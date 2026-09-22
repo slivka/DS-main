@@ -81,8 +81,8 @@ const META = {
 };
 
 const COLUMNS: DataGridColumn<ExportRow>[] = [
-  { id: "document", label: "Doklad", section: "Doklad", value: (row) => row.document, width: 112 },
-  { id: "date", label: "Datum", section: "Doklad", value: (row) => row.date, exportType: "date", width: 104 },
+  { id: "document", label: "Doklad", section: "Doklad", value: (row) => row.document },
+  { id: "date", label: "Datum", section: "Doklad", value: (row) => row.date, exportType: "date" },
   { id: "partner", label: "Partner", section: "Protistrana", value: (row) => row.partner, width: 240 },
   {
     id: "debitAccount",
@@ -90,7 +90,6 @@ const COLUMNS: DataGridColumn<ExportRow>[] = [
     section: "Zaúčtování",
     value: (row) => row.debitAccount,
     render: (row) => <AccountCode code={row.debitAccount} />,
-    width: 120,
   },
   {
     id: "creditAccount",
@@ -98,7 +97,6 @@ const COLUMNS: DataGridColumn<ExportRow>[] = [
     section: "Zaúčtování",
     value: (row) => row.creditAccount,
     render: (row) => <AccountCode code={row.creditAccount} />,
-    width: 120,
   },
   {
     id: "amount",
