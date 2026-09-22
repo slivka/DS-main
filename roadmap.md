@@ -42,3 +42,7 @@
 ## Verze 1.3.1 (stálé zaoblení při zoomu)
 - [x] Zachovat stejné zaoblení tlačítek a výběrů při změně velikosti písma
 - [x] Ověřit výběr účetního období ve všech podporovaných měřítkách
+
+## Verze 1.3.2 (zarovnání odznaků v gridu)
+- [x] Zarovnat všechny systémové odznaky v datových sloupcích vždy vlevo
+- [x] Ověřit typovou kontrolu, sestavení a showcase gridu

@@ -918,7 +918,7 @@ export function DataGrid<Row>({
                               <TableCell
                                 key={c.id}
                                 data-pin-right={c.pinRight || undefined}
-                                className={`${c.align === "right" || (c.numeric && !c.align) ? "text-right num" : c.align === "center" ? "text-center" : "text-left"} ${
+                                className={`${c.align === "right" || (c.numeric && !c.align) ? "text-right num" : c.align === "center" ? "text-center" : "text-left"} [&:has([data-slot=badge])]:text-left ${
                                   isPinnedColumn(c.id)
                                     ? c.align === "left"
                                       ? "text-left"
