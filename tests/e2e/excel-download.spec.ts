@@ -33,7 +33,7 @@ async function inspectWorkbook(filePath: string) {
 
   const numberCells = sheet.getColumn(6).values.slice(5).filter((value) => typeof value === "number");
   expect(numberCells.length).toBeGreaterThan(0);
-  expect(sheet.getCell("F5").numFmt).toBe("#,##0.00;[Red]-#,##0.00");
+  expect(sheet.getCell("F5").numFmt.toLocaleLowerCase("en")).toBe("#,##0.00;[red]-#,##0.00");
 }
 
 function verifyLibreOfficeOpen(filePath: string, outputDir: string) {
