@@ -37,10 +37,7 @@ async function inspectOpenXml(filePath: string) {
   const tableRef = /\bref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(tableXml)?.[1];
   const autoFilterRef = /<autoFilter\s+ref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(tableXml)?.[1];
   expect(tableRef, "Tabulka musí mít platný rozsah").toBeTruthy();
-  const [tableStart = "", tableEnd = ""] = tableRef?.split(":") ?? [];
-  const tableEndColumn = /[A-Z]+/.exec(tableEnd)?.[0] ?? "";
-  const expectedFilterRef = `${tableStart}:${tableEndColumn}${rowFromRef(tableEnd) - 1}`;
-  expect(autoFilterRef, "Filtr tabulky musí odpovídat datové části bez součtového řádku").toBe(expectedFilterRef);
+  expect(autoFilterRef, "Rozsah filtru musí přesně odpovídat rozsahu tabulky").toBe(tableRef);
   expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
   expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
 
