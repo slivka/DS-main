@@ -97,3 +97,17 @@
 - [x] Zachovat stejné pevné zaoblení výběru období a tlačítek při každém přiblížení
 - [x] Zpřístupnit odznaky, karty, tabulky, dialogy, oddělovače a záložky z hlavního vstupu
 - [x] Ověřit typovou kontrolu a sestavení
+
+## Verze 1.7.0 (Excel, navigace aplikace a účetní formuláře)
+- [x] Opravit rozsah filtru tabulky v exportu (filtr končí posledním datovým řádkem)
+- [x] Doplnit strukturální kontrolu filtru, rozsahu tabulky a řádku souhrnů do testů
+- [x] Boční menu se sbalovacími skupinami, štítky a položkami Připravujeme
+- [x] Administrace jako samostatný režim překrývající boční menu
+- [x] Přidat PermissionGate, ReadOnlyBanner a ComingSoon
+- [x] Přidat TreeGrid pro stromová data se součty za uzel a exportem s úrovněmi
+- [x] Přidat PartnerSelect, DimensionSelect, BookSelect, VsField a CurrencyAmount
+- [x] Přidat JournalLinesEditor s ovládáním klávesnicí a kontrolou rozdílu
+- [x] Přidat DocumentForm pro celostránkovou editaci dokladů
+- [x] Nové ukázkové stránky Účetní formuláře a Navigace
+- [x] Zvýšit verzi na 1.7.0, doplnit pravidla a ověřit typovou kontrolu a testy
+

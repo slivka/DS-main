@@ -125,6 +125,24 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Workspace a firma přes `WorkspaceCompanySwitcher` v `AppShell`.
 
 
+## Doklady, číselníky a navigace
+
+- Číselníky (partneři, zakázky, knihy) se editují v `RecordDialog`; doklady vždy
+  v celostránkovém `DocumentForm` (hlavička, `JournalLinesEditor`, stav a akce).
+- Řádky účetního zápisu vždy `JournalLinesEditor`: MD/DAL účet přes `AccountSelect`,
+  částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
+  `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu
+  se hlídá průběžně; režim jen pro čtení se předává propem `readOnly`.
+- Částka v cizí měně vždy `CurrencyAmount` (částka 2 desetinná místa, kurz 6).
+- Stromová data (účtová osnova, zakázky) zobrazuj přes `TreeGrid` – součty za uzel,
+  hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
+- Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
+  `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
+- Administrace je samostatný režim: `adminNav` zobrazí v horní liště ozubené kolo
+  a panel „Administrace“ překryje boční menu (zpět tlačítkem nebo klávesou Esc).
+- Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
+  `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.
+
 ## Struktura
 
 - `src/components/ds/` – design systém, jediný veřejný vstup `ds/index.ts`
