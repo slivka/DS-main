@@ -46,3 +46,4 @@
 ## Verze 1.3.2 (zarovnání odznaků v gridu)
 - [x] Zarovnat všechny systémové odznaky v datových sloupcích vždy vlevo
 - [x] Ověřit typovou kontrolu, sestavení a showcase gridu
+- [x] Zajistit spolehlivé stažení platného vzorového XLSX napříč prohlížeči
