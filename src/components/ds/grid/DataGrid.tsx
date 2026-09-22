@@ -616,6 +616,7 @@ export function DataGrid<Row>({
               views={cols.views}
               zoom={zoom}
               title={texts.columnsTitle}
+              texts={texts}
             />
 
             {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
