@@ -37,6 +37,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 10. **Načti firemní písma v dokumentu aplikace.** Hostitelská aplikace musí v
     hlavičce stránky načíst Work Sans (řezy 400–700) a JetBrains Mono (500–700),
     protože náhledová obálka knihovny se do připojených projektů nekopíruje.
+11. **Exporty a tisk používají firemní ikony.** Pro Excel vždy použij dodanou
+    ikonu Microsoft Excel a pro PDF nebo tiskovou sestavu dodanou ikonu Adobe
+    Acrobat Reader ze sdílených assetů design systému; nenahrazuj je obecnými ikonami.
 
 ## Čísla a data
 

@@ -1,10 +1,10 @@
-import { Download, FileCode2, FileText } from "lucide-react";
+import { Download, FileCode2 } from "lucide-react";
 import { type ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
-import excelIcon from "../../../assets/excel.svg";
-import pdfIcon from "../../../assets/pdf.svg";
+import excelIcon from "../../../assets/icons/excel.svg";
+import pdfIcon from "../../../assets/icons/pdf.svg";
 import robotoRegular from "../../../assets/roboto-regular.ttf";
 import robotoBold from "../../../assets/roboto-bold.ttf";
 import {
