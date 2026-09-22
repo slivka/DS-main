@@ -52,6 +52,12 @@ export function CalendarPicker({
   const [open, setOpen] = React.useState(false);
   const selected = parseISO(value);
   const text = value ? formatDate(value) : "";
+  const disabledMatcher = React.useMemo(() => {
+    if (minDate && maxDate) return { before: minDate, after: maxDate };
+    if (minDate) return { before: minDate };
+    if (maxDate) return { after: maxDate };
+    return undefined;
+  }, [minDate, maxDate]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
