@@ -51,4 +51,4 @@
 ## Verze 1.3.3 (datumové filtry v gridu)
 - [x] Doplnit do datumových sloupců volby podle roku, čtvrtletí a měsíce
 - [x] Zachovat výběr jednotlivých dat a kombinování více voleb
-- [ ] Ověřit typovou kontrolu, sestavení a účetní showcase
+- [x] Ověřit typovou kontrolu, sestavení a účetní showcase
