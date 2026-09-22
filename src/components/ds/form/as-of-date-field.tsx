@@ -1,4 +1,4 @@
-import { DateField } from "@/components/ds/form/date-field";
+import { DateField } from "./date-field";
 
 /** Zdieľané pole „STAV K DÁTUMU“ – výber dňa pre stav skladu/pokladne. */
 export function AsOfDateField({

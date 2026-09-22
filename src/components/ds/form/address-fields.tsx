@@ -1,7 +1,7 @@
-import { OptionSelect } from "@/components/ds/form/option-select";
+import { OptionSelect } from "./option-select";
 import type { ReactNode } from "react";
-import { Field, FieldGrid } from "@/components/ds/layout/RecordDialog";
-import { Input } from "@/components/ui/input";
+import { Field, FieldGrid } from "../layout/RecordDialog";
+import { Input } from "../../ui/input";
 
 export interface AddressValue {
   street?: string | null;

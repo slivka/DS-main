@@ -6,9 +6,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { formatDate } from "@/lib/format";
-import { cn } from "@/lib/utils";
+} from "../../ui/select";
+import { formatDate } from "../../../lib/format";
+import { cn } from "../../../lib/utils";
 
 export type FiscalPeriodState = "open" | "closing" | "closed";
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { DateField } from "@/components/ds/form/date-field";
-import { PERIOD_LABEL, periodRange, type PeriodKey } from "@/lib/period";
+import { Button } from "../../ui/button";
+import { DateField } from "./date-field";
+import { PERIOD_LABEL, periodRange, type PeriodKey } from "../../../lib/period";
 
 export type GridPeriodKey = PeriodKey | "all";
 

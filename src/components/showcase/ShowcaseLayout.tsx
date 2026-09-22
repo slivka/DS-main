@@ -7,8 +7,8 @@ import {
   WorkspaceCompanySwitcher,
   type Crumb,
   type NavItem,
-} from "@/components/ds";
-import { MOCK_COMPANIES, MOCK_WORKSPACES } from "@/lib/mock/accounting";
+} from "../ds";
+import { MOCK_COMPANIES, MOCK_WORKSPACES } from "../../lib/mock/accounting";
 
 const NAV: NavItem[] = [
   { to: "/", label: "Přehled", icon: Palette, section: "Design systém" },

@@ -1,6 +1,6 @@
 import { Minus, Plus, RotateCcw, Type } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { APP_FONT_SIZES, useAppFontSize } from "@/hooks/useAppFontSize";
+import { Button } from "../../ui/button";
+import { APP_FONT_SIZES, useAppFontSize } from "../../../hooks/useAppFontSize";
 
 /** Volba velikosti písma aplikace – ukládá se do localStorage a řídí rem. */
 export function AppFontSizeControl() {

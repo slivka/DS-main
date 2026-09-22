@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Clock } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Input } from "../../ui/input";
+import { cn } from "../../../lib/utils";
 
 export interface TimeInputRightProps
   extends Omit<React.ComponentProps<"input">, "type"> {

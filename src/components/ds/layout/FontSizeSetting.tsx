@@ -6,8 +6,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { FONT_SCALES, getFontScale, setFontScale } from "@/lib/font-scale";
+} from "../../ui/select";
+import { FONT_SCALES, getFontScale, setFontScale } from "../../../lib/font-scale";
 
 /**
  * Nastavenie celkovej veľkosti písma aplikácie. Uloží sa do prehliadača.

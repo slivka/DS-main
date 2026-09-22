@@ -1,8 +1,8 @@
 import { Filter, X } from "lucide-react";
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "../../ui/button";
+import { gridFontSize } from "./grid-zoom";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 
 export function GridFilterToggle({
   open,

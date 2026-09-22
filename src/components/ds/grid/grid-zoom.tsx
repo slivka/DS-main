@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 import { Minus, Plus, Rows2, Rows3 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { GridProgress } from "@/components/ds/grid/grid-states";
-import { useGridKeyboardNav } from "@/hooks/use-grid-keyboard-nav";
+import { Button } from "../../ui/button";
+import { cn } from "../../../lib/utils";
+import { GridProgress } from "./grid-states";
+import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 
 const MIN = 0.6;
 const MAX = 1.4;

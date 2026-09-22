@@ -1,7 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { Button } from "../../ui/button";
+import { TableCell, TableRow } from "../../ui/table";
 
 /** Skeleton řádky – místo prázdné plochy během načítání gridu. */
 export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: number }) {

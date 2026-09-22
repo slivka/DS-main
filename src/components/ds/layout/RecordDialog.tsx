@@ -6,9 +6,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import { Label } from "../../ui/label";
 
 /** Pojmenovaná sekcia formulára – optické zoskupenie polí v editoch. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {

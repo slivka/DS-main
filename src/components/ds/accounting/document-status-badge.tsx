@@ -1,4 +1,4 @@
-import { StatusBadge, type StatusConfig } from "@/components/ds/data-display/status-badge";
+import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 
 export type DocumentStatus = "draft" | "posted" | "cancelled";
 

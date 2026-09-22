@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { TableHead } from "@/components/ui/table";
+import { TableHead } from "../../ui/table";
 
 export type SortDir = "asc" | "desc";
 

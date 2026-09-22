@@ -10,21 +10,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { GridSearch } from "@/components/ds/grid/grid-search";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "../../ui/table";
+import { GridSearch } from "./grid-search";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 
-import { GridPagination, useGridPagination } from "@/components/ds/grid/grid-pagination";
-import { SortHead, useGridSort, useSortedRows } from "@/components/ds/grid/grid-sort";
-import { GridBody, GridErrorRow } from "@/components/ds/grid/grid-states";
-import { GridExport, type GridExportData } from "@/components/ds/grid/grid-export";
-import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "@/components/ds/grid/grid-zoom";
-import { useGridColumns } from "@/components/ds/grid/grid-columns";
-import { ColumnResizeHandle } from "@/components/ds/grid/grid-column-resize";
-import { ColumnPicker } from "@/components/ds/grid/column-picker";
-import { GridFilterPanel, GridFilterToggle } from "@/components/ds/grid/grid-filters";
-import { ColumnFilter } from "@/components/ds/grid/ColumnFilter";
+import { GridPagination, useGridPagination } from "./grid-pagination";
+import { SortHead, useGridSort, useSortedRows } from "./grid-sort";
+import { GridBody, GridErrorRow } from "./grid-states";
+import { GridExport, type GridExportData } from "./grid-export";
+import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "./grid-zoom";
+import { useGridColumns } from "./grid-columns";
+import { ColumnResizeHandle } from "./grid-column-resize";
+import { ColumnPicker } from "./column-picker";
+import { GridFilterPanel, GridFilterToggle } from "./grid-filters";
+import { ColumnFilter } from "./ColumnFilter";
 import {
   GroupBar,
   GroupControl,
@@ -33,18 +33,18 @@ import {
   groupDragProps,
   useGridGrouping,
   useGroupedRows,
-} from "@/components/ds/grid/grid-grouping";
-import { GridTitleBar } from "@/components/ds/grid/grid-title";
-import { GridAction, GridActions } from "@/components/ds/grid/grid-action";
+} from "./grid-grouping";
+import { GridTitleBar } from "./grid-title";
+import { GridAction, GridActions } from "./grid-action";
 import { Pencil, Trash2 } from "lucide-react";
-import { fmtAmount } from "@/lib/format";
+import { fmtAmount } from "../../../lib/format";
 import {
   formatUserDate,
   formatUserDateTime,
   useDateTimePreferences,
-} from "@/lib/date-time-preferences";
-import { IcoLink } from "@/components/ds/form/ico-link";
-import { useConfirmDialog } from "@/components/ds/feedback/confirm-dialog";
+} from "../../../lib/date-time-preferences";
+import { IcoLink } from "../form/ico-link";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
 
 /** Sloupec pobočky – riadi ho explicitne branchVisibility; zobrazuje sa len pri režime „Všetky pobočky", vždy ako prvý. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>

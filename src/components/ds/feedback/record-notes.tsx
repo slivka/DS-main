@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { ArrowDownWideNarrow, ArrowUpWideNarrow, Pencil, Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { formatUserDateTime } from "@/lib/date-time-preferences";
-import { useConfirmDialog } from "@/components/ds/feedback/confirm-dialog";
+import { Button } from "../../ui/button";
+import { Textarea } from "../../ui/textarea";
+import { formatUserDateTime } from "../../../lib/date-time-preferences";
+import { useConfirmDialog } from "./confirm-dialog";
 
 /** Poznámka uživatele k záznamu. */
 export type RecordNote = {

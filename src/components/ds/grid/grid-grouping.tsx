@@ -8,8 +8,8 @@ import {
   Layers,
   X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { Button } from "../../ui/button";
+import { TableCell, TableRow } from "../../ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,11 +17,11 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import { compareValues } from "@/components/ds/grid/grid-sort";
-import { fmtAmount } from "@/lib/format";
-import { formatUserDate } from "@/lib/date-time-preferences";
+} from "../../ui/dropdown-menu";
+import { gridFontSize } from "./grid-zoom";
+import { compareValues } from "./grid-sort";
+import { fmtAmount } from "../../../lib/format";
+import { formatUserDate } from "../../../lib/date-time-preferences";
 
 /** Granularita seskupení podle data. */
 export type GroupGranularity = "day" | "month" | "quarter" | "year";

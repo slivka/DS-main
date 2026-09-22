@@ -1,6 +1,6 @@
-import { DecimalInput } from "@/components/ds/form/decimal-input";
-import { amountClass, formatAmount } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { DecimalInput } from "../form/decimal-input";
+import { amountClass, formatAmount } from "../../../lib/format";
+import { cn } from "../../../lib/utils";
 
 /** Zobrazení částky v gridu nebo detailu – vpravo, tisíce mezerou, 2 desetinná místa. */
 export function AmountCell({

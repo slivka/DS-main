@@ -6,8 +6,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+} from "../../ui/select";
+import { cn } from "../../../lib/utils";
 
 export type WorkspaceOption = { id: string; name: string };
 export type CompanyOption = { id: string; name: string; workspaceId?: string };

@@ -1,12 +1,12 @@
 import { Download, FileCode2, FileText } from "lucide-react";
 import { type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import excelIcon from "@/assets/excel.svg";
-import pdfIcon from "@/assets/pdf.svg";
-import robotoRegular from "@/assets/roboto-regular.ttf";
-import robotoBold from "@/assets/roboto-bold.ttf";
+import { Button } from "../../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { gridFontSize } from "./grid-zoom";
+import excelIcon from "../../../assets/excel.svg";
+import pdfIcon from "../../../assets/pdf.svg";
+import robotoRegular from "../../../assets/roboto-regular.ttf";
+import robotoBold from "../../../assets/roboto-bold.ttf";
 import {
   excelDateFormat,
   formatUserDate,
@@ -14,9 +14,9 @@ import {
   getDateTimePreferences,
   parseUserDate,
   useDateTimePreferences,
-} from "@/lib/date-time-preferences";
+} from "../../../lib/date-time-preferences";
 
-import { nzero, roundTo } from "@/lib/format";
+import { nzero, roundTo } from "../../../lib/format";
 
 type ExportCell = string | number | Date | null | undefined;
 

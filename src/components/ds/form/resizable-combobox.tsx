@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useResizableWidth } from "@/hooks/use-resizable-width";
+import { useResizableWidth } from "../../../hooks/use-resizable-width";
 import type { PointerEvent as ReactPointerEvent } from "react";
 
 /** Úchyt v pravém okraji comboboxu pro změnu šířky tažením. */

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
+} from "../../ui/dropdown-menu";
+import { gridFontSize } from "./grid-zoom";
 
 /** 0 = zobrazit vše (výchozí hodnota). */
 export const PAGE_SIZE_OPTIONS = [0, 25, 50, 100, 200];
