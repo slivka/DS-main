@@ -248,7 +248,7 @@ export function ColumnPicker<Id extends string>({
                     />
                     <span className="truncate text-[1em] text-foreground">
                       {c.label
-                        ? c.label.charAt(0).toUpperCase() + c.label.slice(1).toLowerCase()
+                        ? c.label.replace(/\b(md|dal)\b/gi, (value) => value.toLocaleUpperCase("cs"))
                         : c.label}
                     </span>
                   </label>
