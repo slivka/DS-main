@@ -36,10 +36,25 @@ async function inspectOpenXml(filePath: string) {
 
   const tableRef = /\bref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(tableXml)?.[1];
   const autoFilterRef = /<autoFilter\s+ref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(tableXml)?.[1];
+  const totalsRowCount = Number(/\btotalsRowCount="(\d+)"/.exec(tableXml)?.[1] ?? 0);
   expect(tableRef, "Tabulka musí mít platný rozsah").toBeTruthy();
-  expect(autoFilterRef, "Rozsah filtru musí přesně odpovídat rozsahu tabulky").toBe(tableRef);
+  expect(autoFilterRef, "Filtr musí mít platný rozsah").toBeTruthy();
+  const tableStartRow = rowFromRef(tableRef?.split(":")[0] ?? "");
+  const tableLastRow = rowFromRef(tableRef?.split(":")[1] ?? "");
+  const filterStartRow = rowFromRef(autoFilterRef?.split(":")[0] ?? "");
+  const filterLastRow = rowFromRef(autoFilterRef?.split(":")[1] ?? "");
+  expect(totalsRowCount, "Tabulka musí mít právě jeden řádek souhrnů").toBe(1);
+  expect(filterStartRow, "Filtr musí začínat na řádku hlavičky tabulky").toBe(tableStartRow);
+  expect(filterLastRow, "Filtr musí končit posledním datovým řádkem, ne řádkem souhrnů").toBe(
+    tableLastRow - totalsRowCount,
+  );
+  expect(autoFilterRef?.split(":")[0]?.replace(/\d+/, ""), "Filtr musí mít stejné sloupce jako tabulka").toBe(
+    tableRef?.split(":")[0]?.replace(/\d+/, ""),
+  );
+  expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(tableRef?.split(":")[1]?.replace(/\d+/, ""));
   expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
   expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
+
 
   const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) => decodeXml(match[1]));
   expect(tableColumns.length).toBeGreaterThan(0);
