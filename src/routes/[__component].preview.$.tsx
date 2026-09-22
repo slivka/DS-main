@@ -17,7 +17,7 @@ import { components } from "@/.generated/mockup-components";
 
 type PreviewEntry = (typeof components)[string];
 type SpecimenProps = Record<string, string | number | boolean>;
-type SchemaProp = { name: string; type?: string; values?: string[] };
+type SchemaProp = { name: string; type?: string; values?: string[]; default?: string; required?: boolean };
 
 export const Route = createFileRoute("/__component/preview/$")({
   component: ComponentPreview,
