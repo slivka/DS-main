@@ -21,4 +21,4 @@
 - [x] Přidat společné přepisovatelné texty DataGridu a souvisejících grid komponent
 - [x] Přidat české přepisovatelné texty AddressFields / AddressFieldGrid a ostatních formulářů
 - [x] Aktualizovat pravidla knihovny a verzi na 1.2.0
-- [ ] Ověřit typovou kontrolu, sestavení a showcase
+- [x] Ověřit typovou kontrolu, sestavení a showcase
