@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export function GridFilterToggle({
   open,
@@ -12,6 +13,7 @@ export function GridFilterToggle({
   activeFilters = [],
   defaultFilters = [],
   zoom = 1,
+  texts: textOverrides,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,15 +26,17 @@ export function GridFilterToggle({
    *  Zobrazují se modře místo červeně a v tooltipu pod hlavičkou „Výchozí filtry". */
   defaultFilters?: string[];
   zoom?: number;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const active = activeCount > 0;
   const hasDefault = defaultFilters.length > 0;
   const showDefault = !active && hasDefault;
   const tooltipLabel = active
-    ? `Aktivní filtry: ${activeFilters.join(", ")}`
+    ? `${texts.activeFilters}: ${activeFilters.join(", ")}`
     : showDefault
-      ? `Výchozí filtry: ${defaultFilters.join(", ")}`
-      : "Zobrazit filtry";
+      ? `${texts.defaultFilters}: ${defaultFilters.join(", ")}`
+      : texts.showFilters;
   return (
     <div className="grid-toolbar-group flex shrink-0 items-center">
       <TooltipProvider delayDuration={250}>
@@ -65,8 +69,8 @@ export function GridFilterToggle({
                     <span
                       role="button"
                       tabIndex={0}
-                      aria-label="Zrušit všechny filtry"
-                      title="Zrušit všechny filtry"
+                      aria-label={texts.clearAllFilters}
+                      title={texts.clearAllFilters}
                       onClick={(event) => {
                         event.stopPropagation();
                         onClear();
@@ -92,7 +96,7 @@ export function GridFilterToggle({
               <div className="space-y-1">
                 {hasDefault && (
                   <>
-                    <p className="font-semibold">Výchozí filtry</p>
+                    <p className="font-semibold">{texts.defaultFilters}</p>
                     {defaultFilters.map((filter) => (
                       <p key={filter} className="font-normal">
                         {filter}
@@ -102,7 +106,7 @@ export function GridFilterToggle({
                 )}
                 {active && (
                   <>
-                    <p className="font-semibold pt-1">Aktivní filtry</p>
+                    <p className="font-semibold pt-1">{texts.activeFilters}</p>
                     {(activeFilters.length ? activeFilters : [`${activeCount} aktivní`]).map(
                       (filter) => (
                         <p key={filter} className="font-normal">
@@ -114,7 +118,7 @@ export function GridFilterToggle({
                 )}
               </div>
             ) : (
-              "Zobrazit filtry"
+              texts.showFilters
             )}
           </TooltipContent>
         </Tooltip>
@@ -159,6 +163,7 @@ export function GridResultCount({
   onClearAll,
   zoom = 1,
   className = "",
+  texts: textOverrides,
 }: {
   /** Počet riadkov po filtrech/hledání. */
   shown: number;
@@ -168,7 +173,9 @@ export function GridResultCount({
   onClearAll?: () => void;
   zoom?: number;
   className?: string;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const filtered = shown !== total;
   return (
     <div
@@ -178,14 +185,14 @@ export function GridResultCount({
       <span className="shrink-0 text-muted-foreground" aria-live="polite">
         {filtered ? (
           <>
-            <span className="font-semibold text-foreground">{shown.toLocaleString("sk-SK")}</span>
+            <span className="font-semibold text-foreground">{shown.toLocaleString(texts.locale)}</span>
             {" z "}
-            {total.toLocaleString("sk-SK")} riadkov
+            {total.toLocaleString(texts.locale)} {texts.rowsLabel}
           </>
         ) : (
           <>
-            <span className="font-semibold text-foreground">{total.toLocaleString("sk-SK")}</span>
-            {" riadkov"}
+            <span className="font-semibold text-foreground">{total.toLocaleString(texts.locale)}</span>
+            {` ${texts.rowsLabel}`}
           </>
         )}
       </span>
@@ -217,7 +224,7 @@ export function GridResultCount({
           style={{ fontSize: "1em" }}
           onClick={onClearAll}
         >
-          Zrušit vše
+          {texts.clearAll}
         </Button>
       ) : null}
     </div>

@@ -4,6 +4,7 @@ import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 const MIN = 0.6;
 const MAX = 1.4;
@@ -136,12 +137,15 @@ export function ZoomControl({
   setZoom,
   density,
   setDensity,
+  texts: textOverrides,
 }: {
   zoom: number;
   setZoom: (v: number) => void;
   density?: GridDensity;
   setDensity?: (v: GridDensity) => void;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   return (
     <div className="grid-toolbar-control grid-toolbar-group zoom-control flex shrink-0 items-center rounded-md border border-border bg-card">
       {density && setDensity && (
@@ -149,8 +153,8 @@ export function ZoomControl({
           variant="ghost"
           size="icon"
           className="grid-toolbar-icon-control"
-          aria-label={density === "compact" ? "Normální hustota řádků" : "Kompaktní hustota řádků"}
-          title={density === "compact" ? "Normální hustota řádků" : "Kompaktní hustota řádků"}
+          aria-label={density === "compact" ? texts.normalDensity : texts.compactDensity}
+          title={density === "compact" ? texts.normalDensity : texts.compactDensity}
           onClick={() => setDensity(density === "compact" ? "normal" : "compact")}
         >
           {density === "compact" ? <Rows2 className="size-3.5" /> : <Rows3 className="size-3.5" />}
@@ -160,7 +164,7 @@ export function ZoomControl({
         variant="ghost"
         size="icon"
         className="grid-toolbar-icon-control"
-        aria-label="Zmenšit tabulku"
+        aria-label={texts.zoomOut}
         disabled={zoom <= MIN}
         onClick={() => setZoom(zoom - STEP)}
       >
@@ -169,7 +173,7 @@ export function ZoomControl({
       <button
         type="button"
         onClick={() => setZoom(1)}
-        title="Výchozí velikost"
+        title={texts.zoomReset}
         className="zoom-value num min-w-[1.3em] px-[0.05em] text-[0.9em] text-muted-foreground transition-colors hover:text-foreground"
       >
         {Math.round(zoom * 100)} %
@@ -178,7 +182,7 @@ export function ZoomControl({
         variant="ghost"
         size="icon"
         className="grid-toolbar-icon-control"
-        aria-label="Zvětšit tabulku"
+        aria-label={texts.zoomIn}
         disabled={zoom >= MAX}
         onClick={() => setZoom(zoom + STEP)}
       >
