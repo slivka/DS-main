@@ -331,8 +331,8 @@ export function loadPdfFonts() {
       return btoa(binary);
     };
     const [regular, bold] = await Promise.all([
-      toBase64(robotoRegular.url),
-      toBase64(robotoBold.url),
+      toBase64(robotoRegular),
+      toBase64(robotoBold),
     ]);
     return { regular, bold };
   })();
@@ -885,7 +885,7 @@ ${
           onClick={() => void exportExcel()}
           className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
         >
-          <img src={excelIcon.url} alt="" className="size-[1.5em]" />
+          <img src={excelIcon} alt="" className="size-[1.5em]" />
           Stáhnout do Excelu
         </button>
         <button
@@ -893,7 +893,7 @@ ${
           onClick={() => void (pdfExport ? pdfExport() : exportPdf())}
           className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
         >
-          <img src={pdfIcon.url} alt="" className="size-[1.5em]" />
+          <img src={pdfIcon} alt="" className="size-[1.5em]" />
           Stáhnout do PDF
         </button>
         {html && (
@@ -919,7 +919,7 @@ ${
                 {item.icon ? (
                   <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
                 ) : (
-                  <img src={pdfIcon.url} alt="" className="size-[1.5em]" />
+                  <img src={pdfIcon} alt="" className="size-[1.5em]" />
                 )}
                 {item.label}
               </button>
@@ -935,7 +935,7 @@ ${
               onClick={() => void extraExcelExport.onExport()}
               className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
             >
-              <img src={excelIcon.url} alt="" className="size-[1.5em]" />
+              <img src={excelIcon} alt="" className="size-[1.5em]" />
               {extraExcelExport.label}
             </button>
           </>
