@@ -63,3 +63,9 @@
 - [x] Kontrolovat skutečnou Excel tabulku, součtové vzorce, formáty a chybové hodnoty
 - [x] Otevírat stažený soubor v LibreOffice a odmítnout hlášení o opravě či poškození
 - [x] Ověřit celou testovací sadu, typovou kontrolu a sestavení
+
+## Verze 1.4.1 (šířka součtů v Excel exportu)
+- [x] Zahrnout zobrazené automatické součty do výpočtu šířky sloupců
+- [x] Formátovat hodnoty vlastních součtových řádků stejně jako běžné buňky
+- [x] Předávat z DataGridu metadata, hledání a aktivní sloupcové filtry
+- [ ] Ověřit vzor se součtem širším než jednotlivé hodnoty a typovou kontrolu

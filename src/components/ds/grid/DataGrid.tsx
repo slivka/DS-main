@@ -609,12 +609,20 @@ export function DataGrid<Row>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown, searched, colFilters]);
 
+  const columnFilterLabels = Object.entries(colFilters).map(([id, vals]) => {
+    const options = filterOptions.get(id) ?? [];
+    const labels = vals.map((value) => options.find((option) => option.value === value)?.label ?? value);
+    return `${byId.get(id)?.label ?? id}: ${labels.join(", ")}`;
+  });
   const activeFilterLabels = [
     ...filterChips.map((c) => c.label),
-    ...Object.entries(colFilters).map(
-      ([id, vals]) => `${byId.get(id)?.label ?? id}: ${texts.valuesCount(vals.length)}`,
-    ),
+    ...columnFilterLabels,
     ...shown.filter((c) => c.filterActive && c.filterLabel).map((c) => c.filterLabel!),
+  ];
+  const exportFilterLabels = [
+    ...(exportMeta?.filters ?? []),
+    ...(search.trim() ? [`Hledání: ${search.trim()}`] : []),
+    ...activeFilterLabels,
   ];
   const clearAll = () => {
     setSearch("");
@@ -737,7 +745,7 @@ export function DataGrid<Row>({
               title={exportTitle ?? (typeof title === "string" ? title : "")}
               zoom={zoom}
               texts={texts}
-              meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...activeFilterLabels] }}
+              meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }}
             />
 
             <ColumnPicker

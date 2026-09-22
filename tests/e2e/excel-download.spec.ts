@@ -34,6 +34,17 @@ async function inspectWorkbook(filePath: string) {
   const numberCells = sheet.getColumn(6).values.slice(5).filter((value) => typeof value === "number");
   expect(numberCells.length).toBeGreaterThan(0);
   expect(sheet.getCell("F5").numFmt.toLocaleLowerCase("en")).toBe("#,##0.00;[red]-#,##0.00");
+  const largestValueLength = Math.max(
+    ...numberCells.map((value) =>
+      Number(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length,
+    ),
+  );
+  const total = numberCells.reduce((sum, value) => sum + Number(value), 0);
+  const totalLength = total.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length;
+  expect(totalLength, "Součet ve vzoru musí být širší než jednotlivé hodnoty").toBeGreaterThan(largestValueLength);
+  expect(sheet.getColumn(6).width ?? 0, "Sloupec musí být dost široký pro zobrazený součet").toBeGreaterThanOrEqual(
+    totalLength + 2,
+  );
 }
 
 function verifyLibreOfficeOpen(filePath: string, outputDir: string) {

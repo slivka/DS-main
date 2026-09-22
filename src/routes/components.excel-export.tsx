@@ -53,7 +53,7 @@ const PARTNERS = [
   "Energetika severní Moravy, a.s.",
 ];
 const PROJECTS = ["Administrativa", "Rekonstrukce Brno", "Expedice Praha", "Vývoj ERP"];
-const AMOUNTS = [1250.5, 24890, -3490.75, 0, 1_245_678.9, 87_450.22, -12_000, 3_456_789.12];
+const AMOUNTS = [1250.5, 24890, -3490.75, 0, 9_876_543.21, 87_450.22, -12_000, 8_765_432.1];
 
 const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
   const month = String((index % 3) + 1).padStart(2, "0");
@@ -107,7 +107,6 @@ const COLUMNS: DataGridColumn<ExportRow>[] = [
     numeric: true,
     decimals: 2,
     total: "sum",
-    width: 140,
   },
   {
     id: "count",

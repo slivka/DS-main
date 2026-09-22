@@ -185,6 +185,17 @@ function displayValue(value: ExportCell, meta: ExcelColumnMeta) {
   return String(value);
 }
 
+function summedColumnValue(data: GridExportData, index: number, meta: ExcelColumnMeta) {
+  const decimals = meta.type === "integer" || meta.type === "year" ? 0 : 2;
+  const sum = data.rows.reduce((total, row) => {
+    const value = row[index];
+    return typeof value === "number" && Number.isFinite(value)
+      ? total + nzero(roundTo(value, decimals))
+      : total;
+  }, 0);
+  return nzero(roundTo(sum, decimals));
+}
+
 function excelValue(value: ExportCell, meta: ExcelColumnMeta) {
   if (meta.type === "date" || meta.type === "datetime") return parseDate(value) ?? String(emptyCell(value));
   if (typeof value === "number") {
@@ -348,7 +359,24 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   headers.forEach((header, index) => {
     const columnMeta = meta[index];
     const contentLengths = sampledRows.map((row) => displayValue(row[index], columnMeta).length);
-    const totalLengths = (data.totalRows ?? []).map((row) => String(row.cells[index] ?? row.label).length);
+    const automaticTotalLength = columnMeta.total === "sum"
+      ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).length
+      : columnMeta.total === "count"
+        ? displayValue(data.rows.length, { ...columnMeta, type: "integer" }).length
+        : index === 0 && totalsRow
+          ? totalLabel.length
+          : 0;
+    const totalLengths = (data.totalRows ?? []).map((row) => {
+      const labelSpan = Math.max(1, Math.min(row.labelSpan ?? 1, headers.length));
+      if (index === 0) return row.label.length;
+      if (index < labelSpan) return 0;
+      const value = row.cells[index - labelSpan];
+      const displayed = columnMeta.total === "sum"
+        ? summedColumnValue(data, index, columnMeta)
+        : value;
+      return displayValue(displayed, columnMeta).length;
+    });
+    totalLengths.push(automaticTotalLength);
     const measured = Math.max(8, Math.ceil(header.length * 1.1) + 3, ...contentLengths, ...totalLengths);
     const width = Math.max(8, Math.min(60, columnMeta.width ?? measured + 2));
     sheet.getColumn(index + 1).width = width;
