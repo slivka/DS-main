@@ -109,7 +109,8 @@ export function DateRangeField({
               from: toISO(range.from),
               to: range.to ? toISO(range.to) : toISO(range.from),
             });
-            if (range.from && range.to) setOpen(false);
+            // Zavřeme až po vybrání konce rozsahu (první klik volí jen začátek).
+            if (range.from && range.to && range.to > range.from) setOpen(false);
           }}
           initialFocus
           className="p-3"
