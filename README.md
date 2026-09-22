@@ -5,6 +5,14 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Instalace písem
+
+Hostitelská aplikace musí v hlavičce načíst Work Sans 400–700 a JetBrains Mono 500–700:
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" />
+```
+
 ## Struktura
 
 ```text
