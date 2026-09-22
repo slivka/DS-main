@@ -180,7 +180,7 @@ export function JournalLinesEditor({
                 <TableCell>
                   <DecimalInput
                     value={line.amount}
-                    onChange={(value) => patch(line.id, { amount: value })}
+                    onChange={(value) => patch(line.id, { amount: Number(value) || 0 })}
                     decimals={2}
                     disabled={readOnly}
                     aria-label={t.amount}

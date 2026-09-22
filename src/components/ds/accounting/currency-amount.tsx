@@ -64,7 +64,7 @@ export function CurrencyAmount({
         <DecimalInput
           id={`${idPrefix}-amount`}
           value={amount}
-          onChange={onAmountChange}
+          onChange={(value) => onAmountChange(Number(value) || 0)}
           decimals={2}
           disabled={disabled || readOnly}
         />
@@ -101,7 +101,7 @@ export function CurrencyAmount({
         <DecimalInput
           id={`${idPrefix}-rate`}
           value={isBase ? 1 : rate}
-          onChange={(value) => onRateChange?.(value)}
+          onChange={(value) => onRateChange?.(Number(value) || 0)}
           decimals={6}
           disabled={disabled || readOnly || isBase || !onRateChange}
         />
