@@ -1,4 +1,5 @@
 import type { Alignment, Workbook } from "exceljs";
+import JSZip from "jszip";
 import { excelDateFormat, formatUserDate, formatUserDateTime } from "./date-time-preferences";
 import { nzero, roundTo } from "./format";
 
@@ -457,7 +458,20 @@ export async function downloadWorkbook(
 ) {
   const buffer = await workbook.xlsx.writeBuffer();
   const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer as ArrayBuffer);
-  const blob = new Blob([bytes], {
+  const zip = await JSZip.loadAsync(bytes);
+  const tableFiles = Object.keys(zip.files).filter((path) => /^xl\/tables\/table\d+\.xml$/.test(path));
+  await Promise.all(tableFiles.map(async (path) => {
+    const entry = zip.file(path);
+    if (!entry) return;
+    const xml = await entry.async("text");
+    const tableRef = /<table\b[^>]*\bref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(xml)?.[1];
+    const normalized = xml
+      .replace(/\s+totalsRowFunction="none"/g, "")
+      .replace(/<autoFilter\b[^>]*\bref="[^"]+"/, (tag) => tableRef ? tag.replace(/\bref="[^"]+"/, `ref="${tableRef}"`) : tag);
+    zip.file(path, normalized);
+  }));
+  const finalized = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+  const blob = new Blob([finalized], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   const url = URL.createObjectURL(blob);
