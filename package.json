@@ -1,5 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
+  "version": "1.1.0",
   "private": true,
   "sideEffects": false,
   "type": "module",
