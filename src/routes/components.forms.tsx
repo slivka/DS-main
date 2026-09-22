@@ -6,14 +6,18 @@ import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseL
 import {
   AccountSelect,
   AmountInput,
+  CalendarPicker,
   DateField,
+  DateRangeField,
   Field,
   FieldGrid,
   FormSection,
+  MonthYearSelect,
   OptionSelect,
   RecordDialog,
   TagPicker,
   type TagOption,
+  type DateRangeValue,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +62,9 @@ function FormsPage() {
   const [kind, setKind] = useState("invoice");
   const [note, setNote] = useState("");
   const [tags, setTags] = useState<string[]>(["t2"]);
+  const [range, setRange] = useState<DateRangeValue>({ from: null, to: null });
+  const [calendarDate, setCalendarDate] = useState("");
+  const [monthYear, setMonthYear] = useState<string | null>(null);
   const { confirm, confirmDialog } = useConfirmDialog();
 
   return (
@@ -67,6 +74,23 @@ function FormsPage() {
         description="Stejný dialog používají všechny editace: tlačítko Odstranit vlevo, Zrušit a Uložit vpravo."
       >
         <Button onClick={() => setOpen(true)}>Otevřít doklad</Button>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Výběr data"
+        description="Tři samostatné komponenty: rozsah Od–Do v jednom ovládání, kalendář vybíraný jen kliknutím a výběr měsíce a roku."
+      >
+        <FieldGrid cols={3}>
+          <Field label="Rozsah dat">
+            <DateRangeField value={range} onChange={setRange} />
+          </Field>
+          <Field label="Datum (kalendář)">
+            <CalendarPicker value={calendarDate} onChange={setCalendarDate} />
+          </Field>
+          <Field label="Měsíc a rok">
+            <MonthYearSelect value={monthYear} onChange={setMonthYear} />
+          </Field>
+        </FieldGrid>
       </ShowcaseSection>
 
       <RecordDialog
