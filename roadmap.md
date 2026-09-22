@@ -91,4 +91,4 @@
 - [x] Zpřístupnit základní ovládací prvky a formátovací nástroje z hlavního vstupu
 - [x] Zpřístupnit odkazy na firemní písma a použít je v ukázce
 - [x] Vyčistit metadata místní knihovny bez neplatných údajů externího balíčku
-- [ ] Ověřit typovou kontrolu a sestavení
+- [x] Ověřit typovou kontrolu a sestavení
