@@ -1,0 +1,8 @@
+components:
+  # Jediný veřejný vstup design systému – barrel se všemi komponentami.
+  - file: src/components/ds/index.ts
+    operation: ts-named-exports
+tokens:
+  # Barvy, typografie, rozestupy, tisk a tmavý režim.
+  - file: src/styles.css
+    operation: css-variables
