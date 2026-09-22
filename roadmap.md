@@ -69,3 +69,10 @@
 - [x] Formátovat hodnoty vlastních součtových řádků stejně jako běžné buňky
 - [x] Předávat z DataGridu metadata, hledání a aktivní sloupcové filtry
 - [x] Ověřit vzor se součtem širším než jednotlivé hodnoty a typovou kontrolu
+
+## Verze 1.5.0 (standard sloupců účtů MD / DAL)
+- [x] Přidat veřejný helper accountColumns se skrytými MD/DAL a viditelnými názvy účtů
+- [x] Používat formátované textové hodnoty účtů ve filtrech, hledání, seskupení a exportu
+- [x] Doplnit oddělenou hodnotu pro číselné řazení sloupců
+- [x] Zapojit standard do ukázek Datová mřížka a Export do Excelu
+- [ ] Ověřit typovou kontrolu, sestavení, showcase a text účtu ve staženém XLSX

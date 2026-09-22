@@ -3,10 +3,10 @@ import { useMemo } from "react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
-  AccountCode,
   AmountCell,
   DataGrid,
   ExcelExportButton,
+  accountColumns,
   type DataGridColumn,
   type GridExportData,
 } from "@/components/ds";
@@ -54,6 +54,13 @@ const PARTNERS = [
 ];
 const PROJECTS = ["Administrativa", "Rekonstrukce Brno", "Expedice Praha", "Vývoj ERP"];
 const AMOUNTS = [1250.5, 24890, -3490.75, 0, 9_876_543.21, 87_450.22, -12_000, 8_765_432.1];
+const ACCOUNT_NAMES = new Map([
+  ["311001", "Odběratelé"],
+  ["321001", "Dodavatelé"],
+  ["321100", "Závazky"],
+  ["518001", "Ostatní služby"],
+  ["602001", "Tržby z prodeje služeb"],
+]);
 
 const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
   const month = String((index % 3) + 1).padStart(2, "0");
@@ -63,7 +70,7 @@ const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
     document: `ID${String(index + 1).padStart(6, "0")}`,
     date: `2026-${month}-${day}`,
     partner: PARTNERS[index % PARTNERS.length],
-    debitAccount: index % 2 ? "518001" : "311001",
+    debitAccount: index % 3 === 0 ? "321100" : index % 2 ? "518001" : "311001",
     creditAccount: index % 2 ? "321001" : "602001",
     amount: AMOUNTS[index % AMOUNTS.length],
     count: (index % 7) + 1,
@@ -84,20 +91,12 @@ const COLUMNS: DataGridColumn<ExportRow>[] = [
   { id: "document", label: "Doklad", section: "Doklad", value: (row) => row.document },
   { id: "date", label: "Datum", section: "Doklad", value: (row) => row.date, exportType: "date" },
   { id: "partner", label: "Partner", section: "Protistrana", value: (row) => row.partner, width: 240 },
-  {
-    id: "debitAccount",
-    label: "Účet MD",
+  ...accountColumns<ExportRow>({
+    debit: (row) => row.debitAccount,
+    credit: (row) => row.creditAccount,
+    accountName: (code) => ACCOUNT_NAMES.get(code),
     section: "Zaúčtování",
-    value: (row) => row.debitAccount,
-    render: (row) => <AccountCode code={row.debitAccount} />,
-  },
-  {
-    id: "creditAccount",
-    label: "Účet Dal",
-    section: "Zaúčtování",
-    value: (row) => row.creditAccount,
-    render: (row) => <AccountCode code={row.creditAccount} />,
-  },
+  }),
   {
     id: "amount",
     label: "Částka",

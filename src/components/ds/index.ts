@@ -79,6 +79,7 @@ export * from "./data-display/tree-view";
 /* Účetnictví */
 export * from "./accounting/amount";
 export * from "./accounting/account-code";
+export * from "./accounting/account-columns";
 export * from "./accounting/account-select";
 export * from "./accounting/debit-credit-cells";
 export * from "./accounting/document-status-badge";

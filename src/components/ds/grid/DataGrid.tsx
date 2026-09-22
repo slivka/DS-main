@@ -107,6 +107,8 @@ export type DataGridColumn<Row> = {
   align?: "left" | "right" | "center" | undefined;
   /** Hodnota použitá na hľadanie, radenie aj export. */
   value?: ((row: Row) => string | number | null | undefined) | undefined;
+  /** Oddělená hodnota použitá pouze pro řazení, například neformátované číslo účtu. */
+  sortValue?: ((row: Row) => string | number | null | undefined) | undefined;
   /** Vlastné vykreslenie bunky. */
   render?: ((row: Row) => ReactNode) | undefined;
   /** Číselný stĺpec – zarovnanie vpravo a oddeľovanie tisícov. */
@@ -411,7 +413,7 @@ export function DataGrid<Row>({
   const valueOf = (row: Row, id: string) => {
     const col = byId.get(id);
     if (!col) return null;
-    return col.value ? col.value(row) : null;
+    return col.sortValue ? col.sortValue(row) : col.value ? col.value(row) : null;
   };
 
   useEffect(() => {
