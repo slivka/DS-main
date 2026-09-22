@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -14,7 +14,8 @@
       "#enrichment": "1e772bde42c40c6889e85de0bb549168cecdbdfa7475927dac07e0e3065c6c55",
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
-      ".lovable/meta.yaml": "86a17ac0d6b10fddfde4cdc325cb93a7",
+      ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
+      ".lovable/plan.md": "68754a1018b633d595fa67dce1a73b2c",
       ".lovable/plan/automatické-testy-vzorového-excelu-2026-09-22.md": "47c025fa03a747c0c7deaec85a1e0e13",
       ".lovable/plan/datumové-volby-ve-filtru-gridu-2026-09-22.md": "e9f79cef43a6b6adcba50f573359881b",
       ".lovable/plan/excel-export-1-3-0-2026-09-22.md": "a22a933faf345d8d68b36da990499da3",
