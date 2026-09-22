@@ -73,7 +73,8 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  /* Zaoblení je pevné, aby se při uživatelském zvětšení písma neměnil tvar ovládacích prvků. */
+  --radius: 10px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
   --background: oklch(0.975 0.005 245);
   --foreground: oklch(0.25 0.04 245);

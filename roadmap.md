@@ -38,3 +38,7 @@
 - [x] Přidat showcase Export do Excelu s účetními daty a kontrolním seznamem
 - [x] Aktualizovat pravidla knihovny a verzi na 1.3.0
 - [x] Ověřit typovou kontrolu, sestavení, showcase a obsah staženého XLSX
+
+## Verze 1.3.1 (stálé zaoblení při zoomu)
+- [x] Zachovat stejné zaoblení tlačítek a výběrů při změně velikosti písma
+- [x] Ověřit výběr účetního období ve všech podporovaných měřítkách
