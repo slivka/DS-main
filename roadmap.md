@@ -28,4 +28,4 @@
 - [x] Zpřístupnit motiv a nastavení data a času přes veřejný vstup
 - [x] Přesně připnout ověřené základní závislosti
 - [x] Doplnit pravidlo pro načtení firemních písem v připojených aplikacích
-- [ ] Ověřit typovou kontrolu, sestavení a showcase
+- [x] Ověřit typovou kontrolu, sestavení a showcase
