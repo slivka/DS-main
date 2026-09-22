@@ -85,4 +85,4 @@
 - [x] Opravit osnovu řádků, názvy tabulky a sloupců a strukturu vlastních součtů
 - [x] Ukládat datum bez časového posunu a zachovat místní čas u data s časem
 - [x] Zpřísnit stažení souboru a odstranit falešnou osnovu ze vzorového exportu
-- [ ] Ověřit rozbalenou strukturu XLSX, typovou kontrolu, stažení a sestavení
+- [x] Ověřit rozbalenou strukturu XLSX, typovou kontrolu, stažení a sestavení
