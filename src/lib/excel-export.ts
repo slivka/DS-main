@@ -1,4 +1,5 @@
 import type { Alignment, Workbook } from "exceljs";
+import JSZip from "jszip";
 import { excelDateFormat, formatUserDate, formatUserDateTime } from "./date-time-preferences";
 import { nzero, roundTo } from "./format";
 
@@ -80,7 +81,7 @@ function loadExcelJs() {
   return excelJsPromise;
 }
 
-const emptyCell = (value: ExportCell) => (value === null || value === undefined ? "" : value);
+const emptyCell = (value: ExportCell) => (value === null || value === undefined || value === "" ? null : value);
 
 function safeWorksheetName(title: string) {
   const safe = title.replace(/[\\/:?*[\]]/g, "-").replace(/^'+|'+$/g, "").trim();
@@ -88,11 +89,8 @@ function safeWorksheetName(title: string) {
 }
 
 function tableName(value: string) {
-  let hash = 0;
-  for (let index = 0; index < value.length; index += 1) {
-    hash = (hash * 31 + value.charCodeAt(index)) | 0;
-  }
-  return `Tabulka${Math.abs(hash) || 1}`;
+  const cleaned = value.normalize("NFKD").replace(/[^A-Za-z0-9_]/g, "").slice(0, 240);
+  return /^[A-Za-z]/.test(cleaned) ? cleaned : `Tabulka_${cleaned || "Export"}`;
 }
 
 function uniqueHeaders(data: GridExportData) {
@@ -102,10 +100,14 @@ function uniqueHeaders(data: GridExportData) {
     const parts = rows
       .map((row) => String(row[index] ?? "").trim())
       .filter((part, partIndex, all) => part && all.indexOf(part) === partIndex);
-    const base = parts.join(" – ") || fallback || `Sloupec ${index + 1}`;
+    const raw = parts.join(" – ") || fallback || `Sloupec ${index + 1}`;
+    const base = raw.replace(/[\[\]#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || `Sloupec ${index + 1}`;
     let name = base;
     let suffix = 2;
-    while (used.has(name.toLocaleLowerCase("cs"))) name = `${base} (${suffix++})`;
+    while (used.has(name.toLocaleLowerCase("cs"))) {
+      const ending = ` (${suffix++})`;
+      name = `${base.slice(0, 255 - ending.length)}${ending}`;
+    }
     used.add(name.toLocaleLowerCase("cs"));
     return name;
   });
@@ -197,7 +199,19 @@ function summedColumnValue(data: GridExportData, index: number, meta: ExcelColum
 }
 
 function excelValue(value: ExportCell, meta: ExcelColumnMeta) {
-  if (meta.type === "date" || meta.type === "datetime") return parseDate(value) ?? String(emptyCell(value));
+  if (meta.type === "date" || meta.type === "datetime") {
+    const date = parseDate(value);
+    if (!date) return emptyCell(value);
+    return new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      meta.type === "datetime" ? date.getHours() : 0,
+      meta.type === "datetime" ? date.getMinutes() : 0,
+      meta.type === "datetime" ? date.getSeconds() : 0,
+      meta.type === "datetime" ? date.getMilliseconds() : 0,
+    ));
+  }
   if (typeof value === "number") {
     const decimals = meta.type === "integer" || meta.type === "year" ? 0 : 2;
     return nzero(roundTo(value, decimals));
@@ -278,14 +292,16 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     rows: data.rows.map((row) => headers.map((_, index) => excelValue(row[index], meta[index]))),
   });
 
-  data.rows.forEach((_, rowIndex) => {
-    const level = data.rowLevels?.[rowIndex];
-    if (typeof level === "number" && level > 0) {
-      sheet.getRow(firstDataRow + rowIndex).outlineLevel = Math.min(7, level);
-    }
+  const requestedLevels = (data.rowLevels ?? []).map((level) => Math.max(0, Math.min(7, Math.trunc(level))));
+  const hasSummaryBoundary = requestedLevels.some((level) => level === 0);
+  const appliedLevels = hasSummaryBoundary ? requestedLevels : [];
+  const maxOutlineLevel = Math.max(0, ...appliedLevels);
+  appliedLevels.forEach((level, rowIndex) => {
+    if (level > 0 && rowIndex < data.rows.length) sheet.getRow(firstDataRow + rowIndex).outlineLevel = level;
   });
+  sheet.properties.outlineLevelRow = maxOutlineLevel;
 
-  const customTotalsStart = tableLastRow + 1;
+  const customTotalsStart = tableLastRow + 2;
   (data.totalRows ?? []).forEach((definition, rowIndex) => {
     const rowNumber = customTotalsStart + rowIndex;
     const row = sheet.getRow(rowNumber);
@@ -296,6 +312,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       const columnIndex = labelSpan + cellIndex;
       if (columnIndex >= headers.length) return;
       const columnMeta = meta[columnIndex];
+      if (columnMeta.total !== "sum" && (value === null || value === undefined || value === "")) return;
       row.getCell(columnIndex + 1).value =
         columnMeta.total === "sum"
           ? { formula: `SUBTOTAL(109,${name}[${excelColumnName(headers[columnIndex])}])` }
@@ -307,21 +324,17 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   (data.footerRows ?? []).forEach((definition, rowIndex) => {
     const row = sheet.getRow(footerStart + rowIndex);
     row.getCell(1).value = definition.label;
-    row.getCell(headers.length).value = definition.value ?? "";
+    if (definition.value !== null && definition.value !== undefined && definition.value !== "") {
+      row.getCell(headers.length).value = definition.value;
+    }
     row.font = { name: "Arial", bold: definition.bold || definition.warn };
     if (definition.warn) row.font = { ...row.font, color: { argb: "FFBE1E2D" } };
   });
 
-  const finalRow = Math.max(
-    tableLastRow,
-    customTotalsStart + (data.totalRows?.length ?? 0) - 1,
-    footerStart + (data.footerRows?.length ?? 0) - 1,
-  );
-  for (let rowIndex = firstHeaderRow; rowIndex <= finalRow; rowIndex += 1) {
+  for (let rowIndex = firstHeaderRow; rowIndex <= tableLastRow; rowIndex += 1) {
     const row = sheet.getRow(rowIndex);
     const isHeader = rowIndex === firstHeaderRow;
     const isTableTotal = totalsRow && rowIndex === tableLastRow;
-    const isCustomTotal = rowIndex >= customTotalsStart && rowIndex < customTotalsStart + (data.totalRows?.length ?? 0);
     row.height = isHeader ? 24 : 18;
     for (let columnIndex = 0; columnIndex < headers.length; columnIndex += 1) {
       const target = row.getCell(columnIndex + 1);
@@ -329,7 +342,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       const horizontal = columnMeta.align as Alignment["horizontal"];
       target.font = {
         name: "Arial",
-        bold: isHeader || isTableTotal || isCustomTotal,
+        bold: isHeader || isTableTotal,
         ...(isHeader ? { color: { argb: NAVY_TRUST.primaryForeground } } : {}),
       };
       target.alignment = {
@@ -338,7 +351,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
         wrapText: columnMeta.type === "text" && (sheet.getColumn(columnIndex + 1).width ?? 0) >= 60,
       };
       if (isHeader) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.primary } };
-      if (isTableTotal || isCustomTotal) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
+      if (isTableTotal) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
       target.border = {
         top: { style: "thin", color: { argb: NAVY_TRUST.border } },
         bottom: { style: "thin", color: { argb: NAVY_TRUST.border } },
@@ -352,6 +365,27 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       }
     }
   }
+
+  (data.totalRows ?? []).forEach((definition, rowIndex) => {
+    const rowNumber = customTotalsStart + rowIndex;
+    const labelSpan = Math.max(1, Math.min(definition.labelSpan ?? 1, headers.length));
+    const populatedColumns = new Set<number>([1]);
+    definition.cells.forEach((value, cellIndex) => {
+      const columnIndex = labelSpan + cellIndex;
+      const columnMeta = meta[columnIndex];
+      if (columnIndex < headers.length && columnMeta && (columnMeta.total === "sum" || (value !== null && value !== undefined && value !== ""))) {
+        populatedColumns.add(columnIndex + 1);
+      }
+    });
+    populatedColumns.forEach((columnNumber) => {
+      const target = sheet.getCell(rowNumber, columnNumber);
+      const columnMeta = meta[columnNumber - 1];
+      target.font = { name: "Arial", bold: true };
+      target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
+      target.alignment = { horizontal: columnMeta?.align, vertical: "middle" };
+      if (columnMeta && ["number", "integer", "percent", "year"].includes(columnMeta.type)) target.numFmt = numberFormat(columnMeta);
+    });
+  });
 
   const sampledRows = data.rows.length <= 2_000
     ? data.rows
@@ -417,7 +451,21 @@ export async function downloadWorkbook(
 ) {
   const buffer = await workbook.xlsx.writeBuffer();
   const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer as ArrayBuffer);
-  const blob = new Blob([bytes], {
+  const zip = await JSZip.loadAsync(bytes);
+  const tableFiles = Object.keys(zip.files).filter((path) => /^xl\/tables\/table\d+\.xml$/.test(path));
+  await Promise.all(tableFiles.map(async (path) => {
+    const entry = zip.file(path);
+    if (!entry) return;
+    const xml = await entry.async("text");
+    const tableRef = /<table\b[^>]*\bref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(xml)?.[1];
+    const normalized = xml
+      .replace(/\s+totalsRowFunction="none"/g, "")
+      .replace(/<autoFilter\b[^>]*\bref="[^"]+"/, (tag) => tableRef ? tag.replace(/\bref="[^"]+"/, `ref="${tableRef}"`) : tag);
+    zip.file(path, normalized);
+  }));
+  const finalized = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+  const finalizedBuffer = finalized.buffer.slice(finalized.byteOffset, finalized.byteOffset + finalized.byteLength) as ArrayBuffer;
+  const blob = new Blob([finalizedBuffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   const url = URL.createObjectURL(blob);
@@ -430,5 +478,5 @@ export async function downloadWorkbook(
   window.setTimeout(() => {
     anchor.remove();
     URL.revokeObjectURL(url);
-  }, 10_000);
+  }, 60_000);
 }

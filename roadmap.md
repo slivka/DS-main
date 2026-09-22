@@ -80,3 +80,9 @@
 ## Verze 1.5.1 (názvy částkových sloupců)
 - [x] Přejmenovat výchozí částkové sloupce na MD částka a DAL částka
 - [x] Ověřit typovou kontrolu, sestavení a ukázku datové mřížky
+
+## Verze 1.5.1 (kompatibilita exportu s Microsoft Excelem)
+- [x] Opravit osnovu řádků, názvy tabulky a sloupců a strukturu vlastních součtů
+- [x] Ukládat datum bez časového posunu a zachovat místní čas u data s časem
+- [x] Zpřísnit stažení souboru a odstranit falešnou osnovu ze vzorového exportu
+- [x] Ověřit rozbalenou strukturu XLSX, typovou kontrolu, stažení a sestavení
