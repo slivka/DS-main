@@ -153,7 +153,7 @@ type Props<Row> = {
   actionsLabel?: string | undefined;
   /** Skryje filtre priamo v záhlaviach stĺpcov. */
   columnFilters?: boolean | undefined;
-  /** Povolí seskupovanie riadkov podľa stĺpcov. */
+  /** Povolí seskupování řádků podle sloupců. */
   groupable?: boolean | undefined;
   /** Skryje spodnú lištu so stránkovaním. */
   paginated?: boolean | undefined;
@@ -163,19 +163,19 @@ type Props<Row> = {
   hideToolbar?: boolean | undefined;
   /** Skryje predvolené tlačidlá Upravit / Odstranit. Dvojklik na riadku stále funguje, ak je onEditRow. */
   hideDefaultActions?: boolean | undefined;
-  /** Povolenie úpravy pre konkrétny riadok (ikona sa inak nezobrazí). */
+  /** Povolení úpravy pro konkrétní řádek (ikona se jinak nezobrazí). */
   canEditRow?: ((row: Row) => boolean) | undefined;
-  /** Povolenie odstránenia pre konkrétny riadok (ikona sa inak nezobrazí). */
+  /** Povolení odstranění pro konkrétní řádek (ikona se jinak nezobrazí). */
   canDeleteRow?: ((row: Row) => boolean) | undefined;
-  /** Povolí režim hromadného výberu riadkov (tlačidlo v lište gridu). */
+  /** Povolí režim hromadného výběru řádků (tlačítko v liště gridu). */
   selectable?: boolean | undefined;
-  /** Hromadné akcie v lište – dostanú vybrané riadky a funkciu na zrušenie výberu. */
+  /** Hromadné akce v liště – dostanou vybrané řádky a funkci pro zrušení výběru. */
   selectionActions?: ((rows: Row[], clear: () => void) => ReactNode) | undefined;
-  /** Riadený režim výberu pre viac vnorených gridov s jednou spoločnou lištou. */
+  /** Řízený režim výběru pro více vnořených gridů s jednou společnou lištou. */
   selectMode?: boolean | undefined;
   /** Oznámi nadradenému stromu vybrané riadky. */
   onSelectedRowsChange?: ((rows: Row[]) => void) | undefined;
-  /** Skryje lokálne tlačidlo, ak výber ovláda nadradená lišta. */
+  /** Skryje místní tlačítko, pokud výběr ovládá nadřazená lišta. */
   hideSelectionToggle?: boolean | undefined;
   /** Obsah bočného panelu patriaceho ku gridu. */
   sidePanel?: ReactNode | undefined;
@@ -185,7 +185,7 @@ type Props<Row> = {
   showTotalRow?: boolean | undefined;
   /** Oznámi zmenu stĺpcových filtrov (id sloupce → vybrané hodnoty). */
   onColumnFiltersChange?: ((filters: Record<string, string[]>) => void) | undefined;
-  /** Zmena textového hľadania (napr. pre rozpad zoskupených riadkov). */
+  /** Změna textového hledání (např. pro rozpad seskupených řádků). */
   onSearchChange?: ((search: string) => void) | undefined;
   /** Dodatočná CSS trieda pre vonkajší obal gridu. */
   className?: string | undefined;
@@ -209,8 +209,8 @@ const cellText = (v: unknown) => {
 
 /**
  * Zdieľaný grid celej aplikácie – jednotná hlavička a lišta nástrojov
- * (hľadanie, filtre, export, výber stĺpcov, zoskupovanie, zoom a hustota),
- * radenie, stránkovanie a jednotné prázdne aj chybové stavy.
+ * (hledání, filtry, export, výběr sloupců, seskupování, zoom a hustota),
+ * řazení, stránkování a jednotné prázdné i chybové stavy.
  */
 export function DataGrid<Row>({
   storageKey,
@@ -282,7 +282,7 @@ export function DataGrid<Row>({
   const colDefs = useMemo(
     () =>
       columns
-        // Sloupec pobočky sa pri výbere jednej pobočky automaticky skryje.
+        // Sloupec pobočky se při výběru jedné pobočky automaticky skryje.
         .filter((c) => allBranches || !isBranchColumn(c) || c.branchVisibility === "always")
         .map((c) => ({
           id: c.id,
@@ -401,7 +401,7 @@ export function DataGrid<Row>({
   const sorted = useSortedRows(filtered, sort, valueOf);
   const pagination = useGridPagination(storageKey, sorted, { defaultPageSize: 50 });
 
-  // --- hromadný výber riadkov --------------------------------------------
+  // --- hromadný výběr řádků ----------------------------------------------
   const selectedRows = useMemo(
     () => sorted.filter((r) => selectedKeys.has(rowKey(r))),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -529,7 +529,7 @@ export function DataGrid<Row>({
       : "";
 
   // --- ukotvený riadok so súčtami ----------------------------------------
-  /** Súčty počítame zo všetkých filtrovaných riadkov, nie len z aktuálnej strany. */
+  /** Součty počítáme ze všech filtrovaných řádků, nejen z aktuální strany. */
   const totalCells = useMemo(
     () =>
       shown.map((c) => {
@@ -552,7 +552,7 @@ export function DataGrid<Row>({
     [shown, sorted],
   );
   const hasTotals = totalCells.some((v) => v !== null && v !== undefined && v !== "");
-  /** Prvý stĺpec bez spolu – sem dáme popis „Spolu“. */
+  /** První sloupec bez součtu – sem umístíme popis „Celkem“. */
   const totalLabelIndex = totalCells.findIndex((v) => v === null);
 
   return (

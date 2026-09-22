@@ -110,7 +110,7 @@ export function ContactSelect({
   searchPlaceholder = "Hledat klienta…",
   noResultsText = "Nebyl nalezen žádný klient.",
   createLabel = "Nový kontakt",
-  homeCountries = ["Česko", "Česká republika", "CZ"],
+  homeCountries = ["Slovensko", "SK"],
   idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povolenie_pobyt: "Povolení" },
 }: {
   contacts: ContactOption[];

@@ -16,7 +16,7 @@ export interface AddressFieldGridProps {
   onChange: (patch: Partial<AddressValue>) => void;
   countries?: { code: string; name: string }[];
   showCountry?: boolean;
-  /** Trieda pre pole Krajina (napr. „sm:col-span-2“). */
+  /** Třída pro pole Země (např. „sm:col-span-2“). */
   countryClassName?: string;
   className?: string;
   children?: ReactNode;
@@ -42,7 +42,7 @@ export const DEFAULT_ADDRESS_FIELD_LABELS: AddressFieldLabels = {
   country: "Země",
 };
 
-/** Jednotná mriežka adresných polí: Ulica 3/4 + Číslo 1/4, PSČ 1/4 + Mesto 3/4. */
+/** Jednotná mřížka adresních polí: Ulice 3/4 + Číslo 1/4, PSČ 1/4 + Město 3/4. */
 export function AddressFieldGrid({
   value,
   onChange,
@@ -52,7 +52,7 @@ export function AddressFieldGrid({
   className,
   children,
   labels: labelOverrides,
-  defaultCountry = "CZ",
+  defaultCountry = "SK",
 }: AddressFieldGridProps) {
   const labels = { ...DEFAULT_ADDRESS_FIELD_LABELS, ...labelOverrides };
   return (
