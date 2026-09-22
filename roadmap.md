@@ -52,3 +52,8 @@
 - [x] Doplnit do datumových sloupců volby podle roku, čtvrtletí a měsíce
 - [x] Zachovat výběr jednotlivých dat a kombinování více voleb
 - [x] Ověřit typovou kontrolu, sestavení a účetní showcase
+
+## Verze 1.3.4 (kompaktní systémové sloupce)
+- [x] Stavové odznaky, datumy, čísla dokladů, VS a účty MD/Dal držet na nejmenší šířce podle obsahu
+- [x] Zachovat jednořádkové hodnoty, filtry, řazení a zarovnání
+- [ ] Ověřit typovou kontrolu, sestavení a skutečné šířky v účetním showcase

@@ -61,6 +61,45 @@ const PINNED_COLUMN_WIDTH = 84;
 export const isPinnedColumn = (id: string) => PINNED_COLUMN_IDS.has(id);
 const pinnedColumnWidth = (id: string) => (id === "is_system" ? 118 : PINNED_COLUMN_WIDTH);
 
+/**
+ * Účetní identifikátory a krátké systémové hodnoty mají v gridu vždy jen
+ * šířku nutnou pro záhlaví, filtr a nejdelší zobrazenou hodnotu.
+ */
+const COMPACT_COLUMN_IDS = new Set([
+  "status",
+  "state",
+  "documentstatus",
+  "date",
+  "documentdate",
+  "document",
+  "documentnumber",
+  "number",
+  "variabilesymbol",
+  "variablesymbol",
+  "symbol",
+  "vs",
+  "md",
+  "dal",
+  "debit",
+  "credit",
+  "debitaccount",
+  "creditaccount",
+]);
+
+const compactColumnKey = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toLocaleLowerCase("cs");
+
+const isCompactColumn = <Row,>(column: DataGridColumn<Row>) =>
+  column.fitContent === true ||
+  column.exportType === "date" ||
+  column.exportType === "datetime" ||
+  COMPACT_COLUMN_IDS.has(compactColumnKey(column.id)) ||
+  COMPACT_COLUMN_IDS.has(compactColumnKey(column.label));
+
 export type DataGridColumn<Row> = {
   /** Jednoznačný kľúč sloupce. */
   id: string;
@@ -777,14 +816,15 @@ export function DataGrid<Row>({
               <colgroup>
                 {selectMode ? <col style={{ width: "40px" }} /> : null}
                 {shown.map((c) => {
+                  const compact = isCompactColumn(c);
                   const w = isBranchColumn(c)
                     ? BRANCH_COLUMN_WIDTH
+                    : compact
+                      ? 1
                     : isPinnedColumn(c.id)
                       ? pinnedColumnWidth(c.id)
-                      : c.fitContent
-                        ? 1
-                        : (cols.widths[c.id] ?? c.width);
-                  return c.fitContent ? (
+                      : (cols.widths[c.id] ?? c.width);
+                   return compact ? (
                     <col key={c.id} style={{ width: "1px", whiteSpace: "nowrap" }} />
                   ) : (
                     <col key={c.id} {...(w ? { style: { width: `${w}px` } } : {})} />
@@ -823,14 +863,15 @@ export function DataGrid<Row>({
                   {shown.map((c) => {
                     const isPinned = isPinnedColumn(c.id);
                     const isBranch = isBranchColumn(c);
+                    const compact = isCompactColumn(c);
                     const width = isBranch
                       ? BRANCH_COLUMN_WIDTH
+                      : compact
+                        ? 1
                       : isPinned
                         ? pinnedColumnWidth(c.id)
-                        : c.fitContent
-                          ? 1
-                          : (cols.widths[c.id] ?? c.width);
-                    const headStyle = c.fitContent
+                        : (cols.widths[c.id] ?? c.width);
+                    const headStyle = compact
                       ? { width: "1px", whiteSpace: "nowrap" as const }
                       : width
                         ? {
@@ -841,7 +882,7 @@ export function DataGrid<Row>({
                           }
                         : undefined;
                     const resize =
-                      isPinned || isBranch || c.fitContent ? null : (
+                      isPinned || isBranch || compact ? null : (
                         <ColumnResizeHandle
                           onResize={(w) => cols.setWidth(c.id, w)}
                           onReset={() => cols.clearWidth(c.id)}
@@ -978,7 +1019,8 @@ export function DataGrid<Row>({
                           ) : null}
                           {shown.map((c) => {
                             const v = c.value?.(item.row);
-                            const cellStyle = c.fitContent
+                            const compact = isCompactColumn(c);
+                            const cellStyle = compact
                               ? { whiteSpace: "nowrap" as const }
                               : c.width
                                 ? {

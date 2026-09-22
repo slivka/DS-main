@@ -43,6 +43,7 @@ function GridPage() {
       {
         id: "date",
         label: "Datum",
+        exportType: "date",
         width: 110,
         value: (r) => r.date,
         render: (r) => formatDate(r.date),
@@ -72,7 +73,6 @@ function GridPage() {
       {
         id: "status",
         label: "Stav",
-        width: 130,
         value: (r) => DOCUMENT_STATUS_CONFIG[r.status].label,
         render: (r) => <DocumentStatusBadge status={r.status} />,
       },

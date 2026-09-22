@@ -15,7 +15,7 @@ export function debitCreditColumns<Row>({
   debitId = "debit",
   creditId = "credit",
   decimals = 2,
-  width = 130,
+  width,
 }: {
   debit: (row: Row) => number | null | undefined;
   credit: (row: Row) => number | null | undefined;
