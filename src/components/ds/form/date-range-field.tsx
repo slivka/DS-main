@@ -68,6 +68,12 @@ export function DateRangeField({
       ? `${formatDate(value.from)} – ${formatDate(value.to)}`
       : formatDate(value.from)
     : "";
+  const disabledMatcher = React.useMemo(() => {
+    if (minDate && maxDate) return { before: minDate, after: maxDate };
+    if (minDate) return { before: minDate };
+    if (maxDate) return { after: maxDate };
+    return undefined;
+  }, [minDate, maxDate]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
