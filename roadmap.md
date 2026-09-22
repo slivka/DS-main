@@ -86,3 +86,9 @@
 - [x] Ukládat datum bez časového posunu a zachovat místní čas u data s časem
 - [x] Zpřísnit stažení souboru a odstranit falešnou osnovu ze vzorového exportu
 - [x] Ověřit rozbalenou strukturu XLSX, typovou kontrolu, stažení a sestavení
+
+## Verze 1.5.1 (veřejné zapojení knihovny)
+- [x] Zpřístupnit základní ovládací prvky a formátovací nástroje z hlavního vstupu
+- [x] Zpřístupnit odkazy na firemní písma a použít je v ukázce
+- [x] Vyčistit metadata místní knihovny bez neplatných údajů externího balíčku
+- [x] Ověřit typovou kontrolu a sestavení
