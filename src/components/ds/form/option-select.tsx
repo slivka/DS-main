@@ -1,0 +1,62 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+
+export type SelectOption = {
+  value: string;
+  label: string;
+  disabled?: boolean;
+};
+
+const EMPTY = "__empty__";
+
+/**
+ * Zdieľaný výber zo zoznamu (nahrádza natívny <select>).
+ * Prázdna hodnota sa mapuje na interný kľúč, lebo Radix Select nepodporuje prázdny value.
+ */
+export function OptionSelect({
+  value,
+  onChange,
+  options,
+  placeholder = "— nevybraný —",
+  emptyLabel = "— nevybraný —",
+  allowEmpty = true,
+  disabled,
+  id,
+  className,
+  triggerClassName,
+}: {
+  value: string | null | undefined;
+  onChange: (value: string) => void;
+  options: SelectOption[];
+  placeholder?: string;
+  emptyLabel?: string;
+  allowEmpty?: boolean;
+  disabled?: boolean;
+  id?: string;
+  className?: string;
+  triggerClassName?: string;
+}) {
+  const current = value ?? "";
+  const known = options.some((o) => o.value === current);
+
+  return (
+    <Select
+      value={current === "" ? (allowEmpty ? EMPTY : "") : current}
+      onValueChange={(v) => onChange(v === EMPTY ? "" : v)}
+      disabled={disabled}
+    >
+      <SelectTrigger id={id} className={cn("h-9 w-full min-w-0", className, triggerClassName)}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {allowEmpty ? <SelectItem value={EMPTY}>{emptyLabel}</SelectItem> : null}
+        {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
+        {options.map((o) => (
+          <SelectItem key={o.value} value={o.value} disabled={o.disabled}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}

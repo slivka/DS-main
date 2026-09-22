@@ -9,13 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComponentsGridRouteImport } from './routes/components.grid'
+import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
+import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
+const GuidelinesRoute = GuidelinesRouteImport.update({
+  id: '/guidelines',
+  path: '/guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsGridRoute = ComponentsGridRouteImport.update({
+  id: '/components/grid',
+  path: '/components/grid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsFormsRoute = ComponentsFormsRouteImport.update({
+  id: '/components/forms',
+  path: '/components/forms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsFeedbackRoute = ComponentsFeedbackRouteImport.update({
+  id: '/components/feedback',
+  path: '/components/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91__mockupChar93PreviewSplatRoute =
@@ -33,41 +57,107 @@ const Char91__componentChar93PreviewSplatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/guidelines': typeof GuidelinesRoute
+  '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/forms': typeof ComponentsFormsRoute
+  '/components/grid': typeof ComponentsGridRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/guidelines': typeof GuidelinesRoute
+  '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/forms': typeof ComponentsFormsRoute
+  '/components/grid': typeof ComponentsGridRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/guidelines': typeof GuidelinesRoute
+  '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/forms': typeof ComponentsFormsRoute
+  '/components/grid': typeof ComponentsGridRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/__component/preview/$' | '/__mockup/preview/$'
+  fullPaths:
+    | '/'
+    | '/guidelines'
+    | '/components/feedback'
+    | '/components/forms'
+    | '/components/grid'
+    | '/__component/preview/$'
+    | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/__component/preview/$' | '/__mockup/preview/$'
-  id: '__root__' | '/' | '/__component/preview/$' | '/__mockup/preview/$'
+  to:
+    | '/'
+    | '/guidelines'
+    | '/components/feedback'
+    | '/components/forms'
+    | '/components/grid'
+    | '/__component/preview/$'
+    | '/__mockup/preview/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/guidelines'
+    | '/components/feedback'
+    | '/components/forms'
+    | '/components/grid'
+    | '/__component/preview/$'
+    | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GuidelinesRoute: typeof GuidelinesRoute
+  ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
+  ComponentsFormsRoute: typeof ComponentsFormsRoute
+  ComponentsGridRoute: typeof ComponentsGridRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/guidelines': {
+      id: '/guidelines'
+      path: '/guidelines'
+      fullPath: '/guidelines'
+      preLoaderRoute: typeof GuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/grid': {
+      id: '/components/grid'
+      path: '/components/grid'
+      fullPath: '/components/grid'
+      preLoaderRoute: typeof ComponentsGridRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/forms': {
+      id: '/components/forms'
+      path: '/components/forms'
+      fullPath: '/components/forms'
+      preLoaderRoute: typeof ComponentsFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/feedback': {
+      id: '/components/feedback'
+      path: '/components/feedback'
+      fullPath: '/components/feedback'
+      preLoaderRoute: typeof ComponentsFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/__mockup/preview/$': {
@@ -89,6 +179,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GuidelinesRoute: GuidelinesRoute,
+  ComponentsFeedbackRoute: ComponentsFeedbackRoute,
+  ComponentsFormsRoute: ComponentsFormsRoute,
+  ComponentsGridRoute: ComponentsGridRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,
@@ -98,10 +192,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

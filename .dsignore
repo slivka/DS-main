@@ -1,0 +1,3 @@
+# Showcase-only složky zůstávají mimo knihovnu (standartní výjimky platformy
+# už kryjí src/routes/ a preview scaffolding).
+src/components/showcase
