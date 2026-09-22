@@ -47,3 +47,8 @@
 - [x] Zarovnat všechny systémové odznaky v datových sloupcích vždy vlevo
 - [x] Ověřit typovou kontrolu, sestavení a showcase gridu
 - [x] Zajistit spolehlivé stažení platného vzorového XLSX napříč prohlížeči
+
+## Verze 1.3.3 (datumové filtry v gridu)
+- [x] Doplnit do datumových sloupců volby podle roku, čtvrtletí a měsíce
+- [x] Zachovat výběr jednotlivých dat a kombinování více voleb
+- [x] Ověřit typovou kontrolu, sestavení a účetní showcase

@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -1005,6 +1005,17 @@
           "name": "defaultGroupBy",
           "type": "string"
         }
+      ],
+      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data.",
+      "examples": [
+        {
+          "label": "Datumový filtr",
+          "code": "<DataGrid rows={rows} columns={[{ id: \"date\", label: \"Datum\", value: (row) => row.date, exportType: \"date\" }]} rowKey={(row) => row.id} storageKey=\"documents\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.",
+        "Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny."
       ]
     },
     {
@@ -1364,6 +1375,16 @@
           "name": "texts",
           "type": "any"
         }
+      ],
+      "usage": "Použijte jako automatický filtr v záhlaví DataGridu; podporuje seskupené volby a přepisovatelné české texty.",
+      "examples": [
+        {
+          "label": "Filtr hodnot",
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte pevné uživatelské texty; předejte je přes texts."
       ]
     },
     {

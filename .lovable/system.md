@@ -65,6 +65,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Gridy, exporty, tisk
 
 - Název gridu, lišta, hlavička a součtový řádek tvoří jeden spojený blok.
+- Filtr datumového sloupce s `exportType: "date" | "datetime"` nabízí vedle
+  jednotlivých dat také rychlé volby podle roku, čtvrtletí a měsíce.
 - Export do Excelu vždy jako tabulka Excelu se součty a roztaženými sloupci
   (výjimka: extra dlouhé texty se zalamují).
 - Tiskové sestavy a PDF: nadpis tmavě modrý; u vícestránkových sestav opakuj
