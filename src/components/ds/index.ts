@@ -14,6 +14,7 @@ export * from "./layout/command-palette";
 export * from "./layout/ThemeToggle";
 export * from "./layout/FontSizeSetting";
 export * from "./layout/app-font-size";
+export * from "./layout/page-header";
 
 /* Grid */
 export * from "./grid/DataGrid";
