@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
+import { Route as ComponentsExcelExportRouteImport } from './routes/components.excel-export'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
@@ -42,6 +43,11 @@ const ComponentsFeedbackRoute = ComponentsFeedbackRouteImport.update({
   path: '/components/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComponentsExcelExportRoute = ComponentsExcelExportRouteImport.update({
+  id: '/components/excel-export',
+  path: '/components/excel-export',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91__mockupChar93PreviewSplatRoute =
   Char91__mockupChar93PreviewSplatRouteImport.update({
     id: '/__mockup/preview/$',
@@ -58,6 +64,7 @@ const Char91__componentChar93PreviewSplatRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/guidelines'
+    | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/guidelines'
+    | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/guidelines'
+    | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuidelinesRoute: typeof GuidelinesRoute
+  ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
   ComponentsGridRoute: typeof ComponentsGridRoute
@@ -160,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/excel-export': {
+      id: '/components/excel-export'
+      path: '/components/excel-export'
+      fullPath: '/components/excel-export'
+      preLoaderRoute: typeof ComponentsExcelExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/__mockup/preview/$': {
       id: '/__mockup/preview/$'
       path: '/__mockup/preview/$'
@@ -180,6 +200,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuidelinesRoute: GuidelinesRoute,
+  ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,
   ComponentsGridRoute: ComponentsGridRoute,

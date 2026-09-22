@@ -46,6 +46,7 @@ import {
 import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export";
 
 /** Sloupec pobočky řídí explicitně branchVisibility; zobrazuje se jen v režimu „Všechny pobočky“, vždy jako první. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
@@ -72,6 +73,8 @@ export type DataGridColumn<Row> = {
   /** Číselný stĺpec – zarovnanie vpravo a oddeľovanie tisícov. */
   numeric?: boolean | undefined;
   decimals?: number | undefined;
+  /** Explicitní datový typ pro Excel export; bez hodnoty se použije numeric/text. */
+  exportType?: ExcelColumnType | undefined;
   /**
    * Súčtový riadok: „sum" (predvolené pri číselných stĺpcoch), „avg", „count",
    * "none" pre vypnutie alebo vlastná funkcia nad filtrovanými riadkami.
@@ -140,6 +143,8 @@ type Props<Row> = {
   onEmptyAction?: (() => void) | undefined;
   /** Názov súboru exportu (bez prípony). */
   exportName?: string | undefined;
+  /** Volitelné údaje v hlavičce Excel sestavy. */
+  exportMeta?: ExcelExportMeta | undefined;
   defaultSort?: string | undefined;
   /** Úprava riadku – ikona v ukotvenom stĺpci akcií vpravo. */
   onEditRow?: ((row: Row) => void) | undefined;
@@ -155,6 +160,8 @@ type Props<Row> = {
   columnFilters?: boolean | undefined;
   /** Povolí seskupování řádků podle sloupců. */
   groupable?: boolean | undefined;
+  /** Výchozí sloupec seskupení, pokud uživatel nemá uložené vlastní nastavení. */
+  defaultGroupBy?: string | undefined;
   /** Skryje spodnú lištu so stránkovaním. */
   paginated?: boolean | undefined;
   /** Zjednodušený vzhľad bez modrého akcentu vľavo a so zaobleným vrchom – pre vnorené gridy bez nadpisu. */
@@ -234,6 +241,7 @@ export function DataGrid<Row>({
   emptyActionLabel,
   onEmptyAction,
   exportName,
+  exportMeta,
   defaultSort,
   onEditRow,
   onDeleteRow,
@@ -242,6 +250,7 @@ export function DataGrid<Row>({
   actionsLabel,
   columnFilters = true,
   groupable = true,
+  defaultGroupBy,
   paginated = true,
   hideDefaultActions,
   canEditRow,
@@ -301,7 +310,11 @@ export function DataGrid<Row>({
   );
 
   const cols = useGridColumns(storageKey, colDefs);
-  const grouping = useGridGrouping(storageKey, { disabled: !groupable });
+  const defaultGroups = useMemo(
+    () => (defaultGroupBy ? [{ id: defaultGroupBy, granularity: "month" as const }] : []),
+    [defaultGroupBy],
+  );
+  const grouping = useGridGrouping(storageKey, { disabled: !groupable, defaultGroups });
 
   // Při výběru jedné pobočky nemá seskupení podle pobočky význam – odstraníme ho.
   const branchColIds = useMemo(
@@ -438,16 +451,33 @@ export function DataGrid<Row>({
   );
   const grouped = useGroupedRows(pagination.rows, grouping, groupColumns, valueOf);
 
-  const exportData = (): GridExportData => ({
-    columns: shown.map((c) => c.label),
-    rows: sorted.map((row) =>
-      shown.map((c) => {
-        const v = c.value?.(row) ?? null;
-        if (c.numeric && typeof v === "number") return v;
-        return v === null || v === undefined ? "" : String(v);
+  const exportData = (): GridExportData => {
+    const hasSections = shown.some((column) => column.section);
+    return {
+      columns: shown.map((column) => column.label),
+      ...(hasSections
+        ? { headerRows: [shown.map((column) => column.section ?? ""), shown.map((column) => column.label)] }
+        : {}),
+      rows: sorted.map((row) =>
+        shown.map((column) => {
+          const value = column.value?.(row) ?? null;
+          if (typeof value === "number") return value;
+          return value === null || value === undefined ? "" : String(value);
+        }),
+      ),
+      columnMeta: shown.map((column) => {
+        const type = column.exportType ?? (column.numeric ? "number" : "text");
+        const total = column.total ?? (column.numeric ? "sum" : "none");
+        return {
+          type,
+          align: column.align ?? (column.numeric ? "right" : "left"),
+          total: total === "sum" || total === "count" ? total : "none",
+          ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
+        };
       }),
-    ),
-  });
+      ...(grouping.active ? { rowLevels: sorted.map(() => Math.max(1, grouping.groups.length)) } : {}),
+    };
+  };
 
   /** Ponuka hodnot pre autofilter v záhlaví každého sloupce. */
   const filterOptions = useMemo(() => {
@@ -594,6 +624,7 @@ export function DataGrid<Row>({
               title={exportTitle ?? (typeof title === "string" ? title : "")}
               zoom={zoom}
               texts={texts}
+              meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...activeFilterLabels] }}
             />
 
             <ColumnPicker

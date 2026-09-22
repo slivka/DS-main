@@ -8,7 +8,6 @@ import pdfIcon from "../../../assets/icons/pdf.svg";
 import robotoRegular from "../../../assets/roboto-regular.ttf";
 import robotoBold from "../../../assets/roboto-bold.ttf";
 import {
-  excelDateFormat,
   formatUserDate,
   formatUserDateTime,
   getDateTimePreferences,
@@ -17,89 +16,18 @@ import {
 } from "../../../lib/date-time-preferences";
 
 import { nzero, roundTo } from "../../../lib/format";
+import {
+  buildExcelWorkbook,
+  downloadWorkbook,
+  type ExcelExportMeta,
+  type ExportCell,
+  type GridExportData,
+} from "../../../lib/excel-export";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
-type ExportCell = string | number | Date | null | undefined;
-
-export type GridExportData = {
-  /** Hlavičky sloupců v pořadí zobrazení. */
-  columns: string[];
-  /** Volitelné víceřádkové záhlaví; poslední řádek odpovídá datovým sloupcům. */
-  headerRows?: string[][];
-  /** Řádky – hodnoty jako text nebo číslo. */
-  rows: ExportCell[][];
-  /** V PDF rozloží dlouhý seznam do více paralelních bloků. */
-  pdfColumnGroups?: number;
-  /** Vypnout součtový řádek u stavových a časových řad. */
-  summarize?: boolean;
-  /** Volitelný Excel číselný formát pro jednotlivé sloupce. */
-  excelNumberFormats?: (string | null)[];
-  /** Úroveň zanoření řádku (0 = kořen) – v Excelu vytvoří sbalovací skupiny. */
-  rowLevels?: number[];
-  /** Doplňková informace do záhlaví sestavy (např. přepočet k datu). */
-  note?: string | null;
-  /** Rekapitulace pod tabulkou – popis a hodnota, volitelně tučně či červeně. */
-  footerRows?: {
-    label: string;
-    value?: number | string | null;
-    bold?: boolean;
-    warn?: boolean;
-    numberFormat?: string | null;
-  }[];
-  /**
-   * Součtové řádky tabulky (stejné jako patička gridu). Popisek se slučuje přes
-   * prvních `labelSpan` sloupců a zarovnává doprava, hodnoty navazují za ním.
-   */
-  totalRows?: { label: string; labelSpan?: number; cells: ExportCell[] }[];
-};
+export type { ExcelColumnMeta, ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 
 const cell = (v: ExportCell) => (v === null || v === undefined ? "" : v);
-
-const CURRENCY_CODE = "EUR";
-const NUM_FMT = "#,##0.00";
-const MONEY_FMT = `#,##0.00\u00a0"\u20ac"`;
-const INT_FMT = "#,##0";
-const PCT_FMT = "0.0%";
-const YEAR_FMT = "0";
-
-/** Doplní do Excel formátu sekci pro nulu, aby se místo 0,00 (a nikdy -0,00) zobrazila pomlčka. */
-/** Tenké orámování buněk tabulky v sešitu. */
-const THIN = { style: "thin", color: { argb: "FFB8BCC4" } } as const;
-const TABLE_BORDER_EXCELJS = { top: THIN, bottom: THIN, left: THIN, right: THIN };
-
-/** ExcelJS se načítá až při exportu (prohlížečový build). */
-let excelJsPromise: Promise<typeof import("exceljs")> | null = null;
-function loadExcelJs() {
-  excelJsPromise ??= import("exceljs/dist/exceljs.min.js").then(
-    (mod) => ((mod as { default?: unknown }).default ?? mod) as typeof import("exceljs"),
-  );
-  return excelJsPromise;
-}
-
-/** Stabilní číslo pro unikátní název tabulky v sešitu. */
-function hashCode(value: string) {
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) hash = (hash * 31 + value.charCodeAt(i)) | 0;
-  return hash;
-}
-
-function withDashZero(fmt: string) {
-  if (fmt.includes(";")) return fmt;
-  return `${fmt};-${fmt};"–"`;
-}
-
-/** Počet desetinných míst, na který se hodnota zaokrouhlí, aby formát nikdy neukázal -0,00. */
-function decimalsForFormat(fmt: string | null | undefined) {
-  if (!fmt) return 6;
-  if (fmt.includes("%")) return 6;
-  const match = /\.(0+)/.exec(fmt);
-  return match ? match[1].length : 0;
-}
-
-/** Normalizuje číslo pro export: zaokrouhlí dle formátu a odstraní zápornou nulu. */
-function normalizeExportNumber(v: number, fmt?: string | null) {
-  return nzero(roundTo(v, decimalsForFormat(fmt)));
-}
 
 const fmtNumber = (v: number) => {
   const n = nzero(roundTo(v, 2));
@@ -242,44 +170,6 @@ function numericColumns(data: GridExportData) {
   });
 }
 
-const CURRENCY_CODES = [CURRENCY_CODE];
-
-/** Vrátí kód měny z hlavičky sloupce, např. „Zůstatek (EUR)“ → EUR. */
-function currencyFromHeader(header: string) {
-  const upper = header.toUpperCase();
-  if (/€|\bEUR\b/.test(upper)) return CURRENCY_CODE;
-  return CURRENCY_CODES.find((code) => new RegExp(`\\b${code}\\b`).test(upper)) ?? null;
-}
-
-const MONEY_WORDS =
-  /zůstatek|zostatok|stav|vázan|viazan|volné|volne|částka|castka|čiastka|ciastka|celkem|celkom|obrat|suma|cena|hodnota|balance|úrok|urok|poplatok|poplatek|záloha|zaloha/i;
-const COUNT_WORDS = /počet|pocet|počty|množství|mnozstvi|ks\b|účtů|uctu|id\b/i;
-
-/**
- * Určí číselný formát pro každý sloupec podle hlavičky a hodnot:
- * měna → #,##0.00 "CZK", procenta → 0.0%, počty/roky → celá čísla, jinak 2 desetinná.
- */
-function columnFormats(data: GridExportData, numeric: boolean[]) {
-  return data.columns.map((header, i) => {
-    if (!numeric[i]) return null;
-    const explicitFormat = data.excelNumberFormats?.[i];
-    if (explicitFormat) return explicitFormat;
-    const values = data.rows
-      .map((r) => r[i])
-      .filter((v): v is number => typeof v === "number" && Number.isFinite(v));
-    const allIntegers = values.every((v) => Number.isInteger(v));
-
-    if (/%|procent/i.test(header)) return PCT_FMT;
-    if (/\brok\b|\broku\b|year/i.test(header) && allIntegers) return YEAR_FMT;
-
-    const currency = currencyFromHeader(header);
-    if (currency) return MONEY_FMT;
-    if (MONEY_WORDS.test(header)) return MONEY_FMT;
-    if (allIntegers && COUNT_WORDS.test(header)) return INT_FMT;
-    return allIntegers ? INT_FMT : NUM_FMT;
-  });
-}
-
 function columnSums(data: GridExportData, numeric: boolean[]) {
   return data.columns.map((_, i) =>
     numeric[i]
@@ -294,27 +184,6 @@ function columnSums(data: GridExportData, numeric: boolean[]) {
         )
       : null,
   );
-}
-
-/** Excel nepovoluje v názvu listu znaky : \\ / ? * [ ] a limituje jej na 31 znaků. */
-function worksheetName(title: string) {
-  const safe = title
-    .replace(/[\\/:?*[\]]/g, "-")
-    .replace(/^'+|'+$/g, "")
-    .trim();
-  return (safe || "Data").slice(0, 31);
-}
-
-function downloadXlsx(data: ArrayBuffer, filename: string) {
-  const blob = new Blob([data], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }
 
 let fontsPromise: Promise<{ regular: string; bold: string }> | null = null;
@@ -356,6 +225,7 @@ export function GridExport({
   pdfExport,
   disabled = false,
   texts: textOverrides,
+  meta,
 }: {
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
   getData: () => GridExportData | Promise<GridExportData>;
@@ -385,6 +255,8 @@ export function GridExport({
   pdfExport?: () => void | Promise<void>;
   disabled?: boolean;
   texts?: Partial<GridTexts>;
+  /** Volitelné údaje v hlavičce Excel sestavy. */
+  meta?: ExcelExportMeta;
 }) {
   const texts = resolveGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
@@ -392,256 +264,15 @@ export function GridExport({
 
   const exportExcel = async () => {
     const data = await getData();
-    const { columns, rows } = data;
-    const exportColumns = columns.map(formatExportTextDates);
-    const colCount = Math.max(1, exportColumns.length);
-    const numeric = numericColumns(data);
-    const dates = dateColumns(data);
-    const formats = columnFormats(data, numeric);
-    const sums = data.summarize === false ? columns.map(() => null) : columnSums(data, numeric);
-    const hasSums = sums.some((v) => v !== null);
-    const columnHeaders = (data.headerRows?.length ? data.headerRows : [columns]).map((header) =>
-      exportColumns.map((_, i) => formatExportTextDates(header[i] ?? "")),
-    );
-    const headerRowCount = columnHeaders.length;
-    const note = data.note?.trim() ? formatExportTextDates(data.note.trim()) : null;
-    const heading = [title ? formatExportTextDates(title) : null, note].filter(Boolean).join(" · ");
-    const totalDefs = data.totalRows ?? [];
-    const totalSpan = (t: { labelSpan?: number }) =>
-      Math.max(1, Math.min(t.labelSpan ?? 1, colCount));
-    const footerDefs = data.footerRows ?? [];
-    const levels = data.rowLevels;
-    const grouped = Boolean(levels?.some((l) => l > 0));
-    // skutečná Excel tabulka jde použít jen u jednořádkové hlavičky bez seskupení
-    const useTable = headerRowCount === 1 && rows.length > 0 && !grouped;
-
-    const ExcelJS = await loadExcelJs();
-
-    const valueFor = (v: ExportCell, i: number): Date | number | string => {
-      if (dates[i]?.isDate) {
-        const parsed = parseDateValue(v);
-        if (parsed) return parsed.date;
-      }
-      const normalized = cell(v);
-      if (typeof normalized === "number") return normalizeExportNumber(normalized, formats[i]);
-      if (normalized instanceof Date) return formatUserDateTime(normalized);
-      return normalized as string;
-    };
-
-    const titleRow = heading ? 1 : 0;
-    const firstHeaderRow = titleRow + 1;
-    const headerRow = firstHeaderRow + headerRowCount - 1;
-    const firstDataRow = headerRow + 1;
-    const lastDataRow = headerRow + rows.length;
-    const summaryRowNum = hasSums ? lastDataRow + 1 : 0;
-    const customTotalsStart = (summaryRowNum || lastDataRow) + 1;
-    const tableLastRow = customTotalsStart + totalDefs.length - 1;
-    const footerStart = footerDefs.length ? tableLastRow + 2 : 0;
-
-    const book = new ExcelJS.Workbook();
-    const sheet = book.addWorksheet(worksheetName(formatExportTextDates(title ?? "Data")), {
-      views: [{ state: "frozen", ySplit: headerRow }],
-      properties: { outlineProperties: { summaryBelow: false, summaryRight: false } },
+    const created = new Date();
+    const workbook = await buildExcelWorkbook(data, {
+      title: title || filename,
+      exportName: filename,
+      meta,
+      totalLabel: texts.total,
+      created,
     });
-
-    if (heading) {
-      const row = sheet.getRow(1);
-      row.getCell(1).value = heading;
-      if (colCount > 1) sheet.mergeCells(1, 1, 1, colCount);
-    }
-
-    if (useTable) {
-      // unikátní názvy sloupců – Excel je v tabulce vyžaduje
-      const used = new Set<string>();
-      const tableColumns = columnHeaders[0].map((label, i) => {
-        const base = (label || `Sloupec ${i + 1}`).trim() || `Sloupec ${i + 1}`;
-        let name = base;
-        let n = 2;
-        while (used.has(name.toLowerCase())) name = `${base} (${n++})`;
-        used.add(name.toLowerCase());
-        return {
-          name,
-          filterButton: true,
-          ...(hasSums
-            ? i === 0
-              ? { totalsRowLabel: texts.total }
-              : sums[i] !== null
-                ? { totalsRowFunction: "sum" as const }
-                : { totalsRowLabel: "" }
-            : {}),
-        };
-      });
-      sheet.addTable({
-        name: `Tabulka${Math.abs(hashCode(filename)) % 100000}`,
-        ref: `A${firstHeaderRow}`,
-        headerRow: true,
-        totalsRow: hasSums,
-        style: { theme: "TableStyleLight9", showRowStripes: true, showColumnStripes: false },
-        columns: tableColumns,
-        rows: rows.map((r) => exportColumns.map((_, i) => valueFor(r[i], i))),
-      });
-    } else {
-      columnHeaders.forEach((header, i) => {
-        const row = sheet.getRow(firstHeaderRow + i);
-        header.forEach((value, c) => {
-          row.getCell(c + 1).value = value;
-        });
-      });
-      rows.forEach((r, i) => {
-        const row = sheet.getRow(firstDataRow + i);
-        exportColumns.forEach((_, c) => {
-          row.getCell(c + 1).value = valueFor(r[c], c);
-        });
-      });
-      if (hasSums) {
-        const row = sheet.getRow(summaryRowNum);
-        exportColumns.forEach((_, c) => {
-          if (c === 0) row.getCell(1).value = texts.total;
-          else if (sums[c] !== null)
-            row.getCell(c + 1).value = normalizeExportNumber(sums[c] as number, formats[c]);
-        });
-      }
-      if (rows.length)
-        sheet.autoFilter = {
-          from: { row: headerRow, column: 1 },
-          to: { row: lastDataRow, column: colCount },
-        };
-    }
-
-    // součtové řádky se sloučeným popiskem (stejné jako patička gridu)
-    totalDefs.forEach((t, i) => {
-      const rowNum = customTotalsStart + i;
-      const row = sheet.getRow(rowNum);
-      const span = totalSpan(t);
-      row.getCell(1).value = t.label;
-      t.cells.forEach((v, ci) => {
-        const c = span + ci;
-        if (c >= colCount) return;
-        row.getCell(c + 1).value = valueFor(v, c);
-      });
-      if (span > 1) sheet.mergeCells(rowNum, 1, rowNum, span);
-    });
-
-    // rekapitulace pod tabulkou (oddělená prázdným řádkem)
-    footerDefs.forEach((f, i) => {
-      const row = sheet.getRow(footerStart + i);
-      row.getCell(1).value = f.label;
-      if (f.value !== null && f.value !== undefined)
-        row.getCell(colCount).value =
-          typeof f.value === "number" ? normalizeExportNumber(f.value, f.numberFormat) : f.value;
-    });
-
-    const HEADER_FILL = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "FFE8EAEE" },
-    } as const;
-    const TOTAL_FILL = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "FFDCE3F0" },
-    } as const;
-
-    const lastRow = Math.max(tableLastRow, footerStart + footerDefs.length - 1, 1);
-    for (let r = 1; r <= lastRow; r++) {
-      const row = sheet.getRow(r);
-      const isNote = r === titleRow;
-      const isHeader = r >= firstHeaderRow && r <= headerRow;
-      const isSummary = summaryRowNum > 0 && r === summaryRowNum;
-      const totalDef =
-        totalDefs.length && r >= customTotalsStart && r <= tableLastRow
-          ? totalDefs[r - customTotalsStart]
-          : null;
-      const footerDef = footerStart > 0 && r >= footerStart ? footerDefs[r - footerStart] : null;
-      const inTable = r >= firstHeaderRow && r <= tableLastRow;
-      const isData = r >= firstDataRow && r <= lastDataRow;
-
-      for (let c = 1; c <= colCount; c++) {
-        const target = row.getCell(c);
-        const isNumber = typeof target.value === "number";
-        const isDateCell = target.value instanceof Date;
-        if (isDateCell) target.numFmt = excelDateFormat(undefined, dates[c - 1]?.hasTime ?? false);
-        else if (footerDef && isNumber)
-          target.numFmt = withDashZero(footerDef.numberFormat ?? formats[c - 1] ?? NUM_FMT);
-        else if (isNumber && inTable && numeric[c - 1])
-          target.numFmt = withDashZero(formats[c - 1] ?? NUM_FMT);
-
-        const totalLabelCell = totalDef ? c <= totalSpan(totalDef) : false;
-        target.alignment = {
-          vertical: "middle",
-          horizontal: isHeader
-            ? "center"
-            : isNote
-              ? "left"
-              : totalLabelCell || isNumber || isDateCell
-                ? "right"
-                : "left",
-          wrapText: (isHeader && !isNumber) || isNote,
-        };
-        if (inTable && !useTable) target.border = TABLE_BORDER_EXCELJS;
-        if (inTable && useTable && (isSummary || totalDef)) target.border = TABLE_BORDER_EXCELJS;
-        if (isHeader && !useTable) target.fill = HEADER_FILL;
-        if (isHeader && useTable) target.fill = HEADER_FILL;
-        if (isSummary || totalDef) target.fill = TOTAL_FILL;
-        target.font = {
-          bold:
-            isHeader ||
-            isNote ||
-            isSummary ||
-            Boolean(totalDef) ||
-            Boolean(footerDef?.bold || footerDef?.warn),
-          ...(footerDef?.warn ? { color: { argb: "FFBE1E2D" } } : {}),
-          ...(isNote ? { size: 12 } : {}),
-        };
-      }
-
-      if (isData && grouped) {
-        const level = levels?.[r - firstDataRow];
-        if (typeof level === "number" && level > 0) row.outlineLevel = Math.min(7, level);
-      }
-    }
-
-    const MAX_W = 60;
-    const MIN_W = 10;
-    const widths = exportColumns.map((label, i) =>
-      Math.min(
-        MAX_W,
-        dates[i]?.isDate
-          ? Math.max(
-              label.length + 4,
-              ...columnHeaders.map((header) => String(header[i] ?? "").length + 4),
-              MIN_W,
-              dates[i].hasTime ? 19 : 13,
-            )
-          : Math.max(
-              label.length + 4,
-              ...columnHeaders.map((header) => String(header[i] ?? "").length + 4),
-              MIN_W,
-              ...rows.map((r) =>
-                numeric[i] && typeof r[i] === "number"
-                  ? fmtNumber(r[i] as number).length + (formats[i]?.includes('"') ? 7 : 3)
-                  : String(cell(r[i])).length + 2,
-              ),
-            ),
-      ),
-    );
-    widths.forEach((w, i) => {
-      sheet.getColumn(i + 1).width = w;
-    });
-
-    const ROW_H = 16;
-    const HEAD_H = 22;
-    const titleWidth = widths.reduce((a, w) => a + w, 0);
-    const titleLines = heading
-      ? Math.max(1, Math.ceil(heading.length / Math.max(20, titleWidth - 2)))
-      : 1;
-    for (let r = 1; r <= lastRow; r++) {
-      sheet.getRow(r).height =
-        r === titleRow ? Math.max(HEAD_H, titleLines * 16 + 6) : r <= headerRow ? HEAD_H : ROW_H;
-    }
-
-    const buffer = (await book.xlsx.writeBuffer()) as ArrayBuffer;
-    downloadXlsx(buffer, `${filename}.xlsx`);
+    await downloadWorkbook(workbook, filename, created);
   };
 
   const exportPdf = async () => {
@@ -946,6 +577,42 @@ ${
         )}
       </PopoverContent>
     </Popover>
+  );
+}
+
+export interface ExcelExportButtonProps {
+  getData: () => GridExportData | Promise<GridExportData>;
+  exportName: string;
+  title: string;
+  meta?: ExcelExportMeta;
+  label?: string;
+  className?: string;
+}
+
+/** Textové tlačítko pro přímé stažení standardního Excel sešitu mimo grid. */
+export function ExcelExportButton({
+  getData,
+  exportName,
+  title,
+  meta,
+  label = "Stáhnout vzorový export",
+  className,
+}: ExcelExportButtonProps) {
+  const onClick = async () => {
+    const created = new Date();
+    const workbook = await buildExcelWorkbook(await getData(), {
+      title,
+      exportName,
+      meta,
+      created,
+    });
+    await downloadWorkbook(workbook, exportName, created);
+  };
+
+  return (
+    <Button type="button" onClick={() => void onClick()} className={className}>
+      {label}
+    </Button>
   );
 }
 
