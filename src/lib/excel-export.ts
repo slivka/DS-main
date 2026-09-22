@@ -388,13 +388,19 @@ export async function downloadWorkbook(
   created = workbook.created ?? new Date(),
 ) {
   const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer as BlobPart], {
+  const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer as ArrayBuffer);
+  const blob = new Blob([bytes], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = datedFilename(exportName, created);
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
   anchor.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+  window.setTimeout(() => {
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  }, 10_000);
 }
