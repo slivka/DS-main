@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { TableHead } from "../../ui/table";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type SortDir = "asc" | "desc";
 
@@ -104,6 +105,7 @@ type SortHeadProps<Id extends string> = {
   /** Ruční šířka sloupce (viz `ColumnResizeHandle`). */
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  texts?: Partial<GridTexts>;
 };
 
 /** Hlavička sloupce s přepínáním řazení (klik = asc → desc). */
@@ -118,7 +120,9 @@ export function SortHead<Id extends string>({
   dragProps,
   style,
   children,
+  texts: textOverrides,
 }: SortHeadProps<Id>) {
+  const texts = resolveGridTexts(textOverrides);
   const active = sort.key === id;
   return (
     <TableHead
@@ -140,7 +144,7 @@ export function SortHead<Id extends string>({
           }`}
           aria-label={`Seřadit podle ${label}`}
         >
-          {label.toLocaleUpperCase("sk-SK")}
+          {label.toLocaleUpperCase(texts.locale)}
           {active &&
             (sort.dir === "asc" ? (
               <ArrowUp className="size-3 shrink-0" />

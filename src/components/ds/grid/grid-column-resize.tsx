@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Úchyt na pravém okraji záhlaví sloupce – tažením myší mění šířku sloupce,
@@ -7,12 +8,15 @@ import { useRef } from "react";
 export function ColumnResizeHandle({
   onResize,
   onReset,
+  texts: textOverrides,
 }: {
   /** Nová šířka v px (průběžně během tažení). */
   onResize: (width: number) => void;
   /** Zrušení ruční šířky (dvojklik). */
   onReset?: () => void;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const ref = useRef<HTMLSpanElement>(null);
 
   const start = (e: React.PointerEvent) => {
@@ -43,8 +47,8 @@ export function ColumnResizeHandle({
       ref={ref}
       role="separator"
       aria-orientation="vertical"
-      aria-label="Změnit šířku sloupce"
-      title="Ťahaním zmeníte šírku, dvojklik vráti automatickú"
+      aria-label={texts.resizeColumn}
+      title={texts.resizeColumnHint}
       onPointerDown={start}
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => {

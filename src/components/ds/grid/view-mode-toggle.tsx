@@ -2,6 +2,7 @@ import { ListTree, Table2 } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type GridViewMode = "grid" | "tree";
 
@@ -12,12 +13,15 @@ export type GridViewMode = "grid" | "tree";
 export function ViewModeToggle({
   mode,
   onChange,
+  texts: textOverrides,
 }: {
   mode: GridViewMode;
   onChange: (mode: GridViewMode) => void;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const next: GridViewMode = mode === "grid" ? "tree" : "grid";
-  const label = next === "tree" ? "Stromové zobrazení" : "Tabulkové zobrazení";
+  const label = next === "tree" ? texts.treeView : texts.tableView;
   const Icon = next === "tree" ? ListTree : Table2;
   return (
     <Tooltip>

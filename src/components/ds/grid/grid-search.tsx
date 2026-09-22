@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Kompaktní hledání v gridu – malé tlačítko, které se po rozkliknutí
@@ -11,17 +12,20 @@ export function GridSearch({
   value,
   onChange,
   zoom = 1,
-  placeholder = "Hledat…",
+  placeholder,
   className = "",
+  texts: textOverrides,
 }: {
   value: string;
   onChange: (v: string) => void;
   zoom?: number;
   placeholder?: string;
   className?: string;
+  texts?: Partial<GridTexts>;
   /** Zpětná kompatibilita; zvýraznění se vždy řídí pouze hledaným textem. */
   active?: boolean;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const isActive = value.trim().length > 0;
   const [open, setOpen] = useState(!!value);
@@ -50,8 +54,8 @@ export function GridSearch({
       <Button
         variant="outline"
         size="sm"
-        aria-label="Hledat"
-        title="Hledat"
+        aria-label={texts.searchLabel}
+        title={texts.searchLabel}
         onClick={() => setOpen(true)}
         className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 ${isActive ? "grid-toolbar-active" : ""} ${className}`}
         style={{ fontSize }}
@@ -72,7 +76,7 @@ export function GridSearch({
       <input
         ref={inputRef}
         value={value}
-        placeholder={placeholder}
+        placeholder={placeholder ?? texts.searchPlaceholder}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
@@ -91,7 +95,7 @@ export function GridSearch({
       />
       <button
         type="button"
-        aria-label="Zrušit hledání"
+        aria-label={texts.clearSearchLabel}
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => {
           onChange("");

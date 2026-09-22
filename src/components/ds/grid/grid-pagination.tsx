@@ -9,11 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { gridFontSize } from "./grid-zoom";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /** 0 = zobrazit vše (výchozí hodnota). */
 export const PAGE_SIZE_OPTIONS = [0, 25, 50, 100, 200];
-
-const label = (size: number) => (size === 0 ? "Vše" : String(size));
 
 /**
  * Stránkování gridu s velikostí stránky uloženou v prohlížeči.
@@ -74,6 +73,7 @@ type Props = {
   /** Lišta navazuje přímo na spodní hranu gridu (bez mezery a horního rámečku). */
   attached?: boolean;
   className?: string;
+  texts?: Partial<GridTexts>;
 };
 
 /** Kompaktní lišta stránkování navazující na grid. */
@@ -87,7 +87,10 @@ export function GridPagination({
   zoom = 1,
   attached = true,
   className = "",
+  texts: textOverrides,
 }: Props) {
+  const texts = resolveGridTexts(textOverrides);
+  const label = (size: number) => (size === 0 ? texts.all : String(size));
   const from = total === 0 ? 0 : pageSize === 0 ? 1 : (page - 1) * pageSize + 1;
   const to = pageSize === 0 ? total : Math.min(page * pageSize, total);
 
@@ -101,13 +104,13 @@ export function GridPagination({
       style={{ fontSize: gridFontSize(zoom) }}
     >
       <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-        <span className="text-muted-foreground">Zobrazit</span>
+        <span className="text-muted-foreground">{texts.show}</span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               className="zoom-pagination-size num typo-action"
-              aria-label="Počet záznamů na stránku"
+              aria-label={texts.pageSize}
             >
               {label(pageSize)}
               <ChevronDown className="opacity-60" />
@@ -131,7 +134,7 @@ export function GridPagination({
           </DropdownMenuContent>
         </DropdownMenu>
         <span className="num text-muted-foreground">
-          {total === 0 ? "žádné záznamy" : `${from}–${to} z ${total}`}
+          {total === 0 ? texts.noRecords : `${from}–${to} z ${total}`}
         </span>
       </div>
 
@@ -141,20 +144,20 @@ export function GridPagination({
             variant="ghost"
             size="icon"
             className="h-7 w-7"
-            aria-label="Předchozí stránka"
+            aria-label={texts.previousPage}
             disabled={page <= 1}
             onClick={() => setPage(page - 1)}
           >
             <ChevronLeft />
           </Button>
           <span className="num text-muted-foreground">
-            Strana {page} / {pageCount}
+            {texts.page(page, pageCount)}
           </span>
           <Button
             variant="ghost"
             size="icon"
             className="h-7 w-7"
-            aria-label="Další stránka"
+            aria-label={texts.nextPage}
             disabled={page >= pageCount}
             onClick={() => setPage(page + 1)}
           >

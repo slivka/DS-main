@@ -1,6 +1,7 @@
 import { CheckSquare } from "lucide-react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Přepínač režimu hromadného výběru řádků v gridu.
@@ -12,13 +13,16 @@ export function GridSelectionToggle({
   count = 0,
   zoom = 1,
   className = "",
+  texts: textOverrides,
 }: {
   active: boolean;
   onToggle: (next: boolean) => void;
   count?: number;
   zoom?: number;
   className?: string;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   return (
     <Button
@@ -26,8 +30,8 @@ export function GridSelectionToggle({
       variant={active ? "default" : "outline"}
       size="sm"
       aria-pressed={active}
-      aria-label="Výběr více položek"
-      title={active ? "Ukončit výběr více položek" : "Vybrat více položek"}
+      aria-label={texts.selectMore}
+      title={active ? texts.cancelSelection : texts.selectMore}
       className={`shrink-0 px-[0.5em] ${className}`}
       style={{ fontSize }}
       onClick={() => onToggle(!active)}
