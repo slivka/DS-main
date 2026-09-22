@@ -290,6 +290,13 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     columns: tableColumns,
     rows: data.rows.map((row) => headers.map((_, index) => excelValue(row[index], meta[index]))),
   });
+  const addedTable = sheet.getTable(name);
+  addedTable?.table.columns.forEach((column, index) => {
+    if (index > 0 && meta[index]?.total === "none") {
+      delete column.totalsRowFunction;
+      delete column.totalsRowFormula;
+    }
+  });
 
   const requestedLevels = (data.rowLevels ?? []).map((level) => Math.max(0, Math.min(7, Math.trunc(level))));
   const hasSummaryBoundary = requestedLevels.some((level) => level === 0);
