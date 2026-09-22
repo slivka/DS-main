@@ -275,6 +275,7 @@ _Datumový filtr_
 
 - Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.
 - Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.
+- Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns().
 
 ### DateField
 
