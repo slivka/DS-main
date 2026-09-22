@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import { useResizableWidth } from "@/hooks/use-resizable-width";
-import { ComboboxResizeHandle } from "@/components/ds/form/resizable-combobox";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { gridFontSize } from "../grid/grid-zoom";
+import { useResizableWidth } from "../../../hooks/use-resizable-width";
+import { ComboboxResizeHandle } from "./resizable-combobox";
 
 export type MultiSelectOption = { value: string; label: string };
 

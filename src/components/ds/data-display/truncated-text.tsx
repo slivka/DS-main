@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 
 /**
  * Text v buňce gridu, který se při nedostatku místa zkrátí třemi tečkami.

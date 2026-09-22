@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { Badge } from "@/components/ui/badge";
-import { TableHead, TableRow } from "@/components/ui/table";
-import type { GridColumnGroup } from "@/components/ds/grid/grid-columns";
+import { Badge } from "../../ui/badge";
+import { TableHead, TableRow } from "../../ui/table";
+import type { GridColumnGroup } from "./grid-columns";
 
 /**
  * Horní řádek hlavičky gridu se seskupením sloupců do sekcí.

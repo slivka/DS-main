@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../../../lib/utils";
 
 /**
  * Překrytí obsahu při načítání – zabrání probliknutí mezistavů

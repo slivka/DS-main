@@ -80,4 +80,4 @@ export * from "./accounting/document-status-badge";
 export * from "./accounting/fiscal-period-select";
 
 /* Formátování a pomocné funkce */
-export * from "@/lib/format";
+export * from "../../lib/format";

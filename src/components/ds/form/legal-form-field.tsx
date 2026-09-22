@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "../../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -9,9 +9,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { LEGAL_FORMS } from "@/lib/legal-forms";
-import { cn } from "@/lib/utils";
+} from "../../ui/command";
+import { LEGAL_FORMS } from "../../../lib/legal-forms";
+import { cn } from "../../../lib/utils";
 
 type LegalFormFieldProps = {
   value: string;

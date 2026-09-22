@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../../../lib/utils";
 
 /**
  * Zobrazení čísla účtu: první tři znaky jsou syntetika, zbytek je analytika

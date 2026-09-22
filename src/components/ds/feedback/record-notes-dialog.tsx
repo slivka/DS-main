@@ -1,8 +1,8 @@
 import { MessageSquare } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { GridAction } from "@/components/ds/grid/grid-action";
-import { RecordNotes, type RecordNote } from "@/components/ds/feedback/record-notes";
+import { Button } from "../../ui/button";
+import { GridAction } from "../grid/grid-action";
+import { RecordNotes, type RecordNote } from "./record-notes";
 
 /** Boční panel poznámek k záznamu. */
 export function NotesPanel({

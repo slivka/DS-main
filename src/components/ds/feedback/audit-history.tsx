@@ -1,8 +1,8 @@
 import { History } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { GridAction } from "@/components/ds/grid/grid-action";
-import { formatUserDateTime } from "@/lib/date-time-preferences";
+import { Button } from "../../ui/button";
+import { GridAction } from "../grid/grid-action";
+import { formatUserDateTime } from "../../../lib/date-time-preferences";
 
 /** Jeden záznam historie změn. */
 export type AuditEntry = {

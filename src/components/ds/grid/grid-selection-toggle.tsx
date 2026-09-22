@@ -1,6 +1,6 @@
 import { CheckSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
+import { Button } from "../../ui/button";
+import { gridFontSize } from "./grid-zoom";
 
 /**
  * Přepínač režimu hromadného výběru řádků v gridu.

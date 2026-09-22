@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { fmtAmount } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { Input } from "../../ui/input";
+import { fmtAmount } from "../../../lib/format";
+import { cn } from "../../../lib/utils";
 
 /** Prevod užívateľského vstupu s čiarkou/tečkou a medzerami na číslo. */
 export function parseDecimalInput(value: string): number | null {

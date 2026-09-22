@@ -2,13 +2,13 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/ds/layout/ThemeToggle";
-import { FontSizeSetting } from "@/components/ds/layout/FontSizeSetting";
-import { Breadcrumbs, type Crumb } from "@/components/ds/layout/breadcrumbs";
-import { cn } from "@/lib/utils";
-import { applyFontScale } from "@/lib/font-scale";
+import { Button } from "../../ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../../ui/sheet";
+import { ThemeToggle } from "./ThemeToggle";
+import { FontSizeSetting } from "./FontSizeSetting";
+import { Breadcrumbs, type Crumb } from "./breadcrumbs";
+import { cn } from "../../../lib/utils";
+import { applyFontScale } from "../../../lib/font-scale";
 
 export type NavItem = {
   to: string;

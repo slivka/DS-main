@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 
 export type ChipOption = { value: string; label: string };
 

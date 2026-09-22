@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useTheme } from "@/lib/theme";
+import { Button } from "../../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { useTheme } from "../../../lib/theme";
 
 /** Rychlé přepnutí světlého / tmavého režimu v horní liště. */
 export function ThemeToggle({ className = "" }: { className?: string }) {

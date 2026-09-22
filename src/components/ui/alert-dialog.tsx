@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { useDialogBackClose } from "@/hooks/use-dialog-back-close";
+import { cn } from "../../lib/utils";
+import { buttonVariants } from "./button";
+import { useDialogBackClose } from "../../hooks/use-dialog-back-close";
 
 const AlertDialog = ({
   open,

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Check, GripVertical, RotateCcw, SlidersHorizontal, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import type { ColumnViewsApi } from "@/components/ds/grid/grid-columns";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { gridFontSize } from "./grid-zoom";
+import type { ColumnViewsApi } from "./grid-columns";
 
 export type PickerColumn<Id extends string = string> = {
   id: Id;

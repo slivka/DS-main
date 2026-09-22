@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import { cn } from "@/lib/utils";
+import { gridFontSize } from "./grid-zoom";
+import { cn } from "../../../lib/utils";
 
 /**
  * Výrazný název gridu nad panelem tlačítek.

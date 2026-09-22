@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
+import { Button } from "../../ui/button";
+import { gridFontSize } from "./grid-zoom";
 
 /**
  * Kompaktní hledání v gridu – malé tlačítko, které se po rozkliknutí

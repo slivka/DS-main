@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronsUpDown, SearchX } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -8,9 +8,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "../../ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { cn } from "../../../lib/utils";
 export type Country = { code: string; code3?: string; name: string; is_eu?: boolean };
 
 /** Vyhledávání bez ohledu na diakritiku a velikost písmen ("ceska" najde "Česká republika"). */

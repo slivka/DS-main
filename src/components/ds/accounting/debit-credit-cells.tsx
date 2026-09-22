@@ -1,7 +1,7 @@
-import { AmountCell } from "@/components/ds/accounting/amount";
-import type { DataGridColumn } from "@/components/ds/grid/DataGrid";
-import { formatAmount } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { AmountCell } from "./amount";
+import type { DataGridColumn } from "../grid/DataGrid";
+import { formatAmount } from "../../../lib/format";
+import { cn } from "../../../lib/utils";
 
 /**
  * Dvojice sloupců Má dáti / Dal pro grid.

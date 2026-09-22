@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from "react";
 import { CheckSquare, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { gridFontSize } from "@/components/ds/grid/grid-zoom";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { gridFontSize } from "./grid-zoom";
 
 export type GridMoreItem = {
   label: string;

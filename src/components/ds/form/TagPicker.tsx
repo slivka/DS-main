@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Check, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { cn } from "../../../lib/utils";
 
 export type TagOption = {
   id: string;

@@ -1,6 +1,6 @@
-import type { AccountOption } from "@/components/ds/accounting/account-select";
-import type { DocumentStatus } from "@/components/ds/accounting/document-status-badge";
-import type { FiscalPeriod } from "@/components/ds/accounting/fiscal-period-select";
+import type { AccountOption } from "../../components/ds/accounting/account-select";
+import type { DocumentStatus } from "../../components/ds/accounting/document-status-badge";
+import type { FiscalPeriod } from "../../components/ds/accounting/fiscal-period-select";
 
 /** Ukázková účtová osnova (pouze pro showcase design systému). */
 export const MOCK_ACCOUNTS: AccountOption[] = [
