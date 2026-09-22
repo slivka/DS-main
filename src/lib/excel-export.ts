@@ -291,13 +291,6 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     columns: tableColumns,
     rows: data.rows.map((row) => headers.map((_, index) => excelValue(row[index], meta[index]))),
   });
-  const addedTable = sheet.getTable(name);
-  addedTable?.table.columns.forEach((column, index) => {
-    if (index > 0 && meta[index]?.total === "none") {
-      delete column.totalsRowFunction;
-      delete column.totalsRowFormula;
-    }
-  });
 
   const requestedLevels = (data.rowLevels ?? []).map((level) => Math.max(0, Math.min(7, Math.trunc(level))));
   const hasSummaryBoundary = requestedLevels.some((level) => level === 0);
@@ -471,7 +464,8 @@ export async function downloadWorkbook(
     zip.file(path, normalized);
   }));
   const finalized = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
-  const blob = new Blob([finalized], {
+  const finalizedBuffer = finalized.buffer.slice(finalized.byteOffset, finalized.byteOffset + finalized.byteLength) as ArrayBuffer;
+  const blob = new Blob([finalizedBuffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
   const url = URL.createObjectURL(blob);
