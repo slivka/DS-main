@@ -96,4 +96,4 @@
 ## Verze 1.5.2 (sjednocení lišty gridu a veřejných stavebních prvků)
 - [x] Zachovat stejné pevné zaoblení výběru období a tlačítek při každém přiblížení
 - [x] Zpřístupnit odznaky, karty, tabulky, dialogy, oddělovače a záložky z hlavního vstupu
-- [ ] Ověřit typovou kontrolu a sestavení
+- [x] Ověřit typovou kontrolu a sestavení
