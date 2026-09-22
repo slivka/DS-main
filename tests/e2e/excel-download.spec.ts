@@ -18,7 +18,8 @@ const decodeXml = (value: string) => value
 
 const rowFromRef = (ref: string) => Number(/\d+/.exec(ref)?.[0] ?? 0);
 
-async function inspectOpenXml(filePath: string) {
+/** `original` = soubor stažený z aplikace; LibreOffice si rozsah filtru přepisuje po svém. */
+async function inspectOpenXml(filePath: string, original = true) {
   const zip = await JSZip.loadAsync(await readFile(filePath));
   const text = async (path: string) => {
     const entry = zip.file(path);
@@ -45,9 +46,11 @@ async function inspectOpenXml(filePath: string) {
   const filterLastRow = rowFromRef(autoFilterRef?.split(":")[1] ?? "");
   expect(totalsRowCount, "Tabulka musí mít právě jeden řádek souhrnů").toBe(1);
   expect(filterStartRow, "Filtr musí začínat na řádku hlavičky tabulky").toBe(tableStartRow);
-  expect(filterLastRow, "Filtr musí končit posledním datovým řádkem, ne řádkem souhrnů").toBe(
-    tableLastRow - totalsRowCount,
-  );
+  if (original) {
+    expect(filterLastRow, "Filtr musí končit posledním datovým řádkem, ne řádkem souhrnů").toBe(
+      tableLastRow - totalsRowCount,
+    );
+  }
   expect(autoFilterRef?.split(":")[0]?.replace(/\d+/, ""), "Filtr musí mít stejné sloupce jako tabulka").toBe(
     tableRef?.split(":")[0]?.replace(/\d+/, ""),
   );
@@ -191,7 +194,7 @@ test("vzorový Excel se stáhne a otevře bez varování", async ({ page }, test
     await inspectWorkbook(filePath);
 
     const openedPath = verifyLibreOfficeOpen(filePath, convertedDir);
-    await inspectOpenXml(openedPath);
+    await inspectOpenXml(openedPath, false);
     await inspectWorkbook(openedPath);
   } finally {
     await rm(workDir, { recursive: true, force: true });
