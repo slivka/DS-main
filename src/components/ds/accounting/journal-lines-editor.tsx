@@ -136,7 +136,8 @@ export function JournalLinesEditor({
 
   return (
     <div className={cn("rounded-lg border bg-card", className)} id={tableId} onKeyDown={onKeyDown}>
-      <Table>
+      <div className="overflow-x-auto">
+      <Table className="min-w-[1280px]">
         <TableHeader>
           <TableRow>
             <TableHead className="w-[220px]">{t.debitAccount}</TableHead>
@@ -278,6 +279,7 @@ export function JournalLinesEditor({
           </TableRow>
         </TableFooter>
       </Table>
+      </div>
 
       {readOnly ? null : (
         <div className="border-t p-2">
