@@ -56,7 +56,7 @@ export function accountColumns<Row>({
     accountText(getCode(row), accountName);
   const numericSortValue = (getCode: (row: Row) => string | null) => (row: Row) => {
     const normalized = normalizeAccountCode(getCode(row));
-    return normalized ? Number(normalized) : null;
+    return normalized || null;
   };
 
   return [
