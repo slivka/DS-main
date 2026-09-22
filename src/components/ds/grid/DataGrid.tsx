@@ -45,6 +45,7 @@ import {
 } from "../../../lib/date-time-preferences";
 import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /** Sloupec pobočky – riadi ho explicitne branchVisibility; zobrazuje sa len pri režime „Všetky pobočky", vždy ako prvý. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
@@ -188,6 +189,8 @@ type Props<Row> = {
   onSearchChange?: ((search: string) => void) | undefined;
   /** Dodatočná CSS trieda pre vonkajší obal gridu. */
   className?: string | undefined;
+  /** Přepis výchozích českých textů, například pro slovenskou verzi aplikace. */
+  texts?: Partial<GridTexts>;
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -226,7 +229,7 @@ export function DataGrid<Row>({
   filters,
   filterChips = [],
   onClearFilters,
-  emptyTitle = "Zatím zde nejsou žádné záznamy",
+  emptyTitle,
   emptyDescription,
   emptyActionLabel,
   onEmptyAction,
@@ -256,7 +259,9 @@ export function DataGrid<Row>({
   onColumnFiltersChange,
   onSearchChange,
   className,
+  texts: textOverrides,
 }: Props<Row>) {
+  const texts = useMemo(() => resolveGridTexts(textOverrides), [textOverrides]);
   const { confirm, confirmDialog } = useConfirmDialog();
   const [ownSelectMode, setOwnSelectMode] = useState(false);
   const selectMode = controlledSelectMode ?? ownSelectMode;
@@ -453,8 +458,8 @@ export function DataGrid<Row>({
       map.set(
         c.id,
         [...values]
-          .sort((a, b) => a.localeCompare(b, "sk"))
-          .map((v) => ({ value: v, label: v === "" ? "(prázdne)" : v })),
+          .sort((a, b) => a.localeCompare(b, texts.locale))
+          .map((v) => ({ value: v, label: v === "" ? texts.emptyValue : v })),
       );
     }
     return map;
@@ -464,7 +469,7 @@ export function DataGrid<Row>({
   const activeFilterLabels = [
     ...filterChips.map((c) => c.label),
     ...Object.entries(colFilters).map(
-      ([id, vals]) => `${byId.get(id)?.label ?? id}: ${vals.length} hodnot`,
+      ([id, vals]) => `${byId.get(id)?.label ?? id}: ${texts.valuesCount(vals.length)}`,
     ),
     ...shown.filter((c) => c.filterActive && c.filterLabel).map((c) => c.filterLabel!),
   ];
@@ -569,7 +574,7 @@ export function DataGrid<Row>({
           ) : null}
 
           <div className="ml-auto flex min-w-0 shrink-0 items-center gap-2">
-            <GridSearch value={search} onChange={setSearch} zoom={zoom} placeholder="Hledat…" />
+            <GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />
 
             {filters ? (
               <GridFilterToggle
@@ -579,6 +584,7 @@ export function DataGrid<Row>({
                 activeCount={filterChips.length + columnFilterCount}
                 activeFilters={activeFilterLabels}
                 zoom={zoom}
+                texts={texts}
               />
             ) : null}
 
@@ -587,6 +593,7 @@ export function DataGrid<Row>({
               filename={exportName ?? storageKey}
               title={exportTitle ?? (typeof title === "string" ? title : "")}
               zoom={zoom}
+              texts={texts}
             />
 
             <ColumnPicker
@@ -608,12 +615,12 @@ export function DataGrid<Row>({
               onToggleSection={cols.toggleSection}
               views={cols.views}
               zoom={zoom}
-              title="Sloupce"
+              title={texts.columnsTitle}
             />
 
-            {groupable ? <GroupControl grouping={grouping} /> : null}
+            {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
 
-            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
+            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />
 
             {selectable && !hideSelectionToggle ? (
               <Button
@@ -623,7 +630,7 @@ export function DataGrid<Row>({
                 className="h-8"
                 onClick={() => (selectMode ? exitSelectMode() : setOwnSelectMode(true))}
               >
-                {selectMode ? "Zrušit výber" : "Vybrat více"}
+                {selectMode ? texts.cancelSelection : texts.selectMore}
               </Button>
             ) : null}
 
@@ -634,7 +641,7 @@ export function DataGrid<Row>({
         {selectMode ? (
           <div className="flex flex-wrap items-center gap-2 border border-t-0 border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm">
             <span className="text-muted-foreground">
-              Vybraných záznamov: {fmtAmount(selectedRows.length, 0)}
+              {texts.selectedRecords(fmtAmount(selectedRows.length, 0))}
             </span>
             <div className="ml-auto flex items-center gap-2">
               {selectionActions?.(selectedRows, clearSelection)}
@@ -648,6 +655,7 @@ export function DataGrid<Row>({
             columns={groupColumns}
             dateColumns={dateColumns}
             zoom={zoom}
+            texts={texts}
           />
         ) : null}
 
@@ -688,7 +696,7 @@ export function DataGrid<Row>({
                         colSpan={g.span}
                         className="border-l text-center font-semibold text-muted-foreground first:border-l-0"
                       >
-                        {g.section?.toLocaleUpperCase("sk-SK")}
+                        {g.section?.toLocaleUpperCase(texts.locale)}
                       </TableHead>
                     ))}
                     {hasRowActions ? (
@@ -702,7 +710,7 @@ export function DataGrid<Row>({
                       <Checkbox
                         checked={allSelected}
                         onCheckedChange={() => toggleAll()}
-                        aria-label="Vybrat všechny řádky"
+                        aria-label={texts.selectAllRows}
                       />
                     </TableHead>
                   ) : null}
@@ -740,6 +748,7 @@ export function DataGrid<Row>({
                         selected={new Set(colFilters[c.id] ?? [])}
                         onChange={(next) => setColFilter(c.id, next)}
                         label={c.label}
+                        texts={texts}
                       />
                     );
                     return c.sortable === false ? (
@@ -759,7 +768,7 @@ export function DataGrid<Row>({
                                 : "inline-flex items-center gap-1"
                           }
                         >
-                          {c.label.toLocaleUpperCase("sk-SK")}
+                          {c.label.toLocaleUpperCase(texts.locale)}
                           {columnFilters ? filter : null}
                         </span>
                         {resize}
@@ -775,6 +784,7 @@ export function DataGrid<Row>({
                         pinRight={c.pinRight}
                         {...(headStyle ? { style: headStyle } : {})}
                         dragProps={isPinned ? {} : headerDragProps(c.id)}
+                        texts={texts}
                       >
                         {columnFilters ? filter : null}
                         {resize}
@@ -784,8 +794,8 @@ export function DataGrid<Row>({
                   {hasRowActions ? (
                     <TableHead
                       className="grid-actions-header sticky right-0 z-20 !min-w-0 whitespace-nowrap border-l !px-0.5 py-0 text-right"
-                      aria-label={actionsLabel ?? "Akcie"}
-                      title={actionsLabel ?? "Akcie"}
+                      aria-label={actionsLabel ?? texts.actions}
+                      title={actionsLabel ?? texts.actions}
                     />
                   ) : null}
                 </TableRow>
@@ -796,18 +806,20 @@ export function DataGrid<Row>({
                     colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
                     error={error}
                     onRetry={onRetry}
+                    texts={texts}
                   />
                 ) : (
                   <GridBody
                     loading={loading}
                     empty={sorted.length === 0}
                     cols={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
-                    title={search ? "Hledání neodpovídá žádný záznam" : emptyTitle}
+                    title={search ? texts.searchEmptyTitle : (emptyTitle ?? texts.emptyTitle)}
                     description={search ? undefined : emptyDescription}
                     filtered={Boolean(search) || filterChips.length > 0 || columnFilterCount > 0}
                     onClearFilter={clearAll}
                     actionLabel={emptyActionLabel}
                     onAction={onEmptyAction}
+                    texts={texts}
                   >
                     {grouped.map((item, i) =>
                       item.type === "group" ? (
@@ -854,7 +866,7 @@ export function DataGrid<Row>({
                                 checked={selectedKeys.has(rowKey(item.row))}
                                 onCheckedChange={() => toggleRowKey(rowKey(item.row))}
                                 onClick={(e) => e.stopPropagation()}
-                                aria-label="Vybrat řádek"
+                                aria-label={texts.selectRow}
                               />
                             </TableCell>
                           ) : null}
@@ -904,8 +916,8 @@ export function DataGrid<Row>({
                                 {rowActions?.(item.row)}
                                 {!hideDefaultActions && onEditRow && (canEditRow?.(item.row) ?? true) ? (
                                   <GridAction
-                                    title="Upravit"
-                                    aria-label="Upravit"
+                                    title={texts.edit}
+                                    aria-label={texts.edit}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       onEditRow(item.row);
@@ -917,16 +929,16 @@ export function DataGrid<Row>({
                                 {!hideDefaultActions && onDeleteRow && (canDeleteRow?.(item.row) ?? true) ? (
                                   <GridAction
                                     tone="destructive"
-                                    title="Odstranit"
-                                    aria-label="Odstranit"
+                                    title={texts.remove}
+                                    aria-label={texts.remove}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       const msg =
                                         deleteConfirm?.(item.row) ??
-                                        "Opravdu odstranit tento záznam?";
+                                        texts.removeConfirm;
                                       confirm({
                                         title: msg,
-                                        confirmLabel: "Odstranit",
+                                        confirmLabel: texts.remove,
                                         destructive: true,
                                         onConfirm: () => onDeleteRow(item.row),
                                       });
@@ -959,7 +971,7 @@ export function DataGrid<Row>({
                         {totalCells[i] ??
                           (i === totalLabelIndex ? (
                             <span className="text-muted-foreground">
-                              SPOLU
+                               {texts.total.toLocaleUpperCase(texts.locale)}
                             </span>
                           ) : null)}
                       </TableCell>
@@ -976,7 +988,7 @@ export function DataGrid<Row>({
             <aside
               data-grid-side-panel
               className="w-[24rem] shrink-0 overflow-y-auto border border-l-0 border-t-0 bg-card p-4"
-              aria-label="Poznámky k vybranému záznamu"
+              aria-label={texts.sidePanelLabel}
             >
               {sidePanel}
             </aside>
@@ -992,6 +1004,7 @@ export function DataGrid<Row>({
             setPage={pagination.setPage}
             setPageSize={pagination.setPageSize}
             zoom={zoom}
+            texts={texts}
           />
         ) : null}
         {confirmDialog}
