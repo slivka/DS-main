@@ -3,10 +3,10 @@ import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { gridFontSize } from "@/components/ds/grid/grid-zoom";
-import excelIcon from "@/assets/excel.svg.asset.json";
-import pdfIcon from "@/assets/pdf.svg.asset.json";
-import robotoRegular from "@/assets/roboto-regular.ttf.asset.json";
-import robotoBold from "@/assets/roboto-bold.ttf.asset.json";
+import excelIcon from "@/assets/excel.svg";
+import pdfIcon from "@/assets/pdf.svg";
+import robotoRegular from "@/assets/roboto-regular.ttf";
+import robotoBold from "@/assets/roboto-bold.ttf";
 import {
   excelDateFormat,
   formatUserDate,
