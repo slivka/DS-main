@@ -88,7 +88,7 @@ export function MonthYearSelect({
         placeholder={yearLabel}
         emptyLabel={emptyLabel}
         disabled={disabled}
-        className={cn("shrink-0", yearClassName)}
+        className={cn("w-[7rem] shrink-0", yearClassName)}
       />
     </div>
   );
