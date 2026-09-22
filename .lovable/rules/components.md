@@ -31,6 +31,8 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `countryClassName` | string | `sm:col-span-1` |
 | `className` | string | `sm:col-span-3` |
 | `children` | any | `—` |
+| `labels` | any | `—` |
+| `defaultCountry` | string | `SK` |
 
 ### AmountCell
 
@@ -86,6 +88,7 @@ import { BulkSelectionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `entity` | object | `—` |
 | `showZero` | boolean | `—` |
 | `clearLabel` | string | `Zrušit` |
+| `texts` | any | `—` |
 
 ### CalendarPicker
 
@@ -136,6 +139,7 @@ import { ColumnFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 | `onChange` | function | `—` |
 | `label` | string | `—` |
 | `children` | any | `—` |
+| `texts` | any | `—` |
 
 ### ColumnPicker
 
@@ -196,7 +200,7 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | Prop | Type | Default |
 |---|---|---|
 | `storageKey` | string | `—` |
-| `title` | any | `Sloupce` |
+| `title` | any | `—` |
 | `hideTitleMark` | boolean | `—` |
 | `exportTitle` | string | `—` |
 | `rows` | any | `—` |
@@ -211,7 +215,7 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
-| `emptyTitle` | string | `Zatím zde nejsou žádné záznamy` |
+| `emptyTitle` | string | `—` |
 | `emptyDescription` | string | `—` |
 | `emptyActionLabel` | string | `—` |
 | `onEmptyAction` | function | `—` |
@@ -241,6 +245,7 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `onColumnFiltersChange` | function | `—` |
 | `onSearchChange` | function | `—` |
 | `className` | string | `ml-auto flex min-w-0 shrink-0 items-center gap-2` |
+| `texts` | any | `—` |
 
 ### DateField
 
@@ -412,6 +417,7 @@ import { GridPagination } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | `zoom` | number | `1` |
 | `attached` | boolean | `true` |
 | `className` | string | `—` |
+| `texts` | any | `—` |
 
 ### GridProgress
 
@@ -512,9 +518,11 @@ import { IcoField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `onLookup` | function | `—` |
 | `busy` | boolean | `false` |
 | `disabled` | boolean | `false` |
-| `placeholder` | string | `Zadajte IČO alebo názov firmy` |
+| `placeholder` | string | `Zadejte IČO nebo název firmy` |
 | `className` | string | `pr-9` |
 | `resetKey` | any | `—` |
+| `lookupLabel` | string | `Vyhledat v rejstříku` |
+| `refreshLabel` | string | `Aktualizovat z rejstříku` |
 
 ### IcoLink
 
@@ -536,6 +544,10 @@ import { LegalFormField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | `onChange` | function | `—` |
 | `disabled` | boolean | `—` |
 | `className` | string | `ml-2 size-4 shrink-0 opacity-50` |
+| `placeholder` | string | `Vyberte právní formu` |
+| `searchPlaceholder` | string | `Hledat právní formu…` |
+| `noResultsText` | string | `Nebyla nalezena žádná právní forma.` |
+| `clearLabel` | string | `Zrušit výběr` |
 
 ### ListError
 
@@ -641,6 +653,7 @@ import { SortHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `dragProps` | any | `—` |
 | `style` | any | `—` |
 | `children` | any | `—` |
+| `texts` | any | `—` |
 
 ### StatusBadge
 

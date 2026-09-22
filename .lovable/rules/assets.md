@@ -9,13 +9,13 @@ These files are copied into `src/design-system/{slug}/assets/` in this project â
 Raw files import directly, e.g. `import logo from "@/design-system/{slug}/assets/logos/logo.svg"`.
 The full machine-readable catalog lives in this library's `design-system.json` (`assets` array).
 
+## Icons
+
+- `@/design-system/{slug}/assets/icons/excel.svg` (svg)
+- `@/design-system/{slug}/assets/icons/pdf.svg` (svg)
+
 ## Fonts
 
 - `@/design-system/{slug}/assets/roboto-bold.ttf` (ttf)
 - `@/design-system/{slug}/assets/roboto-regular.ttf` (ttf)
-
-## Images
-
-- `@/design-system/{slug}/assets/excel.svg` (svg)
-- `@/design-system/{slug}/assets/pdf.svg` (svg)
 
