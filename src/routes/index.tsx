@@ -9,6 +9,7 @@ import {
   DecimalInput,
   DocumentStatusBadge,
   OptionSelect,
+  PageHeader,
   StatusBadge,
   StatusDot,
 } from "@/components/ds";
@@ -151,11 +152,31 @@ function OverviewPage() {
         </div>
       </ShowcaseSection>
 
+      <ShowcaseSection
+        title="Hlavička stránky"
+        description="Nadpis, popis a akce vpravo; na úzkých obrazovkách se zalamuje."
+      >
+        <PageHeader
+          title="Přijaté faktury"
+          description="Přehled dokladů za vybrané účetní období."
+          actions={
+            <>
+              <Button variant="outline">Exportovat</Button>
+              <Button>Nový doklad</Button>
+            </>
+          }
+        />
+      </ShowcaseSection>
+
       <ShowcaseSection title="Stavy a štítky">
         <div className="flex flex-wrap items-center gap-3">
           <DocumentStatusBadge status="draft" />
+          <DocumentStatusBadge status="filed" />
           <DocumentStatusBadge status="posted" />
+          <DocumentStatusBadge status="locked" />
           <DocumentStatusBadge status="cancelled" />
+          <DocumentStatusBadge status="posted" approved />
+          <DocumentStatusBadge status="filed" approved />
           <StatusBadge
             status="active"
             config={{ active: { label: "Aktivní", tone: "info" } }}

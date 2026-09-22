@@ -64,8 +64,15 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Číslo účtu se ukládá jako `221001`, zobrazuje se jako `221.001` (`AccountCode`);
   analytika má proměnnou délku.
-- Stav dokladu vždy přes `DocumentStatusBadge` (Koncept / Zaúčtováno / Stornováno);
-  Koncept je výrazně odlišený.
+- Stav dokladu vždy přes `DocumentStatusBadge`. Stavy: `draft` = Koncept
+  (přerušovaný rámeček, doklad se nikde nepočítá), `filed` = Zařazen (má číslo,
+  počítá se, není zaúčtován, informační tón), `posted` = Zaúčtován (success),
+  `locked` = Uzamčen (tmavší neutrální tón s ikonou zámku), `cancelled` =
+  Stornován (danger).
+- Příznak `approved` na `DocumentStatusBadge` zobrazí vedle stavu malý odznak
+  „Schválen“ (success, fajfka). Je nezávislý na stavu dokladu.
+- Hlavičku stránky skládej z `PageHeader` (nadpis, popis, akce vpravo,
+  spodní linka), ne vlastním nadpisem na stránce.
 - MD / Dal přes `debitCreditColumns` s kontrolou rozdílu v součtu.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).
 - Workspace a firma přes `WorkspaceCompanySwitcher` v `AppShell`.
