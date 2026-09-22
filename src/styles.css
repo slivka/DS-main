@@ -1,9 +1,1658 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-foreground: var(--tooltip-foreground);
+  --color-tooltip-border: var(--tooltip-border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-strong: var(--warning-strong);
+  --color-share-high: var(--share-high);
+  --color-share-mid: var(--share-mid);
+  --color-share-low: var(--share-low);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-switch-unchecked: var(--switch-unchecked);
+  --color-grid-heading: var(--grid-heading-surface);
+  --color-grid-chrome: var(--grid-chrome-border);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-company: var(--company);
+  --color-company-foreground: var(--company-foreground);
+  --color-company-muted: var(--company-muted);
+  --color-person: var(--person);
+  --color-person-foreground: var(--person-foreground);
+  --color-person-muted: var(--person-muted);
+  --shadow-panel: 0 1px 2px oklch(0.3 0.03 60 / 0.07), 0 8px 24px oklch(0.3 0.03 60 / 0.07);
+  /* Interakční stavy – jednotné plochy pro hover / active / výběr / focus. */
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-surface-selected: var(--surface-selected);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-row-stripe: var(--row-stripe);
+  --shadow-focus: var(--focus-ring-shadow);
+  /* Typografická škála – jednotné velikosti pro nadpisy a popisky. */
+  --text-title: 1.79em;
+  --text-section: 1.15em;
+  --text-label: 0.82em;
+  --text-meta: 0.78em;
 }
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
+:root {
+  --radius: 0.625rem;
+  /* Námořnická modrá – profesionální paleta pro účetnictví. */
+  --background: oklch(0.975 0.005 245);
+  --foreground: oklch(0.25 0.04 245);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.04 245);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.04 245);
+  /* Primární: tmavá námořnická modrá. */
+  --primary: oklch(0.45 0.11 250);
+  --primary-foreground: oklch(0.985 0.005 250);
+  --secondary: oklch(0.94 0.02 245);
+  --secondary-foreground: oklch(0.32 0.05 245);
+  --muted: oklch(0.94 0.018 245);
+  --muted-foreground: oklch(0.5 0.035 245);
+  /* Accent = jemná modrá plocha pro hover/aktivní stavy. */
+  --accent: oklch(0.9 0.04 250);
+  --accent-foreground: oklch(0.25 0.05 245);
+  --tooltip: oklch(0.25 0.04 245);
+  --tooltip-foreground: oklch(0.98 0.01 250);
+  --tooltip-border: oklch(0.45 0.055 245);
+  --destructive: oklch(0.58 0.2 28);
+  --destructive-foreground: oklch(0.99 0.005 90);
+  --success: oklch(0.55 0.12 155);
+  --success-foreground: oklch(0.99 0.008 130);
+  /* Jantar #eab308. */
+  --warning: oklch(0.85 0.17 92);
+  --warning-foreground: oklch(0.26 0.03 90);
+  --warning-strong: oklch(0.55 0.13 75);
+  --border: oklch(0.88 0.025 245);
+  --input: oklch(0.58 0.035 245);
+  /* Ring / signální modrá. */
+  --ring: oklch(0.55 0.12 250);
+  /* Chrome: hluboká námořnická modrá se světlým textem. */
+  --sidebar: oklch(0.28 0.06 245);
+  --sidebar-foreground: oklch(0.94 0.012 250);
+  --sidebar-accent: oklch(0.38 0.085 245);
+  --sidebar-border: oklch(0.35 0.065 245);
+  /* Globální barvy typů kontaktů */
+  --company: oklch(0.5 0.1 250);
+  --company-foreground: oklch(0.99 0.008 250);
+  --company-muted: oklch(0.92 0.04 245);
+  --person: oklch(0.65 0.12 35);
+  --person-foreground: oklch(0.24 0.03 40);
+  --person-muted: oklch(0.94 0.05 40);
+  /* Barvy podílů ve stromu (neúplné podíly) */
+  --share-high: oklch(0.55 0.11 245);
+  --share-mid: oklch(0.62 0.14 80);
+  --share-low: oklch(0.56 0.16 28);
+  /* Stavy interakce */
+  --surface-hover: oklch(0.94 0.025 245);
+  --surface-active: oklch(0.91 0.04 245);
+  --surface-selected: oklch(0.915 0.045 245);
+  --surface-subtle: oklch(0.96 0.018 245);
+  --row-stripe: oklch(0.968 0.012 245);
+  --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+  --switch-unchecked: oklch(0.72 0 0);
+  /* DataGrid chrome: technická Navy Trust stupnica bez pastelových plôch. */
+  --grid-navy-deep: oklch(0.2333 0.0673 266.58);
+  --grid-navy: oklch(0.3462 0.0736 256.04);
+  --grid-steel: oklch(0.5281 0.0957 248.81);
+  --grid-frost: oklch(0.944 0.0097 252.81);
+  --grid-title-surface: white;
+  --grid-toolbar-surface: white;
+  --grid-heading-surface: var(--grid-frost);
+  --grid-total-surface: color-mix(in oklab, var(--grid-frost) 72%, white);
+  --grid-chrome-border: color-mix(in oklab, var(--grid-navy) 32%, var(--grid-frost));
 }
+
+.dark {
+  /* Tmavý námořnický režim – tmavá modrá (#0f172a) se světle modrými akcenty. */
+  --background: oklch(0.18 0.02 250);
+  --foreground: oklch(0.92 0.01 250);
+  --card: oklch(0.24 0.015 250);
+  --card-foreground: oklch(0.92 0.01 250);
+  --popover: oklch(0.24 0.015 250);
+  --popover-foreground: oklch(0.92 0.01 250);
+  /* Primární: světlejší modrá pro dostatečný kontrast na tmavém pozadí. */
+  --primary: oklch(0.65 0.13 250);
+  --primary-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.28 0.015 250);
+  --secondary-foreground: oklch(0.9 0.012 250);
+  --muted: oklch(0.26 0.012 250);
+  --muted-foreground: oklch(0.72 0.02 250);
+  --accent: oklch(0.32 0.025 250);
+  --accent-foreground: oklch(0.93 0.015 250);
+  --tooltip: oklch(0.9 0.012 250);
+  --tooltip-foreground: oklch(0.18 0.02 250);
+  --tooltip-border: oklch(0.68 0.025 250);
+  --destructive: oklch(0.68 0.17 30);
+  --destructive-foreground: oklch(0.18 0.02 40);
+  --success: oklch(0.75 0.13 150);
+  --success-foreground: oklch(0.18 0.025 150);
+  /* Jantar #fbbf24. */
+  --warning: oklch(0.83 0.16 85);
+  --warning-foreground: oklch(0.22 0.02 80);
+  --warning-strong: oklch(0.85 0.15 85);
+  --share-high: oklch(0.72 0.12 250);
+  --share-mid: oklch(0.78 0.14 85);
+  --share-low: oklch(0.7 0.15 30);
+  --border: oklch(0.32 0.018 250);
+  --input: oklch(0.58 0.025 250);
+  --ring: oklch(0.68 0.13 250);
+  --sidebar: oklch(0.14 0.015 250);
+  --sidebar-foreground: oklch(0.9 0.012 250);
+  --sidebar-accent: oklch(0.28 0.03 250);
+  --sidebar-border: oklch(0.26 0.02 250);
+  --company: oklch(0.72 0.12 250);
+  --company-foreground: oklch(0.15 0.02 250);
+  --company-muted: oklch(0.32 0.04 250);
+  --person: oklch(0.78 0.13 45);
+  --person-foreground: oklch(0.18 0.025 45);
+  --person-muted: oklch(0.32 0.045 45);
+  /* Stavy interakce (tmavý režim) */
+  --surface-hover: oklch(0.26 0.018 250);
+  --surface-active: oklch(0.3 0.025 250);
+  --surface-selected: oklch(0.32 0.03 250);
+  --surface-subtle: oklch(0.23 0.015 250);
+  --row-stripe: oklch(0.22 0.012 250);
+  --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+  --shadow-panel: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.35);
+  --switch-unchecked: oklch(0.42 0 0);
+  --grid-navy-deep: oklch(0.2333 0.0673 266.58);
+  --grid-navy: oklch(0.3462 0.0736 256.04);
+  --grid-steel: oklch(0.5281 0.0957 248.81);
+  --grid-frost: oklch(0.944 0.0097 252.81);
+  --grid-title-surface: var(--card);
+  --grid-toolbar-surface: var(--card);
+  --grid-heading-surface: color-mix(in oklab, var(--grid-navy) 42%, var(--card));
+  --grid-total-surface: color-mix(in oklab, var(--grid-navy) 48%, var(--card));
+  --grid-chrome-border: color-mix(in oklab, var(--grid-steel) 52%, var(--border));
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Peněžní částky: stejná šířka číslic a stabilní zarovnání řádů pod sebe.
+   Velikost i šířka jsou v em, aby se v gridech měnily spolu se zoomem. */
+@utility amount-cell {
+  min-width: 9.5em;
+  white-space: nowrap;
+  text-align: right;
+  font-size: 1em;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+}
+
+/* ---- Jednotná typografie napříč aplikací ----
+   Stejné styly pro záhlaví gridů, popisky formulářů, nadpisy prázdných stavů,
+   sekce a tlačítka.  */
+
+/* Štítek / záhlaví: verzálky, tučné, s prokladou – grid hlavičky, formulářové
+   popisky, nadpisy prázdných stavů, názvy sekcí. */
+@utility typo-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+/* Akce / tlačítka: tučné bez proklady, normální velikost písmen. */
+@utility typo-action {
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+/* Tělo / popis: normální řez, bez proklady, s volnějším řádkováním. */
+@utility typo-body {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+/* Jednotné velikosti nadpisů a popisků – navázané na tokeny --text-*. */
+@utility typo-title {
+  font-size: var(--text-title);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+@utility typo-section {
+  font-size: var(--text-section);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+@utility typo-meta {
+  font-size: var(--text-meta);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-muted-foreground);
+}
+
+/* Jednotné interakční stavy – hover / active / výběr / focus. */
+@utility interactive {
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  &:active {
+    background-color: var(--color-surface-active);
+  }
+}
+
+@utility is-selected {
+  background-color: var(--color-surface-selected);
+}
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+}
+
+/* Panel filtrů nad gridem – škáluje se stejným zoomem jako tabulka. */
+.zoom-filters {
+  --f-h: 2.3em;
+  font-size: inherit;
+  gap: 0.5em !important;
+  padding: 0.5em 0.75em !important;
+}
+
+/* Vnořená lišta (např. nad doklady ve stromu) – menší varianta, stále v em,
+   takže se zmenšuje spolu se zoomem gridu. */
+.zoom-filters.zoom-filters-sm {
+  --f-h: 1.9em;
+  font-size: 0.85em;
+}
+
+.zoom-filters.zoom-filters-sm .grid-toolbar-control {
+  padding-inline: 0.55em;
+  border-radius: 0.4em;
+}
+
+/* Jednotný rozměrový systém všech prvků lišty gridu. Rozměry jsou v em,
+   takže se spolu s font-size obalu mění při každém kroku zoomu. */
+.zoom-filters .grid-toolbar-control {
+  height: var(--f-h) !important;
+  min-height: var(--f-h);
+  padding-inline: 0.7em;
+  gap: 0.4em;
+  border-radius: 0.4em;
+  border-width: 1px;
+  font-size: 1em !important;
+  line-height: 1.2;
+  box-shadow: none;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+/* Pracovná lišta s titulkom tvorí jeden súvislý technický panel bez deliacej čiary.
+   Rámček má rovnakú farbu ako titulkový pás a tabuľka, aby obal gridu pôsobil jednotne. */
+.grid-toolbar-row {
+  position: relative;
+  background-color: var(--grid-title-surface);
+  border-color: var(--grid-chrome-border);
+  box-shadow: none;
+}
+
+/* Pripojené stránkovanie uzatvára spoločný rámček gridu – rovnaká farba okraja. */
+.zoom-pagination {
+  border-color: var(--grid-chrome-border);
+}
+
+.grid-toolbar-row .grid-toolbar-control {
+  border-color: var(--grid-chrome-border);
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+/* Primárne tlačidlo v lište gridu (pridanie záznamu) – modré so svetlým textom. */
+.zoom-filters .grid-toolbar-primary,
+.grid-toolbar-row .grid-toolbar-primary {
+  background-color: var(--grid-steel);
+  border-color: var(--grid-steel);
+  color: var(--grid-frost);
+  font-weight: 600;
+}
+
+.zoom-filters .grid-toolbar-primary:hover,
+.grid-toolbar-row .grid-toolbar-primary:hover {
+  background-color: var(--grid-navy);
+  border-color: var(--grid-navy);
+  color: var(--grid-frost);
+}
+
+
+.grid-toolbar-row .grid-toolbar-icon-control:hover {
+  border-color: var(--color-border);
+  background-color: var(--background);
+  color: var(--color-primary);
+}
+
+/* Jednotný aktivní stav vyhledávání a filtrů ve všech gridech. */
+.zoom-filters .grid-toolbar-active {
+  color: var(--destructive);
+  border-color: var(--destructive) !important;
+  background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+}
+
+.zoom-filters .grid-toolbar-active:hover {
+  color: var(--destructive);
+  background-color: color-mix(in oklab, var(--destructive) 15%, transparent);
+}
+
+.zoom-filters .grid-toolbar-icon-control {
+  width: var(--f-h) !important;
+  min-width: var(--f-h);
+  height: var(--f-h) !important;
+  padding: 0 !important;
+  border-radius: 0.4em !important;
+}
+
+.zoom-filters .grid-toolbar-group {
+  height: var(--f-h);
+  min-height: var(--f-h);
+  gap: 0.4em;
+}
+
+/* Zoom control – co nejkompaktnější skupinka, aby nezabírala zbytečně místo v liště. */
+.zoom-filters .grid-toolbar-control.zoom-control {
+  padding-inline: 0.15em;
+  gap: 0.05em;
+  overflow: hidden;
+}
+
+.zoom-filters .zoom-control .grid-toolbar-icon-control {
+  border: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.zoom-filters .grid-toolbar-control.zoom-control .zoom-value {
+  min-width: 1.3em;
+  padding-inline: 0.05em;
+}
+
+.zoom-filters .grid-filter-field {
+  width: 14em;
+  min-width: 9em;
+  max-width: 100%;
+}
+
+.zoom-filters .grid-filter-field-sm {
+  width: 9em;
+}
+.zoom-filters .grid-filter-field-md {
+  width: 11em;
+}
+.zoom-filters .grid-filter-field-lg {
+  width: 14em;
+}
+
+.zoom-filters .grid-toolbar-control svg,
+.zoom-filters .grid-toolbar-icon-control svg {
+  width: 1.15em !important;
+  height: 1.15em !important;
+}
+
+/* Ovládací prvky se na úzkých obrazovkách smrští místo přetečení. */
+.zoom-filters > * {
+  min-width: 0;
+}
+
+.zoom-filters :is(input, button, [data-slot="select-trigger"], .h-8, .h-9) {
+  height: var(--f-h) !important;
+  font-size: 1em !important;
+  line-height: 1.2;
+}
+
+.zoom-filters :is(button, [data-slot="select-trigger"]) {
+  padding-inline: 0.7em;
+  gap: 0.4em;
+  /* Text tlačítek se nikdy nezalamuje – při zoomu se mění jen velikost, ne layout. */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.zoom-filters svg {
+  width: 1.15em !important;
+  height: 1.15em !important;
+}
+
+/* Segmentový přepínač (ToggleGroup) v liště filtrů – stejná výška jako ostatní prvky. */
+.zoom-filters .grid-segmented {
+  height: var(--f-h) !important;
+  padding: 0 !important;
+  gap: 0;
+  border-radius: 0.45em;
+}
+
+.zoom-filters .grid-segmented > button {
+  height: 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent;
+}
+
+.zoom-filters .grid-segmented > button:first-child {
+  border-radius: calc(var(--f-h) * 0.2) 0 0 calc(var(--f-h) * 0.2) !important;
+}
+
+.zoom-filters .grid-segmented > button:last-child {
+  border-radius: 0 calc(var(--f-h) * 0.2) calc(var(--f-h) * 0.2) 0 !important;
+}
+
+.zoom-filters .grid-segmented > button:only-child {
+  border-radius: calc(var(--f-h) * 0.2) !important;
+}
+
+/* Vnořené „pill“ ovládací prvky (zoom, stránkování) mají menší vnitřní tlačítka. */
+.zoom-filters :is(.h-8, .h-9) :is(button, [data-slot="select-trigger"]) {
+  height: calc(var(--f-h) - 0.6em) !important;
+  padding-inline: 0.35em;
+}
+
+.zoom-filters :is(.h-8, .h-9) button[aria-label] {
+  width: calc(var(--f-h) - 0.6em);
+  padding: 0;
+}
+
+.zoom-filters :is(.h-8, .h-9) :is(span, button, div) {
+  font-size: 1em;
+}
+
+/* Stránkování pod gridem – škáluje se stejným zoomem jako tabulka. */
+.zoom-pagination {
+  --p-h: 2.4em;
+  min-height: var(--p-h);
+  padding-block: 0.3em;
+  padding-inline: 0.65em;
+  line-height: 1.2;
+  gap: 0.5em;
+  align-items: center;
+}
+
+/* Skupiny vlevo/vpravo drží stejné vnitřní rozestupy i svislé vyrovnání. */
+.zoom-pagination > div {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: calc(var(--p-h) - 0.6em);
+}
+
+.zoom-pagination :is(button, [data-slot="dropdown-menu-trigger"]) {
+  height: calc(var(--p-h) - 0.6em) !important;
+  min-width: 0;
+  padding-inline: 0.55em;
+  font-size: 1em !important;
+  gap: 0.3em;
+}
+
+.zoom-pagination button[aria-label="Předchozí stránka"],
+.zoom-pagination button[aria-label="Další stránka"] {
+  width: calc(var(--p-h) - 0.6em);
+  padding: 0;
+}
+
+.zoom-pagination svg {
+  width: 1.1em !important;
+  height: 1.1em !important;
+}
+
+.zoom-pagination span {
+  font-size: 1em;
+  white-space: nowrap;
+}
+
+/* Volba počtu záznamů – bez rámečku, číslo přesně vystředěné na výšku lišty. */
+.zoom-pagination .zoom-pagination-size {
+  height: calc(var(--p-h) - 0.9em) !important;
+  padding-inline: 0.35em !important;
+  gap: 0.15em;
+  border-radius: 0.35em;
+  line-height: 1;
+  color: var(--foreground);
+}
+
+.zoom-pagination .zoom-pagination-size:hover {
+  background: color-mix(in oklab, var(--foreground) 7%, transparent);
+}
+
+.zoom-pagination .zoom-pagination-size svg {
+  width: 0.95em !important;
+  height: 0.95em !important;
+}
+
+/* Zoomovatelný datový grid – písmo i šířka sloupců se řídí font-size obalu. */
+
+.zoom-grid {
+  /* Posuvník nezabírá trvalé místo vpravo – grid saje až k pravému okraji. */
+  scrollbar-width: thin;
+  /* Vnitřní okraj gridu – řádky začínají i končí přímo u okrajů gridu;
+     součtový řádek navazuje přímo na stránkování bez mezery. */
+  --grid-edge-x: 0em;
+  --grid-edge-y: 0em;
+}
+
+/* Spodní rohy podkladu jsou vždy zaoblené stejně jako horní; pokud pod gridem
+   navazuje připojené stránkování, přebírá zaoblení ono. */
+.zoom-grid {
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.zoom-grid:has(+ .zoom-pagination) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Datum v liště gridu používá em jednotky, takže zůstává čitelné a jeho
+   minimální šířka i ovládací prvky se mění společně se zoomem gridu. */
+.zoom-filters .zoom-date-field {
+  font-size: inherit;
+}
+
+.zoom-filters .zoom-date-field input {
+  height: var(--f-h);
+  padding-inline: 0.75em 2.6em;
+  font-size: inherit;
+}
+
+.zoom-filters .zoom-date-field button {
+  width: var(--f-h);
+}
+
+.zoom-filters .zoom-date-field svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* Výběr období (roku) má v liště gridu stejnou velikost jako ostatní tlačítka. */
+.zoom-filters .period-select-trigger {
+  font-size: 1em !important;
+  padding-inline: 0.7em;
+}
+
+/* Ikona kalendáře uvnitř pole Datum se nesmí roztáhnout na výšku lišty. */
+.zoom-filters .date-field-trigger {
+  height: 1.7em !important;
+  min-height: 0 !important;
+  width: 1.7em !important;
+  padding: 0 !important;
+}
+
+.zoom-filters .date-field-trigger svg {
+  width: 1.05em !important;
+  height: 1.05em !important;
+}
+
+/* Kalendář se vykresluje přes portál mimo .zoom-filters, proto dostává zoom
+   samostatně a všechny jeho pevné rozměry převádíme na jednotky em. */
+.grid-date-popover .grid-date-calendar {
+  --cell-size: 2.45em;
+  padding: 0.75em;
+}
+
+.grid-date-popover .grid-date-calendar :is(button, select) {
+  font-size: 1em;
+}
+
+.grid-date-popover .grid-date-calendar [class*="gap-4"] {
+  gap: 1em;
+}
+
+.grid-date-popover .grid-date-calendar [class*="gap-1.5"] {
+  gap: 0.375em;
+}
+
+.grid-date-popover .grid-date-calendar [class*="text-sm"] {
+  font-size: 1em;
+}
+
+.grid-date-popover .grid-date-calendar [class*="text-[0.8rem]"] {
+  font-size: 0.8em;
+}
+
+.grid-date-popover .grid-date-calendar [class*="h-8"] {
+  height: 2em;
+}
+
+.grid-date-popover .grid-date-calendar svg {
+  width: 1em;
+  height: 1em;
+}
+
+/* Obalový <div> z Table komponenty (overflow-auto) je sám rolovací kontejner
+   a nachází se mezi zoom-grid a tabulkou. Bez něj by lepicím prvkům (záhlaví/
+   patička) "zalehly" na tento obal, který nemá omezenou výšku, takže lepení
+   nikdy nenastalo. Přepneme obal na visible – roluje až vnější zoom-grid,
+   ke kterému se záhlaví i patička správně přichytí. */
+.zoom-grid > div {
+  overflow: visible !important;
+}
+
+.zoom-grid table {
+  font-size: inherit;
+  min-width: 0;
+  --grid-line: 1.5em;
+  --grid-pad-y: 0.6em;
+  --grid-pad-x: 0.65em;
+  --grid-row-h: calc(var(--grid-line) + 2 * var(--grid-pad-y));
+  --grid-head-scale: 1;
+  --grid-head-rows: 1.25;
+}
+
+/* Texty v gridech se nikdy nezalamují – dlouhý obsah se ořízne třemi tečkami. */
+.zoom-grid :is(thead, tbody, tfoot) tr > :is(th, td) {
+  white-space: nowrap;
+}
+
+/* Přebijeme i utility třídy (px-3, text-xs…), aby vše škálovalo v em. */
+.zoom-grid :is(th, td) {
+  padding: var(--grid-pad-y) var(--grid-pad-x) !important;
+  font-size: 1em;
+  line-height: var(--grid-line);
+  min-height: var(--grid-row-h);
+}
+
+/* Symetrický okraj u obou krajů tabulky. */
+.zoom-grid :is(thead, tbody, tfoot) tr > :is(th, td):first-child {
+  padding-left: calc(var(--grid-pad-x) + var(--grid-edge-x)) !important;
+}
+
+.zoom-grid :is(thead, tbody, tfoot) tr > :is(th, td):last-child {
+  padding-right: calc(var(--grid-pad-x) + var(--grid-edge-x)) !important;
+}
+
+.zoom-grid :is(thead, tbody, tfoot, tr) {
+  font-size: 1em !important;
+}
+
+.zoom-grid thead :is(th, td) {
+  font-size: calc(1em * var(--grid-head-scale)) !important;
+  padding: 0 calc(var(--grid-pad-x) / var(--grid-head-scale)) !important;
+  line-height: 1.2;
+  height: calc(var(--grid-row-h) * var(--grid-head-rows) / var(--grid-head-scale));
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kompaktní podgrid ve stromovém zobrazení – hlavička a patička mají stejnou
+   výšku jako datové řádky, aby nepůsobily těžkopádně vnořené pod sebe. */
+.zoom-grid.compact-header table {
+  --grid-head-rows: 1;
+}
+
+.zoom-grid.compact-header tfoot tr {
+  height: var(--grid-row-h);
+}
+
+.zoom-grid .grid-column-header :is(th, td) {
+  background-color: var(--grid-heading-surface);
+  color: color-mix(in oklab, var(--grid-navy-deep) 78%, var(--foreground));
+  font-family: var(--font-display);
+  font-size: 0.88em;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+}
+
+/* Ukotvený sloupec akcí je součást stejného pásu jako záhlaví a součty. */
+.zoom-grid .grid-column-header .grid-actions-header {
+  background: var(--grid-heading-surface);
+  border-left-color: var(--grid-chrome-border);
+}
+
+.zoom-grid .grid-column-header :is(th, td):has(button[aria-label^="Seřadit"]) button {
+  font-weight: 700;
+}
+
+.zoom-grid .grid-column-header :is(th, td):has(button[aria-label^="Seřadit"]) button.text-foreground {
+  color: var(--color-foreground);
+}
+
+.zoom-grid thead :is(th, td) * {
+  font-size: 1em !important;
+}
+
+.zoom-grid thead th svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td) {
+  vertical-align: middle;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td) svg {
+  vertical-align: middle;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* Jednotná velikost písma ve všech buňkách gridu – utility třídy uvnitř buněk
+   (text-xs, text-sm, text-[13px]…) by jinak dělaly různě velké texty.
+   Výjimky si velikost řídí samy (kompaktní stav, prázdný stav s CTA). */
+.zoom-grid
+  :is(thead, tbody, tfoot)
+  :is(th, td)
+  :is(
+    span,
+    div,
+    p,
+    a,
+    small,
+    strong,
+    em,
+    b,
+    i,
+    label,
+    code,
+    time,
+    button,
+    [data-slot="badge"],
+    .badge
+  ):not([data-loan-status-compact="true"]):not([data-grid-cta]):not([data-grid-cta] *) {
+  font-size: 1em !important;
+}
+
+/* Vnitřní prvky buněk (badge, tlačítka) škálují se zoomem.
+   Výzvy k akci v prázdném stavu (data-grid-cta) se neškálují – potřebují
+   pohodlný poměr textu a plochy tlačítka. */
+.zoom-grid
+  :is(tbody, tfoot)
+  :is(th, td)
+  :is(button, a, [data-slot="badge"], .badge):not([role="checkbox"]):not([role="switch"]):not(
+    [data-grid-cta]
+  ):not([data-slot="grid-action"]) {
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.2 !important;
+  padding: 0.15em 0.5em !important;
+  border-radius: 0.35em;
+  gap: 0.3em;
+}
+
+/* Stav vložený přímo vedle čísla půjčky zabírá jen šířku textu a celý se
+   mění spolu se zoomem gridu. */
+.zoom-grid [data-loan-status-compact="true"] {
+  min-width: 0 !important;
+  padding: 0.1em 0.3em !important;
+  font-size: 0.82em !important;
+  line-height: 1.1 !important;
+}
+
+.zoom-grid
+  :is(tbody, tfoot)
+  :is(th, td)
+  button:has(> svg:only-child):not([role="checkbox"]):not([data-grid-cta]) {
+  padding: 0.15em !important;
+  width: auto !important;
+}
+
+/* Prázdný stav gridu – tlačítko je nižší a škáluje se se zoomem gridu. */
+.zoom-grid :is(th, td) [data-grid-cta] {
+  font-size: 0.95em;
+  line-height: 1.2;
+  height: auto;
+  min-height: 0;
+  padding-block: 0.3em;
+  padding-inline: 0.9em;
+  border-radius: 0.375em;
+}
+
+.zoom-grid :is(th, td) [data-grid-cta] svg {
+  width: 1.05em !important;
+  height: 1.05em !important;
+}
+
+/* Zaškrtávací pole v řádcích – stejný vzhled jako v záhlaví, škáluje se zoomem. */
+.zoom-grid :is(thead, tbody, tfoot) :is(th, td) [role="checkbox"] {
+  height: 1.35em !important;
+  width: 1.35em !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-radius: 0.25em !important;
+  flex: none;
+}
+
+.zoom-grid :is(thead, tbody, tfoot) :is(th, td) [role="checkbox"] svg {
+  height: 1.1em;
+  width: 1.1em;
+}
+
+/* Akční tlačítka v řádku – širší klikací plocha a rozestupy škálované zoomem gridu. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) [data-slot="grid-action"] {
+  width: 2em !important;
+  height: 1.6em !important;
+  padding: 0 !important;
+  border-radius: 0.25em;
+}
+
+/* Ikony akcí jsou v klidu tlumené, na řádku pod kurzorem plně čitelné. */
+.zoom-grid tbody tr [data-slot="grid-action"] {
+  opacity: 0.6;
+}
+.zoom-grid tbody tr:hover [data-slot="grid-action"],
+.zoom-grid tbody tr [data-slot="grid-action"]:hover,
+.zoom-grid tbody tr [data-slot="grid-action"]:focus-visible {
+  opacity: 1;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td),
+.zoom-grid :is(tbody, tfoot) :is(th, td) * {
+  font-size: 1em !important;
+}
+
+/* Lepivé záhlaví a patička. */
+.zoom-grid thead tr > :is(th, td) {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: color-mix(in oklab, var(--muted) 70%, var(--card));
+  background-clip: padding-box;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Řádek se seskupením sloupců je vizuálně podřízený vlastnímu záhlaví:
+   tmavší podklad, jemnější (ale kontrastní) text – funguje ve světlém i tmavém režimu. */
+.zoom-grid thead tr.grid-group-row > :is(th, td) {
+  background: color-mix(in oklab, var(--muted) 55%, var(--foreground) 7%);
+  color: var(--muted-foreground);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  box-shadow: none;
+  /* Řádek sekcí zůstává úplně nahoře a nesmí se schovat pod hlavičku. */
+  top: 0;
+  height: var(--grid-group-h, 1.9em);
+  z-index: 8;
+}
+
+/* Řádek s názvy sloupců se ukotví pod řádkem sekcí. */
+.zoom-grid thead tr.grid-group-row ~ tr > :is(th, td) {
+  top: var(--grid-group-h, 1.9em);
+}
+
+/* Verzálky v záhlaví – sjednoceno s .typo-label (stejná proklada i tučnost). */
+.zoom-grid thead tr > :is(th, td) {
+  font-variant-caps: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.zoom-grid tfoot {
+  position: sticky;
+  bottom: var(--grid-edge-y);
+  z-index: 5;
+}
+
+/* Řádek patičky drží vlastní podklad, aby průhledné sloučené buňky
+   neprosvítaly na rolovaný obsah. */
+.zoom-grid tfoot tr {
+  background: var(--grid-total-surface);
+}
+
+.zoom-grid tfoot tr > :is(th, td) {
+  position: sticky;
+  bottom: var(--grid-edge-y);
+
+  background: var(--grid-total-surface);
+  background-clip: padding-box;
+  border-top: 0;
+  font-variant-caps: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: color-mix(in oklab, var(--grid-navy-deep) 82%, var(--foreground));
+}
+
+.zoom-grid tfoot .grid-actions-footer {
+  background: var(--grid-total-surface);
+  border-top: 0;
+  border-left-color: var(--grid-chrome-border);
+  backdrop-filter: none;
+}
+
+/* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
+.zoom-grid thead tr:last-child > :is(th, td) {
+  border-bottom: 1px solid var(--grid-chrome-border);
+  box-shadow: none;
+}
+
+/* Součty v patičce si drží tabulkové číslice a normální velikost číslic. */
+.zoom-grid tfoot :is(th, td).num,
+.zoom-grid tfoot :is(th, td).text-right {
+  font-variant-caps: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Svislé oddělení sloupců – jemné čáry mezi všemi sloupci. V patičce (součtový
+   řádek) se oddělovače nevykreslují, aby celý řádek působil jako jeden pás. */
+.zoom-grid thead tr > :is(th, td) + :is(th, td) {
+  border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+}
+
+.zoom-grid tbody tr > :is(th, td) + :is(th, td) {
+  border-left: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+}
+
+/* Buňky pokračující ve vizuálně sloučeném rozsahu nemají svislý oddělovač. */
+/* Kompaktní tabulka mimo DataGrid (např. historie predĺžení) – vizuálně sladěná
+   se záhlavím a součtovým řádkem hlavních gridů. */
+.compact-table thead {
+  background-color: var(--grid-heading-surface);
+  color: color-mix(in oklab, var(--grid-navy-deep) 78%, var(--foreground));
+}
+.compact-table thead th {
+  font-family: var(--font-display);
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  font-weight: 700;
+  border-bottom: 1px solid var(--grid-chrome-border);
+}
+.compact-table tbody tr + tr {
+  border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+.compact-table tbody td {
+  vertical-align: middle;
+}
+.compact-table tfoot {
+  background: var(--grid-total-surface);
+  color: color-mix(in oklab, var(--grid-navy-deep) 82%, var(--foreground));
+  font-family: var(--font-display);
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+.compact-table tfoot td {
+  border-top: 1px solid var(--grid-chrome-border);
+}
+
+.zoom-grid :is(thead, tfoot, tbody) tr > :is(th, td).merge-continue {
+  border-left: 0;
+}
+
+/* Popisek vizuálně sloučených buněk nesmí být oříznut hranicí své buňky.
+   Vrstvení držíme shodné s ostatními buňkami patičky, jinak by sloučená
+   buňka překryla stín/čáru sousedů a dělící čára by vypadala dvojitá. */
+.zoom-grid :is(tbody, tfoot) :is(th, td).merge-start {
+  overflow: visible;
+}
+
+.zoom-grid tfoot tr > :is(th, td).merge-start {
+  z-index: 8;
+}
+
+.zoom-grid tfoot tr > :is(th, td).merge-continue {
+  z-index: 7;
+}
+
+/* V patičce musí sloučené buňky zůstat neprůhledné, jinak přes ně při
+   vodorovném posunu prosvítají zasouvané sloupce s hodnotami. */
+.zoom-grid tfoot :is(th, td):is(.merge-start, .merge-continue) {
+  background: color-mix(in oklab, var(--muted) 70%, var(--card));
+  background-clip: padding-box;
+}
+
+.zoom-grid tbody :is(th, td).merge-continue {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Sloučené buňky nesmí vykreslovat vlastní boční stín – čára pak nenavazuje. */
+.zoom-grid :is(th, td):is(.merge-start, .merge-continue).grid-pin-last {
+  box-shadow: none;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td).merge-start > * {
+  max-height: none;
+}
+
+/* Dlouhý součtový název se u užší kombinace viditelných sloupců (typicky
+   roční plán po měsících bez sloupce Účty) zmenší jen natolik, aby se celý
+   vešel do sloučeného rozsahu Druh–Položka. */
+.zoom-grid tfoot .footer-merged-label {
+  font-size: calc(1em * var(--footer-label-scale, 1)) !important;
+  line-height: var(--grid-line);
+}
+
+/* Výraznější oddělení na hranicích sekcí – viditelné i při malém zoomu. */
+.zoom-grid :is(thead, tbody) tr > :is(th, td).col-sep {
+  border-left: 2px solid color-mix(in oklab, var(--foreground) 22%, transparent);
+}
+
+/* Ukotvené (pinned) sloupce zůstávají viditelné při horizontálním rolování.
+   Pozici `left` a `position: sticky` nastavuje ZoomGrid v px podle skutečných
+   šířek sloupců; zde řešíme jen vrstvení a podklad, aby pinované buňky
+   překryly rolovaný obsah (opakem). Hlavička/patička mají vlastní podklad. */
+.zoom-grid :is(th, td).grid-pin-cell {
+  z-index: 3;
+}
+.zoom-grid thead tr > :is(th, td).grid-pin-cell {
+  z-index: 7;
+}
+.zoom-grid thead tr.grid-group-row > :is(th, td).grid-pin-cell {
+  z-index: 9;
+}
+.zoom-grid tfoot tr > :is(th, td).grid-pin-cell {
+  z-index: 6;
+}
+.zoom-grid tfoot tr > :is(th, td).grid-pin-cell.merge-start {
+  z-index: 8;
+}
+.zoom-grid tfoot tr > :is(th, td).grid-pin-cell.merge-continue {
+  z-index: 7;
+}
+.zoom-grid tbody tr > :is(th, td).grid-pin-cell {
+  background: var(--card);
+  background-clip: padding-box;
+}
+.zoom-grid tbody tr:hover > :is(th, td).grid-pin-cell {
+  background: color-mix(in oklab, var(--muted) 50%, var(--card));
+}
+/* Pravý stín na posledním ukotveném sloupci naznačuje další rolovatelný obsah. */
+.zoom-grid :is(th, td).grid-pin-last {
+  box-shadow: 6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+
+/* Ukotvené (pinned) sloupce zprava – zrcadlové chování k ukotvení vlevo.
+   Pozici `right` a `position: sticky` nastavuje ZoomGrid v px; zde řešíme
+   vrstvení a neprůhledný podklad, aby pinované buňky překryly rolovaný obsah. */
+.zoom-grid :is(th, td).grid-pin-right-cell {
+  z-index: 3;
+}
+.zoom-grid thead tr > :is(th, td).grid-pin-right-cell {
+  z-index: 7;
+}
+.zoom-grid thead tr.grid-group-row > :is(th, td).grid-pin-right-cell {
+  z-index: 9;
+}
+.zoom-grid tfoot tr > :is(th, td).grid-pin-right-cell {
+  z-index: 6;
+  background: var(--grid-total-surface);
+  background-clip: padding-box;
+}
+.zoom-grid tbody tr > :is(th, td).grid-pin-right-cell {
+  background: var(--card);
+  background-clip: padding-box;
+}
+.zoom-grid tbody tr:hover > :is(th, td).grid-pin-right-cell {
+  background: color-mix(in oklab, var(--muted) 50%, var(--card));
+}
+/* Levý stín na prvním (nejlevějším) ukotveném sloupci zprava. */
+.zoom-grid :is(th, td).grid-pin-right-first {
+  box-shadow: -6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+/* V patičce má být sloupec akcí vizuálně sjednocený s řádkem součtu. */
+.zoom-grid tfoot tr > :is(th, td).grid-pin-right-first {
+  box-shadow: none;
+}
+
+/* Ukotvený sloupec akcí: pokud grid obsahuje akce v řádku, poslední sloupec
+   zůstává vždy viditelný u pravého okraje a jeho šířka se smrští na obsah
+   (tedy na počet ikon). */
+.zoom-grid table:has([data-slot="grid-actions"]) tr > :is(th, td):last-child {
+  position: sticky;
+  right: 0;
+  z-index: 7;
+  white-space: nowrap;
+  background: var(--card);
+  background-clip: padding-box;
+  border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  box-shadow: -6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+
+.zoom-grid table:has([data-slot="grid-actions"]) tbody tr:hover > :is(th, td):last-child {
+  background: color-mix(in oklab, var(--muted) 50%, var(--card));
+}
+
+/* Záhlaví i patička sloupce akcí sdílejí podklad s pásem záhlaví sloupců
+   a součtovým řádkem, aby tvořily jeden souvislý celek. */
+.zoom-grid table:has([data-slot="grid-actions"]) thead tr > :is(th, td):last-child {
+  z-index: 9;
+  background: var(--grid-heading-surface);
+}
+
+.zoom-grid table:has([data-slot="grid-actions"]) thead tr.grid-group-row > :is(th, td):last-child {
+  z-index: 10;
+  background: color-mix(in oklab, var(--muted) 55%, var(--foreground) 7%);
+}
+
+.zoom-grid table:has([data-slot="grid-actions"]) tfoot tr > :is(th, td):last-child {
+  z-index: 8;
+  background: var(--grid-total-surface);
+  box-shadow: none;
+}
+
+/* Akční buňka drží ikony na jednom řádku s co nejmenší rezervou. */
+.zoom-grid table:has([data-slot="grid-actions"]) tbody tr > :is(th, td):last-child {
+  padding-left: 0.25em !important;
+  padding-right: 0.25em !important;
+}
+
+/* Zarovnání sloupců: číselné sloupce drží tabulkové číslice, nezalamují se
+   a mají mírnou rezervu navíc, aby čísla nebyla nalepená na okraj. Šířka je
+   v em, takže se počítá ze zoomu gridu; při nedostatku místa se sloupce
+   stále smrští na obsah. */
+.zoom-grid :is(th, td).num,
+.zoom-grid :is(th, td).text-right {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 7em;
+}
+
+.zoom-grid :is(th, td).text-right {
+  width: 1%;
+}
+
+/* Textové sloupce se smí zkrátit, ne roztlačit tabulku. */
+.zoom-grid :is(th, td).truncate {
+  max-width: 18em;
+}
+
+/* Vstupy uvnitř buněk (inline editace) škálují se zoomem. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) input {
+  height: calc(var(--grid-line) + 0.5em) !important;
+  padding: 0 0.35em !important;
+  font-size: 1em !important;
+  line-height: var(--grid-line);
+}
+
+/* Akční tlačítka v gridech potřebují mezeru, aby nebyla nalepená na sebe. */
+.zoom-grid tbody :is(td, th) > button + button,
+.zoom-grid tbody :is(td, th) > button + a,
+.zoom-grid tbody :is(td, th) > a + button {
+  margin-left: 0.4em;
+}
+
+.zoom-grid tbody :is(td, th) > .flex > button + button {
+  margin-left: 0;
+}
+
+/* Nabídka počtu záznamů se škáluje spolu se zoomem gridu. */
+.zoom-pagination-menu {
+  padding: 0.15em !important;
+  min-width: 4em !important;
+  border-radius: 0.4em;
+  font-size: inherit;
+  line-height: 1.15;
+}
+
+.zoom-pagination-menu :is([data-slot="dropdown-menu-radio-item"], [role="menuitemradio"]) {
+  font-size: 0.9em !important;
+  line-height: 1.15 !important;
+  padding-block: 0.15em !important;
+  padding-left: 1.4em !important;
+  padding-right: 0.5em !important;
+  border-radius: 0.3em;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.zoom-pagination-menu
+  :is([data-slot="dropdown-menu-radio-item"], [role="menuitemradio"])
+  > span:first-child {
+  position: absolute;
+  left: 0.3em;
+  width: 0.75em !important;
+  height: 0.75em !important;
+}
+
+.zoom-pagination-menu svg {
+  width: 0.5em !important;
+  height: 0.5em !important;
+}
+
+/* Indeterminate progress bar pro překrytí načítání. */
+@keyframes loading-bar-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+.loading-bar {
+  animation: loading-bar-slide 1.1s ease-in-out infinite;
+}
+
+/* Sonner richColors: jednotné mapování na design tokeny aplikace. */
+[data-sonner-toast][data-type="success"] {
+  --success-bg: color-mix(in oklab, var(--success) 12%, var(--background));
+  --success-border: color-mix(in oklab, var(--success) 40%, var(--background));
+  --success-text: var(--success);
+}
+
+[data-sonner-toast][data-type="info"] {
+  --info-bg: color-mix(in oklab, var(--primary) 12%, var(--background));
+  --info-border: color-mix(in oklab, var(--primary) 40%, var(--background));
+  --info-text: var(--primary);
+}
+
+[data-sonner-toast][data-type="warning"] {
+  --warning-bg: color-mix(in oklab, var(--warning) 16%, var(--background));
+  --warning-border: color-mix(in oklab, var(--warning) 45%, var(--background));
+  --warning-text: oklch(0.45 0.12 75);
+}
+
+[data-sonner-toast][data-type="error"] {
+  --error-bg: color-mix(in oklab, var(--destructive) 12%, var(--background));
+  --error-border: color-mix(in oklab, var(--destructive) 40%, var(--background));
+  --error-text: var(--destructive);
+}
+
+/* Ikony toastů dědí barvu typu, aby ladily s tokeny. */
+[data-sonner-toast][data-type="success"] [data-icon] {
+  color: var(--success);
+}
+[data-sonner-toast][data-type="info"] [data-icon] {
+  color: var(--primary);
+}
+[data-sonner-toast][data-type="warning"] [data-icon] {
+  color: oklch(0.45 0.12 75);
+}
+[data-sonner-toast][data-type="error"] [data-icon] {
+  color: var(--destructive);
+}
+
+/* Jednotné chování štítků, tagů a typových odznaků (osoba/firma). */
+@utility chip-base {
+  --chip-pad-x: 0.55em;
+  --chip-pad-y: 0.2em;
+  --chip-gap: 0.35em;
+  --chip-icon: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--chip-gap);
+  padding: var(--chip-pad-y) var(--chip-pad-x);
+  text-align: center;
+  line-height: 1.2;
+  vertical-align: middle;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+  & > * {
+    align-self: center;
+  }
+  & svg {
+    display: block;
+    flex: none;
+    align-self: center;
+    width: var(--chip-icon) !important;
+    height: var(--chip-icon) !important;
+    min-width: var(--chip-icon);
+    min-height: var(--chip-icon);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 4px var(--ring);
+  }
+}
+
+/* Chip bez vnitřního odsazení – pro čistě ikonové prvky (křížek, barevný čtverec). */
+@utility chip-icon {
+  --chip-pad-x: 0;
+  --chip-pad-y: 0;
+}
+
+/* Tlačítka a akční pilulky: ikona i text vždy svisle vycentrované. */
+button,
+[role="button"],
+[data-slot="select-trigger"],
+[data-grid-cta],
+.zoom-filters :is(button, [data-slot="select-trigger"]),
+.zoom-pagination button {
+  align-items: center;
+}
+
+:is(button, [role="button"], [data-slot="select-trigger"], [data-grid-cta]) > svg,
+:is(button, [role="button"], [data-slot="select-trigger"], [data-grid-cta]) > * > svg {
+  display: block;
+  flex: none;
+  align-self: center;
+}
+
+:is(button, [role="button"], [data-slot="select-trigger"], [data-grid-cta]) > :is(span, div, p) {
+  align-self: center;
+  line-height: 1.2;
+}
+
+@utility chip-interactive {
+  cursor: pointer;
+  &:hover {
+    border-color: color-mix(in oklab, currentColor 45%, transparent);
+    background-color: color-mix(in oklab, currentColor 16%, var(--background));
+  }
+  &:active {
+    background-color: color-mix(in oklab, currentColor 24%, var(--background));
+  }
+}
+
+/* ---- Hustota řádků (kompaktní / normální), ukládaná ke gridu ---- */
+.zoom-grid[data-density="compact"] table {
+  --grid-line: 1.15em;
+  --grid-pad-y: 0.18em;
+  --grid-pad-x: 0.45em;
+  --grid-head-rows: 1.05;
+}
+
+/* ---- Jednotná výška řádků při každém zoomu ----
+   Buňky i jejich vnitřní obsah drží jednu textovou řádku odvozenou od
+   --grid-line (v em), takže se výška při zoomu mění plynule a texty se
+   nikdy nepřekrývají ani nerozjíždějí řádky různě vysoko. */
+.zoom-grid :is(tbody, tfoot) tr {
+  height: var(--grid-row-h);
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td) {
+  overflow: hidden;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td) > * {
+  max-height: calc(2 * var(--grid-line));
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td) :is(span, div, a, p, label, time, code) {
+  line-height: var(--grid-line);
+}
+
+/* Prázdné stavy a řádky se sloučenými buňkami potřebují volnou výšku. */
+.zoom-grid :is(tbody, tfoot) tr:has([colspan]) {
+  height: auto;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td)[colspan] {
+  overflow: visible;
+}
+
+.zoom-grid :is(tbody, tfoot) :is(th, td)[colspan] > *,
+.zoom-grid :is(tbody, tfoot) :is(th, td)[colspan] :is(span, div, a, p) {
+  max-height: none;
+  line-height: normal;
+}
+
+/* ---- Ukotvená hlavička a patička tabulek ---- */
+.zoom-grid thead :is(th, td) {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: color-mix(in oklab, var(--muted) 75%, var(--card));
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+.zoom-grid tfoot :is(th, td) {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  vertical-align: middle;
+}
+
+/* ---- Jednotné tabulkové číslice a zarovnání číselných sloupců ---- */
+.zoom-grid {
+  font-variant-numeric: tabular-nums;
+}
+
+.zoom-grid :is(th, td).num,
+.zoom-grid :is(th, td)[data-num] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sloupce s čísly účtů a daty drží tabulkové číslice, ale zarovnávají se vlevo. */
+.zoom-grid :is(th, td).num.text-left,
+.zoom-grid :is(th, td).num.text-left :is(input, span, div) {
+  text-align: left;
+}
+
+.zoom-grid :is(th, td).num :is(input, span, div) {
+  text-align: right;
+}
+
+/* Vyšší titulkový pás otvára spoločný farebný systém celého gridu.
+   Názov gridu je výraznejší – väčší, širšie rozťahované písmo, dvojitý
+   kontrastný akcent namiesto jednofarebnej čiary. */
+.grid-title-bar {
+  position: relative;
+  min-height: 5em;
+  padding-block: 1.1em !important;
+  padding-inline: 1.25em !important;
+  background-color: var(--grid-title-surface) !important;
+  border-color: var(--grid-chrome-border);
+  box-shadow: none;
+}
+
+.grid-title-bar .typo-title {
+  font-family: var(--font-display);
+  font-size: 1.55em;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Znak pred názvom gridu – jednoduchý zaoblený pruh v primárnej farbe,
+   rovnaký ako indikátor vybranej položky v menu. */
+.grid-title-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.22em;
+  height: 1.35em;
+  align-self: center;
+  border-radius: 9999px;
+  background-color: var(--primary);
+}
+
+/* Ovládacie prvky v titulkovom páse gridu – rovnaký dizajn ako lišta gridu
+   (jednotná výška, zaoblenie, okraj a podklad). */
+.grid-title-bar .grid-title-control {
+  height: 2.1em;
+  min-height: 2.1em;
+  padding-inline: 0.7em;
+  gap: 0.4em;
+  border-radius: 0.4em;
+  border-width: 1px;
+  font-size: 0.82em;
+  line-height: 1.2;
+  box-shadow: none;
+  border-color: var(--grid-chrome-border);
+  background-color: var(--card);
+  color: var(--foreground);
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.grid-title-bar .grid-title-control:hover {
+  border-color: var(--color-border);
+  background-color: var(--background);
+  color: var(--color-primary);
+}
+
+.grid-title-bar .grid-title-icon-control {
+  width: 2.1em;
+  min-width: 2.1em;
+  padding: 0 !important;
+}
+
+.grid-title-bar .grid-title-control svg {
+  width: 1.15em !important;
+  height: 1.15em !important;
+}
+
+.grid-title-count {
+  font-family: var(--font-display);
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  color: color-mix(in oklab, var(--grid-navy) 72%, var(--foreground));
+}
+
+.grid-title-count-dot {
+  width: 0.18em;
+  height: 1.35em;
+  flex: none;
+  border-radius: 0;
+  background-color: var(--grid-steel);
+}
+
+.grid-table-surface {
+  border-color: var(--grid-chrome-border);
+}
+
+/* --- Přístupnost: viditelný fokus řádku gridu ------------------------- */
+.zoom-grid tbody tr[data-grid-row]:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+/* --- Responzivní lišta gridu ------------------------------------------ */
+@media (max-width: 640px) {
+  .zoom-filters {
+    row-gap: 0.5rem;
+  }
+
+  /* Skupina akcí se na úzkých oknech přesune na vlastní řádek
+     a vodorovně se posouvá místo přetékání. */
+  .zoom-filters > .ml-auto {
+    margin-left: 0;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    justify-content: flex-end;
+  }
+}
+
+/* --- Webová prezentácia (zaloznareal.sk) ------------------------------- */
+@theme {
+  --color-web-ink: oklch(0.21 0.04 258);
+  --color-web-ink-soft: oklch(0.31 0.045 258);
+  --color-web-gold: oklch(0.79 0.13 84);
+  --color-web-gold-strong: oklch(0.68 0.13 74);
+  --color-web-cream: oklch(0.975 0.012 85);
+}
+
+/* --- Jednotný hover pre interaktívne prvky aplikácie -------------------- */
+/* Vzor prevzatý z prepínača svetlého/tmavého režimu. */
+@utility hover-surface {
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+
+  &:hover:not(:disabled):not([data-disabled]) {
+    background-color: var(--color-muted);
+    color: var(--color-foreground);
+  }
+}
+
+/* --- Časové inputy – vlastní ikona výběru času u pravého okraje ------- */
+input[type="time"].time-input-right {
+  position: relative;
+}
+input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* Akční tlačítka v buňce gridu nesmějí mít vnitřní odsazení – drží se jen na ikoně. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) [data-slot="grid-actions"] > [data-slot="grid-action"].grid-action {
+  padding: 0 !important;
+}
+
+/* Jednotný rozostup akčných ikon vo všetkých mriežkach. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) [data-slot="grid-actions"] {
+  gap: 0.7em;
+}
+
+
+
