@@ -89,7 +89,7 @@ export function DocumentForm({
   texts,
   className,
 }: {
-  title: ReactNode;
+  title: string;
   description?: ReactNode;
   value: DocumentHeaderValue;
   onChange: (value: DocumentHeaderValue) => void;
