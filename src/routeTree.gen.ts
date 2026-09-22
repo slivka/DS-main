@@ -11,10 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComponentsNavigationRouteImport } from './routes/components.navigation'
 import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
 import { Route as ComponentsExcelExportRouteImport } from './routes/components.excel-export'
+import { Route as ComponentsAccountingFormsRouteImport } from './routes/components.accounting-forms'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
@@ -26,6 +28,11 @@ const GuidelinesRoute = GuidelinesRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsNavigationRoute = ComponentsNavigationRouteImport.update({
+  id: '/components/navigation',
+  path: '/components/navigation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsGridRoute = ComponentsGridRouteImport.update({
@@ -48,6 +55,12 @@ const ComponentsExcelExportRoute = ComponentsExcelExportRouteImport.update({
   path: '/components/excel-export',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComponentsAccountingFormsRoute =
+  ComponentsAccountingFormsRouteImport.update({
+    id: '/components/accounting-forms',
+    path: '/components/accounting-forms',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char91__mockupChar93PreviewSplatRoute =
   Char91__mockupChar93PreviewSplatRouteImport.update({
     id: '/__mockup/preview/$',
@@ -64,20 +77,24 @@ const Char91__componentChar93PreviewSplatRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/navigation': typeof ComponentsNavigationRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/navigation': typeof ComponentsNavigationRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -85,10 +102,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/navigation': typeof ComponentsNavigationRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -97,30 +116,36 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/guidelines'
+    | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/navigation'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/guidelines'
+    | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/navigation'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   id:
     | '__root__'
     | '/'
     | '/guidelines'
+    | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/navigation'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
@@ -128,10 +153,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuidelinesRoute: typeof GuidelinesRoute
+  ComponentsAccountingFormsRoute: typeof ComponentsAccountingFormsRoute
   ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
   ComponentsGridRoute: typeof ComponentsGridRoute
+  ComponentsNavigationRoute: typeof ComponentsNavigationRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -150,6 +177,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/navigation': {
+      id: '/components/navigation'
+      path: '/components/navigation'
+      fullPath: '/components/navigation'
+      preLoaderRoute: typeof ComponentsNavigationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/components/grid': {
@@ -180,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsExcelExportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/accounting-forms': {
+      id: '/components/accounting-forms'
+      path: '/components/accounting-forms'
+      fullPath: '/components/accounting-forms'
+      preLoaderRoute: typeof ComponentsAccountingFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/__mockup/preview/$': {
       id: '/__mockup/preview/$'
       path: '/__mockup/preview/$'
@@ -200,10 +241,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuidelinesRoute: GuidelinesRoute,
+  ComponentsAccountingFormsRoute: ComponentsAccountingFormsRoute,
   ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,
   ComponentsGridRoute: ComponentsGridRoute,
+  ComponentsNavigationRoute: ComponentsNavigationRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,

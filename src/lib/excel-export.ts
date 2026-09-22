@@ -453,16 +453,17 @@ export async function downloadWorkbook(
   const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer as ArrayBuffer);
   const zip = await JSZip.loadAsync(bytes);
   const tableFiles = Object.keys(zip.files).filter((path) => /^xl\/tables\/table\d+\.xml$/.test(path));
+  // Post-processing jen odstraní totalsRowFunction="none"; rozsah filtru zapisuje
+  // ExcelJS správně – končí posledním datovým řádkem, ne řádkem souhrnů.
   await Promise.all(tableFiles.map(async (path) => {
     const entry = zip.file(path);
     if (!entry) return;
     const xml = await entry.async("text");
-    const tableRef = /<table\b[^>]*\bref="([A-Z]+\d+:[A-Z]+\d+)"/.exec(xml)?.[1];
-    const normalized = xml
-      .replace(/\s+totalsRowFunction="none"/g, "")
-      .replace(/<autoFilter\b[^>]*\bref="[^"]+"/, (tag) => tableRef ? tag.replace(/\bref="[^"]+"/, `ref="${tableRef}"`) : tag);
-    zip.file(path, normalized);
+    zip.file(path, xml.replace(/\s+totalsRowFunction="none"/g, ""));
   }));
+
+
+
   const finalized = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
   const finalizedBuffer = finalized.buffer.slice(finalized.byteOffset, finalized.byteOffset + finalized.byteLength) as ArrayBuffer;
   const blob = new Blob([finalizedBuffer], {
