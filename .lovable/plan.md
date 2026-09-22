@@ -1,20 +1,20 @@
-# České a přepisovatelné texty komponent – verze 1.2.0
+# Excel export 1.3.0
 
-## Cíl
-Sjednotit uživatelsky viditelné texty design systému do češtiny, odstranit slovenské jazykové zbytky a připravit grid pro budoucí slovenský překlad bez změny vzhledu nebo chování.
+## Rozsah
+- Oddělit čisté sestavení a stažení sešitu do veřejných funkcí `buildExcelWorkbook` a `downloadWorkbook`.
+- Vždy vytvořit skutečnou Excel tabulku, sloučit víceřádková záhlaví, přenést seskupení do osnovy a součty do vzorců tabulky/SUBTOTAL.
+- Přidat typovaná metadata sloupců a automaticky je vytvářet z definic sloupců DataGridu.
+- Zavést jednotné číselné formáty, zarovnání, šířky, zalamování, hlavičku sestavy, tiskové nastavení a vlastnosti souboru.
+- Zachovat PDF a HTML export beze změny.
+- Přidat stránku „Export do Excelu“ s účetními daty, seskupenými záhlavími, samostatným stažením a kontrolním seznamem pravidel.
+- Aktualizovat veřejné exporty, pravidla knihovny, znalosti, roadmapu a verzi na 1.3.0.
 
-## Postup
-1. Projít všechny komponenty v design systému a opravit slovenské viditelné texty, popisky přístupnosti, nápovědy, prázdné stavy a texty exportů na české výchozí hodnoty.
-2. Vytvořit veřejně exportovaný typ `GridTexts` a objekt `DEFAULT_GRID_TEXTS`, který pokryje společné texty DataGridu i jeho vnořených ovládacích prvků.
-3. Přidat do `DataGrid` prop `texts?: Partial<GridTexts>`, sloučit jej s českými výchozími texty a předat výsledné texty vyhledávání, filtrům, výběru sloupců, seskupování, stránkování, stavům, výběru řádků a exportu.
-4. U samostatně použitelných grid komponent zachovat české výchozí hodnoty a umožnit jejich cílené přepsání přes vhodný `texts` nebo textový prop, aby fungovaly i mimo DataGrid.
-5. Změnit české řazení a převod na velká písmena z `sk` / `sk-SK` na `cs` / `cs-CZ` ve všech komponentách design systému.
-6. Upravit slovenské komentáře, které popisují logiku poboček a gridu, aby zdroj nebyl jazykově matoucí; logiku samotnou neměnit.
-7. Zvýšit verzi knihovny na `1.2.0`, doplnit roadmapu a pravidlo dokumentace, že všechny viditelné texty musí být předávané přes props s českými výchozími hodnotami.
-8. Ověřit typovou kontrolu, sestavení a hlavní scénáře showcase včetně mřížky, filtrů, výběru, seskupování a exportní nabídky.
+## Ověření
+- Typová kontrola a automatické sestavení náhledu.
+- Kontrola stránky na počítači i mobilu a stažení vzorového souboru.
+- Načtení staženého XLSX přes ExcelJS a ověření tabulky, součtových vzorců, formátů, zarovnání, šířek, osnovy a tiskových nastavení.
 
-## Technické zásady
-- Bez vizuálních změn a bez změn stávající logiky dat.
-- Stávající individuální textové props zůstanou funkční; nové společné `texts` je doplní, ne zruší.
-- Překladový objekt bude typovaný a exportovaný přes veřejný vstup knihovny.
-- Výchozí čeština bude úplná, takže stávající použití bez nového prop zůstane kompatibilní.
+## Technické poznámky
+- Výchozí číselný formát bude `#,##0.00;[Red]-#,##0.00`; výjimky vzniknou jen z `columnMeta`.
+- Barvy Excelu budou odvozené z Navy Trust tokenů a předané jako výchozí exportní motiv.
+- `DataGridColumn.exportType` určí explicitní výjimky; `numeric`, `decimals`, `align`, `total`, `section` a šířka doplní ostatní metadata automaticky.
