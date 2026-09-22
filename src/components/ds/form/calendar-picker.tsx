@@ -82,11 +82,7 @@ export function CalendarPicker({
           mode="single"
           selected={selected}
           defaultMonth={selected ?? maxDate}
-          disabled={
-            minDate || maxDate
-              ? { before: minDate, after: maxDate }
-              : undefined
-          }
+          disabled={disabledMatcher}
           onSelect={(d) => {
             onChange(d ? toISO(d) : "");
             setOpen(false);
