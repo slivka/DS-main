@@ -31,9 +31,21 @@ async function inspectWorkbook(filePath: string) {
   expect(formulas.some((formula) => /SUBTOTAL/i.test(formula)), "Součty musí zůstat jako vzorce").toBe(true);
   expect(errors, "Sešit nesmí obsahovat chybové hodnoty Excelu").toEqual([]);
 
-  const numberCells = sheet.getColumn(6).values.slice(5).filter((value) => typeof value === "number");
+  const headerRow = sheet.getRow(4);
+  const headerIndex = (name: string) => {
+    const index = headerRow.values.findIndex((value) => String(value).endsWith(name));
+    expect(index, `Excel musí obsahovat sloupec ${name}`).toBeGreaterThan(0);
+    return index;
+  };
+  const debitAccountNameColumn = headerIndex("MD účet");
+  const debitAccountCell = sheet.getCell(5, debitAccountNameColumn);
+  expect(debitAccountCell.value).toBe("321.100 - Závazky");
+  expect(debitAccountCell.type, "Účet musí být v Excelu uložen jako text").toBe(ExcelJS.ValueType.String);
+
+  const amountColumn = headerIndex("Částka");
+  const numberCells = sheet.getColumn(amountColumn).values.slice(5).filter((value) => typeof value === "number");
   expect(numberCells.length).toBeGreaterThan(0);
-  expect(sheet.getCell("F5").numFmt.toLocaleLowerCase("en")).toBe("#,##0.00;[red]-#,##0.00");
+  expect(sheet.getCell(5, amountColumn).numFmt.toLocaleLowerCase("en")).toBe("#,##0.00;[red]-#,##0.00");
   const largestValueLength = Math.max(
     ...numberCells.map((value) =>
       Number(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length,
@@ -42,7 +54,7 @@ async function inspectWorkbook(filePath: string) {
   const total = numberCells.reduce((sum, value) => sum + Number(value), 0);
   const totalLength = total.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length;
   expect(totalLength, "Součet ve vzoru musí být širší než jednotlivé hodnoty").toBeGreaterThan(largestValueLength);
-  expect(sheet.getColumn(6).width ?? 0, "Sloupec musí být dost široký pro zobrazený součet").toBeGreaterThanOrEqual(
+  expect(sheet.getColumn(amountColumn).width ?? 0, "Sloupec musí být dost široký pro zobrazený součet").toBeGreaterThanOrEqual(
     totalLength + 2,
   );
 }

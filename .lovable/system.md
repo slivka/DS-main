@@ -68,7 +68,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Filtr datumového sloupce s `exportType: "date" | "datetime"` nabízí vedle
   jednotlivých dat také rychlé volby podle roku, čtvrtletí a měsíce.
 - Sloupce se stavovými odznaky, datumem, číslem dokladu, variabilním symbolem
-  a účty MD/Dal mají vždy nejmenší šířku podle obsahu a nezalamují se.
+  a krátkými účty MD/DAL mají vždy nejmenší šířku podle obsahu a nezalamují se.
 - Export do Excelu vždy jako tabulka Excelu se součty a roztaženými sloupci
   (výjimka: extra dlouhé texty se zalamují).
 - Tiskové sestavy a PDF: nadpis tmavě modrý; u vícestránkových sestav opakuj
@@ -106,6 +106,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Číslo účtu se ukládá jako `221001`, zobrazuje se jako `221.001` (`AccountCode`);
   analytika má proměnnou délku.
+- Každý grid se zaúčtováním používá `accountColumns()`: viditelné jsou sloupce
+  „MD účet“ / „DAL účet“ ve tvaru `321.100 - Závazky`, krátké „MD“ / „DAL“ jsou
+  výchozí skryté. Čísla účtů se zobrazují, filtrují a exportují vždy s tečkou
+  jako text; řazení používá číselný kód účtu.
 - Stav dokladu vždy přes `DocumentStatusBadge`. Stavy: `draft` = Koncept
   (přerušovaný rámeček, doklad se nikde nepočítá), `filed` = Zařazen (má číslo,
   počítá se, není zaúčtován, informační tón), `posted` = Zaúčtován (success),
@@ -115,7 +119,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   „Schválen“ (success, fajfka). Je nezávislý na stavu dokladu.
 - Hlavičku stránky skládej z `PageHeader` (nadpis, popis, akce vpravo,
   spodní linka), ne vlastním nadpisem na stránce.
-- MD / Dal přes `debitCreditColumns` s kontrolou rozdílu v součtu.
+- MD / DAL přes `debitCreditColumns` s kontrolou rozdílu v součtu.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).
 - Workspace a firma přes `WorkspaceCompanySwitcher` v `AppShell`.
 

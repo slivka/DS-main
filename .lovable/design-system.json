@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "1.4.2",
+    "version": "1.5.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -1023,7 +1023,8 @@
       ],
       "antipatterns": [
         "Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.",
-        "Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny."
+        "Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.",
+        "Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns()."
       ]
     },
     {
@@ -1854,6 +1855,22 @@
       "name": "AccountCode",
       "file": "src/components/ds/accounting/account-code.tsx",
       "import_path": ""
+    },
+    {
+      "name": "accountColumns",
+      "file": "src/components/ds/accounting/account-columns.tsx",
+      "import_path": "",
+      "usage": "Použijte v každém gridu se zaúčtováním. Helper zobrazí MD účet a DAL účet s formátovaným číslem a názvem; krátké MD a DAL ponechá výchozí skryté.",
+      "examples": [
+        {
+          "label": "Účetní sloupce",
+          "code": "...accountColumns({ debit: (row) => row.debitAccount, credit: (row) => row.creditAccount, accountName: (code) => accountNames.get(code) })"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte neformátovaný kód účtu přímo do value sloupce.",
+        "Neexportujte čísla účtů jako čísla; exportType musí zůstat text."
+      ]
     },
     {
       "name": "AccountSelect",

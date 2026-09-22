@@ -3,14 +3,14 @@ import { useMemo, useState } from "react";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import {
-  AccountCode,
   DataGrid,
   DocumentStatusBadge,
   FiscalPeriodSelect,
+  accountColumns,
   debitCreditColumns,
   type DataGridColumn,
 } from "@/components/ds";
-import { MOCK_JOURNAL, MOCK_PERIODS, type JournalEntry } from "@/lib/mock/accounting";
+import { MOCK_ACCOUNTS, MOCK_JOURNAL, MOCK_PERIODS, type JournalEntry } from "@/lib/mock/accounting";
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
 import { formatDate } from "@/lib/format";
 import { toast } from "sonner";
@@ -37,6 +37,10 @@ export const Route = createFileRoute("/components/grid")({
 
 function GridPage() {
   const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
+  const accountNames = useMemo(
+    () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
+    [],
+  );
 
   const columns = useMemo<DataGridColumn<JournalEntry>[]>(
     () => [
@@ -49,20 +53,12 @@ function GridPage() {
         render: (r) => formatDate(r.date),
       },
       { id: "document", label: "Doklad", width: 130, value: (r) => r.document },
-      {
-        id: "debitAccount",
-        label: "Účet MD",
-        width: 150,
-        value: (r) => r.debitAccount,
-        render: (r) => <AccountCode code={r.debitAccount} />,
-      },
-      {
-        id: "creditAccount",
-        label: "Účet Dal",
-        width: 150,
-        value: (r) => r.creditAccount,
-        render: (r) => <AccountCode code={r.creditAccount} />,
-      },
+      ...accountColumns<JournalEntry>({
+        debit: (r) => r.debitAccount,
+        credit: (r) => r.creditAccount,
+        accountName: (code) => accountNames.get(code),
+        section: "Zaúčtování",
+      }),
       ...debitCreditColumns<JournalEntry>({
         debit: (r) => r.debit,
         credit: (r) => r.credit,
@@ -77,7 +73,7 @@ function GridPage() {
         render: (r) => <DocumentStatusBadge status={r.status} />,
       },
     ],
-    [],
+    [accountNames],
   );
 
   return (

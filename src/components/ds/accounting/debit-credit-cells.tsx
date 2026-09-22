@@ -11,7 +11,7 @@ export function debitCreditColumns<Row>({
   debit,
   credit,
   debitLabel = "MD",
-  creditLabel = "Dal",
+  creditLabel = "DAL",
   debitId = "debit",
   creditId = "credit",
   decimals = 2,
