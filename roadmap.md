@@ -75,4 +75,4 @@
 - [x] Používat formátované textové hodnoty účtů ve filtrech, hledání, seskupení a exportu
 - [x] Doplnit oddělenou hodnotu pro číselné řazení sloupců
 - [x] Zapojit standard do ukázek Datová mřížka a Export do Excelu
-- [ ] Ověřit typovou kontrolu, sestavení, showcase a text účtu ve staženém XLSX
+- [x] Ověřit typovou kontrolu, sestavení, showcase a text účtu ve staženém XLSX
