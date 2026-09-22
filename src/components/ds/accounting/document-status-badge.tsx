@@ -1,23 +1,60 @@
+import { Check, Lock } from "lucide-react";
+import { cn } from "../../../lib/utils";
 import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 
-export type DocumentStatus = "draft" | "posted" | "cancelled";
+/**
+ * Stav účetního dokladu.
+ * Zachována zpětná kompatibilita hodnot `draft` / `posted` / `cancelled`.
+ */
+export type DocumentStatus = "draft" | "filed" | "posted" | "locked" | "cancelled";
 
 /** Výchozí české popisky stavů dokladu. */
 export const DOCUMENT_STATUS_CONFIG: StatusConfig<DocumentStatus> = {
   draft: { label: "Koncept", tone: "draft" },
-  posted: { label: "Zaúčtováno", tone: "success" },
-  cancelled: { label: "Stornováno", tone: "danger" },
+  filed: { label: "Zařazen", tone: "info" },
+  posted: { label: "Zaúčtován", tone: "success" },
+  locked: {
+    label: "Uzamčen",
+    tone: "neutral",
+    icon: <Lock aria-hidden="true" className="size-3" />,
+  },
+  cancelled: { label: "Stornován", tone: "danger" },
 };
 
-/** Stav účetního dokladu. Koncept je výrazně odlišen přerušovaným rámečkem. */
+/**
+ * Stav účetního dokladu. Koncept je výrazně odlišen přerušovaným rámečkem.
+ * Vedlejší příznak `approved` je na stavu nezávislý a zobrazí se vedle stavu.
+ */
 export function DocumentStatusBadge({
   status,
   config = DOCUMENT_STATUS_CONFIG,
+  approved = false,
+  approvedLabel = "Schválen",
   className,
 }: {
   status: DocumentStatus | null | undefined;
   config?: StatusConfig<DocumentStatus>;
+  /** Nezávislý příznak schválení dokladu. */
+  approved?: boolean;
+  approvedLabel?: string;
   className?: string;
 }) {
-  return <StatusBadge status={status} config={config} className={className} />;
+  const badge = <StatusBadge status={status} config={config} className={className} />;
+  if (!approved) return badge;
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {badge}
+      <StatusBadge
+        status="approved"
+        config={{
+          approved: {
+            label: approvedLabel,
+            tone: "success",
+            icon: <Check aria-hidden="true" className="size-3" />,
+          },
+        }}
+        className={cn("font-normal")}
+      />
+    </span>
+  );
 }
