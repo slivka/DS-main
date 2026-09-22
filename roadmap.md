@@ -57,3 +57,9 @@
 - [x] Stavové odznaky, datumy, čísla dokladů, VS a účty MD/Dal držet na nejmenší šířce podle obsahu
 - [x] Zachovat jednořádkové hodnoty, filtry, řazení a zarovnání
 - [x] Ověřit typovou kontrolu, sestavení a skutečné šířky v účetním showcase
+
+## Verze 1.3.5 (automatické testy vzorového Excelu)
+- [x] Ověřit stažení vzorového exportu v Chromium, Firefoxu a WebKitu
+- [x] Kontrolovat skutečnou Excel tabulku, součtové vzorce, formáty a chybové hodnoty
+- [x] Otevírat stažený soubor v LibreOffice a odmítnout hlášení o opravě či poškození
+- [ ] Ověřit celou testovací sadu, typovou kontrolu a sestavení

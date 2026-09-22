@@ -1,6 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "private": true,
   "sideEffects": [
     "**/*.css"
@@ -11,7 +11,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:excel": "playwright test tests/e2e/excel-download.spec.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
