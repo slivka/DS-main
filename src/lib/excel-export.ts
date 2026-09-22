@@ -330,11 +330,6 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     if (definition.warn) row.font = { ...row.font, color: { argb: "FFBE1E2D" } };
   });
 
-  const finalRow = Math.max(
-    tableLastRow,
-    customTotalsStart + (data.totalRows?.length ?? 0) - 1,
-    footerStart + (data.footerRows?.length ?? 0) - 1,
-  );
   for (let rowIndex = firstHeaderRow; rowIndex <= tableLastRow; rowIndex += 1) {
     const row = sheet.getRow(rowIndex);
     const isHeader = rowIndex === firstHeaderRow;

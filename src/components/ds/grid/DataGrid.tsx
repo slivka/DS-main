@@ -547,7 +547,6 @@ export function DataGrid<Row>({
           ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
         };
       }),
-      ...(grouping.active ? { rowLevels: sorted.map(() => Math.max(1, grouping.groups.length)) } : {}),
     };
   };
 
