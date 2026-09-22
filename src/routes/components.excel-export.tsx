@@ -154,7 +154,6 @@ function sampleExportData(): GridExportData {
       total: column.total === "sum" || column.total === "count" ? column.total : "none",
       ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
     })),
-    rowLevels: ROWS.map(() => 1),
     totalRows: [
       {
         label: "Kontrolní součet",
