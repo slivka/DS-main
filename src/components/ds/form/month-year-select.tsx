@@ -63,6 +63,7 @@ export function MonthYearSelect({
   const yearOptions: SelectOption[] = [];
   for (let y = minYear; y <= maxYear; y++) yearOptions.push({ value: String(y), label: String(y) });
 
+  /** Doplň chybějící část dneškem, dokud není vybráno obojí. */
   const compose = (nextMonth: number | null, nextYear: number | null) => {
     const m = nextMonth ?? currentMonth;
     const y = nextYear ?? currentYear;
@@ -73,7 +74,7 @@ export function MonthYearSelect({
     <div className={cn("flex items-center gap-2", className)}>
       <OptionSelect
         value={month ? String(month) : null}
-        onChange={(m) => onChange(compose(Number(m), year))}
+        onChange={(m) => onChange(m === "" ? null : compose(Number(m), year))}
         options={MONTH_OPTIONS}
         placeholder={monthLabel}
         emptyLabel={emptyLabel}
@@ -82,7 +83,7 @@ export function MonthYearSelect({
       />
       <OptionSelect
         value={year ? String(year) : null}
-        onChange={(y) => onChange(compose(month, Number(y)))}
+        onChange={(y) => onChange(y === "" ? null : compose(month, Number(y)))}
         options={yearOptions}
         placeholder={yearLabel}
         emptyLabel={emptyLabel}

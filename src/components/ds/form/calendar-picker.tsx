@@ -50,7 +50,7 @@ export function CalendarPicker({
   const preferences = useDateTimePreferences();
   const { formatDate } = preferences;
   const [open, setOpen] = React.useState(false);
-  const selected = parseISO(value disbelief);
+  const selected = parseISO(value);
   const text = value ? formatDate(value) : "";
 
   return (
