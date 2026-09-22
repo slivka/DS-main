@@ -4,14 +4,14 @@ import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 
 /**
- * Dvojice sloupců Má dáti / Dal pro grid.
+ * Dvojice částkových sloupců Má dáti / Dal pro grid.
  * V součtovém řádku se obě strany sečtou; pokud se liší, rozdíl se zvýrazní červeně.
  */
 export function debitCreditColumns<Row>({
   debit,
   credit,
-  debitLabel = "MD",
-  creditLabel = "DAL",
+  debitLabel = "MD částka",
+  creditLabel = "DAL částka",
   debitId = "debit",
   creditId = "credit",
   decimals = 2,
@@ -37,7 +37,7 @@ export function debitCreditColumns<Row>({
     return (
       <span
         className={cn("block text-right tabular-nums font-semibold", !balanced && "text-destructive")}
-        title={balanced ? undefined : `Rozdíl MD/Dal: ${formatAmount(d - c, decimals)}`}
+        title={balanced ? undefined : `Rozdíl MD/DAL: ${formatAmount(d - c, decimals)}`}
       >
         {formatAmount(value, decimals)}
       </span>

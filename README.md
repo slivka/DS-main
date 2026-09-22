@@ -87,7 +87,7 @@ src/
 
 ### Účetnictví
 - **AmountCell / AmountInput** – částka vpravo, tisíce mezerou, 2 desetinná místa.
-- **debitCreditColumns** – dvojice sloupců MD / Dal s kontrolou rozdílu v součtu.
+- **debitCreditColumns** – dvojice částkových sloupců „MD částka“ / „DAL částka“ s kontrolou rozdílu v součtu.
 - **AccountCode** – číslo účtu se syntetikou a analytikou (221001 → 221.001).
 - **AccountSelect** – výběr účtu s kódem, názvem a typem; neaktivní a syntetické lze zakázat.
 - **DocumentStatusBadge** – stavy dokladu Koncept / Zaúčtováno / Stornováno.

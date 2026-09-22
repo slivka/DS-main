@@ -119,7 +119,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   „Schválen“ (success, fajfka). Je nezávislý na stavu dokladu.
 - Hlavičku stránky skládej z `PageHeader` (nadpis, popis, akce vpravo,
   spodní linka), ne vlastním nadpisem na stránce.
-- MD / DAL přes `debitCreditColumns` s kontrolou rozdílu v součtu.
+- Částkové sloupce přes `debitCreditColumns`: výchozí popisky jsou „MD částka“ /
+  „DAL částka“ a součet kontroluje rozdíl obou stran.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).
 - Workspace a firma přes `WorkspaceCompanySwitcher` v `AppShell`.
 
