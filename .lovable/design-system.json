@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -15,7 +15,7 @@
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
-      ".lovable/plan.md": "d970dba7e821d24f564fb771aa69071a",
+      ".lovable/plan.md": "a22a933faf345d8d68b36da990499da3",
       ".lovable/sources.yaml": "d3c5b102726f25312c3fd477d6bdbceb",
       ".lovable/system.md": "9685102043b4594bf46248909e609ce2",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
