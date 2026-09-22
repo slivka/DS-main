@@ -92,3 +92,8 @@
 - [x] Zpřístupnit odkazy na firemní písma a použít je v ukázce
 - [x] Vyčistit metadata místní knihovny bez neplatných údajů externího balíčku
 - [x] Ověřit typovou kontrolu a sestavení
+
+## Verze 1.5.2 (sjednocení lišty gridu a veřejných stavebních prvků)
+- [x] Zachovat stejné pevné zaoblení výběru období a tlačítek při každém přiblížení
+- [x] Zpřístupnit odznaky, karty, tabulky, dialogy, oddělovače a záložky z hlavního vstupu
+- [x] Ověřit typovou kontrolu a sestavení

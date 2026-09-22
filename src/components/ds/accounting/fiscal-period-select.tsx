@@ -55,7 +55,7 @@ export function FiscalPeriodSelect({
 }) {
   return (
     <Select value={value ?? undefined} onValueChange={onChange}>
-      <SelectTrigger className={cn("h-9 w-[260px]", className)} aria-label={label}>
+      <SelectTrigger className={cn("grid-toolbar-control h-9 w-[260px]", className)} aria-label={label}>
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>
