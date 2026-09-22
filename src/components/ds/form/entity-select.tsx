@@ -52,24 +52,18 @@ function tokens(query: string) {
   return query.split(/\s+/).filter(Boolean).map(fold);
 }
 
-function formatAddress(c: ContactOption) {
+function formatAddress(c: ContactOption, homeCountries: string[]) {
   const parts: string[] = [];
   const street = [c.street, c.house_number].filter(Boolean).join(" ");
   if (street) parts.push(street);
   const city = [c.zip, c.city].filter(Boolean).join(" ");
   if (city) parts.push(city);
-  if (c.country && c.country !== "Slovensko" && c.country !== "SK") parts.push(c.country);
+  if (c.country && !homeCountries.includes(c.country)) parts.push(c.country);
   return parts.join(", ");
 }
 
-function formatIdDoc(c: ContactOption) {
+function formatIdDoc(c: ContactOption, labels: Record<string, string>) {
   if (!c.id_doc_number) return null;
-  const labels: Record<string, string> = {
-    op: "OP",
-    pas: "Pas",
-    vodicsky: "Vodičský",
-    povolenie_pobyt: "Povolenie",
-  };
   const type = c.id_doc_type ? labels[c.id_doc_type] ?? c.id_doc_type : "";
   return [type, c.id_doc_number].filter(Boolean).join(" ");
 }
@@ -113,6 +107,11 @@ export function ContactSelect({
   className,
   placeholder = "– vyberte –",
   autoOpen = false,
+  searchPlaceholder = "Hledat klienta…",
+  noResultsText = "Nebyl nalezen žádný klient.",
+  createLabel = "Nový kontakt",
+  homeCountries = ["Česko", "Česká republika", "CZ"],
+  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povolenie_pobyt: "Povolení" },
 }: {
   contacts: ContactOption[];
   value: string;
@@ -123,6 +122,11 @@ export function ContactSelect({
   placeholder?: string;
   /** Pri prvom zobrazení automaticky otvorí výber a focusne vyhľadávanie. */
   autoOpen?: boolean;
+  searchPlaceholder?: string;
+  noResultsText?: string;
+  createLabel?: string;
+  homeCountries?: string[];
+  idDocumentLabels?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(autoOpen);
   const [query, setQuery] = useState("");
@@ -185,7 +189,7 @@ export function ContactSelect({
         <Command shouldFilter={false}>
           <CommandInput
             ref={inputRef}
-            placeholder="Hledat klienta…"
+            placeholder={searchPlaceholder}
             value={query}
             onValueChange={setQuery}
           />
@@ -202,18 +206,18 @@ export function ContactSelect({
                   setQuery("");
                 }}
               >
-                Nový kontakt
+                {createLabel}
               </Button>
             </div>
           ) : null}
           {/* stopPropagation: bez neho Popover/Radix pohltenie wheel udalostí blokuje scroll myšou */}
           <div onWheel={(e) => e.stopPropagation()}>
             <CommandList className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain">
-              <CommandEmpty>Nenašiel sa žiadny klient.</CommandEmpty>
+              <CommandEmpty>{noResultsText}</CommandEmpty>
               <CommandGroup>
                 {filtered.map((c) => {
-                  const address = formatAddress(c);
-                  const idDoc = formatIdDoc(c);
+                   const address = formatAddress(c, homeCountries);
+                   const idDoc = formatIdDoc(c, idDocumentLabels);
                   return (
                     <CommandItem
                       key={c.id}

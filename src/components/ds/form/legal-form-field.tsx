@@ -18,10 +18,23 @@ type LegalFormFieldProps = {
   onChange: (value: string) => void;
   disabled?: boolean;
   className?: string;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  noResultsText?: string;
+  clearLabel?: string;
 };
 
 /** Zdieľaný výber právnej formy z číselníka (ŠÚ SR / Finstat). */
-export function LegalFormField({ value, onChange, disabled, className }: LegalFormFieldProps) {
+export function LegalFormField({
+  value,
+  onChange,
+  disabled,
+  className,
+  placeholder = "Vyberte právní formu",
+  searchPlaceholder = "Hledat právní formu…",
+  noResultsText = "Nebyla nalezena žádná právní forma.",
+  clearLabel = "Zrušit výběr",
+}: LegalFormFieldProps) {
   const [open, setOpen] = useState(false);
   const current = value?.trim() ?? "";
   const known = LEGAL_FORMS.some((f) => f.name === current);
@@ -39,16 +52,16 @@ export function LegalFormField({ value, onChange, disabled, className }: LegalFo
           className={cn("hover-surface w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !current && "text-muted-foreground")}>
-            {current || "Vyberte právnu formu"}
+            {current || placeholder}
           </span>
           <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[min(520px,90vw)] p-0" align="start">
         <Command>
-          <CommandInput placeholder="Hledat právnu formu…" />
+          <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
-            <CommandEmpty>Nenašla sa žiadna právna forma.</CommandEmpty>
+            <CommandEmpty>{noResultsText}</CommandEmpty>
             <CommandGroup>
               {current ? (
                 <CommandItem
@@ -58,7 +71,7 @@ export function LegalFormField({ value, onChange, disabled, className }: LegalFo
                     setOpen(false);
                   }}
                 >
-                  <span className="text-muted-foreground">Zrušit výber</span>
+                  <span className="text-muted-foreground">{clearLabel}</span>
                 </CommandItem>
               ) : null}
               {options.map((f) => (

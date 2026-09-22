@@ -21,6 +21,8 @@ type IcoFieldProps = {
   className?: string;
   /** Zmena tejto hodnoty (napr. id záznamu) znovu vyhodnotí počiatočný stav. */
   resetKey?: string | number;
+  lookupLabel?: string;
+  refreshLabel?: string;
 };
 
 /**
@@ -37,6 +39,8 @@ export function IcoField({
   placeholder = "Zadejte IČO nebo název firmy",
   className,
   resetKey,
+  lookupLabel = "Vyhledat v rejstříku",
+  refreshLabel = "Aktualizovat z rejstříku",
 }: IcoFieldProps) {
   const initial = useRef(value.trim().length > 0);
   const [resolved, setResolved] = useState(initial.current);
@@ -52,7 +56,7 @@ export function IcoField({
     if (!value.trim()) setResolved(false);
   }, [value]);
 
-  const label = resolved ? "Aktualizovat z rejstříku" : "Vyhledat v rejstříku";
+  const label = resolved ? refreshLabel : lookupLabel;
   const Icon = resolved ? RefreshCw : Search;
 
   return (

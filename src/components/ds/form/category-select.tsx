@@ -68,6 +68,8 @@ export function CategorySelect({
   variant = "field",
   disabled = false,
   className,
+  searchPlaceholder = "Hledat kategorii…",
+  noResultsText = "Nic nenalezeno",
 }: {
   value: string | null;
   onChange: (id: string | null) => void;
@@ -79,6 +81,8 @@ export function CategorySelect({
   variant?: "cell" | "field";
   disabled?: boolean;
   className?: string;
+  searchPlaceholder?: string;
+  noResultsText?: string;
 }) {
   const [open, setOpen] = useState(false);
   const flat = useMemo(() => flattenCategories(options), [options]);
