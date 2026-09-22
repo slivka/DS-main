@@ -15,3 +15,5 @@ export * from "./components/ds";
 export * from "./lib/utils";
 export * from "./lib/theme";
 export * from "./lib/date-time-preferences";
+export * from "./lib/excel-export";
+export * from "./lib/font-scale";

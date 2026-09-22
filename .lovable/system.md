@@ -70,6 +70,34 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Tiskové sestavy a PDF: nadpis tmavě modrý; u vícestránkových sestav opakuj
   v hlavičce jen důležité údaje.
 
+## Export do Excelu
+
+- Pro grid i vlastní sestavy používej veřejné funkce `buildExcelWorkbook` a
+  `downloadWorkbook`; React komponenta `GridExport` pouze předává data a volby.
+- Data musí být vždy skutečná tabulka Excelu (`sheet.addTable`), nikdy obyčejná
+  oblast buněk. Víceřádkové záhlaví sluč do názvů „Sekce – Sloupec“ a zajisti
+  jejich jedinečnost. Seskupení zapisuj jako úrovně osnovy řádků tabulky.
+- Součtový řádek tabulky používá `sum` nebo `count`; součty musí zůstat vzorci
+  založenými na `SUBTOTAL`, aby reagovaly na filtry. Vlastní součtové řádky pod
+  tabulkou používají `SUBTOTAL(109, Tabulka[Sloupec])`, pokud sčítají sloupec.
+- Výchozí číslo má formát `#,##0.00;[Red]-#,##0.00`, zaokrouhlení na dvě
+  desetinná místa a nikdy zápornou nulu. Celá čísla, roky a procenta jsou
+  výjimky pouze přes `columnMeta` / `DataGridColumn.exportType`; formát nikdy
+  neodhaduj z názvu sloupce a nepřidávej pevnou měnu.
+- Zarovnání dat i záhlaví vychází z `align` a číselného typu sloupce. Datum a
+  text jsou vlevo, čísla vpravo, na střed jen explicitně označené sloupce.
+- Šířku počítej ze skutečně zobrazených hodnot, záhlaví a součtů, v rozsahu
+  8–60 znaků. U více než 2 000 řádků měř reprezentativní vzorek; dlouhý text
+  zalamuj. Záhlaví počítá i s místem pro filtr.
+- Hlavička sešitu obsahuje tmavě modrý název a volitelná metadata firmy,
+  období, uživatele a filtrů. Záhlaví tabulky ukotvi a opakuj při tisku.
+- Tisk nastav na A4, přizpůsobení na jednu stránku na šířku, vhodnou orientaci,
+  okraje 1 cm a zápatí s názvem sestavy a „Strana &P z &N“.
+- Vyplň vlastnosti sešitu title, creator, company a created. Název souboru je
+  `{exportName}_{rrrr-MM-dd}.xlsx`, název listu bezpečně odvoď z nadpisu.
+- Tabulka používá Navy Trust záhlaví, bílé písmo, pruhované řádky a zvýrazněný
+  součtový řádek.
+
 ## Účetní konvence
 
 - Číslo účtu se ukládá jako `221001`, zobrazuje se jako `221.001` (`AccountCode`);

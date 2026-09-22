@@ -64,10 +64,15 @@ const CHIP_MIME = "application/x-grid-group-chip";
  * Sdílené seskupování řádků gridu podle sloupců.
  * Volba se ukládá do prohlížeče pod `grouping:<storageKey>`.
  */
-export function useGridGrouping(storageKey: string, opts?: { disabled?: boolean }): GroupingApi {
+export function useGridGrouping(
+  storageKey: string,
+  opts?: { disabled?: boolean; defaultGroups?: GroupSpec[] },
+): GroupingApi {
   const disabled = opts?.disabled ?? false;
-  const [enabled, setEnabledState] = useState(false);
-  const [groups, setGroups] = useState<GroupSpec[]>([]);
+  const defaultGroups = opts?.defaultGroups ?? [];
+  const defaultGroupsKey = defaultGroups.map((group) => `${group.id}:${group.granularity}`).join("|");
+  const [enabled, setEnabledState] = useState(defaultGroups.length > 0);
+  const [groups, setGroups] = useState<GroupSpec[]>(defaultGroups);
   const [collapsed, setCollapsed] = useState<string[]>([]);
 
   useEffect(() => {
@@ -80,8 +85,8 @@ export function useGridGrouping(storageKey: string, opts?: { disabled?: boolean 
     try {
       const raw = localStorage.getItem(`grouping:${storageKey}`);
       if (!raw) {
-        setEnabledState(false);
-        setGroups([]);
+        setEnabledState(defaultGroups.length > 0);
+        setGroups(defaultGroups);
         return;
       }
       const saved = JSON.parse(raw) as { enabled?: boolean; groups?: GroupSpec[] };
@@ -91,7 +96,7 @@ export function useGridGrouping(storageKey: string, opts?: { disabled?: boolean 
       setEnabledState(false);
       setGroups([]);
     }
-  }, [storageKey, disabled]);
+  }, [storageKey, disabled, defaultGroupsKey]);
 
   const persist = useCallback(
     (next: { enabled: boolean; groups: GroupSpec[] }) => {

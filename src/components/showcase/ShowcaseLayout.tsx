@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { BookOpen, LayoutGrid, MessageSquare, Palette, TextCursorInput } from "lucide-react";
+import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, TextCursorInput } from "lucide-react";
 
 import {
   AppShell,
@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { to: "/", label: "Přehled", icon: Palette, section: "Design systém" },
   { to: "/guidelines", label: "Pravidla", icon: BookOpen, section: "Design systém" },
   { to: "/components/grid", label: "Datová mřížka", icon: LayoutGrid, section: "Komponenty" },
+  { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet, section: "Komponenty" },
   { to: "/components/forms", label: "Formuláře", icon: TextCursorInput, section: "Komponenty" },
   { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare, section: "Komponenty" },
 ];

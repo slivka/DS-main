@@ -996,6 +996,14 @@
         {
           "name": "texts",
           "type": "any"
+        },
+        {
+          "name": "exportMeta",
+          "type": "ExcelExportMeta"
+        },
+        {
+          "name": "defaultGroupBy",
+          "type": "string"
         }
       ]
     },
@@ -1013,6 +1021,12 @@
       "name": "GridExport",
       "file": "src/components/ds/grid/grid-export.tsx",
       "import_path": ""
+    },
+    {
+      "name": "ExcelExportButton",
+      "file": "src/components/ds/grid/grid-export.tsx",
+      "import_path": "",
+      "description": "Přímý standardizovaný export účetní sestavy do skutečné Excel tabulky."
     },
     {
       "name": "BulkSelectionBar",

@@ -1,0 +1,235 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+
+import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
+import {
+  AccountCode,
+  AmountCell,
+  DataGrid,
+  ExcelExportButton,
+  type DataGridColumn,
+  type GridExportData,
+} from "@/components/ds";
+
+export const Route = createFileRoute("/components/excel-export")({
+  head: () => ({
+    meta: [
+      { title: "Export do Excelu – Slivka Design System" },
+      {
+        name: "description",
+        content: "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
+      },
+      { property: "og:title", content: "Export do Excelu – Slivka Design System" },
+      {
+        property: "og:description",
+        content: "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: ExcelExportPage,
+});
+
+type ExportRow = {
+  id: string;
+  document: string;
+  date: string;
+  partner: string;
+  debitAccount: string;
+  creditAccount: string;
+  amount: number;
+  count: number;
+  year: number;
+  vat: number;
+  project: string;
+};
+
+const PARTNERS = [
+  "Alfa stavební společnost, s.r.o.",
+  "Moravská obchodní a distribuční, a.s.",
+  "Technické služby Nové Město",
+  "Kancelářské potřeby Vltava spol. s r.o.",
+  "Energetika severní Moravy, a.s.",
+];
+const PROJECTS = ["Administrativa", "Rekonstrukce Brno", "Expedice Praha", "Vývoj ERP"];
+const AMOUNTS = [1250.5, 24890, -3490.75, 0, 1_245_678.9, 87_450.22, -12_000, 3_456_789.12];
+
+const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
+  const month = String((index % 3) + 1).padStart(2, "0");
+  const day = String((index % 27) + 1).padStart(2, "0");
+  return {
+    id: `journal-${index + 1}`,
+    document: `ID${String(index + 1).padStart(6, "0")}`,
+    date: `2026-${month}-${day}`,
+    partner: PARTNERS[index % PARTNERS.length],
+    debitAccount: index % 2 ? "518001" : "311001",
+    creditAccount: index % 2 ? "321001" : "602001",
+    amount: AMOUNTS[index % AMOUNTS.length],
+    count: (index % 7) + 1,
+    year: 2026,
+    vat: [0, 0.12, 0.21][index % 3],
+    project: PROJECTS[index % PROJECTS.length],
+  };
+});
+
+const META = {
+  company: "Slivka Accounting, s.r.o.",
+  period: "01–03/2026",
+  user: "Petr Slivka",
+  filters: ["Stav: Zaúčtován", "Období: 1. čtvrtletí 2026"],
+};
+
+const COLUMNS: DataGridColumn<ExportRow>[] = [
+  { id: "document", label: "Doklad", section: "Doklad", value: (row) => row.document, width: 112 },
+  { id: "date", label: "Datum", section: "Doklad", value: (row) => row.date, exportType: "date", width: 104 },
+  { id: "partner", label: "Partner", section: "Protistrana", value: (row) => row.partner, width: 240 },
+  {
+    id: "debitAccount",
+    label: "Účet MD",
+    section: "Zaúčtování",
+    value: (row) => row.debitAccount,
+    render: (row) => <AccountCode code={row.debitAccount} />,
+    width: 120,
+  },
+  {
+    id: "creditAccount",
+    label: "Účet Dal",
+    section: "Zaúčtování",
+    value: (row) => row.creditAccount,
+    render: (row) => <AccountCode code={row.creditAccount} />,
+    width: 120,
+  },
+  {
+    id: "amount",
+    label: "Částka",
+    section: "Hodnoty",
+    value: (row) => row.amount,
+    render: (row) => <AmountCell value={row.amount} />,
+    numeric: true,
+    decimals: 2,
+    total: "sum",
+    width: 140,
+  },
+  {
+    id: "count",
+    label: "Počet",
+    section: "Hodnoty",
+    value: (row) => row.count,
+    numeric: true,
+    decimals: 0,
+    exportType: "integer",
+    total: "count",
+    width: 90,
+  },
+  {
+    id: "year",
+    label: "Rok",
+    section: "Hodnoty",
+    value: (row) => row.year,
+    numeric: true,
+    decimals: 0,
+    exportType: "year",
+    total: "none",
+    width: 84,
+  },
+  {
+    id: "vat",
+    label: "DPH %",
+    section: "Hodnoty",
+    value: (row) => row.vat,
+    numeric: true,
+    decimals: 2,
+    exportType: "percent",
+    total: "none",
+    width: 90,
+  },
+  { id: "project", label: "Zakázka", section: "Zařazení", value: (row) => row.project, width: 160 },
+];
+
+function sampleExportData(): GridExportData {
+  return {
+    columns: COLUMNS.map((column) => column.label),
+    headerRows: [COLUMNS.map((column) => column.section ?? ""), COLUMNS.map((column) => column.label)],
+    rows: ROWS.map((row) => COLUMNS.map((column) => column.value?.(row) ?? "")),
+    columnMeta: COLUMNS.map((column) => ({
+      type: column.exportType ?? (column.numeric ? "number" : "text"),
+      align: column.align ?? (column.numeric ? "right" : "left"),
+      total: column.total === "sum" || column.total === "count" ? column.total : "none",
+      ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
+    })),
+    rowLevels: ROWS.map(() => 1),
+    totalRows: [
+      {
+        label: "Kontrolní součet",
+        labelSpan: 5,
+        cells: [0, null, null, null, null],
+      },
+    ],
+  };
+}
+
+const RULES = [
+  "Data jsou vždy ve skutečné tabulce Excelu; sekce a názvy tvoří jednořádkové záhlaví.",
+  "Součty a počty jsou vzorce tabulky a po filtrování se přepočítají.",
+  "Čísla mají oddělené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
+  "Záhlaví i data jsou zarovnána podle typu a nastavení sloupce.",
+  "Šířky vycházejí ze zobrazeného obsahu; dlouhé texty se zalamují.",
+  "Výjimky formátů určuje pouze metadata sloupce, nikoli jeho název.",
+  "Nad tabulkou je nadpis a volitelné údaje o firmě, období, uživateli a filtrech.",
+  "Tisk je nastaven na A4, přizpůsobený šířce a s opakovaným záhlavím.",
+  "Sešit obsahuje název, autora, firmu a datum vytvoření.",
+  "Tabulka používá Navy Trust styl, pruhované řádky a zvýrazněný součet.",
+];
+
+function ExcelExportPage() {
+  const columns = useMemo(() => COLUMNS, []);
+  return (
+    <ShowcaseLayout
+      breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Export do Excelu" }]}
+    >
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b pb-4">
+        <div>
+          <h1 className="typo-title text-primary">Export do Excelu</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Účetní sestava se standardním formátováním, součty, seskupením a tiskem.
+          </p>
+        </div>
+        <ExcelExportButton
+          getData={sampleExportData}
+          exportName="vzorovy-ucetni-export"
+          title="Účetní deník – vzorový export"
+          meta={META}
+        />
+      </div>
+
+      <DataGrid<ExportRow>
+        storageKey="ds-showcase-excel-export"
+        title="Účetní deník"
+        exportTitle="Účetní deník – vzorový export"
+        exportName="ucetni-denik"
+        exportMeta={META}
+        rows={ROWS}
+        columns={columns}
+        rowKey={(row) => row.id}
+        defaultSort="date"
+        defaultGroupBy="project"
+        groupable
+        columnFilters
+        paginated={false}
+        showTotalRow
+      />
+
+      <ShowcaseSection title="Kontrolní seznam exportu">
+        <ol className="grid gap-2 sm:grid-cols-2">
+          {RULES.map((rule, index) => (
+            <li key={rule} className="flex gap-3 border-b py-2 text-sm">
+              <span className="font-mono font-semibold text-success">✓</span>
+              <span><strong>{index + 1}.</strong> {rule}</span>
+            </li>
+          ))}
+        </ol>
+      </ShowcaseSection>
+    </ShowcaseLayout>
+  );
+}

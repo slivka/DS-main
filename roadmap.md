@@ -29,3 +29,12 @@
 - [x] Přesně připnout ověřené základní závislosti
 - [x] Doplnit pravidlo pro načtení firemních písem v připojených aplikacích
 - [x] Ověřit typovou kontrolu, sestavení a showcase
+
+
+## Verze 1.3.0 (standard exportu do Excelu)
+- [x] Vytvořit veřejné funkce buildExcelWorkbook a downloadWorkbook
+- [x] Převést GridExport vždy na skutečnou Excel tabulku se vzorci a metadaty sloupců
+- [x] Doplnit hlavičku sestavy, tisk, vlastnosti souboru, šířky a Navy Trust styl
+- [x] Přidat showcase Export do Excelu s účetními daty a kontrolním seznamem
+- [x] Aktualizovat pravidla knihovny a verzi na 1.3.0
+- [x] Ověřit typovou kontrolu, sestavení, showcase a obsah staženého XLSX
