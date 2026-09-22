@@ -47,11 +47,11 @@ import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
-/** Sloupec pobočky – riadi ho explicitne branchVisibility; zobrazuje sa len pri režime „Všetky pobočky", vždy ako prvý. */
+/** Sloupec pobočky řídí explicitně branchVisibility; zobrazuje se jen v režimu „Všechny pobočky“, vždy jako první. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
   c.branchVisibility !== undefined;
 
-/** Pevná minimálna šírka sloupce pobočky — kódy pobočiek sú krátke, nech zaberá čo najmenej miesta. */
+/** Pevná minimální šířka sloupce pobočky — kódy poboček jsou krátké, proto zabírá co nejméně místa. */
 const BRANCH_COLUMN_WIDTH = 78;
 
 /** Sloupce pripnuté vľavo – vždy na prvom mieste, minimálna šírka s miestom pre filter. */
@@ -303,7 +303,7 @@ export function DataGrid<Row>({
   const cols = useGridColumns(storageKey, colDefs);
   const grouping = useGridGrouping(storageKey, { disabled: !groupable });
 
-  // Pri výbere jednej pobočky nahoře nemá seskupenie podľa pobočky význam – odstránime ho.
+  // Při výběru jedné pobočky nemá seskupení podle pobočky význam – odstraníme ho.
   const branchColIds = useMemo(
     () => columns.filter(isBranchColumn).map((c) => c.id),
     [columns],

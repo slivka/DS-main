@@ -29,7 +29,7 @@ export function flattenCategories(options: CategoryOption[]): FlatOption[] {
     const key = o.parent_id ?? null;
     byParent.set(key, [...(byParent.get(key) ?? []), o]);
   }
-  for (const list of byParent.values()) list.sort((a, b) => a.name.localeCompare(b.name, "sk"));
+  for (const list of byParent.values()) list.sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
   const out: FlatOption[] = [];
   const walk = (parent: string | null, level: number, prefix: string) => {
@@ -63,8 +63,8 @@ export function CategorySelect({
   onChange,
   options,
   allowEmpty = true,
-  emptyLabel = "Bez kategórie",
-  placeholder = "Vyberte kategóriu",
+  emptyLabel = "Bez kategorie",
+  placeholder = "Vyberte kategorii",
   variant = "field",
   disabled = false,
   className,
@@ -123,9 +123,9 @@ export function CategorySelect({
             itemValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0
           }
         >
-          <CommandInput placeholder="Hledat kategóriu…" />
+          <CommandInput placeholder={searchPlaceholder} />
           <CommandList className="max-h-72 overflow-y-auto overscroll-contain">
-            <CommandEmpty>Nič sa nenašlo</CommandEmpty>
+            <CommandEmpty>{noResultsText}</CommandEmpty>
             <CommandGroup>
               {allowEmpty ? (
                 <CommandItem

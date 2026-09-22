@@ -4,7 +4,7 @@ import { DateField } from "./date-field";
 export function AsOfDateField({
   value,
   onChange,
-  label = "Stav k dátumu",
+  label = "Stav k datu",
 }: {
   value: string;
   onChange: (value: string) => void;

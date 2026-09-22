@@ -34,7 +34,7 @@ export function IcoField({
   onLookup,
   busy = false,
   disabled = false,
-  placeholder = "Zadajte IČO alebo názov firmy",
+  placeholder = "Zadejte IČO nebo název firmy",
   className,
   resetKey,
 }: IcoFieldProps) {
