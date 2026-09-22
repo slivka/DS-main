@@ -129,7 +129,7 @@ export function DateRangeField({
           ) : (
             <span />
           )}
-          {value.from && value.to ? (
+          {value.from && value.to && value.to !== value.from ? (
             <span className="text-xs text-muted-foreground">
               {formatDate(value.from)} – {formatDate(value.to)}
             </span>
