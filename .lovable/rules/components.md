@@ -34,6 +34,72 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `labels` | any | `—` |
 | `defaultCountry` | string | `SK` |
 
+### AlertDialog
+
+```ts
+import { AlertDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogAction
+
+```ts
+import { AlertDialogAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogCancel
+
+```ts
+import { AlertDialogCancel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogContent
+
+```ts
+import { AlertDialogContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogDescription
+
+```ts
+import { AlertDialogDescription } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogFooter
+
+```ts
+import { AlertDialogFooter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogHeader
+
+```ts
+import { AlertDialogHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogOverlay
+
+```ts
+import { AlertDialogOverlay } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogPortal
+
+```ts
+import { AlertDialogPortal } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogTitle
+
+```ts
+import { AlertDialogTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### AlertDialogTrigger
+
+```ts
+import { AlertDialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### AmountCell
 
 ```ts
@@ -64,6 +130,18 @@ import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { AsOfDateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### Badge
+
+```ts
+import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | default · secondary · destructive · outline · success · warning · info | `default` |
+
 ### Breadcrumbs
 
 ```ts
@@ -90,16 +168,72 @@ import { BulkSelectionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `clearLabel` | string | `Zrušit` |
 | `texts` | any | `—` |
 
+### Button
+
+```ts
+import { Button } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | default · destructive · outline · outline-destructive · secondary · ghost · link | `default` |
+| `size` | default · sm · lg · icon | `default` |
+| `asChild` | boolean | `false` |
+
 ### CalendarPicker
 
 ```ts
 import { CalendarPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### Card
+
+```ts
+import { Card } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### CardContent
+
+```ts
+import { CardContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### CardDescription
+
+```ts
+import { CardDescription } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### CardFooter
+
+```ts
+import { CardFooter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### CardHeader
+
+```ts
+import { CardHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### CardTitle
+
+```ts
+import { CardTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### CategorySelect
 
 ```ts
 import { CategorySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### Checkbox
+
+```ts
+import { Checkbox } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### ChipMultiSelect
@@ -309,6 +443,66 @@ import { DateRangeField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ```ts
 import { DecimalInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### Dialog
+
+```ts
+import { Dialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogClose
+
+```ts
+import { DialogClose } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogContent
+
+```ts
+import { DialogContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogDescription
+
+```ts
+import { DialogDescription } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogFooter
+
+```ts
+import { DialogFooter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogHeader
+
+```ts
+import { DialogHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogOverlay
+
+```ts
+import { DialogOverlay } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogPortal
+
+```ts
+import { DialogPortal } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogTitle
+
+```ts
+import { DialogTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### DialogTrigger
+
+```ts
+import { DialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### DocumentStatusBadge
@@ -577,6 +771,18 @@ import { IcoField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { IcoLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### Input
+
+```ts
+import { Input } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### Label
+
+```ts
+import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### LegalFormField
 
 ```ts
@@ -680,6 +886,12 @@ import { RecordNotes } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { ResizableCombobox } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### Separator
+
+```ts
+import { Separator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### SortHead
 
 ```ts
@@ -714,6 +926,78 @@ import { StatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { StatusDot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### Table
+
+```ts
+import { Table } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableBody
+
+```ts
+import { TableBody } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableCaption
+
+```ts
+import { TableCaption } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableCell
+
+```ts
+import { TableCell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableFooter
+
+```ts
+import { TableFooter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableHead
+
+```ts
+import { TableHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableHeader
+
+```ts
+import { TableHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TableRow
+
+```ts
+import { TableRow } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### Tabs
+
+```ts
+import { Tabs } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TabsContent
+
+```ts
+import { TabsContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TabsList
+
+```ts
+import { TabsList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TabsTrigger
+
+```ts
+import { TabsTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### TagPicker
 
 ```ts
@@ -737,6 +1021,18 @@ import { TimeInputRight } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | Prop | Type | Default |
 |---|---|---|
 | `wrapperClassName` | string | `—` |
+
+### Toaster
+
+```ts
+import { Toaster } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### TooltipProvider
+
+```ts
+import { TooltipProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
 
 ### TreeView
 
