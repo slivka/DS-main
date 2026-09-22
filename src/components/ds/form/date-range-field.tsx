@@ -74,6 +74,14 @@ export function DateRangeField({
     if (maxDate) return { after: maxDate };
     return undefined;
   }, [minDate, maxDate]);
+  // Meze rozbalovacího výběru roku v hlavičce kalendáře.
+  const [startMonth, endMonth] = React.useMemo(() => {
+    const now = new Date();
+    return [
+      minDate ?? new Date(now.getFullYear() - 15, 0, 1),
+      maxDate ?? new Date(now.getFullYear() + 5, 11, 1),
+    ] as const;
+  }, [minDate, maxDate]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -96,6 +104,9 @@ export function DateRangeField({
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="range"
+          captionLayout="dropdown"
+          startMonth={startMonth}
+          endMonth={endMonth}
           numberOfMonths={months}
           selected={selected}
           defaultMonth={selected.from ?? maxDate}
