@@ -94,3 +94,66 @@ export const MOCK_JOURNAL: JournalEntry[] = Array.from({ length: 180 }, (_, i) =
     status: STATUSES[i % STATUSES.length],
   } satisfies JournalEntry;
 });
+
+/** Ukázkoví obchodní partneři (jen pro showcase). */
+export const MOCK_PARTNERS = [
+  { id: "p1", name: "Alfa Trading s.r.o.", ico: "27182818" },
+  { id: "p2", name: "Beta Servis a.s.", ico: "31415926" },
+  { id: "p3", name: "Cesta Logistic s.r.o.", ico: "16180339" },
+  { id: "p4", name: "Delta Consulting s.r.o.", ico: "14142135" },
+  { id: "p5", name: "Epsilon Media s.r.o.", ico: "17320508" },
+];
+
+/** Ukázkové knihy dokladů. */
+export const MOCK_BOOKS = [
+  { id: "b-fp", code: "FP", name: "Přijaté faktury", type: "invoiceIn" as const },
+  { id: "b-fv", code: "FV", name: "Vydané faktury", type: "invoiceOut" as const },
+  { id: "b-bv", code: "BV", name: "Bankovní výpisy", type: "bank" as const },
+  { id: "b-pd", code: "PD", name: "Pokladní doklady", type: "cash" as const },
+  { id: "b-id", code: "ID", name: "Interní doklady", type: "internal" as const },
+];
+
+/** Ukázkový strom zakázek – nadřazené větve nejsou volitelné. */
+export const MOCK_DIMENSIONS = [
+  { id: "d-cz", code: "CZ", name: "Česká republika", selectable: false },
+  { id: "d-cz-1", parentId: "d-cz", code: "CZ-100", name: "Rekonstrukce Brno" },
+  { id: "d-cz-2", parentId: "d-cz", code: "CZ-200", name: "Novostavba Praha" },
+  { id: "d-sk", code: "SK", name: "Slovensko", selectable: false },
+  { id: "d-sk-1", parentId: "d-sk", code: "SK-100", name: "Servis Bratislava" },
+  { id: "d-rezie", code: "REZ", name: "Režie" },
+];
+
+export type ChartNode = {
+  id: string;
+  parentId?: string | null;
+  code: string;
+  name: string;
+  debit: number;
+  credit: number;
+};
+
+/** Ukázková účtová osnova ve stromu (třída → skupina → syntetika → analytika). */
+export const MOCK_CHART_TREE: ChartNode[] = [
+  { id: "t2", code: "2", name: "Finanční účty", debit: 0, credit: 0 },
+  { id: "g22", parentId: "t2", code: "22", name: "Účty v bankách", debit: 0, credit: 0 },
+  { id: "s221", parentId: "g22", code: "221", name: "Bankovní účty", debit: 0, credit: 0 },
+  { id: "a221001", parentId: "s221", code: "221001", name: "Běžný účet CZK", debit: 1284500.5, credit: 942310.25 },
+  { id: "a221002", parentId: "s221", code: "221002", name: "Běžný účet EUR", debit: 318200, credit: 205480.9 },
+  { id: "t3", code: "3", name: "Zúčtovací vztahy", debit: 0, credit: 0 },
+  { id: "g31", parentId: "t3", code: "31", name: "Pohledávky", debit: 0, credit: 0 },
+  { id: "s311", parentId: "g31", code: "311", name: "Odběratelé", debit: 0, credit: 0 },
+  { id: "a311001", parentId: "s311", code: "311001", name: "Odběratelé tuzemsko", debit: 2450800.75, credit: 1980420.1 },
+  { id: "g32", parentId: "t3", code: "32", name: "Závazky", debit: 0, credit: 0 },
+  { id: "s321", parentId: "g32", code: "321", name: "Dodavatelé", debit: 0, credit: 0 },
+  { id: "a321001", parentId: "s321", code: "321001", name: "Dodavatelé tuzemsko", debit: 890400.4, credit: 1560900.8 },
+  { id: "a321100", parentId: "s321", code: "321100", name: "Závazky ostatní", debit: 120300, credit: 245600.35 },
+  { id: "t5", code: "5", name: "Náklady", debit: 0, credit: 0 },
+  { id: "g51", parentId: "t5", code: "51", name: "Služby", debit: 0, credit: 0 },
+  { id: "s518", parentId: "g51", code: "518", name: "Ostatní služby", debit: 0, credit: 0 },
+  { id: "a518001", parentId: "s518", code: "518001", name: "Ostatní služby", debit: 642100.2, credit: 12400 },
+  { id: "a518002", parentId: "s518", code: "518002", name: "Nájemné", debit: 480000, credit: 0 },
+  { id: "t6", code: "6", name: "Výnosy", debit: 0, credit: 0 },
+  { id: "g60", parentId: "t6", code: "60", name: "Tržby", debit: 0, credit: 0 },
+  { id: "s602", parentId: "g60", code: "602", name: "Tržby z prodeje služeb", debit: 0, credit: 0 },
+  { id: "a602001", parentId: "s602", code: "602001", name: "Tržby ze služeb", debit: 18400, credit: 3894250.6 },
+];
