@@ -30,6 +30,6 @@ export function applyFontScale(scale?: string) {
 export function setFontScale(scale: string) {
   window.localStorage.setItem(FONT_SCALE_KEY, scale);
   applyFontScale(scale);
-  // Informuj ostatné komponenty (napr. otvorené nastavenie profilu).
+  // Informuj ostatní komponenty (např. otevřené nastavení profilu).
   window.dispatchEvent(new CustomEvent("app:font-scale", { detail: scale }));
 }
