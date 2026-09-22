@@ -34,6 +34,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
    zástupné texty, prázdné stavy a přístupnostní názvy předávej přes props;
    výchozí hodnoty jsou vždy české. Grid používá `DEFAULT_GRID_TEXTS` a prop
    `texts`, aby aplikace mohla dodat slovenské nebo jiné překlady.
+10. **Načti firemní písma v dokumentu aplikace.** Hostitelská aplikace musí v
+    hlavičce stránky načíst Work Sans (řezy 400–700) a JetBrains Mono (500–700),
+    protože náhledová obálka knihovny se do připojených projektů nekopíruje.
 
 ## Čísla a data
 

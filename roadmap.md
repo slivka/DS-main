@@ -22,3 +22,10 @@
 - [x] Přidat české přepisovatelné texty AddressFields / AddressFieldGrid a ostatních formulářů
 - [x] Aktualizovat pravidla knihovny a verzi na 1.2.0
 - [x] Ověřit typovou kontrolu, sestavení a showcase
+
+## Verze 1.2.1 (zapojení knihovny)
+- [x] Zachovat styly při výběrovém načítání komponent
+- [x] Zpřístupnit motiv a nastavení data a času přes veřejný vstup
+- [x] Přesně připnout ověřené základní závislosti
+- [x] Doplnit pravidlo pro načtení firemních písem v připojených aplikacích
+- [ ] Ověřit typovou kontrolu, sestavení a showcase
