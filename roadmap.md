@@ -68,4 +68,4 @@
 - [x] Zahrnout zobrazené automatické součty do výpočtu šířky sloupců
 - [x] Formátovat hodnoty vlastních součtových řádků stejně jako běžné buňky
 - [x] Předávat z DataGridu metadata, hledání a aktivní sloupcové filtry
-- [ ] Ověřit vzor se součtem širším než jednotlivé hodnoty a typovou kontrolu
+- [x] Ověřit vzor se součtem širším než jednotlivé hodnoty a typovou kontrolu
