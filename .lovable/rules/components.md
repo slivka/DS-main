@@ -130,6 +130,8 @@ import { CollapsibleSection } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { ColumnFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Použijte jako automatický filtr v záhlaví DataGridu; podporuje seskupené volby a přepisovatelné české texty.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -140,6 +142,17 @@ import { ColumnFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 | `label` | string | `—` |
 | `children` | any | `—` |
 | `texts` | any | `—` |
+
+**Examples:**
+
+_Filtr hodnot_
+```tsx
+<ColumnFilter options={options} selected={selected} onChange={setSelected} label="Datum" />
+```
+
+**Avoid:**
+
+- Nevkládejte pevné uživatelské texty; předejte je přes texts.
 
 ### ColumnPicker
 
@@ -195,6 +208,8 @@ import { CountrySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -220,6 +235,7 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `emptyActionLabel` | string | `—` |
 | `onEmptyAction` | function | `—` |
 | `exportName` | string | `—` |
+| `exportMeta` | any | `—` |
 | `defaultSort` | string | `—` |
 | `onEditRow` | function | `—` |
 | `onDeleteRow` | function | `—` |
@@ -228,6 +244,7 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `actionsLabel` | string | `—` |
 | `columnFilters` | boolean | `true` |
 | `groupable` | boolean | `true` |
+| `defaultGroupBy` | string | `—` |
 | `paginated` | boolean | `true` |
 | `plain` | boolean | `—` |
 | `hideToolbar` | boolean | `—` |
@@ -246,6 +263,18 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `onSearchChange` | function | `—` |
 | `className` | string | `ml-auto flex min-w-0 shrink-0 items-center gap-2` |
 | `texts` | any | `—` |
+
+**Examples:**
+
+_Datumový filtr_
+```tsx
+<DataGrid rows={rows} columns={[{ id: "date", label: "Datum", value: (row) => row.date, exportType: "date" }]} rowKey={(row) => row.id} storageKey="documents" />
+```
+
+**Avoid:**
+
+- Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.
+- Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.
 
 ### DateField
 
@@ -307,6 +336,23 @@ import { ErrorBoundary } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 | `fallback` | any | `—` |
 | `onCatch` | function | `—` |
 | `resetKey` | any | `—` |
+
+### ExcelExportButton
+
+```ts
+import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `getData` | function | `—` |
+| `exportName` | string | `—` |
+| `title` | string | `—` |
+| `meta` | any | `—` |
+| `label` | string | `Stáhnout vzorový export` |
+| `className` | string | `—` |
 
 ### Field
 
