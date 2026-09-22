@@ -99,11 +99,7 @@ export function DateRangeField({
           numberOfMonths={months}
           selected={selected}
           defaultMonth={selected.from ?? maxDate}
-          disabled={
-            minDate || maxDate
-              ? { before: minDate, after: maxDate }
-              : undefined
-          }
+          disabled={disabledMatcher}
           onSelect={(range) => {
             if (!range?.from) {
               onChange({ from: null, to: null });
