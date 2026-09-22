@@ -17,6 +17,7 @@ import {
 } from "../../../lib/date-time-preferences";
 
 import { nzero, roundTo } from "../../../lib/format";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 type ExportCell = string | number | Date | null | undefined;
 
@@ -104,7 +105,7 @@ const fmtNumber = (v: number) => {
   const n = nzero(roundTo(v, 2));
   return n === 0
     ? "–"
-    : n.toLocaleString("sk-SK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    : n.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 /** Sjednotí ISO datum/čas vložený v nadpisu, záhlaví nebo popisu filtru. */
@@ -354,6 +355,7 @@ export function GridExport({
   extraPdfExport,
   pdfExport,
   disabled = false,
+  texts: textOverrides,
 }: {
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
   getData: () => GridExportData | Promise<GridExportData>;
@@ -382,7 +384,9 @@ export function GridExport({
   /** Nahradí výchozí PDF export vlastní tiskovou sestavou. */
   pdfExport?: () => void | Promise<void>;
   disabled?: boolean;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
   const fontSize = gridFontSize(zoom);
 
@@ -460,7 +464,7 @@ export function GridExport({
           filterButton: true,
           ...(hasSums
             ? i === 0
-              ? { totalsRowLabel: "Spolu" }
+              ? { totalsRowLabel: texts.total }
               : sums[i] !== null
                 ? { totalsRowFunction: "sum" as const }
                 : { totalsRowLabel: "" }
@@ -492,7 +496,7 @@ export function GridExport({
       if (hasSums) {
         const row = sheet.getRow(summaryRowNum);
         exportColumns.forEach((_, c) => {
-          if (c === 0) row.getCell(1).value = "Spolu";
+          if (c === 0) row.getCell(1).value = texts.total;
           else if (sums[c] !== null)
             row.getCell(c + 1).value = normalizeExportNumber(sums[c] as number, formats[c]);
         });
@@ -729,7 +733,7 @@ export function GridExport({
       ...(hasSums
         ? [
             columns.map((_, i) =>
-              i === 0 ? "Spolu" : sums[i] === null ? "" : fmtNumber(sums[i] as number),
+              i === 0 ? texts.total : sums[i] === null ? "" : fmtNumber(sums[i] as number),
             ),
           ]
         : []),
@@ -848,7 +852,7 @@ ${
   htmlTotals || hasSums
     ? `<tfoot>${htmlTotals}${
         hasSums
-          ? `<tr>${columns.map((_, i) => td(i === 0 ? "Spolu" : sums[i], i)).join("")}</tr>`
+           ? `<tr>${columns.map((_, i) => td(i === 0 ? texts.total : sums[i], i)).join("")}</tr>`
           : ""
       }</tfoot>`
     : ""
@@ -870,8 +874,8 @@ ${
         <Button
           variant="outline"
           size="sm"
-          aria-label="Stáhnout"
-          title="Stáhnout"
+          aria-label={texts.download}
+          title={texts.download}
           disabled={disabled}
           className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 ${className}`}
           style={{ fontSize }}
@@ -886,7 +890,7 @@ ${
           className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
         >
           <img src={excelIcon} alt="" className="size-[1.5em]" />
-          Stáhnout do Excelu
+          {texts.downloadExcel}
         </button>
         <button
           type="button"
@@ -894,7 +898,7 @@ ${
           className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
         >
           <img src={pdfIcon} alt="" className="size-[1.5em]" />
-          Stáhnout do PDF
+          {texts.downloadPdf}
         </button>
         {html && (
           <button
@@ -903,7 +907,7 @@ ${
             className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
           >
             <FileCode2 className="size-[1.5em] text-muted-foreground" />
-            Stáhnout do HTML
+            {texts.downloadHtml}
           </button>
         )}
         {extraPdfExport && (

@@ -22,14 +22,14 @@ export type CategoryOption = {
 
 type FlatOption = { id: string; name: string; level: number; path: string };
 
-/** Zoradí kategórie do stromového poradia (rodič, potom jeho potomkovia). */
+/** Seřadí kategorie do stromového pořadí (rodič, potom jeho potomci). */
 export function flattenCategories(options: CategoryOption[]): FlatOption[] {
   const byParent = new Map<string | null, CategoryOption[]>();
   for (const o of options) {
     const key = o.parent_id ?? null;
     byParent.set(key, [...(byParent.get(key) ?? []), o]);
   }
-  for (const list of byParent.values()) list.sort((a, b) => a.name.localeCompare(b.name, "sk"));
+  for (const list of byParent.values()) list.sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
   const out: FlatOption[] = [];
   const walk = (parent: string | null, level: number, prefix: string) => {
@@ -48,14 +48,14 @@ export function flattenCategories(options: CategoryOption[]): FlatOption[] {
   return out;
 }
 
-/** Názov kategórie vrátane cesty od koreňa. */
+/** Název kategorie včetně cesty od kořene. */
 export function categoryPath(options: CategoryOption[], id: string | null | undefined) {
   if (!id) return "";
   return flattenCategories(options).find((o) => o.id === id)?.path ?? "";
 }
 
 /**
- * Zdieľaný výber kategórie – vlastný komponent (nie systémový select),
+ * Sdílený výběr kategorie – vlastní komponenta (nikoli systémový select),
  * zobrazuje stromovú štruktúru s odsadením a vyhľadávaním.
  */
 export function CategorySelect({
@@ -63,11 +63,13 @@ export function CategorySelect({
   onChange,
   options,
   allowEmpty = true,
-  emptyLabel = "Bez kategórie",
-  placeholder = "Vyberte kategóriu",
+  emptyLabel = "Bez kategorie",
+  placeholder = "Vyberte kategorii",
   variant = "field",
   disabled = false,
   className,
+  searchPlaceholder = "Hledat kategorii…",
+  noResultsText = "Nic nenalezeno",
 }: {
   value: string | null;
   onChange: (id: string | null) => void;
@@ -79,6 +81,8 @@ export function CategorySelect({
   variant?: "cell" | "field";
   disabled?: boolean;
   className?: string;
+  searchPlaceholder?: string;
+  noResultsText?: string;
 }) {
   const [open, setOpen] = useState(false);
   const flat = useMemo(() => flattenCategories(options), [options]);
@@ -123,9 +127,9 @@ export function CategorySelect({
             itemValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0
           }
         >
-          <CommandInput placeholder="Hledat kategóriu…" />
+          <CommandInput placeholder={searchPlaceholder} />
           <CommandList className="max-h-72 overflow-y-auto overscroll-contain">
-            <CommandEmpty>Nič sa nenašlo</CommandEmpty>
+            <CommandEmpty>{noResultsText}</CommandEmpty>
             <CommandGroup>
               {allowEmpty ? (
                 <CommandItem

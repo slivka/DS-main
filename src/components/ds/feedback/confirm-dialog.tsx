@@ -25,7 +25,7 @@ type ConfirmOptions = {
  * Zdieľaný potvrdzovací dialóg namiesto window.confirm.
  * Použitie:
  *   const { confirm, confirmDialog } = useConfirmDialog();
- *   confirm({ title: "Naozaj zrušiť zmluvu?", onConfirm: () => ... });
+ *   confirm({ title: "Opravdu zrušit smlouvu?", onConfirm: () => ... });
  *   ... v JSX: {confirmDialog}
  */
 export function useConfirmDialog() {
@@ -61,7 +61,7 @@ export function useConfirmDialog() {
         <AlertDialogFooter>
           {opts?.info ? (
             <AlertDialogAction onClick={confirmCurrent}>
-              {opts?.confirmLabel ?? "Rozumiem"}
+              {opts?.confirmLabel ?? "Rozumím"}
             </AlertDialogAction>
           ) : (
             <>

@@ -1,8 +1,8 @@
-/** Zdieľaná kompaktná značka stavu (aktívny/neaktívny) pre gridy. */
+/** Sdílená kompaktní značka stavu (aktivní/neaktivní) pro gridy. */
 export function StatusDot({
   active,
-  activeLabel = "Aktívny",
-  inactiveLabel = "Neaktívny",
+  activeLabel = "Aktivní",
+  inactiveLabel = "Neaktivní",
   inactiveTone = "muted",
 }: {
   active: boolean;

@@ -38,6 +38,7 @@ export * from "./grid/grid-column-resize";
 export * from "./grid/grid-virtual";
 export * from "./grid/column-picker";
 export * from "./grid/ColumnFilter";
+export * from "./grid/grid-texts";
 
 /* Formuláře */
 export * from "./form/decimal-input";

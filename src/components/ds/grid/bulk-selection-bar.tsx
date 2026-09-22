@@ -2,6 +2,7 @@ import { CheckSquare, X } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { cn } from "../../../lib/utils";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type BulkSelectionBarProps = {
   /** Počet vybraných záznamů. */
@@ -19,6 +20,7 @@ export type BulkSelectionBarProps = {
   showZero?: boolean;
   /** Text tlačítka pro zrušení. */
   clearLabel?: string;
+  texts?: Partial<GridTexts>;
 };
 
 function czechCount(n: number, one: string, few: string, many: string) {
@@ -41,7 +43,9 @@ export function BulkSelectionBar({
   entity = { one: "záznam", few: "záznamy", many: "záznamů" },
   showZero,
   clearLabel = "Zrušit",
+  texts: textOverrides,
 }: BulkSelectionBarProps) {
+  const texts = resolveGridTexts(textOverrides);
   if (count <= 0 && !showZero) return null;
 
   const label = count > 0 ? czechCount(count, entity.one, entity.few, entity.many) : "";
@@ -65,7 +69,7 @@ export function BulkSelectionBar({
             size="sm"
             className="h-auto px-[0.4em] py-[0.2em] text-muted-foreground hover-surface-foreground/10 hover:text-muted-foreground"
             onClick={onClear}
-            title="Zrušit výběr"
+            title={texts.cancelSelection}
           >
             <X className="size-[1.1em]" />
             <span>{clearLabel}</span>
@@ -102,7 +106,7 @@ export function BulkSelectionBar({
           title="Vybrat všechny záznamy na stránce"
         >
           <CheckSquare className="size-[1.1em]" />
-          <span>Vybrat vše</span>
+          <span>{texts.selectAll}</span>
         </Button>
       )}
       {onClear && (
@@ -112,7 +116,7 @@ export function BulkSelectionBar({
           size="sm"
           className="h-auto px-[0.4em] py-[0.2em] text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
           onClick={onClear}
-          title="Zrušit výběr"
+          title={texts.cancelSelection}
         >
           <X className="size-[1.1em]" />
           <span>{clearLabel}</span>

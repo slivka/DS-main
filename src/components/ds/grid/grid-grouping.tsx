@@ -22,6 +22,7 @@ import { gridFontSize } from "./grid-zoom";
 import { compareValues } from "./grid-sort";
 import { fmtAmount } from "../../../lib/format";
 import { formatUserDate } from "../../../lib/date-time-preferences";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /** Granularita seskupení podle data. */
 export type GroupGranularity = "day" | "month" | "quarter" | "year";
@@ -190,19 +191,22 @@ export function useGridGrouping(storageKey: string, opts?: { disabled?: boolean 
 export function GroupControl({
   grouping,
   hidden = false,
+  texts: textOverrides,
 }: {
   grouping: GroupingApi;
   /** Skryje tlačítko, např. když je grid přepnutý do stromového zobrazení. */
   hidden?: boolean;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   if (hidden) return null;
   // Skrytá lišta, ale seskupení stále platí → varovné (červené) tlačítko.
   const hiddenActive = !grouping.enabled && grouping.groups.length > 0;
   const label = grouping.enabled
-    ? "Vypnout seskupení"
+    ? texts.groupingDisable
     : hiddenActive
       ? `Skrytý pruh se seskupením (${grouping.groups.length}) – zobrazit`
-      : "Seskupit podle sloupce";
+      : texts.groupingEnable;
   return (
     <Button
       type="button"
@@ -246,7 +250,7 @@ const MONTHS = [
 ];
 
 /** Klíč a popisek skupiny pro jednu hodnotu podle zvolené granularity. */
-function bucket(value: unknown, granularity: GroupGranularity): { key: string; label: string } {
+function bucket(value: unknown, granularity: GroupGranularity, emptyLabel = "(nevyplněno)"): { key: string; label: string } {
   const iso = isoDate(value);
   if (iso) {
     const [y, m] = iso.slice(0, 10).split("-") as [string, string, string];
@@ -265,7 +269,7 @@ function bucket(value: unknown, granularity: GroupGranularity): { key: string; l
     }
   }
   const text = value === null || value === undefined || value === "" ? "" : String(value);
-  return { key: text || "\u0000", label: text || "(nevyplněno)" };
+  return { key: text || "\u0000", label: text || emptyLabel };
 }
 
 /** Vrátí id sloupců, jejichž hodnoty jsou datumy (podle prvního vyplněného řádku). */
@@ -433,13 +437,16 @@ export function GroupBar({
   columns,
   dateColumns,
   zoom = 1,
+  texts: textOverrides,
 }: {
   grouping: GroupingApi;
   columns: { id: string; label: string }[];
   /** Sloupce s datem – jen u nich se nabízí volba den/měsíc/čtvrtletí/rok. */
   dateColumns?: string[];
   zoom?: number;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const [over, setOver] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -474,7 +481,7 @@ export function GroupBar({
     >
       {grouping.groups.length === 0 && (
         <span className="typo-label text-muted-foreground">
-          Přetáhněte sem záhlaví sloupce pro seskupení
+          {texts.groupingDropHint}
         </span>
       )}
       {grouping.groups.map((g, i) => (
@@ -581,7 +588,7 @@ export function GroupBar({
               variant="outline"
               className="grid-toolbar-control border-primary text-primary hover:bg-primary/10 hover:text-primary"
             >
-              + Přidat sloupec
+              {texts.groupingAddColumn}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="max-h-80 overflow-y-auto">
@@ -599,7 +606,7 @@ export function GroupBar({
           className="ml-auto text-destructive hover:text-destructive/80 font-medium"
           onClick={grouping.clear}
         >
-          Zrušit seskupení
+          {texts.groupingClear}
         </button>
       )}
     </div>

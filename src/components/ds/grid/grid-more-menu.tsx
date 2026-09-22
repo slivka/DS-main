@@ -4,6 +4,7 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type GridMoreItem = {
   label: string;
@@ -25,11 +26,14 @@ export function GridMoreMenu({
   items,
   zoom = 1,
   className = "",
+  texts: textOverrides,
 }: {
   items: GridMoreItem[];
   zoom?: number;
   className?: string;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
   if (items.length === 0) return null;
@@ -39,8 +43,8 @@ export function GridMoreMenu({
         <Button
           variant="outline"
           size="sm"
-          aria-label="Další akce"
-          title="Další akce"
+          aria-label={texts.moreActions}
+          title={texts.moreActions}
           className={`shrink-0 px-[0.5em] ${className}`}
           style={{ fontSize }}
         >

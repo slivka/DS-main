@@ -13,3 +13,5 @@ export { TooltipProvider } from "./components/ui/tooltip";
 
 export * from "./components/ds";
 export * from "./lib/utils";
+export * from "./lib/theme";
+export * from "./lib/date-time-preferences";

@@ -1,10 +1,10 @@
 import { DateField } from "./date-field";
 
-/** Zdieľané pole „STAV K DÁTUMU“ – výber dňa pre stav skladu/pokladne. */
+/** Sdílené pole „STAV K DATU“ – výběr dne pro stav skladu/pokladny. */
 export function AsOfDateField({
   value,
   onChange,
-  label = "Stav k dátumu",
+  label = "Stav k datu",
 }: {
   value: string;
   onChange: (value: string) => void;

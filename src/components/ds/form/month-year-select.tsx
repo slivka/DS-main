@@ -30,7 +30,7 @@ export function MonthYearSelect({
   onChange,
   minYear = new Date().getFullYear() - 10,
   maxYear = new Date().getFullYear() + 5,
-  emptyLabel = "— nevybraný —",
+  emptyLabel = "— nevybráno —",
   monthLabel = "Měsíc",
   yearLabel = "Rok",
   disabled,

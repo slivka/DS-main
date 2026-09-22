@@ -5,6 +5,7 @@ import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
 import type { ColumnViewsApi } from "./grid-columns";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type PickerColumn<Id extends string = string> = {
   id: Id;
@@ -35,6 +36,7 @@ export function ColumnPicker<Id extends string>({
   hasCustomDefault = false,
   hiddenSections = [],
   onToggleSection,
+  texts: textOverrides,
 }: {
   columns: PickerColumn<Id>[];
   visible: Record<Id, boolean>;
@@ -54,7 +56,9 @@ export function ColumnPicker<Id extends string>({
   hiddenSections?: string[];
   /** Zapnutí / vypnutí celé sekce. */
   onToggleSection?: (section: string) => void;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const [newName, setNewName] = useState("");
   const [savedDefault, setSavedDefault] = useState(false);
@@ -102,8 +106,8 @@ export function ColumnPicker<Id extends string>({
         <Button
           variant="outline"
           size="sm"
-          aria-label="Zobrazené sloupce"
-          title="Zobrazené sloupce"
+          aria-label={texts.columnsTitle}
+          title={texts.columnsTitle}
           className="grid-toolbar-control grid-toolbar-icon-control ml-auto shrink-0"
           style={{ fontSize }}
         >

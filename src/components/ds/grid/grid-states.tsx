@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 
 import { Button } from "../../ui/button";
 import { TableCell, TableRow } from "../../ui/table";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /** Skeleton řádky – místo prázdné plochy během načítání gridu. */
 export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: number }) {
@@ -34,6 +35,7 @@ export function GridEmptyRow({
   filtered = false,
   onClearFilter,
   children,
+  texts: textOverrides,
 }: {
   colSpan: number;
   icon?: ComponentType<{ className?: string }>;
@@ -45,7 +47,9 @@ export function GridEmptyRow({
   filtered?: boolean;
   onClearFilter?: () => void;
   children?: ReactNode;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const hasActions = Boolean(
     (filtered && onClearFilter) || (!filtered && actionLabel && onAction) || children,
   );
@@ -69,7 +73,7 @@ export function GridEmptyRow({
                   variant="outline"
                   onClick={onClearFilter}
                 >
-                  Zrušit filtr
+                  {texts.clearFilter}
                 </Button>
               ) : null}
               {!filtered && actionLabel && onAction ? (
@@ -116,17 +120,21 @@ export function GridBody({
  */
 export function GridProgress({
   show,
-  label = "Načítám data…",
+  label,
+  texts: textOverrides,
 }: {
   show?: boolean;
   label?: string;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
+  const progressLabel = label ?? texts.loading;
   if (!show) return null;
   return (
     <div
       role="status"
       aria-live="polite"
-      aria-label={label}
+      aria-label={progressLabel}
       className="sticky top-0 left-0 z-30 h-[3px] w-full overflow-hidden bg-primary/15"
     >
       <div className="loading-bar h-full w-1/3 rounded-full bg-primary" />
@@ -171,11 +179,14 @@ export function GridErrorRow({
   colSpan,
   error,
   onRetry,
+  texts: textOverrides,
 }: {
   colSpan: number;
   error: unknown;
   onRetry?: () => void;
+  texts?: Partial<GridTexts>;
 }) {
+  const texts = resolveGridTexts(textOverrides);
   const { title, detail } = friendlyErrorMessage(error);
   return (
     <TableRow className="hover:bg-transparent">
@@ -190,7 +201,7 @@ export function GridErrorRow({
           ) : null}
           {onRetry ? (
             <Button type="button" size="sm" variant="outline" onClick={onRetry}>
-              Zkusit znovu
+              {texts.retry}
             </Button>
           ) : null}
         </div>

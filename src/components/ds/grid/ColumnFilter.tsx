@@ -3,6 +3,7 @@ import { Filter, Check, Search } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type FilterOption = { value: string; label: string };
 
@@ -17,6 +18,7 @@ type ColumnFilterProps = {
   label: string;
   /** Optional render of a custom numeric filter body. */
   children?: React.ReactNode;
+  texts?: Partial<GridTexts>;
 };
 
 /**
@@ -24,7 +26,8 @@ type ColumnFilterProps = {
  * panel with a search box and a checklist of distinct values, plus Select all
  * / Clear actions. An empty selection means "no filter".
  */
-export function ColumnFilter({ options, selected, onChange, label, children }: ColumnFilterProps) {
+export function ColumnFilter({ options, selected, onChange, label, children, texts: textOverrides }: ColumnFilterProps) {
+  const texts = resolveGridTexts(textOverrides);
   const [search, setSearch] = useState("");
 
   const active = selected.size > 0;
@@ -51,7 +54,7 @@ export function ColumnFilter({ options, selected, onChange, label, children }: C
           variant="ghost"
           size="icon"
           className={`size-6 shrink-0 p-0 ${active ? "rounded-md bg-destructive/12 text-destructive ring-1 ring-destructive/50 hover:text-destructive" : "text-muted-foreground/60 hover:text-foreground"}`}
-          aria-label={`Filtrovat ${label}`}
+          aria-label={texts.filterLabel(label)}
         >
           <Filter className="size-3.5" />
         </Button>
@@ -67,7 +70,7 @@ export function ColumnFilter({ options, selected, onChange, label, children }: C
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Hledat…"
+                  placeholder={texts.filterSearchPlaceholder}
                   className="h-8 pl-7 text-xs"
                 />
               </div>
@@ -78,19 +81,19 @@ export function ColumnFilter({ options, selected, onChange, label, children }: C
                 className="font-medium text-primary hover:underline"
                 onClick={selectAll}
               >
-                Vybrat vše
+                {texts.selectAll}
               </button>
               <button
                 type="button"
                 className="font-medium text-muted-foreground hover:underline"
                 onClick={clearAll}
               >
-                Vymazat
+                {texts.clear}
               </button>
             </div>
             <div className="max-h-56 overflow-auto py-1">
               {filtered.length === 0 ? (
-                <p className="px-3 py-2 text-xs text-muted-foreground">Žádné hodnoty.</p>
+                <p className="px-3 py-2 text-xs text-muted-foreground">{texts.noValues}</p>
               ) : (
                 filtered.map((opt) => {
                   const checked = selected.has(opt.value);

@@ -15,3 +15,17 @@
 - [x] Ukázky v showcase (Přehled: Hlavička stránky, Stavy a štítky)
 - [x] Aktualizace .lovable/system.md (účetní konvence, PageHeader)
 - [x] Verze knihovny 1.1.0
+
+## Verze 1.2.0 (čeština a přepisovatelné texty)
+- [x] Opravit slovenské viditelné texty a locale ve všech komponentách design systému
+- [x] Přidat společné přepisovatelné texty DataGridu a souvisejících grid komponent
+- [x] Přidat české přepisovatelné texty AddressFields / AddressFieldGrid a ostatních formulářů
+- [x] Aktualizovat pravidla knihovny a verzi na 1.2.0
+- [x] Ověřit typovou kontrolu, sestavení a showcase
+
+## Verze 1.2.1 (zapojení knihovny)
+- [x] Zachovat styly při výběrovém načítání komponent
+- [x] Zpřístupnit motiv a nastavení data a času přes veřejný vstup
+- [x] Přesně připnout ověřené základní závislosti
+- [x] Doplnit pravidlo pro načtení firemních písem v připojených aplikacích
+- [x] Ověřit typovou kontrolu, sestavení a showcase

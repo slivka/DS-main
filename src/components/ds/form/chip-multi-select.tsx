@@ -19,7 +19,7 @@ export function ChipMultiSelect({
   searchPlaceholder = "Hledat…",
   emptyLabel = "Žádné hodnoty.",
   allLabel = "Vybrat vše",
-  clearLabel = "Zrušit výber",
+  clearLabel = "Zrušit výběr",
   placeholder,
 }: {
   options: ChipOption[];
