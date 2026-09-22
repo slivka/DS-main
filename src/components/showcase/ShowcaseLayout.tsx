@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, TextCursorInput } from "lucide-react";
+import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, TextCursorInput } from "lucide-react";
 
 import {
   AppShell,
@@ -17,6 +17,8 @@ const NAV: NavItem[] = [
   { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet, section: "Komponenty" },
   { to: "/components/forms", label: "Formuláře", icon: TextCursorInput, section: "Komponenty" },
   { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare, section: "Komponenty" },
+  { to: "/components/accounting-forms", label: "Účetní formuláře", icon: Receipt, section: "Komponenty" },
+  { to: "/components/navigation", label: "Navigace", icon: RouteIcon, section: "Komponenty" },
 ];
 
 const TARGETS = NAV.map((n) => ({ label: n.label, group: n.section ?? "Stránky", to: n.to }));
