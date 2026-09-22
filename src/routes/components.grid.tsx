@@ -57,6 +57,7 @@ function GridPage() {
         debit: (r) => r.debitAccount,
         credit: (r) => r.creditAccount,
         accountName: (code) => accountNames.get(code),
+        section: "Zaúčtování",
       }),
       ...debitCreditColumns<JournalEntry>({
         debit: (r) => r.debit,
