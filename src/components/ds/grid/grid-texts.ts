@@ -24,6 +24,11 @@ export interface GridTexts {
   selectAll: string;
   clear: string;
   noValues: string;
+  dateFilterYears: string;
+  dateFilterQuarters: string;
+  dateFilterMonths: string;
+  dateFilterDates: string;
+  dateFilterQuarter: (quarter: number, year: number) => string;
   showFilters: string;
   activeFilters: string;
   defaultFilters: string;
@@ -88,6 +93,11 @@ export const DEFAULT_GRID_TEXTS: GridTexts = {
   selectAll: "Vybrat vše",
   clear: "Vymazat",
   noValues: "Žádné hodnoty.",
+  dateFilterYears: "Roky",
+  dateFilterQuarters: "Čtvrtletí",
+  dateFilterMonths: "Měsíce",
+  dateFilterDates: "Jednotlivá data",
+  dateFilterQuarter: (quarter, year) => `${quarter}. čtvrtletí ${year}`,
   showFilters: "Zobrazit filtry",
   activeFilters: "Aktivní filtry",
   defaultFilters: "Výchozí filtry",

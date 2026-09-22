@@ -202,6 +202,28 @@ type Props<Row> = {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_DATE_TIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/;
+const DATE_FILTER_PREFIX = "__date:";
+
+type DateFilterParts = { year: number; month: number };
+
+const dateFilterParts = (value: unknown): DateFilterParts | null => {
+  if (typeof value !== "string") return null;
+  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (iso) return { year: Number(iso[1]), month: Number(iso[2]) };
+  const local = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})/.exec(value.trim());
+  if (!local) return null;
+  return { year: Number(local[3]), month: Number(local[2]) };
+};
+
+const dateFilterKeys = (parts: DateFilterParts) => {
+  const month = String(parts.month).padStart(2, "0");
+  const quarter = Math.ceil(parts.month / 3);
+  return [
+    `${DATE_FILTER_PREFIX}year:${parts.year}`,
+    `${DATE_FILTER_PREFIX}quarter:${parts.year}-Q${quarter}`,
+    `${DATE_FILTER_PREFIX}month:${parts.year}-${month}`,
+  ];
+};
 
 /** Textová podoba bunky – dátumy vždy podľa centrálneho nastavenia firmy. */
 const cellText = (v: unknown) => {
@@ -396,12 +418,21 @@ export function DataGrid<Row>({
     const many = c?.filterValues?.(row);
     return many && many.length ? many : [textOf(row, id)];
   };
+  const filterKeysOf = (row: Row, id: string) => {
+    const column = byId.get(id);
+    const values = valuesOf(row, id);
+    if (column?.exportType !== "date" && column?.exportType !== "datetime") return values;
+    return values.flatMap((value) => {
+      const parts = dateFilterParts(value);
+      return parts ? [value, ...dateFilterKeys(parts)] : [value];
+    });
+  };
   /** Riadky prefiltrované všetkými stĺpcovými filtrami okrem zadaného. */
   const rowsExcept = (skipId: string | null) => {
     const entries = Object.entries(colFilters).filter(([id]) => id !== skipId);
     if (!entries.length) return searched;
     return searched.filter((row) =>
-      entries.every(([id, vals]) => valuesOf(row, id).some((v) => vals.includes(v))),
+      entries.every(([id, vals]) => filterKeysOf(row, id).some((v) => vals.includes(v))),
     );
   };
   const filtered = useMemo(
@@ -481,15 +512,58 @@ export function DataGrid<Row>({
 
   /** Ponuka hodnot pre autofilter v záhlaví každého sloupce. */
   const filterOptions = useMemo(() => {
-    const map = new Map<string, { value: string; label: string }[]>();
+    const map = new Map<string, { value: string; label: string; section?: string }[]>();
     for (const c of shown) {
       const values = new Set<string>();
       for (const row of rowsExcept(c.id)) for (const v of valuesOf(row, c.id)) values.add(v);
+      const isDate = c.exportType === "date" || c.exportType === "datetime";
+      const dateParts = isDate
+        ? [...values].map((value) => dateFilterParts(value)).filter((part): part is DateFilterParts => part !== null)
+        : [];
+      const years = [...new Set(dateParts.map((part) => part.year))].sort((a, b) => b - a);
+      const quarters = [...new Set(dateParts.map((part) => `${part.year}-Q${Math.ceil(part.month / 3)}`))]
+        .sort((a, b) => b.localeCompare(a, texts.locale));
+      const months = [...new Set(dateParts.map((part) => `${part.year}-${String(part.month).padStart(2, "0")}`))]
+        .sort((a, b) => b.localeCompare(a, texts.locale));
+      const groupedOptions = isDate
+        ? [
+            ...years.map((year) => ({
+              value: `${DATE_FILTER_PREFIX}year:${year}`,
+              label: String(year),
+              section: texts.dateFilterYears,
+            })),
+            ...quarters.map((key) => {
+              const [year, quarter] = key.split("-Q").map(Number);
+              return {
+                value: `${DATE_FILTER_PREFIX}quarter:${key}`,
+                label: texts.dateFilterQuarter(quarter ?? 1, year ?? 0),
+                section: texts.dateFilterQuarters,
+              };
+            }),
+            ...months.map((key) => {
+              const [year, month] = key.split("-").map(Number);
+              return {
+                value: `${DATE_FILTER_PREFIX}month:${key}`,
+                label: new Intl.DateTimeFormat(texts.locale, { month: "long", year: "numeric" }).format(
+                  new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, 1)),
+                ),
+                section: texts.dateFilterMonths,
+              };
+            }),
+          ]
+        : [];
       map.set(
         c.id,
-        [...values]
-          .sort((a, b) => a.localeCompare(b, texts.locale))
-          .map((v) => ({ value: v, label: v === "" ? texts.emptyValue : v })),
+        [
+          ...groupedOptions,
+          ...[...values]
+            .sort((a, b) => a.localeCompare(b, texts.locale))
+            .map((v) => ({
+              value: v,
+              label: v === "" ? texts.emptyValue : v,
+              ...(isDate ? { section: texts.dateFilterDates } : {}),
+            })),
+        ],
       );
     }
     return map;

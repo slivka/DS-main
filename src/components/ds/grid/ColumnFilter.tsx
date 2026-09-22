@@ -5,7 +5,7 @@ import { Input } from "../../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
-export type FilterOption = { value: string; label: string };
+export type FilterOption = { value: string; label: string; section?: string };
 
 type ColumnFilterProps = {
   /** Distinct values available in this column. */
@@ -34,8 +34,23 @@ export function ColumnFilter({ options, selected, onChange, label, children, tex
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return options;
-    return options.filter((o) => o.label.toLowerCase().includes(q));
+    return options.filter(
+      (o) => o.label.toLocaleLowerCase(texts.locale).includes(q) || o.section?.toLocaleLowerCase(texts.locale).includes(q),
+    );
   }, [options, search]);
+
+  const sections = useMemo(() => {
+    const result: { label?: string; options: FilterOption[] }[] = [];
+    for (const option of filtered) {
+      const current = result.at(-1);
+      if (!current || current.label !== option.section) {
+        result.push({ ...(option.section ? { label: option.section } : {}), options: [option] });
+      } else {
+        current.options.push(option);
+      }
+    }
+    return result;
+  }, [filtered]);
 
   const toggle = (value: string) => {
     const next = new Set(selected);
@@ -95,28 +110,37 @@ export function ColumnFilter({ options, selected, onChange, label, children, tex
               {filtered.length === 0 ? (
                 <p className="px-3 py-2 text-xs text-muted-foreground">{texts.noValues}</p>
               ) : (
-                filtered.map((opt) => {
-                  const checked = selected.has(opt.value);
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs hover-surface"
-                      onClick={() => toggle(opt.value)}
-                    >
-                      <span
-                        className={`flex size-4 items-center justify-center rounded border ${
-                          checked
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-input"
-                        }`}
-                      >
-                        {checked && <Check className="size-3" />}
-                      </span>
-                      <span className="truncate">{opt.label || "—"}</span>
-                    </button>
-                  );
-                })
+                sections.map((section) => (
+                  <div key={section.label ?? "values"}>
+                    {section.label ? (
+                      <div className="sticky top-0 border-y bg-muted/70 px-2 py-1 text-[0.6875rem] font-semibold uppercase text-muted-foreground first:border-t-0">
+                        {section.label}
+                      </div>
+                    ) : null}
+                    {section.options.map((opt) => {
+                      const checked = selected.has(opt.value);
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs hover-surface"
+                          onClick={() => toggle(opt.value)}
+                        >
+                          <span
+                            className={`flex size-4 items-center justify-center rounded border ${
+                              checked
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-input"
+                            }`}
+                          >
+                            {checked && <Check className="size-3" />}
+                          </span>
+                          <span className="truncate">{opt.label || "—"}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))
               )}
             </div>
           </>
