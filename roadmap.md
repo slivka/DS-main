@@ -76,3 +76,7 @@
 - [x] Doplnit oddělenou hodnotu pro číselné řazení sloupců
 - [x] Zapojit standard do ukázek Datová mřížka a Export do Excelu
 - [x] Ověřit typovou kontrolu, sestavení, showcase a text účtu ve staženém XLSX
+
+## Verze 1.5.1 (názvy částkových sloupců)
+- [x] Přejmenovat výchozí částkové sloupce na MD částka a DAL částka
+- [ ] Ověřit typovou kontrolu, sestavení a ukázku datové mřížky
