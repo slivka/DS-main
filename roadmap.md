@@ -79,4 +79,4 @@
 
 ## Verze 1.5.1 (názvy částkových sloupců)
 - [x] Přejmenovat výchozí částkové sloupce na MD částka a DAL částka
-- [ ] Ověřit typovou kontrolu, sestavení a ukázku datové mřížky
+- [x] Ověřit typovou kontrolu, sestavení a ukázku datové mřížky
