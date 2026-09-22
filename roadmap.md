@@ -17,8 +17,8 @@
 - [x] Verze knihovny 1.1.0
 
 ## Verze 1.2.0 (čeština a přepisovatelné texty)
-- [ ] Opravit slovenské viditelné texty a locale ve všech komponentách design systému
-- [ ] Přidat společné přepisovatelné texty DataGridu a souvisejících grid komponent
-- [ ] Přidat české přepisovatelné texty AddressFields / AddressFieldGrid a ostatních formulářů
-- [ ] Aktualizovat pravidla knihovny a verzi na 1.2.0
+- [x] Opravit slovenské viditelné texty a locale ve všech komponentách design systému
+- [x] Přidat společné přepisovatelné texty DataGridu a souvisejících grid komponent
+- [x] Přidat české přepisovatelné texty AddressFields / AddressFieldGrid a ostatních formulářů
+- [x] Aktualizovat pravidla knihovny a verzi na 1.2.0
 - [ ] Ověřit typovou kontrolu, sestavení a showcase

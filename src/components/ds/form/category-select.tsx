@@ -22,7 +22,7 @@ export type CategoryOption = {
 
 type FlatOption = { id: string; name: string; level: number; path: string };
 
-/** Zoradí kategórie do stromového poradia (rodič, potom jeho potomkovia). */
+/** Seřadí kategorie do stromového pořadí (rodič, potom jeho potomci). */
 export function flattenCategories(options: CategoryOption[]): FlatOption[] {
   const byParent = new Map<string | null, CategoryOption[]>();
   for (const o of options) {
@@ -48,14 +48,14 @@ export function flattenCategories(options: CategoryOption[]): FlatOption[] {
   return out;
 }
 
-/** Názov kategórie vrátane cesty od koreňa. */
+/** Název kategorie včetně cesty od kořene. */
 export function categoryPath(options: CategoryOption[], id: string | null | undefined) {
   if (!id) return "";
   return flattenCategories(options).find((o) => o.id === id)?.path ?? "";
 }
 
 /**
- * Zdieľaný výber kategórie – vlastný komponent (nie systémový select),
+ * Sdílený výběr kategorie – vlastní komponenta (nikoli systémový select),
  * zobrazuje stromovú štruktúru s odsadením a vyhľadávaním.
  */
 export function CategorySelect({

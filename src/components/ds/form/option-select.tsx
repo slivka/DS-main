@@ -10,7 +10,7 @@ export type SelectOption = {
 const EMPTY = "__empty__";
 
 /**
- * Zdieľaný výber zo zoznamu (nahrádza natívny <select>).
+ * Sdílený výběr ze seznamu (nahrazuje nativní <select>).
  * Prázdna hodnota sa mapuje na interný kľúč, lebo Radix Select nepodporuje prázdny value.
  */
 export function OptionSelect({

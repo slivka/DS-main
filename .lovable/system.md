@@ -30,6 +30,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
    opakuj v záhlaví jen důležité údaje.
 8. **Nic nepřepisuj ani nezjednodušuj.** Vzhled a chování importovaných komponent
    zůstávají beze změny; rozšiřuj, nepřepisuj.
+9. **Žádné pevné uživatelské texty v komponentách.** Všechny popisky, nápovědy,
+   zástupné texty, prázdné stavy a přístupnostní názvy předávej přes props;
+   výchozí hodnoty jsou vždy české. Grid používá `DEFAULT_GRID_TEXTS` a prop
+   `texts`, aby aplikace mohla dodat slovenské nebo jiné překlady.
 
 ## Čísla a data
 

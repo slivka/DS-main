@@ -165,9 +165,9 @@ export function GridResultCount({
   className = "",
   texts: textOverrides,
 }: {
-  /** Počet riadkov po filtrech/hledání. */
+  /** Počet řádků po filtrech/hledání. */
   shown: number;
-  /** Celkový počet načtených riadkov. */
+  /** Celkový počet načtených řádků. */
   total: number;
   chips?: GridFilterChip[];
   onClearAll?: () => void;
