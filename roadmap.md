@@ -62,4 +62,4 @@
 - [x] Ověřit stažení vzorového exportu v Chromium, Firefoxu a WebKitu
 - [x] Kontrolovat skutečnou Excel tabulku, součtové vzorce, formáty a chybové hodnoty
 - [x] Otevírat stažený soubor v LibreOffice a odmítnout hlášení o opravě či poškození
-- [ ] Ověřit celou testovací sadu, typovou kontrolu a sestavení
+- [x] Ověřit celou testovací sadu, typovou kontrolu a sestavení
