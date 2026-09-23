@@ -161,6 +161,14 @@
 - [x] Zachovat a označit zastaralé vlastnosti AppShellu
 - [x] Doplnit exporty, ukázky, dokumentaci a ověření
 
+## Verze 2.5.0 (režim více oken)
+
+- [x] `PaneLayout`, `PaneHeader`, `LayoutSwitcher`, historie panelu a `openInPane`
+- [x] Neuložené změny (`usePaneDirty`, `confirmAllPanesClean`), `uniqueKey`, automatické skrytí panelů
+- [x] Container queries v gridu, hlavičce stránky, dialogu a formulářích dokladu
+- [x] Zkratky jen v aktivním panelu, tisk jen aktivního panelu, serializace stavu
+- [x] Ukázka na stránce Navigace (3 panely, šířky 1100/1440/1920, měřítko 100/125 %)
+
 ## Verze 2.4.0 (řádky zápisu 1:1 s databází)
 
 - `toJournalRow` / `fromJournalRow`, deprecated `toDbLines` / `fromDbLines` / `pairNo`

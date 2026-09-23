@@ -26,6 +26,7 @@ import { GridAction, GridActions } from "../grid/grid-action";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
 import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/grid-zoom";
 import { amountClass, formatAmount } from "../../../lib/format";
+import { useIsActivePane } from "../panes/pane-context";
 import { cn } from "../../../lib/utils";
 import type { JournalLine, JournalLineColumn, JournalSharedSide } from "./journal-lines";
 
@@ -157,6 +158,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     },
     forwardedRef,
   ) {
+    const paneActive = useIsActivePane();
     const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts };
     const rootRef = useRef<HTMLDivElement | null>(null);
     const setRootRef = (node: HTMLDivElement | null) => {
@@ -420,7 +422,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     }, [editing]);
 
     const onRootKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-      if (editing || !active || (!event.ctrlKey && !event.metaKey)) return;
+      if (!paneActive || editing || !active || (!event.ctrlKey && !event.metaKey)) return;
       const line = lines.find((item) => item.id === active.rowId);
       if (!line || line.isRounding) return;
       if (event.key.toLocaleLowerCase("cs") === "d") { event.preventDefault(); event.stopPropagation(); duplicate(line); }
@@ -432,7 +434,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
 
     return (
       <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-        <div ref={setRootRef} className={cn("overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
+        <div ref={setRootRef} className={cn("@container overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
           <div className="flex items-center justify-end border-b bg-muted/30 p-1.5"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
           <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} noFit maxHeight="32rem" className="journal-lines-grid">
             <Table role="grid" className="min-w-max table-fixed">

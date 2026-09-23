@@ -210,3 +210,14 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Komponenta vždy kontroluje MD účet, DAL účet a nenulovou částku. Další účetní pravidla dodává aplikace přes `validate`.
 - Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; Kč částka se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
 - Každá produkční instance má stabilní `storageKey`, aby se zachovaly šířky sloupců, zoom a hustota.
+
+## Režim více oken (panely)
+
+- Aplikace může obsah `AppShell` vykreslit přes `PaneLayout` (1 / 2 / 3 panely). Přepínač `LayoutSwitcher` patří do horní lišty vedle `SearchButton`.
+- Editace dokladu je vždy stránka v panelu, nikdy modál. Firma a období jsou společné pro všechny panely.
+- Navigace uvnitř panelu jen přes `usePane()`; otevírání z menu nebo gridu přes `usePaneManager().openInPane(route, params, { target: 'active' | 'new' | paneId })`. Stejný záznam označ `uniqueKey`, aby se neotevřel dvakrát.
+- Neuložené změny hlas přes `usePaneDirty(isDirty)`; před přepnutím firmy nebo období volej `confirmAllPanesClean`.
+- Minimální šířka panelu je 560 px při měřítku písma 100 %. Nedostupná rozložení nech zašedlá s vysvětlením.
+- Komponenty uvnitř panelu se přizpůsobují šířce panelu přes container queries (`@min-[…]`), nikdy přes breakpointy okna. Horní lišta a boční menu se řídí šířkou okna.
+- Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K, Ctrl+B, Ctrl+1/2/3 a Ctrl+Shift+W.
+- Stav panelů serializuj přes `serializePanes` / `parsePanes` (URL nebo databáze).

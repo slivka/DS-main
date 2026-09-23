@@ -116,7 +116,7 @@ export function DocumentForm({
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("@container space-y-4", className)}>
       <PageHeader
         title={title}
         description={description}
@@ -134,7 +134,7 @@ export function DocumentForm({
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           {t.headerSection}
         </h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 @min-[40rem]:grid-cols-2 @min-[64rem]:grid-cols-4">
           <div className="flex flex-col gap-1">
             <Label htmlFor="document-book">{t.book}</Label>
             <BookSelect
@@ -201,7 +201,7 @@ export function DocumentForm({
               disabled={readOnly}
             />
           </div>
-          <div className="flex flex-col gap-1 sm:col-span-2 lg:col-span-4">
+          <div className="flex flex-col gap-1 @min-[40rem]:col-span-2 @min-[64rem]:col-span-4">
             <Label htmlFor="document-description">{t.description}</Label>
             <Textarea
               id="document-description"

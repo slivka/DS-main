@@ -1,5 +1,7 @@
 import { useCallback, useEffect } from "react";
 
+import { useIsActivePane } from "../components/ds/panes/pane-context";
+
 /**
  * Klávesové ovládání gridu: šipky nahoru/dolů, Home/End a PageUp/PageDown
  * přesouvají fokus mezi řádky označenými `data-grid-row`.
@@ -8,6 +10,7 @@ import { useCallback, useEffect } from "react";
  * Řádky si držíme jako `tabIndex={-1}`, takže nezasahují do běžného tabování.
  */
 export function useGridKeyboardNav(ref: React.RefObject<HTMLElement | null>) {
+  const paneActive = useIsActivePane();
   const rows = useCallback(() => {
     const el = ref.current;
     if (!el) return [] as HTMLElement[];
@@ -26,6 +29,7 @@ export function useGridKeyboardNav(ref: React.RefObject<HTMLElement | null>) {
     observer.observe(el, { childList: true, subtree: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!paneActive) return;
       const key = event.key;
       if (
         key !== "ArrowDown" &&
@@ -78,5 +82,5 @@ export function useGridKeyboardNav(ref: React.RefObject<HTMLElement | null>) {
       observer.disconnect();
       el.removeEventListener("keydown", onKeyDown);
     };
-  }, [ref, rows]);
+  }, [ref, rows, paneActive]);
 }

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+import { usePane } from "../components/ds/panes/pane-context";
+
 /**
  * Zabezpečí, aby sa otvorený dialóg zavrel tlačidlom „Späť"
  * (tlačidlo myši / prehliadača), rovnako ako cez „Zavrieť".
@@ -10,13 +12,14 @@ import { useEffect, useRef } from "react";
  * nezavrel aj rodičovský dialóg.
  */
 export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) => void) {
+  const pane = usePane();
   const markerRef = useRef<string | null>(null);
   const pushedRef = useRef(false);
   const onOpenChangeRef = useRef(onOpenChange);
   onOpenChangeRef.current = onOpenChange;
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || pane) return;
     if (open && !pushedRef.current) {
       markerRef.current = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
       pushedRef.current = true;
@@ -30,7 +33,7 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
       pushedRef.current = false;
       window.history.back();
     }
-  }, [open]);
+  }, [open, pane]);
 
   // Ak sa otvorený dialóg odmontuje (napr. navigáciou na inú stránku),
   // odstránime jeho záznam z histórie.

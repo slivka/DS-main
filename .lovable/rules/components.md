@@ -1559,10 +1559,6 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 | `partners` | any | `—` |
 | `currencies` | any | `—` |
 | `showCurrency` | boolean | `false` |
-| `sideFields` | shared · split | `shared` |
-| `sharedSide` | any | `both` |
-| `mainAccount` | any | `—` |
-| `isNonTaxAllowed` | function | `—` |
 | `editableColumns` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `expectedTotal` | number | `—` |

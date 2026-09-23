@@ -1,4 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+
+import { usePane } from "../panes/pane-context";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 import {
   Dialog,
@@ -63,16 +66,93 @@ export function RecordDialog({
   sidePanelExtra?: ReactNode;
 }) {
   const [panelOpen, setPanelOpen] = useState(false);
+  const pane = usePane();
+  const [paneElement, setPaneElement] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!pane) {
+      setPaneElement(null);
+      return;
+    }
+    setPaneElement(document.querySelector<HTMLElement>(`[data-pane="${pane.paneId}"]`));
+  }, [pane?.paneId, open]);
   useEffect(() => {
     if (!open) setPanelOpen(false);
   }, [open]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
 
+  const inner = (
+    <>
+      {sidePanel ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="absolute right-12 top-3 gap-1.5"
+          onClick={() => setPanelOpen((v) => !v)}
+          title={panelVisible ? `Skrýt ${sidePanelLabel.toLowerCase()}` : sidePanelLabel}
+        >
+          {panelVisible ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
+          {sidePanelTitle ?? sidePanelLabel}
+        </Button>
+      ) : null}
+      {sidePanel && sidePanelExtra ? (
+        <div className="absolute right-12 top-14 flex items-center justify-end">{sidePanelExtra}</div>
+      ) : null}
+
+      <div className="flex min-w-0 items-start gap-4">
+        <form
+          className="min-w-0 flex-1 space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          {children}
+          <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
+            {extraActions}
+            <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Zrušit
+              </Button>
+              <Button type="submit" disabled={busy}>
+                {submitLabel}
+              </Button>
+            </div>
+          </div>
+        </form>
+
+        {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
+      </div>
+    </>
+  );
+
+  // Uvnitř panelu se dialog vykreslí jen nad obsahem svého panelu.
+  if (open && paneElement) {
+    return createPortal(
+      <div className="absolute inset-0 z-40 flex items-start justify-center overflow-auto bg-black/40 p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onOpenChange(false); }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          className={`@container relative w-full max-w-3xl rounded-lg border bg-background p-6 shadow-lg ${contentClassName ?? ""}`}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-4 space-y-1">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+            {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
+          </div>
+          {inner}
+        </div>
+      </div>,
+      paneElement,
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-h-[90dvh] overflow-y-auto overflow-x-hidden ${
+        className={`@container max-h-[90dvh] overflow-y-auto overflow-x-hidden ${
           contentClassName ?? (wide ? "sm:max-w-3xl" : "")
         } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
       >
@@ -81,54 +161,7 @@ export function RecordDialog({
           {description ? <DialogDescription>{description}</DialogDescription> : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>
-
-        {sidePanel ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-12 top-3 gap-1.5"
-            onClick={() => setPanelOpen((v) => !v)}
-            title={panelVisible ? `Skrýt ${sidePanelLabel.toLowerCase()}` : sidePanelLabel}
-          >
-            {panelVisible ? (
-              <PanelRightClose className="size-4" />
-            ) : (
-              <PanelRightOpen className="size-4" />
-            )}
-            {sidePanelTitle ?? sidePanelLabel}
-          </Button>
-        ) : null}
-        {sidePanel && sidePanelExtra ? (
-          <div className="absolute right-12 top-14 flex items-center justify-end">{sidePanelExtra}</div>
-        ) : null}
-
-        <div className="flex min-w-0 items-start gap-4">
-          <form
-            className="min-w-0 flex-1 space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
-          >
-            {children}
-            <div className="flex flex-col-reverse items-start gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
-              {extraActions}
-              <div className="flex items-center gap-2 sm:ml-auto">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                  Zrušit
-                </Button>
-                <Button type="submit" disabled={busy}>
-                  {submitLabel}
-                </Button>
-              </div>
-            </div>
-          </form>
-
-          {panelVisible ? (
-            <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside>
-          ) : null}
-        </div>
+        {inner}
       </DialogContent>
     </Dialog>
   );
@@ -194,11 +227,11 @@ export function FieldGrid({
     cols === 1
       ? "grid-cols-1"
       : cols === 3
-        ? "sm:grid-cols-3"
+        ? "@min-[40rem]:grid-cols-3"
         : cols === 4
-          ? "sm:grid-cols-4"
+          ? "@min-[40rem]:grid-cols-4"
           : cols === 6
-            ? "sm:grid-cols-6"
-            : "sm:grid-cols-2";
-  return <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>;
+            ? "@min-[40rem]:grid-cols-6"
+            : "@min-[40rem]:grid-cols-2";
+  return <div className={`@container grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>;
 }
