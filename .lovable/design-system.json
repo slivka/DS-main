@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.7.1",
+    "version": "2.8.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "0091b439d8ce064460ce4c7f94cbc4adbcc535284edcb36c2288a71821b4e8e0",
+      "#enrichment": "cf95b823f21473d2c4ebcb0e493ac1a265f097e1b79bf294f5bff437db21a5d0",
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
@@ -28,18 +28,18 @@
       ".lovable/plan/oprava-šířky-součtů-v-excel-exportu-1-4-1-2026-09-22.md": "68754a1018b633d595fa67dce1a73b2c",
       ".lovable/plan/standard-sloupců-účtů-md-dal-verze-1-5-0-2026-09-22.md": "8f0e8f3e9ba6e2a9023345c757c0ff69",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "cddad94756bee04883747ff490d7c2fe",
+      ".lovable/system.md": "cd8b24cb77c2d8ff6ba79ef4cd0dd103",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "25ad1eb79cd6a6fb81aab73a80698432",
+      "README.md": "900181601e1d6e7950d6285c6b041e5a",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
-      "package.json": "f91cf30ff255f39a0937c2a839a1471f",
+      "package.json": "a2e9b482f97ce808c3f2d09bda33d0a9",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "3cd087cc7f8973380dc1b613d626ca5b",
+      "roadmap.md": "20ecc13a5df4dc3f1e0ff5d7fbd7c884",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -52,12 +52,15 @@
       "src/components/ds/accounting/currency-amount.tsx": "d87a2312e148b6c8676c93dd24ae0aee",
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "078fdff92395e41f1a79d4c13b5b30ec",
-      "src/components/ds/accounting/document-form.tsx": "510fe33f1f52fd1dda62c7f7d5a9102e",
+      "src/components/ds/accounting/document-fields.ts": "810431b93999f85b0cc6d5d5c57485d8",
+      "src/components/ds/accounting/document-form.tsx": "08e4f73ac46b506a319b466781d8b744",
       "src/components/ds/accounting/document-status-badge.tsx": "708954ec8e536ef8005a00c6b819e449",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
       "src/components/ds/accounting/journal-lines-editor.tsx": "49754b37443ccf9e603bc2ccc2d91502",
       "src/components/ds/accounting/journal-lines.ts": "b2f9947f3e6092b998a0b5b100be0d74",
       "src/components/ds/accounting/partner-select.tsx": "2ab012bc73eb6dc02a2f2363e85554e6",
+      "src/components/ds/accounting/payment-schedule-editor.tsx": "53f2a9bdef0c2f46267d8da7d18ab06e",
+      "src/components/ds/accounting/payment-schedule.ts": "e5843d856417e6b3c23bab3be57b3344",
       "src/components/ds/accounting/vs-field.tsx": "5bb222411945aba5fb1fc506781a7350",
       "src/components/ds/data-display/status-badge.tsx": "5aa6cd4177be70539169127cfd2a4791",
       "src/components/ds/data-display/status-dot.tsx": "60e37500a6392e750db2b1d6a1d98054",
@@ -115,7 +118,7 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "26dc63176bdacbaf0ddea666832b5721",
       "src/components/ds/grid/view-mode-toggle.tsx": "7ba9f08e4b064164a441d1c530d596ad",
-      "src/components/ds/index.ts": "e3c08137c48292cd407fb105ad43d093",
+      "src/components/ds/index.ts": "12fe157a1efa09e872d883977ab00814",
       "src/components/ds/layout/AppShell.tsx": "da5d849cf8798cf9d7a1af74b0b530cf",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "b6f4126fa8e041ecb017dfd0b83c59cc",
@@ -138,7 +141,8 @@
       "src/components/ds/panes/pane-layout-switcher.tsx": "15ed43574d4b7174696af6d0f32d1c36",
       "src/components/ds/panes/pane-layout.tsx": "4be16eeada51f811e87aa4eb7e538b6d",
       "src/components/ds/panes/pane-state.ts": "87ef303d6e99597126d64c9fe50b6e57",
-      "src/components/showcase/PaneShowcase.tsx": "80c298e097c5ca279ee79457cbc5ef42",
+      "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
+      "src/components/showcase/PaneShowcase.tsx": "bdd11c68650dc0e5d86416c405026fe6",
       "src/components/showcase/ShowcaseLayout.tsx": "db372060e2ebf377d141fbf02c1a3ddd",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
       "src/components/ui/alert-dialog.tsx": "3b58ac3e4b5bac2c0eeff4242fa6f996",
@@ -221,7 +225,7 @@
       "src/routes/[__component].preview.$.tsx": "0131c8b79c864fb8dafda850ebf45440",
       "src/routes/[__mockup].preview.$.tsx": "5d9f42470848aa60148f20f9580e240e",
       "src/routes/__root.tsx": "4e4a9e33d6e9dcbfc2288c51f91ed9c0",
-      "src/routes/components.accounting-forms.tsx": "ed58594ca4c61f56186291ae2b102e5d",
+      "src/routes/components.accounting-forms.tsx": "4620eedb49a4b3263aeaeae2015495fc",
       "src/routes/components.excel-export.tsx": "77f66606ac8532c34fc4c9d5c1a18d68",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
@@ -235,6 +239,7 @@
       "tests/e2e/accounting-logic.spec.ts": "8a16c89d3ffd0c653100b1a71e7c96f0",
       "tests/e2e/excel-download.spec.ts": "aeae6a7769950765bc2c1282efc40ebf",
       "tests/e2e/journal-editor.spec.ts": "037ea51b6f2f79ca822db1dc6406f30c",
+      "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
@@ -2247,7 +2252,7 @@
       "examples": [
         {
           "label": "AppShell 2.3",
-          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>"
+          "code": "\u003cAppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}\u003e…\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -2401,7 +2406,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2455,7 +2460,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2519,7 +2524,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -2582,7 +2587,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -2657,7 +2662,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2732,11 +2737,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
         },
         {
           "label": "Firma bez období",
-          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
+          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2804,7 +2809,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2835,7 +2840,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3141,7 +3146,7 @@
       "examples": [
         {
           "label": "Grid s hlavní akcí",
-          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"documents\" actions={<Button onClick={onCreate}>Nový doklad</Button>} />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3542,7 +3547,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4161,7 +4166,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4173,11 +4178,137 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "any"
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "lines",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onLinesChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "books",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "accounts",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "partners",
+          "type": "any"
+        },
+        {
+          "name": "dimensions",
+          "type": "any"
+        },
+        {
+          "name": "currencies",
+          "type": "any"
+        },
+        {
+          "name": "fields",
+          "type": "any"
+        },
+        {
+          "name": "editableFields",
+          "type": "any"
+        },
+        {
+          "name": "isNew",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "mainSide",
+          "type": "enum",
+          "values": [
+            "MD",
+            "D"
+          ]
+        },
+        {
+          "name": "mainAccountLocked",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "linesEditorProps",
+          "type": "any"
+        },
+        {
+          "name": "tabs",
+          "type": "any"
+        },
+        {
+          "name": "status",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "approved",
+          "type": "boolean"
+        },
+        {
+          "name": "changedBy",
+          "type": "string"
+        },
+        {
+          "name": "changedAt",
+          "type": "string"
+        },
+        {
+          "name": "actions",
+          "type": "any"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "readOnlyReason",
+          "type": "any"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "flex flex-wrap items-center gap-2"
+        }
+      ],
       "usage": "Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupiny přes fields (documentFieldsForType), řádky přes JournalLinesEditor a další záložky přes tabs. Číslo, kurz, kniha po založení a směr jsou jen ke čtení; formulář nic neukládá.",
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
+          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4188,12 +4319,83 @@
     },
     {
       "name": "PaymentScheduleEditor",
-      "importPath": "@/components/ds",
+      "file": "src/components/ds/accounting/payment-schedule-editor.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "totalToPay",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "paid",
+          "type": "number"
+        },
+        {
+          "name": "remaining",
+          "type": "number"
+        },
+        {
+          "name": "users",
+          "type": "any"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "default": "CZK"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "canRelease",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "canUnrelease",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "onRelease",
+          "type": "function"
+        },
+        {
+          "name": "onUnrelease",
+          "type": "function"
+        },
+        {
+          "name": "onGenerate",
+          "type": "function"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2"
+        }
+      ],
       "usage": "Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozepsat, rozložením na splátky a uvolněním pozastávky. Komponenta nic neukládá; aplikace uloží celé pole items jedním voláním.",
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [

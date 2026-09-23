@@ -1028,6 +1028,53 @@ import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupiny přes fields (documentFieldsForType), řádky přes JournalLinesEditor a další záložky přes tabs. Číslo, kurz, kniha po založení a směr jsou jen ke čtení; formulář nic neukládá.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | string | `—` |
+| `description` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `lines` | any | `—` |
+| `onLinesChange` | function | `—` |
+| `books` | any | `—` |
+| `accounts` | any | `—` |
+| `partners` | any | `—` |
+| `dimensions` | any | `—` |
+| `currencies` | any | `—` |
+| `fields` | any | `—` |
+| `editableFields` | any | `—` |
+| `isNew` | boolean | `false` |
+| `mainSide` | MD · D | `—` |
+| `mainAccountLocked` | boolean | `false` |
+| `linesEditorProps` | any | `—` |
+| `tabs` | any | `—` |
+| `status` | any | `—` |
+| `approved` | boolean | `—` |
+| `changedBy` | string | `—` |
+| `changedAt` | string | `—` |
+| `actions` | any | `—` |
+| `readOnly` | boolean | `false` |
+| `readOnlyReason` | any | `—` |
+| `texts` | any | `—` |
+| `className` | string | `flex flex-wrap items-center gap-2` |
+
+**Examples:**
+
+_Přijatá faktura_
+```tsx
+<DocumentForm title="Přijatá faktura" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType("FP")} mainSide="D" status="filed" tabs={[{ id: "schedule", label: "Platební kalendář", content: <PaymentScheduleEditor … /> }]} />
+```
+
+**Avoid:**
+
+- Nečíslujte doklad ani nepřepisujte kurz ve formuláři – číslo přiděluje databáze.
+- Neřiďte stav Zaúčtován přes readOnly; použijte editableFields.
+- Nepředávejte sideFields přímo – patří do linesEditorProps.
+
 ### DocumentStatusBadge
 
 ```ts
@@ -1944,6 +1991,46 @@ import { PaneManagerContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 ```ts
 import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### PaymentScheduleEditor
+
+```ts
+import { PaymentScheduleEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozepsat, rozložením na splátky a uvolněním pozastávky. Komponenta nic neukládá; aplikace uloží celé pole items jedním voláním.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `onChange` | function | `—` |
+| `totalToPay` | number | `—` |
+| `paid` | number | `—` |
+| `remaining` | number | `—` |
+| `users` | any | `—` |
+| `currency` | string | `CZK` |
+| `readOnly` | boolean | `false` |
+| `canRelease` | boolean | `false` |
+| `canUnrelease` | boolean | `false` |
+| `onRelease` | function | `—` |
+| `onUnrelease` | function | `—` |
+| `onGenerate` | function | `—` |
+| `texts` | any | `—` |
+| `className` | string | `flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2` |
+
+**Examples:**
+
+_Kalendář faktury_
+```tsx
+<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />
+```
+
+**Avoid:**
+
+- Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.
+- Neukládejte jednotlivé řádky zvlášť.
 
 ### PeriodFilter
 
