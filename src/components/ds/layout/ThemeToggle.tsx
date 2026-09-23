@@ -4,7 +4,17 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useTheme } from "../../../lib/theme";
 
 /** Rychlé přepnutí světlého / tmavého režimu v horní liště. */
-export function ThemeToggle({ className = "" }: { className?: string }) {
+export interface ThemeToggleProps {
+  className?: string;
+  lightLabel?: string;
+  darkLabel?: string;
+}
+
+export function ThemeToggle({
+  className = "",
+  lightLabel = "Světlý režim",
+  darkLabel = "Tmavý režim",
+}: ThemeToggleProps) {
   const { mode, setMode } = useTheme();
   const isDark =
     mode === "dark" ||
@@ -18,7 +28,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
         <Button
           variant="ghost"
           size="icon"
-          aria-label={isDark ? "Přepnout na světlý režim" : "Přepnout na tmavý režim"}
+          aria-label={isDark ? lightLabel : darkLabel}
           aria-pressed={isDark}
           onClick={() => setMode(isDark ? "light" : "dark")}
           className={`text-muted-foreground ${className}`}
@@ -26,7 +36,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
           {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>{isDark ? "Světlý režim" : "Tmavý režim"}</TooltipContent>
+        <TooltipContent>{isDark ? lightLabel : darkLabel}</TooltipContent>
     </Tooltip>
   );
 }
