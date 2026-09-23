@@ -239,6 +239,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           totalAmount={header.amount}
+          sideFields="shared"
           storageKey="showcase-journal-czk"
           defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
         />
@@ -259,6 +260,7 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           showCurrency
           totalAmount={2512}
+          sideFields="shared"
           storageKey="showcase-journal-currency"
         />
       </ShowcaseSection>
@@ -292,6 +294,7 @@ function AccountingFormsPage() {
           mainAccount={{ accountId: "211001", side: "MD" }}
           sharedSide="credit"
           totalAmount={3500.5}
+          sideFields="shared"
           storageKey="showcase-journal-cash"
         />
       </ShowcaseSection>
@@ -308,6 +311,7 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           editableFields={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
           totalAmount={9800}
+          sideFields="shared"
           storageKey="showcase-journal-posted"
         />
       </ShowcaseSection>
@@ -326,6 +330,7 @@ function AccountingFormsPage() {
             vs: line.vs ? undefined : "Variabilní symbol je pro tento doklad povinný",
             dimensionId: line.dimensionId ? undefined : "Vyberte zakázku",
           })}
+          sideFields="shared"
           storageKey="showcase-journal-validation"
         />
       </ShowcaseSection>
