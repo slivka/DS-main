@@ -161,6 +161,12 @@
 - [x] Zachovat a označit zastaralé vlastnosti AppShellu
 - [x] Doplnit exporty, ukázky, dokumentaci a ověření
 
+## Verze 2.3.1 (oprava kompaktní hodnoty období)
+- [x] Zobrazovat v kompaktním režimu kód období místo identifikátoru
+- [x] Ověřit kompaktní hodnoty firmy a ContextPill (nikdy identifikátor)
+- [x] Rozšířit min. šířku kódu období na mobilu na 72 px
+- [x] Zvýšit verzi a ověřit typy i sestavení
+
 ## Verze 2.3.0 (adaptivní lišta a období)
 - [x] Doplnit do PeriodSwitcher stav bez výběru, bez období a volitelné založení
 - [x] Přepnout kontextové volby do kompaktního režimu pod 1 280 px a mobilního režimu pod 768 px
