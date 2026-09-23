@@ -188,3 +188,13 @@
 - [x] Zajistit jednořádkovou lištu bez vodorovného posuvníku
 - [x] Doplnit náhled šířek a prázdných stavů na stránku Navigace
 - [x] Zvýšit verzi, doplnit changelog a ověřit typy i sestavení
+
+## Verze 2.6.0 (JournalLinesEditor – dva režimy podle hlavního účtu)
+- [x] sideFields="split" jako výchozí, mainAccount.side používá 'MD' | 'D'
+- [x] Hlavní strana jen ke čtení (šedá), protiúčet bez účtů stejné kategorie
+- [x] Povinná stranová pole podle category / account_type (sideFieldRules) s uvedením strany
+- [x] Rozbalitelný detail řádku (Alt+↓) a kompaktní štítky chybějících polí
+- [x] Nedaňový jako značka u částky (Ctrl+N) místo samostatného sloupce
+- [x] Řádek haléřového vyrovnání jen ke čtení s nápovědou, „Zbývá rozepsat" a „Dorovnat zaokrouhlením"
+- [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
+- [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
