@@ -156,6 +156,16 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.5.0
+
+- **Režim více oken (panely 1 / 2 / 3)** – `PaneLayout` uvnitř `AppShell` místo `children`, `LayoutSwitcher` do horní lišty vedle `SearchButton`.
+- Panely mají vlastní historii (`usePane()` → `navigate`, `back`, `forward`, `setTitle`, `close`), `usePaneManager().openInPane(route, params, { target })` a hlídání neuložených změn (`usePaneDirty`, `confirmAllPanesClean`).
+- Stejný záznam se neotevře dvakrát (`uniqueKey`), minimální šířka panelu 560 px při 100 %, při zmenšení okna se panely dočasně skryjí s upozorněním a vrátí se po zvětšení.
+- Dělicí čáry lze táhnout, dvojklik rozdělí šířky rovnoměrně; zkratky Ctrl+1/2/3 (přepnout panel) a Ctrl+Shift+W (zavřít panel), Ctrl+K a Ctrl+B zůstávají globální.
+- Zkratky mřížek a editorů reagují jen v aktivním panelu; `RecordDialog` uvnitř panelu překrývá jen svůj panel; tisk vytiskne jen panel, ze kterého byl spuštěn.
+- `DataGrid`, `PageHeader`, `RecordDialog`, `DocumentForm` a `JournalLinesEditor` jsou kontejnery (`@container`) – v úzkém panelu se chovají jako na úzké obrazovce. Mimo `PaneLayout` je vzhled beze změny.
+- Serializace stavu panelů: `serializePanes` / `parsePanes` (URL `?panes=…&active=…` nebo JSON v databázi).
+
 ## Changelog 2.4.0
 
 - Řádky zápisu odpovídají databázi 1:1 – nové mapování `toJournalRow` / `fromJournalRow`; `toDbLines`, `fromDbLines` a `pairNo` jsou deprecated.
