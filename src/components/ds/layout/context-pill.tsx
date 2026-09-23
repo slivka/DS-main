@@ -21,11 +21,11 @@ export interface ContextPillProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
 /** Dvouřádkový kontextový přepínač do horní lišty aplikace. */
 export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
   ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, ...props }, ref) => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
+    <TooltipProvider>
+      <Tooltip>
+        <Popover>
+          <TooltipTrigger asChild>
+            <PopoverTrigger asChild>
               <Button
                 ref={ref}
                 type="button"
@@ -44,15 +44,15 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                 </span>
                 <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground xl:block" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent className="xl:hidden">{label}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </PopoverTrigger>
-      <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
-        {children}
-      </PopoverContent>
-    </Popover>
+            </PopoverTrigger>
+          </TooltipTrigger>
+          <TooltipContent className="xl:hidden">{label}</TooltipContent>
+          <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
+            {children}
+          </PopoverContent>
+        </Popover>
+      </Tooltip>
+    </TooltipProvider>
   ),
 );
 ContextPill.displayName = "ContextPill";

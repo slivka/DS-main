@@ -54,7 +54,7 @@ export function PeriodSwitcher({
     <ContextPill
       label={label}
       value={displayValue === label ? placeholder : displayValue}
-      compactValue={selected?.name ?? (isEmpty ? emptyText : placeholder)}
+      compactValue={selected?.id ?? (isEmpty ? emptyText : placeholder)}
       valueMuted={!selected}
       statusIndicator={!selected ? <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" /> : null}
       icon={CalendarRange}

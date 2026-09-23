@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
 import { applyFontScale } from "../../../lib/font-scale";
+import { useMediaQuery } from "../../../hooks/use-mobile";
 
 export type NavItem = {
   to: string;
@@ -188,6 +189,9 @@ export function AppShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const [ownCollapsed, setOwnCollapsed] = useState(false);
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
+  const [collapseWasChosen, setCollapseWasChosen] = useState(false);
+  const isNarrow = useMediaQuery("(max-width: 1279px)");
+  const collapsedRef = useRef(false);
 
   useEffect(() => {
     applyFontScale();
@@ -206,7 +210,9 @@ export function AppShell({
   const legacyActivePanel = adminMode ? "admin" : null;
   const resolvedActivePanel = activePanel !== undefined ? activePanel : adminMode !== undefined ? legacyActivePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
-  const isCollapsed = collapsed ?? ownCollapsed;
+  const requestedCollapsed = collapsed ?? ownCollapsed;
+  const isCollapsed = collapseWasChosen ? requestedCollapsed : isNarrow || requestedCollapsed;
+  collapsedRef.current = isCollapsed;
 
   const setPanel = (id: string | null) => {
     onActivePanelChange?.(id);
@@ -214,9 +220,22 @@ export function AppShell({
     if (activePanel === undefined && adminMode === undefined) setOwnActivePanel(id);
   };
   const setCollapsed = (next: boolean) => {
+    setCollapseWasChosen(true);
     onCollapsedChange?.(next);
     if (collapsed === undefined) setOwnCollapsed(next);
   };
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target;
+      const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      if (!event.ctrlKey || event.altKey || event.metaKey || event.key.toLowerCase() !== "b" || isEditing) return;
+      event.preventDefault();
+      setCollapsed(!collapsedRef.current);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   useEffect(() => {
     if (!currentPanel) return;
@@ -238,12 +257,12 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="z-30 flex h-14 shrink-0 items-center border-b bg-card">
+      <header className="z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
         {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
           {logo}
           {!isCollapsed ? <span className="truncate font-semibold tracking-tight">{appName}</span> : null}
         </div> : null}
-        <div className="flex min-w-0 flex-1 items-center gap-2 pl-3 pr-3">
+        <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1 overflow-hidden pl-3 pr-2 xl:gap-2 xl:pr-3">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
             <SheetContent side="left" className="w-72 p-0">
@@ -251,13 +270,14 @@ export function AppShell({
               {nav(false)}
             </SheetContent>
           </Sheet>
-          <div className="flex min-w-0 items-center gap-2">{contextLeft}</div>
-          {hasContext ? <Separator orientation="vertical" className="hidden h-6 md:block" /> : null}
-          <div className="min-w-0 flex-1">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
-          {hasActions ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center gap-2">{actions}</div>
+          <div className="flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2">{contextLeft}</div>
+          {hasContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}
+          <div className="hidden min-w-0 flex-1 2xl:block">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
+          <div className="min-w-0 flex-1 2xl:hidden" />
+          {hasActions ? <Separator orientation="vertical" className="hidden h-6 shrink-0 sm:block" /> : null}
+          <div className="flex shrink-0 items-center gap-1 xl:gap-2">{actions}</div>
           {hasActions && hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1 xl:gap-2">
             {resolvedPanels.map((panel) => {
               const Icon = panel.icon;
               const pressed = panel.id === currentPanel?.id;
@@ -265,11 +285,11 @@ export function AppShell({
             })}
           </div>
           {(hasActions || hasPanels) && hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center">{notificationBell}</div>
+          <div className="flex shrink-0 items-center">{notificationBell}</div>
           {(hasActions || hasPanels || hasNotifications) && hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center">{themeToggleButton}</div>
+          <div className="hidden shrink-0 items-center sm:flex">{themeToggleButton}</div>
           {(hasActions || hasPanels || hasNotifications || hasThemeToggle) && hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center gap-2">{userMenu}</div>
+          <div className="hidden shrink-0 items-center gap-2 md:flex">{userMenu}</div>
         </div>
       </header>
 
