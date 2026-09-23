@@ -199,6 +199,12 @@
 - [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
 
+## Verze 2.7.0 (DocumentForm pro skutečné doklady + PaymentScheduleEditor)
+- [x] DocumentForm: nová hlavička, pole jen ke čtení, fields / documentFieldsForType, editableFields, hlavní účet, režim částky, linesEditorProps, tabs
+- [x] PaymentScheduleEditor + generatePaymentSchedule s unit testy
+- [x] Ukázky: FP s kalendářem, zaúčtovaná FP, pokladna výdej, interní doklad
+- [x] Verze 2.7.0, changelog s přechodem, design-system.json
+
 ## Verze 2.6.1 (decentní stav menu a pořadí akcí gridu)
 - [x] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
 - [x] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu

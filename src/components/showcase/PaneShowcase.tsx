@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DocumentForm,
+  documentFieldsForType,
   LayoutSwitcher,
   PaneLayout,
   maxPaneLayout,
@@ -71,11 +72,13 @@ function PaneDocument({ dirty }: { dirty: boolean }) {
     taxDate: "2026-01-15",
     dueDate: "2026-01-29",
     partnerId: "p1",
-    vs: "2026000012",
+    variableSymbol: "2026000012",
     description: "Servisní práce za leden 2026",
+    accountingDate: "2026-01-15",
     currency: "CZK",
     rate: 1,
-    amount: 4800,
+    amountTotal: 4800,
+    totalMode: "sum",
   });
   const [lines, setLines] = useState<JournalLine[]>([
     { id: "l1", debitAccount: "518001", creditAccount: "321001", amount: 4800, text: "Servisní práce" },
@@ -94,6 +97,7 @@ function PaneDocument({ dirty }: { dirty: boolean }) {
       accounts={MOCK_ACCOUNTS}
       partners={MOCK_PARTNERS}
       dimensions={MOCK_DIMENSIONS}
+      fields={documentFieldsForType("FP")}
       status="filed"
     />
   );

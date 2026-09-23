@@ -2247,7 +2247,7 @@
       "examples": [
         {
           "label": "AppShell 2.3",
-          "code": "\u003cAppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}\u003e…\u003c/AppShell\u003e"
+          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>"
         }
       ],
       "antipatterns": [
@@ -2401,7 +2401,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
+          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
         }
       ],
       "antipatterns": [
@@ -2455,7 +2455,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
+          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
         }
       ],
       "antipatterns": [
@@ -2519,7 +2519,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cThemeSetting /\u003e"
+          "code": "<ThemeSetting />"
         }
       ],
       "antipatterns": [
@@ -2582,7 +2582,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
         }
       ],
       "antipatterns": [
@@ -2657,7 +2657,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
         }
       ],
       "antipatterns": [
@@ -2732,11 +2732,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
         },
         {
           "label": "Firma bez období",
-          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
+          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
         }
       ],
       "antipatterns": [
@@ -2804,7 +2804,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
         }
       ],
       "antipatterns": [
@@ -2835,7 +2835,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
+          "code": "<SearchButton onClick={() => setOpen(true)} />"
         }
       ],
       "antipatterns": [
@@ -3141,7 +3141,7 @@
       "examples": [
         {
           "label": "Grid s hlavní akcí",
-          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
+          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"documents\" actions={<Button onClick={onCreate}>Nový doklad</Button>} />"
         }
       ],
       "antipatterns": [
@@ -3542,7 +3542,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
         }
       ],
       "antipatterns": [
@@ -4161,7 +4161,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
@@ -4172,7 +4172,34 @@
     {
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupiny přes fields (documentFieldsForType), řádky přes JournalLinesEditor a další záložky přes tabs. Číslo, kurz, kniha po založení a směr jsou jen ke čtení; formulář nic neukládá.",
+      "examples": [
+        {
+          "label": "Přijatá faktura",
+          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
+        }
+      ],
+      "antipatterns": [
+        "Nečíslujte doklad ani nepřepisujte kurz ve formuláři – číslo přiděluje databáze.",
+        "Neřiďte stav Zaúčtován přes readOnly; použijte editableFields.",
+        "Nepředávejte sideFields přímo – patří do linesEditorProps."
+      ]
+    },
+    {
+      "name": "PaymentScheduleEditor",
+      "importPath": "@/components/ds",
+      "usage": "Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozepsat, rozložením na splátky a uvolněním pozastávky. Komponenta nic neukládá; aplikace uloží celé pole items jedním voláním.",
+      "examples": [
+        {
+          "label": "Kalendář faktury",
+          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
+        "Neukládejte jednotlivé řádky zvlášť."
+      ]
     }
   ],
   "assets": [

@@ -156,6 +156,25 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.7.0
+
+- **DocumentForm přepracován pro skutečné doklady.** Nová hlavička `DocumentHeaderValue` (bookId, number, direction, accountingDate, issueDate, taxDate, dueDate, externalNumber, partnerId, variableSymbol, constantSymbol, specificSymbol, bankAccount, description, currency, rate, rateInfo, amountTotal, totalMode, roundingAmount, mainAccountId, excludeFromPaymentOrders).
+- Kniha (po založení), číslo („přidělí se při zařazení“), kurz (s `rateInfo`) a směr jsou vždy jen ke čtení. Formulář nic neukládá ani nečísluje.
+- Nové props `fields` + `documentFieldsForType(code)` (ID, FV, FP, PO, BA, ZFV, ZFP, UZ), `editableFields`, `isNew`, `mainSide`, `mainAccountLocked`, `linesEditorProps`, `tabs` (Řádky vždy první).
+- **Nový PaymentScheduleEditor** (splátky a pozastávky, Doplnit zbytek, Rozložit…, Uvolnit / Zrušit uvolnění) a čistá funkce `generatePaymentSchedule(total, params)`.
+
+### Přechod z 2.6 (bez zpětné kompatibility)
+
+| Dříve | Nyní |
+|---|---|
+| `value.vs` | `value.variableSymbol` |
+| `value.amount` | `value.amountTotal` + `value.totalMode` (`'entered'` / `'sum'`) |
+| `value.number` editovatelné | jen zobrazení, přiděluje databáze |
+| `value.rate` editovatelný (`onRateChange`) | jen zobrazení + `rateInfo` |
+| prop `sideFields` | `linesEditorProps={{ sideFields }}` |
+| hlavní účet v řádcích ručně | `value.mainAccountId` + prop `mainSide` → `mainAccount` editoru |
+| — | povinné nové pole `totalMode`, doporučené `accountingDate` |
+
 ## Changelog 2.6.1
 
 - Nedostupné položky menu používají decentní stavovou tečku; celý text „Připravujeme“ zůstává v nápovědě a nepřekrývá název položky.
