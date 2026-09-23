@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, Settings, X, type LucideIcon } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, Settings, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
