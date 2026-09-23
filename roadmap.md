@@ -202,4 +202,4 @@
 ## Verze 2.6.1 (decentní stav menu a pořadí akcí gridu)
 - [x] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
 - [x] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
-- [ ] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled
+- [x] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled

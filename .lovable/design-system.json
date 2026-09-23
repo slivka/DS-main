@@ -2242,7 +2242,7 @@
           "type": "boolean"
         }
       ],
-      "usage": "Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely.",
+      "usage": "Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely. Nedostupné položky zůstávají čitelné a stav Připravujeme sdělují jemnou tečkou s nápovědou.",
       "examples": [
         {
           "label": "AppShell 2.3",
@@ -2250,7 +2250,8 @@
         }
       ],
       "antipatterns": [
-        "Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování."
+        "Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování.",
+        "Nevkládejte k nedostupné položce dlouhý stavový štítek, který omezuje nebo překrývá její název."
       ]
     },
     {
@@ -3135,17 +3136,18 @@
           "type": "any"
         }
       ],
-      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data.",
+      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data. Hlavní akci gridu předejte přes actions; zobrazí se bezprostředně vpravo od zoomu.",
       "examples": [
         {
-          "label": "Datumový filtr",
-          "code": "\u003cDataGrid rows={rows} columns={[{ id: \"date\", label: \"Datum\", value: (row) =\u003e row.date, exportType: \"date\" }]} rowKey={(row) =\u003e row.id} storageKey=\"documents\" /\u003e"
+          "label": "Grid s hlavní akcí",
+          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
         }
       ],
       "antipatterns": [
         "Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.",
         "Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.",
-        "Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns()."
+        "Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns().",
+        "Neumisťujte hlavní akci Nový mimo řádku nástrojů gridu ani před ovládání zoomu."
       ]
     },
     {
