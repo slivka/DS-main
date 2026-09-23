@@ -79,7 +79,8 @@ export function NotificationBell({
   const t = { ...DEFAULT_NOTIFICATION_BELL_TEXTS, ...texts };
   const [locallyRead, setLocallyRead] = useState<string[]>([]);
   const derivedUnread = items.filter((item) => !item.readAt && !locallyRead.includes(item.id)).length;
-  const count = unreadCount ?? derivedUnread;
+  const newlyReadCount = items.filter((item) => !item.readAt && locallyRead.includes(item.id)).length;
+  const count = unreadCount === undefined ? derivedUnread : Math.max(0, unreadCount - newlyReadCount);
   const badge = count > 9 ? "9+" : String(count);
 
   const selectItem = (item: NotificationItem) => {
@@ -111,7 +112,7 @@ export function NotificationBell({
               const iconConfig = typeIcons[item.type ?? "info"];
               const Icon = iconConfig.icon;
               return (
-                <button key={item.id} type="button" className="hover-surface flex w-full gap-3 border-b px-4 py-3 text-left last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring" onClick={() => selectItem(item)}>
+                <Button key={item.id} type="button" variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none border-b px-4 py-3 text-left last:border-b-0" onClick={() => selectItem(item)}>
                   <Icon className={cn("mt-0.5 size-4 shrink-0", iconConfig.className)} />
                   <span className="min-w-0 flex-1">
                     <span className={cn("block truncate text-sm", unread && "font-semibold")}>{item.title}</span>
@@ -119,7 +120,7 @@ export function NotificationBell({
                     <span className="mt-1 block text-xs text-muted-foreground">{relativeTime(item.createdAt)}</span>
                   </span>
                   {unread ? <span className="mt-2 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" /> : null}
-                </button>
+                </Button>
               );
             })}
           </div>

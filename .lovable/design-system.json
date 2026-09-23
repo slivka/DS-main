@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -2073,15 +2073,15 @@
       "name": "AppShell",
       "file": "src/components/ds/layout/AppShell.tsx",
       "import_path": "",
-      "usage": "Hlavní rám firemní aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely.",
+      "usage": "Hlavní rám firemní aplikace s horní lištou bez povinné značky, sbalitelnou navigací a přepínatelnými panely.",
       "examples": [
         {
-          "label": "AppShell 2.0",
-          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} activePanel={activePanel} onActivePanelChange={setActivePanel}>…</AppShell>"
+          "label": "AppShell 2.2",
+          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} notificationBell={<NotificationBell {...notifications} />} themeToggleButton={<ThemeToggleButton />} userMenu={<UserMenu {...user} />}>…</AppShell>"
         }
       ],
       "antipatterns": [
-        "Nepoužívejte vlastní paralelní navigaci ani staré administrativní aliasy; režimy skládejte přes panels."
+        "V novém kódu nepoužívejte deprecated administrativní aliasy; režimy skládejte přes panels."
       ]
     },
     {
@@ -3397,6 +3397,36 @@
       ],
       "antipatterns": [
         "Nevkládejte do horní lišty; patří na stránku Předvolby."
+      ]
+    },
+    {
+      "name": "ThemeToggleButton",
+      "file": "src/components/ds/layout/theme-toggle-button.tsx",
+      "import_path": "",
+      "usage": "Ikonové přepnutí světlého a tmavého motivu v horní liště, synchronizované s ThemeSetting.",
+      "examples": [
+        {
+          "label": "Horní lišta",
+          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte oddělený stav motivu mimo sdílené nastavení design systému."
+      ]
+    },
+    {
+      "name": "NotificationBell",
+      "file": "src/components/ds/layout/notification-bell.tsx",
+      "import_path": "",
+      "usage": "Prezentační seznam oznámení v horní liště; data, načítání a akce dodává aplikace.",
+      "examples": [
+        {
+          "label": "Tři nepřečtená oznámení",
+          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+        }
+      ],
+      "antipatterns": [
+        "Nenačítejte data uvnitř komponenty; NotificationBell je čistě prezentační."
       ]
     }
   ],
