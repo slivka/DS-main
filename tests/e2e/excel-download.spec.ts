@@ -57,6 +57,7 @@ async function inspectOpenXml(filePath: string, original = true) {
   expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(tableRef?.split(":")[1]?.replace(/\d+/, ""));
   expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
   expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
+  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").not.toContain('showRowStripes="1"');
 
 
   const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) => decodeXml(match[1]));
@@ -111,6 +112,14 @@ async function inspectWorkbook(filePath: string) {
   expect(tables, "List musí obsahovat skutečnou tabulku Excelu").toHaveLength(1);
   expect(tables[0]?.totalsRow).toBe(true);
 
+  expect(sheet.getCell("A2").value, "Parametry nesmí být v hlavičce datového listu").toBeNull();
+  expect(workbook.worksheets.map((item) => item.name)).toContain("Parametry exportu");
+  const parameters = workbook.getWorksheet("Parametry exportu");
+  expect(parameters?.getCell("A1").value).toBe("Parametr");
+  expect(parameters?.getCell("B1").value).toBe("Hodnota");
+  expect(parameters?.getColumn(1).values).toContain("Firma");
+  expect(parameters?.getColumn(1).values).toContain("Aktivní filtry");
+
   const formulas: string[] = [];
   const errors: string[] = [];
   sheet.eachRow((row) => {
@@ -124,6 +133,16 @@ async function inspectWorkbook(filePath: string) {
   expect(errors, "Sešit nesmí obsahovat chybové hodnoty Excelu").toEqual([]);
 
   const headerRow = sheet.getRow(4);
+  headerRow.eachCell((cell) => {
+    expect(cell.alignment?.wrapText, "Každá buňka záhlaví se musí automaticky zalamovat").toBe(true);
+    expect(cell.alignment?.vertical, "Záhlaví musí být svisle vystředěné").toBe("middle");
+    expect(cell.fill).toMatchObject({ fgColor: { argb: "FFE7E9ED" } });
+  });
+  sheet.eachRow((row) => {
+    row.eachCell({ includeEmpty: false }, (cell) => {
+      expect(cell.alignment?.vertical, `Buňka ${cell.address} musí být svisle vystředěná`).toBe("middle");
+    });
+  });
   const headerIndex = (name: string) => {
     const index = headerRow.values.findIndex((value) => String(value).endsWith(name));
     expect(index, `Excel musí obsahovat sloupec ${name}`).toBeGreaterThan(0);

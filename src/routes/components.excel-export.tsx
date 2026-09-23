@@ -154,13 +154,6 @@ function sampleExportData(): GridExportData {
       total: column.total === "sum" || column.total === "count" ? column.total : "none",
       ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
     })),
-    totalRows: [
-      {
-        label: "Kontrolní součet",
-        labelSpan: 5,
-        cells: [0, null, null, null, null],
-      },
-    ],
   };
 }
 
@@ -168,13 +161,13 @@ const RULES = [
   "Data jsou vždy ve skutečné tabulce Excelu; sekce a názvy tvoří jednořádkové záhlaví.",
   "Součty a počty jsou vzorce tabulky a po filtrování se přepočítají.",
   "Čísla mají oddělené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
-  "Záhlaví i data jsou zarovnána podle typu a nastavení sloupce.",
+  "Šedé záhlaví se automaticky zalamuje; všechny buňky jsou výškově vystředěné.",
   "Šířky vycházejí ze zobrazeného obsahu; dlouhé texty se zalamují.",
   "Výjimky formátů určuje pouze metadata sloupce, nikoli jeho název.",
-  "Nad tabulkou je nadpis a volitelné údaje o firmě, období, uživateli a filtrech.",
+  "Parametry sestavy jsou přehledně uvedené na samostatném listu Parametry exportu.",
   "Tisk je nastaven na A4, přizpůsobený šířce a s opakovaným záhlavím.",
   "Sešit obsahuje název, autora, firmu a datum vytvoření.",
-  "Tabulka používá Navy Trust styl, pruhované řádky a zvýrazněný součet.",
+  "Tabulka používá jednoduchý styl s šedým záhlavím a bez střídání barev řádků.",
 ];
 
 function ExcelExportPage() {
