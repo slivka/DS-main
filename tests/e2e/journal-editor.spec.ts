@@ -39,13 +39,13 @@ test.describe("JournalLinesEditor", () => {
 
   test("měnové řádky přepočítají Kč a ukázka potvrzuje převod tam i zpět", async ({ page }) => {
     await expect(page.getByTestId("journal-roundtrip")).toContainText("2 předkontací → 4 DB řádků → 2 předkontací");
-    const currencyGrid = page.getByRole("grid").nth(2);
-    const foreignCell = currencyGrid.locator('[data-cell-key="fx1:foreignAmount"]');
+    const foreignCell = page.locator('[data-cell-key="fx1:foreignAmount"]');
+    await page.waitForFunction(() => Object.keys(document.querySelector('[data-cell-key="fx1:foreignAmount"]') ?? {}).some((key) => key.startsWith("__reactProps")));
     await foreignCell.dblclick();
     const input = foreignCell.getByRole("textbox");
     await input.fill("200");
     await input.press("Enter");
-    await expect(currencyGrid.locator('[data-cell-key="fx1:amount"]')).toContainText("5 024,00");
+    await expect(page.locator('[data-cell-key="fx1:amount"]')).toContainText("5 024,00");
   });
 
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
