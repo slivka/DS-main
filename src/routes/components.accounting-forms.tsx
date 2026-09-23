@@ -14,14 +14,15 @@ import {
   TreeGrid,
   VsField,
   formatAccountCode,
-  fromDbLines,
-  toDbLines,
+  fromJournalRow,
+  toJournalRow,
   type DocumentHeaderValue,
   type JournalLine,
   type TreeGridColumn,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { formatAmount } from "@/lib/format";
 import {
   MOCK_ACCOUNTS,
   MOCK_BOOKS,
@@ -128,7 +129,25 @@ function AccountingFormsPage() {
   const [validationLines, setValidationLines] = useState<JournalLine[]>([
     { id: "invalid1", pairNo: 1, debitAccount: "518001", creditAccount: "321001", amount: 1200, text: "Chybí povinné údaje" },
   ]);
-  const roundtrip = fromDbLines(toDbLines(lines));
+  const [splitLines, setSplitLines] = useState<JournalLine[]>([
+    {
+      id: "id1", debitAccount: "518001", creditAccount: "321001", amount: 4200,
+      text: "Přeúčtování služeb", debitVs: "2026000501", creditVs: "2026000777",
+      debitPartnerId: "p1", creditPartnerId: "p2",
+      debitDimensionId: "d-cz-1", creditDimensionId: "d-rezie", nonTax: true,
+    },
+    {
+      id: "id2", debitAccount: "521001", creditAccount: "321001", amount: 1800,
+      text: "Mzdové náklady", debitVs: "2026000502", creditVs: "2026000778",
+      debitPartnerId: "p3", creditPartnerId: "p2",
+      debitDimensionId: "d-cz-2", creditDimensionId: "d-rezie",
+    },
+  ]);
+  const [cashLines, setCashLines] = useState<JournalLine[]>([
+    { id: "pd1", debitAccount: "211001", creditAccount: "602001", amount: 3500, text: "Tržba v hotovosti", vs: "2026000091", partnerId: "p2", dimensionId: "d-cz-1" },
+    { id: "pd-r", debitAccount: "211001", creditAccount: "648001", amount: 0.5, text: "Zaokrouhlení", isRounding: true },
+  ]);
+  const roundtrip = fromJournalRow(toJournalRow(lines[0] ?? { id: "x", amount: 0 }));
 
   return (
     <ShowcaseLayout
@@ -187,7 +206,7 @@ function AccountingFormsPage() {
           defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
         />
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
-          {`Převod ${lines.length} předkontací → ${toDbLines(lines).length} DB řádků → ${roundtrip.length} předkontací.`}
+          {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
         </p>
       </ShowcaseSection>
 
@@ -208,8 +227,41 @@ function AccountingFormsPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
+        title="Interní doklad – oddělené strany"
+        description="Režim split zobrazuje VS, partnera i zakázku zvlášť pro stranu MD a DAL."
+      >
+        <JournalLinesEditor
+          lines={splitLines}
+          onChange={setSplitLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          sideFields="split"
+          expectedTotal={6000}
+          storageKey="showcase-journal-split"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Pokladní doklad – hlavní účet 211 na MD"
+        description="Strana hlavního účtu je jen pro čtení, zadává se pouze protiúčet. Řádek zaokrouhlení je vždy poslední a bez akcí."
+      >
+        <JournalLinesEditor
+          lines={cashLines}
+          onChange={setCashLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          mainAccount={{ accountId: "211001", side: "MD" }}
+          sharedSide="credit"
+          expectedTotal={3500.5}
+          storageKey="showcase-journal-cash"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
         title="Zaúčtovaný doklad"
-        description="U zaúčtovaného dokladu zůstávají upravitelné pouze text a zakázka."
+        description="U zaúčtovaného dokladu zůstávají upravitelné pouze text, VS, partner, zakázka a příznak Nedaňový."
       >
         <JournalLinesEditor
           lines={postedLines}
@@ -217,7 +269,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          editableColumns={["text", "dimensionId"]}
+          editableColumns={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
           expectedTotal={9800}
           storageKey="showcase-journal-posted"
         />

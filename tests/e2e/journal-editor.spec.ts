@@ -38,7 +38,7 @@ test.describe("JournalLinesEditor", () => {
   });
 
   test("měnové řádky přepočítají Kč a ukázka potvrzuje převod tam i zpět", async ({ page }) => {
-    await expect(page.getByTestId("journal-roundtrip")).toContainText("2 předkontací → 4 DB řádků → 2 předkontací");
+    await expect(page.getByTestId("journal-roundtrip")).toContainText("Jedna předkontace = jeden databázový řádek");
     const foreignCell = page.locator('[data-cell-key="fx1:foreignAmount"]');
     await page.waitForFunction(() => Object.keys(document.querySelector('[data-cell-key="fx1:foreignAmount"]') ?? {}).some((key) => key.startsWith("__reactProps")));
     await foreignCell.scrollIntoViewIfNeeded();
@@ -50,9 +50,18 @@ test.describe("JournalLinesEditor", () => {
   });
 
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
-    const postedGrid = page.getByRole("grid").nth(3);
+    const postedGrid = page.getByRole("grid").nth(5);
     await expect(postedGrid.locator('[data-cell-key="posted1:text"]')).toHaveAttribute("tabindex", "0");
     await expect(postedGrid.locator('[data-cell-key="posted1:dimensionId"]')).toHaveAttribute("tabindex", "0");
     await expect(postedGrid.locator('[data-cell-key="posted1:amount"]')).toHaveAttribute("tabindex", "-1");
+  });
+
+  test("hlavní účet knihy je jen pro čtení a řádek zaokrouhlení je poslední bez akcí", async ({ page }) => {
+    const cashGrid = page.getByRole("grid").nth(4);
+    await expect(cashGrid.locator('[data-cell-key="pd1:debitAccount"]')).toHaveAttribute("tabindex", "-1");
+    await expect(cashGrid.locator('[data-cell-key="pd1:creditAccount"]')).toHaveAttribute("tabindex", "0");
+    const rows = cashGrid.locator("tbody tr");
+    await expect(rows.last()).toContainText("Zaokrouhlení");
+    await expect(rows.last().getByRole("button", { name: "Odebrat řádek" })).toHaveCount(0);
   });
 });

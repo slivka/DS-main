@@ -197,7 +197,12 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Řádky účetního zápisu
 
 - `JournalLinesEditor` je specializovaný in-place grid. Obecný `DataGrid` se pro editaci řádků zápisu nemění.
-- Řádek obrazovky je předkontace MD účet / DAL účet / částka; do `journal_lines` se ukládá přes `toDbLines` jako dva řádky se společným `pairNo`. Načítání vždy používá `fromDbLines`.
+- Řádek obrazovky je předkontace MD účet / DAL účet / částka a odpovídá právě jednomu řádku v `journal_lines`. Ukládání vždy přes `toJournalRow`, načítání přes `fromJournalRow` (camelCase v komponentě, snake_case v databázi).
+- `toDbLines`, `fromDbLines` a `pairNo` jsou deprecated (rozpad na dva řádky) – v nových aplikacích se nepoužívají.
+- `sideFields="shared"` (výchozí) má jeden sloupec VS / Partner / Zakázka a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both"). `sideFields="split"` má oddělené sloupce MD/DAL, které jsou ve výběru sloupců výchozí skryté, pokud nemají hodnotu.
+- `mainAccount={{ accountId, side }}` uzamkne stranu hlavního účtu knihy (účet, VS i partner jsou jen pro čtení) – uživatel zadává jen protiúčet (`counter_account_id`).
+- Sloupec Nedaňový (`non_tax`) je dostupný jen u řádků s nákladovým nebo výnosovým účtem; výjimky určuje `isNonTaxAllowed(line)`.
+- Řádek zaokrouhlení (`isRounding`) je vždy poslední, jen pro čtení a bez akcí.
 - U zaúčtovaných dokladů se upravitelnost řídí přes `editableColumns`; `readOnly` je pouze zpětně kompatibilní zkratka pro žádný upravitelný sloupec.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
 - Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.

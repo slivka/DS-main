@@ -156,6 +156,14 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.4.0
+
+- Řádky zápisu odpovídají databázi 1:1 – nové mapování `toJournalRow` / `fromJournalRow`; `toDbLines`, `fromDbLines` a `pairNo` jsou deprecated.
+- Nové props `sideFields` ("shared" | "split") a `sharedSide` pro oddělený VS, partnera a zakázku na straně MD a DAL.
+- Nový prop `mainAccount` pro knihy s pevným hlavním účtem – zadává se jen protiúčet.
+- Nový sloupec Nedaňový (`isNonTaxAllowed`) a jen pro čtení řádek zaokrouhlení (`isRounding`) vždy na konci.
+- Ukázka Účetní formuláře obsahuje interní doklad s oddělenými stranami a pokladní doklad s hlavním účtem 211.
+
 ## Changelog 2.3.0
 
 - Přepínač období rozlišuje stav bez výběru a firmu bez období; volitelně nabídne založení období.
