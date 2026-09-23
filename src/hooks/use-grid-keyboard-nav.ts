@@ -82,5 +82,5 @@ export function useGridKeyboardNav(ref: React.RefObject<HTMLElement | null>) {
       observer.disconnect();
       el.removeEventListener("keydown", onKeyDown);
     };
-  }, [ref, rows]);
+  }, [ref, rows, paneActive]);
 }
