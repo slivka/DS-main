@@ -199,14 +199,17 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `JournalLinesEditor` je specializovaný in-place grid. Obecný `DataGrid` se pro editaci řádků zápisu nemění.
 - Řádek obrazovky je předkontace MD účet / DAL účet / částka a odpovídá právě jednomu řádku v `journal_lines`. Ukládání vždy přes `toJournalRow`, načítání přes `fromJournalRow` (camelCase v komponentě, snake_case v databázi).
 - `toDbLines`, `fromDbLines` a `pairNo` jsou deprecated (rozpad na dva řádky) – v nových aplikacích se nepoužívají.
-- `sideFields="shared"` (výchozí) má jeden sloupec VS / Partner / Zakázka a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both"). `sideFields="split"` má oddělené sloupce MD/DAL, které jsou ve výběru sloupců výchozí skryté, pokud nemají hodnotu.
-- `mainAccount={{ accountId, side }}` uzamkne stranu hlavního účtu knihy (účet, VS i partner jsou jen pro čtení) – uživatel zadává jen protiúčet (`counter_account_id`).
-- Sloupec Nedaňový (`non_tax`) je dostupný jen u řádků s nákladovým nebo výnosovým účtem; výjimky určuje `isNonTaxAllowed(line)`.
-- Řádek zaokrouhlení (`isRounding`) je vždy poslední, jen pro čtení a bez akcí.
-- U zaúčtovaných dokladů se upravitelnost řídí přes `editableColumns`; `readOnly` je pouze zpětně kompatibilní zkratka pro žádný upravitelný sloupec.
+- Dva režimy jedné komponenty: bez `mainAccount` jde o interní doklad (MD i DAL účet na řádku, `sideFields="split"` je výchozí); s `mainAccount` je hlavní strana jen ke čtení a zadává se pouze protiúčet.
+- `sideFields="split"` (výchozí) má oddělené sloupce MD/DAL, ve výběru sloupců výchozí skryté, pokud nemají hodnotu. `sideFields="shared"` má jeden sloupec VS / Partner / Zakázka a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both").
+- `mainAccount={{ accountId, side }}` používá `side: 'MD' | 'D'` (shodně s `documents.main_account_side`). Hlavní strana (účet, VS, partner, zakázka) je jen pro čtení a šedá; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
+- Povinnost stranových polí určuje `sideFieldRules(account, { dimensionRequired })` podle `account.category` a `account.accountType`: VS u `pohledavky` / `zavazky` / `poskytnute_zalohy` / `prijate_zalohy` / `saldokonto`, zakázka u `bilance` při `dimensionRequired`, partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany, rozhoduje databáze.
+- Stranová pole jsou i v rozbalitelném detailu řádku (Alt+↓); chybějící povinné pole se v řádku ukazuje jako kompaktní štítek.
+- Nedaňový (`non_tax`) nemá vlastní sloupec – je to přepínací značka u částky (jen u nákladových / výnosových účtů, zkratka Ctrl+N) a zaškrtávátko v detailu řádku; výjimky určuje `isNonTaxAllowed(line)`.
+- Řádek haléřového vyrovnání (`isRounding`) je vždy poslední, šedý, jen pro čtení a bez akcí, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu". U dokladu s hlavním účtem a `totalMode="entered"` se proti `totalAmount` ukazuje „Zbývá rozepsat" a při rozdílu do `roundingLimit` tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`).
+- U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, zakázky, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
 - Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.
-- Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `expectedTotal` předvyplní částku.
+- Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `totalAmount` předvyplní částku.
 - Komponenta vždy kontroluje MD účet, DAL účet a nenulovou částku. Další účetní pravidla dodává aplikace přes `validate`.
 - Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; Kč částka se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
 - Každá produkční instance má stabilní `storageKey`, aby se zachovaly šířky sloupců, zoom a hustota.

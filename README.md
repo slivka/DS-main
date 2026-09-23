@@ -156,6 +156,16 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.6.0
+
+- **JournalLinesEditor má dva režimy v jedné komponentě** – bez `mainAccount` jde o interní doklad (na řádku MD i DAL účet, `sideFields="split"` je nově výchozí); s `mainAccount` je hlavní strana jen ke čtení (šedě) a zadává se pouze protiúčet.
+- `mainAccount.side` používá hodnoty `'MD' | 'D'` shodné s `documents.main_account_side`; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
+- Povinná stranová pole podle osnovy: `sideFieldRules(account, { dimensionRequired })` – VS u kategorií `pohledavky`, `zavazky`, `poskytnute_zalohy`, `prijate_zalohy`, `saldokonto`; zakázka u `bilance` při `dimensionRequired`; partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany („Chybí zakázka na straně DAL"), rozhoduje databáze.
+- Rozbalitelný detail řádku (Alt+↓) se stranovými poli a zaškrtávátkem Nedaňový; chybějící povinná pole se v řádku ukazují jako kompaktní štítky.
+- Nedaňový už nemá vlastní sloupec – je to malá přepínací značka u částky (jen u nákladových / výnosových účtů), zkratka Ctrl+N.
+- Řádek haléřového vyrovnání (`isRounding`) je šedý, bez akcí a vždy poslední, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu"; u dokladu s hlavním účtem přibyl ukazatel „Zbývá rozepsat" (`totalAmount`, `totalMode="entered"`) a tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`, `roundingLimit`).
+- `editableFields` nahrazuje `editableColumns` i `readOnly`; `AccountOption` má nová pole `category` a `accountType`; `DocumentForm` přijímá `sideFields`.
+
 ## Changelog 2.5.0
 
 - **Režim více oken (panely 1 / 2 / 3)** – `PaneLayout` uvnitř `AppShell` místo `children`, `LayoutSwitcher` do horní lišty vedle `SearchButton`.

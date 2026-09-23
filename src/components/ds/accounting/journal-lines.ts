@@ -72,8 +72,49 @@ export type JournalRowOptions = {
   /** Na kterou stranu se zapisují společné údaje (výchozí "both"). */
   sharedSide?: JournalSharedSide;
   /** Strana hlavního účtu knihy – protiúčtem je pak druhá strana. */
-  mainSide?: "MD" | "DAL";
+  mainSide?: "MD" | "D";
 };
+
+/** Kategorie účtu z osnovy (sloupec `accounts.category`). */
+export type AccountCategory =
+  | "pohledavky"
+  | "zavazky"
+  | "poskytnute_zalohy"
+  | "prijate_zalohy"
+  | "saldokonto"
+  | "bilance"
+  | (string & {});
+
+/** Typ účtu z osnovy (sloupec `accounts.account_type`). */
+export type AccountTypeCode = "nakladovy" | "vynosovy" | "rozvahovy" | (string & {});
+
+type AccountLike = { category?: AccountCategory | null; accountType?: AccountTypeCode | null };
+
+const VS_REQUIRED_CATEGORIES = new Set<string>([
+  "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
+]);
+const SALDO_CATEGORIES = new Set<string>([
+  "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
+]);
+
+/** Která stranová pole jsou pro daný účet povinná nebo nabízená. */
+export function sideFieldRules(
+  account: AccountLike | undefined,
+  options: { dimensionRequired?: boolean } = {},
+): { vsRequired: boolean; dimensionRequired: boolean; partnerOffered: boolean } {
+  const category = account?.category ?? undefined;
+  return {
+    vsRequired: !!category && VS_REQUIRED_CATEGORIES.has(category),
+    dimensionRequired: Boolean(options.dimensionRequired) && category === "bilance",
+    partnerOffered: !!category && SALDO_CATEGORIES.has(category),
+  };
+}
+
+/** Nákladový nebo výnosový účet – tam má příznak Nedaňový smysl. */
+export function isResultAccountType(account?: AccountLike, code?: string | null): boolean {
+  if (account?.accountType) return account.accountType === "nakladovy" || account.accountType === "vynosovy";
+  return !!code && (code.startsWith("5") || code.startsWith("6"));
+}
 
 const emptyToNull = (value?: string | null) => (value ? value : null);
 
@@ -95,7 +136,7 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   const credit = emptyToNull(line.creditAccount);
   const counter =
     emptyToNull(line.counterAccount) ??
-    (options.mainSide === "MD" ? credit : options.mainSide === "DAL" ? debit : null);
+    (options.mainSide === "MD" ? credit : options.mainSide === "D" ? debit : null);
 
   return {
     debit_account_id: debit,

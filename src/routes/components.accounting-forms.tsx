@@ -147,6 +147,43 @@ function AccountingFormsPage() {
     { id: "pd1", debitAccount: "211001", creditAccount: "602001", amount: 3500, text: "Tržba v hotovosti", vs: "2026000091", partnerId: "p2", dimensionId: "d-cz-1" },
     { id: "pd-r", debitAccount: "211001", creditAccount: "648001", amount: 0.5, text: "Zaokrouhlení", isRounding: true },
   ]);
+  const [internalLines, setInternalLines] = useState<JournalLine[]>([
+    {
+      id: "in1", debitAccount: "511001", creditAccount: "321001", amount: 12500,
+      text: "Oprava výrobní haly", debitDimensionId: "d-cz-1",
+      creditVs: "2026000601", creditPartnerId: "p1",
+    },
+    {
+      id: "in2", debitAccount: "311100", creditAccount: "311200", amount: 8400,
+      text: "Přeúčtování pohledávky", debitVs: "2026000602", creditVs: "2026000603",
+      debitPartnerId: "p2", creditPartnerId: "p3",
+    },
+    {
+      id: "in3", debitAccount: "513001", creditAccount: "211001", amount: 1900,
+      text: "Reprezentace – obchodní jednání", nonTax: true, debitDimensionId: "d-rezie",
+    },
+  ]);
+  const [invoiceLines, setInvoiceLines] = useState<JournalLine[]>([
+    {
+      id: "fp1", debitAccount: "518001", creditAccount: "321001", amount: 10000,
+      text: "Servisní služby", debitDimensionId: "d-cz-2", creditVs: "2026000712", creditPartnerId: "p1",
+    },
+    {
+      id: "fp2", debitAccount: "343001", creditAccount: "321001", amount: 2100,
+      text: "DPH 21 %", creditVs: "2026000712", creditPartnerId: "p1",
+    },
+    {
+      id: "fp3", debitAccount: "548001", creditAccount: "321001", amount: 0.4,
+      text: "Haléřové vyrovnání", isRounding: true,
+    },
+  ]);
+  const [bankLines, setBankLines] = useState<JournalLine[]>([
+    {
+      id: "bv1", debitAccount: "221002", creditAccount: "311200", amount: 24800,
+      currency: "EUR", foreignAmount: 1000, rate: 24.8,
+      text: "Úhrada faktury v EUR", creditVs: "2026000603", creditPartnerId: "p3",
+    },
+  ]);
   const roundtrip = fromJournalRow(toJournalRow(lines[0] ?? { id: "x", amount: 0 }));
 
   return (
@@ -174,6 +211,7 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
+          sideFields="shared"
           status="filed"
           approved
           changedBy="Jan Slivka"
@@ -201,7 +239,8 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          expectedTotal={header.amount}
+          totalAmount={header.amount}
+          sideFields="shared"
           storageKey="showcase-journal-czk"
           defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
         />
@@ -221,7 +260,8 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           showCurrency
-          expectedTotal={2512}
+          totalAmount={2512}
+          sideFields="shared"
           storageKey="showcase-journal-currency"
         />
       </ShowcaseSection>
@@ -237,7 +277,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           sideFields="split"
-          expectedTotal={6000}
+          totalAmount={6000}
           storageKey="showcase-journal-split"
         />
       </ShowcaseSection>
@@ -254,7 +294,8 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           mainAccount={{ accountId: "211001", side: "MD" }}
           sharedSide="credit"
-          expectedTotal={3500.5}
+          totalAmount={3500.5}
+          sideFields="shared"
           storageKey="showcase-journal-cash"
         />
       </ShowcaseSection>
@@ -269,8 +310,9 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          editableColumns={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
-          expectedTotal={9800}
+          editableFields={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
+          totalAmount={9800}
+          sideFields="shared"
           storageKey="showcase-journal-posted"
         />
       </ShowcaseSection>
@@ -289,7 +331,64 @@ function AccountingFormsPage() {
             vs: line.vs ? undefined : "Variabilní symbol je pro tento doklad povinný",
             dimensionId: line.dimensionId ? undefined : "Vyberte zakázku",
           })}
+          sideFields="shared"
           storageKey="showcase-journal-validation"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Interní doklad podle kategorií účtů"
+        description="Na každém řádku MD i DAL účet, VS a partner zvlášť pro obě strany. Alt+↓ rozbalí detail řádku, Ctrl+N přepne Nedaňový u nákladového nebo výnosového účtu."
+      >
+        <JournalLinesEditor
+          lines={internalLines}
+          onChange={setInternalLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          dimensionRequired
+          storageKey="showcase-journal-internal"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Faktura přijatá s hlavním účtem 321"
+        description="Hlavní strana DAL je jen ke čtení, zadává se pouze protiúčet. Poslední řádek je haléřové vyrovnání."
+      >
+        <JournalLinesEditor
+          lines={invoiceLines}
+          onChange={setInvoiceLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          mainAccount={{ accountId: "321001", side: "D" }}
+          totalAmount={12100.4}
+          totalMode="entered"
+          storageKey="showcase-journal-invoice"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Bankovní výpis v EUR"
+        description="Částka v Kč se dopočítá z kurzu; v patičce je vidět, kolik zbývá rozepsat proti částce dokladu."
+      >
+        <JournalLinesEditor
+          lines={bankLines}
+          onChange={setBankLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          showCurrency
+          mainAccount={{ accountId: "221002", side: "MD" }}
+          totalAmount={24800.3}
+          totalMode="entered"
+          onRoundingFill={(amount) =>
+            setBankLines((current) => [
+              ...current.filter((line) => !line.isRounding),
+              { id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Haléřové vyrovnání", isRounding: true },
+            ])
+          }
+          storageKey="showcase-journal-bank"
         />
       </ShowcaseSection>
 
