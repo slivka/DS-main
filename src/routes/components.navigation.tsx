@@ -67,7 +67,7 @@ function NavigationPage() {
   const [canEdit, setCanEdit] = useState(false);
 
   return (
-    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]}>
+    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed darkPreview>
       <ShowcaseSection
         title="Boční menu se skupinami"
         description="Skupiny se sbalují, aktivní položka je zvýrazněná, nedostupné položky nesou štítek Připravujeme. Které položky se zobrazí, určuje aplikace."
@@ -110,8 +110,8 @@ function NavigationPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Administrace jako samostatný režim"
-        description="Ozubené kolo v horní liště otevře panel Administrace, který překryje boční menu. Zpět do aplikace vede tlačítko nebo klávesa Esc."
+        title="Panely aplikace"
+        description="V horní liště jsou samostatná tlačítka Nastavení firmy a Administrace. Otevřený panel nahradí hlavní menu a zavře se výrazným tlačítkem nebo klávesou Esc."
       >
         <div className="rounded-lg border bg-card">
           <div className="flex items-center gap-2 border-b px-3 py-2">

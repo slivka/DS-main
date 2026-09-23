@@ -35,7 +35,9 @@ src/
 ## Komponenty
 
 ### Rám aplikace
-- **AppShell** – levá navigace, horní lišta, drobečková navigace; název aplikace je textový prop.
+- **AppShell 2.0** – horní lišta přes celou šířku, sbalitelné boční menu a přepínatelné panely.
+- **ContextPill / CompanySwitcher / PeriodSwitcher** – dvouřádkové kontextové volby firmy a období.
+- **SearchButton / UserMenu** – globální hledání a uživatelská nabídka s pracovními prostory.
 - **WorkspaceCompanySwitcher** – výběr workspace a firmy v horní liště.
 - **EntitySwitcher** – obecný přepínač jedné entity v liště.
 - **RecordDialog** – editační dialog záznamu s patičkou, bočním panelem a akcemi.
@@ -43,6 +45,7 @@ src/
 - **CollapsibleSection** – sbalitelná sekce obsahu.
 - **CommandPalette** – rychlé hledání stránek (Ctrl/Cmd + K).
 - **ThemeToggle** – přepínač světlého a tmavého režimu.
+- **ThemeSetting** – volba Světlý / Tmavý / Podle systému pro stránku Předvolby.
 - **FontSizeSetting** – volba velikosti písma celé aplikace.
 
 ### Datová mřížka
@@ -119,6 +122,20 @@ měna podle nastavení aplikace.
 4. Ukázkové stránky v `src/routes` použijte jako vzor a postupně je nahraďte
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
+
+## Changelog 2.0.0
+
+- Horní lišta nyní vede přes celou šířku a značka aplikace je její první částí.
+- Přibyly řízené panely, sbalitelné menu, nové přepínače firmy a období, hledání a uživatelská nabídka.
+- Nastavení písma a motivu jsou samostatné komponenty pro stránku Předvolby.
+- Staré vlastnosti AppShellu zůstávají funkční a jsou označené jako zastaralé.
+
+### Přechod z 1.x
+
+1. `topBarLeft` nahraďte `contextLeft`, `topBarRight` rozdělte mezi `actions` a `userMenu`.
+2. `adminNav` a `adminMode` postupně nahraďte `panels`, `activePanel` a `onActivePanelChange`.
+3. Nastavení velikosti písma a motivu přesuňte na stránku Předvolby; dočasně je lze ponechat přes `showLegacyToolbar`.
+4. Plochý seznam `items` dál funguje, pro nové aplikace používejte `navGroups`.
 
 ## Ukázkové stránky
 

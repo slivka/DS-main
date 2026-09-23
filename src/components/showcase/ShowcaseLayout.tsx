@@ -1,14 +1,18 @@
-import { useState, type ReactNode } from "react";
-import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, TextCursorInput } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { BookOpen, Building2, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, TextCursorInput, UserRound } from "lucide-react";
 
 import {
   AppShell,
+  CompanySwitcher,
   CommandPalette,
-  WorkspaceCompanySwitcher,
+  PeriodSwitcher,
+  SearchButton,
+  UserMenu,
   type Crumb,
   type NavItem,
 } from "../ds";
-import { MOCK_COMPANIES, MOCK_WORKSPACES } from "../../lib/mock/accounting";
+import { MOCK_COMPANIES, MOCK_PERIODS, MOCK_WORKSPACES } from "../../lib/mock/accounting";
+import { applyTheme } from "../../lib/theme";
 
 const NAV: NavItem[] = [
   { to: "/", label: "Přehled", icon: Palette, section: "Design systém" },
@@ -23,38 +27,69 @@ const NAV: NavItem[] = [
 
 const TARGETS = NAV.map((n) => ({ label: n.label, group: n.section ?? "Stránky", to: n.to }));
 
+const COMPANY_PANEL = [{
+  id: "company-settings",
+  label: "Nastavení firmy",
+  items: [
+    { to: "/components/navigation", label: "Základní údaje", icon: Building2 },
+    { to: "/components/forms", label: "Předvolby dokladů", icon: Settings2 },
+  ],
+}];
+
+const ADMIN_PANEL = [{
+  id: "administration",
+  label: "Administrace",
+  items: [
+    { to: "/components/navigation", label: "Uživatelé a oprávnění", icon: ShieldCheck },
+    { to: "/guidelines", label: "Pravidla systému", icon: BookOpen },
+  ],
+}];
+
 /** Rám ukázkových stránek design systému. */
 export function ShowcaseLayout({
   children,
   breadcrumbs,
+  defaultCollapsed = false,
+  darkPreview = false,
 }: {
   children: ReactNode;
   breadcrumbs?: Crumb[];
+  defaultCollapsed?: boolean;
+  darkPreview?: boolean;
 }) {
   const [workspaceId, setWorkspaceId] = useState(MOCK_WORKSPACES[0].id);
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
+  const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    if (!darkPreview) return;
+    applyTheme("dark");
+    return () => applyTheme("light");
+  }, [darkPreview]);
+
+  const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
 
   return (
     <AppShell
       appName="Slivka Design System"
       items={NAV}
       breadcrumbs={breadcrumbs}
-      topBarLeft={
-        <WorkspaceCompanySwitcher
-          workspaces={MOCK_WORKSPACES}
-          companies={MOCK_COMPANIES}
-          workspaceId={workspaceId}
-          companyId={companyId}
-          onWorkspaceChange={(id) => {
-            setWorkspaceId(id);
-            const first = MOCK_COMPANIES.find((c) => c.workspaceId === id);
-            if (first) setCompanyId(first.id);
-          }}
-          onCompanyChange={setCompanyId}
-        />
-      }
+      contextLeft={<><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></>}
+      actions={<SearchButton onClick={() => setSearchOpen(true)} />}
+      panels={[
+        { id: "company", title: "Nastavení firmy", icon: Building2, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
+        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace", nav: ADMIN_PANEL, accent: "warning" },
+      ]}
+      activePanel={activePanel}
+      onActivePanelChange={setActivePanel}
+      collapsed={collapsed}
+      onCollapsedChange={setCollapsed}
+      userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} onSignOut={() => undefined} />}
     >
-      <CommandPalette targets={TARGETS} />
+      <CommandPalette targets={TARGETS} open={searchOpen} onOpenChange={setSearchOpen} />
       {children}
     </AppShell>
   );

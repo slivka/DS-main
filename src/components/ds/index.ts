@@ -13,6 +13,12 @@ export * from "./layout/collapsible-section";
 export * from "./layout/command-palette";
 export * from "./layout/ThemeToggle";
 export * from "./layout/FontSizeSetting";
+export * from "./layout/theme-setting";
+export * from "./layout/context-pill";
+export * from "./layout/company-switcher";
+export * from "./layout/period-switcher";
+export * from "./layout/user-menu";
+export * from "./layout/search-button";
 export * from "./layout/app-font-size";
 export * from "./layout/page-header";
 
