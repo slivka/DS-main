@@ -199,6 +199,11 @@
 - [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
 
+## Verze 2.7.1 (úklid API řádků zápisu)
+- [x] Odstranit toDbLines / fromDbLines / pairNo
+- [x] JournalLinesEditor: mode, mainSide, mainAccount, sideFieldRules; DocumentForm je předává přímo
+- [x] Testy, typová kontrola, sestavení, changelog, design-system.json
+
 ## Verze 2.7.0 (DocumentForm pro skutečné doklady + PaymentScheduleEditor)
 - [x] DocumentForm: nová hlavička, pole jen ke čtení, fields / documentFieldsForType, editableFields, hlavní účet, režim částky, linesEditorProps, tabs
 - [x] PaymentScheduleEditor + generatePaymentSchedule s unit testy

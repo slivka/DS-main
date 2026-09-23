@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { toDbLines, fromDbLines, toJournalRow, fromJournalRow } from "../../src/components/ds/accounting/journal-lines";
+import { toJournalRow, fromJournalRow, sideFieldRules } from "../../src/components/ds/accounting/journal-lines";
 import { convertAmount } from "../../src/components/ds/accounting/currency-amount";
 
 test.describe("Accounting Logic Unit Tests", () => {
@@ -9,26 +9,11 @@ test.describe("Accounting Logic Unit Tests", () => {
     expect(convertAmount(0, 25, 1)).toBe(0);
   });
 
-  test("roundtrip conversion (UI <-> DB) preserves data integrity", () => {
-    const uiLines = [
-      { id: "1", amount: 123.45, debitAccount: "211", creditAccount: "602", text: "Test" }
-    ];
-    
-    const dbLines = toDbLines(uiLines);
-    expect(dbLines).toHaveLength(2);
-    expect(dbLines[0]).toMatchObject({ pairNo: 1, account: "211", debit: 123.45, credit: 0 });
-    expect(dbLines[1]).toMatchObject({ pairNo: 1, account: "602", debit: 0, credit: 123.45 });
-
-    const backToUi = fromDbLines(dbLines);
-    expect(backToUi[0].amount).toBe(123.45);
-    expect(backToUi[0].debitAccount).toBe("211");
-    expect(backToUi[0].creditAccount).toBe("602");
-    expect(backToUi[0].pairNo).toBe(1);
-  });
-
-  test("fromDbLines zachová nespárovatelný starší řádek", () => {
-    const [line] = fromDbLines([{ account: "211", debit: 500, credit: 0, text: "Starší data" }]);
-    expect(line).toMatchObject({ debitAccount: "211", creditAccount: null, amount: 500, text: "Starší data" });
+  test("roundtrip toJournalRow / fromJournalRow zachová data", () => {
+    const row = toJournalRow({ id: "1", amount: 123.45, debitAccount: "211", creditAccount: "602", text: "Test" });
+    expect(row).toMatchObject({ debit_account_id: "211", credit_account_id: "602", amount: 123.45, description: "Test" });
+    const back = fromJournalRow(row, "1");
+    expect(back).toMatchObject({ id: "1", amount: 123.45, debitAccount: "211", creditAccount: "602", text: "Test" });
   });
 
   test("toJournalRow mapuje předkontaci na jeden databázový řádek", () => {
@@ -53,5 +38,10 @@ test.describe("Accounting Logic Unit Tests", () => {
   test("hlavní účet knihy určí protiúčet", () => {
     const row = toJournalRow({ id: "1", debitAccount: "211001", creditAccount: "602001", amount: 500 }, { mainSide: "MD" });
     expect(row.counter_account_id).toBe("602001");
+  });
+
+  test("sideFieldRules určí povinná stranová pole", () => {
+    expect(sideFieldRules({ category: "zavazky" })).toMatchObject({ vsRequired: true, partnerOffered: true });
+    expect(sideFieldRules({ category: "bilance" }, { dimensionRequired: true }).dimensionRequired).toBe(true);
   });
 });

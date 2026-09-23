@@ -103,16 +103,16 @@ function AccountingFormsPage() {
   const [currency, setCurrency] = useState("EUR");
   const [currencyLines, setCurrencyLines] = useState<JournalLine[]>([
     {
-      id: "fx1", pairNo: 1, debitAccount: "518001", creditAccount: "321001",
+      id: "fx1", debitAccount: "518001", creditAccount: "321001",
       currency: "EUR", foreignAmount: 100, rate: 25.12, amount: 2512,
       text: "Licence v EUR", dimensionId: "d-cz-1", partnerId: "p1", vs: "2026000042",
     },
   ]);
   const [postedLines, setPostedLines] = useState<JournalLine[]>([
-    { id: "posted1", pairNo: 1, debitAccount: "518002", creditAccount: "321001", amount: 9800, text: "Zaúčtovaný nájem", dimensionId: "d-rezie" },
+    { id: "posted1", debitAccount: "518002", creditAccount: "321001", amount: 9800, text: "Zaúčtovaný nájem", dimensionId: "d-rezie" },
   ]);
   const [validationLines, setValidationLines] = useState<JournalLine[]>([
-    { id: "invalid1", pairNo: 1, debitAccount: "518001", creditAccount: "321001", amount: 1200, text: "Chybí povinné údaje" },
+    { id: "invalid1", debitAccount: "518001", creditAccount: "321001", amount: 1200, text: "Chybí povinné údaje" },
   ]);
   const [splitLines, setSplitLines] = useState<JournalLine[]>([
     {
@@ -240,7 +240,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          mainAccount={{ accountId: "211001", side: "MD" }}
+          mode="mainAccount" mainSide="MD" mainAccount="211001"
           sharedSide="credit"
           totalAmount={3500.5}
           sideFields="shared"
@@ -309,7 +309,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          mainAccount={{ accountId: "321001", side: "D" }}
+          mode="mainAccount" mainSide="D" mainAccount="321001"
           totalAmount={12100.4}
           totalMode="entered"
           storageKey="showcase-journal-invoice"
@@ -327,7 +327,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           showCurrency
-          mainAccount={{ accountId: "221002", side: "MD" }}
+          mode="mainAccount" mainSide="MD" mainAccount="221002"
           totalAmount={24800.3}
           totalMode="entered"
           onRoundingFill={(amount) =>

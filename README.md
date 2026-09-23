@@ -96,7 +96,7 @@ src/
 - **DocumentStatusBadge** – stavy dokladu Koncept / Zaúčtováno / Stornováno.
 - **FiscalPeriodSelect** – účetní období se stavy Otevřené / V uzávěrce / Uzavřené.
 - **JournalLinesEditor** – in-place grid předkontací se zoomem, klávesovým ovládáním, validací a volitelnou měnou.
-- **toDbLines / fromDbLines** – převod předkontace MD/DAL na dva databázové řádky se společným `pairNo` a zpět.
+- **toJournalRow / fromJournalRow** – převod předkontace na jeden databázový řádek a zpět (1:1).
 
 ### Formátování (`src/lib/format.ts`)
 `formatAmount`, `formatCurrency`, `amountClass`, `formatDate`, `setFormatSettings` –
@@ -140,7 +140,7 @@ měna podle nastavení aplikace.
 - `JournalLinesEditor` je samostatný in-place grid se zoomem, hustotou, uloženými šířkami a sticky součtem.
 - Přibylo řízení sloupců přes `editableColumns`, měnové sloupce, výchozí hodnoty a validace jednotlivých buněk.
 - Klávesnice podporuje přímé přepsání znakem, F2, Enter/Tab, Esc, Ctrl+D a Ctrl+Delete s akcí Zpět.
-- `toDbLines` a `fromDbLines` převádějí předkontace na párové databázové řádky a zachovávají starší nespárovatelná data.
+- `toJournalRow` a `fromJournalRow` převádějí předkontaci na jeden databázový řádek a zpět.
 - `readOnly` zůstává zpětně kompatibilní zkratkou pro prázdné `editableColumns`.
 
 ## Changelog 2.2.0
@@ -155,6 +155,15 @@ měna podle nastavení aplikace.
 - Kompaktní a mobilní zobrazení přepínače období ukazuje kód období (např. 2026) místo technického identifikátoru.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
+
+## Changelog 2.7.1
+
+Úklid API řádků zápisu (bez zpětné kompatibility):
+- Odstraněno: `toDbLines`, `fromDbLines`, typ `JournalDbLine`, pole `JournalLine.pairNo`, typ `JournalMainAccount`. Náhrada: `toJournalRow` / `fromJournalRow`.
+- JournalLinesEditor má nové veřejné props `mode` ('internal' | 'mainAccount', výchozí 'internal'), `mainSide` ('MD' | 'D'), `sideFieldRules` (výchozí `sideFieldRules`). Prop `mainAccount` je nově číslo účtu (string), ne objekt `{ accountId, side }`.
+- Přechod: `mainAccount={{ accountId: "321001", side: "D" }}` → `mode="mainAccount" mainSide="D" mainAccount="321001"`.
+- DocumentForm předává `mode`, `mainSide` a `mainAccount` editoru přímo; v `linesEditorProps` je už nelze přepsat.
+- Nové typy: `JournalLinesMode`, `JournalMainSide`, `SideFieldRules`, `SideFieldRulesFn`.
 
 ## Changelog 2.7.0
 

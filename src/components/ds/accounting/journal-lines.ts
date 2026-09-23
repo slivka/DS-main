@@ -22,8 +22,6 @@ export type JournalSharedSide = "debit" | "credit" | "both";
 
 export type JournalLine = {
   id: string;
-  /** @deprecated Databáze ukládá předkontaci jako jeden řádek, párování už není potřeba. */
-  pairNo?: number;
   debitAccount?: string | null;
   creditAccount?: string | null;
   /** Protiúčet u knih s pevným hlavním účtem. */
@@ -88,7 +86,7 @@ export type AccountCategory =
 /** Typ účtu z osnovy (sloupec `accounts.account_type`). */
 export type AccountTypeCode = "nakladovy" | "vynosovy" | "rozvahovy" | (string & {});
 
-type AccountLike = { category?: AccountCategory | null; accountType?: AccountTypeCode | null };
+export type AccountLike = { category?: AccountCategory | null; accountType?: AccountTypeCode | null };
 
 const VS_REQUIRED_CATEGORIES = new Set<string>([
   "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
@@ -97,11 +95,17 @@ const SALDO_CATEGORIES = new Set<string>([
   "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
 ]);
 
+export type SideFieldRules = { vsRequired: boolean; dimensionRequired: boolean; partnerOffered: boolean };
+export type SideFieldRulesFn = (
+  account: AccountLike | undefined,
+  options?: { dimensionRequired?: boolean },
+) => SideFieldRules;
+
 /** Která stranová pole jsou pro daný účet povinná nebo nabízená. */
 export function sideFieldRules(
   account: AccountLike | undefined,
   options: { dimensionRequired?: boolean } = {},
-): { vsRequired: boolean; dimensionRequired: boolean; partnerOffered: boolean } {
+): SideFieldRules {
   const category = account?.category ?? undefined;
   return {
     vsRequired: !!category && VS_REQUIRED_CATEGORIES.has(category),
@@ -182,108 +186,4 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     foreignAmount: row.amount_foreign ?? undefined,
     rate: row.exchange_rate ?? undefined,
   };
-}
-
-/** @deprecated Model rozpadu na dva účty se už nepoužívá. */
-export type JournalDbLine = {
-  id?: string;
-  pairNo?: number;
-  account: string;
-  debit: number;
-  credit: number;
-  text?: string;
-  dimensionId?: string | null;
-  vs?: string;
-  partnerId?: string | null;
-  currency?: string;
-  foreignAmount?: number;
-  rate?: number;
-};
-
-const sharedValues = (line: JournalLine, pairNo: number) => ({
-  pairNo,
-  text: line.text,
-  dimensionId: line.dimensionId,
-  vs: line.vs,
-  partnerId: line.partnerId,
-  currency: line.currency,
-  foreignAmount: line.foreignAmount,
-  rate: line.rate,
-});
-
-/** @deprecated Použijte `toJournalRow`. */
-export function toDbLines(lines: JournalLine[]): JournalDbLine[] {
-  return lines.flatMap((line, index) => {
-    const pairNo = line.pairNo ?? index + 1;
-    const common = sharedValues(line, pairNo);
-    const amount = Math.abs(Number(line.amount) || 0);
-    return [
-      { id: `${line.id}-debit`, ...common, account: line.debitAccount ?? "", debit: amount, credit: 0 },
-      { id: `${line.id}-credit`, ...common, account: line.creditAccount ?? "", debit: 0, credit: amount },
-    ];
-  });
-}
-
-const fromSingleDbLine = (line: JournalDbLine, index: number): JournalLine => ({
-  id: line.id ?? `db-line-${index + 1}`,
-  pairNo: line.pairNo,
-  debitAccount: line.debit !== 0 ? line.account : null,
-  creditAccount: line.credit !== 0 ? line.account : null,
-  amount: Math.abs(line.debit || line.credit || 0),
-  text: line.text,
-  dimensionId: line.dimensionId,
-  vs: line.vs,
-  partnerId: line.partnerId,
-  currency: line.currency,
-  foreignAmount: line.foreignAmount,
-  rate: line.rate,
-});
-
-/** @deprecated Použijte `fromJournalRow`. */
-export function fromDbLines(dbLines: JournalDbLine[]): JournalLine[] {
-  const paired = new Map<number, { line: JournalDbLine; index: number }[]>();
-  const result: { line: JournalLine; index: number }[] = [];
-
-  dbLines.forEach((line, index) => {
-    if (line.pairNo === undefined) {
-      result.push({ line: fromSingleDbLine(line, index), index });
-      return;
-    }
-    const group = paired.get(line.pairNo) ?? [];
-    group.push({ line, index });
-    paired.set(line.pairNo, group);
-  });
-
-  for (const [pairNo, group] of paired) {
-    const debit = group.find(({ line }) => line.debit !== 0);
-    const credit = group.find(({ line }) => line.credit !== 0);
-    if (!debit || !credit) {
-      result.push(...group.map(({ line, index }) => ({ line: fromSingleDbLine(line, index), index })));
-      continue;
-    }
-    result.push({
-      index: Math.min(debit.index, credit.index),
-      line: {
-        id: `pair-${pairNo}`,
-        pairNo,
-        debitAccount: debit.line.account,
-        creditAccount: credit.line.account,
-        amount: Math.abs(debit.line.debit || credit.line.credit),
-        text: debit.line.text,
-        dimensionId: debit.line.dimensionId,
-        vs: debit.line.vs,
-        partnerId: debit.line.partnerId,
-        currency: debit.line.currency,
-        foreignAmount: debit.line.foreignAmount,
-        rate: debit.line.rate,
-      },
-    });
-    result.push(
-      ...group
-        .filter(({ index }) => index !== debit.index && index !== credit.index)
-        .map(({ line, index }) => ({ line: fromSingleDbLine(line, index), index })),
-    );
-  }
-
-  return result.sort((a, b) => a.index - b.index).map(({ line }) => line);
 }

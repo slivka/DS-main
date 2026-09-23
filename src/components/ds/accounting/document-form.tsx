@@ -108,7 +108,7 @@ export interface DocumentFormProps {
   mainSide?: "MD" | "D";
   mainAccountLocked?: boolean;
   /** Další props JournalLinesEditoru (editableFields, dimensionRequired, showCurrency, onRoundingFill …). */
-  linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions">>;
+  linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
   /** Další záložky pod hlavičkou; Řádky jsou vždy první. */
   tabs?: DocumentFormTab[];
   status: DocumentStatus;
@@ -148,8 +148,7 @@ export function DocumentForm({
   const linesSum = Math.round(lines.reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
   const total = value.totalMode === "sum" ? linesSum : value.amountTotal;
   const book = books.find((b) => b.id === value.bookId);
-  const mainAccount = f.mainAccount && value.mainAccountId && mainSide
-    ? { accountId: value.mainAccountId, side: mainSide } : undefined;
+  const mode = f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
 
   const field = (id: string, label: string, control: ReactNode, wide?: boolean) => (
     <div className={cn("flex flex-col gap-1", wide && "@min-[40rem]:col-span-2 @min-[64rem]:col-span-4")}>
@@ -177,7 +176,9 @@ export function DocumentForm({
           accounts={accounts}
           dimensions={dimensions}
           partners={partners}
-          mainAccount={mainAccount}
+          mode={mode}
+          mainSide={mainSide}
+          mainAccount={value.mainAccountId}
           totalAmount={value.totalMode === "entered" ? value.amountTotal : undefined}
           totalMode={value.totalMode === "entered" ? "entered" : "computed"}
           {...linesEditorProps}
