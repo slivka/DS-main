@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, Building2, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, TextCursorInput, UserRound } from "lucide-react";
+import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
 
 import {
   AppShell,
@@ -45,7 +45,7 @@ const COMPANY_PANEL = [{
   id: "company-settings",
   label: "Nastavení firmy",
   items: [
-    { to: "/components/navigation", label: "Základní údaje", icon: Building2 },
+    { to: "/components/navigation", label: "Základní údaje", icon: SlidersHorizontal },
     { to: "/components/forms", label: "Předvolby dokladů", icon: Settings2 },
   ],
 }];
@@ -96,10 +96,10 @@ export function ShowcaseLayout({
       appName="Slivka Design System"
       navGroups={NAV_GROUPS}
       breadcrumbs={breadcrumbs}
-      contextLeft={<div className="hidden items-center gap-2 lg:flex"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
+      contextLeft={<div className="flex min-w-0 items-center gap-1 xl:gap-2"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
-        { id: "company", title: "Nastavení firmy", icon: Building2, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
+        { id: "company", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
         { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace", nav: ADMIN_PANEL, accent: "warning" },
       ]}
       activePanel={activePanel}

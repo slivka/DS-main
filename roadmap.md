@@ -160,3 +160,11 @@
 - [x] Přidat prezentační NotificationBell včetně všech stavů
 - [x] Zachovat a označit zastaralé vlastnosti AppShellu
 - [x] Doplnit exporty, ukázky, dokumentaci a ověření
+
+## Verze 2.3.0 (adaptivní lišta a období)
+- [x] Doplnit do PeriodSwitcher stav bez výběru, bez období a volitelné založení
+- [x] Přepnout kontextové volby do kompaktního režimu pod 1 280 px a mobilního režimu pod 768 px
+- [x] Automaticky sbalit boční menu pod 1 280 px a přidat zkratku Ctrl+B
+- [x] Zajistit jednořádkovou lištu bez vodorovného posuvníku
+- [x] Doplnit náhled šířek a prázdných stavů na stránku Navigace
+- [x] Zvýšit verzi, doplnit changelog a ověřit typy i sestavení

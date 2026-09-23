@@ -1,6 +1,7 @@
 import { CalendarRange, Check } from "lucide-react";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command";
+import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { formatDate } from "../../../lib/format";
 import {
@@ -19,6 +20,10 @@ export interface PeriodSwitcherProps {
   disableClosed?: boolean;
   className?: string;
   periodsLabel?: string;
+  placeholder?: string;
+  emptyText?: string;
+  createLabel?: string;
+  onCreate?: () => void;
 }
 
 const stateClass: Record<FiscalPeriodState, string> = {
@@ -37,17 +42,31 @@ export function PeriodSwitcher({
   disableClosed = false,
   className,
   periodsLabel = "Období",
+  placeholder = "Vyberte období",
+  emptyText = "Firma nemá účetní období",
+  createLabel = "Založit období",
+  onCreate,
 }: PeriodSwitcherProps) {
   const selected = periods.find((period) => period.id === value);
+  const isEmpty = periods.length === 0;
+  const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
   return (
     <ContextPill
       label={label}
-      value={selected?.name ?? label}
+      value={displayValue === label ? placeholder : displayValue}
+      compactValue={selected?.id ?? (isEmpty ? emptyText : placeholder)}
+      valueMuted={!selected}
+      statusIndicator={!selected ? <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" /> : null}
       icon={CalendarRange}
-      className={className}
+      className={cn("max-w-[64px] md:max-w-[200px] xl:max-w-[360px]", className)}
       contentClassName="w-[380px]"
     >
-      <Command>
+      {isEmpty ? (
+        <div className="p-3">
+          <p className="text-sm text-muted-foreground">{emptyText}</p>
+          {onCreate ? <Button type="button" className="mt-3 w-full" onClick={onCreate}>{createLabel}</Button> : null}
+        </div>
+      ) : <Command>
         <CommandList>
           <CommandGroup heading={periodsLabel}>
             {periods.map((period) => (
@@ -69,7 +88,7 @@ export function PeriodSwitcher({
             ))}
           </CommandGroup>
         </CommandList>
-      </Command>
+      </Command>}
     </ContextPill>
   );
 }
