@@ -9,7 +9,6 @@ import {
   maxPaneLayout,
   requiredPaneWidth,
   usePaneDirty,
-  usePaneManager,
   type DataGridColumn,
   type DocumentHeaderValue,
   type JournalLine,
@@ -75,6 +74,7 @@ function PaneDocument({ dirty }: { dirty: boolean }) {
     vs: "2026000012",
     description: "Servisní práce za leden 2026",
     currency: "CZK",
+    rate: 1,
     amount: 4800,
   });
   const [lines, setLines] = useState<JournalLine[]>([
@@ -99,22 +99,6 @@ function PaneDocument({ dirty }: { dirty: boolean }) {
   );
 }
 
-function OpenAgainButton() {
-  const manager = usePaneManager();
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      size="sm"
-      onClick={() =>
-        manager?.openInPane("/doklad", { id: "FP2026000012" }, { target: "new", title: "Doklad FP2026000012", uniqueKey: true })
-      }
-    >
-      Otevřít stejný doklad znovu
-    </Button>
-  );
-}
-
 /** Ukázka režimu více oken – tři panely, přepínač 1/2/3 a simulace šířky i měřítka písma. */
 export function PaneShowcase() {
   const [state, setState] = useState<PaneLayoutState>(INITIAL);
@@ -123,6 +107,17 @@ export function PaneShowcase() {
   const [dirty, setDirty] = useState(false);
 
   const maxLayout = maxPaneLayout(previewWidth, MIN_PANE_WIDTH, fontScale);
+
+  const openDocumentAgain = () => {
+    const existing = state.panes.find((pane) => pane.route === "/doklad");
+    if (existing) {
+      setState((value) => ({ ...value, activePaneId: existing.id }));
+      toast.info("Doklad je již otevřený – přepnuto na jeho panel");
+      return;
+    }
+    const pane: PaneState = { id: `p${state.panes.length + 1}`, route: "/doklad", params: { id: "FP2026000012" }, title: "Doklad FP2026000012", uniqueKey: true };
+    setState((value) => ({ ...value, panes: [...value.panes, pane], activePaneId: pane.id, widths: undefined }));
+  };
 
   const renderPane = (pane: PaneState) => {
     if (pane.route === "/doklad") return <PaneDocument dirty={dirty} />;
@@ -161,7 +156,9 @@ export function PaneShowcase() {
           <Switch id="pane-dirty" checked={dirty} onCheckedChange={setDirty} />
           <Label htmlFor="pane-dirty">Neuložené změny v dokladu</Label>
         </div>
-        <OpenAgainButton />
+        <Button type="button" variant="outline" size="sm" onClick={openDocumentAgain}>
+          Otevřít stejný doklad znovu
+        </Button>
         <Button type="button" size="sm" variant="ghost" onClick={() => { setState(INITIAL); toast.info("Rozložení obnoveno"); }}>
           Obnovit ukázku
         </Button>
