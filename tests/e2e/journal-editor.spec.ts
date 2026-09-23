@@ -7,7 +7,7 @@ test.describe("JournalLinesEditor", () => {
   });
 
   test("píše rovnou do aktivní buňky, Esc vrací hodnotu a F2 ji zachová", async ({ page }) => {
-    const firstGrid = page.getByRole("grid").first();
+    const firstGrid = page.locator('[role="grid"]:has([data-cell-key="l1:text"])');
     const textCell = firstGrid.locator('[data-cell-key="l1:text"]');
     await expect(textCell).toContainText("Servisní práce");
 
@@ -24,8 +24,8 @@ test.describe("JournalLinesEditor", () => {
   });
 
   test("Ctrl+D duplikuje a Ctrl+Delete odebere řádek s možností vrácení", async ({ page }) => {
-    const firstGrid = page.getByRole("grid").first();
-    const rows = firstGrid.locator("tbody tr");
+    const firstGrid = page.locator('[role="grid"]:has([data-cell-key="l2:text"])');
+    const rows = firstGrid.locator('[data-cell-key$=":text"]');
     await expect(rows).toHaveCount(2);
     const activeCell = firstGrid.locator('[data-cell-key="l1:text"]');
     await activeCell.click();
@@ -50,14 +50,14 @@ test.describe("JournalLinesEditor", () => {
   });
 
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
-    const postedGrid = page.getByRole("grid").nth(5);
+    const postedGrid = page.locator('[role="grid"]:has([data-cell-key="posted1:text"])');
     await expect(postedGrid.locator('[data-cell-key="posted1:text"]')).toHaveAttribute("tabindex", "0");
     await expect(postedGrid.locator('[data-cell-key="posted1:dimensionId"]')).toHaveAttribute("tabindex", "0");
     await expect(postedGrid.locator('[data-cell-key="posted1:amount"]')).toHaveAttribute("tabindex", "-1");
   });
 
   test("hlavní účet knihy je jen pro čtení a řádek zaokrouhlení je poslední bez akcí", async ({ page }) => {
-    const cashGrid = page.getByRole("grid").nth(4);
+    const cashGrid = page.locator('[role="grid"]:has([data-cell-key="pd1:debitAccount"])');
     await expect(cashGrid.locator('[data-cell-key="pd1:debitAccount"]')).toHaveAttribute("tabindex", "-1");
     await expect(cashGrid.locator('[data-cell-key="pd1:creditAccount"]')).toHaveAttribute("tabindex", "0");
     const rows = cashGrid.locator("tbody tr");

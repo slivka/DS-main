@@ -1,11 +1,10 @@
 /**
  * @deprecated Importujte převodní funkce a typy z veřejného vstupu design systému.
- * Soubor zůstává jako kompatibilní alias pro starší přímé importy.
  */
 export {
-  fromDbLines,
-  toDbLines,
-  type JournalDbLine,
+  fromJournalRow,
+  toJournalRow,
   type JournalLine,
   type JournalLineColumn,
+  type JournalRow,
 } from "../components/ds/accounting/journal-lines";

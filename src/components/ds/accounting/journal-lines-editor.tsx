@@ -29,21 +29,24 @@ import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/gri
 import { amountClass, formatAmount } from "../../../lib/format";
 import { useIsActivePane } from "../panes/pane-context";
 import { cn } from "../../../lib/utils";
+import type { SideFieldRulesFn } from "./journal-lines";
 import {
   isResultAccountType,
-  sideFieldRules,
+  sideFieldRules as defaultSideFieldRules,
   type JournalLine,
   type JournalLineColumn,
   type JournalSharedSide,
 } from "./journal-lines";
 
-export type { JournalDbLine, JournalLine, JournalLineColumn, JournalRow, JournalSharedSide } from "./journal-lines";
-export { fromDbLines, fromJournalRow, toDbLines, toJournalRow, sideFieldRules } from "./journal-lines";
+export type { JournalLine, JournalLineColumn, JournalRow, JournalSharedSide, SideFieldRules, SideFieldRulesFn } from "./journal-lines";
+export { fromJournalRow, toJournalRow, sideFieldRules } from "./journal-lines";
 
-export type JournalLineDefaults = Partial<Omit<JournalLine, "id" | "pairNo">>;
+export type JournalLineDefaults = Partial<Omit<JournalLine, "id">>;
+/** Režim editoru: interní doklad (obě strany) nebo doklad s hlavním účtem knihy. */
+export type JournalLinesMode = "internal" | "mainAccount";
+/** Strana hlavního účtu – odpovídá `documents.main_account_side`. */
+export type JournalMainSide = "MD" | "D";
 export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
-/** Hlavní účet knihy – strana odpovídá `documents.main_account_side`. */
-export type JournalMainAccount = { accountId: string; side: "MD" | "D" };
 
 export interface JournalLinesEditorTexts {
   row: string;
@@ -156,8 +159,14 @@ export interface JournalLinesEditorProps {
   sideFields?: "shared" | "split";
   /** Na kterou stranu se ve sdíleném režimu hodnoty ukládají (výchozí "both"). */
   sharedSide?: JournalSharedSide;
-  /** Hlavní účet knihy – jeho strana je jen pro čtení, zadává se protiúčet. */
-  mainAccount?: JournalMainAccount;
+  /** Režim: "internal" = MD i DAL na řádku, "mainAccount" = hlavní strana jen ke čtení, zadává se protiúčet (výchozí "internal"). */
+  mode?: JournalLinesMode;
+  /** Strana hlavního účtu knihy (režim "mainAccount"). */
+  mainSide?: JournalMainSide;
+  /** Číslo hlavního účtu knihy (režim "mainAccount"). */
+  mainAccount?: string | null;
+  /** Pravidla stranových polí podle účtu (výchozí sideFieldRules z design systému). */
+  sideFieldRules?: SideFieldRulesFn;
   /** Zakázka je povinná u bilančních účtů. */
   dimensionRequired?: boolean;
   /** Povolení příznaku Nedaňový pro řádek (výchozí: nákladový nebo výnosový účet). */
@@ -186,7 +195,8 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     {
       lines, onChange, accounts, dimensions = [], partners = [], currencies = [
         { value: "CZK", label: "CZK" }, { value: "EUR", label: "EUR" }, { value: "USD", label: "USD" },
-      ], showCurrency = false, sideFields = "split", sharedSide = "both", mainAccount,
+      ], showCurrency = false, sideFields = "split", sharedSide = "both",
+      mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules,
       dimensionRequired = false, isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed",
       roundingLimit = 0.5, onRoundingFill, expectedTotal, defaults,
       validate, storageKey = "journal-lines", texts, className,
@@ -222,6 +232,8 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       () => new Map(accounts.map((account) => [account.code, account])),
       [accounts],
     );
+    const mainAccount = mode === "mainAccount" && mainAccountId && mainSide
+      ? { accountId: mainAccountId, side: mainSide } : undefined;
     const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
     const mainColumn: JournalLineColumn | null = mainAccount
       ? mainAccount.side === "MD" ? "debitAccount" : "creditAccount"

@@ -4092,8 +4092,29 @@
           "default": "both"
         },
         {
+          "name": "mode",
+          "type": "enum",
+          "values": [
+            "internal",
+            "mainAccount"
+          ],
+          "default": "internal"
+        },
+        {
+          "name": "mainSide",
+          "type": "enum",
+          "values": [
+            "MD",
+            "D"
+          ]
+        },
+        {
           "name": "mainAccount",
-          "type": "any"
+          "type": "string"
+        },
+        {
+          "name": "sideFieldRules",
+          "type": "function"
         },
         {
           "name": "dimensionRequired",
@@ -4157,7 +4178,7 @@
           "default": "journal-cell-editor"
         }
       ],
-      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním.",
+      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Režim mode=\"mainAccount\" s mainSide a mainAccount zamkne hlavní stranu; převod do databáze přes toJournalRow / fromJournalRow.",
       "examples": [
         {
           "label": "Řádky zápisu",
@@ -4166,7 +4187,8 @@
       ],
       "antipatterns": [
         "Nepřidávejte in-place účetní editaci do obecného DataGridu.",
-        "Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns."
+        "Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns.",
+        "Nepoužívejte odstraněné toDbLines / fromDbLines ani pairNo; mainAccount nepředávejte jako objekt."
       ]
     },
     {

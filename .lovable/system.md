@@ -198,7 +198,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - `JournalLinesEditor` je specializovaný in-place grid. Obecný `DataGrid` se pro editaci řádků zápisu nemění.
 - Řádek obrazovky je předkontace MD účet / DAL účet / částka a odpovídá právě jednomu řádku v `journal_lines`. Ukládání vždy přes `toJournalRow`, načítání přes `fromJournalRow` (camelCase v komponentě, snake_case v databázi).
-- `toDbLines`, `fromDbLines` a `pairNo` jsou deprecated (rozpad na dva řádky) – v nových aplikacích se nepoužívají.
+- Převod řádků jen přes `toJournalRow` / `fromJournalRow` (1:1 s databází). JournalLinesEditor: `mode` ('internal' | 'mainAccount'), `mainSide` ('MD' | 'D'), `mainAccount` (číslo účtu), `sideFieldRules` (vlastní pravidla stranových polí). DocumentForm tyto props předává editoru přímo.
 - Dva režimy jedné komponenty: bez `mainAccount` jde o interní doklad (MD i DAL účet na řádku, `sideFields="split"` je výchozí); s `mainAccount` je hlavní strana jen ke čtení a zadává se pouze protiúčet.
 - `sideFields="split"` (výchozí) má oddělené sloupce MD/DAL, ve výběru sloupců výchozí skryté, pokud nemají hodnotu. `sideFields="shared"` má jeden sloupec VS / Partner / Zakázka a zapisuje jej podle `sharedSide` ("debit" | "credit" | "both", výchozí "both").
 - `mainAccount={{ accountId, side }}` používá `side: 'MD' | 'D'` (shodně s `documents.main_account_side`). Hlavní strana (účet, VS, partner, zakázka) je jen pro čtení a šedá; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
