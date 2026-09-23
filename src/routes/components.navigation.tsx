@@ -16,6 +16,7 @@ import {
   type NavGroup,
   type NavItem,
 } from "@/components/ds";
+import { PaneShowcase } from "@/components/showcase/PaneShowcase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MOCK_COMPANIES, MOCK_PERIODS } from "@/lib/mock/accounting";
@@ -197,6 +198,13 @@ function NavigationPage() {
             ))}
           </ul>
         </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Režim více oken"
+        description="Panely mají vlastní historii a titulek, dělicí čáry jdou táhnout (dvojklik = rovnoměrně). Nedostupné rozložení je šedé, stejný doklad se neotevře dvakrát a neuložené změny se potvrzují."
+      >
+        <PaneShowcase />
       </ShowcaseSection>
 
       <ShowcaseSection
