@@ -31,6 +31,10 @@ export type AccountOption = {
   code: string;
   name: string;
   type?: AccountType;
+  /** Kategorie účtu z osnovy (`accounts.category`) – řídí povinná stranová pole. */
+  category?: string;
+  /** Typ účtu z osnovy (`accounts.account_type`), např. „nakladovy“. */
+  accountType?: string;
   active?: boolean;
   /** Zda lze na tento účet přímo účtovat (jinak je jen součtový). */
   postable?: boolean;
