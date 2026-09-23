@@ -7,12 +7,13 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { Copy, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Percent, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../../ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { formatAccountCode } from "./account-code";
@@ -28,19 +29,27 @@ import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/gri
 import { amountClass, formatAmount } from "../../../lib/format";
 import { useIsActivePane } from "../panes/pane-context";
 import { cn } from "../../../lib/utils";
-import type { JournalLine, JournalLineColumn, JournalSharedSide } from "./journal-lines";
+import {
+  isResultAccountType,
+  sideFieldRules,
+  type JournalLine,
+  type JournalLineColumn,
+  type JournalSharedSide,
+} from "./journal-lines";
 
 export type { JournalDbLine, JournalLine, JournalLineColumn, JournalRow, JournalSharedSide } from "./journal-lines";
-export { fromDbLines, fromJournalRow, toDbLines, toJournalRow } from "./journal-lines";
+export { fromDbLines, fromJournalRow, toDbLines, toJournalRow, sideFieldRules } from "./journal-lines";
 
 export type JournalLineDefaults = Partial<Omit<JournalLine, "id" | "pairNo">>;
 export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
-export type JournalMainAccount = { accountId: string; side: "MD" | "DAL" };
+/** Hlavní účet knihy – strana odpovídá `documents.main_account_side`. */
+export type JournalMainAccount = { accountId: string; side: "MD" | "D" };
 
 export interface JournalLinesEditorTexts {
   row: string;
   debitAccount: string;
   creditAccount: string;
+  counterAccount: string;
   amount: string;
   currency: string;
   foreignAmount: string;
@@ -56,7 +65,15 @@ export interface JournalLinesEditorTexts {
   debitPartner: string;
   creditPartner: string;
   nonTax: string;
+  nonTaxOn: string;
+  nonTaxOff: string;
   rounding: string;
+  roundingHint: string;
+  detail: string;
+  showDetail: string;
+  hideDetail: string;
+  sideDebit: string;
+  sideCredit: string;
   actions: string;
   addLine: string;
   duplicateLine: string;
@@ -66,25 +83,36 @@ export interface JournalLinesEditorTexts {
   total: string;
   balanced: string;
   difference: string;
+  remaining: string;
+  fillRounding: string;
   errors: string;
   empty: string;
   debitRequired: string;
   creditRequired: string;
   amountRequired: string;
+  missingVs: string;
+  missingDimension: string;
 }
 
 export const DEFAULT_JOURNAL_LINES_TEXTS: JournalLinesEditorTexts = {
-  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", amount: "Částka v Kč",
+  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", counterAccount: "Protiúčet",
+  amount: "Částka v Kč",
   currency: "Měna", foreignAmount: "Částka v měně", rate: "Kurz", text: "Text",
   dimension: "Zakázka", vs: "VS", partner: "Partner",
   debitDimension: "MD zakázka", creditDimension: "DAL zakázka",
   debitVs: "MD VS", creditVs: "DAL VS",
   debitPartner: "MD partner", creditPartner: "DAL partner",
-  nonTax: "Nedaňový", rounding: "Zaokrouhlení", actions: "Akce",
+  nonTax: "Nedaňový", nonTaxOn: "Nedaňový", nonTaxOff: "Daňový – klikněte pro nedaňový",
+  rounding: "Zaokrouhlení", roundingHint: "Zaokrouhlení měňte v hlavičce dokladu",
+  detail: "Detail řádku", showDetail: "Zobrazit detail řádku (Alt+↓)", hideDetail: "Skrýt detail řádku (Alt+↓)",
+  sideDebit: "MD", sideCredit: "DAL",
+  actions: "Akce",
   addLine: "Přidat řádek", duplicateLine: "Duplikovat řádek", removeLine: "Odebrat řádek",
   undo: "Zpět", removed: "Řádek byl odebrán", total: "Celkem", balanced: "Částka odpovídá dokladu",
-  difference: "Zbývá", errors: "Počet chyb", empty: "Zatím zde nejsou žádné řádky",
+  difference: "Zbývá", remaining: "Zbývá rozepsat", fillRounding: "Dorovnat zaokrouhlením",
+  errors: "Počet chyb", empty: "Zatím zde nejsou žádné řádky",
   debitRequired: "Vyberte účet MD", creditRequired: "Vyberte účet DAL", amountRequired: "Částka musí být nenulová",
+  missingVs: "Chybí VS na straně {side}", missingDimension: "Chybí zakázka na straně {side}",
 };
 
 const SHARED_COLUMNS: JournalLineColumn[] = ["dimensionId", "vs", "partnerId"];
@@ -110,14 +138,11 @@ const newId = () => `line-${Math.random().toString(36).slice(2, 10)}`;
 const roundMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 
 const COLUMN_WIDTHS: Record<ColumnId, number> = {
-  row: 54, debitAccount: 220, creditAccount: 220, amount: 140, currency: 92,
+  row: 70, debitAccount: 220, creditAccount: 220, amount: 170, currency: 92,
   foreignAmount: 150, rate: 110, text: 240, dimensionId: 190, vs: 120, partnerId: 220,
   debitDimensionId: 190, creditDimensionId: 190, debitVs: 120, creditVs: 120,
   debitPartnerId: 220, creditPartnerId: 220, nonTax: 110, actions: 72,
 };
-
-/** Účet nákladů nebo výnosů (třída 5 a 6) – tam má nedaňový příznak smysl. */
-const isResultAccount = (code?: string | null) => !!code && (code.startsWith("5") || code.startsWith("6"));
 
 export interface JournalLinesEditorProps {
   lines: JournalLine[];
@@ -127,17 +152,26 @@ export interface JournalLinesEditorProps {
   partners?: PartnerOption[];
   currencies?: SelectOption[];
   showCurrency?: boolean;
-  /** Společné nebo oddělené VS / partner / zakázka pro MD a DAL (výchozí "shared"). */
+  /** Společné nebo oddělené VS / partner / zakázka pro MD a DAL (výchozí "split"). */
   sideFields?: "shared" | "split";
   /** Na kterou stranu se ve sdíleném režimu hodnoty ukládají (výchozí "both"). */
   sharedSide?: JournalSharedSide;
   /** Hlavní účet knihy – jeho strana je jen pro čtení, zadává se protiúčet. */
   mainAccount?: JournalMainAccount;
+  /** Zakázka je povinná u bilančních účtů. */
+  dimensionRequired?: boolean;
   /** Povolení příznaku Nedaňový pro řádek (výchozí: nákladový nebo výnosový účet). */
   isNonTaxAllowed?: (line: JournalLine) => boolean;
-  editableColumns?: JournalLineColumn[];
-  /** @deprecated Použijte editableColumns; true znamená, že nelze upravit žádný sloupec. */
-  readOnly?: boolean;
+  /** Pole, která lze upravit (výchozí všechna). Zaúčtovaný doklad předá jen povolená. */
+  editableFields?: JournalLineColumn[];
+  /** Celá částka dokladu, proti které se hlídá „Zbývá rozepsat“. */
+  totalAmount?: number;
+  /** "entered" = částka dokladu je zadaná v hlavičce, kontroluje se rozepsání. */
+  totalMode?: "entered" | "computed";
+  /** Limit pro dorovnání haléřovým vyrovnáním (výchozí 0,50). */
+  roundingLimit?: number;
+  onRoundingFill?: (amount: number) => void;
+  /** @deprecated Použijte totalAmount. */
   expectedTotal?: number;
   defaults?: JournalLineDefaults;
   validate?: (line: JournalLine) => JournalLineErrors;
@@ -152,8 +186,9 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     {
       lines, onChange, accounts, dimensions = [], partners = [], currencies = [
         { value: "CZK", label: "CZK" }, { value: "EUR", label: "EUR" }, { value: "USD", label: "USD" },
-      ], showCurrency = false, sideFields = "shared", sharedSide = "both", mainAccount,
-      isNonTaxAllowed, editableColumns, readOnly = false, expectedTotal, defaults,
+      ], showCurrency = false, sideFields = "split", sharedSide = "both", mainAccount,
+      dimensionRequired = false, isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed",
+      roundingLimit = 0.5, onRoundingFill, expectedTotal, defaults,
       validate, storageKey = "journal-lines", texts, className,
     },
     forwardedRef,
@@ -167,9 +202,11 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       else if (forwardedRef) forwardedRef.current = node;
     };
     const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey);
-    const editable = useMemo(() => new Set(readOnly ? [] : (editableColumns ?? ALL_EDITABLE)), [editableColumns, readOnly]);
+    const editable = useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
     const [active, setActive] = useState<{ rowId: string; column: JournalLineColumn } | null>(null);
     const [editing, setEditing] = useState<EditState | null>(null);
+    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+    const expectedAmount = totalAmount ?? expectedTotal;
 
     const LABEL_KEYS: Record<JournalLineColumn, keyof JournalLinesEditorTexts> = {
       debitAccount: "debitAccount", creditAccount: "creditAccount", amount: "amount", text: "text",
@@ -181,11 +218,23 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     };
     const label = (column: JournalLineColumn) => t[LABEL_KEYS[column]];
 
-    /** Sloupec hlavního účtu a jeho společné údaje jsou jen pro čtení. */
+    const accountByCode = useMemo(
+      () => new Map(accounts.map((account) => [account.code, account])),
+      [accounts],
+    );
+    const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
+    const mainColumn: JournalLineColumn | null = mainAccount
+      ? mainAccount.side === "MD" ? "debitAccount" : "creditAccount"
+      : null;
+    const counterColumn: JournalLineColumn | null = mainAccount
+      ? mainAccount.side === "MD" ? "creditAccount" : "debitAccount"
+      : null;
+
+    /** Sloupce hlavní strany jsou jen ke čtení – doplní je hlavička dokladu. */
     const isMainSideColumn = (column: JournalLineColumn) => {
       if (!mainAccount) return false;
-      const debitSide: JournalLineColumn[] = ["debitAccount", "debitVs", "debitPartnerId"];
-      const creditSide: JournalLineColumn[] = ["creditAccount", "creditVs", "creditPartnerId"];
+      const debitSide: JournalLineColumn[] = ["debitAccount", "debitVs", "debitPartnerId", "debitDimensionId"];
+      const creditSide: JournalLineColumn[] = ["creditAccount", "creditVs", "creditPartnerId", "creditDimensionId"];
       return (mainAccount.side === "MD" ? debitSide : creditSide).includes(column);
     };
 
@@ -201,8 +250,16 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
         : SHARED_COLUMNS.map((id) => ({ id, label: label(id), locked: true }));
       return [
         { id: "row", label: t.row, locked: true },
-        { id: "debitAccount", label: t.debitAccount, locked: true },
-        { id: "creditAccount", label: t.creditAccount, locked: true },
+        {
+          id: "debitAccount",
+          label: mainAccount ? (mainColumn === "debitAccount" ? t.debitAccount : t.counterAccount) : t.debitAccount,
+          locked: true,
+        },
+        {
+          id: "creditAccount",
+          label: mainAccount ? (mainColumn === "creditAccount" ? t.creditAccount : t.counterAccount) : t.creditAccount,
+          locked: true,
+        },
         ...(showCurrency ? [
           { id: "currency" as const, label: t.currency, locked: true },
           { id: "foreignAmount" as const, label: t.foreignAmount, locked: true, align: "right" as const },
@@ -211,19 +268,47 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
         { id: "amount", label: t.amount, locked: true, align: "right" },
         { id: "text", label: t.text, locked: true },
         ...sideColumns,
-        { id: "nonTax", label: t.nonTax, align: "center" },
         { id: "actions", label: t.actions, locked: true, align: "right" },
       ];
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showCurrency, sideFields, lines, t.actions, t.amount, t.creditAccount, t.currency, t.debitAccount, t.dimension, t.foreignAmount, t.nonTax, t.partner, t.rate, t.row, t.text, t.vs]);
+    }, [showCurrency, sideFields, lines, mainAccount?.side, t.actions, t.amount, t.counterAccount, t.creditAccount, t.currency, t.debitAccount, t.dimension, t.foreignAmount, t.partner, t.rate, t.row, t.text, t.vs]);
     const columns = useGridColumns(storageKey, columnDefs);
     const visibleColumns = columns.columns;
 
-    /** Řádek zaokrouhlení je vždy poslední a jen pro čtení. */
+    /** Řádek haléřového vyrovnání je vždy poslední a jen pro čtení. */
     const orderedLines = useMemo(
       () => [...lines].sort((a, b) => Number(Boolean(a.isRounding)) - Number(Boolean(b.isRounding))),
       [lines],
     );
+
+    /** Chybějící povinná stranová pole – jen nápověda, rozhoduje databáze. */
+    const sideIssues = (line: JournalLine): { column: JournalLineColumn; message: string }[] => {
+      if (line.isRounding) return [];
+      const issues: { column: JournalLineColumn; message: string }[] = [];
+      (["debit", "credit"] as const).forEach((side) => {
+        const code = side === "debit" ? line.debitAccount : line.creditAccount;
+        const account = code ? accountByCode.get(code) : undefined;
+        if (!account) return;
+        const rules = sideFieldRules(account, { dimensionRequired });
+        const sideLabel = side === "debit" ? t.sideDebit : t.sideCredit;
+        const vsValue = (side === "debit" ? line.debitVs : line.creditVs) ?? (sideFields === "shared" ? line.vs : undefined);
+        const dimensionValue = (side === "debit" ? line.debitDimensionId : line.creditDimensionId)
+          ?? (sideFields === "shared" ? line.dimensionId : undefined);
+        if (rules.vsRequired && !vsValue) {
+          issues.push({
+            column: sideFields === "shared" ? "vs" : side === "debit" ? "debitVs" : "creditVs",
+            message: t.missingVs.replace("{side}", sideLabel),
+          });
+        }
+        if (rules.dimensionRequired && !dimensionValue) {
+          issues.push({
+            column: sideFields === "shared" ? "dimensionId" : side === "debit" ? "debitDimensionId" : "creditDimensionId",
+            message: t.missingDimension.replace("{side}", sideLabel),
+          });
+        }
+      });
+      return issues;
+    };
 
     const validations = useMemo(() => new Map(lines.map((line) => {
       const builtIn: JournalLineErrors = {};
@@ -231,25 +316,32 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
         if (!line.debitAccount) builtIn.debitAccount = t.debitRequired;
         if (!line.creditAccount) builtIn.creditAccount = t.creditRequired;
         if (!Number(line.amount)) builtIn.amount = t.amountRequired;
+        sideIssues(line).forEach((issue) => { builtIn[issue.column] = issue.message; });
       }
       return [line.id, { ...builtIn, ...validate?.(line) }];
-    })), [lines, t.amountRequired, t.creditRequired, t.debitRequired, validate]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    })), [lines, dimensionRequired, sideFields, t.amountRequired, t.creditRequired, t.debitRequired, validate]);
     const errorCount = [...validations.values()].reduce((sum, errors) => sum + Object.values(errors).filter(Boolean).length, 0);
     const total = lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
-    const difference = expectedTotal === undefined ? 0 : roundMoney(expectedTotal - total);
+    const difference = expectedAmount === undefined ? 0 : roundMoney(expectedAmount - total);
+    const showRemaining = Boolean(mainAccount) && totalMode === "entered" && expectedAmount !== undefined;
+    const canFillRounding = showRemaining && difference !== 0 && Math.abs(difference) <= roundingLimit && Boolean(onRoundingFill);
 
-    const nonTaxAllowed = (line: JournalLine) =>
-      isNonTaxAllowed ? isNonTaxAllowed(line) : isResultAccount(line.debitAccount) || isResultAccount(line.creditAccount);
+    const nonTaxAllowed = (line: JournalLine) => {
+      if (isNonTaxAllowed) return isNonTaxAllowed(line);
+      return [line.debitAccount, line.creditAccount].some((code) =>
+        isResultAccountType(code ? accountByCode.get(code) : undefined, code));
+    };
 
     const patch = (id: string, values: Partial<JournalLine>) =>
       onChange(lines.map((line) => (line.id === id ? { ...line, ...values } : line)));
 
     const makeLine = (previous?: JournalLine): JournalLine => {
-      const remaining = expectedTotal === undefined ? 0 : roundMoney(expectedTotal - total);
+      const remaining = expectedAmount === undefined ? 0 : roundMoney(expectedAmount - total);
       return {
         id: newId(),
         debitAccount: mainAccount?.side === "MD" ? mainAccount.accountId : null,
-        creditAccount: mainAccount?.side === "DAL" ? mainAccount.accountId : null,
+        creditAccount: mainAccount?.side === "D" ? mainAccount.accountId : null,
         amount: remaining > 0 ? remaining : 0,
         text: previous?.text ?? defaults?.text,
         dimensionId: previous?.dimensionId ?? defaults?.dimensionId,
@@ -278,11 +370,23 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       onChange(remaining);
       toast(t.removed, { action: { label: t.undo, onClick: () => onChange([...remaining.slice(0, index), line, ...remaining.slice(index)]) } });
     };
+    const toggleNonTax = (line: JournalLine) => {
+      if (!nonTaxAllowed(line) || !editable.has("nonTax") || line.isRounding) return;
+      patch(line.id, { nonTax: !line.nonTax });
+    };
+    const toggleDetail = (line: JournalLine) =>
+      setExpanded((state) => ({ ...state, [line.id]: !state[line.id] }));
 
     const canEditCell = (line: JournalLine, column: JournalLineColumn) => {
       if (line.isRounding || !editable.has(column) || isMainSideColumn(column)) return false;
       if (column === "nonTax") return nonTaxAllowed(line);
       return true;
+    };
+
+    /** Protiúčet nesmí mít stejnou kategorii jako hlavní účet knihy. */
+    const accountsFor = (column: JournalLineColumn) => {
+      if (!mainAccount || column !== counterColumn || !mainOption?.category) return accounts;
+      return accounts.filter((account) => account.category !== mainOption.category);
     };
 
     const focusCell = (rowIndex: number, column: JournalLineColumn, backwards = false) => {
@@ -317,7 +421,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     const displayValue = (line: JournalLine, column: JournalLineColumn) => {
       if (ACCOUNT_COLUMNS.has(column)) {
         const code = line[column as "debitAccount" | "creditAccount"];
-        const account = accounts.find((item) => item.code === code);
+        const account = code ? accountByCode.get(code) : undefined;
         return code ? `${formatAccountCode(code)}${account ? ` – ${account.name}` : ""}` : "";
       }
       if (DIMENSION_COLUMNS.has(column)) {
@@ -345,7 +449,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       const seed = editing?.seed;
       const commitSelect = (values: Partial<JournalLine>) => { patch(line.id, values); finish(rowIndex, column); };
       if (ACCOUNT_COLUMNS.has(column)) return (
-        <AccountSelect accounts={accounts} value={line[column as "debitAccount"]} initialSearch={seed} onChange={(value) => commitSelect({ [column]: value, counterAccount: mainAccount ? value : line.counterAccount })} onOpenChange={(open) => { if (!open) setEditing(null); }} className="journal-cell-editor" />
+        <AccountSelect accounts={accountsFor(column)} value={line[column as "debitAccount"]} initialSearch={seed} onChange={(value) => commitSelect({ [column]: value, counterAccount: mainAccount ? value : line.counterAccount })} onOpenChange={(open) => { if (!open) setEditing(null); }} className="journal-cell-editor" />
       );
       if (DIMENSION_COLUMNS.has(column)) return <DimensionSelect options={dimensions} value={line[column as "dimensionId"]} onChange={(value) => commitSelect({ [column]: value })} className="journal-cell-editor" />;
       if (PARTNER_COLUMNS.has(column)) return <PartnerSelect partners={partners} value={line[column as "partnerId"]} onChange={(value) => commitSelect({ [column]: value })} className="journal-cell-editor" />;
@@ -362,18 +466,32 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       return <Input autoFocus aria-label={label(column)} value={seed ?? String(line[column] ?? "")} className="journal-cell-editor" onKeyDown={(event) => inputKey(event, rowIndex, column)} onChange={(event) => patch(line.id, { [column]: VS_COLUMNS.has(column) ? event.target.value.replace(/\D/g, "").slice(0, 10) : event.target.value })} />;
     };
 
-    const renderNonTax = (line: JournalLine) => {
-      const allowed = nonTaxAllowed(line);
-      const canEdit = canEditCell(line, "nonTax");
-      if (!allowed) return <span className="text-muted-foreground">—</span>;
+    /** Přepínací značka Nedaňový u částky. */
+    const renderNonTaxMark = (line: JournalLine) => {
+      if (line.isRounding || !nonTaxAllowed(line)) return null;
+      const on = Boolean(line.nonTax);
       return (
-        <Checkbox
-          checked={Boolean(line.nonTax)}
-          disabled={!canEdit}
-          aria-label={t.nonTax}
-          data-cell-key={`${line.id}:nonTax`}
-          onCheckedChange={(checked) => patch(line.id, { nonTax: checked === true })}
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              data-cell-key={`${line.id}:nonTax`}
+              aria-label={t.nonTax}
+              aria-pressed={on}
+              disabled={!canEditCell(line, "nonTax")}
+              onClick={() => toggleNonTax(line)}
+              className={cn(
+                "inline-flex size-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors",
+                on
+                  ? "border-amber-500 bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+                  : "border-transparent text-muted-foreground/50 hover:border-border",
+              )}
+            >
+              <Percent className="size-3" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{on ? t.nonTaxOn : t.nonTaxOff}</TooltipContent>
+        </Tooltip>
       );
     };
 
@@ -382,17 +500,24 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       const canEdit = canEditCell(line, column);
       const isEditing = editing?.rowId === line.id && editing.column === column;
       const content = isEditing ? renderEditor(line, rowIndex, column) : displayValue(line, column);
+      const readOnlyMain = isMainSideColumn(column) && !line.isRounding;
       const cell = (
         <div
           tabIndex={canEdit ? 0 : -1}
           role="gridcell"
           data-cell-key={`${line.id}:${column}`}
           aria-label={`${label(column)} ${rowIndex + 1}`}
-          className={cn("journal-grid-cell min-h-[1.8em] truncate rounded-sm px-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/50", canEdit && "cursor-cell", error && "ring-1 ring-destructive")}
+          className={cn(
+            "journal-grid-cell min-h-[1.8em] truncate rounded-sm px-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+            canEdit && "cursor-cell",
+            readOnlyMain && "bg-muted/50 text-muted-foreground",
+            error && "ring-1 ring-destructive",
+          )}
           onClick={(event) => (event.currentTarget as HTMLElement).focus()}
           onFocus={() => setActive({ rowId: line.id, column })}
           onDoubleClick={() => canEdit && setEditing({ rowId: line.id, column, original: { ...line } })}
           onKeyDown={(event) => {
+            if (event.altKey && event.key === "ArrowDown") { event.preventDefault(); toggleDetail(line); return; }
             if (!canEdit || isEditing) return;
             if (event.key === "F2" || event.key === "Enter") { event.preventDefault(); event.stopPropagation(); setEditing({ rowId: line.id, column, original: { ...line } }); return; }
             if (event.key === "Tab") { event.preventDefault(); focusCell(rowIndex, column, event.shiftKey); return; }
@@ -415,6 +540,48 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       return error ? <Tooltip><TooltipTrigger asChild>{cell}</TooltipTrigger><TooltipContent>{error}</TooltipContent></Tooltip> : cell;
     };
 
+    /** Rozbalený detail řádku – stranová pole a příznak Nedaňový. */
+    const renderDetail = (line: JournalLine) => {
+      const fieldIds: JournalLineColumn[] = sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS;
+      return (
+        <div className="grid gap-3 bg-muted/30 p-3 @min-[48rem]:grid-cols-3">
+          {fieldIds.map((id) => {
+            const disabled = !canEditCell(line, id);
+            const control = DIMENSION_COLUMNS.has(id) ? (
+              <DimensionSelect options={dimensions} value={line[id as "dimensionId"]} disabled={disabled} onChange={(value) => patch(line.id, { [id]: value })} />
+            ) : PARTNER_COLUMNS.has(id) ? (
+              <PartnerSelect partners={partners} value={line[id as "partnerId"]} disabled={disabled} onChange={(value) => patch(line.id, { [id]: value })} />
+            ) : (
+              <Input
+                inputMode="numeric"
+                value={String(line[id] ?? "")}
+                disabled={disabled}
+                onChange={(event) => patch(line.id, { [id]: event.target.value.replace(/\D/g, "").slice(0, 10) })}
+                className="h-9 text-right font-mono tabular-nums"
+              />
+            );
+            return (
+              <div key={id} className="flex flex-col gap-1">
+                <Label className="text-xs text-muted-foreground">{label(id)}</Label>
+                {control}
+              </div>
+            );
+          })}
+          {nonTaxAllowed(line) ? (
+            <div className="flex items-center gap-2 pt-5">
+              <Checkbox
+                id={`${line.id}-nontax`}
+                checked={Boolean(line.nonTax)}
+                disabled={!canEditCell(line, "nonTax")}
+                onCheckedChange={(checked) => patch(line.id, { nonTax: checked === true })}
+              />
+              <Label htmlFor={`${line.id}-nontax`}>{t.nonTax}</Label>
+            </div>
+          ) : null}
+        </div>
+      );
+    };
+
     useEffect(() => {
       if (!editing) return;
       const cell = rootRef.current?.querySelector<HTMLElement>(`[data-cell-key="${editing.rowId}:${editing.column}"]`);
@@ -425,11 +592,13 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       if (!paneActive || editing || !active || (!event.ctrlKey && !event.metaKey)) return;
       const line = lines.find((item) => item.id === active.rowId);
       if (!line || line.isRounding) return;
-      if (event.key.toLocaleLowerCase("cs") === "d") { event.preventDefault(); event.stopPropagation(); duplicate(line); }
+      const key = event.key.toLocaleLowerCase("cs");
+      if (key === "d") { event.preventDefault(); event.stopPropagation(); duplicate(line); }
+      if (key === "n") { event.preventDefault(); event.stopPropagation(); toggleNonTax(line); }
       if (event.key === "Delete") { event.preventDefault(); event.stopPropagation(); remove(line); }
     };
 
-    const actionsVisible = !readOnly;
+    const actionsVisible = editable.size > 0;
     const span = visibleColumns.length;
 
     return (
@@ -440,24 +609,92 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
             <Table role="grid" className="min-w-max table-fixed">
               <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: `${columns.widths[column.id] ?? COLUMN_WIDTHS[column.id]}px` }} />)}</colgroup>
               <TableHeader className="grid-column-header"><TableRow>{visibleColumns.map((column) => <TableHead key={column.id} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn("relative", column.align === "right" && "text-right", column.align === "center" && "text-center", column.id === "actions" && "grid-actions-header")}><span>{column.label}</span>{column.id !== "row" && column.id !== "actions" ? <ColumnResizeHandle onResize={(width) => columns.setWidth(column.id, width)} onReset={() => columns.clearWidth(column.id)} /> : null}</TableHead>)}</TableRow></TableHeader>
-              <TableBody>{orderedLines.length === 0 ? <TableRow><TableCell colSpan={span} className="py-8 text-center text-muted-foreground">{t.empty}</TableCell></TableRow> : orderedLines.map((line, rowIndex) => <TableRow key={line.id} data-grid-row data-rounding={line.isRounding ? "" : undefined} tabIndex={-1} className={cn("group/row", line.isRounding && "text-muted-foreground")}>{visibleColumns.map((column) => {
-                if (column.id === "row") return <TableCell key={column.id} data-pin className="text-center font-mono text-muted-foreground">{rowIndex + 1}</TableCell>;
-                if (column.id === "actions") return <TableCell key={column.id} data-pin-right className="grid-actions-cell text-right">{actionsVisible && !line.isRounding ? <GridActions><Tooltip><TooltipTrigger asChild><GridAction aria-label={t.duplicateLine} onClick={() => duplicate(line)}><Copy /></GridAction></TooltipTrigger><TooltipContent>{t.duplicateLine}</TooltipContent></Tooltip><Tooltip><TooltipTrigger asChild><GridAction tone="destructive" aria-label={t.removeLine} onClick={() => remove(line)}><Trash2 /></GridAction></TooltipTrigger><TooltipContent>{t.removeLine}</TooltipContent></Tooltip></GridActions> : null}</TableCell>;
-                const id = column.id as JournalLineColumn;
-                if (id === "nonTax") return <TableCell key={id} className="text-center">{renderNonTax(line)}</TableCell>;
-                return <TableCell key={id} className={cn(NUMERIC_COLUMNS.has(id) && "text-right font-mono tabular-nums")}>{renderCell(line, rowIndex, id)}</TableCell>;
-              })}</TableRow>)}</TableBody>
+              <TableBody>{orderedLines.length === 0 ? <TableRow><TableCell colSpan={span} className="py-8 text-center text-muted-foreground">{t.empty}</TableCell></TableRow> : orderedLines.flatMap((line, rowIndex) => {
+                const issues = sideIssues(line);
+                const rowNode = (
+                  <TableRow key={line.id} data-grid-row data-rounding={line.isRounding ? "" : undefined} tabIndex={-1} className={cn("group/row", line.isRounding && "bg-muted/40 text-muted-foreground")}>
+                    {visibleColumns.map((column) => {
+                      if (column.id === "row") return (
+                        <TableCell key={column.id} data-pin className="text-center font-mono text-muted-foreground">
+                          <div className="flex items-center justify-center gap-1">
+                            {line.isRounding ? null : (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button type="button" aria-label={expanded[line.id] ? t.hideDetail : t.showDetail} onClick={() => toggleDetail(line)} className="text-muted-foreground hover:text-foreground">
+                                    {expanded[line.id] ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>{expanded[line.id] ? t.hideDetail : t.showDetail}</TooltipContent>
+                              </Tooltip>
+                            )}
+                            <span>{rowIndex + 1}</span>
+                          </div>
+                        </TableCell>
+                      );
+                      if (column.id === "actions") return (
+                        <TableCell key={column.id} data-pin-right className="grid-actions-cell text-right">
+                          {line.isRounding ? (
+                            <Tooltip><TooltipTrigger asChild><span className="text-xs">{t.rounding}</span></TooltipTrigger><TooltipContent>{t.roundingHint}</TooltipContent></Tooltip>
+                          ) : actionsVisible ? (
+                            <GridActions>
+                              <Tooltip><TooltipTrigger asChild><GridAction aria-label={t.duplicateLine} onClick={() => duplicate(line)}><Copy /></GridAction></TooltipTrigger><TooltipContent>{t.duplicateLine}</TooltipContent></Tooltip>
+                              <Tooltip><TooltipTrigger asChild><GridAction tone="destructive" aria-label={t.removeLine} onClick={() => remove(line)}><Trash2 /></GridAction></TooltipTrigger><TooltipContent>{t.removeLine}</TooltipContent></Tooltip>
+                            </GridActions>
+                          ) : null}
+                        </TableCell>
+                      );
+                      const id = column.id as JournalLineColumn;
+                      if (id === "amount") return (
+                        <TableCell key={id} className="text-right font-mono tabular-nums">
+                          <div className="flex items-center justify-end gap-1">
+                            {renderNonTaxMark(line)}
+                            <div className="min-w-0 flex-1">{renderCell(line, rowIndex, id)}</div>
+                          </div>
+                        </TableCell>
+                      );
+                      if (id === "text") return (
+                        <TableCell key={id}>
+                          {renderCell(line, rowIndex, id)}
+                          {issues.length ? (
+                            <div className="mt-0.5 flex flex-wrap gap-1">
+                              {issues.map((issue) => (
+                                <span key={issue.column} className="rounded-[4px] bg-destructive/10 px-1 text-[0.7em] text-destructive">{issue.message}</span>
+                              ))}
+                            </div>
+                          ) : null}
+                        </TableCell>
+                      );
+                      return <TableCell key={id} className={cn(NUMERIC_COLUMNS.has(id) && "text-right font-mono tabular-nums")}>{renderCell(line, rowIndex, id)}</TableCell>;
+                    })}
+                  </TableRow>
+                );
+                if (!expanded[line.id] || line.isRounding) return [rowNode];
+                return [rowNode, (
+                  <TableRow key={`${line.id}-detail`} data-grid-row-detail>
+                    <TableCell colSpan={span} className="p-0">{renderDetail(line)}</TableCell>
+                  </TableRow>
+                )];
+              })}</TableBody>
               <TableFooter><TableRow>{visibleColumns.map((column, index) => {
                 let content: ReactNode = null;
                 if (column.id === "row") content = t.total;
                 if (column.id === "amount") content = <span className="font-mono tabular-nums">{formatAmount(total, 2)}</span>;
-                if (column.id === "text") content = expectedTotal === undefined ? null : difference === 0 ? t.balanced : <span className={amountClass(-Math.abs(difference))}>{`${t.difference}: ${formatAmount(difference, 2)}`}</span>;
+                if (column.id === "text") content = expectedAmount === undefined ? null : difference === 0 ? t.balanced : (
+                  <span className={amountClass(-Math.abs(difference))}>{`${showRemaining ? t.remaining : t.difference}: ${formatAmount(difference, 2)}`}</span>
+                );
                 if (column.id === "actions" && errorCount > 0) content = <span className="text-destructive">{`${t.errors}: ${errorCount}`}</span>;
                 return <TableCell key={`${column.id}-${index}`} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn(column.align === "right" && "text-right", column.id === "actions" && "grid-actions-footer whitespace-nowrap")}>{content}</TableCell>;
               })}</TableRow></TableFooter>
             </Table>
           </ZoomGrid>
-          {!readOnly ? <div className="border-t p-2"><Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button></div> : null}
+          {editable.size > 0 ? (
+            <div className="flex flex-wrap items-center gap-2 border-t p-2">
+              <Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button>
+              {canFillRounding ? (
+                <Button type="button" variant="outline" size="sm" onClick={() => onRoundingFill?.(difference)}>{t.fillRounding}</Button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </GridZoomContext.Provider>
     );
