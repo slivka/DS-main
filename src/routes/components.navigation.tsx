@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Building2, FileText, KeyRound, LayoutGrid, Settings2, Users } from "lucide-react";
+import { Building2, FileText, KeyRound, LayoutGrid, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
@@ -11,11 +11,14 @@ import {
   NotificationBell,
   ThemeToggleButton,
   ThemeSetting,
+  CompanySwitcher,
+  PeriodSwitcher,
   type NavGroup,
   type NavItem,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MOCK_COMPANIES, MOCK_PERIODS } from "@/lib/mock/accounting";
 
 export const Route = createFileRoute("/components/navigation")({
   head: () => ({
@@ -63,12 +66,16 @@ const NAV_GROUPS: NavGroup[] = [
 const ADMIN_NAV: NavItem[] = [
   { to: "/components/navigation", label: "Uživatelé", icon: Users },
   { to: "/components/navigation", label: "Role a oprávnění", icon: KeyRound },
-  { to: "/components/navigation", label: "Nastavení firmy", icon: Settings2 },
+  { to: "/components/navigation", label: "Nastavení firmy", icon: SlidersHorizontal },
 ];
+
+const PREVIEW_WIDTHS = [1440, 1100, 390] as const;
 
 function NavigationPage() {
   const [activePanel, setActivePanel] = useState<string | null>(null);
   const [canEdit, setCanEdit] = useState(false);
+  const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1100);
+  const [periodId, setPeriodId] = useState<string | null>(null);
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed darkPreview>
@@ -80,6 +87,42 @@ function NavigationPage() {
           <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
           <span className="text-sm text-muted-foreground">Prázdný stav oznámení</span>
           <ThemeToggleButton />
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Přizpůsobení šířce"
+        description="Lišta zůstává v jedné řádce, kontext se na užších obrazovkách zkrátí a menu se automaticky sbalí."
+      >
+        <div className="mb-3 flex flex-wrap gap-2" role="group" aria-label="Šířka náhledu">
+          {PREVIEW_WIDTHS.map((width) => (
+            <Button key={width} type="button" size="sm" variant={previewWidth === width ? "default" : "outline"} onClick={() => setPreviewWidth(width)}>
+              {width.toLocaleString("cs-CZ")} px
+            </Button>
+          ))}
+        </div>
+        <div className="max-w-full overflow-auto rounded-lg border bg-muted p-3">
+          <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px`, maxWidth: "100%" }}>
+            <div className="flex h-14 min-w-0 flex-nowrap items-center gap-1 overflow-hidden px-3">
+              <CompanySwitcher items={MOCK_COMPANIES} value={MOCK_COMPANIES[0].id} onChange={() => undefined} />
+              <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+              <div className="min-w-0 flex-1" />
+              <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
+            </div>
+            <div className="flex h-24 border-t">
+              <div className={cn("border-r bg-card p-2 transition-[width]", previewWidth < 1280 ? "w-14" : "w-60")}>
+                <LayoutGrid className="size-4" />
+              </div>
+              <div className="p-3 text-sm text-muted-foreground">Obsah aplikace</div>
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Prázdné stavy období" description="Přepínač rozlišuje chybějící výběr a firmu, která zatím nemá žádné období.">
+        <div className="flex flex-wrap gap-3 rounded-lg border bg-card p-3">
+          <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+          <PeriodSwitcher periods={[]} value={null} onChange={() => undefined} onCreate={() => undefined} />
         </div>
       </ShowcaseSection>
 
