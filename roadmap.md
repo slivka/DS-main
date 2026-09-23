@@ -128,4 +128,4 @@
 - [x] Minimalizovat šířky sloupců podle záhlaví, zobrazených hodnot a součtů
 - [x] Texty delší než 100 znaků zobrazit ve sloupci širokém přibližně 100 znaků a zalamovat
 - [x] Doplnit dlouhý text do vzorového exportu a automaticky ověřit šířku i zalamování
-- [ ] Ověřit typovou kontrolu, stažení, otevření sešitu a sestavení
+- [x] Ověřit typovou kontrolu, stažení, otevření sešitu a sestavení
