@@ -201,7 +201,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          expectedTotal={header.amount}
+          totalAmount={header.amount}
           storageKey="showcase-journal-czk"
           defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
         />
@@ -221,7 +221,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           showCurrency
-          expectedTotal={2512}
+          totalAmount={2512}
           storageKey="showcase-journal-currency"
         />
       </ShowcaseSection>
@@ -237,7 +237,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           sideFields="split"
-          expectedTotal={6000}
+          totalAmount={6000}
           storageKey="showcase-journal-split"
         />
       </ShowcaseSection>
@@ -254,7 +254,7 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           mainAccount={{ accountId: "211001", side: "MD" }}
           sharedSide="credit"
-          expectedTotal={3500.5}
+          totalAmount={3500.5}
           storageKey="showcase-journal-cash"
         />
       </ShowcaseSection>
@@ -269,8 +269,8 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          editableColumns={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
-          expectedTotal={9800}
+          editableFields={["text", "vs", "partnerId", "dimensionId", "nonTax"]}
+          totalAmount={9800}
           storageKey="showcase-journal-posted"
         />
       </ShowcaseSection>
