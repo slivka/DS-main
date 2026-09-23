@@ -1,4 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+
+import { usePane } from "../panes/pane-context";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 import {
   Dialog,
@@ -63,6 +66,15 @@ export function RecordDialog({
   sidePanelExtra?: ReactNode;
 }) {
   const [panelOpen, setPanelOpen] = useState(false);
+  const pane = usePane();
+  const [paneElement, setPaneElement] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!pane) {
+      setPaneElement(null);
+      return;
+    }
+    setPaneElement(document.querySelector<HTMLElement>(`[data-pane="${pane.paneId}"]`));
+  }, [pane?.paneId, open]);
   useEffect(() => {
     if (!open) setPanelOpen(false);
   }, [open]);

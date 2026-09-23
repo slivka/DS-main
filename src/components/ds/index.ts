@@ -24,6 +24,12 @@ export * from "./layout/search-button";
 export * from "./layout/app-font-size";
 export * from "./layout/page-header";
 
+/* Panely (režim více oken) */
+export * from "./panes/pane-state";
+export * from "./panes/pane-context";
+export * from "./panes/pane-layout";
+export * from "./panes/pane-layout-switcher";
+
 /* Grid */
 export * from "./grid/DataGrid";
 export * from "./grid/grid-action";
