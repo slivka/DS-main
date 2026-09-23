@@ -111,3 +111,7 @@
 - [x] Nové ukázkové stránky Účetní formuláře a Navigace
 - [x] Zvýšit verzi na 1.7.0, doplnit pravidla a ověřit typovou kontrolu a testy
 
+## Verze 1.7.1 (oprava otevírání exportu v Microsoft Excelu)
+- [x] Oprava: Excel export se otevíral s opravným dialogem (pořadí prvků sheetPr)
+- [x] Post-processing přesunut do testovatelné funkce finalizeWorkbookBuffer
+- [x] Ověřit přeskládání prvků, typovou kontrolu a testy stažení
