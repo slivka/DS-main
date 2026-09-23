@@ -129,3 +129,9 @@
 - [x] Texty delší než 100 znaků zobrazit ve sloupci širokém přibližně 100 znaků a zalamovat
 - [x] Doplnit dlouhý text do vzorového exportu a automaticky ověřit šířku i zalamování
 - [x] Ověřit typovou kontrolu, stažení, otevření sešitu a sestavení
+
+## Verze 1.7.4 (jednotné pevné zaoblení)
+- [x] Sjednotit poloměry rohů na pevnou tokenovou škálu 4 / 6 / 8 px
+- [x] Odstranit zaoblení odvozené od písma, výšky prvku a zoomu
+- [x] Sjednotit ovládací prvky lišty gridu na mírnější zaoblení 6 px
+- [x] Ověřit stejné rohy při různých úrovních zoomu, typovou kontrolu a sestavení

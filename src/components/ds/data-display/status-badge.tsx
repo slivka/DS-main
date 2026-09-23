@@ -34,7 +34,7 @@ export function StatusBadge<S extends string>({
     <span
       data-slot="badge"
       className={cn(
-        "inline-flex items-center gap-1 rounded-[0.35em] border px-2 py-0.5 text-xs font-medium leading-tight",
+        "inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-xs font-medium leading-tight",
         TONE_CLASS[tone],
         className,
       )}
