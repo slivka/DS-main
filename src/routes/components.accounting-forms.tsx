@@ -22,6 +22,7 @@ import {
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { formatAmount } from "@/lib/format";
 import {
   MOCK_ACCOUNTS,
   MOCK_BOOKS,
@@ -205,7 +206,7 @@ function AccountingFormsPage() {
           defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
         />
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
-          {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmountText(roundtrip.amount)}.`}
+          {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
         </p>
       </ShowcaseSection>
 

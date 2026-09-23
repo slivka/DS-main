@@ -20,6 +20,7 @@ export const MOCK_ACCOUNTS: AccountOption[] = [
   { code: "521001", name: "Mzdové náklady", type: "expense" },
   { code: "602001", name: "Tržby z prodeje služeb", type: "revenue" },
   { code: "604001", name: "Tržby za zboží", type: "revenue" },
+  { code: "648001", name: "Ostatní provozní výnosy", type: "revenue" },
   { code: "999001", name: "Podrozvahová evidence", type: "offBalance", active: false },
 ];
 
