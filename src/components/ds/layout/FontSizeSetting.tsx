@@ -12,7 +12,17 @@ import { FONT_SCALES, getFontScale, setFontScale } from "../../../lib/font-scale
 /**
  * Nastavenie celkovej veľkosti písma aplikácie. Uloží sa do prehliadača.
  */
-export function FontSizeSetting() {
+export interface FontSizeSettingProps {
+  placeholder?: string;
+  label?: string;
+  className?: string;
+}
+
+export function FontSizeSetting({
+  placeholder = "Vyberte velikost písma",
+  label = "Velikost písma",
+  className,
+}: FontSizeSettingProps = {}) {
   const [scale, setScale] = useState("1");
 
   useEffect(() => {
@@ -23,10 +33,10 @@ export function FontSizeSetting() {
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className={className ?? "flex flex-wrap items-center gap-3"}>
       <Select value={scale} onValueChange={(v) => setFontScale(v)}>
-        <SelectTrigger className="w-[220px]">
-          <SelectValue placeholder="Vyberte velikost písma" />
+        <SelectTrigger className="w-[220px]" aria-label={label}>
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           {FONT_SCALES.map((s) => (

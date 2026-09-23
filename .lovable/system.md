@@ -135,7 +135,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Částkové sloupce přes `debitCreditColumns`: výchozí popisky jsou „MD částka“ /
   „DAL částka“ a součet kontroluje rozdíl obou stran.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).
-- Workspace a firma přes `WorkspaceCompanySwitcher` v `AppShell`.
+- Kontext firmy a období v horní liště skládej přes `CompanySwitcher` a
+  `PeriodSwitcher`; pracovní prostor přepínej přímo v `UserMenu`.
 
 
 ## Doklady, číselníky a navigace
@@ -151,8 +152,14 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
   `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
-- Administrace je samostatný režim: `adminNav` zobrazí v horní liště ozubené kolo
-  a panel „Administrace“ překryje boční menu (zpět tlačítkem nebo klávesou Esc).
+- `AppShell` 2.0 používá horní lištu přes celou šířku a sloty `contextLeft`,
+  `actions`, `panelButtons` a `userMenu`. Boční menu začíná až pod lištou a lze je
+  sbalit na pruh ikon.
+- Nastavení firmy, administraci a další režimy skládej přes `panels`; otevřený
+  panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc. Staré
+  `adminNav` / `adminMode` používej jen při přechodu aplikace z verze 1.x.
+- `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby. Starý rychlý
+  přepínač v liště zapínej pouze dočasně přes `showLegacyToolbar`.
 - Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
   `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.
 

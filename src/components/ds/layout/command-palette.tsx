@@ -20,14 +20,18 @@ export type CommandTarget = {
 /** Globální vyhledávání stránek – otevře se přes Ctrl/Cmd+K. Seznam dodá aplikace. */
 export function CommandPalette({
   targets,
+  open,
+  onOpenChange,
   placeholder = "Hledat stránku…",
   emptyText = "Nic nenalezeno.",
-}: {
-  targets: CommandTarget[];
-  placeholder?: string;
-  emptyText?: string;
-}) {
-  const [open, setOpen] = useState(false);
+}: CommandPaletteProps) {
+  const [ownOpen, setOwnOpen] = useState(false);
+  const isOpen = open ?? ownOpen;
+  const setOpen = (next: boolean | ((value: boolean) => boolean)) => {
+    const resolved = typeof next === "function" ? next(isOpen) : next;
+    if (open === undefined) setOwnOpen(resolved);
+    onOpenChange?.(resolved);
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,7 +53,7 @@ export function CommandPalette({
   };
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
+    <CommandDialog open={isOpen} onOpenChange={setOpen}>
       <CommandInput placeholder={placeholder} />
       <CommandList>
         <CommandEmpty>{emptyText}</CommandEmpty>
@@ -71,4 +75,12 @@ export function CommandPalette({
       </CommandList>
     </CommandDialog>
   );
+}
+
+export interface CommandPaletteProps {
+  targets: CommandTarget[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  placeholder?: string;
+  emptyText?: string;
 }

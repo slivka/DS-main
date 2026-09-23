@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "1.7.4",
+    "version": "2.0.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -2072,7 +2072,17 @@
     {
       "name": "AppShell",
       "file": "src/components/ds/layout/AppShell.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Hlavní rám firemní aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely.",
+      "examples": [
+        {
+          "label": "AppShell 2.0",
+          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} activePanel={activePanel} onActivePanelChange={setActivePanel}>…</AppShell>"
+        }
+      ],
+      "antipatterns": [
+        "Pro nové aplikace nepoužívejte zastaralé adminNav ani topBarLeft."
+      ]
     },
     {
       "name": "WorkspaceCompanySwitcher",
@@ -2380,7 +2390,7 @@
       "examples": [
         {
           "label": "Datumový filtr",
-          "code": "\u003cDataGrid rows={rows} columns={[{ id: \"date\", label: \"Datum\", value: (row) =\u003e row.date, exportType: \"date\" }]} rowKey={(row) =\u003e row.id} storageKey=\"documents\" /\u003e"
+          "code": "<DataGrid rows={rows} columns={[{ id: \"date\", label: \"Datum\", value: (row) => row.date, exportType: \"date\" }]} rowKey={(row) => row.id} storageKey=\"documents\" />"
         }
       ],
       "antipatterns": [
@@ -2780,7 +2790,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
         }
       ],
       "antipatterns": [
@@ -3287,6 +3297,96 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form.tsx",
       "import_path": ""
+    },
+    {
+      "name": "ContextPill",
+      "file": "src/components/ds/layout/context-pill.tsx",
+      "import_path": "",
+      "usage": "Dvouřádkový kontextový přepínač do horní lišty.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte pro běžná formulářová pole."
+      ]
+    },
+    {
+      "name": "CompanySwitcher",
+      "file": "src/components/ds/layout/company-switcher.tsx",
+      "import_path": "",
+      "usage": "Výběr firmy s hledáním, IČO a posledními položkami.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+        }
+      ],
+      "antipatterns": [
+        "Nenahrazujte nativním selectem."
+      ]
+    },
+    {
+      "name": "PeriodSwitcher",
+      "file": "src/components/ds/layout/period-switcher.tsx",
+      "import_path": "",
+      "usage": "Kontextový výběr účetního období se stavem.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte pro obecné datumové filtry."
+      ]
+    },
+    {
+      "name": "UserMenu",
+      "file": "src/components/ds/layout/user-menu.tsx",
+      "import_path": "",
+      "usage": "Uživatelská nabídka s přímým přepínáním pracovních prostorů.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte pracovní prostory do vnořeného podmenu."
+      ]
+    },
+    {
+      "name": "SearchButton",
+      "file": "src/components/ds/layout/search-button.tsx",
+      "import_path": "",
+      "usage": "Ikonové tlačítko otevírající globální hledání.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<SearchButton onClick={() => setOpen(true)} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte textové tlačítko v horní liště."
+      ]
+    },
+    {
+      "name": "ThemeSetting",
+      "file": "src/components/ds/layout/theme-setting.tsx",
+      "import_path": "",
+      "usage": "Nastavení světlého, tmavého nebo systémového motivu.",
+      "examples": [
+        {
+          "label": "Základní použití",
+          "code": "<ThemeSetting />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte do horní lišty; patří na stránku Předvolby."
+      ]
     }
   ],
   "assets": [
