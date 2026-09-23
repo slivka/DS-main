@@ -69,10 +69,78 @@ export function RecordDialog({
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
 
+  const inner = (
+    <>
+      {sidePanel ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="absolute right-12 top-3 gap-1.5"
+          onClick={() => setPanelOpen((v) => !v)}
+          title={panelVisible ? `Skrýt ${sidePanelLabel.toLowerCase()}` : sidePanelLabel}
+        >
+          {panelVisible ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
+          {sidePanelTitle ?? sidePanelLabel}
+        </Button>
+      ) : null}
+      {sidePanel && sidePanelExtra ? (
+        <div className="absolute right-12 top-14 flex items-center justify-end">{sidePanelExtra}</div>
+      ) : null}
+
+      <div className="flex min-w-0 items-start gap-4">
+        <form
+          className="min-w-0 flex-1 space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          {children}
+          <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
+            {extraActions}
+            <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Zrušit
+              </Button>
+              <Button type="submit" disabled={busy}>
+                {submitLabel}
+              </Button>
+            </div>
+          </div>
+        </form>
+
+        {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
+      </div>
+    </>
+  );
+
+  // Uvnitř panelu se dialog vykreslí jen nad obsahem svého panelu.
+  if (open && paneElement) {
+    return createPortal(
+      <div className="absolute inset-0 z-40 flex items-start justify-center overflow-auto bg-black/40 p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onOpenChange(false); }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          className={`@container relative w-full max-w-3xl rounded-lg border bg-background p-6 shadow-lg ${contentClassName ?? ""}`}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-4 space-y-1">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+            {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
+          </div>
+          {inner}
+        </div>
+      </div>,
+      paneElement,
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-h-[90dvh] overflow-y-auto overflow-x-hidden ${
+        className={`@container max-h-[90dvh] overflow-y-auto overflow-x-hidden ${
           contentClassName ?? (wide ? "sm:max-w-3xl" : "")
         } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
       >
@@ -81,54 +149,7 @@ export function RecordDialog({
           {description ? <DialogDescription>{description}</DialogDescription> : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>
-
-        {sidePanel ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-12 top-3 gap-1.5"
-            onClick={() => setPanelOpen((v) => !v)}
-            title={panelVisible ? `Skrýt ${sidePanelLabel.toLowerCase()}` : sidePanelLabel}
-          >
-            {panelVisible ? (
-              <PanelRightClose className="size-4" />
-            ) : (
-              <PanelRightOpen className="size-4" />
-            )}
-            {sidePanelTitle ?? sidePanelLabel}
-          </Button>
-        ) : null}
-        {sidePanel && sidePanelExtra ? (
-          <div className="absolute right-12 top-14 flex items-center justify-end">{sidePanelExtra}</div>
-        ) : null}
-
-        <div className="flex min-w-0 items-start gap-4">
-          <form
-            className="min-w-0 flex-1 space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
-          >
-            {children}
-            <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
-              {extraActions}
-              <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                  Zrušit
-                </Button>
-                <Button type="submit" disabled={busy}>
-                  {submitLabel}
-                </Button>
-              </div>
-            </div>
-          </form>
-
-          {panelVisible ? (
-            <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside>
-          ) : null}
-        </div>
+        {inner}
       </DialogContent>
     </Dialog>
   );
