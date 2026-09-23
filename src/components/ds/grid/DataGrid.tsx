@@ -563,7 +563,6 @@ export function DataGrid<Row>({
           type,
           align: column.align ?? (column.numeric ? "right" : "left"),
           total: total === "sum" || total === "count" ? total : "none",
-          ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
         };
       }),
     };

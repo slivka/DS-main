@@ -123,3 +123,9 @@
 - [x] Odstranit vlastní kontrolní součet ze vzorového exportu
 - [x] Zachovat seskupení gridu a stromu v osnově Excelu
 - [x] Ověřit typovou kontrolu, stažení, obsah sešitu a sestavení
+
+## Verze 1.7.3 (automatické šířky Excel exportů)
+- [x] Minimalizovat šířky sloupců podle záhlaví, zobrazených hodnot a součtů
+- [x] Texty delší než 100 znaků zobrazit ve sloupci širokém přibližně 100 znaků a zalamovat
+- [x] Doplnit dlouhý text do vzorového exportu a automaticky ověřit šířku i zalamování
+- [ ] Ověřit typovou kontrolu, stažení, otevření sešitu a sestavení
