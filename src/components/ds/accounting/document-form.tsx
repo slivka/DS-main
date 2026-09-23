@@ -11,7 +11,7 @@ import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { AccountSelect, type AccountOption } from "./account-select";
-import { BookSelect, formatBookLabel, type BookOption } from "./book-select";
+import { BookSelect, formatBook, type BookOption } from "./book-select";
 import type { CurrencyOption } from "./currency-amount";
 import { DocumentStatusBadge, type DocumentStatus } from "./document-status-badge";
 import { documentFieldsForType, type DocumentFields } from "./document-fields";
@@ -208,7 +208,7 @@ export function DocumentForm({
         <div className="grid gap-3 @min-[40rem]:grid-cols-2 @min-[64rem]:grid-cols-4">
           {field("document-book", t.book, isNew && can("bookId") ? (
             <BookSelect id="document-book" books={books} value={value.bookId ?? ""} onChange={(bookId) => patch({ bookId })} />
-          ) : <ReadField id="document-book" value={book ? formatBookLabel(book) : "—"} />)}
+          ) : <ReadField id="document-book" value={book ? formatBook(book) : "—"} />)}
           {field("document-number", t.number, (
             <ReadField id="document-number" mono={!!value.number} muted={!value.number} value={value.number || t.numberPending} />
           ))}
