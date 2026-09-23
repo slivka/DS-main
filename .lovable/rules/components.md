@@ -172,6 +172,55 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+| `navGroups` | any | `—` |
+| `bottomItems` | any | `—` |
+| `appName` | string | `Aplikace` |
+| `logo` | any | `—` |
+| `showBrand` | boolean | `false` |
+| `breadcrumbs` | any | `—` |
+| `contextLeft` | any | `—` |
+| `actions` | any | `—` |
+| `notificationBell` | any | `—` |
+| `themeToggleButton` | any | `—` |
+| `userMenu` | any | `—` |
+| `panels` | any | `—` |
+| `activePanel` | string | `—` |
+| `onActivePanelChange` | function | `—` |
+| `closeLabel` | string | `Zavřít` |
+| `collapsed` | boolean | `—` |
+| `onCollapsedChange` | function | `—` |
+| `menuLabel` | string | `Menu` |
+| `collapseLabel` | string | `Sbalit menu` |
+| `expandLabel` | string | `Rozbalit menu` |
+| `disabledHint` | string | `—` |
+| `items` | any | `—` |
+| `adminNav` | any | `—` |
+| `adminMode` | boolean | `—` |
+| `adminTitle` | string | `Administrace` |
+| `adminButtonLabel` | string | `Administrace` |
+| `adminBackLabel` | string | `—` |
+| `adminBasePath` | string | `—` |
+| `onAdminModeChange` | function | `—` |
+| `showLegacyToolbar` | boolean | `—` |
+
+**Examples:**
+
+_AppShell 2.3_
+```tsx
+<AppShell appName="Accounting" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>
+```
+
+**Avoid:**
+
+- Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování.
+
 ### AsOfDateField
 
 ```ts
@@ -585,6 +634,16 @@ import { CommandList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { CommandPalette } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `targets` | any | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `placeholder` | string | `Hledat stránku…` |
+| `emptyText` | string | `Nic nenalezeno.` |
+
 ### CommandSeparator
 
 ```ts
@@ -596,6 +655,42 @@ import { CommandSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 ```ts
 import { CommandShortcut } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### CompanySwitcher
+
+```ts
+import { CompanySwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Výběr firmy s hledáním, IČO a posledními položkami.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `recentIds` | any | `—` |
+| `label` | string | `Firma` |
+| `searchPlaceholder` | string | `Hledat firmu…` |
+| `recentLabel` | string | `Poslední` |
+| `allLabel` | string | `Všechny firmy` |
+| `emptyText` | string | `Žádná firma nebyla nalezena.` |
+| `createLabel` | string | `Nová firma` |
+| `onCreate` | function | `—` |
+| `className` | string | `min-w-0 flex-1` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />
+```
+
+**Avoid:**
+
+- Nenahrazujte nativním selectem.
 
 ### ContactSelect
 
@@ -692,6 +787,39 @@ import { ContextMenuSubTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b
 ```ts
 import { ContextMenuTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### ContextPill
+
+```ts
+import { ContextPill } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Adaptivní kontextový přepínač do horní lišty; na užších obrazovkách skrývá popisek a zkracuje hodnotu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `—` |
+| `value` | string | `—` |
+| `icon` | any | `—` |
+| `children` | any | `—` |
+| `contentClassName` | string | `—` |
+| `contentAlign` | start · center · end | `start` |
+| `valueMuted` | boolean | `false` |
+| `statusIndicator` | any | `—` |
+| `compactValue` | string | `—` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<ContextPill label="Firma" value="Slivka s.r.o.">…</ContextPill>
+```
+
+**Avoid:**
+
+- Nepoužívejte pro běžná formulářová pole.
 
 ### CountrySelect
 
@@ -807,7 +935,7 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `onChange` | function | `—` |
 | `placeholder` | string | `Vyberte datum` |
 | `disabled` | boolean | `—` |
-| `className` | string | `date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-[0.35em] !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
+| `className` | string | `date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
@@ -1116,6 +1244,14 @@ import { FiscalPeriodSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { FontSizeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `placeholder` | string | `Vyberte velikost písma` |
+| `label` | string | `Velikost písma` |
+| `className` | string | `w-[220px]` |
+
 ### Form
 
 ```ts
@@ -1410,6 +1546,40 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `lines` | any | `—` |
+| `onChange` | function | `—` |
+| `accounts` | any | `—` |
+| `dimensions` | any | `—` |
+| `partners` | any | `—` |
+| `currencies` | any | `—` |
+| `showCurrency` | boolean | `false` |
+| `editableColumns` | any | `—` |
+| `readOnly` | boolean | `false` |
+| `expectedTotal` | number | `—` |
+| `defaults` | any | `—` |
+| `validate` | function | `—` |
+| `storageKey` | string | `journal-lines` |
+| `texts` | any | `—` |
+| `className` | string | `journal-cell-editor` |
+
+**Examples:**
+
+_Řádky zápisu_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey="invoice-lines" />
+```
+
+**Avoid:**
+
+- Nepřidávejte in-place účetní editaci do obecného DataGridu.
+- Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns.
+
 ### Label
 
 ```ts
@@ -1627,6 +1797,38 @@ import { NotesGridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { NotesPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### NotificationBell
+
+```ts
+import { NotificationBell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Prezentační seznam oznámení v horní liště; data, načítání a akce dodává aplikace.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `unreadCount` | number | `—` |
+| `loading` | boolean | `false` |
+| `onItemClick` | function | `—` |
+| `onMarkAllRead` | function | `—` |
+| `onShowAll` | function | `—` |
+| `texts` | any | `—` |
+| `className` | string | `size-4` |
+
+**Examples:**
+
+_Tři nepřečtená oznámení_
+```tsx
+<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />
+```
+
+**Avoid:**
+
+- Nenačítejte data uvnitř komponenty; NotificationBell je čistě prezentační.
+
 ### OptionSelect
 
 ```ts
@@ -1699,6 +1901,48 @@ import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { PeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### PeriodSwitcher
+
+```ts
+import { PeriodSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Kontextový výběr účetního období se stavem, zástupným textem a podporou firmy bez založeného období.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `periods` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `label` | string | `Účetní období` |
+| `stateLabels` | object | `—` |
+| `disableClosed` | boolean | `false` |
+| `className` | string | `size-2 shrink-0 rounded-full bg-warning` |
+| `periodsLabel` | string | `Období` |
+| `placeholder` | string | `Vyberte období` |
+| `emptyText` | string | `Firma nemá účetní období` |
+| `createLabel` | string | `Založit období` |
+| `onCreate` | function | `—` |
+
+**Examples:**
+
+_Výběr období_
+```tsx
+<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />
+```
+
+_Firma bez období_
+```tsx
+<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />
+```
+
+**Avoid:**
+
+- Nepoužívejte stejný text pro popisek a hodnotu přepínače.
+- Nepoužívejte pro obecné datumové filtry.
+
 ### PermissionGate
 
 ```ts
@@ -1733,6 +1977,18 @@ import { PopoverTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ```ts
 import { Progress } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### QueryClient
+
+```ts
+import { QueryClient } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### QueryClientProvider
+
+```ts
+import { QueryClientProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### RadioGroup
@@ -1800,6 +2056,33 @@ import { ScrollArea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { ScrollBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### SearchButton
+
+```ts
+import { SearchButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Ikonové tlačítko otevírající globální hledání.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onClick` | function | `—` |
+| `label` | string | `Hledat (Ctrl+K)` |
+| `className` | string | `size-4` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<SearchButton onClick={() => setOpen(true)} />
+```
+
+**Avoid:**
+
+- Nepoužívejte textové tlačítko v horní liště.
 
 ### Select
 
@@ -2214,11 +2497,76 @@ import { TagPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 import { Textarea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### ThemeSetting
+
+```ts
+import { ThemeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Nastavení světlého, tmavého nebo systémového motivu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `Motiv` |
+| `lightLabel` | string | `Světlý` |
+| `darkLabel` | string | `Tmavý` |
+| `systemLabel` | string | `Podle systému` |
+| `className` | string | `text-sm font-medium` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<ThemeSetting />
+```
+
+**Avoid:**
+
+- Nevkládejte do horní lišty; patří na stránku Předvolby.
+
 ### ThemeToggle
 
 ```ts
 import { ThemeToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `className` | string | `—` |
+| `lightLabel` | string | `Světlý režim` |
+| `darkLabel` | string | `Tmavý režim` |
+
+### ThemeToggleButton
+
+```ts
+import { ThemeToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Ikonové přepnutí světlého a tmavého motivu v horní liště, synchronizované s ThemeSetting.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `darkLabel` | string | `Tmavý režim` |
+| `lightLabel` | string | `Světlý režim` |
+| `onThemeChange` | function | `—` |
+| `className` | string | `size-4` |
+
+**Examples:**
+
+_Horní lišta_
+```tsx
+<ThemeToggleButton onThemeChange={saveTheme} />
+```
+
+**Avoid:**
+
+- Nevytvářejte oddělený stav motivu mimo sdílené nastavení design systému.
 
 ### TimeInputRight
 
@@ -2310,6 +2658,41 @@ import { TruncatedLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```ts
 import { TruncatedText } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### UserMenu
+
+```ts
+import { UserMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Uživatelská nabídka s přímým přepínáním pracovních prostorů.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `name` | string | `—` |
+| `email` | string | `—` |
+| `workspaces` | any | `—` |
+| `activeWorkspaceId` | string | `—` |
+| `onWorkspaceChange` | function | `—` |
+| `workspaceLabel` | string | `Pracovní prostor` |
+| `workspaceSearchPlaceholder` | string | `Hledat pracovní prostor…` |
+| `items` | any | `—` |
+| `onSignOut` | function | `—` |
+| `signOutLabel` | string | `Odhlásit` |
+| `menuLabel` | string | `Uživatelská nabídka` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={workspaces} />
+```
+
+**Avoid:**
+
+- Nevkládejte pracovní prostory do vnořeného podmenu.
 
 ### ViewModeToggle
 
