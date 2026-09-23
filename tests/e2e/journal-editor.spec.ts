@@ -41,7 +41,8 @@ test.describe("JournalLinesEditor", () => {
     await expect(page.getByTestId("journal-roundtrip")).toContainText("2 předkontací → 4 DB řádků → 2 předkontací");
     const foreignCell = page.locator('[data-cell-key="fx1:foreignAmount"]');
     await page.waitForFunction(() => Object.keys(document.querySelector('[data-cell-key="fx1:foreignAmount"]') ?? {}).some((key) => key.startsWith("__reactProps")));
-    await foreignCell.dblclick();
+    await foreignCell.scrollIntoViewIfNeeded();
+    await foreignCell.evaluate((element) => element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true })));
     const input = foreignCell.getByRole("textbox");
     await input.fill("200");
     await input.press("Enter");
