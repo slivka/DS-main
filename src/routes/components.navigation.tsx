@@ -7,6 +7,8 @@ import {
   ComingSoon,
   PermissionGate,
   ReadOnlyBanner,
+  FontSizeSetting,
+  ThemeSetting,
   type NavGroup,
   type NavItem,
 } from "@/components/ds";
@@ -138,6 +140,19 @@ function NavigationPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Předvolby vzhledu"
+        description="Velikost písma a motiv jsou samostatné volby pro stránku Předvolby, nikoli trvalá tlačítka v horní liště."
+      >
+        <div className="grid gap-6 rounded-lg border bg-card p-4 md:grid-cols-2">
+          <div>
+            <div className="mb-2 text-sm font-medium">Velikost písma</div>
+            <FontSizeSetting />
+          </div>
+          <ThemeSetting />
         </div>
       </ShowcaseSection>
 

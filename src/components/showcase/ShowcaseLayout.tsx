@@ -77,7 +77,7 @@ export function ShowcaseLayout({
       appName="Slivka Design System"
       items={NAV}
       breadcrumbs={breadcrumbs}
-      contextLeft={<><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></>}
+      contextLeft={<div className="hidden items-center gap-2 lg:flex"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
         { id: "company", title: "Nastavení firmy", icon: Building2, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
