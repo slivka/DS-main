@@ -158,6 +158,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     },
     forwardedRef,
   ) {
+    const paneActive = useIsActivePane();
     const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts };
     const rootRef = useRef<HTMLDivElement | null>(null);
     const setRootRef = (node: HTMLDivElement | null) => {
@@ -421,7 +422,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     }, [editing]);
 
     const onRootKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-      if (editing || !active || (!event.ctrlKey && !event.metaKey)) return;
+      if (!paneActive || editing || !active || (!event.ctrlKey && !event.metaKey)) return;
       const line = lines.find((item) => item.id === active.rowId);
       if (!line || line.isRounding) return;
       if (event.key.toLocaleLowerCase("cs") === "d") { event.preventDefault(); event.stopPropagation(); duplicate(line); }
