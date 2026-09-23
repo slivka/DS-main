@@ -153,7 +153,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
   `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
 - `AppShell` 2.0 používá horní lištu přes celou šířku a sloty `contextLeft`,
-  `actions`, `panelButtons` a `userMenu`. Boční menu začíná až pod lištou a lze je
+  `actions` a `userMenu`. Boční menu začíná až pod lištou a lze je
   sbalit na pruh ikon.
 - Nastavení firmy, administraci a další režimy skládej přes `panels`; otevřený
   panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc.

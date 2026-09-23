@@ -47,7 +47,6 @@ export interface AppShellProps {
   breadcrumbs?: Crumb[];
   contextLeft?: ReactNode;
   actions?: ReactNode;
-  panelButtons?: ReactNode;
   userMenu?: ReactNode;
   panels?: AppShellPanel[];
   activePanel?: string | null;
@@ -142,7 +141,6 @@ export function AppShell({
   breadcrumbs,
   contextLeft,
   actions,
-  panelButtons,
   userMenu,
   panels,
   activePanel,
@@ -163,7 +161,7 @@ export function AppShell({
   useEffect(() => { applyFontScale(); }, []);
 
   const resolvedPanels = panels ?? [];
-  const resolvedActivePanel = activePanel ?? ownActivePanel;
+  const resolvedActivePanel = activePanel !== undefined ? activePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
   const isCollapsed = collapsed ?? ownCollapsed;
 
@@ -189,7 +187,7 @@ export function AppShell({
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
-  const hasPanels = Boolean(resolvedPanels.length || panelButtons);
+  const hasPanels = resolvedPanels.length > 0;
   const hasUser = Boolean(userMenu);
 
   return (
@@ -219,7 +217,6 @@ export function AppShell({
               const pressed = panel.id === currentPanel?.id;
               return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
             })}
-            {panelButtons}
           </div>
           {hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">{userMenu}</div>
