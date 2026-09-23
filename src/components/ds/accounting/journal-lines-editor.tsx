@@ -26,6 +26,7 @@ import { GridAction, GridActions } from "../grid/grid-action";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
 import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/grid-zoom";
 import { amountClass, formatAmount } from "../../../lib/format";
+import { useIsActivePane } from "../panes/pane-context";
 import { cn } from "../../../lib/utils";
 import type { JournalLine, JournalLineColumn, JournalSharedSide } from "./journal-lines";
 

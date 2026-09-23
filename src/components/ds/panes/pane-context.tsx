@@ -45,6 +45,12 @@ export function usePaneManager(): PaneManagerApi | null {
   return useContext(PaneManagerContext);
 }
 
+/** True, pokud je komponenta v aktivním panelu; mimo PaneLayout vždy true. */
+export function useIsActivePane(): boolean {
+  const pane = useContext(PaneApiContext);
+  return pane ? pane.isActive : true;
+}
+
 /** Ohlásí neuložené změny panelu – zavření i navigace pak vyžádají potvrzení. */
 export function usePaneDirty(isDirty: boolean) {
   const pane = usePane();
