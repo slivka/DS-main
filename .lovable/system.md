@@ -209,7 +209,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, zakázky, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
 - Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.
-- Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `expectedTotal` předvyplní částku.
+- Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `totalAmount` předvyplní částku.
 - Komponenta vždy kontroluje MD účet, DAL účet a nenulovou částku. Další účetní pravidla dodává aplikace přes `validate`.
 - Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; Kč částka se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
 - Každá produkční instance má stabilní `storageKey`, aby se zachovaly šířky sloupců, zoom a hustota.
