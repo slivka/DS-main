@@ -40,13 +40,16 @@ export const NAV_DISABLED_HINT = "Připravujeme";
 
 export interface AppShellProps {
   children: ReactNode;
-  navGroups: NavGroup[];
+  navGroups?: NavGroup[];
   bottomItems?: NavItem[];
   appName?: string;
   logo?: ReactNode;
+  showBrand?: boolean;
   breadcrumbs?: Crumb[];
   contextLeft?: ReactNode;
   actions?: ReactNode;
+  notificationBell?: ReactNode;
+  themeToggleButton?: ReactNode;
   userMenu?: ReactNode;
   panels?: AppShellPanel[];
   activePanel?: string | null;
@@ -58,6 +61,24 @@ export interface AppShellProps {
   collapseLabel?: string;
   expandLabel?: string;
   disabledHint?: string;
+  /** @deprecated Použijte navGroups. */
+  items?: NavItem[];
+  /** @deprecated Použijte panels. */
+  adminNav?: NavItem[];
+  /** @deprecated Použijte activePanel. */
+  adminMode?: boolean;
+  /** @deprecated Použijte title v panels. */
+  adminTitle?: string;
+  /** @deprecated Použijte tooltip v panels. */
+  adminButtonLabel?: string;
+  /** @deprecated Použijte closeLabel. */
+  adminBackLabel?: string;
+  /** @deprecated Cestu určují položky panels.nav. */
+  adminBasePath?: string;
+  /** @deprecated Použijte onActivePanelChange. */
+  onAdminModeChange?: (active: boolean) => void;
+  /** @deprecated Ovládání vzhledu skládejte do samostatných slotů. */
+  showLegacyToolbar?: boolean;
 }
 
 type ShellNavProps = {
@@ -138,9 +159,12 @@ export function AppShell({
   bottomItems = [],
   appName = "Aplikace",
   logo,
+  showBrand = false,
   breadcrumbs,
   contextLeft,
   actions,
+  notificationBell,
+  themeToggleButton,
   userMenu,
   panels,
   activePanel,
@@ -152,22 +176,42 @@ export function AppShell({
   collapseLabel = "Sbalit menu",
   expandLabel = "Rozbalit menu",
   disabledHint = NAV_DISABLED_HINT,
+  items,
+  adminNav,
+  adminMode,
+  adminTitle = "Administrace",
+  adminButtonLabel = "Administrace",
+  adminBackLabel,
+  onAdminModeChange,
 }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const [ownCollapsed, setOwnCollapsed] = useState(false);
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
 
-  useEffect(() => { applyFontScale(); }, []);
+  useEffect(() => {
+    applyFontScale();
+    document.title = appName;
+  }, [appName]);
 
-  const resolvedPanels = panels ?? [];
-  const resolvedActivePanel = activePanel !== undefined ? activePanel : ownActivePanel;
+  const resolvedGroups = navGroups ?? (items ? [{ id: "main", label: "", items }] : []);
+  const legacyPanel: AppShellPanel | null = adminNav ? {
+    id: "admin",
+    title: adminTitle,
+    icon: PanelLeftOpen,
+    tooltip: adminButtonLabel,
+    nav: [{ id: "admin", label: "", items: adminNav }],
+  } : null;
+  const resolvedPanels = panels ?? (legacyPanel ? [legacyPanel] : []);
+  const legacyActivePanel = adminMode ? "admin" : null;
+  const resolvedActivePanel = activePanel !== undefined ? activePanel : adminMode !== undefined ? legacyActivePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
   const isCollapsed = collapsed ?? ownCollapsed;
 
   const setPanel = (id: string | null) => {
     onActivePanelChange?.(id);
-    if (activePanel === undefined) setOwnActivePanel(id);
+    onAdminModeChange?.(id === "admin");
+    if (activePanel === undefined && adminMode === undefined) setOwnActivePanel(id);
   };
   const setCollapsed = (next: boolean) => {
     onCollapsedChange?.(next);
@@ -181,23 +225,25 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const visibleGroups = currentPanel?.nav ?? navGroups;
+  const visibleGroups = currentPanel?.nav ?? resolvedGroups;
   const nav = (compact: boolean) => (
     <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={() => setMenuOpen(false)} />
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
   const hasPanels = resolvedPanels.length > 0;
+  const hasNotifications = Boolean(notificationBell);
+  const hasThemeToggle = Boolean(themeToggleButton);
   const hasUser = Boolean(userMenu);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="z-30 flex h-14 shrink-0 items-center border-b bg-card">
-        <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
+        {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
           {logo}
           {!isCollapsed ? <span className="truncate font-semibold tracking-tight">{appName}</span> : null}
-        </div>
-        <div className="flex min-w-0 flex-1 items-center gap-2 px-3">
+        </div> : null}
+        <div className="flex min-w-0 flex-1 items-center gap-2 pl-3 pr-3">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
             <SheetContent side="left" className="w-72 p-0">
@@ -218,6 +264,10 @@ export function AppShell({
               return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
             })}
           </div>
+          {hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
+          <div className="flex items-center">{notificationBell}</div>
+          {hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
+          <div className="flex items-center">{themeToggleButton}</div>
           {hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">{userMenu}</div>
         </div>
@@ -227,7 +277,7 @@ export function AppShell({
         <div className={cn("flex h-11 shrink-0 items-center border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
           <div className={cn("hidden shrink-0 items-center gap-2 md:flex", isCollapsed ? "w-14" : "w-60")}><currentPanel.icon className="size-4" /><span className="truncate font-semibold">{currentPanel.title}</span></div>
           <div className="flex flex-1 items-center md:hidden"><currentPanel.icon className="mr-2 size-4" /><span className="truncate font-semibold">{currentPanel.title}</span></div>
-          <Button type="button" variant="default" size="sm" className="ml-auto" onClick={() => setPanel(null)}><X className="size-4" />{closeLabel}</Button>
+          <Button type="button" variant="default" size="sm" className="ml-auto" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
         </div>
       ) : null}
 
