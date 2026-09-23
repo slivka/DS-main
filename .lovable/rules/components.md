@@ -172,7 +172,7 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely.
+Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely. Nedostupné položky zůstávají čitelné a stav Připravujeme sdělují jemnou tečkou s nápovědou.
 
 **Props:**
 
@@ -220,6 +220,7 @@ _AppShell 2.3_
 **Avoid:**
 
 - Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování.
+- Nevkládejte k nedostupné položce dlouhý stavový štítek, který omezuje nebo překrývá její název.
 
 ### AsOfDateField
 
@@ -851,7 +852,7 @@ import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data.
+Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data. Hlavní akci gridu předejte přes actions; zobrazí se bezprostředně vpravo od zoomu.
 
 **Props:**
 
@@ -909,9 +910,9 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 
 **Examples:**
 
-_Datumový filtr_
+_Grid s hlavní akcí_
 ```tsx
-<DataGrid rows={rows} columns={[{ id: "date", label: "Datum", value: (row) => row.date, exportType: "date" }]} rowKey={(row) => row.id} storageKey="documents" />
+<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey="documents" actions={<Button onClick={onCreate}>Nový doklad</Button>} />
 ```
 
 **Avoid:**
@@ -919,6 +920,7 @@ _Datumový filtr_
 - Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.
 - Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.
 - Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns().
+- Neumisťujte hlavní akci Nový mimo řádku nástrojů gridu ani před ovládání zoomu.
 
 ### DateField
 
