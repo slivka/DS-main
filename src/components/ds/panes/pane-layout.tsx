@@ -349,8 +349,14 @@ export function PaneLayout({
 
   // Tisk jen aktivního panelu.
   useEffect(() => {
-    const onBefore = () => document.body.setAttribute("data-printing-pane", activePaneId);
-    const onAfter = () => document.body.removeAttribute("data-printing-pane");
+    const onBefore = () => {
+      document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => {
+        element.setAttribute("data-print-hide", element.dataset.pane === activePaneId ? "false" : "true");
+      });
+    };
+    const onAfter = () => {
+      document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => element.removeAttribute("data-print-hide"));
+    };
     window.addEventListener("beforeprint", onBefore);
     window.addEventListener("afterprint", onAfter);
     return () => {

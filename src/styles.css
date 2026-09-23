@@ -1660,7 +1660,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 
 /* Tisk v režimu více oken: tiskne se jen panel, ze kterého byl tisk spuštěn. */
 @media print {
-  body[data-printing-pane] [data-pane]:not([data-pane=""]) {
-    display: none;
+  [data-pane][data-print-hide="true"] {
+    display: none !important;
   }
 }
