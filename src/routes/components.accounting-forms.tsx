@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
   AccountCode,
   BookSelect,
   CurrencyAmount,
   DimensionSelect,
-  DocumentForm,
   JournalLinesEditor,
   PartnerSelect,
   TreeGrid,
@@ -16,7 +16,6 @@ import {
   formatAccountCode,
   fromJournalRow,
   toJournalRow,
-  type DocumentHeaderValue,
   type JournalLine,
   type TreeGridColumn,
 } from "@/components/ds";
@@ -72,19 +71,6 @@ const CHART_COLUMNS: TreeGridColumn<ChartNode>[] = [
 ];
 
 function AccountingFormsPage() {
-  const [header, setHeader] = useState<DocumentHeaderValue>({
-    bookId: "b-fp",
-    number: "FP2026000012",
-    issueDate: "2026-01-15",
-    taxDate: "2026-01-15",
-    dueDate: "2026-01-29",
-    partnerId: "p1",
-    vs: "2026000012",
-    description: "Servisní práce za leden 2026",
-    currency: "EUR",
-    rate: 25.125,
-    amount: 4800,
-  });
   const [lines, setLines] = useState<JournalLine[]>([
     {
       id: "l1",
@@ -115,7 +101,6 @@ function AccountingFormsPage() {
   const [amount, setAmount] = useState(125400.5);
   const [rate, setRate] = useState(24.815);
   const [currency, setCurrency] = useState("EUR");
-  const [readOnly, setReadOnly] = useState(false);
   const [currencyLines, setCurrencyLines] = useState<JournalLine[]>([
     {
       id: "fx1", pairNo: 1, debitAccount: "518001", creditAccount: "321001",
@@ -190,44 +175,7 @@ function AccountingFormsPage() {
     <ShowcaseLayout
       breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}
     >
-      <ShowcaseSection
-        title="Editor dokladu"
-        description="Doklady se vždy editují v DocumentForm; číselníky naopak v RecordDialog."
-      >
-        <div className="mb-3">
-          <Button variant="outline" size="sm" onClick={() => setReadOnly((value) => !value)}>
-            {readOnly ? "Povolit úpravy" : "Přepnout na jen pro čtení"}
-          </Button>
-        </div>
-        <DocumentForm
-          title="Přijatá faktura FP2026000012"
-          description="Ukázka celostránkového editoru dokladu."
-          value={header}
-          onChange={setHeader}
-          lines={lines}
-          onLinesChange={setLines}
-          books={MOCK_BOOKS}
-          accounts={MOCK_ACCOUNTS}
-          partners={MOCK_PARTNERS}
-          dimensions={MOCK_DIMENSIONS}
-          currencies={CURRENCIES}
-          sideFields="shared"
-          status="filed"
-          approved
-          changedBy="Jan Slivka"
-          changedAt="15.01.2026 10:24"
-          readOnly={readOnly}
-          readOnlyReason="Účetní období je v uzávěrce, doklad lze pouze prohlížet."
-          actions={
-            <>
-              <Button variant="outline" onClick={() => toast.success("Koncept uložen")}>
-                Uložit koncept
-              </Button>
-              <Button onClick={() => toast.success("Doklad zaúčtován")}>Zaúčtovat</Button>
-            </>
-          }
-        />
-      </ShowcaseSection>
+      <DocumentFormShowcase />
 
       <ShowcaseSection
         title="Řádky zápisu v Kč"
@@ -239,10 +187,10 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          totalAmount={header.amount}
+          totalAmount={4800}
           sideFields="shared"
           storageKey="showcase-journal-czk"
-          defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
+          defaults={{ text: "Servisní práce za leden 2026", vs: "2026000012", partnerId: "p1" }}
         />
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
           {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
