@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -2073,15 +2073,15 @@
       "name": "AppShell",
       "file": "src/components/ds/layout/AppShell.tsx",
       "import_path": "",
-      "usage": "Hlavní rám firemní aplikace s horní lištou bez povinné značky, sbalitelnou navigací a přepínatelnými panely.",
+      "usage": "Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely.",
       "examples": [
         {
-          "label": "AppShell 2.2",
-          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} notificationBell={<NotificationBell {...notifications} />} themeToggleButton={<ThemeToggleButton />} userMenu={<UserMenu {...user} />}>…</AppShell>"
+          "label": "AppShell 2.3",
+          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>"
         }
       ],
       "antipatterns": [
-        "V novém kódu nepoužívejte deprecated administrativní aliasy; režimy skládejte přes panels."
+        "Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování."
       ]
     },
     {
@@ -3313,7 +3313,7 @@
       "name": "ContextPill",
       "file": "src/components/ds/layout/context-pill.tsx",
       "import_path": "",
-      "usage": "Dvouřádkový kontextový přepínač do horní lišty.",
+      "usage": "Adaptivní kontextový přepínač do horní lišty; na užších obrazovkách skrývá popisek a zkracuje hodnotu.",
       "examples": [
         {
           "label": "Základní použití",
@@ -3343,14 +3343,19 @@
       "name": "PeriodSwitcher",
       "file": "src/components/ds/layout/period-switcher.tsx",
       "import_path": "",
-      "usage": "Kontextový výběr účetního období se stavem.",
+      "usage": "Kontextový výběr účetního období se stavem, zástupným textem a podporou firmy bez založeného období.",
       "examples": [
         {
-          "label": "Základní použití",
+          "label": "Výběr období",
           "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+        },
+        {
+          "label": "Firma bez období",
+          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
         }
       ],
       "antipatterns": [
+        "Nepoužívejte stejný text pro popisek a hodnotu přepínače.",
         "Nepoužívejte pro obecné datumové filtry."
       ]
     },

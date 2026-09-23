@@ -36,10 +36,10 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                 {Icon ? <Icon className="size-4 shrink-0 text-muted-foreground" /> : null}
                 {statusIndicator}
                 <span className="min-w-0 flex-1 leading-tight">
-                  <span className="hidden truncate text-xs font-normal text-muted-foreground xl:block">{label}</span>
+                  <span data-slot="context-pill-label" className="hidden truncate text-xs font-normal text-muted-foreground xl:block">{label}</span>
                   <span className={cn("block truncate text-sm font-semibold", valueMuted ? "text-muted-foreground" : "text-foreground")}>
-                    <span className="md:hidden">{compactValue ?? value}</span>
-                    <span className="hidden md:inline">{value}</span>
+                    <span data-slot="context-pill-mobile-value" className="md:hidden">{compactValue ?? value}</span>
+                    <span data-slot="context-pill-value" className="hidden md:inline">{value}</span>
                   </span>
                 </span>
                 <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground xl:block" />

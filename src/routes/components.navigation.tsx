@@ -103,9 +103,9 @@ function NavigationPage() {
         </div>
         <div className="max-w-full overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px`, maxWidth: "100%" }}>
-            <div className="flex h-14 min-w-0 flex-nowrap items-center gap-1 overflow-hidden px-3">
-              <CompanySwitcher items={MOCK_COMPANIES} value={MOCK_COMPANIES[0].id} onChange={() => undefined} />
-              <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+            <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-1 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
+              <CompanySwitcher className={previewWidth < 768 ? "max-w-[72px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={MOCK_COMPANIES} value={MOCK_COMPANIES[0].id} onChange={() => undefined} />
+              <PeriodSwitcher className={previewWidth < 768 ? "max-w-[64px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
               <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
             </div>

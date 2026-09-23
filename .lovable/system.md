@@ -136,7 +136,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   „DAL částka“ a součet kontroluje rozdíl obou stran.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).
 - Kontext firmy a období v horní liště skládej přes `CompanySwitcher` a
-  `PeriodSwitcher`; pracovní prostor přepínej přímo v `UserMenu`.
+  `PeriodSwitcher`; pracovní prostor přepínej přímo v `UserMenu`. `PeriodSwitcher`
+  musí rozlišit stav bez výběru a firmu bez období; popisek a hodnota nesmí být
+  stejný text.
 
 
 ## Doklady, číselníky a navigace
@@ -157,6 +159,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   a `appName` zapínej jen explicitně přes `showBrand`.
 - Pravá část lišty má pořadí `actions`, tlačítka `panels`, `notificationBell`,
   `themeToggleButton`, `userMenu`; jednotlivé skupiny odděluj Separatorem.
+- Pod 1 280 px se kontextové přepínače zobrazují kompaktně a boční menu se bez
+  předchozí volby uživatele automaticky sbalí. Pod 768 px zůstává menu v Sheetu.
+  Horní lišta se nikdy nezalamuje ani nevytváří vodorovný posuvník.
+- Sbalení menu ovládá tlačítko na jeho spodním okraji nebo zkratka Ctrl+B;
+  respektuj řízené vlastnosti `collapsed` a `onCollapsedChange`.
 - Oznámení vkládej přes prezentační `NotificationBell`; data a všechny akce
   dodává aplikace. Rychlé přepnutí motivu dělej přes `ThemeToggleButton`, který
   sdílí uloženou volbu s `ThemeSetting`.

@@ -58,7 +58,7 @@ export function PeriodSwitcher({
       valueMuted={!selected}
       statusIndicator={!selected ? <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" /> : null}
       icon={CalendarRange}
-      className={cn("max-w-[104px] md:max-w-[200px] xl:max-w-[360px]", className)}
+      className={cn("max-w-[64px] md:max-w-[200px] xl:max-w-[360px]", className)}
       contentClassName="w-[380px]"
     >
       {isEmpty ? (
