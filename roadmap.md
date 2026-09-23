@@ -161,6 +161,12 @@
 - [x] Zachovat a označit zastaralé vlastnosti AppShellu
 - [x] Doplnit exporty, ukázky, dokumentaci a ověření
 
+## Verze 2.4.0 (řádky zápisu 1:1 s databází)
+
+- `toJournalRow` / `fromJournalRow`, deprecated `toDbLines` / `fromDbLines` / `pairNo`
+- `sideFields`, `sharedSide`, `mainAccount`, `isNonTaxAllowed`, řádek zaokrouhlení
+- Ukázky: interní doklad (split), pokladní doklad (hlavní účet 211 na MD), zaúčtovaný doklad
+
 ## Verze 2.3.1 (oprava kompaktní hodnoty období)
 - [x] Zobrazovat v kompaktním režimu kód období místo identifikátoru
 - [x] Ověřit kompaktní hodnoty firmy a ContextPill (nikdy identifikátor)
