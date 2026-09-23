@@ -3456,5 +3456,6 @@
       "kind": "font",
       "format": "ttf"
     }
-  ]
+  ],
+  "version": "2.3.1"
 }
