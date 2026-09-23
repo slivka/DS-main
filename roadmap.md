@@ -137,9 +137,9 @@
 - [x] Ověřit stejné rohy při různých úrovních zoomu, typovou kontrolu a sestavení
 
 ## Verze 2.0.0 (AppShell 2.0)
-- [ ] Horní lišta přes celou šířku a sbalitelné boční menu pod ní
-- [ ] Řízené panely a zpětně kompatibilní administrativní aliasy
-- [ ] ContextPill, CompanySwitcher, PeriodSwitcher, UserMenu, SearchButton a ThemeSetting
-- [ ] Řízený CommandPalette a samostatné předvolby písma a motivu
-- [ ] Ukázka navigace se dvěma panely, přepínači, uživatelem a tmavým motivem
-- [ ] Changelog, přechod z 1.x, pravidla knihovny, typová kontrola a sestavení
+- [x] Horní lišta přes celou šířku a sbalitelné boční menu pod ní
+- [x] Řízené panely a zpětně kompatibilní administrativní aliasy
+- [x] ContextPill, CompanySwitcher, PeriodSwitcher, UserMenu, SearchButton a ThemeSetting
+- [x] Řízený CommandPalette a samostatné předvolby písma a motivu
+- [x] Ukázka navigace se dvěma panely, přepínači, uživatelem a tmavým motivem
+- [x] Changelog, přechod z 1.x, pravidla knihovny, typová kontrola a sestavení
