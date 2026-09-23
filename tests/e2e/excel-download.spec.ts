@@ -57,6 +57,7 @@ async function inspectOpenXml(filePath: string, original = true) {
   expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(tableRef?.split(":")[1]?.replace(/\d+/, ""));
   expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
   expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
+  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").toContain('showRowStripes="0"');
 
 
   const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) => decodeXml(match[1]));
@@ -110,7 +111,6 @@ async function inspectWorkbook(filePath: string) {
   const tables = sheet.model.tables ?? [];
   expect(tables, "List musí obsahovat skutečnou tabulku Excelu").toHaveLength(1);
   expect(tables[0]?.totalsRow).toBe(true);
-  expect(tables[0]?.style?.showRowStripes, "Řádky tabulky nesmí střídat barvy").toBe(false);
 
   expect(sheet.getCell("A2").value, "Parametry nesmí být v hlavičce datového listu").toBeNull();
   expect(workbook.worksheets.map((item) => item.name)).toContain("Parametry exportu");
