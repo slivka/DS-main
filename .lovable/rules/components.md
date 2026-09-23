@@ -1559,8 +1559,16 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 | `partners` | any | `—` |
 | `currencies` | any | `—` |
 | `showCurrency` | boolean | `false` |
-| `editableColumns` | any | `—` |
-| `readOnly` | boolean | `false` |
+| `sideFields` | shared · split | `split` |
+| `sharedSide` | any | `both` |
+| `mainAccount` | any | `—` |
+| `dimensionRequired` | boolean | `false` |
+| `isNonTaxAllowed` | function | `—` |
+| `editableFields` | any | `—` |
+| `totalAmount` | number | `—` |
+| `totalMode` | entered · computed | `computed` |
+| `roundingLimit` | number | `0.5` |
+| `onRoundingFill` | function | `—` |
 | `expectedTotal` | number | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
@@ -1584,6 +1592,12 @@ _Řádky zápisu_
 
 ```ts
 import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### LayoutSwitcher
+
+```ts
+import { LayoutSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### LegalFormField
@@ -1887,6 +1901,40 @@ import { PaginationNext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ```ts
 import { PaginationPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### PaneApiContext
+
+```ts
+import { PaneApiContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### PaneLayout
+
+```ts
+import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `panes` | any | `—` |
+| `activePaneId` | string | `—` |
+| `layout` | any | `—` |
+| `widths` | any | `—` |
+| `onChange` | function | `—` |
+| `minPaneWidth` | number | `560` |
+| `renderPane` | function | `—` |
+| `defaultRoute` | string | `—` |
+| `defaultTitle` | string | `—` |
+| `texts` | any | `—` |
+| `className` | string | `flex min-w-0` |
+
+### PaneManagerContext
+
+```ts
+import { PaneManagerContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### PartnerSelect
