@@ -102,7 +102,8 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
       <>
         <span className={cn("absolute inset-y-1 left-0 w-0.5 rounded-r bg-primary transition-opacity", active ? "opacity-100" : "opacity-0")} />
         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
-        {!collapsed ? <span className="truncate">{item.label}</span> : null}
+        {!collapsed ? <span className="min-w-0 flex-1 truncate">{item.label}</span> : null}
+        {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-muted-foreground/40" /> : null}
         {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{item.badge}</span> : null}
       </>
     );
