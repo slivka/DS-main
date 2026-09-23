@@ -8,6 +8,8 @@ import {
   PermissionGate,
   ReadOnlyBanner,
   FontSizeSetting,
+  NotificationBell,
+  ThemeToggleButton,
   ThemeSetting,
   type NavGroup,
   type NavItem,
@@ -70,6 +72,17 @@ function NavigationPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed darkPreview>
+      <ShowcaseSection
+        title="Horní lišta"
+        description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámení, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámení a tmavý režim."
+      >
+        <div className="flex items-center justify-end gap-2 rounded-lg border bg-card p-3">
+          <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
+          <span className="text-sm text-muted-foreground">Prázdný stav oznámení</span>
+          <ThemeToggleButton />
+        </div>
+      </ShowcaseSection>
+
       <ShowcaseSection
         title="Boční menu se skupinami"
         description="Skupiny se sbalují, aktivní položka je zvýrazněná, nedostupné položky nesou štítek Připravujeme. Které položky se zobrazí, určuje aplikace."
