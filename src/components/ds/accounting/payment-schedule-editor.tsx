@@ -148,7 +148,7 @@ export function PaymentScheduleEditor({
               <th className="w-40 px-2 py-2 text-left font-medium">{t.dueDate}</th>
               <th className="w-36 px-2 py-2 text-left font-medium">{t.kind}</th>
               <th className="w-40 px-2 py-2 text-right font-medium">{`${t.amount} (${currency})`}</th>
-              <th className="px-2 py-2 text-left font-medium">{t.description}</th>
+              <th className="min-w-[14rem] px-2 py-2 text-left font-medium">{t.description}</th>
               <th className="w-48 px-2 py-2 text-left font-medium">{t.responsible}</th>
               <th className="w-28 px-2 py-2 text-left font-medium">{t.releasedDate}</th>
               <th className="w-32 px-2 py-2 text-left font-medium">{t.releasedBy}</th>

@@ -224,3 +224,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Komponenty uvnitř panelu se přizpůsobují šířce panelu přes container queries (`@min-[…]`), nikdy přes breakpointy okna. Horní lišta a boční menu se řídí šířkou okna.
 - Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K, Ctrl+B, Ctrl+1/2/3 a Ctrl+Shift+W.
 - Stav panelů serializuj přes `serializePanes` / `parsePanes` (URL nebo databáze).
+
+
+## Doklady a platební kalendář (2.7.0)
+- Doklad vždy `DocumentForm`; skupiny polí přes `fields={documentFieldsForType(kód)}`. Číslo, kurz, kniha (po založení) a směr nikdy neupravujte ve formuláři.
+- Stav Zaúčtován řiďte přes `editableFields` (hlavička) a `linesEditorProps.editableFields` (řádky); `readOnly` jen pro uzamčené doklady.
+- Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
+- Platební kalendář vždy `PaymentScheduleEditor`; rozložení přes `generatePaymentSchedule`. Ukládá se celé pole jedním voláním.
