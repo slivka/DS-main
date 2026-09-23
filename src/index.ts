@@ -9,6 +9,7 @@ import "./styles.css";
 
 /* Runtime obálky, které musí hostitelská aplikace nastavit (notifikace, nápovědné bubliny). */
 export { Toaster } from "./components/ui/sonner";
+export { toast } from "sonner";
 export * from "./components/ui/tooltip";
 export * from "./components/ui/button";
 export * from "./components/ui/input";
