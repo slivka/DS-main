@@ -35,9 +35,9 @@ src/
 ## Komponenty
 
 ### Rám aplikace
-- **AppShell 2.0** – horní lišta přes celou šířku, sbalitelné boční menu a přepínatelné panely.
+- **AppShell 2.2** – horní lišta přes celou šířku bez povinného bloku značky, sbalitelné boční menu a přepínatelné panely.
 - **ContextPill / CompanySwitcher / PeriodSwitcher** – dvouřádkové kontextové volby firmy a období.
-- **SearchButton / UserMenu** – globální hledání a uživatelská nabídka s pracovními prostory.
+- **SearchButton / NotificationBell / ThemeToggleButton / UserMenu** – hledání, oznámení, rychlý motiv a uživatelská nabídka.
 - **WorkspaceCompanySwitcher** – výběr workspace a firmy v horní liště.
 - **EntitySwitcher** – obecný přepínač jedné entity v liště.
 - **RecordDialog** – editační dialog záznamu s patičkou, bočním panelem a akcemi.
@@ -142,6 +142,13 @@ měna podle nastavení aplikace.
 - Klávesnice podporuje přímé přepsání znakem, F2, Enter/Tab, Esc, Ctrl+D a Ctrl+Delete s akcí Zpět.
 - `toDbLines` a `fromDbLines` převádějí předkontace na párové databázové řádky a zachovávají starší nespárovatelná data.
 - `readOnly` zůstává zpětně kompatibilní zkratkou pro prázdné `editableColumns`.
+
+## Changelog 2.2.0
+
+- Horní lišta standardně začíná přepínačem firmy; původní blok značky lze zapnout přes `showBrand`.
+- Pravá část má pevné pořadí hledání, panely, oznámení, motiv a uživatel.
+- Přibyly `NotificationBell` a `ThemeToggleButton`; motiv se okamžitě synchronizuje s `ThemeSetting`.
+- Staré vlastnosti AppShellu zůstávají dočasně funkční a jsou označené jako zastaralé.
 
 ## Ukázkové stránky
 

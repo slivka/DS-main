@@ -12,6 +12,8 @@ export * from "./layout/breadcrumbs";
 export * from "./layout/collapsible-section";
 export * from "./layout/command-palette";
 export * from "./layout/ThemeToggle";
+export * from "./layout/theme-toggle-button";
+export * from "./layout/notification-bell";
 export * from "./layout/FontSizeSetting";
 export * from "./layout/theme-setting";
 export * from "./layout/context-pill";

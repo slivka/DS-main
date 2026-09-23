@@ -152,3 +152,11 @@
 - [x] Doplnit klávesové ovládání, duplikaci, odebrání s vrácením a součtový řádek
 - [x] Přidat čtyři ukázky a automatické testy klávesnice i převodů
 - [x] Doplnit pravidla a changelog, zvýšit verzi a ověřit typy i sestavení
+
+## Verze 2.2.0 (horní lišta AppShell)
+- [x] Odstranit výchozí blok značky a zachovat ho volitelně přes showBrand
+- [x] Seřadit pravé ovladače horní lišty
+- [x] Přidat sdílený ThemeToggleButton
+- [x] Přidat prezentační NotificationBell včetně všech stavů
+- [x] Zachovat a označit zastaralé vlastnosti AppShellu
+- [x] Doplnit exporty, ukázky, dokumentaci a ověření

@@ -152,14 +152,19 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
   `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
-- `AppShell` 2.0 používá horní lištu přes celou šířku a sloty `contextLeft`,
-  `actions` a `userMenu`. Boční menu začíná až pod lištou a lze je
-  sbalit na pruh ikon.
+- `AppShell` používá horní lištu přes celou šířku. Standardně nezačíná blokem
+  značky: `CompanySwitcher` ve slotu `contextLeft` je úplně vlevo. Blok `logo`
+  a `appName` zapínej jen explicitně přes `showBrand`.
+- Pravá část lišty má pořadí `actions`, tlačítka `panels`, `notificationBell`,
+  `themeToggleButton`, `userMenu`; jednotlivé skupiny odděluj Separatorem.
+- Oznámení vkládej přes prezentační `NotificationBell`; data a všechny akce
+  dodává aplikace. Rychlé přepnutí motivu dělej přes `ThemeToggleButton`, který
+  sdílí uloženou volbu s `ThemeSetting`.
 - Nastavení firmy, administraci a další režimy skládej přes `panels`; otevřený
   panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc.
-- AppShell přijímá navigaci výhradně přes `navGroups`; administrační a jiné režimy
-  výhradně přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy ani
-  plochý seznam navigace nejsou součástí veřejného API.
+- Pro nový kód používá AppShell navigaci přes `navGroups`; administrační a jiné
+  režimy přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy a
+  plochý seznam jsou pouze dočasná zpětná kompatibilita a jsou deprecated.
 - `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby, ne do horní lišty.
 - Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
   `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.

@@ -6,7 +6,9 @@ import {
   CompanySwitcher,
   CommandPalette,
   PeriodSwitcher,
+  NotificationBell,
   SearchButton,
+  ThemeToggleButton,
   UserMenu,
   type Crumb,
   type NavGroup,
@@ -83,6 +85,11 @@ export function ShowcaseLayout({
   }, [darkPreview]);
 
   const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
+  const notifications = [
+    { id: "n1", title: "Doklad byl zaúčtován", body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.", type: "success" as const, createdAt: new Date(Date.now() - 5 * 60_000) },
+    { id: "n2", title: "Blíží se termín DPH", body: "Přiznání k DPH je potřeba podat do pěti dnů.", type: "warning" as const, createdAt: new Date(Date.now() - 42 * 60_000) },
+    { id: "n3", title: "Nový bankovní výpis", body: "Byl načten výpis se 24 pohyby.", type: "info" as const, createdAt: new Date(Date.now() - 2 * 3_600_000) },
+  ];
 
   return (
     <AppShell
@@ -99,6 +106,8 @@ export function ShowcaseLayout({
       onActivePanelChange={setActivePanel}
       collapsed={collapsed}
       onCollapsedChange={setCollapsed}
+      notificationBell={<NotificationBell items={notifications} onItemClick={() => undefined} onMarkAllRead={() => undefined} onShowAll={() => undefined} />}
+      themeToggleButton={<ThemeToggleButton />}
       userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} onSignOut={() => undefined} />}
     >
       <CommandPalette targets={TARGETS} open={searchOpen} onOpenChange={setSearchOpen} />
