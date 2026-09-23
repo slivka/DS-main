@@ -46,7 +46,7 @@ type ExportRow = {
 };
 
 const PARTNERS = [
-  "Alfa stavební společnost, s.r.o.",
+  "Alfa stavební společnost, s.r.o. – dlouhý popis partnera pro ověření automatické šířky a zalamování textu v exportu do Excelu nad hranicí jednoho sta znaků",
   "Moravská obchodní a distribuční, a.s.",
   "Technické služby Nové Město",
   "Kancelářské potřeby Vltava spol. s r.o.",
@@ -152,7 +152,6 @@ function sampleExportData(): GridExportData {
       type: column.exportType ?? (column.numeric ? "number" : "text"),
       align: column.align ?? (column.numeric ? "right" : "left"),
       total: column.total === "sum" || column.total === "count" ? column.total : "none",
-      ...(column.width ? { width: Math.max(8, Math.min(60, Math.round(column.width / 8))) } : {}),
     })),
   };
 }
@@ -162,7 +161,7 @@ const RULES = [
   "Součty a počty jsou vzorce tabulky a po filtrování se přepočítají.",
   "Čísla mají oddělené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
   "Šedé záhlaví se automaticky zalamuje; všechny buňky jsou výškově vystředěné.",
-  "Šířky vycházejí ze zobrazeného obsahu; dlouhé texty se zalamují.",
+  "Šířky se minimalizují podle obsahu; texty delší než 100 znaků mají šířku přibližně 100 znaků a zalamují se.",
   "Výjimky formátů určuje pouze metadata sloupce, nikoli jeho název.",
   "Parametry sestavy jsou přehledně uvedené na samostatném listu Parametry exportu.",
   "Tisk je nastaven na A4, přizpůsobený šířce a s opakovaným záhlavím.",

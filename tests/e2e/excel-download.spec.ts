@@ -158,6 +158,18 @@ async function inspectWorkbook(filePath: string) {
   expect(dateCell.value).toEqual(new Date(Date.UTC(2026, 0, 1)));
   expect(dateCell.numFmt).toContain("dd");
 
+  const documentColumn = headerIndex("Doklad");
+  expect(sheet.getColumn(documentColumn).width ?? 0, "Krátký sloupec se musí automaticky zúžit podle obsahu").toBeLessThan(20);
+
+  const partnerColumn = headerIndex("Partner");
+  const longPartnerCell = sheet.getCell(5, partnerColumn);
+  expect(String(longPartnerCell.value).length, "Vzor musí obsahovat text delší než 100 znaků").toBeGreaterThan(100);
+  expect(sheet.getColumn(partnerColumn).width ?? 0, "Dlouhý text má mít šířku přibližně 100 znaků").toBeGreaterThanOrEqual(98);
+  expect(sheet.getColumn(partnerColumn).width ?? 0).toBeLessThanOrEqual(100);
+  expect(longPartnerCell.alignment?.wrapText, "Buňka s textem nad 100 znaků se musí zalamovat").toBe(true);
+  expect(longPartnerCell.alignment?.vertical).toBe("middle");
+  expect(sheet.getRow(5).height ?? 0, "Řádek s dlouhým textem musí mít prostor pro zalomení").toBeGreaterThan(18);
+
   const amountColumn = headerIndex("Částka");
   const numberCells = sheet.getColumn(amountColumn).values.slice(5).filter((value) => typeof value === "number");
   expect(numberCells.length).toBeGreaterThan(0);

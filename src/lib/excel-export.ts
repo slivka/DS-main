@@ -64,6 +64,12 @@ export const EXCEL_INTEGER_FORMAT = "#,##0";
 export const EXCEL_YEAR_FORMAT = "0";
 export const EXCEL_PERCENT_FORMAT = "0.00%";
 
+const EXCEL_MIN_COLUMN_WIDTH = 8;
+const EXCEL_MAX_COLUMN_WIDTH = 100;
+const EXCEL_LONG_TEXT_LENGTH = 100;
+const EXCEL_FILTER_WIDTH = 3;
+const EXCEL_CELL_PADDING = 2;
+
 const NAVY_TRUST = {
   primary: "FF385A8A",
   header: "FFE7E9ED",
@@ -378,7 +384,8 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     : Array.from({ length: 2_000 }, (_, index) => data.rows[Math.floor((index * data.rows.length) / 2_000)]);
   headers.forEach((header, index) => {
     const columnMeta = meta[index];
-    const contentLengths = sampledRows.map((row) => displayValue(row[index], columnMeta).length);
+    const displayedValues = sampledRows.map((row) => displayValue(row[index], columnMeta));
+    const contentLengths = displayedValues.map((value) => value.length);
     const automaticTotalLength = columnMeta.total === "sum"
       ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).length
       : columnMeta.total === "count"
@@ -397,15 +404,23 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       return displayValue(displayed, columnMeta).length;
     });
     totalLengths.push(automaticTotalLength);
-    const measured = Math.max(8, Math.ceil(header.length * 1.1) + 3, ...contentLengths, ...totalLengths);
-    const width = Math.max(8, Math.min(60, columnMeta.width ?? measured + 2));
+    const measured = Math.max(
+      EXCEL_MIN_COLUMN_WIDTH,
+      header.length + EXCEL_FILTER_WIDTH,
+      ...contentLengths.map((length) => length + EXCEL_CELL_PADDING),
+      ...totalLengths.map((length) => length + EXCEL_CELL_PADDING),
+    );
+    const preferred = columnMeta.width === undefined ? measured : Math.max(measured, columnMeta.width);
+    const width = Math.max(EXCEL_MIN_COLUMN_WIDTH, Math.min(EXCEL_MAX_COLUMN_WIDTH, preferred));
     sheet.getColumn(index + 1).width = width;
-    if (columnMeta.type === "text" && measured > 60) {
+    if (columnMeta.type === "text") {
       for (let rowIndex = firstDataRow; rowIndex < firstDataRow + data.rows.length; rowIndex += 1) {
-        sheet.getCell(rowIndex, index + 1).alignment = {
-          ...sheet.getCell(rowIndex, index + 1).alignment,
-          wrapText: true,
-        };
+        const displayed = displayValue(data.rows[rowIndex - firstDataRow]?.[index], columnMeta);
+        if (displayed.length <= EXCEL_LONG_TEXT_LENGTH) continue;
+        const cell = sheet.getCell(rowIndex, index + 1);
+        cell.alignment = { ...cell.alignment, wrapText: true };
+        const row = sheet.getRow(rowIndex);
+        row.height = Math.max(row.height ?? 18, Math.ceil(displayed.length / EXCEL_LONG_TEXT_LENGTH) * 18);
       }
     }
   });

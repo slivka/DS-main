@@ -90,9 +90,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   neodhaduj z názvu sloupce a nepřidávej pevnou měnu.
 - Zarovnání dat i záhlaví vychází z `align` a číselného typu sloupce. Datum a
   text jsou vlevo, čísla vpravo, na střed jen explicitně označené sloupce.
-- Šířku počítej ze skutečně zobrazených hodnot, záhlaví a součtů, v rozsahu
-  8–60 znaků. U více než 2 000 řádků měř reprezentativní vzorek; dlouhý text
-  zalamuj. Záhlaví počítá i s místem pro filtr.
+- Šířku každého sloupce minimalizuj podle skutečně zobrazených hodnot, záhlaví
+  a součtů stejně jako automatické přizpůsobení šířky v Excelu; minimum je 8
+  znaků a záhlaví počítá i s místem pro filtr. U více než 2 000 řádků měř
+  reprezentativní vzorek. Obsahuje-li textová buňka více než 100 znaků, nastav
+  sloupec přibližně na šířku 100 znaků a zalamuj tyto dlouhé buňky.
 - Na prvním listu je pouze tmavě modrý název a datová tabulka. Parametry exportu
   (firma, období, datum a čas, uživatel, aktivní filtry) vypiš přehledně na
   samostatný druhý list „Parametry exportu“, nikdy do hlavičky datového listu.
