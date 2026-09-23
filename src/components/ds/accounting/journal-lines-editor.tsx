@@ -169,8 +169,15 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     const [active, setActive] = useState<{ rowId: string; column: JournalLineColumn } | null>(null);
     const [editing, setEditing] = useState<EditState | null>(null);
 
-    const label = (column: JournalLineColumn) =>
-      column === "dimensionId" ? t.dimension : column === "partnerId" ? t.partner : t[column];
+    const LABEL_KEYS: Record<JournalLineColumn, keyof JournalLinesEditorTexts> = {
+      debitAccount: "debitAccount", creditAccount: "creditAccount", amount: "amount", text: "text",
+      dimensionId: "dimension", vs: "vs", partnerId: "partner",
+      debitDimensionId: "debitDimension", creditDimensionId: "creditDimension",
+      debitVs: "debitVs", creditVs: "creditVs",
+      debitPartnerId: "debitPartner", creditPartnerId: "creditPartner",
+      nonTax: "nonTax", currency: "currency", foreignAmount: "foreignAmount", rate: "rate",
+    };
+    const label = (column: JournalLineColumn) => t[LABEL_KEYS[column]];
 
     /** Sloupec hlavního účtu a jeho společné údaje jsou jen pro čtení. */
     const isMainSideColumn = (column: JournalLineColumn) => {
