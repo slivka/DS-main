@@ -147,6 +147,43 @@ function AccountingFormsPage() {
     { id: "pd1", debitAccount: "211001", creditAccount: "602001", amount: 3500, text: "Tržba v hotovosti", vs: "2026000091", partnerId: "p2", dimensionId: "d-cz-1" },
     { id: "pd-r", debitAccount: "211001", creditAccount: "648001", amount: 0.5, text: "Zaokrouhlení", isRounding: true },
   ]);
+  const [internalLines, setInternalLines] = useState<JournalLine[]>([
+    {
+      id: "in1", debitAccount: "511001", creditAccount: "321001", amount: 12500,
+      text: "Oprava výrobní haly", debitDimensionId: "d-cz-1",
+      creditVs: "2026000601", creditPartnerId: "p1",
+    },
+    {
+      id: "in2", debitAccount: "311100", creditAccount: "311200", amount: 8400,
+      text: "Přeúčtování pohledávky", debitVs: "2026000602", creditVs: "2026000603",
+      debitPartnerId: "p2", creditPartnerId: "p3",
+    },
+    {
+      id: "in3", debitAccount: "513001", creditAccount: "211001", amount: 1900,
+      text: "Reprezentace – obchodní jednání", nonTax: true, debitDimensionId: "d-rezie",
+    },
+  ]);
+  const [invoiceLines, setInvoiceLines] = useState<JournalLine[]>([
+    {
+      id: "fp1", debitAccount: "518001", creditAccount: "321001", amount: 10000,
+      text: "Servisní služby", debitDimensionId: "d-cz-2", creditVs: "2026000712", creditPartnerId: "p1",
+    },
+    {
+      id: "fp2", debitAccount: "343001", creditAccount: "321001", amount: 2100,
+      text: "DPH 21 %", creditVs: "2026000712", creditPartnerId: "p1",
+    },
+    {
+      id: "fp3", debitAccount: "548001", creditAccount: "321001", amount: 0.4,
+      text: "Haléřové vyrovnání", isRounding: true,
+    },
+  ]);
+  const [bankLines, setBankLines] = useState<JournalLine[]>([
+    {
+      id: "bv1", debitAccount: "221002", creditAccount: "311200", amount: 24800,
+      currency: "EUR", foreignAmount: 1000, rate: 24.8,
+      text: "Úhrada faktury v EUR", creditVs: "2026000603", creditPartnerId: "p3",
+    },
+  ]);
   const roundtrip = fromJournalRow(toJournalRow(lines[0] ?? { id: "x", amount: 0 }));
 
   return (
