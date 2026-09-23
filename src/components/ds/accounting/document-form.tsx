@@ -246,8 +246,8 @@ export function DocumentForm({
           accounts={accounts}
           dimensions={dimensions}
           partners={partners}
-          readOnly={readOnly}
-          expectedTotal={value.amount}
+          editableFields={readOnly ? [] : undefined}
+          totalAmount={value.amount}
         />
       </section>
     </div>
