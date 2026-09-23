@@ -115,3 +115,11 @@
 - [x] Oprava: Excel export se otevíral s opravným dialogem (pořadí prvků sheetPr)
 - [x] Post-processing přesunut do testovatelné funkce finalizeWorkbookBuffer
 - [x] Ověřit přeskládání prvků, typovou kontrolu a testy stažení
+
+## Verze 1.7.2 (sjednocený vzhled a struktura Excel exportů)
+- [x] Použít jednoduchou tabulku s šedým záhlavím bez střídání barev řádků
+- [x] Automaticky zalamovat záhlaví a svisle vystředit všechny buňky
+- [x] Přesunout parametry exportu na samostatný druhý list
+- [x] Odstranit vlastní kontrolní součet ze vzorového exportu
+- [x] Zachovat seskupení gridu a stromu v osnově Excelu
+- [ ] Ověřit typovou kontrolu, stažení, obsah sešitu a sestavení

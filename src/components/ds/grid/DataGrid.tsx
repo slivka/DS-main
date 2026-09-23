@@ -522,21 +522,40 @@ export function DataGrid<Row>({
     [pagination.rows, groupColumns],
   );
   const grouped = useGroupedRows(pagination.rows, grouping, groupColumns, valueOf);
+  const exportGrouped = useGroupedRows(
+    sorted,
+    { ...grouping, collapsed: [] },
+    groupColumns,
+    valueOf,
+  );
 
   const exportData = (): GridExportData => {
     const hasSections = shown.some((column) => column.section);
+    const exportItems = grouping.active
+      ? exportGrouped
+      : sorted.map((row) => ({ type: "row" as const, row }));
     return {
       columns: shown.map((column) => column.label),
       ...(hasSections
         ? { headerRows: [shown.map((column) => column.section ?? ""), shown.map((column) => column.label)] }
         : {}),
-      rows: sorted.map((row) =>
-        shown.map((column) => {
-          const value = column.value?.(row) ?? null;
+      rows: exportItems.map((item) => {
+        if (item.type === "group") {
+          return shown.map((_, index) => index === 0 ? `${item.column}: ${item.label}` : null);
+        }
+        return shown.map((column) => {
+          const value = column.value?.(item.row) ?? null;
           if (typeof value === "number") return value;
           return value === null || value === undefined ? "" : String(value);
-        }),
-      ),
+        });
+      }),
+      ...(grouping.active
+        ? {
+            rowLevels: exportItems.map((item) =>
+              item.type === "group" ? item.level : grouping.groups.length,
+            ),
+          }
+        : {}),
       columnMeta: shown.map((column) => {
         const type = column.exportType ?? (column.numeric ? "number" : "text");
         const total = column.total ?? (column.numeric ? "sum" : "none");

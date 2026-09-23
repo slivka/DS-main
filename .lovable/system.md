@@ -93,14 +93,21 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Šířku počítej ze skutečně zobrazených hodnot, záhlaví a součtů, v rozsahu
   8–60 znaků. U více než 2 000 řádků měř reprezentativní vzorek; dlouhý text
   zalamuj. Záhlaví počítá i s místem pro filtr.
-- Hlavička sešitu obsahuje tmavě modrý název a volitelná metadata firmy,
-  období, uživatele a filtrů. Záhlaví tabulky ukotvi a opakuj při tisku.
+- Na prvním listu je pouze tmavě modrý název a datová tabulka. Parametry exportu
+  (firma, období, datum a čas, uživatel, aktivní filtry) vypiš přehledně na
+  samostatný druhý list „Parametry exportu“, nikdy do hlavičky datového listu.
+- Záhlaví sloupců je vždy šedé a má zapnuté automatické zalamování. Všechny buňky
+  jsou svisle vystředěné. Tabulka nepoužívá střídání barev řádků.
+- Pokud je grid seskupený podle sloupců nebo má stromovou strukturu, zachovej
+  stejné skupiny v Excelu pomocí úrovní osnovy; neseskupená data osnovu nemají.
+- Vlastní kontrolní součet pod tabulkou nevytvářej. Standardní součtový řádek
+  tabulky zůstává řízený metadaty sloupců a používá vzorce `SUBTOTAL`.
 - Tisk nastav na A4, přizpůsobení na jednu stránku na šířku, vhodnou orientaci,
   okraje 1 cm a zápatí s názvem sestavy a „Strana &P z &N“.
 - Vyplň vlastnosti sešitu title, creator, company a created. Název souboru je
   `{exportName}_{rrrr-MM-dd}.xlsx`, název listu bezpečně odvoď z nadpisu.
-- Tabulka používá Navy Trust záhlaví, bílé písmo, pruhované řádky a zvýrazněný
-  součtový řádek.
+- Tabulka používá jednoduché šedé záhlaví, tmavý text, bez pruhovaných řádků;
+  standardní součtový řádek je zvýrazněný.
 
 ## Účetní konvence
 

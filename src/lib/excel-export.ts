@@ -66,8 +66,8 @@ export const EXCEL_PERCENT_FORMAT = "0.00%";
 
 const NAVY_TRUST = {
   primary: "FF385A8A",
-  primaryForeground: "FFFFFFFF",
-  frost: "FFEFF2F6",
+  header: "FFE7E9ED",
+  headerForeground: "FF27272A",
   total: "FFDCE3F0",
   muted: "FF71717A",
   border: "FFC4CBD4",
@@ -257,20 +257,6 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   titleCell.alignment = { horizontal: "left", vertical: "middle" };
   sheet.getRow(1).height = 22;
 
-  const metadata = [
-    options.meta?.company ? `Firma: ${options.meta.company}` : null,
-    options.meta?.period ? `Období: ${options.meta.period}` : null,
-    `Exportováno: ${formatUserDateTime(created)}`,
-    options.meta?.user ? `Uživatel: ${options.meta.user}` : null,
-    options.meta?.filters?.length ? `Filtry: ${options.meta.filters.join("; ")}` : null,
-  ].filter((item): item is string => Boolean(item));
-  sheet.mergeCells(2, 1, 2, Math.max(1, headers.length));
-  const metaCell = sheet.getCell(2, 1);
-  metaCell.value = metadata.join(" · ");
-  metaCell.font = { name: "Arial", size: 9, color: { argb: NAVY_TRUST.muted } };
-  metaCell.alignment = { horizontal: "left", vertical: "middle", wrapText: true };
-  sheet.getRow(2).height = Math.max(18, Math.ceil(metaCell.value.length / 120) * 13);
-
   const tableColumns = headers.map((header, index) => {
     const total = meta[index]?.total ?? "none";
     return {
@@ -287,7 +273,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     ref: `A${firstHeaderRow}`,
     headerRow: true,
     totalsRow,
-    style: { theme: "TableStyleMedium2", showRowStripes: true, showColumnStripes: false },
+    style: { theme: "TableStyleLight1", showRowStripes: false, showColumnStripes: false },
     columns: tableColumns,
     rows: data.rows.map((row) => headers.map((_, index) => excelValue(row[index], meta[index]))),
   });
@@ -343,14 +329,14 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       target.font = {
         name: "Arial",
         bold: isHeader || isTableTotal,
-        ...(isHeader ? { color: { argb: NAVY_TRUST.primaryForeground } } : {}),
+        ...(isHeader ? { color: { argb: NAVY_TRUST.headerForeground } } : {}),
       };
       target.alignment = {
         horizontal,
         vertical: "middle",
-        wrapText: columnMeta.type === "text" && (sheet.getColumn(columnIndex + 1).width ?? 0) >= 60,
+        wrapText: isHeader || (columnMeta.type === "text" && (sheet.getColumn(columnIndex + 1).width ?? 0) >= 60),
       };
-      if (isHeader) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.primary } };
+      if (isHeader) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.header } };
       if (isTableTotal) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
       target.border = {
         top: { style: "thin", color: { argb: NAVY_TRUST.border } },
@@ -435,6 +421,46 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     margins: { left: 0.394, right: 0.394, top: 0.394, bottom: 0.394, header: 0.2, footer: 0.2 },
   };
   sheet.headerFooter = { oddFooter: `&L${title}&RStrana &P z &N` };
+
+  const parameterRows = [
+    ["Název sestavy", title],
+    ...(options.meta?.company ? [["Firma", options.meta.company]] : []),
+    ...(options.meta?.period ? [["Období", options.meta.period]] : []),
+    ["Exportováno", formatUserDateTime(created)],
+    ...(options.meta?.user ? [["Uživatel", options.meta.user]] : []),
+    ...(options.meta?.filters?.length ? [["Aktivní filtry", options.meta.filters.join("; ")]] : []),
+  ];
+  const parameterSheet = workbook.addWorksheet("Parametry exportu", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  parameterSheet.addTable({
+    name: `${name.slice(0, 230)}_Parametry`,
+    ref: "A1",
+    headerRow: true,
+    totalsRow: false,
+    style: { theme: "TableStyleLight1", showRowStripes: false, showColumnStripes: false },
+    columns: [{ name: "Parametr", filterButton: false }, { name: "Hodnota", filterButton: false }],
+    rows: parameterRows,
+  });
+  parameterSheet.getColumn(1).width = 22;
+  parameterSheet.getColumn(2).width = 60;
+  parameterSheet.eachRow((row, rowNumber) => {
+    row.height = rowNumber === 1 ? 30 : 20;
+    row.eachCell((cell) => {
+      cell.font = { name: "Arial", bold: rowNumber === 1 };
+      cell.alignment = { horizontal: "left", vertical: "middle", wrapText: true };
+      cell.border = {
+        top: { style: "thin", color: { argb: NAVY_TRUST.border } },
+        bottom: { style: "thin", color: { argb: NAVY_TRUST.border } },
+        left: { style: "thin", color: { argb: NAVY_TRUST.border } },
+        right: { style: "thin", color: { argb: NAVY_TRUST.border } },
+      };
+      if (rowNumber === 1) {
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.header } };
+        cell.font = { ...cell.font, color: { argb: NAVY_TRUST.headerForeground } };
+      }
+    });
+  });
   return workbook;
 }
 
