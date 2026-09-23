@@ -84,6 +84,7 @@ export function DocumentForm({
   changedBy,
   changedAt,
   actions,
+  sideFields,
   readOnly = false,
   readOnlyReason,
   texts,
@@ -107,6 +108,8 @@ export function DocumentForm({
   changedAt?: string;
   /** Akční tlačítka podle stavu (Uložit koncept, Zařadit, Zaúčtovat…). */
   actions?: ReactNode;
+  /** Sdílená nebo oddělená stranová pole v řádcích zápisu. */
+  sideFields?: "shared" | "split";
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
   texts?: Partial<DocumentFormTexts>;
@@ -246,6 +249,7 @@ export function DocumentForm({
           accounts={accounts}
           dimensions={dimensions}
           partners={partners}
+          sideFields={sideFields}
           editableFields={readOnly ? [] : undefined}
           totalAmount={value.amount}
         />

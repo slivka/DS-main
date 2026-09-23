@@ -211,6 +211,7 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
+          sideFields="shared"
           status="filed"
           approved
           changedBy="Jan Slivka"
