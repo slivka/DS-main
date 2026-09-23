@@ -443,6 +443,59 @@ function datedFilename(exportName: string, created: Date) {
   return `${exportName}_${date}.xlsx`;
 }
 
+/**
+ * Přeskládá děti <sheetPr> do pořadí vyžadovaného schématem OOXML (CT_SheetPr):
+ * tabColor → outlinePr → pageSetUpPr. ExcelJS je zapisuje obráceně
+ * (pageSetUpPr před outlinePr), což Microsoft Excel při kombinaci fitToPage
+ * a outlineProperties odmítne s hláškou „Zjistili jsme problém s obsahem“.
+ * Atributy sheetPr i jednotlivých elementů zůstávají beze změny.
+ *
+ * Vstup:  <sheetPr><pageSetUpPr fitToPage="1"/><outlinePr summaryBelow="0" summaryRight="0"/></sheetPr>
+ * Výstup: <sheetPr><outlinePr summaryBelow="0" summaryRight="0"/><pageSetUpPr fitToPage="1"/></sheetPr>
+ */
+function reorderSheetPrChildren(xml: string) {
+  return xml.replace(/<sheetPr\b[^>]*>([\s\S]*?)<\/sheetPr>/g, (match, inner: string) => {
+    const openTag = match.slice(0, match.indexOf(">") + 1);
+    let rest = inner;
+    const extract = (tag: string) => {
+      const re = new RegExp(`<${tag}\\b[^>]*/>|<${tag}\\b[^>]*>[\\s\\S]*?</${tag}>`);
+      const found = rest.match(re);
+      if (!found) return "";
+      rest = rest.replace(re, "");
+      return found[0];
+    };
+    const tabColor = extract("tabColor");
+    const outlinePr = extract("outlinePr");
+    const pageSetUpPr = extract("pageSetUpPr");
+    return `${openTag}${tabColor}${outlinePr}${pageSetUpPr}${rest}</sheetPr>`;
+  });
+}
+
+/**
+ * Finalizuje buffer XLSX sešitu pro Microsoft Excel (bez vazby na DOM):
+ * - odstraní neplatné totalsRowFunction="none" z definic tabulek,
+ * - opraví pořadí prvků <sheetPr> (tabColor → outlinePr → pageSetUpPr),
+ *   které ExcelJS zapisuje obráceně a Excel pak soubor „opravuje“.
+ * Rozsah filtru zapisuje ExcelJS správně – končí posledním datovým řádkem,
+ * ne řádkem souhrnů.
+ */
+export async function finalizeWorkbookBuffer(buffer: ArrayBuffer | Uint8Array): Promise<Uint8Array> {
+  const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer);
+  const zip = await JSZip.loadAsync(bytes);
+  await Promise.all(Object.keys(zip.files).map(async (path) => {
+    const entry = zip.file(path);
+    if (!entry) return;
+    if (/^xl\/tables\/table\d+\.xml$/.test(path)) {
+      const xml = await entry.async("text");
+      zip.file(path, xml.replace(/\s+totalsRowFunction="none"/g, ""));
+    } else if (/^xl\/worksheets\/sheet\d+\.xml$/.test(path)) {
+      const xml = await entry.async("text");
+      zip.file(path, reorderSheetPrChildren(xml));
+    }
+  }));
+  return zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+}
+
 /** Stáhne hotový sešit v prohlížeči. */
 export async function downloadWorkbook(
   workbook: Workbook,
@@ -450,21 +503,7 @@ export async function downloadWorkbook(
   created = workbook.created ?? new Date(),
 ) {
   const buffer = await workbook.xlsx.writeBuffer();
-  const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer as ArrayBuffer);
-  const zip = await JSZip.loadAsync(bytes);
-  const tableFiles = Object.keys(zip.files).filter((path) => /^xl\/tables\/table\d+\.xml$/.test(path));
-  // Post-processing jen odstraní totalsRowFunction="none"; rozsah filtru zapisuje
-  // ExcelJS správně – končí posledním datovým řádkem, ne řádkem souhrnů.
-  await Promise.all(tableFiles.map(async (path) => {
-    const entry = zip.file(path);
-    if (!entry) return;
-    const xml = await entry.async("text");
-    zip.file(path, xml.replace(/\s+totalsRowFunction="none"/g, ""));
-  }));
-
-
-
-  const finalized = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+  const finalized = await finalizeWorkbookBuffer(buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer as ArrayBuffer));
   const finalizedBuffer = finalized.buffer.slice(finalized.byteOffset, finalized.byteOffset + finalized.byteLength) as ArrayBuffer;
   const blob = new Blob([finalizedBuffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
