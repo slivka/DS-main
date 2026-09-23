@@ -65,7 +65,7 @@ const ADMIN_NAV: NavItem[] = [
 ];
 
 function NavigationPage() {
-  const [adminMode, setAdminMode] = useState(false);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
   const [canEdit, setCanEdit] = useState(false);
 
   return (
@@ -118,19 +118,19 @@ function NavigationPage() {
         <div className="rounded-lg border bg-card">
           <div className="flex items-center gap-2 border-b px-3 py-2">
             <span className="font-semibold">
-              {adminMode ? "Administrace" : "Slivka Accounting"}
+              {activePanel === "admin" ? "Administrace" : "Slivka Accounting"}
             </span>
             <Button
               variant="outline"
               size="sm"
               className="ml-auto"
-              onClick={() => setAdminMode((value) => !value)}
+              onClick={() => setActivePanel((value) => value === "admin" ? null : "admin")}
             >
-              {adminMode ? "Zpět do aplikace" : "Administrace"}
+              {activePanel === "admin" ? "Zpět do aplikace" : "Administrace"}
             </Button>
           </div>
           <ul className="space-y-0.5 p-2">
-            {(adminMode ? ADMIN_NAV : NAV_GROUPS[0].items).map((item) => (
+            {(activePanel === "admin" ? ADMIN_NAV : NAV_GROUPS[0].items).map((item) => (
               <li
                 key={item.label}
                 className="hover-surface flex items-center gap-2 rounded-md px-3 py-2 text-sm"

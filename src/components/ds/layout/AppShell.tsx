@@ -1,13 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
-import { ChevronDown, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, Settings, X, type LucideIcon } from "lucide-react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { ChevronDown, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../../ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
-import { ThemeToggle } from "./ThemeToggle";
-import { FontSizeSetting } from "./FontSizeSetting";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
 import { applyFontScale } from "../../../lib/font-scale";
@@ -16,8 +14,6 @@ export type NavItem = {
   to: string;
   label: string;
   icon?: ComponentType<{ className?: string }>;
-  /** @deprecated Skupiny definujte přes `navGroups`. */
-  section?: string;
   search?: Record<string, string>;
   badge?: ReactNode;
   disabled?: boolean;
@@ -44,16 +40,13 @@ export const NAV_DISABLED_HINT = "Připravujeme";
 
 export interface AppShellProps {
   children: ReactNode;
-  /** @deprecated Plochý seznam zůstává funkční; nové aplikace používají `navGroups`. */
-  items?: NavItem[];
-  navGroups?: NavGroup[];
+  navGroups: NavGroup[];
   bottomItems?: NavItem[];
   appName?: string;
   logo?: ReactNode;
   breadcrumbs?: Crumb[];
   contextLeft?: ReactNode;
   actions?: ReactNode;
-  panelButtons?: ReactNode;
   userMenu?: ReactNode;
   panels?: AppShellPanel[];
   activePanel?: string | null;
@@ -65,26 +58,6 @@ export interface AppShellProps {
   collapseLabel?: string;
   expandLabel?: string;
   disabledHint?: string;
-  /** @deprecated Použijte `contextLeft`. */
-  topBarLeft?: ReactNode;
-  /** @deprecated Použijte `userMenu`, případně `actions`. */
-  topBarRight?: ReactNode;
-  /** @deprecated Použijte `panels`. Převede se na jeden panel administrace. */
-  adminNav?: NavGroup[];
-  /** @deprecated Použijte `panels[].title`. */
-  adminTitle?: string;
-  /** @deprecated Použijte `panels[].tooltip`. */
-  adminButtonLabel?: string;
-  /** @deprecated Nahrazeno pruhem panelu a `closeLabel`. */
-  adminBackLabel?: string;
-  /** @deprecated Slouží jen k automatickému otevření starého panelu administrace. */
-  adminBasePath?: string;
-  /** @deprecated Použijte `activePanel`. */
-  adminMode?: boolean;
-  /** @deprecated Použijte `onActivePanelChange`. */
-  onAdminModeChange?: (open: boolean) => void;
-  /** @deprecated Staré ovladače písma a motivu v liště zapínejte jen během přechodu. */
-  showLegacyToolbar?: boolean;
 }
 
 type ShellNavProps = {
@@ -161,7 +134,6 @@ function ShellNavGroup({ group, collapsed, collapsible, renderItem }: { group: N
 /** Společný rám aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely. */
 export function AppShell({
   children,
-  items = [],
   navGroups,
   bottomItems = [],
   appName = "Aplikace",
@@ -169,7 +141,6 @@ export function AppShell({
   breadcrumbs,
   contextLeft,
   actions,
-  panelButtons,
   userMenu,
   panels,
   activePanel,
@@ -181,15 +152,6 @@ export function AppShell({
   collapseLabel = "Sbalit menu",
   expandLabel = "Rozbalit menu",
   disabledHint = NAV_DISABLED_HINT,
-  topBarLeft,
-  topBarRight,
-  adminNav,
-  adminTitle = "Administrace",
-  adminButtonLabel = "Administrace",
-  adminBasePath,
-  adminMode,
-  onAdminModeChange,
-  showLegacyToolbar = false,
 }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -198,26 +160,14 @@ export function AppShell({
 
   useEffect(() => { applyFontScale(); }, []);
 
-  const legacyPanels = useMemo<AppShellPanel[]>(() => adminNav?.length ? [{ id: "administration", title: adminTitle, icon: Settings, tooltip: adminButtonLabel, nav: adminNav }] : [], [adminNav, adminTitle, adminButtonLabel]);
-  const resolvedPanels = panels ?? legacyPanels;
-  const inAdminPath = Boolean(adminBasePath && pathname.startsWith(adminBasePath));
-  const legacyPanelId = legacyPanels[0]?.id ?? null;
-  const resolvedActivePanel = activePanel !== undefined
-    ? activePanel
-    : panels
-      ? ownActivePanel
-      : adminMode === true || inAdminPath
-        ? legacyPanelId
-        : adminMode === false
-          ? null
-          : ownActivePanel;
+  const resolvedPanels = panels ?? [];
+  const resolvedActivePanel = activePanel !== undefined ? activePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
   const isCollapsed = collapsed ?? ownCollapsed;
 
   const setPanel = (id: string | null) => {
     onActivePanelChange?.(id);
     if (activePanel === undefined) setOwnActivePanel(id);
-    if (!panels) onAdminModeChange?.(id !== null);
   };
   const setCollapsed = (next: boolean) => {
     onCollapsedChange?.(next);
@@ -231,21 +181,14 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const groups: NavGroup[] = navGroups ?? items.reduce<NavGroup[]>((result, item) => {
-    const label = item.section ?? "";
-    const last = result[result.length - 1];
-    if (last?.label === label) last.items.push(item);
-    else result.push({ id: `${label}-${result.length}`, label, items: [item] });
-    return result;
-  }, []);
-  const visibleGroups = currentPanel?.nav ?? groups;
+  const visibleGroups = currentPanel?.nav ?? navGroups;
   const nav = (compact: boolean) => (
-    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups={Boolean(currentPanel || navGroups)} disabledHint={disabledHint} onNavigate={() => setMenuOpen(false)} />
+    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={() => setMenuOpen(false)} />
   );
-  const hasContext = Boolean(contextLeft ?? topBarLeft);
-  const hasActions = Boolean(actions || showLegacyToolbar);
-  const hasPanels = Boolean(resolvedPanels.length || panelButtons);
-  const hasUser = Boolean(userMenu ?? topBarRight);
+  const hasContext = Boolean(contextLeft);
+  const hasActions = Boolean(actions);
+  const hasPanels = resolvedPanels.length > 0;
+  const hasUser = Boolean(userMenu);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -262,11 +205,11 @@ export function AppShell({
               {nav(false)}
             </SheetContent>
           </Sheet>
-          <div className="flex min-w-0 items-center gap-2">{contextLeft ?? topBarLeft}</div>
+          <div className="flex min-w-0 items-center gap-2">{contextLeft}</div>
           {hasContext ? <Separator orientation="vertical" className="hidden h-6 md:block" /> : null}
           <div className="min-w-0 flex-1">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
           {hasActions ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center gap-2">{actions}{showLegacyToolbar ? <><FontSizeSetting className="flex items-center" /><ThemeToggle /></> : null}</div>
+          <div className="flex items-center gap-2">{actions}</div>
           {hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">
             {resolvedPanels.map((panel) => {
@@ -274,10 +217,9 @@ export function AppShell({
               const pressed = panel.id === currentPanel?.id;
               return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
             })}
-            {panelButtons}
           </div>
           {hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex items-center gap-2">{userMenu ?? topBarRight}</div>
+          <div className="flex items-center gap-2">{userMenu}</div>
         </div>
       </header>
 
