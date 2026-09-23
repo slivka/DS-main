@@ -17,7 +17,7 @@ export function GridAction({
       type="button"
       data-slot="grid-action"
       className={cn(
-        "grid-action inline-flex size-5 items-center justify-center rounded-[3px] border border-transparent",
+        "grid-action inline-flex size-5 items-center justify-center rounded-sm border border-transparent",
         "text-muted-foreground opacity-60 transition-[color,background-color,border-color,opacity] duration-100 outline-none",
         "group-hover/row:opacity-100 hover:opacity-100 focus-visible:opacity-100",
         "focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring/40",

@@ -8,11 +8,11 @@
   --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "JetBrains Mono", ui-monospace, monospace;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -73,8 +73,8 @@
 }
 
 :root {
-  /* Zaoblení je pevné, aby se při uživatelském zvětšení písma neměnil tvar ovládacích prvků. */
-  --radius: 10px;
+  /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
+  --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
   --background: oklch(0.975 0.005 245);
   --foreground: oklch(0.25 0.04 245);
@@ -500,7 +500,7 @@
   height: var(--f-h) !important;
   padding: 0 !important;
   gap: 0;
-  border-radius: 0.45em;
+  border-radius: var(--radius-md);
 }
 
 .zoom-filters .grid-segmented > button {
@@ -511,15 +511,15 @@
 }
 
 .zoom-filters .grid-segmented > button:first-child {
-  border-radius: calc(var(--f-h) * 0.2) 0 0 calc(var(--f-h) * 0.2) !important;
+  border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
 }
 
 .zoom-filters .grid-segmented > button:last-child {
-  border-radius: 0 calc(var(--f-h) * 0.2) calc(var(--f-h) * 0.2) 0 !important;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
 }
 
 .zoom-filters .grid-segmented > button:only-child {
-  border-radius: calc(var(--f-h) * 0.2) !important;
+  border-radius: var(--radius-md) !important;
 }
 
 /* Vnořené „pill“ ovládací prvky (zoom, stránkování) mají menší vnitřní tlačítka. */
@@ -585,7 +585,7 @@
   height: calc(var(--p-h) - 0.9em) !important;
   padding-inline: 0.35em !important;
   gap: 0.15em;
-  border-radius: 0.35em;
+  border-radius: var(--radius-sm);
   line-height: 1;
   color: var(--foreground);
 }
@@ -847,7 +847,7 @@
   min-height: 0 !important;
   line-height: 1.2 !important;
   padding: 0.15em 0.5em !important;
-  border-radius: 0.35em;
+  border-radius: var(--radius-sm);
   gap: 0.3em;
 }
 
@@ -876,7 +876,7 @@
   min-height: 0;
   padding-block: 0.3em;
   padding-inline: 0.9em;
-  border-radius: 0.375em;
+  border-radius: var(--radius-md);
 }
 
 .zoom-grid :is(th, td) [data-grid-cta] svg {
@@ -890,7 +890,7 @@
   width: 1.35em !important;
   min-height: 0 !important;
   padding: 0 !important;
-  border-radius: 0.25em !important;
+  border-radius: var(--radius-sm) !important;
   flex: none;
 }
 
@@ -904,7 +904,7 @@
   width: 2em !important;
   height: 1.6em !important;
   padding: 0 !important;
-  border-radius: 0.25em;
+  border-radius: var(--radius-sm);
 }
 
 /* Ikony akcí jsou v klidu tlumené, na řádku pod kurzorem plně čitelné. */
@@ -1256,7 +1256,7 @@
 .zoom-pagination-menu {
   padding: 0.15em !important;
   min-width: 4em !important;
-  border-radius: 0.4em;
+  border-radius: var(--radius-md);
   font-size: inherit;
   line-height: 1.15;
 }
@@ -1267,7 +1267,7 @@
   padding-block: 0.15em !important;
   padding-left: 1.4em !important;
   padding-right: 0.5em !important;
-  border-radius: 0.3em;
+  border-radius: var(--radius-sm);
   min-height: 0 !important;
   height: auto !important;
 }
@@ -1537,7 +1537,7 @@ button,
   min-height: 2.1em;
   padding-inline: 0.7em;
   gap: 0.4em;
-  border-radius: 0.4em;
+  border-radius: var(--radius-md);
   border-width: 1px;
   font-size: 0.82em;
   line-height: 1.2;

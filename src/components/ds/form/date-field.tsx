@@ -179,7 +179,7 @@ export function DateField({
             size="icon"
             disabled={disabled}
             aria-label="Otevřít kalendář"
-            className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-[0.35em] !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+            className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
           >
             <CalendarIcon className="size-[1.05em]" />
           </Button>

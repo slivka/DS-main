@@ -40,6 +40,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 11. **Exporty a tisk používají firemní ikony.** Pro Excel vždy použij dodanou
     ikonu Microsoft Excel a pro PDF nebo tiskovou sestavu dodanou ikonu Adobe
     Acrobat Reader ze sdílených assetů design systému; nenahrazuj je obecnými ikonami.
+12. **Zaoblení rohů je pevné a jednotné.** Používej výhradně tokenovou škálu
+    `rounded-sm` / `rounded-md` / `rounded-lg` (4 / 6 / 6 px; větší plochy nejvýše
+    8 px). Poloměr nikdy neodvozuj z `em`, `rem`, velikosti písma, výšky prvku ani
+    zoomu. Běžná tlačítka, výběry a pole používají `rounded-md` (6 px).
 
 ## Čísla a data
 
