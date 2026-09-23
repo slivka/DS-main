@@ -794,6 +794,8 @@ export function DataGrid<Row>({
 
             <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />
 
+            {actions}
+
             {selectable && !hideSelectionToggle ? (
               <Button
                 type="button"
@@ -806,7 +808,6 @@ export function DataGrid<Row>({
               </Button>
             ) : null}
 
-            {actions}
           </div>
         </div> : null}
 

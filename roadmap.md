@@ -200,6 +200,6 @@
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
 
 ## Verze 2.6.1 (decentní stav menu a pořadí akcí gridu)
-- [ ] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
-- [ ] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
-- [ ] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled
+- [x] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
+- [x] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
+- [x] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled

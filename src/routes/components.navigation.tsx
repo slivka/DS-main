@@ -155,9 +155,7 @@ function NavigationPage() {
                         </span>
                       ) : null}
                       {item.disabled ? (
-                        <span className="ml-auto rounded bg-muted px-1.5 text-[11px]">
-                          Připravujeme
-                        </span>
+                        <span aria-label="Připravujeme" title="Připravujeme" className="ml-auto size-1.5 shrink-0 rounded-full bg-muted-foreground/40" />
                       ) : null}
                     </li>
                   ))}

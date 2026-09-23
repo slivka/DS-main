@@ -156,6 +156,11 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.6.1
+
+- Nedostupné položky menu používají decentní stavovou tečku; celý text „Připravujeme“ zůstává v nápovědě a nepřekrývá název položky.
+- Hlavní akce gridu, například „Nový doklad“, je vždy bezprostředně vpravo od ovládání zoomu.
+
 ## Changelog 2.6.0
 
 - **JournalLinesEditor má dva režimy v jedné komponentě** – bez `mainAccount` jde o interní doklad (na řádku MD i DAL účet, `sideFields="split"` je nově výchozí); s `mainAccount` je hlavní strana jen ke čtení (šedě) a zadává se pouze protiúčet.

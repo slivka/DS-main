@@ -14,6 +14,7 @@ import { MOCK_ACCOUNTS, MOCK_JOURNAL, MOCK_PERIODS, type JournalEntry } from "@/
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
 import { formatDate } from "@/lib/format";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/components/grid")({
   head: () => ({
@@ -93,6 +94,7 @@ function GridPage() {
         paginated
         selectable
         showTotalRow
+        actions={<Button type="button" size="sm" onClick={() => toast.info("Nový doklad")}>Nový doklad</Button>}
         toolbarLeft={
           <FiscalPeriodSelect
             periods={MOCK_PERIODS}
