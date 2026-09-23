@@ -198,3 +198,8 @@
 - [x] Řádek haléřového vyrovnání jen ke čtení s nápovědou, „Zbývá rozepsat" a „Dorovnat zaokrouhlením"
 - [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
+
+## Verze 2.6.1 (decentní stav menu a pořadí akcí gridu)
+- [ ] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
+- [ ] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
+- [ ] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled
