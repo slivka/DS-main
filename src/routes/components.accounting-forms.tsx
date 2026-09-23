@@ -331,6 +331,62 @@ function AccountingFormsPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
+        title="Interní doklad podle kategorií účtů"
+        description="Na každém řádku MD i DAL účet, VS a partner zvlášť pro obě strany. Alt+↓ rozbalí detail řádku, Ctrl+N přepne Nedaňový u nákladového nebo výnosového účtu."
+      >
+        <JournalLinesEditor
+          lines={internalLines}
+          onChange={setInternalLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          dimensionRequired
+          storageKey="showcase-journal-internal"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Faktura přijatá s hlavním účtem 321"
+        description="Hlavní strana DAL je jen ke čtení, zadává se pouze protiúčet. Poslední řádek je haléřové vyrovnání."
+      >
+        <JournalLinesEditor
+          lines={invoiceLines}
+          onChange={setInvoiceLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          mainAccount={{ accountId: "321001", side: "D" }}
+          totalAmount={12100.4}
+          totalMode="entered"
+          storageKey="showcase-journal-invoice"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Bankovní výpis v EUR"
+        description="Částka v Kč se dopočítá z kurzu; v patičce je vidět, kolik zbývá rozepsat proti částce dokladu."
+      >
+        <JournalLinesEditor
+          lines={bankLines}
+          onChange={setBankLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          showCurrency
+          mainAccount={{ accountId: "221002", side: "MD" }}
+          totalAmount={24800.3}
+          totalMode="entered"
+          onRoundingFill={(amount) =>
+            setBankLines((current) => [
+              ...current.filter((line) => !line.isRounding),
+              { id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Haléřové vyrovnání", isRounding: true },
+            ])
+          }
+          storageKey="showcase-journal-bank"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
         title="Jednotlivé prvky"
         description="Výběr partnera, knihy a zakázky, variabilní symbol a částka v měně dokladu."
       >
