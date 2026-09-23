@@ -432,7 +432,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
 
     return (
       <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-        <div ref={setRootRef} className={cn("overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
+        <div ref={setRootRef} className={cn("@container overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
           <div className="flex items-center justify-end border-b bg-muted/30 p-1.5"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
           <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} noFit maxHeight="32rem" className="journal-lines-grid">
             <Table role="grid" className="min-w-max table-fixed">
