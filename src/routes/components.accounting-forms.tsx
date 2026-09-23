@@ -14,6 +14,8 @@ import {
   TreeGrid,
   VsField,
   formatAccountCode,
+  fromDbLines,
+  toDbLines,
   type DocumentHeaderValue,
   type JournalLine,
   type TreeGridColumn,
@@ -113,6 +115,20 @@ function AccountingFormsPage() {
   const [rate, setRate] = useState(24.815);
   const [currency, setCurrency] = useState("EUR");
   const [readOnly, setReadOnly] = useState(false);
+  const [currencyLines, setCurrencyLines] = useState<JournalLine[]>([
+    {
+      id: "fx1", pairNo: 1, debitAccount: "518001", creditAccount: "321001",
+      currency: "EUR", foreignAmount: 100, rate: 25.12, amount: 2512,
+      text: "Licence v EUR", dimensionId: "d-cz-1", partnerId: "p1", vs: "2026000042",
+    },
+  ]);
+  const [postedLines, setPostedLines] = useState<JournalLine[]>([
+    { id: "posted1", pairNo: 1, debitAccount: "518002", creditAccount: "321001", amount: 9800, text: "Zaúčtovaný nájem", dimensionId: "d-rezie" },
+  ]);
+  const [validationLines, setValidationLines] = useState<JournalLine[]>([
+    { id: "invalid1", pairNo: 1, debitAccount: "518001", creditAccount: "321001", amount: 1200, text: "Chybí povinné údaje" },
+  ]);
+  const roundtrip = fromDbLines(toDbLines(lines));
 
   return (
     <ShowcaseLayout
@@ -157,8 +173,8 @@ function AccountingFormsPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Řádky zápisu samostatně"
-        description="Enter nebo Tab posune na další pole, na konci řádku vznikne nový řádek. Rozdíl proti částce dokladu se průběžně hlídá."
+        title="Řádky zápisu v Kč"
+        description="Psaní začne úpravu, F2 nebo dvojklik zachová hodnotu. Enter a Tab uloží a pokračují, Esc vrátí původní hodnotu. Ctrl+D duplikuje a Ctrl+Delete odebere řádek."
       >
         <JournalLinesEditor
           lines={lines}
@@ -167,6 +183,61 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           expectedTotal={header.amount}
+          storageKey="showcase-journal-czk"
+          defaults={{ text: header.description, vs: header.vs, partnerId: header.partnerId }}
+        />
+        <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
+          {`Převod ${lines.length} předkontací → ${toDbLines(lines).length} DB řádků → ${roundtrip.length} předkontací.`}
+        </p>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Řádky v cizí měně"
+        description="Částka v Kč se po změně částky v měně nebo kurzu automaticky přepočítá a lze ji následně přepsat."
+      >
+        <JournalLinesEditor
+          lines={currencyLines}
+          onChange={setCurrencyLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          showCurrency
+          expectedTotal={2512}
+          storageKey="showcase-journal-currency"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Zaúčtovaný doklad"
+        description="U zaúčtovaného dokladu zůstávají upravitelné pouze text a zakázka."
+      >
+        <JournalLinesEditor
+          lines={postedLines}
+          onChange={setPostedLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          editableColumns={["text", "dimensionId"]}
+          expectedTotal={9800}
+          storageKey="showcase-journal-posted"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Validace buněk"
+        description="Vestavěná kontrola hlídá účty a nenulovou částku; aplikace přidává vlastní účetní pravidla."
+      >
+        <JournalLinesEditor
+          lines={validationLines}
+          onChange={setValidationLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          validate={(line) => ({
+            vs: line.vs ? undefined : "Variabilní symbol je pro tento doklad povinný",
+            dimensionId: line.dimensionId ? undefined : "Vyberte zakázku",
+          })}
+          storageKey="showcase-journal-validation"
         />
       </ShowcaseSection>
 

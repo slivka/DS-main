@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -3291,7 +3291,18 @@
     {
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/journal-lines-editor.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním.",
+      "examples": [
+        {
+          "label": "Řádky zápisu",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nepřidávejte in-place účetní editaci do obecného DataGridu.",
+        "Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns."
+      ]
     },
     {
       "name": "DocumentForm",
