@@ -112,9 +112,9 @@ export function RecordDialog({
             }}
           >
             {children}
-            <div className="flex flex-col-reverse items-start gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
               {extraActions}
-              <div className="flex items-center gap-2 sm:ml-auto">
+              <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                   Zrušit
                 </Button>
@@ -194,11 +194,11 @@ export function FieldGrid({
     cols === 1
       ? "grid-cols-1"
       : cols === 3
-        ? "sm:grid-cols-3"
+        ? "@min-[40rem]:grid-cols-3"
         : cols === 4
-          ? "sm:grid-cols-4"
+          ? "@min-[40rem]:grid-cols-4"
           : cols === 6
-            ? "sm:grid-cols-6"
-            : "sm:grid-cols-2";
-  return <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>;
+            ? "@min-[40rem]:grid-cols-6"
+            : "@min-[40rem]:grid-cols-2";
+  return <div className={`@container grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>;
 }
