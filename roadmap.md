@@ -122,4 +122,4 @@
 - [x] Přesunout parametry exportu na samostatný druhý list
 - [x] Odstranit vlastní kontrolní součet ze vzorového exportu
 - [x] Zachovat seskupení gridu a stromu v osnově Excelu
-- [ ] Ověřit typovou kontrolu, stažení, obsah sešitu a sestavení
+- [x] Ověřit typovou kontrolu, stažení, obsah sešitu a sestavení

@@ -173,7 +173,6 @@ async function inspectWorkbook(filePath: string) {
   expect(sheet.getColumn(amountColumn).width ?? 0, "Sloupec musí být dost široký pro zobrazený součet").toBeGreaterThanOrEqual(
     totalLength + 2,
   );
-  expect(sheet.eachRow).toBeDefined();
 }
 
 function verifyLibreOfficeOpen(filePath: string, outputDir: string) {
