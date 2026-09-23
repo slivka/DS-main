@@ -1595,7 +1595,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním.
+Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Režim mode="mainAccount" s mainSide a mainAccount zamkne hlavní stranu; převod do databáze přes toJournalRow / fromJournalRow.
 
 **Props:**
 
@@ -1610,7 +1610,10 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 | `showCurrency` | boolean | `false` |
 | `sideFields` | shared · split | `split` |
 | `sharedSide` | any | `both` |
-| `mainAccount` | any | `—` |
+| `mode` | internal · mainAccount | `internal` |
+| `mainSide` | MD · D | `—` |
+| `mainAccount` | string | `—` |
+| `sideFieldRules` | any | `—` |
 | `dimensionRequired` | boolean | `false` |
 | `isNonTaxAllowed` | function | `—` |
 | `editableFields` | any | `—` |
@@ -1636,6 +1639,7 @@ _Řádky zápisu_
 
 - Nepřidávejte in-place účetní editaci do obecného DataGridu.
 - Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns.
+- Nepoužívejte odstraněné toDbLines / fromDbLines ani pairNo; mainAccount nepředávejte jako objekt.
 
 ### Label
 
