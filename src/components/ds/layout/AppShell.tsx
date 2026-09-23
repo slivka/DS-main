@@ -256,7 +256,7 @@ export function AppShell({
           <div className="min-w-0 flex-1">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
           {hasActions ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">{actions}</div>
-          {hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
+          {hasActions && hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">
             {resolvedPanels.map((panel) => {
               const Icon = panel.icon;
@@ -264,11 +264,11 @@ export function AppShell({
               return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
             })}
           </div>
-          {hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
+          {(hasActions || hasPanels) && hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center">{notificationBell}</div>
-          {hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
+          {(hasActions || hasPanels || hasNotifications) && hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center">{themeToggleButton}</div>
-          {hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
+          {(hasActions || hasPanels || hasNotifications || hasThemeToggle) && hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
           <div className="flex items-center gap-2">{userMenu}</div>
         </div>
       </header>
