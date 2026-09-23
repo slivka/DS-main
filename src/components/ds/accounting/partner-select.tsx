@@ -77,6 +77,7 @@ export function PartnerSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
+          onFocus={() => !disabled && setOpen(true)}
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -32,6 +32,8 @@ export type AccountOption = {
   name: string;
   type?: AccountType;
   active?: boolean;
+  /** Zda lze na tento účet přímo účtovat (jinak je jen součtový). */
+  postable?: boolean;
 };
 
 /** Výběr účtu z osnovy – kód, název a typ účtu. */
@@ -48,6 +50,8 @@ export function AccountSelect({
   disableSyntheticWithAnalytics = true,
   typeLabels = ACCOUNT_TYPE_LABELS,
   disabled,
+  initialSearch,
+  onOpenChange,
   className,
 }: {
   accounts: AccountOption[];
@@ -60,9 +64,20 @@ export function AccountSelect({
   disableSyntheticWithAnalytics?: boolean;
   typeLabels?: Record<AccountType, string>;
   disabled?: boolean;
+  /** Počáteční hledání při otevření z editovatelné buňky. */
+  initialSearch?: string;
+  onOpenChange?: (open: boolean) => void;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState(initialSearch ?? "");
+
+  useEffect(() => setQuery(initialSearch ?? ""), [initialSearch]);
+
+  const changeOpen = (next: boolean) => {
+    setOpen(next);
+    onOpenChange?.(next);
+  };
 
   const list = useMemo(() => {
     const codes = accounts.map((a) => normalizeAccountCode(a.code));
@@ -73,21 +88,32 @@ export function AccountSelect({
         const hasAnalytics =
           code.length === 3 && codes.some((c) => c.length > 3 && c.startsWith(code));
         const blocked =
-          a.active === false || (disableSyntheticWithAnalytics && hasAnalytics);
+          a.active === false || (a.postable !== undefined ? !a.postable : disableSyntheticWithAnalytics && hasAnalytics);
         return { ...a, code, blocked };
       });
   }, [accounts, hideInactive, disableSyntheticWithAnalytics]);
 
   const selected = list.find((a) => a.code === normalizeAccountCode(value));
+  const normalizedQuery = normalizeAccountCode(query).toLocaleLowerCase("cs");
+  const filteredList = query.trim()
+    ? list.filter((account) => {
+        const numericQuery = /^\s*[\d.]+\s*$/.test(query);
+        if (numericQuery) return account.code.startsWith(normalizedQuery);
+        return `${account.code} ${formatAccountCode(account.code)} ${account.name}`
+          .toLocaleLowerCase("cs")
+          .includes(query.trim().toLocaleLowerCase("cs"));
+      })
+    : list;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={changeOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
           variant="outline"
           role="combobox"
           disabled={disabled}
+          onFocus={() => !disabled && changeOpen(true)}
           className={cn("w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
@@ -104,12 +130,12 @@ export function AccountSelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+        <Command shouldFilter={false}>
+          <CommandInput autoFocus placeholder={searchPlaceholder} value={query} onValueChange={setQuery} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              {list.map((a) => (
+              {filteredList.map((a) => (
                 <CommandItem
                   key={a.code}
                   value={`${a.code} ${formatAccountCode(a.code)} ${a.name}`}
@@ -117,7 +143,7 @@ export function AccountSelect({
                   onSelect={() => {
                     if (a.blocked) return;
                     onChange(a.code);
-                    setOpen(false);
+                    changeOpen(false);
                   }}
                   className={cn("gap-2", a.blocked && "opacity-50")}
                 >

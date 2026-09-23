@@ -1,10 +1,16 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Check, ChevronDown, ChevronRight, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 
 export type DimensionOption = {
@@ -85,63 +91,60 @@ export function DimensionSelect({
 
   const selected = value ? byId.get(value) : undefined;
 
-  const renderNodes = (parentId: string, level: number): React.ReactNode[] =>
-    (childrenOf.get(parentId) ?? [])
-      .filter((option) => !matched || matched.has(option.id))
-      .flatMap((option) => {
-        const children = childrenOf.get(option.id) ?? [];
-        const isCollapsed = !matched && collapsed[option.id] === true;
-        const blocked = option.selectable === false;
-        const row = (
+  const renderCommandNode = (option: DimensionOption, level: number): React.ReactNode => {
+    const children = childrenOf.get(option.id) ?? [];
+    const isCollapsed = !matched && collapsed[option.id] === true;
+    const blocked = option.selectable === false;
+
+    const node = (
+      <CommandItem
+        key={option.id}
+        value={`${option.code ?? ""} ${option.name} ${option.id}`}
+        disabled={blocked}
+        onSelect={() => {
+          if (blocked) return;
+          onChange(option.id);
+          setOpen(false);
+        }}
+        className={cn("flex items-center gap-1", blocked && "opacity-50")}
+        style={{ paddingLeft: `${level * 16 + 8}px` }}
+      >
+        {children.length ? (
           <div
-            key={option.id}
-            className={cn(
-              "flex items-center gap-1 rounded-md px-1 py-1 text-sm",
-              !blocked && "hover-surface cursor-pointer",
-              blocked && "text-muted-foreground",
-            )}
-            style={{ paddingLeft: `${level * 16 + 4}px` }}
-            onClick={() => {
-              if (blocked) return;
-              onChange(option.id);
-              setOpen(false);
+            className="flex size-5 shrink-0 items-center justify-center rounded hover:bg-accent/50"
+            onClick={(event) => {
+              event.stopPropagation();
+              setCollapsed({ ...collapsed, [option.id]: !isCollapsed });
             }}
           >
-            {children.length ? (
-              <button
-                type="button"
-                aria-label={isCollapsed ? "Rozbalit" : "Sbalit"}
-                className="flex size-5 shrink-0 items-center justify-center rounded"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setCollapsed({ ...collapsed, [option.id]: !isCollapsed });
-                }}
-              >
-                {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
-              </button>
-            ) : (
-              <span className="size-5 shrink-0" />
-            )}
-            <span className="min-w-0 flex-1 truncate">{label(option)}</span>
-            {blocked ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[11px]">
-                      {option.reason ?? defaultReason}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{option.reason ?? defaultReason}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ) : null}
-            {selected?.id === option.id ? <Check className="size-4 shrink-0" /> : null}
+            {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
           </div>
-        );
-        return isCollapsed ? [row] : [row, ...renderNodes(option.id, level + 1)];
-      });
+        ) : (
+          <span className="size-5 shrink-0" />
+        )}
+        <span className="min-w-0 flex-1 truncate">{label(option)}</span>
+        {blocked ? (
+          <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+            {option.reason ?? defaultReason}
+          </span>
+        ) : null}
+        {selected?.id === option.id ? <Check className="size-4 shrink-0" /> : null}
+      </CommandItem>
+    );
 
-  const nodes = renderNodes("", 0);
+    if (isCollapsed) return node;
+
+    const childNodes = children
+      .filter((child) => !matched || matched.has(child.id))
+      .map((child) => renderCommandNode(child, level + 1));
+
+    return (
+      <React.Fragment key={option.id}>
+        {node}
+        {childNodes}
+      </React.Fragment>
+    );
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -152,6 +155,7 @@ export function DimensionSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
+          onFocus={() => !disabled && setOpen(true)}
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
@@ -160,27 +164,35 @@ export function DimensionSelect({
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-2" align="start">
-        <Input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={searchPlaceholder}
-          className="mb-2 h-9"
-        />
-        <div className="max-h-72 overflow-y-auto">
-          {allowClear && !query ? (
-            <div
-              className="hover-surface cursor-pointer rounded-md px-2 py-1 text-sm text-muted-foreground"
-              onClick={() => {
-                onChange("");
-                setOpen(false);
-              }}
-            >
-              {clearLabel}
-            </div>
-          ) : null}
-          {nodes.length ? nodes : <p className="p-2 text-sm text-muted-foreground">{emptyText}</p>}
-        </div>
+      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
+        <Command loop>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={query}
+            onValueChange={setQuery}
+          />
+          <CommandList>
+            <CommandEmpty>{emptyText}</CommandEmpty>
+            {allowClear && !query && (
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => {
+                    onChange("");
+                    setOpen(false);
+                  }}
+                  className="text-muted-foreground"
+                >
+                  {clearLabel}
+                </CommandItem>
+              </CommandGroup>
+            )}
+            <CommandGroup>
+              {(childrenOf.get("") ?? [])
+                .filter((option) => !matched || matched.has(option.id))
+                .map((option) => renderCommandNode(option, 0))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </PopoverContent>
     </Popover>
   );

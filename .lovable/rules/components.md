@@ -172,55 +172,6 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hlavní rám firemní aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `children` | any | `—` |
-| `items` | any | `—` |
-| `navGroups` | any | `—` |
-| `bottomItems` | any | `—` |
-| `appName` | string | `Aplikace` |
-| `logo` | any | `—` |
-| `breadcrumbs` | any | `—` |
-| `contextLeft` | any | `—` |
-| `actions` | any | `—` |
-| `panelButtons` | any | `—` |
-| `userMenu` | any | `—` |
-| `panels` | any | `—` |
-| `activePanel` | string | `—` |
-| `onActivePanelChange` | function | `—` |
-| `closeLabel` | string | `Zavřít` |
-| `collapsed` | boolean | `—` |
-| `onCollapsedChange` | function | `—` |
-| `menuLabel` | string | `Menu` |
-| `collapseLabel` | string | `Sbalit menu` |
-| `expandLabel` | string | `Rozbalit menu` |
-| `disabledHint` | string | `—` |
-| `topBarLeft` | any | `—` |
-| `topBarRight` | any | `—` |
-| `adminNav` | any | `—` |
-| `adminTitle` | string | `Administrace` |
-| `adminButtonLabel` | string | `Administrace` |
-| `adminBackLabel` | string | `—` |
-| `adminBasePath` | string | `—` |
-| `adminMode` | boolean | `—` |
-| `onAdminModeChange` | function | `—` |
-| `showLegacyToolbar` | boolean | `false` |
-
-**Examples:**
-
-_AppShell 2.0_
-```tsx
-<AppShell appName="Accounting" navGroups={navGroups} panels={panels} activePanel={activePanel} onActivePanelChange={setActivePanel}>…</AppShell>
-```
-
-**Avoid:**
-
-- Pro nové aplikace nepoužívejte zastaralé adminNav ani topBarLeft.
-
 ### AsOfDateField
 
 ```ts
@@ -634,16 +585,6 @@ import { CommandList } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { CommandPalette } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `targets` | any | `—` |
-| `open` | boolean | `—` |
-| `onOpenChange` | function | `—` |
-| `placeholder` | string | `Hledat stránku…` |
-| `emptyText` | string | `Nic nenalezeno.` |
-
 ### CommandSeparator
 
 ```ts
@@ -655,42 +596,6 @@ import { CommandSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 ```ts
 import { CommandShortcut } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-### CompanySwitcher
-
-```ts
-import { CompanySwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Výběr firmy s hledáním, IČO a posledními položkami.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `items` | any | `—` |
-| `value` | string | `—` |
-| `onChange` | function | `—` |
-| `recentIds` | any | `—` |
-| `label` | string | `Firma` |
-| `searchPlaceholder` | string | `Hledat firmu…` |
-| `recentLabel` | string | `Poslední` |
-| `allLabel` | string | `Všechny firmy` |
-| `emptyText` | string | `Žádná firma nebyla nalezena.` |
-| `createLabel` | string | `Nová firma` |
-| `onCreate` | function | `—` |
-| `className` | string | `min-w-0 flex-1` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />
-```
-
-**Avoid:**
-
-- Nenahrazujte nativním selectem.
 
 ### ContactSelect
 
@@ -787,36 +692,6 @@ import { ContextMenuSubTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b
 ```ts
 import { ContextMenuTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-### ContextPill
-
-```ts
-import { ContextPill } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Dvouřádkový kontextový přepínač do horní lišty.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `label` | string | `—` |
-| `value` | string | `—` |
-| `icon` | any | `—` |
-| `children` | any | `—` |
-| `contentClassName` | string | `—` |
-| `contentAlign` | start · center · end | `start` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<ContextPill label="Firma" value="Slivka s.r.o.">…</ContextPill>
-```
-
-**Avoid:**
-
-- Nepoužívejte pro běžná formulářová pole.
 
 ### CountrySelect
 
@@ -932,7 +807,7 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `onChange` | function | `—` |
 | `placeholder` | string | `Vyberte datum` |
 | `disabled` | boolean | `—` |
-| `className` | string | `date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
+| `className` | string | `date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-[0.35em] !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
@@ -1240,14 +1115,6 @@ import { FiscalPeriodSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 ```ts
 import { FontSizeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `placeholder` | string | `Vyberte velikost písma` |
-| `label` | string | `Velikost písma` |
-| `className` | string | `w-[220px]` |
 
 ### Form
 
@@ -1832,38 +1699,6 @@ import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { PeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### PeriodSwitcher
-
-```ts
-import { PeriodSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Kontextový výběr účetního období se stavem.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `periods` | any | `—` |
-| `value` | string | `—` |
-| `onChange` | function | `—` |
-| `label` | string | `Účetní období` |
-| `stateLabels` | object | `—` |
-| `disableClosed` | boolean | `false` |
-| `className` | string | `min-w-0 flex-1` |
-| `periodsLabel` | string | `Období` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />
-```
-
-**Avoid:**
-
-- Nepoužívejte pro obecné datumové filtry.
-
 ### PermissionGate
 
 ```ts
@@ -1965,33 +1800,6 @@ import { ScrollArea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { ScrollBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-### SearchButton
-
-```ts
-import { SearchButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Ikonové tlačítko otevírající globální hledání.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `onClick` | function | `—` |
-| `label` | string | `Hledat (Ctrl+K)` |
-| `className` | string | `size-4` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<SearchButton onClick={() => setOpen(true)} />
-```
-
-**Avoid:**
-
-- Nepoužívejte textové tlačítko v horní liště.
 
 ### Select
 
@@ -2406,48 +2214,11 @@ import { TagPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 import { Textarea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### ThemeSetting
-
-```ts
-import { ThemeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Nastavení světlého, tmavého nebo systémového motivu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `label` | string | `Motiv` |
-| `lightLabel` | string | `Světlý` |
-| `darkLabel` | string | `Tmavý` |
-| `systemLabel` | string | `Podle systému` |
-| `className` | string | `text-sm font-medium` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<ThemeSetting />
-```
-
-**Avoid:**
-
-- Nevkládejte do horní lišty; patří na stránku Předvolby.
-
 ### ThemeToggle
 
 ```ts
 import { ThemeToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `className` | string | `—` |
-| `lightLabel` | string | `Světlý režim` |
-| `darkLabel` | string | `Tmavý režim` |
 
 ### TimeInputRight
 
@@ -2539,41 +2310,6 @@ import { TruncatedLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```ts
 import { TruncatedText } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-### UserMenu
-
-```ts
-import { UserMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Uživatelská nabídka s přímým přepínáním pracovních prostorů.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `name` | string | `—` |
-| `email` | string | `—` |
-| `workspaces` | any | `—` |
-| `activeWorkspaceId` | string | `—` |
-| `onWorkspaceChange` | function | `—` |
-| `workspaceLabel` | string | `Pracovní prostor` |
-| `workspaceSearchPlaceholder` | string | `Hledat pracovní prostor…` |
-| `items` | any | `—` |
-| `onSignOut` | function | `—` |
-| `signOutLabel` | string | `Odhlásit` |
-| `menuLabel` | string | `Uživatelská nabídka` |
-
-**Examples:**
-
-_Základní použití_
-```tsx
-<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={workspaces} />
-```
-
-**Avoid:**
-
-- Nevkládejte pracovní prostory do vnořeného podmenu.
 
 ### ViewModeToggle
 

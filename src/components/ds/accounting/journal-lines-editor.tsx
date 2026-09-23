@@ -1,41 +1,47 @@
-import { useId, type KeyboardEvent } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { Copy, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../../ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { formatAccountCode } from "./account-code";
 import { AccountSelect, type AccountOption } from "./account-select";
 import { DimensionSelect, type DimensionOption } from "./dimension-select";
 import { PartnerSelect, type PartnerOption } from "./partner-select";
-import { VsField } from "./vs-field";
+import { OptionSelect, type SelectOption } from "../form/option-select";
 import { DecimalInput } from "../form/decimal-input";
+import { ColumnResizeHandle } from "../grid/grid-column-resize";
+import { GridAction, GridActions } from "../grid/grid-action";
+import { useGridColumns, type GridColumn } from "../grid/grid-columns";
+import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/grid-zoom";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import type { JournalLine, JournalLineColumn } from "./journal-lines";
 
-export type JournalLine = {
-  id: string;
-  debitAccount?: string | null;
-  creditAccount?: string | null;
-  amount: number;
-  text?: string;
-  dimensionId?: string | null;
-  vs?: string;
-  partnerId?: string | null;
-};
+export type { JournalDbLine, JournalLine, JournalLineColumn } from "./journal-lines";
+export { fromDbLines, toDbLines } from "./journal-lines";
 
-export type JournalLinesEditorTexts = {
+export type JournalLineDefaults = Partial<Omit<JournalLine, "id" | "pairNo">>;
+export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
+
+export interface JournalLinesEditorTexts {
+  row: string;
   debitAccount: string;
   creditAccount: string;
   amount: string;
+  currency: string;
+  foreignAmount: string;
+  rate: string;
   text: string;
   dimension: string;
   vs: string;
@@ -44,251 +50,297 @@ export type JournalLinesEditorTexts = {
   addLine: string;
   duplicateLine: string;
   removeLine: string;
+  undo: string;
+  removed: string;
   total: string;
   balanced: string;
   difference: string;
+  errors: string;
   empty: string;
-};
+  debitRequired: string;
+  creditRequired: string;
+  amountRequired: string;
+}
 
 export const DEFAULT_JOURNAL_LINES_TEXTS: JournalLinesEditorTexts = {
-  debitAccount: "MD účet",
-  creditAccount: "DAL účet",
-  amount: "Částka",
-  text: "Text",
-  dimension: "Zakázka",
-  vs: "VS",
-  partner: "Partner",
-  actions: "Akce",
-  addLine: "Přidat řádek",
-  duplicateLine: "Duplikovat řádek",
-  removeLine: "Odebrat řádek",
-  total: "Celkem",
-  balanced: "Zápis je vyrovnaný",
-  difference: "Rozdíl MD/DAL",
-  empty: "Zatím zde nejsou žádné řádky",
+  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", amount: "Částka v Kč",
+  currency: "Měna", foreignAmount: "Částka v měně", rate: "Kurz", text: "Text",
+  dimension: "Zakázka", vs: "VS", partner: "Partner", actions: "Akce",
+  addLine: "Přidat řádek", duplicateLine: "Duplikovat řádek", removeLine: "Odebrat řádek",
+  undo: "Zpět", removed: "Řádek byl odebrán", total: "Celkem", balanced: "Částka odpovídá dokladu",
+  difference: "Zbývá", errors: "Počet chyb", empty: "Zatím zde nejsou žádné řádky",
+  debitRequired: "Vyberte účet MD", creditRequired: "Vyberte účet DAL", amountRequired: "Částka musí být nenulová",
 };
 
-const newId = () => `line-${Math.random().toString(36).slice(2, 10)}`;
+const ALL_EDITABLE: JournalLineColumn[] = [
+  "debitAccount", "creditAccount", "amount", "currency", "foreignAmount", "rate",
+  "text", "dimensionId", "vs", "partnerId",
+];
 
-/**
- * Editovatelná tabulka řádků účetního zápisu (controlled).
- * Ovládání klávesnicí: Enter přeskočí na další pole, na konci vytvoří nový řádek.
- */
-export function JournalLinesEditor({
-  lines,
-  onChange,
-  accounts,
-  dimensions = [],
-  partners = [],
-  readOnly = false,
-  expectedTotal,
-  texts,
-  className,
-}: {
+type ColumnId = JournalLineColumn | "row" | "actions";
+type EditState = { rowId: string; column: JournalLineColumn; seed?: string; original: JournalLine };
+
+const newId = () => `line-${Math.random().toString(36).slice(2, 10)}`;
+const roundMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
+const COLUMN_WIDTHS: Record<ColumnId, number> = {
+  row: 54, debitAccount: 220, creditAccount: 220, amount: 140, currency: 92,
+  foreignAmount: 150, rate: 110, text: 240, dimensionId: 190, vs: 120, partnerId: 220, actions: 72,
+};
+
+export interface JournalLinesEditorProps {
   lines: JournalLine[];
   onChange: (lines: JournalLine[]) => void;
   accounts: AccountOption[];
   dimensions?: DimensionOption[];
   partners?: PartnerOption[];
+  currencies?: SelectOption[];
+  showCurrency?: boolean;
+  editableColumns?: JournalLineColumn[];
+  /** @deprecated Použijte editableColumns; true znamená, že nelze upravit žádný sloupec. */
   readOnly?: boolean;
-  /** Očekávaná celková částka dokladu; rozdíl se průběžně zvýrazní. */
   expectedTotal?: number;
+  defaults?: JournalLineDefaults;
+  validate?: (line: JournalLine) => JournalLineErrors;
+  storageKey?: string;
   texts?: Partial<JournalLinesEditorTexts>;
   className?: string;
-}) {
-  const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts };
-  const tableId = useId();
-
-  const total = lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
-  const difference = expectedTotal === undefined ? 0 : Math.round((expectedTotal - total) * 100) / 100;
-
-  const patch = (id: string, values: Partial<JournalLine>) =>
-    onChange(lines.map((line) => (line.id === id ? { ...line, ...values } : line)));
-
-  const addLine = () =>
-    onChange([...lines, { id: newId(), amount: 0, debitAccount: null, creditAccount: null }]);
-
-  const duplicate = (line: JournalLine) => {
-    const index = lines.findIndex((item) => item.id === line.id);
-    const copy = { ...line, id: newId() };
-    onChange([...lines.slice(0, index + 1), copy, ...lines.slice(index + 1)]);
-  };
-
-  const remove = (id: string) => onChange(lines.filter((line) => line.id !== id));
-
-  /** Enter posune kurzor na další pole; na posledním poli přidá nový řádek. */
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "Enter" || readOnly) return;
-    const target = event.target as HTMLElement;
-    if (target.tagName === "BUTTON" && target.getAttribute("role") !== "combobox") return;
-    const root = document.getElementById(tableId);
-    if (!root) return;
-    const fields = Array.from(
-      root.querySelectorAll<HTMLElement>("input, [role='combobox']"),
-    ).filter((element) => !(element as HTMLInputElement).disabled);
-    const index = fields.indexOf(target);
-    if (index < 0) return;
-    event.preventDefault();
-    const next = fields[index + 1];
-    if (next) next.focus();
-    else addLine();
-  };
-
-  return (
-    <div className={cn("rounded-lg border bg-card", className)} id={tableId} onKeyDown={onKeyDown}>
-      <div className="overflow-x-auto">
-      <Table className="min-w-[1280px]">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[220px]">{t.debitAccount}</TableHead>
-            <TableHead className="w-[220px]">{t.creditAccount}</TableHead>
-            <TableHead className="w-[140px] text-right">{t.amount}</TableHead>
-            <TableHead>{t.text}</TableHead>
-            <TableHead className="w-[200px]">{t.dimension}</TableHead>
-            <TableHead className="w-[120px]">{t.vs}</TableHead>
-            <TableHead className="w-[220px]">{t.partner}</TableHead>
-            {readOnly ? null : (
-              <TableHead className="w-[104px] text-right">{t.actions}</TableHead>
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {lines.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={readOnly ? 7 : 8} className="py-8 text-center text-muted-foreground">
-                {t.empty}
-              </TableCell>
-            </TableRow>
-          ) : (
-            lines.map((line) => (
-              <TableRow key={line.id}>
-                <TableCell>
-                  <AccountSelect
-                    accounts={accounts}
-                    value={line.debitAccount ?? ""}
-                    onChange={(value) => patch(line.id, { debitAccount: value })}
-                    disabled={readOnly}
-                  />
-                </TableCell>
-                <TableCell>
-                  <AccountSelect
-                    accounts={accounts}
-                    value={line.creditAccount ?? ""}
-                    onChange={(value) => patch(line.id, { creditAccount: value })}
-                    disabled={readOnly}
-                  />
-                </TableCell>
-                <TableCell>
-                  <DecimalInput
-                    value={line.amount}
-                    onChange={(value) => patch(line.id, { amount: Number(value) || 0 })}
-                    decimals={2}
-                    disabled={readOnly}
-                    aria-label={t.amount}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    value={line.text ?? ""}
-                    onChange={(event) => patch(line.id, { text: event.target.value })}
-                    disabled={readOnly}
-                    aria-label={t.text}
-                    className="h-9"
-                  />
-                </TableCell>
-                <TableCell>
-                  <DimensionSelect
-                    options={dimensions}
-                    value={line.dimensionId ?? ""}
-                    onChange={(value) => patch(line.id, { dimensionId: value })}
-                    disabled={readOnly || dimensions.length === 0}
-                  />
-                </TableCell>
-                <TableCell>
-                  <VsField
-                    value={line.vs ?? ""}
-                    onChange={(value) => patch(line.id, { vs: value })}
-                    disabled={readOnly}
-                    aria-label={t.vs}
-                  />
-                </TableCell>
-                <TableCell>
-                  <PartnerSelect
-                    partners={partners}
-                    value={line.partnerId ?? ""}
-                    onChange={(value) => patch(line.id, { partnerId: value })}
-                    disabled={readOnly || partners.length === 0}
-                  />
-                </TableCell>
-                {readOnly ? null : (
-                  <TableCell className="text-right">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            aria-label={t.duplicateLine}
-                            onClick={() => duplicate(line)}
-                          >
-                            <Copy className="size-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{t.duplicateLine}</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            aria-label={t.removeLine}
-                            className="text-destructive"
-                            onClick={() => remove(line.id)}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{t.removeLine}</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                )}
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2} className="font-semibold">
-              {t.total}
-            </TableCell>
-            <TableCell className="text-right font-semibold tabular-nums">
-              {formatAmount(total, 2)}
-            </TableCell>
-            <TableCell colSpan={readOnly ? 4 : 5}>
-              {expectedTotal === undefined ? null : difference === 0 ? (
-                <span className="text-sm text-muted-foreground">{t.balanced}</span>
-              ) : (
-                <span className={cn("text-sm font-semibold", amountClass(-Math.abs(difference)))}>
-                  {`${t.difference}: ${formatAmount(difference, 2)}`}
-                </span>
-              )}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-      </div>
-
-      {readOnly ? null : (
-        <div className="border-t p-2">
-          <Button type="button" variant="outline" size="sm" onClick={addLine}>
-            <Plus className="size-4" />
-            {t.addLine}
-          </Button>
-        </div>
-      )}
-    </div>
-  );
 }
+
+/** Editovatelná mřížka předkontací se zoomem, validací a ovládáním jako v Excelu. */
+export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorProps>(
+  function JournalLinesEditor(
+    {
+      lines, onChange, accounts, dimensions = [], partners = [], currencies = [
+        { value: "CZK", label: "CZK" }, { value: "EUR", label: "EUR" }, { value: "USD", label: "USD" },
+      ], showCurrency = false, editableColumns, readOnly = false, expectedTotal, defaults,
+      validate, storageKey = "journal-lines", texts, className,
+    },
+    forwardedRef,
+  ) {
+    const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts };
+    const rootRef = useRef<HTMLDivElement | null>(null);
+    const setRootRef = (node: HTMLDivElement | null) => {
+      rootRef.current = node;
+      if (typeof forwardedRef === "function") forwardedRef(node);
+      else if (forwardedRef) forwardedRef.current = node;
+    };
+    const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey);
+    const editable = useMemo(() => new Set(readOnly ? [] : (editableColumns ?? ALL_EDITABLE)), [editableColumns, readOnly]);
+    const [active, setActive] = useState<{ rowId: string; column: JournalLineColumn } | null>(null);
+    const [editing, setEditing] = useState<EditState | null>(null);
+
+    const columnDefs = useMemo<GridColumn<ColumnId>[]>(() => [
+      { id: "row", label: t.row, locked: true },
+      { id: "debitAccount", label: t.debitAccount, locked: true },
+      { id: "creditAccount", label: t.creditAccount, locked: true },
+      ...(showCurrency ? [
+        { id: "currency" as const, label: t.currency, locked: true },
+        { id: "foreignAmount" as const, label: t.foreignAmount, locked: true, align: "right" as const },
+        { id: "rate" as const, label: t.rate, locked: true, align: "right" as const },
+      ] : []),
+      { id: "amount", label: t.amount, locked: true, align: "right" },
+      { id: "text", label: t.text, locked: true },
+      { id: "dimensionId", label: t.dimension, locked: true },
+      { id: "vs", label: t.vs, locked: true },
+      { id: "partnerId", label: t.partner, locked: true },
+      { id: "actions", label: t.actions, locked: true, align: "right" },
+    ], [showCurrency, t.actions, t.amount, t.creditAccount, t.currency, t.debitAccount, t.dimension, t.foreignAmount, t.partner, t.rate, t.row, t.text, t.vs]);
+    const columns = useGridColumns(storageKey, columnDefs);
+    const visibleColumns = columns.columns;
+
+    const validations = useMemo(() => new Map(lines.map((line) => {
+      const builtIn: JournalLineErrors = {};
+      if (!line.debitAccount) builtIn.debitAccount = t.debitRequired;
+      if (!line.creditAccount) builtIn.creditAccount = t.creditRequired;
+      if (!Number(line.amount)) builtIn.amount = t.amountRequired;
+      return [line.id, { ...builtIn, ...validate?.(line) }];
+    })), [lines, t.amountRequired, t.creditRequired, t.debitRequired, validate]);
+    const errorCount = [...validations.values()].reduce((sum, errors) => sum + Object.values(errors).filter(Boolean).length, 0);
+    const total = lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+    const difference = expectedTotal === undefined ? 0 : roundMoney(expectedTotal - total);
+
+    const patch = (id: string, values: Partial<JournalLine>) =>
+      onChange(lines.map((line) => (line.id === id ? { ...line, ...values } : line)));
+
+    const makeLine = (previous?: JournalLine): JournalLine => {
+      const remaining = expectedTotal === undefined ? 0 : roundMoney(expectedTotal - total);
+      return {
+        id: newId(), pairNo: Math.max(0, ...lines.map((line) => line.pairNo ?? 0)) + 1,
+        debitAccount: null, creditAccount: null,
+        amount: remaining > 0 ? remaining : 0,
+        text: previous?.text ?? defaults?.text,
+        dimensionId: previous?.dimensionId ?? defaults?.dimensionId,
+        vs: previous?.vs ?? defaults?.vs,
+        partnerId: previous?.partnerId ?? defaults?.partnerId,
+        currency: previous?.currency ?? defaults?.currency ?? (showCurrency ? "EUR" : "CZK"),
+        foreignAmount: previous?.foreignAmount ?? defaults?.foreignAmount,
+        rate: previous?.rate ?? defaults?.rate,
+      };
+    };
+    const addLine = () => onChange([...lines, makeLine(lines.at(-1))]);
+    const duplicate = (line: JournalLine) => {
+      const index = lines.findIndex((item) => item.id === line.id);
+      onChange([...lines.slice(0, index + 1), { ...line, id: newId(), pairNo: Math.max(0, ...lines.map((item) => item.pairNo ?? 0)) + 1 }, ...lines.slice(index + 1)]);
+    };
+    const remove = (line: JournalLine) => {
+      const index = lines.findIndex((item) => item.id === line.id);
+      const remaining = lines.filter((item) => item.id !== line.id);
+      onChange(remaining);
+      toast(t.removed, { action: { label: t.undo, onClick: () => onChange([...remaining.slice(0, index), line, ...remaining.slice(index)]) } });
+    };
+
+    const focusCell = (rowIndex: number, column: JournalLineColumn, backwards = false) => {
+      const order = visibleColumns.map((item) => item.id).filter((id): id is JournalLineColumn => editable.has(id as JournalLineColumn));
+      const current = order.indexOf(column);
+      let nextRow = rowIndex;
+      let nextIndex = current + (backwards ? -1 : 1);
+      if (nextIndex >= order.length) { nextIndex = 0; nextRow += 1; }
+      if (nextIndex < 0) { nextIndex = order.length - 1; nextRow -= 1; }
+      if (nextRow >= lines.length) {
+        const created = makeLine(lines.at(-1));
+        onChange([...lines, created]);
+        requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(`[data-cell-key="${created.id}:${order[0]}"]`)?.focus());
+        return;
+      }
+      const nextLine = lines[nextRow];
+      const nextColumn = order[nextIndex];
+      if (nextLine && nextColumn) requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(`[data-cell-key="${nextLine.id}:${nextColumn}"]`)?.focus());
+    };
+
+    const finish = (rowIndex: number, column: JournalLineColumn, backwards = false) => {
+      setEditing(null);
+      focusCell(rowIndex, column, backwards);
+    };
+    const cancel = () => {
+      if (editing) onChange(lines.map((line) => line.id === editing.rowId ? editing.original : line));
+      setEditing(null);
+    };
+
+    const displayValue = (line: JournalLine, column: JournalLineColumn) => {
+      if (column === "debitAccount" || column === "creditAccount") {
+        const code = line[column];
+        const account = accounts.find((item) => item.code === code);
+        return code ? `${formatAccountCode(code)}${account ? ` – ${account.name}` : ""}` : "";
+      }
+      if (column === "dimensionId") return dimensions.find((item) => item.id === line.dimensionId)?.name ?? "";
+      if (column === "partnerId") return partners.find((item) => item.id === line.partnerId)?.name ?? "";
+      if (column === "amount" || column === "foreignAmount") return formatAmount(Number(line[column]) || 0, 2);
+      if (column === "rate") return formatAmount(Number(line.rate) || 0, 6);
+      return String(line[column] ?? "");
+    };
+
+    const inputKey = (event: KeyboardEvent, rowIndex: number, column: JournalLineColumn) => {
+      if (event.key === "Escape") { event.preventDefault(); cancel(); return; }
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        finish(rowIndex, column, event.shiftKey);
+      }
+    };
+
+    const renderEditor = (line: JournalLine, rowIndex: number, column: JournalLineColumn) => {
+      const seed = editing?.seed;
+      const commitSelect = (values: Partial<JournalLine>) => { patch(line.id, values); finish(rowIndex, column); };
+      if (column === "debitAccount" || column === "creditAccount") return (
+        <AccountSelect accounts={accounts} value={line[column]} initialSearch={seed} onChange={(value) => commitSelect({ [column]: value })} onOpenChange={(open) => { if (!open) setEditing(null); }} className="journal-cell-editor" />
+      );
+      if (column === "dimensionId") return <DimensionSelect options={dimensions} value={line.dimensionId} onChange={(value) => commitSelect({ dimensionId: value })} className="journal-cell-editor" />;
+      if (column === "partnerId") return <PartnerSelect partners={partners} value={line.partnerId} onChange={(value) => commitSelect({ partnerId: value })} className="journal-cell-editor" />;
+      if (column === "currency") return <OptionSelect value={line.currency} options={currencies} onChange={(value) => commitSelect({ currency: value })} triggerClassName="journal-cell-editor" />;
+      if (column === "amount" || column === "foreignAmount" || column === "rate") {
+        const initial = seed === undefined ? Number(line[column]) || 0 : Number(seed.replace(",", ".")) || 0;
+        return <DecimalInput autoFocus aria-label={t[column]} value={initial} decimals={column === "rate" ? 6 : 2} className="journal-cell-editor" onKeyDown={(event) => inputKey(event, rowIndex, column)} onChange={(value) => {
+          const numeric = Number(value) || 0;
+          if (column === "foreignAmount") patch(line.id, { foreignAmount: numeric, amount: roundMoney(numeric * (line.rate || 0)) });
+          else if (column === "rate") patch(line.id, { rate: numeric, amount: roundMoney((line.foreignAmount || 0) * numeric) });
+          else patch(line.id, { amount: numeric });
+        }} />;
+      }
+      return <Input autoFocus aria-label={t[column]} value={seed ?? String(line[column] ?? "")} className="journal-cell-editor" onKeyDown={(event) => inputKey(event, rowIndex, column)} onChange={(event) => patch(line.id, { [column]: column === "vs" ? event.target.value.replace(/\D/g, "").slice(0, 10) : event.target.value })} />;
+    };
+
+    const renderCell = (line: JournalLine, rowIndex: number, column: JournalLineColumn) => {
+      const error = validations.get(line.id)?.[column];
+      const canEdit = editable.has(column);
+      const isEditing = editing?.rowId === line.id && editing.column === column;
+      const content = isEditing ? renderEditor(line, rowIndex, column) : displayValue(line, column);
+      const cell = (
+        <div
+          tabIndex={canEdit ? 0 : -1}
+          role="gridcell"
+          data-cell-key={`${line.id}:${column}`}
+          aria-label={`${t[column === "dimensionId" ? "dimension" : column === "partnerId" ? "partner" : column]} ${rowIndex + 1}`}
+          className={cn("journal-grid-cell min-h-[1.8em] truncate rounded-sm px-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/50", canEdit && "cursor-cell", error && "ring-1 ring-destructive")}
+          onClick={(event) => (event.currentTarget as HTMLElement).focus()}
+          onFocus={() => setActive({ rowId: line.id, column })}
+          onDoubleClick={() => canEdit && setEditing({ rowId: line.id, column, original: { ...line } })}
+          onKeyDown={(event) => {
+            if (!canEdit || isEditing) return;
+            if (event.key === "F2" || event.key === "Enter") { event.preventDefault(); event.stopPropagation(); setEditing({ rowId: line.id, column, original: { ...line } }); return; }
+            if (event.key === "Tab") { event.preventDefault(); focusCell(rowIndex, column, event.shiftKey); return; }
+            if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+              event.preventDefault(); event.stopPropagation();
+              const original = { ...line };
+              if (column === "debitAccount" || column === "creditAccount") {
+                setEditing({ rowId: line.id, column, seed: event.key, original });
+              } else {
+                const value = column === "amount" || column === "foreignAmount" || column === "rate"
+                  ? Number(event.key.replace(",", ".")) || 0
+                  : event.key;
+                patch(line.id, { [column]: value });
+                setEditing({ rowId: line.id, column, original });
+              }
+            }
+          }}
+        >{content || <span className="text-muted-foreground">—</span>}</div>
+      );
+      return error ? <Tooltip><TooltipTrigger asChild>{cell}</TooltipTrigger><TooltipContent>{error}</TooltipContent></Tooltip> : cell;
+    };
+
+    useEffect(() => {
+      if (!editing) return;
+      const cell = rootRef.current?.querySelector<HTMLElement>(`[data-cell-key="${editing.rowId}:${editing.column}"]`);
+      requestAnimationFrame(() => cell?.querySelector<HTMLElement>("input,button,[role=combobox]")?.focus());
+    }, [editing]);
+
+    const onRootKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+      if (editing || !active || (!event.ctrlKey && !event.metaKey)) return;
+      const line = lines.find((item) => item.id === active.rowId);
+      if (!line) return;
+      if (event.key.toLocaleLowerCase("cs") === "d") { event.preventDefault(); event.stopPropagation(); duplicate(line); }
+      if (event.key === "Delete") { event.preventDefault(); event.stopPropagation(); remove(line); }
+    };
+
+    const actionsVisible = !readOnly;
+    const span = visibleColumns.length;
+
+    return (
+      <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
+        <div ref={setRootRef} className={cn("overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
+          <div className="flex items-center justify-end border-b bg-muted/30 p-1.5"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
+          <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} noFit maxHeight="32rem" className="journal-lines-grid">
+            <Table role="grid" className="min-w-max table-fixed">
+              <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: `${columns.widths[column.id] ?? COLUMN_WIDTHS[column.id]}px` }} />)}</colgroup>
+              <TableHeader className="grid-column-header"><TableRow>{visibleColumns.map((column) => <TableHead key={column.id} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn("relative", column.align === "right" && "text-right", column.id === "actions" && "grid-actions-header")}><span>{column.label}</span>{column.id !== "row" && column.id !== "actions" ? <ColumnResizeHandle onResize={(width) => columns.setWidth(column.id, width)} onReset={() => columns.clearWidth(column.id)} /> : null}</TableHead>)}</TableRow></TableHeader>
+              <TableBody>{lines.length === 0 ? <TableRow><TableCell colSpan={span} className="py-8 text-center text-muted-foreground">{t.empty}</TableCell></TableRow> : lines.map((line, rowIndex) => <TableRow key={line.id} data-grid-row tabIndex={-1} className="group/row">{visibleColumns.map((column) => {
+                if (column.id === "row") return <TableCell key={column.id} data-pin className="text-center font-mono text-muted-foreground">{rowIndex + 1}</TableCell>;
+                if (column.id === "actions") return <TableCell key={column.id} data-pin-right className="grid-actions-cell text-right">{actionsVisible ? <GridActions><Tooltip><TooltipTrigger asChild><GridAction aria-label={t.duplicateLine} onClick={() => duplicate(line)}><Copy /></GridAction></TooltipTrigger><TooltipContent>{t.duplicateLine}</TooltipContent></Tooltip><Tooltip><TooltipTrigger asChild><GridAction tone="destructive" aria-label={t.removeLine} onClick={() => remove(line)}><Trash2 /></GridAction></TooltipTrigger><TooltipContent>{t.removeLine}</TooltipContent></Tooltip></GridActions> : null}</TableCell>;
+                const id = column.id as JournalLineColumn;
+                return <TableCell key={id} className={cn((id === "amount" || id === "foreignAmount" || id === "rate") && "text-right font-mono tabular-nums")}>{renderCell(line, rowIndex, id)}</TableCell>;
+              })}</TableRow>)}</TableBody>
+              <TableFooter><TableRow>{visibleColumns.map((column, index) => {
+                let content: ReactNode = null;
+                if (column.id === "row") content = t.total;
+                if (column.id === "amount") content = <span className="font-mono tabular-nums">{formatAmount(total, 2)}</span>;
+                if (column.id === "text") content = expectedTotal === undefined ? null : difference === 0 ? t.balanced : <span className={amountClass(-Math.abs(difference))}>{`${t.difference}: ${formatAmount(difference, 2)}`}</span>;
+                if (column.id === "actions" && errorCount > 0) content = <span className="text-destructive">{`${t.errors}: ${errorCount}`}</span>;
+                return <TableCell key={`${column.id}-${index}`} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn(column.align === "right" && "text-right", column.id === "actions" && "grid-actions-footer whitespace-nowrap")}>{content}</TableCell>;
+              })}</TableRow></TableFooter>
+            </Table>
+          </ZoomGrid>
+          {!readOnly ? <div className="border-t p-2"><Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button></div> : null}
+        </div>
+      </GridZoomContext.Provider>
+    );
+  },
+);

@@ -102,7 +102,6 @@ Border-radius classes:
 |---|---|
 | `rounded-sm` | `--radius-sm` |
 | `rounded-md` | `--radius-md` |
-| `rounded-lg` | `--radius-lg` |
 | `rounded-xl` | `--radius-xl` |
 | `rounded-2xl` | `--radius-2xl` |
 | `rounded` | `--radius` |

@@ -143,3 +143,11 @@
 - [x] Řízený CommandPalette a samostatné předvolby písma a motivu
 - [x] Ukázka navigace se dvěma panely, přepínači, uživatelem a tmavým motivem
 - [x] Changelog, přechod z 1.x, pravidla knihovny, typová kontrola a sestavení
+
+## Verze 2.1.0 (editovatelný grid řádků zápisu)
+- [x] Přidat převody předkontací na databázové řádky a zpět včetně osiřelých starších dat
+- [x] Přepracovat JournalLinesEditor na in-place grid se zoomem, hustotou a uloženými šířkami
+- [x] Doplnit řízenou editovatelnost, měnové sloupce, výchozí hodnoty a validaci buněk
+- [x] Doplnit klávesové ovládání, duplikaci, odebrání s vrácením a součtový řádek
+- [x] Přidat čtyři ukázky a automatické testy klávesnice i převodů
+- [x] Doplnit pravidla a changelog, zvýšit verzi a ověřit typy i sestavení

@@ -180,3 +180,15 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Variace komponent přes pojmenované props (`variant`, `size`), ne booleovské
   styling props ani duplicitní komponenty.
 - Přijímej a slučuj `className`, přeposílej ref a zbývající props elementu.
+
+## Řádky účetního zápisu
+
+- `JournalLinesEditor` je specializovaný in-place grid. Obecný `DataGrid` se pro editaci řádků zápisu nemění.
+- Řádek obrazovky je předkontace MD účet / DAL účet / částka; do `journal_lines` se ukládá přes `toDbLines` jako dva řádky se společným `pairNo`. Načítání vždy používá `fromDbLines`.
+- U zaúčtovaných dokladů se upravitelnost řídí přes `editableColumns`; `readOnly` je pouze zpětně kompatibilní zkratka pro žádný upravitelný sloupec.
+- Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
+- Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.
+- Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `expectedTotal` předvyplní částku.
+- Komponenta vždy kontroluje MD účet, DAL účet a nenulovou částku. Další účetní pravidla dodává aplikace přes `validate`.
+- Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; Kč částka se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
+- Každá produkční instance má stabilní `storageKey`, aby se zachovaly šířky sloupců, zoom a hustota.

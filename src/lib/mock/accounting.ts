@@ -4,10 +4,10 @@ import type { FiscalPeriod } from "../../components/ds/accounting/fiscal-period-
 
 /** Ukázková účtová osnova (pouze pro showcase design systému). */
 export const MOCK_ACCOUNTS: AccountOption[] = [
-  { code: "211", name: "Pokladna", type: "asset" },
-  { code: "211001", name: "Pokladna hlavní", type: "asset" },
+  { code: "211", name: "Pokladna", type: "asset", postable: false },
+  { code: "211001", name: "Pokladna hlavní", type: "asset", postable: true },
   { code: "211002", name: "Pokladna valutová", type: "asset" },
-  { code: "221", name: "Bankovní účty", type: "asset" },
+  { code: "221", name: "Bankovní účty", type: "asset", postable: false },
   { code: "221001", name: "Běžný účet CZK", type: "asset" },
   { code: "221002", name: "Běžný účet EUR", type: "asset" },
   { code: "311001", name: "Odběratelé", type: "asset" },

@@ -95,6 +95,8 @@ src/
 - **AccountSelect** – výběr účtu s kódem, názvem a typem; neaktivní a syntetické lze zakázat.
 - **DocumentStatusBadge** – stavy dokladu Koncept / Zaúčtováno / Stornováno.
 - **FiscalPeriodSelect** – účetní období se stavy Otevřené / V uzávěrce / Uzavřené.
+- **JournalLinesEditor** – in-place grid předkontací se zoomem, klávesovým ovládáním, validací a volitelnou měnou.
+- **toDbLines / fromDbLines** – převod předkontace MD/DAL na dva databázové řádky se společným `pairNo` a zpět.
 
 ### Formátování (`src/lib/format.ts`)
 `formatAmount`, `formatCurrency`, `amountClass`, `formatDate`, `setFormatSettings` –
@@ -136,6 +138,14 @@ měna podle nastavení aplikace.
 2. `adminNav` a `adminMode` postupně nahraďte `panels`, `activePanel` a `onActivePanelChange`.
 3. Nastavení velikosti písma a motivu přesuňte na stránku Předvolby; dočasně je lze ponechat přes `showLegacyToolbar`.
 4. Plochý seznam `items` dál funguje, pro nové aplikace používejte `navGroups`.
+
+## Changelog 2.1.0
+
+- `JournalLinesEditor` je samostatný in-place grid se zoomem, hustotou, uloženými šířkami a sticky součtem.
+- Přibylo řízení sloupců přes `editableColumns`, měnové sloupce, výchozí hodnoty a validace jednotlivých buněk.
+- Klávesnice podporuje přímé přepsání znakem, F2, Enter/Tab, Esc, Ctrl+D a Ctrl+Delete s akcí Zpět.
+- `toDbLines` a `fromDbLines` převádějí předkontace na párové databázové řádky a zachovávají starší nespárovatelná data.
+- `readOnly` zůstává zpětně kompatibilní zkratkou pro prázdné `editableColumns`.
 
 ## Ukázkové stránky
 
