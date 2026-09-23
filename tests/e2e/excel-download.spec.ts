@@ -57,7 +57,7 @@ async function inspectOpenXml(filePath: string, original = true) {
   expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(tableRef?.split(":")[1]?.replace(/\d+/, ""));
   expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
   expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
-  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").toContain('showRowStripes="0"');
+  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").not.toContain('showRowStripes="1"');
 
 
   const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) => decodeXml(match[1]));

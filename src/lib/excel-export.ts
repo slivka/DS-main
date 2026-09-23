@@ -519,7 +519,14 @@ export async function finalizeWorkbookBuffer(buffer: ArrayBuffer | Uint8Array): 
     if (!entry) return;
     if (/^xl\/tables\/table\d+\.xml$/.test(path)) {
       const xml = await entry.async("text");
-      zip.file(path, xml.replace(/\s+totalsRowFunction="none"/g, ""));
+      const cleaned = xml
+        .replace(/\s+totalsRowFunction="none"/g, "")
+        .replace(
+          /(<table\b[^>]*\bref="[A-Z]+(\d+):[A-Z]+(\d+)"[^>]*\btotalsRowCount="1"[^>]*>[\s\S]*?<autoFilter\s+ref="([A-Z]+)\d+:([A-Z]+))\d+("[^>]*>)/,
+          (_match, prefix: string, start: string, end: string, firstColumn: string, lastColumn: string, suffix: string) =>
+            `${prefix}${Number(end) - 1}${suffix}`,
+        );
+      zip.file(path, cleaned);
     } else if (/^xl\/worksheets\/sheet\d+\.xml$/.test(path)) {
       const xml = await entry.async("text");
       zip.file(path, reorderSheetPrChildren(xml));
