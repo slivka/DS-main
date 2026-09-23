@@ -136,7 +136,7 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   const credit = emptyToNull(line.creditAccount);
   const counter =
     emptyToNull(line.counterAccount) ??
-    (options.mainSide === "MD" ? credit : options.mainSide === "DAL" ? debit : null);
+    (options.mainSide === "MD" ? credit : options.mainSide === "D" ? debit : null);
 
   return {
     debit_account_id: debit,
