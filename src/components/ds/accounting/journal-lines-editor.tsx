@@ -185,8 +185,9 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     };
     const remove = (line: JournalLine) => {
       const index = lines.findIndex((item) => item.id === line.id);
-      onChange(lines.filter((item) => item.id !== line.id));
-      toast(t.removed, { action: { label: t.undo, onClick: () => onChange([...lines.slice(0, index), line, ...lines.slice(index)]) } });
+      const remaining = lines.filter((item) => item.id !== line.id);
+      onChange(remaining);
+      toast(t.removed, { action: { label: t.undo, onClick: () => onChange([...remaining.slice(0, index), line, ...remaining.slice(index)]) } });
     };
 
     const focusCell = (rowIndex: number, column: JournalLineColumn, backwards = false) => {
