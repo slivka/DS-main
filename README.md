@@ -130,17 +130,13 @@ měna podle nastavení aplikace.
 - Horní lišta nyní vede přes celou šířku a značka aplikace je její první částí.
 - Přibyly řízené panely, sbalitelné menu, nové přepínače firmy a období, hledání a uživatelská nabídka.
 - Nastavení písma a motivu jsou samostatné komponenty pro stránku Předvolby.
-- Staré vlastnosti AppShellu zůstávají funkční a jsou označené jako zastaralé.
-
-### Přechod z 1.x
-
-1. `topBarLeft` nahraďte `contextLeft`, `topBarRight` rozdělte mezi `actions` a `userMenu`.
-2. `adminNav` a `adminMode` postupně nahraďte `panels`, `activePanel` a `onActivePanelChange`.
-3. Nastavení velikosti písma a motivu přesuňte na stránku Předvolby; dočasně je lze ponechat přes `showLegacyToolbar`.
-4. Plochý seznam `items` dál funguje, pro nové aplikace používejte `navGroups`.
+- AppShell používá jediné rozhraní přes `navGroups`, `panels`, `activePanel`,
+  `onActivePanelChange`, `contextLeft`, `actions` a `userMenu`.
 
 ## Changelog 2.1.0
 
+- AppShell už neobsahuje staré administrativní aliasy, plochý seznam navigace
+  ani dočasné ovladače vzhledu v horní liště.
 - `JournalLinesEditor` je samostatný in-place grid se zoomem, hustotou, uloženými šířkami a sticky součtem.
 - Přibylo řízení sloupců přes `editableColumns`, měnové sloupce, výchozí hodnoty a validace jednotlivých buněk.
 - Klávesnice podporuje přímé přepsání znakem, F2, Enter/Tab, Esc, Ctrl+D a Ctrl+Delete s akcí Zpět.

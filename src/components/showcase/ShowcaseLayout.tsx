@@ -9,23 +9,35 @@ import {
   SearchButton,
   UserMenu,
   type Crumb,
-  type NavItem,
+  type NavGroup,
 } from "../ds";
 import { MOCK_COMPANIES, MOCK_PERIODS, MOCK_WORKSPACES } from "../../lib/mock/accounting";
 import { applyTheme } from "../../lib/theme";
 
-const NAV: NavItem[] = [
-  { to: "/", label: "Přehled", icon: Palette, section: "Design systém" },
-  { to: "/guidelines", label: "Pravidla", icon: BookOpen, section: "Design systém" },
-  { to: "/components/grid", label: "Datová mřížka", icon: LayoutGrid, section: "Komponenty" },
-  { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet, section: "Komponenty" },
-  { to: "/components/forms", label: "Formuláře", icon: TextCursorInput, section: "Komponenty" },
-  { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare, section: "Komponenty" },
-  { to: "/components/accounting-forms", label: "Účetní formuláře", icon: Receipt, section: "Komponenty" },
-  { to: "/components/navigation", label: "Navigace", icon: RouteIcon, section: "Komponenty" },
+const NAV_GROUPS: NavGroup[] = [
+  {
+    id: "design-system",
+    label: "Design systém",
+    items: [
+      { to: "/", label: "Přehled", icon: Palette },
+      { to: "/guidelines", label: "Pravidla", icon: BookOpen },
+    ],
+  },
+  {
+    id: "components",
+    label: "Komponenty",
+    items: [
+      { to: "/components/grid", label: "Datová mřížka", icon: LayoutGrid },
+      { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet },
+      { to: "/components/forms", label: "Formuláře", icon: TextCursorInput },
+      { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare },
+      { to: "/components/accounting-forms", label: "Účetní formuláře", icon: Receipt },
+      { to: "/components/navigation", label: "Navigace", icon: RouteIcon },
+    ],
+  },
 ];
 
-const TARGETS = NAV.map((n) => ({ label: n.label, group: n.section ?? "Stránky", to: n.to }));
+const TARGETS = NAV_GROUPS.flatMap((group) => group.items.map((item) => ({ label: item.label, group: group.label, to: item.to })));
 
 const COMPANY_PANEL = [{
   id: "company-settings",
@@ -75,7 +87,7 @@ export function ShowcaseLayout({
   return (
     <AppShell
       appName="Slivka Design System"
-      items={NAV}
+      navGroups={NAV_GROUPS}
       breadcrumbs={breadcrumbs}
       contextLeft={<div className="hidden items-center gap-2 lg:flex"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}

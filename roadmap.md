@@ -138,13 +138,14 @@
 
 ## Verze 2.0.0 (AppShell 2.0)
 - [x] Horní lišta přes celou šířku a sbalitelné boční menu pod ní
-- [x] Řízené panely a zpětně kompatibilní administrativní aliasy
+- [x] Řízené panely přes jednotné rozhraní AppShellu
 - [x] ContextPill, CompanySwitcher, PeriodSwitcher, UserMenu, SearchButton a ThemeSetting
 - [x] Řízený CommandPalette a samostatné předvolby písma a motivu
 - [x] Ukázka navigace se dvěma panely, přepínači, uživatelem a tmavým motivem
-- [x] Changelog, přechod z 1.x, pravidla knihovny, typová kontrola a sestavení
+- [x] Changelog, pravidla knihovny, typová kontrola a sestavení
 
 ## Verze 2.1.0 (editovatelný grid řádků zápisu)
+- [x] Odstranit z AppShellu staré props, aliasy a plochý seznam navigace
 - [x] Přidat převody předkontací na databázové řádky a zpět včetně osiřelých starších dat
 - [x] Přepracovat JournalLinesEditor na in-place grid se zoomem, hustotou a uloženými šířkami
 - [x] Doplnit řízenou editovatelnost, měnové sloupce, výchozí hodnoty a validaci buněk

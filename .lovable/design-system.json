@@ -2081,7 +2081,7 @@
         }
       ],
       "antipatterns": [
-        "Pro nové aplikace nepoužívejte zastaralé adminNav ani topBarLeft."
+        "Nepoužívejte vlastní paralelní navigaci ani staré administrativní aliasy; režimy skládejte přes panels."
       ]
     },
     {

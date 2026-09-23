@@ -156,10 +156,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   `actions`, `panelButtons` a `userMenu`. Boční menu začíná až pod lištou a lze je
   sbalit na pruh ikon.
 - Nastavení firmy, administraci a další režimy skládej přes `panels`; otevřený
-  panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc. Staré
-  `adminNav` / `adminMode` používej jen při přechodu aplikace z verze 1.x.
-- `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby. Starý rychlý
-  přepínač v liště zapínej pouze dočasně přes `showLegacyToolbar`.
+  panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc.
+- AppShell přijímá navigaci výhradně přes `navGroups`; administrační a jiné režimy
+  výhradně přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy ani
+  plochý seznam navigace nejsou součástí veřejného API.
+- `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby, ne do horní lišty.
 - Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
   `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.
 
