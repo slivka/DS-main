@@ -116,7 +116,7 @@ export function DocumentForm({
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("@container space-y-4", className)}>
       <PageHeader
         title={title}
         description={description}
