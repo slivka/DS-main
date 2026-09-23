@@ -410,6 +410,12 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     }
   });
 
+  sheet.eachRow((row) => {
+    row.eachCell({ includeEmpty: false }, (cell) => {
+      cell.alignment = { ...cell.alignment, vertical: "middle" };
+    });
+  });
+
   const totalWidth = sheet.columns.reduce((sum, column) => sum + (column.width ?? 8), 0);
   sheet.pageSetup = {
     paperSize: 9,
