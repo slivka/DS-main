@@ -35,8 +35,8 @@ src/
 ## Komponenty
 
 ### Rám aplikace
-- **AppShell 2.2** – horní lišta přes celou šířku bez povinného bloku značky, sbalitelné boční menu a přepínatelné panely.
-- **ContextPill / CompanySwitcher / PeriodSwitcher** – dvouřádkové kontextové volby firmy a období.
+- **AppShell 2.3** – adaptivní horní lišta bez zalamování, sbalitelné boční menu a přepínatelné panely.
+- **ContextPill / CompanySwitcher / PeriodSwitcher** – kontextové volby firmy a období s kompaktním a prázdným stavem.
 - **SearchButton / NotificationBell / ThemeToggleButton / UserMenu** – hledání, oznámení, rychlý motiv a uživatelská nabídka.
 - **WorkspaceCompanySwitcher** – výběr workspace a firmy v horní liště.
 - **EntitySwitcher** – obecný přepínač jedné entity v liště.
@@ -149,6 +149,13 @@ měna podle nastavení aplikace.
 - Pravá část má pevné pořadí hledání, panely, oznámení, motiv a uživatel.
 - Přibyly `NotificationBell` a `ThemeToggleButton`; motiv se okamžitě synchronizuje s `ThemeSetting`.
 - Staré vlastnosti AppShellu zůstávají dočasně funkční a jsou označené jako zastaralé.
+
+## Changelog 2.3.0
+
+- Přepínač období rozlišuje stav bez výběru a firmu bez období; volitelně nabídne založení období.
+- Kontext firmy a období se pod 1 280 px automaticky zkrátí, mobilní lišta zůstává jednořádková bez vodorovného posuvu.
+- Boční menu se pod 1 280 px automaticky sbalí a lze je kdykoli přepnout tlačítkem dole nebo zkratkou Ctrl+B.
+- Ukázka Navigace obsahuje náhled šířek 1 440, 1 100 a 390 px i oba prázdné stavy období.
 
 ## Ukázkové stránky
 

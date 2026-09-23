@@ -61,7 +61,8 @@ export function CompanySwitcher({
       label={label}
       value={selected?.name ?? emptyText}
       icon={Building2}
-      className={className}
+      compactValue={selected?.name ?? emptyText}
+      className={`max-w-[128px] md:max-w-[200px] xl:max-w-[360px] ${className ?? ""}`}
       contentClassName="w-[380px]"
       onClick={() => setOpenKey((key) => key + 1)}
     >
