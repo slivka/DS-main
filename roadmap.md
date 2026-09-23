@@ -134,4 +134,4 @@
 - [x] Sjednotit poloměry rohů na pevnou tokenovou škálu 4 / 6 / 8 px
 - [x] Odstranit zaoblení odvozené od písma, výšky prvku a zoomu
 - [x] Sjednotit ovládací prvky lišty gridu na mírnější zaoblení 6 px
-- [ ] Ověřit stejné rohy při různých úrovních zoomu, typovou kontrolu a sestavení
+- [x] Ověřit stejné rohy při různých úrovních zoomu, typovou kontrolu a sestavení
