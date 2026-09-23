@@ -112,7 +112,7 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     non_tax: Boolean(line.nonTax),
     is_rounding: Boolean(line.isRounding),
     currency_code: emptyToNull(line.currency),
-    amount_foreign: line.amountForeignSafe ?? (line.foreignAmount ?? null),
+    amount_foreign: line.foreignAmount ?? null,
     exchange_rate: line.rate ?? null,
   };
 }
