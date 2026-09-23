@@ -150,6 +150,12 @@ měna podle nastavení aplikace.
 - Přibyly `NotificationBell` a `ThemeToggleButton`; motiv se okamžitě synchronizuje s `ThemeSetting`.
 - Staré vlastnosti AppShellu zůstávají dočasně funkční a jsou označené jako zastaralé.
 
+## Changelog 2.3.1
+
+- Kompaktní a mobilní zobrazení přepínače období ukazuje kód období (např. 2026) místo technického identifikátoru.
+- Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
+- Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
+
 ## Changelog 2.3.0
 
 - Přepínač období rozlišuje stav bez výběru a firmu bez období; volitelně nabídne založení období.
