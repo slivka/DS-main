@@ -2294,18 +2294,6 @@ import { PopoverTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { Progress } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### QueryClient
-
-```ts
-import { QueryClient } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-### QueryClientProvider
-
-```ts
-import { QueryClientProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
 ### RadioGroup
 
 ```ts

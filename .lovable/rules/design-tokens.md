@@ -43,6 +43,7 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `company-foreground` | `--company-foreground` |
 | `company-muted` | `--company-muted` |
 | `person` | `--person` |
+| `person-strong` | `--person-strong` |
 | `person-foreground` | `--person-foreground` |
 | `person-muted` | `--person-muted` |
 | `share-high` | `--share-high` |
@@ -54,6 +55,7 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `surface-subtle` | `--surface-subtle` |
 | `row-stripe` | `--row-stripe` |
 | `switch-unchecked` | `--switch-unchecked` |
+| `filter-active` | `--filter-active` |
 | `grid-navy-deep` | `--grid-navy-deep` |
 | `grid-navy` | `--grid-navy` |
 | `grid-steel` | `--grid-steel` |
