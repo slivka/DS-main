@@ -337,6 +337,34 @@ _Rozbor nákladů_
 import { BookSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Výběr účetní knihy ve formuláři. Jedinou aktivní knihu výchozí displayWhenSingle zobrazí jako hodnotu jen pro čtení a automaticky doplní její id.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `books` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `typeLabels` | object | `—` |
+| `placeholder` | string | `Vyberte knihu` |
+| `allowEmpty` | boolean | `false` |
+| `disabled` | boolean | `—` |
+| `displayWhenSingle` | boolean | `true` |
+| `id` | string | `—` |
+| `className` | string | `—` |
+
+**Examples:**
+
+_Jediná dostupná kniha_
+```tsx
+<BookSelect books={books} value={bookId} onChange={setBookId} />
+```
+
+**Avoid:**
+
+- Nevykreslujte jedinou dostupnou knihu jako zakázaný select.
+
 ### Breadcrumb
 
 ```ts
@@ -925,7 +953,7 @@ import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable.
+Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
 
 **Props:**
 
@@ -947,6 +975,8 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `onRowClick` | function | `—` |
 | `actions` | any | `—` |
 | `toolbarLeft` | any | `—` |
+| `period` | any | `—` |
+| `book` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
@@ -1522,6 +1552,53 @@ import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { GridBody } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### GridBookSelect
+
+```ts
+import { GridBookSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Kontextový výběr účetní knihy; jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text bez zakázaného výběru.
+
+**Examples:**
+
+_Kniha jen pro čtení_
+```tsx
+<GridBookSelect books={books} value={bookId} readOnly />
+```
+
+**Avoid:**
+
+- Nevykreslujte jedinou nebo needitovatelnou knihu jako disabled combobox.
+
+### GridContextBar
+
+```ts
+import { GridContextBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Samostatný kontextový řádek bezprostředně nad GridToolbar; vlevo kniha, oddělovač a období. Škáluje se stejným zoomem a hustotou jako řádek akcí.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `period` | any | `—` |
+| `book` | any | `—` |
+| `zoom` | number | `—` |
+| `density` | any | `—` |
+
+**Examples:**
+
+_Kniha a období_
+```tsx
+<GridContextBar book={bookConfig} period={periodConfig} />
+```
+
+**Avoid:**
+
+- Vkládat období nebo knihu zároveň do toolbarLeft
+
 ### GridEmptyRow
 
 ```ts
@@ -1590,6 +1667,14 @@ import { GridPagination } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | `attached` | boolean | `true` |
 | `className` | string | `—` |
 | `texts` | any | `—` |
+
+### GridPeriodFilter
+
+```ts
+import { GridPeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Volba celého, měsíčního, čtvrtletního, pololetního, YTD nebo vlastního rozsahu v mezích účetního období.
 
 ### GridProgress
 
@@ -2185,7 +2270,7 @@ import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { PageHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hlavička každé stránky. V panelu vykreslí vlevo nadpis a dirty tečku, vpravo listování záznamy, historii, maximalizaci a menu ⋯; akce stránky přijímá přes menuActions.
+Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirty tečku, vpravo listování záznamy, historii, maximalizaci a menu ⋯; akce stránky přijímá přes menuActions.
 
 **Props:**
 
@@ -2201,6 +2286,7 @@ Hlavička každé stránky. V panelu vykreslí vlevo nadpis a dirty tečku, vpra
 
 - Předávat actions uvnitř panelu místo menuActions
 - Vkládat akci Nový do záhlaví místo gridového addAction
+- Předávat description; kontext patří do GridContextBar nebo horní lišty
 
 ### Pagination
 
@@ -3248,7 +3334,7 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid.
+Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
 
 **Props:**
 
@@ -3270,6 +3356,8 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `onRowOpen` | function | `—` |
 | `actions` | any | `—` |
 | `toolbarLeft` | any | `—` |
+| `period` | any | `—` |
+| `book` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
