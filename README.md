@@ -130,10 +130,14 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
-## Changelog 2.17.2 – společný zoom tabulky a stromu
+## Changelog 2.18.1 – společný zoom tabulky a stromu
 
-- `DataGrid` a `TreeGrid` při přepínání zobrazení automaticky zachovají zoom i hustotu; nový prop `viewZoomKey` explicitně propojí i odlišně pojmenované pohledy.
+- `DataGrid` a `TreeGrid` při zadaném `viewMode` sdílejí zoom i hustotu přes společný klíč `view:<exportName>` (nebo prop `viewZoomKey`); po aktualizaci začne zoom jednou od 100 %. Bez breaking changes.
 - Přepnutí do tabulkového zobrazení používá jednoznačnou ikonu tabulky.
+
+## Changelog 2.18.0 – vydání katalogu
+
+- Vydání katalogu design systému bez nových funkcí; obsah odpovídá changelogu 2.17.0 (jednotný řádek akcí gridu, rovnocenné záložky, `PageHeader.menuActions`, `AppShell.navSearchMenu`, `LayoutMenu trigger="icon"`).
 
 ## Changelog 2.17.1 – veřejné pomocné nástroje
 
