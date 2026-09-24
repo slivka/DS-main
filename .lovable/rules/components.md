@@ -1143,6 +1143,39 @@ _Přijatá faktura_
 import { DocumentStatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### DraftRestoredBanner
+
+```ts
+import { DraftRestoredBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Zobrazte nad formulářem, když useTabDraft vrátí meta.restored (koncept obnoven) nebo meta.conflict (záznam se mezitím změnil a koncept se nepoužil).
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | restored · conflict | `restored` |
+| `savedAt` | any | `—` |
+| `onDiscard` | function | `—` |
+| `onShowDraft` | function | `—` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Obnovený koncept_
+```tsx
+const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });
+{draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}
+{draft.conflict ? <DraftRestoredBanner variant="conflict" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}
+```
+
+**Avoid:**
+
+- Použít koncept automaticky, když se verze záznamu liší
+- Zobrazovat banner bez tlačítka Zahodit
+- Mazat koncept až po zavření okna místo po uložení
+
 ### Drawer
 
 ```ts
@@ -1768,6 +1801,41 @@ _Řádky zápisu_
 import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### LayoutMenu
+
+```ts
+import { LayoutMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3. Data a ukládání dodává aplikace; snímek bere z serializeLayout, použití přes usePaneTabs().applyLayout.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `onSave` | function | `—` |
+| `onApply` | function | `—` |
+| `onUpdate` | function | `—` |
+| `onDelete` | function | `—` |
+| `onReorder` | function | `—` |
+| `shortcut` | boolean | `true` |
+| `texts` | any | `—` |
+| `className` | string | `size-4` |
+
+**Examples:**
+
+_Uložená rozložení_
+```tsx
+<LayoutMenu items={layouts} onSave={({ name, isDefault, snapshot }) => save(name, isDefault, snapshot)} onApply={(id) => tabs.applyLayout(find(id).snapshot)} onUpdate={update} onDelete={remove} onReorder={reorder} />
+```
+
+**Avoid:**
+
+- Ukládat do rozložení koncepty nebo nové neuložené záznamy
+- Zavírat rozepsané záložky při použití rozložení
+- Otevírat nabídku jinou zkratkou než Alt+L
+
 ### LayoutSwitcher
 
 ```ts
@@ -2029,6 +2097,17 @@ import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { PageHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Hlavička každé stránky. Uvnitř PaneLayout navíc vykreslí ovládání záložky z usePaneChrome (← → s historií, ● neuložené změny, špendlík, ↑ n / N ↓, maximalizace, menu ⋯, nadpis jako úchyt přetažení); mimo panel se chová jako dříve.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | any | `—` |
+| `description` | any | `—` |
+| `actions` | any | `—` |
+| `paneTexts` | any | `—` |
+
 ### Pagination
 
 ```ts
@@ -2083,6 +2162,12 @@ import { PaginationPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { PaneApiContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### PaneChromeContext
+
+```ts
+import { PaneChromeContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### PaneEmpty
 
 ```ts
@@ -2094,7 +2179,7 @@ import { PaneEmpty } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | Prop | Type | Default |
 |---|---|---|
 | `hint` | string | `—` |
-| `className` | string | `flex min-w-0` |
+| `className` | string | `flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground` |
 
 ### PaneLayout
 
@@ -2113,9 +2198,10 @@ Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluj
 | `renderEmpty` | function | `—` |
 | `isPinned` | function | `—` |
 | `onTogglePin` | function | `—` |
+| `tabBarMode` | any | `auto` |
 | `minPaneWidth` | number | `560` |
 | `texts` | any | `—` |
-| `className` | string | `flex min-w-0` |
+| `className` | string | `flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground` |
 
 **Examples:**
 
@@ -2165,7 +2251,7 @@ _Položka menu_
 import { PaneTabBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlastní rozložení.
+Lišta záložek panelu – od 2.16.0 jen záložky a nabídka „»“; historie ← →, špendlík, maximalizace a menu ⋯ jsou v PageHeader. Dočasná záložka má titulek kurzívou, dvojklik ji ponechá. Vykresluje ji PaneLayout.
 
 **Props:**
 
@@ -2176,12 +2262,11 @@ Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlas
 | `paneCount` | number | `—` |
 | `api` | any | `—` |
 | `getTabIcon` | function | `—` |
-| `maximized` | boolean | `—` |
 | `onToggleMaximize` | function | `—` |
-| `pinned` | boolean | `—` |
+| `isPinned` | function | `—` |
 | `onTogglePin` | function | `—` |
 | `texts` | any | `—` |
-| `className` | string | `size-7` |
+| `className` | string | `flex min-w-0 flex-1 items-stretch overflow-hidden` |
 
 **Examples:**
 
@@ -2212,7 +2297,7 @@ Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; 
 
 | Prop | Type | Default |
 |---|---|---|
-| `state` | any | `—` |
+| `state` | any | `open` |
 | `onChange` | function | `—` |
 | `onSaveTab` | function | `—` |
 | `onNewTabRequest` | function | `—` |

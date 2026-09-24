@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.16.0",
+    "version": "2.17.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "be6aa37d458aea076becc5777a7eb51332fa87b8b917aaee6eab49d04d6ff945",
+      "#enrichment": "c4af3abec4074370a0bddd6d3edfdf694b3b39fd81fdd801093bb13ea2ae3669",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
@@ -23,6 +23,7 @@
       ".lovable/plan/datumové-volby-ve-filtru-gridu-2026-09-22.md": "e9f79cef43a6b6adcba50f573359881b",
       ".lovable/plan/decentní-stav-menu-a-akce-nový-v-gridu-2026-09-23.md": "0b13c5786612779a5fda01e290e038d0",
       ".lovable/plan/doplnění-veřejných-nástrojů-knihovny-2026-09-24.md": "733b8f0f6245dacdd0b0ff2db0bd89bd",
+      ".lovable/plan/ds-2-16-0-dočasné-a-ponechané-záložky-maximalizace-koncepty-2026-09-24.md": "af0e3b05ec2bec67f3f1a3fe806125d0",
       ".lovable/plan/excel-export-1-3-0-2026-09-22.md": "a22a933faf345d8d68b36da990499da3",
       ".lovable/plan/kompaktní-systémové-sloupce-gridu-2026-09-22.md": "3a3ee896dd5696e92cddfc864c6c9937",
       ".lovable/plan/navigace-a-kontext-horní-lišty-ds-2-15-0-2026-09-24.md": "e409a95976ad76363d84b5193f4f19d0",
@@ -36,20 +37,20 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "9f0ecaa8e764e9d4828a6333142c949b",
+      ".lovable/system.md": "d6b00dce7ed093a5994c21122f38fcb2",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "556ca7c4f392b687e613d8145e24c0fb",
+      "README.md": "67b1768527800ee1977dc56c41eb4f87",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "2109b0d436519d7830218b73918221fb",
+      "components.md": "497a702fcf5b58f681fd3830a7a5cafb",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "23178afeb874e0245de06e29b6b12398",
+      "package.json": "a9a108e642c78a761cfb72dac09bf4f4",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "c9a99665339977d3f6ebde5986276431",
+      "roadmap.md": "869c352ca957b29596988ed101294c6e",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -131,8 +132,8 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "26dc63176bdacbaf0ddea666832b5721",
       "src/components/ds/grid/view-mode-toggle.tsx": "7ba9f08e4b064164a441d1c530d596ad",
-      "src/components/ds/index.ts": "10e1c1a4e92dc6155371ce3d06f638d2",
-      "src/components/ds/layout/AppShell.tsx": "b754b25a29307a33cc111b14ea8ca84e",
+      "src/components/ds/index.ts": "619a36f8f57890d15dddb6ce1b7b7966",
+      "src/components/ds/layout/AppShell.tsx": "4a948837dbd52b9f3c2c95da154b884f",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "b6f4126fa8e041ecb017dfd0b83c59cc",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
@@ -145,22 +146,24 @@
       "src/components/ds/layout/context-pill.tsx": "94a8f060231eb35fd048da15efa29771",
       "src/components/ds/layout/nav-search.tsx": "456020217b4eb84afbdeede2e691fe16",
       "src/components/ds/layout/notification-bell.tsx": "61e31db02987a724c6f601d569c6a946",
-      "src/components/ds/layout/page-header.tsx": "90e202b874a465239d3b8e5a9ac6cdff",
+      "src/components/ds/layout/page-header.tsx": "5ef8898246aecb5d2e6e5137bed52182",
       "src/components/ds/layout/period-switcher.tsx": "f908bc06a9d3a82f59d4b6fc9dde5d94",
       "src/components/ds/layout/search-button.tsx": "65b85c2d056182cd9014930d4338aa7a",
       "src/components/ds/layout/theme-setting.tsx": "059b307549a15239d438e0bb0e3d60c7",
       "src/components/ds/layout/theme-toggle-button.tsx": "0e1776217df487e913b805af9dc5d998",
       "src/components/ds/layout/user-menu.tsx": "dbe2649e35c4602e643dfc1d5fab752e",
-      "src/components/ds/panes/pane-context.tsx": "65c57e17f9c3c35b409d4949a3db37c4",
+      "src/components/ds/panes/draft-restored-banner.tsx": "109d3c126ba3f29b93fc1aa5dfc8e6a6",
+      "src/components/ds/panes/layout-menu.tsx": "e57409b62993f2ea8ec0f25acf201057",
+      "src/components/ds/panes/pane-context.tsx": "2596690224a13d13c074e83cf4581bb5",
       "src/components/ds/panes/pane-layout-switcher.tsx": "a4e5eb53d508003985c54e4063313b50",
-      "src/components/ds/panes/pane-layout.tsx": "edb34a04e797e405c6c09762f5e40e5e",
-      "src/components/ds/panes/pane-link.tsx": "c3444e59c2bbd8a87bbfa2090eef6655",
-      "src/components/ds/panes/pane-state.ts": "4a3f88f12bd43a29ecf47098d23163f0",
-      "src/components/ds/panes/pane-tab-bar.tsx": "b62acf5f4cd27aa0502dd5d05b2791d7",
-      "src/components/ds/panes/pane-tab-store.ts": "ef2651b0de82879150d4b23dd160e9d5",
+      "src/components/ds/panes/pane-layout.tsx": "4e2ff2eff1d0ec164c9576b884f250d9",
+      "src/components/ds/panes/pane-link.tsx": "aa6579ba904fbccb159b0b249ddef028",
+      "src/components/ds/panes/pane-state.ts": "b99a61733a248500b82f4809dd2696fc",
+      "src/components/ds/panes/pane-tab-bar.tsx": "8dfc42b6822fc99c1eaed5cb3e2f19ee",
+      "src/components/ds/panes/pane-tab-store.ts": "b139badd702a13643ae21348b5f3d7d9",
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
-      "src/components/showcase/PaneShowcase.tsx": "72fdbcca3a08f04ebec21aa917e6a97f",
+      "src/components/showcase/PaneShowcase.tsx": "4c69a70ecefdc46bf2973e3e99ce0014",
       "src/components/showcase/ReportsShowcase.tsx": "0ae0797f6d63c7fb2e2c9b20dae3c376",
       "src/components/showcase/ShowcaseLayout.tsx": "0ae5177b589d02f257f45eb61aa03b22",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
@@ -257,7 +260,7 @@
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
       "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
       "src/start.ts": "322ad835cfa30a963726d9b1cbaa3f20",
-      "src/styles.css": "7f30e0b8c9046e8bbdd625a5f078cce0",
+      "src/styles.css": "56663a7bd767acd82dc8c68424396e85",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "aeae6a7769950765bc2c1282efc40ebf",
@@ -266,6 +269,7 @@
       "tests/e2e/reports.spec.ts": "53d4c191582ec1923cd76d7dbdbec480",
       "tests/unit/nav-search.test.ts": "1238cac92c7ed13e5cd690d0049aebdf",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
+      "tests/unit/pane-tabs-216.test.ts": "4d2e16cf94e3198aa7d5df4baa90b5c0",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
@@ -2332,7 +2336,7 @@
       "examples": [
         {
           "label": "Skupiny a hledání",
-          "code": "<AppShell navGroups={groups} navStateKey=\"accounting\" navSearch>{children}</AppShell>"
+          "code": "\u003cAppShell navGroups={groups} navStateKey=\"accounting\" navSearch\u003e{children}\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -2487,7 +2491,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2541,7 +2545,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2605,7 +2609,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -2688,7 +2692,7 @@
       "examples": [
         {
           "label": "Kontext s detailem",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\" tooltip=\"Firma: Slivka s.r.o. · IČO 12345678\">…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\" tooltip=\"Firma: Slivka s.r.o. · IČO 12345678\"\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -2764,7 +2768,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2839,11 +2843,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
         },
         {
           "label": "Firma bez období",
-          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
+          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2911,7 +2915,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2942,7 +2946,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2958,6 +2962,25 @@
       "name": "PageHeader",
       "file": "src/components/ds/layout/page-header.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "title",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "any"
+        },
+        {
+          "name": "actions",
+          "type": "any"
+        },
+        {
+          "name": "paneTexts",
+          "type": "any"
+        }
+      ],
       "usage": "Hlavička každé stránky. Uvnitř PaneLayout navíc vykreslí ovládání záložky z usePaneChrome (← → s historií, ● neuložené změny, špendlík, ↑ n / N ↓, maximalizace, menu ⋯, nadpis jako úchyt přetažení); mimo panel se chová jako dříve."
     },
     {
@@ -2978,6 +3001,7 @@
         {
           "name": "state",
           "type": "any",
+          "default": "open",
           "required": true
         },
         {
@@ -3021,6 +3045,11 @@
       ]
     },
     {
+      "name": "PaneChromeContext",
+      "file": "src/components/ds/panes/pane-context.tsx",
+      "import_path": ""
+    },
+    {
       "name": "PaneLayout",
       "file": "src/components/ds/panes/pane-layout.tsx",
       "import_path": "",
@@ -3047,6 +3076,11 @@
           "type": "function"
         },
         {
+          "name": "tabBarMode",
+          "type": "any",
+          "default": "auto"
+        },
+        {
           "name": "minPaneWidth",
           "type": "number",
           "default": "560"
@@ -3058,19 +3092,14 @@
         {
           "name": "className",
           "type": "string",
-          "default": "flex min-w-0"
-        },
-        {
-          "name": "tabBarMode",
-          "type": "'auto' | 'always'",
-          "default": "auto"
+          "default": "flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground"
         }
       ],
       "usage": "Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.",
       "examples": [
         {
           "label": "Panely se záložkami",
-          "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
+          "code": "\u003cPaneTabsProvider state={state} onChange={setState}\u003e\n  \u003cPaneLayout renderTab={(tab) =\u003e \u003cPage route={tab.route} /\u003e} getTabIcon={(tab) =\u003e ICONS[tab.icon]} /\u003e\n\u003c/PaneTabsProvider\u003e"
         }
       ],
       "antipatterns": [
@@ -3090,7 +3119,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "flex min-w-0"
+          "default": "flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground"
         }
       ]
     },
@@ -3137,7 +3166,7 @@
       "examples": [
         {
           "label": "Připnuté stránky",
-          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
+          "code": "\u003cPinnedBar items={items} onOpen={(id, options) =\u003e openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3176,16 +3205,12 @@
           "type": "function"
         },
         {
-          "name": "maximized",
-          "type": "boolean"
-        },
-        {
           "name": "onToggleMaximize",
           "type": "function"
         },
         {
-          "name": "pinned",
-          "type": "boolean"
+          "name": "isPinned",
+          "type": "function"
         },
         {
           "name": "onTogglePin",
@@ -3198,14 +3223,14 @@
         {
           "name": "className",
           "type": "string",
-          "default": "size-7"
+          "default": "flex min-w-0 flex-1 items-stretch overflow-hidden"
         }
       ],
       "usage": "Lišta záložek panelu – od 2.16.0 jen záložky a nabídka „»“; historie ← →, špendlík, maximalizace a menu ⋯ jsou v PageHeader. Dočasná záložka má titulek kurzívou, dvojklik ji ponechá. Vykresluje ji PaneLayout.",
       "examples": [
         {
           "label": "Vlastní panel",
-          "code": "<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />"
+          "code": "\u003cPaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3239,11 +3264,119 @@
       "examples": [
         {
           "label": "Položka menu",
-          "code": "<PaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>"
+          "code": "\u003cPaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}\u003eÚčetní deník\u003c/PaneLink\u003e"
         }
       ],
       "antipatterns": [
-        "Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
+        "Obyčejný \u003ca\u003e uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
+      ]
+    },
+    {
+      "name": "DraftRestoredBanner",
+      "file": "src/components/ds/panes/draft-restored-banner.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "restored",
+            "conflict"
+          ],
+          "default": "restored"
+        },
+        {
+          "name": "savedAt",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onDiscard",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onShowDraft",
+          "type": "function"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        }
+      ],
+      "usage": "Zobrazte nad formulářem, když useTabDraft vrátí meta.restored (koncept obnoven) nebo meta.conflict (záznam se mezitím změnil a koncept se nepoužil).",
+      "examples": [
+        {
+          "label": "Obnovený koncept",
+          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? \u003cDraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /\u003e : null}\n{draft.conflict ? \u003cDraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /\u003e : null}"
+        }
+      ],
+      "antipatterns": [
+        "Použít koncept automaticky, když se verze záznamu liší",
+        "Zobrazovat banner bez tlačítka Zahodit",
+        "Mazat koncept až po zavření okna místo po uložení"
+      ]
+    },
+    {
+      "name": "LayoutMenu",
+      "file": "src/components/ds/panes/layout-menu.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onSave",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onApply",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onUpdate",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onDelete",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onReorder",
+          "type": "function"
+        },
+        {
+          "name": "shortcut",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "size-4"
+        }
+      ],
+      "usage": "Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3. Data a ukládání dodává aplikace; snímek bere z serializeLayout, použití přes usePaneTabs().applyLayout.",
+      "examples": [
+        {
+          "label": "Uložená rozložení",
+          "code": "\u003cLayoutMenu items={layouts} onSave={({ name, isDefault, snapshot }) =\u003e save(name, isDefault, snapshot)} onApply={(id) =\u003e tabs.applyLayout(find(id).snapshot)} onUpdate={update} onDelete={remove} onReorder={reorder} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Ukládat do rozložení koncepty nebo nové neuložené záznamy",
+        "Zavírat rozepsané záložky při použití rozložení",
+        "Otevírat nabídku jinou zkratkou než Alt+L"
       ]
     },
     {
@@ -3474,7 +3607,7 @@
       "examples": [
         {
           "label": "Grid s obnovením a výběrem",
-          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable /\u003e"
         }
       ],
       "antipatterns": [
@@ -3849,7 +3982,7 @@
       "examples": [
         {
           "label": "Asynchronní obnovení",
-          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
+          "code": "\u003cGridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3916,7 +4049,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4031,7 +4164,7 @@
       "examples": [
         {
           "label": "Strom s obnovením a výběrem",
-          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />"
+          "code": "\u003cTreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4073,7 +4206,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
+          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4562,7 +4695,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
+          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4593,7 +4726,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4778,7 +4911,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4921,7 +5054,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
+          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5008,119 +5141,12 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
-      ]
-    },
-    {
-      "name": "DraftRestoredBanner",
-      "file": "src/components/ds/panes/draft-restored-banner.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "variant",
-          "type": "'restored' | 'conflict'",
-          "default": "restored"
-        },
-        {
-          "name": "savedAt",
-          "type": "number | Date",
-          "required": true
-        },
-        {
-          "name": "onDiscard",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onShowDraft",
-          "type": "function"
-        },
-        {
-          "name": "texts",
-          "type": "Partial<DraftRestoredBannerTexts>"
-        },
-        {
-          "name": "className",
-          "type": "string"
-        }
-      ],
-      "usage": "Zobrazte nad formulářem, když useTabDraft vrátí meta.restored (koncept obnoven) nebo meta.conflict (záznam se mezitím změnil a koncept se nepoužil).",
-      "examples": [
-        {
-          "label": "Obnovený koncept",
-          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}\n{draft.conflict ? <DraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}"
-        }
-      ],
-      "antipatterns": [
-        "Použít koncept automaticky, když se verze záznamu liší",
-        "Zobrazovat banner bez tlačítka Zahodit",
-        "Mazat koncept až po zavření okna místo po uložení"
-      ]
-    },
-    {
-      "name": "LayoutMenu",
-      "file": "src/components/ds/panes/layout-menu.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "items",
-          "type": "SavedLayoutItem[]",
-          "required": true
-        },
-        {
-          "name": "onSave",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onApply",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onUpdate",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onDelete",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onReorder",
-          "type": "function"
-        },
-        {
-          "name": "shortcut",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "texts",
-          "type": "Partial<LayoutMenuTexts>"
-        },
-        {
-          "name": "className",
-          "type": "string"
-        }
-      ],
-      "usage": "Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3. Data a ukládání dodává aplikace; snímek bere z serializeLayout, použití přes usePaneTabs().applyLayout.",
-      "examples": [
-        {
-          "label": "Uložená rozložení",
-          "code": "<LayoutMenu items={layouts} onSave={({ name, isDefault, snapshot }) => save(name, isDefault, snapshot)} onApply={(id) => tabs.applyLayout(find(id).snapshot)} onUpdate={update} onDelete={remove} onReorder={reorder} />"
-        }
-      ],
-      "antipatterns": [
-        "Ukládat do rozložení koncepty nebo nové neuložené záznamy",
-        "Zavírat rozepsané záložky při použití rozložení",
-        "Otevírat nabídku jinou zkratkou než Alt+L"
       ]
     }
   ],
