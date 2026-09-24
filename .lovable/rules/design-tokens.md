@@ -63,11 +63,6 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `info-border` | `--info-border` |
 | `warning-border` | `--warning-border` |
 | `error-border` | `--error-border` |
-| `web-ink` | `--color-web-ink` |
-| `web-ink-soft` | `--color-web-ink-soft` |
-| `web-gold` | `--color-web-gold` |
-| `web-gold-strong` | `--color-web-gold-strong` |
-| `web-cream` | `--color-web-cream` |
 
 ## Typography
 
