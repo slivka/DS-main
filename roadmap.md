@@ -1,6 +1,6 @@
 # Roadmap
 
-## Verze 2.17.2 (společný zoom tabulky a stromu)
+## Verze 2.18.1 (společný zoom tabulky a stromu)
 - [x] Sdílet zoom a hustotu mezi tabulkovým a stromovým zobrazením přes `viewZoomKey`
 - [x] Použít pro přepnutí do tabulky jednoznačnou ikonu tabulky
 
