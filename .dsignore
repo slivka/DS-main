@@ -1,3 +1,6 @@
-# Showcase-only složky zůstávají mimo knihovnu (standartní výjimky platformy
-# už kryjí src/routes/ a preview scaffolding).
+# Ukázková aplikace a její router nejsou součástí distribuované knihovny.
 src/components/showcase
+src/routes/**
+src/router.tsx
+src/start.ts
+src/routeTree.gen.ts

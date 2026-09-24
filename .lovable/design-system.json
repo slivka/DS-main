@@ -4970,16 +4970,6 @@
       "file": "src/assets/icons/pdf.svg",
       "kind": "icon",
       "format": "svg"
-    },
-    {
-      "file": "src/assets/roboto-bold.ttf",
-      "kind": "font",
-      "format": "ttf"
-    },
-    {
-      "file": "src/assets/roboto-regular.ttf",
-      "kind": "font",
-      "format": "ttf"
     }
   ]
 }
