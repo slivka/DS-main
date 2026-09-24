@@ -144,7 +144,7 @@ export function SortHead<Id extends string>({
           }`}
           aria-label={`Seřadit podle ${label}`}
         >
-          {label.toLocaleUpperCase(texts.locale)}
+          {label}
           {active &&
             (sort.dir === "asc" ? (
               <ArrowUp className="size-3 shrink-0" />

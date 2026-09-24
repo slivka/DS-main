@@ -6,7 +6,7 @@
 
 @theme inline {
   --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -34,6 +34,7 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-filter-active: var(--filter-active);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-strong: var(--warning-strong);
@@ -55,6 +56,7 @@
   --color-company-foreground: var(--company-foreground);
   --color-company-muted: var(--company-muted);
   --color-person: var(--person);
+  --color-person-strong: var(--person-strong);
   --color-person-foreground: var(--person-foreground);
   --color-person-muted: var(--person-muted);
   --shadow-panel: 0 1px 2px oklch(0.3 0.03 60 / 0.07), 0 8px 24px oklch(0.3 0.03 60 / 0.07);
@@ -69,17 +71,17 @@
   /* Typografická škála – jednotné velikosti pro nadpisy a popisky. */
   --text-title: 1.79em;
   --text-section: 1.15em;
-  --text-label: 0.82em;
-  --text-meta: 0.78em;
+  --text-label: 0.857em;
+  --text-meta: 0.857em;
 }
 
 :root {
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
-  /* Světlé podkladové pozadí stránky #FAFAFA podle firemní aplikace evala.cz.
+  /* Jemně modré podkladové pozadí pracovní plochy #EFF4F9.
      Hodnota je sdílená s PAGE_SURFACE_LIGHT v src/lib/tokens.ts (samostatné HTML výstupy). */
-  --surface-page: oklch(0.985 0 0);
+  --surface-page: oklch(0.965 0.008 245);
   --background: var(--surface-page);
   --foreground: oklch(0.25 0.04 245);
   --card: oklch(1 0 0);
@@ -101,13 +103,13 @@
   --tooltip-border: oklch(0.45 0.055 245);
   --destructive: oklch(0.58 0.2 28);
   --destructive-foreground: oklch(0.99 0.005 90);
-  --success: oklch(0.55 0.12 155);
+  --success: oklch(0.5 0.12 155);
   --success-foreground: oklch(0.99 0.008 130);
   /* Jantar #eab308. */
   --warning: oklch(0.85 0.17 92);
   --warning-foreground: oklch(0.26 0.03 90);
   --warning-strong: oklch(0.55 0.13 75);
-  --border: oklch(0.88 0.025 245);
+  --border: oklch(0.84 0.03 245);
   --input: oklch(0.58 0.035 245);
   /* Ring / signální modrá. */
   --ring: oklch(0.55 0.12 250);
@@ -121,6 +123,7 @@
   --company-foreground: oklch(0.99 0.008 250);
   --company-muted: oklch(0.92 0.04 245);
   --person: oklch(0.65 0.12 35);
+  --person-strong: oklch(0.55 0.13 35);
   --person-foreground: oklch(0.24 0.03 40);
   --person-muted: oklch(0.94 0.05 40);
   /* Barvy podílů ve stromu (neúplné podíly) */
@@ -134,7 +137,8 @@
   --surface-subtle: oklch(0.96 0.018 245);
   --row-stripe: oklch(0.968 0.012 245);
   --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
-  --switch-unchecked: oklch(0.72 0 0);
+  --switch-unchecked: oklch(0.6 0 0);
+  --filter-active: oklch(0.54 0.16 50);
   /* DataGrid chrome: technická Navy Trust stupnica bez pastelových plôch. */
   --grid-navy-deep: oklch(0.2333 0.0673 266.58);
   --grid-navy: oklch(0.3462 0.0736 256.04);
@@ -149,10 +153,10 @@
 
 .dark {
   /* Tmavý námořnický režim – tmavá modrá (#0f172a) se světle modrými akcenty. */
-  --surface-page: oklch(0.18 0.02 250);
+  --surface-page: oklch(0.165 0.02 250);
   --background: var(--surface-page);
   --foreground: oklch(0.92 0.01 250);
-  --card: oklch(0.24 0.015 250);
+  --card: oklch(0.255 0.018 250);
   --card-foreground: oklch(0.92 0.01 250);
   --popover: oklch(0.24 0.015 250);
   --popover-foreground: oklch(0.92 0.01 250);
@@ -190,6 +194,7 @@
   --company-foreground: oklch(0.15 0.02 250);
   --company-muted: oklch(0.32 0.04 250);
   --person: oklch(0.78 0.13 45);
+  --person-strong: oklch(0.8 0.12 45);
   --person-foreground: oklch(0.18 0.025 45);
   --person-muted: oklch(0.32 0.045 45);
   /* Stavy interakce (tmavý režim) */
@@ -201,6 +206,7 @@
   --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
   --shadow-panel: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.35);
   --switch-unchecked: oklch(0.42 0 0);
+  --filter-active: oklch(0.78 0.15 60);
   --grid-navy-deep: oklch(0.2333 0.0673 266.58);
   --grid-navy: oklch(0.3462 0.0736 256.04);
   --grid-steel: oklch(0.5281 0.0957 248.81);
@@ -228,8 +234,9 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: 0 !important;
     font-weight: 600;
+    text-transform: none !important;
   }
 }
 
@@ -245,6 +252,7 @@
   text-align: right;
   font-size: 1em;
   line-height: 1.4;
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings:
     "tnum" 1,
@@ -255,12 +263,11 @@
    Stejné styly pro záhlaví gridů, popisky formulářů, nadpisy prázdných stavů,
    sekce a tlačítka.  */
 
-/* Štítek / záhlaví: verzálky, tučné, s prokladou – grid hlavičky, formulářové
-   popisky, nadpisy prázdných stavů, názvy sekcí. */
+/* Štítek / záhlaví: větné psaní a střední řez. */
 @utility typo-label {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
   line-height: 1.2;
 }
 
@@ -284,8 +291,8 @@
 @utility typo-title {
   font-size: var(--text-title);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
+  text-transform: none;
+  letter-spacing: 0;
   line-height: 1.15;
 }
 
@@ -320,6 +327,7 @@
 
 @utility is-selected {
   background-color: var(--color-surface-selected);
+  box-shadow: inset 3px 0 0 var(--primary);
 }
 
 @utility focus-ring {
@@ -412,14 +420,41 @@
 
 /* Jednotný aktivní stav vyhledávání a filtrů ve všech gridech. */
 .zoom-filters .grid-toolbar-active {
-  color: var(--destructive);
-  border-color: var(--destructive) !important;
-  background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+  color: var(--filter-active);
+  border-color: var(--filter-active) !important;
+  border-width: 1.5px;
+  background-color: color-mix(in oklab, var(--filter-active) 10%, transparent);
 }
 
 .zoom-filters .grid-toolbar-active:hover {
-  color: var(--destructive);
-  background-color: color-mix(in oklab, var(--destructive) 15%, transparent);
+  color: var(--filter-active);
+  background-color: color-mix(in oklab, var(--filter-active) 16%, transparent);
+}
+
+/* Počet aktivních filtrů a ikony aktivního hledání používají stejný oranžový stav. */
+.zoom-filters .grid-toolbar-active > span:first-of-type {
+  background-color: var(--filter-active) !important;
+  color: white !important;
+}
+
+.zoom-filters .grid-filter-field:has(.grid-toolbar-active) > svg,
+.zoom-filters .grid-filter-field:has(.grid-toolbar-active) > button {
+  color: var(--filter-active) !important;
+}
+
+/* Štítky aktivních filtrů sdílejí oranžovou barvu lišty. */
+[data-slot="filter-chips"] [data-chip-id] {
+  border-color: color-mix(in oklab, var(--filter-active) 45%, transparent) !important;
+  background-color: color-mix(in oklab, var(--filter-active) 10%, transparent) !important;
+  color: var(--filter-active) !important;
+}
+
+[data-slot="filter-chips"] [data-chip-id] :is(span, button) {
+  color: inherit !important;
+}
+
+[data-slot="filter-chips"] [data-chip-id] button:hover {
+  background-color: color-mix(in oklab, var(--filter-active) 16%, transparent) !important;
 }
 
 .zoom-filters .grid-toolbar-icon-control {
@@ -773,10 +808,11 @@
 .zoom-grid .grid-column-header :is(th, td) {
   background-color: var(--grid-heading-surface);
   color: color-mix(in oklab, var(--grid-navy-deep) 78%, var(--foreground));
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.88em;
-  text-transform: uppercase;
-  letter-spacing: 0.035em;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
 }
 
 /* Ukotvený sloupec akcí je součást stejného pásu jako záhlaví a součty. */
@@ -932,7 +968,7 @@
   position: sticky;
   top: 0;
   z-index: 6;
-  background: color-mix(in oklab, var(--muted) 70%, var(--card));
+  background: var(--grid-heading-surface);
   background-clip: padding-box;
   border-bottom: 1px solid var(--border);
 }
@@ -955,12 +991,13 @@
   top: var(--grid-group-h, 1.9em);
 }
 
-/* Verzálky v záhlaví – sjednoceno s .typo-label (stejná proklada i tučnost). */
+/* Záhlaví sloupců: Work Sans 600, větné psaní bez prokládání. */
 .zoom-grid thead tr > :is(th, td) {
   font-variant-caps: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
   color: var(--foreground);
 }
 
@@ -984,10 +1021,10 @@
   background-clip: padding-box;
   border-top: 0;
   font-variant-caps: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: none;
+  letter-spacing: 0;
   font-weight: 700;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   color: color-mix(in oklab, var(--grid-navy-deep) 82%, var(--foreground));
 }
 
@@ -1030,11 +1067,11 @@
   color: color-mix(in oklab, var(--grid-navy-deep) 78%, var(--foreground));
 }
 .compact-table thead th {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.82em;
-  text-transform: uppercase;
-  letter-spacing: 0.035em;
-  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
   border-bottom: 1px solid var(--grid-chrome-border);
 }
 .compact-table tbody tr + tr {
@@ -1046,10 +1083,10 @@
 .compact-table tfoot {
   background: var(--grid-total-surface);
   color: color-mix(in oklab, var(--grid-navy-deep) 82%, var(--foreground));
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 0.82em;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: none;
+  letter-spacing: 0;
   font-weight: 700;
 }
 .compact-table tfoot td {
@@ -1224,6 +1261,7 @@
    stále smrští na obsah. */
 .zoom-grid :is(th, td).num,
 .zoom-grid :is(th, td).text-right {
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   min-width: 7em;
@@ -1244,6 +1282,15 @@
   padding: 0 0.35em !important;
   font-size: 1em !important;
   line-height: var(--grid-line);
+}
+
+/* Částkové vstupy a výstupy nikdy nepřebírají monospace písmo. */
+input[inputmode="decimal"],
+output.tabular-nums,
+.zoom-grid :is(th, td).num :is(input, span, div),
+.zoom-grid :is(th, td).text-right :is(input, span, div) {
+  font-family: var(--font-sans) !important;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 /* Akční tlačítka v gridech potřebují mezeru, aby nebyla nalepená na sebe. */
@@ -1465,15 +1512,7 @@ button,
   line-height: normal;
 }
 
-/* ---- Ukotvená hlavička a patička tabulek ---- */
-.zoom-grid thead :is(th, td) {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background-color: color-mix(in oklab, var(--muted) 75%, var(--card));
-  box-shadow: inset 0 -1px 0 var(--color-border);
-}
-
+/* ---- Ukotvená patička tabulek ---- */
 .zoom-grid tfoot :is(th, td) {
   position: sticky;
   bottom: 0;
@@ -1518,9 +1557,9 @@ button,
 .grid-title-bar .typo-title {
   font-family: var(--font-display);
   font-size: 1.55em;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: none;
 }
 
 /* Znak pred názvom gridu – jednoduchý zaoblený pruh v primárnej farbe,
@@ -1576,8 +1615,8 @@ button,
 .grid-title-count {
   font-family: var(--font-display);
   font-size: 0.82em;
-  text-transform: uppercase;
-  letter-spacing: 0.035em;
+  text-transform: none;
+  letter-spacing: 0;
   color: color-mix(in oklab, var(--grid-navy) 72%, var(--foreground));
 }
 
@@ -1591,6 +1630,43 @@ button,
 
 .grid-table-surface {
   border-color: var(--grid-chrome-border);
+}
+
+/* Vybraný řádek má vedle podkladu také pevný primární orientační pruh. */
+.zoom-grid tbody tr:is([data-state="selected"], [aria-selected="true"]) {
+  background-color: var(--surface-selected);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.zoom-grid tbody tr:is([data-state="selected"], [aria-selected="true"]) > :is(th, td) {
+  background-color: var(--surface-selected);
+}
+
+.zoom-grid tbody tr:is([data-state="selected"], [aria-selected="true"]) > :is(th, td):first-child {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+/* Běžné karty používají stejný jemný stín jako obal gridu. */
+.bg-card.rounded-xl.border.shadow,
+.bg-card.rounded-lg.border:not(button):not([role="button"]) {
+  box-shadow: var(--shadow-panel);
+}
+
+/* Textové styly nepoužívají verzálky ani kladné prokládání. */
+:is(.typo-title, .typo-label, thead, tfoot, .grid-column-header, .grid-title-count) {
+  text-transform: none !important;
+  letter-spacing: min(0em, var(--tw-tracking, 0em)) !important;
+}
+
+thead,
+.grid-column-header {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+tfoot {
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 /* --- Přístupnost: viditelný fokus řádku gridu ------------------------- */
@@ -1614,15 +1690,6 @@ button,
     scrollbar-width: thin;
     justify-content: flex-end;
   }
-}
-
-/* --- Webová prezentácia (zaloznareal.sk) ------------------------------- */
-@theme {
-  --color-web-ink: oklch(0.21 0.04 258);
-  --color-web-ink-soft: oklch(0.31 0.045 258);
-  --color-web-gold: oklch(0.79 0.13 84);
-  --color-web-gold-strong: oklch(0.68 0.13 74);
-  --color-web-cream: oklch(0.975 0.012 85);
 }
 
 /* --- Jednotný hover pre interaktívne prvky aplikácie -------------------- */

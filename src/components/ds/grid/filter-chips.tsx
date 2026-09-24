@@ -51,10 +51,10 @@ export const FilterChips = forwardRef<HTMLDivElement, FilterChipsProps>(function
           <span
             key={chip.id}
             data-chip-id={chip.id}
-            className="inline-flex max-w-[22rem] items-center gap-1 rounded-full border border-primary/40 bg-primary/10 py-0.5 pr-1 pl-2.5 text-primary"
+            className="inline-flex max-w-[22rem] items-center gap-1 rounded-full border border-filter-active/45 bg-filter-active/10 py-0.5 pr-1 pl-2.5 text-filter-active"
           >
             <span className="truncate">
-              <span className="text-primary/80">{chip.label}</span>
+              <span className="opacity-80">{chip.label}</span>
               {chip.value ? <span className="font-medium">: {chip.value}</span> : null}
             </span>
             {chip.onRemove ? (
@@ -63,7 +63,7 @@ export const FilterChips = forwardRef<HTMLDivElement, FilterChipsProps>(function
                 aria-label={t.removeLabel(text)}
                 title={t.removeLabel(text)}
                 onClick={chip.onRemove}
-                className="flex size-5 items-center justify-center rounded-full hover:bg-primary/15 hover:text-destructive focus-visible:outline-2 focus-visible:outline-ring"
+                className="flex size-5 items-center justify-center rounded-full hover:bg-filter-active/15 focus-visible:outline-2 focus-visible:outline-ring"
               >
                 <X className="size-3.5" />
               </button>

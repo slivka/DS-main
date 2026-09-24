@@ -657,7 +657,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
                       );
                       const id = column.id as JournalLineColumn;
                       if (id === "amount") return (
-                        <TableCell key={id} className="text-right font-mono tabular-nums">
+                        <TableCell key={id} className="amount-cell text-right tabular-nums">
                           <div className="flex items-center justify-end gap-1">
                             {renderNonTaxMark(line)}
                             <div className="min-w-0 flex-1">{renderCell(line, rowIndex, id)}</div>
@@ -676,7 +676,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
                           ) : null}
                         </TableCell>
                       );
-                      return <TableCell key={id} className={cn(NUMERIC_COLUMNS.has(id) && "text-right font-mono tabular-nums")}>{renderCell(line, rowIndex, id)}</TableCell>;
+                       return <TableCell key={id} className={cn(NUMERIC_COLUMNS.has(id) && "amount-cell text-right tabular-nums")}>{renderCell(line, rowIndex, id)}</TableCell>;
                     })}
                   </TableRow>
                 );
@@ -690,7 +690,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
               <TableFooter><TableRow>{visibleColumns.map((column, index) => {
                 let content: ReactNode = null;
                 if (column.id === "row") content = t.total;
-                if (column.id === "amount") content = <span className="font-mono tabular-nums">{formatAmount(total, 2)}</span>;
+                if (column.id === "amount") content = <span className="font-sans tabular-nums">{formatAmount(total, 2)}</span>;
                 if (column.id === "text") content = expectedAmount === undefined ? null : difference === 0 ? t.balanced : (
                   <span className={amountClass(-Math.abs(difference))}>{`${showRemaining ? t.remaining : t.difference}: ${formatAmount(difference, 2)}`}</span>
                 );

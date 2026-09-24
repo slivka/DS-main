@@ -1,5 +1,13 @@
 # Roadmap
 
+## Verze 2.11.0 (čitelnost, plochy a typografie)
+- [x] Jemně modré pozadí stránky, bílé navigační plochy a výraznější oddělení karet a gridů
+- [x] Oranžový stav aktivního hledání, filtrů, počtu filtrů a štítků
+- [x] Primární levý pruh vybraného řádku a upravené stavové barvy
+- [x] Work Sans pro nadpisy, popisky, záhlaví, součty a částky; JetBrains Mono jen pro kódy
+- [x] Typografický znak minus u záporných částek a aktualizovaná typografická ukázka
+- [x] Ověření světlého a tmavého režimu, zoomů gridu, tisku/PDF a Excel exportu
+
 ## Import design systému z GitHubu (slivka/slivka-design-system)
 - [x] Stáhnout a prozkoumat repozitář
 - [x] Přenést tokeny (src/styles.css), komponenty (src/components/ds, src/components/ui)

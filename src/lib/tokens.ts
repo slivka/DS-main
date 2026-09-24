@@ -4,5 +4,5 @@
  * Hodnoty musí odpovídat definicím v src/styles.css.
  */
 
-/** Světlé podkladové pozadí stránky – odpovídá `--surface-page` ve světlém režimu (#FAFAFA). */
-export const PAGE_SURFACE_LIGHT = "oklch(0.985 0 0)";
+/** Jemně modré podkladové pozadí stránky – odpovídá `--surface-page` ve světlém režimu (#EFF4F9). */
+export const PAGE_SURFACE_LIGHT = "oklch(0.965 0.008 245)";
