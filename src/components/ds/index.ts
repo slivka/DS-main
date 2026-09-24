@@ -30,6 +30,9 @@ export * from "./panes/pane-context";
 export * from "./panes/pane-layout";
 export * from "./panes/pane-layout-switcher";
 export * from "./panes/pinned-bar";
+export * from "./panes/pane-tab-store";
+export * from "./panes/pane-tab-bar";
+export * from "./panes/pane-link";
 
 /* Grid */
 export * from "./grid/DataGrid";

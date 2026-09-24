@@ -19,12 +19,18 @@
 - `gridTexts?: Partial<GridTexts>` přepisuje společné texty gridové lišty včetně `refresh`.
 - Nadpis je standardně skrytý a zobrazí se pouze s `showTitle`.
 
-## PaneLayout
+## Záložky v panelech (2.12.0)
 
-- Změna `layout` na 2 nebo 3 doplní chybějící panely s `route: ""` a aktivuje první nový panel.
-- `renderEmpty?: (pane) => ReactNode` přepisuje výchozí `PaneEmpty`.
-- `isPinned?: (pane) => boolean` a `onTogglePin?: (pane) => void` řídí připnutí neprázdných panelů.
-- Prázdný panel nevstupuje do historie, `renderPane`, `uniqueKey` ani `paneKey`; serializace ho zachová.
+- `PaneTabsProvider` drží stav `PaneTabsState` (`version: 2`) přes `state` / `onChange`; `onSaveTab(tabId)` zobrazí v dialogu tlačítko Uložit, `onNewTabRequest` obsluhuje Alt+T. Obalte jím AppShell i PaneLayout – navigace pak otevírá záložky.
+- `usePaneTabs()` – `openTab(route, params, { target: 'replace' | 'newTab' | 'adjacentPane', kind: 'list' | 'record', recordKey, title, shortTitle, icon })`, `closeTab`, `closeOtherTabs`, `moveTab`, `activateTab`, `activatePane`, `duplicateTab`, `setLayout`, `closePane`, `back`, `forward`, `setTabTitle`.
+- Pravidla: prázdný panel → nová záložka, jinak nahrazení aktivní (rozepsaná → dialog Uložit / Zahodit / Otevřít v nové záložce / Zrušit); `record` jen jednou; limit 10 záložek na panel (zavře nejdéle nepoužitou čistou, jinak odmítne); zavření/ubrání panelu přesune záložky doleva (u prvního doprava) bez dotazu; automatické zúžení podle šířky se po zvětšení obnoví.
+- `PaneLayout` – `renderTab(tab, pane)`, `getTabIcon(tab)`, `renderEmpty`, `isPinned(tab)`, `onTogglePin(tab)`, `minPaneWidth`, `texts`. Vykresluje jen aktivní záložku každého panelu.
+- `PaneTabBar` – záložky 120–200 px s tooltipem, ● při neuložených změnách, nabídka „»“, ← →, menu ⋯ (Maximalizovat panel, Zavřít ostatní záložky, Zavřít panel), kontextové menu (Zavřít, Zavřít ostatní, Přesunout do panelu N, Duplikovat jen u seznamů), přetahování v liště, do jiné lišty i na plochu panelu.
+- `useTabDraft(tabId, initial, key?)` – stav, který přežije odpojení i přesun; `useTabScrollRestore`; `clearTabState` po zavření.
+- `useTabDirty(isDirty, key?)` nahrazuje `usePaneDirty`.
+- `PaneLink`, `getOpenTarget(event)`, `handlePaneLinkEvent(event, open)` – Cmd/Ctrl + klik a prostřední tlačítko = nová záložka, Cmd/Ctrl + Shift + klik = sousední panel.
+- Stav: `serializePaneTabs` / `parsePaneTabs` (DB, v1 převede automaticky), `serializeActiveTabUrl` / `parseActiveTabUrl` (URL), `migratePaneStateV1`.
+- Zkratky: Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T.
 
 ## PinnedBar
 

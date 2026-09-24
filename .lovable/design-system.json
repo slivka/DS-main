@@ -2247,7 +2247,7 @@
       "examples": [
         {
           "label": "Rám s připnutými stránkami",
-          "code": "\u003cAppShell navGroups={groups} subHeader={\u003cPinnedBar items={pins} onOpen={open} onUnpin={unpin} /\u003e}\u003e{children}\u003c/AppShell\u003e"
+          "code": "<AppShell navGroups={groups} subHeader={<PinnedBar items={pins} onOpen={open} onUnpin={unpin} />}>{children}</AppShell>"
         }
       ],
       "antipatterns": [
@@ -2402,7 +2402,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
+          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
         }
       ],
       "antipatterns": [
@@ -2456,7 +2456,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
+          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
         }
       ],
       "antipatterns": [
@@ -2520,7 +2520,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cThemeSetting /\u003e"
+          "code": "<ThemeSetting />"
         }
       ],
       "antipatterns": [
@@ -2583,7 +2583,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
         }
       ],
       "antipatterns": [
@@ -2658,7 +2658,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
         }
       ],
       "antipatterns": [
@@ -2733,11 +2733,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
         },
         {
           "label": "Firma bez období",
-          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
+          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
         }
       ],
       "antipatterns": [
@@ -2805,7 +2805,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
         }
       ],
       "antipatterns": [
@@ -2836,7 +2836,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
+          "code": "<SearchButton onClick={() => setOpen(true)} />"
         }
       ],
       "antipatterns": [
@@ -2859,48 +2859,18 @@
       "import_path": ""
     },
     {
-      "name": "PaneManagerContext",
-      "file": "src/components/ds/panes/pane-context.tsx",
-      "import_path": ""
-    },
-    {
       "name": "PaneLayout",
       "file": "src/components/ds/panes/pane-layout.tsx",
       "import_path": "",
       "props": [
         {
-          "name": "panes",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "activePaneId",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "layout",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "widths",
-          "type": "any"
-        },
-        {
-          "name": "onChange",
+          "name": "renderTab",
           "type": "function",
           "required": true
         },
         {
-          "name": "minPaneWidth",
-          "type": "number",
-          "default": "560"
-        },
-        {
-          "name": "renderPane",
-          "type": "function",
-          "required": true
+          "name": "getTabIcon",
+          "type": "function"
         },
         {
           "name": "renderEmpty",
@@ -2915,35 +2885,29 @@
           "type": "function"
         },
         {
-          "name": "defaultRoute",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "defaultTitle",
-          "type": "string"
+          "name": "minPaneWidth",
+          "type": "number",
+          "default": "560"
         },
         {
           "name": "texts",
-          "type": "any"
+          "type": "Partial<PaneLayoutTexts>"
         },
         {
           "name": "className",
-          "type": "string",
-          "default": "flex min-w-0"
+          "type": "string"
         }
       ],
-      "usage": "Použijte pro 1 až 3 souběžné pracovní panely. Zvýšení layoutu automaticky doplní prázdné panely; prázdný panel nikdy neposílejte do renderPane.",
+      "usage": "Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.",
       "examples": [
         {
-          "label": "Panely s prázdným stavem a připnutím",
-          "code": "\u003cPaneLayout panes={panes} activePaneId={activeId} layout={layout} onChange={setState} defaultRoute=\"/doklady\" renderPane={renderPane} renderEmpty={(pane) =\u003e \u003cPaneEmpty /\u003e} isPinned={isPinned} onTogglePin={togglePin} /\u003e"
+          "label": "Panely se záložkami",
+          "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
         }
       ],
       "antipatterns": [
-        "Vytvářet prázdné panely ručně mimo PaneLayout",
-        "Volat renderPane pro panel s route prázdným řetězcem",
-        "Ukládat připnutí jako stav otevřeného okna"
+        "Držet stav formuláře záložky jen v useState – po přepnutí se ztratí; použijte useTabDraft.",
+        "Používat usePaneDirty / openInPane (odstraněno ve 2.12.0)."
       ]
     },
     {
@@ -3005,7 +2969,7 @@
       "examples": [
         {
           "label": "Připnuté stránky",
-          "code": "\u003cPinnedBar items={items} onOpen={(id, options) =\u003e openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} /\u003e"
+          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
         }
       ],
       "antipatterns": [
@@ -3242,7 +3206,7 @@
       "examples": [
         {
           "label": "Grid s obnovením a výběrem",
-          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable /\u003e"
+          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable />"
         }
       ],
       "antipatterns": [
@@ -3617,7 +3581,7 @@
       "examples": [
         {
           "label": "Asynchronní obnovení",
-          "code": "\u003cGridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} /\u003e"
+          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
         }
       ],
       "antipatterns": [
@@ -3684,7 +3648,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
         }
       ],
       "antipatterns": [
@@ -3799,7 +3763,7 @@
       "examples": [
         {
           "label": "Strom s obnovením a výběrem",
-          "code": "\u003cTreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} /\u003e"
+          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />"
         }
       ],
       "antipatterns": [
@@ -3841,7 +3805,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
+          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
         }
       ],
       "antipatterns": [
@@ -4330,7 +4294,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
+          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
         }
       ],
       "antipatterns": [
@@ -4361,7 +4325,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
+          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
         }
       ],
       "antipatterns": [
@@ -4546,7 +4510,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
@@ -4689,7 +4653,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
+          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
         }
       ],
       "antipatterns": [
@@ -4776,12 +4740,136 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
+          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
+      ]
+    },
+    {
+      "name": "PaneTabsProvider",
+      "file": "src/components/ds/panes/pane-context.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "state",
+          "type": "PaneTabsState",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onSaveTab",
+          "type": "function"
+        },
+        {
+          "name": "onNewTabRequest",
+          "type": "function"
+        },
+        {
+          "name": "shortcuts",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "texts",
+          "type": "Partial<PaneTabsTexts>"
+        }
+      ],
+      "usage": "Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.",
+      "examples": [
+        {
+          "label": "Otevření záznamu",
+          "code": "const tabs = usePaneTabs();\ntabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' });"
+        }
+      ],
+      "antipatterns": [
+        "Otevírat konkrétní záznam s kind 'list' – otevřel by se vícekrát.",
+        "Přepisovat Cmd/Ctrl+W nebo Ctrl+1–9."
+      ]
+    },
+    {
+      "name": "PaneTabBar",
+      "file": "src/components/ds/panes/pane-tab-bar.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "pane",
+          "type": "TabPane",
+          "required": true
+        },
+        {
+          "name": "paneIndex",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "paneCount",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "api",
+          "type": "PaneTabsApi",
+          "required": true
+        },
+        {
+          "name": "getTabIcon",
+          "type": "function"
+        },
+        {
+          "name": "texts",
+          "type": "Partial<PaneTabBarTexts>"
+        }
+      ],
+      "usage": "Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlastní rozložení.",
+      "examples": [
+        {
+          "label": "Vlastní panel",
+          "code": "<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />"
+        }
+      ],
+      "antipatterns": [
+        "Přidávat vedle lišty samostatný křížek panelu – zavření je v menu ⋯."
+      ]
+    },
+    {
+      "name": "PaneLink",
+      "file": "src/components/ds/panes/pane-link.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "route",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "params",
+          "type": "Record<string, unknown>"
+        },
+        {
+          "name": "options",
+          "type": "Omit<OpenTabOptions, 'target'>"
+        },
+        {
+          "name": "href",
+          "type": "string"
+        }
+      ],
+      "usage": "Odkaz do záložek: klik nahradí aktivní záložku, Cmd/Ctrl + klik nebo prostřední tlačítko otevře novou, Cmd/Ctrl + Shift + klik sousední panel.",
+      "examples": [
+        {
+          "label": "Položka menu",
+          "code": "<PaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>"
+        }
+      ],
+      "antipatterns": [
+        "Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
       ]
     }
   ],

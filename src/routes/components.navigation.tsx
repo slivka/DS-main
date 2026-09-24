@@ -200,7 +200,7 @@ function NavigationPage() {
 
       <ShowcaseSection
         title="Režim více oken"
-        description="Panely mají vlastní historii a titulek, dělicí čáry jdou táhnout (dvojklik = rovnoměrně). Nedostupné rozložení je šedé, stejný doklad se neotevře dvakrát a neuložené změny se potvrzují."
+        description="Každý panel má záložky s vlastní historií. Záložky jdou přetahovat v liště i mezi panely, rozepsaný doklad se při přesunu neztratí. Cmd/Ctrl + klik v menu otevře novou záložku, Cmd/Ctrl + Shift + klik sousední panel. Stejný doklad se otevře jen jednou."
       >
         <PaneShowcase />
       </ShowcaseSection>

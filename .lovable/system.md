@@ -222,12 +222,12 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Aplikace může obsah `AppShell` vykreslit přes `PaneLayout` (1 / 2 / 3 panely). Přepínač `LayoutSwitcher` patří do horní lišty vedle `SearchButton`.
 - Editace dokladu je vždy stránka v panelu, nikdy modál. Firma a období jsou společné pro všechny panely.
-- Navigace uvnitř panelu jen přes `usePane()`; otevírání z menu nebo gridu přes `usePaneManager().openInPane(route, params, { target: 'active' | 'new' | paneId })`. Stejný záznam označ `uniqueKey`, aby se neotevřel dvakrát.
-- Neuložené změny hlas přes `usePaneDirty(isDirty)`; před přepnutím firmy nebo období volej `confirmAllPanesClean`.
+- Každý panel má záložky. Otevírání z menu nebo gridu přes `usePaneTabs().openTab(route, params, { target: 'replace' | 'newTab' | 'adjacentPane', kind, recordKey })`; odkazy přes `PaneLink` (Cmd/Ctrl + klik = nová záložka, + Shift = sousední panel, prostřední tlačítko = nová záložka). Konkrétní záznam vždy `kind: 'record'` – otevře se jen jednou.
+- Neuložené změny hlas přes `useTabDirty(isDirty)`. Záložky na pozadí se odpojují – stav formuláře a gridu drž přes `useTabDraft(tabId, initial, key)`, nikdy jen v `useState`.
 - Minimální šířka panelu je 560 px při měřítku písma 100 %. Nedostupná rozložení nech zašedlá s vysvětlením.
 - Komponenty uvnitř panelu se přizpůsobují šířce panelu přes container queries (`@min-[…]`), nikdy přes breakpointy okna. Horní lišta a boční menu se řídí šířkou okna.
-- Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K, Ctrl+B, Ctrl+1/2/3 a Ctrl+Shift+W.
-- Stav panelů serializuj přes `serializePanes` / `parsePanes` (URL nebo databáze).
+- Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K a Ctrl+B; panely a záložky ovládá Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T (kontrola přes `event.code`). Cmd/Ctrl+W ani Ctrl+1–9 nepřepisuj.
+- Stav panelů serializuj přes `serializePaneTabs` / `parsePaneTabs` (databáze) a `serializeActiveTabUrl` (URL).
 
 
 ## Doklady a platební kalendář (2.7.0)
