@@ -239,18 +239,7 @@ export function PaneShowcase() {
 
         <div className="overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
-            <PinnedBar
-              items={PAGES.filter((page) => pinned.includes(page.route)).map((page) => ({
-                id: page.route,
-                title: page.title,
-                icon: ICONS[page.icon],
-                open: state.panes.some((pane) => pane.tabs.some((tab) => tab.route === page.route)),
-              }))}
-              onOpen={() => undefined}
-              onUnpin={(id) => setPinned((ids) => ids.filter((item) => item !== id))}
-              onReorder={setPinned}
-            />
-            <PinnedOpenBridge />
+            <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
             <div className="flex h-[560px]">
               <DemoMenu />
               <PaneLayout
@@ -268,15 +257,29 @@ export function PaneShowcase() {
   );
 }
 
-/** Otevírání připnutých stránek – klik nahradí aktivní záložku, Ctrl/Cmd nebo prostřední tlačítko otevře novou. */
-function PinnedOpenBridge() {
+/** Připnuté stránky – klik nahradí aktivní záložku, Ctrl/Cmd nebo prostřední tlačítko otevře novou. */
+function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (update: (ids: string[]) => string[]) => void }) {
   const tabs = usePaneTabs();
-  if (typeof document !== "undefined") {
-    const bar = document.querySelector<HTMLElement>("[data-demo-pinned]");
-    void bar;
-  }
-  void tabs;
-  return null;
+  if (!tabs) return null;
+  const active = tabs.state.panes.find((pane) => pane.id === tabs.state.active);
+  const activeRoute = active?.tabs.find((tab) => tab.id === active.activeTab)?.route;
+  return (
+    <PinnedBar
+      items={PAGES.filter((page) => pinned.includes(page.route)).map((page) => ({
+        id: page.route,
+        title: page.title,
+        icon: ICONS[page.icon],
+        open: tabs.state.panes.some((pane) => pane.tabs.some((tab) => tab.route === page.route)),
+        active: activeRoute === page.route,
+      }))}
+      onOpen={(id, { newPane }) => {
+        const page = PAGES.find((item) => item.route === id);
+        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "replace", title: page.title, icon: page.icon });
+      }}
+      onUnpin={(id) => setPinned((ids) => ids.filter((item) => item !== id))}
+      onReorder={(ids) => setPinned(() => ids)}
+    />
+  );
 }
 
 function ShowcaseLayoutSwitcher({ maxLayout }: { maxLayout: 1 | 2 | 3 }) {
