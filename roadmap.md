@@ -1,6 +1,6 @@
 # Roadmap
 
-## Verze 2.16.0 (dočasné a ponechané záložky)
+## Verze 2.16.0 (nahrazeno změnou záložek ve 2.17.0)
 - [x] Stav pinned / openerTabId, převod staršího v2, jedna dočasná záložka na panel
 - [x] preview, openRecord a–f, keep/release, historie jako ponechaná záložka, zásobník zavřených, limit s přednostní dočasnou
 - [x] Maximalizace s pruhem, Alt+M, Esc, Alt+Shift+T, bliknutí panelu
@@ -288,3 +288,7 @@
 - [x] addAction, moreActions, vlastní PDF a další exporty
 - [x] Společný wheel zoom DataGrid, TreeGrid a ZoomPane; loading v TreeGrid
 - [x] PageHeader bez spodní linky; ukázky, dokumentace, katalog a ověření
+- [x] Rovnocenné záložky bez pinned/preview/keep/release a kompatibilní načtení starého stavu
+- [x] Vždy viditelná PaneTabBar, replace historie, openRecord čistý/dirty detail a limit 10
+- [x] PageHeader v panelu: ↑↓, ←→, maximalizace, menuActions a ⋯
+- [x] LayoutMenu jako ⋯ vedle hledání přes AppShell.navSearchMenu

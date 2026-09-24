@@ -184,7 +184,8 @@ function HistoryButtons({ chrome, t }: ChromeProps) {
 
 /** ↑ n / N ↓ – listování záznamy v pořadí seznamu. */
 function RecordNavButtons({ chrome, t }: ChromeProps) {
-  const nav = chrome.recordNav!;
+  const nav = chrome.recordNav;
+  if (!nav) return null;
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
