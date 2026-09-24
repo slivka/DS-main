@@ -1,5 +1,13 @@
 # Roadmap
 
+## Verze 2.12.0 (záložky v panelech)
+- [x] Stav v2 se záložkami, převod z v1, serializace pro DB a URL
+- [x] PaneTabsProvider / usePaneTabs, limit 10 záložek, jeden záznam jen jednou
+- [x] PaneTabBar s „»“, historií, menu ⋯, kontextovým menu a přetahováním
+- [x] useTabDraft, useTabDirty (náhrada usePaneDirty), dialog Uložit / Zahodit / Otevřít v nové záložce / Zrušit
+- [x] Zkratky Alt+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T; PaneLink v navigaci AppShellu
+- [x] Ukázka Režim více oken, testy pravidel, dokumentace
+
 ## Verze 2.11.0 (čitelnost, plochy a typografie)
 - [x] Jemně modré pozadí stránky, bílé navigační plochy a výraznější oddělení karet a gridů
 - [x] Oranžový stav aktivního hledání, filtrů, počtu filtrů a štítků
