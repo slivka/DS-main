@@ -1,5 +1,8 @@
 import "./styles.css";
 
+export { SlivkaProvider, type SlivkaProviderProps } from "./slivka-provider";
+export { SlivkaHead, type SlivkaHeadProps } from "./slivka-head";
+
 /**
  * Slivka Design System – veřejný barrel knihovny.
  * Komponenty se skládají výhradně z exportů design systému (src/components/ds).
