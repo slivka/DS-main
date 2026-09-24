@@ -9,7 +9,7 @@ import {
   type FiscalPeriod,
   type FiscalPeriodState,
 } from "../accounting/fiscal-period-select";
-import { ContextPill } from "./context-pill";
+import { ContextPill, useContextPillClose } from "./context-pill";
 
 export interface PeriodSwitcherProps {
   periods: FiscalPeriod[];
@@ -49,6 +49,7 @@ export function PeriodSwitcher({
 }: PeriodSwitcherProps) {
   const selected = periods.find((period) => period.id === value);
   const isEmpty = periods.length === 0;
+  const close = useContextPillClose();
   const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
   return (
     <ContextPill
@@ -64,7 +65,7 @@ export function PeriodSwitcher({
       {isEmpty ? (
         <div className="p-3">
           <p className="text-sm text-muted-foreground">{emptyText}</p>
-          {onCreate ? <Button type="button" className="mt-3 w-full" onClick={onCreate}>{createLabel}</Button> : null}
+          {onCreate ? <Button type="button" className="mt-3 w-full" onClick={() => { close(); onCreate(); }}>{createLabel}</Button> : null}
         </div>
       ) : <Command>
         <CommandList>
@@ -73,7 +74,7 @@ export function PeriodSwitcher({
               <CommandItem
                 key={period.id}
                 disabled={disableClosed && period.state === "closed"}
-                onSelect={() => onChange(period.id)}
+                onSelect={() => { onChange(period.id); close(); }}
                 value={`${period.name} ${stateLabels[period.state]}`}
               >
                 <span className={cn("size-2 shrink-0 rounded-full", stateClass[period.state])} />

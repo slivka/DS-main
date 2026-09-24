@@ -3,7 +3,7 @@ import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
-import { ContextPill } from "./context-pill";
+import { ContextPill, useContextPillClose } from "./context-pill";
 
 export type CompanySwitcherItem = { id: string; name: string; ico?: string };
 
@@ -45,9 +45,10 @@ export function CompanySwitcher({
   const recentSet = new Set(recent.map((item) => item.id));
   const others = items.filter((item) => !recentSet.has(item.id));
   const [openKey, setOpenKey] = useState(0);
+  const close = useContextPillClose();
 
   const row = (item: CompanySwitcherItem) => (
-    <CommandItem key={`${openKey}-${item.id}`} value={`${item.name} ${item.ico ?? ""}`} onSelect={() => onChange(item.id)}>
+    <CommandItem key={`${openKey}-${item.id}`} value={`${item.name} ${item.ico ?? ""}`} onSelect={() => { onChange(item.id); close(); }}>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{item.name}</span>
         {item.ico ? <span className="block text-xs text-muted-foreground">IČO {item.ico}</span> : null}
@@ -76,7 +77,7 @@ export function CompanySwitcher({
       </Command>
       {onCreate ? (
         <div className="border-t p-2">
-          <Button type="button" variant="ghost" className="w-full justify-start" onClick={onCreate}>
+          <Button type="button" variant="ghost" className="w-full justify-start" onClick={() => { close(); onCreate(); }}>
             <Plus className="size-4" />
             {createLabel}
           </Button>
