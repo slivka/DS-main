@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Building2, Check, Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
@@ -110,7 +110,6 @@ export function CompanySwitcher({
     <ContextPill
       label={label}
       value={selected?.name ?? emptyText}
-      icon={Building2}
       compactValue={selected?.name ?? emptyText}
       className={`max-w-[72px] md:max-w-[200px] xl:max-w-[360px] ${className ?? ""}`}
       contentClassName="w-[380px]"
