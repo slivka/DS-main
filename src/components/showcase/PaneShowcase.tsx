@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { FileText, LayoutGrid, ReceiptText, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -6,6 +7,7 @@ import {
   DocumentForm,
   documentFieldsForType,
   LayoutSwitcher,
+  PinnedBar,
   PaneLayout,
   maxPaneLayout,
   requiredPaneWidth,
@@ -34,12 +36,10 @@ const FONT_SCALES = [1, 1.25] as const;
 const MIN_PANE_WIDTH = 560;
 
 const INITIAL: PaneLayoutState = {
-  layout: 3,
+  layout: 1,
   activePaneId: "p1",
   panes: [
     { id: "p1", route: "/faktury-vydane", title: "Vydané faktury" },
-    { id: "p2", route: "/faktury-prijate", title: "Přijaté faktury" },
-    { id: "p3", route: "/doklad", params: { id: "FP2026000012" }, title: "Doklad FP2026000012", uniqueKey: true },
   ],
 };
 
@@ -109,6 +109,14 @@ export function PaneShowcase() {
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1440);
   const [fontScale, setFontScale] = useState<(typeof FONT_SCALES)[number]>(1);
   const [dirty, setDirty] = useState(false);
+  const [pinnedIds, setPinnedIds] = useState(["issued", "received", "journal", "partners"]);
+
+  const pinnedItems = [
+    { id: "issued", title: "Vydané faktury", icon: FileText, route: "/faktury-vydane" },
+    { id: "received", title: "Přijaté faktury", icon: ReceiptText, route: "/faktury-prijate" },
+    { id: "journal", title: "Účetní deník", icon: LayoutGrid, route: "/denik" },
+    { id: "partners", title: "Partneři", icon: Users, route: "/partneri" },
+  ].filter((item) => pinnedIds.includes(item.id));
 
   const maxLayout = maxPaneLayout(previewWidth, MIN_PANE_WIDTH, fontScale);
 
@@ -140,7 +148,11 @@ export function PaneShowcase() {
           value={state.layout}
           maxLayout={maxLayout}
           requiredWidths={{ 2: requiredPaneWidth(2, MIN_PANE_WIDTH, fontScale), 3: requiredPaneWidth(3, MIN_PANE_WIDTH, fontScale) }}
-          onChange={(layout) => setState((value) => ({ ...value, layout, widths: undefined }))}
+          onChange={(layout) => {
+            const missing = Math.max(0, layout - state.panes.length);
+            const added = Array.from({ length: missing }, (_, index) => ({ id: `demo-empty-${Date.now()}-${index}`, route: "" }));
+            setState((value) => ({ ...value, panes: [...value.panes, ...added], activePaneId: added[0]?.id ?? value.activePaneId, layout, widths: undefined }));
+          }}
         />
         <div className="flex items-center gap-1">
           {PREVIEW_WIDTHS.map((width) => (
@@ -169,9 +181,23 @@ export function PaneShowcase() {
       </div>
 
       <div className="overflow-auto rounded-lg border bg-muted p-3">
+        <PinnedBar
+          items={pinnedItems.map(({ id, title, icon, route }) => ({ id, title, icon, open: state.panes.some((pane) => pane.route === route), active: state.panes.some((pane) => pane.id === state.activePaneId && pane.route === route) }))}
+          onOpen={(id, { newPane }) => {
+            const item = pinnedItems.find((candidate) => candidate.id === id);
+            if (!item) return;
+            setState((value) => {
+              const target = newPane ? value.panes.find((pane) => !pane.route) : value.panes.find((pane) => pane.id === value.activePaneId);
+              if (!target) return value;
+              return { ...value, panes: value.panes.map((pane) => pane.id === target.id ? { ...pane, route: item.route, title: item.title } : pane), activePaneId: target.id };
+            });
+          }}
+          onUnpin={(id) => setPinnedIds((ids) => ids.filter((item) => item !== id))}
+          onReorder={setPinnedIds}
+        />
         <div
           className="mx-auto flex h-[520px] overflow-hidden rounded-md border bg-card"
-          style={{ width: `${previewWidth}px`, maxWidth: "100%", fontSize: `${fontScale * 16}px` }}
+          style={{ width: `${previewWidth}px`, fontSize: `${fontScale * 16}px` }}
         >
           <PaneLayout
             panes={state.panes}
@@ -183,6 +209,16 @@ export function PaneShowcase() {
             defaultRoute="/faktury-vydane"
             defaultTitle="Vydané faktury"
             renderPane={renderPane}
+            isPinned={(pane) => pinnedItems.some((item) => item.route === pane.route)}
+            onTogglePin={(pane) => {
+              const item = [
+                { id: "issued", route: "/faktury-vydane" },
+                { id: "received", route: "/faktury-prijate" },
+                { id: "journal", route: "/denik" },
+                { id: "partners", route: "/partneri" },
+              ].find((candidate) => candidate.route === pane.route);
+              if (item) setPinnedIds((ids) => ids.includes(item.id) ? ids.filter((id) => id !== item.id) : [...ids, item.id]);
+            }}
           />
         </div>
       </div>

@@ -29,6 +29,7 @@ export * from "./panes/pane-state";
 export * from "./panes/pane-context";
 export * from "./panes/pane-layout";
 export * from "./panes/pane-layout-switcher";
+export * from "./panes/pinned-bar";
 
 /* Grid */
 export * from "./grid/DataGrid";
@@ -47,6 +48,7 @@ export * from "./grid/grid-states";
 export * from "./grid/grid-zoom";
 export * from "./grid/grid-pagination";
 export * from "./grid/grid-selection-toggle";
+export * from "./grid/grid-refresh";
 export * from "./grid/grid-more-menu";
 export * from "./grid/grid-column-resize";
 export * from "./grid/grid-virtual";

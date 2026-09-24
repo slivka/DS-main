@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, Maximize2, Minimize2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Maximize2, Minimize2, Pin, PinOff, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "../../ui/button";
@@ -29,6 +29,10 @@ export type PaneLayoutTexts = {
   unsavedConfirm: string;
   unsavedCancel: string;
   untitled: string;
+  emptyTitle: string;
+  emptyHint: string;
+  pin: string;
+  unpin: string;
 };
 
 export const DEFAULT_PANE_TEXTS: PaneLayoutTexts = {
@@ -43,6 +47,10 @@ export const DEFAULT_PANE_TEXTS: PaneLayoutTexts = {
   unsavedConfirm: "Zahodit změny",
   unsavedCancel: "Zpět k editaci",
   untitled: "Bez názvu",
+  emptyTitle: "Prázdný panel",
+  emptyHint: "Vyberte stránku v menu. Otevře se v aktivním panelu.",
+  pin: "Připnout",
+  unpin: "Odepnout",
 };
 
 type HistoryEntry = { route: string; params?: Record<string, unknown>; title?: string };
@@ -87,6 +95,12 @@ export interface PaneLayoutProps {
   onChange: (state: PaneLayoutState) => void;
   minPaneWidth?: number;
   renderPane: (pane: PaneState) => ReactNode;
+  /** Vlastní obsah prázdného panelu. Prázdný panel se nikdy neposílá do renderPane. */
+  renderEmpty?: (pane: PaneState) => ReactNode;
+  /** Určí, zda je stránka panelu připnutá. */
+  isPinned?: (pane: PaneState) => boolean;
+  /** Zobrazí tlačítko připnutí a oznámí jeho použití. */
+  onTogglePin?: (pane: PaneState) => void;
   /** Výchozí stránka po zavření posledního panelu. */
   defaultRoute: string;
   defaultTitle?: string;
@@ -103,6 +117,9 @@ export function PaneLayout({
   onChange,
   minPaneWidth = 560,
   renderPane,
+  renderEmpty,
+  isPinned,
+  onTogglePin,
   defaultRoute,
   defaultTitle,
   texts,
@@ -116,6 +133,7 @@ export function PaneLayout({
   const [maximized, setMaximized] = useState<string | null>(null);
   const historiesRef = useRef(new Map<string, History>());
   const dirtyRef = useRef(new Map<string, Set<string>>());
+  const paneSequence = useRef(0);
   const [, force] = useState(0);
   const rerender = () => force((value) => value + 1);
 
@@ -135,7 +153,7 @@ export function PaneLayout({
 
   // Panel bez historie dostane záznam podle svého stavu.
   panes.forEach((pane) => {
-    if (!historiesRef.current.has(pane.id)) {
+    if (pane.route && !historiesRef.current.has(pane.id)) {
       historiesRef.current.set(pane.id, {
         entries: [{ route: pane.route, params: pane.params, title: pane.title }],
         index: 0,
@@ -244,7 +262,15 @@ export function PaneLayout({
 
   const setLayout = (next: PaneLayoutCount) => {
     requestedRef.current = next;
-    emit({ layout: next, widths: evenWidths(Math.min(next, Math.max(panes.length, 1))) });
+    if (next <= panes.length) {
+      emit({ layout: next, widths: evenWidths(next) });
+      return;
+    }
+    const added = Array.from({ length: next - panes.length }, () => {
+      paneSequence.current += 1;
+      return { id: `pane-empty-${Date.now()}-${paneSequence.current}`, route: "" } satisfies PaneState;
+    });
+    emit({ panes: [...panes, ...added], activePaneId: added[0].id, layout: next, widths: evenWidths(next) });
   };
 
   const openInPane = (
@@ -254,12 +280,20 @@ export function PaneLayout({
   ) => {
     const target: PaneTarget = options?.target ?? "active";
     const key = paneKey({ route, params });
-    const existing = panes.find((pane) => pane.uniqueKey && paneKey(pane) === key);
+    const existing = key ? panes.find((pane) => pane.uniqueKey && paneKey(pane) === key) : undefined;
     if (existing) {
       emit({ activePaneId: existing.id });
       return;
     }
     if (target === "new") {
+      const empty = panes.find((pane) => !pane.route);
+      if (empty) {
+        const entry = { route, params, title: options?.title };
+        historiesRef.current.set(empty.id, { entries: [entry], index: 0 });
+        emit({ panes: panes.map((pane) => pane.id === empty.id ? { ...pane, ...entry, uniqueKey: options?.uniqueKey } : pane), activePaneId: empty.id });
+        rerender();
+        return;
+      }
       const nextLayout = Math.min(Math.max(layout, panes.length + 1), maxLayout) as PaneLayoutCount;
       if (panes.length >= 3 || nextLayout <= panes.length) {
         // Není místo – nahradí nejstarší neaktivní panel.
@@ -286,11 +320,14 @@ export function PaneLayout({
       return;
     }
     const paneId = target === "active" ? activePaneId : target;
-    if (options?.uniqueKey) {
-      const pane = panes.find((item) => item.id === paneId);
-      if (pane) emit({ panes: panes.map((item) => (item.id === paneId ? { ...item, uniqueKey: true } : item)) });
-    }
-    navigateInPane(paneId, route, params, options?.title);
+    guard(paneId, () => {
+      const history = historiesRef.current.get(paneId) ?? { entries: [], index: -1 };
+      const entry = { route, params, title: options?.title };
+      const entries = [...history.entries.slice(0, history.index + 1), entry];
+      historiesRef.current.set(paneId, { entries, index: entries.length - 1 });
+      emit({ activePaneId: paneId, panes: panes.map((item) => item.id === paneId ? { ...item, ...entry, uniqueKey: options?.uniqueKey } : item) });
+      rerender();
+    });
   };
 
   const manager: PaneManagerApi = {
@@ -405,7 +442,8 @@ export function PaneLayout({
     <PaneManagerContext.Provider value={manager}>
       <div ref={containerRef} className={cn("flex min-h-0 w-full flex-1 items-stretch", className)}>
         {shownPanes.map((pane, index) => {
-          const history = historiesRef.current.get(pane.id);
+          const empty = pane.route === "";
+          const history = empty ? undefined : historiesRef.current.get(pane.id);
           const api: PaneApi = {
             paneId: pane.id,
             isActive: pane.id === activePaneId,
@@ -430,9 +468,9 @@ export function PaneLayout({
                   api.isActive ? "border-t-2 border-t-primary" : "border-t-2 border-t-transparent",
                 )}
               >
-                <PaneHeader api={api} title={pane.title ?? t.untitled} texts={t} maximized={maximized === pane.id} onToggleMaximize={() => setMaximized(maximized === pane.id ? null : pane.id)} />
+                <PaneHeader api={api} title={empty ? t.emptyTitle : pane.title ?? t.untitled} texts={t} maximized={maximized === pane.id} onToggleMaximize={() => setMaximized(maximized === pane.id ? null : pane.id)} {...(!empty && onTogglePin ? { pinned: isPinned?.(pane) === true, onTogglePin: () => onTogglePin(pane) } : {})} />
                 <div className="min-h-0 flex-1 overflow-auto p-4">
-                  <PaneApiContext.Provider value={api}>{renderPane(pane)}</PaneApiContext.Provider>
+                  <PaneApiContext.Provider value={api}>{empty ? (renderEmpty?.(pane) ?? <PaneEmpty hint={t.emptyHint} />) : renderPane(pane)}</PaneApiContext.Provider>
                 </div>
               </section>
               {index < shownPanes.length - 1 ? (
@@ -459,12 +497,16 @@ function PaneHeader({
   texts,
   maximized,
   onToggleMaximize,
+  pinned,
+  onTogglePin,
 }: {
   api: PaneApi;
   title: string;
   texts: PaneLayoutTexts;
   maximized: boolean;
   onToggleMaximize: () => void;
+  pinned?: boolean;
+  onTogglePin?: () => void;
 }) {
   const iconButton = (label: string, icon: ReactNode, onClick: () => void, disabled?: boolean) => (
     <Tooltip>
@@ -485,9 +527,20 @@ function PaneHeader({
         {iconButton(texts.back, <ArrowLeft className="size-4" />, api.back, !api.canBack)}
         {iconButton(texts.forward, <ArrowRight className="size-4" />, api.forward, !api.canForward)}
         <span className="min-w-0 flex-1 truncate px-1 text-sm font-semibold">{title}</span>
+        {onTogglePin ? iconButton(pinned ? texts.unpin : texts.pin, pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />, onTogglePin) : null}
         {iconButton(maximized ? texts.restore : texts.maximize, maximized ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />, onToggleMaximize)}
         {iconButton(texts.close, <X className="size-4" />, api.close)}
       </div>
     </TooltipProvider>
   );
+}
+
+export interface PaneEmptyProps {
+  hint?: string;
+  className?: string;
+}
+
+/** Výchozí obsah prázdného panelu. */
+export function PaneEmpty({ hint = DEFAULT_PANE_TEXTS.emptyHint, className }: PaneEmptyProps) {
+  return <div className={cn("flex h-full min-h-40 items-center justify-center text-center text-sm text-muted-foreground", className)}>{hint}</div>;
 }

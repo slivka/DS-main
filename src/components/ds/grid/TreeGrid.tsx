@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 import {
@@ -11,11 +11,15 @@ import {
   TableRow,
 } from "../../ui/table";
 import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 import { GridSearch } from "./grid-search";
 import { ExcelExportButton } from "./grid-export";
 import { ColumnPicker } from "./column-picker";
 import { useGridColumns } from "./grid-columns";
 import { ZoomControl, gridFontSize, useGridZoom } from "./grid-zoom";
+import { GridRefreshButton } from "./grid-refresh";
+import { GridSelectionToggle } from "./grid-selection-toggle";
+import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
@@ -92,6 +96,15 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   onRowOpen?: (row: Row) => void;
   /** Akce „Nový“ a další – v liště vpravo od zoomu. */
   actions?: ReactNode;
+  /** Ruční obnovení dat; po dobu Promise se tlačítko samo deaktivuje. */
+  onRefresh?: () => void | Promise<unknown>;
+  /** Řízený stav probíhajícího obnovení. */
+  refreshing?: boolean;
+  /** Povolí hromadný výběr řádků. */
+  selectable?: boolean;
+  selectionActions?: (rows: Row[], clear: () => void) => ReactNode;
+  onSelectedRowsChange?: (rows: Row[]) => void;
+  gridTexts?: Partial<GridTexts>;
   texts?: Partial<TreeGridTexts>;
   className?: string;
 }
@@ -127,15 +140,24 @@ export function TreeGrid<Row extends TreeGridRow>({
   onRowClick,
   onRowOpen,
   actions,
+  onRefresh,
+  refreshing,
+  selectable,
+  selectionActions,
+  onSelectedRowsChange,
+  gridTexts,
   texts,
   className,
 }: TreeGridProps<Row>) {
   const t = { ...DEFAULT_TREE_GRID_TEXTS, ...texts };
+  const sharedTexts = resolveGridTexts(gridTexts);
   const key = storageKey ?? `tree:${exportName ?? title}`;
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [ownDepth, setOwnDepth] = useState<number | null>(null);
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { zoom, setZoom, density, setDensity } = useGridZoom(key);
 
   const colDefs = useMemo(
@@ -252,6 +274,19 @@ export function TreeGrid<Row extends TreeGridRow>({
 
   const visible = flatten(roots, 0);
   const highlighted = highlightedRowId !== undefined ? highlightedRowId : autoHighlight;
+  const selectedRows = useMemo(() => rows.filter((row) => selectedIds.has(row.id)), [rows, selectedIds]);
+  const selectedRowsChangeRef = useRef(onSelectedRowsChange);
+  selectedRowsChangeRef.current = onSelectedRowsChange;
+  useEffect(() => selectedRowsChangeRef.current?.(selectedRows), [selectedRows]);
+  useEffect(() => { if (!selectMode) setSelectedIds(new Set()); }, [selectMode]);
+  const clearSelection = () => setSelectedIds(new Set());
+  const allSelected = visible.length > 0 && visible.every(({ row }) => selectedIds.has(row.id));
+  const toggleAll = () => setSelectedIds(allSelected ? new Set() : new Set(visible.map(({ row }) => row.id)));
+  const toggleRow = (id: string) => setSelectedIds((current) => {
+    const next = new Set(current);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
 
   const grandTotals = new Map<string, number>();
   for (const root of roots) {
@@ -321,7 +356,8 @@ export function TreeGrid<Row extends TreeGridRow>({
                 variant={activeDepth === level.depth ? "secondary" : "ghost"}
                 aria-pressed={activeDepth === level.depth}
                 disabled={Boolean(matched)}
-                className="h-7 px-2.5"
+                className="h-8 px-2.5"
+                style={{ fontSize: gridFontSize(zoom) }}
                 onClick={() => selectDepth(level.depth)}
               >
                 {level.label}
@@ -329,30 +365,33 @@ export function TreeGrid<Row extends TreeGridRow>({
             ))}
           </div>
         ) : null}
+        <Button
+          variant="outline"
+          size="sm"
+          style={{ fontSize: gridFontSize(zoom) }}
+          disabled={Boolean(matched)}
+          onClick={() => {
+            setCollapsed(Object.fromEntries(rows.map((row) => [row.id, false])));
+            setOwnDepth(null);
+          }}
+        >
+          {t.expandAll}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          style={{ fontSize: gridFontSize(zoom) }}
+          disabled={Boolean(matched)}
+          onClick={() => {
+            setCollapsed(Object.fromEntries(rows.map((row) => [row.id, true])));
+            setOwnDepth(null);
+          }}
+        >
+          {t.collapseAll}
+        </Button>
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <GridSearch value={query} onChange={setQuery} placeholder={t.searchPlaceholder} zoom={zoom} />
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={Boolean(matched)}
-            onClick={() => {
-              setCollapsed(Object.fromEntries(rows.map((row) => [row.id, false])));
-              setOwnDepth(null);
-            }}
-          >
-            {t.expandAll}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={Boolean(matched)}
-            onClick={() => {
-              setCollapsed(Object.fromEntries(rows.map((row) => [row.id, true])));
-              setOwnDepth(null);
-            }}
-          >
-            {t.collapseAll}
-          </Button>
+          {onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null}
           {exportName ? (
             <ExcelExportButton
               getData={exportData}
@@ -373,13 +412,17 @@ export function TreeGrid<Row extends TreeGridRow>({
           />
           <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
           {actions}
+          {selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}
         </div>
       </div>
+
+      {selectMode ? <div className="flex items-center gap-2 border-b border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm"><span className="text-muted-foreground">{sharedTexts.selectedRecords(formatAmount(selectedRows.length, 0))}</span><div className="ml-auto flex items-center gap-2">{selectionActions?.(selectedRows, clearSelection)}</div></div> : null}
 
       <div style={{ fontSize: gridFontSize(zoom) }}>
         <Table className={cn(density === "compact" && "[&_td]:py-1 [&_th]:h-8")}>
           <TableHeader>
             <TableRow>
+              {selectMode ? <TableHead className="w-10 text-center"><Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label={sharedTexts.selectAllRows} /></TableHead> : null}
               {shown.map((column) => (
                 <TableHead
                   key={column.id}
@@ -394,7 +437,7 @@ export function TreeGrid<Row extends TreeGridRow>({
           <TableBody>
             {visible.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={shown.length} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={shown.length + (selectMode ? 1 : 0)} className="py-8 text-center text-muted-foreground">
                   {t.emptyLabel}
                 </TableCell>
               </TableRow>
@@ -415,6 +458,7 @@ export function TreeGrid<Row extends TreeGridRow>({
                     onDoubleClick={() => onRowOpen?.(row)}
                     className={cn(canExpand && "font-medium", isHighlighted && "bg-primary/10 hover:bg-primary/15")}
                   >
+                    {selectMode ? <TableCell className="w-10 text-center"><Checkbox checked={selectedIds.has(row.id)} onCheckedChange={() => toggleRow(row.id)} aria-label={sharedTexts.selectRow} onClick={(event) => event.stopPropagation()} /></TableCell> : null}
                     {shown.map((column, index) => {
                       const total = nodeTotal(column, row);
                       const numericShown = column.numeric ? (total ?? numericValue(column, row)) : null;
@@ -462,6 +506,7 @@ export function TreeGrid<Row extends TreeGridRow>({
           {hasTotals && visible.length > 0 ? (
             <TableFooter>
               <TableRow>
+                {selectMode ? <TableCell /> : null}
                 {shown.map((column, index) => (
                   <TableCell key={column.id} className={cn("whitespace-nowrap font-semibold", column.numeric && "text-right tabular-nums")}>
                     {index === 0

@@ -29,7 +29,8 @@ const stableParams = (params?: Record<string, unknown>) => {
 };
 
 /** Klíč pro porovnání, zda je stejný záznam už otevřený v jiném panelu. */
-export function paneKey(pane: { route: string; params?: Record<string, unknown> }) {
+export function paneKey(pane: { route: string; params?: Record<string, unknown> }): string | null {
+  if (!pane.route) return null;
   const query = stableParams(pane.params);
   return query ? `${pane.route}?${query}` : pane.route;
 }

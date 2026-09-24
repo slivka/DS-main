@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.11.0",
+    "version": "2.10.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -15,7 +15,6 @@
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
-      ".lovable/plan.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
       ".lovable/plan/appshell-2-3-0-adaptivní-lišta-a-období-2026-09-23.md": "cff0cd14c533151ad08b061cfce05b5d",
       ".lovable/plan/automatické-testy-vzorového-excelu-2026-09-22.md": "47c025fa03a747c0c7deaec85a1e0e13",
@@ -102,7 +101,7 @@
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
-      "src/components/ds/grid/DataGrid.tsx": "056ff9a0f081b717ae4e4e2bcdd2a6c2",
+      "src/components/ds/grid/DataGrid.tsx": "d02ab7d0bbc230cc2ae8db031cb0b11c",
       "src/components/ds/grid/TreeGrid.tsx": "0ac1a90b4db5d00fcca26fac98f547b2",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
@@ -236,7 +235,7 @@
       "src/routes/[__mockup].preview.$.tsx": "5d9f42470848aa60148f20f9580e240e",
       "src/routes/__root.tsx": "66178d672803ac98dc33c485710c4541",
       "src/routes/components.accounting-forms.tsx": "1a7093838a2023c7de794b7fcad38c8e",
-      "src/routes/components.excel-export.tsx": "854c5e8220edc784a118bd7b2e17a232",
+      "src/routes/components.excel-export.tsx": "77f66606ac8532c34fc4c9d5c1a18d68",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
       "src/routes/components.grid.tsx": "593907369b7ec0cd40fa0103d7fc2bed",
@@ -2259,16 +2258,17 @@
           "type": "boolean"
         }
       ],
-      "usage": "Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely. Nedostupné položky zůstávají čitelné a stav Připravujeme sdělují jemnou tečkou s nápovědou.",
+      "usage": "Použijte jako společný rám aplikace. PinnedBar nebo jinou podřízenou lištu vložte do subHeader; při otevřeném Nastavení/Administraci se automaticky skryje.",
       "examples": [
         {
-          "label": "AppShell 2.3",
-          "code": "\u003cAppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}\u003e…\u003c/AppShell\u003e"
+          "label": "Rám s připnutými stránkami",
+          "code": "<AppShell navGroups={groups} subHeader={<PinnedBar items={pins} onOpen={open} onUnpin={unpin} />}>{children}</AppShell>"
         }
       ],
       "antipatterns": [
-        "Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování.",
-        "Nevkládejte k nedostupné položce dlouhý stavový štítek, který omezuje nebo překrývá její název."
+        "Vykreslovat PinnedBar ručně nad AppShell",
+        "Zobrazovat subHeader v režimu Nastavení/Administrace",
+        "Používat staré administrativní aliasy v novém kódu"
       ]
     },
     {
@@ -2417,7 +2417,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
+          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
         }
       ],
       "antipatterns": [
@@ -2471,7 +2471,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
+          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
         }
       ],
       "antipatterns": [
@@ -2535,7 +2535,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cThemeSetting /\u003e"
+          "code": "<ThemeSetting />"
         }
       ],
       "antipatterns": [
@@ -2598,7 +2598,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
         }
       ],
       "antipatterns": [
@@ -2673,7 +2673,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
         }
       ],
       "antipatterns": [
@@ -2748,11 +2748,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
         },
         {
           "label": "Firma bez období",
-          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
+          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
         }
       ],
       "antipatterns": [
@@ -2820,7 +2820,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
         }
       ],
       "antipatterns": [
@@ -2851,7 +2851,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
+          "code": "<SearchButton onClick={() => setOpen(true)} />"
         }
       ],
       "antipatterns": [
@@ -2935,6 +2935,18 @@
           "type": "string",
           "default": "flex min-w-0"
         }
+      ],
+      "usage": "Použijte pro 1 až 3 souběžné pracovní panely. Zvýšení layoutu automaticky doplní prázdné panely; prázdný panel nikdy neposílejte do renderPane.",
+      "examples": [
+        {
+          "label": "Panely s prázdným stavem a připnutím",
+          "code": "<PaneLayout panes={panes} activePaneId={activeId} layout={layout} onChange={setState} defaultRoute=\"/doklady\" renderPane={renderPane} renderEmpty={(pane) => <PaneEmpty />} isPinned={isPinned} onTogglePin={togglePin} />"
+        }
+      ],
+      "antipatterns": [
+        "Vytvářet prázdné panely ručně mimo PaneLayout",
+        "Volat renderPane pro panel s route prázdným řetězcem",
+        "Ukládat připnutí jako stav otevřeného okna"
       ]
     },
     {
@@ -3153,18 +3165,17 @@
           "type": "any"
         }
       ],
-      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data. Hlavní akci gridu předejte přes actions; zobrazí se bezprostředně vpravo od zoomu.",
+      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable.",
       "examples": [
         {
-          "label": "Grid s hlavní akcí",
-          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
+          "label": "Grid s obnovením a výběrem",
+          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable />"
         }
       ],
       "antipatterns": [
-        "Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.",
-        "Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.",
-        "Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns().",
-        "Neumisťujte hlavní akci Nový mimo řádku nástrojů gridu ani před ovládání zoomu."
+        "Vlastní tlačítko obnovení mimo lištu gridu",
+        "Přepisovat klávesu F5",
+        "Textové tlačítko Vybrat více místo GridSelectionToggle"
       ]
     },
     {
@@ -3558,7 +3569,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
         }
       ],
       "antipatterns": [
@@ -3640,16 +3651,16 @@
           "default": "flex flex-wrap items-center gap-2 border-b px-3 py-2"
         }
       ],
-      "usage": "Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbalení, výběrem sloupců, zoomem a exportem do Excelu se souhrnem pod dětmi.",
+      "usage": "Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Podporuje stejné obnovení a hromadný výběr jako DataGrid.",
       "examples": [
         {
-          "label": "Osnova s úrovněmi",
-          "code": "\u003cTreeGrid title=\"Účtová osnova\" rows={rows} columns={cols} expandLevels={[{id:\"c\",label:\"Třídy\",depth:0},{id:\"g\",label:\"Skupiny\",depth:1},{id:\"a\",label:\"Vše\",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName=\"osnova\" actions={\u003cButton size=\"sm\"\u003eNový účet\u003c/Button\u003e} /\u003e"
+          "label": "Strom s obnovením a výběrem",
+          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />"
         }
       ],
       "antipatterns": [
         "Vlastní rozbalovací tabulka místo TreeGrid",
-        "Akce „Nový“ mimo lištu gridu",
+        "Vlastní tlačítko obnovení mimo lištu",
         "Ruční sčítání uzlů v aplikaci"
       ]
     },
@@ -3685,7 +3696,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
+          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
         }
       ],
       "antipatterns": [
@@ -4174,7 +4185,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
+          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
         }
       ],
       "antipatterns": [
@@ -4205,7 +4216,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
+          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
         }
       ],
       "antipatterns": [
@@ -4390,7 +4401,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
@@ -4533,7 +4544,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
+          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
         }
       ],
       "antipatterns": [
@@ -4620,12 +4631,46 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
+          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
+      ]
+    },
+    {
+      "name": "PinnedBar",
+      "file": "src/components/ds/panes/pinned-bar.tsx",
+      "import_path": "",
+      "usage": "Použijte jako trvalou lištu záložek stránek pod horní lištou AppShellu. Stav připnutí a pořadí vlastní aplikace.",
+      "examples": [
+        {
+          "label": "Připnuté stránky",
+          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
+        }
+      ],
+      "antipatterns": [
+        "Vykreslit lištu při prázdném items",
+        "Ukládat rozpracovaný stav stránky do položky připnutí",
+        "Zalamovat připnuté položky do více řádků"
+      ]
+    },
+    {
+      "name": "GridRefreshButton",
+      "file": "src/components/ds/grid/grid-refresh.tsx",
+      "import_path": "",
+      "usage": "Sdílené ikonové obnovení dat v liště DataGridu a TreeGridu; samo čeká na Promise a zobrazuje probíhající stav.",
+      "examples": [
+        {
+          "label": "Asynchronní obnovení",
+          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
+        }
+      ],
+      "antipatterns": [
+        "Přepisovat klávesu F5",
+        "Přidávat vedle ikony text Obnovit",
+        "Vytvářet vlastní refresh tlačítko pro každý grid"
       ]
     }
   ],
