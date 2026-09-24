@@ -166,6 +166,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ
   `disabled` (štítek „Připravujeme“), viditelnost položek řeší aplikace.
+- Související po sobě jdoucí skupiny menu spoj do bloku stejnou hodnotou
+  `NavGroup.section`; sekce je pouze neklikací nadpis, sbalují se dál jednotlivé skupiny.
 - `AppShell` používá horní lištu přes celou šířku. Standardně nezačíná blokem
   značky: `CompanySwitcher` ve slotu `contextLeft` je úplně vlevo. Blok `logo`
   a `appName` zapínej jen explicitně přes `showBrand`.

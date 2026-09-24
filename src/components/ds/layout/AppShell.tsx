@@ -13,7 +13,7 @@ import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
-import { highlightNavMatch, matchesNavSearch, normalizeNavSearch } from "./nav-search";
+import { highlightNavMatch, matchesNavSearch, normalizeNavSearch, withNavSections } from "./nav-search";
 
 export type NavItem = {
   to: string;
@@ -30,6 +30,8 @@ export type NavGroup = {
   label: string;
   items: NavItem[];
   defaultCollapsed?: boolean;
+  /** Nadpis vizuálního bloku; po sobě jdoucí skupiny se stejnou hodnotou tvoří jeden blok. */
+  section?: string;
 };
 
 export type AppShellPanel = {
@@ -146,6 +148,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     const groupMatch = normalizeNavSearch(group.label).includes(normalizeNavSearch(query));
     return { ...group, items: query ? group.items.filter((item) => groupMatch || matchesNavSearch(item.label, group.label, query)) : group.items };
   }).filter((group) => !query || group.items.length > 0), [groups, query]);
+  const sectionedGroups = useMemo(() => withNavSections(filteredGroups), [filteredGroups]);
   const enabledResults = filteredGroups.flatMap((group) => group.items).filter((item) => !item.disabled);
   const [highlighted, setHighlighted] = useState(0);
 
@@ -243,7 +246,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
           </div>
         ) : null}
         <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2" aria-label="Hlavní menu">
-          {filteredGroups.map((group, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
+          {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
           {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
           {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
         </nav>
@@ -252,7 +255,29 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   );
 }
 
-function ShellNavGroup({ group, groupIndex, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
+function ShellNavSection({ label, first, collapsed }: { label: string; first: boolean; collapsed: boolean }) {
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div data-nav-section={label} className={cn("flex h-6 items-center px-1", !first && "mt-3")}>
+            <span className="h-0.5 w-full bg-sidebar-border" />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="right">{label}</TooltipContent>
+      </Tooltip>
+    );
+  }
+  return (
+    <div data-nav-section={label} className={cn(!first && "mt-4 border-t border-sidebar-border pt-4")}>
+      <div className="flex h-7 items-center px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-sidebar-muted">
+        <span className="truncate">{label}</span>
+      </div>
+    </div>
+  );
+}
+
+function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; sectionStart: string | null; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
   const [groupCollapsed, setGroupCollapsed] = useState(group.defaultCollapsed === true);
   useEffect(() => setGroupCollapsed(readGroupCollapsed(storageKey, group.defaultCollapsed === true)), [storageKey, group.defaultCollapsed]);
@@ -264,19 +289,22 @@ function ShellNavGroup({ group, groupIndex, active, forcedOpen, query, collapsed
   const total = badgeTotal(group);
   const hidden = groupCollapsed && !forcedOpen;
   return (
-    <div className={cn("flex flex-col", group.label && groupIndex > 0 && "mt-2 border-t border-sidebar-border pt-2")}>
-      {group.label && !collapsed ? (
-        collapsible ? (
-          <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
-            <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
-            {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}
-            {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label="Obsahuje aktivní stránku" /> : null}
-            <ChevronRight className={cn("size-3.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none", !hidden && "rotate-90")} />
-          </button>
-        ) : <div className="shell-nav-group mb-1 flex h-8 items-center px-3 text-[0.8rem] font-semibold text-sidebar-muted">{group.label}</div>
-      ) : null}
-      {hidden && !collapsed ? null : <div className={cn("flex flex-col gap-0.5", !collapsed && group.label && "ml-2 border-l border-sidebar-border pl-2")}>{group.items.map((item) => <span key={`${item.to}-${item.label}`}>{renderItem(item)}</span>)}</div>}
-    </div>
+    <>
+      {sectionStart ? <ShellNavSection label={sectionStart} first={groupIndex === 0} collapsed={collapsed} /> : null}
+      <div className={cn("flex flex-col", group.label && groupIndex > 0 && !sectionStart && "mt-2 border-t border-sidebar-border pt-2")}>
+        {group.label && !collapsed ? (
+          collapsible ? (
+            <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
+              <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
+              {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}
+              {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label="Obsahuje aktivní stránku" /> : null}
+              <ChevronRight className={cn("size-3.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none", !hidden && "rotate-90")} />
+            </button>
+          ) : <div className="shell-nav-group mb-1 flex h-8 items-center px-3 text-[0.8rem] font-semibold text-sidebar-muted">{group.label}</div>
+        ) : null}
+        {hidden && !collapsed ? null : <div className={cn("flex flex-col gap-0.5", !collapsed && group.label && "ml-2 border-l border-sidebar-border pl-2")}>{group.items.map((item) => <span key={`${item.to}-${item.label}`}>{renderItem(item)}</span>)}</div>}
+      </div>
+    </>
   );
 }
 

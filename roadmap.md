@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.19.0 (bloky sekcí v levém menu)
+- [x] Rozšířit `NavGroup` o volitelné `section` a zachovat stávající skupiny beze změny
+- [x] Zobrazit bloky v rozbaleném, sbaleném, mobilním i panelovém menu
+- [x] Skrýt prázdné bloky při hledání bez zahrnutí názvu sekce do hledání
+- [x] Doplnit ukázku, testy, changelog a katalog veřejného API
+
 ## Verze 2.18.1 (společný zoom tabulky a stromu)
 - [x] Sdílet zoom a hustotu mezi tabulkovým a stromovým zobrazením přes `viewZoomKey`
 - [x] Použít pro přepnutí do tabulky jednoznačnou ikonu tabulky

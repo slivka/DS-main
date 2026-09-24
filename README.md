@@ -130,6 +130,12 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.19.0 – bloky sekcí v levém menu
+
+- `NavGroup` má nový volitelný prop `section`. Po sobě jdoucí skupiny se stejnou hodnotou tvoří vizuální blok s nesbalitelným nadpisem.
+- Bloky fungují shodně v rozbaleném, ikonovém a mobilním menu i v panelech Nastavení firmy / Administrace. Při hledání se prázdný blok skryje a název sekce se neprohledává.
+- Stávající skupiny bez `section`, záložky, panely a chování hledání zůstávají beze změny. Bez breaking changes.
+
 ## Changelog 2.18.1 – společný zoom tabulky a stromu
 
 - `DataGrid` a `TreeGrid` při zadaném `viewMode` sdílejí zoom i hustotu přes společný klíč `view:<exportName>` (nebo prop `viewZoomKey`); po aktualizaci začne zoom jednou od 100 %. Bez breaking changes.

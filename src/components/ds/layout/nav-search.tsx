@@ -1,5 +1,22 @@
 import type { ReactNode } from "react";
 
+export type NavSectionGroup = {
+  section?: string;
+};
+
+export type NavSectionEntry<T extends NavSectionGroup> = {
+  group: T;
+  sectionStart: string | null;
+};
+
+/** Označí začátky po sobě jdoucích bloků menu. Skupiny bez sekce zůstávají samostatné. */
+export function withNavSections<T extends NavSectionGroup>(groups: T[]): NavSectionEntry<T>[] {
+  return groups.map((group, index) => ({
+    group,
+    sectionStart: group.section && group.section !== groups[index - 1]?.section ? group.section : null,
+  }));
+}
+
 /** Text pro hledání v menu bez rozdílů diakritiky a velikosti písmen. */
 export function normalizeNavSearch(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("cs-CZ").trim();
