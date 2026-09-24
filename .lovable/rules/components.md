@@ -186,7 +186,7 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, automaticky sbalitelnou navigací a přepínatelnými panely. Nedostupné položky zůstávají čitelné a stav Připravujeme sdělují jemnou tečkou s nápovědou.
+Použijte jako společný rám aplikace. PinnedBar nebo jinou podřízenou lištu vložte do subHeader; při otevřeném Nastavení/Administraci se automaticky skryje.
 
 **Props:**
 
@@ -200,6 +200,7 @@ Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, auto
 | `showBrand` | boolean | `false` |
 | `breadcrumbs` | any | `—` |
 | `contextLeft` | any | `—` |
+| `subHeader` | any | `—` |
 | `actions` | any | `—` |
 | `notificationBell` | any | `—` |
 | `themeToggleButton` | any | `—` |
@@ -226,15 +227,16 @@ Hlavní adaptivní rám firemní aplikace s jednořádkovou horní lištou, auto
 
 **Examples:**
 
-_AppShell 2.3_
+_Rám s připnutými stránkami_
 ```tsx
-<AppShell appName="Accounting" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>
+<AppShell navGroups={groups} subHeader={<PinnedBar items={pins} onOpen={open} onUnpin={unpin} />}>{children}</AppShell>
 ```
 
 **Avoid:**
 
-- Nedovolte zalomení horní lišty ani vodorovný posuvník; na užších obrazovkách použijte vestavěné kompaktní chování.
-- Nevkládejte k nedostupné položce dlouhý stavový štítek, který omezuje nebo překrývá její název.
+- Vykreslovat PinnedBar ručně nad AppShell
+- Zobrazovat subHeader v režimu Nastavení/Administrace
+- Používat staré administrativní aliasy v novém kódu
 
 ### AsOfDateField
 
@@ -899,7 +901,7 @@ import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Datumové sloupce označené exportType date nebo datetime automaticky nabízejí filtr podle roku, čtvrtletí, měsíce i jednotlivého data. Hlavní akci gridu předejte přes actions; zobrazí se bezprostředně vpravo od zoomu.
+Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable.
 
 **Props:**
 
@@ -907,6 +909,7 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 |---|---|---|
 | `storageKey` | string | `—` |
 | `title` | any | `—` |
+| `showTitle` | boolean | `false` |
 | `hideTitleMark` | boolean | `—` |
 | `exportTitle` | string | `—` |
 | `rows` | any | `—` |
@@ -915,6 +918,8 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `loading` | boolean | `—` |
 | `error` | any | `—` |
 | `onRetry` | function | `—` |
+| `onRefresh` | function | `—` |
+| `refreshing` | boolean | `—` |
 | `onRowClick` | function | `—` |
 | `actions` | any | `—` |
 | `toolbarLeft` | any | `—` |
@@ -957,17 +962,17 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 
 **Examples:**
 
-_Grid s hlavní akcí_
+_Grid s obnovením a výběrem_
 ```tsx
-<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey="documents" actions={<Button onClick={onCreate}>Nový doklad</Button>} />
+<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey="doklady" onRefresh={reload} refreshing={loading} selectable />
 ```
 
 **Avoid:**
 
-- Nevytvářejte vlastní filtr roku nebo měsíce vedle gridu pro datumový sloupec.
-- Neoznačujte datumový sloupec pouze textovým typem, pokud má nabízet datumové skupiny.
-- Nevytvářejte ručně sloupce účtů MD a DAL; použijte accountColumns().
-- Neumisťujte hlavní akci Nový mimo řádku nástrojů gridu ani před ovládání zoomu.
+- Vlastní tlačítko obnovení mimo lištu gridu
+- Přepisovat klávesu F5
+- Textové tlačítko Vybrat více místo GridSelectionToggle
+- Zobrazovat nadpis gridu bez výslovného showTitle
 
 ### DateField
 
@@ -1511,6 +1516,37 @@ import { GridPagination } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { GridProgress } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### GridRefreshButton
+
+```ts
+import { GridRefreshButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Sdílené ikonové obnovení dat v liště DataGridu a TreeGridu; samo čeká na Promise a zobrazuje probíhající stav.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onRefresh` | function | `—` |
+| `refreshing` | boolean | `—` |
+| `zoom` | number | `1` |
+| `className` | string | `—` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Asynchronní obnovení_
+```tsx
+<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />
+```
+
+**Avoid:**
+
+- Přepisovat klávesu F5
+- Přidávat vedle ikony text Obnovit
+- Vytvářet vlastní refresh tlačítko pro každý grid
+
 ### GridResultCount
 
 ```ts
@@ -2037,11 +2073,26 @@ import { PaginationPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { PaneApiContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### PaneEmpty
+
+```ts
+import { PaneEmpty } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `hint` | string | `—` |
+| `className` | string | `flex min-w-0` |
+
 ### PaneLayout
 
 ```ts
 import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Použijte pro 1 až 3 souběžné pracovní panely. Zvýšení layoutu automaticky doplní prázdné panely; prázdný panel nikdy neposílejte do renderPane.
 
 **Props:**
 
@@ -2054,10 +2105,26 @@ import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `onChange` | function | `—` |
 | `minPaneWidth` | number | `560` |
 | `renderPane` | function | `—` |
+| `renderEmpty` | function | `—` |
+| `isPinned` | function | `—` |
+| `onTogglePin` | function | `—` |
 | `defaultRoute` | string | `—` |
 | `defaultTitle` | string | `—` |
 | `texts` | any | `—` |
 | `className` | string | `flex min-w-0` |
+
+**Examples:**
+
+_Panely s prázdným stavem a připnutím_
+```tsx
+<PaneLayout panes={panes} activePaneId={activeId} layout={layout} onChange={setState} defaultRoute="/doklady" renderPane={renderPane} renderEmpty={(pane) => <PaneEmpty />} isPinned={isPinned} onTogglePin={togglePin} />
+```
+
+**Avoid:**
+
+- Vytvářet prázdné panely ručně mimo PaneLayout
+- Volat renderPane pro panel s route prázdným řetězcem
+- Ukládat připnutí jako stav otevřeného okna
 
 ### PaneManagerContext
 
@@ -2164,6 +2231,38 @@ _Firma bez období_
 ```ts
 import { PermissionGate } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### PinnedBar
+
+```ts
+import { PinnedBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Použijte jako trvalou lištu záložek stránek pod horní lištou AppShellu. Stav připnutí a pořadí vlastní aplikace.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `onOpen` | function | `—` |
+| `onUnpin` | function | `—` |
+| `onReorder` | function | `—` |
+| `texts` | any | `—` |
+| `className` | string | `size-8 shrink-0` |
+
+**Examples:**
+
+_Připnuté stránky_
+```tsx
+<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />
+```
+
+**Avoid:**
+
+- Vykreslit lištu při prázdném items
+- Ukládat rozpracovaný stav stránky do položky připnutí
+- Zalamovat připnuté položky do více řádků
 
 ### Popover
 
@@ -2857,7 +2956,7 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbalení, výběrem sloupců, zoomem a exportem do Excelu se souhrnem pod dětmi.
+Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid.
 
 **Props:**
 
@@ -2866,6 +2965,7 @@ Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbal
 | `rows` | any | `—` |
 | `columns` | any | `—` |
 | `title` | string | `—` |
+| `showTitle` | boolean | `false` |
 | `storageKey` | string | `—` |
 | `exportName` | string | `—` |
 | `exportMeta` | any | `—` |
@@ -2877,21 +2977,28 @@ Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbal
 | `onRowClick` | function | `—` |
 | `onRowOpen` | function | `—` |
 | `actions` | any | `—` |
+| `onRefresh` | function | `—` |
+| `refreshing` | boolean | `—` |
+| `selectable` | boolean | `—` |
+| `selectionActions` | function | `—` |
+| `onSelectedRowsChange` | function | `—` |
+| `gridTexts` | any | `—` |
 | `texts` | any | `—` |
 | `className` | string | `flex flex-wrap items-center gap-2 border-b px-3 py-2` |
 
 **Examples:**
 
-_Osnova s úrovněmi_
+_Strom s obnovením a výběrem_
 ```tsx
-<TreeGrid title="Účtová osnova" rows={rows} columns={cols} expandLevels={[{id:"c",label:"Třídy",depth:0},{id:"g",label:"Skupiny",depth:1},{id:"a",label:"Vše",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName="osnova" actions={<Button size="sm">Nový účet</Button>} />
+<TreeGrid title="Účtová osnova" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />
 ```
 
 **Avoid:**
 
 - Vlastní rozbalovací tabulka místo TreeGrid
-- Akce „Nový“ mimo lištu gridu
+- Vlastní tlačítko obnovení mimo lištu
 - Ruční sčítání uzlů v aplikaci
+- Zobrazovat nadpis gridu bez výslovného showTitle
 
 ### TreeView
 
