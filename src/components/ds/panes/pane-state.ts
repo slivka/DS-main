@@ -9,13 +9,14 @@ export type PaneLayoutCount = 1 | 2 | 3;
 export type TabKind = "list" | "record";
 
 /** Kam otevřít stránku: nahradit aktivní záložku, nová záložka, nebo nová záložka v sousedním panelu. */
-export type OpenTabTarget = "replace" | "newTab" | "adjacentPane";
+export type OpenTabTarget = "replace" | "newTab" | "adjacentPane" | "preview";
 
 export type TabHistoryEntry = {
   route: string;
   params?: Record<string, unknown>;
   title?: string;
   shortTitle?: string;
+  icon?: string;
 };
 
 export type PaneTab = {
@@ -33,6 +34,12 @@ export type PaneTab = {
   historyIndex: number;
   /** Čas posledního použití (pro limit záložek). */
   lastUsed: number;
+  /** false = dočasná záložka (v panelu nejvýš jedna), true = ponechaná. */
+  pinned: boolean;
+  /** Záložka, ze které byla tato otevřena (typicky seznam → detail). */
+  openerTabId: string | null;
+  /** Nový, dosud neuložený záznam – nepatří do uloženého rozložení. */
+  isNew?: boolean;
 };
 
 export type TabPane = {
@@ -122,11 +129,15 @@ export type CreateTabInput = {
   title?: string;
   shortTitle?: string;
   icon?: string;
+  /** Výchozí true (ponechaná). */
+  pinned?: boolean;
+  openerTabId?: string | null;
+  isNew?: boolean;
 };
 
 /** Vytvoří novou záložku s jedním krokem historie. */
 export function createTab(input: CreateTabInput, now = Date.now()): PaneTab {
-  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle };
+  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon };
   return {
     id: createPaneId("tab"),
     route: input.route,
@@ -139,6 +150,9 @@ export function createTab(input: CreateTabInput, now = Date.now()): PaneTab {
     history: [entry],
     historyIndex: 0,
     lastUsed: now,
+    pinned: input.pinned ?? true,
+    openerTabId: input.openerTabId ?? null,
+    isNew: input.isNew || undefined,
   };
 }
 
@@ -188,7 +202,7 @@ export function resolveTargetPaneIndex(state: PaneTabsState, target: OpenTabTarg
 
 /** Efektivní způsob otevření – u prázdného panelu se nahrazení mění na novou záložku. */
 export function resolveOpenMode(state: PaneTabsState, target: OpenTabTarget): "replace" | "newTab" {
-  if (target !== "replace") return "newTab";
+  if (target !== "replace" && target !== "preview") return "newTab";
   const pane = state.panes[resolveTargetPaneIndex(state, target)];
   return pane?.activeTab ? "replace" : "newTab";
 }
@@ -211,6 +225,10 @@ export type OpenTabResult = {
   tabId?: string;
   /** Záložka zavřená kvůli limitu. */
   evictedTabId?: string;
+  /** Čisté dočasné záložky zavřené kvůli pravidlu „jedna dočasná na panel“. */
+  closedTabIds?: string[];
+  /** Cílový panel. */
+  paneId?: string;
 };
 
 /**
@@ -228,12 +246,13 @@ export function openTabInState(
   if (existing) return { state: activateTabInState(state, existing.id, now), outcome: "activated", tabId: existing.id };
 
   const target = input.target ?? "replace";
+  if (target === "preview") return previewTabInState(state, input, isDirty, now);
   const paneIndex = resolveTargetPaneIndex(state, target);
   const pane = state.panes[paneIndex];
   const mode = resolveOpenMode(state, target);
 
   if (mode === "replace" && pane.activeTab) {
-    const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle };
+    const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon };
     const tabs = pane.tabs.map((tab) => {
       if (tab.id !== pane.activeTab) return tab;
       const history = [...tab.history.slice(0, tab.historyIndex + 1), entry];
@@ -251,24 +270,251 @@ export function openTabInState(
     return { state: { ...replacePane(state, { ...pane, tabs }), active: pane.id }, outcome: "replaced", tabId: pane.activeTab };
   }
 
+  const tab = createTab({ ...input, pinned: input.pinned ?? true }, now);
+  return insertTabInState(state, paneIndex, tab, pane.activeTab, isDirty);
+}
+
+/** Nejdéle nepoužitá čistá záložka k zavření kvůli limitu – dočasná přednostně. */
+export function pickEvictionVictim(tabs: PaneTab[], isDirty: (tabId: string) => boolean, exclude: string[] = []): PaneTab | undefined {
+  const clean = tabs.filter((tab) => !isDirty(tab.id) && !exclude.includes(tab.id)).sort((a, b) => a.lastUsed - b.lastUsed);
+  return clean.find((tab) => !tab.pinned) ?? clean[0];
+}
+
+/**
+ * Vloží záložku do panelu za `afterTabId` (jinak na konec), aktivuje ji i panel.
+ * Hlídá limit 10 záložek a pravidlo „nejvýš jedna dočasná záložka v panelu“.
+ */
+export function insertTabInState(
+  state: PaneTabsState,
+  paneIndex: number,
+  tab: PaneTab,
+  afterTabId: string | null | undefined,
+  isDirty: (tabId: string) => boolean = () => false,
+): OpenTabResult {
+  const pane = state.panes[paneIndex];
+  if (!pane) return { state, outcome: "rejected" };
   let tabs = pane.tabs;
+  const closedTabIds: string[] = [];
+  // Jiná čistá dočasná záložka panelu se zavře (fromTab / opener se ponechá).
+  if (!tab.pinned) {
+    const others = tabs.filter((item) => !item.pinned && item.id !== afterTabId && item.id !== tab.openerTabId);
+    others.forEach((item) => {
+      if (isDirty(item.id)) return;
+      closedTabIds.push(item.id);
+    });
+    tabs = tabs
+      .filter((item) => !closedTabIds.includes(item.id))
+      .map((item) => (!item.pinned && item.id !== tab.id ? { ...item, pinned: true } : item));
+  }
   let evictedTabId: string | undefined;
   if (tabs.length >= MAX_TABS_PER_PANE) {
-    const victim = [...tabs].filter((tab) => !isDirty(tab.id)).sort((a, b) => a.lastUsed - b.lastUsed)[0];
+    const victim = pickEvictionVictim(tabs, isDirty, afterTabId ? [afterTabId] : []);
     if (!victim) return { state, outcome: "rejected" };
     evictedTabId = victim.id;
-    tabs = tabs.filter((tab) => tab.id !== victim.id);
+    tabs = tabs.filter((item) => item.id !== victim.id);
   }
-  const tab = createTab(input, now);
-  const activeIndex = tabs.findIndex((item) => item.id === pane.activeTab);
-  const insertAt = activeIndex >= 0 ? activeIndex + 1 : tabs.length;
+  const afterIndex = afterTabId ? tabs.findIndex((item) => item.id === afterTabId) : -1;
+  const insertAt = afterIndex >= 0 ? afterIndex + 1 : tabs.length;
   const nextTabs = [...tabs.slice(0, insertAt), tab, ...tabs.slice(insertAt)];
   return {
     state: { ...replacePane(state, { ...pane, tabs: nextTabs, activeTab: tab.id }), active: pane.id },
     outcome: "opened",
     tabId: tab.id,
     evictedTabId,
+    closedTabIds,
+    paneId: pane.id,
   };
+}
+
+/** Nahradí obsah záložky novou stránkou (nový krok historie) a aktivuje ji. */
+export function replaceTabContentInState(state: PaneTabsState, tabId: string, input: CreateTabInput, now = Date.now()): PaneTabsState {
+  const found = findTab(state, tabId);
+  if (!found) return state;
+  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon ?? found.tab.icon };
+  const history = [...found.tab.history.slice(0, found.tab.historyIndex + 1), entry];
+  const tab: PaneTab = {
+    ...found.tab,
+    ...entry,
+    kind: input.kind ?? found.tab.kind,
+    recordKey: input.recordKey,
+    icon: input.icon ?? found.tab.icon,
+    isNew: input.isNew || undefined,
+    openerTabId: input.openerTabId !== undefined ? input.openerTabId : found.tab.openerTabId,
+    history,
+    historyIndex: history.length - 1,
+    lastUsed: now,
+  };
+  const pane = { ...found.pane, activeTab: tabId, tabs: found.pane.tabs.map((item) => (item.id === tabId ? tab : item)) };
+  return { ...replacePane(state, pane), active: pane.id };
+}
+
+/**
+ * 'preview': otevřený záznam jen aktivuje; jinak otevře stránku v dočasné záložce aktivního panelu
+ * (nový krok historie). Když dočasná není, založí ji za aktivní.
+ */
+export function previewTabInState(
+  state: PaneTabsState,
+  input: CreateTabInput,
+  isDirty: (tabId: string) => boolean = () => false,
+  now = Date.now(),
+): OpenTabResult {
+  const existing = findRecordTab(state, input);
+  if (existing) return { state: activateTabInState(state, existing.id, now), outcome: "activated", tabId: existing.id };
+  const paneIndex = Math.max(0, state.panes.findIndex((pane) => pane.id === state.active));
+  const pane = state.panes[paneIndex];
+  const temp = pane.tabs.find((tab) => !tab.pinned && !isDirty(tab.id));
+  if (temp) {
+    return { state: replaceTabContentInState(state, temp.id, { ...input, openerTabId: input.openerTabId ?? temp.openerTabId }, now), outcome: "replaced", tabId: temp.id, paneId: pane.id };
+  }
+  const tab = createTab({ ...input, pinned: false }, now);
+  return insertTabInState(state, paneIndex, tab, pane.activeTab, isDirty);
+}
+
+export type OpenRecordModifiers = { mod?: boolean; shift?: boolean };
+
+export type OpenRecordStateOptions = {
+  fromTabId?: string | null;
+  isNew?: boolean;
+  modifiers?: OpenRecordModifiers;
+  /** Index maximalizovaného panelu – pravidlo e) se pak neuplatní. */
+  maximized?: number | null;
+};
+
+const adjacentIndex = (count: number, index: number) => (count < 2 ? -1 : index === count - 1 ? index - 1 : index + 1);
+
+/**
+ * Otevření záznamu ze seznamu podle pravidel a–f (viz dokumentace usePaneTabs.openRecord).
+ * Vrací i `paneId` cílového panelu – když se liší od panelu fromTab, panel má bliknout.
+ */
+export function openRecordInState(
+  state: PaneTabsState,
+  input: CreateTabInput,
+  options: OpenRecordStateOptions = {},
+  isDirty: (tabId: string) => boolean = () => false,
+  now = Date.now(),
+): OpenTabResult & { cancelMaximize?: boolean } {
+  const record: CreateTabInput = { ...input, kind: input.kind ?? "record", isNew: options.isNew };
+  // a) otevřený záznam
+  const existing = record.isNew ? null : findRecordTab(state, record);
+  if (existing) {
+    const next = activateTabInState(state, existing.id, now);
+    return { state: next, outcome: "activated", tabId: existing.id, paneId: findTab(next, existing.id)?.pane.id };
+  }
+  const from = options.fromTabId ? findTab(state, options.fromTabId) : null;
+  const fromPaneIndex = from ? from.paneIndex : Math.max(0, state.panes.findIndex((pane) => pane.id === state.active));
+  const fromId = from?.tab.id ?? null;
+  const pinned = !!options.isNew;
+  const mods = options.modifiers ?? {};
+  const make = (pin: boolean) => createTab({ ...record, pinned: pin, openerTabId: fromId }, now);
+
+  // b) modifikátory
+  if (mods.mod && mods.shift) {
+    const target = adjacentIndex(state.panes.length, fromPaneIndex);
+    const paneIndex = target < 0 ? fromPaneIndex : target;
+    const pane = state.panes[paneIndex];
+    return { ...insertTabInState(state, paneIndex, make(true), pane.activeTab, isDirty), cancelMaximize: true };
+  }
+  if (mods.mod) return insertTabInState(state, fromPaneIndex, make(true), fromId, isDirty);
+
+  // c) čistý dočasný detail otevřený z téhož seznamu → nahradit obsah
+  if (!options.isNew && fromId) {
+    for (const pane of state.panes) {
+      const temp = pane.tabs.find((tab) => !tab.pinned && tab.openerTabId === fromId && tab.kind === "record" && !isDirty(tab.id));
+      if (temp) {
+        return { state: replaceTabContentInState(state, temp.id, { ...record, openerTabId: fromId }, now), outcome: "replaced", tabId: temp.id, paneId: pane.id };
+      }
+    }
+  }
+
+  // d) jiný panel, kde už jsou záložky otevřené z fromTab
+  if (fromId) {
+    const index = state.panes.findIndex((pane, i) => i !== fromPaneIndex && pane.tabs.some((tab) => tab.openerTabId === fromId));
+    if (index >= 0) {
+      const pane = state.panes[index];
+      const last = [...pane.tabs].reverse().find((tab) => tab.openerTabId === fromId);
+      return insertTabInState(state, index, make(pinned), last?.id ?? pane.activeTab, isDirty);
+    }
+  }
+
+  // e) prázdný sousední panel (vpravo, pak vlevo; ne při maximalizaci)
+  if (options.maximized == null) {
+    for (const index of [fromPaneIndex + 1, fromPaneIndex - 1]) {
+      const pane = state.panes[index];
+      if (pane && pane.tabs.length === 0) return insertTabInState(state, index, make(pinned), null, isDirty);
+    }
+  }
+
+  // f) nová záložka za fromTab ve stejném panelu
+  return insertTabInState(state, fromPaneIndex, make(pinned), fromId ?? state.panes[fromPaneIndex].activeTab, isDirty);
+}
+
+/** Ponechá záložku (pinned = true). */
+export function keepTabInState(state: PaneTabsState, tabId: string): PaneTabsState {
+  const found = findTab(state, tabId);
+  if (!found || found.tab.pinned) return state;
+  return replacePane(state, { ...found.pane, tabs: found.pane.tabs.map((tab) => (tab.id === tabId ? { ...tab, pinned: true } : tab)) });
+}
+
+/**
+ * Uvolní záložku (pinned = false). Jiná čistá dočasná záložka panelu se zavře.
+ * S neuloženými změnami vrací null (uvolnění se odmítne).
+ */
+export function releaseTabInState(
+  state: PaneTabsState,
+  tabId: string,
+  isDirty: (tabId: string) => boolean = () => false,
+): { state: PaneTabsState; closedTabIds: string[] } | null {
+  const found = findTab(state, tabId);
+  if (!found || isDirty(tabId)) return null;
+  const closedTabIds = found.pane.tabs.filter((tab) => tab.id !== tabId && !tab.pinned && !isDirty(tab.id)).map((tab) => tab.id);
+  const tabs = found.pane.tabs
+    .filter((tab) => !closedTabIds.includes(tab.id))
+    .map((tab) => (tab.id === tabId ? { ...tab, pinned: false } : tab.pinned ? tab : { ...tab, pinned: true }));
+  const activeTab = tabs.some((tab) => tab.id === found.pane.activeTab) ? found.pane.activeTab : tabId;
+  return { state: replacePane(state, { ...found.pane, tabs, activeTab }), closedTabIds };
+}
+
+/** Otevře krok historie záložky jako novou ponechanou záložku hned za ní. */
+export function openFromHistoryInState(state: PaneTabsState, tabId: string, index: number, isDirty: (tabId: string) => boolean = () => false, now = Date.now()): OpenTabResult {
+  const found = findTab(state, tabId);
+  const entry = found?.tab.history[index];
+  if (!found || !entry) return { state, outcome: "rejected" };
+  const tab: PaneTab = {
+    ...createTab({ ...entry, kind: found.tab.kind, icon: found.tab.icon, pinned: true, openerTabId: found.tab.openerTabId }, now),
+    history: found.tab.history.slice(0, index + 1),
+    historyIndex: index,
+  };
+  return insertTabInState(state, found.paneIndex, tab, tabId, isDirty);
+}
+
+/** Zavřená záložka v zásobníku pro „Znovu otevřít zavřenou záložku“. */
+export type ClosedTabRecord = { tab: PaneTab; paneId: string; index: number };
+
+export const MAX_CLOSED_TABS = 10;
+
+/** Přidá záznam do zásobníku zavřených záložek (nejvýš 10). */
+export function pushClosedTab(stack: ClosedTabRecord[], record: ClosedTabRecord): ClosedTabRecord[] {
+  return [...stack, record].slice(-MAX_CLOSED_TABS);
+}
+
+/** Obnoví zavřenou záložku do jejího panelu (jinak do aktivního) jako ponechanou. */
+export function reopenClosedTabInState(state: PaneTabsState, record: ClosedTabRecord, isDirty: (tabId: string) => boolean = () => false, now = Date.now()): OpenTabResult {
+  const existing = record.tab.kind === "record" ? findRecordTab(state, record.tab) : null;
+  if (existing) return { state: activateTabInState(state, existing.id, now), outcome: "activated", tabId: existing.id };
+  let paneIndex = state.panes.findIndex((pane) => pane.id === record.paneId);
+  if (paneIndex < 0) paneIndex = Math.max(0, state.panes.findIndex((pane) => pane.id === state.active));
+  const pane = state.panes[paneIndex];
+  const tab: PaneTab = { ...record.tab, id: createPaneId("tab"), pinned: true, lastUsed: now };
+  const after = pane.tabs[Math.min(record.index, pane.tabs.length) - 1]?.id ?? null;
+  if (!after && pane.tabs.length) {
+    // Vložit na začátek.
+    const result = insertTabInState(state, paneIndex, tab, null, isDirty);
+    if (result.outcome !== "opened") return result;
+    const target = result.state.panes[paneIndex];
+    const tabs = [tab, ...target.tabs.filter((item) => item.id !== tab.id)];
+    return { ...result, state: replacePane(result.state, { ...target, tabs }) };
+  }
+  return insertTabInState(state, paneIndex, tab, after, isDirty);
 }
 
 /** Zavře záložku; aktivní se stane soused vpravo (jinak vlevo), poslední nechá panel prázdný. */
@@ -277,8 +523,16 @@ export function closeTabInState(state: PaneTabsState, tabId: string): PaneTabsSt
   if (!found) return state;
   const tabs = found.pane.tabs.filter((tab) => tab.id !== tabId);
   let activeTab = found.pane.activeTab;
-  if (activeTab === tabId) activeTab = (tabs[found.tabIndex] ?? tabs[found.tabIndex - 1])?.id ?? null;
-  return replacePane(state, { ...found.pane, tabs, activeTab });
+  const wasActive = activeTab === tabId;
+  if (wasActive) activeTab = (tabs[found.tabIndex] ?? tabs[found.tabIndex - 1])?.id ?? null;
+  const next = replacePane(state, { ...found.pane, tabs, activeTab });
+  // Po zavření aktivní záložky se vrátí na záložku, ze které byla otevřena.
+  const opener = found.tab.openerTabId;
+  if (wasActive && opener && findTab(next, opener)) {
+    const openerFound = findTab(next, opener)!;
+    if (openerFound.pane.id === found.pane.id || state.active === found.pane.id) return activateTabInState(next, opener);
+  }
+  return next;
 }
 
 /** Id záložek, které by „Zavřít ostatní“ zavřelo. */
@@ -296,7 +550,8 @@ export function moveTabInState(state: PaneTabsState, tabId: string, toPaneId: st
   const target = next.panes.find((pane) => pane.id === toPaneId)!;
   if (target.tabs.length >= MAX_TABS_PER_PANE && target.id !== found.pane.id) return state;
   const at = index === undefined ? target.tabs.length : Math.max(0, Math.min(index, target.tabs.length));
-  const tabs = [...target.tabs.slice(0, at), touch(found.tab, now), ...target.tabs.slice(at)];
+  const moved: PaneTab = { ...touch(found.tab, now), pinned: true };
+  const tabs = [...target.tabs.slice(0, at), moved, ...target.tabs.slice(at)];
   next = replacePane(next, { ...target, tabs, activeTab: tabId });
   return { ...next, active: toPaneId };
 }
@@ -305,7 +560,7 @@ export function moveTabInState(state: PaneTabsState, tabId: string, toPaneId: st
 export function duplicateTabInState(state: PaneTabsState, tabId: string, now = Date.now()): { state: PaneTabsState; tabId?: string } {
   const found = findTab(state, tabId);
   if (!found || found.tab.kind !== "list" || found.pane.tabs.length >= MAX_TABS_PER_PANE) return { state };
-  const copy: PaneTab = { ...found.tab, id: createPaneId("tab"), history: [...found.tab.history], lastUsed: now };
+  const copy: PaneTab = { ...found.tab, id: createPaneId("tab"), history: [...found.tab.history], lastUsed: now, pinned: true };
   const tabs = [...found.pane.tabs.slice(0, found.tabIndex + 1), copy, ...found.pane.tabs.slice(found.tabIndex + 1)];
   return { state: { ...replacePane(state, { ...found.pane, tabs, activeTab: copy.id }), active: found.pane.id }, tabId: copy.id };
 }
@@ -317,7 +572,7 @@ export function stepTabHistory(state: PaneTabsState, tabId: string, delta: numbe
   const index = found.tab.historyIndex + delta;
   const entry = found.tab.history[index];
   if (!entry) return state;
-  const tab: PaneTab = { ...found.tab, ...entry, historyIndex: index };
+  const tab: PaneTab = { ...found.tab, ...entry, icon: entry.icon ?? found.tab.icon, historyIndex: index };
   return replacePane(state, { ...found.pane, tabs: found.pane.tabs.map((item) => (item.id === tabId ? tab : item)) });
 }
 
@@ -439,7 +694,7 @@ export function parsePaneTabs(value: string | null | undefined): PaneTabsState |
   try {
     const raw = JSON.parse(value);
     if (raw && raw.version === 2 && Array.isArray(raw.panes) && raw.panes.length) {
-      const state = raw as PaneTabsState;
+      const state = normalizePaneTabsState(raw as PaneTabsState);
       const layout = clampLayout(state.panes.length);
       const active = state.panes.some((pane) => pane.id === state.active) ? state.active : state.panes[0].id;
       return { ...state, layout, active, widths: state.widths?.length === layout ? state.widths : evenWidths(layout) };
@@ -482,4 +737,137 @@ export function parseActiveTabUrl(value: string | null | undefined): PaneTabsSta
   } catch {
     return null;
   }
+}
+
+/**
+ * Doplní pole z 2.16.0 do stavu v2 uloženého dřívější verzí: pinned = true, openerTabId = null.
+ * Zajistí i pravidlo „nejvýš jedna dočasná záložka v panelu“.
+ */
+export function normalizePaneTabsState(state: PaneTabsState): PaneTabsState {
+  return {
+    ...state,
+    panes: state.panes.map((pane) => {
+      let seenTemp = false;
+      return {
+        ...pane,
+        tabs: pane.tabs.map((tab) => {
+          let pinned = typeof tab.pinned === "boolean" ? tab.pinned : true;
+          if (!pinned) {
+            if (seenTemp) pinned = true;
+            seenTemp = true;
+          }
+          return { ...tab, pinned, openerTabId: tab.openerTabId ?? null };
+        }),
+      };
+    }),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Uložená rozložení
+
+/** Záložka v uloženém rozložení (bez konceptů). */
+export type LayoutSnapshotTab = {
+  route: string;
+  params?: Record<string, unknown>;
+  kind: TabKind;
+  recordKey?: string;
+  title?: string;
+  shortTitle?: string;
+  icon?: string;
+  /** Stav gridu (filtr, řazení, rozbalení) – koncept záložky pod klíčem "grid". */
+  grid?: unknown;
+};
+
+export type LayoutSnapshot = {
+  version: 1;
+  layout: PaneLayoutCount;
+  widths?: number[];
+  activePane: number;
+  panes: { activeIndex: number; tabs: LayoutSnapshotTab[] }[];
+};
+
+/**
+ * Snímek rozložení pro uložení: záložky (route, params, stav gridu), aktivní záložka, šířky a počet panelů.
+ * Bez konceptů a bez nových, dosud neuložených záznamů.
+ */
+export function serializeLayout(state: PaneTabsState, getGridState: (tabId: string) => unknown = () => undefined): LayoutSnapshot {
+  const activePane = Math.max(0, state.panes.findIndex((pane) => pane.id === state.active));
+  return {
+    version: 1,
+    layout: state.layout,
+    widths: state.widths,
+    activePane,
+    panes: state.panes.map((pane) => {
+      const tabs = pane.tabs.filter((tab) => !tab.isNew);
+      return {
+        activeIndex: Math.max(0, tabs.findIndex((tab) => tab.id === pane.activeTab)),
+        tabs: tabs.map((tab) => {
+          const grid = getGridState(tab.id);
+          return {
+            route: tab.route,
+            params: tab.params,
+            kind: tab.kind,
+            recordKey: tab.recordKey,
+            title: tab.title,
+            shortTitle: tab.shortTitle,
+            icon: tab.icon,
+            ...(grid !== undefined ? { grid } : {}),
+          };
+        }),
+      };
+    }),
+  };
+}
+
+export type ApplyLayoutResult = {
+  state: PaneTabsState;
+  /** Záložky s neuloženými změnami, které se nezavřely (přesunuté na konec panelu 1). */
+  skipped: PaneTab[];
+  /** Zavřené čisté záložky. */
+  closedTabIds: string[];
+  /** Stav gridu pro nově vytvořené záložky. */
+  gridStates: { tabId: string; grid: unknown }[];
+};
+
+/** Použije uložené rozložení: čisté záložky zavře, rozepsané přesune na konec panelu 1. */
+export function applyLayoutInState(
+  state: PaneTabsState,
+  snapshot: LayoutSnapshot,
+  options: { keepDirty?: boolean } = {},
+  isDirty: (tabId: string) => boolean = () => false,
+  now = Date.now(),
+): ApplyLayoutResult {
+  const keepDirty = options.keepDirty !== false;
+  const all = state.panes.flatMap((pane) => pane.tabs);
+  const skipped = keepDirty ? all.filter((tab) => isDirty(tab.id)).map((tab) => ({ ...tab, pinned: true })) : [];
+  const closedTabIds = all.filter((tab) => !skipped.some((item) => item.id === tab.id)).map((tab) => tab.id);
+  const gridStates: ApplyLayoutResult["gridStates"] = [];
+  const layout = clampLayout(snapshot.panes.length || snapshot.layout);
+  const panes: TabPane[] = Array.from({ length: layout }, (_, index) => {
+    const saved = snapshot.panes[index];
+    const tabs = (saved?.tabs ?? []).slice(0, MAX_TABS_PER_PANE).map((item) => {
+      const tab = createTab({ ...item, pinned: true }, now);
+      if (item.grid !== undefined) gridStates.push({ tabId: tab.id, grid: item.grid });
+      return tab;
+    });
+    return { id: createPaneId("pane"), tabs, activeTab: tabs[saved?.activeIndex ?? 0]?.id ?? tabs[0]?.id ?? null };
+  });
+  if (skipped.length) {
+    const recordKeys = new Set(skipped.filter((tab) => tab.kind === "record").map((tab) => recordKeyOf(tab)));
+    panes.forEach((pane) => {
+      pane.tabs = pane.tabs.filter((tab) => !(tab.kind === "record" && recordKeys.has(recordKeyOf(tab))));
+      if (!pane.tabs.some((tab) => tab.id === pane.activeTab)) pane.activeTab = pane.tabs[0]?.id ?? null;
+    });
+    panes[0].tabs = [...panes[0].tabs, ...skipped];
+    panes[0].activeTab = panes[0].activeTab ?? skipped[0].id;
+  }
+  const activeIndex = Math.min(Math.max(0, snapshot.activePane ?? 0), panes.length - 1);
+  const widths = snapshot.widths?.length === layout ? snapshot.widths : evenWidths(layout);
+  return {
+    state: { version: 2, layout, widths, active: panes[activeIndex].id, panes, hiddenPanes: null },
+    skipped,
+    closedTabIds,
+    gridStates,
+  };
 }

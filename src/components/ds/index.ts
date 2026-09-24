@@ -33,6 +33,8 @@ export * from "./panes/pinned-bar";
 export * from "./panes/pane-tab-store";
 export * from "./panes/pane-tab-bar";
 export * from "./panes/pane-link";
+export * from "./panes/draft-restored-banner";
+export * from "./panes/layout-menu";
 
 /* Grid */
 export * from "./grid/DataGrid";

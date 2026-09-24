@@ -12,6 +12,7 @@ import { applyFontScale } from "../../../lib/font-scale";
 import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
+import type { OpenTabTarget } from "../panes/pane-state";
 import { highlightNavMatch, matchesNavSearch, normalizeNavSearch } from "./nav-search";
 
 export type NavItem = {
@@ -133,7 +134,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   const currentPath = paneTabs ? activeTab?.route ?? "" : pathname;
   const isActive = (item: NavItem) => !item.disabled && (currentPath === item.to || currentPath.startsWith(`${item.to}/`));
   const paneOpen = (item: NavItem) =>
-    paneTabs ? (target: "replace" | "newTab" | "adjacentPane") => paneTabs.openTab(item.to, item.search, { target, title: item.label }) : null;
+    paneTabs ? (target: OpenTabTarget) => paneTabs.openTab(item.to, item.search, { target, title: item.label }) : null;
 
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
