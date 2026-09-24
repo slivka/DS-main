@@ -23,6 +23,7 @@ export * from "./layout/user-menu";
 export * from "./layout/search-button";
 export * from "./layout/app-font-size";
 export * from "./layout/page-header";
+export * from "./layout/nav-search";
 
 /* Panely (režim více oken) */
 export * from "./panes/pane-state";
