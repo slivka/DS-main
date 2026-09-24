@@ -63,6 +63,7 @@
   --color-surface-active: var(--surface-active);
   --color-surface-selected: var(--surface-selected);
   --color-surface-subtle: var(--surface-subtle);
+  --color-surface-page: var(--surface-page);
   --color-row-stripe: var(--row-stripe);
   --shadow-focus: var(--focus-ring-shadow);
   /* Typografická škála – jednotné velikosti pro nadpisy a popisky. */
@@ -76,8 +77,10 @@
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
-  /* Neutrální podklad #FAFAFA podle firemní aplikace evala.cz. */
-  --background: oklch(0.985 0 0);
+  /* Světlé podkladové pozadí stránky #FAFAFA podle firemní aplikace evala.cz.
+     Hodnota je sdílená s PAGE_SURFACE_LIGHT v src/lib/tokens.ts (samostatné HTML výstupy). */
+  --surface-page: oklch(0.985 0 0);
+  --background: var(--surface-page);
   --foreground: oklch(0.25 0.04 245);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.25 0.04 245);
@@ -146,7 +149,8 @@
 
 .dark {
   /* Tmavý námořnický režim – tmavá modrá (#0f172a) se světle modrými akcenty. */
-  --background: oklch(0.18 0.02 250);
+  --surface-page: oklch(0.18 0.02 250);
+  --background: var(--surface-page);
   --foreground: oklch(0.92 0.01 250);
   --card: oklch(0.24 0.015 250);
   --card-foreground: oklch(0.92 0.01 250);
