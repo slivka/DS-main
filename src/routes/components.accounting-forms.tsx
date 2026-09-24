@@ -12,7 +12,6 @@ import {
   JournalLinesEditor,
   PartnerSelect,
   VsField,
-  formatAccountCode,
   fromJournalRow,
   toJournalRow,
   type JournalLine,
