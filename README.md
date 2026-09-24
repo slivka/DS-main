@@ -153,25 +153,9 @@ Změny chování a přechod:
 - `PageHeader` má v panelu vpravo pouze ↑/↓, ←/→, maximalizaci a ⋯. Alt+↑/↓ listuje záznamy, Alt+←/→ historií a Alt+M maximalizuje.
 - `LayoutMenu` přesuňte z horní lišty do `AppShell.navSearchMenu` a použijte `trigger="icon"`.
 
-## Changelog 2.16.0 – dočasné a ponechané záložky, maximalizace, koncepty, rozložení
+## Changelog 2.16.0 – nahrazeno ve 2.17.0
 
-Nové:
-- Záložka má `pinned` (dočasná / ponechaná) a `openerTabId`; v panelu je nejvýš jedna dočasná záložka (titulek kurzívou). Starší stav v2 se převede automaticky (`pinned = true`, `openerTabId = null`, `normalizePaneTabsState`).
-- `usePaneTabs`: `openTab(..., { target: 'preview' })`, `openRecord(route, params, { fromTabId, isNew, modifiers })` podle pravidel a–f, `keepTab`, `releaseTab`, `openFromHistory`, `goToHistory`, `reopenClosedTab` (zásobník 10), `maximizePane`, `restoreLayout`, `toggleMaximize`, `maximized`, `registerRecordNav`, `serializeLayout`, `applyLayout`.
-- Čisté funkce: `previewTabInState`, `openRecordInState`, `keepTabInState`, `releaseTabInState`, `openFromHistoryInState`, `reopenClosedTabInState`, `replaceTabContentInState`, `insertTabInState`, `pickEvictionVictim`, `serializeLayout`, `applyLayoutInState`.
-- Koncepty: `useTabDraft(tabId, initial, key, { route, params, recordVersion })` vrací navíc `meta` (`restored`, `conflict`, `applyConflict`, `discard`, `markSaved`); `persistDrafts({ userKey, companyId, maxAgeDays })` zapne IndexedDB (idb-keyval 6.2.1), `listOrphanDrafts`, `clearDrafts`, vlastní adaptér `DraftStorageAdapter`. Ukládání s debounce 1 s.
-- `DraftRestoredBanner`, `LayoutMenu` (Alt+L), `usePaneChrome`, `buildTabMenuActions`.
-- `PageHeader` uvnitř panelu: ← → (podržení 400 ms / pravé tlačítko = historie s ⧉), ●, špendlík, ↑ n / N ↓, maximalizace, menu ⋯, nadpis jako úchyt přetažení, dvojklik = ponechat. Nový volitelný prop `paneTexts`.
-- `PaneLayout`: `tabBarMode: 'auto' | 'always'`, pruh „Panel N je maximalizovaný · Obnovit rozložení“, bliknutí cílového panelu (0,7 s).
-- Zkratky: Alt+M, Esc (obnovit rozložení), Alt+Shift+T, Alt+1/2/3 při maximalizaci přepne maximalizovaný panel.
-
-Změny chování (přechod z 2.15):
-- `PaneTabBar` už nemá ← →, ⋯ ani props `maximized`, `onToggleMaximize` (nyní jen dvojklik na prázdné místo), `pinned`, `onTogglePin` (nahrazeno `isPinned(tab)` / `onTogglePin(tab)`); texty `back`, `forward`, `more`, `maximize`, `restore`, `closeOthers`, `closePane`, `closeOtherTabs`, `moveToPane`, `duplicate`, `pin`, `unpin` jsou v `PaneChromeTexts`.
-- `getOpenTarget` / `PaneLink` vrací pro obyčejný klik `'preview'` místo `'replace'` – procházení menu jde do jedné dočasné záložky.
-- `newTab`, `adjacentPane`, přesun záložky, duplikace a první neuložená změna záložku ponechají.
-- Po zavření aktivní záložky se aktivuje její opener (jinak soused).
-- V režimu `'auto'` je lišta záložek skrytá, dokud žádný viditelný panel nemá 2+ záložek.
-- Při plném panelu se zavírá přednostně čistá dočasná záložka.
+Koncepty, historie, maximalizace, listování záznamy a uložená rozložení zůstávají. Dočasné/ponechané záložky, `pinned`, `preview`, `keepTab`, `releaseTab` a `tabBarMode` byly ve 2.17.0 odstraněny; postup přechodu je v changelogu 2.17.0 výše.
 
 ## Changelog 2.15.0 – skupiny a hledání v menu
 
