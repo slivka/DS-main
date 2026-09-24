@@ -39,7 +39,7 @@ export function DecimalInput({
     <Input
       type="text"
       inputMode="decimal"
-      className={cn("text-right", className)}
+      className={cn("font-sans text-right tabular-nums", className)}
       value={shown}
       onFocus={() =>
         setText(num != null ? String(num).replace(".", ",") : value != null ? String(value) : "")

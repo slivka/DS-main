@@ -71,7 +71,7 @@ export function GridSearch({
       style={{ fontSize }}
     >
       <Search
-        className={`pointer-events-none absolute left-[0.6em] size-[1.15em] ${isActive ? "text-destructive" : "text-muted-foreground"}`}
+        className={`pointer-events-none absolute left-[0.6em] size-[1.15em] ${isActive ? "text-filter-active" : "text-muted-foreground"}`}
       />
       <input
         ref={inputRef}
@@ -89,7 +89,7 @@ export function GridSearch({
         }}
         className={`grid-toolbar-control h-auto w-full min-w-0 rounded-md border border-input bg-background !pl-[2.35em] !pr-[2.2em] text-[1em] outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 ${
           isActive
-            ? "grid-toolbar-active focus-visible:ring-destructive"
+             ? "grid-toolbar-active focus-visible:ring-filter-active"
             : "focus-visible:ring-ring"
         }`}
       />
@@ -103,7 +103,7 @@ export function GridSearch({
         }}
         className={`absolute right-[0.5em] transition-colors ${
           isActive
-            ? "text-destructive hover:text-destructive/80"
+             ? "text-filter-active hover:opacity-75"
             : "text-muted-foreground hover:text-foreground"
         }`}
       >

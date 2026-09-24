@@ -111,7 +111,7 @@ export function CurrencyAmount({
         <Label htmlFor={`${idPrefix}-base`}>{`${baseLabel} (${baseCurrency})`}</Label>
         <output
           id={`${idPrefix}-base`}
-          className="flex h-9 items-center justify-end rounded-md border bg-muted/40 px-3 text-sm tabular-nums"
+          className="flex h-9 items-center justify-end rounded-md border bg-muted/40 px-3 font-sans text-sm tabular-nums"
         >
           {formatAmount(converted, 2)}
         </output>

@@ -62,7 +62,7 @@ export function GridFilterToggle({
               <Filter className="size-[1.2em]" />
               {active ? (
                 <>
-                  <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-full bg-destructive px-1 text-[0.72em] leading-[1.45em] font-semibold text-destructive-foreground">
+                   <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-full bg-filter-active px-1 text-[0.72em] leading-[1.45em] font-semibold text-white">
                     {activeCount}
                   </span>
                   {onClear ? (
@@ -82,7 +82,7 @@ export function GridFilterToggle({
                           onClear();
                         }
                       }}
-                      className="inline-flex items-center justify-center hover:text-destructive/70"
+                       className="inline-flex items-center justify-center hover:opacity-75"
                     >
                       <X className="size-[1.15em]" />
                     </span>

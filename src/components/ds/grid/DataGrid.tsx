@@ -879,7 +879,7 @@ export function DataGrid<Row>({
                 })}
                 {hasRowActions ? <col style={{ width: "auto", whiteSpace: "nowrap" }} /> : null}
               </colgroup>
-              <TableHeader className={`grid-column-header sticky top-0 z-10 [&_th]:uppercase ${plain ? "[&_th]:border-t-0" : ""}`}>
+              <TableHeader className={`grid-column-header sticky top-0 z-10 ${plain ? "[&_th]:border-t-0" : ""}`}>
                 {cols.groups.some((g) => g.section) && (
                   <TableRow>
                     {selectMode ? <TableHead className="w-10" /> : null}
@@ -889,7 +889,7 @@ export function DataGrid<Row>({
                         colSpan={g.span}
                         className="border-l text-center font-semibold text-muted-foreground first:border-l-0"
                       >
-                        {g.section?.toLocaleUpperCase(texts.locale)}
+                        {g.section}
                       </TableHead>
                     ))}
                     {hasRowActions ? (

@@ -234,9 +234,9 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: 0;
+    letter-spacing: 0 !important;
     font-weight: 600;
-    text-transform: none;
+    text-transform: none !important;
   }
 }
 
@@ -1638,9 +1638,35 @@ button,
   box-shadow: inset 3px 0 0 var(--primary);
 }
 
+.zoom-grid tbody tr:is([data-state="selected"], [aria-selected="true"]) > :is(th, td) {
+  background-color: var(--surface-selected);
+}
+
+.zoom-grid tbody tr:is([data-state="selected"], [aria-selected="true"]) > :is(th, td):first-child {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
 /* Běžné karty používají stejný jemný stín jako obal gridu. */
-.bg-card.rounded-xl.border.shadow {
+.bg-card.rounded-xl.border.shadow,
+.bg-card.rounded-lg.border:not(button):not([role="button"]) {
   box-shadow: var(--shadow-panel);
+}
+
+/* Textové styly nepoužívají verzálky ani kladné prokládání. */
+:is(.typo-title, .typo-label, thead, tfoot, .grid-column-header, .grid-title-count) {
+  text-transform: none !important;
+  letter-spacing: min(0em, var(--tw-tracking, 0em)) !important;
+}
+
+thead,
+.grid-column-header {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+tfoot {
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 /* --- Přístupnost: viditelný fokus řádku gridu ------------------------- */
