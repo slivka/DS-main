@@ -107,6 +107,7 @@ type ShellNavProps = {
   searchEmptyText: string;
   onExpandSearch?: () => void;
   focusSearch?: number;
+  onDismissSearch?: () => void;
 };
 
 function readGroupCollapsed(storageKey: string, fallback: boolean) {
@@ -125,7 +126,7 @@ function badgeTotal(group: NavGroup) {
   return total > 0 ? total : null;
 }
 
-function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0 }: ShellNavProps) {
+function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0, onDismissSearch }: ShellNavProps) {
   // V režimu záložek otevírá navigace stránky do záložek (Cmd/Ctrl + klik = nová záložka, + Shift = sousední panel).
   const paneTabs = usePaneTabs();
   const activeTab = useActivePaneTab();
@@ -170,7 +171,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
       activateResult(event);
     } else if (event.key === "Escape") {
       if (query) setQuery("");
-      else inputRef.current?.blur();
+      else { inputRef.current?.blur(); onDismissSearch?.(); }
     }
   };
 
@@ -242,7 +243,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
           </div>
         ) : null}
         <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2" aria-label="Hlavní menu">
-          {filteredGroups.map((group, index) => <ShellNavGroup key={group.id} group={group} groupIndex={index} active={group.items.some(isActive)} forcedOpen={Boolean(query)} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
+          {filteredGroups.map((group, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
           {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
           {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
         </nav>
@@ -251,7 +252,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   );
 }
 
-function ShellNavGroup({ group, groupIndex, active, forcedOpen, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; active: boolean; forcedOpen: boolean; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
+function ShellNavGroup({ group, groupIndex, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
   const [groupCollapsed, setGroupCollapsed] = useState(() => readGroupCollapsed(storageKey, group.defaultCollapsed === true));
   const setStoredCollapsed = () => {
@@ -266,7 +267,7 @@ function ShellNavGroup({ group, groupIndex, active, forcedOpen, collapsed, colla
       {group.label && !collapsed ? (
         collapsible ? (
           <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
-            <span className="min-w-0 flex-1 truncate">{group.label}</span>
+            <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
             {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}
             {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label="Obsahuje aktivní stránku" /> : null}
             <ChevronRight className={cn("size-3.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none", !hidden && "rotate-90")} />
@@ -407,8 +408,8 @@ export function AppShell({
 
   const visibleGroups = currentPanel?.nav ?? resolvedGroups;
   const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}` : navStateKey ?? appName;
-  const nav = (compact: boolean, onNavigate = () => setMenuOpen(false)) => (
-    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} />
+  const nav = (compact: boolean, onNavigate = () => setMenuOpen(false), onDismissSearch?: () => void) => (
+    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} />
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
@@ -508,7 +509,7 @@ export function AppShell({
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
-        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden w-60 flex-col border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false))}</div> : null}
+        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden w-60 flex-col border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
         <main className="min-w-0 flex-1 p-4">{children}</main>
       </div>
     </div>
