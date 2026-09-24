@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Check, ChevronsUpDown, Download, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -61,6 +61,13 @@ export function PartnerSelect({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
+  const suppressFocusOpen = useRef(false);
+
+  const changeOpen = (next: boolean) => {
+    if (!next) suppressFocusOpen.current = true;
+    setOpen(next);
+  };
 
   const list = useMemo(
     () => partners.filter((partner) => partner.active !== false),
@@ -69,7 +76,7 @@ export function PartnerSelect({
   const selected = list.find((partner) => partner.id === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={changeOpen}>
       <PopoverTrigger asChild>
         <Button
           id={id}
@@ -77,7 +84,13 @@ export function PartnerSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
-          onFocus={() => !disabled && setOpen(true)}
+          onFocus={() => {
+            if (disabled || suppressFocusOpen.current) return;
+            changeOpen(true);
+          }}
+          onBlur={() => {
+            suppressFocusOpen.current = false;
+          }}
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
