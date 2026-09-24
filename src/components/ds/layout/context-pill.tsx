@@ -16,6 +16,11 @@ export interface ContextPillProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
   valueMuted?: boolean;
   statusIndicator?: ReactNode;
   compactValue?: string;
+  tooltip?: string;
+  valueClassName?: string;
+  valueContainerClassName?: string;
+  detail?: ReactNode;
+  detailClassName?: string;
 }
 
 const ContextPillCloseContext = createContext<() => void>(() => {});
@@ -25,9 +30,9 @@ export function useContextPillClose() {
   return useContext(ContextPillCloseContext);
 }
 
-/** Dvouřádkový kontextový přepínač do horní lišty aplikace. */
+/** Jednořádkový kontextový přepínač do horní lišty aplikace. */
 export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
-  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, ...props }, ref) => {
+  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, tooltip, valueClassName, valueContainerClassName, detail, detailClassName, ...props }, ref) => {
     const [open, setOpen] = useState(false);
     return (
       <TooltipProvider>
@@ -39,23 +44,26 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   ref={ref}
                   type="button"
                   variant="ghost"
-                  className={cn("h-11 min-w-0 max-w-[360px] justify-start gap-2 px-3 text-left xl:min-w-[220px]", className)}
+                  aria-label={label}
+                  className={cn("h-11 min-w-0 max-w-[360px] justify-start gap-2 px-2 text-left", className)}
                   {...props}
                 >
                   {Icon ? <Icon className="size-4 shrink-0 text-muted-foreground" /> : null}
-                  {statusIndicator}
-                  <span className="min-w-0 flex-1 leading-tight">
-                    <span data-slot="context-pill-label" className="hidden truncate text-xs font-normal text-muted-foreground xl:block">{label}</span>
-                    <span className={cn("block truncate text-sm font-semibold", valueMuted ? "text-muted-foreground" : "text-foreground")}>
+                  <span className={cn("flex min-w-0 flex-1 items-center gap-2", valueContainerClassName)}>
+                    {statusIndicator}
+                    <span className="flex min-w-0 flex-1 items-baseline gap-2 leading-tight">
+                    <span className={cn("block min-w-0 truncate text-base font-semibold xl:text-lg", valueMuted ? "text-muted-foreground" : "text-foreground", valueClassName)}>
                       <span data-slot="context-pill-mobile-value" className="md:hidden">{compactValue ?? value}</span>
                       <span data-slot="context-pill-value" className="hidden md:inline">{value}</span>
                     </span>
+                    {detail ? <span className={cn("hidden min-w-0 truncate text-sm font-normal text-muted-foreground 2xl:inline", detailClassName)}>{detail}</span> : null}
+                    </span>
                   </span>
-                  <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground xl:block" />
+                  <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground md:block" />
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent className="xl:hidden">{label}</TooltipContent>
+            <TooltipContent>{tooltip ?? `${label}: ${value}`}</TooltipContent>
             <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
               <ContextPillCloseContext.Provider value={() => setOpen(false)}>
                 {children}

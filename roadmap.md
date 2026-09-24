@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.15.0 (skupiny a hledání v menu, výraznější kontext)
+- [x] Oddělené skupiny menu s vodicí linkou, uloženým sbalením, odznaky a aktivní tečkou
+- [x] Hledání bez diakritiky, klávesové ovládání, zkratka / a překryv sbaleného menu
+- [x] Jednořádková firma a stavový štítek období v horní liště
+- [x] Ukázky, dokumentace, typová kontrola, sestavení a ověření v prohlížeči
+
 ## Verze 2.13.0 (bílý vzhled, tmavě modré menu, IBM Plex)
 - [x] Bílé plochy, neutrální šedé hover/záhlaví/součty, nové linky a okraje
 - [x] Tmavě modré levé menu s kontrastem ≥ 4,5 : 1

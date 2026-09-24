@@ -177,6 +177,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   režimy přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy a
   plochý seznam jsou pouze dočasná zpětná kompatibilita a jsou deprecated.
 - `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby, ne do horní lišty.
+- AppShell ve výchozím stavu nabízí hledání v menu; zkratka `/` je vyhrazena pro něj. Sbalení skupin ukládej přes `navStateKey`, aby se aplikace a její panely navzájem neovlivňovaly.
 - Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
   `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.
 

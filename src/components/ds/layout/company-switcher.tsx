@@ -116,6 +116,7 @@ export function CompanySwitcher({
       label={label}
       value={selected?.name ?? emptyText}
       compactValue={selected?.name ?? emptyText}
+      tooltip={selected ? `${label}: ${selected.name}${selected.ico ? ` · IČO ${selected.ico}` : ""}` : `${label}: ${emptyText}`}
       className={`max-w-[72px] md:max-w-[200px] xl:max-w-[360px] ${className ?? ""}`}
       contentClassName="w-[380px]"
       onClick={() => setOpenKey((key) => key + 1)}

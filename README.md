@@ -5,13 +5,18 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
-## Instalace písem
+## Zapojení do aplikace
 
-Hostitelská aplikace musí v hlavičce načíst IBM Plex Sans 400–700 a IBM Plex Mono 400–500:
+`SlivkaProvider` zajistí React Query, tooltipy a toast notifikace. `SlivkaHead` v hlavičce načte IBM Plex Sans/Mono a nastaví motiv před prvním vykreslením.
 
-```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" />
+```tsx
+<html lang="cs">
+  <head><SlivkaHead /></head>
+  <body><SlivkaProvider queryClient={queryClient}>{children}</SlivkaProvider></body>
+</html>
 ```
+
+Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
 ## Struktura
 
@@ -124,6 +129,13 @@ měna podle nastavení aplikace.
 4. Ukázkové stránky v `src/routes` použijte jako vzor a postupně je nahraďte
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
+
+## Changelog 2.15.0 – skupiny a hledání v menu
+
+- AppShell odděluje skupiny menu, pamatuje jejich sbalení a ve sbaleném záhlaví zachová součet odznaků i označení aktivní stránky.
+- Nové hledání v menu ignoruje diakritiku, podporuje více slov, šipky, Enter, Esc a zkratku `/`; ve sbaleném menu se otevře dočasný překryv.
+- Nové volitelné props: `navStateKey`, `navSearch`, `navSearchPlaceholder`, `navSearchEmptyText`. Stav skupiny používá klíč `ds:nav-groups:<navStateKey>:<group.id>`.
+- Firma je jednořádková a výraznější; období používá stavový štítek s rozsahem na široké obrazovce. Stávající props zůstávají kompatibilní.
 
 ## Changelog 2.13.0 – bílý vzhled a IBM Plex
 

@@ -62,6 +62,23 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/components/navigation", label: "Majetek", icon: Building2, disabled: true },
     ],
   },
+  {
+    id: "accounting",
+    label: "Účetnictví",
+    defaultCollapsed: true,
+    items: [
+      { to: "/components/accounting-forms", label: "Účetní doklady", icon: FileText, badge: "4" },
+      { to: "/components/grid", label: "Účetní deník", icon: LayoutGrid },
+    ],
+  },
+  {
+    id: "reports",
+    label: "Výkazy",
+    items: [
+      { to: "/components/navigation", label: "Změny v rejstříku", icon: Building2, badge: "2" },
+      { to: "/components/navigation", label: "Přehled výkazů", icon: LayoutGrid },
+    ],
+  },
 ];
 
 const ADMIN_NAV: NavItem[] = [
@@ -122,14 +139,15 @@ function NavigationPage() {
 
       <ShowcaseSection title="Prázdné stavy období" description="Přepínač rozlišuje chybějící výběr a firmu, která zatím nemá žádné období.">
         <div className="flex flex-wrap gap-3 rounded-lg border bg-card p-3">
-          <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+          {MOCK_PERIODS.map((period) => <PeriodSwitcher key={period.id} periods={MOCK_PERIODS} value={period.id} onChange={setPeriodId} />)}
+          <PeriodSwitcher periods={MOCK_PERIODS} value={null} onChange={setPeriodId} />
           <PeriodSwitcher periods={[]} value={null} onChange={() => undefined} onCreate={() => undefined} />
         </div>
       </ShowcaseSection>
 
       <ShowcaseSection
         title="Boční menu se skupinami"
-        description="Skupiny se sbalují, aktivní položka je zvýrazněná, nedostupné položky nesou štítek Připravujeme. Které položky se zobrazí, určuje aplikace."
+        description="Čtyři skupiny ukazují oddělení, odznaky, nedostupnou položku a výchozí sbalení. V hlavním menu zkuste hledat „ucet“, potvrdit Enterem, smazat Esc a stisknout / i při sbaleném menu."
       >
         <div className="rounded-lg border bg-card p-3">
           <div className="grid gap-4 md:grid-cols-2">

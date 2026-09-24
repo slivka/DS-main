@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -11,10 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Toaster } from "@/components/ui/sonner";
-import { THEME_INIT_SCRIPT } from "@/lib/theme";
-import { SLIVKA_FONT_LINKS } from "@/lib/font-links";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { SlivkaHead } from "@/slivka-head";
+import { SlivkaProvider } from "@/slivka-provider";
 
 function NotFoundComponent() {
   return (
@@ -90,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
-      ...SLIVKA_FONT_LINKS,
+        // Fonty do head() přidává SlivkaHead; zde zůstává jen CSS ukázkové aplikace.
       {
         rel: "stylesheet",
         href: appCss,
@@ -109,7 +107,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="cs">
       <head>
         <HeadContent />
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <SlivkaHead />
       </head>
       <body>
         {children}
@@ -123,12 +121,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider delayDuration={300}>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <Toaster richColors position="top-right" />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <SlivkaProvider queryClient={queryClient}>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
+    </SlivkaProvider>
   );
 }
