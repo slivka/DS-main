@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import { Button } from "../../ui/button";
@@ -31,6 +31,25 @@ const stateClass: Record<FiscalPeriodState, string> = {
   closing: "bg-warning",
   closed: "bg-muted-foreground",
 };
+
+const triggerStateClass: Record<FiscalPeriodState, string> = {
+  open: "bg-success/12 text-success",
+  closing: "bg-warning/18 text-warning-strong",
+  closed: "bg-muted text-muted-foreground",
+};
+
+function formatPeriodTooltipDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return value;
+  return `${day}. ${month}. ${year}`;
+}
+
+function formatPeriodRange(from: string, to: string) {
+  const [fromYear, fromMonth, fromDay] = from.split("-").map(Number);
+  const [toYear, toMonth, toDay] = to.split("-").map(Number);
+  if (!fromYear || !fromMonth || !fromDay || !toYear || !toMonth || !toDay) return `${from} – ${to}`;
+  return `${fromDay}. ${fromMonth}. – ${toDay}. ${toMonth}. ${toYear}`;
+}
 
 /** Obsah popoveru – je uvnitř ContextPill, takže může popover zavřít. */
 function PeriodSwitcherContent({
@@ -110,14 +129,23 @@ export function PeriodSwitcher({
   const selected = periods.find((period) => period.id === value);
   const isEmpty = periods.length === 0;
   const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
+  const indicator = selected?.state === "closed"
+    ? <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+    : <span className={cn("size-2 shrink-0 rounded-full", selected ? stateClass[selected.state] : "bg-warning")} aria-hidden="true" />;
+  const tooltip = selected
+    ? `${label} ${selected.name.replace(/^Rok\s+/i, "")} · ${formatPeriodTooltipDate(selected.from)} – ${formatPeriodTooltipDate(selected.to)} · ${stateLabels[selected.state]}`
+    : `${label}: ${displayValue}`;
   return (
     <ContextPill
       label={label}
       value={displayValue === label ? placeholder : displayValue}
       compactValue={selected?.name ?? (isEmpty ? emptyText : placeholder)}
       valueMuted={!selected}
-      statusIndicator={!selected ? <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" /> : null}
-      className={cn("max-w-[72px] md:max-w-[200px] xl:max-w-[360px]", className)}
+      statusIndicator={indicator}
+      tooltip={tooltip}
+      detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
+      valueClassName={cn("text-base xl:text-base", selected && triggerStateClass[selected.state], "rounded-md px-2.5 py-1")}
+      className={cn("relative max-w-[72px] before:absolute before:-left-1 before:h-6 before:border-l before:border-border md:max-w-[220px] xl:max-w-[460px]", className)}
       contentClassName="w-[380px]"
     >
       <PeriodSwitcherContent
