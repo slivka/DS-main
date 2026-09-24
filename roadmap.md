@@ -1,5 +1,14 @@
 # Roadmap
 
+## Verze 2.16.0 (dočasné a ponechané záložky)
+- [x] Stav pinned / openerTabId, převod staršího v2, jedna dočasná záložka na panel
+- [x] preview, openRecord a–f, keep/release, historie jako ponechaná záložka, zásobník zavřených, limit s přednostní dočasnou
+- [x] Maximalizace s pruhem, Alt+M, Esc, Alt+Shift+T, bliknutí panelu
+- [x] usePaneChrome a ovládání v PageHeader; PaneTabBar jen se záložkami, tabBarMode
+- [x] Trvalé koncepty (IndexedDB), DraftRestoredBanner
+- [x] serializeLayout / applyLayout, LayoutMenu (Alt+L)
+- [x] Ukázka, changelog, components.md, katalog, testy, typová kontrola, sestavení
+
 ## Verze 2.15.0 (skupiny a hledání v menu, výraznější kontext)
 - [x] Oddělené skupiny menu s vodicí linkou, uloženým sbalením, odznaky a aktivní tečkou
 - [x] Hledání bez diakritiky, klávesové ovládání, zkratka / a překryv sbaleného menu

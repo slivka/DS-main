@@ -229,6 +229,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Komponenty uvnitř panelu se přizpůsobují šířce panelu přes container queries (`@min-[…]`), nikdy přes breakpointy okna. Horní lišta a boční menu se řídí šířkou okna.
 - Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K a Ctrl+B; panely a záložky ovládá Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T (kontrola přes `event.code`). Cmd/Ctrl+W ani Ctrl+1–9 nepřepisuj.
 - Stav panelů serializuj přes `serializePaneTabs` / `parsePaneTabs` (databáze) a `serializeActiveTabUrl` (URL).
+- Od 2.16.0: menu otevírá dočasnou záložku (`target: 'preview'`), záznamy ze seznamu vždy `openRecord(route, params, { fromTabId: usePane().tabId, isNew, modifiers: event })`. Stránka v panelu vždy začíná `PageHeader` – ten sám vykreslí historii, špendlík, listování (po `registerRecordNav`), maximalizaci a menu ⋯; tato ovládání nepřidávej do stránky ručně.
+- Rozepsané formuláře: `useTabDraft(tabId, initial, key, { route, params, recordVersion: updated_at })`, po uložení `meta.markSaved()`, nad formulářem `DraftRestoredBanner`. `persistDrafts({ userKey, companyId })` volej po přihlášení / změně firmy.
+- Zkratky navíc: Alt+M, Esc (jen při maximalizaci), Alt+Shift+T, Alt+L (LayoutMenu).
 
 
 ## Doklady a platební kalendář (2.7.0)

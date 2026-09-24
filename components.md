@@ -32,6 +32,18 @@
 - Stav: `serializePaneTabs` / `parsePaneTabs` (DB, v1 převede automaticky), `serializeActiveTabUrl` / `parseActiveTabUrl` (URL), `migratePaneStateV1`.
 - Zkratky: Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T.
 
+## Dočasné a ponechané záložky (2.16.0)
+
+- `PaneTab.pinned` (false = dočasná, v panelu nejvýš jedna) a `openerTabId`. Starší stav v2 → `pinned = true`, `openerTabId = null`. Maximalizace se neukládá.
+- `openTab(route, params, { target: 'preview' | 'newTab' | 'adjacentPane' | 'replace', openerTabId })` – `preview` jen aktivuje otevřený záznam, jinak použije dočasnou záložku aktivního panelu (nový krok historie) nebo ji založí za aktivní.
+- `openRecord(route, params, { fromTabId, isNew, modifiers })`: a) otevřený → aktivovat; b) Cmd/Ctrl → ponechaná za fromTab, Cmd/Ctrl+Shift → sousední panel; c) čistý dočasný detail z fromTab → nahradit; d) panel s detaily z fromTab; e) prázdný sousední panel (ne při maximalizaci); f) nová za fromTab. Cílový jiný panel blikne 0,7 s.
+- `keepTab` / `releaseTab` (dirty → false + toast), automatický keep při první změně, přesunu a `openFromHistory`. `reopenClosedTab` (10 posledních), `maximizePane` / `restoreLayout` / `toggleMaximize`, `registerRecordNav(tabId, getOrderedItems)`.
+- `usePaneChrome()` – kontext pro `PageHeader` (historie, dirty, pinned, recordNav, maximalizace, `menuActions`, `dragHandleProps`).
+- `PaneTabBar` jen se záložkami a „»“; `PaneLayout.tabBarMode` 'auto' | 'always'.
+- Koncepty: `useTabDraft(..., { route, params, recordVersion })` → `[value, set, meta]`, `persistDrafts`, `listOrphanDrafts`, `clearDrafts`, `DraftRestoredBanner`.
+- Rozložení: `serializeLayout`, `applyLayout(snapshot, { keepDirty: true })`, `LayoutMenu` (Alt+L).
+- Zkratky: Alt+M, Esc, Alt+Shift+T, Alt+1/2/3 (při maximalizaci přepne maximalizovaný panel).
+
 ## PinnedBar
 
 `PinnedBar` je jednořádková lišta trvalých záložek stránky. Přijímá `items`, `onOpen(id, { newPane })`, `onUnpin(id)`, volitelné `onReorder(ids)` a `texts`. Při prázdném `items` se nevykreslí.
