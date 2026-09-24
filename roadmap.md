@@ -206,6 +206,12 @@
 - [x] BarBreakdownChart, FilterChips
 - [x] Ukázky, testy (19 zelených), typová kontrola, changelog
 
+## Verze 2.8.1 (horní lišta a veřejné nástroje)
+- [x] Vystředit firmu a období, při kolizi je přesunout vlevo
+- [x] Odebrat ikonu z výběru firmy
+- [x] Zpřístupnit sdílené nástroje a hooky přes hlavní vstup knihovny
+- [x] Zachovat metadata místní knihovny bez údajů externího balíčku
+
 ## Verze 2.7.1 (úklid API řádků zápisu)
 - [x] Odstranit toDbLines / fromDbLines / pairNo
 - [x] JournalLinesEditor: mode, mainSide, mainAccount, sideFieldRules; DocumentForm je předává přímo
