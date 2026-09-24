@@ -86,7 +86,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `DataGrid`, `TreeGrid` a vlastní obsah v `ZoomPane` používají jediný `GridToolbar`.
 - Pořadí vlevo: Tabulka/Strom, Rozbalit/Sbalit, Stav k datu, `toolbarLeft`. Pořadí vpravo: Hledat, Filtr, Obnovit, Export, Sloupce, Seskupit, Hustota + zoom, Vybrat více, kompatibilní `actions`, `moreActions`, `addAction`.
 - Oranžová znamená, že ovládání zužuje nebo přeskupuje data: filtr, hledání, seskupení a `GridToggleButton tone="grouping"`. Modrá plná znamená zapnutý režim (`AsOfDateToggle`, `tone="mode"`) nebo primární Přidat.
-- Hlavní parametry obrazovky vkládej do `toolbarLeft`; pomocné filtry do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader`.
+- Hlavní parametry obrazovky vkládej do `toolbarLeft`; pomocné filtry do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader.menuActions`.
 - „Nový“ nikdy nevkládej do `PageHeader`; použij `addAction`. Export v gridu je vždy jediný ikonový `GridExport` s nabídkou. `ExcelExportButton` je v gridu zakázaný a zůstává jen pro samostatný obsah.
 - Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta se v úzkém panelu zalamuje bez vodorovného posuvníku.
 
@@ -237,7 +237,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Komponenty uvnitř panelu se přizpůsobují šířce panelu přes container queries (`@min-[…]`), nikdy přes breakpointy okna. Horní lišta a boční menu se řídí šířkou okna.
 - Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K a Ctrl+B; panely a záložky ovládá Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T (kontrola přes `event.code`). Cmd/Ctrl+W ani Ctrl+1–9 nepřepisuj.
 - Stav panelů serializuj přes `serializePaneTabs` / `parsePaneTabs` (databáze) a `serializeActiveTabUrl` (URL).
-- Od 2.16.0: menu otevírá dočasnou záložku (`target: 'preview'`), záznamy ze seznamu vždy `openRecord(route, params, { fromTabId: usePane().tabId, isNew, modifiers: event })`. Stránka v panelu vždy začíná `PageHeader` – ten sám vykreslí historii, špendlík, listování (po `registerRecordNav`), maximalizaci a menu ⋯; tato ovládání nepřidávej do stránky ručně.
+- Lišta záložek je v každém panelu vždy viditelná, i s jedinou nebo žádnou záložkou. Všechny záložky jsou rovnocenné; nepoužívej dočasné/ponechané záložky ani špendlík v záhlaví.
+- Běžný klik v menu používá `openTab(..., { target: 'replace' })`: aktivní záložku nahradí jako nový krok historie. Cmd/Ctrl+klik používá `newTab`, Cmd/Ctrl+Shift+klik `adjacentPane`.
+- Záznamy ze seznamu vždy otevírej přes `openRecord(route, params, { fromTabId: usePane().tabId, isNew, modifiers: event })`. Čistý detail ze stejného seznamu se nahradí; při neuložených změnách se otevře další záložka; nový záznam vždy další záložka.
+- Stránka v panelu vždy začíná `PageHeader`: vlevo má jen nadpis a dirty tečku, vpravo jen ↑/↓, ←/→, maximalizaci a ⋯. Akce celé stránky dávej do `menuActions`; `actions` je jen pro stránky mimo panel. „Nový“ patří do `DataGrid.addAction`.
+- `LayoutMenu trigger="icon"` patří přes `AppShell.navSearchMenu` vedle hledání v menu, nikdy do horní lišty.
 - Rozepsané formuláře: `useTabDraft(tabId, initial, key, { route, params, recordVersion: updated_at })`, po uložení `meta.markSaved()`, nad formulářem `DraftRestoredBanner`. `persistDrafts({ userKey, companyId })` volej po přihlášení / změně firmy.
 - Zkratky navíc: Alt+M, Esc (jen při maximalizaci), Alt+Shift+T, Alt+L (LayoutMenu).
 

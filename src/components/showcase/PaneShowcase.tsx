@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, FileText, LayoutGrid, ReceiptText, Users, Wallet } from "lucide-react";
+import { BookOpen, FileText, LayoutGrid, ReceiptText, Search, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -52,9 +52,9 @@ const PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
 
-/** Výchozí stav: 1 panel s jednou dočasnou záložkou (pevné id kvůli vykreslení na serveru). */
+/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykreslení na serveru). */
 function initialState(): PaneTabsState {
-  const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued", pinned: false }, 0), id: "tab-start" };
+  const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" }, 0), id: "tab-start" };
   return { version: 2, layout: 1, widths: [1], active: "pane-a", hiddenPanes: null, panes: [{ id: "pane-a", activeTab: tab.id, tabs: [tab] }] };
 }
 
@@ -72,7 +72,7 @@ const INVOICES: Invoice[] = MOCK_JOURNAL.slice(0, 30).map((row: JournalEntry, in
 
 const detailTitle = (id: string) => (id.startsWith("new-") ? "Nová faktura" : `Faktura ${id}`);
 
-/** Seznam faktur: klik = openRecord (pravidla a–f), Cmd/Ctrl = ponechaná záložka, Cmd/Ctrl+Shift = sousední panel. */
+/** Seznam faktur: klik = openRecord, Cmd/Ctrl = nová záložka, Cmd/Ctrl+Shift = sousední panel. */
 function InvoiceList({ title }: { title: string }) {
   const pane = usePane();
   const tabs = usePaneTabs();
@@ -106,14 +106,10 @@ function InvoiceList({ title }: { title: string }) {
     >
       <PageHeader
         title={title}
-        description="Klik na řádek plní detail vedle; Cmd/Ctrl + klik = ponechaná záložka, Cmd/Ctrl + Shift + klik = sousední panel."
-        actions={
-          <Button type="button" size="sm" onClick={() => open(`new-${counter.current++}`, true)}>
-            Nový
-          </Button>
-        }
+        description="Klik na řádek plní detail vedle; Cmd/Ctrl + klik = nová záložka, Cmd/Ctrl + Shift + klik = sousední panel."
+        menuActions={[{ label: "Výkazy", onClick: () => toast.info("Ukázková akce stránky") }]}
       />
-      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} paginated />
+      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }} paginated />
     </div>
   );
 }
@@ -130,7 +126,7 @@ function PageList({ title }: { title: string }) {
   );
   return (
     <div className="space-y-3">
-      <PageHeader title={title} description="Procházejte menu – stránky se střídají v jedné dočasné záložce. Špendlík záložku ponechá." />
+      <PageHeader title={title} description="Běžný klik v menu nahradí obsah aktivní záložky; šipkou zpět se vrátíte." menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]} />
       <DataGrid<JournalEntry> storageKey={`pane-showcase-${title}`} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />
     </div>
   );
@@ -161,12 +157,8 @@ function InvoiceDetail({ id }: { id: string }) {
     <div className="space-y-4">
       <PageHeader
         title={detailTitle(id)}
-        description={invoice ? `${invoice.partner} · ${formatDate(invoice.date)}` : "Nový záznam se otevírá jako ponechaná záložka."}
-        actions={
-          <Button type="button" size="sm" disabled={!dirty} onClick={save}>
-            Uložit
-          </Button>
-        }
+        description={invoice ? `${invoice.partner} · ${formatDate(invoice.date)}` : "Nový záznam se vždy otevře v nové záložce."}
+        menuActions={[{ label: "Uložit", disabled: !dirty, disabledReason: "Nejsou žádné změny", onClick: save }]}
       />
       {draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}
       {draft.conflict ? <DraftRestoredBanner variant="conflict" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}
@@ -185,11 +177,15 @@ function InvoiceDetail({ id }: { id: string }) {
   );
 }
 
-/** Ukázkové menu – obyčejný klik otevírá dočasnou záložku, Cmd/Ctrl + klik ponechanou. */
-function DemoMenu() {
+/** Ukázkové menu – klik nahrazuje aktivní záložku, Cmd/Ctrl + klik otevře novou. */
+function DemoMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void }) {
   const tabs = usePaneTabs();
   return (
     <nav aria-label="Ukázkové menu" className="flex w-48 shrink-0 flex-col gap-0.5 border-r bg-card p-2 text-sm">
+      <div className="mb-2 flex items-center gap-1">
+        <div className="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-md border px-2 text-muted-foreground"><Search className="size-4" /><span className="truncate">Hledat v menu…</span></div>
+        <ShowcaseLayoutMenu layouts={layouts} setLayouts={setLayouts} icon />
+      </div>
       {PAGES.map((page) => {
         const Icon = ICONS[page.icon];
         return (
@@ -220,7 +216,7 @@ function DemoMenu() {
 
 type StoredLayout = SavedLayoutItem & { snapshot: LayoutSnapshot | null };
 
-/** Ukázka režimu více oken: dočasné a ponechané záložky, maximalizace, koncepty a uložená rozložení. */
+/** Ukázka režimu více oken: rovnocenné záložky, maximalizace, koncepty a uložená rozložení. */
 export function PaneShowcase() {
   const [state, setState] = useState<PaneTabsState>(initialState);
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1440);
@@ -270,7 +266,6 @@ export function PaneShowcase() {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-3">
           <ShowcaseLayoutSwitcher maxLayout={maxLayout} />
-          <ShowcaseLayoutMenu layouts={layouts} setLayouts={setLayouts} />
           <div className="flex items-center gap-1">
             {PREVIEW_WIDTHS.map((width) => (
               <Button key={width} type="button" size="sm" variant={previewWidth === width ? "default" : "outline"} onClick={() => setPreviewWidth(width)}>
@@ -292,25 +287,23 @@ export function PaneShowcase() {
           <span className="text-sm text-muted-foreground">Alt+M maximalizace · Esc obnovit · Alt+Shift+T znovu otevřít · Alt+L rozložení · Alt+1/2/3 · Alt+W</span>
         </div>
         <ol className="grid gap-1 rounded-lg border bg-card p-3 text-sm text-muted-foreground md:grid-cols-2">
-          <li>1. V 1 panelu procházejte menu – jedna dočasná záložka (kurzíva) bez lišty; ← zpět, podržením ← historie s ⧉.</li>
-          <li>2. Špendlík v záhlaví záložku ponechá; další klik v menu přidá druhou záložku a objeví se lišta.</li>
-          <li>3. Přepněte na 2 panely a klikejte na řádky Vydaných faktur – detail se plní vpravo, listujte ↑ ↓; Nový = ponechaná záložka.</li>
+          <li>1. Lišta je viditelná i s jedinou záložkou. Klik v menu ji nahradí; ← vrátí předchozí stránku.</li>
+          <li>2. Cmd/Ctrl + klik otevře novou záložku; Cmd/Ctrl + Shift + klik sousední panel.</li>
+          <li>3. Ve 2 panelech další řádek nahradí čistý detail vpravo; při změně otevře nový detail.</li>
           <li>4. Maximalizujte panel ikonou nebo Alt+M, obnovte Esc.</li>
           <li>5. Rozepište popis faktury a obnovte stránku – nabídne se rozepsaná verze.</li>
-          <li>6. Rozložení ▾ – uložte aktuální rozložení a později ho obnovte.</li>
+          <li>6. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
         </ol>
 
         <div className="overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
             <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
             <div className="flex h-[600px]">
-              <DemoMenu />
+              <DemoMenu layouts={layouts} setLayouts={setLayouts} />
               <PaneLayout
                 minPaneWidth={MIN_PANE_WIDTH}
                 renderTab={renderTab}
                 getTabIcon={(tab) => ICONS[tab.icon as IconName]}
-                isPinned={(tab) => pinned.includes(tab.route)}
-                onTogglePin={(tab) => setPinned((ids) => (ids.includes(tab.route) ? ids.filter((id) => id !== tab.route) : [...ids, tab.route]))}
               />
             </div>
           </div>
@@ -320,11 +313,12 @@ export function PaneShowcase() {
   );
 }
 
-function ShowcaseLayoutMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void }) {
+function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void; icon?: boolean }) {
   const tabs = usePaneTabs();
   return (
     <LayoutMenu
       items={layouts}
+      trigger={icon ? "icon" : "default"}
       onSave={({ name, isDefault, snapshot }) => {
         const item: StoredLayout = { id: `layout-${Date.now()}`, name, isDefault, panes: snapshot?.layout ?? 1, snapshot };
         setLayouts((items) => [...items.map((other) => (isDefault ? { ...other, isDefault: false } : other)), item]);
@@ -351,7 +345,7 @@ function ShowcaseLayoutMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; 
   );
 }
 
-/** Připnuté stránky – klik otevře dočasnou záložku, Ctrl/Cmd nebo prostřední tlačítko ponechanou. */
+/** Připnuté stránky – klik nahradí aktivní záložku, Ctrl/Cmd nebo prostřední tlačítko otevře novou. */
 function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (update: (ids: string[]) => string[]) => void }) {
   const tabs = usePaneTabs();
   if (!tabs) return null;
@@ -368,7 +362,7 @@ function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (up
       }))}
       onOpen={(id, { newPane }) => {
         const page = PAGES.find((item) => item.route === id);
-        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "preview", title: page.title, icon: page.icon });
+        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "replace", title: page.title, icon: page.icon });
       }}
       onUnpin={(id) => setPinned((ids) => ids.filter((item) => item !== id))}
       onReorder={(ids) => setPinned(() => ids)}

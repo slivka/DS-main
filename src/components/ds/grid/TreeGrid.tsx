@@ -451,8 +451,8 @@ export function TreeGrid<Row extends TreeGridRow>({
             title={t.columnsTitle}
           />
           <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
-          {actions}
           {selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}
+          {actions}
           {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}
           {addAction ? <GridAddActions actions={addAction} /> : null}
         </>}

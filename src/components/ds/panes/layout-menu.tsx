@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ArrowDown, ArrowUp, ChevronDown, Columns2, Columns3, Square, Star, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, Columns2, Columns3, MoreHorizontal, Square, Star, Trash2 } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
@@ -95,14 +95,16 @@ export interface LayoutMenuProps {
   onReorder?: (ids: string[]) => void;
   /** Zkratka Alt+L otevře nabídku. Výchozí true. */
   shortcut?: boolean;
+  /** Textové tlačítko nebo kompaktní ikona ⋯ do řádku hledání menu. */
+  trigger?: "default" | "icon";
   texts?: Partial<LayoutMenuTexts>;
   className?: string;
 }
 
 const PANE_ICONS = { 1: Square, 2: Columns2, 3: Columns3 } as const;
 
-/** Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3 – uložená rozložení panelů. */
-export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, texts, className }: LayoutMenuProps) {
+/** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
+export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
   const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...texts };
   const tabs = usePaneTabs();
   const [open, setOpen] = React.useState(false);
@@ -145,10 +147,16 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
         <Tooltip>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="outline" size="sm" className={cn("gap-1", className)}>
-                {t.trigger}
-                <ChevronDown className="size-4" aria-hidden="true" />
-              </Button>
+              {trigger === "icon" ? (
+                <Button type="button" variant="ghost" size="icon" className={cn("size-8 shrink-0 text-sidebar-foreground", className)} aria-label={t.trigger}>
+                  <MoreHorizontal className="size-4" aria-hidden="true" />
+                </Button>
+              ) : (
+                <Button type="button" variant="outline" size="sm" className={cn("gap-1", className)}>
+                  {t.trigger}
+                  <ChevronDown className="size-4" aria-hidden="true" />
+                </Button>
+              )}
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>

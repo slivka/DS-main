@@ -130,13 +130,15 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
-## Changelog 2.17.0 – jednotný řádek akcí gridu
+## Changelog 2.17.0 – jednotný řádek akcí gridu a rovnocenné záložky
 
 Nové:
 - Veřejné `GridToolbar`, `GridToolbarSeparator`, `AsOfDateToggle`, `GridToggleButton`, `GridExpandControls` a typy akcí/exportů.
 - `DataGrid`: `viewMode`, `onViewModeChange`, `asOf`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`.
 - `TreeGrid`: `viewMode`, `onViewModeChange`, `asOf`, `toolbarLeft`, `filters`, `filterChips`, `onClearFilters`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`, `loading`.
 - Ctrl/Cmd+kolečko používá stejný plynulý výpočet nad celým blokem DataGridu, TreeGridu i ZoomPane.
+- `PageHeader.menuActions`, `AppShell.navSearchMenu` a `LayoutMenu trigger="icon"` přesouvají akce stránky do ⋯ a uložená rozložení vedle hledání v menu.
+- Lišta záložek je vždy viditelná. Všechny záložky jsou rovnocenné a `openerTabId` dál váže detail k seznamu.
 
 Změny chování a přechod:
 - **Breaking:** TreeGrid už nemá textová tlačítka ani segment úrovní; rozbalení/sbalení je ikonové a více úrovní je v nabídce.
@@ -145,26 +147,15 @@ Změny chování a přechod:
 - **Breaking:** aktivní `GroupControl`, včetně skrytého seskupení, je oranžový místo modrého nebo červeného.
 - Stávající `actions` zůstává funkční, ale nové primární akce přesuňte do `addAction` a vedlejší do `moreActions`.
 - `AsOfDateField` je zastaralý; v řádku akcí použijte `AsOfDateToggle`.
+- **Breaking:** odstraňte `PaneTab.pinned`, target `preview`, `keepTab`, `releaseTab` a `PaneLayout.tabBarMode`. Běžný klik používá `target: 'replace'`; staré uložené `pinned` se bezpečně ignoruje.
+- **Breaking:** `PaneLayout` už nepřijímá panelové `isPinned` / `onTogglePin`; samostatný `PinnedBar` zůstává beze změny.
+- **Breaking:** `PageHeader.actions` se uvnitř panelu nevykreslí; akce celé stránky přesuňte do `menuActions`, „Nový“ do gridového `addAction`.
+- `PageHeader` má v panelu vpravo pouze ↑/↓, ←/→, maximalizaci a ⋯. Alt+↑/↓ listuje záznamy, Alt+←/→ historií a Alt+M maximalizuje.
+- `LayoutMenu` přesuňte z horní lišty do `AppShell.navSearchMenu` a použijte `trigger="icon"`.
 
-## Changelog 2.16.0 – dočasné a ponechané záložky, maximalizace, koncepty, rozložení
+## Changelog 2.16.0 – nahrazeno ve 2.17.0
 
-Nové:
-- Záložka má `pinned` (dočasná / ponechaná) a `openerTabId`; v panelu je nejvýš jedna dočasná záložka (titulek kurzívou). Starší stav v2 se převede automaticky (`pinned = true`, `openerTabId = null`, `normalizePaneTabsState`).
-- `usePaneTabs`: `openTab(..., { target: 'preview' })`, `openRecord(route, params, { fromTabId, isNew, modifiers })` podle pravidel a–f, `keepTab`, `releaseTab`, `openFromHistory`, `goToHistory`, `reopenClosedTab` (zásobník 10), `maximizePane`, `restoreLayout`, `toggleMaximize`, `maximized`, `registerRecordNav`, `serializeLayout`, `applyLayout`.
-- Čisté funkce: `previewTabInState`, `openRecordInState`, `keepTabInState`, `releaseTabInState`, `openFromHistoryInState`, `reopenClosedTabInState`, `replaceTabContentInState`, `insertTabInState`, `pickEvictionVictim`, `serializeLayout`, `applyLayoutInState`.
-- Koncepty: `useTabDraft(tabId, initial, key, { route, params, recordVersion })` vrací navíc `meta` (`restored`, `conflict`, `applyConflict`, `discard`, `markSaved`); `persistDrafts({ userKey, companyId, maxAgeDays })` zapne IndexedDB (idb-keyval 6.2.1), `listOrphanDrafts`, `clearDrafts`, vlastní adaptér `DraftStorageAdapter`. Ukládání s debounce 1 s.
-- `DraftRestoredBanner`, `LayoutMenu` (Alt+L), `usePaneChrome`, `buildTabMenuActions`.
-- `PageHeader` uvnitř panelu: ← → (podržení 400 ms / pravé tlačítko = historie s ⧉), ●, špendlík, ↑ n / N ↓, maximalizace, menu ⋯, nadpis jako úchyt přetažení, dvojklik = ponechat. Nový volitelný prop `paneTexts`.
-- `PaneLayout`: `tabBarMode: 'auto' | 'always'`, pruh „Panel N je maximalizovaný · Obnovit rozložení“, bliknutí cílového panelu (0,7 s).
-- Zkratky: Alt+M, Esc (obnovit rozložení), Alt+Shift+T, Alt+1/2/3 při maximalizaci přepne maximalizovaný panel.
-
-Změny chování (přechod z 2.15):
-- `PaneTabBar` už nemá ← →, ⋯ ani props `maximized`, `onToggleMaximize` (nyní jen dvojklik na prázdné místo), `pinned`, `onTogglePin` (nahrazeno `isPinned(tab)` / `onTogglePin(tab)`); texty `back`, `forward`, `more`, `maximize`, `restore`, `closeOthers`, `closePane`, `closeOtherTabs`, `moveToPane`, `duplicate`, `pin`, `unpin` jsou v `PaneChromeTexts`.
-- `getOpenTarget` / `PaneLink` vrací pro obyčejný klik `'preview'` místo `'replace'` – procházení menu jde do jedné dočasné záložky.
-- `newTab`, `adjacentPane`, přesun záložky, duplikace a první neuložená změna záložku ponechají.
-- Po zavření aktivní záložky se aktivuje její opener (jinak soused).
-- V režimu `'auto'` je lišta záložek skrytá, dokud žádný viditelný panel nemá 2+ záložek.
-- Při plném panelu se zavírá přednostně čistá dočasná záložka.
+Koncepty, historie, maximalizace, listování záznamy a uložená rozložení zůstávají. Dočasné/ponechané záložky, `pinned`, `preview`, `keepTab`, `releaseTab` a `tabBarMode` byly ve 2.17.0 odstraněny; postup přechodu je v changelogu 2.17.0 výše.
 
 ## Changelog 2.15.0 – skupiny a hledání v menu
 
@@ -187,7 +178,7 @@ Každý panel obsahuje seznam záložek. **Breaking changes** a přechod:
 - `usePaneDirty(isDirty)` → `useTabDirty(isDirty, key?)`. Příznak se drží podle záložky i po jejím odpojení.
 - `usePaneManager().openInPane(route, params, { target: 'active' | 'new' | paneId, uniqueKey })` → `usePaneTabs().openTab(route, params, { target: 'replace' | 'newTab' | 'adjacentPane', kind: 'list' | 'record', recordKey, title, shortTitle, icon })`. `uniqueKey: true` = `kind: 'record'`. `confirmAllPanesClean` a `registerDirty` odstraněny.
 - Stav: `PaneState` / `PaneLayoutState` (v1) → `PaneTabsState` (`version: 2`). Uložené hodnoty převede `parsePaneTabs` automaticky, objekty v1 `migratePaneStateV1`. `serializePanes` / `parsePanes` → `serializePaneTabs` / `parsePaneTabs` (DB) a `serializeActiveTabUrl` / `parseActiveTabUrl` (URL, jen aktivní záložka).
-- `PaneLayout` je řízený přes `PaneTabsProvider` (props `state`, `onChange`, `onSaveTab`, `onNewTabRequest`); props `panes`, `activePaneId`, `layout`, `widths`, `onChange`, `renderPane`, `defaultRoute` nahrazuje `renderTab(tab, pane)` a `getTabIcon`. `isPinned` / `onTogglePin` dostávají záložku. Samostatný křížek panelu nahradilo menu ⋯.
+- `PaneLayout` je řízený přes `PaneTabsProvider` (props `state`, `onChange`, `onSaveTab`, `onNewTabRequest`); props `panes`, `activePaneId`, `layout`, `widths`, `onChange`, `renderPane`, `defaultRoute` nahrazuje `renderTab(tab, pane)` a `getTabIcon`. Samostatný křížek panelu nahradilo menu ⋯.
 - `usePane()` navíc vrací `tabId`; `close()` zavírá záložku.
 - Zkratky: Ctrl+1/2/3 a Ctrl+Shift+W zrušeny → Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T.
 - Nové: `PaneTabBar`, `PaneLink`, `getOpenTarget`, `handlePaneLinkEvent`, `useTabDraft`, `useTabScrollRestore`, `clearTabState`, `MAX_TABS_PER_PANE`. Navigace AppShellu uvnitř `PaneTabsProvider` otevírá záložky.
@@ -205,7 +196,7 @@ Každý panel obsahuje seznam záložek. **Breaking changes** a přechod:
 
 ## Changelog 2.10.0
 
-- **PaneLayout**: `setLayout(2 | 3)` doplní chybějící prázdné panely (`route: ""`) a aktivuje první nový. Nové props `renderEmpty`, `isPinned`, `onTogglePin`; nové texty `emptyTitle`, `emptyHint`, `pin`, `unpin`. `paneKey` vrací pro prázdný panel `null`.
+- **PaneLayout**: `setLayout(2 | 3)` doplní chybějící prázdné panely a aktivuje první nový. Prop `renderEmpty` upraví prázdný obsah; lišta záložek zůstává vždy viditelná.
 - **PinnedBar**: nová lišta trvalých záložek s props `items`, `onOpen(id, { newPane })`, `onUnpin`, `onReorder`, `texts` a `className`.
 - **AppShell**: nový slot `subHeader`, který se vykreslí pod horní lištou a skryje při aktivním panelu Nastavení/Administrace.
 - **DataGrid**: nové props `onRefresh` a `refreshing`; výběr více používá `GridSelectionToggle` s počtem vybraných řádků.

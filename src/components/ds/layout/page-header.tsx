@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Copy, Maximize2, Minimize2, MoreHorizontal, Pin, PinOff } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Copy, Maximize2, Minimize2, MoreHorizontal, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -19,37 +19,48 @@ export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"di
   title: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
+  /** Akce celé stránky; uvnitř panelu se zobrazí nahoře v menu ⋯. */
+  menuActions?: PageHeaderMenuAction[];
   /** Texty ovládání panelu (jen uvnitř PaneLayout). */
   paneTexts?: Partial<PaneChromeTexts>;
 }
 
+export interface PageHeaderMenuAction {
+  label: string;
+  icon?: LucideIcon;
+  onClick: () => void;
+  disabled?: boolean;
+  disabledReason?: string;
+  destructive?: boolean;
+}
+
 /**
  * Hlavička stránky – nadpis, popis a akce vpravo.
- * Uvnitř PaneLayout navíc vykreslí ovládání záložky (historie, ponechání, listování, maximalizace, menu ⋯).
+ * Uvnitř PaneLayout navíc vykreslí ovládání záznamu, historie, maximalizaci a menu ⋯.
  */
-export function PageHeader({ title, description, actions, paneTexts, className, ...props }: PageHeaderProps) {
+export function PageHeader({ title, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
   const chrome = usePaneChrome();
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
+  React.useEffect(() => {
+    if (import.meta.env.DEV && chrome && actions) console.warn("PageHeader: v panelu použijte menuActions místo actions.");
+  }, [chrome, actions]);
 
   return (
     <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)} {...props}>
       <div className="flex min-w-0 items-start gap-2">
-        {chrome ? <HistoryButtons chrome={chrome} t={t} /> : null}
         <div className="min-w-0 space-y-1">
           <div className="flex min-w-0 items-center gap-1.5">
             {chrome ? (
               <h1
                 {...chrome.dragHandleProps}
                 className="typo-title min-w-0 cursor-grab truncate text-primary active:cursor-grabbing"
-                onDoubleClick={chrome.keep}
-                title={chrome.pinned ? undefined : t.keep}
               >
                 {title}
               </h1>
             ) : (
               <h1 className="typo-title text-primary">{title}</h1>
             )}
-            {chrome ? <TitleStatus chrome={chrome} t={t} /> : null}
+            {chrome?.dirty ? <span role="img" aria-label={t.unsaved} title={t.unsaved} className="size-2 shrink-0 rounded-full bg-primary" /> : null}
           </div>
           {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
         </div>
@@ -57,8 +68,9 @@ export function PageHeader({ title, description, actions, paneTexts, className, 
       {actions || chrome ? (
         <div className="flex flex-wrap items-center gap-2">
           {chrome?.recordNav ? <RecordNavButtons chrome={chrome} t={t} /> : null}
-          {actions}
-          {chrome ? <PaneButtons chrome={chrome} t={t} /> : null}
+          {!chrome ? actions : null}
+          {chrome ? <HistoryButtons chrome={chrome} t={t} /> : null}
+          {chrome ? <PaneButtons chrome={chrome} t={t} pageActions={menuActions} /> : null}
         </div>
       ) : null}
     </div>
@@ -143,8 +155,8 @@ function HistoryButtons({ chrome, t }: ChromeProps) {
                   {!step.current ? (
                     <button
                       type="button"
-                      aria-label={t.openAsKept}
-                      title={t.openAsKept}
+                       aria-label={t.openInNewTab}
+                       title={t.openInNewTab}
                       className="flex size-6 items-center justify-center rounded hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
                       onPointerDown={(event) => event.stopPropagation()}
                       onClick={(event) => {
@@ -170,28 +182,10 @@ function HistoryButtons({ chrome, t }: ChromeProps) {
   );
 }
 
-/** ● při neuložených změnách a špendlík (obrys = dočasná, plná = ponechaná). */
-function TitleStatus({ chrome, t }: ChromeProps) {
-  return (
-    <TooltipProvider>
-      <span className="flex shrink-0 items-center gap-1">
-        {chrome.dirty ? <span role="img" aria-label={t.unsaved} title={t.unsaved} className="size-2 rounded-full bg-primary" /> : null}
-        <IconButton
-          label={chrome.pinned ? t.release : t.keep}
-          aria-pressed={chrome.pinned}
-          onClick={() => (chrome.pinned ? chrome.release() : chrome.keep())}
-          className={cn("size-7", chrome.pinned ? "text-primary" : "text-muted-foreground")}
-        >
-          {chrome.pinned ? <Pin className="size-4 fill-current" /> : <PinOff className="size-4" />}
-        </IconButton>
-      </span>
-    </TooltipProvider>
-  );
-}
-
 /** ↑ n / N ↓ – listování záznamy v pořadí seznamu. */
 function RecordNavButtons({ chrome, t }: ChromeProps) {
-  const nav = chrome.recordNav!;
+  const nav = chrome.recordNav;
+  if (!nav) return null;
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
@@ -210,7 +204,7 @@ function RecordNavButtons({ chrome, t }: ChromeProps) {
 }
 
 /** Maximalizace (jen při 2–3 panelech) a menu ⋯. */
-function PaneButtons({ chrome, t }: ChromeProps) {
+function PaneButtons({ chrome, t, pageActions }: ChromeProps & { pageActions: PageHeaderMenuAction[] }) {
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
@@ -231,6 +225,17 @@ function PaneButtons({ chrome, t }: ChromeProps) {
             <TooltipContent>{t.more}</TooltipContent>
           </Tooltip>
           <DropdownMenuContent align="end" className="min-w-64">
+            {pageActions.length ? <DropdownMenuLabel>{t.pageActions}</DropdownMenuLabel> : null}
+            {pageActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <DropdownMenuItem key={action.label} disabled={action.disabled} className={cn(action.destructive && "text-destructive focus:text-destructive")} title={action.disabledReason} onSelect={action.onClick}>
+                  {Icon ? <Icon className="size-4" /> : null}
+                  {action.label}
+                </DropdownMenuItem>
+              );
+            })}
+            {pageActions.length ? <DropdownMenuSeparator /> : null}
             {chrome.menuActions.map((action) => (
               <React.Fragment key={action.id}>
                 {action.separatorBefore ? <DropdownMenuSeparator /> : null}
