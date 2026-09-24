@@ -1,5 +1,10 @@
 # Roadmap
 
+## Verze 2.20.1 (zoom a hustota kontextového řádku gridu)
+- [x] Škálovat `GridContextBar` stejným zoomem a hustotou jako `GridToolbar`
+- [x] Převést ovládací prvky období a knihy na společné rozměry v `em`
+- [x] Ověřit DataGrid i TreeGrid při 60 %, 100 %, 140 % a kompaktní hustotě
+
 ## Verze 2.20.0 (kontextový řádek gridu a hlavičky bez podtitulků)
 - [x] Přidat `GridContextBar`, `GridPeriodFilter`, `GridBookSelect` a veřejné nástroje období
 - [x] Zapojit volitelné `period` a `book` do DataGridu a TreeGridu

@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.20.1 – zoom a hustota kontextového řádku
+
+- `GridContextBar` přijímá volitelné `zoom` a `density`; bez nich hodnoty převezme z `GridZoomContext`.
+- Období, posun, vymazání a výběr knihy se škálují stejně jako ovládací prvky v `GridToolbar`, včetně kompaktní hustoty.
+- `DataGrid` a `TreeGrid` předávají oběma řádkům stejné hodnoty. Ctrl/Cmd + kolečko nad kontextovým řádkem mění zoom celého gridu.
+- Bez breaking changes.
+
 ## Struktura
 
 ```text
