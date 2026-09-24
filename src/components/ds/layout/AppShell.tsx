@@ -13,7 +13,7 @@ import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
-import { highlightNavMatch, matchesNavSearch, normalizeNavSearch, withNavSections } from "./nav-search";
+import { filterNavGroups, highlightNavMatch, withNavSections } from "./nav-search";
 
 export type NavItem = {
   to: string;
@@ -144,10 +144,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const resultRefs = useRef<Array<HTMLAnchorElement | null>>([]);
-  const filteredGroups = useMemo(() => groups.map((group) => {
-    const groupMatch = normalizeNavSearch(group.label).includes(normalizeNavSearch(query));
-    return { ...group, items: query ? group.items.filter((item) => groupMatch || matchesNavSearch(item.label, group.label, query)) : group.items };
-  }).filter((group) => !query || group.items.length > 0), [groups, query]);
+  const filteredGroups = useMemo(() => filterNavGroups(groups, query), [groups, query]);
   const sectionedGroups = useMemo(() => withNavSections(filteredGroups), [filteredGroups]);
   const enabledResults = filteredGroups.flatMap((group) => group.items).filter((item) => !item.disabled);
   const [highlighted, setHighlighted] = useState(0);

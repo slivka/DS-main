@@ -28,6 +28,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: "components",
     label: "Komponenty",
+    section: "Knihovna",
     items: [
       { to: "/components/grid", label: "Datová mřížka", icon: LayoutGrid },
       { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet },
@@ -40,6 +41,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: "accounting",
     label: "Účetnictví",
+    section: "Ukázky aplikace",
     items: [
       { to: "/components/accounting-forms", label: "Účetní doklady", icon: Landmark, badge: "3" },
       { to: "/components/grid", label: "Účetní deník", icon: LayoutGrid },
@@ -48,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: "planned",
     label: "Další moduly",
+    section: "Ukázky aplikace",
     defaultCollapsed: true,
     items: [
       { to: "/components/navigation", label: "Majetek", icon: Settings2, disabled: true },
@@ -60,6 +63,7 @@ const TARGETS = NAV_GROUPS.flatMap((group) => group.items.map((item) => ({ label
 const COMPANY_PANEL = [{
   id: "company-settings",
   label: "Nastavení firmy",
+  section: "Firma",
   items: [
     { to: "/components/navigation", label: "Základní údaje", icon: SlidersHorizontal },
     { to: "/components/forms", label: "Předvolby dokladů", icon: Settings2 },
@@ -69,6 +73,7 @@ const COMPANY_PANEL = [{
 const ADMIN_PANEL = [{
   id: "administration",
   label: "Administrace",
+  section: "Správa systému",
   items: [
     { to: "/components/navigation", label: "Uživatelé a oprávnění", icon: ShieldCheck },
     { to: "/guidelines", label: "Pravidla systému", icon: BookOpen },

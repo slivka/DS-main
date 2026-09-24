@@ -9,12 +9,27 @@ export type NavSectionEntry<T extends NavSectionGroup> = {
   sectionStart: string | null;
 };
 
+type SearchableNavGroup = NavSectionGroup & {
+  label: string;
+  items: Array<{ label: string }>;
+};
+
 /** Označí začátky po sobě jdoucích bloků menu. Skupiny bez sekce zůstávají samostatné. */
 export function withNavSections<T extends NavSectionGroup>(groups: T[]): NavSectionEntry<T>[] {
   return groups.map((group, index) => ({
     group,
     sectionStart: group.section && group.section !== groups[index - 1]?.section ? group.section : null,
   }));
+}
+
+/** Filtruje skupiny podle názvu skupiny a položek; název sekce se záměrně neprohledává. */
+export function filterNavGroups<T extends SearchableNavGroup>(groups: T[], query: string): T[] {
+  if (!query) return groups;
+  const normalizedQuery = normalizeNavSearch(query);
+  return groups.map((group) => {
+    const groupMatch = normalizeNavSearch(group.label).includes(normalizedQuery);
+    return { ...group, items: group.items.filter((item) => groupMatch || matchesNavSearch(item.label, group.label, query)) };
+  }).filter((group) => group.items.length > 0) as T[];
 }
 
 /** Text pro hledání v menu bez rozdílů diakritiky a velikosti písmen. */
