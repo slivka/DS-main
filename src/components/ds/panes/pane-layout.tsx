@@ -150,7 +150,6 @@ function PaneLayoutInner({
       if (left < minShare || right < minShare) return;
       next[index] = left;
       next[index + 1] = right;
-      api.activatePane(api.state.active);
       onWidths(next);
     };
     const onUp = () => {
@@ -160,12 +159,7 @@ function PaneLayoutInner({
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
   };
-  const widthsRef = useRef<(widths: number[]) => void>(() => {});
-  widthsRef.current = (widths) => {
-    // Šířky nejsou akce záložek – mění se přímo ve stavu.
-    (api as PaneTabsApi & { __setWidths?: (w: number[]) => void }).__setWidths?.(widths);
-  };
-  const onWidths = (widths: number[]) => widthsRef.current(widths);
+  const onWidths = (widths: number[]) => api.setWidths(widths);
 
   const onDragEnd = (event: DragEndEvent) => {
     const tabId = String(event.active.id);

@@ -76,6 +76,8 @@ export type PaneTabsApi = {
   back: (tabId: string) => void;
   forward: (tabId: string) => void;
   setTabTitle: (tabId: string, title: string, shortTitle?: string) => void;
+  /** Podíly šířek viditelných panelů. */
+  setWidths: (widths: number[]) => void;
   isTabDirty: (tabId: string) => boolean;
   /** Žádost o novou záložku (Alt+T) – typicky otevře CommandPalette. */
   requestNewTab: () => void;
@@ -312,6 +314,7 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     back: (tabId) => step(tabId, -1),
     forward: (tabId) => step(tabId, 1),
     setTabTitle: (tabId, title, shortTitle) => commit(setTabTitleInState(stateRef.current, tabId, title, shortTitle)),
+    setWidths: (widths) => commit({ ...stateRef.current, widths }),
     isTabDirty,
     requestNewTab: () => onNewTabRequest?.(),
     reportMaxLayout,
