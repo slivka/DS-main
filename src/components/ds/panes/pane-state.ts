@@ -371,7 +371,7 @@ export function previewTabInState(
 
 export type OpenRecordModifiers = { mod?: boolean; shift?: boolean };
 
-export type OpenRecordOptions = {
+export type OpenRecordStateOptions = {
   fromTabId?: string | null;
   isNew?: boolean;
   modifiers?: OpenRecordModifiers;
@@ -388,7 +388,7 @@ const adjacentIndex = (count: number, index: number) => (count < 2 ? -1 : index 
 export function openRecordInState(
   state: PaneTabsState,
   input: CreateTabInput,
-  options: OpenRecordOptions = {},
+  options: OpenRecordStateOptions = {},
   isDirty: (tabId: string) => boolean = () => false,
   now = Date.now(),
 ): OpenTabResult & { cancelMaximize?: boolean } {
