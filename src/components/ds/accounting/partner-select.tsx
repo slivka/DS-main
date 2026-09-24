@@ -63,6 +63,8 @@ export function PartnerSelect({
   const [query, setQuery] = useState("");
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
   const suppressFocusOpen = useRef(false);
+  // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.
+  const pointerDown = useRef(false);
 
   const changeOpen = (next: boolean) => {
     if (!next) suppressFocusOpen.current = true;
@@ -84,12 +86,19 @@ export function PartnerSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
+          onPointerDownCapture={() => {
+            pointerDown.current = true;
+          }}
+          onPointerUp={() => {
+            pointerDown.current = false;
+          }}
           onFocus={() => {
-            if (disabled || suppressFocusOpen.current) return;
+            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
             changeOpen(true);
           }}
           onBlur={() => {
             suppressFocusOpen.current = false;
+            pointerDown.current = false;
           }}
           className={cn("h-9 w-full justify-between font-normal", className)}
         >

@@ -100,6 +100,8 @@ export function AccountSelect({
   const [query, setQuery] = useState(initialSearch ?? "");
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
   const suppressFocusOpen = useRef(false);
+  // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.
+  const pointerDown = useRef(false);
 
   useEffect(() => setQuery(initialSearch ?? ""), [initialSearch]);
 
@@ -151,12 +153,19 @@ export function AccountSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
+          onPointerDownCapture={() => {
+            pointerDown.current = true;
+          }}
+          onPointerUp={() => {
+            pointerDown.current = false;
+          }}
           onFocus={() => {
-            if (disabled || suppressFocusOpen.current) return;
+            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
             changeOpen(true);
           }}
           onBlur={() => {
             suppressFocusOpen.current = false;
+            pointerDown.current = false;
           }}
           className={cn("w-full justify-between font-normal", className)}
         >
