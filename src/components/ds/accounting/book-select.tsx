@@ -73,7 +73,7 @@ export function BookSelect({
   }, [onChange, single, value]);
 
   if (single) {
-    return <span id={id} className={cn("flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground", className)}>{formatBook(single, typeLabels)}</span>;
+    return <output id={id} className={cn("flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground", className)}>{formatBook(single, typeLabels)}</output>;
   }
 
   return (

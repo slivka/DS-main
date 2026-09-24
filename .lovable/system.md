@@ -65,6 +65,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Potvrzení vždy přes `ConfirmDialog`, nikdy `window.confirm`.
 - Výběry vždy `OptionSelect` / `EntitySelect` / `AccountSelect`, nikdy nativní
   `select`.
+- Výběr s jedinou možností se nezobrazuje jako zakázaný select, ale jako text hodnoty.
 - Texty komponent se předávají přes props; výchozí hodnoty jsou české
   (aplikace běží česky i slovensky).
 
@@ -97,7 +98,6 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - „Celé období“ je neutrální. Měsíc, čtvrtletí, pololetí, období od začátku roku a vlastní rozsah jsou oranžové, protože zužují data.
 - Období respektuje `fiscalFrom` a `fiscalTo`, i když účetní rok nezačíná v lednu. Stav může aplikace zachovat přes `useTabDraft`.
 - Kontextový řádek se škáluje se zoomem a hustotou gridu stejně jako řádek akcí.
-- Výběr s jedinou možností se nezobrazuje jako zakázaný select, ale jako text hodnoty.
 
 ## Export do Excelu
 
