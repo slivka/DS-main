@@ -12,6 +12,7 @@ import { applyFontScale } from "../../../lib/font-scale";
 import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
+import type { OpenTabTarget } from "../panes/pane-state";
 import { highlightNavMatch, matchesNavSearch, normalizeNavSearch } from "./nav-search";
 
 export type NavItem = {

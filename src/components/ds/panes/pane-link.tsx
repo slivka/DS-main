@@ -6,13 +6,13 @@ import type { OpenTabTarget } from "./pane-state";
 /**
  * Způsob otevření podle události myši:
  * Cmd/Ctrl + Shift + klik → sousední panel, Cmd/Ctrl + klik nebo prostřední tlačítko → nová záložka,
- * jinak nahrazení aktivní záložky.
+ * jinak 'preview' – dočasná záložka aktivního panelu (od 2.16.0; dříve 'replace').
  */
 export function getOpenTarget(event: Pick<MouseEvent, "ctrlKey" | "metaKey" | "shiftKey" | "button">): OpenTabTarget {
   const modifier = event.ctrlKey || event.metaKey;
   if (modifier && event.shiftKey) return "adjacentPane";
   if (modifier || event.button === 1) return "newTab";
-  return "replace";
+  return "preview";
 }
 
 /**
