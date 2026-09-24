@@ -250,7 +250,7 @@ export function formatAmount(
   const n = nzero(value);
   const [int, dec] = Math.abs(n).toFixed(decimals).split(".");
   const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, NBSP);
-  return `${n < 0 ? "-" : ""}${grouped}${dec ? `,${dec}` : ""}`;
+  return `${n < 0 ? "−" : ""}${grouped}${dec ? `,${dec}` : ""}`;
 }
 
 /** Částka včetně měny podle nastavení aplikace. */

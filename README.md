@@ -7,10 +7,10 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 ## Instalace písem
 
-Hostitelská aplikace musí v hlavičce načíst Work Sans 400–700 a JetBrains Mono 500–700:
+Hostitelská aplikace musí v hlavičce načíst Work Sans 400–700 a JetBrains Mono 400–600:
 
 ```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600;700&display=swap" />
 ```
 
 ## Struktura
@@ -124,6 +124,13 @@ měna podle nastavení aplikace.
 4. Ukázkové stránky v `src/routes` použijte jako vzor a postupně je nahraďte
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
+
+## Changelog 2.11.0
+
+- Jemně modré pozadí pracovní plochy, bílé oddělené navigační plochy a výraznější okraje karet a mřížek.
+- Aktivní hledání, filtry, jejich počet a štítky používají oranžový stav; vybraný řádek má modrý levý pruh.
+- Nadpisy, popisky, záhlaví, součty a částky používají Work Sans bez verzálek; JetBrains Mono zůstává pro kódy a identifikátory.
+- Záporné částky používají typografický znak minus pro přesné zarovnání.
 
 ## Changelog 2.10.1
 
