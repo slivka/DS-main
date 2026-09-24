@@ -1,60 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, Maximize2, Minimize2, Pin, PinOff, X } from "lucide-react";
-import { toast } from "sonner";
+import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
+import { DndContext, PointerSensor, closestCenter, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 
-import { Button } from "../../ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
-import { useConfirmDialog } from "../feedback/confirm-dialog";
-import { PaneApiContext, PaneManagerContext, type PaneApi, type PaneManagerApi } from "./pane-context";
-import {
-  evenWidths,
-  paneKey,
-  type PaneLayoutCount,
-  type PaneLayoutState,
-  type PaneState,
-  type PaneTarget,
-} from "./pane-state";
+import { PaneApiContext, usePaneTabs, type PaneApi, type PaneTabsApi } from "./pane-context";
+import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
+import { evenWidths, findTab, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
 
-export type PaneLayoutTexts = {
-  back: string;
-  forward: string;
-  close: string;
-  maximize: string;
-  restore: string;
-  /** {index} se nahradí pořadím panelu. */
-  hidden: string;
-  unsavedTitle: string;
-  unsavedDescription: string;
-  unsavedConfirm: string;
-  unsavedCancel: string;
-  untitled: string;
-  emptyTitle: string;
+export type PaneLayoutTexts = PaneTabBarTexts & {
   emptyHint: string;
-  pin: string;
-  unpin: string;
 };
 
-export const DEFAULT_PANE_TEXTS: PaneLayoutTexts = {
-  back: "Zpět",
-  forward: "Vpřed",
-  close: "Zavřít panel",
-  maximize: "Maximalizovat",
-  restore: "Obnovit",
-  hidden: "Panel {index} skryt – málo místa",
-  unsavedTitle: "Neuložené změny",
-  unsavedDescription: "V panelu jsou neuložené změny. Opravdu chcete pokračovat?",
-  unsavedConfirm: "Zahodit změny",
-  unsavedCancel: "Zpět k editaci",
-  untitled: "Bez názvu",
-  emptyTitle: "Prázdný panel",
-  emptyHint: "Vyberte stránku v menu. Otevře se v aktivním panelu.",
-  pin: "Připnout",
-  unpin: "Odepnout",
+export const DEFAULT_PANE_TEXTS: Pick<PaneLayoutTexts, "emptyHint"> = {
+  emptyHint: "Otevřete položku z menu",
 };
-
-type HistoryEntry = { route: string; params?: Record<string, unknown>; title?: string };
-type History = { entries: HistoryEntry[]; index: number };
 
 export const PANE_DIVIDER_WIDTH = 8;
 
@@ -88,54 +46,57 @@ function useFontScale() {
 }
 
 export interface PaneLayoutProps {
-  panes: PaneState[];
-  activePaneId: string;
-  layout: PaneLayoutCount;
-  widths?: number[];
-  onChange: (state: PaneLayoutState) => void;
+  /** Obsah aktivní záložky. Záložky na pozadí se nevykreslují – stav držte přes useTabDraft. */
+  renderTab: (tab: PaneTab, pane: PaneApi) => ReactNode;
+  /** Ikona záložky podle jejího `icon` nebo route. */
+  getTabIcon?: (tab: PaneTab) => ComponentType<{ className?: string }> | undefined;
+  /** Vlastní obsah prázdného panelu. */
+  renderEmpty?: (pane: TabPane) => ReactNode;
+  /** Připnutí aktivní záložky (položka v menu ⋯). */
+  isPinned?: (tab: PaneTab) => boolean;
+  onTogglePin?: (tab: PaneTab) => void;
   minPaneWidth?: number;
-  renderPane: (pane: PaneState) => ReactNode;
-  /** Vlastní obsah prázdného panelu. Prázdný panel se nikdy neposílá do renderPane. */
-  renderEmpty?: (pane: PaneState) => ReactNode;
-  /** Určí, zda je stránka panelu připnutá. */
-  isPinned?: (pane: PaneState) => boolean;
-  /** Zobrazí tlačítko připnutí a oznámí jeho použití. */
-  onTogglePin?: (pane: PaneState) => void;
-  /** Výchozí stránka po zavření posledního panelu. */
-  defaultRoute: string;
-  defaultTitle?: string;
   texts?: Partial<PaneLayoutTexts>;
   className?: string;
 }
 
-/** Režim více oken – 1 až 3 panely s vlastní historií, lištou a dělicími čarami. */
-export function PaneLayout({
-  panes,
-  activePaneId,
-  layout,
-  widths,
-  onChange,
-  minPaneWidth = 560,
-  renderPane,
+/** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
+export function PaneLayout({ renderTab, getTabIcon, renderEmpty, isPinned, onTogglePin, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
+  const api = usePaneTabs();
+  if (!api) throw new Error("PaneLayout musí být uvnitř PaneTabsProvider.");
+  return (
+    <PaneLayoutInner
+      api={api}
+      renderTab={renderTab}
+      getTabIcon={getTabIcon}
+      renderEmpty={renderEmpty}
+      isPinned={isPinned}
+      onTogglePin={onTogglePin}
+      minPaneWidth={minPaneWidth}
+      texts={texts}
+      className={className}
+    />
+  );
+}
+
+function PaneLayoutInner({
+  api,
+  renderTab,
+  getTabIcon,
   renderEmpty,
   isPinned,
   onTogglePin,
-  defaultRoute,
-  defaultTitle,
+  minPaneWidth,
   texts,
   className,
-}: PaneLayoutProps) {
-  const t = { ...DEFAULT_PANE_TEXTS, ...texts };
-  const { confirm, confirmDialog } = useConfirmDialog();
+}: PaneLayoutProps & { api: PaneTabsApi; minPaneWidth: number }) {
+  const { state } = api;
+  const emptyHint = texts?.emptyHint ?? DEFAULT_PANE_TEXTS.emptyHint;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const fontScale = useFontScale();
   const [maximized, setMaximized] = useState<string | null>(null);
-  const historiesRef = useRef(new Map<string, History>());
-  const dirtyRef = useRef(new Map<string, Set<string>>());
-  const paneSequence = useRef(0);
-  const [, force] = useState(0);
-  const rerender = () => force((value) => value + 1);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   useEffect(() => {
     const element = containerRef.current;
@@ -146,392 +107,204 @@ export function PaneLayout({
     return () => observer.disconnect();
   }, []);
 
-  const maxLayout = containerWidth ? maxPaneLayout(containerWidth, minPaneWidth, fontScale) : layout;
-  const visibleCount = Math.min(layout, maxLayout, panes.length) as PaneLayoutCount;
-  const requestedRef = useRef(layout);
-  if (layout > requestedRef.current) requestedRef.current = layout;
-
-  // Panel bez historie dostane záznam podle svého stavu.
-  panes.forEach((pane) => {
-    if (pane.route && !historiesRef.current.has(pane.id)) {
-      historiesRef.current.set(pane.id, {
-        entries: [{ route: pane.route, params: pane.params, title: pane.title }],
-        index: 0,
-      });
-    }
-  });
-
-  const emit = useCallback(
-    (next: Partial<PaneLayoutState>) =>
-      onChange({
-        panes,
-        activePaneId,
-        layout,
-        widths,
-        ...next,
-      }),
-    [onChange, panes, activePaneId, layout, widths],
-  );
-
-  // Automatické snížení počtu viditelných panelů při zmenšení okna.
-  const reportedRef = useRef<number | null>(null);
+  const maxLayout = containerWidth ? maxPaneLayout(containerWidth, minPaneWidth, fontScale) : null;
   useEffect(() => {
-    if (!containerWidth) return;
-    if (layout > maxLayout) {
-      if (reportedRef.current !== maxLayout) {
-        reportedRef.current = maxLayout;
-        for (let index = maxLayout + 1; index <= layout; index += 1) {
-          toast.info(t.hidden.replace("{index}", String(index)));
-        }
-      }
-      emit({ layout: maxLayout as PaneLayoutCount, widths: evenWidths(maxLayout) });
-    } else if (layout < requestedRef.current && maxLayout >= requestedRef.current) {
-      reportedRef.current = null;
-      emit({ layout: requestedRef.current as PaneLayoutCount, widths: evenWidths(requestedRef.current) });
-    }
-  }, [containerWidth, maxLayout, layout]);
-
-  const isDirty = (paneId: string) => (dirtyRef.current.get(paneId)?.size ?? 0) > 0;
-  const guard = (paneId: string, action: () => void) => {
-    if (!isDirty(paneId)) {
-      action();
-      return;
-    }
-    confirm({
-      title: t.unsavedTitle,
-      description: t.unsavedDescription,
-      confirmLabel: t.unsavedConfirm,
-      cancelLabel: t.unsavedCancel,
-      destructive: true,
-      onConfirm: () => {
-        dirtyRef.current.delete(paneId);
-        action();
-      },
-    });
-  };
-
-  const syncPane = (paneId: string, entry: HistoryEntry) =>
-    emit({
-      activePaneId: paneId,
-      panes: panes.map((pane) =>
-        pane.id === paneId ? { ...pane, route: entry.route, params: entry.params, title: entry.title } : pane,
-      ),
-    });
-
-  const navigateInPane = (paneId: string, route: string, params?: Record<string, unknown>, title?: string) =>
-    guard(paneId, () => {
-      const history = historiesRef.current.get(paneId) ?? { entries: [], index: -1 };
-      const entries = [...history.entries.slice(0, history.index + 1), { route, params, title }];
-      historiesRef.current.set(paneId, { entries, index: entries.length - 1 });
-      syncPane(paneId, entries[entries.length - 1]);
-      rerender();
-    });
-
-  const step = (paneId: string, delta: number) =>
-    guard(paneId, () => {
-      const history = historiesRef.current.get(paneId);
-      if (!history) return;
-      const index = history.index + delta;
-      if (index < 0 || index >= history.entries.length) return;
-      historiesRef.current.set(paneId, { ...history, index });
-      syncPane(paneId, history.entries[index]);
-      rerender();
-    });
-
-  const closePane = (paneId: string) =>
-    guard(paneId, () => {
-      historiesRef.current.delete(paneId);
-      dirtyRef.current.delete(paneId);
-      const rest = panes.filter((pane) => pane.id !== paneId);
-      if (!rest.length) {
-        const fallback: PaneState = { id: `pane-${Date.now()}`, route: defaultRoute, title: defaultTitle };
-        requestedRef.current = 1;
-        emit({ panes: [fallback], activePaneId: fallback.id, layout: 1, widths: evenWidths(1) });
-        return;
-      }
-      const nextLayout = Math.min(layout, rest.length) as PaneLayoutCount;
-      requestedRef.current = nextLayout;
-      emit({
-        panes: rest,
-        activePaneId: activePaneId === paneId ? rest[0].id : activePaneId,
-        layout: nextLayout,
-        widths: evenWidths(Math.min(nextLayout, rest.length)),
-      });
-      setMaximized(null);
-    });
-
-  const setLayout = (next: PaneLayoutCount) => {
-    requestedRef.current = next;
-    if (next <= panes.length) {
-      emit({ layout: next, widths: evenWidths(next) });
-      return;
-    }
-    const added = Array.from({ length: next - panes.length }, () => {
-      paneSequence.current += 1;
-      return { id: `pane-empty-${Date.now()}-${paneSequence.current}`, route: "" } satisfies PaneState;
-    });
-    emit({ panes: [...panes, ...added], activePaneId: added[0].id, layout: next, widths: evenWidths(next) });
-  };
-
-  const openInPane = (
-    route: string,
-    params?: Record<string, unknown>,
-    options?: { target?: PaneTarget; title?: string; uniqueKey?: boolean },
-  ) => {
-    const target: PaneTarget = options?.target ?? "active";
-    const key = paneKey({ route, params });
-    const existing = key ? panes.find((pane) => pane.uniqueKey && paneKey(pane) === key) : undefined;
-    if (existing) {
-      emit({ activePaneId: existing.id });
-      return;
-    }
-    if (target === "new") {
-      const empty = panes.find((pane) => !pane.route);
-      if (empty) {
-        const entry = { route, params, title: options?.title };
-        historiesRef.current.set(empty.id, { entries: [entry], index: 0 });
-        emit({ panes: panes.map((pane) => pane.id === empty.id ? { ...pane, ...entry, uniqueKey: options?.uniqueKey } : pane), activePaneId: empty.id });
-        rerender();
-        return;
-      }
-      const nextLayout = Math.min(Math.max(layout, panes.length + 1), maxLayout) as PaneLayoutCount;
-      if (panes.length >= 3 || nextLayout <= panes.length) {
-        // Není místo – nahradí nejstarší neaktivní panel.
-        const victim = panes.find((pane) => pane.id !== activePaneId) ?? panes[0];
-        navigateInPane(victim.id, route, params, options?.title);
-        emit({ activePaneId: victim.id });
-        return;
-      }
-      const pane: PaneState = {
-        id: `pane-${Date.now()}`,
-        route,
-        params,
-        title: options?.title,
-        uniqueKey: options?.uniqueKey,
-      };
-      historiesRef.current.set(pane.id, { entries: [{ route, params, title: options?.title }], index: 0 });
-      requestedRef.current = nextLayout;
-      emit({
-        panes: [...panes, pane],
-        activePaneId: pane.id,
-        layout: nextLayout,
-        widths: evenWidths(nextLayout),
-      });
-      return;
-    }
-    const paneId = target === "active" ? activePaneId : target;
-    guard(paneId, () => {
-      const history = historiesRef.current.get(paneId) ?? { entries: [], index: -1 };
-      const entry = { route, params, title: options?.title };
-      const entries = [...history.entries.slice(0, history.index + 1), entry];
-      historiesRef.current.set(paneId, { entries, index: entries.length - 1 });
-      emit({ activePaneId: paneId, panes: panes.map((item) => item.id === paneId ? { ...item, ...entry, uniqueKey: options?.uniqueKey } : item) });
-      rerender();
-    });
-  };
-
-  const manager: PaneManagerApi = {
-    activePaneId,
-    layout,
-    setLayout,
-    setActivePane: (paneId) => emit({ activePaneId: paneId }),
-    openInPane,
-    closePane,
-    confirmAllPanesClean: (onConfirmed) => {
-      const dirtyPane = panes.find((pane) => isDirty(pane.id));
-      if (!dirtyPane) {
-        onConfirmed();
-        return;
-      }
-      confirm({
-        title: t.unsavedTitle,
-        description: t.unsavedDescription,
-        confirmLabel: t.unsavedConfirm,
-        cancelLabel: t.unsavedCancel,
-        destructive: true,
-        onConfirm: () => {
-          dirtyRef.current.clear();
-          onConfirmed();
-        },
-      });
-    },
-    registerDirty: (paneId, key, dirty) => {
-      const set = dirtyRef.current.get(paneId) ?? new Set<string>();
-      if (dirty) set.add(key);
-      else set.delete(key);
-      dirtyRef.current.set(paneId, set);
-    },
-  };
-
-  // Globální zkratky Ctrl+1/2/3 a Ctrl+Shift+W.
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
-      if (event.shiftKey && event.key.toLowerCase() === "w") {
-        event.preventDefault();
-        closePane(activePaneId);
-        return;
-      }
-      if (event.shiftKey) return;
-      const index = Number(event.key);
-      if (!Number.isInteger(index) || index < 1 || index > 3) return;
-      const pane = panes[index - 1];
-      if (!pane) return;
-      event.preventDefault();
-      emit({ activePaneId: pane.id });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
+    if (maxLayout) api.reportMaxLayout(maxLayout);
+  }, [maxLayout, state.layout]);
 
   // Tisk jen aktivního panelu.
   useEffect(() => {
     const onBefore = () => {
       document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => {
-        element.setAttribute("data-print-hide", element.dataset.pane === activePaneId ? "false" : "true");
+        element.setAttribute("data-print-hide", element.dataset.pane === state.active ? "false" : "true");
       });
     };
-    const onAfter = () => {
-      document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => element.removeAttribute("data-print-hide"));
-    };
+    const onAfter = () => document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => element.removeAttribute("data-print-hide"));
     window.addEventListener("beforeprint", onBefore);
     window.addEventListener("afterprint", onAfter);
     return () => {
       window.removeEventListener("beforeprint", onBefore);
       window.removeEventListener("afterprint", onAfter);
     };
-  }, [activePaneId]);
+  }, [state.active]);
 
-  const visiblePanes = panes.slice(0, visibleCount);
-  const shownPanes = maximized ? visiblePanes.filter((pane) => pane.id === maximized) : visiblePanes;
+  const shownPanes = maximized && state.panes.some((pane) => pane.id === maximized) ? state.panes.filter((pane) => pane.id === maximized) : state.panes;
   const resolvedWidths = useMemo(() => {
     if (shownPanes.length === 1) return [1];
-    const base = widths && widths.length === shownPanes.length ? widths : evenWidths(shownPanes.length);
+    const base = state.widths && state.widths.length === shownPanes.length ? state.widths : evenWidths(shownPanes.length);
     const sum = base.reduce((total, value) => total + value, 0) || 1;
     return base.map((value) => value / sum);
-  }, [widths, shownPanes.length]);
+  }, [state.widths, shownPanes.length]);
 
-  const dragRef = useRef<{ index: number; startX: number; widths: number[] } | null>(null);
   const onDividerDown = (index: number) => (event: React.PointerEvent) => {
     event.preventDefault();
-    dragRef.current = { index, startX: event.clientX, widths: resolvedWidths };
+    const start = { x: event.clientX, widths: resolvedWidths };
     const onMove = (moveEvent: PointerEvent) => {
-      const drag = dragRef.current;
-      if (!drag || !containerRef.current) return;
+      if (!containerRef.current) return;
       const total = containerRef.current.getBoundingClientRect().width;
-      const delta = (moveEvent.clientX - drag.startX) / total;
-      const next = [...drag.widths];
+      const delta = (moveEvent.clientX - start.x) / total;
+      const next = [...start.widths];
       const minShare = (minPaneWidth * fontScale) / total;
-      const left = next[drag.index] + delta;
-      const right = next[drag.index + 1] - delta;
+      const left = next[index] + delta;
+      const right = next[index + 1] - delta;
       if (left < minShare || right < minShare) return;
-      next[drag.index] = left;
-      next[drag.index + 1] = right;
-      emit({ widths: next });
+      next[index] = left;
+      next[index + 1] = right;
+      api.activatePane(api.state.active);
+      onWidths(next);
     };
     const onUp = () => {
-      dragRef.current = null;
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
     };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
   };
+  const widthsRef = useRef<(widths: number[]) => void>(() => {});
+  widthsRef.current = (widths) => {
+    // Šířky nejsou akce záložek – mění se přímo ve stavu.
+    (api as PaneTabsApi & { __setWidths?: (w: number[]) => void }).__setWidths?.(widths);
+  };
+  const onWidths = (widths: number[]) => widthsRef.current(widths);
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const tabId = String(event.active.id);
+    const over = event.over;
+    if (!over) return;
+    const overId = String(over.id);
+    if (overId === tabId) return;
+    if (overId.startsWith("bar:") || overId.startsWith("area:")) {
+      const paneId = overId.slice(overId.indexOf(":") + 1);
+      api.moveTab(tabId, paneId);
+      return;
+    }
+    const target = findTab(api.state, overId);
+    if (!target) return;
+    const source = findTab(api.state, tabId);
+    let index = target.tabIndex;
+    if (source && source.pane.id === target.pane.id && source.tabIndex < target.tabIndex) index = target.tabIndex;
+    api.moveTab(tabId, target.pane.id, index);
+  };
 
   return (
-    <PaneManagerContext.Provider value={manager}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <div ref={containerRef} className={cn("flex min-h-0 w-full flex-1 items-stretch", className)}>
-        {shownPanes.map((pane, index) => {
-          const empty = pane.route === "";
-          const history = empty ? undefined : historiesRef.current.get(pane.id);
-          const api: PaneApi = {
-            paneId: pane.id,
-            isActive: pane.id === activePaneId,
-            navigate: (route, params, title) => navigateInPane(pane.id, route, params, title),
-            back: () => step(pane.id, -1),
-            forward: () => step(pane.id, 1),
-            canBack: (history?.index ?? 0) > 0,
-            canForward: history ? history.index < history.entries.length - 1 : false,
-            setTitle: (title) => emit({ panes: panes.map((item) => (item.id === pane.id ? { ...item, title } : item)) }),
-            close: () => closePane(pane.id),
-          };
-          return (
-            <div key={pane.id} className="flex min-w-0" style={{ flex: `${resolvedWidths[index] ?? 1} 1 0%` }}>
-              <section
-                data-pane={pane.id}
-                data-active={api.isActive ? "true" : undefined}
-                onPointerDownCapture={() => {
-                  if (!api.isActive) emit({ activePaneId: pane.id });
-                }}
-                className={cn(
-                  "@container relative flex min-w-0 flex-1 flex-col overflow-hidden border-r bg-background last:border-r-0",
-                  api.isActive ? "border-t-2 border-t-primary" : "border-t-2 border-t-transparent",
-                )}
-              >
-                <PaneHeader api={api} title={empty ? t.emptyTitle : pane.title ?? t.untitled} texts={t} maximized={maximized === pane.id} onToggleMaximize={() => setMaximized(maximized === pane.id ? null : pane.id)} {...(!empty && onTogglePin ? { pinned: isPinned?.(pane) === true, onTogglePin: () => onTogglePin(pane) } : {})} />
-                <div className="min-h-0 flex-1 overflow-auto p-4">
-                  <PaneApiContext.Provider value={api}>{empty ? (renderEmpty?.(pane) ?? <PaneEmpty hint={t.emptyHint} />) : renderPane(pane)}</PaneApiContext.Provider>
-                </div>
-              </section>
-              {index < shownPanes.length - 1 ? (
-                <div
-                  role="separator"
-                  aria-orientation="vertical"
-                  onPointerDown={onDividerDown(index)}
-                  onDoubleClick={() => emit({ widths: evenWidths(shownPanes.length) })}
-                  className="w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40"
-                />
-              ) : null}
-            </div>
-          );
-        })}
+        {shownPanes.map((pane, index) => (
+          <div key={pane.id} className="flex min-w-0" style={{ flex: `${resolvedWidths[index] ?? 1} 1 0%` }}>
+            <PaneColumn
+              pane={pane}
+              paneIndex={state.panes.indexOf(pane)}
+              api={api}
+              renderTab={renderTab}
+              renderEmpty={renderEmpty}
+              getTabIcon={getTabIcon}
+              isPinned={isPinned}
+              onTogglePin={onTogglePin}
+              emptyHint={emptyHint}
+              texts={texts}
+              maximized={maximized === pane.id}
+              onToggleMaximize={() => setMaximized(maximized === pane.id ? null : pane.id)}
+            />
+            {index < shownPanes.length - 1 ? (
+              <div
+                role="separator"
+                aria-orientation="vertical"
+                onPointerDown={onDividerDown(index)}
+                onDoubleClick={() => onWidths(evenWidths(shownPanes.length))}
+                className="w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40"
+              />
+            ) : null}
+          </div>
+        ))}
       </div>
-      {confirmDialog}
-    </PaneManagerContext.Provider>
+    </DndContext>
   );
 }
 
-function PaneHeader({
+function PaneColumn({
+  pane,
+  paneIndex,
   api,
-  title,
+  renderTab,
+  renderEmpty,
+  getTabIcon,
+  isPinned,
+  onTogglePin,
+  emptyHint,
   texts,
   maximized,
   onToggleMaximize,
-  pinned,
-  onTogglePin,
 }: {
-  api: PaneApi;
-  title: string;
-  texts: PaneLayoutTexts;
+  pane: TabPane;
+  paneIndex: number;
+  api: PaneTabsApi;
+  renderTab: PaneLayoutProps["renderTab"];
+  renderEmpty?: PaneLayoutProps["renderEmpty"];
+  getTabIcon?: PaneLayoutProps["getTabIcon"];
+  isPinned?: PaneLayoutProps["isPinned"];
+  onTogglePin?: PaneLayoutProps["onTogglePin"];
+  emptyHint: string;
+  texts?: Partial<PaneLayoutTexts>;
   maximized: boolean;
   onToggleMaximize: () => void;
-  pinned?: boolean;
-  onTogglePin?: () => void;
 }) {
-  const iconButton = (label: string, icon: ReactNode, onClick: () => void, disabled?: boolean) => (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span>
-          <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={label} disabled={disabled} onClick={onClick}>
-            {icon}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  );
+  const { setNodeRef, isOver } = useDroppable({ id: `area:${pane.id}`, data: { paneId: pane.id } });
+  const isActive = api.state.active === pane.id;
+  const tab = pane.tabs.find((item) => item.id === pane.activeTab) ?? null;
+  const tabApi: PaneApi | null = tab
+    ? {
+        paneId: pane.id,
+        tabId: tab.id,
+        isActive,
+        navigate: (route, params, title) => {
+          if (!isActive) api.activatePane(pane.id);
+          api.activateTab(tab.id);
+          api.openTab(route, params, { target: "replace", title });
+        },
+        back: () => api.back(tab.id),
+        forward: () => api.forward(tab.id),
+        canBack: tab.historyIndex > 0,
+        canForward: tab.historyIndex < tab.history.length - 1,
+        setTitle: (title, shortTitle) => api.setTabTitle(tab.id, title, shortTitle),
+        close: () => api.closeTab(tab.id),
+      }
+    : null;
 
   return (
-    <TooltipProvider>
-      <div className="flex h-10 shrink-0 items-center gap-1 border-b bg-muted/60 px-2">
-        {iconButton(texts.back, <ArrowLeft className="size-4" />, api.back, !api.canBack)}
-        {iconButton(texts.forward, <ArrowRight className="size-4" />, api.forward, !api.canForward)}
-        <span className="min-w-0 flex-1 truncate px-1 text-sm font-semibold">{title}</span>
-        {onTogglePin ? iconButton(pinned ? texts.unpin : texts.pin, pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />, onTogglePin) : null}
-        {iconButton(maximized ? texts.restore : texts.maximize, maximized ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />, onToggleMaximize)}
-        {iconButton(texts.close, <X className="size-4" />, api.close)}
+    <section
+      data-pane={pane.id}
+      data-active={isActive ? "true" : undefined}
+      onPointerDownCapture={() => {
+        if (!isActive) api.activatePane(pane.id);
+      }}
+      className={cn(
+        "@container relative flex min-w-0 flex-1 flex-col overflow-hidden border-r bg-background last:border-r-0",
+        isActive ? "border-t-2 border-t-primary" : "border-t-2 border-t-transparent",
+      )}
+    >
+      <PaneTabBar
+        pane={pane}
+        paneIndex={paneIndex}
+        paneCount={api.state.panes.length}
+        api={api}
+        getTabIcon={getTabIcon}
+        maximized={maximized}
+        onToggleMaximize={onToggleMaximize}
+        {...(tab && onTogglePin ? { pinned: isPinned?.(tab) === true, onTogglePin: () => onTogglePin(tab) } : {})}
+        texts={texts}
+      />
+      <div ref={setNodeRef} className={cn("min-h-0 flex-1 overflow-auto p-4", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
+        {tab && tabApi ? (
+          <PaneApiContext.Provider value={tabApi}>
+            <div key={tab.id} className="contents">
+              {renderTab(tab, tabApi)}
+            </div>
+          </PaneApiContext.Provider>
+        ) : (
+          renderEmpty?.(pane) ?? <PaneEmpty hint={emptyHint} />
+        )}
       </div>
-    </TooltipProvider>
+    </section>
   );
 }
 
