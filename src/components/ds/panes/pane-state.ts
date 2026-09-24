@@ -572,7 +572,7 @@ export function stepTabHistory(state: PaneTabsState, tabId: string, delta: numbe
   const index = found.tab.historyIndex + delta;
   const entry = found.tab.history[index];
   if (!entry) return state;
-  const tab: PaneTab = { ...found.tab, ...entry, historyIndex: index };
+  const tab: PaneTab = { ...found.tab, ...entry, icon: entry.icon ?? found.tab.icon, historyIndex: index };
   return replacePane(state, { ...found.pane, tabs: found.pane.tabs.map((item) => (item.id === tabId ? tab : item)) });
 }
 
