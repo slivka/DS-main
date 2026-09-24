@@ -186,7 +186,7 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společný rám aplikace s tmavým skupinovým menu, hledáním bez diakritiky, uloženým sbalením skupin a podporou panelů a záložek.
+Společný rám aplikace s tmavým skupinovým menu, volitelnými bloky přes NavGroup.section, hledáním bez diakritiky, uloženým sbalením skupin a podporou panelů a záložek.
 
 **Props:**
 
@@ -234,6 +234,7 @@ Společný rám aplikace s tmavým skupinovým menu, hledáním bez diakritiky, 
 
 _Skupiny a hledání_
 ```tsx
+const groups = [{ id: 'invoices', label: 'Faktury', section: 'Doklady', items }];
 <AppShell navGroups={groups} navStateKey="accounting" navSearch>{children}</AppShell>
 ```
 
