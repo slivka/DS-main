@@ -18,6 +18,7 @@ export interface ContextPillProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
   compactValue?: string;
   tooltip?: string;
   valueClassName?: string;
+  valueContainerClassName?: string;
   detail?: ReactNode;
   detailClassName?: string;
 }
@@ -31,7 +32,7 @@ export function useContextPillClose() {
 
 /** Jednořádkový kontextový přepínač do horní lišty aplikace. */
 export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
-  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, tooltip, valueClassName, detail, detailClassName, ...props }, ref) => {
+  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, tooltip, valueClassName, valueContainerClassName, detail, detailClassName, ...props }, ref) => {
     const [open, setOpen] = useState(false);
     return (
       <TooltipProvider>
@@ -48,13 +49,15 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   {...props}
                 >
                   {Icon ? <Icon className="size-4 shrink-0 text-muted-foreground" /> : null}
-                  {statusIndicator}
-                  <span className="flex min-w-0 flex-1 items-baseline gap-2 leading-tight">
+                  <span className={cn("flex min-w-0 flex-1 items-center gap-2", valueContainerClassName)}>
+                    {statusIndicator}
+                    <span className="flex min-w-0 flex-1 items-baseline gap-2 leading-tight">
                     <span className={cn("block min-w-0 truncate text-base font-semibold xl:text-lg", valueMuted ? "text-muted-foreground" : "text-foreground", valueClassName)}>
                       <span data-slot="context-pill-mobile-value" className="md:hidden">{compactValue ?? value}</span>
                       <span data-slot="context-pill-value" className="hidden md:inline">{value}</span>
                     </span>
                     {detail ? <span className={cn("hidden min-w-0 truncate text-sm font-normal text-muted-foreground 2xl:inline", detailClassName)}>{detail}</span> : null}
+                    </span>
                   </span>
                   <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground md:block" />
                 </Button>

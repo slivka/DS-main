@@ -310,6 +310,10 @@ export function AppShell({
   adminButtonLabel = "Administrace",
   adminBackLabel,
   onAdminModeChange,
+  navStateKey,
+  navSearch = true,
+  navSearchPlaceholder = "Hledat v menu…",
+  navSearchEmptyText = "Nic nenalezeno",
 }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -322,6 +326,9 @@ export function AppShell({
   const contextRef = useRef<HTMLDivElement>(null);
   const rightControlsRef = useRef<HTMLDivElement>(null);
   const [centerContext, setCenterContext] = useState(true);
+  const [searchOverlay, setSearchOverlay] = useState(false);
+  const [focusSearch, setFocusSearch] = useState(0);
+  const searchOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     applyFontScale();
@@ -368,6 +375,30 @@ export function AppShell({
   });
 
   useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target;
+      const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      if (event.key !== "/" || event.ctrlKey || event.metaKey || event.altKey || isEditing || !navSearch) return;
+      event.preventDefault();
+      if (isCollapsed) setSearchOverlay(true);
+      setFocusSearch((value) => value + 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isCollapsed, navSearch]);
+
+  useEffect(() => {
+    if (!searchOverlay) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (searchOverlayRef.current && event.target instanceof Node && !searchOverlayRef.current.contains(event.target)) setSearchOverlay(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [searchOverlay]);
+
+  useEffect(() => setSearchOverlay(false), [resolvedActivePanel]);
+
+  useEffect(() => {
     if (!currentPanel) return;
     const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setPanel(null); };
     window.addEventListener("keydown", onKey);
@@ -375,8 +406,9 @@ export function AppShell({
   });
 
   const visibleGroups = currentPanel?.nav ?? resolvedGroups;
-  const nav = (compact: boolean) => (
-    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={() => setMenuOpen(false)} />
+  const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}` : navStateKey ?? appName;
+  const nav = (compact: boolean, onNavigate = () => setMenuOpen(false)) => (
+    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} />
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
@@ -470,12 +502,13 @@ export function AppShell({
       ) : null}
 
       <div className="flex min-h-0 flex-1">
-        <aside className={cn("shell-sidebar hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
+        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
+        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden w-60 flex-col border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false))}</div> : null}
         <main className="min-w-0 flex-1 p-4">{children}</main>
       </div>
     </div>

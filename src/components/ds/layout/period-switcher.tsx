@@ -144,7 +144,8 @@ export function PeriodSwitcher({
       statusIndicator={indicator}
       tooltip={tooltip}
       detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
-      valueClassName={cn("text-base xl:text-base", selected && triggerStateClass[selected.state], "rounded-md px-2.5 py-1")}
+      valueClassName="text-base xl:text-base"
+      valueContainerClassName={cn("rounded-md px-2.5 py-1", selected ? triggerStateClass[selected.state] : "bg-warning/18 text-warning-strong")}
       className={cn("relative max-w-[72px] before:absolute before:-left-1 before:h-6 before:border-l before:border-border md:max-w-[220px] xl:max-w-[460px]", className)}
       contentClassName="w-[380px]"
     >
