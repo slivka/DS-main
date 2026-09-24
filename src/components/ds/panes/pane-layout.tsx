@@ -14,7 +14,7 @@ import {
   type PaneTabsApi,
 } from "./pane-context";
 import { PaneTabBar, type PaneTabBarTexts, type TabBarMode } from "./pane-tab-bar";
-import { evenWidths, findTab, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
+import { evenWidths, findTab, paneKey, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
 
 export type PaneLayoutTexts = PaneTabBarTexts &
   PaneChromeTexts & {
@@ -379,7 +379,7 @@ function PaneColumn({
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>
-              <div key={tab.id} className="contents">
+              <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
                 {renderTab(tab, tabApi)}
               </div>
             </PaneChromeContext.Provider>
