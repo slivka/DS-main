@@ -2135,7 +2135,7 @@ Kontextový výběr účetního období se stavem, zástupným textem a podporou
 | `label` | string | `Účetní období` |
 | `stateLabels` | object | `—` |
 | `disableClosed` | boolean | `false` |
-| `className` | string | `size-2 shrink-0 rounded-full bg-warning` |
+| `className` | string | `p-3` |
 | `periodsLabel` | string | `Období` |
 | `placeholder` | string | `Vyberte období` |
 | `emptyText` | string | `Firma nemá účetní období` |
