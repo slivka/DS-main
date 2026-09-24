@@ -219,6 +219,7 @@ Společný rám aplikace s tmavým skupinovým menu, hledáním bez diakritiky, 
 | `navSearch` | boolean | `true` |
 | `navSearchPlaceholder` | string | `Hledat v menu…` |
 | `navSearchEmptyText` | string | `Nic nenalezeno` |
+| `navSearchMenu` | any | `—` |
 | `items` | any | `—` |
 | `adminNav` | any | `—` |
 | `adminMode` | boolean | `—` |
@@ -951,6 +952,7 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `defaultFilters` | any | `—` |
 | `viewMode` | any | `—` |
 | `onViewModeChange` | function | `—` |
+| `viewZoomKey` | string | `—` |
 | `asOf` | any | `—` |
 | `addAction` | any | `—` |
 | `moreActions` | any | `—` |
@@ -1891,7 +1893,7 @@ import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 import { LayoutMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3. Data a ukládání dodává aplikace; snímek bere z serializeLayout, použití přes usePaneTabs().applyLayout.
+Nabídka uložených rozložení. Varianta trigger="icon" patří do AppShell.navSearchMenu vedle hledání; data a ukládání dodává aplikace.
 
 **Props:**
 
@@ -1904,21 +1906,22 @@ Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3. Data
 | `onDelete` | function | `—` |
 | `onReorder` | function | `—` |
 | `shortcut` | boolean | `true` |
+| `trigger` | default · icon | `default` |
 | `texts` | any | `—` |
 | `className` | string | `size-4` |
 
 **Examples:**
 
-_Uložená rozložení_
+_Vedle hledání v menu_
 ```tsx
-<LayoutMenu items={layouts} onSave={({ name, isDefault, snapshot }) => save(name, isDefault, snapshot)} onApply={(id) => tabs.applyLayout(find(id).snapshot)} onUpdate={update} onDelete={remove} onReorder={reorder} />
+<AppShell navSearchMenu={<LayoutMenu trigger="icon" items={layouts} onSave={save} onApply={apply} onUpdate={update} onDelete={remove} />} />
 ```
 
 **Avoid:**
 
+- Vkládat nabídku rozložení do horní lišty
 - Ukládat do rozložení koncepty nebo nové neuložené záznamy
 - Zavírat rozepsané záložky při použití rozložení
-- Otevírat nabídku jinou zkratkou než Alt+L
 
 ### LayoutSwitcher
 
@@ -2181,7 +2184,7 @@ import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { PageHeader } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hlavička každé stránky. Uvnitř PaneLayout navíc vykreslí ovládání záložky z usePaneChrome (← → s historií, ● neuložené změny, špendlík, ↑ n / N ↓, maximalizace, menu ⋯, nadpis jako úchyt přetažení); mimo panel se chová jako dříve.
+Hlavička každé stránky. V panelu vykreslí vlevo nadpis a dirty tečku, vpravo listování záznamy, historii, maximalizaci a menu ⋯; akce stránky přijímá přes menuActions.
 
 **Props:**
 
@@ -2190,7 +2193,13 @@ Hlavička každé stránky. Uvnitř PaneLayout navíc vykreslí ovládání zál
 | `title` | any | `—` |
 | `description` | any | `—` |
 | `actions` | any | `—` |
+| `menuActions` | any | `—` |
 | `paneTexts` | any | `—` |
+
+**Avoid:**
+
+- Předávat actions uvnitř panelu místo menuActions
+- Vkládat akci Nový do záhlaví místo gridového addAction
 
 ### Pagination
 
@@ -2271,7 +2280,7 @@ import { PaneEmpty } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.
+Režim více oken s vždy viditelnou lištou rovnocenných záložek; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.
 
 **Props:**
 
@@ -2280,9 +2289,6 @@ Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluj
 | `renderTab` | function | `—` |
 | `getTabIcon` | function | `—` |
 | `renderEmpty` | function | `—` |
-| `isPinned` | function | `—` |
-| `onTogglePin` | function | `—` |
-| `tabBarMode` | any | `auto` |
 | `minPaneWidth` | number | `560` |
 | `texts` | any | `—` |
 | `className` | string | `flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground` |
@@ -2335,7 +2341,7 @@ _Položka menu_
 import { PaneTabBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Lišta záložek panelu – od 2.16.0 jen záložky a nabídka „»“; historie ← →, špendlík, maximalizace a menu ⋯ jsou v PageHeader. Dočasná záložka má titulek kurzívou, dvojklik ji ponechá. Vykresluje ji PaneLayout.
+Vždy viditelná lišta rovnocenných záložek panelu, včetně jediné záložky a prázdného panelu; podporuje DnD, zavření prostředním tlačítkem, kontextové menu a overflow „»“.
 
 **Props:**
 
@@ -2347,8 +2353,6 @@ Lišta záložek panelu – od 2.16.0 jen záložky a nabídka „»“; histori
 | `api` | any | `—` |
 | `getTabIcon` | function | `—` |
 | `onToggleMaximize` | function | `—` |
-| `isPinned` | function | `—` |
-| `onTogglePin` | function | `—` |
 | `texts` | any | `—` |
 | `className` | string | `flex min-w-0 flex-1 items-stretch overflow-hidden` |
 
@@ -3271,6 +3275,7 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `defaultFilters` | any | `—` |
 | `viewMode` | any | `—` |
 | `onViewModeChange` | function | `—` |
+| `viewZoomKey` | string | `—` |
 | `asOf` | any | `—` |
 | `addAction` | any | `—` |
 | `moreActions` | any | `—` |
