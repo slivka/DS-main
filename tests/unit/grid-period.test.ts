@@ -55,10 +55,10 @@ describe("kontextový řádek gridu", () => {
   it("řadí knihu, oddělovač a období zleva a oddělovač bez dvojice nezobrazí", () => {
     const period = { fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: gridPeriodRange("2026-01-01", "2026-12-31", "all"), onChange: () => {}, today: "2026-09-24" };
     const both = renderToStaticMarkup(createElement(GridContextBar, { book, period }));
-    expect(both.indexOf("Kniha A")).toBeLessThan(both.indexOf('aria-hidden="true"'));
-    expect(both.indexOf('aria-hidden="true"')).toBeLessThan(both.indexOf("Celé období"));
-    expect(renderToStaticMarkup(createElement(GridContextBar, { book }))).not.toContain('aria-hidden="true"');
-    expect(renderToStaticMarkup(createElement(GridContextBar, { period }))).not.toContain('aria-hidden="true"');
+    expect(both.indexOf("Kniha A")).toBeLessThan(both.indexOf("w-px shrink-0"));
+    expect(both.indexOf("w-px shrink-0")).toBeLessThan(both.indexOf("Celé období"));
+    expect(renderToStaticMarkup(createElement(GridContextBar, { book }))).not.toContain("w-px shrink-0");
+    expect(renderToStaticMarkup(createElement(GridContextBar, { period }))).not.toContain("w-px shrink-0");
   });
 
   it("jedinou knihu vykreslí jen jako text bez tlačítka nebo comboboxu", () => {
