@@ -2,69 +2,38 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowLeft, ArrowRight, ChevronsRight, MoreHorizontal, X } from "lucide-react";
+import { ChevronsRight, X } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from "../../ui/context-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "../../ui/context-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
-import type { PaneTabsApi } from "./pane-context";
+import { buildTabMenuActions, type PaneChromeTexts, type PaneTabsApi } from "./pane-context";
 import type { PaneTab, TabPane } from "./pane-state";
 
 export type PaneTabBarTexts = {
-  back: string;
-  forward: string;
-  more: string;
   overflow: string;
-  maximize: string;
-  restore: string;
-  closeOthers: string;
-  closePane: string;
   closeTab: string;
-  closeOtherTabs: string;
-  /** {index} se nahradí číslem panelu. */
-  moveToPane: string;
-  duplicate: string;
   unsaved: string;
-  pin: string;
-  unpin: string;
+  /** Doplněk tooltipu dočasné záložky. */
+  temporary: string;
   untitled: string;
 };
 
 export const DEFAULT_PANE_TAB_BAR_TEXTS: PaneTabBarTexts = {
-  back: "Zpět",
-  forward: "Vpřed",
-  more: "Další akce panelu",
   overflow: "Další záložky",
-  maximize: "Maximalizovat panel",
-  restore: "Obnovit rozložení",
-  closeOthers: "Zavřít ostatní záložky",
-  closePane: "Zavřít panel",
   closeTab: "Zavřít",
-  closeOtherTabs: "Zavřít ostatní",
-  moveToPane: "Přesunout do panelu {index}",
-  duplicate: "Duplikovat",
   unsaved: "Neuložené změny",
-  pin: "Připnout",
-  unpin: "Odepnout",
+  temporary: "Dočasná záložka – dvojklikem ji ponecháte",
   untitled: "Bez názvu",
 };
 
 /** Minimální šířka záložky v px (maximální je 200 px). */
 export const PANE_TAB_MIN_WIDTH = 120;
+
+/** 'auto' = lišta jen když má některý viditelný panel 2+ záložek; 'always' = vždy. */
+export type TabBarMode = "auto" | "always";
 
 export interface PaneTabBarProps {
   pane: TabPane;
@@ -72,28 +41,17 @@ export interface PaneTabBarProps {
   paneCount: number;
   api: PaneTabsApi;
   getTabIcon?: (tab: PaneTab) => ComponentType<{ className?: string }> | undefined;
-  maximized?: boolean;
+  /** Dvojklik na prázdné místo lišty. */
   onToggleMaximize?: () => void;
-  pinned?: boolean;
-  onTogglePin?: () => void;
-  texts?: Partial<PaneTabBarTexts>;
+  /** Připnutí stránky do PinnedBar (položka kontextového menu). */
+  isPinned?: (tab: PaneTab) => boolean;
+  onTogglePin?: (tab: PaneTab) => void;
+  texts?: Partial<PaneTabBarTexts & PaneChromeTexts>;
   className?: string;
 }
 
-/** Lišta záložek panelu: záložky, nabídka „»“, historie ← → a menu ⋯. */
-export function PaneTabBar({
-  pane,
-  paneIndex,
-  paneCount,
-  api,
-  getTabIcon,
-  maximized,
-  onToggleMaximize,
-  pinned,
-  onTogglePin,
-  texts,
-  className,
-}: PaneTabBarProps) {
+/** Lišta záložek panelu: jen záložky a nabídka „»“ (historie a menu ⋯ jsou od 2.16.0 v PageHeader). */
+export function PaneTabBar({ pane, paneIndex, paneCount, api, getTabIcon, onToggleMaximize, isPinned, onTogglePin, texts, className }: PaneTabBarProps) {
   const t = { ...DEFAULT_PANE_TAB_BAR_TEXTS, ...texts };
   const stripRef = useRef<HTMLDivElement | null>(null);
   const [capacity, setCapacity] = useState(pane.tabs.length || 1);
@@ -115,21 +73,7 @@ export function PaneTabBar({
   let visible = pane.tabs.slice(0, slots);
   if (activeIndex >= slots) visible = [...pane.tabs.slice(0, slots - 1), pane.tabs[activeIndex]];
   const hidden = pane.tabs.filter((tab) => !visible.includes(tab));
-  const activeTab = pane.tabs[activeIndex];
   const titleOf = (tab: PaneTab) => tab.title ?? t.untitled;
-
-  const iconButton = (label: string, icon: React.ReactNode, onClick: () => void, disabled?: boolean) => (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span>
-          <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={label} disabled={disabled} onClick={onClick}>
-            {icon}
-          </Button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  );
 
   return (
     <TooltipProvider>
@@ -138,22 +82,25 @@ export function PaneTabBar({
         role="toolbar"
         aria-label={`Panel ${paneIndex + 1}`}
         className={cn("flex h-9 shrink-0 items-stretch gap-1 border-b bg-muted/60 pl-1 pr-1", isOver && "bg-primary/10", className)}
+        onDoubleClick={(event) => {
+          if (event.target === event.currentTarget || (event.target as HTMLElement).dataset.tabStrip !== undefined) onToggleMaximize?.();
+        }}
       >
-        <div ref={stripRef} role="tablist" className="flex min-w-0 flex-1 items-stretch overflow-hidden">
+        <div ref={stripRef} role="tablist" data-tab-strip="" className="flex min-w-0 flex-1 items-stretch overflow-hidden">
           <SortableContext items={visible.map((tab) => tab.id)} strategy={horizontalListSortingStrategy}>
             {visible.map((tab) => (
               <SortableTab
                 key={tab.id}
                 tab={tab}
                 paneId={pane.id}
-                paneIndex={paneIndex}
-                paneCount={paneCount}
                 active={tab.id === pane.activeTab}
                 dirty={api.isTabDirty(tab.id)}
                 Icon={getTabIcon?.(tab)}
                 api={api}
                 texts={t}
                 title={titleOf(tab)}
+                isPinned={isPinned}
+                onTogglePin={onTogglePin}
               />
             ))}
           </SortableContext>
@@ -177,7 +124,7 @@ export function PaneTabBar({
                 return (
                   <DropdownMenuItem key={tab.id} onSelect={() => api.activateTab(tab.id)}>
                     {Icon ? <Icon className="size-4" /> : null}
-                    <span className="truncate">{titleOf(tab)}</span>
+                    <span className={cn("truncate", !tab.pinned && "italic")}>{titleOf(tab)}</span>
                     {api.isTabDirty(tab.id) ? <span aria-label={t.unsaved} className="ml-auto size-2 rounded-full bg-primary" /> : null}
                   </DropdownMenuItem>
                 );
@@ -185,36 +132,6 @@ export function PaneTabBar({
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null}
-        <div className="flex shrink-0 items-center gap-0.5">
-          {iconButton(t.back, <ArrowLeft className="size-4" />, () => activeTab && api.back(activeTab.id), !activeTab || activeTab.historyIndex <= 0)}
-          {iconButton(
-            t.forward,
-            <ArrowRight className="size-4" />,
-            () => activeTab && api.forward(activeTab.id),
-            !activeTab || activeTab.historyIndex >= activeTab.history.length - 1,
-          )}
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={t.more}>
-                    <MoreHorizontal className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>{t.more}</TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="end">
-              {onToggleMaximize ? <DropdownMenuItem onSelect={onToggleMaximize}>{maximized ? t.restore : t.maximize}</DropdownMenuItem> : null}
-              {onTogglePin && activeTab ? <DropdownMenuItem onSelect={onTogglePin}>{pinned ? t.unpin : t.pin}</DropdownMenuItem> : null}
-              <DropdownMenuItem disabled={pane.tabs.length < 2 || !activeTab} onSelect={() => activeTab && api.closeOtherTabs(activeTab.id)}>
-                {t.closeOthers}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => api.closePane(pane.id)}>{t.closePane}</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
       </div>
     </TooltipProvider>
   );
@@ -223,28 +140,29 @@ export function PaneTabBar({
 function SortableTab({
   tab,
   paneId,
-  paneIndex,
-  paneCount,
   active,
   dirty,
   Icon,
   api,
   texts,
   title,
+  isPinned,
+  onTogglePin,
 }: {
   tab: PaneTab;
   paneId: string;
-  paneIndex: number;
-  paneCount: number;
   active: boolean;
   dirty: boolean;
   Icon?: ComponentType<{ className?: string }>;
   api: PaneTabsApi;
-  texts: PaneTabBarTexts;
+  texts: PaneTabBarTexts & Partial<PaneChromeTexts>;
   title: string;
+  isPinned?: (tab: PaneTab) => boolean;
+  onTogglePin?: (tab: PaneTab) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id, data: { paneId } });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id, data: { paneId, tabId: tab.id } });
   const label = tab.shortTitle ?? title;
+  const actions = buildTabMenuActions(api, tab.id, texts, onTogglePin ? { pinned: isPinned?.(tab) === true, onTogglePin: () => onTogglePin(tab) } : undefined);
 
   return (
     <ContextMenu>
@@ -252,6 +170,7 @@ function SortableTab({
         <div
           ref={setNodeRef}
           data-tab-id={tab.id}
+          data-pinned={tab.pinned ? "true" : "false"}
           style={{ transform: CSS.Translate.toString(transform), transition, flex: "0 1 200px", minWidth: 120, maxWidth: 200 }}
           className={cn(
             "group relative flex items-center border-r text-sm transition-colors",
@@ -262,6 +181,13 @@ function SortableTab({
             if (event.button !== 1) return;
             event.preventDefault();
             api.closeTab(tab.id);
+          }}
+          onMouseDown={(event) => {
+            if (event.button === 1) event.preventDefault();
+          }}
+          onDoubleClick={(event) => {
+            event.stopPropagation();
+            api.keepTab(tab.id);
           }}
           {...attributes}
           {...listeners}
@@ -277,16 +203,20 @@ function SortableTab({
                 onClick={() => api.activateTab(tab.id)}
               >
                 {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
-                <span className="truncate">{label}</span>
+                <span className={cn("truncate", !tab.pinned && "italic")}>{label}</span>
               </button>
             </TooltipTrigger>
-            <TooltipContent>{title}</TooltipContent>
+            <TooltipContent>
+              {title}
+              {!tab.pinned ? <span className="block text-xs opacity-80">{texts.temporary}</span> : null}
+            </TooltipContent>
           </Tooltip>
           <button
             type="button"
             aria-label={dirty ? `${texts.closeTab} (${texts.unsaved})` : texts.closeTab}
             className="relative mr-1 flex size-5 shrink-0 items-center justify-center rounded hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
             onPointerDown={(event) => event.stopPropagation()}
+            onDoubleClick={(event) => event.stopPropagation()}
             onClick={() => api.closeTab(tab.id)}
           >
             {dirty ? <span className="size-2 rounded-full bg-primary group-hover:hidden" aria-hidden="true" /> : null}
@@ -295,22 +225,15 @@ function SortableTab({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onSelect={() => api.closeTab(tab.id)}>{texts.closeTab}</ContextMenuItem>
-        <ContextMenuItem onSelect={() => api.closeOtherTabs(tab.id)}>{texts.closeOtherTabs}</ContextMenuItem>
-        {paneCount > 1 ? <ContextMenuSeparator /> : null}
-        {Array.from({ length: paneCount }, (_, index) => index)
-          .filter((index) => index !== paneIndex)
-          .map((index) => (
-            <ContextMenuItem key={index} onSelect={() => api.moveTab(tab.id, api.state.panes[index].id)}>
-              {texts.moveToPane.replace("{index}", String(index + 1))}
+        {actions.map((action) => (
+          <div key={action.id} className="contents">
+            {action.separatorBefore ? <ContextMenuSeparator /> : null}
+            <ContextMenuItem disabled={action.disabled} onSelect={action.onSelect}>
+              {action.label}
+              {action.shortcut ? <ContextMenuShortcut>{action.shortcut}</ContextMenuShortcut> : null}
             </ContextMenuItem>
-          ))}
-        {tab.kind === "list" ? (
-          <>
-            <ContextMenuSeparator />
-            <ContextMenuItem onSelect={() => api.duplicateTab(tab.id)}>{texts.duplicate}</ContextMenuItem>
-          </>
-        ) : null}
+          </div>
+        ))}
       </ContextMenuContent>
     </ContextMenu>
   );
