@@ -8,7 +8,7 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 
 | Name | CSS variable |
 |---|---|
-| `background` | `--background` |
+| `surface-page` | `--surface-page` |
 | `foreground` | `--foreground` |
 | `card` | `--card` |
 | `card-foreground` | `--card-foreground` |
