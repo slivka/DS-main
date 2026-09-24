@@ -397,7 +397,8 @@ export function DataGrid<Row>({
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
-  const { zoom, setZoom, density, setDensity } = useGridZoom(viewZoomKey ?? storageKey);
+  const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? exportTitle ?? title ?? storageKey}` : storageKey);
+  const { zoom, setZoom, density, setDensity } = useGridZoom(zoomKey);
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
 

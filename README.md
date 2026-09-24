@@ -132,7 +132,7 @@ měna podle nastavení aplikace.
 
 ## Changelog 2.17.2 – společný zoom tabulky a stromu
 
-- `DataGrid` a `TreeGrid` mají nový prop `viewZoomKey`; při stejné hodnotě zachovají zoom i hustotu při přepínání zobrazení.
+- `DataGrid` a `TreeGrid` při přepínání zobrazení automaticky zachovají zoom i hustotu; nový prop `viewZoomKey` explicitně propojí i odlišně pojmenované pohledy.
 - Přepnutí do tabulkového zobrazení používá jednoznačnou ikonu tabulky.
 
 ## Changelog 2.17.1 – veřejné pomocné nástroje

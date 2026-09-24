@@ -203,7 +203,8 @@ export function TreeGrid<Row extends TreeGridRow>({
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { zoom, setZoom, density, setDensity } = useGridZoom(viewZoomKey ?? key);
+  const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? title}` : key);
+  const { zoom, setZoom, density, setDensity } = useGridZoom(zoomKey);
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
 
