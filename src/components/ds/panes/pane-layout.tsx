@@ -102,7 +102,6 @@ function PaneLayoutInner({
   const { state } = api;
   const t = { ...DEFAULT_PANE_TEXTS, ...texts };
   const emptyHint = t.emptyHint;
-  const [dragging, setDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const fontScale = useFontScale();
@@ -198,8 +197,8 @@ function PaneLayoutInner({
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragStart={() => setDragging(true)}
-      onDragCancel={() => setDragging(false)}
+      onDragStart={() => undefined}
+      onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
     >
       <div className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
