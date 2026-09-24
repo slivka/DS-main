@@ -73,4 +73,5 @@ export * from "./lib/tokens";
 export * from "./lib/lovable-error-reporting";
 export * from "./hooks";
 export * from "@tanstack/react-query";
-export * from "lucide-react";
+export * as LucideIcons from "lucide-react";
+export type { LucideIcon, LucideProps } from "lucide-react";
