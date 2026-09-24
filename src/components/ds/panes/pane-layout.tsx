@@ -13,7 +13,7 @@ import {
   type PaneChromeTexts,
   type PaneTabsApi,
 } from "./pane-context";
-import { PaneTabBar, type PaneTabBarTexts, type TabBarMode } from "./pane-tab-bar";
+import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
 import { evenWidths, findTab, paneKey, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
 
 export type PaneLayoutTexts = PaneTabBarTexts &
@@ -68,18 +68,13 @@ export interface PaneLayoutProps {
   getTabIcon?: (tab: PaneTab) => ComponentType<{ className?: string }> | undefined;
   /** Vlastní obsah prázdného panelu. */
   renderEmpty?: (pane: TabPane) => ReactNode;
-  /** Připnutí stránky do PinnedBar (položka v menu ⋯ a kontextovém menu záložky). */
-  isPinned?: (tab: PaneTab) => boolean;
-  onTogglePin?: (tab: PaneTab) => void;
-  /** 'auto' (výchozí) = lišty záložek jen když má některý viditelný panel 2+ záložek; 'always' = vždy. */
-  tabBarMode?: TabBarMode;
   minPaneWidth?: number;
   texts?: Partial<PaneLayoutTexts>;
   className?: string;
 }
 
 /** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
-export function PaneLayout({ renderTab, getTabIcon, renderEmpty, isPinned, onTogglePin, tabBarMode = "auto", minPaneWidth = 560, texts, className }: PaneLayoutProps) {
+export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
   const api = usePaneTabs();
   if (!api) throw new Error("PaneLayout musí být uvnitř PaneTabsProvider.");
   return (
@@ -88,9 +83,6 @@ export function PaneLayout({ renderTab, getTabIcon, renderEmpty, isPinned, onTog
       renderTab={renderTab}
       getTabIcon={getTabIcon}
       renderEmpty={renderEmpty}
-      isPinned={isPinned}
-      onTogglePin={onTogglePin}
-      tabBarMode={tabBarMode}
       minPaneWidth={minPaneWidth}
       texts={texts}
       className={className}
@@ -103,9 +95,6 @@ function PaneLayoutInner({
   renderTab,
   getTabIcon,
   renderEmpty,
-  isPinned,
-  onTogglePin,
-  tabBarMode,
   minPaneWidth,
   texts,
   className,
@@ -152,7 +141,6 @@ function PaneLayoutInner({
   }, [state.active]);
 
   const shownPanes = maximized ? state.panes.filter((pane) => pane.id === maximized) : state.panes;
-  const showBars = tabBarMode === "always" || dragging || shownPanes.some((pane) => pane.tabs.length >= 2);
   const resolvedWidths = useMemo(() => {
     if (shownPanes.length === 1) return [1];
     const base = state.widths && state.widths.length === shownPanes.length ? state.widths : evenWidths(shownPanes.length);
@@ -234,11 +222,8 @@ function PaneLayoutInner({
               renderTab={renderTab}
               renderEmpty={renderEmpty}
               getTabIcon={getTabIcon}
-              isPinned={isPinned}
-              onTogglePin={onTogglePin}
               emptyHint={emptyHint}
               texts={texts}
-              showBar={showBars}
               maximized={maximized === pane.id}
               flashing={api.flashPaneId === pane.id}
               getIconByName={(name) => (getTabIcon ? getTabIcon({ icon: name } as PaneTab) : undefined)}
@@ -267,11 +252,8 @@ function PaneColumn({
   renderTab,
   renderEmpty,
   getTabIcon,
-  isPinned,
-  onTogglePin,
   emptyHint,
   texts,
-  showBar,
   maximized,
   flashing,
   getIconByName,
@@ -282,11 +264,8 @@ function PaneColumn({
   renderTab: PaneLayoutProps["renderTab"];
   renderEmpty?: PaneLayoutProps["renderEmpty"];
   getTabIcon?: PaneLayoutProps["getTabIcon"];
-  isPinned?: PaneLayoutProps["isPinned"];
-  onTogglePin?: PaneLayoutProps["onTogglePin"];
   emptyHint: string;
   texts?: Partial<PaneLayoutTexts>;
-  showBar: boolean;
   maximized: boolean;
   flashing: boolean;
   getIconByName: PaneChrome["getIcon"];
@@ -316,7 +295,6 @@ function PaneColumn({
     : null;
   const paneCount = api.state.panes.length;
   const toggleMaximize = () => api.toggleMaximize(paneIndex);
-  const pinExtra = tab && onTogglePin ? { pinned: isPinned?.(tab) === true, onTogglePin: () => onTogglePin(tab) } : undefined;
   const chrome: PaneChrome | null = tab
     ? {
         tabId: tab.id,
@@ -330,14 +308,11 @@ function PaneColumn({
         goToHistory: (index) => api.goToHistory(tab.id, index),
         openFromHistory: (index) => api.openFromHistory(tab.id, index),
         dirty: api.isTabDirty(tab.id),
-        pinned: tab.pinned,
-        keep: () => api.keepTab(tab.id),
-        release: () => api.releaseTab(tab.id),
         recordNav: api.getRecordNav(tab.id),
         canMaximize: paneCount > 1,
         maximized,
         toggleMaximize,
-        menuActions: buildTabMenuActions(api, tab.id, texts, pinExtra),
+        menuActions: buildTabMenuActions(api, tab.id, texts),
         dragHandleProps: { ref: drag.setNodeRef, ...drag.attributes, ...drag.listeners },
         getIcon: getIconByName,
       }
@@ -357,24 +332,15 @@ function PaneColumn({
         flashing && "pane-flash",
       )}
     >
-      <div
-        aria-hidden={!showBar}
-        className={cn("grid shrink-0 transition-[grid-template-rows] duration-150 motion-reduce:transition-none", showBar ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
-      >
-        <div className="min-h-0 overflow-hidden">
-          <PaneTabBar
-            pane={pane}
-            paneIndex={paneIndex}
-            paneCount={paneCount}
-            api={api}
-            getTabIcon={getTabIcon}
-            onToggleMaximize={paneCount > 1 ? toggleMaximize : undefined}
-            isPinned={isPinned}
-            onTogglePin={onTogglePin}
-            texts={texts}
-          />
-        </div>
-      </div>
+      <PaneTabBar
+        pane={pane}
+        paneIndex={paneIndex}
+        paneCount={paneCount}
+        api={api}
+        getTabIcon={getTabIcon}
+        onToggleMaximize={paneCount > 1 ? toggleMaximize : undefined}
+        texts={texts}
+      />
       <div ref={setNodeRef} className={cn("min-h-0 flex-1 overflow-auto p-4", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>

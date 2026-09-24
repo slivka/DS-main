@@ -16,8 +16,6 @@ export type PaneTabBarTexts = {
   overflow: string;
   closeTab: string;
   unsaved: string;
-  /** Doplněk tooltipu dočasné záložky. */
-  temporary: string;
   untitled: string;
 };
 
@@ -25,15 +23,11 @@ export const DEFAULT_PANE_TAB_BAR_TEXTS: PaneTabBarTexts = {
   overflow: "Další záložky",
   closeTab: "Zavřít",
   unsaved: "Neuložené změny",
-  temporary: "Dočasná záložka – dvojklikem ji ponecháte",
   untitled: "Bez názvu",
 };
 
 /** Minimální šířka záložky v px (maximální je 200 px). */
 export const PANE_TAB_MIN_WIDTH = 120;
-
-/** 'auto' = lišta jen když má některý viditelný panel 2+ záložek; 'always' = vždy. */
-export type TabBarMode = "auto" | "always";
 
 export interface PaneTabBarProps {
   pane: TabPane;
@@ -43,15 +37,12 @@ export interface PaneTabBarProps {
   getTabIcon?: (tab: PaneTab) => ComponentType<{ className?: string }> | undefined;
   /** Dvojklik na prázdné místo lišty. */
   onToggleMaximize?: () => void;
-  /** Připnutí stránky do PinnedBar (položka kontextového menu). */
-  isPinned?: (tab: PaneTab) => boolean;
-  onTogglePin?: (tab: PaneTab) => void;
   texts?: Partial<PaneTabBarTexts & PaneChromeTexts>;
   className?: string;
 }
 
 /** Lišta záložek panelu: jen záložky a nabídka „»“ (historie a menu ⋯ jsou od 2.16.0 v PageHeader). */
-export function PaneTabBar({ pane, paneIndex, paneCount, api, getTabIcon, onToggleMaximize, isPinned, onTogglePin, texts, className }: PaneTabBarProps) {
+export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize, texts, className }: PaneTabBarProps) {
   const t = { ...DEFAULT_PANE_TAB_BAR_TEXTS, ...texts };
   const stripRef = useRef<HTMLDivElement | null>(null);
   const [capacity, setCapacity] = useState(pane.tabs.length || 1);
@@ -99,8 +90,6 @@ export function PaneTabBar({ pane, paneIndex, paneCount, api, getTabIcon, onTogg
                 api={api}
                 texts={t}
                 title={titleOf(tab)}
-                isPinned={isPinned}
-                onTogglePin={onTogglePin}
               />
             ))}
           </SortableContext>
@@ -124,7 +113,7 @@ export function PaneTabBar({ pane, paneIndex, paneCount, api, getTabIcon, onTogg
                 return (
                   <DropdownMenuItem key={tab.id} onSelect={() => api.activateTab(tab.id)}>
                     {Icon ? <Icon className="size-4" /> : null}
-                    <span className={cn("truncate", !tab.pinned && "italic")}>{titleOf(tab)}</span>
+                    <span className="truncate">{titleOf(tab)}</span>
                     {api.isTabDirty(tab.id) ? <span aria-label={t.unsaved} className="ml-auto size-2 rounded-full bg-primary" /> : null}
                   </DropdownMenuItem>
                 );
@@ -146,8 +135,6 @@ function SortableTab({
   api,
   texts,
   title,
-  isPinned,
-  onTogglePin,
 }: {
   tab: PaneTab;
   paneId: string;
@@ -157,12 +144,10 @@ function SortableTab({
   api: PaneTabsApi;
   texts: PaneTabBarTexts & Partial<PaneChromeTexts>;
   title: string;
-  isPinned?: (tab: PaneTab) => boolean;
-  onTogglePin?: (tab: PaneTab) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id, data: { paneId, tabId: tab.id } });
   const label = tab.shortTitle ?? title;
-  const actions = buildTabMenuActions(api, tab.id, texts, onTogglePin ? { pinned: isPinned?.(tab) === true, onTogglePin: () => onTogglePin(tab) } : undefined);
+  const actions = buildTabMenuActions(api, tab.id, texts);
 
   return (
     <ContextMenu>
@@ -170,7 +155,6 @@ function SortableTab({
         <div
           ref={setNodeRef}
           data-tab-id={tab.id}
-          data-pinned={tab.pinned ? "true" : "false"}
           style={{ transform: CSS.Translate.toString(transform), transition, flex: "0 1 200px", minWidth: 120, maxWidth: 200 }}
           className={cn(
             "group relative flex items-center border-r text-sm transition-colors",
@@ -184,10 +168,6 @@ function SortableTab({
           }}
           onMouseDown={(event) => {
             if (event.button === 1) event.preventDefault();
-          }}
-          onDoubleClick={(event) => {
-            event.stopPropagation();
-            api.keepTab(tab.id);
           }}
           {...attributes}
           {...listeners}
@@ -203,12 +183,11 @@ function SortableTab({
                 onClick={() => api.activateTab(tab.id)}
               >
                 {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
-                <span className={cn("truncate", !tab.pinned && "italic")}>{label}</span>
+                <span className="truncate">{label}</span>
               </button>
             </TooltipTrigger>
             <TooltipContent>
               {title}
-              {!tab.pinned ? <span className="block text-xs opacity-80">{texts.temporary}</span> : null}
             </TooltipContent>
           </Tooltip>
           <button

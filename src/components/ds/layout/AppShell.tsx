@@ -74,6 +74,8 @@ export interface AppShellProps {
   navSearch?: boolean;
   navSearchPlaceholder?: string;
   navSearchEmptyText?: string;
+  /** Nabídka uložených rozložení vedle hledání v menu. */
+  navSearchMenu?: ReactNode;
   /** @deprecated Použijte navGroups. */
   items?: NavItem[];
   /** @deprecated Použijte panels. */
@@ -109,6 +111,7 @@ type ShellNavProps = {
   onExpandSearch?: () => void;
   focusSearch?: number;
   onDismissSearch?: () => void;
+  searchMenu?: ReactNode;
 };
 
 function readGroupCollapsed(storageKey: string, fallback: boolean) {
@@ -127,7 +130,7 @@ function badgeTotal(group: NavGroup) {
   return total > 0 ? total : null;
 }
 
-function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0, onDismissSearch }: ShellNavProps) {
+function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0, onDismissSearch, searchMenu }: ShellNavProps) {
   // V režimu záložek otevírá navigace stránky do záložek (Cmd/Ctrl + klik = nová záložka, + Shift = sousední panel).
   const paneTabs = usePaneTabs();
   const activeTab = useActivePaneTab();
@@ -233,14 +236,10 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     <TooltipProvider>
       <div className="flex h-full min-h-0 flex-col">
         {searchEnabled ? collapsed ? (
-          <div className="shrink-0 p-2"><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="w-full text-sidebar-foreground" aria-label={searchPlaceholder} onClick={onExpandSearch}><Search className="size-4" /></Button></TooltipTrigger><TooltipContent side="right">{searchPlaceholder}</TooltipContent></Tooltip></div>
+          <div className="flex shrink-0 flex-col gap-1 p-2"><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="w-full text-sidebar-foreground" aria-label={searchPlaceholder} onClick={onExpandSearch}><Search className="size-4" /></Button></TooltipTrigger><TooltipContent side="right">{searchPlaceholder}</TooltipContent></Tooltip>{searchMenu}</div>
         ) : (
           <div className="shrink-0 px-2 pb-1 pt-2">
-            <div className="flex h-9 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator">
-              <Search className="size-4 shrink-0" />
-              <input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />
-              {query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label="Smazat hledání" onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}
-            </div>
+            <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label="Smazat hledání" onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
           </div>
         ) : null}
         <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2" aria-label="Hlavní menu">
@@ -317,6 +316,7 @@ export function AppShell({
   navSearch = true,
   navSearchPlaceholder = "Hledat v menu…",
   navSearchEmptyText = "Nic nenalezeno",
+  navSearchMenu,
 }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -413,7 +413,7 @@ export function AppShell({
   const visibleGroups = currentPanel?.nav ?? resolvedGroups;
   const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}` : navStateKey ?? appName;
   const nav = (compact: boolean, onNavigate = () => setMenuOpen(false), onDismissSearch?: () => void) => (
-    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} />
+    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} searchMenu={navSearchMenu} />
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
