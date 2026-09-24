@@ -57,7 +57,7 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
             </TooltipTrigger>
             <TooltipContent className="xl:hidden">{label}</TooltipContent>
             <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
-              <ContextPillCloseContext.Provider value={() => setOpen(false)}>
+              <ContextPillCloseContext.Provider value={() => { console.log("pill-close"); setOpen(false); }}>
                 {children}
               </ContextPillCloseContext.Provider>
             </PopoverContent>
