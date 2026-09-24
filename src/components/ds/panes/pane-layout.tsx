@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
-import { DndContext, PointerSensor, closestCenter, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, PointerSensor, closestCenter, pointerWithin, type CollisionDetection, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
@@ -107,6 +107,11 @@ function PaneLayoutInner({
   const fontScale = useFontScale();
   const maximizedIndex = api.maximized !== null && state.panes[api.maximized] ? api.maximized : null;
   const maximized = maximizedIndex !== null ? state.panes[maximizedIndex].id : null;
+  const collision: CollisionDetection = (args) => {
+    // Rozhoduje místo, kde je ukazatel; plocha panelu má přednost před záložkami jiného panelu.
+    const hits = pointerWithin(args);
+    return hits.length ? hits : closestCenter(args);
+  };
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   useEffect(() => {
@@ -195,7 +200,7 @@ function PaneLayoutInner({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={collision}
       onDragStart={() => undefined}
       onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
