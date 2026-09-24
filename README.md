@@ -130,13 +130,15 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
-## Changelog 2.17.0 – jednotný řádek akcí gridu
+## Changelog 2.17.0 – jednotný řádek akcí gridu a rovnocenné záložky
 
 Nové:
 - Veřejné `GridToolbar`, `GridToolbarSeparator`, `AsOfDateToggle`, `GridToggleButton`, `GridExpandControls` a typy akcí/exportů.
 - `DataGrid`: `viewMode`, `onViewModeChange`, `asOf`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`.
 - `TreeGrid`: `viewMode`, `onViewModeChange`, `asOf`, `toolbarLeft`, `filters`, `filterChips`, `onClearFilters`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`, `loading`.
 - Ctrl/Cmd+kolečko používá stejný plynulý výpočet nad celým blokem DataGridu, TreeGridu i ZoomPane.
+- `PageHeader.menuActions`, `AppShell.navSearchMenu` a `LayoutMenu trigger="icon"` přesouvají akce stránky do ⋯ a uložená rozložení vedle hledání v menu.
+- Lišta záložek je vždy viditelná. Všechny záložky jsou rovnocenné a `openerTabId` dál váže detail k seznamu.
 
 Změny chování a přechod:
 - **Breaking:** TreeGrid už nemá textová tlačítka ani segment úrovní; rozbalení/sbalení je ikonové a více úrovní je v nabídce.
@@ -145,6 +147,11 @@ Změny chování a přechod:
 - **Breaking:** aktivní `GroupControl`, včetně skrytého seskupení, je oranžový místo modrého nebo červeného.
 - Stávající `actions` zůstává funkční, ale nové primární akce přesuňte do `addAction` a vedlejší do `moreActions`.
 - `AsOfDateField` je zastaralý; v řádku akcí použijte `AsOfDateToggle`.
+- **Breaking:** odstraňte `PaneTab.pinned`, target `preview`, `keepTab`, `releaseTab` a `PaneLayout.tabBarMode`. Běžný klik používá `target: 'replace'`; staré uložené `pinned` se bezpečně ignoruje.
+- **Breaking:** `PaneLayout` už nepřijímá panelové `isPinned` / `onTogglePin`; samostatný `PinnedBar` zůstává beze změny.
+- **Breaking:** `PageHeader.actions` se uvnitř panelu nevykreslí; akce celé stránky přesuňte do `menuActions`, „Nový“ do gridového `addAction`.
+- `PageHeader` má v panelu vpravo pouze ↑/↓, ←/→, maximalizaci a ⋯. Alt+↑/↓ listuje záznamy, Alt+←/→ historií a Alt+M maximalizuje.
+- `LayoutMenu` přesuňte z horní lišty do `AppShell.navSearchMenu` a použijte `trigger="icon"`.
 
 ## Changelog 2.16.0 – dočasné a ponechané záložky, maximalizace, koncepty, rozložení
 
