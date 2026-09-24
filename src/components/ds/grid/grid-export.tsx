@@ -1,4 +1,5 @@
 import { Download, FileCode2 } from "lucide-react";
+import { PAGE_SURFACE_LIGHT } from "../../../lib/tokens";
 import { type ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
@@ -470,7 +471,7 @@ h1{font-size:18px;margin:0 0 4px}
 table{border-collapse:collapse;font-size:12px;width:100%}
 th,td{border:1px solid #d4d4d8;padding:4px 8px;text-align:left}
 th{background:#f4f4f5}
-tbody tr:nth-child(even){background:#fafafa}
+tbody tr:nth-child(even){background:${PAGE_SURFACE_LIGHT}}
 tfoot td{background:#e4e4e7;font-weight:600}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 </style></head><body>

@@ -69,6 +69,7 @@ export * from "./lib/excel-export";
 export * from "./lib/font-scale";
 export * from "./lib/font-links";
 export * from "./lib/format";
+export * from "./lib/tokens";
 export * from "./lib/lovable-error-reporting";
 export * from "./hooks";
 export { QueryClient, QueryClientProvider } from "@tanstack/react-query";
