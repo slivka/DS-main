@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -193,6 +193,10 @@ export function AppShell({
   const [collapseWasChosen, setCollapseWasChosen] = useState(false);
   const isNarrow = useMediaQuery("(max-width: 1279px)");
   const collapsedRef = useRef(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const contextRef = useRef<HTMLDivElement>(null);
+  const rightControlsRef = useRef<HTMLDivElement>(null);
+  const [centerContext, setCenterContext] = useState(true);
 
   useEffect(() => {
     applyFontScale();
@@ -256,9 +260,35 @@ export function AppShell({
   const hasThemeToggle = Boolean(themeToggleButton);
   const hasUser = Boolean(userMenu);
 
+  const updateContextPosition = useCallback(() => {
+    const header = headerRef.current;
+    const context = contextRef.current;
+    const rightControls = rightControlsRef.current;
+    if (!header || !context || !rightControls || !hasContext) return;
+
+    const headerRect = header.getBoundingClientRect();
+    const contextWidth = context.getBoundingClientRect().width;
+    const rightControlsLeft = rightControls.getBoundingClientRect().left;
+    const centeredRight = headerRect.left + headerRect.width / 2 + contextWidth / 2;
+    setCenterContext(centeredRight + 16 <= rightControlsLeft);
+  }, [hasContext]);
+
+  useEffect(() => {
+    updateContextPosition();
+    const observer = new ResizeObserver(updateContextPosition);
+    if (headerRef.current) observer.observe(headerRef.current);
+    if (contextRef.current) observer.observe(contextRef.current);
+    if (rightControlsRef.current) observer.observe(rightControlsRef.current);
+    window.addEventListener("resize", updateContextPosition);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateContextPosition);
+    };
+  }, [updateContextPosition]);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
+      <header ref={headerRef} className="relative z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
         {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
           {logo}
           {!isCollapsed ? <span className="truncate font-semibold tracking-tight">{appName}</span> : null}
@@ -271,26 +301,36 @@ export function AppShell({
               {nav(false)}
             </SheetContent>
           </Sheet>
-          <div className="flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2">{contextLeft}</div>
-          {hasContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}
+          <div
+            ref={contextRef}
+            className={cn(
+              "z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2",
+              centerContext && "absolute left-1/2 -translate-x-1/2",
+            )}
+          >
+            {contextLeft}
+          </div>
+          {hasContext && !centerContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}
           <div className="hidden min-w-0 flex-1 2xl:block">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
           <div className="min-w-0 flex-1 2xl:hidden" />
-          {hasActions ? <Separator orientation="vertical" className="hidden h-6 shrink-0 sm:block" /> : null}
-          <div className="flex shrink-0 items-center gap-1 xl:gap-2">{actions}</div>
-          {hasActions && hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex shrink-0 items-center gap-1 xl:gap-2">
-            {resolvedPanels.map((panel) => {
-              const Icon = panel.icon;
-              const pressed = panel.id === currentPanel?.id;
-              return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
-            })}
+          <div ref={rightControlsRef} className="flex shrink-0 items-center gap-1 xl:gap-2">
+            {hasActions ? <Separator orientation="vertical" className="hidden h-6 shrink-0 sm:block" /> : null}
+            <div className="flex shrink-0 items-center gap-1 xl:gap-2">{actions}</div>
+            {hasActions && hasPanels ? <Separator orientation="vertical" className="h-6" /> : null}
+            <div className="flex shrink-0 items-center gap-1 xl:gap-2">
+              {resolvedPanels.map((panel) => {
+                const Icon = panel.icon;
+                const pressed = panel.id === currentPanel?.id;
+                return <TooltipProvider key={panel.id}><Tooltip><TooltipTrigger asChild><Button type="button" variant={pressed ? "secondary" : "ghost"} size="icon" aria-label={panel.tooltip} aria-pressed={pressed} onClick={() => setPanel(pressed ? null : panel.id)}><Icon className="size-4" /></Button></TooltipTrigger><TooltipContent>{panel.tooltip}</TooltipContent></Tooltip></TooltipProvider>;
+              })}
+            </div>
+            {(hasActions || hasPanels) && hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
+            <div className="flex shrink-0 items-center">{notificationBell}</div>
+            {(hasActions || hasPanels || hasNotifications) && hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
+            <div className="hidden shrink-0 items-center sm:flex">{themeToggleButton}</div>
+            {(hasActions || hasPanels || hasNotifications || hasThemeToggle) && hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
+            <div className="hidden shrink-0 items-center gap-2 md:flex">{userMenu}</div>
           </div>
-          {(hasActions || hasPanels) && hasNotifications ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="flex shrink-0 items-center">{notificationBell}</div>
-          {(hasActions || hasPanels || hasNotifications) && hasThemeToggle ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="hidden shrink-0 items-center sm:flex">{themeToggleButton}</div>
-          {(hasActions || hasPanels || hasNotifications || hasThemeToggle) && hasUser ? <Separator orientation="vertical" className="h-6" /> : null}
-          <div className="hidden shrink-0 items-center gap-2 md:flex">{userMenu}</div>
         </div>
       </header>
 
