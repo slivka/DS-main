@@ -346,6 +346,10 @@ function AccountingFormsPage() {
             <BookSelect id="demo-book" books={MOCK_BOOKS} value={bookId} onChange={setBookId} />
           </div>
           <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-single-book">Jediná dostupná kniha</Label>
+            <BookSelect id="demo-single-book" books={MOCK_BOOKS.slice(0, 1)} value={bookId} onChange={setBookId} />
+          </div>
+          <div className="flex flex-col gap-1">
             <Label htmlFor="demo-dimension">Zakázka</Label>
             <DimensionSelect
               id="demo-dimension"

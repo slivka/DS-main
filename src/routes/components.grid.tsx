@@ -41,6 +41,7 @@ export const Route = createFileRoute("/components/grid")({
 function GridPage() {
   const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "all"));
   const [bookId, setBookId] = useState<string | "all">("all");
+  const [singleBookPeriod, setSingleBookPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "month", 0));
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
   const [asOfEnabled, setAsOfEnabled] = useState(true);
@@ -148,6 +149,7 @@ function GridPage() {
           rows={MOCK_JOURNAL.slice(0, 3)}
           columns={columns}
           rowKey={(row) => row.id}
+          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
           book={{ books: books.slice(0, 1), value: "pczk", onChange: () => {} }}
           showTotalRow
         />
@@ -156,6 +158,12 @@ function GridPage() {
         <GridContextBar
           period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
           book={{ books, value: bookId, onChange: setBookId }}
+          className="rounded border"
+        />
+      </div>
+      <div className="mt-8 max-w-3xl">
+        <GridContextBar
+          book={{ books, value: "csob", readOnly: true }}
           className="rounded border"
         />
       </div>

@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { filterByGridPeriod, gridPeriodLabel, gridPeriodRange, moveGridPeriod } from "../../src/components/ds/grid/grid-period";
-import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
+import { createGridBookColumn, GridBookSelect, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
+import { BookSelect } from "../../src/components/ds/accounting/book-select";
 import { GridZoomContext } from "../../src/components/ds/grid/grid-zoom";
 
 describe("období gridu", () => {
@@ -49,5 +50,46 @@ describe("kontextový řádek gridu", () => {
     const html = renderToStaticMarkup(createElement(GridZoomContext.Provider, { value: { zoom: 0.6, density: "compact", setZoom: () => {} } }, createElement(GridContextBar, { book })));
     expect(html).toContain('data-density="compact"');
     expect(html).toContain('font-size:7.80px');
+  });
+
+  it("řadí knihu, oddělovač a období zleva a oddělovač bez dvojice nezobrazí", () => {
+    const period = { fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: gridPeriodRange("2026-01-01", "2026-12-31", "all"), onChange: () => {}, today: "2026-09-24" };
+    const both = renderToStaticMarkup(createElement(GridContextBar, { book, period }));
+    expect(both.indexOf("Kniha A")).toBeLessThan(both.indexOf("w-px shrink-0"));
+    expect(both.indexOf("w-px shrink-0")).toBeLessThan(both.indexOf("Celé období"));
+    expect(renderToStaticMarkup(createElement(GridContextBar, { book }))).not.toContain("w-px shrink-0");
+    expect(renderToStaticMarkup(createElement(GridContextBar, { period }))).not.toContain("w-px shrink-0");
+  });
+
+  it("jedinou knihu vykreslí jen jako text bez tlačítka nebo comboboxu", () => {
+    const html = renderToStaticMarkup(createElement(GridBookSelect, { ...book, onChange: () => {} }));
+    expect(html).toContain("<strong");
+    expect(html).toContain("Kniha A");
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain('role="combobox"');
+  });
+
+  it("readOnly výběr vykreslí vybranou knihu nebo všechny knihy jen jako text", () => {
+    const books = [book.books[0], { id: "b", code: "B", name: "Kniha B" }];
+    const selected = renderToStaticMarkup(createElement(GridBookSelect, { books, value: "b", readOnly: true }));
+    const all = renderToStaticMarkup(createElement(GridBookSelect, { books, value: "all", readOnly: true }));
+    expect(selected).toContain("Kniha B");
+    expect(all).toContain("Všechny knihy");
+    expect(selected).not.toContain("<button");
+    expect(all).not.toContain("<button");
+  });
+
+  it("neznámou hodnotu více knih zobrazí jako výběr Všechny knihy", () => {
+    const books = [book.books[0], { id: "b", code: "B", name: "Kniha B" }];
+    const html = renderToStaticMarkup(createElement(GridBookSelect, { books, value: "missing", onChange: () => {} }));
+    expect(html).toContain("<button");
+    expect(html).toContain("Všechny knihy");
+  });
+
+  it("formulářovou jedinou knihu zobrazí jako hodnotu bez výběru", () => {
+    const html = renderToStaticMarkup(createElement(BookSelect, { books: book.books, value: "a", onChange: () => {} }));
+    expect(html).toContain("A – Kniha A");
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain('role="combobox"');
   });
 });

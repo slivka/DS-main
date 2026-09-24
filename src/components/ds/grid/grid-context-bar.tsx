@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { cn } from "../../../lib/utils";
 import { DateRangeField } from "../form/date-range-field";
 import type { BookOption } from "../accounting/book-select";
+import { GridToolbarSeparator } from "./grid-toolbar";
 import { gridPeriodLabel, gridPeriodRange, moveGridPeriod, type GridPeriodKind, type GridPeriodValue } from "./grid-period";
 import { gridFontSize, useGridZoomContext, type GridDensity } from "./grid-zoom";
 
@@ -23,7 +24,7 @@ export interface GridPeriodConfig {
   fiscalFrom: string; fiscalTo: string; value: GridPeriodValue; onChange: (value: GridPeriodValue) => void; texts?: Partial<GridPeriodTexts>; today?: string;
 }
 export interface GridBookDisplayConfig {
-  books: BookOption[]; value: string | "all"; onChange: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string;
+  books: BookOption[]; value: string | "all"; onChange?: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string; readOnly?: boolean;
 }
 export interface GridBookConfig<Row = unknown> extends GridBookDisplayConfig {
   getRowBookId?: (row: Row) => string | null | undefined;
@@ -89,14 +90,16 @@ function PeriodGrid({ label, count, active, columns, render, onSelect }: { label
   return <div><div className="mb-1 text-sm font-medium">{label}</div><div className={cn("grid gap-1", columns === 4 ? "grid-cols-4" : "grid-cols-2")}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
 }
 
-export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy" }: GridBookDisplayConfig) {
+export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy", readOnly = false }: GridBookDisplayConfig) {
   const active = books.filter((book) => book.active !== false);
   const selected = active.find((book) => book.id === value);
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
-  if (active.length === 1) return <TooltipProvider><Tooltip><TooltipTrigger asChild><strong className="block max-w-[16em] truncate">{active[0]?.name}</strong></TooltipTrigger><TooltipContent>{active[0]?.code}</TooltipContent></Tooltip></TooltipProvider>;
+  const textOnly = active.length === 1 || readOnly || !onChange;
+  const textBook = active.length === 1 ? active[0] : selected;
+  if (textOnly) return <TooltipProvider><Tooltip><TooltipTrigger asChild><strong className="block max-w-[16em] truncate">{value === "all" ? allBooksLabel : textBook?.name ?? allBooksLabel}</strong></TooltipTrigger>{textBook?.code ? <TooltipContent>{textBook.code}</TooltipContent> : null}</Tooltip></TooltipProvider>;
   const options = active.filter((book) => `${book.name} ${book.code}`.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
-  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button type="button" variant="outline" className="grid-toolbar-control max-w-[16em] justify-between font-semibold"><span className="truncate">{value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger><PopoverContent align="end" className="w-72 p-1"><div className="relative mb-1"><Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat knihu…" className="pl-8" autoFocus /></div>{allowAll ? <BookOptionButton selected={value === "all"} label={allBooksLabel} onSelect={() => { onChange("all"); setOpen(false); }} /> : null}{options.map((book) => <BookOptionButton key={book.id} selected={value === book.id} label={`${book.name} (${book.code})`} onSelect={() => { onChange(book.id); setOpen(false); }} />)}</PopoverContent></Popover>;
+  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button type="button" variant="outline" className="grid-toolbar-control max-w-[16em] justify-between font-semibold"><span className="truncate">{value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger><PopoverContent align="start" className="w-72 p-1"><div className="relative mb-1"><Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat knihu…" className="pl-8" autoFocus /></div>{allowAll ? <BookOptionButton selected={value === "all"} label={allBooksLabel} onSelect={() => { onChange("all"); setOpen(false); }} /> : null}{options.map((book) => <BookOptionButton key={book.id} selected={value === book.id} label={`${book.name} (${book.code})`} onSelect={() => { onChange(book.id); setOpen(false); }} />)}</PopoverContent></Popover>;
 }
 function BookOptionButton({ selected, label, onSelect }: { selected: boolean; label: string; onSelect: () => void }) { return <Button type="button" role="option" aria-selected={selected} variant="ghost" className="w-full justify-start gap-2 px-2 font-normal" onClick={onSelect}><span className="size-4">{selected ? <Check className="size-4" /> : null}</span><span className="truncate">{label}</span></Button>; }
 
@@ -105,7 +108,7 @@ export const GridContextBar = React.forwardRef<HTMLDivElement, GridContextBarPro
   const resolvedZoom = zoom ?? context?.zoom ?? 1;
   const resolvedDensity = density ?? context?.density ?? "normal";
   if (!period && !book) return null;
-  return <div ref={ref} data-slot="grid-context-bar" data-density={resolvedDensity} className={cn("zoom-filters grid-toolbar-row flex min-w-0 flex-wrap items-center gap-2 border", className)} style={{ ...style, fontSize: gridFontSize(resolvedZoom) }} {...props}>{period ? <GridPeriodFilter {...period} /> : null}{book ? <div className="ml-auto flex min-w-0 items-center justify-end"><GridBookSelect {...book} /></div> : null}</div>;
+  return <div ref={ref} data-slot="grid-context-bar" data-density={resolvedDensity} className={cn("zoom-filters grid-toolbar-row flex min-w-0 flex-wrap items-center gap-2 border", className)} style={{ ...style, fontSize: gridFontSize(resolvedZoom) }} {...props}>{book ? <GridBookSelect {...book} /> : null}{book && period ? <GridToolbarSeparator density={resolvedDensity} /> : null}{period ? <GridPeriodFilter {...period} /> : null}</div>;
 });
 
 export const GRID_BOOK_COLUMN_ID = "__grid_book__";

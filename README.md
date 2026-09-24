@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.20.2 – kniha vlevo a jednohodnotové výběry
+
+- `GridContextBar` zobrazuje vlevo knihu, oddělovač podle hustoty a následně období; pravá část zůstává prázdná.
+- `GridBookDisplayConfig` má volitelný `readOnly` a `onChange`. Jediná nebo needitovatelná kniha se zobrazuje jako tučný text, nikdy jako zakázaný výběr.
+- `BookSelect` má nový volitelný prop `displayWhenSingle` (výchozí `true`). Jedinou aktivní knihu zobrazí jako hodnotu jen pro čtení a doplní její id přes `onChange`.
+- Bez breaking changes.
+
 ## Changelog 2.20.1 – zoom a hustota kontextového řádku
 
 - `GridContextBar` přijímá volitelné `zoom` a `density`; bez nich hodnoty převezme z `GridZoomContext`.
@@ -139,7 +146,7 @@ měna podle nastavení aplikace.
 
 ## Changelog 2.20.0 – kontextový řádek gridu a hlavičky bez podtitulků
 
-- `DataGrid` a `TreeGrid` mají nové volitelné props `period` a `book`. Nad řádkem akcí zobrazí společný `GridContextBar` s obdobím vlevo a knihou vpravo.
+- `DataGrid` a `TreeGrid` mají volitelné props `period` a `book`. Nad řádkem akcí zobrazí společný `GridContextBar` s knihou vlevo, oddělovačem a obdobím.
 - Nové veřejné `GridPeriodFilter`, `GridBookSelect`, `useGridPeriod`, `gridPeriodRange`, `gridPeriodLabel` a `filterByGridPeriod` podporují i nekalendářní účetní období.
 - Při výběru „Všechny knihy“ se automaticky zobrazí první povinný sloupec Kniha; zůstává mimo uložené pořadí, viditelnost a šířky sloupců.
 - `PageHeader.description`, `DocumentForm.description` a `RecordDialog.description` jsou zastaralé. Odstraňte je; popis dialogu zůstává pouze pro čtečky obrazovky. Pod nadpisem stránky ani formuláře není doplňkový text.

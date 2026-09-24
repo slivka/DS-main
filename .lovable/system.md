@@ -65,6 +65,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Potvrzení vždy přes `ConfirmDialog`, nikdy `window.confirm`.
 - Výběry vždy `OptionSelect` / `EntitySelect` / `AccountSelect`, nikdy nativní
   `select`.
+- Výběr s jedinou možností se nezobrazuje jako zakázaný select, ale jako text hodnoty.
 - Texty komponent se předávají přes props; výchozí hodnoty jsou české
   (aplikace běží česky i slovensky).
 
@@ -92,7 +93,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ### Kontextový řádek gridu
 
-- `GridContextBar` je součást spojeného bloku gridu a stojí bezprostředně nad `GridToolbar`. Vlevo obsahuje `GridPeriodFilter`, vpravo `GridBookSelect` zarovnaný nad akcí Přidat.
+- `GridContextBar` je součást spojeného bloku gridu a stojí bezprostředně nad `GridToolbar`. Vlevo kniha, oddělovač, období. Jedna dostupná kniha = jen tučný název, nikdy zakázaný výběr.
 - Používej jej na seznamech dokladů a účetních výkazech, kde uživatel mění rozsah účetního období nebo knihu. Samostatně jej lze použít nad obsahem v `ZoomPane`.
 - „Celé období“ je neutrální. Měsíc, čtvrtletí, pololetí, období od začátku roku a vlastní rozsah jsou oranžové, protože zužují data.
 - Období respektuje `fiscalFrom` a `fiscalTo`, i když účetní rok nezačíná v lednu. Stav může aplikace zachovat přes `useTabDraft`.

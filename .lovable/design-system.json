@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.20.1",
+    "version": "2.20.2",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -40,9 +40,9 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "ded73c40e8c71db8fd074f069fa3730e92173aa89811349f6fa9cb614143c3fa",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "b435a1b138a31ca78482a1d56b5a4bd2ea425dc8cd9e16a83d871c76c920c776",
       ".lovable/sources.yaml": "cd10cda62ad85617fe29c5cbe2316cad6594b8602256ceb443f2c0adc78d6235",
-      ".lovable/system.md": "5640a8db2ed32bfd9526d787d304a6180d2db19dfed0bf90aab267488be8f262",
+      ".lovable/system.md": "bcb29613fd3a431d5749eb35dfe38b4a430f95217a8bc106799f41b6b4e80d5c",
       "AGENTS.md": "f325419bab6d88476b5146b2506591ff3371d5edc06347cc352dc0221be7c7de",
-      "README.md": "f3c94d85cfdf67fae4a3fe468fc53ac22aaa4281e6be91f01e58ff9e3fb93597",
+      "README.md": "bf74c89f3238e2582e9ed916df4d6300bb680758001e467497010858429b8a9f",
       "bunfig.toml": "206f8e670d3fd41b1f7cd4cfcc7c68fc22cca73cb5fbc9f8edb7f584de798211",
       "components.json": "37c484818824d2521eee3367e7aa2c2abbd19635d8103d19734b6e24603d0292",
       "components.md": "a0c8aa1fd64d50177fbe2a7af02583cb63e5d7a46d7e0d79f661cf282277580a",
@@ -50,10 +50,10 @@
       "lovable.toml": "29c6aafa087b03db8fc4ae91957bf688c47862230bc9dbd219c380b842e61962",
       "mockupPreviewPlugin.ts": "e512c36bf49251328a58edcc44c62b0db42352524beaee307b1cf37cc155245f",
       "null": "6fb66a2c3fb2eacd8fbcb2e13461cb1efea02e2f9312e43ca7f27691fff99e96",
-      "package.json": "f80fdedb329dea9499d55b20ed6f96524085b38c06a1bf93d111578f158c051d",
+      "package.json": "dcc97e4b19e4b700624195d2dced3803a96d58eb33569ddae77b2a607b80dee3",
       "playwright.config.ts": "8381e386472840ed9a0e10eec5d12a92ce15d6a2e4de3611b5460be2dff89e7e",
       "public/favicon.ico": "dd821076a9b03adc2173c93956226aea3d92482d7578fc4339c5d3a2e9c24586",
-      "roadmap.md": "f46c3d128e13349231d7ae06ebd93339186e255dc880dba63a0a7d2b23176313",
+      "roadmap.md": "d9237ab0a12c9bf9a7e34258849804806b5c4a732f77980735f18fee0c76aafe",
       "src/assets/icons/excel.svg": "4c7dbe59d387dd10e3c3f74d60ec859ab3ae4a57bca6b4baf5dc9378bf730234",
       "src/assets/icons/pdf.svg": "5fcf580c2269f4f9ac0e1a8f60533b8a5371f4c51ca52794b5a275000c3496b8",
       "src/assets/roboto-bold.ttf": "61f89f8db49261c2f6106e8dccc35df7b2f7ed909020db40a3fc905e95f99334",
@@ -62,7 +62,7 @@
       "src/components/ds/accounting/account-columns.tsx": "ce933c7bf3877a853ea58e16ace6f7d78ca14de0af5901fa9ccaa3befeda38ef",
       "src/components/ds/accounting/account-select.tsx": "5c96c4a5f5efe66122621a8c49a905d247c6e659d7b5b28a1cc9b34a28328a4e",
       "src/components/ds/accounting/amount.tsx": "5fab25b8972e102586e386d8ac10f05ebb7005a83ef1b2bf80a32f0de036439d",
-      "src/components/ds/accounting/book-select.tsx": "45fcdbfb727098aa9aed85215779ae6ff716e4be8853bd6ecbfc9cbb55c9fc64",
+      "src/components/ds/accounting/book-select.tsx": "f540a34568e927078c4c54f4cdff759402672f34fe762697d8ce577f42099249",
       "src/components/ds/accounting/currency-amount.tsx": "841f780886c68460de0498ed01310721f21c3e0a4f575c0cd7f26b515d577b03",
       "src/components/ds/accounting/debit-credit-cells.tsx": "ce41eb99d41e5f766b71ac57965413baf751e14028ab61f1fdb0bac5291761d0",
       "src/components/ds/accounting/dimension-select.tsx": "6f8df536b1c8f2d41136f64cc4ad6259aa7473b7533828dbda5ad4b843b02fae",
@@ -253,11 +253,11 @@
       "src/routes/[__component].preview.$.tsx": "274ceb845615e10dd074391e1b93c865ad85944ab83c8204b31495d7b2954e93",
       "src/routes/[__mockup].preview.$.tsx": "12a5dc920ef1f87b53c9961f835927fcc53c866a949c9173370c9cfa4d408916",
       "src/routes/__root.tsx": "b6e3ad1ad5d4136ade7b4249b38847268bc616646f6150f11999789bc753858c",
-      "src/routes/components.accounting-forms.tsx": "806daaddd9f28d8d7ac5a85652d68da6dff8d693294f0c3b86f6fb00e670a6d1",
+      "src/routes/components.accounting-forms.tsx": "0f5e886f6e994e095b973264f98c7e4e01790791257c6f453efb4bc0008c5b9e",
       "src/routes/components.excel-export.tsx": "fa4943f4f3fe8ca17b79c1c1b3fdb718bb68c013018ac131eb41c4b87ce08e3f",
       "src/routes/components.feedback.tsx": "aacf8f3f4e001770bef7d7cef3372ed129836baffc50b4d242930335e1614408",
       "src/routes/components.forms.tsx": "e5627b26148c3169acba6d8af6de2dce973035c3f6912348d82f2491c339e573",
-      "src/routes/components.grid.tsx": "8e8087c91a0b42fa67d7744a503931155f3e8d6229110d58297bd7da4b66e9b6",
+      "src/routes/components.grid.tsx": "ea024d5166c20e425f8d91b5e374475f258248ec14cf6b4a437b5adaabbbf701",
       "src/routes/components.navigation.tsx": "bcde4de38157d130791045f86b1cb17021a37c1e32cda9065ef360e0f47aac67",
       "src/routes/guidelines.tsx": "ad89770a8f9e2667a6705a4ae8d470924cfad923ac0237044c0c77276dffba30",
       "src/routes/index.tsx": "847ddbb117ae335ec0ac512aca193edef881e46963c5b00c20755b5625c77784",
@@ -278,8 +278,8 @@
       "vite.config.ts": "f6ca9dbb16beab272c5a37bfba1086739a48f40cfbb1864f2c29072b396410f4",
       "wrangler.jsonc": "381bac804401d7194697bcb42c05101d440d76e3f657a99b55469e76316d7204",
       "src/components/ds/grid/grid-period.ts": "740337f749f0f781ebec7146474bc5a4bcd22eb6450eb53fcf9444fc2d947c41",
-      "src/components/ds/grid/grid-context-bar.tsx": "afb72823a4146c51305abaa90e1a310937238f57b3773d4c3a0bf2a6ee72193f",
-      "tests/unit/grid-period.test.ts": "3ca165f090e2ea09a01d002d46ff85a0a3e44d35e4f47437e002a65a45a21212"
+      "src/components/ds/grid/grid-context-bar.tsx": "ce2d9df839f32c0f05229fa0b3d86884e1c4ee5f19002ad99bad02fbeb43b744",
+      "tests/unit/grid-period.test.ts": "b930d77d2b8bf3c3e2f3c5baee4bca6aacf9b2cc2cf64f2206e145e881ecfde2"
     },
     "pipeline_version": 8
   },
@@ -4963,7 +4963,62 @@
     {
       "name": "BookSelect",
       "file": "src/components/ds/accounting/book-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "props": [
+        {
+          "name": "books",
+          "type": "BookOption[]",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "string | null | undefined",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "(id: string) => void",
+          "required": true
+        },
+        {
+          "name": "typeLabels",
+          "type": "Record<DocumentBookType, string>"
+        },
+        {
+          "name": "placeholder",
+          "type": "string"
+        },
+        {
+          "name": "allowEmpty",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "displayWhenSingle",
+          "type": "boolean"
+        },
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Výběr účetní knihy ve formuláři. Jedinou aktivní knihu výchozí displayWhenSingle zobrazí jako hodnotu jen pro čtení a automaticky doplní její id.",
+      "examples": [
+        {
+          "label": "Jediná dostupná kniha",
+          "code": "<BookSelect books={books} value={bookId} onChange={setBookId} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte jedinou dostupnou knihu jako zakázaný select."
+      ]
     },
     {
       "name": "VsField",
@@ -5381,9 +5436,15 @@
           "type": "GridDensity"
         }
       ],
-      "usage": "Samostatný kontextový řádek bezprostředně nad GridToolbar; období vlevo a kniha vpravo. Škáluje se stejným zoomem a hustotou jako řádek akcí.",
+      "usage": "Samostatný kontextový řádek bezprostředně nad GridToolbar; vlevo kniha, oddělovač a období. Škáluje se stejným zoomem a hustotou jako řádek akcí.",
       "antipatterns": [
         "Vkládat období nebo knihu zároveň do toolbarLeft"
+      ],
+      "examples": [
+        {
+          "label": "Kniha a období",
+          "code": "<GridContextBar book={bookConfig} period={periodConfig} />"
+        }
       ]
     },
     {
@@ -5439,15 +5500,31 @@
         },
         {
           "name": "onChange",
-          "type": "function",
-          "required": true
+          "type": "function"
         },
         {
-          "name": "texts",
-          "type": "GridBookTexts"
+          "name": "allowAll",
+          "type": "boolean"
+        },
+        {
+          "name": "allBooksLabel",
+          "type": "string"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
         }
       ],
-      "usage": "Kontextový výběr účetní knihy; jediná dostupná kniha se zobrazí bez interaktivního výběru."
+      "usage": "Kontextový výběr účetní knihy; jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text bez zakázaného výběru.",
+      "examples": [
+        {
+          "label": "Kniha jen pro čtení",
+          "code": "<GridBookSelect books={books} value={bookId} readOnly />"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte jedinou nebo needitovatelnou knihu jako disabled combobox."
+      ]
     }
   ],
   "assets": [
