@@ -101,3 +101,6 @@ export function createGridBookColumn<Row>(book: GridBookConfig<Row>) {
   const names = new Map(book.books.map((item) => [item.id, item.name]));
   return { id: GRID_BOOK_COLUMN_ID, label: "Kniha", value: (row: Row) => names.get(book.getRowBookId?.(row) ?? "") ?? "", locked: true, fitContent: true, transient: true } as const;
 }
+export function placeGridBookColumnFirst<Column extends { id: string }>(columns: Column[]): Column[] {
+  return [...columns.filter((column) => column.id === GRID_BOOK_COLUMN_ID), ...columns.filter((column) => column.id !== GRID_BOOK_COLUMN_ID)];
+}

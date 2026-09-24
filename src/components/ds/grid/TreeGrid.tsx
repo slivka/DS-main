@@ -35,7 +35,7 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
-import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
+import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
 
 export type TreeGridRow = { id: string; parentId?: string | null };
@@ -235,7 +235,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   const shown = useMemo(
     () => {
       const visible = cols.columns.filter((c) => cols.visible[c.id]).map((c) => byColumnId.get(c.id)!).filter(Boolean);
-      return [...visible.filter((c) => c.id === GRID_BOOK_COLUMN_ID), ...visible.filter((c) => c.id !== GRID_BOOK_COLUMN_ID)];
+      return placeGridBookColumnFirst(visible);
     },
     [cols.columns, cols.visible, byColumnId],
   );

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { filterByGridPeriod, gridPeriodLabel, gridPeriodRange, moveGridPeriod } from "../../src/components/ds/grid/grid-period";
+import { createGridBookColumn, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
 
 describe("období gridu", () => {
   it("počítá měsíce kalendářního období", () => {
@@ -20,5 +21,14 @@ describe("období gridu", () => {
     const value = gridPeriodRange("2026-07-01", "2027-06-30", "month", 0);
     expect(filterByGridPeriod([{ d: "2026-06-30" }, { d: "2026-07-01" }, { d: "2026-07-31" }, { d: "2026-08-01" }], value, (row) => row.d)).toHaveLength(2);
     expect(gridPeriodLabel(value)).toContain("červenec");
+  });
+});
+
+describe("sloupec knihy", () => {
+  it("je povinný, dočasný a vždy první", () => {
+    const book = createGridBookColumn({ books: [{ id: "a", code: "A", name: "Kniha A" }], value: "all", onChange: () => {}, getRowBookId: () => "a" });
+    expect(book.locked).toBe(true);
+    expect(book.transient).toBe(true);
+    expect(placeGridBookColumnFirst([{ id: "date" }, book, { id: "amount" }]).map((column) => column.id)).toEqual([GRID_BOOK_COLUMN_ID, "date", "amount"]);
   });
 });

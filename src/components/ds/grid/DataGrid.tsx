@@ -61,7 +61,7 @@ import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export";
-import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
+import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
 import { cn } from "../../../lib/utils";
 
@@ -472,7 +472,7 @@ export function DataGrid<Row>({
     const pinned = rest.filter((c) => isPinnedColumn(c.id));
     const middle = rest.filter((c) => !isPinnedColumn(c.id) && !c.pinRight);
     const pinnedRight = rest.filter((c) => !isPinnedColumn(c.id) && c.pinRight);
-    return [...books, ...branch, ...pinned, ...middle, ...pinnedRight];
+    return placeGridBookColumnFirst([...books, ...branch, ...pinned, ...middle, ...pinnedRight]);
   }, [cols.columns, cols.visible, byId]);
 
   const sort = useGridSort<string>(storageKey, defaultSort ?? effectiveColumns[0]?.id ?? null);
