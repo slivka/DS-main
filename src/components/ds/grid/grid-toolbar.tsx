@@ -209,24 +209,6 @@ export function GridExpandControls({
   );
 }
 
-export const GRID_TOOLBAR_COMPONENT_DOCS = {
-  GridToolbar: {
-    usage: "Použijte jako jediný řádek akcí nad tabulkou, stromem nebo vlastním obsahem.",
-    examples: [{ label: "Vlastní obsah", code: '<GridToolbar left={parameters} right={actions} />' }],
-    antipatterns: ["Přidávat další ovládání nad nebo vedle řádku akcí."],
-  },
-  AsOfDateToggle: {
-    usage: "Zapíná režim stavu k datu a po aktivaci zobrazí DateField.",
-    examples: [{ label: "Stav skladu", code: '<AsOfDateToggle enabled={enabled} onEnabledChange={setEnabled} value={date} onChange={setDate} />' }],
-    antipatterns: ["Používat zastaralý AsOfDateField s verzálkovým popiskem."],
-  },
-  GridToggleButton: {
-    usage: "Použijte tone=mode pro modrý režim a tone=grouping pro oranžové seskupení dat.",
-    examples: [{ label: "Seskupení", code: '<GridToggleButton pressed={grouped} tone="grouping">Podle partnera</GridToggleButton>' }],
-    antipatterns: ["Používat oranžovou pro režim, který data nefiltruje ani nepřeskupuje."],
-  },
-} as const;
-
 export interface GridAddAction {
   label: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;

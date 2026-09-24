@@ -777,7 +777,7 @@ export function DataGrid<Row>({
 
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-      <div ref={blockRef} className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
+      <div ref={blockRef} data-slot="data-grid" className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
