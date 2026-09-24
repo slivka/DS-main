@@ -1,5 +1,9 @@
 # Roadmap
 
+## Verze 2.17.2 (společný zoom tabulky a stromu)
+- [x] Sdílet zoom a hustotu mezi tabulkovým a stromovým zobrazením přes `viewZoomKey`
+- [x] Použít pro přepnutí do tabulky jednoznačnou ikonu tabulky
+
 ## Verze 2.17.1 (veřejné pomocné nástroje)
 - [x] Zpřístupnit nastavení gridů, výpočty období, validaci formulářů a opakování síťových požadavků
 - [x] Ponechat interní zachytávání chyb a nouzovou serverovou stránku mimo veřejný vstup

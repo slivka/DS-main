@@ -103,6 +103,7 @@ function GridPage() {
         selectable
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        viewZoomKey="ds-showcase-journal-view"
         asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
         filters={<span className="text-sm text-muted-foreground">Pomocné filtry účetního deníku</span>}
         defaultFilters={["Rok 2026"]}
