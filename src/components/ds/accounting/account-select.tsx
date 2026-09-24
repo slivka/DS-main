@@ -98,10 +98,13 @@ export function AccountSelect({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(initialSearch ?? "");
+  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
+  const suppressFocusOpen = useRef(false);
 
   useEffect(() => setQuery(initialSearch ?? ""), [initialSearch]);
 
   const changeOpen = (next: boolean) => {
+    if (!next) suppressFocusOpen.current = true;
     setOpen(next);
     onOpenChange?.(next);
   };
@@ -148,7 +151,13 @@ export function AccountSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
-          onFocus={() => !disabled && changeOpen(true)}
+          onFocus={() => {
+            if (disabled || suppressFocusOpen.current) return;
+            changeOpen(true);
+          }}
+          onBlur={() => {
+            suppressFocusOpen.current = false;
+          }}
           className={cn("w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
