@@ -732,7 +732,15 @@ export function DataGrid<Row>({
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
         {!hideToolbar ? <div
-          className={`zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border border-b-0 p-2 ${plain ? "rounded-t-lg shadow-none" : "border-t-0 shadow-none"}`}
+          className={`zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border border-b-0 p-2 ${
+            title
+              ? plain
+                ? "rounded-t-lg shadow-none"
+                : "border-t-0 shadow-none"
+              : plain
+                ? "rounded-t-lg shadow-none"
+                : "rounded-t-lg shadow-panel"
+          }`}
           style={{ fontSize: `${(13 * zoom).toFixed(2)}px` }}
         >
           {toolbarLeft}
