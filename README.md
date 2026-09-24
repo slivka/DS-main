@@ -5,13 +5,18 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
-## Instalace písem
+## Zapojení do aplikace
 
-Hostitelská aplikace musí v hlavičce načíst IBM Plex Sans 400–700 a IBM Plex Mono 400–500:
+`SlivkaProvider` zajistí React Query, tooltipy a toast notifikace. `SlivkaHead` v hlavičce načte IBM Plex Sans/Mono a nastaví motiv před prvním vykreslením.
 
-```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" />
+```tsx
+<html lang="cs">
+  <head><SlivkaHead /></head>
+  <body><SlivkaProvider queryClient={queryClient}>{children}</SlivkaProvider></body>
+</html>
 ```
+
+Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
 ## Struktura
 
