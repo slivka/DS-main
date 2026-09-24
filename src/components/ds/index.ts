@@ -54,6 +54,7 @@ export * from "./grid/column-picker";
 export * from "./grid/ColumnFilter";
 export * from "./grid/grid-texts";
 export * from "./grid/TreeGrid";
+export * from "./grid/filter-chips";
 
 /* Formuláře */
 export * from "./form/decimal-input";
@@ -93,6 +94,7 @@ export * from "./data-display/status-badge";
 export * from "./data-display/status-dot";
 export * from "./data-display/truncated-text";
 export * from "./data-display/tree-view";
+export * from "./data-display/bar-breakdown-chart";
 
 /* Účetnictví */
 export * from "./accounting/amount";
