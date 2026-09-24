@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.20.2 (kniha vlevo a jednohodnotové výběry)
+- [x] Přesunout knihu před období a vložit mezi ně hustotně řízený oddělovač
+- [x] Zobrazovat jedinou nebo needitovatelnou knihu jen jako text
+- [x] Rozšířit formulářový BookSelect o textové zobrazení jediné aktivní knihy
+- [x] Doplnit ukázky, testy, pravidla a veřejný katalog
+
 ## Verze 2.20.1 (zoom a hustota kontextového řádku gridu)
 - [x] Škálovat `GridContextBar` stejným zoomem a hustotou jako `GridToolbar`
 - [x] Převést ovládací prvky období a knihy na společné rozměry v `em`

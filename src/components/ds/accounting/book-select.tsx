@@ -1,4 +1,7 @@
+import { useEffect } from "react";
+
 import { OptionSelect } from "../form/option-select";
+import { cn } from "../../../lib/utils";
 
 export type DocumentBookType =
   | "invoiceIn"
@@ -46,6 +49,7 @@ export function BookSelect({
   placeholder = "Vyberte knihu",
   allowEmpty = false,
   disabled,
+  displayWhenSingle = true,
   id,
   className,
 }: {
@@ -56,9 +60,22 @@ export function BookSelect({
   placeholder?: string;
   allowEmpty?: boolean;
   disabled?: boolean;
+  /** Jedinou aktivní knihu zobrazí jako hodnotu jen pro čtení místo zakázaného výběru. */
+  displayWhenSingle?: boolean;
   id?: string;
   className?: string;
 }) {
+  const active = books.filter((book) => book.active !== false);
+  const single = displayWhenSingle && active.length === 1 ? active[0] : undefined;
+
+  useEffect(() => {
+    if (single && value !== single.id) onChange(single.id);
+  }, [onChange, single, value]);
+
+  if (single) {
+    return <span id={id} className={cn("flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground", className)}>{formatBook(single, typeLabels)}</span>;
+  }
+
   return (
     <OptionSelect
       id={id}
@@ -68,8 +85,7 @@ export function BookSelect({
       placeholder={placeholder}
       disabled={disabled}
       className={className}
-      options={books
-        .filter((book) => book.active !== false)
+      options={active
         .map((book) => ({ value: book.id, label: formatBook(book, typeLabels) }))}
     />
   );
