@@ -39,7 +39,11 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
   const t = { ...DEFAULT_GRID_PERIOD_TEXTS, ...texts };
   const [open, setOpen] = React.useState(false);
   const movable = value.kind === "month" || value.kind === "quarter" || value.kind === "half";
-  const maxIndex = value.kind === "month" ? 11 : value.kind === "quarter" ? 3 : value.kind === "half" ? 1 : 0;
+  const start = parse(fiscalFrom);
+  const end = parse(fiscalTo);
+  const fiscalMonths = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth() + 1;
+  const span = value.kind === "month" ? 1 : value.kind === "quarter" ? 3 : value.kind === "half" ? 6 : fiscalMonths;
+  const maxIndex = Math.max(0, Math.ceil(fiscalMonths / span) - 1);
   const setKind = (kind: GridPeriodKind, index = 0) => {
     onChange(gridPeriodRange(fiscalFrom, fiscalTo, kind, index, today));
     if (kind !== "custom") setOpen(false);
@@ -76,8 +80,8 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
   </div></TooltipProvider>;
 }
 
-function PeriodGrid({ label, count, active, columns, render, onSelect }: { label: string; count: number; active?: number; columns: number; render: (index: number) => string; onSelect: (index: number) => void }) {
-  return <div><div className="mb-1 text-sm font-medium">{label}</div><div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
+function PeriodGrid({ label, count, active, columns, render, onSelect }: { label: string; count: number; active?: number; columns: 2 | 4; render: (index: number) => string; onSelect: (index: number) => void }) {
+  return <div><div className="mb-1 text-sm font-medium">{label}</div><div className={cn("grid gap-1", columns === 4 ? "grid-cols-4" : "grid-cols-2")}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
 }
 
 export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy" }: GridBookDisplayConfig) {
@@ -89,7 +93,7 @@ export function GridBookSelect({ books, value, onChange, allowAll = true, allBoo
   const options = active.filter((book) => `${book.name} ${book.code}`.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
   return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button type="button" variant="outline" size="sm" className="max-w-[16rem] justify-between gap-2 font-semibold"><span className="truncate">{value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel}</span><ChevronDown className="size-3.5 shrink-0" /></Button></PopoverTrigger><PopoverContent align="end" className="w-72 p-1"><div className="relative mb-1"><Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat knihu…" className="pl-8" autoFocus /></div>{allowAll ? <BookOptionButton selected={value === "all"} label={allBooksLabel} onSelect={() => { onChange("all"); setOpen(false); }} /> : null}{options.map((book) => <BookOptionButton key={book.id} selected={value === book.id} label={`${book.name} (${book.code})`} onSelect={() => { onChange(book.id); setOpen(false); }} />)}</PopoverContent></Popover>;
 }
-function BookOptionButton({ selected, label, onSelect }: { selected: boolean; label: string; onSelect: () => void }) { return <button type="button" role="option" aria-selected={selected} className="flex w-full items-center gap-2 rounded-sm px-2 py-2 text-left text-sm hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring" onClick={onSelect}><span className="size-4">{selected ? <Check className="size-4" /> : null}</span><span className="truncate">{label}</span></button>; }
+function BookOptionButton({ selected, label, onSelect }: { selected: boolean; label: string; onSelect: () => void }) { return <Button type="button" role="option" aria-selected={selected} variant="ghost" className="w-full justify-start gap-2 px-2 font-normal" onClick={onSelect}><span className="size-4">{selected ? <Check className="size-4" /> : null}</span><span className="truncate">{label}</span></Button>; }
 
 export const GridContextBar = React.forwardRef<HTMLDivElement, GridContextBarProps>(function GridContextBar({ period, book, className, ...props }, ref) {
   if (!period && !book) return null;

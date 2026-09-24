@@ -13,7 +13,7 @@ import {
   debitCreditColumns,
   type DataGridColumn,
 } from "@/components/ds";
-import { MOCK_ACCOUNTS, MOCK_JOURNAL, MOCK_PERIODS, type JournalEntry } from "@/lib/mock/accounting";
+import { MOCK_ACCOUNTS, MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
 import { formatDate } from "@/lib/format";
 import { toast } from "sonner";

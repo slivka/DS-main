@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.20.0 (kontextový řádek gridu a hlavičky bez podtitulků)
+- [x] Přidat `GridContextBar`, `GridPeriodFilter`, `GridBookSelect` a veřejné nástroje období
+- [x] Zapojit volitelné `period` a `book` do DataGridu a TreeGridu
+- [x] Při „Všechny knihy“ držet povinný první sloupec Kniha mimo uložená nastavení
+- [x] Přestat zobrazovat `PageHeader.description` a viditelné popisy formulářových dialogů
+- [x] Doplnit ukázky, testy, changelog, pravidla a katalog veřejného API
+
 ## Verze 2.19.0 (bloky sekcí v levém menu)
 - [x] Rozšířit `NavGroup` o volitelné `section` a zachovat stávající skupiny beze změny
 - [x] Zobrazit bloky v rozbaleném, sbaleném, mobilním i panelovém menu
