@@ -173,7 +173,6 @@ function PaneLayoutInner({
   const onWidths = (widths: number[]) => api.setWidths(widths);
 
   const onDragEnd = (event: DragEndEvent) => {
-    setDragging(false);
     // Úchyt v nadpisu stránky má id "header:<tabId>" a tabId v datech.
     const tabId = String((event.active.data.current as { tabId?: string } | undefined)?.tabId ?? event.active.id);
     const over = event.over;
