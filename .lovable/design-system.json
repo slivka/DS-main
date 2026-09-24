@@ -2969,6 +2969,11 @@
           "type": "any"
         },
         {
+          "name": "showTitle",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
           "name": "hideTitleMark",
           "type": "boolean"
         },
@@ -3212,6 +3217,11 @@
           "name": "title",
           "type": "string",
           "required": true
+        },
+        {
+          "name": "showTitle",
+          "type": "boolean",
+          "default": "false"
         },
         {
           "name": "meta",

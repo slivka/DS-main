@@ -160,6 +160,8 @@ type Props<Row> = {
   storageKey: string;
   /** Nadpis gridu (môže byť ReactNode s vlastnou hlavičkou). Keď chýba, hlavička sa nezobrazí. */
   title?: ReactNode;
+  /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
+  showTitle?: boolean;
   /** Skryje ozdobný pruh pred nadpisom (napr. pri vlastnej hlavičke s mesiacom). */
   hideTitleMark?: boolean;
   /** Textový nadpis použitý v exportoch (PDF/Excel). Ak nie je zadaný, použije sa string hodnota title. */
@@ -291,6 +293,7 @@ const cellText = (v: unknown) => {
 export function DataGrid<Row>({
   storageKey,
   title,
+  showTitle = false,
   hideTitleMark,
   exportTitle,
   rows,
@@ -736,12 +739,12 @@ export function DataGrid<Row>({
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
       <div className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
-        {title ? (
+        {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
         {!hideToolbar ? <div
           className={`zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border border-b-0 p-2 ${
-            title
+            showTitle && title
               ? plain
                 ? "rounded-t-lg shadow-none"
                 : "border-t-0 shadow-none"

@@ -6,6 +6,7 @@
 
 - `onRefresh?: () => void | Promise<unknown>` zobrazí ikonové tlačítko Obnovit data. Komponenta po dobu vrácené Promise sama zobrazí stav načítání.
 - `refreshing?: boolean` umožní řídit stav načítání z aplikace.
+- Nadpis je standardně skrytý. Zobrazí se pouze s `showTitle`; `title` lze dál použít pro název exportu.
 - Hromadný výběr používá `GridSelectionToggle`; aktivní stav ukazuje počet vybraných záznamů.
 - Zkratka F5 není komponentou přepsána.
 
@@ -16,6 +17,7 @@
 - `onRefresh?: () => void | Promise<unknown>` a `refreshing?: boolean` řídí obnovení.
 - `selectable?: boolean`, `selectedRows?`, `onSelectedRowsChange?` a `selectionActions?` řídí hromadný výběr.
 - `gridTexts?: Partial<GridTexts>` přepisuje společné texty gridové lišty včetně `refresh`.
+- Nadpis je standardně skrytý a zobrazí se pouze s `showTitle`.
 
 ## PaneLayout
 

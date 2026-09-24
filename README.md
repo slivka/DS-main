@@ -125,6 +125,10 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.10.1
+
+- **DataGrid, TreeGrid**: nadpis je nově ve výchozím stavu skrytý. Nový prop `showTitle` ho zobrazí pouze na vyžádání; `title` zůstává dostupný pro export a uložená nastavení.
+
 ## Changelog 2.10.0
 
 - **PaneLayout**: `setLayout(2 | 3)` doplní chybějící prázdné panely (`route: ""`) a aktivuje první nový. Nové props `renderEmpty`, `isPinned`, `onTogglePin`; nové texty `emptyTitle`, `emptyHint`, `pin`, `unpin`. `paneKey` vrací pro prázdný panel `null`.

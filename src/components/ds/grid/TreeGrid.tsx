@@ -78,6 +78,8 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   rows: Row[];
   columns: TreeGridColumn<Row>[];
   title: string;
+  /** Zobrazí nadpis v liště. Výchozí je false; title se dál používá pro export a nastavení. */
+  showTitle?: boolean;
   /** Klíč pro uložení zoomu a viditelnosti sloupců (výchozí z `exportName` / `title`). */
   storageKey?: string;
   /** Základ názvu souboru exportu; bez něj se tlačítko exportu nezobrazí. */
@@ -129,6 +131,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   rows,
   columns,
   title,
+  showTitle = false,
   storageKey,
   exportName,
   exportMeta,
@@ -341,7 +344,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   return (
     <div className={cn("rounded-lg border bg-card", className)} data-slot="tree-grid">
       <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
-        <span className="font-semibold">{title}</span>
+        {showTitle ? <span className="font-semibold">{title}</span> : null}
         {expandLevels?.length ? (
           <div
             role="group"

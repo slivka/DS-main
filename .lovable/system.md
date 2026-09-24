@@ -68,7 +68,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## Gridy, exporty, tisk
 
-- Název gridu, lišta, hlavička a součtový řádek tvoří jeden spojený blok.
+- Nadpis gridu je ve výchozím stavu skrytý; zobrazuj ho pouze na výslovné
+  vyžádání přes `showTitle`. Lišta, hlavička a součtový řádek tvoří jeden spojený blok.
 - Filtr datumového sloupce s `exportType: "date" | "datetime"` nabízí vedle
   jednotlivých dat také rychlé volby podle roku, čtvrtletí a měsíce.
 - Sloupce se stavovými odznaky, datumem, číslem dokladu, variabilním symbolem
