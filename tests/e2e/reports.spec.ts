@@ -14,9 +14,11 @@ test.describe("Výkazy 2.8.0", () => {
     const grid = page.locator('[data-slot="tree-grid"]').first();
     await expect(grid.locator('[data-row-id="g22"]')).toBeVisible();
     await expect(grid.locator('[data-row-id="s221"]')).toHaveCount(0);
-    await grid.getByRole("button", { name: "Vše", exact: true }).click();
+    await grid.getByRole("button", { name: "Rozbalit vše" }).click();
+    await grid.getByRole("menuitem", { name: "Vše" }).click();
     await expect(grid.locator('[data-row-id="a221001"]')).toBeVisible();
-    await grid.getByRole("button", { name: "Třídy", exact: true }).click();
+    await grid.getByRole("button", { name: "Rozbalit vše" }).click();
+    await grid.getByRole("menuitem", { name: "Třídy" }).click();
     await expect(grid.locator('[data-row-id="g22"]')).toHaveCount(0);
     await grid.locator('[data-row-id="t2"]').getByRole("button", { name: "Rozbalit" }).click();
     await expect(grid.locator('[data-row-id="t2"]')).toHaveAttribute("data-highlighted", "true");
@@ -26,7 +28,10 @@ test.describe("Výkazy 2.8.0", () => {
     const grid = page.locator('[data-slot="tree-grid"]').first();
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      grid.getByRole("button", { name: /Export do Excelu/ }).click(),
+      (async () => {
+        await grid.getByRole("button", { name: "Stáhnout" }).click();
+        await grid.getByRole("button", { name: "Stáhnout Excel" }).click();
+      })(),
     ]);
     const zip = await JSZip.loadAsync(await readFile((await download.path())!));
     const sheet = await zip.file("xl/worksheets/sheet1.xml")!.async("text");

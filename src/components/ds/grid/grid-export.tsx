@@ -28,6 +28,13 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 export type { ExcelColumnMeta, ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 
+export type GridExtraExport = {
+  label: string;
+  onExport: () => void | Promise<void>;
+  kind: "excel" | "pdf" | "other";
+  icon?: ReactNode;
+};
+
 const cell = (v: ExportCell) => (v === null || v === undefined ? "" : v);
 
 const fmtNumber = (v: number) => {
@@ -223,6 +230,7 @@ export function GridExport({
   html = false,
   extraExcelExport,
   extraPdfExport,
+  extraExports = [],
   pdfExport,
   disabled = false,
   texts: textOverrides,
@@ -251,6 +259,8 @@ export function GridExport({
         icon?: ReactNode;
       }
     | { label: string; onExport: () => void | Promise<void>; icon?: ReactNode }[];
+  /** Další exporty zobrazené za oddělovačem ve společné nabídce. */
+  extraExports?: GridExtraExport[];
 
   /** Nahradí výchozí PDF export vlastní tiskovou sestavou. */
   pdfExport?: () => void | Promise<void>;
@@ -576,6 +586,30 @@ ${
             </button>
           </>
         )}
+        {extraExports.length ? (
+          <>
+            <div className="my-[0.3em] border-t" />
+            {extraExports.map((item) => (
+              <button
+                key={`${item.kind}-${item.label}`}
+                type="button"
+                onClick={() => void item.onExport()}
+                className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+              >
+                {item.icon ? (
+                  <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
+                ) : item.kind === "excel" ? (
+                  <img src={excelIcon} alt="" className="size-[1.5em]" />
+                ) : item.kind === "pdf" ? (
+                  <img src={pdfIcon} alt="" className="size-[1.5em]" />
+                ) : (
+                  <FileCode2 className="size-[1.5em] text-muted-foreground" />
+                )}
+                {item.label}
+              </button>
+            ))}
+          </>
+        ) : null}
       </PopoverContent>
     </Popover>
   );

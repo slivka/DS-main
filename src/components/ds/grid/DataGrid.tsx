@@ -18,8 +18,8 @@ import { Checkbox } from "../../ui/checkbox";
 import { GridPagination, useGridPagination } from "./grid-pagination";
 import { SortHead, useGridSort, useSortedRows } from "./grid-sort";
 import { GridBody, GridErrorRow } from "./grid-states";
-import { GridExport, type GridExportData } from "./grid-export";
-import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "./grid-zoom";
+import { GridExport, type GridExportData, type GridExtraExport } from "./grid-export";
+import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom, useWheelZoom } from "./grid-zoom";
 import { useGridColumns } from "./grid-columns";
 import { ColumnResizeHandle } from "./grid-column-resize";
 import { ColumnPicker } from "./column-picker";
@@ -39,6 +39,18 @@ import { GridAction, GridActions } from "./grid-action";
 import { Pencil, Trash2 } from "lucide-react";
 import { GridSelectionToggle } from "./grid-selection-toggle";
 import { GridRefreshButton } from "./grid-refresh";
+import { ViewModeToggle, type GridViewMode } from "./view-mode-toggle";
+import { FilterChips } from "./filter-chips";
+import { GridMoreMenu, type GridMoreItem } from "./grid-more-menu";
+import {
+  AsOfDateToggle,
+  GridAddActions,
+  GridExpandControls,
+  GridToolbar,
+  GridToolbarSeparator,
+  type AsOfDateConfig,
+  type GridAddAction,
+} from "./grid-toolbar";
 import { fmtAmount } from "../../../lib/format";
 import {
   formatUserDate,
@@ -155,7 +167,7 @@ export type DataGridColumn<Row> = {
 
 export type DataGridFilterChip = { id: string; label: string; onRemove?: () => void };
 
-type Props<Row> = {
+export type DataGridProps<Row> = {
   /** Kľúč pre uloženie nastavení gridu v prehliadači. */
   storageKey: string;
   /** Nadpis gridu (môže byť ReactNode s vlastnou hlavičkou). Keď chýba, hlavička sa nezobrazí. */
@@ -186,6 +198,21 @@ type Props<Row> = {
   /** Popisy aktívnych filtrov pre tooltip a chipy. */
   filterChips?: DataGridFilterChip[] | undefined;
   onClearFilters?: (() => void) | undefined;
+  /** Popisy filtrů aktivních ve výchozím stavu. */
+  defaultFilters?: string[] | undefined;
+  /** Přepínač tabulkového a stromového zobrazení. */
+  viewMode?: GridViewMode | undefined;
+  onViewModeChange?: ((mode: GridViewMode) => void) | undefined;
+  /** Volitelný režim „Stav k datu“. */
+  asOf?: AsOfDateConfig | undefined;
+  /** Primární akce vždy na pravém konci lišty. */
+  addAction?: GridAddAction | GridAddAction[] | undefined;
+  /** Vedlejší akce v nabídce ⋯. */
+  moreActions?: GridMoreItem[] | undefined;
+  /** Vlastní PDF sestava místo standardního PDF gridu. */
+  pdfExport?: (() => Promise<void>) | undefined;
+  /** Další položky ve společné nabídce exportu. */
+  extraExports?: GridExtraExport[] | undefined;
   emptyTitle?: string | undefined;
   emptyDescription?: string | undefined;
   emptyActionLabel?: string | undefined;
@@ -310,6 +337,14 @@ export function DataGrid<Row>({
   filters,
   filterChips = [],
   onClearFilters,
+  defaultFilters = [],
+  viewMode,
+  onViewModeChange,
+  asOf,
+  addAction,
+  moreActions = [],
+  pdfExport,
+  extraExports = [],
   emptyTitle,
   emptyDescription,
   emptyActionLabel,
@@ -343,7 +378,7 @@ export function DataGrid<Row>({
   onSearchChange,
   className,
   texts: textOverrides,
-}: Props<Row>) {
+}: DataGridProps<Row>) {
   const texts = useMemo(() => resolveGridTexts(textOverrides), [textOverrides]);
   const { confirm, confirmDialog } = useConfirmDialog();
   const [ownSelectMode, setOwnSelectMode] = useState(false);
@@ -358,7 +393,10 @@ export function DataGrid<Row>({
   useDateTimePreferences();
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey);
+  const blockRef = useRef<HTMLDivElement>(null);
+  useWheelZoom(blockRef, setZoom, zoom);
 
   const allBranches = true;
 
@@ -533,6 +571,7 @@ export function DataGrid<Row>({
     [pagination.rows, groupColumns],
   );
   const grouped = useGroupedRows(pagination.rows, grouping, groupColumns, valueOf);
+  const groupKeys = grouped.flatMap((item) => item.type === "group" ? [item.key] : []);
   const exportGrouped = useGroupedRows(
     sorted,
     { ...grouping, collapsed: [] },
@@ -738,12 +777,14 @@ export function DataGrid<Row>({
 
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-      <div className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
+      <div ref={blockRef} className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
-        {!hideToolbar ? <div
-          className={`zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border border-b-0 p-2 ${
+        {!hideToolbar ? <GridToolbar
+          zoom={zoom}
+          density={density}
+          className={`border-b-0 ${
             showTitle && title
               ? plain
                 ? "rounded-t-lg shadow-none"
@@ -752,17 +793,30 @@ export function DataGrid<Row>({
                 ? "rounded-t-lg shadow-none"
                 : "rounded-t-lg shadow-panel"
           }`}
-          style={{ fontSize: `${(13 * zoom).toFixed(2)}px` }}
-        >
-          {toolbarLeft}
-
-          {filters ? (
-            <GridFilterPanel open={filtersOpen} zoom={zoom}>
-              {filters}
-            </GridFilterPanel>
-          ) : null}
-
-          <div className="ml-auto flex min-w-0 shrink-0 items-center gap-2">
+          left={<>
+            {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}
+            {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
+            {grouping.active ? (
+              <GridExpandControls
+                levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 }))}
+                activeDepth={groupExpandDepth}
+                disabled={Boolean(search)}
+                onExpand={(depth) => {
+                  setGroupExpandDepth(depth);
+                  grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
+                }}
+                onCollapse={() => {
+                  setGroupExpandDepth(0);
+                  grouping.collapseAll(groupKeys);
+                }}
+              />
+            ) : null}
+            {grouping.active ? <GridToolbarSeparator density={density} /> : null}
+            {asOf ? <AsOfDateToggle {...asOf} /> : null}
+            {asOf ? <GridToolbarSeparator density={density} /> : null}
+            {toolbarLeft}
+          </>}
+          right={<>
             <GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />
 
             {filters ? (
@@ -772,6 +826,7 @@ export function DataGrid<Row>({
                 {...(onClearFilters ? { onClear: onClearFilters } : {})}
                 activeCount={filterChips.length + columnFilterCount}
                 activeFilters={activeFilterLabels}
+                defaultFilters={defaultFilters}
                 zoom={zoom}
                 texts={texts}
               />
@@ -786,6 +841,8 @@ export function DataGrid<Row>({
               zoom={zoom}
               texts={texts}
               meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }}
+              pdfExport={pdfExport}
+              extraExports={extraExports}
             />
 
             <ColumnPicker
@@ -826,9 +883,17 @@ export function DataGrid<Row>({
                 onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()}
               />
             ) : null}
+            {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}
+            {addAction ? <GridAddActions actions={addAction} /> : null}
+          </>}
+        /> : null}
 
+        {filters ? <GridFilterPanel open={filtersOpen}>{filters}</GridFilterPanel> : null}
+        {!filtersOpen && filterChips.length ? (
+          <div className="border border-t-0 bg-card px-2 py-1.5">
+            <FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" />
           </div>
-        </div> : null}
+        ) : null}
 
         {selectMode ? (
           <div className="flex flex-wrap items-center gap-2 border border-t-0 border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm">

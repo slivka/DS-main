@@ -1,6 +1,6 @@
 import { DateField } from "./date-field";
 
-/** Sdílené pole „STAV K DATU“ – výběr dne pro stav skladu/pokladny. */
+/** @deprecated Použijte AsOfDateToggle v jednotném řádku akcí gridu. */
 export function AsOfDateField({
   value,
   onChange,

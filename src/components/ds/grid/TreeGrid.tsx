@@ -10,15 +10,27 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { GridSearch } from "./grid-search";
-import { ExcelExportButton } from "./grid-export";
+import { GridExport, type GridExtraExport } from "./grid-export";
 import { ColumnPicker } from "./column-picker";
 import { useGridColumns } from "./grid-columns";
-import { ZoomControl, gridFontSize, useGridZoom } from "./grid-zoom";
+import { ZoomControl, ZoomGrid, useGridZoom, useWheelZoom } from "./grid-zoom";
 import { GridRefreshButton } from "./grid-refresh";
 import { GridSelectionToggle } from "./grid-selection-toggle";
+import { GridFilterPanel, GridFilterToggle } from "./grid-filters";
+import { FilterChips, type FilterChip } from "./filter-chips";
+import { ViewModeToggle, type GridViewMode } from "./view-mode-toggle";
+import { GridMoreMenu, type GridMoreItem } from "./grid-more-menu";
+import {
+  AsOfDateToggle,
+  GridAddActions,
+  GridExpandControls,
+  GridToolbar,
+  GridToolbarSeparator,
+  type AsOfDateConfig,
+  type GridAddAction,
+} from "./grid-toolbar";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -98,6 +110,18 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   onRowOpen?: (row: Row) => void;
   /** Akce „Nový“ a další – v liště vpravo od zoomu. */
   actions?: ReactNode;
+  toolbarLeft?: ReactNode;
+  filters?: ReactNode;
+  filterChips?: FilterChip[];
+  onClearFilters?: () => void;
+  defaultFilters?: string[];
+  viewMode?: GridViewMode;
+  onViewModeChange?: (mode: GridViewMode) => void;
+  asOf?: AsOfDateConfig;
+  addAction?: GridAddAction | GridAddAction[];
+  moreActions?: GridMoreItem[];
+  pdfExport?: () => Promise<void>;
+  extraExports?: GridExtraExport[];
   /** Ruční obnovení dat; po dobu Promise se tlačítko samo deaktivuje. */
   onRefresh?: () => void | Promise<unknown>;
   /** Řízený stav probíhajícího obnovení. */
@@ -108,6 +132,7 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   onSelectedRowsChange?: (rows: Row[]) => void;
   gridTexts?: Partial<GridTexts>;
   texts?: Partial<TreeGridTexts>;
+  loading?: boolean;
   className?: string;
 }
 
@@ -143,6 +168,18 @@ export function TreeGrid<Row extends TreeGridRow>({
   onRowClick,
   onRowOpen,
   actions,
+  toolbarLeft,
+  filters,
+  filterChips = [],
+  onClearFilters,
+  defaultFilters = [],
+  viewMode,
+  onViewModeChange,
+  asOf,
+  addAction,
+  moreActions = [],
+  pdfExport,
+  extraExports = [],
   onRefresh,
   refreshing,
   selectable,
@@ -150,18 +187,22 @@ export function TreeGrid<Row extends TreeGridRow>({
   onSelectedRowsChange,
   gridTexts,
   texts,
+  loading,
   className,
 }: TreeGridProps<Row>) {
   const t = { ...DEFAULT_TREE_GRID_TEXTS, ...texts };
   const sharedTexts = resolveGridTexts(gridTexts);
   const key = storageKey ?? `tree:${exportName ?? title}`;
   const [query, setQuery] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [ownDepth, setOwnDepth] = useState<number | null>(null);
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { zoom, setZoom, density, setDensity } = useGridZoom(key);
+  const blockRef = useRef<HTMLDivElement>(null);
+  useWheelZoom(blockRef, setZoom, zoom);
 
   const colDefs = useMemo(
     () =>
@@ -276,6 +317,14 @@ export function TreeGrid<Row extends TreeGridRow>({
       ]);
 
   const visible = flatten(roots, 0);
+  const maxDepth = Math.max(0, ...levelOf.values());
+  const availableLevels = expandLevels?.length
+    ? expandLevels
+    : Array.from({ length: Math.max(1, maxDepth) }, (_, index) => ({
+        id: `level-${index + 1}`,
+        label: `Úroveň ${index + 1}`,
+        depth: index + 1,
+      })).concat(maxDepth > 1 ? [{ id: "all", label: "Vše", depth: maxDepth + 1 }] : []);
   const highlighted = highlightedRowId !== undefined ? highlightedRowId : autoHighlight;
   const selectedRows = useMemo(() => rows.filter((row) => selectedIds.has(row.id)), [rows, selectedIds]);
   const selectedRowsChangeRef = useRef(onSelectedRowsChange);
@@ -342,66 +391,54 @@ export function TreeGrid<Row extends TreeGridRow>({
     );
 
   return (
-    <div className={cn("rounded-lg border bg-card", className)} data-slot="tree-grid">
-      <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
-        {showTitle ? <span className="font-semibold">{title}</span> : null}
-        {expandLevels?.length ? (
-          <div
-            role="group"
-            aria-label={t.levelsLabel}
-            className="grid-toolbar-control flex items-center rounded-md border bg-card p-0.5"
-          >
-            {expandLevels.map((level) => (
-              <Button
-                key={level.id}
-                type="button"
-                size="sm"
-                variant={activeDepth === level.depth ? "secondary" : "ghost"}
-                aria-pressed={activeDepth === level.depth}
-                disabled={Boolean(matched)}
-                className="h-8 px-2.5"
-                style={{ fontSize: gridFontSize(zoom) }}
-                onClick={() => selectDepth(level.depth)}
-              >
-                {level.label}
-              </Button>
-            ))}
-          </div>
-        ) : null}
-        <Button
-          variant="outline"
-          size="sm"
-          style={{ fontSize: gridFontSize(zoom) }}
-          disabled={Boolean(matched)}
-          onClick={() => {
-            setCollapsed(Object.fromEntries(rows.map((row) => [row.id, false])));
-            setOwnDepth(null);
-          }}
-        >
-          {t.expandAll}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          style={{ fontSize: gridFontSize(zoom) }}
-          disabled={Boolean(matched)}
-          onClick={() => {
-            setCollapsed(Object.fromEntries(rows.map((row) => [row.id, true])));
-            setOwnDepth(null);
-          }}
-        >
-          {t.collapseAll}
-        </Button>
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+    <div ref={blockRef} className={cn("@container flex min-w-0 flex-col", className)} data-slot="tree-grid">
+      {showTitle ? <div className="rounded-t-lg border bg-card px-3 py-2 font-semibold">{title}</div> : null}
+      <GridToolbar
+        zoom={zoom}
+        density={density}
+        className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", showTitle && "rounded-t-none border-t-0 shadow-none")}
+        left={<>
+          {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
+          {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
+          <GridExpandControls
+            levels={availableLevels}
+            activeDepth={activeDepth}
+            disabled={Boolean(matched)}
+            onExpand={selectDepth}
+            onCollapse={() => selectDepth(0)}
+            expandLabel={t.expandAll}
+            collapseLabel={t.collapseAll}
+          />
+          <GridToolbarSeparator density={density} />
+          {asOf ? <AsOfDateToggle {...asOf} /> : null}
+          {asOf ? <GridToolbarSeparator density={density} /> : null}
+          {toolbarLeft}
+        </>}
+        right={<>
           <GridSearch value={query} onChange={setQuery} placeholder={t.searchPlaceholder} zoom={zoom} />
+          {filters ? (
+            <GridFilterToggle
+              open={filtersOpen}
+              onOpenChange={setFiltersOpen}
+              onClear={onClearFilters}
+              activeCount={filterChips.length}
+              activeFilters={filterChips.map((chip) => chip.value ? `${chip.label}: ${chip.value}` : chip.label)}
+              defaultFilters={defaultFilters}
+              zoom={zoom}
+              texts={sharedTexts}
+            />
+          ) : null}
           {onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null}
           {exportName ? (
-            <ExcelExportButton
+            <GridExport
               getData={exportData}
-              exportName={exportName}
+              filename={exportName}
               title={title}
               meta={{ ...exportMeta, ...(query.trim() ? { filters: [...(exportMeta?.filters ?? []), `Hledání: ${query.trim()}`] } : {}) }}
-              label={t.exportLabel}
+              zoom={zoom}
+              texts={sharedTexts}
+              pdfExport={pdfExport}
+              extraExports={extraExports}
             />
           ) : null}
           <ColumnPicker
@@ -416,12 +453,16 @@ export function TreeGrid<Row extends TreeGridRow>({
           <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
           {actions}
           {selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}
-        </div>
-      </div>
+          {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}
+          {addAction ? <GridAddActions actions={addAction} /> : null}
+        </>}
+      />
+      {filters ? <GridFilterPanel open={filtersOpen}>{filters}</GridFilterPanel> : null}
+      {!filtersOpen && filterChips.length ? <div className="border border-t-0 bg-card px-2 py-1.5"><FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" /></div> : null}
 
       {selectMode ? <div className="flex items-center gap-2 border-b border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm"><span className="text-muted-foreground">{sharedTexts.selectedRecords(formatAmount(selectedRows.length, 0))}</span><div className="ml-auto flex items-center gap-2">{selectionActions?.(selectedRows, clearSelection)}</div></div> : null}
 
-      <div style={{ fontSize: gridFontSize(zoom) }}>
+      <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} loading={loading} noFit className="rounded-t-none border-t-0">
         <Table className={cn(density === "compact" && "[&_td]:py-1 [&_th]:h-8")}>
           <TableHeader>
             <TableRow>
@@ -523,7 +564,7 @@ export function TreeGrid<Row extends TreeGridRow>({
             </TableFooter>
           ) : null}
         </Table>
-      </div>
+      </ZoomGrid>
     </div>
   );
 }

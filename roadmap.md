@@ -279,3 +279,12 @@
 ## Verze 2.10.1 (nadpisy gridů pouze na vyžádání)
 - [x] DataGrid a TreeGrid standardně skrývají nadpis
 - [x] Nový prop showTitle pro výslovné zobrazení nadpisu
+
+## Verze 2.17.0 (jednotný řádek akcí gridu)
+- [x] GridToolbar, GridToolbarSeparator, AsOfDateToggle a GridToggleButton
+- [x] Jednotné pořadí a zalamování akcí v DataGrid a TreeGrid
+- [x] Stromové rozbalení ikonami a nabídkou pojmenovaných / automatických úrovní
+- [x] Filtry a chipy pod lištou, oranžové seskupení a ikonový GridExport
+- [x] addAction, moreActions, vlastní PDF a další exporty
+- [x] Společný wheel zoom DataGrid, TreeGrid a ZoomPane; loading v TreeGrid
+- [x] PageHeader bez spodní linky; ukázky, dokumentace, katalog a ověření

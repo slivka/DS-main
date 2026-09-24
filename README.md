@@ -130,6 +130,22 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.17.0 – jednotný řádek akcí gridu
+
+Nové:
+- Veřejné `GridToolbar`, `GridToolbarSeparator`, `AsOfDateToggle`, `GridToggleButton`, `GridExpandControls` a typy akcí/exportů.
+- `DataGrid`: `viewMode`, `onViewModeChange`, `asOf`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`.
+- `TreeGrid`: `viewMode`, `onViewModeChange`, `asOf`, `toolbarLeft`, `filters`, `filterChips`, `onClearFilters`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`, `loading`.
+- Ctrl/Cmd+kolečko používá stejný plynulý výpočet nad celým blokem DataGridu, TreeGridu i ZoomPane.
+
+Změny chování a přechod:
+- **Breaking:** TreeGrid už nemá textová tlačítka ani segment úrovní; rozbalení/sbalení je ikonové a více úrovní je v nabídce.
+- **Breaking:** TreeGrid používá společný ikonový `GridExport` místo `ExcelExportButton`; Excel zachovává osnovu a SUBTOTAL, stejné menu nabízí PDF, HTML a vlastní exporty.
+- **Breaking:** `PageHeader` už nemá spodní linku ani spodní vnitřní odsazení.
+- **Breaking:** aktivní `GroupControl`, včetně skrytého seskupení, je oranžový místo modrého nebo červeného.
+- Stávající `actions` zůstává funkční, ale nové primární akce přesuňte do `addAction` a vedlejší do `moreActions`.
+- `AsOfDateField` je zastaralý; v řádku akcí použijte `AsOfDateToggle`.
+
 ## Changelog 2.16.0 – dočasné a ponechané záložky, maximalizace, koncepty, rozložení
 
 Nové:
