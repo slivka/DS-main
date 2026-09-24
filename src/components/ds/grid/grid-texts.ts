@@ -3,6 +3,7 @@ export interface GridTexts {
   searchPlaceholder: string;
   searchLabel: string;
   clearSearchLabel: string;
+  refresh: string;
   columnsTitle: string;
   selectMore: string;
   cancelSelection: string;
@@ -72,6 +73,7 @@ export const DEFAULT_GRID_TEXTS: GridTexts = {
   searchPlaceholder: "Hledat…",
   searchLabel: "Hledat",
   clearSearchLabel: "Zrušit hledání",
+  refresh: "Obnovit data",
   columnsTitle: "Sloupce",
   selectMore: "Vybrat více",
   cancelSelection: "Zrušit výběr",

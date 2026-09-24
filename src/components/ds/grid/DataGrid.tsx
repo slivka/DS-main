@@ -37,6 +37,8 @@ import {
 import { GridTitleBar } from "./grid-title";
 import { GridAction, GridActions } from "./grid-action";
 import { Pencil, Trash2 } from "lucide-react";
+import { GridSelectionToggle } from "./grid-selection-toggle";
+import { GridRefreshButton } from "./grid-refresh";
 import { fmtAmount } from "../../../lib/format";
 import {
   formatUserDate,
@@ -168,6 +170,10 @@ type Props<Row> = {
   loading?: boolean | undefined;
   error?: unknown;
   onRetry?: (() => void) | undefined;
+  /** Ruční obnovení dat; po dobu Promise se tlačítko samo deaktivuje. */
+  onRefresh?: (() => void | Promise<unknown>) | undefined;
+  /** Řízený stav probíhajícího obnovení. */
+  refreshing?: boolean | undefined;
   onRowClick?: ((row: Row) => void) | undefined;
   /** Hlavné akcie vpravo v lište (napr. „Přidat záznam“). */
   actions?: ReactNode | undefined;
@@ -293,6 +299,8 @@ export function DataGrid<Row>({
   loading,
   error,
   onRetry,
+  onRefresh,
+  refreshing,
   onRowClick,
   actions,
   toolbarLeft,
@@ -766,6 +774,8 @@ export function DataGrid<Row>({
               />
             ) : null}
 
+            {onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /> : null}
+
             <GridExport
               getData={exportData}
               filename={exportName ?? storageKey}
@@ -805,15 +815,13 @@ export function DataGrid<Row>({
             {actions}
 
             {selectable && !hideSelectionToggle ? (
-              <Button
-                type="button"
-                variant={selectMode ? "secondary" : "ghost"}
-                size="sm"
-                className="h-8"
-                onClick={() => (selectMode ? exitSelectMode() : setOwnSelectMode(true))}
-              >
-                {selectMode ? texts.cancelSelection : texts.selectMore}
-              </Button>
+              <GridSelectionToggle
+                active={selectMode}
+                count={selectedRows.length}
+                zoom={zoom}
+                texts={texts}
+                onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()}
+              />
             ) : null}
 
           </div>

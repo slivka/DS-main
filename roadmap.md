@@ -228,6 +228,13 @@
 - [x] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
 - [x] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled
 
+## Verze 2.10.0 (panely, připnuté stránky a lišty gridů)
+- [x] PaneLayout doplňuje prázdné panely při přepnutí na 2/3 a zachovává je v serializaci
+- [x] PaneEmpty, připnutí v PaneHeaderu a nová PinnedBar
+- [x] AppShell subHeader skrytý v Nastavení/Administraci
+- [x] DataGrid a TreeGrid: GridSelectionToggle, onRefresh a refreshing
+- [x] Ukázky, veřejné exporty, changelog, testy a typová kontrola
+
 ## Verze 2.9.0 (token světlého podkladu)
 - [x] Nový token --surface-page (utility bg-surface-page), --background z něj odvozen
 - [x] Sdílená konstanta PAGE_SURFACE_LIGHT pro samostatné HTML výstupy (chybová stránka, HTML náhled exportu gridu)

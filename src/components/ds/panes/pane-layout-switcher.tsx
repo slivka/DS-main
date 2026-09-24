@@ -14,9 +14,9 @@ export type LayoutSwitcherTexts = {
 };
 
 export const DEFAULT_LAYOUT_SWITCHER_TEXTS: LayoutSwitcherTexts = {
-  one: "Jedno okno",
-  two: "Dvě okna",
-  three: "Tři okna",
+  one: "1 panel",
+  two: "2 panely",
+  three: "3 panely",
   needsWidth: "Pro {count} okna je potřeba šířka alespoň {width} px",
 };
 

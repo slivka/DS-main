@@ -48,6 +48,8 @@ export interface AppShellProps {
   showBrand?: boolean;
   breadcrumbs?: Crumb[];
   contextLeft?: ReactNode;
+  /** Lišta pod horní lištou; při otevřeném panelu Nastavení/Administrace se skryje. */
+  subHeader?: ReactNode;
   actions?: ReactNode;
   notificationBell?: ReactNode;
   themeToggleButton?: ReactNode;
@@ -164,6 +166,7 @@ export function AppShell({
   showBrand = false,
   breadcrumbs,
   contextLeft,
+  subHeader,
   actions,
   notificationBell,
   themeToggleButton,
@@ -333,6 +336,8 @@ export function AppShell({
           </div>
         </div>
       </header>
+
+      {!currentPanel ? subHeader : null}
 
       {currentPanel ? (
         <div className={cn("flex h-11 shrink-0 items-center border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>

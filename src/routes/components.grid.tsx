@@ -38,6 +38,7 @@ export const Route = createFileRoute("/components/grid")({
 
 function GridPage() {
   const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
+  const [refreshing, setRefreshing] = useState(false);
   const accountNames = useMemo(
     () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
     [],
@@ -93,6 +94,13 @@ function GridPage() {
         groupable
         paginated
         selectable
+        refreshing={refreshing}
+        onRefresh={async () => {
+          setRefreshing(true);
+          await new Promise((resolve) => window.setTimeout(resolve, 1500));
+          setRefreshing(false);
+          toast.success("Data byla obnovena");
+        }}
         showTotalRow
         actions={<Button type="button" size="sm" onClick={() => toast.info("Nový doklad")}>Nový doklad</Button>}
         toolbarLeft={

@@ -125,6 +125,15 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.10.0
+
+- **PaneLayout**: `setLayout(2 | 3)` doplní chybějící prázdné panely (`route: ""`) a aktivuje první nový. Nové props `renderEmpty`, `isPinned`, `onTogglePin`; nové texty `emptyTitle`, `emptyHint`, `pin`, `unpin`. `paneKey` vrací pro prázdný panel `null`.
+- **PinnedBar**: nová lišta trvalých záložek s props `items`, `onOpen(id, { newPane })`, `onUnpin`, `onReorder`, `texts` a `className`.
+- **AppShell**: nový slot `subHeader`, který se vykreslí pod horní lištou a skryje při aktivním panelu Nastavení/Administrace.
+- **DataGrid**: nové props `onRefresh` a `refreshing`; výběr více používá `GridSelectionToggle` s počtem vybraných řádků.
+- **TreeGrid**: nové props `onRefresh`, `refreshing`, `selectable`, `selectionActions`, `onSelectedRowsChange` a `gridTexts`; lišta používá stejné ovladače obnovení a výběru jako DataGrid.
+- **LayoutSwitcher**: výchozí nápovědy voleb jsou „1 panel“, „2 panely“ a „3 panely“; nedostupné volby dál zobrazují potřebnou šířku.
+
 ## Changelog 2.0.0
 
 - Horní lišta nyní vede přes celou šířku a značka aplikace je její první částí.
