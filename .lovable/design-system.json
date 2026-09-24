@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.10.0",
+    "version": "2.10.1",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -2969,6 +2969,11 @@
           "type": "any"
         },
         {
+          "name": "showTitle",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
           "name": "hideTitleMark",
           "type": "boolean"
         },
@@ -3165,7 +3170,7 @@
           "type": "any"
         }
       ],
-      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable.",
+      "usage": "Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable.",
       "examples": [
         {
           "label": "Grid s obnovením a výběrem",
@@ -3175,7 +3180,8 @@
       "antipatterns": [
         "Vlastní tlačítko obnovení mimo lištu gridu",
         "Přepisovat klávesu F5",
-        "Textové tlačítko Vybrat více místo GridSelectionToggle"
+        "Textové tlačítko Vybrat více místo GridSelectionToggle",
+        "Zobrazovat nadpis gridu bez výslovného showTitle"
       ]
     },
     {
@@ -3212,6 +3218,11 @@
           "name": "title",
           "type": "string",
           "required": true
+        },
+        {
+          "name": "showTitle",
+          "type": "boolean",
+          "default": "false"
         },
         {
           "name": "meta",
@@ -3651,7 +3662,7 @@
           "default": "flex flex-wrap items-center gap-2 border-b px-3 py-2"
         }
       ],
-      "usage": "Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Podporuje stejné obnovení a hromadný výběr jako DataGrid.",
+      "usage": "Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid.",
       "examples": [
         {
           "label": "Strom s obnovením a výběrem",
@@ -3661,7 +3672,8 @@
       "antipatterns": [
         "Vlastní rozbalovací tabulka místo TreeGrid",
         "Vlastní tlačítko obnovení mimo lištu",
-        "Ruční sčítání uzlů v aplikaci"
+        "Ruční sčítání uzlů v aplikaci",
+        "Zobrazovat nadpis gridu bez výslovného showTitle"
       ]
     },
     {

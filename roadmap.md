@@ -239,3 +239,7 @@
 - [x] Nový token --surface-page (utility bg-surface-page), --background z něj odvozen
 - [x] Sdílená konstanta PAGE_SURFACE_LIGHT pro samostatné HTML výstupy (chybová stránka, HTML náhled exportu gridu)
 - [x] Odstraněny pevné hodnoty #FAFAFA z kódu
+
+## Verze 2.10.1 (nadpisy gridů pouze na vyžádání)
+- [x] DataGrid a TreeGrid standardně skrývají nadpis
+- [x] Nový prop showTitle pro výslovné zobrazení nadpisu
