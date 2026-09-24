@@ -30,7 +30,7 @@ test.describe("Výkazy 2.8.0", () => {
       page.waitForEvent("download"),
       (async () => {
         await grid.getByRole("button", { name: "Stáhnout" }).click();
-        await page.getByRole("button", { name: "Stáhnout Excel" }).click();
+        await page.getByRole("button", { name: "Stáhnout do Excelu" }).click();
       })(),
     ]);
     const zip = await JSZip.loadAsync(await readFile((await download.path())!));
