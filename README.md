@@ -125,6 +125,13 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.15.0 – skupiny a hledání v menu
+
+- AppShell odděluje skupiny menu, pamatuje jejich sbalení a ve sbaleném záhlaví zachová součet odznaků i označení aktivní stránky.
+- Nové hledání v menu ignoruje diakritiku, podporuje více slov, šipky, Enter, Esc a zkratku `/`; ve sbaleném menu se otevře dočasný překryv.
+- Nové volitelné props: `navStateKey`, `navSearch`, `navSearchPlaceholder`, `navSearchEmptyText`. Stav skupiny používá klíč `ds:nav-groups:<navStateKey>:<group.id>`.
+- Firma je jednořádková a výraznější; období používá stavový štítek s rozsahem na široké obrazovce. Stávající props zůstávají kompatibilní.
+
 ## Changelog 2.13.0 – bílý vzhled a IBM Plex
 
 - Všechny plochy světlého režimu jsou bílé; hover, záhlaví a součty gridu v neutrální šedé, linky #DFE3E8, okraj gridu a karet #C9D0D8.

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, FileSpreadsheet, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
+import { BookOpen, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
 
 import {
   AppShell,
@@ -35,6 +35,22 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare },
       { to: "/components/accounting-forms", label: "Účetní formuláře", icon: Receipt },
       { to: "/components/navigation", label: "Navigace", icon: RouteIcon },
+    ],
+  },
+  {
+    id: "accounting",
+    label: "Účetnictví",
+    items: [
+      { to: "/components/accounting-forms", label: "Účetní doklady", icon: Landmark, badge: "3" },
+      { to: "/components/grid", label: "Účetní deník", icon: LayoutGrid },
+    ],
+  },
+  {
+    id: "planned",
+    label: "Další moduly",
+    defaultCollapsed: true,
+    items: [
+      { to: "/components/navigation", label: "Majetek", icon: Settings2, disabled: true },
     ],
   },
 ];
@@ -95,6 +111,7 @@ export function ShowcaseLayout({
     <AppShell
       appName="Slivka Design System"
       navGroups={NAV_GROUPS}
+      navStateKey="showcase"
       breadcrumbs={breadcrumbs}
       contextLeft={<div className="flex min-w-0 items-center gap-1 xl:gap-2"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}

@@ -39,3 +39,14 @@
 ## AppShell
 
 Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otevřeném Nastavení firmy nebo Administraci se automaticky skryje.
+
+- Skupiny mají oddělená záhlaví a ukládají sbalení do `ds:nav-groups:<navStateKey>:<group.id>`; `navStateKey` je výchozí `appName`, panely přidávají své `id`.
+- `navSearch?: boolean` je výchozí `true`; texty mění `navSearchPlaceholder` a `navSearchEmptyText`.
+- Hledání ignoruje diakritiku a velikost písmen. `/` ho aktivuje, šipky mění výsledek, Enter otevře položku a Esc smaže hledání nebo pole opustí.
+- Cmd/Ctrl+Enter otevře novou záložku, Cmd/Ctrl+Shift+Enter sousední panel. Zakázané položky jsou vidět, ale klávesové zvýraznění je přeskočí.
+
+## CompanySwitcher a PeriodSwitcher
+
+- `label` se nezobrazuje nad hodnotou; zůstává přístupnostním názvem a součástí nápovědy.
+- Firma zobrazuje výrazný název a v nápovědě IČO. Období zobrazuje stavový štítek; otevřené je zelené, období v uzávěrce jantarové a uzavřené se zámkem.
+- Kompaktní `compactValue`, prázdné stavy a obsah nabídek zůstávají beze změny.
