@@ -150,6 +150,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu
   se hlídá průběžně; režim jen pro čtení se předává propem `readOnly`.
 - Částka v cizí měně vždy `CurrencyAmount` (částka 2 desetinná místa, kurz 6).
+- Výkazy: úrovně rozbalení přes `TreeGrid.expandLevels`, výběr třídy / skupiny přes `AccountSelect allowLevels + catalog`, rozbor po skupinách přes `BarBreakdownChart`, aktivní filtry přes `FilterChips`. Export stromu má souhrn pod dětmi se vzorci SUBTOTAL.
 - Stromová data (účtová osnova, zakázky) zobrazuj přes `TreeGrid` – součty za uzel,
   hledání zachová cestu k nalezeným uzlům, export do Excelu nese úrovně osnovy.
 - Boční navigaci skládej z `AppShell` s `navGroups`; nedostupné položky označ

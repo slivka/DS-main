@@ -156,6 +156,19 @@ měna podle nastavení aplikace.
 - Kód období má na úzkých obrazovkách dostatek místa, aby zůstal čitelný.
 - Přepínač firmy v kompaktním režimu zkrácený název firmy potvrzen; identifikátory se nikdy nezobrazují.
 
+## Changelog 2.8.0
+Doplnění pro výkazy účetnictví.
+- **TreeGrid**: `expandLevels` + řízené `expandDepth` / `onExpandDepthChange` (segmentovaný přepínač v liště), `highlightedRowId` (výchozí naposledy rozbalený / vybraný uzel), `onRowClick`, `storageKey`, výběr sloupců (`hiddenByDefault` u sloupce, uložení přes `useGridColumns`), zoom a hustota (`useGridZoom`), akce `actions` vpravo od zoomu. Export do Excelu: souhrnný řádek pod dětmi (outline `summaryBelow`) a součty uzlů jako `SUBTOTAL(9, …)`.
+- **AccountSelect**: `allowLevels` (`class` | `group` | `synthetic` | `analytic`) a `catalog` (názvy tříd a skupin); při třídě / skupině vrací prefix („5“, „51“). Nové `accountLevelOf`, `AccountLevel`, `AccountCatalogItem`.
+- **Nové**: `BarBreakdownChart` (vodorovné pruhy, hodnota + podíl %, výběr klikem, záporné červeně, bez externí knihovny), `FilterChips` (štítky filtrů + „Zrušit vše“).
+- **Excel**: `GridExportData.outlineSummaryBelow` a `subtotalRows`.
+
+**Přechod z 2.7.x (TreeGrid)**
+- Export stromu má nově rodiče **pod** dětmi – pokud jste soubor dál zpracovávali podle pořadí řádků, upravte to.
+- První sloupec nelze skrýt; `width` se přepočítává podle zoomu.
+- Tlačítko u uzlu má popisek z `texts.expandNode` / `texts.collapseNode` (dříve `expandAll` / `collapseAll`).
+- Vlastní akce předávejte v `actions` – zobrazí se vpravo od zoomu.
+
 ## Changelog 2.7.1
 
 Úklid API řádků zápisu (bez zpětné kompatibility):

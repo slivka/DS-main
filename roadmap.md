@@ -199,6 +199,13 @@
 - [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR
 
+## Verze 2.8.0 (výkazy účetnictví)
+- [x] TreeGrid: úrovně rozbalení, zvýraznění uzlu, výběr sloupců, zoom, akce vpravo od zoomu
+- [x] TreeGrid export: souhrn pod dětmi + SUBTOTAL, otevření bez chyby
+- [x] AccountSelect: allowLevels + catalog (prefix třídy / skupiny)
+- [x] BarBreakdownChart, FilterChips
+- [x] Ukázky, testy (19 zelených), typová kontrola, changelog
+
 ## Verze 2.7.1 (úklid API řádků zápisu)
 - [x] Odstranit toDbLines / fromDbLines / pairNo
 - [x] JournalLinesEditor: mode, mainSide, mainAccount, sideFieldRules; DocumentForm je předává přímo
