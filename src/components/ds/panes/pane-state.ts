@@ -16,6 +16,7 @@ export type TabHistoryEntry = {
   params?: Record<string, unknown>;
   title?: string;
   shortTitle?: string;
+  icon?: string;
 };
 
 export type PaneTab = {
@@ -136,7 +137,7 @@ export type CreateTabInput = {
 
 /** Vytvoří novou záložku s jedním krokem historie. */
 export function createTab(input: CreateTabInput, now = Date.now()): PaneTab {
-  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle };
+  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon };
   return {
     id: createPaneId("tab"),
     route: input.route,
@@ -251,7 +252,7 @@ export function openTabInState(
   const mode = resolveOpenMode(state, target);
 
   if (mode === "replace" && pane.activeTab) {
-    const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle };
+    const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon };
     const tabs = pane.tabs.map((tab) => {
       if (tab.id !== pane.activeTab) return tab;
       const history = [...tab.history.slice(0, tab.historyIndex + 1), entry];
@@ -329,7 +330,7 @@ export function insertTabInState(
 export function replaceTabContentInState(state: PaneTabsState, tabId: string, input: CreateTabInput, now = Date.now()): PaneTabsState {
   const found = findTab(state, tabId);
   if (!found) return state;
-  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle };
+  const entry: TabHistoryEntry = { route: input.route, params: input.params, title: input.title, shortTitle: input.shortTitle, icon: input.icon ?? found.tab.icon };
   const history = [...found.tab.history.slice(0, found.tab.historyIndex + 1), entry];
   const tab: PaneTab = {
     ...found.tab,

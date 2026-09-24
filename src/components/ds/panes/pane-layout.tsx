@@ -326,7 +326,7 @@ function PaneColumn({
         canForward: tab.historyIndex < tab.history.length - 1,
         back: () => api.back(tab.id),
         forward: () => api.forward(tab.id),
-        history: tab.history.map((entry, index) => ({ index, title: entry.title ?? entry.route, icon: tab.icon, current: index === tab.historyIndex })),
+        history: tab.history.map((entry, index) => ({ index, title: entry.title ?? entry.route, icon: entry.icon ?? tab.icon, current: index === tab.historyIndex })),
         goToHistory: (index) => api.goToHistory(tab.id, index),
         openFromHistory: (index) => api.openFromHistory(tab.id, index),
         dirty: api.isTabDirty(tab.id),
