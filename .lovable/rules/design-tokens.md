@@ -39,6 +39,8 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `sidebar-foreground` | `--sidebar-foreground` |
 | `sidebar-accent` | `--sidebar-accent` |
 | `sidebar-border` | `--sidebar-border` |
+| `sidebar-muted` | `--sidebar-muted` |
+| `sidebar-indicator` | `--sidebar-indicator` |
 | `company` | `--company` |
 | `company-foreground` | `--company-foreground` |
 | `company-muted` | `--company-muted` |

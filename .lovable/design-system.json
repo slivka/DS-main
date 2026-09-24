@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.13.0",
+    "version": "2.14.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "2d7b10f0ffb43db25ccc10f08e143e76e0f9ad881238b12ee93ead4bbf2f000a",
+      "#enrichment": "aef4ec029175f8fde1e127f3db6ccc6cced8252d1315ef536e405379002262e8",
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
@@ -32,22 +32,23 @@
       ".lovable/plan/standard-sloupců-účtů-md-dal-verze-1-5-0-2026-09-22.md": "8f0e8f3e9ba6e2a9023345c757c0ff69",
       ".lovable/plan/světlé-pozadí-podle-vzorku-evala-cz-2026-09-24.md": "2ccb0aa13a84bf7b0e32592b91c01297",
       ".lovable/plan/vystředění-firmy-a-období-v-horní-liště-2026-09-24.md": "da4bb48cc53dfbab43c8b83ce10f7a39",
+      ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "39d08b2a819f3cd467d97ab481d5b72c",
+      ".lovable/system.md": "b874d878e85058262fb451ac08ad59a0",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "0ebbcbbef00c9f1b726068252688ca49",
+      "README.md": "1dd9f61d8d8a5d4e074326640b07ecd3",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "14507be770d9c9ed4bee8d5cb0bb79cd",
+      "components.md": "b5a486027f8595d042e835218490a826",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "55904bcb978571a2a611327127df38ac",
+      "package.json": "6cd0861f8bdb2bc764a4004ff19f5e5e",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "d7c0d4ecad90259d02e96589fa01d0d2",
+      "roadmap.md": "b687826e21784b5a62a287bac50c8050",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -129,8 +130,8 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "26dc63176bdacbaf0ddea666832b5721",
       "src/components/ds/grid/view-mode-toggle.tsx": "7ba9f08e4b064164a441d1c530d596ad",
-      "src/components/ds/index.ts": "235efd2be54b9ffdf67f52260080b538",
-      "src/components/ds/layout/AppShell.tsx": "19b29edf42214899fae6d07f810898e6",
+      "src/components/ds/index.ts": "10e1c1a4e92dc6155371ce3d06f638d2",
+      "src/components/ds/layout/AppShell.tsx": "31ea309b9278a690bd97339a38a2350a",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "b6f4126fa8e041ecb017dfd0b83c59cc",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
@@ -148,13 +149,16 @@
       "src/components/ds/layout/theme-setting.tsx": "059b307549a15239d438e0bb0e3d60c7",
       "src/components/ds/layout/theme-toggle-button.tsx": "0e1776217df487e913b805af9dc5d998",
       "src/components/ds/layout/user-menu.tsx": "dbe2649e35c4602e643dfc1d5fab752e",
-      "src/components/ds/panes/pane-context.tsx": "11e551c211fe3aea07c38739cd247704",
+      "src/components/ds/panes/pane-context.tsx": "65c57e17f9c3c35b409d4949a3db37c4",
       "src/components/ds/panes/pane-layout-switcher.tsx": "a4e5eb53d508003985c54e4063313b50",
-      "src/components/ds/panes/pane-layout.tsx": "719f31ab32f29255c66db245d8481edf",
-      "src/components/ds/panes/pane-state.ts": "36043f8ee82a1bda09de0cca3349e7a6",
+      "src/components/ds/panes/pane-layout.tsx": "edb34a04e797e405c6c09762f5e40e5e",
+      "src/components/ds/panes/pane-link.tsx": "c3444e59c2bbd8a87bbfa2090eef6655",
+      "src/components/ds/panes/pane-state.ts": "4a3f88f12bd43a29ecf47098d23163f0",
+      "src/components/ds/panes/pane-tab-bar.tsx": "b62acf5f4cd27aa0502dd5d05b2791d7",
+      "src/components/ds/panes/pane-tab-store.ts": "ef2651b0de82879150d4b23dd160e9d5",
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
-      "src/components/showcase/PaneShowcase.tsx": "fdadd80390e9af327069d90b4e12c550",
+      "src/components/showcase/PaneShowcase.tsx": "72fdbcca3a08f04ebec21aa917e6a97f",
       "src/components/showcase/ReportsShowcase.tsx": "0ae0797f6d63c7fb2e2c9b20dae3c376",
       "src/components/showcase/ShowcaseLayout.tsx": "db372060e2ebf377d141fbf02c1a3ddd",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
@@ -217,7 +221,7 @@
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
       "src/lib/error-page.ts": "c3f17e6ac5b1215ded9b9589840381a9",
       "src/lib/excel-export.ts": "fa1d5098b712b45c929dbbc9148d3616",
-      "src/lib/font-links.ts": "fd9e80f4b319ba2df099774ab1b56915",
+      "src/lib/font-links.ts": "100aa0679f828068d4d078bbdf73d639",
       "src/lib/font-scale.ts": "3182f555aa17adbb10c559079ba67057",
       "src/lib/form-errors.ts": "b3d3f883fabe619ed7746770ff3a7b4e",
       "src/lib/format.ts": "9a8050a8c7bfeec072607904c1abce09",
@@ -232,7 +236,7 @@
       "src/lib/regions.ts": "b4c31bef0e7a60b5a1de443f05c7746f",
       "src/lib/retry-after.ts": "f91ebfed0f40e5fbf47879a7c4b0707c",
       "src/lib/theme.ts": "739217fbf0bc6cff942d66ec42ab8819",
-      "src/lib/tokens.ts": "d05b2f0b5d8557bd4f745beca50133e1",
+      "src/lib/tokens.ts": "6f1c7a590a05885e3a987a49663841d1",
       "src/lib/utils.ts": "d9837f38cc05303254571985e3164050",
       "src/mockup-preview.d.ts": "ae9d81e2b8514e13fd59b5b6bece9a64",
       "src/routeTree.gen.ts": "a47f54abe38cdd6d99c033686370f0db",
@@ -245,17 +249,18 @@
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
       "src/routes/components.grid.tsx": "9581bb542168c3bf0ad0b7fee17a5289",
-      "src/routes/components.navigation.tsx": "785fce6625e22b978fdc95818c9d1d33",
+      "src/routes/components.navigation.tsx": "3d0b818aa24d20bb7f4f9061495fed92",
       "src/routes/guidelines.tsx": "53a5b4b7f10207463bfe1871da64316d",
-      "src/routes/index.tsx": "0c534603688b2c93f02109e167af0405",
+      "src/routes/index.tsx": "45376f7844263eb978b27d8ca5fbcad1",
       "src/start.ts": "322ad835cfa30a963726d9b1cbaa3f20",
-      "src/styles.css": "8f567e8fe1487dda41a063bac05fe330",
+      "src/styles.css": "7f30e0b8c9046e8bbdd625a5f078cce0",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "aeae6a7769950765bc2c1282efc40ebf",
       "tests/e2e/journal-editor.spec.ts": "bfbebeecce960c3c905445629d9e3753",
       "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
       "tests/e2e/reports.spec.ts": "53d4c191582ec1923cd76d7dbdbec480",
+      "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
@@ -266,7 +271,7 @@
     "color": [
       {
         "name": "--surface-page",
-        "raw": "oklch(0.965 0.008 245)",
+        "raw": "oklch(1 0 0)",
         "source": "src/styles.css"
       },
       {
@@ -306,7 +311,7 @@
       },
       {
         "name": "--secondary",
-        "raw": "oklch(0.94 0.02 245)",
+        "raw": "oklch(0.970 0.0029 264.5)",
         "source": "src/styles.css"
       },
       {
@@ -316,7 +321,7 @@
       },
       {
         "name": "--muted",
-        "raw": "oklch(0.94 0.018 245)",
+        "raw": "oklch(0.970 0.0029 264.5)",
         "source": "src/styles.css"
       },
       {
@@ -326,7 +331,7 @@
       },
       {
         "name": "--accent",
-        "raw": "oklch(0.9 0.04 250)",
+        "raw": "oklch(0.959 0.0069 247.9)",
         "source": "src/styles.css"
       },
       {
@@ -386,7 +391,7 @@
       },
       {
         "name": "--border",
-        "raw": "oklch(0.84 0.03 245)",
+        "raw": "oklch(0.914 0.0081 253.9)",
         "source": "src/styles.css"
       },
       {
@@ -406,17 +411,27 @@
       },
       {
         "name": "--sidebar-foreground",
-        "raw": "oklch(0.94 0.012 250)",
+        "raw": "oklch(0.96 0.01 250)",
         "source": "src/styles.css"
       },
       {
         "name": "--sidebar-accent",
-        "raw": "oklch(0.38 0.085 245)",
+        "raw": "oklch(0.380 0.0846 244.6)",
         "source": "src/styles.css"
       },
       {
         "name": "--sidebar-border",
-        "raw": "oklch(0.35 0.065 245)",
+        "raw": "oklch(0.28 0.06 245)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-muted",
+        "raw": "oklch(0.707 0.0382 249.7)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-indicator",
+        "raw": "oklch(0.750 0.0922 248.7)",
         "source": "src/styles.css"
       },
       {
@@ -471,27 +486,27 @@
       },
       {
         "name": "--surface-hover",
-        "raw": "oklch(0.94 0.025 245)",
+        "raw": "oklch(0.979 0.0029 264.5)",
         "source": "src/styles.css"
       },
       {
         "name": "--surface-active",
-        "raw": "oklch(0.91 0.04 245)",
+        "raw": "oklch(0.959 0.0069 247.9)",
         "source": "src/styles.css"
       },
       {
         "name": "--surface-selected",
-        "raw": "oklch(0.915 0.045 245)",
+        "raw": "oklch(0.955 0.0131 251.6)",
         "source": "src/styles.css"
       },
       {
         "name": "--surface-subtle",
-        "raw": "oklch(0.96 0.018 245)",
+        "raw": "oklch(0.970 0.0029 264.5)",
         "source": "src/styles.css"
       },
       {
         "name": "--row-stripe",
-        "raw": "oklch(0.968 0.012 245)",
+        "raw": "oklch(0.988 0.0017 247.8)",
         "source": "src/styles.css"
       },
       {
@@ -521,12 +536,12 @@
       },
       {
         "name": "--grid-frost",
-        "raw": "oklch(0.944 0.0097 252.81)",
+        "raw": "oklch(0.970 0.0029 264.5)",
         "source": "src/styles.css"
       },
       {
         "name": "--grid-chrome-border",
-        "raw": "color-mix(in oklab, var(--grid-navy) 32%, var(--grid-frost))",
+        "raw": "oklch(0.855 0.0135 251.6)",
         "source": "src/styles.css"
       },
       {
@@ -666,7 +681,7 @@
       },
       {
         "name": "--grid-total-surface",
-        "raw": "color-mix(in oklab, var(--grid-frost) 72%, white)",
+        "raw": "color-mix(in oklab, var(--grid-navy) 48%, var(--card))",
         "source": "src/styles.css"
       },
       {
@@ -2247,7 +2262,7 @@
       "examples": [
         {
           "label": "Rám s připnutými stránkami",
-          "code": "<AppShell navGroups={groups} subHeader={<PinnedBar items={pins} onOpen={open} onUnpin={unpin} />}>{children}</AppShell>"
+          "code": "\u003cAppShell navGroups={groups} subHeader={\u003cPinnedBar items={pins} onOpen={open} onUnpin={unpin} /\u003e}\u003e{children}\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -2402,7 +2417,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2456,7 +2471,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2520,7 +2535,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -2583,7 +2598,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -2658,7 +2673,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2733,11 +2748,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
         },
         {
           "label": "Firma bez období",
-          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
+          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2805,7 +2820,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2836,7 +2851,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2857,6 +2872,61 @@
       "name": "PaneApiContext",
       "file": "src/components/ds/panes/pane-context.tsx",
       "import_path": ""
+    },
+    {
+      "name": "PaneTabsContext",
+      "file": "src/components/ds/panes/pane-context.tsx",
+      "import_path": ""
+    },
+    {
+      "name": "PaneTabsProvider",
+      "file": "src/components/ds/panes/pane-context.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "state",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onSaveTab",
+          "type": "function"
+        },
+        {
+          "name": "onNewTabRequest",
+          "type": "function"
+        },
+        {
+          "name": "shortcuts",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "usage": "Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.",
+      "examples": [
+        {
+          "label": "Otevření záznamu",
+          "code": "const tabs = usePaneTabs();\ntabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' });"
+        }
+      ],
+      "antipatterns": [
+        "Otevírat konkrétní záznam s kind 'list' – otevřel by se vícekrát.",
+        "Přepisovat Cmd/Ctrl+W nebo Ctrl+1–9."
+      ]
     },
     {
       "name": "PaneLayout",
@@ -2891,18 +2961,19 @@
         },
         {
           "name": "texts",
-          "type": "Partial<PaneLayoutTexts>"
+          "type": "any"
         },
         {
           "name": "className",
-          "type": "string"
+          "type": "string",
+          "default": "flex min-w-0"
         }
       ],
       "usage": "Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.",
       "examples": [
         {
           "label": "Panely se záložkami",
-          "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
+          "code": "\u003cPaneTabsProvider state={state} onChange={setState}\u003e\n  \u003cPaneLayout renderTab={(tab) =\u003e \u003cPage route={tab.route} /\u003e} getTabIcon={(tab) =\u003e ICONS[tab.icon]} /\u003e\n\u003c/PaneTabsProvider\u003e"
         }
       ],
       "antipatterns": [
@@ -2969,13 +3040,113 @@
       "examples": [
         {
           "label": "Připnuté stránky",
-          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
+          "code": "\u003cPinnedBar items={items} onOpen={(id, options) =\u003e openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} /\u003e"
         }
       ],
       "antipatterns": [
         "Vykreslit lištu při prázdném items",
         "Ukládat rozpracovaný stav stránky do položky připnutí",
         "Zalamovat připnuté položky do více řádků"
+      ]
+    },
+    {
+      "name": "PaneTabBar",
+      "file": "src/components/ds/panes/pane-tab-bar.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "pane",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "paneIndex",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "paneCount",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "api",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "getTabIcon",
+          "type": "function"
+        },
+        {
+          "name": "maximized",
+          "type": "boolean"
+        },
+        {
+          "name": "onToggleMaximize",
+          "type": "function"
+        },
+        {
+          "name": "pinned",
+          "type": "boolean"
+        },
+        {
+          "name": "onTogglePin",
+          "type": "function"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "size-7"
+        }
+      ],
+      "usage": "Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlastní rozložení.",
+      "examples": [
+        {
+          "label": "Vlastní panel",
+          "code": "\u003cPaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Přidávat vedle lišty samostatný křížek panelu – zavření je v menu ⋯."
+      ]
+    },
+    {
+      "name": "PaneLink",
+      "file": "src/components/ds/panes/pane-link.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "route",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "params",
+          "type": "object"
+        },
+        {
+          "name": "options",
+          "type": "any"
+        },
+        {
+          "name": "href",
+          "type": "string"
+        }
+      ],
+      "usage": "Odkaz do záložek: klik nahradí aktivní záložku, Cmd/Ctrl + klik nebo prostřední tlačítko otevře novou, Cmd/Ctrl + Shift + klik sousední panel.",
+      "examples": [
+        {
+          "label": "Položka menu",
+          "code": "\u003cPaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}\u003eÚčetní deník\u003c/PaneLink\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Obyčejný \u003ca\u003e uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
       ]
     },
     {
@@ -3206,7 +3377,7 @@
       "examples": [
         {
           "label": "Grid s obnovením a výběrem",
-          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"doklady\" onRefresh={reload} refreshing={loading} selectable /\u003e"
         }
       ],
       "antipatterns": [
@@ -3581,7 +3752,7 @@
       "examples": [
         {
           "label": "Asynchronní obnovení",
-          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
+          "code": "\u003cGridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3648,7 +3819,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -3763,7 +3934,7 @@
       "examples": [
         {
           "label": "Strom s obnovením a výběrem",
-          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />"
+          "code": "\u003cTreeGrid title=\"Účtová osnova\" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3805,7 +3976,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
+          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4294,7 +4465,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
+          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4325,7 +4496,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4510,7 +4681,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4653,7 +4824,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
+          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4740,136 +4911,12 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
-      ]
-    },
-    {
-      "name": "PaneTabsProvider",
-      "file": "src/components/ds/panes/pane-context.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "state",
-          "type": "PaneTabsState",
-          "required": true
-        },
-        {
-          "name": "onChange",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "onSaveTab",
-          "type": "function"
-        },
-        {
-          "name": "onNewTabRequest",
-          "type": "function"
-        },
-        {
-          "name": "shortcuts",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "texts",
-          "type": "Partial<PaneTabsTexts>"
-        }
-      ],
-      "usage": "Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.",
-      "examples": [
-        {
-          "label": "Otevření záznamu",
-          "code": "const tabs = usePaneTabs();\ntabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' });"
-        }
-      ],
-      "antipatterns": [
-        "Otevírat konkrétní záznam s kind 'list' – otevřel by se vícekrát.",
-        "Přepisovat Cmd/Ctrl+W nebo Ctrl+1–9."
-      ]
-    },
-    {
-      "name": "PaneTabBar",
-      "file": "src/components/ds/panes/pane-tab-bar.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "pane",
-          "type": "TabPane",
-          "required": true
-        },
-        {
-          "name": "paneIndex",
-          "type": "number",
-          "required": true
-        },
-        {
-          "name": "paneCount",
-          "type": "number",
-          "required": true
-        },
-        {
-          "name": "api",
-          "type": "PaneTabsApi",
-          "required": true
-        },
-        {
-          "name": "getTabIcon",
-          "type": "function"
-        },
-        {
-          "name": "texts",
-          "type": "Partial<PaneTabBarTexts>"
-        }
-      ],
-      "usage": "Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlastní rozložení.",
-      "examples": [
-        {
-          "label": "Vlastní panel",
-          "code": "<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />"
-        }
-      ],
-      "antipatterns": [
-        "Přidávat vedle lišty samostatný křížek panelu – zavření je v menu ⋯."
-      ]
-    },
-    {
-      "name": "PaneLink",
-      "file": "src/components/ds/panes/pane-link.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "route",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "params",
-          "type": "Record<string, unknown>"
-        },
-        {
-          "name": "options",
-          "type": "Omit<OpenTabOptions, 'target'>"
-        },
-        {
-          "name": "href",
-          "type": "string"
-        }
-      ],
-      "usage": "Odkaz do záložek: klik nahradí aktivní záložku, Cmd/Ctrl + klik nebo prostřední tlačítko otevře novou, Cmd/Ctrl + Shift + klik sousední panel.",
-      "examples": [
-        {
-          "label": "Položka menu",
-          "code": "<PaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>"
-        }
-      ],
-      "antipatterns": [
-        "Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
       ]
     }
   ],

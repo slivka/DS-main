@@ -2092,45 +2092,136 @@ import { PaneEmpty } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 import { PaneLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro 1 až 3 souběžné pracovní panely. Zvýšení layoutu automaticky doplní prázdné panely; prázdný panel nikdy neposílejte do renderPane.
+Režim více oken se záložkami; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.
 
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
-| `panes` | any | `—` |
-| `activePaneId` | string | `—` |
-| `layout` | any | `—` |
-| `widths` | any | `—` |
-| `onChange` | function | `—` |
-| `minPaneWidth` | number | `560` |
-| `renderPane` | function | `—` |
+| `renderTab` | function | `—` |
+| `getTabIcon` | function | `—` |
 | `renderEmpty` | function | `—` |
 | `isPinned` | function | `—` |
 | `onTogglePin` | function | `—` |
-| `defaultRoute` | string | `—` |
-| `defaultTitle` | string | `—` |
+| `minPaneWidth` | number | `560` |
 | `texts` | any | `—` |
 | `className` | string | `flex min-w-0` |
 
 **Examples:**
 
-_Panely s prázdným stavem a připnutím_
+_Panely se záložkami_
 ```tsx
-<PaneLayout panes={panes} activePaneId={activeId} layout={layout} onChange={setState} defaultRoute="/doklady" renderPane={renderPane} renderEmpty={(pane) => <PaneEmpty />} isPinned={isPinned} onTogglePin={togglePin} />
+<PaneTabsProvider state={state} onChange={setState}>
+  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />
+</PaneTabsProvider>
 ```
 
 **Avoid:**
 
-- Vytvářet prázdné panely ručně mimo PaneLayout
-- Volat renderPane pro panel s route prázdným řetězcem
-- Ukládat připnutí jako stav otevřeného okna
+- Držet stav formuláře záložky jen v useState – po přepnutí se ztratí; použijte useTabDraft.
+- Používat usePaneDirty / openInPane (odstraněno ve 2.12.0).
 
-### PaneManagerContext
+### PaneLink
 
 ```ts
-import { PaneManagerContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+import { PaneLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Odkaz do záložek: klik nahradí aktivní záložku, Cmd/Ctrl + klik nebo prostřední tlačítko otevře novou, Cmd/Ctrl + Shift + klik sousední panel.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `route` | string | `—` |
+| `params` | object | `—` |
+| `options` | any | `—` |
+| `href` | string | `—` |
+
+**Examples:**
+
+_Položka menu_
+```tsx
+<PaneLink route="/denik" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>
+```
+
+**Avoid:**
+
+- Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče.
+
+### PaneTabBar
+
+```ts
+import { PaneTabBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Lišta záložek panelu; PaneLayout ji vykresluje sám, samostatně jen pro vlastní rozložení.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `pane` | any | `—` |
+| `paneIndex` | number | `—` |
+| `paneCount` | number | `—` |
+| `api` | any | `—` |
+| `getTabIcon` | function | `—` |
+| `maximized` | boolean | `—` |
+| `onToggleMaximize` | function | `—` |
+| `pinned` | boolean | `—` |
+| `onTogglePin` | function | `—` |
+| `texts` | any | `—` |
+| `className` | string | `size-7` |
+
+**Examples:**
+
+_Vlastní panel_
+```tsx
+<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />
+```
+
+**Avoid:**
+
+- Přidávat vedle lišty samostatný křížek panelu – zavření je v menu ⋯.
+
+### PaneTabsContext
+
+```ts
+import { PaneTabsContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### PaneTabsProvider
+
+```ts
+import { PaneTabsProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `state` | any | `—` |
+| `onChange` | function | `—` |
+| `onSaveTab` | function | `—` |
+| `onNewTabRequest` | function | `—` |
+| `shortcuts` | boolean | `true` |
+| `texts` | any | `—` |
+| `children` | any | `—` |
+
+**Examples:**
+
+_Otevření záznamu_
+```tsx
+const tabs = usePaneTabs();
+tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' });
+```
+
+**Avoid:**
+
+- Otevírat konkrétní záznam s kind 'list' – otevřel by se vícekrát.
+- Přepisovat Cmd/Ctrl+W nebo Ctrl+1–9.
 
 ### PartnerSelect
 
