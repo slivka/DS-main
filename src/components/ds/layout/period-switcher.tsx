@@ -1,4 +1,4 @@
-import { CalendarRange, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import { Button } from "../../ui/button";
@@ -117,7 +117,6 @@ export function PeriodSwitcher({
       compactValue={selected?.name ?? (isEmpty ? emptyText : placeholder)}
       valueMuted={!selected}
       statusIndicator={!selected ? <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" /> : null}
-      icon={CalendarRange}
       className={cn("max-w-[72px] md:max-w-[200px] xl:max-w-[360px]", className)}
       contentClassName="w-[380px]"
     >
