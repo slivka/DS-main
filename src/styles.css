@@ -79,8 +79,7 @@
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
-  /* Jemně modré podkladové pozadí pracovní plochy #EFF4F9.
-     Hodnota je sdílená s PAGE_SURFACE_LIGHT v src/lib/tokens.ts (samostatné HTML výstupy). */
+  /* Bílý vzhled: všechny plochy světlého režimu jsou bílé (#FFFFFF). */
   --surface-page: oklch(1 0 0);
   --background: var(--surface-page);
   --foreground: oklch(0.25 0.04 245);

@@ -98,8 +98,8 @@ function OverviewPage() {
           <h2 className="text-lg font-semibold">Nadpis sekce</h2>
           <p className="text-sm">Základní text aplikace ve velikosti 14 px.</p>
           <p className="text-xs text-muted-foreground">Doplňkový popisek a nápověda.</p>
-          <p className="tabular-nums">1 234 567,89 — částka ve Work Sans s tabulkovými číslicemi</p>
-          <p className="font-mono tabular-nums">221.001 — kód účtu v JetBrains Mono</p>
+          <p className="tabular-nums">1 234 567,89 — částka v IBM Plex Sans s tabulkovými číslicemi</p>
+          <p className="font-mono tabular-nums">221.001 — kód účtu v IBM Plex Mono</p>
         </div>
       </ShowcaseSection>
 

@@ -7,10 +7,10 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 ## Instalace písem
 
-Hostitelská aplikace musí v hlavičce načíst Work Sans 400–700 a JetBrains Mono 400–600:
+Hostitelská aplikace musí v hlavičce načíst IBM Plex Sans 400–700 a IBM Plex Mono 400–500:
 
 ```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" />
 ```
 
 ## Struktura
@@ -124,6 +124,13 @@ měna podle nastavení aplikace.
 4. Ukázkové stránky v `src/routes` použijte jako vzor a postupně je nahraďte
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
+
+## Changelog 2.13.0 – bílý vzhled a IBM Plex
+
+- Všechny plochy světlého režimu jsou bílé; hover, záhlaví a součty gridu v neutrální šedé, linky #DFE3E8, okraj gridu a karet #C9D0D8.
+- Levé menu tmavě modré (tokeny `--sidebar`, nové `--sidebar-muted` a `--sidebar-indicator`), aktivní položka se světle modrým levým pruhem.
+- Písmo IBM Plex Sans (text, nadpisy, částky s tabulkovými číslicemi) a IBM Plex Mono (kódy, 0.95em); Work Sans a JetBrains Mono odstraněny. Aktualizujte odkaz na písma v hlavičce aplikace.
+- Chování komponent se nemění; PDF a Excel beze změny.
 
 ## Changelog 2.12.0 – záložky v panelech
 
