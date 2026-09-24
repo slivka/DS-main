@@ -876,8 +876,6 @@ export function DataGrid<Row>({
 
             <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />
 
-            {actions}
-
             {selectable && !hideSelectionToggle ? (
               <GridSelectionToggle
                 active={selectMode}
@@ -887,6 +885,7 @@ export function DataGrid<Row>({
                 onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()}
               />
             ) : null}
+            {actions}
             {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}
             {addAction ? <GridAddActions actions={addAction} /> : null}
           </>}

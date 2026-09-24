@@ -103,7 +103,7 @@ export interface LayoutMenuProps {
 
 const PANE_ICONS = { 1: Square, 2: Columns2, 3: Columns3 } as const;
 
-/** Tlačítko „Rozložení ▾“ do horní lišty vedle přepínače 1/2/3 – uložená rozložení panelů. */
+/** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
 export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
   const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...texts };
   const tabs = usePaneTabs();
