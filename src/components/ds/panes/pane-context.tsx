@@ -15,12 +15,10 @@ import {
   activateTabInState,
   activeTabOf,
   applyLayoutInState,
-  keepTabInState,
   openFromHistoryInState,
   openRecordInState,
   paneKey,
   pushClosedTab,
-  releaseTabInState,
   reopenClosedTabInState,
   replaceTabContentInState,
   serializeLayout,
@@ -64,7 +62,7 @@ export type OpenTabOptions = {
 export type OpenRecordOptions = {
   /** Záložka seznamu, ze které se záznam otevírá (typicky usePane().tabId). */
   fromTabId?: string | null;
-  /** Nový záznam – otevře se jako ponechaná záložka. */
+  /** Nový záznam – vždy otevře novou záložku. */
   isNew?: boolean;
   /** Modifikátory kliknutí: mod = Cmd/Ctrl, shift = Shift. Lze předat přímo událost myši. */
   modifiers?: OpenRecordModifiers | { metaKey?: boolean; ctrlKey?: boolean; shiftKey?: boolean };
@@ -119,11 +117,7 @@ export type PaneTabsApi = {
   reportMaxLayout: (maxLayout: PaneLayoutCount) => void;
   /** Otevření záznamu ze seznamu podle pravidel a–f. */
   openRecord: (route: string, params?: Record<string, unknown>, options?: OpenRecordOptions) => void;
-  /** Ponechá záložku (z dočasné udělá trvalou). */
-  keepTab: (tabId: string) => void;
-  /** Uvolní záložku na dočasnou; s neuloženými změnami odmítne a vrátí false. */
-  releaseTab: (tabId: string) => boolean;
-  /** Otevře krok historie jako novou ponechanou záložku. */
+  /** Otevře krok historie jako novou záložku. */
   openFromHistory: (tabId: string, index: number) => void;
   /** Přejde na krok historie v téže záložce. */
   goToHistory: (tabId: string, index: number) => void;
@@ -163,7 +157,6 @@ export type PaneTabsTexts = {
   narrowed: string;
   restored: string;
   untitled: string;
-  releaseDirty: string;
   recordNavDirty: string;
 };
 
@@ -182,7 +175,6 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdělení obnoví.",
   restored: "Rozdělení panelů obnoveno.",
   untitled: "Bez názvu",
-  releaseDirty: "Záložku s neuloženými změnami nejde uvolnit",
   recordNavDirty: "Nejprve uložte nebo zahoďte neuložené změny",
 };
 
@@ -212,15 +204,10 @@ export function useIsActivePane(): boolean {
  */
 export function useTabDirty(isDirty: boolean, key = "default") {
   const pane = usePane();
-  const tabs = usePaneTabs();
   const tabId = pane?.tabId;
-  const keepRef = useRef(tabs?.keepTab);
-  keepRef.current = tabs?.keepTab;
 
   useEffect(() => {
     if (tabId) setTabDirty(tabId, isDirty, key);
-    // První neuložená změna záložku automaticky ponechá.
-    if (tabId && isDirty) keepRef.current?.(tabId);
   }, [tabId, isDirty, key]);
 
   useEffect(() => {
@@ -313,7 +300,8 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       toast.info(t.limitEvicted.replace("{title}", titleOf(result.evictedTabId)).replace("{max}", String(MAX_TABS_PER_PANE)));
       clearTabState(result.evictedTabId);
     }
-    if (result.outcome === "replaced" && (result.tabId ?? replacedId)) clearTabState((result.tabId ?? replacedId)!);
+    const clearedTabId = result.tabId ?? replacedId;
+    if (result.outcome === "replaced" && clearedTabId) clearTabState(clearedTabId);
     result.closedTabIds?.forEach(clearTabState);
     if (options.target === "adjacentPane") setMaximized(null);
     commit(result.state);
@@ -323,8 +311,8 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     const current = stateRef.current;
     const target = options.target ?? "replace";
     if (target === "replace" && !findRecordTab(current, { route, params, ...options }) && resolveOpenMode(current, target) === "replace") {
-      const tabId = current.panes[resolveTargetPaneIndex(current, target)].activeTab!;
-      if (isTabDirty(tabId)) {
+      const tabId = current.panes[resolveTargetPaneIndex(current, target)]?.activeTab;
+      if (tabId && isTabDirty(tabId)) {
         setPending({ tabId, route, params, options });
         return;
       }
@@ -398,22 +386,6 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     if (!notice) return;
     toast.info(notice === "narrowed" ? t.narrowed : t.restored);
     commit(next);
-  };
-
-  const keepTab = (tabId: string) => {
-    const next = keepTabInState(stateRef.current, tabId);
-    if (next !== stateRef.current) commit(next);
-  };
-
-  const releaseTab = (tabId: string) => {
-    const result = releaseTabInState(stateRef.current, tabId, isTabDirty);
-    if (!result) {
-      if (isTabDirty(tabId)) toast.warning(t.releaseDirty);
-      return false;
-    }
-    result.closedTabIds.forEach(clearTabState);
-    commit(result.state);
-    return true;
   };
 
   const openRecord: PaneTabsApi["openRecord"] = (route, params, options = {}) => {
@@ -501,8 +473,6 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   const api: PaneTabsApi = {
     state,
     openRecord,
-    keepTab,
-    releaseTab,
     openFromHistory,
     goToHistory: (tabId, index) => {
       const found = findTab(stateRef.current, tabId);
@@ -543,7 +513,6 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     openTab,
     closeTab,
     closeOtherTabs,
-    // Přesun záložku automaticky ponechá (moveTabInState nastaví pinned = true).
     moveTab: (tabId, toPaneId, index) => commit(moveTabInState(stateRef.current, tabId, toPaneId, index)),
     activateTab: (tabId) => commit(activateTabInState(stateRef.current, tabId)),
     activatePane: (paneId) => {
@@ -609,11 +578,18 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       }
       if ((event.code === "ArrowLeft" || event.code === "ArrowRight") && !event.shiftKey) {
         event.preventDefault();
-        if (!pane.tabs.length) return;
-        const index = pane.tabs.findIndex((tab) => tab.id === pane.activeTab);
-        const delta = event.code === "ArrowLeft" ? -1 : 1;
-        const next = pane.tabs[(index + delta + pane.tabs.length) % pane.tabs.length];
-        a.activateTab(next.id);
+        if (!pane.activeTab) return;
+        if (event.code === "ArrowLeft") a.back(pane.activeTab);
+        else a.forward(pane.activeTab);
+        return;
+      }
+      if ((event.code === "ArrowUp" || event.code === "ArrowDown") && !event.shiftKey) {
+        if (!pane.activeTab) return;
+        const nav = a.getRecordNav(pane.activeTab);
+        if (!nav) return;
+        event.preventDefault();
+        if (event.code === "ArrowUp") nav.prev();
+        else nav.next();
         return;
       }
       if (event.code === "KeyW") {
@@ -710,9 +686,7 @@ export type PaneChromeTexts = {
   back: string;
   forward: string;
   history: string;
-  openAsKept: string;
-  keep: string;
-  release: string;
+  openInNewTab: string;
   unsaved: string;
   prevRecord: string;
   nextRecord: string;
@@ -726,21 +700,18 @@ export type PaneChromeTexts = {
   duplicate: string;
   reopenClosed: string;
   closePane: string;
-  pinPage: string;
-  unpinPage: string;
+  pageActions: string;
   untitled: string;
 };
 
 export const DEFAULT_PANE_CHROME_TEXTS: PaneChromeTexts = {
-  back: "Zpět",
-  forward: "Vpřed",
+  back: "Zpět (Alt+←)",
+  forward: "Vpřed (Alt+→)",
   history: "Historie záložky",
-  openAsKept: "Otevřít jako ponechanou záložku",
-  keep: "Ponechat záložku",
-  release: "Uvolnit záložku",
+  openInNewTab: "Otevřít v nové záložce",
   unsaved: "Neuložené změny",
-  prevRecord: "Předchozí záznam",
-  nextRecord: "Další záznam",
+  prevRecord: "Předchozí záznam (Alt+↑)",
+  nextRecord: "Další záznam (Alt+↓)",
   maximize: "Maximalizovat panel (Alt+M)",
   restore: "Obnovit rozložení (Esc)",
   more: "Další akce záložky",
@@ -750,8 +721,7 @@ export const DEFAULT_PANE_CHROME_TEXTS: PaneChromeTexts = {
   duplicate: "Duplikovat",
   reopenClosed: "Znovu otevřít zavřenou záložku",
   closePane: "Zavřít panel",
-  pinPage: "Připnout do lišty",
-  unpinPage: "Odepnout z lišty",
+  pageActions: "Akce stránky",
   untitled: "Bez názvu",
 };
 
@@ -770,7 +740,6 @@ export function buildTabMenuActions(
   api: PaneTabsApi,
   tabId: string,
   texts: Partial<PaneChromeTexts> = {},
-  extra?: { pinned?: boolean; onTogglePin?: () => void },
 ): PaneMenuAction[] {
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...texts };
   const found = findTab(api.state, tabId);
@@ -778,10 +747,7 @@ export function buildTabMenuActions(
   const { tab, pane, paneIndex } = found;
   const count = api.state.panes.length;
   const actions: PaneMenuAction[] = [
-    tab.pinned
-      ? { id: "release", label: t.release, onSelect: () => api.releaseTab(tabId) }
-      : { id: "keep", label: t.keep, onSelect: () => api.keepTab(tabId) },
-    { id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId), separatorBefore: true },
+    { id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) },
     { id: "closeOthers", label: t.closeOthers, disabled: pane.tabs.length < 2, onSelect: () => api.closeOtherTabs(tabId) },
   ];
   Array.from({ length: count }, (_, index) => index)
@@ -795,7 +761,6 @@ export function buildTabMenuActions(
       }),
     );
   if (tab.kind === "list") actions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
-  if (extra?.onTogglePin) actions.push({ id: "pinPage", label: extra.pinned ? t.unpinPage : t.pinPage, onSelect: extra.onTogglePin });
   if (count > 1) {
     actions.push({
       id: "maximize",
@@ -823,12 +788,9 @@ export type PaneChrome = {
   history: { index: number; title: string; icon?: string; current: boolean }[];
   /** Přejde na krok historie v téže záložce. */
   goToHistory: (index: number) => void;
-  /** Otevře krok historie jako novou ponechanou záložku. */
+  /** Otevře krok historie jako novou záložku. */
   openFromHistory: (index: number) => void;
   dirty: boolean;
-  pinned: boolean;
-  keep: () => void;
-  release: () => boolean;
   recordNav: RecordNav | null;
   canMaximize: boolean;
   maximized: boolean;
