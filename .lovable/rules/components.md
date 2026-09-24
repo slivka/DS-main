@@ -248,6 +248,18 @@ _Skupiny a hledání_
 import { AsOfDateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### AsOfDateToggle
+
+```ts
+import { AsOfDateToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Modrý přepínač režimu Stav k datu s navazujícím DateField.
+
+**Avoid:**
+
+- AsOfDateField v nových gridových obrazovkách
+
 ### AspectRatio
 
 ```ts
@@ -936,6 +948,14 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
+| `defaultFilters` | any | `—` |
+| `viewMode` | any | `—` |
+| `onViewModeChange` | function | `—` |
+| `asOf` | any | `—` |
+| `addAction` | any | `—` |
+| `moreActions` | any | `—` |
+| `pdfExport` | function | `—` |
+| `extraExports` | any | `—` |
 | `emptyTitle` | string | `—` |
 | `emptyDescription` | string | `—` |
 | `emptyActionLabel` | string | `—` |
@@ -967,7 +987,7 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `showTotalRow` | boolean | `true` |
 | `onColumnFiltersChange` | function | `—` |
 | `onSearchChange` | function | `—` |
-| `className` | string | `ml-auto flex min-w-0 shrink-0 items-center gap-2` |
+| `className` | string | `border border-t-0 bg-card px-2 py-1.5` |
 | `texts` | any | `—` |
 
 **Examples:**
@@ -983,6 +1003,9 @@ _Grid s obnovením a výběrem_
 - Přepisovat klávesu F5
 - Textové tlačítko Vybrat více místo GridSelectionToggle
 - Zobrazovat nadpis gridu bez výslovného showTitle
+- ExcelExportButton uvnitř gridu
+- Ovládání gridu nad společným řádkem akcí
+- Akce Nový v PageHeader místo addAction
 
 ### DateField
 
@@ -1484,6 +1507,12 @@ import { GridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { GridActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### GridAddActions
+
+```ts
+import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### GridBody
 
 ```ts
@@ -1500,6 +1529,12 @@ import { GridEmptyRow } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 
 ```ts
 import { GridErrorRow } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### GridExpandControls
+
+```ts
+import { GridExpandControls } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### GridExport
@@ -1625,6 +1660,55 @@ import { GridSkeletonRows } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 ```ts
 import { GridTitleBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### GridToggleButton
+
+```ts
+import { GridToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+tone=mode pro modrý režim; tone=grouping pro oranžové přeskupení dat.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `pressed` | boolean | `—` |
+| `tone` | mode · grouping | `mode` |
+| `icon` | any | `—` |
+
+**Avoid:**
+
+- Oranžová pro režim, který data nefiltruje ani nepřeskupuje
+
+### GridToolbar
+
+```ts
+import { GridToolbar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Jediný řádek akcí pro DataGrid, TreeGrid a vlastní obsah.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `left` | any | `—` |
+| `right` | any | `—` |
+| `zoom` | number | `1` |
+| `density` | any | `normal` |
+
+**Examples:**
+
+_Vlastní obsah_
+```tsx
+<GridToolbar left={parameters} right={actions} />
+```
+
+**Avoid:**
+
+- Ovládání gridu mimo společný řádek akcí
+- Samostatná exportní tlačítka v gridu
 
 ### GridToolbarSeparator
 
@@ -3180,6 +3264,18 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `onRowClick` | function | `—` |
 | `onRowOpen` | function | `—` |
 | `actions` | any | `—` |
+| `toolbarLeft` | any | `—` |
+| `filters` | any | `—` |
+| `filterChips` | any | `—` |
+| `onClearFilters` | function | `—` |
+| `defaultFilters` | any | `—` |
+| `viewMode` | any | `—` |
+| `onViewModeChange` | function | `—` |
+| `asOf` | any | `—` |
+| `addAction` | any | `—` |
+| `moreActions` | any | `—` |
+| `pdfExport` | function | `—` |
+| `extraExports` | any | `—` |
 | `onRefresh` | function | `—` |
 | `refreshing` | boolean | `—` |
 | `selectable` | boolean | `—` |
@@ -3187,7 +3283,8 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `onSelectedRowsChange` | function | `—` |
 | `gridTexts` | any | `—` |
 | `texts` | any | `—` |
-| `className` | string | `flex flex-wrap items-center gap-2 border-b px-3 py-2` |
+| `loading` | boolean | `—` |
+| `className` | string | `rounded-t-lg border bg-card px-3 py-2 font-semibold` |
 
 **Examples:**
 
@@ -3202,6 +3299,9 @@ _Strom s obnovením a výběrem_
 - Vlastní tlačítko obnovení mimo lištu
 - Ruční sčítání uzlů v aplikaci
 - Zobrazovat nadpis gridu bez výslovného showTitle
+- ExcelExportButton uvnitř gridu
+- Ovládání gridu nad společným řádkem akcí
+- Akce Nový v PageHeader místo addAction
 
 ### TreeView
 
