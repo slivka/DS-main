@@ -130,6 +130,11 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.17.1 – veřejné pomocné nástroje
+
+- Veřejný vstup nově zpřístupňuje nastavení gridů, výpočty období, validaci formulářů a bezpečné opakování síťových požadavků.
+- Interní zachytávání chyb a nouzová serverová stránka zůstávají záměrně neveřejné, protože nejsou součástí uživatelského rozhraní a zachytávání mění globální chování chyb.
+
 ## Changelog 2.17.0 – jednotný řádek akcí gridu a rovnocenné záložky
 
 Nové:

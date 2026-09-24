@@ -1,5 +1,10 @@
 # Roadmap
 
+## Verze 2.17.1 (veřejné pomocné nástroje)
+- [x] Zpřístupnit nastavení gridů, výpočty období, validaci formulářů a opakování síťových požadavků
+- [x] Ponechat interní zachytávání chyb a nouzovou serverovou stránku mimo veřejný vstup
+- [x] Zachovat metadata místní knihovny bez externích verzí a samostatné bezpečné zapojení hlavičky dokumentu
+
 ## Verze 2.16.0 (nahrazeno změnou záložek ve 2.17.0)
 - [x] Stav pinned / openerTabId, převod staršího v2, jedna dočasná záložka na panel
 - [x] preview, openRecord a–f, keep/release, historie jako ponechaná záložka, zásobník zavřených, limit s přednostní dočasnou
