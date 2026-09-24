@@ -100,9 +100,14 @@ export function CompanySwitcher({
   className,
 }: CompanySwitcherProps) {
   const selected = items.find((item) => item.id === value);
+  // Aktuálně vybraná firma se v „Posledních“ nezobrazuje – je vidět v hlavičce.
   const recent = useMemo(
-    () => recentIds.map((id) => items.find((item) => item.id === id)).filter((item): item is CompanySwitcherItem => Boolean(item)),
-    [items, recentIds],
+    () =>
+      recentIds
+        .filter((id) => id !== value)
+        .map((id) => items.find((item) => item.id === id))
+        .filter((item): item is CompanySwitcherItem => Boolean(item)),
+    [items, recentIds, value],
   );
   const [openKey, setOpenKey] = useState(0);
 
