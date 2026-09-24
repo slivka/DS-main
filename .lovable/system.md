@@ -35,7 +35,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
    výchozí hodnoty jsou vždy české. Grid používá `DEFAULT_GRID_TEXTS` a prop
    `texts`, aby aplikace mohla dodat slovenské nebo jiné překlady.
 10. **Načti firemní písma v dokumentu aplikace.** Hostitelská aplikace musí v
-    hlavičce stránky načíst Work Sans (řezy 400–700) a JetBrains Mono (400–600),
+    hlavičce stránky načíst IBM Plex Sans (řezy 400–700) a IBM Plex Mono (400–500),
     protože náhledová obálka knihovny se do připojených projektů nekopíruje.
 11. **Exporty a tisk používají firemní ikony.** Pro Excel vždy použij dodanou
     ikonu Microsoft Excel a pro PDF nebo tiskovou sestavu dodanou ikonu Adobe
@@ -50,7 +50,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Tisíce odděluj mezerou – v editech, gridech, tiscích i exportech.
 - Částky na 2 desetinná místa, zarovnané vpravo, záporné červeně
   (`AmountCell`, `AmountInput`, `formatAmount`).
-- Částky používají Work Sans s tabulkovými číslicemi; JetBrains Mono je pouze
+- Částky používají IBM Plex Sans s tabulkovými číslicemi; IBM Plex Mono je pouze
   pro kódy a identifikátory (účty, čísla dokladů, VS, IČO/DIČ).
 - Datum vždy ve formátu `dd.MM.rrrr`.
 - Číselné vstupy vždy `DecimalInput` / `AmountInput`, nikdy holý `input`.

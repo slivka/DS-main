@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.12.0",
+    "version": "2.13.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -560,17 +560,17 @@
     "typography": [
       {
         "name": "--font-sans",
-        "raw": "\"Work Sans\", ui-sans-serif, system-ui, sans-serif",
+        "raw": "\"IBM Plex Sans\", ui-sans-serif, system-ui, sans-serif",
         "source": "src/styles.css"
       },
       {
         "name": "--font-display",
-        "raw": "\"Work Sans\", ui-sans-serif, system-ui, sans-serif",
+        "raw": "\"IBM Plex Sans\", ui-sans-serif, system-ui, sans-serif",
         "source": "src/styles.css"
       },
       {
         "name": "--font-mono",
-        "raw": "\"JetBrains Mono\", ui-monospace, monospace",
+        "raw": "\"IBM Plex Mono\", ui-monospace, monospace",
         "source": "src/styles.css"
       },
       {

@@ -110,7 +110,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     const active = isActive(item);
     const content = (
       <>
-        <span className={cn("absolute inset-y-1 left-0 w-0.5 rounded-r bg-primary transition-opacity", active ? "opacity-100" : "opacity-0")} />
+        <span className={cn("shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-primary transition-opacity", active ? "opacity-100" : "opacity-0")} />
         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
         {!collapsed ? <span className="min-w-0 flex-1 truncate">{item.label}</span> : null}
         {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-muted-foreground/40" /> : null}
@@ -118,13 +118,13 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
       </>
     );
     const base = cn(
-      "relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
+      "shell-nav-item relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
       collapsed ? "justify-center px-2" : "px-3",
       active ? "bg-primary/10 font-semibold text-primary" : "text-foreground/80",
       item.disabled && "cursor-not-allowed text-muted-foreground opacity-70",
     );
     const node = item.disabled ? (
-      <span aria-disabled="true" className={base}>{content}</span>
+      <span aria-disabled="true" data-active="false" className={base}>{content}</span>
     ) : (
       <Link
         to={item.to as never}
@@ -137,6 +137,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
         onMouseDown={(event) => {
           if (paneTabs && event.button === 1) event.preventDefault();
         }}
+        data-active={active ? "true" : "false"}
         className={base}
       >
         {content}
@@ -167,11 +168,11 @@ function ShellNavGroup({ group, collapsed, collapsible, renderItem }: { group: N
     <div className="flex flex-col gap-0.5">
       {group.label && !collapsed ? (
         collapsible ? (
-          <button type="button" onClick={() => setGroupCollapsed((value) => !value)} aria-expanded={!groupCollapsed} className="mb-1 mt-3 flex items-center gap-1 rounded-md px-3 py-1 text-sm font-normal text-muted-foreground hover:text-foreground">
+          <button type="button" onClick={() => setGroupCollapsed((value) => !value)} aria-expanded={!groupCollapsed} className="shell-nav-group mb-1 mt-3 flex items-center gap-1 rounded-md px-3 py-1 text-sm font-normal text-muted-foreground hover:text-foreground">
             {groupCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronDown className="size-3.5" />}
             <span className="truncate">{group.label}</span>
           </button>
-        ) : <div className="mb-1 mt-3 px-3 py-1 text-sm font-normal text-muted-foreground">{group.label}</div>
+        ) : <div className="shell-nav-group mb-1 mt-3 px-3 py-1 text-sm font-normal text-muted-foreground">{group.label}</div>
       ) : null}
       {groupCollapsed && !collapsed ? null : group.items.map((item) => <span key={`${item.to}-${item.label}`}>{renderItem(item)}</span>)}
     </div>
@@ -321,7 +322,7 @@ export function AppShell({
         <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1 overflow-hidden pl-3 pr-2 xl:gap-2 xl:pr-3">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
-            <SheetContent side="left" className="w-72 p-0">
+            <SheetContent side="left" className="shell-sidebar w-72 p-0">
               <SheetHeader className="h-14 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle></SheetHeader>
               {nav(false)}
             </SheetContent>
@@ -370,7 +371,7 @@ export function AppShell({
       ) : null}
 
       <div className="flex min-h-0 flex-1">
-        <aside className={cn("hidden shrink-0 border-r bg-card transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
+        <aside className={cn("shell-sidebar hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>

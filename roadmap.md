@@ -1,5 +1,10 @@
 # Roadmap
 
+## Verze 2.13.0 (bílý vzhled, tmavě modré menu, IBM Plex)
+- [x] Bílé plochy, neutrální šedé hover/záhlaví/součty, nové linky a okraje
+- [x] Tmavě modré levé menu s kontrastem ≥ 4,5 : 1
+- [x] IBM Plex Sans / IBM Plex Mono místo Work Sans / JetBrains Mono
+
 ## Verze 2.12.0 (záložky v panelech)
 - [x] Stav v2 se záložkami, převod z v1, serializace pro DB a URL
 - [x] PaneTabsProvider / usePaneTabs, limit 10 záložek, jeden záznam jen jednou
