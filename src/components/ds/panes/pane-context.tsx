@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import {
@@ -836,7 +836,7 @@ export type PaneChrome = {
   menuActions: PaneMenuAction[];
   /** Vlastnosti úchytu pro přetažení záložky (nadpis stránky). */
   dragHandleProps: Record<string, unknown> & { ref?: (element: HTMLElement | null) => void };
-  getIcon?: (icon: string | undefined) => React.ComponentType<{ className?: string }> | undefined;
+  getIcon?: (icon: string | undefined) => ComponentType<{ className?: string }> | undefined;
 };
 
 export const PaneChromeContext = createContext<PaneChrome | null>(null);
