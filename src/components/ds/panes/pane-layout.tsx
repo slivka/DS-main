@@ -179,17 +179,17 @@ function PaneLayoutInner({
     if (!over) return;
     const overId = String(over.id);
     if (overId === tabId) return;
-    if (overId.startsWith("bar:") || overId.startsWith("area:")) {
+    const source = findTab(api.state, tabId);
+    // Přesun mezi panely jen přetažením na plochu panelu; lišta slouží jen k řazení.
+    if (overId.startsWith("area:")) {
       const paneId = overId.slice(overId.indexOf(":") + 1);
-      api.moveTab(tabId, paneId);
+      if (source?.pane.id !== paneId) api.moveTab(tabId, paneId);
       return;
     }
+    if (overId.startsWith("bar:")) return;
     const target = findTab(api.state, overId);
-    if (!target) return;
-    const source = findTab(api.state, tabId);
-    let index = target.tabIndex;
-    if (source && source.pane.id === target.pane.id && source.tabIndex < target.tabIndex) index = target.tabIndex;
-    api.moveTab(tabId, target.pane.id, index);
+    if (!target || !source || source.pane.id !== target.pane.id) return;
+    api.moveTab(tabId, target.pane.id, target.tabIndex);
   };
 
   return (
@@ -330,15 +330,17 @@ function PaneColumn({
         flashing && "pane-flash",
       )}
     >
-      <PaneTabBar
-        pane={pane}
-        paneIndex={paneIndex}
-        paneCount={paneCount}
-        api={api}
-        getTabIcon={getTabIcon}
-        onToggleMaximize={paneCount > 1 ? toggleMaximize : undefined}
-        texts={texts}
-      />
+      {pane.tabs.length >= 2 ? (
+        <PaneTabBar
+          pane={pane}
+          paneIndex={paneIndex}
+          paneCount={paneCount}
+          api={api}
+          getTabIcon={getTabIcon}
+          onToggleMaximize={paneCount > 1 ? toggleMaximize : undefined}
+          texts={texts}
+        />
+      ) : null}
       <div ref={setNodeRef} className={cn("min-h-0 flex-1 overflow-auto p-4", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
