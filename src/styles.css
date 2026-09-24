@@ -1758,5 +1758,4 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 .shell-sidebar button:not(.shell-nav-group):hover { background: color-mix(in oklab, var(--sidebar-accent) 60%, transparent); color: var(--sidebar-foreground); }
 .shell-sidebar .border-t { border-color: color-mix(in oklab, var(--sidebar-foreground) 14%, transparent); }
 /* IBM Plex Mono má vyšší písmena – dorovnání kódů. */
-.font-mono, code, kbd { font-size-adjust: none; }
 .font-mono { font-size: 0.95em; }
