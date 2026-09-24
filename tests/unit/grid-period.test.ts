@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { filterByGridPeriod, gridPeriodLabel, gridPeriodRange, moveGridPeriod } from "../../src/components/ds/grid/grid-period";
-import { createGridBookColumn, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
+import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst } from "../../src/components/ds/grid/grid-context-bar";
+import { GridZoomContext } from "../../src/components/ds/grid/grid-zoom";
 
 describe("období gridu", () => {
   it("počítá měsíce kalendářního období", () => {
@@ -30,5 +33,21 @@ describe("sloupec knihy", () => {
     expect(book.locked).toBe(true);
     expect(book.transient).toBe(true);
     expect(placeGridBookColumnFirst([{ id: "date" }, book, { id: "amount" }]).map((column) => column.id)).toEqual([GRID_BOOK_COLUMN_ID, "date", "amount"]);
+  });
+});
+
+describe("kontextový řádek gridu", () => {
+  const book = { books: [{ id: "a", code: "A", name: "Kniha A" }], value: "a", onChange: () => {} };
+
+  it("použije bez kontextu normální hustotu a zoom 100 %", () => {
+    const html = renderToStaticMarkup(createElement(GridContextBar, { book }));
+    expect(html).toContain('data-density="normal"');
+    expect(html).toContain('font-size:13.00px');
+  });
+
+  it("převezme zoom a hustotu z GridZoomContext", () => {
+    const html = renderToStaticMarkup(createElement(GridZoomContext.Provider, { value: { zoom: 0.6, density: "compact", setZoom: () => {} } }, createElement(GridContextBar, { book })));
+    expect(html).toContain('data-density="compact"');
+    expect(html).toContain('font-size:7.80px');
   });
 });

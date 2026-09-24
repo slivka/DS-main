@@ -348,6 +348,12 @@
   padding: 0.5em 0.75em !important;
 }
 
+/* Kompaktní hustota používá v kontextovém i akčním řádku stejné rozměry. */
+.zoom-filters[data-density="compact"] {
+  --f-h: 1.9em;
+  padding-block: 0.35em !important;
+}
+
 /* Vnořená lišta (např. nad doklady ve stromu) – menší varianta, stále v em,
    takže se zmenšuje spolu se zoomem gridu. */
 .zoom-filters.zoom-filters-sm {

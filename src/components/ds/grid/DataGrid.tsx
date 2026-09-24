@@ -800,7 +800,7 @@ export function DataGrid<Row>({
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
-        {period || book ? <GridContextBar period={period} book={book} className={cn("border-b-0", showTitle && title ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
+        {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-b-0", showTitle && title ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
         {!hideToolbar ? <GridToolbar
           zoom={zoom}
           density={density}

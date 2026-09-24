@@ -96,6 +96,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Používej jej na seznamech dokladů a účetních výkazech, kde uživatel mění rozsah účetního období nebo knihu. Samostatně jej lze použít nad obsahem v `ZoomPane`.
 - „Celé období“ je neutrální. Měsíc, čtvrtletí, pololetí, období od začátku roku a vlastní rozsah jsou oranžové, protože zužují data.
 - Období respektuje `fiscalFrom` a `fiscalTo`, i když účetní rok nezačíná v lednu. Stav může aplikace zachovat přes `useTabDraft`.
+- Kontextový řádek se škáluje se zoomem a hustotou gridu stejně jako řádek akcí.
 
 ## Export do Excelu
 

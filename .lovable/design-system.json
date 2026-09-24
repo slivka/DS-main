@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.20.0",
+    "version": "2.20.1",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -40,9 +40,9 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "ded73c40e8c71db8fd074f069fa3730e92173aa89811349f6fa9cb614143c3fa",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "b435a1b138a31ca78482a1d56b5a4bd2ea425dc8cd9e16a83d871c76c920c776",
       ".lovable/sources.yaml": "cd10cda62ad85617fe29c5cbe2316cad6594b8602256ceb443f2c0adc78d6235",
-      ".lovable/system.md": "408321e3534bab74ce8a07fbfb2c698b147d7fe6950c4ec6695f97c91fd4f756",
+      ".lovable/system.md": "5640a8db2ed32bfd9526d787d304a6180d2db19dfed0bf90aab267488be8f262",
       "AGENTS.md": "f325419bab6d88476b5146b2506591ff3371d5edc06347cc352dc0221be7c7de",
-      "README.md": "7a5637d1dd1542ebb8fe2ce96cdf2b5eeb26da853b74ac118033f4052d238ccc",
+      "README.md": "f3c94d85cfdf67fae4a3fe468fc53ac22aaa4281e6be91f01e58ff9e3fb93597",
       "bunfig.toml": "206f8e670d3fd41b1f7cd4cfcc7c68fc22cca73cb5fbc9f8edb7f584de798211",
       "components.json": "37c484818824d2521eee3367e7aa2c2abbd19635d8103d19734b6e24603d0292",
       "components.md": "a0c8aa1fd64d50177fbe2a7af02583cb63e5d7a46d7e0d79f661cf282277580a",
@@ -50,10 +50,10 @@
       "lovable.toml": "29c6aafa087b03db8fc4ae91957bf688c47862230bc9dbd219c380b842e61962",
       "mockupPreviewPlugin.ts": "e512c36bf49251328a58edcc44c62b0db42352524beaee307b1cf37cc155245f",
       "null": "6fb66a2c3fb2eacd8fbcb2e13461cb1efea02e2f9312e43ca7f27691fff99e96",
-      "package.json": "a507a7a3173975e5aeb6a08c1bb8aa5a1dce4be034b6ec6fb553d49378f6b713",
+      "package.json": "f80fdedb329dea9499d55b20ed6f96524085b38c06a1bf93d111578f158c051d",
       "playwright.config.ts": "8381e386472840ed9a0e10eec5d12a92ce15d6a2e4de3611b5460be2dff89e7e",
       "public/favicon.ico": "dd821076a9b03adc2173c93956226aea3d92482d7578fc4339c5d3a2e9c24586",
-      "roadmap.md": "ebbd858d586325b30680da76f5769aa279813989581bf13bb606108b8511eb2e",
+      "roadmap.md": "f46c3d128e13349231d7ae06ebd93339186e255dc880dba63a0a7d2b23176313",
       "src/assets/icons/excel.svg": "4c7dbe59d387dd10e3c3f74d60ec859ab3ae4a57bca6b4baf5dc9378bf730234",
       "src/assets/icons/pdf.svg": "5fcf580c2269f4f9ac0e1a8f60533b8a5371f4c51ca52794b5a275000c3496b8",
       "src/assets/roboto-bold.ttf": "61f89f8db49261c2f6106e8dccc35df7b2f7ed909020db40a3fc905e95f99334",
@@ -111,8 +111,8 @@
       "src/components/ds/form/resizable-combobox.tsx": "dbffb3de694f64559fd1f6c816e7b17e1220936d33d6a30351622a51aa5d6e1c",
       "src/components/ds/form/time-input-right.tsx": "c7af2de3d9d2fe0f1eacc6bf0da4de4969650737182f0ad5cbb66bd4331c83be",
       "src/components/ds/grid/ColumnFilter.tsx": "2d418e88435820675981ed0482af952dfe2a9b05f084393806bb1818a2ddd564",
-      "src/components/ds/grid/DataGrid.tsx": "e6e01a8eb5be45d5f7748d882be169a3ff00332168e77c1743703713ea9d8b2e",
-      "src/components/ds/grid/TreeGrid.tsx": "3bb1594c57c74211ab1238d516b53912d5a03f1f4519ae0550bf43185f916a42",
+      "src/components/ds/grid/DataGrid.tsx": "a307eb43e13fbf38e7390b2a98a30ef15a5dc31a5c1216722fc191eaa4fbcbb3",
+      "src/components/ds/grid/TreeGrid.tsx": "6f4cb0b1627f9e19addacd80b65bfc666da9e557056ac03eda34087cd67ef75f",
       "src/components/ds/grid/bulk-selection-bar.tsx": "67869ccc3d9ceba4a7bcef715716ba14d65006e96a6fa639ac50a8578451cfd5",
       "src/components/ds/grid/column-picker.tsx": "3901ecb396a60efbd5a8ba4d25c8fbd9219eee75c1503ce18bae01dba8d40097",
       "src/components/ds/grid/filter-chips.tsx": "04ba0331ae298cda9fc03e04d5edb57526ef0b37adc3b0d524c3bc111fdb2e02",
@@ -264,7 +264,7 @@
       "src/slivka-head.tsx": "5a9bedb0736d9897116b5816fbb89163d3df8222431a2b0958a04aef0fcff482",
       "src/slivka-provider.tsx": "f55a2f38adf2fb4ce6882b349e2a3c05877e2480cbd4bd1056f74224c6a2115b",
       "src/start.ts": "b8f87930196deeea28741368fb855665750d6162151f83f0deef01952427a8f3",
-      "src/styles.css": "558b9296c9e9e701be203e9db463c1cd19afa71d646d5b279708fb47c43844db",
+      "src/styles.css": "abf41dfa2cb59cd668fb463e5ae34f6c1d801ae42d502cc9a7991a18e25470ab",
       "src/types/exceljs-browser.d.ts": "2605da2ed6d313cb0e5f640ceaf2738566740d7c013f023116f2c353ddbf70d2",
       "tests/e2e/accounting-logic.spec.ts": "97de5bf99b96c29055398c9c6cac90e9110b64ff622f9ff791dadc4c4455fe4f",
       "tests/e2e/excel-download.spec.ts": "bb5b5cf28fbbcb18d94e4d01ec45bc32e3352c35453126c262baf06b68a1ac37",
@@ -278,8 +278,8 @@
       "vite.config.ts": "f6ca9dbb16beab272c5a37bfba1086739a48f40cfbb1864f2c29072b396410f4",
       "wrangler.jsonc": "381bac804401d7194697bcb42c05101d440d76e3f657a99b55469e76316d7204",
       "src/components/ds/grid/grid-period.ts": "740337f749f0f781ebec7146474bc5a4bcd22eb6450eb53fcf9444fc2d947c41",
-      "src/components/ds/grid/grid-context-bar.tsx": "ce43485e54dbf76688ea7640cd1509da7abff9199fbc2ed1e49f612600610da8",
-      "tests/unit/grid-period.test.ts": "9827e4eac145379178e05dbeeb222b683d87df613216e8ced352b1eb6949a4d3"
+      "src/components/ds/grid/grid-context-bar.tsx": "afb72823a4146c51305abaa90e1a310937238f57b3773d4c3a0bf2a6ee72193f",
+      "tests/unit/grid-period.test.ts": "3ca165f090e2ea09a01d002d46ff85a0a3e44d35e4f47437e002a65a45a21212"
     },
     "pipeline_version": 8
   },
@@ -5371,9 +5371,17 @@
         {
           "name": "className",
           "type": "string"
+        },
+        {
+          "name": "zoom",
+          "type": "number"
+        },
+        {
+          "name": "density",
+          "type": "GridDensity"
         }
       ],
-      "usage": "Samostatný kontextový řádek bezprostředně nad GridToolbar; období vlevo a kniha vpravo.",
+      "usage": "Samostatný kontextový řádek bezprostředně nad GridToolbar; období vlevo a kniha vpravo. Škáluje se stejným zoomem a hustotou jako řádek akcí.",
       "antipatterns": [
         "Vkládat období nebo knihu zároveň do toolbarLeft"
       ]
