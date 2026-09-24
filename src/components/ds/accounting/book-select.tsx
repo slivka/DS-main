@@ -40,6 +40,20 @@ export function formatBook(
   return book.type ? `${base} (${typeLabels[book.type]})` : base;
 }
 
+export interface BookSelectProps {
+  books: BookOption[];
+  value: string | null | undefined;
+  onChange: (id: string) => void;
+  typeLabels?: Record<DocumentBookType, string>;
+  placeholder?: string;
+  allowEmpty?: boolean;
+  disabled?: boolean;
+  /** Jedinou aktivní knihu zobrazí jako hodnotu jen pro čtení místo zakázaného výběru. */
+  displayWhenSingle?: boolean;
+  id?: string;
+  className?: string;
+}
+
 /** Výběr knihy dokladů – kód, název a typ dokladu. */
 export function BookSelect({
   books,
@@ -52,19 +66,7 @@ export function BookSelect({
   displayWhenSingle = true,
   id,
   className,
-}: {
-  books: BookOption[];
-  value: string | null | undefined;
-  onChange: (id: string) => void;
-  typeLabels?: Record<DocumentBookType, string>;
-  placeholder?: string;
-  allowEmpty?: boolean;
-  disabled?: boolean;
-  /** Jedinou aktivní knihu zobrazí jako hodnotu jen pro čtení místo zakázaného výběru. */
-  displayWhenSingle?: boolean;
-  id?: string;
-  className?: string;
-}) {
+}: BookSelectProps) {
   const active = books.filter((book) => book.active !== false);
   const single = displayWhenSingle && active.length === 1 ? active[0] : undefined;
 
