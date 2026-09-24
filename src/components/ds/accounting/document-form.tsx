@@ -87,6 +87,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
 
 export interface DocumentFormProps {
   title: string;
+  /** @deprecated Pod nadpisem formuláře se doplňkový text nezobrazuje. */
   description?: ReactNode;
   value: DocumentHeaderValue;
   onChange: (value: DocumentHeaderValue) => void;
@@ -134,7 +135,7 @@ const ReadField = ({ id, value, muted, mono }: { id: string; value: ReactNode; m
  * akce (Uložit koncept, Zařadit, Zaúčtovat…) dodává aplikace přes `actions`.
  */
 export function DocumentForm({
-  title, description, value, onChange, lines, onLinesChange, books, accounts,
+  title, description: _description, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, linesEditorProps, tabs = [], status, approved,
   changedBy, changedAt, actions, readOnly = false, readOnlyReason, texts, className,
@@ -193,7 +194,6 @@ export function DocumentForm({
     <div className={cn("@container space-y-4", className)}>
       <PageHeader
         title={title}
-        description={description}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <DocumentStatusBadge status={status} approved={approved} />

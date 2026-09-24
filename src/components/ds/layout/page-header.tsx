@@ -17,6 +17,7 @@ import { DEFAULT_PANE_CHROME_TEXTS, usePaneChrome, type PaneChrome, type PaneChr
 
 export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"div">, "title"> {
   title: React.ReactNode;
+  /** @deprecated Kontext patří do GridContextBar nebo horní lišty. */
   description?: React.ReactNode;
   actions?: React.ReactNode;
   /** Akce celé stránky; uvnitř panelu se zobrazí nahoře v menu ⋯. */
@@ -35,7 +36,7 @@ export interface PageHeaderMenuAction {
 }
 
 /**
- * Hlavička stránky – nadpis, popis a akce vpravo.
+ * Hlavička stránky – nadpis a akce vpravo.
  * Uvnitř PaneLayout navíc vykreslí ovládání záznamu, historie, maximalizaci a menu ⋯.
  */
 export function PageHeader({ title, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
@@ -43,12 +44,13 @@ export function PageHeader({ title, description, actions, menuActions = [], pane
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
   React.useEffect(() => {
     if (import.meta.env.DEV && chrome && actions) console.warn("PageHeader: v panelu použijte menuActions místo actions.");
-  }, [chrome, actions]);
+    if (import.meta.env.DEV && description) console.warn("PageHeader: description se nezobrazuje – kontext patří do GridContextBar / horní lišty.");
+  }, [chrome, actions, description]);
 
   return (
     <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)} {...props}>
       <div className="flex min-w-0 items-start gap-2">
-        <div className="min-w-0 space-y-1">
+        <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-1.5">
             {chrome ? (
               <h1
@@ -62,7 +64,6 @@ export function PageHeader({ title, description, actions, menuActions = [], pane
             )}
             {chrome?.dirty ? <span role="img" aria-label={t.unsaved} title={t.unsaved} className="size-2 shrink-0 rounded-full bg-primary" /> : null}
           </div>
-          {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
         </div>
       </div>
       {actions || chrome ? (

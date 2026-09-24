@@ -47,6 +47,7 @@ export function RecordDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
+  /** @deprecated Popis se zachovává pouze skrytě pro čtečky obrazovky. */
   description?: string;
   onSubmit: () => void;
   submitLabel?: string;
@@ -139,7 +140,7 @@ export function RecordDialog({
         >
           <div className="mb-4 space-y-1">
             <h2 className="text-lg font-semibold">{title}</h2>
-            {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+            {description ? <p className="sr-only">{description}</p> : null}
             {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
           </div>
           {inner}
@@ -158,7 +159,7 @@ export function RecordDialog({
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
+          {description ? <DialogDescription className="sr-only">{description}</DialogDescription> : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>
         {inner}
