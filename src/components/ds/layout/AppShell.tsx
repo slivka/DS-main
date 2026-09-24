@@ -254,7 +254,8 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
 
 function ShellNavGroup({ group, groupIndex, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
-  const [groupCollapsed, setGroupCollapsed] = useState(() => readGroupCollapsed(storageKey, group.defaultCollapsed === true));
+  const [groupCollapsed, setGroupCollapsed] = useState(group.defaultCollapsed === true);
+  useEffect(() => setGroupCollapsed(readGroupCollapsed(storageKey, group.defaultCollapsed === true)), [storageKey, group.defaultCollapsed]);
   const setStoredCollapsed = () => {
     const next = !groupCollapsed;
     setGroupCollapsed(next);
