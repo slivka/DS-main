@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Building2, FileText, KeyRound, LayoutGrid, SlidersHorizontal, Users } from "lucide-react";
+import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
@@ -45,38 +45,48 @@ export const Route = createFileRoute("/components/navigation")({
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    id: "documents",
-    label: "Doklady",
+    id: "overview",
+    label: "Přehled",
     items: [
-      { to: "/components/accounting-forms", label: "Přijaté faktury", icon: FileText },
+      { to: "/", label: "Domovská stránka", icon: Home },
+    ],
+  },
+  {
+    id: "issued-documents",
+    label: "Vydané doklady",
+    section: "Doklady",
+    items: [
       { to: "/components/grid", label: "Vydané faktury", icon: FileText, badge: "12" },
-      { to: "/components/excel-export", label: "Bankovní výpisy", icon: FileText },
+      { to: "/components/accounting-forms", label: "Ostatní pohledávky", icon: Receipt },
     ],
   },
   {
-    id: "registers",
-    label: "Číselníky",
-    items: [
-      { to: "/components/forms", label: "Partneři", icon: Users },
-      { to: "/components/feedback", label: "Zakázky", icon: LayoutGrid },
-      { to: "/components/navigation", label: "Majetek", icon: Building2, disabled: true },
-    ],
-  },
-  {
-    id: "accounting",
-    label: "Účetnictví",
+    id: "received-documents",
+    label: "Přijaté doklady",
+    section: "Doklady",
     defaultCollapsed: true,
     items: [
-      { to: "/components/accounting-forms", label: "Účetní doklady", icon: FileText, badge: "4" },
-      { to: "/components/grid", label: "Účetní deník", icon: LayoutGrid },
+      { to: "/components/accounting-forms", label: "Přijaté faktury", icon: FileText },
+      { to: "/components/excel-export", label: "Bankovní výpisy", icon: FileText },
     ],
   },
   {
     id: "reports",
     label: "Výkazy",
+    section: "Přehledy a evidence",
     items: [
-      { to: "/components/navigation", label: "Změny v rejstříku", icon: Building2, badge: "2" },
-      { to: "/components/navigation", label: "Přehled výkazů", icon: LayoutGrid },
+      { to: "/components/navigation", label: "Účetní výkazy", icon: BarChart3 },
+      { to: "/components/navigation", label: "Přehled hospodaření", icon: LayoutGrid },
+    ],
+  },
+  {
+    id: "registers",
+    label: "Evidence",
+    section: "Přehledy a evidence",
+    items: [
+      { to: "/components/forms", label: "Partneři", icon: Users },
+      { to: "/components/feedback", label: "Zakázky", icon: LayoutGrid },
+      { to: "/components/navigation", label: "Majetek", icon: Building2, disabled: true },
     ],
   },
 ];
@@ -146,40 +156,14 @@ function NavigationPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Boční menu se skupinami"
-        description="Čtyři skupiny ukazují oddělení, odznaky, nedostupnou položku a výchozí sbalení. V hlavním menu zkuste hledat „ucet“, potvrdit Enterem, smazat Esc a stisknout / i při sbaleném menu."
+        title="Boční menu s bloky"
+        description="Skupina Přehled zůstává bez sekce. Doklady a Přehledy a evidence sdružují vždy dvě samostatně sbalitelné skupiny; hledání prázdné bloky skryje."
       >
         <div className="rounded-lg border bg-card p-3">
-          <div className="grid gap-4 md:grid-cols-2">
-            {NAV_GROUPS.map((group) => (
-              <div key={group.id}>
-                <div className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  {group.label}
-                </div>
-                <ul className="space-y-0.5">
-                  {group.items.map((item) => (
-                    <li
-                      key={item.label}
-                      className={cn(
-                        "flex items-center gap-2 rounded-md px-3 py-2 text-sm",
-                        item.disabled ? "text-muted-foreground" : "hover-surface",
-                      )}
-                    >
-                      {item.icon ? <item.icon className="size-4 shrink-0" /> : null}
-                      <span className="truncate">{item.label}</span>
-                      {item.badge ? (
-                        <span className="ml-auto rounded bg-primary/10 px-1.5 text-xs font-semibold text-primary">
-                          {item.badge}
-                        </span>
-                      ) : null}
-                      {item.disabled ? (
-                        <span aria-label="Připravujeme" title="Připravujeme" className="ml-auto size-1.5 shrink-0 rounded-full bg-muted-foreground/40" />
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto_1fr]">
+            <NavigationBlockPreview title="Rozbalené menu" groups={NAV_GROUPS} />
+            <NavigationBlockPreview title="Sbalené menu" groups={NAV_GROUPS} collapsed />
+            <NavigationBlockPreview title="Hledání: faktury" groups={NAV_GROUPS.filter((group) => group.section === "Doklady").map((group) => ({ ...group, items: group.items.filter((item) => item.label.includes("faktury")) })).filter((group) => group.items.length > 0)} />
           </div>
         </div>
       </ShowcaseSection>
@@ -260,5 +244,40 @@ function NavigationPage() {
         <ComingSoon description="Evidence majetku bude dostupná v některém z dalších vydání." />
       </ShowcaseSection>
     </ShowcaseLayout>
+  );
+}
+
+function NavigationBlockPreview({ title, groups, collapsed = false }: { title: string; groups: NavGroup[]; collapsed?: boolean }) {
+  let previousSection: string | undefined;
+  return (
+    <div className={cn("overflow-hidden rounded-md border bg-sidebar text-sidebar-foreground", collapsed ? "w-14" : "min-w-0")}>
+      <div className={cn("border-b border-sidebar-border py-2 text-xs font-medium text-sidebar-muted", collapsed ? "px-2 text-center" : "px-3")}>{collapsed ? "•••" : title}</div>
+      <div className="p-2">
+        {groups.map((group, index) => {
+          const startsSection = Boolean(group.section && group.section !== previousSection);
+          previousSection = group.section;
+          return (
+            <div key={group.id} className={cn(index > 0 && !startsSection && "mt-2 border-t border-sidebar-border pt-2")}>
+              {startsSection ? collapsed ? (
+                <div title={group.section} aria-label={group.section} className={cn("flex h-6 items-center px-1", index > 0 && "mt-3")}><span className="h-0.5 w-full bg-sidebar-border" /></div>
+              ) : (
+                <div className={cn(index > 0 && "mt-4 border-t border-sidebar-border pt-4")}>
+                  <div className="flex h-7 items-center px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-sidebar-muted">{group.section}</div>
+                </div>
+              ) : null}
+              {!collapsed ? <div className="flex h-8 items-center px-3 text-[0.8rem] font-semibold text-sidebar-muted">{group.label}</div> : null}
+              <div className={cn("space-y-0.5", !collapsed && "ml-2 border-l border-sidebar-border pl-2")}>
+                {group.items.map((item) => (
+                  <div key={item.label} title={item.label} className={cn("flex h-8 items-center rounded-md text-sm", collapsed ? "justify-center px-2" : "gap-2 px-3", item.disabled && "text-sidebar-muted")}>
+                    {item.icon ? <item.icon className="size-4 shrink-0" /> : null}
+                    {!collapsed ? <span className="truncate">{item.label}</span> : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
