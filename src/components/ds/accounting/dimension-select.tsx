@@ -111,7 +111,7 @@ export function DimensionSelect({
         onSelect={() => {
           if (blocked) return;
           onChange(option.id);
-          setOpen(false);
+          changeOpen(false);
         }}
         className={cn("flex items-center gap-1", blocked && "opacity-50")}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
@@ -191,7 +191,7 @@ export function DimensionSelect({
                 <CommandItem
                   onSelect={() => {
                     onChange("");
-                    setOpen(false);
+                    changeOpen(false);
                   }}
                   className="text-muted-foreground"
                 >
