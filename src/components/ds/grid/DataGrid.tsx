@@ -962,7 +962,7 @@ export function DataGrid<Row>({
                                 : "inline-flex items-center gap-1"
                           }
                         >
-                          {c.label.toLocaleUpperCase(texts.locale)}
+                          {c.label}
                           {columnFilters ? filter : null}
                         </span>
                         {resize}
@@ -1166,7 +1166,7 @@ export function DataGrid<Row>({
                         {totalCells[i] ??
                           (i === totalLabelIndex ? (
                             <span className="text-muted-foreground">
-                               {texts.total.toLocaleUpperCase(texts.locale)}
+                               {texts.total}
                             </span>
                           ) : null)}
                       </TableCell>
