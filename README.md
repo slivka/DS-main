@@ -163,6 +163,12 @@ Doplnění pro výkazy účetnictví.
 - **Nové**: `BarBreakdownChart` (vodorovné pruhy, hodnota + podíl %, výběr klikem, záporné červeně, bez externí knihovny), `FilterChips` (štítky filtrů + „Zrušit vše“).
 - **Excel**: `GridExportData.outlineSummaryBelow` a `subtotalRows`.
 
+## Changelog 2.8.1
+
+- Volby firmy a účetního období jsou na široké obrazovce vystředěné; při nedostatku místa se automaticky přesunou vlevo před ovládací prvky.
+- Volba firmy už v horní liště nezobrazuje ikonu budovy.
+- Hlavní vstup knihovny nově zpřístupňuje sdílené nástroje pro velikost písma, mřížky, účetní převody, jména osob, PSČ, kraje a právní formy.
+
 **Přechod z 2.7.x (TreeGrid)**
 - Export stromu má nově rodiče **pod** dětmi – pokud jste soubor dál zpracovávali podle pořadí řádků, upravte to.
 - První sloupec nelze skrýt; `width` se přepočítává podle zoomu.
