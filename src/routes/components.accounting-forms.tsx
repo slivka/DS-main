@@ -2,22 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
-  AccountCode,
   BookSelect,
   CurrencyAmount,
   DimensionSelect,
   JournalLinesEditor,
   PartnerSelect,
-  TreeGrid,
   VsField,
   formatAccountCode,
   fromJournalRow,
   toJournalRow,
   type JournalLine,
-  type TreeGridColumn,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,10 +23,8 @@ import { formatAmount } from "@/lib/format";
 import {
   MOCK_ACCOUNTS,
   MOCK_BOOKS,
-  MOCK_CHART_TREE,
   MOCK_DIMENSIONS,
   MOCK_PARTNERS,
-  type ChartNode,
 } from "@/lib/mock/accounting";
 
 export const Route = createFileRoute("/components/accounting-forms")({
@@ -59,16 +55,6 @@ const CURRENCIES = [
   { code: "USD", label: "Americký dolar" },
 ];
 
-const CHART_COLUMNS: TreeGridColumn<ChartNode>[] = [
-  {
-    id: "account",
-    label: "Účet",
-    width: 360,
-    value: (row) => `${formatAccountCode(row.code)} – ${row.name}`,
-  },
-  { id: "debit", label: "MD částka", numeric: true, width: 160, value: (row) => row.debit },
-  { id: "credit", label: "DAL částka", numeric: true, width: 160, value: (row) => row.credit },
-];
 
 function AccountingFormsPage() {
   const [lines, setLines] = useState<JournalLine[]>([
@@ -388,22 +374,7 @@ function AccountingFormsPage() {
         />
       </ShowcaseSection>
 
-      <ShowcaseSection
-        title="Stromová mřížka (TreeGrid)"
-        description="Účtová osnova od třídy po analytiku se součty za uzel, hledáním se zachováním cesty a exportem do Excelu s úrovněmi."
-      >
-        <TreeGrid
-          title="Účtová osnova"
-          rows={MOCK_CHART_TREE}
-          columns={CHART_COLUMNS}
-          exportName="uctova-osnova"
-          exportMeta={{ company: "Slivka Accounting s.r.o.", period: "Rok 2026" }}
-          onRowOpen={(row) => toast.info(`Otevřít účet ${formatAccountCode(row.code)}`)}
-        />
-        <p className="mt-2 text-sm text-muted-foreground">
-          Čísla účtů se zobrazují s tečkou, např. <AccountCode code="321100" />.
-        </p>
-      </ShowcaseSection>
+      <ReportsShowcase />
     </ShowcaseLayout>
   );
 }
