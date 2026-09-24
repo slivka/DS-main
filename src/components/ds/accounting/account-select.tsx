@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -98,10 +98,15 @@ export function AccountSelect({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(initialSearch ?? "");
+  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
+  const suppressFocusOpen = useRef(false);
+  // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.
+  const pointerDown = useRef(false);
 
   useEffect(() => setQuery(initialSearch ?? ""), [initialSearch]);
 
   const changeOpen = (next: boolean) => {
+    if (!next) suppressFocusOpen.current = true;
     setOpen(next);
     onOpenChange?.(next);
   };
@@ -148,7 +153,20 @@ export function AccountSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
-          onFocus={() => !disabled && changeOpen(true)}
+          onPointerDownCapture={() => {
+            pointerDown.current = true;
+          }}
+          onPointerUp={() => {
+            pointerDown.current = false;
+          }}
+          onFocus={() => {
+            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
+            changeOpen(true);
+          }}
+          onBlur={() => {
+            suppressFocusOpen.current = false;
+            pointerDown.current = false;
+          }}
           className={cn("w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>

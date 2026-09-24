@@ -9,7 +9,7 @@ import {
   type FiscalPeriod,
   type FiscalPeriodState,
 } from "../accounting/fiscal-period-select";
-import { ContextPill } from "./context-pill";
+import { ContextPill, useContextPillClose } from "./context-pill";
 
 export interface PeriodSwitcherProps {
   periods: FiscalPeriod[];
@@ -31,6 +31,66 @@ const stateClass: Record<FiscalPeriodState, string> = {
   closing: "bg-warning",
   closed: "bg-muted-foreground",
 };
+
+/** Obsah popoveru – je uvnitř ContextPill, takže může popover zavřít. */
+function PeriodSwitcherContent({
+  periods,
+  value,
+  onChange,
+  stateLabels,
+  disableClosed,
+  periodsLabel,
+  emptyText,
+  createLabel,
+  onCreate,
+}: {
+  periods: FiscalPeriod[];
+  value: string | null | undefined;
+  onChange: (id: string) => void;
+  stateLabels: Record<FiscalPeriodState, string>;
+  disableClosed: boolean;
+  periodsLabel: string;
+  emptyText: string;
+  createLabel: string;
+  onCreate?: () => void;
+}) {
+  const close = useContextPillClose();
+
+  if (periods.length === 0) {
+    return (
+      <div className="p-3">
+        <p className="text-sm text-muted-foreground">{emptyText}</p>
+        {onCreate ? <Button type="button" className="mt-3 w-full" onClick={() => { close(); onCreate(); }}>{createLabel}</Button> : null}
+      </div>
+    );
+  }
+
+  return (
+    <Command>
+      <CommandList>
+        <CommandGroup heading={periodsLabel}>
+          {periods.map((period) => (
+            <CommandItem
+              key={period.id}
+              disabled={disableClosed && period.state === "closed"}
+              onSelect={() => { onChange(period.id); close(); }}
+              value={`${period.name} ${stateLabels[period.state]}`}
+            >
+              <span className={cn("size-2 shrink-0 rounded-full", stateClass[period.state])} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium">{period.name}</span>
+                <span className="block text-xs text-muted-foreground">
+                  {formatDate(period.from)} – {formatDate(period.to)} · {stateLabels[period.state]}
+                </span>
+              </span>
+              {period.id === value ? <Check className="size-4 text-primary" /> : null}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}
 
 /** Kompaktní výběr účetního období do kontextové části horní lišty. */
 export function PeriodSwitcher({
@@ -61,34 +121,17 @@ export function PeriodSwitcher({
       className={cn("max-w-[72px] md:max-w-[200px] xl:max-w-[360px]", className)}
       contentClassName="w-[380px]"
     >
-      {isEmpty ? (
-        <div className="p-3">
-          <p className="text-sm text-muted-foreground">{emptyText}</p>
-          {onCreate ? <Button type="button" className="mt-3 w-full" onClick={onCreate}>{createLabel}</Button> : null}
-        </div>
-      ) : <Command>
-        <CommandList>
-          <CommandGroup heading={periodsLabel}>
-            {periods.map((period) => (
-              <CommandItem
-                key={period.id}
-                disabled={disableClosed && period.state === "closed"}
-                onSelect={() => onChange(period.id)}
-                value={`${period.name} ${stateLabels[period.state]}`}
-              >
-                <span className={cn("size-2 shrink-0 rounded-full", stateClass[period.state])} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-medium">{period.name}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    {formatDate(period.from)} – {formatDate(period.to)} · {stateLabels[period.state]}
-                  </span>
-                </span>
-                {period.id === value ? <Check className="size-4 text-primary" /> : null}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>}
+      <PeriodSwitcherContent
+        periods={periods}
+        value={value}
+        onChange={onChange}
+        stateLabels={stateLabels}
+        disableClosed={disableClosed}
+        periodsLabel={periodsLabel}
+        emptyText={emptyText}
+        createLabel={createLabel}
+        onCreate={onCreate}
+      />
     </ContextPill>
   );
 }
