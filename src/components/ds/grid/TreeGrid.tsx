@@ -117,6 +117,8 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   defaultFilters?: string[];
   viewMode?: GridViewMode;
   onViewModeChange?: (mode: GridViewMode) => void;
+  /** Společný klíč zoomu pro tabulkové a stromové zobrazení stejného obsahu. */
+  viewZoomKey?: string;
   asOf?: AsOfDateConfig;
   addAction?: GridAddAction | GridAddAction[];
   moreActions?: GridMoreItem[];
@@ -175,6 +177,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   defaultFilters = [],
   viewMode,
   onViewModeChange,
+  viewZoomKey,
   asOf,
   addAction,
   moreActions = [],
@@ -200,7 +203,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { zoom, setZoom, density, setDensity } = useGridZoom(key);
+  const { zoom, setZoom, density, setDensity } = useGridZoom(viewZoomKey ?? key);
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
 

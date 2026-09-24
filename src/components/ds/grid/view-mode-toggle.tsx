@@ -1,4 +1,4 @@
-import { ListTree, Table2 } from "lucide-react";
+import { ListTree, Table } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
@@ -22,7 +22,7 @@ export function ViewModeToggle({
   const texts = resolveGridTexts(textOverrides);
   const next: GridViewMode = mode === "grid" ? "tree" : "grid";
   const label = next === "tree" ? texts.treeView : texts.tableView;
-  const Icon = next === "tree" ? ListTree : Table2;
+  const Icon = next === "tree" ? ListTree : Table;
   return (
     <Tooltip>
       <TooltipTrigger asChild>

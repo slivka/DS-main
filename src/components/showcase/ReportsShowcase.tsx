@@ -97,6 +97,7 @@ export function ReportsShowcase() {
           onExpandDepthChange={setDepth}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
+          viewZoomKey="showcase-chart-view"
           asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
           filters={<span className="text-sm text-muted-foreground">Filtry účtové osnovy</span>}
           defaultFilters={["Rok 2026"]}

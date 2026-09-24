@@ -203,6 +203,8 @@ export type DataGridProps<Row> = {
   /** Přepínač tabulkového a stromového zobrazení. */
   viewMode?: GridViewMode | undefined;
   onViewModeChange?: ((mode: GridViewMode) => void) | undefined;
+  /** Společný klíč zoomu pro tabulkové a stromové zobrazení stejného obsahu. */
+  viewZoomKey?: string | undefined;
   /** Volitelný režim „Stav k datu“. */
   asOf?: AsOfDateConfig | undefined;
   /** Primární akce vždy na pravém konci lišty. */
@@ -340,6 +342,7 @@ export function DataGrid<Row>({
   defaultFilters = [],
   viewMode,
   onViewModeChange,
+  viewZoomKey,
   asOf,
   addAction,
   moreActions = [],
@@ -394,7 +397,7 @@ export function DataGrid<Row>({
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
-  const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey);
+  const { zoom, setZoom, density, setDensity } = useGridZoom(viewZoomKey ?? storageKey);
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
 

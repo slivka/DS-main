@@ -130,6 +130,11 @@ měna podle nastavení aplikace.
    obrazovkami aplikace.
 5. Importujte výhradně z `@/components/ds`.
 
+## Changelog 2.17.2 – společný zoom tabulky a stromu
+
+- `DataGrid` a `TreeGrid` mají nový prop `viewZoomKey`; při stejné hodnotě zachovají zoom i hustotu při přepínání zobrazení.
+- Přepnutí do tabulkového zobrazení používá jednoznačnou ikonu tabulky.
+
 ## Changelog 2.17.1 – veřejné pomocné nástroje
 
 - Veřejný vstup nově zpřístupňuje nastavení gridů, výpočty období, validaci formulářů a bezpečné opakování síťových požadavků.
