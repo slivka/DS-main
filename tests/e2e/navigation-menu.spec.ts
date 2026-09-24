@@ -4,7 +4,9 @@ test.describe("AppShell menu 2.15.0", () => {
   test("hledá bez diakritiky, pamatuje skupiny a ovládá se klávesnicí", async ({ page }) => {
     await page.goto("/components/navigation");
     const expand = page.getByRole("button", { name: "Rozbalit menu" });
-    if (await expand.isVisible()) await expand.click();
+    await expect(expand).toBeVisible();
+    await expand.click();
+    await expect(page.getByRole("textbox", { name: "Hledat v menu…" }).first()).toBeVisible();
 
     await page.keyboard.press("/");
     const search = page.getByRole("textbox", { name: "Hledat v menu…" }).first();
@@ -28,7 +30,13 @@ test.describe("AppShell menu 2.15.0", () => {
   test("sbalené menu otevře hledání v překryvu", async ({ page }) => {
     await page.goto("/components/navigation");
     const collapse = page.getByRole("button", { name: "Sbalit menu" });
-    if (await collapse.isVisible()) await collapse.click();
+    const expand = page.getByRole("button", { name: "Rozbalit menu" });
+    if (await expand.isVisible()) {
+      await expand.click();
+      await expect(collapse).toBeVisible();
+    }
+    await collapse.click();
+    await expect(expand).toBeVisible();
     await page.keyboard.press("/");
     await expect(page.locator(".shell-sidebar.fixed")).toBeVisible();
     await expect(page.locator(".shell-sidebar.fixed").getByRole("textbox", { name: "Hledat v menu…" })).toBeFocused();
@@ -39,7 +47,9 @@ test.describe("AppShell menu 2.15.0", () => {
   test("mobilní menu obsahuje stejné hledání", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/components/navigation");
-    await page.getByRole("button", { name: "Menu" }).click();
+    const menu = page.getByRole("button", { name: "Menu", exact: true });
+    await expect(menu).toBeVisible();
+    await menu.click();
     const sheet = page.getByRole("dialog");
     await expect(sheet.getByRole("textbox", { name: "Hledat v menu…" })).toBeVisible();
     await sheet.getByRole("textbox", { name: "Hledat v menu…" }).fill("ucet");
