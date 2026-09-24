@@ -76,7 +76,8 @@
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
-  --background: oklch(0.975 0.005 245);
+  /* Neutrální podklad #FAFAFA podle firemní aplikace evala.cz. */
+  --background: oklch(0.985 0 0);
   --foreground: oklch(0.25 0.04 245);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.25 0.04 245);
