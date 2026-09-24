@@ -265,7 +265,11 @@
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
     },
-    "pipeline_version": 8
+    "pipeline_version": 8,
+    "sourceManifest": {
+      "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
+      "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2"
+    }
   },
   "tokens": {
     "color": [
@@ -4970,6 +4974,16 @@
       "file": "src/assets/icons/pdf.svg",
       "kind": "icon",
       "format": "svg"
+    },
+    {
+      "file": "src/assets/roboto-bold.ttf",
+      "kind": "font",
+      "format": "ttf"
+    },
+    {
+      "file": "src/assets/roboto-regular.ttf",
+      "kind": "font",
+      "format": "ttf"
     }
   ]
 }
