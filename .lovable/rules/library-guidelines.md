@@ -8,6 +8,15 @@ The design system exports these components — import them from `@ws-8gsevdft8cw
 
 Per-component details (import stanzas, props, variants, examples) live in `.lovable/rules/libraries/{slug}/components.md` — on disk, not auto-loaded. Read that file or the component source when the name alone isn't enough.
 
+## Rules
+
+These rules apply at all times when working in this project:
+
+- Lišta záložek panelu je vždy viditelná; dočasné a ponechané záložky se nepoužívají.
+- Běžný klik v menu nahrazuje aktivní záložku; Cmd/Ctrl otevře novou a Cmd/Ctrl+Shift sousední panel.
+- Akce stránky v panelu patří do PageHeader.menuActions; akce Nový patří do gridového addAction.
+- LayoutMenu patří jako ikonové menu do AppShell.navSearchMenu, ne do horní lišty.
+
 ## Theme Files
 
 The design system's theme is delivered through the following files. The author's original source files carry the full wiring the design system needs — variable declarations, framework-specific directives, provider objects, etc. — and are the canonical import target.
