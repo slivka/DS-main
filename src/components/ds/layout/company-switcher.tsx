@@ -117,8 +117,8 @@ export function CompanySwitcher({
       value={selected?.name ?? emptyText}
       compactValue={selected?.name ?? emptyText}
       tooltip={selected ? `${label}: ${selected.name}${selected.ico ? ` · IČO ${selected.ico}` : ""}` : `${label}: ${emptyText}`}
-      valueClassName="text-sm font-semibold xl:text-sm"
-      className={`h-9 max-w-[72px] px-1.5 md:max-w-[240px] xl:max-w-[360px] ${className ?? ""}`}
+      valueClassName="text-lg font-semibold xl:text-lg"
+      className={`h-11 max-w-[72px] px-2 md:max-w-[280px] xl:max-w-[380px] ${className ?? ""}`}
       contentClassName="w-[380px]"
       onClick={() => setOpenKey((key) => key + 1)}
     >

@@ -144,7 +144,7 @@
       "src/components/ds/layout/breadcrumbs.tsx": "abceb00c4d40d03f2a445d92027d40e1",
       "src/components/ds/layout/collapsible-section.tsx": "1e3361027796f7808a66490fc4bf170a",
       "src/components/ds/layout/command-palette.tsx": "bab8cca4b149eb81fb611b64bee1a09e",
-      "src/components/ds/layout/company-switcher.tsx": "30fca500972d5d0b868263de1b3dacb1",
+      "src/components/ds/layout/company-switcher.tsx": "74753d5ac5bbecfe49422e03e13a9f27",
       "src/components/ds/layout/context-pill.tsx": "94a8f060231eb35fd048da15efa29771",
       "src/components/ds/layout/nav-search.tsx": "456020217b4eb84afbdeede2e691fe16",
       "src/components/ds/layout/notification-bell.tsx": "61e31db02987a724c6f601d569c6a946",
