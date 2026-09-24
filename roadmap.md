@@ -227,3 +227,8 @@
 - [x] Nahradit dlouhý štítek „Připravujeme“ v menu kompaktním stavovým symbolem s nápovědou
 - [x] Umístit hlavní akci „Nový“ bezprostředně vpravo od ovládání zoomu gridu
 - [x] Doplnit ukázky, zvýšit patch verzi a ověřit typy, sestavení a náhled
+
+## Verze 2.9.0 (token světlého podkladu)
+- [x] Nový token --surface-page (utility bg-surface-page), --background z něj odvozen
+- [x] Sdílená konstanta PAGE_SURFACE_LIGHT pro samostatné HTML výstupy (chybová stránka, HTML náhled exportu gridu)
+- [x] Odstraněny pevné hodnoty #FAFAFA z kódu
