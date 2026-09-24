@@ -58,7 +58,7 @@ export function GridMoreMenu({
             <div key={key}>
               {item.group && item.group !== items[i - 1]?.group ? (
                 <div
-                  className={`px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold uppercase tracking-wide text-muted-foreground ${i > 0 ? "mt-[0.35em] border-t border-border/50 pt-[0.6em]" : ""}`}
+                  className={`px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground ${i > 0 ? "mt-[0.35em] border-t border-border/50 pt-[0.6em]" : ""}`}
                 >
                   {item.group}
                 </div>

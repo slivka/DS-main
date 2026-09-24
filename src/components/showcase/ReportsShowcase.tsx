@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Archive } from "lucide-react";
 
 import { ShowcaseSection } from "./ShowcaseLayout";
 import {
@@ -12,8 +13,8 @@ import {
   type FilterChip,
   type TreeGridColumn,
   type TreeGridExpandLevel,
+  type GridViewMode,
 } from "@/components/ds";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { MOCK_ACCOUNTS, MOCK_CHART_TREE, type ChartNode } from "@/lib/mock/accounting";
 
@@ -66,6 +67,9 @@ export function ReportsShowcase() {
   const [prefix, setPrefix] = useState<string>("51");
   const [group, setGroup] = useState<string | null>("51");
   const [onlyActive, setOnlyActive] = useState(true);
+  const [viewMode, setViewMode] = useState<GridViewMode>("tree");
+  const [asOfEnabled, setAsOfEnabled] = useState(true);
+  const [asOfDate, setAsOfDate] = useState("2026-09-24");
 
   const chips = useMemo<FilterChip[]>(() => {
     const list: FilterChip[] = [{ id: "period", label: "Období", value: "01–09/2026" }];
@@ -91,14 +95,34 @@ export function ReportsShowcase() {
           expandLevels={LEVELS}
           expandDepth={depth}
           onExpandDepthChange={setDepth}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
+          filters={<span className="text-sm text-muted-foreground">Filtry účtové osnovy</span>}
+          defaultFilters={["Rok 2026"]}
+          filterChips={chips}
+          onClearFilters={() => { setGroup(null); setOnlyActive(false); }}
           exportName="uctova-osnova"
           exportMeta={{ company: "Slivka Accounting s.r.o.", period: "Rok 2026" }}
           onRowOpen={(row) => toast.info(`Otevřít účet ${formatAccountCode(row.code)}`)}
-          actions={
-            <Button size="sm" onClick={() => toast.info("Nový účet")}>
-              Nový účet
-            </Button>
-          }
+          moreActions={[{ label: "Archivovat účet", icon: <Archive className="size-4" />, onSelect: () => { toast.info("Archivace"); } }]}
+          addAction={{ label: "Přidat účet", onClick: () => { toast.info("Nový účet"); } }}
+          pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
+          extraExports={[{ label: "Analytický přehled", kind: "pdf", onExport: async () => { toast.info("Analytický přehled"); } }]}
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Strom bez pojmenovaných úrovní"
+        description="Nabídka rozbalení odvodí Úroveň 1 až N a Vše podle skutečné hloubky dat."
+      >
+        <TreeGrid
+          title="Zakázky"
+          storageKey="showcase-auto-level-tree"
+          rows={MOCK_CHART_TREE}
+          columns={COLUMNS}
+          exportName="zakazky-strom"
+          addAction={{ label: "Přidat zakázku", onClick: () => { toast.info("Nová zakázka"); } }}
         />
       </ShowcaseSection>
 

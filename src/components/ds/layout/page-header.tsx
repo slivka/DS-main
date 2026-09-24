@@ -24,7 +24,7 @@ export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"di
 }
 
 /**
- * Hlavička stránky – nadpis, popis a akce vpravo, oddělené spodní linkou.
+ * Hlavička stránky – nadpis, popis a akce vpravo.
  * Uvnitř PaneLayout navíc vykreslí ovládání záložky (historie, ponechání, listování, maximalizace, menu ⋯).
  */
 export function PageHeader({ title, description, actions, paneTexts, className, ...props }: PageHeaderProps) {
@@ -32,7 +32,7 @@ export function PageHeader({ title, description, actions, paneTexts, className, 
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
 
   return (
-    <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3 border-b pb-4", className)} {...props}>
+    <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)} {...props}>
       <div className="flex min-w-0 items-start gap-2">
         {chrome ? <HistoryButtons chrome={chrome} t={t} /> : null}
         <div className="min-w-0 space-y-1">

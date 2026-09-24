@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { Archive, Building2 } from "lucide-react";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import {
   DataGrid,
   DocumentStatusBadge,
   FiscalPeriodSelect,
+  GridToggleButton,
   accountColumns,
   debitCreditColumns,
   type DataGridColumn,
@@ -14,7 +16,6 @@ import { MOCK_ACCOUNTS, MOCK_JOURNAL, MOCK_PERIODS, type JournalEntry } from "@/
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
 import { formatDate } from "@/lib/format";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/components/grid")({
   head: () => ({
@@ -39,6 +40,12 @@ export const Route = createFileRoute("/components/grid")({
 function GridPage() {
   const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
   const [refreshing, setRefreshing] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
+  const [asOfEnabled, setAsOfEnabled] = useState(true);
+  const [asOfDate, setAsOfDate] = useState("2026-09-24");
+  const [analytic, setAnalytic] = useState(true);
+  const [byPartner, setByPartner] = useState(true);
+  const [activeFilter, setActiveFilter] = useState(true);
   const accountNames = useMemo(
     () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
     [],
@@ -94,6 +101,13 @@ function GridPage() {
         groupable
         paginated
         selectable
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
+        filters={<span className="text-sm text-muted-foreground">Pomocné filtry účetního deníku</span>}
+        defaultFilters={["Rok 2026"]}
+        filterChips={activeFilter ? [{ id: "posted", label: "Stav: Zaúčtován", onRemove: () => setActiveFilter(false) }] : []}
+        onClearFilters={() => setActiveFilter(false)}
         refreshing={refreshing}
         onRefresh={async () => {
           setRefreshing(true);
@@ -102,14 +116,16 @@ function GridPage() {
           toast.success("Data byla obnovena");
         }}
         showTotalRow
-        actions={<Button type="button" size="sm" onClick={() => toast.info("Nový doklad")}>Nový doklad</Button>}
+        moreActions={[{ label: "Archivovat uzavřené", icon: <Archive className="size-4" />, onSelect: () => { toast.info("Archivace"); } }]}
+        addAction={{ label: "Přidat doklad", onClick: () => { toast.info("Nový doklad"); } }}
+        pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
+        extraExports={[{ label: "Kontrolní sestava", kind: "pdf", onExport: async () => { toast.info("Kontrolní sestava"); } }]}
         toolbarLeft={
-          <FiscalPeriodSelect
-            periods={MOCK_PERIODS}
-            value={periodId}
-            onChange={setPeriodId}
-            className="w-[280px]"
-          />
+          <>
+            <FiscalPeriodSelect periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} className="w-[280px]" />
+            <GridToggleButton pressed={analytic} tone="mode" icon={<Building2 className="size-4" />} onClick={() => setAnalytic((value) => !value)}>Analytické účty</GridToggleButton>
+            <GridToggleButton pressed={byPartner} tone="grouping" onClick={() => setByPartner((value) => !value)}>Podle partnera</GridToggleButton>
+          </>
         }
         onEditRow={(r) => toast.info(`Otevřít doklad ${r.document}`)}
         onDeleteRow={(r) => toast.success(`Doklad ${r.document} odstraněn`)}

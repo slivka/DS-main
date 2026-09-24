@@ -117,21 +117,6 @@ export function useGridZoom(storageKey: string) {
   };
 }
 
-/** Svislý oddělovač v toolbarech gridů – jednotný vzhled napříč aplikací. */
-/** Svislý oddělovač skupin ovládacích prvků v liště gridu.
- *  Výška i okraje se odvozují od velikosti písma lišty (zoom) a zvolené hustoty. */
-export function GridToolbarSeparator({ density = "normal" }: { density?: GridDensity }) {
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        "w-px shrink-0 self-center bg-border",
-        density === "compact" ? "mx-0.5 h-[1.1em]" : "mx-1 h-[1.4em]",
-      )}
-    />
-  );
-}
-
 export function ZoomControl({
   zoom,
   setZoom,
@@ -494,20 +479,7 @@ export function ZoomPane({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const zoomRef = useRef(zoom);
-  zoomRef.current = zoom;
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !setZoom) return;
-    const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !e.metaKey) return;
-      e.preventDefault();
-      setZoom(clamp(zoomRef.current + (e.deltaY < 0 ? 0.05 : -0.05)));
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [setZoom]);
+  useWheelZoom(ref, setZoom, zoom);
 
   return (
     <div ref={ref} className={"overflow-auto " + className} style={{ maxHeight }}>

@@ -205,7 +205,7 @@ export function GroupControl({
 }) {
   const texts = resolveGridTexts(textOverrides);
   if (hidden) return null;
-  // Skrytá lišta, ale seskupení stále platí → varovné (červené) tlačítko.
+  // Skrytá lišta, ale seskupení stále platí → oranžový stav zužující pohled na data.
   const hiddenActive = !grouping.enabled && grouping.groups.length > 0;
   const label = grouping.enabled
     ? texts.groupingDisable
@@ -216,11 +216,11 @@ export function GroupControl({
     <Button
       type="button"
       size={hiddenActive ? "sm" : "icon"}
-      variant={grouping.enabled ? "default" : "outline"}
+      variant="outline"
       className={`grid-toolbar-control ${
         hiddenActive
-          ? "gap-1 border-destructive text-destructive hover:text-destructive"
-          : "grid-toolbar-icon-control"
+          ? "grid-toolbar-active gap-1"
+          : `grid-toolbar-icon-control ${grouping.enabled ? "grid-toolbar-active" : ""}`
       }`}
       title={label}
       aria-label={label}

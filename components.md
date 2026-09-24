@@ -1,14 +1,24 @@
 # Komponenty design systému
 
-## DataGrid
+## Řádek akcí gridu (2.17.0)
 
-`DataGrid` používá jednotné pořadí akcí v liště: Hledat, Filtr, Obnovit, Export, Sloupce, Seskupit, Zoom, vlastní `actions` a Vybrat více.
+`GridToolbar` je jediný řádek akcí pro `DataGrid`, `TreeGrid` i vlastní obsah v `ZoomPane`.
+
+- Vlevo: `ViewModeToggle` · Rozbalit / Sbalit · `AsOfDateToggle` · `toolbarLeft`.
+- Vpravo: Hledat · Filtr · Obnovit · `GridExport` · Sloupce · Seskupit · Hustota + zoom · Vybrat více · stávající `actions` · `GridMoreMenu` · `addAction`.
+- Oranžová označuje hledání, aktivní filtry, seskupení a `GridToggleButton tone="grouping"`.
+- Modrá plná označuje zapnutý režim (`AsOfDateToggle`, `GridToggleButton tone="mode"`) a primární akci Přidat.
+- Hlavní parametry obrazovky patří do `toolbarLeft`, pomocné filtry do `filters`, vedlejší akce do `moreActions`. „Nový“ se předává přes `addAction`, ne do `PageHeader`.
+- Nad grid nepřidávejte samostatné filtry ani exportní tlačítka. `ExcelExportButton` je jen pro obsah mimo grid.
+
+## DataGrid
 
 - `onRefresh?: () => void | Promise<unknown>` zobrazí ikonové tlačítko Obnovit data. Komponenta po dobu vrácené Promise sama zobrazí stav načítání.
 - `refreshing?: boolean` umožní řídit stav načítání z aplikace.
 - Nadpis je standardně skrytý. Zobrazí se pouze s `showTitle`; `title` lze dál použít pro název exportu.
 - Hromadný výběr používá `GridSelectionToggle`; aktivní stav ukazuje počet vybraných záznamů.
 - Zkratka F5 není komponentou přepsána.
+- Nové props: `viewMode`, `onViewModeChange`, `asOf`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`.
 
 ## TreeGrid
 
@@ -18,6 +28,8 @@
 - `selectable?: boolean`, `selectedRows?`, `onSelectedRowsChange?` a `selectionActions?` řídí hromadný výběr.
 - `gridTexts?: Partial<GridTexts>` přepisuje společné texty gridové lišty včetně `refresh`.
 - Nadpis je standardně skrytý a zobrazí se pouze s `showTitle`.
+- Rozbalení používá ikonová tlačítka; více úrovní otevře nabídku, jedna úroveň se rozbalí přímo. Bez `expandLevels` se názvy odvodí ze skutečné hloubky.
+- Nové props: `viewMode`, `onViewModeChange`, `asOf`, `toolbarLeft`, `filters`, `filterChips`, `onClearFilters`, `defaultFilters`, `addAction`, `moreActions`, `pdfExport`, `extraExports`, `loading`.
 
 ## Záložky v panelech (2.12.0)
 
