@@ -186,7 +186,7 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte jako společný rám aplikace. PinnedBar nebo jinou podřízenou lištu vložte do subHeader; při otevřeném Nastavení/Administraci se automaticky skryje.
+Společný rám aplikace s tmavým skupinovým menu, hledáním bez diakritiky, uloženým sbalením skupin a podporou panelů a záložek.
 
 **Props:**
 
@@ -215,6 +215,10 @@ Použijte jako společný rám aplikace. PinnedBar nebo jinou podřízenou lišt
 | `collapseLabel` | string | `Sbalit menu` |
 | `expandLabel` | string | `Rozbalit menu` |
 | `disabledHint` | string | `—` |
+| `navStateKey` | string | `—` |
+| `navSearch` | boolean | `true` |
+| `navSearchPlaceholder` | string | `Hledat v menu…` |
+| `navSearchEmptyText` | string | `Nic nenalezeno` |
 | `items` | any | `—` |
 | `adminNav` | any | `—` |
 | `adminMode` | boolean | `—` |
@@ -227,16 +231,16 @@ Použijte jako společný rám aplikace. PinnedBar nebo jinou podřízenou lišt
 
 **Examples:**
 
-_Rám s připnutými stránkami_
+_Skupiny a hledání_
 ```tsx
-<AppShell navGroups={groups} subHeader={<PinnedBar items={pins} onOpen={open} onUnpin={unpin} />}>{children}</AppShell>
+<AppShell navGroups={groups} navStateKey="accounting" navSearch>{children}</AppShell>
 ```
 
 **Avoid:**
 
-- Vykreslovat PinnedBar ručně nad AppShell
-- Zobrazovat subHeader v režimu Nastavení/Administrace
-- Používat staré administrativní aliasy v novém kódu
+- Nepoužívejte stejné navStateKey pro nesouvisející aplikace.
+- Nenahrazujte hledání v menu globální CommandPalette.
+- Nemanipulujte stavem záložek při filtrování menu.
 
 ### AsOfDateField
 
@@ -712,7 +716,7 @@ import { CommandShortcut } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { CompanySwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr firmy s hledáním, IČO a posledními položkami.
+Jednořádkový výrazný výběr firmy s hledáním, IČO v nápovědě a posledními položkami.
 
 **Props:**
 
@@ -844,7 +848,7 @@ import { ContextMenuTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { ContextPill } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Adaptivní kontextový přepínač do horní lišty; na užších obrazovkách skrývá popisek a zkracuje hodnotu.
+Jednořádkový kontextový přepínač do horní lišty; label slouží jako přístupnostní název a nápověda, detail se ukazuje na široké obrazovce.
 
 **Props:**
 
@@ -859,17 +863,23 @@ Adaptivní kontextový přepínač do horní lišty; na užších obrazovkách s
 | `valueMuted` | boolean | `false` |
 | `statusIndicator` | any | `—` |
 | `compactValue` | string | `—` |
+| `tooltip` | string | `—` |
+| `valueClassName` | string | `—` |
+| `valueContainerClassName` | string | `—` |
+| `detail` | any | `—` |
+| `detailClassName` | string | `—` |
 
 **Examples:**
 
-_Základní použití_
+_Kontext s detailem_
 ```tsx
-<ContextPill label="Firma" value="Slivka s.r.o.">…</ContextPill>
+<ContextPill label="Firma" value="Slivka s.r.o." tooltip="Firma: Slivka s.r.o. · IČO 12345678">…</ContextPill>
 ```
 
 **Avoid:**
 
 - Nepoužívejte pro běžná formulářová pole.
+- Nevkládejte viditelný druhý řádek s popiskem.
 
 ### CountrySelect
 
@@ -2281,7 +2291,7 @@ import { PeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { PeriodSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextový výběr účetního období se stavem, zástupným textem a podporou firmy bez založeného období.
+Kontextový výběr účetního období se stavovým štítkem, rozsahem na široké obrazovce a podporou firmy bez založeného období.
 
 **Props:**
 
@@ -2766,6 +2776,35 @@ import { Skeleton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { Slider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### SlivkaHead
+
+```ts
+import { SlivkaHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `nonce` | string | `—` |
+| `fonts` | boolean | `true` |
+| `themeScript` | boolean | `true` |
+
+### SlivkaProvider
+
+```ts
+import { SlivkaProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+| `queryClient` | any | `—` |
+| `tooltipDelayDuration` | number | `300` |
+| `toasterProps` | any | `—` |
 
 ### SortHead
 
