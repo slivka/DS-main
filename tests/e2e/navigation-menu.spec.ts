@@ -1,8 +1,12 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("AppShell menu 2.15.0", () => {
-  test("hledá bez diakritiky, pamatuje skupiny a ovládá se klávesnicí", async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto("/components/navigation");
+    await page.waitForTimeout(500);
+  });
+
+  test("hledá bez diakritiky, pamatuje skupiny a ovládá se klávesnicí", async ({ page }) => {
     const expand = page.getByRole("button", { name: "Rozbalit menu" });
     await expect(expand).toBeVisible();
     await expand.click();
@@ -28,7 +32,6 @@ test.describe("AppShell menu 2.15.0", () => {
   });
 
   test("sbalené menu otevře hledání v překryvu", async ({ page }) => {
-    await page.goto("/components/navigation");
     const collapse = page.getByRole("button", { name: "Sbalit menu" });
     const expand = page.getByRole("button", { name: "Rozbalit menu" });
     if (await expand.isVisible()) {
@@ -46,7 +49,8 @@ test.describe("AppShell menu 2.15.0", () => {
 
   test("mobilní menu obsahuje stejné hledání", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/components/navigation");
+    await page.reload();
+    await page.waitForTimeout(500);
     const menu = page.getByRole("button", { name: "Menu", exact: true });
     await expect(menu).toBeVisible();
     await menu.click();
@@ -57,7 +61,6 @@ test.describe("AppShell menu 2.15.0", () => {
   });
 
   test("firma a období jsou jednořádkové a mají stavové údaje", async ({ page }) => {
-    await page.goto("/components/navigation");
     const company = page.getByRole("button", { name: "Firma" }).first();
     const period = page.getByRole("button", { name: "Účetní období" }).first();
     await expect(company).toContainText("Slivka Accounting s.r.o.");
