@@ -61,6 +61,7 @@ import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export";
+import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 
 /** Sloupec pobočky řídí explicitně branchVisibility; zobrazuje se jen v režimu „Všechny pobočky“, vždy jako první. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
@@ -163,6 +164,8 @@ export type DataGridColumn<Row> = {
    * zastupuje aj skryté pohyby). Ponuka aj porovnanie použije tieto hodnoty.
    */
   filterValues?: ((row: Row) => string[]) | undefined;
+  /** Interní systémový sloupec se neukládá do nastavení. */
+  transient?: boolean | undefined;
 };
 
 export type DataGridFilterChip = { id: string; label: string; onRemove?: () => void };
@@ -193,6 +196,10 @@ export type DataGridProps<Row> = {
   actions?: ReactNode | undefined;
   /** Vlastné ovládacie prvky vľavo v lište (prepínače, dátum a pod.). */
   toolbarLeft?: ReactNode | undefined;
+  /** Účetní období v kontextovém řádku nad akcemi. */
+  period?: GridPeriodConfig | undefined;
+  /** Kniha v kontextovém řádku; při hodnotě all se zobrazí první systémový sloupec Kniha. */
+  book?: GridBookConfig<Row> | undefined;
   /** Obsah rozbaliteľného panelu filtrov. */
   filters?: ReactNode | undefined;
   /** Popisy aktívnych filtrov pre tooltip a chipy. */
@@ -336,6 +343,8 @@ export function DataGrid<Row>({
   onRowClick,
   actions,
   toolbarLeft,
+  period,
+  book,
   filters,
   filterChips = [],
   onClearFilters,
@@ -403,10 +412,11 @@ export function DataGrid<Row>({
   useWheelZoom(blockRef, setZoom, zoom);
 
   const allBranches = true;
+  const effectiveColumns = useMemo<DataGridColumn<Row>[]>(() => book?.value === "all" && book.getRowBookId ? [createGridBookColumn(book), ...columns] : columns, [book, columns]);
 
   const colDefs = useMemo(
     () =>
-      columns
+      effectiveColumns
         // Sloupec pobočky se při výběru jedné pobočky automaticky skryje.
         .filter((c) => allBranches || !isBranchColumn(c) || c.branchVisibility === "always")
         .map((c) => ({
@@ -420,9 +430,10 @@ export function DataGrid<Row>({
           ...(c.defaultVisible !== undefined ? { defaultVisible: c.defaultVisible } : {}),
           ...(c.section !== undefined ? { section: c.section } : {}),
           ...(c.branchVisibility !== undefined ? { branchVisibility: c.branchVisibility } : {}),
+          ...(c.transient !== undefined ? { transient: c.transient } : {}),
           align: (c.align ?? (c.numeric ? "right" : "left")) as "left" | "right" | "center",
         })),
-    [columns, allBranches],
+    [effectiveColumns, allBranches],
   );
 
   const cols = useGridColumns(storageKey, colDefs);
@@ -434,8 +445,8 @@ export function DataGrid<Row>({
 
   // Při výběru jedné pobočky nemá seskupení podle pobočky význam – odstraníme ho.
   const branchColIds = useMemo(
-    () => columns.filter(isBranchColumn).map((c) => c.id),
-    [columns],
+    () => effectiveColumns.filter(isBranchColumn).map((c) => c.id),
+    [effectiveColumns],
   );
   useEffect(() => {
     if (allBranches) return;
@@ -445,23 +456,24 @@ export function DataGrid<Row>({
   }, [allBranches, branchColIds, grouping.groups]);
 
 
-  const byId = useMemo(() => new Map(columns.map((c) => [c.id, c])), [columns]);
+  const byId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
   /** Sloupce v uloženom poradí a len viditeľné. */
   const shown = useMemo(() => {
     const list = cols.columns
       .filter((c) => cols.visible[c.id] || isBranchColumn(c))
       .map((c) => byId.get(c.id)!);
     // Sloupec pobočky je pri „Všetky pobočky“ vždy viditeľný a úplne vľavo.
+    const books = list.filter((c) => c.id === GRID_BOOK_COLUMN_ID);
     const branch = list.filter((c) => isBranchColumn(c));
-    const rest = list.filter((c) => !isBranchColumn(c));
+    const rest = list.filter((c) => !isBranchColumn(c) && c.id !== GRID_BOOK_COLUMN_ID);
     // Pripnuté stĺpce držíme hneď za stĺpcom pobočky.
     const pinned = rest.filter((c) => isPinnedColumn(c.id));
     const middle = rest.filter((c) => !isPinnedColumn(c.id) && !c.pinRight);
     const pinnedRight = rest.filter((c) => !isPinnedColumn(c.id) && c.pinRight);
-    return [...branch, ...pinned, ...middle, ...pinnedRight];
+    return [...books, ...branch, ...pinned, ...middle, ...pinnedRight];
   }, [cols.columns, cols.visible, byId]);
 
-  const sort = useGridSort<string>(storageKey, defaultSort ?? columns[0]?.id ?? null);
+  const sort = useGridSort<string>(storageKey, defaultSort ?? effectiveColumns[0]?.id ?? null);
 
   const valueOf = (row: Row, id: string) => {
     const col = byId.get(id);
@@ -479,14 +491,14 @@ export function DataGrid<Row>({
     const q = search.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((row) =>
-      columns.some((c) => {
+      effectiveColumns.some((c) => {
         // Skupinový riadok zastupuje aj svoje skryté položky.
         const many = c.filterValues?.(row);
         if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
         return cellText(c.value?.(row)).toLowerCase().includes(q);
       }),
     );
-  }, [rows, columns, search]);
+  }, [rows, effectiveColumns, search]);
 
   // --- filtre jednotlivých stĺpcov (autofilter v záhlaví) -----------------
   const [colFilters, setColFilters] = useState<Record<string, string[]>>({});
@@ -785,11 +797,12 @@ export function DataGrid<Row>({
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
+        {period || book ? <GridContextBar period={period} book={book} className={cn("border-b-0", showTitle && title ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
         {!hideToolbar ? <GridToolbar
           zoom={zoom}
           density={density}
           className={`border-b-0 ${
-            showTitle && title
+            showTitle && title || period || book
               ? plain
                 ? "rounded-t-lg shadow-none"
                 : "border-t-0 shadow-none"
@@ -854,7 +867,7 @@ export function DataGrid<Row>({
             />
 
             <ColumnPicker
-              columns={cols.columns.map((c) => ({
+              columns={cols.columns.filter((c) => !c.transient).map((c) => ({
                 id: c.id,
                 label: c.label,
                 ...(c.locked !== undefined ? { locked: c.locked } : {}),
@@ -981,6 +994,7 @@ export function DataGrid<Row>({
                   ) : null}
                   {shown.map((c) => {
                     const isPinned = isPinnedColumn(c.id);
+                    const isBook = c.id === GRID_BOOK_COLUMN_ID;
                     const isBranch = isBranchColumn(c);
                     const compact = isCompactColumn(c);
                     const width = isBranch
@@ -1001,7 +1015,7 @@ export function DataGrid<Row>({
                           }
                         : undefined;
                     const resize =
-                      isPinned || isBranch || compact ? null : (
+                      isPinned || isBranch || isBook || compact ? null : (
                         <ColumnResizeHandle
                           onResize={(w) => cols.setWidth(c.id, w)}
                           onReset={() => cols.clearWidth(c.id)}
@@ -1023,7 +1037,7 @@ export function DataGrid<Row>({
                         data-pin-right={c.pinRight || undefined}
                         className={`${c.align === "right" || (c.numeric && !c.align) ? "text-right" : c.align === "center" ? "text-center" : ""} ${headClass}`}
                         {...(headStyle ? { style: headStyle } : {})}
-                        {...(isPinned ? {} : headerDragProps(c.id))}
+                          {...(isPinned || isBook ? {} : headerDragProps(c.id))}
                       >
                         <span
                           className={
