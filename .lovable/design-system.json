@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.17.1",
+    "version": "2.17.2",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -40,7 +40,7 @@
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "a4e8fce4d6460f998cdb7ba01c011254",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "f716554ecb21d7d5d48f4da1a7f23746",
+      "README.md": "dc026c46606670da1b871e76a83a6ab9",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "components.md": "0fcc03114f199a3c4403070b5734848c",
@@ -109,8 +109,8 @@
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
-      "src/components/ds/grid/DataGrid.tsx": "eb0e584bf636848d92d36c46ea603bbf",
-      "src/components/ds/grid/TreeGrid.tsx": "53cb68a852a04a4c5b45f6099bb46e35",
+      "src/components/ds/grid/DataGrid.tsx": "112319c44560a06acec4778250d3a957",
+      "src/components/ds/grid/TreeGrid.tsx": "bf4aaaba3b9524713244d9a9ed8f35fb",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
@@ -133,7 +133,7 @@
       "src/components/ds/grid/grid-toolbar.tsx": "57eaf01ac510c7f753b2f25fb29b0a86",
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "8147ece7d73aa9cd518ca289b6153308",
-      "src/components/ds/grid/view-mode-toggle.tsx": "7ba9f08e4b064164a441d1c530d596ad",
+      "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
       "src/components/ds/index.ts": "547cc353e2d775eddc83514bb6f9e5b6",
       "src/components/ds/layout/AppShell.tsx": "4a948837dbd52b9f3c2c95da154b884f",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
@@ -166,7 +166,7 @@
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
       "src/components/showcase/PaneShowcase.tsx": "4c69a70ecefdc46bf2973e3e99ce0014",
-      "src/components/showcase/ReportsShowcase.tsx": "763bacb3fe198d5226baecf728d29dd4",
+      "src/components/showcase/ReportsShowcase.tsx": "78e7545cdfaffe285dfd21f559b8cab4",
       "src/components/showcase/ShowcaseLayout.tsx": "0ae5177b589d02f257f45eb61aa03b22",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
       "src/components/ui/alert-dialog.tsx": "3b58ac3e4b5bac2c0eeff4242fa6f996",
@@ -255,7 +255,7 @@
       "src/routes/components.excel-export.tsx": "854c5e8220edc784a118bd7b2e17a232",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
-      "src/routes/components.grid.tsx": "daef9a024e91bff455aea97868083b22",
+      "src/routes/components.grid.tsx": "60f6194681efeccbd07ff14264f2b9cc",
       "src/routes/components.navigation.tsx": "cc2c7421eab332e4f06426af1f273f5a",
       "src/routes/guidelines.tsx": "53a5b4b7f10207463bfe1871da64316d",
       "src/routes/index.tsx": "45376f7844263eb978b27d8ca5fbcad1",
@@ -3480,6 +3480,12 @@
           "type": "function"
         },
         {
+          "name": "viewZoomKey",
+          "type": "string",
+          "required": false,
+          "description": "Společný klíč zachová zoom a hustotu při přepnutí mezi tabulkou a stromem."
+        },
+        {
           "name": "asOf",
           "type": "any"
         },
@@ -4274,6 +4280,12 @@
         {
           "name": "onViewModeChange",
           "type": "function"
+        },
+        {
+          "name": "viewZoomKey",
+          "type": "string",
+          "required": false,
+          "description": "Společný klíč zachová zoom a hustotu při přepnutí mezi tabulkou a stromem."
         },
         {
           "name": "asOf",
