@@ -220,7 +220,7 @@ function PaneLayoutInner({
           <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
           <Button type="button" size="sm" variant="outline" className="h-7" onClick={api.restoreLayout}>
             {t.restoreLayout}
-            <kbd className="ml-1 font-mono text-meta text-muted-foreground">Esc</kbd>
+            <kbd className="ml-1 font-mono text-xs text-muted-foreground">Esc</kbd>
           </Button>
         </div>
       ) : null}
