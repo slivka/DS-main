@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.9.1",
+    "version": "2.9.2",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -27,6 +27,7 @@
       ".lovable/plan/oprava-veřejného-zapojení-design-systému-2026-09-22.md": "df164e96ad9d9d8e1e7dc10350f7b87d",
       ".lovable/plan/oprava-šířky-součtů-v-excel-exportu-1-4-1-2026-09-22.md": "68754a1018b633d595fa67dce1a73b2c",
       ".lovable/plan/standard-sloupců-účtů-md-dal-verze-1-5-0-2026-09-22.md": "8f0e8f3e9ba6e2a9023345c757c0ff69",
+      ".lovable/plan/světlé-pozadí-podle-vzorku-evala-cz-2026-09-24.md": "2ccb0aa13a84bf7b0e32592b91c01297",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "7b752f425b5e7538f7d838c310282f76",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
@@ -238,7 +239,7 @@
       "src/routes/guidelines.tsx": "53a5b4b7f10207463bfe1871da64316d",
       "src/routes/index.tsx": "0376521ffa11650474df27387a363385",
       "src/start.ts": "322ad835cfa30a963726d9b1cbaa3f20",
-      "src/styles.css": "0e73850ffff3dc1a11f1e6a2d41402ff",
+      "src/styles.css": "ea445b28da30d474044d5164404f90e1",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "aeae6a7769950765bc2c1282efc40ebf",
@@ -255,7 +256,7 @@
     "color": [
       {
         "name": "--background",
-        "raw": "oklch(0.975 0.005 245)",
+        "raw": "oklch(0.985 0 0)",
         "source": "src/styles.css"
       },
       {
