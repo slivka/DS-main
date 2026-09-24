@@ -22,12 +22,6 @@ export type NavItem = {
   badge?: ReactNode;
   disabled?: boolean;
   disabledHint?: string;
-  /** Klíč uloženého sbalení skupin; výchozí je appName. */
-  navStateKey?: string;
-  /** Zobrazit hledání v menu. */
-  navSearch?: boolean;
-  navSearchPlaceholder?: string;
-  navSearchEmptyText?: string;
 };
 
 export type NavGroup = {
@@ -73,6 +67,12 @@ export interface AppShellProps {
   collapseLabel?: string;
   expandLabel?: string;
   disabledHint?: string;
+  /** Klíč uloženého sbalení skupin; výchozí je appName. */
+  navStateKey?: string;
+  /** Zobrazit hledání v menu. */
+  navSearch?: boolean;
+  navSearchPlaceholder?: string;
+  navSearchEmptyText?: string;
   /** @deprecated Použijte navGroups. */
   items?: NavItem[];
   /** @deprecated Použijte panels. */
@@ -322,6 +322,7 @@ export function AppShell({
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
   const [collapseWasChosen, setCollapseWasChosen] = useState(false);
   const isNarrow = useMediaQuery("(max-width: 1279px)");
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const collapsedRef = useRef(false);
   const headerRef = useRef<HTMLElement>(null);
   const contextRef = useRef<HTMLDivElement>(null);
@@ -381,12 +382,13 @@ export function AppShell({
       const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
       if (event.key !== "/" || event.ctrlKey || event.metaKey || event.altKey || isEditing || !navSearch) return;
       event.preventDefault();
-      if (isCollapsed) setSearchOverlay(true);
+      if (isMobile) setMenuOpen(true);
+      else if (isCollapsed) setSearchOverlay(true);
       setFocusSearch((value) => value + 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isCollapsed, navSearch]);
+  }, [isCollapsed, isMobile, navSearch]);
 
   useEffect(() => {
     if (!searchOverlay) return;
