@@ -5,8 +5,3 @@ source_type: local
 upstream_package: ""
 starter_template: custom_design_system
 stack_packages: []
-upstream_versions:
-  "@tanstack/react-query": "5.101.1"
-  "@tanstack/react-router": "1.170.16"
-  "tailwindcss": "4.3.3"
-  "lucide-react": "0.575.0"
