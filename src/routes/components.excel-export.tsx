@@ -192,7 +192,6 @@ function ExcelExportPage() {
 
       <DataGrid<ExportRow>
         storageKey="ds-showcase-excel-export"
-        title="Účetní deník"
         exportTitle="Účetní deník – vzorový export"
         exportName="ucetni-denik"
         exportMeta={META}
