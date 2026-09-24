@@ -798,12 +798,16 @@ export function DataGrid<Row>({
             {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
             {grouping.active ? (
               <GridExpandControls
-                levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 }))}
+                levels={[
+                  ...grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 })),
+                  ...(grouping.groups.length > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.length + 1 }] : []),
+                ]}
                 activeDepth={groupExpandDepth}
                 disabled={Boolean(search)}
                 onExpand={(depth) => {
                   setGroupExpandDepth(depth);
-                  grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
+                  if (depth > grouping.groups.length) grouping.expandAll();
+                  else grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
                 }}
                 onCollapse={() => {
                   setGroupExpandDepth(0);
