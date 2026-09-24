@@ -5,4 +5,4 @@
  */
 
 /** Jemně modré podkladové pozadí stránky – odpovídá `--surface-page` ve světlém režimu (#EFF4F9). */
-export const PAGE_SURFACE_LIGHT = "oklch(0.965 0.008 245)";
+export const PAGE_SURFACE_LIGHT = "oklch(1 0 0)";
