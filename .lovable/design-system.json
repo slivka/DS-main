@@ -2253,7 +2253,7 @@
       "examples": [
         {
           "label": "AppShell 2.3",
-          "code": "\u003cAppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}\u003e…\u003c/AppShell\u003e"
+          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>"
         }
       ],
       "antipatterns": [
@@ -2407,7 +2407,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
+          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
         }
       ],
       "antipatterns": [
@@ -2461,7 +2461,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
+          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
         }
       ],
       "antipatterns": [
@@ -2525,7 +2525,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cThemeSetting /\u003e"
+          "code": "<ThemeSetting />"
         }
       ],
       "antipatterns": [
@@ -2588,7 +2588,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
         }
       ],
       "antipatterns": [
@@ -2663,7 +2663,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
         }
       ],
       "antipatterns": [
@@ -2738,11 +2738,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
         },
         {
           "label": "Firma bez období",
-          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
+          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
         }
       ],
       "antipatterns": [
@@ -2810,7 +2810,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
         }
       ],
       "antipatterns": [
@@ -2841,7 +2841,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
+          "code": "<SearchButton onClick={() => setOpen(true)} />"
         }
       ],
       "antipatterns": [
@@ -3147,7 +3147,7 @@
       "examples": [
         {
           "label": "Grid s hlavní akcí",
-          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
+          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"documents\" actions={<Button onClick={onCreate}>Nový doklad</Button>} />"
         }
       ],
       "antipatterns": [
@@ -3548,7 +3548,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
+          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
         }
       ],
       "antipatterns": [
@@ -3558,7 +3558,19 @@
     {
       "name": "TreeGrid",
       "file": "src/components/ds/grid/TreeGrid.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbalení, výběrem sloupců, zoomem a exportem do Excelu se souhrnem pod dětmi.",
+      "examples": [
+        {
+          "label": "Osnova s úrovněmi",
+          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={cols} expandLevels={[{id:\"c\",label:\"Třídy\",depth:0},{id:\"g\",label:\"Skupiny\",depth:1},{id:\"a\",label:\"Vše\",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName=\"osnova\" actions={<Button size=\"sm\">Nový účet</Button>} />"
+        }
+      ],
+      "antipatterns": [
+        "Vlastní rozbalovací tabulka místo TreeGrid",
+        "Akce „Nový“ mimo lištu gridu",
+        "Ruční sčítání uzlů v aplikaci"
+      ]
     },
     {
       "name": "DecimalInput",
@@ -4009,7 +4021,18 @@
     {
       "name": "AccountSelect",
       "file": "src/components/ds/accounting/account-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Výběr účtu z osnovy; s allowLevels a catalog i výběr třídy / skupiny jako prefix pro výkazy.",
+      "examples": [
+        {
+          "label": "Třída nebo skupina",
+          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+        }
+      ],
+      "antipatterns": [
+        "Nativní select pro účty",
+        "Doplňování tečky do uloženého kódu"
+      ]
     },
     {
       "name": "DocumentStatusBadge",
@@ -4188,7 +4211,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
@@ -4331,7 +4354,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
+          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
         }
       ],
       "antipatterns": [
@@ -4418,12 +4441,43 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
+          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
+      ]
+    },
+    {
+      "name": "BarBreakdownChart",
+      "file": "src/components/ds/data-display/bar-breakdown-chart.tsx",
+      "import_path": "",
+      "usage": "Rozbor nákladů / výnosů po skupinách – vodorovné pruhy s hodnotou a podílem, klik na pruh = filtr.",
+      "examples": [
+        {
+          "label": "Rozbor nákladů",
+          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
+        }
+      ],
+      "antipatterns": [
+        "Graf z externí knihovny pro jednoduchý rozbor",
+        "Barvy natvrdo místo variant"
+      ]
+    },
+    {
+      "name": "FilterChips",
+      "file": "src/components/ds/grid/filter-chips.tsx",
+      "import_path": "",
+      "usage": "Odebíratelné štítky aktivních filtrů nad výkazem nebo gridem, s „Zrušit vše“.",
+      "examples": [
+        {
+          "label": "Filtry",
+          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
+        }
+      ],
+      "antipatterns": [
+        "Vlastní štítky filtrů ve stránce"
       ]
     }
   ],

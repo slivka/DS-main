@@ -40,6 +40,20 @@ export type AccountOption = {
   postable?: boolean;
 };
 
+/** Úroveň v osnově: třída (1 znak), skupina (2), syntetický (3), analytický (4+). */
+export type AccountLevel = "class" | "group" | "synthetic" | "analytic";
+
+/** Položka číselníku tříd a skupin (kód „5“, „51“ + název). */
+export type AccountCatalogItem = { code: string; name: string };
+
+export function accountLevelOf(code: string): AccountLevel {
+  const length = normalizeAccountCode(code).length;
+  if (length <= 1) return "class";
+  if (length === 2) return "group";
+  if (length === 3) return "synthetic";
+  return "analytic";
+}
+
 /** Výběr účtu z osnovy – kód, název a typ účtu. */
 export function AccountSelect({
   accounts,
@@ -53,6 +67,8 @@ export function AccountSelect({
   /** Zakázat výběr syntetického účtu, který má analytiky. */
   disableSyntheticWithAnalytics = true,
   typeLabels = ACCOUNT_TYPE_LABELS,
+  allowLevels,
+  catalog,
   disabled,
   initialSearch,
   onOpenChange,
@@ -67,6 +83,13 @@ export function AccountSelect({
   hideInactive?: boolean;
   disableSyntheticWithAnalytics?: boolean;
   typeLabels?: Record<AccountType, string>;
+  /**
+   * Povolené úrovně výběru. Bez zadání jen účty, na které lze účtovat.
+   * Při třídě / skupině vrací `onChange` prefix („5“, „51“).
+   */
+  allowLevels?: AccountLevel[];
+  /** Číselník tříd a skupin – názvy pro prefixy „5“, „51“. */
+  catalog?: AccountCatalogItem[];
   disabled?: boolean;
   /** Počáteční hledání při otevření z editovatelné buňky. */
   initialSearch?: string;
@@ -85,17 +108,25 @@ export function AccountSelect({
 
   const list = useMemo(() => {
     const codes = accounts.map((a) => normalizeAccountCode(a.code));
-    return accounts
+    const known = new Set(codes);
+    const catalogOptions: AccountOption[] = (catalog ?? [])
+      .filter((item) => !known.has(normalizeAccountCode(item.code)))
+      .map((item) => ({ code: item.code, name: item.name, postable: false }));
+    const merged = [...accounts, ...catalogOptions]
       .filter((a) => (hideInactive ? a.active !== false : true))
       .map((a) => {
         const code = normalizeAccountCode(a.code);
+        const level = accountLevelOf(code);
         const hasAnalytics =
           code.length === 3 && codes.some((c) => c.length > 3 && c.startsWith(code));
-        const blocked =
-          a.active === false || (a.postable !== undefined ? !a.postable : disableSyntheticWithAnalytics && hasAnalytics);
-        return { ...a, code, blocked };
+        const blocked = allowLevels
+          ? a.active === false || !allowLevels.includes(level)
+          : a.active === false ||
+            (a.postable !== undefined ? !a.postable : disableSyntheticWithAnalytics && hasAnalytics);
+        return { ...a, code, level, blocked };
       });
-  }, [accounts, hideInactive, disableSyntheticWithAnalytics]);
+    return catalogOptions.length ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs")) : merged;
+  }, [accounts, catalog, allowLevels, hideInactive, disableSyntheticWithAnalytics]);
 
   const selected = list.find((a) => a.code === normalizeAccountCode(value));
   const normalizedQuery = normalizeAccountCode(query).toLocaleLowerCase("cs");
@@ -151,7 +182,12 @@ export function AccountSelect({
                   }}
                   className={cn("gap-2", a.blocked && "opacity-50")}
                 >
-                  <span className="w-20 shrink-0 font-mono tabular-nums">
+                  <span
+                    className={cn(
+                      "w-20 shrink-0 font-mono tabular-nums",
+                      (a.level === "class" || a.level === "group") && "font-semibold",
+                    )}
+                  >
                     {formatAccountCode(a.code)}
                   </span>
                   <span className="min-w-0 flex-1 truncate">{a.name}</span>

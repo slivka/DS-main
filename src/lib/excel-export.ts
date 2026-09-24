@@ -40,6 +40,13 @@ export interface GridExportData {
   /** @deprecated Použijte columnMeta[].numFmt. Zachováno kvůli kompatibilitě PDF/HTML exportů. */
   excelNumberFormats?: (string | null)[];
   rowLevels?: number[];
+  /** Souhrnný řádek skupiny je pod svými dětmi (Excel outline summaryBelow). */
+  outlineSummaryBelow?: boolean;
+  /**
+   * Souhrnné řádky stromu: `row` je index souhrnného řádku v `rows`,
+   * `from`–`to` rozsah řádků jeho potomků. Sčítané sloupce dostanou vzorec SUBTOTAL(9, …).
+   */
+  subtotalRows?: { row: number; from: number; to: number }[];
   note?: string | null;
   footerRows?: {
     label: string;
@@ -252,7 +259,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   workbook.calcProperties.fullCalcOnLoad = true;
 
   const sheet = workbook.addWorksheet(safeWorksheetName(title), {
-    properties: { outlineProperties: { summaryBelow: false, summaryRight: false } },
+    properties: { outlineProperties: { summaryBelow: data.outlineSummaryBelow === true, summaryRight: false } },
     views: [{ state: "frozen", ySplit: firstHeaderRow }],
   });
 
@@ -274,6 +281,11 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     };
   });
 
+  const subtotalByRow = new Map(
+    (data.subtotalRows ?? [])
+      .filter((entry) => entry.from <= entry.to && entry.to < data.rows.length && entry.row < data.rows.length)
+      .map((entry) => [entry.row, entry]),
+  );
   sheet.addTable({
     name,
     ref: `A${firstHeaderRow}`,
@@ -281,7 +293,18 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     totalsRow,
     style: { theme: "TableStyleLight1", showRowStripes: false, showColumnStripes: false },
     columns: tableColumns,
-    rows: data.rows.map((row) => headers.map((_, index) => excelValue(row[index], meta[index]))),
+    rows: data.rows.map((row, rowIndex) =>
+      headers.map((_, index) => {
+        const subtotal = subtotalByRow.get(rowIndex);
+        const value = excelValue(row[index], meta[index]);
+        if (!subtotal || index === 0 || meta[index]?.total !== "sum") return value;
+        const letter = sheet.getColumn(index + 1).letter;
+        return {
+          formula: `SUBTOTAL(9,${letter}${firstDataRow + subtotal.from}:${letter}${firstDataRow + subtotal.to})`,
+          result: typeof value === "number" ? value : 0,
+        };
+      }),
+    ),
   });
 
   const requestedLevels = (data.rowLevels ?? []).map((level) => Math.max(0, Math.min(7, Math.trunc(level))));
