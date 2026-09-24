@@ -38,6 +38,20 @@ import { AccountCode } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { AccountSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Výběr účtu z osnovy; s allowLevels a catalog i výběr třídy / skupiny jako prefix pro výkazy.
+
+**Examples:**
+
+_Třída nebo skupina_
+```tsx
+<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={["class","group"]} value={prefix} onChange={setPrefix} />
+```
+
+**Avoid:**
+
+- Nativní select pro účty
+- Doplňování tečky do uloženého kódu
+
 ### AddressFieldGrid
 
 ```ts
@@ -263,6 +277,39 @@ import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 | Prop | Type | Default |
 |---|---|---|
 | `variant` | default · secondary · destructive · outline · success · warning · info | `default` |
+
+### BarBreakdownChart
+
+```ts
+import { BarBreakdownChart } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Rozbor nákladů / výnosů po skupinách – vodorovné pruhy s hodnotou a podílem, klik na pruh = filtr.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `selectedId` | string | `—` |
+| `onSelect` | function | `—` |
+| `total` | number | `—` |
+| `decimals` | number | `2` |
+| `variant` | primary · cost · revenue | `primary` |
+| `showTotal` | boolean | `true` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Rozbor nákladů_
+```tsx
+<BarBreakdownChart items={groups} variant="cost" selectedId={group} onSelect={(id) => setGroup(id)} />
+```
+
+**Avoid:**
+
+- Graf z externí knihovny pro jednoduchý rozbor
+- Barvy natvrdo místo variant
 
 ### BookSelect
 
@@ -1280,6 +1327,34 @@ import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 ```ts
 import { FieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### FilterChips
+
+```ts
+import { FilterChips } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Odebíratelné štítky aktivních filtrů nad výkazem nebo gridem, s „Zrušit vše“.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `chips` | any | `—` |
+| `onClearAll` | function | `—` |
+| `size` | sm · md | `md` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Filtry_
+```tsx
+<FilterChips chips={[{ id: "g", label: "Skupina", value: "51 – Služby", onRemove: () => setGroup(null) }]} onClearAll={clear} />
+```
+
+**Avoid:**
+
+- Vlastní štítky filtrů ve stránce
 
 ### FiscalPeriodSelect
 
@@ -2781,6 +2856,42 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 ```ts
 import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbalení, výběrem sloupců, zoomem a exportem do Excelu se souhrnem pod dětmi.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `rows` | any | `—` |
+| `columns` | any | `—` |
+| `title` | string | `—` |
+| `storageKey` | string | `—` |
+| `exportName` | string | `—` |
+| `exportMeta` | any | `—` |
+| `defaultCollapsed` | boolean | `false` |
+| `expandLevels` | any | `—` |
+| `expandDepth` | number | `—` |
+| `onExpandDepthChange` | function | `—` |
+| `highlightedRowId` | string | `—` |
+| `onRowClick` | function | `—` |
+| `onRowOpen` | function | `—` |
+| `actions` | any | `—` |
+| `texts` | any | `—` |
+| `className` | string | `flex flex-wrap items-center gap-2 border-b px-3 py-2` |
+
+**Examples:**
+
+_Osnova s úrovněmi_
+```tsx
+<TreeGrid title="Účtová osnova" rows={rows} columns={cols} expandLevels={[{id:"c",label:"Třídy",depth:0},{id:"g",label:"Skupiny",depth:1},{id:"a",label:"Vše",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName="osnova" actions={<Button size="sm">Nový účet</Button>} />
+```
+
+**Avoid:**
+
+- Vlastní rozbalovací tabulka místo TreeGrid
+- Akce „Nový“ mimo lištu gridu
+- Ruční sčítání uzlů v aplikaci
 
 ### TreeView
 

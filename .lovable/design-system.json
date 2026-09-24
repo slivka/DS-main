@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.8.1",
+    "version": "2.9.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "ac8caca9eecd43118658cd63dd9ed50d826e0316d646dc1eb1171ce365556792",
+      "#enrichment": "7b0ced241aa2052ef616f8c92edf5aa492068da3b7e27b8007a862fe0c18c5f3",
       ".dsignore": "64fa31b930f0bb5bfecb732e92388059",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
@@ -28,26 +28,26 @@
       ".lovable/plan/oprava-šířky-součtů-v-excel-exportu-1-4-1-2026-09-22.md": "68754a1018b633d595fa67dce1a73b2c",
       ".lovable/plan/standard-sloupců-účtů-md-dal-verze-1-5-0-2026-09-22.md": "8f0e8f3e9ba6e2a9023345c757c0ff69",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "8aacda5c474ef46a1e32968e610ce8df",
+      ".lovable/system.md": "7b752f425b5e7538f7d838c310282f76",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "dceb13ff1d952b7dfd4b49864576122d",
+      "README.md": "91dca3969307a05d5fd668440624760e",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "4ee037c1f95462b0d3a83fb8f81e63d0",
+      "package.json": "f112d07494b36d5df618564dbc4d0197",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "ac54b88f8f59f5a7b6b5fa8f13519f8f",
+      "roadmap.md": "a780d5466cecbf65816ca0fb65684c44",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
       "src/components/ds/accounting/account-code.tsx": "355464ea912043d6664a07dee0d9947b",
       "src/components/ds/accounting/account-columns.tsx": "f82571b50e51538b46c380dc770fafe3",
-      "src/components/ds/accounting/account-select.tsx": "e014f9345c76bc6b229c750c3ee8b9ec",
+      "src/components/ds/accounting/account-select.tsx": "da433ef60d00bdaff26d2939bdfcb539",
       "src/components/ds/accounting/amount.tsx": "5c9bc69911a0f1b54a550840d275cb02",
       "src/components/ds/accounting/book-select.tsx": "8d5fb6c4acea46e19f5220549e643ebe",
       "src/components/ds/accounting/currency-amount.tsx": "d87a2312e148b6c8676c93dd24ae0aee",
@@ -63,6 +63,7 @@
       "src/components/ds/accounting/payment-schedule-editor.tsx": "53f2a9bdef0c2f46267d8da7d18ab06e",
       "src/components/ds/accounting/payment-schedule.ts": "e5843d856417e6b3c23bab3be57b3344",
       "src/components/ds/accounting/vs-field.tsx": "5bb222411945aba5fb1fc506781a7350",
+      "src/components/ds/data-display/bar-breakdown-chart.tsx": "6398ddf573f699e405dfd5424478e0ee",
       "src/components/ds/data-display/status-badge.tsx": "5aa6cd4177be70539169127cfd2a4791",
       "src/components/ds/data-display/status-dot.tsx": "60e37500a6392e750db2b1d6a1d98054",
       "src/components/ds/data-display/tree-view.tsx": "f301b9001da0b65e1040cb926b411655",
@@ -98,9 +99,10 @@
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
       "src/components/ds/grid/DataGrid.tsx": "d02ab7d0bbc230cc2ae8db031cb0b11c",
-      "src/components/ds/grid/TreeGrid.tsx": "294ca4ab8acec56a6cdff9ae4b052ac3",
+      "src/components/ds/grid/TreeGrid.tsx": "0ac1a90b4db5d00fcca26fac98f547b2",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
+      "src/components/ds/grid/filter-chips.tsx": "3f95be34247d10f69f1d5a2c3f688793",
       "src/components/ds/grid/grid-action.tsx": "e47e6ef496270c2ba71de609ac704872",
       "src/components/ds/grid/grid-column-resize.tsx": "d7ab96fbc8749dcf71dbfe0c415e69fa",
       "src/components/ds/grid/grid-columns.tsx": "c3c847038bea6baac4e28c6c9f6e4228",
@@ -119,7 +121,7 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "26dc63176bdacbaf0ddea666832b5721",
       "src/components/ds/grid/view-mode-toggle.tsx": "7ba9f08e4b064164a441d1c530d596ad",
-      "src/components/ds/index.ts": "12fe157a1efa09e872d883977ab00814",
+      "src/components/ds/index.ts": "be7ea90da490969b7501a0870fe563b2",
       "src/components/ds/layout/AppShell.tsx": "da5d849cf8798cf9d7a1af74b0b530cf",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "b6f4126fa8e041ecb017dfd0b83c59cc",
@@ -144,6 +146,7 @@
       "src/components/ds/panes/pane-state.ts": "87ef303d6e99597126d64c9fe50b6e57",
       "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
       "src/components/showcase/PaneShowcase.tsx": "bdd11c68650dc0e5d86416c405026fe6",
+      "src/components/showcase/ReportsShowcase.tsx": "0ae0797f6d63c7fb2e2c9b20dae3c376",
       "src/components/showcase/ShowcaseLayout.tsx": "db372060e2ebf377d141fbf02c1a3ddd",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
       "src/components/ui/alert-dialog.tsx": "3b58ac3e4b5bac2c0eeff4242fa6f996",
@@ -203,7 +206,7 @@
       "src/lib/date-time-preferences.ts": "4d79d0079108534000a160b97b300773",
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
       "src/lib/error-page.ts": "172b2f0e0673ac9f209406330ffd4c23",
-      "src/lib/excel-export.ts": "76105b8ef708081e321e23eb762aec8f",
+      "src/lib/excel-export.ts": "fa1d5098b712b45c929dbbc9148d3616",
       "src/lib/font-links.ts": "ded294d11ffabc54d6afb2908a2139da",
       "src/lib/font-scale.ts": "3182f555aa17adbb10c559079ba67057",
       "src/lib/form-errors.ts": "b3d3f883fabe619ed7746770ff3a7b4e",
@@ -226,7 +229,7 @@
       "src/routes/[__component].preview.$.tsx": "0131c8b79c864fb8dafda850ebf45440",
       "src/routes/[__mockup].preview.$.tsx": "5d9f42470848aa60148f20f9580e240e",
       "src/routes/__root.tsx": "66178d672803ac98dc33c485710c4541",
-      "src/routes/components.accounting-forms.tsx": "7f25095059d1473048ab5227b63925ce",
+      "src/routes/components.accounting-forms.tsx": "1a7093838a2023c7de794b7fcad38c8e",
       "src/routes/components.excel-export.tsx": "77f66606ac8532c34fc4c9d5c1a18d68",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
@@ -241,6 +244,7 @@
       "tests/e2e/excel-download.spec.ts": "aeae6a7769950765bc2c1282efc40ebf",
       "tests/e2e/journal-editor.spec.ts": "bfbebeecce960c3c905445629d9e3753",
       "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
+      "tests/e2e/reports.spec.ts": "53d4c191582ec1923cd76d7dbdbec480",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "680b897d48e44bcc65fe437c29b38f3b"
@@ -2253,7 +2257,7 @@
       "examples": [
         {
           "label": "AppShell 2.3",
-          "code": "<AppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}>…</AppShell>"
+          "code": "\u003cAppShell appName=\"Accounting\" navGroups={navGroups} panels={panels} collapsed={collapsed} onCollapsedChange={setCollapsed}\u003e…\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -2407,7 +2411,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2461,7 +2465,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2525,7 +2529,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -2588,7 +2592,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\">…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\"\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -2663,7 +2667,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2738,11 +2742,11 @@
       "examples": [
         {
           "label": "Výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} /\u003e"
         },
         {
           "label": "Firma bez období",
-          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
+          "code": "\u003cPeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2810,7 +2814,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2841,7 +2845,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3147,7 +3151,7 @@
       "examples": [
         {
           "label": "Grid s hlavní akcí",
-          "code": "<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey=\"documents\" actions={<Button onClick={onCreate}>Nový doklad</Button>} />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} rowKey={(row) =\u003e row.id} storageKey=\"documents\" actions={\u003cButton onClick={onCreate}\u003eNový doklad\u003c/Button\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3548,7 +3552,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -3559,17 +3563,127 @@
       "name": "TreeGrid",
       "file": "src/components/ds/grid/TreeGrid.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "rows",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "columns",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "storageKey",
+          "type": "string"
+        },
+        {
+          "name": "exportName",
+          "type": "string"
+        },
+        {
+          "name": "exportMeta",
+          "type": "any"
+        },
+        {
+          "name": "defaultCollapsed",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "expandLevels",
+          "type": "any"
+        },
+        {
+          "name": "expandDepth",
+          "type": "number"
+        },
+        {
+          "name": "onExpandDepthChange",
+          "type": "function"
+        },
+        {
+          "name": "highlightedRowId",
+          "type": "string"
+        },
+        {
+          "name": "onRowClick",
+          "type": "function"
+        },
+        {
+          "name": "onRowOpen",
+          "type": "function"
+        },
+        {
+          "name": "actions",
+          "type": "any"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "flex flex-wrap items-center gap-2 border-b px-3 py-2"
+        }
+      ],
       "usage": "Stromová data (osnova, výkazy, zakázky) se součty za uzel, úrovněmi rozbalení, výběrem sloupců, zoomem a exportem do Excelu se souhrnem pod dětmi.",
       "examples": [
         {
           "label": "Osnova s úrovněmi",
-          "code": "<TreeGrid title=\"Účtová osnova\" rows={rows} columns={cols} expandLevels={[{id:\"c\",label:\"Třídy\",depth:0},{id:\"g\",label:\"Skupiny\",depth:1},{id:\"a\",label:\"Vše\",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName=\"osnova\" actions={<Button size=\"sm\">Nový účet</Button>} />"
+          "code": "\u003cTreeGrid title=\"Účtová osnova\" rows={rows} columns={cols} expandLevels={[{id:\"c\",label:\"Třídy\",depth:0},{id:\"g\",label:\"Skupiny\",depth:1},{id:\"a\",label:\"Vše\",depth:99}]} expandDepth={depth} onExpandDepthChange={setDepth} exportName=\"osnova\" actions={\u003cButton size=\"sm\"\u003eNový účet\u003c/Button\u003e} /\u003e"
         }
       ],
       "antipatterns": [
         "Vlastní rozbalovací tabulka místo TreeGrid",
         "Akce „Nový“ mimo lištu gridu",
         "Ruční sčítání uzlů v aplikaci"
+      ]
+    },
+    {
+      "name": "FilterChips",
+      "file": "src/components/ds/grid/filter-chips.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "chips",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "onClearAll",
+          "type": "function"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        }
+      ],
+      "usage": "Odebíratelné štítky aktivních filtrů nad výkazem nebo gridem, s „Zrušit vše“.",
+      "examples": [
+        {
+          "label": "Filtry",
+          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Vlastní štítky filtrů ve stránce"
       ]
     },
     {
@@ -4004,6 +4118,65 @@
       "import_path": ""
     },
     {
+      "name": "BarBreakdownChart",
+      "file": "src/components/ds/data-display/bar-breakdown-chart.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "selectedId",
+          "type": "string"
+        },
+        {
+          "name": "onSelect",
+          "type": "function"
+        },
+        {
+          "name": "total",
+          "type": "number"
+        },
+        {
+          "name": "decimals",
+          "type": "number",
+          "default": "2"
+        },
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "primary",
+            "cost",
+            "revenue"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "showTotal",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        }
+      ],
+      "usage": "Rozbor nákladů / výnosů po skupinách – vodorovné pruhy s hodnotou a podílem, klik na pruh = filtr.",
+      "examples": [
+        {
+          "label": "Rozbor nákladů",
+          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Graf z externí knihovny pro jednoduchý rozbor",
+        "Barvy natvrdo místo variant"
+      ]
+    },
+    {
       "name": "AmountCell",
       "file": "src/components/ds/accounting/amount.tsx",
       "import_path": ""
@@ -4026,7 +4199,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4211,7 +4384,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4354,7 +4527,7 @@
       "examples": [
         {
           "label": "Přijatá faktura",
-          "code": "<DocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: <PaymentScheduleEditor … /> }]} />"
+          "code": "\u003cDocumentForm title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType(\"FP\")} mainSide=\"D\" status=\"filed\" tabs={[{ id: \"schedule\", label: \"Platební kalendář\", content: \u003cPaymentScheduleEditor … /\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4441,43 +4614,12 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepočítejte splátky ručně – použijte generatePaymentSchedule se stejnou logikou jako databáze.",
         "Neukládejte jednotlivé řádky zvlášť."
-      ]
-    },
-    {
-      "name": "BarBreakdownChart",
-      "file": "src/components/ds/data-display/bar-breakdown-chart.tsx",
-      "import_path": "",
-      "usage": "Rozbor nákladů / výnosů po skupinách – vodorovné pruhy s hodnotou a podílem, klik na pruh = filtr.",
-      "examples": [
-        {
-          "label": "Rozbor nákladů",
-          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
-        }
-      ],
-      "antipatterns": [
-        "Graf z externí knihovny pro jednoduchý rozbor",
-        "Barvy natvrdo místo variant"
-      ]
-    },
-    {
-      "name": "FilterChips",
-      "file": "src/components/ds/grid/filter-chips.tsx",
-      "import_path": "",
-      "usage": "Odebíratelné štítky aktivních filtrů nad výkazem nebo gridem, s „Zrušit vše“.",
-      "examples": [
-        {
-          "label": "Filtry",
-          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
-        }
-      ],
-      "antipatterns": [
-        "Vlastní štítky filtrů ve stránce"
       ]
     }
   ],
