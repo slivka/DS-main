@@ -10,6 +10,8 @@ import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
 import { applyFontScale } from "../../../lib/font-scale";
 import { useMediaQuery } from "../../../hooks/use-mobile";
+import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
+import { handlePaneLinkEvent } from "../panes/pane-link";
 
 export type NavItem = {
   to: string;
@@ -95,7 +97,13 @@ type ShellNavProps = {
 };
 
 function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate }: ShellNavProps) {
-  const isActive = (item: NavItem) => !item.disabled && (pathname === item.to || pathname.startsWith(`${item.to}/`));
+  // V režimu záložek otevírá navigace stránky do záložek (Cmd/Ctrl + klik = nová záložka, + Shift = sousední panel).
+  const paneTabs = usePaneTabs();
+  const activeTab = useActivePaneTab();
+  const currentPath = paneTabs ? activeTab?.route ?? "" : pathname;
+  const isActive = (item: NavItem) => !item.disabled && (currentPath === item.to || currentPath.startsWith(`${item.to}/`));
+  const paneOpen = (item: NavItem) =>
+    paneTabs ? (target: "replace" | "newTab" | "adjacentPane") => paneTabs.openTab(item.to, item.search, { target, title: item.label }) : null;
 
   const navItem = (item: NavItem) => {
     const Icon = item.icon;
@@ -118,7 +126,21 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     const node = item.disabled ? (
       <span aria-disabled="true" className={base}>{content}</span>
     ) : (
-      <Link to={item.to as never} search={item.search as never} onClick={onNavigate} className={base}>{content}</Link>
+      <Link
+        to={item.to as never}
+        search={item.search as never}
+        onClick={(event) => {
+          handlePaneLinkEvent(event, paneOpen(item));
+          onNavigate();
+        }}
+        onAuxClick={(event) => handlePaneLinkEvent(event, paneOpen(item))}
+        onMouseDown={(event) => {
+          if (paneTabs && event.button === 1) event.preventDefault();
+        }}
+        className={base}
+      >
+        {content}
+      </Link>
     );
     if (!collapsed && !item.disabled) return node;
     return (
