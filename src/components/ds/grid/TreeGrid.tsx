@@ -36,6 +36,7 @@ import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
+import { gridPeriodLabel } from "./grid-period";
 
 export type TreeGridRow = { id: string; parentId?: string | null };
 

@@ -62,6 +62,8 @@ import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export";
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
+import { gridPeriodLabel } from "./grid-period";
+import { cn } from "../../../lib/utils";
 
 /** Sloupec pobočky řídí explicitně branchVisibility; zobrazuje se jen v režimu „Všechny pobočky“, vždy jako první. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
@@ -706,6 +708,7 @@ export function DataGrid<Row>({
   ];
   const exportFilterLabels = [
     ...(exportMeta?.filters ?? []),
+    ...(period ? [gridPeriodLabel(period.value)] : []),
     ...(search.trim() ? [`Hledání: ${search.trim()}`] : []),
     ...activeFilterLabels,
   ];

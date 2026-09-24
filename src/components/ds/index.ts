@@ -64,6 +64,8 @@ export * from "./grid/ColumnFilter";
 export * from "./grid/grid-texts";
 export * from "./grid/TreeGrid";
 export * from "./grid/filter-chips";
+export * from "./grid/grid-period";
+export * from "./grid/grid-context-bar";
 
 /* Formuláře */
 export * from "./form/decimal-input";

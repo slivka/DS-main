@@ -159,7 +159,6 @@ function OverviewPage() {
       >
         <PageHeader
           title="Přijaté faktury"
-          description="Přehled dokladů za vybrané účetní období."
           actions={
             <>
               <Button variant="outline">Exportovat</Button>
