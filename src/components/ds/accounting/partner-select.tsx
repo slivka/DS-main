@@ -115,7 +115,7 @@ export function PartnerSelect({
                   value={`${partner.name} ${partner.ico ?? ""}`}
                   onSelect={() => {
                     onChange(partner.id);
-                    setOpen(false);
+                    changeOpen(false);
                   }}
                   className="gap-2"
                 >
@@ -137,7 +137,7 @@ export function PartnerSelect({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setOpen(false);
+                      changeOpen(false);
                       onCreate(query);
                     }}
                   >
@@ -151,7 +151,7 @@ export function PartnerSelect({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setOpen(false);
+                      changeOpen(false);
                       onLoadFromAres(query);
                     }}
                   >
