@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { Fragment, useEffect, useRef, useState, type ComponentType } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -226,13 +226,13 @@ function SortableTab({
       </ContextMenuTrigger>
       <ContextMenuContent>
         {actions.map((action) => (
-          <div key={action.id} className="contents">
+          <Fragment key={action.id}>
             {action.separatorBefore ? <ContextMenuSeparator /> : null}
             <ContextMenuItem disabled={action.disabled} onSelect={action.onSelect}>
               {action.label}
               {action.shortcut ? <ContextMenuShortcut>{action.shortcut}</ContextMenuShortcut> : null}
             </ContextMenuItem>
-          </div>
+          </Fragment>
         ))}
       </ContextMenuContent>
     </ContextMenu>
