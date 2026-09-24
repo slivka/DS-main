@@ -1,42 +1,45 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, FileText, LayoutGrid, ReceiptText, Users, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import {
   DataGrid,
-  DocumentForm,
-  documentFieldsForType,
+  DraftRestoredBanner,
+  LayoutMenu,
   LayoutSwitcher,
+  PageHeader,
   PaneLayout,
   PaneLink,
   PaneTabsProvider,
   PinnedBar,
+  createTab,
   maxPaneLayout,
+  parsePaneTabs,
+  persistDrafts,
   requiredPaneWidth,
+  serializePaneTabs,
+  setTabDirty,
   usePane,
   usePaneTabs,
   useTabDirty,
   useTabDraft,
   type DataGridColumn,
-  type DocumentHeaderValue,
-  type JournalLine,
+  type LayoutSnapshot,
   type PaneTab,
   type PaneTabsState,
-  type TabKind,
+  type SavedLayoutItem,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { formatAmount, formatDate } from "@/lib/format";
-import {
-  MOCK_ACCOUNTS,
-  MOCK_BOOKS,
-  MOCK_DIMENSIONS,
-  MOCK_JOURNAL,
-  MOCK_PARTNERS,
-  type JournalEntry,
-} from "@/lib/mock/accounting";
+import { MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
 
 const PREVIEW_WIDTHS = [1100, 1440, 1920] as const;
 const MIN_PANE_WIDTH = 420;
+const STATE_KEY = "ds-showcase:pane-tabs:v216";
+const LAYOUTS_KEY = "ds-showcase:layouts:v216";
 
 const ICONS = { issued: FileText, received: ReceiptText, journal: BookOpen, partners: Users, cash: Wallet, document: LayoutGrid } as const;
 type IconName = keyof typeof ICONS;
@@ -49,44 +52,74 @@ const PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
 
-/** Záložka s pevným id (kvůli shodě při vykreslení na serveru). */
-function fixedTab(id: string, route: string, title: string, icon: IconName, kind: TabKind = "list", params?: Record<string, unknown>): PaneTab {
-  return { id, route, params, kind, title, icon, history: [{ route, params, title }], historyIndex: 0, lastUsed: 0 };
+/** Výchozí stav: 1 panel s jednou dočasnou záložkou (pevné id kvůli vykreslení na serveru). */
+function initialState(): PaneTabsState {
+  const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued", pinned: false }, 0), id: "tab-start" };
+  return { version: 2, layout: 1, widths: [1], active: "pane-a", hiddenPanes: null, panes: [{ id: "pane-a", activeTab: tab.id, tabs: [tab] }] };
 }
 
-const INITIAL: PaneTabsState = {
-  version: 2,
-  layout: 3,
-  widths: [1 / 3, 1 / 3, 1 / 3],
-  active: "pane-a",
-  hiddenPanes: null,
-  panes: [
-    {
-      id: "pane-a",
-      activeTab: "tab-doc",
-      tabs: [
-        fixedTab("tab-issued", "/faktury-vydane", "Vydané faktury", "issued"),
-        fixedTab("tab-doc", "/doklad", "Přijatá faktura FP2026000012", "document", "record", { id: "FP2026000012" }),
-      ],
-    },
-    {
-      id: "pane-b",
-      activeTab: "tab-journal",
-      tabs: [
-        fixedTab("tab-journal", "/denik", "Účetní deník", "journal"),
-        fixedTab("tab-partners", "/partneri", "Partneři", "partners"),
-        fixedTab("tab-received", "/faktury-prijate", "Přijaté faktury", "received"),
-      ],
-    },
-    {
-      id: "pane-c",
-      activeTab: "tab-cash",
-      tabs: [fixedTab("tab-cash", "/pokladna", "Pokladna", "cash")],
-    },
-  ],
-};
+type Invoice = { id: string; number: string; date: string; partner: string; amount: number; text: string; updatedAt: string };
 
-function PaneGrid({ title, storageKey }: { title: string; storageKey: string }) {
+const INVOICES: Invoice[] = MOCK_JOURNAL.slice(0, 30).map((row: JournalEntry, index) => ({
+  id: `FV${String(2026000100 + index)}`,
+  number: `FV${String(2026000100 + index)}`,
+  date: row.date,
+  partner: row.partner,
+  amount: row.debit,
+  text: row.text,
+  updatedAt: "2026-09-01T08:00:00Z",
+}));
+
+const detailTitle = (id: string) => (id.startsWith("new-") ? "Nová faktura" : `Faktura ${id}`);
+
+/** Seznam faktur: klik = openRecord (pravidla a–f), Cmd/Ctrl = ponechaná záložka, Cmd/Ctrl+Shift = sousední panel. */
+function InvoiceList({ title }: { title: string }) {
+  const pane = usePane();
+  const tabs = usePaneTabs();
+  const modifiers = useRef({ metaKey: false, ctrlKey: false, shiftKey: false });
+  const counter = useRef(1);
+
+  useEffect(() => {
+    if (!pane || !tabs) return;
+    return tabs.registerRecordNav(pane.tabId, () => INVOICES.map((invoice) => ({ route: "/faktura", params: { id: invoice.id }, title: detailTitle(invoice.id), icon: "document" })));
+  }, [pane?.tabId]);
+
+  const columns = useMemo<DataGridColumn<Invoice>[]>(
+    () => [
+      { id: "number", label: "Doklad", width: 140, value: (row) => row.number, render: (row) => <span className="font-mono">{row.number}</span> },
+      { id: "date", label: "Datum", width: 110, value: (row) => row.date, render: (row) => formatDate(row.date) },
+      { id: "partner", label: "Partner", width: 180, value: (row) => row.partner },
+      { id: "amount", label: "Částka", numeric: true, width: 130, value: (row) => row.amount, render: (row) => formatAmount(row.amount, 2) },
+    ],
+    [],
+  );
+
+  const open = (id: string, isNew = false) =>
+    tabs?.openRecord("/faktura", { id }, { fromTabId: pane?.tabId, isNew, modifiers: modifiers.current, title: detailTitle(id), shortTitle: id.startsWith("new-") ? "Nová" : id, icon: "document" });
+
+  return (
+    <div
+      className="space-y-3"
+      onPointerDownCapture={(event) => {
+        modifiers.current = { metaKey: event.metaKey, ctrlKey: event.ctrlKey, shiftKey: event.shiftKey };
+      }}
+    >
+      <PageHeader
+        title={title}
+        description="Klik na řádek plní detail vedle; Cmd/Ctrl + klik = ponechaná záložka, Cmd/Ctrl + Shift + klik = sousední panel."
+        actions={
+          <Button type="button" size="sm" onClick={() => open(`new-${counter.current++}`, true)}>
+            Nový
+          </Button>
+        }
+      />
+      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} paginated />
+    </div>
+  );
+}
+
+/** Obecná stránka seznamu (menu). */
+function PageList({ title }: { title: string }) {
   const columns = useMemo<DataGridColumn<JournalEntry>[]>(
     () => [
       { id: "date", label: "Datum", width: 110, value: (row) => row.date, render: (row) => formatDate(row.date) },
@@ -95,81 +128,77 @@ function PaneGrid({ title, storageKey }: { title: string; storageKey: string }) 
     ],
     [],
   );
-  return <DataGrid<JournalEntry> storageKey={storageKey} title={title} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />;
-}
-
-const INITIAL_HEADER: DocumentHeaderValue = {
-  bookId: "b-fp",
-  number: "FP2026000012",
-  issueDate: "2026-01-15",
-  taxDate: "2026-01-15",
-  dueDate: "2026-01-29",
-  partnerId: "p1",
-  variableSymbol: "2026000012",
-  description: "Servisní práce za leden 2026",
-  accountingDate: "2026-01-15",
-  currency: "CZK",
-  rate: 1,
-  amountTotal: 4800,
-  totalMode: "sum",
-};
-const INITIAL_LINES: JournalLine[] = [{ id: "l1", debitAccount: "518001", creditAccount: "321001", amount: 4800, text: "Servisní práce" }];
-
-/** Doklad, jehož rozepsaný stav přežije přepnutí i přesun záložky do jiného panelu. */
-function PaneDocument() {
-  const pane = usePane();
-  const [header, setHeader] = useTabDraft(pane?.tabId, INITIAL_HEADER, "header");
-  const [lines, setLines] = useTabDraft(pane?.tabId, INITIAL_LINES, "lines");
-  const dirty = JSON.stringify(header) !== JSON.stringify(INITIAL_HEADER) || JSON.stringify(lines) !== JSON.stringify(INITIAL_LINES);
-  useTabDirty(dirty);
-
   return (
-    <DocumentForm
-      title="Přijatá faktura FP2026000012"
-      description={dirty ? "Doklad má neuložené změny – přetáhněte záložku do jiného panelu, změny zůstanou." : "Změňte popis a přetáhněte záložku do jiného panelu."}
-      value={header}
-      onChange={setHeader}
-      lines={lines}
-      onLinesChange={setLines}
-      books={MOCK_BOOKS}
-      accounts={MOCK_ACCOUNTS}
-      partners={MOCK_PARTNERS}
-      dimensions={MOCK_DIMENSIONS}
-      fields={documentFieldsForType("FP")}
-      status="filed"
-    />
+    <div className="space-y-3">
+      <PageHeader title={title} description="Procházejte menu – stránky se střídají v jedné dočasné záložce. Špendlík záložku ponechá." />
+      <DataGrid<JournalEntry> storageKey={`pane-showcase-${title}`} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />
+    </div>
   );
 }
 
-/** Ukázkové menu – odkazy otevírají záložky (Cmd/Ctrl + klik, prostřední tlačítko, Cmd/Ctrl + Shift + klik). */
+type InvoiceForm = { partner: string; amount: string; text: string };
+
+/** Detail faktury: rozepsaný stav se ukládá do IndexedDB a po obnovení stránky se nabídne zpět. */
+function InvoiceDetail({ id }: { id: string }) {
+  const pane = usePane();
+  const invoice = INVOICES.find((item) => item.id === id);
+  const base: InvoiceForm = { partner: invoice?.partner ?? "", amount: invoice ? String(invoice.amount) : "", text: invoice?.text ?? "" };
+  const [form, setForm, draft] = useTabDraft<InvoiceForm>(pane?.tabId, base, "form", {
+    route: "/faktura",
+    params: { id },
+    recordVersion: invoice?.updatedAt ?? null,
+  });
+  const dirty = JSON.stringify(form) !== JSON.stringify(base);
+  useTabDirty(dirty);
+
+  const save = () => {
+    if (pane) setTabDirty(pane.tabId, false);
+    draft.markSaved();
+    toast.success("Faktura uložena (ukázka)");
+  };
+
+  return (
+    <div className="space-y-4">
+      <PageHeader
+        title={detailTitle(id)}
+        description={invoice ? `${invoice.partner} · ${formatDate(invoice.date)}` : "Nový záznam se otevírá jako ponechaná záložka."}
+        actions={
+          <Button type="button" size="sm" disabled={!dirty} onClick={save}>
+            Uložit
+          </Button>
+        }
+      />
+      {draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}
+      {draft.conflict ? <DraftRestoredBanner variant="conflict" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}
+      <div className="grid max-w-xl gap-3">
+        <div className="space-y-1.5">
+          <Label htmlFor={`partner-${id}`}>Partner</Label>
+          <Input id={`partner-${id}`} value={form.partner} onChange={(event) => setForm({ ...form, partner: event.target.value })} />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor={`text-${id}`}>Popis</Label>
+          <Textarea id={`text-${id}`} value={form.text} onChange={(event) => setForm({ ...form, text: event.target.value })} />
+        </div>
+        <p className="text-sm text-muted-foreground">Změňte popis a obnovte stránku prohlížeče – rozepsaná verze se po chvíli (1 s) uloží a po obnovení se nabídne zpět.</p>
+      </div>
+    </div>
+  );
+}
+
+/** Ukázkové menu – obyčejný klik otevírá dočasnou záložku, Cmd/Ctrl + klik ponechanou. */
 function DemoMenu() {
   const tabs = usePaneTabs();
-  const Doc = ICONS.document;
   return (
     <nav aria-label="Ukázkové menu" className="flex w-48 shrink-0 flex-col gap-0.5 border-r bg-card p-2 text-sm">
       {PAGES.map((page) => {
         const Icon = ICONS[page.icon];
         return (
-          <PaneLink
-            key={page.route}
-            route={page.route}
-            options={{ title: page.title, icon: page.icon, kind: "list" }}
-            className="flex h-8 items-center gap-2 rounded-md px-2 hover-surface"
-          >
+          <PaneLink key={page.route} route={page.route} options={{ title: page.title, icon: page.icon, kind: "list" }} className="flex h-8 items-center gap-2 rounded-md px-2 hover-surface">
             <Icon className="size-4" />
             {page.title}
           </PaneLink>
         );
       })}
-      <PaneLink
-        route="/doklad"
-        params={{ id: "FP2026000012" }}
-        options={{ title: "Přijatá faktura FP2026000012", shortTitle: "FP2026000012", icon: "document", kind: "record" }}
-        className="flex h-8 items-center gap-2 rounded-md px-2 hover-surface"
-      >
-        <Doc className="size-4" />
-        Doklad FP2026000012
-      </PaneLink>
       <div className="mt-auto space-y-1 border-t pt-2">
         <Button
           type="button"
@@ -189,17 +218,42 @@ function DemoMenu() {
   );
 }
 
-/** Ukázka režimu více oken se záložkami. */
+type StoredLayout = SavedLayoutItem & { snapshot: LayoutSnapshot | null };
+
+/** Ukázka režimu více oken: dočasné a ponechané záložky, maximalizace, koncepty a uložená rozložení. */
 export function PaneShowcase() {
-  const [state, setState] = useState<PaneTabsState>(INITIAL);
+  const [state, setState] = useState<PaneTabsState>(initialState);
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1440);
-  const [pinned, setPinned] = useState<string[]>(["/faktury-vydane", "/faktury-prijate", "/denik", "/partneri"]);
+  const [pinned, setPinned] = useState<string[]>(["/faktury-vydane", "/denik"]);
+  const [layouts, setLayouts] = useState<StoredLayout[]>([]);
   const [demoKey, setDemoKey] = useState(0);
+  const [loaded, setLoaded] = useState(false);
   const maxLayout = maxPaneLayout(previewWidth - 192, MIN_PANE_WIDTH);
 
+  // Stav záložek a rozložení se v ukázce drží v localStorage (v aplikaci v databázi), koncepty v IndexedDB.
+  useEffect(() => {
+    void persistDrafts({ userKey: "showcase", companyId: "demo", maxAgeDays: 7 });
+    try {
+      const saved = parsePaneTabs(window.localStorage.getItem(STATE_KEY));
+      if (saved) setState(saved);
+      const savedLayouts = window.localStorage.getItem(LAYOUTS_KEY);
+      if (savedLayouts) setLayouts(JSON.parse(savedLayouts));
+    } catch {
+      /* ukázka */
+    }
+    setLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (loaded) window.localStorage.setItem(STATE_KEY, serializePaneTabs(state));
+  }, [state, loaded]);
+  useEffect(() => {
+    if (loaded) window.localStorage.setItem(LAYOUTS_KEY, JSON.stringify(layouts));
+  }, [layouts, loaded]);
+
   const renderTab = (tab: PaneTab) => {
-    if (tab.route === "/doklad") return <PaneDocument />;
-    return <PaneGrid title={tab.title ?? "Doklady"} storageKey={`pane-${tab.route.replace(/\W+/g, "-")}`} />;
+    if (tab.route === "/faktura") return <InvoiceDetail id={String(tab.params?.id ?? "")} />;
+    if (tab.route === "/faktury-vydane") return <InvoiceList title={tab.title ?? "Vydané faktury"} />;
+    return <PageList title={tab.title ?? "Stránka"} />;
   };
 
   return (
@@ -208,7 +262,7 @@ export function PaneShowcase() {
       state={state}
       onChange={setState}
       onSaveTab={() => {
-        toast.success("Doklad uložen");
+        toast.success("Uloženo");
         return true;
       }}
       onNewTabRequest={() => toast.info("Alt+T otevře vyhledávání; vybraná stránka se otevře do nové záložky.")}
@@ -216,6 +270,7 @@ export function PaneShowcase() {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-3">
           <ShowcaseLayoutSwitcher maxLayout={maxLayout} />
+          <ShowcaseLayoutMenu layouts={layouts} setLayouts={setLayouts} />
           <div className="flex items-center gap-1">
             {PREVIEW_WIDTHS.map((width) => (
               <Button key={width} type="button" size="sm" variant={previewWidth === width ? "default" : "outline"} onClick={() => setPreviewWidth(width)}>
@@ -228,19 +283,27 @@ export function PaneShowcase() {
             size="sm"
             variant="ghost"
             onClick={() => {
-              setState(INITIAL);
+              setState(initialState());
               setDemoKey((value) => value + 1);
             }}
           >
             Obnovit ukázku
           </Button>
-          <span className="text-sm text-muted-foreground">Zkratky: Alt+1/2/3 · Alt+←/→ · Alt+W · Alt+Shift+W · Alt+T</span>
+          <span className="text-sm text-muted-foreground">Alt+M maximalizace · Esc obnovit · Alt+Shift+T znovu otevřít · Alt+L rozložení · Alt+1/2/3 · Alt+W</span>
         </div>
+        <ol className="grid gap-1 rounded-lg border bg-card p-3 text-sm text-muted-foreground md:grid-cols-2">
+          <li>1. V 1 panelu procházejte menu – jedna dočasná záložka (kurzíva) bez lišty; ← zpět, podržením ← historie s ⧉.</li>
+          <li>2. Špendlík v záhlaví záložku ponechá; další klik v menu přidá druhou záložku a objeví se lišta.</li>
+          <li>3. Přepněte na 2 panely a klikejte na řádky Vydaných faktur – detail se plní vpravo, listujte ↑ ↓; Nový = ponechaná záložka.</li>
+          <li>4. Maximalizujte panel ikonou nebo Alt+M, obnovte Esc.</li>
+          <li>5. Rozepište popis faktury a obnovte stránku – nabídne se rozepsaná verze.</li>
+          <li>6. Rozložení ▾ – uložte aktuální rozložení a později ho obnovte.</li>
+        </ol>
 
         <div className="overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
             <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
-            <div className="flex h-[560px]">
+            <div className="flex h-[600px]">
               <DemoMenu />
               <PaneLayout
                 minPaneWidth={MIN_PANE_WIDTH}
@@ -257,7 +320,38 @@ export function PaneShowcase() {
   );
 }
 
-/** Připnuté stránky – klik nahradí aktivní záložku, Ctrl/Cmd nebo prostřední tlačítko otevře novou. */
+function ShowcaseLayoutMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void }) {
+  const tabs = usePaneTabs();
+  return (
+    <LayoutMenu
+      items={layouts}
+      onSave={({ name, isDefault, snapshot }) => {
+        const item: StoredLayout = { id: `layout-${Date.now()}`, name, isDefault, panes: snapshot?.layout ?? 1, snapshot };
+        setLayouts((items) => [...items.map((other) => (isDefault ? { ...other, isDefault: false } : other)), item]);
+        toast.success(`Rozložení „${name}“ uloženo`);
+      }}
+      onApply={(id) => {
+        const item = layouts.find((layout) => layout.id === id);
+        if (!item?.snapshot || !tabs) return;
+        const skipped = tabs.applyLayout(item.snapshot, { keepDirty: true });
+        if (skipped.length) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.length.toLocaleString("cs-CZ")}`);
+      }}
+      onUpdate={(id, patch) =>
+        setLayouts((items) =>
+          items.map((item) => {
+            if (item.id !== id) return patch.isDefault ? { ...item, isDefault: false } : item;
+            const snapshot = patch.snapshot !== undefined ? patch.snapshot : item.snapshot;
+            return { ...item, ...(patch.name ? { name: patch.name } : {}), ...(patch.isDefault !== undefined ? { isDefault: patch.isDefault } : {}), snapshot, panes: snapshot?.layout ?? item.panes };
+          }),
+        )
+      }
+      onDelete={(id) => setLayouts((items) => items.filter((item) => item.id !== id))}
+      onReorder={(ids) => setLayouts((items) => ids.map((id) => items.find((item) => item.id === id)!).filter(Boolean))}
+    />
+  );
+}
+
+/** Připnuté stránky – klik otevře dočasnou záložku, Ctrl/Cmd nebo prostřední tlačítko ponechanou. */
 function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (update: (ids: string[]) => string[]) => void }) {
   const tabs = usePaneTabs();
   if (!tabs) return null;
@@ -274,7 +368,7 @@ function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (up
       }))}
       onOpen={(id, { newPane }) => {
         const page = PAGES.find((item) => item.route === id);
-        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "replace", title: page.title, icon: page.icon });
+        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "preview", title: page.title, icon: page.icon });
       }}
       onUnpin={(id) => setPinned((ids) => ids.filter((item) => item !== id))}
       onReorder={(ids) => setPinned(() => ids)}
