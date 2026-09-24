@@ -53,7 +53,7 @@ export const DraftRestoredBanner = React.forwardRef<HTMLDivElement, DraftRestore
     >
       <History className={cn("size-4 shrink-0", conflict ? "text-warning" : "text-primary")} aria-hidden="true" />
       <span className="min-w-0 flex-1">
-        {conflict ? `${t.conflict} – ${t.restored.replace("{time}", timeOf(savedAt)).toLowerCase()}` : t.restored.replace("{time}", timeOf(savedAt))}
+        {conflict ? t.conflict : t.restored.replace("{time}", timeOf(savedAt))}
       </span>
       <span className="flex items-center gap-1">
         {conflict && onShowDraft ? (
