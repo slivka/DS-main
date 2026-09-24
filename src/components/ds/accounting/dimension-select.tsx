@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, ChevronRight, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -59,6 +59,13 @@ export function DimensionSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
+  const suppressFocusOpen = useRef(false);
+
+  const changeOpen = (next: boolean) => {
+    if (!next) suppressFocusOpen.current = true;
+    setOpen(next);
+  };
 
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
   const childrenOf = useMemo(() => {
@@ -147,7 +154,7 @@ export function DimensionSelect({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={changeOpen}>
       <PopoverTrigger asChild>
         <Button
           id={id}
@@ -155,7 +162,13 @@ export function DimensionSelect({
           variant="outline"
           role="combobox"
           disabled={disabled}
-          onFocus={() => !disabled && setOpen(true)}
+          onFocus={() => {
+            if (disabled || suppressFocusOpen.current) return;
+            changeOpen(true);
+          }}
+          onBlur={() => {
+            suppressFocusOpen.current = false;
+          }}
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
