@@ -21,11 +21,14 @@ export const DEFAULT_GRID_PERIOD_TEXTS: GridPeriodTexts = {
 export interface GridPeriodConfig {
   fiscalFrom: string; fiscalTo: string; value: GridPeriodValue; onChange: (value: GridPeriodValue) => void; texts?: Partial<GridPeriodTexts>; today?: string;
 }
-export interface GridBookConfig<Row = unknown> {
-  books: BookOption[]; value: string | "all"; onChange: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string; getRowBookId?: (row: Row) => string | null | undefined;
+export interface GridBookDisplayConfig {
+  books: BookOption[]; value: string | "all"; onChange: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string;
 }
-export interface GridContextBarProps<Row = unknown> extends React.ComponentPropsWithoutRef<"div"> {
-  period?: GridPeriodConfig; book?: GridBookConfig<Row>;
+export interface GridBookConfig<Row = unknown> extends GridBookDisplayConfig {
+  getRowBookId?: (row: Row) => string | null | undefined;
+}
+export interface GridContextBarProps extends React.ComponentPropsWithoutRef<"div"> {
+  period?: GridPeriodConfig; book?: GridBookDisplayConfig;
 }
 
 const parse = (value: string) => new Date(`${value}T00:00:00Z`);
@@ -77,7 +80,7 @@ function PeriodGrid({ label, count, active, columns, render, onSelect }: { label
   return <div><div className="mb-1 text-sm font-medium">{label}</div><div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
 }
 
-export function GridBookSelect<Row = unknown>({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy" }: GridBookConfig<Row>) {
+export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy" }: GridBookDisplayConfig) {
   const active = books.filter((book) => book.active !== false);
   const selected = active.find((book) => book.id === value);
   const [open, setOpen] = React.useState(false);

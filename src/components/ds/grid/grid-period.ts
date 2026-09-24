@@ -24,7 +24,10 @@ export function gridPeriodRange(fiscalFrom: string, fiscalTo: string, kind: Grid
   if (kind === "ytd") return { kind, from: fiscalFrom, to: clamp(today, fiscalFrom, fiscalTo) };
   if (kind === "custom") return { kind, from: fiscalFrom, to: fiscalTo };
   const span = kind === "month" ? 1 : kind === "quarter" ? 3 : 6;
-  const maxIndex = Math.max(0, Math.ceil(((parse(fiscalTo).getTime() - parse(fiscalFrom).getTime()) / DAY + 1) / (span * 28)) - 1);
+  const start = parse(fiscalFrom);
+  const end = parse(fiscalTo);
+  const fiscalMonths = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth() + 1;
+  const maxIndex = Math.max(0, Math.ceil(fiscalMonths / span) - 1);
   const safeIndex = Math.max(0, Math.min(index, maxIndex));
   const from = addMonths(fiscalFrom, safeIndex * span);
   const to = clamp(endBefore(addMonths(from, span)), fiscalFrom, fiscalTo);
