@@ -86,9 +86,16 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `DataGrid`, `TreeGrid` a vlastní obsah v `ZoomPane` používají jediný `GridToolbar`.
 - Pořadí vlevo: Tabulka/Strom, Rozbalit/Sbalit, Stav k datu, `toolbarLeft`. Pořadí vpravo: Hledat, Filtr, Obnovit, Export, Sloupce, Seskupit, Hustota + zoom, Vybrat více, kompatibilní `actions`, `moreActions`, `addAction`.
 - Oranžová znamená, že ovládání zužuje nebo přeskupuje data: filtr, hledání, seskupení a `GridToggleButton tone="grouping"`. Modrá plná znamená zapnutý režim (`AsOfDateToggle`, `tone="mode"`) nebo primární Přidat.
-- Hlavní parametry obrazovky vkládej do `toolbarLeft`; pomocné filtry do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader.menuActions`.
+- Hlavní parametry obrazovky vkládej do `toolbarLeft`; účetní období a knihu však při použití `GridContextBar` předávej výhradně přes `period` a `book`. Pomocné filtry patří do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader.menuActions`.
 - „Nový“ nikdy nevkládej do `PageHeader`; použij `addAction`. Export v gridu je vždy jediný ikonový `GridExport` s nabídkou. `ExcelExportButton` je v gridu zakázaný a zůstává jen pro samostatný obsah.
 - Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta se v úzkém panelu zalamuje bez vodorovného posuvníku.
+
+### Kontextový řádek gridu
+
+- `GridContextBar` je součást spojeného bloku gridu a stojí bezprostředně nad `GridToolbar`. Vlevo obsahuje `GridPeriodFilter`, vpravo `GridBookSelect` zarovnaný nad akcí Přidat.
+- Používej jej na seznamech dokladů a účetních výkazech, kde uživatel mění rozsah účetního období nebo knihu. Samostatně jej lze použít nad obsahem v `ZoomPane`.
+- „Celé období“ je neutrální. Měsíc, čtvrtletí, pololetí, období od začátku roku a vlastní rozsah jsou oranžové, protože zužují data.
+- Období respektuje `fiscalFrom` a `fiscalTo`, i když účetní rok nezačíná v lednu. Stav může aplikace zachovat přes `useTabDraft`.
 
 ## Export do Excelu
 
@@ -142,7 +149,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   Stornován (danger).
 - Příznak `approved` na `DocumentStatusBadge` zobrazí vedle stavu malý odznak
   „Schválen“ (success, fajfka). Je nezávislý na stavu dokladu.
-- Hlavičku stránky skládej z `PageHeader` (nadpis, popis, akce vpravo), ne vlastním nadpisem na stránce.
+- Hlavičku stránky skládej z `PageHeader` (nadpis a akce vpravo), ne vlastním nadpisem na stránce. Pod nadpisem stránky ani formuláře není doplňkový text.
 - Částkové sloupce přes `debitCreditColumns`: výchozí popisky jsou „MD částka“ /
   „DAL částka“ a součet kontroluje rozdíl obou stran.
 - Účetní období přes `FiscalPeriodSelect` (Otevřené / V uzávěrce / Uzavřené).

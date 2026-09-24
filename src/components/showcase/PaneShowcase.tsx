@@ -106,7 +106,6 @@ function InvoiceList({ title }: { title: string }) {
     >
       <PageHeader
         title={title}
-        description="Klik na řádek plní detail vedle; Cmd/Ctrl + klik = nová záložka, Cmd/Ctrl + Shift + klik = sousední panel."
         menuActions={[{ label: "Výkazy", onClick: () => toast.info("Ukázková akce stránky") }]}
       />
       <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }} paginated />
@@ -126,7 +125,7 @@ function PageList({ title }: { title: string }) {
   );
   return (
     <div className="space-y-3">
-      <PageHeader title={title} description="Běžný klik v menu nahradí obsah aktivní záložky; šipkou zpět se vrátíte." menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]} />
+      <PageHeader title={title} menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]} />
       <DataGrid<JournalEntry> storageKey={`pane-showcase-${title}`} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />
     </div>
   );
@@ -157,7 +156,6 @@ function InvoiceDetail({ id }: { id: string }) {
     <div className="space-y-4">
       <PageHeader
         title={detailTitle(id)}
-        description={invoice ? `${invoice.partner} · ${formatDate(invoice.date)}` : "Nový záznam se vždy otevře v nové záložce."}
         menuActions={[{ label: "Uložit", disabled: !dirty, disabledReason: "Nejsou žádné změny", onClick: save }]}
       />
       {draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}

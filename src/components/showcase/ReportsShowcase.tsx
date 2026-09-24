@@ -7,6 +7,7 @@ import {
   AccountSelect,
   BarBreakdownChart,
   FilterChips,
+  gridPeriodRange,
   TreeGrid,
   formatAccountCode,
   type AccountCatalogItem,
@@ -70,6 +71,7 @@ export function ReportsShowcase() {
   const [viewMode, setViewMode] = useState<GridViewMode>("tree");
   const [asOfEnabled, setAsOfEnabled] = useState(true);
   const [asOfDate, setAsOfDate] = useState("2026-09-24");
+  const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "quarter", 0));
 
   const chips = useMemo<FilterChip[]>(() => {
     const list: FilterChip[] = [{ id: "period", label: "Období", value: "01–09/2026" }];
@@ -98,6 +100,7 @@ export function ReportsShowcase() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           viewZoomKey="showcase-chart-view"
+          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
           asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
           filters={<span className="text-sm text-muted-foreground">Filtry účtové osnovy</span>}
           defaultFilters={["Rok 2026"]}

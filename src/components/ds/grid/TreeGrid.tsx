@@ -35,6 +35,8 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
+import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
+import { gridPeriodLabel } from "./grid-period";
 
 export type TreeGridRow = { id: string; parentId?: string | null };
 
@@ -55,6 +57,9 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   width?: number;
   /** Sloupec je ve výchozím stavu skrytý (lze zapnout ve výběru sloupců). */
   hiddenByDefault?: boolean;
+  locked?: boolean;
+  fitContent?: boolean;
+  transient?: boolean;
 };
 
 /** Úroveň rozbalení – `depth` = počet rozbalených úrovní (0 = jen kořeny). */
@@ -111,6 +116,8 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   /** Akce „Nový“ a další – v liště vpravo od zoomu. */
   actions?: ReactNode;
   toolbarLeft?: ReactNode;
+  period?: GridPeriodConfig;
+  book?: GridBookConfig<Row>;
   filters?: ReactNode;
   filterChips?: FilterChip[];
   onClearFilters?: () => void;
@@ -171,6 +178,8 @@ export function TreeGrid<Row extends TreeGridRow>({
   onRowOpen,
   actions,
   toolbarLeft,
+  period,
+  book,
   filters,
   filterChips = [],
   onClearFilters,
@@ -208,20 +217,26 @@ export function TreeGrid<Row extends TreeGridRow>({
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
 
+  const effectiveColumns = useMemo<TreeGridColumn<Row>[]>(() => book?.value === "all" && book.getRowBookId ? [createGridBookColumn(book), ...columns] : columns, [book, columns]);
+  const hierarchyColumnId = columns[0]?.id;
   const colDefs = useMemo(
     () =>
-      columns.map((column, index) => ({
+      effectiveColumns.map((column) => ({
         id: column.id,
         label: column.label,
-        ...(index === 0 ? { locked: true } : {}),
+        ...(column.id === hierarchyColumnId || column.locked ? { locked: true } : {}),
         ...(column.hiddenByDefault ? { defaultVisible: false } : {}),
+        ...(column.transient ? { transient: true } : {}),
       })),
-    [columns],
+    [effectiveColumns, hierarchyColumnId],
   );
   const cols = useGridColumns(key, colDefs);
-  const byColumnId = useMemo(() => new Map(columns.map((c) => [c.id, c])), [columns]);
+  const byColumnId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
   const shown = useMemo(
-    () => cols.columns.filter((c) => cols.visible[c.id]).map((c) => byColumnId.get(c.id)!).filter(Boolean),
+    () => {
+      const visible = cols.columns.filter((c) => cols.visible[c.id]).map((c) => byColumnId.get(c.id)!).filter(Boolean);
+      return placeGridBookColumnFirst(visible);
+    },
     [cols.columns, cols.visible, byColumnId],
   );
 
@@ -370,7 +385,7 @@ export function TreeGrid<Row extends TreeGridRow>({
       columns: shown.map((column) => column.label),
       rows: out.map(({ row, level }) =>
         shown.map((column, index): ExportCell => {
-          if (index === 0) return `${"    ".repeat(level)}${cellText(column, row)}`;
+          if (column.id === hierarchyColumnId) return `${"    ".repeat(level)}${cellText(column, row)}`;
           const total = nodeTotal(column, row);
           if (total !== null) return total;
           const raw = column.value?.(row);
@@ -397,10 +412,11 @@ export function TreeGrid<Row extends TreeGridRow>({
   return (
     <div ref={blockRef} className={cn("@container flex min-w-0 flex-col", className)} data-slot="tree-grid">
       {showTitle ? <div className="rounded-t-lg border bg-card px-3 py-2 font-semibold">{title}</div> : null}
+      {period || book ? <GridContextBar period={period} book={book} className={cn("border-b-0", showTitle ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
       <GridToolbar
         zoom={zoom}
         density={density}
-        className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", showTitle && "rounded-t-none border-t-0 shadow-none")}
+        className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", (showTitle || period || book) && "rounded-t-none border-t-0 shadow-none")}
         left={<>
           {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
           {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
@@ -438,7 +454,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               getData={exportData}
               filename={exportName}
               title={title}
-              meta={{ ...exportMeta, ...(query.trim() ? { filters: [...(exportMeta?.filters ?? []), `Hledání: ${query.trim()}`] } : {}) }}
+              meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }}
               zoom={zoom}
               texts={sharedTexts}
               pdfExport={pdfExport}
@@ -446,7 +462,7 @@ export function TreeGrid<Row extends TreeGridRow>({
             />
           ) : null}
           <ColumnPicker
-            columns={cols.columns.map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))}
+            columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))}
             visible={cols.columnVisible}
             onToggle={cols.toggle}
             onReorder={cols.reorder}
@@ -507,16 +523,16 @@ export function TreeGrid<Row extends TreeGridRow>({
                     className={cn(canExpand && "font-medium", isHighlighted && "bg-primary/10 hover:bg-primary/15")}
                   >
                     {selectMode ? <TableCell className="w-10 text-center"><Checkbox checked={selectedIds.has(row.id)} onCheckedChange={() => toggleRow(row.id)} aria-label={sharedTexts.selectRow} onClick={(event) => event.stopPropagation()} /></TableCell> : null}
-                    {shown.map((column, index) => {
+                    {shown.map((column) => {
                       const total = nodeTotal(column, row);
                       const numericShown = column.numeric ? (total ?? numericValue(column, row)) : null;
                       return (
                         <TableCell
                           key={column.id}
                           className={cn("whitespace-nowrap", alignClass(column), column.numeric && amountClass(numericShown))}
-                          style={index === 0 ? { paddingLeft: `${level * 1.5 + 0.9}em` } : undefined}
+                          style={column.id === hierarchyColumnId ? { paddingLeft: `${level * 1.5 + 0.9}em` } : undefined}
                         >
-                          {index === 0 ? (
+                          {column.id === hierarchyColumnId ? (
                             <span className="flex items-center gap-1">
                               {canExpand ? (
                                 <button
@@ -555,9 +571,9 @@ export function TreeGrid<Row extends TreeGridRow>({
             <TableFooter>
               <TableRow>
                 {selectMode ? <TableCell /> : null}
-                {shown.map((column, index) => (
+                {shown.map((column) => (
                   <TableCell key={column.id} className={cn("whitespace-nowrap font-semibold", column.numeric && "text-right tabular-nums")}>
-                    {index === 0
+                    {column.id === hierarchyColumnId
                       ? t.totalLabel
                       : column.numeric && column.total !== "none"
                         ? formatAmount(grandTotals.get(column.id) ?? 0, column.decimals ?? 2)

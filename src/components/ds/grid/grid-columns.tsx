@@ -115,6 +115,8 @@ export type GridColumn<Id extends string = string> = {
   align?: "left" | "right" | "center";
   /** Sloupec pobočky – pri „Všetky pobočky" sa posúva vľavo a skrýva pri jednej pobočke. */
   branchVisibility?: "auto" | "always";
+  /** Dočasný systémový sloupec se neukládá do uživatelských pohledů ani nastavení. */
+  transient?: boolean;
 };
 
 /** Spojená skupina sloupců v horním řádku hlavičky. */
@@ -126,6 +128,9 @@ export type GridColumnGroup = { section: string; span: number };
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
 export function useGridColumns<Id extends string>(storageKey: string, columns: GridColumn<Id>[]) {
+  const persistentIds = useMemo(() => new Set(columns.filter((column) => !column.transient).map((column) => column.id)), [columns]);
+  const persistentRecord = useCallback(<Value,>(record: Partial<Record<Id, Value>>) => Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))), [persistentIds]);
+  const persistentOrder = useCallback((ids: Id[]) => ids.filter((id) => persistentIds.has(id)), [persistentIds]);
   const defaults = useMemo(
     () =>
       Object.fromEntries(columns.map((c) => [c.id, c.defaultVisible !== false])) as Record<
@@ -187,13 +192,13 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     (next: Record<Id, boolean>) => {
       setVisible(next);
       try {
-        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(next));
+        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(persistentRecord(next)));
       } catch {
         /* úložiště není dostupné */
       }
       window.dispatchEvent(new CustomEvent("grid-columns-change", { detail: { storageKey, visible: next } }));
     },
-    [storageKey],
+    [storageKey, persistentRecord],
   );
 
   const toggle = useCallback(
@@ -245,13 +250,13 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     (next: Id[]) => {
       setOrder(next);
       try {
-        localStorage.setItem(`columnOrder:${storageKey}`, JSON.stringify(next));
+        localStorage.setItem(`columnOrder:${storageKey}`, JSON.stringify(persistentOrder(next)));
       } catch {
         /* úložiště není dostupné */
       }
       window.dispatchEvent(new CustomEvent("grid-column-order-change", { detail: { storageKey, order: next } }));
     },
-    [storageKey],
+    [storageKey, persistentOrder],
   );
 
   /** Posun sloupce o jednu pozici (-1 nahoru / +1 dolů). */
@@ -313,7 +318,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   const storeWidths = useCallback(
     (next: Partial<Record<Id, number>>) => {
       try {
-        localStorage.setItem(widthsKey, JSON.stringify(next));
+        localStorage.setItem(widthsKey, JSON.stringify(persistentRecord(next)));
       } catch {
         /* úložiště není dostupné */
       }
@@ -321,7 +326,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
         new CustomEvent("grid-column-widths", { detail: { key: widthsKey, widths: next } }),
       );
     },
-    [widthsKey],
+    [widthsKey, persistentRecord],
   );
 
   const persistWidths = useCallback(
@@ -374,12 +379,12 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   /** Uloží aktuální viditelnost, pořadí i šířky jako výchozí zobrazení gridu. */
   const saveDefault = useCallback(() => {
     try {
-      localStorage.setItem(defaultKey, JSON.stringify({ visible, order, widths }));
+      localStorage.setItem(defaultKey, JSON.stringify({ visible: persistentRecord(visible), order: persistentOrder(order), widths: persistentRecord(widths) }));
       setHasCustomDefault(true);
     } catch {
       /* úložiště není dostupné */
     }
-  }, [defaultKey, visible, order, widths]);
+  }, [defaultKey, visible, order, widths, persistentRecord, persistentOrder]);
 
   /** Zruší vlastní výchozí zobrazení (vrátí tovární). */
   const clearDefault = useCallback(() => {
@@ -427,7 +432,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     persistWidths(saved?.widths ?? {});
   }, [defaultKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder]);
 
-  const views = useColumnViews(storageKey, visible, persist, order, persistOrder);
+  const views = useColumnViews(storageKey, persistentRecord(visible) as Record<Id, boolean>, persist, persistentOrder(order), persistOrder);
 
   // --- sekce sloupců -----------------------------------------------------
   const sections = useMemo(
