@@ -42,6 +42,10 @@ const SCHEDULE: PaymentScheduleItem[] = [
 
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
 export function DocumentFormShowcase() {
+  const [handedSuggestions, setHandedSuggestions] = useState(true);
+  const [descriptionSuggestions, setDescriptionSuggestions] = useState(true);
+  const suggestNames = async (query: string) => ["Jan Veselý", "Jana Nováková", "Petr Svoboda"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
+  const suggestDescriptions = async (query: string) => ["Doprava zásilky", "Nákup kancelářských potřeb", "Úhrada faktury v hotovosti"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
   const [invoice, setInvoice] = useState(INVOICE_HEADER);
   const [invoiceLines, setInvoiceLines] = useState(INVOICE_LINES);
   const [schedule, setSchedule] = useState(SCHEDULE);
@@ -102,12 +106,13 @@ export function DocumentFormShowcase() {
   return (
     <>
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
-        <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", <span className="font-mono">211.001 - Pokladna CZK <span className="font-sans">DAL</span></span>], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
+        <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
+          handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČ a DIČ.">
-        <DocumentForm title="Pokladní doklad – příjem" identity={{ items: ["PO - Pokladna", "CZK", "2026", <span className="font-mono">211.001 - Pokladna CZK <span className="font-sans">MD</span></span>], number: cashIn.number }} directionBadge="in" value={cashIn} onChange={setCashIn} lines={[]} {...common}
+        <DocumentForm title="Pokladní doklad – příjem" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "MD", text: "211.001 - Pokladna CZK" }], number: cashIn.number }} directionBadge="in" value={cashIn} onChange={setCashIn} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" mainSide="MD" mainAccountLocked status="filed" />
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna v EUR" description="Měna zamčená (text), kurz viditelný se zdrojem.">

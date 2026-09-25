@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.32.0 – edit dokladu 4 a jednotná lišta gridu
+
+- Všechny akce v lištách gridů, řádků a platebního kalendáře používají stejný neutrální rámeček; aktivní filtry zůstávají oranžové a zapnuté režimy modré.
+- `CounterpartyField` po otevření ukáže všechny aktivní partnery, podporuje `favoriteIds` a má šipku pro otevření seznamu. Nový `SuggestInput` nabízí hodnoty z předchozích dokladů.
+- `DocumentForm` používá nadpis Základní údaje, našeptávání pro předávajícího a popis, editovatelné ruční Celkem se symbolem Σ a štítky MD/DAL v identitě.
+- `JournalLinesEditor` má jednotnou horní lištu s přidáním, haléřovým vyrovnáním, hledáním, sloupci, obnovením rozložení a zoomem. Pata sjednocuje Rozpis, Haléřové vyrovnání, Celkem, Zadáno a Rozdíl.
+- Nová sbalitelná rekapitulace nabízí Účtování, Zakázky a vlastní `recapTabs`; stav panelu a záložky se pamatuje podle `storageKey`.
+
 ## Changelog 2.31.0 – rozvržení údajů dokladu
 
 - `DocumentForm` používá jednotnou dvacetisloupcovou mřížku: hlavní obsah zabírá 70 % a krátké údaje po 15 %; v úzkém panelu se pole skládají pod sebe, IČ a DIČ zůstávají vedle sebe.

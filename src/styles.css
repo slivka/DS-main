@@ -469,10 +469,13 @@
   border-color: var(--grid-chrome-border);
 }
 
-.grid-toolbar-row .grid-toolbar-control {
+.grid-toolbar-row :is(.grid-toolbar-control, .grid-toolbar-icon-control, .zoom-controls) {
   border-color: var(--border);
   border-width: 1px;
   border-style: solid;
+}
+
+.grid-toolbar-row .grid-toolbar-control {
   background-color: var(--card);
   color: var(--foreground);
 }

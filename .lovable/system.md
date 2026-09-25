@@ -100,6 +100,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Hlavní parametry obrazovky vkládej do `toolbarLeft`; účetní období a knihu však při použití `GridContextBar` předávej výhradně přes `period` a `book`. Pomocné filtry patří do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader.menuActions`.
 - „Nový“ nikdy nevkládej do `PageHeader`; použij `addAction`. Export v gridu je vždy jediný ikonový `GridExport` s nabídkou. `ExcelExportButton` je v gridu zakázaný a zůstává jen pro samostatný obsah.
 - Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta zůstává vždy v jednom řádku bez vodorovného posuvníku. Podle skutečně změřené šířky přesouvá méně důležité skupiny Zobrazení a Data do jediné nabídky ⋯; Obnovit zůstává úplně vpravo.
+- Všechna neaktivní tlačítka v `GridToolbar` a lištách editorů používají společnou třídu `grid-toolbar-control`: stejný jednobodový rámeček tokenu `--border`, výšku a zaoblení. Jednotlivé akce nesmějí přepisovat rámeček vlastní variantou; odlišuje se jen oranžový aktivní filtr/seskupení, modrý režim a primární Přidat.
 
 ### Kontextový řádek gridu
 

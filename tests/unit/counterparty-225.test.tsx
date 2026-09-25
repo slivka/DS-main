@@ -12,6 +12,7 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
   it("psaní textu zruší partnerId a ponechá identifikátory", () => expect(counterpartyFromText("Alfa stavby", "12345678", "CZ12345678")).toEqual({ name: "Alfa stavby", partnerId: null, ico: "12345678", dic: "CZ12345678" }));
   it("výběr partnera vyplní všechny údaje", () => expect(counterpartyFromPartner(partners[0])).toEqual({ name: "Alfa stavby s.r.o.", partnerId: "p1", ico: "12345678", dic: "CZ12345678" }));
   it("našeptává podle názvu i IČO", () => {
+    expect(filterCounterpartyPartners(partners, "")).toHaveLength(1);
     expect(filterCounterpartyPartners(partners, "alfa")).toHaveLength(1);
     expect(filterCounterpartyPartners(partners, "1234")).toHaveLength(1);
   });

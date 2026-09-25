@@ -238,7 +238,7 @@ export function DocumentForm({
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
-    <div className={cn("@container space-y-4", className)} onKeyDown={(event) => {
+    <TooltipProvider><div className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} />
@@ -298,7 +298,7 @@ export function DocumentForm({
         </TabsList>{changedBy ? <span className="text-xs text-muted-foreground">{`${t.changedBy}: ${changedBy}`}</span> : null}{changedAt ? <span className="text-xs text-muted-foreground">{`${t.changedAt}: ${changedAt}`}</span> : null}</div>
         {allTabs.map((item) => <TabsContent key={item.id} value={item.id} className="mt-2">{item.content}</TabsContent>)}
       </Tabs>
-    </div>
+    </div></TooltipProvider>
   );
 }
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { hasOverflowRight } from "../../src/components/ds/grid/grid-zoom";
 import { calculateGridToolbarOverflowLevel, type GridToolbarWidths } from "../../src/components/ds/grid/grid-toolbar";
+import { readFileSync } from "node:fs";
 
 describe("výpočet úrovně řádku akcí", () => {
   const widths: GridToolbarWidths = { container: 900, leftFull: 260, leftCompact: 150, findFull: 180, findCompact: 72, display: 240, data: 180, menu: 36, refresh: 36, gap: 8, padding: 16, hasMenuItems: false };
@@ -25,5 +26,13 @@ describe("pravý stín gridu", () => {
   });
   it("používá stav data-overflow-right ve stylech", () => {
     expect(hasOverflowRight({ scrollLeft: 299.5, clientWidth: 500, scrollWidth: 800 })).toBe(false);
+  });
+});
+
+describe("jednotný rámeček lišty", () => {
+  it("sdílí token rámečku pro tlačítka, ikonové akce a zoom", () => {
+    const css = readFileSync("src/styles.css", "utf8");
+    expect(css).toContain(".grid-toolbar-row :is(.grid-toolbar-control, .grid-toolbar-icon-control, .zoom-controls)");
+    expect(css).toContain("border-color: var(--border)");
   });
 });

@@ -1,5 +1,13 @@
 # Komponenty design systému
 
+## Edit dokladu a jednotné lišty (2.32.0)
+
+- `SuggestInput` načítá po 200 ms nejvýše 10 návrhů i pro prázdný dotaz. Ikona Historie zapíná a vypíná našeptávání; seznam ovládají šipky, Enter a Esc.
+- `CounterpartyField.favoriteIds` řadí oblíbené aktivní partnery první; prázdný dotaz zobrazí celý abecední seznam.
+- `DocumentForm` přijímá `handedOverBySuggest`, `descriptionSuggest` a položky identity `{ side: "MD" | "DAL", text }`. Ruční Celkem je editovatelné; Σ přepíná `totalMode` a u ID/UZ zůstává zamčené.
+- `JournalLinesEditor.recapTabs` přidává vlastní záložky pod vestavěné Účtování a Zakázky. Horní lišta obsahuje Přidat, haléřové vyrovnání, Hledat, Sloupce, Obnovit rozložení a Hustotu se zoomem; Ctrl/Cmd+Enter přidá řádek.
+- Pata vždy uvádí Rozpis, Haléřové vyrovnání a Celkem; při ručně zadaném součtu také Zadáno a barevný Rozdíl. Hledání nemění výpočty ani kontroly.
+
 ## Kontextový řádek gridu (2.23.0)
 
 `GridContextBar` tvoří samostatný řádek nad `GridToolbar`; `DataGrid` a `TreeGrid` jej zobrazí přes props `period` a `book`.
