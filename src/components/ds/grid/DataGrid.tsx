@@ -1048,10 +1048,10 @@ export function DataGrid<Row>({
                   })}
                   {hasRowActions ? (
                     <TableHead
-                      className="grid-actions-header sticky right-0 z-20 !min-w-0 whitespace-nowrap border-l !px-0.5 py-0 text-right"
+                      className="grid-actions-header sticky right-0 z-20 w-px whitespace-nowrap border-l px-2 py-0 text-center"
                       aria-label={actionsLabel ?? texts.actions}
                       title={actionsLabel ?? texts.actions}
-                    />
+                    >{actionsLabel ?? texts.actions}</TableHead>
                   ) : null}
                 </TableRow>
               </TableHeader>

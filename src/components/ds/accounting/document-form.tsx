@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { CheckCircle2, Loader2, MoreHorizontal, Save, type LucideIcon } from "lucide-react";
 
 import { Checkbox } from "../../ui/checkbox";
 import { Input } from "../../ui/input";
@@ -6,6 +7,9 @@ import { Label } from "../../ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Textarea } from "../../ui/textarea";
 import { PageHeader } from "../layout/page-header";
+import { Button } from "../../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
@@ -68,6 +72,9 @@ export type DocumentHeaderValue = {
 
 export type DocumentHeaderField = keyof DocumentHeaderValue;
 export type DocumentFormTab = { id: string; label: string; content: ReactNode; badge?: ReactNode };
+export type DocumentSaveAction = { onSave: () => void; disabled?: boolean; busy?: boolean; dirty?: boolean };
+export type DocumentPrimaryAction = { label: string; onClick: () => void; disabled?: boolean; busy?: boolean; icon?: LucideIcon };
+export type DocumentMoreAction = { id: string; label: string; onClick: () => void; icon?: LucideIcon; destructive?: boolean; disabled?: boolean; disabledReason?: string; separatorBefore?: boolean };
 
 export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string;
@@ -134,7 +141,9 @@ export interface DocumentFormProps {
   approved?: boolean;
   changedBy?: string;
   changedAt?: string;
-  actions?: ReactNode;
+  saveAction?: DocumentSaveAction;
+  primaryAction?: DocumentPrimaryAction;
+  moreActions?: DocumentMoreAction[];
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
   texts?: Partial<DocumentFormTexts>;
@@ -161,7 +170,7 @@ export function DocumentForm({
   title, description: _description, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false, onCreatePartner, linesEditorProps, tabs = [], status, approved,
-  changedBy, changedAt, actions, readOnly = false, readOnlyReason, texts, className,
+  changedBy, changedAt, saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
@@ -212,8 +221,17 @@ export function DocumentForm({
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
-    <div className={cn("@container space-y-4", className)}>
-      <PageHeader title={title} actions={<div className="flex flex-wrap items-center gap-2"><DocumentStatusBadge status={status} approved={approved} />{actions}</div>} />
+    <div
+      className={cn("@container space-y-4", className)}
+      onKeyDown={(event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) {
+          event.preventDefault();
+          saveAction.onSave();
+        }
+      }}
+    >
+      <PageHeader title={title} />
+      <DocumentActionBar status={status} approved={approved} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card">
@@ -285,5 +303,56 @@ export function DocumentForm({
         {allTabs.map((item) => <TabsContent key={item.id} value={item.id} className="mt-2">{item.content}</TabsContent>)}
       </Tabs>
     </div>
+  );
+}
+
+function CompactActionButton({ label, icon: Icon, busy, ...props }: { label: string; icon: LucideIcon; busy?: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button {...props} aria-label={label} className={cn("@max-[39.99rem]:size-9 @max-[39.99rem]:px-0", props.className)}>
+          {busy ? <Loader2 className="animate-spin" /> : <Icon />}
+          <span className="@max-[39.99rem]:sr-only">{busy ? `${label}…` : label}</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className="@min-[40rem]:hidden">{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+/** Trvale viditelný pruh stavu a akcí účetního dokladu. */
+export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
+  status: DocumentStatus;
+  approved?: boolean;
+  saveAction?: DocumentSaveAction;
+  primaryAction?: DocumentPrimaryAction;
+  moreActions?: DocumentMoreAction[];
+}) {
+  const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
+  return (
+    <TooltipProvider>
+      <div data-slot="document-action-bar" className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 border-b bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
+        <DocumentStatusBadge status={status} approved={approved} />
+        <div className="flex shrink-0 items-center gap-2">
+          {saveAction ? (
+            <CompactActionButton label="Uložit" icon={Save} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>
+              {saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}
+            </CompactActionButton>
+          ) : null}
+          {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
+          {moreActions.length ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-56">
+                {moreActions.map((action) => {
+                  const Icon = action.icon;
+                  return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} title={action.disabledReason} onSelect={action.onClick} className={cn(action.destructive && "text-destructive focus:text-destructive")}>{Icon ? <Icon /> : null}{action.label}</DropdownMenuItem></span>;
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
+        </div>
+      </div>
+    </TooltipProvider>
   );
 }

@@ -9,7 +9,6 @@ import {
   type JournalLine,
   type PaymentScheduleItem,
 } from "@/components/ds";
-import { Button } from "@/components/ui/button";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 
 const CURRENCIES = [
@@ -140,10 +139,9 @@ export function DocumentFormShowcase() {
                 paid={3630} remaining={invoice.amountTotal - 3630} users={USERS} canRelease canUnrelease />
             ),
           }]}
-          actions={<>
-            <Button variant="outline" onClick={() => toast.success("Koncept uložen")}>Uložit koncept</Button>
-            <Button onClick={() => toast.success("Doklad zaúčtován")}>Zaúčtovat</Button>
-          </>}
+          saveAction={{ onSave: () => toast.success("Doklad uložen"), dirty: true }}
+          primaryAction={{ label: "Zaúčtovat", onClick: () => toast.success("Doklad zaúčtován") }}
+          moreActions={[{ id: "duplicate", label: "Duplikovat", onClick: () => toast.info("Doklad zduplikován") }]}
         />
       </ShowcaseSection>
 
