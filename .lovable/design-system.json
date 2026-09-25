@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.21.0",
+    "version": "2.22.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -2363,7 +2363,17 @@
     {
       "name": "WorkspaceCompanySwitcher",
       "file": "src/components/ds/layout/WorkspaceCompanySwitcher.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Starší společný výběr pracovního prostoru a firmy; firemní část používá neutrální obrys, ikonu budovy a volitelné IČO.",
+      "examples": [
+        {
+          "label": "Pracovní prostor a firma",
+          "code": "<WorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} />"
+        }
+      ],
+      "antipatterns": [
+        "Pro nové horní lišty používejte CompanySwitcher a pracovní prostor přepínejte v UserMenu."
+      ]
     },
     {
       "name": "EntitySwitcher",
@@ -2701,18 +2711,30 @@
         {
           "name": "detailClassName",
           "type": "string"
+        },
+        {
+          "name": "iconClassName",
+          "type": "string"
+        },
+        {
+          "name": "open",
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function"
         }
       ],
-      "usage": "Jednořádkový kontextový přepínač do horní lišty; label slouží jako přístupnostní název a nápověda, detail se ukazuje na široké obrazovce.",
+      "usage": "Jednořádkový řízený kontextový přepínač do horní lišty; drží společnou geometrii, focus a zavírání firemního i období štítku.",
       "examples": [
         {
-          "label": "Kontext s detailem",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\" tooltip=\"Firma: Slivka s.r.o. · IČO 12345678\">…</ContextPill>"
+          "label": "Řízené otevření",
+          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\" open={open} onOpenChange={setOpen}>…</ContextPill>"
         }
       ],
       "antipatterns": [
         "Nepoužívejte pro běžná formulářová pole.",
-        "Nevkládejte viditelný druhý řádek s popiskem."
+        "Neobcházejte zavírání změnou key podle cesty."
       ]
     },
     {
@@ -2736,10 +2758,6 @@
           "required": true
         },
         {
-          "name": "recentIds",
-          "type": "any"
-        },
-        {
           "name": "label",
           "type": "string",
           "default": "Firma"
@@ -2748,16 +2766,6 @@
           "name": "searchPlaceholder",
           "type": "string",
           "default": "Hledat firmu…"
-        },
-        {
-          "name": "recentLabel",
-          "type": "string",
-          "default": "Poslední"
-        },
-        {
-          "name": "allLabel",
-          "type": "string",
-          "default": "Všechny firmy"
         },
         {
           "name": "emptyText",
@@ -2777,16 +2785,25 @@
           "name": "className",
           "type": "string",
           "default": "min-w-0 flex-1"
+        },
+        {
+          "name": "open",
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function"
         }
       ],
-      "usage": "Jednořádkový výrazný výběr firmy s hledáním, IČO v nápovědě a posledními položkami.",
+      "usage": "Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě.",
       "examples": [
         {
-          "label": "Základní použití",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />"
+          "label": "Řízený výběr firmy",
+          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />"
         }
       ],
       "antipatterns": [
+        "Nevytvářejte skupinu posledních firem.",
         "Nenahrazujte nativním selectem."
       ]
     },
@@ -2852,22 +2869,26 @@
         {
           "name": "onCreate",
           "type": "function"
-        }
-      ],
-      "usage": "Kontextový výběr účetního období se stavovým štítkem, rozsahem na široké obrazovce a podporou firmy bez založeného období.",
-      "examples": [
-        {
-          "label": "Výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />"
         },
         {
-          "label": "Firma bez období",
-          "code": "<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />"
+          "name": "open",
+          "type": "boolean"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function"
+        }
+      ],
+      "usage": "Kontextový výběr účetního období se stavovou barvou a obrysem, řízeným otevřením a odlišením stavu bez výběru od firmy bez období.",
+      "examples": [
+        {
+          "label": "Řízený výběr období",
+          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} />"
         }
       ],
       "antipatterns": [
-        "Nepoužívejte stejný text pro popisek a hodnotu přepínače.",
-        "Nepoužívejte pro obecné datumové filtry."
+        "Nepřebírejte stavovou barvu období na štítek firmy.",
+        "Neobcházejte zavírání změnou key podle cesty."
       ]
     },
     {
