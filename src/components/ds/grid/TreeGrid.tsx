@@ -24,7 +24,7 @@ import { ViewModeToggle, type GridViewMode } from "./view-mode-toggle";
 import { GridMoreMenu, type GridMoreItem } from "./grid-more-menu";
 import {
   AsOfDateToggle,
-  GridAddActions,
+  GridAddActions, GridToolbarCollapsible,
   GridExpandControls,
   GridToolbar,
   GridToolbarSeparator,
@@ -449,6 +449,7 @@ export function TreeGrid<Row extends TreeGridRow>({
         className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", (showTitle || period || book || contextRight) && "rounded-t-none border-t-0 shadow-none")}
         left={<>
           {addAction ? <GridAddActions actions={addAction} /> : null}
+            <GridToolbarCollapsible>
           {addAction && (viewMode || rows.length || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
           {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
           <GridExpandControls
@@ -461,6 +462,7 @@ export function TreeGrid<Row extends TreeGridRow>({
             collapseLabel={t.collapseAll}
           />
           {(asOf || toolbarLeft) ? <span className="grid-toolbar-optional contents"><span className="hidden @min-[640px]:contents"><GridToolbarSeparator density={density} /></span>{asOf ? <AsOfDateToggle {...asOf} /> : null}{asOf && toolbarLeft ? <GridToolbarSeparator density={density} /> : null}{toolbarLeft}</span> : null}
+          </GridToolbarCollapsible>
         </>}
         right={<>
           <span data-toolbar-measure="find" data-toolbar-group="find" className="flex shrink-0 items-center gap-2"><GridSearch value={query} onChange={setQuery} placeholder={t.searchPlaceholder} zoom={zoom} />

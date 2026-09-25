@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.24.2 – oprava měření řádku akcí
+
+- Měřicí kopie řádku akcí se vkládá do kontejneru gridu v obalu s `container-type: inline-size` a skutečnou šířkou, takže texty typu „Nový doklad“ se změří správně a Obnovit se neořízne.
+- Pod 640 px se otevřené hledání s textem v úrovni 3 zúží (min. 6em) místo vytlačení ostatních prvků.
+- Nová komponenta `GridToolbarCollapsible`: doplňky levé části se v úrovni 3 v řádku nevykreslí (jsou jen v ⋯) – žádná duplicitní id; kopie navíc id odstraňuje.
+- Kopie se přeměřuje jen při změně sady nástrojů/stavů, zoomu, hustoty nebo velikosti, ne při psaní.
+
 ## Changelog 2.24.1 – bezeztrátová adaptivní lišta
 
 - Krajně úzká lišta přesouvá hlavní parametry, režim zobrazení, rozbalení a Stav k datu do jediné nabídky `⋯`; žádný ovladač už nezmizí.
