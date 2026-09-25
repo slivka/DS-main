@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.21.2 – skupiny pravé části lišty gridu
+
+- DataGrid i TreeGrid řadí pravou stranu do skupin Najít, Zobrazení, Data a Obnovit s oddělovači pouze mezi neprázdnými skupinami.
+- Stáhnout obsahuje pouze exporty; importy a vedlejší akce zůstávají v nabídce ⋯.
+- Úzká lišta zůstává beze změny a její jediná nabídka ⋯ řadí nástroje jako Zobrazení, Data a Obnovit.
+- Bez breaking changes.
+
 ## Changelog 2.21.1 – opravy lišty a stínu gridu
 
 - DataGrid i TreeGrid mají na široké ploše nejvýše jednu nabídku ⋯ a na úzké ploše právě jednu společnou nabídku nástrojů a dalších akcí.

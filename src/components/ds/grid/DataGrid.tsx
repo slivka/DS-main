@@ -863,56 +863,19 @@ export function DataGrid<Row>({
               />
             ) : null}
 
-            <div className="hidden @min-[640px]:contents"><GridExport
-              getData={exportData}
-              filename={exportName ?? storageKey}
-              title={exportTitle ?? (typeof title === "string" ? title : "")}
-              zoom={zoom}
-              texts={texts}
-              meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }}
-              pdfExport={pdfExport}
-              extraExports={extraExports}
-            />
-
-            <ColumnPicker
-              columns={cols.columns.filter((c) => !c.transient).map((c) => ({
-                id: c.id,
-                label: c.label,
-                ...(c.locked !== undefined ? { locked: c.locked } : {}),
-                ...(isPinnedColumn(c.id) ? { pinned: true } : {}),
-                ...(c.section !== undefined ? { section: c.section } : {}),
-              }))}
-              visible={cols.columnVisible}
-              onToggle={cols.toggle}
-              onReorder={cols.reorder}
-              onReset={cols.reset}
-              onSaveDefault={cols.saveDefault}
-              onClearDefault={cols.clearDefault}
-              hasCustomDefault={cols.hasCustomDefault}
-              hiddenSections={cols.hiddenSections}
-              onToggleSection={cols.toggleSection}
-              views={cols.views}
-              zoom={zoom}
-              title={texts.columnsTitle}
-              texts={texts}
-            />
-
-            {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}</div>
-
-            {(selectable && !hideSelectionToggle) || actions || moreActions.length ? <div className="hidden @min-[640px]:contents"><GridToolbarSeparator density={density} /></div> : null}
-            {selectable && !hideSelectionToggle ? (
-              <div className="hidden @min-[640px]:contents">
-              <GridSelectionToggle
-                active={selectMode}
-                count={selectedRows.length}
-                zoom={zoom}
-                texts={texts}
-                onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()}
-              /></div>
-            ) : null}
-            <div className="hidden @min-[640px]:contents">{actions}</div>
-            <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} tools={<><GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} />{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />{onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /> : null}</>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}</>} className="@min-[640px]:hidden" />
-            <div className="hidden @min-[640px]:contents">{moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}{(selectable && !hideSelectionToggle) || actions || moreActions.length ? <GridToolbarSeparator density={density} /> : null}<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />{onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></> : null}</div>
+            <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} footer={onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /> : null} className="@min-[640px]:hidden" />
+            <div className="hidden @min-[640px]:contents">
+              <GridToolbarSeparator density={density} />
+              {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
+              <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} onSaveDefault={cols.saveDefault} onClearDefault={cols.clearDefault} hasCustomDefault={cols.hasCustomDefault} hiddenSections={cols.hiddenSections} onToggleSection={cols.toggleSection} views={cols.views} zoom={zoom} title={texts.columnsTitle} texts={texts} />
+              <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />
+              <GridToolbarSeparator density={density} />
+              {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
+              {actions}
+              <GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
+              {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}
+              {onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></> : null}
+            </div>
           </>}
         /> : null}
 

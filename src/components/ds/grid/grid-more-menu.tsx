@@ -26,6 +26,7 @@ export function GridMoreMenu({
   items,
   tools,
   secondary,
+  footer,
   zoom = 1,
   className = "",
   texts: textOverrides,
@@ -35,6 +36,8 @@ export function GridMoreMenu({
   tools?: ReactNode;
   /** Další ovládání přesunuté do nabídky v úzkém gridu. */
   secondary?: ReactNode;
+  /** Poslední skupina nabídky v úzkém gridu, typicky obnovení dat. */
+  footer?: ReactNode;
   zoom?: number;
   className?: string;
   texts?: Partial<GridTexts>;
@@ -42,7 +45,7 @@ export function GridMoreMenu({
   const texts = resolveGridTexts(textOverrides);
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
-  if (items.length === 0 && !tools && !secondary) return null;
+  if (items.length === 0 && !tools && !secondary && !footer) return null;
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -58,8 +61,8 @@ export function GridMoreMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
-        {tools ? <div className="grid-more-tools mb-[0.35em] border-b border-border/50 pb-[0.5em]"><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{tools}</div></div> : null}
-        {secondary ? <div className="mb-[0.35em] flex flex-wrap items-center gap-[0.35em] border-b border-border/50 px-[0.35em] pb-[0.5em]">{secondary}</div> : null}
+        {tools ? <div className={`grid-more-tools pb-[0.5em] ${(secondary || items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{tools}</div></div> : null}
+        {secondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{secondary}</div> : null}
         {items.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;
           return (
@@ -102,6 +105,7 @@ export function GridMoreMenu({
             </div>
           );
         })}
+        {footer ? <div className={`${(tools || secondary || items.length) ? "mt-[0.35em] border-t border-border/50 pt-[0.5em]" : ""} flex flex-wrap items-center gap-[0.35em] px-[0.35em]`}>{footer}</div> : null}
       </PopoverContent>
     </Popover>
   );

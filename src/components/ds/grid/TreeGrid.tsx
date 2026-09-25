@@ -473,30 +473,14 @@ export function TreeGrid<Row extends TreeGridRow>({
               texts={sharedTexts}
             />
           ) : null}
-          <div className="hidden @min-[640px]:contents">{exportName ? (
-            <GridExport
-              getData={exportData}
-              filename={exportName}
-              title={title}
-              meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }}
-              zoom={zoom}
-              texts={sharedTexts}
-              pdfExport={pdfExport}
-              extraExports={extraExports}
-            />
-          ) : null}
-          <ColumnPicker
-            columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))}
-            visible={cols.columnVisible}
-            onToggle={cols.toggle}
-            onReorder={cols.reorder}
-            onReset={cols.reset}
-            zoom={zoom}
-            title={t.columnsTitle}
-          /></div>
-          {(selectable || actions || moreActions.length) ? <div className="hidden @min-[640px]:contents"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}</div> : null}
-          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} tools={<>{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />{onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null}</>} secondary={<>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}</>} className="@min-[640px]:hidden" />
-          <div className="hidden @min-[640px]:contents">{moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}{selectable || actions || moreActions.length ? <GridToolbarSeparator density={density} /> : null}<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />{onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></> : null}</div>
+          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} footer={onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null} className="@min-[640px]:hidden" />
+          <div className="hidden @min-[640px]:contents">
+            <GridToolbarSeparator density={density} />
+            <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} />
+            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
+            {(selectable || actions || exportName || moreActions.length) ? <><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}{moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}</> : null}
+            {onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></> : null}
+          </div>
         </>}
       />
       {filters ? <GridFilterPanel open={filtersOpen}>{filters}</GridFilterPanel> : null}
