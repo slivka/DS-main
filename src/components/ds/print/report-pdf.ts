@@ -15,10 +15,12 @@ const NAVY: [number, number, number] = [28, 72, 119];
 const GRAY: [number, number, number] = [102, 112, 123];
 const LINE: [number, number, number] = [201, 208, 216];
 const PAPER: [number, number, number] = [244, 245, 247];
-const TOTAL_PAGES = "{total_pages_count_string}";
-
 export function companyMonogramSvg(name: string, color = "#1c4877") {
-  const initials = name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toLocaleUpperCase("cs-CZ") ?? "").join("") || "?";
+  const legalForms = /^(?:s\.?r\.?o\.?|spol\.?|a\.?s\.?|k\.?s\.?|v\.?o\.?s\.?|z\.?s\.?|s\.?p\.?)$/i;
+  const words = name.trim().split(/\s+/).map((part) => part.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}.]+$/gu, "")).filter((part) => part && !legalForms.test(part));
+  const initials = words.length === 1
+    ? words[0]?.slice(0, 2).toLocaleUpperCase("cs-CZ") || "?"
+    : words.slice(0, 2).map((part) => part[0]?.toLocaleUpperCase("cs-CZ") ?? "").join("") || "?";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="48" fill="${color.replace(/[<>&"']/g, "")}"/><text x="48" y="58" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="white">${initials}</text></svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
@@ -75,7 +77,7 @@ export async function resolveCompanyLogo(company: PrintCompany, enabled: boolean
 }
 
 function printedAtText(date: Date) {
-  return date.toLocaleString("cs-CZ", { day: "numeric", month: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleString("cs-CZ", { day: "numeric", month: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
 export async function drawPrintFooter(doc: JsPdf, context: PrintContext, logo: string | null, showPageCount = true) {
@@ -92,14 +94,13 @@ export async function drawPrintFooter(doc: JsPdf, context: PrintContext, logo: s
     const companyBits = [context.settings.footerName ? context.company.name : null, context.settings.footerIco && context.company.ico ? `IČO ${context.company.ico}` : null].filter(Boolean).join(" · ");
     if (companyBits) doc.text(companyBits, left, height - 7);
     if (context.settings.showPrintedBy && context.printedBy) doc.text(`Vytiskl: ${context.printedBy}, ${printedAtText(context.printedAt)}`, width / 2, height - 7, { align: "center" });
-    const pageLabel = reportPageLabel(page, pages, TOTAL_PAGES);
+    const pageLabel = reportPageLabel(page, pages);
     if (showPageCount && pageLabel) doc.text(pageLabel, width - 15, height - 7, { align: "right" });
   }
-  if (showPageCount && pages > 1 && typeof doc.putTotalPages === "function") doc.putTotalPages(TOTAL_PAGES);
 }
 
-export function reportPageLabel(page: number, total: number, totalPlaceholder = String(total)) {
-  return total > 1 ? `Strana ${page} z ${totalPlaceholder}` : "";
+export function reportPageLabel(page: number, total: number) {
+  return total > 1 ? `Strana ${page} z ${total}` : "";
 }
 
 export async function buildReportPdf({ title, subtitle, params = [], context, orientation = "portrait", sections }: {
@@ -110,7 +111,12 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
   orientation?: "portrait" | "landscape";
   sections: PrintSection[];
 }) {
-  const [doc, autoTableModule, logo] = await Promise.all([createPrintDocument(orientation), import("jspdf-autotable"), resolveCompanyLogo(context.company, context.settings.footerLogo)]);
+  const [doc, autoTableModule, headerLogo, footerLogo] = await Promise.all([
+    createPrintDocument(orientation),
+    import("jspdf-autotable"),
+    resolveCompanyLogo(context.company, true),
+    resolveCompanyLogo(context.company, context.settings.footerLogo),
+  ]);
   const autoTable = autoTableModule.default;
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -118,8 +124,8 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
   const drawHeader = (page: number) => {
     doc.setTextColor(...GRAY);
     if (page === 1) {
-      if (logo) doc.addImage(logo, "PNG", margin, 14, 12, 12);
-      const left = logo ? 30 : margin;
+      if (headerLogo) doc.addImage(headerLogo, "PNG", margin, 14, 12, 12);
+      const left = headerLogo ? 30 : margin;
       doc.setFont("Roboto", "bold"); doc.setFontSize(10); doc.text(context.company.name, left, 18);
       doc.setFont("Roboto", "normal"); doc.setFontSize(8); doc.text([context.company.ico ? `IČO ${context.company.ico}` : "", context.company.address ?? ""].filter(Boolean).join(" · "), left, 23);
       doc.setTextColor(...NAVY); doc.setFont("Roboto", "bold"); doc.setFontSize(16); doc.text(title, pageWidth - margin, 18, { align: "right" });
@@ -140,6 +146,7 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
       if (cursor.y + lines.length * 5 > pageHeight - 18) { doc.addPage(); drawHeader(doc.getNumberOfPages()); cursor.y = 24; }
       doc.setFont("Roboto", "normal"); doc.setFontSize(9); doc.setTextColor(24, 24, 27); doc.text(lines, cursor.x, cursor.y); cursor.y += lines.length * 5 + 3;
     } else if (section.type === "custom") {
+      if (cursor.y + 5 > pageHeight - 18) { doc.addPage(); drawHeader(doc.getNumberOfPages()); cursor.y = 24; }
       cursor = section.draw(doc, cursor);
     } else {
       const body = section.rows.map((row) => section.columns.map((column) => formatCell(row[column.key], column.format)));
@@ -158,7 +165,7 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
       cursor.y = finalY + 5;
     }
   }
-  await drawPrintFooter(doc, context, logo);
+  await drawPrintFooter(doc, context, footerLogo);
   return doc.output("blob");
 }
 
@@ -173,24 +180,30 @@ function underThousand(value: number, gender: "m" | "f" = "f") {
   else { text += TENS[Math.floor(rest / 10)] ?? ""; const one = rest % 10; text += one === 1 && gender === "m" ? "jeden" : one === 2 && gender === "f" ? "dvě" : ONES[one] ?? ""; }
   return text;
 }
-function wholeWords(value: number) {
-  if (value === 0) return "nula";
-  const million = Math.floor(value / 1_000_000); const thousand = Math.floor(value / 1_000) % 1_000; const rest = value % 1_000;
-  let text = "";
-  if (million) text += `${underThousand(million, "m")}${million === 1 ? "milion" : million >= 2 && million <= 4 ? "miliony" : "milionů"}`;
-  if (thousand) text += `${underThousand(thousand, "m")}${thousand === 1 ? "tisíc" : thousand >= 2 && thousand <= 4 ? "tisíce" : "tisíc"}`;
-  return text + underThousand(rest);
+function groupForm(value: number, one: string, few: string, many: string) {
+  return value === 1 ? one : value >= 2 && value <= 4 ? few : many;
 }
-function plural(value: number, one: string, few: string, many: string) {
-  const lastTwo = value % 100;
-  const last = value % 10;
-  if (lastTwo >= 11 && lastTwo <= 14) return many;
-  return last === 1 ? one : last >= 2 && last <= 4 ? few : many;
+function wholeWords(value: number, gender: "m" | "f" = "f") {
+  if (value === 0) return "nula";
+  if (!Number.isSafeInteger(value) || value > 999_999_999_999) throw new RangeError("Částku lze převést nejvýše do 999 999 999 999.");
+  const billion = Math.floor(value / 1_000_000_000); const million = Math.floor(value / 1_000_000) % 1_000; const thousand = Math.floor(value / 1_000) % 1_000; const rest = value % 1_000;
+  let text = "";
+  if (billion) text += `${underThousand(billion, "f")}${groupForm(billion, "miliarda", "miliardy", "miliard")}`;
+  if (million) text += `${underThousand(million, "m")}${groupForm(million, "milion", "miliony", "milionů")}`;
+  if (thousand) text += `${underThousand(thousand, "m")}${groupForm(thousand, "tisíc", "tisíce", "tisíc")}`;
+  return text + underThousand(rest, gender);
 }
 export function amountInWordsCs(amount: number, currency = "CZK") {
-  const negative = amount < 0 ? "minus" : "";
-  const absolute = Math.abs(amount); const whole = Math.floor(absolute + 1e-9); const cents = Math.round((absolute - whole) * 100);
-  if (currency !== "CZK") return `${negative}${wholeWords(whole)} ${currency}${cents ? ` a ${wholeWords(cents)} setin` : ""}`;
-  const crowns = plural(whole, "korunačeská", "korunyčeské", "korunčeských");
-  return `${negative}${wholeWords(whole)}${crowns}${cents ? ` a ${wholeWords(cents)} ${plural(cents, "haléř", "haléře", "haléřů")}` : ""}`;
+  if (!Number.isFinite(amount)) throw new RangeError("Částka musí být konečné číslo.");
+  const negative = amount < 0 ? "minus " : "";
+  const roundedHundredths = Math.round(Math.abs(amount) * 100);
+  const whole = Math.floor(roundedHundredths / 100); const cents = roundedHundredths % 100;
+  if (whole > 999_999_999_999) throw new RangeError("Částku lze převést nejvýše do 999 999 999 999.");
+  if (currency !== "CZK") {
+    const fraction = cents ? ` a ${currency === "EUR" || currency === "USD" ? `${wholeWords(cents, "m")} ${groupForm(cents, "cent", "centy", "centů")}` : `${String(cents).padStart(2, "0")}/100`}` : "";
+    return `${negative}${wholeWords(whole)} ${currency}${fraction}`;
+  }
+  const crowns = groupForm(whole, "korunačeská", "korunyčeské", "korunčeských");
+  const heller = cents ? ` a ${wholeWords(cents, "m")}${groupForm(cents, "haléř", "haléře", "haléřů")}` : "";
+  return `${negative}${wholeWords(whole)}${crowns}${heller}`;
 }
