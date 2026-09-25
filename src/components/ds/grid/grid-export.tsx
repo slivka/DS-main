@@ -237,7 +237,10 @@ export function GridExport({
   texts: textOverrides,
   meta,
   print,
+  getPrintData,
 }: {
+  /** Data pro tisk (např. jen rozbalené skupiny); výchozí `getData`. */
+  getPrintData?: (() => GridExportData | Promise<GridExportData>) | undefined;
   /** Tisk do PDF přes firemní sestavu a náhled; bez něj se položka Tisk nezobrazí. */
   print?: GridPrintConfig | undefined;
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
@@ -277,7 +280,7 @@ export function GridExport({
   const { formatDateTime } = useDateTimePreferences();
   const fontSize = gridFontSize(zoom);
   const [menuOpen, setMenuOpen] = useState(false);
-  const printer = useGridPrint(getData, print);
+  const printer = useGridPrint(getPrintData ?? getData, print);
 
   const exportExcel = async () => {
     const data = await getData();
