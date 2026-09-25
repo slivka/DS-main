@@ -1,10 +1,11 @@
-import { useState, type ReactNode } from "react";
+import { useContext, useState, type ReactNode } from "react";
 import { CheckSquare, MoreHorizontal } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { GridToolbarOverflowContext } from "./grid-toolbar";
 
 export type GridMoreItem = {
   label: string;
@@ -29,6 +30,7 @@ export function GridMoreMenu({
   footer,
   zoom = 1,
   className = "",
+  responsiveOverflow = false,
   texts: textOverrides,
 }: {
   items: GridMoreItem[];
@@ -40,12 +42,18 @@ export function GridMoreMenu({
   footer?: ReactNode;
   zoom?: number;
   className?: string;
+  /** Vnitřní nabídka gridu řízená skutečně dostupnou šířkou lišty. */
+  responsiveOverflow?: boolean;
   texts?: Partial<GridTexts>;
 }) {
   const texts = resolveGridTexts(textOverrides);
+  const overflowLevel = useContext(GridToolbarOverflowContext);
+  const shownTools = !responsiveOverflow || overflowLevel >= 1 ? tools : null;
+  const shownSecondary = !responsiveOverflow || overflowLevel >= 2 ? secondary : null;
+  const shownItems = !responsiveOverflow || overflowLevel >= 2 ? items : [];
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
-  if (items.length === 0 && !tools && !secondary && !footer) return null;
+  if (shownItems.length === 0 && !shownTools && !shownSecondary && !footer) return null;
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -61,13 +69,13 @@ export function GridMoreMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
-        {tools ? <div className={`grid-more-tools pb-[0.5em] ${(secondary || items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{tools}</div></div> : null}
-        {secondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{secondary}</div> : null}
-        {items.map((item, i) => {
+        {shownTools ? <div className={`grid-more-tools pb-[0.5em] ${(shownSecondary || shownItems.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownTools}</div></div> : null}
+        {shownSecondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(shownItems.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{shownSecondary}</div> : null}
+        {shownItems.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;
           return (
             <div key={key}>
-              {item.group && item.group !== items[i - 1]?.group ? (
+              {item.group && item.group !== shownItems[i - 1]?.group ? (
                 <div
                   className={`px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground ${i > 0 ? "mt-[0.35em] border-t border-border/50 pt-[0.6em]" : ""}`}
                 >
@@ -105,7 +113,7 @@ export function GridMoreMenu({
             </div>
           );
         })}
-        {footer ? <div className={`${(tools || secondary || items.length) ? "mt-[0.35em] border-t border-border/50 pt-[0.5em]" : ""} flex flex-wrap items-center gap-[0.35em] px-[0.35em]`}>{footer}</div> : null}
+        {footer ? <div className={`${(shownTools || shownSecondary || shownItems.length) ? "mt-[0.35em] border-t border-border/50 pt-[0.5em]" : ""} flex flex-wrap items-center gap-[0.35em] px-[0.35em]`}>{footer}</div> : null}
       </PopoverContent>
     </Popover>
   );

@@ -13,6 +13,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
+export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2>(2);
+
 export interface GridToolbarProps extends React.ComponentPropsWithoutRef<"div"> {
   left?: React.ReactNode;
   right?: React.ReactNode;
@@ -26,6 +28,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   ref,
 ) {
   const ownRef = React.useRef<HTMLDivElement | null>(null);
+  const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2>(2);
   const setRefs = React.useCallback((node: HTMLDivElement | null) => {
     ownRef.current = node;
     if (typeof ref === "function") ref(node);
@@ -39,10 +42,13 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         node.dataset.overflowLevel = "0";
+        let next: 0 | 1 | 2 = 0;
         for (const level of [1, 2]) {
           if (node.scrollWidth <= node.clientWidth + 1) break;
           node.dataset.overflowLevel = String(level);
+          next = level as 1 | 2;
         }
+        setOverflowLevel(next);
       });
     };
     const observer = new ResizeObserver(update);
@@ -52,6 +58,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     return () => { cancelAnimationFrame(frame); observer.disconnect(); };
   }, [left, right, zoom, density]);
   return (
+    <GridToolbarOverflowContext.Provider value={overflowLevel}>
     <div
       ref={setRefs}
       data-slot="grid-toolbar"
@@ -66,6 +73,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       {left ?? children}
       {right ? <div className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2">{right}</div> : null}
     </div>
+    </GridToolbarOverflowContext.Provider>
   );
 });
 

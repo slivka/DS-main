@@ -1,13 +1,13 @@
 # Roadmap
 
 ## Verze 2.23.0 (stabilní horní kontext a jednořádkový grid)
-- [ ] Sjednotit šířku firmy s obdobím a vložit skutečný oddělovač v horní liště
-- [ ] Zarovnat knihu a období vlevo a upravit adaptivní šířku období
-- [ ] Přesunout panel filtrů pod řádek akcí a sjednotit přirozené šířky jeho prvků
-- [ ] Udržet řádek akcí v jednom řádku dynamickým přesunem nástrojů do nabídky
-- [ ] Sjednotit výšku a písmo kontextových ovládacích prvků a popisků
-- [ ] Zjemnit vzhled GridSegmentedToggle při zachování oranžového aktivního filtru
-- [ ] Zvětšit záložky stránek a formulářů podle vizuální hierarchie
+- [x] Sjednotit šířku firmy s obdobím a vložit skutečný oddělovač v horní liště
+- [x] Zarovnat knihu a období vlevo a upravit adaptivní šířku období
+- [x] Přesunout panel filtrů pod řádek akcí a sjednotit přirozené šířky jeho prvků
+- [x] Udržet řádek akcí v jednom řádku dynamickým přesunem nástrojů do nabídky
+- [x] Sjednotit výšku a písmo kontextových ovládacích prvků a popisků
+- [x] Zjemnit vzhled GridSegmentedToggle při zachování oranžového aktivního filtru
+- [x] Zvětšit záložky stránek a formulářů podle vizuální hierarchie
 - [ ] Aktualizovat ukázky, changelog, dokumentaci, testy a provést vizuální kontrolu
 
 ## Verze 2.22.0 (vyvážený kontext firmy a období)
