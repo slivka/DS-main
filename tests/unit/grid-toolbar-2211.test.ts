@@ -46,7 +46,7 @@ describe("GridToolbar měření", () => {
 
   it("zobrazí jedinou nabídku pro přesunuté nástroje i pod 640 px", () => {
     expect(stylesSource).toContain('@container (width < 640px)');
-    expect(stylesSource).toContain('.grid-toolbar-row .grid-toolbar-overflow-menu');
+    expect(stylesSource).toContain('.grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu');
     expect(stylesSource).toContain('.grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu');
     expect(stylesSource).toContain('display: inline-flex !important');
     expect(moreMenuSource).not.toContain("footer");
