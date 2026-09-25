@@ -210,7 +210,7 @@ export function DocumentForm({
       <Label htmlFor={id}>{label}</Label>{control}
     </div>
   );
-  const date = (key: "accountingDate" | "issueDate" | "taxDate" | "dueDate", label: string) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} />, 3, true);
+  const date = (key: "accountingDate" | "issueDate" | "taxDate" | "dueDate", label: string) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} />, 3);
   const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const linkedPartner = !!value.partnerId;
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
