@@ -982,6 +982,7 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | `book` | any | `—` |
 | `contextRight` | any | `—` |
 | `filters` | any | `—` |
+| `defaultFiltersOpen` | boolean | `false` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
 | `defaultFilters` | any | `—` |
@@ -1840,6 +1841,12 @@ _Vlastní obsah_
 - Ovládání gridu mimo společný řádek akcí
 - Samostatná exportní tlačítka v gridu
 
+### GridToolbarOverflowContext
+
+```ts
+import { GridToolbarOverflowContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### GridToolbarSeparator
 
 ```ts
@@ -2329,6 +2336,20 @@ Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirt
 - Předávat actions uvnitř panelu místo menuActions
 - Vkládat akci Nový do záhlaví místo gridového addAction
 - Předávat description; kontext patří do GridContextBar nebo horní lišty
+
+### PageTabs
+
+```ts
+import { PageTabs } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `listLabel` | string | `Sekce stránky` |
+| `className` | string | `min-h-10 gap-1 rounded-none border-b bg-transparent p-0` |
 
 ### Pagination
 
@@ -3399,6 +3420,7 @@ Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako 
 | `book` | any | `—` |
 | `contextRight` | any | `—` |
 | `filters` | any | `—` |
+| `defaultFiltersOpen` | boolean | `false` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
 | `defaultFilters` | any | `—` |

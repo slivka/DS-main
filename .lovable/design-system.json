@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.24.0",
+    "version": "2.25.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,10 +11,11 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "759fdcc12ad74b81e4045238543a7298c10b407b27a5a954b766da7e93f389bb",
+      "#enrichment": "1e9889778080c18ef301fd8dc76b958c1cfcf49e37c97d142f166b33ffd7356a",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
-      ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
+      ".lovable/meta.yaml": "86a17ac0d6b10fddfde4cdc325cb93a7",
+      ".lovable/plan.md": "567791966eee1e554297603177a3ce4a",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
       ".lovable/plan/appshell-2-3-0-adaptivní-lišta-a-období-2026-09-23.md": "cff0cd14c533151ad08b061cfce05b5d",
@@ -46,20 +47,20 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "31cfa71815458f38521228913a3a2127",
+      ".lovable/system.md": "aeb2a8a7a9cd6ff9c0f3115671a93c78",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "b7aa93a4a36a1e3a96a7414c4d2fb262",
+      "README.md": "e90b24f444c780315d5b3cd41bce872f",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "873edfb3000da3ecaf17d6360e6e753a",
+      "components.md": "3fc9977e1d9a7893f8f1010c1332db3b",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "d7d4dbf5590293d8cf6ee5aafa70059b",
+      "package.json": "53513b8afc296712c1f0c05a2ef4008b",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "444ee0760581008597aab6425ba32381",
+      "roadmap.md": "d7784db609adb4e6c477abfca3ead3e6",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -73,7 +74,7 @@
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "0fa104976e899ed02ba38f9dfb5289b0",
       "src/components/ds/accounting/document-fields.ts": "810431b93999f85b0cc6d5d5c57485d8",
-      "src/components/ds/accounting/document-form.tsx": "924e9e02926a1d3483da996525d14624",
+      "src/components/ds/accounting/document-form.tsx": "7077d9ccfe03149809998162a77e8d02",
       "src/components/ds/accounting/document-status-badge.tsx": "708954ec8e536ef8005a00c6b819e449",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
       "src/components/ds/accounting/journal-lines-editor.tsx": "52809d4e46c48102584681cc797c2c49",
@@ -117,36 +118,36 @@
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
-      "src/components/ds/grid/DataGrid.tsx": "0016e0fea9534d21305b6d383dd1c542",
-      "src/components/ds/grid/TreeGrid.tsx": "5386c06a12d8e388a1c7e1b37b49271b",
+      "src/components/ds/grid/DataGrid.tsx": "73dce1e42724b0d9b7008c285f08e5f5",
+      "src/components/ds/grid/TreeGrid.tsx": "fe9e03c34889fb4f03ee59099b72793d",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
       "src/components/ds/grid/grid-action.tsx": "9dad9ab2b2e63c77b16bad1d0b82ddc9",
       "src/components/ds/grid/grid-column-resize.tsx": "d7ab96fbc8749dcf71dbfe0c415e69fa",
       "src/components/ds/grid/grid-columns.tsx": "d53c72de1d102db12009eea281dd2d2b",
-      "src/components/ds/grid/grid-context-bar.tsx": "68e1e4e166284f6e9bc59e4245cd144d",
+      "src/components/ds/grid/grid-context-bar.tsx": "9f18a3dffc46927b14deb2d977e4264e",
       "src/components/ds/grid/grid-export.tsx": "e82a90868cf3e1862765fe6ec9e7cdb3",
-      "src/components/ds/grid/grid-filters.tsx": "36497c8c556d4812c50c9411891e0dc9",
+      "src/components/ds/grid/grid-filters.tsx": "62195648eb74041b08422b9e905aa924",
       "src/components/ds/grid/grid-grouping.tsx": "c1f101769f4e4acade47fb2108114463",
-      "src/components/ds/grid/grid-more-menu.tsx": "af114d03ebe42230b628fb38d6db2f12",
+      "src/components/ds/grid/grid-more-menu.tsx": "89e0e9379ac8808736723b6ea21b201c",
       "src/components/ds/grid/grid-pagination.tsx": "e7e6eef33aec4ea729741ea534eb75d4",
-      "src/components/ds/grid/grid-period.ts": "1542e8eeb00967e7230ac9023b5c12cd",
+      "src/components/ds/grid/grid-period.ts": "e387dc41a2fc0c9a64a5a90b02792408",
       "src/components/ds/grid/grid-refresh.tsx": "e8b51c21f4411a94691709f3eaf578b2",
-      "src/components/ds/grid/grid-search.tsx": "35db41160af35b4ce051ed57c0aace93",
+      "src/components/ds/grid/grid-search.tsx": "fc4b5ceb8a8a68e616a58e735ae2a6cb",
       "src/components/ds/grid/grid-sections.tsx": "7186337750209d575c12c257d5246c3e",
-      "src/components/ds/grid/grid-segmented-toggle.tsx": "dc74f80652ffe78b9ae383ebedd2be9c",
+      "src/components/ds/grid/grid-segmented-toggle.tsx": "7a065448d4a9e210f66aaff0d6f0907f",
       "src/components/ds/grid/grid-selection-toggle.tsx": "9446783e39f45d9a17472daa4accca6c",
       "src/components/ds/grid/grid-sort.tsx": "cf8a4099a8b407a3ad36212434c802e1",
       "src/components/ds/grid/grid-states.tsx": "1e4c03e89bf3710c775ca2435893c19e",
       "src/components/ds/grid/grid-texts.ts": "0e4ca7249dc56b3909423d100572dc43",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
-      "src/components/ds/grid/grid-toolbar.tsx": "9b9099674f61a4db79ff960af78ed692",
+      "src/components/ds/grid/grid-toolbar.tsx": "d5ef7d81cbf6a8092e8ce8b35cf91997",
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "ea65781bad02b3deec17eff5cdd34699",
       "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
-      "src/components/ds/index.ts": "cb1572f6711036cce822a28365f071ad",
-      "src/components/ds/layout/AppShell.tsx": "b5a36d80c7058a24a6dc22cb3741539f",
+      "src/components/ds/index.ts": "4177aaee747b1eb209dcc7c3b1544b76",
+      "src/components/ds/layout/AppShell.tsx": "759b50c45ed540877647b11a8dedf1e6",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "d2104af5f798bfe1e51e7a1cea625180",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
@@ -155,12 +156,13 @@
       "src/components/ds/layout/breadcrumbs.tsx": "abceb00c4d40d03f2a445d92027d40e1",
       "src/components/ds/layout/collapsible-section.tsx": "1e3361027796f7808a66490fc4bf170a",
       "src/components/ds/layout/command-palette.tsx": "bab8cca4b149eb81fb611b64bee1a09e",
-      "src/components/ds/layout/company-switcher.tsx": "4b67414d47385d7be4408d2873a76a52",
+      "src/components/ds/layout/company-switcher.tsx": "93ffbf4ebca78855abee2dd27984cf6c",
       "src/components/ds/layout/context-pill.tsx": "a02786206a69bb8efa555d8c06792f3d",
       "src/components/ds/layout/nav-search.tsx": "bc48b789b22a9b5cd023176b85ca0d40",
       "src/components/ds/layout/notification-bell.tsx": "61e31db02987a724c6f601d569c6a946",
       "src/components/ds/layout/page-header.tsx": "93322a7a9b4328edf382729d51a71b1f",
-      "src/components/ds/layout/period-switcher.tsx": "fd8f063b55a5b8ea811ccd96ef3eee1a",
+      "src/components/ds/layout/page-tabs.tsx": "529fcaedad1dda1c2e82640e431e0fd3",
+      "src/components/ds/layout/period-switcher.tsx": "3e037c273789cf5df59e0f2624d9cc97",
       "src/components/ds/layout/search-button.tsx": "65b85c2d056182cd9014930d4338aa7a",
       "src/components/ds/layout/theme-setting.tsx": "059b307549a15239d438e0bb0e3d60c7",
       "src/components/ds/layout/theme-toggle-button.tsx": "0e1776217df487e913b805af9dc5d998",
@@ -220,7 +222,7 @@
       "src/components/ui/sonner.tsx": "97f59f60be3413196d095fcbf7383216",
       "src/components/ui/switch.tsx": "29f8aad30780c4c4d7905ed5c0e85fd1",
       "src/components/ui/table.tsx": "d36126efb4fdc9eee88299302ca0cc8d",
-      "src/components/ui/tabs.tsx": "8e1583f9f413f749835a589c349a49cc",
+      "src/components/ui/tabs.tsx": "23c6c1a1f2e96d3cfe0cc31e7d3bd2a3",
       "src/components/ui/textarea.tsx": "d984d793fbc8562f2bd099a770dd729d",
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
@@ -266,14 +268,14 @@
       "src/routes/components.excel-export.tsx": "854c5e8220edc784a118bd7b2e17a232",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
-      "src/routes/components.grid.tsx": "4e3adf5120b8f89b0cd1e71403f1a6df",
-      "src/routes/components.navigation.tsx": "943837ab6e5fd2398bedf96f32a3a600",
+      "src/routes/components.grid.tsx": "25081269361afd436a2bcbe6e87ba88d",
+      "src/routes/components.navigation.tsx": "c6ee086bc11c7220c6aeb26c09578976",
       "src/routes/guidelines.tsx": "53a5b4b7f10207463bfe1871da64316d",
       "src/routes/index.tsx": "b989e778f05c49b2ad91e100e9fe8e60",
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
       "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
       "src/start.ts": "5684c6ddeec813f1264536f3228817b1",
-      "src/styles.css": "1515d4088b2c2089a931de5736faf255",
+      "src/styles.css": "8d7fa8cf0c3f52b42a93c8dac55d5db3",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "e4f9483a1a9f31650365765d5ce42d95",
@@ -281,8 +283,8 @@
       "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
       "tests/e2e/reports.spec.ts": "b0e8a570a298b73df2e87a9af880833a",
       "tests/unit/context-switchers-222.test.ts": "fdb6791278cc44155d24639854fb8da9",
-      "tests/unit/grid-period.test.ts": "660da68eec09b774c0f5d45e58e6f644",
-      "tests/unit/grid-toolbar-2211.test.ts": "3ba4dce6c478198332bad947268a81e9",
+      "tests/unit/grid-period.test.ts": "7435553353e1983abe1305332c7ab020",
+      "tests/unit/grid-toolbar-2211.test.ts": "9650e1b398bfd391fa03875249735a09",
       "tests/unit/nav-search.test.ts": "f1c39b11786ffadcedd2e614d1142635",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
       "tests/unit/pane-tabs-217.test.ts": "7b8c35b0c9c96170f93fa973f9a697fd",
@@ -635,7 +637,7 @@
       },
       {
         "name": "--grid-heading-surface",
-        "raw": "color-mix(in oklab, var(--grid-navy) 42%, var(--card))",
+        "raw": "color-mix(in oklch, var(--grid-navy) 42%, var(--card))",
         "source": "src/styles.css"
       },
       {
@@ -706,7 +708,7 @@
       },
       {
         "name": "--grid-total-surface",
-        "raw": "color-mix(in oklab, var(--grid-navy) 48%, var(--card))",
+        "raw": "color-mix(in oklch, var(--grid-navy) 48%, var(--card))",
         "source": "src/styles.css"
       },
       {
@@ -3034,6 +3036,28 @@
       ]
     },
     {
+      "name": "PageTabs",
+      "file": "src/components/ds/layout/page-tabs.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "listLabel",
+          "type": "string",
+          "default": "Sekce stránky"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "min-h-10 gap-1 rounded-none border-b bg-transparent p-0"
+        }
+      ]
+    },
+    {
       "name": "PaneApiContext",
       "file": "src/components/ds/panes/pane-context.tsx",
       "import_path": ""
@@ -3506,6 +3530,11 @@
         {
           "name": "filters",
           "type": "any"
+        },
+        {
+          "name": "defaultFiltersOpen",
+          "type": "boolean",
+          "default": "false"
         },
         {
           "name": "filterChips",
@@ -3993,6 +4022,11 @@
       "import_path": ""
     },
     {
+      "name": "GridToolbarOverflowContext",
+      "file": "src/components/ds/grid/grid-toolbar.tsx",
+      "import_path": ""
+    },
+    {
       "name": "GridToolbar",
       "file": "src/components/ds/grid/grid-toolbar.tsx",
       "import_path": "",
@@ -4336,6 +4370,11 @@
         {
           "name": "filters",
           "type": "any"
+        },
+        {
+          "name": "defaultFiltersOpen",
+          "type": "boolean",
+          "default": "false"
         },
         {
           "name": "filterChips",
