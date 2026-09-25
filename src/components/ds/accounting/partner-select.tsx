@@ -20,6 +20,10 @@ export type PartnerOption = {
   ico?: string;
   /** DIČ partnera. */
   dic?: string;
+  /** Země partnera, obvykle ISO kód CZ. */
+  country?: string;
+  /** Právnická nebo fyzická osoba pro volbu veřejného registru. */
+  kind?: "company" | "person";
   active?: boolean;
 };
 

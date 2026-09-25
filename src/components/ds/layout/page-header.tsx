@@ -17,6 +17,8 @@ import { DEFAULT_PANE_CHROME_TEXTS, usePaneChrome, type PaneChrome, type PaneChr
 
 export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"div">, "title"> {
   title: React.ReactNode;
+  /** Vlastní identifikační řádek místo viditelného nadpisu; `title` zůstává pro čtečky. */
+  titleSlot?: React.ReactNode;
   /** @deprecated Kontext patří do GridContextBar nebo horní lišty. */
   description?: React.ReactNode;
   actions?: React.ReactNode;
@@ -39,7 +41,7 @@ export interface PageHeaderMenuAction {
  * Hlavička stránky – nadpis a akce vpravo.
  * Uvnitř PaneLayout navíc vykreslí ovládání záznamu, historie, maximalizaci a menu ⋯.
  */
-export function PageHeader({ title, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
+export function PageHeader({ title, titleSlot, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
   const chrome = usePaneChrome();
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
   React.useEffect(() => {
@@ -49,10 +51,11 @@ export function PageHeader({ title, description, actions, menuActions = [], pane
 
   return (
     <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)} {...props}>
-      <div className="flex min-w-0 items-start gap-2">
-        <div className="min-w-0">
+      <div className="flex min-w-0 flex-1 items-start gap-2">
+        <div className="min-w-0 flex-1">
+          {titleSlot ? <h1 className="sr-only">{title}</h1> : null}
           <div className="flex min-w-0 items-center gap-1.5">
-            {chrome ? (
+            {titleSlot ? titleSlot : chrome ? (
               <h1
                 {...chrome.dragHandleProps}
                 className="typo-title min-w-0 cursor-grab truncate text-primary active:cursor-grabbing"

@@ -22,18 +22,21 @@ export function DecimalInput({
   value,
   onChange,
   decimals = 2,
+  displayDecimals,
   className,
   ...props
 }: {
   value: number | string | null | undefined;
   onChange: (value: string) => void;
   decimals?: number;
+  /** Počet míst při zobrazení; při psaní lze zadat až `decimals`. */
+  displayDecimals?: number;
 } & Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type">) {
   const [text, setText] = useState<string | null>(null);
 
   const num = typeof value === "string" ? parseDecimalInput(value) : (value ?? null);
   const shown =
-    text ?? (num != null ? fmtAmount(num, decimals) : value != null ? String(value) : "");
+    text ?? (num != null ? fmtAmount(num, displayDecimals ?? decimals) : value != null ? String(value) : "");
 
   return (
     <Input

@@ -7,6 +7,13 @@ import { cn } from "../../../lib/utils";
 import type { PartnerOption } from "./partner-select";
 
 export type CounterpartyValue = { name: string; partnerId: string | null };
+export type CounterpartySeed = { name: string; ico: string };
+
+export function counterpartyCreateSeed(value: string): CounterpartySeed {
+  const clean = value.trim();
+  const digits = clean.replace(/\s/g, "");
+  return /^\d{8}$/.test(digits) ? { name: "", ico: digits } : { name: clean, ico: "" };
+}
 
 /** Ruční změna textu vždy zruší vazbu na partnera. */
 export function counterpartyFromText(name: string): CounterpartyValue {
@@ -34,7 +41,7 @@ export interface CounterpartyFieldProps {
   onChange: (value: CounterpartyValue) => void;
   partners: PartnerOption[];
   /** Akce „Nový partner“ z napsaného textu – bez ní se volba nezobrazí. */
-  onCreatePartner?: (name: string) => void;
+  onCreatePartner?: (seed: CounterpartySeed) => void;
   disabled?: boolean;
   placeholder?: string;
   id?: string;
@@ -53,7 +60,7 @@ export function CounterpartyField({
   const [active, setActive] = useState(0);
   const linked = !!value.partnerId;
   const matches = useMemo(() => filterCounterpartyPartners(partners, value.name), [partners, value.name]);
-  const showCreate = !!onCreatePartner && !linked && value.name.trim().length > 0;
+  const showCreate = !!onCreatePartner && !linked;
   const listOpen = open && !linked && (matches.length > 0 || showCreate);
   const listId = id ? `${id}-list` : undefined;
 
@@ -85,9 +92,11 @@ export function CounterpartyField({
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
               if (!listOpen) return;
-              if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(i + 1, matches.length - 1)); }
+              const last = matches.length + (showCreate ? 1 : 0) - 1;
+              if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(i + 1, last)); }
               else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)); }
               else if (e.key === "Enter" && matches[active]) { e.preventDefault(); select(matches[active]); }
+              else if (e.key === "Enter" && showCreate && active === matches.length) { e.preventDefault(); setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name)); }
               else if (e.key === "Escape") setOpen(false);
             }}
           />
@@ -117,9 +126,10 @@ export function CounterpartyField({
         </ul>
         {showCreate ? (
           <button type="button" onMouseDown={(e) => e.preventDefault()}
-            onClick={() => { setOpen(false); onCreatePartner?.(value.name); }}
-            className={cn("w-full rounded-sm px-2 py-1.5 text-left text-sm text-primary hover:bg-muted", matches.length > 0 && "mt-1 border-t")}>
-            {createLabel}
+            onMouseEnter={() => setActive(matches.length)}
+            onClick={() => { setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name)); }}
+            className={cn("w-full rounded-sm border-t px-2 py-1.5 text-left text-sm text-primary hover:bg-muted", active === matches.length && "bg-accent text-accent-foreground", matches.length > 0 && "mt-1")}>
+            {`${createLabel}…`}
           </button>
         ) : null}
       </PopoverContent>

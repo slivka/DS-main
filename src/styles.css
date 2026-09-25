@@ -34,6 +34,10 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-strong: var(--success-strong);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-strong: var(--destructive-strong);
   --color-filter-active: var(--filter-active);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
@@ -104,6 +108,10 @@
   --destructive-foreground: oklch(0.99 0.005 90);
   --success: oklch(0.5 0.12 155);
   --success-foreground: oklch(0.99 0.008 130);
+  --success-soft: oklch(0.94 0.055 150);
+  --success-strong: oklch(0.35 0.11 150);
+  --destructive-soft: oklch(0.95 0.04 25);
+  --destructive-strong: oklch(0.44 0.17 25);
   /* Jantar #eab308. */
   --warning: oklch(0.85 0.17 92);
   --warning-foreground: oklch(0.26 0.03 90);
@@ -177,6 +185,10 @@
   --destructive-foreground: oklch(0.18 0.02 40);
   --success: oklch(0.75 0.13 150);
   --success-foreground: oklch(0.18 0.025 150);
+  --success-soft: oklch(0.3 0.06 150);
+  --success-strong: oklch(0.85 0.11 150);
+  --destructive-soft: oklch(0.3 0.07 25);
+  --destructive-strong: oklch(0.86 0.1 25);
   /* Jantar #fbbf24. */
   --warning: oklch(0.83 0.16 85);
   --warning-foreground: oklch(0.22 0.02 80);
@@ -241,6 +253,13 @@
     font-weight: 600;
     text-transform: none !important;
   }
+}
+
+.section-heading {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
 }
 
 @utility num {

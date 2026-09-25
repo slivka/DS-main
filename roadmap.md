@@ -426,3 +426,13 @@
 - [x] Vždy viditelná PaneTabBar, replace historie, openRecord čistý/dirty detail a limit 10
 - [x] PageHeader v panelu: ↑↓, ←→, maximalizace, menuActions a ⋯
 - [x] LayoutMenu jako ⋯ vedle hledání přes AppShell.navSearchMenu
+
+## Verze 2.28.0 (DocumentForm – identita, směr a nový kurz)
+- [x] Přidat SectionHeading a sjednotit sekční nadpisy formulářů, dialogů, karet a panelů
+- [x] Přestavět DocumentForm bez pravého panelu, s identitou a badge směru
+- [x] Přidat RateField a rozšířit hodnotu dokladu o ruční a doporučený kurz
+- [x] Rozšířit IcoLink, PartnerOption a formát IČO v gridu
+- [x] Upravit volbu „Nový partner…“ a předání seed hodnot
+- [x] Upravit zavírání a dirty stav záložek panelů
+- [x] Doplnit ukázky, testy, dokumentaci a verzi 2.28.0
+- [ ] Ověřit typy, lint, testy, sestavení a formuláře v obou motivech a šířkách

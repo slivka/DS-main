@@ -103,8 +103,8 @@ export const MOCK_JOURNAL: JournalEntry[] = Array.from({ length: 180 }, (_, i) =
 
 /** Ukázkoví obchodní partneři (jen pro showcase). */
 export const MOCK_PARTNERS = [
-  { id: "p1", name: "Alfa Trading s.r.o.", ico: "27182818", dic: "CZ27182818" },
-  { id: "p2", name: "Beta Servis a.s.", ico: "31415926", dic: "CZ31415926" },
+  { id: "p1", name: "Alfa Trading s.r.o.", ico: "27182818", dic: "CZ27182818", country: "CZ", kind: "company" as const },
+  { id: "p2", name: "Beta Servis a.s.", ico: "27074358", dic: "CZ27074358", country: "CZ", kind: "company" as const },
   { id: "p3", name: "Cesta Logistic s.r.o.", ico: "16180339", dic: "CZ16180339" },
   { id: "p4", name: "Delta Consulting s.r.o.", ico: "14142135" },
   { id: "p5", name: "Epsilon Media s.r.o.", ico: "17320508" },
