@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { mainAccountLabelForType, partnerLabelForType } from "../../src/components/ds/accounting/document-fields";
 import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
@@ -50,5 +51,14 @@ describe("DocumentForm 2.24.0", () => {
     expect(html).toContain('data-slot="document-action-bar"');
     expect(html).toContain('aria-label="Uložit"');
     expect(html).toContain("Neuložené změny");
+  });
+
+  it("zobrazuje důvod zakázané další akce přímo v nabídce a stav jen v pruhu", () => {
+    const html = renderToStaticMarkup(<DocumentForm title="Doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="filed" approved moreActions={[{ id: "cancel", label: "Stornovat", onClick: () => {}, disabled: true, disabledReason: "Doklad je uzamčen." }]} />);
+    expect((html.match(/Zařazen/g) ?? []).length).toBe(1);
+    expect((html.match(/Schválen/g) ?? []).length).toBe(1);
+    const source = readFileSync("src/components/ds/accounting/document-form.tsx", "utf8");
+    expect(source).toContain("action.disabled && action.disabledReason");
+    expect(source).not.toContain("title={action.disabledReason}");
   });
 });

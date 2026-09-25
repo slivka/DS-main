@@ -1,3 +1,10 @@
+## Verze 2.26.1 (opravy částek slovy, PDF a pruhu dokladu)
+- [x] Opravit skloňování, haléře, zaokrouhlení, cizí měny a miliardy v amountInWordsCs
+- [x] Upravit pokladní doklad bez ztráty řádků, s dynamickou A4 a zápatím každé kopie
+- [x] Opravit číslování, logo a vlastní sekce tiskových sestav
+- [x] Upravit zakázané akce, měření úzkého pruhu a odstranit duplicitní stav z panelu
+- [x] Ověřit typy, lint, testy, build a vizuálně požadované PDF
+
 
 ## Verze 2.26.0 (akce dokladu a tiskové PDF)
 - [x] Přidat trvale viditelný pruh akcí DocumentForm a klávesovou zkratku Uložit
