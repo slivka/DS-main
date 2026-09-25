@@ -156,15 +156,15 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-y-2 text-sm font-medium text-foreground">
+        <div className="flex min-w-0 flex-wrap items-center gap-y-1 text-[15px] font-semibold text-foreground">
           {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
           {firstItem != null ? <span className="flex min-w-0 items-center">
-            {direction ? <span aria-hidden="true" className="mx-2 h-5 w-px bg-border" /> : null}
+            {direction ? <span aria-hidden="true" className="mx-2 h-4 w-px bg-border" /> : null}
             <span className="min-w-0 break-words">{firstItem}</span>
           </span> : null}
           {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
             {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
-              <span aria-hidden="true" className={cn("mx-2 h-5 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
+              <span aria-hidden="true" className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
               <span className="min-w-0 break-words">{item}</span>
             </span>)}
           </span> : null}
@@ -222,7 +222,8 @@ export function DocumentForm({
     id: "lines", label: t.linesTab, badge: lines.length || undefined,
     content: <JournalLinesEditor lines={lines} onChange={onLinesChange} accounts={accounts} dimensions={dimensions} partners={partners}
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
-      totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields} />,
+      totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields}
+      rounding={f.rounding ? { value: value.roundingAmount ?? 0, onChange: can("roundingAmount") ? (roundingAmount) => patch({ roundingAmount }) : undefined, readOnly: !can("roundingAmount"), label: t.rounding } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
@@ -266,7 +267,6 @@ export function DocumentForm({
           {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
           {field("document-amountTotal", t.amountTotal, <ReadField id="document-amountTotal" mono value={<span className="ml-auto font-bold">{formatAmount(total, 2)}</span>} />, 3, false, "@min-[40rem]:col-start-1")}
           {foreign && value.rate != null ? field("document-total-home", t.totalHomeCurrency.replace("CZK", homeCurrency), <ReadField id="document-total-home" mono value={<span className="ml-auto font-bold">{formatAmount(convertAmount(total, value.rate, rateAmount), 2)}</span>} />, 3) : null}
-          {f.rounding ? field("document-roundingAmount", t.rounding, can("roundingAmount") ? <DecimalInput id="document-roundingAmount" className="h-9 tabular-nums" value={value.roundingAmount ?? 0} onChange={(next) => patch({ roundingAmount: next === "" ? 0 : Number(next) })} /> : <ReadField id="document-roundingAmount" mono value={<span className="ml-auto">{formatAmount(value.roundingAmount ?? 0, 2)}</span>} />, 3) : null}
           <label className="col-span-20 flex min-h-9 items-center gap-2 self-end text-sm @min-[40rem]:col-span-6"><Checkbox checked={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onCheckedChange={(checked) => patch({ totalMode: checked === true ? "sum" : "entered" })} />{t.sumFromLines}</label>
         </div>
 
@@ -298,7 +298,7 @@ function CompactActionButton({ label, icon: Icon, busy, compact, children, ...pr
 
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
-  return <span data-slot="document-direction-badge" className={cn("inline-flex h-6 items-center gap-1 rounded-md px-2 text-xs font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
+  return <span data-slot="document-direction-badge" className={cn("inline-flex h-6 items-center gap-1 rounded-md px-2 text-[13px] font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
 export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
@@ -309,7 +309,7 @@ export function DocumentActionBar({ status, approved, saveAction, primaryAction,
   const [compact, setCompact] = useState(false);
   useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
   return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-    <DocumentStatusBadge status={status} approved={approved} />
+    <DocumentStatusBadge status={status} approved={approved} size="md" />
     <div className="flex shrink-0 items-center gap-2">
       {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
       {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}

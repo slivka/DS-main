@@ -5512,7 +5512,59 @@
     {
       "name": "DocumentStatusBadge",
       "file": "src/components/ds/accounting/document-status-badge.tsx",
-      "import_path": ""
+      "import_path": "",
+      "props": [
+        {
+          "name": "status",
+          "type": "enum",
+          "values": [
+            "draft",
+            "filed",
+            "posted",
+            "locked",
+            "cancelled"
+          ],
+          "required": true
+        },
+        {
+          "name": "config",
+          "type": "any"
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "approvedLabel",
+          "type": "string",
+          "default": "Schválen"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "default": "sm"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Stav účetního dokladu. Výchozí size=\"sm\" patří do gridů; size=\"md\" sjednocuje výšku štítku v pruhu akcí s badge směru.",
+      "examples": [
+        {
+          "label": "Stav v pruhu akcí",
+          "code": "<DocumentStatusBadge status=\"filed\" approved size=\"md\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní barevné štítky stavů dokladu.",
+        "V gridech nepoužívejte velikost md."
+      ]
     },
     {
       "name": "FiscalPeriodSelect",
@@ -5776,6 +5828,10 @@
           "default": "computed"
         },
         {
+          "name": "rounding",
+          "type": "object"
+        },
+        {
           "name": "roundingLimit",
           "type": "number",
           "default": "0.5"
@@ -5811,11 +5867,11 @@
           "default": "journal-cell-editor"
         }
       ],
-      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Režim mode=\"mainAccount\" s mainSide a mainAccount zamkne hlavní stranu; převod do databáze přes toJournalRow / fromJournalRow.",
+      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Nepovinný rounding zobrazí haléřové vyrovnání v dolní liště vedle zbývající částky; režim mode=\"mainAccount\" zamkne hlavní stranu.",
       "examples": [
         {
-          "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "label": "Řádky dokladu s vyrovnáním",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} totalAmount={total} rounding={{ value: rounding, onChange: setRounding }} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [

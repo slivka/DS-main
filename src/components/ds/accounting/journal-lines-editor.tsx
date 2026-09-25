@@ -47,6 +47,12 @@ export type JournalLinesMode = "internal" | "mainAccount";
 /** Strana hlavního účtu – odpovídá `documents.main_account_side`. */
 export type JournalMainSide = "MD" | "D";
 export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
+export interface JournalLinesRounding {
+  value: number;
+  onChange?: (value: number) => void;
+  readOnly?: boolean;
+  label?: string;
+}
 
 export interface JournalLinesEditorTexts {
   row: string;
@@ -180,6 +186,8 @@ export interface JournalLinesEditorProps {
   /** Limit pro dorovnání haléřovým vyrovnáním (výchozí 0,50). */
   roundingLimit?: number;
   onRoundingFill?: (amount: number) => void;
+  /** Haléřové vyrovnání z hlavičky dokladu zobrazené v liště pod řádky. */
+  rounding?: JournalLinesRounding;
   /** @deprecated Použijte totalAmount. */
   expectedTotal?: number;
   defaults?: JournalLineDefaults;
@@ -198,7 +206,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       ], showCurrency = false, sideFields = "split", sharedSide = "both",
       mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules,
       dimensionRequired = false, isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed",
-      roundingLimit = 0.5, onRoundingFill, expectedTotal, defaults,
+      roundingLimit = 0.5, onRoundingFill, rounding, expectedTotal, defaults,
       validate, storageKey = "journal-lines", texts, className,
     },
     forwardedRef,
@@ -691,7 +699,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
                 let content: ReactNode = null;
                 if (column.id === "row") content = t.total;
                 if (column.id === "amount") content = <span className="font-sans tabular-nums">{formatAmount(total, 2)}</span>;
-                if (column.id === "text") content = expectedAmount === undefined ? null : difference === 0 ? t.balanced : (
+                if (column.id === "text") content = expectedAmount === undefined || showRemaining ? null : difference === 0 ? t.balanced : (
                   <span className={amountClass(-Math.abs(difference))}>{`${showRemaining ? t.remaining : t.difference}: ${formatAmount(difference, 2)}`}</span>
                 );
                 if (column.id === "actions" && errorCount > 0) content = <span className="text-destructive">{`${t.errors}: ${errorCount}`}</span>;
@@ -699,12 +707,23 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
               })}</TableRow></TableFooter>
             </Table>
           </ZoomGrid>
-          {editable.size > 0 ? (
-            <div className="flex flex-wrap items-center gap-2 border-t p-2">
-              <Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button>
-              {canFillRounding ? (
-                <Button type="button" variant="outline" size="sm" onClick={() => onRoundingFill?.(difference)}>{t.fillRounding}</Button>
-              ) : null}
+          {editable.size > 0 || rounding || showRemaining ? (
+            <div className="flex flex-wrap items-end justify-between gap-3 border-t p-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {editable.size > 0 ? <Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button> : null}
+                {canFillRounding ? (
+                  <Button type="button" variant="outline" size="sm" onClick={() => onRoundingFill?.(difference)}>{t.fillRounding}</Button>
+                ) : null}
+              </div>
+              <div className="ml-auto flex flex-wrap items-end justify-end gap-3">
+                {rounding ? <div data-slot="journal-lines-rounding" className="flex items-center gap-2">
+                  <Label htmlFor="journal-lines-rounding" className="whitespace-nowrap text-xs">{rounding.label ?? "Haléřové vyrovnání"}</Label>
+                  {rounding.readOnly || !rounding.onChange
+                    ? <span id="journal-lines-rounding" aria-readonly="true" className="w-32 text-right font-mono text-sm tabular-nums">{formatAmount(rounding.value, 2)}</span>
+                    : <DecimalInput id="journal-lines-rounding" value={rounding.value} onChange={(value) => rounding.onChange?.(value === "" ? 0 : Number(value))} className="h-8 w-32 text-right font-mono tabular-nums" />}
+                </div> : null}
+                {showRemaining ? <span data-slot="journal-lines-remaining" className={cn("whitespace-nowrap text-sm font-medium tabular-nums", difference !== 0 && amountClass(-Math.abs(difference)))}>{`${t.remaining}: ${formatAmount(difference, 2)}`}</span> : null}
+              </div>
             </div>
           ) : null}
         </div>
