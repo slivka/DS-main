@@ -132,10 +132,10 @@ export interface DocumentFormProps {
   className?: string;
 }
 
-const ReadField = ({ id, value, muted, mono, plain }: { id: string; value: ReactNode; muted?: boolean; mono?: boolean; plain?: boolean }) => (
+/** Pole jen pro čtení = čistý text bez rámečku a plochy, zarovnaný k sousedním polím. */
+const ReadField = ({ id, value, muted, mono }: { id: string; value: ReactNode; muted?: boolean; mono?: boolean }) => (
   <div id={id} aria-readonly="true" className={cn(
     "flex min-h-9 items-center text-sm",
-    !plain && "rounded-md border bg-card px-3",
     muted && "italic text-muted-foreground",
     mono && "font-mono tabular-nums",
   )}>{value}</div>
@@ -212,7 +212,7 @@ export function DocumentForm({
             <h2 className="mb-3 text-sm font-semibold text-foreground">{t.headerSection}</h2>
             <div className="grid gap-3 @min-[40rem]:grid-cols-2">
               {f.mainAccount ? field("document-main-account", mainAccountLabel, accountLocked ? (
-                <ReadField id="document-main-account" plain value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} />
+                <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} />
               ) : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />) : null}
               {date("accountingDate", t.accountingDate)}
               {date("issueDate", t.issueDate)}
