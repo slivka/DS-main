@@ -15,7 +15,9 @@ describe("období gridu", () => {
     expect(gridPeriodRange("2026-07-01", "2027-06-30", "quarter", 1)).toEqual({ kind: "quarter", index: 1, from: "2026-10-01", to: "2026-12-31" });
   });
   it("omezuje YTD koncem účetního období", () => {
-    expect(gridPeriodRange("2026-07-01", "2027-06-30", "ytd", 0, "2027-09-25").to).toBe("2027-06-30");
+    const value = gridPeriodRange("2026-07-01", "2027-06-30", "ytd", 0, "2027-09-25");
+    expect(value.to).toBe("2027-06-30");
+    expect(gridPeriodLabel(value)).toBe("1. 7. 2026 – 30. 6. 2027");
   });
   it("nepustí posun před začátek ani za konec", () => {
     const first = gridPeriodRange("2026-07-01", "2027-06-30", "quarter", 0);
@@ -126,7 +128,7 @@ describe("kontextový řádek gridu", () => {
     const period = { fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: gridPeriodRange("2026-01-01", "2026-12-31", "ytd", 0, "2026-09-25"), onChange: () => {} };
     const html = renderToStaticMarkup(createElement(GridContextBar, { period }));
     expect(html).toContain("Celé období");
-    expect(html).toContain("Od začátku roku do");
+    expect(html).toContain("1. 1. 2026 – 25. 9. 2026");
     expect((html.match(/\[grid-area:1\/1\]/g) ?? []).length).toBeGreaterThanOrEqual(6);
   });
 

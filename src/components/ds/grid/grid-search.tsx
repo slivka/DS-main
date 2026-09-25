@@ -37,6 +37,10 @@ export function GridSearch({
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  useEffect(() => {
+    if (overflowLevel >= 3 && !isActive) setOpen(false);
+  }, [isActive, overflowLevel]);
+
   // Zkratka „/“ – rychlý skok do hledání gridu (mimo formulářová pole).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -51,7 +55,7 @@ export function GridSearch({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  if (!open || (overflowLevel >= 3 && !isActive)) {
+  if (!open) {
     return (
       <Button
         variant="outline"

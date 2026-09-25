@@ -1,5 +1,14 @@
 # Roadmap
 
+## Verze 2.23.1 (opravy adaptivní lišty a kontextu)
+- [x] Sjednotit nabídku ⋯ a ponechat Obnovit pouze úplně vpravo
+- [x] Měřit celý řádek a při kritické šířce zkrátit Přidat a hledání
+- [x] Opravit přebité stavy Filtru a GridSegmentedToggle
+- [x] Upravit rozestupy a centrování firmy s obdobím
+- [x] Omezit nový vzhled záložek na stránky a formuláře
+- [x] Zkrátit popisek YTD na skutečný rozsah účetního období
+- [x] Doplnit regresní testy a vizuální kontrolu
+
 ## Verze 2.23.0 (stabilní horní kontext a jednořádkový grid)
 - [x] Sjednotit šířku firmy s obdobím a vložit skutečný oddělovač v horní liště
 - [x] Zarovnat knihu a období vlevo a upravit adaptivní šířku období
