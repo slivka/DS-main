@@ -105,3 +105,6 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - `AccountSelect.suffix` patří dovnitř spouštěče před šipku; `totalMode` lze uvést v `editableFields`.
 - Zamčený nebo jediný hlavní účet se zobrazuje jako text, nikoli jako zakázaný výběr.
 
+
+## CounterpartyField (2.25.0)
+Protistrana jako volný text s volitelným propojením na partnera. Props: `value: { name, partnerId }`, `onChange`, `partners`, `onCreatePartner?`, `disabled`, `placeholder`, `id`. Psaní ruší `partnerId`, výběr partnera vyplní oba údaje. DocumentForm: `counterpartyName`, `homeCurrency`, `currencyLocked`, `onCreatePartner`.
