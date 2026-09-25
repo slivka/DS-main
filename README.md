@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.26.1 – opravy tisku a akcí dokladu
+
+- Částky slovy správně skloňují koruny a haléře podle celé částky, zaokrouhlují na haléře, podporují miliardy a cizí měny.
+- Pokladní doklad zalamuje dlouhou částku slovy, zachovává všechny řádky, umí přejít na celou A4 a má zápatí u každé kopie.
+- Sestava doplňuje konečný počet stran až po vykreslení, používá logo v první hlavičce nezávisle na zápatí a hlídá vlastní sekce u konce stránky.
+- Pruh akcí měří skutečnou šířku, důvod zakázané akce zobrazuje přímo v nabídce a stav se již neopakuje v pravém panelu.
+- Firemní monogram ignoruje právní formy názvu.
+
 ## Changelog 2.26.0 – akce dokladu a tiskové PDF
 
 - `DocumentForm` má pod nadpisem přilepený pruh se stavem, schválením, akcí Uložit, hlavní stavovou akcí a nabídkou dalších akcí. Nové props jsou `saveAction`, `primaryAction` a `moreActions`; původní volné `actions` bylo odstraněno.

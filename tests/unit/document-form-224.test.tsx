@@ -51,4 +51,12 @@ describe("DocumentForm 2.24.0", () => {
     expect(html).toContain('aria-label="Uložit"');
     expect(html).toContain("Neuložené změny");
   });
+
+  it("zobrazuje důvod zakázané další akce přímo v nabídce a stav jen v pruhu", () => {
+    const html = renderToStaticMarkup(<DocumentForm title="Doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="filed" approved moreActions={[{ id: "cancel", label: "Stornovat", onClick: () => {}, disabled: true, disabledReason: "Doklad je uzamčen." }]} />);
+    expect(html).toContain("Doklad je uzamčen.");
+    expect(html).not.toContain('title="Doklad je uzamčen."');
+    expect((html.match(/Zařazen/g) ?? []).length).toBe(1);
+    expect((html.match(/Schválen/g) ?? []).length).toBe(1);
+  });
 });

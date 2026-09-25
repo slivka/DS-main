@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CheckCircle2, Loader2, MoreHorizontal, Save, type LucideIcon } from "lucide-react";
 
 import { Checkbox } from "../../ui/checkbox";
@@ -272,8 +272,6 @@ export function DocumentForm({
               {property("document-period", t.period, <span title={t.periodHint} className="font-normal text-muted-foreground">{periodLabel ?? "—"}</span>)}
               {property("document-number", t.number, <span className={cn("font-mono tabular-nums", !value.number && "font-sans font-normal italic text-muted-foreground")}>{value.number || t.numberPending}</span>)}
               {f.direction ? property("document-direction", t.direction, value.direction === "in" ? t.directionIn : value.direction === "out" ? t.directionOut : "—") : null}
-              {property("document-status", t.status, <DocumentStatusBadge status={status} />)}
-              {property("document-approved", t.approved, approved ? t.yes : t.no)}
             </div>
 
             <h3 className="mb-2 mt-5 border-t pt-4 text-sm font-semibold text-foreground">{foreign ? t.rateSection : t.currencySection}</h3>
@@ -306,17 +304,17 @@ export function DocumentForm({
   );
 }
 
-function CompactActionButton({ label, icon: Icon, busy, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
+function CompactActionButton({ label, icon: Icon, busy, compact, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" {...props} aria-label={label} className={cn("@max-[39.99rem]:size-9 @max-[39.99rem]:px-0", props.className)}>
+        <Button type="button" {...props} aria-label={label} className={cn(compact && "size-9 px-0", props.className)}>
           {busy ? <Loader2 className="animate-spin" /> : <Icon />}
-          <span className="@max-[39.99rem]:sr-only">{busy ? `${label}…` : label}</span>
+          <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
           {children}
         </Button>
       </TooltipTrigger>
-      <TooltipContent className="@min-[40rem]:hidden">{label}</TooltipContent>
+      {compact ? <TooltipContent>{label}</TooltipContent> : null}
     </Tooltip>
   );
 }
@@ -330,24 +328,35 @@ export function DocumentActionBar({ status, approved, saveAction, primaryAction,
   moreActions?: DocumentMoreAction[];
 }) {
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
+  const barRef = useRef<HTMLDivElement>(null);
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const node = barRef.current;
+    if (!node) return;
+    const update = () => setCompact(node.getBoundingClientRect().width < 640);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
   return (
     <TooltipProvider>
-      <div data-slot="document-action-bar" className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 border-b bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
+      <div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 border-b bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
         <DocumentStatusBadge status={status} approved={approved} />
         <div className="flex shrink-0 items-center gap-2">
           {saveAction ? (
-            <CompactActionButton label="Uložit" icon={Save} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>
+            <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>
               {saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}
             </CompactActionButton>
           ) : null}
-          {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
+          {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
           {moreActions.length ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-56">
                 {moreActions.map((action) => {
                   const Icon = action.icon;
-                  return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} title={action.disabledReason} onSelect={action.onClick} className={cn(action.destructive && "text-destructive focus:text-destructive")}>{Icon ? <Icon /> : null}{action.label}</DropdownMenuItem></span>;
+                   return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>;
                 })}
               </DropdownMenuContent>
             </DropdownMenu>

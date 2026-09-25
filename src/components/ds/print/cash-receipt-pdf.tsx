@@ -117,7 +117,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   drawReceiptFooter(doc, context, logo, fullPage ? top + 282 : top + 139);
 }
 
-export function cashReceiptNeedsFullPage(input: Pick<CashReceiptPdfInput, "lines" | "amount" | "currency" | "homeCurrency">) {
+function cashReceiptNeedsFullPage(input: Pick<CashReceiptPdfInput, "lines" | "amount" | "currency" | "homeCurrency">) {
   const estimatedWordLines = Math.max(1, Math.ceil(amountInWordsCs(input.amount, input.currency).length / 95));
   const availableRows = input.currency !== input.homeCurrency || estimatedWordLines > 1 ? 7 : 8;
   return input.lines.length > availableRows;
@@ -129,7 +129,7 @@ export async function buildCashReceiptPdf(input: CashReceiptPdfInput, context: P
   const logo = await resolveCompanyLogo(context.company, context.settings.footerLogo);
   drawReceipt(doc, input, context, logo, 5, false, fullPage);
   if (input.copies === 2 && !fullPage) {
-    doc.setDrawColor(...GRAY); doc.setLineDashPattern([2, 2], 0); doc.line(15, 148, 195, 148); doc.setLineDashPattern([], 0); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("✂  odstřihněte", 105, 146.5, { align: "center" });
+    doc.setDrawColor(...GRAY); doc.setLineDashPattern([2, 2], 0); doc.line(15, 148, 195, 148); doc.setLineDashPattern([], 0); doc.setFontSize(7); doc.setTextColor(...GRAY);
     doc.setLineWidth(0.3); doc.circle(100.5, 145.7, 1.2); doc.circle(100.5, 148.1, 1.2); doc.line(101.5, 146.4, 104, 148.5); doc.line(101.5, 147.4, 104, 145.3);
     doc.setLineWidth(0.2); doc.setFillColor(255, 255, 255); doc.rect(104, 143.5, 20, 5, "F"); doc.text("odstřihněte", 114, 146.7, { align: "center" });
     drawReceipt(doc, input, context, logo, 151, true, false);

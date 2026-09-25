@@ -7,14 +7,28 @@ describe("české částky slovy", () => {
     [1, "jednakorunačeská"],
     [2, "dvěkorunyčeské"],
     [5, "pětkorunčeských"],
-    [21, "dvacetjednakorunačeská"],
+    [21, "dvacetjednakorunčeských"],
+    [22, "dvacetdvakorunčeských"],
     [100, "stokorunčeských"],
+    [101, "stojednakorunčeských"],
     [1000, "jedentisíckorunčeských"],
-    [1234567.89, "jedenmiliondvěstětřicetčtyřitisícpětsetšedesátsedmkorunčeských a osmdesátdevět haléřů"],
-    [-5, "minuspětkorunčeských"],
+    [1001, "jedentisícjednakorunčeských"],
+    [2.999, "třikorunyčeské"],
+    [1_000_000_000, "jednamiliardakorunčeských"],
+    [1234567.89, "jedenmiliondvěstětřicetčtyřitisícpětsetšedesátsedmkorunčeských a osmdesátdevěthaléřů"],
+    [-2, "minus dvěkorunyčeské"],
+    [1.01, "jednakorunačeská a jedenhaléř"],
+    [2.02, "dvěkorunyčeské a dvahaléře"],
+    [5.05, "pětkorunčeských a pěthaléřů"],
+    [21.21, "dvacetjednakorunčeských a dvacetjedenhaléřů"],
   ])("převede %s", (amount, expected) => expect(amountInWordsCs(amount)).toBe(expected));
 
-  it("u cizí měny připíše kód", () => expect(amountInWordsCs(180, "EUR")).toBe("stoosmdesát EUR"));
+  it("u cizí měny připíše kód a správnou setinu", () => {
+    expect(amountInWordsCs(180.5, "EUR")).toBe("stoosmdesát EUR a padesát centů");
+    expect(amountInWordsCs(1, "EUR")).toBe("jedna EUR");
+    expect(amountInWordsCs(180.5, "GBP")).toBe("stoosmdesát GBP a 50/100");
+  });
+  it("odmítne bilion a vyšší částky", () => expect(() => amountInWordsCs(1_000_000_000_000)).toThrow());
 });
 
 describe("číslování stran sestavy", () => {
