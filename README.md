@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.27.0 – tisk gridu do PDF
+
+- DataGrid a TreeGrid: nové props `printContext`, `printTitle`, `printParams`; v menu Stáhnout položka „Tisk (PDF)…“ (jen s `printContext`).
+- Data jako Excel export: viditelné sloupce v pořadí, filtr, řazení, seskupení; tisk jen rozbalených skupin a uzlů, skupiny/uzly tučně s odsazením 2 mm na úroveň a mezisoučty, řádek součtů.
+- Parametry záhlaví z kontextového řádku (kniha / Všechny knihy, období s rozsahem, hledání, filtry, Stav k datu) + `printParams`.
+- Orientace automaticky (> 7 sloupců nebo > 180 mm → na šířku), v náhledu přepínač Na výšku / Na šířku.
+- Nad 5 000 řádků potvrzení s odhadem stran. Nové veřejné nástroje: `gridPrintParams`, `gridPrintOrientation`, `gridPrintColumnWidths`, `buildGridPrintSection`, `buildGridPrintPdf`, `useGridPrint`; `GridExport` props `print`, `getPrintData`; `PrintSection.table.rowStyles`, formát `code`, záhlaví částek vpravo.
+
 ## Changelog 2.26.1 – opravy tisku a akcí dokladu
 
 - Částky slovy správně skloňují koruny a haléře podle celé částky, zaokrouhlují na haléře, podporují miliardy a cizí měny.

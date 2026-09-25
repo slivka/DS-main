@@ -1,3 +1,7 @@
+## Verze 2.27.0 (tisk gridu do PDF)
+
+- [x] Tisk (PDF)… v DataGrid a TreeGrid, parametry z kontextu, orientace, velké objemy, ukázky, testy
+
 ## Verze 2.26.1 (opravy částek slovy, PDF a pruhu dokladu)
 - [x] Opravit skloňování, haléře, zaokrouhlení, cizí měny a miliardy v amountInWordsCs
 - [x] Upravit pokladní doklad bez ztráty řádků, s dynamickou A4 a zápatím každé kopie

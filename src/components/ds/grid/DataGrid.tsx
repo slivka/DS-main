@@ -19,6 +19,8 @@ import { GridPagination, useGridPagination } from "./grid-pagination";
 import { SortHead, useGridSort, useSortedRows } from "./grid-sort";
 import { GridBody, GridErrorRow } from "./grid-states";
 import { GridExport, type GridExportData, type GridExtraExport } from "./grid-export";
+import { gridPrintParams, type GridPrintParam } from "./grid-print";
+import type { PrintContext } from "../print/report-pdf";
 import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom, useWheelZoom } from "./grid-zoom";
 import { useGridColumns } from "./grid-columns";
 import { ColumnResizeHandle } from "./grid-column-resize";
@@ -226,6 +228,12 @@ export type DataGridProps<Row> = {
   moreActions?: GridMoreItem[] | undefined;
   /** Vlastní PDF sestava místo standardního PDF gridu. */
   pdfExport?: (() => Promise<void>) | undefined;
+  /** Kontext firemní tiskové sestavy; bez něj se v menu Stáhnout nezobrazí „Tisk (PDF)…“. */
+  printContext?: PrintContext | undefined;
+  /** Nadpis tiskové sestavy (výchozí titulek exportu). */
+  printTitle?: string | undefined;
+  /** Další parametry záhlaví; připojí se za automatické z kontextového řádku. */
+  printParams?: GridPrintParam[] | undefined;
   /** Další položky ve společné nabídce exportu. */
   extraExports?: GridExtraExport[] | undefined;
   emptyTitle?: string | undefined;
@@ -374,6 +382,9 @@ export function DataGrid<Row>({
   emptyActionLabel,
   onEmptyAction,
   exportName,
+  printContext,
+  printTitle,
+  printParams,
   exportMeta,
   defaultSort,
   onEditRow,
@@ -609,10 +620,11 @@ export function DataGrid<Row>({
     valueOf,
   );
 
-  const exportData = (): GridExportData => {
+  const printGrouped = useGroupedRows(sorted, grouping, groupColumns, valueOf);
+  const exportData = (forPrint = false): GridExportData => {
     const hasSections = shown.some((column) => column.section);
     const exportItems = grouping.active
-      ? exportGrouped
+      ? (forPrint ? printGrouped : exportGrouped)
       : sorted.map((row) => ({ type: "row" as const, row }));
     return {
       columns: shown.map((column) => column.label),
@@ -621,7 +633,7 @@ export function DataGrid<Row>({
         : {}),
       rows: exportItems.map((item) => {
         if (item.type === "group") {
-          return shown.map((_, index) => index === 0 ? `${item.column}: ${item.label}` : null);
+          return shown.map((column, index) => index === 0 ? `${item.column}: ${item.label}` : forPrint ? (item.sums.find((sum) => sum.id === column.id)?.total ?? null) : null);
         }
         return shown.map((column) => {
           const value = column.value?.(item.row) ?? null;
@@ -724,6 +736,11 @@ export function DataGrid<Row>({
     ...(search.trim() ? [`Hledání: ${search.trim()}`] : []),
     ...activeFilterLabels,
   ];
+  const printConfig = printContext ? {
+    context: printContext,
+    title: printTitle ?? exportTitle ?? (typeof title === "string" && title ? title : exportName ?? storageKey),
+    params: gridPrintParams({ book, period: period?.value, search, filters: [...(exportMeta?.filters ?? []), ...activeFilterLabels], asOf: asOf ? { enabled: asOf.enabled, value: asOf.value } : undefined, extra: printParams }),
+  } : undefined;
   const clearAll = () => {
     setSearch("");
     setColFilters({});
@@ -875,10 +892,10 @@ export function DataGrid<Row>({
                <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
               {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
               {actions}
-              <GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
+              <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
               </span>
             </div>
-             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.length) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
+             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.length) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
              {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></span> : null}
           </>}
         /> : null}

@@ -5,9 +5,10 @@ export interface PrintCompany { name: string; ico?: string; dic?: string; addres
 export interface PrintSettings { showPrintedBy: boolean; footerLogo: boolean; footerName: boolean; footerIco: boolean }
 export interface PrintContext { company: PrintCompany; settings: PrintSettings; printedBy?: string; printedAt: Date }
 export type PrintColumn = { key: string; label: string; align?: "left" | "center" | "right"; width?: number; format?: "amount" | "date" | "text" | "code" };
+export type PrintRowStyle = { bold?: boolean; indent?: number };
 export type PrintCursor = { x: number; y: number; width: number; pageHeight: number };
 export type PrintSection =
-  | { type: "table"; columns: PrintColumn[]; rows: Array<Record<string, unknown>>; totals?: Record<string, unknown> }
+  | { type: "table"; columns: PrintColumn[]; rows: Array<Record<string, unknown>>; totals?: Record<string, unknown>; /** Styl řádku: tučně (skupina / uzel) a odsazení prvního sloupce v mm. */ rowStyles?: Array<PrintRowStyle | undefined> }
   | { type: "text"; text: string }
   | { type: "custom"; draw: (doc: JsPdf, cursor: PrintCursor) => PrintCursor };
 
@@ -51,6 +52,7 @@ function formatCell(value: unknown, format: PrintColumn["format"]) {
   if (value == null) return "";
   if (format === "amount") return formatAmount(value);
   if (format === "date") return formatDate(value);
+  if (format === "code") { const raw = String(value); return /^\d{4,}$/.test(raw) ? `${raw.slice(0, 3)}.${raw.slice(3)}` : raw; }
   return String(value);
 }
 
@@ -159,6 +161,18 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
         headStyles: { font: "Roboto", fontStyle: "bold", fillColor: PAPER, textColor: [24, 24, 27] },
         footStyles: { font: "Roboto", fontStyle: "bold", fillColor: [255, 255, 255], textColor: [24, 24, 27], lineWidth: { top: 0.35, right: 0, bottom: 0, left: 0 } },
         columnStyles: Object.fromEntries(section.columns.map((column, index) => [index, { halign: column.align ?? (column.format === "amount" ? "right" : "left"), ...(column.width ? { cellWidth: column.width } : {}) }])),
+        didParseCell: (hook) => {
+          if (hook.section === "head") { const column = section.columns[hook.column.index]; hook.cell.styles.halign = column?.align ?? (column?.format === "amount" ? "right" : "left"); return; }
+          if (hook.section !== "body") return;
+          const style = section.rowStyles?.[hook.row.index];
+          if (!style) return;
+          if (style.bold) hook.cell.styles.fontStyle = "bold";
+          if (style.indent && hook.column.index === 0) {
+            const padding = hook.cell.styles.cellPadding;
+            const base = typeof padding === "number" ? padding : 1.7;
+            hook.cell.styles.cellPadding = { top: base, right: base, bottom: base, left: base + style.indent };
+          }
+        },
         didDrawPage: ({ pageNumber }) => { if (pageNumber > 1) drawHeader(pageNumber); },
       });
       const finalY = (doc as JsPdf & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? cursor.y;
