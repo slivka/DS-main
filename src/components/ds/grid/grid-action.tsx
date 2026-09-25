@@ -1,5 +1,11 @@
 import type { ComponentProps } from "react";
 import { cn } from "../../../lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+
+export interface GridActionProps extends ComponentProps<"button"> {
+  tone?: "default" | "destructive";
+  disabledReason?: string;
+}
 
 /**
  * Jednotné akční tlačítko v řádku gridu.
@@ -10,9 +16,10 @@ import { cn } from "../../../lib/utils";
 export function GridAction({
   className,
   tone = "default",
+  disabledReason,
   ...props
-}: ComponentProps<"button"> & { tone?: "default" | "destructive" }) {
-  return (
+}: GridActionProps) {
+  const action = (
     <button
       type="button"
       data-slot="grid-action"
@@ -21,7 +28,7 @@ export function GridAction({
         "text-muted-foreground opacity-60 transition-[color,background-color,border-color,opacity] duration-100 outline-none",
         "group-hover/row:opacity-100 hover:opacity-100 focus-visible:opacity-100",
         "focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring/40",
-        "disabled:pointer-events-none disabled:opacity-40",
+        "disabled:cursor-not-allowed disabled:opacity-40",
         tone === "destructive"
           ? "hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive active:bg-destructive/20 data-[state=open]:border-destructive/30 data-[state=open]:bg-destructive/10 data-[state=open]:text-destructive"
           : "hover:border-primary/30 hover:bg-primary/10 hover:text-primary active:bg-primary/20 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/10 data-[state=open]:text-primary",
@@ -31,6 +38,8 @@ export function GridAction({
       {...props}
     />
   );
+  if (!disabledReason) return action;
+  return <TooltipProvider delayDuration={250}><Tooltip><TooltipTrigger asChild><span className="inline-flex" tabIndex={0}>{action}</span></TooltipTrigger><TooltipContent>{disabledReason}</TooltipContent></Tooltip></TooltipProvider>;
 }
 
 /** Obal pro skupinu akcí v buňce – drží je vpravo a s jednotnou mezerou. */

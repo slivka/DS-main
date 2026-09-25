@@ -281,6 +281,17 @@ export function ZoomGrid({
     return () => el.removeEventListener("wheel", onWheel);
   }, [setZoom]);
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => { el.dataset["scrolledX"] = el.scrollLeft > 1 ? "true" : "false"; };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => { el.removeEventListener("scroll", update); observer.disconnect(); };
+  }, [children, zoom]);
+
   // Přeuspořádání sloupců podle uživatelského nastavení – tabulky renderují
   // buňky v původním pořadí, proto je po každém renderu srovnáme v DOM.
   // Každou buňku si jednou označíme její původní pozicí (`data-colpos`),

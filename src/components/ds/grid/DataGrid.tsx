@@ -218,7 +218,7 @@ export type DataGridProps<Row> = {
   viewZoomKey?: string | undefined;
   /** Volitelný režim „Stav k datu“. */
   asOf?: AsOfDateConfig | undefined;
-  /** Primární akce vždy na pravém konci lišty. */
+  /** Primární akce vždy vlevo na začátku lišty. */
   addAction?: GridAddAction | GridAddAction[] | undefined;
   /** Vedlejší akce v nabídce ⋯. */
   moreActions?: GridMoreItem[] | undefined;
@@ -261,8 +261,12 @@ export type DataGridProps<Row> = {
   hideDefaultActions?: boolean | undefined;
   /** Povolení úpravy pro konkrétní řádek (ikona se jinak nezobrazí). */
   canEditRow?: ((row: Row) => boolean) | undefined;
+  /** Důvod zakázané úpravy; akce zůstane viditelná a zešedne. */
+  editDisabledReason?: ((row: Row) => string | undefined) | undefined;
   /** Povolení odstranění pro konkrétní řádek (ikona se jinak nezobrazí). */
   canDeleteRow?: ((row: Row) => boolean) | undefined;
+  /** Důvod zakázaného odstranění; akce zůstane viditelná a zešedne. */
+  deleteDisabledReason?: ((row: Row) => string | undefined) | undefined;
   /** Povolí režim hromadného výběru řádků (tlačítko v liště gridu). */
   selectable?: boolean | undefined;
   /** Hromadné akce v liště – dostanou vybrané řádky a funkci pro zrušení výběru. */
@@ -380,7 +384,9 @@ export function DataGrid<Row>({
   paginated = true,
   hideDefaultActions,
   canEditRow,
+  editDisabledReason,
   canDeleteRow,
+  deleteDisabledReason,
   selectable,
   selectionActions,
   selectMode: controlledSelectMode,
@@ -817,8 +823,9 @@ export function DataGrid<Row>({
                 : "rounded-t-lg shadow-panel"
           }`}
           left={<>
+            {addAction ? <GridAddActions actions={addAction} /> : null}
+            {addAction && (viewMode || grouping.active || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
             {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}
-            {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
             {grouping.active ? (
               <GridExpandControls
                 levels={[
@@ -838,10 +845,7 @@ export function DataGrid<Row>({
                 }}
               />
             ) : null}
-            {grouping.active ? <GridToolbarSeparator density={density} /> : null}
-            {asOf ? <AsOfDateToggle {...asOf} /> : null}
-            {asOf ? <GridToolbarSeparator density={density} /> : null}
-            {toolbarLeft}
+            {(asOf || toolbarLeft) ? <div className="hidden @min-[640px]:contents">{grouping.active ? <GridToolbarSeparator density={density} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{asOf && toolbarLeft ? <GridToolbarSeparator density={density} /> : null}{toolbarLeft}</div> : null}
           </>}
           right={<>
             <GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />
@@ -859,9 +863,7 @@ export function DataGrid<Row>({
               />
             ) : null}
 
-            {onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /> : null}
-
-            <GridExport
+            <div className="hidden @min-[640px]:contents"><GridExport
               getData={exportData}
               filename={exportName ?? storageKey}
               title={exportTitle ?? (typeof title === "string" ? title : "")}
@@ -895,22 +897,22 @@ export function DataGrid<Row>({
               texts={texts}
             />
 
-            {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
+            {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}</div>
 
-            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />
-
+            {(selectable && !hideSelectionToggle) || actions || moreActions.length ? <div className="hidden @min-[640px]:contents"><GridToolbarSeparator density={density} /></div> : null}
             {selectable && !hideSelectionToggle ? (
+              <div className="hidden @min-[640px]:contents">
               <GridSelectionToggle
                 active={selectMode}
                 count={selectedRows.length}
                 zoom={zoom}
                 texts={texts}
                 onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()}
-              />
+              /></div>
             ) : null}
-            {actions}
-            {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}
-            {addAction ? <GridAddActions actions={addAction} /> : null}
+            <div className="hidden @min-[640px]:contents">{actions}</div>
+            <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} tools={<><GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} />{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />{onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /> : null}</>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}</>} className="@min-[640px]:inline-flex" />
+            <div className="hidden @min-[640px]:contents">{(selectable && !hideSelectionToggle) || actions || moreActions.length ? <GridToolbarSeparator density={density} /> : null}<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} />{moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={texts} /> : null}{onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></> : null}</div>
           </>}
         /> : null}
 
@@ -1121,7 +1123,7 @@ export function DataGrid<Row>({
                           onDoubleClick={
                             !selectMode && (onEditRow || onRowClick)
                               ? () => {
-                                  if (onEditRow && (canEditRow?.(item.row) ?? true))
+                                   if (onEditRow && !editDisabledReason?.(item.row) && (canEditRow?.(item.row) ?? true))
                                     onEditRow(item.row);
                                   else onRowClick?.(item.row);
                                 }
@@ -1201,10 +1203,12 @@ export function DataGrid<Row>({
                             <TableCell className="sticky right-0 z-[1] !min-w-0 whitespace-nowrap border-l bg-card px-0.5 py-0">
                               <GridActions>
                                 {rowActions?.(item.row)}
-                                {!hideDefaultActions && onEditRow && (canEditRow?.(item.row) ?? true) ? (
+                                {!hideDefaultActions && onEditRow && ((canEditRow?.(item.row) ?? true) || editDisabledReason?.(item.row)) ? (
                                   <GridAction
                                     title={texts.edit}
                                     aria-label={texts.edit}
+                                    disabled={Boolean(editDisabledReason?.(item.row))}
+                                    disabledReason={editDisabledReason?.(item.row)}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       onEditRow(item.row);
@@ -1213,11 +1217,13 @@ export function DataGrid<Row>({
                                     <Pencil className="size-3.5" />
                                   </GridAction>
                                 ) : null}
-                                {!hideDefaultActions && onDeleteRow && (canDeleteRow?.(item.row) ?? true) ? (
+                                {!hideDefaultActions && onDeleteRow && ((canDeleteRow?.(item.row) ?? true) || deleteDisabledReason?.(item.row)) ? (
                                   <GridAction
                                     tone="destructive"
                                     title={texts.remove}
                                     aria-label={texts.remove}
+                                    disabled={Boolean(deleteDisabledReason?.(item.row))}
+                                    disabledReason={deleteDisabledReason?.(item.row)}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       const msg =

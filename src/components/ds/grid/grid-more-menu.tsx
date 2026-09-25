@@ -24,11 +24,17 @@ export type GridMoreItem = {
 /** Tlačítko „…“ s návazným menu doplňkových akcí gridu. */
 export function GridMoreMenu({
   items,
+  tools,
+  secondary,
   zoom = 1,
   className = "",
   texts: textOverrides,
 }: {
   items: GridMoreItem[];
+  /** Nástroje přesunuté do nabídky v úzkém gridu. */
+  tools?: ReactNode;
+  /** Další ovládání přesunuté do nabídky v úzkém gridu. */
+  secondary?: ReactNode;
   zoom?: number;
   className?: string;
   texts?: Partial<GridTexts>;
@@ -36,7 +42,7 @@ export function GridMoreMenu({
   const texts = resolveGridTexts(textOverrides);
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
-  if (items.length === 0) return null;
+  if (items.length === 0 && !tools && !secondary) return null;
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -52,6 +58,8 @@ export function GridMoreMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
+        {tools ? <div className="grid-more-tools mb-[0.35em] border-b border-border/50 pb-[0.5em]"><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{tools}</div></div> : null}
+        {secondary ? <div className="mb-[0.35em] flex flex-wrap items-center gap-[0.35em] border-b border-border/50 px-[0.35em] pb-[0.5em]">{secondary}</div> : null}
         {items.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;
           return (

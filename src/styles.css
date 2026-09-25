@@ -1277,6 +1277,9 @@
   background: var(--card);
   background-clip: padding-box;
   border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  transition: box-shadow 120ms ease;
+}
+.zoom-grid[data-scrolled-x="true"] table:has([data-slot="grid-actions"]) tr > :is(th, td):last-child {
   box-shadow: -6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
 }
 
@@ -1299,7 +1302,6 @@
 .zoom-grid table:has([data-slot="grid-actions"]) tfoot tr > :is(th, td):last-child {
   z-index: 8;
   background: var(--grid-total-surface);
-  box-shadow: none;
 }
 
 /* Akční buňka drží ikony na jednom řádku s co nejmenší rezervou. */
