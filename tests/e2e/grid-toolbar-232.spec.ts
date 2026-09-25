@@ -28,7 +28,7 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
     if (width < 620) {
       await toolbar.getByRole("button", { name: "Další akce" }).click();
       await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
-      await expect(page.getByText("Stav k datu", { exact: true })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Stav k datu" }).last()).toBeVisible();
     }
   });
 }
@@ -41,16 +41,14 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
     await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
     const order = await toolbar.locator('[data-toolbar-group]').evaluateAll((groups) => groups.map((group) => group.getAttribute("data-toolbar-group")));
     expect(order).toEqual(["find", "display", "data", "menu", "refresh"]);
-    const separators = toolbar.locator('[data-slot="grid-toolbar-separator"]:visible');
-    const separatorCount = await separators.count();
-    expect(separatorCount).toBeGreaterThan(0);
-    for (let index = 0; index < separatorCount; index += 1) {
-      const invalid = await separators.nth(index).evaluate((separator) => {
-        const previous = separator.previousElementSibling;
-        const next = separator.nextElementSibling;
-        return !previous || !next || previous.matches('[data-slot="grid-toolbar-separator"]') || next.matches('[data-slot="grid-toolbar-separator"]');
-      });
-      expect(invalid).toBe(false);
-    }
+    const separatorBoxes = await toolbar.locator('[data-slot="grid-toolbar-separator"]:visible').evaluateAll((items) => items.map((item) => {
+      const box = item.getBoundingClientRect();
+      return { left: box.left, right: box.right };
+    }));
+    const toolbarBox = await toolbar.boundingBox();
+    expect(separatorBoxes.length).toBeGreaterThan(0);
+    expect(toolbarBox).not.toBeNull();
+    expect(separatorBoxes.every((separator) => toolbarBox && separator.left > toolbarBox.x + 4 && separator.right < toolbarBox.x + toolbarBox.width - 4)).toBe(true);
+    expect(separatorBoxes.every((separator, index) => index === 0 || separator.left - separatorBoxes[index - 1].right > 2)).toBe(true);
   });
 }
