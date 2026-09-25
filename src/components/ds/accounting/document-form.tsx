@@ -14,7 +14,7 @@ import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
-import { IcoLink, type IcoLinkTarget } from "../form/ico-link";
+import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../form/ico-link";
 import { OptionSelect } from "../form/option-select";
 import { RateField } from "../form/rate-field";
 import { AccountSelect, type AccountOption } from "./account-select";
@@ -46,6 +46,9 @@ export type DocumentHeaderValue = {
   externalNumber?: string | null;
   partnerId?: string | null;
   counterpartyName?: string | null;
+  counterpartyIco?: string | null;
+  counterpartyDic?: string | null;
+  handedOverBy?: string | null;
   variableSymbol?: string | null;
   constantSymbol?: string | null;
   specificSymbol?: string | null;
@@ -73,12 +76,12 @@ export type DocumentMoreAction = { id: string; label: string; onClick: () => voi
 export type DocumentIdentity = { items: ReactNode[]; number?: string | null; numberPending?: string };
 
 export type DocumentFormTexts = {
-  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; accountingSection: string;
+  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string; accountingSection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
   accountingDate: string; issueDate: string; taxDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
-  partner: string; ico: string; dic: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
-  description: string; currency: string; rate: string; amountTotal: string; amountSum: string; sumFromLines: string; rounding: string;
+  partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
+  description: string; currency: string; rate: string; amountTotal: string; totalHomeCurrency: string; amountSum: string; sumFromLines: string; rounding: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
@@ -86,12 +89,12 @@ export type DocumentFormTexts = {
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   headerSection: "Základní údaje", datesSection: "Data", paymentSection: "Platební údaje", propertiesSection: "Vlastnosti dokladu",
-  rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", accountingSection: "Účtování a částka",
+  rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka", accountingSection: "Účtování a částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
-  partner: "Partner", ico: "IČ", dic: "DIČ", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
-  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", amountSum: "Celkem za doklad", sumFromLines: "Sčítat z rozpisu", rounding: "Haléřové vyrovnání",
+  partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
+  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHomeCurrency: "Celkem v CZK", amountSum: "Celkem za doklad", sumFromLines: "Sčítat z rozpisu", rounding: "Haléřové vyrovnání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
   linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
 };
@@ -152,7 +155,7 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
   const [firstItem, ...remainingItems] = identity?.items ?? [];
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-y-2 text-sm font-medium text-foreground">
           {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
           {firstItem != null ? <span className="flex min-w-0 items-center">
@@ -202,13 +205,18 @@ export function DocumentForm({
   const hideIdentityAccount = !!identity && mainAccountLocked;
   const hideIdentityCurrency = !!identity && currencyLocked;
 
-  const field = (id: string, label: string, control: ReactNode, span = 3, mobileHalf = false) => (
-    <div className={cn("col-span-12 flex min-w-0 flex-col gap-1 @min-[40rem]:col-span-3", mobileHalf && "col-span-6", span === 2 && "@min-[40rem]:col-span-2", span === 4 && "@min-[40rem]:col-span-4", span === 6 && "@min-[40rem]:col-span-6", span === 12 && "@min-[40rem]:col-span-12")}>
+  const field = (id: string, label: string, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
+    <div className={cn("col-span-20 flex min-w-0 flex-col gap-1 @min-[40rem]:col-span-3", mobileHalf && "col-span-10", span === 6 && "@min-[40rem]:col-span-6", span === 14 && "@min-[40rem]:col-span-14", span === 20 && "@min-[40rem]:col-span-20", className)}>
       <Label htmlFor={id}>{label}</Label>{control}
     </div>
   );
   const date = (key: "accountingDate" | "issueDate" | "taxDate" | "dueDate", label: string) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} />, 3, true);
-  const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount", label: string, span = 3) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span);
+  const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
+  const linkedPartner = !!value.partnerId;
+  const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
+  const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
+  const icoWarning = !linkedPartner && /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) && !isValidCzIco(counterpartyIco);
+  const showMainAccount = f.mainAccount && !hideIdentityAccount;
 
   const allTabs: DocumentFormTab[] = [{
     id: "lines", label: t.linesTab, badge: lines.length || undefined,
@@ -230,47 +238,46 @@ export function DocumentForm({
         {f.partner ? (
           <>
             <SectionHeading>{partnerLabel}</SectionHeading>
-            <div className="grid grid-cols-12 gap-3">
-              {field("document-partner", partnerLabel, <CounterpartyField id="document-partner" partners={partners} value={{ name: value.counterpartyName ?? partner?.name ?? "", partnerId: value.partnerId ?? null }} onChange={(next) => patch({ counterpartyName: next.name, partnerId: next.partnerId })} onCreatePartner={onCreatePartner} disabled={!can("partnerId")} />, 6)}
-              {field("document-partner-ico", t.ico, <ReadField id="document-partner-ico" mono value={partner?.ico ? <IcoLink ico={partner.ico} country={partner.country} kind={partner.kind} target={icoLinkTarget} /> : "—"} />, 2)}
-              {field("document-partner-dic", t.dic, <ReadField id="document-partner-dic" mono value={partner?.dic || "—"} />, 2)}
-              {f.externalNumber && (normalizedType === "FP" || normalizedType === "ZFP") ? text("externalNumber", t.supplierNumber, 2) : null}
-              {field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 12)}
+            <div className="grid grid-cols-20 gap-3">
+              {field("document-partner", partnerLabel, <CounterpartyField id="document-partner" partners={partners} value={{ name: value.counterpartyName ?? partner?.name ?? "", partnerId: value.partnerId ?? null, ico: counterpartyIco, dic: counterpartyDic }} onChange={(next) => patch({ counterpartyName: next.name, partnerId: next.partnerId, counterpartyIco: next.ico ?? null, counterpartyDic: next.dic ?? null })} onCreatePartner={onCreatePartner ? (seed) => onCreatePartner({ ...seed, ico: counterpartyIco || seed.ico, dic: counterpartyDic || seed.dic }) : undefined} disabled={!can("partnerId")} />, 14, false, "@min-[40rem]:pr-3")}
+              {field("document-partner-ico", t.ico, linkedPartner ? <ReadField id="document-partner-ico" mono value={counterpartyIco ? <IcoLink ico={counterpartyIco} country={partner?.country} kind={partner?.kind} target={icoLinkTarget} /> : "—"} /> : <><Input id="document-partner-ico" value={counterpartyIco} onChange={(event) => patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })} disabled={!can("counterpartyIco")} className="h-9 font-mono tabular-nums" />{icoWarning ? <p role="alert" className="text-xs font-medium text-warning-foreground">{t.invalidIco}</p> : null}</>, 3, true)}
+              {field("document-partner-dic", t.dic, linkedPartner ? <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} /> : <Input id="document-partner-dic" value={counterpartyDic} onChange={(event) => patch({ counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase() })} disabled={!can("counterpartyDic")} className="h-9 font-mono uppercase tabular-nums" />, 3, true)}
+              {f.handedOverBy ? text("handedOverBy", value.direction === "in" ? t.handedOverByIn : t.handedOverByOut, 14, "@min-[40rem]:pr-3") : null}
+              {f.externalNumber ? text("externalNumber", normalizedType === "FP" || normalizedType === "ZFP" ? t.supplierNumber : t.externalNumber, 3, false, f.handedOverBy ? undefined : "@min-[40rem]:col-start-15") : null}
+              {field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 20)}
             </div>
           </>
         ) : null}
 
         <SectionHeading>{t.datesSection}</SectionHeading>
-        <div className="grid grid-cols-12 gap-3">
-          {date("accountingDate", t.accountingDate)}
+        <div className="grid grid-cols-20 gap-3">
           {date("issueDate", t.issueDate)}
+          {date("accountingDate", t.accountingDate)}
           {f.taxDate ? date("taxDate", t.taxDate) : null}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
-          {f.externalNumber && normalizedType === "PO" ? text("externalNumber", t.externalNumber, 3) : null}
-          {!f.partner ? field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 12) : null}
+          {!f.partner ? field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 20) : null}
         </div>
 
-        <SectionHeading>{t.accountingSection}</SectionHeading>
-        <div className="grid grid-cols-12 gap-3">
-          {f.mainAccount && !hideIdentityAccount ? field("document-main-account", mainAccountLabel, accountLocked ? <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} /> : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />, 6) : null}
-          {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 2) : null}
-          {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 4) : null}
-          <div className="col-span-12 flex flex-wrap items-end gap-4">
-            <label className="flex min-h-9 items-center gap-2 text-sm"><Checkbox checked={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onCheckedChange={(checked) => patch({ totalMode: checked === true ? "sum" : "entered" })} />{t.sumFromLines}</label>
-            <div className="min-w-64 flex-1">{field("document-amountTotal", t.amountTotal, totalMode === "entered" && can("amountTotal") ? <DecimalInput id="document-amountTotal" className="h-9 tabular-nums" value={value.amountTotal} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} /> : <ReadField id="document-amountTotal" mono value={<span className="ml-auto">{formatAmount(total, 2)}</span>} />, 12)}</div>
-            {foreign && value.rate != null ? <span className="min-h-9 py-2 text-sm tabular-nums text-muted-foreground">{`= ${formatAmount(convertAmount(total, value.rate, rateAmount), 2)} ${homeCurrency}`}</span> : null}
-            {f.rounding ? <div className="min-w-48 flex-1">{field("document-roundingAmount", t.rounding, can("roundingAmount") ? <DecimalInput id="document-roundingAmount" className="h-9 tabular-nums" value={value.roundingAmount ?? 0} onChange={(next) => patch({ roundingAmount: next === "" ? 0 : Number(next) })} /> : <ReadField id="document-roundingAmount" mono value={<span className="ml-auto">{formatAmount(value.roundingAmount ?? 0, 2)}</span>} />, 12)}</div> : null}
-          </div>
+        <SectionHeading>{showMainAccount ? t.accountingSection : t.amountOnlySection}</SectionHeading>
+        <div className="grid grid-cols-20 gap-3">
+          {showMainAccount ? field("document-main-account", mainAccountLabel, accountLocked ? <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} /> : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />, 14, false, "@min-[40rem]:pr-3") : null}
+          {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
+          {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 3) : null}
+          {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
+          {field("document-amountTotal", t.amountTotal, <ReadField id="document-amountTotal" mono value={<span className="ml-auto font-bold">{formatAmount(total, 2)}</span>} />, 3)}
+          {foreign && value.rate != null ? field("document-total-home", t.totalHomeCurrency.replace("CZK", homeCurrency), <ReadField id="document-total-home" mono value={<span className="ml-auto font-bold">{formatAmount(convertAmount(total, value.rate, rateAmount), 2)}</span>} />, 3) : null}
+          {f.rounding ? field("document-roundingAmount", t.rounding, can("roundingAmount") ? <DecimalInput id="document-roundingAmount" className="h-9 tabular-nums" value={value.roundingAmount ?? 0} onChange={(next) => patch({ roundingAmount: next === "" ? 0 : Number(next) })} /> : <ReadField id="document-roundingAmount" mono value={<span className="ml-auto">{formatAmount(value.roundingAmount ?? 0, 2)}</span>} />, 3) : null}
+          <label className="col-span-20 flex min-h-9 items-center gap-2 self-end text-sm @min-[40rem]:col-span-6"><Checkbox checked={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onCheckedChange={(checked) => patch({ totalMode: checked === true ? "sum" : "entered" })} />{t.sumFromLines}</label>
         </div>
 
         {f.symbols || f.bankAccount || f.paymentOrders ? <>
           <SectionHeading>{t.paymentSection}</SectionHeading>
-          <div className="grid grid-cols-12 gap-3">
+          <div className="grid grid-cols-20 gap-3">
             {f.symbols ? field("document-variableSymbol", t.variableSymbol, <VsField id="document-variableSymbol" value={value.variableSymbol ?? ""} onChange={(variableSymbol) => patch({ variableSymbol })} disabled={!can("variableSymbol")} />) : null}
             {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
             {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
-            {f.bankAccount ? text("bankAccount", t.bankAccount) : null}
-            {f.paymentOrders ? <label className="col-span-12 flex items-center gap-2 text-sm"><Checkbox checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked === true })} />{t.excludeFromPaymentOrders}</label> : null}
+            {f.bankAccount ? text("bankAccount", t.bankAccount, 6) : null}
+            {f.paymentOrders ? <label className="col-span-20 flex items-center gap-2 text-sm"><Checkbox checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked === true })} />{t.excludeFromPaymentOrders}</label> : null}
           </div>
         </> : null}
       </section>
@@ -291,7 +298,7 @@ function CompactActionButton({ label, icon: Icon, busy, compact, children, ...pr
 
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
-  return <span data-slot="document-direction-badge" className={cn("inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-4" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
+  return <span data-slot="document-direction-badge" className={cn("inline-flex h-6 items-center gap-1 rounded-md px-2 text-xs font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
 export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
@@ -301,7 +308,7 @@ export function DocumentActionBar({ status, approved, saveAction, primaryAction,
   const barRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
   useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
-  return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 border-b bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
+  return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
     <DocumentStatusBadge status={status} approved={approved} />
     <div className="flex shrink-0 items-center gap-2">
       {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
