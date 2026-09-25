@@ -37,4 +37,11 @@ describe("DocumentForm 2.24.0", () => {
     const accountField = html.match(/Účet pokladny[\s\S]*?Datum účetního případu/)?.[0] ?? "";
     expect(accountField).not.toContain('role="combobox"');
   });
+
+  it("zobrazí měnu, kurz za množství a fiskální období", () => {
+    const html = renderToStaticMarkup(<DocumentForm title="Přijatá faktura" documentType="FP" periodLabel="Rok 2026" rateAmount={100} value={{ ...value, currency: "JPY", rate: 15.9 }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} currencies={[{ code: "JPY", label: "Japonský jen" }]} status="draft" />);
+    expect(html).toContain("JPY – Japonský jen");
+    expect(html).toContain("15,900 CZK za 100 JPY");
+    expect(html).toContain("Rok 2026");
+  });
 });

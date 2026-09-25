@@ -38,6 +38,7 @@ export function OptionSelect({
 }) {
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
+  const selectedLabel = options.find((option) => option.value === current)?.label;
 
   return (
     <Select
@@ -46,7 +47,7 @@ export function OptionSelect({
       disabled={disabled}
     >
       <SelectTrigger id={id} className={cn("h-9 w-full min-w-0", className, triggerClassName)}>
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyLabel}</SelectItem> : null}
