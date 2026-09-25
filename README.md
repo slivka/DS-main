@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.21.0 – nové pořadí akcí gridu a akce ve stromu
+
+- `addAction` je vizuálně vlevo; Obnovit je vždy úplně vpravo. Veřejné API `addAction` se nemění a aplikace nemusí nic upravovat.
+- Pod šířkou gridu 640 px zůstává základní ovládání a nabídka ⋯; export, sloupce, seskupení, hustota, zoom a obnovení jsou ve skupině Nástroje.
+- `DataGrid` přidává `editDisabledReason` a `deleteDisabledReason`; zakázaná akce může zůstat viditelná s vysvětlením.
+- `TreeGrid` přidává `onEditRow`, `onDeleteRow`, `deleteConfirm`, `rowActions`, `canEditRow`, `canDeleteRow`, oba `disabledReason`, `actionsLabel` a `hideDefaultActions`.
+- Bez breaking changes.
+
 ## Changelog 2.20.3 – popisky a oddělený kontextový řádek
 
 - `GridContextBar` má české výchozí popisky „Kniha:“ a „Období:“; lze je změnit přes `texts.bookLabel` a `texts.periodLabel` a jsou přístupnostně svázané s hodnotou nebo výběrem.

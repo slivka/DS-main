@@ -5,6 +5,7 @@ import { Archive, Building2 } from "lucide-react";
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import {
   DataGrid,
+  TreeGrid,
   DocumentStatusBadge,
   GridContextBar,
   GridSegmentedToggle,
@@ -136,7 +137,7 @@ function GridPage() {
         }}
         showTotalRow
         moreActions={[{ label: "Archivovat uzavřené", icon: <Archive className="size-4" />, onSelect: () => { toast.info("Archivace"); } }]}
-        addAction={{ label: "Přidat doklad", onClick: () => { toast.info("Nový doklad"); } }}
+        addAction={{ label: "Nový doklad", onClick: () => { toast.info("Nový doklad"); } }}
         pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
         extraExports={[{ label: "Kontrolní sestava", kind: "pdf", onExport: async () => { toast.info("Kontrolní sestava"); } }]}
         toolbarLeft={
@@ -148,7 +149,38 @@ function GridPage() {
         onEditRow={(r) => toast.info(`Otevřít doklad ${r.document}`)}
         onDeleteRow={(r) => toast.success(`Doklad ${r.document} odstraněn`)}
         deleteConfirm={(r) => `Odstranit doklad ${r.document}?`}
+        deleteDisabledReason={(r) => r.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
       />
+      <div className="mt-8">
+        <TreeGrid<JournalEntry>
+          title="Účetní deník – strom"
+          exportName="ucetni-denik-strom"
+          rows={MOCK_JOURNAL}
+          columns={columns.map((column) => ({ ...column, render: column.render ? (row: JournalEntry) => column.render?.(row) : undefined }))}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          viewZoomKey="ds-showcase-journal-view"
+          addAction={{ label: "Nový doklad", onClick: () => toast.info("Nový doklad") }}
+          onEditRow={(row) => toast.info(`Otevřít doklad ${row.document}`)}
+          onDeleteRow={(row) => toast.success(`Doklad ${row.document} odstraněn`)}
+          deleteDisabledReason={(row) => row.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
+          onRefresh={() => toast.success("Data byla obnovena")}
+        />
+      </div>
+      <div className="mt-8 w-[39rem] max-w-full">
+        <DataGrid<JournalEntry>
+          storageKey="ds-showcase-narrow-grid"
+          title="Úzký panel"
+          rows={MOCK_JOURNAL.slice(0, 5)}
+          columns={columns}
+          rowKey={(row) => row.id}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          addAction={{ label: "Nový doklad", onClick: () => toast.info("Nový doklad") }}
+          filters={<span className="text-muted-foreground">Filtry</span>}
+          onRefresh={() => toast.success("Data byla obnovena")}
+        />
+      </div>
       <div className="mt-8">
         <DataGrid<JournalEntry>
           storageKey="ds-showcase-cash-direction"

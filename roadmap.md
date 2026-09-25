@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.21.0 (nové pořadí lišty a akce ve stromu)
+- [x] Přesunout Nový vlevo a Obnovit úplně vpravo v DataGridu i TreeGridu
+- [x] Přesunout méně důležité nástroje do nabídky ⋯ pod šířkou 640 px
+- [x] Doplnit důvody zakázání a stín sticky sloupce akcí DataGridu
+- [x] Přidat shodný sloupec akcí, potvrzení a dvojklik do TreeGridu
+- [x] Doplnit ukázky, pravidla, veřejný katalog a ověření
+
 ## Verze 2.20.3 (popisky a oddělený kontextový řádek)
 - [x] Doplnit přístupně svázané popisky Kniha a Období s přeložitelnými texty
 - [x] Vizuálně oddělit kontextový řádek tokenovým podkladem, linkou a nižší výškou
