@@ -218,7 +218,7 @@ export interface GridAddAction {
 
 /** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
-  const list = Array.isArray(actions) ? actions : [actions];
+  const list = React.useMemo(() => Array.isArray(actions) ? actions : [actions], [actions]);
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return;
