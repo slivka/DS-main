@@ -219,14 +219,28 @@ export interface GridAddAction {
 /** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
   const list = Array.isArray(actions) ? actions : [actions];
+  React.useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLocaleLowerCase("cs") !== "n" || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]")) return;
+      const action = list[0];
+      if (!action || action.disabled) return;
+      event.preventDefault();
+      action.onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [list]);
   return (
     <TooltipProvider delayDuration={250}>
       {list.map((action) => {
-        const label = action.disabled && action.disabledReason ? action.disabledReason : action.label;
+        const actionLabel = `${action.label} (N)`;
+        const label = action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
         return (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
-              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={action.label} className="grid-toolbar-control shrink-0">
+              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control shrink-0">
                 <Plus className="size-[1.2em]" />
                 <span className="hidden @min-[640px]:inline">{action.label}</span>
               </Button>
