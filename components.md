@@ -11,12 +11,15 @@
 - Období ani knihu nevkládejte do `toolbarLeft`, pokud grid používá `GridContextBar`.
 - `PageHeader.description` se od této verze nezobrazuje; kontext patří sem nebo do horní lišty.
 
-## Řádek akcí gridu (2.17.0)
+## Řádek akcí gridu (2.21.2)
 
 `GridToolbar` je jediný řádek akcí pro `DataGrid`, `TreeGrid` i vlastní obsah v `ZoomPane`.
 
 - Vlevo: `ViewModeToggle` · Rozbalit / Sbalit · `AsOfDateToggle` · `toolbarLeft`.
-- Vpravo: Hledat · Filtr · Obnovit · `GridExport` · Sloupce · Seskupit · Hustota + zoom · Vybrat více · stávající `actions` · `GridMoreMenu` · `addAction`.
+- Vpravo nad 640 px: Hledat · Filtr │ Seskupit (jen DataGrid s `groupable`) · Sloupce · Hustota + zoom │ Vybrat více · `actions` · Stáhnout (`GridExport`) · `GridMoreMenu` │ Obnovit.
+- Prázdné skupiny ani jejich oddělovače se nezobrazují; oddělovač nikdy není na kraji ani dvakrát vedle sebe.
+- Stáhnout obsahuje jen Excel, PDF a `extraExports`; importy a vedlejší akce patří do `GridMoreMenu`.
+- Pod 640 px zůstávají Hledat, Filtr a jediná nabídka ⋯ se skupinami Zobrazení, Data a Obnovit; oddělovače skupin se v liště skryjí.
 - Oranžová označuje hledání, aktivní filtry, seskupení a `GridToggleButton tone="grouping"`.
 - Modrá plná označuje zapnutý režim (`AsOfDateToggle`, `GridToggleButton tone="mode"`) a primární akci Přidat.
 - Hlavní parametry obrazovky patří do `toolbarLeft`, pomocné filtry do `filters`, vedlejší akce do `moreActions`. „Nový“ se předává přes `addAction`, ne do `PageHeader`.

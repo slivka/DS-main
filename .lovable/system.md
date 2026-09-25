@@ -85,8 +85,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ### Řádek akcí gridu
 
 - `DataGrid`, `TreeGrid` a vlastní obsah v `ZoomPane` používají jediný `GridToolbar`.
-- Pořadí vlevo: `addAction`, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu, `toolbarLeft`. Pořadí vpravo: Hledat, Filtr, Export, Sloupce, Seskupit, oddělovač, Vybrat více, `actions`, `moreActions`, oddělovač, Hustota + zoom, oddělovač, Obnovit. Obnovit je vždy úplně vpravo.
-- Pod šířkou gridu 640 px zůstává vlevo Přidat jen jako ikona, Tabulka/Strom a Rozbalit/Sbalit; vpravo zůstávají Hledat, Filtr a ⋯. Export, Sloupce, Seskupit, Hustota + zoom a Obnovit patří do skupiny „Nástroje“ nabídky ⋯.
+- Pořadí vlevo: `addAction`, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu, `toolbarLeft`. Vpravo nad 640 px jsou skupiny: Najít = Hledat, Filtr │ Zobrazení = Seskupit (jen DataGrid s `groupable`), Sloupce, Hustota + zoom │ Data = Vybrat více, `actions`, Stáhnout, `moreActions` │ Obnovit. Oddělovače vykresluj jen mezi neprázdnými skupinami, nikdy na kraji ani dvakrát vedle sebe.
+- Stáhnout (`GridExport`) obsahuje výhradně Excel, PDF a `extraExports`; importy a vedlejší akce patří do `moreActions` nabídky ⋯.
+- Pod šířkou gridu 640 px zůstává vlevo Přidat jen jako ikona, Tabulka/Strom a Rozbalit/Sbalit; vpravo zůstávají Hledat, Filtr a právě jedna nabídka ⋯. Ta řadí nástroje podle skupin Zobrazení, Data a Obnovit; oddělovače skupin se v liště skryjí.
 - Upravit a Odstranit jednotlivého záznamu patří jen do sloupce akcí řádku; dvojklik znamená Upravit. Tyto akce nepoužívej v řádku akcí gridu ani v hlavičce stránky. Hromadné akce jsou pouze přes Vybrat více.
 - Nepovolená akce řádku, u které má uživatel vědět proč, zůstává zešedlá s tooltipem přes `editDisabledReason` / `deleteDisabledReason`; jinak se nezobrazuje přes `canEditRow` / `canDeleteRow`.
 - Oranžová znamená, že ovládání zužuje nebo přeskupuje data: filtr, hledání, seskupení a `GridToggleButton tone="grouping"`. Modrá plná znamená zapnutý režim (`AsOfDateToggle`, `tone="mode"`) nebo primární Přidat.

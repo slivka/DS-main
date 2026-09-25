@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.21.2 (skupiny pravé části lišty gridu)
+- [x] Seskupit pravé ovládání DataGridu a TreeGridu v pořadí Najít, Zobrazení, Data a Obnovit
+- [x] Zobrazovat oddělovače pouze mezi neprázdnými skupinami
+- [x] Oddělit exporty ve Stáhnout od importů a vedlejších akcí v nabídce ⋯
+- [x] Zachovat jedinou úzkou nabídku a shodné pořadí jejích skupin
+- [x] Aktualizovat ukázky, pravidla, testy, typovou kontrolu a lint
+
 ## Verze 2.21.1 (opravy lišty a stínu gridu)
 - [x] Sjednotit jednu nabídku ⋯ pro široký a úzký DataGrid i TreeGrid
 - [x] Ponechat Stav k datu a hlavní parametry dostupné pod 640 px

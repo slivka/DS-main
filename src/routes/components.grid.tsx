@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Archive, Building2 } from "lucide-react";
+import { Building2 } from "lucide-react";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import {
@@ -138,7 +138,10 @@ function GridPage() {
           toast.success("Data byla obnovena");
         }}
         showTotalRow
-        moreActions={[{ label: "Archivovat uzavřené", icon: <Archive className="size-4" />, onSelect: () => { toast.info("Archivace"); } }]}
+        moreActions={[
+          { label: "Import osnovy", onSelect: () => { toast.info("Import osnovy"); } },
+          { label: "Import deníku", onSelect: () => { toast.info("Import deníku"); } },
+        ]}
         addAction={{ label: "Nový doklad", onClick: () => { toast.info("Nový doklad"); } }}
         pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
         extraExports={[{ label: "Kontrolní sestava", kind: "pdf", onExport: async () => { toast.info("Kontrolní sestava"); } }]}
