@@ -17,7 +17,7 @@ describe.each([
   });
 
   it("ponechává Stav k datu a toolbarLeft viditelné v úzkém gridu", () => {
-    expect(source).toMatch(/<\/span>\}\{asOf \? <AsOfDateToggle/);
+    expect(source).toMatch(/<\/span>\{asOf \? <AsOfDateToggle/);
     expect(source).toContain("{toolbarLeft}");
   });
 
