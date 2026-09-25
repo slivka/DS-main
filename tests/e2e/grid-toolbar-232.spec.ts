@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-for (const width of [620, 800, 1100, 1440]) {
+for (const width of [360, 480, 620, 800, 1100, 1440]) {
   test(`řádek akcí se neořízne při ${width} px`, async ({ page }) => {
     await page.goto("/components/grid");
     const grid = page.locator('[data-slot="data-grid"]').first();
@@ -25,5 +25,32 @@ for (const width of [620, 800, 1100, 1440]) {
     await expect(refresh).toBeVisible();
     const refreshBox = await refresh.boundingBox();
     expect(refreshBox && toolbarBox && refreshBox.x + refreshBox.width <= toolbarBox.x + toolbarBox.width + 1).toBe(true);
+    if (width < 620) {
+      await toolbar.getByRole("button", { name: "Další akce" }).click();
+      await expect(page.getByText("Parametry", { exact: true })).toBeVisible();
+      await expect(page.getByText("Stav k datu", { exact: true })).toBeVisible();
+    }
+  });
+}
+
+for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]']) {
+  test(`pořadí skupin a oddělovače v ${gridSelector}`, async ({ page }) => {
+    await page.goto("/components/grid");
+    const toolbar = page.locator(gridSelector).first().locator('[data-slot="grid-toolbar"]');
+    await toolbar.evaluate((element) => { (element.closest('[data-slot="data-grid"],[data-slot="tree-grid"]') as HTMLElement).style.width = "1440px"; });
+    await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
+    const order = await toolbar.locator('[data-toolbar-group]').evaluateAll((groups) => groups.map((group) => group.getAttribute("data-toolbar-group")));
+    expect(order).toEqual(["find", "display", "data", "menu", "refresh"]);
+    const separators = toolbar.locator('[data-slot="grid-toolbar-separator"]:visible');
+    const separatorCount = await separators.count();
+    expect(separatorCount).toBeGreaterThan(0);
+    for (let index = 0; index < separatorCount; index += 1) {
+      const invalid = await separators.nth(index).evaluate((separator) => {
+        const previous = separator.previousElementSibling;
+        const next = separator.nextElementSibling;
+        return !previous || !next || previous.matches('[data-slot="grid-toolbar-separator"]') || next.matches('[data-slot="grid-toolbar-separator"]');
+      });
+      expect(invalid).toBe(false);
+    }
   });
 }

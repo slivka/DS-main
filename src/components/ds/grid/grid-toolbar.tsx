@@ -107,8 +107,10 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       };
       const add = copy.querySelector<HTMLElement>("[data-toolbar-add]");
       const search = copy.querySelector<HTMLElement>("[data-toolbar-search]");
+      const addWidth = add?.getBoundingClientRect().width ?? 0;
+      const searchWidth = search?.getBoundingClientRect().width ?? 0;
       copy.remove();
-      return { ...result, addWidth: add?.getBoundingClientRect().width ?? 0, searchWidth: search?.getBoundingClientRect().width ?? 0 };
+      return { ...result, addWidth, searchWidth };
     };
     const update = () => {
       cancelAnimationFrame(frame);
