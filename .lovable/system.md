@@ -93,7 +93,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Oranžová znamená, že ovládání zužuje nebo přeskupuje data: filtr, hledání, seskupení a `GridToggleButton tone="grouping"`. Modrá plná znamená zapnutý režim (`AsOfDateToggle`, `tone="mode"`) nebo primární Přidat.
 - Hlavní parametry obrazovky vkládej do `toolbarLeft`; účetní období a knihu však při použití `GridContextBar` předávej výhradně přes `period` a `book`. Pomocné filtry patří do `filters`; vedlejší akce do `moreActions`; akce celé stránky (Importovat, Výkazy…) do `PageHeader.menuActions`.
 - „Nový“ nikdy nevkládej do `PageHeader`; použij `addAction`. Export v gridu je vždy jediný ikonový `GridExport` s nabídkou. `ExcelExportButton` je v gridu zakázaný a zůstává jen pro samostatný obsah.
-- Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta se v úzkém panelu zalamuje bez vodorovného posuvníku.
+- Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta zůstává vždy v jednom řádku bez vodorovného posuvníku. Podle skutečně změřené šířky přesouvá méně důležité skupiny Zobrazení a Data do jediné nabídky ⋯; Obnovit zůstává úplně vpravo.
 
 ### Kontextový řádek gridu
 
@@ -104,6 +104,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - „Celé období“ je neutrální. Měsíc, čtvrtletí, pololetí, období od začátku roku a vlastní rozsah jsou oranžové, protože zužují data.
 - Období respektuje `fiscalFrom` a `fiscalTo`, i když účetní rok nezačíná v lednu. Stav může aplikace zachovat přes `useTabDraft`.
 - Kontextový řádek se škáluje se zoomem a hustotou gridu stejně jako řádek akcí.
+- Popisky Kniha, Období a popisek pravého kontextu mají jediný styl. Výběry i segmentový přepínač mají stejnou výšku a písmo jako prvky řádku akcí.
+- Panel pomocných filtrů stojí bezprostředně pod řádkem akcí. Ovládací prvky mají přirozenou šířku podle obsahu, popisek vlevo a zalamují se až při nedostatku místa.
+- Záložky sekcí stránky a formuláře používají 15–16px střední řez; aktivní záložka je tučná a podtržená primární barvou.
 
 ## Export do Excelu
 

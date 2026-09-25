@@ -18,6 +18,17 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.23.0 – stabilní kontext a jednořádkové ovládání gridu
+
+- Firma má od šířky tabletu minimálně šířku období; mezi oběma štítky je skutečný svislý oddělovač.
+- Kniha a období jsou zarovnané vlevo. Běžná období drží krátkou stálou šířku, dlouhé volby se rozšíří nejvýše do 20 em.
+- Panel filtrů se otevírá přímo pod řádkem akcí, zachovává přirozené šířky polí a sdílí zoom i hustotu gridu.
+- Řádek akcí je jednořádkový a podle změřené šířky přesouvá skupiny Zobrazení a Data do nabídky ⋯; Obnovit zůstává vpravo.
+- Primární Přidat je vždy modré, tlačítko Filtr má stabilní šířku a křížek hledání se ukáže pouze při zadaném textu.
+- Kontextové popisky a ovládání mají jednotnou výšku i písmo. `GridSegmentedToggle` má lehký obrys a jasně odlišenou vybranou hodnotu.
+- Nové `PageTabs` a záložky ve formulářích používají větší text, aktivní podtržení a jasnější hierarchii.
+- Bez breaking změn.
+
 ## Changelog 2.22.0 – vyvážený kontext firmy a období
 
 - `CompanySwitcher` zobrazuje neutrální obrysový štítek s ikonou budovy, názvem firmy a šipkou; v kompaktní šířce název zkrátí a celý název s IČO ponechá v nápovědě.
