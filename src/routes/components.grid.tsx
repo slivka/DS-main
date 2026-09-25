@@ -16,6 +16,7 @@ import {
   accountColumns,
   debitCreditColumns,
   type DataGridColumn,
+  type TreeGridColumn,
 } from "@/components/ds";
 import { MOCK_ACCOUNTS, MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
@@ -101,6 +102,7 @@ function GridPage() {
     ],
     [accountNames],
   );
+  const treeColumns = useMemo<TreeGridColumn<JournalEntry>[]>(() => columns.map((column) => ({ id: column.id, label: column.label, ...(column.align ? { align: column.align } : {}), ...(column.numeric ? { numeric: true, total: column.total === "none" ? "none" : "sum" as const } : {}), ...(column.decimals !== undefined ? { decimals: column.decimals } : {}), ...(column.value ? { value: column.value } : {}), ...(column.render ? { render: (row) => column.render?.(row) } : {}), ...(column.width ? { width: column.width } : {}) })), [columns]);
 
   return (
     <ShowcaseLayout
@@ -156,7 +158,7 @@ function GridPage() {
           title="Účetní deník – strom"
           exportName="ucetni-denik-strom"
           rows={MOCK_JOURNAL}
-          columns={columns.map((column) => ({ ...column, render: column.render ? (row: JournalEntry) => column.render?.(row) : undefined }))}
+          columns={treeColumns}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           viewZoomKey="ds-showcase-journal-view"
@@ -164,7 +166,7 @@ function GridPage() {
           onEditRow={(row) => toast.info(`Otevřít doklad ${row.document}`)}
           onDeleteRow={(row) => toast.success(`Doklad ${row.document} odstraněn`)}
           deleteDisabledReason={(row) => row.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
-          onRefresh={() => toast.success("Data byla obnovena")}
+          onRefresh={() => { toast.success("Data byla obnovena"); }}
         />
       </div>
       <div className="mt-8 w-[39rem] max-w-full">
@@ -178,7 +180,7 @@ function GridPage() {
           onViewModeChange={setViewMode}
           addAction={{ label: "Nový doklad", onClick: () => toast.info("Nový doklad") }}
           filters={<span className="text-muted-foreground">Filtry</span>}
-          onRefresh={() => toast.success("Data byla obnovena")}
+          onRefresh={() => { toast.success("Data byla obnovena"); }}
         />
       </div>
       <div className="mt-8">
