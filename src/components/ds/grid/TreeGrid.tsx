@@ -446,7 +446,7 @@ export function TreeGrid<Row extends TreeGridRow>({
         className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", (showTitle || period || book || contextRight) && "rounded-t-none border-t-0 shadow-none")}
         left={<>
           {addAction ? <GridAddActions actions={addAction} /> : null}
-          {addAction ? <GridToolbarSeparator density={density} /> : null}
+          {addAction && (viewMode || rows.length || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
           {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
           <GridExpandControls
             levels={availableLevels}
