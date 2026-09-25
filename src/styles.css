@@ -393,6 +393,44 @@
   box-shadow: none;
 }
 
+/* Kontext je jemné záhlaví společného gridového bloku, ne druhá akční lišta. */
+.grid-context-row {
+  position: relative;
+  padding: 0.45em 0.7em;
+  background-color: var(--grid-heading-surface);
+  border-color: var(--grid-chrome-border);
+  box-shadow: none;
+}
+
+.grid-context-row[data-density="compact"] {
+  padding-block: 0.3em;
+}
+
+.grid-context-row .grid-toolbar-control {
+  border-color: var(--grid-chrome-border);
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+/* Jeden rám a jeden stín pro kontext, akce, hlavičku, data i součet. */
+.grid-connected-block {
+  border-color: var(--grid-chrome-border);
+}
+
+.grid-connected-block > :is(.grid-title-bar, [data-slot="grid-context-bar"], [data-slot="grid-toolbar"], .zoom-grid, .zoom-pagination) {
+  border-inline: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.grid-connected-block > :first-child {
+  border-top: 0;
+}
+
+.grid-connected-block > :last-child {
+  border-bottom: 0;
+}
+
 /* Pripojené stránkovanie uzatvára spoločný rámček gridu – rovnaká farba okraja. */
 .zoom-pagination {
   border-color: var(--grid-chrome-border);

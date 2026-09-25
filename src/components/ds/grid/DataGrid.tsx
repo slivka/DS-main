@@ -796,11 +796,11 @@ export function DataGrid<Row>({
 
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-      <div ref={blockRef} data-slot="data-grid" className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : ""}`}>
+      <div ref={blockRef} data-slot="data-grid" className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : "grid-connected-block overflow-hidden rounded-lg border shadow-panel"}`}>
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
-        {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-b-0", showTitle && title ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
+        {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-t-0", showTitle && title && "rounded-t-none")} /> : null}
         {!hideToolbar ? <GridToolbar
           zoom={zoom}
           density={density}
@@ -808,7 +808,7 @@ export function DataGrid<Row>({
             showTitle && title || period || book
               ? plain
                 ? "rounded-t-lg shadow-none"
-                : "border-t-0 shadow-none"
+                : "rounded-t-none border-t-0 shadow-none"
               : plain
                 ? "rounded-t-lg shadow-none"
                 : "rounded-t-lg shadow-panel"

@@ -410,9 +410,9 @@ export function TreeGrid<Row extends TreeGridRow>({
     );
 
   return (
-    <div ref={blockRef} className={cn("@container flex min-w-0 flex-col", className)} data-slot="tree-grid">
+    <div ref={blockRef} className={cn("grid-connected-block @container flex min-w-0 flex-col overflow-hidden rounded-lg border shadow-panel", className)} data-slot="tree-grid">
       {showTitle ? <div className="rounded-t-lg border bg-card px-3 py-2 font-semibold">{title}</div> : null}
-      {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-b-0", showTitle ? "border-t-0" : "rounded-t-lg shadow-panel")} /> : null}
+      {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-t-0", showTitle && "rounded-t-none")} /> : null}
       <GridToolbar
         zoom={zoom}
         density={density}
