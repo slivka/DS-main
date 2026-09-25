@@ -959,7 +959,7 @@ _Řízené otevření_
 import { CounterpartyField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Protistrana jako volný text s propojením na partnera; hodnota zachovává IČ a DIČ při zrušení vazby a poslední volba Nový partner předá seed { name, ico, dic }.
+Protistrana jako volný text s propojením na partnera; poslední volba Nový partner předá seed { name, ico }.
 
 **Props:**
 
@@ -979,15 +979,14 @@ Protistrana jako volný text s propojením na partnera; hodnota zachovává IČ 
 
 **Examples:**
 
-_Protistrana s identifikátory_
+_Protistrana_
 ```tsx
-<CounterpartyField value={{ name, partnerId, ico, dic }} onChange={setCounterparty} partners={partners} onCreatePartner={openNewPartner} />
+<CounterpartyField value={counterparty} onChange={setCounterparty} partners={partners} onCreatePartner={openNewPartner} />
 ```
 
 **Avoid:**
 
 - Po ruční změně textu neponechávejte staré partnerId.
-- Při zrušení propojení nemažte IČ ani DIČ.
 
 ### CountrySelect
 
@@ -1226,7 +1225,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový editor dokladu s identitou v těle, dvacetisloupcovým rozvržením 14/3/3, editovatelnou nebo propojenou protistranou, přilepeným pruhem akcí a záložkami řádků.
+Celostránkový editor dokladu s vždy viditelným nadpisem stránky, identitou a směrem v prvním řádku karty, sekcemi hlavičky, přilepeným pruhem akcí a záložkami řádků.
 
 **Props:**
 
@@ -1275,45 +1274,19 @@ Celostránkový editor dokladu s identitou v těle, dvacetisloupcovým rozvržen
 
 _Pokladní příjem_
 ```tsx
-<DocumentForm title="Pokladní doklad" identity={{ items: ["PO - Pokladna", "CZK", "2026"], number }} directionBadge="in" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} status="filed" />
+<DocumentForm title="Pokladní doklad" identity={{ items: ["PO - Pokladna", "CZK", "2026"], number }} directionBadge="in" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} status="filed" />
 ```
 
 **Avoid:**
 
 - Nevkládejte doklad do RecordDialogu.
 - Neopakujte účet nebo měnu v sekci, pokud jsou zamčené a už jsou v identity.
-- Nezaměňujte ruční protistranu za propojeného partnera; partnerId určuje uzamčení IČ a DIČ.
 
 ### DocumentStatusBadge
 
 ```ts
 import { DocumentStatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjednocuje výšku štítku v pruhu akcí s badge směru.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `status` | draft · filed · posted · locked · cancelled | `approved` |
-| `config` | any | `—` |
-| `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
-| `size` | sm · md | `sm` |
-| `className` | string | `size-3` |
-
-**Examples:**
-
-_Stav v pruhu akcí_
-```tsx
-<DocumentStatusBadge status="filed" approved size="md" />
-```
-
-**Avoid:**
-
-- Nevytvářejte vlastní barevné štítky stavů dokladu.
-- V gridech nepoužívejte velikost md.
 
 ### DraftRestoredBanner
 
@@ -2114,7 +2087,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Nepovinný rounding zobrazí haléřové vyrovnání v dolní liště vedle zbývající částky; režim mode="mainAccount" zamkne hlavní stranu.
+Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Režim mode="mainAccount" s mainSide a mainAccount zamkne hlavní stranu; převod do databáze přes toJournalRow / fromJournalRow.
 
 **Props:**
 
@@ -2140,7 +2113,6 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 | `totalMode` | entered · computed | `computed` |
 | `roundingLimit` | number | `0.5` |
 | `onRoundingFill` | function | `—` |
-| `rounding` | any | `—` |
 | `expectedTotal` | number | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
@@ -2150,9 +2122,9 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 
 **Examples:**
 
-_Řádky dokladu s vyrovnáním_
+_Řádky zápisu_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} totalAmount={total} rounding={{ value: rounding, onChange: setRounding }} storageKey="invoice-lines" />
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey="invoice-lines" />
 ```
 
 **Avoid:**
@@ -2911,7 +2883,6 @@ Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního
 | `manualSourceLabel` | string | `Ruční kurz` |
 | `suggestedTooltip` | function | `—` |
 | `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
-| `showNote` | boolean | `true` |
 | `id` | string | `rate` |
 | `className` | string | `min-h-9 text-sm font-mono tabular-nums` |
 

@@ -30,7 +30,7 @@ export function GridRefreshButton({ onRefresh, refreshing, zoom = 1, className, 
       <Tooltip>
         <TooltipTrigger asChild>
           <span>
-            <Button type="button" variant="outline" size="sm" disabled={busy} aria-label={texts.refresh} className={cn("shrink-0 px-[0.5em]", className)} style={{ fontSize: gridFontSize(zoom) }} onClick={() => void run()}>
+            <Button type="button" variant="outline" size="sm" disabled={busy} aria-label={texts.refresh} className={cn("grid-toolbar-control shrink-0 px-[0.5em]", className)} style={{ fontSize: gridFontSize(zoom) }} onClick={() => void run()}>
               <RefreshCw className={cn("size-[1.25em]", busy && "animate-spin")} />
             </Button>
           </span>

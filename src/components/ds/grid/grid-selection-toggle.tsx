@@ -33,7 +33,7 @@ export function GridSelectionToggle({
       size="sm"
       aria-pressed={active}
       aria-label={label}
-      className={`shrink-0 px-[0.5em] ${className}`}
+      className={`grid-toolbar-control shrink-0 px-[0.5em] ${className}`}
       style={{ fontSize }}
       onClick={() => onToggle(!active)}
     >

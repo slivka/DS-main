@@ -35,16 +35,16 @@ describe("DocumentForm 2.31.0", () => {
   it("vykreslí badge obou směrů", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
-    expect(incoming).toContain("h-6");
-    expect(incoming).toContain("text-[13px]");
+    expect(incoming).toContain("h-[26px]");
+    expect(incoming).toContain("text-sm");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
   });
   it("má badge směru i stavu stejnou výšku", () => {
     const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     const status = renderToStaticMarkup(<DocumentStatusBadge status="draft" size="md" />);
-    expect(direction).toContain("h-6");
-    expect(status).toContain("h-6");
-    expect(status).toContain("text-[13px]");
+    expect(direction).toContain("h-[26px]");
+    expect(status).toContain("h-[26px]");
+    expect(status).toContain("text-sm");
   });
   it("pruh akcí nemá spodní linku", () => {
     const html = form({ saveAction: { onSave: () => {} } });
@@ -81,6 +81,13 @@ describe("DocumentForm 2.31.0", () => {
     expect(html).toContain('data-slot="journal-lines-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Haléřové vyrovnání");
+  });
+  it("zobrazuje ruční Celkem se symbolem součtu a boční štítek identity", () => {
+    const html = form({ documentType: "PO", identity: { items: [{ side: "MD", text: "211.001 - Pokladna" }] } });
+    expect(html).toContain('id="document-amountTotal"');
+    expect(html).toContain("MD");
+    expect(html).toContain("211.001 - Pokladna");
+    expect(html).toContain("Sčítat z rozpisu");
   });
   it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));
 });

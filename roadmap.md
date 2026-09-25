@@ -1,3 +1,10 @@
+## Verze 2.32.0 (edit dokladu 4 a jednotná lišta gridu)
+- [x] Sjednotit rámečky akcí ve všech gridových lištách
+- [x] Opravit seznam partnerů a přidat SuggestInput
+- [x] Rozšířit DocumentForm o našeptávání, ruční Celkem a štítky MD/DAL
+- [x] Doplnit JournalLinesEditor o horní lištu, hledání, patu a rekapitulace
+- [x] Upravit ukázky, testy, dokumentaci a verzi 2.32.0
+
 ## Verze 2.31.0 (rozvržení údajů DocumentForm)
 - [x] Zmenšit badge směru, vystředit identitu a odstranit linku pruhu akcí
 - [x] Zavést mřížku 70 / 15 / 15 a přeuspořádat partnera, data, částku a platební údaje

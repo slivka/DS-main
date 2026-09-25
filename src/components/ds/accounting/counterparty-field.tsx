@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link2, X } from "lucide-react";
+import { ChevronDown, Link2, X } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover";
@@ -26,14 +26,14 @@ export function counterpartyFromPartner(partner: Pick<PartnerOption, "id" | "nam
 }
 
 /** Partneři odpovídající textu (název nebo IČO). */
-export function filterCounterpartyPartners(partners: PartnerOption[], query: string, limit = 8): PartnerOption[] {
+export function filterCounterpartyPartners(partners: PartnerOption[], query: string, favoriteIds: string[] = []): PartnerOption[] {
   const q = query.trim().toLocaleLowerCase("cs");
-  if (!q) return [];
   const digits = q.replace(/\s/g, "");
+  const favorites = new Set(favoriteIds);
   return partners
     .filter((p) => p.active !== false)
-    .filter((p) => p.name.toLocaleLowerCase("cs").includes(q) || (!!p.ico && /^\d+$/.test(digits) && p.ico.includes(digits)))
-    .slice(0, limit);
+    .filter((p) => !q || p.name.toLocaleLowerCase("cs").includes(q) || (!!p.ico && /^\d+$/.test(digits) && p.ico.includes(digits)))
+    .sort((a, b) => Number(favorites.has(b.id)) - Number(favorites.has(a.id)) || a.name.localeCompare(b.name, "cs"));
 }
 
 export interface CounterpartyFieldProps {
@@ -49,17 +49,19 @@ export interface CounterpartyFieldProps {
   linkedLabel?: string;
   unlinkLabel?: string;
   createLabel?: string;
+  /** Oblíbení partneři se při prázdném hledání zobrazí první. */
+  favoriteIds?: string[];
 }
 
 /** Protistrana jako volný text s volitelným propojením na partnera. */
 export function CounterpartyField({
   value, onChange, partners, onCreatePartner, disabled, placeholder = "Název protistrany", id, className,
-  linkedLabel = "Partner", unlinkLabel = "Zrušit propojení", createLabel = "Nový partner",
+  linkedLabel = "Partner", unlinkLabel = "Zrušit propojení", createLabel = "Nový partner", favoriteIds = [],
 }: CounterpartyFieldProps) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const linked = !!value.partnerId;
-  const matches = useMemo(() => filterCounterpartyPartners(partners, value.name), [partners, value.name]);
+  const matches = useMemo(() => filterCounterpartyPartners(partners, value.name, favoriteIds), [favoriteIds, partners, value.name]);
   const showCreate = !!onCreatePartner && !linked;
   const listOpen = open && !linked && (matches.length > 0 || showCreate);
   const listId = id ? `${id}-list` : undefined;
@@ -87,7 +89,7 @@ export function CounterpartyField({
           <Input
             id={id} role="combobox" aria-expanded={listOpen} aria-controls={listId} aria-autocomplete="list"
             autoComplete="off" placeholder={placeholder} value={value.name}
-            className={cn("h-9", linked && "pr-32")}
+            className={cn("h-9 pr-9", linked && "pr-32")}
             onChange={(e) => { onChange(counterpartyFromText(e.target.value, value.ico, value.dic)); setActive(0); setOpen(true); }}
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
@@ -109,12 +111,12 @@ export function CounterpartyField({
                 <X className="size-3.5" />
               </button>
             </div>
-          ) : null}
+          ) : <button type="button" aria-label="Zobrazit partnery" title="Zobrazit partnery" onMouseDown={(event) => event.preventDefault()} onClick={() => setOpen(true)} className="absolute right-0 top-0 inline-flex size-9 items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><ChevronDown className="size-4" /></button>}
         </div>
       </PopoverAnchor>
       <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-[280px] p-1"
         onOpenAutoFocus={(e) => e.preventDefault()}>
-        <ul id={listId} role="listbox">
+        <ul id={listId} role="listbox" className="max-h-[22.5rem] overflow-y-auto">
           {matches.map((p, i) => (
             <li key={p.id} role="option" aria-selected={i === active}
               onMouseDown={(e) => e.preventDefault()} onClick={() => select(p)} onMouseEnter={() => setActive(i)}

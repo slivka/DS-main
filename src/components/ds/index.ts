@@ -93,6 +93,7 @@ export * from "./form/date-range-field";
 export * from "./form/calendar-picker";
 export * from "./form/month-year-select";
 export * from "./form/entity-select";
+export * from "./form/suggest-input";
 
 /* Zpětná vazba */
 export * from "./feedback/confirm-dialog";
@@ -130,6 +131,7 @@ export * from "./accounting/vs-field";
 export * from "./accounting/currency-amount";
 export * from "./accounting/journal-lines";
 export * from "./accounting/journal-lines-editor";
+export * from "./accounting/journal-lines-recap";
 export * from "./accounting/document-form";
 export * from "./accounting/document-fields";
 export * from "./accounting/payment-schedule";
