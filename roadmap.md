@@ -4,7 +4,9 @@
 - [x] Doplnit přístupně svázané popisky Kniha a Období s přeložitelnými texty
 - [x] Vizuálně oddělit kontextový řádek tokenovým podkladem, linkou a nižší výškou
 - [x] Sjednotit kontext, akce a tabulku do jednoho bloku s jedním okrajem a stínem
-- [x] Doplnit ukázky, testy, pravidla a veřejný katalog
+- [ ] Stabilizovat šířku výběru knihy a období podle nejdelšího popisku
+- [ ] Přidat pravou část kontextového řádku a přístupný směrový přepínač
+- [ ] Doplnit ukázky, testy, pravidla a veřejný katalog
 
 ## Verze 2.20.2 (kniha vlevo a jednohodnotové výběry)
 - [x] Přesunout knihu před období a vložit mezi ně hustotně řízený oddělovač
