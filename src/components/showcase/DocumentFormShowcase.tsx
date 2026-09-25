@@ -72,8 +72,55 @@ export function DocumentFormShowcase() {
     { id: "i2", debitAccount: "513001", creditAccount: "211001", amount: 1900, text: "Reprezentace", nonTax: true },
   ]);
 
+  const [courier, setCourier] = useState<DocumentHeaderValue>({
+    bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
+    counterpartyName: "Kurýr – Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
+    amountTotal: 350, totalMode: "entered", mainAccountId: "211001",
+  });
+  const [cashIn, setCashIn] = useState<DocumentHeaderValue>({
+    bookId: "b-pd", number: "PD2026000118", direction: "in", accountingDate: "2026-09-24", issueDate: "2026-09-24",
+    partnerId: "p1", counterpartyName: MOCK_PARTNERS.find((p) => p.id === "p1")?.name ?? null,
+    description: "Úhrada faktury v hotovosti", currency: "CZK", rate: 1, amountTotal: 5000, totalMode: "entered", mainAccountId: "211001",
+  });
+  const [cashEur, setCashEur] = useState<DocumentHeaderValue>({
+    bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
+    counterpartyName: "Hotel Alpenhof", partnerId: null, description: "Ubytování – služební cesta", currency: "EUR", rate: 24.38,
+    rateInfo: "ČNB 24. 9. 2026", amountTotal: 180, totalMode: "entered", mainAccountId: "211001",
+  });
+  const [fvCzk, setFvCzk] = useState<DocumentHeaderValue>({
+    bookId: "b-fv", number: "FV2026000420", accountingDate: "2026-09-24", issueDate: "2026-09-24", taxDate: "2026-09-24",
+    dueDate: "2026-10-08", partnerId: "p2", counterpartyName: MOCK_PARTNERS.find((p) => p.id === "p2")?.name ?? null,
+    variableSymbol: "2026000420", description: "Konzultační služby", currency: "CZK", rate: 1, amountTotal: 24200, totalMode: "entered", mainAccountId: "311001",
+  });
+  const [idCp, setIdCp] = useState<DocumentHeaderValue>({
+    bookId: "b-id", number: "ID2026000032", accountingDate: "2026-09-30", issueDate: "2026-09-30",
+    counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
+  });
+  const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, periodLabel: "Rok 2026", onLinesChange: () => {} };
+
   return (
     <>
+      <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; IČ a DIČ se nezobrazují, u CZK chybí řádek kurzu.">
+        <DocumentForm title="Pokladní doklad – výdej" value={courier} onChange={setCourier} lines={[]} {...common}
+          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
+          onCreatePartner={(name) => toast.info(`Nový partner: ${name}`)} />
+      </ShowcaseSection>
+      <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČ a DIČ.">
+        <DocumentForm title="Pokladní doklad – příjem" value={cashIn} onChange={setCashIn} lines={[]} {...common}
+          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" mainSide="MD" mainAccountLocked status="filed" />
+      </ShowcaseSection>
+      <ShowcaseSection title="Pokladna v EUR" description="Měna zamčená (text), kurz viditelný se zdrojem.">
+        <DocumentForm title="Pokladní doklad EUR" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
+          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" />
+      </ShowcaseSection>
+      <ShowcaseSection title="Vydaná faktura v CZK" description="Podsekce se jmenuje Měna a řádek kurzu chybí.">
+        <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
+          books={MOCK_BOOKS} documentType="FV" mainSide="MD" status="filed" />
+      </ShowcaseSection>
+      <ShowcaseSection title="Interní doklad s protistranou" description="ID má protistranu jako volný text.">
+        <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
+          books={MOCK_BOOKS} documentType="ID" status="filed" />
+      </ShowcaseSection>
       <ShowcaseSection title="Faktura přijatá s platebním kalendářem"
         description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kalendář je druhá záložka: 3 splátky a pozastávka.">
         <DocumentForm

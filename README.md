@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.25.0 – protistrana, měna a období v DocumentForm
+
+- Nová komponenta `CounterpartyField`: volný text protistrany s našeptáváním partnerů (název, IČO); výběr vyplní název i `partnerId`, ruční přepis vazbu zruší, ✕ „Zrušit propojení“ nechá text; `disabled` = text.
+- `DocumentHeaderValue.counterpartyName` (edituje se spolu s `partnerId`); DocumentForm místo PartnerSelect používá CounterpartyField, nový prop `onCreatePartner`.
+- Protistrana u všech druhů dokladů včetně ID (ne UZ). IČ a DIČ jen u propojeného partnera.
+- Nové props `homeCurrency` (výchozí CZK) a `currencyLocked`; kurz se ukazuje jen u cizí měny, jinak se podsekce jmenuje „Měna“.
+- Období v pravém panelu šedě s nápovědou „Období se řídí datem účetního případu“.
+
 ## Changelog 2.24.2 – oprava měření řádku akcí
 
 - Měřicí kopie řádku akcí se vkládá do kontejneru gridu v obalu s `container-type: inline-size` a skutečnou šířkou, takže texty typu „Nový doklad“ se změří správně a Obnovit se neořízne.

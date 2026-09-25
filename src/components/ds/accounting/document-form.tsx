@@ -25,7 +25,8 @@ import {
 import { JournalLinesEditor, type JournalLinesEditorProps } from "./journal-lines-editor";
 import type { JournalLine } from "./journal-lines";
 import type { DimensionOption } from "./dimension-select";
-import { PartnerSelect, type PartnerOption } from "./partner-select";
+import type { PartnerOption } from "./partner-select";
+import { CounterpartyField } from "./counterparty-field";
 import { VsField } from "./vs-field";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -45,6 +46,8 @@ export type DocumentHeaderValue = {
   dueDate?: string | null;
   externalNumber?: string | null;
   partnerId?: string | null;
+  /** Text protistrany; může být bez vazby na partnera. */
+  counterpartyName?: string | null;
   variableSymbol?: string | null;
   constantSymbol?: string | null;
   specificSymbol?: string | null;
@@ -67,7 +70,7 @@ export type DocumentHeaderField = keyof DocumentHeaderValue;
 export type DocumentFormTab = { id: string; label: string; content: ReactNode; badge?: ReactNode };
 
 export type DocumentFormTexts = {
-  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; amountSection: string;
+  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
   accountingDate: string; issueDate: string; taxDate: string; dueDate: string; externalNumber: string;
@@ -79,7 +82,7 @@ export type DocumentFormTexts = {
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   headerSection: "Základní údaje", datesSection: "Data", paymentSection: "Platební údaje", propertiesSection: "Vlastnosti dokladu",
-  rateSection: "Kurz dokladu", amountSection: "Částka dokladu",
+  rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "přidělí se při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP",
@@ -119,6 +122,12 @@ export interface DocumentFormProps {
   periodLabel?: ReactNode;
   /** Množství cizí měny, pro které je uveden kurz. */
   rateAmount?: number;
+  /** Domácí měna; kurz se ukazuje jen u jiné měny. Výchozí „CZK“. */
+  homeCurrency?: string;
+  /** Měna jen jako text. */
+  currencyLocked?: boolean;
+  /** Akce „Nový partner“ z textu protistrany. */
+  onCreatePartner?: (name: string) => void;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
   tabs?: DocumentFormTab[];
   status: DocumentStatus;
@@ -151,7 +160,7 @@ const SideBadge = ({ side, texts }: { side: "MD" | "D"; texts: DocumentFormTexts
 export function DocumentForm({
   title, description: _description, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
-  mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, linesEditorProps, tabs = [], status, approved,
+  mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false, onCreatePartner, linesEditorProps, tabs = [], status, approved,
   changedBy, changedAt, actions, readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
@@ -188,9 +197,10 @@ export function DocumentForm({
       <div id={id} className={cn("min-w-0 font-medium", mono && "font-mono tabular-nums")}>{content}</div>
     </div>
   );
-  const rateText = value.currency === "CZK" || value.rate == null
+  const foreign = value.currency !== homeCurrency;
+  const rateText = value.rate == null
     ? "—"
-    : `${formatAmount(value.rate, 3)} CZK za ${formatAmount(rateAmount, Number.isInteger(rateAmount) ? 0 : 3)} ${value.currency}`;
+    : `${formatAmount(value.rate, 3)} ${homeCurrency} za ${formatAmount(rateAmount, Number.isInteger(rateAmount) ? 0 : 3)} ${value.currency}`;
 
   const allTabs: DocumentFormTab[] = [{
     id: "lines", label: t.linesTab, badge: lines.length || undefined,
@@ -219,9 +229,9 @@ export function DocumentForm({
               {f.taxDate ? date("taxDate", t.taxDate) : null}
               {f.dueDate ? date("dueDate", t.dueDate) : null}
               {f.externalNumber ? text("externalNumber", t.externalNumber) : null}
-              {f.partner ? field("document-partner", partnerLabel, <PartnerSelect id="document-partner" partners={partners} value={value.partnerId ?? ""} onChange={(partnerId) => patch({ partnerId })} disabled={!can("partnerId") || partners.length === 0} />, true) : null}
-              {f.partner ? field("document-partner-ico", t.ico, <ReadField id="document-partner-ico" mono value={partner?.ico || "—"} />) : null}
-              {f.partner ? field("document-partner-dic", t.dic, <ReadField id="document-partner-dic" mono value={partner?.dic || "—"} />) : null}
+              {f.partner ? field("document-partner", partnerLabel, <CounterpartyField id="document-partner" partners={partners} value={{ name: value.counterpartyName ?? partner?.name ?? "", partnerId: value.partnerId ?? null }} onChange={(next) => patch({ counterpartyName: next.name, partnerId: next.partnerId })} onCreatePartner={onCreatePartner} disabled={!can("partnerId")} />, true) : null}
+              {f.partner && partner ? field("document-partner-ico", t.ico, <ReadField id="document-partner-ico" mono value={partner.ico || "—"} />) : null}
+              {f.partner && partner ? field("document-partner-dic", t.dic, <ReadField id="document-partner-dic" mono value={partner.dic || "—"} />) : null}
               {field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, true)}
             </div>
 
@@ -241,17 +251,17 @@ export function DocumentForm({
             <h2 className="mb-3 text-sm font-semibold text-foreground">{t.propertiesSection}</h2>
             <div className="space-y-2.5">
               {property("document-book", t.book, isNew && can("bookId") ? <BookSelect id="document-book" books={books} value={value.bookId ?? ""} onChange={(bookId) => patch({ bookId })} /> : <span>{book ? formatBook(book) : "—"}</span>)}
-              {property("document-period", t.period, periodLabel ?? "—")}
+              {property("document-period", t.period, <span title={t.periodHint} className="font-normal text-muted-foreground">{periodLabel ?? "—"}</span>)}
               {property("document-number", t.number, <span className={cn("font-mono tabular-nums", !value.number && "font-sans font-normal italic text-muted-foreground")}>{value.number || t.numberPending}</span>)}
               {f.direction ? property("document-direction", t.direction, value.direction === "in" ? t.directionIn : value.direction === "out" ? t.directionOut : "—") : null}
               {property("document-status", t.status, <DocumentStatusBadge status={status} />)}
               {property("document-approved", t.approved, approved ? t.yes : t.no)}
             </div>
 
-            <h3 className="mb-2 mt-5 border-t pt-4 text-sm font-semibold text-foreground">{t.rateSection}</h3>
+            <h3 className="mb-2 mt-5 border-t pt-4 text-sm font-semibold text-foreground">{foreign ? t.rateSection : t.currencySection}</h3>
             <div className="space-y-2.5">
-              {property("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : value.currency)}
-              {property("document-rate", t.rate, <><span className="font-mono tabular-nums">{rateText}</span>{value.rateInfo ? <span className="mt-1 block text-xs font-normal text-muted-foreground">{value.rateInfo}</span> : null}</>)}
+              {property("document-currency", t.currency, currencies && !currencyLocked && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : value.currency)}
+              {foreign ? property("document-rate", t.rate, <><span className="font-mono tabular-nums">{rateText}</span>{value.rateInfo ? <span className="mt-1 block text-xs font-normal text-muted-foreground">{value.rateInfo}</span> : null}</>) : null}
             </div>
 
             <h3 className="mb-2 mt-5 border-t pt-4 text-sm font-semibold text-foreground">{t.amountSection}</h3>

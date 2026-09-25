@@ -43,7 +43,7 @@ const NONE: DocumentFields = {
 };
 
 const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
-  ID: NONE,
+  ID: { ...NONE, partner: true },
   UZ: NONE,
   FV: { ...NONE, taxDate: true, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true },
   FP: { ...NONE, taxDate: true, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true, paymentOrders: true },

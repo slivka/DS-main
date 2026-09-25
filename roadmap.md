@@ -1,5 +1,8 @@
 # Roadmap
 
+## Verze 2.25.0 (protistrana v DocumentForm)
+- [x] CounterpartyField, counterpartyName, homeCurrency, currencyLocked, ID s protistranou, testy, ukázky
+
 ## Verze 2.24.2 (měření řádku akcí)
 - [x] Měřicí kopie řádku akcí uvnitř kontejneru gridu (správné container queries, Obnovit se neořízne).
 - [x] Pod 640 px: hledání s textem se v úrovni 3 zúží, nic se nevytlačí.
