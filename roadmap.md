@@ -1,3 +1,9 @@
+## Verze 2.28.1 (identita dokladu v těle formuláře)
+- [x] Vrátit vždy viditelný nadpis stránky a přesunout identitu se směrem do karty
+- [x] Přesunout stav vlevo v pruhu akcí a zachovat veřejné API
+- [x] Upravit ukázky, testy, dokumentaci a verzi 2.28.1
+- [x] Ověřit typy, lint, testy, build a šířky 1 280 px / 560 px
+
 ## Verze 2.27.0 (tisk gridu do PDF)
 
 - [x] Tisk (PDF)… v DataGrid a TreeGrid, parametry z kontextu, orientace, velké objemy, ukázky, testy
