@@ -92,9 +92,14 @@ export async function drawPrintFooter(doc: JsPdf, context: PrintContext, logo: s
     const companyBits = [context.settings.footerName ? context.company.name : null, context.settings.footerIco && context.company.ico ? `IČO ${context.company.ico}` : null].filter(Boolean).join(" · ");
     if (companyBits) doc.text(companyBits, left, height - 7);
     if (context.settings.showPrintedBy && context.printedBy) doc.text(`Vytiskl: ${context.printedBy}, ${printedAtText(context.printedAt)}`, width / 2, height - 7, { align: "center" });
-    if (showPageCount && pages > 1) doc.text(`Strana ${page} z ${TOTAL_PAGES}`, width - 15, height - 7, { align: "right" });
+    const pageLabel = reportPageLabel(page, pages, TOTAL_PAGES);
+    if (showPageCount && pageLabel) doc.text(pageLabel, width - 15, height - 7, { align: "right" });
   }
   if (showPageCount && pages > 1 && typeof doc.putTotalPages === "function") doc.putTotalPages(TOTAL_PAGES);
+}
+
+export function reportPageLabel(page: number, total: number, totalPlaceholder = String(total)) {
+  return total > 1 ? `Strana ${page} z ${totalPlaceholder}` : "";
 }
 
 export async function buildReportPdf({ title, subtitle, params = [], context, orientation = "portrait", sections }: {
@@ -119,7 +124,7 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
       doc.setFont("Roboto", "normal"); doc.setFontSize(8); doc.text([context.company.ico ? `IČO ${context.company.ico}` : "", context.company.address ?? ""].filter(Boolean).join(" · "), left, 23);
       doc.setTextColor(...NAVY); doc.setFont("Roboto", "bold"); doc.setFontSize(16); doc.text(title, pageWidth - margin, 18, { align: "right" });
       doc.setTextColor(...GRAY); doc.setFont("Roboto", "normal"); doc.setFontSize(9);
-      const details = [subtitle, ...params.map((item) => `${item.label}: ${item.value}`)].filter(Boolean);
+      const details = [subtitle, ...params.map((item) => `${item.label}: ${item.value}`)].filter((item): item is string => Boolean(item));
       doc.text(details, pageWidth - margin, 23, { align: "right" });
       doc.setDrawColor(...LINE); doc.line(margin, 34, pageWidth - margin, 34);
     } else {

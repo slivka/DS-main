@@ -306,13 +306,14 @@ export function DocumentForm({
   );
 }
 
-function CompactActionButton({ label, icon: Icon, busy, ...props }: { label: string; icon: LucideIcon; busy?: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
+function CompactActionButton({ label, icon: Icon, busy, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button {...props} aria-label={label} className={cn("@max-[39.99rem]:size-9 @max-[39.99rem]:px-0", props.className)}>
+        <Button type="button" {...props} aria-label={label} className={cn("@max-[39.99rem]:size-9 @max-[39.99rem]:px-0", props.className)}>
           {busy ? <Loader2 className="animate-spin" /> : <Icon />}
           <span className="@max-[39.99rem]:sr-only">{busy ? `${label}…` : label}</span>
+          {children}
         </Button>
       </TooltipTrigger>
       <TooltipContent className="@min-[40rem]:hidden">{label}</TooltipContent>
