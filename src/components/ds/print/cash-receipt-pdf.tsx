@@ -119,7 +119,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
 
 function cashReceiptNeedsFullPage(input: Pick<CashReceiptPdfInput, "lines" | "amount" | "currency" | "homeCurrency">) {
   const estimatedWordLines = Math.max(1, Math.ceil(amountInWordsCs(input.amount, input.currency).length / 95));
-  const availableRows = input.currency !== input.homeCurrency || estimatedWordLines > 1 ? 7 : 8;
+  const availableRows = input.currency !== input.homeCurrency || estimatedWordLines > 2 ? 9 : 10;
   return input.lines.length > availableRows;
 }
 
