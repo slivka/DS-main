@@ -210,7 +210,7 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
         blob={blob}
         title={config.title}
         companyName={config.context.company.name}
-        settings={<GridSegmentedToggle options={ORIENTATION_OPTIONS} value={orientation} defaultValue="portrait" onChange={setOrientation} ariaLabel="Orientace stránky" />}
+        settings={<GridSegmentedToggle options={ORIENTATION_OPTIONS} value={orientation} defaultValue="portrait" onChange={(value) => setOrientation(value as GridPrintOrientation)} ariaLabel="Orientace stránky" />}
       />
     </>
   ) : null;
