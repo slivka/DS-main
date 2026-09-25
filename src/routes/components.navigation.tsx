@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
@@ -104,7 +104,9 @@ function NavigationPage() {
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1100);
   const [periodId, setPeriodId] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
+  const [companyPreviewOpen, setCompanyPreviewOpen] = useState(false);
   const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
+  useEffect(() => setCompanyPreviewOpen(true), []);
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed>
@@ -151,7 +153,7 @@ function NavigationPage() {
 
       <ShowcaseSection title="Rozbalený výběr firmy" description="Nabídka obsahuje hledání a jediný seznam všech firem bez skupinových nadpisů; vybraná firma má fajfku a pod názvem IČO.">
         <div className="min-h-80 rounded-lg border bg-card p-3">
-          <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open onOpenChange={() => undefined} onCreate={() => undefined} />
+          <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen} onCreate={() => undefined} />
         </div>
       </ShowcaseSection>
 

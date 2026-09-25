@@ -46,7 +46,7 @@ describe("ukázka horní lišty", () => {
       expect(navigationSource).toContain(label);
     }
     expect(navigationSource).toContain("PREVIEW_WIDTHS = [1440, 1100, 390]");
-    expect(navigationSource).toContain("<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open");
+    expect(navigationSource).toContain("open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen}");
   });
 
   it("ContextPill předává řízený stav popoveru", () => {
