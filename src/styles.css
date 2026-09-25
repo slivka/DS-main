@@ -470,7 +470,9 @@
 }
 
 .grid-toolbar-row .grid-toolbar-control {
-  border-color: var(--grid-chrome-border);
+  border-color: var(--border);
+  border-width: 1px;
+  border-style: solid;
   background-color: var(--card);
   color: var(--foreground);
 }

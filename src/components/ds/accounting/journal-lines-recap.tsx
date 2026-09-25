@@ -69,7 +69,7 @@ export function JournalLinesRecap({ lines, accounts, dimensions = [], rounding =
     return [...map.values()];
   }, [lines]);
   const tabs = [{ id: "accounting", label: "Účtování" }, { id: "jobs", label: "Zakázky" }, ...recapTabs];
-  if (!tabs.some((item) => item.id === tab)) setTab("accounting");
+  React.useEffect(() => { if (!tabs.some((item) => item.id === tab)) setTab("accounting"); }, [tab, tabs]);
   return <section data-slot="journal-lines-recap" className="border-t bg-card" style={{ fontSize: `${14 * zoom}px` }}>
     <Button type="button" variant="ghost" onClick={() => changeOpen(!open)} className="h-9 w-full justify-start rounded-none px-3 text-sm font-semibold">{open ? <ChevronDown /> : <ChevronRight />}Rekapitulace</Button>
     {open ? <Tabs value={tab} onValueChange={changeTab} className="border-t">

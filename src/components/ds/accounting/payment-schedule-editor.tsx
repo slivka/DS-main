@@ -127,16 +127,16 @@ export function PaymentScheduleEditor({
 
   return (
     <div className={cn("@container overflow-hidden rounded-lg border bg-card", className)}>
-      <div className="flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2">
-        <Button type="button" size="sm" variant="outline" onClick={add} disabled={readOnly}>{t.add}</Button>
-        <Button type="button" size="sm" variant="outline" onClick={() => selected != null && remove(selected)}
+      <div className="zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2">
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control" onClick={add} disabled={readOnly}>{t.add}</Button>
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control" onClick={() => selected != null && remove(selected)}
           disabled={readOnly || !selectedItem || isReleased(selectedItem)}>{t.remove}</Button>
-        <Button type="button" size="sm" variant="outline" onClick={fillRest} disabled={readOnly || unallocated === 0}>{t.fillRest}</Button>
-        <Button type="button" size="sm" variant="outline" onClick={() => setGenerateOpen(true)} disabled={readOnly}>{t.generate}</Button>
-        <Button type="button" size="sm" variant="outline"
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control" onClick={fillRest} disabled={readOnly || unallocated === 0}>{t.fillRest}</Button>
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control" onClick={() => setGenerateOpen(true)} disabled={readOnly}>{t.generate}</Button>
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control"
           disabled={!canRelease || !selectedItem || selectedItem.kind !== "retention" || isReleased(selectedItem)}
           onClick={() => { setReleaseDate(today()); setReleaseIndex(selected); }}>{t.release}</Button>
-        <Button type="button" size="sm" variant="outline"
+        <Button type="button" size="sm" variant="outline" className="grid-toolbar-control"
           disabled={!canUnrelease || !selectedItem || !isReleased(selectedItem)}
           onClick={() => selected != null && askUnrelease(selected)}>{t.unrelease}</Button>
       </div>
