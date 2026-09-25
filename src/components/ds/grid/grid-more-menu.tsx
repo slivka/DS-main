@@ -27,6 +27,7 @@ export function GridMoreMenu({
   items,
   tools,
   secondary,
+  compact,
   zoom = 1,
   className = "",
   responsiveOverflow = false,
@@ -37,6 +38,8 @@ export function GridMoreMenu({
   tools?: ReactNode;
   /** Další ovládání přesunuté do nabídky v úzkém gridu. */
   secondary?: ReactNode;
+  /** Hlavní parametry přesunuté do nabídky při krajně úzkém řádku. */
+  compact?: ReactNode;
   zoom?: number;
   className?: string;
   /** Vnitřní nabídka gridu řízená skutečně dostupnou šířkou lišty. */
@@ -47,10 +50,11 @@ export function GridMoreMenu({
   const overflowLevel = useContext(GridToolbarOverflowContext);
   const shownTools = !responsiveOverflow || overflowLevel >= 1 ? tools : null;
   const shownSecondary = !responsiveOverflow || overflowLevel >= 2 ? secondary : null;
+  const shownCompact = responsiveOverflow && overflowLevel >= 3 ? compact : null;
   const shownItems = items;
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
-  if (shownItems.length === 0 && !shownTools && !shownSecondary) return null;
+  if (shownItems.length === 0 && !shownTools && !shownSecondary && !shownCompact) return null;
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -66,8 +70,9 @@ export function GridMoreMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
+        {shownCompact ? <div className={`grid-more-compact pb-[0.5em] ${(shownTools || shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Parametry</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownCompact}</div></div> : null}
         {shownTools ? <div className={`grid-more-tools pb-[0.5em] ${(shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownTools}</div></div> : null}
-        {shownSecondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${shownItems.length ? "mb-[0.35em] border-b border-border/50" : ""}`}>{shownSecondary}</div> : null}
+        {shownSecondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{shownSecondary}</div> : null}
         {shownItems.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;
           return (

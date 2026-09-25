@@ -81,37 +81,53 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     if (!node) return;
     let frame = 0;
     let current: 0 | 1 | 2 | 3 = Number(node.dataset.overflowLevel || 0) as 0 | 1 | 2 | 3;
-    const cached = { leftFull: 0, findFull: 0, display: 0, data: 0, menu: 0, refresh: 0 };
-    const widthOf = (name: string) => {
-      const target = node.querySelector<HTMLElement>(`[data-toolbar-measure="${name}"]`);
+    const widthOf = (scope: ParentNode, name: string) => {
+      const target = scope.querySelector<HTMLElement>(`[data-toolbar-measure="${name}"]`);
       if (!target) return 0;
       const ownWidth = target.getBoundingClientRect().width;
       if (ownWidth > 0) return ownWidth;
       return Array.from(target.children).reduce((total, child) => total + (child as HTMLElement).getBoundingClientRect().width, 0);
     };
+    const naturalWidths = () => {
+      const copy = node.cloneNode(true) as HTMLElement;
+      copy.removeAttribute("data-overflow-level");
+      copy.setAttribute("aria-hidden", "true");
+      copy.classList.add("grid-toolbar-measure-copy");
+      Object.assign(copy.style, {
+        position: "fixed", visibility: "hidden", pointerEvents: "none", inset: "0 auto auto 0",
+        width: "max-content", maxWidth: "none", contain: "layout style", zIndex: "-1",
+      });
+      copy.querySelectorAll<HTMLElement>(".grid-toolbar-wide").forEach((item) => { item.style.display = "contents"; });
+      copy.querySelectorAll<HTMLElement>(".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional").forEach((item) => { item.style.display = "inline-flex"; });
+      document.body.append(copy);
+      const result = {
+        leftFull: widthOf(copy, "left"), findFull: widthOf(copy, "find"),
+        display: widthOf(copy, "display"), data: widthOf(copy, "data"),
+        menu: widthOf(copy, "menu"), refresh: widthOf(copy, "refresh"),
+      };
+      const add = copy.querySelector<HTMLElement>("[data-toolbar-add]");
+      const search = copy.querySelector<HTMLElement>("[data-toolbar-search]");
+      copy.remove();
+      return { ...result, addWidth: add?.getBoundingClientRect().width ?? 0, searchWidth: search?.getBoundingClientRect().width ?? 0 };
+    };
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const style = getComputedStyle(node);
-        const gap = Number.parseFloat(style.columnGap || style.gap) || 0;
+        const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
+        const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
+        const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
         const padding = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
-        node.dataset.overflowLevel = "0";
-        if (current < 3 || cached.leftFull === 0) cached.leftFull = widthOf("left");
-        if (current < 3 || cached.findFull === 0) cached.findFull = widthOf("find");
-        if (current === 0 || cached.display === 0) cached.display = widthOf("display");
-        if (current <= 1 || cached.data === 0) cached.data = widthOf("data");
-        cached.menu = Math.max(widthOf("menu"), cached.menu);
-        cached.refresh = Math.max(widthOf("refresh"), cached.refresh);
-        const leftFull = cached.leftFull;
-        const findFull = cached.findFull;
-        const add = node.querySelector<HTMLElement>("[data-toolbar-add]");
-        const search = node.querySelector<HTMLElement>("[data-toolbar-search]");
+        const measured = naturalWidths();
+        const leftFull = measured.leftFull;
+        const findFull = measured.findFull;
         const controlSize = Number.parseFloat(getComputedStyle(node).getPropertyValue("--f-h")) * (Number.parseFloat(style.fontSize) || 13);
-        const leftCompact = Math.max(0, leftFull - (add ? add.getBoundingClientRect().width - controlSize : 0));
-        const findCompact = Math.max(0, findFull - (search ? search.getBoundingClientRect().width - controlSize : 0));
+        const addCount = node.querySelectorAll("[data-toolbar-add]").length;
+        const leftCompact = addCount ? addCount * controlSize + Math.max(0, addCount - 1) * gap : 0;
+        const findCompact = Math.max(0, findFull - Math.max(0, measured.searchWidth - controlSize));
         const next = calculateGridToolbarOverflowLevel({
           container: node.clientWidth, leftFull, leftCompact, findFull, findCompact,
-          display: cached.display, data: cached.data, menu: Math.max(cached.menu, controlSize), refresh: cached.refresh,
+          display: measured.display, data: measured.data, menu: Math.max(measured.menu, controlSize), refresh: measured.refresh,
           gap, padding, hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
         }, current);
         setOverflowLevel(next);
@@ -152,6 +168,7 @@ export function GridToolbarSeparator({ density = "normal" }: { density?: GridDen
   return (
     <span
       aria-hidden
+      data-slot="grid-toolbar-separator"
       className={cn(
         "w-px shrink-0 self-center bg-border",
         density === "compact" ? "mx-0.5 h-[1.1em]" : "mx-1 h-[1.4em]",
@@ -221,7 +238,7 @@ export function AsOfDateToggle({
     onEnabledChange(next);
   };
   return (
-    <div className="grid-toolbar-optional flex min-w-0 items-center gap-2">
+    <div className="grid-toolbar-group grid-toolbar-optional flex min-w-0 items-center gap-2">
       <Button
         type="button"
         size="sm"

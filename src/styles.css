@@ -474,8 +474,8 @@
   display: inline-flex;
 }
 
-/* Poslední pojistka úrovně 3: řádek zůstane vždy jediný a bez ořezu. */
-.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-left > .grid-toolbar-optional {
+/* V krajně úzkém řádku zůstane vlevo jen Přidat; ostatní parametry jsou v nabídce. */
+.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-left > :not([data-toolbar-add]) {
   display: none;
 }
 

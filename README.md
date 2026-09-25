@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.24.1 – bezeztrátová adaptivní lišta
+
+- Krajně úzká lišta přesouvá hlavní parametry, režim zobrazení, rozbalení a Stav k datu do jediné nabídky `⋯`; žádný ovladač už nezmizí.
+- Přidat se zkrátí na `+`, hledání na ikonu a Obnovit zůstává samostatně vpravo i při šířce 360 px.
+- Přirozené šířky všech skupin se měří skrytou kopií při každé změně obsahu; mezery vycházejí ze skutečného vykresleného stylu a respektují zoom.
+- `AsOfDateToggle` znovu sdílí výšku a mezery skupiny řádku akcí. API zůstává beze změny.
+
 ## Changelog 2.23.2 – dokončení adaptivního řádku akcí
 
 - Úroveň lišty se určuje z přirozených šířek levé části a pravých skupin; obsah se už neořezává ani neposouvá vodorovně.
