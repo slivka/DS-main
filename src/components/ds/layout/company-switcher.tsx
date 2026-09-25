@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -87,12 +86,6 @@ export function CompanySwitcher({
   onOpenChange,
 }: CompanySwitcherProps) {
   const selected = items.find((item) => item.id === value);
-  const [internalOpen, setInternalOpen] = useState(false);
-  const resolvedOpen = open ?? internalOpen;
-  const setOpen = (next: boolean) => {
-    if (open === undefined) setInternalOpen(next);
-    onOpenChange?.(next);
-  };
 
   return (
     <ContextPill
@@ -105,8 +98,8 @@ export function CompanySwitcher({
       valueClassName="text-base font-semibold"
       className={cn("max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]", className)}
       contentClassName="w-[380px]"
-      open={resolvedOpen}
-      onOpenChange={setOpen}
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <CompanySwitcherContent
         items={items}

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Check, Lock } from "lucide-react";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command";
@@ -131,12 +130,6 @@ export function PeriodSwitcher({
   open,
   onOpenChange,
 }: PeriodSwitcherProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const resolvedOpen = open ?? internalOpen;
-  const setOpen = (next: boolean) => {
-    if (open === undefined) setInternalOpen(next);
-    onOpenChange?.(next);
-  };
   const selected = periods.find((period) => period.id === value);
   const isEmpty = periods.length === 0;
   const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
@@ -161,8 +154,8 @@ export function PeriodSwitcher({
       valueContainerClassName="gap-2"
       className={cn("relative max-w-[112px] border shadow-sm before:absolute before:-left-3 before:h-6 before:border-l before:border-border data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]", selected ? triggerStateClass[selected.state] : isEmpty ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80" : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24", className)}
       contentClassName="w-[380px]"
-      open={resolvedOpen}
-      onOpenChange={setOpen}
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <PeriodSwitcherContent
         periods={periods}

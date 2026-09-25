@@ -22,6 +22,7 @@ describe("CompanySwitcher 2.22.0", () => {
     expect(companySource).toContain("border-grid-chrome bg-background");
     expect(companySource).toContain("open?: boolean");
     expect(companySource).toContain("onOpenChange?: (open: boolean) => void");
+    expect(companySource).not.toContain("useState");
   });
 });
 
@@ -30,6 +31,7 @@ describe("PeriodSwitcher 2.22.0", () => {
     expect(periodSource).toContain("onChange(period.id); close();");
     expect(periodSource).toContain("close(); onCreate();");
     expect(periodSource).toContain("open?: boolean");
+    expect(periodSource).not.toContain("useState");
   });
 
   it("má obrys pro všechny stavy a bez období nemá tečku", () => {
