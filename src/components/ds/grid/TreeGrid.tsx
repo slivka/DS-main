@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Pencil, Trash2 } from "lucide-react";
 
 import {
   Table,
@@ -37,6 +37,8 @@ import { cn } from "../../../lib/utils";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
+import { GridAction, GridActions } from "./grid-action";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
 
 export type TreeGridRow = { id: string; parentId?: string | null };
 
@@ -137,6 +139,16 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   onRefresh?: () => void | Promise<unknown>;
   /** Řízený stav probíhajícího obnovení. */
   refreshing?: boolean;
+  onEditRow?: (row: Row) => void;
+  onDeleteRow?: (row: Row) => void;
+  deleteConfirm?: (row: Row) => string;
+  rowActions?: (row: Row) => ReactNode;
+  canEditRow?: (row: Row) => boolean;
+  canDeleteRow?: (row: Row) => boolean;
+  editDisabledReason?: (row: Row) => string | undefined;
+  deleteDisabledReason?: (row: Row) => string | undefined;
+  actionsLabel?: string;
+  hideDefaultActions?: boolean;
   /** Povolí hromadný výběr řádků. */
   selectable?: boolean;
   selectionActions?: (rows: Row[], clear: () => void) => ReactNode;
@@ -197,6 +209,16 @@ export function TreeGrid<Row extends TreeGridRow>({
   extraExports = [],
   onRefresh,
   refreshing,
+  onEditRow,
+  onDeleteRow,
+  deleteConfirm,
+  rowActions,
+  canEditRow,
+  canDeleteRow,
+  editDisabledReason,
+  deleteDisabledReason,
+  actionsLabel,
+  hideDefaultActions,
   selectable,
   selectionActions,
   onSelectedRowsChange,
@@ -207,6 +229,7 @@ export function TreeGrid<Row extends TreeGridRow>({
 }: TreeGridProps<Row>) {
   const t = { ...DEFAULT_TREE_GRID_TEXTS, ...texts };
   const sharedTexts = resolveGridTexts(gridTexts);
+  const { confirm, confirmDialog } = useConfirmDialog();
   const key = storageKey ?? `tree:${exportName ?? title}`;
   const [query, setQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -215,6 +238,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const hasRowActions = Boolean((onEditRow && !hideDefaultActions) || (onDeleteRow && !hideDefaultActions) || rowActions) && !selectMode;
   const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? title}` : key);
   const { zoom, setZoom, density, setDensity } = useGridZoom(zoomKey);
   const blockRef = useRef<HTMLDivElement>(null);
@@ -421,8 +445,9 @@ export function TreeGrid<Row extends TreeGridRow>({
         density={density}
         className={cn("rounded-t-lg border-b-0 bg-card shadow-panel", (showTitle || period || book || contextRight) && "rounded-t-none border-t-0 shadow-none")}
         left={<>
+          {addAction ? <GridAddActions actions={addAction} /> : null}
+          {addAction ? <GridToolbarSeparator density={density} /> : null}
           {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
-          {viewMode && onViewModeChange ? <GridToolbarSeparator density={density} /> : null}
           <GridExpandControls
             levels={availableLevels}
             activeDepth={activeDepth}
@@ -451,8 +476,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               texts={sharedTexts}
             />
           ) : null}
-          {onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null}
-          {exportName ? (
+          <div className="hidden @min-[640px]:contents">{exportName ? (
             <GridExport
               getData={exportData}
               filename={exportName}
@@ -472,12 +496,12 @@ export function TreeGrid<Row extends TreeGridRow>({
             onReset={cols.reset}
             zoom={zoom}
             title={t.columnsTitle}
-          />
-          <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
+          /></div>
           {selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}
           {actions}
-          {moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}
-          {addAction ? <GridAddActions actions={addAction} /> : null}
+          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} className={moreActions.length ? "" : "hidden @max-[639px]:inline-flex"} />
+          <div className="hidden @min-[640px]:contents"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
+          {onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} className="hidden @min-[640px]:inline-flex" /></> : null}
         </>}
       />
       {filters ? <GridFilterPanel open={filtersOpen}>{filters}</GridFilterPanel> : null}
@@ -499,12 +523,13 @@ export function TreeGrid<Row extends TreeGridRow>({
                   {column.label}
                 </TableHead>
               ))}
+              {hasRowActions ? <TableHead className="grid-actions-header sticky right-0 z-20 w-px border-l !px-0.5 py-0" aria-label={actionsLabel ?? sharedTexts.actions} /> : null}
             </TableRow>
           </TableHeader>
           <TableBody>
             {visible.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={shown.length + (selectMode ? 1 : 0)} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={shown.length + (selectMode ? 1 : 0) + (hasRowActions ? 1 : 0)} className="py-8 text-center text-muted-foreground">
                   {t.emptyLabel}
                 </TableCell>
               </TableRow>
@@ -522,7 +547,10 @@ export function TreeGrid<Row extends TreeGridRow>({
                       setAutoHighlight(row.id);
                       onRowClick?.(row);
                     }}
-                    onDoubleClick={() => onRowOpen?.(row)}
+                    onDoubleClick={() => {
+                      if (onRowOpen) onRowOpen(row);
+                      else if (onEditRow && !editDisabledReason?.(row) && (canEditRow?.(row) ?? true)) onEditRow(row);
+                    }}
                     className={cn(canExpand && "font-medium", isHighlighted && "bg-primary/10 hover:bg-primary/15")}
                   >
                     {selectMode ? <TableCell className="w-10 text-center"><Checkbox checked={selectedIds.has(row.id)} onCheckedChange={() => toggleRow(row.id)} aria-label={sharedTexts.selectRow} onClick={(event) => event.stopPropagation()} /></TableCell> : null}
@@ -565,6 +593,11 @@ export function TreeGrid<Row extends TreeGridRow>({
                         </TableCell>
                       );
                     })}
+                    {hasRowActions ? <TableCell className="sticky right-0 z-[1] !min-w-0 whitespace-nowrap border-l bg-card px-0.5 py-0"><GridActions>
+                      {rowActions?.(row)}
+                      {!hideDefaultActions && onEditRow && ((canEditRow?.(row) ?? true) || editDisabledReason?.(row)) ? <GridAction title={sharedTexts.edit} aria-label={sharedTexts.edit} disabled={Boolean(editDisabledReason?.(row))} disabledReason={editDisabledReason?.(row)} onClick={(event) => { event.stopPropagation(); onEditRow(row); }}><Pencil className="size-3.5" /></GridAction> : null}
+                      {!hideDefaultActions && onDeleteRow && ((canDeleteRow?.(row) ?? true) || deleteDisabledReason?.(row)) ? <GridAction tone="destructive" title={sharedTexts.remove} aria-label={sharedTexts.remove} disabled={Boolean(deleteDisabledReason?.(row))} disabledReason={deleteDisabledReason?.(row)} onClick={(event) => { event.stopPropagation(); confirm({ title: deleteConfirm?.(row) ?? sharedTexts.removeConfirm, confirmLabel: sharedTexts.remove, destructive: true, onConfirm: () => onDeleteRow(row) }); }}><Trash2 className="size-3.5" /></GridAction> : null}
+                    </GridActions></TableCell> : null}
                   </TableRow>
                 );
               })
@@ -583,11 +616,13 @@ export function TreeGrid<Row extends TreeGridRow>({
                         : null}
                   </TableCell>
                 ))}
+                {hasRowActions ? <TableCell className="grid-actions-footer sticky right-0 z-[9] !min-w-0 whitespace-nowrap border-l px-0.5 py-2" /> : null}
               </TableRow>
             </TableFooter>
           ) : null}
         </Table>
       </ZoomGrid>
+      {confirmDialog}
     </div>
   );
 }
