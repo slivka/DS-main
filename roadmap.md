@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.21.1 (opravy lišty a stínu gridu)
+- [x] Sjednotit jednu nabídku ⋯ pro široký a úzký DataGrid i TreeGrid
+- [x] Ponechat Stav k datu a hlavní parametry dostupné pod 640 px
+- [x] Přesunout další akce před hustotu a zoom na široké ploše
+- [x] Řídit stín sloupce akcí zbývajícím přetečením vpravo a přepočítat jej při změně velikosti a zoomu
+- [x] Doplnit testy, typovou kontrolu a lint
+
 ## Verze 2.21.0 (nové pořadí lišty a akce ve stromu)
 - [x] Přesunout Nový vlevo a Obnovit úplně vpravo v DataGridu i TreeGridu
 - [x] Přesunout méně důležité nástroje do nabídky ⋯ pod šířkou 640 px
