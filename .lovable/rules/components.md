@@ -772,7 +772,7 @@ Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, říz
 | `emptyText` | string | `Žádná firma nebyla nalezena.` |
 | `createLabel` | string | `Nová firma` |
 | `onCreate` | function | `—` |
-| `className` | string | `—` |
+| `className` | string | `min-w-0 flex-1` |
 | `open` | boolean | `—` |
 | `onOpenChange` | function | `—` |
 
@@ -890,7 +890,7 @@ import { ContextMenuTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { ContextPill } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednořádkový kontextový přepínač do horní lišty; label slouží jako přístupnostní název a nápověda, detail se ukazuje na široké obrazovce.
+Jednořádkový řízený kontextový přepínač do horní lišty; drží společnou geometrii, focus a zavírání firemního i období štítku.
 
 **Props:**
 
@@ -916,15 +916,15 @@ Jednořádkový kontextový přepínač do horní lišty; label slouží jako p�
 
 **Examples:**
 
-_Kontext s detailem_
+_Řízené otevření_
 ```tsx
-<ContextPill label="Firma" value="Slivka s.r.o." tooltip="Firma: Slivka s.r.o. · IČO 12345678">…</ContextPill>
+<ContextPill label="Firma" value="Slivka s.r.o." open={open} onOpenChange={setOpen}>…</ContextPill>
 ```
 
 **Avoid:**
 
 - Nepoužívejte pro běžná formulářová pole.
-- Nevkládejte viditelný druhý řádek s popiskem.
+- Neobcházejte zavírání změnou key podle cesty.
 
 ### CountrySelect
 
@@ -956,7 +956,7 @@ import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
+Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a individuální Upravit/Odstranit pouze ve sticky sloupci akcí řádku.
 
 **Props:**
 
@@ -980,6 +980,7 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `toolbarLeft` | any | `—` |
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
@@ -1012,7 +1013,9 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `hideToolbar` | boolean | `—` |
 | `hideDefaultActions` | boolean | `—` |
 | `canEditRow` | function | `—` |
+| `editDisabledReason` | function | `—` |
 | `canDeleteRow` | function | `—` |
+| `deleteDisabledReason` | function | `—` |
 | `selectable` | boolean | `—` |
 | `selectionActions` | function | `—` |
 | `selectMode` | boolean | `—` |
@@ -1023,25 +1026,20 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `showTotalRow` | boolean | `true` |
 | `onColumnFiltersChange` | function | `—` |
 | `onSearchChange` | function | `—` |
-| `className` | string | `border border-t-0 bg-card px-2 py-1.5` |
+| `className` | string | `hidden @min-[640px]:contents` |
 | `texts` | any | `—` |
 
 **Examples:**
 
-_Grid s obnovením a výběrem_
+_Akce řádků s vysvětlením zákazu_
 ```tsx
-<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey="doklady" onRefresh={reload} refreshing={loading} selectable />
+<DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
 **Avoid:**
 
-- Vlastní tlačítko obnovení mimo lištu gridu
-- Přepisovat klávesu F5
-- Textové tlačítko Vybrat více místo GridSelectionToggle
-- Zobrazovat nadpis gridu bez výslovného showTitle
-- ExcelExportButton uvnitř gridu
-- Ovládání gridu nad společným řádkem akcí
-- Akce Nový v PageHeader místo addAction
+- Umisťovat Upravit nebo Odstranit jednotlivého řádku do horní lišty
+- Skrýt zakázanou akci, pokud má uživatel potřebovat vysvětlení důvodu
 
 ### DateField
 
@@ -1537,6 +1535,13 @@ import { FormSection } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { GridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `tone` | default · destructive | `default` |
+| `disabledReason` | string | `—` |
+
 ### GridActions
 
 ```ts
@@ -1561,7 +1566,7 @@ import { GridBody } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { GridBookSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextový výběr účetní knihy; jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text bez zakázaného výběru.
+Kontextový výběr účetní knihy; při více knihách drží stálou šířku podle nejdelšího popisku. Jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text.
 
 **Examples:**
 
@@ -1580,7 +1585,7 @@ _Kniha jen pro čtení_
 import { GridContextBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextové záhlaví bezprostředně nad GridToolbar; vlevo jsou přístupně popsané Kniha a Období. Používá tokenový podklad záhlaví a škáluje se stejně jako grid.
+Kontextové záhlaví nad GridToolbar; vlevo jsou přístupně popsané Kniha a Období, vpravo může být další kontextový filtr. Používá tokenový podklad záhlaví a škáluje se stejně jako grid.
 
 **Props:**
 
@@ -1588,20 +1593,22 @@ Kontextové záhlaví bezprostředně nad GridToolbar; vlevo jsou přístupně p
 |---|---|---|
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `texts` | any | `—` |
 | `zoom` | number | `—` |
 | `density` | any | `—` |
 
 **Examples:**
 
-_Kniha a období_
+_Kniha, období a směr_
 ```tsx
-<GridContextBar book={bookConfig} period={periodConfig} />
+<GridContextBar book={bookConfig} period={periodConfig} contextRight={<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr dokladu" />} />
 ```
 
 **Avoid:**
 
 - Vkládat období nebo knihu zároveň do toolbarLeft
+- Používat neutrální vzhled pro segmentový filtr, který zužuje data
 
 ### GridEmptyRow
 
@@ -1734,6 +1741,37 @@ import { GridSearch } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { GridSectionToggles } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### GridSegmentedToggle
+
+```ts
+import { GridSegmentedToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Segmentový filtr pro pravou část kontextového řádku. Výchozí hodnota je neutrální; jiná hodnota je oranžová, protože zužuje data.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `defaultValue` | any | `—` |
+| `label` | string | `—` |
+| `ariaLabel` | string | `—` |
+
+**Examples:**
+
+_Směr pokladního dokladu_
+```tsx
+<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr pokladního dokladu" />
+```
+
+**Avoid:**
+
+- Používat pro běžnou akci místo volby jedné z navzájem výlučných hodnot
+- Vynechat ariaLabel, pokud přepínač nemá viditelný label
 
 ### GridSelectionToggle
 
@@ -2578,20 +2616,15 @@ Kontextový výběr účetního období se stavovou barvou a obrysem, řízeným
 
 **Examples:**
 
-_Výběr období_
+_Řízený výběr období_
 ```tsx
-<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} />
-```
-
-_Firma bez období_
-```tsx
-<PeriodSwitcher periods={[]} value={null} onChange={setPeriodId} onCreate={createPeriod} />
+<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} />
 ```
 
 **Avoid:**
 
-- Nepoužívejte stejný text pro popisek a hodnotu přepínače.
-- Nepoužívejte pro obecné datumové filtry.
+- Nepřebírejte stavovou barvu období na štítek firmy.
+- Neobcházejte zavírání změnou key podle cesty.
 
 ### PermissionGate
 
@@ -3340,7 +3373,7 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
+Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako DataGrid; onRowOpen má při dvojkliku přednost před úpravou.
 
 **Props:**
 
@@ -3364,6 +3397,7 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `toolbarLeft` | any | `—` |
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
@@ -3378,6 +3412,16 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `extraExports` | any | `—` |
 | `onRefresh` | function | `—` |
 | `refreshing` | boolean | `—` |
+| `onEditRow` | function | `—` |
+| `onDeleteRow` | function | `—` |
+| `deleteConfirm` | function | `—` |
+| `rowActions` | function | `—` |
+| `canEditRow` | function | `—` |
+| `canDeleteRow` | function | `—` |
+| `editDisabledReason` | function | `—` |
+| `deleteDisabledReason` | function | `—` |
+| `actionsLabel` | string | `—` |
+| `hideDefaultActions` | boolean | `—` |
 | `selectable` | boolean | `—` |
 | `selectionActions` | function | `—` |
 | `onSelectedRowsChange` | function | `—` |
@@ -3388,20 +3432,15 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 
 **Examples:**
 
-_Strom s obnovením a výběrem_
+_Akce řádků s vysvětlením zákazu_
 ```tsx
-<TreeGrid title="Účtová osnova" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />
+<TreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
 **Avoid:**
 
-- Vlastní rozbalovací tabulka místo TreeGrid
-- Vlastní tlačítko obnovení mimo lištu
-- Ruční sčítání uzlů v aplikaci
-- Zobrazovat nadpis gridu bez výslovného showTitle
-- ExcelExportButton uvnitř gridu
-- Ovládání gridu nad společným řádkem akcí
-- Akce Nový v PageHeader místo addAction
+- Umisťovat Upravit nebo Odstranit jednotlivého řádku do horní lišty
+- Skrýt zakázanou akci, pokud má uživatel potřebovat vysvětlení důvodu
 
 ### TreeView
 
@@ -3480,6 +3519,19 @@ import { VsField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736433
 import { WorkspaceCompanySwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Starší společný výběr pracovního prostoru a firmy; firemní část používá neutrální obrys, ikonu budovy a volitelné IČO.
+
+**Examples:**
+
+_Pracovní prostor a firma_
+```tsx
+<WorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} />
+```
+
+**Avoid:**
+
+- Pro nové horní lišty používejte CompanySwitcher a pracovní prostor přepínejte v UserMenu.
+
 ### ZoomControl
 
 ```ts
@@ -3498,19 +3550,3 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-
-## Kontext firmy a období (2.22.0)
-
-`CompanySwitcher` je neutrální obrysový štítek s ikonou budovy, názvem, šipkou a tooltipem s plným názvem a IČO. Nabídka má hledání a jediný nepojmenovaný seznam všech firem; props `recentIds`, `recentLabel` a `allLabel` byly odstraněny.
-
-`PeriodSwitcher` má shodnou geometrii a stavový obrys: otevřené zeleně, v uzávěrce a bez výběru jantarově, uzavřené šedě se zámkem a firma bez období tlumeně šedě bez tečky. Oba výběry podporují `open` / `onOpenChange` a po volbě nebo `onCreate` se zavřou.
-
-## Řádek akcí gridu (2.21.2)
-
-Pořadí vlevo: Nový, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu a vlastní levý obsah. Vpravo nad 640 px: Hledat, Filtr │ Seskupit (jen DataGrid s `groupable`), Sloupce, Hustota + zoom │ Vybrat více, vlastní `actions`, Stáhnout, nabídka ⋯ │ Obnovit. Prázdná skupina ani její oddělovač se nezobrazí; oddělovač nikdy není na kraji ani dvakrát vedle sebe.
-
-Stáhnout obsahuje výhradně Excel, PDF a `extraExports`. Importy a vedlejší akce patří do nabídky ⋯.
-
-Upravit a Odstranit jednotlivý záznam patří jen do sticky sloupce akcí řádku; dvojklik znamená Upravit. Hromadné akce patří jen do režimu Vybrat více. Zakázaná akce s důvodem zůstává zešedlá s tooltipem přes `editDisabledReason` / `deleteDisabledReason`; bez důvodu se skryje přes `canEditRow` / `canDeleteRow`.
-
-Pod šířkou gridu 640 px zůstává Nový jako ikona, přepnutí pohledu, rozbalení, hledání, filtr a právě jedna nabídka ⋯. Nabídka řadí nástroje podle skupin Zobrazení, Data a Obnovit; oddělovače skupin se v liště skryjí.
