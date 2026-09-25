@@ -149,17 +149,22 @@ export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side:
 
 function DocumentIdentityLine({ identity, direction, fallback, texts }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts }) {
   const number = identity?.number || null;
+  const [firstItem, ...remainingItems] = identity?.items ?? [];
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-y-2 text-sm font-medium text-foreground">
           {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
-          {identity?.items.map((item, index) => (
-            <span key={index} className={cn("flex min-w-0 items-center", index > 0 && "@max-[40rem]:basis-full @min-[40rem]:basis-auto")}>
-              {(direction || index > 0) ? <span aria-hidden="true" className={cn("mx-2 h-5 w-px bg-border", index > 0 && "@max-[40rem]:hidden")} /> : null}
+          {firstItem != null ? <span className="flex min-w-0 items-center">
+            {direction ? <span aria-hidden="true" className="mx-2 h-5 w-px bg-border" /> : null}
+            <span className="min-w-0 break-words">{firstItem}</span>
+          </span> : null}
+          {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
+            {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
+              <span aria-hidden="true" className={cn("mx-2 h-5 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
               <span className="min-w-0 break-words">{item}</span>
-            </span>
-          ))}
+            </span>)}
+          </span> : null}
         </div>
         {identity ? <span className={cn("shrink-0 text-right font-mono text-xl font-bold tabular-nums", !number && "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground")}>
           {number ?? identity.numberPending ?? fallback}
@@ -289,7 +294,7 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
   return <span data-slot="document-direction-badge" className={cn("inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-4" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
-export function DocumentActionBar({ status, approved, direction, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
+export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
   status: DocumentStatus; approved?: boolean; direction?: DocumentDirection; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;

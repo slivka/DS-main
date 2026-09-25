@@ -3029,6 +3029,18 @@
           "type": "any"
         },
         {
+          "name": "identity",
+          "type": "DocumentIdentity"
+        },
+        {
+          "name": "directionBadge",
+          "type": "enum",
+          "values": [
+            "in",
+            "out"
+          ]
+        },
+        {
           "name": "actions",
           "type": "any"
         },
@@ -5787,7 +5799,7 @@
           "default": "rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
         }
       ],
-      "usage": "Celostránkový editor dokladu s identifikačním řádkem, směrem pohybu, sekcemi hlavičky, přilepeným pruhem akcí a záložkami řádků.",
+      "usage": "Celostránkový editor dokladu s vždy viditelným nadpisem stránky, identitou a směrem v prvním řádku karty, sekcemi hlavičky, přilepeným pruhem akcí a záložkami řádků.",
       "examples": [
         {
           "label": "Pokladní příjem",
