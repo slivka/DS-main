@@ -1,11 +1,10 @@
 import { useMemo, useState } from "react";
-import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CashReceiptPrintDialog, PrintPreviewDialog, buildCashReceiptPdf, buildReportPdf, companyMonogramSvg, type CashReceiptPdfInput, type PrintContext } from "@/components/ds";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
 const COMPANY = { name: "Slivka Accounting s.r.o.", ico: "12345678", dic: "CZ12345678", address: "Vinohradská 12, 120 00 Praha 2" };
-const ROWS = Array.from({ length: 128 }, (_, index) => ({ account: `${index % 2 ? "518" : "602"}.${String(index + 1).padStart(3, "0")}`, name: index % 2 ? "Ostatní služby" : "Tržby za služby", opening: index * 1250.25, debit: index * 832.7, credit: index * 917.4, balance: index * 1165.55 }));
+const ROWS = Array.from({ length: 96 }, (_, index) => ({ account: `${index % 2 ? "518" : "602"}.${String(index + 1).padStart(3, "0")}`, name: index % 2 ? "Ostatní služby" : "Tržby za služby", opening: index * 1250.25, debit: index * 832.7, credit: index * 917.4, balance: index * 1165.55 }));
 const CONTEXT: PrintContext = { company: COMPANY, settings: { showPrintedBy: true, footerLogo: true, footerName: true, footerIco: true }, printedBy: "Petr Slivka", printedAt: new Date("2026-09-25T13:54:00") };
 const RECEIPT: Omit<CashReceiptPdfInput, "copies"> = { direction: "in", number: "PPD2026000118", bookName: "Pokladna CZK", company: COMPANY, counterparty: { name: "Alfa stavební společnost, s.r.o.", ico: "87654321", dic: "CZ87654321", address: "Hlavní 18, Brno" }, purpose: "Úhrada faktury v hotovosti", amount: 5000, currency: "CZK", homeCurrency: "CZK", dateIssued: "2026-09-25", dateAccounting: "2026-09-25", dateTax: "2026-09-25", lines: [{ debit: "211.001", credit: "311.001", amount: 5000, text: "Úhrada faktury" }], issuedBy: "Petr Slivka", approvedBy: "Jana Nováková", status: "filed" };
 
@@ -23,7 +22,7 @@ export function PrintShowcase() {
     setCashOpen(true);
   };
   return <>
-    <ShowcaseSection title="Obratová sestava" description="Vícestránková sestava s opakovaným záhlavím tabulky, součty a střídmou hlavičkou dalších stran."><div className="flex flex-wrap gap-2"><Button onClick={() => void openReport(true)}><FileText />Náhled s monogramem</Button><Button variant="outline" onClick={() => void openReport(false)}>Náhled bez loga</Button></div></ShowcaseSection>
+    <ShowcaseSection title="Obratová sestava" description="Vícestránková sestava s opakovaným záhlavím tabulky, součty a střídmou hlavičkou dalších stran."><div className="flex flex-wrap gap-2"><Button onClick={() => void openReport(true)}>Náhled s monogramem</Button><Button variant="outline" onClick={() => void openReport(false)}>Náhled bez loga</Button></div></ShowcaseSection>
     <ShowcaseSection title="Pokladní doklady" description="Příjem, výdej bez partnera, koncept s vodoznakem a doklad v cizí měně."><div className="flex flex-wrap gap-2"><Button onClick={() => openCash("in")}>Příjem</Button><Button variant="outline" onClick={() => openCash("courier")}>Výdej kurýrovi</Button><Button variant="outline" onClick={() => openCash("draft")}>Koncept</Button><Button variant="outline" onClick={() => openCash("eur")}>Doklad v EUR</Button></div></ShowcaseSection>
     <PrintPreviewDialog open={reportOpen} onOpenChange={setReportOpen} blob={reportBlob} title="Obratová sestava" companyName={COMPANY.name} />
     <CashReceiptPrintDialog open={cashOpen} onOpenChange={setCashOpen} value={cashValue} context={context} />

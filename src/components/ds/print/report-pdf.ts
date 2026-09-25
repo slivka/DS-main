@@ -147,6 +147,7 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
       autoTable(doc, {
         startY: cursor.y, margin: { top: 24, right: margin, bottom: 18, left: margin },
         head: [section.columns.map((column) => column.label)], body, foot,
+        showFoot: "lastPage",
         styles: { font: "Roboto", fontSize: 8, cellPadding: 1.7, lineColor: LINE, lineWidth: 0.1, textColor: [24, 24, 27] },
         headStyles: { font: "Roboto", fontStyle: "bold", fillColor: PAPER, textColor: [24, 24, 27] },
         footStyles: { font: "Roboto", fontStyle: "bold", fillColor: [255, 255, 255], textColor: [24, 24, 27], lineWidth: { top: 0.35, right: 0, bottom: 0, left: 0 } },

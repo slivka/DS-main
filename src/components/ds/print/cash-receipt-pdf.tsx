@@ -80,6 +80,8 @@ export async function buildCashReceiptPdf(input: CashReceiptPdfInput, context: P
   drawReceipt(doc, input, 5, false);
   if (input.copies === 2) {
     doc.setDrawColor(...GRAY); doc.setLineDashPattern([2, 2], 0); doc.line(15, 148, 195, 148); doc.setLineDashPattern([], 0); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("✂  odstřihněte", 105, 146.5, { align: "center" });
+    doc.setLineWidth(0.3); doc.circle(100.5, 145.7, 1.2); doc.circle(100.5, 148.1, 1.2); doc.line(101.5, 146.4, 104, 148.5); doc.line(101.5, 147.4, 104, 145.3);
+    doc.setFillColor(255, 255, 255); doc.rect(104, 143.5, 20, 5, "F"); doc.text("odstřihněte", 114, 146.7, { align: "center" });
     drawReceipt(doc, input, 151, true);
   }
   const logo = await resolveCompanyLogo(context.company, context.settings.footerLogo);
