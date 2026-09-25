@@ -1577,7 +1577,7 @@ _Kniha jen pro čtení_
 import { GridContextBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Samostatný kontextový řádek bezprostředně nad GridToolbar; vlevo kniha, oddělovač a období. Škáluje se stejným zoomem a hustotou jako řádek akcí.
+Kontextové záhlaví bezprostředně nad GridToolbar; vlevo jsou přístupně popsané Kniha a Období. Používá tokenový podklad záhlaví a škáluje se stejně jako grid.
 
 **Props:**
 
@@ -1585,6 +1585,7 @@ Samostatný kontextový řádek bezprostředně nad GridToolbar; vlevo kniha, od
 |---|---|---|
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `texts` | any | `—` |
 | `zoom` | number | `—` |
 | `density` | any | `—` |
 
