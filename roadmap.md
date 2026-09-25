@@ -1,3 +1,10 @@
+
+## Verze 2.26.0 (akce dokladu a tiskové PDF)
+- [ ] Přidat trvale viditelný pruh akcí DocumentForm a klávesovou zkratku Uložit
+- [ ] Zobrazit přeložitelné záhlaví Akce v DataGrid a TreeGrid
+- [ ] Přidat tiskové jádro, náhled PDF a český převod částek slovy
+- [ ] Přidat šablonu a dialog Pokladní doklad
+- [ ] Doplnit stránku Tisk, testy, dokumentaci a ověření PDF
 # Roadmap
 
 ## Verze 2.25.0 (protistrana v DocumentForm)
