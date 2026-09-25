@@ -848,11 +848,10 @@ export function DataGrid<Row>({
                 }}
               />
             ) : null}
-            {(asOf || toolbarLeft) ? <><span className="hidden @min-[640px]:contents">{grouping.active ? <GridToolbarSeparator density={density} /> : null}</span>{asOf ? <AsOfDateToggle {...asOf} /> : null}{asOf && toolbarLeft ? <GridToolbarSeparator density={density} /> : null}{toolbarLeft}</> : null}
+            {(asOf || toolbarLeft) ? <span className="grid-toolbar-optional contents"><span className="hidden @min-[640px]:contents">{grouping.active ? <GridToolbarSeparator density={density} /> : null}</span>{asOf ? <AsOfDateToggle {...asOf} /> : null}{asOf && toolbarLeft ? <GridToolbarSeparator density={density} /> : null}{toolbarLeft}</span> : null}
           </>}
           right={<>
-            <GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />
-
+            <span data-toolbar-measure="find" className="flex shrink-0 items-center gap-2"><GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />
             {filters ? (
               <GridFilterToggle
                 open={filtersOpen}
@@ -864,21 +863,21 @@ export function DataGrid<Row>({
                 zoom={zoom}
                 texts={texts}
               />
-            ) : null}
+            ) : null}</span>
 
             <div className="grid-toolbar-wide hidden @min-[640px]:contents">
-              <span className="grid-toolbar-display-group contents"><GridToolbarSeparator density={density} />
+              <span data-toolbar-measure="display" className="grid-toolbar-display-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
               {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
               <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} onSaveDefault={cols.saveDefault} onClearDefault={cols.clearDefault} hasCustomDefault={cols.hasCustomDefault} hiddenSections={cols.hiddenSections} onToggleSection={cols.toggleSection} views={cols.views} zoom={zoom} title={texts.columnsTitle} texts={texts} />
               <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></span>
-              <span className="grid-toolbar-data-group contents"><GridToolbarSeparator density={density} />
+              <span data-toolbar-measure="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
               {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
               {actions}
               <GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
               </span>
             </div>
-            <GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" />
-            {onRefresh ? <span className="grid-toolbar-refresh-group contents"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></span> : null}
+            <span data-toolbar-measure="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={exportData} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
+            {onRefresh ? <span data-toolbar-measure="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></span> : null}
           </>}
         /> : null}
 

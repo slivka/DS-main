@@ -637,7 +637,7 @@
       },
       {
         "name": "--grid-heading-surface",
-        "raw": "color-mix(in oklch, var(--grid-navy) 42%, var(--card))",
+        "raw": "color-mix(in oklab, var(--grid-navy) 42%, var(--card))",
         "source": "src/styles.css"
       },
       {
@@ -708,7 +708,7 @@
       },
       {
         "name": "--grid-total-surface",
-        "raw": "color-mix(in oklch, var(--grid-navy) 48%, var(--card))",
+        "raw": "color-mix(in oklab, var(--grid-navy) 48%, var(--card))",
         "source": "src/styles.css"
       },
       {

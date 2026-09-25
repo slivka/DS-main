@@ -216,9 +216,9 @@
   --grid-frost: oklch(0.944 0.0097 252.81);
   --grid-title-surface: var(--card);
   --grid-toolbar-surface: var(--card);
-  --grid-heading-surface: color-mix(in oklch, var(--grid-navy) 42%, var(--card));
-  --grid-total-surface: color-mix(in oklch, var(--grid-navy) 48%, var(--card));
-  --grid-chrome-border: color-mix(in oklch, var(--grid-steel) 52%, var(--border));
+  --grid-heading-surface: color-mix(in oklab, var(--grid-navy) 42%, var(--card));
+  --grid-total-surface: color-mix(in oklab, var(--grid-navy) 48%, var(--card));
+  --grid-chrome-border: color-mix(in oklab, var(--grid-steel) 52%, var(--border));
 }
 
 @layer base {
@@ -474,21 +474,8 @@
   display: inline-flex;
 }
 
-@container (width < 640px) {
-  .grid-toolbar-row .grid-toolbar-wide {
-    display: none;
-  }
-
-  .grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu {
-    display: inline-flex !important;
-  }
-}
-
-.grid-toolbar-row {
-  scrollbar-width: none;
-}
-
-.grid-toolbar-row::-webkit-scrollbar {
+/* Poslední pojistka úrovně 3: řádek zůstane vždy jediný a bez ořezu. */
+.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-left > .grid-toolbar-optional {
   display: none;
 }
 

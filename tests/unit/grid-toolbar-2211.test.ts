@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { hasOverflowRight } from "../../src/components/ds/grid/grid-zoom";
+import { calculateGridToolbarOverflowLevel, type GridToolbarWidths } from "../../src/components/ds/grid/grid-toolbar";
 
 const dataGridSource = readFileSync(new URL("../../src/components/ds/grid/DataGrid.tsx", import.meta.url), "utf8");
 const treeGridSource = readFileSync(new URL("../../src/components/ds/grid/TreeGrid.tsx", import.meta.url), "utf8");
@@ -34,21 +35,19 @@ describe.each([
 });
 
 describe("GridToolbar měření", () => {
-  it("používá ResizeObserver a úrovně přetečení", () => {
+  it("používá přirozené šířky bez scrollWidth a bez sledování atributů", () => {
     expect(toolbarSource).toContain("ResizeObserver");
     expect(toolbarSource).toContain("MutationObserver");
     expect(toolbarSource).toContain("dataset.overflowLevel");
     expect(toolbarSource).toContain("GridToolbarOverflowContext");
-    expect(toolbarSource).toContain("node.scrollWidth > node.clientWidth");
-    expect(toolbarSource).toContain("[1, 2, 3]");
-    expect(toolbarSource).toContain("}, []);");
+    expect(toolbarSource).toContain("calculateGridToolbarOverflowLevel");
+    expect(toolbarSource).not.toContain("node.scrollWidth > node.clientWidth");
+    expect(toolbarSource).not.toContain("attributeFilter");
+    expect(toolbarSource).not.toContain("overflow-x-auto");
   });
 
   it("zobrazí jedinou nabídku pro přesunuté nástroje i pod 640 px", () => {
-    expect(stylesSource).toContain('@container (width < 640px)');
-    expect(stylesSource).toContain('.grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu');
-    expect(stylesSource).toContain('.grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu');
-    expect(stylesSource).toContain('display: inline-flex !important');
+    expect(stylesSource).toContain('.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-overflow-menu');
     expect(moreMenuSource).not.toContain("footer");
   });
 
@@ -56,6 +55,19 @@ describe("GridToolbar měření", () => {
     expect(moreMenuSource).toContain("shownSecondary || shownItems.length");
     expect(moreMenuSource).toContain('shownItems.length ? "mb-[0.35em] border-b');
     expect(stylesSource).not.toContain("GridToolbarSeparator + GridToolbarSeparator");
+  });
+});
+
+describe("výpočet úrovně řádku akcí", () => {
+  const widths: GridToolbarWidths = { container: 900, leftFull: 260, leftCompact: 150, findFull: 180, findCompact: 72, display: 240, data: 180, menu: 36, refresh: 36, gap: 8, padding: 16, hasMenuItems: false };
+  it("volí nejnižší úroveň podle součtu přirozených šířek", () => {
+    expect(calculateGridToolbarOverflowLevel(widths)).toBe(1);
+    expect(calculateGridToolbarOverflowLevel({ ...widths, container: 700 })).toBe(2);
+    expect(calculateGridToolbarOverflowLevel({ ...widths, container: 500 })).toBe(3);
+  });
+  it("vrací nižší úroveň až s rezervou hystereze", () => {
+    expect(calculateGridToolbarOverflowLevel({ ...widths, container: 734 }, 2)).toBe(2);
+    expect(calculateGridToolbarOverflowLevel({ ...widths, container: 760 }, 2)).toBe(1);
   });
 });
 

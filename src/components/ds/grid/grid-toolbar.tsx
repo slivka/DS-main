@@ -15,6 +15,48 @@ import { gridFontSize, type GridDensity } from "./grid-zoom";
 
 export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
 
+export type GridToolbarWidths = {
+  container: number;
+  leftFull: number;
+  leftCompact: number;
+  findFull: number;
+  findCompact: number;
+  display: number;
+  data: number;
+  menu: number;
+  refresh: number;
+  gap: number;
+  padding: number;
+  hasMenuItems: boolean;
+};
+
+/** Čistý výpočet nejnižší úrovně, která se vejde; návrat má 16px hysterézi. */
+export function calculateGridToolbarOverflowLevel(
+  widths: GridToolbarWidths,
+  current: 0 | 1 | 2 | 3 = 0,
+  hysteresis = 16,
+): 0 | 1 | 2 | 3 {
+  const sum = (...values: number[]) => values.filter((value) => value > 0).reduce((total, value) => total + value, 0);
+  const withGaps = (...values: number[]) => {
+    const visible = values.filter((value) => value > 0);
+    return sum(...visible) + Math.max(0, visible.length - 1) * widths.gap + widths.padding;
+  };
+  const menuAtZero = widths.hasMenuItems ? widths.menu : 0;
+  const required: Record<0 | 1 | 2 | 3, number> = {
+    0: withGaps(widths.leftFull, widths.findFull, widths.display, widths.data, menuAtZero, widths.refresh),
+    1: withGaps(widths.leftFull, widths.findFull, widths.data, widths.menu, widths.refresh),
+    2: withGaps(widths.leftFull, widths.findFull, widths.menu, widths.refresh),
+    3: withGaps(widths.leftCompact, widths.findCompact, widths.menu, widths.refresh),
+  };
+  const minimum: 0 | 2 = widths.container < 640 ? 2 : 0;
+  let next: 0 | 1 | 2 | 3 = 3;
+  for (const level of [minimum, ...(minimum === 0 ? [1, 2, 3] : [3])] as (0 | 1 | 2 | 3)[]) {
+    if (required[level] <= widths.container) { next = level; break; }
+  }
+  if (next < current && required[next] + hysteresis > widths.container) return current;
+  return next;
+}
+
 export interface GridToolbarProps extends React.ComponentPropsWithoutRef<"div"> {
   left?: React.ReactNode;
   right?: React.ReactNode;
@@ -34,35 +76,56 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     if (typeof ref === "function") ref(node);
     else if (ref) ref.current = node;
   }, [ref]);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const node = ownRef.current;
     if (!node) return;
     let frame = 0;
+    let current: 0 | 1 | 2 | 3 = Number(node.dataset.overflowLevel || 0) as 0 | 1 | 2 | 3;
+    const cached = { leftFull: 0, findFull: 0, display: 0, data: 0, menu: 0, refresh: 0 };
+    const widthOf = (name: string) => {
+      const target = node.querySelector<HTMLElement>(`[data-toolbar-measure="${name}"]`);
+      if (!target) return 0;
+      const ownWidth = target.getBoundingClientRect().width;
+      if (ownWidth > 0) return ownWidth;
+      return Array.from(target.children).reduce((total, child) => total + (child as HTMLElement).getBoundingClientRect().width, 0);
+    };
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const overflows = () => node.scrollWidth > node.clientWidth + 1;
+        const style = getComputedStyle(node);
+        const gap = Number.parseFloat(style.columnGap || style.gap) || 0;
+        const padding = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
         node.dataset.overflowLevel = "0";
-        let next: 0 | 1 | 2 | 3 = node.clientWidth < 640 ? 2 : 0;
-        node.dataset.overflowLevel = String(next);
-        for (const level of [1, 2, 3] as const) {
-          if (level <= next) continue;
-          if (!overflows()) break;
-          node.dataset.overflowLevel = String(level);
-          next = level;
-          void node.offsetWidth;
-        }
+        if (current < 3 || cached.leftFull === 0) cached.leftFull = widthOf("left");
+        if (current < 3 || cached.findFull === 0) cached.findFull = widthOf("find");
+        if (current === 0 || cached.display === 0) cached.display = widthOf("display");
+        if (current <= 1 || cached.data === 0) cached.data = widthOf("data");
+        cached.menu = Math.max(widthOf("menu"), cached.menu);
+        cached.refresh = Math.max(widthOf("refresh"), cached.refresh);
+        const leftFull = cached.leftFull;
+        const findFull = cached.findFull;
+        const add = node.querySelector<HTMLElement>("[data-toolbar-add]");
+        const search = node.querySelector<HTMLElement>("[data-toolbar-search]");
+        const controlSize = Number.parseFloat(getComputedStyle(node).getPropertyValue("--f-h")) * (Number.parseFloat(style.fontSize) || 13);
+        const leftCompact = Math.max(0, leftFull - (add ? add.getBoundingClientRect().width - controlSize : 0));
+        const findCompact = Math.max(0, findFull - (search ? search.getBoundingClientRect().width - controlSize : 0));
+        const next = calculateGridToolbarOverflowLevel({
+          container: node.clientWidth, leftFull, leftCompact, findFull, findCompact,
+          display: cached.display, data: cached.data, menu: Math.max(cached.menu, controlSize), refresh: cached.refresh,
+          gap, padding, hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
+        }, current);
         setOverflowLevel(next);
+        current = next;
+        node.dataset.overflowLevel = String(next);
       });
     };
     const observer = new ResizeObserver(update);
     observer.observe(node);
-    Array.from(node.children).forEach((child) => observer.observe(child));
     const mutations = new MutationObserver(update);
-    mutations.observe(node, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "aria-expanded", "aria-pressed", "data-state"] });
+    mutations.observe(node, { subtree: true, childList: true, characterData: true });
     update();
     return () => { cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect(); };
-  }, []);
+  }, [zoom, density]);
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
     <div
@@ -70,15 +133,15 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       data-slot="grid-toolbar"
       data-density={density}
       className={cn(
-        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 border p-2",
-        right ? "overflow-x-auto overflow-y-hidden" : "overflow-visible",
+        "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
+        right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
         className,
       )}
       style={{ fontSize: gridFontSize(zoom) }}
       {...props}
     >
-      {left ?? children}
-      {right ? <div data-slot="grid-toolbar-right" className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2 overflow-hidden">{right}</div> : null}
+      <div data-toolbar-measure="left" className={cn("grid-toolbar-left items-center gap-2", right ? "flex shrink-0 flex-nowrap" : "contents")}>{left ?? children}</div>
+      {right ? <div data-slot="grid-toolbar-right" className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible">{right}</div> : null}
     </div>
     </GridToolbarOverflowContext.Provider>
   );
@@ -158,7 +221,7 @@ export function AsOfDateToggle({
     onEnabledChange(next);
   };
   return (
-    <div className="grid-toolbar-group flex min-w-0 items-center gap-2">
+    <div className="grid-toolbar-optional flex min-w-0 items-center gap-2">
       <Button
         type="button"
         size="sm"
@@ -283,7 +346,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
         return (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
-              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
+              <Button data-toolbar-add type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
                 <Plus className="size-[1.2em]" />
                 <span className={cn("hidden @min-[640px]:inline", overflowLevel >= 3 && "@min-[640px]:hidden")}>{action.label}</span>
               </Button>
