@@ -134,8 +134,9 @@ function NavigationPage() {
         </div>
         <div className="max-w-full overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px`, maxWidth: "100%" }}>
-            <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-6 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
+            <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-2 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
               <CompanySwitcher className={previewWidth < 768 ? "max-w-[132px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={companies} value={companyId} onChange={setCompanyId} />
+              <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-border" />
               <PeriodSwitcher className={previewWidth < 768 ? "max-w-[112px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
               <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />

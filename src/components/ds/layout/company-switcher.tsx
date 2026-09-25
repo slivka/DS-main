@@ -89,6 +89,7 @@ export function CompanySwitcher({
 
   return (
     <ContextPill
+      data-context-switcher="company"
       label={label}
       value={selected?.name ?? emptyText}
       compactValue={selected?.name ?? emptyText}

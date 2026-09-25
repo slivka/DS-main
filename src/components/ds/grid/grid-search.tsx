@@ -93,7 +93,7 @@ export function GridSearch({
             : "focus-visible:ring-ring"
         }`}
       />
-      <button
+      {isActive ? <button
         type="button"
         aria-label={texts.clearSearchLabel}
         onMouseDown={(e) => e.preventDefault()}
@@ -101,14 +101,10 @@ export function GridSearch({
           onChange("");
           setOpen(false);
         }}
-        className={`absolute right-[0.5em] transition-colors ${
-          isActive
-             ? "text-filter-active hover:opacity-75"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
+        className="absolute right-[0.5em] text-filter-active transition-colors hover:opacity-75"
       >
         <X className="size-[1.15em]" />
-      </button>
+      </button> : null}
     </div>
   );
 }

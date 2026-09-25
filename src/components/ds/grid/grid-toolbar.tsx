@@ -13,6 +13,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
+export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2>(2);
+
 export interface GridToolbarProps extends React.ComponentPropsWithoutRef<"div"> {
   left?: React.ReactNode;
   right?: React.ReactNode;
@@ -25,21 +27,56 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   { left, right, zoom = 1, density = "normal", className, children, ...props },
   ref,
 ) {
+  const ownRef = React.useRef<HTMLDivElement | null>(null);
+  const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2>(2);
+  const setRefs = React.useCallback((node: HTMLDivElement | null) => {
+    ownRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) ref.current = node;
+  }, [ref]);
+  React.useEffect(() => {
+    const node = ownRef.current;
+    if (!node) return;
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
+        const overflows = () => Boolean(rightNode && rightNode.scrollWidth > rightNode.clientWidth + 1);
+        node.dataset.overflowLevel = "0";
+        let next: 0 | 1 | 2 = 0;
+        for (const level of [1, 2]) {
+          if (!overflows()) break;
+          node.dataset.overflowLevel = String(level);
+          next = level as 1 | 2;
+          void rightNode?.offsetWidth;
+        }
+        setOverflowLevel(next);
+      });
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    Array.from(node.children).forEach((child) => observer.observe(child));
+    update();
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
+  }, [left, right, zoom, density]);
   return (
+    <GridToolbarOverflowContext.Provider value={overflowLevel}>
     <div
-      ref={ref}
+      ref={setRefs}
       data-slot="grid-toolbar"
       data-density={density}
       className={cn(
-        "zoom-filters grid-toolbar-row flex min-w-0 flex-wrap items-center gap-2 border p-2",
+        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 overflow-hidden border p-2",
         className,
       )}
       style={{ fontSize: gridFontSize(zoom) }}
       {...props}
     >
       {left ?? children}
-      {right ? <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2">{right}</div> : null}
+      {right ? <div data-slot="grid-toolbar-right" className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2 overflow-hidden">{right}</div> : null}
     </div>
+    </GridToolbarOverflowContext.Provider>
   );
 });
 
@@ -241,7 +278,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
         return (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
-              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control shrink-0">
+              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
                 <Plus className="size-[1.2em]" />
                 <span className="hidden @min-[640px]:inline">{action.label}</span>
               </Button>

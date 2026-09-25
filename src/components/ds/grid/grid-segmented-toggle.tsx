@@ -45,11 +45,11 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
 
   return (
     <div ref={ref} className={cn("flex min-w-0 items-center gap-[0.35em]", className)} {...props}>
-      {label ? <span className="font-normal text-muted-foreground">{label}</span> : null}
+      {label ? <span className="grid-context-label grid-segmented-label">{label}</span> : null}
       <div
         role="radiogroup"
         aria-label={ariaLabel}
-        className={cn("grid-toolbar-control inline-flex overflow-hidden border bg-card p-0", active && "grid-toolbar-active")}
+        className={cn("grid-segmented grid-toolbar-control inline-flex overflow-hidden border border-grid-chrome bg-card p-0", active && "grid-toolbar-active")}
       >
         {options.map((option, index) => (
           <Button
@@ -60,9 +60,9 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
             aria-checked={option.value === value}
             tabIndex={option.value === value ? 0 : -1}
             className={cn(
-              "h-full min-h-0 rounded-none border-0 px-[0.7em] text-[1em] shadow-none focus-visible:z-10",
-              index > 0 && "border-l border-l-border",
-              option.value === value && (active ? "bg-filter-active/15 text-filter-active" : "bg-muted text-foreground"),
+              "h-full min-h-0 rounded-none border-0 px-[0.7em] text-[1em] font-normal shadow-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              index > 0 && "border-l border-l-grid-chrome",
+              option.value === value && (active ? "bg-filter-active/15 font-semibold text-filter-active" : "bg-primary/10 font-semibold text-primary"),
             )}
             onClick={() => onChange(option.value)}
             onKeyDown={(event) => move(event, index)}

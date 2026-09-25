@@ -143,6 +143,7 @@ export function PeriodSwitcher({
     : `${label}: ${displayValue}`;
   return (
     <ContextPill
+      data-context-switcher="period"
       label={label}
       value={displayValue === label ? placeholder : displayValue}
       compactValue={selected?.name ?? (isEmpty ? emptyText : placeholder)}
@@ -152,7 +153,7 @@ export function PeriodSwitcher({
       detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
       valueClassName="text-base xl:text-base"
       valueContainerClassName="gap-2"
-      className={cn("relative max-w-[112px] border shadow-sm before:absolute before:-left-3 before:h-6 before:border-l before:border-border data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]", selected ? triggerStateClass[selected.state] : isEmpty ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80" : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24", className)}
+      className={cn("max-w-[112px] border shadow-sm data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]", selected ? triggerStateClass[selected.state] : isEmpty ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80" : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24", className)}
       contentClassName="w-[380px]"
       open={open}
       onOpenChange={onOpenChange}

@@ -17,6 +17,9 @@ import {
   debitCreditColumns,
   type DataGridColumn,
   type TreeGridColumn,
+  OptionSelect,
+  DateRangeField,
+  PageTabs,
 } from "@/components/ds";
 import { MOCK_ACCOUNTS, MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
 import { DOCUMENT_STATUS_CONFIG } from "@/components/ds/accounting/document-status-badge";
@@ -56,6 +59,10 @@ function GridPage() {
   const [analytic, setAnalytic] = useState(true);
   const [byPartner, setByPartner] = useState(true);
   const [activeFilter, setActiveFilter] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("posted");
+  const [partnerFilter, setPartnerFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState<{ from: string | null; to: string | null }>({ from: "2026-09-01", to: "2026-09-24" });
+  const [pageSection, setPageSection] = useState("statements");
   const books = useMemo(() => [
     { id: "pczk", code: "PCZK", name: "Pokladna CZK" },
     { id: "peur", code: "PEUR", name: "Pokladna EUR" },
@@ -108,6 +115,9 @@ function GridPage() {
     <ShowcaseLayout
       breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}
     >
+      <div className="mb-3">
+        <PageTabs value={pageSection} onValueChange={setPageSection} listLabel="Části banky" items={[{ value: "statements", label: "Výpisy" }, { value: "items", label: "Položky" }]} />
+      </div>
       <DataGrid<JournalEntry>
         storageKey="ds-showcase-journal"
         title="Účetní deník"
@@ -126,7 +136,8 @@ function GridPage() {
         period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
         book={{ books, value: bookId, onChange: setBookId, getRowBookId: rowBookId }}
         asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
-        filters={<span className="text-sm text-muted-foreground">Pomocné filtry účetního deníku</span>}
+        defaultFiltersOpen
+        filters={<><label className="grid-filter-label flex items-center gap-2">Stav:<OptionSelect className="min-w-[11em]" value={statusFilter} onChange={setStatusFilter} options={[{ value: "posted", label: "Zaúčtován" }, { value: "filed", label: "Zařazen" }, { value: "draft", label: "Koncept" }]} /></label><label className="grid-filter-label flex items-center gap-2">Partner:<OptionSelect className="min-w-[16em]" value={partnerFilter} onChange={setPartnerFilter} options={[{ value: "all", label: "Všichni partneři" }, { value: "alfa", label: "ALFA servis Praha s.r.o." }, { value: "beta", label: "BETA obchod a služby a.s." }]} /></label><label className="grid-filter-label flex items-center gap-2">Datum:<DateRangeField className="w-[15em]" value={dateFilter} onChange={setDateFilter} /></label><GridSegmentedToggle label="Směr:" options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => { if (value === "all" || value === "in" || value === "out") setDirection(value); }} defaultValue="all" ariaLabel="Směr dokladu" /></>}
         defaultFilters={["Rok 2026"]}
         filterChips={activeFilter ? [{ id: "posted", label: "Stav: Zaúčtován", onRemove: () => setActiveFilter(false) }] : []}
         onClearFilters={() => setActiveFilter(false)}
