@@ -10,14 +10,27 @@ import { SectionHeading } from "../../src/components/ds/layout/section-heading";
 const value: DocumentHeaderValue = { accountingDate: "2026-09-25", issueDate: "2026-09-25", currency: "CZK", amountTotal: 1000, totalMode: "entered" };
 const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm title="Pokladní doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
 
-describe("DocumentForm 2.28.0", () => {
-  it("vykreslí identitu s číslem a bez viditelného nadpisu", () => {
-    const html = form({ identity: { items: ["PO - Pokladna", "CZK"], number: "POP20260012" } });
+describe("DocumentForm 2.28.1", () => {
+  it("vykreslí viditelný nadpis a identitu s číslem v těle", () => {
+    const html = form({ identity: { items: ["PO - Pokladna", "CZK"], number: "POP20260012" }, directionBadge: "in" });
     expect(html).toContain("document-identity");
     expect(html).toContain("POP20260012");
-    expect(html).toContain('class="sr-only">Pokladní doklad');
+    expect(html).toContain(">Pokladní doklad</h1>");
+    expect(html.indexOf("Pokladní doklad")).toBeLessThan(html.indexOf("document-identity"));
+    expect(html.indexOf("document-direction-badge")).toBeGreaterThan(html.indexOf("document-identity"));
+    expect(html.indexOf("document-direction-badge")).toBeLessThan(html.indexOf("PO - Pokladna"));
   });
-  it("vykreslí výchozí text čekajícího čísla", () => expect(form({ identity: { items: ["PO - Pokladna"] } })).toContain("Koncept – číslo při zařazení"));
+  it("vykreslí výchozí i vlastní text čekajícího čísla", () => {
+    expect(form({ identity: { items: ["PO - Pokladna"] } })).toContain("Koncept – číslo při zařazení");
+    expect(form({ identity: { items: ["PO - Pokladna"], numberPending: "Čeká na číslo" } })).toContain("Čeká na číslo");
+  });
+  it("vykreslí směr v těle bez identity a ne v pruhu akcí", () => {
+    const html = form({ directionBadge: "out" });
+    const actionBar = html.slice(html.indexOf("document-action-bar"), html.indexOf("document-identity"));
+    expect(actionBar).not.toContain("document-direction-badge");
+    expect(html).toContain("document-direction-badge");
+    expect(html).toContain("Výdej");
+  });
   it("vykreslí badge obou směrů", () => {
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="in" />)).toContain("Příjem");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");

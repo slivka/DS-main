@@ -147,21 +147,29 @@ export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side:
   </span>
 );
 
-function DocumentIdentityLine({ identity, fallback }: { identity: DocumentIdentity; fallback: string }) {
-  const number = identity.number || null;
+function DocumentIdentityLine({ identity, direction, fallback, texts }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts }) {
+  const number = identity?.number || null;
+  const [firstItem, ...remainingItems] = identity?.items ?? [];
   return (
-    <div data-slot="document-identity" className="flex min-w-0 flex-1 items-center justify-between gap-4">
-      <div className="flex min-w-0 items-center text-sm font-medium text-foreground">
-        {identity.items.map((item, index) => (
-          <span key={index} className={cn("flex min-w-0 items-center gap-2", index > 0 && "@max-[40rem]:hidden")}>
-            {index > 0 ? <span aria-hidden="true" className="mx-2 text-border">|</span> : null}
-            <span className="truncate">{item}</span>
-          </span>
-        ))}
+    <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-y-2 text-sm font-medium text-foreground">
+          {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
+          {firstItem != null ? <span className="flex min-w-0 items-center">
+            {direction ? <span aria-hidden="true" className="mx-2 h-5 w-px bg-border" /> : null}
+            <span className="min-w-0 break-words">{firstItem}</span>
+          </span> : null}
+          {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
+            {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
+              <span aria-hidden="true" className={cn("mx-2 h-5 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
+              <span className="min-w-0 break-words">{item}</span>
+            </span>)}
+          </span> : null}
+        </div>
+        {identity ? <span className={cn("shrink-0 text-right font-mono text-xl font-bold tabular-nums", !number && "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground")}>
+          {number ?? identity.numberPending ?? fallback}
+        </span> : null}
       </div>
-      <span className={cn("shrink-0 font-mono text-xl font-bold tabular-nums", !number && "font-sans text-sm font-normal italic text-muted-foreground")}>
-        {number ?? identity.numberPending ?? fallback}
-      </span>
     </div>
   );
 }
@@ -213,11 +221,12 @@ export function DocumentForm({
     <div className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
-      <PageHeader title={title} titleSlot={identity ? <DocumentIdentityLine identity={identity} fallback={t.numberPending} /> : undefined} />
-      <DocumentActionBar status={status} approved={approved} direction={directionBadge} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} texts={t} />
+      <PageHeader title={title} />
+      <DocumentActionBar status={status} approved={approved} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} texts={t} />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
+        {identity || directionBadge ? <DocumentIdentityLine identity={identity} direction={directionBadge} fallback={t.numberPending} texts={t} /> : null}
         {f.partner ? (
           <>
             <SectionHeading>{partnerLabel}</SectionHeading>
@@ -285,7 +294,7 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
   return <span data-slot="document-direction-badge" className={cn("inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-4" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
-export function DocumentActionBar({ status, approved, direction, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
+export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
   status: DocumentStatus; approved?: boolean; direction?: DocumentDirection; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
@@ -293,8 +302,8 @@ export function DocumentActionBar({ status, approved, direction, saveAction, pri
   const [compact, setCompact] = useState(false);
   useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
   return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 border-b bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-    <div>{direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}</div>
-    <div className="flex shrink-0 items-center gap-2"><DocumentStatusBadge status={status} approved={approved} />
+    <DocumentStatusBadge status={status} approved={approved} />
+    <div className="flex shrink-0 items-center gap-2">
       {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
       {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
       {moreActions.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}

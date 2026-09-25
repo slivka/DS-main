@@ -959,8 +959,6 @@ _Řízené otevření_
 import { CounterpartyField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Protistrana jako volný text s propojením na partnera; poslední volba Nový partner předá seed { name, ico }.
-
 **Props:**
 
 | Prop | Type | Default |
@@ -976,17 +974,6 @@ Protistrana jako volný text s propojením na partnera; poslední volba Nový pa
 | `linkedLabel` | string | `Partner` |
 | `unlinkLabel` | string | `Zrušit propojení` |
 | `createLabel` | string | `Nový partner` |
-
-**Examples:**
-
-_Protistrana_
-```tsx
-<CounterpartyField value={counterparty} onChange={setCounterparty} partners={partners} onCreatePartner={openNewPartner} />
-```
-
-**Avoid:**
-
-- Po ruční změně textu neponechávejte staré partnerId.
 
 ### CountrySelect
 
@@ -1213,19 +1200,13 @@ import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { DocumentActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### DocumentDirectionBadge
-
-```ts
-import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
 ### DocumentForm
 
 ```ts
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový editor dokladu s identifikačním řádkem, směrem pohybu, sekcemi hlavičky, přilepeným pruhem akcí a záložkami řádků.
+Celostránkový editor dokladu podle Money. documentType určuje výchozí pole a účetní popisky; vlevo jsou základní a platební údaje, vpravo vlastnosti, kurz a částka. Číslo, kurz, kniha po založení a směr jsou jen ke čtení.
 
 **Props:**
 
@@ -1233,8 +1214,6 @@ Celostránkový editor dokladu s identifikačním řádkem, směrem pohybu, sekc
 |---|---|---|
 | `title` | string | `—` |
 | `description` | any | `—` |
-| `identity` | any | `—` |
-| `directionBadge` | in · out | `—` |
 | `value` | any | `—` |
 | `onChange` | function | `—` |
 | `lines` | any | `—` |
@@ -1255,7 +1234,6 @@ Celostránkový editor dokladu s identifikačním řádkem, směrem pohybu, sekc
 | `homeCurrency` | string | `CZK` |
 | `currencyLocked` | boolean | `false` |
 | `onCreatePartner` | function | `—` |
-| `icoLinkTarget` | any | `auto` |
 | `linesEditorProps` | any | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
@@ -1272,15 +1250,16 @@ Celostránkový editor dokladu s identifikačním řádkem, směrem pohybu, sekc
 
 **Examples:**
 
-_Pokladní příjem_
+_Přijatá faktura v EUR_
 ```tsx
-<DocumentForm title="Pokladní doklad" identity={{ items: ["PO - Pokladna", "CZK", "2026"], number }} directionBadge="in" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} status="filed" />
+<DocumentForm documentType="FP" periodLabel="Rok 2026" rateAmount={1} title="Přijatá faktura" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} mainSide="D" status="filed" />
 ```
 
 **Avoid:**
 
-- Nevkládejte doklad do RecordDialogu.
-- Neopakujte účet nebo měnu v sekci, pokud jsou zamčené a už jsou v identity.
+- Nečíslujte doklad ani nepřepisujte kurz ve formuláři – číslo přiděluje databáze.
+- Neřiďte stav Zaúčtován přes readOnly; použijte editableFields.
+- Nepředávejte sideFields přímo – patří do linesEditorProps.
 
 ### DocumentStatusBadge
 
@@ -2027,30 +2006,6 @@ import { IcoField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { IcoLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Zobrazí IČO monospacem a u platného českého IČO přidá odkaz do obchodního rejstříku nebo ARES.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `ico` | string | `—` |
-| `value` | string | `—` |
-| `country` | string | `—` |
-| `kind` | company · person | `company` |
-| `target` | auto · or · ares | `auto` |
-| `className` | string | `size-3` |
-
-**Examples:**
-
-_Právnická osoba_
-```tsx
-<IcoLink ico="27074358" country="CZ" kind="company" target="auto" />
-```
-
-**Avoid:**
-
-- Nevytvářejte odkaz pro neplatné nebo zahraniční IČO.
-
 ### Input
 
 ```ts
@@ -2443,7 +2398,6 @@ Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirt
 | Prop | Type | Default |
 |---|---|---|
 | `title` | any | `—` |
-| `titleSlot` | any | `—` |
 | `description` | any | `—` |
 | `actions` | any | `—` |
 | `menuActions` | any | `—` |
@@ -2853,51 +2807,6 @@ import { RadioGroup } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { RadioGroupItem } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### RateField
-
-```ts
-import { RateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního kurzu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | number | `—` |
-| `onChange` | function | `—` |
-| `currency` | string | `—` |
-| `homeCurrency` | string | `—` |
-| `rateAmount` | number | `—` |
-| `suggestedRate` | number | `—` |
-| `suggestedInfo` | string | `—` |
-| `manual` | boolean | `—` |
-| `onUseSuggested` | function | `—` |
-| `disabled` | boolean | `—` |
-| `readOnly` | boolean | `—` |
-| `note` | string | `—` |
-| `onNoteChange` | function | `—` |
-| `noteLabel` | string | `Důvod ručního kurzu` |
-| `sourceLabel` | string | `—` |
-| `manualSourceLabel` | string | `Ruční kurz` |
-| `suggestedTooltip` | function | `—` |
-| `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
-| `id` | string | `rate` |
-| `className` | string | `min-h-9 text-sm font-mono tabular-nums` |
-
-**Examples:**
-
-_Kurz EUR_
-```tsx
-<RateField value={rate} onChange={setRate} currency="EUR" homeCurrency="CZK" rateAmount={1} suggestedRate={24.38} suggestedInfo="ČNB 25. 9. 2026" manual={manual} />
-```
-
-**Avoid:**
-
-- Nepoužívejte holý číselný input pro kurz.
-- Ruční kurz neukládejte bez důvodu.
-
 ### ReadOnlyBanner
 
 ```ts
@@ -2978,31 +2887,6 @@ _Základní použití_
 **Avoid:**
 
 - Nepoužívejte textové tlačítko v horní liště.
-
-### SectionHeading
-
-```ts
-import { SectionHeading } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Nadpis sekce formuláře, dialogu, karty nebo panelu; nepoužívejte pro nadpis stránky ani záhlaví gridu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `level` | any | `2` |
-
-**Examples:**
-
-_Sekce formuláře_
-```tsx
-<SectionHeading level={2}>Platební údaje</SectionHeading>
-```
-
-**Avoid:**
-
-- Nepoužívejte SectionHeading místo PageHeader ani GridTitleBar.
 
 ### Select
 
@@ -3134,12 +3018,6 @@ import { SheetTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 
 ```ts
 import { SheetTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-### SideBadge
-
-```ts
-import { SideBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### Sidebar

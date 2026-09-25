@@ -99,9 +99,10 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - Období používá stejnou výšku, poloměr, odsazení a typografii; otevřené je zelené, období v uzávěrce a stav bez výběru jantarové, uzavřené se zámkem a firma bez období tlumeně šedá bez tečky.
 - `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
 
-### DocumentForm 2.28.0
+### DocumentForm 2.28.1
 - Formulář nemá pravý panel; používá sekce Partner, Data, Účtování a částka a volitelně Platební údaje.
-- `identity` zobrazí identifikační řádek s položkami a velkým číslem dokladu; `title` zůstává přístupnostním názvem. `directionBadge` zobrazí Příjem/Výdej vlevo v pruhu akcí.
+- `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.
+- `directionBadge` stojí před identitou; bez `identity` vytvoří samostatný první řádek těla. Pruh akcí drží vlevo stav a Schváleno a vpravo akce.
 - `RateField` podporuje doporučený kurz, ruční kurz s povinným důvodem a režim jen pro čtení. Hodnota dokladu má `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
 - `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
 - `onCreatePartner` dostává `{ name, ico }`; osm číslic předvyplní IČO, jiný text název.
