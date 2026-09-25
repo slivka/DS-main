@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.22.0 – vyvážený kontext firmy a období
+
+- `CompanySwitcher` zobrazuje neutrální obrysový štítek s ikonou budovy, názvem firmy a šipkou; v kompaktní šířce název zkrátí a celý název s IČO ponechá v nápovědě.
+- Nabídka firmy obsahuje jen hledání a jeden seznam všech firem bez skupin „Poslední“ a „Všechny firmy“. Odstraněny byly veřejné props `recentIds`, `recentLabel` a `allLabel` (breaking změna; ukázky je nepoužívají).
+- `CompanySwitcher`, `PeriodSwitcher` a `ContextPill` podporují řízené `open` / `onOpenChange`; výběr i `onCreate` nabídku zavřou bez obcházení změnou klíče.
+- `PeriodSwitcher` zachovává stavové barvy a přidává odpovídající obrys pro otevřené, uzávěrkové, uzavřené i oba prázdné stavy. Firma bez období je šedá a bez stavové tečky.
+- `WorkspaceCompanySwitcher` používá pro firemní výběr stejnou neutrální geometrii, ikonu a IČO v seznamu.
+
 ## Changelog 2.21.2 – skupiny pravé části lišty gridu
 
 - DataGrid i TreeGrid řadí pravou stranu do skupin Najít, Zobrazení, Data a Obnovit s oddělovači pouze mezi neprázdnými skupinami.

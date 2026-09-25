@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.22.0 (vyvážený kontext firmy a období)
+- [x] Odstranit skupinu Poslední, její veřejné props a související dělení seznamu firem
+- [x] Zavřít nabídku firmy a období po výběru i po založení nové položky přes řízený stav
+- [x] Sjednotit geometrii firmy a období, zachovat stavové barvy pouze na období
+- [x] Doplnit světlou, tmavou, kompaktní a otevřenou ukázku všech pěti stavů
+- [x] Aktualizovat changelog, pravidla, katalog, testy, typovou kontrolu a sestavení
+
 ## Verze 2.21.2 (skupiny pravé části lišty gridu)
 - [x] Seskupit pravé ovládání DataGridu a TreeGridu v pořadí Najít, Zobrazení, Data a Obnovit
 - [x] Zobrazovat oddělovače pouze mezi neprázdnými skupinami

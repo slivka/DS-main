@@ -9,7 +9,6 @@ import {
   ReadOnlyBanner,
   FontSizeSetting,
   NotificationBell,
-  ThemeToggleButton,
   ThemeSetting,
   CompanySwitcher,
   PeriodSwitcher,

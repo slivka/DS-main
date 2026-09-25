@@ -87,5 +87,7 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 ## CompanySwitcher a PeriodSwitcher
 
 - `label` se nezobrazuje nad hodnotou; zůstává přístupnostním názvem a součástí nápovědy.
-- Firma zobrazuje výrazný název a v nápovědě IČO. Období zobrazuje stavový štítek; otevřené je zelené, období v uzávěrce jantarové a uzavřené se zámkem.
-- Kompaktní `compactValue`, prázdné stavy a obsah nabídek zůstávají beze změny.
+- Firma používá neutrální obrysový štítek s ikonou budovy, názvem a šipkou. V nápovědě zobrazuje celý název a IČO; v kompaktní šířce název zkrátí.
+- Nabídka firmy obsahuje `searchPlaceholder` a jediný nepojmenovaný seznam všech `items`. Props `recentIds`, `recentLabel` a `allLabel` byly ve 2.22.0 odstraněny.
+- Období používá stejnou výšku, poloměr, odsazení a typografii; otevřené je zelené, období v uzávěrce a stav bez výběru jantarové, uzavřené se zámkem a firma bez období tlumeně šedá bez tečky.
+- `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
