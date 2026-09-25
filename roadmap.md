@@ -8,7 +8,7 @@
 - [x] Sjednotit výšku a písmo kontextových ovládacích prvků a popisků
 - [x] Zjemnit vzhled GridSegmentedToggle při zachování oranžového aktivního filtru
 - [x] Zvětšit záložky stránek a formulářů podle vizuální hierarchie
-- [ ] Aktualizovat ukázky, changelog, dokumentaci, testy a provést vizuální kontrolu
+- [x] Aktualizovat ukázky, changelog, dokumentaci, testy a provést vizuální kontrolu
 
 ## Verze 2.22.0 (vyvážený kontext firmy a období)
 - [x] Odstranit skupinu Poslední, její veřejné props a související dělení seznamu firem

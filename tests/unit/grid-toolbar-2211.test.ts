@@ -28,7 +28,7 @@ describe.each([
 describe("GridToolbar měření", () => {
   it("používá ResizeObserver a úrovně přetečení", () => {
     expect(toolbarSource).toContain("ResizeObserver");
-    expect(toolbarSource).toContain("data-overflow-level");
+    expect(toolbarSource).toContain("dataset.overflowLevel");
     expect(toolbarSource).toContain("GridToolbarOverflowContext");
   });
 });
