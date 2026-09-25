@@ -58,7 +58,7 @@ describe("DocumentForm 2.31.0", () => {
   });
   it("použije nadpis Částka bez viditelného hlavního účtu", () => {
     expect(form({ documentType: "ID" })).toContain(">Částka</h2>");
-    expect(form({ documentType: "FP" })).toContain("ÚČTOVÁNÍ A ČÁSTKA");
+    expect(form({ documentType: "FP" })).toContain(">Účtování a částka</h2>");
   });
   it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));
 });
