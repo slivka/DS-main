@@ -1,6 +1,7 @@
 import { Download, FileCode2 } from "lucide-react";
 import { PAGE_SURFACE_LIGHT } from "../../../lib/tokens";
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { useGridPrint, type GridPrintConfig } from "./grid-print";
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
@@ -235,7 +236,10 @@ export function GridExport({
   disabled = false,
   texts: textOverrides,
   meta,
+  print,
 }: {
+  /** Tisk do PDF přes firemní sestavu a náhled; bez něj se položka Tisk nezobrazí. */
+  print?: GridPrintConfig | undefined;
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
   getData: () => GridExportData | Promise<GridExportData>;
   /** Název souboru bez přípony. */
@@ -272,6 +276,8 @@ export function GridExport({
   const texts = resolveGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
   const fontSize = gridFontSize(zoom);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const printer = useGridPrint(getData, print);
 
   const exportExcel = async () => {
     const data = await getData();
@@ -511,7 +517,8 @@ ${
   };
 
   return (
-    <Popover>
+    <>
+    <Popover open={menuOpen} onOpenChange={setMenuOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -542,6 +549,16 @@ ${
           <img src={pdfIcon} alt="" className="size-[1.5em]" />
           {texts.downloadPdf}
         </button>
+        {print ? (
+          <button
+            type="button"
+            onClick={() => { setMenuOpen(false); void printer.start(); }}
+            className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+          >
+            <img src={pdfIcon} alt="" className="size-[1.5em]" />
+            {print.label ?? "Tisk (PDF)…"}
+          </button>
+        ) : null}
         {html && (
           <button
             type="button"
@@ -612,6 +629,8 @@ ${
         ) : null}
       </PopoverContent>
     </Popover>
+    {printer.dialog}
+    </>
   );
 }
 

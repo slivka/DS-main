@@ -43,6 +43,7 @@ export * from "./grid/DataGrid";
 export * from "./grid/grid-action";
 export * from "./grid/grid-columns";
 export * from "./grid/grid-export";
+export * from "./grid/grid-print";
 export * from "./grid/bulk-selection-bar";
 export * from "./grid/view-mode-toggle";
 export * from "./grid/grid-title";
