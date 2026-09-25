@@ -6,23 +6,23 @@ import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import type { PartnerOption } from "./partner-select";
 
-export type CounterpartyValue = { name: string; partnerId: string | null };
-export type CounterpartySeed = { name: string; ico: string };
+export type CounterpartyValue = { name: string; partnerId: string | null; ico?: string; dic?: string };
+export type CounterpartySeed = { name: string; ico: string; dic: string };
 
-export function counterpartyCreateSeed(value: string): CounterpartySeed {
+export function counterpartyCreateSeed(value: string, ico = "", dic = ""): CounterpartySeed {
   const clean = value.trim();
   const digits = clean.replace(/\s/g, "");
-  return /^\d{8}$/.test(digits) ? { name: "", ico: digits } : { name: clean, ico: "" };
+  return /^\d{8}$/.test(digits) ? { name: "", ico: digits, dic } : { name: clean, ico, dic };
 }
 
 /** Ruční změna textu vždy zruší vazbu na partnera. */
-export function counterpartyFromText(name: string): CounterpartyValue {
-  return { name, partnerId: null };
+export function counterpartyFromText(name: string, ico?: string, dic?: string): CounterpartyValue {
+  return { name, partnerId: null, ico, dic };
 }
 
 /** Výběr partnera vyplní název i vazbu. */
-export function counterpartyFromPartner(partner: Pick<PartnerOption, "id" | "name">): CounterpartyValue {
-  return { name: partner.name, partnerId: partner.id };
+export function counterpartyFromPartner(partner: Pick<PartnerOption, "id" | "name" | "ico" | "dic">): CounterpartyValue {
+  return { name: partner.name, partnerId: partner.id, ico: partner.ico, dic: partner.dic };
 }
 
 /** Partneři odpovídající textu (název nebo IČO). */
@@ -88,7 +88,7 @@ export function CounterpartyField({
             id={id} role="combobox" aria-expanded={listOpen} aria-controls={listId} aria-autocomplete="list"
             autoComplete="off" placeholder={placeholder} value={value.name}
             className={cn("h-9", linked && "pr-32")}
-            onChange={(e) => { onChange(counterpartyFromText(e.target.value)); setActive(0); setOpen(true); }}
+            onChange={(e) => { onChange(counterpartyFromText(e.target.value, value.ico, value.dic)); setActive(0); setOpen(true); }}
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
               if (!listOpen) return;
@@ -96,7 +96,7 @@ export function CounterpartyField({
               if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(i + 1, last)); }
               else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)); }
               else if (e.key === "Enter" && matches[active]) { e.preventDefault(); select(matches[active]); }
-              else if (e.key === "Enter" && showCreate && active === matches.length) { e.preventDefault(); setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name)); }
+               else if (e.key === "Enter" && showCreate && active === matches.length) { e.preventDefault(); setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic)); }
               else if (e.key === "Escape") setOpen(false);
             }}
           />
@@ -104,7 +104,7 @@ export function CounterpartyField({
             <div className="absolute right-1 flex items-center gap-1">
               {badge}
               <button type="button" aria-label={unlinkLabel} title={unlinkLabel}
-                onClick={() => onChange({ name: value.name, partnerId: null })}
+                 onClick={() => onChange({ name: value.name, partnerId: null, ico: value.ico, dic: value.dic })}
                 className="rounded-sm p-1 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <X className="size-3.5" />
               </button>
@@ -127,7 +127,7 @@ export function CounterpartyField({
         {showCreate ? (
           <button type="button" onMouseDown={(e) => e.preventDefault()}
             onMouseEnter={() => setActive(matches.length)}
-            onClick={() => { setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name)); }}
+             onClick={() => { setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic)); }}
             className={cn("w-full rounded-sm border-t px-2 py-1.5 text-left text-sm text-primary hover:bg-muted", active === matches.length && "bg-accent text-accent-foreground", matches.length > 0 && "mt-1")}>
             {`${createLabel}…`}
           </button>
