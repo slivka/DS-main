@@ -79,7 +79,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   doc.setFont("Roboto", "bold"); doc.setFontSize(16); doc.text(input.status === "draft" ? "—" : input.number || "—", x + width, top + 10, { align: "right" });
   doc.setFont("Roboto", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY); doc.text(input.bookName, x + width, top + 15, { align: "right" });
   doc.setDrawColor(...LINE); doc.line(x, top + 19, x + width, top + 19);
-  if (copy) { doc.roundedRect(x + width - 18, top + 20.5, 18, 6, 1, 1); doc.setFontSize(7); doc.text("kopie", x + width - 9, top + 24.5, { align: "center" }); }
+  if (copy) { doc.roundedRect(x + 86, top + 10.5, 18, 6, 1, 1); doc.setFontSize(7); doc.text("kopie", x + 95, top + 14.5, { align: "center" }); }
 
   field(doc, "Vystavitel", [input.company.name, input.company.address, input.company.ico ? `IČO ${input.company.ico}` : "", input.company.dic ? `DIČ ${input.company.dic}` : ""].filter(Boolean).join(" · "), x, top + 25, 112);
   field(doc, input.direction === "in" ? "Přijato od:" : "Vyplaceno komu:", [input.counterparty.name, input.counterparty.ico ? `IČO ${input.counterparty.ico}` : "", input.counterparty.dic ? `DIČ ${input.counterparty.dic}` : "", input.counterparty.address].filter(Boolean).join(" · "), x, top + 38, 112);
