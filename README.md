@@ -23,6 +23,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `GridContextBar` má české výchozí popisky „Kniha:“ a „Období:“; lze je změnit přes `texts.bookLabel` a `texts.periodLabel` a jsou přístupnostně svázané s hodnotou nebo výběrem.
 - Kontextový řádek používá tokenový podklad záhlaví, spodní linku a nižší výšku. Výběry zůstávají bílé a řádek akcí zůstává bílý.
 - Kontext, akce, hlavička, řádky a součet tvoří jeden blok s jediným vnějším okrajem a stínem. Stejná logika platí v tmavém režimu.
+- Výběr knihy i období drží stálou šířku podle nejdelšího popisku bez měření v JavaScriptu; dlouhé hodnoty se zkracují s dostupným celým názvem.
+- `GridContextBar`, `DataGrid` a `TreeGrid` přijímají `contextRight`. Nový `GridSegmentedToggle` nabízí přístupný segmentový filtr; `GRID_DIRECTION_OPTIONS` a `filterByDirection` pokrývají pokladní a bankovní směr Vše / Příjmy / Výdaje.
 - Bez breaking changes.
 
 ## Changelog 2.20.2 – kniha vlevo a jednohodnotové výběry
