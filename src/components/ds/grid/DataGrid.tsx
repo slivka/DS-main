@@ -202,6 +202,8 @@ export type DataGridProps<Row> = {
   period?: GridPeriodConfig | undefined;
   /** Kniha v kontextovém řádku; při hodnotě all se zobrazí první systémový sloupec Kniha. */
   book?: GridBookConfig<Row> | undefined;
+  /** Volitelný obsah vpravo v kontextovém řádku. */
+  contextRight?: ReactNode | undefined;
   /** Obsah rozbaliteľného panelu filtrov. */
   filters?: ReactNode | undefined;
   /** Popisy aktívnych filtrov pre tooltip a chipy. */
@@ -347,6 +349,7 @@ export function DataGrid<Row>({
   toolbarLeft,
   period,
   book,
+  contextRight,
   filters,
   filterChips = [],
   onClearFilters,
@@ -800,12 +803,12 @@ export function DataGrid<Row>({
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
-        {period || book ? <GridContextBar period={period} book={book} zoom={zoom} density={density} className={cn("border-t-0", !showTitle || !title ? "rounded-t-lg" : "rounded-t-none")} /> : null}
+        {period || book || contextRight ? <GridContextBar period={period} book={book} contextRight={contextRight} zoom={zoom} density={density} className={cn("border-t-0", !showTitle || !title ? "rounded-t-lg" : "rounded-t-none")} /> : null}
         {!hideToolbar ? <GridToolbar
           zoom={zoom}
           density={density}
           className={`border-b-0 ${
-            showTitle && title || period || book
+            showTitle && title || period || book || contextRight
               ? plain
                 ? "rounded-t-lg shadow-none"
                 : "rounded-t-none border-t-0 shadow-none"

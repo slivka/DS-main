@@ -7,6 +7,9 @@ import {
   DataGrid,
   DocumentStatusBadge,
   GridContextBar,
+  GridSegmentedToggle,
+  GRID_DIRECTION_OPTIONS,
+  filterByDirection,
   GridToggleButton,
   gridPeriodRange,
   accountColumns,
@@ -42,6 +45,7 @@ function GridPage() {
   const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "all"));
   const [bookId, setBookId] = useState<string | "all">("all");
   const [singleBookPeriod, setSingleBookPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "month", 0));
+  const [direction, setDirection] = useState<"all" | "in" | "out">("all");
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
   const [asOfEnabled, setAsOfEnabled] = useState(true);
@@ -55,6 +59,8 @@ function GridPage() {
     { id: "csob", code: "CSOB", name: "Banka ČSOB" },
   ], []);
   const rowBookId = (row: JournalEntry) => books[Math.abs(Number(row.id.replace(/\D/g, "")) || 0) % books.length]?.id ?? books[0]?.id;
+  const cashRows = useMemo(() => filterByDirection(MOCK_JOURNAL.slice(0, 12), direction, (row) => Number(row.id.replace(/\D/g, "")) % 2 ? "in" : "out"), [direction]);
+  const directionToggle = <GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr pokladního dokladu" />;
   const accountNames = useMemo(
     () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
     [],
@@ -146,11 +152,12 @@ function GridPage() {
         <DataGrid<JournalEntry>
           storageKey="ds-showcase-single-book"
           title="Pokladna CZK"
-          rows={MOCK_JOURNAL.slice(0, 3)}
+          rows={cashRows}
           columns={columns}
           rowKey={(row) => row.id}
           period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
           book={{ books: books.slice(0, 1), value: "pczk", onChange: () => {} }}
+          contextRight={directionToggle}
           showTotalRow
         />
       </div>
@@ -158,6 +165,7 @@ function GridPage() {
         <GridContextBar
           period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
           book={{ books, value: bookId, onChange: setBookId }}
+          contextRight={directionToggle}
           className="rounded-t-lg border"
         />
       </div>

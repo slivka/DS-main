@@ -93,7 +93,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ### Kontextový řádek gridu
 
-- `GridContextBar` je součást spojeného bloku gridu a stojí bezprostředně nad `GridToolbar`. Vlevo kniha, oddělovač, období. Jedna dostupná kniha = jen tučný název, nikdy zakázaný výběr.
+- `GridContextBar` je součást spojeného bloku gridu a stojí bezprostředně nad `GridToolbar`. Vlevo Kniha: · Období:, vpravo volitelně přepínač (u pokladny a banky Vše / Příjmy / Výdaje). Přepínač mimo výchozí hodnotu je oranžový. Jedna dostupná kniha = jen tučný název, nikdy zakázaný výběr.
 - Knihu vždy uvozuje popisek „Kniha:“ a období popisek „Období:“; texty lze změnit přes `texts`. Popisky jsou přístupnostně svázané s hodnotou nebo výběrem. Kontextový řádek má podklad záhlaví gridu, spodní linku a menší výšku než bílý řádek akcí.
 - Kontext, akce, hlavička, řádky a součet tvoří jeden blok s jediným vnějším okrajem a stínem. Mezi `PageHeader` a tímto blokem používej jednotnou mezeru `mt-3`; nadpis stránky zůstává bez linky.
 - Používej jej na seznamech dokladů a účetních výkazech, kde uživatel mění rozsah účetního období nebo knihu. Samostatně jej lze použít nad obsahem v `ZoomPane`.

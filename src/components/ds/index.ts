@@ -66,6 +66,7 @@ export * from "./grid/TreeGrid";
 export * from "./grid/filter-chips";
 export * from "./grid/grid-period";
 export * from "./grid/grid-context-bar";
+export * from "./grid/grid-segmented-toggle";
 
 /* Formuláře */
 export * from "./form/decimal-input";
