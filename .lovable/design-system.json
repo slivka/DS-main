@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.31.0",
+    "version": "2.32.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -5635,16 +5635,15 @@
           "default": "Nový partner"
         }
       ],
-      "usage": "Protistrana jako volný text s propojením na partnera; hodnota zachovává IČ a DIČ při zrušení vazby a poslední volba Nový partner předá seed { name, ico, dic }.",
+      "usage": "Volný text protistrany s volitelným propojením; prázdný dotaz zobrazí aktivní partnery a favoriteIds je řadí první.",
       "examples": [
         {
-          "label": "Protistrana s identifikátory",
-          "code": "<CounterpartyField value={{ name, partnerId, ico, dic }} onChange={setCounterparty} partners={partners} onCreatePartner={openNewPartner} />"
+          "label": "Výběr partnera",
+          "code": "<CounterpartyField value={value} onChange={setValue} partners={partners} favoriteIds={[\"p1\"]} />"
         }
       ],
       "antipatterns": [
-        "Po ruční změně textu neponechávejte staré partnerId.",
-        "Při zrušení propojení nemažte IČ ani DIČ."
+        "Nepoužívejte prázdný vlastní seznam místo předání všech aktivních partnerů."
       ]
     },
     {
@@ -5867,17 +5866,15 @@
           "default": "journal-cell-editor"
         }
       ],
-      "usage": "Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Nepovinný rounding zobrazí haléřové vyrovnání v dolní liště vedle zbývající částky; režim mode=\"mainAccount\" zamkne hlavní stranu.",
+      "usage": "Účetní rozpis s jednotnou lištou, hledáním, haléřovým vyrovnáním, souhrnnou patou a rekapitulacemi.",
       "examples": [
         {
-          "label": "Řádky dokladu s vyrovnáním",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} totalAmount={total} rounding={{ value: rounding, onChange: setRounding }} storageKey=\"invoice-lines\" />"
+          "label": "Rozpis s rekapitulací",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} rounding={rounding} storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
-        "Nepřidávejte in-place účetní editaci do obecného DataGridu.",
-        "Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns.",
-        "Nepoužívejte odstraněné toDbLines / fromDbLines ani pairNo; mainAccount nepředávejte jako objekt."
+        "Nepřidávejte samostatnou lištu nebo druhý údaj rozdílu mimo komponentu."
       ]
     },
     {
@@ -6068,17 +6065,15 @@
           "default": "rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
         }
       ],
-      "usage": "Celostránkový editor dokladu s identitou v těle, dvacetisloupcovým rozvržením 14/3/3, editovatelnou nebo propojenou protistranou, přilepeným pruhem akcí a záložkami řádků.",
+      "usage": "Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a účetním rozpiseem.",
       "examples": [
         {
-          "label": "Pokladní příjem",
-          "code": "<DocumentForm title=\"Pokladní doklad\" identity={{ items: [\"PO - Pokladna\", \"CZK\", \"2026\"], number }} directionBadge=\"in\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} status=\"filed\" />"
+          "label": "Doklad s našeptáváním",
+          "code": "<DocumentForm {...props} descriptionSuggest={{ enabled, onEnabledChange: setEnabled, load }} />"
         }
       ],
       "antipatterns": [
-        "Nevkládejte doklad do RecordDialogu.",
-        "Neopakujte účet nebo měnu v sekci, pokud jsou zamčené a už jsou v identity.",
-        "Nezaměňujte ruční protistranu za propojeného partnera; partnerId určuje uzamčení IČ a DIČ."
+        "Nevkládejte Celkem ani haléřové vyrovnání do vlastních polí mimo standardní sekce."
       ]
     },
     {
@@ -6186,6 +6181,36 @@
       "name": "CashReceiptPrintDialog",
       "file": "src/components/ds/print/cash-receipt-pdf.tsx",
       "import_path": ""
+    },
+    {
+      "name": "SuggestInput",
+      "file": "src/components/ds/form/suggest-input.tsx",
+      "import_path": "",
+      "usage": "Textové pole s přepínatelným našeptávačem z předchozích záznamů.",
+      "examples": [
+        {
+          "label": "Historie popisů",
+          "code": "<SuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} />"
+        }
+      ],
+      "antipatterns": [
+        "Nenačítejte více než deset viditelných návrhů ani neblokujte psaní čekáním na odpověď."
+      ]
+    },
+    {
+      "name": "JournalLinesRecap",
+      "file": "src/components/ds/accounting/journal-lines-recap.tsx",
+      "import_path": "",
+      "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",
+      "examples": [
+        {
+          "label": "Rekapitulace",
+          "code": "<JournalLinesRecap lines={lines} accounts={accounts} storageKey=\"invoice-lines\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte rekapitulaci z filtrované podmnožiny řádků."
+      ]
     }
   ],
   "assets": [
