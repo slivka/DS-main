@@ -561,6 +561,12 @@ import { CarouselNext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { CarouselPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### CashReceiptPrintDialog
+
+```ts
+import { CashReceiptPrintDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### CategorySelect
 
 ```ts
@@ -947,6 +953,28 @@ _Řízené otevření_
 - Nepoužívejte pro běžná formulářová pole.
 - Neobcházejte zavírání změnou key podle cesty.
 
+### CounterpartyField
+
+```ts
+import { CounterpartyField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `partners` | any | `—` |
+| `onCreatePartner` | function | `—` |
+| `disabled` | boolean | `—` |
+| `placeholder` | string | `Název protistrany` |
+| `id` | string | `—` |
+| `className` | string | `inline-flex shrink-0 items-center gap-1 rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground` |
+| `linkedLabel` | string | `Partner` |
+| `unlinkLabel` | string | `Zrušit propojení` |
+| `createLabel` | string | `Nový partner` |
+
 ### CountrySelect
 
 ```ts
@@ -1163,6 +1191,12 @@ import { DialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### DocumentActionBar
+
+```ts
+import { DocumentActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### DocumentForm
 
 ```ts
@@ -1194,13 +1228,18 @@ Celostránkový editor dokladu podle Money. documentType určuje výchozí pole 
 | `mainAccountLocked` | boolean | `false` |
 | `periodLabel` | any | `—` |
 | `rateAmount` | number | `1` |
+| `homeCurrency` | string | `CZK` |
+| `currencyLocked` | boolean | `false` |
+| `onCreatePartner` | function | `—` |
 | `linesEditorProps` | any | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
 | `approved` | boolean | `—` |
 | `changedBy` | string | `—` |
 | `changedAt` | string | `—` |
-| `actions` | any | `—` |
+| `saveAction` | any | `—` |
+| `primaryAction` | any | `—` |
+| `moreActions` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `readOnlyReason` | any | `—` |
 | `texts` | any | `—` |
@@ -2739,6 +2778,12 @@ import { PopoverContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 ```ts
 import { PopoverTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+### PrintPreviewDialog
+
+```ts
+import { PrintPreviewDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 ### Progress
