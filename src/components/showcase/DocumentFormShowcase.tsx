@@ -5,7 +5,6 @@ import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
   DocumentForm,
   PaymentScheduleEditor,
-  documentFieldsForType,
   type DocumentHeaderValue,
   type JournalLine,
   type PaymentScheduleItem,
@@ -27,7 +26,7 @@ const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
   taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-  description: "Rekonstrukce skladu – 1. etapa", currency: "CZK", rate: 1, rateInfo: "ČNB 10. 9. 2026",
+  description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "ČNB 10. 9. 2026",
   amountTotal: 12100, totalMode: "entered", roundingAmount: 0, mainAccountId: "321001",
 };
 const INVOICE_LINES: JournalLine[] = [
@@ -83,7 +82,7 @@ export function DocumentFormShowcase() {
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
-          fields={documentFieldsForType("FP")}
+          documentType="FP" periodLabel="Rok 2026" rateAmount={1}
           mainSide="D"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp" }}
           status="filed"
@@ -101,15 +100,15 @@ export function DocumentFormShowcase() {
         />
       </ShowcaseSection>
 
-      <ShowcaseSection title="Zaúčtovaná faktura – jen platební údaje"
+      <ShowcaseSection title="Vydaná faktura – odběratel s IČ a DIČ"
         description="editableFields povolí pouze popis a platební údaje; řádky mění jen popisné údaje. Uvolněná pozastávka je jen ke čtení.">
         <DocumentForm
-          title="Přijatá faktura"
-          value={posted} onChange={setPosted}
+          title="Vydaná faktura"
+          value={{ ...posted, mainAccountId: "311001" }} onChange={setPosted}
           lines={postedLines} onLinesChange={setPostedLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          fields={documentFieldsForType("FP")}
-          mainSide="D" mainAccountLocked
+          documentType="FV" periodLabel="Rok 2026"
+          mainSide="MD"
           editableFields={["description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
           linesEditorProps={{ editableFields: ["text", "debitVs", "creditVs", "debitPartnerId", "creditPartnerId", "debitDimensionId", "creditDimensionId", "nonTax"], storageKey: "showcase-doc-posted" }}
           status="posted" approved
@@ -127,9 +126,10 @@ export function DocumentFormShowcase() {
           title="Pokladní doklad – výdej"
           value={cash} onChange={setCash}
           lines={cashLines} onLinesChange={setCashLines}
-          books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          fields={documentFieldsForType("PO")}
-          isNew mainSide="D"
+          accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
+          documentType="PO" periodLabel="Rok 2026"
+          books={MOCK_BOOKS.filter((book) => book.id === "b-pd")}
+          isNew mainSide="D" mainAccountLocked
           linesEditorProps={{ storageKey: "showcase-doc-cash" }}
           status="draft"
         />
@@ -142,7 +142,7 @@ export function DocumentFormShowcase() {
           value={internal} onChange={setInternal}
           lines={internalLines} onLinesChange={setInternalLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          fields={documentFieldsForType("ID")}
+          documentType="ID" periodLabel="Rok 2026"
           linesEditorProps={{ storageKey: "showcase-doc-internal" }}
           status="filed"
         />

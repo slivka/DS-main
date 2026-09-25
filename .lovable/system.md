@@ -269,7 +269,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 
 ## Doklady a platební kalendář (2.7.0)
-- Doklad vždy `DocumentForm`; skupiny polí přes `fields={documentFieldsForType(kód)}`. Číslo, kurz, kniha (po založení) a směr nikdy neupravujte ve formuláři.
+- Doklad vždy `DocumentForm`; typ předávejte přes `documentType`, který sám zvolí pole a účetní popisky. `fields` použijte jen pro výjimku. Číslo, kurz, kniha po založení a směr jsou jen pro čtení.
+- Hlavička `DocumentForm` má základní a platební údaje vlevo a vlastnosti, kurz a částku vpravo. Zamčený hlavní účet je text se stranou MD/DAL, nikoli zakázaný výběr; ID a UZ mají režim součtu řádků vždy zamčený.
 - Stav Zaúčtován řiďte přes `editableFields` (hlavička) a `linesEditorProps.editableFields` (řádky); `readOnly` jen pro uzamčené doklady.
 - Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
 - Platební kalendář vždy `PaymentScheduleEditor`; rozložení přes `generatePaymentSchedule`. Ukládá se celé pole jedním voláním.
