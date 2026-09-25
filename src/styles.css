@@ -406,6 +406,14 @@
   padding-block: 0.3em;
 }
 
+.grid-context-label {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
 .grid-context-row .grid-toolbar-control {
   border-color: var(--grid-chrome-border);
   background-color: var(--card);
@@ -446,6 +454,31 @@
   border-color: var(--grid-chrome-border);
   background-color: var(--card);
   color: var(--foreground);
+}
+
+.grid-toolbar-row[data-overflow-level="0"] .grid-toolbar-overflow-menu {
+  display: none;
+}
+
+.grid-toolbar-row[data-overflow-level="1"] .grid-toolbar-display-group,
+.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-display-group,
+.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-data-group {
+  display: none;
+}
+
+.grid-toolbar-row[data-overflow-level="1"] .grid-toolbar-overflow-menu,
+.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-overflow-menu {
+  display: inline-flex;
+}
+
+@container (width < 640px) {
+  .grid-toolbar-row .grid-toolbar-wide {
+    display: none;
+  }
+
+  .grid-toolbar-row .grid-toolbar-overflow-menu {
+    display: inline-flex;
+  }
 }
 
 /* Primárne tlačidlo v lište gridu (pridanie záznamu) – modré so svetlým textom. */
@@ -594,6 +627,8 @@
   padding: 0 !important;
   gap: 0;
   border-radius: var(--radius-md);
+  border-color: var(--grid-chrome-border);
+  background-color: var(--card);
 }
 
 .zoom-filters .grid-segmented > button {
@@ -601,6 +636,30 @@
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent;
+}
+
+.grid-filter-panel {
+  min-height: calc(var(--f-h) + 1em);
+  border-color: var(--grid-chrome-border);
+}
+
+.grid-filter-panel > * {
+  flex: 0 1 auto;
+  min-width: min(10em, 100%);
+  max-width: min(20em, 100%);
+}
+
+.grid-filter-panel :is([data-slot="select-trigger"], [role="combobox"]) {
+  width: auto;
+  min-width: 10em;
+  max-width: 20em;
+}
+
+.grid-filter-panel :is(label, .grid-filter-label) {
+  color: var(--muted-foreground);
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 .zoom-filters .grid-segmented > button:first-child {
