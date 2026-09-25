@@ -114,7 +114,7 @@ function uniqueHeaders(data: GridExportData) {
       .map((row) => String(row[index] ?? "").trim())
       .filter((part, partIndex, all) => part && all.indexOf(part) === partIndex);
     const raw = parts.join(" – ") || fallback || `Sloupec ${index + 1}`;
-    const base = raw.replace(/[][]|[#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || `Sloupec ${index + 1}`;
+    const base = raw.replace(/[[\]#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || `Sloupec ${index + 1}`;
     let name = base;
     let suffix = 2;
     while (used.has(name.toLocaleLowerCase("cs"))) {
