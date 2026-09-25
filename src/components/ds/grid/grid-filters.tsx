@@ -50,12 +50,14 @@ export function GridFilterToggle({
               aria-controls="grid-filter-panel"
               aria-label={tooltipLabel}
               onClick={() => onOpenChange(!open)}
-              className={`grid-toolbar-control relative ${
+               className={`grid-toolbar-control relative min-w-[6.9em] ${
                 active
                   ? "grid-toolbar-active"
                   : showDefault
                     ? "border-primary text-primary hover:bg-primary/10 hover:text-primary"
-                    : ""
+                     : open
+                       ? "border-primary/50 bg-primary/10 text-primary"
+                       : ""
               }`}
               style={{ fontSize: gridFontSize(zoom) }}
             >
@@ -130,21 +132,25 @@ export function GridFilterToggle({
 export function GridFilterPanel({
   open,
   onClear: _onClear,
-  zoom: _zoom,
+  zoom = 1,
+  density = "normal",
   children,
 }: {
   open: boolean;
   /** @deprecated Zrušení filtrů patří do GridFilterToggle. */
   onClear?: () => void;
-  /** @deprecated Zachováno pro kompatibilitu volajících míst. */
+  /** Měřítko panelu shodné s řádkem akcí. */
   zoom?: number;
+  density?: "normal" | "compact";
   children: ReactNode;
 }) {
   if (!open) return null;
   return (
     <div
       id="grid-filter-panel"
-      className="grid-toolbar-group order-last flex w-full basis-full flex-wrap items-center border-t pt-2"
+      data-density={density}
+      className="zoom-filters grid-filter-panel flex w-full flex-wrap items-center border-b bg-card"
+      style={{ fontSize: gridFontSize(zoom) }}
     >
       {children}
     </div>

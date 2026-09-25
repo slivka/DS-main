@@ -353,6 +353,7 @@ export function AppShell({
   const collapsedRef = useRef(false);
   const headerRef = useRef<HTMLElement>(null);
   const contextRef = useRef<HTMLDivElement>(null);
+  const contextSeparatorRef = useRef<HTMLSpanElement>(null);
   const rightControlsRef = useRef<HTMLDivElement>(null);
   const [centerContext, setCenterContext] = useState(true);
   const [searchOverlay, setSearchOverlay] = useState(false);
@@ -458,13 +459,33 @@ export function AppShell({
     const rightControlsLeft = rightControls.getBoundingClientRect().left;
     const centeredRight = headerRect.left + headerRect.width / 2 + contextWidth / 2;
     setCenterContext(centeredRight + 16 <= rightControlsLeft);
+
+    const company = context.querySelector<HTMLElement>('[data-context-switcher="company"]');
+    const period = context.querySelector<HTMLElement>('[data-context-switcher="period"]');
+    const separator = contextSeparatorRef.current;
+    if (company && period && window.matchMedia("(min-width: 768px)").matches) {
+      const periodWidth = period.getBoundingClientRect().width;
+      company.style.minWidth = `${periodWidth}px`;
+      const contextLeft = context.getBoundingClientRect().left;
+      const gapCenter = (company.getBoundingClientRect().right + period.getBoundingClientRect().left) / 2;
+      if (separator) {
+        separator.style.left = `${gapCenter - contextLeft}px`;
+        separator.hidden = false;
+      }
+    } else {
+      company?.style.removeProperty("min-width");
+      if (separator) separator.hidden = true;
+    }
   }, [hasContext]);
 
   useEffect(() => {
     updateContextPosition();
     const observer = new ResizeObserver(updateContextPosition);
     if (headerRef.current) observer.observe(headerRef.current);
-    if (contextRef.current) observer.observe(contextRef.current);
+    if (contextRef.current) {
+      observer.observe(contextRef.current);
+      contextRef.current.querySelectorAll<HTMLElement>('[data-context-switcher]').forEach((node) => observer.observe(node));
+    }
     if (rightControlsRef.current) observer.observe(rightControlsRef.current);
     window.addEventListener("resize", updateContextPosition);
     return () => {
@@ -491,10 +512,11 @@ export function AppShell({
           <div
             ref={contextRef}
             className={cn(
-              "z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2",
+              "relative z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2",
               centerContext && "absolute left-1/2 -translate-x-1/2",
             )}
           >
+            <span ref={contextSeparatorRef} hidden aria-hidden className="pointer-events-none absolute top-1/2 h-6 w-px -translate-x-1/2 -translate-y-1/2 bg-border" />
             {contextLeft}
           </div>
           {hasContext && !centerContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}

@@ -25,20 +25,46 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   { left, right, zoom = 1, density = "normal", className, children, ...props },
   ref,
 ) {
+  const ownRef = React.useRef<HTMLDivElement | null>(null);
+  const setRefs = React.useCallback((node: HTMLDivElement | null) => {
+    ownRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) ref.current = node;
+  }, [ref]);
+  React.useEffect(() => {
+    const node = ownRef.current;
+    if (!node) return;
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        node.dataset.overflowLevel = "0";
+        for (const level of [1, 2]) {
+          if (node.scrollWidth <= node.clientWidth + 1) break;
+          node.dataset.overflowLevel = String(level);
+        }
+      });
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    Array.from(node.children).forEach((child) => observer.observe(child));
+    update();
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
+  }, [left, right, zoom, density]);
   return (
     <div
-      ref={ref}
+      ref={setRefs}
       data-slot="grid-toolbar"
       data-density={density}
       className={cn(
-        "zoom-filters grid-toolbar-row flex min-w-0 flex-wrap items-center gap-2 border p-2",
+        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 overflow-hidden border p-2",
         className,
       )}
       style={{ fontSize: gridFontSize(zoom) }}
       {...props}
     >
       {left ?? children}
-      {right ? <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2">{right}</div> : null}
+      {right ? <div className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2">{right}</div> : null}
     </div>
   );
 });
@@ -241,7 +267,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
         return (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
-              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control shrink-0">
+              <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
                 <Plus className="size-[1.2em]" />
                 <span className="hidden @min-[640px]:inline">{action.label}</span>
               </Button>
