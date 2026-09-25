@@ -44,6 +44,7 @@ export const Route = createFileRoute("/components/grid")({
 function GridPage() {
   const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "all"));
   const [bookId, setBookId] = useState<string | "all">("all");
+  const [cashBookId, setCashBookId] = useState<string | "all">("all");
   const [singleBookPeriod, setSingleBookPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "month", 0));
   const [direction, setDirection] = useState<"all" | "in" | "out">("all");
   const [refreshing, setRefreshing] = useState(false);
@@ -150,9 +151,22 @@ function GridPage() {
       />
       <div className="mt-8">
         <DataGrid<JournalEntry>
-          storageKey="ds-showcase-single-book"
-          title="Pokladna CZK"
+          storageKey="ds-showcase-cash-direction"
+          title="Pokladna"
           rows={cashRows}
+          columns={columns}
+          rowKey={(row) => row.id}
+          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
+          book={{ books: books.slice(0, 2), value: cashBookId, onChange: setCashBookId, getRowBookId: rowBookId }}
+          contextRight={directionToggle}
+          showTotalRow
+        />
+      </div>
+      <div className="mt-8">
+        <DataGrid<JournalEntry>
+          storageKey="ds-showcase-single-book-direction"
+          title="Pokladna CZK"
+          rows={cashRows.slice(0, 4)}
           columns={columns}
           rowKey={(row) => row.id}
           period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
