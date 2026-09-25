@@ -18,6 +18,8 @@ export type PartnerOption = {
   name: string;
   /** IČO partnera (jen číslice). */
   ico?: string;
+  /** DIČ partnera. */
+  dic?: string;
   active?: boolean;
 };
 

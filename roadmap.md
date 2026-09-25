@@ -1,5 +1,12 @@
 # Roadmap
 
+## Verze 2.24.0 (DocumentForm podle Money)
+- [x] Přeskládat hlavičku na základní údaje a pravý panel vlastností
+- [x] Doplnit typové popisky hlavního účtu a partnera, IČ a DIČ
+- [x] Přesunout MD/DAL dovnitř účtu a zamčený účet zobrazit jako text
+- [x] Doplnit období, kurz za množství a režim součtu z rozpisu
+- [x] Přidat ukázky PO, FV a FP v EUR a regresní testy
+
 ## Verze 2.23.1 (opravy adaptivní lišty a kontextu)
 - [x] Sjednotit nabídku ⋯ a ponechat Obnovit pouze úplně vpravo
 - [x] Měřit celý řádek a při kritické šířce zkrátit Přidat a hledání

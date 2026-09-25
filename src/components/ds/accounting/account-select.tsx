@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -72,6 +72,7 @@ export function AccountSelect({
   disabled,
   initialSearch,
   onOpenChange,
+  suffix,
   className,
 }: {
   accounts: AccountOption[];
@@ -94,6 +95,8 @@ export function AccountSelect({
   /** Počáteční hledání při otevření z editovatelné buňky. */
   initialSearch?: string;
   onOpenChange?: (open: boolean) => void;
+  /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
+  suffix?: ReactNode;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -179,7 +182,10 @@ export function AccountSelect({
               placeholder
             )}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+          <span className="ml-auto flex shrink-0 items-center gap-2">
+            {suffix}
+            <ChevronsUpDown className="size-4 opacity-50" />
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
