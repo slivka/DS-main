@@ -4,7 +4,7 @@
 - [x] Zobrazit přeložitelné záhlaví Akce v DataGrid a TreeGrid
 - [x] Přidat tiskové jádro, náhled PDF a český převod částek slovy
 - [x] Přidat šablonu a dialog Pokladní doklad
-- [ ] Doplnit stránku Tisk, testy, dokumentaci a ověření PDF
+- [x] Doplnit stránku Tisk, testy, dokumentaci a ověření PDF
 # Roadmap
 
 ## Verze 2.25.0 (protistrana v DocumentForm)
