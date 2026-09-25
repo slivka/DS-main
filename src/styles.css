@@ -1893,3 +1893,13 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
     box-shadow: inset 0 0 0 2px var(--primary);
   }
 }
+
+/* Úroveň 3: otevřené hledání s textem se zúží místo vytlačení ostatních prvků. */
+.grid-toolbar-row[data-overflow-level="3"] [data-slot="grid-toolbar-right"] {
+  flex-shrink: 1;
+  min-width: 0;
+}
+.grid-toolbar-row[data-overflow-level="3"] [data-toolbar-search] {
+  flex: 1 1 6em;
+  min-width: 6em;
+}

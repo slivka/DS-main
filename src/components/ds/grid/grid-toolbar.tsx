@@ -81,6 +81,9 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     if (!node) return;
     let frame = 0;
     let cachedWidths: ReturnType<typeof naturalWidths> | null = null;
+    // Šířka levé části změřená v úrovni < 3 (v úrovni 3 se její doplňky nevykreslují).
+    let fullLeft = 0;
+    let lastWidth = -1;
     let current: 0 | 1 | 2 | 3 = Number(node.dataset.overflowLevel || 0) as 0 | 1 | 2 | 3;
     const widthOf = (scope: ParentNode, name: string) => {
       const target = scope.querySelector<HTMLElement>(`[data-toolbar-measure="${name}"]`);
@@ -92,15 +95,24 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     const naturalWidths = () => {
       const copy = node.cloneNode(true) as HTMLElement;
       copy.removeAttribute("data-overflow-level");
-      copy.setAttribute("aria-hidden", "true");
+      copy.removeAttribute("id");
+      copy.querySelectorAll("[id]").forEach((item) => item.removeAttribute("id"));
       copy.classList.add("grid-toolbar-measure-copy");
-      Object.assign(copy.style, {
-        position: "fixed", visibility: "hidden", pointerEvents: "none", inset: "0 auto auto 0",
-        width: "max-content", maxWidth: "none", contain: "layout style", zIndex: "-1",
-      });
+      Object.assign(copy.style, { position: "static", width: "max-content", maxWidth: "none" });
       copy.querySelectorAll<HTMLElement>(".grid-toolbar-wide").forEach((item) => { item.style.display = "contents"; });
       copy.querySelectorAll<HTMLElement>(".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional").forEach((item) => { item.style.display = "inline-flex"; });
-      document.body.append(copy);
+      // Kopie leží uvnitř kontejneru gridu v obalu se stejnou šířkou a vlastním
+      // container query – třídy @min-[640px]:… se v ní vyhodnotí jako v řádku.
+      const holder = document.createElement("div");
+      holder.setAttribute("aria-hidden", "true");
+      holder.setAttribute("inert", "");
+      Object.assign(holder.style, {
+        position: "absolute", left: "0", top: "0", height: "0", overflow: "hidden",
+        width: `${node.getBoundingClientRect().width}px`, containerType: "inline-size",
+        visibility: "hidden", pointerEvents: "none", zIndex: "-1",
+      });
+      holder.append(copy);
+      (node.parentElement ?? document.body).append(holder);
       const result = {
         leftFull: widthOf(copy, "left"), findFull: widthOf(copy, "find"),
         display: widthOf(copy, "display"), data: widthOf(copy, "data"),
@@ -110,7 +122,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       const search = copy.querySelector<HTMLElement>("[data-toolbar-search]");
       const addWidth = add?.getBoundingClientRect().width ?? 0;
       const searchWidth = search?.getBoundingClientRect().width ?? 0;
-      copy.remove();
+      holder.remove();
       return { ...result, addWidth, searchWidth };
     };
     const update = () => {
@@ -122,12 +134,17 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
         const padding = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
         const measured = cachedWidths ??= naturalWidths();
-        const leftFull = measured.leftFull;
+        if (current < 3 || !fullLeft) fullLeft = measured.leftFull;
+        const leftFull = current === 3 ? Math.max(fullLeft, measured.leftFull) : measured.leftFull;
         const findFull = measured.findFull;
-        const controlSize = Number.parseFloat(getComputedStyle(node).getPropertyValue("--f-h")) * (Number.parseFloat(style.fontSize) || 13);
+        const fontSize = Number.parseFloat(style.fontSize) || 13;
+        const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
         const addCount = node.querySelectorAll("[data-toolbar-add]").length;
         const leftCompact = addCount ? addCount * controlSize + Math.max(0, addCount - 1) * gap : 0;
-        const findCompact = Math.max(0, findFull - Math.max(0, measured.searchWidth - controlSize));
+        // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
+        const searchHasText = Boolean(node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim());
+        const searchCompact = searchHasText ? Math.min(measured.searchWidth, 6 * fontSize) : controlSize;
+        const findCompact = Math.max(0, findFull - Math.max(0, measured.searchWidth - searchCompact));
         const next = calculateGridToolbarOverflowLevel({
           container: node.clientWidth, leftFull, leftCompact, findFull, findCompact,
           display: measured.display, data: measured.data, menu: Math.max(measured.menu, controlSize), refresh: measured.refresh,
@@ -138,13 +155,26 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         node.dataset.overflowLevel = String(next);
       });
     };
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(() => {
+      const width = node.getBoundingClientRect().width;
+      if (Math.abs(width - lastWidth) > 0.5) { lastWidth = width; cachedWidths = null; }
+      update();
+    });
     observer.observe(node);
+    // Přeměření jen při změně sady nástrojů / stavů (ne při psaní v hledání).
+    let signature = "";
+    const toolSignature = () => Array.from(node.querySelectorAll<HTMLElement>("button, [data-toolbar-search], [data-toolbar-measure]"))
+      .map((item) => `${item.tagName}:${item.getAttribute("aria-label") ?? ""}:${item.getAttribute("aria-pressed") ?? ""}:${item.getAttribute("aria-expanded") ?? ""}:${item.className}:${item.textContent?.length ?? 0}`)
+      .join("|");
     const mutations = new MutationObserver(() => {
+      const next = toolSignature();
+      if (next === signature) return;
+      signature = next;
       cachedWidths = null;
       update();
     });
-    mutations.observe(node, { subtree: true, childList: true, characterData: true });
+    signature = toolSignature();
+    mutations.observe(node, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "aria-pressed", "aria-expanded"] });
     update();
     return () => { cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect(); };
   }, [zoom, density]);
@@ -380,4 +410,9 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
       })}
     </TooltipProvider>
   );
+}
+/** Doplňky levé části řádku akcí; v úrovni 3 se nevykreslí (jsou v nabídce ⋯), aby nevznikla duplicitní id. */
+export function GridToolbarCollapsible({ children }: { children?: React.ReactNode }) {
+  const overflowLevel = React.useContext(GridToolbarOverflowContext);
+  return overflowLevel >= 3 ? null : <>{children}</>;
 }

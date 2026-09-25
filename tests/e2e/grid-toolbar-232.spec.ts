@@ -54,3 +54,40 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
     expect(separatorBoxes.every((separator, index) => index === 0 || separator.left - separatorBoxes[index - 1].right > 2)).toBe(true);
   });
 }
+for (const width of [700, 800, 900, 1000]) {
+  test(`Nový doklad + toolbarLeft + aktivní filtr: Obnovit uvnitř řádku při ${width} px`, async ({ page }) => {
+    await page.setViewportSize({ width: 1800, height: 1200 });
+    await page.goto("/components/grid");
+    const grid = page.locator('[data-slot="data-grid"]').first();
+    await grid.evaluate((element, nextWidth) => { (element as HTMLElement).style.width = `${nextWidth}px`; }, width);
+    const toolbar = grid.locator('[data-slot="grid-toolbar"]');
+    await expect(toolbar).toHaveAttribute("data-overflow-level", /[0-3]/);
+    await expect(toolbar.locator("[data-toolbar-add]").first()).toBeVisible();
+    await page.waitForTimeout(400);
+    const box = await toolbar.boundingBox();
+    const boxes = await toolbar.locator("button:visible,input:visible").evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()));
+    expect(box).not.toBeNull();
+    for (const b of boxes) {
+      expect(b.left).toBeGreaterThanOrEqual(box!.x - 1);
+      expect(b.right).toBeLessThanOrEqual(box!.x + box!.width + 1);
+    }
+    const refresh = await toolbar.getByRole("button", { name: "Obnovit data" }).boundingBox();
+    expect(refresh!.x + refresh!.width).toBeLessThanOrEqual(box!.x + box!.width + 1);
+    expect(await page.locator("[id]").evaluateAll((els) => { const ids = els.map((e) => e.id); return ids.length - new Set(ids).size; })).toBe(0);
+  });
+}
+
+test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
+  await page.setViewportSize({ width: 1800, height: 1200 });
+  await page.goto("/components/grid");
+  const grid = page.locator('[data-slot="data-grid"]').first();
+  await grid.evaluate((element) => { (element as HTMLElement).style.width = "360px"; });
+  const toolbar = grid.locator('[data-slot="grid-toolbar"]');
+  await expect(toolbar).toHaveAttribute("data-overflow-level", "3");
+  await toolbar.getByRole("button", { name: /Hledat/ }).first().click();
+  await page.keyboard.type("faktura");
+  await page.waitForTimeout(400);
+  const box = await toolbar.boundingBox();
+  const boxes = await toolbar.locator("button:visible,input:visible").evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()));
+  for (const b of boxes) expect(b.right).toBeLessThanOrEqual(box!.x + box!.width + 1);
+});

@@ -44,7 +44,7 @@ import { FilterChips } from "./filter-chips";
 import { GridMoreMenu, type GridMoreItem } from "./grid-more-menu";
 import {
   AsOfDateToggle,
-  GridAddActions,
+  GridAddActions, GridToolbarCollapsible,
   GridExpandControls,
   GridToolbar,
   GridToolbarSeparator,
@@ -827,6 +827,7 @@ export function DataGrid<Row>({
           }`}
           left={<>
             {addAction ? <GridAddActions actions={addAction} /> : null}
+            <GridToolbarCollapsible>
             {addAction && (viewMode || grouping.active || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
             {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}
             {grouping.active ? (
@@ -849,6 +850,7 @@ export function DataGrid<Row>({
               />
             ) : null}
             {(asOf || toolbarLeft) ? <span className="grid-toolbar-optional contents"><span className="hidden @min-[640px]:contents">{grouping.active ? <GridToolbarSeparator density={density} /> : null}</span>{asOf ? <AsOfDateToggle {...asOf} /> : null}{asOf && toolbarLeft ? <GridToolbarSeparator density={density} /> : null}{toolbarLeft}</span> : null}
+          </GridToolbarCollapsible>
           </>}
           right={<>
              <span data-toolbar-measure="find" data-toolbar-group="find" className="flex shrink-0 items-center gap-2"><GridSearch value={search} onChange={setSearch} zoom={zoom} texts={texts} />

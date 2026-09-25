@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.24.2 (měření řádku akcí)
+- [x] Měřicí kopie řádku akcí uvnitř kontejneru gridu (správné container queries, Obnovit se neořízne).
+- [x] Pod 640 px: hledání s textem se v úrovni 3 zúží, nic se nevytlačí.
+- [x] Doplňky levé části (Stav k datu, toolbarLeft, Tabulka/Strom) se v úrovni 3 nevykreslují v řádku – bez duplicitních id.
+- [x] Kopie se nepřestavuje při psaní v hledání, jen při změně nástrojů/stavů, zoomu, hustoty nebo velikosti.
+
 ## Verze 2.24.1 (bezeztrátová adaptivní lišta)
 - [x] Přesunout hlavní parametry a Stav k datu na úrovni 3 do jediné nabídky
 - [x] Zachovat Přidat, hledání a Obnovit v jednom řádku od šířky 360 px
