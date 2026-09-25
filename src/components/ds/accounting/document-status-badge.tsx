@@ -45,7 +45,7 @@ export function DocumentStatusBadge({
   size = "sm",
   className,
 }: DocumentStatusBadgeProps) {
-  const sizeClass = size === "md" ? "h-6 px-2.5 text-[13px] font-medium" : undefined;
+  const sizeClass = size === "md" ? "h-[26px] px-2.5 text-sm font-medium" : undefined;
   const badge = <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />;
   if (!approved) return badge;
   return (

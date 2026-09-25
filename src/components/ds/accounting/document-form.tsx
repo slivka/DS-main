@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Sigma, type LucideIcon } from "lucide-react";
 
 import { Checkbox } from "../../ui/checkbox";
 import { Input } from "../../ui/input";
@@ -17,6 +17,7 @@ import { DecimalInput } from "../form/decimal-input";
 import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../form/ico-link";
 import { OptionSelect } from "../form/option-select";
 import { RateField } from "../form/rate-field";
+import { SuggestInput } from "../form/suggest-input";
 import { AccountSelect, type AccountOption } from "./account-select";
 import { formatAccountCode } from "./account-code";
 import type { BookOption } from "./book-select";
@@ -73,7 +74,9 @@ export type DocumentFormTab = { id: string; label: string; content: ReactNode; b
 export type DocumentSaveAction = { onSave: () => void; disabled?: boolean; busy?: boolean; dirty?: boolean };
 export type DocumentPrimaryAction = { label: string; onClick: () => void; disabled?: boolean; busy?: boolean; icon?: LucideIcon };
 export type DocumentMoreAction = { id: string; label: string; onClick: () => void; icon?: LucideIcon; destructive?: boolean; disabled?: boolean; disabledReason?: string; separatorBefore?: boolean };
-export type DocumentIdentity = { items: ReactNode[]; number?: string | null; numberPending?: string };
+export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: ReactNode };
+export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
+export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
 
 export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string; accountingSection: string;
@@ -125,6 +128,8 @@ export interface DocumentFormProps {
   currencyLocked?: boolean;
   onCreatePartner?: (seed: CounterpartySeed) => void;
   icoLinkTarget?: IcoLinkTarget;
+  handedOverBySuggest?: DocumentSuggestConfig;
+  descriptionSuggest?: DocumentSuggestConfig;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
   tabs?: DocumentFormTab[];
   status: DocumentStatus;
@@ -153,6 +158,10 @@ export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side:
 function DocumentIdentityLine({ identity, direction, fallback, texts }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts }) {
   const number = identity?.number || null;
   const [firstItem, ...remainingItems] = identity?.items ?? [];
+  const renderItem = (item: DocumentIdentityItem) => {
+    if (typeof item === "object" && item !== null && !Array.isArray(item) && "text" in item) return <span className="inline-flex min-w-0 items-center gap-1.5">{item.side ? <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{item.side}</span> : null}<span className="min-w-0 break-words">{item.text}</span></span>;
+    return <span className="min-w-0 break-words">{item}</span>;
+  };
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2">
@@ -160,12 +169,12 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
           {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
           {firstItem != null ? <span className="flex min-w-0 items-center">
             {direction ? <span aria-hidden="true" className="mx-2 h-4 w-px bg-border" /> : null}
-            <span className="min-w-0 break-words">{firstItem}</span>
+            {renderItem(firstItem)}
           </span> : null}
           {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
             {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
               <span aria-hidden="true" className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
-              <span className="min-w-0 break-words">{item}</span>
+               {renderItem(item)}
             </span>)}
           </span> : null}
         </div>
@@ -181,7 +190,7 @@ export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false,
-  onCreatePartner, icoLinkTarget = "auto", linesEditorProps, tabs = [], status, approved, changedBy, changedAt,
+  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, linesEditorProps, tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
@@ -192,8 +201,9 @@ export function DocumentForm({
   const normalizedType = documentType.toUpperCase();
   const forcedSum = normalizedType === "ID" || normalizedType === "UZ";
   const totalMode = forcedSum ? "sum" : value.totalMode;
-  const linesSum = Math.round(lines.reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
-  const total = totalMode === "sum" ? linesSum : value.amountTotal;
+  const linesSum = Math.round(lines.filter((line) => !line.isRounding).reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
+  const roundedLinesSum = Math.round((linesSum + (value.roundingAmount ?? 0)) * 100) / 100;
+  const total = totalMode === "sum" ? roundedLinesSum : value.amountTotal;
   const partner = partners.find((item) => item.id === value.partnerId);
   const account = accounts.find((item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""));
   const mode = f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
@@ -212,6 +222,7 @@ export function DocumentForm({
   );
   const date = (key: "accountingDate" | "issueDate" | "taxDate" | "dueDate", label: string) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} />, 3);
   const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
+  const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
   const linkedPartner = !!value.partnerId;
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
@@ -238,14 +249,14 @@ export function DocumentForm({
         {identity || directionBadge ? <DocumentIdentityLine identity={identity} direction={directionBadge} fallback={t.numberPending} texts={t} /> : null}
         {f.partner ? (
           <>
-            <SectionHeading>{partnerLabel}</SectionHeading>
+             <SectionHeading>{t.headerSection}</SectionHeading>
             <div className="grid grid-cols-20 gap-3">
               {field("document-partner", partnerLabel, <CounterpartyField id="document-partner" partners={partners} value={{ name: value.counterpartyName ?? partner?.name ?? "", partnerId: value.partnerId ?? null, ico: counterpartyIco, dic: counterpartyDic }} onChange={(next) => patch({ counterpartyName: next.name, partnerId: next.partnerId, counterpartyIco: next.ico ?? null, counterpartyDic: next.dic ?? null })} onCreatePartner={onCreatePartner ? (seed) => onCreatePartner({ ...seed, ico: counterpartyIco || seed.ico, dic: counterpartyDic || seed.dic }) : undefined} disabled={!can("partnerId")} />, 14, false, "@min-[40rem]:pr-3")}
               {field("document-partner-ico", t.ico, linkedPartner ? <ReadField id="document-partner-ico" mono value={counterpartyIco ? <IcoLink ico={counterpartyIco} country={partner?.country} kind={partner?.kind} target={icoLinkTarget} /> : "—"} /> : <><Input id="document-partner-ico" value={counterpartyIco} onChange={(event) => patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })} disabled={!can("counterpartyIco")} className="h-9 font-mono tabular-nums" />{icoWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{t.invalidIco}</p> : null}</>, 3, true)}
               {field("document-partner-dic", t.dic, linkedPartner ? <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} /> : <Input id="document-partner-dic" value={counterpartyDic} onChange={(event) => patch({ counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase() })} disabled={!can("counterpartyDic")} className="h-9 font-mono uppercase tabular-nums" />, 3, true)}
-              {f.handedOverBy ? text("handedOverBy", value.direction === "in" ? t.handedOverByIn : t.handedOverByOut, 14, "@min-[40rem]:pr-3") : null}
+               {f.handedOverBy ? suggestedText("handedOverBy", value.direction === "in" ? t.handedOverByIn : t.handedOverByOut, handedOverBySuggest, 14, "@min-[40rem]:pr-3") : null}
               {f.externalNumber ? text("externalNumber", normalizedType === "FP" || normalizedType === "ZFP" ? t.supplierNumber : t.externalNumber, 3, f.handedOverBy ? undefined : "@min-[40rem]:col-start-15") : null}
-              {field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 20)}
+               {suggestedText("description", t.description, descriptionSuggest, 20)}
             </div>
           </>
         ) : null}
@@ -256,7 +267,7 @@ export function DocumentForm({
           {date("accountingDate", t.accountingDate)}
           {f.taxDate ? date("taxDate", t.taxDate) : null}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
-          {!f.partner ? field("document-description", t.description, <Textarea id="document-description" rows={2} value={value.description ?? ""} onChange={(event) => patch({ description: event.target.value })} disabled={!can("description")} />, 20) : null}
+           {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 
         <SectionHeading>{showMainAccount ? t.accountingSection : t.amountOnlySection}</SectionHeading>
@@ -265,9 +276,8 @@ export function DocumentForm({
           {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
           {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 3) : null}
           {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
-          {field("document-amountTotal", t.amountTotal, <ReadField id="document-amountTotal" mono value={<span className="ml-auto font-bold">{formatAmount(total, 2)}</span>} />, 3, false, "@min-[40rem]:col-start-1")}
-          {foreign && value.rate != null ? field("document-total-home", t.totalHomeCurrency.replace("CZK", homeCurrency), <ReadField id="document-total-home" mono value={<span className="ml-auto font-bold">{formatAmount(convertAmount(total, value.rate, rateAmount), 2)}</span>} />, 3) : null}
-          <label className="col-span-20 flex min-h-9 items-center gap-2 self-end text-sm @min-[40rem]:col-span-6"><Checkbox checked={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onCheckedChange={(checked) => patch({ totalMode: checked === true ? "sum" : "entered" })} />{t.sumFromLines}</label>
+           {field("document-amountTotal", t.amountTotal, <div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className="h-11 pr-11 font-mono text-xl font-bold tabular-nums" /><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className={cn("absolute right-1 top-1 size-9", totalMode === "sum" ? "text-primary" : "text-muted-foreground")}><Sigma className="size-4" /></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka zadaná ručně – rozdíl proti rozpisu je vidět pod řádky"}</TooltipContent></Tooltip></div>, 6, false, "@min-[40rem]:col-start-15")}
+           {foreign && value.rate != null ? field("document-total-home", t.totalHomeCurrency.replace("CZK", homeCurrency), <ReadField id="document-total-home" mono value={<span className="ml-auto font-bold">{formatAmount(convertAmount(total, value.rate, rateAmount), 2)}</span>} />, 3, false, "@min-[40rem]:col-start-18") : null}
         </div>
 
         {f.symbols || f.bankAccount || f.paymentOrders ? <>
@@ -298,7 +308,7 @@ function CompactActionButton({ label, icon: Icon, busy, compact, children, ...pr
 
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
-  return <span data-slot="document-direction-badge" className={cn("inline-flex h-6 items-center gap-1 rounded-md px-2 text-[13px] font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
+  return <span data-slot="document-direction-badge" className={cn("inline-flex h-[26px] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
 export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
