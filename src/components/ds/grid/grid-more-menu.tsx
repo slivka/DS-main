@@ -59,7 +59,7 @@ export function GridMoreMenu({
           size="sm"
           aria-label={texts.moreActions}
           title={texts.moreActions}
-          className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 px-[0.5em] ${className}`}
+          className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 px-[0.5em] ${items.length ? "grid-more-has-items" : ""} ${className}`}
           style={{ fontSize }}
         >
           <MoreHorizontal className="size-[1.25em]" />

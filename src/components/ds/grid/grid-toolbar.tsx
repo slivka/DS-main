@@ -70,7 +70,8 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       data-slot="grid-toolbar"
       data-density={density}
       className={cn(
-        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto overflow-y-hidden border p-2",
+        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 border p-2",
+        right ? "overflow-x-auto overflow-y-hidden" : "overflow-visible",
         className,
       )}
       style={{ fontSize: gridFontSize(zoom) }}
