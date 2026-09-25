@@ -61,7 +61,7 @@ function GridPage() {
   const [activeFilter, setActiveFilter] = useState(true);
   const [statusFilter, setStatusFilter] = useState("posted");
   const [partnerFilter, setPartnerFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState({ from: "2026-09-01", to: "2026-09-24" });
+  const [dateFilter, setDateFilter] = useState<{ from: string | null; to: string | null }>({ from: "2026-09-01", to: "2026-09-24" });
   const [pageSection, setPageSection] = useState("statements");
   const books = useMemo(() => [
     { id: "pczk", code: "PCZK", name: "Pokladna CZK" },
@@ -137,7 +137,7 @@ function GridPage() {
         book={{ books, value: bookId, onChange: setBookId, getRowBookId: rowBookId }}
         asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
         defaultFiltersOpen
-        filters={<><label className="grid-filter-label flex items-center gap-2">Stav:<OptionSelect className="min-w-[11em]" value={statusFilter} onChange={setStatusFilter} options={[{ value: "posted", label: "Zaúčtován" }, { value: "filed", label: "Zařazen" }, { value: "draft", label: "Koncept" }]} /></label><label className="grid-filter-label flex items-center gap-2">Partner:<OptionSelect className="min-w-[16em]" value={partnerFilter} onChange={setPartnerFilter} options={[{ value: "all", label: "Všichni partneři" }, { value: "alfa", label: "ALFA servis Praha s.r.o." }, { value: "beta", label: "BETA obchod a služby a.s." }]} /></label><label className="grid-filter-label flex items-center gap-2">Datum:<DateRangeField className="w-[15em]" value={dateFilter} onChange={setDateFilter} /></label><GridSegmentedToggle label="Směr:" options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => setDirection(value)} defaultValue="all" ariaLabel="Směr dokladu" /></>}
+        filters={<><label className="grid-filter-label flex items-center gap-2">Stav:<OptionSelect className="min-w-[11em]" value={statusFilter} onChange={setStatusFilter} options={[{ value: "posted", label: "Zaúčtován" }, { value: "filed", label: "Zařazen" }, { value: "draft", label: "Koncept" }]} /></label><label className="grid-filter-label flex items-center gap-2">Partner:<OptionSelect className="min-w-[16em]" value={partnerFilter} onChange={setPartnerFilter} options={[{ value: "all", label: "Všichni partneři" }, { value: "alfa", label: "ALFA servis Praha s.r.o." }, { value: "beta", label: "BETA obchod a služby a.s." }]} /></label><label className="grid-filter-label flex items-center gap-2">Datum:<DateRangeField className="w-[15em]" value={dateFilter} onChange={setDateFilter} /></label><GridSegmentedToggle label="Směr:" options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => { if (value === "all" || value === "in" || value === "out") setDirection(value); }} defaultValue="all" ariaLabel="Směr dokladu" /></>}
         defaultFilters={["Rok 2026"]}
         filterChips={activeFilter ? [{ id: "posted", label: "Stav: Zaúčtován", onRemove: () => setActiveFilter(false) }] : []}
         onClearFilters={() => setActiveFilter(false)}
