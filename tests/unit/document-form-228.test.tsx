@@ -37,6 +37,11 @@ describe("DocumentForm 2.31.0", () => {
     expect(incoming).toContain("h-6");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
   });
+  it("pruh akcí nemá spodní linku", () => {
+    const html = form({ saveAction: { onSave: () => {} } });
+    const actionBar = html.match(/data-slot="document-action-bar"[^>]+/)?.[0] ?? "";
+    expect(actionBar).not.toContain("border-b");
+  });
   it("zamkne IČ a DIČ propojeného partnera, ruční protistranu nechá editovat", () => {
     const partners = [{ id: "p1", name: "Beta Servis a.s.", ico: "27074358", dic: "CZ27074358", country: "CZ" }];
     const linked = form({ documentType: "PO", partners, value: { ...value, partnerId: "p1", counterpartyName: "Beta Servis a.s." } });

@@ -25,7 +25,8 @@ const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
     taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-  description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "ČNB 10. 9. 2026",
+   description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "Ruční kurz", rateManual: true,
+   rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
   amountTotal: 12100, totalMode: "entered", roundingAmount: 0, mainAccountId: "321001",
 };
 const INVOICE_LINES: JournalLine[] = [
