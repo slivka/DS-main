@@ -3493,3 +3493,11 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+## Řádek akcí gridu (2.21.0)
+
+Pořadí vlevo: Nový, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu a vlastní levý obsah. Pořadí vpravo: Hledat, Filtr, Export, Sloupce, Seskupit, oddělovač, Vybrat více, další akce, hustota a zoom, oddělovač, Obnovit. Obnovit je vždy úplně vpravo.
+
+Upravit a Odstranit jednotlivý záznam patří jen do sticky sloupce akcí řádku; dvojklik znamená Upravit. Hromadné akce patří jen do režimu Vybrat více. Zakázaná akce s důvodem zůstává zešedlá s tooltipem přes `editDisabledReason` / `deleteDisabledReason`; bez důvodu se skryje přes `canEditRow` / `canDeleteRow`.
+
+Pod šířkou gridu 640 px zůstává Nový jako ikona, přepnutí pohledu, rozbalení, hledání, filtr a nabídka dalších akcí. Ostatní nástroje jsou ve skupině Nástroje nabídky ⋯.
