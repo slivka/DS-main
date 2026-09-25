@@ -29,6 +29,10 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `destructive-foreground` | `--destructive-foreground` |
 | `success` | `--success` |
 | `success-foreground` | `--success-foreground` |
+| `success-soft` | `--success-soft` |
+| `success-strong` | `--success-strong` |
+| `destructive-soft` | `--destructive-soft` |
+| `destructive-strong` | `--destructive-strong` |
 | `warning` | `--warning` |
 | `warning-foreground` | `--warning-foreground` |
 | `warning-strong` | `--warning-strong` |
