@@ -79,6 +79,7 @@ describe("DocumentForm 2.31.0", () => {
     const amountSection = html.slice(html.indexOf(">Účtování a částka</h2>"), html.indexOf("role=\"tablist\""));
     expect(amountSection).not.toContain('id="document-roundingAmount"');
     expect(html).toContain('data-slot="journal-lines-rounding"');
+    expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Haléřové vyrovnání");
   });
   it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));

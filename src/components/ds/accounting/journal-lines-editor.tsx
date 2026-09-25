@@ -699,7 +699,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
                 let content: ReactNode = null;
                 if (column.id === "row") content = t.total;
                 if (column.id === "amount") content = <span className="font-sans tabular-nums">{formatAmount(total, 2)}</span>;
-                if (column.id === "text") content = expectedAmount === undefined ? null : difference === 0 ? t.balanced : (
+                if (column.id === "text") content = expectedAmount === undefined || showRemaining ? null : difference === 0 ? t.balanced : (
                   <span className={amountClass(-Math.abs(difference))}>{`${showRemaining ? t.remaining : t.difference}: ${formatAmount(difference, 2)}`}</span>
                 );
                 if (column.id === "actions" && errorCount > 0) content = <span className="text-destructive">{`${t.errors}: ${errorCount}`}</span>;
