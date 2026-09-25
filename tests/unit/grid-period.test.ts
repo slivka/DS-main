@@ -122,6 +122,14 @@ describe("kontextový řádek gridu", () => {
     expect(html).toContain('aria-hidden="true"');
   });
 
+  it("drží typické i vybrané popisky období ve stejné překryvné buňce", () => {
+    const period = { fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: gridPeriodRange("2026-01-01", "2026-12-31", "ytd", 0, "2026-09-25"), onChange: () => {} };
+    const html = renderToStaticMarkup(createElement(GridContextBar, { period }));
+    expect(html).toContain("Celé období");
+    expect(html).toContain("Od začátku roku do");
+    expect((html.match(/\[grid-area:1\/1\]/g) ?? []).length).toBeGreaterThanOrEqual(6);
+  });
+
   it("formulářovou jedinou knihu zobrazí jako hodnotu bez výběru", () => {
     const html = renderToStaticMarkup(createElement(BookSelect, { books: book.books, value: "a", onChange: () => {} }));
     expect(html).toContain("A – Kniha A");
