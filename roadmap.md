@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.20.3 (popisky a oddělený kontextový řádek)
+- [x] Doplnit přístupně svázané popisky Kniha a Období s přeložitelnými texty
+- [x] Vizuálně oddělit kontextový řádek tokenovým podkladem, linkou a nižší výškou
+- [x] Sjednotit kontext, akce a tabulku do jednoho bloku s jedním okrajem a stínem
+- [x] Doplnit ukázky, testy, pravidla a veřejný katalog
+
 ## Verze 2.20.2 (kniha vlevo a jednohodnotové výběry)
 - [x] Přesunout knihu před období a vložit mezi ně hustotně řízený oddělovač
 - [x] Zobrazovat jedinou nebo needitovatelnou knihu jen jako text

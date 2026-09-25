@@ -21,27 +21,38 @@ export const DEFAULT_GRID_PERIOD_TEXTS: GridPeriodTexts = {
   thisMonth: "Tento měsíc", previousMonth: "Minulý měsíc", thisQuarter: "Toto čtvrtletí", previous: "Předchozí období", next: "Následující období", clear: "Celé období",
 };
 export interface GridPeriodConfig {
-  fiscalFrom: string; fiscalTo: string; value: GridPeriodValue; onChange: (value: GridPeriodValue) => void; texts?: Partial<GridPeriodTexts>; today?: string;
+  fiscalFrom: string; fiscalTo: string; value: GridPeriodValue; onChange: (value: GridPeriodValue) => void; texts?: Partial<GridPeriodTexts>; today?: string; controlId?: string; ariaLabelledBy?: string;
 }
 export interface GridBookDisplayConfig {
-  books: BookOption[]; value: string | "all"; onChange?: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string; readOnly?: boolean;
+  books: BookOption[]; value: string | "all"; onChange?: (value: string | "all") => void; allowAll?: boolean; allBooksLabel?: string; readOnly?: boolean; controlId?: string; ariaLabelledBy?: string;
 }
 export interface GridBookConfig<Row = unknown> extends GridBookDisplayConfig {
   getRowBookId?: (row: Row) => string | null | undefined;
 }
 export interface GridContextBarProps extends React.ComponentPropsWithoutRef<"div"> {
   period?: GridPeriodConfig; book?: GridBookDisplayConfig;
+  texts?: Partial<GridContextBarTexts>;
   /** Měřítko řádku; bez zadání se převezme z nejbližšího GridZoomContext. */
   zoom?: number;
   /** Hustota řádku; bez zadání se převezme z nejbližšího GridZoomContext. */
   density?: GridDensity;
 }
 
+export interface GridContextBarTexts {
+  bookLabel: string;
+  periodLabel: string;
+}
+
+export const DEFAULT_GRID_CONTEXT_BAR_TEXTS: GridContextBarTexts = {
+  bookLabel: "Kniha:",
+  periodLabel: "Období:",
+};
+
 const parse = (value: string) => new Date(`${value}T00:00:00Z`);
 const iso = (date: Date) => date.toISOString().slice(0, 10);
 const monthIndex = (fiscalFrom: string, date: Date) => (date.getUTCFullYear() - parse(fiscalFrom).getUTCFullYear()) * 12 + date.getUTCMonth() - parse(fiscalFrom).getUTCMonth();
 
-export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts, today = iso(new Date()) }: GridPeriodConfig) {
+export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts, today = iso(new Date()), controlId, ariaLabelledBy }: GridPeriodConfig) {
   const t = { ...DEFAULT_GRID_PERIOD_TEXTS, ...texts };
   const [open, setOpen] = React.useState(false);
   const movable = value.kind === "month" || value.kind === "quarter" || value.kind === "half";
@@ -68,7 +79,7 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
   return <TooltipProvider delayDuration={250}><div className="flex min-w-0 items-center gap-1">
     {movable ? <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="grid-toolbar-icon-control" aria-label={t.previous} disabled={(value.index ?? 0) <= 0} onClick={() => onChange(moveGridPeriod(fiscalFrom, fiscalTo, value, -1))}><ChevronLeft className="size-[1.2em]" /></Button></TooltipTrigger><TooltipContent>{t.previous}</TooltipContent></Tooltip> : null}
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild><Button type="button" variant="outline" className={cn("grid-toolbar-control max-w-[20em] font-medium", value.kind !== "all" && "grid-toolbar-active")}><span className="truncate">{gridPeriodLabel(value)}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger>
+      <PopoverTrigger asChild><Button id={controlId} aria-labelledby={ariaLabelledBy} type="button" variant="outline" className={cn("grid-toolbar-control max-w-[20em] bg-card font-medium", value.kind !== "all" && "grid-toolbar-active")}><span className="truncate">{gridPeriodLabel(value)}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger>
       <PopoverContent align="start" className="w-[22rem] p-3" onKeyDown={(event) => { if (event.altKey && (event.key === "ArrowLeft" || event.key === "ArrowRight")) event.stopPropagation(); }}>
         {quick.length ? <div className="mb-3 flex flex-wrap gap-1 border-b pb-3">{quick.map((item) => <Button key={item.label} type="button" size="sm" variant="ghost" onClick={() => setKind(item.kind, item.index)}>{item.label}</Button>)}</div> : null}
         <div className="grid gap-2">
@@ -90,25 +101,31 @@ function PeriodGrid({ label, count, active, columns, render, onSelect }: { label
   return <div><div className="mb-1 text-sm font-medium">{label}</div><div className={cn("grid gap-1", columns === 4 ? "grid-cols-4" : "grid-cols-2")}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
 }
 
-export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy", readOnly = false }: GridBookDisplayConfig) {
+export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy", readOnly = false, controlId, ariaLabelledBy }: GridBookDisplayConfig) {
   const active = books.filter((book) => book.active !== false);
   const selected = active.find((book) => book.id === value);
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const textOnly = active.length === 1 || readOnly || !onChange;
   const textBook = active.length === 1 ? active[0] : selected;
-  if (textOnly) return <TooltipProvider><Tooltip><TooltipTrigger asChild><strong className="block max-w-[16em] truncate">{value === "all" ? allBooksLabel : textBook?.name ?? allBooksLabel}</strong></TooltipTrigger>{textBook?.code ? <TooltipContent>{textBook.code}</TooltipContent> : null}</Tooltip></TooltipProvider>;
+  if (textOnly) return <TooltipProvider><Tooltip><TooltipTrigger asChild><strong id={controlId} aria-labelledby={ariaLabelledBy} className="block max-w-[16em] truncate">{value === "all" ? allBooksLabel : textBook?.name ?? allBooksLabel}</strong></TooltipTrigger>{textBook?.code ? <TooltipContent>{textBook.code}</TooltipContent> : null}</Tooltip></TooltipProvider>;
   const options = active.filter((book) => `${book.name} ${book.code}`.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
-  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button type="button" variant="outline" className="grid-toolbar-control max-w-[16em] justify-between font-semibold"><span className="truncate">{value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger><PopoverContent align="start" className="w-72 p-1"><div className="relative mb-1"><Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat knihu…" className="pl-8" autoFocus /></div>{allowAll ? <BookOptionButton selected={value === "all"} label={allBooksLabel} onSelect={() => { onChange("all"); setOpen(false); }} /> : null}{options.map((book) => <BookOptionButton key={book.id} selected={value === book.id} label={`${book.name} (${book.code})`} onSelect={() => { onChange(book.id); setOpen(false); }} />)}</PopoverContent></Popover>;
+  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button id={controlId} aria-labelledby={ariaLabelledBy} type="button" variant="outline" className="grid-toolbar-control max-w-[16em] justify-between bg-card font-semibold"><span className="truncate">{value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel}</span><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger><PopoverContent align="start" className="w-72 p-1"><div className="relative mb-1"><Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Hledat knihu…" className="pl-8" autoFocus /></div>{allowAll ? <BookOptionButton selected={value === "all"} label={allBooksLabel} onSelect={() => { onChange("all"); setOpen(false); }} /> : null}{options.map((book) => <BookOptionButton key={book.id} selected={value === book.id} label={`${book.name} (${book.code})`} onSelect={() => { onChange(book.id); setOpen(false); }} />)}</PopoverContent></Popover>;
 }
 function BookOptionButton({ selected, label, onSelect }: { selected: boolean; label: string; onSelect: () => void }) { return <Button type="button" role="option" aria-selected={selected} variant="ghost" className="w-full justify-start gap-2 px-2 font-normal" onClick={onSelect}><span className="size-4">{selected ? <Check className="size-4" /> : null}</span><span className="truncate">{label}</span></Button>; }
 
-export const GridContextBar = React.forwardRef<HTMLDivElement, GridContextBarProps>(function GridContextBar({ period, book, zoom, density, className, style, ...props }, ref) {
+export const GridContextBar = React.forwardRef<HTMLDivElement, GridContextBarProps>(function GridContextBar({ period, book, texts, zoom, density, className, style, ...props }, ref) {
   const context = useGridZoomContext();
+  const uid = React.useId().replace(/[^a-zA-Z0-9]/g, "");
+  const t = { ...DEFAULT_GRID_CONTEXT_BAR_TEXTS, ...texts };
+  const bookLabelId = `grid-book-label-${uid}`;
+  const bookControlId = `grid-book-control-${uid}`;
+  const periodLabelId = `grid-period-label-${uid}`;
+  const periodControlId = `grid-period-control-${uid}`;
   const resolvedZoom = zoom ?? context?.zoom ?? 1;
   const resolvedDensity = density ?? context?.density ?? "normal";
   if (!period && !book) return null;
-  return <div ref={ref} data-slot="grid-context-bar" data-density={resolvedDensity} className={cn("zoom-filters grid-toolbar-row flex min-w-0 flex-wrap items-center gap-2 border", className)} style={{ ...style, fontSize: gridFontSize(resolvedZoom) }} {...props}>{book ? <GridBookSelect {...book} /> : null}{book && period ? <GridToolbarSeparator density={resolvedDensity} /> : null}{period ? <GridPeriodFilter {...period} /> : null}</div>;
+  return <div ref={ref} data-slot="grid-context-bar" data-density={resolvedDensity} className={cn("zoom-filters grid-context-row flex min-w-0 flex-wrap items-center gap-2 border", className)} style={{ ...style, fontSize: gridFontSize(resolvedZoom) }} {...props}>{book ? <div className="flex min-w-0 items-center gap-[0.35em]"><label id={bookLabelId} htmlFor={bookControlId} className="font-normal text-muted-foreground">{t.bookLabel}</label><GridBookSelect {...book} controlId={bookControlId} ariaLabelledBy={bookLabelId} /></div> : null}{book && period ? <GridToolbarSeparator density={resolvedDensity} /> : null}{period ? <div className="flex min-w-0 items-center gap-[0.35em]"><label id={periodLabelId} htmlFor={periodControlId} className="font-normal text-muted-foreground">{t.periodLabel}</label><GridPeriodFilter {...period} controlId={periodControlId} ariaLabelledBy={periodLabelId} /></div> : null}</div>;
 });
 
 export const GRID_BOOK_COLUMN_ID = "__grid_book__";

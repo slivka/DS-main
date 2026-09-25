@@ -61,6 +61,24 @@ describe("kontextový řádek gridu", () => {
     expect(renderToStaticMarkup(createElement(GridContextBar, { period }))).not.toContain("w-px shrink-0");
   });
 
+  it("zobrazuje české popisky a váže je na knihu i období", () => {
+    const period = { fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: gridPeriodRange("2026-01-01", "2026-12-31", "all"), onChange: () => {} };
+    const html = renderToStaticMarkup(createElement(GridContextBar, { book, period }));
+    expect(html).toContain(">Kniha:</label>");
+    expect(html).toContain(">Období:</label>");
+    const bookLabelId = html.match(/id="(grid-book-label-[^"]+)"/)?.[1];
+    const periodLabelId = html.match(/id="(grid-period-label-[^"]+)"/)?.[1];
+    expect(bookLabelId).toBeTruthy();
+    expect(periodLabelId).toBeTruthy();
+    expect(html).toContain(`aria-labelledby="${bookLabelId}"`);
+    expect(html).toContain(`aria-labelledby="${periodLabelId}"`);
+  });
+
+  it("přijímá vlastní popisky přes texts", () => {
+    const html = renderToStaticMarkup(createElement(GridContextBar, { book, texts: { bookLabel: "Agenda:" } }));
+    expect(html).toContain(">Agenda:</label>");
+  });
+
   it("jedinou knihu vykreslí jen jako text bez tlačítka nebo comboboxu", () => {
     const html = renderToStaticMarkup(createElement(GridBookSelect, { ...book, onChange: () => {} }));
     expect(html).toContain("<strong");

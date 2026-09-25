@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.20.3 – popisky a oddělený kontextový řádek
+
+- `GridContextBar` má české výchozí popisky „Kniha:“ a „Období:“; lze je změnit přes `texts.bookLabel` a `texts.periodLabel` a jsou přístupnostně svázané s hodnotou nebo výběrem.
+- Kontextový řádek používá tokenový podklad záhlaví, spodní linku a nižší výšku. Výběry zůstávají bílé a řádek akcí zůstává bílý.
+- Kontext, akce, hlavička, řádky a součet tvoří jeden blok s jediným vnějším okrajem a stínem. Stejná logika platí v tmavém režimu.
+- Bez breaking changes.
+
 ## Changelog 2.20.2 – kniha vlevo a jednohodnotové výběry
 
 - `GridContextBar` zobrazuje vlevo knihu, oddělovač podle hustoty a následně období; pravá část zůstává prázdná.

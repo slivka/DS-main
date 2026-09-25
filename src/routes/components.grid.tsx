@@ -158,13 +158,19 @@ function GridPage() {
         <GridContextBar
           period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
           book={{ books, value: bookId, onChange: setBookId }}
-          className="rounded border"
+          className="rounded-t-lg border"
+        />
+      </div>
+      <div className="mt-8 max-w-3xl">
+        <GridContextBar
+          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
+          className="rounded-t-lg border"
         />
       </div>
       <div className="mt-8 max-w-3xl">
         <GridContextBar
           book={{ books, value: "csob", readOnly: true }}
-          className="rounded border"
+          className="rounded-t-lg border"
         />
       </div>
     </ShowcaseLayout>
