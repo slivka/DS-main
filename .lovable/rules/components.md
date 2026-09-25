@@ -3550,3 +3550,10 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### DocumentForm 2.24.0
+- `documentType` (výchozí `ID`) určuje výchozí pole a účetní popisky; `fields` slouží pro výjimky.
+- `periodLabel` je text období a `rateAmount` množství měny pro kurz; `PartnerOption.dic` doplňuje DIČ.
+- `AccountSelect.suffix` patří dovnitř spouštěče před šipku; `totalMode` lze uvést v `editableFields`.
+- Zamčený nebo jediný hlavní účet se zobrazuje jako text, nikoli jako zakázaný výběr.
+
