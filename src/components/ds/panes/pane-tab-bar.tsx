@@ -192,7 +192,7 @@ function SortableTab({
           </Tooltip>
           <button
             type="button"
-            aria-label={dirty ? `${texts.closeTab} (${texts.unsaved})` : texts.closeTab}
+                    aria-label={dirty ? `${texts.closeTab} (${texts.unsaved.charAt(0).toLocaleLowerCase("cs")}${texts.unsaved.slice(1)})` : texts.closeTab}
             className="relative mr-1 flex size-5 shrink-0 items-center justify-center rounded-full text-foreground/70 hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             onPointerDown={(event) => event.stopPropagation()}
             onDoubleClick={(event) => event.stopPropagation()}

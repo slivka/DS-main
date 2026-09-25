@@ -13,6 +13,6 @@ describe("PaneTabBar 2.28.0", () => {
   it("zavírá prostředním tlačítkem a popisuje neuložené změny", () => {
     expect(source).toContain("event.button !== 1");
     expect(source).toContain("api.closeTab(tab.id)");
-    expect(source).toContain('`${texts.closeTab} (${texts.unsaved})`');
+    expect(source).toContain('texts.unsaved.charAt(0).toLocaleLowerCase("cs")');
   });
 });
