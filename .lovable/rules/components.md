@@ -1042,6 +1042,9 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | `addAction` | any | `—` |
 | `moreActions` | any | `—` |
 | `pdfExport` | function | `—` |
+| `printContext` | any | `—` |
+| `printTitle` | string | `—` |
+| `printParams` | any | `—` |
 | `extraExports` | any | `—` |
 | `emptyTitle` | string | `—` |
 | `emptyDescription` | string | `—` |
@@ -3508,6 +3511,9 @@ Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako 
 | `addAction` | any | `—` |
 | `moreActions` | any | `—` |
 | `pdfExport` | function | `—` |
+| `printContext` | any | `—` |
+| `printTitle` | string | `—` |
+| `printParams` | any | `—` |
 | `extraExports` | any | `—` |
 | `onRefresh` | function | `—` |
 | `refreshing` | boolean | `—` |

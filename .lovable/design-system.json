@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.27.0",
+    "version": "2.28.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -49,7 +49,7 @@
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "8c115ec19c7b8b286ad4f5b3e70be3e0",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "e518605e7aca50acb9de859a80f72aaa",
+      "README.md": "2668772787284653252f2efdb14e955c",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "components.md": "ac3b24e3ae2682b0978528b2bc490b2d",
@@ -57,10 +57,10 @@
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "aa01eb3788fc2d05819023b5830bb31a",
+      "package.json": "68d051f88989822819f87217acc2f500",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "e00308548a4d7bac6cdeeacad7084cc7",
+      "roadmap.md": "933f7affd81bf70608c2bb2daed44952",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -119,8 +119,8 @@
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
-      "src/components/ds/grid/DataGrid.tsx": "cb7a683da8ddb6c3b27a7f331e78f8a2",
-      "src/components/ds/grid/TreeGrid.tsx": "912971a9717793ac4d5ddfce15681ab3",
+      "src/components/ds/grid/DataGrid.tsx": "7237ff39536af537ec1a5daa9db25222",
+      "src/components/ds/grid/TreeGrid.tsx": "7b8ba85a2fec7b82f54c3d2a5f9d1d4d",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
@@ -128,12 +128,13 @@
       "src/components/ds/grid/grid-column-resize.tsx": "d7ab96fbc8749dcf71dbfe0c415e69fa",
       "src/components/ds/grid/grid-columns.tsx": "d53c72de1d102db12009eea281dd2d2b",
       "src/components/ds/grid/grid-context-bar.tsx": "9f18a3dffc46927b14deb2d977e4264e",
-      "src/components/ds/grid/grid-export.tsx": "e82a90868cf3e1862765fe6ec9e7cdb3",
+      "src/components/ds/grid/grid-export.tsx": "fed011280b0a483cc9dd991ea48ee237",
       "src/components/ds/grid/grid-filters.tsx": "cc183be2b2f5fbfd0d58dec0a613deb6",
       "src/components/ds/grid/grid-grouping.tsx": "c1f101769f4e4acade47fb2108114463",
       "src/components/ds/grid/grid-more-menu.tsx": "43d5cc3d635b5b3be9a4b1ea7f7a66f2",
       "src/components/ds/grid/grid-pagination.tsx": "e7e6eef33aec4ea729741ea534eb75d4",
       "src/components/ds/grid/grid-period.ts": "577ac3b586c7c6ba80e47dbef9d3d001",
+      "src/components/ds/grid/grid-print.tsx": "60cf44f2df155060e51ed8b650e9dec0",
       "src/components/ds/grid/grid-refresh.tsx": "e8b51c21f4411a94691709f3eaf578b2",
       "src/components/ds/grid/grid-search.tsx": "c939f18619ae419b790969d2fba8250a",
       "src/components/ds/grid/grid-sections.tsx": "7186337750209d575c12c257d5246c3e",
@@ -147,7 +148,7 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "ea65781bad02b3deec17eff5cdd34699",
       "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
-      "src/components/ds/index.ts": "8b09461d4751faec6e4b15fc5258c498",
+      "src/components/ds/index.ts": "bd53973208568d63604f786e2472d05e",
       "src/components/ds/layout/AppShell.tsx": "759b50c45ed540877647b11a8dedf1e6",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "d2104af5f798bfe1e51e7a1cea625180",
@@ -180,10 +181,10 @@
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/ds/print/cash-receipt-pdf.tsx": "bcbb15a43b610908ff92d5552de446a8",
       "src/components/ds/print/print-preview-dialog.tsx": "bbfee92dc25da606c7eebf80955844af",
-      "src/components/ds/print/report-pdf.ts": "ca9cddaf8ff9e37824d4a9e45f1685dd",
+      "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
       "src/components/showcase/DocumentFormShowcase.tsx": "1e3ae8a74a442b90d325e988c91f01e7",
       "src/components/showcase/PaneShowcase.tsx": "d2abe066e9d9b6dabac5bdea2ffcd369",
-      "src/components/showcase/PrintShowcase.tsx": "0bcf90b475ac9654bcb7124522b50eaf",
+      "src/components/showcase/PrintShowcase.tsx": "52356421037e974927fd29901c18afdd",
       "src/components/showcase/ReportsShowcase.tsx": "cf8eb24d8cc6229e5102b8990053eee3",
       "src/components/showcase/ShowcaseLayout.tsx": "83f6f4faf7e83d7516dd54b1c302973b",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
@@ -294,6 +295,7 @@
       "tests/unit/document-form-224.test.tsx": "365dcbd48fffd08ae66785ea5eb6015a",
       "tests/unit/grid-actions-226.test.tsx": "6400529251c2ccdb659e07c4e06f7dd5",
       "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
+      "tests/unit/grid-print-227.test.ts": "5779194524d28ce74635ac0a101ea3ac",
       "tests/unit/grid-toolbar-2211.test.ts": "b47743c69f26969c1af57b556fcae1b1",
       "tests/unit/nav-search.test.ts": "f1c39b11786ffadcedd2e614d1142635",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
@@ -3588,6 +3590,18 @@
           "type": "function"
         },
         {
+          "name": "printContext",
+          "type": "any"
+        },
+        {
+          "name": "printTitle",
+          "type": "string"
+        },
+        {
+          "name": "printParams",
+          "type": "any"
+        },
+        {
           "name": "extraExports",
           "type": "any"
         },
@@ -4431,6 +4445,18 @@
         {
           "name": "pdfExport",
           "type": "function"
+        },
+        {
+          "name": "printContext",
+          "type": "any"
+        },
+        {
+          "name": "printTitle",
+          "type": "string"
+        },
+        {
+          "name": "printParams",
+          "type": "any"
         },
         {
           "name": "extraExports",
