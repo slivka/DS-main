@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 for (const width of [360, 480, 620, 800, 1100, 1440]) {
   test(`řádek akcí se neořízne při ${width} px`, async ({ page }) => {
+    await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
     const grid = page.locator('[data-slot="data-grid"]').first();
     await grid.evaluate((element, nextWidth) => {
@@ -35,6 +36,7 @@ for (const width of [360, 480, 620, 800, 1100, 1440]) {
 
 for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]']) {
   test(`pořadí skupin a oddělovače v ${gridSelector}`, async ({ page }) => {
+    await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
     const toolbar = page.locator(gridSelector).first().locator('[data-slot="grid-toolbar"]');
     await toolbar.evaluate((element) => { (element.closest('[data-slot="data-grid"],[data-slot="tree-grid"]') as HTMLElement).style.width = "1440px"; });
