@@ -77,7 +77,7 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
     { label: t.previousMonth, kind: "month" as const, index: previousMonth },
     { label: t.thisQuarter, kind: "quarter" as const, index: currentQuarter },
   ].filter((item) => item.index >= 0 && inFiscal(gridPeriodRange(fiscalFrom, fiscalTo, item.kind, item.index).from, gridPeriodRange(fiscalFrom, fiscalTo, item.kind, item.index).to));
-  const widthLabels = [
+  const widthLabels = [selectedLabel,
     t.all,
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "month", 8, today)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "quarter", 3, today)),
@@ -85,7 +85,7 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "ytd", 0, fiscalTo)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "custom", 0, today)),
   ];
-  const selectedLabel = gridPeriodLabel(value);
+  ];
 
   return <TooltipProvider delayDuration={250}><div className="flex min-w-0 items-center gap-1">
     {movable ? <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="grid-toolbar-icon-control" aria-label={t.previous} disabled={(value.index ?? 0) <= 0} onClick={() => onChange(moveGridPeriod(fiscalFrom, fiscalTo, value, -1))}><ChevronLeft className="size-[1.2em]" /></Button></TooltipTrigger><TooltipContent>{t.previous}</TooltipContent></Tooltip> : null}

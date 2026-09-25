@@ -60,7 +60,7 @@ function GridPage() {
   ], []);
   const rowBookId = (row: JournalEntry) => books[Math.abs(Number(row.id.replace(/\D/g, "")) || 0) % books.length]?.id ?? books[0]?.id;
   const cashRows = useMemo(() => filterByDirection(MOCK_JOURNAL.slice(0, 12), direction, (row) => Number(row.id.replace(/\D/g, "")) % 2 ? "in" : "out"), [direction]);
-  const directionToggle = <GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr pokladního dokladu" />;
+  const directionToggle = <GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => { if (value === "all" || value === "in" || value === "out") setDirection(value); }} defaultValue="all" ariaLabel="Směr pokladního dokladu" />;
   const accountNames = useMemo(
     () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
     [],
