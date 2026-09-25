@@ -497,11 +497,9 @@ export function TreeGrid<Row extends TreeGridRow>({
             zoom={zoom}
             title={t.columnsTitle}
           /></div>
-          {selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}
-          {actions}
-          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} className={moreActions.length ? "" : "hidden @max-[639px]:inline-flex"} />
-          <div className="hidden @min-[640px]:contents"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
-          {onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} className="hidden @min-[640px]:inline-flex" /></> : null}
+          <div className="hidden @min-[640px]:contents">{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}</div>
+          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} tools={<>{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />{onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null}</>} secondary={<>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}</>} className="@min-[640px]:hidden" />
+          <div className="hidden @min-[640px]:contents"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />{moreActions.length ? <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} /> : null}{onRefresh ? <><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></> : null}</div>
         </>}
       />
       {filters ? <GridFilterPanel open={filtersOpen}>{filters}</GridFilterPanel> : null}
