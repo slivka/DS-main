@@ -54,7 +54,7 @@ export function DocumentFormShowcase() {
   ]);
 
   const [cash, setCash] = useState<DocumentHeaderValue>({
-    bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-23", issueDate: "2026-09-23",
+    bookId: "b-pd", number: "", direction: "in", accountingDate: "2026-09-23", issueDate: "2026-09-23",
     taxDate: "2026-09-23", partnerId: "p2", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
     amountTotal: 1250, totalMode: "entered", roundingAmount: 0.4, mainAccountId: "211001",
   });
@@ -109,7 +109,7 @@ export function DocumentFormShowcase() {
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="FV" periodLabel="Rok 2026"
           mainSide="MD"
-          editableFields={["description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
+          editableFields={["mainAccountId", "description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
           linesEditorProps={{ editableFields: ["text", "debitVs", "creditVs", "debitPartnerId", "creditPartnerId", "debitDimensionId", "creditDimensionId", "nonTax"], storageKey: "showcase-doc-posted" }}
           status="posted" approved
           changedBy="Jana Nováková" changedAt="12.09.2026 14:05"
@@ -120,16 +120,16 @@ export function DocumentFormShowcase() {
         />
       </ShowcaseSection>
 
-      <ShowcaseSection title="Pokladna – výdej s haléřovým vyrovnáním"
-        description="Směr je jen ke čtení, číslo se přidělí při zařazení. Hlavní účet 211 na straně DAL, řádek zaokrouhlení je poslední.">
+      <ShowcaseSection title="Pokladna – příjem se zamčeným účtem"
+        description="Jediná kniha a účet pokladny jsou zobrazené jako text. Směr je jen ke čtení a číslo se přidělí při zařazení.">
         <DocumentForm
-          title="Pokladní doklad – výdej"
+          title="Pokladní doklad – příjem"
           value={cash} onChange={setCash}
           lines={cashLines} onLinesChange={setCashLines}
           accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="PO" periodLabel="Rok 2026"
           books={MOCK_BOOKS.filter((book) => book.id === "b-pd")}
-          isNew mainSide="D" mainAccountLocked
+          isNew mainSide="MD" mainAccountLocked
           linesEditorProps={{ storageKey: "showcase-doc-cash" }}
           status="draft"
         />

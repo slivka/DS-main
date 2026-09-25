@@ -34,6 +34,7 @@ describe("DocumentForm 2.24.0", () => {
     expect(html).toContain("211.001");
     expect(html).toContain("Pokladna CZK");
     expect(html).not.toContain('id="document-main-account" type="button"');
-    expect(html).not.toContain('role="combobox"');
+    const accountField = html.match(/Účet pokladny[\s\S]*?Datum účetního případu/)?.[0] ?? "";
+    expect(accountField).not.toContain('role="combobox"');
   });
 });

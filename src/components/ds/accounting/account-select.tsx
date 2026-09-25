@@ -46,6 +46,26 @@ export type AccountLevel = "class" | "group" | "synthetic" | "analytic";
 /** Položka číselníku tříd a skupin (kód „5“, „51“ + název). */
 export type AccountCatalogItem = { code: string; name: string };
 
+export interface AccountSelectProps {
+  accounts: AccountOption[];
+  value: string | null | undefined;
+  onChange: (code: string) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+  hideInactive?: boolean;
+  disableSyntheticWithAnalytics?: boolean;
+  typeLabels?: Record<AccountType, string>;
+  allowLevels?: AccountLevel[];
+  catalog?: AccountCatalogItem[];
+  disabled?: boolean;
+  initialSearch?: string;
+  onOpenChange?: (open: boolean) => void;
+  /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
+  suffix?: ReactNode;
+  className?: string;
+}
+
 export function accountLevelOf(code: string): AccountLevel {
   const length = normalizeAccountCode(code).length;
   if (length <= 1) return "class";
@@ -74,31 +94,7 @@ export function AccountSelect({
   onOpenChange,
   suffix,
   className,
-}: {
-  accounts: AccountOption[];
-  value: string | null | undefined;
-  onChange: (code: string) => void;
-  placeholder?: string;
-  searchPlaceholder?: string;
-  emptyText?: string;
-  hideInactive?: boolean;
-  disableSyntheticWithAnalytics?: boolean;
-  typeLabels?: Record<AccountType, string>;
-  /**
-   * Povolené úrovně výběru. Bez zadání jen účty, na které lze účtovat.
-   * Při třídě / skupině vrací `onChange` prefix („5“, „51“).
-   */
-  allowLevels?: AccountLevel[];
-  /** Číselník tříd a skupin – názvy pro prefixy „5“, „51“. */
-  catalog?: AccountCatalogItem[];
-  disabled?: boolean;
-  /** Počáteční hledání při otevření z editovatelné buňky. */
-  initialSearch?: string;
-  onOpenChange?: (open: boolean) => void;
-  /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
-  suffix?: ReactNode;
-  className?: string;
-}) {
+}: AccountSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(initialSearch ?? "");
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
