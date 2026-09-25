@@ -123,6 +123,8 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   /** Volitelný obsah vpravo v kontextovém řádku. */
   contextRight?: ReactNode;
   filters?: ReactNode;
+  /** Otevře panel filtrů při prvním zobrazení. */
+  defaultFiltersOpen?: boolean;
   filterChips?: FilterChip[];
   onClearFilters?: () => void;
   defaultFilters?: string[];
@@ -196,6 +198,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   book,
   contextRight,
   filters,
+  defaultFiltersOpen = false,
   filterChips = [],
   onClearFilters,
   defaultFilters = [],
@@ -232,7 +235,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   const { confirm, confirmDialog } = useConfirmDialog();
   const key = storageKey ?? `tree:${exportName ?? title}`;
   const [query, setQuery] = useState("");
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(defaultFiltersOpen);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [ownDepth, setOwnDepth] = useState<number | null>(null);
   const [autoHighlight, setAutoHighlight] = useState<string | null>(null);
@@ -473,7 +476,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               texts={sharedTexts}
             />
           ) : null}
-          <GridMoreMenu items={moreActions} zoom={zoom} texts={sharedTexts} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} footer={onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null} className="grid-toolbar-overflow-menu @min-[640px]:hidden" />
+          <GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={exportData} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} footer={onRefresh ? <GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /> : null} className="grid-toolbar-overflow-menu @min-[640px]:hidden" />
           <div className="grid-toolbar-wide hidden @min-[640px]:contents">
             <span className="grid-toolbar-display-group contents"><GridToolbarSeparator density={density} />
             <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} />
