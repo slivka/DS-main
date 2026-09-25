@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
+import { BookOpen, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
 
 import {
   AppShell,
@@ -32,6 +32,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: "/components/grid", label: "Datová mřížka", icon: LayoutGrid },
       { to: "/components/excel-export", label: "Export do Excelu", icon: FileSpreadsheet },
+      { to: "/components/print", label: "Tisk", icon: Printer },
       { to: "/components/forms", label: "Formuláře", icon: TextCursorInput },
       { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare },
       { to: "/components/accounting-forms", label: "Účetní formuláře", icon: Receipt },

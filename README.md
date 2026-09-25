@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.26.0 – akce dokladu a tiskové PDF
+
+- `DocumentForm` má pod nadpisem přilepený pruh se stavem, schválením, akcí Uložit, hlavní stavovou akcí a nabídkou dalších akcí. Nové props jsou `saveAction`, `primaryAction` a `moreActions`; původní volné `actions` bylo odstraněno.
+- Uložit podporuje stav změn, průběh ukládání a zkratku Ctrl/Cmd+S uvnitř formuláře; v úzkém panelu zůstávají hlavní akce jako ikony s nápovědou.
+- Akční sloupec `DataGrid` a `TreeGrid` má viditelné přeložitelné záhlaví „Akce“.
+- Nové tiskové jádro `buildReportPdf`, `PrintPreviewDialog`, `companyMonogramSvg` a `amountInWordsCs` vytváří firemní A4 sestavy s českými fonty, opakovaným záhlavím, součty a číslováním vícestránkových výstupů.
+- Nové `buildCashReceiptPdf` a `CashReceiptPrintDialog` tisknou příjmové i výdajové pokladní doklady, jednu nebo dvě kopie na A4, koncept s vodoznakem a cizí měnu.
+
 ## Changelog 2.25.0 – protistrana, měna a období v DocumentForm
 
 - Nová komponenta `CounterpartyField`: volný text protistrany s našeptáváním partnerů (název, IČO); výběr vyplní název i `partnerId`, ruční přepis vazbu zruší, ✕ „Zrušit propojení“ nechá text; `disabled` = text.

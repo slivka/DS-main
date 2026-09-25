@@ -507,7 +507,7 @@ export function TreeGrid<Row extends TreeGridRow>({
                   {column.label}
                 </TableHead>
               ))}
-              {hasRowActions ? <TableHead className="grid-actions-header sticky right-0 z-20 w-px border-l !px-0.5 py-0" aria-label={actionsLabel ?? sharedTexts.actions} /> : null}
+              {hasRowActions ? <TableHead className="grid-actions-header sticky right-0 z-20 w-px whitespace-nowrap border-l px-2 py-0 text-center" aria-label={actionsLabel ?? sharedTexts.actions}>{actionsLabel ?? sharedTexts.actions}</TableHead> : null}
             </TableRow>
           </TableHeader>
           <TableBody>

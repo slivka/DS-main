@@ -108,3 +108,9 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 ## CounterpartyField (2.25.0)
 Protistrana jako volný text s volitelným propojením na partnera. Props: `value: { name, partnerId }`, `onChange`, `partners`, `onCreatePartner?`, `disabled`, `placeholder`, `id`. Psaní ruší `partnerId`, výběr partnera vyplní oba údaje. DocumentForm: `counterpartyName`, `homeCurrency`, `currencyLocked`, `onCreatePartner`.
+
+## DocumentActionBar a tisk (2.26.0)
+
+`DocumentForm` používá `saveAction`, `primaryAction` a `moreActions`; stav a schválení zůstávají v přilepeném pruhu přímo pod `PageHeader`. Akce Uložit reaguje na Ctrl/Cmd+S, `dirty` a `busy`.
+
+`buildReportPdf` vytváří obecné firemní sestavy ze sekcí `table`, `text` a `custom`. `PrintPreviewDialog` zobrazuje PDF přes celou šířku a nabízí Tisk a Stáhnout PDF. `buildCashReceiptPdf` a `CashReceiptPrintDialog` vytvářejí pokladní doklady včetně dvou kopií na A4. `amountInWordsCs` převádí částky na český dokladový zápis a `companyMonogramSvg` dodává náhradní firemní monogram.

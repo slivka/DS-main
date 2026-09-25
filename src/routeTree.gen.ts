@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComponentsPrintRouteImport } from './routes/components.print'
 import { Route as ComponentsNavigationRouteImport } from './routes/components.navigation'
 import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
@@ -28,6 +29,11 @@ const GuidelinesRoute = GuidelinesRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsPrintRoute = ComponentsPrintRouteImport.update({
+  id: '/components/print',
+  path: '/components/print',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsNavigationRoute = ComponentsNavigationRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/navigation': typeof ComponentsNavigationRoute
+  '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/navigation': typeof ComponentsNavigationRoute
+  '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/navigation': typeof ComponentsNavigationRoute
+  '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/components/forms'
     | '/components/grid'
     | '/components/navigation'
+    | '/components/print'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/components/forms'
     | '/components/grid'
     | '/components/navigation'
+    | '/components/print'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   id:
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/components/forms'
     | '/components/grid'
     | '/components/navigation'
+    | '/components/print'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
@@ -159,6 +171,7 @@ export interface RootRouteChildren {
   ComponentsFormsRoute: typeof ComponentsFormsRoute
   ComponentsGridRoute: typeof ComponentsGridRoute
   ComponentsNavigationRoute: typeof ComponentsNavigationRoute
+  ComponentsPrintRoute: typeof ComponentsPrintRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -177,6 +190,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/print': {
+      id: '/components/print'
+      path: '/components/print'
+      fullPath: '/components/print'
+      preLoaderRoute: typeof ComponentsPrintRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/components/navigation': {
@@ -247,6 +267,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComponentsFormsRoute: ComponentsFormsRoute,
   ComponentsGridRoute: ComponentsGridRoute,
   ComponentsNavigationRoute: ComponentsNavigationRoute,
+  ComponentsPrintRoute: ComponentsPrintRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,

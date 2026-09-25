@@ -44,4 +44,11 @@ describe("DocumentForm 2.24.0", () => {
     expect(html).toContain("15,900 CZK za 100 JPY");
     expect(html).toContain("Rok 2026");
   });
+
+  it("vykreslí trvale viditelné Uložit mimo PageHeader", () => {
+    const html = renderToStaticMarkup(<DocumentForm title="Doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" saveAction={{ onSave: () => {}, dirty: true }} />);
+    expect(html).toContain('data-slot="document-action-bar"');
+    expect(html).toContain('aria-label="Uložit"');
+    expect(html).toContain("Neuložené změny");
+  });
 });
