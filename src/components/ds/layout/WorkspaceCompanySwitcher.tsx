@@ -10,7 +10,7 @@ import {
 import { cn } from "../../../lib/utils";
 
 export type WorkspaceOption = { id: string; name: string };
-export type CompanyOption = { id: string; name: string; workspaceId?: string };
+export type CompanyOption = { id: string; name: string; workspaceId?: string; ico?: string };
 
 /** Výběr pracovního prostoru a firmy v horní liště aplikace. */
 export function WorkspaceCompanySwitcher({
@@ -54,14 +54,14 @@ export function WorkspaceCompanySwitcher({
         </SelectContent>
       </Select>
       <Select value={companyId} onValueChange={onCompanyChange}>
-        <SelectTrigger className="h-9 w-[200px]" aria-label={companyLabel}>
-          <Building2 className="size-4 opacity-70" />
+        <SelectTrigger className="h-9 w-[200px] border-grid-chrome bg-background px-2.5 py-1 text-base font-semibold hover:border-input hover:bg-surface-hover focus-visible:border-primary" aria-label={companyLabel}>
+          <Building2 className="size-4 text-primary" />
           <SelectValue placeholder={companyLabel} />
         </SelectTrigger>
         <SelectContent>
           {visibleCompanies.map((c) => (
             <SelectItem key={c.id} value={c.id}>
-              {c.name}
+              <span className="min-w-0"><span className="block truncate">{c.name}</span>{c.ico ? <span className="block text-xs font-normal text-muted-foreground">IČO {c.ico}</span> : null}</span>
             </SelectItem>
           ))}
         </SelectContent>

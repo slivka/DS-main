@@ -21,6 +21,9 @@ export interface ContextPillProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
   valueContainerClassName?: string;
   detail?: ReactNode;
   detailClassName?: string;
+  iconClassName?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const ContextPillCloseContext = createContext<() => void>(() => {});
@@ -32,12 +35,17 @@ export function useContextPillClose() {
 
 /** Jednořádkový kontextový přepínač do horní lišty aplikace. */
 export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
-  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, tooltip, valueClassName, valueContainerClassName, detail, detailClassName, ...props }, ref) => {
-    const [open, setOpen] = useState(false);
+  ({ label, value, icon: Icon, children, className, contentClassName, contentAlign = "start", valueMuted = false, statusIndicator, compactValue, tooltip, valueClassName, valueContainerClassName, detail, detailClassName, iconClassName, open, onOpenChange, ...props }, ref) => {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const resolvedOpen = open ?? internalOpen;
+    const setOpen = (next: boolean) => {
+      if (open === undefined) setInternalOpen(next);
+      onOpenChange?.(next);
+    };
     return (
       <TooltipProvider>
         <Tooltip>
-          <Popover open={open} onOpenChange={setOpen}>
+          <Popover open={resolvedOpen} onOpenChange={setOpen}>
             <TooltipTrigger asChild>
               <PopoverTrigger asChild>
                 <Button
@@ -45,14 +53,14 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   type="button"
                   variant="ghost"
                   aria-label={label}
-                  className={cn("h-11 min-w-0 max-w-[360px] justify-start gap-2 px-2 text-left", className)}
+                  className={cn("h-9 min-w-0 max-w-[360px] justify-start gap-2 rounded-md px-2.5 py-1 text-left", className)}
                   {...props}
                 >
-                  {Icon ? <Icon className="size-4 shrink-0 text-muted-foreground" /> : null}
+                  {Icon ? <Icon className={cn("size-4 shrink-0 text-muted-foreground", iconClassName)} /> : null}
                   <span className={cn("flex min-w-0 flex-1 items-center gap-2", valueContainerClassName)}>
                     {statusIndicator}
                     <span className="flex min-w-0 flex-1 items-baseline gap-2 leading-tight">
-                    <span className={cn("block min-w-0 truncate text-base font-semibold xl:text-lg", valueMuted ? "text-muted-foreground" : "text-foreground", valueClassName)}>
+                      <span className={cn("block min-w-0 truncate text-base font-semibold", valueMuted ? "text-muted-foreground" : "text-foreground", valueClassName)}>
                       <span data-slot="context-pill-mobile-value" className="md:hidden">{compactValue ?? value}</span>
                       <span data-slot="context-pill-value" className="hidden md:inline">{value}</span>
                     </span>

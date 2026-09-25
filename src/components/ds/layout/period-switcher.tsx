@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Check, Lock } from "lucide-react";
 
 import { Command, CommandGroup, CommandItem, CommandList } from "../../ui/command";
@@ -33,9 +34,9 @@ const stateClass: Record<FiscalPeriodState, string> = {
 };
 
 const triggerStateClass: Record<FiscalPeriodState, string> = {
-  open: "bg-success/12 text-success",
-  closing: "bg-warning/18 text-warning-strong",
-  closed: "bg-muted text-muted-foreground",
+  open: "border-success/35 bg-success/12 text-success hover:border-success/50 hover:bg-success/16",
+  closing: "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24",
+  closed: "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80",
 };
 
 function formatPeriodTooltipDate(value: string) {
@@ -126,12 +127,15 @@ export function PeriodSwitcher({
   createLabel = "Založit období",
   onCreate,
 }: PeriodSwitcherProps) {
+  const [open, setOpen] = useState(false);
   const selected = periods.find((period) => period.id === value);
   const isEmpty = periods.length === 0;
   const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
   const indicator = selected?.state === "closed"
     ? <Lock className="size-3.5 shrink-0" aria-hidden="true" />
-    : <span className={cn("size-2 shrink-0 rounded-full", selected ? stateClass[selected.state] : "bg-warning")} aria-hidden="true" />;
+    : selected || !isEmpty
+      ? <span className={cn("size-2 shrink-0 rounded-full", selected ? stateClass[selected.state] : "bg-warning")} aria-hidden="true" />
+      : null;
   const tooltip = selected
     ? `${label} ${selected.name.replace(/^Rok\s+/i, "")} · ${formatPeriodTooltipDate(selected.from)} – ${formatPeriodTooltipDate(selected.to)} · ${stateLabels[selected.state]}`
     : `${label}: ${displayValue}`;
@@ -145,9 +149,11 @@ export function PeriodSwitcher({
       tooltip={tooltip}
       detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
       valueClassName="text-base xl:text-base"
-      valueContainerClassName={cn("rounded-md px-2.5 py-1", selected ? triggerStateClass[selected.state] : "bg-warning/18 text-warning-strong")}
-      className={cn("relative max-w-[72px] before:absolute before:-left-1 before:h-6 before:border-l before:border-border md:max-w-[220px] xl:max-w-[460px]", className)}
+      valueContainerClassName="gap-2"
+      className={cn("relative max-w-[112px] border shadow-sm before:absolute before:-left-3 before:h-6 before:border-l before:border-border data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]", selected ? triggerStateClass[selected.state] : isEmpty ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80" : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24", className)}
       contentClassName="w-[380px]"
+      open={open}
+      onOpenChange={setOpen}
     >
       <PeriodSwitcherContent
         periods={periods}
