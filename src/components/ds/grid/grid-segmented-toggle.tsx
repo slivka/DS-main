@@ -18,6 +18,16 @@ export interface GridSegmentedToggleProps<Value extends string = string>
   ariaLabel: string;
 }
 
+export function nextGridSegmentValue<Value extends string>(
+  options: GridSegmentedToggleOption<Value>[],
+  value: Value,
+  direction: -1 | 1,
+): Value {
+  if (!options.length) return value;
+  const index = Math.max(0, options.findIndex((option) => option.value === value));
+  return options[(index + direction + options.length) % options.length]?.value ?? value;
+}
+
 /** Segmentový filtr pro pravou část kontextového řádku gridu. */
 export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmentedToggleProps>(function GridSegmentedToggle(
   { options, value, onChange, defaultValue, label, ariaLabel, className, ...props },
@@ -27,10 +37,9 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
   const move = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    const nextIndex = (index + (event.key === "ArrowRight" ? 1 : -1) + options.length) % options.length;
-    const next = options[nextIndex];
-    if (!next) return;
-    onChange(next.value);
+    const nextValue = nextGridSegmentValue(options, value, event.key === "ArrowRight" ? 1 : -1);
+    const nextIndex = options.findIndex((option) => option.value === nextValue);
+    onChange(nextValue);
     event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[nextIndex]?.focus();
   };
 
