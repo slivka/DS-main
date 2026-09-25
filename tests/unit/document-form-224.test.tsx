@@ -20,9 +20,9 @@ describe("DocumentForm 2.24.0", () => {
     expect(mainAccountLabelForType("ID")).toBe("Hlavní účet");
   });
 
-  it("odvozuje popisek partnera podle typu a směru", () => {
-    expect(partnerLabelForType("PO", "in")).toBe("Přijato od");
-    expect(partnerLabelForType("PO", "out")).toBe("Vyplaceno komu");
+  it("odvozuje popisek partnera podle typu", () => {
+    expect(partnerLabelForType("PO", "in")).toBe("Partner");
+    expect(partnerLabelForType("PO", "out")).toBe("Partner");
     expect(partnerLabelForType("FV", "out")).toBe("Odběratel");
     expect(partnerLabelForType("ZFV", "out")).toBe("Odběratel");
     expect(partnerLabelForType("FP", "in")).toBe("Dodavatel");

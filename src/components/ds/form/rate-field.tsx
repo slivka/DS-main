@@ -27,6 +27,7 @@ export interface RateFieldProps {
   manualSourceLabel?: string;
   suggestedTooltip?: (info: string, rate: string) => string;
   requiredMessage?: string;
+  showNote?: boolean;
   id?: string;
   className?: string;
 }
@@ -55,6 +56,7 @@ export function RateField({
   manualSourceLabel = "Ruční kurz",
   suggestedTooltip = (info, rate) => `Kurz v databázi (${info}) je ${rate} – kliknutím použít`,
   requiredMessage = "Uveďte důvod ručního kurzu.",
+  showNote = true,
   id = "rate",
   className,
 }: RateFieldProps) {
@@ -112,7 +114,7 @@ export function RateField({
         <span className="shrink-0 text-sm text-muted-foreground">{suffix}</span>
       </div>
       {source ? <p className="text-xs text-muted-foreground">{source}</p> : null}
-      {manual ? (
+       {manual && showNote ? (
         <div className="space-y-1">
           <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
           <Input

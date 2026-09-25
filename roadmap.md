@@ -1,3 +1,10 @@
+## Verze 2.31.0 (rozvržení údajů DocumentForm)
+- [x] Zmenšit badge směru, vystředit identitu a odstranit linku pruhu akcí
+- [x] Zavést mřížku 70 / 15 / 15 a přeuspořádat partnera, data, částku a platební údaje
+- [x] Rozšířit hlavičku o IČ, DIČ a předávajícího včetně propojení partnera
+- [x] Upravit ukázky, testy, changelog a verzi 2.31.0
+- [x] Ověřit všechny testy, typy, lint, build a vzhled 1 280 px / 560 px ve světlém i tmavém režimu
+
 ## Verze 2.30.0 (identita dokladu v těle formuláře; dříve 2.28.1)
 - [x] Vrátit vždy viditelný nadpis stránky a přesunout identitu se směrem do karty
 - [x] Přesunout stav vlevo v pruhu akcí a zachovat veřejné API

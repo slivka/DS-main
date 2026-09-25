@@ -99,21 +99,23 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - Období používá stejnou výšku, poloměr, odsazení a typografii; otevřené je zelené, období v uzávěrce a stav bez výběru jantarové, uzavřené se zámkem a firma bez období tlumeně šedá bez tečky.
 - `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
 
-### DocumentForm 2.28.1
-- Formulář nemá pravý panel; používá sekce Partner, Data, Účtování a částka a volitelně Platební údaje.
+### DocumentForm 2.31.0
+- Formulář nemá pravý panel; používá jednotnou mřížku 70 / 15 / 15 v sekcích Partner, Data, Účtování a částka nebo Částka a volitelně Platební údaje.
 - `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.
 - `directionBadge` stojí před identitou; bez `identity` vytvoří samostatný první řádek těla. Pruh akcí drží vlevo stav a Schváleno a vpravo akce.
+- `DocumentHeaderValue` podporuje `counterpartyIco`, `counterpartyDic` a `handedOverBy`. Propojený partner zamkne IČ a DIČ, ruční protistrana je ponechá editovatelná; chybné české IČ pouze zobrazí upozornění.
+- Pokladní doklad zobrazuje Přijato od / Vyplaceno komu. Data začínají datem vystavení; externí čísla patří do partnerské sekce.
 - `RateField` podporuje doporučený kurz, ruční kurz s povinným důvodem a režim jen pro čtení. Hodnota dokladu má `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
 - `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
-- `onCreatePartner` dostává `{ name, ico }`; osm číslic předvyplní IČO, jiný text název.
+- `onCreatePartner` dostává `{ name, ico, dic }`; osm číslic předvyplní IČO, jiný text název a samostatná pole se zachovají.
 
 ## SectionHeading (2.28.0)
 
 Jednotný nadpis sekcí formulářů, dialogů, karet a panelů: verzálky, jemná prokladová sazba a linka přes celou šířku. Nepoužívá se pro PageHeader ani záhlaví gridu.
 
 
-## CounterpartyField (2.28.0)
-Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Callback dostává `{ name, ico }`.
+## CounterpartyField (2.31.0)
+Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Hodnota a callback nesou `{ name, partnerId, ico, dic }`; zrušení propojení ponechá IČ a DIČ.
 
 ## DocumentActionBar a tisk (2.26.0)
 

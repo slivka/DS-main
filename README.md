@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.31.0 – rozvržení údajů dokladu
+
+- `DocumentForm` používá jednotnou dvacetisloupcovou mřížku: hlavní obsah zabírá 70 % a krátké údaje po 15 %; v úzkém panelu se pole skládají pod sebe, IČ a DIČ zůstávají vedle sebe.
+- Partner má vždy samostatná pole IČ a DIČ. Propojený partner je vyplní a zamkne; u ruční protistrany je lze upravit. Neplatné osmimístné české IČ pouze zobrazí upozornění.
+- `DocumentHeaderValue` přidává `counterpartyIco`, `counterpartyDic` a `handedOverBy`; pokladní doklad zobrazuje Přijato od / Vyplaceno komu a externí číslo v partnerské sekci.
+- Sekce Data řadí Datum vystavení před Datum účetního případu. Sekce částky má kompaktní řádky a rozlišuje nadpisy Částka a Účtování a částka.
+- Identifikační badge je nižší a celý řádek je svisle vystředěný. Přilepený pruh akcí už nemá spodní linku.
+
 ## Changelog 2.30.0 – identita v těle formuláře (dříve 2.28.1)
 
 - `PageHeader` vždy zobrazuje nadpis dokladu; identita jej už nenahrazuje.
@@ -31,7 +39,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `DocumentForm` přechází na jedno široké rozvržení se sekcemi Partner, Data, Účtování a částka a Platební údaje. Nové `identity` doplňuje identifikační řádek a `directionBadge` tónovaný směr Příjem/Výdej.
 - Nový `RateField` podporuje doporučený a ruční kurz včetně povinného důvodu; `DocumentHeaderValue` přidává `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
 - `IcoLink` ověřuje české IČO a volí obchodní rejstřík nebo ARES. `DataGridColumn.format="ico"` zpřístupňuje stejné zobrazení tabulkám.
-- `CounterpartyField` drží „Nový partner…“ vždy na konci a předává seed `{ name, ico }`. Záložky mají vždy viditelný křížek, dirty tečku s přepnutím při najetí a zavření prostředním tlačítkem.
+- `CounterpartyField` drží „Nový partner…“ vždy na konci a předává seed `{ name, ico, dic }`. Záložky mají vždy viditelný křížek, dirty tečku s přepnutím při najetí a zavření prostředním tlačítkem.
 
 ## Changelog 2.27.0 – tisk gridu do PDF
 

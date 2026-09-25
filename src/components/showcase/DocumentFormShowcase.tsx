@@ -23,9 +23,10 @@ const USERS = [
 
 const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
-  taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1",
+    taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-  description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "ČNB 10. 9. 2026",
+   description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "Ruční kurz", rateManual: true,
+   rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
   amountTotal: 12100, totalMode: "entered", roundingAmount: 0, mainAccountId: "321001",
 };
 const INVOICE_LINES: JournalLine[] = [
@@ -54,7 +55,7 @@ export function DocumentFormShowcase() {
 
   const [cash, setCash] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "in", accountingDate: "2026-09-23", issueDate: "2026-09-23",
-    taxDate: "2026-09-23", partnerId: "p2", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
+    taxDate: "2026-09-23", partnerId: "p2", counterpartyIco: "27074358", counterpartyDic: "CZ27074358", handedOverBy: "Jana Nováková", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
     amountTotal: 1250, totalMode: "entered", roundingAmount: 0.4, mainAccountId: "211001",
   });
   const [cashLines, setCashLines] = useState<JournalLine[]>([
@@ -73,12 +74,12 @@ export function DocumentFormShowcase() {
 
   const [courier, setCourier] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
-    counterpartyName: "Kurýr – Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
+    counterpartyName: "Kurýr – Jan Veselý", counterpartyIco: "12345678", counterpartyDic: "CZ12345678", handedOverBy: "Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
     amountTotal: 350, totalMode: "entered", mainAccountId: "211001",
   });
   const [cashIn, setCashIn] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "PD2026000118", direction: "in", accountingDate: "2026-09-24", issueDate: "2026-09-24",
-    partnerId: "p1", counterpartyName: MOCK_PARTNERS.find((p) => p.id === "p1")?.name ?? null,
+    partnerId: "p1", counterpartyName: MOCK_PARTNERS.find((p) => p.id === "p1")?.name ?? null, counterpartyIco: "27182818", counterpartyDic: "CZ27182818", handedOverBy: "Petr Svoboda",
     description: "Úhrada faktury v hotovosti", currency: "CZK", rate: 1, amountTotal: 5000, totalMode: "entered", mainAccountId: "211001",
   });
   const [cashEur, setCashEur] = useState<DocumentHeaderValue>({
@@ -100,7 +101,7 @@ export function DocumentFormShowcase() {
 
   return (
     <>
-      <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; IČ a DIČ se nezobrazují, u CZK chybí řádek kurzu.">
+      <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", <span className="font-mono">211.001 - Pokladna CZK <span className="font-sans">DAL</span></span>], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
