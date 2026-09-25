@@ -221,6 +221,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
   const list = Array.isArray(actions) ? actions : [actions];
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
       if (event.key.toLocaleLowerCase("cs") !== "n" || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]")) return;
