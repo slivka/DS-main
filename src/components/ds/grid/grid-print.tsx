@@ -156,10 +156,6 @@ export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem
       }, 0);
     }
   }
-  const widths = gridPrintColumnWidths(data);
-  const total = widths.reduce((sum, width) => sum + width, 0);
-  const available = gridPrintOrientation(widths) === "landscape" ? 267 : 180;
-  if (total <= available) columns.forEach((column, index) => { column.width = widths[index]; });
   return { type: "table", columns, rows, rowStyles, ...(totals ? { totals } : {}) };
 }
 

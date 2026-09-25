@@ -162,6 +162,7 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
         footStyles: { font: "Roboto", fontStyle: "bold", fillColor: [255, 255, 255], textColor: [24, 24, 27], lineWidth: { top: 0.35, right: 0, bottom: 0, left: 0 } },
         columnStyles: Object.fromEntries(section.columns.map((column, index) => [index, { halign: column.align ?? (column.format === "amount" ? "right" : "left"), ...(column.width ? { cellWidth: column.width } : {}) }])),
         didParseCell: (hook) => {
+          if (hook.section === "head") { const column = section.columns[hook.column.index]; hook.cell.styles.halign = column?.align ?? (column?.format === "amount" ? "right" : "left"); return; }
           if (hook.section !== "body") return;
           const style = section.rowStyles?.[hook.row.index];
           if (!style) return;
