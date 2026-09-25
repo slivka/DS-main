@@ -180,7 +180,12 @@ function wholeWords(value: number) {
   if (thousand) text += `${underThousand(thousand, "m")}${thousand === 1 ? "tisíc" : thousand >= 2 && thousand <= 4 ? "tisíce" : "tisíc"}`;
   return text + underThousand(rest);
 }
-function plural(value: number, one: string, few: string, many: string) { const last = value % 100; return last === 1 ? one : last >= 2 && last <= 4 ? few : many; }
+function plural(value: number, one: string, few: string, many: string) {
+  const lastTwo = value % 100;
+  const last = value % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return many;
+  return last === 1 ? one : last >= 2 && last <= 4 ? few : many;
+}
 export function amountInWordsCs(amount: number, currency = "CZK") {
   const negative = amount < 0 ? "minus" : "";
   const absolute = Math.abs(amount); const whole = Math.floor(absolute + 1e-9); const cents = Math.round((absolute - whole) * 100);
