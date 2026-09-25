@@ -50,6 +50,15 @@ export const GRID_BASE_FONT_PX = 13;
 /** Velikost písma odpovídající aktuálnímu zoomu gridu (px string). */
 export const gridFontSize = (zoom = 1) => `${(GRID_BASE_FONT_PX * clamp(zoom)).toFixed(2)}px`;
 
+/** Určuje, zda pod pravým ukotveným sloupcem zůstává skrytý obsah tabulky. */
+export function hasOverflowRight({
+  scrollLeft,
+  clientWidth,
+  scrollWidth,
+}: Pick<HTMLElement, "scrollLeft" | "clientWidth" | "scrollWidth">) {
+  return scrollLeft + clientWidth < scrollWidth - 1;
+}
+
 /** Zoom tabulky uložený v prohlížeči pod vlastním klíčem. */
 export type GridDensity = "compact" | "normal";
 
@@ -284,11 +293,15 @@ export function ZoomGrid({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const update = () => { el.dataset["scrolledX"] = el.scrollLeft > 1 ? "true" : "false"; };
+    const update = () => {
+      el.dataset["overflowRight"] = hasOverflowRight(el) ? "true" : "false";
+    };
     update();
     el.addEventListener("scroll", update, { passive: true });
     const observer = new ResizeObserver(update);
     observer.observe(el);
+    const table = el.querySelector("table");
+    if (table) observer.observe(table);
     return () => { el.removeEventListener("scroll", update); observer.disconnect(); };
   }, [children, zoom]);
 

@@ -64,7 +64,7 @@ async function inspectOpenXml(filePath: string, original = true) {
   expect(tableColumns.length).toBeGreaterThan(0);
   for (const name of tableColumns) {
     expect(name.length).toBeLessThanOrEqual(255);
-    expect(name).not.toMatch(/[\[\]#']/);
+    expect(name).not.toMatch(/[[\]#']/);
   }
 
   const headerRowXml = /<row\b[^>]*\br="4"[^>]*>([\s\S]*?)<\/row>/.exec(sheetXml)?.[1] ?? "";

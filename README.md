@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.21.1 – opravy lišty a stínu gridu
+
+- DataGrid i TreeGrid mají na široké ploše nejvýše jednu nabídku ⋯ a na úzké ploše právě jednu společnou nabídku nástrojů a dalších akcí.
+- `asOf` a `toolbarLeft` zůstávají dostupné i pod 640 px; lišta se podle potřeby zalomí.
+- Široká lišta řadí další akce před hustotu a zoom a ponechává Obnovit úplně vpravo.
+- Stín ukotveného sloupce akcí se zobrazuje, dokud vpravo zbývá odrolovaný obsah, a přepočítává se při změně velikosti i zoomu.
+
 ## Changelog 2.21.0 – nové pořadí akcí gridu a akce ve stromu
 
 - `addAction` je vizuálně vlevo; Obnovit je vždy úplně vpravo. Veřejné API `addAction` se nemění a aplikace nemusí nic upravovat.
