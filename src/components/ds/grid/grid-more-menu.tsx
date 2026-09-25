@@ -62,7 +62,7 @@ export function GridMoreMenu({
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
         {tools ? <div className={`grid-more-tools pb-[0.5em] ${(secondary || items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{tools}</div></div> : null}
-        {secondary ? <div className="mb-[0.35em] flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em]">{secondary}</div> : null}
+        {secondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(items.length || footer) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{secondary}</div> : null}
         {items.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;
           return (

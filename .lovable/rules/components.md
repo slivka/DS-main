@@ -3494,10 +3494,12 @@ import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```
 
 
-## Řádek akcí gridu (2.21.0)
+## Řádek akcí gridu (2.21.2)
 
-Pořadí vlevo: Nový, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu a vlastní levý obsah. Pořadí vpravo: Hledat, Filtr, Export, Sloupce, Seskupit, oddělovač, Vybrat více, další akce, hustota a zoom, oddělovač, Obnovit. Obnovit je vždy úplně vpravo.
+Pořadí vlevo: Nový, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu a vlastní levý obsah. Vpravo nad 640 px: Hledat, Filtr │ Seskupit (jen DataGrid s `groupable`), Sloupce, Hustota + zoom │ Vybrat více, vlastní `actions`, Stáhnout, nabídka ⋯ │ Obnovit. Prázdná skupina ani její oddělovač se nezobrazí; oddělovač nikdy není na kraji ani dvakrát vedle sebe.
+
+Stáhnout obsahuje výhradně Excel, PDF a `extraExports`. Importy a vedlejší akce patří do nabídky ⋯.
 
 Upravit a Odstranit jednotlivý záznam patří jen do sticky sloupce akcí řádku; dvojklik znamená Upravit. Hromadné akce patří jen do režimu Vybrat více. Zakázaná akce s důvodem zůstává zešedlá s tooltipem přes `editDisabledReason` / `deleteDisabledReason`; bez důvodu se skryje přes `canEditRow` / `canDeleteRow`.
 
-Pod šířkou gridu 640 px zůstává Nový jako ikona, přepnutí pohledu, rozbalení, hledání, filtr a nabídka dalších akcí. Ostatní nástroje jsou ve skupině Nástroje nabídky ⋯.
+Pod šířkou gridu 640 px zůstává Nový jako ikona, přepnutí pohledu, rozbalení, hledání, filtr a právě jedna nabídka ⋯. Nabídka řadí nástroje podle skupin Zobrazení, Data a Obnovit; oddělovače skupin se v liště skryjí.

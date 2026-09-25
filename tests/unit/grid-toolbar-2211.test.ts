@@ -10,7 +10,7 @@ const stylesSource = readFileSync(new URL("../../src/styles.css", import.meta.ur
 describe.each([
   ["DataGrid", dataGridSource],
   ["TreeGrid", treeGridSource],
-])("lišta %s ve verzi 2.21.1", (_name, source) => {
+])("úzká lišta %s", (_name, source) => {
   it("skrývá společnou úzkou nabídku nad 640 px", () => {
     expect(source).toContain('className="@min-[640px]:hidden"');
     expect(source).not.toContain('className="@min-[640px]:inline-flex"');
@@ -21,11 +21,35 @@ describe.each([
     expect(source).toContain("{toolbarLeft}");
   });
 
-  it("řadí širokou nabídku dalších akcí před zoom a obnovení", () => {
-    const desktop = source.match(/<div className="hidden @min-\[640px\]:contents">\{moreActions[\s\S]*?<ZoomControl[\s\S]*?<GridRefreshButton/)?.[0];
+  it("řadí nabídku po skupinách zobrazení, data a obnovení", () => {
+    const narrow = source.match(/<GridMoreMenu items=\{moreActions\}[\s\S]*?className="@min-\[640px\]:hidden"/u)?.[0];
+    expect(narrow).toBeTruthy();
+    expect(narrow?.indexOf("tools=")).toBeLessThan(narrow?.indexOf("secondary=") ?? 0);
+    expect(narrow?.indexOf("secondary=")).toBeLessThan(narrow?.indexOf("footer=") ?? 0);
+  });
+});
+
+describe("široká lišta ve verzi 2.21.2", () => {
+  it("řadí DataGrid jako Najít, Zobrazení, Data a Obnovit", () => {
+    const desktop = dataGridSource.match(/<div className="hidden @min-\[640px\]:contents">[\s\S]*?<\/div>/u)?.[0];
     expect(desktop).toBeTruthy();
-    expect(desktop?.indexOf("<GridMoreMenu")).toBeLessThan(desktop?.indexOf("<ZoomControl") ?? 0);
-    expect(desktop?.indexOf("<ZoomControl")).toBeLessThan(desktop?.indexOf("<GridRefreshButton") ?? 0);
+    const ordered = ["<GroupControl", "<ColumnPicker", "<ZoomControl", "<GridSelectionToggle", "{actions}", "<GridExport", "<GridMoreMenu", "<GridRefreshButton"];
+    for (let index = 1; index < ordered.length; index += 1) {
+      expect(desktop?.indexOf(ordered[index - 1] ?? "")).toBeLessThan(desktop?.indexOf(ordered[index] ?? "") ?? 0);
+    }
+    expect(desktop?.match(/<GridToolbarSeparator/g)).toHaveLength(3);
+  });
+
+  it("TreeGrid přidá oddělovač dat jen tehdy, když skupina není prázdná", () => {
+    expect(treeGridSource).toContain("{(selectable || actions || exportName || moreActions.length) ? <><GridToolbarSeparator");
+    expect(treeGridSource).not.toMatch(/<GridToolbarSeparator[^>]*\/>\s*<GridToolbarSeparator/u);
+  });
+
+  it("nemá krajní ani zdvojené oddělovače", () => {
+    for (const source of [dataGridSource, treeGridSource]) {
+      expect(source).not.toMatch(/contents">\s*<GridToolbarSeparator[^>]*\/>\s*<\/div>/u);
+      expect(source).not.toMatch(/<GridToolbarSeparator[^>]*\/>\s*<GridToolbarSeparator/u);
+    }
   });
 });
 
