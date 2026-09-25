@@ -50,7 +50,7 @@ export function GridMoreMenu({
   const overflowLevel = useContext(GridToolbarOverflowContext);
   const shownTools = !responsiveOverflow || overflowLevel >= 1 ? tools : null;
   const shownSecondary = !responsiveOverflow || overflowLevel >= 2 ? secondary : null;
-  const shownItems = !responsiveOverflow || overflowLevel >= 2 ? items : [];
+  const shownItems = items;
   const [open, setOpen] = useState(false);
   const fontSize = gridFontSize(zoom);
   if (shownItems.length === 0 && !shownTools && !shownSecondary && !footer) return null;
@@ -62,7 +62,7 @@ export function GridMoreMenu({
           size="sm"
           aria-label={texts.moreActions}
           title={texts.moreActions}
-          className={`shrink-0 px-[0.5em] ${className}`}
+          className={`shrink-0 px-[0.5em] ${items.length ? "grid-more-has-items" : ""} ${className}`}
           style={{ fontSize }}
         >
           <MoreHorizontal className="size-[1.25em]" />

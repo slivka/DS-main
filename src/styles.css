@@ -456,7 +456,7 @@
   color: var(--foreground);
 }
 
-.grid-toolbar-row[data-overflow-level="0"] .grid-toolbar-overflow-menu {
+.grid-toolbar-row[data-overflow-level="0"] .grid-toolbar-overflow-menu:not(.grid-more-has-items) {
   display: none;
 }
 
