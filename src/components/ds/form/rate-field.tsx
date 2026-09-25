@@ -67,7 +67,7 @@ export function RateField({
 
   if (readOnly) {
     return (
-    <TooltipProvider><div className={cn("space-y-1", className)}>
+      <div className={cn("space-y-1", className)}>
         <div id={id} aria-readonly="true" className="min-h-9 text-sm font-mono tabular-nums">
           {value == null ? "—" : `${formatAmount(value, 3)} ${suffix}`}
         </div>
@@ -78,7 +78,7 @@ export function RateField({
   }
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <TooltipProvider><div className={cn("space-y-2", className)}>
       <div className="flex min-w-0 items-center gap-2">
         <div className="relative min-w-0 flex-1">
           <DecimalInput
