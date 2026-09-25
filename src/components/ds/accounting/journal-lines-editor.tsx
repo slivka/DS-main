@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { ChevronDown, ChevronRight, Copy, Percent, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Percent, Plus, RotateCcw, Trash2, WandSparkles, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "../../ui/button";
@@ -23,9 +23,13 @@ import { PartnerSelect, type PartnerOption } from "./partner-select";
 import { OptionSelect, type SelectOption } from "../form/option-select";
 import { DecimalInput } from "../form/decimal-input";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
+import { ColumnPicker } from "../grid/column-picker";
 import { GridAction, GridActions } from "../grid/grid-action";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
+import { GridSearch } from "../grid/grid-search";
+import { GridToolbar, GridToolbarSeparator } from "../grid/grid-toolbar";
 import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom } from "../grid/grid-zoom";
+import { JournalLinesRecap, type JournalRecapTab } from "./journal-lines-recap";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { useIsActivePane } from "../panes/pane-context";
 import { cn } from "../../../lib/utils";
@@ -193,6 +197,8 @@ export interface JournalLinesEditorProps {
   defaults?: JournalLineDefaults;
   validate?: (line: JournalLine) => JournalLineErrors;
   storageKey?: string;
+  /** Doplňkové záložky rekapitulace; vestavěné Účtování a Zakázky zůstávají vždy. */
+  recapTabs?: JournalRecapTab[];
   texts?: Partial<JournalLinesEditorTexts>;
   className?: string;
 }
@@ -207,7 +213,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules,
       dimensionRequired = false, isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed",
       roundingLimit = 0.5, onRoundingFill, rounding, expectedTotal, defaults,
-      validate, storageKey = "journal-lines", texts, className,
+       validate, storageKey = "journal-lines", recapTabs = [], texts, className,
     },
     forwardedRef,
   ) {
@@ -224,6 +230,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     const [active, setActive] = useState<{ rowId: string; column: JournalLineColumn } | null>(null);
     const [editing, setEditing] = useState<EditState | null>(null);
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+    const [search, setSearch] = useState("");
     const expectedAmount = totalAmount ?? expectedTotal;
 
     const LABEL_KEYS: Record<JournalLineColumn, keyof JournalLinesEditorTexts> = {
@@ -293,13 +300,24 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showCurrency, sideFields, lines, mainAccount?.side, t.actions, t.amount, t.counterAccount, t.creditAccount, t.currency, t.debitAccount, t.dimension, t.foreignAmount, t.partner, t.rate, t.row, t.text, t.vs]);
     const columns = useGridColumns(storageKey, columnDefs);
-    const visibleColumns = columns.columns;
+    const visibleColumns = columns.columns.filter((column) => columns.visible[column.id]);
 
     /** Řádek haléřového vyrovnání je vždy poslední a jen pro čtení. */
     const orderedLines = useMemo(
       () => [...lines].sort((a, b) => Number(Boolean(a.isRounding)) - Number(Boolean(b.isRounding))),
       [lines],
     );
+    const displayedLines = useMemo(() => {
+      const query = search.trim().toLocaleLowerCase("cs");
+      if (!query) return orderedLines;
+      return orderedLines.filter((line) => {
+        const values = [line.text, line.debitAccount, line.creditAccount, line.vs, line.debitVs, line.creditVs, line.amount,
+          line.partnerId, line.debitPartnerId, line.creditPartnerId, line.dimensionId, line.debitDimensionId, line.creditDimensionId];
+        return values.some((value) => String(value ?? "").toLocaleLowerCase("cs").includes(query))
+          || [line.partnerId, line.debitPartnerId, line.creditPartnerId].some((id) => partners.find((item) => item.id === id)?.name.toLocaleLowerCase("cs").includes(query))
+          || [line.dimensionId, line.debitDimensionId, line.creditDimensionId].some((id) => dimensions.find((item) => item.id === id)?.name.toLocaleLowerCase("cs").includes(query));
+      });
+    }, [dimensions, orderedLines, partners, search]);
 
     /** Chybějící povinná stranová pole – jen nápověda, rozhoduje databáze. */
     const sideIssues = (line: JournalLine): { column: JournalLineColumn; message: string }[] => {
@@ -342,7 +360,9 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       // eslint-disable-next-line react-hooks/exhaustive-deps
     })), [lines, dimensionRequired, sideFields, t.amountRequired, t.creditRequired, t.debitRequired, validate]);
     const errorCount = [...validations.values()].reduce((sum, errors) => sum + Object.values(errors).filter(Boolean).length, 0);
-    const total = lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+    const linesTotal = lines.filter((line) => !line.isRounding).reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+    const roundingValue = rounding?.value ?? lines.filter((line) => line.isRounding).reduce((sum, line) => sum + (Number(line.amount) || 0), 0);
+    const total = roundMoney(linesTotal + roundingValue);
     const difference = expectedAmount === undefined ? 0 : roundMoney(expectedAmount - total);
     const showRemaining = Boolean(mainAccount) && totalMode === "entered" && expectedAmount !== undefined;
     const canFillRounding = showRemaining && difference !== 0 && Math.abs(difference) <= roundingLimit && Boolean(onRoundingFill);
@@ -379,7 +399,7 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
       };
     };
     const lastEditable = () => orderedLines.filter((line) => !line.isRounding).at(-1);
-    const addLine = () => onChange([...lines, makeLine(lastEditable())]);
+    const addLine = () => { setSearch(""); onChange([...lines, makeLine(lastEditable())]); };
     const duplicate = (line: JournalLine) => {
       const index = lines.findIndex((item) => item.id === line.id);
       onChange([...lines.slice(0, index + 1), { ...line, id: newId() }, ...lines.slice(index + 1)]);
@@ -609,7 +629,9 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     }, [editing]);
 
     const onRootKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-      if (!paneActive || editing || !active || (!event.ctrlKey && !event.metaKey)) return;
+      if (!paneActive || editing || (!event.ctrlKey && !event.metaKey)) return;
+      if (event.key === "Enter") { event.preventDefault(); event.stopPropagation(); addLine(); return; }
+      if (!active) return;
       const line = lines.find((item) => item.id === active.rowId);
       if (!line || line.isRounding) return;
       const key = event.key.toLocaleLowerCase("cs");
@@ -624,12 +646,23 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
     return (
       <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
         <div ref={setRootRef} className={cn("@container overflow-hidden rounded-lg border bg-card", className)} onKeyDown={onRootKeyDown}>
-          <div className="flex items-center justify-end border-b bg-muted/30 p-1.5"><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></div>
+          <GridToolbar zoom={zoom} density={density} left={<>
+            {editable.size > 0 ? <Tooltip><TooltipTrigger asChild><Button type="button" variant="outline" size="icon" aria-label={`${t.addLine} (Ctrl+Enter)`} onClick={addLine} className="grid-toolbar-control grid-toolbar-icon-control"><Plus /></Button></TooltipTrigger><TooltipContent>{`${t.addLine} (Ctrl+Enter)`}</TooltipContent></Tooltip> : null}
+            {(editable.size > 0 && rounding) ? <GridToolbarSeparator density={density} /> : null}
+            {rounding ? <div data-slot="journal-lines-rounding" className="grid-toolbar-group flex items-center gap-2"><Label htmlFor="journal-lines-rounding" className="whitespace-nowrap text-xs">{rounding.label ?? "Haléřové vyrovnání"}</Label><div className="relative">{rounding.readOnly || !rounding.onChange ? <span id="journal-lines-rounding" aria-readonly="true" className="grid-toolbar-control inline-flex w-32 items-center justify-end border border-border bg-card px-2 font-mono tabular-nums">{formatAmount(rounding.value, 2)}</span> : <DecimalInput id="journal-lines-rounding" value={rounding.value} onChange={(value) => rounding.onChange?.(value === "" ? 0 : Number(value))} className="grid-toolbar-control w-32 pr-8 font-mono tabular-nums" />}{canFillRounding ? <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label={t.fillRounding} onClick={() => onRoundingFill?.(difference)} className="absolute right-0 top-0 grid-toolbar-icon-control"><WandSparkles /></Button></TooltipTrigger><TooltipContent>{t.fillRounding}</TooltipContent></Tooltip> : null}</div></div> : null}
+          </>} right={<>
+            <GridSearch value={search} onChange={setSearch} zoom={zoom} placeholder="Hledat v řádcích…" />
+            <GridToolbarSeparator density={density} />
+            <ColumnPicker columns={columns.columns.map((column) => ({ id: column.id, label: column.label, locked: column.locked }))} visible={columns.columnVisible} onToggle={columns.toggle} onReset={columns.reset} onReorder={columns.reorder} zoom={zoom} />
+            <Tooltip><TooltipTrigger asChild><Button type="button" variant="outline" size="icon" aria-label="Obnovit rozložení" onClick={() => { columns.reset(); setZoom(1); setDensity("normal"); }} className="grid-toolbar-control grid-toolbar-icon-control"><RotateCcw /></Button></TooltipTrigger><TooltipContent>Obnovit rozložení</TooltipContent></Tooltip>
+            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} />
+          </>} />
+          {search ? <div className="flex items-center justify-between border-b bg-filter-active/10 px-3 py-1 text-xs text-filter-active"><span>{`Zobrazeno ${displayedLines.length} z ${orderedLines.length} řádků`}</span><Button type="button" variant="ghost" size="icon" aria-label="Zrušit hledání" onClick={() => setSearch("")} className="size-7 text-filter-active"><X /></Button></div> : null}
           <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} noFit maxHeight="32rem" className="journal-lines-grid">
             <Table role="grid" className="min-w-max table-fixed">
               <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: `${columns.widths[column.id] ?? COLUMN_WIDTHS[column.id]}px` }} />)}</colgroup>
               <TableHeader className="grid-column-header"><TableRow>{visibleColumns.map((column) => <TableHead key={column.id} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn("relative", column.align === "right" && "text-right", column.align === "center" && "text-center", column.id === "actions" && "grid-actions-header")}><span>{column.label}</span>{column.id !== "row" && column.id !== "actions" ? <ColumnResizeHandle onResize={(width) => columns.setWidth(column.id, width)} onReset={() => columns.clearWidth(column.id)} /> : null}</TableHead>)}</TableRow></TableHeader>
-              <TableBody>{orderedLines.length === 0 ? <TableRow><TableCell colSpan={span} className="py-8 text-center text-muted-foreground">{t.empty}</TableCell></TableRow> : orderedLines.flatMap((line, rowIndex) => {
+               <TableBody>{displayedLines.length === 0 ? <TableRow><TableCell colSpan={span} className="py-8 text-center text-muted-foreground">{search ? "Žádný řádek neodpovídá hledání" : t.empty}</TableCell></TableRow> : displayedLines.flatMap((line, rowIndex) => {
                 const issues = sideIssues(line);
                 const rowNode = (
                   <TableRow key={line.id} data-grid-row data-rounding={line.isRounding ? "" : undefined} tabIndex={-1} className={cn("group/row", line.isRounding && "bg-muted/40 text-muted-foreground")}>
@@ -698,34 +731,14 @@ export const JournalLinesEditor = forwardRef<HTMLDivElement, JournalLinesEditorP
               <TableFooter><TableRow>{visibleColumns.map((column, index) => {
                 let content: ReactNode = null;
                 if (column.id === "row") content = t.total;
-                if (column.id === "amount") content = <span className="font-sans tabular-nums">{formatAmount(total, 2)}</span>;
-                if (column.id === "text") content = expectedAmount === undefined || showRemaining ? null : difference === 0 ? t.balanced : (
-                  <span className={amountClass(-Math.abs(difference))}>{`${showRemaining ? t.remaining : t.difference}: ${formatAmount(difference, 2)}`}</span>
-                );
+                 if (column.id === "amount") content = <span className="font-sans tabular-nums">{formatAmount(total, 2)}</span>;
                 if (column.id === "actions" && errorCount > 0) content = <span className="text-destructive">{`${t.errors}: ${errorCount}`}</span>;
                 return <TableCell key={`${column.id}-${index}`} data-pin={column.id === "row" ? "" : undefined} data-pin-right={column.id === "actions" ? "" : undefined} className={cn(column.align === "right" && "text-right", column.id === "actions" && "grid-actions-footer whitespace-nowrap")}>{content}</TableCell>;
               })}</TableRow></TableFooter>
             </Table>
           </ZoomGrid>
-          {editable.size > 0 || rounding || showRemaining ? (
-            <div className="flex flex-wrap items-end justify-between gap-3 border-t p-2">
-              <div className="flex flex-wrap items-center gap-2">
-                {editable.size > 0 ? <Button type="button" variant="outline" size="sm" onClick={addLine}><Plus className="size-4" />{t.addLine}</Button> : null}
-                {canFillRounding ? (
-                  <Button type="button" variant="outline" size="sm" onClick={() => onRoundingFill?.(difference)}>{t.fillRounding}</Button>
-                ) : null}
-              </div>
-              <div className="ml-auto flex flex-wrap items-end justify-end gap-3">
-                {rounding ? <div data-slot="journal-lines-rounding" className="flex items-center gap-2">
-                  <Label htmlFor="journal-lines-rounding" className="whitespace-nowrap text-xs">{rounding.label ?? "Haléřové vyrovnání"}</Label>
-                  {rounding.readOnly || !rounding.onChange
-                    ? <span id="journal-lines-rounding" aria-readonly="true" className="w-32 text-right font-mono text-sm tabular-nums">{formatAmount(rounding.value, 2)}</span>
-                    : <DecimalInput id="journal-lines-rounding" value={rounding.value} onChange={(value) => rounding.onChange?.(value === "" ? 0 : Number(value))} className="h-8 w-32 text-right font-mono tabular-nums" />}
-                </div> : null}
-                {showRemaining ? <span data-slot="journal-lines-remaining" className={cn("whitespace-nowrap text-sm font-medium tabular-nums", difference !== 0 && amountClass(-Math.abs(difference)))}>{`${t.remaining}: ${formatAmount(difference, 2)}`}</span> : null}
-              </div>
-            </div>
-          ) : null}
+          <div data-slot="journal-lines-summary" className="flex flex-wrap justify-end gap-x-5 gap-y-1 border-t bg-muted/40 px-3 py-2 text-sm tabular-nums"><span>{`Rozpis ${formatAmount(linesTotal, 2)}`}</span><span>{`Haléřové vyrovnání ${formatAmount(roundingValue, 2)}`}</span><span className="font-semibold">{`Celkem ${formatAmount(total, 2)}`}</span>{totalMode === "entered" && expectedAmount !== undefined ? <><span>{`Zadáno ${formatAmount(expectedAmount, 2)}`}</span><span data-slot="journal-lines-remaining" className={cn("font-semibold", difference === 0 ? "text-success-strong" : "text-destructive")}>{`Rozdíl ${formatAmount(difference, 2)}`}</span></> : null}</div>
+          <JournalLinesRecap lines={lines} accounts={accounts} dimensions={dimensions} rounding={roundingValue} foreign={showCurrency} currency={currencies[0]?.value} storageKey={storageKey} recapTabs={recapTabs} zoom={zoom} />
         </div>
       </GridZoomContext.Provider>
     );
