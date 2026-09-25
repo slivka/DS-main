@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.25.0",
+    "version": "2.26.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,10 +11,10 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "1e9889778080c18ef301fd8dc76b958c1cfcf49e37c97d142f166b33ffd7356a",
+      "#enrichment": "d73389fad2ccd3328db46cb5bc988c70cbf831cb45dfab57d512a87db332c6d1",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
-      ".lovable/meta.yaml": "86a17ac0d6b10fddfde4cdc325cb93a7",
+      ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
       ".lovable/plan.md": "567791966eee1e554297603177a3ce4a",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
@@ -47,39 +47,39 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "aeb2a8a7a9cd6ff9c0f3115671a93c78",
+      ".lovable/system.md": "8c115ec19c7b8b286ad4f5b3e70be3e0",
       "AGENTS.md": "8ef449460e0c6a430c7eacf1fb57720c",
-      "README.md": "e90b24f444c780315d5b3cd41bce872f",
+      "README.md": "c6dc29120585a60508a5857ad7903d7f",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "3fc9977e1d9a7893f8f1010c1332db3b",
+      "components.md": "f5301d9ac5e0d506f80a481b8139a687",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "53513b8afc296712c1f0c05a2ef4008b",
+      "package.json": "a3b1b96c57c3ae2e7647c60b1b838211",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "d7784db609adb4e6c477abfca3ead3e6",
+      "roadmap.md": "ea66a7ecdf0e8342fb5bc803931b8741",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
       "src/components/ds/accounting/account-code.tsx": "355464ea912043d6664a07dee0d9947b",
       "src/components/ds/accounting/account-columns.tsx": "f82571b50e51538b46c380dc770fafe3",
-      "src/components/ds/accounting/account-select.tsx": "120e9d22a97d7dc02d0d92013856d1c4",
+      "src/components/ds/accounting/account-select.tsx": "ea2949f41dc8e0e5734d82cd8a01f235",
       "src/components/ds/accounting/amount.tsx": "e578c7150ee580ee26d439f27de72d96",
       "src/components/ds/accounting/book-select.tsx": "fff1319f8d2de9ff992f47585cbf2a9e",
       "src/components/ds/accounting/currency-amount.tsx": "52be1396989e6b82783e126862cef493",
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "0fa104976e899ed02ba38f9dfb5289b0",
-      "src/components/ds/accounting/document-fields.ts": "810431b93999f85b0cc6d5d5c57485d8",
-      "src/components/ds/accounting/document-form.tsx": "7077d9ccfe03149809998162a77e8d02",
+      "src/components/ds/accounting/document-fields.ts": "f776f02641a3be3a555de7e36861bed8",
+      "src/components/ds/accounting/document-form.tsx": "de46e37510c730beca81da2c6ad4399e",
       "src/components/ds/accounting/document-status-badge.tsx": "708954ec8e536ef8005a00c6b819e449",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
       "src/components/ds/accounting/journal-lines-editor.tsx": "52809d4e46c48102584681cc797c2c49",
       "src/components/ds/accounting/journal-lines.ts": "afa5b93ccdd23977cc245fc369b6a8c4",
-      "src/components/ds/accounting/partner-select.tsx": "3aa46a927da025df22e4b11a2d169d1f",
+      "src/components/ds/accounting/partner-select.tsx": "2b3a7b1f7612af1234c23f0b1d453f7b",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "53f2a9bdef0c2f46267d8da7d18ab06e",
       "src/components/ds/accounting/payment-schedule.ts": "e5843d856417e6b3c23bab3be57b3344",
       "src/components/ds/accounting/vs-field.tsx": "5bb222411945aba5fb1fc506781a7350",
@@ -113,13 +113,13 @@
       "src/components/ds/form/legal-form-field.tsx": "c4fa6e001d2c579b1b03ac1ec48dae4f",
       "src/components/ds/form/month-year-select.tsx": "2e3093ace2fa030b414a1af85d7d34aa",
       "src/components/ds/form/multi-select.tsx": "47e379fd34dcd35667673dc7ab0820f2",
-      "src/components/ds/form/option-select.tsx": "5be205c9c817fd6517ad1ecd7bac0263",
+      "src/components/ds/form/option-select.tsx": "adefc718ea04e1569faf1f4446cfa350",
       "src/components/ds/form/period-filter.tsx": "365fffc9d9b2f2eba653d952af855a51",
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "c1cebb2bf9742dc32acdd165c059eb83",
-      "src/components/ds/grid/DataGrid.tsx": "73dce1e42724b0d9b7008c285f08e5f5",
-      "src/components/ds/grid/TreeGrid.tsx": "fe9e03c34889fb4f03ee59099b72793d",
+      "src/components/ds/grid/DataGrid.tsx": "1e41ac3f0f279c82ab8426d8f817051b",
+      "src/components/ds/grid/TreeGrid.tsx": "14731b08460949f7db5de05244a40a4a",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "483636ad1f98ba2c2208b74dafed7e7c",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
@@ -128,13 +128,13 @@
       "src/components/ds/grid/grid-columns.tsx": "d53c72de1d102db12009eea281dd2d2b",
       "src/components/ds/grid/grid-context-bar.tsx": "9f18a3dffc46927b14deb2d977e4264e",
       "src/components/ds/grid/grid-export.tsx": "e82a90868cf3e1862765fe6ec9e7cdb3",
-      "src/components/ds/grid/grid-filters.tsx": "62195648eb74041b08422b9e905aa924",
+      "src/components/ds/grid/grid-filters.tsx": "cc183be2b2f5fbfd0d58dec0a613deb6",
       "src/components/ds/grid/grid-grouping.tsx": "c1f101769f4e4acade47fb2108114463",
-      "src/components/ds/grid/grid-more-menu.tsx": "89e0e9379ac8808736723b6ea21b201c",
+      "src/components/ds/grid/grid-more-menu.tsx": "43d5cc3d635b5b3be9a4b1ea7f7a66f2",
       "src/components/ds/grid/grid-pagination.tsx": "e7e6eef33aec4ea729741ea534eb75d4",
-      "src/components/ds/grid/grid-period.ts": "e387dc41a2fc0c9a64a5a90b02792408",
+      "src/components/ds/grid/grid-period.ts": "577ac3b586c7c6ba80e47dbef9d3d001",
       "src/components/ds/grid/grid-refresh.tsx": "e8b51c21f4411a94691709f3eaf578b2",
-      "src/components/ds/grid/grid-search.tsx": "fc4b5ceb8a8a68e616a58e735ae2a6cb",
+      "src/components/ds/grid/grid-search.tsx": "c939f18619ae419b790969d2fba8250a",
       "src/components/ds/grid/grid-sections.tsx": "7186337750209d575c12c257d5246c3e",
       "src/components/ds/grid/grid-segmented-toggle.tsx": "7a065448d4a9e210f66aaff0d6f0907f",
       "src/components/ds/grid/grid-selection-toggle.tsx": "9446783e39f45d9a17472daa4accca6c",
@@ -142,7 +142,7 @@
       "src/components/ds/grid/grid-states.tsx": "1e4c03e89bf3710c775ca2435893c19e",
       "src/components/ds/grid/grid-texts.ts": "0e4ca7249dc56b3909423d100572dc43",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
-      "src/components/ds/grid/grid-toolbar.tsx": "d5ef7d81cbf6a8092e8ce8b35cf91997",
+      "src/components/ds/grid/grid-toolbar.tsx": "cb46030cd1a106ea90202646c12485ad",
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "ea65781bad02b3deec17eff5cdd34699",
       "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
@@ -161,7 +161,7 @@
       "src/components/ds/layout/nav-search.tsx": "bc48b789b22a9b5cd023176b85ca0d40",
       "src/components/ds/layout/notification-bell.tsx": "61e31db02987a724c6f601d569c6a946",
       "src/components/ds/layout/page-header.tsx": "93322a7a9b4328edf382729d51a71b1f",
-      "src/components/ds/layout/page-tabs.tsx": "529fcaedad1dda1c2e82640e431e0fd3",
+      "src/components/ds/layout/page-tabs.tsx": "e40401e771bf641741977a9d32d9ae96",
       "src/components/ds/layout/period-switcher.tsx": "3e037c273789cf5df59e0f2624d9cc97",
       "src/components/ds/layout/search-button.tsx": "65b85c2d056182cd9014930d4338aa7a",
       "src/components/ds/layout/theme-setting.tsx": "059b307549a15239d438e0bb0e3d60c7",
@@ -177,7 +177,7 @@
       "src/components/ds/panes/pane-tab-bar.tsx": "def78a014d31687611faa7ed792f5566",
       "src/components/ds/panes/pane-tab-store.ts": "b139badd702a13643ae21348b5f3d7d9",
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
-      "src/components/showcase/DocumentFormShowcase.tsx": "24a30558d5e044a9981d255726ad4874",
+      "src/components/showcase/DocumentFormShowcase.tsx": "5504f0c40acd9b955619c0fed019da61",
       "src/components/showcase/PaneShowcase.tsx": "d2abe066e9d9b6dabac5bdea2ffcd369",
       "src/components/showcase/ReportsShowcase.tsx": "cf8eb24d8cc6229e5102b8990053eee3",
       "src/components/showcase/ShowcaseLayout.tsx": "4a72aad16e23a9a4a5a1c4ae3ba15956",
@@ -249,7 +249,7 @@
       "src/lib/http-retry.ts": "f99f894ba8cb89a6a7c189b4c695ff2d",
       "src/lib/legal-forms.ts": "f255b096348f9387907beff9717f94fc",
       "src/lib/lovable-error-reporting.ts": "0367e03b7d71917510e4dc1cdae172ec",
-      "src/lib/mock/accounting.ts": "e40e0519d1955c6f7c2d13c821355e97",
+      "src/lib/mock/accounting.ts": "11e4362c95fb06b512642a52255c05bb",
       "src/lib/period.ts": "2f9fa68e6680cc653c8e61f10524b671",
       "src/lib/person-name.ts": "95a97eaa6e5d784ca34f04d230d6431b",
       "src/lib/postal-code.ts": "31780add95ad233efc64897c59a77a24",
@@ -275,16 +275,18 @@
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
       "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
       "src/start.ts": "5684c6ddeec813f1264536f3228817b1",
-      "src/styles.css": "8d7fa8cf0c3f52b42a93c8dac55d5db3",
+      "src/styles.css": "2838c31d0219e1ddc303fd83d372ce08",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "e4f9483a1a9f31650365765d5ce42d95",
+      "tests/e2e/grid-toolbar-232.spec.ts": "30d58335a490e1563622bd21d8036e8a",
       "tests/e2e/journal-editor.spec.ts": "bfbebeecce960c3c905445629d9e3753",
       "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
       "tests/e2e/reports.spec.ts": "b0e8a570a298b73df2e87a9af880833a",
       "tests/unit/context-switchers-222.test.ts": "fdb6791278cc44155d24639854fb8da9",
-      "tests/unit/grid-period.test.ts": "7435553353e1983abe1305332c7ab020",
-      "tests/unit/grid-toolbar-2211.test.ts": "9650e1b398bfd391fa03875249735a09",
+      "tests/unit/document-form-224.test.tsx": "7c6a3dec88ac9c4a3912ef607951d265",
+      "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
+      "tests/unit/grid-toolbar-2211.test.ts": "b47743c69f26969c1af57b556fcae1b1",
       "tests/unit/nav-search.test.ts": "f1c39b11786ffadcedd2e614d1142635",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
       "tests/unit/pane-tabs-217.test.ts": "7b8c35b0c9c96170f93fa973f9a697fd",
@@ -2358,7 +2360,7 @@
       "examples": [
         {
           "label": "Skupiny a hledání",
-          "code": "const groups = [{ id: 'invoices', label: 'Faktury', section: 'Doklady', items }];\n<AppShell navGroups={groups} navStateKey=\"accounting\" navSearch>{children}</AppShell>"
+          "code": "const groups = [{ id: 'invoices', label: 'Faktury', section: 'Doklady', items }];\n\u003cAppShell navGroups={groups} navStateKey=\"accounting\" navSearch\u003e{children}\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -2375,7 +2377,7 @@
       "examples": [
         {
           "label": "Pracovní prostor a firma",
-          "code": "<WorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} />"
+          "code": "\u003cWorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2523,7 +2525,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2577,7 +2579,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2641,7 +2643,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -2736,7 +2738,7 @@
       "examples": [
         {
           "label": "Řízené otevření",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\" open={open} onOpenChange={setOpen}>…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\" open={open} onOpenChange={setOpen}\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -2806,7 +2808,7 @@
       "examples": [
         {
           "label": "Řízený výběr firmy",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2890,7 +2892,7 @@
       "examples": [
         {
           "label": "Řízený výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2958,7 +2960,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2989,7 +2991,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3053,7 +3055,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "min-h-10 gap-1 rounded-none border-b bg-transparent p-0"
+          "default": "h-10 gap-1 rounded-none border-b bg-transparent p-0"
         }
       ]
     },
@@ -3160,7 +3162,7 @@
       "examples": [
         {
           "label": "Panely se záložkami",
-          "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
+          "code": "\u003cPaneTabsProvider state={state} onChange={setState}\u003e\n  \u003cPaneLayout renderTab={(tab) =\u003e \u003cPage route={tab.route} /\u003e} getTabIcon={(tab) =\u003e ICONS[tab.icon]} /\u003e\n\u003c/PaneTabsProvider\u003e"
         }
       ],
       "antipatterns": [
@@ -3227,7 +3229,7 @@
       "examples": [
         {
           "label": "Připnuté stránky",
-          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
+          "code": "\u003cPinnedBar items={items} onOpen={(id, options) =\u003e openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3283,7 +3285,7 @@
       "examples": [
         {
           "label": "Vlastní panel",
-          "code": "<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />"
+          "code": "\u003cPaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3317,11 +3319,11 @@
       "examples": [
         {
           "label": "Položka menu",
-          "code": "<PaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>"
+          "code": "\u003cPaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}\u003eÚčetní deník\u003c/PaneLink\u003e"
         }
       ],
       "antipatterns": [
-        "Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
+        "Obyčejný \u003ca\u003e uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
       ]
     },
     {
@@ -3361,7 +3363,7 @@
       "examples": [
         {
           "label": "Obnovený koncept",
-          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}\n{draft.conflict ? <DraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}"
+          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? \u003cDraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /\u003e : null}\n{draft.conflict ? \u003cDraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /\u003e : null}"
         }
       ],
       "antipatterns": [
@@ -3432,7 +3434,7 @@
       "examples": [
         {
           "label": "Vedle hledání v menu",
-          "code": "<AppShell navSearchMenu={<LayoutMenu trigger=\"icon\" items={layouts} onSave={save} onApply={apply} onUpdate={update} onDelete={remove} />} />"
+          "code": "\u003cAppShell navSearchMenu={\u003cLayoutMenu trigger=\"icon\" items={layouts} onSave={save} onApply={apply} onUpdate={update} onDelete={remove} /\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3719,7 +3721,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "hidden @min-[640px]:contents"
+          "default": "grid-toolbar-optional contents"
         },
         {
           "name": "texts",
@@ -3730,7 +3732,7 @@
       "examples": [
         {
           "label": "Akce řádků s vysvětlením zákazu",
-          "code": "<DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row =\u003e row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4054,7 +4056,7 @@
       "examples": [
         {
           "label": "Vlastní obsah",
-          "code": "<GridToolbar left={parameters} right={actions} />"
+          "code": "\u003cGridToolbar left={parameters} right={actions} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4112,6 +4114,11 @@
     },
     {
       "name": "GridAddActions",
+      "file": "src/components/ds/grid/grid-toolbar.tsx",
+      "import_path": ""
+    },
+    {
+      "name": "GridToolbarCollapsible",
       "file": "src/components/ds/grid/grid-toolbar.tsx",
       "import_path": ""
     },
@@ -4207,7 +4214,7 @@
       "examples": [
         {
           "label": "Asynchronní obnovení",
-          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
+          "code": "\u003cGridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4274,7 +4281,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -4502,7 +4509,7 @@
       "examples": [
         {
           "label": "Akce řádků s vysvětlením zákazu",
-          "code": "<TreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} />"
+          "code": "\u003cTreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row =\u003e row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4542,7 +4549,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
+          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4563,7 +4570,7 @@
       "examples": [
         {
           "label": "Kniha jen pro čtení",
-          "code": "<GridBookSelect books={books} value={bookId} readOnly />"
+          "code": "\u003cGridBookSelect books={books} value={bookId} readOnly /\u003e"
         }
       ],
       "antipatterns": [
@@ -4604,7 +4611,7 @@
       "examples": [
         {
           "label": "Kniha, období a směr",
-          "code": "<GridContextBar book={bookConfig} period={periodConfig} contextRight={<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr dokladu\" />} />"
+          "code": "\u003cGridContextBar book={bookConfig} period={periodConfig} contextRight={\u003cGridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr dokladu\" /\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4651,7 +4658,7 @@
       "examples": [
         {
           "label": "Směr pokladního dokladu",
-          "code": "<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr pokladního dokladu\" />"
+          "code": "\u003cGridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr pokladního dokladu\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -5141,7 +5148,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
+          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5168,11 +5175,86 @@
       "name": "AccountSelect",
       "file": "src/components/ds/accounting/account-select.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "accounts",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "Vyberte účet"
+        },
+        {
+          "name": "searchPlaceholder",
+          "type": "string",
+          "default": "Hledat účet nebo číslo…"
+        },
+        {
+          "name": "emptyText",
+          "type": "string",
+          "default": "Žádný účet nenalezen"
+        },
+        {
+          "name": "hideInactive",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "disableSyntheticWithAnalytics",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "typeLabels",
+          "type": "object"
+        },
+        {
+          "name": "allowLevels",
+          "type": "any"
+        },
+        {
+          "name": "catalog",
+          "type": "any"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "initialSearch",
+          "type": "string"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function"
+        },
+        {
+          "name": "suffix",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "font-mono tabular-nums"
+        }
+      ],
       "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu.",
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5257,7 +5339,7 @@
       "examples": [
         {
           "label": "Jediná dostupná kniha",
-          "code": "<BookSelect books={books} value={bookId} onChange={setBookId} />"
+          "code": "\u003cBookSelect books={books} value={bookId} onChange={setBookId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5416,7 +5498,7 @@
       "examples": [
         {
           "label": "Řádky zápisu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -5482,6 +5564,11 @@
           "type": "any"
         },
         {
+          "name": "documentType",
+          "type": "any",
+          "default": "ID"
+        },
+        {
           "name": "fields",
           "type": "any"
         },
@@ -5506,6 +5593,15 @@
           "name": "mainAccountLocked",
           "type": "boolean",
           "default": "false"
+        },
+        {
+          "name": "periodLabel",
+          "type": "any"
+        },
+        {
+          "name": "rateAmount",
+          "type": "number",
+          "default": "1"
         },
         {
           "name": "linesEditorProps",
@@ -5552,28 +5648,14 @@
         {
           "name": "className",
           "type": "string",
-          "default": "flex flex-wrap items-center gap-2"
-        },
-        {
-          "name": "documentType",
-          "type": "DocumentTypeCode | string",
-          "default": "ID"
-        },
-        {
-          "name": "periodLabel",
-          "type": "ReactNode"
-        },
-        {
-          "name": "rateAmount",
-          "type": "number",
-          "default": "1"
+          "default": "rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
         }
       ],
       "usage": "Celostránkový editor dokladu podle Money. documentType určuje výchozí pole a účetní popisky; vlevo jsou základní a platební údaje, vpravo vlastnosti, kurz a částka. Číslo, kurz, kniha po založení a směr jsou jen ke čtení.",
       "examples": [
         {
           "label": "Přijatá faktura v EUR",
-          "code": "<DocumentForm documentType=\"FP\" periodLabel=\"Rok 2026\" rateAmount={1} title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} mainSide=\"D\" status=\"filed\" />"
+          "code": "\u003cDocumentForm documentType=\"FP\" periodLabel=\"Rok 2026\" rateAmount={1} title=\"Přijatá faktura\" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} mainSide=\"D\" status=\"filed\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -5660,7 +5742,7 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [

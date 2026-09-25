@@ -38,7 +38,28 @@ import { AccountCode } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { AccountSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr účtu z osnovy; s allowLevels a catalog i výběr třídy / skupiny jako prefix pro výkazy.
+Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `accounts` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `placeholder` | string | `Vyberte účet` |
+| `searchPlaceholder` | string | `Hledat účet nebo číslo…` |
+| `emptyText` | string | `Žádný účet nenalezen` |
+| `hideInactive` | boolean | `false` |
+| `disableSyntheticWithAnalytics` | boolean | `true` |
+| `typeLabels` | object | `—` |
+| `allowLevels` | any | `—` |
+| `catalog` | any | `—` |
+| `disabled` | boolean | `—` |
+| `initialSearch` | string | `—` |
+| `onOpenChange` | function | `—` |
+| `suffix` | any | `—` |
+| `className` | string | `font-mono tabular-nums` |
 
 **Examples:**
 
@@ -1027,7 +1048,7 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | `showTotalRow` | boolean | `true` |
 | `onColumnFiltersChange` | function | `—` |
 | `onSearchChange` | function | `—` |
-| `className` | string | `hidden @min-[640px]:contents` |
+| `className` | string | `grid-toolbar-optional contents` |
 | `texts` | any | `—` |
 
 **Examples:**
@@ -1148,7 +1169,7 @@ import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupiny přes fields (documentFieldsForType), řádky přes JournalLinesEditor a další záložky přes tabs. Číslo, kurz, kniha po založení a směr jsou jen ke čtení; formulář nic neukládá.
+Celostránkový editor dokladu podle Money. documentType určuje výchozí pole a účetní popisky; vlevo jsou základní a platební údaje, vpravo vlastnosti, kurz a částka. Číslo, kurz, kniha po založení a směr jsou jen ke čtení.
 
 **Props:**
 
@@ -1165,11 +1186,14 @@ Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupin
 | `partners` | any | `—` |
 | `dimensions` | any | `—` |
 | `currencies` | any | `—` |
+| `documentType` | any | `ID` |
 | `fields` | any | `—` |
 | `editableFields` | any | `—` |
 | `isNew` | boolean | `false` |
 | `mainSide` | MD · D | `—` |
 | `mainAccountLocked` | boolean | `false` |
+| `periodLabel` | any | `—` |
+| `rateAmount` | number | `1` |
 | `linesEditorProps` | any | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
@@ -1180,13 +1204,13 @@ Celostránkový editor dokladu. Hlavička DocumentHeaderValue, viditelné skupin
 | `readOnly` | boolean | `false` |
 | `readOnlyReason` | any | `—` |
 | `texts` | any | `—` |
-| `className` | string | `flex flex-wrap items-center gap-2` |
+| `className` | string | `rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground` |
 
 **Examples:**
 
-_Přijatá faktura_
+_Přijatá faktura v EUR_
 ```tsx
-<DocumentForm title="Přijatá faktura" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} fields={documentFieldsForType("FP")} mainSide="D" status="filed" tabs={[{ id: "schedule", label: "Platební kalendář", content: <PaymentScheduleEditor … /> }]} />
+<DocumentForm documentType="FP" periodLabel="Rok 2026" rateAmount={1} title="Přijatá faktura" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} partners={partners} mainSide="D" status="filed" />
 ```
 
 **Avoid:**
@@ -1841,6 +1865,12 @@ _Vlastní obsah_
 - Ovládání gridu mimo společný řádek akcí
 - Samostatná exportní tlačítka v gridu
 
+### GridToolbarCollapsible
+
+```ts
+import { GridToolbarCollapsible } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### GridToolbarOverflowContext
 
 ```ts
@@ -2349,7 +2379,7 @@ import { PageTabs } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 |---|---|---|
 | `items` | any | `—` |
 | `listLabel` | string | `Sekce stránky` |
-| `className` | string | `min-h-10 gap-1 rounded-none border-b bg-transparent p-0` |
+| `className` | string | `h-10 gap-1 rounded-none border-b bg-transparent p-0` |
 
 ### Pagination
 
@@ -2561,6 +2591,8 @@ tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' 
 ```ts
 import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Výběr partnera podle názvu a IČ; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.
 
 ### PaymentScheduleEditor
 
@@ -3571,11 +3603,4 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-
-### DocumentForm 2.24.0
-- `documentType` (výchozí `ID`) určuje výchozí pole a účetní popisky; `fields` slouží pro výjimky.
-- `periodLabel` je text období a `rateAmount` množství měny pro kurz; `PartnerOption.dic` doplňuje DIČ.
-- `AccountSelect.suffix` patří dovnitř spouštěče před šipku; `totalMode` lze uvést v `editableFields`.
-- Zamčený nebo jediný hlavní účet se zobrazuje jako text, nikoli jako zakázaný výběr.
 
