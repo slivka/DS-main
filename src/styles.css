@@ -423,6 +423,12 @@
   box-shadow: none;
 }
 
+.grid-connected-block .zoom-grid {
+  border-inline: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .grid-connected-block > :first-child {
   border-top: 0;
 }
