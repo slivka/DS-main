@@ -177,7 +177,7 @@ function underThousand(value: number, gender: "m" | "f" = "f") {
   const hundred = Math.floor(value / 100); const rest = value % 100;
   let text = HUNDREDS[hundred]?.replaceAll(" ", "") ?? "";
   if (rest >= 10 && rest < 20) text += TEENS[rest - 10];
-  else { text += TENS[Math.floor(rest / 10)] ?? ""; const one = rest % 10; text += one === 1 && gender === "m" ? "jeden" : one === 2 && gender === "f" ? "dvě" : ONES[one] ?? ""; }
+  else { text += TENS[Math.floor(rest / 10)] ?? ""; const one = rest % 10; text += one === 1 && gender === "m" ? "jeden" : value === 2 && gender === "f" ? "dvě" : ONES[one] ?? ""; }
   return text;
 }
 function groupForm(value: number, one: string, few: string, many: string) {
