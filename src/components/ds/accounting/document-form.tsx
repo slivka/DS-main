@@ -293,9 +293,9 @@ export function DocumentForm({
 
       <Tabs value={tab} onValueChange={setTab}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          <TabsList>
+          <TabsList className="min-h-10 gap-1 rounded-none border-b bg-transparent p-0">
             {allTabs.map((item) => (
-              <TabsTrigger key={item.id} value={item.id} className="gap-1.5">
+              <TabsTrigger key={item.id} value={item.id} className="min-h-10 gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none">
                 {item.label}
                 {item.badge != null ? <span className="rounded-sm bg-muted px-1.5 text-xs tabular-nums text-muted-foreground">{item.badge}</span> : null}
               </TabsTrigger>

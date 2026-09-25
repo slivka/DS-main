@@ -458,14 +458,15 @@ export function AppShell({
     const contextWidth = context.getBoundingClientRect().width;
     const rightControlsLeft = rightControls.getBoundingClientRect().left;
     const centeredRight = headerRect.left + headerRect.width / 2 + contextWidth / 2;
-    setCenterContext(window.innerWidth >= 1024 && centeredRight + 16 <= rightControlsLeft);
+    setCenterContext(centeredRight + 16 <= rightControlsLeft);
 
     const company = context.querySelector<HTMLElement>('[data-context-switcher="company"]');
     const period = context.querySelector<HTMLElement>('[data-context-switcher="period"]');
     const separator = contextSeparatorRef.current;
     if (company && period && window.matchMedia("(min-width: 768px)").matches) {
       const periodWidth = period.getBoundingClientRect().width;
-      company.style.minWidth = `${periodWidth}px`;
+      const maxWidth = Number.parseFloat(window.getComputedStyle(company).maxWidth);
+      company.style.minWidth = `${Number.isFinite(maxWidth) ? Math.min(periodWidth, maxWidth) : periodWidth}px`;
       const contextLeft = context.getBoundingClientRect().left;
       const gapCenter = (company.getBoundingClientRect().right + period.getBoundingClientRect().left) / 2;
       if (separator) {
@@ -512,7 +513,7 @@ export function AppShell({
           <div
             ref={contextRef}
             className={cn(
-              "relative z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden xl:gap-2",
+              "relative z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden md:gap-5",
               centerContext && "absolute left-1/2 -translate-x-1/2",
             )}
           >

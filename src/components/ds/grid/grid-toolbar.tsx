@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
-export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2>(2);
+export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
 
 export interface GridToolbarProps extends React.ComponentPropsWithoutRef<"div"> {
   left?: React.ReactNode;
@@ -28,7 +28,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   ref,
 ) {
   const ownRef = React.useRef<HTMLDivElement | null>(null);
-  const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2>(2);
+  const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2 | 3>(0);
   const setRefs = React.useCallback((node: HTMLDivElement | null) => {
     ownRef.current = node;
     if (typeof ref === "function") ref(node);
@@ -41,15 +41,16 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
-        const overflows = () => Boolean(rightNode && rightNode.scrollWidth > rightNode.clientWidth + 1);
+        const overflows = () => node.scrollWidth > node.clientWidth + 1;
         node.dataset.overflowLevel = "0";
-        let next: 0 | 1 | 2 = 0;
-        for (const level of [1, 2]) {
+        let next: 0 | 1 | 2 | 3 = node.clientWidth < 640 ? 2 : 0;
+        node.dataset.overflowLevel = String(next);
+        for (const level of [1, 2, 3] as const) {
+          if (level <= next) continue;
           if (!overflows()) break;
           node.dataset.overflowLevel = String(level);
-          next = level as 1 | 2;
-          void rightNode?.offsetWidth;
+          next = level;
+          void node.offsetWidth;
         }
         setOverflowLevel(next);
       });
@@ -57,9 +58,11 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     const observer = new ResizeObserver(update);
     observer.observe(node);
     Array.from(node.children).forEach((child) => observer.observe(child));
+    const mutations = new MutationObserver(update);
+    mutations.observe(node, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "aria-expanded", "aria-pressed", "data-state"] });
     update();
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
-  }, [left, right, zoom, density]);
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect(); };
+  }, []);
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
     <div
@@ -67,7 +70,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       data-slot="grid-toolbar"
       data-density={density}
       className={cn(
-        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 overflow-hidden border p-2",
+        "zoom-filters grid-toolbar-row flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto overflow-y-hidden border p-2",
         className,
       )}
       style={{ fontSize: gridFontSize(zoom) }}
@@ -255,6 +258,7 @@ export interface GridAddAction {
 
 /** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
+  const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const list = React.useMemo(() => Array.isArray(actions) ? actions : [actions], [actions]);
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -280,7 +284,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
             <TooltipTrigger asChild>
               <Button type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
                 <Plus className="size-[1.2em]" />
-                <span className="hidden @min-[640px]:inline">{action.label}</span>
+                <span className={cn("hidden @min-[640px]:inline", overflowLevel >= 3 && "@min-[640px]:hidden")}>{action.label}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>{label}</TooltipContent>
