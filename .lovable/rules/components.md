@@ -953,7 +953,7 @@ import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Ruční načtení předejte přes onRefresh; hromadný výběr zapněte selectable. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
+Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a individuální Upravit/Odstranit pouze ve sticky sloupci akcí řádku.
 
 **Props:**
 
@@ -977,6 +977,7 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `toolbarLeft` | any | `—` |
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
@@ -1009,7 +1010,9 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `hideToolbar` | boolean | `—` |
 | `hideDefaultActions` | boolean | `—` |
 | `canEditRow` | function | `—` |
+| `editDisabledReason` | function | `—` |
 | `canDeleteRow` | function | `—` |
+| `deleteDisabledReason` | function | `—` |
 | `selectable` | boolean | `—` |
 | `selectionActions` | function | `—` |
 | `selectMode` | boolean | `—` |
@@ -1020,25 +1023,20 @@ Použijte pro tabulkové přehledy s řazením, filtrováním, součty a exporte
 | `showTotalRow` | boolean | `true` |
 | `onColumnFiltersChange` | function | `—` |
 | `onSearchChange` | function | `—` |
-| `className` | string | `border border-t-0 bg-card px-2 py-1.5` |
+| `className` | string | `hidden @min-[640px]:contents` |
 | `texts` | any | `—` |
 
 **Examples:**
 
-_Grid s obnovením a výběrem_
+_Akce řádků s vysvětlením zákazu_
 ```tsx
-<DataGrid rows={rows} columns={columns} rowKey={(row) => row.id} storageKey="doklady" onRefresh={reload} refreshing={loading} selectable />
+<DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
 **Avoid:**
 
-- Vlastní tlačítko obnovení mimo lištu gridu
-- Přepisovat klávesu F5
-- Textové tlačítko Vybrat více místo GridSelectionToggle
-- Zobrazovat nadpis gridu bez výslovného showTitle
-- ExcelExportButton uvnitř gridu
-- Ovládání gridu nad společným řádkem akcí
-- Akce Nový v PageHeader místo addAction
+- Umisťovat Upravit nebo Odstranit jednotlivého řádku do horní lišty
+- Skrýt zakázanou akci, pokud má uživatel potřebovat vysvětlení důvodu
 
 ### DateField
 
@@ -1534,6 +1532,13 @@ import { FormSection } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { GridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `tone` | default · destructive | `default` |
+| `disabledReason` | string | `—` |
+
 ### GridActions
 
 ```ts
@@ -1558,7 +1563,7 @@ import { GridBody } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { GridBookSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextový výběr účetní knihy; jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text bez zakázaného výběru.
+Kontextový výběr účetní knihy; při více knihách drží stálou šířku podle nejdelšího popisku. Jediná dostupná, readOnly nebo needitovatelná kniha se zobrazí jako tučný text.
 
 **Examples:**
 
@@ -1577,7 +1582,7 @@ _Kniha jen pro čtení_
 import { GridContextBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextové záhlaví bezprostředně nad GridToolbar; vlevo jsou přístupně popsané Kniha a Období. Používá tokenový podklad záhlaví a škáluje se stejně jako grid.
+Kontextové záhlaví nad GridToolbar; vlevo jsou přístupně popsané Kniha a Období, vpravo může být další kontextový filtr. Používá tokenový podklad záhlaví a škáluje se stejně jako grid.
 
 **Props:**
 
@@ -1585,20 +1590,22 @@ Kontextové záhlaví bezprostředně nad GridToolbar; vlevo jsou přístupně p
 |---|---|---|
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `texts` | any | `—` |
 | `zoom` | number | `—` |
 | `density` | any | `—` |
 
 **Examples:**
 
-_Kniha a období_
+_Kniha, období a směr_
 ```tsx
-<GridContextBar book={bookConfig} period={periodConfig} />
+<GridContextBar book={bookConfig} period={periodConfig} contextRight={<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr dokladu" />} />
 ```
 
 **Avoid:**
 
 - Vkládat období nebo knihu zároveň do toolbarLeft
+- Používat neutrální vzhled pro segmentový filtr, který zužuje data
 
 ### GridEmptyRow
 
@@ -1731,6 +1738,37 @@ import { GridSearch } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { GridSectionToggles } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### GridSegmentedToggle
+
+```ts
+import { GridSegmentedToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Segmentový filtr pro pravou část kontextového řádku. Výchozí hodnota je neutrální; jiná hodnota je oranžová, protože zužuje data.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `defaultValue` | any | `—` |
+| `label` | string | `—` |
+| `ariaLabel` | string | `—` |
+
+**Examples:**
+
+_Směr pokladního dokladu_
+```tsx
+<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue="all" ariaLabel="Směr pokladního dokladu" />
+```
+
+**Avoid:**
+
+- Používat pro běžnou akci místo volby jedné z navzájem výlučných hodnot
+- Vynechat ariaLabel, pokud přepínač nemá viditelný label
 
 ### GridSelectionToggle
 
@@ -3335,7 +3373,7 @@ import { TooltipTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exportem. Nadpis je výchozí skrytý; zobrazte ho jen výslovně přes showTitle. Podporuje stejné obnovení a hromadný výběr jako DataGrid. Volitelné period a book vykreslí GridContextBar nad řádkem akcí.
+Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako DataGrid; onRowOpen má při dvojkliku přednost před úpravou.
 
 **Props:**
 
@@ -3359,6 +3397,7 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `toolbarLeft` | any | `—` |
 | `period` | any | `—` |
 | `book` | any | `—` |
+| `contextRight` | any | `—` |
 | `filters` | any | `—` |
 | `filterChips` | any | `—` |
 | `onClearFilters` | function | `—` |
@@ -3373,6 +3412,16 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 | `extraExports` | any | `—` |
 | `onRefresh` | function | `—` |
 | `refreshing` | boolean | `—` |
+| `onEditRow` | function | `—` |
+| `onDeleteRow` | function | `—` |
+| `deleteConfirm` | function | `—` |
+| `rowActions` | function | `—` |
+| `canEditRow` | function | `—` |
+| `canDeleteRow` | function | `—` |
+| `editDisabledReason` | function | `—` |
+| `deleteDisabledReason` | function | `—` |
+| `actionsLabel` | string | `—` |
+| `hideDefaultActions` | boolean | `—` |
 | `selectable` | boolean | `—` |
 | `selectionActions` | function | `—` |
 | `onSelectedRowsChange` | function | `—` |
@@ -3383,20 +3432,15 @@ Použijte pro stromová data se součty za uzel, úrovněmi rozbalení a exporte
 
 **Examples:**
 
-_Strom s obnovením a výběrem_
+_Akce řádků s vysvětlením zákazu_
 ```tsx
-<TreeGrid title="Účtová osnova" rows={rows} columns={columns} onRefresh={reload} refreshing={loading} selectable onSelectedRowsChange={setSelected} />
+<TreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
 ```
 
 **Avoid:**
 
-- Vlastní rozbalovací tabulka místo TreeGrid
-- Vlastní tlačítko obnovení mimo lištu
-- Ruční sčítání uzlů v aplikaci
-- Zobrazovat nadpis gridu bez výslovného showTitle
-- ExcelExportButton uvnitř gridu
-- Ovládání gridu nad společným řádkem akcí
-- Akce Nový v PageHeader místo addAction
+- Umisťovat Upravit nebo Odstranit jednotlivého řádku do horní lišty
+- Skrýt zakázanou akci, pokud má uživatel potřebovat vysvětlení důvodu
 
 ### TreeView
 
@@ -3493,11 +3537,3 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-
-## Řádek akcí gridu (2.21.0)
-
-Pořadí vlevo: Nový, oddělovač, Tabulka/Strom, Rozbalit/Sbalit, oddělovač, Stav k datu a vlastní levý obsah. Pořadí vpravo: Hledat, Filtr, Export, Sloupce, Seskupit, oddělovač, Vybrat více, další akce, hustota a zoom, oddělovač, Obnovit. Obnovit je vždy úplně vpravo.
-
-Upravit a Odstranit jednotlivý záznam patří jen do sticky sloupce akcí řádku; dvojklik znamená Upravit. Hromadné akce patří jen do režimu Vybrat více. Zakázaná akce s důvodem zůstává zešedlá s tooltipem přes `editDisabledReason` / `deleteDisabledReason`; bez důvodu se skryje přes `canEditRow` / `canDeleteRow`.
-
-Pod šířkou gridu 640 px zůstává Nový jako ikona, přepnutí pohledu, rozbalení, hledání, filtr a nabídka dalších akcí. Ostatní nástroje jsou ve skupině Nástroje nabídky ⋯.
