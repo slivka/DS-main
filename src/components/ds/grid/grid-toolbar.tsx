@@ -80,6 +80,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     const node = ownRef.current;
     if (!node) return;
     let frame = 0;
+    let cachedWidths: ReturnType<typeof naturalWidths> | null = null;
     let current: 0 | 1 | 2 | 3 = Number(node.dataset.overflowLevel || 0) as 0 | 1 | 2 | 3;
     const widthOf = (scope: ParentNode, name: string) => {
       const target = scope.querySelector<HTMLElement>(`[data-toolbar-measure="${name}"]`);
@@ -120,7 +121,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
         const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
         const padding = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
-        const measured = naturalWidths();
+        const measured = cachedWidths ??= naturalWidths();
         const leftFull = measured.leftFull;
         const findFull = measured.findFull;
         const controlSize = Number.parseFloat(getComputedStyle(node).getPropertyValue("--f-h")) * (Number.parseFloat(style.fontSize) || 13);
@@ -139,7 +140,10 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     };
     const observer = new ResizeObserver(update);
     observer.observe(node);
-    const mutations = new MutationObserver(update);
+    const mutations = new MutationObserver(() => {
+      cachedWidths = null;
+      update();
+    });
     mutations.observe(node, { subtree: true, childList: true, characterData: true });
     update();
     return () => { cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect(); };
