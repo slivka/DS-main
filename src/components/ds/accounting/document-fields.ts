@@ -15,6 +15,28 @@ export type DocumentFields = {
 /** Kódy typů dokladů s předvolbou polí. */
 export type DocumentTypeCode = "ID" | "FV" | "FP" | "PO" | "BA" | "ZFV" | "ZFP" | "UZ";
 
+/** Popisek hlavního účtu podle druhu dokladu. */
+export function mainAccountLabelForType(code: DocumentTypeCode | string): string {
+  const labels: Partial<Record<DocumentTypeCode, string>> = {
+    PO: "Účet pokladny",
+    BA: "Účet banky",
+    FV: "Účet pohledávky",
+    FP: "Účet závazku",
+    ZFV: "Účet přijaté zálohy",
+    ZFP: "Účet poskytnuté zálohy",
+  };
+  return labels[code.toUpperCase() as DocumentTypeCode] ?? "Hlavní účet";
+}
+
+/** Popisek partnera podle druhu a směru dokladu. */
+export function partnerLabelForType(code: DocumentTypeCode | string, direction?: "in" | "out" | null): string {
+  const normalized = code.toUpperCase();
+  if (normalized === "PO") return direction === "in" ? "Přijato od" : "Vyplaceno komu";
+  if (normalized === "FV" || normalized === "ZFV") return "Odběratel";
+  if (normalized === "FP" || normalized === "ZFP") return "Dodavatel";
+  return "Partner";
+}
+
 const NONE: DocumentFields = {
   taxDate: false, dueDate: false, externalNumber: false, partner: false, symbols: false,
   bankAccount: false, mainAccount: false, direction: false, rounding: false, paymentOrders: false,

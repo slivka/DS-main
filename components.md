@@ -98,3 +98,10 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - Nabídka firmy obsahuje `searchPlaceholder` a jediný nepojmenovaný seznam všech `items`. Props `recentIds`, `recentLabel` a `allLabel` byly ve 2.22.0 odstraněny.
 - Období používá stejnou výšku, poloměr, odsazení a typografii; otevřené je zelené, období v uzávěrce a stav bez výběru jantarové, uzavřené se zámkem a firma bez období tlumeně šedá bez tečky.
 - `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
+
+### DocumentForm 2.24.0
+- `documentType` (výchozí `ID`) určuje výchozí pole a účetní popisky; `fields` slouží pro výjimky.
+- `periodLabel` je text období a `rateAmount` množství měny pro kurz; `PartnerOption.dic` doplňuje DIČ.
+- `AccountSelect.suffix` patří dovnitř spouštěče před šipku; `totalMode` lze uvést v `editableFields`.
+- Zamčený nebo jediný hlavní účet se zobrazuje jako text, nikoli jako zakázaný výběr.
+
