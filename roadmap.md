@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.24.1 (bezeztrátová adaptivní lišta)
+- [x] Přesunout hlavní parametry a Stav k datu na úrovni 3 do jediné nabídky
+- [x] Zachovat Přidat, hledání a Obnovit v jednom řádku od šířky 360 px
+- [x] Měřit skryté skupiny a skutečné mezery nezávisle na aktuální úrovni
+- [x] Doplnit DOM testy pořadí, oddělovačů, hystereze a krajních šířek
+
 ## Verze 2.23.2 (dokončení adaptivního řádku akcí)
 - [x] Výpočet úrovně z přirozených šířek včetně kompaktního Přidat a hledání
 - [x] Hystereze 16 px, žádné ořezávání ani vodorovný posuvník, jedno `⋯`, Obnovit vždy vpravo
