@@ -31,6 +31,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - Hlavička dokladu má základní a platební údaje vlevo a panel vlastností, kurzu a částky vpravo; v úzkém panelu se části skládají pod sebe.
 - Hlavní účet je první a jeho popisek se řídí druhem dokladu. Zamčený účet je prostý text a strana MD/DAL je uvnitř hodnoty.
 - Partner používá popisek podle druhu a směru dokladu a zobrazuje IČ i DIČ.
+- Pole jen pro čtení (hlavní účet, IČ, DIČ, Celkem za doklad při sčítání z rozpisu, Haléřové vyrovnání) jsou čistý text bez rámečku a plochy; částky jsou vpravo a v mono písmu.
 - Přibyly props `documentType`, `periodLabel`, `rateAmount`, `PartnerOption.dic`, `AccountSelect.suffix`; `totalMode` lze řídit přes `editableFields`.
 - Jde o minor verzi bez zachování zpětné kompatibility rozvržení; význam stávajících props zůstává zachován.
 
