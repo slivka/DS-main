@@ -458,7 +458,7 @@ export function AppShell({
     const contextWidth = context.getBoundingClientRect().width;
     const rightControlsLeft = rightControls.getBoundingClientRect().left;
     const centeredRight = headerRect.left + headerRect.width / 2 + contextWidth / 2;
-    setCenterContext(centeredRight + 16 <= rightControlsLeft);
+    setCenterContext(window.innerWidth >= 1024 && centeredRight + 16 <= rightControlsLeft);
 
     const company = context.querySelector<HTMLElement>('[data-context-switcher="company"]');
     const period = context.querySelector<HTMLElement>('[data-context-switcher="period"]');

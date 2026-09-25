@@ -41,12 +41,15 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
+        const overflows = () => Boolean(rightNode && rightNode.scrollWidth > rightNode.clientWidth + 1);
         node.dataset.overflowLevel = "0";
         let next: 0 | 1 | 2 = 0;
         for (const level of [1, 2]) {
-          if (node.scrollWidth <= node.clientWidth + 1) break;
+          if (!overflows()) break;
           node.dataset.overflowLevel = String(level);
           next = level as 1 | 2;
+          void rightNode?.offsetWidth;
         }
         setOverflowLevel(next);
       });
@@ -71,7 +74,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       {...props}
     >
       {left ?? children}
-      {right ? <div className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2">{right}</div> : null}
+      {right ? <div data-slot="grid-toolbar-right" className="ml-auto flex min-w-0 flex-nowrap items-center justify-end gap-2 overflow-hidden">{right}</div> : null}
     </div>
     </GridToolbarOverflowContext.Provider>
   );
