@@ -104,17 +104,20 @@ function NavigationPage() {
   const [canEdit, setCanEdit] = useState(false);
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1100);
   const [periodId, setPeriodId] = useState<string | null>(null);
+  const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
+  const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
 
   return (
-    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed darkPreview>
+    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed>
       <ShowcaseSection
         title="Horní lišta"
         description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámení, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámení a tmavý režim."
       >
-        <div className="flex items-center justify-end gap-2 rounded-lg border bg-card p-3">
-          <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
-          <span className="text-sm text-muted-foreground">Prázdný stav oznámení</span>
-          <ThemeToggleButton />
+        <div className="grid gap-3">
+          <ContextStatesPreview title="Světlý režim" companies={companies} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
+          <div className="dark rounded-lg bg-background p-3 text-foreground">
+            <ContextStatesPreview title="Tmavý režim" companies={companies} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
+          </div>
         </div>
       </ShowcaseSection>
 
@@ -131,9 +134,9 @@ function NavigationPage() {
         </div>
         <div className="max-w-full overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px`, maxWidth: "100%" }}>
-            <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-1 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
-              <CompanySwitcher className={previewWidth < 768 ? "max-w-[72px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={MOCK_COMPANIES} value={MOCK_COMPANIES[0].id} recentIds={["c1", "c3"]} onChange={() => undefined} />
-              <PeriodSwitcher className={previewWidth < 768 ? "max-w-[64px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+            <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-6 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
+              <CompanySwitcher className={previewWidth < 768 ? "max-w-[132px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={companies} value={companyId} onChange={setCompanyId} />
+              <PeriodSwitcher className={previewWidth < 768 ? "max-w-[112px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
               <NotificationBell items={[]} onItemClick={() => undefined} onMarkAllRead={() => undefined} />
             </div>
@@ -147,11 +150,9 @@ function NavigationPage() {
         </div>
       </ShowcaseSection>
 
-      <ShowcaseSection title="Prázdné stavy období" description="Přepínač rozlišuje chybějící výběr a firmu, která zatím nemá žádné období.">
-        <div className="flex flex-wrap gap-3 rounded-lg border bg-card p-3">
-          {MOCK_PERIODS.map((period) => <PeriodSwitcher key={period.id} periods={MOCK_PERIODS} value={period.id} onChange={setPeriodId} />)}
-          <PeriodSwitcher periods={MOCK_PERIODS} value={null} onChange={setPeriodId} />
-          <PeriodSwitcher periods={[]} value={null} onChange={() => undefined} onCreate={() => undefined} />
+      <ShowcaseSection title="Rozbalený výběr firmy" description="Nabídka obsahuje hledání a jediný seznam všech firem bez skupinových nadpisů; vybraná firma má fajfku a pod názvem IČO.">
+        <div className="min-h-80 rounded-lg border bg-card p-3">
+          <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open onOpenChange={() => undefined} onCreate={() => undefined} />
         </div>
       </ShowcaseSection>
 
@@ -244,6 +245,30 @@ function NavigationPage() {
         <ComingSoon description="Evidence majetku bude dostupná v některém z dalších vydání." />
       </ShowcaseSection>
     </ShowcaseLayout>
+  );
+}
+
+function ContextStatesPreview({ title, companies, companyId, onCompanyChange, onPeriodChange }: { title: string; companies: Array<{ id: string; name: string; ico?: string }>; companyId: string; onCompanyChange: (id: string) => void; onPeriodChange: (id: string) => void }) {
+  const states = [
+    { label: "Otevřené", periods: MOCK_PERIODS, value: "2026" },
+    { label: "V uzávěrce", periods: MOCK_PERIODS, value: "2025" },
+    { label: "Uzavřené", periods: MOCK_PERIODS, value: "2024" },
+    { label: "Bez výběru", periods: MOCK_PERIODS, value: null },
+    { label: "Firma bez období", periods: [], value: null },
+  ];
+  return (
+    <div className="rounded-lg border bg-card p-3">
+      <div className="mb-3 text-sm font-semibold">{title}</div>
+      <div className="grid gap-3">
+        {states.map((state) => (
+          <div key={state.label} className="flex min-w-0 items-center gap-6">
+            <span className="w-32 shrink-0 text-sm text-muted-foreground">{state.label}</span>
+            <CompanySwitcher items={companies} value={companyId} onChange={onCompanyChange} />
+            <PeriodSwitcher periods={state.periods} value={state.value} onChange={onPeriodChange} onCreate={state.periods.length === 0 ? () => undefined : undefined} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -18,6 +18,8 @@ export interface CompanySwitcherProps {
   createLabel?: string;
   onCreate?: () => void;
   className?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 /** Obsah popoveru – je uvnitř ContextPill, takže může popover zavřít. */
@@ -81,9 +83,16 @@ export function CompanySwitcher({
   createLabel = "Nová firma",
   onCreate,
   className,
+  open,
+  onOpenChange,
 }: CompanySwitcherProps) {
   const selected = items.find((item) => item.id === value);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const resolvedOpen = open ?? internalOpen;
+  const setOpen = (next: boolean) => {
+    if (open === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   return (
     <ContextPill
@@ -96,7 +105,7 @@ export function CompanySwitcher({
       valueClassName="text-base font-semibold"
       className={cn("max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]", className)}
       contentClassName="w-[380px]"
-      open={open}
+      open={resolvedOpen}
       onOpenChange={setOpen}
     >
       <CompanySwitcherContent
