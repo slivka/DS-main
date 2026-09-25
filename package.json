@@ -1,6 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
-  "version": "2.23.0",
+  "version": "2.23.1",
   "private": true,
   "sideEffects": [
     "**/*.css"
@@ -93,7 +93,7 @@
     "typescript-eslint": "8.60.1",
     "vite": "8.1.0",
     "@cloudflare/vite-plugin": "1.25.5",
-    "@tailwindcss/vite": "4.2.1",
+    "@tailwindcss/vite": "4.3.3",
     "vite-tsconfig-paths": "6.0.2"
   }
 }

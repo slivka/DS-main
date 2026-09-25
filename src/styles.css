@@ -216,9 +216,9 @@
   --grid-frost: oklch(0.944 0.0097 252.81);
   --grid-title-surface: var(--card);
   --grid-toolbar-surface: var(--card);
-  --grid-heading-surface: color-mix(in oklab, var(--grid-navy) 42%, var(--card));
-  --grid-total-surface: color-mix(in oklab, var(--grid-navy) 48%, var(--card));
-  --grid-chrome-border: color-mix(in oklab, var(--grid-steel) 52%, var(--border));
+  --grid-heading-surface: color-mix(in oklch, var(--grid-navy) 42%, var(--card));
+  --grid-total-surface: color-mix(in oklch, var(--grid-navy) 48%, var(--card));
+  --grid-chrome-border: color-mix(in oklch, var(--grid-steel) 52%, var(--border));
 }
 
 @layer base {
@@ -462,12 +462,15 @@
 
 .grid-toolbar-row[data-overflow-level="1"] .grid-toolbar-display-group,
 .grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-display-group,
-.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-data-group {
+.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-data-group,
+.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-display-group,
+.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-data-group {
   display: none;
 }
 
 .grid-toolbar-row[data-overflow-level="1"] .grid-toolbar-overflow-menu,
-.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-overflow-menu {
+.grid-toolbar-row[data-overflow-level="2"] .grid-toolbar-overflow-menu,
+.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-overflow-menu {
   display: inline-flex;
 }
 
@@ -476,9 +479,23 @@
     display: none;
   }
 
-  .grid-toolbar-row .grid-toolbar-overflow-menu {
-    display: inline-flex;
+  .grid-toolbar-row[data-overflow-level] .grid-toolbar-overflow-menu {
+    display: inline-flex !important;
   }
+}
+
+.grid-toolbar-row {
+  scrollbar-width: none;
+}
+
+.grid-toolbar-row::-webkit-scrollbar {
+  display: none;
+}
+
+.grid-toolbar-row .grid-toolbar-control[aria-expanded="true"]:not(.grid-toolbar-active) {
+  border-color: color-mix(in oklch, var(--primary) 50%, var(--grid-chrome-border));
+  background-color: color-mix(in oklch, var(--primary) 10%, var(--card));
+  color: var(--primary);
 }
 
 /* Primárne tlačidlo v lište gridu (pridanie záznamu) – modré so svetlým textom. */
@@ -633,9 +650,26 @@
 
 .zoom-filters .grid-segmented > button {
   height: 100% !important;
-  border: 0 !important;
+  border-block: 0 !important;
+  border-right: 0 !important;
   border-radius: 0 !important;
   background: transparent;
+}
+
+.zoom-filters .grid-segmented > button + button {
+  border-left: 1px solid var(--grid-chrome-border) !important;
+}
+
+.zoom-filters .grid-segmented > button[aria-checked="true"]:not(.grid-toolbar-active) {
+  background-color: color-mix(in oklch, var(--primary) 10%, var(--card));
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.zoom-filters .grid-segmented.grid-toolbar-active > button[aria-checked="true"] {
+  background-color: color-mix(in oklch, var(--filter-active) 15%, var(--card));
+  color: var(--filter-active);
+  font-weight: 600;
 }
 
 .grid-filter-panel {
@@ -1787,23 +1821,6 @@ tfoot {
 .zoom-grid tbody tr[data-grid-row]:focus-visible {
   outline: none;
   box-shadow: inset 0 0 0 2px var(--color-primary);
-}
-
-/* --- Responzivní lišta gridu ------------------------------------------ */
-@media (max-width: 640px) {
-  .zoom-filters {
-    row-gap: 0.5rem;
-  }
-
-  /* Skupina akcí se na úzkých oknech přesune na vlastní řádek
-     a vodorovně se posouvá místo přetékání. */
-  .zoom-filters > .ml-auto {
-    margin-left: 0;
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    justify-content: flex-end;
-  }
 }
 
 /* --- Jednotný hover pre interaktívne prvky aplikácie -------------------- */

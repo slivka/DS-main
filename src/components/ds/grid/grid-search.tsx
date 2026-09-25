@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { GridToolbarOverflowContext } from "./grid-toolbar";
 
 /**
  * Kompaktní hledání v gridu – malé tlačítko, které se po rozkliknutí
@@ -29,11 +30,16 @@ export function GridSearch({
   const fontSize = gridFontSize(zoom);
   const isActive = value.trim().length > 0;
   const [open, setOpen] = useState(!!value);
+  const overflowLevel = useContext(GridToolbarOverflowContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
+
+  useEffect(() => {
+    if (overflowLevel >= 3 && !isActive) setOpen(false);
+  }, [isActive, overflowLevel]);
 
   // Zkratka „/“ – rychlý skok do hledání gridu (mimo formulářová pole).
   useEffect(() => {

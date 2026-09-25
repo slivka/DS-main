@@ -18,6 +18,16 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.23.1 – opravy adaptivní lišty a kontextu
+
+- DataGrid i TreeGrid používají jedinou nabídku ⋯, která obsahuje další akce a právě přesunuté nástroje; Obnovit zůstává vždy samostatně úplně vpravo.
+- Lišta měří celý svůj obsah. Při kritické šířce zkrátí Přidat na ikonu a zavřené hledání ponechá jako ikonu bez ořezu obsahu.
+- Otevřený Filtr je opět viditelně stisknutý a segmentový přepínač zachovává dělicí linky i modré/oranžové vybrání ve světlém a tmavém režimu.
+- Firma a období mají od tabletové šířky stálou mezeru kolem oddělovače; centrování se řídí pouze skutečně dostupným místem.
+- Nový větší vzhled používají jen `PageTabs` a záložky formulářů; aktivní záložka je tučná. Ostatní záložky zůstávají beze změny.
+- YTD se zobrazuje a exportuje jako skutečný rozsah od začátku účetního období, například „1. 7. 2026 – 24. 9. 2026“.
+- Bez změny veřejného API.
+
 ## Changelog 2.23.0 – stabilní kontext a jednořádkové ovládání gridu
 
 - Firma má od šířky tabletu minimálně šířku období; mezi oběma štítky je skutečný svislý oddělovač.
