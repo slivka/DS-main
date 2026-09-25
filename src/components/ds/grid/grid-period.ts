@@ -39,7 +39,14 @@ export function gridPeriodLabel(value: GridPeriodValue): string {
   if (value.kind === "month") return monthName(value.from);
   if (value.kind === "quarter") return `${(value.index ?? 0) + 1}. čtvrtletí ${parse(value.from).getUTCFullYear()}`;
   if (value.kind === "half") return `${(value.index ?? 0) + 1}. pololetí ${parse(value.from).getUTCFullYear()}`;
-  if (value.kind === "ytd") return `${formatDate(value.from)} – ${formatDate(value.to)}`;
+  if (value.kind === "ytd") {
+    const from = parse(value.from);
+    const to = parse(value.to);
+    const shortFrom = `${from.getUTCDate()}. ${from.getUTCMonth() + 1}.`;
+    return from.getUTCFullYear() === to.getUTCFullYear()
+      ? `${shortFrom} – ${formatDate(value.to)}`
+      : `${formatDate(value.from)} – ${formatDate(value.to)}`;
+  }
   return `${formatDate(value.from)} – ${formatDate(value.to)}`;
 }
 

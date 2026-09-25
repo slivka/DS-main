@@ -57,7 +57,7 @@ export function GridSearch({
 
   if (!open) {
     return (
-      <Button
+      <Button data-toolbar-search
         variant="outline"
         size="sm"
         aria-label={texts.searchLabel}
@@ -72,7 +72,7 @@ export function GridSearch({
   }
 
   return (
-    <div
+    <div data-toolbar-search
       className={`grid-filter-field relative flex min-w-0 basis-[16em] items-center ${className}`}
       style={{ fontSize }}
     >

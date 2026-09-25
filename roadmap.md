@@ -1,5 +1,11 @@
 # Roadmap
 
+## Verze 2.23.2 (dokončení adaptivního řádku akcí)
+- [x] Výpočet úrovně z přirozených šířek včetně kompaktního Přidat a hledání
+- [x] Hystereze 16 px, žádné ořezávání ani vodorovný posuvník, jedno `⋯`, Obnovit vždy vpravo
+- [x] Čtvercový neaktivní Filtr, shodná výška záložek a zkrácený YTD popisek
+- [x] Obnovené testy pořadí, oddělovačů a čistého výpočtu úrovní
+
 ## Verze 2.24.0 (DocumentForm podle Money)
 - [x] Přeskládat hlavičku na základní údaje a pravý panel vlastností
 - [x] Doplnit typové popisky hlavního účtu a partnera, IČ a DIČ

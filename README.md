@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.23.2 – dokončení adaptivního řádku akcí
+
+- Úroveň lišty se určuje z přirozených šířek levé části a pravých skupin; obsah se už neořezává ani neposouvá vodorovně.
+- Přesunuté nástroje sdílí právě jednu nabídku `⋯`, zatímco Obnovit zůstává vždy vpravo; návrat na širší variantu má 16px hysterézi.
+- Neaktivní Filtr je čtvercové ikonové tlačítko, záložky stránky i formuláře mají shodnou výšku 40 px a YTD používá zkrácené počáteční datum ve stejném roce.
+- `@tailwindcss/vite` byl povýšen z 4.2.1 na 4.3.3; míchání gridových ploch zůstává v `oklab`, aby se nezměnily tmavé odstíny záhlaví a součtů.
+- API zůstává beze změny.
+
 ## Changelog 2.24.0 – rozvržení DocumentForm podle Money
 
 - Hlavička dokladu má základní a platební údaje vlevo a panel vlastností, kurzu a částky vpravo; v úzkém panelu se části skládají pod sebe.

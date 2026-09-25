@@ -50,7 +50,7 @@ export function GridFilterToggle({
               aria-controls="grid-filter-panel"
               aria-label={tooltipLabel}
               onClick={() => onOpenChange(!open)}
-                className={`grid-toolbar-control relative ${
+                className={`grid-toolbar-control relative ${!active ? "grid-toolbar-icon-control" : ""} ${
                 active
                   ? "grid-toolbar-active"
                   : showDefault
