@@ -77,14 +77,15 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
     { label: t.previousMonth, kind: "month" as const, index: previousMonth },
     { label: t.thisQuarter, kind: "quarter" as const, index: currentQuarter },
   ].filter((item) => item.index >= 0 && inFiscal(gridPeriodRange(fiscalFrom, fiscalTo, item.kind, item.index).from, gridPeriodRange(fiscalFrom, fiscalTo, item.kind, item.index).to));
-  const widthLabels = [selectedLabel,
+  const selectedLabel = gridPeriodLabel(value);
+  const widthLabels = [
+    selectedLabel,
     t.all,
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "month", 8, today)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "quarter", 3, today)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "half", 1, today)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "ytd", 0, fiscalTo)),
     gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "custom", 0, today)),
-  ];
   ];
 
   return <TooltipProvider delayDuration={250}><div className="flex min-w-0 items-center gap-1">
