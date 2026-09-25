@@ -15,17 +15,19 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(filterCounterpartyPartners(partners, "alfa")).toHaveLength(1);
     expect(filterCounterpartyPartners(partners, "1234")).toHaveLength(1);
   });
-  it("IČ/DIČ bez partnera nejsou", () => {
+  it("IČ/DIČ bez partnera mají prázdnou hodnotu", () => {
     const html = render({ ...base, counterpartyName: "Kurýr" });
-    expect(html).not.toContain("document-partner-ico");
-    expect(html).not.toContain("document-partner-dic");
+    expect(html).toContain("document-partner-ico");
+    expect(html).toContain("document-partner-dic");
     expect(render({ ...base, partnerId: "p1" })).toContain("CZ12345678");
   });
-  it("ID má protistranu", () => expect(render({ ...base, counterpartyName: "FÚ" }, { documentType: "ID" })).toContain('id="document-partner"'));
+  it("ID nemá partnerskou sekci", () => expect(render({ ...base, counterpartyName: "FÚ" }, { documentType: "ID" })).not.toContain('id="document-partner"'));
   it("kurz u CZK není", () => {
     const html = render(base);
     expect(html).not.toContain("document-rate");
-    expect(render({ ...base, currency: "EUR", rate: 24.38 })).toContain("24,380 CZK za 1 EUR");
+    const foreign = render({ ...base, currency: "EUR", rate: 24.38 });
+    expect(foreign).toContain("24,380");
+    expect(foreign).toContain("CZK za 1 EUR");
   });
   it("currencyLocked = text", () => {
     const html = render({ ...base, currency: "EUR", rate: 24.38 }, { currencies: [{ code: "CZK" }, { code: "EUR" }], currencyLocked: true });

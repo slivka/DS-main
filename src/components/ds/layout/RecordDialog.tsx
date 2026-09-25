@@ -12,14 +12,13 @@ import {
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { Label } from "../../ui/label";
+import { SectionHeading } from "./section-heading";
 
 /** Pojmenovaná sekcia formulára – optické zoskupenie polí v editoch. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="space-y-3">
-      <div className="border-b pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {title}
-      </div>
+    <div>
+      <SectionHeading>{title}</SectionHeading>
       {children}
     </div>
   );
@@ -217,10 +216,12 @@ export function Field({
 /** Mriežka polí formulára. */
 export function FieldGrid({
   cols = 2,
+  title,
   className = "",
   children,
 }: {
   cols?: 1 | 2 | 3 | 4 | 6;
+  title?: ReactNode;
   className?: string;
   children: ReactNode;
 }) {
@@ -234,5 +235,5 @@ export function FieldGrid({
           : cols === 6
             ? "@min-[40rem]:grid-cols-6"
             : "@min-[40rem]:grid-cols-2";
-  return <div className={`@container grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>;
+  return <div className="@container">{title ? <SectionHeading>{title}</SectionHeading> : null}<div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div></div>;
 }

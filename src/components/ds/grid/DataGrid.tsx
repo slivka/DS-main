@@ -135,6 +135,8 @@ export type DataGridColumn<Row> = {
   decimals?: number | undefined;
   /** Explicitní datový typ pro Excel export; bez hodnoty se použije numeric/text. */
   exportType?: ExcelColumnType | undefined;
+  /** Vestavěné zobrazení hodnoty; `ico` přidá ověřený odkaz do českého registru. */
+  format?: "ico" | undefined;
   /**
    * Súčtový riadok: „sum" (predvolené pri číselných stĺpcoch), „avg", „count",
    * "none" pre vypnutie alebo vlastná funkcia nad filtrovanými riadkami.
@@ -1170,7 +1172,7 @@ export function DataGrid<Row>({
                               >
                                 {c.render ? (
                                   c.render(item.row)
-                                ) : c.id === "ico" &&
+                                ) : (c.format === "ico" || c.id === "ico") &&
                                   v !== null &&
                                   v !== undefined &&
                                   cellText(v).trim() !== "" ? (

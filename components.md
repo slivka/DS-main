@@ -99,15 +99,20 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - Období používá stejnou výšku, poloměr, odsazení a typografii; otevřené je zelené, období v uzávěrce a stav bez výběru jantarové, uzavřené se zámkem a firma bez období tlumeně šedá bez tečky.
 - `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
 
-### DocumentForm 2.24.0
-- `documentType` (výchozí `ID`) určuje výchozí pole a účetní popisky; `fields` slouží pro výjimky.
-- `periodLabel` je text období a `rateAmount` množství měny pro kurz; `PartnerOption.dic` doplňuje DIČ.
-- `AccountSelect.suffix` patří dovnitř spouštěče před šipku; `totalMode` lze uvést v `editableFields`.
-- Zamčený nebo jediný hlavní účet se zobrazuje jako text, nikoli jako zakázaný výběr.
+### DocumentForm 2.28.0
+- Formulář nemá pravý panel; používá sekce Partner, Data, Účtování a částka a volitelně Platební údaje.
+- `identity` zobrazí identifikační řádek s položkami a velkým číslem dokladu; `title` zůstává přístupnostním názvem. `directionBadge` zobrazí Příjem/Výdej vlevo v pruhu akcí.
+- `RateField` podporuje doporučený kurz, ruční kurz s povinným důvodem a režim jen pro čtení. Hodnota dokladu má `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
+- `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
+- `onCreatePartner` dostává `{ name, ico }`; osm číslic předvyplní IČO, jiný text název.
+
+## SectionHeading (2.28.0)
+
+Jednotný nadpis sekcí formulářů, dialogů, karet a panelů: verzálky, jemná prokladová sazba a linka přes celou šířku. Nepoužívá se pro PageHeader ani záhlaví gridu.
 
 
-## CounterpartyField (2.25.0)
-Protistrana jako volný text s volitelným propojením na partnera. Props: `value: { name, partnerId }`, `onChange`, `partners`, `onCreatePartner?`, `disabled`, `placeholder`, `id`. Psaní ruší `partnerId`, výběr partnera vyplní oba údaje. DocumentForm: `counterpartyName`, `homeCurrency`, `currencyLocked`, `onCreatePartner`.
+## CounterpartyField (2.28.0)
+Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Callback dostává `{ name, ico }`.
 
 ## DocumentActionBar a tisk (2.26.0)
 

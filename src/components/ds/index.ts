@@ -23,6 +23,7 @@ export * from "./layout/user-menu";
 export * from "./layout/search-button";
 export * from "./layout/app-font-size";
 export * from "./layout/page-header";
+export * from "./layout/section-heading";
 export * from "./layout/page-tabs";
 export * from "./layout/nav-search";
 
@@ -72,6 +73,7 @@ export * from "./grid/grid-segmented-toggle";
 
 /* Formuláře */
 export * from "./form/decimal-input";
+export * from "./form/rate-field";
 export * from "./form/date-field";
 export * from "./form/as-of-date-field";
 export * from "./form/time-input-right";

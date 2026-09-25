@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.28.0 – identita dokladu, kurz a sekce
+
+- Nový `SectionHeading` sjednocuje nadpisy sekcí formulářů, dialogů, karet a panelů; nadpisy stránek a gridů se nemění.
+- `DocumentForm` přechází na jedno široké rozvržení se sekcemi Partner, Data, Účtování a částka a Platební údaje. Nové `identity` nahrazuje viditelný nadpis identifikačním řádkem a `directionBadge` přidává tónovaný směr Příjem/Výdej do pruhu akcí.
+- Nový `RateField` podporuje doporučený a ruční kurz včetně povinného důvodu; `DocumentHeaderValue` přidává `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
+- `IcoLink` ověřuje české IČO a volí obchodní rejstřík nebo ARES. `DataGridColumn.format="ico"` zpřístupňuje stejné zobrazení tabulkám.
+- `CounterpartyField` drží „Nový partner…“ vždy na konci a předává seed `{ name, ico }`. Záložky mají vždy viditelný křížek, dirty tečku s přepnutím při najetí a zavření prostředním tlačítkem.
+
 ## Changelog 2.27.0 – tisk gridu do PDF
 
 - DataGrid a TreeGrid: nové props `printContext`, `printTitle`, `printParams`; v menu Stáhnout položka „Tisk (PDF)…“ (jen s `printContext`).

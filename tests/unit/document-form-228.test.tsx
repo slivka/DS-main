@@ -1,0 +1,56 @@
+import { describe, expect, it } from "bun:test";
+import { renderToStaticMarkup } from "react-dom/server";
+
+import { DocumentForm, DocumentDirectionBadge, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import { counterpartyCreateSeed } from "../../src/components/ds/accounting/counterparty-field";
+import { IcoLink, icoRegistryUrl, isValidCzIco } from "../../src/components/ds/form/ico-link";
+import { RateField, rateValuesDiffer } from "../../src/components/ds/form/rate-field";
+import { SectionHeading } from "../../src/components/ds/layout/section-heading";
+
+const value: DocumentHeaderValue = { accountingDate: "2026-09-25", issueDate: "2026-09-25", currency: "CZK", amountTotal: 1000, totalMode: "entered" };
+const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm title="Pokladní doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
+
+describe("DocumentForm 2.28.0", () => {
+  it("vykreslí identitu s číslem a bez viditelného nadpisu", () => {
+    const html = form({ identity: { items: ["PO - Pokladna", "CZK"], number: "POP20260012" } });
+    expect(html).toContain("document-identity");
+    expect(html).toContain("POP20260012");
+    expect(html).toContain('class="sr-only">Pokladní doklad');
+  });
+  it("vykreslí výchozí text čekajícího čísla", () => expect(form({ identity: { items: ["PO - Pokladna"] } })).toContain("Koncept – číslo při zařazení"));
+  it("vykreslí badge obou směrů", () => {
+    expect(renderToStaticMarkup(<DocumentDirectionBadge direction="in" />)).toContain("Příjem");
+    expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
+  });
+  it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));
+});
+
+describe("RateField", () => {
+  it("ukáže doporučení jen při rozdílu", () => {
+    const same = renderToStaticMarkup(<RateField value={24.38} onChange={() => {}} currency="EUR" homeCurrency="CZK" rateAmount={1} suggestedRate={24.38} manual={false} />);
+    const different = renderToStaticMarkup(<RateField value={24.38} onChange={() => {}} currency="EUR" homeCurrency="CZK" rateAmount={1} suggestedRate={24.4} suggestedInfo="ČNB 25. 9. 2026" manual={false} />);
+    expect(same).not.toContain("Kurz v databázi");
+    expect(different).toContain("Kurz v databázi");
+  });
+  it("porovnává doporučený kurz na šest míst a má akci pro jeho použití", () => {
+    expect(rateValuesDiffer(24.38, 24.3800004)).toBe(false);
+    expect(rateValuesDiffer(24.38, 24.39)).toBe(true);
+    expect(renderToStaticMarkup(<RateField value={24.38} onChange={() => {}} currency="EUR" homeCurrency="CZK" rateAmount={1} suggestedRate={24.39} manual={false} onUseSuggested={() => {}} />)).toContain('type="button"');
+  });
+  it("ruční kurz vyžaduje důvod", () => expect(renderToStaticMarkup(<RateField value={24.38} onChange={() => {}} currency="EUR" homeCurrency="CZK" rateAmount={1} manual note="" />)).toContain("Uveďte důvod ručního kurzu"));
+});
+
+describe("IcoLink", () => {
+  it("ověří české IČO a sestaví registry", () => {
+    expect(isValidCzIco("27074358")).toBe(true);
+    expect(isValidCzIco("12345678")).toBe(false);
+    expect(icoRegistryUrl("27074358", "or")).toContain("or.justice.cz");
+    expect(icoRegistryUrl("27074358", "ares")).toContain("ares.gov.cz");
+  });
+  it("auto pošle osobu do ARES", () => expect(renderToStaticMarkup(<IcoLink ico="27074358" kind="person" />)).toContain("ares.gov.cz"));
+  it("neplatné nebo zahraniční IČO nevytvoří odkaz", () => expect(renderToStaticMarkup(<IcoLink ico="27074358" country="SK" />)).not.toContain("href="));
+  it("vytvoří seed podle osmi číslic", () => {
+    expect(counterpartyCreateSeed("27074358")).toEqual({ name: "", ico: "27074358" });
+    expect(counterpartyCreateSeed("Alfa")).toEqual({ name: "Alfa", ico: "" });
+  });
+});

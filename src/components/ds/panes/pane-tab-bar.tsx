@@ -193,13 +193,13 @@ function SortableTab({
           <button
             type="button"
             aria-label={dirty ? `${texts.closeTab} (${texts.unsaved})` : texts.closeTab}
-            className="relative mr-1 flex size-5 shrink-0 items-center justify-center rounded hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+            className="relative mr-1 flex size-5 shrink-0 items-center justify-center rounded-full text-foreground/70 hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             onPointerDown={(event) => event.stopPropagation()}
             onDoubleClick={(event) => event.stopPropagation()}
             onClick={() => api.closeTab(tab.id)}
           >
             {dirty ? <span className="size-2 rounded-full bg-primary group-hover:hidden" aria-hidden="true" /> : null}
-            <X className={cn("size-3.5", dirty && "hidden group-hover:block")} />
+            <X className={cn("size-3.5", active && "text-foreground", dirty && "hidden group-hover:block")} />
           </button>
         </div>
       </ContextMenuTrigger>

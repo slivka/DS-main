@@ -44,6 +44,12 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
     `rounded-sm` / `rounded-md` / `rounded-lg` (4 / 6 / 6 px; větší plochy nejvýše
     8 px). Poloměr nikdy neodvozuj z `em`, `rem`, velikosti písma, výšky prvku ani
     zoomu. Běžná tlačítka, výběry a pole používají `rounded-md` (6 px).
+13. **Sekční nadpisy jsou verzálkami.** Nadpisy sekcí formulářů, dialogů, karet
+    a panelů vždy skládej přes `SectionHeading`. Nadpisy stránek v `PageHeader`
+    a záhlaví gridů zůstávají bez verzálek.
+14. **Směr peněžního pohybu má vlastní významové tóny.** Jemná zelená a červená
+    plocha je povolená pro Příjem a Výdej. Plná červená zůstává vyhrazená pro
+    chyby, Odstranit a záporné částky.
 
 ## Čísla a data
 
@@ -176,6 +182,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Číselníky (partneři, zakázky, knihy) se editují v `RecordDialog`; doklady vždy
   v celostránkovém `DocumentForm` (hlavička, `JournalLinesEditor`, stav a akce).
+- `DocumentForm.identity` nahrazuje viditelný nadpis identifikačním řádkem a
+  `directionBadge` zobrazuje Příjem/Výdej vlevo v pruhu akcí. Kurz cizí měny
+  zadávej přes `RateField`; ruční kurz vždy vyžaduje důvod.
 - Řádky účetního zápisu vždy `JournalLinesEditor`: MD/DAL účet přes `AccountSelect`,
   částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
   `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu

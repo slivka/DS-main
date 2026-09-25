@@ -84,7 +84,8 @@ export function DocumentFormShowcase() {
   const [cashEur, setCashEur] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
     counterpartyName: "Hotel Alpenhof", partnerId: null, description: "Ubytování – služební cesta", currency: "EUR", rate: 24.38,
-    rateInfo: "ČNB 24. 9. 2026", amountTotal: 180, totalMode: "entered", mainAccountId: "211001",
+    rateInfo: "Ruční kurz", rateManual: true, rateNote: "Kurz dle bankovního výpisu", suggestedRate: 24.72,
+    suggestedRateInfo: "ČNB 24. 9. 2026", amountTotal: 180, totalMode: "entered", mainAccountId: "211001",
   });
   const [fvCzk, setFvCzk] = useState<DocumentHeaderValue>({
     bookId: "b-fv", number: "FV2026000420", accountingDate: "2026-09-24", issueDate: "2026-09-24", taxDate: "2026-09-24",
@@ -100,23 +101,23 @@ export function DocumentFormShowcase() {
   return (
     <>
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; IČ a DIČ se nezobrazují, u CZK chybí řádek kurzu.">
-        <DocumentForm title="Pokladní doklad – výdej" value={courier} onChange={setCourier} lines={[]} {...common}
+        <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", <span className="font-mono">211.001 - Pokladna CZK <span className="font-sans">DAL</span></span>], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
-          onCreatePartner={(name) => toast.info(`Nový partner: ${name}`)} />
+          onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČ a DIČ.">
-        <DocumentForm title="Pokladní doklad – příjem" value={cashIn} onChange={setCashIn} lines={[]} {...common}
+        <DocumentForm title="Pokladní doklad – příjem" identity={{ items: ["PO - Pokladna", "CZK", "2026", <span className="font-mono">211.001 - Pokladna CZK <span className="font-sans">MD</span></span>], number: cashIn.number }} directionBadge="in" value={cashIn} onChange={setCashIn} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" mainSide="MD" mainAccountLocked status="filed" />
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna v EUR" description="Měna zamčená (text), kurz viditelný se zdrojem.">
-        <DocumentForm title="Pokladní doklad EUR" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
-          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" />
+        <DocumentForm title="Bankovní doklad EUR" identity={{ items: ["BV - Banka EUR", "EUR", "2026", <span className="font-mono">221.002 - Běžný účet EUR <span className="font-sans">DAL</span></span>], number: cashEur.number }} directionBadge="out" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
+          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft" />
       </ShowcaseSection>
       <ShowcaseSection title="Vydaná faktura v CZK" description="Podsekce se jmenuje Měna a řádek kurzu chybí.">
         <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
           books={MOCK_BOOKS} documentType="FV" mainSide="MD" status="filed" />
       </ShowcaseSection>
-      <ShowcaseSection title="Interní doklad s protistranou" description="ID má protistranu jako volný text.">
+      <ShowcaseSection title="Interní doklad" description="ID bez partnera skládá popis do sekce Data.">
         <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
           books={MOCK_BOOKS} documentType="ID" status="filed" />
       </ShowcaseSection>
