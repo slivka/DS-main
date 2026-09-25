@@ -1,20 +1,18 @@
-# DS 2.20.3 – dokončení kontextového řádku
+# DS 2.21.0 – řádek akcí a akce ve stromu
 
 ## Implementace
-- Zachovat hotové popisky „Kniha:“ / „Období:“, oddělené záhlaví gridu a jednotnou mezeru pod nadpisem.
-- Upravit víceknihový výběr na stabilní šířku podle nejdelšího dostupného popisku bez měření v JavaScriptu; dlouhé hodnoty omezit a zpřístupnit celé přes nápovědu.
-- Stejným překryvným principem stabilizovat šířku období pomocí typických popisků odvozených z aktuálního období.
-- Přidat `contextRight` do `GridContextBar`, `DataGrid` a `TreeGrid`; řádek se zobrazí i jen s pravým obsahem.
-- Přidat přístupný `GridSegmentedToggle` s klávesovými šipkami, neutrální výchozí hodnotou a oranžovým aktivním filtrem.
-- Přidat `GRID_DIRECTION_OPTIONS` a `filterByDirection`, poté je zapojit do ukázky Pokladny s více i jednou knihou.
+- Sjednotit pořadí `GridToolbar` v DataGridu a TreeGridu: vytvoření vlevo, nástroje uprostřed a obnovení úplně vpravo.
+- Pro šířku pod 640 px ponechat vlevo vytvoření, přepnutí pohledu a rozbalení; vpravo hledání, filtr a vždy dostupné menu dalších nástrojů.
+- Přesunout export, sloupce, seskupení, hustotu, zoom a obnovení do mobilní skupiny „Nástroje“ v `GridMoreMenu`.
+- Upravit `GridExpandControls`, aby rozbalení ani sbalení nemělo indikátor nabídky a jedna úroveň se rozbalila přímo.
+- Rozšířit akce DataGridu o důvody zakázání a stín sticky sloupce při vodorovném posunu; zachovat neskrývatelnost a pevnou šířku.
+- Přidat TreeGridu shodný sticky sloupec akcí, potvrzení odstranění, důvody zakázání a pravidlo dvojkliku.
 
-## Dokumentace a vydání
-- Rozšířit systémové pravidlo, changelog a roadmapu v rámci stejné verze 2.20.3.
-- Doplnit veřejné exporty a katalog o nové vlastnosti, komponentu, příklad a nevhodná použití.
+## Ukázky a pravidla
+- Aktualizovat společnou ukázku tabulky/stromu, zakázané odstranění a úzký panel.
+- Přepsat pravidla řádku akcí v systémové dokumentaci a veřejném katalogu.
+- Nastavit verzi 2.21.0 a doplnit changelog a roadmapu bez breaking changes.
 
 ## Ověření
-- Přidat testy stabilní šířky, pravého obsahu, neutrálního/oranžového stavu, klávesnice a směrového filtru.
-- Ověřit typy, testy a automatické sestavení.
-- V náhledu zkontrolovat 75 %, 100 %, 125 %, kompaktní hustotu a tmavý režim.
-
-Bez breaking changes. Release se nevytváří.
+- Doplnit testy pořadí, úzkého režimu, důvodů zakázání, dvojkliku a stromových akcí.
+- Ověřit typy, jednotkové testy, sestavení a vzhled v širokém i úzkém gridu.
