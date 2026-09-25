@@ -164,7 +164,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Kontext firmy a období v horní liště skládej přes `CompanySwitcher` a
   `PeriodSwitcher`; pracovní prostor přepínej přímo v `UserMenu`. `PeriodSwitcher`
   musí rozlišit stav bez výběru a firmu bez období; popisek a hodnota nesmí být
-  stejný text.
+  stejný text. Firma používá neutrální obrys bez stavové barvy; barvu nese pouze
+  období. Výběr firmy má jediný seznam bez skupiny posledních položek. Oba výběry
+  zavírej přes řízené `open` / `onOpenChange`, ne změnou React `key` podle cesty.
 
 
 ## Doklady, číselníky a navigace

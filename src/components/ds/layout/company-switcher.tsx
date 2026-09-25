@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
-import { Check, Plus } from "lucide-react";
+import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
+import { cn } from "../../../lib/utils";
 import { ContextPill, useContextPillClose } from "./context-pill";
 
 export type CompanySwitcherItem = { id: string; name: string; ico?: string };
@@ -11,15 +11,14 @@ export interface CompanySwitcherProps {
   items: CompanySwitcherItem[];
   value: string;
   onChange: (id: string) => void;
-  recentIds?: string[];
   label?: string;
   searchPlaceholder?: string;
-  recentLabel?: string;
-  allLabel?: string;
   emptyText?: string;
   createLabel?: string;
   onCreate?: () => void;
   className?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 /** Obsah popoveru – je uvnitř ContextPill, takže může popover zavřít. */
@@ -27,11 +26,7 @@ function CompanySwitcherContent({
   items,
   value,
   onChange,
-  recent,
-  openKey,
   searchPlaceholder,
-  recentLabel,
-  allLabel,
   emptyText,
   createLabel,
   onCreate,
@@ -39,21 +34,14 @@ function CompanySwitcherContent({
   items: CompanySwitcherItem[];
   value: string;
   onChange: (id: string) => void;
-  recent: CompanySwitcherItem[];
-  openKey: number;
   searchPlaceholder: string;
-  recentLabel: string;
-  allLabel: string;
   emptyText: string;
   createLabel: string;
   onCreate?: () => void;
 }) {
   const close = useContextPillClose();
-  const recentSet = new Set(recent.map((item) => item.id));
-  const others = items.filter((item) => !recentSet.has(item.id));
-
   const row = (item: CompanySwitcherItem) => (
-    <CommandItem key={`${openKey}-${item.id}`} value={`${item.name} ${item.ico ?? ""}`} onSelect={() => { onChange(item.id); close(); }}>
+    <CommandItem key={item.id} value={`${item.name} ${item.ico ?? ""}`} onSelect={() => { onChange(item.id); close(); }}>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{item.name}</span>
         {item.ico ? <span className="block text-xs text-muted-foreground">IČO {item.ico}</span> : null}
@@ -68,8 +56,7 @@ function CompanySwitcherContent({
         <CommandInput placeholder={searchPlaceholder} />
         <CommandList>
           <CommandEmpty>{emptyText}</CommandEmpty>
-          {recent.length ? <CommandGroup heading={recentLabel}>{recent.map(row)}</CommandGroup> : null}
-          <CommandGroup heading={allLabel}>{others.map(row)}</CommandGroup>
+          <CommandGroup>{items.map(row)}</CommandGroup>
         </CommandList>
       </Command>
       {onCreate ? (
@@ -84,53 +71,41 @@ function CompanySwitcherContent({
   );
 }
 
-/** Výběr firmy s hledáním a naposledy použitými firmami. */
+/** Neutrální obrysový výběr firmy s hledáním v jednom seznamu. */
 export function CompanySwitcher({
   items,
   value,
   onChange,
-  recentIds = [],
   label = "Firma",
   searchPlaceholder = "Hledat firmu…",
-  recentLabel = "Poslední",
-  allLabel = "Všechny firmy",
   emptyText = "Žádná firma nebyla nalezena.",
   createLabel = "Nová firma",
   onCreate,
   className,
+  open,
+  onOpenChange,
 }: CompanySwitcherProps) {
   const selected = items.find((item) => item.id === value);
-  // Aktuálně vybraná firma se v „Posledních“ nezobrazuje – je vidět v hlavičce.
-  const recent = useMemo(
-    () =>
-      recentIds
-        .filter((id) => id !== value)
-        .map((id) => items.find((item) => item.id === id))
-        .filter((item): item is CompanySwitcherItem => Boolean(item)),
-    [items, recentIds, value],
-  );
-  const [openKey, setOpenKey] = useState(0);
 
   return (
     <ContextPill
       label={label}
       value={selected?.name ?? emptyText}
       compactValue={selected?.name ?? emptyText}
+      icon={Building2}
+      iconClassName="text-primary"
       tooltip={selected ? `${label}: ${selected.name}${selected.ico ? ` · IČO ${selected.ico}` : ""}` : `${label}: ${emptyText}`}
-      valueClassName="text-lg font-semibold xl:text-lg"
-      className={`h-11 max-w-[72px] px-2 md:max-w-[280px] xl:max-w-[380px] ${className ?? ""}`}
+      valueClassName="text-base font-semibold"
+      className={cn("max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]", className)}
       contentClassName="w-[380px]"
-      onClick={() => setOpenKey((key) => key + 1)}
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <CompanySwitcherContent
         items={items}
         value={value}
         onChange={onChange}
-        recent={recent}
-        openKey={openKey}
         searchPlaceholder={searchPlaceholder}
-        recentLabel={recentLabel}
-        allLabel={allLabel}
         emptyText={emptyText}
         createLabel={createLabel}
         onCreate={onCreate}

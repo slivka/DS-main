@@ -758,7 +758,7 @@ import { CommandShortcut } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { CompanySwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednořádkový výrazný výběr firmy s hledáním, IČO v nápovědě a posledními položkami.
+Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě.
 
 **Props:**
 
@@ -767,25 +767,25 @@ Jednořádkový výrazný výběr firmy s hledáním, IČO v nápovědě a posle
 | `items` | any | `—` |
 | `value` | string | `—` |
 | `onChange` | function | `—` |
-| `recentIds` | any | `—` |
 | `label` | string | `Firma` |
 | `searchPlaceholder` | string | `Hledat firmu…` |
-| `recentLabel` | string | `Poslední` |
-| `allLabel` | string | `Všechny firmy` |
 | `emptyText` | string | `Žádná firma nebyla nalezena.` |
 | `createLabel` | string | `Nová firma` |
 | `onCreate` | function | `—` |
-| `className` | string | `min-w-0 flex-1` |
+| `className` | string | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
 
 **Examples:**
 
-_Základní použití_
+_Řízený výběr firmy_
 ```tsx
-<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />
+<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />
 ```
 
 **Avoid:**
 
+- Nevytvářejte skupinu posledních firem.
 - Nenahrazujte nativním selectem.
 
 ### ContactSelect
@@ -910,6 +910,9 @@ Jednořádkový kontextový přepínač do horní lišty; label slouží jako p�
 | `valueContainerClassName` | string | `—` |
 | `detail` | any | `—` |
 | `detailClassName` | string | `—` |
+| `iconClassName` | string | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
 
 **Examples:**
 
@@ -2552,7 +2555,7 @@ import { PeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { PeriodSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kontextový výběr účetního období se stavovým štítkem, rozsahem na široké obrazovce a podporou firmy bez založeného období.
+Kontextový výběr účetního období se stavovou barvou a obrysem, řízeným otevřením a odlišením stavu bez výběru od firmy bez období.
 
 **Props:**
 
@@ -2570,6 +2573,8 @@ Kontextový výběr účetního období se stavovým štítkem, rozsahem na šir
 | `emptyText` | string | `Firma nemá účetní období` |
 | `createLabel` | string | `Založit období` |
 | `onCreate` | function | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
 
 **Examples:**
 
@@ -3493,6 +3498,12 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+## Kontext firmy a období (2.22.0)
+
+`CompanySwitcher` je neutrální obrysový štítek s ikonou budovy, názvem, šipkou a tooltipem s plným názvem a IČO. Nabídka má hledání a jediný nepojmenovaný seznam všech firem; props `recentIds`, `recentLabel` a `allLabel` byly odstraněny.
+
+`PeriodSwitcher` má shodnou geometrii a stavový obrys: otevřené zeleně, v uzávěrce a bez výběru jantarově, uzavřené šedě se zámkem a firma bez období tlumeně šedě bez tečky. Oba výběry podporují `open` / `onOpenChange` a po volbě nebo `onCreate` se zavřou.
 
 ## Řádek akcí gridu (2.21.2)
 

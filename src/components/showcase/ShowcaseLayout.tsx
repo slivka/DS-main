@@ -118,7 +118,7 @@ export function ShowcaseLayout({
       navGroups={NAV_GROUPS}
       navStateKey="showcase"
       breadcrumbs={breadcrumbs}
-      contextLeft={<div className="flex min-w-0 items-center gap-1 xl:gap-2"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} recentIds={[companyId]} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
+      contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
         { id: "company", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
