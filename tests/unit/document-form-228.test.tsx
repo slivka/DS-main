@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { DocumentForm, DocumentDirectionBadge, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import { DocumentStatusBadge } from "../../src/components/ds/accounting/document-status-badge";
 import { counterpartyCreateSeed } from "../../src/components/ds/accounting/counterparty-field";
 import { IcoLink, icoRegistryUrl, isValidCzIco } from "../../src/components/ds/form/ico-link";
 import { RateField, rateValuesDiffer } from "../../src/components/ds/form/rate-field";
@@ -35,7 +36,15 @@ describe("DocumentForm 2.31.0", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
     expect(incoming).toContain("h-6");
+    expect(incoming).toContain("text-[13px]");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
+  });
+  it("má badge směru i stavu stejnou výšku", () => {
+    const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
+    const status = renderToStaticMarkup(<DocumentStatusBadge status="draft" size="md" />);
+    expect(direction).toContain("h-6");
+    expect(status).toContain("h-6");
+    expect(status).toContain("text-[13px]");
   });
   it("pruh akcí nemá spodní linku", () => {
     const html = form({ saveAction: { onSave: () => {} } });
@@ -64,6 +73,13 @@ describe("DocumentForm 2.31.0", () => {
   it("použije nadpis Částka bez viditelného hlavního účtu", () => {
     expect(form({ documentType: "ID" })).toContain(">Částka</h2>");
     expect(form({ documentType: "FP" })).toContain(">Účtování a částka</h2>");
+  });
+  it("přesune haléřové vyrovnání do lišty řádků", () => {
+    const html = form({ documentType: "PO", value: { ...value, roundingAmount: 0.4 } });
+    const amountSection = html.slice(html.indexOf(">Účtování a částka</h2>"), html.indexOf("role=\"tablist\""));
+    expect(amountSection).not.toContain('id="document-roundingAmount"');
+    expect(html).toContain('data-slot="journal-lines-rounding"');
+    expect(html).toContain("Haléřové vyrovnání");
   });
   it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));
 });

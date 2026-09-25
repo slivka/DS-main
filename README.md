@@ -25,6 +25,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `DocumentHeaderValue` přidává `counterpartyIco`, `counterpartyDic` a `handedOverBy`; pokladní doklad zobrazuje Přijato od / Vyplaceno komu a externí číslo v partnerské sekci.
 - Sekce Data řadí Datum vystavení před Datum účetního případu. Sekce částky má kompaktní řádky a rozlišuje nadpisy Částka a Účtování a částka.
 - Identifikační badge je nižší a celý řádek je svisle vystředěný. Přilepený pruh akcí už nemá spodní linku.
+- Identifikační údaje jsou zvýrazněné 15px polotučným textem; badge směru a stavu mají shodnou výšku. `DocumentStatusBadge` přidává velikost `sm | md`, přičemž gridy zůstávají na `sm`.
+- Haléřové vyrovnání se zadává v liště `JournalLinesEditor` vedle údaje Zbývá rozepsat přes nový nepovinný prop `rounding`; v sekci Částka už samostatné pole není.
 
 ## Changelog 2.30.0 – identita v těle formuláře (dříve 2.28.1)
 

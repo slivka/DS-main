@@ -2,6 +2,8 @@
 - [x] Zmenšit badge směru, vystředit identitu a odstranit linku pruhu akcí
 - [x] Zavést mřížku 70 / 15 / 15 a přeuspořádat partnera, data, částku a platební údaje
 - [x] Rozšířit hlavičku o IČ, DIČ a předávajícího včetně propojení partnera
+- [x] Zvýraznit identifikační řádek a sjednotit výšku badge směru a stavu
+- [x] Přesunout haléřové vyrovnání do lišty řádků vedle zbývající částky
 - [x] Upravit ukázky, testy, changelog a verzi 2.31.0
 - [x] Ověřit všechny testy, typy, lint, build a vzhled 1 280 px / 560 px ve světlém i tmavém režimu
 

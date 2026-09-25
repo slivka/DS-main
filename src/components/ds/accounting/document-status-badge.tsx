@@ -7,6 +7,18 @@ import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
  * Zachována zpětná kompatibilita hodnot `draft` / `posted` / `cancelled`.
  */
 export type DocumentStatus = "draft" | "filed" | "posted" | "locked" | "cancelled";
+export type DocumentStatusBadgeSize = "sm" | "md";
+
+export interface DocumentStatusBadgeProps {
+  status: DocumentStatus | null | undefined;
+  config?: StatusConfig<DocumentStatus>;
+  /** Nezávislý příznak schválení dokladu. */
+  approved?: boolean;
+  approvedLabel?: string;
+  /** Velikost štítku; md sjednocuje výšku s odznakem směru ve formuláři. */
+  size?: DocumentStatusBadgeSize;
+  className?: string;
+}
 
 /** Výchozí české popisky stavů dokladu. */
 export const DOCUMENT_STATUS_CONFIG: StatusConfig<DocumentStatus> = {
@@ -30,16 +42,11 @@ export function DocumentStatusBadge({
   config = DOCUMENT_STATUS_CONFIG,
   approved = false,
   approvedLabel = "Schválen",
+  size = "sm",
   className,
-}: {
-  status: DocumentStatus | null | undefined;
-  config?: StatusConfig<DocumentStatus>;
-  /** Nezávislý příznak schválení dokladu. */
-  approved?: boolean;
-  approvedLabel?: string;
-  className?: string;
-}) {
-  const badge = <StatusBadge status={status} config={config} className={className} />;
+}: DocumentStatusBadgeProps) {
+  const sizeClass = size === "md" ? "h-6 px-2.5 text-[13px] font-medium" : undefined;
+  const badge = <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />;
   if (!approved) return badge;
   return (
     <span className="inline-flex items-center gap-1.5">
@@ -53,7 +60,7 @@ export function DocumentStatusBadge({
             icon: <Check aria-hidden="true" className="size-3" />,
           },
         }}
-        className={cn("font-normal")}
+        className={cn(sizeClass, "font-normal")}
       />
     </span>
   );
