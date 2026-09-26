@@ -78,7 +78,7 @@ describe("DocumentForm 2.31.0", () => {
     const html = form({ documentType: "PO", value: { ...value, roundingAmount: 0.4 } });
     const amountSection = html.slice(html.indexOf(">Účtování a částka</h2>"), html.indexOf("role=\"tablist\""));
     expect(amountSection).not.toContain('id="document-roundingAmount"');
-    expect(html).toContain('data-rounding=""');
+    expect(html).toContain('data-slot="journal-lines-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Haléřové vyrovnání");
   });
