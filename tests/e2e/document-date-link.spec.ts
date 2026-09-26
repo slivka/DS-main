@@ -6,6 +6,7 @@ test("svázané datum se kliknutím odemkne a dostane fokus", async ({ page }) =
   const unlock = section.getByRole("button", { name: "Stejné jako datum vystavení – klikněte pro úpravu" });
   await expect(unlock).toHaveAttribute("aria-pressed", "true");
   await expect(section.getByRole("button", { name: "Otevřít kalendář" })).toHaveCount(2);
+  await page.waitForTimeout(500);
   await unlock.click();
   await expect(section.getByRole("button", { name: "Znovu svázat s datem vystavení" })).toHaveAttribute("aria-pressed", "false");
   await expect(section.locator("#document-accountingDate")).toBeFocused();

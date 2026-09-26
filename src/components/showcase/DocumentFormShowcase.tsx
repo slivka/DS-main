@@ -128,7 +128,7 @@ export function DocumentFormShowcase() {
         <DocumentForm title="Bankovní doklad EUR" identity={{ items: ["BV - Banka EUR", "EUR", "2026", <span className="font-mono">221.002 - Běžný účet EUR <span className="font-sans">DAL</span></span>], number: cashEur.number }} directionBadge="out" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
           books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft" />
       </ShowcaseSection>
-      <ShowcaseSection title="Vydaná faktura v CZK" description="Podsekce se jmenuje Měna a řádek kurzu chybí.">
+      <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se DUZP ani Období DPH nezobrazují.">
         <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
           books={MOCK_BOOKS} documentType="FV" mainSide="MD" status="filed" />
       </ShowcaseSection>
