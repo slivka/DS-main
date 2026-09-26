@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.33.0",
+    "version": "2.34.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -147,7 +147,7 @@
       "src/components/ds/grid/grid-states.tsx": "1e4c03e89bf3710c775ca2435893c19e",
       "src/components/ds/grid/grid-texts.ts": "0e4ca7249dc56b3909423d100572dc43",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
-      "src/components/ds/grid/grid-toolbar.tsx": "cb46030cd1a106ea90202646c12485ad",
+      "src/components/ds/grid/grid-toolbar.tsx": "fb756e0a398457588d08cb64e2fb1190",
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "ea65781bad02b3deec17eff5cdd34699",
       "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
