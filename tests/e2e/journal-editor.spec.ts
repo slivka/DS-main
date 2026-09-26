@@ -38,7 +38,7 @@ test.describe("JournalLinesEditor", () => {
     await amount.press("-");
     await page.keyboard.type("12");
     await page.keyboard.press("Enter");
-    await expect(amount).toContainText("-12,00");
+    await expect(amount).toContainText("−12,00");
 
     await amount.press(",");
     await page.keyboard.type("5");
