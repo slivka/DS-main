@@ -49,7 +49,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
   );
 });
 
-export interface CheckboxGroupProps extends ComponentPropsWithoutRef<"div"> {
+export interface CheckboxGroupProps extends Omit<ComponentPropsWithoutRef<"div">, "title"> {
   /** `vertical` = pod sebou (gap-2), `horizontal` = vedle sebe se zalamováním (gap-6). */
   direction?: "vertical" | "horizontal";
   /** Volitelný nadpis skupiny. */
