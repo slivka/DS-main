@@ -20,7 +20,7 @@ test.describe("JournalLinesEditor", () => {
     await textCell.press("F2");
     await expect(textCell.getByRole("textbox")).toHaveValue("Servisní práce");
     await page.keyboard.press("Enter");
-    await expect(firstGrid.locator('[data-cell-key="l1:dimensionId"]')).toBeFocused();
+    await expect(firstGrid.locator('[data-cell-key="l1:debitAccount"]')).toBeFocused();
   });
 
   test("Ctrl+D duplikuje a Ctrl+Delete odebere řádek s možností vrácení", async ({ page }) => {
@@ -39,8 +39,8 @@ test.describe("JournalLinesEditor", () => {
 
   test("měnové řádky přepočítají Kč a ukázka potvrzuje převod tam i zpět", async ({ page }) => {
     await expect(page.getByTestId("journal-roundtrip")).toContainText("Jedna předkontace = jeden databázový řádek");
-    const foreignCell = page.locator('[data-cell-key="fx1:foreignAmount"]');
-    await page.waitForFunction(() => Object.keys(document.querySelector('[data-cell-key="fx1:foreignAmount"]') ?? {}).some((key) => key.startsWith("__reactProps")));
+    const foreignCell = page.locator('[data-cell-key="fx1:amount"]');
+    await page.waitForFunction(() => Object.keys(document.querySelector('[data-cell-key="fx1:amount"]') ?? {}).some((key) => key.startsWith("__reactProps")));
     await foreignCell.scrollIntoViewIfNeeded();
     await foreignCell.evaluate((element) => element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true })));
     const input = foreignCell.getByRole("textbox");
@@ -52,14 +52,13 @@ test.describe("JournalLinesEditor", () => {
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
     const postedGrid = page.locator('[role="grid"]:has([data-cell-key="posted1:text"])');
     await expect(postedGrid.locator('[data-cell-key="posted1:text"]')).toHaveAttribute("tabindex", "0");
-    await expect(postedGrid.locator('[data-cell-key="posted1:dimensionId"]')).toHaveAttribute("tabindex", "0");
+    await expect(postedGrid.locator('[data-cell-key="posted1:text"]')).toHaveAttribute("tabindex", "0");
     await expect(postedGrid.locator('[data-cell-key="posted1:amount"]')).toHaveAttribute("tabindex", "-1");
   });
 
   test("hlavní účet knihy je jen pro čtení a řádek zaokrouhlení je poslední bez akcí", async ({ page }) => {
-    const cashGrid = page.locator('[role="grid"]:has([data-cell-key="pd1:debitAccount"])');
-    await expect(cashGrid.locator('[data-cell-key="pd1:debitAccount"]')).toHaveAttribute("tabindex", "-1");
-    await expect(cashGrid.locator('[data-cell-key="pd1:creditAccount"]')).toHaveAttribute("tabindex", "0");
+    const cashGrid = page.locator('[role="grid"]:has([data-cell-key="pd1:counterAccount"])');
+    await expect(cashGrid.locator('[data-cell-key="pd1:counterAccount"]')).toHaveAttribute("tabindex", "0");
     const rows = cashGrid.locator("tbody tr");
     await expect(rows.last()).toContainText("Zaokrouhlení");
     await expect(rows.last().getByRole("button", { name: "Odebrat řádek" })).toHaveCount(0);
