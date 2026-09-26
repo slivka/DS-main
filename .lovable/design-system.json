@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.35.0",
+    "version": "2.36.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -11,7 +11,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "c392601f079f03a8d2c35e88305d01417bd448cc4ebb06fa43941fec97b84f24",
+      "#enrichment": "44a870ff45ae758d29fcfdc827450f6e75deb23c5f3b271cedc76ad33faa56ed",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "8794970d6049858cc148d2b86f7a2b22",
@@ -47,20 +47,20 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "fa7f267d8af1acb9347dd1eb06b00eb2",
-      "AGENTS.md": "5d2dcdd8866a0297a96b9581f9f3b9b6",
-      "README.md": "841f9cb919726bbd3b76d470a673232f",
+      ".lovable/system.md": "00294e95e28bb260c26d3d57f216fd2e",
+      "AGENTS.md": "031876af70b68931e56763293bf9cfb9",
+      "README.md": "b8e115699f60e3ec02d810ed3c32c506",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "1b082c5caf6f80897f325f8f0bcccfae",
+      "components.md": "7e023746cf230241de2b91d5f95e9f5d",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "6f618fbfe465c9cd589d50797bd23913",
+      "package.json": "f7a3fdeb8ef0b118cc3b953690f69b5d",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "37cd4bbc00d4662f0e9316760ff54b80",
+      "roadmap.md": "895aed07bbc00a93dde3bfd1438a87a9",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -75,15 +75,16 @@
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "0fa104976e899ed02ba38f9dfb5289b0",
       "src/components/ds/accounting/document-fields.ts": "27b38f8d4d751166df7de7d3279ed90f",
-      "src/components/ds/accounting/document-form.tsx": "fab26fe8feb1cbb9975dd01fe8f3aab2",
-      "src/components/ds/accounting/document-status-badge.tsx": "448629d4a9d74d4e2867b446595e49e4",
+      "src/components/ds/accounting/document-form.tsx": "ef3a734eb42e0cd422645a5694e50bdc",
+      "src/components/ds/accounting/document-status-badge.tsx": "c47c92d0325ac24e658c6fcfe1491f14",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
-      "src/components/ds/accounting/journal-lines-editor.tsx": "c1c3bc2cf898708328dbb8698e00404b",
-      "src/components/ds/accounting/journal-lines-recap.tsx": "b435a34da20a0cdae4853646ff99c7ea",
-      "src/components/ds/accounting/journal-lines.ts": "afa5b93ccdd23977cc245fc369b6a8c4",
+      "src/components/ds/accounting/journal-lines-editor.tsx": "723a9eeeb92a0410726d12ae4830cfc9",
+      "src/components/ds/accounting/journal-lines-recap.tsx": "6ee583773006ddfa447f5e853b9024bf",
+      "src/components/ds/accounting/journal-lines.ts": "1e20b5b46d6f06e18e0052698d15cb31",
       "src/components/ds/accounting/partner-select.tsx": "dd338994186c35f4c64d1b3bdc966ec8",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "d03246e8c71a2e1e04b868faebc2a339",
       "src/components/ds/accounting/payment-schedule.ts": "e5843d856417e6b3c23bab3be57b3344",
+      "src/components/ds/accounting/unit-select.tsx": "ee46643e25d98b217bab74208645b9fa",
       "src/components/ds/accounting/vs-field.tsx": "5bb222411945aba5fb1fc506781a7350",
       "src/components/ds/data-display/bar-breakdown-chart.tsx": "6398ddf573f699e405dfd5424478e0ee",
       "src/components/ds/data-display/status-badge.tsx": "5aa6cd4177be70539169127cfd2a4791",
@@ -117,7 +118,7 @@
       "src/components/ds/form/multi-select.tsx": "47e379fd34dcd35667673dc7ab0820f2",
       "src/components/ds/form/option-select.tsx": "adefc718ea04e1569faf1f4446cfa350",
       "src/components/ds/form/period-filter.tsx": "365fffc9d9b2f2eba653d952af855a51",
-      "src/components/ds/form/rate-field.tsx": "36d56e994105d0e2b0a64df05695bdf3",
+      "src/components/ds/form/rate-field.tsx": "8285e357c1f088ecfa8123c07d2aeab4",
       "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
       "src/components/ds/form/suggest-input.tsx": "be8f5b213b0ec7c88afde204de20ff84",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
@@ -151,7 +152,7 @@
       "src/components/ds/grid/grid-virtual.tsx": "f948eea3ea1fe4839f0a2b72f41a2fa0",
       "src/components/ds/grid/grid-zoom.tsx": "ea65781bad02b3deec17eff5cdd34699",
       "src/components/ds/grid/view-mode-toggle.tsx": "3e4123e3a186e10f64b499dc19dc2843",
-      "src/components/ds/index.ts": "6c37f89540cf7a07f1242307f81ee3e7",
+      "src/components/ds/index.ts": "aa65e809b2f916308ee43bfde32b8bda",
       "src/components/ds/layout/AppShell.tsx": "759b50c45ed540877647b11a8dedf1e6",
       "src/components/ds/layout/FontSizeSetting.tsx": "7a84961c859283abc4e88a5dfec6c300",
       "src/components/ds/layout/RecordDialog.tsx": "a8cf9bbea214e03de74159d7b0f189b4",
@@ -169,7 +170,7 @@
       "src/components/ds/layout/page-tabs.tsx": "e40401e771bf641741977a9d32d9ae96",
       "src/components/ds/layout/period-switcher.tsx": "3e037c273789cf5df59e0f2624d9cc97",
       "src/components/ds/layout/search-button.tsx": "65b85c2d056182cd9014930d4338aa7a",
-      "src/components/ds/layout/section-heading.tsx": "6f373d30233859c36c958eec2c0fd9cf",
+      "src/components/ds/layout/section-heading.tsx": "5b8fc65ca91bc86b87ffaada6b5ca27d",
       "src/components/ds/layout/theme-setting.tsx": "059b307549a15239d438e0bb0e3d60c7",
       "src/components/ds/layout/theme-toggle-button.tsx": "0e1776217df487e913b805af9dc5d998",
       "src/components/ds/layout/user-menu.tsx": "dbe2649e35c4602e643dfc1d5fab752e",
@@ -186,7 +187,7 @@
       "src/components/ds/print/cash-receipt-pdf.tsx": "bcbb15a43b610908ff92d5552de446a8",
       "src/components/ds/print/print-preview-dialog.tsx": "bbfee92dc25da606c7eebf80955844af",
       "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
-      "src/components/showcase/DocumentFormShowcase.tsx": "a0fed469dcfb8e3dc99e9c6fa1131d40",
+      "src/components/showcase/DocumentFormShowcase.tsx": "66c16ce433a1e9d76225e69603f9e274",
       "src/components/showcase/PaneShowcase.tsx": "d2abe066e9d9b6dabac5bdea2ffcd369",
       "src/components/showcase/PrintShowcase.tsx": "52356421037e974927fd29901c18afdd",
       "src/components/showcase/ReportsShowcase.tsx": "cf8eb24d8cc6229e5102b8990053eee3",
@@ -274,7 +275,7 @@
       "src/routes/[__component].preview.$.tsx": "0131c8b79c864fb8dafda850ebf45440",
       "src/routes/[__mockup].preview.$.tsx": "5d9f42470848aa60148f20f9580e240e",
       "src/routes/__root.tsx": "6a47f7a96b3f1e5f68a1aa16449f844a",
-      "src/routes/components.accounting-forms.tsx": "20b400e664eb7494e1e81faa9113b2f8",
+      "src/routes/components.accounting-forms.tsx": "365f04418b5faad14d3ce4721b2fb707",
       "src/routes/components.excel-export.tsx": "854c5e8220edc784a118bd7b2e17a232",
       "src/routes/components.feedback.tsx": "6d949254955fbdda66a73db17cee8ee3",
       "src/routes/components.forms.tsx": "0d65744bedeaac4e7e4780f45f0f39a3",
@@ -286,7 +287,7 @@
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
       "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
       "src/start.ts": "5684c6ddeec813f1264536f3228817b1",
-      "src/styles.css": "f456cdae4c61b0f4595b482e51d4fdcb",
+      "src/styles.css": "c515cb03c90671755fe06b8397d19917",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/excel-download.spec.ts": "e4f9483a1a9f31650365765d5ce42d95",
@@ -297,11 +298,12 @@
       "tests/unit/context-switchers-222.test.ts": "fdb6791278cc44155d24639854fb8da9",
       "tests/unit/counterparty-225.test.tsx": "a4b82ce53ae5944121941617d6c6222f",
       "tests/unit/document-form-224.test.tsx": "1cf94176eec4429606236db6245d7afd",
-      "tests/unit/document-form-228.test.tsx": "3ada6f042f413f06765d16e1f7952ed7",
+      "tests/unit/document-form-228.test.tsx": "27ebe457bd36d0080a316a6c1bda58b6",
       "tests/unit/grid-actions-226.test.tsx": "6400529251c2ccdb659e07c4e06f7dd5",
       "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
       "tests/unit/grid-print-227.test.ts": "5779194524d28ce74635ac0a101ea3ac",
       "tests/unit/grid-toolbar-2211.test.ts": "a845b961ead2af2799f810f4307036e0",
+      "tests/unit/journal-lines-234.test.tsx": "0db452138e0feb51925047da199c6071",
       "tests/unit/nav-search.test.ts": "f1c39b11786ffadcedd2e614d1142635",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
       "tests/unit/pane-tab-bar-228.test.ts": "74a64ff258a91daa3489748de3d44f3f",
@@ -5722,6 +5724,59 @@
       "import_path": ""
     },
     {
+      "name": "UnitSelect",
+      "file": "src/components/ds/accounting/unit-select.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "options",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "onCreateUnit",
+          "type": "function"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "Vyberte MJ"
+        },
+        {
+          "name": "searchPlaceholder",
+          "type": "string",
+          "default": "Hledat kód nebo název…"
+        },
+        {
+          "name": "emptyText",
+          "type": "string",
+          "default": "Žádná měrná jednotka nenalezena"
+        },
+        {
+          "name": "createLabel",
+          "type": "function"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "size-3.5 shrink-0 opacity-50"
+        }
+      ]
+    },
+    {
       "name": "BookSelect",
       "file": "src/components/ds/accounting/book-select.tsx",
       "import_path": "",
@@ -5823,13 +5878,32 @@
           "type": "any"
         },
         {
-          "name": "currencies",
+          "name": "units",
           "type": "any"
         },
         {
-          "name": "showCurrency",
-          "type": "boolean",
-          "default": "false"
+          "name": "onCreateUnit",
+          "type": "function"
+        },
+        {
+          "name": "documentCurrency",
+          "type": "string",
+          "default": "CZK"
+        },
+        {
+          "name": "homeCurrency",
+          "type": "string",
+          "default": "CZK"
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "rateAmount",
+          "type": "number",
+          "default": "1"
         },
         {
           "name": "sideFields",
@@ -5842,8 +5916,7 @@
         },
         {
           "name": "sharedSide",
-          "type": "any",
-          "default": "both"
+          "type": "any"
         },
         {
           "name": "mode",
@@ -5897,21 +5970,8 @@
           "default": "computed"
         },
         {
-          "name": "roundingLimit",
-          "type": "number",
-          "default": "0.5"
-        },
-        {
-          "name": "onRoundingFill",
-          "type": "function"
-        },
-        {
           "name": "rounding",
           "type": "any"
-        },
-        {
-          "name": "expectedTotal",
-          "type": "number"
         },
         {
           "name": "defaults",
@@ -5922,9 +5982,17 @@
           "type": "function"
         },
         {
+          "name": "reorderable",
+          "type": "boolean"
+        },
+        {
           "name": "storageKey",
           "type": "string",
           "default": "journal-lines"
+        },
+        {
+          "name": "recap",
+          "type": "any"
         },
         {
           "name": "recapTabs",
@@ -5937,7 +6005,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "journal-cell-editor"
+          "default": "cursor-grab text-muted-foreground active:cursor-grabbing"
         }
       ],
       "usage": "Účetní rozpis s jednotnou lištou, hledáním, haléřovým vyrovnáním, souhrnnou patou a rekapitulacemi.",
@@ -5971,22 +6039,30 @@
           "type": "any"
         },
         {
-          "name": "rounding",
-          "type": "number",
-          "default": "0"
+          "name": "documentCurrency",
+          "type": "string",
+          "required": true
         },
         {
-          "name": "foreign",
+          "name": "homeCurrency",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "open",
           "type": "boolean"
         },
         {
-          "name": "currency",
+          "name": "onOpenChange",
+          "type": "function"
+        },
+        {
+          "name": "tab",
           "type": "string"
         },
         {
-          "name": "storageKey",
-          "type": "string",
-          "required": true
+          "name": "onTabChange",
+          "type": "function"
         },
         {
           "name": "recapTabs",
@@ -5996,6 +6072,11 @@
           "name": "zoom",
           "type": "number",
           "default": "1"
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "default": "Rekapitulace"
         }
       ],
       "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",

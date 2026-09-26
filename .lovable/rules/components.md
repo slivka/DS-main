@@ -2125,10 +2125,14 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `accounts` | any | `—` |
 | `dimensions` | any | `—` |
 | `partners` | any | `—` |
-| `currencies` | any | `—` |
-| `showCurrency` | boolean | `false` |
+| `units` | any | `—` |
+| `onCreateUnit` | function | `—` |
+| `documentCurrency` | string | `CZK` |
+| `homeCurrency` | string | `CZK` |
+| `rate` | number | `1` |
+| `rateAmount` | number | `1` |
 | `sideFields` | shared · split | `split` |
-| `sharedSide` | any | `both` |
+| `sharedSide` | any | `—` |
 | `mode` | internal · mainAccount | `internal` |
 | `mainSide` | MD · D | `—` |
 | `mainAccount` | string | `—` |
@@ -2138,16 +2142,15 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `editableFields` | any | `—` |
 | `totalAmount` | number | `—` |
 | `totalMode` | entered · computed | `computed` |
-| `roundingLimit` | number | `0.5` |
-| `onRoundingFill` | function | `—` |
 | `rounding` | any | `—` |
-| `expectedTotal` | number | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
+| `reorderable` | boolean | `—` |
 | `storageKey` | string | `journal-lines` |
+| `recap` | any | `—` |
 | `recapTabs` | any | `—` |
 | `texts` | any | `—` |
-| `className` | string | `journal-cell-editor` |
+| `className` | string | `cursor-grab text-muted-foreground active:cursor-grabbing` |
 
 **Examples:**
 
@@ -2175,12 +2178,15 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `lines` | any | `—` |
 | `accounts` | any | `—` |
 | `dimensions` | any | `—` |
-| `rounding` | number | `0` |
-| `foreign` | boolean | `—` |
-| `currency` | string | `—` |
-| `storageKey` | string | `—` |
+| `documentCurrency` | string | `—` |
+| `homeCurrency` | string | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `tab` | string | `—` |
+| `onTabChange` | function | `—` |
 | `recapTabs` | any | `—` |
 | `zoom` | number | `1` |
+| `heading` | string | `Rekapitulace` |
 
 **Examples:**
 
@@ -3780,6 +3786,27 @@ import { TruncatedLink } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```ts
 import { TruncatedText } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### UnitSelect
+
+```ts
+import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `onCreateUnit` | function | `—` |
+| `disabled` | boolean | `—` |
+| `placeholder` | string | `Vyberte MJ` |
+| `searchPlaceholder` | string | `Hledat kód nebo název…` |
+| `emptyText` | string | `Žádná měrná jednotka nenalezena` |
+| `createLabel` | function | `—` |
+| `className` | string | `size-3.5 shrink-0 opacity-50` |
 
 ### UserMenu
 
