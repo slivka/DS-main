@@ -159,7 +159,7 @@ function sampleExportData(): GridExportData {
 const RULES = [
   "Data jsou vždy ve skutečné tabulce Excelu; sekce a názvy tvoří jednořádkové záhlaví.",
   "Součty a počty jsou vzorce tabulky a po filtrování se přepočítají.",
-  "Čísla mají oddějené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
+  "Čísla mají oddělené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
   "Šedé záhlaví se automaticky zalamuje; všechny buňky jsou výškově vystředěné.",
   "Šířky se minimalizují podle obsahu; texty delší než 100 znaků mají šířku přibližně 100 znaků a zalamují se.",
   "Výjimky formátů určuje pouze metadata sloupce, nikoli jeho název.",

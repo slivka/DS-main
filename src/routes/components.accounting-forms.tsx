@@ -115,7 +115,7 @@ function AccountingFormsPage() {
   ]);
   const [cashLines, setCashLines] = useState<JournalLine[]>([
     { id: "pd1", debitAccount: "211001", creditAccount: "602001", amount: 3500, text: "Tržba v hotovosti", vs: "2026000091", partnerId: "p2", dimensionId: "d-cz-1" },
-    { id: "pd-r", debitAccount: "211001", creditAccount: "648001", amount: 0.5, text: "Zaokrouhjení", isRounding: true },
+    { id: "pd-r", debitAccount: "211001", creditAccount: "648001", amount: 0.5, text: "Zaokrouhlení", isRounding: true },
   ]);
   const [internalLines, setInternalLines] = useState<JournalLine[]>([
     {
@@ -203,7 +203,7 @@ function AccountingFormsPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Interní doklad – oddějené strany"
+        title="Interní doklad – oddělené strany"
         description="Režim split zobrazuje VS, partnera i zakázku zvlášť pro stranu MD a DAL."
       >
         <JournalLinesEditor
@@ -221,7 +221,7 @@ function AccountingFormsPage() {
 
       <ShowcaseSection
         title="Pokladní doklad – hlavní účet 211 na MD"
-        description="Strana hlavního účtu je jen pro čtení, zadává se pouze protiúčet. Řádek zaokrouhjení je vždy poslední a bez akcí."
+        description="Strana hlavního účtu je jen pro čtení, zadává se pouze protiúčet. Řádek zaokrouhlení je vždy poslední a bez akcí."
       >
         <JournalLinesEditor
           lines={cashLines}
@@ -278,7 +278,7 @@ function AccountingFormsPage() {
 
       <ShowcaseSection
         title="Interní doklad podle kategorií účtů"
-        description="Na každém řádku MD i DAL účet, VS a partner zvlášť pro obě strany. Alt+↓ rozbalí detail řádku, Ctrl+N přepne Nedaňový u nákladového nebo výnosového účtu."
+        description="Na každém řádku MD i DAL účet, VS a partner zvlášť pro obě strany. Alt+↓ rozbalí detail řádku, Alt+N přepne Nedaňový u nákladového nebo výnosového účtu."
       >
         <JournalLinesEditor
           lines={internalLines}

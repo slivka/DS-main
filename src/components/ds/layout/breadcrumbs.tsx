@@ -10,7 +10,7 @@ export type Crumb = {
 };
 
 /**
- * Drobečková navigace: šedé odkazy oddějené šipkou, poslední položka
+ * Drobečková navigace: šedé odkazy oddělené šipkou, poslední položka
  * jako zvýrazněná „pilulka“.
  */
 export function Breadcrumbs({ items, as = "nav" }: { items: Crumb[]; as?: "nav" | "h1" }) {

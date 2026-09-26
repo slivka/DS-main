@@ -52,7 +52,7 @@ export const DEFAULT_JOURNAL_LINES_TEXTS: JournalLinesEditorTexts = {
   text: "Text", quantity: "Množství", unit: "MJ", unitPrice: "Cena za MJ", dimension: "Zakázka", vs: "VS", partner: "Partner",
   debitDimension: "MD zakázka", creditDimension: "DAL zakázka", debitVs: "MD VS", creditVs: "DAL VS", debitPartner: "MD partner", creditPartner: "DAL partner",
   nonTax: "Nedaňový", nonTaxOn: "Nedaňový", nonTaxOff: "Daňový – klikněte pro nedaňový", rounding: "Haléřové vyrovnání",
-  fxRounding: "Zaokrouhjení přepočtu", fxRoundingHint: "Rozdíl mezi přepočtem celého dokladu a řádků – vytváří databáze", detail: "Detail řádku",
+  fxRounding: "Zaokrouhlení přepočtu", fxRoundingHint: "Rozdíl mezi přepočtem celého dokladu a řádků – vytváří databáze", detail: "Detail řádku",
   showDetail: "Zobrazit detail řádku (Alt+↓)", hideDetail: "Skrýt detail řádku (Alt+↓)", sideDebit: "MD", sideCredit: "DAL", actions: "Akce",
   addLine: "Přidat řádek", duplicateLine: "Duplikovat řádek", removeLine: "Odebrat řádek", undo: "Zpět", removed: "Řádek byl odebrán",
   total: "Celkem", remaining: "Zbývá rozepsat", balanced: "Rozepsáno", roundingExists: "Haléřové vyrovnání už na dokladu je", errors: "Počet chyb",

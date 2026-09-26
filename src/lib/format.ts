@@ -184,7 +184,7 @@ export const MONEY_EPS = 0.5 / 10 ** MONEY_DECIMALS;
 /** Počet desetinných míst pro sazby v procentech. */
 export const RATE_DECIMALS = 3;
 
-/** Zaokrouhjení na zadaný počet desetinných míst (bez artefaktů plovoucí čárky). */
+/** Zaokrouhlení na zadaný počet desetinných míst (bez artefaktů plovoucí čárky). */
 export function roundTo(value: number, decimals: number): number {
   if (!Number.isFinite(value)) return 0;
   const f = 10 ** decimals;
@@ -193,14 +193,14 @@ export function roundTo(value: number, decimals: number): number {
   return Object.is(rounded, -0) ? 0 : nzero(rounded);
 }
 
-/** Zaokrouhjení částky na jednotný počet desetinných míst. */
+/** Zaokrouhlení částky na jednotný počet desetinných míst. */
 export function roundMoney(value: number): number;
 export function roundMoney(value: number | null | undefined): number | null;
 export function roundMoney(value: number | null | undefined): number | null {
   return value == null ? null : roundTo(value, MONEY_DECIMALS);
 }
 
-/** Zaokrouhjení sazby (v procentech) na jednotný počet desetinných míst. */
+/** Zaokrouhlení sazby (v procentech) na jednotný počet desetinných míst. */
 export function roundRate(value: number): number {
   return roundTo(value, RATE_DECIMALS);
 }

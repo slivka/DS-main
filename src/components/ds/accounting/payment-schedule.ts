@@ -56,7 +56,7 @@ export function addDaysIso(iso: string, days: number): string {
 
 /**
  * Rozloží částku k úhradě na splátky a volitelnou pozastávku – stejně jako databáze.
- * Částky se zaokrouhlí na 2 desetinná místa, rozdíl ze zaokrouhjení jde do poslední splátky.
+ * Částky se zaokrouhlí na 2 desetinná místa, rozdíl ze zaokrouhlení jde do poslední splátky.
  */
 export function generatePaymentSchedule(total: number, params: PaymentScheduleParams): PaymentScheduleItem[] {
   const count = Math.max(1, Math.floor(params.count));

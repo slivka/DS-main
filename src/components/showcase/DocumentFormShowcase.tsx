@@ -37,7 +37,7 @@ const INVOICE_LINES: JournalLine[] = [
   { id: "f1", debitAccount: "311001", creditAccount: "602001", amount: 995.69, foreignAmount: 41, quantity: 2, unitId: "hour", unitPrice: 20.5, text: "Konzultace", creditDimensionId: "d-cz-1" },
   { id: "f2", debitAccount: "311001", creditAccount: "602001", amount: 1085.54, foreignAmount: 44.7, quantity: 3, unitId: "hour", unitPrice: 14.9, text: "Implementace" },
   { id: "f3", debitAccount: "311001", creditAccount: "604001", amount: 2161.37, foreignAmount: 89, quantity: 1, unitId: "piece", unitPrice: 89, text: "Materiál" },
-  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhjení přepočtu", isFxRounding: true },
+  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhlení přepočtu", isFxRounding: true },
 ];
 const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s1", kind: "installment", dueDate: "2026-10-08", amount: 3630, description: "Splátka 1/3" },
