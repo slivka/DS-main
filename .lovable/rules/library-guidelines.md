@@ -17,6 +17,18 @@ These rules apply at all times when working in this project:
 - Akce stránky v panelu patří do PageHeader.menuActions; akce Nový patří do gridového addAction.
 - LayoutMenu patří jako ikonové menu do AppShell.navSearchMenu, ne do horní lišty.
 
+## Stack Dependencies
+
+The design system's components require these packages to work correctly. A consumer project must have them installed with compatible versions.
+
+| Package | Version |
+|---|---|
+| @tanstack/react-query | 5.101.1 |
+| @tanstack/react-router | 1.170.16 |
+| lucide-react | 0.575.0 |
+| react | 19.2.7 |
+| tailwindcss | 4.3.3 |
+
 ## Theme Files
 
 The design system's theme is delivered through the following files. The author's original source files carry the full wiring the design system needs — variable declarations, framework-specific directives, provider objects, etc. — and are the canonical import target.

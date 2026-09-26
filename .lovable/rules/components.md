@@ -1123,12 +1123,13 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `onChange` | function | `—` |
 | `placeholder` | string | `Vyberte datum` |
 | `disabled` | boolean | `—` |
-| `className` | string | `date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
+| `className` | string | `date-field-link absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
 | `gridZoom` | number | `—` |
 | `onValidityChange` | function | `—` |
+| `link` | any | `—` |
 
 ### DateRangeField
 
@@ -1259,7 +1260,11 @@ Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a ú�
 | `icoLinkTarget` | any | `auto` |
 | `handedOverBySuggest` | any | `—` |
 | `descriptionSuggest` | any | `—` |
+| `accountingDateLink` | any | `—` |
+| `vat` | any | `—` |
 | `linesEditorProps` | any | `—` |
+| `roundingLimit` | number | `1` |
+| `roundingLabel` | string | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
 | `approved` | boolean | `—` |
