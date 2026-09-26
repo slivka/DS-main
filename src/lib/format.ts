@@ -66,7 +66,7 @@ export function fmtMoney(value: number | null | undefined): string {
   return n === 0 ? "–" : czk2.format(n);
 }
 
-/** Zobrazované jméno kontaktu – u fyzické osoby je příjmění velkými písmeny. */
+/** Zobrazované jméno kontaktu – u fyzické osoby je příjmení velkými písmeny. */
 export function formatContactName(
   contact?: {
     type?: string | null;
@@ -90,7 +90,7 @@ export function formatContactName(
   return name.toUpperCase();
 }
 
-/** Zobrazované jméno uživatele (operátora) – příjmění velkými písmeny. */
+/** Zobrazované jméno uživatele (operátora) – příjmení velkými písmeny. */
 export function formatWorkerName(
   profile?: {
     first_name?: string | null;

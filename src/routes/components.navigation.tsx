@@ -223,7 +223,7 @@ function NavigationPage() {
         </div>
       </ShowcaseSection>
 
-      <ShowcaseSection title="Uživatelé napříč prostory" description="Administrace provozovatele rozlišuje bezpečnostní stav a čjenství každého uživatele.">
+      <ShowcaseSection title="Uživatelé napříč prostory" description="Administrace provozovatele rozlišuje bezpečnostní stav a členství každého uživatele.">
         <DataGrid<UserRow> storageKey="ds-navigation-users" title="Uživatelé" showTitle rows={USER_ROWS} columns={USER_COLUMNS} rowKey={(row) => row.id} paginated={false} showTotalRow={false} onRowClick={() => setWorkspaceDetailOpen(true)} />
         <div className="mt-3"><Button variant="outline" onClick={() => setWorkspaceDetailOpen(true)}>Otevřít detail prostoru</Button></div>
       </ShowcaseSection>

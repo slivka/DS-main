@@ -63,7 +63,7 @@ const title = (v: string) => {
 
 /**
  * Jméno osoby pro zobrazení v jednom poli.
- * Vstupem mohou být oddějená pole (jméno/příjmění) i celé jméno.
+ * Vstupem mohou být oddějená pole (jméno/příjmení) i celé jméno.
  *
  * Tituly (před jménem i za jménem) se vždy uvádějí až na konci za čárkou,
  * v pořadí: `titleBefore`, tituly rozebrané ze jména, `titleAfter`.
@@ -201,7 +201,7 @@ export function looksLikePersonName(value?: string | null): boolean {
 
 /**
  * Rozdělí celé jméno na části pro uložení kontaktu.
- * Výchozí tvar je „PŘÍJMENÍ Jméno“ (příjmění první), jak ho uvádějí
+ * Výchozí tvar je „PŘÍJMENÍ Jméno“ (příjmení první), jak ho uvádějí
  * účetní deníky při importu. Uživatelský vstup ve formulářích bývá
  * v přirozeném pořadí „Jméno Příjmění“ – pak předej `order: "natural"`.
  * Tituly mohou být kdekoliv a ukládají se za jméno.
