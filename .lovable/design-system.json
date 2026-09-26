@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.36.0",
+    "version": "2.37.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -49,18 +49,18 @@
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "00294e95e28bb260c26d3d57f216fd2e",
       "AGENTS.md": "031876af70b68931e56763293bf9cfb9",
-      "README.md": "b8e115699f60e3ec02d810ed3c32c506",
+      "README.md": "54c2e8186058a17b036b97748ff830c2",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "7e023746cf230241de2b91d5f95e9f5d",
+      "components.md": "94a5734c33b12f7c6d8225040143eb02",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "f7a3fdeb8ef0b118cc3b953690f69b5d",
+      "package.json": "445824f334b6f5c28ae59cbc378833a4",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "895aed07bbc00a93dde3bfd1438a87a9",
+      "roadmap.md": "e407b666038f533e2e50754d2ee4b4ff",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -75,10 +75,10 @@
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "0fa104976e899ed02ba38f9dfb5289b0",
       "src/components/ds/accounting/document-fields.ts": "27b38f8d4d751166df7de7d3279ed90f",
-      "src/components/ds/accounting/document-form.tsx": "ef3a734eb42e0cd422645a5694e50bdc",
+      "src/components/ds/accounting/document-form.tsx": "b61c2f96d64244d0fef5da538f93da9d",
       "src/components/ds/accounting/document-status-badge.tsx": "c47c92d0325ac24e658c6fcfe1491f14",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
-      "src/components/ds/accounting/journal-lines-editor.tsx": "723a9eeeb92a0410726d12ae4830cfc9",
+      "src/components/ds/accounting/journal-lines-editor.tsx": "61518740a448934ef6a52b702652b25b",
       "src/components/ds/accounting/journal-lines-recap.tsx": "6ee583773006ddfa447f5e853b9024bf",
       "src/components/ds/accounting/journal-lines.ts": "1e20b5b46d6f06e18e0052698d15cb31",
       "src/components/ds/accounting/partner-select.tsx": "dd338994186c35f4c64d1b3bdc966ec8",
@@ -299,6 +299,7 @@
       "tests/unit/counterparty-225.test.tsx": "a4b82ce53ae5944121941617d6c6222f",
       "tests/unit/document-form-224.test.tsx": "1cf94176eec4429606236db6245d7afd",
       "tests/unit/document-form-228.test.tsx": "27ebe457bd36d0080a316a6c1bda58b6",
+      "tests/unit/document-form-236.test.tsx": "3e5ac20cdb3808c201b8fba94a630329",
       "tests/unit/grid-actions-226.test.tsx": "6400529251c2ccdb659e07c4e06f7dd5",
       "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
       "tests/unit/grid-print-227.test.ts": "5779194524d28ce74635ac0a101ea3ac",
@@ -6233,6 +6234,15 @@
         {
           "name": "linesEditorProps",
           "type": "any"
+        },
+        {
+          "name": "roundingLimit",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "roundingLabel",
+          "type": "string"
         },
         {
           "name": "tabs",

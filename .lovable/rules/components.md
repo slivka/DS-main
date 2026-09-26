@@ -1260,6 +1260,8 @@ Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a ú�
 | `handedOverBySuggest` | any | `—` |
 | `descriptionSuggest` | any | `—` |
 | `linesEditorProps` | any | `—` |
+| `roundingLimit` | number | `1` |
+| `roundingLabel` | string | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
 | `approved` | boolean | `—` |
