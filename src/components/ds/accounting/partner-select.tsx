@@ -46,6 +46,8 @@ export function PartnerSelect({
   createLabel = "Nový partner",
   aresLabel = "Načíst z ARES",
   disabled,
+  initialSearch = "",
+  defaultOpen = false,
   id,
   className,
 }: {
@@ -62,11 +64,13 @@ export function PartnerSelect({
   createLabel?: string;
   aresLabel?: string;
   disabled?: boolean;
+  initialSearch?: string;
+  defaultOpen?: boolean;
   id?: string;
   className?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(defaultOpen);
+  const [query, setQuery] = useState(initialSearch);
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
   const suppressFocusOpen = useRef(false);
   // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.

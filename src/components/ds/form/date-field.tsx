@@ -60,6 +60,7 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
 export type DateFieldLink = {
   locked: boolean;
   onToggle: (locked: boolean) => void;
+  toggleDisabled?: boolean;
   lockedHint?: string;
   unlockedHint?: string;
 };
@@ -168,7 +169,7 @@ export function DateField({
         ref={inputRef}
         id={id}
         inputMode="numeric"
-        disabled={disabled}
+           disabled={disabled || link.toggleDisabled}
         readOnly={link?.locked}
         placeholder={placeholder === "Vyberte datum" ? dateFormat.toLowerCase() : placeholder}
         value={text}
@@ -206,7 +207,7 @@ export function DateField({
           type="button"
           variant="ghost"
           size="icon"
-          disabled={disabled}
+         disabled={disabled || link.toggleDisabled}
           aria-label={lockedHint}
           aria-pressed="true"
           onClick={toggleLink}

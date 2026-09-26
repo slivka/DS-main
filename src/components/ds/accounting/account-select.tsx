@@ -62,6 +62,7 @@ export interface AccountSelectProps {
   catalog?: AccountCatalogItem[];
   disabled?: boolean;
   initialSearch?: string;
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
   suffix?: ReactNode;
@@ -93,11 +94,12 @@ export function AccountSelect({
   catalog,
   disabled,
   initialSearch,
+  defaultOpen = false,
   onOpenChange,
   suffix,
   className,
 }: AccountSelectProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
   const suppressFocusOpen = useRef(false);
