@@ -116,8 +116,8 @@ describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
     expect(vatSwitch).toContain("disabled");
   });
 
-  it("bez handleru přepínač nevykreslí a zachová dosavadní pole DPH", () => {
-    const html = form({ vat: { visible: true, periodOptions: periods } });
+  it("bez handleru přepínač nevykreslí a zachová dosavadní pole DPH i při relevant false", () => {
+    const html = form({ vat: { visible: true, relevant: false, periodOptions: periods } });
     expect(html).not.toContain("Vstupuje do DPH");
     expect(html).toContain(">DUZP<");
     expect(html).toContain(">Období DPH<");

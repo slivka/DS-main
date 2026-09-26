@@ -251,7 +251,7 @@ export function DocumentForm({
   const showMainAccount = f.mainAccount && !hideIdentityAccount;
   const selectedVatPeriod = vat?.periodOptions.find((option) => option.value === value.vatPeriod);
   const vatPeriodWarning = selectedVatPeriod?.filed ? vat?.filedWarning ?? "Období je podané – doklad půjde do dodatečného přiznání" : null;
-  const vatRelevant = vat?.relevant !== false;
+  const vatRelevant = vat?.onRelevantChange ? vat.relevant !== false : true;
   const showVatFields = vat?.visible && vatRelevant;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
