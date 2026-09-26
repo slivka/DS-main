@@ -18,6 +18,12 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.41.0 – Vstupuje do DPH
+
+- `DocumentForm.vat` přidává řízený přepínač přes `relevant`, `relevantReadOnly` a `onRelevantChange`.
+- Vypnutý příznak skryje DUZP a Období DPH bez mazání hodnot; neplátce nevidí žádné prvky DPH.
+- Bez `onRelevantChange` zůstává dosavadní zobrazení DUZP a Období DPH beze změny.
+
 ## Changelog 2.40.0 – kontext panelů a detail prostoru
 
 - `AppShellPanel` přidává `badge` a `context`; Administrace provozovatele tak označí pohled přes všechny prostory a nastavení prostoru či firmy ukáže svůj objekt.

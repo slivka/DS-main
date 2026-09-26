@@ -1,5 +1,11 @@
 # Komponenty design systému
 
+## Vstupuje do DPH (2.41.0)
+
+- `DocumentForm.vat` přidává `relevant`, `relevantReadOnly` a `onRelevantChange`. Přepínač „Vstupuje do DPH“ se zobrazí pouze plátci a pouze s předaným handlerem.
+- `relevant` je ve výchozím stavu `true`. Hodnota `false` skryje DUZP a Období DPH bez změny uložených hodnot; `relevantReadOnly` přepínač zakáže.
+- Bez `onRelevantChange` se přepínač nezobrazí a DUZP i Období DPH se chovají stejně jako ve verzi 2.38.0.
+
 ## Kontext panelů a detail jen pro čtení (2.40.0)
 
 - `AppShellPanel.badge` přidává do hlavičky panelu tónovaný štítek (`neutral`, `info`, `warning`, `accent`); pohled provozovatele napříč prostory používá `accent`.

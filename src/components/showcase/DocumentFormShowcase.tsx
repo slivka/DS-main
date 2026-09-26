@@ -49,6 +49,8 @@ const SCHEDULE: PaymentScheduleItem[] = [
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
 export function DocumentFormShowcase() {
   const [cashDateLocked, setCashDateLocked] = useState(true);
+  const [courierVatRelevant, setCourierVatRelevant] = useState(true);
+  const [invoiceVatRelevant, setInvoiceVatRelevant] = useState(false);
   const [handedSuggestions, setHandedSuggestions] = useState(true);
   const [descriptionSuggestions, setDescriptionSuggestions] = useState(true);
   const suggestNames = async (query: string) => ["Jan Veselý", "Jana Nováková", "Petr Svoboda"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
@@ -116,7 +118,7 @@ export function DocumentFormShowcase() {
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
-          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, periodOptions: VAT_PERIODS, periodReadOnly: true }}
+          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, relevant: courierVatRelevant, onRelevantChange: setCourierVatRelevant, periodOptions: VAT_PERIODS, periodReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
@@ -128,7 +130,7 @@ export function DocumentFormShowcase() {
         <DocumentForm title="Bankovní doklad EUR" identity={{ items: ["BV - Banka EUR", "EUR", "2026", <span className="font-mono">221.002 - Běžný účet EUR <span className="font-sans">DAL</span></span>], number: cashEur.number }} directionBadge="out" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
           books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft" />
       </ShowcaseSection>
-      <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se DUZP ani Období DPH nezobrazují.">
+      <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se nezobrazuje přepínač, DUZP ani Období DPH.">
         <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
           books={MOCK_BOOKS} documentType="FV" mainSide="MD" status="filed" />
       </ShowcaseSection>
@@ -145,7 +147,7 @@ export function DocumentFormShowcase() {
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
           documentType="FP" periodLabel="Rok 2026" rateAmount={1}
-          vat={{ visible: true, periodOptions: VAT_PERIODS }}
+          vat={{ visible: true, relevant: invoiceVatRelevant, onRelevantChange: setInvoiceVatRelevant, periodOptions: VAT_PERIODS }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"

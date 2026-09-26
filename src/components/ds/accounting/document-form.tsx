@@ -4,6 +4,7 @@ import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Sav
 import { Checkbox } from "../../ui/checkbox";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
+import { Switch } from "../../ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Textarea } from "../../ui/textarea";
 import { Button } from "../../ui/button";
@@ -82,6 +83,9 @@ export type DocumentAccountingDateLink = { locked: boolean; onToggle: (locked: b
 export type DocumentVatPeriodOption = { value: string; label: string; filed?: boolean };
 export type DocumentVatConfig = {
   visible: boolean;
+  relevant?: boolean;
+  relevantReadOnly?: boolean;
+  onRelevantChange?: (value: boolean) => void;
   periodOptions: DocumentVatPeriodOption[];
   periodReadOnly?: boolean;
   periodReadOnlyHint?: string;
@@ -92,7 +96,7 @@ export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string; accountingSection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
-  accountingDate: string; issueDate: string; taxDate: string; vatPeriod: string; vatPeriodEmpty: string; vatPeriodFiled: string; dueDate: string; externalNumber: string; supplierNumber: string;
+  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatPeriod: string; vatPeriodEmpty: string; vatPeriodFiled: string; dueDate: string; externalNumber: string; supplierNumber: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; amountTotal: string; totalHomeCurrency: string; amountSum: string; sumFromLines: string; rounding: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
@@ -105,7 +109,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka", accountingSection: "Účtování a částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
-  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatPeriod: "Období DPH", vatPeriodEmpty: "Vyberte období", vatPeriodFiled: "podáno", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
+  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatPeriod: "Období DPH", vatPeriodEmpty: "Vyberte období", vatPeriodFiled: "podáno", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
   partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHomeCurrency: "Celkem v CZK", amountSum: "Celkem za doklad", sumFromLines: "Sčítat z rozpisu", rounding: "Haléřové vyrovnání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
@@ -247,6 +251,8 @@ export function DocumentForm({
   const showMainAccount = f.mainAccount && !hideIdentityAccount;
   const selectedVatPeriod = vat?.periodOptions.find((option) => option.value === value.vatPeriod);
   const vatPeriodWarning = selectedVatPeriod?.filed ? vat?.filedWarning ?? "Období je podané – doklad půjde do dodatečného přiznání" : null;
+  const vatRelevant = vat?.onRelevantChange ? vat.relevant !== false : true;
+  const showVatFields = vat?.visible && vatRelevant;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
@@ -292,8 +298,9 @@ export function DocumentForm({
           {date("issueDate", t.issueDate)}
           {date("accountingDate", t.accountingDate)}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
-          {vat?.visible && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
-          {vat?.visible ? field("document-vatPeriod", t.vatPeriod, <>
+          {vat?.visible && vat.onRelevantChange ? field("document-vatRelevant", t.vatRelevant, <div className="flex h-9 items-center"><Switch id="document-vatRelevant" checked={vatRelevant} disabled={readOnly || vat.relevantReadOnly} onCheckedChange={vat.onRelevantChange} aria-label={t.vatRelevant} /></div>, 6, false, "@min-[40rem]:col-start-15") : null}
+          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
+          {showVatFields ? field("document-vatPeriod", t.vatPeriod, <>
             {vat.periodReadOnly ? <Tooltip><TooltipTrigger asChild><div><Input id="document-vatPeriod" readOnly aria-readonly="true" title={vat.periodReadOnlyHint ?? "Období se řídí DUZP"} value={selectedVatPeriod?.label ?? t.vatPeriodEmpty} className="h-9 cursor-default" /></div></TooltipTrigger><TooltipContent>{vat.periodReadOnlyHint ?? "Období se řídí DUZP"}</TooltipContent></Tooltip> : <OptionSelect id="document-vatPeriod" value={value.vatPeriod ?? ""} onChange={(vatPeriod) => patch({ vatPeriod: vatPeriod || null })} options={vat.periodOptions.map((option) => ({ value: option.value, label: option.label, muted: option.filed, trailingLabel: option.filed ? t.vatPeriodFiled : undefined }))} placeholder={t.vatPeriodEmpty} emptyLabel={t.vatPeriodEmpty} disabled={!can("vatPeriod")} />}
             {vatPeriodWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{vatPeriodWarning}</p> : null}
           </>, 3, false, "@min-[40rem]:col-start-18") : null}
