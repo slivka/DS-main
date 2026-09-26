@@ -2467,6 +2467,22 @@
       "antipatterns": [
         "Nevykreslujte tlačítko Uložit v režimu readOnly.",
         "Nevytvářejte vlastní lištu záložek mimo tabs."
+      ],
+      "props": [
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "default": "Zavřít"
+        },
+        {
+          "name": "tabs",
+          "type": "RecordDialogTab[]"
+        }
       ]
     },
     {
@@ -3152,6 +3168,10 @@
           "name": "className",
           "type": "string",
           "default": "h-10 gap-1 rounded-none border-b bg-transparent p-0"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode"
         }
       ]
     },
@@ -5432,6 +5452,22 @@
       ],
       "antipatterns": [
         "Nepoužívejte danger pro provozovatele; danger je vyhrazený pro chyby a blokace."
+      ],
+      "props": [
+        {
+          "name": "status",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "config",
+          "type": "StatusConfig"
+        },
+        {
+          "name": "size",
+          "type": "sm | md",
+          "default": "sm"
+        }
       ]
     },
     {
