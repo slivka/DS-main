@@ -131,6 +131,8 @@ export interface DocumentFormProps {
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
+  roundingLimit?: number;
+  roundingLabel?: string;
   tabs?: DocumentFormTab[];
   status: DocumentStatus;
   approved?: boolean;
