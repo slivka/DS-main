@@ -199,6 +199,7 @@ function PaneLayoutInner({
 
   return (
     <DndContext
+      id="pane-layout"
       sensors={sensors}
       collisionDetection={collision}
       onDragStart={() => undefined}
