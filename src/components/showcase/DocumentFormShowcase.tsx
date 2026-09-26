@@ -147,6 +147,7 @@ export function DocumentFormShowcase() {
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
           documentType="FP" periodLabel="Rok 2026" rateAmount={1}
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           vat={{ visible: true, periodLabel: VAT_PERIODS[0].label, periodFiled: true }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
@@ -172,6 +173,7 @@ export function DocumentFormShowcase() {
           lines={postedLines} onLinesChange={setPostedLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="FV" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           mainSide="MD"
           editableFields={["mainAccountId", "description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
           linesEditorProps={{ editableFields: ["text", "debitVs", "creditVs", "debitPartnerId", "creditPartnerId", "debitDimensionId", "creditDimensionId", "nonTax"], storageKey: "showcase-doc-posted" }}
@@ -192,6 +194,7 @@ export function DocumentFormShowcase() {
           lines={cashLines} onLinesChange={setCashLines}
           accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="PO" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           books={MOCK_BOOKS.filter((book) => book.id === "b-pd")}
           isNew mainSide="MD" mainAccountLocked
           linesEditorProps={{ storageKey: "showcase-doc-cash" }}
@@ -207,6 +210,7 @@ export function DocumentFormShowcase() {
           lines={internalLines} onLinesChange={setInternalLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="ID" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           linesEditorProps={{ storageKey: "showcase-doc-internal" }}
           status="filed"
         />
