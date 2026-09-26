@@ -81,9 +81,11 @@ export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: Reac
 export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
 export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
 export type DocumentAccountingDateLink = { locked: boolean; onToggle: (locked: boolean) => void; hint?: string };
+export type DocumentDateField = "issueDate" | "accountingDate" | "taxDate" | "dueDate" | "vatDate";
 export type DocumentVatConfig = {
   visible: boolean;
   relevantReadOnly?: boolean;
+  periodLabel?: string;
   periodFiled?: boolean;
   dateLink?: { locked: boolean; onToggle: (locked: boolean) => void; lockedHint?: string; unlockedHint?: string };
   dateLockReadOnly?: boolean;
@@ -143,6 +145,7 @@ export interface DocumentFormProps {
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;
   accountingDateLink?: DocumentAccountingDateLink;
+  dateWarnings?: Partial<Record<DocumentDateField, string>>;
   vat?: DocumentVatConfig;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
   roundingLimit?: number;
@@ -206,7 +209,7 @@ export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
-  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
+  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
@@ -239,7 +242,7 @@ export function DocumentForm({
       <Label htmlFor={id}>{label}</Label>{control}
     </div>
   );
-  const date = (key: "accountingDate" | "issueDate" | "taxDate" | "vatDate" | "dueDate", label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning} />, 3, false, className);
+  const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning ?? dateWarnings?.[key]} />, 3, false, className);
   const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
   const linkedPartner = !!value.partnerId;
@@ -296,7 +299,7 @@ export function DocumentForm({
           {date("accountingDate", t.accountingDate)}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
-          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-15", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, warning: vatDateWarning }) : null}
+          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-15", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning }) : null}
            {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 

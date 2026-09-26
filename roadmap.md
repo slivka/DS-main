@@ -1,3 +1,9 @@
+## Verze 2.44.0 (doplnění editace dokladu 6)
+- [x] Zobrazit popisek období pod Datem DPH s předností výstrahy podaného období
+- [x] Předat varování k jednotlivým datovým polím formuláře dokladu
+- [x] Tisknout měnové značky v pokladním dokladu s návratem ke kódu měny
+- [x] Doplnit ukázku, testy, dokumentaci a verzi 2.44.0
+
 ## Verze 2.43.0 (edit dokladu 6, část B)
 - [x] Opravit in-place editaci, navigaci a automatické otevření výběrů v řádcích
 - [x] Přestavět sloupce, detail řádku, sticky Akce a přepínač Nedaňový

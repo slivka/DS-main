@@ -13,7 +13,9 @@ export interface CashReceiptPdfInput {
   purpose: string;
   amount: number;
   currency: string;
+  currencySymbol?: string;
   homeCurrency: string;
+  homeCurrencySymbol?: string;
   rate?: number;
   rateAmount?: number;
   amountHome?: number;
@@ -30,7 +32,7 @@ export interface CashReceiptPdfInput {
 const NAVY: [number, number, number] = [28, 72, 119];
 const GRAY: [number, number, number] = [102, 112, 123];
 const LINE: [number, number, number] = [201, 208, 216];
-const formatMoney = (value: number, currency: string) => `${value < 0 ? "−" : ""}${Math.abs(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
+export const formatCashReceiptMoney = (value: number, currency: string, currencySymbol?: string) => `${value < 0 ? "−" : ""}${Math.abs(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol ?? currency}`;
 const formatDate = (value: string | Date) => (value instanceof Date ? value : new Date(value)).toLocaleDateString("cs-CZ");
 
 type PrintDoc = Awaited<ReturnType<typeof createPrintDocument>>;
@@ -86,12 +88,12 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   field(doc, "Účel platby:", input.purpose, x, top + 51, 112);
   doc.setDrawColor(...NAVY); doc.setLineWidth(0.35); doc.roundedRect(x + 119, top + 24, 61, 23, 1.5, 1.5);
   doc.setLineWidth(0.2);
-  doc.setFont("Roboto", "bold"); doc.setFontSize(15); doc.setTextColor(...NAVY); doc.text(formatMoney(input.amount, input.currency), x + 176, top + 38, { align: "right" });
+  doc.setFont("Roboto", "bold"); doc.setFontSize(15); doc.setTextColor(...NAVY); doc.text(formatCashReceiptMoney(input.amount, input.currency, input.currencySymbol), x + 176, top + 38, { align: "right" });
   doc.setFont("Roboto", "normal"); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("Částka", x + 123, top + 29);
   doc.setFont("Roboto", "normal"); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("Slovy:", x, top + 61);
   doc.setFontSize(8); doc.setTextColor(24, 24, 27); const words = wrapByWidth(doc, amountInWordsCs(input.amount, input.currency), width); doc.text(words, x, top + 65);
   const wordsBottom = top + 65 + Math.max(0, words.length - 1) * 3.5;
-  if (input.currency !== input.homeCurrency) field(doc, "Kurz / částka v domácí měně", `${formatMoney(input.rate ?? 0, input.homeCurrency)} za ${(input.rateAmount ?? 1).toLocaleString("cs-CZ")} ${input.currency} · ${formatMoney(input.amountHome ?? input.amount * (input.rate ?? 0) / (input.rateAmount ?? 1), input.homeCurrency)}`, x, wordsBottom + 5, width);
+  if (input.currency !== input.homeCurrency) field(doc, "Kurz / částka v domácí měně", `${formatCashReceiptMoney(input.rate ?? 0, input.homeCurrency, input.homeCurrencySymbol)} za ${(input.rateAmount ?? 1).toLocaleString("cs-CZ")} ${input.currencySymbol ?? input.currency} · ${formatCashReceiptMoney(input.amountHome ?? input.amount * (input.rate ?? 0) / (input.rateAmount ?? 1), input.homeCurrency, input.homeCurrencySymbol)}`, x, wordsBottom + 5, width);
 
   const datesY = wordsBottom + (input.currency !== input.homeCurrency ? 15 : 6);
   field(doc, "Datum vystavení", formatDate(input.dateIssued), x, datesY, 44);
@@ -105,7 +107,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   ["MD", "DAL", "Částka", "Text"].forEach((text, index) => { doc.setFont("Roboto", "bold"); doc.setFontSize(tableFontSize); doc.setTextColor(24, 24, 27); doc.text(text, columns[index] + 2, tableY + 4); });
   input.lines.forEach((line, row) => {
     const y = tableY + 6 + row * rowHeight; doc.setFont("Roboto", "normal"); doc.setFontSize(tableFontSize);
-    doc.text(line.debit, columns[0] + 2, y + rowHeight - 1.5); doc.text(line.credit, columns[1] + 2, y + rowHeight - 1.5); doc.text(formatMoney(line.amount, input.currency), columns[3] - 2, y + rowHeight - 1.5, { align: "right" }); doc.text(doc.splitTextToSize(line.text, 94)[0] ?? "", columns[3] + 2, y + rowHeight - 1.5); doc.line(x, y + rowHeight, x + width, y + rowHeight);
+    doc.text(line.debit, columns[0] + 2, y + rowHeight - 1.5); doc.text(line.credit, columns[1] + 2, y + rowHeight - 1.5); doc.text(formatCashReceiptMoney(line.amount, input.currency, input.currencySymbol), columns[3] - 2, y + rowHeight - 1.5, { align: "right" }); doc.text(doc.splitTextToSize(line.text, 94)[0] ?? "", columns[3] + 2, y + rowHeight - 1.5); doc.line(x, y + rowHeight, x + width, y + rowHeight);
   });
   const tableBottom = tableY + 6 + input.lines.length * rowHeight;
   const signatureY = fullPage ? Math.min(tableBottom + 12, top + 245) : Math.min(Math.max(tableBottom + 8, top + 108), top + 119);

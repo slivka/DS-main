@@ -143,7 +143,8 @@ export function DocumentFormShowcase() {
           currencies={CURRENCIES}
           documentType="FP" rateAmount={1}
           homeCurrency="CZK" homeCurrencySymbol="Kč"
-          vat={{ visible: true, periodFiled: true }}
+          vat={{ visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" }}
+          dateWarnings={{ taxDate: "DUZP a zaúčtování jsou v různých letech" }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
