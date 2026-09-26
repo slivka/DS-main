@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
+import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
 import {
   AccountSelect,
   AmountInput,
@@ -172,6 +173,7 @@ function FormsPage() {
         </FormSection>
       </RecordDialog>
       {confirmDialog}
+      <PartnerShowcase />
     </ShowcaseLayout>
   );
 }

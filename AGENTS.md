@@ -23,3 +23,4 @@
 - Pohled provozovatele napříč pracovními prostory vždy označte accent štítkem; panely nastavení prostoru a firmy vždy pojmenují upravovaný objekt přes `context`.
 - Adaptivní sloupce `JournalLinesEditor` řídí čistý výpočet ze změřené šířky, zoomu a šířek sloupců; pevné breakpointy by nereagovaly na uživatelské nastavení.
 - Varování k datům dokladu předávej přes `DocumentForm.dateWarnings`; období DPH patří do `vat.periodLabel` a podané období jej nahrazuje výstrahou.
+- Neaktivní položky filtruje každý výběr sám přes sdílené `InactiveTag` / `selectableItems`, aby se chování nelišilo mezi výběry.

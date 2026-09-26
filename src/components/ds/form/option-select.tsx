@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
+import { InactiveTag } from "../data-display/inactive-tag";
 
 export type SelectOption = {
   value: string;
@@ -8,6 +9,8 @@ export type SelectOption = {
   disabled?: boolean;
   muted?: boolean;
   trailingLabel?: ReactNode;
+  /** Neaktivní položka se nenabízí; vybraná se ukáže se štítkem „neaktivní“. */
+  inactive?: boolean;
 };
 
 const EMPTY = "__empty__";
@@ -27,6 +30,7 @@ export function OptionSelect({
   id,
   className,
   triggerClassName,
+  inactiveLabel = "neaktivní",
 }: {
   value: string | null | undefined;
   onChange: (value: string) => void;
@@ -38,10 +42,13 @@ export function OptionSelect({
   id?: string;
   className?: string;
   triggerClassName?: string;
+  inactiveLabel?: string;
 }) {
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
-  const selectedLabel = options.find((option) => option.value === current)?.label;
+  const selectedOption = options.find((option) => option.value === current);
+  const selectedLabel = selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.label;
+  const offered = options.filter((option) => !option.inactive || option.value === current);
 
   return (
     <Select
@@ -55,9 +62,9 @@ export function OptionSelect({
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyLabel}</SelectItem> : null}
         {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
-        {options.map((o) => (
-          <SelectItem key={o.value} value={o.value} disabled={o.disabled} className={cn(o.muted && "text-muted-foreground")}>
-            <span className="flex min-w-0 items-center justify-between gap-3"><span className="truncate">{o.label}</span>{o.trailingLabel ? <span className="shrink-0 text-xs">{o.trailingLabel}</span> : null}</span>
+        {offered.map((o) => (
+          <SelectItem key={o.value} value={o.value} disabled={o.disabled || o.inactive} className={cn(o.muted && "text-muted-foreground")}>
+            <span className="flex min-w-0 items-center justify-between gap-3"><span className="truncate">{o.label}</span>{o.inactive ? <InactiveTag label={inactiveLabel} /> : o.trailingLabel ? <span className="shrink-0 text-xs">{o.trailingLabel}</span> : null}</span>
           </SelectItem>
         ))}
       </SelectContent>

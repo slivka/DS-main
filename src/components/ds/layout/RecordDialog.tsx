@@ -15,12 +15,30 @@ import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
 import { PageTabs } from "./page-tabs";
 import { TabsContent } from "../../ui/tabs";
+import { StatusBadge } from "../data-display/status-badge";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
 
 export interface RecordDialogTab {
   value: string;
   label: ReactNode;
   content: ReactNode;
   disabled?: boolean;
+}
+
+export interface RecordDialogStatus {
+  active: boolean;
+  activeLabel?: string;
+  inactiveLabel?: string;
+}
+
+export interface RecordDialogLifecycleAction {
+  /** Např. „Deaktivovat“ / „Aktivovat“. */
+  label: string;
+  /** `saveFirst: true` = uživatel potvrdil „Uložit změny a …“. */
+  onClick: (opts: { saveFirst: boolean }) => void | Promise<void>;
+  confirm?: { title: string; description?: string; confirmLabel?: string };
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export interface RecordDialogProps {
@@ -46,6 +64,37 @@ export interface RecordDialogProps {
   readOnly?: boolean;
   /** Volitelné rovnocenné sekce detailu, jejichž obsah spravuje volající. */
   tabs?: RecordDialogTab[];
+  /** Stav záznamu vedle nadpisu (Aktivní / Neaktivní). U nového záznamu nepředávejte. */
+  status?: RecordDialogStatus;
+  /** Akce životního cyklu v patičce vlevo vedle Odstranit. U nového záznamu nepředávejte. */
+  lifecycleAction?: RecordDialogLifecycleAction;
+  /** Formulář má neuložené změny – akce životního cyklu nabídne „Uložit změny a …“. */
+  dirty?: boolean;
+  /** Text tlačítka Zrušit. */
+  cancelLabel?: string;
+  /** Šablona potvrzení při změnách, `{label}` = akce (malými). */
+  saveAndActionLabel?: string;
+  /** Titulek potvrzení při neuložených změnách bez vlastního `confirm`. */
+  dirtyConfirmTitle?: string;
+}
+
+/** Čistý výpočet potvrzení akce životního cyklu; `null` = spustit hned bez dotazu. */
+export function resolveLifecycleConfirm(
+  action: Pick<RecordDialogLifecycleAction, "label" | "confirm">,
+  dirty: boolean,
+  saveAndActionLabel = "Uložit změny a {label}",
+  dirtyConfirmTitle = "Formulář obsahuje neuložené změny",
+): { title: string; description?: string; confirmLabel: string; saveFirst: boolean } | null {
+  if (dirty) {
+    return {
+      title: action.confirm?.title ?? dirtyConfirmTitle,
+      ...(action.confirm?.description ? { description: action.confirm.description } : {}),
+      confirmLabel: saveAndActionLabel.replace("{label}", action.label.toLocaleLowerCase("cs")),
+      saveFirst: true,
+    };
+  }
+  if (!action.confirm) return null;
+  return { title: action.confirm.title, ...(action.confirm.description ? { description: action.confirm.description } : {}), confirmLabel: action.confirm.confirmLabel ?? action.label, saveFirst: false };
 }
 
 /** Pojmenovaná sekce formuláře – optické seskupení polí v editorech. */
@@ -53,7 +102,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   return (
     <div>
       <SectionHeading>{title}</SectionHeading>
-      {children}
+      <div className="space-y-3">{children}</div>
     </div>
   );
 }
@@ -79,7 +128,29 @@ export function RecordDialog({
   sidePanelExtra,
   readOnly = false,
   tabs,
+  status,
+  lifecycleAction,
+  dirty = false,
+  cancelLabel = "Zrušit",
+  saveAndActionLabel = "Uložit změny a {label}",
+  dirtyConfirmTitle = "Formulář obsahuje neuložené změny",
 }: RecordDialogProps) {
+  const { confirm, confirmDialog } = useConfirmDialog();
+  const runLifecycle = () => {
+    if (!lifecycleAction) return;
+    const plan = resolveLifecycleConfirm(lifecycleAction, dirty, saveAndActionLabel, dirtyConfirmTitle);
+    if (!plan) {
+      void lifecycleAction.onClick({ saveFirst: false });
+      return;
+    }
+    confirm({ title: plan.title, ...(plan.description ? { description: plan.description } : {}), confirmLabel: plan.confirmLabel, cancelLabel, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
+  };
+  const statusBadge = status ? (
+    <StatusBadge
+      status={status.active ? "active" : "inactive"}
+      config={{ active: { label: status.activeLabel ?? "Aktivní", tone: "success" }, inactive: { label: status.inactiveLabel ?? "Neaktivní", tone: "neutral" } }}
+    />
+  ) : null;
   const [panelOpen, setPanelOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs?.[0]?.value ?? "");
   const pane = usePane();
@@ -134,10 +205,19 @@ export function RecordDialog({
             </PageTabs>
           ) : null}
           <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
-            {extraActions}
+            {extraActions || lifecycleAction ? (
+              <div className="flex items-center gap-2">
+                {extraActions}
+                {lifecycleAction ? (
+                  <Button type="button" variant="outline" data-slot="lifecycle-action" disabled={lifecycleAction.disabled} title={lifecycleAction.disabled ? lifecycleAction.disabledReason : undefined} onClick={runLifecycle}>
+                    {lifecycleAction.label}
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
             <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                {readOnly ? closeLabel : "Zrušit"}
+                {readOnly ? closeLabel : cancelLabel}
               </Button>
               {!readOnly ? <Button type="submit" disabled={busy}>
                 {submitLabel}
@@ -148,6 +228,7 @@ export function RecordDialog({
 
         {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
       </div>
+      {confirmDialog}
     </>
   );
 
@@ -162,7 +243,7 @@ export function RecordDialog({
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-4 space-y-1">
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 className="flex flex-wrap items-center gap-2 text-lg font-semibold">{title}{statusBadge}</h2>
             {description ? <p className="sr-only">{description}</p> : null}
             {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
           </div>
@@ -181,7 +262,7 @@ export function RecordDialog({
         } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
       >
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="flex flex-wrap items-center gap-2">{title}{statusBadge}</DialogTitle>
           {description ? <DialogDescription className="sr-only">{description}</DialogDescription> : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>

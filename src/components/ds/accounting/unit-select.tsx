@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { InactiveTag } from "../data-display/inactive-tag";
 
 export interface UnitOption {
   id: string;
@@ -28,6 +29,7 @@ export interface UnitSelectProps {
   emptyText?: string;
   createLabel?: (code: string) => string;
   className?: string;
+  inactiveLabel?: string;
 }
 
 /** Výběr měrné jednotky s možností založit chybějící kód. */
@@ -46,6 +48,7 @@ export function UnitSelect({
   emptyText = "Žádná měrná jednotka nenalezena",
   createLabel = (code) => `Přidat MJ „${code}“`,
   className,
+  inactiveLabel = "neaktivní",
 }: UnitSelectProps) {
   const [open, setOpen] = React.useState(defaultOpen);
   const [query, setQuery] = React.useState(initialSearch);
@@ -59,7 +62,7 @@ export function UnitSelect({
     <Popover open={open} onOpenChange={(next) => { setOpen(next); onOpenChange?.(next); }}>
       <PopoverTrigger asChild>
         <Button type="button" variant="outline" role="combobox" disabled={disabled} className={cn("h-full w-full justify-between rounded-sm px-1 font-normal", className)}>
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>{selected?.code ?? placeholder}</span>
+          <span className={cn("truncate", !selected && "text-muted-foreground")}>{selected?.code ?? placeholder}</span>{selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
           <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

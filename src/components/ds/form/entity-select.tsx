@@ -14,6 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { formatContactName } from "../../../lib/format";
+import { InactiveTag } from "../data-display/inactive-tag";
 
 interface ContactOption {
   id: string;
@@ -21,6 +22,8 @@ interface ContactOption {
   type?: string | null;
   is_blacklisted?: boolean;
   blacklist_reason?: string | null;
+  /** Neaktivní kontakt se nenabízí; vybraný se ukáže se štítkem „neaktivní“. */
+  active?: boolean;
   /** Volitelná pole pro fulltextové hledání. */
   ico?: string | null;
   company_name?: string | null;
@@ -111,6 +114,7 @@ export function ContactSelect({
   noResultsText = "Nebyl nalezen žádný klient.",
   createLabel = "Nový kontakt",
   homeCountries = ["Slovensko", "SK"],
+  inactiveLabel = "neaktivní",
   idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povojene_pobyt: "Povolený pobyt" },
 }: {
   contacts: ContactOption[];
@@ -127,6 +131,7 @@ export function ContactSelect({
   createLabel?: string;
   homeCountries?: string[];
   idDocumentLabels?: Record<string, string>;
+  inactiveLabel?: string;
 }) {
   const [open, setOpen] = useState(autoOpen);
   const [query, setQuery] = useState("");
@@ -156,7 +161,7 @@ export function ContactSelect({
 
   const filtered = useMemo(() => {
     const list = contacts
-      .filter((c) => matchesContact(c, query, queryTokens))
+      .filter((c) => c.active !== false && matchesContact(c, query, queryTokens))
       .sort((a, b) => a.display_name.localeCompare(b.display_name));
     return list;
   }, [contacts, query, queryTokens]);
@@ -179,6 +184,7 @@ export function ContactSelect({
           )}
         >
           <span className="truncate">{formatContactName(selected) ?? placeholder}</span>
+          {selected?.active === false ? <InactiveTag label={inactiveLabel} className="ml-2" /> : null}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

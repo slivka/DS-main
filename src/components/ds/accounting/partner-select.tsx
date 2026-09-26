@@ -12,6 +12,7 @@ import {
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { InactiveTag } from "../data-display/inactive-tag";
 
 export type PartnerOption = {
   id: string;
@@ -45,6 +46,7 @@ export function PartnerSelect({
   emptyText = "Žádný partner nenalezen",
   createLabel = "Nový partner",
   aresLabel = "Načíst z ARES",
+  inactiveLabel = "neaktivní",
   disabled,
   initialSearch = "",
   defaultOpen = false,
@@ -65,6 +67,7 @@ export function PartnerSelect({
   emptyText?: string;
   createLabel?: string;
   aresLabel?: string;
+  inactiveLabel?: string;
   disabled?: boolean;
   initialSearch?: string;
   defaultOpen?: boolean;
@@ -90,7 +93,7 @@ export function PartnerSelect({
     () => partners.filter((partner) => partner.active !== false),
     [partners],
   );
-  const selected = list.find((partner) => partner.id === value);
+  const selected = partners.find((partner) => partner.id === value);
 
   return (
     <Popover open={open} onOpenChange={changeOpen}>
@@ -120,6 +123,7 @@ export function PartnerSelect({
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
             {selected ? formatPartner(selected) : placeholder}
           </span>
+          {selected?.active === false ? <InactiveTag label={inactiveLabel} /> : null}
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

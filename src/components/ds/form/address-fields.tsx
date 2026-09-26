@@ -2,6 +2,7 @@ import { OptionSelect } from "./option-select";
 import type { ReactNode } from "react";
 import { Field, FieldGrid } from "../layout/RecordDialog";
 import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 
 export interface AddressValue {
   street?: string | null;
@@ -24,6 +25,15 @@ export interface AddressFieldGridProps {
   labels?: Partial<AddressFieldLabels>;
   /** Výchozí kód země při prázdné hodnotě. */
   defaultCountry?: string;
+  /** Tlačítko Mapa v posledním řádku (Země 2/4 · prázdná 1/4 · Mapa 1/4). */
+  mapAction?: AddressMapAction;
+}
+
+export interface AddressMapAction {
+  /** Výchozí „Mapa“. */
+  label?: string;
+  onClick: () => void;
+  disabled?: boolean;
 }
 
 export interface AddressFieldLabels {
@@ -53,6 +63,7 @@ export function AddressFieldGrid({
   children,
   labels: labelOverrides,
   defaultCountry = "SK",
+  mapAction,
 }: AddressFieldGridProps) {
   const labels = { ...DEFAULT_ADDRESS_FIELD_LABELS, ...labelOverrides };
   return (
@@ -73,7 +84,7 @@ export function AddressFieldGrid({
         <Input value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
       </Field>
       {showCountry ? (
-        <Field label={labels.country} className={countryClassName}>
+        <Field label={labels.country} className={mapAction ? "@min-[40rem]:col-span-2" : countryClassName}>
           {countries ? (
             <OptionSelect
               value={value.country ?? defaultCountry}
@@ -88,6 +99,14 @@ export function AddressFieldGrid({
             />
           )}
         </Field>
+      ) : null}
+      {mapAction ? (
+        <div data-slot="address-map-action" className="flex flex-col @min-[40rem]:col-start-4">
+          <span aria-hidden className="hidden h-5 @min-[40rem]:mb-1 @min-[40rem]:block" />
+          <Button type="button" variant="outline" className="h-9 w-full" onClick={mapAction.onClick} disabled={mapAction.disabled}>
+            {mapAction.label ?? "Mapa"}
+          </Button>
+        </div>
       ) : null}
       {children}
     </FieldGrid>
