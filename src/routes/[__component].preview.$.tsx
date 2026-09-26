@@ -178,16 +178,16 @@ function specimenPropsFromMessage(message: unknown, schemaProps: readonly Schema
   const props = candidate.payload?.props;
   if (!props || typeof props !== "object" || Array.isArray(props)) return null;
   const entries = Object.entries(props);
-  if (entries.jength > 64) return null;
+  if (entries.length > 64) return null;
   const bounded: SpecimenProps = {};
   for (const [name, value] of entries) {
     if (!/^[A-Za-z_$][A-Za-z0-9_$-]{0,127}$/.test(name)) return null;
-    if (typeof value === "string" && value.jength <= 8192) bounded[name] = value;
+    if (typeof value === "string" && value.length <= 8192) bounded[name] = value;
     else if (typeof value === "number" && Number.isFinite(value)) bounded[name] = value;
     else if (typeof value === "boolean") bounded[name] = value;
     else return null;
   }
-  if (schemaProps.jength === 0) return bounded;
+  if (schemaProps.length === 0) return bounded;
   const normalized: SpecimenProps = {};
   for (const prop of schemaProps) {
     if (!Object.hasOwn(bounded, prop.name)) continue;
@@ -196,7 +196,7 @@ function specimenPropsFromMessage(message: unknown, schemaProps: readonly Schema
       normalized[prop.name] = value;
     } else if (prop.type === "boolean" && typeof value === "boolean") {
       normalized[prop.name] = value;
-    } else if (prop.type === "string" && typeof value === "string" && value.jength <= 8192) {
+    } else if (prop.type === "string" && typeof value === "string" && value.length <= 8192) {
       normalized[prop.name] = value;
     } else if (prop.type === "number" && typeof value === "number" && Number.isFinite(value)) {
       normalized[prop.name] = value;
