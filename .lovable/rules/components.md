@@ -57,7 +57,9 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 | `catalog` | any | `—` |
 | `disabled` | boolean | `—` |
 | `initialSearch` | string | `—` |
+| `defaultOpen` | boolean | `false` |
 | `onOpenChange` | function | `—` |
+| `onKeyDown` | any | `—` |
 | `suffix` | any | `—` |
 | `className` | string | `font-mono tabular-nums` |
 
@@ -1121,13 +1123,15 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `onChange` | function | `—` |
 | `placeholder` | string | `Vyberte datum` |
 | `disabled` | boolean | `—` |
-| `className` | string | `date-field-link absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground` |
+| `className` | string | `relative` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
 | `gridZoom` | number | `—` |
 | `onValidityChange` | function | `—` |
 | `link` | any | `—` |
+| `hint` | string | `—` |
+| `warning` | string | `—` |
 
 ### DateRangeField
 
@@ -1250,9 +1254,9 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 | `isNew` | boolean | `false` |
 | `mainSide` | MD · D | `—` |
 | `mainAccountLocked` | boolean | `false` |
-| `periodLabel` | any | `—` |
 | `rateAmount` | number | `1` |
-| `homeCurrency` | string | `CZK` |
+| `homeCurrency` | string | `—` |
+| `homeCurrencySymbol` | string | `—` |
 | `currencyLocked` | boolean | `false` |
 | `onCreatePartner` | function | `—` |
 | `icoLinkTarget` | any | `auto` |
@@ -1285,7 +1289,7 @@ _Doklad plátce s řízeným vlivem na DPH_
 
 **Avoid:**
 
-- Nemažte `taxDate` ani `vatDate` při vypnutí `value.vatRelevant`; komponenta je pouze skryje.
+- Nemažte taxDate ani vatDate při vypnutí value.vatRelevant; komponenta je pouze skryje.
 - Nezobrazujte přepínač ani daňová pole, když firma k datu dokladu není plátcem DPH.
 
 ### DocumentStatusBadge
@@ -1303,7 +1307,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
+| `approvedLabel` | string | `Schvájen` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -2131,8 +2135,10 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `partners` | any | `—` |
 | `units` | any | `—` |
 | `onCreateUnit` | function | `—` |
-| `documentCurrency` | string | `CZK` |
-| `homeCurrency` | string | `CZK` |
+| `documentCurrency` | string | `—` |
+| `documentCurrencySymbol` | string | `—` |
+| `homeCurrency` | string | `—` |
+| `homeCurrencySymbol` | string | `—` |
 | `rate` | number | `1` |
 | `rateAmount` | number | `1` |
 | `sideFields` | shared · split | `split` |
@@ -2183,14 +2189,16 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `accounts` | any | `—` |
 | `dimensions` | any | `—` |
 | `documentCurrency` | string | `—` |
+| `documentCurrencySymbol` | string | `—` |
 | `homeCurrency` | string | `—` |
+| `homeCurrencySymbol` | string | `—` |
 | `open` | boolean | `—` |
 | `onOpenChange` | function | `—` |
 | `tab` | string | `—` |
 | `onTabChange` | function | `—` |
 | `recapTabs` | any | `—` |
 | `zoom` | number | `1` |
-| `heading` | string | `Rekapitulace` |
+| `texts` | any | `—` |
 
 **Examples:**
 
@@ -2261,6 +2269,7 @@ import { LegalFormField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 | Prop | Type | Default |
 |---|---|---|
+| `options` | any | `—` |
 | `value` | string | `__clear__` |
 | `onChange` | function | `—` |
 | `disabled` | boolean | `—` |
@@ -2514,6 +2523,7 @@ Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirt
 |---|---|---|
 | `title` | any | `—` |
 | `titleSlot` | any | `—` |
+| `titleBadge` | any | `—` |
 | `description` | any | `—` |
 | `actions` | any | `—` |
 | `menuActions` | any | `—` |
@@ -2770,7 +2780,7 @@ Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozeps
 | `paid` | number | `—` |
 | `remaining` | number | `—` |
 | `users` | any | `—` |
-| `currency` | string | `CZK` |
+| `currencySymbol` | string | `—` |
 | `readOnly` | boolean | `false` |
 | `canRelease` | boolean | `false` |
 | `canUnrelease` | boolean | `false` |
@@ -2939,6 +2949,8 @@ Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního
 | `onChange` | function | `—` |
 | `currency` | string | `—` |
 | `homeCurrency` | string | `—` |
+| `homeCurrencySymbol` | string | `—` |
+| `currencySymbol` | string | `—` |
 | `rateAmount` | number | `—` |
 | `suggestedRate` | number | `—` |
 | `suggestedInfo` | string | `—` |
@@ -3857,6 +3869,10 @@ import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `onChange` | function | `—` |
 | `onCreateUnit` | function | `—` |
 | `disabled` | boolean | `—` |
+| `initialSearch` | string | `—` |
+| `defaultOpen` | boolean | `false` |
+| `onOpenChange` | function | `—` |
+| `onKeyDown` | any | `—` |
 | `placeholder` | string | `Vyberte MJ` |
 | `searchPlaceholder` | string | `Hledat kód nebo název…` |
 | `emptyText` | string | `Žádná měrná jednotka nenalezena` |
