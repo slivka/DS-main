@@ -237,7 +237,7 @@ export function DocumentForm({
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
     if (roundingLine) onLinesChange(lines.map((line) => line.id === roundingLine.id ? { ...line, amount: roundingAmount } : line));
-    else if (roundingAmount) onLinesChange([...lines, { id: `rounding-${Date.now()}`, amount: roundingAmount, text: t.rounding, isRounding: true }]);
+    else if (roundingAmount) onLinesChange([...lines, { id: `rounding-${Date.now()}`, amount: roundingAmount, text: roundingLabel ?? t.rounding, isRounding: true }]);
   };
 
   const allTabs: DocumentFormTab[] = [{
