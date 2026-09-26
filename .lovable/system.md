@@ -101,6 +101,14 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - „Nový“ nikdy nevkládej do `PageHeader`; použij `addAction`. Export v gridu je vždy jediný ikonový `GridExport` s nabídkou. `ExcelExportButton` je v gridu zakázaný a zůstává jen pro samostatný obsah.
 - Ovládání nad gridem mimo tento řádek akcí je zakázané. Lišta zůstává vždy v jednom řádku bez vodorovného posuvníku. Podle skutečně změřené šířky přesouvá méně důležité skupiny Zobrazení a Data do jediné nabídky ⋯; Obnovit zůstává úplně vpravo.
 - Všechna neaktivní tlačítka v `GridToolbar` a lištách editorů používají společnou třídu `grid-toolbar-control`: stejný jednobodový rámeček tokenu `--border`, výšku a zaoblení. Jednotlivé akce nesmějí přepisovat rámeček vlastní variantou; odlišuje se jen oranžový aktivní filtr/seskupení, modrý režim a primární Přidat.
+- „Obnovit“ (⟳) znamená výhradně nové načtení dat. Nad gridem stojí úplně vpravo a je oddělené čárou. Grid bez serverových dat, například řádky rozpracovaného dokladu, tuto akci nemá. Obnovení rozložení patří pouze do nabídky Sloupce.
+
+### Formulář dokladu
+
+- Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
+- Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
+- Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
+- Sbalitelné panely mají šipku vpravo a celý nadpis je klikací. Trvalý stav spravuje aplikace přes řízené props, nikoli komponenta přes `localStorage`.
 
 ### Kontextový řádek gridu
 

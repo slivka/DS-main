@@ -4,7 +4,7 @@ import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 
 /**
  * Stav účetního dokladu.
- * Zachována zpětná kompatibilita hodnot `draft` / `posted` / `cancelled`.
+ * Stav dokladu pro formuláře a gridy.
  */
 export type DocumentStatus = "draft" | "filed" | "posted" | "locked" | "cancelled";
 export type DocumentStatusBadgeSize = "sm" | "md";

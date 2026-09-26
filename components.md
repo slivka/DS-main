@@ -1,5 +1,14 @@
 # Komponenty design systému
 
+## Edit dokladu 5 (2.34.0)
+
+- `DocumentForm` používá nadpis sekce místo jediné záložky Řádky. Celkem ovládá Σ; u cizí měny odděluje částku dokladu, kurz a domácí přepočet.
+- `JournalLinesEditor` přijímá `documentCurrency`, `homeCurrency`, `rate`, `rateAmount`, `units`, `onCreateUnit`, `reorderable` a řízený objekt `recap`. Staré `showCurrency`, `onRoundingFill` a ukládání rekapitulace přes `storageKey` se nepoužívají.
+- `JournalLinesRounding` obsahuje `value`, `onChange`, `readOnly`, `label` a `limit`. Akce ± navrhne vyrovnání, zatímco samotné vyrovnání je připnutý poslední řádek.
+- `JournalLine` přidává `quantity`, `unitId`, `unitPrice` a `isFxRounding`. Množství × cena automaticky určí částku.
+- `JournalLinesRecap` má řízené `open`, `onOpenChange`, `tab`, `onTabChange` a explicitní `documentCurrency` / `homeCurrency`.
+- `UnitSelect` používá `UnitOption { id, code, name, isActive }`; `onCreateUnit(code)` může asynchronně založit chybějící jednotku.
+
 ## Edit dokladu a jednotné lišty (2.32.0)
 
 - `SuggestInput` načítá po 200 ms nejvýše 10 návrhů i pro prázdný dotaz. Ikona Historie zapíná a vypíná našeptávání; seznam ovládají šipky, Enter a Esc.
