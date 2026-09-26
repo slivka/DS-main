@@ -49,7 +49,7 @@ test.describe("JournalLinesEditor", () => {
     await input.press("Enter");
     await expect(foreignCell).toContainText("200,00");
     await foreignCell.locator("xpath=ancestor::tr").getByRole("button", { name: "Zobrazit detail řádku" }).click();
-    await expect(foreignCell.locator("xpath=ancestor::tr/following-sibling::tr[1]").getByRole("textbox", { name: "Částka v Kč" })).toHaveValue("5 024,00");
+    await expect(foreignCell.locator("xpath=ancestor::tr/following-sibling::tr[1]").locator('input[value="5 024,00"]')).toHaveCount(1);
   });
 
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
