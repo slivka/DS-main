@@ -126,6 +126,7 @@ export * from "./accounting/fiscal-period-select";
 export * from "./accounting/partner-select";
 export * from "./accounting/counterparty-field";
 export * from "./accounting/dimension-select";
+export * from "./accounting/unit-select";
 export * from "./accounting/book-select";
 export * from "./accounting/vs-field";
 export * from "./accounting/currency-amount";

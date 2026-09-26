@@ -71,9 +71,9 @@ export function RateField({
     return (
       <div className={cn("space-y-1", className)}>
         <div id={id} aria-readonly="true" className="min-h-9 text-sm font-mono tabular-nums">
-          {value == null ? "—" : `${formatAmount(value, 3)} ${suffix}`}
+          {value == null ? "—" : formatAmount(value, 3)}
         </div>
-        {source ? <p className="text-xs text-muted-foreground">{source}</p> : null}
+        <p className="text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
         {manual && note ? <p className="text-xs text-muted-foreground">{note}</p> : null}
       </div>
     );
@@ -81,8 +81,7 @@ export function RateField({
 
   return (
     <TooltipProvider><div className={cn("space-y-2", className)}>
-      <div className="flex min-w-0 items-center gap-2">
-        <div className="relative min-w-0 flex-1">
+      <div className="relative min-w-0">
           <DecimalInput
             id={id}
             value={value}
@@ -110,10 +109,8 @@ export function RateField({
               <TooltipContent>{tooltip}</TooltipContent>
             </Tooltip>
           ) : null}
-        </div>
-        <span className="shrink-0 text-sm text-muted-foreground">{suffix}</span>
       </div>
-      {source ? <p className="text-xs text-muted-foreground">{source}</p> : null}
+      <p className="text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
        {manual && showNote ? (
         <div className="space-y-1">
           <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
