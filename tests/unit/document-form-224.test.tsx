@@ -43,7 +43,7 @@ describe("DocumentForm 2.24.0", () => {
     const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Přijatá faktura" documentType="FP" periodLabel="Rok 2026" rateAmount={100} value={{ ...value, currency: "JPY", rate: 15.9 }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} currencies={[{ code: "JPY", label: "Japonský jen" }]} status="draft" />);
     expect(html).toContain("JPY – Japonský jen");
     expect(html).toContain("15,900");
-    expect(html).toContain("CZK za 100 JPY");
+    expect(html).toContain("Kč za 100 JPY");
   });
 
   it("vykreslí trvale viditelné Uložit mimo PageHeader", () => {
@@ -53,7 +53,7 @@ describe("DocumentForm 2.24.0", () => {
     expect(html).toContain("Neuložené změny");
   });
 
-  it("zobrazuje důvod zakázané další akce přímo v nabídce a stav jen v pruhu", () => {
+  it("zobrazuje důvod zakázané další akce přímo v nabídce a stav u nadpisu", () => {
     const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="filed" approved moreActions={[{ id: "cancel", label: "Stornovat", onClick: () => {}, disabled: true, disabledReason: "Doklad je uzamčen." }]} />);
     expect((html.match(/Zařazen/g) ?? []).length).toBe(1);
     expect((html.match(/Schválen/g) ?? []).length).toBe(1);

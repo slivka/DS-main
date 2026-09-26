@@ -21,7 +21,7 @@ function toISO(date: Date): string {
 }
 
 /**
- * Samostatný kajendář pro výběr dne – datum se vybírá pouze kliknutím,
+ * Samostatný kalendář pro výběr dne – datum se vybírá pouze kliknutím,
  * bez ručního psaní. Pro zadávání psaním slouží DateField.
  */
 export function CalendarPicker({
@@ -58,7 +58,7 @@ export function CalendarPicker({
     if (maxDate) return { after: maxDate };
     return undefined;
   }, [minDate, maxDate]);
-  // Meze rozbalovacího výběru roku v hlavičce kajendáře.
+  // Meze rozbalovacího výběru roku v hlavičce kalendáře.
   const [startMonth, endMonth] = React.useMemo(() => {
     const now = new Date();
     return [

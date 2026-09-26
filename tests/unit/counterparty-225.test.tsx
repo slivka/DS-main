@@ -28,7 +28,7 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(html).not.toContain("document-rate");
     const foreign = render({ ...base, currency: "EUR", rate: 24.38 });
     expect(foreign).toContain("24,380");
-    expect(foreign).toContain("CZK za 1 EUR");
+    expect(foreign).toContain("Kč za 1 EUR");
   });
   it("currencyLocked = text", () => {
     const html = render({ ...base, currency: "EUR", rate: 24.38 }, { currencies: [{ code: "CZK" }, { code: "EUR" }], currencyLocked: true });

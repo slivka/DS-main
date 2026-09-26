@@ -107,7 +107,7 @@ type UserRow = { id: string; name: string; email: string; workspace: string; sta
 const USER_STATUS = {
   blocked: { label: "Zablokován", tone: "danger" },
   operator: { label: "Provozovatel", tone: "accent" },
-  unassigned: { label: "Bez čjenství", tone: "neutral" },
+  unassigned: { label: "Bez členství", tone: "neutral" },
   unconfirmed: { label: "Nepotvrzený e-mail", tone: "warning" },
   archived: { label: "Archivovaný", tone: "neutral" },
 } as const;

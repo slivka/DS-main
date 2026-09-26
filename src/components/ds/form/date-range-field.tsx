@@ -27,7 +27,7 @@ function toISO(date: Date): string {
 }
 
 /**
- * Výběr rozsahu dat (Od–Do) v jednom ovládání – kajendář otevřený
+ * Výběr rozsahu dat (Od–Do) v jednom ovládání – kalendář otevřený
  * z jednoho tlačítka. Hodí se do filtrů přehledů.
  */
 export function DateRangeField({
@@ -44,7 +44,7 @@ export function DateRangeField({
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
   placeholder?: string;
-  /** Počet měsíců zobrazených vedle sebe v kajendáři. */
+  /** Počet měsíců zobrazených vedle sebe v kalendáři. */
   months?: number;
   disabled?: boolean;
   /** Nejpozdější povojené datum (YYYY-MM-DD). */
@@ -74,7 +74,7 @@ export function DateRangeField({
     if (maxDate) return { after: maxDate };
     return undefined;
   }, [minDate, maxDate]);
-  // Meze rozbalovacího výběru roku v hlavičce kajendáře.
+  // Meze rozbalovacího výběru roku v hlavičce kalendáře.
   const [startMonth, endMonth] = React.useMemo(() => {
     const now = new Date();
     return [

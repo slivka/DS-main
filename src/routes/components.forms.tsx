@@ -78,13 +78,13 @@ function FormsPage() {
 
       <ShowcaseSection
         title="Výběr data"
-        description="Tři samostatné komponenty: rozsah Od–Do v jednom ovládání, kajendář vybíraný jen kliknutím a výběr měsíce a roku."
+        description="Tři samostatné komponenty: rozsah Od–Do v jednom ovládání, kalendář vybíraný jen kliknutím a výběr měsíce a roku."
       >
         <FieldGrid cols={3}>
           <Field label="Rozsah dat">
             <DateRangeField value={range} onChange={setRange} />
           </Field>
-          <Field label="Datum (kajendář)">
+          <Field label="Datum (kalendář)">
             <CalendarPicker value={calendarDate} onChange={setCalendarDate} />
           </Field>
           <Field label="Měsíc a rok">

@@ -138,8 +138,8 @@ export function DocumentFormShowcase() {
         <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
           books={MOCK_BOOKS} documentType="ID" status="filed" vat={{ visible: false }} />
       </ShowcaseSection>
-      <ShowcaseSection title="Faktura přijatá s platebním kajendářem"
-        description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kajendář je druhá záložka: 3 splátky a pozastávka.">
+      <ShowcaseSection title="Faktura přijatá s platebním kalendářem"
+        description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kalendář je druhá záložka: 3 splátky a pozastávka.">
         <DocumentForm
           title="Přijatá faktura"
           value={{ ...invoice, vatRelevant: invoiceVatRelevant }} onChange={(next) => { setInvoice(next); setInvoiceVatRelevant(next.vatRelevant !== false); }}
@@ -153,7 +153,7 @@ export function DocumentFormShowcase() {
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
           tabs={[{
-            id: "schedule", label: "Platební kajendář", badge: schedule.length,
+            id: "schedule", label: "Platební kalendář", badge: schedule.length,
             content: (
               <PaymentScheduleEditor items={schedule} onChange={setSchedule} totalToPay={invoice.amountTotal}
                 paid={3630} remaining={invoice.amountTotal - 3630} users={USERS} canRelease canUnrelease />
@@ -180,7 +180,7 @@ export function DocumentFormShowcase() {
           status="posted" approved
           changedBy="Jana Nováková" changedAt="12.09.2026 14:05"
           tabs={[{
-            id: "schedule", label: "Platební kajendář",
+            id: "schedule", label: "Platební kalendář",
             content: <PaymentScheduleEditor items={postedSchedule} onChange={setPostedSchedule} totalToPay={12100} paid={10890} remaining={1210} users={USERS} canUnrelease />,
           }]}
         />

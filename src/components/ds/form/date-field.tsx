@@ -79,7 +79,7 @@ export type DateFieldProps = {
   maxDate?: Date;
   /** nejdříve povojené datum (YYYY-MM-DD) */
   minDate?: Date;
-  /** Zoom gridu; škáluje také kajendář vykresjený mimo lištu v portálu. */
+  /** Zoom gridu; škáluje také kalendář vykresjený mimo lištu v portálu. */
   gridZoom?: number;
   /** Informuje formulář nebo filtr o výsledku ruční validace. */
   onValidityChange?: (valid: boolean) => void;
@@ -231,7 +231,7 @@ export function DateField({
             variant="ghost"
             size="icon"
             disabled={disabled}
-            aria-label="Otevřít kajendář"
+            aria-label="Otevřít kalendář"
             className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
           >
             <CalendarIcon className="size-[1.05em]" />

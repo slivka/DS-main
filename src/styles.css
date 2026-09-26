@@ -853,7 +853,7 @@
   padding-inline: 0.7em;
 }
 
-/* Ikona kajendáře uvnitř pole Datum se nesmí roztáhnout na výšku lišty. */
+/* Ikona kalendáře uvnitř pole Datum se nesmí roztáhnout na výšku lišty. */
 .zoom-filters .date-field-trigger {
   height: 1.7em !important;
   min-height: 0 !important;
@@ -866,7 +866,7 @@
   height: 1.05em !important;
 }
 
-/* Kajendář se vykresluje přes portál mimo .zoom-filters, proto dostává zoom
+/* Kalendář se vykresluje přes portál mimo .zoom-filters, proto dostává zoom
    samostatně a všechny jeho pevné rozměry převádíme na jednotky em. */
 .grid-date-popover .grid-date-calendar {
   --cell-size: 2.45em;

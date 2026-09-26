@@ -1,4 +1,4 @@
-/** Položka platebního kajendáře dokladu. */
+/** Položka platebního kalendáře dokladu. */
 export type PaymentScheduleItem = {
   id?: string;
   kind: "installment" | "retention";
@@ -91,7 +91,7 @@ export function generatePaymentSchedule(total: number, params: PaymentSchedulePa
   return items;
 }
 
-/** Součet částek kajendáře zaokrouhjený na haléře. */
+/** Součet částek kalendáře zaokrouhjený na haléře. */
 export function sumPaymentSchedule(items: PaymentScheduleItem[]): number {
   return round2(items.reduce((sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0), 0));
 }
