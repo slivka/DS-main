@@ -192,7 +192,9 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          showCurrency
+          documentCurrency="EUR"
+          homeCurrency="CZK"
+          rate={25.12}
           totalAmount={2512}
           sideFields="shared"
           storageKey="showcase-journal-currency"
@@ -311,16 +313,16 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          showCurrency
+          documentCurrency="EUR"
+          homeCurrency="CZK"
+          rate={24.8}
           mode="mainAccount" mainSide="MD" mainAccount="221002"
           totalAmount={24800.3}
           totalMode="entered"
-          onRoundingFill={(amount) =>
-            setBankLines((current) => [
-              ...current.filter((line) => !line.isRounding),
-              { id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Haléřové vyrovnání", isRounding: true },
-            ])
-          }
+          rounding={{ value: bankLines.find((line) => line.isRounding)?.amount ?? 0, onChange: (amount) => setBankLines((current) => [
+            ...current.filter((line) => !line.isRounding),
+            ...(amount ? [{ id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Haléřové vyrovnání", isRounding: true }] : []),
+          ]) }}
           storageKey="showcase-journal-bank"
         />
       </ShowcaseSection>

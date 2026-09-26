@@ -4,7 +4,7 @@ import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 
 /**
  * Stav účetního dokladu.
- * Zachována zpětná kompatibilita hodnot `draft` / `posted` / `cancelled`.
+ * Stav dokladu pro formuláře a gridy.
  */
 export type DocumentStatus = "draft" | "filed" | "posted" | "locked" | "cancelled";
 export type DocumentStatusBadgeSize = "sm" | "md";
@@ -45,7 +45,7 @@ export function DocumentStatusBadge({
   size = "sm",
   className,
 }: DocumentStatusBadgeProps) {
-  const sizeClass = size === "md" ? "h-[26px] px-2.5 text-sm font-medium" : undefined;
+  const sizeClass = size === "md" ? "h-[1.625rem] px-2.5 text-sm font-medium" : undefined;
   const badge = <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />;
   if (!approved) return badge;
   return (

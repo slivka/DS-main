@@ -18,6 +18,15 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.34.0 – formulář dokladu a grid řádků
+
+- Formulář používá jedinou typografickou stupnici v `rem`; jedna sekce Řádky se zobrazuje bez lišty záložek a informace o změně jsou pod formulářem.
+- Částka má výrazný přepínač Σ, samostatné rozvržení cizí měny a kurz s jednotkou i zdrojem pod vstupem.
+- `JournalLinesEditor` rozlišuje hlavní protiúčet a interní doklad, podporuje množství, MJ, cenu, měnu dokladu a připnuté řádky vyrovnání či kurzového zaokrouhlení.
+- Řádky lze řadit tažením nebo Alt+šipka; vyrovnání se navrhne z rozdílu a součty jsou výhradně v patě příslušných sloupců.
+- `JournalLinesRecap` je řízená přes props, správně používá měny dokladu a domácí měnu a neukládá stav do `localStorage`.
+- Nový `UnitSelect` hledá měrné jednotky podle kódu i názvu a volitelně umožní založit nový kód.
+
 ## Changelog 2.32.0 – edit dokladu 4 a jednotná lišta gridu
 
 - Všechny akce v lištách gridů, řádků a platebního kalendáře používají stejný neutrální rámeček; aktivní filtry zůstávají oranžové a zapnuté režimy modré.

@@ -35,15 +35,15 @@ describe("DocumentForm 2.31.0", () => {
   it("vykreslí badge obou směrů", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
-    expect(incoming).toContain("h-[26px]");
+    expect(incoming).toContain("h-[1.625rem]");
     expect(incoming).toContain("text-sm");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
   });
   it("má badge směru i stavu stejnou výšku", () => {
     const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     const status = renderToStaticMarkup(<DocumentStatusBadge status="draft" size="md" />);
-    expect(direction).toContain("h-[26px]");
-    expect(status).toContain("h-[26px]");
+    expect(direction).toContain("h-[1.625rem]");
+    expect(status).toContain("h-[1.625rem]");
     expect(status).toContain("text-sm");
   });
   it("pruh akcí nemá spodní linku", () => {

@@ -1,3 +1,11 @@
+## Verze 2.34.0 (edit dokladu 5)
+- [x] Sjednotit typografii formuláře, sekcí, editoru a rekapitulace v rem
+- [x] Upravit částku, kurz, měny a ovládání Σ
+- [x] Přepracovat sloupce, vyrovnání, součty a řazení řádků
+- [x] Přidat množství, měrné jednotky a cenu za MJ
+- [x] Řídit stav rekapitulace aplikací a opravit její měny
+- [x] Doplnit ukázky, testy, dokumentaci a verzi 2.34.0
+
 ## Verze 2.32.0 (edit dokladu 4 a jednotná lišta gridu)
 - [x] Sjednotit rámečky akcí ve všech gridových lištách
 - [x] Opravit seznam partnerů a přidat SuggestInput

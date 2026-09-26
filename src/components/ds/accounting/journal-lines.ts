@@ -1,6 +1,7 @@
 export type JournalLineColumn =
   | "debitAccount"
   | "creditAccount"
+  | "counterAccount"
   | "amount"
   | "text"
   | "dimensionId"
@@ -15,7 +16,10 @@ export type JournalLineColumn =
   | "nonTax"
   | "currency"
   | "foreignAmount"
-  | "rate";
+  | "rate"
+  | "quantity"
+  | "unitId"
+  | "unitPrice";
 
 /** Strana, na kterou se zapisují společné údaje (VS, partner, zakázka). */
 export type JournalSharedSide = "debit" | "credit" | "both";
@@ -41,6 +45,11 @@ export type JournalLine = {
   creditPartnerId?: string | null;
   nonTax?: boolean;
   isRounding?: boolean;
+  /** Databází vytvořený rozdíl přepočtu celého dokladu a jednotlivých řádků. */
+  isFxRounding?: boolean;
+  quantity?: number;
+  unitId?: string | null;
+  unitPrice?: number;
   currency?: string;
   foreignAmount?: number;
   rate?: number;
@@ -64,6 +73,10 @@ export type JournalRow = {
   currency_code: string | null;
   amount_foreign: number | null;
   exchange_rate: number | null;
+  quantity: number | null;
+  unit_id: string | null;
+  unit_price: number | null;
+  is_fx_rounding: boolean;
 };
 
 export type JournalRowOptions = {
@@ -159,6 +172,10 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     currency_code: emptyToNull(line.currency),
     amount_foreign: line.foreignAmount ?? null,
     exchange_rate: line.rate ?? null,
+    quantity: line.quantity ?? null,
+    unit_id: emptyToNull(line.unitId),
+    unit_price: line.unitPrice ?? null,
+    is_fx_rounding: Boolean(line.isFxRounding),
   };
 }
 
@@ -185,5 +202,9 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     currency: row.currency_code ?? undefined,
     foreignAmount: row.amount_foreign ?? undefined,
     rate: row.exchange_rate ?? undefined,
+    quantity: row.quantity ?? undefined,
+    unitId: row.unit_id,
+    unitPrice: row.unit_price ?? undefined,
+    isFxRounding: row.is_fx_rounding,
   };
 }
