@@ -25,13 +25,15 @@ const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
     taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-   description: "Rekonstrukce skladu – 1. etapa", currency: "EUR", rate: 24.38, rateInfo: "Ruční kurz", rateManual: true,
+   description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true,
    rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
-  amountTotal: 12100, totalMode: "entered", roundingAmount: 0, mainAccountId: "321001",
+  amountTotal: 174.7, totalMode: "sum", roundingAmount: 0, mainAccountId: "311001",
 };
 const INVOICE_LINES: JournalLine[] = [
-  { id: "f1", debitAccount: "518001", creditAccount: "321001", amount: 10000, text: "Stavební práce", debitDimensionId: "d-cz-1" },
-  { id: "f2", debitAccount: "343001", creditAccount: "321001", amount: 2100, text: "DPH 21 %" },
+  { id: "f1", debitAccount: "311001", creditAccount: "602001", amount: 995.69, foreignAmount: 41, quantity: 2, unitId: "hour", unitPrice: 20.5, text: "Konzultace", creditDimensionId: "d-cz-1" },
+  { id: "f2", debitAccount: "311001", creditAccount: "602001", amount: 1085.54, foreignAmount: 44.7, quantity: 3, unitId: "hour", unitPrice: 14.9, text: "Implementace" },
+  { id: "f3", debitAccount: "311001", creditAccount: "604001", amount: 2161.37, foreignAmount: 89, quantity: 1, unitId: "piece", unitPrice: 89, text: "Materiál" },
+  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhlení přepočtu", isFxRounding: true },
 ];
 const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s1", kind: "installment", dueDate: "2026-10-08", amount: 3630, description: "Splátka 1/3" },
@@ -102,6 +104,7 @@ export function DocumentFormShowcase() {
     counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
   });
   const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, periodLabel: "Rok 2026", onLinesChange: () => {} };
+  const units = [{ id: "hour", code: "hod", name: "hodina", isActive: true }, { id: "piece", code: "ks", name: "kus", isActive: true }];
 
   return (
     <>
@@ -135,9 +138,9 @@ export function DocumentFormShowcase() {
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
-          documentType="FP" periodLabel="Rok 2026" rateAmount={1}
-          mainSide="D"
-          linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp" }}
+          documentType="FV" periodLabel="Rok 2026" rateAmount={1}
+          mainSide="MD"
+          linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
           tabs={[{
             id: "schedule", label: "Platební kalendář", badge: schedule.length,
