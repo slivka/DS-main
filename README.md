@@ -18,6 +18,17 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.46.0 – Partneři, část B
+
+- Nové: `LookupField` (ikonová akce v poli, režimy search / refresh / auto); `IcoField` na něm postavený s `digitsOnly` (výchozí true, jen číslice, max. 8).
+- Nové: `CheckboxField`, `CheckboxGroup`, `SwitchField`, `SettingsSection`; `FormSection` má svislou mezeru mezi potomky; `ColumnFilter` a `ColumnPicker` používají standardní `Checkbox`.
+- `DocumentForm`: „Nezahrnovat do platebních příkazů“ jako `CheckboxField`.
+- `AddressFieldGrid.mapAction` – tlačítko Mapa v posledním řádku.
+- Nové pomocné funkce bankovních účtů: `parseCzAccount`, `isValidCzAccount`, `czIban`, `isValidIban`, `formatIban`.
+- Nové: `VatStatusBadge`.
+- Stav záznamu: `RecordDialog.status`, `lifecycleAction`, `dirty`, `cancelLabel`; grid `activeStatusColumn`, `filterInactiveRows`, `ShowInactiveToggle`, `GridRowMenu`, `activeToggleMenuItem`; `InactiveTag` a jednotné chování neaktivních položek v `OptionSelect` (`inactive`), `BookSelect`, `PartnerSelect`, `UnitSelect`, `DimensionSelect` (`active`) a `ContactSelect` (`active`).
+- Pravidla zaškrtávátek, přepínačů a stavu záznamu v `system.md`.
+
 ## Changelog 2.44.0 – doplnění editace dokladu 6
 
 - `DocumentForm.vat.periodLabel` zobrazuje popisek období pod Datem DPH; při podaném období má přednost `filedWarning`.

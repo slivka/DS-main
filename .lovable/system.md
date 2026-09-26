@@ -54,6 +54,18 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
     prostory má vždy štítek provozovatele v tónu `accent`. Nastavení prostoru
     a firmy vždy předává název upravovaného objektu přes `AppShellPanel.context`.
 
+## Zaškrtávátka, přepínače a stav záznamu (2.46.0)
+
+1. **Checkbox** (`CheckboxField`, `CheckboxGroup`) = hodnota formuláře ukládaná tlačítkem Uložit / Potvrdit; výběr více položek; volba před akcí (import, výkaz, „Založit vybrané“).
+2. **Přepínač** (`SwitchField` v `SettingsSection`) = nastavení, které platí a uloží se hned po kliknutí, bez Uložit; sekce má nápovědu „Změny se ukládají hned“; nikdy se nemíchá s poli čekajícími na Uložit.
+3. Výjimka: matice v gridu (oprávnění, uzávěrka) = Checkbox s okamžitým uložením a potvrzujícím toastem.
+4. Výjimka: „Vstupuje do DPH“ v `DocumentForm` zůstává přepínač v pruhu akcí, i když se ukládá s Uložit – mění, co formulář zobrazuje (DUZP, Datum DPH, sloupce DPH).
+5. „Aktivní“ u číselníků nikdy jako pole formuláře (ani Checkbox, ani Switch) – vždy stav záznamu: `RecordDialog.status` (štítek vedle nadpisu) + `lifecycleAction` (Deaktivovat / Aktivovat vlevo vedle Odstranit, s `dirty` nabídne „Uložit změny a …“); u nového záznamu se nepředává. V gridu `activeStatusColumn()`, `ShowInactiveToggle` (výchozí vypnuto = neaktivní skryté) a `GridRowMenu` s `activeToggleMenuItem()`. Výběry neaktivní položky nenabízejí, již vybranou ukážou se štítkem „neaktivní“ (`InactiveTag`).
+6. Filtr ano/ne nad gridem = vždy `GridToggleButton` (ne Switch, ne OptionSelect).
+7. Ve stránkách jen `CheckboxField` / `CheckboxGroup` / `SwitchField` (a buňky gridu); holé `Checkbox`, `Switch` a nativní `<label>` ne. `CheckboxField align="input"` zarovná zaškrtávátko ve `FieldGrid` na výšku pole.
+
+**Vyhledávací pole:** `LookupField` (lupa / ⟳ v poli, `mode="auto"`), `IcoField` na něm s `digitsOnly`. **Adresa:** `AddressFieldGrid.mapAction` = Země 2/4 · prázdná 1/4 · „Mapa“ 1/4 vpravo, textové outline tlačítko. **Bankovní účty:** `parseCzAccount`, `isValidCzAccount` (modulo 11), `czIban`, `isValidIban`, `formatIban`. **Stav DPH:** `VatStatusBadge` (nespolehlivý plátce plně červeně).
+
 ## Čísla a data
 
 - Tisíce odděluj mezerou – v editech, gridech, tiscích i exportech.

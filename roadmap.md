@@ -1,3 +1,11 @@
+## Verze 2.46.0 (Partneři, část B)
+- [x] LookupField a IcoField s digitsOnly
+- [x] CheckboxField, CheckboxGroup, SwitchField, SettingsSection a pravidlo v system.md
+- [x] DocumentForm CheckboxField, AddressFieldGrid Mapa
+- [x] Bankovní účet a IBAN, VatStatusBadge
+- [x] Stav záznamu Aktivní / Neaktivní v dialogu, gridu a výběrech
+- [x] Testy, ukázka Partneři, vizuální kontrola, verze 2.46.0
+
 ## Verze 2.44.0 (doplnění editace dokladu 6)
 - [x] Zobrazit popisek období pod Datem DPH s předností výstrahy podaného období
 - [x] Předat varování k jednotlivým datovým polím formuláře dokladu
