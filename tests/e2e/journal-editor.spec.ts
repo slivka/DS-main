@@ -24,6 +24,28 @@ test.describe("JournalLinesEditor", () => {
     await expect(textCell).toContainText("Servisní práce");
   });
 
+  test("uloží první znak, znaménko, desetinnou čárku, blur a Tab", async ({ page }) => {
+    const grid = page.locator('[role="grid"]:has([data-cell-key="l1:text"])');
+    const text = grid.locator('[data-cell-key="l1:text"]');
+    const amount = grid.locator('[data-cell-key="l1:amount"]');
+
+    await text.click();
+    await text.press("a");
+    await page.getByRole("heading", { name: "Řádky" }).click();
+    await expect(text).toContainText("a");
+
+    await amount.click();
+    await amount.press("-");
+    await page.keyboard.type("12");
+    await page.keyboard.press("Enter");
+    await expect(amount).toContainText("-12,00");
+
+    await amount.press(",");
+    await page.keyboard.type("5");
+    await page.keyboard.press("Tab");
+    await expect(amount).toContainText("0,50");
+  });
+
   test("Ctrl+D duplikuje a Ctrl+Delete odebere řádek s možností vrácení", async ({ page }) => {
     const firstGrid = page.locator('[role="grid"]:has([data-cell-key="l2:text"])');
     const rows = firstGrid.locator('[data-cell-key$=":text"]');
