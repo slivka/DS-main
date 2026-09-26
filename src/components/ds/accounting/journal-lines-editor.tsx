@@ -168,9 +168,9 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
       observer.observe(node);
       observer.observe(document.documentElement);
     };
-    connect();
+    frame = requestAnimationFrame(connect);
     return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
-  }, []);
+  }, [lines.length]);
   const foreign = documentCurrency !== homeCurrency; const canReorder = (reorderable ?? editable.size > 0) && !search;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const accountByCode = React.useMemo(() => new Map(accounts.map((account) => [account.code, account])), [accounts]);
