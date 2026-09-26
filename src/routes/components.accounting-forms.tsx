@@ -294,7 +294,7 @@ function AccountingFormsPage() {
 
       <ShowcaseSection
         title="Faktura přijatá s hlavním účtem 321"
-        description="Hlavní strana DAL je jen ke čtení, zadává se pouze protiúčet. Poslední řádek je haléřové vyrovnání."
+        description="Hlavní strana DAL je jen ke čtení, zadává se pouze protiúčet. Poslední řádek je zaokrouhlení."
       >
         <JournalLinesEditor
           lines={invoiceLines}

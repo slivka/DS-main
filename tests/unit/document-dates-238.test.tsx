@@ -57,7 +57,7 @@ describe("DocumentForm DPH 2.43.0", () => {
   });
 
   it("kotví DUZP a Datum DPH ve sloupcích 15–20 za levými daty", () => {
-    const html = form({ vat: { visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" } });
+    const html = form({ vat: { visible: true } });
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
@@ -67,10 +67,16 @@ describe("DocumentForm DPH 2.43.0", () => {
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {
-    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026", periodFiled: true } });
+    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodFiled: true } });
     expect(html).toContain('id="document-vatDate"');
     expect(html).toContain("Daň na výstupu patří do období DUZP");
     expect(html).toContain("Období je podané – doklad půjde do dodatečného přiznání");
+  });
+
+  it("přebírá upozornění podaného období z texts", () => {
+    const html = form({ vat: { visible: true, periodFiled: true }, texts: { filedWarning: "Vlastní upozornění" } });
+    expect(html).toContain("Vlastní upozornění");
+    expect(html).not.toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
 
   it("předá zámek do Data účetního případu", () => {
