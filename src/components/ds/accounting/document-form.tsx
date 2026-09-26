@@ -192,7 +192,8 @@ export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false,
-  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, linesEditorProps, tabs = [], status, approved, changedBy, changedAt,
+  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, linesEditorProps, roundingLimit = 1, roundingLabel,
+  tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
