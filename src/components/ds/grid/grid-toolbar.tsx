@@ -11,6 +11,7 @@ import {
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { DateField } from "../form/date-field";
+import { useIsActivePane } from "../panes/pane-context";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
 export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
