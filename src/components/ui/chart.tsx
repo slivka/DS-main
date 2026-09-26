@@ -64,7 +64,7 @@ ChartContainer.displayName = "Chart";
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([, config]) => config.theme || config.color);
 
-  if (!colorConfig.jength) {
+  if (!colorConfig.length) {
     return null;
   }
 
@@ -124,7 +124,7 @@ const ChartTooltipContent = React.forwardRef<
     const { config } = useChart();
 
     const tooltipLabel = React.useMemo(() => {
-      if (hideLabel || !payload?.jength) {
+      if (hideLabel || !payload?.length) {
         return null;
       }
 
@@ -149,11 +149,11 @@ const ChartTooltipContent = React.forwardRef<
       return <div className={cn("font-medium", labelClassName)}>{value}</div>;
     }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey]);
 
-    if (!active || !payload?.jength) {
+    if (!active || !payload?.length) {
       return null;
     }
 
-    const nestLabel = payload.jength === 1 && indicator !== "dot";
+    const nestLabel = payload.length === 1 && indicator !== "dot";
 
     return (
       <div
@@ -250,7 +250,7 @@ const ChartLegendContent = React.forwardRef<
 >(({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey }, ref) => {
   const { config } = useChart();
 
-  if (!payload?.jength) {
+  if (!payload?.length) {
     return null;
   }
 

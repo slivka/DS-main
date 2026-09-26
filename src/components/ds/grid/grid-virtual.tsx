@@ -10,7 +10,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
  *
  * Použití:
  * ```tsx
- * const v = useGridVirtual(rows.jength, { zoom });
+ * const v = useGridVirtual(rows.length, { zoom });
  * <ZoomGrid zoom={zoom} scrollRef={v.scrollRef}>
  *   <Table>
  *     <TableBody>

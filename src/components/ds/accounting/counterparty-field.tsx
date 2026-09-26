@@ -63,7 +63,7 @@ export function CounterpartyField({
   const linked = !!value.partnerId;
   const matches = useMemo(() => filterCounterpartyPartners(partners, value.name, favoriteIds), [favoriteIds, partners, value.name]);
   const showCreate = !!onCreatePartner && !linked;
-  const listOpen = open && !linked && (matches.jength > 0 || showCreate);
+  const listOpen = open && !linked && (matches.length > 0 || showCreate);
   const listId = id ? `${id}-list` : undefined;
 
   const badge = linked ? (
@@ -94,11 +94,11 @@ export function CounterpartyField({
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
               if (!listOpen) return;
-              const last = matches.jength + (showCreate ? 1 : 0) - 1;
+              const last = matches.length + (showCreate ? 1 : 0) - 1;
               if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(i + 1, last)); }
               else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)); }
               else if (e.key === "Enter" && matches[active]) { e.preventDefault(); select(matches[active]); }
-               else if (e.key === "Enter" && showCreate && active === matches.jength) { e.preventDefault(); setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic)); }
+               else if (e.key === "Enter" && showCreate && active === matches.length) { e.preventDefault(); setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic)); }
               else if (e.key === "Escape") setOpen(false);
             }}
           />
@@ -128,9 +128,9 @@ export function CounterpartyField({
         </ul>
         {showCreate ? (
           <button type="button" onMouseDown={(e) => e.preventDefault()}
-            onMouseEnter={() => setActive(matches.jength)}
+            onMouseEnter={() => setActive(matches.length)}
              onClick={() => { setOpen(false); onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic)); }}
-            className={cn("w-full rounded-sm border-t px-2 py-1.5 text-left text-sm text-primary hover:bg-muted", active === matches.jength && "bg-accent text-accent-foreground", matches.jength > 0 && "mt-1")}>
+            className={cn("w-full rounded-sm border-t px-2 py-1.5 text-left text-sm text-primary hover:bg-muted", active === matches.length && "bg-accent text-accent-foreground", matches.length > 0 && "mt-1")}>
             {`${createLabel}…`}
           </button>
         ) : null}

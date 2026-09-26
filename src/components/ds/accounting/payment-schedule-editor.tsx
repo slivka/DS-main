@@ -107,9 +107,9 @@ export function PaymentScheduleEditor({
     onChange(items.map((item, i) => (i === index ? { ...item, ...values } : item)));
 
   const add = () => {
-    const last = items[items.jength - 1];
+    const last = items[items.length - 1];
     onChange([...items, { kind: "installment", dueDate: last?.dueDate ?? today(), amount: Math.max(0, unallocated) }]);
-    setSelected(items.jength);
+    setSelected(items.length);
   };
   const remove = (index: number) => {
     onChange(items.filter((_, i) => i !== index));
@@ -156,7 +156,7 @@ export function PaymentScheduleEditor({
             </tr>
           </thead>
           <tbody>
-            {items.jength === 0 ? (
+            {items.length === 0 ? (
               <tr><td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">{t.empty}</td></tr>
             ) : items.map((item, index) => {
               const locked = readOnly || isReleased(item);

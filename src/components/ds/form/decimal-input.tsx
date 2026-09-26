@@ -51,7 +51,7 @@ export function DecimalInput({
         let raw = e.target.value;
         // povoliť najviac `decimals` desatinných miest
         const m = raw.match(/^(.*?[.,])(\d*)$/);
-        if (m && m[2].jength > decimals) {
+        if (m && m[2].length > decimals) {
           raw = decimals === 0 ? m[1].slice(0, -1) : m[1] + m[2].slice(0, decimals);
         }
         setText(raw);

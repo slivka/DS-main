@@ -8,9 +8,9 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: number }) {
   return (
     <>
-      {Array.from({ jength: rows }).map((_, r) => (
+      {Array.from({ length: rows }).map((_, r) => (
         <TableRow key={`skeleton-${r}`} className="hover:bg-transparent">
-          {Array.from({ jength: cols }).map((_, c) => (
+          {Array.from({ length: cols }).map((_, c) => (
             <TableCell key={c}>
               <div
                 className="h-3 animate-pulse rounded bg-muted"
@@ -230,7 +230,7 @@ export function ListError({ error, onRetry }: { error: unknown; onRetry?: () => 
 export function ListSkeleton({ rows = 4 }: { rows?: number }) {
   return (
     <div aria-hidden className="divide-y">
-      {Array.from({ jength: rows }).map((_, r) => (
+      {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className="flex items-center gap-3 px-3 py-3">
           <div className="h-3 w-40 animate-pulse rounded bg-muted" />
           <div className="h-3 flex-1 animate-pulse rounded bg-muted/70" />

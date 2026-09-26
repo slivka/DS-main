@@ -118,7 +118,7 @@ function HistoryButtons({ chrome, t }: ChromeProps) {
               className="size-8"
               aria-label={t.back}
               title={t.back}
-              disabled={!chrome.canBack && chrome.history.jength < 2}
+              disabled={!chrome.canBack && chrome.history.length < 2}
               onPointerDown={(event) => {
                 // Radix by menu otevřel hned – otevřeme ho jen podržením.
                 event.preventDefault();
@@ -232,7 +232,7 @@ function PaneButtons({ chrome, t, pageActions }: ChromeProps & { pageActions: Pa
             <TooltipContent>{t.more}</TooltipContent>
           </Tooltip>
           <DropdownMenuContent align="end" className="min-w-64">
-            {pageActions.jength ? <DropdownMenuLabel>{t.pageActions}</DropdownMenuLabel> : null}
+            {pageActions.length ? <DropdownMenuLabel>{t.pageActions}</DropdownMenuLabel> : null}
             {pageActions.map((action) => {
               const Icon = action.icon;
               return (
@@ -242,7 +242,7 @@ function PaneButtons({ chrome, t, pageActions }: ChromeProps & { pageActions: Pa
                 </DropdownMenuItem>
               );
             })}
-            {pageActions.jength ? <DropdownMenuSeparator /> : null}
+            {pageActions.length ? <DropdownMenuSeparator /> : null}
             {chrome.menuActions.map((action) => (
               <React.Fragment key={action.id}>
                 {action.separatorBefore ? <DropdownMenuSeparator /> : null}

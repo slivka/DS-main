@@ -189,7 +189,7 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
             {direction ? <span aria-hidden="true" className="mx-2 h-4 w-px bg-border" /> : null}
             {renderItem(firstItem)}
           </span> : null}
-          {remainingItems.jength ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
+          {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
             {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
               <span aria-hidden="true" className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
                {renderItem(item)}
@@ -260,7 +260,7 @@ export function DocumentForm({
   };
 
   const allTabs: DocumentFormTab[] = [{
-    id: "lines", label: t.linesTab, badge: lines.jength || undefined,
+    id: "lines", label: t.linesTab, badge: lines.length || undefined,
     content: <JournalLinesEditor lines={lines} onChange={onLinesChange} accounts={accounts} dimensions={dimensions} partners={partners}
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
       documentCurrency={value.currency} documentCurrencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rate={value.rate} rateAmount={rateAmount}
@@ -324,7 +324,7 @@ export function DocumentForm({
         </> : null}
       </section>
 
-      {allTabs.jength === 1 ? <><SectionHeading>{t.linesTab}</SectionHeading><div className="mt-2">{allTabs[0]?.content}</div></> : <Tabs value={tab} onValueChange={setTab}>
+      {allTabs.length === 1 ? <><SectionHeading>{t.linesTab}</SectionHeading><div className="mt-2">{allTabs[0]?.content}</div></> : <Tabs value={tab} onValueChange={setTab}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1"><TabsList className="h-10 gap-1 rounded-none border-b bg-transparent p-0">
           {allTabs.map((item) => <TabsTrigger key={item.id} value={item.id} className="h-10 gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none">{item.label}{item.badge != null ? <span className="rounded-sm bg-muted px-1.5 text-xs tabular-nums text-muted-foreground">{item.badge}</span> : null}</TabsTrigger>)}
         </TabsList></div>
@@ -356,7 +356,7 @@ export function DocumentActionBar({ vat, vatRelevant, onVatRelevantChange, saveA
     <div className="flex shrink-0 items-center gap-2">
       {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
       {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
-      {moreActions.jength ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}
+      {moreActions.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}
     </div>
   </div></TooltipProvider>;
 }

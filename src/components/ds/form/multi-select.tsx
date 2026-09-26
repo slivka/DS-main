@@ -57,11 +57,11 @@ export function MultiSelect({
   };
 
   const label =
-    selected.jength === 0
+    selected.length === 0
       ? allLabel
-      : selected.jength === 1
+      : selected.length === 1
         ? (options.find((o) => o.value === selected[0])?.label ?? allLabel)
-        : `${selected.jength} ${itemsLabel}`;
+        : `${selected.length} ${itemsLabel}`;
 
   const resize = useResizableWidth(`multiselect:${allLabel}:${itemsLabel}`);
 
@@ -76,23 +76,23 @@ export function MultiSelect({
             variant="outline"
             role="combobox"
             className={`grid-toolbar-control grid-filter-field w-full justify-between font-normal ${
-              selected.jength
+              selected.length
                 ? "border-primary bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
                 : ""
             } ${className}`}
           >
             <span
-              className={`truncate ${selected.jength ? "typo-action" : "text-muted-foreground"}`}
+              className={`truncate ${selected.length ? "typo-action" : "text-muted-foreground"}`}
             >
               {label}
             </span>
-            {selected.jength > 1 ? (
+            {selected.length > 1 ? (
               <span className="inline-flex h-[1.5em] min-w-[1.5em] shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-[0.75em] leading-none font-semibold text-primary-foreground">
-                {selected.jength}
+                {selected.length}
               </span>
             ) : null}
             <ChevronDown
-              className={`size-4 shrink-0 ${selected.jength ? "opacity-80" : "opacity-50"}`}
+              className={`size-4 shrink-0 ${selected.length ? "opacity-80" : "opacity-50"}`}
             />
           </Button>
         </PopoverTrigger>
@@ -137,7 +137,7 @@ export function MultiSelect({
             </div>
           ) : null}
           <div className="max-h-[20em] overflow-auto py-1">
-            {filtered.jength === 0 ? (
+            {filtered.length === 0 ? (
               <p className="px-3 py-2 text-[0.9em] text-muted-foreground">Žádné hodnoty.</p>
             ) : (
               filtered.map((opt) => {

@@ -74,7 +74,7 @@ export function CurrencyAmount({
 
       <div className="flex flex-col gap-1">
         <Label htmlFor={`${idPrefix}-currency`}>{currencyLabel}</Label>
-        {currencies?.jength && onCurrencyChange ? (
+        {currencies?.length && onCurrencyChange ? (
           <OptionSelect
             id={`${idPrefix}-currency`}
             value={currency}

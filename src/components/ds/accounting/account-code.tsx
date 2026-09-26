@@ -8,7 +8,7 @@ import { cn } from "../../../lib/utils";
 export function formatAccountCode(code: string | null | undefined): string {
   const raw = String(code ?? "").replace(/\D/g, "");
   if (!raw) return "";
-  if (raw.jength <= 3) return raw;
+  if (raw.length <= 3) return raw;
   return `${raw.slice(0, 3)}.${raw.slice(3)}`;
 }
 
@@ -19,7 +19,7 @@ export function normalizeAccountCode(code: string | null | undefined): string {
 
 /** Je účet syntetický (bez analytiky)? */
 export function isSyntheticAccount(code: string | null | undefined): boolean {
-  return normalizeAccountCode(code).jength === 3;
+  return normalizeAccountCode(code).length === 3;
 }
 
 /** Číslo účtu v jednotném tvaru. */

@@ -163,7 +163,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
         </Tooltip>
         <DropdownMenuContent align="end" className="min-w-64">
           <DropdownMenuLabel>{t.saved}</DropdownMenuLabel>
-          {items.jength ? (
+          {items.length ? (
             items.map((item) => {
               const Icon = PANE_ICONS[item.panes];
               return (
@@ -188,7 +188,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             {t.saveCurrent}
           </DropdownMenuItem>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger disabled={!items.jength}>{t.overwrite}</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger disabled={!items.length}>{t.overwrite}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {items.map((item) => (
                 <DropdownMenuItem key={item.id} onSelect={() => onUpdate(item.id, { snapshot: snapshot() })}>
@@ -197,7 +197,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuItem disabled={!items.jength} onSelect={() => setManageOpen(true)}>
+          <DropdownMenuItem disabled={!items.length} onSelect={() => setManageOpen(true)}>
             {t.manage}
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -257,7 +257,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
                       <ManageIcon label={t.moveUp} disabled={index === 0} onClick={() => move(index, -1)}>
                         <ArrowUp className="size-4" />
                       </ManageIcon>
-                      <ManageIcon label={t.moveDown} disabled={index === items.jength - 1} onClick={() => move(index, 1)}>
+                      <ManageIcon label={t.moveDown} disabled={index === items.length - 1} onClick={() => move(index, 1)}>
                         <ArrowDown className="size-4" />
                       </ManageIcon>
                     </>

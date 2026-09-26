@@ -127,8 +127,8 @@ const USER_COLUMNS: DataGridColumn<UserRow>[] = [
 
 const DETAIL_ROWS = {
   members: [{ id: "m1", name: "Petr Slivka", role: "Správce" }, { id: "m2", name: "Jana Nováková", role: "Účetní" }],
-  invitations: [{ id: "i1", email: "novy.cjen@example.cz", state: "Čeká na přijetí" }],
-  companes: [{ id: "c1", name: "Slivka Accounting s.r.o.", ico: "12345678" }, { id: "c2", name: "Slivka Services s.r.o.", ico: "87654321" }],
+  invitations: [{ id: "i1", email: "novy.člen@example.cz", state: "Čeká na přijetí" }],
+  companies: [{ id: "c1", name: "Slivka Accounting s.r.o.", ico: "12345678" }, { id: "c2", name: "Slivka Services s.r.o.", ico: "87654321" }],
 };
 
 function NavigationPage() {
@@ -139,7 +139,7 @@ function NavigationPage() {
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
   const [companyPreviewOpen, setCompanyPreviewOpen] = useState(true);
   const [workspaceDetailOpen, setWorkspaceDetailOpen] = useState(false);
-  const companes = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
+  const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed>
@@ -148,9 +148,9 @@ function NavigationPage() {
         description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámění, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámění a tmavý režim."
       >
         <div className="grid gap-3">
-          <ContextStatesPreview title="Světlý režim" companes={companes} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
+          <ContextStatesPreview title="Světlý režim" companies={companies} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
           <div className="dark rounded-lg bg-background p-3 text-foreground">
-            <ContextStatesPreview title="Tmavý režim" companes={companes} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
+            <ContextStatesPreview title="Tmavý režim" companies={companies} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
           </div>
         </div>
       </ShowcaseSection>
@@ -169,7 +169,7 @@ function NavigationPage() {
         <div className="max-w-full overflow-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px`, maxWidth: "100%" }}>
             <div className={cn("flex h-14 min-w-0 flex-nowrap items-center gap-2 overflow-hidden px-3", previewWidth < 1280 && "[&_[data-slot=context-pill-label]]:hidden", previewWidth < 768 && "[&_[data-slot=context-pill-mobile-value]]:inline [&_[data-slot=context-pill-value]]:hidden")}>
-              <CompanySwitcher className={previewWidth < 768 ? "max-w-[132px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={companes} value={companyId} onChange={setCompanyId} />
+              <CompanySwitcher className={previewWidth < 768 ? "max-w-[132px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} items={companies} value={companyId} onChange={setCompanyId} />
               <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-border" />
               <PeriodSwitcher className={previewWidth < 768 ? "max-w-[112px]" : previewWidth < 1280 ? "max-w-[200px]" : undefined} periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
@@ -187,7 +187,7 @@ function NavigationPage() {
 
       <ShowcaseSection title="Rozbajený výběr firmy" description="Nabídka obsahuje hledání a jediný seznam všech firem bez skupinových nadpisů; vybraná firma má fajfku a pod názvem IČO.">
         <div className="min-h-80 rounded-lg border bg-card p-3">
-          <CompanySwitcher items={companes} value={companyId} onChange={setCompanyId} open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen} onCreate={() => undefined} />
+          <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen} onCreate={() => undefined} />
         </div>
       </ShowcaseSection>
 
@@ -199,7 +199,7 @@ function NavigationPage() {
           <div className="grid gap-4 lg:grid-cols-[1fr_auto_1fr]">
             <NavigationBlockPreview title="Rozbajené menu" groups={NAV_GROUPS} />
             <NavigationBlockPreview title="Sbajené menu" groups={NAV_GROUPS} collapsed />
-            <NavigationBlockPreview title="Hledání: faktury" groups={NAV_GROUPS.filter((group) => group.section === "Doklady").map((group) => ({ ...group, items: group.items.filter((item) => item.label.includes("faktury")) })).filter((group) => group.items.jength > 0)} />
+            <NavigationBlockPreview title="Hledání: faktury" groups={NAV_GROUPS.filter((group) => group.section === "Doklady").map((group) => ({ ...group, items: group.items.filter((item) => item.label.includes("faktury")) })).filter((group) => group.items.length > 0)} />
           </div>
         </div>
       </ShowcaseSection>
@@ -237,7 +237,7 @@ function NavigationPage() {
         tabs={[
           { value: "members", label: "Čjenové", content: <DataGrid storageKey="ds-workspace-members" rows={DETAIL_ROWS.members} columns={[{ id: "name", label: "Čjen", value: (row) => row.name }, { id: "role", label: "Role", value: (row) => row.role }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
           { value: "invitations", label: "Pozvánky", content: <DataGrid storageKey="ds-workspace-invitations" rows={DETAIL_ROWS.invitations} columns={[{ id: "email", label: "E-mail", value: (row) => row.email }, { id: "state", label: "Stav", value: (row) => row.state }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
-          { value: "companes", label: "Firmy", content: <DataGrid storageKey="ds-workspace-companes" rows={DETAIL_ROWS.companes} columns={[{ id: "name", label: "Firma", value: (row) => row.name }, { id: "ico", label: "IČO", value: (row) => row.ico }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
+          { value: "companies", label: "Firmy", content: <DataGrid storageKey="ds-workspace-companies" rows={DETAIL_ROWS.companies} columns={[{ id: "name", label: "Firma", value: (row) => row.name }, { id: "ico", label: "IČO", value: (row) => row.ico }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
         ]}
       />
 
@@ -288,7 +288,7 @@ function NavigationPage() {
   );
 }
 
-function ContextStatesPreview({ title, companes, companyId, onCompanyChange, onPeriodChange }: { title: string; companes: Array<{ id: string; name: string; ico?: string }>; companyId: string; onCompanyChange: (id: string) => void; onPeriodChange: (id: string) => void }) {
+function ContextStatesPreview({ title, companies, companyId, onCompanyChange, onPeriodChange }: { title: string; companies: Array<{ id: string; name: string; ico?: string }>; companyId: string; onCompanyChange: (id: string) => void; onPeriodChange: (id: string) => void }) {
   const states = [
     { label: "Otevřené", periods: MOCK_PERIODS, value: "2026" },
     { label: "V uzávěrce", periods: MOCK_PERIODS, value: "2025" },
@@ -303,8 +303,8 @@ function ContextStatesPreview({ title, companes, companyId, onCompanyChange, onP
         {states.map((state) => (
           <div key={state.label} className="flex min-w-0 items-center gap-6">
             <span className="w-32 shrink-0 text-sm text-muted-foreground">{state.label}</span>
-            <CompanySwitcher items={companes} value={companyId} onChange={onCompanyChange} />
-            <PeriodSwitcher periods={state.periods} value={state.value} onChange={onPeriodChange} onCreate={state.periods.jength === 0 ? () => undefined : undefined} />
+            <CompanySwitcher items={companies} value={companyId} onChange={onCompanyChange} />
+            <PeriodSwitcher periods={state.periods} value={state.value} onChange={onPeriodChange} onCreate={state.periods.length === 0 ? () => undefined : undefined} />
           </div>
         ))}
       </div>

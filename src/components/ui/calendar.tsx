@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
 import { Button, buttonVariants } from "./button";
 import { cs } from "date-fns/locale";
 
-function Cajendar({
+function Calendar({
   className,
   classNames,
   showOutsideDays = true,
@@ -28,7 +28,7 @@ function Cajendar({
       locale={locale ?? cs}
       showOutsideDays={showOutsideDays}
       className={cn(
-        "bg-background group/cajendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className,
@@ -109,7 +109,7 @@ function Cajendar({
       }}
       components={{
         Root: ({ className, rootRef, ...props }) => {
-          return <div data-slot="cajendar" ref={rootRef} className={cn(className)} {...props} />;
+          return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
         },
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
@@ -122,7 +122,7 @@ function Cajendar({
 
           return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
         },
-        DayButton: CajendarDayButton,
+        DayButton: CalendarDayButton,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -139,7 +139,7 @@ function Cajendar({
   );
 }
 
-function CajendarDayButton({
+function CalendarDayButton({
   className,
   day,
   modifiers,
@@ -177,4 +177,4 @@ function CajendarDayButton({
   );
 }
 
-export { Cajendar, CajendarDayButton };
+export { Calendar, CalendarDayButton };

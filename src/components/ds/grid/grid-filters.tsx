@@ -30,7 +30,7 @@ export function GridFilterToggle({
 }) {
   const texts = resolveGridTexts(textOverrides);
   const active = activeCount > 0;
-  const hasDefault = defaultFilters.jength > 0;
+  const hasDefault = defaultFilters.length > 0;
   const showDefault = !active && hasDefault;
   const tooltipLabel = active
     ? `${texts.activeFilters}: ${activeFilters.join(", ")}`
@@ -109,7 +109,7 @@ export function GridFilterToggle({
                 {active && (
                   <>
                     <p className="font-semibold pt-1">{texts.activeFilters}</p>
-                    {(activeFilters.jength ? activeFilters : [`${activeCount} aktivní`]).map(
+                    {(activeFilters.length ? activeFilters : [`${activeCount} aktivní`]).map(
                       (filter) => (
                         <p key={filter} className="font-normal">
                           {filter}
@@ -221,7 +221,7 @@ export function GridResultCount({
           ) : null}
         </span>
       ))}
-      {chips.jength > 1 && onClearAll ? (
+      {chips.length > 1 && onClearAll ? (
         <Button
           type="button"
           variant="ghost"

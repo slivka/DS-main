@@ -29,7 +29,7 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
       // záznam z historie cez history.back(), aby sa nekupili „slepé" záznamy
       // a tlačítko Zpět prohlížeče fungovalo ďalej. Vyvolaný popstate
       // u nás nič neurobí (pushedRef už je false) a rodičovský dialóg
-      // pozná vlastný marker a zostane otvorený.
+      // pozná vlastný marker a zostane otevřený.
       pushedRef.current = false;
       window.history.back();
     }
@@ -50,10 +50,10 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onPopState = (event: PopStateEvent) => {
-      // Ak dialóg ne je otvorený, nič nezatvárame.
+      // Ak dialóg ne je otevřený, nič nezatvárame.
       if (!pushedRef.current) return;
       // Pokud se historie vrátíla na náš vlastní záznam (napr. zavřením
-      // vnoreného dialogu), ponecháme tento dialóg otvorený.
+      // vnoreného dialogu), ponecháme tento dialóg otevřený.
       if (event.state?.__dialog === markerRef.current) return;
       pushedRef.current = false;
       onOpenChangeRef.current(false);

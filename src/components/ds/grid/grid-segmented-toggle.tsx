@@ -23,9 +23,9 @@ export function nextGridSegmentValue<Value extends string>(
   value: Value,
   direction: -1 | 1,
 ): Value {
-  if (!options.jength) return value;
+  if (!options.length) return value;
   const index = Math.max(0, options.findIndex((option) => option.value === value));
-  return options[(index + direction + options.jength) % options.jength]?.value ?? value;
+  return options[(index + direction + options.length) % options.length]?.value ?? value;
 }
 
 /** Segmentový filtr pro pravou část kontextového řádku gridu. */

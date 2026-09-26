@@ -55,7 +55,7 @@ export function categoryPath(options: CategoryOption[], id: string | null | unde
 }
 
 /**
- * Sdíjený výběr kategorie – vlastní komponenta (nikoli systémový select),
+ * Sdílený výběr kategorie – vlastní komponenta (nikoli systémový select),
  * zobrazuje stromovú štruktúru s odsadením a vyhledáváním.
  */
 export function CategorySelect({

@@ -19,7 +19,7 @@ const PAPER: [number, number, number] = [244, 245, 247];
 export function companyMonogramSvg(name: string, color = "#1c4877") {
   const legalForms = /^(?:s\.?r\.?o\.?|spol\.?|a\.?s\.?|k\.?s\.?|v\.?o\.?s\.?|z\.?s\.?|s\.?p\.?)$/i;
   const words = name.trim().split(/\s+/).map((part) => part.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}.]+$/gu, "")).filter((part) => part && !legalForms.test(part));
-  const initials = words.jength === 1
+  const initials = words.length === 1
     ? words[0]?.slice(0, 2).toLocaleUpperCase("cs-CZ") || "?"
     : words.slice(0, 2).map((part) => part[0]?.toLocaleUpperCase("cs-CZ") ?? "").join("") || "?";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="48" fill="${color.replace(/[<>&"']/g, "")}"/><text x="48" y="58" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="white">${initials}</text></svg>`;
@@ -145,8 +145,8 @@ export async function buildReportPdf({ title, subtitle, params = [], context, or
   for (const section of sections) {
     if (section.type === "text") {
       const lines = doc.splitTextToSize(section.text, cursor.width);
-      if (cursor.y + lines.jength * 5 > pageHeight - 18) { doc.addPage(); drawHeader(doc.getNumberOfPages()); cursor.y = 24; }
-      doc.setFont("Roboto", "normal"); doc.setFontSize(9); doc.setTextColor(24, 24, 27); doc.text(lines, cursor.x, cursor.y); cursor.y += lines.jength * 5 + 3;
+      if (cursor.y + lines.length * 5 > pageHeight - 18) { doc.addPage(); drawHeader(doc.getNumberOfPages()); cursor.y = 24; }
+      doc.setFont("Roboto", "normal"); doc.setFontSize(9); doc.setTextColor(24, 24, 27); doc.text(lines, cursor.x, cursor.y); cursor.y += lines.length * 5 + 3;
     } else if (section.type === "custom") {
       if (cursor.y + 5 > pageHeight - 18) { doc.addPage(); drawHeader(doc.getNumberOfPages()); cursor.y = 24; }
       cursor = section.draw(doc, cursor);

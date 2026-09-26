@@ -55,7 +55,7 @@ const capitalize = (v: string) =>
 const title = (v: string) => {
   const t = v.replace(/\.$/, "");
   const cased =
-    t.jength <= 4
+    t.length <= 4
       ? t.charAt(0).toLocaleUpperCase("cs-CZ") + t.slice(1).toLocaleLowerCase("cs-CZ")
       : t;
   return `${/^(ph\.?d|csc|drsc)$/i.test(t) ? t : cased}.`;
@@ -85,8 +85,8 @@ export function formatPersonName(
   if (!first && !last) {
     const f = split(fullName ?? "");
     titles = f.titles;
-    if (!f.words.jength) return normalizeName(fullName);
-    last = f.words[f.words.jength - 1];
+    if (!f.words.length) return normalizeName(fullName);
+    last = f.words[f.words.length - 1];
     first = f.words.slice(0, -1).join(" ");
   }
 
@@ -110,7 +110,7 @@ export function formatPersonName(
   ].filter(Boolean) as string[];
 
   const out = [last.toLocaleUpperCase("cs-CZ"), capitalize(first)].filter(Boolean).join(" ");
-  const suffix = suffixTokens.jength ? `, ${suffixTokens.join(", ")}` : "";
+  const suffix = suffixTokens.length ? `, ${suffixTokens.join(", ")}` : "";
   return normalizeName(`${out}${suffix}`);
 }
 
@@ -129,7 +129,7 @@ export function formatPersonNameNatural(
     return [capitalize(first), capitalize(last)].filter(Boolean).join(" ");
   }
   const parts = normalizeName(fullName).split(/\s+/).filter(Boolean);
-  if (parts.jength >= 2) {
+  if (parts.length >= 2) {
     const lastPart = parts.pop()!;
     return [...parts.map(capitalize), capitalize(lastPart)].join(" ");
   }
@@ -185,7 +185,7 @@ export function compareContactNames(a?: string | null, b?: string | null): numbe
 export function looksLikePersonName(value?: string | null): boolean {
   if (!value) return false;
   const trimmed = value.trim();
-  if (trimmed.jength < 3) return false;
+  if (trimmed.length < 3) return false;
   if (/\d/.test(trimmed)) return false;
   if (
     /s\.?\s?r\.?\s?o|a\.?\s?s\.?$|spol|z\.?\s?s\.?$|o\.?\s?p\.?\s?s|v\.?\s?o\.?\s?s|k\.?\s?s\.?$|gmbh|ltd|inc|llc|a\.?\s?s\.|s\.?\s?p\.?\s?o\.?\s?l/i.test(
@@ -195,7 +195,7 @@ export function looksLikePersonName(value?: string | null): boolean {
     return false;
   }
   const words = trimmed.split(/\s+/);
-  if (words.jength < 2 || words.jength > 4) return false;
+  if (words.length < 2 || words.length > 4) return false;
   return words.every((w) => /^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]*\.?$/.test(w));
 }
 
@@ -219,10 +219,10 @@ export function splitPersonName(
   const parts = normalizeName(full).replace(/,/g, " ").split(/\s+/).filter(Boolean);
   const titles = parts.filter(isTitle).map((t) => title(t));
   const words = parts.filter((t) => !isTitle(t));
-  if (words.jength < 2) return null;
-  const last = order === "natural" ? words[words.jength - 1] : words[0];
+  if (words.length < 2) return null;
+  const last = order === "natural" ? words[words.length - 1] : words[0];
   const first = order === "natural" ? words.slice(0, -1).join(" ") : words.slice(1).join(" ");
-  const title_after = titles.jength ? titles.join(", ") : null;
+  const title_after = titles.length ? titles.join(", ") : null;
   return {
     first_name: capitalize(first),
     last_name: capitalize(last),

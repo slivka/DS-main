@@ -15,7 +15,7 @@ export type CompanyOption = { id: string; name: string; workspaceId?: string; ic
 /** Výběr pracovního prostoru a firmy v horní liště aplikace. */
 export function WorkspaceCompanySwitcher({
   workspaces,
-  companes,
+  companies,
   workspaceId,
   companyId,
   onWorkspaceChange,
@@ -25,7 +25,7 @@ export function WorkspaceCompanySwitcher({
   className,
 }: {
   workspaces: WorkspaceOption[];
-  companes: CompanyOption[];
+  companies: CompanyOption[];
   workspaceId: string;
   companyId: string;
   onWorkspaceChange: (id: string) => void;
@@ -34,7 +34,7 @@ export function WorkspaceCompanySwitcher({
   companyLabel?: string;
   className?: string;
 }) {
-  const visibleCompanes = companes.filter(
+  const visibleCompanies = companies.filter(
     (c) => !c.workspaceId || c.workspaceId === workspaceId,
   );
 
@@ -59,7 +59,7 @@ export function WorkspaceCompanySwitcher({
           <SelectValue placeholder={companyLabel} />
         </SelectTrigger>
         <SelectContent>
-          {visibleCompanes.map((c) => (
+          {visibleCompanies.map((c) => (
             <SelectItem key={c.id} value={c.id}>
               <span className="min-w-0"><span className="block truncate">{c.name}</span>{c.ico ? <span className="block text-xs font-normal text-muted-foreground">IČO {c.ico}</span> : null}</span>
             </SelectItem>

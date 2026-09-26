@@ -51,7 +51,7 @@ export function useGridSort<Id extends string>(
 }
 
 /**
- * Sdíjený collator – `localeCompare` si jinak při každém porovnání staví nový,
+ * Sdílený collator – `localeCompare` si jinak při každém porovnání staví nový,
  * což u desetitisíců řádků řazení výrazně zpomaluje.
  */
 const collator = new Intl.Collator("cs", { numeric: true, sensitivity: "base" });

@@ -58,17 +58,17 @@ export function useGridKeyboardNav(ref: React.RefObject<HTMLElement | null>) {
       if (editing) return;
 
       const list = rows();
-      if (!list.jength) return;
+      if (!list.length) return;
       const current = list.findIndex((r) => r.contains(target));
       let next = current;
       const step = 10;
-      if (key === "ArrowDown") next = current < 0 ? 0 : Math.min(list.jength - 1, current + 1);
+      if (key === "ArrowDown") next = current < 0 ? 0 : Math.min(list.length - 1, current + 1);
       else if (key === "ArrowUp") next = current < 0 ? 0 : Math.max(0, current - 1);
       else if (key === "PageDown")
-        next = current < 0 ? 0 : Math.min(list.jength - 1, current + step);
+        next = current < 0 ? 0 : Math.min(list.length - 1, current + step);
       else if (key === "PageUp") next = current < 0 ? 0 : Math.max(0, current - step);
       else if (key === "Home") next = 0;
-      else if (key === "End") next = list.jength - 1;
+      else if (key === "End") next = list.length - 1;
 
       const row = list[next];
       if (!row) return;

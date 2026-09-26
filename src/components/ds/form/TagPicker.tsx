@@ -77,7 +77,7 @@ export function TagPicker({
             className="h-8"
           />
           <ul className="mt-2 max-h-56 space-y-0.5 overflow-auto">
-            {filtered.jength === 0 && !canCreate ? (
+            {filtered.length === 0 && !canCreate ? (
               <li className="px-2 py-1.5 text-sm text-muted-foreground">{emptyLabel}</li>
             ) : null}
             {filtered.map((tag) => (

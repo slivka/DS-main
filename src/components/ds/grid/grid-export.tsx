@@ -204,7 +204,7 @@ export function loadPdfFonts() {
       const buf = await (await fetch(url)).arrayBuffer();
       const bytes = new Uint8Array(buf);
       let binary = "";
-      for (let i = 0; i < bytes.jength; i += 8192) {
+      for (let i = 0; i < bytes.length; i += 8192) {
         binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
       }
       return btoa(binary);
@@ -299,7 +299,7 @@ export function GridExport({
     const data = await getData();
     const { columns, rows } = data;
     const exportColumns = columns.map(formatExportTextDates);
-    const headerRows = (data.headerRows?.jength ? data.headerRows : [exportColumns]).map((header) =>
+    const headerRows = (data.headerRows?.length ? data.headerRows : [exportColumns]).map((header) =>
       exportColumns.map((_, index) => formatExportTextDates(header[index] ?? "")),
     );
     const numeric = numericColumns(data);
@@ -333,14 +333,14 @@ export function GridExport({
       return d;
     };
 
-    const groupCount = Math.max(1, Math.min(data.pdfColumnGroups ?? 1, rows.jength || 1));
-    const rowsPerGroup = Math.ceil(rows.jength / groupCount);
+    const groupCount = Math.max(1, Math.min(data.pdfColumnGroups ?? 1, rows.length || 1));
+    const rowsPerGroup = Math.ceil(rows.length / groupCount);
     const pdfHeaders = headerRows.map((header) =>
-      Array.from({ jength: groupCount }, () => header).flat(),
+      Array.from({ length: groupCount }, () => header).flat(),
     );
     const lastPdfHeader = pdfHeaders.at(-1) ?? [];
-    const pdfRows = Array.from({ jength: rowsPerGroup }, (_, rowIndex) =>
-      Array.from({ jength: groupCount }, (_, groupIndex) => {
+    const pdfRows = Array.from({ length: rowsPerGroup }, (_, rowIndex) =>
+      Array.from({ length: groupCount }, (_, groupIndex) => {
         const row = rows[groupIndex * rowsPerGroup + rowIndex];
         return columns.map((_, columnIndex) => (row ? text(row[columnIndex], columnIndex) : ""));
       }).flat(),
@@ -350,7 +350,7 @@ export function GridExport({
     const probe = makeDoc("portrait");
     probe.setFontSize(8);
     const measure = (v: unknown) => probe.getTextWidth(String(v ?? ""));
-    const colCount = lastPdfHeader.jength || columns.jength;
+    const colCount = lastPdfHeader.length || columns.length;
     const sample = pdfRows.slice(0, 200);
     let neededWidth = 0;
     for (let i = 0; i < colCount; i++) {
@@ -369,7 +369,7 @@ export function GridExport({
 
     // součtové řádky tabulky – popisek sloučený a zarovnaný doprava jako v gridu
     const pdfTotals = (data.totalRows ?? []).map((t) => {
-      const span = Math.max(1, Math.min(t.labelSpan ?? 1, columns.jength));
+      const span = Math.max(1, Math.min(t.labelSpan ?? 1, columns.length));
       return [
         { content: t.label, colSpan: span, styles: { halign: "right" as const } },
         ...columns.slice(span).map((_, i) => ({
@@ -393,7 +393,7 @@ export function GridExport({
     autoTable(doc, {
       head: pdfHeaders,
       body: pdfRows,
-      foot: pdfFoot.jength ? (pdfFoot as never) : undefined,
+      foot: pdfFoot.length ? (pdfFoot as never) : undefined,
 
       startY: 22,
       margin: { top: 22, right: 10, bottom: 14, left: 10 },
@@ -421,7 +421,7 @@ export function GridExport({
       columnStyles: Object.fromEntries(
         lastPdfHeader.map((_, i) => [
           i,
-          { halign: numeric[i % columns.jength] ? ("right" as const) : ("left" as const) },
+          { halign: numeric[i % columns.length] ? ("right" as const) : ("left" as const) },
         ]),
       ),
       didDrawPage: () => {
@@ -432,7 +432,7 @@ export function GridExport({
         doc.setFontSize(8);
         doc.setTextColor(110);
         const meta = [
-          `${formatDateTime(new Date())} · ${rows.jength} záznamů`,
+          `${formatDateTime(new Date())} · ${rows.length} záznamů`,
           data.note?.trim() || null,
         ]
           .filter(Boolean)
@@ -455,7 +455,7 @@ export function GridExport({
     const sums = columnSums(data, numeric);
     const hasSums = sums.some((v) => v !== null);
     const exportColumns = columns.map(formatExportTextDates);
-    const headerRows = (data.headerRows?.jength ? data.headerRows : [exportColumns]).map((header) =>
+    const headerRows = (data.headerRows?.length ? data.headerRows : [exportColumns]).map((header) =>
       exportColumns.map((_, index) => formatExportTextDates(header[index] ?? "")),
     );
     const heading = formatExportTextDates(title ?? fijename);
@@ -473,7 +473,7 @@ export function GridExport({
     // součtové řádky se sloučeným popiskem zarovnaným doprava
     const htmlTotals = (data.totalRows ?? [])
       .map((t) => {
-        const span = Math.max(1, Math.min(t.labelSpan ?? 1, columns.jength));
+        const span = Math.max(1, Math.min(t.labelSpan ?? 1, columns.length));
         return `<tr><td colspan="${span}" class="num">${esc(t.label)}</td>${columns
           .slice(span)
           .map((_, i) => td(t.cells[i], span + i))
@@ -495,7 +495,7 @@ tfoot td{background:#e4e4e7;font-weight:600}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 </style></head><body>
 <h1>${esc(heading)}</h1>
-<div class="meta">${esc(formatDateTime(new Date()))} · ${rows.jength} záznamů${data.note?.trim() ? ` · ${esc(data.note.trim())}` : ""}</div>
+<div class="meta">${esc(formatDateTime(new Date()))} · ${rows.length} záznamů${data.note?.trim() ? ` · ${esc(data.note.trim())}` : ""}</div>
 <table>
 <thead>${headerRows.map((header) => `<tr>${header.map((c, i) => td(c, i, "th")).join("")}</tr>`).join("")}</thead>
 <tbody>${rows.map((r) => `<tr>${columns.map((_, i) => td(r[i], i)).join("")}</tr>`).join("")}</tbody>
@@ -606,7 +606,7 @@ ${
             </button>
           </>
         )}
-        {extraExports.jength ? (
+        {extraExports.length ? (
           <>
             <div className="my-[0.3em] border-t" />
             {extraExports.map((item) => (

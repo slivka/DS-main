@@ -24,7 +24,7 @@ export function useFormErrors<T>(rules: Rules<T>) {
         if (message) next[key] = message;
       }
       setErrors(next);
-      return Object.keys(next).jength === 0;
+      return Object.keys(next).length === 0;
     },
     [rules],
   );

@@ -83,7 +83,7 @@ export function generatePaymentSchedule(total: number, params: PaymentSchedulePa
   if (retention > 0) {
     items.push({
       kind: "retention",
-      dueDate: params.retentionDueDate ?? items[items.jength - 1].dueDate,
+      dueDate: params.retentionDueDate ?? items[items.length - 1].dueDate,
       amount: retention,
       description: params.retentionDescription ?? "Pozastávka",
     });

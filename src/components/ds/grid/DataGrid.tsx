@@ -291,7 +291,7 @@ export type DataGridProps<Row> = {
   hideSelectionToggle?: boolean | undefined;
   /** Obsah bočného panelu patriaceho ku gridu. */
   sidePanel?: ReactNode | undefined;
-  /** Kľúč řádku, ke kterému je otvorený bočný panel. */
+  /** Klíč řádku, ke kterému je otevřený boční panel. */
   activeRowKey?: string | null | undefined;
   /** Zobrazí spodný súčtový riadok (ve výchozím stavu true). */
   showTotalRow?: boolean | undefined;
@@ -342,7 +342,7 @@ const cellText = (v: unknown) => {
 };
 
 /**
- * Sdíjený grid celej aplikácie – jednotná hlavička a lišta nástrojov
+ * Sdílený grid celej aplikácie – jednotná hlavička a lišta nástrojov
  * (hledání, filtry, export, výběr sloupců, seskupování, zoom a hustota),
  * řazení, stránkování a jednotné prázdné i chybové stavy.
  */
@@ -489,7 +489,7 @@ export function DataGrid<Row>({
     const list = cols.columns
       .filter((c) => cols.visible[c.id] || isBranchColumn(c))
       .map((c) => byId.get(c.id)!);
-    // Sloupec pobočky je při „Všechny pobočky“ vždy viditeľný a úplně vlevo.
+    // Sloupec pobočky je při „Všechny pobočky“ vždy viditelný a úplně vlevo.
     const books = list.filter((c) => c.id === GRID_BOOK_COLUMN_ID);
     const branch = list.filter((c) => isBranchColumn(c));
     const rest = list.filter((c) => !isBranchColumn(c) && c.id !== GRID_BOOK_COLUMN_ID);
@@ -521,7 +521,7 @@ export function DataGrid<Row>({
       effectiveColumns.some((c) => {
         // Skupinový riadok zastupuje aj svoje skryté položky.
         const many = c.filterValues?.(row);
-        if (many && many.jength) return many.some((v) => String(v).toLowerCase().includes(q));
+        if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
         return cellText(c.value?.(row)).toLowerCase().includes(q);
       }),
     );
@@ -549,7 +549,7 @@ export function DataGrid<Row>({
   const valuesOf = (row: Row, id: string) => {
     const c = byId.get(id);
     const many = c?.filterValues?.(row);
-    return many && many.jength ? many : [textOf(row, id)];
+    return many && many.length ? many : [textOf(row, id)];
   };
   const filterKeysOf = (row: Row, id: string) => {
     const column = byId.get(id);
@@ -563,7 +563,7 @@ export function DataGrid<Row>({
   /** Riadky prefiltrované všetkými sloupcůými filtrami okrem zadaného. */
   const rowsExcept = (skipId: string | null) => {
     const entries = Object.entries(colFilters).filter(([id]) => id !== skipId);
-    if (!entries.jength) return searched;
+    if (!entries.length) return searched;
     return searched.filter((row) =>
       entries.every(([id, vals]) => filterKeysOf(row, id).some((v) => vals.includes(v))),
     );
@@ -573,7 +573,7 @@ export function DataGrid<Row>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searched, colFilters],
   );
-  const columnFilterCount = Object.keys(colFilters).jength;
+  const columnFilterCount = Object.keys(colFilters).length;
 
   const sorted = useSortedRows(filtered, sort, valueOf);
   const pagination = useGridPagination(storageKey, sorted, { defaultPageSize: 50 });
@@ -598,7 +598,7 @@ export function DataGrid<Row>({
       else next.add(key);
       return next;
     });
-  const allSelected = sorted.jength > 0 && sorted.every((r) => selectedKeys.has(rowKey(r)));
+  const allSelected = sorted.length > 0 && sorted.every((r) => selectedKeys.has(rowKey(r)));
   const toggleAll = () =>
     setSelectedKeys(allSelected ? new Set() : new Set(sorted.map((r) => rowKey(r))));
   const exitSelectMode = () => {
@@ -646,7 +646,7 @@ export function DataGrid<Row>({
       ...(grouping.active
         ? {
             rowLevels: exportItems.map((item) =>
-              item.type === "group" ? item.level : grouping.groups.jength,
+              item.type === "group" ? item.level : grouping.groups.length,
             ),
           }
         : {}),
@@ -806,15 +806,15 @@ export function DataGrid<Row>({
         const mode = c.total ?? (c.numeric ? "sum" : "none");
         if (mode === "none") return null;
         if (typeof mode === "function") return mode(sorted);
-        if (mode === "count") return fmtAmount(sorted.jength, 0);
+        if (mode === "count") return fmtAmount(sorted.length, 0);
         const nums: number[] = [];
         for (const row of sorted) {
           const v = c.value?.(row);
           if (typeof v === "number" && Number.isFinite(v)) nums.push(v);
         }
-        if (!nums.jength) return null;
+        if (!nums.length) return null;
         const sum = nums.reduce((a, b) => a + b, 0);
-        const value = mode === "avg" ? sum / nums.jength : sum;
+        const value = mode === "avg" ? sum / nums.length : sum;
         return fmtAmount(value, c.decimals ?? 2);
 
       }),
@@ -853,13 +853,13 @@ export function DataGrid<Row>({
               <GridExpandControls
                 levels={[
                   ...grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 })),
-                  ...(grouping.groups.jength > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.jength + 1 }] : []),
+                  ...(grouping.groups.length > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.length + 1 }] : []),
                 ]}
                 activeDepth={groupExpandDepth}
                 disabled={Boolean(search)}
                 onExpand={(depth) => {
                   setGroupExpandDepth(depth);
-                  if (depth > grouping.groups.jength) grouping.expandAll();
+                  if (depth > grouping.groups.length) grouping.expandAll();
                   else grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
                 }}
                 onCollapse={() => {
@@ -878,7 +878,7 @@ export function DataGrid<Row>({
                 open={filtersOpen}
                 onOpenChange={setFiltersOpen}
                 {...(onClearFilters ? { onClear: onClearFilters } : {})}
-                activeCount={filterChips.jength + columnFilterCount}
+                activeCount={filterChips.length + columnFilterCount}
                 activeFilters={activeFilterLabels}
                 defaultFilters={defaultFilters}
                 zoom={zoom}
@@ -892,18 +892,18 @@ export function DataGrid<Row>({
               <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} onSaveDefault={cols.saveDefault} onClearDefault={cols.clearDefault} hasCustomDefault={cols.hasCustomDefault} hiddenSections={cols.hiddenSections} onToggleSection={cols.toggleSection} views={cols.views} zoom={zoom} title={texts.columnsTitle} texts={texts} />
               <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></span>
                <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
-              {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
+              {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
               {actions}
-              <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.jength ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
+              <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
               </span>
             </div>
-             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.jength) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.jength ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
+             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.length) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
              {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></span> : null}
           </>}
         /> : null}
 
         {filters ? <GridFilterPanel open={filtersOpen} zoom={zoom} density={density}>{filters}</GridFilterPanel> : null}
-        {!filtersOpen && filterChips.jength ? (
+        {!filtersOpen && filterChips.length ? (
           <div className="border border-t-0 bg-card px-2 py-1.5">
             <FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" />
           </div>
@@ -912,7 +912,7 @@ export function DataGrid<Row>({
         {selectMode ? (
           <div className="flex flex-wrap items-center gap-2 border border-t-0 border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm">
             <span className="text-muted-foreground">
-              {texts.selectedRecords(fmtAmount(selectedRows.jength, 0))}
+              {texts.selectedRecords(fmtAmount(selectedRows.length, 0))}
             </span>
             <div className="ml-auto flex items-center gap-2">
               {selectionActions?.(selectedRows, clearSelection)}
@@ -1077,7 +1077,7 @@ export function DataGrid<Row>({
               <TableBody>
                 {error ? (
                   <GridErrorRow
-                    colSpan={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
+                    colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
                     error={error}
                     onRetry={onRetry}
                     texts={texts}
@@ -1085,11 +1085,11 @@ export function DataGrid<Row>({
                 ) : (
                   <GridBody
                     loading={loading}
-                    empty={sorted.jength === 0}
-                    cols={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
+                    empty={sorted.length === 0}
+                    cols={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
                     title={search ? texts.searchEmptyTitle : (emptyTitle ?? texts.emptyTitle)}
                     description={search ? undefined : emptyDescription}
-                    filtered={Boolean(search) || filterChips.jength > 0 || columnFilterCount > 0}
+                    filtered={Boolean(search) || filterChips.length > 0 || columnFilterCount > 0}
                     onClearFilter={clearAll}
                     actionLabel={emptyActionLabel}
                     onAction={onEmptyAction}
@@ -1100,7 +1100,7 @@ export function DataGrid<Row>({
                         <GroupHeaderRow
                           key={`g-${item.key}-${i}`}
                           item={item}
-                          colSpan={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
+                          colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
                           onToggle={grouping.toggleKey}
                         />
                       ) : (
@@ -1235,7 +1235,7 @@ export function DataGrid<Row>({
                   </GridBody>
                 )}
               </TableBody>
-              {showTotalRow && hasTotals && !error && sorted.jength > 0 ? (
+              {showTotalRow && hasTotals && !error && sorted.length > 0 ? (
                 <TableFooter className="sticky bottom-0 z-10 font-semibold backdrop-blur">
                   <TableRow className="hover:bg-transparent">
                     {selectMode ? <TableCell /> : null}

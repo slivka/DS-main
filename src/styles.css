@@ -868,36 +868,36 @@
 
 /* Kajendář se vykresluje přes portál mimo .zoom-filters, proto dostává zoom
    samostatně a všechny jeho pevné rozměry převádíme na jednotky em. */
-.grid-date-popover .grid-date-cajendar {
+.grid-date-popover .grid-date-calendar {
   --cell-size: 2.45em;
   padding: 0.75em;
 }
 
-.grid-date-popover .grid-date-cajendar :is(button, select) {
+.grid-date-popover .grid-date-calendar :is(button, select) {
   font-size: 1em;
 }
 
-.grid-date-popover .grid-date-cajendar [class*="gap-4"] {
+.grid-date-popover .grid-date-calendar [class*="gap-4"] {
   gap: 1em;
 }
 
-.grid-date-popover .grid-date-cajendar [class*="gap-1.5"] {
+.grid-date-popover .grid-date-calendar [class*="gap-1.5"] {
   gap: 0.375em;
 }
 
-.grid-date-popover .grid-date-cajendar [class*="text-sm"] {
+.grid-date-popover .grid-date-calendar [class*="text-sm"] {
   font-size: 1em;
 }
 
-.grid-date-popover .grid-date-cajendar [class*="text-[0.8rem]"] {
+.grid-date-popover .grid-date-calendar [class*="text-[0.8rem]"] {
   font-size: 0.8em;
 }
 
-.grid-date-popover .grid-date-cajendar [class*="h-8"] {
+.grid-date-popover .grid-date-calendar [class*="h-8"] {
   height: 2em;
 }
 
-.grid-date-popover .grid-date-cajendar svg {
+.grid-date-popover .grid-date-calendar svg {
   width: 1em;
   height: 1em;
 }
@@ -1857,7 +1857,7 @@ tfoot {
 input[type="time"].time-input-right {
   position: relative;
 }
-input[type="time"].time-input-right::-webkit-cajendar-picker-indicator {
+input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   opacity: 0;
   width: 0;
   height: 0;

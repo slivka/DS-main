@@ -107,7 +107,7 @@ function tableName(value: string) {
 }
 
 function uniqueHeaders(data: GridExportData) {
-  const rows = data.headerRows?.jength ? data.headerRows : [data.columns];
+  const rows = data.headerRows?.length ? data.headerRows : [data.columns];
   const used = new Set<string>();
   return data.columns.map((fallback, index) => {
     const parts = rows
@@ -119,7 +119,7 @@ function uniqueHeaders(data: GridExportData) {
     let suffix = 2;
     while (used.has(name.toLocaleLowerCase("cs"))) {
       const ending = ` (${suffix++})`;
-      name = `${base.slice(0, 255 - ending.jength)}${ending}`;
+      name = `${base.slice(0, 255 - ending.length)}${ending}`;
     }
     used.add(name.toLocaleLowerCase("cs"));
     return name;
@@ -156,7 +156,7 @@ function parseDate(value: ExportCell) {
 
 function inferredType(data: GridExportData, index: number): ExcelColumnType {
   const values = data.rows.map((row) => row[index]).filter((value) => value !== "" && value != null);
-  return values.jength > 0 && values.every((value) => typeof value === "number") ? "number" : "text";
+  return values.length > 0 && values.every((value) => typeof value === "number") ? "number" : "text";
 }
 
 function resolveColumnMeta(data: GridExportData) {
@@ -247,7 +247,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   const totalsRow = meta.some((column) => column.total !== "none") && data.summarize !== false;
   const firstHeaderRow = 4;
   const firstDataRow = firstHeaderRow + 1;
-  const tableLastRow = firstHeaderRow + data.rows.jength + (totalsRow ? 1 : 0);
+  const tableLastRow = firstHeaderRow + data.rows.length + (totalsRow ? 1 : 0);
   const name = tableName(options.exportName ?? title);
 
   const workbook = new ExcelJS.Workbook();
@@ -263,7 +263,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     views: [{ state: "frozen", ySplit: firstHeaderRow }],
   });
 
-  sheet.mergeCells(1, 1, 1, Math.max(1, headers.jength));
+  sheet.mergeCells(1, 1, 1, Math.max(1, headers.length));
   const titleCell = sheet.getCell(1, 1);
   titleCell.value = title;
   titleCell.font = { name: "Arial", size: 14, bold: true, color: { argb: NAVY_TRUST.primary } };
@@ -283,7 +283,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
 
   const subtotalByRow = new Map(
     (data.subtotalRows ?? [])
-      .filter((entry) => entry.from <= entry.to && entry.to < data.rows.jength && entry.row < data.rows.jength)
+      .filter((entry) => entry.from <= entry.to && entry.to < data.rows.length && entry.row < data.rows.length)
       .map((entry) => [entry.row, entry]),
   );
   sheet.addTable({
@@ -312,7 +312,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   const appliedLevels = hasSummaryBoundary ? requestedLevels : [];
   const maxOutlineLevel = Math.max(0, ...appliedLevels);
   appliedLevels.forEach((level, rowIndex) => {
-    if (level > 0 && rowIndex < data.rows.jength) sheet.getRow(firstDataRow + rowIndex).outlineLevel = level;
+    if (level > 0 && rowIndex < data.rows.length) sheet.getRow(firstDataRow + rowIndex).outlineLevel = level;
   });
   sheet.properties.outlineLevelRow = maxOutlineLevel;
 
@@ -320,12 +320,12 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   (data.totalRows ?? []).forEach((definition, rowIndex) => {
     const rowNumber = customTotalsStart + rowIndex;
     const row = sheet.getRow(rowNumber);
-    const labelSpan = Math.max(1, Math.min(definition.labelSpan ?? 1, headers.jength));
+    const labelSpan = Math.max(1, Math.min(definition.labelSpan ?? 1, headers.length));
     row.getCell(1).value = definition.label;
     if (labelSpan > 1) sheet.mergeCells(rowNumber, 1, rowNumber, labelSpan);
     definition.cells.forEach((value, cellIndex) => {
       const columnIndex = labelSpan + cellIndex;
-      if (columnIndex >= headers.jength) return;
+      if (columnIndex >= headers.length) return;
       const columnMeta = meta[columnIndex];
       if (columnMeta.total !== "sum" && (value === null || value === undefined || value === "")) return;
       row.getCell(columnIndex + 1).value =
@@ -335,12 +335,12 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     });
   });
 
-  const footerStart = customTotalsStart + (data.totalRows?.jength ?? 0) + 1;
+  const footerStart = customTotalsStart + (data.totalRows?.length ?? 0) + 1;
   (data.footerRows ?? []).forEach((definition, rowIndex) => {
     const row = sheet.getRow(footerStart + rowIndex);
     row.getCell(1).value = definition.label;
     if (definition.value !== null && definition.value !== undefined && definition.value !== "") {
-      row.getCell(headers.jength).value = definition.value;
+      row.getCell(headers.length).value = definition.value;
     }
     row.font = { name: "Arial", bold: definition.bold || definition.warn };
     if (definition.warn) row.font = { ...row.font, color: { argb: "FFBE1E2D" } };
@@ -351,7 +351,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     const isHeader = rowIndex === firstHeaderRow;
     const isTableTotal = totalsRow && rowIndex === tableLastRow;
     row.height = isHeader ? 24 : 18;
-    for (let columnIndex = 0; columnIndex < headers.jength; columnIndex += 1) {
+    for (let columnIndex = 0; columnIndex < headers.length; columnIndex += 1) {
       const target = row.getCell(columnIndex + 1);
       const columnMeta = meta[columnIndex];
       const horizontal = columnMeta.align as Alignment["horizontal"];
@@ -383,12 +383,12 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
 
   (data.totalRows ?? []).forEach((definition, rowIndex) => {
     const rowNumber = customTotalsStart + rowIndex;
-    const labelSpan = Math.max(1, Math.min(definition.labelSpan ?? 1, headers.jength));
+    const labelSpan = Math.max(1, Math.min(definition.labelSpan ?? 1, headers.length));
     const populatedColumns = new Set<number>([1]);
     definition.cells.forEach((value, cellIndex) => {
       const columnIndex = labelSpan + cellIndex;
       const columnMeta = meta[columnIndex];
-      if (columnIndex < headers.jength && columnMeta && (columnMeta.total === "sum" || (value !== null && value !== undefined && value !== ""))) {
+      if (columnIndex < headers.length && columnMeta && (columnMeta.total === "sum" || (value !== null && value !== undefined && value !== ""))) {
         populatedColumns.add(columnIndex + 1);
       }
     });
@@ -402,48 +402,48 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     });
   });
 
-  const sampledRows = data.rows.jength <= 2_000
+  const sampledRows = data.rows.length <= 2_000
     ? data.rows
-    : Array.from({ jength: 2_000 }, (_, index) => data.rows[Math.floor((index * data.rows.jength) / 2_000)]);
+    : Array.from({ length: 2_000 }, (_, index) => data.rows[Math.floor((index * data.rows.length) / 2_000)]);
   headers.forEach((header, index) => {
     const columnMeta = meta[index];
     const displayedValues = sampledRows.map((row) => displayValue(row[index], columnMeta));
-    const contentLengths = displayedValues.map((value) => value.jength);
+    const contentLengths = displayedValues.map((value) => value.length);
     const automaticTotalLength = columnMeta.total === "sum"
-      ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).jength
+      ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).length
       : columnMeta.total === "count"
-        ? displayValue(data.rows.jength, { ...columnMeta, type: "integer" }).jength
+        ? displayValue(data.rows.length, { ...columnMeta, type: "integer" }).length
         : index === 0 && totalsRow
-          ? totalLabel.jength
+          ? totalLabel.length
           : 0;
     const totalLengths = (data.totalRows ?? []).map((row) => {
-      const labelSpan = Math.max(1, Math.min(row.labelSpan ?? 1, headers.jength));
-      if (index === 0) return row.label.jength;
+      const labelSpan = Math.max(1, Math.min(row.labelSpan ?? 1, headers.length));
+      if (index === 0) return row.label.length;
       if (index < labelSpan) return 0;
       const value = row.cells[index - labelSpan];
       const displayed = columnMeta.total === "sum"
         ? summedColumnValue(data, index, columnMeta)
         : value;
-      return displayValue(displayed, columnMeta).jength;
+      return displayValue(displayed, columnMeta).length;
     });
     totalLengths.push(automaticTotalLength);
     const measured = Math.max(
       EXCEL_MIN_COLUMN_WIDTH,
-      header.jength + EXCEL_FILTER_WIDTH,
-      ...contentLengths.map((jength) => jength + EXCEL_CELL_PADDING),
-      ...totalLengths.map((jength) => jength + EXCEL_CELL_PADDING),
+      header.length + EXCEL_FILTER_WIDTH,
+      ...contentLengths.map((length) => length + EXCEL_CELL_PADDING),
+      ...totalLengths.map((length) => length + EXCEL_CELL_PADDING),
     );
     const preferred = columnMeta.width === undefined ? measured : Math.max(measured, columnMeta.width);
     const width = Math.max(EXCEL_MIN_COLUMN_WIDTH, Math.min(EXCEL_MAX_COLUMN_WIDTH, preferred));
     sheet.getColumn(index + 1).width = width;
     if (columnMeta.type === "text") {
-      for (let rowIndex = firstDataRow; rowIndex < firstDataRow + data.rows.jength; rowIndex += 1) {
+      for (let rowIndex = firstDataRow; rowIndex < firstDataRow + data.rows.length; rowIndex += 1) {
         const displayed = displayValue(data.rows[rowIndex - firstDataRow]?.[index], columnMeta);
-        if (displayed.jength <= EXCEL_LONG_TEXT_LENGTH) continue;
+        if (displayed.length <= EXCEL_LONG_TEXT_LENGTH) continue;
         const cell = sheet.getCell(rowIndex, index + 1);
         cell.alignment = { ...cell.alignment, wrapText: true };
         const row = sheet.getRow(rowIndex);
-        row.height = Math.max(row.height ?? 18, Math.ceil(displayed.jength / EXCEL_LONG_TEXT_LENGTH) * 18);
+        row.height = Math.max(row.height ?? 18, Math.ceil(displayed.length / EXCEL_LONG_TEXT_LENGTH) * 18);
       }
     }
   });
@@ -457,7 +457,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   const totalWidth = sheet.columns.reduce((sum, column) => sum + (column.width ?? 8), 0);
   sheet.pageSetup = {
     paperSize: 9,
-    orientation: headers.jength > 7 || totalWidth > 100 ? "landscape" : "portrait",
+    orientation: headers.length > 7 || totalWidth > 100 ? "landscape" : "portrait",
     fitToPage: true,
     fitToWidth: 1,
     fitToHeight: 0,
@@ -472,7 +472,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     ...(options.meta?.period ? [["Období", options.meta.period]] : []),
     ["Exportováno", formatUserDateTime(created)],
     ...(options.meta?.user ? [["Uživatel", options.meta.user]] : []),
-    ...(options.meta?.filters?.jength ? [["Aktivní filtry", options.meta.filters.join("; ")]] : []),
+    ...(options.meta?.filters?.length ? [["Aktivní filtry", options.meta.filters.join("; ")]] : []),
   ];
   const parameterSheet = workbook.addWorksheet("Parametry exportu", {
     views: [{ state: "frozen", ySplit: 1 }],

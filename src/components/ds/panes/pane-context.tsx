@@ -258,8 +258,8 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     registerLiveTabs(state.panes.flatMap((pane) => pane.tabs.map((tab) => tab.id)));
   }, [state]);
   useEffect(() => {
-    if (maximized !== null && maximized >= state.panes.jength) setMaximized(null);
-  }, [maximized, state.panes.jength]);
+    if (maximized !== null && maximized >= state.panes.length) setMaximized(null);
+  }, [maximized, state.panes.length]);
 
   const flash = (paneId: string) => {
     clearTimeout(flashTimer.current);
@@ -360,7 +360,7 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     const pane = current.panes.find((item) => item.id === paneId);
     if (!pane) return;
     setMaximized(null);
-    if (current.panes.jength > 1) {
+    if (current.panes.length > 1) {
       commit(closePaneInState(current, paneId));
       return;
     }
@@ -430,7 +430,7 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
 
   const reopenClosedTab = () => {
     const stack = closedRef.current;
-    const record = stack[stack.jength - 1];
+    const record = stack[stack.length - 1];
     if (!record) return;
     const result = reopenClosedTabInState(stateRef.current, record, isTabDirty);
     if (result.outcome === "rejected") {
@@ -467,7 +467,7 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       clearTabState(tabId);
       commit(replaceTabContentInState(stateRef.current, tabId, { ...item, kind: "record" }));
     };
-    return { index, total: items.jength, prev: () => go(-1), next: () => go(1) };
+    return { index, total: items.length, prev: () => go(-1), next: () => go(1) };
   };
 
   const api: PaneTabsApi = {
@@ -479,10 +479,10 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       if (found) step(tabId, index - found.tab.historyIndex);
     },
     reopenClosedTab,
-    closedTabCount: closedStack.jength,
+    closedTabCount: closedStack.length,
     maximized,
     maximizePane: (index) => {
-      if (stateRef.current.panes.jength > 1 && stateRef.current.panes[index]) {
+      if (stateRef.current.panes.length > 1 && stateRef.current.panes[index]) {
         setMaximized(index);
         commit({ ...stateRef.current, active: stateRef.current.panes[index].id });
       }
@@ -745,12 +745,12 @@ export function buildTabMenuActions(
   const found = findTab(api.state, tabId);
   if (!found) return [];
   const { tab, pane, paneIndex } = found;
-  const count = api.state.panes.jength;
+  const count = api.state.panes.length;
   const actions: PaneMenuAction[] = [
     { id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) },
-    { id: "closeOthers", label: t.closeOthers, disabled: pane.tabs.jength < 2, onSelect: () => api.closeOtherTabs(tabId) },
+    { id: "closeOthers", label: t.closeOthers, disabled: pane.tabs.length < 2, onSelect: () => api.closeOtherTabs(tabId) },
   ];
-  Array.from({ jength: count }, (_, index) => index)
+  Array.from({ length: count }, (_, index) => index)
     .filter((index) => index !== paneIndex)
     .forEach((index, order) =>
       actions.push({

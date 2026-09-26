@@ -71,7 +71,7 @@ export function useGridGrouping(
   const disabled = opts?.disabled ?? false;
   const defaultGroups = opts?.defaultGroups ?? [];
   const defaultGroupsKey = defaultGroups.map((group) => `${group.id}:${group.granularity}`).join("|");
-  const [enabled, setEnabledState] = useState(defaultGroups.jength > 0);
+  const [enabled, setEnabledState] = useState(defaultGroups.length > 0);
   const [groups, setGroups] = useState<GroupSpec[]>(defaultGroups);
   const [collapsed, setCollapsed] = useState<string[]>([]);
 
@@ -85,7 +85,7 @@ export function useGridGrouping(
     try {
       const raw = localStorage.getItem(`grouping:${storageKey}`);
       if (!raw) {
-        setEnabledState(defaultGroups.jength > 0);
+        setEnabledState(defaultGroups.length > 0);
         setGroups(defaultGroups);
         return;
       }
@@ -134,7 +134,7 @@ export function useGridGrouping(
     (id: string, delta: number) => {
       const from = groups.findIndex((g) => g.id === id);
       const to = from + delta;
-      if (from < 0 || to < 0 || to >= groups.jength) return;
+      if (from < 0 || to < 0 || to >= groups.length) return;
       const next = [...groups];
       next.splice(to, 0, next.splice(from, 1)[0]!);
       persist({ enabled, groups: next });
@@ -147,7 +147,7 @@ export function useGridGrouping(
     (id: string, index: number) => {
       const from = groups.findIndex((g) => g.id === id);
       if (from < 0) return;
-      const to = Math.max(0, Math.min(groups.jength - 1, index));
+      const to = Math.max(0, Math.min(groups.length - 1, index));
       if (to === from) return;
       const next = [...groups];
       next.splice(to, 0, next.splice(from, 1)[0]!);
@@ -188,7 +188,7 @@ export function useGridGrouping(
     toggleKey,
     collapseAll: setCollapsed,
     expandAll: () => setCollapsed([]),
-    active: enabled && groups.jength > 0,
+    active: enabled && groups.length > 0,
   };
 }
 
@@ -206,11 +206,11 @@ export function GroupControl({
   const texts = resolveGridTexts(textOverrides);
   if (hidden) return null;
   // Skrytá lišta, ale seskupení stále platí → oranžový stav zužující pohled na data.
-  const hiddenActive = !grouping.enabled && grouping.groups.jength > 0;
+  const hiddenActive = !grouping.enabled && grouping.groups.length > 0;
   const label = grouping.enabled
     ? texts.groupingDisable
     : hiddenActive
-      ? `Skrytý pruh se seskupením (${grouping.groups.jength}) – zobrazit`
+      ? `Skrytý pruh se seskupením (${grouping.groups.length}) – zobrazit`
       : texts.groupingEnable;
   return (
     <Button
@@ -228,7 +228,7 @@ export function GroupControl({
       onClick={() => grouping.setEnabled(!grouping.enabled)}
     >
       <Layers className="size-[1.2em]" />
-      {hiddenActive && <span className="typo-action">Seskupeno ({grouping.groups.jength})</span>}
+      {hiddenActive && <span className="typo-action">Seskupeno ({grouping.groups.length})</span>}
     </Button>
   );
 }
@@ -363,7 +363,7 @@ export function useGroupedRows<T>(
             label: entry.label,
             column: labelOf(spec.id),
             level,
-            count: entry.items.jength,
+            count: entry.items.length,
             sums: numericIds.map((id) => ({
               id,
               label: labelOf(id),
@@ -417,7 +417,7 @@ export function GroupHeaderRow<T>({
             <span>{item.label}</span>
           </button>
           <span className="text-muted-foreground">({item.count})</span>
-          {item.sums.jength > 0 && (
+          {item.sums.length > 0 && (
             <span className="flex flex-wrap items-center gap-3 text-muted-foreground">
               {item.sums.map((s) => (
                 <span key={s.id}>
@@ -476,7 +476,7 @@ export function GroupBar({
         setOverIndex(null);
         const chip = e.dataTransfer.getData(CHIP_MIME);
         if (chip) {
-          grouping.moveTo(chip, grouping.groups.jength - 1);
+          grouping.moveTo(chip, grouping.groups.length - 1);
           setDragId(null);
           return;
         }
@@ -484,7 +484,7 @@ export function GroupBar({
         if (id && columns.some((c) => c.id === id)) grouping.add(id);
       }}
     >
-      {grouping.groups.jength === 0 && (
+      {grouping.groups.length === 0 && (
         <span className="typo-label text-muted-foreground">
           {texts.groupingDropHint}
         </span>
@@ -525,7 +525,7 @@ export function GroupBar({
           <span className="typo-label text-primary-foreground/70">{i + 1}.</span>
           <GripVertical className="size-[1em] cursor-grab text-primary-foreground/70" aria-hidden />
           <span className="typo-action">{label(g.id)}</span>
-          {grouping.groups.jength > 1 && (
+          {grouping.groups.length > 1 && (
             <span className="inline-flex items-center">
               <button
                 type="button"
@@ -541,7 +541,7 @@ export function GroupBar({
                 type="button"
                 title="Posunout doprava"
                 aria-label="Posunout doprava"
-                disabled={i === grouping.groups.jength - 1}
+                disabled={i === grouping.groups.length - 1}
                 onClick={() => grouping.move(g.id, 1)}
                 className="text-primary-foreground/70 hover:text-primary-foreground disabled:opacity-30"
               >
@@ -585,7 +585,7 @@ export function GroupBar({
           </button>
         </span>
       ))}
-      {available.jength > 0 && (
+      {available.length > 0 && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -605,7 +605,7 @@ export function GroupBar({
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      {grouping.groups.jength > 0 && (
+      {grouping.groups.length > 0 && (
         <button
           type="button"
           className="ml-auto text-destructive hover:text-destructive/80 font-medium"

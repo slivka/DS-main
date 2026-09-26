@@ -326,7 +326,7 @@ function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: St
         const item = layouts.find((layout) => layout.id === id);
         if (!item?.snapshot || !tabs) return;
         const skipped = tabs.applyLayout(item.snapshot, { keepDirty: true });
-        if (skipped.jength) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.jength.toLocaleString("cs-CZ")}`);
+        if (skipped.length) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.length.toLocaleString("cs-CZ")}`);
       }}
       onUpdate={(id, patch) =>
         setLayouts((items) =>

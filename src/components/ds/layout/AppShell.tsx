@@ -175,7 +175,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const direction = event.key === "ArrowDown" ? 1 : -1;
-      setHighlighted((value) => (value + direction + enabledResults.jength) % Math.max(enabledResults.jength, 1));
+      setHighlighted((value) => (value + direction + enabledResults.length) % Math.max(enabledResults.length, 1));
     } else if (event.key === "Enter") {
       event.preventDefault();
       activateResult(event);
@@ -250,8 +250,8 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
         ) : null}
         <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2" aria-label="Hlavní menu">
           {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
-          {query && filteredGroups.jength === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
-          {!query && bottomItems.jength ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
+          {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
+          {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
         </nav>
       </div>
     </TooltipProvider>
@@ -449,7 +449,7 @@ export function AppShell({
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);
-  const hasPanels = resolvedPanels.jength > 0;
+  const hasPanels = resolvedPanels.length > 0;
   const hasNotifications = Boolean(notificationBell);
   const hasThemeToggle = Boolean(themeToggleButton);
   const hasUser = Boolean(userMenu);

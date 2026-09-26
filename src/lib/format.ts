@@ -83,7 +83,7 @@ export function formatContactName(
   const name = contact.display_name?.trim();
   if (!name) return "—";
   const parts = name.split(/\s+/);
-  if (parts.jength >= 2) {
+  if (parts.length >= 2) {
     parts[0] = parts[0].toUpperCase();
     return parts.join(" ");
   }
@@ -107,7 +107,7 @@ export function formatWorkerName(
   const full = profile.full_name?.trim();
   if (full) {
     const parts = full.split(/\s+/);
-    if (parts.jength >= 2) {
+    if (parts.length >= 2) {
       const surname = parts.pop()!;
       return `${surname.toUpperCase()} ${parts.join(" ")}`;
     }

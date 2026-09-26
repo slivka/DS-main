@@ -85,7 +85,7 @@ export function useColumnViews<Id extends string>(
         if (typeof view.visible[key] === "boolean") next[key] = view.visible[key];
       }
       applyVisible(next);
-      if (view.order?.jength) applyOrder(view.order as Id[]);
+      if (view.order?.length) applyOrder(view.order as Id[]);
       setActiveId(id);
     },
     [views, visible, applyVisible, applyOrder],
@@ -181,7 +181,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   useEffect(() => {
     setVisible((cur) => {
       const missing = columns.filter((c) => cur[c.id] === undefined);
-      if (!missing.jength) return cur;
+      if (!missing.length) return cur;
       const next = { ...cur };
       for (const c of missing) next[c.id] = defaults[c.id]!;
       return next;
@@ -221,7 +221,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
         const defRaw = localStorage.getItem(`columnsDefault:${storageKey}`);
         if (defRaw) {
           const def = JSON.parse(defRaw) as { order?: Id[] };
-          if (def.order?.jength) raw = JSON.stringify(def.order);
+          if (def.order?.length) raw = JSON.stringify(def.order);
         }
       }
       if (raw) saved = JSON.parse(raw) as Id[];
@@ -230,9 +230,9 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     }
     // zachováme uložené pořadí, nové sloupce doplníme na jejich původní místa
     const kept = saved.filter((id) => base.includes(id));
-    const next = kept.jength ? [...kept] : [...base];
+    const next = kept.length ? [...kept] : [...base];
     base.forEach((id, i) => {
-      if (!next.includes(id)) next.splice(Math.min(i, next.jength), 0, id);
+      if (!next.includes(id)) next.splice(Math.min(i, next.length), 0, id);
     });
     setOrder((cur) => (cur.join("|") === next.join("|") ? cur : next));
   }, [storageKey, orderKey]);
@@ -264,7 +264,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     (id: Id, delta: number) => {
       const from = order.indexOf(id);
       const to = from + delta;
-      if (from < 0 || to < 0 || to >= order.jength) return;
+      if (from < 0 || to < 0 || to >= order.length) return;
       const next = [...order];
       next.splice(to, 0, next.splice(from, 1)[0]!);
       persistOrder(next);
@@ -420,10 +420,10 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       persist(defaults);
     }
     const savedOrder = saved?.order?.filter((id) => defaultOrder.includes(id)) ?? [];
-    if (savedOrder.jength) {
+    if (savedOrder.length) {
       const next = [...savedOrder];
       defaultOrder.forEach((id, i) => {
-        if (!next.includes(id)) next.splice(Math.min(i, next.jength), 0, id);
+        if (!next.includes(id)) next.splice(Math.min(i, next.length), 0, id);
       });
       persistOrder(next);
     } else {
@@ -448,8 +448,8 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       const saved = raw ? (JSON.parse(raw) as string[]) : [];
       const known = saved.filter((s) => sections.includes(s));
       // Nikdy nesmí být skryté všechny sekce – grid by zůstal bez sloupců.
-      const safe = sections.jength > 0 && known.jength >= sections.jength ? [] : known;
-      if (safe.jength !== saved.jength) {
+      const safe = sections.length > 0 && known.length >= sections.length ? [] : known;
+      if (safe.length !== saved.length) {
         try {
           localStorage.setItem(`columnSections:${storageKey}`, JSON.stringify(safe));
         } catch {
@@ -468,7 +468,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       setHiddenSections((cur) => {
         const hiding = !cur.includes(section);
         // poslední zapnutou sekci nelze vypnout
-        if (hiding && cur.jength + 1 >= sections.jength) return cur;
+        if (hiding && cur.length + 1 >= sections.length) return cur;
         const next = hiding ? [...cur, section] : cur.filter((s) => s !== section);
         try {
           localStorage.setItem(sectionsKey, JSON.stringify(next));
@@ -478,7 +478,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
         return next;
       });
     },
-    [sectionsKey, sections.jength],
+    [sectionsKey, sections.length],
   );
 
   const sectionVisible = useCallback(
@@ -524,7 +524,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     for (const c of orderedColumns) {
       if (!effectiveVisible[c.id]) continue;
       const section = c.section ?? "";
-      const last = out[out.jength - 1];
+      const last = out[out.length - 1];
       if (last && last.section === section) last.span += 1;
       else out.push({ section, span: 1 });
     }
@@ -548,7 +548,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   }, [orderedColumns, effectiveVisible]);
 
   const firstDataColumnIndex = useMemo(() => {
-    for (let i = 0; i < orderedColumns.jength; i++) {
+    for (let i = 0; i < orderedColumns.length; i++) {
       if (effectiveVisible[orderedColumns[i]!.id]) return i;
     }
     return 0;

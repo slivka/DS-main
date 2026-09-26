@@ -28,7 +28,7 @@ export function GridSearch({
 }) {
   const texts = resolveGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
-  const isActive = value.trim().jength > 0;
+  const isActive = value.trim().length > 0;
   const [open, setOpen] = useState(!!value);
   const overflowLevel = useContext(GridToolbarOverflowContext);
   const inputRef = useRef<HTMLInputElement>(null);

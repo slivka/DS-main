@@ -70,10 +70,10 @@ export interface AccountSelectProps {
 }
 
 export function accountLevelOf(code: string): AccountLevel {
-  const jength = normalizeAccountCode(code).jength;
-  if (jength <= 1) return "class";
-  if (jength === 2) return "group";
-  if (jength === 3) return "synthetic";
+  const length = normalizeAccountCode(code).length;
+  if (length <= 1) return "class";
+  if (length === 2) return "group";
+  if (length === 3) return "synthetic";
   return "analytic";
 }
 
@@ -126,14 +126,14 @@ export function AccountSelect({
         const code = normalizeAccountCode(a.code);
         const level = accountLevelOf(code);
         const hasAnalytics =
-          code.jength === 3 && codes.some((c) => c.jength > 3 && c.startsWith(code));
+          code.length === 3 && codes.some((c) => c.length > 3 && c.startsWith(code));
         const blocked = allowLevels
           ? a.active === false || !allowLevels.includes(level)
           : a.active === false ||
             (a.postable !== undefined ? !a.postable : disableSyntheticWithAnalytics && hasAnalytics);
         return { ...a, code, level, blocked };
       });
-    return catalogOptions.jength ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs")) : merged;
+    return catalogOptions.length ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs")) : merged;
   }, [accounts, catalog, allowLevels, hideInactive, disableSyntheticWithAnalytics]);
 
   const selected = list.find((a) => a.code === normalizeAccountCode(value));

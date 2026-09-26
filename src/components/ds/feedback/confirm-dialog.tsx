@@ -22,7 +22,7 @@ type ConfirmOptions = {
 };
 
 /**
- * Sdíjený potvrdzovací dialóg namiesto window.confirm.
+ * Sdílený potvrdzovací dialóg namiesto window.confirm.
  * Použitie:
  *   const { confirm, confirmDialog } = useConfirmDialog();
  *   confirm({ title: "Opravdu zrušit smlouvu?", onConfirm: () => ... });

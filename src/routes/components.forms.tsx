@@ -6,7 +6,7 @@ import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseL
 import {
   AccountSelect,
   AmountInput,
-  CajendarPicker,
+  CalendarPicker,
   DateField,
   DateRangeField,
   Field,
@@ -63,7 +63,7 @@ function FormsPage() {
   const [note, setNote] = useState("");
   const [tags, setTags] = useState<string[]>(["t2"]);
   const [range, setRange] = useState<DateRangeValue>({ from: null, to: null });
-  const [cajendarDate, setCajendarDate] = useState("");
+  const [calendarDate, setCalendarDate] = useState("");
   const [monthYear, setMonthYear] = useState<string | null>(null);
   const { confirm, confirmDialog } = useConfirmDialog();
 
@@ -85,7 +85,7 @@ function FormsPage() {
             <DateRangeField value={range} onChange={setRange} />
           </Field>
           <Field label="Datum (kajendář)">
-            <CajendarPicker value={cajendarDate} onChange={setCajendarDate} />
+            <CalendarPicker value={calendarDate} onChange={setCalendarDate} />
           </Field>
           <Field label="Měsíc a rok">
             <MonthYearSelect value={monthYear} onChange={setMonthYear} />

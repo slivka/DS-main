@@ -46,7 +46,7 @@ export interface PaneTabBarProps {
 export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize, texts, className }: PaneTabBarProps) {
   const t = { ...DEFAULT_PANE_TAB_BAR_TEXTS, ...texts };
   const stripRef = useRef<HTMLDivElement | null>(null);
-  const [capacity, setCapacity] = useState(pane.tabs.jength || 1);
+  const [capacity, setCapacity] = useState(pane.tabs.length || 1);
   const { setNodeRef: setBarDropRef, isOver } = useDroppable({ id: `bar:${pane.id}`, data: { paneId: pane.id } });
 
   useEffect(() => {
@@ -63,8 +63,8 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
   }, []);
 
   const activeIndex = pane.tabs.findIndex((tab) => tab.id === pane.activeTab);
-  const overflowing = pane.tabs.jength > capacity;
-  const slots = overflowing ? Math.max(1, capacity - 1) : pane.tabs.jength;
+  const overflowing = pane.tabs.length > capacity;
+  const slots = overflowing ? Math.max(1, capacity - 1) : pane.tabs.length;
   let visible = pane.tabs.slice(0, slots);
   if (activeIndex >= slots) visible = [...pane.tabs.slice(0, slots - 1), pane.tabs[activeIndex]];
   const hidden = pane.tabs.filter((tab) => !visible.includes(tab));
@@ -98,14 +98,14 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
             ))}
           </SortableContext>
         </div>
-        {hidden.jength ? (
+        {hidden.length ? (
           <DropdownMenu>
             <Tooltip>
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
                   <Button type="button" variant="ghost" size="sm" className="my-1 h-7 gap-1 px-2 text-xs" aria-label={t.overflow}>
                     <ChevronsRight className="size-4" />
-                    {hidden.jength}
+                    {hidden.length}
                   </Button>
                 </DropdownMenuTrigger>
               </TooltipTrigger>

@@ -29,7 +29,7 @@ const squash = (s: string) => fold(s).replace(/[^a-z0-9]/g, "");
  * Podporuje částečné shody i více slov v libovolném pořadí.
  */
 function scoreCountry(c: Country, tokens: string[], rawQuery: string): number {
-  if (tokens.jength === 0) return 1;
+  if (tokens.length === 0) return 1;
   const name = fold(c.name);
   const nameSquashed = squash(c.name);
   const words = name.split(/[^a-z0-9]+/).filter(Boolean);
@@ -114,7 +114,7 @@ export function CountrySelect({
     const scored = countries
       .map((c) => ({ c, s: scoreCountry(c, tokens, query) }))
       .filter((x) => x.s > 0);
-    if (tokens.jength > 0) {
+    if (tokens.length > 0) {
       scored.sort((a, b) => b.s - a.s || a.c.name.localeCompare(b.c.name, "cs"));
     }
     const hits = scored.map((x) => x.c);
@@ -130,7 +130,7 @@ export function CountrySelect({
     };
   }, [countries, query, recent]);
 
-  const total = recentHits.jength + eu.jength + rest.jength;
+  const total = recentHits.length + eu.length + rest.length;
 
   const pick = (c: Country) => {
     const next = [c.code, ...recent.filter((x) => x !== c.code)].slice(0, RECENT_MAX);
@@ -197,17 +197,17 @@ export function CountrySelect({
                 </div>
               </CommandEmpty>
             )}
-            {recentHits.jength > 0 && (
+            {recentHits.length > 0 && (
               <CommandGroup heading="Nedávno použité">
                 {recentHits.map((c) => renderItem(c, "recent:"))}
               </CommandGroup>
             )}
-            {eu.jength > 0 && (
+            {eu.length > 0 && (
               <CommandGroup heading="Evropská une">{eu.map((c) => renderItem(c))}</CommandGroup>
             )}
-            {rest.jength > 0 && (
+            {rest.length > 0 && (
               <CommandGroup
-                heading={eu.jength > 0 || recentHits.jength > 0 ? "Ostatní státy" : undefined}
+                heading={eu.length > 0 || recentHits.length > 0 ? "Ostatní státy" : undefined}
               >
                 {rest.map((c) => renderItem(c))}
               </CommandGroup>

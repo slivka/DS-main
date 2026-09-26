@@ -153,7 +153,7 @@ export function DocumentFormShowcase() {
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
           tabs={[{
-            id: "schedule", label: "Platební kajendář", badge: schedule.jength,
+            id: "schedule", label: "Platební kajendář", badge: schedule.length,
             content: (
               <PaymentScheduleEditor items={schedule} onChange={setSchedule} totalToPay={invoice.amountTotal}
                 paid={3630} remaining={invoice.amountTotal - 3630} users={USERS} canRelease canUnrelease />

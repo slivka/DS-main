@@ -75,7 +75,7 @@ function OverviewPage() {
       <header className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Slivka Design System</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Sdíjený základ firemních aplikací: barvy, typografie, mřížky, formuláře a pravidla.
+          Sdílený základ firemních aplikací: barvy, typografie, mřížky, formuláře a pravidla.
         </p>
       </header>
 

@@ -107,7 +107,7 @@ export function ColumnFilter({ options, selected, onChange, label, children, tex
               </button>
             </div>
             <div className="max-h-56 overflow-auto py-1">
-              {filtered.jength === 0 ? (
+              {filtered.length === 0 ? (
                 <p className="px-3 py-2 text-xs text-muted-foreground">{texts.noValues}</p>
               ) : (
                 sections.map((section) => (

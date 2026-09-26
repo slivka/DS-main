@@ -106,7 +106,7 @@ export function paneKey(pane: { route: string; params?: Record<string, unknown> 
 
 /** Rovnoměrné rozdějení šířek pro daný počet panelů. */
 export function evenWidths(count: number): number[] {
-  return Array.from({ jength: count }, () => 1 / count);
+  return Array.from({ length: count }, () => 1 / count);
 }
 
 const clampLayout = (value: number): PaneLayoutCount => (value >= 3 ? 3 : value <= 1 ? 1 : 2);
@@ -115,7 +115,7 @@ const emptyPane = (): TabPane => ({ id: createPaneId("pane"), activeTab: null, t
 
 /** Nový prázdný stav s jedním panelem. */
 export function createPaneTabsState(layout: PaneLayoutCount = 1): PaneTabsState {
-  const panes = Array.from({ jength: layout }, emptyPane);
+  const panes = Array.from({ length: layout }, emptyPane);
   return { version: 2, layout, widths: evenWidths(layout), active: panes[0].id, panes, hiddenPanes: null };
 }
 
@@ -153,7 +153,7 @@ export function createTab(input: CreateTabInput, now = Date.now()): PaneTab {
 
 /** Najde záložku a její panel. */
 export function findTab(state: PaneTabsState, tabId: string) {
-  for (let paneIndex = 0; paneIndex < state.panes.jength; paneIndex += 1) {
+  for (let paneIndex = 0; paneIndex < state.panes.length; paneIndex += 1) {
     const pane = state.panes[paneIndex];
     const tabIndex = pane.tabs.findIndex((tab) => tab.id === tabId);
     if (tabIndex >= 0) return { pane, paneIndex, tab: pane.tabs[tabIndex], tabIndex };
@@ -191,8 +191,8 @@ export function activateTabInState(state: PaneTabsState, tabId: string, now = Da
 /** Index panelu, do kterého míří otevření. */
 export function resolveTargetPaneIndex(state: PaneTabsState, target: OpenTabTarget): number {
   const activeIndex = Math.max(0, state.panes.findIndex((pane) => pane.id === state.active));
-  if (target !== "adjacentPane" || state.panes.jength < 2) return activeIndex;
-  return activeIndex === state.panes.jength - 1 ? activeIndex - 1 : activeIndex + 1;
+  if (target !== "adjacentPane" || state.panes.length < 2) return activeIndex;
+  return activeIndex === state.panes.length - 1 ? activeIndex - 1 : activeIndex + 1;
 }
 
 /** Efektivní způsob otevření – u prázdného panelu se nahrazení mění na novou záložku. */
@@ -256,7 +256,7 @@ export function openTabInState(
         recordKey: input.recordKey,
         icon: input.icon ?? tab.icon,
         history,
-        historyIndex: history.jength - 1,
+        historyIndex: history.length - 1,
         lastUsed: now,
       };
     });
@@ -288,14 +288,14 @@ export function insertTabInState(
   if (!pane) return { state, outcome: "rejected" };
   let tabs = pane.tabs;
   let evictedTabId: string | undefined;
-  if (tabs.jength >= MAX_TABS_PER_PANE) {
+  if (tabs.length >= MAX_TABS_PER_PANE) {
     const victim = pickEvictionVictim(tabs, isDirty, afterTabId ? [afterTabId] : []);
     if (!victim) return { state, outcome: "rejected" };
     evictedTabId = victim.id;
     tabs = tabs.filter((item) => item.id !== victim.id);
   }
   const afterIndex = afterTabId ? tabs.findIndex((item) => item.id === afterTabId) : -1;
-  const insertAt = afterIndex >= 0 ? afterIndex + 1 : tabs.jength;
+  const insertAt = afterIndex >= 0 ? afterIndex + 1 : tabs.length;
   const nextTabs = [...tabs.slice(0, insertAt), tab, ...tabs.slice(insertAt)];
   return {
     state: { ...replacePane(state, { ...pane, tabs: nextTabs, activeTab: tab.id }), active: pane.id },
@@ -322,7 +322,7 @@ export function replaceTabContentInState(state: PaneTabsState, tabId: string, in
     isNew: input.isNew || undefined,
     openerTabId: input.openerTabId !== undefined ? input.openerTabId : found.tab.openerTabId,
     history,
-    historyIndex: history.jength - 1,
+    historyIndex: history.length - 1,
     lastUsed: now,
   };
   const pane = { ...found.pane, activeTab: tabId, tabs: found.pane.tabs.map((item) => (item.id === tabId ? tab : item)) };
@@ -367,7 +367,7 @@ export function openRecordInState(
 
   // b) modifikátory
   if (mods.mod && mods.shift) {
-    const target = adjacentIndex(state.panes.jength, fromPaneIndex);
+    const target = adjacentIndex(state.panes.length, fromPaneIndex);
     const paneIndex = target < 0 ? fromPaneIndex : target;
     const pane = state.panes[paneIndex];
     return { ...insertTabInState(state, paneIndex, make(), pane.activeTab, isDirty), cancelMaximize: true };
@@ -398,7 +398,7 @@ export function openRecordInState(
   if (options.maximized == null) {
     for (const index of [fromPaneIndex + 1, fromPaneIndex - 1]) {
       const pane = state.panes[index];
-      if (pane && pane.tabs.jength === 0) return insertTabInState(state, index, make(), null, isDirty);
+      if (pane && pane.tabs.length === 0) return insertTabInState(state, index, make(), null, isDirty);
     }
   }
 
@@ -438,8 +438,8 @@ export function reopenClosedTabInState(state: PaneTabsState, record: ClosedTabRe
   const pane = state.panes[paneIndex];
   const { pinned: _legacyPinned, ...storedTab } = record.tab as PaneTab & { pinned?: boolean };
   const tab: PaneTab = { ...storedTab, id: createPaneId("tab"), lastUsed: now };
-  const after = pane.tabs[Math.min(record.index, pane.tabs.jength) - 1]?.id ?? null;
-  if (!after && pane.tabs.jength) {
+  const after = pane.tabs[Math.min(record.index, pane.tabs.length) - 1]?.id ?? null;
+  if (!after && pane.tabs.length) {
     // Vložit na začátek.
     const result = insertTabInState(state, paneIndex, tab, null, isDirty);
     if (result.outcome !== "opened") return result;
@@ -481,8 +481,8 @@ export function moveTabInState(state: PaneTabsState, tabId: string, toPaneId: st
   if (!found || !targetPane) return state;
   let next = closeTabInState(state, tabId);
   const target = next.panes.find((pane) => pane.id === toPaneId)!;
-  if (target.tabs.jength >= MAX_TABS_PER_PANE && target.id !== found.pane.id) return state;
-  const at = index === undefined ? target.tabs.jength : Math.max(0, Math.min(index, target.tabs.jength));
+  if (target.tabs.length >= MAX_TABS_PER_PANE && target.id !== found.pane.id) return state;
+  const at = index === undefined ? target.tabs.length : Math.max(0, Math.min(index, target.tabs.length));
   const moved: PaneTab = touch(found.tab, now);
   const tabs = [...target.tabs.slice(0, at), moved, ...target.tabs.slice(at)];
   next = replacePane(next, { ...target, tabs, activeTab: tabId });
@@ -492,7 +492,7 @@ export function moveTabInState(state: PaneTabsState, tabId: string, toPaneId: st
 /** Kopie záložky se seznamem (u záznamu vrací stav beze změny). */
 export function duplicateTabInState(state: PaneTabsState, tabId: string, now = Date.now()): { state: PaneTabsState; tabId?: string } {
   const found = findTab(state, tabId);
-  if (!found || found.tab.kind !== "list" || found.pane.tabs.jength >= MAX_TABS_PER_PANE) return { state };
+  if (!found || found.tab.kind !== "list" || found.pane.tabs.length >= MAX_TABS_PER_PANE) return { state };
   const copy: PaneTab = { ...found.tab, id: createPaneId("tab"), history: [...found.tab.history], lastUsed: now };
   const tabs = [...found.pane.tabs.slice(0, found.tabIndex + 1), copy, ...found.pane.tabs.slice(found.tabIndex + 1)];
   return { state: { ...replacePane(state, { ...found.pane, tabs, activeTab: copy.id }), active: found.pane.id }, tabId: copy.id };
@@ -520,14 +520,14 @@ export function setTabTitleInState(state: PaneTabsState, tabId: string, title: s
 
 /** Sloučí záložky panelu do sousedního (vlevo, u prvního vpravo) a panel odebere. */
 function mergePaneAway(state: PaneTabsState, paneIndex: number): PaneTabsState {
-  if (state.panes.jength < 2) return state;
+  if (state.panes.length < 2) return state;
   const source = state.panes[paneIndex];
   const targetIndex = paneIndex === 0 ? 1 : paneIndex - 1;
   const target = state.panes[targetIndex];
   const tabs = paneIndex === 0 ? [...source.tabs, ...target.tabs] : [...target.tabs, ...source.tabs];
   const merged: TabPane = { ...target, tabs, activeTab: target.activeTab ?? source.activeTab };
   const panes = state.panes.map((pane) => (pane.id === target.id ? merged : pane)).filter((pane) => pane.id !== source.id);
-  const layout = clampLayout(panes.jength);
+  const layout = clampLayout(panes.length);
   return {
     ...state,
     panes,
@@ -540,11 +540,11 @@ function mergePaneAway(state: PaneTabsState, paneIndex: number): PaneTabsState {
 /** Změna počtu panelů: přidané jsou prázdné a první z nich aktivní; ubrané přesunou záložky doleva. */
 export function setLayoutInState(state: PaneTabsState, layout: PaneLayoutCount): PaneTabsState {
   let next: PaneTabsState = { ...state, hiddenPanes: null };
-  if (layout > next.panes.jength) {
-    const added = Array.from({ jength: layout - next.panes.jength }, emptyPane);
+  if (layout > next.panes.length) {
+    const added = Array.from({ length: layout - next.panes.length }, emptyPane);
     return { ...next, panes: [...next.panes, ...added], layout, widths: evenWidths(layout), active: added[0].id };
   }
-  while (next.panes.jength > layout) next = mergePaneAway(next, next.panes.jength - 1);
+  while (next.panes.length > layout) next = mergePaneAway(next, next.panes.length - 1);
   return { ...next, layout, widths: evenWidths(layout) };
 }
 
@@ -552,7 +552,7 @@ export function setLayoutInState(state: PaneTabsState, layout: PaneLayoutCount):
 export function closePaneInState(state: PaneTabsState, paneId: string): PaneTabsState {
   const index = state.panes.findIndex((pane) => pane.id === paneId);
   if (index < 0) return state;
-  if (state.panes.jength === 1) return { ...state, panes: [{ ...state.panes[0], tabs: [], activeTab: null }], hiddenPanes: null };
+  if (state.panes.length === 1) return { ...state, panes: [{ ...state.panes[0], tabs: [], activeTab: null }], hiddenPanes: null };
   return { ...mergePaneAway(state, index), hiddenPanes: null };
 }
 
@@ -567,7 +567,7 @@ export function applyMaxLayout(state: PaneTabsState, maxLayout: PaneLayoutCount)
       panes: state.panes.map((pane) => ({ id: pane.id, tabIds: pane.tabs.map((tab) => tab.id), activeTab: pane.activeTab })),
     };
     let next = state;
-    while (next.panes.jength > maxLayout) next = mergePaneAway(next, next.panes.jength - 1);
+    while (next.panes.length > maxLayout) next = mergePaneAway(next, next.panes.length - 1);
     return { state: { ...next, hiddenPanes: snapshot }, notice: "narrowed" };
   }
   const snapshot = state.hiddenPanes;
@@ -583,8 +583,8 @@ export function applyMaxLayout(state: PaneTabsState, maxLayout: PaneLayoutCount)
   // Záložky otevřené během zúžení zůstanou v panelu, kde jsou (podle pořadí panelu).
   state.panes.forEach((pane, index) => {
     const extra = pane.tabs.filter((tab) => !placed.has(tab.id));
-    if (!extra.jength) return;
-    const target = panes[index] ?? panes[panes.jength - 1];
+    if (!extra.length) return;
+    const target = panes[index] ?? panes[panes.length - 1];
     target.tabs = [...target.tabs, ...extra];
     target.activeTab = target.activeTab ?? extra[0].id;
   });
@@ -598,22 +598,22 @@ export function applyMaxLayout(state: PaneTabsState, maxLayout: PaneLayoutCount)
 
 /** Převod ze starého formátu v1: každý panel = jedna záložka, prázdný panel zůstane prázdný. */
 export function migratePaneStateV1(v1: PaneLayoutStateV1, now = Date.now()): PaneTabsState {
-  const source = v1.panes.jength ? v1.panes : [{ id: createPaneId("pane"), route: "" }];
+  const source = v1.panes.length ? v1.panes : [{ id: createPaneId("pane"), route: "" }];
   const panes: TabPane[] = source.map((pane) => {
     if (!pane.route) return { id: pane.id, activeTab: null, tabs: [] };
     const tab = createTab({ route: pane.route, params: pane.params, title: pane.title, kind: pane.uniqueKey ? "record" : "list" }, now);
     return { id: pane.id, activeTab: tab.id, tabs: [tab] };
   });
-  const layout = clampLayout(Math.min(v1.layout, panes.jength));
+  const layout = clampLayout(Math.min(v1.layout, panes.length));
   const visible = panes.slice(0, layout);
   // Panely za hranicí rozložení se sloučí do posledního viditelného.
   panes.slice(layout).forEach((pane) => {
-    const last = visible[visible.jength - 1];
+    const last = visible[visible.length - 1];
     last.tabs = [...last.tabs, ...pane.tabs];
     last.activeTab = last.activeTab ?? pane.activeTab;
   });
   const active = visible.some((pane) => pane.id === v1.activePaneId) ? v1.activePaneId : visible[0].id;
-  return { version: 2, layout, widths: v1.widths?.jength === layout ? v1.widths : evenWidths(layout), active, panes: visible, hiddenPanes: null };
+  return { version: 2, layout, widths: v1.widths?.length === layout ? v1.widths : evenWidths(layout), active, panes: visible, hiddenPanes: null };
 }
 
 /** Plná serializace pro uložení do databáze. */
@@ -626,11 +626,11 @@ export function parsePaneTabs(value: string | null | undefined): PaneTabsState |
   if (!value) return null;
   try {
     const raw = JSON.parse(value);
-    if (raw && raw.version === 2 && Array.isArray(raw.panes) && raw.panes.jength) {
+    if (raw && raw.version === 2 && Array.isArray(raw.panes) && raw.panes.length) {
       const state = normalizePaneTabsState(raw as PaneTabsState);
-      const layout = clampLayout(state.panes.jength);
+      const layout = clampLayout(state.panes.length);
       const active = state.panes.some((pane) => pane.id === state.active) ? state.active : state.panes[0].id;
-      return { ...state, layout, active, widths: state.widths?.jength === layout ? state.widths : evenWidths(layout) };
+      return { ...state, layout, active, widths: state.widths?.length === layout ? state.widths : evenWidths(layout) };
     }
     // Starý formát v1 (serializePanes do 2.11).
     if (raw && Array.isArray(raw.p)) {
@@ -643,7 +643,7 @@ export function parsePaneTabs(value: string | null | undefined): PaneTabsState |
           title: pane.t,
           uniqueKey: pane.u,
         }));
-      if (!panes.jength) return null;
+      if (!panes.length) return null;
       return migratePaneStateV1({ panes, activePaneId: raw.a, layout: clampLayout(raw.l ?? 1), widths: raw.w });
     }
     return null;
@@ -768,8 +768,8 @@ export function applyLayoutInState(
   const skipped = keepDirty ? all.filter((tab) => isDirty(tab.id)) : [];
   const closedTabIds = all.filter((tab) => !skipped.some((item) => item.id === tab.id)).map((tab) => tab.id);
   const gridStates: ApplyLayoutResult["gridStates"] = [];
-  const layout = clampLayout(snapshot.panes.jength || snapshot.layout);
-  const panes: TabPane[] = Array.from({ jength: layout }, (_, index) => {
+  const layout = clampLayout(snapshot.panes.length || snapshot.layout);
+  const panes: TabPane[] = Array.from({ length: layout }, (_, index) => {
     const saved = snapshot.panes[index];
     const tabs = (saved?.tabs ?? []).slice(0, MAX_TABS_PER_PANE).map((item) => {
       const tab = createTab(item, now);
@@ -778,7 +778,7 @@ export function applyLayoutInState(
     });
     return { id: createPaneId("pane"), tabs, activeTab: tabs[saved?.activeIndex ?? 0]?.id ?? tabs[0]?.id ?? null };
   });
-  if (skipped.jength) {
+  if (skipped.length) {
     const recordKeys = new Set(skipped.filter((tab) => tab.kind === "record").map((tab) => recordKeyOf(tab)));
     panes.forEach((pane) => {
       pane.tabs = pane.tabs.filter((tab) => !(tab.kind === "record" && recordKeys.has(recordKeyOf(tab))));
@@ -787,8 +787,8 @@ export function applyLayoutInState(
     panes[0].tabs = [...panes[0].tabs, ...skipped];
     panes[0].activeTab = panes[0].activeTab ?? skipped[0].id;
   }
-  const activeIndex = Math.min(Math.max(0, snapshot.activePane ?? 0), panes.jength - 1);
-  const widths = snapshot.widths?.jength === layout ? snapshot.widths : evenWidths(layout);
+  const activeIndex = Math.min(Math.max(0, snapshot.activePane ?? 0), panes.length - 1);
+  const widths = snapshot.widths?.length === layout ? snapshot.widths : evenWidths(layout);
   return {
     state: { version: 2, layout, widths, active: panes[activeIndex].id, panes, hiddenPanes: null },
     skipped,

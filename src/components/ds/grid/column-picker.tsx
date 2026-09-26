@@ -281,7 +281,7 @@ export function ColumnPicker<Id extends string>({
               Uložené pohledy
             </div>
 
-            {views.views.jength === 0 ? (
+            {views.views.length === 0 ? (
               <p className="px-[1em] pb-[0.4em] text-[0.85em] text-muted-foreground">
                 Zatím nemáte uložený žádný pohled.
               </p>

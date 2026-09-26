@@ -61,7 +61,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
     onChange(item);
     setOpen(false);
   };
-  const visible = enabled && open && items.jength > 0 && !disabled && !readOnly;
+  const visible = enabled && open && items.length > 0 && !disabled && !readOnly;
   const tooltip = enabled ? enabledLabel : disabledLabel;
 
   return (
@@ -76,7 +76,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
             onKeyDown={(event) => {
               onKeyDown?.(event);
               if (event.defaultPrevented || !visible) return;
-              if (event.key === "ArrowDown") { event.preventDefault(); setActive((index) => Math.min(index + 1, items.jength - 1)); }
+              if (event.key === "ArrowDown") { event.preventDefault(); setActive((index) => Math.min(index + 1, items.length - 1)); }
               else if (event.key === "ArrowUp") { event.preventDefault(); setActive((index) => Math.max(index - 1, 0)); }
               else if (event.key === "Enter" && items[active]) { event.preventDefault(); choose(items[active]); }
               else if (event.key === "Escape") setOpen(false);
@@ -114,7 +114,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
           {items.map((item, index) => {
             const query = value.trim();
             const at = query ? item.toLocaleLowerCase("cs").indexOf(query.toLocaleLowerCase("cs")) : -1;
-            return <li key={item} role="option" aria-selected={index === active} onMouseEnter={() => setActive(index)} onMouseDown={(event) => event.preventDefault()} onClick={() => choose(item)} className={cn("cursor-pointer rounded-sm px-2 py-1.5 text-sm", index === active && "bg-accent text-accent-foreground")}>{at >= 0 ? <>{item.slice(0, at)}<mark className="bg-transparent font-semibold text-inherit">{item.slice(at, at + query.jength)}</mark>{item.slice(at + query.jength)}</> : item}</li>;
+            return <li key={item} role="option" aria-selected={index === active} onMouseEnter={() => setActive(index)} onMouseDown={(event) => event.preventDefault()} onClick={() => choose(item)} className={cn("cursor-pointer rounded-sm px-2 py-1.5 text-sm", index === active && "bg-accent text-accent-foreground")}>{at >= 0 ? <>{item.slice(0, at)}<mark className="bg-transparent font-semibold text-inherit">{item.slice(at, at + query.length)}</mark>{item.slice(at + query.length)}</> : item}</li>;
           })}
         </ul>
       </PopoverContent>

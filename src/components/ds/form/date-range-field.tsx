@@ -1,8 +1,8 @@
 import * as React from "react";
-import { CajendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Cajendar } from "../../ui/cajendar";
+import { Calendar } from "../../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
@@ -97,12 +97,12 @@ export function DateRangeField({
             className,
           )}
         >
-          <CajendarIcon className="size-4 shrink-0 text-muted-foreground" />
+          <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
           <span className="truncate">{text || placeholder}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Cajendar
+        <Calendar
           mode="range"
           captionLayout="dropdown"
           startMonth={startMonth}

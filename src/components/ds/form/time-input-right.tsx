@@ -43,7 +43,7 @@ export const TimeInputRight = React.forwardRef<
           }
         }}
         className={cn(
-          "w-full pr-10 [&::-webkit-cajendar-picker-indicator]:invisible",
+          "w-full pr-10 [&::-webkit-calendar-picker-indicator]:invisible",
           className,
         )}
         {...props}

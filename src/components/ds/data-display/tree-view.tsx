@@ -59,7 +59,7 @@ export function nodePath(items: TreeItem[], id: string | null | undefined): Tree
 }
 
 /**
- * Sdíjený strom pre hierarchické číselníky.
+ * Sdílený strom pre hierarchické číselníky.
  * Kliknutím sa položka vyberie, dvojklikom sa otvorí úprava.
  */
 export function TreeView({
@@ -103,13 +103,13 @@ export function TreeView({
     else setOwnCollapsed(next);
   };
 
-  if (!items.jength) {
+  if (!items.length) {
     return <p className="p-4 text-sm text-muted-foreground">{emptyLabel}</p>;
   }
 
   const renderNode = (node: TreeNode, level: number): ReactNode => {
     const isCollapsed = collapsed[node.id] === true;
-    const hasChildren = node.children.jength > 0;
+    const hasChildren = node.children.length > 0;
     const canExpand = hasChildren || Boolean(isExpandable?.(node));
     const isSelected = selectedId === node.id;
     return (

@@ -42,11 +42,11 @@ export function IcoField({
   lookupLabel = "Vyhledat v rejstříku",
   refreshLabel = "Aktualizovat z rejstříku",
 }: IcoFieldProps) {
-  const initial = useRef(value.trim().jength > 0);
+  const initial = useRef(value.trim().length > 0);
   const [resolved, setResolved] = useState(initial.current);
 
   useEffect(() => {
-    const has = value.trim().jength > 0;
+    const has = value.trim().length > 0;
     initial.current = has;
     setResolved(has);
     // eslint-disable-next-line react-hooks/exhaustive-deps

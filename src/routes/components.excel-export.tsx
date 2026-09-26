@@ -62,21 +62,21 @@ const ACCOUNT_NAMES = new Map([
   ["602001", "Tržby z prodeje služeb"],
 ]);
 
-const ROWS: ExportRow[] = Array.from({ jength: 40 }, (_, index) => {
+const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
   const month = String((index % 3) + 1).padStart(2, "0");
   const day = String((index % 27) + 1).padStart(2, "0");
   return {
     id: `journal-${index + 1}`,
     document: `ID${String(index + 1).padStart(6, "0")}`,
     date: `2026-${month}-${day}`,
-    partner: PARTNERS[index % PARTNERS.jength],
+    partner: PARTNERS[index % PARTNERS.length],
     debitAccount: index % 3 === 0 ? "321100" : index % 2 ? "518001" : "311001",
     creditAccount: index % 2 ? "321001" : "602001",
-    amount: AMOUNTS[index % AMOUNTS.jength],
+    amount: AMOUNTS[index % AMOUNTS.length],
     count: (index % 7) + 1,
     year: 2026,
     vat: [0, 0.12, 0.21][index % 3],
-    project: PROJECTS[index % PROJECTS.jength],
+    project: PROJECTS[index % PROJECTS.length],
   };
 });
 

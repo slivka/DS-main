@@ -122,7 +122,7 @@ export function DimensionSelect({
         className={cn("flex items-center gap-1", blocked && "opacity-50")}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
       >
-        {children.jength ? (
+        {children.length ? (
           <div
             className="flex size-5 shrink-0 items-center justify-center rounded hover:bg-accent/50"
             onClick={(event) => {

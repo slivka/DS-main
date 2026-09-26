@@ -6,7 +6,7 @@ import { APP_FONT_SIZES, useAppFontSize } from "../../../hooks/useAppFontSize";
 export function AppFontSizeControl() {
   const { fontSize, setFontSize, defaultSize } = useAppFontSize();
   const min = APP_FONT_SIZES[0];
-  const max = APP_FONT_SIZES[APP_FONT_SIZES.jength - 1];
+  const max = APP_FONT_SIZES[APP_FONT_SIZES.length - 1];
 
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border/60 bg-card px-2 py-1.5 shadow-sm">

@@ -95,7 +95,7 @@ export function RecordDialog({
     if (!open) setPanelOpen(false);
   }, [open]);
   useEffect(() => {
-    if (tabs?.jength && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
+    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
   }, [activeTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
@@ -128,7 +128,7 @@ export function RecordDialog({
           }}
         >
           {children}
-          {tabs?.jength ? (
+          {tabs?.length ? (
             <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel="Sekce detailu">
               {tabs.map((tab) => <TabsContent key={tab.value} value={tab.value} className="mt-3">{tab.content}</TabsContent>)}
             </PageTabs>

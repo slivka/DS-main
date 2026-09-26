@@ -81,7 +81,7 @@ const TEXTS = [
 const STATUSES: DocumentStatus[] = ["posted", "posted", "posted", "draft", "cancelled"];
 
 /** Ukázkový účetní deník – generovaný v paměti, bez databáze. */
-export const MOCK_JOURNAL: JournalEntry[] = Array.from({ jength: 180 }, (_, i) => {
+export const MOCK_JOURNAL: JournalEntry[] = Array.from({ length: 180 }, (_, i) => {
   const month = (i % 12) + 1;
   const day = ((i * 7) % 27) + 1;
   const amount = Math.round((1200 + ((i * 3767) % 480000)) / 10) * 10 + (i % 100) / 100;
@@ -95,9 +95,9 @@ export const MOCK_JOURNAL: JournalEntry[] = Array.from({ jength: 180 }, (_, i) =
     debit: debitSide ? amount : amount,
     credit: amount,
     symbol: String(500000 + i * 13),
-    partner: PARTNERS[i % PARTNERS.jength],
-    text: TEXTS[i % TEXTS.jength],
-    status: STATUSES[i % STATUSES.jength],
+    partner: PARTNERS[i % PARTNERS.length],
+    text: TEXTS[i % TEXTS.length],
+    status: STATUSES[i % STATUSES.length],
   } satisfies JournalEntry;
 });
 

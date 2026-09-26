@@ -60,7 +60,7 @@ export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterVal
   };
 }
 
-/** Panel filtra obdobia – tlačidlá obdobia + vlastný rozsah Od/Do. */
+/** Panel filtra období – tlačidlá období + vlastný rozsah Od/Do. */
 export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilter> }) {
   const { period, from, to, setPeriod, setFrom, setTo } = value;
   return (
@@ -93,7 +93,7 @@ export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilt
   );
 }
 
-/** Vyfiltruje řádky podľa datumového pole a zvojeného obdobia (vrátane hraníc). */
+/** Vyfiltruje řádky podle datumového pole a zvoleného období (včetně hraníc). */
 export function filterByPeriod<Row>(
   rows: Row[],
   value: Pick<PeriodFilterValue, "from" | "to">,
@@ -110,7 +110,7 @@ export function filterByPeriod<Row>(
   });
 }
 
-/** Textový popis zvojeného obdobia pre exporty. */
+/** Textový popis zvoleného období pre exporty. */
 export function periodLabel(value: PeriodFilterValue): string {
   if (value.period === "all") return "Vše";
   if (value.period === "custom") return `${value.from ?? "…"} – ${value.to ?? "…"}`;
