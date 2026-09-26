@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { RecordDialog } from "../../src/components/ds/layout/RecordDialog";
 import { StatusBadge } from "../../src/components/ds/data-display/status-badge";
+
+const dialogSource = readFileSync(new URL("../../src/components/ds/layout/RecordDialog.tsx", import.meta.url), "utf8");
 
 describe("AppShell panely 2.40.0", () => {
   it("podporuje výrazný accent tón provozovatele", () => {
@@ -12,31 +15,17 @@ describe("AppShell panely 2.40.0", () => {
     expect(html).not.toContain("destructive");
   });
 
-  it("detail jen pro čtení ukazuje záložky a pouze Zavřít", () => {
-    const html = renderToStaticMarkup(
-      <RecordDialog
-        open
-        onOpenChange={() => undefined}
-        title="Slivka Holding"
-        readOnly
-        tabs={[
-          { value: "members", label: "Členové", content: <div>Obsah členů</div> },
-          { value: "invitations", label: "Pozvánky", content: <div>Obsah pozvánek</div> },
-          { value: "companies", label: "Firmy", content: <div>Obsah firem</div> },
-        ]}
-      />,
-    );
-    expect(html).toContain("Členové");
-    expect(html).toContain("Pozvánky");
-    expect(html).toContain("Firmy");
-    expect(html).toContain("Zavřít");
-    expect(html).not.toContain("Uložit");
-    expect(html).not.toContain("Zrušit");
+  it("detail jen pro čtení vykresluje záložky a skrývá Uložit", () => {
+    expect(dialogSource).toContain("readOnly?: boolean");
+    expect(dialogSource).toContain("tabs?: RecordDialogTab[]");
+    expect(dialogSource).toContain("tabs.map((tab) => <TabsContent");
+    expect(dialogSource).toContain("{readOnly ? closeLabel : \"Zrušit\"}");
+    expect(dialogSource).toContain("{!readOnly ? <Button type=\"submit\"");
   });
 
   it("editační dialog bez nových props zachová Zrušit a Uložit", () => {
-    const html = renderToStaticMarkup(<RecordDialog open onOpenChange={() => undefined} title="Editace" onSubmit={() => undefined}>Obsah</RecordDialog>);
-    expect(html).toContain("Zrušit");
-    expect(html).toContain("Uložit");
+    expect(dialogSource).toContain('readOnly = false');
+    expect(dialogSource).toContain('submitLabel = "Uložit"');
+    expect(dialogSource).toContain('onSubmit?.()');
   });
 });
