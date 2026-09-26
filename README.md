@@ -18,7 +18,7 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
-## Changelog 2.34.0 – formulář dokladu a grid řádků
+## Changelog 2.35.0 – formulář dokladu a grid řádků (dříve 2.34.0)
 
 - Formulář používá jedinou typografickou stupnici v `rem`; jedna sekce Řádky se zobrazuje bez lišty záložek a informace o změně jsou pod formulářem.
 - Částka má výrazný přepínač Σ, samostatné rozvržení cizí měny a kurz s jednotkou i zdrojem pod vstupem.
