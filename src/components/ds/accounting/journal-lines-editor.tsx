@@ -153,7 +153,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
   const [active, setActive] = React.useState<{ rowId: string; column: JournalLineColumn } | null>(null); const [editing, setEditing] = React.useState<EditState | null>(null);
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({}); const [search, setSearch] = React.useState("");
-  const [containerWidth, setContainerWidth] = React.useState(1920);
+  const [containerWidth, setContainerWidth] = React.useState(0);
   const [rootRemPx, setRootRemPx] = React.useState(16);
   const setRootRef = React.useCallback((node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; }, [forwardedRef]);
   React.useEffect(() => {
