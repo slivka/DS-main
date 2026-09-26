@@ -150,13 +150,13 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
-  const setRootRef = (node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; };
+  const setRootRef = React.useCallback((node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; }, [forwardedRef]);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
   const [active, setActive] = React.useState<{ rowId: string; column: JournalLineColumn } | null>(null); const [editing, setEditing] = React.useState<EditState | null>(null);
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({}); const [search, setSearch] = React.useState("");
   const [containerWidth, setContainerWidth] = React.useState(1920);
   const [rootRemPx, setRootRemPx] = React.useState(16);
-  React.useEffect(() => { const node = rootRef.current; if (!node) return; const update = () => { setContainerWidth(node.getBoundingClientRect().width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; update(); const observer = new ResizeObserver(update); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", update); return () => { observer.disconnect(); window.removeEventListener("resize", update); }; }, []);
+  React.useLayoutEffect(() => { const node = rootRef.current; if (!node) return; const update = () => { setContainerWidth(node.getBoundingClientRect().width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; update(); const observer = new ResizeObserver(update); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", update); return () => { observer.disconnect(); window.removeEventListener("resize", update); }; }, []);
   const foreign = documentCurrency !== homeCurrency; const canReorder = (reorderable ?? editable.size > 0) && !search;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const accountByCode = React.useMemo(() => new Map(accounts.map((account) => [account.code, account])), [accounts]);
