@@ -84,3 +84,42 @@ describe("DocumentForm DPH 2.38.0", () => {
     expect(accountingDate).not.toContain("Otevřít kalendář");
   });
 });
+
+describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
+  it("plátci se zapnutým příznakem zobrazí přepínač, DUZP i období", () => {
+    const html = form({ vat: { visible: true, relevant: true, onRelevantChange: () => {}, periodOptions: periods } });
+    expect(html).toContain('role="switch"');
+    expect(html).toContain('aria-checked="true"');
+    expect(html).toContain(">Vstupuje do DPH<");
+    expect(html).toContain(">DUZP<");
+    expect(html).toContain(">Období DPH<");
+  });
+
+  it("plátci s vypnutým příznakem ponechá jen vypnutý přepínač", () => {
+    const html = form({ vat: { visible: true, relevant: false, onRelevantChange: () => {}, periodOptions: periods } });
+    expect(html).toContain('role="switch"');
+    expect(html).toContain('aria-checked="false"');
+    expect(html).not.toContain(">DUZP<");
+    expect(html).not.toContain(">Období DPH<");
+  });
+
+  it("neplátci skryje celý blok DPH včetně přepínače", () => {
+    const html = form({ vat: { visible: false, relevant: true, onRelevantChange: () => {}, periodOptions: periods } });
+    expect(html).not.toContain("Vstupuje do DPH");
+    expect(html).not.toContain(">DUZP<");
+    expect(html).not.toContain(">Období DPH<");
+  });
+
+  it("režim jen pro čtení přepínač zakáže", () => {
+    const html = form({ vat: { visible: true, relevant: true, relevantReadOnly: true, onRelevantChange: () => {}, periodOptions: periods } });
+    const vatSwitch = html.slice(html.indexOf('id="document-vatRelevant"'), html.indexOf('id="document-taxDate"'));
+    expect(vatSwitch).toContain("disabled");
+  });
+
+  it("bez handleru přepínač nevykreslí a zachová dosavadní pole DPH", () => {
+    const html = form({ vat: { visible: true, periodOptions: periods } });
+    expect(html).not.toContain("Vstupuje do DPH");
+    expect(html).toContain(">DUZP<");
+    expect(html).toContain(">Období DPH<");
+  });
+});
