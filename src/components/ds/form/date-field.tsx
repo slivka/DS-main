@@ -84,6 +84,10 @@ export type DateFieldProps = {
   onValidityChange?: (valid: boolean) => void;
   /** Řízené svázání se zdrojovým datem. */
   link?: DateFieldLink;
+  /** Doplňující text pod polem. */
+  hint?: string;
+  /** Výstraha pod polem; má přednost před hintem. */
+  warning?: string;
 };
 
 /** Jednotná komponenta pro zadání data v celé aplikaci. */
@@ -100,6 +104,8 @@ export function DateField({
   gridZoom,
   onValidityChange,
   link,
+  hint,
+  warning,
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
   const { dateFormat, formatDate } = preferences;
@@ -157,7 +163,7 @@ export function DateField({
   const unlockedHint = link?.unlockedHint ?? "Znovu svázat s datem vystavení";
 
   return (
-    <TooltipProvider><div className={cn("relative", className)}>
+    <TooltipProvider><div className={cn("min-w-0", className)}><div className="relative">
       <Input
         ref={inputRef}
         id={id}
@@ -256,6 +262,6 @@ export function DateField({
         </PopoverContent>
       </Popover>
       </>}
-    </div></TooltipProvider>
+    </div>{warning ? <p className="mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
   );
 }

@@ -4,7 +4,7 @@ import { OptionSelect } from "../form/option-select";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 
-export type CurrencyOption = { code: string; label?: string };
+export type CurrencyOption = { code: string; label?: string; symbol?: string };
 
 /** Přepočet částky dokladu do měny účetnictví. */
 export function convertAmount(amount: number, rate: number, rateUnit = 1) {
@@ -25,7 +25,8 @@ export function CurrencyAmount({
   rate,
   onRateChange,
   rateUnit = 1,
-  baseCurrency = "CZK",
+  baseCurrency,
+  homeCurrencySymbol,
   amountLabel = "Částka",
   currencyLabel = "Měna",
   rateLabel = "Kurz",
@@ -44,7 +45,8 @@ export function CurrencyAmount({
   onRateChange?: (value: number) => void;
   /** Kurz je uveden za tento počet jednotek měny (např. 100 JPY). */
   rateUnit?: number;
-  baseCurrency?: string;
+  baseCurrency: string;
+  homeCurrencySymbol?: string;
   amountLabel?: string;
   currencyLabel?: string;
   rateLabel?: string;
@@ -108,7 +110,7 @@ export function CurrencyAmount({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor={`${idPrefix}-base`}>{`${baseLabel} (${baseCurrency})`}</Label>
+        <Label htmlFor={`${idPrefix}-base`}>{`${baseLabel} (${homeCurrencySymbol ?? baseCurrency})`}</Label>
         <output
           id={`${idPrefix}-base`}
           className="flex h-9 items-center justify-end rounded-md border bg-muted/40 px-3 font-sans text-sm tabular-nums"

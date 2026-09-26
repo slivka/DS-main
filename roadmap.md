@@ -1,3 +1,10 @@
+## Verze 2.43.0 (edit dokladu 6, část B)
+- [ ] Opravit in-place editaci, navigaci a automatické otevření výběrů v řádcích
+- [ ] Přestavět sloupce, detail řádku, sticky Akce a přepínač Nedaňový
+- [ ] Upravit rekapitulaci, formulář dokladu, Datum DPH a měnové značky
+- [ ] Změnit LegalFormField, záložky panelů, české texty a dokumentaci
+- [ ] Dokončit typy, lint, testy, build a vizuální matici
+
 ## Verze 2.41.0 (Vstupuje do DPH)
 - [x] DocumentForm: doplnit řízený přepínač `vat.relevant` včetně režimu jen pro čtení
 - [x] Skrýt DUZP a Období DPH při vypnutém příznaku bez mazání hodnot a zachovat dosavadní chování bez handleru

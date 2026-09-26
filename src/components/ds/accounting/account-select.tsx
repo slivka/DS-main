@@ -35,6 +35,8 @@ export type AccountOption = {
   category?: string;
   /** Typ účtu z osnovy (`accounts.account_type`), např. „nakladovy“. */
   accountType?: string;
+  /** Výchozí příznak Nedaňový při použití účtu na řádku dokladu. */
+  nonTaxDefault?: boolean;
   active?: boolean;
   /** Zda lze na tento účet přímo účtovat (jinak je jen součtový). */
   postable?: boolean;
