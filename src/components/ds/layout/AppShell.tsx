@@ -14,6 +14,8 @@ import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
 import { filterNavGroups, highlightNavMatch, withNavSections } from "./nav-search";
+import { StatusBadge, type StatusTone } from "../data-display/status-badge";
+import { TruncatedText } from "../data-display/truncated-text";
 
 export type NavItem = {
   to: string;
@@ -41,6 +43,10 @@ export type AppShellPanel = {
   tooltip: string;
   nav: NavGroup[];
   accent?: "default" | "warning";
+  /** Volitelný stavový štítek vedle názvu panelu. */
+  badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> };
+  /** Název prostoru, firmy nebo jiného objektu, kterého se panel týká. */
+  context?: string;
 };
 
 export const NAV_DISABLED_HINT = "Připravujeme";
@@ -447,6 +453,23 @@ export function AppShell({
   const hasNotifications = Boolean(notificationBell);
   const hasThemeToggle = Boolean(themeToggleButton);
   const hasUser = Boolean(userMenu);
+  const panelHeading = currentPanel ? (
+    <div className="min-w-0 flex-1 py-1">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="truncate font-semibold">{currentPanel.title}</span>
+        {currentPanel.badge ? (
+          <StatusBadge
+            status={currentPanel.badge.tone}
+            config={{ [currentPanel.badge.tone]: currentPanel.badge }}
+            className="h-[1.625rem] shrink-0 px-2 text-[0.75rem]"
+          />
+        ) : null}
+      </div>
+      {currentPanel.context ? (
+        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanel.context} />
+      ) : null}
+    </div>
+  ) : null;
 
   const updateContextPosition = useCallback(() => {
     const header = headerRef.current;
@@ -506,7 +529,7 @@ export function AppShell({
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
             <SheetContent side="left" className="shell-sidebar w-72 p-0">
-              <SheetHeader className="h-14 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle></SheetHeader>
+              <SheetHeader className="min-h-14 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle>{currentPanel?.context ? <TruncatedText text={currentPanel.context} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
               {nav(false)}
             </SheetContent>
           </Sheet>
@@ -547,10 +570,11 @@ export function AppShell({
       {!currentPanel ? subHeader : null}
 
       {currentPanel ? (
-        <div className={cn("flex h-11 shrink-0 items-center border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
-          <div className={cn("hidden shrink-0 items-center gap-2 md:flex", isCollapsed ? "w-14" : "w-60")}><currentPanel.icon className="size-4" /><span className="truncate font-semibold">{currentPanel.title}</span></div>
-          <div className="flex flex-1 items-center md:hidden"><currentPanel.icon className="mr-2 size-4" /><span className="truncate font-semibold">{currentPanel.title}</span></div>
-          <Button type="button" variant="default" size="sm" className="ml-auto" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
+        <div data-slot="app-shell-panel-header" className={cn("flex min-h-11 shrink-0 items-center gap-2 border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
+          <div className={cn("hidden shrink-0 items-center md:flex", isCollapsed ? "w-11 justify-center" : "w-[14.25rem]")}><currentPanel.icon className="size-4" /></div>
+          <div className="flex min-w-0 flex-1 items-center gap-2 md:hidden"><currentPanel.icon className="size-4 shrink-0" />{panelHeading}</div>
+          <div className="hidden min-w-0 flex-1 md:flex">{panelHeading}</div>
+          <Button type="button" variant="default" size="sm" className="ml-auto shrink-0" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
         </div>
       ) : null}
 

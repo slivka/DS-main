@@ -9,7 +9,7 @@ export interface PageTabItem {
   disabled?: boolean;
 }
 
-export interface PageTabsProps extends Omit<React.ComponentPropsWithoutRef<typeof Tabs>, "children"> {
+export interface PageTabsProps extends React.ComponentPropsWithoutRef<typeof Tabs> {
   items: PageTabItem[];
   listLabel?: string;
   className?: string;
@@ -29,6 +29,7 @@ export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function
           </TabsTrigger>
         ))}
       </TabsList>
+      {props.children}
     </Tabs>
   );
 });
