@@ -18,6 +18,11 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.38.0 – data a období DPH na dokladu
+
+- `DateField` podporuje řízené svázané datum: zamčené pole nahrazuje kalendář zámkem, odemčené nabízí opětovné svázání.
+- `DocumentForm` přidává `accountingDateLink`, `vat` a `vatPeriod`; DUZP a Období DPH kotví v pravé části sekce Data a umí rozlišit podané období.
+
 ## Changelog 2.36.0 – limit haléřového vyrovnání
 
 - `DocumentForm` přijímá `roundingLimit` (výchozí 1,00 Kč) a `roundingLabel`; oba přeposílá do editoru řádků jako limit a popisek haléřového vyrovnání. Aplikace tak může nastavit firemní limit i vlastní pojmenování vyrovnání.

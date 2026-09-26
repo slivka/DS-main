@@ -1,5 +1,10 @@
 # Komponenty design systému
 
+## Data a období DPH na dokladu (2.38.0)
+
+- `DateField.link` řídí svázání data přes `locked`, `onToggle`, `lockedHint` a `unlockedHint`; zámek je klávesnicově dostupné tlačítko.
+- `DocumentForm.accountingDateLink` zapojuje zámek na Datum účetního případu. `DocumentForm.vat` řídí viditelnost DPH, možnosti období, režim jen pro čtení a upozornění na podané období; `DocumentHeaderValue.vatPeriod` ukládá první den měsíce.
+
 ## Edit dokladu 5 (2.36.0)
 
 - `DocumentForm` přidává `roundingLimit` (výchozí 1,00 Kč) a `roundingLabel`; oba se přeposílají do `JournalLinesEditor` jako `rounding.limit` a `rounding.label`, takže aplikace nastaví firemní limit i vlastní pojmenování vyrovnání. Vlastní popisek se použije i pro text nově vytvořeného řádku vyrovnání.

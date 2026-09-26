@@ -1,3 +1,8 @@
+## Verze 2.38.0 (data a období DPH na dokladu)
+- [x] Přidat řízený zámek svázaného data do DateField
+- [x] Přesunout DUZP a Období DPH vpravo v sekci Data
+- [x] Doplnit podaná období, neplátce, ukázky, testy a dokumentaci
+
 ## Verze 2.36.0 (limit haléřového vyrovnání)
 - [x] DocumentForm: prop `roundingLimit` (výchozí 1,00) a `roundingLabel` předávané do `JournalLinesEditor` jako `rounding.limit` / `rounding.label`
 - [x] Changelog, components.md a test
