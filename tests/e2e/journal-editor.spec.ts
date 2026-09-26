@@ -47,7 +47,9 @@ test.describe("JournalLinesEditor", () => {
     const input = foreignCell.getByRole("textbox");
     await input.fill("200");
     await input.press("Enter");
-    await expect(page.locator('[data-cell-key="fx1:amount"]')).toContainText("5 024,00");
+    await expect(foreignCell).toContainText("200,00");
+    await foreignCell.locator("xpath=ancestor::tr").getByRole("button", { name: "Zobrazit detail řádku" }).click();
+    await expect(foreignCell.locator("xpath=ancestor::tr/following-sibling::tr[1]")).toContainText("5 024,00");
   });
 
   test("zaúčtovaný příklad dovolí upravit pouze text a zakázku", async ({ page }) => {
