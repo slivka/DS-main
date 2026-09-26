@@ -45,7 +45,7 @@ const SCHEDULE: PaymentScheduleItem[] = [
 export function DocumentFormShowcase() {
   const [cashDateLocked, setCashDateLocked] = useState(true);
   const [courierVatRelevant, setCourierVatRelevant] = useState(true);
-  const [invoiceVatRelevant, setInvoiceVatRelevant] = useState(false);
+  const [invoiceVatRelevant, setInvoiceVatRelevant] = useState(true);
   const [handedSuggestions, setHandedSuggestions] = useState(true);
   const [descriptionSuggestions, setDescriptionSuggestions] = useState(true);
   const suggestNames = async (query: string) => ["Jan Veselý", "Jana Nováková", "Petr Svoboda"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
@@ -143,7 +143,8 @@ export function DocumentFormShowcase() {
           currencies={CURRENCIES}
           documentType="FP" rateAmount={1}
           homeCurrency="CZK" homeCurrencySymbol="Kč"
-          vat={{ visible: true, periodFiled: true }}
+          vat={{ visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" }}
+          dateWarnings={{ taxDate: "DUZP a zaúčtování jsou v různých letech" }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"

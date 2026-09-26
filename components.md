@@ -1,9 +1,11 @@
 # Komponenty design systému
 
-## Edit dokladu 6, část B (2.43.0)
+## Doplnění editace dokladu 6 (2.44.0)
 
 - `DocumentForm` ukládá DPH do `value.vatRelevant` a `value.vatDate`. Přepínač je vlevo v přilepeném pruhu; DUZP a Datum DPH jsou vpravo v sekci Datumy.
 - `vat` přijímá `visible`, `relevantReadOnly`, `periodLabel`, `periodFiled`, `filedWarning`, `dateLink` a `dateLockReadOnly`.
+- `vat.periodLabel` se zobrazuje pod Datem DPH; `periodFiled` s `filedWarning` má před popiskem přednost. `dateWarnings` předává výstrahy pod jednotlivá datová pole.
+- `CashReceiptPdfInput.currencySymbol` a `homeCurrencySymbol` dodávají značky částek v pokladním PDF; bez značky se použije kód měny.
 - `DateField` přijímá `hint`, `warning`; `link.toggleDisabled` zachová zámek jen pro čtení.
 - `JournalLinesEditor` vyžaduje `documentCurrency` a `homeCurrency`, volitelně `documentCurrencySymbol` a `homeCurrencySymbol`; `AccountOption.nonTaxDefault` předvyplní ND.
 - `CurrencyOption.symbol` dodává značku měny. `CurrencyAmount.baseCurrency` a `DocumentForm.homeCurrency` jsou povinné.

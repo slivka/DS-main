@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { amountInWordsCs, reportPageLabel } from "../../src/components/ds/print/report-pdf";
+import { formatCashReceiptMoney } from "../../src/components/ds/print/cash-receipt-pdf";
 
 describe("české částky slovy", () => {
   it.each([
@@ -34,4 +35,12 @@ describe("české částky slovy", () => {
 describe("číslování stran sestavy", () => {
   it("jednu stranu nečísluje", () => expect(reportPageLabel(1, 1)).toBe(""));
   it("více stran čísluje", () => expect(reportPageLabel(2, 3)).toBe("Strana 2 z 3"));
+});
+
+describe("měnové značky pokladního dokladu 2.44.0", () => {
+  it("použije značku měny a bez ní zachová kód", () => {
+    expect(formatCashReceiptMoney(1_000, "CZK", "Kč")).toBe("1 000,00 Kč");
+    expect(formatCashReceiptMoney(40, "EUR", "€")).toBe("40,00 €");
+    expect(formatCashReceiptMoney(40, "EUR")).toBe("40,00 EUR");
+  });
 });

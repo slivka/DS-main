@@ -79,6 +79,20 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html).not.toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
 
+  it("zobrazí období pod Datem DPH a podané období má před popiskem přednost", () => {
+    const period = "KH srpen 2026 · DPH 3.Q 2026";
+    expect(form({ vat: { visible: true, periodLabel: period } })).toContain(period);
+    const filed = form({ vat: { visible: true, periodLabel: period, periodFiled: true } });
+    expect(filed).toContain("Období je podané – doklad půjde do dodatečného přiznání");
+    expect(filed).not.toContain(period);
+  });
+
+  it("předá varování všem datovým polím", () => {
+    const dateWarnings = { issueDate: "Vystavení", accountingDate: "Zaúčtování", dueDate: "Splatnost", taxDate: "DUZP a zaúčtování jsou v různých letech", vatDate: "Datum DPH" };
+    const html = form({ vat: { visible: true }, dateWarnings });
+    Object.values(dateWarnings).forEach((warning) => expect(html).toContain(warning));
+  });
+
   it("předá zámek do Data účetního případu", () => {
     const html = form({ accountingDateLink: { locked: true, onToggle: () => {}, hint: "Vlastní nápověda" } });
     const accountingDate = html.slice(html.indexOf("Datum účetního případu"), html.indexOf("Splatnost"));

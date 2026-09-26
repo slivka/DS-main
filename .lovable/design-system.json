@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.43.0",
+    "version": "2.44.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -6432,6 +6432,10 @@
           "type": "any"
         },
         {
+          "name": "dateWarnings",
+          "type": "any"
+        },
+        {
           "name": "vat",
           "type": "any"
         },
@@ -6500,11 +6504,11 @@
           "default": "rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
         }
       ],
-      "usage": "Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH a navazující daňová data.",
+      "usage": "Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH, navazující daňová data, popisek období a varování pod jednotlivými daty.",
       "examples": [
         {
           "label": "Doklad plátce s řízeným vlivem na DPH",
-          "code": "\u003cDocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} /\u003e"
+          "code": "\u003cDocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} dateWarnings={{ taxDate: yearWarning }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6615,7 +6619,17 @@
     {
       "name": "CashReceiptPrintDialog",
       "file": "src/components/ds/print/cash-receipt-pdf.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Zobrazuje náhled a vytváří pokladní doklad; vstup přijímá značku měny dokladu i domácí měny a bez značky použije kód.",
+      "examples": [
+        {
+          "label": "Pokladní doklad se značkami měn",
+          "code": "\u003cCashReceiptPrintDialog {...props} value={{ ...receipt, currency: 'EUR', currencySymbol: '€', homeCurrency: 'CZK', homeCurrencySymbol: 'Kč' }} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
+      ]
     }
   ],
   "assets": [

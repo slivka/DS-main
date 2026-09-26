@@ -18,6 +18,12 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.44.0 – doplnění editace dokladu 6
+
+- `DocumentForm.vat.periodLabel` zobrazuje popisek období pod Datem DPH; při podaném období má přednost `filedWarning`.
+- `DocumentForm.dateWarnings` předává varování pod Datum vystavení, Datum účetního případu, DUZP, Splatnost nebo Datum DPH.
+- `CashReceiptPdfInput` přijímá `currencySymbol` a `homeCurrencySymbol`; pokladní PDF používá značku a bez ní zachová kód měny.
+
 ## Changelog 2.43.0 – edit dokladu 6, část B
 
 - Breaking: `DocumentHeaderValue.vatDate` nahrazuje `vatPeriod`; `vat.periodOptions`, `periodReadOnly`, `relevant` a `onRelevantChange` byly odstraněny. Stav přepínače je `value.vatRelevant`, období popisuje `vat.periodLabel` a Datum DPH řídí `vat.dateLink` / `dateLockReadOnly`.
