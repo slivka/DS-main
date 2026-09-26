@@ -1,4 +1,4 @@
-## Verze 2.34.0 (edit dokladu 5)
+## Verze 2.35.0 (edit dokladu 5) – dříve 2.34.0
 - [x] Sjednotit typografii formuláře, sekcí, editoru a rekapitulace v rem
 - [x] Upravit částku, kurz, měny a ovládání Σ
 - [x] Přepracovat sloupce, vyrovnání, součty a řazení řádků
