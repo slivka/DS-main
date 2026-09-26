@@ -83,7 +83,7 @@ export function PartnerShowcase() {
           rows={filterInactiveRows(partners, showInactive, (r) => r.active)}
           rowKey={(r) => r.id}
           columns={columns}
-          toolbarExtra={<ShowInactiveToggle pressed={showInactive} onPressedChange={setShowInactive} />}
+          filters={<ShowInactiveToggle pressed={showInactive} onPressedChange={setShowInactive} />}
           rowActions={(row) => (
             <GridRowMenu items={[activeToggleMenuItem(row.active, (next) => setPartners((list) => list.map((p) => (p.id === row.id ? { ...p, active: next } : p))))]} />
           )}
