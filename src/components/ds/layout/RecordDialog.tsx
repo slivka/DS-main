@@ -147,7 +147,6 @@ export function RecordDialog({
   };
   const statusBadge = status ? (
     <StatusBadge
-      data-record-status={status.active ? "active" : "inactive"}
       status={status.active ? "active" : "inactive"}
       config={{ active: { label: status.activeLabel ?? "Aktivní", tone: "success" }, inactive: { label: status.inactiveLabel ?? "Neaktivní", tone: "neutral" } }}
     />
