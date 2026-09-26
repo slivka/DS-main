@@ -49,8 +49,8 @@ export const Route = createFileRoute("/components/accounting-forms")({
 });
 
 const CURRENCIES = [
-  { code: "CZK", label: "Česká koruna" },
-  { code: "EUR", label: "Euro" },
+  { code: "CZK", label: "Česká koruna", symbol: "Kč" },
+  { code: "EUR", label: "Euro", symbol: "€" },
   { code: "USD", label: "Americký dolar" },
 ];
 
@@ -193,7 +193,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           documentCurrency="EUR"
-          homeCurrency="CZK"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           rate={25.12}
           totalAmount={2512}
           sideFields="shared"
@@ -314,7 +314,7 @@ function AccountingFormsPage() {
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
           documentCurrency="EUR"
-          homeCurrency="CZK"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           rate={24.8}
           mode="mainAccount" mainSide="MD" mainAccount="221002"
           totalAmount={24800.3}
@@ -373,6 +373,7 @@ function AccountingFormsPage() {
           currency={currency}
           onCurrencyChange={setCurrency}
           currencies={CURRENCIES}
+          baseCurrency="CZK" homeCurrencySymbol="Kč"
           rate={rate}
           onRateChange={setRate}
           idPrefix="demo-currency"
