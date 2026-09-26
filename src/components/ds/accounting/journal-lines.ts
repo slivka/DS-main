@@ -1,6 +1,7 @@
 export type JournalLineColumn =
   | "debitAccount"
   | "creditAccount"
+  | "counterAccount"
   | "amount"
   | "text"
   | "dimensionId"
