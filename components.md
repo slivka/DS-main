@@ -1,6 +1,6 @@
 # Komponenty design systému
 
-## Edit dokladu 5 (2.34.0)
+## Edit dokladu 5 (2.35.0) – dříve 2.34.0
 
 - `DocumentForm` používá nadpis sekce místo jediné záložky Řádky. Celkem ovládá Σ; u cizí měny odděluje částku dokladu, kurz a domácí přepočet.
 - `JournalLinesEditor` přijímá `documentCurrency`, `homeCurrency`, `rate`, `rateAmount`, `units`, `onCreateUnit`, `reorderable` a řízený objekt `recap`. Staré `showCurrency`, `onRoundingFill` a ukládání rekapitulace přes `storageKey` se nepoužívají.
