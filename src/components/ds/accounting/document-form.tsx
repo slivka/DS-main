@@ -44,7 +44,8 @@ export type DocumentHeaderValue = {
   accountingDate?: string | null;
   issueDate?: string | null;
   taxDate?: string | null;
-  vatPeriod?: string | null;
+  vatDate?: string | null;
+  vatRelevant?: boolean;
   dueDate?: string | null;
   externalNumber?: string | null;
   partnerId?: string | null;
@@ -80,15 +81,13 @@ export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: Reac
 export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
 export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
 export type DocumentAccountingDateLink = { locked: boolean; onToggle: (locked: boolean) => void; hint?: string };
-export type DocumentVatPeriodOption = { value: string; label: string; filed?: boolean };
 export type DocumentVatConfig = {
   visible: boolean;
-  relevant?: boolean;
   relevantReadOnly?: boolean;
-  onRelevantChange?: (value: boolean) => void;
-  periodOptions: DocumentVatPeriodOption[];
-  periodReadOnly?: boolean;
-  periodReadOnlyHint?: string;
+  periodLabel?: string;
+  periodFiled?: boolean;
+  dateLink?: { locked: boolean; onToggle: (locked: boolean) => void; lockedHint?: string; unlockedHint?: string };
+  dateLockReadOnly?: boolean;
   filedWarning?: string;
 };
 
@@ -96,7 +95,7 @@ export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string; accountingSection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
-  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatPeriod: string; vatPeriodEmpty: string; vatPeriodFiled: string; dueDate: string; externalNumber: string; supplierNumber: string;
+  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; amountTotal: string; totalHomeCurrency: string; amountSum: string; sumFromLines: string; rounding: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
@@ -105,13 +104,13 @@ export type DocumentFormTexts = {
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
-  headerSection: "Základní údaje", datesSection: "Data", paymentSection: "Platební údaje", propertiesSection: "Vlastnosti dokladu",
+  headerSection: "Základní údaje", datesSection: "Datumy", paymentSection: "Platební údaje", propertiesSection: "Vlastnosti dokladu",
   rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka", accountingSection: "Účtování a částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
-  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatPeriod: "Období DPH", vatPeriodEmpty: "Vyberte období", vatPeriodFiled: "podáno", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
+  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
   partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
-  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHomeCurrency: "Celkem v CZK", amountSum: "Celkem za doklad", sumFromLines: "Sčítat z rozpisu", rounding: "Haléřové vyrovnání",
+  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHomeCurrency: "Celkem v domácí měně", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Haléřové vyrovnání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
   linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
 };
@@ -138,7 +137,8 @@ export interface DocumentFormProps {
   mainAccountLocked?: boolean;
   periodLabel?: ReactNode;
   rateAmount?: number;
-  homeCurrency?: string;
+  homeCurrency: string;
+  homeCurrencySymbol?: string;
   currencyLocked?: boolean;
   onCreatePartner?: (seed: CounterpartySeed) => void;
   icoLinkTarget?: IcoLinkTarget;
@@ -207,7 +207,7 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
 export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
-  mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false,
+  mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
@@ -241,7 +241,7 @@ export function DocumentForm({
       <Label htmlFor={id}>{label}</Label>{control}
     </div>
   );
-  const date = (key: "accountingDate" | "issueDate" | "taxDate" | "dueDate", label: string, className?: string) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined} />, 3, false, className);
+  const date = (key: "accountingDate" | "issueDate" | "taxDate" | "vatDate" | "dueDate", label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning} />, 3, false, className);
   const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
   const linkedPartner = !!value.partnerId;
@@ -249,9 +249,8 @@ export function DocumentForm({
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning = !linkedPartner && /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) && !isValidCzIco(counterpartyIco);
   const showMainAccount = f.mainAccount && !hideIdentityAccount;
-  const selectedVatPeriod = vat?.periodOptions.find((option) => option.value === value.vatPeriod);
-  const vatPeriodWarning = selectedVatPeriod?.filed ? vat?.filedWarning ?? "Období je podané – doklad půjde do dodatečného přiznání" : null;
-  const vatRelevant = vat?.onRelevantChange ? vat.relevant !== false : true;
+  const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? "Období je podané – doklad půjde do dodatečného přiznání" : undefined;
+  const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
@@ -264,7 +263,7 @@ export function DocumentForm({
     id: "lines", label: t.linesTab, badge: lines.length || undefined,
     content: <JournalLinesEditor lines={lines} onChange={onLinesChange} accounts={accounts} dimensions={dimensions} partners={partners}
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
-      documentCurrency={value.currency} homeCurrency={homeCurrency} rate={value.rate} rateAmount={rateAmount}
+      documentCurrency={value.currency} documentCurrencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rate={value.rate} rateAmount={rateAmount}
       totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields}
       rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
@@ -273,8 +272,8 @@ export function DocumentForm({
     <TooltipProvider><div className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
-      <PageHeader title={title} />
-      <DocumentActionBar status={status} approved={approved} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} texts={t} />
+      <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />
+      <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} texts={t} />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
@@ -298,12 +297,8 @@ export function DocumentForm({
           {date("issueDate", t.issueDate)}
           {date("accountingDate", t.accountingDate)}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
-          {vat?.visible && vat.onRelevantChange ? field("document-vatRelevant", t.vatRelevant, <div className="flex h-9 items-center"><Switch id="document-vatRelevant" checked={vatRelevant} disabled={readOnly || vat.relevantReadOnly} onCheckedChange={vat.onRelevantChange} aria-label={t.vatRelevant} /></div>, 6, false, "@min-[40rem]:col-start-15") : null}
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
-          {showVatFields ? field("document-vatPeriod", t.vatPeriod, <>
-            {vat.periodReadOnly ? <Tooltip><TooltipTrigger asChild><div><Input id="document-vatPeriod" readOnly aria-readonly="true" title={vat.periodReadOnlyHint ?? "Období se řídí DUZP"} value={selectedVatPeriod?.label ?? t.vatPeriodEmpty} className="h-9 cursor-default" /></div></TooltipTrigger><TooltipContent>{vat.periodReadOnlyHint ?? "Období se řídí DUZP"}</TooltipContent></Tooltip> : <OptionSelect id="document-vatPeriod" value={value.vatPeriod ?? ""} onChange={(vatPeriod) => patch({ vatPeriod: vatPeriod || null })} options={vat.periodOptions.map((option) => ({ value: option.value, label: option.label, muted: option.filed, trailingLabel: option.filed ? t.vatPeriodFiled : undefined }))} placeholder={t.vatPeriodEmpty} emptyLabel={t.vatPeriodEmpty} disabled={!can("vatPeriod")} />}
-            {vatPeriodWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{vatPeriodWarning}</p> : null}
-          </>, 3, false, "@min-[40rem]:col-start-18") : null}
+          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-18", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? "Daň na výstupu patří do období DUZP" : vat.dateLink.lockedHint } : undefined, hint: vatDateWarning ? undefined : vat?.periodLabel, warning: vatDateWarning ? `${vatDateWarning}${vat?.periodLabel ? ` · ${vat.periodLabel}` : ""}` : undefined }) : null}
            {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 
@@ -311,10 +306,10 @@ export function DocumentForm({
         <div className="grid grid-cols-20 gap-3">
           {showMainAccount ? field("document-main-account", mainAccountLabel, accountLocked ? <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} /> : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />, 20) : null}
            {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
-           {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 5) : null}
+            {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full @min-[40rem]:w-36" />, 3) : null}
           {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
-           {foreign ? field("document-total-home", `${t.amountTotal.replace("za doklad", "")} v ${homeCurrency}`, <ReadField id="document-total-home" value={<span className="ml-auto font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</span>} />, 4) : null}
-           {field("document-amountTotal", foreign ? `${t.amountTotal} (${value.currency})` : `${t.amountTotal} (${homeCurrency === "CZK" ? "Kč" : homeCurrency})`, <div><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><Sigma className="size-4" /></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p className="mt-1 text-xs text-muted-foreground">Sčítá se z rozpisu</p> : null}</div>, 6, false, "@min-[40rem]:col-start-15")}
+            {foreign ? field("document-total-home", `${t.amountTotal.replace("za doklad", "")} v ${homeCurrencySymbol ?? homeCurrency}`, <div className="text-right"><ReadField id="document-total-home" value={<span className="ml-auto font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</span>} /></div>, 3) : null}
+            {field("document-amountTotal", `${t.amountTotal} (${currencies?.find((item) => item.code === value.currency)?.symbol ?? value.currency})`, <div><div className="mb-1 flex items-center justify-between text-xs text-muted-foreground"><span>{totalMode === "sum" ? t.sumFromLines : ""}</span></div><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><Sigma className="size-4" /></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div></div>, 6, false, "@min-[40rem]:col-start-15")}
         </div>
 
         {f.symbols || f.bankAccount || f.paymentOrders ? <>
@@ -349,15 +344,15 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
   return <span data-slot="document-direction-badge" className={cn("inline-flex h-[1.625rem] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
-export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
-  status: DocumentStatus; approved?: boolean; direction?: DocumentDirection; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
+export function DocumentActionBar({ vat, vatRelevant, onVatRelevantChange, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
+  vat?: DocumentVatConfig; vatRelevant: boolean; onVatRelevantChange: (value: boolean) => void; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
   const barRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
   useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
   return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-    <DocumentStatusBadge status={status} approved={approved} size="md" />
+    <div>{vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null}</div>
     <div className="flex shrink-0 items-center gap-2">
       {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
       {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
