@@ -19,7 +19,7 @@ declare global {
     __lovableReportRuntimeError?: (payload: {
       message: string;
       stack?: string;
-      fijename?: string;
+      filename?: string;
     }) => void;
   }
 }
@@ -54,6 +54,6 @@ export function reportLovableError(error: unknown, context: Record<string, unkno
   window.__lovableReportRuntimeError?.({
     message,
     ...(stack !== undefined && { stack }),
-    fijename: window.location.pathname,
+    filename: window.location.pathname,
   });
 }
