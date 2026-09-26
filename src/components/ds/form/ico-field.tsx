@@ -1,88 +1,49 @@
-import { useEffect, useRef, useState } from "react";
-import { RefreshCw, Search } from "lucide-react";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
-import { cn } from "../../../lib/utils";
+import { forwardRef } from "react";
+import { LookupField, type LookupFieldProps } from "./lookup-field";
 
-type IcoFieldProps = {
-  /** Aktuálna hodnota IČO. */
-  value: string;
-  /** Zmena hodnoty IČO. */
-  onChange: (value: string) => void;
+/** Normalizace IČO: jen číslice, nejvýše 8 znaků. */
+export function normalizeIcoInput(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 8);
+}
+
+export interface IcoFieldProps extends Omit<LookupFieldProps, "onAction" | "searchLabel" | "refreshLabel"> {
   /**
-   * Vyhledání v registri. Vráťte `true`, ak sa údaje podarilo doplniť –
-   * ikona sa potom přepne na „Aktualizovat z rejstříku“.
+   * Vyhledání v registru. Vraťte `true`, pokud se údaje podařilo doplnit –
+   * ikona se potom přepne na „Aktualizovat z rejstříku“; `false` ji nechá beze změny.
    */
   onLookup: () => Promise<boolean | void> | boolean | void;
-  /** Prebieha vyhledávání. */
-  busy?: boolean;
-  disabled?: boolean;
-  placeholder?: string;
-  className?: string;
-  /** Zmena tejto hodnoty (napr. id záznamu) znovu vyhodnotí počiatočný stav. */
-  resetKey?: string | number;
+  /** Výchozí true: jen číslice, max. 8; vložené mezery a jiné znaky odstraní. */
+  digitsOnly?: boolean;
   lookupLabel?: string;
   refreshLabel?: string;
-};
+}
 
 /**
- * Sdílené pole pre IČO s tlačítkom registra priamo v poli.
- * Ikona lupy = ještě jsme nevyhledávali, ikona obnovenia = IČO bylo při vstupu
- * do formulára už vyplnené alebo sme ho z registra doplnili.
+ * Sdílené pole pro IČO s tlačítkem registru přímo v poli (postavené na `LookupField`).
+ * Lupa = ještě jsme nevyhledávali, ⟳ = IČO bylo při otevření vyplněné nebo bylo doplněno z registru.
  */
-export function IcoField({
-  value,
-  onChange,
-  onLookup,
-  busy = false,
-  disabled = false,
-  placeholder = "Zadejte IČO nebo název firmy",
-  className,
-  resetKey,
-  lookupLabel = "Vyhledat v rejstříku",
-  refreshLabel = "Aktualizovat z rejstříku",
-}: IcoFieldProps) {
-  const initial = useRef(value.trim().length > 0);
-  const [resolved, setResolved] = useState(initial.current);
-
-  useEffect(() => {
-    const has = value.trim().length > 0;
-    initial.current = has;
-    setResolved(has);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetKey]);
-
-  useEffect(() => {
-    if (!value.trim()) setResolved(false);
-  }, [value]);
-
-  const label = resolved ? refreshLabel : lookupLabel;
-  const Icon = resolved ? RefreshCw : Search;
-
+export const IcoField = forwardRef<HTMLInputElement, IcoFieldProps>(function IcoField(
+  {
+    onLookup,
+    onChange,
+    digitsOnly = true,
+    placeholder = "Zadejte IČO",
+    lookupLabel = "Vyhledat v rejstříku",
+    refreshLabel = "Aktualizovat z rejstříku",
+    ...props
+  },
+  ref,
+) {
   return (
-    <div className={cn("relative", className)}>
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="pr-9"
-      />
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="absolute right-0 top-0 h-9 w-9 text-muted-foreground hover:text-foreground"
-        onClick={async () => {
-          const ok = await onLookup();
-          if (ok !== false) setResolved(true);
-        }}
-        disabled={disabled || busy}
-        title={label}
-        aria-label={label}
-      >
-        <Icon className={cn("size-4", busy && "animate-spin")} />
-      </Button>
-    </div>
+    <LookupField
+      ref={ref}
+      {...props}
+      placeholder={placeholder}
+      inputMode={digitsOnly ? "numeric" : props.inputMode}
+      onChange={(next) => onChange(digitsOnly ? normalizeIcoInput(next) : next)}
+      onAction={onLookup}
+      searchLabel={lookupLabel}
+      refreshLabel={refreshLabel}
+    />
   );
-}
+});
