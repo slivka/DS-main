@@ -20,11 +20,6 @@ const USERS = [
   { id: "u2", name: "Jana Nováková" },
   { id: "u3", name: "Tomáš Dvořák" },
 ];
-const VAT_PERIODS = [
-  { value: "2026-08-01", label: "08/2026 · KH srpen 2026 / DPH 3.Q 2026", filed: true },
-  { value: "2026-09-01", label: "09/2026 · KH září 2026 / DPH 3.Q 2026" },
-];
-
 const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
     taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
@@ -110,7 +105,7 @@ export function DocumentFormShowcase() {
     bookId: "b-id", number: "ID2026000032", accountingDate: "2026-09-30", issueDate: "2026-09-30",
     counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
   });
-  const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, periodLabel: "Rok 2026", homeCurrency: "CZK", homeCurrencySymbol: "Kč", onLinesChange: () => {} };
+  const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, homeCurrency: "CZK", homeCurrencySymbol: "Kč", onLinesChange: () => {} };
   const units = [{ id: "hour", code: "hod", name: "hodina", isActive: true }, { id: "piece", code: "ks", name: "kus", isActive: true }];
 
   return (
@@ -118,7 +113,7 @@ export function DocumentFormShowcase() {
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={{ ...courier, vatRelevant: courierVatRelevant }} onChange={(next) => { setCourier(next); setCourierVatRelevant(next.vatRelevant !== false); }} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
-          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodLabel: VAT_PERIODS[1].label }}
+          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
@@ -130,7 +125,7 @@ export function DocumentFormShowcase() {
         <DocumentForm title="Bankovní doklad EUR" identity={{ items: ["BV - Banka EUR", "EUR", "2026", <span className="font-mono">221.002 - Běžný účet EUR <span className="font-sans">DAL</span></span>], number: cashEur.number }} directionBadge="out" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
           books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft" />
       </ShowcaseSection>
-      <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se nezobrazuje přepínač, DUZP ani Období DPH.">
+      <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se nezobrazuje přepínač, DUZP ani Datum DPH.">
         <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
           books={MOCK_BOOKS} documentType="FV" mainSide="MD" status="filed" />
       </ShowcaseSection>
@@ -148,7 +143,7 @@ export function DocumentFormShowcase() {
           currencies={CURRENCIES}
           documentType="FP" rateAmount={1}
           homeCurrency="CZK" homeCurrencySymbol="Kč"
-          vat={{ visible: true, periodLabel: VAT_PERIODS[0].label, periodFiled: true }}
+          vat={{ visible: true, periodFiled: true }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"

@@ -262,13 +262,13 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Povinnost stranových polí určuje `sideFieldRules(account, { dimensionRequired })` podle `account.category` a `account.accountType`: VS u `pohledavky` / `zavazky` / `poskytnute_zalohy` / `prijate_zalohy` / `saldokonto`, zakázka u `bilance` při `dimensionRequired`, partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany, rozhoduje databáze.
 - Stranová pole jsou i v rozbalitelném detailu řádku (Alt+↓); chybějící povinné pole se v řádku ukazuje jako kompaktní štítek.
 - Nedaňový (`non_tax`) nemá vlastní sloupec – je to přepínací značka u částky (jen u nákladových / výnosových účtů, zkratka Alt+N) a zaškrtávátko v detailu řádku; výjimky určuje `isNonTaxAllowed(line)`.
-- Řádek haléřového vyrovnání (`isRounding`) je vždy poslední, šedý, jen pro čtení a bez akcí, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu". U dokladu s hlavním účtem a `totalMode="entered"` se proti `totalAmount` ukazuje „Zbývá rozepsat" a při rozdílu do `roundingLimit` tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`).
+- Řádek zaokrouhlení (`isRounding`) je vždy poslední, šedý, jen pro čtení a bez akcí, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu". U dokladu s hlavním účtem a `totalMode="entered"` se proti `totalAmount` ukazuje „Zbývá rozepsat" a při rozdílu do `roundingLimit` tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`).
 - U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, zakázky, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.
 - Účet se hledá číselným prefixem; neaktivní a `postable: false` účty jsou viditelné, ale nevolitelné.
 - Nový řádek přebírá text, VS, partnera a zakázku z předchozího řádku, jinak z `defaults`; kladný zbytek do `totalAmount` předvyplní částku.
 - Komponenta vždy kontroluje MD účet, DAL účet a nenulovou částku. Další účetní pravidla dodává aplikace přes `validate`.
-- Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; Kč částka se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
+- Zapnutí `showCurrency` přidá Měnu, Částku v měně a Kurz; částka v domácí měně se přepočítá na dvě desetinná místa, ale zůstává ručně upravitelná.
 - Každá produkční instance má stabilní `storageKey`, aby se zachovaly šířky sloupců, zoom a hustota.
 
 ## Režim více oken (panely)

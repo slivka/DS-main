@@ -84,7 +84,6 @@ export type DocumentAccountingDateLink = { locked: boolean; onToggle: (locked: b
 export type DocumentVatConfig = {
   visible: boolean;
   relevantReadOnly?: boolean;
-  periodLabel?: string;
   periodFiled?: boolean;
   dateLink?: { locked: boolean; onToggle: (locked: boolean) => void; lockedHint?: string; unlockedHint?: string };
   dateLockReadOnly?: boolean;
@@ -97,7 +96,7 @@ export type DocumentFormTexts = {
   status: string; approved: string; yes: string; no: string;
   accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
-  description: string; currency: string; rate: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string;
+  description: string; currency: string; rate: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
@@ -110,7 +109,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
   partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
-  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP",
+  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
   linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
 };
@@ -248,7 +247,7 @@ export function DocumentForm({
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning = !linkedPartner && /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) && !isValidCzIco(counterpartyIco);
   const showMainAccount = f.mainAccount && !hideIdentityAccount;
-  const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? "Období je podané – doklad půjde do dodatečného přiznání" : undefined;
+  const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? t.filedWarning : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
   const changeRounding = (roundingAmount: number) => {
@@ -297,7 +296,7 @@ export function DocumentForm({
           {date("accountingDate", t.accountingDate)}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
-          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-15", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vatDateWarning ? undefined : vat?.periodLabel, warning: vatDateWarning ? `${vatDateWarning}${vat?.periodLabel ? ` · ${vat.periodLabel}` : ""}` : undefined }) : null}
+          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-15", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, warning: vatDateWarning }) : null}
            {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 

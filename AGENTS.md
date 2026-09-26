@@ -21,3 +21,4 @@
 - Obnovit znamená pouze znovu načíst serverová data a stojí úplně vpravo za oddělovačem; rozložení se obnovuje pouze v nabídce Sloupce.
 - Sbalitelné panely mají šipku vpravo a jejich stav řídí aplikace přes props, nikdy `localStorage`.
 - Pohled provozovatele napříč pracovními prostory vždy označte accent štítkem; panely nastavení prostoru a firmy vždy pojmenují upravovaný objekt přes `context`.
+- Adaptivní sloupce `JournalLinesEditor` řídí čistý výpočet ze změřené šířky, zoomu a šířek sloupců; pevné breakpointy by nereagovaly na uživatelské nastavení.
