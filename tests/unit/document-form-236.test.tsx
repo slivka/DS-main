@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 
 const value: DocumentHeaderValue = { accountingDate: "2026-09-26", issueDate: "2026-09-26", currency: "CZK", amountTotal: 1000, totalMode: "entered" };
-const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm title="Pokladní doklad" documentType="PO" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
+const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Pokladní doklad" documentType="PO" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
 
 describe("DocumentForm 2.36.0 – limit a popisek haléřového vyrovnání", () => {
   it("výchozí limit je 1 Kč a popisek je výchozí", () => {

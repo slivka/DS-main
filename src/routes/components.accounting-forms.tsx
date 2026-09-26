@@ -176,7 +176,8 @@ function AccountingFormsPage() {
           sideFields="shared"
           storageKey="showcase-journal-czk"
           defaults={{ text: "Servisní práce za leden 2026", vs: "2026000012", partnerId: "p1" }}
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
           {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
         </p>
@@ -192,7 +193,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          documentCurrency="EUR"
+          documentCurrency="EUR" documentCurrencySymbol="€"
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           rate={25.12}
           totalAmount={2512}
@@ -214,7 +215,8 @@ function AccountingFormsPage() {
           sideFields="split"
           totalAmount={6000}
           storageKey="showcase-journal-split"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -232,7 +234,8 @@ function AccountingFormsPage() {
           totalAmount={3500.5}
           sideFields="shared"
           storageKey="showcase-journal-cash"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -249,7 +252,8 @@ function AccountingFormsPage() {
           totalAmount={9800}
           sideFields="shared"
           storageKey="showcase-journal-posted"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -268,7 +272,8 @@ function AccountingFormsPage() {
           })}
           sideFields="shared"
           storageKey="showcase-journal-validation"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -283,7 +288,8 @@ function AccountingFormsPage() {
           partners={MOCK_PARTNERS}
           dimensionRequired
           storageKey="showcase-journal-internal"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -300,7 +306,8 @@ function AccountingFormsPage() {
           totalAmount={12100.4}
           totalMode="entered"
           storageKey="showcase-journal-invoice"
-        />
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
       </ShowcaseSection>
 
       <ShowcaseSection
@@ -313,7 +320,7 @@ function AccountingFormsPage() {
           accounts={MOCK_ACCOUNTS}
           dimensions={MOCK_DIMENSIONS}
           partners={MOCK_PARTNERS}
-          documentCurrency="EUR"
+          documentCurrency="EUR" documentCurrencySymbol="€"
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           rate={24.8}
           mode="mainAccount" mainSide="MD" mainAccount="221002"
