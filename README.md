@@ -20,7 +20,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.43.0 – edit dokladu 6, část B
 
-- Breaking: `DocumentHeaderValue.vatPeriod` nahrazuje `vatDate`; `vat.periodOptions`, `periodReadOnly`, `relevant` a `onRelevantChange` byly odstraněny. Stav přepínače je `value.vatRelevant`, období popisuje `vat.periodLabel` a Datum DPH řídí `vat.dateLink` / `dateLockReadOnly`.
+- Breaking: `DocumentHeaderValue.vatDate` nahrazuje `vatPeriod`; `vat.periodOptions`, `periodReadOnly`, `relevant` a `onRelevantChange` byly odstraněny. Stav přepínače je `value.vatRelevant`, období popisuje `vat.periodLabel` a Datum DPH řídí `vat.dateLink` / `dateLockReadOnly`.
 - `JournalLinesEditor` začíná editaci jedním klikem i psaním, otevírá výběry, naviguje Tabem, má responzivní sloupce, připnuté Akce a přepínač ND v částce. `AccountOption` přidává `nonTaxDefault`.
 - Stav dokladu je u titulku přes `PageHeader.titleBadge`; přepínač DPH je v pruhu akcí. Rekapitulace používá záložkový řádek bez nadpisu.
 - Breaking: `LegalFormField.options` je povinné a hodnota je kód. `CurrencyOption.symbol`, `homeCurrencySymbol` a explicitní domácí měna nahrazují pevné CZK/Kč.
@@ -28,9 +28,9 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.41.0 – Vstupuje do DPH
 
-- `DocumentForm.vat` přidává řízený přepínač přes `relevant`, `relevantReadOnly` a `onRelevantChange`.
+- Ve verzi 2.41 `DocumentForm.vat` přidalo řízený přepínač přes dnes již odstraněné props `relevant` a `onRelevantChange`.
 - Vypnutý příznak skryje DUZP a Období DPH bez mazání hodnot; neplátce nevidí žádné prvky DPH.
-- Bez `onRelevantChange` zůstává dosavadní zobrazení DUZP a Období DPH beze změny.
+- Tato konfigurace byla ve verzi 2.43 nahrazena hodnotou `value.vatRelevant`.
 
 ## Changelog 2.40.0 – kontext panelů a detail prostoru
 
@@ -42,7 +42,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 ## Changelog 2.38.0 – data a období DPH na dokladu
 
 - `DateField` podporuje řízené svázané datum: zamčené pole nahrazuje kalendář zámkem, odemčené nabízí opětovné svázání.
-- `DocumentForm` přidává `accountingDateLink`, `vat` a `vatPeriod`; DUZP a Období DPH kotví v pravé části sekce Data a umí rozlišit podané období.
+- `DocumentForm` ve verzi 2.38 přidalo `accountingDateLink`, `vat` a dnes již nahrazené `vatPeriod`; od verze 2.43 používá Datum DPH (`vatDate`).
 
 ## Changelog 2.36.0 – limit haléřového vyrovnání
 

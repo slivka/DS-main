@@ -20,7 +20,7 @@
 ## Data a období DPH na dokladu (2.38.0)
 
 - `DateField.link` řídí svázání data přes `locked`, `onToggle`, `lockedHint` a `unlockedHint`; zámek je klávesnicově dostupné tlačítko.
-- `DocumentForm.accountingDateLink` zapojuje zámek na Datum účetního případu. `DocumentForm.vat` řídí viditelnost DPH, možnosti období, režim jen pro čtení a upozornění na podané období; `DocumentHeaderValue.vatPeriod` ukládá první den měsíce.
+- `DocumentForm.accountingDateLink` zapojuje zámek na Datum účetního případu. Od verze 2.43 `DocumentForm.vat` řídí viditelnost, popisek období, podané období a zámek Data DPH; `DocumentHeaderValue.vatDate` ukládá konkrétní datum.
 
 ## Edit dokladu 5 (2.36.0)
 
