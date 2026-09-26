@@ -5,6 +5,7 @@ const companySource = readFileSync(new URL("../../src/components/ds/layout/compa
 const periodSource = readFileSync(new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url), "utf8");
 const contextSource = readFileSync(new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url), "utf8");
 const navigationSource = readFileSync(new URL("../../src/routes/components.navigation.tsx", import.meta.url), "utf8");
+const appShellSource = readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8");
 
 describe("CompanySwitcher 2.22.0", () => {
   it("nemá poslední firmy ani nadpis jediného seznamu", () => {
@@ -23,6 +24,20 @@ describe("CompanySwitcher 2.22.0", () => {
     expect(companySource).toContain("open?: boolean");
     expect(companySource).toContain("onOpenChange?: (open: boolean) => void");
     expect(companySource).not.toContain("useState");
+  });
+});
+
+describe("AppShell panel context 2.40.0", () => {
+  it("nabízí badge a context a zkracuje kontext přes TruncatedText", () => {
+    expect(appShellSource).toContain('badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> }');
+    expect(appShellSource).toContain("context?: string");
+    expect(appShellSource).toContain("<TruncatedText");
+  });
+
+  it("ukázka obsahuje tři panely a všech pět stavů uživatele", () => {
+    for (const label of ["Administrace", "Nastavení prostoru", "Nastavení firmy", "Provozovatel · všechny prostory", "Zablokován", "Bez členství", "Nepotvrzený e-mail", "Archivovaný"]) {
+      expect(navigationSource).toContain(label);
+    }
   });
 });
 

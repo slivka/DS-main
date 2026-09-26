@@ -459,8 +459,8 @@ export function AppShell({
         <span className="truncate font-semibold">{currentPanel.title}</span>
         {currentPanel.badge ? (
           <StatusBadge
-            status={currentPanel.badge.tone}
-            config={{ [currentPanel.badge.tone]: currentPanel.badge }}
+            status="panel"
+            config={{ panel: currentPanel.badge }}
             className="h-[1.625rem] shrink-0 px-2 text-[0.75rem]"
           />
         ) : null}
