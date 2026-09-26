@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Sigma, type LucideIcon } from "lucide-react";
 
-import { Checkbox } from "../../ui/checkbox";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Switch } from "../../ui/switch";
