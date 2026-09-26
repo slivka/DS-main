@@ -85,7 +85,7 @@ export function DocumentFormShowcase() {
 
   const [courier, setCourier] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
-    counterpartyName: "Kurýr – Jan Veselý", counterpartyIco: "12345678", counterpartyDic: "CZ12345678", handedOverBy: "Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
+    taxDate: "2026-09-24", vatPeriod: "2026-09-01", counterpartyName: "Kurýr – Jan Veselý", counterpartyIco: "12345678", counterpartyDic: "CZ12345678", handedOverBy: "Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
     amountTotal: 350, totalMode: "entered", mainAccountId: "211001",
   });
   const [cashIn, setCashIn] = useState<DocumentHeaderValue>({
@@ -144,7 +144,7 @@ export function DocumentFormShowcase() {
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
-          documentType="FV" periodLabel="Rok 2026" rateAmount={1}
+          documentType="FP" periodLabel="Rok 2026" rateAmount={1}
           vat={{ visible: true, periodOptions: VAT_PERIODS }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}

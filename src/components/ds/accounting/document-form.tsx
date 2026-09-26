@@ -296,7 +296,7 @@ export function DocumentForm({
           {vat?.visible ? field("document-vatPeriod", t.vatPeriod, <>
             {vat.periodReadOnly ? <Tooltip><TooltipTrigger asChild><div><Input id="document-vatPeriod" readOnly aria-readonly="true" value={selectedVatPeriod?.label ?? t.vatPeriodEmpty} className="h-9 cursor-default" /></div></TooltipTrigger><TooltipContent>{vat.periodReadOnlyHint ?? "Období se řídí DUZP"}</TooltipContent></Tooltip> : <OptionSelect id="document-vatPeriod" value={value.vatPeriod ?? ""} onChange={(vatPeriod) => patch({ vatPeriod: vatPeriod || null })} options={vat.periodOptions.map((option) => ({ value: option.value, label: option.label, muted: option.filed, trailingLabel: option.filed ? t.vatPeriodFiled : undefined }))} placeholder={t.vatPeriodEmpty} emptyLabel={t.vatPeriodEmpty} disabled={!can("vatPeriod")} />}
             {vatPeriodWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{vatPeriodWarning}</p> : null}
-          </>, 3) : null}
+          </>, 3, false, "@min-[40rem]:col-start-18") : null}
            {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 
