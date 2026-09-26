@@ -65,7 +65,6 @@ export * from "./lib/theme";
 export * from "./lib/accounting-utils";
 export * from "./lib/person-name";
 export * from "./lib/postal-code";
-export * from "./lib/regions";
 export * from "./lib/date-time-preferences";
 export * from "./lib/excel-export";
 export * from "./lib/font-scale";

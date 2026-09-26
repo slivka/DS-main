@@ -169,7 +169,7 @@ export function DateField({
         ref={inputRef}
         id={id}
         inputMode="numeric"
-           disabled={disabled || link.toggleDisabled}
+        disabled={disabled || link?.locked}
         readOnly={link?.locked}
         placeholder={placeholder === "Vyberte datum" ? dateFormat.toLowerCase() : placeholder}
         value={text}
@@ -207,7 +207,7 @@ export function DateField({
           type="button"
           variant="ghost"
           size="icon"
-         disabled={disabled || link.toggleDisabled}
+          disabled={disabled || link.toggleDisabled}
           aria-label={lockedHint}
           aria-pressed="true"
           onClick={toggleLink}
@@ -218,7 +218,7 @@ export function DateField({
         type="button"
         variant="ghost"
         size="icon"
-        disabled={disabled}
+         disabled={disabled || link.toggleDisabled}
         aria-label={unlockedHint}
         aria-pressed="false"
         onClick={toggleLink}
