@@ -102,7 +102,12 @@ export function JournalLinesRecap({
     return [...grouped.values()];
   }, [lines]);
   const tabs = React.useMemo(() => [{ id: "accounting", label: "Účtování" }, { id: "jobs", label: "Zakázky" }, ...recapTabs], [recapTabs]);
-  React.useEffect(() => { if (!tabs.some((item) => item.id === activeTab)) changeTab("accounting"); }, [activeTab, tabs]);
+  React.useEffect(() => {
+    if (!tabs.some((item) => item.id === activeTab)) {
+      if (onTabChange) onTabChange("accounting");
+      else setLocalTab("accounting");
+    }
+  }, [activeTab, onTabChange, tabs]);
 
   return <section data-slot="journal-lines-recap" className="bg-card" style={{ fontSize: `${0.875 * zoom}rem` }}>
     <SectionHeading className="m-0 p-0">
