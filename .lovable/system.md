@@ -109,6 +109,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
 - Sbalitelné panely mají šipku vpravo a celý nadpis je klikací. Trvalý stav spravuje aplikace přes řízené props, nikoli komponenta přes `localStorage`.
+- Data DPH (`DUZP`, `Období DPH`) jsou ve formuláři dokladu vždy vpravo; svázané datum se zobrazuje se zámkem místo kalendáře.
 
 ### Kontextový řádek gridu
 

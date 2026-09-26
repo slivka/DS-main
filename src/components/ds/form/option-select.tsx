@@ -1,10 +1,13 @@
+import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
 
 export type SelectOption = {
   value: string;
-  label: string;
+  label: ReactNode;
   disabled?: boolean;
+  muted?: boolean;
+  trailingLabel?: ReactNode;
 };
 
 const EMPTY = "__empty__";
@@ -53,8 +56,8 @@ export function OptionSelect({
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyLabel}</SelectItem> : null}
         {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
         {options.map((o) => (
-          <SelectItem key={o.value} value={o.value} disabled={o.disabled}>
-            {o.label}
+          <SelectItem key={o.value} value={o.value} disabled={o.disabled} className={cn(o.muted && "text-muted-foreground")}>
+            <span className="flex min-w-0 items-center justify-between gap-3"><span className="truncate">{o.label}</span>{o.trailingLabel ? <span className="shrink-0 text-xs">{o.trailingLabel}</span> : null}</span>
           </SelectItem>
         ))}
       </SelectContent>

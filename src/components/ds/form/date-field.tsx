@@ -1,11 +1,12 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Lock, LockOpen } from "lucide-react";
 import { cs } from "date-fns/locale";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Calendar } from "../../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { parseUserDate, useDateTimePreferences } from "../../../lib/date-time-preferences";
 
 function parseISO(value?: string | null): Date | undefined {
@@ -56,7 +57,14 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
   return text;
 }
 
-type DateFieldProps = {
+export type DateFieldLink = {
+  locked: boolean;
+  onToggle: (locked: boolean) => void;
+  lockedHint?: string;
+  unlockedHint?: string;
+};
+
+export type DateFieldProps = {
   id?: string;
   /** hodnota ve formátu YYYY-MM-DD */
   value?: string | null;
@@ -74,6 +82,8 @@ type DateFieldProps = {
   gridZoom?: number;
   /** Informuje formulář nebo filtr o výsledku ruční validace. */
   onValidityChange?: (valid: boolean) => void;
+  /** Řízené svázání se zdrojovým datem. */
+  link?: DateFieldLink;
 };
 
 /** Jednotná komponenta pro zadání data v celé aplikaci. */
@@ -89,6 +99,7 @@ export function DateField({
   minDate,
   gridZoom,
   onValidityChange,
+  link,
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
   const { dateFormat, formatDate } = preferences;
@@ -96,6 +107,7 @@ export function DateField({
   const selected = parseISO(value);
   const [text, setText] = React.useState(value ? formatDate(value) : "");
   const [invalid, setInvalid] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const disabledMatcher = React.useMemo(() => {
     if (maxDate && minDate) return { before: minDate, after: maxDate };
     if (maxDate) return { after: maxDate };
@@ -134,12 +146,24 @@ export function DateField({
     setText(formatDate(`${parsed}T00:00:00`));
   };
 
+  const toggleLink = () => {
+    if (!link) return;
+    const nextLocked = !link.locked;
+    link.onToggle(nextLocked);
+    if (!nextLocked) requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const lockedHint = link?.lockedHint ?? "Stejné jako datum vystavení – klikněte pro úpravu";
+  const unlockedHint = link?.unlockedHint ?? "Znovu svázat s datem vystavení";
+
   return (
-    <div className={cn("relative", className)}>
+    <TooltipProvider><div className={cn("relative", className)}>
       <Input
+        ref={inputRef}
         id={id}
         inputMode="numeric"
         disabled={disabled}
+        readOnly={link?.locked}
         placeholder={placeholder === "Vyberte datum" ? dateFormat.toLowerCase() : placeholder}
         value={text}
         aria-invalid={invalid}
@@ -169,8 +193,30 @@ export function DateField({
             commitText();
           }
         }}
-        className={cn("pr-[2.4em]", inputClassName)}
+        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", link?.locked && "bg-muted/40", inputClassName)}
       />
+      {link?.locked ? (
+        <Tooltip><TooltipTrigger asChild><Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          disabled={disabled}
+          aria-label={lockedHint}
+          aria-pressed="true"
+          onClick={toggleLink}
+          className="date-field-link absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+        ><Lock className="size-[1.05em]" /></Button></TooltipTrigger><TooltipContent>{lockedHint}</TooltipContent></Tooltip>
+      ) : <>
+      {link ? <Tooltip><TooltipTrigger asChild><Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        disabled={disabled}
+        aria-label={unlockedHint}
+        aria-pressed="false"
+        onClick={toggleLink}
+        className="date-field-link absolute right-[2.1em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+      ><LockOpen className="size-[1.05em]" /></Button></TooltipTrigger><TooltipContent>{unlockedHint}</TooltipContent></Tooltip> : null}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -209,6 +255,7 @@ export function DateField({
           />
         </PopoverContent>
       </Popover>
-    </div>
+      </>}
+    </div></TooltipProvider>
   );
 }

@@ -20,12 +20,16 @@ const USERS = [
   { id: "u2", name: "Jana Nováková" },
   { id: "u3", name: "Tomáš Dvořák" },
 ];
+const VAT_PERIODS = [
+  { value: "2026-08-01", label: "08/2026 · KH srpen 2026 / DPH 3.Q 2026", filed: true },
+  { value: "2026-09-01", label: "09/2026 · KH září 2026 / DPH 3.Q 2026" },
+];
 
 const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
     taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-   description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true,
+     description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true, vatPeriod: "2026-08-01",
    rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
   amountTotal: 174.7, totalMode: "sum", roundingAmount: 0, mainAccountId: "311001",
 };
@@ -44,6 +48,7 @@ const SCHEDULE: PaymentScheduleItem[] = [
 
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
 export function DocumentFormShowcase() {
+  const [cashDateLocked, setCashDateLocked] = useState(true);
   const [handedSuggestions, setHandedSuggestions] = useState(true);
   const [descriptionSuggestions, setDescriptionSuggestions] = useState(true);
   const suggestNames = async (query: string) => ["Jan Veselý", "Jana Nováková", "Petr Svoboda"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
@@ -61,7 +66,7 @@ export function DocumentFormShowcase() {
 
   const [cash, setCash] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "in", accountingDate: "2026-09-23", issueDate: "2026-09-23",
-    taxDate: "2026-09-23", partnerId: "p2", counterpartyIco: "27074358", counterpartyDic: "CZ27074358", handedOverBy: "Jana Nováková", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
+    taxDate: "2026-09-23", vatPeriod: "2026-09-01", partnerId: "p2", counterpartyIco: "27074358", counterpartyDic: "CZ27074358", handedOverBy: "Jana Nováková", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
     amountTotal: 1250, totalMode: "entered", roundingAmount: 0.4, mainAccountId: "211001",
   });
   const [cashLines, setCashLines] = useState<JournalLine[]>([
@@ -111,6 +116,7 @@ export function DocumentFormShowcase() {
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
+          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, periodOptions: VAT_PERIODS, periodReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
@@ -128,7 +134,7 @@ export function DocumentFormShowcase() {
       </ShowcaseSection>
       <ShowcaseSection title="Interní doklad" description="ID bez partnera skládá popis do sekce Data.">
         <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
-          books={MOCK_BOOKS} documentType="ID" status="filed" />
+          books={MOCK_BOOKS} documentType="ID" status="filed" vat={{ visible: false, periodOptions: [] }} />
       </ShowcaseSection>
       <ShowcaseSection title="Faktura přijatá s platebním kalendářem"
         description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kalendář je druhá záložka: 3 splátky a pozastávka.">
@@ -139,6 +145,7 @@ export function DocumentFormShowcase() {
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
           documentType="FV" periodLabel="Rok 2026" rateAmount={1}
+          vat={{ visible: true, periodOptions: VAT_PERIODS }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
