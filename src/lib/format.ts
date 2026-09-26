@@ -229,7 +229,7 @@ export function getFormatSettings(): FormatSettings {
 
 const NBSP = "\u00a0";
 
-/** Částka s tisíci oddějenými mezerou a pevným počtem desetinných míst. */
+/** Částka s tisíci oddělenými mezerou a pevným počtem desetinných míst. */
 export function formatAmount(
   value: number | null | undefined,
   decimals = settings.decimals,
