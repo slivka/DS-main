@@ -26,8 +26,8 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
   const controlId = id ?? `checkbox-${autoId}`;
   const hintId = hint ? `${controlId}-hint` : undefined;
   return (
-    <div data-slot="checkbox-field" data-align={align} className={cn(align === "input" && "pt-[calc(1.25rem+0.25rem)]", className)}>
-      <div className={cn("flex items-start gap-2", align === "input" && "min-h-9 items-center")}>
+    <div data-slot="checkbox-field" data-align={align} className={cn(align === "input" && "@min-[40rem]:pt-6", className)}>
+      <div className={cn("flex items-start gap-2", align === "input" && "items-center @min-[40rem]:min-h-9")}>
         <Checkbox
           ref={ref}
           id={controlId}
