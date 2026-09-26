@@ -143,7 +143,7 @@ export function RecordDialog({
       void lifecycleAction.onClick({ saveFirst: false });
       return;
     }
-    confirm({ title: plan.title, description: plan.description, confirmLabel: plan.confirmLabel, cancelLabel, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
+    confirm({ title: plan.title, ...(plan.description ? { description: plan.description } : {}), confirmLabel: plan.confirmLabel, cancelLabel, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
   };
   const statusBadge = status ? (
     <StatusBadge
