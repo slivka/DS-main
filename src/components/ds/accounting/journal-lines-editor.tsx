@@ -156,19 +156,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const [containerWidth, setContainerWidth] = React.useState(0);
   const [rootRemPx, setRootRemPx] = React.useState(16);
   const setRootRef = React.useCallback((node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; }, [forwardedRef]);
-  React.useEffect(() => {
-    let frame = 0;
-    const measure = () => {
-      const node = rootRef.current;
-      if (node) {
-        setContainerWidth(node.getBoundingClientRect().width);
-        setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
-      }
-      frame = requestAnimationFrame(measure);
-    };
-    frame = requestAnimationFrame(measure);
-    return () => cancelAnimationFrame(frame);
-  }, []);
+  React.useEffect(() => { const node = rootRef.current; if (!node) return; const update = () => { setContainerWidth(node.getBoundingClientRect().width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; update(); const observer = new ResizeObserver(update); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", update); return () => { observer.disconnect(); window.removeEventListener("resize", update); }; }, []);
   const foreign = documentCurrency !== homeCurrency; const canReorder = (reorderable ?? editable.size > 0) && !search;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const accountByCode = React.useMemo(() => new Map(accounts.map((account) => [account.code, account])), [accounts]);
