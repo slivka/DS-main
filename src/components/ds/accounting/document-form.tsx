@@ -246,7 +246,7 @@ export function DocumentForm({
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
       documentCurrency={value.currency} homeCurrency={homeCurrency} rate={value.rate} rateAmount={rateAmount}
       totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields}
-      rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: t.rounding } : undefined} />,
+      rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
