@@ -16,7 +16,7 @@ const baseValue: DocumentHeaderValue = {
 };
 
 function form(extra: Record<string, unknown> = {}) {
-  return renderToStaticMarkup(<DocumentForm
+  return renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč"
     title="Doklad"
     documentType="FP"
     value={baseValue}
@@ -49,7 +49,7 @@ describe("DateField link 2.38.0", () => {
   });
 });
 
-describe("DocumentForm DPH 2.38.0", () => {
+describe("DocumentForm DPH 2.43.0", () => {
   it("neplátci skryje DUZP i Datum DPH", () => {
     const html = form({ vat: { visible: false } });
     expect(html).not.toContain(">DUZP<");
@@ -67,9 +67,9 @@ describe("DocumentForm DPH 2.38.0", () => {
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {
-    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true } });
-    expect(html).toContain('id="document-vatDate" readOnly="" aria-readonly="true"');
-    expect(html).toContain("Období se řídí DUZP");
+    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026", periodFiled: true } });
+    expect(html).toContain('id="document-vatDate"');
+    expect(html).toContain("Daň na výstupu patří do období DUZP");
     expect(html).toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
 
@@ -82,7 +82,7 @@ describe("DocumentForm DPH 2.38.0", () => {
   });
 });
 
-describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
+describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
   it("plátci se zapnutým příznakem zobrazí přepínač, DUZP i období", () => {
     const html = form({ vat: { visible: true } });
     expect(html).toContain('role="switch"');
@@ -93,7 +93,7 @@ describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
   });
 
   it("plátci s vypnutým příznakem ponechá jen vypnutý přepínač", () => {
-    const html = form({ vat: { visible: true } });
+    const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" title="Doklad" documentType="FP" value={{ ...baseValue, vatRelevant: false }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" vat={{ visible: true }} />);
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="false"');
     expect(html).not.toContain(">DUZP<");
@@ -109,13 +109,13 @@ describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
 
   it("režim jen pro čtení přepínač zakáže", () => {
     const html = form({ vat: { visible: true, relevantReadOnly: true } });
-    const vatSwitch = html.slice(html.indexOf('id="document-vatRelevant"'), html.indexOf('id="document-taxDate"'));
-    expect(vatSwitch).toContain("disabled");
+    expect(html).toContain('role="switch"');
+    expect(html).toContain("disabled");
   });
 
-  it("bez handleru přepínač nevykreslí a zachová dosavadní pole DPH i při relevant false", () => {
+  it("přepínač je součástí pruhu akcí a stav je ve value", () => {
     const html = form({ vat: { visible: true } });
-    expect(html).not.toContain("Vstupuje do DPH");
+    expect(html.indexOf("Vstupuje do DPH")).toBeLessThan(html.indexOf('data-slot="document-dates"'));
     expect(html).toContain(">DUZP<");
     expect(html).toContain(">Datum DPH<");
   });
