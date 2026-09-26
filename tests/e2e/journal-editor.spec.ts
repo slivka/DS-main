@@ -31,7 +31,7 @@ test.describe("JournalLinesEditor", () => {
 
     await text.click();
     await text.press("a");
-    await page.getByRole("heading", { name: "Řádky" }).click();
+    await page.getByRole("heading", { name: "Řádky", exact: true }).first().click();
     await expect(text).toContainText("a");
 
     await amount.click();
