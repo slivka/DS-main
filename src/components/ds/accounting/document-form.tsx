@@ -201,8 +201,9 @@ export function DocumentForm({
   const normalizedType = documentType.toUpperCase();
   const forcedSum = normalizedType === "ID" || normalizedType === "UZ";
   const totalMode = forcedSum ? "sum" : value.totalMode;
-  const linesSum = Math.round(lines.filter((line) => !line.isRounding).reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
-  const roundedLinesSum = Math.round((linesSum + (value.roundingAmount ?? 0)) * 100) / 100;
+  const linesSum = Math.round(lines.filter((line) => !line.isRounding && !line.isFxRounding).reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
+  const lineRounding = lines.find((line) => line.isRounding)?.amount;
+  const roundedLinesSum = Math.round((linesSum + (lineRounding ?? value.roundingAmount ?? 0)) * 100) / 100;
   const total = totalMode === "sum" ? roundedLinesSum : value.amountTotal;
   const partner = partners.find((item) => item.id === value.partnerId);
   const account = accounts.find((item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""));
@@ -228,13 +229,20 @@ export function DocumentForm({
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning = !linkedPartner && /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) && !isValidCzIco(counterpartyIco);
   const showMainAccount = f.mainAccount && !hideIdentityAccount;
+  const changeRounding = (roundingAmount: number) => {
+    patch({ roundingAmount });
+    const roundingLine = lines.find((line) => line.isRounding);
+    if (roundingLine) onLinesChange(lines.map((line) => line.id === roundingLine.id ? { ...line, amount: roundingAmount } : line));
+    else if (roundingAmount) onLinesChange([...lines, { id: `rounding-${Date.now()}`, amount: roundingAmount, text: t.rounding, isRounding: true }]);
+  };
 
   const allTabs: DocumentFormTab[] = [{
     id: "lines", label: t.linesTab, badge: lines.length || undefined,
     content: <JournalLinesEditor lines={lines} onChange={onLinesChange} accounts={accounts} dimensions={dimensions} partners={partners}
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
+      documentCurrency={value.currency} homeCurrency={homeCurrency} rate={value.rate} rateAmount={rateAmount}
       totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields}
-      rounding={f.rounding ? { value: value.roundingAmount ?? 0, onChange: can("roundingAmount") ? (roundingAmount) => patch({ roundingAmount }) : undefined, readOnly: !can("roundingAmount"), label: t.rounding } : undefined} />,
+      rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: t.rounding } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
@@ -273,11 +281,11 @@ export function DocumentForm({
         <SectionHeading>{showMainAccount ? t.accountingSection : t.amountOnlySection}</SectionHeading>
         <div className="grid grid-cols-20 gap-3">
           {showMainAccount ? field("document-main-account", mainAccountLabel, accountLocked ? <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} /> : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />, 14, false, "@min-[40rem]:pr-3") : null}
-          {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
-          {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 3) : null}
+           {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
+           {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} homeCurrency={homeCurrency} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} />, 5) : null}
           {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
-           {field("document-amountTotal", t.amountTotal, <div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className="h-11 pr-11 text-right font-mono text-xl font-bold tabular-nums" /><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className={cn("absolute right-1 top-1 size-9", totalMode === "sum" ? "text-primary" : "text-muted-foreground")}><Sigma className="size-4" /></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka zadaná ručně – rozdíl proti rozpisu je vidět pod řádky"}</TooltipContent></Tooltip></div>, foreign ? 3 : 6, false, "@min-[40rem]:col-start-15")}
-           {foreign && value.rate != null ? field("document-total-home", t.totalHomeCurrency.replace("CZK", homeCurrency), <ReadField id="document-total-home" mono value={<span className="ml-auto font-bold">{formatAmount(convertAmount(total, value.rate, rateAmount), 2)}</span>} />, 3, false, "@min-[40rem]:col-start-18") : null}
+           {foreign ? field("document-foreign-total", `${t.amountTotal.replace("za doklad", "")} v ${value.currency}`, <ReadField id="document-foreign-total" value={<span className="ml-auto text-lg font-bold tabular-nums">{formatAmount(total, 2)}</span>} />, 4) : null}
+           {field("document-amountTotal", foreign ? t.amountTotal : `${t.amountTotal} (${homeCurrency === "CZK" ? "Kč" : homeCurrency})`, <div><div className="relative"><DecimalInput id="document-amountTotal" value={foreign && value.rate != null ? convertAmount(total, value.rate, rateAmount) : total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={foreign || totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><Sigma className="size-4" /></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p className="mt-1 text-xs text-muted-foreground">Sčítá se z rozpisu</p> : null}</div>, 6, false, "@min-[40rem]:col-start-15")}
         </div>
 
         {f.symbols || f.bankAccount || f.paymentOrders ? <>
@@ -292,12 +300,13 @@ export function DocumentForm({
         </> : null}
       </section>
 
-      <Tabs value={tab} onValueChange={setTab}>
+      {allTabs.length === 1 ? <><SectionHeading>{t.linesTab}</SectionHeading><div className="mt-2">{allTabs[0]?.content}</div></> : <Tabs value={tab} onValueChange={setTab}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1"><TabsList className="h-10 gap-1 rounded-none border-b bg-transparent p-0">
           {allTabs.map((item) => <TabsTrigger key={item.id} value={item.id} className="h-10 gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none">{item.label}{item.badge != null ? <span className="rounded-sm bg-muted px-1.5 text-xs tabular-nums text-muted-foreground">{item.badge}</span> : null}</TabsTrigger>)}
         </TabsList>{changedBy ? <span className="text-xs text-muted-foreground">{`${t.changedBy}: ${changedBy}`}</span> : null}{changedAt ? <span className="text-xs text-muted-foreground">{`${t.changedAt}: ${changedAt}`}</span> : null}</div>
         {allTabs.map((item) => <TabsContent key={item.id} value={item.id} className="mt-2">{item.content}</TabsContent>)}
-      </Tabs>
+      </Tabs>}
+      {changedBy || changedAt ? <div className="flex flex-wrap justify-end gap-x-4 text-xs text-muted-foreground">{changedBy ? <span>{`${t.changedBy}: ${changedBy}`}</span> : null}{changedAt ? <span>{`${t.changedAt}: ${changedAt}`}</span> : null}</div> : null}
     </div></TooltipProvider>
   );
 }
@@ -308,7 +317,7 @@ function CompactActionButton({ label, icon: Icon, busy, compact, children, ...pr
 
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
-  return <span data-slot="document-direction-badge" className={cn("inline-flex h-[26px] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
+  return <span data-slot="document-direction-badge" className={cn("inline-flex h-[1.625rem] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
 }
 
 export function DocumentActionBar({ status, approved, saveAction, primaryAction, moreActions = [] }: {
