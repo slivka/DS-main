@@ -377,12 +377,17 @@ export interface GridAddAction {
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const list = React.useMemo(() => Array.isArray(actions) ? actions : [actions], [actions]);
+  // Zkratka N reaguje jen v aktivním panelu a jen když není otevřený dialog,
+  // aby jeden stisk neklikl na Přidat ve všech gridových lištách najednou.
+  const paneActive = useIsActivePane();
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!paneActive) return;
       if (event.defaultPrevented) return;
       if (event.key.toLocaleLowerCase("cs") !== "n" || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]")) return;
+      if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
       const action = list[0];
       if (!action || action.disabled) return;
       event.preventDefault();
@@ -390,7 +395,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [list]);
+  }, [list, paneActive]);
   return (
     <TooltipProvider delayDuration={250}>
       {list.map((action) => {
