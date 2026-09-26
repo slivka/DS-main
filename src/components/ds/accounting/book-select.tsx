@@ -87,8 +87,7 @@ export function BookSelect({
       placeholder={placeholder}
       disabled={disabled}
       className={className}
-      options={active
-        .map((book) => ({ value: book.id, label: formatBook(book, typeLabels) }))}
+      options={books.map((book) => ({ value: book.id, label: formatBook(book, typeLabels), inactive: book.active === false }))}
     />
   );
 }

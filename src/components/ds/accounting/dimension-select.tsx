@@ -12,6 +12,7 @@ import {
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { InactiveTag } from "../data-display/inactive-tag";
 
 export type DimensionOption = {
   id: string;
@@ -23,6 +24,8 @@ export type DimensionOption = {
   selectable?: boolean;
   /** Vysvětlení, proč nejde vybrat. */
   reason?: string;
+  /** Neaktivní položka se nenabízí; vybraná se ukáže se štítkem „neaktivní“. */
+  active?: boolean;
 };
 
 const label = (option: DimensionOption) =>
@@ -30,7 +33,7 @@ const label = (option: DimensionOption) =>
 
 /** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
 export function DimensionSelect({
-  options,
+  options: allOptions,
   value,
   onChange,
   placeholder = "Vyberte zakázku",
@@ -46,8 +49,10 @@ export function DimensionSelect({
   onKeyDown,
   id,
   className,
+  inactiveLabel = "neaktivní",
 }: {
   options: DimensionOption[];
+  inactiveLabel?: string;
   value: string | null | undefined;
   onChange: (id: string) => void;
   placeholder?: string;
@@ -78,6 +83,8 @@ export function DimensionSelect({
     onOpenChange?.(next);
   };
 
+  const options = useMemo(() => allOptions.filter((option) => option.active !== false), [allOptions]);
+  const selectedAny = value ? allOptions.find((option) => option.id === value) : undefined;
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
   const childrenOf = useMemo(() => {
     const map = new Map<string, DimensionOption[]>();
@@ -107,7 +114,7 @@ export function DimensionSelect({
     return keep;
   }, [byId, options, query]);
 
-  const selected = value ? byId.get(value) : undefined;
+  const selected = selectedAny;
 
   const renderCommandNode = (option: DimensionOption, level: number): React.ReactNode => {
     const children = childrenOf.get(option.id) ?? [];
@@ -190,7 +197,7 @@ export function DimensionSelect({
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? label(selected) : placeholder}
+            {selected ? label(selected) : placeholder}{selected?.active === false ? <InactiveTag label={inactiveLabel} className="ml-2" /> : null}
           </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
