@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, SlidersHorizontal, Users } from "lucide-react";
+import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, Settings, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
@@ -12,6 +12,10 @@ import {
   ThemeSetting,
   CompanySwitcher,
   PeriodSwitcher,
+  DataGrid,
+  RecordDialog,
+  StatusBadge,
+  type DataGridColumn,
   type NavGroup,
   type NavItem,
 } from "@/components/ds";
@@ -98,6 +102,35 @@ const ADMIN_NAV: NavItem[] = [
 
 const PREVIEW_WIDTHS = [1440, 1100, 390] as const;
 
+type UserStatus = "blocked" | "operator" | "unassigned" | "unconfirmed" | "archived";
+type UserRow = { id: string; name: string; email: string; workspace: string; status: UserStatus };
+const USER_STATUS = {
+  blocked: { label: "Zablokován", tone: "danger" },
+  operator: { label: "Provozovatel", tone: "accent" },
+  unassigned: { label: "Bez členství", tone: "neutral" },
+  unconfirmed: { label: "Nepotvrzený e-mail", tone: "warning" },
+  archived: { label: "Archivovaný", tone: "neutral" },
+} as const;
+const USER_ROWS: UserRow[] = [
+  { id: "u1", name: "Petr Slivka", email: "petr@slivka.cz", workspace: "Slivka Holding", status: "operator" },
+  { id: "u2", name: "Jana Nováková", email: "jana@example.cz", workspace: "Slivka Holding", status: "blocked" },
+  { id: "u3", name: "Martin Dvořák", email: "martin@example.cz", workspace: "—", status: "unassigned" },
+  { id: "u4", name: "Eva Malá", email: "eva@example.cz", workspace: "Auditní prostor", status: "unconfirmed" },
+  { id: "u5", name: "Tomáš Veselý", email: "tomas@example.cz", workspace: "Archiv 2025", status: "archived" },
+];
+const USER_COLUMNS: DataGridColumn<UserRow>[] = [
+  { id: "name", label: "Uživatel", value: (row) => row.name },
+  { id: "email", label: "E-mail", value: (row) => row.email },
+  { id: "workspace", label: "Pracovní prostor", value: (row) => row.workspace },
+  { id: "status", label: "Stav", value: (row) => USER_STATUS[row.status].label, render: (row) => <StatusBadge status={row.status} config={USER_STATUS} /> },
+];
+
+const DETAIL_ROWS = {
+  members: [{ id: "m1", name: "Petr Slivka", role: "Správce" }, { id: "m2", name: "Jana Nováková", role: "Účetní" }],
+  invitations: [{ id: "i1", email: "novy.clen@example.cz", state: "Čeká na přijetí" }],
+  companies: [{ id: "c1", name: "Slivka Accounting s.r.o.", ico: "12345678" }, { id: "c2", name: "Slivka Services s.r.o.", ico: "87654321" }],
+};
+
 function NavigationPage() {
   const [activePanel, setActivePanel] = useState<string | null>(null);
   const [canEdit, setCanEdit] = useState(false);
@@ -105,6 +138,7 @@ function NavigationPage() {
   const [periodId, setPeriodId] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
   const [companyPreviewOpen, setCompanyPreviewOpen] = useState(true);
+  const [workspaceDetailOpen, setWorkspaceDetailOpen] = useState(false);
   const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
 
   return (
@@ -172,35 +206,40 @@ function NavigationPage() {
 
       <ShowcaseSection
         title="Panely aplikace"
-        description="V horní liště jsou samostatná tlačítka Nastavení firmy a Administrace. Otevřený panel nahradí hlavní menu a zavře se výrazným tlačítkem nebo klávesou Esc."
+        description="Horní lišta má samostatné panely Administrace, Nastavení prostoru a Nastavení firmy. Provozovatel je označen napříč prostory a nastavení vždy uvádí svůj kontext."
       >
-        <div className="rounded-lg border bg-card">
-          <div className="flex items-center gap-2 border-b px-3 py-2">
-            <span className="font-semibold">
-              {activePanel === "admin" ? "Administrace" : "Slivka Accounting"}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto"
-              onClick={() => setActivePanel((value) => value === "admin" ? null : "admin")}
-            >
-              {activePanel === "admin" ? "Zpět do aplikace" : "Administrace"}
-            </Button>
+        <div className="overflow-hidden rounded-lg border bg-card">
+          <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
+            <Button variant={activePanel === "admin" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "admin" ? null : "admin")}>Administrace</Button>
+            <Button variant={activePanel === "workspace" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "workspace" ? null : "workspace")}>Nastavení prostoru</Button>
+            <Button variant={activePanel === "company" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "company" ? null : "company")}>Nastavení firmy</Button>
           </div>
-          <ul className="space-y-0.5 p-2">
-            {(activePanel === "admin" ? ADMIN_NAV : NAV_GROUPS[0].items).map((item) => (
-              <li
-                key={item.label}
-                className="hover-surface flex items-center gap-2 rounded-md px-3 py-2 text-sm"
-              >
-                {item.icon ? <item.icon className="size-4 shrink-0" /> : null}
-                {item.label}
-              </li>
-            ))}
-          </ul>
+          <div className="flex min-h-14 items-center gap-2 bg-muted px-3 py-2">
+            {activePanel === "admin" ? <><ShieldCheck className="size-4" /><strong>Administrace</strong><StatusBadge status="operator" config={{ operator: { label: "Provozovatel · všechny prostory", tone: "accent" } }} /></> : null}
+            {activePanel === "workspace" ? <><Settings className="size-4" /><div><strong className="block">Nastavení prostoru</strong><span className="block text-xs text-muted-foreground">Slivka Holding</span></div></> : null}
+            {activePanel === "company" ? <><SlidersHorizontal className="size-4" /><div><strong className="block">Nastavení firmy</strong><span className="block text-xs text-muted-foreground">Slivka Accounting s.r.o.</span></div></> : null}
+            {!activePanel ? <span className="text-sm text-muted-foreground">Vyberte panel v horní liště.</span> : null}
+          </div>
         </div>
       </ShowcaseSection>
+
+      <ShowcaseSection title="Uživatelé napříč prostory" description="Administrace provozovatele rozlišuje bezpečnostní stav a členství každého uživatele.">
+        <DataGrid<UserRow> storageKey="ds-navigation-users" title="Uživatelé" showTitle rows={USER_ROWS} columns={USER_COLUMNS} rowKey={(row) => row.id} paginated={false} showTotalRow={false} onRowClick={() => setWorkspaceDetailOpen(true)} />
+        <div className="mt-3"><Button variant="outline" onClick={() => setWorkspaceDetailOpen(true)}>Otevřít detail prostoru</Button></div>
+      </ShowcaseSection>
+
+      <RecordDialog
+        open={workspaceDetailOpen}
+        onOpenChange={setWorkspaceDetailOpen}
+        title="Slivka Holding"
+        readOnly
+        wide
+        tabs={[
+          { value: "members", label: "Členové", content: <DataGrid storageKey="ds-workspace-members" rows={DETAIL_ROWS.members} columns={[{ id: "name", label: "Člen", value: (row) => row.name }, { id: "role", label: "Role", value: (row) => row.role }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
+          { value: "invitations", label: "Pozvánky", content: <DataGrid storageKey="ds-workspace-invitations" rows={DETAIL_ROWS.invitations} columns={[{ id: "email", label: "E-mail", value: (row) => row.email }, { id: "state", label: "Stav", value: (row) => row.state }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
+          { value: "companies", label: "Firmy", content: <DataGrid storageKey="ds-workspace-companies" rows={DETAIL_ROWS.companies} columns={[{ id: "name", label: "Firma", value: (row) => row.name }, { id: "ico", label: "IČO", value: (row) => row.ico }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
+        ]}
+      />
 
       <ShowcaseSection
         title="Režim více oken"

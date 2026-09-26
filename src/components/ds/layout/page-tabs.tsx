@@ -17,7 +17,7 @@ export interface PageTabsProps extends React.ComponentPropsWithoutRef<typeof Tab
 
 /** Přepínač rovnocenných sekcí stránky pod hlavním nadpisem. */
 export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function PageTabs(
-  { items, listLabel = "Sekce stránky", className, ...props },
+  { items, listLabel = "Sekce stránky", className, children, ...props },
   ref,
 ) {
   return (
@@ -29,7 +29,7 @@ export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function
           </TabsTrigger>
         ))}
       </TabsList>
-      {props.children}
+      {children}
     </Tabs>
   );
 });
