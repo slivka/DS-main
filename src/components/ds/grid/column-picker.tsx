@@ -244,7 +244,6 @@ export function ColumnPicker<Id extends string>({
                       checked={!!visible[c.id]}
                       disabled={c.locked}
                       onCheckedChange={() => !c.locked && onToggle(c.id)}
-                      className="size-[1.25em]"
                     />
                     <span className="truncate text-[1em] text-foreground">
                       {c.label

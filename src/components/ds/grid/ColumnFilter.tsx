@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { Filter, Check, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
+import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
@@ -120,23 +121,13 @@ export function ColumnFilter({ options, selected, onChange, label, children, tex
                     {section.options.map((opt) => {
                       const checked = selected.has(opt.value);
                       return (
-                        <button
+                        <label
                           key={opt.value}
-                          type="button"
-                          className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs hover-surface"
-                          onClick={() => toggle(opt.value)}
+                          className="flex w-full cursor-pointer items-center gap-2 px-2 py-1.5 text-left text-xs hover-surface"
                         >
-                          <span
-                            className={`flex size-4 items-center justify-center rounded border ${
-                              checked
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : "border-input"
-                            }`}
-                          >
-                            {checked && <Check className="size-3" />}
-                          </span>
+                          <Checkbox checked={checked} onCheckedChange={() => toggle(opt.value)} />
                           <span className="truncate">{opt.label || "—"}</span>
-                        </button>
+                        </label>
                       );
                     })}
                   </div>

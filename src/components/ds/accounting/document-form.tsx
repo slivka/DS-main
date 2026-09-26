@@ -11,6 +11,7 @@ import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { PageHeader } from "../layout/page-header";
+import { CheckboxField } from "../form/checkbox-field";
 import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
 import { DateField } from "../form/date-field";
@@ -320,7 +321,7 @@ export function DocumentForm({
             {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
             {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
             {f.bankAccount ? text("bankAccount", t.bankAccount, 6) : null}
-            {f.paymentOrders ? <label className="col-span-20 flex items-center gap-2 text-sm"><Checkbox checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked === true })} />{t.excludeFromPaymentOrders}</label> : null}
+            {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className="col-span-20" label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
           </div>
         </> : null}
       </section>

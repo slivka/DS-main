@@ -15,8 +15,8 @@ export function SettingsSection({ title, children, instantSaveHint = "Změny se 
   return (
     <section data-slot="settings-section" className={cn("space-y-2", className)}>
       <div>
-        <SectionHeading>{title}</SectionHeading>
-        <p className="-mt-1 text-xs text-muted-foreground">{instantSaveHint}</p>
+        <SectionHeading className="mb-1">{title}</SectionHeading>
+        <p className="text-xs text-muted-foreground">{instantSaveHint}</p>
       </div>
       <div className="divide-y">{children}</div>
     </section>

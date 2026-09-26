@@ -53,7 +53,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   return (
     <div>
       <SectionHeading>{title}</SectionHeading>
-      {children}
+      <div className="space-y-3">{children}</div>
     </div>
   );
 }
