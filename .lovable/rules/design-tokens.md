@@ -22,6 +22,8 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `muted-foreground` | `--muted-foreground` |
 | `accent` | `--accent` |
 | `accent-foreground` | `--accent-foreground` |
+| `operator-accent` | `--operator-accent` |
+| `operator-accent-foreground` | `--operator-accent-foreground` |
 | `tooltip` | `--tooltip` |
 | `tooltip-foreground` | `--tooltip-foreground` |
 | `tooltip-border` | `--tooltip-border` |

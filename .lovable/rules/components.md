@@ -207,7 +207,7 @@ import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společný rám aplikace s tmavým skupinovým menu, volitelnými bloky přes NavGroup.section, hledáním bez diakritiky, uloženým sbalením skupin a podporou panelů a záložek.
+Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozovatele použijte badge tónu accent; nastavení prostoru a firmy vždy pojmenuje objekt přes context.
 
 **Props:**
 
@@ -253,17 +253,15 @@ Společný rám aplikace s tmavým skupinovým menu, volitelnými bloky přes Na
 
 **Examples:**
 
-_Skupiny a hledání_
+_Panely se stavem a kontextem_
 ```tsx
-const groups = [{ id: 'invoices', label: 'Faktury', section: 'Doklady', items }];
-<AppShell navGroups={groups} navStateKey="accounting" navSearch>{children}</AppShell>
+<AppShell panels={[{ id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace", nav, badge: { label: "Provozovatel · všechny prostory", tone: "accent" } }, { id: "workspace", title: "Nastavení prostoru", icon: Settings, tooltip: "Nastavení prostoru", nav, context: workspace.name }]}>{children}</AppShell>
 ```
 
 **Avoid:**
 
-- Nepoužívejte stejné navStateKey pro nesouvisející aplikace.
-- Nenahrazujte hledání v menu globální CommandPalette.
-- Nemanipulujte stavem záložek při filtrování menu.
+- Nezobrazujte pohled napříč prostory bez štítku provozovatele.
+- Nezobrazujte nastavení prostoru nebo firmy bez context.
 
 ### AsOfDateField
 
@@ -2982,6 +2980,44 @@ import { ReadOnlyBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { RecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `title` | string | `—` |
+| `description` | string | `—` |
+| `onSubmit` | function | `—` |
+| `submitLabel` | string | `Uložit` |
+| `closeLabel` | string | `Zavřít` |
+| `busy` | boolean | `—` |
+| `children` | any | `—` |
+| `extraActions` | any | `—` |
+| `wide` | boolean | `—` |
+| `contentClassName` | string | `—` |
+| `sidePanel` | any | `—` |
+| `sidePanelLabel` | string | `Poznámky` |
+| `sidePanelTitle` | any | `—` |
+| `headerExtra` | any | `—` |
+| `sidePanelExtra` | any | `—` |
+| `readOnly` | boolean | `false` |
+| `tabs` | any | `—` |
+
+**Examples:**
+
+_Detail prostoru jen pro čtení_
+```tsx
+<RecordDialog open={open} onOpenChange={setOpen} title={workspace.name} readOnly tabs={[{ value: "members", label: "Členové", content: <MembersGrid /> }]} />
+```
+
+**Avoid:**
+
+- Nevykreslujte tlačítko Uložit v režimu readOnly.
+- Nevytvářejte vlastní lištu záložek mimo tabs.
+
 ### RecordNotes
 
 ```ts
@@ -3427,6 +3463,19 @@ import { SortHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { StatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Jednotný štítek stavu. Tón accent označuje privilegovaný pohled provozovatele bez chybového významu.
+
+**Examples:**
+
+_Provozovatel_
+```tsx
+<StatusBadge status="operator" config={{ operator: { label: "Provozovatel", tone: "accent" } }} />
+```
+
+**Avoid:**
+
+- Nepoužívejte danger pro provozovatele; danger je vyhrazený pro chyby a blokace.
 
 ### StatusDot
 

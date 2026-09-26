@@ -10,4 +10,3 @@ stack_packages:
     - '@tanstack/react-router'
     - lucide-react
     - tailwindcss
-upstream_versions: {}
