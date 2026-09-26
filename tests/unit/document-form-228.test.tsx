@@ -35,15 +35,15 @@ describe("DocumentForm 2.31.0", () => {
   it("vykreslí badge obou směrů", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
-    expect(incoming).toContain("h-[26px]");
+    expect(incoming).toContain("h-[1.625rem]");
     expect(incoming).toContain("text-sm");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
   });
   it("má badge směru i stavu stejnou výšku", () => {
     const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     const status = renderToStaticMarkup(<DocumentStatusBadge status="draft" size="md" />);
-    expect(direction).toContain("h-[26px]");
-    expect(status).toContain("h-[26px]");
+    expect(direction).toContain("h-[1.625rem]");
+    expect(status).toContain("h-[1.625rem]");
     expect(status).toContain("text-sm");
   });
   it("pruh akcí nemá spodní linku", () => {
@@ -78,7 +78,7 @@ describe("DocumentForm 2.31.0", () => {
     const html = form({ documentType: "PO", value: { ...value, roundingAmount: 0.4 } });
     const amountSection = html.slice(html.indexOf(">Účtování a částka</h2>"), html.indexOf("role=\"tablist\""));
     expect(amountSection).not.toContain('id="document-roundingAmount"');
-    expect(html).toContain('data-slot="journal-lines-rounding"');
+    expect(html).toContain('data-rounding=""');
     expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Haléřové vyrovnání");
   });

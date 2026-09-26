@@ -1,6 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
-  "version": "2.32.0",
+  "version": "2.34.0",
   "private": true,
   "sideEffects": [
     "**/*.css"
