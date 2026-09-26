@@ -1225,7 +1225,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a účetním rozpiseem.
+Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH a navazující daňová data.
 
 **Props:**
 
@@ -1278,14 +1278,15 @@ Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a ú�
 
 **Examples:**
 
-_Doklad s našeptáváním_
+_Doklad plátce s řízeným vlivem na DPH_
 ```tsx
-<DocumentForm {...props} descriptionSuggest={{ enabled, onEnabledChange: setEnabled, load }} />
+<DocumentForm {...props} vat={{ visible: true, relevant: vatRelevant, onRelevantChange: setVatRelevant, periodOptions }} />
 ```
 
 **Avoid:**
 
-- Nevkládejte Celkem ani haléřové vyrovnání do vlastních polí mimo standardní sekce.
+- Nemažte taxDate ani vatPeriod při vypnutí relevant; komponenta je pouze skryje.
+- Nezobrazujte přepínač ani daňová pole, když firma k datu dokladu není plátcem DPH.
 
 ### DocumentStatusBadge
 
