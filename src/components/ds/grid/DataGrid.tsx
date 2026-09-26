@@ -128,7 +128,7 @@ export type DataGridColumn<Row> = {
   value?: ((row: Row) => string | number | null | undefined) | undefined;
   /** Oddějená hodnota použitá pouze pro řazení, například neformátované číslo účtu. */
   sortValue?: ((row: Row) => string | number | null | undefined) | undefined;
-  /** Vlastné vykresjene buňky. */
+  /** Vlastní vykreslení buňky. */
   render?: ((row: Row) => ReactNode) | undefined;
   /** Číselný sloupec – zarovnání vpravo a oddělování tisícov. */
   numeric?: boolean | undefined;

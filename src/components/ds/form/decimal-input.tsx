@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../ui/input";
 import { fmtAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 
-/** Převod uživatelského vstupu s čárkou/tečkou a medzerami na číslo. */
+/** Převod uživatelského vstupu s čárkou/tečkou a mezerami na číslo. */
 export function parseDecimalInput(value: string): number | null {
   const cleaned = value.replace(/\s/g, "").replace(",", ".");
   if (cleaned === "" || cleaned === "." || cleaned === "-" || cleaned === ",") return null;
@@ -12,18 +12,20 @@ export function parseDecimalInput(value: string): number | null {
 }
 
 /**
- * Jednotné číselné pole pre editačné formuláre.
- * Během psaní drží nezpracovaný text, pri opuštění pole naformátuje hodnotu:
- * tisíce odděluje medzerami a desetinná místa doplní na `decimals` (ve výchozím stavu 2).
- * onChange vracia číselný text ("1234.56") alebo "" – rovnako ako klasický input,
- * takže sa dá použiť namiesto `<Input type="number">`.
+ * Jednotné číselné pole pro editační formuláře.
+ * Během psaní drží nezpracovaný text, při opuštění pole naformátuje hodnotu:
+ * tisíce odděluje mezerami a desetinná místa doplní na `decimals` (ve výchozím stavu 2).
+ * onChange vrací číselný text ("1234.56") nebo "" – stejně jako klasický input,
+ * takže se dá použít namísto `<Input type="number">`.
  */
 export function DecimalInput({
   value,
   onChange,
   decimals = 2,
   displayDecimals,
+  seed,
   className,
+  onBlur,
   ...props
 }: {
   value: number | string | null | undefined;
@@ -31,8 +33,11 @@ export function DecimalInput({
   decimals?: number;
   /** Počet míst při zobrazení; při psaní lze zadat až `decimals`. */
   displayDecimals?: number;
+  /** Nezpracovaný první znak při zahájení editace z gridu. */
+  seed?: string;
 } & Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type">) {
-  const [text, setText] = useState<string | null>(null);
+  const [text, setText] = useState<string | null>(seed ?? null);
+  useEffect(() => { if (seed !== undefined) setText(seed); }, [seed]);
 
   const num = typeof value === "string" ? parseDecimalInput(value) : (value ?? null);
   const shown =
@@ -49,7 +54,7 @@ export function DecimalInput({
       }
       onChange={(e) => {
         let raw = e.target.value;
-        // povoliť najviac `decimals` desatinných miest
+        // Povolit nejvýše `decimals` desetinných míst.
         const m = raw.match(/^(.*?[.,])(\d*)$/);
         if (m && m[2].length > decimals) {
           raw = decimals === 0 ? m[1].slice(0, -1) : m[1] + m[2].slice(0, decimals);
@@ -58,8 +63,8 @@ export function DecimalInput({
         const n = parseDecimalInput(raw);
         onChange(n == null ? "" : String(n));
       }}
-      onBlur={() => setText(null)}
       {...props}
+      onBlur={(event) => { setText(null); onBlur?.(event); }}
     />
   );
 }

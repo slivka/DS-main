@@ -63,7 +63,7 @@ test.describe("JournalLinesEditor", () => {
     const cashGrid = page.locator('[role="grid"]:has([data-cell-key="pd1:counterAccount"])');
     await expect(cashGrid.locator('[data-cell-key="pd1:counterAccount"]')).toHaveAttribute("tabindex", "0");
     const rows = cashGrid.locator("tbody tr");
-    await expect(rows.last()).toContainText("Haléřové vyrovnání");
+    await expect(rows.last()).toContainText("Zaokrouhlení");
     await expect(rows.last().getByRole("button", { name: "Odebrat řádek" })).toHaveCount(0);
   });
 });

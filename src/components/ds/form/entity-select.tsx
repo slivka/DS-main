@@ -111,7 +111,7 @@ export function ContactSelect({
   noResultsText = "Nebyl nalezen žádný klient.",
   createLabel = "Nový kontakt",
   homeCountries = ["Slovensko", "SK"],
-  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povojene_pobyt: "Povojení" },
+  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povojene_pobyt: "Povolený pobyt" },
 }: {
   contacts: ContactOption[];
   value: string;

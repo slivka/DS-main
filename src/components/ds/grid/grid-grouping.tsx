@@ -61,7 +61,7 @@ const MIME = "application/x-grid-column";
 const CHIP_MIME = "application/x-grid-group-chip";
 
 /**
- * Sdíjené seskupování řádků gridu podle sloupců.
+ * Sdílené seskupování řádků gridu podle sloupců.
  * Volba se ukládá do prohlížeče pod `grouping:<storageKey>`.
  */
 export function useGridGrouping(

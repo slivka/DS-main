@@ -39,9 +39,9 @@ export function CalendarPicker({
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  /** Nejpozdější povojené datum (YYYY-MM-DD). */
+  /** Nejpozdější povolené datum (YYYY-MM-DD). */
   maxDate?: Date;
-  /** Nejdříve povojené datum (YYYY-MM-DD). */
+  /** Nejdříve povolené datum (YYYY-MM-DD). */
   minDate?: Date;
   className?: string;
   /** Přístupný název ovládání. */

@@ -42,10 +42,10 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
   );
   const out: string[] = [];
   let index = 0;
-  for (const jen of lengths) {
+  for (const length of lengths) {
     if (index >= digits.length) break;
-    out.push(digits.slice(index, index + jen));
-    index += jen;
+    out.push(digits.slice(index, index + length));
+    index += length;
   }
   let text = out.join(separator);
   // po dopsání části doplníme oddělovač, ať uživatel může rovnou psát dál
@@ -75,11 +75,11 @@ export type DateFieldProps = {
   className?: string;
   /** třída pro samotný input */
   inputClassName?: string;
-  /** nejpozdější povojené datum (YYYY-MM-DD) */
+  /** Nejpozdější povolené datum (YYYY-MM-DD). */
   maxDate?: Date;
-  /** nejdříve povojené datum (YYYY-MM-DD) */
+  /** Nejdříve povolené datum (YYYY-MM-DD). */
   minDate?: Date;
-  /** Zoom gridu; škáluje také kalendář vykresjený mimo lištu v portálu. */
+  /** Zoom gridu; škáluje také kalendář vykreslený mimo lištu v portálu. */
   gridZoom?: number;
   /** Informuje formulář nebo filtr o výsledku ruční validace. */
   onValidityChange?: (valid: boolean) => void;
@@ -203,7 +203,7 @@ export function DateField({
         className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", link?.locked && "bg-muted/40", inputClassName)}
       />
       {link?.locked ? (
-        <Tooltip><TooltipTrigger asChild><Button
+        <Tooltip><TooltipTrigger asChild><span className="absolute right-[0.3em] top-1/2 -translate-y-1/2"><Button
           type="button"
           variant="ghost"
           size="icon"
@@ -211,8 +211,8 @@ export function DateField({
           aria-label={lockedHint}
           aria-pressed="true"
           onClick={toggleLink}
-          className="date-field-link absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
-        ><Lock className="size-[1.05em]" /></Button></TooltipTrigger><TooltipContent>{lockedHint}</TooltipContent></Tooltip>
+          className="date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+        ><Lock className="size-[1.05em]" /></Button></span></TooltipTrigger><TooltipContent>{lockedHint}</TooltipContent></Tooltip>
       ) : <>
       {link ? <Tooltip><TooltipTrigger asChild><Button
         type="button"

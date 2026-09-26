@@ -15,7 +15,7 @@ export interface GridRefreshButtonProps {
   texts?: Partial<GridTexts>;
 }
 
-/** Sdíjené tlačítko ručního obnovení dat v liště gridu. */
+/** Sdílené tlačítko ručního obnovení dat v liště gridu. */
 export function GridRefreshButton({ onRefresh, refreshing, zoom = 1, className, texts: textOverrides }: GridRefreshButtonProps) {
   const texts = resolveGridTexts(textOverrides);
   const [pending, setPending] = useState(false);

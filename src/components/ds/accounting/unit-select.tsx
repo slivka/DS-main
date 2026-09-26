@@ -21,6 +21,8 @@ export interface UnitSelectProps {
   disabled?: boolean;
   initialSearch?: string;
   defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
@@ -37,6 +39,8 @@ export function UnitSelect({
   disabled,
   initialSearch = "",
   defaultOpen = false,
+  onOpenChange,
+  onKeyDown,
   placeholder = "Vyberte MJ",
   searchPlaceholder = "Hledat kód nebo název…",
   emptyText = "Žádná měrná jednotka nenalezena",
@@ -52,7 +56,7 @@ export function UnitSelect({
   const canCreate = Boolean(onCreateUnit && query.trim() && !options.some((item) => item.code.toLocaleLowerCase("cs") === normalized));
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={(next) => { setOpen(next); onOpenChange?.(next); }}>
       <PopoverTrigger asChild>
         <Button type="button" variant="outline" role="combobox" disabled={disabled} className={cn("h-full w-full justify-between rounded-sm px-1 font-normal", className)}>
           <span className={cn("truncate", !selected && "text-muted-foreground")}>{selected?.code ?? placeholder}</span>
@@ -61,7 +65,7 @@ export function UnitSelect({
       </PopoverTrigger>
       <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
         <Command shouldFilter={false}>
-          <CommandInput value={query} onValueChange={setQuery} placeholder={searchPlaceholder} />
+          <CommandInput value={query} onValueChange={setQuery} placeholder={searchPlaceholder} onKeyDown={onKeyDown} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

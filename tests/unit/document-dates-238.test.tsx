@@ -63,7 +63,7 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
     const dates = html.slice(html.indexOf('data-slot="document-dates"'), html.indexOf(">Účtování a částka</h2>"));
     expect(dates).toContain("@min-[40rem]:col-start-15");
-    expect(dates).toContain("@min-[40rem]:col-start-18");
+    expect(dates.match(/@min-\[40rem\]:col-start-15/g)?.length).toBe(2);
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {

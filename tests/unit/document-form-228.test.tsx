@@ -80,7 +80,7 @@ describe("DocumentForm 2.31.0", () => {
     expect(amountSection).not.toContain('id="document-roundingAmount"');
     expect(html).toContain('data-slot="journal-lines-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
-    expect(html).toContain("Haléřové vyrovnání");
+    expect(html).toContain("Zaokrouhlení");
   });
   it("zobrazuje ruční Celkem se symbolem součtu a boční štítek identity", () => {
     const html = form({ documentType: "PO", identity: { items: [{ side: "MD", text: "211.001 - Pokladna" }] } });

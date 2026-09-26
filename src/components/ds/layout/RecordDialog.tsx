@@ -48,7 +48,7 @@ export interface RecordDialogProps {
   tabs?: RecordDialogTab[];
 }
 
-/** Pojjménovaná sekcia formulára – optické zoskupene polí v editoch. */
+/** Pojmenovaná sekce formuláře – optické seskupení polí v editorech. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>

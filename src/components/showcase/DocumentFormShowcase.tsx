@@ -37,7 +37,7 @@ const INVOICE_LINES: JournalLine[] = [
   { id: "f1", debitAccount: "311001", creditAccount: "602001", amount: 995.69, foreignAmount: 41, quantity: 2, unitId: "hour", unitPrice: 20.5, text: "Konzultace", creditDimensionId: "d-cz-1" },
   { id: "f2", debitAccount: "311001", creditAccount: "602001", amount: 1085.54, foreignAmount: 44.7, quantity: 3, unitId: "hour", unitPrice: 14.9, text: "Implementace" },
   { id: "f3", debitAccount: "311001", creditAccount: "604001", amount: 2161.37, foreignAmount: 89, quantity: 1, unitId: "piece", unitPrice: 89, text: "Materiál" },
-  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhlení přepočtu", isFxRounding: true },
+  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Kurzové zaokrouhlení", isFxRounding: true },
 ];
 const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s1", kind: "installment", dueDate: "2026-10-08", amount: 3630, description: "Splátka 1/3" },
@@ -73,7 +73,7 @@ export function DocumentFormShowcase() {
   });
   const [cashLines, setCashLines] = useState<JournalLine[]>([
     { id: "c1", debitAccount: "518001", creditAccount: "211001", amount: 1249.6, text: "Kancelářské potřeby", debitDimensionId: "d-rezie" },
-    { id: "c2", debitAccount: "548001", creditAccount: "211001", amount: 0.4, text: "Haléřové vyrovnání", isRounding: true },
+    { id: "c2", debitAccount: "548001", creditAccount: "211001", amount: 0.4, text: "Zaokrouhlení", isRounding: true },
   ]);
 
   const [internal, setInternal] = useState<DocumentHeaderValue>({
@@ -146,7 +146,7 @@ export function DocumentFormShowcase() {
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
-          documentType="FP" periodLabel="Rok 2026" rateAmount={1}
+          documentType="FP" rateAmount={1}
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           vat={{ visible: true, periodLabel: VAT_PERIODS[0].label, periodFiled: true }}
           mainSide="MD"
@@ -155,7 +155,7 @@ export function DocumentFormShowcase() {
           tabs={[{
             id: "schedule", label: "Platební kalendář", badge: schedule.length,
             content: (
-              <PaymentScheduleEditor items={schedule} onChange={setSchedule} totalToPay={invoice.amountTotal}
+              <PaymentScheduleEditor items={schedule} onChange={setSchedule} totalToPay={invoice.amountTotal} currencySymbol="Kč"
                 paid={3630} remaining={invoice.amountTotal - 3630} users={USERS} canRelease canUnrelease />
             ),
           }]}
@@ -172,7 +172,7 @@ export function DocumentFormShowcase() {
           value={{ ...posted, mainAccountId: "311001" }} onChange={setPosted}
           lines={postedLines} onLinesChange={setPostedLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          documentType="FV" periodLabel="Rok 2026"
+          documentType="FV"
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           mainSide="MD"
           editableFields={["mainAccountId", "description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
@@ -181,7 +181,7 @@ export function DocumentFormShowcase() {
           changedBy="Jana Nováková" changedAt="12.09.2026 14:05"
           tabs={[{
             id: "schedule", label: "Platební kalendář",
-            content: <PaymentScheduleEditor items={postedSchedule} onChange={setPostedSchedule} totalToPay={12100} paid={10890} remaining={1210} users={USERS} canUnrelease />,
+            content: <PaymentScheduleEditor items={postedSchedule} onChange={setPostedSchedule} totalToPay={12100} currencySymbol="Kč" paid={10890} remaining={1210} users={USERS} canUnrelease />,
           }]}
         />
       </ShowcaseSection>
@@ -193,7 +193,7 @@ export function DocumentFormShowcase() {
           value={cash} onChange={setCash}
           lines={cashLines} onLinesChange={setCashLines}
           accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          documentType="PO" periodLabel="Rok 2026"
+          documentType="PO"
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           books={MOCK_BOOKS.filter((book) => book.id === "b-pd")}
           isNew mainSide="MD" mainAccountLocked
@@ -209,7 +209,7 @@ export function DocumentFormShowcase() {
           value={internal} onChange={setInternal}
           lines={internalLines} onLinesChange={setInternalLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
-          documentType="ID" periodLabel="Rok 2026"
+          documentType="ID"
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           linesEditorProps={{ storageKey: "showcase-doc-internal" }}
           status="filed"

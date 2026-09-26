@@ -21,14 +21,14 @@ export type DimensionOption = {
   name: string;
   /** Nadřazené větve bývají vidět, ale nejdou vybrat. */
   selectable?: boolean;
-  /** Vysvětjení, proč nejde vybrat. */
+  /** Vysvětlení, proč nejde vybrat. */
   reason?: string;
 };
 
 const label = (option: DimensionOption) =>
   option.code ? `${option.code} – ${option.name}` : option.name;
 
-/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětjením. */
+/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
 export function DimensionSelect({
   options,
   value,
@@ -42,6 +42,8 @@ export function DimensionSelect({
   disabled,
   initialSearch = "",
   defaultOpen = false,
+  onOpenChange,
+  onKeyDown,
   id,
   className,
 }: {
@@ -57,6 +59,8 @@ export function DimensionSelect({
   disabled?: boolean;
   initialSearch?: string;
   defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   id?: string;
   className?: string;
 }) {
@@ -71,6 +75,7 @@ export function DimensionSelect({
   const changeOpen = (next: boolean) => {
     if (!next) suppressFocusOpen.current = true;
     setOpen(next);
+    onOpenChange?.(next);
   };
 
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
@@ -196,6 +201,7 @@ export function DimensionSelect({
             placeholder={searchPlaceholder}
             value={query}
             onValueChange={setQuery}
+            onKeyDown={onKeyDown}
           />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
