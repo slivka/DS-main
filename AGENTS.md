@@ -14,6 +14,7 @@
 - `DocumentForm` vždy drží nadpis v `PageHeader`; identita a směr patří do prvního řádku karty, aby panelové ovládání zůstalo oddělené od údajů dokladu.
 - `DocumentForm` skládá hlavičkové údaje do dvacetisloupcové mřížky 14/3/3; sjednocuje tak široká a krátká účetní pole.
 - Data DPH (`DUZP`, `Datum DPH`) jsou v `DocumentForm` vždy vpravo; řízený přepínač „Vstupuje do DPH“ patří vlevo do pruhu akcí a vypnutí údaje pouze skryje; svázané datum ukazuje zámek místo kalendáře.
+- Značky měn v částkách a kurzech pocházejí vždy z dat; nepoužívejte pevné `Kč` ani `CZK`.
 - Formulář dokladu používá jedinou typografickou stupnici v `rem`; jednotky a zdroje zobrazuj pod polem a obsah pole se nesmí oříznout.
 - Haléřové vyrovnání je připnutý poslední řádek `JournalLinesEditor`; lišta obsahuje jen akci pro jeho návrh a stav rozepsání.
 - Gridové a editorové lišty sdílejí `grid-toolbar-control`, protože všechny neaktivní akce musí mít stejný tokenový rámeček.

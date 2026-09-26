@@ -20,7 +20,7 @@ const LABELS: Record<GridPeriodKey, string> = {
   ...PERIOD_LABEL,
 };
 
-/** Sdíjený filter obdobia pre gridy – rovnaké ovládane ako v prehľadoch. */
+/** Sdílený filtr období pro gridy – stejné ovládání jako v přehledech. */
 export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterValue & {
   setPeriod: (p: GridPeriodKey) => void;
   setFrom: (v: string) => void;
@@ -93,7 +93,7 @@ export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilt
   );
 }
 
-/** Vyfiltruje řádky podľa datumového poľa a zvojeného obdobia (vrátane hraníc). */
+/** Vyfiltruje řádky podľa datumového pole a zvojeného obdobia (vrátane hraníc). */
 export function filterByPeriod<Row>(
   rows: Row[],
   value: Pick<PeriodFilterValue, "from" | "to">,

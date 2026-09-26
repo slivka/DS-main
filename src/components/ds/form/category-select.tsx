@@ -77,7 +77,7 @@ export function CategorySelect({
   allowEmpty?: boolean;
   emptyLabel?: string;
   placeholder?: string;
-  /** "cell" = vzhľad bunky gridu (bez rámčeka), "field" = bežné pole formulára. */
+  /** "cell" = vzhled buňky gridu (bez rámečku), "field" = běžné pole formulára. */
   variant?: "cell" | "field";
   disabled?: boolean;
   className?: string;

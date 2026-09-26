@@ -85,13 +85,13 @@ export function TreeView({
   /** Riadený stav zbajenia (na tlačidlá Rozbalit/Sbalit všetko). */
   collapsed?: Record<string, boolean>;
   onCollapsedChange?: (next: Record<string, boolean>) => void;
-  /** Položka môže byť rozbaliteľná aj bez podřízených uzlov (napr. kvôli vnorenému gridu). */
+  /** Položka může být rozbalitelná aj bez podřízených uzlov (např. kvůli vnořenému gridu). */
   isExpandable?: (item: TreeItem) => boolean;
   /** Obsah vložený priamo pod rozbajený uzol. */
   expandedContent?: (item: TreeItem, level: number) => ReactNode;
   /** Kliknutie na šípku zároveň označí rozbalovanou vetvu. */
   selectOnToggle?: boolean;
-  /** Tabuľkový variant pre strom vložený do gridu. */
+  /** Tabulkový variant pro strom vložený do gridu. */
   variant?: "default" | "grid";
   emptyLabel?: string;
 }) {

@@ -5,11 +5,11 @@ export type FieldErrors = Record<string, string>;
 /** Validační pravidlo jednoho pole – vrátí text chyby alebo null. */
 export type Rule<T> = (form: T) => string | null;
 
-/** Definice validace formuláře: klíč poľa → pravidlo. */
+/** Definice validace formuláře: klíč pole → pravidlo. */
 export type Rules<T> = Record<string, Rule<T>>;
 
 /**
- * Zdieľaná validácia formulářů.
+ * Sdílená validácia formulářů.
  * Chyby sa zobrazujú priamo pri poliach (komponenta `Field` s `error`),
  * takže všechny úpravy v aplikácii hlásí chyby stejně.
  */

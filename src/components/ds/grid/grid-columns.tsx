@@ -113,7 +113,7 @@ export type GridColumn<Id extends string = string> = {
   section?: string;
   /** Zarovnání obsahu buňky (výchozí vlevo). */
   align?: "left" | "right" | "center";
-  /** Sloupec pobočky – pri „Všechny pobočky" sa posúva vľavo a skrýva pri jednej pobočke. */
+  /** Sloupec pobočky – při „Všechny pobočky" se posouvá vlevo a skrývá při jedné pobočce. */
   branchVisibility?: "auto" | "always";
   /** Dočasný systémový sloupec se neukládá do uživatelských pohledů ani nastavení. */
   transient?: boolean;

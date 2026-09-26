@@ -8,7 +8,7 @@ export type GridViewMode = "grid" | "tree";
 
 /**
  * Přepínač medzi tabulkovým a stromovým zobrazením hierarchických číselníků.
- * Ikona sa mění podľa toho, na aké zobrazene sa přepne.
+ * Ikona se mění podle toho, na jaké zobrazení se přepne.
  */
 export function ViewModeToggle({
   mode,

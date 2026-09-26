@@ -357,7 +357,7 @@ export function GridExport({
       let w = 0;
       for (const header of pdfHeaders) w = Math.max(w, measure(header[i]));
       for (const row of sample) w = Math.max(w, measure(row[i]));
-      // sloupec sa môže zalomiť, preto omezíme jeho nárok na šířku
+      // sloupec se může zalomit, proto omezíme jeho nárok na šířku
       neededWidth += Math.min(w + 3.6, 45);
     }
     const portraitUsable = probe.internal.pageSize.getWidth() - 20;

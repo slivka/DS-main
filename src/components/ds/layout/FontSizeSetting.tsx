@@ -10,7 +10,7 @@ import {
 import { FONT_SCALES, getFontScale, setFontScale } from "../../../lib/font-scale";
 
 /**
- * Nastavene celkovej veľkosti písma aplikácie. Uloží sa do prohlížeče.
+ * Nastavení celkové velikosti písma aplikace. Uloží se do prohlížeče.
  */
 export interface FontSizeSettingProps {
   placeholder?: string;

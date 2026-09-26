@@ -9,7 +9,7 @@ export type ChipOption = { value: string; label: string };
 
 /**
  * Sdíjený výber viacerých hodnot v štýle štítkov – vybrané hodnoty sú chipy,
- * pridávane cez popover so zaškrtávacím zoznamom, hľadaním a voľbou „vybrať všetko“.
+ * přidávání přes popover se zaškrtávacím seznamem, hledáním a volbou „vybrat vše“.
  */
 export function ChipMultiSelect({
   options,

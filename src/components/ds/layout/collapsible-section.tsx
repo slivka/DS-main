@@ -17,7 +17,7 @@ interface CollapsibleSectionProps {
   right?: React.ReactNode;
 }
 
-/** Jednotná sbaliteľná sekcia pre nástenku a prehľady. */
+/** Jednotná sbalitelná sekce pro nástěnku a přehledy. */
 export function CollapsibleSection({
   title,
   children,

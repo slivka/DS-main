@@ -74,7 +74,7 @@ const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
 /** Pevná minimální šířka sloupce pobočky — kódy poboček jsou krátké, proto zabírá co nejméně místa. */
 const BRANCH_COLUMN_WIDTH = 78;
 
-/** Sloupce připnuté vľavo – vždy na prvním místě, minimální šířka s místem pre filter. */
+/** Sloupce připnuté vlevo – vždy na prvním místě, minimální šířka s místem pro filtr. */
 const PINNED_COLUMN_IDS = new Set(["status", "is_active", "is_system", "source"]);
 const PINNED_COLUMN_WIDTH = 84;
 export const isPinnedColumn = (id: string) => PINNED_COLUMN_IDS.has(id);
@@ -128,9 +128,9 @@ export type DataGridColumn<Row> = {
   value?: ((row: Row) => string | number | null | undefined) | undefined;
   /** Oddějená hodnota použitá pouze pro řazení, například neformátované číslo účtu. */
   sortValue?: ((row: Row) => string | number | null | undefined) | undefined;
-  /** Vlastné vykresjene bunky. */
+  /** Vlastné vykresjene buňky. */
   render?: ((row: Row) => ReactNode) | undefined;
-  /** Číselný sloupec – zarovnane vpravo a oddeľovane tisícov. */
+  /** Číselný sloupec – zarovnání vpravo a oddělování tisícov. */
   numeric?: boolean | undefined;
   decimals?: number | undefined;
   /** Explicitní datový typ pro Excel export; bez hodnoty se použije numeric/text. */
@@ -163,7 +163,7 @@ export type DataGridColumn<Row> = {
   filter?: ReactNode | undefined;
   /** Příznak aktivního vlastního filtra (pro indikaci a tlačítko Vymazat filtry). */
   filterActive?: boolean | undefined;
-  /** Text vlastního filtra pre prehľad aktívnych filtrovaní. */
+  /** Text vlastního filtru pro přehled aktivních filtrování. */
   filterLabel?: string | undefined;
   /**
    * Více hodnot řádku pre autofilter (napr. složený riadok skupiny, ktorý
@@ -177,9 +177,9 @@ export type DataGridColumn<Row> = {
 export type DataGridFilterChip = { id: string; label: string; onRemove?: () => void };
 
 export type DataGridProps<Row> = {
-  /** Kľúč pre uložene nastavení gridu v prohlížeči. */
+  /** Klíč pro uložení nastavení gridu v prohlížeči. */
   storageKey: string;
-  /** Nadpis gridu (môže byť ReactNode s vlastnou hlavičkou). Když chybí, hlavička sa nezobrazí. */
+  /** Nadpis gridu (může být ReactNode s vlastní hlavičkou). Když chybí, hlavička se nezobrazí. */
   title?: ReactNode;
   /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
   showTitle?: boolean;
@@ -247,9 +247,9 @@ export type DataGridProps<Row> = {
   /** Volitelné údaje v hlavičce Excel sestavy. */
   exportMeta?: ExcelExportMeta | undefined;
   defaultSort?: string | undefined;
-  /** Úprava řádku – ikona v ukotvenom stĺpci akcií vpravo. */
+  /** Úprava řádku – ikona v ukotveném sloupci akcií vpravo. */
   onEditRow?: ((row: Row) => void) | undefined;
-  /** Odstránene řádku – ikona v ukotvenom stĺpci akcií vpravo. */
+  /** Odstranění řádku – ikona v ukotveném sloupci akcií vpravo. */
   onDeleteRow?: ((row: Row) => void) | undefined;
   /** Text potvrdenia pred odstránením řádku. */
   deleteConfirm?: ((row: Row) => string) | undefined;
@@ -265,7 +265,7 @@ export type DataGridProps<Row> = {
   defaultGroupBy?: string | undefined;
   /** Skryje spodnú lištu so stránkovaním. */
   paginated?: boolean | undefined;
-  /** Zjednodušený vzhľad bez modrého akcentu vľavo a so zaobjeným vrchom – pre vnorené gridy bez nadpisu. */
+  /** Zjednodušený vzhled bez modrého akcentu vlevo a so zaobleným vrchom – pro vnořené gridy bez nadpisu. */
   plain?: boolean | undefined;
   /** Skryje ovládaciu lištu pri gridoch vložených priamo do rozbajeného řádku. */
   hideToolbar?: boolean | undefined;
@@ -291,7 +291,7 @@ export type DataGridProps<Row> = {
   hideSelectionToggle?: boolean | undefined;
   /** Obsah bočného panelu patriaceho ku gridu. */
   sidePanel?: ReactNode | undefined;
-  /** Kľúč řádku, ku ktorému je otvorený bočný panel. */
+  /** Kľúč řádku, ke kterému je otvorený bočný panel. */
   activeRowKey?: string | null | undefined;
   /** Zobrazí spodný súčtový riadok (ve výchozím stavu true). */
   showTotalRow?: boolean | undefined;
@@ -330,7 +330,7 @@ const dateFilterKeys = (parts: DateFilterParts) => {
   ];
 };
 
-/** Textová podoba bunky – datumy vždy podľa centrálneho nastavenia firmy. */
+/** Textová podoba buňky – datumy vždy podle centrálního nastavenia firmy. */
 const cellText = (v: unknown) => {
   if (v === null || v === undefined) return "";
   if (v instanceof Date) return formatUserDateTime(v);
@@ -484,16 +484,16 @@ export function DataGrid<Row>({
 
 
   const byId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
-  /** Sloupce v uloženom poradí a jen viditeľné. */
+  /** Sloupce v uloženém pořadí a jen viditelné. */
   const shown = useMemo(() => {
     const list = cols.columns
       .filter((c) => cols.visible[c.id] || isBranchColumn(c))
       .map((c) => byId.get(c.id)!);
-    // Sloupec pobočky je pri „Všechny pobočky“ vždy viditeľný a úplne vľavo.
+    // Sloupec pobočky je při „Všechny pobočky“ vždy viditeľný a úplně vlevo.
     const books = list.filter((c) => c.id === GRID_BOOK_COLUMN_ID);
     const branch = list.filter((c) => isBranchColumn(c));
     const rest = list.filter((c) => !isBranchColumn(c) && c.id !== GRID_BOOK_COLUMN_ID);
-    // Připnuté sloupce držíme hneď za stĺpcom pobočky.
+    // Připnuté sloupce držíme hned za sloupcem pobočky.
     const pinned = rest.filter((c) => isPinnedColumn(c.id));
     const middle = rest.filter((c) => !isPinnedColumn(c.id) && !c.pinRight);
     const pinnedRight = rest.filter((c) => !isPinnedColumn(c.id) && c.pinRight);
@@ -545,7 +545,7 @@ export function DataGrid<Row>({
     const v = c?.value?.(row);
     return c?.numeric && typeof v === "number" ? fmtAmount(v, c.decimals ?? 0) : cellText(v);
   };
-  /** Všechny hodnoty řádku v stĺpci (skupinový riadok môže zastupovať viac hodnot). */
+  /** Všechny hodnoty řádku ve sloupci (skupinový řádek může zastupovat více hodnot). */
   const valuesOf = (row: Row, id: string) => {
     const c = byId.get(id);
     const many = c?.filterValues?.(row);

@@ -27,7 +27,7 @@ type IcoFieldProps = {
 
 /**
  * Sdíjené pole pre IČO s tlačítkom registra priamo v poli.
- * Ikona lupy = ešte sme nevyhľadávali, ikona obnovenia = IČO bolo pri vstupe
+ * Ikona lupy = ještě jsme nevyhledávali, ikona obnovenia = IČO bylo při vstupu
  * do formulára už vyplnené alebo sme ho z registra doplnili.
  */
 export function IcoField({

@@ -21,7 +21,7 @@ interface ContactOption {
   type?: string | null;
   is_blacklisted?: boolean;
   blacklist_reason?: string | null;
-  /** Voliteľné polia pre fulltextové hledání. */
+  /** Volitelná pole pro fulltextové hledání. */
   ico?: string | null;
   company_name?: string | null;
   first_name?: string | null;
@@ -116,7 +116,7 @@ export function ContactSelect({
   contacts: ContactOption[];
   value: string;
   onChange: (value: string) => void;
-  /** Voliteľná obsluha pre tlačítko „Nový kontakt" vo výbere. */
+  /** Volitelná obsluha tlačítka „Nový kontakt" ve výběru. */
   onCreateNew?: () => void;
   className?: string;
   placeholder?: string;

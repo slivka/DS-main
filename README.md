@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.43.0 – edit dokladu 6, část B
+
+- Breaking: `DocumentHeaderValue.vatPeriod` nahrazuje `vatDate`; `vat.periodOptions`, `periodReadOnly`, `relevant` a `onRelevantChange` byly odstraněny. Stav přepínače je `value.vatRelevant`, období popisuje `vat.periodLabel` a Datum DPH řídí `vat.dateLink` / `dateLockReadOnly`.
+- `JournalLinesEditor` začíná editaci jedním klikem i psaním, otevírá výběry, naviguje Tabem, má responzivní sloupce, připnuté Akce a přepínač ND v částce. `AccountOption` přidává `nonTaxDefault`.
+- Stav dokladu je u titulku přes `PageHeader.titleBadge`; přepínač DPH je v pruhu akcí. Rekapitulace používá záložkový řádek bez nadpisu.
+- Breaking: `LegalFormField.options` je povinné a hodnota je kód. `CurrencyOption.symbol`, `homeCurrencySymbol` a explicitní domácí měna nahrazují pevné CZK/Kč.
+- `DateField` přidává `hint`, `warning` a `link.toggleDisabled`; záložky panelů mají stejné šířky 7,5–12,5 rem a tooltip celého názvu.
+
 ## Changelog 2.41.0 – Vstupuje do DPH
 
 - `DocumentForm.vat` přidává řízený přepínač přes `relevant`, `relevantReadOnly` a `onRelevantChange`.
