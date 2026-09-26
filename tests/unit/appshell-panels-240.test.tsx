@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { RecordDialog } from "../../src/components/ds/layout/RecordDialog";
 import { StatusBadge } from "../../src/components/ds/data-display/status-badge";
 
 const dialogSource = readFileSync(new URL("../../src/components/ds/layout/RecordDialog.tsx", import.meta.url), "utf8");
