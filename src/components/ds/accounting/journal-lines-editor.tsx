@@ -182,7 +182,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [mode, foreign, documentMark, homeMark, lines, t, counterColumn]);
   const columns = useGridColumns(`${storageKey}:v2`, columnDefs);
-  const effectiveWidthRem = containerWidth / zoom / rootRemPx;
+  const effectiveWidthRem = containerWidth / rootRemPx;
   const requestedColumnIds = columns.columns.filter((column) => columns.visible[column.id]).map((column) => column.id);
   const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, mode, visibleColumnIds: requestedColumnIds, widths: Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / rootRemPx : undefined])) }), [effectiveWidthRem, mode, requestedColumnIds, columns.widths, rootRemPx]);
   const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
