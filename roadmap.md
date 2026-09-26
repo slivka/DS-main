@@ -1,3 +1,7 @@
+## Verze 2.36.0 (limit haléřového vyrovnání)
+- [x] DocumentForm: prop `roundingLimit` (výchozí 1,00) a `roundingLabel` předávané do `JournalLinesEditor` jako `rounding.limit` / `rounding.label`
+- [x] Changelog, components.md a test
+
 ## Verze 2.35.0 (edit dokladu 5) – dříve 2.34.0
 - [x] Sjednotit typografii formuláře, sekcí, editoru a rekapitulace v rem
 - [x] Upravit částku, kurz, měny a ovládání Σ

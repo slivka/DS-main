@@ -131,6 +131,8 @@ export interface DocumentFormProps {
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
+  roundingLimit?: number;
+  roundingLabel?: string;
   tabs?: DocumentFormTab[];
   status: DocumentStatus;
   approved?: boolean;
@@ -190,7 +192,8 @@ export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, periodLabel, rateAmount = 1, homeCurrency = "CZK", currencyLocked = false,
-  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, linesEditorProps, tabs = [], status, approved, changedBy, changedAt,
+  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, linesEditorProps, roundingLimit = 1, roundingLabel,
+  tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
@@ -234,7 +237,7 @@ export function DocumentForm({
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
     if (roundingLine) onLinesChange(lines.map((line) => line.id === roundingLine.id ? { ...line, amount: roundingAmount } : line));
-    else if (roundingAmount) onLinesChange([...lines, { id: `rounding-${Date.now()}`, amount: roundingAmount, text: t.rounding, isRounding: true }]);
+    else if (roundingAmount) onLinesChange([...lines, { id: `rounding-${Date.now()}`, amount: roundingAmount, text: roundingLabel ?? t.rounding, isRounding: true }]);
   };
 
   const allTabs: DocumentFormTab[] = [{
@@ -243,7 +246,7 @@ export function DocumentForm({
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
       documentCurrency={value.currency} homeCurrency={homeCurrency} rate={value.rate} rateAmount={rateAmount}
       totalMode={totalMode === "entered" ? "entered" : "computed"} {...linesEditorProps} editableFields={readOnly ? [] : linesEditorProps?.editableFields}
-      rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: t.rounding } : undefined} />,
+      rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (

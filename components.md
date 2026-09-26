@@ -1,5 +1,9 @@
 # Komponenty design systému
 
+## Edit dokladu 5 (2.36.0)
+
+- `DocumentForm` přidává `roundingLimit` (výchozí 1,00 Kč) a `roundingLabel`; oba se přeposílají do `JournalLinesEditor` jako `rounding.limit` a `rounding.label`, takže aplikace nastaví firemní limit i vlastní pojmenování vyrovnání. Vlastní popisek se použije i pro text nově vytvořeného řádku vyrovnání.
+
 ## Edit dokladu 5 (2.35.0) – dříve 2.34.0
 
 - `DocumentForm` používá nadpis sekce místo jediné záložky Řádky. Celkem ovládá Σ; u cizí měny odděluje částku dokladu, kurz a domácí přepočet.
