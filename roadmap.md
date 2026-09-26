@@ -1,3 +1,11 @@
+## Verze 2.40.0 (kontext panelů a detail jen pro čtení)
+- [ ] AppShell: badge a context v hlavičce panelu pro Administraci, Nastavení prostoru a Nastavení firmy
+- [ ] RecordDialog: režim readOnly se záložkami a pouze akcí Zavřít
+- [ ] StatusBadge: accent a ukázkové stavy uživatelů
+- [ ] Navigace: tři panely, grid Uživatelé a detail prostoru se třemi gridovými záložkami
+- [ ] Dokumentace, katalog, changelog, verze 2.40.0 a lokální meta bez upstream_versions
+- [ ] Typy, lint, build, testy a vizuální kontrola 1 280 / 560 px, světlý / tmavý, sbalené menu
+
 ## Verze 2.38.0 (data a období DPH na dokladu)
 - [x] Přidat řízený zámek svázaného data do DateField
 - [x] Přesunout DUZP a Období DPH vpravo v sekci Data
