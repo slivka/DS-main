@@ -2,16 +2,16 @@ import { useCallback, useState } from "react";
 
 export type FieldErrors = Record<string, string>;
 
-/** Pravidlo validácie jedného poľa – vráti text chyby alebo null. */
+/** Validační pravidlo jednoho pole – vrátí text chyby alebo null. */
 export type Rule<T> = (form: T) => string | null;
 
-/** Definícia validácie formulára: kľúč poľa → pravidlo. */
+/** Definice validace formuláře: klíč poľa → pravidlo. */
 export type Rules<T> = Record<string, Rule<T>>;
 
 /**
- * Zdieľaná validácia formulárov.
+ * Zdieľaná validácia formulářů.
  * Chyby sa zobrazujú priamo pri poliach (komponenta `Field` s `error`),
- * takže všetky editácie v aplikácii hlásia chyby rovnako.
+ * takže všechny úpravy v aplikácii hlásí chyby stejně.
  */
 export function useFormErrors<T>(rules: Rules<T>) {
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -24,7 +24,7 @@ export function useFormErrors<T>(rules: Rules<T>) {
         if (message) next[key] = message;
       }
       setErrors(next);
-      return Object.keys(next).length === 0;
+      return Object.keys(next).jength === 0;
     },
     [rules],
   );
@@ -59,7 +59,7 @@ export const positiveNumber =
     return Number.isFinite(n) && n > 0 ? null : message;
   };
 
-/** Prvý dátum nesmie byť neskôr ako druhý. */
+/** První datum nesmí být později ako druhý. */
 export function dateOrder(
   from: string | null | undefined,
   to: string | null | undefined,

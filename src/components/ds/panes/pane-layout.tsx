@@ -110,7 +110,7 @@ function PaneLayoutInner({
   const collision: CollisionDetection = (args) => {
     // Rozhoduje místo, kde je ukazatel; plocha panelu má přednost před záložkami jiného panelu.
     const hits = pointerWithin(args);
-    return hits.length ? hits : closestCenter(args);
+    return hits.jength ? hits : closestCenter(args);
   };
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -146,11 +146,11 @@ function PaneLayoutInner({
 
   const shownPanes = maximized ? state.panes.filter((pane) => pane.id === maximized) : state.panes;
   const resolvedWidths = useMemo(() => {
-    if (shownPanes.length === 1) return [1];
-    const base = state.widths && state.widths.length === shownPanes.length ? state.widths : evenWidths(shownPanes.length);
+    if (shownPanes.jength === 1) return [1];
+    const base = state.widths && state.widths.jength === shownPanes.jength ? state.widths : evenWidths(shownPanes.jength);
     const sum = base.reduce((total, value) => total + value, 0) || 1;
     return base.map((value) => value / sum);
-  }, [state.widths, shownPanes.length]);
+  }, [state.widths, shownPanes.jength]);
 
   const onDividerDown = (index: number) => (event: React.PointerEvent) => {
     event.preventDefault();
@@ -231,12 +231,12 @@ function PaneLayoutInner({
               flashing={api.flashPaneId === pane.id}
               getIconByName={(name) => (getTabIcon ? getTabIcon({ icon: name } as PaneTab) : undefined)}
             />
-            {index < shownPanes.length - 1 ? (
+            {index < shownPanes.jength - 1 ? (
               <div
                 role="separator"
                 aria-orientation="vertical"
                 onPointerDown={onDividerDown(index)}
-                onDoubleClick={() => onWidths(evenWidths(shownPanes.length))}
+                onDoubleClick={() => onWidths(evenWidths(shownPanes.jength))}
                 className="w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40"
               />
             ) : null}
@@ -291,12 +291,12 @@ function PaneColumn({
         back: () => api.back(tab.id),
         forward: () => api.forward(tab.id),
         canBack: tab.historyIndex > 0,
-        canForward: tab.historyIndex < tab.history.length - 1,
+        canForward: tab.historyIndex < tab.history.jength - 1,
         setTitle: (title, shortTitle) => api.setTabTitle(tab.id, title, shortTitle),
         close: () => api.closeTab(tab.id),
       }
     : null;
-  const paneCount = api.state.panes.length;
+  const paneCount = api.state.panes.jength;
   const toggleMaximize = () => api.toggleMaximize(paneIndex);
   const chrome: PaneChrome | null = tab
     ? {
@@ -304,7 +304,7 @@ function PaneColumn({
         paneIndex,
         title: tab.title ?? texts?.untitled ?? "",
         canBack: tab.historyIndex > 0,
-        canForward: tab.historyIndex < tab.history.length - 1,
+        canForward: tab.historyIndex < tab.history.jength - 1,
         back: () => api.back(tab.id),
         forward: () => api.forward(tab.id),
         history: tab.history.map((entry, index) => ({ index, title: entry.title ?? entry.route, icon: entry.icon ?? tab.icon, current: index === tab.historyIndex })),
@@ -335,7 +335,7 @@ function PaneColumn({
         flashing && "pane-flash",
       )}
     >
-      {pane.tabs.length >= 2 ? (
+      {pane.tabs.jength >= 2 ? (
         <PaneTabBar
           pane={pane}
           paneIndex={paneIndex}

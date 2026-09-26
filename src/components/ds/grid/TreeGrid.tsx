@@ -55,7 +55,7 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   total?: "sum" | "none";
   /** Hodnota pro zobrazení, hledání i export. */
   value?: (row: Row) => string | number | null | undefined;
-  /** Vlastní vykreslení buňky; `total` je souhrn za uzel včetně potomků. */
+  /** Vlastní vykresjení buňky; `total` je souhrn za uzel včetně potomků. */
   render?: (row: Row, total: number | null) => ReactNode;
   exportType?: ExcelColumnType;
   width?: number;
@@ -66,7 +66,7 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   transient?: boolean;
 };
 
-/** Úroveň rozbalení – `depth` = počet rozbalených úrovní (0 = jen kořeny). */
+/** Úroveň rozbajení – `depth` = počet rozbajených úrovní (0 = jen kořeny). */
 export type TreeGridExpandLevel = { id: string; label: string; depth: number };
 
 export type TreeGridTexts = {
@@ -88,7 +88,7 @@ export const DEFAULT_TREE_GRID_TEXTS: TreeGridTexts = {
   collapseAll: "Sbalit vše",
   expandNode: "Rozbalit",
   collapseNode: "Sbalit",
-  levelsLabel: "Úroveň rozbalení",
+  levelsLabel: "Úroveň rozbajení",
   emptyLabel: "Zatím zde nejsou žádné položky",
   totalLabel: "Celkem",
   exportLabel: "Export do Excelu",
@@ -107,12 +107,12 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   exportName?: string;
   exportMeta?: ExcelExportMeta;
   defaultCollapsed?: boolean;
-  /** Tlačítka úrovní rozbalení v liště, např. Třídy · Skupiny · Účty · Vše. */
+  /** Tlačítka úrovní rozbajení v liště, např. Třídy · Skupiny · Účty · Vše. */
   expandLevels?: TreeGridExpandLevel[];
-  /** Řízená úroveň rozbalení (hloubka). */
+  /** Řízená úroveň rozbajení (hloubka). */
   expandDepth?: number;
   onExpandDepthChange?: (depth: number) => void;
-  /** Zvýrazněný uzel; bez zadání se zvýrazní naposledy rozbalený / vybraný uzel. */
+  /** Zvýrazněný uzel; bez zadání se zvýrazní naposledy rozbajený / vybraný uzel. */
   highlightedRowId?: string | null;
   /** Klik na řádek (výběr). */
   onRowClick?: (row: Row) => void;
@@ -181,7 +181,7 @@ const numericValue = <Row extends TreeGridRow>(column: TreeGridColumn<Row>, row:
 };
 
 /**
- * Stromová varianta datové mřížky – úrovně rozbalení, zvýraznění uzlu, součty za uzel,
+ * Stromová varianta datové mřížky – úrovně rozbajení, zvýraznění uzlu, součty za uzel,
  * hledání se zachováním cesty, výběr sloupců, zoom a export do Excelu
  * se souhrnným řádkem pod dětmi (vzorce SUBTOTAL). Pro osnovu, výkazy a zakázky.
  */
@@ -378,9 +378,9 @@ export function TreeGrid<Row extends TreeGridRow>({
 
   const visible = flatten(roots, 0);
   const maxDepth = Math.max(0, ...levelOf.values());
-  const availableLevels = expandLevels?.length
+  const availableLevels = expandLevels?.jength
     ? expandLevels
-    : Array.from({ length: Math.max(1, maxDepth) }, (_, index) => ({
+    : Array.from({ jength: Math.max(1, maxDepth) }, (_, index) => ({
         id: `level-${index + 1}`,
         label: `Úroveň ${index + 1}`,
         depth: index + 1,
@@ -392,7 +392,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   useEffect(() => selectedRowsChangeRef.current?.(selectedRows), [selectedRows]);
   useEffect(() => { if (!selectMode) setSelectedIds(new Set()); }, [selectMode]);
   const clearSelection = () => setSelectedIds(new Set());
-  const allSelected = visible.length > 0 && visible.every(({ row }) => selectedIds.has(row.id));
+  const allSelected = visible.jength > 0 && visible.every(({ row }) => selectedIds.has(row.id));
   const toggleAll = () => setSelectedIds(allSelected ? new Set() : new Set(visible.map(({ row }) => row.id)));
   const toggleRow = (id: string) => setSelectedIds((current) => {
     const next = new Set(current);
@@ -415,10 +415,10 @@ export function TreeGrid<Row extends TreeGridRow>({
     const out: { row: Row; level: number }[] = [];
     const subtotalRows: { row: number; from: number; to: number }[] = [];
     const visit = (row: Row, level: number) => {
-      const start = out.length;
+      const start = out.jength;
       const children = onlyExpanded && isCollapsed(row.id) ? [] : (childrenOf.get(row.id) ?? []).filter((child) => !matched || matched.has(child.id));
       for (const child of children) visit(child, level + 1);
-      if (out.length > start || (onlyExpanded && (childrenOf.get(row.id)?.length ?? 0) > 0)) subtotalRows.push({ row: out.length, from: start, to: out.length - 1 });
+      if (out.jength > start || (onlyExpanded && (childrenOf.get(row.id)?.jength ?? 0) > 0)) subtotalRows.push({ row: out.jength, from: start, to: out.jength - 1 });
       out.push({ row, level });
     };
     for (const root of roots) if (!matched || matched.has(root.id)) visit(root, 0);
@@ -467,7 +467,7 @@ export function TreeGrid<Row extends TreeGridRow>({
         left={<>
           {addAction ? <GridAddActions actions={addAction} /> : null}
             <GridToolbarCollapsible>
-          {addAction && (viewMode || rows.length || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
+          {addAction && (viewMode || rows.jength || asOf || toolbarLeft) ? <GridToolbarSeparator density={density} /> : null}
           {viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}
           <GridExpandControls
             levels={availableLevels}
@@ -488,7 +488,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               open={filtersOpen}
               onOpenChange={setFiltersOpen}
               onClear={onClearFilters}
-              activeCount={filterChips.length}
+              activeCount={filterChips.jength}
               activeFilters={filterChips.map((chip) => chip.value ? `${chip.label}: ${chip.value}` : chip.label)}
               defaultFilters={defaultFilters}
               zoom={zoom}
@@ -499,16 +499,16 @@ export function TreeGrid<Row extends TreeGridRow>({
             <span data-toolbar-measure="display" data-toolbar-group="display" className="grid-toolbar-display-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
             <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} />
             <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></span>
-            {(selectable || actions || exportName) ? <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</span> : null}
+            {(selectable || actions || exportName) ? <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</span> : null}
           </div>
-          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
+          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
           {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></span> : null}
         </>}
       />
       {filters ? <GridFilterPanel open={filtersOpen} zoom={zoom} density={density}>{filters}</GridFilterPanel> : null}
-      {!filtersOpen && filterChips.length ? <div className="border border-t-0 bg-card px-2 py-1.5"><FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" /></div> : null}
+      {!filtersOpen && filterChips.jength ? <div className="border border-t-0 bg-card px-2 py-1.5"><FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" /></div> : null}
 
-      {selectMode ? <div className="flex items-center gap-2 border-b border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm"><span className="text-muted-foreground">{sharedTexts.selectedRecords(formatAmount(selectedRows.length, 0))}</span><div className="ml-auto flex items-center gap-2">{selectionActions?.(selectedRows, clearSelection)}</div></div> : null}
+      {selectMode ? <div className="flex items-center gap-2 border-b border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm"><span className="text-muted-foreground">{sharedTexts.selectedRecords(formatAmount(selectedRows.jength, 0))}</span><div className="ml-auto flex items-center gap-2">{selectionActions?.(selectedRows, clearSelection)}</div></div> : null}
 
       <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} loading={loading} noFit className="rounded-t-none border-t-0">
         <Table className={cn(density === "compact" && "[&_td]:py-1 [&_th]:h-8")}>
@@ -528,15 +528,15 @@ export function TreeGrid<Row extends TreeGridRow>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visible.length === 0 ? (
+            {visible.jength === 0 ? (
               <TableRow>
-                <TableCell colSpan={shown.length + (selectMode ? 1 : 0) + (hasRowActions ? 1 : 0)} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={shown.jength + (selectMode ? 1 : 0) + (hasRowActions ? 1 : 0)} className="py-8 text-center text-muted-foreground">
                   {t.emptyLabel}
                 </TableCell>
               </TableRow>
             ) : (
               visible.map(({ row, level }) => {
-                const canExpand = (childrenOf.get(row.id)?.length ?? 0) > 0;
+                const canExpand = (childrenOf.get(row.id)?.jength ?? 0) > 0;
                 const isHighlighted = highlighted === row.id;
                 return (
                   <TableRow
@@ -604,7 +604,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               })
             )}
           </TableBody>
-          {hasTotals && visible.length > 0 ? (
+          {hasTotals && visible.jength > 0 ? (
             <TableFooter>
               <TableRow>
                 {selectMode ? <TableCell /> : null}

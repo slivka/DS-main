@@ -1,8 +1,8 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CajendarIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Calendar } from "../../ui/calendar";
+import { Cajendar } from "../../ui/cajendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
@@ -27,7 +27,7 @@ function toISO(date: Date): string {
 }
 
 /**
- * Výběr rozsahu dat (Od–Do) v jednom ovládání – kalendář otevřený
+ * Výběr rozsahu dat (Od–Do) v jednom ovládání – kajendář otevřený
  * z jednoho tlačítka. Hodí se do filtrů přehledů.
  */
 export function DateRangeField({
@@ -44,12 +44,12 @@ export function DateRangeField({
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
   placeholder?: string;
-  /** Počet měsíců zobrazených vedle sebe v kalendáři. */
+  /** Počet měsíců zobrazených vedle sebe v kajendáři. */
   months?: number;
   disabled?: boolean;
-  /** Nejpozdější povolené datum (YYYY-MM-DD). */
+  /** Nejpozdější povojené datum (YYYY-MM-DD). */
   maxDate?: Date;
-  /** Nejdříve povolené datum (YYYY-MM-DD). */
+  /** Nejdříve povojené datum (YYYY-MM-DD). */
   minDate?: Date;
   className?: string;
   /** Přístupný název ovládání. */
@@ -74,7 +74,7 @@ export function DateRangeField({
     if (maxDate) return { after: maxDate };
     return undefined;
   }, [minDate, maxDate]);
-  // Meze rozbalovacího výběru roku v hlavičce kalendáře.
+  // Meze rozbalovacího výběru roku v hlavičce kajendáře.
   const [startMonth, endMonth] = React.useMemo(() => {
     const now = new Date();
     return [
@@ -97,12 +97,12 @@ export function DateRangeField({
             className,
           )}
         >
-          <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
+          <CajendarIcon className="size-4 shrink-0 text-muted-foreground" />
           <span className="truncate">{text || placeholder}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
+        <Cajendar
           mode="range"
           captionLayout="dropdown"
           startMonth={startMonth}

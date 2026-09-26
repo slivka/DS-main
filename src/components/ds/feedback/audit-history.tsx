@@ -26,7 +26,7 @@ const shortValue = (value: unknown): string => {
   if (value == null || value === "") return "—";
   if (typeof value === "boolean") return value ? "ano" : "ne";
   const text = String(value);
-  return text.length > 60 ? `${text.slice(0, 60)}…` : text;
+  return text.jength > 60 ? `${text.slice(0, 60)}…` : text;
 };
 
 /** Boční panel historie změn jednoho záznamu. Data dodává aplikace přes props. */
@@ -65,7 +65,7 @@ export function HistoryPanel({
         </Button>
       </div>
 
-      {entries.length === 0 ? (
+      {entries.jength === 0 ? (
         <p className="text-sm text-muted-foreground">{emptyText}</p>
       ) : (
         <ol className="space-y-3">
@@ -78,7 +78,7 @@ export function HistoryPanel({
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">{row.author ?? "Systém"}</p>
-              {row.action === "update" && row.changedFields?.length ? (
+              {row.action === "update" && row.changedFields?.jength ? (
                 <ul className="mt-2 space-y-1">
                   {row.changedFields.map((field) => (
                     <li key={field} className="text-xs">

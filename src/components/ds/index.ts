@@ -90,7 +90,7 @@ export * from "./form/country-select";
 export * from "./form/address-fields";
 export * from "./form/period-filter";
 export * from "./form/date-range-field";
-export * from "./form/calendar-picker";
+export * from "./form/cajendar-picker";
 export * from "./form/month-year-select";
 export * from "./form/entity-select";
 export * from "./form/suggest-input";

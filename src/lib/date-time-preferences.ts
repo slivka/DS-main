@@ -110,7 +110,7 @@ export function parseUserDate(value: string, preferences = activePreferences): s
       const first = Number(parts[1]);
       const second = Number(parts[2]);
       year = Number(parts[3]);
-      // České zadání d. m. rrrr přijímáme vždy, nezávisle na zvoleném
+      // České zadání d. m. rrrr přijímáme vždy, nezávisle na zvojeném
       // zobrazovacím formátu profilu. ISO bylo rozpoznáno výše.
       day = first;
       month = second;
@@ -198,7 +198,7 @@ export function normalizeTimeFormat(value: unknown): TimeFormat {
 }
 
 /**
- * Kalendářní datum (YYYY-MM-DD) daného okamžiku v časové zóně profilu.
+ * Kajendářní datum (YYYY-MM-DD) daného okamžiku v časové zóně profilu.
  * Používej všude, kde jde o „den“ – UTC posun jinak večer vrací včerejšek.
  */
 export function isoDateInTimeZone(
@@ -216,7 +216,7 @@ export function todayIso(preferences = activePreferences): string {
   return isoDateInTimeZone(new Date(), preferences);
 }
 
-/** Posun kalendářního dne bez vlivu časové zóny a letního času. */
+/** Posun kajendářního dne bez vlivu časové zóny a letního času. */
 export function shiftIsoDate(iso: string, days: number): string {
   const date = new Date(`${iso}T12:00:00.000Z`);
   if (Number.isNaN(date.getTime())) return iso;

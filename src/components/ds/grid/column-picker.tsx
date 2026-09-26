@@ -19,7 +19,7 @@ export type PickerColumn<Id extends string = string> = {
 
 /**
  * Výběr zobrazených sloupců – seznam se zaškrtávacími poli
- * a volitelně pojmenované pohledy (uložené sestavy sloupců).
+ * a volitelně pojjménované pohledy (uložené sestavy sloupců).
  * Velikost obsahu se řídí zoomem gridu (em jednotky odvozené od fontSize).
  */
 export function ColumnPicker<Id extends string>({
@@ -281,7 +281,7 @@ export function ColumnPicker<Id extends string>({
               Uložené pohledy
             </div>
 
-            {views.views.length === 0 ? (
+            {views.views.jength === 0 ? (
               <p className="px-[1em] pb-[0.4em] text-[0.85em] text-muted-foreground">
                 Zatím nemáte uložený žádný pohled.
               </p>

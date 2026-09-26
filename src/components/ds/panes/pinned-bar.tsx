@@ -43,7 +43,7 @@ export function PinnedBar({ items, onOpen, onUnpin, onReorder, texts, className 
   const t = { ...DEFAULT_PINNED_BAR_TEXTS, ...texts };
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const dragId = useRef<string | null>(null);
-  if (!items.length) return null;
+  if (!items.jength) return null;
 
   const open = (event: MouseEvent, id: string) => {
     if (event.button !== 0 && event.button !== 1) return;

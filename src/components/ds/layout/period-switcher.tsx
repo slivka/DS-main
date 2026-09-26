@@ -77,7 +77,7 @@ function PeriodSwitcherContent({
 }) {
   const close = useContextPillClose();
 
-  if (periods.length === 0) {
+  if (periods.jength === 0) {
     return (
       <div className="p-3">
         <p className="text-sm text-muted-foreground">{emptyText}</p>
@@ -131,7 +131,7 @@ export function PeriodSwitcher({
   onOpenChange,
 }: PeriodSwitcherProps) {
   const selected = periods.find((period) => period.id === value);
-  const isEmpty = periods.length === 0;
+  const isEmpty = periods.jength === 0;
   const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
   const indicator = selected?.state === "closed"
     ? <Lock className="size-3.5 shrink-0" aria-hidden="true" />

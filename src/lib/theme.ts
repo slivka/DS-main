@@ -5,7 +5,7 @@ export type ThemeMode = "light" | "dark" | "system";
 const KEY = "theme";
 const THEME_EVENT = "slivka-theme-change";
 
-/** Skript vložený do <head>, aby se motiv nastavil ještě před vykreslením. */
+/** Skript vložený do <head>, aby se motiv nastavil ještě před vykresjením. */
 export const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem(${JSON.stringify(KEY)})||"light";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
 
 const prefersDark = () =>

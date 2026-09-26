@@ -48,7 +48,7 @@ export interface RecordDialogProps {
   tabs?: RecordDialogTab[];
 }
 
-/** Pojmenovaná sekcia formulára – optické zoskupenie polí v editoch. */
+/** Pojjménovaná sekcia formulára – optické zoskupene polí v editoch. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
@@ -58,7 +58,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   );
 }
 
-/** Jednotný formulárový dialóg pre všetky editácie v aplikácii. */
+/** Jednotný formulářůý dialóg pre všechny úpravy v aplikácii. */
 export function RecordDialog({
   open,
   onOpenChange,
@@ -95,7 +95,7 @@ export function RecordDialog({
     if (!open) setPanelOpen(false);
   }, [open]);
   useEffect(() => {
-    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
+    if (tabs?.jength && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
   }, [activeTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
@@ -128,7 +128,7 @@ export function RecordDialog({
           }}
         >
           {children}
-          {tabs?.length ? (
+          {tabs?.jength ? (
             <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel="Sekce detailu">
               {tabs.map((tab) => <TabsContent key={tab.value} value={tab.value} className="mt-3">{tab.content}</TabsContent>)}
             </PageTabs>
@@ -194,7 +194,7 @@ export function RecordDialog({
 /**
  * Pole formulára s popiskom a jednotnými rozstupmi.
  * Pri chybe (`error`) sa pole orámuje červeno a pod ním sa zobrazí hláška –
- * rovnako vo všetkých formulároch aplikácie.
+ * rovnako vo všech formulároch aplikácie.
  */
 export function Field({
   label,

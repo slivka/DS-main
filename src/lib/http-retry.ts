@@ -1,4 +1,4 @@
-// Sdílená síťová vrstva pro ARES a obchodní rejstřík: opakování dotazu při
+// Sdíjená síťová vrstva pro ARES a obchodní rejstřík: opakování dotazu při
 // dočasné chybě a sloučení souběžných dotazů na stejný klíč.
 
 export type RetryOptions = {
@@ -30,7 +30,7 @@ export async function fetchWithRetry(
     try {
       const res = await fetch(url, init);
       if (retryableStatus(res.status) && i < attempts - 1) {
-        lastError = new Error(`${label} vrátila chybu ${res.status}.`);
+        lastError = new Error(`${label} vrátíla chybu ${res.status}.`);
         continue;
       }
       return res;

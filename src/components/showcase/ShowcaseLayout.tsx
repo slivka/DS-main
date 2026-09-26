@@ -87,7 +87,7 @@ const WORKSPACE_PANEL = [{
   section: "Pracovní prostor",
   items: [
     { to: "/components/navigation", label: "Základní údaje", icon: Settings },
-    { to: "/components/navigation", label: "Členové a pozvánky", icon: Users },
+    { to: "/components/navigation", label: "Čjenové a pozvánky", icon: Users },
     { to: "/components/navigation", label: "Firmy", icon: Building2 },
   ],
 }];
@@ -117,9 +117,9 @@ export function ShowcaseLayout({
     return () => applyTheme("light");
   }, [darkPreview]);
 
-  const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
+  const companes = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
   const activeWorkspace = MOCK_WORKSPACES.find((workspace) => workspace.id === workspaceId) ?? MOCK_WORKSPACES[0];
-  const activeCompany = companies.find((company) => company.id === companyId) ?? companies[0];
+  const activeCompany = companes.find((company) => company.id === companyId) ?? companes[0];
   const notifications = [
     { id: "n1", title: "Doklad byl zaúčtován", body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.", type: "success" as const, createdAt: new Date(Date.now() - 5 * 60_000) },
     { id: "n2", title: "Blíží se termín DPH", body: "Přiznání k DPH je potřeba podat do pěti dnů.", type: "warning" as const, createdAt: new Date(Date.now() - 42 * 60_000) },
@@ -132,7 +132,7 @@ export function ShowcaseLayout({
       navGroups={NAV_GROUPS}
       navStateKey="showcase"
       breadcrumbs={breadcrumbs}
-      contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
+      contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companes} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
         { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace provozovatele", nav: ADMIN_PANEL, badge: { label: "Provozovatel · všechny prostory", tone: "accent" } },

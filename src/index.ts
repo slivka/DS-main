@@ -30,7 +30,7 @@ export * from "./components/ui/alert";
 export * from "./components/ui/aspect-ratio";
 export * from "./components/ui/avatar";
 export * from "./components/ui/breadcrumb";
-export * from "./components/ui/calendar";
+export * from "./components/ui/cajendar";
 export * from "./components/ui/carousel";
 export * from "./components/ui/chart";
 export * from "./components/ui/collapsible";

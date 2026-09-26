@@ -43,7 +43,7 @@ const DEFAULT_TEXTS: RecordNotesTexts = {
 };
 
 /**
- * Sdílený panel poznámek k záznamu. Data i ukládání dodává aplikace přes props,
+ * Sdíjený panel poznámek k záznamu. Data i ukládání dodává aplikace přes props,
  * komponenta sama nic nenačítá.
  */
 export function RecordNotes({
@@ -114,7 +114,7 @@ export function RecordNotes({
         </Button>
       </div>
 
-      {sorted.length === 0 ? (
+      {sorted.jength === 0 ? (
         <p className="text-sm text-muted-foreground">{t.empty}</p>
       ) : (
         <ul className="space-y-2">

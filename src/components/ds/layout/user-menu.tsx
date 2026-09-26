@@ -75,11 +75,11 @@ export function UserMenu({
           <span className="block truncate">{name}</span>
           <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
-        {workspaces.length ? (
+        {workspaces.jength ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">{workspaceLabel}</DropdownMenuLabel>
-            {workspaces.length > 8 ? (
+            {workspaces.jength > 8 ? (
               <div className="relative px-1 pb-1">
                 <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
                 <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={workspaceSearchPlaceholder} className="pl-8" />
@@ -95,7 +95,7 @@ export function UserMenu({
             </DropdownMenuRadioGroup>
           </>
         ) : null}
-        {items.length ? <DropdownMenuSeparator /> : null}
+        {items.jength ? <DropdownMenuSeparator /> : null}
         {items.map((item) => {
           const Icon = item.icon;
           const content = <>{Icon ? <Icon className="size-4" /> : null}{item.label}</>;

@@ -40,7 +40,7 @@ export function flattenCategories(options: CategoryOption[]): FlatOption[] {
     }
   };
   walk(null, 0, "");
-  // osirené položky (rodič mimo zoznamu) doplníme na koniec
+  // osirené položky (rodič mimo zoznamu) doplníme na konec
   const seen = new Set(out.map((o) => o.id));
   for (const o of options) {
     if (!seen.has(o.id)) out.push({ id: o.id, name: o.name, level: 0, path: o.name });
@@ -55,8 +55,8 @@ export function categoryPath(options: CategoryOption[], id: string | null | unde
 }
 
 /**
- * Sdílený výběr kategorie – vlastní komponenta (nikoli systémový select),
- * zobrazuje stromovú štruktúru s odsadením a vyhľadávaním.
+ * Sdíjený výběr kategorie – vlastní komponenta (nikoli systémový select),
+ * zobrazuje stromovú štruktúru s odsadením a vyhledáváním.
  */
 export function CategorySelect({
   value,
@@ -116,8 +116,8 @@ export function CategorySelect({
         className="w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0"
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => {
-          // Ruční posun – v modálním dialógu sa kolečko myši môže zablokovať,
-          // preto zoznam posunieme priamo.
+          // Ruční posun – v modálním dialogu sa kolečko myši může zablokovat,
+          // preto zoznam posuneme priamo.
           const list = e.currentTarget.querySelector<HTMLElement>("[cmdk-list]");
           if (list) list.scrollTop += e.deltaY;
         }}

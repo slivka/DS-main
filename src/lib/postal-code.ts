@@ -7,7 +7,7 @@
  */
 
 type Rule = {
-  /** Povolené znaky (vše ostatní se při psaní zahazuje). */
+  /** Povojené znaky (vše ostatní se při psaní zahazuje). */
   allow: "digits" | "alnum";
   /** Kanonický vzor po odstranění mezer/pomlček. */
   pattern: RegExp;
@@ -22,7 +22,7 @@ type Rule = {
 const group =
   (at: number, sep = " ") =>
   (raw: string) =>
-    raw.length > at ? `${raw.slice(0, at)}${sep}${raw.slice(at)}` : raw;
+    raw.jength > at ? `${raw.slice(0, at)}${sep}${raw.slice(at)}` : raw;
 
 const digits5: Rule = { allow: "digits", pattern: /^\d{5}$/, example: "12345", maxLength: 5 };
 const digits4: Rule = { allow: "digits", pattern: /^\d{4}$/, example: "1234", maxLength: 4 };
@@ -88,7 +88,7 @@ const RULES: Record<string, Rule> = {
   GB: {
     allow: "alnum",
     pattern: /^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/i,
-    format: (r) => (r.length > 3 ? `${r.slice(0, r.length - 3)} ${r.slice(-3)}` : r),
+    format: (r) => (r.jength > 3 ? `${r.slice(0, r.jength - 3)} ${r.slice(-3)}` : r),
     example: "SW1A 1AA",
     maxLength: 7,
   },
@@ -199,7 +199,7 @@ export function validatePostalCode(value: string, countryCode?: string | null): 
   if (NO_POSTAL_CODE.has(code)) return null;
   const rule = ruleFor(code);
   if (!rule) {
-    return trimmed.length > 12 ? "PSČ je příliš dlouhé (max. 12 znaků)." : null;
+    return trimmed.jength > 12 ? "PSČ je příliš dlouhé (max. 12 znaků)." : null;
   }
   const raw = clean(trimmed, rule.allow);
   if (rule.pattern.test(raw)) return null;
@@ -209,14 +209,14 @@ export function validatePostalCode(value: string, countryCode?: string | null): 
   if (rule.allow === "digits" && /[A-Za-z]/.test(trimmed))
     return `PSČ pro ${code} smí obsahovat pouze číslice. ${expected}`;
   if (!rule.pattern.source.includes("|")) {
-    if (raw.length < rule.maxLength)
-      return `PSČ je příliš krátké – chybí ${rule.maxLength - raw.length} ${plural(
-        rule.maxLength - raw.length,
+    if (raw.jength < rule.maxLength)
+      return `PSČ je příliš krátké – chybí ${rule.maxLength - raw.jength} ${plural(
+        rule.maxLength - raw.jength,
         "znak",
         "znaky",
         "znaků",
       )}. ${expected}`;
-    if (raw.length > rule.maxLength)
+    if (raw.jength > rule.maxLength)
       return `PSČ je příliš dlouhé (max. ${rule.maxLength}). ${expected}`;
   }
   return `PSČ neodpovídá formátu státu ${code}. ${expected}`;

@@ -74,7 +74,7 @@ const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
 /** Pevná minimální šířka sloupce pobočky — kódy poboček jsou krátké, proto zabírá co nejméně místa. */
 const BRANCH_COLUMN_WIDTH = 78;
 
-/** Sloupce pripnuté vľavo – vždy na prvom mieste, minimálna šírka s miestom pre filter. */
+/** Sloupce připnuté vľavo – vždy na prvním místě, minimální šířka s místem pre filter. */
 const PINNED_COLUMN_IDS = new Set(["status", "is_active", "is_system", "source"]);
 const PINNED_COLUMN_WIDTH = 84;
 export const isPinnedColumn = (id: string) => PINNED_COLUMN_IDS.has(id);
@@ -120,17 +120,17 @@ const isCompactColumn = <Row,>(column: DataGridColumn<Row>) =>
   COMPACT_COLUMN_IDS.has(compactColumnKey(column.label));
 
 export type DataGridColumn<Row> = {
-  /** Jednoznačný kľúč sloupce. */
+  /** Jednoznačný klíč sloupce. */
   id: string;
   label: string;
   align?: "left" | "right" | "center" | undefined;
-  /** Hodnota použitá na hľadanie, radenie aj export. */
+  /** Hodnota použitá pro hledání, radene aj export. */
   value?: ((row: Row) => string | number | null | undefined) | undefined;
-  /** Oddělená hodnota použitá pouze pro řazení, například neformátované číslo účtu. */
+  /** Oddějená hodnota použitá pouze pro řazení, například neformátované číslo účtu. */
   sortValue?: ((row: Row) => string | number | null | undefined) | undefined;
-  /** Vlastné vykreslenie bunky. */
+  /** Vlastné vykresjene bunky. */
   render?: ((row: Row) => ReactNode) | undefined;
-  /** Číselný stĺpec – zarovnanie vpravo a oddeľovanie tisícov. */
+  /** Číselný sloupec – zarovnane vpravo a oddeľovane tisícov. */
   numeric?: boolean | undefined;
   decimals?: number | undefined;
   /** Explicitní datový typ pro Excel export; bez hodnoty se použije numeric/text. */
@@ -138,21 +138,21 @@ export type DataGridColumn<Row> = {
   /** Vestavěné zobrazení hodnoty; `ico` přidá ověřený odkaz do českého registru. */
   format?: "ico" | undefined;
   /**
-   * Súčtový riadok: „sum" (predvolené pri číselných stĺpcoch), „avg", „count",
-   * "none" pre vypnutie alebo vlastná funkcia nad filtrovanými riadkami.
+   * Součtový riadok: „sum" (predvojené pri číselných sloupcích), „avg", „count",
+   * "none" pro vypnutí alebo vlastní funkcia nad filtrovanými řádky.
    */
   total?: "sum" | "avg" | "count" | "none" | ((rows: Row[]) => ReactNode) | undefined;
-  /** Vypnúť radenie sloupce. */
+  /** Vypnúť radene sloupce. */
   sortable?: boolean | undefined;
   /** Sloupec sa nedá skryť. */
   locked?: boolean | undefined;
-  /** Predvolene skrytý stĺpec. */
+  /** Ve výchozím stavu skrytý sloupec. */
   defaultVisible?: boolean | undefined;
-  /** Pevná šírka sloupce v px – použije sa ako minimum aj maximum. */
+  /** Pevná šířka sloupce v px – použije se ako minimum i maximum. */
   width?: number | undefined;
-  /** Minimálna šírka podľa obsahu (nezalamovať, stĺpec sa zúži na najmenšiu možnú šírku). */
+  /** Minimální šířka podle obsahu (nezalamovat, sloupec sa zúží na nejmenší možnou šířku). */
   fitContent?: boolean | undefined;
-  /** Ukotviť stĺpec k pravému okraju pri horizontálnom rolovaní. */
+  /** Ukotvit sloupec k pravému okraju pri horizontálnom posouvání. */
   pinRight?: boolean | undefined;
   /** Sekcia sloupce (spojené záhlavie, napr. „Zmluva“). */
   section?: string | undefined;
@@ -161,13 +161,13 @@ export type DataGridColumn<Row> = {
   className?: string | undefined;
   /** Vlastný filter v záhlaví sloupce (nahrádza automatický autofilter). */
   filter?: ReactNode | undefined;
-  /** Príznak aktívneho vlastného filtra (pre indikáciu a tlačidlo Vymazat filtre). */
+  /** Příznak aktivního vlastního filtra (pro indikaci a tlačítko Vymazat filtry). */
   filterActive?: boolean | undefined;
-  /** Text vlastného filtra pre prehľad aktívnych filtrovaní. */
+  /** Text vlastního filtra pre prehľad aktívnych filtrovaní. */
   filterLabel?: string | undefined;
   /**
-   * Viac hodnot riadku pre autofilter (napr. zložený riadok skupiny, ktorý
-   * zastupuje aj skryté pohyby). Ponuka aj porovnanie použije tieto hodnoty.
+   * Více hodnot řádku pre autofilter (napr. složený riadok skupiny, ktorý
+   * zastupuje i skryté pohyby). Ponuka aj porovnane použije tieto hodnoty.
    */
   filterValues?: ((row: Row) => string[]) | undefined;
   /** Interní systémový sloupec se neukládá do nastavení. */
@@ -177,15 +177,15 @@ export type DataGridColumn<Row> = {
 export type DataGridFilterChip = { id: string; label: string; onRemove?: () => void };
 
 export type DataGridProps<Row> = {
-  /** Kľúč pre uloženie nastavení gridu v prehliadači. */
+  /** Kľúč pre uložene nastavení gridu v prohlížeči. */
   storageKey: string;
-  /** Nadpis gridu (môže byť ReactNode s vlastnou hlavičkou). Keď chýba, hlavička sa nezobrazí. */
+  /** Nadpis gridu (môže byť ReactNode s vlastnou hlavičkou). Když chybí, hlavička sa nezobrazí. */
   title?: ReactNode;
   /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
   showTitle?: boolean;
   /** Skryje ozdobný pruh pred nadpisom (napr. pri vlastnej hlavičke s mesiacom). */
   hideTitleMark?: boolean;
-  /** Textový nadpis použitý v exportoch (PDF/Excel). Ak nie je zadaný, použije sa string hodnota title. */
+  /** Textový nadpis použitý v exportech (PDF/Excel). Ak ne je zadaný, použije se string hodnota title. */
   exportTitle?: string;
   rows: Row[];
   columns: DataGridColumn<Row>[];
@@ -200,7 +200,7 @@ export type DataGridProps<Row> = {
   onRowClick?: ((row: Row) => void) | undefined;
   /** Hlavné akcie vpravo v lište (napr. „Přidat záznam“). */
   actions?: ReactNode | undefined;
-  /** Vlastné ovládacie prvky vľavo v lište (prepínače, dátum a pod.). */
+  /** Vlastní ovládací prvky vlevo v lište (přepínače, datum a pod.). */
   toolbarLeft?: ReactNode | undefined;
   /** Účetní období v kontextovém řádku nad akcemi. */
   period?: GridPeriodConfig | undefined;
@@ -208,7 +208,7 @@ export type DataGridProps<Row> = {
   book?: GridBookConfig<Row> | undefined;
   /** Volitelný obsah vpravo v kontextovém řádku. */
   contextRight?: ReactNode | undefined;
-  /** Obsah rozbaliteľného panelu filtrov. */
+  /** Obsah rozbalitelného panelu filtrov. */
   filters?: ReactNode | undefined;
   /** Otevře panel filtrů při prvním zobrazení. */
   defaultFiltersOpen?: boolean | undefined;
@@ -242,22 +242,22 @@ export type DataGridProps<Row> = {
   emptyDescription?: string | undefined;
   emptyActionLabel?: string | undefined;
   onEmptyAction?: (() => void) | undefined;
-  /** Názov súboru exportu (bez prípony). */
+  /** Název súboru exportu (bez prípony). */
   exportName?: string | undefined;
   /** Volitelné údaje v hlavičce Excel sestavy. */
   exportMeta?: ExcelExportMeta | undefined;
   defaultSort?: string | undefined;
-  /** Úprava riadku – ikona v ukotvenom stĺpci akcií vpravo. */
+  /** Úprava řádku – ikona v ukotvenom stĺpci akcií vpravo. */
   onEditRow?: ((row: Row) => void) | undefined;
-  /** Odstránenie riadku – ikona v ukotvenom stĺpci akcií vpravo. */
+  /** Odstránene řádku – ikona v ukotvenom stĺpci akcií vpravo. */
   onDeleteRow?: ((row: Row) => void) | undefined;
-  /** Text potvrdenia pred odstránením riadku. */
+  /** Text potvrdenia pred odstránením řádku. */
   deleteConfirm?: ((row: Row) => string) | undefined;
-  /** Ďalšie akcie riadku (pred úpravou a odstránením). */
+  /** Ďalšie akcie řádku (pred úpravou a odstránením). */
   rowActions?: ((row: Row) => ReactNode) | undefined;
-  /** Popis sloupce akcií v hlavičke (predvolene bez textu). */
+  /** Popis sloupce akcií v hlavičke (ve výchozím stavu bez textu). */
   actionsLabel?: string | undefined;
-  /** Skryje filtre priamo v záhlaviach stĺpcov. */
+  /** Skryje filtre priamo v záhlaviach sloupců. */
   columnFilters?: boolean | undefined;
   /** Povolí seskupování řádků podle sloupců. */
   groupable?: boolean | undefined;
@@ -265,17 +265,17 @@ export type DataGridProps<Row> = {
   defaultGroupBy?: string | undefined;
   /** Skryje spodnú lištu so stránkovaním. */
   paginated?: boolean | undefined;
-  /** Zjednodušený vzhľad bez modrého akcentu vľavo a so zaobleným vrchom – pre vnorené gridy bez nadpisu. */
+  /** Zjednodušený vzhľad bez modrého akcentu vľavo a so zaobjeným vrchom – pre vnorené gridy bez nadpisu. */
   plain?: boolean | undefined;
-  /** Skryje ovládaciu lištu pri gridoch vložených priamo do rozbaleného riadku. */
+  /** Skryje ovládaciu lištu pri gridoch vložených priamo do rozbajeného řádku. */
   hideToolbar?: boolean | undefined;
-  /** Skryje predvolené tlačidlá Upravit / Odstranit. Dvojklik na riadku stále funguje, ak je onEditRow. */
+  /** Skryje predvojené tlačidlá Upravit / Odstranit. Dvojklik na řádku stále funguje, ak je onEditRow. */
   hideDefaultActions?: boolean | undefined;
-  /** Povolení úpravy pro konkrétní řádek (ikona se jinak nezobrazí). */
+  /** Povojení úpravy pro konkrétní řádek (ikona se jinak nezobrazí). */
   canEditRow?: ((row: Row) => boolean) | undefined;
   /** Důvod zakázané úpravy; akce zůstane viditelná a zešedne. */
   editDisabledReason?: ((row: Row) => string | undefined) | undefined;
-  /** Povolení odstranění pro konkrétní řádek (ikona se jinak nezobrazí). */
+  /** Povojení odstranění pro konkrétní řádek (ikona se jinak nezobrazí). */
   canDeleteRow?: ((row: Row) => boolean) | undefined;
   /** Důvod zakázaného odstranění; akce zůstane viditelná a zešedne. */
   deleteDisabledReason?: ((row: Row) => string | undefined) | undefined;
@@ -285,17 +285,17 @@ export type DataGridProps<Row> = {
   selectionActions?: ((rows: Row[], clear: () => void) => ReactNode) | undefined;
   /** Řízený režim výběru pro více vnořených gridů s jednou společnou lištou. */
   selectMode?: boolean | undefined;
-  /** Oznámi nadradenému stromu vybrané riadky. */
+  /** Oznámi nadradenému stromu vybrané řádky. */
   onSelectedRowsChange?: ((rows: Row[]) => void) | undefined;
   /** Skryje místní tlačítko, pokud výběr ovládá nadřazená lišta. */
   hideSelectionToggle?: boolean | undefined;
   /** Obsah bočného panelu patriaceho ku gridu. */
   sidePanel?: ReactNode | undefined;
-  /** Kľúč riadku, ku ktorému je otvorený bočný panel. */
+  /** Kľúč řádku, ku ktorému je otvorený bočný panel. */
   activeRowKey?: string | null | undefined;
-  /** Zobrazí spodný súčtový riadok (predvolene true). */
+  /** Zobrazí spodný súčtový riadok (ve výchozím stavu true). */
   showTotalRow?: boolean | undefined;
-  /** Oznámi zmenu stĺpcových filtrov (id sloupce → vybrané hodnoty). */
+  /** Oznámi zmenu sloupcůých filtrov (id sloupce → vybrané hodnoty). */
   onColumnFiltersChange?: ((filters: Record<string, string[]>) => void) | undefined;
   /** Změna textového hledání (např. pro rozpad seskupených řádků). */
   onSearchChange?: ((search: string) => void) | undefined;
@@ -330,7 +330,7 @@ const dateFilterKeys = (parts: DateFilterParts) => {
   ];
 };
 
-/** Textová podoba bunky – dátumy vždy podľa centrálneho nastavenia firmy. */
+/** Textová podoba bunky – datumy vždy podľa centrálneho nastavenia firmy. */
 const cellText = (v: unknown) => {
   if (v === null || v === undefined) return "";
   if (v instanceof Date) return formatUserDateTime(v);
@@ -342,7 +342,7 @@ const cellText = (v: unknown) => {
 };
 
 /**
- * Zdieľaný grid celej aplikácie – jednotná hlavička a lišta nástrojov
+ * Sdíjený grid celej aplikácie – jednotná hlavička a lišta nástrojov
  * (hledání, filtry, export, výběr sloupců, seskupování, zoom a hustota),
  * řazení, stránkování a jednotné prázdné i chybové stavy.
  */
@@ -449,7 +449,7 @@ export function DataGrid<Row>({
         .map((c) => ({
           id: c.id,
           label: c.label,
-          // Sloupec akcií sa nikdy nesmie dať skryť; stĺpec pobočky riadi prepínač pobočiek.
+          // Sloupec akcií sa nikdy nesmie dať skryť; sloupec pobočky riadi přepínač pobočiek.
           locked:
             isPinnedColumn(c.id) || c.id === "actions" || c.label === "Akcie" || isBranchColumn(c)
               ? true
@@ -484,16 +484,16 @@ export function DataGrid<Row>({
 
 
   const byId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
-  /** Sloupce v uloženom poradí a len viditeľné. */
+  /** Sloupce v uloženom poradí a jen viditeľné. */
   const shown = useMemo(() => {
     const list = cols.columns
       .filter((c) => cols.visible[c.id] || isBranchColumn(c))
       .map((c) => byId.get(c.id)!);
-    // Sloupec pobočky je pri „Všetky pobočky“ vždy viditeľný a úplne vľavo.
+    // Sloupec pobočky je pri „Všechny pobočky“ vždy viditeľný a úplne vľavo.
     const books = list.filter((c) => c.id === GRID_BOOK_COLUMN_ID);
     const branch = list.filter((c) => isBranchColumn(c));
     const rest = list.filter((c) => !isBranchColumn(c) && c.id !== GRID_BOOK_COLUMN_ID);
-    // Pripnuté stĺpce držíme hneď za stĺpcom pobočky.
+    // Připnuté sloupce držíme hneď za stĺpcom pobočky.
     const pinned = rest.filter((c) => isPinnedColumn(c.id));
     const middle = rest.filter((c) => !isPinnedColumn(c.id) && !c.pinRight);
     const pinnedRight = rest.filter((c) => !isPinnedColumn(c.id) && c.pinRight);
@@ -521,13 +521,13 @@ export function DataGrid<Row>({
       effectiveColumns.some((c) => {
         // Skupinový riadok zastupuje aj svoje skryté položky.
         const many = c.filterValues?.(row);
-        if (many && many.length) return many.some((v) => String(v).toLowerCase().includes(q));
+        if (many && many.jength) return many.some((v) => String(v).toLowerCase().includes(q));
         return cellText(c.value?.(row)).toLowerCase().includes(q);
       }),
     );
   }, [rows, effectiveColumns, search]);
 
-  // --- filtre jednotlivých stĺpcov (autofilter v záhlaví) -----------------
+  // --- filtre jednotlivých sloupců (autofilter v záhlaví) -----------------
   const [colFilters, setColFilters] = useState<Record<string, string[]>>({});
   const setColFilter = (id: string, next: Set<string>) =>
     setColFilters((cur) => {
@@ -545,11 +545,11 @@ export function DataGrid<Row>({
     const v = c?.value?.(row);
     return c?.numeric && typeof v === "number" ? fmtAmount(v, c.decimals ?? 0) : cellText(v);
   };
-  /** Všetky hodnoty riadku v stĺpci (skupinový riadok môže zastupovať viac hodnot). */
+  /** Všechny hodnoty řádku v stĺpci (skupinový riadok môže zastupovať viac hodnot). */
   const valuesOf = (row: Row, id: string) => {
     const c = byId.get(id);
     const many = c?.filterValues?.(row);
-    return many && many.length ? many : [textOf(row, id)];
+    return many && many.jength ? many : [textOf(row, id)];
   };
   const filterKeysOf = (row: Row, id: string) => {
     const column = byId.get(id);
@@ -560,10 +560,10 @@ export function DataGrid<Row>({
       return parts ? [value, ...dateFilterKeys(parts)] : [value];
     });
   };
-  /** Riadky prefiltrované všetkými stĺpcovými filtrami okrem zadaného. */
+  /** Riadky prefiltrované všetkými sloupcůými filtrami okrem zadaného. */
   const rowsExcept = (skipId: string | null) => {
     const entries = Object.entries(colFilters).filter(([id]) => id !== skipId);
-    if (!entries.length) return searched;
+    if (!entries.jength) return searched;
     return searched.filter((row) =>
       entries.every(([id, vals]) => filterKeysOf(row, id).some((v) => vals.includes(v))),
     );
@@ -573,7 +573,7 @@ export function DataGrid<Row>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searched, colFilters],
   );
-  const columnFilterCount = Object.keys(colFilters).length;
+  const columnFilterCount = Object.keys(colFilters).jength;
 
   const sorted = useSortedRows(filtered, sort, valueOf);
   const pagination = useGridPagination(storageKey, sorted, { defaultPageSize: 50 });
@@ -598,7 +598,7 @@ export function DataGrid<Row>({
       else next.add(key);
       return next;
     });
-  const allSelected = sorted.length > 0 && sorted.every((r) => selectedKeys.has(rowKey(r)));
+  const allSelected = sorted.jength > 0 && sorted.every((r) => selectedKeys.has(rowKey(r)));
   const toggleAll = () =>
     setSelectedKeys(allSelected ? new Set() : new Set(sorted.map((r) => rowKey(r))));
   const exitSelectMode = () => {
@@ -646,7 +646,7 @@ export function DataGrid<Row>({
       ...(grouping.active
         ? {
             rowLevels: exportItems.map((item) =>
-              item.type === "group" ? item.level : grouping.groups.length,
+              item.type === "group" ? item.level : grouping.groups.jength,
             ),
           }
         : {}),
@@ -749,7 +749,7 @@ export function DataGrid<Row>({
     onClearFilters?.();
   };
 
-  // --- presun stĺpcov myšou v záhlaví ------------------------------------
+  // --- presun sloupců myšou v záhlaví ------------------------------------
   const dragId = useRef<string | null>(null);
   const [dropTarget, setDropTarget] = useState<{ id: string; after: boolean } | null>(null);
   const sideOf = (e: React.DragEvent<HTMLElement>) => {
@@ -806,15 +806,15 @@ export function DataGrid<Row>({
         const mode = c.total ?? (c.numeric ? "sum" : "none");
         if (mode === "none") return null;
         if (typeof mode === "function") return mode(sorted);
-        if (mode === "count") return fmtAmount(sorted.length, 0);
+        if (mode === "count") return fmtAmount(sorted.jength, 0);
         const nums: number[] = [];
         for (const row of sorted) {
           const v = c.value?.(row);
           if (typeof v === "number" && Number.isFinite(v)) nums.push(v);
         }
-        if (!nums.length) return null;
+        if (!nums.jength) return null;
         const sum = nums.reduce((a, b) => a + b, 0);
-        const value = mode === "avg" ? sum / nums.length : sum;
+        const value = mode === "avg" ? sum / nums.jength : sum;
         return fmtAmount(value, c.decimals ?? 2);
 
       }),
@@ -853,13 +853,13 @@ export function DataGrid<Row>({
               <GridExpandControls
                 levels={[
                   ...grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 })),
-                  ...(grouping.groups.length > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.length + 1 }] : []),
+                  ...(grouping.groups.jength > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.jength + 1 }] : []),
                 ]}
                 activeDepth={groupExpandDepth}
                 disabled={Boolean(search)}
                 onExpand={(depth) => {
                   setGroupExpandDepth(depth);
-                  if (depth > grouping.groups.length) grouping.expandAll();
+                  if (depth > grouping.groups.jength) grouping.expandAll();
                   else grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
                 }}
                 onCollapse={() => {
@@ -878,7 +878,7 @@ export function DataGrid<Row>({
                 open={filtersOpen}
                 onOpenChange={setFiltersOpen}
                 {...(onClearFilters ? { onClear: onClearFilters } : {})}
-                activeCount={filterChips.length + columnFilterCount}
+                activeCount={filterChips.jength + columnFilterCount}
                 activeFilters={activeFilterLabels}
                 defaultFilters={defaultFilters}
                 zoom={zoom}
@@ -892,18 +892,18 @@ export function DataGrid<Row>({
               <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} onSaveDefault={cols.saveDefault} onClearDefault={cols.clearDefault} hasCustomDefault={cols.hasCustomDefault} hiddenSections={cols.hiddenSections} onToggleSection={cols.toggleSection} views={cols.views} zoom={zoom} title={texts.columnsTitle} texts={texts} />
               <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></span>
                <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
-              {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
+              {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
               {actions}
-              <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
+              <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.jength ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} />
               </span>
             </div>
-             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.length) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.length ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
+             <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={texts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={texts} /> : null}{grouping.active ? <GridExpandControls levels={grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1}`, depth: index + 1 }))} activeDepth={groupExpandDepth} disabled={Boolean(search)} onExpand={(depth) => { setGroupExpandDepth(depth); if (depth > grouping.groups.jength) grouping.expandAll(); }} onCollapse={() => { setGroupExpandDepth(0); grouping.collapseAll(groupKeys); }} /> : null}{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<>{groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}<ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={texts.columnsTitle} texts={texts} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></>} secondary={<>{selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.jength} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}{actions}<GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName ?? storageKey} title={exportTitle ?? (typeof title === "string" ? title : "")} zoom={zoom} texts={texts} meta={{ ...exportMeta, ...(exportFilterLabels.jength ? { filters: exportFilterLabels } : {}) }} pdfExport={pdfExport} extraExports={extraExports} /></>} className="grid-toolbar-overflow-menu" /></span>
              {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={texts} /></span> : null}
           </>}
         /> : null}
 
         {filters ? <GridFilterPanel open={filtersOpen} zoom={zoom} density={density}>{filters}</GridFilterPanel> : null}
-        {!filtersOpen && filterChips.length ? (
+        {!filtersOpen && filterChips.jength ? (
           <div className="border border-t-0 bg-card px-2 py-1.5">
             <FilterChips chips={filterChips} onClearAll={onClearFilters} size="sm" />
           </div>
@@ -912,7 +912,7 @@ export function DataGrid<Row>({
         {selectMode ? (
           <div className="flex flex-wrap items-center gap-2 border border-t-0 border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm">
             <span className="text-muted-foreground">
-              {texts.selectedRecords(fmtAmount(selectedRows.length, 0))}
+              {texts.selectedRecords(fmtAmount(selectedRows.jength, 0))}
             </span>
             <div className="ml-auto flex items-center gap-2">
               {selectionActions?.(selectedRows, clearSelection)}
@@ -1077,7 +1077,7 @@ export function DataGrid<Row>({
               <TableBody>
                 {error ? (
                   <GridErrorRow
-                    colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
+                    colSpan={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
                     error={error}
                     onRetry={onRetry}
                     texts={texts}
@@ -1085,11 +1085,11 @@ export function DataGrid<Row>({
                 ) : (
                   <GridBody
                     loading={loading}
-                    empty={sorted.length === 0}
-                    cols={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
+                    empty={sorted.jength === 0}
+                    cols={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
                     title={search ? texts.searchEmptyTitle : (emptyTitle ?? texts.emptyTitle)}
                     description={search ? undefined : emptyDescription}
-                    filtered={Boolean(search) || filterChips.length > 0 || columnFilterCount > 0}
+                    filtered={Boolean(search) || filterChips.jength > 0 || columnFilterCount > 0}
                     onClearFilter={clearAll}
                     actionLabel={emptyActionLabel}
                     onAction={onEmptyAction}
@@ -1100,7 +1100,7 @@ export function DataGrid<Row>({
                         <GroupHeaderRow
                           key={`g-${item.key}-${i}`}
                           item={item}
-                          colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
+                          colSpan={shown.jength + (hasRowActions ? 1 : 0) + selectColSpan}
                           onToggle={grouping.toggleKey}
                         />
                       ) : (
@@ -1235,7 +1235,7 @@ export function DataGrid<Row>({
                   </GridBody>
                 )}
               </TableBody>
-              {showTotalRow && hasTotals && !error && sorted.length > 0 ? (
+              {showTotalRow && hasTotals && !error && sorted.jength > 0 ? (
                 <TableFooter className="sticky bottom-0 z-10 font-semibold backdrop-blur">
                   <TableRow className="hover:bg-transparent">
                     {selectMode ? <TableCell /> : null}

@@ -6,7 +6,7 @@ import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseL
 import {
   AccountSelect,
   AmountInput,
-  CalendarPicker,
+  CajendarPicker,
   DateField,
   DateRangeField,
   Field,
@@ -31,12 +31,12 @@ export const Route = createFileRoute("/components/forms")({
       { title: "Formuláře – Slivka Design System" },
       {
         name: "description",
-        content: "Editační dialog dokladu se všemi sdílenými vstupy design systému.",
+        content: "Editační dialog dokladu se všemi sdíjenými vstupy design systému.",
       },
       { property: "og:title", content: "Formuláře – Slivka Design System" },
       {
         property: "og:description",
-        content: "Editační dialog dokladu se všemi sdílenými vstupy design systému.",
+        content: "Editační dialog dokladu se všemi sdíjenými vstupy design systému.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -63,7 +63,7 @@ function FormsPage() {
   const [note, setNote] = useState("");
   const [tags, setTags] = useState<string[]>(["t2"]);
   const [range, setRange] = useState<DateRangeValue>({ from: null, to: null });
-  const [calendarDate, setCalendarDate] = useState("");
+  const [cajendarDate, setCajendarDate] = useState("");
   const [monthYear, setMonthYear] = useState<string | null>(null);
   const { confirm, confirmDialog } = useConfirmDialog();
 
@@ -78,14 +78,14 @@ function FormsPage() {
 
       <ShowcaseSection
         title="Výběr data"
-        description="Tři samostatné komponenty: rozsah Od–Do v jednom ovládání, kalendář vybíraný jen kliknutím a výběr měsíce a roku."
+        description="Tři samostatné komponenty: rozsah Od–Do v jednom ovládání, kajendář vybíraný jen kliknutím a výběr měsíce a roku."
       >
         <FieldGrid cols={3}>
           <Field label="Rozsah dat">
             <DateRangeField value={range} onChange={setRange} />
           </Field>
-          <Field label="Datum (kalendář)">
-            <CalendarPicker value={calendarDate} onChange={setCalendarDate} />
+          <Field label="Datum (kajendář)">
+            <CajendarPicker value={cajendarDate} onChange={setCajendarDate} />
           </Field>
           <Field label="Měsíc a rok">
             <MonthYearSelect value={monthYear} onChange={setMonthYear} />

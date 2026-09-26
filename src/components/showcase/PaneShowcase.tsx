@@ -52,7 +52,7 @@ const PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
 
-/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykreslení na serveru). */
+/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykresjení na serveru). */
 function initialState(): PaneTabsState {
   const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" }, 0), id: "tab-start" };
   return { version: 2, layout: 1, widths: [1], active: "pane-a", hiddenPanes: null, panes: [{ id: "pane-a", activeTab: tab.id, tabs: [tab] }] };
@@ -326,7 +326,7 @@ function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: St
         const item = layouts.find((layout) => layout.id === id);
         if (!item?.snapshot || !tabs) return;
         const skipped = tabs.applyLayout(item.snapshot, { keepDirty: true });
-        if (skipped.length) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.length.toLocaleString("cs-CZ")}`);
+        if (skipped.jength) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.jength.toLocaleString("cs-CZ")}`);
       }}
       onUpdate={(id, patch) =>
         setLayouts((items) =>

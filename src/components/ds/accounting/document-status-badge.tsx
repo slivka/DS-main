@@ -12,7 +12,7 @@ export type DocumentStatusBadgeSize = "sm" | "md";
 export interface DocumentStatusBadgeProps {
   status: DocumentStatus | null | undefined;
   config?: StatusConfig<DocumentStatus>;
-  /** Nezávislý příznak schválení dokladu. */
+  /** Nezávislý příznak schvájení dokladu. */
   approved?: boolean;
   approvedLabel?: string;
   /** Velikost štítku; md sjednocuje výšku s odznakem směru ve formuláři. */
@@ -41,7 +41,7 @@ export function DocumentStatusBadge({
   status,
   config = DOCUMENT_STATUS_CONFIG,
   approved = false,
-  approvedLabel = "Schválen",
+  approvedLabel = "Schvájen",
   size = "sm",
   className,
 }: DocumentStatusBadgeProps) {

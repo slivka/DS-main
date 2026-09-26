@@ -37,7 +37,7 @@ const INVOICE_LINES: JournalLine[] = [
   { id: "f1", debitAccount: "311001", creditAccount: "602001", amount: 995.69, foreignAmount: 41, quantity: 2, unitId: "hour", unitPrice: 20.5, text: "Konzultace", creditDimensionId: "d-cz-1" },
   { id: "f2", debitAccount: "311001", creditAccount: "602001", amount: 1085.54, foreignAmount: 44.7, quantity: 3, unitId: "hour", unitPrice: 14.9, text: "Implementace" },
   { id: "f3", debitAccount: "311001", creditAccount: "604001", amount: 2161.37, foreignAmount: 89, quantity: 1, unitId: "piece", unitPrice: 89, text: "Materiál" },
-  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhlení přepočtu", isFxRounding: true },
+  { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Zaokrouhjení přepočtu", isFxRounding: true },
 ];
 const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s1", kind: "installment", dueDate: "2026-10-08", amount: 3630, description: "Splátka 1/3" },
@@ -138,8 +138,8 @@ export function DocumentFormShowcase() {
         <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
           books={MOCK_BOOKS} documentType="ID" status="filed" vat={{ visible: false }} />
       </ShowcaseSection>
-      <ShowcaseSection title="Faktura přijatá s platebním kalendářem"
-        description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kalendář je druhá záložka: 3 splátky a pozastávka.">
+      <ShowcaseSection title="Faktura přijatá s platebním kajendářem"
+        description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kajendář je druhá záložka: 3 splátky a pozastávka.">
         <DocumentForm
           title="Přijatá faktura"
           value={{ ...invoice, vatRelevant: invoiceVatRelevant }} onChange={(next) => { setInvoice(next); setInvoiceVatRelevant(next.vatRelevant !== false); }}
@@ -153,7 +153,7 @@ export function DocumentFormShowcase() {
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
           tabs={[{
-            id: "schedule", label: "Platební kalendář", badge: schedule.length,
+            id: "schedule", label: "Platební kajendář", badge: schedule.jength,
             content: (
               <PaymentScheduleEditor items={schedule} onChange={setSchedule} totalToPay={invoice.amountTotal}
                 paid={3630} remaining={invoice.amountTotal - 3630} users={USERS} canRelease canUnrelease />
@@ -180,7 +180,7 @@ export function DocumentFormShowcase() {
           status="posted" approved
           changedBy="Jana Nováková" changedAt="12.09.2026 14:05"
           tabs={[{
-            id: "schedule", label: "Platební kalendář",
+            id: "schedule", label: "Platební kajendář",
             content: <PaymentScheduleEditor items={postedSchedule} onChange={setPostedSchedule} totalToPay={12100} paid={10890} remaining={1210} users={USERS} canUnrelease />,
           }]}
         />

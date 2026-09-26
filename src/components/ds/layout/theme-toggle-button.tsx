@@ -12,7 +12,7 @@ export interface ThemeToggleButtonProps {
   className?: string;
 }
 
-/** Ikonové přepnutí světlého a tmavého motivu sdílené s ThemeSetting. */
+/** Ikonové přepnutí světlého a tmavého motivu sdíjené s ThemeSetting. */
 export function ThemeToggleButton({
   darkLabel = "Tmavý režim",
   lightLabel = "Světlý režim",

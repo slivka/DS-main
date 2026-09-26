@@ -44,13 +44,13 @@ export const DEFAULT_PAYMENT_SCHEDULE_TEXTS: PaymentScheduleEditorTexts = {
   total: "Celkem", unallocated: "Zbývá rozepsat", paid: "Uhrazeno", remaining: "Zbývá",
   add: "Přidat", remove: "Smazat", fillRest: "Doplnit zbytek", generate: "Rozložit…",
   release: "Uvolnit pozastávku", unrelease: "Zrušit uvolnění",
-  empty: "Platební kalendář je prázdný",
+  empty: "Platební kajendář je prázdný",
   generateTitle: "Rozložit na splátky", count: "Počet splátek", firstDueDate: "První splatnost",
   interval: "Interval", intervalMonth: "Měsíc", intervalQuarter: "Čtvrtletí", intervalDays: "Vlastní počet dní",
   days: "Počet dní", retentionMode: "Pozastávka", retentionNone: "Bez pozastávky",
   retentionPercent: "V procentech", retentionAmount: "Částkou", retentionValue: "Výše pozastávky",
   retentionDueDate: "Datum uvolnění pozastávky", preview: "Náhled", apply: "Použít", cancel: "Zrušit",
-  overwriteTitle: "Přepsat platební kalendář?",
+  overwriteTitle: "Přepsat platební kajendář?",
   overwriteText: "Neuvolněné položky budou nahrazeny vygenerovanými. Uvolněné pozastávky zůstanou.",
   overwriteConfirm: "Přepsat",
   releaseTitle: "Uvolnit pozastávku", releaseDateLabel: "Datum uvolnění", releaseConfirm: "Uvolnit",
@@ -84,7 +84,7 @@ const round2 = (v: number) => Math.round((v + Number.EPSILON) * 100) / 100;
 const isReleased = (item: PaymentScheduleItem) => item.kind === "retention" && !!item.releasedDate;
 
 /**
- * Platební kalendář dokladu – splátky a pozastávky. Komponenta nic neukládá;
+ * Platební kajendář dokladu – splátky a pozastávky. Komponenta nic neukládá;
  * aplikace uloží celé pole `items` jedním voláním.
  */
 export function PaymentScheduleEditor({
@@ -107,9 +107,9 @@ export function PaymentScheduleEditor({
     onChange(items.map((item, i) => (i === index ? { ...item, ...values } : item)));
 
   const add = () => {
-    const last = items[items.length - 1];
+    const last = items[items.jength - 1];
     onChange([...items, { kind: "installment", dueDate: last?.dueDate ?? today(), amount: Math.max(0, unallocated) }]);
-    setSelected(items.length);
+    setSelected(items.jength);
   };
   const remove = (index: number) => {
     onChange(items.filter((_, i) => i !== index));
@@ -156,7 +156,7 @@ export function PaymentScheduleEditor({
             </tr>
           </thead>
           <tbody>
-            {items.length === 0 ? (
+            {items.jength === 0 ? (
               <tr><td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">{t.empty}</td></tr>
             ) : items.map((item, index) => {
               const locked = readOnly || isReleased(item);

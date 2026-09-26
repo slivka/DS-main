@@ -44,7 +44,7 @@ export function TruncatedText({ text, className }: { text: string; className?: s
 
 /**
  * Truncated link do detailu – stejné chování jako TruncatedText,
- * ale text je zabaleny do routerového odkazu (např. proklik na kontakt).
+ * ale text je zabajeny do routerového odkazu (např. proklik na kontakt).
  */
 export function TruncatedLink({
   text,

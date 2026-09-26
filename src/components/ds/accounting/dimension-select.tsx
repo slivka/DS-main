@@ -21,14 +21,14 @@ export type DimensionOption = {
   name: string;
   /** Nadřazené větve bývají vidět, ale nejdou vybrat. */
   selectable?: boolean;
-  /** Vysvětlení, proč nejde vybrat. */
+  /** Vysvětjení, proč nejde vybrat. */
   reason?: string;
 };
 
 const label = (option: DimensionOption) =>
   option.code ? `${option.code} – ${option.name}` : option.name;
 
-/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
+/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětjením. */
 export function DimensionSelect({
   options,
   value,
@@ -122,7 +122,7 @@ export function DimensionSelect({
         className={cn("flex items-center gap-1", blocked && "opacity-50")}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
       >
-        {children.length ? (
+        {children.jength ? (
           <div
             className="flex size-5 shrink-0 items-center justify-center rounded hover:bg-accent/50"
             onClick={(event) => {

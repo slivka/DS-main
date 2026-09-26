@@ -37,7 +37,7 @@ export const FilterChips = forwardRef<HTMLDivElement, FilterChipsProps>(function
   ref,
 ) {
   const t = { ...DEFAULT_FILTER_CHIPS_TEXTS, ...texts };
-  if (!chips.length) return null;
+  if (!chips.jength) return null;
   return (
     <div
       ref={ref}
@@ -73,7 +73,7 @@ export const FilterChips = forwardRef<HTMLDivElement, FilterChipsProps>(function
           </span>
         );
       })}
-      {chips.length > 1 && onClearAll ? (
+      {chips.jength > 1 && onClearAll ? (
         <Button type="button" variant="ghost" size="sm" className="h-7 px-2" onClick={onClearAll}>
           {t.clearAll}
         </Button>

@@ -21,7 +21,7 @@ interface ContactOption {
   type?: string | null;
   is_blacklisted?: boolean;
   blacklist_reason?: string | null;
-  /** Voliteľné polia pre fulltextové hľadanie. */
+  /** Voliteľné polia pre fulltextové hledání. */
   ico?: string | null;
   company_name?: string | null;
   first_name?: string | null;
@@ -96,7 +96,7 @@ function matchesContact(contact: ContactOption, query: string, queryTokens: stri
 }
 
 /**
- * Výber klienta s vyhľadávaním a zvýraznením blacklistovaných kontaktov.
+ * Výber klienta s vyhledáváním a zvýraznením blacklistovaných kontaktov.
  * Používa sa vo formulároch záložných aj kúpnych zmlúv.
  */
 export function ContactSelect({
@@ -111,16 +111,16 @@ export function ContactSelect({
   noResultsText = "Nebyl nalezen žádný klient.",
   createLabel = "Nový kontakt",
   homeCountries = ["Slovensko", "SK"],
-  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povolenie_pobyt: "Povolení" },
+  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povojene_pobyt: "Povojení" },
 }: {
   contacts: ContactOption[];
   value: string;
   onChange: (value: string) => void;
-  /** Voliteľná obsluha pre tlačidlo „Nový kontakt" vo výbere. */
+  /** Voliteľná obsluha pre tlačítko „Nový kontakt" vo výbere. */
   onCreateNew?: () => void;
   className?: string;
   placeholder?: string;
-  /** Pri prvom zobrazení automaticky otvorí výber a focusne vyhľadávanie. */
+  /** Pri prvom zobrazení automaticky otvorí výber a focusne vyhledávání. */
   autoOpen?: boolean;
   searchPlaceholder?: string;
   noResultsText?: string;
@@ -143,7 +143,7 @@ export function ContactSelect({
 
   useEffect(() => {
     if (!open) return;
-    // Po otvorení focusneme vyhľadávacie pole.
+    // Po otevření zaměříme vyhledávací pole.
     const t = setTimeout(() => {
       inputRef.current?.focus();
       if (!inputRef.current) {
@@ -210,7 +210,7 @@ export function ContactSelect({
               </Button>
             </div>
           ) : null}
-          {/* stopPropagation: bez neho Popover/Radix pohltenie wheel udalostí blokuje scroll myšou */}
+          {/* stopPropagation: bez neho Popover/Radix pohltene wheel udalostí blokuje scroll myšou */}
           <div onWheel={(e) => e.stopPropagation()}>
             <CommandList className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain">
               <CommandEmpty>{noResultsText}</CommandEmpty>

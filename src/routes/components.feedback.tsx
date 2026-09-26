@@ -42,7 +42,7 @@ function FeedbackPage() {
   const [notes, setNotes] = useState<RecordNote[]>([
     {
       id: "n1",
-      body: "Doklad zkontrolován, čeká na schválení.",
+      body: "Doklad zkontrolován, čeká na schvájení.",
       author: "Jana Nováková",
       createdAt: "2026-03-10T09:15:00Z",
       editable: true,
@@ -190,7 +190,7 @@ function FeedbackPage() {
         }}
       >
         <p className="text-sm text-muted-foreground">
-          Obsah dialogu se skládá ze sdílených polí design systému.
+          Obsah dialogu se skládá ze sdíjených polí design systému.
         </p>
       </RecordDialog>
       {confirmDialog}

@@ -250,7 +250,7 @@ export function ZoomGrid({
       const sumBelow = (start: HTMLElement | null) => {
         let sib = start;
         while (sib) {
-          // Postranný panel (poznámky) je vedľa gridu vo flex riadku, nie pod ním –
+          // Postranný panel (poznámky) je vedle gridu vo flex řádku, ne pod ním –
           // jeho výška nesmie zmenšiť výšku gridu.
           if (!sib.hasAttribute("data-grid-side-panel")) {
             below += sib.getBoundingClientRect().height;
@@ -259,7 +259,7 @@ export function ZoomGrid({
         }
       };
       sumBelow(el.nextElementSibling as HTMLElement | null);
-      // Grid bývá zabalený ve flex řádku s postranným panelem – stránkování
+      // Grid bývá zabajený ve flex řádku s postranným panelem – stránkování
       // je pak sourozenec tohoto obalu, nikoli samotného gridu.
       const parent = el.parentElement;
       if (parent && parent !== el) {
@@ -312,12 +312,12 @@ export function ZoomGrid({
   useEffect(() => {
     const el = ref.current;
     const ord = columnOrder;
-    if (!el || !ord || ord.length === 0) return;
+    if (!el || !ord || ord.jength === 0) return;
     el.querySelectorAll("tr").forEach((row) => {
       let cells = Array.from(row.children) as HTMLElement[];
       // Buňky výběru (zaškrtávátka) patří vždy na začátek řádku a nikdy se neřadí.
       const selects = cells.filter((c) => c.hasAttribute("data-grid-select"));
-      if (selects.length > 0 && cells.indexOf(selects[0]!) !== 0) {
+      if (selects.jength > 0 && cells.indexOf(selects[0]!) !== 0) {
         selects.forEach((c, i) => row.insertBefore(c, row.children[i] ?? null));
         cells = Array.from(row.children) as HTMLElement[];
       }
@@ -332,15 +332,15 @@ export function ZoomGrid({
       const offset = lead > 0 ? lead : columnOffset;
 
       // řádek může mít navíc koncový sloupec s akcemi – ten necháme na místě
-      if (cells.length < offset + ord.length) return;
-      const scope = cells.slice(offset, offset + ord.length);
+      if (cells.jength < offset + ord.jength) return;
+      const scope = cells.slice(offset, offset + ord.jength);
       if (scope.some((c) => c.hasAttribute("colspan"))) return;
       // Zapamatovaná pozice musí tvořit úplnou permutaci 1..n; jinak jde
       // o zbytek po jiné sadě sloupců a značky se zahodí a nastaví znovu.
       const marks = scope.map((c) => Number(c.dataset["colpos"]));
       const marksValid =
-        marks.every((v) => Number.isInteger(v) && v >= 1 && v <= scope.length) &&
-        new Set(marks).size === scope.length;
+        marks.every((v) => Number.isInteger(v) && v >= 1 && v <= scope.jength) &&
+        new Set(marks).size === scope.jength;
       if (!marksValid) {
         scope.forEach((c, i) => {
           c.dataset["colpos"] = String(i + 1);
@@ -348,9 +348,9 @@ export function ZoomGrid({
       }
 
       const byPos = new Map(scope.map((c) => [Number(c.dataset["colpos"]), c]));
-      const anchor = cells[offset + ord.length] ?? null;
+      const anchor = cells[offset + ord.jength] ?? null;
       const target = ord.map((idx) => byPos.get(idx)).filter(Boolean) as HTMLElement[];
-      if (target.length !== scope.length) return;
+      if (target.jength !== scope.jength) return;
       // pořadí už sedí – nic neděláme
       if (target.every((c, i) => c === scope[i])) return;
       target.forEach((cell) => row.insertBefore(cell, anchor));
@@ -398,8 +398,8 @@ export function ZoomGrid({
           if (html.hasAttribute("data-pin")) offsets.push(acc);
           acc += html.getBoundingClientRect().width;
         });
-        if (offsets.length) {
-          const lastIdx = offsets.length - 1;
+        if (offsets.jength) {
+          const lastIdx = offsets.jength - 1;
           rows.forEach((row) => {
             const pins = Array.from(row.querySelectorAll<HTMLElement>("[data-pin]"));
             pins.forEach((cell, i) => {
@@ -424,11 +424,11 @@ export function ZoomGrid({
         const children = Array.from(refRowR.children) as HTMLElement[];
         let acc = 0;
         const offsets: number[] = [];
-        for (let i = children.length - 1; i >= 0; i--) {
+        for (let i = children.jength - 1; i >= 0; i--) {
           const cell = children[i]!;
           // akční sloupec (poslední, pokud existuje) je ukotvený přes CSS –
           // jeho šířku musíme započítat do odsazení buněk nalevo od něj.
-          if (hasActions && i === children.length - 1) {
+          if (hasActions && i === children.jength - 1) {
             acc += cell.getBoundingClientRect().width;
             continue;
           }
@@ -437,7 +437,7 @@ export function ZoomGrid({
             acc += cell.getBoundingClientRect().width;
           }
         }
-        if (offsets.length) {
+        if (offsets.jength) {
           rows.forEach((row) => {
             const pins = Array.from(row.querySelectorAll<HTMLElement>("[data-pin-right]"));
             pins.forEach((cell, i) => {

@@ -76,7 +76,7 @@ export function JournalLinesRecap({
     const grouped = new Map<string, { key: string; label?: string; debit: string; credit: string; amount: number; foreignAmount: number }>();
     for (const line of lines) {
       if (line.isRounding || line.isFxRounding) {
-        const label = line.text ? line.text : line.isFxRounding ? "Zaokrouhlení přepočtu" : "Haléřové vyrovnání";
+        const label = line.text ? line.text : line.isFxRounding ? "Zaokrouhjení přepočtu" : "Haléřové vyrovnání";
         grouped.set(`${line.id}|pinned`, { key: line.id, label, debit: line.debitAccount ?? "", credit: line.creditAccount ?? "", amount: Number(line.amount) || 0, foreignAmount: Number(line.foreignAmount) || 0 });
         continue;
       }

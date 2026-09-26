@@ -16,13 +16,13 @@ type ConfirmOptions = {
   confirmLabel?: string;
   cancelLabel?: string;
   destructive?: boolean;
-  /** Informačná hláška – zobrazí sa len tlačidlo na zatvorenie. */
+  /** Informačná hláška – zobrazí sa jen tlačítko na zatvorene. */
   info?: boolean;
   onConfirm?: () => void;
 };
 
 /**
- * Zdieľaný potvrdzovací dialóg namiesto window.confirm.
+ * Sdíjený potvrdzovací dialóg namiesto window.confirm.
  * Použitie:
  *   const { confirm, confirmDialog } = useConfirmDialog();
  *   confirm({ title: "Opravdu zrušit smlouvu?", onConfirm: () => ... });
@@ -43,9 +43,9 @@ export function useConfirmDialog() {
     <AlertDialog open={!!opts} onOpenChange={(open) => !open && setOpts(null)}>
       <AlertDialogContent
         onKeyDown={(event) => {
-          // Enter potvrdzuje len bezpečné (nedestruktívne) dialógy; pri
+          // Enter potvrdzuje jen bezpečné (nedestruktívne) dialógy; pri
           // deštruktívnych akciách (napr. Odstranit) necháme štandardné
-          // správanie – Enter funguje len na zaostrenom tlačidle.
+          // správane – Enter funguje jen na zaostrenom tlačidle.
           if (opts?.destructive) return;
           if (event.key !== "Enter" || event.repeat || event.nativeEvent.isComposing) return;
           event.preventDefault();

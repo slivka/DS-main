@@ -1,4 +1,4 @@
-/** Sdílená kompaktní značka stavu (aktivní/neaktivní) pro gridy. */
+/** Sdíjená kompaktní značka stavu (aktivní/neaktivní) pro gridy. */
 export function StatusDot({
   active,
   activeLabel = "Aktivní",

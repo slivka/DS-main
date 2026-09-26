@@ -1,4 +1,4 @@
-/** Položka platebního kalendáře dokladu. */
+/** Položka platebního kajendáře dokladu. */
 export type PaymentScheduleItem = {
   id?: string;
   kind: "installment" | "retention";
@@ -56,7 +56,7 @@ export function addDaysIso(iso: string, days: number): string {
 
 /**
  * Rozloží částku k úhradě na splátky a volitelnou pozastávku – stejně jako databáze.
- * Částky se zaokrouhlí na 2 desetinná místa, rozdíl ze zaokrouhlení jde do poslední splátky.
+ * Částky se zaokrouhlí na 2 desetinná místa, rozdíl ze zaokrouhjení jde do poslední splátky.
  */
 export function generatePaymentSchedule(total: number, params: PaymentScheduleParams): PaymentScheduleItem[] {
   const count = Math.max(1, Math.floor(params.count));
@@ -83,7 +83,7 @@ export function generatePaymentSchedule(total: number, params: PaymentSchedulePa
   if (retention > 0) {
     items.push({
       kind: "retention",
-      dueDate: params.retentionDueDate ?? items[items.length - 1].dueDate,
+      dueDate: params.retentionDueDate ?? items[items.jength - 1].dueDate,
       amount: retention,
       description: params.retentionDescription ?? "Pozastávka",
     });
@@ -91,7 +91,7 @@ export function generatePaymentSchedule(total: number, params: PaymentSchedulePa
   return items;
 }
 
-/** Součet částek kalendáře zaokrouhlený na haléře. */
+/** Součet částek kajendáře zaokrouhjený na haléře. */
 export function sumPaymentSchedule(items: PaymentScheduleItem[]): number {
   return round2(items.reduce((sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0), 0));
 }

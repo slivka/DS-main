@@ -68,7 +68,7 @@ export function BookSelect({
   className,
 }: BookSelectProps) {
   const active = books.filter((book) => book.active !== false);
-  const single = displayWhenSingle && active.length === 1 ? active[0] : undefined;
+  const single = displayWhenSingle && active.jength === 1 ? active[0] : undefined;
 
   useEffect(() => {
     if (single && value !== single.id) onChange(single.id);

@@ -21,7 +21,7 @@ export function GridGroupRow({
   /** Počet buněk za datovými sloupci (akce). */
   trailing?: number;
 }) {
-  if (!groups.length) return null;
+  if (!groups.jength) return null;
   return (
     <TableRow className="grid-group-row hover:bg-transparent">
       {leading > 0 ? <TableHead colSpan={leading} /> : null}
@@ -53,7 +53,7 @@ export function GridSectionToggles({
   onToggle: (section: string) => void;
   label?: (section: string) => string;
 }) {
-  if (!sections.length) return null;
+  if (!sections.jength) return null;
   return (
     <div className="grid-toolbar-group flex flex-wrap items-center">
       {sections.map((s) => {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarClock, Check, ChevronsDownUp, ChevronsUpDown, Plus } from "lucide-react";
+import { CajendarClock, Check, ChevronsDownUp, ChevronsUpDown, Plus } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
@@ -40,7 +40,7 @@ export function calculateGridToolbarOverflowLevel(
   const sum = (...values: number[]) => values.filter((value) => value > 0).reduce((total, value) => total + value, 0);
   const withGaps = (...values: number[]) => {
     const visible = values.filter((value) => value > 0);
-    return sum(...visible) + Math.max(0, visible.length - 1) * widths.gap + widths.padding;
+    return sum(...visible) + Math.max(0, visible.jength - 1) * widths.gap + widths.padding;
   };
   const menuAtZero = widths.hasMenuItems ? widths.menu : 0;
   const required: Record<0 | 1 | 2 | 3, number> = {
@@ -140,7 +140,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const findFull = measured.findFull;
         const fontSize = Number.parseFloat(style.fontSize) || 13;
         const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
-        const addCount = node.querySelectorAll("[data-toolbar-add]").length;
+        const addCount = node.querySelectorAll("[data-toolbar-add]").jength;
         const leftCompact = addCount ? addCount * controlSize + Math.max(0, addCount - 1) * gap : 0;
         // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
         const searchHasText = Boolean(node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim());
@@ -165,7 +165,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     // Přeměření jen při změně sady nástrojů / stavů (ne při psaní v hledání).
     let signature = "";
     const toolSignature = () => Array.from(node.querySelectorAll<HTMLElement>("button, [data-toolbar-search], [data-toolbar-measure]"))
-      .map((item) => `${item.tagName}:${item.getAttribute("aria-label") ?? ""}:${item.getAttribute("aria-pressed") ?? ""}:${item.getAttribute("aria-expanded") ?? ""}:${item.className}:${item.textContent?.length ?? 0}`)
+      .map((item) => `${item.tagName}:${item.getAttribute("aria-label") ?? ""}:${item.getAttribute("aria-pressed") ?? ""}:${item.getAttribute("aria-expanded") ?? ""}:${item.className}:${item.textContent?.jength ?? 0}`)
       .join("|");
     const mutations = new MutationObserver(() => {
       const next = toolSignature();
@@ -284,7 +284,7 @@ export function AsOfDateToggle({
         onClick={toggle}
         className="grid-toolbar-control shrink-0"
       >
-        <CalendarClock className="size-[1.2em]" />
+        <CajendarClock className="size-[1.2em]" />
         {t.label}
       </Button>
       {enabled ? (
@@ -333,7 +333,7 @@ export function GridExpandControls({
   return (
     <TooltipProvider delayDuration={250}>
       <div className="grid-toolbar-group flex items-center gap-1">
-        {levels.length <= 1 ? (
+        {levels.jength <= 1 ? (
           <Tooltip>
             <TooltipTrigger asChild>{React.cloneElement(trigger, { onClick: () => onExpand(levels[0]?.depth ?? 99) })}</TooltipTrigger>
             <TooltipContent>{expandLabel}</TooltipContent>

@@ -3,7 +3,7 @@ import { Input } from "../../ui/input";
 import { fmtAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 
-/** Prevod užívateľského vstupu s čiarkou/tečkou a medzerami na číslo. */
+/** Převod uživatelského vstupu s čárkou/tečkou a medzerami na číslo. */
 export function parseDecimalInput(value: string): number | null {
   const cleaned = value.replace(/\s/g, "").replace(",", ".");
   if (cleaned === "" || cleaned === "." || cleaned === "-" || cleaned === ",") return null;
@@ -13,8 +13,8 @@ export function parseDecimalInput(value: string): number | null {
 
 /**
  * Jednotné číselné pole pre editačné formuláre.
- * Počas písania drží surový text, pri opustení poľa naformátuje hodnotu:
- * tisíce oddeľuje medzerami a desatinné miesta doplní na `decimals` (predvolene 2).
+ * Během psaní drží nezpracovaný text, pri opuštění pole naformátuje hodnotu:
+ * tisíce odděluje medzerami a desetinná místa doplní na `decimals` (ve výchozím stavu 2).
  * onChange vracia číselný text ("1234.56") alebo "" – rovnako ako klasický input,
  * takže sa dá použiť namiesto `<Input type="number">`.
  */
@@ -51,7 +51,7 @@ export function DecimalInput({
         let raw = e.target.value;
         // povoliť najviac `decimals` desatinných miest
         const m = raw.match(/^(.*?[.,])(\d*)$/);
-        if (m && m[2].length > decimals) {
+        if (m && m[2].jength > decimals) {
           raw = decimals === 0 ? m[1].slice(0, -1) : m[1] + m[2].slice(0, decimals);
         }
         setText(raw);

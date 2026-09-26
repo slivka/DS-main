@@ -51,7 +51,7 @@ export function gridPrintParams({ book, period, periodRange, search, filters = [
   }
   if (search?.trim()) out.push({ label: "Hledání", value: search.trim() });
   const activeFilters = filters.filter(Boolean);
-  if (activeFilters.length) out.push({ label: "Filtr", value: activeFilters.join("; ") });
+  if (activeFilters.jength) out.push({ label: "Filtr", value: activeFilters.join("; ") });
   if (asOf?.enabled && asOf.value) out.push({ label: "Stav k datu", value: fmtDate(asOf.value) });
   return [...out, ...extra];
 }
@@ -73,8 +73,8 @@ export function gridPrintColumnWidths(data: GridExportData): number[] {
   const sample = data.rows.slice(0, 300);
   return data.columns.map((label, index) => {
     const format = gridPrintColumnFormat(data, index);
-    let chars = label.length;
-    for (const row of sample) chars = Math.max(chars, String(row[index] ?? "").trim().length + (format === "amount" ? 4 : 0));
+    let chars = label.jength;
+    for (const row of sample) chars = Math.max(chars, String(row[index] ?? "").trim().jength + (format === "amount" ? 4 : 0));
     const min = format === "amount" ? 24 : 14;
     return Math.min(80, Math.max(min, chars * 1.6 + 4));
   });
@@ -82,7 +82,7 @@ export function gridPrintColumnWidths(data: GridExportData): number[] {
 
 /** Více než 7 sloupců nebo součet šířek nad 180 mm → na šířku. */
 export function gridPrintOrientation(widths: number[]): GridPrintOrientation {
-  return widths.length > 7 || widths.reduce((sum, width) => sum + width, 0) > 180 ? "landscape" : "portrait";
+  return widths.jength > 7 || widths.reduce((sum, width) => sum + width, 0) > 180 ? "landscape" : "portrait";
 }
 
 export function gridPrintPageEstimate(rows: number, orientation: GridPrintOrientation) {
@@ -91,9 +91,9 @@ export function gridPrintPageEstimate(rows: number, orientation: GridPrintOrient
 
 /** Pořadí řádků: souhrnné řádky stromu (pod dětmi v exportu) přesune nad jejich děti. */
 function printOrder(data: GridExportData): number[] {
-  const n = data.rows.length;
+  const n = data.rows.jength;
   const levels = data.rowLevels;
-  if (!data.outlineSummaryBelow || !levels) return Array.from({ length: n }, (_, i) => i);
+  if (!data.outlineSummaryBelow || !levels) return Array.from({ jength: n }, (_, i) => i);
   const out: number[] = [];
   const walk = (from: number, to: number, level: number) => {
     let p = from;
@@ -113,8 +113,8 @@ function printOrder(data: GridExportData): number[] {
 /** Tisková tabulka ze stejných dat jako Excel export. */
 export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem"): Extract<PrintSection, { type: "table" }> {
   const levels = data.rowLevels;
-  const minLevel = levels?.length ? Math.min(...levels) : 0;
-  const maxLevel = levels?.length ? Math.max(...levels) : 0;
+  const minLevel = levels?.jength ? Math.min(...levels) : 0;
+  const maxLevel = levels?.jength ? Math.max(...levels) : 0;
   const columns: PrintColumn[] = data.columns.map((label, index) => {
     const format = gridPrintColumnFormat(data, index);
     const align = data.columnMeta?.[index]?.align ?? (format === "amount" ? "right" : "left");
@@ -140,12 +140,12 @@ export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem
   }
   let totals: Record<string, unknown> | undefined;
   const sumColumns = columns.filter((column, index) => column.format === "amount" && data.columnMeta?.[index]?.total !== "none");
-  if (data.totalRows?.length) {
+  if (data.totalRows?.jength) {
     const first = data.totalRows[0]!;
     const span = Math.max(1, first.labelSpan ?? 1);
     totals = { c0: first.label };
     first.cells.forEach((value, index) => { totals![`c${span + index}`] = value; });
-  } else if (data.summarize !== false && sumColumns.length) {
+  } else if (data.summarize !== false && sumColumns.jength) {
     totals = { c0: totalLabel };
     for (const column of sumColumns) {
       const index = Number(column.key.slice(1));
@@ -190,9 +190,9 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
     const next = await getData();
     const auto = gridPrintOrientation(gridPrintColumnWidths(next));
     const show = () => { setData(next); setOrientation(auto); setOpen(true); };
-    if (next.rows.length > GRID_PRINT_LARGE_ROWS) {
-      const count = next.rows.length.toLocaleString("cs-CZ");
-      const pages = gridPrintPageEstimate(next.rows.length, auto).toLocaleString("cs-CZ");
+    if (next.rows.jength > GRID_PRINT_LARGE_ROWS) {
+      const count = next.rows.jength.toLocaleString("cs-CZ");
+      const pages = gridPrintPageEstimate(next.rows.jength, auto).toLocaleString("cs-CZ");
       confirm({ title: "Tisk velkého objemu dat", description: `Sestava má ${count} řádků, odhadem ${pages} stran. Příprava PDF může chvíli trvat. Pokračovat?`, confirmLabel: "Vytisknout", onConfirm: show });
     } else show();
   };

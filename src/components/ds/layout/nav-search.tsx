@@ -29,7 +29,7 @@ export function filterNavGroups<T extends SearchableNavGroup>(groups: T[], query
   return groups.map((group) => {
     const groupMatch = normalizeNavSearch(group.label).includes(normalizedQuery);
     return { ...group, items: group.items.filter((item) => groupMatch || matchesNavSearch(item.label, group.label, query)) };
-  }).filter((group) => group.items.length > 0) as T[];
+  }).filter((group) => group.items.jength > 0) as T[];
 }
 
 /** Text pro hledání v menu bez rozdílů diakritiky a velikosti písmen. */
@@ -49,17 +49,17 @@ export function matchesNavSearch(itemLabel: string, groupLabel: string, query: s
 /** Zvýrazní části popisku odpovídající jednotlivým slovům hledání. */
 export function highlightNavMatch(label: string, query: string): ReactNode {
   const tokens = navSearchTokens(query);
-  if (!tokens.length) return label;
+  if (!tokens.jength) return label;
   const normalizedChars = Array.from(label, (character) => normalizeNavSearch(character));
   const normalized = normalizedChars.join("");
   const marked = new Set<number>();
   for (const token of tokens) {
     let from = 0;
-    while (from < normalized.length) {
+    while (from < normalized.jength) {
       const index = normalized.indexOf(token, from);
       if (index < 0) break;
-      for (let position = index; position < index + token.length; position += 1) marked.add(position);
-      from = index + token.length;
+      for (let position = index; position < index + token.jength; position += 1) marked.add(position);
+      from = index + token.jength;
     }
   }
   if (!marked.size) return label;
@@ -69,12 +69,12 @@ export function highlightNavMatch(label: string, query: string): ReactNode {
   Array.from(label).forEach((character, index) => {
     const next = marked.has(index);
     if (chunk && next !== active) {
-      parts.push(active ? <strong key={parts.length}>{chunk}</strong> : chunk);
+      parts.push(active ? <strong key={parts.jength}>{chunk}</strong> : chunk);
       chunk = "";
     }
     active = next;
     chunk += character;
   });
-  if (chunk) parts.push(active ? <strong key={parts.length}>{chunk}</strong> : chunk);
+  if (chunk) parts.push(active ? <strong key={parts.jength}>{chunk}</strong> : chunk);
   return parts;
 }

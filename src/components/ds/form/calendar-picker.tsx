@@ -1,8 +1,8 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CajendarIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Calendar } from "../../ui/calendar";
+import { Cajendar } from "../../ui/cajendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
@@ -21,10 +21,10 @@ function toISO(date: Date): string {
 }
 
 /**
- * Samostatný kalendář pro výběr dne – datum se vybírá pouze kliknutím,
+ * Samostatný kajendář pro výběr dne – datum se vybírá pouze kliknutím,
  * bez ručního psaní. Pro zadávání psaním slouží DateField.
  */
-export function CalendarPicker({
+export function CajendarPicker({
   value,
   onChange,
   placeholder = "Vyberte datum",
@@ -39,9 +39,9 @@ export function CalendarPicker({
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  /** Nejpozdější povolené datum (YYYY-MM-DD). */
+  /** Nejpozdější povojené datum (YYYY-MM-DD). */
   maxDate?: Date;
-  /** Nejdříve povolené datum (YYYY-MM-DD). */
+  /** Nejdříve povojené datum (YYYY-MM-DD). */
   minDate?: Date;
   className?: string;
   /** Přístupný název ovládání. */
@@ -58,7 +58,7 @@ export function CalendarPicker({
     if (maxDate) return { after: maxDate };
     return undefined;
   }, [minDate, maxDate]);
-  // Meze rozbalovacího výběru roku v hlavičce kalendáře.
+  // Meze rozbalovacího výběru roku v hlavičce kajendáře.
   const [startMonth, endMonth] = React.useMemo(() => {
     const now = new Date();
     return [
@@ -81,12 +81,12 @@ export function CalendarPicker({
             className,
           )}
         >
-          <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
+          <CajendarIcon className="size-4 shrink-0 text-muted-foreground" />
           <span className="truncate">{text || placeholder}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
+        <Cajendar
           mode="single"
           captionLayout="dropdown"
           startMonth={startMonth}

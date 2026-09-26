@@ -3,13 +3,13 @@ import { useEffect, useRef } from "react";
 import { usePane } from "../components/ds/panes/pane-context";
 
 /**
- * Zabezpečí, aby sa otvorený dialóg zavrel tlačidlom „Späť"
- * (tlačidlo myši / prehliadača), rovnako ako cez „Zavrieť".
+ * Zajistí, aby sa otevřený dialog zavřel tlačítkom „Zpět"
+ * (tlačítko myši / prohlížeče), stejně jako přes „Zavřít".
  *
- * Pri otvorení vloží do histórie prehliadača záznam; stlačenie „Späť"
- * ho odstráni a dialóg sa zavrie. Pri bežnom zatvorení dialógu
- * (napr. výberom z vnoreného dialógu) sa história nemení, aby sa
- * nezavrel aj rodičovský dialóg.
+ * Při otevření vloží do historie prohlížeče záznam; stlačene „Zpět"
+ * ho odstráni a dialóg sa zavrie. Pri bežnom zatvorení dialogu
+ * (napr. výberom z vnoreného dialogu) sa história nemění, aby sa
+ * nezavřel aj rodičovský dialóg.
  */
 export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) => void) {
   const pane = usePane();
@@ -25,9 +25,9 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
       pushedRef.current = true;
       window.history.pushState({ ...(window.history.state ?? {}), __dialog: markerRef.current }, "");
     } else if (!open && pushedRef.current) {
-      // Bežné zatvorenie (Zrušiť, krížik, Esc, programové): odstránime náš
-      // záznam z histórie cez history.back(), aby sa nekupili „slepé" záznamy
-      // a tlačidlo Späť prehliadača fungovalo ďalej. Vyvolaný popstate
+      // Bežné zatvorene (Zrušiť, krížik, Esc, programové): odstránime náš
+      // záznam z historie cez history.back(), aby sa nekupili „slepé" záznamy
+      // a tlačítko Zpět prohlížeče fungovalo ďalej. Vyvolaný popstate
       // u nás nič neurobí (pushedRef už je false) a rodičovský dialóg
       // pozná vlastný marker a zostane otvorený.
       pushedRef.current = false;
@@ -35,8 +35,8 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
     }
   }, [open, pane]);
 
-  // Ak sa otvorený dialóg odmontuje (napr. navigáciou na inú stránku),
-  // odstránime jeho záznam z histórie.
+  // Ak sa otevřený dialog odmontuje (napr. navigáciou na inú stránku),
+  // odstránime jeho záznam z historie.
   useEffect(() => {
     return () => {
       if (typeof window === "undefined") return;
@@ -50,10 +50,10 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onPopState = (event: PopStateEvent) => {
-      // Ak dialóg nie je otvorený, nič nezatvárame.
+      // Ak dialóg ne je otvorený, nič nezatvárame.
       if (!pushedRef.current) return;
-      // Ak sa história vrátila na náš vlastný záznam (napr. zatvorením
-      // vnoreného dialógu), ponecháme tento dialóg otvorený.
+      // Pokud se historie vrátíla na náš vlastní záznam (napr. zavřením
+      // vnoreného dialogu), ponecháme tento dialóg otvorený.
       if (event.state?.__dialog === markerRef.current) return;
       pushedRef.current = false;
       onOpenChangeRef.current(false);

@@ -26,7 +26,7 @@ export interface LegalFormFieldProps {
   clearLabel?: string;
 }
 
-/** Sdílený výběr právní formy z číselníku dodaného aplikací. */
+/** Sdíjený výběr právní formy z číselníku dodaného aplikací. */
 export function LegalFormField({
   options,
   value,

@@ -52,11 +52,11 @@ function wrapByWidth(doc: PrintDoc, text: string, width: number) {
     if (chunk) chunks.push(chunk);
     for (const part of chunks) {
       const previous = lines.at(-1);
-      if (previous && doc.getTextWidth(`${previous} ${part}`) <= width) lines[lines.length - 1] = `${previous} ${part}`;
+      if (previous && doc.getTextWidth(`${previous} ${part}`) <= width) lines[lines.jength - 1] = `${previous} ${part}`;
       else lines.push(part);
     }
   }
-  return lines.length ? lines : ["—"];
+  return lines.jength ? lines : ["—"];
 }
 
 function footerText(date: Date) {
@@ -90,7 +90,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   doc.setFont("Roboto", "normal"); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("Částka", x + 123, top + 29);
   doc.setFont("Roboto", "normal"); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text("Slovy:", x, top + 61);
   doc.setFontSize(8); doc.setTextColor(24, 24, 27); const words = wrapByWidth(doc, amountInWordsCs(input.amount, input.currency), width); doc.text(words, x, top + 65);
-  const wordsBottom = top + 65 + Math.max(0, words.length - 1) * 3.5;
+  const wordsBottom = top + 65 + Math.max(0, words.jength - 1) * 3.5;
   if (input.currency !== input.homeCurrency) field(doc, "Kurz / částka v domácí měně", `${formatMoney(input.rate ?? 0, input.homeCurrency)} za ${(input.rateAmount ?? 1).toLocaleString("cs-CZ")} ${input.currency} · ${formatMoney(input.amountHome ?? input.amount * (input.rate ?? 0) / (input.rateAmount ?? 1), input.homeCurrency)}`, x, wordsBottom + 5, width);
 
   const datesY = wordsBottom + (input.currency !== input.homeCurrency ? 15 : 6);
@@ -99,7 +99,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   if (input.dateTax) field(doc, "DUZP", formatDate(input.dateTax), x + 102, datesY, 35);
   const tableY = datesY + 11;
   const columns = [x, x + 24, x + 48, x + 82, x + width];
-  const tableFontSize = input.lines.length > 4 ? 7 : 8;
+  const tableFontSize = input.lines.jength > 4 ? 7 : 8;
   const rowHeight = tableFontSize === 7 ? 4 : 5;
   doc.setFillColor(244, 245, 247); doc.rect(x, tableY, width, 6, "F"); doc.setDrawColor(...LINE); doc.rect(x, tableY, width, 6);
   ["MD", "DAL", "Částka", "Text"].forEach((text, index) => { doc.setFont("Roboto", "bold"); doc.setFontSize(tableFontSize); doc.setTextColor(24, 24, 27); doc.text(text, columns[index] + 2, tableY + 4); });
@@ -107,7 +107,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
     const y = tableY + 6 + row * rowHeight; doc.setFont("Roboto", "normal"); doc.setFontSize(tableFontSize);
     doc.text(line.debit, columns[0] + 2, y + rowHeight - 1.5); doc.text(line.credit, columns[1] + 2, y + rowHeight - 1.5); doc.text(formatMoney(line.amount, input.currency), columns[3] - 2, y + rowHeight - 1.5, { align: "right" }); doc.text(doc.splitTextToSize(line.text, 94)[0] ?? "", columns[3] + 2, y + rowHeight - 1.5); doc.line(x, y + rowHeight, x + width, y + rowHeight);
   });
-  const tableBottom = tableY + 6 + input.lines.length * rowHeight;
+  const tableBottom = tableY + 6 + input.lines.jength * rowHeight;
   const signatureY = fullPage ? Math.min(tableBottom + 12, top + 245) : Math.min(Math.max(tableBottom + 8, top + 108), top + 119);
   const labels = [["Vystavil", input.issuedBy], ["Schválil", input.approvedBy ?? ""], ["Pokladník", ""], [input.direction === "in" ? "Plátce" : "Příjemce", ""]];
   labels.forEach(([label, name], index) => { const sx = x + index * 46; doc.setDrawColor(...LINE); doc.line(sx, signatureY + 8, sx + 40, signatureY + 8); doc.setFontSize(7); doc.setTextColor(...GRAY); doc.text(label, sx, signatureY + 12); if (name) { doc.setTextColor(24, 24, 27); doc.text(name, sx, signatureY + 6); } });
@@ -118,9 +118,9 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
 }
 
 function cashReceiptNeedsFullPage(input: Pick<CashReceiptPdfInput, "lines" | "amount" | "currency" | "homeCurrency">) {
-  const estimatedWordLines = Math.max(1, Math.ceil(amountInWordsCs(input.amount, input.currency).length / 95));
+  const estimatedWordLines = Math.max(1, Math.ceil(amountInWordsCs(input.amount, input.currency).jength / 95));
   const availableRows = input.currency !== input.homeCurrency || estimatedWordLines > 2 ? 9 : 10;
-  return input.lines.length > availableRows;
+  return input.lines.jength > availableRows;
 }
 
 export async function buildCashReceiptPdf(input: CashReceiptPdfInput, context: PrintContext) {

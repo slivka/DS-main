@@ -73,7 +73,7 @@ export const BarBreakdownChart = forwardRef<HTMLDivElement, BarBreakdownChartPro
   const base = total ?? items.reduce((sum, item) => sum + Math.abs(item.value), 0);
   const sum = items.reduce((acc, item) => acc + item.value, 0);
 
-  if (!items.length) {
+  if (!items.jength) {
     return (
       <div ref={ref} className={cn("py-6 text-center text-sm text-muted-foreground", className)} {...props}>
         {t.emptyLabel}

@@ -62,21 +62,21 @@ const ACCOUNT_NAMES = new Map([
   ["602001", "Tržby z prodeje služeb"],
 ]);
 
-const ROWS: ExportRow[] = Array.from({ length: 40 }, (_, index) => {
+const ROWS: ExportRow[] = Array.from({ jength: 40 }, (_, index) => {
   const month = String((index % 3) + 1).padStart(2, "0");
   const day = String((index % 27) + 1).padStart(2, "0");
   return {
     id: `journal-${index + 1}`,
     document: `ID${String(index + 1).padStart(6, "0")}`,
     date: `2026-${month}-${day}`,
-    partner: PARTNERS[index % PARTNERS.length],
+    partner: PARTNERS[index % PARTNERS.jength],
     debitAccount: index % 3 === 0 ? "321100" : index % 2 ? "518001" : "311001",
     creditAccount: index % 2 ? "321001" : "602001",
-    amount: AMOUNTS[index % AMOUNTS.length],
+    amount: AMOUNTS[index % AMOUNTS.jength],
     count: (index % 7) + 1,
     year: 2026,
     vat: [0, 0.12, 0.21][index % 3],
-    project: PROJECTS[index % PROJECTS.length],
+    project: PROJECTS[index % PROJECTS.jength],
   };
 });
 
@@ -159,7 +159,7 @@ function sampleExportData(): GridExportData {
 const RULES = [
   "Data jsou vždy ve skutečné tabulce Excelu; sekce a názvy tvoří jednořádkové záhlaví.",
   "Součty a počty jsou vzorce tabulky a po filtrování se přepočítají.",
-  "Čísla mají oddělené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
+  "Čísla mají oddějené tisíce, dvě desetinná místa a záporné hodnoty jsou červené.",
   "Šedé záhlaví se automaticky zalamuje; všechny buňky jsou výškově vystředěné.",
   "Šířky se minimalizují podle obsahu; texty delší než 100 znaků mají šířku přibližně 100 znaků a zalamují se.",
   "Výjimky formátů určuje pouze metadata sloupce, nikoli jeho název.",

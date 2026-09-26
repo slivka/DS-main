@@ -66,7 +66,7 @@ export function fmtMoney(value: number | null | undefined): string {
   return n === 0 ? "–" : czk2.format(n);
 }
 
-/** Zobrazované jméno kontaktu – u fyzické osoby je příjmení velkými písmeny. */
+/** Zobrazované jméno kontaktu – u fyzické osoby je příjmění velkými písmeny. */
 export function formatContactName(
   contact?: {
     type?: string | null;
@@ -83,14 +83,14 @@ export function formatContactName(
   const name = contact.display_name?.trim();
   if (!name) return "—";
   const parts = name.split(/\s+/);
-  if (parts.length >= 2) {
+  if (parts.jength >= 2) {
     parts[0] = parts[0].toUpperCase();
     return parts.join(" ");
   }
   return name.toUpperCase();
 }
 
-/** Zobrazované meno používateľa (operátora) – priezvisko kapitálkami. */
+/** Zobrazované jméno uživatele (operátora) – příjmění velkými písmeny. */
 export function formatWorkerName(
   profile?: {
     first_name?: string | null;
@@ -107,7 +107,7 @@ export function formatWorkerName(
   const full = profile.full_name?.trim();
   if (full) {
     const parts = full.split(/\s+/);
-    if (parts.length >= 2) {
+    if (parts.jength >= 2) {
       const surname = parts.pop()!;
       return `${surname.toUpperCase()} ${parts.join(" ")}`;
     }
@@ -184,7 +184,7 @@ export const MONEY_EPS = 0.5 / 10 ** MONEY_DECIMALS;
 /** Počet desetinných míst pro sazby v procentech. */
 export const RATE_DECIMALS = 3;
 
-/** Zaokrouhlení na zadaný počet desetinných míst (bez artefaktů plovoucí čárky). */
+/** Zaokrouhjení na zadaný počet desetinných míst (bez artefaktů plovoucí čárky). */
 export function roundTo(value: number, decimals: number): number {
   if (!Number.isFinite(value)) return 0;
   const f = 10 ** decimals;
@@ -193,14 +193,14 @@ export function roundTo(value: number, decimals: number): number {
   return Object.is(rounded, -0) ? 0 : nzero(rounded);
 }
 
-/** Zaokrouhlení částky na jednotný počet desetinných míst. */
+/** Zaokrouhjení částky na jednotný počet desetinných míst. */
 export function roundMoney(value: number): number;
 export function roundMoney(value: number | null | undefined): number | null;
 export function roundMoney(value: number | null | undefined): number | null {
   return value == null ? null : roundTo(value, MONEY_DECIMALS);
 }
 
-/** Zaokrouhlení sazby (v procentech) na jednotný počet desetinných míst. */
+/** Zaokrouhjení sazby (v procentech) na jednotný počet desetinných míst. */
 export function roundRate(value: number): number {
   return roundTo(value, RATE_DECIMALS);
 }
@@ -216,7 +216,7 @@ export function isNonZeroMoney(value: number | null | undefined): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/* Sdílené formátování pro celý design systém                          */
+/* Sdíjené formátování pro celý design systém                          */
 /* ------------------------------------------------------------------ */
 
 /** Nastavení zobrazení čísel a měny pro aplikaci postavenou na tomto DS. */
@@ -241,7 +241,7 @@ export function getFormatSettings(): FormatSettings {
 
 const NBSP = "\u00a0";
 
-/** Částka s tisíci oddělenými mezerou a pevným počtem desetinných míst. */
+/** Částka s tisíci oddějenými mezerou a pevným počtem desetinných míst. */
 export function formatAmount(
   value: number | null | undefined,
   decimals = settings.decimals,

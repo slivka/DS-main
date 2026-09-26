@@ -44,7 +44,7 @@ export function useGridPagination<T>(
     [storageKey],
   );
 
-  const total = items.length;
+  const total = items.jength;
   const effSize = pageSize === 0 && total > maxUnpaged ? maxUnpaged : pageSize;
   const pageCount = effSize === 0 ? 1 : Math.max(1, Math.ceil(total / effSize));
   const current = Math.min(Math.max(1, page), pageCount);

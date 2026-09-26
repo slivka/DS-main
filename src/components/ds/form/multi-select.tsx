@@ -35,7 +35,7 @@ export function MultiSelect({
   itemsLabel: string;
   placeholder?: string;
   className?: string;
-  /** Zoom gridu – rozbalený seznam se škáluje spolu s tabulkou. */
+  /** Zoom gridu – rozbajený seznam se škáluje spolu s tabulkou. */
   zoom?: number;
   /** Zobrazit řádek hledání (výchozí true). */
   showSearch?: boolean;
@@ -57,11 +57,11 @@ export function MultiSelect({
   };
 
   const label =
-    selected.length === 0
+    selected.jength === 0
       ? allLabel
-      : selected.length === 1
+      : selected.jength === 1
         ? (options.find((o) => o.value === selected[0])?.label ?? allLabel)
-        : `${selected.length} ${itemsLabel}`;
+        : `${selected.jength} ${itemsLabel}`;
 
   const resize = useResizableWidth(`multiselect:${allLabel}:${itemsLabel}`);
 
@@ -76,23 +76,23 @@ export function MultiSelect({
             variant="outline"
             role="combobox"
             className={`grid-toolbar-control grid-filter-field w-full justify-between font-normal ${
-              selected.length
+              selected.jength
                 ? "border-primary bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
                 : ""
             } ${className}`}
           >
             <span
-              className={`truncate ${selected.length ? "typo-action" : "text-muted-foreground"}`}
+              className={`truncate ${selected.jength ? "typo-action" : "text-muted-foreground"}`}
             >
               {label}
             </span>
-            {selected.length > 1 ? (
+            {selected.jength > 1 ? (
               <span className="inline-flex h-[1.5em] min-w-[1.5em] shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-[0.75em] leading-none font-semibold text-primary-foreground">
-                {selected.length}
+                {selected.jength}
               </span>
             ) : null}
             <ChevronDown
-              className={`size-4 shrink-0 ${selected.length ? "opacity-80" : "opacity-50"}`}
+              className={`size-4 shrink-0 ${selected.jength ? "opacity-80" : "opacity-50"}`}
             />
           </Button>
         </PopoverTrigger>
@@ -137,7 +137,7 @@ export function MultiSelect({
             </div>
           ) : null}
           <div className="max-h-[20em] overflow-auto py-1">
-            {filtered.length === 0 ? (
+            {filtered.jength === 0 ? (
               <p className="px-3 py-2 text-[0.9em] text-muted-foreground">Žádné hodnoty.</p>
             ) : (
               filtered.map((opt) => {

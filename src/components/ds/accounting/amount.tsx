@@ -23,7 +23,7 @@ export function AmountCell({
   );
 }
 
-/** Vstup pro částku – nad sdíleným DecimalInputem, zarovnaný vpravo. */
+/** Vstup pro částku – nad sdíjeným DecimalInputem, zarovnaný vpravo. */
 export function AmountInput({
   value,
   onChange,

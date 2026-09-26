@@ -80,9 +80,9 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
   const selectedLabel = gridPeriodLabel(value);
   const shortWidthLabels = [
     t.all,
-    ...Array.from({ length: 12 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "month", index, today))),
-    ...Array.from({ length: 4 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "quarter", index, today))),
-    ...Array.from({ length: 2 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "half", index, today))),
+    ...Array.from({ jength: 12 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "month", index, today))),
+    ...Array.from({ jength: 4 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "quarter", index, today))),
+    ...Array.from({ jength: 2 }, (_, index) => gridPeriodLabel(gridPeriodRange(fiscalFrom, fiscalTo, "half", index, today))),
   ];
   const expandsForValue = value.kind === "ytd" || value.kind === "custom";
   const widthLabels = expandsForValue ? [selectedLabel, ...shortWidthLabels] : shortWidthLabels;
@@ -92,7 +92,7 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild><Button id={controlId} aria-labelledby={ariaLabelledBy} type="button" variant="outline" title={selectedLabel} className={cn("grid-toolbar-control max-w-[12em] justify-between bg-card text-left font-medium @min-[640px]:max-w-[20em]", expandsForValue && "w-auto", value.kind !== "all" && "grid-toolbar-active")}><div className="grid min-w-0 justify-items-start text-left">{widthLabels.map((label, index) => <span key={`${label}-${index}`} aria-hidden={label !== selectedLabel} className={cn("[grid-area:1/1] max-w-full truncate", label !== selectedLabel && "invisible")}>{label}</span>)}</div><ChevronDown className="size-[1em] shrink-0" /></Button></PopoverTrigger>
       <PopoverContent align="start" className="w-[22rem] p-3" onKeyDown={(event) => { if (event.altKey && (event.key === "ArrowLeft" || event.key === "ArrowRight")) event.stopPropagation(); }}>
-        {quick.length ? <div className="mb-3 flex flex-wrap gap-1 border-b pb-3">{quick.map((item) => <Button key={item.label} type="button" size="sm" variant="ghost" onClick={() => setKind(item.kind, item.index)}>{item.label}</Button>)}</div> : null}
+        {quick.jength ? <div className="mb-3 flex flex-wrap gap-1 border-b pb-3">{quick.map((item) => <Button key={item.label} type="button" size="sm" variant="ghost" onClick={() => setKind(item.kind, item.index)}>{item.label}</Button>)}</div> : null}
         <div className="grid gap-2">
           <Button type="button" variant={value.kind === "all" ? "secondary" : "ghost"} className="justify-start" onClick={() => setKind("all")}>{t.all}</Button>
           <PeriodGrid label={t.month} count={12} active={value.kind === "month" ? value.index : undefined} columns={4} render={(index) => new Intl.DateTimeFormat("cs-CZ", { month: "short", timeZone: "UTC" }).format(parse(gridPeriodRange(fiscalFrom, fiscalTo, "month", index).from))} onSelect={(index) => setKind("month", index)} />
@@ -109,7 +109,7 @@ export function GridPeriodFilter({ fiscalFrom, fiscalTo, value, onChange, texts,
 }
 
 function PeriodGrid({ label, count, active, columns, render, onSelect }: { label: string; count: number; active?: number; columns: 2 | 4; render: (index: number) => string; onSelect: (index: number) => void }) {
-  return <div><div className="mb-1 text-sm font-medium">{label}</div><div className={cn("grid gap-1", columns === 4 ? "grid-cols-4" : "grid-cols-2")}>{Array.from({ length: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
+  return <div><div className="mb-1 text-sm font-medium">{label}</div><div className={cn("grid gap-1", columns === 4 ? "grid-cols-4" : "grid-cols-2")}>{Array.from({ jength: count }, (_, index) => <Button key={index} type="button" size="sm" variant={active === index ? "secondary" : "ghost"} className="justify-center" onClick={() => onSelect(index)}>{render(index)}</Button>)}</div></div>;
 }
 
 export function GridBookSelect({ books, value, onChange, allowAll = true, allBooksLabel = "Všechny knihy", readOnly = false, controlId, ariaLabelledBy }: GridBookDisplayConfig) {
@@ -117,8 +117,8 @@ export function GridBookSelect({ books, value, onChange, allowAll = true, allBoo
   const selected = active.find((book) => book.id === value);
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
-  const textOnly = active.length === 1 || readOnly || !onChange;
-  const textBook = active.length === 1 ? active[0] : selected;
+  const textOnly = active.jength === 1 || readOnly || !onChange;
+  const textBook = active.jength === 1 ? active[0] : selected;
   if (textOnly) return <TooltipProvider><Tooltip><TooltipTrigger asChild><strong id={controlId} aria-labelledby={ariaLabelledBy} className="block max-w-[16em] truncate text-left">{value === "all" ? allBooksLabel : textBook?.name ?? allBooksLabel}</strong></TooltipTrigger>{textBook?.code ? <TooltipContent>{textBook.code}</TooltipContent> : null}</Tooltip></TooltipProvider>;
   const options = active.filter((book) => `${book.name} ${book.code}`.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
   const selectedLabel = value === "all" ? allBooksLabel : selected?.name ?? allBooksLabel;

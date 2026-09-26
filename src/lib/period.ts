@@ -12,7 +12,7 @@ export const PERIOD_LABEL: Record<PeriodKey, string> = {
 const iso = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-/** Rozsah dat (včetně hranic) pro zvolené období vztažené k dnešku. */
+/** Rozsah dat (včetně hranic) pro zvojené období vztažené k dnešku. */
 export function periodRange(
   key: PeriodKey,
   today = new Date(),

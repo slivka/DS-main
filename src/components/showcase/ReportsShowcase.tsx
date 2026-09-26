@@ -87,7 +87,7 @@ export function ReportsShowcase() {
     <>
       <ShowcaseSection
         title="Stromová mřížka (TreeGrid)"
-        description="Úrovně rozbalení Třídy · Skupiny · Účty · Vše, zvýraznění naposledy rozbaleného uzlu, výběr sloupců (Zůstatek je skrytý), zoom, akce Nový vpravo od zoomu a export do Excelu se souhrnem pod dětmi."
+        description="Úrovně rozbajení Třídy · Skupiny · Účty · Vše, zvýraznění naposledy rozbajeného uzlu, výběr sloupců (Zůstatek je skrytý), zoom, akce Nový vpravo od zoomu a export do Excelu se souhrnem pod dětmi."
       >
         <TreeGrid
           title="Účtová osnova"
@@ -117,8 +117,8 @@ export function ReportsShowcase() {
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Strom bez pojmenovaných úrovní"
-        description="Nabídka rozbalení odvodí Úroveň 1 až N a Vše podle skutečné hloubky dat."
+        title="Strom bez pojjménovaných úrovní"
+        description="Nabídka rozbajení odvodí Úroveň 1 až N a Vše podle skutečné hloubky dat."
       >
         <TreeGrid
           title="Zakázky"

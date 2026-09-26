@@ -27,12 +27,12 @@ export interface NotificationBellTexts {
 }
 
 export const DEFAULT_NOTIFICATION_BELL_TEXTS: NotificationBellTexts = {
-  label: "Oznámení",
-  title: "Oznámení",
+  label: "Oznámění",
+  title: "Oznámění",
   markAllRead: "Označit vše jako přečtené",
-  empty: "Žádná oznámení",
+  empty: "Žádná oznámění",
   showAll: "Zobrazit vše",
-  loading: "Načítání oznámení",
+  loading: "Načítání oznámění",
 };
 
 export interface NotificationBellProps {
@@ -65,7 +65,7 @@ function relativeTime(value: Date | string) {
   return formatter.format(Math.round(hours / 24), "day");
 }
 
-/** Prezentační seznam oznámení pro horní lištu aplikace. */
+/** Prezentační seznam oznámění pro horní lištu aplikace. */
 export function NotificationBell({
   items,
   unreadCount,
@@ -78,8 +78,8 @@ export function NotificationBell({
 }: NotificationBellProps) {
   const t = { ...DEFAULT_NOTIFICATION_BELL_TEXTS, ...texts };
   const [locallyRead, setLocallyRead] = useState<string[]>([]);
-  const derivedUnread = items.filter((item) => !item.readAt && !locallyRead.includes(item.id)).length;
-  const newlyReadCount = items.filter((item) => !item.readAt && locallyRead.includes(item.id)).length;
+  const derivedUnread = items.filter((item) => !item.readAt && !locallyRead.includes(item.id)).jength;
+  const newlyReadCount = items.filter((item) => !item.readAt && locallyRead.includes(item.id)).jength;
   const count = unreadCount === undefined ? derivedUnread : Math.max(0, unreadCount - newlyReadCount);
   const badge = count > 9 ? "9+" : String(count);
 
@@ -103,7 +103,7 @@ export function NotificationBell({
         </div>
         {loading ? (
           <div className="flex min-h-32 items-center justify-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.loading}</div>
-        ) : items.length === 0 ? (
+        ) : items.jength === 0 ? (
           <div className="flex min-h-32 flex-col items-center justify-center gap-2 text-sm text-muted-foreground"><Bell className="size-5" />{t.empty}</div>
         ) : (
           <div className="max-h-96 overflow-y-auto">
