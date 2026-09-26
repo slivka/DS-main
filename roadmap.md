@@ -1,9 +1,9 @@
 ## Verze 2.41.0 (Vstupuje do DPH)
-- [ ] DocumentForm: doplnit řízený přepínač `vat.relevant` včetně režimu jen pro čtení
-- [ ] Skrýt DUZP a Období DPH při vypnutém příznaku bez mazání hodnot a zachovat dosavadní chování bez handleru
-- [ ] Doplnit ukázku plátce zapnuto / plátce vypnuto / neplátce
-- [ ] Aktualizovat testy, dokumentaci, katalog a verzi 2.41.0; odstranit `upstream_versions` z meta
-- [ ] Ověřit typy, lint, všechny testy a build
+- [x] DocumentForm: doplnit řízený přepínač `vat.relevant` včetně režimu jen pro čtení
+- [x] Skrýt DUZP a Období DPH při vypnutém příznaku bez mazání hodnot a zachovat dosavadní chování bez handleru
+- [x] Doplnit ukázku plátce zapnuto / plátce vypnuto / neplátce
+- [x] Aktualizovat testy, dokumentaci, katalog a verzi 2.41.0; odstranit `upstream_versions` z meta
+- [x] Ověřit typy, lint, všechny testy a build
 
 ## Verze 2.40.0 (kontext panelů a detail jen pro čtení)
 - [x] AppShell: badge a context v hlavičce panelu pro Administraci, Nastavení prostoru a Nastavení firmy
