@@ -959,7 +959,7 @@ _Řízené otevření_
 import { CounterpartyField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Protistrana jako volný text s propojením na partnera; poslední volba Nový partner předá seed { name, ico }.
+Volný text protistrany s volitelným propojením; prázdný dotaz zobrazí aktivní partnery a favoriteIds je řadí první.
 
 **Props:**
 
@@ -976,17 +976,18 @@ Protistrana jako volný text s propojením na partnera; poslední volba Nový pa
 | `linkedLabel` | string | `Partner` |
 | `unlinkLabel` | string | `Zrušit propojení` |
 | `createLabel` | string | `Nový partner` |
+| `favoriteIds` | any | `—` |
 
 **Examples:**
 
-_Protistrana_
+_Výběr partnera_
 ```tsx
-<CounterpartyField value={counterparty} onChange={setCounterparty} partners={partners} onCreatePartner={openNewPartner} />
+<CounterpartyField value={value} onChange={setValue} partners={partners} favoriteIds={["p1"]} />
 ```
 
 **Avoid:**
 
-- Po ruční změně textu neponechávejte staré partnerId.
+- Nepoužívejte prázdný vlastní seznam místo předání všech aktivních partnerů.
 
 ### CountrySelect
 
@@ -1225,7 +1226,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový editor dokladu s vždy viditelným nadpisem stránky, identitou a směrem v prvním řádku karty, sekcemi hlavičky, přilepeným pruhem akcí a záložkami řádků.
+Kompletní hlavička dokladu s identitou, ručním nebo sčítaným celkem a účetním rozpiseem.
 
 **Props:**
 
@@ -1256,6 +1257,8 @@ Celostránkový editor dokladu s vždy viditelným nadpisem stránky, identitou 
 | `currencyLocked` | boolean | `false` |
 | `onCreatePartner` | function | `—` |
 | `icoLinkTarget` | any | `auto` |
+| `handedOverBySuggest` | any | `—` |
+| `descriptionSuggest` | any | `—` |
 | `linesEditorProps` | any | `—` |
 | `tabs` | any | `—` |
 | `status` | any | `—` |
@@ -1272,21 +1275,45 @@ Celostránkový editor dokladu s vždy viditelným nadpisem stránky, identitou 
 
 **Examples:**
 
-_Pokladní příjem_
+_Doklad s našeptáváním_
 ```tsx
-<DocumentForm title="Pokladní doklad" identity={{ items: ["PO - Pokladna", "CZK", "2026"], number }} directionBadge="in" value={header} onChange={setHeader} lines={lines} onLinesChange={setLines} books={books} accounts={accounts} status="filed" />
+<DocumentForm {...props} descriptionSuggest={{ enabled, onEnabledChange: setEnabled, load }} />
 ```
 
 **Avoid:**
 
-- Nevkládejte doklad do RecordDialogu.
-- Neopakujte účet nebo měnu v sekci, pokud jsou zamčené a už jsou v identity.
+- Nevkládejte Celkem ani haléřové vyrovnání do vlastních polí mimo standardní sekce.
 
 ### DocumentStatusBadge
 
 ```ts
 import { DocumentStatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjednocuje výšku štítku v pruhu akcí s badge směru.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `status` | draft · filed · posted · locked · cancelled | `approved` |
+| `config` | any | `—` |
+| `approved` | boolean | `false` |
+| `approvedLabel` | string | `Schválen` |
+| `size` | sm · md | `sm` |
+| `className` | string | `size-3` |
+
+**Examples:**
+
+_Stav v pruhu akcí_
+```tsx
+<DocumentStatusBadge status="filed" approved size="md" />
+```
+
+**Avoid:**
+
+- Nevytvářejte vlastní barevné štítky stavů dokladu.
+- V gridech nepoužívejte velikost md.
 
 ### DraftRestoredBanner
 
@@ -2087,7 +2114,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Editovatelný grid účetních předkontací se zoomem, hustotou, validací buněk, měnou a klávesovým ovládáním. Režim mode="mainAccount" s mainSide a mainAccount zamkne hlavní stranu; převod do databáze přes toJournalRow / fromJournalRow.
+Účetní rozpis s jednotnou lištou, hledáním, haléřovým vyrovnáním, souhrnnou patou a rekapitulacemi.
 
 **Props:**
 
@@ -2113,25 +2140,58 @@ Editovatelný grid účetních předkontací se zoomem, hustotou, validací bun�
 | `totalMode` | entered · computed | `computed` |
 | `roundingLimit` | number | `0.5` |
 | `onRoundingFill` | function | `—` |
+| `rounding` | any | `—` |
 | `expectedTotal` | number | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
 | `storageKey` | string | `journal-lines` |
+| `recapTabs` | any | `—` |
 | `texts` | any | `—` |
 | `className` | string | `journal-cell-editor` |
 
 **Examples:**
 
-_Řádky zápisu_
+_Rozpis s rekapitulací_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} expectedTotal={total} storageKey="invoice-lines" />
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} rounding={rounding} storageKey="invoice-lines" />
 ```
 
 **Avoid:**
 
-- Nepřidávejte in-place účetní editaci do obecného DataGridu.
-- Pro zaúčtované doklady nepoužívejte readOnly, pokud mají zůstat upravitelné vybrané sloupce; použijte editableColumns.
-- Nepoužívejte odstraněné toDbLines / fromDbLines ani pairNo; mainAccount nepředávejte jako objekt.
+- Nepřidávejte samostatnou lištu nebo druhý údaj rozdílu mimo komponentu.
+
+### JournalLinesRecap
+
+```ts
+import { JournalLinesRecap } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `lines` | any | `—` |
+| `accounts` | any | `—` |
+| `dimensions` | any | `—` |
+| `rounding` | number | `0` |
+| `foreign` | boolean | `—` |
+| `currency` | string | `—` |
+| `storageKey` | string | `—` |
+| `recapTabs` | any | `—` |
+| `zoom` | number | `1` |
+
+**Examples:**
+
+_Rekapitulace_
+```tsx
+<JournalLinesRecap lines={lines} accounts={accounts} storageKey="invoice-lines" />
+```
+
+**Avoid:**
+
+- Nepočítejte rekapitulaci z filtrované podmnožiny řádků.
 
 ### Label
 
@@ -2708,7 +2768,7 @@ Platební kalendář dokladu (splátky a pozastávky) s dopočtem Zbývá rozeps
 | `onUnrelease` | function | `—` |
 | `onGenerate` | function | `—` |
 | `texts` | any | `—` |
-| `className` | string | `flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2` |
+| `className` | string | `zoom-filters grid-toolbar-row flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2` |
 
 **Examples:**
 
@@ -2883,6 +2943,7 @@ Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního
 | `manualSourceLabel` | string | `Ruční kurz` |
 | `suggestedTooltip` | function | `—` |
 | `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
+| `showNote` | boolean | `true` |
 | `id` | string | `rate` |
 | `className` | string | `min-h-9 text-sm font-mono tabular-nums` |
 
@@ -3361,6 +3422,39 @@ import { StatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 ```ts
 import { StatusDot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### SuggestInput
+
+```ts
+import { SuggestInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Textové pole s přepínatelným našeptávačem z předchozích záznamů.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `loadSuggestions` | function | `—` |
+| `enabled` | boolean | `—` |
+| `onEnabledChange` | function | `—` |
+| `readOnly` | boolean | `—` |
+| `debounceMs` | number | `200` |
+| `enabledLabel` | string | `Našeptávač z předchozích dokladů – zapnuto` |
+| `disabledLabel` | string | `Našeptávač z předchozích dokladů – vypnuto` |
+
+**Examples:**
+
+_Historie popisů_
+```tsx
+<SuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} />
+```
+
+**Avoid:**
+
+- Nenačítejte více než deset viditelných návrhů ani neblokujte psaní čekáním na odpověď.
 
 ### Switch
 
