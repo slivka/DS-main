@@ -567,6 +567,19 @@ import { CarouselPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 import { CashReceiptPrintDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Zobrazuje náhled a vytváří pokladní doklad; vstup přijímá značku měny dokladu i domácí měny a bez značky použije kód.
+
+**Examples:**
+
+_Pokladní doklad se značkami měn_
+```tsx
+<CashReceiptPrintDialog {...props} value={{ ...receipt, currency: 'EUR', currencySymbol: '€', homeCurrency: 'CZK', homeCurrencySymbol: 'Kč' }} />
+```
+
+**Avoid:**
+
+- Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol.
+
 ### CategorySelect
 
 ```ts
@@ -1229,7 +1242,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH a navazující daňová data.
+Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH, navazující daňová data, popisek období a varování pod jednotlivými daty.
 
 **Props:**
 
@@ -1263,6 +1276,7 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 | `handedOverBySuggest` | any | `—` |
 | `descriptionSuggest` | any | `—` |
 | `accountingDateLink` | any | `—` |
+| `dateWarnings` | any | `—` |
 | `vat` | any | `—` |
 | `linesEditorProps` | any | `—` |
 | `roundingLimit` | number | `1` |
@@ -1284,7 +1298,7 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 
 _Doklad plátce s řízeným vlivem na DPH_
 ```tsx
-<DocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} />
+<DocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} dateWarnings={{ taxDate: yearWarning }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} />
 ```
 
 **Avoid:**
