@@ -22,7 +22,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 4. **Akční tlačítka v editačních dialozích jsou jen textová, bez ikon.**
    Akční tlačítka v řádku gridu jsou naopak ikonová.
 5. **Sdílené komponenty důsledně** – nová funkcionalita se skládá ze stávajících
-   ds komponent, aby se vše chovalo kompaktně. Nevytvorej paralelní varianty.
+   ds komponent, aby se vše chovalo kompaktně. Nevytvářej paralelní varianty.
 6. **Exporty do Excelu** ve formě tabulky včetně součtu v tabulce; všechny sloupce
    roztažené tak, aby byl vidět obsah (výjimka: extra dlouhé texty se zalamují).
    Používej `GridExport` / `grid-export` komponentu.
@@ -112,7 +112,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
 - Sbalitelné panely mají šipku vpravo a celý nadpis je klikací. Trvalý stav spravuje aplikace přes řízené props, nikoli komponenta přes `localStorage`.
-- Data DPH (`DUZP`, `Období DPH`) jsou ve formuláři dokladu vždy vpravo; svázané datum se zobrazuje se zámkem místo kalendáře.
+- Data DPH (`DUZP`, `Datum DPH`) jsou ve formuláři dokladu vždy vpravo; svázané datum se zobrazuje se zámkem místo kalendáře.
 
 ### Kontextový řádek gridu
 
@@ -239,7 +239,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   (layout, grid, form, feedback, data-display, accounting)
 - `src/components/ui/` – shadcn primitiva
 - `src/hooks/`, `src/lib/` – hooky a pomocné funkce (format, period, font-scale,
-  theme, grid-prefs, date-time-preferences, legal-forms, regions, postal-code,
+  theme, grid-prefs, date-time-preferences, regions, postal-code,
   person-name, form-errors, utils)
 - `src/routes/` – ukázkové stránky (showcase), jen náhled, není součástí knihovny
 - `src/styles.css` – barvy, typografie, rozestupy, tisk, tmavý režim
@@ -261,7 +261,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `mainAccount={{ accountId, side }}` používá `side: 'MD' | 'D'` (shodně s `documents.main_account_side`). Hlavní strana (účet, VS, partner, zakázka) je jen pro čtení a šedá; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
 - Povinnost stranových polí určuje `sideFieldRules(account, { dimensionRequired })` podle `account.category` a `account.accountType`: VS u `pohledavky` / `zavazky` / `poskytnute_zalohy` / `prijate_zalohy` / `saldokonto`, zakázka u `bilance` při `dimensionRequired`, partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany, rozhoduje databáze.
 - Stranová pole jsou i v rozbalitelném detailu řádku (Alt+↓); chybějící povinné pole se v řádku ukazuje jako kompaktní štítek.
-- Nedaňový (`non_tax`) nemá vlastní sloupec – je to přepínací značka u částky (jen u nákladových / výnosových účtů, zkratka Ctrl+N) a zaškrtávátko v detailu řádku; výjimky určuje `isNonTaxAllowed(line)`.
+- Nedaňový (`non_tax`) nemá vlastní sloupec – je to přepínací značka u částky (jen u nákladových / výnosových účtů, zkratka Alt+N) a zaškrtávátko v detailu řádku; výjimky určuje `isNonTaxAllowed(line)`.
 - Řádek haléřového vyrovnání (`isRounding`) je vždy poslední, šedý, jen pro čtení a bez akcí, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu". U dokladu s hlavním účtem a `totalMode="entered"` se proti `totalAmount` ukazuje „Zbývá rozepsat" a při rozdílu do `roundingLimit` tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`).
 - U zaúčtovaných dokladů se upravitelnost řídí přes `editableFields` (typicky text, VS, partneři, zakázky, Nedaňový); uzamčený doklad předá prázdné pole. Ukládají se jen změněné klíče.
 - Psaní znaku přepíše aktivní buňku, F2 a dvojklik upravují původní hodnotu, Enter/Tab uloží a pokračují, Esc vrátí původní hodnotu.

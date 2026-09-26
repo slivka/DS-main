@@ -67,7 +67,7 @@ export interface PaymentScheduleEditorProps {
   /** Zbývá uhradit – dodává aplikace, jen zobrazení. */
   remaining?: number;
   users?: PaymentScheduleUser[];
-  currency?: string;
+  currencySymbol?: string;
   readOnly?: boolean;
   canRelease?: boolean;
   canUnrelease?: boolean;
@@ -88,7 +88,7 @@ const isReleased = (item: PaymentScheduleItem) => item.kind === "retention" && !
  * aplikace uloží celé pole `items` jedním voláním.
  */
 export function PaymentScheduleEditor({
-  items, onChange, totalToPay, paid, remaining, users = [], currency = "CZK",
+  items, onChange, totalToPay, paid, remaining, users = [], currencySymbol,
   readOnly = false, canRelease = false, canUnrelease = false, onRelease, onUnrelease, onGenerate,
   texts, className,
 }: PaymentScheduleEditorProps) {
@@ -147,7 +147,7 @@ export function PaymentScheduleEditor({
             <tr>
               <th className="w-40 px-2 py-2 text-left font-medium">{t.dueDate}</th>
               <th className="w-36 px-2 py-2 text-left font-medium">{t.kind}</th>
-              <th className="w-40 px-2 py-2 text-right font-medium">{`${t.amount} (${currency})`}</th>
+              <th className="w-40 px-2 py-2 text-right font-medium">{currencySymbol ? `${t.amount} (${currencySymbol})` : t.amount}</th>
               <th className="min-w-[14rem] px-2 py-2 text-left font-medium">{t.description}</th>
               <th className="w-48 px-2 py-2 text-left font-medium">{t.responsible}</th>
               <th className="w-28 px-2 py-2 text-left font-medium">{t.releasedDate}</th>

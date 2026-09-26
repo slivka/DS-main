@@ -11,15 +11,15 @@ export type PickerColumn<Id extends string = string> = {
   id: Id;
   label: string;
   locked?: boolean;
-  /** Připnutý sloupec vlevo – ve výběru je nahoře a nejde přesouvat. */
-  pinned?: boolean;
+  /** Připnutý sloupec – ve výběru zůstává na svém okraji a nejde přesouvat. */
+  pinned?: boolean | "start" | "end";
   /** Sekce, do které sloupec patří (oddělovač v seznamu). */
   section?: string;
 };
 
 /**
  * Výběr zobrazených sloupců – seznam se zaškrtávacími poli
- * a volitelně pojjménované pohledy (uložené sestavy sloupců).
+ * a volitelně pojmenované pohledy (uložené sestavy sloupců).
  * Velikost obsahu se řídí zoomem gridu (em jednotky odvozené od fontSize).
  */
 export function ColumnPicker<Id extends string>({
@@ -89,8 +89,8 @@ export function ColumnPicker<Id extends string>({
     window.setTimeout(() => setSavedDefault(false), 1600);
   };
 
-  // Připnuté sloupce jsou v gridu vždy vlevo – ve výběru je držíme nahoře.
-  const sortedColumns = [...columns].sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned));
+  const pinRank = (column: PickerColumn<Id>) => column.pinned === "end" ? 2 : column.pinned ? 0 : 1;
+  const sortedColumns = [...columns].sort((a, b) => pinRank(a) - pinRank(b));
 
   const saveView = () => {
     if (!views) return;

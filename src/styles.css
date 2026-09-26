@@ -1199,7 +1199,7 @@
   backdrop-filter: none;
 }
 
-/* Vizuální oddějení rolovaných řádků od ukotveného záhlaví. */
+/* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
 .zoom-grid thead tr:last-child > :is(th, td) {
   border-bottom: 1px solid var(--grid-chrome-border);
   box-shadow: none;
@@ -1213,7 +1213,7 @@
   letter-spacing: 0;
 }
 
-/* Svislé oddějení sloupců – jemné čáry mezi všemi sloupci. V patičce (součtový
+/* Svislé oddělení sloupců – jemné čáry mezi všemi sloupci. V patičce (součtový
    řádek) se oddělovače nevykreslují, aby celý řádek působil jako jeden pás. */
 .zoom-grid thead tr > :is(th, td) + :is(th, td) {
   border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
@@ -1305,7 +1305,7 @@
   line-height: var(--grid-line);
 }
 
-/* Výraznější oddějení na hranicích sekcí – viditelné i při malém zoomu. */
+/* Výraznější oddělení na hranicích sekcí – viditelné i při malém zoomu. */
 .zoom-grid :is(thead, tbody) tr > :is(th, td).col-sep {
   border-left: 2px solid color-mix(in oklab, var(--foreground) 22%, transparent);
 }

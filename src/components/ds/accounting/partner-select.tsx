@@ -48,6 +48,8 @@ export function PartnerSelect({
   disabled,
   initialSearch = "",
   defaultOpen = false,
+  onOpenChange,
+  onKeyDown,
   id,
   className,
 }: {
@@ -66,6 +68,8 @@ export function PartnerSelect({
   disabled?: boolean;
   initialSearch?: string;
   defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   id?: string;
   className?: string;
 }) {
@@ -79,6 +83,7 @@ export function PartnerSelect({
   const changeOpen = (next: boolean) => {
     if (!next) suppressFocusOpen.current = true;
     setOpen(next);
+    onOpenChange?.(next);
   };
 
   const list = useMemo(
@@ -124,6 +129,7 @@ export function PartnerSelect({
             placeholder={searchPlaceholder}
             value={query}
             onValueChange={setQuery}
+            onKeyDown={onKeyDown}
           />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>

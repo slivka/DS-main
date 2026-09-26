@@ -8,7 +8,7 @@ export type SortDir = "asc" | "desc";
 export type SortState<Id extends string> = { key: Id | null; dir: SortDir };
 
 /**
- * Sdíjené řazení gridů. Stav se ukládá do prohlížeče pod `sort:<storageKey>`,
+ * Sdílené řazení gridů. Stav se ukládá do prohlížeče pod `sort:<storageKey>`,
  * takže si každý grid pamatuje poslední zvojený sloupec i směr.
  */
 export function useGridSort<Id extends string>(

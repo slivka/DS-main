@@ -144,7 +144,7 @@ function AccountingFormsPage() {
     },
     {
       id: "fp3", debitAccount: "548001", creditAccount: "321001", amount: 0.4,
-      text: "Haléřové vyrovnání", isRounding: true,
+      text: "Zaokrouhlení", isRounding: true,
     },
   ]);
   const [bankLines, setBankLines] = useState<JournalLine[]>([
@@ -328,7 +328,7 @@ function AccountingFormsPage() {
           totalMode="entered"
           rounding={{ value: bankLines.find((line) => line.isRounding)?.amount ?? 0, onChange: (amount) => setBankLines((current) => [
             ...current.filter((line) => !line.isRounding),
-            ...(amount ? [{ id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Haléřové vyrovnání", isRounding: true }] : []),
+            ...(amount ? [{ id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Zaokrouhlení", isRounding: true }] : []),
           ]) }}
           storageKey="showcase-journal-bank"
         />

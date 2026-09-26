@@ -5,7 +5,7 @@ import { cn } from "../../../lib/utils";
 
 /**
  * Obal podle oprávnění – obsah buď úplně skryje, nebo zobrazí zakázaný
- * (neaktivní a neklikatelný) s vysvětjením v nápovědě.
+ * (neaktivní a neklikatelný) s vysvětlením v nápovědě.
  */
 export function PermissionGate({
   allowed,

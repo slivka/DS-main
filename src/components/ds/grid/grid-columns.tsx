@@ -17,7 +17,7 @@ export type ColumnViewsApi = {
 };
 
 /**
- * Pojjménované pohledy (uložené sestavy sloupců) pro jeden grid.
+ * Pojmenované pohledy (uložené sestavy sloupců) pro jeden grid.
  * Ukládá se do prohlížeče pod `columnViews:<storageKey>`.
  */
 export function useColumnViews<Id extends string>(
@@ -123,7 +123,7 @@ export type GridColumn<Id extends string = string> = {
 export type GridColumnGroup = { section: string; span: number };
 
 /**
- * Sdíjená správa viditelnosti sloupců pro všechny gridy.
+ * Sdílená správa viditelnosti sloupců pro všechny gridy.
  * Nastavení se ukládá do prohlížeče pod `columns:<storageKey>`.
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
@@ -532,7 +532,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   }, [orderedColumns, effectiveVisible]);
 
   /** ID sloupců, které začínají novou sekci (první viditelný sloupec sekce,
-   *  kromě úplně prvního sloupce) — pro výraznější svislé oddějení v gridu. */
+   *  kromě úplně prvního sloupce) — pro výraznější svislé oddělení v gridu. */
   const sectionSeparators = useMemo(() => {
     const sep = new Set<Id>();
     let prevSection: string | undefined;

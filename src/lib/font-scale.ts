@@ -1,5 +1,5 @@
 /**
- * Sdíjené nastavení velikosti písma celé aplikace.
+ * Sdílené nastavení velikosti písma celé aplikace.
  * Hodnota je násobek základní velikosti (16 px) aplikovaný na <html>,
  * takže se škálují všechny rem jednotky. Ukládá se do localStorage.
  */

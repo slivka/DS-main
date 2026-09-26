@@ -102,7 +102,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
                 onClick={() => { const next = !enabled; onEnabledChange(next); setOpen(next); }}
                  className={cn("absolute right-0 top-0 size-9", enabled ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-muted-foreground")}
               >
-                <History className="size-4" />
+                 <span className="relative"><History className="size-4" />{!enabled ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>{tooltip}</TooltipContent>

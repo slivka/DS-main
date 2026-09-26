@@ -62,7 +62,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - Všechny akce v lištách gridů, řádků a platebního kalendáře používají stejný neutrální rámeček; aktivní filtry zůstávají oranžové a zapnuté režimy modré.
 - `CounterpartyField` po otevření ukáže všechny aktivní partnery, podporuje `favoriteIds` a má šipku pro otevření seznamu. Nový `SuggestInput` nabízí hodnoty z předchozích dokladů.
 - `DocumentForm` používá nadpis Základní údaje, našeptávání pro předávajícího a popis, editovatelné ruční Celkem se symbolem Σ a štítky MD/DAL v identitě.
-- `JournalLinesEditor` má jednotnou horní lištu s přidáním, haléřovým vyrovnáním, hledáním, sloupci, obnovením rozložení a zoomem. Pata sjednocuje Rozpis, Haléřové vyrovnání, Celkem, Zadáno a Rozdíl.
+- `JournalLinesEditor` má jednotnou horní lištu s přidáním, zaokrouhlením, hledáním, sloupci, obnovením rozložení a zoomem. Pata sjednocuje Rozpis, Zaokrouhlení, Celkem, Zadáno a Rozdíl.
 - Nová sbalitelná rekapitulace nabízí Účtování, Zakázky a vlastní `recapTabs`; stav panelu a záložky se pamatuje podle `storageKey`.
 
 ## Changelog 2.31.0 – rozvržení údajů dokladu
@@ -73,7 +73,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - Sekce Data řadí Datum vystavení před Datum účetního případu. Sekce částky má kompaktní řádky a rozlišuje nadpisy Částka a Účtování a částka.
 - Identifikační badge je nižší a celý řádek je svisle vystředěný. Přilepený pruh akcí už nemá spodní linku.
 - Identifikační údaje jsou zvýrazněné 15px polotučným textem; badge směru a stavu mají shodnou výšku. `DocumentStatusBadge` přidává velikost `sm | md`, přičemž gridy zůstávají na `sm`.
-- Haléřové vyrovnání se zadává v liště `JournalLinesEditor` vedle údaje Zbývá rozepsat přes nový nepovinný prop `rounding`; v sekci Částka už samostatné pole není.
+- Zaokrouhlení se zadává v liště `JournalLinesEditor` vedle údaje Zbývá rozepsat přes nový nepovinný prop `rounding`; v sekci Částka už samostatné pole není.
 
 ## Changelog 2.30.0 – identita v těle formuláře (dříve 2.28.1)
 
@@ -149,8 +149,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - Hlavička dokladu má základní a platební údaje vlevo a panel vlastností, kurzu a částky vpravo; v úzkém panelu se části skládají pod sebe.
 - Hlavní účet je první a jeho popisek se řídí druhem dokladu. Zamčený účet je prostý text a strana MD/DAL je uvnitř hodnoty.
 - Partner používá popisek podle druhu a směru dokladu a zobrazuje IČ i DIČ.
-- Pole jen pro čtení (hlavní účet, IČ, DIČ, Celkem za doklad při sčítání z rozpisu, Haléřové vyrovnání) jsou čistý text bez rámečku a plochy; částky jsou vpravo a v mono písmu.
-- Přibyly props `documentType`, `periodLabel`, `rateAmount`, `PartnerOption.dic`, `AccountSelect.suffix`; `totalMode` lze řídit přes `editableFields`.
+- Pole jen pro čtení (hlavní účet, IČ, DIČ, Celkem za doklad při sčítání z rozpisu, Zaokrouhlení) jsou čistý text bez rámečku a plochy; částky jsou vpravo a v mono písmu.
+- Přibyly props `documentType`, `vat.periodLabel`, `rateAmount`, `PartnerOption.dic`, `AccountSelect.suffix`; `totalMode` lze řídit přes `editableFields`.
 - Jde o minor verzi bez zachování zpětné kompatibility rozvržení; význam stávajících props zůstává zachován.
 
 ## Changelog 2.23.1 – opravy adaptivní lišty a kontextu
@@ -529,7 +529,7 @@ Doplnění pro výkazy účetnictví.
 - `mainAccount.side` používá hodnoty `'MD' | 'D'` shodné s `documents.main_account_side`; `AccountSelect` protiúčtu nenabídne účty se stejnou `category` jako hlavní účet.
 - Povinná stranová pole podle osnovy: `sideFieldRules(account, { dimensionRequired })` – VS u kategorií `pohledavky`, `zavazky`, `poskytnute_zalohy`, `prijate_zalohy`, `saldokonto`; zakázka u `bilance` při `dimensionRequired`; partner se nabízí u saldokontních účtů. Validace je jen nápověda s uvedením strany („Chybí zakázka na straně DAL"), rozhoduje databáze.
 - Rozbalitelný detail řádku (Alt+↓) se stranovými poli a zaškrtávátkem Nedaňový; chybějící povinná pole se v řádku ukazují jako kompaktní štítky.
-- Nedaňový už nemá vlastní sloupec – je to malá přepínací značka u částky (jen u nákladových / výnosových účtů), zkratka Ctrl+N.
+- Nedaňový už nemá vlastní sloupec – je to malá přepínací značka u částky (jen u nákladových / výnosových účtů), zkratka Alt+N.
 - Řádek haléřového vyrovnání (`isRounding`) je šedý, bez akcí a vždy poslední, s nápovědou „Zaokrouhlení měňte v hlavičce dokladu"; u dokladu s hlavním účtem přibyl ukazatel „Zbývá rozepsat" (`totalAmount`, `totalMode="entered"`) a tlačítko „Dorovnat zaokrouhlením" (`onRoundingFill`, `roundingLimit`).
 - `editableFields` nahrazuje `editableColumns` i `readOnly`; `AccountOption` má nová pole `category` a `accountType`; `DocumentForm` přijímá `sideFields`.
 

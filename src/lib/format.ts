@@ -8,55 +8,43 @@ export function nzero(value: number): number {
   return Math.abs(value) < EPS ? 0 : value + 0;
 }
 
-const czk2 = new Intl.NumberFormat("sk-SK", {
+const czk2 = new Intl.NumberFormat("cs-CZ", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
-const czk0 = new Intl.NumberFormat("sk-SK", {
+const czk0 = new Intl.NumberFormat("cs-CZ", {
   style: "decimal",
   maximumFractionDigits: 0,
 });
 
-const pct2 = new Intl.NumberFormat("sk-SK", {
+const pct2 = new Intl.NumberFormat("cs-CZ", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
-const pct1 = new Intl.NumberFormat("sk-SK", {
+const pct1 = new Intl.NumberFormat("cs-CZ", {
   maximumFractionDigits: 1,
 });
 
-const pct3 = new Intl.NumberFormat("sk-SK", {
+const pct3 = new Intl.NumberFormat("cs-CZ", {
   maximumFractionDigits: 3,
 });
 
-const hourFmt = new Intl.NumberFormat("sk-SK", {
+const hourFmt = new Intl.NumberFormat("cs-CZ", {
   maximumFractionDigits: 1,
 });
 
-const compact1 = new Intl.NumberFormat("sk-SK", {
+const compact1 = new Intl.NumberFormat("cs-CZ", {
   notation: "compact",
   maximumFractionDigits: 1,
 });
 
-/** Měna aplikace – všechny částky se evidují a zobrazují v EUR. */
-export const CURRENCY = "EUR" as const;
-/** Symbol měny aplikace. */
-export const CURRENCY_SYMBOL = "€";
-
-const eur2 = new Intl.NumberFormat("sk-SK", {
-  style: "currency",
-  currency: CURRENCY,
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
-/** Formát částky včetně symbolu měny (EUR). Nula -> pomlčka. */
-export function fmtEur(value: number | null | undefined): string {
+/** Formát částky včetně značky dodané aplikací. Nula -> pomlčka. */
+export function fmtEur(value: number | null | undefined, currencySymbol = ""): string {
   if (value == null) return "–";
   const n = roundMoney(value);
-  return n === 0 ? "–" : eur2.format(n);
+  return n === 0 ? "–" : `${czk2.format(n)}${currencySymbol ? `\u00a0${currencySymbol}` : ""}`;
 }
 
 /** Formát částky se 2 desetinnými místy. Nula nebo hodnota blízká nule -> pomlčka. */
@@ -157,7 +145,7 @@ export function fmtAmount(value: number | null | undefined, decimals = 2): strin
   const n = roundTo(value, decimals);
   return n === 0
     ? "0"
-    : new Intl.NumberFormat("sk-SK", {
+    : new Intl.NumberFormat("cs-CZ", {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals,
       }).format(n);
@@ -216,20 +204,20 @@ export function isNonZeroMoney(value: number | null | undefined): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/* Sdíjené formátování pro celý design systém                          */
+/* Sdílené formátování pro celý design systém                          */
 /* ------------------------------------------------------------------ */
 
 /** Nastavení zobrazení čísel a měny pro aplikaci postavenou na tomto DS. */
 export type FormatSettings = {
   /** Kód měny, např. "CZK" nebo "EUR". */
-  currency: string;
+  currency?: string;
   /** Jazyk pro názvy měsíců apod. */
   locale: string;
   /** Počet desetinných míst u částek. */
   decimals: number;
 };
 
-let settings: FormatSettings = { currency: "CZK", locale: "cs-CZ", decimals: 2 };
+let settings: FormatSettings = { locale: "cs-CZ", decimals: 2 };
 
 export function setFormatSettings(next: Partial<FormatSettings>) {
   settings = { ...settings, ...next };
@@ -256,12 +244,10 @@ export function formatAmount(
 /** Částka včetně měny podle nastavení aplikace. */
 export function formatCurrency(
   value: number | null | undefined,
-  currency = settings.currency,
+  currencySymbol = settings.currency,
 ): string {
   if (value == null || !Number.isFinite(value)) return "";
-  const symbols: Record<string, string> = { CZK: "Kč", EUR: "€", USD: "$" };
-  const symbol = symbols[currency] ?? currency;
-  return `${formatAmount(value)}${NBSP}${symbol}`;
+  return `${formatAmount(value)}${currencySymbol ? `${NBSP}${currencySymbol}` : ""}`;
 }
 
 /** Třída pro červené zobrazení záporných částek. */

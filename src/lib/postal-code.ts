@@ -7,7 +7,7 @@
  */
 
 type Rule = {
-  /** Povojené znaky (vše ostatní se při psaní zahazuje). */
+  /** Povolené znaky (vše ostatní se při psaní zahazuje). */
   allow: "digits" | "alnum";
   /** Kanonický vzor po odstranění mezer/pomlček. */
   pattern: RegExp;

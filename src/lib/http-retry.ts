@@ -1,4 +1,4 @@
-// Sdíjená síťová vrstva pro ARES a obchodní rejstřík: opakování dotazu při
+// Sdílená síťová vrstva pro ARES a obchodní rejstřík: opakování dotazu při
 // dočasné chybě a sloučení souběžných dotazů na stejný klíč.
 
 export type RetryOptions = {

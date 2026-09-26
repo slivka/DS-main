@@ -64,6 +64,7 @@ export interface AccountSelectProps {
   initialSearch?: string;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
   suffix?: ReactNode;
   className?: string;
@@ -96,6 +97,7 @@ export function AccountSelect({
   initialSearch,
   defaultOpen = false,
   onOpenChange,
+  onKeyDown,
   suffix,
   className,
 }: AccountSelectProps) {
@@ -190,7 +192,7 @@ export function AccountSelect({
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
         <Command shouldFilter={false}>
-          <CommandInput autoFocus placeholder={searchPlaceholder} value={query} onValueChange={setQuery} />
+          <CommandInput autoFocus placeholder={searchPlaceholder} value={query} onValueChange={setQuery} onKeyDown={onKeyDown} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

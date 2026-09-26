@@ -19,7 +19,7 @@ export function useGridStateMemory<T extends Record<string, unknown>>(
   const applyRef = useRef(apply);
   applyRef.current = apply;
 
-  // obnova při prvním vykresjení
+  // obnova při prvním vykreslení
   useEffect(() => {
     if (restored.current) return;
     restored.current = true;

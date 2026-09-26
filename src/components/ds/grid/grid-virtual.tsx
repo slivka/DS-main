@@ -115,7 +115,7 @@ export function useGridVirtual(
   };
 }
 
-/** Prázdný řádek nahrazující výšku nevykresjených řádků. */
+/** Prázdný řádek nahrazující výšku nevykreslených řádků. */
 export function VirtualPad({ height, colSpan }: { height: number; colSpan: number }) {
   if (height <= 0) return null;
   return (

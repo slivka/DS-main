@@ -1,9 +1,9 @@
 ## Verze 2.43.0 (edit dokladu 6, část B)
-- [ ] Opravit in-place editaci, navigaci a automatické otevření výběrů v řádcích
-- [ ] Přestavět sloupce, detail řádku, sticky Akce a přepínač Nedaňový
-- [ ] Upravit rekapitulaci, formulář dokladu, Datum DPH a měnové značky
-- [ ] Změnit LegalFormField, záložky panelů, české texty a dokumentaci
-- [ ] Dokončit typy, lint, testy, build a vizuální matici
+- [x] Opravit in-place editaci, navigaci a automatické otevření výběrů v řádcích
+- [x] Přestavět sloupce, detail řádku, sticky Akce a přepínač Nedaňový
+- [x] Upravit rekapitulaci, formulář dokladu, Datum DPH a měnové značky
+- [x] Změnit LegalFormField, záložky panelů, české texty a dokumentaci
+- [x] Dokončit typy, lint, testy, build a vizuální matici
 
 ## Verze 2.41.0 (Vstupuje do DPH)
 - [x] DocumentForm: doplnit řízený přepínač `vat.relevant` včetně režimu jen pro čtení
@@ -425,7 +425,7 @@
 - [x] Hlavní strana jen ke čtení (šedá), protiúčet bez účtů stejné kategorie
 - [x] Povinná stranová pole podle category / account_type (sideFieldRules) s uvedením strany
 - [x] Rozbalitelný detail řádku (Alt+↓) a kompaktní štítky chybějících polí
-- [x] Nedaňový jako značka u částky (Ctrl+N) místo samostatného sloupce
+- [x] Nedaňový jako značka u částky (Alt+N) místo samostatného sloupce
 - [x] Řádek haléřového vyrovnání jen ke čtení s nápovědou, „Zbývá rozepsat" a „Dorovnat zaokrouhlením"
 - [x] editableFields místo editableColumns/readOnly, totalAmount / totalMode / roundingLimit
 - [x] Ukázky: interní doklad, faktura přijatá s hlavním účtem 321 (D), banka v EUR

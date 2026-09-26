@@ -41,7 +41,7 @@
 - `CounterpartyField.favoriteIds` řadí oblíbené aktivní partnery první; prázdný dotaz zobrazí celý abecední seznam.
 - `DocumentForm` přijímá `handedOverBySuggest`, `descriptionSuggest` a položky identity `{ side: "MD" | "DAL", text }`. Ruční Celkem je editovatelné; Σ přepíná `totalMode` a u ID/UZ zůstává zamčené.
 - `JournalLinesEditor.recapTabs` přidává vlastní záložky pod vestavěné Účtování a Zakázky. Horní lišta obsahuje Přidat, haléřové vyrovnání, Hledat, Sloupce, Obnovit rozložení a Hustotu se zoomem; Ctrl/Cmd+Enter přidá řádek.
-- Pata vždy uvádí Rozpis, Haléřové vyrovnání a Celkem; při ručně zadaném součtu také Zadáno a barevný Rozdíl. Hledání nemění výpočty ani kontroly.
+- Pata vždy uvádí Rozpis, Zaokrouhlení a Celkem; při ručně zadaném součtu také Zadáno a barevný Rozdíl. Hledání nemění výpočty ani kontroly.
 
 ## Kontextový řádek gridu (2.23.0)
 
@@ -152,7 +152,7 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - `RateField` podporuje doporučený kurz, ruční kurz s povinným důvodem a režim jen pro čtení. Hodnota dokladu má `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
 - `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
 - `onCreatePartner` dostává `{ name, ico, dic }`; osm číslic předvyplní IČO, jiný text název a samostatná pole se zachovají.
-- Haléřové vyrovnání předává formulář do `JournalLinesEditor` přes `rounding`; pole je v dolní liště řádků vlevo od údaje Zbývá rozepsat a respektuje právo k úpravě.
+- Zaokrouhlení předává formulář do `JournalLinesEditor` přes `rounding`; pole je v dolní liště řádků vlevo od údaje Zbývá rozepsat a respektuje právo k úpravě.
 
 ## SectionHeading (2.28.0)
 
