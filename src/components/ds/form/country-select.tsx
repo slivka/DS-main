@@ -203,7 +203,7 @@ export function CountrySelect({
               </CommandGroup>
             )}
             {eu.length > 0 && (
-              <CommandGroup heading="Evropská unie">{eu.map((c) => renderItem(c))}</CommandGroup>
+              <CommandGroup heading="Evropská une">{eu.map((c) => renderItem(c))}</CommandGroup>
             )}
             {rest.length > 0 && (
               <CommandGroup

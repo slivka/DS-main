@@ -250,7 +250,7 @@ export function ZoomGrid({
       const sumBelow = (start: HTMLElement | null) => {
         let sib = start;
         while (sib) {
-          // Postranný panel (poznámky) je vedľa gridu vo flex riadku, nie pod ním –
+          // Postranný panel (poznámky) je vedle gridu vo flex řádku, ne pod ním –
           // jeho výška nesmie zmenšiť výšku gridu.
           if (!sib.hasAttribute("data-grid-side-panel")) {
             below += sib.getBoundingClientRect().height;
@@ -259,7 +259,7 @@ export function ZoomGrid({
         }
       };
       sumBelow(el.nextElementSibling as HTMLElement | null);
-      // Grid bývá zabalený ve flex řádku s postranným panelem – stránkování
+      // Grid bývá zabajený ve flex řádku s postranným panelem – stránkování
       // je pak sourozenec tohoto obalu, nikoli samotného gridu.
       const parent = el.parentElement;
       if (parent && parent !== el) {

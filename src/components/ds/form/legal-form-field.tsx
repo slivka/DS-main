@@ -10,10 +10,12 @@ import {
   CommandItem,
   CommandList,
 } from "../../ui/command";
-import { LEGAL_FORMS } from "../../../lib/legal-forms";
 import { cn } from "../../../lib/utils";
 
-type LegalFormFieldProps = {
+export type LegalFormOption = { code: string; name: string };
+
+export interface LegalFormFieldProps {
+  options: LegalFormOption[];
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
@@ -22,10 +24,11 @@ type LegalFormFieldProps = {
   searchPlaceholder?: string;
   noResultsText?: string;
   clearLabel?: string;
-};
+}
 
-/** Zdieľaný výber právnej formy z číselníka (ŠÚ SR / Finstat). */
+/** Sdílený výběr právní formy z číselníku dodaného aplikací. */
 export function LegalFormField({
+  options,
   value,
   onChange,
   disabled,
@@ -37,8 +40,7 @@ export function LegalFormField({
 }: LegalFormFieldProps) {
   const [open, setOpen] = useState(false);
   const current = value?.trim() ?? "";
-  const known = LEGAL_FORMS.some((f) => f.name === current);
-  const options = known || !current ? LEGAL_FORMS : [{ code: "", name: current }, ...LEGAL_FORMS];
+  const selected = options.find((item) => item.code === current);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -52,7 +54,7 @@ export function LegalFormField({
           className={cn("hover-surface w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !current && "text-muted-foreground")}>
-            {current || placeholder}
+            {selected ? `${selected.code} – ${selected.name}` : placeholder}
           </span>
           <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
@@ -79,17 +81,15 @@ export function LegalFormField({
                   key={`${f.code}-${f.name}`}
                   value={`${f.code} ${f.name}`}
                   onSelect={() => {
-                    onChange(f.name);
+                    onChange(f.code);
                     setOpen(false);
                   }}
                 >
                   <Check
-                    className={cn("mr-2 size-4", current === f.name ? "opacity-100" : "opacity-0")}
+                    className={cn("mr-2 size-4", current === f.code ? "opacity-100" : "opacity-0")}
                   />
-                  <span className="flex-1">{f.name}</span>
-                  {f.code ? (
-                    <span className="ml-2 text-xs text-muted-foreground">{f.code}</span>
-                  ) : null}
+                  <span className="w-14 shrink-0 font-mono text-xs text-muted-foreground">{f.code}</span>
+                  <span className="min-w-0 flex-1">{f.name}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

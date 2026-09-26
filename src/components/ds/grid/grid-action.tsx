@@ -54,7 +54,7 @@ export function GridActions({ className, ...props }: ComponentProps<"div">) {
 }
 
 /**
- * Jednotné chování řádku gridu: pokud je edit povolen, jde ho vyvolat dvojklikem.
+ * Jednotné chování řádku gridu: pokud je edit povojen, jde ho vyvolat dvojklikem.
  * Vrácené props se rozprostřou na element řádku (`<TableRow>` nebo řádkový `<div>`).
  * Dvojklik ignorujeme, pokud uživatel právě označuje text.
  */

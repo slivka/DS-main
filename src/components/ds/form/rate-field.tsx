@@ -13,6 +13,8 @@ export interface RateFieldProps {
   onChange: (value: number | null) => void;
   currency: string;
   homeCurrency: string;
+  homeCurrencySymbol?: string;
+  currencySymbol?: string;
   rateAmount: number;
   suggestedRate?: number | null;
   suggestedInfo?: string;
@@ -42,6 +44,8 @@ export function RateField({
   onChange,
   currency,
   homeCurrency,
+  homeCurrencySymbol,
+  currencySymbol,
   rateAmount,
   suggestedRate,
   suggestedInfo,
@@ -61,7 +65,7 @@ export function RateField({
   className,
 }: RateFieldProps) {
   const unit = Number.isInteger(rateAmount) ? formatAmount(rateAmount, 0) : formatAmount(rateAmount, 3);
-  const suffix = `${homeCurrency} za ${unit} ${currency}`;
+  const suffix = `${homeCurrencySymbol ?? homeCurrency} za ${unit} ${currencySymbol ?? currency}`;
   const differs = rateValuesDiffer(value, suggestedRate);
   const source = manual ? manualSourceLabel : sourceLabel ?? suggestedInfo;
   const tooltip = suggestedRate == null ? "" : suggestedTooltip(suggestedInfo ?? "bez data", formatAmount(suggestedRate, 3));

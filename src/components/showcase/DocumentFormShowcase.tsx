@@ -12,8 +12,8 @@ import {
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 
 const CURRENCIES = [
-  { code: "CZK", label: "Česká koruna" },
-  { code: "EUR", label: "Euro" },
+  { code: "CZK", label: "Česká koruna", symbol: "Kč" },
+  { code: "EUR", label: "Euro", symbol: "€" },
 ];
 const USERS = [
   { id: "u1", name: "Petr Slivka" },
@@ -29,7 +29,7 @@ const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
     taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
   variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
-     description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true, vatPeriod: "2026-08-01",
+     description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true, vatDate: "2026-08-01",
    rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
   amountTotal: 174.7, totalMode: "sum", roundingAmount: 0, mainAccountId: "311001",
 };
@@ -68,7 +68,7 @@ export function DocumentFormShowcase() {
 
   const [cash, setCash] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "in", accountingDate: "2026-09-23", issueDate: "2026-09-23",
-    taxDate: "2026-09-23", vatPeriod: "2026-09-01", partnerId: "p2", counterpartyIco: "27074358", counterpartyDic: "CZ27074358", handedOverBy: "Jana Nováková", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
+    taxDate: "2026-09-23", vatDate: "2026-09-01", partnerId: "p2", counterpartyIco: "27074358", counterpartyDic: "CZ27074358", handedOverBy: "Jana Nováková", description: "Nákup kancelářských potřeb", currency: "CZK", rate: 1,
     amountTotal: 1250, totalMode: "entered", roundingAmount: 0.4, mainAccountId: "211001",
   });
   const [cashLines, setCashLines] = useState<JournalLine[]>([
@@ -87,7 +87,7 @@ export function DocumentFormShowcase() {
 
   const [courier, setCourier] = useState<DocumentHeaderValue>({
     bookId: "b-pd", number: "", direction: "out", accountingDate: "2026-09-24", issueDate: "2026-09-24",
-    taxDate: "2026-09-24", vatPeriod: "2026-09-01", counterpartyName: "Kurýr – Jan Veselý", counterpartyIco: "12345678", counterpartyDic: "CZ12345678", handedOverBy: "Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
+    taxDate: "2026-09-24", vatDate: "2026-09-01", counterpartyName: "Kurýr – Jan Veselý", counterpartyIco: "12345678", counterpartyDic: "CZ12345678", handedOverBy: "Jan Veselý", partnerId: null, description: "Doprava zásilky", currency: "CZK", rate: 1,
     amountTotal: 350, totalMode: "entered", mainAccountId: "211001",
   });
   const [cashIn, setCashIn] = useState<DocumentHeaderValue>({
@@ -110,15 +110,15 @@ export function DocumentFormShowcase() {
     bookId: "b-id", number: "ID2026000032", accountingDate: "2026-09-30", issueDate: "2026-09-30",
     counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
   });
-  const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, periodLabel: "Rok 2026", onLinesChange: () => {} };
+  const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, periodLabel: "Rok 2026", homeCurrency: "CZK", homeCurrencySymbol: "Kč", onLinesChange: () => {} };
   const units = [{ id: "hour", code: "hod", name: "hodina", isActive: true }, { id: "piece", code: "ks", name: "kus", isActive: true }];
 
   return (
     <>
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
-        <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={courier} onChange={setCourier} lines={[]} {...common}
+        <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={{ ...courier, vatRelevant: courierVatRelevant }} onChange={(next) => { setCourier(next); setCourierVatRelevant(next.vatRelevant !== false); }} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft"
-          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, relevant: courierVatRelevant, onRelevantChange: setCourierVatRelevant, periodOptions: VAT_PERIODS, periodReadOnly: true }}
+          accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodLabel: VAT_PERIODS[1].label }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
       </ShowcaseSection>
@@ -136,18 +136,19 @@ export function DocumentFormShowcase() {
       </ShowcaseSection>
       <ShowcaseSection title="Interní doklad" description="ID bez partnera skládá popis do sekce Data.">
         <DocumentForm title="Interní doklad" value={idCp} onChange={setIdCp} lines={[]} {...common}
-          books={MOCK_BOOKS} documentType="ID" status="filed" vat={{ visible: false, periodOptions: [] }} />
+          books={MOCK_BOOKS} documentType="ID" status="filed" vat={{ visible: false }} />
       </ShowcaseSection>
       <ShowcaseSection title="Faktura přijatá s platebním kalendářem"
         description="Hlavní účet 321 na straně DAL, číslo a kurz jen ke čtení, částka zadaná v hlavičce. Platební kalendář je druhá záložka: 3 splátky a pozastávka.">
         <DocumentForm
           title="Přijatá faktura"
-          value={invoice} onChange={setInvoice}
+          value={{ ...invoice, vatRelevant: invoiceVatRelevant }} onChange={(next) => { setInvoice(next); setInvoiceVatRelevant(next.vatRelevant !== false); }}
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
           documentType="FP" periodLabel="Rok 2026" rateAmount={1}
-          vat={{ visible: true, relevant: invoiceVatRelevant, onRelevantChange: setInvoiceVatRelevant, periodOptions: VAT_PERIODS }}
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
+          vat={{ visible: true, periodLabel: VAT_PERIODS[0].label, periodFiled: true }}
           mainSide="MD"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
@@ -172,6 +173,7 @@ export function DocumentFormShowcase() {
           lines={postedLines} onLinesChange={setPostedLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="FV" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           mainSide="MD"
           editableFields={["mainAccountId", "description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
           linesEditorProps={{ editableFields: ["text", "debitVs", "creditVs", "debitPartnerId", "creditPartnerId", "debitDimensionId", "creditDimensionId", "nonTax"], storageKey: "showcase-doc-posted" }}
@@ -192,6 +194,7 @@ export function DocumentFormShowcase() {
           lines={cashLines} onLinesChange={setCashLines}
           accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="PO" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           books={MOCK_BOOKS.filter((book) => book.id === "b-pd")}
           isNew mainSide="MD" mainAccountLocked
           linesEditorProps={{ storageKey: "showcase-doc-cash" }}
@@ -207,6 +210,7 @@ export function DocumentFormShowcase() {
           lines={internalLines} onLinesChange={setInternalLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           documentType="ID" periodLabel="Rok 2026"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
           linesEditorProps={{ storageKey: "showcase-doc-internal" }}
           status="filed"
         />

@@ -1,5 +1,5 @@
 // Jednotné zobrazení jména osoby v jednom poli:
-// PŘÍJMENÍ (kapitálkami) Jméno + tituly, např. „FILO Milan, Mgr.“
+// PŘÍJMENÍ (velkými písmeny) Jméno + tituly, např. „FILO Milan, Mgr.“
 
 /**
  * Sjednotí zápis textu, aby se stejné jméno nezobrazovalo dvěma způsoby:
@@ -63,7 +63,7 @@ const title = (v: string) => {
 
 /**
  * Jméno osoby pro zobrazení v jednom poli.
- * Vstupem mohou být oddělená pole (jméno/příjmení) i celé jméno.
+ * Vstupem mohou být oddějená pole (jméno/příjmení) i celé jméno.
  *
  * Tituly (před jménem i za jménem) se vždy uvádějí až na konci za čárkou,
  * v pořadí: `titleBefore`, tituly rozebrané ze jména, `titleAfter`.
@@ -115,7 +115,7 @@ export function formatPersonName(
 }
 
 /**
- * Jméno osoby v přirozeném pořadí „Jméno Příjmení“ (bez titulů).
+ * Jméno osoby v přirozeném pořadí „Jméno Příjmění“ (bez titulů).
  * Použijte např. pro zobrazení přihlášeného uživatele v hlavičce.
  */
 export function formatPersonNameNatural(
@@ -203,7 +203,7 @@ export function looksLikePersonName(value?: string | null): boolean {
  * Rozdělí celé jméno na části pro uložení kontaktu.
  * Výchozí tvar je „PŘÍJMENÍ Jméno“ (příjmení první), jak ho uvádějí
  * účetní deníky při importu. Uživatelský vstup ve formulářích bývá
- * v přirozeném pořadí „Jméno Příjmení“ – pak předej `order: "natural"`.
+ * v přirozeném pořadí „Jméno Příjmění“ – pak předej `order: "natural"`.
  * Tituly mohou být kdekoliv a ukládají se za jméno.
  * Vrací null, pokud text nevypadá jako jméno osoby (jediné slovo).
  */

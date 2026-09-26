@@ -48,7 +48,7 @@ export interface RecordDialogProps {
   tabs?: RecordDialogTab[];
 }
 
-/** Pojmenovaná sekcia formulára – optické zoskupenie polí v editoch. */
+/** Pojjménovaná sekcia formulára – optické zoskupene polí v editoch. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
@@ -58,7 +58,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   );
 }
 
-/** Jednotný formulárový dialóg pre všetky editácie v aplikácii. */
+/** Jednotný formulářůý dialóg pre všechny úpravy v aplikácii. */
 export function RecordDialog({
   open,
   onOpenChange,
@@ -194,7 +194,7 @@ export function RecordDialog({
 /**
  * Pole formulára s popiskom a jednotnými rozstupmi.
  * Pri chybe (`error`) sa pole orámuje červeno a pod ním sa zobrazí hláška –
- * rovnako vo všetkých formulároch aplikácie.
+ * rovnako vo všech formulároch aplikácie.
  */
 export function Field({
   label,

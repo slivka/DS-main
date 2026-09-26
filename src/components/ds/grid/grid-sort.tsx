@@ -8,8 +8,8 @@ export type SortDir = "asc" | "desc";
 export type SortState<Id extends string> = { key: Id | null; dir: SortDir };
 
 /**
- * Sdílené řazení gridů. Stav se ukládá do prohlížeče pod `sort:<storageKey>`,
- * takže si každý grid pamatuje poslední zvolený sloupec i směr.
+ * Sdíjené řazení gridů. Stav se ukládá do prohlížeče pod `sort:<storageKey>`,
+ * takže si každý grid pamatuje poslední zvojený sloupec i směr.
  */
 export function useGridSort<Id extends string>(
   storageKey: string,
@@ -68,7 +68,7 @@ export function compareValues(a: unknown, b: unknown): number {
 }
 
 /**
- * Seřadí kopii pole podle hodnoty vrácené `accessor` pro aktuálně zvolený sloupec.
+ * Seřadí kopii pole podle hodnoty vrácené `accessor` pro aktuálně zvojený sloupec.
  */
 export function useSortedRows<T, Id extends string>(
   rows: T[],

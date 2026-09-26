@@ -5,7 +5,6 @@ import { Button } from "../../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
-import { SectionHeading } from "../layout/section-heading";
 import { formatAccountCode } from "./account-code";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
@@ -22,18 +21,18 @@ export interface JournalLinesRecapProps {
   accounts: AccountOption[];
   dimensions?: DimensionOption[];
   documentCurrency: string;
+  documentCurrencySymbol?: string;
   homeCurrency: string;
+  homeCurrencySymbol?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   tab?: string;
   onTabChange?: (tab: string) => void;
   recapTabs?: JournalRecapTab[];
   zoom?: number;
-  heading?: string;
 }
 
 const money = (value: number) => formatAmount(value, 2);
-const currencyLabel = (code: string) => code === "CZK" ? "Kč" : code;
 
 /** Řízená nebo lokálně řízená rekapitulace aktuálních účetních řádků. */
 export function JournalLinesRecap({
@@ -41,14 +40,15 @@ export function JournalLinesRecap({
   accounts,
   dimensions = [],
   documentCurrency,
+  documentCurrencySymbol,
   homeCurrency,
+  homeCurrencySymbol,
   open,
   onOpenChange,
   tab,
   onTabChange,
   recapTabs = [],
   zoom = 1,
-  heading = "Rekapitulace",
 }: JournalLinesRecapProps) {
   const [localOpen, setLocalOpen] = React.useState(true);
   const [localTab, setLocalTab] = React.useState("accounting");
@@ -59,6 +59,8 @@ export function JournalLinesRecap({
   const accountMap = React.useMemo(() => new Map(accounts.map((item) => [item.code, item.name])), [accounts]);
   const dimensionMap = React.useMemo(() => new Map(dimensions.map((item) => [item.id, item])), [dimensions]);
   const foreign = documentCurrency !== homeCurrency;
+  const documentMark = documentCurrencySymbol ?? documentCurrency;
+  const homeMark = homeCurrencySymbol ?? homeCurrency;
   const dimensionLabel = (id: string) => {
     const parts: string[] = [];
     let current = dimensionMap.get(id);
@@ -110,16 +112,13 @@ export function JournalLinesRecap({
   }, [activeTab, onTabChange, tabs]);
 
   return <section data-slot="journal-lines-recap" className="bg-card" style={{ fontSize: `${0.875 * zoom}rem` }}>
-    <SectionHeading className="m-0 p-0">
-      <Button type="button" variant="ghost" onClick={() => changeOpen(!shown)} aria-expanded={shown} className="h-auto w-full justify-between rounded-none px-0 py-2 text-[0.8125rem] font-semibold uppercase tracking-wide">
-        {heading}{shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
-      </Button>
-    </SectionHeading>
-    {shown ? <Tabs value={activeTab} onValueChange={changeTab}>
-      <TabsList className="h-9 rounded-none bg-transparent px-2">{tabs.map((item) => <TabsTrigger key={item.id} value={item.id} className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">{item.label}</TabsTrigger>)}</TabsList>
-      <TabsContent value="accounting" className="m-0 overflow-x-auto"><table className="w-full min-w-[44rem] text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">Účet MD</th><th className="p-2 text-left">Název</th><th className="p-2 text-left">Účet DAL</th><th className="p-2 text-left">Název</th><th className="p-2 text-right">{`Celkem (${currencyLabel(homeCurrency)})`}</th>{foreign ? <th className="p-2 text-right">{`Celkem v ${documentCurrency}`}</th> : null}</tr></thead><tbody>{accounting.map((row) => <tr key={row.key} className={cn("border-t", row.label && "bg-muted/40")}><td className="p-2 font-mono">{row.debit ? formatAccountCode(row.debit) : "—"}</td><td className="p-2">{row.label ?? (row.debit ? accountMap.get(row.debit) ?? "—" : "—")}</td><td className="p-2 font-mono">{row.credit ? formatAccountCode(row.credit) : "—"}</td><td className="p-2">{row.credit ? accountMap.get(row.credit) ?? "—" : "—"}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(row.foreignAmount)}</td> : null}</tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={4} className="p-2">Celkem</td><td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.amount, 0))}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.foreignAmount, 0))}</td> : null}</tr></tfoot></table></TabsContent>
-      <TabsContent value="jobs" className="m-0 overflow-x-auto"><table className="w-full text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">Zakázka</th><th className="p-2 text-left">Strana</th><th className="p-2 text-right">{`Celkem (${currencyLabel(homeCurrency)})`}</th></tr></thead><tbody>{jobs.map((row) => <tr key={`${row.id}|${row.side}`} className="border-t"><td className="p-2">{dimensionLabel(row.id)}</td><td className="p-2 font-mono">{row.side}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td></tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">Celkem</td><td className="p-2 text-right tabular-nums">{money(jobs.reduce((sum, row) => sum + row.amount, 0))}</td></tr></tfoot></table></TabsContent>
+    <Tabs value={activeTab} onValueChange={(next) => { changeTab(next); if (!shown) changeOpen(true); }}>
+      <div className="flex items-center border-b"><TabsList className="h-9 flex-1 justify-start rounded-none bg-transparent px-2">{tabs.map((item) => <TabsTrigger key={item.id} value={item.id} className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">{item.label}</TabsTrigger>)}</TabsList><Button type="button" variant="ghost" size="icon" onClick={() => changeOpen(!shown)} aria-label={shown ? "Sbalit rekapitulaci" : "Rozbalit rekapitulaci"} aria-expanded={shown} className="mr-1 size-8">{shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</Button></div>
+      {shown ? <>
+      <TabsContent value="accounting" className="m-0 overflow-x-auto"><table className="w-full min-w-[36rem] text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">MD účet</th><th className="p-2 text-left">DAL účet</th><th className="p-2 text-right">{`Celkem (${homeMark})`}</th>{foreign ? <th className="p-2 text-right">{`Celkem (${documentMark})`}</th> : null}</tr></thead><tbody>{accounting.map((row) => <tr key={row.key} className={cn("border-t", row.label && "bg-muted/40")}><td className="p-2"><span className="font-mono">{row.debit ? formatAccountCode(row.debit) : "—"}</span>{row.debit ? ` - ${accountMap.get(row.debit) ?? "—"}` : ""}{row.label ? <span className="ml-2 text-muted-foreground">{row.label}</span> : null}</td><td className="p-2"><span className="font-mono">{row.credit ? formatAccountCode(row.credit) : "—"}</span>{row.credit ? ` - ${accountMap.get(row.credit) ?? "—"}` : ""}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(row.foreignAmount)}</td> : null}</tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">Celkem</td><td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.amount, 0))}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.foreignAmount, 0))}</td> : null}</tr></tfoot></table></TabsContent>
+      <TabsContent value="jobs" className="m-0 overflow-x-auto"><table className="w-full text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">Zakázka</th><th className="p-2 text-left">Strana</th><th className="p-2 text-right">{`Celkem (${homeMark})`}</th></tr></thead><tbody>{jobs.map((row) => <tr key={`${row.id}|${row.side}`} className="border-t"><td className="p-2">{dimensionLabel(row.id)}</td><td className="p-2 font-mono">{row.side}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td></tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">Celkem</td><td className="p-2 text-right tabular-nums">{money(jobs.reduce((sum, row) => sum + row.amount, 0))}</td></tr></tfoot></table></TabsContent>
       {recapTabs.map((item) => <TabsContent key={item.id} value={item.id} className="m-0 border-t p-3">{typeof item.content === "function" ? item.content(lines) : item.content}</TabsContent>)}
-    </Tabs> : null}
+      </> : null}
+    </Tabs>
   </section>;
 }

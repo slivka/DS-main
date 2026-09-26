@@ -1,5 +1,5 @@
 /**
- * Sdílené hodnoty design tokenů pro místa, kde nejde použít CSS proměnné
+ * Sdíjené hodnoty design tokenů pro místa, kde nejde použít CSS proměnné
  * (samostatné HTML výstupy – chybová stránka, HTML náhled exportu gridu).
  * Hodnoty musí odpovídat definicím v src/styles.css.
  */

@@ -14,7 +14,7 @@ const EMPTY = "__empty__";
 
 /**
  * Sdílený výběr ze seznamu (nahrazuje nativní <select>).
- * Prázdna hodnota sa mapuje na interný kľúč, lebo Radix Select nepodporuje prázdny value.
+ * Prázdná hodnota sa mapuje na interní klíč, lebo Radix Select nepodporuje prázdný value.
  */
 export function OptionSelect({
   value,

@@ -19,6 +19,8 @@ export interface UnitSelectProps {
   onChange: (id: string) => void;
   onCreateUnit?: (code: string) => Promise<UnitOption>;
   disabled?: boolean;
+  initialSearch?: string;
+  defaultOpen?: boolean;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
@@ -33,14 +35,16 @@ export function UnitSelect({
   onChange,
   onCreateUnit,
   disabled,
+  initialSearch = "",
+  defaultOpen = false,
   placeholder = "Vyberte MJ",
   searchPlaceholder = "Hledat kód nebo název…",
   emptyText = "Žádná měrná jednotka nenalezena",
   createLabel = (code) => `Přidat MJ „${code}“`,
   className,
 }: UnitSelectProps) {
-  const [open, setOpen] = React.useState(false);
-  const [query, setQuery] = React.useState("");
+  const [open, setOpen] = React.useState(defaultOpen);
+  const [query, setQuery] = React.useState(initialSearch);
   const [creating, setCreating] = React.useState(false);
   const selected = options.find((item) => item.id === value);
   const normalized = query.trim().toLocaleLowerCase("cs");

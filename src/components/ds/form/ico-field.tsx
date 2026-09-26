@@ -10,11 +10,11 @@ type IcoFieldProps = {
   /** Zmena hodnoty IČO. */
   onChange: (value: string) => void;
   /**
-   * Vyhľadanie v registri. Vráťte `true`, ak sa údaje podarilo doplniť –
-   * ikona sa potom prepne na „Aktualizovat z rejstříku“.
+   * Vyhledání v registri. Vráťte `true`, ak sa údaje podarilo doplniť –
+   * ikona sa potom přepne na „Aktualizovat z rejstříku“.
    */
   onLookup: () => Promise<boolean | void> | boolean | void;
-  /** Prebieha vyhľadávanie. */
+  /** Prebieha vyhledávání. */
   busy?: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -26,8 +26,8 @@ type IcoFieldProps = {
 };
 
 /**
- * Zdieľané pole pre IČO s tlačidlom registra priamo v poli.
- * Ikona lupy = ešte sme nevyhľadávali, ikona obnovenia = IČO bolo pri vstupe
+ * Sdíjené pole pre IČO s tlačítkom registra priamo v poli.
+ * Ikona lupy = ještě jsme nevyhledávali, ikona obnovenia = IČO bylo při vstupu
  * do formulára už vyplnené alebo sme ho z registra doplnili.
  */
 export function IcoField({

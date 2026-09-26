@@ -8,8 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 export type ChipOption = { value: string; label: string };
 
 /**
- * Zdieľaný výber viacerých hodnot v štýle štítkov – vybrané hodnoty sú chipy,
- * pridávanie cez popover so zaškrtávacím zoznamom, hľadaním a voľbou „vybrať všetko“.
+ * Sdílený výber viacerých hodnot v štýle štítkov – vybrané hodnoty sú chipy,
+ * přidávání přes popover se zaškrtávacím seznamem, hledáním a volbou „vybrat vše“.
  */
 export function ChipMultiSelect({
   options,
@@ -30,7 +30,7 @@ export function ChipMultiSelect({
   emptyLabel?: string;
   allLabel?: string;
   clearLabel?: string;
-  /** Text zobrazený, keď nie je nič vybrané. */
+  /** Text zobrazený, keď ne je nič vybrané. */
   placeholder?: string;
 }) {
   const [search, setSearch] = useState("");

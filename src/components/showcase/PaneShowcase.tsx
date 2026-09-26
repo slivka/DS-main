@@ -52,7 +52,7 @@ const PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
 
-/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykreslení na serveru). */
+/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykresjení na serveru). */
 function initialState(): PaneTabsState {
   const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" }, 0), id: "tab-start" };
   return { version: 2, layout: 1, widths: [1], active: "pane-a", hiddenPanes: null, panes: [{ id: "pane-a", activeTab: tab.id, tabs: [tab] }] };

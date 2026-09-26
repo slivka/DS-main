@@ -1,10 +1,14 @@
 # Komponenty design systému
 
-## Vstupuje do DPH (2.41.0)
+## Edit dokladu 6, část B (2.43.0)
 
-- `DocumentForm.vat` přidává `relevant`, `relevantReadOnly` a `onRelevantChange`. Přepínač „Vstupuje do DPH“ se zobrazí pouze plátci a pouze s předaným handlerem.
-- `relevant` je ve výchozím stavu `true`. Hodnota `false` skryje DUZP a Období DPH bez změny uložených hodnot; `relevantReadOnly` přepínač zakáže.
-- Bez `onRelevantChange` se přepínač nezobrazí a DUZP i Období DPH se chovají stejně jako ve verzi 2.38.0.
+- `DocumentForm` ukládá DPH do `value.vatRelevant` a `value.vatDate`. Přepínač je vlevo v přilepeném pruhu; DUZP a Datum DPH jsou vpravo v sekci Datumy.
+- `vat` přijímá `visible`, `relevantReadOnly`, `periodLabel`, `periodFiled`, `filedWarning`, `dateLink` a `dateLockReadOnly`.
+- `DateField` přijímá `hint`, `warning`; `link.toggleDisabled` zachová zámek jen pro čtení.
+- `JournalLinesEditor` vyžaduje `documentCurrency` a `homeCurrency`, volitelně `documentCurrencySymbol` a `homeCurrencySymbol`; `AccountOption.nonTaxDefault` předvyplní ND.
+- `CurrencyOption.symbol` dodává značku měny. `CurrencyAmount.baseCurrency` a `DocumentForm.homeCurrency` jsou povinné.
+- `LegalFormField.options` je povinný seznam `{ code, name }[]`; hodnota pole je kód.
+- `PageHeader.titleBadge` umístí stavový badge vedle nadpisu.
 
 ## Kontext panelů a detail jen pro čtení (2.40.0)
 
@@ -16,7 +20,7 @@
 ## Data a období DPH na dokladu (2.38.0)
 
 - `DateField.link` řídí svázání data přes `locked`, `onToggle`, `lockedHint` a `unlockedHint`; zámek je klávesnicově dostupné tlačítko.
-- `DocumentForm.accountingDateLink` zapojuje zámek na Datum účetního případu. `DocumentForm.vat` řídí viditelnost DPH, možnosti období, režim jen pro čtení a upozornění na podané období; `DocumentHeaderValue.vatPeriod` ukládá první den měsíce.
+- `DocumentForm.accountingDateLink` zapojuje zámek na Datum účetního případu. Od verze 2.43 `DocumentForm.vat` řídí viditelnost, popisek období, podané období a zámek Data DPH; `DocumentHeaderValue.vatDate` ukládá konkrétní datum.
 
 ## Edit dokladu 5 (2.36.0)
 

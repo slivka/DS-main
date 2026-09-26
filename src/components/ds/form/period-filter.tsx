@@ -8,7 +8,7 @@ export type GridPeriodKey = PeriodKey | "all";
 
 export type PeriodFilterValue = {
   period: GridPeriodKey;
-  /** ISO dátumy (yyyy-mm-dd); pri období „all“ sú null. */
+  /** ISO datumy (yyyy-mm-dd); pri období „all“ sú null. */
   from: string | null;
   to: string | null;
 };
@@ -20,7 +20,7 @@ const LABELS: Record<GridPeriodKey, string> = {
   ...PERIOD_LABEL,
 };
 
-/** Zdieľaný filter obdobia pre gridy – rovnaké ovládanie ako v prehľadoch. */
+/** Sdílený filtr období pro gridy – stejné ovládání jako v přehledech. */
 export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterValue & {
   setPeriod: (p: GridPeriodKey) => void;
   setFrom: (v: string) => void;
@@ -60,7 +60,7 @@ export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterVal
   };
 }
 
-/** Panel filtra obdobia – tlačidlá obdobia + vlastný rozsah Od/Do. */
+/** Panel filtra období – tlačidlá období + vlastný rozsah Od/Do. */
 export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilter> }) {
   const { period, from, to, setPeriod, setFrom, setTo } = value;
   return (
@@ -93,7 +93,7 @@ export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilt
   );
 }
 
-/** Vyfiltruje riadky podľa dátumového poľa a zvoleného obdobia (vrátane hraníc). */
+/** Vyfiltruje řádky podle datumového pole a zvoleného období (včetně hraníc). */
 export function filterByPeriod<Row>(
   rows: Row[],
   value: Pick<PeriodFilterValue, "from" | "to">,
@@ -110,7 +110,7 @@ export function filterByPeriod<Row>(
   });
 }
 
-/** Textový popis zvoleného obdobia pre exporty. */
+/** Textový popis zvoleného období pre exporty. */
 export function periodLabel(value: PeriodFilterValue): string {
   if (value.period === "all") return "Vše";
   if (value.period === "custom") return `${value.from ?? "…"} – ${value.to ?? "…"}`;

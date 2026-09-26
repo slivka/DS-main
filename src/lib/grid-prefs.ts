@@ -23,7 +23,7 @@ export function isGridPrefKey(key: string): boolean {
   return PREFIXES.some((p) => key.startsWith(p));
 }
 
-/** Připraví nastavení gridů před vykreslením (v prohlížeči je okamžitě k dispozici). */
+/** Připraví nastavení gridů před vykresjením (v prohlížeči je okamžitě k dispozici). */
 export function hydrateGridPrefs(): Promise<void> {
   return Promise.resolve();
 }

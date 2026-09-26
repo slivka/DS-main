@@ -2,7 +2,7 @@ import { cn } from "../../../lib/utils";
 
 /**
  * Zobrazení čísla účtu: první tři znaky jsou syntetika, zbytek je analytika
- * oddělená tečkou. Uložené „221001“ se zobrazí jako „221.001“.
+ * oddějená tečkou. Uložené „221001“ se zobrazí jako „221.001“.
  * Analytika může mít libovolnou délku.
  */
 export function formatAccountCode(code: string | null | undefined): string {

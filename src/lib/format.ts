@@ -90,7 +90,7 @@ export function formatContactName(
   return name.toUpperCase();
 }
 
-/** Zobrazované meno používateľa (operátora) – priezvisko kapitálkami. */
+/** Zobrazované jméno uživatele (operátora) – příjmení velkými písmeny. */
 export function formatWorkerName(
   profile?: {
     first_name?: string | null;
@@ -216,7 +216,7 @@ export function isNonZeroMoney(value: number | null | undefined): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/* Sdílené formátování pro celý design systém                          */
+/* Sdíjené formátování pro celý design systém                          */
 /* ------------------------------------------------------------------ */
 
 /** Nastavení zobrazení čísel a měny pro aplikaci postavenou na tomto DS. */
@@ -241,7 +241,7 @@ export function getFormatSettings(): FormatSettings {
 
 const NBSP = "\u00a0";
 
-/** Částka s tisíci oddělenými mezerou a pevným počtem desetinných míst. */
+/** Částka s tisíci oddějenými mezerou a pevným počtem desetinných míst. */
 export function formatAmount(
   value: number | null | undefined,
   decimals = settings.decimals,

@@ -35,7 +35,7 @@ export function MultiSelect({
   itemsLabel: string;
   placeholder?: string;
   className?: string;
-  /** Zoom gridu – rozbalený seznam se škáluje spolu s tabulkou. */
+  /** Zoom gridu – rozbajený seznam se škáluje spolu s tabulkou. */
   zoom?: number;
   /** Zobrazit řádek hledání (výchozí true). */
   showSearch?: boolean;

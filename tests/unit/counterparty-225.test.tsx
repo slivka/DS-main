@@ -6,7 +6,7 @@ import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/
 const partners = [{ id: "p1", name: "Alfa stavby s.r.o.", ico: "12345678", dic: "CZ12345678" }];
 const base: DocumentHeaderValue = { bookId: "b", accountingDate: "2026-09-25", issueDate: "2026-09-25", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "entered" };
 const render = (value: DocumentHeaderValue, extra: Record<string, unknown> = {}) => renderToStaticMarkup(
-  <DocumentForm title="Doklad" documentType="PO" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} partners={partners} status="draft" {...extra} />);
+  <DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Doklad" documentType="PO" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} partners={partners} status="draft" {...extra} />);
 
 describe("CounterpartyField / DocumentForm 2.25.0", () => {
   it("psaní textu zruší partnerId a ponechá identifikátory", () => expect(counterpartyFromText("Alfa stavby", "12345678", "CZ12345678")).toEqual({ name: "Alfa stavby", partnerId: null, ico: "12345678", dic: "CZ12345678" }));
@@ -28,7 +28,7 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(html).not.toContain("document-rate");
     const foreign = render({ ...base, currency: "EUR", rate: 24.38 });
     expect(foreign).toContain("24,380");
-    expect(foreign).toContain("CZK za 1 EUR");
+    expect(foreign).toContain("Kč za 1 EUR");
   });
   it("currencyLocked = text", () => {
     const html = render({ ...base, currency: "EUR", rate: 24.38 }, { currencies: [{ code: "CZK" }, { code: "EUR" }], currencyLocked: true });

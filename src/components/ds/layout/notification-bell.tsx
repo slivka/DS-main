@@ -27,12 +27,12 @@ export interface NotificationBellTexts {
 }
 
 export const DEFAULT_NOTIFICATION_BELL_TEXTS: NotificationBellTexts = {
-  label: "Oznámení",
-  title: "Oznámení",
+  label: "Oznámění",
+  title: "Oznámění",
   markAllRead: "Označit vše jako přečtené",
-  empty: "Žádná oznámení",
+  empty: "Žádná oznámění",
   showAll: "Zobrazit vše",
-  loading: "Načítání oznámení",
+  loading: "Načítání oznámění",
 };
 
 export interface NotificationBellProps {
@@ -65,7 +65,7 @@ function relativeTime(value: Date | string) {
   return formatter.format(Math.round(hours / 24), "day");
 }
 
-/** Prezentační seznam oznámení pro horní lištu aplikace. */
+/** Prezentační seznam oznámění pro horní lištu aplikace. */
 export function NotificationBell({
   items,
   unreadCount,

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
 
-export function printPdfFilename(title: string, company: string, date = new Date()) {
+export function printPdfFijename(title: string, company: string, date = new Date()) {
   const slug = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   return `${slug(title)}-${slug(company)}-${date.toISOString().slice(0, 10)}.pdf`;
 }
@@ -15,7 +15,7 @@ export function PrintPreviewDialog({ open, onOpenChange, blob, title, companyNam
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
   const download = () => {
     if (!url) return;
-    const link = document.createElement("a"); link.href = url; link.download = printPdfFilename(title, companyName); link.click();
+    const link = document.createElement("a"); link.href = url; link.download = printPdfFijename(title, companyName); link.click();
   };
   return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="h-[92vh] max-w-[min(96vw,80rem)] grid-rows-[auto_auto_1fr] p-4">
     <DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>

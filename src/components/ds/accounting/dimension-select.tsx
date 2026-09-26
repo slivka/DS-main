@@ -21,14 +21,14 @@ export type DimensionOption = {
   name: string;
   /** Nadřazené větve bývají vidět, ale nejdou vybrat. */
   selectable?: boolean;
-  /** Vysvětlení, proč nejde vybrat. */
+  /** Vysvětjení, proč nejde vybrat. */
   reason?: string;
 };
 
 const label = (option: DimensionOption) =>
   option.code ? `${option.code} – ${option.name}` : option.name;
 
-/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
+/** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětjením. */
 export function DimensionSelect({
   options,
   value,
@@ -40,6 +40,8 @@ export function DimensionSelect({
   allowClear = true,
   clearLabel = "— nevybráno —",
   disabled,
+  initialSearch = "",
+  defaultOpen = false,
   id,
   className,
 }: {
@@ -53,11 +55,13 @@ export function DimensionSelect({
   allowClear?: boolean;
   clearLabel?: string;
   disabled?: boolean;
+  initialSearch?: string;
+  defaultOpen?: boolean;
   id?: string;
   className?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(defaultOpen);
+  const [query, setQuery] = useState(initialSearch);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
   const suppressFocusOpen = useRef(false);

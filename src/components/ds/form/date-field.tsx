@@ -42,10 +42,10 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
   );
   const out: string[] = [];
   let index = 0;
-  for (const len of lengths) {
+  for (const jen of lengths) {
     if (index >= digits.length) break;
-    out.push(digits.slice(index, index + len));
-    index += len;
+    out.push(digits.slice(index, index + jen));
+    index += jen;
   }
   let text = out.join(separator);
   // po dopsání části doplníme oddělovač, ať uživatel může rovnou psát dál
@@ -60,6 +60,7 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
 export type DateFieldLink = {
   locked: boolean;
   onToggle: (locked: boolean) => void;
+  toggleDisabled?: boolean;
   lockedHint?: string;
   unlockedHint?: string;
 };
@@ -74,16 +75,20 @@ export type DateFieldProps = {
   className?: string;
   /** třída pro samotný input */
   inputClassName?: string;
-  /** nejpozdější povolené datum (YYYY-MM-DD) */
+  /** nejpozdější povojené datum (YYYY-MM-DD) */
   maxDate?: Date;
-  /** nejdříve povolené datum (YYYY-MM-DD) */
+  /** nejdříve povojené datum (YYYY-MM-DD) */
   minDate?: Date;
-  /** Zoom gridu; škáluje také kalendář vykreslený mimo lištu v portálu. */
+  /** Zoom gridu; škáluje také kalendář vykresjený mimo lištu v portálu. */
   gridZoom?: number;
   /** Informuje formulář nebo filtr o výsledku ruční validace. */
   onValidityChange?: (valid: boolean) => void;
   /** Řízené svázání se zdrojovým datem. */
   link?: DateFieldLink;
+  /** Doplňující text pod polem. */
+  hint?: string;
+  /** Výstraha pod polem; má přednost před hintem. */
+  warning?: string;
 };
 
 /** Jednotná komponenta pro zadání data v celé aplikaci. */
@@ -100,6 +105,8 @@ export function DateField({
   gridZoom,
   onValidityChange,
   link,
+  hint,
+  warning,
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
   const { dateFormat, formatDate } = preferences;
@@ -157,12 +164,12 @@ export function DateField({
   const unlockedHint = link?.unlockedHint ?? "Znovu svázat s datem vystavení";
 
   return (
-    <TooltipProvider><div className={cn("relative", className)}>
+    <TooltipProvider><div className={cn("min-w-0", className)}><div className="relative">
       <Input
         ref={inputRef}
         id={id}
         inputMode="numeric"
-        disabled={disabled}
+        disabled={disabled || link?.locked}
         readOnly={link?.locked}
         placeholder={placeholder === "Vyberte datum" ? dateFormat.toLowerCase() : placeholder}
         value={text}
@@ -200,7 +207,7 @@ export function DateField({
           type="button"
           variant="ghost"
           size="icon"
-          disabled={disabled}
+          disabled={disabled || link.toggleDisabled}
           aria-label={lockedHint}
           aria-pressed="true"
           onClick={toggleLink}
@@ -211,7 +218,7 @@ export function DateField({
         type="button"
         variant="ghost"
         size="icon"
-        disabled={disabled}
+         disabled={disabled || link.toggleDisabled}
         aria-label={unlockedHint}
         aria-pressed="false"
         onClick={toggleLink}
@@ -256,6 +263,6 @@ export function DateField({
         </PopoverContent>
       </Popover>
       </>}
-    </div></TooltipProvider>
+    </div>{warning ? <p className="mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
   );
 }

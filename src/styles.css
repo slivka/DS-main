@@ -153,7 +153,7 @@
   --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
   --switch-unchecked: oklch(0.6 0 0);
   --filter-active: oklch(0.54 0.16 50);
-  /* DataGrid chrome: technická Navy Trust stupnica bez pastelových plôch. */
+  /* DataGrid chrome: technická Navy Trust stupnice bez pastelových ploch. */
   --grid-navy-deep: oklch(0.2333 0.0673 266.58);
   --grid-navy: oklch(0.3462 0.0736 256.04);
   --grid-steel: oklch(0.5281 0.0957 248.81);
@@ -411,7 +411,7 @@
 }
 
 /* Pracovná lišta s titulkom tvorí jeden súvislý technický panel bez deliacej čiary.
-   Rámček má rovnakú farbu ako titulkový pás a tabuľka, aby obal gridu pôsobil jednotne. */
+   Rámeček má stejnou barvu ako titulkový pás a tabulka, aby obal gridu působil jednotne. */
 .grid-toolbar-row {
   position: relative;
   background-color: var(--grid-title-surface);
@@ -471,7 +471,7 @@
   border-bottom: 0;
 }
 
-/* Pripojené stránkovanie uzatvára spoločný rámček gridu – rovnaká farba okraja. */
+/* Pripojené stránkovane uzatvára spoločný rámček gridu – rovnaká farba okraja. */
 .zoom-pagination {
   border-color: var(--grid-chrome-border);
 }
@@ -516,7 +516,7 @@
   color: var(--primary);
 }
 
-/* Primárne tlačidlo v lište gridu (pridanie záznamu) – modré so svetlým textom. */
+/* Primární tlačítko v lište gridu (přidání záznamu) – modré so světlým textom. */
 .zoom-filters .grid-toolbar-primary,
 .grid-toolbar-row .grid-toolbar-primary {
   background-color: var(--grid-steel);
@@ -814,8 +814,8 @@
   --grid-edge-y: 0em;
 }
 
-/* Spodní rohy podkladu jsou vždy zaoblené stejně jako horní; pokud pod gridem
-   navazuje připojené stránkování, přebírá zaoblení ono. */
+/* Spodní rohy podkladu jsou vždy zaobjené stejně jako horní; pokud pod gridem
+   navazuje připojené stránkování, přebírá zaobjení ono. */
 .zoom-grid {
   border-bottom-left-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
@@ -1199,7 +1199,7 @@
   backdrop-filter: none;
 }
 
-/* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
+/* Vizuální oddějení rolovaných řádků od ukotveného záhlaví. */
 .zoom-grid thead tr:last-child > :is(th, td) {
   border-bottom: 1px solid var(--grid-chrome-border);
   box-shadow: none;
@@ -1213,7 +1213,7 @@
   letter-spacing: 0;
 }
 
-/* Svislé oddělení sloupců – jemné čáry mezi všemi sloupci. V patičce (součtový
+/* Svislé oddějení sloupců – jemné čáry mezi všemi sloupci. V patičce (součtový
    řádek) se oddělovače nevykreslují, aby celý řádek působil jako jeden pás. */
 .zoom-grid thead tr > :is(th, td) + :is(th, td) {
   border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
@@ -1224,7 +1224,7 @@
 }
 
 /* Buňky pokračující ve vizuálně sloučeném rozsahu nemají svislý oddělovač. */
-/* Kompaktní tabulka mimo DataGrid (např. historie predĺžení) – vizuálně sladěná
+/* Kompaktní tabulka mimo DataGrid (např. historie prodloužení) – vizuálně sladěná
    se záhlavím a součtovým řádkem hlavních gridů. */
 .compact-table thead {
   background-color: var(--grid-heading-surface);
@@ -1305,7 +1305,7 @@
   line-height: var(--grid-line);
 }
 
-/* Výraznější oddělení na hranicích sekcí – viditelné i při malém zoomu. */
+/* Výraznější oddějení na hranicích sekcí – viditelné i při malém zoomu. */
 .zoom-grid :is(thead, tbody) tr > :is(th, td).col-sep {
   border-left: 2px solid color-mix(in oklab, var(--foreground) 22%, transparent);
 }
@@ -1708,7 +1708,7 @@ button,
 }
 
 /* Vyšší titulkový pás otvára spoločný farebný systém celého gridu.
-   Názov gridu je výraznejší – väčší, širšie rozťahované písmo, dvojitý
+   Název gridu je výraznejší – větší, širšie rozťahované písmo, dvojitý
    kontrastný akcent namiesto jednofarebnej čiary. */
 .grid-title-bar {
   position: relative;
@@ -1728,7 +1728,7 @@ button,
   text-transform: none;
 }
 
-/* Znak pred názvom gridu – jednoduchý zaoblený pruh v primárnej farbe,
+/* Znak pred názvom gridu – jednoduchý zaobjený pruh v primárnej farbe,
    rovnaký ako indikátor vybranej položky v menu. */
 .grid-title-mark {
   display: inline-block;
@@ -1741,7 +1741,7 @@ button,
 }
 
 /* Ovládacie prvky v titulkovom páse gridu – rovnaký dizajn ako lišta gridu
-   (jednotná výška, zaoblenie, okraj a podklad). */
+   (jednotná výška, zaobjene, okraj a podklad). */
 .grid-title-bar .grid-title-control {
   height: 2.1em;
   min-height: 2.1em;
@@ -1842,7 +1842,7 @@ tfoot {
 }
 
 /* --- Jednotný hover pre interaktívne prvky aplikácie -------------------- */
-/* Vzor prevzatý z prepínača svetlého/tmavého režimu. */
+/* Vzor převzatý z přepínača světlého/tmavého režimu. */
 @utility hover-surface {
   transition-property: color, background-color, border-color;
   transition-duration: 150ms;
@@ -1871,7 +1871,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   padding: 0 !important;
 }
 
-/* Jednotný rozostup akčných ikon vo všetkých mriežkach. */
+/* Jednotný rozostup akčních ikon vo všech mřížkách. */
 .zoom-grid :is(tbody, tfoot) :is(th, td) [data-slot="grid-actions"] {
   gap: 0.7em;
 }

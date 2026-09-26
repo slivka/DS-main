@@ -47,9 +47,9 @@ export function DateRangeField({
   /** Počet měsíců zobrazených vedle sebe v kalendáři. */
   months?: number;
   disabled?: boolean;
-  /** Nejpozdější povolené datum (YYYY-MM-DD). */
+  /** Nejpozdější povojené datum (YYYY-MM-DD). */
   maxDate?: Date;
-  /** Nejdříve povolené datum (YYYY-MM-DD). */
+  /** Nejdříve povojené datum (YYYY-MM-DD). */
   minDate?: Date;
   className?: string;
   /** Přístupný název ovládání. */

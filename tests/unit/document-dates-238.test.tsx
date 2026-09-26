@@ -8,7 +8,7 @@ const baseValue: DocumentHeaderValue = {
   issueDate: "2026-09-26",
   accountingDate: "2026-09-26",
   taxDate: "2026-09-26",
-  vatPeriod: "2026-08-01",
+  vatDate: "2026-08-15", vatRelevant: true,
   dueDate: "2026-10-10",
   currency: "CZK",
   amountTotal: 1_000,
@@ -16,7 +16,7 @@ const baseValue: DocumentHeaderValue = {
 };
 
 function form(extra: Record<string, unknown> = {}) {
-  return renderToStaticMarkup(<DocumentForm
+  return renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč"
     title="Doklad"
     documentType="FP"
     value={baseValue}
@@ -30,10 +30,7 @@ function form(extra: Record<string, unknown> = {}) {
   />);
 }
 
-const periods = [
-  { value: "2026-08-01", label: "08/2026 · KH srpen 2026 / DPH 3.Q 2026", filed: true },
-  { value: "2026-09-01", label: "09/2026 · KH září 2026 / DPH 3.Q 2026" },
-];
+
 
 describe("DateField link 2.38.0", () => {
   it("zamčené datum je jen pro čtení, nabízí odemčení a nezobrazuje kalendář", () => {
@@ -52,15 +49,15 @@ describe("DateField link 2.38.0", () => {
   });
 });
 
-describe("DocumentForm DPH 2.38.0", () => {
-  it("neplátci skryje DUZP i Období DPH", () => {
-    const html = form({ vat: { visible: false, periodOptions: periods } });
+describe("DocumentForm DPH 2.43.0", () => {
+  it("neplátci skryje DUZP i Datum DPH", () => {
+    const html = form({ vat: { visible: false } });
     expect(html).not.toContain(">DUZP<");
-    expect(html).not.toContain(">Období DPH<");
+    expect(html).not.toContain(">Datum DPH<");
   });
 
-  it("kotví DUZP a Období DPH ve sloupcích 15–20 za levými daty", () => {
-    const html = form({ vat: { visible: true, periodOptions: periods } });
+  it("kotví DUZP a Datum DPH ve sloupcích 15–20 za levými daty", () => {
+    const html = form({ vat: { visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" } });
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
@@ -70,9 +67,9 @@ describe("DocumentForm DPH 2.38.0", () => {
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {
-    const html = form({ vat: { visible: true, periodOptions: periods, periodReadOnly: true } });
-    expect(html).toContain('id="document-vatPeriod" readOnly="" aria-readonly="true"');
-    expect(html).toContain("Období se řídí DUZP");
+    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026", periodFiled: true } });
+    expect(html).toContain('id="document-vatDate"');
+    expect(html).toContain("Daň na výstupu patří do období DUZP");
     expect(html).toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
 
@@ -85,41 +82,41 @@ describe("DocumentForm DPH 2.38.0", () => {
   });
 });
 
-describe("DocumentForm Vstupuje do DPH 2.41.0", () => {
+describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
   it("plátci se zapnutým příznakem zobrazí přepínač, DUZP i období", () => {
-    const html = form({ vat: { visible: true, relevant: true, onRelevantChange: () => {}, periodOptions: periods } });
+    const html = form({ vat: { visible: true } });
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="true"');
     expect(html).toContain(">Vstupuje do DPH<");
     expect(html).toContain(">DUZP<");
-    expect(html).toContain(">Období DPH<");
+    expect(html).toContain(">Datum DPH<");
   });
 
   it("plátci s vypnutým příznakem ponechá jen vypnutý přepínač", () => {
-    const html = form({ vat: { visible: true, relevant: false, onRelevantChange: () => {}, periodOptions: periods } });
+    const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" title="Doklad" documentType="FP" value={{ ...baseValue, vatRelevant: false }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" vat={{ visible: true }} />);
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="false"');
     expect(html).not.toContain(">DUZP<");
-    expect(html).not.toContain(">Období DPH<");
+    expect(html).not.toContain(">Datum DPH<");
   });
 
   it("neplátci skryje celý blok DPH včetně přepínače", () => {
-    const html = form({ vat: { visible: false, relevant: true, onRelevantChange: () => {}, periodOptions: periods } });
+    const html = form({ vat: { visible: false } });
     expect(html).not.toContain("Vstupuje do DPH");
     expect(html).not.toContain(">DUZP<");
-    expect(html).not.toContain(">Období DPH<");
+    expect(html).not.toContain(">Datum DPH<");
   });
 
   it("režim jen pro čtení přepínač zakáže", () => {
-    const html = form({ vat: { visible: true, relevant: true, relevantReadOnly: true, onRelevantChange: () => {}, periodOptions: periods } });
-    const vatSwitch = html.slice(html.indexOf('id="document-vatRelevant"'), html.indexOf('id="document-taxDate"'));
-    expect(vatSwitch).toContain("disabled");
+    const html = form({ vat: { visible: true, relevantReadOnly: true } });
+    expect(html).toContain('role="switch"');
+    expect(html).toContain("disabled");
   });
 
-  it("bez handleru přepínač nevykreslí a zachová dosavadní pole DPH i při relevant false", () => {
-    const html = form({ vat: { visible: true, relevant: false, periodOptions: periods } });
-    expect(html).not.toContain("Vstupuje do DPH");
+  it("přepínač je součástí pruhu akcí a stav je ve value", () => {
+    const html = form({ vat: { visible: true } });
+    expect(html.indexOf("Vstupuje do DPH")).toBeLessThan(html.indexOf('data-slot="document-dates"'));
     expect(html).toContain(">DUZP<");
-    expect(html).toContain(">Období DPH<");
+    expect(html).toContain(">Datum DPH<");
   });
 });

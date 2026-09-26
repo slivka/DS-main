@@ -7,8 +7,8 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 export type GridViewMode = "grid" | "tree";
 
 /**
- * Prepínač medzi tabuľkovým a stromovým zobrazením hierarchických číselníkov.
- * Ikona sa mení podľa toho, na aké zobrazenie sa prepne.
+ * Přepínač medzi tabulkovým a stromovým zobrazením hierarchických číselníků.
+ * Ikona se mění podle toho, na jaké zobrazení se přepne.
  */
 export function ViewModeToggle({
   mode,

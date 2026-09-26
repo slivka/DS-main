@@ -87,7 +87,7 @@ const WORKSPACE_PANEL = [{
   section: "Pracovní prostor",
   items: [
     { to: "/components/navigation", label: "Základní údaje", icon: Settings },
-    { to: "/components/navigation", label: "Členové a pozvánky", icon: Users },
+    { to: "/components/navigation", label: "Čjenové a pozvánky", icon: Users },
     { to: "/components/navigation", label: "Firmy", icon: Building2 },
   ],
 }];

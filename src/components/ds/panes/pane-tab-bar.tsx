@@ -26,8 +26,9 @@ export const DEFAULT_PANE_TAB_BAR_TEXTS: PaneTabBarTexts = {
   untitled: "Bez názvu",
 };
 
-/** Minimální šířka záložky v px (maximální je 200 px). */
-export const PANE_TAB_MIN_WIDTH = 120;
+/** Minimální a maximální šířka záložky v rem. */
+export const PANE_TAB_MIN_WIDTH_REM = 7.5;
+export const PANE_TAB_MAX_WIDTH_REM = 12.5;
 
 export interface PaneTabBarProps {
   pane: TabPane;
@@ -51,7 +52,10 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
   useEffect(() => {
     const element = stripRef.current;
     if (!element) return;
-    const measure = () => setCapacity(Math.max(1, Math.floor(element.clientWidth / PANE_TAB_MIN_WIDTH)));
+    const measure = () => {
+      const rootSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      setCapacity(Math.max(1, Math.floor(element.clientWidth / (PANE_TAB_MIN_WIDTH_REM * rootSize))));
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(element);
@@ -155,7 +159,7 @@ function SortableTab({
         <div
           ref={setNodeRef}
           data-tab-id={tab.id}
-          style={{ transform: CSS.Translate.toString(transform), transition, flex: "0 1 200px", minWidth: 120, maxWidth: 200 }}
+          style={{ transform: CSS.Translate.toString(transform), transition, flex: `1 1 ${PANE_TAB_MAX_WIDTH_REM}rem`, minWidth: `${PANE_TAB_MIN_WIDTH_REM}rem`, maxWidth: `${PANE_TAB_MAX_WIDTH_REM}rem` }}
           className={cn(
             "group relative flex items-center border-r text-sm transition-colors",
             active ? "bg-card font-semibold text-foreground shadow-[inset_0_2px_0_var(--primary)]" : "text-muted-foreground hover-surface",

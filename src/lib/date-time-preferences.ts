@@ -110,7 +110,7 @@ export function parseUserDate(value: string, preferences = activePreferences): s
       const first = Number(parts[1]);
       const second = Number(parts[2]);
       year = Number(parts[3]);
-      // České zadání d. m. rrrr přijímáme vždy, nezávisle na zvoleném
+      // České zadání d. m. rrrr přijímáme vždy, nezávisle na zvojeném
       // zobrazovacím formátu profilu. ISO bylo rozpoznáno výše.
       day = first;
       month = second;

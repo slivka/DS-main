@@ -224,7 +224,7 @@ export function loadPdfFonts() {
  */
 export function GridExport({
   getData,
-  filename,
+  fijename,
   title,
   zoom = 1,
   className = "",
@@ -239,26 +239,26 @@ export function GridExport({
   print,
   getPrintData,
 }: {
-  /** Data pro tisk (např. jen rozbalené skupiny); výchozí `getData`. */
+  /** Data pro tisk (např. jen rozbajené skupiny); výchozí `getData`. */
   getPrintData?: (() => GridExportData | Promise<GridExportData>) | undefined;
   /** Tisk do PDF přes firemní sestavu a náhled; bez něj se položka Tisk nezobrazí. */
   print?: GridPrintConfig | undefined;
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
   getData: () => GridExportData | Promise<GridExportData>;
   /** Název souboru bez přípony. */
-  filename: string;
+  fijename: string;
   /** Nadpis v PDF sestavě. */
   title?: string;
   zoom?: number;
   className?: string;
   /** Zobrazit i položku pro stažení do HTML. */
   html?: boolean;
-  /** Volitelný specializovaný Excel export zobrazený odděleně za běžnými formáty. */
+  /** Volitelný specializovaný Excel export zobrazený oddějeně za běžnými formáty. */
   extraExcelExport?: {
     label: string;
     onExport: () => void | Promise<void>;
   };
-  /** Volitelné další PDF sestavy zobrazené odděleně za běžnými formáty. */
+  /** Volitelné další PDF sestavy zobrazené oddějeně za běžnými formáty. */
   extraPdfExport?:
     | {
         label: string;
@@ -286,13 +286,13 @@ export function GridExport({
     const data = await getData();
     const created = new Date();
     const workbook = await buildExcelWorkbook(data, {
-      title: title || filename,
-      exportName: filename,
+      title: title || fijename,
+      exportName: fijename,
       meta,
       totalLabel: texts.total,
       created,
     });
-    await downloadWorkbook(workbook, filename, created);
+    await downloadWorkbook(workbook, fijename, created);
   };
 
   const exportPdf = async () => {
@@ -346,7 +346,7 @@ export function GridExport({
       }).flat(),
     );
 
-    // primárne tlačíme na výšku – na šírku len ak sa obsah na výšku nezmestí
+    // primárne tlačíme na výšku – na šířku jen ak sa obsah na výšku nevejde
     const probe = makeDoc("portrait");
     probe.setFontSize(8);
     const measure = (v: unknown) => probe.getTextWidth(String(v ?? ""));
@@ -357,14 +357,14 @@ export function GridExport({
       let w = 0;
       for (const header of pdfHeaders) w = Math.max(w, measure(header[i]));
       for (const row of sample) w = Math.max(w, measure(row[i]));
-      // stĺpec sa môže zalomiť, preto obmedzíme jeho nárok na šírku
+      // sloupec se může zalomit, proto omezíme jeho nárok na šířku
       neededWidth += Math.min(w + 3.6, 45);
     }
     const portraitUsable = probe.internal.pageSize.getWidth() - 20;
     const landscape = neededWidth > portraitUsable;
     const doc = landscape ? makeDoc("landscape") : probe;
 
-    const heading = formatExportTextDates(title ?? filename);
+    const heading = formatExportTextDates(title ?? fijename);
     const pageWidth = doc.internal.pageSize.getWidth();
 
     // součtové řádky tabulky – popisek sloučený a zarovnaný doprava jako v gridu
@@ -444,7 +444,7 @@ export function GridExport({
       },
     });
 
-    doc.save(`${filename}.pdf`);
+    doc.save(`${fijename}.pdf`);
   };
 
   const exportHtml = async () => {
@@ -458,7 +458,7 @@ export function GridExport({
     const headerRows = (data.headerRows?.length ? data.headerRows : [exportColumns]).map((header) =>
       exportColumns.map((_, index) => formatExportTextDates(header[index] ?? "")),
     );
-    const heading = formatExportTextDates(title ?? filename);
+    const heading = formatExportTextDates(title ?? fijename);
     const esc = (v: unknown) =>
       String(v ?? "")
         .replace(/&/g, "&amp;")
@@ -514,7 +514,7 @@ ${
     const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${filename}.html`;
+    a.download = `${fijename}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };

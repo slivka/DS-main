@@ -47,7 +47,7 @@ function GridPrintShowcase() {
   const [period, setPeriod] = useState<GridPeriodValue>(() => gridPeriodRange("2026-01-01", "2026-12-31", "all"));
   const [bookId, setBookId] = useState<string | "all">("fp");
   return <>
-    <ShowcaseSection title="Tisk stromu – obratová sestava" description="Menu Stáhnout → Tisk (PDF)…: tiskne jen rozbalené uzly, uzly tučně s odsazením, součty a parametry z kontextového řádku.">
+    <ShowcaseSection title="Tisk stromu – obratová sestava" description="Menu Stáhnout → Tisk (PDF)…: tiskne jen rozbajené uzly, uzly tučně s odsazením, součty a parametry z kontextového řádku.">
       <TreeGrid rows={TURNOVER} columns={TURNOVER_COLUMNS} title="Obratová sestava" exportName="obratova-sestava" expandLevels={[{ id: "classes", label: "Třídy", depth: 0 }, { id: "groups", label: "Skupiny", depth: 1 }, { id: "all", label: "Vše", depth: 99 }]} period={{ fiscalFrom: "2026-01-01", fiscalTo: "2026-12-31", value: period, onChange: setPeriod }} printContext={CONTEXT} printParams={[{ label: "Účty", value: "S pohybem" }]} />
     </ShowcaseSection>
     <ShowcaseSection title="Tisk seznamu dokladů se seskupením" description="Seskupení podle partnera s mezisoučty; tisknou se jen viditelné sloupce bez akcí a výběru.">

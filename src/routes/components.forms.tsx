@@ -31,12 +31,12 @@ export const Route = createFileRoute("/components/forms")({
       { title: "Formuláře – Slivka Design System" },
       {
         name: "description",
-        content: "Editační dialog dokladu se všemi sdílenými vstupy design systému.",
+        content: "Editační dialog dokladu se všemi sdíjenými vstupy design systému.",
       },
       { property: "og:title", content: "Formuláře – Slivka Design System" },
       {
         property: "og:description",
-        content: "Editační dialog dokladu se všemi sdílenými vstupy design systému.",
+        content: "Editační dialog dokladu se všemi sdíjenými vstupy design systému.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

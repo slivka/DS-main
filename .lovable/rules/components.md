@@ -1280,12 +1280,12 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 
 _Doklad plátce s řízeným vlivem na DPH_
 ```tsx
-<DocumentForm {...props} vat={{ visible: true, relevant: vatRelevant, onRelevantChange: setVatRelevant, periodOptions }} />
+<DocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} />
 ```
 
 **Avoid:**
 
-- Nemažte taxDate ani vatPeriod při vypnutí relevant; komponenta je pouze skryje.
+- Nemažte `taxDate` ani `vatDate` při vypnutí `value.vatRelevant`; komponenta je pouze skryje.
 - Nezobrazujte přepínač ani daňová pole, když firma k datu dokladu není plátcem DPH.
 
 ### DocumentStatusBadge

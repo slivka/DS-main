@@ -127,7 +127,7 @@ const USER_COLUMNS: DataGridColumn<UserRow>[] = [
 
 const DETAIL_ROWS = {
   members: [{ id: "m1", name: "Petr Slivka", role: "Správce" }, { id: "m2", name: "Jana Nováková", role: "Účetní" }],
-  invitations: [{ id: "i1", email: "novy.clen@example.cz", state: "Čeká na přijetí" }],
+  invitations: [{ id: "i1", email: "novy.člen@example.cz", state: "Čeká na přijetí" }],
   companies: [{ id: "c1", name: "Slivka Accounting s.r.o.", ico: "12345678" }, { id: "c2", name: "Slivka Services s.r.o.", ico: "87654321" }],
 };
 
@@ -145,7 +145,7 @@ function NavigationPage() {
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed>
       <ShowcaseSection
         title="Horní lišta"
-        description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámení, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámení a tmavý režim."
+        description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámění, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámění a tmavý režim."
       >
         <div className="grid gap-3">
           <ContextStatesPreview title="Světlý režim" companies={companies} companyId={companyId} onCompanyChange={setCompanyId} onPeriodChange={setPeriodId} />
@@ -185,7 +185,7 @@ function NavigationPage() {
         </div>
       </ShowcaseSection>
 
-      <ShowcaseSection title="Rozbalený výběr firmy" description="Nabídka obsahuje hledání a jediný seznam všech firem bez skupinových nadpisů; vybraná firma má fajfku a pod názvem IČO.">
+      <ShowcaseSection title="Rozbajený výběr firmy" description="Nabídka obsahuje hledání a jediný seznam všech firem bez skupinových nadpisů; vybraná firma má fajfku a pod názvem IČO.">
         <div className="min-h-80 rounded-lg border bg-card p-3">
           <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen} onCreate={() => undefined} />
         </div>
@@ -197,8 +197,8 @@ function NavigationPage() {
       >
         <div className="rounded-lg border bg-card p-3">
           <div className="grid gap-4 lg:grid-cols-[1fr_auto_1fr]">
-            <NavigationBlockPreview title="Rozbalené menu" groups={NAV_GROUPS} />
-            <NavigationBlockPreview title="Sbalené menu" groups={NAV_GROUPS} collapsed />
+            <NavigationBlockPreview title="Rozbajené menu" groups={NAV_GROUPS} />
+            <NavigationBlockPreview title="Sbajené menu" groups={NAV_GROUPS} collapsed />
             <NavigationBlockPreview title="Hledání: faktury" groups={NAV_GROUPS.filter((group) => group.section === "Doklady").map((group) => ({ ...group, items: group.items.filter((item) => item.label.includes("faktury")) })).filter((group) => group.items.length > 0)} />
           </div>
         </div>
@@ -235,7 +235,7 @@ function NavigationPage() {
         readOnly
         wide
         tabs={[
-          { value: "members", label: "Členové", content: <DataGrid storageKey="ds-workspace-members" rows={DETAIL_ROWS.members} columns={[{ id: "name", label: "Člen", value: (row) => row.name }, { id: "role", label: "Role", value: (row) => row.role }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
+          { value: "members", label: "Čjenové", content: <DataGrid storageKey="ds-workspace-members" rows={DETAIL_ROWS.members} columns={[{ id: "name", label: "Čjen", value: (row) => row.name }, { id: "role", label: "Role", value: (row) => row.role }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
           { value: "invitations", label: "Pozvánky", content: <DataGrid storageKey="ds-workspace-invitations" rows={DETAIL_ROWS.invitations} columns={[{ id: "email", label: "E-mail", value: (row) => row.email }, { id: "state", label: "Stav", value: (row) => row.state }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
           { value: "companies", label: "Firmy", content: <DataGrid storageKey="ds-workspace-companies" rows={DETAIL_ROWS.companies} columns={[{ id: "name", label: "Firma", value: (row) => row.name }, { id: "ico", label: "IČO", value: (row) => row.ico }]} rowKey={(row) => row.id} hideToolbar paginated={false} showTotalRow={false} /> },
         ]}

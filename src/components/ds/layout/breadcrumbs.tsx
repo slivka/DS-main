@@ -15,7 +15,7 @@ export type Crumb = {
  */
 export function Breadcrumbs({ items, as = "nav" }: { items: Crumb[]; as?: "nav" | "h1" }) {
   const Last = as === "h1" ? "h1" : "span";
-  // Zobrazenie len ak má zmysel (aspoň 2 položky). Ak nie, vyhradí sa rovnaká
+  // Zobrazene jen ak má zmysel (aspoň 2 položky). Ak ne, vyhradí sa rovnaká
   // výška, aby sa obsah stránky neposúval nahor/dolu.
   if (items.length < 2) {
     return <nav aria-hidden className="min-w-0 min-h-[1.75rem]" />;

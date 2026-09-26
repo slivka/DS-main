@@ -9,7 +9,7 @@ import { RateField, rateValuesDiffer } from "../../src/components/ds/form/rate-f
 import { SectionHeading } from "../../src/components/ds/layout/section-heading";
 
 const value: DocumentHeaderValue = { accountingDate: "2026-09-25", issueDate: "2026-09-25", currency: "CZK", amountTotal: 1000, totalMode: "entered" };
-const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm title="Pokladní doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
+const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Pokladní doklad" value={value} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" {...extra} />);
 
 describe("DocumentForm 2.31.0", () => {
   it("vykreslí viditelný nadpis a identitu s číslem v těle", () => {
@@ -87,7 +87,7 @@ describe("DocumentForm 2.31.0", () => {
     expect(html).toContain('id="document-amountTotal"');
     expect(html).toContain("MD");
     expect(html).toContain("211.001 - Pokladna");
-    expect(html).toContain("Sčítat z rozpisu");
+    expect(html).toContain("Sčítá se z rozpisu");
   });
   it("SectionHeading používá nový styl", () => expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain("section-heading"));
 });

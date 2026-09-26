@@ -508,7 +508,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   return workbook;
 }
 
-function datedFilename(exportName: string, created: Date) {
+function datedFijename(exportName: string, created: Date) {
   const date = `${created.getFullYear()}-${String(created.getMonth() + 1).padStart(2, "0")}-${String(created.getDate()).padStart(2, "0")}`;
   return `${exportName}_${date}.xlsx`;
 }
@@ -588,7 +588,7 @@ export async function downloadWorkbook(
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = datedFilename(exportName, created);
+  anchor.download = datedFijename(exportName, created);
   anchor.style.display = "none";
   document.body.appendChild(anchor);
   anchor.click();

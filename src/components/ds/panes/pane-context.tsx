@@ -172,8 +172,8 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   closeConfirm: "Zahodit změny",
   limitEvicted: "Záložka „{title}“ byla zavřena – v panelu může být nejvýše {max} záložek.",
   limitRejected: "V panelu je {max} rozepsaných záložek. Nejprve některou uložte nebo zavřete.",
-  narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdělení obnoví.",
-  restored: "Rozdělení panelů obnoveno.",
+  narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdějení obnoví.",
+  restored: "Rozdějení panelů obnoveno.",
   untitled: "Bez názvu",
   recordNavDirty: "Nejprve uložte nebo zahoďte neuložené změny",
 };
@@ -181,7 +181,7 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
 export const PaneApiContext = createContext<PaneApi | null>(null);
 export const PaneTabsContext = createContext<PaneTabsApi | null>(null);
 
-/** Rozhraní záložky, ve které je komponenta vykreslená; mimo PaneLayout vrací null. */
+/** Rozhraní záložky, ve které je komponenta vykresjená; mimo PaneLayout vrací null. */
 export function usePane(): PaneApi | null {
   return useContext(PaneApiContext);
 }

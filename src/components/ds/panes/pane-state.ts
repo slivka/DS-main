@@ -46,7 +46,7 @@ export type TabPane = {
   tabs: PaneTab[];
 };
 
-/** Uložené rozdělení záložek před automatickým zúžením podle šířky. */
+/** Uložené rozdějení záložek před automatickým zúžením podle šířky. */
 export type HiddenPanesSnapshot = {
   layout: PaneLayoutCount;
   panes: { id: string; tabIds: string[]; activeTab: string | null }[];
@@ -104,7 +104,7 @@ export function paneKey(pane: { route: string; params?: Record<string, unknown> 
   return query ? `${pane.route}?${query}` : pane.route;
 }
 
-/** Rovnoměrné rozdělení šířek pro daný počet panelů. */
+/** Rovnoměrné rozdějení šířek pro daný počet panelů. */
 export function evenWidths(count: number): number[] {
   return Array.from({ length: count }, () => 1 / count);
 }
@@ -557,7 +557,7 @@ export function closePaneInState(state: PaneTabsState, paneId: string): PaneTabs
 }
 
 /**
- * Automatické zúžení podle šířky: uloží rozdělení do hiddenPanes; po zvětšení ho obnoví
+ * Automatické zúžení podle šířky: uloží rozdějení do hiddenPanes; po zvětšení ho obnoví
  * (jen záložky, které ještě existují; nové záložky zůstanou tam, kde jsou).
  */
 export function applyMaxLayout(state: PaneTabsState, maxLayout: PaneLayoutCount): { state: PaneTabsState; notice: "narrowed" | "restored" | null } {
@@ -700,7 +700,7 @@ export type LayoutSnapshotTab = {
   title?: string;
   shortTitle?: string;
   icon?: string;
-  /** Stav gridu (filtr, řazení, rozbalení) – koncept záložky pod klíčem "grid". */
+  /** Stav gridu (filtr, řazení, rozbajení) – koncept záložky pod klíčem "grid". */
   grid?: unknown;
 };
 

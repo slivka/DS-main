@@ -164,12 +164,12 @@ export function friendlyErrorMessage(error: unknown): { title: string; detail?: 
   if (text.includes("permission") || text.includes("row-level security") || text.includes("403"))
     return {
       title: "K těmto datům nemáte oprávnění.",
-      detail: "Požádejte správce účtu o přidělení role.",
+      detail: "Požádejte správce účtu o přidějení role.",
     };
   if (text.includes("timeout") || text.includes("timed out"))
     return {
       title: "Načítání trvalo příliš dlouho.",
-      detail: "Zkuste zúžit období nebo akci opakovat.",
+      detail: "Zkuste zúžít období nebo akci opakovat.",
     };
   return { title: "Data se nepodařilo načíst.", detail: raw };
 }

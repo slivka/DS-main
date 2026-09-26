@@ -8,8 +8,8 @@ import { cn } from "../../lib/utils";
 import { useDialogBackClose } from "../../hooks/use-dialog-back-close";
 
 /**
- * Root dialógu – okrem štandardného správania zabezpečuje, že sa
- * otvorený dialóg zavrie aj tlačidlom „Späť“ (myš / prehliadač).
+ * Root dialogu – okrem štandardného správania zabezpečuje, že sa
+ * otevřený dialog zavrie aj tlačítkom „Zpět“ (myš / prohlížeč).
  */
 const Dialog = ({
   open,

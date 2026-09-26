@@ -61,7 +61,7 @@ const MIME = "application/x-grid-column";
 const CHIP_MIME = "application/x-grid-group-chip";
 
 /**
- * Sdílené seskupování řádků gridu podle sloupců.
+ * Sdíjené seskupování řádků gridu podle sloupců.
  * Volba se ukládá do prohlížeče pod `grouping:<storageKey>`.
  */
 export function useGridGrouping(
@@ -254,7 +254,7 @@ const MONTHS = [
   "prosinec",
 ];
 
-/** Klíč a popisek skupiny pro jednu hodnotu podle zvolené granularity. */
+/** Klíč a popisek skupiny pro jednu hodnotu podle zvojené granularity. */
 function bucket(value: unknown, granularity: GroupGranularity, emptyLabel = "(nevyplněno)"): { key: string; label: string } {
   const iso = isoDate(value);
   if (iso) {

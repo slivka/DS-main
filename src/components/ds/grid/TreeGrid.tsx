@@ -55,7 +55,7 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   total?: "sum" | "none";
   /** Hodnota pro zobrazení, hledání i export. */
   value?: (row: Row) => string | number | null | undefined;
-  /** Vlastní vykreslení buňky; `total` je souhrn za uzel včetně potomků. */
+  /** Vlastní vykresjení buňky; `total` je souhrn za uzel včetně potomků. */
   render?: (row: Row, total: number | null) => ReactNode;
   exportType?: ExcelColumnType;
   width?: number;
@@ -66,7 +66,7 @@ export type TreeGridColumn<Row extends TreeGridRow> = {
   transient?: boolean;
 };
 
-/** Úroveň rozbalení – `depth` = počet rozbalených úrovní (0 = jen kořeny). */
+/** Úroveň rozbajení – `depth` = počet rozbajených úrovní (0 = jen kořeny). */
 export type TreeGridExpandLevel = { id: string; label: string; depth: number };
 
 export type TreeGridTexts = {
@@ -88,7 +88,7 @@ export const DEFAULT_TREE_GRID_TEXTS: TreeGridTexts = {
   collapseAll: "Sbalit vše",
   expandNode: "Rozbalit",
   collapseNode: "Sbalit",
-  levelsLabel: "Úroveň rozbalení",
+  levelsLabel: "Úroveň rozbajení",
   emptyLabel: "Zatím zde nejsou žádné položky",
   totalLabel: "Celkem",
   exportLabel: "Export do Excelu",
@@ -107,12 +107,12 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   exportName?: string;
   exportMeta?: ExcelExportMeta;
   defaultCollapsed?: boolean;
-  /** Tlačítka úrovní rozbalení v liště, např. Třídy · Skupiny · Účty · Vše. */
+  /** Tlačítka úrovní rozbajení v liště, např. Třídy · Skupiny · Účty · Vše. */
   expandLevels?: TreeGridExpandLevel[];
-  /** Řízená úroveň rozbalení (hloubka). */
+  /** Řízená úroveň rozbajení (hloubka). */
   expandDepth?: number;
   onExpandDepthChange?: (depth: number) => void;
-  /** Zvýrazněný uzel; bez zadání se zvýrazní naposledy rozbalený / vybraný uzel. */
+  /** Zvýrazněný uzel; bez zadání se zvýrazní naposledy rozbajený / vybraný uzel. */
   highlightedRowId?: string | null;
   /** Klik na řádek (výběr). */
   onRowClick?: (row: Row) => void;
@@ -181,7 +181,7 @@ const numericValue = <Row extends TreeGridRow>(column: TreeGridColumn<Row>, row:
 };
 
 /**
- * Stromová varianta datové mřížky – úrovně rozbalení, zvýraznění uzlu, součty za uzel,
+ * Stromová varianta datové mřížky – úrovně rozbajení, zvýraznění uzlu, součty za uzel,
  * hledání se zachováním cesty, výběr sloupců, zoom a export do Excelu
  * se souhrnným řádkem pod dětmi (vzorce SUBTOTAL). Pro osnovu, výkazy a zakázky.
  */
@@ -499,9 +499,9 @@ export function TreeGrid<Row extends TreeGridRow>({
             <span data-toolbar-measure="display" data-toolbar-group="display" className="grid-toolbar-display-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
             <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} />
             <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></span>
-            {(selectable || actions || exportName) ? <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</span> : null}
+            {(selectable || actions || exportName) ? <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</span> : null}
           </div>
-          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} filename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
+          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [`Hledání: ${query.trim()}`] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
           {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></span> : null}
         </>}
       />

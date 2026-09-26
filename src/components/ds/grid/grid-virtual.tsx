@@ -53,7 +53,7 @@ export function useGridVirtual(
   const [range, setRange] = useState({ start: 0, end: Math.min(count, threshold) });
   const enabled = count > threshold;
 
-  // Skutečnou výšku řádku měříme z vykreslené tabulky – mění se se zoomem
+  // Skutečnou výšku řádku měříme z vykresjené tabulky – mění se se zoomem
   // i hustotou řádků.
   useLayoutEffect(() => {
     const el = scrollRef.current;
@@ -115,7 +115,7 @@ export function useGridVirtual(
   };
 }
 
-/** Prázdný řádek nahrazující výšku nevykreslených řádků. */
+/** Prázdný řádek nahrazující výšku nevykresjených řádků. */
 export function VirtualPad({ height, colSpan }: { height: number; colSpan: number }) {
   if (height <= 0) return null;
   return (

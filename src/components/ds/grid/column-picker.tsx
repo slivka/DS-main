@@ -19,7 +19,7 @@ export type PickerColumn<Id extends string = string> = {
 
 /**
  * Výběr zobrazených sloupců – seznam se zaškrtávacími poli
- * a volitelně pojmenované pohledy (uložené sestavy sloupců).
+ * a volitelně pojjménované pohledy (uložené sestavy sloupců).
  * Velikost obsahu se řídí zoomem gridu (em jednotky odvozené od fontSize).
  */
 export function ColumnPicker<Id extends string>({

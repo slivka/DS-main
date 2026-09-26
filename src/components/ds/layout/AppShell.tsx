@@ -76,7 +76,7 @@ export interface AppShellProps {
   collapseLabel?: string;
   expandLabel?: string;
   disabledHint?: string;
-  /** Klíč uloženého sbalení skupin; výchozí je appName. */
+  /** Klíč uloženého sbajení skupin; výchozí je appName. */
   navStateKey?: string;
   /** Zobrazit hledání v menu. */
   navSearch?: boolean;

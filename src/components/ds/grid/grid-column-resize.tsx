@@ -3,7 +3,7 @@ import { resolveGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Úchyt na pravém okraji záhlaví sloupce – tažením myší mění šířku sloupce,
- * dvojklik šířku vrátí na automatickou. Používá se ve sdíleném gridu.
+ * dvojklik šířku vrátí na automatickou. Používá se ve sdíjeném gridu.
  */
 export function ColumnResizeHandle({
   onResize,

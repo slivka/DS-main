@@ -293,7 +293,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Doklady a platební kalendář (2.7.0)
 - Doklad vždy `DocumentForm`; typ předávejte přes `documentType`, který sám zvolí pole a účetní popisky. `fields` použijte jen pro výjimku. Číslo, kurz, kniha po založení a směr jsou jen pro čtení.
 - Hlavička `DocumentForm` má základní a platební údaje vlevo a vlastnosti, kurz a částku vpravo. Zamčený hlavní účet je text se stranou MD/DAL, nikoli zakázaný výběr; ID a UZ mají režim součtu řádků vždy zamčený.
-- U plátce DPH řiďte příznak přes `vat.relevant` a `vat.onRelevantChange`; vypnutí jen skryje DUZP a Období DPH, jejich hodnoty nemažte. Neplátci předejte `vat.visible: false` a nezobrazujte žádný prvek DPH.
+- U plátce DPH řiďte příznak přes `value.vatRelevant`; vypnutí jen skryje DUZP a Datum DPH, jejich hodnoty nemažte. Přepínač patří vlevo do přilepeného pruhu akcí. Neplátci předejte `vat.visible: false`.
+- Popisky částek a jednotky kurzu vždy používají značku měny z dat (`CurrencyOption.symbol`, `homeCurrencySymbol`), nikdy pevný text Kč nebo CZK; bez značky použijte kód.
+- Ikonový přepínač v poli je zapnutý jako plné primární tlačítko s bílou ikonou, vypnutý jako obrys s přeškrtnutou ikonou; tooltip vždy pojmenuje stav.
+- Záložky panelu jsou stejně široké v rozsahu 7,5–12,5 rem. `shortTitle` začíná rozlišujícím údajem; nový záznam „Nový · kontext“, koncept „Koncept · kontext“, existující záznam identifikátorem. Nepoužívejte „Úprava“ ani zkratku druhu. `title` je úplný tooltip druhu, identifikátoru a kontextu.
 - Stav Zaúčtován řiďte přes `editableFields` (hlavička) a `linesEditorProps.editableFields` (řádky); `readOnly` jen pro uzamčené doklady.
 - Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
 - Platební kalendář vždy `PaymentScheduleEditor`; rozložení přes `generatePaymentSchedule`. Ukládá se celé pole jedním voláním.

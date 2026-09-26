@@ -19,6 +19,8 @@ export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"di
   title: React.ReactNode;
   /** Vlastní identifikační řádek místo viditelného nadpisu; `title` zůstává pro čtečky. */
   titleSlot?: React.ReactNode;
+  /** Stavový štítek bezprostředně za nadpisem. */
+  titleBadge?: React.ReactNode;
   /** @deprecated Kontext patří do GridContextBar nebo horní lišty. */
   description?: React.ReactNode;
   actions?: React.ReactNode;
@@ -41,7 +43,7 @@ export interface PageHeaderMenuAction {
  * Hlavička stránky – nadpis a akce vpravo.
  * Uvnitř PaneLayout navíc vykreslí ovládání záznamu, historie, maximalizaci a menu ⋯.
  */
-export function PageHeader({ title, titleSlot, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
+export function PageHeader({ title, titleSlot, titleBadge, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
   const chrome = usePaneChrome();
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
   React.useEffect(() => {
@@ -65,6 +67,7 @@ export function PageHeader({ title, titleSlot, description, actions, menuActions
             ) : (
               <h1 className="typo-title text-primary">{title}</h1>
             )}
+            {titleBadge ? <span className="inline-flex shrink-0 items-center self-center">{titleBadge}</span> : null}
             {chrome?.dirty ? <span role="img" aria-label={t.unsaved} title={t.unsaved} className="size-2 shrink-0 rounded-full bg-primary" /> : null}
           </div>
         </div>

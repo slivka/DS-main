@@ -89,7 +89,7 @@ export interface LayoutMenuProps {
   onSave: (input: { name: string; isDefault: boolean; snapshot: LayoutSnapshot | null }) => void;
   /** Použití uloženého rozložení – aplikace zavolá usePaneTabs().applyLayout(snapshot). */
   onApply: (id: string) => void;
-  /** Přejmenování, změna výchozího nebo přepsání aktuálním (`snapshot`). */
+  /** Přejjménování, změna výchozího nebo přepsání aktuálním (`snapshot`). */
   onUpdate: (id: string, patch: { name?: string; isDefault?: boolean; snapshot?: LayoutSnapshot | null }) => void;
   onDelete: (id: string) => void;
   onReorder?: (ids: string[]) => void;

@@ -93,14 +93,14 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
             <TooltipTrigger asChild>
               <Button
                 type="button"
-                variant="ghost"
+                 variant={enabled ? "default" : "outline"}
                 size="icon"
                 aria-label={tooltip}
                 aria-pressed={enabled}
                 disabled={disabled || readOnly}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => { const next = !enabled; onEnabledChange(next); setOpen(next); }}
-                className={cn("absolute right-0 top-0 size-9", enabled ? "text-primary" : "text-muted-foreground")}
+                 className={cn("absolute right-0 top-0 size-9", enabled ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-muted-foreground")}
               >
                 <History className="size-4" />
               </Button>
