@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound } from "lucide-react";
+import { BookOpen, Building2, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound, Users } from "lucide-react";
 
 import {
   AppShell,
@@ -81,6 +81,17 @@ const ADMIN_PANEL = [{
   ],
 }];
 
+const WORKSPACE_PANEL = [{
+  id: "workspace-settings",
+  label: "Nastavení prostoru",
+  section: "Pracovní prostor",
+  items: [
+    { to: "/components/navigation", label: "Základní údaje", icon: Settings },
+    { to: "/components/navigation", label: "Členové a pozvánky", icon: Users },
+    { to: "/components/navigation", label: "Firmy", icon: Building2 },
+  ],
+}];
+
 /** Rám ukázkových stránek design systému. */
 export function ShowcaseLayout({
   children,
@@ -107,6 +118,8 @@ export function ShowcaseLayout({
   }, [darkPreview]);
 
   const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
+  const activeWorkspace = MOCK_WORKSPACES.find((workspace) => workspace.id === workspaceId) ?? MOCK_WORKSPACES[0];
+  const activeCompany = companies.find((company) => company.id === companyId) ?? companies[0];
   const notifications = [
     { id: "n1", title: "Doklad byl zaúčtován", body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.", type: "success" as const, createdAt: new Date(Date.now() - 5 * 60_000) },
     { id: "n2", title: "Blíží se termín DPH", body: "Přiznání k DPH je potřeba podat do pěti dnů.", type: "warning" as const, createdAt: new Date(Date.now() - 42 * 60_000) },
@@ -122,8 +135,9 @@ export function ShowcaseLayout({
       contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
-        { id: "company", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy", nav: COMPANY_PANEL },
-        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace", nav: ADMIN_PANEL, accent: "warning" },
+        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace provozovatele", nav: ADMIN_PANEL, badge: { label: "Provozovatel · všechny prostory", tone: "accent" } },
+        { id: "workspace", title: "Nastavení prostoru", icon: Settings, tooltip: "Nastavení prostoru", nav: WORKSPACE_PANEL, context: activeWorkspace.name },
+        { id: "company", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy", nav: COMPANY_PANEL, context: activeCompany.name },
       ]}
       activePanel={activePanel}
       onActivePanelChange={setActivePanel}

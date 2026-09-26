@@ -1,6 +1,6 @@
 import { cn } from "../../../lib/utils";
 
-export type StatusTone = "neutral" | "info" | "success" | "warning" | "danger" | "draft";
+export type StatusTone = "neutral" | "info" | "success" | "warning" | "danger" | "draft" | "accent";
 
 export type StatusConfig<S extends string = string> = Record<
   S,
@@ -14,6 +14,7 @@ const TONE_CLASS: Record<StatusTone, string> = {
   warning: "bg-amber-500/15 text-amber-800 border-amber-500/40 dark:text-amber-300",
   danger: "bg-destructive/10 text-destructive border-destructive/30",
   draft: "border-dashed border-amber-500/60 bg-amber-500/10 text-amber-800 dark:text-amber-300",
+  accent: "border-operator-accent bg-operator-accent text-operator-accent-foreground",
 };
 
 /** Obecný stavový štítek – stavy a jejich vzhled se předávají konfigurací. */

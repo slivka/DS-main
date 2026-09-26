@@ -9,7 +9,7 @@ export interface PageTabItem {
   disabled?: boolean;
 }
 
-export interface PageTabsProps extends Omit<React.ComponentPropsWithoutRef<typeof Tabs>, "children"> {
+export interface PageTabsProps extends React.ComponentPropsWithoutRef<typeof Tabs> {
   items: PageTabItem[];
   listLabel?: string;
   className?: string;
@@ -17,7 +17,7 @@ export interface PageTabsProps extends Omit<React.ComponentPropsWithoutRef<typeo
 
 /** Přepínač rovnocenných sekcí stránky pod hlavním nadpisem. */
 export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function PageTabs(
-  { items, listLabel = "Sekce stránky", className, ...props },
+  { items, listLabel = "Sekce stránky", className, children, ...props },
   ref,
 ) {
   return (
@@ -29,6 +29,7 @@ export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function
           </TabsTrigger>
         ))}
       </TabsList>
+      {children}
     </Tabs>
   );
 });

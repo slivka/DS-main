@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.40.0 – kontext panelů a detail prostoru
+
+- `AppShellPanel` přidává `badge` a `context`; Administrace provozovatele tak označí pohled přes všechny prostory a nastavení prostoru či firmy ukáže svůj objekt.
+- `StatusBadge` přidává výrazný nealarmující tón `accent` se světlou i tmavou variantou.
+- `RecordDialog` přidává `readOnly`, `closeLabel` a `tabs`; detail jen pro čtení nabízí pouze Zavřít a rovnocenné gridové záložky.
+- Ukázka Navigace obsahuje tři panely, grid uživatelů s bezpečnostními stavy a detail prostoru se záložkami Členové, Pozvánky a Firmy.
+
 ## Changelog 2.38.0 – data a období DPH na dokladu
 
 - `DateField` podporuje řízené svázané datum: zamčené pole nahrazuje kalendář zámkem, odemčené nabízí opětovné svázání.

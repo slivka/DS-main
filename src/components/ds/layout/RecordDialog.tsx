@@ -13,6 +13,40 @@ import {
 import { Button } from "../../ui/button";
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
+import { PageTabs } from "./page-tabs";
+import { TabsContent } from "../../ui/tabs";
+
+export interface RecordDialogTab {
+  value: string;
+  label: ReactNode;
+  content: ReactNode;
+  disabled?: boolean;
+}
+
+export interface RecordDialogProps {
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+  title: string;
+  /** @deprecated Popis se zachovává pouze skrytě pro čtečky obrazovky. */
+  description?: string;
+  onSubmit?: () => void;
+  submitLabel?: string;
+  closeLabel?: string;
+  busy?: boolean;
+  children?: ReactNode;
+  extraActions?: ReactNode;
+  wide?: boolean;
+  contentClassName?: string;
+  sidePanel?: ReactNode;
+  sidePanelLabel?: string;
+  sidePanelTitle?: ReactNode;
+  headerExtra?: ReactNode;
+  sidePanelExtra?: ReactNode;
+  /** Detail bez editace: skryje Uložit a ponechá pouze Zavřít. */
+  readOnly?: boolean;
+  /** Volitelné rovnocenné sekce detailu, jejichž obsah spravuje volající. */
+  tabs?: RecordDialogTab[];
+}
 
 /** Pojmenovaná sekcia formulára – optické zoskupenie polí v editoch. */
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
@@ -32,6 +66,7 @@ export function RecordDialog({
   description,
   onSubmit,
   submitLabel = "Uložit",
+  closeLabel = "Zavřít",
   busy,
   children,
   extraActions,
@@ -42,30 +77,11 @@ export function RecordDialog({
   sidePanelTitle,
   headerExtra,
   sidePanelExtra,
-}: {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
-  title: string;
-  /** @deprecated Popis se zachovává pouze skrytě pro čtečky obrazovky. */
-  description?: string;
-  onSubmit: () => void;
-  submitLabel?: string;
-  busy?: boolean;
-  children: ReactNode;
-  extraActions?: ReactNode;
-  wide?: boolean;
-  contentClassName?: string;
-  /** Voliteľný vysúvací panel vpravo (napr. poznámky k záznamu). */
-  sidePanel?: ReactNode;
-  sidePanelLabel?: string;
-  /** Voliteľný bohatší názov tlačidla panela (napr. s počtami). Keď nie je zadaný, použije sa sidePanelLabel. */
-  sidePanelTitle?: ReactNode;
-  /** Voliteľný doplnkový prvok pod nadpisom dialógu (napr. informácie o operátorovi). */
-  headerExtra?: ReactNode;
-  /** Voliteľný doplnkový prvok pod tlačidlom vysúvacieho panela (napr. odznak Omega). */
-  sidePanelExtra?: ReactNode;
-}) {
+  readOnly = false,
+  tabs,
+}: RecordDialogProps) {
   const [panelOpen, setPanelOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(tabs?.[0]?.value ?? "");
   const pane = usePane();
   const [paneElement, setPaneElement] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -78,6 +94,9 @@ export function RecordDialog({
   useEffect(() => {
     if (!open) setPanelOpen(false);
   }, [open]);
+  useEffect(() => {
+    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
+  }, [activeTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
 
@@ -105,19 +124,24 @@ export function RecordDialog({
           className="min-w-0 flex-1 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit();
+            if (!readOnly) onSubmit?.();
           }}
         >
           {children}
+          {tabs?.length ? (
+            <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel="Sekce detailu">
+              {tabs.map((tab) => <TabsContent key={tab.value} value={tab.value} className="mt-3">{tab.content}</TabsContent>)}
+            </PageTabs>
+          ) : null}
           <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
             {extraActions}
             <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Zrušit
+                {readOnly ? closeLabel : "Zrušit"}
               </Button>
-              <Button type="submit" disabled={busy}>
+              {!readOnly ? <Button type="submit" disabled={busy}>
                 {submitLabel}
-              </Button>
+              </Button> : null}
             </div>
           </div>
         </form>

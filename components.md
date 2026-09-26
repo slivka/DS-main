@@ -1,5 +1,12 @@
 # Komponenty design systému
 
+## Kontext panelů a detail jen pro čtení (2.40.0)
+
+- `AppShellPanel.badge` přidává do hlavičky panelu tónovaný štítek (`neutral`, `info`, `warning`, `accent`); pohled provozovatele napříč prostory používá `accent`.
+- `AppShellPanel.context` uvádí prostor, firmu nebo jiný upravovaný objekt na druhém řádku a dlouhý text zkrátí s tooltipem.
+- `RecordDialog.readOnly` skryje Uložit a nahradí Zrušit tlačítkem Zavřít. `RecordDialog.tabs` přijímá rovnocenné sekce `{ value, label, content, disabled? }`.
+- `StatusBadge` podporuje nový tón `accent`; stavy uživatelů mapujte: Zablokován = danger, Provozovatel = accent, Bez členství = neutral, Nepotvrzený e-mail = warning, Archivovaný = neutral.
+
 ## Data a období DPH na dokladu (2.38.0)
 
 - `DateField.link` řídí svázání data přes `locked`, `onToggle`, `lockedHint` a `unlockedHint`; zámek je klávesnicově dostupné tlačítko.

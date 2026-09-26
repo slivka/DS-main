@@ -50,6 +50,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 14. **Směr peněžního pohybu má vlastní významové tóny.** Jemná zelená a červená
     plocha je povolená pro Příjem a Výdej. Plná červená zůstává vyhrazená pro
     chyby, Odstranit a záporné částky.
+15. **Panel vždy vysvětluje rozsah pohledu.** Administrace napříč pracovními
+    prostory má vždy štítek provozovatele v tónu `accent`. Nastavení prostoru
+    a firmy vždy předává název upravovaného objektu přes `AppShellPanel.context`.
 
 ## Čísla a data
 
