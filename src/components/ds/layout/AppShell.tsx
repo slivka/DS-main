@@ -558,7 +558,7 @@ export function AppShell({
   }, [updateContextPosition]);
 
   return (
-    <div data-slot="app-shell" className="flex h-screen h-dvh flex-col overflow-hidden bg-background">
+    <div data-slot="app-shell" className="app-shell-root flex flex-col overflow-hidden bg-background">
       <header ref={headerRef} className="relative z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
         {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
           {logo}
@@ -567,9 +567,9 @@ export function AppShell({
         <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1 overflow-hidden pl-3 pr-2 xl:gap-2 xl:pr-3">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
-            <SheetContent side="left" className="shell-sidebar w-72 p-0">
-              <SheetHeader className="min-h-14 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle>{currentPanel?.context ? <TruncatedText text={currentPanel.context} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
-              {nav(false)}
+            <SheetContent side="left" className="shell-sidebar flex w-72 flex-col gap-0 p-0">
+              <SheetHeader className="min-h-14 shrink-0 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle>{currentPanel?.context ? <TruncatedText text={currentPanel.context} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
+              <div data-slot="app-shell-sheet-nav" className="flex min-h-0 flex-1 flex-col">{nav(false)}</div>
             </SheetContent>
           </Sheet>
           <div

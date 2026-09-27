@@ -45,13 +45,19 @@ export function useGridVirtual(
     overscan?: number;
     /** Pod tímto počtem řádků se virtualizace nepoužije. */
     threshold?: number;
+    /**
+     * Výška gridu. V režimu "auto" (grid roste s obsahem, nemá vlastní svislé rolování)
+     * je virtualizace vypnutá – vykreslí se všechny řádky. Auto gridy jsou ve formulářích
+     * s omezeným počtem řádků; dlouhé seznamy patří do PageLayout variant="list" (fill).
+     */
+    height?: "fill" | "auto";
   } = {},
 ): GridVirtual {
-  const { zoom = 1, density = "normal", overscan = 12, threshold = 60 } = options;
+  const { zoom = 1, density = "normal", overscan = 12, threshold = 60, height = "fill" } = options;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [rowHeight, setRowHeight] = useState(() => estimateRowHeight(zoom, density));
   const [range, setRange] = useState({ start: 0, end: Math.min(count, threshold) });
-  const enabled = count > threshold;
+  const enabled = height !== "auto" && count > threshold;
 
   // Skutečnou výšku řádku měříme z vykresjené tabulky – mění se se zoomem
   // i hustotou řádků.
