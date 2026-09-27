@@ -22,6 +22,11 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
     expect(layout.compactAccounts).toBe(true);
   });
 
+  it("přesouvá v režimu shared společného partnera, VS a zakázku do detailu", () => {
+    const layout = resolveJournalColumnLayout({ availableWidthRem: 40, mode: "internal", sharedSideFields: true, visibleColumnIds: ["row", "text", "debitAccount", "creditAccount", "amount", "dimensionId", "vs", "partnerId", "actions"] });
+    expect(layout.hiddenColumnIds).toEqual(["partnerId", "vs", "dimensionId"]);
+  });
+
   it("započítá vlastní uloženou šířku a vždy rezervuje Textu 12 rem", () => {
     const layout = resolveJournalColumnLayout({ availableWidthRem: 60, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "amount", "dimensionId", "actions"], widths: { amount: 20, text: 40 } });
     expect(layout.hiddenColumnIds).toEqual([]);

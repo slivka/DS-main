@@ -100,6 +100,7 @@ export type JournalColumnLayoutInput = {
   widths?: Partial<Record<ColumnId, number>>;
   accountDisplay?: JournalAccountDisplay;
   protectedColumnIds?: ColumnId[];
+  sharedSideFields?: boolean;
 };
 
 export type JournalColumnLayout = {
@@ -109,11 +110,11 @@ export type JournalColumnLayout = {
 };
 
 /** Přesune méně důležité sloupce do detailu podle jejich skutečné potřebné šířky. */
-export function resolveJournalColumnLayout({ availableWidthRem, mode, visibleColumnIds, widths = {}, accountDisplay = "number", protectedColumnIds = [] }: JournalColumnLayoutInput): JournalColumnLayout {
+export function resolveJournalColumnLayout({ availableWidthRem, mode, visibleColumnIds, widths = {}, accountDisplay = "number", protectedColumnIds = [], sharedSideFields = false }: JournalColumnLayoutInput): JournalColumnLayout {
   const hidden = new Set<ColumnId>();
   const protectedIds = new Set(protectedColumnIds);
   let compactAccounts = accountDisplay === "number";
-  const dimensions = mode === "mainAccount" ? ["dimensionId" as const] : ["debitDimensionId" as const, "creditDimensionId" as const];
+  const sideColumns: ColumnId[] = mode === "mainAccount" ? ["dimensionId"] : sharedSideFields ? ["partnerId", "vs", "dimensionId"] : ["debitDimensionId", "creditDimensionId"];
   const widthFor = (id: ColumnId) => {
     if (id === "text") return TEXT_MIN_WIDTH_REM;
     if (compactAccounts && ACCOUNT_COLUMN_IDS.has(id)) return COMPACT_ACCOUNT_WIDTH_REM;
@@ -127,7 +128,7 @@ export function resolveJournalColumnLayout({ availableWidthRem, mode, visibleCol
 
   hideGroup([...QUANTITY_COLUMNS]);
   if (accountDisplay === "numberName" && required() > availableWidthRem && visibleColumnIds.some((id) => ACCOUNT_COLUMN_IDS.has(id))) compactAccounts = true;
-  hideGroup(dimensions);
+  hideGroup(sideColumns);
 
   return { hiddenColumnIds: [...hidden], compactAccounts, requiredWidthRem: required() };
 }
@@ -138,7 +139,7 @@ export interface JournalLinesEditorProps {
   sideFields?: "shared" | "split"; sharedSide?: JournalSharedSide; mode?: JournalLinesMode; mainSide?: JournalMainSide; mainAccount?: string | null;
   sideFieldRules?: SideFieldRulesFn; dimensionRequired?: boolean; isNonTaxAllowed?: (line: JournalLine) => boolean; editableFields?: JournalLineColumn[];
   totalAmount?: number; totalMode?: "entered" | "computed"; rounding?: JournalLinesRounding; defaults?: JournalLineDefaults; validate?: (line: JournalLine) => JournalLineErrors;
-  reorderable?: boolean; initialEmptyLine?: boolean; showAllErrors?: boolean; accountDisplay?: JournalAccountDisplay; storageKey?: string; recap?: JournalLinesRecapState; recapTabs?: JournalRecapTab[]; texts?: Partial<JournalLinesEditorTexts>; className?: string;
+  reorderable?: boolean; initialEmptyLine?: boolean; showAllErrors?: boolean; showQuantityColumns?: boolean; accountDisplay?: JournalAccountDisplay; storageKey?: string; recap?: JournalLinesRecapState; recapTabs?: JournalRecapTab[]; texts?: Partial<JournalLinesEditorTexts>; className?: string;
 }
 
 function SortableRow({ id, disabled, children }: { id: string; disabled: boolean; children: (handle: React.ReactNode, style: React.CSSProperties, setNodeRef: (node: HTMLElement | null) => void) => React.ReactNode }) {
@@ -152,7 +153,7 @@ function SortableRow({ id, disabled, children }: { id: string; disabled: boolean
 export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesEditorProps>(function JournalLinesEditor({
   lines, onChange, accounts, dimensions = [], partners = [], units = [], onCreateUnit, documentCurrency, documentCurrencySymbol, homeCurrency, homeCurrencySymbol, rate = 1, rateAmount = 1,
   sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
-  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, initialEmptyLine = false, showAllErrors = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
+  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
@@ -175,26 +176,26 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const hasValue = (column: JournalLineColumn) => lines.some((line) => line[column] !== undefined && line[column] !== null && line[column] !== "");
   const columnDefs = React.useMemo<GridColumn<ColumnId>[]>(() => mode === "mainAccount" ? [
     { id: "row", label: t.row, locked: true }, { id: "text", label: t.text, locked: true }, { id: "counterAccount", label: counterColumn === "creditAccount" ? t.creditAccount : t.debitAccount, locked: true },
-    { id: "quantity", label: t.quantity, defaultVisible: false }, { id: "unitId", label: t.unit, defaultVisible: false }, { id: "unitPrice", label: t.unitPrice, defaultVisible: false, align: "right" },
+    { id: "quantity", label: t.quantity, defaultVisible: showQuantityColumns }, { id: "unitId", label: t.unit, defaultVisible: showQuantityColumns }, { id: "unitPrice", label: t.unitPrice, defaultVisible: showQuantityColumns, align: "right" },
     { id: "amount", label: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, locked: true, align: "right" },
     ...(foreign ? [{ id: "homeAmount" as const, label: `Částka v ${homeMark}`, defaultVisible: false, align: "right" as const }] : []),
-    { id: "dimensionId", label: t.dimension, defaultVisible: false }, { id: "vs", label: t.vs, defaultVisible: false }, { id: "partnerId", label: t.partner, defaultVisible: false }, { id: "actions", label: t.actions, locked: true, align: "right" },
+    { id: "dimensionId", label: t.dimension }, { id: "vs", label: t.vs, defaultVisible: false }, { id: "partnerId", label: t.partner, defaultVisible: false }, { id: "actions", label: t.actions, locked: true, align: "right" },
   ] : [
     { id: "row", label: t.row, locked: true }, { id: "text", label: t.text, locked: true }, { id: "debitAccount", label: t.debitAccount, locked: true }, { id: "creditAccount", label: t.creditAccount, locked: true },
-    { id: "quantity", label: t.quantity, defaultVisible: false }, { id: "unitId", label: t.unit, defaultVisible: false }, { id: "unitPrice", label: t.unitPrice, defaultVisible: false, align: "right" },
+    { id: "quantity", label: t.quantity, defaultVisible: showQuantityColumns }, { id: "unitId", label: t.unit, defaultVisible: showQuantityColumns }, { id: "unitPrice", label: t.unitPrice, defaultVisible: showQuantityColumns, align: "right" },
     { id: "amount", label: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, locked: true, align: "right" }, ...(foreign ? [{ id: "homeAmount" as const, label: `Částka v ${homeMark}`, defaultVisible: false, align: "right" as const }] : []),
     ...(sideFields === "shared"
-      ? SHARED_COLUMNS.map((id) => ({ id, label: labels[id], locked: true }))
+      ? SHARED_COLUMNS.map((id) => ({ id, label: labels[id] }))
       : SPLIT_COLUMNS.map((id) => ({ id, label: labels[id], defaultVisible: hasValue(id) }))),
     { id: "actions", label: t.actions, locked: true, align: "right" },
   // Text overrides and current values intentionally rebuild the complete column model.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [mode, foreign, documentMark, homeMark, lines, sideFields, t, counterColumn]);
+  ], [mode, foreign, documentMark, homeMark, lines, sideFields, showQuantityColumns, t, counterColumn]);
   const columns = useGridColumns(`${storageKey}:v3`, columnDefs);
   const protectedColumns = columns.columns.filter((column) => column.defaultVisible === false && columns.visible[column.id]).map((column) => column.id);
   const effectiveWidthRem = containerWidth / rootRemPx;
   const requestedColumnIds = columns.columns.filter((column) => columns.visible[column.id]).map((column) => column.id);
-  const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, widths: Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / rootRemPx : undefined])) }), [effectiveWidthRem, mode, requestedColumnIds, accountDisplay, protectedColumns, columns.widths, rootRemPx]);
+  const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / rootRemPx : undefined])) }), [effectiveWidthRem, mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, columns.widths, rootRemPx]);
   const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
   const compactAccounts = columnLayout.compactAccounts;
   const visibleColumns = columns.columns.filter((column) => columns.visible[column.id] && !autoHidden.has(column.id)).sort((a, b) => a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0);
