@@ -160,7 +160,7 @@ function AccountingFormsPage() {
     <ShowcaseLayout
       breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}
     >
-      <DocumentFormShowcase />
+      {null}
 
       <ShowcaseSection
         title="Řádky zápisu v Kč"
