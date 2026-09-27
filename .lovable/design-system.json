@@ -5822,7 +5822,7 @@
       "name": "PartnerSelect",
       "file": "src/components/ds/accounting/partner-select.tsx",
       "import_path": "",
-      "usage": "Výběr partnera podle názvu a IČ; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři."
+      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři."
     },
     {
       "name": "CounterpartyField",
@@ -6201,6 +6201,11 @@
         },
         {
           "name": "showAllErrors",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "showQuantityColumns",
           "type": "boolean",
           "default": "false"
         },

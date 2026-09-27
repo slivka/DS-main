@@ -2760,7 +2760,7 @@ tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' 
 import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr partnera podle názvu a IČ; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.
+Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.
 
 ### PaymentScheduleEditor
 

@@ -53,9 +53,7 @@ describe("JournalLinesEditor 2.49", () => {
       sideFields="shared"
       dimensionRequired
     /></TooltipProvider>);
-    expect(html).toContain(">Zakázka<");
-    expect(html).toContain(">VS<");
-    expect(html).toContain(">Partner<");
+    expect(html).toContain('data-auto-hidden="partnerId,vs,dimensionId"');
     expect(html).not.toContain(">MD zakázka<");
     expect(html).toContain("Počet chyb: 2");
   });

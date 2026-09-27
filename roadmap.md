@@ -1,4 +1,7 @@
 ## Verze 2.49.0 (doplnění editace dokladu 7, část B)
+- [x] Dokončit výchozí Zakázku, množstevní sloupce, dvouřádkový detail a sbalování režimu shared
+- [x] Převést texty chybového pruhu a název účtu na veřejné texty a Tooltip
+- [x] Prověřit celý repozitář na samostatný popisek IČ
 - [x] Doplnit volbu zobrazení účtu v gridu a do nastavení dokladu
 - [x] Zpřístupnit Zakázku ve Sloupcích a chránit ručně zapnuté sloupce před automatickým sbalením
 - [x] Přestavět detail řádku na pružné jedno- až dvouřádkové rozložení
