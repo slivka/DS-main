@@ -7,12 +7,14 @@ import {
   DataGrid,
   Field,
   FieldGrid,
+  FieldValue,
   FormSection,
   GridRowMenu,
   IcoField,
   LookupField,
   OptionSelect,
   RecordDialog,
+  SegmentedField,
   SettingsSection,
   ShowInactiveToggle,
   SwitchField,
@@ -29,6 +31,7 @@ import {
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
 type Partner = { id: string; name: string; ico: string; city: string; active: boolean };
@@ -54,6 +57,11 @@ export function PartnerShowcase() {
   const [flags, setFlags] = useState({ customer: true, supplier: false, excludeOrders: false });
   const [settings, setSettings] = useState({ reminders: true, ares: false });
   const [account, setAccount] = useState("19-2000145399");
+  const [person, setPerson] = useState({ titleBefore: "Ing.", firstName: "Petr", lastName: "Novák", titleAfter: "Ph.D." });
+  const [companyDetails, setCompanyDetails] = useState({ vatId: "CZ12345678", legalForm: "sro", founded: "2012-03-14", ended: "" });
+  const [birthDate, setBirthDate] = useState("1985-04-18");
+  const [contact, setContact] = useState({ email: "info@alfaservis.cz", phone: "+420 222 111 222", note: "Preferuje elektronickou komunikaci." });
+  const [freeAddress, setFreeAddress] = useState(false);
 
   const parsed = parseCzAccount(account);
   const accountOk = parsed ? isValidCzAccount(parsed.prefix, parsed.number) : false;
@@ -126,21 +134,37 @@ export function PartnerShowcase() {
         }}
       >
         <FormSection title="Základní údaje">
-          <FieldGrid cols={4}>
-            <Field label="Typ" className="@min-[40rem]:col-span-1">
-              <OptionSelect value={kind} onChange={setKind} allowEmpty={false} options={[{ value: "company", label: "Firma" }, { value: "person", label: "Osoba" }]} />
-            </Field>
-            <Field label="IČO" className="@min-[40rem]:col-span-1">
-              <IcoField value={ico} onChange={(v) => { setIco(v); setDirty(true); }} onLookup={lookup} busy={busy} />
-            </Field>
-            <Field label={kind === "company" ? "Název" : "Jméno a příjmení"} className="@min-[40rem]:col-span-2">
-              <LookupField value={name} onChange={(v) => { setName(v); setDirty(true); }} onAction={lookup} busy={busy} searchLabel="Vyhledat podle názvu" refreshLabel="Aktualizovat z rejstříku" />
-            </Field>
-            <Field label="Stav DPH" className="@min-[40rem]:col-span-3">
-              <div className="flex min-h-9 items-center"><VatStatusBadge status={kind === "company" ? "payer" : "non_payer"} checkedAt="2026-09-26" /></div>
-            </Field>
-            <CheckboxField align="input" label="Plátce DPH" checked={kind === "company"} onCheckedChange={() => setDirty(true)} />
-          </FieldGrid>
+          <SegmentedField
+            ariaLabel="Typ partnera"
+            value={kind}
+            onChange={(value) => { setKind(value); setDirty(true); }}
+            options={[{ value: "company", label: "Firma" }, { value: "person", label: "Osoba" }]}
+          />
+          {kind === "company" ? (
+            <FieldGrid cols={12}>
+              {ico ? (
+                <Field label="Název" span={12}>
+                  <LookupField value={name} onChange={(v) => { setName(v); setDirty(true); }} onAction={lookup} busy={busy} searchLabel="Vyhledat podle názvu" refreshLabel="Aktualizovat z rejstříku" />
+                </Field>
+              ) : (
+                <>
+                  <Field label="IČO" span={3}>
+                    <IcoField value={ico} onChange={(v) => { setIco(v); setDirty(true); }} onLookup={lookup} busy={busy} />
+                  </Field>
+                  <Field label="Název" span={9}>
+                    <LookupField value={name} onChange={(v) => { setName(v); setDirty(true); }} onAction={lookup} busy={busy} searchLabel="Vyhledat podle názvu" refreshLabel="Aktualizovat z rejstříku" />
+                  </Field>
+                </>
+              )}
+            </FieldGrid>
+          ) : (
+            <FieldGrid cols={12}>
+              <Field label="Titul před" span={2}><Input value={person.titleBefore} onChange={(e) => setPerson((v) => ({ ...v, titleBefore: e.target.value }))} /></Field>
+              <Field label="Jméno" span={4}><Input value={person.firstName} onChange={(e) => setPerson((v) => ({ ...v, firstName: e.target.value }))} /></Field>
+              <Field label="Příjmení" span={4}><Input value={person.lastName} onChange={(e) => setPerson((v) => ({ ...v, lastName: e.target.value }))} /></Field>
+              <Field label="Titul za" span={2}><Input value={person.titleAfter} onChange={(e) => setPerson((v) => ({ ...v, titleAfter: e.target.value }))} /></Field>
+            </FieldGrid>
+          )}
           <CheckboxGroup direction="horizontal" title="Role partnera">
             <CheckboxField label="Odběratel" checked={flags.customer} onCheckedChange={(v) => { setFlags((f) => ({ ...f, customer: v })); setDirty(true); }} />
             <CheckboxField label="Dodavatel" checked={flags.supplier} onCheckedChange={(v) => { setFlags((f) => ({ ...f, supplier: v })); setDirty(true); }} />
@@ -148,13 +172,36 @@ export function PartnerShowcase() {
           </CheckboxGroup>
         </FormSection>
         <FormSection title="Adresa">
-          <AddressFieldGrid
-            value={address}
-            onChange={(patch) => { setAddress((a) => ({ ...a, ...patch })); setDirty(true); }}
-            countries={[{ code: "CZ", name: "Česko" }, { code: "SK", name: "Slovensko" }]}
-            defaultCountry="CZ"
-            mapAction={{ onClick: () => toast.info("Otevřela by se mapa") }}
-          />
+          <AddressFieldGrid value={address} onChange={(patch) => { setAddress((a) => ({ ...a, ...patch })); setDirty(true); }} countries={[{ code: "CZ", name: "Česko" }, { code: "SK", name: "Slovensko" }]} defaultCountry="CZ" mapAction={{ onClick: () => toast.info("Otevřela by se mapa") }}>
+            <div className="@min-[40rem]:col-span-4"><CheckboxField label="Volná adresa" checked={freeAddress} onCheckedChange={setFreeAddress} /></div>
+          </AddressFieldGrid>
+        </FormSection>
+        <FormSection title="Doplňující údaje">
+          <FieldGrid cols={4}>
+            <Field label="IČO"><IcoField value={ico} onChange={(v) => { setIco(v); setDirty(true); }} onLookup={lookup} busy={busy} /></Field>
+            <Field label="DIČ"><Input value={companyDetails.vatId} onChange={(e) => setCompanyDetails((v) => ({ ...v, vatId: e.target.value }))} /></Field>
+            <Field label="Stav DPH" hint="Ověřeno 26.09.2026" className="@min-[40rem]:col-span-2">
+              <FieldValue><VatStatusBadge status={kind === "company" ? "payer" : "non_payer"} /></FieldValue>
+            </Field>
+            {kind === "company" ? (
+              <>
+                <Field label="Právní forma" className="@min-[40rem]:col-span-2">
+                  <OptionSelect value={companyDetails.legalForm} onChange={(legalForm) => setCompanyDetails((v) => ({ ...v, legalForm }))} options={[{ value: "sro", label: "Společnost s ručením omezeným" }, { value: "as", label: "Akciová společnost" }]} placeholderValueLabel="Neověřeno" />
+                </Field>
+                <Field label="Datum vzniku"><Input type="date" value={companyDetails.founded} onChange={(e) => setCompanyDetails((v) => ({ ...v, founded: e.target.value }))} /></Field>
+                <Field label="Ukončeno"><Input type="date" value={companyDetails.ended} onChange={(e) => setCompanyDetails((v) => ({ ...v, ended: e.target.value }))} /></Field>
+              </>
+            ) : (
+              <Field label="Datum narození"><Input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} /></Field>
+            )}
+          </FieldGrid>
+        </FormSection>
+        <FormSection title="Kontakt">
+          <FieldGrid cols={2}>
+            <Field label="E-mail"><Input type="email" value={contact.email} onChange={(e) => setContact((v) => ({ ...v, email: e.target.value }))} /></Field>
+            <Field label="Telefon"><Input type="tel" value={contact.phone} onChange={(e) => setContact((v) => ({ ...v, phone: e.target.value }))} /></Field>
+          </FieldGrid>
+          <Field label="Poznámka"><Textarea value={contact.note} onChange={(e) => setContact((v) => ({ ...v, note: e.target.value }))} rows={3} /></Field>
         </FormSection>
       </RecordDialog>
     </ShowcaseSection>
