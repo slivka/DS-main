@@ -43,7 +43,7 @@ export function PageLayout({ variant = "form", children, className, ...props }: 
         data-page-layout={variant}
         data-scrolled={scrolled || undefined}
         {...props}
-        className={cn("min-w-0", variant === "list" ? "flex h-full min-h-[15rem] flex-col gap-3" : "space-y-4", className)}
+        className={cn("relative min-w-0", variant === "list" ? "flex h-full min-h-[15rem] flex-col gap-3" : "space-y-4", className)}
       >
         <span ref={sentinelRef} data-page-scroll-sentinel aria-hidden className="pointer-events-none absolute h-px w-px" />
         {children}
