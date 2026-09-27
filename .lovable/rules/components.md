@@ -95,8 +95,8 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `onChange` | function | `—` |
 | `countries` | object | `—` |
 | `showCountry` | boolean | `true` |
-| `countryClassName` | string | `sm:col-span-1` |
-| `className` | string | `sm:col-span-3` |
+| `countryClassName` | string | `@min-[40rem]:col-span-1` |
+| `className` | string | `@min-[40rem]:col-span-3` |
 | `children` | any | `—` |
 | `labels` | any | `—` |
 | `defaultCountry` | string | `SK` |
@@ -1661,11 +1661,62 @@ import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Obal formulářového ovládání s popiskem, nápovědou a chybou. V FieldGrid cols={12} řídí prop span šířku pole od kontejneru 40 rem.
+
+**Examples:**
+
+_Pole přes čtyři sloupce_
+```tsx
+<FieldGrid cols={12}><Field label="Jméno" span={4}><Input /></Field></FieldGrid>
+```
+
+**Avoid:**
+
+- Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.
+
 ### FieldGrid
 
 ```ts
 import { FieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Responzivní mřížka polí. Varianta cols={12} skládá pod 40 rem pole po dvojicích a nad hranicí respektuje Field.span.
+
+**Examples:**
+
+_Jméno osoby_
+```tsx
+<FieldGrid cols={12}><Field label="Titul před" span={2}>…</Field><Field label="Jméno" span={4}>…</Field></FieldGrid>
+```
+
+**Avoid:**
+
+- Nepoužívejte ruční CSS grid pro standardní formulářové řádky.
+
+### FieldValue
+
+```ts
+import { FieldValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `trailing` | any | `—` |
+
+**Examples:**
+
+_Stav DPH_
+```tsx
+<Field label="Stav DPH" hint="Ověřeno 26.09.2026"><FieldValue><VatStatusBadge status="payer" /></FieldValue></Field>
+```
+
+**Avoid:**
+
+- Nevkládejte FieldValue bez nadřazeného Field a popisku.
 
 ### FilterChips
 
@@ -2703,6 +2754,19 @@ _Tři nepřečtená oznámení_
 import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Standardní výběr ze seznamu. placeholderValueLabel mění text prázdné položky i zobrazené prázdné hodnoty.
+
+**Examples:**
+
+_Vlastní prázdná hodnota_
+```tsx
+<OptionSelect value={value} onChange={setValue} options={options} placeholderValueLabel="Neověřeno" />
+```
+
+**Avoid:**
+
+- Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.
+
 ### PageHeader
 
 ```ts
@@ -3329,6 +3393,37 @@ _Sekce formuláře_
 **Avoid:**
 
 - Nepoužívejte SectionHeading místo PageHeader ani GridTitleBar.
+
+### SegmentedField
+
+```ts
+import { SegmentedField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | any | `—` |
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `disabled` | boolean | `—` |
+| `label` | string | `—` |
+| `ariaLabel` | string | `—` |
+
+**Examples:**
+
+_Typ partnera_
+```tsx
+<SegmentedField ariaLabel="Typ partnera" options={[{ value: "company", label: "Firma" }, { value: "person", label: "Osoba" }]} value={kind} onChange={setKind} />
+```
+
+**Avoid:**
+
+- Nepoužívejte GridSegmentedToggle ve formuláři.
+- Nepoužívejte OptionSelect pro 2–3 základní typy záznamu.
 
 ### Select
 
