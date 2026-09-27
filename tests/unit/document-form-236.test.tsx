@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
@@ -41,7 +42,7 @@ describe("DocumentForm 2.49", () => {
 
 describe("DocumentSettingsDialog 2.49", () => {
   it("veřejná hodnota obsahuje volbu zobrazení účtu", () => {
-    const source = require("node:fs").readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
+    const source = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
     expect(source).toContain('accountDisplay: DocumentAccountDisplay');
     expect(source).toContain('Zkráceně – 501.100');
     expect(source).toContain('Celý – 501.100 - Spotřeba materiálu');
