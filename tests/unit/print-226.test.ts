@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { amountInWordsCs, reportPageLabel } from "../../src/components/ds/print/report-pdf";
-import { formatCashReceiptMoney } from "../../src/components/ds/print/cash-receipt-pdf";
+import { cashReceiptNumberLabel, formatCashReceiptMoney, planCashReceiptPages } from "../../src/components/ds/print/cash-receipt-pdf";
 
 describe("české částky slovy", () => {
   it.each([
@@ -42,5 +42,25 @@ describe("měnové značky pokladního dokladu 2.44.0", () => {
     expect(formatCashReceiptMoney(1_000, "CZK", "Kč")).toBe("1 000,00 Kč");
     expect(formatCashReceiptMoney(40, "EUR", "€")).toBe("40,00 €");
     expect(formatCashReceiptMoney(40, "EUR")).toBe("40,00 EUR");
+  });
+});
+
+describe("tisk pokladního dokladu podle nastavení 2.51.0", () => {
+  it("skládá kopie po dvou na stránku", () => {
+    expect(planCashReceiptPages(5, true, false)).toEqual([
+      { page: 0, slot: 0, copy: false }, { page: 0, slot: 1, copy: true },
+      { page: 1, slot: 0, copy: true }, { page: 1, slot: 1, copy: true },
+      { page: 2, slot: 0, copy: true },
+    ]);
+  });
+  it("bez skládání nebo u dlouhého dokladu dává každou kopii na vlastní stranu", () => {
+    expect(planCashReceiptPages(3, false, false).map((p) => p.page)).toEqual([0, 1, 2]);
+    expect(planCashReceiptPages(2, true, true).map((p) => p.page)).toEqual([0, 1]);
+    expect(planCashReceiptPages(1, true, false)).toEqual([{ page: 0, slot: 0, copy: false }]);
+  });
+  it("vypnutý tisk čísla nechává pole prázdné", () => {
+    expect(cashReceiptNumberLabel({ number: "PPD1", status: "filed", printNumber: false })).toBe("");
+    expect(cashReceiptNumberLabel({ number: "PPD1", status: "filed" })).toBe("PPD1");
+    expect(cashReceiptNumberLabel({ number: "PPD1", status: "draft" })).toBe("—");
   });
 });

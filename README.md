@@ -18,6 +18,12 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.51.0 – tisk pokladního dokladu podle nastavení
+
+- Pokladní doklad tiskne 1–5 kopií; při zapnutém skládání se kopie řadí po dvou na A4, jinak každá na vlastní stranu.
+- `CashReceiptPdfInput.printNumber` (výchozí true) vypíná tisk čísla dokladu – pole zůstane prázdné.
+- `CashReceiptPrintDialog` přijímá výchozí hodnoty z nastavení dokladu: `defaultCopies`, `defaultTwoPerPage`, `defaultPrintNumber`.
+
 ## Changelog 2.49.0 – doplnění editace dokladu 7
 
 - `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ a Zakázka je v režimu hlavního účtu výchozí.

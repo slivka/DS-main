@@ -1,3 +1,9 @@
+## Verze 2.51.0 (tisk pokladního dokladu podle nastavení)
+- [x] Rozšířit počet kopií pokladního dokladu na 1–5 a skládat je po dvou na A4
+- [x] Přidat volitelný tisk čísla dokladu (printNumber, výchozí true)
+- [x] Předat výchozí hodnoty dialogu přes defaultCopies / defaultTwoPerPage / defaultPrintNumber
+- [x] Doplnit testy a changelog
+
 ## Verze 2.49.0 (doplnění editace dokladu 7, část B)
 - [x] Dokončit výchozí Zakázku, množstevní sloupce, dvouřádkový detail a sbalování režimu shared
 - [x] Převést texty chybového pruhu a název účtu na veřejné texty a Tooltip
