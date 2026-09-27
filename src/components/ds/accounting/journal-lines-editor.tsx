@@ -2,7 +2,7 @@ import * as React from "react";
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronRight, Copy, GripVertical, Pin, ReceiptText, Trash2, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, GripVertical, Pin, Plus, ReceiptText, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "../../ui/button";
@@ -16,6 +16,7 @@ import { AccountSelect, type AccountOption } from "./account-select";
 import { DimensionSelect, type DimensionOption } from "./dimension-select";
 import { PartnerSelect, type PartnerOption } from "./partner-select";
 import { UnitSelect, type UnitOption } from "./unit-select";
+import { VsField } from "./vs-field";
 import { DecimalInput } from "../form/decimal-input";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { ColumnPicker } from "../grid/column-picker";
@@ -40,16 +41,16 @@ export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
 export interface JournalLinesRounding { value: number; onChange?: (value: number) => void; readOnly?: boolean; label?: string; limit?: number }
 export interface JournalLinesRecapState { open?: boolean; onOpenChange?: (open: boolean) => void; tab?: string; onTabChange?: (tab: string) => void }
 export interface JournalLinesEditorTexts {
-  row: string; debitAccount: string; creditAccount: string; counterAccount: string; amount: string; homeAmount: string; text: string;
+  row: string; debitAccount: string; creditAccount: string; counterAccount: string; amount: string; homeAmount: string; foreignAmount: string; text: string;
   quantity: string; unit: string; unitPrice: string; dimension: string; vs: string; partner: string; debitDimension: string; creditDimension: string;
   debitVs: string; creditVs: string; debitPartner: string; creditPartner: string; nonTax: string; nonTaxOn: string; nonTaxOff: string;
   rounding: string; fxRounding: string; fxRoundingHint: string; detail: string; showDetail: string; hideDetail: string; sideDebit: string; sideCredit: string;
   actions: string; addLine: string; duplicateLine: string; removeLine: string; undo: string; removed: string; total: string; remaining: string;
-  balanced: string; roundingExists: string; errors: string; empty: string; debitRequired: string; creditRequired: string; amountRequired: string;
+  balanced: string; roundingExists: string; /** @deprecated Počet chyb předejte přes onValidationChange. */ errors: string; empty: string; debitRequired: string; creditRequired: string; amountRequired: string;
   missingVs: string; missingDimension: string; search: string; searchResult: string; clearSearch: string; quantityPriceHint: string;
 }
 export const DEFAULT_JOURNAL_LINES_TEXTS: JournalLinesEditorTexts = {
-  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", counterAccount: "Protiúčet", amount: "Částka", homeAmount: "Částka",
+  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", counterAccount: "Protiúčet", amount: "Částka", homeAmount: "Částka v {symbol}", foreignAmount: "Částka v {symbol}",
   text: "Text", quantity: "Množství", unit: "MJ", unitPrice: "Cena za MJ", dimension: "Zakázka", vs: "VS", partner: "Partner",
   debitDimension: "MD zakázka", creditDimension: "DAL zakázka", debitVs: "MD VS", creditVs: "DAL VS", debitPartner: "MD partner", creditPartner: "DAL partner",
   nonTax: "Nedaňový", nonTaxOn: "Nedaňový", nonTaxOff: "Daňový – klikněte pro nedaňový", rounding: "Zaokrouhlení",
@@ -87,7 +88,7 @@ export const reorderJournalLines = (lines: JournalLine[], activeId: string, over
   if (from < 0 || to < 0 || from === to) return orderJournalLines(lines);
   return [...arrayMove(movable, from, to), ...lines.filter((line) => line.isFxRounding), ...lines.filter((line) => line.isRounding)];
 };
-const WIDTHS: Record<ColumnId, number> = { row: 3.75, text: 15, quantity: 7, unitId: 5, unitPrice: 8, amount: 11, homeAmount: 10, counterAccount: 13, debitAccount: 13, creditAccount: 13, dimensionId: 11, vs: 8, partnerId: 13, debitDimensionId: 11, creditDimensionId: 11, debitVs: 8, creditVs: 8, debitPartnerId: 13, creditPartnerId: 13, nonTax: 7, currency: 6, foreignAmount: 10, rate: 8, actions: 5 };
+const WIDTHS: Record<ColumnId, number> = { row: 4.75, text: 15, quantity: 7, unitId: 5, unitPrice: 8, amount: 11, homeAmount: 10, counterAccount: 13, debitAccount: 13, creditAccount: 13, dimensionId: 11, vs: 8, partnerId: 13, debitDimensionId: 11, creditDimensionId: 11, debitVs: 8, creditVs: 8, debitPartnerId: 13, creditPartnerId: 13, nonTax: 7, currency: 6, foreignAmount: 10, rate: 8, actions: 5 };
 const TEXT_MIN_WIDTH_REM = 12;
 const TEXT_SHRUNK_MIN_WIDTH_REM = 6;
 const COMPACT_ACCOUNT_WIDTH_REM = 6;
@@ -158,13 +159,14 @@ export interface JournalLinesEditorProps {
   sideFields?: "shared" | "split"; sharedSide?: JournalSharedSide; mode?: JournalLinesMode; mainSide?: JournalMainSide; mainAccount?: string | null;
   sideFieldRules?: SideFieldRulesFn; dimensionRequired?: boolean; isNonTaxAllowed?: (line: JournalLine) => boolean; editableFields?: JournalLineColumn[];
   totalAmount?: number; totalMode?: "entered" | "computed"; rounding?: JournalLinesRounding; defaults?: JournalLineDefaults; validate?: (line: JournalLine) => JournalLineErrors;
+  onValidationChange?: (count: number, errors: { line: number; field: string; message: string }[]) => void;
   reorderable?: boolean; initialEmptyLine?: boolean; showAllErrors?: boolean; showQuantityColumns?: boolean; accountDisplay?: JournalAccountDisplay; storageKey?: string; recap?: JournalLinesRecapState; recapTabs?: JournalRecapTab[]; texts?: Partial<JournalLinesEditorTexts>; className?: string;
 }
 
 function SortableRow({ id, disabled, children }: { id: string; disabled: boolean; children: (handle: React.ReactNode, style: React.CSSProperties, setNodeRef: (node: HTMLElement | null) => void) => React.ReactNode }) {
   const sortable = useSortable({ id, disabled });
   const style: React.CSSProperties = { transform: CSS.Transform.toString(sortable.transform), transition: sortable.transition, opacity: sortable.isDragging ? 0.65 : 1 };
-  const handle = disabled ? null : <button type="button" aria-label="Přesunout řádek" className="cursor-grab text-muted-foreground active:cursor-grabbing" {...sortable.attributes} {...sortable.listeners}><GripVertical className="size-4" /></button>;
+  const handle = disabled ? null : <button type="button" aria-label="Přesunout řádek" className="cursor-grab text-muted-foreground active:cursor-grabbing" {...sortable.attributes} {...sortable.listeners}><GripVertical className="size-[1em]" /></button>;
   return <>{children(handle, style, sortable.setNodeRef)}</>;
 }
 
@@ -172,7 +174,7 @@ function SortableRow({ id, disabled, children }: { id: string; disabled: boolean
 export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesEditorProps>(function JournalLinesEditor({
   lines, onChange, accounts, dimensions = [], partners = [], units = [], onCreateUnit, documentCurrency, documentCurrencySymbol, homeCurrency, homeCurrencySymbol, rate = 1, rateAmount = 1,
   sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
-  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
+  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, onValidationChange, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
@@ -191,25 +193,27 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
   const counterColumn: "debitAccount" | "creditAccount" | null = mainAccount ? mainAccount.side === "MD" ? "creditAccount" : "debitAccount" : null;
   const documentMark = documentCurrencySymbol ?? documentCurrency; const homeMark = homeCurrencySymbol ?? homeCurrency;
-  const labels: Record<JournalLineColumn, string> = { counterAccount: t.counterAccount, debitAccount: t.debitAccount, creditAccount: t.creditAccount, amount: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, foreignAmount: `Částka v ${documentMark}`, text: t.text, quantity: t.quantity, unitId: t.unit, unitPrice: t.unitPrice, dimensionId: t.dimension, vs: t.vs, partnerId: t.partner, debitDimensionId: t.debitDimension, creditDimensionId: t.creditDimension, debitVs: t.debitVs, creditVs: t.creditVs, debitPartnerId: t.debitPartner, creditPartnerId: t.creditPartner, nonTax: t.nonTax, currency: documentCurrency, rate: "Kurz" };
+  const homeAmountLabel = t.homeAmount.replace("{symbol}", homeMark);
+  const foreignAmountLabel = t.foreignAmount.replace("{symbol}", documentMark);
+  const labels: Record<JournalLineColumn, string> = { counterAccount: t.counterAccount, debitAccount: t.debitAccount, creditAccount: t.creditAccount, amount: t.amount, foreignAmount: foreignAmountLabel, text: t.text, quantity: t.quantity, unitId: t.unit, unitPrice: t.unitPrice, dimensionId: t.dimension, vs: t.vs, partnerId: t.partner, debitDimensionId: t.debitDimension, creditDimensionId: t.creditDimension, debitVs: t.debitVs, creditVs: t.creditVs, debitPartnerId: t.debitPartner, creditPartnerId: t.creditPartner, nonTax: t.nonTax, currency: documentCurrency, rate: "Kurz" };
   const hasValue = (column: JournalLineColumn) => lines.some((line) => line[column] !== undefined && line[column] !== null && line[column] !== "");
   const columnDefs = React.useMemo<GridColumn<ColumnId>[]>(() => mode === "mainAccount" ? [
     { id: "row", label: t.row, locked: true }, { id: "text", label: t.text, locked: true }, { id: "counterAccount", label: counterColumn === "creditAccount" ? t.creditAccount : t.debitAccount, locked: true },
     { id: "quantity", label: t.quantity, defaultVisible: showQuantityColumns }, { id: "unitId", label: t.unit, defaultVisible: showQuantityColumns }, { id: "unitPrice", label: t.unitPrice, defaultVisible: showQuantityColumns, align: "right" },
-    { id: "amount", label: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, locked: true, align: "right" },
-    ...(foreign ? [{ id: "homeAmount" as const, label: `Částka v ${homeMark}`, defaultVisible: false, align: "right" as const }] : []),
+    { id: "amount", label: t.amount, locked: true, align: "right" },
+    ...(foreign ? [{ id: "homeAmount" as const, label: homeAmountLabel, defaultVisible: false, align: "right" as const }] : []),
     { id: "dimensionId", label: t.dimension }, { id: "vs", label: t.vs, defaultVisible: false }, { id: "partnerId", label: t.partner, defaultVisible: false }, { id: "actions", label: t.actions, locked: true, align: "right" },
   ] : [
     { id: "row", label: t.row, locked: true }, { id: "text", label: t.text, locked: true }, { id: "debitAccount", label: t.debitAccount, locked: true }, { id: "creditAccount", label: t.creditAccount, locked: true },
     { id: "quantity", label: t.quantity, defaultVisible: showQuantityColumns }, { id: "unitId", label: t.unit, defaultVisible: showQuantityColumns }, { id: "unitPrice", label: t.unitPrice, defaultVisible: showQuantityColumns, align: "right" },
-    { id: "amount", label: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, locked: true, align: "right" }, ...(foreign ? [{ id: "homeAmount" as const, label: `Částka v ${homeMark}`, defaultVisible: false, align: "right" as const }] : []),
+    { id: "amount", label: t.amount, locked: true, align: "right" }, ...(foreign ? [{ id: "homeAmount" as const, label: homeAmountLabel, defaultVisible: false, align: "right" as const }] : []),
     ...(sideFields === "shared"
       ? SHARED_COLUMNS.map((id) => ({ id, label: labels[id] }))
       : SPLIT_COLUMNS.map((id) => ({ id, label: labels[id], defaultVisible: hasValue(id) }))),
     { id: "actions", label: t.actions, locked: true, align: "right" },
   // Text overrides and current values intentionally rebuild the complete column model.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [mode, foreign, documentMark, homeMark, lines, sideFields, showQuantityColumns, t, counterColumn]);
+  ], [mode, foreign, homeAmountLabel, lines, sideFields, showQuantityColumns, t, counterColumn]);
   const columns = useGridColumns(`${storageKey}:v3`, columnDefs);
   const protectedColumns = columns.columns.filter((column) => columns.visible[column.id] && (column.defaultVisible === false || columns.explicitVisibility.includes(column.id))).map((column) => column.id);
   const effectiveWidthRem = containerWidth / rootRemPx;
