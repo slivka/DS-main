@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Label } from "../../ui/label";
+import { CheckboxField } from "../form/checkbox-field";
 import { OptionSelect } from "../form/option-select";
 import { amountInWordsCs, createPrintDocument, resolveCompanyLogo, type PrintCompany, type PrintContext } from "./report-pdf";
 import { PrintPreviewDialog } from "./print-preview-dialog";
