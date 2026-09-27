@@ -104,6 +104,7 @@ export type DocumentFormTexts = {
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
+  errorTitle: string; closeError: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
@@ -115,7 +116,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku",
 };
 
 export interface DocumentFormProps {
@@ -283,7 +284,7 @@ export function DocumentForm({
     }}>
       <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />
       <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} texts={t} />
-      {error ? <div ref={errorRef} role="alert" data-slot="document-form-error" className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? "Doklad nelze uložit"}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label="Zavřít chybovou hlášku" onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
+      {error ? <div ref={errorRef} role="alert" data-slot="document-form-error" className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? t.errorTitle}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label={t.closeError} onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card p-4">

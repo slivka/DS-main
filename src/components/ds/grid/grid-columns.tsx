@@ -141,6 +141,8 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   );
 
   const [visible, setVisible] = useState<Record<Id, boolean>>(defaults);
+  const visibilityOverridesKey = `columnVisibilityOverrides:${storageKey}`;
+  const [explicitVisibility, setExplicitVisibility] = useState<Id[]>([]);
 
   useEffect(() => {
     try {
@@ -167,6 +169,16 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageKey]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(visibilityOverridesKey);
+      const saved = raw ? JSON.parse(raw) as Id[] : [];
+      setExplicitVisibility(saved.filter((id) => persistentIds.has(id)));
+    } catch {
+      setExplicitVisibility([]);
+    }
+  }, [visibilityOverridesKey, persistentIds]);
 
   useEffect(() => {
     const sync = (event: Event) => {
@@ -202,8 +214,15 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   );
 
   const toggle = useCallback(
-    (id: Id) => persist({ ...visible, [id]: !visible[id] }),
-    [persist, visible],
+    (id: Id) => {
+      persist({ ...visible, [id]: !visible[id] });
+      setExplicitVisibility((current) => {
+        const next = current.includes(id) ? current : [...current, id];
+        try { localStorage.setItem(visibilityOverridesKey, JSON.stringify(next)); } catch { /* úložiště není dostupné */ }
+        return next;
+      });
+    },
+    [persist, visible, visibilityOverridesKey],
   );
 
   // --- pořadí sloupců ---------------------------------------------------
@@ -430,7 +449,9 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       persistOrder(defaultOrder);
     }
     persistWidths(saved?.widths ?? {});
-  }, [defaultKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder]);
+    setExplicitVisibility([]);
+    try { localStorage.removeItem(visibilityOverridesKey); } catch { /* úložiště není dostupné */ }
+  }, [defaultKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder, visibilityOverridesKey]);
 
   const views = useColumnViews(storageKey, persistentRecord(visible) as Record<Id, boolean>, persist, persistentOrder(order), persistOrder);
 
@@ -559,6 +580,7 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     visible: effectiveVisible,
     /** Viditelnost sloupce bez ohledu na sekci (pro výběr sloupců). */
     columnVisible: visible,
+    explicitVisibility,
     toggle,
     reset,
     move,

@@ -53,10 +53,14 @@ describe("JournalLinesEditor 2.49", () => {
       sideFields="shared"
       dimensionRequired
     /></TooltipProvider>);
-    expect(html).toContain(">Zakázka<");
-    expect(html).toContain(">VS<");
-    expect(html).toContain(">Partner<");
+    expect(html).toContain('data-auto-hidden="partnerId,vs,dimensionId"');
     expect(html).not.toContain(">MD zakázka<");
     expect(html).toContain("Počet chyb: 2");
+  });
+  it("má Zakázku výchozí viditelnou a množstevní sloupce řídí prop", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain("showQuantityColumns?: boolean");
+    expect(source).toContain('{ id: "dimensionId", label: t.dimension }');
+    expect(source).toContain("defaultVisible: showQuantityColumns");
   });
 });

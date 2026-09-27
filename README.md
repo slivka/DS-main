@@ -20,7 +20,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.49.0 – doplnění editace dokladu 7
 
-- `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; Zakázku lze zapnout ve Sloupcích a ručně zapnuté sloupce se automaticky nesbalí.
+- `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ a Zakázka je v režimu hlavního účtu výchozí.
 - `DocumentSettingsDialog.value.accountDisplay` ukládá volbu Zkráceně / Celý; detail řádku se skládá do jednoho, nejvýše dvou řádků.
 - `DocumentForm.error` přidává jednotný zavíratelný chybový pruh pod akcemi formuláře.
 - Uživatelské popisky jsou sjednocené na „IČO“.
