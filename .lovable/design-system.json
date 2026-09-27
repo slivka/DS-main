@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.50.0",
+    "version": "2.51.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -59,7 +59,7 @@
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
       ".lovable/system.md": "008c8565a5258d0468b70d90863020b5",
       "AGENTS.md": "41c8cbbf91550d7b71669c956e969a33",
-      "README.md": "077571d5a0bd0b2aafc133b29de837f4",
+      "README.md": "98ab598048fd06e63008181c40e9b2b2",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "components.md": "10c913f64e150b41a28ec848c965b0b7",
@@ -67,10 +67,10 @@
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "b401d34dd00435337586a47bd6e0325f",
+      "package.json": "f171a472512faddac4c5742d9e56ad51",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "2a99ea10b469fb3aef6685528cdd5816",
+      "roadmap.md": "01a0048dafa1f59379bfa3df4fcab894",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -201,7 +201,7 @@
       "src/components/ds/panes/pane-tab-bar.tsx": "5492af43ae6a82425e404daac4ffdb58",
       "src/components/ds/panes/pane-tab-store.ts": "b139badd702a13643ae21348b5f3d7d9",
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
-      "src/components/ds/print/cash-receipt-pdf.tsx": "aa3a3c3c1fb38b2977a04dd88460340f",
+      "src/components/ds/print/cash-receipt-pdf.tsx": "8c0b4f8ddbfec494c8133e565d68f239",
       "src/components/ds/print/print-preview-dialog.tsx": "6bd5b921b454abf04ceb7bf524319b4d",
       "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
       "src/components/showcase/DocumentFormShowcase.tsx": "d5a7a37c0453bef31a809e07ac4fb303",
@@ -331,7 +331,7 @@
       "tests/unit/pane-tab-bar-228.test.ts": "74a64ff258a91daa3489748de3d44f3f",
       "tests/unit/pane-tabs-217.test.ts": "7b8c35b0c9c96170f93fa973f9a697fd",
       "tests/unit/partners-246.test.tsx": "4494637e1ce3574b9dacebf9891c7237",
-      "tests/unit/print-226.test.ts": "47186c82db80b4007b934f3cec3da7a7",
+      "tests/unit/print-226.test.ts": "219feef30d78b1383544ab1b2b99b2bb",
       "tests/unit/suggest-input-232.test.tsx": "d9189a466d314bf91809aa1e051255ce",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
@@ -7053,6 +7053,43 @@
       "name": "CashReceiptPrintDialog",
       "file": "src/components/ds/print/cash-receipt-pdf.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "context",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "defaultCopies",
+          "type": "any",
+          "default": "2"
+        },
+        {
+          "name": "defaultTwoPerPage",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "defaultPrintNumber",
+          "type": "boolean",
+          "default": "true"
+        }
+      ],
       "usage": "Zobrazuje náhled a vytváří pokladní doklad; vstup přijímá značku měny dokladu i domácí měny a bez značky použije kód.",
       "examples": [
         {

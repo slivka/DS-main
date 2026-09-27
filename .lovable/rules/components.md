@@ -576,6 +576,18 @@ import { CashReceiptPrintDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 
 Zobrazuje náhled a vytváří pokladní doklad; vstup přijímá značku měny dokladu i domácí měny a bez značky použije kód.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `value` | any | `—` |
+| `context` | any | `—` |
+| `defaultCopies` | any | `2` |
+| `defaultTwoPerPage` | boolean | `true` |
+| `defaultPrintNumber` | boolean | `true` |
+
 **Examples:**
 
 _Pokladní doklad se značkami měn_
