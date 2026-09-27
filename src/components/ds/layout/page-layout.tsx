@@ -19,14 +19,14 @@ export function useAppShellPaneRegistration() {
 
 export const AppShellContentProvider = AppShellContentContext.Provider;
 
-export interface PageLayoutProps {
+export interface PageLayoutProps extends Omit<React.ComponentPropsWithoutRef<"div">, "children"> {
   variant?: PageLayoutVariant;
   children: ReactNode;
   className?: string;
 }
 
 /** Rozvržení stránky v panelu: list vyplní panel, form nechá rolovat celý obsah. */
-export function PageLayout({ variant = "form", children, className }: PageLayoutProps) {
+export function PageLayout({ variant = "form", children, className, ...props }: PageLayoutProps) {
   const sentinelRef = useRef<HTMLSpanElement>(null);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -42,6 +42,7 @@ export function PageLayout({ variant = "form", children, className }: PageLayout
       <div
         data-page-layout={variant}
         data-scrolled={scrolled || undefined}
+        {...props}
         className={cn("min-w-0", variant === "list" ? "flex h-full min-h-[15rem] flex-col gap-3" : "space-y-4", className)}
       >
         <span ref={sentinelRef} data-page-scroll-sentinel aria-hidden className="pointer-events-none absolute h-px w-px" />

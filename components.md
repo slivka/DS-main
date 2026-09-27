@@ -1,3 +1,11 @@
+## Rolování menu a panelů (2.53.0)
+
+- `PageLayout variant="list" | "form"` nastavuje model výšky stránky. `list` dává gridu zbývající výšku panelu; `form` roluje celý obsah.
+- `DataGrid`, `TreeGrid`, `ZoomGrid` a `ZoomPane` přijímají `height?: "fill" | "auto"`; bez prop se řídí nejbližším `PageLayout`.
+- `GridPreferencesProvider` přijímá `getDefaults(storageKey)` a `onDefaultsChange(storageKey, { zoom, density })`. V otevřených panelech ukládá `useGridZoom` hodnoty po záložkách.
+- `usePaneScrollElement()` vrací rolovací prvek aktuální záložky; běžná aplikace jej nepotřebuje, protože obnovu zajišťuje `PaneLayout`.
+- V režimu `auto` se virtualizace nepoužívá; celý obsah roluje panel. `fill` zachovává vlastní rolovací tělo gridu, sticky záhlaví, součty a připnuté sloupce.
+
 ## Doplnění editace dokladu 7 (2.49.0)
 
 - `JournalLinesEditor.accountDisplay?: "number" | "numberName"` má výchozí `number`; při zkrácení je název účtu v tooltipu.

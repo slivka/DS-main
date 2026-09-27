@@ -700,7 +700,7 @@ export type LayoutSnapshotTab = {
   title?: string;
   shortTitle?: string;
   icon?: string;
-  /** Stav gridu (filtr, řazení, rozbajení) – koncept záložky pod klíčem "grid". */
+  /** Stav gridu včetně zoomu a hustoty této záložky. */
   grid?: unknown;
 };
 

@@ -95,6 +95,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## Gridy, exporty, tisk
 
+- Každou stránku v panelu obalte do `PageLayout`: `variant="list"` pro seznam, jehož grid vyplní zbytek panelu, a `variant="form"` pro formulář rolovaný jako celek.
+- V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu `height="fill"` na listové stránce. Výjimkou jsou dialogy, popovery a seznamy výběrů.
+- Zoom a hustota jsou stav konkrétní instance gridu; v panelu patří záložce. Firemní výchozí hodnoty dodává `GridPreferencesProvider`. Nikdy nesynchronizujte otevřené gridy globální událostí.
+
 - Nadpis gridu je ve výchozím stavu skrytý; zobrazuj ho pouze na výslovné
   vyžádání přes `showTitle`. Lišta, hlavička a součtový řádek tvoří jeden spojený blok.
 - Filtr datumového sloupce s `exportType: "date" | "datetime"` nabízí vedle
