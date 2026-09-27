@@ -80,6 +80,8 @@ export * from "./form/date-field";
 export * from "./form/as-of-date-field";
 export * from "./form/time-input-right";
 export * from "./form/option-select";
+export * from "./form/field-value";
+export * from "./form/segmented-field";
 export * from "./form/category-select";
 export * from "./form/multi-select";
 export * from "./form/chip-multi-select";

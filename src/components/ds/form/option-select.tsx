@@ -25,6 +25,7 @@ export function OptionSelect({
   options,
   placeholder = "— nevybráno —",
   emptyLabel = "— nevybráno —",
+  placeholderValueLabel,
   allowEmpty = true,
   disabled,
   id,
@@ -37,6 +38,8 @@ export function OptionSelect({
   options: SelectOption[];
   placeholder?: string;
   emptyLabel?: string;
+  /** Text prázdné položky i zobrazené prázdné hodnoty, např. „Neověřeno“. */
+  placeholderValueLabel?: string;
   allowEmpty?: boolean;
   disabled?: boolean;
   id?: string;
@@ -47,7 +50,8 @@ export function OptionSelect({
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
-  const selectedLabel = selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.label;
+  const emptyValueLabel = placeholderValueLabel ?? emptyLabel;
+  const selectedLabel = current === "" && allowEmpty ? emptyValueLabel : selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.label;
   const offered = options.filter((option) => !option.inactive || option.value === current);
 
   return (
@@ -60,7 +64,7 @@ export function OptionSelect({
         <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {allowEmpty ? <SelectItem value={EMPTY}>{emptyLabel}</SelectItem> : null}
+        {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
         {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
         {offered.map((o) => (
           <SelectItem key={o.value} value={o.value} disabled={o.disabled || o.inactive} className={cn(o.muted && "text-muted-foreground")}>

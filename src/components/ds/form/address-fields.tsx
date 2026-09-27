@@ -58,7 +58,7 @@ export function AddressFieldGrid({
   onChange,
   countries,
   showCountry = true,
-  countryClassName = "sm:col-span-1",
+  countryClassName = "@min-[40rem]:col-span-1",
   className,
   children,
   labels: labelOverrides,
@@ -68,19 +68,19 @@ export function AddressFieldGrid({
   const labels = { ...DEFAULT_ADDRESS_FIELD_LABELS, ...labelOverrides };
   return (
     <FieldGrid cols={4} className={className}>
-      <Field label={labels.street} className="sm:col-span-3">
+      <Field label={labels.street} className="@min-[40rem]:col-span-3">
         <Input value={value.street ?? ""} onChange={(e) => onChange({ street: e.target.value })} />
       </Field>
-      <Field label={labels.houseNumber} className="sm:col-span-1">
+      <Field label={labels.houseNumber} className="@min-[40rem]:col-span-1">
         <Input
           value={value.house_number ?? ""}
           onChange={(e) => onChange({ house_number: e.target.value })}
         />
       </Field>
-      <Field label={labels.zip} className="sm:col-span-1">
+      <Field label={labels.zip} className="@min-[40rem]:col-span-1">
         <Input value={value.zip ?? ""} onChange={(e) => onChange({ zip: e.target.value })} />
       </Field>
-      <Field label={labels.city} className="sm:col-span-3">
+      <Field label={labels.city} className="@min-[40rem]:col-span-3">
         <Input value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
       </Field>
       {showCountry ? (

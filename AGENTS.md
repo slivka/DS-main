@@ -11,9 +11,9 @@
 
 <!-- LOVABLE:END -->
 
-- `DocumentForm` vždy drží nadpis v `PageHeader`; identita a směr patří do prvního řádku karty, aby panelové ovládání zůstalo oddělené od údajů dokladu.
+- `DocumentForm` drží nadpis v `PageHeader`; identita a směr jsou v prvním řádku karty, odděleně od panelového ovládání.
 - `DocumentForm` skládá hlavičkové údaje do dvacetisloupcové mřížky 14/3/3; sjednocuje tak široká a krátká účetní pole.
-- Data DPH (`DUZP`, `Datum DPH`) jsou v `DocumentForm` vždy vpravo; řízený přepínač „Vstupuje do DPH“ patří vlevo do pruhu akcí a vypnutí údaje pouze skryje; svázané datum ukazuje zámek místo kalendáře.
+- Data DPH jsou vpravo; „Vstupuje do DPH“ je vlevo v pruhu akcí, vypnutí údaje jen skryje a svázané datum ukazuje zámek.
 - Značky měn v částkách a kurzech pocházejí vždy z dat; nepoužívejte pevné `Kč` ani `CZK`.
 - Formulář dokladu používá jedinou typografickou stupnici v `rem`; jednotky a zdroje zobrazuj pod polem a obsah pole se nesmí oříznout.
 - Zaokrouhlení je připnutý poslední řádek `JournalLinesEditor`; lišta obsahuje jen akci pro jeho návrh a stav rozepsání.
@@ -21,6 +21,8 @@
 - Obnovit znamená pouze znovu načíst serverová data a stojí úplně vpravo za oddělovačem; rozložení se obnovuje pouze v nabídce Sloupce.
 - Sbalitelné panely mají šipku vpravo a jejich stav řídí aplikace přes props, nikdy `localStorage`.
 - Pohled provozovatele napříč pracovními prostory vždy označte accent štítkem; panely nastavení prostoru a firmy vždy pojmenují upravovaný objekt přes `context`.
-- Adaptivní sloupce `JournalLinesEditor` vycházejí z měřené šířky; společná Zakázka, VS a Partner se při nedostatku místa sbalí do detailu a ručně zapnuté sloupce zůstávají v gridu.
+- `JournalLinesEditor` vychází z měřené šířky; Zakázka, VS a Partner se sbalí do detailu, ručně zapnuté sloupce zůstávají.
 - Varování k datům dokladu předávej přes `DocumentForm.dateWarnings`; období DPH patří do `vat.periodLabel` a podané období jej nahrazuje výstrahou.
 - Neaktivní položky filtruje každý výběr sám přes sdílené `InactiveTag` / `selectableItems`, aby se chování nelišilo mezi výběry.
+- Hodnota jen ke čtení v řádku formuláře patří do `FieldValue` uvnitř `Field`, aby měla popisek a správné zarovnání.
+- Volbu 2–3 vzájemně výlučných typů řeší `SegmentedField`; `GridSegmentedToggle` zůstává jen pro gridy.

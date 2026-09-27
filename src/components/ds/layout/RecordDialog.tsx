@@ -282,6 +282,7 @@ export function Field({
   htmlFor,
   hint,
   error,
+  span,
   className = "",
   children,
 }: {
@@ -289,13 +290,15 @@ export function Field({
   htmlFor?: string;
   hint?: string;
   error?: string | undefined;
+  /** Šířka pole v dvanáctisloupcové mřížce; pod 40 rem zůstává pole jednou ze dvou položek řádku. */
+  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   className?: string;
   children: ReactNode;
 }) {
   return (
     <div
       data-invalid={error ? "true" : undefined}
-      className={`${label ? "space-y-1" : ""} ${
+      className={`${label ? "space-y-1" : ""} ${fieldSpanClass(span)} ${
         error
           ? "[&_.border-input]:border-destructive [&_input]:border-destructive [&_select]:border-destructive [&_textarea]:border-destructive"
           : ""
@@ -318,6 +321,17 @@ export function Field({
   );
 }
 
+const FIELD_SPAN_CLASSES = {
+  1: "@min-[40rem]:col-span-1", 2: "@min-[40rem]:col-span-2", 3: "@min-[40rem]:col-span-3",
+  4: "@min-[40rem]:col-span-4", 5: "@min-[40rem]:col-span-5", 6: "@min-[40rem]:col-span-6",
+  7: "@min-[40rem]:col-span-7", 8: "@min-[40rem]:col-span-8", 9: "@min-[40rem]:col-span-9",
+  10: "@min-[40rem]:col-span-10", 11: "@min-[40rem]:col-span-11", 12: "@min-[40rem]:col-span-12",
+} as const;
+
+export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
+  return span ? FIELD_SPAN_CLASSES[span] : "";
+}
+
 /** Mriežka polí formulára. */
 export function FieldGrid({
   cols = 2,
@@ -325,7 +339,7 @@ export function FieldGrid({
   className = "",
   children,
 }: {
-  cols?: 1 | 2 | 3 | 4 | 6;
+  cols?: 1 | 2 | 3 | 4 | 6 | 12;
   title?: ReactNode;
   className?: string;
   children: ReactNode;
@@ -333,6 +347,8 @@ export function FieldGrid({
   const cls =
     cols === 1
       ? "grid-cols-1"
+      : cols === 12
+        ? "grid-cols-2 @min-[40rem]:grid-cols-12"
       : cols === 3
         ? "@min-[40rem]:grid-cols-3"
         : cols === 4

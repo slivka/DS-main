@@ -1,3 +1,12 @@
+## Verze 2.52.0 (Partneři D, část B)
+- [x] Přidat FieldValue pro popsané hodnoty jen ke čtení
+- [x] Přidat SegmentedField pro volbu 2–3 typů záznamu
+- [x] Rozšířit FieldGrid na 12 sloupců a Field o řízený span
+- [x] Doplnit vlastní text prázdné hodnoty OptionSelect
+- [x] Přestavět ukázku karty partnera podle schváleného rozvržení
+- [x] Doplnit katalog a pravidla
+- [ ] Dokončit testy a vizuální kontrolu
+
 ## Verze 2.51.0 (tisk pokladního dokladu podle nastavení)
 - [x] Rozšířit počet kopií pokladního dokladu na 1–5 a skládat je po dvou na A4
 - [x] Přidat volitelný tisk čísla dokladu (printNumber, výchozí true)
