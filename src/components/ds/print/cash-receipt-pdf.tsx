@@ -141,25 +141,44 @@ function cashReceiptNeedsFullPage(input: Pick<CashReceiptPdfInput, "lines" | "am
   return input.lines.length > availableRows;
 }
 
+function drawCutMark(doc: PrintDoc) {
+  doc.setDrawColor(...GRAY); doc.setLineDashPattern([2, 2], 0); doc.line(15, 148, 195, 148); doc.setLineDashPattern([], 0); doc.setFontSize(7); doc.setTextColor(...GRAY);
+  doc.setLineWidth(0.3); doc.circle(100.5, 145.7, 1.2); doc.circle(100.5, 148.1, 1.2); doc.line(101.5, 146.4, 104, 148.5); doc.line(101.5, 147.4, 104, 145.3);
+  doc.setLineWidth(0.2); doc.setFillColor(255, 255, 255); doc.rect(104, 143.5, 20, 5, "F"); doc.text("odstřihněte", 114, 146.7, { align: "center" });
+}
+
 export async function buildCashReceiptPdf(input: CashReceiptPdfInput, context: PrintContext) {
   const doc = await createPrintDocument("portrait");
   const fullPage = cashReceiptNeedsFullPage(input);
   const logo = await resolveCompanyLogo(context.company, context.settings.footerLogo);
-  drawReceipt(doc, input, context, logo, 5, false, fullPage);
-  if (input.copies === 2 && !fullPage) {
-    doc.setDrawColor(...GRAY); doc.setLineDashPattern([2, 2], 0); doc.line(15, 148, 195, 148); doc.setLineDashPattern([], 0); doc.setFontSize(7); doc.setTextColor(...GRAY);
-    doc.setLineWidth(0.3); doc.circle(100.5, 145.7, 1.2); doc.circle(100.5, 148.1, 1.2); doc.line(101.5, 146.4, 104, 148.5); doc.line(101.5, 147.4, 104, 145.3);
-    doc.setLineWidth(0.2); doc.setFillColor(255, 255, 255); doc.rect(104, 143.5, 20, 5, "F"); doc.text("odstřihněte", 114, 146.7, { align: "center" });
-    drawReceipt(doc, input, context, logo, 151, true, false);
-  } else if (input.copies === 2) {
-    doc.addPage(); drawReceipt(doc, input, context, logo, 5, true, true);
+  let page = 0;
+  for (const placement of planCashReceiptPages(input.copies, input.twoPerPage !== false, fullPage)) {
+    if (placement.page > page) { doc.addPage(); page = placement.page; }
+    if (placement.slot === 1) drawCutMark(doc);
+    drawReceipt(doc, input, context, logo, placement.slot === 1 ? 151 : 5, placement.copy, fullPage);
   }
   return doc.output("blob");
 }
 
-export function CashReceiptPrintDialog({ open, onOpenChange, value, context }: { open: boolean; onOpenChange: (open: boolean) => void; value: Omit<CashReceiptPdfInput, "copies"> & { copies?: 1 | 2 }; context: PrintContext }) {
-  const [copies, setCopies] = useState<1 | 2>(value.copies ?? 2); const [blob, setBlob] = useState<Blob | null>(null);
-  useEffect(() => { let active = true; if (open) void buildCashReceiptPdf({ ...value, copies }, context).then((next) => { if (active) setBlob(next); }); return () => { active = false; }; }, [open, copies, value, context]);
+export interface CashReceiptPrintDialogProps {
+  open: boolean; onOpenChange: (open: boolean) => void;
+  value: Omit<CashReceiptPdfInput, "copies" | "twoPerPage" | "printNumber">;
+  context: PrintContext;
+  /** Výchozí počet kopií z nastavení dokladu. */
+  defaultCopies?: CashReceiptCopies;
+  /** Výchozí skládání dvou dokladů na A4 z nastavení dokladu. */
+  defaultTwoPerPage?: boolean;
+  /** Výchozí tisk čísla dokladu z nastavení dokladu. */
+  defaultPrintNumber?: boolean;
+}
+
+export function CashReceiptPrintDialog({ open, onOpenChange, value, context, defaultCopies = 2, defaultTwoPerPage = true, defaultPrintNumber = true }: CashReceiptPrintDialogProps) {
+  const [copies, setCopies] = useState<CashReceiptCopies>(defaultCopies);
+  const [twoPerPage, setTwoPerPage] = useState(defaultTwoPerPage);
+  const [printNumber, setPrintNumber] = useState(defaultPrintNumber);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  useEffect(() => { if (open) { setCopies(defaultCopies); setTwoPerPage(defaultTwoPerPage); setPrintNumber(defaultPrintNumber); } }, [open, defaultCopies, defaultTwoPerPage, defaultPrintNumber]);
+  useEffect(() => { let active = true; if (open) void buildCashReceiptPdf({ ...value, copies, twoPerPage, printNumber }, context).then((next) => { if (active) setBlob(next); }); return () => { active = false; }; }, [open, copies, twoPerPage, printNumber, value, context]);
   const fullPage = cashReceiptNeedsFullPage(value);
-  return <PrintPreviewDialog open={open} onOpenChange={onOpenChange} blob={blob} title={value.direction === "in" ? "Příjmový pokladní doklad" : "Výdajový pokladní doklad"} companyName={value.company.name} settings={<div className="grid gap-1"><Label htmlFor="cash-receipt-copies">Doklady na A4</Label><OptionSelect id="cash-receipt-copies" value={String(copies)} onChange={(next) => setCopies(next === "1" ? 1 : 2)} options={[{ value: "1", label: "1 doklad" }, { value: "2", label: "2 doklady" }]} />{fullPage ? <p className="max-w-80 text-xs text-muted-foreground">Doklad má více řádků, proto se každá kopie vytiskne na samostatnou A4.</p> : null}</div>} />;
+  return <PrintPreviewDialog open={open} onOpenChange={onOpenChange} blob={blob} title={value.direction === "in" ? "Příjmový pokladní doklad" : "Výdajový pokladní doklad"} companyName={value.company.name} settings={<div className="flex flex-wrap items-end gap-4"><div className="grid gap-1"><Label htmlFor="cash-receipt-copies">Počet kopií</Label><OptionSelect id="cash-receipt-copies" value={String(copies)} onChange={(next) => setCopies(Number(next) as CashReceiptCopies)} options={([1, 2, 3, 4, 5] as const).map((count) => ({ value: String(count), label: `${count} ${count === 1 ? "kopie" : count < 5 ? "kopie" : "kopií"}` }))} /></div><CheckboxField checked={twoPerPage} onCheckedChange={setTwoPerPage} label="Tisknout 2 doklady na stránku" disabled={fullPage} /><CheckboxField checked={printNumber} onCheckedChange={setPrintNumber} label="Tisknout číslo dokladu" />{fullPage ? <p className="max-w-80 text-xs text-muted-foreground">Doklad má více řádků, proto se každá kopie vytiskne na samostatnou A4.</p> : null}</div>} />;
 }
