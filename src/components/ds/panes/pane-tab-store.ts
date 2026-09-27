@@ -133,9 +133,34 @@ export function stopPersistingDrafts() {
 }
 
 /** Id záložek, které aktuálně existují (hlásí PaneTabsProvider) – pro listOrphanDrafts. */
-export function registerLiveTabs(ids: string[]) {
+export function registerLiveTabs(ids: string[], historyLengths?: Record<string, number>) {
   liveTabIds.clear();
   ids.forEach((id) => liveTabIds.add(id));
+  if (historyLengths) prunePersistedScroll(historyLengths);
+}
+
+/**
+ * Úklid uložených pozic rolování: smaže klíče neexistujících záložek a kroků historie,
+ * které z historie záložky vypadly. `historyLengths` = id živé záložky → délka historie.
+ * Bez živých záložek nic nemaže (stav se teprve načítá).
+ */
+export function prunePersistedScroll(historyLengths: Record<string, number>) {
+  const ids = Object.keys(historyLengths);
+  if (!ids.length) return;
+  try {
+    if (typeof localStorage === "undefined") return;
+    const remove: string[] = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const item = localStorage.key(i);
+      if (!item?.startsWith("paneScroll:")) continue;
+      const rest = item.slice("paneScroll:".length);
+      const id = ids.find((tabId) => rest.startsWith(`${tabId}:`));
+      if (!id) { remove.push(item); continue; }
+      const step = /^pane-scroll:(\d+):/.exec(rest.slice(id.length + 1));
+      if (step && Number(step[1]) >= historyLengths[id]) remove.push(item);
+    }
+    remove.forEach((item) => localStorage.removeItem(item));
+  } catch { /* úložiště nemusí být dostupné */ }
 }
 
 /** Uložené koncepty aktuálního uživatele a firmy, jejichž záložka už neexistuje. */

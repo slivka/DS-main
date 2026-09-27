@@ -1,3 +1,4 @@
+import { usePageLayoutVariant } from "../layout/page-layout";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /**
@@ -49,11 +50,14 @@ export function useGridVirtual(
      * Výška gridu. V režimu "auto" (grid roste s obsahem, nemá vlastní svislé rolování)
      * je virtualizace vypnutá – vykreslí se všechny řádky. Auto gridy jsou ve formulářích
      * s omezeným počtem řádků; dlouhé seznamy patří do PageLayout variant="list" (fill).
+     * Bez zadání se režim odvodí stejně jako u ZoomGrid: uvnitř PageLayout variant="list"
+     * "fill", jinde "auto" – aplikace ho proto nemusí předávat.
      */
     height?: "fill" | "auto";
   } = {},
 ): GridVirtual {
-  const { zoom = 1, density = "normal", overscan = 12, threshold = 60, height = "fill" } = options;
+  const pageVariant = usePageLayoutVariant();
+  const { zoom = 1, density = "normal", overscan = 12, threshold = 60, height = pageVariant === "list" ? "fill" : "auto" } = options;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [rowHeight, setRowHeight] = useState(() => estimateRowHeight(zoom, density));
   const [range, setRange] = useState({ start: 0, end: Math.min(count, threshold) });

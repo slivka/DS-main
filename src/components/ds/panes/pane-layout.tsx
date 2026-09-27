@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { DndContext, PointerSensor, closestCenter, pointerWithin, type CollisionDetection, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 
 import { Button } from "../../ui/button";
@@ -308,6 +308,12 @@ function PaneColumn({
   const { setNodeRef, isOver } = useDroppable({ id: `area:${pane.id}`, data: { paneId: pane.id } });
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
+  // Stabilní ref callback – inline funkce by se v React 19 při každém commitu odpojila a znovu připojila.
+  const setScrollRef = useCallback((node: HTMLDivElement | null) => {
+    setNodeRef(node);
+    scrollRef.current = node;
+    setScrollElement((current) => (current === node ? current : node));
+  }, [setNodeRef]);
   const activeId = pane.activeTab;
   const drag = useDraggable({ id: `header:${activeId ?? pane.id}`, data: { tabId: activeId, paneId: pane.id }, disabled: !activeId });
   const isActive = api.state.active === pane.id;
@@ -397,7 +403,7 @@ function PaneColumn({
           texts={texts}
         />
       ) : null}
-      <div ref={(node) => { setNodeRef(node); scrollRef.current = node; setScrollElement((current) => current === node ? current : node); }} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
+      <div ref={setScrollRef} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>

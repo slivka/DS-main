@@ -1282,6 +1282,9 @@
 [data-page-layout="list"] > [data-grid-height="fill"] { min-height: 15rem; flex: 1 1 0%; }
 [data-page-layout="list"] [data-grid-height="fill"] .zoom-grid,
 [data-page-layout="list"] .zoom-grid[data-grid-height="fill"] { min-height: 8rem; }
+/* Na stránce s pruhem akcí dokladu se přilepuje jen pruh akcí; PageHeader odroluje
+   (jinak by se oba sticky top-0 překryly a --pane-sticky-top by nesouhlasil). */
+[data-page-layout]:has([data-slot="document-action-bar"]) [data-slot="page-header"][data-sticky="true"] { position: static; box-shadow: none; }
 [data-page-layout][data-scrolled="true"] :is([data-slot="document-action-bar"], [data-slot="page-header"][data-sticky="true"]) { box-shadow: var(--shadow-sm); }
 
 /* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */

@@ -261,7 +261,9 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   useTabDirtyVersion();
 
   useEffect(() => {
-    registerLiveTabs(state.panes.flatMap((pane) => pane.tabs.map((tab) => tab.id)));
+    const tabs = state.panes.flatMap((pane) => pane.tabs);
+    // Zároveň uklidí pozice rolování zavřených záložek a vypadlých kroků historie.
+    registerLiveTabs(tabs.map((tab) => tab.id), Object.fromEntries(tabs.map((tab) => [tab.id, tab.history.length])));
   }, [state]);
   useEffect(() => {
     if (maximized !== null && maximized >= state.panes.length) setMaximized(null);

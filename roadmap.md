@@ -5,6 +5,7 @@
 - [x] Upravit editor řádků, sticky prvky, tisk a obnovu pozice rolování
 - [x] Rozšířit PaneShowcase a ověřit A10 včetně tisku a nízkého okna
 - [x] Doplnit testy, katalog, pravidla a changelog
+- [x] Druhá kontrola: BREAKING migrace v dokumentaci, useGridVirtual z PageLayout, stabilní ref callbacky, šířky sloupců bez dvojího zoomu, min. šířka Textu, PageHeader vs. pruh akcí, úklid klíčů rolování
 
 ## Verze 2.52.0 (Partneři D, část B)
 - [x] Přidat FieldValue pro popsané hodnoty jen ke čtení

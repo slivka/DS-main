@@ -293,6 +293,11 @@ export function ZoomGrid({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Stabilní ref callback (React 19 jinak při každém commitu odpojí a znovu připojí).
+  const setRootRef = useCallback((node: HTMLDivElement | null) => {
+    ref.current = node;
+    if (scrollRef) scrollRef.current = node;
+  }, [scrollRef]);
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const resolvedSticky = stickyHeader ?? (resolvedHeight === "fill" ? "grid" : "none");
@@ -491,10 +496,7 @@ export function ZoomGrid({
 
   return (
     <div
-      ref={(node) => {
-        ref.current = node;
-        if (scrollRef) scrollRef.current = node;
-      }}
+      ref={setRootRef}
       id={gridId}
 
       data-density={density ?? "normal"}

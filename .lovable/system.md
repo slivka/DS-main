@@ -326,3 +326,30 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - DUZP je ve sloupci 15 a Datum DPH ve sloupci 18 stejného řádku. Nápovědy data a kurzu se nezalamují, dokud nedosáhnou okraje formuláře.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
 - Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.
+
+## Rolovací oblasti a typy stránek (2.53.0, BREAKING)
+
+- Stránka jako celek nikdy neroluje; rolují menu, `main` (stránky mimo panely) a obsah každé záložky panelu zvlášť.
+- V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu, který vyplňuje celý panel (`PageLayout variant="list"`, `height="fill"`). Výjimky: rozbalovací výběry, dialogy, popovery.
+- Zoom a hustota gridu platí jen pro instanci v záložce; výchozí hodnoty dodává aplikace přes `GridPreferencesProvider`.
+
+### BREAKING pro aplikace – migrace na 2.53.0
+
+- Grid v panelu **bez** `PageLayout variant="list"` má nově `height="auto"`: roste podle obsahu, nemá vlastní svislé rolování a jeho záhlaví se nepřilepuje (roluje celý panel). Virtualizace je v `auto` vypnutá.
+- Seznamové stránky obalte `<PageLayout variant="list">` (PageHeader + lišta + grid) – grid pak vyplní panel (`fill`), roluje jen jeho tělo a záhlaví i součty jsou přilepené. Formuláře a karty obalte `<PageLayout variant="form">`.
+- Odstraňte ruční `maxHeight`, `calc(100vh …)` a výšky odvozené z `window.innerHeight` ve stránkách i u gridů; výšku určuje rodič.
+- Odstraňte `ListScrollRestore` a jiné vlastní obnovy pozice rolování – `PaneLayout` obnovuje pozici každé záložky (per krok historie) sám. Pro výjimečné potřeby je `usePaneScrollElement()`.
+- Napojte `GridPreferencesProvider` (`getDefaults(storageKey)`, `onDefaultsChange(storageKey, { zoom, density })`, volá se s debounce 400 ms) na uložení předvoleb uživatele v aplikaci; bez něj se výchozí zoom/hustota drží jen v localStorage prohlížeče.
+- Událost `grid-zoom-change` byla zrušena – zoom a hustota platí jen pro instanci gridu v záložce.
+- `PaneLayout` má být přímý obsah `AppShell` (ohlásí se sám, main pak nemá padding ani rolování).
+- Na stránce s `DocumentActionBar` (DocumentForm) se přilepuje jen pruh akcí; `PageHeader` odroluje, aby se oba přilepené pruhy nepřekryly. `--pane-sticky-top` = výška pruhu akcí.
+
+### Nové API 2.53.0
+
+- `PageLayout` – `variant?: "list" | "form"` (výchozí `"form"`), děti PageHeader + obsah; `usePageLayoutVariant()`.
+- `height?: "fill" | "auto"` na `ZoomGrid`, `DataGrid`, `TreeGrid`, `ZoomPane` – bez prop podle nejbližšího `PageLayout` (list → fill, jinak auto).
+- `ZoomGrid.stickyHeader?: "grid" | "pane" | "none"` – `grid` = záhlaví přilepené v rolovacím gridu (výchozí pro `fill`); `pane` = opt-in přilepení pod pruh akcí v rolovací oblasti panelu (`--pane-sticky-top`), používá jen `JournalLinesEditor`; `none` = nepřilepené (výchozí pro `auto`).
+- `ZoomGrid.overflowFallback?: boolean` – nouzové vodorovné rolování gridu, který jinak sloupce přesouvá do detailu (když se nevejde ani minimum).
+- `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
+- `usePaneScrollElement()` – rolovací prvek aktuální záložky.
+- `GridPreferencesProvider` – `getDefaults`, `onDefaultsChange`.
