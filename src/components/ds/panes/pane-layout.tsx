@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { DndContext, PointerSensor, closestCenter, pointerWithin, type CollisionDetection, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 
 import { Button } from "../../ui/button";
@@ -17,28 +17,6 @@ import {
 import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
 import { evenWidths, findTab, paneKey, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
 import { useTabScrollRestore } from "./pane-tab-store";
-
-const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
-
-/** Prvky, kterým panel nikdy nebere fokus. */
-export const PANE_FOCUS_EXCLUDED = "input,textarea,select,button,a[href],label,summary,[contenteditable]:not([contenteditable=false]),[role=menu],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=combobox],[role=tab],[role=slider],[role=grid],[role=dialog],[role=alertdialog],[role=listbox],[role=textbox],[role=button],[role=switch],[role=checkbox],[role=radio]";
-
-type FocusNode = { closest?: (selector: string) => unknown };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FocusContainer = { contains: (node: any) => boolean };
-
-/**
- * Rozhodne, zda po kliku přesunout fokus na rolovací oblast panelu.
- * Jen když cíl leží skutečně v panelu (ne v portálu, jehož události bublají Reactem),
- * není interaktivní a klik fokus nepřesunul jinam (aktivní je body nebo prvek mimo panel).
- */
-export function shouldFocusPaneScroll(section: FocusContainer, target: unknown, activeElement: unknown, body: unknown, scrollElement?: unknown): boolean {
-  if (!target || !section.contains(target)) return false;
-  const node = target as FocusNode;
-  if (typeof node.closest === "function" && node.closest(PANE_FOCUS_EXCLUDED)) return false;
-  if (activeElement && activeElement !== body && activeElement !== scrollElement && section.contains(activeElement)) return false;
-  return true;
-}
 import { useAppShellPaneRegistration } from "../layout/page-layout";
 
 export type PaneLayoutTexts = PaneTabBarTexts &
@@ -102,8 +80,7 @@ export interface PaneLayoutProps {
 export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
   const api = usePaneTabs();
   const register = useAppShellPaneRegistration();
-  // useLayoutEffect: main se přepne před prvním vykreslením – bez jednosnímkového skoku paddingu.
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     register?.(true);
     return () => register?.(false);
   }, [register]);
@@ -312,15 +289,11 @@ function PaneColumn({
   const drag = useDraggable({ id: `header:${activeId ?? pane.id}`, data: { tabId: activeId, paneId: pane.id }, disabled: !activeId });
   const isActive = api.state.active === pane.id;
   const tab = pane.tabs.find((item) => item.id === pane.activeTab) ?? null;
-  // Pozice rolování per krok historie záložky – nová stránka začne nahoře, Zpět vrátí pozici.
-  useTabScrollRestore(tab?.id, scrollRef, tab ? `pane-scroll:${tab.historyIndex}:${paneKey(tab)}` : "pane-scroll");
-  const sectionRef = useRef<HTMLElement | null>(null);
+  useTabScrollRestore(tab?.id, scrollRef, "pane-scroll");
   useEffect(() => {
     if (!isActive) return;
     const focused = document.activeElement;
-    const section = sectionRef.current;
-    // Fokus už je v panelu (pole, tlačítko…) nebo v dialogu / výběru – nebereme ho.
-    if (focused instanceof HTMLElement && focused !== document.body && focused !== scrollRef.current && (section?.contains(focused) || focused.closest(PANE_FOCUS_EXCLUDED))) return;
+    if (focused instanceof HTMLElement && (focused.closest("input,textarea,select,[role=grid],[role=dialog],[role=listbox]") || focused.isContentEditable)) return;
     scrollRef.current?.focus({ preventScroll: true });
   }, [isActive, tab?.id]);
   const tabApi: PaneApi | null = tab
@@ -368,16 +341,12 @@ function PaneColumn({
 
   return (
     <section
-      ref={sectionRef}
       data-pane={pane.id}
       data-active={isActive ? "true" : undefined}
       onPointerDownCapture={(event) => {
-        if (!isActive && sectionRef.current?.contains(event.target as Node)) api.activatePane(pane.id);
-      }}
-      onClick={(event) => {
-        // Až po kliku: prohlížeč už fokus přesunul, pokud cíl fokus přijímá.
-        const section = sectionRef.current;
-        if (section && shouldFocusPaneScroll(section, event.target, document.activeElement, document.body, scrollRef.current)) scrollRef.current?.focus({ preventScroll: true });
+        if (!isActive) api.activatePane(pane.id);
+        const target = event.target;
+        if (target instanceof HTMLElement && !target.closest("input,textarea,select,button,a,[role=grid],[role=dialog],[role=listbox],[contenteditable=true]")) scrollRef.current?.focus({ preventScroll: true });
       }}
       data-flash={flashing ? "true" : undefined}
       className={cn(

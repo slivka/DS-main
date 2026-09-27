@@ -34,7 +34,6 @@ export function setTabDraft<T>(tabId: string, value: T, key = "default") {
 /** Smaže koncept i příznak neuložených změn záložky (volá se po zavření nebo nahrazení obsahu). */
 export function clearTabState(tabId: string) {
   drafts.delete(tabId);
-  clearPersistedScroll(tabId);
   void removePersistedDrafts(tabId);
   if (dirty.delete(tabId)) emit();
 }
@@ -359,74 +358,27 @@ export function useTabDraft<T>(tabId: string | null | undefined, initial: T | ((
   return [value, tracked, meta] as const;
 }
 
-/** Klíč uložené pozice rolování v localStorage. */
-export const paneScrollStorageKey = (tabId: string, key: string) => `paneScroll:${tabId}:${key}`;
-
-/** Smaže uložené pozice rolování záložky (volá clearTabState při zavření záložky). */
-export function clearPersistedScroll(tabId: string) {
-  try {
-    if (typeof localStorage === "undefined") return;
-    const prefix = `paneScroll:${tabId}:`;
-    const keys: string[] = [];
-    for (let i = 0; i < localStorage.length; i += 1) {
-      const item = localStorage.key(i);
-      if (item?.startsWith(prefix)) keys.push(item);
-    }
-    keys.forEach((item) => localStorage.removeItem(item));
-  } catch { /* úložiště nemusí být dostupné */ }
-}
-
-/** Interval ukládání pozice rolování. */
-export const SCROLL_SAVE_THROTTLE_MS = 200;
-
-/** Throttle: první volání hned, další nejvýš jednou za `wait`; poslední hodnota se vždy uloží. */
-export function createThrottle<A extends unknown[]>(fn: (...args: A) => void, wait = SCROLL_SAVE_THROTTLE_MS) {
-  let last = 0;
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  let pending: A | null = null;
-  const run = () => {
-    timer = undefined;
-    last = Date.now();
-    if (pending) { const args = pending; pending = null; fn(...args); }
-  };
-  const call = (...args: A) => {
-    pending = args;
-    const remaining = wait - (Date.now() - last);
-    if (remaining <= 0) run();
-    else if (!timer) timer = setTimeout(run, remaining);
-  };
-  return { call, flush: () => { if (timer) clearTimeout(timer); run(); }, cancel: () => { if (timer) clearTimeout(timer); timer = undefined; pending = null; } };
-}
-
-/**
- * Zachová pozici posuvu prvku v záložce (po přepnutí, přesunu i reloadu se obnoví).
- * `key` odlišuje krok historie záložky – bez uložené pozice začne obsah nahoře.
- * Ukládání je throttlované (~200 ms).
- */
+/** Zachová pozici posuvu prvku v záložce (po přepnutí nebo přesunu se obnoví). */
 export function useTabScrollRestore(tabId: string | null | undefined, ref: RefObject<HTMLElement | null>, key = "scroll") {
   useEffect(() => {
     const element = ref.current;
     if (!element || !tabId) return;
-    const storageId = paneScrollStorageKey(tabId, key);
     let persisted: { top: number; left: number } | undefined;
     try {
-      const raw = localStorage.getItem(storageId);
+      const raw = localStorage.getItem(`paneScroll:${tabId}:${key}`);
       if (raw) persisted = JSON.parse(raw) as { top: number; left: number };
     } catch { /* poškozený nebo nedostupný stav ignorujeme */ }
     const saved = getTabDraft<{ top: number; left: number }>(tabId, key) ?? persisted;
-    element.scrollTop = saved?.top ?? 0;
-    element.scrollLeft = saved?.left ?? 0;
-    const saver = createThrottle((value: { top: number; left: number }) => {
+    if (saved) {
+      element.scrollTop = saved.top;
+      element.scrollLeft = saved.left;
+    }
+    const onScroll = () => {
+      const value = { top: element.scrollTop, left: element.scrollLeft };
       setTabDraft(tabId, value, key);
-      try { localStorage.setItem(storageId, JSON.stringify(value)); } catch { /* úložiště nemusí být dostupné */ }
-    });
-    const onScroll = () => saver.call({ top: element.scrollTop, left: element.scrollLeft });
-    element.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      element.removeEventListener("scroll", onScroll);
-      // Zavřená záložka (clearTabState) už pozici neukládá.
-      if (drafts.has(tabId)) saver.flush();
-      else saver.cancel();
+      try { localStorage.setItem(`paneScroll:${tabId}:${key}`, JSON.stringify(value)); } catch { /* úložiště nemusí být dostupné */ }
     };
+    element.addEventListener("scroll", onScroll, { passive: true });
+    return () => element.removeEventListener("scroll", onScroll);
   }, [tabId, ref, key]);
 }
