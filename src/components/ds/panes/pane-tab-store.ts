@@ -424,7 +424,9 @@ export function useTabScrollRestore(tabId: string | null | undefined, ref: RefOb
     element.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       element.removeEventListener("scroll", onScroll);
-      saver.flush();
+      // Zavřená záložka (clearTabState) už pozici neukládá.
+      if (drafts.has(tabId)) saver.flush();
+      else saver.cancel();
     };
   }, [tabId, ref, key]);
 }
