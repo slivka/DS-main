@@ -57,6 +57,7 @@ export function DocumentFormShowcase() {
   const [schedule, setSchedule] = useState(SCHEDULE);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [formError, setFormError] = useState(true);
+  const [lineValidationError, setLineValidationError] = useState<string>();
   const [documentSettings, setDocumentSettings] = useState<DocumentSettingsValue>({ suggestDescription: true, descriptionScope: "book", suggestCounterparty: true, counterpartyScope: "documentType", amountFromLines: "book", showQuantityColumns: true, offerPrintAfterSave: true, printTwoPerPage: false, printDocumentNumber: true, copies: 1, accountDisplay: "number" });
 
   const [posted, setPosted] = useState<DocumentHeaderValue>({ ...INVOICE_HEADER, number: "FP2026000655", amountTotal: 12100 });
@@ -118,7 +119,7 @@ export function DocumentFormShowcase() {
     <>
       <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČO a DIČ zůstávají editovatelné a chybné české IČO se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={{ ...courier, vatRelevant: courierVatRelevant }} onChange={(next) => { setCourier(next); setCourierVatRelevant(next.vatRelevant !== false); }} lines={courierLines} {...common} onLinesChange={setCourierLines}
-          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" settings={{ onOpen: () => setSettingsOpen(true) }} error={formError ? { message: "Doplňte účet a částku na řádku dokladu.", onClose: () => setFormError(false) } : undefined} linesEditorProps={{ initialEmptyLine: true, showQuantityColumns: documentSettings.showQuantityColumns, accountDisplay: documentSettings.accountDisplay, storageKey: "showcase-doc-new-po" }}
+          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" settings={{ onOpen: () => setSettingsOpen(true) }} error={lineValidationError ? { message: lineValidationError, onClose: () => setLineValidationError(undefined) } : formError ? { message: "Doplňte účet a částku na řádku dokladu.", onClose: () => setFormError(false) } : undefined} linesEditorProps={{ initialEmptyLine: true, showQuantityColumns: documentSettings.showQuantityColumns, accountDisplay: documentSettings.accountDisplay, storageKey: "showcase-doc-new-po", onValidationChange: (_count, errors) => setLineValidationError(errors[0] ? `Řádek ${errors[0].line}: ${errors[0].message}` : undefined) }}
           accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
