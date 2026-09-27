@@ -30,7 +30,7 @@ describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
   it("obnovuje scroll podle tabId i po reloadu", () => {
     const source = readFileSync("src/components/ds/panes/pane-tab-store.ts", "utf8");
     expect(source).toContain('`paneScroll:${tabId}:${key}`');
-    expect(source).toContain("localStorage.setItem(storageKey, JSON.stringify(next))");
-    expect(source).toContain("node.scrollTo({ top: saved.top, left: saved.left })");
+    expect(source).toContain('localStorage.setItem(`paneScroll:${tabId}:${key}`, JSON.stringify(value))');
+    expect(source).toContain("element.scrollTop = saved.top");
   });
 });
