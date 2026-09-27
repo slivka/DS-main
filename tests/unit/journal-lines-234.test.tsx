@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
-import { calculateLineAmount, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
+import { calculateLineAmount, formatJournalAccountDisplay, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 
 describe("JournalLinesEditor 2.34.0", () => {
@@ -30,5 +30,12 @@ describe("JournalLinesEditor 2.48", () => {
     expect(source).toContain("showAllErrors?: boolean");
     expect(source).toContain("isBlank: true");
     expect(source).toContain("(Ctrl+Enter)");
+  });
+});
+
+describe("JournalLinesEditor 2.49", () => {
+  it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
+    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "number")).toBe("501.100");
+    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "numberName")).toBe("501.100 - Spotřeba materiálu");
   });
 });

@@ -9,22 +9,22 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
   it("přesouvá PO skupiny podle skutečného součtu šířek", () => {
     expect(resolveJournalColumnLayout({ availableWidthRem: 90, mode: "mainAccount", visibleColumnIds: [...poColumns] }).hiddenColumnIds).toEqual([]);
     const withoutDimension = resolveJournalColumnLayout({ availableWidthRem: 70, mode: "mainAccount", visibleColumnIds: [...poColumns] });
-    expect(withoutDimension.hiddenColumnIds).toEqual(["dimensionId"]);
-    expect(withoutDimension.compactAccounts).toBe(false);
+    expect(withoutDimension.hiddenColumnIds).toEqual(["quantity", "unitId", "unitPrice"]);
+    expect(withoutDimension.compactAccounts).toBe(true);
     const compact = resolveJournalColumnLayout({ availableWidthRem: 35, mode: "mainAccount", visibleColumnIds: [...poColumns] });
-    expect(compact.hiddenColumnIds).toEqual(["dimensionId", "quantity", "unitId", "unitPrice"]);
+    expect(compact.hiddenColumnIds).toEqual(["quantity", "unitId", "unitPrice", "dimensionId"]);
     expect(compact.compactAccounts).toBe(true);
   });
 
   it("přesouvá u ID obě zakázky a zúží oba účty", () => {
     const layout = resolveJournalColumnLayout({ availableWidthRem: 40, mode: "internal", visibleColumnIds: [...idColumns] });
-    expect(layout.hiddenColumnIds).toEqual(["debitDimensionId", "creditDimensionId", "quantity", "unitId", "unitPrice"]);
+    expect(layout.hiddenColumnIds).toEqual(["quantity", "unitId", "unitPrice", "debitDimensionId", "creditDimensionId"]);
     expect(layout.compactAccounts).toBe(true);
   });
 
   it("započítá vlastní uloženou šířku a vždy rezervuje Textu 12 rem", () => {
     const layout = resolveJournalColumnLayout({ availableWidthRem: 60, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "amount", "dimensionId", "actions"], widths: { amount: 20, text: 40 } });
-    expect(layout.hiddenColumnIds).toEqual(["dimensionId"]);
-    expect(layout.requiredWidthRem).toBe(53.75);
+    expect(layout.hiddenColumnIds).toEqual([]);
+    expect(layout.requiredWidthRem).toBe(42.75);
   });
 });
