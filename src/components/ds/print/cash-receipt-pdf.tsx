@@ -94,7 +94,7 @@ function drawReceipt(doc: PrintDoc, input: CashReceiptPdfInput, context: PrintCo
   const x = 15; const width = 180;
   doc.setTextColor(...NAVY); doc.setFont("Roboto", "bold"); doc.setFontSize(15);
   doc.text(input.direction === "in" ? "PŘÍJMOVÝ POKLADNÍ DOKLAD" : "VÝDAJOVÝ POKLADNÍ DOKLAD", x, top + 11);
-  doc.setFont("Roboto", "bold"); doc.setFontSize(16); doc.text(input.status === "draft" ? "—" : input.number || "—", x + width, top + 10, { align: "right" });
+  doc.setFont("Roboto", "bold"); doc.setFontSize(16); doc.text(cashReceiptNumberLabel(input), x + width, top + 10, { align: "right" });
   doc.setFont("Roboto", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY); doc.text(input.bookName, x + width, top + 15, { align: "right" });
   doc.setDrawColor(...LINE); doc.line(x, top + 19, x + width, top + 19);
   if (copy) { doc.roundedRect(x + 86, top + 10.5, 18, 6, 1, 1); doc.setFontSize(7); doc.text("kopie", x + 95, top + 14.5, { align: "center" }); }
