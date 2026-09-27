@@ -332,6 +332,7 @@ export function PaneShowcase() {
             <div className="flex h-[600px] min-h-0 overflow-hidden">
               <DemoMenu layouts={layouts} setLayouts={setLayouts} />
               <PaneLayout
+                embedded
                 minPaneWidth={MIN_PANE_WIDTH}
                 renderTab={renderTab}
                 getTabIcon={(tab) => ICONS[tab.icon as IconName]}
