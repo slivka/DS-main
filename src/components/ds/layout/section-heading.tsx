@@ -14,7 +14,7 @@ export const SectionHeading = React.forwardRef<HTMLHeadingElement, SectionHeadin
       <Heading
         ref={ref}
         className={cn(
-          "section-heading mb-3 mt-5 truncate whitespace-nowrap border-b pb-1 text-[0.8125rem] font-semibold tracking-wide text-foreground first:mt-0",
+          "section-heading mb-3 mt-5 truncate whitespace-nowrap border-b pb-1 text-[0.8125rem] font-semibold leading-[1.35] tracking-wide text-foreground first:mt-0",
           className,
         )}
         {...props}
