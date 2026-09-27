@@ -3,7 +3,7 @@
 - [x] Upravit řádkovou buňku, prázdné hodnoty, Nedaňový a přidání řádku
 - [x] Sjednotit Enter / Tab navigaci a prázdné řádky s `isBlank`
 - [x] Zobrazit značku měny a přidat `DocumentSettingsDialog`
-- [ ] Doplnit testy, dokumentaci, ukázku a vizuální kontrolu 560 / 1 280 / 1 920 px
+- [x] Doplnit testy, dokumentaci, ukázku a vizuální kontrolu 560 / 1 280 / 1 920 px
 
 ## Verze 2.46.0 (Partneři, část B)
 - [x] LookupField a IcoField s digitsOnly
