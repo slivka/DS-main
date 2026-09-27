@@ -30,6 +30,11 @@ export function useWheelZoom(
 ) {
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
+  // Stabilní ref callback (React 19 jinak při každém commitu odpojí a znovu připojí).
+  const setRootRef = useCallback((node: HTMLDivElement | null) => {
+    ref.current = node;
+    if (scrollRef) scrollRef.current = node;
+  }, [scrollRef]);
   // Klávesové ovládání (šipky, Home/End, PageUp/PageDown) pro všechny gridy.
   useGridKeyboardNav(ref);
 
@@ -491,10 +496,7 @@ export function ZoomGrid({
 
   return (
     <div
-      ref={(node) => {
-        ref.current = node;
-        if (scrollRef) scrollRef.current = node;
-      }}
+      ref={setRootRef}
       id={gridId}
 
       data-density={density ?? "normal"}
