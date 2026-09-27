@@ -160,7 +160,7 @@ const DOCUMENT_LINES: JournalLine[] = Array.from({ length: 40 }, (_, index) => (
 function LongDocument({ id }: { id: string }) {
   const [value, setValue] = useState<DocumentHeaderValue>({ number: id, accountingDate: "2026-09-27", issueDate: "2026-09-27", description: "Kontrola nezávislého rolování a zoomu", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum" });
   const [lines, setLines] = useState(() => DOCUMENT_LINES.map((line) => ({ ...line, id: `${id}-${line.id}` })));
-  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines", mode: "internal" }} /></PageLayout>;
+  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines" }} /></PageLayout>;
 }
 
 type InvoiceForm = { partner: string; amount: string; text: string };
