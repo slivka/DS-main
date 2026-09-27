@@ -6668,6 +6668,10 @@
           "type": "any"
         },
         {
+          "name": "onValidationChange",
+          "type": "function"
+        },
+        {
           "name": "texts",
           "type": "any"
         },
@@ -6677,15 +6681,16 @@
           "default": "cursor-grab text-muted-foreground active:cursor-grabbing"
         }
       ],
-      "usage": "Účetní rozpis s pružnými sloupci, editací klávesnicí a volitelným zobrazením čísla či celého názvu účtu.",
+      "usage": "Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.",
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay=\"number\" storageKey=\"invoice-lines\" /\u003e"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay=\"number\" onValidationChange={(count, errors) =\u003e setError(errors[0]?.message)} storageKey=\"invoice-lines\" /\u003e"
         }
       ],
       "antipatterns": [
-        "Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích."
+        "Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.",
+        "Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře."
       ]
     },
     {
