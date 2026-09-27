@@ -1,3 +1,11 @@
+## Verze 2.53.0 (rolování menu a panelů, zoom per záložka)
+- [x] Omezit AppShell na výšku okna a oddělit rolování menu, main a panelů
+- [x] Přidat PageLayout list/form a výšku gridů fill/auto podle rodiče
+- [x] Uložit zoom a hustotu po instanci a záložce přes GridPreferencesProvider
+- [x] Upravit editor řádků, sticky prvky, tisk a obnovu pozice rolování
+- [x] Rozšířit PaneShowcase a ověřit A10 včetně tisku a nízkého okna
+- [x] Doplnit testy, katalog, pravidla a changelog
+
 ## Verze 2.52.0 (Partneři D, část B)
 - [x] Přidat FieldValue pro popsané hodnoty jen ke čtení
 - [x] Přidat SegmentedField pro volbu 2–3 typů záznamu

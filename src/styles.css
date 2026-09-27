@@ -1215,6 +1215,44 @@
   backdrop-filter: none;
 }
 
+.zoom-grid[data-grid-height="auto"] thead tr > :is(th, td) {
+  top: var(--pane-sticky-top, 0px);
+}
+
+.zoom-grid[data-grid-height="auto"] tfoot,
+.zoom-grid[data-grid-height="auto"] tfoot tr > :is(th, td) {
+  position: static;
+}
+
+.journal-lines-grid[data-grid-height="auto"] {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.ds-scroll-area {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+[data-nav-fade] {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  left: 0;
+  height: 1rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+[data-nav-fade][data-visible="true"] { opacity: 1; }
+[data-nav-fade="top"] { top: 0; background: linear-gradient(to bottom, var(--sidebar), transparent); }
+[data-nav-fade="bottom"] { bottom: 0; background: linear-gradient(to top, var(--sidebar), transparent); }
+
+[data-page-layout="list"] > [data-slot="data-grid"],
+[data-page-layout="list"] > [data-slot="tree-grid"] { min-height: 0; flex: 1 1 0%; }
+[data-page-layout][data-scrolled="true"] [data-slot="document-action-bar"] { box-shadow: var(--shadow-sm); }
+
 /* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
 .zoom-grid thead tr:last-child > :is(th, td) {
   border-bottom: 1px solid var(--grid-chrome-border);
@@ -1900,6 +1938,13 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   [data-pane][data-print-hide="true"] {
     display: none !important;
   }
+  html, body, [data-slot="app-shell"], [data-slot="app-shell-main"], [data-pane-scroll], .zoom-grid[data-grid-height="fill"] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  [data-slot="app-shell"] > header, .shell-sidebar, [data-slot="app-shell-panel-header"] { display: none !important; }
+  [data-slot="app-shell-main"], [data-pane-scroll] { padding: 0 !important; }
 }
 
 /* Bílý vzhled 2.12: tmavě modré boční menu. */

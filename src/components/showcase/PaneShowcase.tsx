@@ -4,10 +4,12 @@ import { toast } from "sonner";
 
 import {
   DataGrid,
+  DocumentForm,
   DraftRestoredBanner,
   LayoutMenu,
   LayoutSwitcher,
   PageHeader,
+  PageLayout,
   PaneLayout,
   PaneLink,
   PaneTabsProvider,
@@ -24,6 +26,8 @@ import {
   useTabDirty,
   useTabDraft,
   type DataGridColumn,
+  type DocumentHeaderValue,
+  type JournalLine,
   type LayoutSnapshot,
   type PaneTab,
   type PaneTabsState,
@@ -34,7 +38,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatAmount, formatDate } from "@/lib/format";
-import { MOCK_JOURNAL, type JournalEntry } from "@/lib/mock/accounting";
+import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_JOURNAL, MOCK_PARTNERS, type JournalEntry } from "@/lib/mock/accounting";
 
 const PREVIEW_WIDTHS = [1100, 1440, 1920] as const;
 const MIN_PANE_WIDTH = 420;
@@ -44,23 +48,34 @@ const LAYOUTS_KEY = "ds-showcase:layouts:v216";
 const ICONS = { issued: FileText, received: ReceiptText, journal: BookOpen, partners: Users, cash: Wallet, document: LayoutGrid } as const;
 type IconName = keyof typeof ICONS;
 
-const PAGES: { route: string; title: string; icon: IconName }[] = [
+const BASE_PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" },
   { route: "/faktury-prijate", title: "Přijaté faktury", icon: "received" },
   { route: "/denik", title: "Účetní deník", icon: "journal" },
   { route: "/partneri", title: "Partneři", icon: "partners" },
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
+const PAGES = [...BASE_PAGES, ...Array.from({ length: 40 }, (_, index) => ({ route: `/agenda-${index + 1}`, title: `Agenda ${index + 1}`, icon: "journal" as const }))];
 
-/** Výchozí stav: 1 panel s jednou záložkou (pevné id kvůli vykresjení na serveru). */
+/** Výchozí stav: tři nezávislé panely pro zátěžovou kontrolu rolování. */
 function initialState(): PaneTabsState {
-  const tab: PaneTab = { ...createTab({ route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" }, 0), id: "tab-start" };
-  return { version: 2, layout: 1, widths: [1], active: "pane-a", hiddenPanes: null, panes: [{ id: "pane-a", activeTab: tab.id, tabs: [tab] }] };
+  const specs = [
+    { id: "tab-list", route: "/faktury-vydane", title: "Vydané faktury", icon: "issued" },
+    { id: "tab-doc-a", route: "/doklad-a", title: "Doklad A", icon: "document" },
+    { id: "tab-doc-b", route: "/doklad-b", title: "Doklad B", icon: "document" },
+  ] as const;
+  const panes = specs.map((spec, index) => {
+    const tab: PaneTab = { ...createTab(spec, index), id: spec.id };
+    return { id: `pane-${index + 1}`, activeTab: tab.id, tabs: [tab] };
+  });
+  return { version: 2, layout: 3, widths: [1 / 3, 1 / 3, 1 / 3], active: "pane-1", hiddenPanes: null, panes };
 }
 
 type Invoice = { id: string; number: string; date: string; partner: string; amount: number; text: string; updatedAt: string };
 
-const INVOICES: Invoice[] = MOCK_JOURNAL.slice(0, 30).map((row: JournalEntry, index) => ({
+const INVOICES: Invoice[] = Array.from({ length: 500 }, (_, index) => {
+  const row = MOCK_JOURNAL[index % MOCK_JOURNAL.length] as JournalEntry;
+  return {
   id: `FV${String(2026000100 + index)}`,
   number: `FV${String(2026000100 + index)}`,
   date: row.date,
@@ -68,7 +83,8 @@ const INVOICES: Invoice[] = MOCK_JOURNAL.slice(0, 30).map((row: JournalEntry, in
   amount: row.debit,
   text: row.text,
   updatedAt: "2026-09-01T08:00:00Z",
-}));
+  };
+});
 
 const detailTitle = (id: string) => (id.startsWith("new-") ? "Nová faktura" : `Faktura ${id}`);
 
@@ -98,8 +114,9 @@ function InvoiceList({ title }: { title: string }) {
     tabs?.openRecord("/faktura", { id }, { fromTabId: pane?.tabId, isNew, modifiers: modifiers.current, title: detailTitle(id), shortTitle: id.startsWith("new-") ? "Nová" : id, icon: "document" });
 
   return (
-    <div
-      className="space-y-3"
+    <PageLayout
+      variant="list"
+      className="gap-3"
       onPointerDownCapture={(event) => {
         modifiers.current = { metaKey: event.metaKey, ctrlKey: event.ctrlKey, shiftKey: event.shiftKey };
       }}
@@ -108,8 +125,8 @@ function InvoiceList({ title }: { title: string }) {
         title={title}
         menuActions={[{ label: "Výkazy", onClick: () => toast.info("Ukázková akce stránky") }]}
       />
-      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }} paginated />
-    </div>
+      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }} paginated={false} />
+    </PageLayout>
   );
 }
 
@@ -124,11 +141,26 @@ function PageList({ title }: { title: string }) {
     [],
   );
   return (
-    <div className="space-y-3">
+    <PageLayout variant="list">
       <PageHeader title={title} menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]} />
       <DataGrid<JournalEntry> storageKey={`pane-showcase-${title}`} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />
-    </div>
+    </PageLayout>
   );
+}
+
+const DOCUMENT_LINES: JournalLine[] = Array.from({ length: 40 }, (_, index) => ({
+  id: `line-${index + 1}`,
+  debitAccount: index % 2 ? "518001" : "511001",
+  creditAccount: "321001",
+  amount: 1000 + index * 125,
+  text: `Ukázkový účetní řádek ${index + 1}`,
+  dimensionId: "d-cz-1",
+}));
+
+function LongDocument({ id }: { id: string }) {
+  const [value, setValue] = useState<DocumentHeaderValue>({ number: id, accountingDate: "2026-09-27", issueDate: "2026-09-27", description: "Kontrola nezávislého rolování a zoomu", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum" });
+  const [lines, setLines] = useState(() => DOCUMENT_LINES.map((line) => ({ ...line, id: `${id}-${line.id}` })));
+  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines" }} /></PageLayout>;
 }
 
 type InvoiceForm = { partner: string; amount: string; text: string };
@@ -217,7 +249,7 @@ type StoredLayout = SavedLayoutItem & { snapshot: LayoutSnapshot | null };
 /** Ukázka režimu více oken: rovnocenné záložky, maximalizace, koncepty a uložená rozložení. */
 export function PaneShowcase() {
   const [state, setState] = useState<PaneTabsState>(initialState);
-  const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1440);
+  const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1920);
   const [pinned, setPinned] = useState<string[]>(["/faktury-vydane", "/denik"]);
   const [layouts, setLayouts] = useState<StoredLayout[]>([]);
   const [demoKey, setDemoKey] = useState(0);
@@ -245,6 +277,7 @@ export function PaneShowcase() {
   }, [layouts, loaded]);
 
   const renderTab = (tab: PaneTab) => {
+    if (tab.route === "/doklad-a" || tab.route === "/doklad-b") return <LongDocument id={tab.route === "/doklad-a" ? "ID2026000101" : "ID2026000102"} />;
     if (tab.route === "/faktura") return <InvoiceDetail id={String(tab.params?.id ?? "")} />;
     if (tab.route === "/faktury-vydane") return <InvoiceList title={tab.title ?? "Vydané faktury"} />;
     return <PageList title={tab.title ?? "Stránka"} />;
@@ -293,10 +326,10 @@ export function PaneShowcase() {
           <li>6. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
         </ol>
 
-        <div className="overflow-auto rounded-lg border bg-muted p-3">
+        <div className="overflow-x-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
             <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
-            <div className="flex h-[600px]">
+            <div className="flex h-[600px] min-h-0 overflow-hidden">
               <DemoMenu layouts={layouts} setLayouts={setLayouts} />
               <PaneLayout
                 minPaneWidth={MIN_PANE_WIDTH}

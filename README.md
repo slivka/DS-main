@@ -18,6 +18,15 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.53.0 – rolování menu a panelů
+
+- `AppShell` drží výšku okna; menu, běžná stránka a každý panel rolují nezávisle. `PaneLayout` se ohlásí automaticky, takže aplikace nenastavuje odsazení ani overflow.
+- Nové `PageLayout variant="list" | "form"` rozlišuje seznam s gridem vyplňujícím panel a formulář rolovaný jako celek.
+- `DataGrid`, `TreeGrid`, `ZoomGrid` a `ZoomPane` přijímají `height="fill" | "auto"`; uvnitř listu je výchozí `fill`, jinde `auto`.
+- `GridPreferencesProvider` dodává a ukládá výchozí zoom a hustotu. V panelu jsou tyto hodnoty izolované v záložce a ukládají se i do snímku rozložení.
+- `PaneLayout` obnovuje pozici každé záložky i po obnovení stránky a exportuje `usePaneScrollElement`.
+- `JournalLinesEditor` roste s formulářem bez vlastního svislého posuvníku; záhlaví se drží pod skutečnou výškou pruhu akcí.
+
 ## Changelog 2.52.0 – Partneři D, část B
 
 - Nové `FieldValue` drží hodnotu jen ke čtení ve stejné výšce jako vstup a podporuje pravou doplňkovou akci přes `trailing`.

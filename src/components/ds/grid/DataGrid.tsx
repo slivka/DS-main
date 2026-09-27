@@ -22,6 +22,7 @@ import { GridExport, type GridExportData, type GridExtraExport } from "./grid-ex
 import { gridPrintParams, type GridPrintParam } from "./grid-print";
 import type { PrintContext } from "../print/report-pdf";
 import { GridZoomContext, ZoomControl, ZoomGrid, useGridZoom, useWheelZoom } from "./grid-zoom";
+import { usePageLayoutVariant } from "../layout/page-layout";
 import { useGridColumns } from "./grid-columns";
 import { ColumnResizeHandle } from "./grid-column-resize";
 import { ColumnPicker } from "./column-picker";
@@ -179,6 +180,8 @@ export type DataGridFilterChip = { id: string; label: string; onRemove?: () => v
 export type DataGridProps<Row> = {
   /** Klíč pro uložení nastavení gridu v prohlížeči. */
   storageKey: string;
+  /** Svislá výška gridu; v PageLayout list je výchozí fill, jinak auto. */
+  height?: "fill" | "auto";
   /** Nadpis gridu (může být ReactNode s vlastní hlavičkou). Když chybí, hlavička se nezobrazí. */
   title?: ReactNode;
   /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
@@ -348,6 +351,7 @@ const cellText = (v: unknown) => {
  */
 export function DataGrid<Row>({
   storageKey,
+  height,
   title,
   showTitle = false,
   hideTitleMark,
@@ -418,6 +422,8 @@ export function DataGrid<Row>({
   className,
   texts: textOverrides,
 }: DataGridProps<Row>) {
+  const pageVariant = usePageLayoutVariant();
+  const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const texts = useMemo(() => resolveGridTexts(textOverrides), [textOverrides]);
   const { confirm, confirmDialog } = useConfirmDialog();
   const [ownSelectMode, setOwnSelectMode] = useState(false);
@@ -827,7 +833,7 @@ export function DataGrid<Row>({
 
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
-      <div ref={blockRef} data-slot="data-grid" className={`@container flex w-full min-w-0 flex-col ${plain ? "max-w-full overflow-hidden" : "grid-connected-block overflow-hidden rounded-lg border shadow-panel"}`}>
+      <div ref={blockRef} data-slot="data-grid" data-grid-height={resolvedHeight} className={cn("@container flex w-full min-w-0 flex-col", resolvedHeight === "fill" && "min-h-0 flex-1", plain ? "max-w-full overflow-hidden" : "grid-connected-block overflow-hidden rounded-lg border shadow-panel")}>
         {showTitle && title ? (
           <GridTitleBar title={title} zoom={zoom} hideMark={hideTitleMark} />
         ) : null}
@@ -935,6 +941,7 @@ export function DataGrid<Row>({
             zoom={zoom}
             setZoom={setZoom}
             density={density}
+            height={resolvedHeight}
               className={`grid-table-surface min-w-0 max-w-full flex-1 ${hideToolbar ? "rounded-none border-t-0 !shadow-none" : "rounded-t-none border-t-0"} ${plain ? "rounded-b-lg !shadow-none" : paginated ? "rounded-b-none! border-b-0" : "rounded-b-none!"} ${className ?? ""}`}
             {...(loading !== undefined ? { loading } : {})}
           >

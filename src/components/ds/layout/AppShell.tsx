@@ -16,6 +16,7 @@ import type { OpenTabTarget } from "../panes/pane-state";
 import { filterNavGroups, highlightNavMatch, withNavSections } from "./nav-search";
 import { StatusBadge, type StatusTone } from "../data-display/status-badge";
 import { TruncatedText } from "../data-display/truncated-text";
+import { AppShellContentProvider } from "./page-layout";
 
 export type NavItem = {
   to: string;
@@ -154,6 +155,14 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   const sectionedGroups = useMemo(() => withNavSections(filteredGroups), [filteredGroups]);
   const enabledResults = filteredGroups.flatMap((group) => group.items).filter((item) => !item.disabled);
   const [highlighted, setHighlighted] = useState(0);
+  const navRef = useRef<HTMLElement>(null);
+  const [navEdges, setNavEdges] = useState({ top: false, bottom: false });
+
+  const updateNavEdges = useCallback(() => {
+    const node = navRef.current;
+    if (!node) return;
+    setNavEdges({ top: node.scrollTop > 1, bottom: node.scrollTop + node.clientHeight < node.scrollHeight - 1 });
+  }, []);
 
   useEffect(() => {
     setQuery("");
@@ -163,6 +172,16 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     if (focusSearch > 0) requestAnimationFrame(() => inputRef.current?.focus());
   }, [focusSearch]);
   useEffect(() => setHighlighted(0), [query]);
+  useEffect(() => {
+    updateNavEdges();
+    const node = navRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver(updateNavEdges);
+    observer.observe(node);
+    const content = node.firstElementChild;
+    if (content) observer.observe(content);
+    return () => observer.disconnect();
+  }, [filteredGroups, collapsed, updateNavEdges]);
 
   const activateResult = (event: ReactKeyboardEvent<HTMLInputElement>) => {
     const item = enabledResults[highlighted];
@@ -248,11 +267,17 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
             <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label="Smazat hledání" onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
           </div>
         ) : null}
-        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2" aria-label="Hlavní menu">
-          {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
-          {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
-          {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
-        </nav>
+        <div className="relative min-h-0 flex-1">
+          <nav ref={navRef} onScroll={updateNavEdges} className="ds-scroll-area flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-2" aria-label="Hlavní menu">
+            <div className="flex min-h-full flex-col">
+              {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
+              {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
+              {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
+            </div>
+          </nav>
+          <span aria-hidden data-nav-fade="top" data-visible={navEdges.top || undefined} />
+          <span aria-hidden data-nav-fade="bottom" data-visible={navEdges.bottom || undefined} />
+        </div>
       </div>
     </TooltipProvider>
   );
@@ -364,12 +389,26 @@ export function AppShell({
   const [centerContext, setCenterContext] = useState(true);
   const [searchOverlay, setSearchOverlay] = useState(false);
   const [focusSearch, setFocusSearch] = useState(0);
+  const [hasPaneLayout, setHasPaneLayout] = useState(false);
   const searchOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     applyFontScale();
     document.title = appName;
   }, [appName]);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const previousHtml = html.style.overflow;
+    const previousBody = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = previousHtml;
+      body.style.overflow = previousBody;
+    };
+  }, []);
 
   const resolvedGroups = navGroups ?? (items ? [{ id: "main", label: "", items }] : []);
   const legacyPanel: AppShellPanel | null = adminNav ? {
@@ -519,7 +558,7 @@ export function AppShell({
   }, [updateContextPosition]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div data-slot="app-shell" className="flex h-screen h-dvh flex-col overflow-hidden bg-background">
       <header ref={headerRef} className="relative z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
         {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
           {logo}
@@ -567,7 +606,7 @@ export function AppShell({
         </div>
       </header>
 
-      {!currentPanel ? subHeader : null}
+      {!currentPanel ? <div className="shrink-0">{subHeader}</div> : null}
 
       {currentPanel ? (
         <div data-slot="app-shell-panel-header" className={cn("flex min-h-11 shrink-0 items-center gap-2 border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
@@ -578,15 +617,17 @@ export function AppShell({
         </div>
       ) : null}
 
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
-        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden w-60 flex-col border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
-        <main className="min-w-0 flex-1 p-4">{children}</main>
+        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden min-h-0 w-60 flex-col overflow-hidden border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
+        <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
+          <AppShellContentProvider value={setHasPaneLayout}>{children}</AppShellContentProvider>
+        </main>
       </div>
     </div>
   );

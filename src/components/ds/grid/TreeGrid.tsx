@@ -36,6 +36,7 @@ import {
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { usePageLayoutVariant } from "../layout/page-layout";
 import type { ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
@@ -103,6 +104,8 @@ export interface TreeGridProps<Row extends TreeGridRow> {
   showTitle?: boolean;
   /** Klíč pro uložení zoomu a viditelnosti sloupců (výchozí z `exportName` / `title`). */
   storageKey?: string;
+  /** Svislá výška gridu; v PageLayout list je výchozí fill, jinak auto. */
+  height?: "fill" | "auto";
   /** Základ názvu souboru exportu; bez něj se tlačítko exportu nezobrazí. */
   exportName?: string;
   exportMeta?: ExcelExportMeta;
@@ -191,6 +194,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   title,
   showTitle = false,
   storageKey,
+  height,
   exportName,
   exportMeta,
   defaultCollapsed = false,
@@ -241,6 +245,8 @@ export function TreeGrid<Row extends TreeGridRow>({
   loading,
   className,
 }: TreeGridProps<Row>) {
+  const pageVariant = usePageLayoutVariant();
+  const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const t = { ...DEFAULT_TREE_GRID_TEXTS, ...texts };
   const sharedTexts = resolveGridTexts(gridTexts);
   const { confirm, confirmDialog } = useConfirmDialog();
@@ -457,7 +463,7 @@ export function TreeGrid<Row extends TreeGridRow>({
     );
 
   return (
-    <div ref={blockRef} className={cn("grid-connected-block @container flex min-w-0 flex-col overflow-hidden rounded-lg border shadow-panel", className)} data-slot="tree-grid">
+    <div ref={blockRef} className={cn("grid-connected-block @container flex min-w-0 flex-col overflow-hidden rounded-lg border shadow-panel", resolvedHeight === "fill" && "min-h-0 flex-1", className)} data-slot="tree-grid" data-grid-height={resolvedHeight}>
       {showTitle ? <div className="rounded-t-lg border bg-card px-3 py-2 font-semibold">{title}</div> : null}
       {period || book || contextRight ? <GridContextBar period={period} book={book} contextRight={contextRight} zoom={zoom} density={density} className={cn("border-t-0", showTitle ? "rounded-t-none" : "rounded-t-lg")} /> : null}
       <GridToolbar
@@ -510,7 +516,7 @@ export function TreeGrid<Row extends TreeGridRow>({
 
       {selectMode ? <div className="flex items-center gap-2 border-b border-l-4 border-l-primary bg-secondary/50 px-2 py-1.5 text-sm"><span className="text-muted-foreground">{sharedTexts.selectedRecords(formatAmount(selectedRows.length, 0))}</span><div className="ml-auto flex items-center gap-2">{selectionActions?.(selectedRows, clearSelection)}</div></div> : null}
 
-      <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} loading={loading} noFit className="rounded-t-none border-t-0">
+      <ZoomGrid zoom={zoom} setZoom={setZoom} density={density} loading={loading} height={resolvedHeight} className="rounded-t-none border-t-0">
         <Table className={cn(density === "compact" && "[&_td]:py-1 [&_th]:h-8")}>
           <TableHeader>
             <TableRow>
