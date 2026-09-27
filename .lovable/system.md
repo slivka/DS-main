@@ -312,3 +312,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Stav Zaúčtován řiďte přes `editableFields` (hlavička) a `linesEditorProps.editableFields` (řádky); `readOnly` jen pro uzamčené doklady.
 - Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
 - Platební kalendář vždy `PaymentScheduleEditor`; rozložení přes `generatePaymentSchedule`. Ukládá se celé pole jedním voláním.
+
+## Editace dokladu 2.48.0
+
+- Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
+- DUZP je ve sloupci 15 a Datum DPH ve sloupci 18 stejného řádku. Nápovědy data a kurzu se nezalamují, dokud nedosáhnou okraje formuláře.
+- Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
+- Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.

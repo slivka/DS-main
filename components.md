@@ -1,3 +1,9 @@
+## Editace dokladu 7 (2.48.0)
+
+- `DocumentForm.settings?: { onOpen(): void }` přidává „Nastavení…“ a `DocumentSettingsDialog` poskytuje řízené `value`, `onSave`, `documentTypeLabel`, `allowCounterpartySuggestions`, `busy` a `texts`.
+- `JournalLinesEditor` přidává `initialEmptyLine` a `showAllErrors`; nové prázdné řádky mají `JournalLine.isBlank`, dokud se uživatel nedotkne hodnoty.
+- Enter a Tab ukládají buňku a pokračují, `Shift` obrací směr; na konci se založí nový prázdný řádek. Prázdné hodnoty se nezobrazují jako nula ani pomlčka.
+
 # Komponenty design systému
 
 ## Doplnění editace dokladu 6 (2.44.0)

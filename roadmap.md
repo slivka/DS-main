@@ -1,3 +1,10 @@
+## Verze 2.48.0 (edit dokladu 7, část B)
+- [x] Zarovnat identitu, DPH data a jednořádkové nápovědy
+- [x] Upravit řádkovou buňku, prázdné hodnoty, Nedaňový a přidání řádku
+- [x] Sjednotit Enter / Tab navigaci a prázdné řádky s `isBlank`
+- [x] Zobrazit značku měny a přidat `DocumentSettingsDialog`
+- [x] Doplnit testy, dokumentaci, ukázku a vizuální kontrolu 560 / 1 280 / 1 920 px
+
 ## Verze 2.46.0 (Partneři, část B)
 - [x] LookupField a IcoField s digitsOnly
 - [x] CheckboxField, CheckboxGroup, SwitchField, SettingsSection a pravidlo v system.md

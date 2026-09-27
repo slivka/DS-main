@@ -30,7 +30,7 @@ export type JournalLine = {
   creditAccount?: string | null;
   /** Protiúčet u knih s pevným hlavním účtem. */
   counterAccount?: string | null;
-  amount: number;
+  amount?: number;
   text?: string;
   /** Společné hodnoty (režim sideFields="shared"). */
   dimensionId?: string | null;
@@ -53,6 +53,8 @@ export type JournalLine = {
   currency?: string;
   foreignAmount?: number;
   rate?: number;
+  /** Nedotčený prázdný řádek, který aplikace při ukládání vynechá. */
+  isBlank?: boolean;
 };
 
 /** Databázový řádek zápisu – jedna předkontace = jeden řádek. */

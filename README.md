@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.48.0 – editace dokladu 7, část B
+
+- `DocumentForm.settings` přidává položku „Nastavení…“ do nabídky a identifikační řádek používá měnovou značku.
+- `DocumentSettingsDialog` řídí nastavení zadávání a tisku přes `value` / `onSave`; pokladna může povolit návrhy protistrany.
+- `JournalLinesEditor.initialEmptyLine`, `showAllErrors` a `JournalLine.isBlank` podporují prázdný počáteční řádek; Enter a Tab pokračují další buňkou a na konci přidají řádek.
+- DUZP a Datum DPH jsou vedle sebe; nápovědy dat a kurzu zůstávají na jednom řádku, dokud nedosáhnou okraje formuláře.
+
 ## Changelog 2.46.0 – Partneři, část B
 
 - Nové: `LookupField` (ikonová akce v poli, režimy search / refresh / auto); `IcoField` na něm postavený s `digitsOnly` (výchozí true, jen číslice, max. 8).
