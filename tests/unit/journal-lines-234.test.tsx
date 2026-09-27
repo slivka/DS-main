@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { calculateLineAmount, formatJournalAccountDisplay, JournalLinesEditor, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
+import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 describe("JournalLinesEditor 2.34.0", () => {
   it("navrhne vyrovnání z rozdílu jen v limitu", () => {
@@ -40,7 +41,7 @@ describe("JournalLinesEditor 2.49", () => {
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "numberName")).toBe("501.100 - Spotřeba materiálu");
   });
   it("ve sdíleném režimu zobrazí společné sloupce a obnoví jejich validaci", () => {
-    const html = renderToStaticMarkup(<JournalLinesEditor
+    const html = renderToStaticMarkup(<TooltipProvider><JournalLinesEditor
       lines={[{ id: "1", debitAccount: "311000", creditAccount: "395000", amount: 100 }]}
       onChange={() => {}}
       accounts={[
@@ -51,7 +52,7 @@ describe("JournalLinesEditor 2.49", () => {
       homeCurrency="CZK"
       sideFields="shared"
       dimensionRequired
-    />);
+    /></TooltipProvider>);
     expect(html).toContain(">Zakázka<");
     expect(html).toContain(">VS<");
     expect(html).toContain(">Partner<");
