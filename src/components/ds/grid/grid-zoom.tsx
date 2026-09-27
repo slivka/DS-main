@@ -5,6 +5,10 @@ import { cn } from "../../../lib/utils";
 import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { usePane } from "../panes/pane-context";
+import { useTabDraft } from "../panes/pane-tab-store";
+import { usePageLayoutVariant } from "../layout/page-layout";
+import { useGridPreferences, type GridPreferenceValues } from "./grid-preferences";
 
 const MIN = 0.6;
 const MAX = 1.4;
@@ -75,50 +79,54 @@ export function useGridZoomContext() {
 }
 
 export function useGridZoom(storageKey: string) {
-  const [zoom, setZoom] = useState(1);
-  const [density, setDensity] = useState<GridDensity>("normal");
+  const pane = usePane();
+  const preferences = useGridPreferences();
+  const readDefaults = useCallback((): Required<GridPreferenceValues> => {
+    const provided = preferences?.getDefaults(storageKey);
+    if (provided) return { zoom: clamp(provided.zoom ?? 1), density: provided.density === "compact" ? "compact" : "normal" };
+    try {
+      const raw = localStorage.getItem(`zoom:${storageKey}`);
+      const density = localStorage.getItem(`density:${storageKey}`);
+      return { zoom: clamp(Number(raw) || 1), density: density === "compact" ? "compact" : "normal" };
+    } catch {
+      return { zoom: 1, density: "normal" };
+    }
+  }, [preferences, storageKey]);
+  const [tabPreferences, setTabPreferences] = useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "grid");
+  const [localValue, setLocalValue] = useState<Required<GridPreferenceValues>>(readDefaults);
+  const current = pane?.tabId ? tabPreferences[storageKey] ?? readDefaults() : localValue;
 
-  useEffect(() => {
-    const raw = localStorage.getItem(`zoom:${storageKey}`);
-    if (raw) setZoom(clamp(Number(raw) || 1));
-    const d = localStorage.getItem(`density:${storageKey}`);
-    setDensity(d === "compact" ? "compact" : "normal");
-  }, [storageKey]);
-
-  useEffect(() => {
-    const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; zoom?: number; density?: GridDensity }>).detail;
-      if (detail?.storageKey !== storageKey) return;
-      if (detail.zoom !== undefined) setZoom(clamp(detail.zoom));
-      if (detail.density) setDensity(detail.density);
-    };
-    window.addEventListener("grid-zoom-change", sync);
-    return () => window.removeEventListener("grid-zoom-change", sync);
-  }, [storageKey]);
+  const save = useCallback((next: Required<GridPreferenceValues>) => {
+    if (pane?.tabId) setTabPreferences((state) => ({ ...state, [storageKey]: next }));
+    else setLocalValue(next);
+    preferences?.onDefaultsChange(storageKey, next);
+    if (!preferences) {
+      try {
+        localStorage.setItem(`zoom:${storageKey}`, String(next.zoom));
+        localStorage.setItem(`density:${storageKey}`, next.density);
+      } catch { /* úložiště nemusí být dostupné */ }
+    }
+  }, [pane?.tabId, preferences, setTabPreferences, storageKey]);
 
   const updateDensity = useCallback(
     (next: GridDensity) => {
-      setDensity(next);
-      localStorage.setItem(`density:${storageKey}`, next);
-      window.dispatchEvent(new CustomEvent("grid-zoom-change", { detail: { storageKey, density: next } }));
+      save({ zoom: current.zoom, density: next });
     },
-    [storageKey],
+    [current.zoom, save],
   );
 
   const update = useCallback(
     (next: number) => {
       const v = clamp(next);
-      setZoom(v);
-      localStorage.setItem(`zoom:${storageKey}`, String(v));
-      window.dispatchEvent(new CustomEvent("grid-zoom-change", { detail: { storageKey, zoom: v } }));
+      save({ zoom: v, density: current.density });
     },
-    [storageKey],
+    [current.density, save],
   );
 
   return {
-    zoom,
+    zoom: current.zoom,
     setZoom: update,
-    density,
+    density: current.density,
     setDensity: updateDensity,
     min: MIN,
     max: MAX,
@@ -192,7 +200,8 @@ export function ZoomGrid({
   zoom,
   setZoom,
   className = "",
-  maxHeight = "calc(100vh - 20rem)",
+  maxHeight,
+  height,
   noFit = false,
   hiddenColumns,
   columnOrder,
@@ -206,6 +215,8 @@ export function ZoomGrid({
   setZoom?: (v: number) => void;
   className?: string;
   maxHeight?: string;
+  /** Výška podle rodiče (fill) nebo podle obsahu (auto). */
+  height?: "fill" | "auto";
   /** Vypnout automatickou výšku podle patičky – grid se roztáhne podle obsahu. */
   noFit?: boolean;
   /** 1-based indexy sloupců, které se mají skrýt (z `useGridColumns`). */
@@ -223,60 +234,12 @@ export function ZoomGrid({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const pageVariant = usePageLayoutVariant();
+  const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const gridId = `zg-${uid}`;
-
-  // Má-li tabulka patičku se součty, dopočítáme výšku tak, aby patička
-  // seděla na spodku okna a scrollovaly jen řádky.
-  const [fitHeight, setFitHeight] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (noFit) {
-      setFitHeight(null);
-      return;
-    }
-    const el = ref.current;
-    if (!el) return;
-    if (!el.querySelector("tfoot")) {
-      setFitHeight(null);
-      return;
-    }
-    const measure = () => {
-      const top = el.getBoundingClientRect().top;
-      // Prostor pod gridem (např. připojené stránkování) necháme viditelný.
-      let below = 0;
-      const sumBelow = (start: HTMLElement | null) => {
-        let sib = start;
-        while (sib) {
-          // Postranný panel (poznámky) je vedle gridu vo flex řádku, ne pod ním –
-          // jeho výška nesmie zmenšiť výšku gridu.
-          if (!sib.hasAttribute("data-grid-side-panel")) {
-            below += sib.getBoundingClientRect().height;
-          }
-          sib = sib.nextElementSibling as HTMLElement | null;
-        }
-      };
-      sumBelow(el.nextElementSibling as HTMLElement | null);
-      // Grid bývá zabajený ve flex řádku s postranným panelem – stránkování
-      // je pak sourozenec tohoto obalu, nikoli samotného gridu.
-      const parent = el.parentElement;
-      if (parent && parent !== el) {
-        sumBelow(parent.nextElementSibling as HTMLElement | null);
-      }
-      const h = Math.max(200, window.innerHeight - top - below - 16);
-      setFitHeight(`${Math.round(h)}px`);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(document.body);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [noFit, zoom, children]);
 
   useEffect(() => {
     const el = ref.current;
@@ -475,10 +438,11 @@ export function ZoomGrid({
       id={gridId}
 
       data-density={density ?? "normal"}
+      data-grid-height={resolvedHeight}
       className={
-        "zoom-grid overflow-auto rounded-lg border border-border bg-card shadow-panel " + className
+        cn("zoom-grid rounded-lg border border-border bg-card shadow-panel", resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)
       }
-      style={{ fontSize: gridFontSize(zoom), maxHeight: fitHeight ?? maxHeight }}
+      style={{ fontSize: gridFontSize(zoom), ...(maxHeight ? { maxHeight } : {}) }}
     >
       {hideCss && <style>{hideCss}</style>}
       <GridProgress show={loading} />
@@ -493,20 +457,24 @@ export function ZoomPane({
   zoom,
   setZoom,
   className = "",
-  maxHeight = "calc(100vh - 20rem)",
+  maxHeight,
+  height,
   children,
 }: {
   zoom: number;
   setZoom?: (v: number) => void;
   className?: string;
   maxHeight?: string;
+  height?: "fill" | "auto";
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const pageVariant = usePageLayoutVariant();
+  const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   useWheelZoom(ref, setZoom, zoom);
 
   return (
-    <div ref={ref} className={"overflow-auto " + className} style={{ maxHeight }}>
+    <div ref={ref} data-grid-height={resolvedHeight} className={cn(resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)} style={maxHeight ? { maxHeight } : undefined}>
       <div style={{ zoom: clamp(zoom) }}>{children}</div>
     </div>
   );

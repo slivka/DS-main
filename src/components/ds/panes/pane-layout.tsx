@@ -15,6 +15,8 @@ import {
 } from "./pane-context";
 import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
 import { evenWidths, findTab, paneKey, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
+import { useTabScrollRestore } from "./pane-tab-store";
+import { useAppShellPaneRegistration } from "../layout/page-layout";
 
 export type PaneLayoutTexts = PaneTabBarTexts &
   PaneChromeTexts & {
@@ -76,6 +78,11 @@ export interface PaneLayoutProps {
 /** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
 export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
   const api = usePaneTabs();
+  const register = useAppShellPaneRegistration();
+  useEffect(() => {
+    register?.(true);
+    return () => register?.(false);
+  }, [register]);
   if (!api) throw new Error("PaneLayout musí být uvnitř PaneTabsProvider.");
   return (
     <PaneLayoutInner
@@ -275,10 +282,18 @@ function PaneColumn({
   getIconByName: PaneChrome["getIcon"];
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: `area:${pane.id}`, data: { paneId: pane.id } });
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const activeId = pane.activeTab;
   const drag = useDraggable({ id: `header:${activeId ?? pane.id}`, data: { tabId: activeId, paneId: pane.id }, disabled: !activeId });
   const isActive = api.state.active === pane.id;
   const tab = pane.tabs.find((item) => item.id === pane.activeTab) ?? null;
+  useTabScrollRestore(tab?.id, scrollRef, "pane-scroll");
+  useEffect(() => {
+    if (!isActive) return;
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && (focused.closest("input,textarea,select,[role=grid],[role=dialog],[role=listbox]") || focused.isContentEditable)) return;
+    scrollRef.current?.focus({ preventScroll: true });
+  }, [isActive, tab?.id]);
   const tabApi: PaneApi | null = tab
     ? {
         paneId: pane.id,
@@ -347,7 +362,7 @@ function PaneColumn({
           texts={texts}
         />
       ) : null}
-      <div ref={setNodeRef} className={cn("min-h-0 flex-1 overflow-auto p-4", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
+      <div ref={(node) => { setNodeRef(node); scrollRef.current = node; }} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>
