@@ -22,7 +22,7 @@ describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
   it("nepoužívá globální grid-zoom-change a ukládá preference do záložky", () => {
     const source = readFileSync("src/components/ds/grid/grid-zoom.tsx", "utf8");
     expect(source).not.toContain("grid-zoom-change");
-    expect(source).toContain('useTabDraft<GridPreferenceValues>(tabId');
+    expect(source).toContain('useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId');
     expect(source).toContain("preferences?.getDefaults(storageKey)");
     expect(source).toContain('localStorage.getItem(`zoom:${storageKey}`)');
   });
