@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Settings, Sigma, type LucideIcon } from "lucide-react";
+import { AlertTriangle, ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Settings, Sigma, X, type LucideIcon } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
@@ -78,6 +78,7 @@ export type DocumentSaveAction = { onSave: () => void; disabled?: boolean; busy?
 export type DocumentPrimaryAction = { label: string; onClick: () => void; disabled?: boolean; busy?: boolean; icon?: LucideIcon };
 export type DocumentMoreAction = { id: string; label: string; onClick: () => void; icon?: LucideIcon; destructive?: boolean; disabled?: boolean; disabledReason?: string; separatorBefore?: boolean };
 export type DocumentSettingsAction = { onOpen: () => void };
+export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
 export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: ReactNode };
 export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
 export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
@@ -111,7 +112,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
-  partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
+  partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
   linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
@@ -160,6 +161,7 @@ export interface DocumentFormProps {
   primaryAction?: DocumentPrimaryAction;
   moreActions?: DocumentMoreAction[];
   settings?: DocumentSettingsAction;
+  error?: DocumentFormError;
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
   texts?: Partial<DocumentFormTexts>;
@@ -213,11 +215,13 @@ export function DocumentForm({
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
-  saveAction, primaryAction, moreActions = [], settings, readOnly = false, readOnlyReason, texts, className,
+  saveAction, primaryAction, moreActions = [], settings, error, readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
+  const errorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [error?.title, error?.message]);
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
   const normalizedType = documentType.toUpperCase();
@@ -279,6 +283,7 @@ export function DocumentForm({
     }}>
       <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />
       <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} texts={t} />
+      {error ? <div ref={errorRef} role="alert" data-slot="document-form-error" className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? "Doklad nelze uložit"}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label="Zavřít chybovou hlášku" onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
