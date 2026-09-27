@@ -215,6 +215,9 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const effectiveWidthRem = containerWidth / rootRemPx;
   const requestedColumnIds = columns.columns.filter((column) => columns.visible[column.id]).map((column) => column.id);
   const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, zoom, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / rootRemPx : undefined])) }), [effectiveWidthRem, zoom, mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, columns.widths, rootRemPx]);
+  const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
+  const compactAccounts = columnLayout.compactAccounts;
+  const visibleColumns = columns.columns.filter((column) => columns.visible[column.id] && !autoHidden.has(column.id)).sort((a, b) => a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0);
   // Šířky sloupců v rem včetně zoomu. Uložené šířky jsou v px při zoomu 100 % (úchyt ukládá šířku ÷ zoom),
   // proto se zoom násobí jen jednou. Text dostane explicitní zbytek šířky, nejméně textMinRem –
   // minWidth na <col> prohlížeče ignorují, s table-fixed platí jen width.
@@ -231,9 +234,6 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     result.text = Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed);
     return result;
   }, [visibleColumns, columns.widths, compactAccounts, columnLayout.customWidthsApplied, columnLayout.textMinRem, rootRemPx, zoom, effectiveWidthRem]);
-  const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
-  const compactAccounts = columnLayout.compactAccounts;
-  const visibleColumns = columns.columns.filter((column) => columns.visible[column.id] && !autoHidden.has(column.id)).sort((a, b) => a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0);
   const normalizedLines = React.useMemo(() => orderJournalLines(lines), [lines]);
   const displayedLines = React.useMemo(() => { const query = search.trim().toLocaleLowerCase("cs"); if (!query) return normalizedLines; return normalizedLines.filter((line) => [line.text, line.debitAccount, line.creditAccount, line.counterAccount, line.vs, line.partnerId, line.dimensionId, line.amount, line.foreignAmount, line.quantity, line.unitPrice].some((value) => String(value ?? "").toLocaleLowerCase("cs").includes(query))); }, [normalizedLines, search]);
   const regularLines = lines.filter((line) => !line.isRounding && !line.isFxRounding); const linesTotal = roundJournalAmount(regularLines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
