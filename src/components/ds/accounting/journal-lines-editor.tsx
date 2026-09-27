@@ -151,7 +151,7 @@ function SortableRow({ id, disabled, children }: { id: string; disabled: boolean
 /** Editovatelná mřížka předkontací s jednotnou měnou dokladu, řazením a rekapitulací. */
 export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesEditorProps>(function JournalLinesEditor({
   lines, onChange, accounts, dimensions = [], partners = [], units = [], onCreateUnit, documentCurrency, documentCurrencySymbol, homeCurrency, homeCurrencySymbol, rate = 1, rateAmount = 1,
-  sideFields = "split", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
+  sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
   isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, initialEmptyLine = false, showAllErrors = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
@@ -183,11 +183,13 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     { id: "row", label: t.row, locked: true }, { id: "text", label: t.text, locked: true }, { id: "debitAccount", label: t.debitAccount, locked: true }, { id: "creditAccount", label: t.creditAccount, locked: true },
     { id: "quantity", label: t.quantity, defaultVisible: false }, { id: "unitId", label: t.unit, defaultVisible: false }, { id: "unitPrice", label: t.unitPrice, defaultVisible: false, align: "right" },
     { id: "amount", label: foreign ? `Částka v ${documentMark}` : `Částka v ${homeMark}`, locked: true, align: "right" }, ...(foreign ? [{ id: "homeAmount" as const, label: `Částka v ${homeMark}`, defaultVisible: false, align: "right" as const }] : []),
-    { id: "debitDimensionId", label: t.debitDimension, defaultVisible: false }, { id: "creditDimensionId", label: t.creditDimension, defaultVisible: false },
-    ...SPLIT_COLUMNS.filter((id) => !["debitDimensionId", "creditDimensionId"].includes(id)).map((id) => ({ id, label: labels[id], defaultVisible: !["debitVs", "creditVs", "debitPartnerId", "creditPartnerId"].includes(id) && hasValue(id) })), { id: "actions", label: t.actions, locked: true, align: "right" },
+    ...(sideFields === "shared"
+      ? SHARED_COLUMNS.map((id) => ({ id, label: labels[id], locked: true }))
+      : SPLIT_COLUMNS.map((id) => ({ id, label: labels[id], defaultVisible: hasValue(id) }))),
+    { id: "actions", label: t.actions, locked: true, align: "right" },
   // Text overrides and current values intentionally rebuild the complete column model.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [mode, foreign, documentMark, homeMark, lines, t, counterColumn]);
+  ], [mode, foreign, documentMark, homeMark, lines, sideFields, t, counterColumn]);
   const columns = useGridColumns(`${storageKey}:v3`, columnDefs);
   const protectedColumns = columns.columns.filter((column) => column.defaultVisible === false && columns.visible[column.id]).map((column) => column.id);
   const effectiveWidthRem = containerWidth / rootRemPx;
@@ -216,7 +218,29 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const accountFor = (line: JournalLine, column: JournalLineColumn) => column === "counterAccount" ? line.counterAccount ?? (counterColumn ? line[counterColumn] : null) : line[column as "debitAccount" | "creditAccount"];
   const updateCalculated = (line: JournalLine, values: Partial<JournalLine>) => { const next = { ...line, ...values }; const calculated = calculateLineAmount(next.quantity, next.unitPrice); if (calculated !== undefined) { if (foreign) { next.foreignAmount = calculated; next.amount = roundJournalAmount(calculated * (rate || 0) / rateAmount); } else next.amount = calculated; } patch(line.id, next); };
   const canEditCell = (line: JournalLine, column: JournalLineColumn) => { if (line.isFxRounding) return false; if (line.isRounding) return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true; if (!editable.has(column)) return false; if (column === "amount" && calculateLineAmount(line.quantity, line.unitPrice) !== undefined) return false; return true; };
-  const validations = new Map(lines.map((line) => { const errors: JournalLineErrors = {}; const validateLine = showAllErrors || !line.isBlank || touchedRows.current.has(line.id); if (validateLine && !line.isRounding && !line.isFxRounding) { if (!line.debitAccount) errors.debitAccount = t.debitRequired; if (!line.creditAccount) errors.creditAccount = t.creditRequired; if (!Number(line.amount)) errors.amount = t.amountRequired; } return [line.id, validateLine ? { ...errors, ...validate?.(line) } : {}]; }));
+  const sideIssues = (line: JournalLine): JournalLineErrors => {
+    const issues: JournalLineErrors = {};
+    (["debit", "credit"] as const).forEach((side) => {
+      if (sideFields === "shared" && sharedSide !== "both" && sharedSide !== side) return;
+      const code = side === "debit" ? line.debitAccount : line.creditAccount;
+      const account = code ? accountByCode.get(code) : undefined;
+      if (!account) return;
+      const rules = sideFieldRules(account, { dimensionRequired });
+      const sideLabel = side === "debit" ? t.sideDebit : t.sideCredit;
+      const vsValue = sideFields === "shared" ? line.vs : side === "debit" ? line.debitVs : line.creditVs;
+      const dimensionValue = sideFields === "shared" ? line.dimensionId : side === "debit" ? line.debitDimensionId : line.creditDimensionId;
+      if (rules.vsRequired && !vsValue) {
+        const column = sideFields === "shared" ? "vs" : side === "debit" ? "debitVs" : "creditVs";
+        issues[column] = t.missingVs.replace("{side}", sideLabel);
+      }
+      if (rules.dimensionRequired && !dimensionValue) {
+        const column = sideFields === "shared" ? "dimensionId" : side === "debit" ? "debitDimensionId" : "creditDimensionId";
+        issues[column] = t.missingDimension.replace("{side}", sideLabel);
+      }
+    });
+    return issues;
+  };
+  const validations = new Map(lines.map((line) => { const errors: JournalLineErrors = {}; const validateLine = showAllErrors || !line.isBlank || touchedRows.current.has(line.id); if (validateLine && !line.isRounding && !line.isFxRounding) { if (!line.debitAccount) errors.debitAccount = t.debitRequired; if (!line.creditAccount) errors.creditAccount = t.creditRequired; if (!Number(line.amount)) errors.amount = t.amountRequired; Object.assign(errors, sideIssues(line)); } return [line.id, validateLine ? { ...errors, ...validate?.(line) } : {}]; }));
   const errorCount = [...validations.values()].reduce((sum, item) => sum + Object.values(item).filter(Boolean).length, 0);
   const displayValue = (line: JournalLine, column: JournalLineColumn | "homeAmount") => { if (column === "counterAccount") { const code = accountFor(line, column); const account = code ? accountByCode.get(code) : undefined; return code ? formatJournalAccountDisplay(code, account?.name, accountDisplay, compactAccounts) : ""; } if (ACCOUNT_COLUMNS.has(column as JournalLineColumn)) { const code = line[column as "debitAccount" | "creditAccount"]; const account = code ? accountByCode.get(code) : undefined; return code ? formatJournalAccountDisplay(code, account?.name, accountDisplay, compactAccounts) : ""; } if (DIMENSION_COLUMNS.has(column as JournalLineColumn)) return dimensions.find((item) => item.id === line[column as "dimensionId"])?.name ?? ""; if (PARTNER_COLUMNS.has(column as JournalLineColumn)) return partners.find((item) => item.id === line[column as "partnerId"])?.name ?? ""; if (column === "unitId") return units.find((item) => item.id === line.unitId)?.code ?? ""; if (column === "homeAmount") return line.amount == null && line.foreignAmount == null ? "" : formatAmount(Number(line.amount) || roundJournalAmount((line.foreignAmount || 0) * (rate || 0) / rateAmount), 2); if (column === "amount") { const amount = foreign ? line.foreignAmount : line.amount; return amount == null ? "" : formatAmount(Number(amount), 2); } if (column === "quantity") return line.quantity == null ? "" : new Intl.NumberFormat("cs-CZ", { maximumFractionDigits: 4 }).format(line.quantity); if (column === "unitPrice") return line.unitPrice == null ? "" : new Intl.NumberFormat("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(line.unitPrice); return String(line[column as JournalLineColumn] ?? ""); };
   const finish = () => setEditing(null); const cancel = () => { if (editing) onChange(lines.map((line) => line.id === editing.rowId ? editing.original : line)); setEditing(null); };
