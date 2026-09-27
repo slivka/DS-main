@@ -102,12 +102,12 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
           <DropdownMenu>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span data-slot="tooltip-anchor" className="inline-flex"><DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild>
                   <Button type="button" variant="ghost" size="sm" className="my-1 h-7 gap-1 px-2 text-xs" aria-label={t.overflow}>
                     <ChevronsRight className="size-4" />
                     {hidden.length}
                   </Button>
-                </DropdownMenuTrigger></span>
+                </DropdownMenuTrigger>
               </TooltipTrigger>
               <TooltipContent>{t.overflow}</TooltipContent>
             </Tooltip>

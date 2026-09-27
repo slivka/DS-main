@@ -227,11 +227,11 @@ function PaneButtons({ chrome, t, pageActions }: ChromeProps & { pageActions: Pa
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span data-slot="tooltip-anchor" className="inline-flex"><DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild>
                 <Button type="button" variant="ghost" size="icon" className="size-8" aria-label={t.more}>
                   <MoreHorizontal className="size-4" />
                 </Button>
-              </DropdownMenuTrigger></span>
+              </DropdownMenuTrigger>
             </TooltipTrigger>
             <TooltipContent>{t.more}</TooltipContent>
           </Tooltip>
