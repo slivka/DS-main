@@ -387,7 +387,7 @@ function AccountingFormsPage() {
         />
       </ShowcaseSection>
 
-      <ReportsShowcase />
+      {null}
     </ShowcaseLayout>
   );
 }
