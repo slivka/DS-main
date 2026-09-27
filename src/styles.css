@@ -1224,6 +1224,11 @@
   position: static;
 }
 
+.journal-lines-grid[data-grid-height="auto"] {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
 .ds-scroll-area {
   scrollbar-gutter: stable;
   scrollbar-width: thin;

@@ -284,6 +284,7 @@ function PaneColumn({
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: `area:${pane.id}`, data: { paneId: pane.id } });
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
   const activeId = pane.activeTab;
   const drag = useDraggable({ id: `header:${activeId ?? pane.id}`, data: { tabId: activeId, paneId: pane.id }, disabled: !activeId });
   const isActive = api.state.active === pane.id;
@@ -342,8 +343,10 @@ function PaneColumn({
     <section
       data-pane={pane.id}
       data-active={isActive ? "true" : undefined}
-      onPointerDownCapture={() => {
+      onPointerDownCapture={(event) => {
         if (!isActive) api.activatePane(pane.id);
+        const target = event.target;
+        if (target instanceof HTMLElement && !target.closest("input,textarea,select,button,a,[role=grid],[role=dialog],[role=listbox],[contenteditable=true]")) scrollRef.current?.focus({ preventScroll: true });
       }}
       data-flash={flashing ? "true" : undefined}
       className={cn(
@@ -363,11 +366,11 @@ function PaneColumn({
           texts={texts}
         />
       ) : null}
-      <div ref={(node) => { setNodeRef(node); scrollRef.current = node; }} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
+      <div ref={(node) => { setNodeRef(node); scrollRef.current = node; setScrollElement((current) => current === node ? current : node); }} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>
-              <PaneScrollContext.Provider value={scrollRef.current}>
+              <PaneScrollContext.Provider value={scrollElement}>
                 <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
                   {renderTab(tab, tabApi)}
                 </div>

@@ -92,7 +92,7 @@ export function useGridZoom(storageKey: string) {
       return { zoom: 1, density: "normal" };
     }
   }, [preferences, storageKey]);
-  const [tabPreferences, setTabPreferences] = useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "grid");
+  const [tabPreferences, setTabPreferences] = useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "gridPreferences");
   const [localValue, setLocalValue] = useState<Required<GridPreferenceValues>>(readDefaults);
   const current = pane?.tabId ? tabPreferences[storageKey] ?? readDefaults() : localValue;
 

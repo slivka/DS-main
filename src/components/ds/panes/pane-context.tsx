@@ -506,11 +506,20 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       };
     },
     getRecordNav,
-    serializeLayout: () => serializeLayout(stateRef.current, (tabId) => getTabDraft(tabId, "grid")),
+    serializeLayout: () => serializeLayout(stateRef.current, (tabId) => ({
+      state: getTabDraft(tabId, "grid"),
+      preferences: getTabDraft(tabId, "gridPreferences"),
+    })),
     applyLayout: (snapshot, options) => {
       const result = applyLayoutInState(stateRef.current, snapshot, options, isTabDirty);
       result.closedTabIds.forEach(clearTabState);
-      result.gridStates.forEach(({ tabId, grid }) => setTabDraft(tabId, grid, "grid"));
+      result.gridStates.forEach(({ tabId, grid }) => {
+        const stored = grid as { state?: unknown; preferences?: unknown } | undefined;
+        if (stored && ("state" in stored || "preferences" in stored)) {
+          if (stored.state !== undefined) setTabDraft(tabId, stored.state, "grid");
+          if (stored.preferences !== undefined) setTabDraft(tabId, stored.preferences, "gridPreferences");
+        } else setTabDraft(tabId, grid, "grid");
+      });
       setMaximized(null);
       lastMax.current = null;
       commit(result.state);
