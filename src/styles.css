@@ -1215,18 +1215,45 @@
   backdrop-filter: none;
 }
 
-.zoom-grid[data-grid-height="auto"] thead tr > :is(th, td) {
-  top: var(--pane-sticky-top, 0px);
+/* Záhlaví gridu: "none" = nepřilepené (výchozí u auto), "pane" = pod pruh akcí
+   v rolovací oblasti panelu (opt-in). !important přebije i skupinová záhlaví
+   (specifičnost 0,2,4) a připnuté buňky; vodorovné připnutí (left/right) zůstává. */
+.zoom-grid[data-sticky-header="none"] thead tr > :is(th, td) {
+  top: auto !important;
+}
+.zoom-grid[data-sticky-header="pane"] thead tr > :is(th, td) {
+  top: var(--pane-sticky-top, 0px) !important;
+}
+.zoom-grid[data-sticky-header="pane"] thead tr.grid-group-row ~ tr > :is(th, td) {
+  top: calc(var(--pane-sticky-top, 0px) + var(--grid-group-h, 1.9em)) !important;
 }
 
-.zoom-grid[data-grid-height="auto"] tfoot,
+/* V režimu auto se patička svisle nepřilepuje – ani připnuté buňky akcí. */
+.zoom-grid[data-grid-height="auto"] tfoot {
+  position: static;
+}
 .zoom-grid[data-grid-height="auto"] tfoot tr > :is(th, td) {
+  bottom: auto !important;
+}
+.zoom-grid[data-grid-height="auto"] tfoot tr > :is(th, td):not(.grid-pin-cell):not(.grid-pin-right-cell):not(:last-child) {
   position: static;
 }
 
+/* Grid řádků dokladu není rolovací kontejner (záhlaví se lepí k panelu);
+   sloupce se místo toho přesouvají do detailu. Když se nevejde ani minimum,
+   záloha je vodorovné rolování – nic se neořízne. */
 .journal-lines-grid[data-grid-height="auto"] {
   overflow-x: clip;
   overflow-y: visible;
+}
+.journal-lines-grid[data-grid-height="auto"][data-overflow="true"] {
+  overflow-x: auto;
+}
+.journal-lines-grid td { min-width: 0; }
+
+.app-shell-root {
+  height: 100vh;
+  height: 100dvh;
 }
 
 .ds-scroll-area {
@@ -1249,9 +1276,13 @@
 [data-nav-fade="top"] { top: 0; background: linear-gradient(to bottom, var(--sidebar), transparent); }
 [data-nav-fade="bottom"] { bottom: 0; background: linear-gradient(to top, var(--sidebar), transparent); }
 
+/* Minimální výška platí pro grid, ne pro stránku; když se nevejde, roluje panel. */
 [data-page-layout="list"] > [data-slot="data-grid"],
-[data-page-layout="list"] > [data-slot="tree-grid"] { min-height: 0; flex: 1 1 0%; }
-[data-page-layout][data-scrolled="true"] [data-slot="document-action-bar"] { box-shadow: var(--shadow-sm); }
+[data-page-layout="list"] > [data-slot="tree-grid"],
+[data-page-layout="list"] > [data-grid-height="fill"] { min-height: 15rem; flex: 1 1 0%; }
+[data-page-layout="list"] [data-grid-height="fill"] .zoom-grid,
+[data-page-layout="list"] .zoom-grid[data-grid-height="fill"] { min-height: 8rem; }
+[data-page-layout][data-scrolled="true"] :is([data-slot="document-action-bar"], [data-slot="page-header"][data-sticky="true"]) { box-shadow: var(--shadow-sm); }
 
 /* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
 .zoom-grid thead tr:last-child > :is(th, td) {
@@ -1938,7 +1969,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   [data-pane][data-print-hide="true"] {
     display: none !important;
   }
-  html, body, [data-slot="app-shell"], [data-slot="app-shell-main"], [data-pane-scroll], .zoom-grid[data-grid-height="fill"] {
+  html, body, [data-slot="app-shell"], [data-slot="app-shell-main"], [data-pane-scroll], [data-grid-height="fill"], [data-page-layout="list"] {
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;

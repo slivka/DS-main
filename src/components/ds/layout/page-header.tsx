@@ -2,6 +2,7 @@ import * as React from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Copy, Maximize2, Minimize2, MoreHorizontal, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
+import { usePageLayoutVariant } from "./page-layout";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,8 +52,11 @@ export function PageHeader({ title, titleSlot, titleBadge, description, actions,
     if (import.meta.env.DEV && description) console.warn("PageHeader: description se nezobrazuje – kontext patří do GridContextBar / horní lišty.");
   }, [chrome, actions, description]);
 
+  // Ve formulářové stránce se hlavička s akcemi přilepí nahoru; stín dostane po odrolování (PageLayout).
+  const layoutVariant = usePageLayoutVariant();
+  const sticky = layoutVariant === "form" && (!!actions || menuActions.length > 0);
   return (
-    <div className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", className)} {...props}>
+    <div data-slot="page-header" data-sticky={sticky ? "true" : undefined} className={cn("@container flex flex-wrap items-start justify-between gap-x-6 gap-y-3", sticky && "sticky top-0 z-30 -mx-4 -mt-4 bg-background px-4 pt-4 pb-2 transition-shadow", className)} {...props}>
       <div className="flex min-w-0 flex-1 items-start gap-2">
         <div className="min-w-0 flex-1">
           {titleSlot ? <h1 className="sr-only">{title}</h1> : null}

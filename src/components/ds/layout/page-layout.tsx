@@ -12,7 +12,11 @@ export function usePageLayoutVariant() {
   return useContext(PageLayoutContext);
 }
 
-/** Interní registrace PaneLayoutu do AppShellu – aplikace nic nenastavuje. */
+/**
+ * Interní registrace PaneLayoutu do AppShellu – aplikace nic nenastavuje.
+ * PaneLayout má být přímý obsah AppShellu (children); registruje se v useLayoutEffect,
+ * takže main přepne na režim bez paddingu a rolování ještě před prvním vykreslením.
+ */
 export function useAppShellPaneRegistration() {
   return useContext(AppShellContentContext);
 }
@@ -31,7 +35,8 @@ export function PageLayout({ variant = "form", children, className, ...props }: 
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    const root = sentinel?.closest<HTMLElement>("[data-pane-scroll]") ?? null;
+    // Rolovací oblast panelu, mimo panely rolovací main AppShellu.
+    const root = sentinel?.closest<HTMLElement>("[data-pane-scroll], [data-slot=\"app-shell-main\"]") ?? null;
     if (!sentinel || !root) return;
     const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), { root, threshold: 1 });
     observer.observe(sentinel);
@@ -43,7 +48,7 @@ export function PageLayout({ variant = "form", children, className, ...props }: 
         data-page-layout={variant}
         data-scrolled={scrolled || undefined}
         {...props}
-        className={cn("relative min-w-0", variant === "list" ? "flex h-full min-h-[15rem] flex-col gap-3" : "space-y-4", className)}
+        className={cn("relative min-w-0", variant === "list" ? "flex h-full flex-col gap-3" : "space-y-4", className)}
       >
         <span ref={sentinelRef} data-page-scroll-sentinel aria-hidden className="pointer-events-none absolute h-px w-px" />
         {children}
