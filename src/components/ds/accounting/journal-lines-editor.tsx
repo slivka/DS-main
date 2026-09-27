@@ -151,7 +151,7 @@ function SortableRow({ id, disabled, children }: { id: string; disabled: boolean
 /** Editovatelná mřížka předkontací s jednotnou měnou dokladu, řazením a rekapitulací. */
 export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesEditorProps>(function JournalLinesEditor({
   lines, onChange, accounts, dimensions = [], partners = [], units = [], onCreateUnit, documentCurrency, documentCurrencySymbol, homeCurrency, homeCurrencySymbol, rate = 1, rateAmount = 1,
-  sideFields = "split", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
+  sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
   isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, reorderable, initialEmptyLine = false, showAllErrors = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
