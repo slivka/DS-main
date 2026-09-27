@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.52.0",
+    "version": "2.53.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -18,7 +18,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "c16e769d46b0e2891be874748ec94758d44df34cf31ca3057806dc030155785b",
+      "#enrichment": "e5caf299c48b044c61c77924ee8e21cbfa6ba8afd448a67572ee9d34c473ed52",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
@@ -57,20 +57,20 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "85af74f98a24025c894b146834716c25",
+      ".lovable/system.md": "92035f352634f0a5b5362e82c80f2513",
       "AGENTS.md": "57251e41f94c58865cca2ebf202c7c35",
-      "README.md": "dfd3eb04486bbfbf2519aa1de2336031",
+      "README.md": "8748a376b025f8d0c0d30324a8cfd43b",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "10c913f64e150b41a28ec848c965b0b7",
+      "components.md": "03a76b65d245599db3fa25158f9955c4",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "7086703e62051ad723ed8975072dd7b0",
+      "package.json": "9b00767c8d6dc971a7c2a0d3618a53b9",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "f1f9a4392d161535b3674c77fda20963",
+      "roadmap.md": "7fbdecac73378ac386bbe4831a35282b",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -85,11 +85,11 @@
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "a0eeea29e7a402c22dca46d50a32d746",
       "src/components/ds/accounting/document-fields.ts": "27b38f8d4d751166df7de7d3279ed90f",
-      "src/components/ds/accounting/document-form.tsx": "dc0d60460993f45b03191580ee4cf6f9",
+      "src/components/ds/accounting/document-form.tsx": "a85d97cdc039f30835ffc6d517ede596",
       "src/components/ds/accounting/document-settings-dialog.tsx": "9467836f02c735e4a1bc979ddde885ce",
       "src/components/ds/accounting/document-status-badge.tsx": "0e82aae5b1a1884b27e3d0798d56974a",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
-      "src/components/ds/accounting/journal-lines-editor.tsx": "e21125e8869bf587b5b384aab5bf9d18",
+      "src/components/ds/accounting/journal-lines-editor.tsx": "e5955eef9c719407c3f7b75336b2f4e2",
       "src/components/ds/accounting/journal-lines-recap.tsx": "55a967c55f86c6fa2f671f261570cdca",
       "src/components/ds/accounting/journal-lines.ts": "606ab6ce597219c2c2b6704866841ae1",
       "src/components/ds/accounting/partner-select.tsx": "337f775971e5b9e387c19e09a6a4f8d1",
@@ -140,8 +140,8 @@
       "src/components/ds/form/suggest-input.tsx": "b947f66dc704b5d78a1b0f5a79a6f9d4",
       "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
       "src/components/ds/grid/ColumnFilter.tsx": "ecc87fbacc813e4a5dd7349852739018",
-      "src/components/ds/grid/DataGrid.tsx": "bf711ade0e63d0fae07f47fb3beff213",
-      "src/components/ds/grid/TreeGrid.tsx": "dc4a943034cc240433615154f8800d4c",
+      "src/components/ds/grid/DataGrid.tsx": "63cd6f189ad44d91ffe93b884ece2657",
+      "src/components/ds/grid/TreeGrid.tsx": "321d391e517145d94060ec1649c44771",
       "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
       "src/components/ds/grid/column-picker.tsx": "43bb5f5c304f5d3b60395d20312d6395",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
@@ -156,6 +156,7 @@
       "src/components/ds/grid/grid-more-menu.tsx": "43d5cc3d635b5b3be9a4b1ea7f7a66f2",
       "src/components/ds/grid/grid-pagination.tsx": "e7e6eef33aec4ea729741ea534eb75d4",
       "src/components/ds/grid/grid-period.ts": "577ac3b586c7c6ba80e47dbef9d3d001",
+      "src/components/ds/grid/grid-preferences.tsx": "74c6f259130d78b3ef65cc7d9c753f46",
       "src/components/ds/grid/grid-print.tsx": "60cf44f2df155060e51ed8b650e9dec0",
       "src/components/ds/grid/grid-refresh.tsx": "16454a2f53dbdce34162a6630a8dd0ca",
       "src/components/ds/grid/grid-search.tsx": "c939f18619ae419b790969d2fba8250a",
@@ -167,11 +168,11 @@
       "src/components/ds/grid/grid-texts.ts": "0e4ca7249dc56b3909423d100572dc43",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
       "src/components/ds/grid/grid-toolbar.tsx": "fb756e0a398457588d08cb64e2fb1190",
-      "src/components/ds/grid/grid-virtual.tsx": "2a75c762335526faa7da3d9a419b2f63",
-      "src/components/ds/grid/grid-zoom.tsx": "fdf8d0bc73641861d8911e78e918d170",
+      "src/components/ds/grid/grid-virtual.tsx": "5108097c9dd1061e16355e50dac2ed54",
+      "src/components/ds/grid/grid-zoom.tsx": "728fc58e310a449114c13e68b878f2b2",
       "src/components/ds/grid/view-mode-toggle.tsx": "0274321aa2a701445b7dec4fbff0fd1c",
-      "src/components/ds/index.ts": "910df9ecba7784af68759e5c5c47a413",
-      "src/components/ds/layout/AppShell.tsx": "ea96b110d9bf3f9f12247e78c0384a52",
+      "src/components/ds/index.ts": "9c88e9dff206ce1fb80921f4e1a8808e",
+      "src/components/ds/layout/AppShell.tsx": "1fd175ef3f2fcebe23ff4cd9e15f8d69",
       "src/components/ds/layout/FontSizeSetting.tsx": "08a4e1938f19a9631288ef96d4c2633f",
       "src/components/ds/layout/RecordDialog.tsx": "185266f09398b8969aa30ded8b54d67b",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
@@ -184,7 +185,8 @@
       "src/components/ds/layout/context-pill.tsx": "a02786206a69bb8efa555d8c06792f3d",
       "src/components/ds/layout/nav-search.tsx": "bc48b789b22a9b5cd023176b85ca0d40",
       "src/components/ds/layout/notification-bell.tsx": "2d49a01366e060df86283cd9af0c0b76",
-      "src/components/ds/layout/page-header.tsx": "07aab69328cd0b0d46e7ce1bd0e22093",
+      "src/components/ds/layout/page-header.tsx": "9d53cfa9e12c0b59bf7e7f5fd6bd3d96",
+      "src/components/ds/layout/page-layout.tsx": "29112e5705a251f61f408a96a7a25408",
       "src/components/ds/layout/page-tabs.tsx": "9e90b911648aa36d42dab2c342e3c4ff",
       "src/components/ds/layout/period-switcher.tsx": "3e037c273789cf5df59e0f2624d9cc97",
       "src/components/ds/layout/search-button.tsx": "65b85c2d056182cd9014930d4338aa7a",
@@ -195,19 +197,19 @@
       "src/components/ds/layout/user-menu.tsx": "dbe2649e35c4602e643dfc1d5fab752e",
       "src/components/ds/panes/draft-restored-banner.tsx": "109d3c126ba3f29b93fc1aa5dfc8e6a6",
       "src/components/ds/panes/layout-menu.tsx": "b9aaef49a24e7c91485d1e36553cafd6",
-      "src/components/ds/panes/pane-context.tsx": "07fbe5fbac275ca817b1554ff3ec94fa",
+      "src/components/ds/panes/pane-context.tsx": "d5298b61a020b4bbac8a1a9b6d792d89",
       "src/components/ds/panes/pane-layout-switcher.tsx": "a4e5eb53d508003985c54e4063313b50",
-      "src/components/ds/panes/pane-layout.tsx": "cf077b6e9319c2e4c86f7e649dfc7273",
+      "src/components/ds/panes/pane-layout.tsx": "91f795a8248766f2283ce2bdbb479e7e",
       "src/components/ds/panes/pane-link.tsx": "46c8b301eb472f9082a241b66cd53d04",
-      "src/components/ds/panes/pane-state.ts": "1a9f780f355d2902c44fc9b4df1a4020",
+      "src/components/ds/panes/pane-state.ts": "a0a84bd4643440afd36395951f57f637",
       "src/components/ds/panes/pane-tab-bar.tsx": "5492af43ae6a82425e404daac4ffdb58",
-      "src/components/ds/panes/pane-tab-store.ts": "b139badd702a13643ae21348b5f3d7d9",
+      "src/components/ds/panes/pane-tab-store.ts": "342ce6fbce3a9c823f2d5a25fc73a62d",
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/ds/print/cash-receipt-pdf.tsx": "8c0b4f8ddbfec494c8133e565d68f239",
       "src/components/ds/print/print-preview-dialog.tsx": "6bd5b921b454abf04ceb7bf524319b4d",
       "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
       "src/components/showcase/DocumentFormShowcase.tsx": "d5a7a37c0453bef31a809e07ac4fb303",
-      "src/components/showcase/PaneShowcase.tsx": "ddc7bf4d3687289868394cccd349ed96",
+      "src/components/showcase/PaneShowcase.tsx": "ed1d83c36e16e9e1073278fa9fab6f76",
       "src/components/showcase/PartnerShowcase.tsx": "076b6e884505b59fa80085d3b3c27b0d",
       "src/components/showcase/PrintShowcase.tsx": "a682a20ab45d9a7efb6b24066b80500e",
       "src/components/showcase/ReportsShowcase.tsx": "db91e431e0f3ba26d289af5b4186d14b",
@@ -306,7 +308,7 @@
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
       "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
       "src/start.ts": "5684c6ddeec813f1264536f3228817b1",
-      "src/styles.css": "48506fbd94094794ee94144ad2fd9ef8",
+      "src/styles.css": "ec3191cc1ac00c332f2f494bcaf1c542",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "92932493d010bc5e3f7052774dc0df00",
       "tests/e2e/document-date-link.spec.ts": "837c0f2ecba34fa90fdac0d4b439bd3c",
@@ -328,12 +330,16 @@
       "tests/unit/grid-toolbar-2211.test.ts": "a845b961ead2af2799f810f4307036e0",
       "tests/unit/journal-lines-234.test.tsx": "ed16a2b350cb26e3bb0e316fec7ebaeb",
       "tests/unit/journal-lines-width.test.ts": "039b3fb0bc539788f61ceb313a2d1dde",
+      "tests/unit/journal-width-zoom-253.test.ts": "37fef5aa4bb4689a5d123a7a2481b485",
       "tests/unit/nav-search.test.ts": "f1c39b11786ffadcedd2e614d1142635",
+      "tests/unit/pane-embedded-253.test.ts": "c7a3a0ff6154aa27d932d6c62cd213ca",
       "tests/unit/pane-state.test.ts": "5c7d3e02726f9486ff6e1d1ce0ce5677",
       "tests/unit/pane-tab-bar-228.test.ts": "74a64ff258a91daa3489748de3d44f3f",
       "tests/unit/pane-tabs-217.test.ts": "7b8c35b0c9c96170f93fa973f9a697fd",
       "tests/unit/partners-246.test.tsx": "f4887bad8c7abb1634359ed774bf46bd",
       "tests/unit/print-226.test.ts": "219feef30d78b1383544ab1b2b99b2bb",
+      "tests/unit/scrolling-fixes-253.test.ts": "404f19370d59014d5b3447320803ede7",
+      "tests/unit/scrolling-zoom-253.test.tsx": "3136b33830902074cf0483f9ed982aab",
       "tests/unit/suggest-input-232.test.tsx": "d9189a466d314bf91809aa1e051255ce",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
@@ -3268,6 +3274,37 @@
       ]
     },
     {
+      "name": "AppShellContentProvider",
+      "file": "src/components/ds/layout/page-layout.tsx",
+      "import_path": ""
+    },
+    {
+      "name": "PageLayout",
+      "file": "src/components/ds/layout/page-layout.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "list",
+            "form"
+          ],
+          "default": "form"
+        },
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "pointer-events-none absolute h-px w-px"
+        }
+      ]
+    },
+    {
       "name": "SectionHeading",
       "file": "src/components/ds/layout/section-heading.tsx",
       "import_path": "",
@@ -3359,6 +3396,11 @@
       "import_path": ""
     },
     {
+      "name": "PaneScrollContext",
+      "file": "src/components/ds/panes/pane-context.tsx",
+      "import_path": ""
+    },
+    {
       "name": "PaneTabsProvider",
       "file": "src/components/ds/panes/pane-context.tsx",
       "import_path": "",
@@ -3445,6 +3487,11 @@
           "name": "className",
           "type": "string",
           "default": "flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground"
+        },
+        {
+          "name": "embedded",
+          "type": "boolean",
+          "default": "false"
         }
       ],
       "usage": "Režim více oken s vždy viditelnou lištou rovnocenných záložek; musí být uvnitř PaneTabsProvider. Vykresluje jen aktivní záložku každého panelu.",
@@ -3741,6 +3788,14 @@
           "name": "storageKey",
           "type": "string",
           "required": true
+        },
+        {
+          "name": "height",
+          "type": "enum",
+          "values": [
+            "fill",
+            "auto"
+          ]
         },
         {
           "name": "title",
@@ -4325,6 +4380,18 @@
       "import_path": ""
     },
     {
+      "name": "GridPreferencesProvider",
+      "file": "src/components/ds/grid/grid-preferences.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "GridToolbarOverflowContext",
       "file": "src/components/ds/grid/grid-toolbar.tsx",
       "import_path": ""
@@ -4617,6 +4684,14 @@
         {
           "name": "storageKey",
           "type": "string"
+        },
+        {
+          "name": "height",
+          "type": "enum",
+          "values": [
+            "fill",
+            "auto"
+          ]
         },
         {
           "name": "exportName",

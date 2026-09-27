@@ -272,6 +272,12 @@ _Panely se stavem a kontextem_
 - Nezobrazujte pohled napříč prostory bez štítku provozovatele.
 - Nezobrazujte nastavení prostoru nebo firmy bez context.
 
+### AppShellContentProvider
+
+```ts
+import { AppShellContentProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### AsOfDateField
 
 ```ts
@@ -1116,6 +1122,7 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | Prop | Type | Default |
 |---|---|---|
 | `storageKey` | string | `—` |
+| `height` | fill · auto | `—` |
 | `title` | any | `—` |
 | `showTitle` | boolean | `false` |
 | `hideTitleMark` | boolean | `—` |
@@ -1972,6 +1979,18 @@ import { GridPeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 
 Volba celého, měsíčního, čtvrtletního, pololetního, YTD nebo vlastního rozsahu v mezích účetního období.
 
+### GridPreferencesProvider
+
+```ts
+import { GridPreferencesProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+
 ### GridProgress
 
 ```ts
@@ -2793,6 +2812,20 @@ Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirt
 - Vkládat akci Nový do záhlaví místo gridového addAction
 - Předávat description; kontext patří do GridContextBar nebo horní lišty
 
+### PageLayout
+
+```ts
+import { PageLayout } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | list · form | `form` |
+| `children` | any | `—` |
+| `className` | string | `pointer-events-none absolute h-px w-px` |
+
 ### PageTabs
 
 ```ts
@@ -2898,6 +2931,7 @@ Režim více oken s vždy viditelnou lištou rovnocenných záložek; musí být
 | `minPaneWidth` | number | `560` |
 | `texts` | any | `—` |
 | `className` | string | `flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground` |
+| `embedded` | boolean | `false` |
 
 **Examples:**
 
@@ -2940,6 +2974,12 @@ _Položka menu_
 **Avoid:**
 
 - Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče.
+
+### PaneScrollContext
+
+```ts
+import { PaneScrollContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
 
 ### PaneTabBar
 
@@ -4151,6 +4191,7 @@ Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako 
 | `title` | string | `—` |
 | `showTitle` | boolean | `false` |
 | `storageKey` | string | `—` |
+| `height` | fill · auto | `—` |
 | `exportName` | string | `—` |
 | `exportMeta` | any | `—` |
 | `defaultCollapsed` | boolean | `false` |
