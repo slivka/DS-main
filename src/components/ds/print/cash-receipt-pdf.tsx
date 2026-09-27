@@ -41,6 +41,16 @@ const LINE: [number, number, number] = [201, 208, 216];
 export const formatCashReceiptMoney = (value: number, currency: string, currencySymbol?: string) => `${value < 0 ? "−" : ""}${Math.abs(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol ?? currency}`;
 const formatDate = (value: string | Date) => (value instanceof Date ? value : new Date(value)).toLocaleDateString("cs-CZ");
 
+/** Číslo dokladu na tisku; vypnutý tisk čísla nechává pole prázdné. */
+export const cashReceiptNumberLabel = (input: Pick<CashReceiptPdfInput, "number" | "status" | "printNumber">) =>
+  input.printNumber === false ? "" : input.status === "draft" ? "—" : input.number || "—";
+
+/** Rozložení kopií na strany A4; při dvou na stránku se kopie skládají po dvou. */
+export function planCashReceiptPages(copies: CashReceiptCopies, twoPerPage: boolean, fullPage: boolean): Array<{ page: number; slot: 0 | 1; copy: boolean }> {
+  const pack = twoPerPage && !fullPage;
+  return Array.from({ length: copies }, (_, index) => ({ page: pack ? Math.floor(index / 2) : index, slot: (pack ? index % 2 : 0) as 0 | 1, copy: index > 0 }));
+}
+
 type PrintDoc = Awaited<ReturnType<typeof createPrintDocument>>;
 
 function field(doc: PrintDoc, label: string, value: string, x: number, y: number, width: number) {
