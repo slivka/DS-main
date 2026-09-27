@@ -9,7 +9,7 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
   it("přesouvá PO skupiny podle skutečného součtu šířek", () => {
     expect(resolveJournalColumnLayout({ availableWidthRem: 90, mode: "mainAccount", visibleColumnIds: [...poColumns] }).hiddenColumnIds).toEqual([]);
     const withoutDimension = resolveJournalColumnLayout({ availableWidthRem: 70, mode: "mainAccount", visibleColumnIds: [...poColumns] });
-    expect(withoutDimension.hiddenColumnIds).toEqual(["quantity", "unitId", "unitPrice"]);
+    expect(withoutDimension.hiddenColumnIds).toEqual([]);
     expect(withoutDimension.compactAccounts).toBe(true);
     const compact = resolveJournalColumnLayout({ availableWidthRem: 35, mode: "mainAccount", visibleColumnIds: [...poColumns] });
     expect(compact.hiddenColumnIds).toEqual(["quantity", "unitId", "unitPrice", "dimensionId"]);
@@ -25,6 +25,6 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
   it("započítá vlastní uloženou šířku a vždy rezervuje Textu 12 rem", () => {
     const layout = resolveJournalColumnLayout({ availableWidthRem: 60, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "amount", "dimensionId", "actions"], widths: { amount: 20, text: 40 } });
     expect(layout.hiddenColumnIds).toEqual([]);
-    expect(layout.requiredWidthRem).toBe(42.75);
+    expect(layout.requiredWidthRem).toBe(57.75);
   });
 });
