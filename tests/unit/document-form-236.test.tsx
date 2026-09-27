@@ -19,3 +19,14 @@ describe("DocumentForm 2.36.0 – limit a popisek haléřového vyrovnání", ()
     expect(html).not.toContain(">± Zaokrouhlení<");
   });
 });
+
+describe("DocumentForm 2.48", () => {
+  it("zobrazí symbol měny v identifikačním řádku a Nastavení v menu", async () => {
+    const onOpen = mock();
+    render(<DocumentForm {...baseProps} currencies={[{ code: "CZK", symbol: "Kč" }]} identity={{ items: ["PO", "CZK"], number: "PO1" }} settings={{ onOpen }} />);
+    expect(screen.getByText("Kč")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /další akce/i }));
+    fireEvent.click(screen.getByText("Nastavení…"));
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+});

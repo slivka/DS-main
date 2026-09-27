@@ -22,3 +22,19 @@ describe("JournalLinesEditor 2.34.0", () => {
     expect(reorderJournalLines(lines, "a", "b").map((line) => line.id)).toEqual(["b", "a", "fx", "r"]);
   });
 });
+describe("JournalLinesEditor 2.48", () => {
+  it("vytvoří počáteční prázdný řádek bez nulové částky a bez validace", async () => {
+    const onChange = mock();
+    const { JournalLinesEditor } = await import("@/components/ds/accounting/journal-lines-editor");
+    render(<JournalLinesEditor lines={[]} onChange={onChange} accounts={[]} mode="full" initialEmptyLine />);
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
+    expect(onChange.mock.calls[0][0][0]).toMatchObject({ isBlank: true, amount: undefined });
+    expect(screen.queryByText(/Chyby:/)).not.toBeInTheDocument();
+  });
+
+  it("tlačítko plus má úplný přístupný název", async () => {
+    const { JournalLinesEditor } = await import("@/components/ds/accounting/journal-lines-editor");
+    render(<JournalLinesEditor lines={[]} onChange={() => {}} accounts={[]} mode="full" />);
+    expect(screen.getByRole("button", { name: "Přidat řádek (Ctrl+Enter)" })).toHaveTextContent("＋");
+  });
+});
