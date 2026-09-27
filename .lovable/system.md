@@ -84,6 +84,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Edit vyvolaný z gridu se po Zrušit / Odstranit / Uložit vrací zpět na grid,
   odkud byl vyvolán.
 - Potvrzení vždy přes `ConfirmDialog`, nikdy `window.confirm`.
+- Chyby formuláře vždy zobrazuj přes `DocumentForm.error` jako pruh pod přilepeným pruhem akcí; nepoužívej holý `Alert` nad stránkou.
 - Výběry vždy `OptionSelect` / `EntitySelect` / `AccountSelect`, nikdy nativní
   `select`.
 - Výběr s jedinou možností se nezobrazuje jako zakázaný select, ale jako text hodnoty.

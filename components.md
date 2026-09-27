@@ -1,3 +1,10 @@
+## Doplnění editace dokladu 7 (2.49.0)
+
+- `JournalLinesEditor.accountDisplay?: "number" | "numberName"` má výchozí `number`; při zkrácení je název účtu v tooltipu.
+- Zakázka je volitelný sloupec a uživatelem zapnuté volitelné sloupce zůstávají viditelné. Detail řádku se skládá do jednoho, nejvýše dvou řádků.
+- `DocumentSettingsValue.accountDisplay` ukládá volbu Zkráceně / Celý.
+- `DocumentForm.error?: { title?: string; message: ReactNode; onClose?(): void }` zobrazuje jednotný chybový pruh pod akcemi formuláře.
+
 ## Editace dokladu 7 (2.48.0)
 
 - `DocumentForm.settings?: { onOpen(): void }` přidává „Nastavení…“ a `DocumentSettingsDialog` poskytuje řízené `value`, `onSave`, `documentTypeLabel`, `allowCounterpartySuggestions`, `busy` a `texts`.
