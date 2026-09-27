@@ -75,6 +75,11 @@ const newId = () => `line-${Math.random().toString(36).slice(2, 10)}`;
 export const roundJournalAmount = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const formatJournalAccountDisplay = (code: string, name: string | undefined, display: JournalAccountDisplay, compact = false) => `${formatAccountCode(code)}${name && display === "numberName" && !compact ? ` - ${name}` : ""}`;
 export const calculateLineAmount = (quantity?: number, unitPrice?: number) => quantity != null && unitPrice != null ? roundJournalAmount(quantity * unitPrice) : undefined;
+export const journalAmountLabels = (texts: Pick<JournalLinesEditorTexts, "amount" | "homeAmount" | "foreignAmount">, documentSymbol: string, homeSymbol: string) => ({
+  amount: texts.amount,
+  homeAmount: texts.homeAmount.replace("{symbol}", homeSymbol),
+  foreignAmount: texts.foreignAmount.replace("{symbol}", documentSymbol),
+});
 export const roundingSuggestion = ({ totalMode, expectedAmount, linesTotal, currentRounding = 0, limit = 0.5 }: { totalMode: "entered" | "computed"; expectedAmount?: number; linesTotal: number; currentRounding?: number; limit?: number }) => {
   if (totalMode === "computed") return roundJournalAmount(Math.round(linesTotal) - linesTotal);
   if (expectedAmount === undefined) return 0;
@@ -193,8 +198,9 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const mainOption = mainAccount ? accountByCode.get(mainAccount.accountId) : undefined;
   const counterColumn: "debitAccount" | "creditAccount" | null = mainAccount ? mainAccount.side === "MD" ? "creditAccount" : "debitAccount" : null;
   const documentMark = documentCurrencySymbol ?? documentCurrency; const homeMark = homeCurrencySymbol ?? homeCurrency;
-  const homeAmountLabel = t.homeAmount.replace("{symbol}", homeMark);
-  const foreignAmountLabel = t.foreignAmount.replace("{symbol}", documentMark);
+  const amountLabels = journalAmountLabels(t, documentMark, homeMark);
+  const homeAmountLabel = amountLabels.homeAmount;
+  const foreignAmountLabel = amountLabels.foreignAmount;
   const labels: Record<JournalLineColumn, string> = { counterAccount: t.counterAccount, debitAccount: t.debitAccount, creditAccount: t.creditAccount, amount: t.amount, foreignAmount: foreignAmountLabel, text: t.text, quantity: t.quantity, unitId: t.unit, unitPrice: t.unitPrice, dimensionId: t.dimension, vs: t.vs, partnerId: t.partner, debitDimensionId: t.debitDimension, creditDimensionId: t.creditDimension, debitVs: t.debitVs, creditVs: t.creditVs, debitPartnerId: t.debitPartner, creditPartnerId: t.creditPartner, nonTax: t.nonTax, currency: documentCurrency, rate: "Kurz" };
   const hasValue = (column: JournalLineColumn) => lines.some((line) => line[column] !== undefined && line[column] !== null && line[column] !== "");
   const columnDefs = React.useMemo<GridColumn<ColumnId>[]>(() => mode === "mainAccount" ? [
@@ -280,7 +286,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     });
     return issues;
   };
-  const validations = new Map(lines.map((line) => { const errors: JournalLineErrors = {}; const validateLine = showAllErrors || !line.isBlank || touchedRows.current.has(line.id); if (validateLine && !line.isRounding && !line.isFxRounding) { if (!line.debitAccount) errors.debitAccount = t.debitRequired; if (!line.creditAccount) errors.creditAccount = t.creditRequired; if (!Number(line.amount)) errors.amount = t.amountRequired; Object.assign(errors, sideIssues(line)); } return [line.id, validateLine ? { ...errors, ...validate?.(line) } : {}]; }));
+  const validations = new Map(lines.map((line) => { const errors: JournalLineErrors = {}; const validateLine = showAllErrors || !line.isBlank || touchedRows.current.has(line.id); const validatesRegularLine = validateLine && !line.isRounding && !line.isFxRounding; if (validatesRegularLine) { if (!line.debitAccount) errors.debitAccount = t.debitRequired; if (!line.creditAccount) errors.creditAccount = t.creditRequired; if (!Number(line.amount)) errors.amount = t.amountRequired; Object.assign(errors, sideIssues(line)); } return [line.id, validatesRegularLine ? { ...errors, ...validate?.(line) } : {}]; }));
   const validationErrors = lines.flatMap((line, lineIndex) => Object.entries(validations.get(line.id) ?? {}).flatMap(([field, message]) => message ? [{ line: lineIndex + 1, field, message }] : []));
   const validationSignature = JSON.stringify(validationErrors);
   const validationChangeRef = React.useRef(onValidationChange);

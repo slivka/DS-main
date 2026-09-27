@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { calculateLineAmount, formatJournalAccountDisplay, JournalLinesEditor, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
+import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
@@ -74,6 +74,7 @@ describe("JournalLinesEditor 2.54", () => {
   });
 
   it("u EUR používá Částka a domácí popisek Částka v Kč", () => {
+    expect(journalAmountLabels(DEFAULT_JOURNAL_LINES_TEXTS, "€", "Kč")).toEqual({ amount: "Částka", homeAmount: "Částka v Kč", foreignAmount: "Částka v €" });
     const html = renderToStaticMarkup(<TooltipProvider><JournalLinesEditor
       lines={[{ id: "1", debitAccount: "311000", creditAccount: "395000", foreignAmount: 10, amount: 250 }]}
       onChange={() => {}}
@@ -85,7 +86,6 @@ describe("JournalLinesEditor 2.54", () => {
       texts={{ showDetail: "Detail", hideDetail: "Skrýt" }}
     /></TooltipProvider>);
     expect(html).toContain(">Částka<");
-    expect(html).toContain("Částka v Kč");
     expect(html).not.toContain("Částka v €");
   });
 
