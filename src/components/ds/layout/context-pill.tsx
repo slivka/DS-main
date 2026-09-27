@@ -46,7 +46,9 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
       <TooltipProvider>
         <Tooltip>
           <Popover open={resolvedOpen} onOpenChange={setOpen}>
+            {/* Tooltip na obalu – vnořené asChild spouštěče (Tooltip + Popover) v Reactu 19 cyklí přes refy. */}
             <TooltipTrigger asChild>
+              <span data-slot="context-pill-trigger" className="inline-flex min-w-0 max-w-full">
               <PopoverTrigger asChild>
                 <Button
                   ref={ref}
@@ -70,6 +72,7 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground md:block" />
                 </Button>
               </PopoverTrigger>
+              </span>
             </TooltipTrigger>
             <TooltipContent>{tooltip ?? `${label}: ${value}`}</TooltipContent>
             <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
