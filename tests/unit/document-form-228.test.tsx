@@ -51,7 +51,7 @@ describe("DocumentForm 2.31.0", () => {
     const actionBar = html.match(/data-slot="document-action-bar"[^>]+/)?.[0] ?? "";
     expect(actionBar).not.toContain("border-b");
   });
-  it("zamkne IČ a DIČ propojeného partnera, ruční protistranu nechá editovat", () => {
+  it("zamkne IČO a DIČ propojeného partnera, ruční protistranu nechá editovat", () => {
     const partners = [{ id: "p1", name: "Beta Servis a.s.", ico: "27074358", dic: "CZ27074358", country: "CZ" }];
     const linked = form({ documentType: "PO", partners, value: { ...value, partnerId: "p1", counterpartyName: "Beta Servis a.s." } });
     const manual = form({ documentType: "PO", partners, value: { ...value, partnerId: null, counterpartyName: "Kurýr", counterpartyIco: "12345678", counterpartyDic: "CZ12345678" } });
@@ -59,7 +59,7 @@ describe("DocumentForm 2.31.0", () => {
     expect(linked).toContain('id="document-partner-dic" aria-readonly="true"');
     expect(manual).toContain('id="document-partner-ico"');
     expect(manual).toContain('value="12345678"');
-    expect(manual).toContain("IČ neprošlo kontrolou CZ");
+    expect(manual).toContain("IČO neprošlo kontrolou CZ");
     expect(manual).toContain('id="document-partner-dic"');
   });
   it("zobrazuje předávajícího jen u pokladního dokladu", () => {

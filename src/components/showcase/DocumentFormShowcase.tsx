@@ -56,7 +56,8 @@ export function DocumentFormShowcase() {
   const [invoiceLines, setInvoiceLines] = useState(INVOICE_LINES);
   const [schedule, setSchedule] = useState(SCHEDULE);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [documentSettings, setDocumentSettings] = useState<DocumentSettingsValue>({ suggestDescription: true, descriptionScope: "book", suggestCounterparty: true, counterpartyScope: "documentType", amountFromLines: "book", showQuantityColumns: true, offerPrintAfterSave: true, printTwoPerPage: false, printDocumentNumber: true, copies: 1 });
+  const [formError, setFormError] = useState(true);
+  const [documentSettings, setDocumentSettings] = useState<DocumentSettingsValue>({ suggestDescription: true, descriptionScope: "book", suggestCounterparty: true, counterpartyScope: "documentType", amountFromLines: "book", showQuantityColumns: true, offerPrintAfterSave: true, printTwoPerPage: false, printDocumentNumber: true, copies: 1, accountDisplay: "number" });
 
   const [posted, setPosted] = useState<DocumentHeaderValue>({ ...INVOICE_HEADER, number: "FP2026000655", amountTotal: 12100 });
   const [postedLines, setPostedLines] = useState(INVOICE_LINES);
@@ -115,15 +116,15 @@ export function DocumentFormShowcase() {
 
   return (
     <>
-      <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČ a DIČ zůstávají editovatelné a chybné české IČ se jen zvýrazní.">
+      <ShowcaseSection title="Pokladna – výdej kurýrovi bez partnera" description="Protistrana je jen text; ručně zadané IČO a DIČ zůstávají editovatelné a chybné české IČO se jen zvýrazní.">
         <DocumentForm title="Pokladní doklad – výdej" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "DAL", text: "211.001 - Pokladna CZK" }], number: courier.number }} directionBadge="out" value={{ ...courier, vatRelevant: courierVatRelevant }} onChange={(next) => { setCourier(next); setCourierVatRelevant(next.vatRelevant !== false); }} lines={courierLines} {...common} onLinesChange={setCourierLines}
-          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" settings={{ onOpen: () => setSettingsOpen(true) }} linesEditorProps={{ initialEmptyLine: true, storageKey: "showcase-doc-new-po" }}
+          books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" isNew mainSide="D" mainAccountLocked status="draft" settings={{ onOpen: () => setSettingsOpen(true) }} error={formError ? { message: "Doplňte účet a částku na řádku dokladu.", onClose: () => setFormError(false) } : undefined} linesEditorProps={{ initialEmptyLine: true, accountDisplay: documentSettings.accountDisplay, storageKey: "showcase-doc-new-po" }}
           accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
         <DocumentSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} value={documentSettings} onSave={(next) => { setDocumentSettings(next); setSettingsOpen(false); toast.success("Nastavení uloženo"); }} documentTypeLabel="Pokladní doklad – výdej" allowCounterpartySuggestions />
       </ShowcaseSection>
-      <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČ a DIČ.">
+      <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČO a DIČ.">
         <DocumentForm title="Pokladní doklad – příjem" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "MD", text: "211.001 - Pokladna CZK" }], number: cashIn.number }} directionBadge="in" value={cashIn} onChange={setCashIn} lines={[]} {...common}
           books={MOCK_BOOKS.filter((b) => b.id === "b-pd")} documentType="PO" mainSide="MD" mainAccountLocked status="filed" />
       </ShowcaseSection>
@@ -167,7 +168,7 @@ export function DocumentFormShowcase() {
         />
       </ShowcaseSection>
 
-      <ShowcaseSection title="Vydaná faktura – odběratel s IČ a DIČ"
+      <ShowcaseSection title="Vydaná faktura – odběratel s IČO a DIČ"
         description="editableFields povolí pouze popis a platební údaje; řádky mění jen popisné údaje. Uvolněná pozastávka je jen ke čtení.">
         <DocumentForm
           title="Vydaná faktura"

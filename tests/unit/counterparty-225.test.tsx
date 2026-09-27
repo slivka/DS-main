@@ -16,7 +16,7 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(filterCounterpartyPartners(partners, "alfa")).toHaveLength(1);
     expect(filterCounterpartyPartners(partners, "1234")).toHaveLength(1);
   });
-  it("IČ/DIČ bez partnera mají prázdnou hodnotu", () => {
+  it("IČO/DIČ bez partnera mají prázdnou hodnotu", () => {
     const html = render({ ...base, counterpartyName: "Kurýr" });
     expect(html).toContain("document-partner-ico");
     expect(html).toContain("document-partner-dic");

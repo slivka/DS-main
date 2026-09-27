@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
@@ -25,5 +26,25 @@ describe("DocumentForm 2.48", () => {
     const html = form({ currencies: [{ code: "CZK", symbol: "Kč" }], identity: { items: ["PO", "CZK"], number: "PO1" }, settings: { onOpen: () => {} } });
     expect(html).toContain(">Kč<");
     expect(html).toContain('aria-label="Další akce"');
+  });
+});
+
+describe("DocumentForm 2.49", () => {
+  it("zobrazí chybový pruh pod akcemi s výchozím nadpisem a zavřením", () => {
+    const html = form({ error: { message: "Doplňte účet", onClose: () => {} } });
+    expect(html).toContain('data-slot="document-form-error"');
+    expect(html).toContain("Doklad nelze uložit");
+    expect(html).toContain("Doplňte účet");
+    expect(html.indexOf('data-slot="document-action-bar"')).toBeLessThan(html.indexOf('data-slot="document-form-error"'));
+    expect(html).toContain('aria-label="Zavřít chybovou hlášku"');
+  });
+});
+
+describe("DocumentSettingsDialog 2.49", () => {
+  it("veřejná hodnota obsahuje volbu zobrazení účtu", () => {
+    const source = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
+    expect(source).toContain('accountDisplay: DocumentAccountDisplay');
+    expect(source).toContain('Zkráceně – 501.100');
+    expect(source).toContain('Celý – 501.100 - Spotřeba materiálu');
   });
 });

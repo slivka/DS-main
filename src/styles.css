@@ -544,6 +544,9 @@
 .journal-grid-cell[data-invalid="true"] { box-shadow: inset 0 0 0 1px var(--destructive); }
 .journal-grid-cell[data-invalid="true"]:focus-within { box-shadow: inset 0 0 0 2px var(--destructive); }
 .journal-cell-editor, .journal-cell-editor :is(button, input, [role="combobox"]) { width: 100%; min-width: 0; border-color: transparent !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
+.journal-line-detail-grid { grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr)); }
+.journal-line-detail-grid > .journal-detail-narrow { min-width: 7rem; }
+.journal-line-detail-grid > .journal-detail-wide { min-width: 11rem; }
 
 /* Jednotný aktivní stav vyhledávání a filtrů ve všech gridech. */
 .zoom-filters .grid-toolbar-active {

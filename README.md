@@ -18,6 +18,13 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.49.0 – doplnění editace dokladu 7
+
+- `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; Zakázku lze zapnout ve Sloupcích a ručně zapnuté sloupce se automaticky nesbalí.
+- `DocumentSettingsDialog.value.accountDisplay` ukládá volbu Zkráceně / Celý; detail řádku se skládá do jednoho, nejvýše dvou řádků.
+- `DocumentForm.error` přidává jednotný zavíratelný chybový pruh pod akcemi formuláře.
+- Uživatelské popisky jsou sjednocené na „IČO“.
+
 ## Changelog 2.48.0 – editace dokladu 7, část B
 
 - `DocumentForm.settings` přidává položku „Nastavení…“ do nabídky a identifikační řádek používá měnovou značku.
@@ -91,8 +98,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.31.0 – rozvržení údajů dokladu
 
-- `DocumentForm` používá jednotnou dvacetisloupcovou mřížku: hlavní obsah zabírá 70 % a krátké údaje po 15 %; v úzkém panelu se pole skládají pod sebe, IČ a DIČ zůstávají vedle sebe.
-- Partner má vždy samostatná pole IČ a DIČ. Propojený partner je vyplní a zamkne; u ruční protistrany je lze upravit. Neplatné osmimístné české IČ pouze zobrazí upozornění.
+- `DocumentForm` používá jednotnou dvacetisloupcovou mřížku: hlavní obsah zabírá 70 % a krátké údaje po 15 %; v úzkém panelu se pole skládají pod sebe, IČO a DIČ zůstávají vedle sebe.
+- Partner má vždy samostatná pole IČO a DIČ. Propojený partner je vyplní a zamkne; u ruční protistrany je lze upravit. Neplatné osmimístné české IČO pouze zobrazí upozornění.
 - `DocumentHeaderValue` přidává `counterpartyIco`, `counterpartyDic` a `handedOverBy`; pokladní doklad zobrazuje Přijato od / Vyplaceno komu a externí číslo v partnerské sekci.
 - Sekce Data řadí Datum vystavení před Datum účetního případu. Sekce částky má kompaktní řádky a rozlišuje nadpisy Částka a Účtování a částka.
 - Identifikační badge je nižší a celý řádek je svisle vystředěný. Přilepený pruh akcí už nemá spodní linku.
@@ -142,7 +149,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 - Nová komponenta `CounterpartyField`: volný text protistrany s našeptáváním partnerů (název, IČO); výběr vyplní název i `partnerId`, ruční přepis vazbu zruší, ✕ „Zrušit propojení“ nechá text; `disabled` = text.
 - `DocumentHeaderValue.counterpartyName` (edituje se spolu s `partnerId`); DocumentForm místo PartnerSelect používá CounterpartyField, nový prop `onCreatePartner`.
-- Protistrana u všech druhů dokladů včetně ID (ne UZ). IČ a DIČ jen u propojeného partnera.
+- Protistrana u všech druhů dokladů včetně ID (ne UZ). IČO a DIČ jen u propojeného partnera.
 - Nové props `homeCurrency` (výchozí CZK) a `currencyLocked`; kurz se ukazuje jen u cizí měny, jinak se podsekce jmenuje „Měna“.
 - Období v pravém panelu šedě s nápovědou „Období se řídí datem účetního případu“.
 
@@ -172,8 +179,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 - Hlavička dokladu má základní a platební údaje vlevo a panel vlastností, kurzu a částky vpravo; v úzkém panelu se části skládají pod sebe.
 - Hlavní účet je první a jeho popisek se řídí druhem dokladu. Zamčený účet je prostý text a strana MD/DAL je uvnitř hodnoty.
-- Partner používá popisek podle druhu a směru dokladu a zobrazuje IČ i DIČ.
-- Pole jen pro čtení (hlavní účet, IČ, DIČ, Celkem za doklad při sčítání z rozpisu, Zaokrouhlení) jsou čistý text bez rámečku a plochy; částky jsou vpravo a v mono písmu.
+- Partner používá popisek podle druhu a směru dokladu a zobrazuje IČO i DIČ.
+- Pole jen pro čtení (hlavní účet, IČO, DIČ, Celkem za doklad při sčítání z rozpisu, Zaokrouhlení) jsou čistý text bez rámečku a plochy; částky jsou vpravo a v mono písmu.
 - Přibyly props `documentType`, `vat.periodLabel`, `rateAmount`, `PartnerOption.dic`, `AccountSelect.suffix`; `totalMode` lze řídit přes `editableFields`.
 - Jde o minor verzi bez zachování zpětné kompatibility rozvržení; význam stávajících props zůstává zachován.
 

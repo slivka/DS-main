@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.48.0",
+    "version": "2.49.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -6195,6 +6195,25 @@
           "default": "journal-lines"
         },
         {
+          "name": "initialEmptyLine",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "showAllErrors",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "accountDisplay",
+          "type": "enum",
+          "values": [
+            "number",
+            "numberName"
+          ],
+          "default": "number"
+        },
+        {
           "name": "recap",
           "type": "any"
         },
@@ -6212,15 +6231,15 @@
           "default": "cursor-grab text-muted-foreground active:cursor-grabbing"
         }
       ],
-      "usage": "Účetní rozpis s jednotnou lištou, hledáním, haléřovým vyrovnáním, souhrnnou patou a rekapitulacemi.",
+      "usage": "Účetní rozpis s pružnými sloupci, editací klávesnicí a volitelným zobrazením čísla či celého názvu účtu.",
       "examples": [
         {
-          "label": "Rozpis s rekapitulací",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} rounding={rounding} storageKey=\"invoice-lines\" />"
+          "label": "Rozpis se zkrácenými účty",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay=\"number\" storageKey=\"invoice-lines\" />"
         }
       ],
       "antipatterns": [
-        "Nepřidávejte samostatnou lištu nebo druhý údaj rozdílu mimo komponentu."
+        "Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích."
       ]
     },
     {
@@ -6516,18 +6535,21 @@
           "name": "className",
           "type": "string",
           "default": "rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
+        },
+        {
+          "name": "error",
+          "type": "object"
         }
       ],
-      "usage": "Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH, navazující daňová data, popisek období a varování pod jednotlivými daty.",
+      "usage": "Celostránkový účetní doklad s identitou, přilepenými akcemi, jednotným chybovým pruhem a editorem řádků.",
       "examples": [
         {
-          "label": "Doklad plátce s řízeným vlivem na DPH",
-          "code": "<DocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} dateWarnings={{ taxDate: yearWarning }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} />"
+          "label": "Doklad s chybou uložení",
+          "code": "<DocumentForm {...props} error={{ message: \"Doplňte povinné údaje.\" }} />"
         }
       ],
       "antipatterns": [
-        "Nemažte taxDate ani vatDate při vypnutí value.vatRelevant; komponenta je pouze skryje.",
-        "Nezobrazujte přepínač ani daňová pole, když firma k datu dokladu není plátcem DPH."
+        "Nezobrazujte chybu formuláře samostatným Alertem nad stránkou; použijte prop error."
       ]
     },
     {
