@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { amountInWordsCs, reportPageLabel } from "../../src/components/ds/print/report-pdf";
-import { formatCashReceiptMoney } from "../../src/components/ds/print/cash-receipt-pdf";
+import { cashReceiptNumberLabel, formatCashReceiptMoney, planCashReceiptPages } from "../../src/components/ds/print/cash-receipt-pdf";
 
 describe("české částky slovy", () => {
   it.each([
