@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const labelVariants = cva(
-  "typo-label block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  "typo-label -my-[0.13125rem] block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-[1.35] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 );
 
 const Label = React.forwardRef<
