@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { cn } from "../../../lib/utils";
 
@@ -27,12 +27,24 @@ export interface PageLayoutProps {
 
 /** Rozvržení stránky v panelu: list vyplní panel, form nechá rolovat celý obsah. */
 export function PageLayout({ variant = "form", children, className }: PageLayoutProps) {
+  const sentinelRef = useRef<HTMLSpanElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    const root = sentinel?.closest<HTMLElement>("[data-pane-scroll]") ?? null;
+    if (!sentinel || !root) return;
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), { root, threshold: 1 });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
   return (
     <PageLayoutContext.Provider value={variant}>
       <div
         data-page-layout={variant}
+        data-scrolled={scrolled || undefined}
         className={cn("min-w-0", variant === "list" ? "flex h-full min-h-[15rem] flex-col gap-3" : "space-y-4", className)}
       >
+        <span ref={sentinelRef} data-page-scroll-sentinel aria-hidden className="pointer-events-none absolute h-px w-px" />
         {children}
       </div>
     </PageLayoutContext.Provider>
