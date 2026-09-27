@@ -180,10 +180,16 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
 
 export const PaneApiContext = createContext<PaneApi | null>(null);
 export const PaneTabsContext = createContext<PaneTabsApi | null>(null);
+export const PaneScrollContext = createContext<HTMLElement | null>(null);
 
 /** Rozhraní záložky, ve které je komponenta vykresjená; mimo PaneLayout vrací null. */
 export function usePane(): PaneApi | null {
   return useContext(PaneApiContext);
+}
+
+/** Rolovací oblast aktuální záložky pro výjimečné přesuny a měření. */
+export function usePaneScrollElement(): HTMLElement | null {
+  return useContext(PaneScrollContext);
 }
 
 /** Rozhraní záložek v panelech; mimo PaneTabsProvider vrací null. */

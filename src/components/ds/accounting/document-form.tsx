@@ -222,7 +222,18 @@ export function DocumentForm({
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
   const errorRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   useEffect(() => { if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [error?.title, error?.message]);
+  useEffect(() => {
+    const root = formRef.current;
+    const bar = root?.querySelector<HTMLElement>('[data-slot="document-action-bar"]');
+    if (!root || !bar) return;
+    const update = () => root.style.setProperty("--pane-sticky-top", `${bar.getBoundingClientRect().height}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, []);
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
   const normalizedType = documentType.toUpperCase();
@@ -279,7 +290,7 @@ export function DocumentForm({
   }, ...tabs.filter((item) => item.id !== "lines")];
 
   return (
-    <TooltipProvider><div className={cn("@container space-y-4", className)} onKeyDown={(event) => {
+    <TooltipProvider><div ref={formRef} className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />

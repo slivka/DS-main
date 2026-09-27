@@ -363,12 +363,21 @@ export function useTabScrollRestore(tabId: string | null | undefined, ref: RefOb
   useEffect(() => {
     const element = ref.current;
     if (!element || !tabId) return;
-    const saved = getTabDraft<{ top: number; left: number }>(tabId, key);
+    let persisted: { top: number; left: number } | undefined;
+    try {
+      const raw = localStorage.getItem(`paneScroll:${tabId}:${key}`);
+      if (raw) persisted = JSON.parse(raw) as { top: number; left: number };
+    } catch { /* poškozený nebo nedostupný stav ignorujeme */ }
+    const saved = getTabDraft<{ top: number; left: number }>(tabId, key) ?? persisted;
     if (saved) {
       element.scrollTop = saved.top;
       element.scrollLeft = saved.left;
     }
-    const onScroll = () => setTabDraft(tabId, { top: element.scrollTop, left: element.scrollLeft }, key);
+    const onScroll = () => {
+      const value = { top: element.scrollTop, left: element.scrollLeft };
+      setTabDraft(tabId, value, key);
+      try { localStorage.setItem(`paneScroll:${tabId}:${key}`, JSON.stringify(value)); } catch { /* úložiště nemusí být dostupné */ }
+    };
     element.addEventListener("scroll", onScroll, { passive: true });
     return () => element.removeEventListener("scroll", onScroll);
   }, [tabId, ref, key]);

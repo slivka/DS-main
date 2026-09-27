@@ -7,6 +7,7 @@ import {
   buildTabMenuActions,
   PaneApiContext,
   PaneChromeContext,
+  PaneScrollContext,
   usePaneTabs,
   type PaneApi,
   type PaneChrome,
@@ -366,9 +367,11 @@ function PaneColumn({
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>
-              <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
-                {renderTab(tab, tabApi)}
-              </div>
+              <PaneScrollContext.Provider value={scrollRef.current}>
+                <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
+                  {renderTab(tab, tabApi)}
+                </div>
+              </PaneScrollContext.Provider>
             </PaneChromeContext.Provider>
           </PaneApiContext.Provider>
         ) : (
