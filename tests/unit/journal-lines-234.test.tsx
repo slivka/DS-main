@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
 import { calculateLineAmount, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 
@@ -24,7 +25,7 @@ describe("JournalLinesEditor 2.34.0", () => {
 });
 describe("JournalLinesEditor 2.48", () => {
   it("má veřejné props pro prázdný řádek a úplný přístupný název tlačítka", () => {
-    const source = require("fs").readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
     expect(source).toContain("initialEmptyLine?: boolean");
     expect(source).toContain("showAllErrors?: boolean");
     expect(source).toContain("isBlank: true");
