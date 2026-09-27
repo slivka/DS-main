@@ -146,7 +146,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
+            <span data-slot="tooltip-anchor" className="inline-flex"><DropdownMenuTrigger asChild>
               {trigger === "icon" ? (
                 <Button type="button" variant="ghost" size="icon" className={cn("size-8 shrink-0 text-sidebar-foreground", className)} aria-label={t.trigger}>
                   <MoreHorizontal className="size-4" aria-hidden="true" />
@@ -157,7 +157,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
                   <ChevronDown className="size-4" aria-hidden="true" />
                 </Button>
               )}
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger></span>
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>
         </Tooltip>

@@ -341,7 +341,7 @@ export function GridExpandControls({
         ) : (
           <DropdownMenu>
             <Tooltip>
-              <TooltipTrigger asChild><DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger></TooltipTrigger>
+              <TooltipTrigger asChild><span data-slot="tooltip-anchor" className="inline-flex"><DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger></span></TooltipTrigger>
               <TooltipContent>{expandLabel}</TooltipContent>
             </Tooltip>
             <DropdownMenuContent align="start">
