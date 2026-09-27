@@ -18,6 +18,14 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF exportu; webové rozhraní jej nepoužívá.
 
+## Changelog 2.52.0 – Partneři D, část B
+
+- Nové `FieldValue` drží hodnotu jen ke čtení ve stejné výšce jako vstup a podporuje pravou doplňkovou akci přes `trailing`.
+- Nové `SegmentedField` nabízí přístupnou volbu 2–3 typů záznamu s ovládáním šipkami.
+- `FieldGrid` podporuje `cols={12}` a `Field` prop `span`; pod 40 rem skládá pole po dvojicích.
+- `OptionSelect.placeholderValueLabel` nastaví vlastní text prázdné hodnoty.
+- Ukázka partnera používá schválené rozvržení firmy, osoby, adresy, doplňujících údajů a kontaktu.
+
 ## Changelog 2.51.0 – tisk pokladního dokladu podle nastavení
 
 - Pokladní doklad tiskne 1–5 kopií; při zapnutém skládání se kopie řadí po dvou na A4, jinak každá na vlastní stranu.

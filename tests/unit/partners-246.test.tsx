@@ -7,7 +7,9 @@ import {
   VatStatusBadge, RecordDialog, resolveLifecycleConfirm,
   activeStatusColumn, filterInactiveRows, activeToggleMenuItem, ShowInactiveToggle,
   OptionSelect, PartnerSelect, UnitSelect, selectableItems,
+  Field, FieldGrid, FieldValue, SegmentedField, nextSegmentedFieldValue,
 } from "../../src/components/ds";
+import { Input } from "../../src/components/ui/input";
 
 const noop = () => {};
 
@@ -119,5 +121,35 @@ describe("B8 aktivní / neaktivní", () => {
     expect(renderToStaticMarkup(<OptionSelect value="x" onChange={noop} options={[{ value: "x", label: "Stará", inactive: true }]} />)).toContain("neaktivní");
     expect(renderToStaticMarkup(<PartnerSelect partners={[{ id: "p", name: "Alfa", active: false }]} value="p" onChange={noop} />)).toContain("neaktivní");
     expect(renderToStaticMarkup(<UnitSelect options={[{ id: "u", code: "ks", name: "kus", isActive: false }]} value="u" onChange={noop} />)).toContain("neaktivní");
+  });
+});
+
+describe("Partneři D – formulářové rozvržení 2.52.0", () => {
+  it("FieldValue má stejnou výšku jako Input a podporuje trailing", () => {
+    const input = renderToStaticMarkup(<Input />);
+    const value = renderToStaticMarkup(<FieldValue trailing={<button aria-label="Akce" />}>Hodnota</FieldValue>);
+    expect(input).toContain("h-9");
+    expect(value).toContain("h-9");
+    expect(value).toContain('data-slot="field-value-trailing"');
+  });
+
+  it("SegmentedField má radiogroup a šipky cyklicky mění hodnotu", () => {
+    const options = [{ value: "company", label: "Firma" }, { value: "person", label: "Osoba" }] as const;
+    const html = renderToStaticMarkup(<SegmentedField options={[...options]} value="company" onChange={noop} ariaLabel="Typ partnera" />);
+    expect(html).toContain('role="radiogroup"');
+    expect(html).toContain('role="radio"');
+    expect(nextSegmentedFieldValue([...options], "company", 1)).toBe("person");
+    expect(nextSegmentedFieldValue([...options], "company", -1)).toBe("person");
+  });
+
+  it("FieldGrid podporuje 12 sloupců a mobilní dvojice", () => {
+    const html = renderToStaticMarkup(<FieldGrid cols={12}><Field label="Jméno" span={4}>A</Field><Field label="Příjmení" span={4}>B</Field></FieldGrid>);
+    expect(html).toContain("grid-cols-2");
+    expect(html).toContain("@min-[40rem]:grid-cols-12");
+    expect(html).toContain("@min-[40rem]:col-span-4");
+  });
+
+  it("OptionSelect přijímá vlastní text prázdné hodnoty", () => {
+    expect(renderToStaticMarkup(<OptionSelect value="" onChange={noop} options={[]} placeholderValueLabel="Neověřeno" />)).toContain("Neověřeno");
   });
 });

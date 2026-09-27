@@ -66,6 +66,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 **Vyhledávací pole:** `LookupField` (lupa / ⟳ v poli, `mode="auto"`), `IcoField` na něm s `digitsOnly`. **Adresa:** `AddressFieldGrid.mapAction` = Země 2/4 · prázdná 1/4 · „Mapa“ 1/4 vpravo, textové outline tlačítko. **Bankovní účty:** `parseCzAccount`, `isValidCzAccount` (modulo 11), `czIban`, `isValidIban`, `formatIban`. **Stav DPH:** `VatStatusBadge` (nespolehlivý plátce plně červeně).
 
+**Hodnota jen ke čtení:** stav nebo hodnota v řádku polí vždy patří do `FieldValue` uvnitř `Field` s popiskem; nikdy ji nevkládejte volně do buňky `FieldGrid`. **Typ záznamu:** volbu 2–3 vzájemně výlučných typů (např. Firma / Osoba) zobrazujte přes `SegmentedField`, ne přes `OptionSelect`; `GridSegmentedToggle` je pouze pro gridy. Pro jemné rozvržení použijte `FieldGrid cols={12}` a `Field span={…}`; pod šířkou kontejneru 40 rem se pole skládají po dvojicích.
+
 ## Čísla a data
 
 - Tisíce odděluj mezerou – v editech, gridech, tiscích i exportech.

@@ -4,7 +4,8 @@
 - [x] Rozšířit FieldGrid na 12 sloupců a Field o řízený span
 - [x] Doplnit vlastní text prázdné hodnoty OptionSelect
 - [x] Přestavět ukázku karty partnera podle schváleného rozvržení
-- [ ] Doplnit katalog, pravidla, testy a vizuální kontrolu
+- [x] Doplnit katalog a pravidla
+- [ ] Dokončit testy a vizuální kontrolu
 
 ## Verze 2.51.0 (tisk pokladního dokladu podle nastavení)
 - [x] Rozšířit počet kopií pokladního dokladu na 1–5 a skládat je po dvou na A4

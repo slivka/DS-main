@@ -11,6 +11,7 @@ import {
   FormSection,
   GridRowMenu,
   IcoField,
+  LegalFormField,
   LookupField,
   OptionSelect,
   RecordDialog,
@@ -186,7 +187,7 @@ export function PartnerShowcase() {
             {kind === "company" ? (
               <>
                 <Field label="Právní forma" className="@min-[40rem]:col-span-2">
-                  <OptionSelect value={companyDetails.legalForm} onChange={(legalForm) => setCompanyDetails((v) => ({ ...v, legalForm }))} options={[{ value: "sro", label: "Společnost s ručením omezeným" }, { value: "as", label: "Akciová společnost" }]} placeholderValueLabel="Neověřeno" />
+                  <LegalFormField value={companyDetails.legalForm} onChange={(legalForm) => setCompanyDetails((v) => ({ ...v, legalForm }))} options={[{ code: "sro", name: "Společnost s ručením omezeným" }, { code: "as", name: "Akciová společnost" }]} placeholder="Neověřeno" />
                 </Field>
                 <Field label="Datum vzniku"><Input type="date" value={companyDetails.founded} onChange={(e) => setCompanyDetails((v) => ({ ...v, founded: e.target.value }))} /></Field>
                 <Field label="Ukončeno"><Input type="date" value={companyDetails.ended} onChange={(e) => setCompanyDetails((v) => ({ ...v, ended: e.target.value }))} /></Field>
