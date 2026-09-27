@@ -161,6 +161,137 @@ function AccountingFormsPage() {
       breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}
     >
 
+      <ShowcaseSection
+        title="Validace buněk"
+        description="Vestavěná kontrola hlídá účty a nenulovou částku; aplikace přidává vlastní účetní pravidla."
+      >
+        <JournalLinesEditor
+          lines={validationLines}
+          onChange={setValidationLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          validate={(line) => ({
+            vs: line.vs ? undefined : "Variabilní symbol je pro tento doklad povinný",
+            dimensionId: line.dimensionId ? undefined : "Vyberte zakázku",
+          })}
+          sideFields="shared"
+          storageKey="showcase-journal-validation"
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Interní doklad podle kategorií účtů"
+        description="Na každém řádku MD i DAL účet, VS a partner zvlášť pro obě strany. Alt+↓ rozbalí detail řádku, Alt+N přepne Nedaňový u nákladového nebo výnosového účtu."
+      >
+        <JournalLinesEditor
+          lines={internalLines}
+          onChange={setInternalLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          dimensionRequired
+          storageKey="showcase-journal-internal"
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Faktura přijatá s hlavním účtem 321"
+        description="Hlavní strana DAL je jen ke čtení, zadává se pouze protiúčet. Poslední řádek je zaokrouhlení."
+      >
+        <JournalLinesEditor
+          lines={invoiceLines}
+          onChange={setInvoiceLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          mode="mainAccount" mainSide="D" mainAccount="321001"
+          totalAmount={12100.4}
+          totalMode="entered"
+          storageKey="showcase-journal-invoice"
+        
+          documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč"/>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Bankovní výpis v EUR"
+        description="Částka v Kč se dopočítá z kurzu; v patičce je vidět, kolik zbývá rozepsat proti částce dokladu."
+      >
+        <JournalLinesEditor
+          lines={bankLines}
+          onChange={setBankLines}
+          accounts={MOCK_ACCOUNTS}
+          dimensions={MOCK_DIMENSIONS}
+          partners={MOCK_PARTNERS}
+          documentCurrency="EUR" documentCurrencySymbol="€"
+          homeCurrency="CZK" homeCurrencySymbol="Kč"
+          rate={24.8}
+          mode="mainAccount" mainSide="MD" mainAccount="221002"
+          totalAmount={24800.3}
+          totalMode="entered"
+          rounding={{ value: bankLines.find((line) => line.isRounding)?.amount ?? 0, onChange: (amount) => setBankLines((current) => [
+            ...current.filter((line) => !line.isRounding),
+            ...(amount ? [{ id: "bv-r", debitAccount: "221002", creditAccount: "648001", amount, text: "Zaokrouhlení", isRounding: true }] : []),
+          ]) }}
+          storageKey="showcase-journal-bank"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Jednotlivé prvky"
+        description="Výběr partnera, knihy a zakázky, variabilní symbol a částka v měně dokladu."
+      >
+        <div className="grid gap-4 rounded-lg border bg-card p-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-partner">Partner</Label>
+            <PartnerSelect
+              id="demo-partner"
+              partners={MOCK_PARTNERS}
+              value={partnerId}
+              onChange={setPartnerId}
+              onCreate={() => toast.info("Otevře se formulář nového partnera")}
+              onLoadFromAres={() => toast.info("Načtení údajů z ARES")}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-book">Kniha</Label>
+            <BookSelect id="demo-book" books={MOCK_BOOKS} value={bookId} onChange={setBookId} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-single-book">Jediná dostupná kniha</Label>
+            <BookSelect id="demo-single-book" books={MOCK_BOOKS.slice(0, 1)} value={bookId} onChange={setBookId} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-dimension">Zakázka</Label>
+            <DimensionSelect
+              id="demo-dimension"
+              options={MOCK_DIMENSIONS}
+              value={dimensionId}
+              onChange={setDimensionId}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="demo-vs">Variabilní symbol</Label>
+            <VsField id="demo-vs" value={vs} onChange={setVs} />
+          </div>
+        </div>
+
+        <CurrencyAmount
+          className="mt-4 rounded-lg border bg-card p-4"
+          amount={amount}
+          onAmountChange={setAmount}
+          currency={currency}
+          onCurrencyChange={setCurrency}
+          currencies={CURRENCIES}
+          baseCurrency="CZK" homeCurrencySymbol="Kč"
+          rate={rate}
+          onRateChange={setRate}
+          idPrefix="demo-currency"
+        />
+      </ShowcaseSection>
+
     </ShowcaseLayout>
   );
 }
