@@ -22,7 +22,8 @@ describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
   it("nepoužívá globální grid-zoom-change a ukládá preference do záložky", () => {
     const source = readFileSync("src/components/ds/grid/grid-zoom.tsx", "utf8");
     expect(source).not.toContain("grid-zoom-change");
-    expect(source).toContain('useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId');
+    expect(source).toContain('useTabDraft<GridPreferenceMap>(pane?.tabId');
+    expect(source).toContain("mergeGridPreference(tabId, storageKey, next)");
     expect(source).toContain("preferences?.getDefaults(storageKey)");
     expect(source).toContain('localStorage.getItem(`zoom:${storageKey}`)');
   });
@@ -30,7 +31,7 @@ describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
   it("obnovuje scroll podle tabId i po reloadu", () => {
     const source = readFileSync("src/components/ds/panes/pane-tab-store.ts", "utf8");
     expect(source).toContain('`paneScroll:${tabId}:${key}`');
-    expect(source).toContain('localStorage.setItem(`paneScroll:${tabId}:${key}`, JSON.stringify(value))');
-    expect(source).toContain("element.scrollTop = saved.top");
+    expect(source).toContain("localStorage.setItem(storageId, JSON.stringify(value))");
+    expect(source).toContain("element.scrollTop = saved?.top ?? 0");
   });
 });
