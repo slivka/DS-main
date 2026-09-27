@@ -140,6 +140,7 @@ export * from "./accounting/journal-lines";
 export * from "./accounting/journal-lines-editor";
 export * from "./accounting/journal-lines-recap";
 export * from "./accounting/document-form";
+export * from "./accounting/document-settings-dialog";
 export * from "./accounting/document-fields";
 export * from "./accounting/payment-schedule";
 export * from "./accounting/payment-schedule-editor";

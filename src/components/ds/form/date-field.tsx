@@ -263,6 +263,6 @@ export function DateField({
         </PopoverContent>
       </Popover>
       </>}
-    </div>{warning ? <p className="mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
+    </div>{warning ? <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
   );
 }

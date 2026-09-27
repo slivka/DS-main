@@ -77,7 +77,7 @@ export function RateField({
         <div id={id} aria-readonly="true" className="min-h-9 text-sm font-mono tabular-nums">
           {value == null ? "—" : formatAmount(value, 3)}
         </div>
-        <p className="text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
+        <p className="field-overflow-hint text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
         {manual && note ? <p className="text-xs text-muted-foreground">{note}</p> : null}
       </div>
     );
@@ -114,7 +114,7 @@ export function RateField({
             </Tooltip>
           ) : null}
       </div>
-      <p className="text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
+      <p className="field-overflow-hint text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
        {manual && showNote ? (
         <div className="space-y-1">
           <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
