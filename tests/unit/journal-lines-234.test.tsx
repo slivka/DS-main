@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
-import { calculateLineAmount, formatJournalAccountDisplay, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
+import { renderToStaticMarkup } from "react-dom/server";
+import { calculateLineAmount, formatJournalAccountDisplay, JournalLinesEditor, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 
 describe("JournalLinesEditor 2.34.0", () => {
@@ -37,5 +38,24 @@ describe("JournalLinesEditor 2.49", () => {
   it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "number")).toBe("501.100");
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "numberName")).toBe("501.100 - Spotřeba materiálu");
+  });
+  it("ve sdíleném režimu zobrazí společné sloupce a obnoví jejich validaci", () => {
+    const html = renderToStaticMarkup(<JournalLinesEditor
+      lines={[{ id: "1", debitAccount: "311000", creditAccount: "395000", amount: 100 }]}
+      onChange={() => {}}
+      accounts={[
+        { code: "311000", name: "Odběratelé", category: "zavazky" },
+        { code: "395000", name: "Vnitřní zúčtování", category: "bilance" },
+      ]}
+      documentCurrency="CZK"
+      homeCurrency="CZK"
+      sideFields="shared"
+      dimensionRequired
+    />);
+    expect(html).toContain(">Zakázka<");
+    expect(html).toContain(">VS<");
+    expect(html).toContain(">Partner<");
+    expect(html).not.toContain(">MD zakázka<");
+    expect(html).toContain("Počet chyb: 2");
   });
 });
