@@ -55,12 +55,51 @@ describe("JournalLinesEditor 2.49", () => {
     /></TooltipProvider>);
     expect(html).toContain('data-auto-hidden="partnerId,vs,dimensionId"');
     expect(html).not.toContain(">MD zakázka<");
-    expect(html).toContain("Počet chyb: 2");
+    expect(html).not.toContain("Počet chyb:");
   });
   it("má Zakázku výchozí viditelnou a množstevní sloupce řídí prop", () => {
     const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
     expect(source).toContain("showQuantityColumns?: boolean");
     expect(source).toContain('{ id: "dimensionId", label: t.dimension }');
     expect(source).toContain("defaultVisible: showQuantityColumns");
+  });
+});
+
+describe("JournalLinesEditor 2.54", () => {
+  it("rezervuje pro Ř. 4,75 rem a místo pro trojciferné číslo", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain("row: 4.75");
+    expect(source).toContain('min-w-[3ch] text-right tabular-nums');
+    expect(source).toContain('journal-row-cell');
+  });
+
+  it("u EUR používá Částka a domácí popisek Částka v Kč", () => {
+    const html = renderToStaticMarkup(<TooltipProvider><JournalLinesEditor
+      lines={[{ id: "1", debitAccount: "311000", creditAccount: "395000", foreignAmount: 10, amount: 250 }]}
+      onChange={() => {}}
+      accounts={[]}
+      documentCurrency="EUR"
+      documentCurrencySymbol="€"
+      homeCurrency="CZK"
+      homeCurrencySymbol="Kč"
+      texts={{ showDetail: "Detail", hideDetail: "Skrýt" }}
+    /></TooltipProvider>);
+    expect(html).toContain(">Částka<");
+    expect(html).toContain("Částka v Kč");
+    expect(html).not.toContain("Částka v €");
+  });
+
+  it("skládá dvě detailní pole do jednoho pružného řádku", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain('journal-line-detail-grid flex flex-wrap items-end gap-3');
+    expect(source).not.toContain("journal-detail-columns-");
+    expect(source).toContain("<VsField");
+  });
+
+  it("předává viditelné chyby přes onValidationChange", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain("onValidationChange?: (count: number, errors:");
+    expect(source).toContain("validationChangeRef.current?.(validationErrors.length, validationErrors)");
+    expect(source).not.toContain("`${t.errors}: ${errorCount}`");
   });
 });

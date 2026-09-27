@@ -1,3 +1,11 @@
+## Grid řádků a nezalamování (2.54.0)
+
+- `Label`, `SectionHeading`, `PageHeader` a titulky dialogů jsou vždy jednořádkové; při nedostatku místa se zkrátí a plný text je v tooltipu.
+- `DocumentForm` přesouvá celá datová pole a drží DUZP s Datem DPH vpravo. Popisky „Celkem za doklad“ a „Sčítá se z rozpisu“ se nezalamují.
+- `JournalLinesEditor.onValidationChange?: (count, errors) => void` vrací jen aktuálně zobrazené chyby `{ line, field, message }`; `texts.errors` je zastaralé.
+- `JournalLinesEditor.texts.amount` vždy pojmenovává částku v měně dokladu. `homeAmount` a `foreignAmount` jsou šablony „Částka v {symbol}“.
+- Detail řádku je pružný pás, používá `VsField` a zalamuje jen celá pole.
+
 ## Rolování menu a panelů (2.53.0)
 
 - `PageLayout variant="list" | "form"` nastavuje model výšky stránky. `list` dává gridu zbývající výšku panelu; `form` roluje celý obsah.
