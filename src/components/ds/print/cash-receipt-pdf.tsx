@@ -4,6 +4,8 @@ import { OptionSelect } from "../form/option-select";
 import { amountInWordsCs, createPrintDocument, resolveCompanyLogo, type PrintCompany, type PrintContext } from "./report-pdf";
 import { PrintPreviewDialog } from "./print-preview-dialog";
 
+export type CashReceiptCopies = 1 | 2 | 3 | 4 | 5;
+
 export interface CashReceiptPdfInput {
   direction: "in" | "out";
   number?: string | null;
@@ -26,7 +28,11 @@ export interface CashReceiptPdfInput {
   issuedBy: string;
   approvedBy?: string;
   status: string;
-  copies: 1 | 2;
+  copies: CashReceiptCopies;
+  /** Skládat dvě kopie na jednu A4; výchozí true, u dlouhého dokladu se ignoruje. */
+  twoPerPage?: boolean;
+  /** Tisknout číslo dokladu; výchozí true, vypnuté nechá pole prázdné. */
+  printNumber?: boolean;
 }
 
 const NAVY: [number, number, number] = [28, 72, 119];
