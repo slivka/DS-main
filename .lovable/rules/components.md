@@ -75,6 +75,12 @@ _Třída nebo skupina_
 - Nativní select pro účty
 - Doplňování tečky do uloženého kódu
 
+### ActiveStatusBadge
+
+```ts
+import { ActiveStatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
 ### AddressFieldGrid
 
 ```ts
@@ -94,6 +100,7 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `children` | any | `—` |
 | `labels` | any | `—` |
 | `defaultCountry` | string | `SK` |
+| `mapAction` | any | `—` |
 
 ### Alert
 
@@ -567,6 +574,19 @@ import { CarouselPrevious } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 import { CashReceiptPrintDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Zobrazuje náhled a vytváří pokladní doklad; vstup přijímá značku měny dokladu i domácí měny a bez značky použije kód.
+
+**Examples:**
+
+_Pokladní doklad se značkami měn_
+```tsx
+<CashReceiptPrintDialog {...props} value={{ ...receipt, currency: 'EUR', currencySymbol: '€', homeCurrency: 'CZK', homeCurrencySymbol: 'Kč' }} />
+```
+
+**Avoid:**
+
+- Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol.
+
 ### CategorySelect
 
 ```ts
@@ -614,6 +634,64 @@ import { ChartTooltipContent } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45
 ```ts
 import { Checkbox } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### CheckboxField
+
+```ts
+import { CheckboxField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Zaškrtávátko s popiskem pro hodnotu formuláře ukládanou tlačítkem Uložit, výběr více položek nebo volbu před akcí.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `checked` | boolean | `—` |
+| `onCheckedChange` | function | `—` |
+| `label` | any | `—` |
+| `hint` | any | `—` |
+| `align` | natural · input | `natural` |
+
+**Examples:**
+
+_Vedle polí_
+```tsx
+<FieldGrid cols={4}>…<CheckboxField align="input" label="Plátce DPH" checked={v} onCheckedChange={setV} /></FieldGrid>
+```
+
+**Avoid:**
+
+- Holý Checkbox s nativním <label>
+- CheckboxField pro Aktivní u číselníku
+- Checkbox pro okamžitě ukládané nastavení – použijte SwitchField
+
+### CheckboxGroup
+
+```ts
+import { CheckboxGroup } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Skupina CheckboxField pod sebou nebo vedle sebe s volitelným nadpisem.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `direction` | vertical · horizontal | `vertical` |
+| `title` | any | `—` |
+| `children` | any | `—` |
+
+**Examples:**
+
+_Role_
+```tsx
+<CheckboxGroup direction="horizontal" title="Role"><CheckboxField … /></CheckboxGroup>
+```
+
+**Avoid:**
+
+- Vlastní flex obal s nejednotnými mezerami
 
 ### ChipMultiSelect
 
@@ -1229,7 +1307,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zobrazit přepínač Vstupuje do DPH a navazující daňová data.
+Celostránkový účetní doklad s identitou, přilepenými akcemi, jednotným chybovým pruhem a editorem řádků.
 
 **Props:**
 
@@ -1263,6 +1341,7 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 | `handedOverBySuggest` | any | `—` |
 | `descriptionSuggest` | any | `—` |
 | `accountingDateLink` | any | `—` |
+| `dateWarnings` | any | `—` |
 | `vat` | any | `—` |
 | `linesEditorProps` | any | `—` |
 | `roundingLimit` | number | `1` |
@@ -1275,6 +1354,8 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 | `saveAction` | any | `—` |
 | `primaryAction` | any | `—` |
 | `moreActions` | any | `—` |
+| `settings` | any | `—` |
+| `error` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `readOnlyReason` | any | `—` |
 | `texts` | any | `—` |
@@ -1282,15 +1363,33 @@ Skládá hlavičku a řádky účetního dokladu; u plátce může řízeně zob
 
 **Examples:**
 
-_Doklad plátce s řízeným vlivem na DPH_
+_Doklad s chybou uložení_
 ```tsx
-<DocumentForm {...props} value={{ ...value, vatRelevant, vatDate }} vat={{ visible: true, periodLabel, periodFiled, dateLink }} />
+<DocumentForm {...props} error={{ message: "Doplňte povinné údaje." }} />
 ```
 
 **Avoid:**
 
-- Nemažte taxDate ani vatDate při vypnutí value.vatRelevant; komponenta je pouze skryje.
-- Nezobrazujte přepínač ani daňová pole, když firma k datu dokladu není plátcem DPH.
+- Nezobrazujte chybu formuláře samostatným Alertem nad stránkou; použijte prop error.
+
+### DocumentSettingsDialog
+
+```ts
+import { DocumentSettingsDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `value` | any | `—` |
+| `onSave` | function | `—` |
+| `documentTypeLabel` | string | `—` |
+| `allowCounterpartySuggestions` | boolean | `false` |
+| `busy` | boolean | `—` |
+| `texts` | any | `—` |
 
 ### DocumentStatusBadge
 
@@ -1853,6 +1952,25 @@ _Asynchronní obnovení_
 import { GridResultCount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### GridRowMenu
+
+```ts
+import { GridRowMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Ikonové menu řádku gridu pro rowActions, např. Aktivovat / Deaktivovat.
+
+**Examples:**
+
+_Řádek_
+```tsx
+rowActions={(r) => <GridRowMenu items={[activeToggleMenuItem(r.active, (next) => setActive(r.id, next))]} />}
+```
+
+**Avoid:**
+
+- Textová tlačítka v řádku gridu
+
 ### GridSearch
 
 ```ts
@@ -2041,20 +2159,27 @@ import { HoverCardTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 import { IcoField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Pole IČO s vyhledáním v rejstříku; ve výchozím stavu přijímá jen číslice (max. 8).
+
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
-| `value` | string | `—` |
-| `onChange` | function | `—` |
 | `onLookup` | function | `—` |
-| `busy` | boolean | `false` |
-| `disabled` | boolean | `false` |
-| `placeholder` | string | `Zadejte IČO nebo název firmy` |
-| `className` | string | `pr-9` |
-| `resetKey` | any | `—` |
+| `digitsOnly` | boolean | `true` |
 | `lookupLabel` | string | `Vyhledat v rejstříku` |
 | `refreshLabel` | string | `Aktualizovat z rejstříku` |
+
+**Examples:**
+
+_IČO partnera_
+```tsx
+<IcoField value={ico} onChange={setIco} onLookup={loadFromAres} busy={busy} />
+```
+
+**Avoid:**
+
+- Ruční čištění mezer v aplikaci – řeší digitsOnly
 
 ### IcoLink
 
@@ -2085,6 +2210,25 @@ _Právnická osoba_
 **Avoid:**
 
 - Nevytvářejte odkaz pro neplatné nebo zahraniční IČO.
+
+### InactiveTag
+
+```ts
+import { InactiveTag } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Šedý štítek „neaktivní“ u již vybrané neaktivní položky ve výběrech.
+
+**Examples:**
+
+_Výběr_
+```tsx
+<InactiveTag />
+```
+
+**Avoid:**
+
+- Nabízení neaktivních položek ve výběru
 
 ### Input
 
@@ -2122,7 +2266,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Účetní rozpis s jednotnou lištou, hledáním, haléřovým vyrovnáním, souhrnnou patou a rekapitulacemi.
+Účetní rozpis s pružnými sloupci, editací klávesnicí a volitelným zobrazením čísla či celého názvu účtu.
 
 **Props:**
 
@@ -2142,7 +2286,7 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `rate` | number | `1` |
 | `rateAmount` | number | `1` |
 | `sideFields` | shared · split | `split` |
-| `sharedSide` | any | `—` |
+| `sharedSide` | any | `both` |
 | `mode` | internal · mainAccount | `internal` |
 | `mainSide` | MD · D | `—` |
 | `mainAccount` | string | `—` |
@@ -2156,6 +2300,10 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
 | `reorderable` | boolean | `—` |
+| `initialEmptyLine` | boolean | `false` |
+| `showAllErrors` | boolean | `false` |
+| `showQuantityColumns` | boolean | `false` |
+| `accountDisplay` | number · numberName | `number` |
 | `storageKey` | string | `journal-lines` |
 | `recap` | any | `—` |
 | `recapTabs` | any | `—` |
@@ -2164,14 +2312,14 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 
 **Examples:**
 
-_Rozpis s rekapitulací_
+_Rozpis se zkrácenými účty_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} rounding={rounding} storageKey="invoice-lines" />
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay="number" storageKey="invoice-lines" />
 ```
 
 **Avoid:**
 
-- Nepřidávejte samostatnou lištu nebo druhý údaj rozdílu mimo komponentu.
+- Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
 
 ### JournalLinesRecap
 
@@ -2296,6 +2444,40 @@ import { ListSkeleton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 ```ts
 import { LoadingOverlay } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### LookupField
+
+```ts
+import { LookupField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Vstup s ikonovou akcí vpravo (lupa / ⟳) pro vyhledání nebo obnovení údajů z registru. Režim auto přepne na ⟳ po vyplnění nebo úspěšné akci.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `mode` | search · refresh · auto | `auto` |
+| `onAction` | function | `—` |
+| `busy` | boolean | `false` |
+| `hideAction` | boolean | `false` |
+| `resetKey` | any | `—` |
+| `searchLabel` | string | `Vyhledat` |
+| `refreshLabel` | string | `Aktualizovat` |
+
+**Examples:**
+
+_Název z registru_
+```tsx
+<LookupField value={name} onChange={setName} onAction={lookupByName} busy={busy} searchLabel="Vyhledat podle názvu" />
+```
+
+**Avoid:**
+
+- Tlačítko registru vedle pole místo v poli
+- Vlastní input s absolutně umístěnou ikonou
 
 ### Menubar
 
@@ -2993,7 +3175,7 @@ import { ReadOnlyBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { RecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs.
+Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs. Stav záznamu přes status (Aktivní / Neaktivní vedle nadpisu) a lifecycleAction (Deaktivovat / Aktivovat vlevo vedle Odstranit, s dirty nabídne „Uložit změny a …“).
 
 **Props:**
 
@@ -3018,12 +3200,23 @@ Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte
 | `sidePanelExtra` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `tabs` | any | `—` |
+| `status` | any | `—` |
+| `lifecycleAction` | any | `—` |
+| `dirty` | boolean | `false` |
+| `cancelLabel` | string | `Zrušit` |
+| `saveAndActionLabel` | string | `Uložit změny a {label}` |
+| `dirtyConfirmTitle` | string | `Formulář obsahuje neuložené změny` |
 
 **Examples:**
 
 _Detail prostoru jen pro čtení_
 ```tsx
 <RecordDialog open={open} onOpenChange={setOpen} title={workspace.name} readOnly tabs={[{ value: "members", label: "Členové", content: <MembersGrid /> }]} />
+```
+
+_Stav a deaktivace_
+```tsx
+<RecordDialog status={{ active }} dirty={dirty} lifecycleAction={{ label: active ? "Deaktivovat" : "Aktivovat", confirm: { title: "Deaktivovat partnera?" }, onClick: ({ saveFirst }) => toggle(saveFirst) }} …/>
 ```
 
 **Avoid:**
@@ -3191,6 +3384,34 @@ import { SelectValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { Separator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### SettingsSection
+
+```ts
+import { SettingsSection } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Sekce okamžitých nastavení s jednotnou nápovědou „Změny se ukládají hned“.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | any | `—` |
+| `children` | any | `—` |
+| `instantSaveHint` | any | `Změny se ukládají hned` |
+| `className` | string | `mb-1` |
+
+**Examples:**
+
+_Sekce_
+```tsx
+<SettingsSection title="Firma">{switches}</SettingsSection>
+```
+
+**Avoid:**
+
+- Míchání SwitchField s poli čekajícími na Uložit
+
 ### Sheet
 
 ```ts
@@ -3256,6 +3477,25 @@ import { SheetTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { SheetTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### ShowInactiveToggle
+
+```ts
+import { ShowInactiveToggle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Standardní přepínač „Zobrazit neaktivní“ nad gridem číselníku; výchozí vypnuto.
+
+**Examples:**
+
+_Grid_
+```tsx
+<DataGrid filters={<ShowInactiveToggle pressed={show} onPressedChange={setShow} />} rows={filterInactiveRows(rows, show, (r) => r.active)} … />
+```
+
+**Avoid:**
+
+- Switch nebo OptionSelect pro filtr neaktivních
 
 ### SideBadge
 
@@ -3534,6 +3774,36 @@ _Historie popisů_
 ```ts
 import { Switch } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### SwitchField
+
+```ts
+import { SwitchField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Řádek okamžitého nastavení – popisek vlevo, přepínač vpravo, uloží se hned.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `checked` | boolean | `—` |
+| `onCheckedChange` | function | `—` |
+| `label` | any | `—` |
+| `hint` | any | `—` |
+| `busy` | boolean | `false` |
+
+**Examples:**
+
+_Nastavení_
+```tsx
+<SettingsSection title="Upozornění"><SwitchField label="Připomínat splatnost" checked={v} busy={saving} onCheckedChange={save} /></SettingsSection>
+```
+
+**Avoid:**
+
+- Přepínač ve formuláři s tlačítkem Uložit
+- Filtr ano/ne nad gridem – použijte GridToggleButton
 
 ### Table
 
@@ -3878,6 +4148,7 @@ import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `emptyText` | string | `Žádná měrná jednotka nenalezena` |
 | `createLabel` | function | `—` |
 | `className` | string | `size-3.5 shrink-0 opacity-50` |
+| `inactiveLabel` | string | `neaktivní` |
 
 ### UserMenu
 
@@ -3913,6 +4184,35 @@ _Základní použití_
 **Avoid:**
 
 - Nevkládejte pracovní prostory do vnořeného podmenu.
+
+### VatStatusBadge
+
+```ts
+import { VatStatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Stav DPH partnera se štítkem nespolehlivého plátce a datem ověření.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `status` | payer · identified_person · vat_group · non_payer · unverified | `—` |
+| `unreliableSince` | any | `—` |
+| `checkedAt` | any | `—` |
+| `texts` | any | `—` |
+| `className` | string | `inline-flex items-center rounded-sm border border-destructive bg-destructive px-2 py-0.5 text-xs font-medium leading-tight text-destructive-foreground` |
+
+**Examples:**
+
+_Nespolehlivý plátce_
+```tsx
+<VatStatusBadge status="payer" unreliableSince="2026-03-01" checkedAt="2026-09-26" />
+```
+
+**Avoid:**
+
+- Vlastní barevné štítky stavu DPH
 
 ### ViewModeToggle
 
