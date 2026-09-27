@@ -12,10 +12,10 @@
 <!-- LOVABLE:END -->
 
 - `DocumentForm` drží nadpis v `PageHeader`; identita a směr jsou v prvním řádku karty, odděleně od panelového ovládání.
-- `DocumentForm` skládá hlavičkové údaje do dvacetisloupcové mřížky 14/3/3; sjednocuje tak široká a krátká účetní pole.
+- `DocumentForm` má běžná pole v mřížce 14/3/3, ale Datumy ve flex řádku s DPH vpravo, aby se přesouvala celá pole.
 - Data DPH jsou vpravo; „Vstupuje do DPH“ je vlevo v pruhu akcí, vypnutí údaje jen skryje a svázané datum ukazuje zámek.
 - Značky měn v částkách a kurzech pocházejí vždy z dat; nepoužívejte pevné `Kč` ani `CZK`.
-- Formulář dokladu používá jedinou typografickou stupnici v `rem`; jednotky a zdroje zobrazuj pod polem a obsah pole se nesmí oříznout.
+- Formulář dokladu používá stupnici v `rem`; nadpisy a popisky se nezalamují, přesouvá se celé pole a zkrácení má tooltip.
 - Zaokrouhlení je připnutý poslední řádek `JournalLinesEditor`; lišta obsahuje jen akci pro jeho návrh a stav rozepsání.
 - Gridové a editorové lišty sdílejí `grid-toolbar-control`, protože všechny neaktivní akce musí mít stejný tokenový rámeček.
 - Obnovit znamená pouze znovu načíst serverová data a stojí úplně vpravo za oddělovačem; rozložení se obnovuje pouze v nabídce Sloupce.

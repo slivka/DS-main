@@ -323,7 +323,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Editace dokladu 2.48.0
 
 - Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
-- DUZP je ve sloupci 15 a Datum DPH ve sloupci 18 stejného řádku. Nápovědy data a kurzu se nezalamují, dokud nedosáhnou okraje formuláře.
+- Sekce Datumy je pružný řádek: každé datum je celé pole s minimální šířkou 10,5 rem, DUZP a Datum DPH tvoří pravou skupinu. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
 - Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.
 
@@ -353,3 +353,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
 - `usePaneScrollElement()` – rolovací prvek aktuální záložky.
 - `GridPreferencesProvider` – `getDefaults`, `onDefaultsChange`.
+
+## Pravidlo 20 – nadpisy a popisky (2.54.0, závazné)
+
+- Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
+- Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
+- `DocumentForm` skládá Datumy přes `flex flex-wrap items-start gap-3`; každé datum je `flex-none w-max min-w-[10.5rem]`, DUZP a Datum DPH jsou v pravé skupině `ml-auto flex gap-3`.
+- Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
+- `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.

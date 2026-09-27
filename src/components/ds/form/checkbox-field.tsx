@@ -39,7 +39,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
           {...props}
         />
         <div className="min-w-0 space-y-0.5">
-          <Label htmlFor={controlId} className={cn("font-normal leading-snug", disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")}>
+          <Label htmlFor={controlId} title={typeof label === "string" ? label : undefined} className={cn("font-normal", disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")}>
             {label}
           </Label>
           {hint ? <p id={hintId} className="text-xs text-muted-foreground">{hint}</p> : null}
@@ -65,7 +65,7 @@ export const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(func
   const titleId = useId();
   return (
     <div ref={ref} role="group" aria-labelledby={title ? titleId : undefined} data-slot="checkbox-group" className={cn("space-y-2", className)} {...props}>
-      {title ? <p id={titleId} className="text-sm font-medium">{title}</p> : null}
+      {title ? <p id={titleId} title={typeof title === "string" ? title : undefined} className="truncate whitespace-nowrap text-sm font-medium">{title}</p> : null}
       <div className={cn("flex", direction === "vertical" ? "flex-col gap-2" : "flex-row flex-wrap gap-x-6 gap-y-2")}>{children}</div>
     </div>
   );
@@ -94,7 +94,7 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
   return (
     <div data-slot="switch-field" aria-busy={busy || undefined} className={cn("flex items-center justify-between gap-4 py-1", className)}>
       <div className="min-w-0 space-y-0.5">
-        <Label htmlFor={controlId} className={cn("font-medium leading-snug", inactive ? "cursor-not-allowed" : "cursor-pointer", disabled && "opacity-60")}>
+        <Label htmlFor={controlId} title={typeof label === "string" ? label : undefined} className={cn("font-medium", inactive ? "cursor-not-allowed" : "cursor-pointer", disabled && "opacity-60")}>
           {label}
         </Label>
         {hint ? <p id={hintId} className="text-xs text-muted-foreground">{hint}</p> : null}

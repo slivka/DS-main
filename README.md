@@ -5,6 +5,13 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.54.0 – grid řádků a nezalamování
+
+- **BREAKING pro aplikace:** nadpisy a popisky jsou vždy jednořádkové; formuláře mají při nedostatku místa přesouvat celé pole, ne zalamovat text. Vlastní úzké mřížky nahraďte pružnými řádky s minimální šířkou pole v `rem`/`ch`.
+- `JournalLinesEditor.onValidationChange(count, errors)` nahrazuje počet chyb v patičce a umožňuje zobrazit chybu přes `DocumentForm.error`; `texts.errors` je zastaralé.
+- Sloupec Ř. bezpečně zobrazí trojciferná čísla, detail řádku skládá pole do jednoho řádku, pokud se vejdou, a cizoměnový sloupec se vždy jmenuje „Částka“.
+- Aktivní editor nemá rámeček; klávesový fokus má jemné podbarvení a chybná needitovaná buňka červený rohový trojúhelník s vysvětlením.
+
 ## Zapojení do aplikace
 
 `SlivkaProvider` zajistí React Query, tooltipy a toast notifikace. `SlivkaHead` v hlavičce načte IBM Plex Sans/Mono a nastaví motiv před prvním vykreslením.

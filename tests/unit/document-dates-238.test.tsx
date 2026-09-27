@@ -56,15 +56,16 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html).not.toContain(">Datum DPH<");
   });
 
-  it("kotví DUZP a Datum DPH ve sloupcích 15–20 za levými daty", () => {
+  it("drží DUZP a Datum DPH v pružné pravé skupině za levými daty", () => {
     const html = form({ vat: { visible: true } });
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
     const dates = html.slice(html.indexOf('data-slot="document-dates"'), html.indexOf(">Účtování a částka</h2>"));
-    expect(dates).toContain("@min-[40rem]:col-start-15");
-    expect(dates.match(/@min-\[40rem\]:col-start-15/g)?.length).toBe(1);
-    expect(dates).toContain("@min-[40rem]:col-start-18");
+    expect(dates).toContain("flex flex-wrap items-start gap-3");
+    expect(dates).toContain("ml-auto flex flex-wrap items-start gap-3");
+    expect(dates).toContain("min-w-[10.5rem]");
+    expect(dates).not.toContain("col-start-15");
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {

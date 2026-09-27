@@ -30,6 +30,6 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
   it("započítá vlastní uloženou šířku a vždy rezervuje Textu 12 rem", () => {
     const layout = resolveJournalColumnLayout({ availableWidthRem: 60, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "amount", "dimensionId", "actions"], widths: { amount: 20, text: 40 } });
     expect(layout.hiddenColumnIds).toEqual([]);
-    expect(layout.requiredWidthRem).toBe(57.75);
+    expect(layout.requiredWidthRem).toBe(58.75);
   });
 });

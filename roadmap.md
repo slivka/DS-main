@@ -1,3 +1,10 @@
+## Verze 2.54.0 (grid řádků dokladu a nezalamování nadpisů)
+- [x] Nezalamování nadpisů a popisků ve sdílených formulářových prvcích
+- [x] Pružná sekce Datumy s DPH daty vpravo
+- [x] Sloupec Ř., přidání řádku, fokus a chyby buněk editoru
+- [x] Měnové popisky, jednořádkový detail a onValidationChange
+- [x] Testy, katalog, changelog a vizuální kontrola
+
 ## Verze 2.53.0 (rolování menu a panelů, zoom per záložka)
 - [x] Omezit AppShell na výšku okna a oddělit rolování menu, main a panelů
 - [x] Přidat PageLayout list/form a výšku gridů fill/auto podle rodiče
