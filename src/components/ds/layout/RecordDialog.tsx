@@ -243,7 +243,7 @@ export function RecordDialog({
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-4 space-y-1">
-            <h2 className="flex flex-wrap items-center gap-2 text-lg font-semibold">{title}{statusBadge}</h2>
+            <h2 className="flex min-w-0 flex-nowrap items-center gap-2 text-lg font-semibold"><span className="min-w-0 truncate" title={title}>{title}</span>{statusBadge}</h2>
             {description ? <p className="sr-only">{description}</p> : null}
             {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
           </div>
@@ -262,7 +262,7 @@ export function RecordDialog({
         } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
       >
         <DialogHeader>
-          <DialogTitle className="flex flex-wrap items-center gap-2">{title}{statusBadge}</DialogTitle>
+          <DialogTitle className="flex min-w-0 flex-nowrap items-center gap-2"><span className="min-w-0 truncate" title={title}>{title}</span>{statusBadge}</DialogTitle>
           {description ? <DialogDescription className="sr-only">{description}</DialogDescription> : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>
@@ -305,7 +305,7 @@ export function Field({
       } ${className}`}
     >
       {label ? (
-        <Label htmlFor={htmlFor} className={error ? "text-destructive" : undefined}>
+        <Label htmlFor={htmlFor} title={label} className={error ? "text-destructive" : undefined}>
           {label}
         </Label>
       ) : null}

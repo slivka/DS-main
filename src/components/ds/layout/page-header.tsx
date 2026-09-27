@@ -69,7 +69,7 @@ export function PageHeader({ title, titleSlot, titleBadge, description, actions,
                 {title}
               </h1>
             ) : (
-              <h1 className="typo-title text-primary">{title}</h1>
+              <h1 className="typo-title min-w-0 truncate text-primary">{title}</h1>
             )}
             {titleBadge ? <span className="inline-flex shrink-0 items-center self-center">{titleBadge}</span> : null}
             {chrome?.dirty ? <span role="img" aria-label={t.unsaved} title={t.unsaved} className="size-2 shrink-0 rounded-full bg-primary" /> : null}
