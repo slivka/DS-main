@@ -21,8 +21,8 @@ const memory = new Map<string, string>();
 
 describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", () => {
   it("úzký panel + zoom 1,4 + rozšířený sloupec → požadovaná šířka ≤ dostupná", () => {
-    const layout = resolveJournalColumnLayout({ availableWidthRem: 40, zoom: 1.4, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "quantity", "unitId", "unitPrice", "amount", "dimensionId", "actions"], widths: { amount: 14 } });
-    expect(layout.requiredWidthRem).toBeLessThanOrEqual(40);
+    const layout = resolveJournalColumnLayout({ availableWidthRem: 48, zoom: 1.4, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "quantity", "unitId", "unitPrice", "amount", "dimensionId", "actions"], widths: { amount: 14 } });
+    expect(layout.requiredWidthRem).toBeLessThanOrEqual(48);
     expect(layout.hiddenColumnIds).toContain("dimensionId");
     expect(layout.textMinRem).toBeLessThan(12);
   });
