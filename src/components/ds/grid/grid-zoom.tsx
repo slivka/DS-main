@@ -6,7 +6,7 @@ import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { resolveGridTexts, type GridTexts } from "./grid-texts";
 import { usePane } from "../panes/pane-context";
-import { getTabDraft, useTabDraft } from "../panes/pane-tab-store";
+import { useTabDraft } from "../panes/pane-tab-store";
 import { usePageLayoutVariant } from "../layout/page-layout";
 import { useGridPreferences, type GridPreferenceValues } from "./grid-preferences";
 
@@ -78,38 +78,6 @@ export function useGridZoomContext() {
   return useContext(GridZoomContext);
 }
 
-type GridPreferenceMap = Record<string, Required<GridPreferenceValues>>;
-
-/**
- * Zapíše preference jednoho gridu do stavu záložky nad aktuálním obsahem úložiště
- * (read-modify-write jen vlastního storageKey), aby si gridy v jedné záložce
- * nepřepisovaly hodnoty starou kopií.
- */
-export function mergeGridPreference(tabId: string, storageKey: string, next: Required<GridPreferenceValues>): GridPreferenceMap {
-  const latest = getTabDraft<GridPreferenceMap>(tabId, "gridPreferences") ?? {};
-  return { ...latest, [storageKey]: next };
-}
-
-/** Prodleva, po které se poslední zoom / hustota ohlásí aplikaci jako výchozí. */
-export const GRID_DEFAULTS_DEBOUNCE_MS = 400;
-
-/** Odloží volání – předá jen poslední hodnotu po uplynutí `delay` bez další změny. */
-export function createDebouncedCall<A extends unknown[]>(fn: (...args: A) => void, delay = GRID_DEFAULTS_DEBOUNCE_MS) {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  let pending: A | null = null;
-  const flush = () => {
-    if (timer) clearTimeout(timer);
-    timer = undefined;
-    if (pending) { const args = pending; pending = null; fn(...args); }
-  };
-  const call = (...args: A) => {
-    pending = args;
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(flush, delay);
-  };
-  return { call, flush, cancel: () => { if (timer) clearTimeout(timer); timer = undefined; pending = null; } };
-}
-
 export function useGridZoom(storageKey: string) {
   const pane = usePane();
   const preferences = useGridPreferences();
@@ -130,32 +98,21 @@ export function useGridZoom(storageKey: string) {
     }
     return initialDefaults.current;
   }, [preferences, storageKey]);
-  const [tabPreferences, setTabPreferences] = useTabDraft<GridPreferenceMap>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "gridPreferences");
+  const [tabPreferences, setTabPreferences] = useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "gridPreferences");
   const [localValue, setLocalValue] = useState<Required<GridPreferenceValues>>(readDefaults);
   const current = pane?.tabId ? tabPreferences[storageKey] ?? readDefaults() : localValue;
 
-  // Výchozí hodnota pro nové gridy se ohlásí s prodlevou – ne při každém kroku kolečka.
-  const reportRef = useRef<ReturnType<typeof createDebouncedCall<[string, Required<GridPreferenceValues>]>> | null>(null);
-  const preferencesRef = useRef(preferences);
-  preferencesRef.current = preferences;
-  if (!reportRef.current) {
-    reportRef.current = createDebouncedCall((key: string, value: Required<GridPreferenceValues>) => {
-      const provider = preferencesRef.current;
-      if (provider) { provider.onDefaultsChange(key, value); return; }
-      try {
-        localStorage.setItem(`zoom:${key}`, String(value.zoom));
-        localStorage.setItem(`density:${key}`, value.density);
-      } catch { /* úložiště nemusí být dostupné */ }
-    });
-  }
-  useEffect(() => () => reportRef.current?.flush(), []);
-
   const save = useCallback((next: Required<GridPreferenceValues>) => {
-    const tabId = pane?.tabId;
-    if (tabId) setTabPreferences(mergeGridPreference(tabId, storageKey, next));
+    if (pane?.tabId) setTabPreferences((state) => ({ ...state, [storageKey]: next }));
     else setLocalValue(next);
-    reportRef.current?.call(storageKey, next);
-  }, [pane?.tabId, setTabPreferences, storageKey]);
+    preferences?.onDefaultsChange(storageKey, next);
+    if (!preferences) {
+      try {
+        localStorage.setItem(`zoom:${storageKey}`, String(next.zoom));
+        localStorage.setItem(`density:${storageKey}`, next.density);
+      } catch { /* úložiště nemusí být dostupné */ }
+    }
+  }, [pane?.tabId, preferences, setTabPreferences, storageKey]);
 
   const updateDensity = useCallback(
     (next: GridDensity) => {
@@ -252,8 +209,6 @@ export function ZoomGrid({
   maxHeight,
   height,
   noFit = false,
-  stickyHeader,
-  overflowFallback = false,
   hiddenColumns,
   columnOrder,
   columnOffset = 0,
@@ -270,14 +225,6 @@ export function ZoomGrid({
   height?: "fill" | "auto";
   /** @deprecated Výšku řídí `height`; ponecháno kvůli kompatibilitě volání. */
   noFit?: boolean;
-  /**
-   * Přilepení záhlaví: "grid" = k horní hraně gridu (výchozí u fill),
-   * "pane" = pod pruh akcí v rolovací oblasti panelu (--pane-sticky-top; opt-in, jen grid bez vlastního rolování),
-   * "none" = nepřilepené (výchozí u auto).
-   */
-  stickyHeader?: "grid" | "pane" | "none";
-  /** Záloha: grid, který se ani po sbalení sloupců nevejde, smí vodorovně rolovat. */
-  overflowFallback?: boolean;
   /** 1-based indexy sloupců, které se mají skrýt (z `useGridColumns`). */
   hiddenColumns?: number[];
   /** 1-based původní pozice sloupců v požadovaném pořadí (z `useGridColumns`). */
@@ -295,7 +242,6 @@ export function ZoomGrid({
   const ref = useRef<HTMLDivElement>(null);
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
-  const resolvedSticky = stickyHeader ?? (resolvedHeight === "fill" ? "grid" : "none");
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
@@ -499,8 +445,6 @@ export function ZoomGrid({
 
       data-density={density ?? "normal"}
       data-grid-height={resolvedHeight}
-      data-sticky-header={resolvedSticky}
-      data-overflow={overflowFallback ? "true" : undefined}
       className={
         cn("zoom-grid rounded-lg border border-border bg-card shadow-panel", resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)
       }
