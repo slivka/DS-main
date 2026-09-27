@@ -80,7 +80,8 @@ export interface PaneLayoutProps {
 export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
   const api = usePaneTabs();
   const register = useAppShellPaneRegistration();
-  useEffect(() => {
+  // useLayoutEffect: main se přepne před prvním vykreslením – bez jednosnímkového skoku paddingu.
+  useIsomorphicLayoutEffect(() => {
     register?.(true);
     return () => register?.(false);
   }, [register]);
