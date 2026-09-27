@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Sigma, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Settings, Sigma, type LucideIcon } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
@@ -77,6 +77,7 @@ export type DocumentFormTab = { id: string; label: string; content: ReactNode; b
 export type DocumentSaveAction = { onSave: () => void; disabled?: boolean; busy?: boolean; dirty?: boolean };
 export type DocumentPrimaryAction = { label: string; onClick: () => void; disabled?: boolean; busy?: boolean; icon?: LucideIcon };
 export type DocumentMoreAction = { id: string; label: string; onClick: () => void; icon?: LucideIcon; destructive?: boolean; disabled?: boolean; disabledReason?: string; separatorBefore?: boolean };
+export type DocumentSettingsAction = { onOpen: () => void };
 export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: ReactNode };
 export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
 export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
@@ -100,7 +101,7 @@ export type DocumentFormTexts = {
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
-  excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string;
+  excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
 };
 
@@ -113,7 +114,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   partner: "Partner", ico: "IČ", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČ neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.",
 };
 
 export interface DocumentFormProps {
@@ -158,6 +159,7 @@ export interface DocumentFormProps {
   saveAction?: DocumentSaveAction;
   primaryAction?: DocumentPrimaryAction;
   moreActions?: DocumentMoreAction[];
+  settings?: DocumentSettingsAction;
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
   texts?: Partial<DocumentFormTexts>;
@@ -174,12 +176,12 @@ export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side:
   </span>
 );
 
-function DocumentIdentityLine({ identity, direction, fallback, texts }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts }) {
+function DocumentIdentityLine({ identity, direction, fallback, texts, currencyCode, currencySymbol }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencyCode: string; currencySymbol?: string }) {
   const number = identity?.number || null;
   const [firstItem, ...remainingItems] = identity?.items ?? [];
   const renderItem = (item: DocumentIdentityItem) => {
     if (typeof item === "object" && item !== null && !Array.isArray(item) && "text" in item) return <span className="inline-flex min-w-0 items-center gap-1.5">{item.side ? <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{item.side}</span> : null}<span className="min-w-0 break-words">{item.text}</span></span>;
-    return <span className="min-w-0 break-words">{item}</span>;
+    return <span className="min-w-0 break-words">{typeof item === "string" && item === currencyCode ? currencySymbol ?? currencyCode : item}</span>;
   };
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
@@ -197,7 +199,7 @@ function DocumentIdentityLine({ identity, direction, fallback, texts }: { identi
             </span>)}
           </span> : null}
         </div>
-        {identity ? <span className={cn("shrink-0 text-right font-mono text-xl font-bold tabular-nums", !number && "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground")}>
+         {identity ? <span className={cn("self-center shrink-0 text-right font-mono text-xl font-bold tabular-nums", !number && "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground")}>
           {number ?? identity.numberPending ?? fallback}
         </span> : null}
       </div>
@@ -211,7 +213,7 @@ export function DocumentForm({
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
-  saveAction, primaryAction, moreActions = [], readOnly = false, readOnlyReason, texts, className,
+  saveAction, primaryAction, moreActions = [], settings, readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
@@ -236,6 +238,8 @@ export function DocumentForm({
   const foreign = value.currency !== homeCurrency;
   const hideIdentityAccount = !!identity && mainAccountLocked;
   const hideIdentityCurrency = !!identity && currencyLocked;
+  const currencySymbol = currencies?.find((item) => item.code === value.currency)?.symbol;
+  const actionMenu = settings ? [{ id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings }, ...moreActions.map((action, index) => index === 0 ? { ...action, separatorBefore: true } : action)] : moreActions;
 
   const field = (id: string, label: ReactNode, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
     <div className={cn("col-span-20 flex min-w-0 flex-col gap-1 @min-[40rem]:col-span-3", mobileHalf && "col-span-10", span === 4 && "@min-[40rem]:col-span-4", span === 5 && "@min-[40rem]:col-span-5", span === 6 && "@min-[40rem]:col-span-6", span === 14 && "@min-[40rem]:col-span-14", span === 20 && "@min-[40rem]:col-span-20", className)}>
@@ -274,11 +278,11 @@ export function DocumentForm({
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />
-      <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} texts={t} />
+      <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} texts={t} />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
-        {identity || directionBadge ? <DocumentIdentityLine identity={identity} direction={directionBadge} fallback={t.numberPending} texts={t} /> : null}
+         {identity || directionBadge ? <DocumentIdentityLine identity={identity} direction={directionBadge} fallback={t.numberPending} texts={t} currencyCode={value.currency} currencySymbol={currencySymbol} /> : null}
         {f.partner ? (
           <>
              <SectionHeading>{t.headerSection}</SectionHeading>
@@ -299,7 +303,7 @@ export function DocumentForm({
           {date("accountingDate", t.accountingDate)}
           {f.dueDate ? date("dueDate", t.dueDate) : null}
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "@min-[40rem]:col-start-15") : null}
-          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-15", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning }) : null}
+          {showVatFields ? date("vatDate", t.vatDate, "@min-[40rem]:col-start-18", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning }) : null}
            {!f.partner ? suggestedText("description", t.description, descriptionSuggest, 20) : null}
         </div>
 
