@@ -38,6 +38,12 @@ describe("DocumentForm 2.49", () => {
     expect(html.indexOf('data-slot="document-action-bar"')).toBeLessThan(html.indexOf('data-slot="document-form-error"'));
     expect(html).toContain('aria-label="Zavřít chybovou hlášku"');
   });
+
+  it("převezme texty chybového pruhu z aplikace", () => {
+    const html = form({ error: { message: "Doplňte účet", onClose: () => {} }, texts: { errorTitle: "Uložení se nezdařilo", closeError: "Skrýt chybu" } });
+    expect(html).toContain("Uložení se nezdařilo");
+    expect(html).toContain('aria-label="Skrýt chybu"');
+  });
 });
 
 describe("DocumentSettingsDialog 2.49", () => {
