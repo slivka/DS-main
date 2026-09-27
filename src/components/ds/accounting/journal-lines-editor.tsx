@@ -231,7 +231,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
       result[column.id] = base * zoom;
       fixed += base * zoom;
     }
-    result.text = Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed);
+    result.text = Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25);
     return result;
   }, [visibleColumns, columns.widths, compactAccounts, columnLayout.customWidthsApplied, columnLayout.textMinRem, rootRemPx, zoom, effectiveWidthRem]);
   const normalizedLines = React.useMemo(() => orderJournalLines(lines), [lines]);
