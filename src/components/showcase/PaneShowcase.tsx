@@ -160,7 +160,7 @@ const DOCUMENT_LINES: JournalLine[] = Array.from({ length: 40 }, (_, index) => (
 function LongDocument({ id }: { id: string }) {
   const [value, setValue] = useState<DocumentHeaderValue>({ number: id, accountingDate: "2026-09-27", issueDate: "2026-09-27", description: "Kontrola nezávislého rolování a zoomu", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum" });
   const [lines, setLines] = useState(() => DOCUMENT_LINES.map((line) => ({ ...line, id: `${id}-${line.id}` })));
-  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines" }} /></PageLayout>;
+  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines", mode: "internal" }} /></PageLayout>;
 }
 
 type InvoiceForm = { partner: string; amount: string; text: string };
@@ -329,7 +329,7 @@ export function PaneShowcase() {
         <div className="overflow-x-auto rounded-lg border bg-muted p-3">
           <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
             <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
-            <div className="flex h-[600px]">
+            <div className="flex h-[600px] min-h-0 overflow-hidden">
               <DemoMenu layouts={layouts} setLayouts={setLayouts} />
               <PaneLayout
                 minPaneWidth={MIN_PANE_WIDTH}

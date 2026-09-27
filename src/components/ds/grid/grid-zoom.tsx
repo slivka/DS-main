@@ -81,16 +81,22 @@ export function useGridZoomContext() {
 export function useGridZoom(storageKey: string) {
   const pane = usePane();
   const preferences = useGridPreferences();
+  const initialDefaults = useRef<Required<GridPreferenceValues> | null>(null);
   const readDefaults = useCallback((): Required<GridPreferenceValues> => {
+    if (initialDefaults.current) return initialDefaults.current;
     const provided = preferences?.getDefaults(storageKey);
-    if (provided) return { zoom: clamp(provided.zoom ?? 1), density: provided.density === "compact" ? "compact" : "normal" };
+    if (provided) {
+      initialDefaults.current = { zoom: clamp(provided.zoom ?? 1), density: provided.density === "compact" ? "compact" : "normal" };
+      return initialDefaults.current;
+    }
     try {
       const raw = localStorage.getItem(`zoom:${storageKey}`);
       const density = localStorage.getItem(`density:${storageKey}`);
-      return { zoom: clamp(Number(raw) || 1), density: density === "compact" ? "compact" : "normal" };
+      initialDefaults.current = { zoom: clamp(Number(raw) || 1), density: density === "compact" ? "compact" : "normal" };
     } catch {
-      return { zoom: 1, density: "normal" };
+      initialDefaults.current = { zoom: 1, density: "normal" };
     }
+    return initialDefaults.current;
   }, [preferences, storageKey]);
   const [tabPreferences, setTabPreferences] = useTabDraft<Record<string, Required<GridPreferenceValues>>>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "gridPreferences");
   const [localValue, setLocalValue] = useState<Required<GridPreferenceValues>>(readDefaults);
@@ -217,7 +223,7 @@ export function ZoomGrid({
   maxHeight?: string;
   /** Výška podle rodiče (fill) nebo podle obsahu (auto). */
   height?: "fill" | "auto";
-  /** Vypnout automatickou výšku podle patičky – grid se roztáhne podle obsahu. */
+  /** @deprecated Výšku řídí `height`; ponecháno kvůli kompatibilitě volání. */
   noFit?: boolean;
   /** 1-based indexy sloupců, které se mají skrýt (z `useGridColumns`). */
   hiddenColumns?: number[];
