@@ -540,7 +540,17 @@
 }
 
 .field-overflow-hint { width: max-content; max-width: calc(100cqw - 2rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.journal-lines-grid td.journal-row-cell { padding-inline: 0.4em !important; }
+.zoom-grid.journal-lines-grid :is(thead, tbody, tfoot) tr > :is(th, td).journal-row-cell {
+  padding-inline: 0.4em !important;
+}
+.zoom-grid.journal-lines-grid td.journal-row-cell button {
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+.zoom-grid.journal-lines-grid .journal-line-detail-grid :is(input, button[role="combobox"]) {
+  height: 2.25em !important;
+  min-height: 2.25em !important;
+}
 .journal-grid-cell:focus:not(:has(.journal-cell-editor)) { background-color: color-mix(in oklch, var(--primary) 8%, transparent); }
 .journal-grid-cell:has(.journal-cell-editor),
 .journal-grid-cell[data-invalid="true"]:has(.journal-cell-editor) { box-shadow: none; }
