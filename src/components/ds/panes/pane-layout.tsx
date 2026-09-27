@@ -96,17 +96,49 @@ export interface PaneLayoutProps {
   minPaneWidth?: number;
   texts?: Partial<PaneLayoutTexts>;
   className?: string;
+  /**
+   * Vložený PaneLayout (ukázka, náhled uvnitř stránky) – neovládá rolování AppShellu.
+   * Dejte mu kontejner s pevnou výškou; panely pak rolují samostatně a stránka kolem normálně.
+   */
+  embedded?: boolean;
+}
+
+/** Je prvek skutečně zobrazený (ne display:none, ne nulová velikost)? */
+export function isPaneLayoutVisible(element: { getClientRects: () => { length: number }; getBoundingClientRect: () => { width: number; height: number } } | null): boolean {
+  if (!element || element.getClientRects().length === 0) return false;
+  const rect = element.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+/** PaneLayout ovládá main AppShellu jen když není vložený a je zobrazený. */
+export function shouldRegisterPaneLayout(embedded: boolean, visible: boolean) {
+  return !embedded && visible;
 }
 
 /** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
-export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className }: PaneLayoutProps) {
+export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className, embedded = false }: PaneLayoutProps) {
   const api = usePaneTabs();
   const register = useAppShellPaneRegistration();
-  // useLayoutEffect: main se přepne před prvním vykreslením – bez jednosnímkového skoku paddingu.
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+  // Sleduje skutečné zobrazení – skrytý PaneLayout (třída hidden) nesmí main zablokovat.
   useIsomorphicLayoutEffect(() => {
+    if (embedded) return;
+    const element = rootRef.current;
+    const read = () => setVisible(isPaneLayoutVisible(element));
+    read();
+    if (!element || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(read);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [embedded]);
+  const active = shouldRegisterPaneLayout(embedded, visible);
+  // useLayoutEffect: main se přepne před vykreslením – bez jednosnímkového skoku paddingu.
+  useIsomorphicLayoutEffect(() => {
+    if (!active) return;
     register?.(true);
     return () => register?.(false);
-  }, [register]);
+  }, [register, active]);
   if (!api) throw new Error("PaneLayout musí být uvnitř PaneTabsProvider.");
   return (
     <PaneLayoutInner
@@ -117,6 +149,7 @@ export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 
       minPaneWidth={minPaneWidth}
       texts={texts}
       className={className}
+      rootRef={rootRef}
     />
   );
 }
@@ -129,7 +162,8 @@ function PaneLayoutInner({
   minPaneWidth,
   texts,
   className,
-}: PaneLayoutProps & { api: PaneTabsApi; minPaneWidth: number }) {
+  rootRef,
+}: PaneLayoutProps & { api: PaneTabsApi; minPaneWidth: number; rootRef: React.Ref<HTMLDivElement> }) {
   const { state } = api;
   const t = { ...DEFAULT_PANE_TEXTS, ...texts };
   const emptyHint = t.emptyHint;
@@ -237,7 +271,7 @@ function PaneLayoutInner({
       onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
     >
-      <div className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
+      <div ref={rootRef} data-slot="pane-layout" className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
       {maximizedIndex !== null ? (
         <div role="status" className="flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground">
           <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
