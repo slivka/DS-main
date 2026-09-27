@@ -155,7 +155,7 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.
 - `directionBadge` stojí před identitou; bez `identity` vytvoří samostatný první řádek těla. Pruh akcí drží vlevo stav a Schváleno a vpravo akce.
 - Identifikační údaje používají výrazný 15px řez. `DocumentStatusBadge size="md"` v pruhu akcí má stejnou výšku jako badge směru; výchozí `sm` zůstává pro gridy.
-- `DocumentHeaderValue` podporuje `counterpartyIco`, `counterpartyDic` a `handedOverBy`. Propojený partner zamkne IČ a DIČ, ruční protistrana je ponechá editovatelná; chybné české IČ pouze zobrazí upozornění.
+- `DocumentHeaderValue` podporuje `counterpartyIco`, `counterpartyDic` a `handedOverBy`. Propojený partner zamkne IČO a DIČ, ruční protistrana je ponechá editovatelná; chybné české IČO pouze zobrazí upozornění.
 - Pokladní doklad zobrazuje Přijato od / Vyplaceno komu. Data začínají datem vystavení; externí čísla patří do partnerské sekce.
 - `RateField` podporuje doporučený kurz, ruční kurz s povinným důvodem a režim jen pro čtení. Hodnota dokladu má `rateManual`, `rateNote`, `suggestedRate` a `suggestedRateInfo`.
 - `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
@@ -168,7 +168,7 @@ Jednotný nadpis sekcí formulářů, dialogů, karet a panelů: verzálky, jemn
 
 
 ## CounterpartyField (2.31.0)
-Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Hodnota a callback nesou `{ name, partnerId, ico, dic }`; zrušení propojení ponechá IČ a DIČ.
+Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Hodnota a callback nesou `{ name, partnerId, ico, dic }`; zrušení propojení ponechá IČO a DIČ.
 
 ## DocumentActionBar a tisk (2.26.0)
 

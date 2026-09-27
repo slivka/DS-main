@@ -1,3 +1,11 @@
+## Verze 2.49.0 (doplnění editace dokladu 7, část B)
+- [x] Doplnit volbu zobrazení účtu v gridu a do nastavení dokladu
+- [x] Zpřístupnit Zakázku ve Sloupcích a chránit ručně zapnuté sloupce před automatickým sbalením
+- [x] Přestavět detail řádku na pružné jedno- až dvouřádkové rozložení
+- [x] Přidat jednotný chybový pruh formuláře a pravidlo použití
+- [x] Sjednotit uživatelské popisky na IČO
+- [x] Doplnit testy, dokumentaci a vizuální kontrolu 560 / 1 280 / 1 920 px
+
 ## Verze 2.48.0 (edit dokladu 7, část B)
 - [x] Zarovnat identitu, DPH data a jednořádkové nápovědy
 - [x] Upravit řádkovou buňku, prázdné hodnoty, Nedaňový a přidání řádku
@@ -68,7 +76,7 @@
 ## Verze 2.31.0 (rozvržení údajů DocumentForm)
 - [x] Zmenšit badge směru, vystředit identitu a odstranit linku pruhu akcí
 - [x] Zavést mřížku 70 / 15 / 15 a přeuspořádat partnera, data, částku a platební údaje
-- [x] Rozšířit hlavičku o IČ, DIČ a předávajícího včetně propojení partnera
+- [x] Rozšířit hlavičku o IČO, DIČ a předávajícího včetně propojení partnera
 - [x] Zvýraznit identifikační řádek a sjednotit výšku badge směru a stavu
 - [x] Přesunout haléřové vyrovnání do lišty řádků vedle zbývající částky
 - [x] Upravit ukázky, testy, changelog a verzi 2.31.0
@@ -123,7 +131,7 @@
 
 ## Verze 2.24.0 (DocumentForm podle Money)
 - [x] Přeskládat hlavičku na základní údaje a pravý panel vlastností
-- [x] Doplnit typové popisky hlavního účtu a partnera, IČ a DIČ
+- [x] Doplnit typové popisky hlavního účtu a partnera, IČO a DIČ
 - [x] Přesunout MD/DAL dovnitř účtu a zamčený účet zobrazit jako text
 - [x] Doplnit období, kurz za množství a režim součtu z rozpisu
 - [x] Přidat ukázky PO, FV a FP v EUR a regresní testy
