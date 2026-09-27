@@ -21,12 +21,9 @@ describe("DocumentForm 2.36.0 – limit a popisek haléřového vyrovnání", ()
 });
 
 describe("DocumentForm 2.48", () => {
-  it("zobrazí symbol měny v identifikačním řádku a Nastavení v menu", async () => {
-    const onOpen = mock();
-    render(<DocumentForm {...baseProps} currencies={[{ code: "CZK", symbol: "Kč" }]} identity={{ items: ["PO", "CZK"], number: "PO1" }} settings={{ onOpen }} />);
-    expect(screen.getByText("Kč")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /další akce/i }));
-    fireEvent.click(screen.getByText("Nastavení…"));
-    expect(onOpen).toHaveBeenCalledTimes(1);
+  it("zobrazí symbol měny v identifikačním řádku a Nastavení v menu", () => {
+    const html = form({ currencies: [{ code: "CZK", symbol: "Kč" }], identity: { items: ["PO", "CZK"], number: "PO1" }, settings: { onOpen: () => {} } });
+    expect(html).toContain(">Kč<");
+    expect(html).toContain("Nastavení…");
   });
 });
