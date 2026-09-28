@@ -27,6 +27,7 @@ import { DocumentStatusBadge, type DocumentStatus } from "./document-status-badg
 import { documentFieldsForType, mainAccountLabelForType, partnerLabelForType, type DocumentFields, type DocumentTypeCode } from "./document-fields";
 import { JournalLinesEditor, type JournalLinesEditorProps } from "./journal-lines-editor";
 import type { JournalLine } from "./journal-lines";
+import { computeJournalTotals } from "./journal-vat";
 import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import { CounterpartyField, type CounterpartySeed } from "./counterparty-field";
