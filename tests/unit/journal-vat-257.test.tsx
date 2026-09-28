@@ -92,3 +92,24 @@ describe("Předběžné Kurzové zaokrouhlení", () => {
     expect(buildVatPreviewLines([line], { ...config, vatRate: 24.35 }, FP).lines.some((item) => item.isFxRounding)).toBe(false);
   });
 });
+
+describe("Uložené Kurzové zaokrouhlení vs. předběžné", async () => {
+  const { mergeFxRoundingPreview } = await import("../../src/components/ds/accounting/journal-vat");
+  const codes: VatCodeOption[] = [{ id: "p21", code: "21P", name: "21 %", direction: "in", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxInAccount: "343200" }];
+  const base: JournalLine = { id: "a", debitAccount: "518001", creditAccount: "321001", foreignAmount: 100, amount: 2435, grossAmount: 121, currency: "EUR", vatCodeId: "p21" };
+  const saved: JournalLine = { id: "fx", debitAccount: "211002", creditAccount: "663001", amount: 1.05, isFxRounding: true };
+  const config = { codes, calcMode: "gross" as const, foreign: true, rate: 24.35, rateAmount: 1, vatRate: 24.4, vatRateAmount: 1 };
+  const opts = { vat: { enabled: true, codes, calcMode: "gross" as const, vatRate: 24.4, vatRateAmount: 1 }, foreign: true, rate: 24.35, rateAmount: 1, ...FP };
+  it("editovatelný koncept: jen jeden (předběžný) řádek a celek 2 946,35", () => {
+    const preview = buildVatPreviewLines([base], config, FP).lines;
+    const shown = mergeFxRoundingPreview([base, saved], preview);
+    const fx = [...shown, ...preview.filter((line) => !line.isFxRounding)].filter((line) => line.isFxRounding);
+    expect(fx).toHaveLength(1);
+    expect(fx[0]).toMatchObject({ amount: -1.05, isVatPreview: true });
+    expect(computeJournalTotals([base, saved], opts).grossHome).toBe(2946.35);
+  });
+  it("jen ke čtení: jen uložený řádek", () => {
+    const shown = mergeFxRoundingPreview([base, saved], []);
+    expect(shown.filter((line) => line.isFxRounding)).toEqual([saved]);
+  });
+});

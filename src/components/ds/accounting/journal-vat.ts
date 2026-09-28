@@ -282,3 +282,13 @@ export function fillInitialVatCode(lines: JournalLine[], codeId: string | null |
   if (!codeId || lines.length !== 1 || !first?.isBlank || first.vatCodeId || touched.has(first.id)) return null;
   return [{ ...first, vatCodeId: codeId, vatRate: codes.find((code) => code.id === codeId)?.rate ?? null }];
 }
+
+/**
+ * Řádky pro grid a rekapitulaci: vznikne-li předběžné Kurzové zaokrouhlení, nahradí uložený řádek `isFxRounding` z DB
+ * (DB ho při uložení přepočítá). Bez předběžného (jen ke čtení, rozdíl 0) zůstane uložený.
+ */
+export function mergeFxRoundingPreview(lines: JournalLine[], previewLines: JournalLine[], text?: string): JournalLine[] {
+  const preview = previewLines.find((line) => line.isFxRounding && line.isVatPreview);
+  if (!preview) return lines;
+  return [...lines.filter((line) => !line.isFxRounding), text ? { ...preview, text } : preview];
+}
