@@ -561,6 +561,18 @@
   border-left: 0.45em solid transparent;
   content: "";
 }
+/* Varování (např. ruční DPH s malou odchylkou) – žlutý roh, chyba má přednost. */
+.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(:has(.journal-cell-editor)) { position: relative; }
+.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(:has(.journal-cell-editor))::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 0.45em solid var(--warning-strong);
+  border-left: 0.45em solid transparent;
+  content: "";
+}
 .journal-cell-editor, .journal-cell-editor :is(button, input, [role="combobox"]) { width: 100%; min-width: 0; border-color: transparent !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
 
 /* Jednotný aktivní stav vyhledávání a filtrů ve všech gridech. */
