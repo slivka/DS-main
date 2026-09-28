@@ -199,6 +199,8 @@ export interface JournalLinesEditorProps {
   sideFields?: "shared" | "split"; sharedSide?: JournalSharedSide; mode?: JournalLinesMode; mainSide?: JournalMainSide; mainAccount?: string | null;
   sideFieldRules?: SideFieldRulesFn; dimensionRequired?: boolean; isNonTaxAllowed?: (line: JournalLine) => boolean; editableFields?: JournalLineColumn[];
   totalAmount?: number; totalMode?: "entered" | "computed"; rounding?: JournalLinesRounding; defaults?: JournalLineDefaults; validate?: (line: JournalLine) => JournalLineErrors;
+  /** Celek řádků (stejný výpočet jako patička a „Celkem …“ v liště); volá se jen při změně hodnot. */
+  onTotalsChange?: (totals: JournalTotals) => void;
   onValidationChange?: (count: number, errors: { line: number; field: string; message: string }[]) => void;
   reorderable?: boolean; initialEmptyLine?: boolean; showAllErrors?: boolean; showQuantityColumns?: boolean; accountDisplay?: JournalAccountDisplay; storageKey?: string; recap?: JournalLinesRecapState; recapTabs?: JournalRecapTab[]; texts?: Partial<JournalLinesEditorTexts>; className?: string;
   /** DPH na řádcích – bez propu se editor chová jako dřív. */
@@ -293,10 +295,12 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const taxLines: JournalLine[] = !vatOn ? [] : vatReadOnly ? lines.filter((line) => line.isVatLine).map((line) => ({ ...line, excludeFromTotal: line.excludeFromTotal ?? (mainAccount ? line.debitAccount !== mainAccount.accountId && line.creditAccount !== mainAccount.accountId : Boolean(vatCodeMap.get(line.vatCodeId ?? "")?.selfAssessment)) })) : vatPreview.lines;
   const countedTax = taxLines.filter((line) => !line.excludeFromTotal);
   const missingVatAccounts = new Map(vatPreview.missingAccounts.map((item) => [item.lineId, item.code]));
-  const baseTotal = roundJournalAmount(regularLines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
-  const documentBaseTotal = roundJournalAmount(regularLines.reduce((sum, line) => sum + (foreign ? Number(line.foreignAmount) || 0 : Number(line.amount) || 0), 0));
-  const linesTotal = roundJournalAmount([...regularLines, ...countedTax].reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
-  const documentLinesTotal = roundJournalAmount([...regularLines, ...countedTax].reduce((sum, line) => sum + (foreign ? Number(line.foreignAmount) || 0 : Number(line.amount) || 0), 0));
+  const journalTotals = computeJournalTotals(lines, { vat: vatOn ? { enabled: true, codes: vatCodes, calcMode, vatRate: vat?.vatRate, vatRateAmount: vat?.vatRateAmount } : null, readOnly: vatReadOnly, mainAccount: mainAccount?.accountId, mainSide: mainAccount?.side, foreign, rate, rateAmount });
+  const baseTotal = journalTotals.baseHome; const documentBaseTotal = journalTotals.base; const linesTotal = journalTotals.grossHome; const documentLinesTotal = journalTotals.gross;
+  const totalsKey = `${journalTotals.baseHome}|${journalTotals.base}|${journalTotals.vat}|${journalTotals.grossHome}|${journalTotals.gross}|${journalTotals.visibleLineCount}`;
+  const onTotalsChangeRef = React.useRef(onTotalsChange); onTotalsChangeRef.current = onTotalsChange;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => { onTotalsChangeRef.current?.(journalTotals); }, [totalsKey]);
   const roundingLine = lines.find((line) => line.isRounding); const roundingValue = roundingLine ? Number(roundingLine.amount) || 0 : rounding?.value ?? 0;
   const total = roundJournalAmount(linesTotal + roundingValue + lines.filter((line) => line.isFxRounding).reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
   const difference = totalAmount === undefined ? 0 : roundJournalAmount(totalAmount - (foreign ? documentLinesTotal : total)); const showRemaining = totalMode === "entered" && totalAmount !== undefined;
