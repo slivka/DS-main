@@ -361,3 +361,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `DocumentForm` skládá Datumy přes `flex flex-wrap items-start gap-3`; každé datum je `flex-none w-max min-w-[10.5rem]`, DUZP a Datum DPH jsou v pravé skupině `ml-auto flex gap-3`.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
+
+## DPH na řádcích dokladu (2.55.0)
+- Řádky daně vytváří výhradně databáze; DS je jen zobrazuje (doklad jen ke čtení) nebo počítá předběžně. Nikdy je neposílejte ani needitujte.
+- Editor řádků zapínejte propem `vat`; kódy DPH filtruje aplikace (směr, aktivní, platnost k Datu DPH). Ukládejte přes `toJournalRows` – nikdy neposílá `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
+- Přepínač „Bez DPH | S DPH“ je v liště gridu; v režimu S DPH je Částka jen ke čtení.
+- Značky měn v popiscích DPH vždy z dat (pravidlo 18); kód DPH ve výběru jako „kód – název“ (pravidlo 9).

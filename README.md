@@ -5,6 +5,17 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.55.0 – DPH v editoru řádků dokladu
+
+Minor verze bez breaking změn: bez propu `vat` (nebo s `vat.enabled = false`) se editor chová jako v 2.54.0.
+
+- `JournalLinesEditor` prop `vat` (`JournalLinesVat`): sloupce Kód DPH · Sazba · DPH · Celkem s DPH hned za Částkou, přepínač „Bez DPH | S DPH“, detail (nárok na odpočet, předmět PDP, základ a DPH v domácí měně kurzem DPH), ruční daň (✎, akce „Vrátit vypočtenou daň“, odchylka > 1 chyba, ≤ 1 žluté varování), upozornění „Chybí účty kódu {kód} – daň se nezaúčtuje“.
+- Předběžné řádky daně: dokud je doklad editovatelný, součet, „Zbývá rozepsat“, Zaokrouhlení i rekapitulace počítají vždy z `buildVatPreviewLines`; řádky `isVatLine` z DB se použijí jen u dokladu jen ke čtení. Řádky daně se v gridu nezobrazují.
+- Režim „S DPH“: řádek drží v `amount` / `foreignAmount` předběžný základ, `toJournalRow` posílá `amount_gross` i základ.
+- Duplikace řádku kopíruje kód, nárok i PDP, ruční daň ne.
+- Rekapitulace: vestavěná záložka „DPH“ (`JournalLinesRecap.vatSummary`).
+- Nové exporty: typy `VatCodeOption`, `VatPdpSubject`, `VatCalcMode`, `VatDeduction`, `VatLineKind`, `JournalLinesVat`, `VatSummaryRow`, `ResolvedLineVat`, `VatPreviewConfig`, `VatPreviewResult`; funkce `toJournalRows`, `buildVatPreviewLines`, `resolveLineVat`, `summarizeVat`, `sumJournalTotal`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromBase`, `calculateVatFromGross`.
+
 ## Changelog 2.54.0 – grid řádků a nezalamování
 
 - **BREAKING pro aplikace:** nadpisy a popisky jsou vždy jednořádkové; formuláře mají při nedostatku místa přesouvat celé pole, ne zalamovat text. Vlastní úzké mřížky nahraďte pružnými řádky s minimální šířkou pole v `rem`/`ch`.
