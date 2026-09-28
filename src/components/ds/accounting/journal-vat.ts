@@ -103,7 +103,17 @@ export function buildVatPreviewLines(lines: JournalLine[], config: VatPreviewCon
       });
     };
     if (code.selfAssessment) {
-      if (!code.taxInAccount || !code.taxOutAccount) { missingAccounts.push({ lineId: line.id, code: code.code }); continue; }
+      const rcDeduction = line.vatDeduction ?? "full";
+      if (!code.taxOutAccount || (rcDeduction !== "none" && !code.taxInAccount)) { missingAccounts.push({ lineId: line.id, code: code.code }); continue; }
+      if (rcDeduction === "none") { push(line.debitAccount, code.taxOutAccount, resolved.vat, "non_deductible", "rc-nd"); continue; }
+      if (rcDeduction === "partial") {
+        const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));
+        const deductible = round2(resolved.vat * share / 100);
+        if (deductible) push(code.taxInAccount, code.taxOutAccount, deductible, "deductible", "rc");
+        const rest = round2(resolved.vat - deductible);
+        if (rest) push(line.debitAccount, code.taxOutAccount, rest, "non_deductible", "rc-nd");
+        continue;
+      }
       push(code.taxInAccount, code.taxOutAccount, resolved.vat, "deductible", "rc");
       continue;
     }
@@ -168,9 +178,10 @@ export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): Va
     row.gross = round2(row.gross + (code?.selfAssessment ? resolved.base : resolved.gross));
     row.baseHome = round2(row.baseHome + (line.vatBaseHome ?? round2(resolved.base * conversion)));
     row.vatHome = round2(row.vatHome + (line.vatAmountHome ?? round2(resolved.vat * conversion)));
-    if (code?.direction === "in" && !code.selfAssessment) {
+    if (code?.direction === "in" || code?.selfAssessment) {
       const deduction = line.vatDeduction ?? "full";
-      const deductible = deduction === "none" ? 0 : deduction === "partial" ? round2(resolved.vat * (Number(line.vatDeductionShare) || 0) / 100) : resolved.vat;
+      const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));
+      const deductible = deduction === "none" ? 0 : deduction === "partial" ? round2(resolved.vat * share / 100) : resolved.vat;
       row.deductible = round2(row.deductible + deductible);
       row.nonDeductible = round2(row.nonDeductible + resolved.vat - deductible);
     }
