@@ -1080,14 +1080,6 @@
   gap: 0.3em;
 }
 
-.zoom-grid.journal-lines-grid
-  :is(tbody, tfoot)
-  :is(th, td)
-  .journal-line-detail-grid
-  :is(input, button[role="combobox"]) {
-  height: 2.25em !important;
-  min-height: 2.25em !important;
-}
 
 /* Stav vložený přímo vedle čísla půjčky zabírá jen šířku textu a celý se
    mění spolu se zoomem gridu. */
