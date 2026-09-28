@@ -174,4 +174,28 @@ describe("DPH v editoru", () => {
     expect(html).not.toContain("Kód DPH");
     expect(html).not.toContain("S DPH");
   });
+  it("DPH patička odděluje základ, daň a celek", () => {
+    const base: JournalLine[] = [
+      { id: "a", debitAccount: "311001", creditAccount: "602001", amount: 1000, vatCodeId: "v21" },
+      { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, vatCodeId: "v12" },
+    ];
+    const html = render({ lines: base, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1770, totalMode: "entered", vat: { enabled: true, codes: OUT, calcMode: "net" } });
+    expect(html).toContain('data-slot="journal-lines-total-base">1 500,00');
+    expect(html).toContain('data-slot="journal-lines-total-vat">270,00');
+    expect(html).toContain('data-slot="journal-lines-total-gross">1 770,00');
+  });
+  it("při skrytém Celkem s DPH ukazuje celek se značkou měny v liště", () => {
+    const base: JournalLine[] = [
+      { id: "a", debitAccount: "311001", creditAccount: "602001", amount: 1000, vatCodeId: "v21" },
+      { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, vatCodeId: "v12" },
+    ];
+    const html = render({ lines: base, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1770, totalMode: "entered", documentCurrencySymbol: "Kč", vat: { enabled: true, codes: OUT, calcMode: "net" } });
+    expect(html).toContain('data-slot="journal-lines-toolbar-total"');
+    expect(html).toContain("Celkem 1 770,00 Kč");
+  });
+  it("bez DPH zůstává původní součet v Částce", () => {
+    const html = render({ lines: [{ id: "a", amount: 1000 }, { id: "r", amount: 0.4, isRounding: true }] });
+    expect(html).toContain('data-slot="journal-lines-total-base">1 000,40');
+    expect(html).not.toContain('data-slot="journal-lines-toolbar-total"');
+  });
 });
