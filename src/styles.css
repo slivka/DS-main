@@ -1121,6 +1121,7 @@
   :is(input, button[role="combobox"], [role="combobox"]) {
   height: 2.25em !important;
   min-height: 2.25em !important;
+  max-height: 2.25em !important;
 }
 
 /* Prázdný stav gridu – tlačítko je nižší a škáluje se se zoomem gridu. */
