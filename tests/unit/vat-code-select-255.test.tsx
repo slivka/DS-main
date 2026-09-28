@@ -14,7 +14,7 @@ const codes: VatCodeOption[] = [
 describe("VatCodeSelect – otevírání a filtrování (2.55.0)", () => {
   it("filtruje podle kódu i názvu", () => {
     expect(filterVatCodes(codes, "").map((c) => c.id)).toEqual(["v21", "v12", "p21"]);
-    expect(filterVatCodes(codes, "21").map((c) => c.id)).toEqual(["v21", "vx", "p21"]);
+    expect(filterVatCodes(codes, "21").map((c) => c.id)).toEqual(["v21", "p21"]);
     expect(filterVatCodes(codes, "snížen").map((c) => c.id)).toEqual(["v12"]);
     expect(filterVatCodes(codes, "ZÁKLAD").map((c) => c.id)).toEqual(["v21", "p21"]);
     expect(filterVatCodes(codes, "xx")).toEqual([]);
