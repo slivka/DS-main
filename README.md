@@ -12,7 +12,7 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 - Výchozí kód DPH (`vat.defaultCodeId`) se doplní do počátečního prázdného řádku i opožděně (`fillInitialVatCode`).
 - Přepínač Bez DPH | S DPH je při `vat.readOnly` neaktivní (`GridSegmentedToggle.disabled`).
 - `DocumentForm.vatRateField`: hláška `texts.vatRateMissing`, když chybí kurz ČNB a kurz není ruční.
-- Cizí měna s odlišným kurzem DPH: předběžný řádek „Kurzové zaokrouhlení – dopočítá se při uložení“ (`isFxRounding` + `isVatPreview`, bez účtů, neukládá se; `texts.fxRoundingPreview`).
+- Cizí měna s odlišným kurzem DPH: předběžný řádek „Kurzové zaokrouhlení – dopočítá se při uložení“ (`isFxRounding` + `isVatPreview`, bez účtů, neukládá se; `texts.fxRoundingPreview`); u editovatelného konceptu nahradí uložený řádek z DB v gridu i rekapitulaci (`mergeFxRoundingPreview`), jen ke čtení se ukazuje uložený.
 
 ## Changelog 2.56.0 – opravy po prokliku DPH
 
