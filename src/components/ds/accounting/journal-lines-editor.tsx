@@ -22,7 +22,7 @@ import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { SegmentedField } from "../form/segmented-field";
 import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
-import { applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, summarizeVat, computeJournalTotals, type JournalTotals, type VatPreviewConfig } from "./journal-vat";
+import { fillInitialVatCode, applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, summarizeVat, computeJournalTotals, type JournalTotals, type VatPreviewConfig } from "./journal-vat";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { ColumnPicker } from "../grid/column-picker";
 import { GridAction, GridActions } from "../grid/grid-action";
@@ -312,8 +312,9 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const defaultCodeApplied = React.useRef(false);
   React.useEffect(() => {
     const codeId = vat?.defaultCodeId; if (!vatOn || !initialEmptyLine || !codeId || defaultCodeApplied.current) return;
-    const first = lines[0]; if (lines.length !== 1 || !first?.isBlank || first.vatCodeId || touchedRows.current.has(first.id)) { if (lines.length && !lines[0]?.isBlank) defaultCodeApplied.current = true; return; }
-    defaultCodeApplied.current = true; onChange([{ ...first, vatCodeId: codeId, vatRate: vatCodeMap.get(codeId)?.rate ?? null }]);
+    if (lines.length && !lines[0]?.isBlank) { defaultCodeApplied.current = true; return; }
+    const next = fillInitialVatCode(lines, codeId, vatCodes, touchedRows.current); if (!next) return;
+    defaultCodeApplied.current = true; onChange(next);
   }, [vat?.defaultCodeId, lines]); // eslint-disable-line react-hooks/exhaustive-deps
   React.useEffect(() => { if (!initialEmptyLine || initializedEmptyLine.current || lines.length) return; initializedEmptyLine.current = true; onChange([makeLine()]); }, [initialEmptyLine, lines.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const firstEditableColumn = () => visibleColumns.map((column) => column.id).find((id): id is JournalLineColumn => id !== "row" && id !== "homeAmount" && id !== "actions" && editable.has(id));

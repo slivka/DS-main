@@ -275,3 +275,10 @@ export function computeJournalTotals(lines: JournalLine[], options: JournalTotal
     visibleLineCount: lines.filter((line) => !line.isVatLine && !line.isVatPreview && !line.isBlank).length,
   };
 }
+
+/** Doplní výchozí kód DPH do neupraveného počátečního prázdného řádku bez kódu; jinak vrátí null. */
+export function fillInitialVatCode(lines: JournalLine[], codeId: string | null | undefined, codes: VatCodeOption[], touched: ReadonlySet<string> = new Set()): JournalLine[] | null {
+  const first = lines[0];
+  if (!codeId || lines.length !== 1 || !first?.isBlank || first.vatCodeId || touched.has(first.id)) return null;
+  return [{ ...first, vatCodeId: codeId, vatRate: codes.find((code) => code.id === codeId)?.rate ?? null }];
+}
