@@ -3,6 +3,7 @@
 - [x] Předběžný výpočet daně (`journal-vat.ts`) – FV, FP, ruční daň, PDP, bez nároku, poměrný, S DPH, cizí měna
 - [x] Editor: sloupce, přepínač Bez / S DPH, detail, kontroly, předběžná daň v součtech (DB řádky jen u dokladu jen ke čtení)
 - [x] Rekapitulace – záložka DPH
+- [x] Výběr Kódu DPH v gridu se otevírá hned při editaci a psaní filtruje podle kódu i názvu (`VatCodeSelect`)
 - [x] Ukázka Účetní formuláře a testy
 - [ ] Později: DPH v tisku dokladu a v exportu do Excelu (v 2.55.0 záměrně neřešeno)
 - [ ] Vydání (Release) a Update v aplikaci – provede Petr
