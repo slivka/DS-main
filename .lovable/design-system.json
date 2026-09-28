@@ -6774,6 +6774,78 @@
       ]
     },
     {
+      "name": "VatCodeSelect",
+      "file": "src/components/ds/accounting/vat-code-select.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "codes",
+          "type": "VatCodeOption[]",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "string | null | undefined",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "Vyberte kód DPH"
+        },
+        {
+          "name": "searchPlaceholder",
+          "type": "string",
+          "default": "Hledat kód nebo název…"
+        },
+        {
+          "name": "emptyText",
+          "type": "string",
+          "default": "Žádný kód DPH nenalezen"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean"
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "initialSearch",
+          "type": "string"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "function"
+        },
+        {
+          "name": "onKeyDown",
+          "type": "function"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu.",
+      "examples": [
+        {
+          "label": "Buňka Kód DPH v editoru řádků",
+          "code": "<VatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) => { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className=\"journal-cell-editor\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním."
+      ]
+    },
+    {
       "name": "JournalLinesRecap",
       "file": "src/components/ds/accounting/journal-lines-recap.tsx",
       "import_path": "",
