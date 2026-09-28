@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
+import { VatJournalShowcase } from "@/components/showcase/VatJournalShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
   BookSelect,
@@ -161,6 +162,7 @@ function AccountingFormsPage() {
       breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}
     >
       <DocumentFormShowcase />
+      <VatJournalShowcase />
 
       <ShowcaseSection
         title="Řádky zápisu v Kč"
