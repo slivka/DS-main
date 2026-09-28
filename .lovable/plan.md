@@ -1,75 +1,31 @@
-# DS 2.55.0 – editor řádků dokladu s DPH (DPH krok 2, část B)
+# DS 2.56.0 – opravy po prokliku DPH (minor, bez breaking změn)
 
-Minor verze bez breaking změn: bez propu `vat` se editor, převodní funkce i rekapitulace chovají přesně jako v 2.54.0 (hlídají to stávající testy beze změn).
+Bez DPH a bez nových propů se vše chová jako v 2.55.0.
 
-## Co uvidíte
-- V ukázce Účetní doklady nové příklady: FV se dvěma sazbami (1 770), FP s ruční daní 210,40 (žluté varování) a poměrným nárokem 60 %, FP s přenesením daně (celek 1 000), PO v režimu „S DPH“ (121 → 100 + 21), FP v EUR s kurzem DPH a doklad s vypnutým „Vstupuje do DPH“ (žádné DPH vidět není).
-- V gridu sloupce Kód DPH · Sazba · DPH · Celkem s DPH, přepínač „Bez DPH | S DPH“ v liště, nová záložka „DPH“ v rekapitulaci.
+## 1. Celkem za doklad = celek z editoru (jeden výpočet)
+- Nová sdílená čistá funkce v `journal-vat.ts`: `computeJournalTotals(lines, { vat, mainAccount, mainSide, foreign, rate, rateAmount })` → `{ base, baseHome, vat, gross, grossHome, visibleLineCount }`. Editovatelný doklad: řádky základu + `buildVatPreviewLines`, uložené řádky daně se ignorují; jen ke čtení: řádky z DB, řádky mimo hlavní účet (samovyměření 343/343) se nepočítají.
+- `JournalLinesEditor` ji použije pro patičku („Celkem s DPH“) i lištu („Celkem …“) a nový volitelný prop `onTotalsChange?(totals)` (volá se jen při změně hodnot).
+- `DocumentForm` v režimu „Sčítá se z rozpisu“: je-li u editoru zapnuté DPH, bere celek z téže funkce (počítá ji sám se stejnými vstupy, aby byl správný i při prvním vykreslení); bez DPH dnešní `linesSum` / `documentLinesSum` beze změny.
+- Výsledek: FV 1 000 + 21 % → Celkem za doklad 1 210; RC-P21 1 000 → 1 000 před i po uložení.
 
-## 1. Datový model – `journal-lines.ts`
-Nové typy (exportované z barelu):
-```ts
-type VatDeduction = "full" | "none" | "partial";
-type VatLineKind = "deductible" | "non_deductible";
-type VatCalcMode = "net" | "gross";
-type VatCodeOption = { id: string; code: string; name: string; direction: "out" | "in";
-  hasTax: boolean; rate: number | null; selfAssessment: boolean; requiresPdpSubject: boolean;
-  taxOutAccount?: string | null; taxInAccount?: string | null; inactive?: boolean };
-type VatPdpSubject = { code: string; name: string };
-```
-`JournalLine` dostane volitelné: `vatCodeId, vatRate, vatAmount, vatAmountHome, vatBaseHome, vatManual, vatDeduction, vatDeductionShare, pdpSubjectCode, grossAmount, isVatLine, vatParentLineId, vatLineKind, isVatPreview`.
-`JournalRow` dostane volitelné DPH sloupce z DB (`vat_code_id`, `vat_rate`, `vat_amount_foreign`, `vat_amount`, `vat_base_dom`, `vat_manual`, `vat_deduction`, `vat_deduction_share`, `pdp_subject_code`, `vat_gross_foreign`, `is_vat_line`, `vat_parent_line_id`, `vat_line_kind`, `amount_gross`) – volitelné, aby starý kód dál typově prošel.
+## 2. Odznak „Řádky N“
+- Počítá jen řádky zobrazené v gridu: bez `isVatLine`, `isVatPreview`, `isBlank`. Zaokrouhlení / Kurzové zaokrouhlení se započítají jen pokud jsou v gridu vidět (jako dnes – jsou to viditelné řádky). Hodnota = `visibleLineCount` z funkce výše.
 
-Funkce:
-- `toJournalRow(line, { ...options, vat?: { calcMode } })` – bez `vat` výstup identický s dneškem. S `vat`: `vat_code_id`, `vat_manual`, `vat_amount_foreign` jen při ruční dani, `vat_deduction`, `vat_deduction_share` jen u `partial`, `pdp_subject_code`; v režimu `gross` klíč `amount_gross` místo `amount`. Nikdy `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
-- `toJournalRows(lines, options)` – nová; vynechá `isVatLine`, `isVatPreview` a `isBlank` řádky.
-- `fromJournalRow` – načte všechny DPH sloupce, `vat_gross_foreign` → `grossAmount`.
-- Nový modul `journal-vat.ts` (čisté funkce, export z barelu): `calculateVat(line, code, calcMode)`, `vatDeviation(line, code, calcMode)`, `buildVatPreviewLines(lines, vat, { mainAccount, mainSide })`, `summarizeVat(lines, codes)` pro rekapitulaci.
+## 3. Buňka Kód DPH – psaní po Tab
+- Příčina zatím nepotvrzená: větev „psaní spustí úpravu“ `vatCodeId` už zahrnuje a předává první znak do výběru. První krok: reprodukovat v náhledu (Tab do buňky, napsat „2“) a najít, kde se znak ztrácí (fokus vyhledávání / `initialSearch` / Radix při otevření). Oprava tak, aby se výběr otevřel jako u účtu a psaní filtrovalo kód i název.
+- Test: stisk znaku v buňce Kód DPH → editace s výběrem otevřeným a hledáním „2“; e2e v náhledu Tab + „21V“ + Enter vybere 21V.
 
-Pravidla předběžného zaúčtování (shodná s DB): výstup MD účet základu / DAL `taxOutAccount`; vstup plný MD `taxInAccount` / DAL účet základu; bez nároku na účet základu; poměrný dva řádky (s nárokem / bez nároku); samovyměření MD odpočet / DAL výstup – řádek mimo hlavní účet se do celku nepočítá. Kód bez účtů → daň se spočte, řádek daně nevznikne, upozornění „Chybí účty kódu {kód} – daň se nezaúčtuje“.
+## 4. Kurz DPH v sekci Částka
+- Nový volitelný prop `DocumentForm.vatRateField?: { value: RateFieldValue; onChange; readOnly?; sameAsDocument?: boolean }` – stejný prvek jako kurz dokladu (automatický / ruční s důvodem), popisek „Kurz DPH“, při `sameAsDocument` jen text „stejný jako kurz dokladu“. Pod kurzem dokladu, jen když ho aplikace předá a doklad je v cizí měně. Nové texty `vatRate`, `vatRateSameAsDocument`, `vatRateNote`.
 
-## 2. Editor – `JournalLinesEditor`, nový prop `vat`
-```ts
-vat?: { enabled: boolean; codes: VatCodeOption[]; calcMode: VatCalcMode;
-  onCalcModeChange?: (mode: VatCalcMode) => void; defaultCodeId?: string | null;
-  pdpSubjects?: VatPdpSubject[]; vatRate?: number | null; vatRateAmount?: number;
-  readOnly?: boolean; isCodeRequired?: (line: JournalLine) => boolean }
-```
-- `enabled: false` nebo chybějící prop → nic z DPH se nezobrazí.
-- Řádky daně (`isVatLine`) se v gridu nezobrazují; `orderJournalLines` je vyřadí z pořadí (řazení, přesun, duplikace, mazání jen nad řádky základu), Kurzové zaokrouhlení a Zaokrouhlení zůstávají poslední.
-- Nové sloupce `vatCodeId` (výběr „kód – název“ přes sdílený výběr, neaktivní přes `InactiveTag`), `vatRate` (jen čtení „21 %“ / „—“, lze skrýt), `vatAmount` (přepsání = ruční daň, ikona ✎, akce řádku „Vrátit vypočtenou daň“), `grossAmount` (Celkem s DPH). Změna kódu ruší ruční daň; nový řádek dostane `defaultCodeId`, jinak kód z předchozího řádku.
-- Režim „S DPH“: editovatelné jen Celkem s DPH, Částka jen ke čtení; přepnutí nemění celek dokladu.
-- Přepínač „Bez DPH | S DPH“ v liště přes `GridSegmentedToggle` (lišta gridu), jen při `vat.enabled`.
-- Rozložení: Sazba a Celkem s DPH mají nižší prioritu a při nedostatku místa jdou do detailu (stávající `resolveJournalColumnLayout`, nové šířky v rem); Kód DPH a DPH zůstávají v gridu.
-- Detail řádku: Nárok na odpočet (`SegmentedField` Plný / Bez nároku / Poměrný + `DecimalInput` %) jen u vstupního kódu s daní; Předmět plnění PDP jen u `requiresPdpSubject`; u cizí měny „Základ pro DPH ({značka})“ a „DPH ({značka})“ jen ke čtení.
-- Součet, „Zbývá rozepsat“, návrh Zaokrouhlení a rekapitulace počítají řádky základu + předběžné řádky daně; jakmile APP předá řádky z DB (`isVatLine`), předběžné se nepoužijí.
-- Kontroly (česky, značky měn z dat): kód povinný (výjimky `isCodeRequired`), ruční daň odchylka > 1 chyba / ≤ 1 varování (žlutý roh + tooltip „Ruční daň se liší od vypočtené o …“), PDP povinný, poměrný nárok 1–99 %. Varování nejsou započtena v `onValidationChange`.
-- `vat.readOnly`: DPH sloupce i detail jen ke čtení.
-- Nové texty v `JournalLinesEditorTexts` (vše přes `t.*`, s českými výchozími).
+## 5. Nastavení dokladu – Zadávat částky
+- `DocumentSettingsValue.vatCalcMode?: "net" | "gross"`; nový prop `showVatCalcMode?: boolean`. Volba „Zadávat částky: Bez DPH / S DPH“ přes `SegmentedField` v sekci Zadávání dokladu, jen při `showVatCalcMode`. Texty `vatCalcMode`, `vatCalcNet`, `vatCalcGross`.
 
-## 3. Rekapitulace – záložka „DPH“
-`JournalLinesRecap` dostane volitelný `vat` (stejný tvar) a vestavěnou záložku „DPH“ jen při `enabled`: Kód · Sazba · Základ · DPH · Celkem, u cizí měny navíc Základ a DPH v domácí měně kurzem DPH, řádek součtu, poznámka u samovyměření, rozpad s nárokem / bez nároku. Nadpisy nezalamovat.
+## Soubory
+`journal-vat.ts`, `journal-lines-editor.tsx`, `document-form.tsx`, `document-settings-dialog.tsx`, `vat-code-select.tsx` (dle bodu 3), barely `index.ts`, ukázky (FV s DPH v celém formuláři, kurz DPH, nastavení), `.lovable/system.md`, `design-system.json`, `README.md` (2.56.0), `roadmap.md`, `package.json` → 2.56.0.
 
-## 4. Soubory
-- `src/components/ds/accounting/journal-lines.ts` – typy, `toJournalRow(s)`, `fromJournalRow`
-- `src/components/ds/accounting/journal-vat.ts` – nový, čisté výpočty
-- `src/components/ds/accounting/journal-lines-editor.tsx` – prop `vat`, sloupce, lišta, detail, kontroly
-- `src/components/ds/accounting/journal-lines-recap.tsx` – záložka DPH
-- `src/components/ds/index.ts`, `src/index.ts` – exporty
-- `src/styles.css` – varovný roh buňky (token warning)
-- `src/lib/mock/accounting.ts` – vzorové kódy DPH a PDP předměty
-- `src/components/showcase/DocumentFormShowcase.tsx` – šest ukázek výše
-- `.lovable/system.md`, `components.md`, `README.md` (changelog 2.55.0), `roadmap.md`, `AGENTS.md` („řádky daně vytváří jen DB, DS je jen zobrazuje a počítá předběžně“), `.lovable/design-system.json` (usage/examples/antipatterns)
-- `package.json` → 2.55.0
+## Testy
+`computeJournalTotals` (FV 1 210, dvě sazby 1 770, RC-P21 1 000 editovatelné i jen ke čtení, S DPH, cizí měna); DocumentForm celek a odznak; buňka Kód DPH psaním; Kurz DPH jen při propu; volba Bez/S DPH jen při `showVatCalcMode`. Plus produkční build a kontrola v náhledu.
 
-## 5. Testy (`tests/unit/journal-vat-255.test.tsx`)
-- `toJournalRows`: nic zakázaného se neposílá, řádky daně a předběžné vynechány, `amount_gross` v režimu S DPH, bez `vat` shodné s 2.54.0.
-- `fromJournalRow`: všechny DPH sloupce, `grossAmount`.
-- `buildVatPreviewLines`: 21V 1 000 → 1 210; 21V 1 000 + 12V 500 → 1 770; ruční 210,40; RC-P21 → celek 1 000 (343/343); bez nároku 210 na účet základu; poměrný 60 % → 126 + 84; S DPH 121 → 100 + 21; kód bez účtů → bez řádku + upozornění.
-- Editor: součet a „Zbývá rozepsat“ s předběžnou daní, přepnutí režimu nemění celek, ruční daň chyba / varování, řádky daně skryté, Zaokrouhlení poslední, bez `vat` žádné nové sloupce.
-- Ověření v náhledu: produkční build, ukázky Účetní doklady v 1 panelu a úzkém panelu, zoom 60/140 %.
-
-## Předpoklady k potvrzení
-- Přepínač v liště řeším `GridSegmentedToggle` (jsme v gridu), ne `SegmentedField`.
-- Ruční daň se ukládá v měně dokladu (`vat_amount_foreign`), u domácí měny stejně.
-- Varování ruční daně neblokuje uložení a nezvyšuje počet chyb.
+## Nové exporty
+`computeJournalTotals`, typ `JournalTotals`, `DocumentVatRateField`; rozšířené `JournalLinesEditor` (`onTotalsChange`), `DocumentForm` (`vatRateField`), `DocumentSettingsDialog` (`showVatCalcMode`, `vatCalcMode`).
