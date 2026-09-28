@@ -1,3 +1,7 @@
+## Verze 2.57.0 (opravy editoru řádků s DPH)
+- [x] Samovyměření v režimu S DPH, nárok u samovyměření, opožděný výchozí kód, neaktivní přepínač při readOnly, hláška chybějícího kurzu DPH, předběžné Kurzové zaokrouhlení.
+- [ ] Tisk a export do Excelu s DPH (dříve odloženo).
+
 ## Verze 2.56.0 (opravy po prokliku DPH)
 - [x] Celkem za doklad z rozpisu = celek editoru včetně předběžné daně (`computeJournalTotals`, `onTotalsChange`)
 - [x] Odznak Řádky jen z řádků v gridu

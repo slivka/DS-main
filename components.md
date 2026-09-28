@@ -230,3 +230,10 @@ Protistrana jako volný text s volitelným propojením na partnera. „Nový par
 - Pokladní doklad zachovává všechny řádky; osm řádků se vejde do poloviny A4, delší doklad přejde na celou stránku a dialog na to upozorní.
 - Každá kopie pokladního dokladu má vlastní zápatí a dlouhá částka slovy se zalamuje po znacích.
 - Sestava čísluje stránky až po dokončení tisku a logo v první hlavičce není závislé na nastavení loga v zápatí.
+
+## DPH v editoru řádků (2.57.0)
+- Samovyměření v režimu „S DPH“: zadaná částka je základ, daň navrch, Celkem s DPH = základ (`isSelfAssessed`).
+- Nárok na odpočet u všech vstupních kódů s daní včetně samovyměření.
+- `fillInitialVatCode` – výchozí kód do počátečního řádku i opožděně.
+- `GridSegmentedToggle.disabled` – přepínač Bez/S DPH neaktivní při `vat.readOnly`.
+- `DocumentForm.texts.vatRateMissing`, `JournalLinesEditor.texts.fxRoundingPreview` – předběžné Kurzové zaokrouhlení u cizí měny.

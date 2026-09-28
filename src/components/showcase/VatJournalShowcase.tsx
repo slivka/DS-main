@@ -103,6 +103,20 @@ export function VatJournalShowcase() {
         ]}
       />
       <VatExample
+        title="Faktura přijatá – přenesení daňové povinnosti v režimu S DPH"
+        description="Dodavatel DPH neúčtuje: zadaných 1 000 je základ, daň 210 navrch (343 / 343), Celkem s DPH i celek dokladu 1 000. Nárok na odpočet je v detailu řádku."
+        storageKey="showcase-vat-rc-gross"
+        codes={MOCK_VAT_CODES_IN}
+        mainAccount="321001"
+        mainSide="D"
+        initialMode="gross"
+        totalAmount={1000}
+        initial={[
+          { id: "rcg1", debitAccount: "518001", creditAccount: "321001", amount: 1000, grossAmount: 1000, text: "Stavební práce", vatCodeId: "rc21", pdpSubjectCode: "4", vatDeduction: "full" },
+        ]}
+      />
+
+      <VatExample
         title="Pokladní doklad – zadání s DPH"
         description="V režimu „S DPH“ se píše do Celkem s DPH; Částka (základ) je jen ke čtení. 121 → 100 + 21."
         storageKey="showcase-vat-po"
