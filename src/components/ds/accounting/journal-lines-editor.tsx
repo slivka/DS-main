@@ -181,7 +181,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
   isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, onValidationChange, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className,
 }, forwardedRef) {
-  const paneActive = useIsActivePane(); const t = { ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }; const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const paneActive = useIsActivePane(); const t = React.useMemo(() => ({ ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }), [texts]); const rootRef = React.useRef<HTMLDivElement | null>(null);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
   const [active, setActive] = React.useState<{ rowId: string; column: JournalLineColumn } | null>(null); const [editing, setEditing] = React.useState<EditState | null>(null);
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({}); const [search, setSearch] = React.useState("");

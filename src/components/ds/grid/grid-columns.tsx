@@ -171,13 +171,19 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   }, [storageKey]);
 
   useEffect(() => {
+    let saved: Id[] = [];
     try {
       const raw = localStorage.getItem(visibilityOverridesKey);
-      const saved = raw ? JSON.parse(raw) as Id[] : [];
-      setExplicitVisibility(saved.filter((id) => persistentIds.has(id)));
+      saved = raw ? (JSON.parse(raw) as Id[]).filter((id) => persistentIds.has(id)) : [];
     } catch {
-      setExplicitVisibility([]);
+      saved = [];
     }
+    // Stav nastavíme jen při skutečné změně obsahu – jinak by nestabilní
+    // identita `persistentIds` (inline `columns` u volajícího) způsobila
+    // nekonečný cyklus render → efekt → setState.
+    setExplicitVisibility((cur) =>
+      cur.length === saved.length && cur.every((id, i) => id === saved[i]) ? cur : saved,
+    );
   }, [visibilityOverridesKey, persistentIds]);
 
   useEffect(() => {
