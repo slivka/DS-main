@@ -2348,7 +2348,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Účetní rozpis s pružnými sloupci, editací klávesnicí a volitelným zobrazením čísla či celého názvu účtu.
+Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.
 
 **Props:**
 
@@ -2381,6 +2381,7 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `rounding` | any | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
+| `onValidationChange` | function | `—` |
 | `reorderable` | boolean | `—` |
 | `initialEmptyLine` | boolean | `false` |
 | `showAllErrors` | boolean | `false` |
@@ -2396,12 +2397,13 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 
 _Rozpis se zkrácenými účty_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay="number" storageKey="invoice-lines" />
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay="number" onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
 **Avoid:**
 
 - Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
+- Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
 
 ### JournalLinesRecap
 
