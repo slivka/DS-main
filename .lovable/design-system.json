@@ -2,7 +2,7 @@
   "meta": {
     "name": "Design System",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.55.0",
+    "version": "2.56.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -22,7 +22,6 @@
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
-      ".lovable/plan.md": "dc1d0381c8fa233e839c383e21cf9316",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
       ".lovable/plan/appshell-2-3-0-adaptivní-lišta-a-období-2026-09-23.md": "cff0cd14c533151ad08b061cfce05b5d",
@@ -41,6 +40,7 @@
       ".lovable/plan/ds-2-43-0-edit-dokladu-6-část-b-2026-09-26.md": "3684e903440723c47da77ac8a99e82ab",
       ".lovable/plan/ds-2-43-0-poslední-kontrola-před-vydáním-2026-09-26.md": "1e26efea89da035fb7941c3ceee51bbb",
       ".lovable/plan/ds-2-44-0-doplnění-editace-dokladu-a-tisku-2026-09-26.md": "720a00165a4f24d108521c81436d8141",
+      ".lovable/plan/ds-2-56-0-opravy-po-prokliku-dph-minor-bez-breaking-změn-2026-09-28.md": "1b97bde972a771d3ba942f78ca66f16a",
       ".lovable/plan/excel-export-1-3-0-2026-09-22.md": "a22a933faf345d8d68b36da990499da3",
       ".lovable/plan/horní-lišta-a-výběr-firmy-další-minor-verze-2026-09-25.md": "82a6ef144dd5c012a8023a1cc1f02320",
       ".lovable/plan/kompaktní-systémové-sloupce-gridu-2026-09-22.md": "3a3ee896dd5696e92cddfc864c6c9937",
@@ -58,9 +58,9 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "f551fe9b0cb87d04ab4f3a567f1cdd49",
+      ".lovable/system.md": "efab66b020c52e248ff6a4562757da39",
       "AGENTS.md": "e02593dae69e3f253b82869eba25703d",
-      "README.md": "dc9a98354d6317d2826a8740a1636301",
+      "README.md": "a8aa2bdab2fb9b4f787c8d2b05a8697f",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
       "components.md": "c7720cfd0b4c02a1c2b47814ea9fbeeb",
@@ -68,10 +68,10 @@
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "aab65e913b618b064ec207346316a096",
+      "package.json": "78179b765c4e8a3d0422d2dc1ab106f6",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "390e053b4191eee774d900f8408a5145",
+      "roadmap.md": "faa6e2f986985f537d801e7401d270ea",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -86,14 +86,14 @@
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "a0eeea29e7a402c22dca46d50a32d746",
       "src/components/ds/accounting/document-fields.ts": "27b38f8d4d751166df7de7d3279ed90f",
-      "src/components/ds/accounting/document-form.tsx": "869b63d1c5b5d42ad9186bf65eedabee",
-      "src/components/ds/accounting/document-settings-dialog.tsx": "9467836f02c735e4a1bc979ddde885ce",
+      "src/components/ds/accounting/document-form.tsx": "1178cecb57b72553599a41d9fd0506d4",
+      "src/components/ds/accounting/document-settings-dialog.tsx": "a86de82b5b09d6d747d45105ce972b80",
       "src/components/ds/accounting/document-status-badge.tsx": "0e82aae5b1a1884b27e3d0798d56974a",
       "src/components/ds/accounting/fiscal-period-select.tsx": "85d269a94347280ddf15fd464f3234b1",
-      "src/components/ds/accounting/journal-lines-editor.tsx": "42b9e6ae750dd862b2c6522c6c40167f",
+      "src/components/ds/accounting/journal-lines-editor.tsx": "00dccc2e6df2a0f4200a12de700c3bf7",
       "src/components/ds/accounting/journal-lines-recap.tsx": "cb4c93fe97820a1b5c7a7570ba770af8",
       "src/components/ds/accounting/journal-lines.ts": "ab95f3f05efbf918751d1883ca762a46",
-      "src/components/ds/accounting/journal-vat.ts": "f5d4e80f92a1c61f9b2e218c248b1bb5",
+      "src/components/ds/accounting/journal-vat.ts": "d908f75326f7c1b4b9935a77198bbff8",
       "src/components/ds/accounting/partner-select.tsx": "337f775971e5b9e387c19e09a6a4f8d1",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "f7e3bb080e41c7ae5a403e0707d0e248",
       "src/components/ds/accounting/payment-schedule.ts": "e5843d856417e6b3c23bab3be57b3344",
@@ -211,7 +211,7 @@
       "src/components/ds/print/cash-receipt-pdf.tsx": "8c0b4f8ddbfec494c8133e565d68f239",
       "src/components/ds/print/print-preview-dialog.tsx": "6bd5b921b454abf04ceb7bf524319b4d",
       "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
-      "src/components/showcase/DocumentFormShowcase.tsx": "319296c728ea1b9b58fc808a053e1277",
+      "src/components/showcase/DocumentFormShowcase.tsx": "638fd07f896a2788d2afc8e153811680",
       "src/components/showcase/PaneShowcase.tsx": "ed1d83c36e16e9e1073278fa9fab6f76",
       "src/components/showcase/PartnerShowcase.tsx": "076b6e884505b59fa80085d3b3c27b0d",
       "src/components/showcase/PrintShowcase.tsx": "a682a20ab45d9a7efb6b24066b80500e",
@@ -321,6 +321,7 @@
       "tests/e2e/journal-editor.spec.ts": "29ce059abe10fdacf8ae0101593904c3",
       "tests/e2e/payment-schedule.spec.ts": "13bc35148d1319075adedc7f72306a42",
       "tests/e2e/reports.spec.ts": "b0e8a570a298b73df2e87a9af880833a",
+      "tests/e2e/vat-code-tab-256.spec.ts": "29932c1da5124282eb16c74c9d888553",
       "tests/unit/appshell-panels-240.test.tsx": "0fa7aeff9b79d6b811ede6196bbb5e9e",
       "tests/unit/context-switchers-222.test.ts": "f94361f830e8712ed15a67bb63e444b3",
       "tests/unit/counterparty-225.test.tsx": "68733565fb3be1bee458f20e907dd46e",
@@ -328,6 +329,7 @@
       "tests/unit/document-form-224.test.tsx": "83747cc3bcb8db6012c9a32aec2f036b",
       "tests/unit/document-form-228.test.tsx": "b9f7d13cb481ae8f0bc4eb9f8bd1a7c1",
       "tests/unit/document-form-236.test.tsx": "557b50fba31a5a02d968186fedac2f37",
+      "tests/unit/document-vat-256.test.tsx": "0a69f38de9383137b3291e34fc3d590f",
       "tests/unit/grid-actions-226.test.tsx": "6400529251c2ccdb659e07c4e06f7dd5",
       "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
       "tests/unit/grid-print-227.test.ts": "5779194524d28ce74635ac0a101ea3ac",
@@ -6781,6 +6783,10 @@
           "type": "function"
         },
         {
+          "name": "onTotalsChange",
+          "type": "function"
+        },
+        {
           "name": "onValidationChange",
           "type": "function"
         },
@@ -7091,6 +7097,10 @@
           "type": "any"
         },
         {
+          "name": "vatRateField",
+          "type": "any"
+        },
+        {
           "name": "linesEditorProps",
           "type": "any"
         },
@@ -7216,6 +7226,11 @@
         },
         {
           "name": "allowCounterpartySuggestions",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "showVatCalcMode",
           "type": "boolean",
           "default": "false"
         },

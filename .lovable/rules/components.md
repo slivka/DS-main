@@ -1362,6 +1362,7 @@ Celostránkový účetní doklad s identitou, přilepenými akcemi, jednotným c
 | `accountingDateLink` | any | `—` |
 | `dateWarnings` | any | `—` |
 | `vat` | any | `—` |
+| `vatRateField` | any | `—` |
 | `linesEditorProps` | any | `—` |
 | `roundingLimit` | number | `1` |
 | `roundingLabel` | string | `—` |
@@ -1407,6 +1408,7 @@ import { DocumentSettingsDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 | `onSave` | function | `—` |
 | `documentTypeLabel` | string | `—` |
 | `allowCounterpartySuggestions` | boolean | `false` |
+| `showVatCalcMode` | boolean | `false` |
 | `busy` | boolean | `—` |
 | `texts` | any | `—` |
 
@@ -2381,6 +2383,7 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `rounding` | any | `—` |
 | `defaults` | any | `—` |
 | `validate` | function | `—` |
+| `onTotalsChange` | function | `—` |
 | `onValidationChange` | function | `—` |
 | `reorderable` | boolean | `—` |
 | `initialEmptyLine` | boolean | `false` |
