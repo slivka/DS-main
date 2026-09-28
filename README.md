@@ -17,6 +17,7 @@ Minor verze bez breaking změn: bez propu `vat` (nebo s `vat.enabled = false`) s
 - Duplikace řádku kopíruje kód, nárok i PDP, ruční daň ne.
 - Výběr Kódu DPH v buňce gridu se otevírá hned při vstupu do editace a psaní rovnou filtruje podle kódu i názvu (nová komponenta `VatCodeSelect`).
 - Rekapitulace: vestavěná záložka „DPH“ (`JournalLinesRecap.vatSummary`).
+- Patička při zapnutém DPH odděluje součet základů, DPH a celkem s DPH; pokud je sloupec Celkem s DPH skrytý nebo v detailu, celek se značkou měny dokladu zůstává v liště vedle stavu rozepsání. Rekapitulace používá značky měn předané v datech.
 - Nové exporty: typy `VatCodeOption`, `VatPdpSubject`, `VatCalcMode`, `VatDeduction`, `VatLineKind`, `JournalLinesVat`, `VatSummaryRow`, `ResolvedLineVat`, `VatPreviewConfig`, `VatPreviewResult`; funkce `toJournalRows`, `buildVatPreviewLines`, `resolveLineVat`, `summarizeVat`, `sumJournalTotal`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromBase`, `calculateVatFromGross`; komponenta `VatCodeSelect` (a `filterVatCodes`).
 
 ## Changelog 2.54.0 – grid řádků a nezalamování

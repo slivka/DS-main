@@ -42,7 +42,7 @@ function VatExample({ title, description, initial, codes, mainAccount, mainSide,
         totalAmount={totalAmount}
         totalMode={totalAmount === undefined ? "computed" : "entered"}
         documentCurrency={currency?.code ?? "CZK"}
-        documentCurrencySymbol={currency?.symbol}
+        documentCurrencySymbol={currency?.symbol ?? "Kč"}
         homeCurrency="CZK"
         homeCurrencySymbol="Kč"
         rate={currency?.rate ?? 1}
