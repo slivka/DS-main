@@ -1,3 +1,10 @@
+## Verze 2.56.0 (opravy po prokliku DPH)
+- [x] Celkem za doklad z rozpisu = celek editoru včetně předběžné daně (`computeJournalTotals`, `onTotalsChange`)
+- [x] Odznak Řádky jen z řádků v gridu
+- [x] Tab z Částky na Kód DPH a psaní otevře výběr
+- [x] Kurz DPH v sekci Částka (`vatRateField`)
+- [x] Nastavení dokladu: Zadávat částky Bez DPH / S DPH (`showVatCalcMode`)
+
 ## Verze 2.55.0 (DPH v editoru řádků dokladu – krok 2, část B)
 - [x] Datový model DPH na řádku, `toJournalRow(s)`, `fromJournalRow`
 - [x] Předběžný výpočet daně (`journal-vat.ts`) – FV, FP, ruční daň, PDP, bez nároku, poměrný, S DPH, cizí měna

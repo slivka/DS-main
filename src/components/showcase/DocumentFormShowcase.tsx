@@ -123,7 +123,7 @@ export function DocumentFormShowcase() {
           accountingDateLink={{ locked: cashDateLocked, onToggle: (locked) => { setCashDateLocked(locked); if (locked) setCourier((current) => ({ ...current, accountingDate: current.issueDate })); } }} vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true }}
           handedOverBySuggest={{ enabled: handedSuggestions, onEnabledChange: setHandedSuggestions, load: suggestNames }} descriptionSuggest={{ enabled: descriptionSuggestions, onEnabledChange: setDescriptionSuggestions, load: suggestDescriptions }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)} />
-        <DocumentSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} value={documentSettings} onSave={(next) => { setDocumentSettings(next); setSettingsOpen(false); toast.success("Nastavení uloženo"); }} documentTypeLabel="Pokladní doklad – výdej" allowCounterpartySuggestions />
+        <DocumentSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} value={documentSettings} onSave={(next) => { setDocumentSettings(next); setSettingsOpen(false); toast.success("Nastavení uloženo"); }} documentTypeLabel="Pokladní doklad – výdej" allowCounterpartySuggestions showVatCalcMode />
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna – příjem s propojeným partnerem" description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČO a DIČ.">
         <DocumentForm title="Pokladní doklad – příjem" identity={{ items: ["PO - Pokladna", "CZK", "2026", { side: "MD", text: "211.001 - Pokladna CZK" }], number: cashIn.number }} directionBadge="in" value={cashIn} onChange={setCashIn} lines={[]} {...common}
@@ -131,7 +131,8 @@ export function DocumentFormShowcase() {
       </ShowcaseSection>
       <ShowcaseSection title="Pokladna v EUR" description="Měna zamčená (text), kurz viditelný se zdrojem.">
         <DocumentForm title="Bankovní doklad EUR" identity={{ items: ["BV - Banka EUR", "EUR", "2026", <span className="font-mono">221.002 - Běžný účet EUR <span className="font-sans">DAL</span></span>], number: cashEur.number }} directionBadge="out" value={cashEur} onChange={setCashEur} lines={[]} {...common} currencies={CURRENCIES} currencyLocked
-          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft" />
+          books={MOCK_BOOKS.filter((b) => b.id === "b-bv")} documentType="BA" isNew mainSide="D" mainAccountLocked status="draft"
+          vatRateField={{ value: cashEur.rate ?? null, onChange: () => {}, sameAsDocument: true }} />
       </ShowcaseSection>
       <ShowcaseSection title="Neplátce – vydaná faktura v CZK" description="Firma není plátce, proto se nezobrazuje přepínač, DUZP ani Datum DPH.">
         <DocumentForm title="Vydaná faktura" value={fvCzk} onChange={setFvCzk} lines={[]} {...common} currencies={CURRENCIES}
