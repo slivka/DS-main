@@ -1,5 +1,6 @@
 import type { AccountOption } from "../../components/ds/accounting/account-select";
 import type { DocumentStatus } from "../../components/ds/accounting/document-status-badge";
+import type { VatCodeOption, VatPdpSubject } from "../../components/ds/accounting/journal-lines";
 import type { FiscalPeriod } from "../../components/ds/accounting/fiscal-period-select";
 
 /** Ukázková účtová osnova (pouze pro showcase design systému). */
@@ -16,6 +17,8 @@ export const MOCK_ACCOUNTS: AccountOption[] = [
   { code: "321001", name: "Dodavatelé", type: "liability", category: "zavazky", accountType: "rozvahovy" },
   { code: "321100", name: "Závazky", type: "liability", category: "zavazky", accountType: "rozvahovy" },
   { code: "343001", name: "DPH 21 %", type: "liability", category: "bilance", accountType: "rozvahovy" },
+  { code: "343100", name: "DPH na výstupu", type: "liability", category: "bilance", accountType: "rozvahovy" },
+  { code: "343200", name: "DPH na vstupu", type: "liability", category: "bilance", accountType: "rozvahovy" },
   { code: "411000", name: "Základní kapitál", type: "equity", category: "bilance", accountType: "rozvahovy" },
   { code: "511001", name: "Opravy a udržování", type: "expense", category: "vysledkove", accountType: "nakladovy" },
   { code: "513001", name: "Náklady na reprezentaci", type: "expense", category: "vysledkove", accountType: "nakladovy" },
@@ -162,4 +165,22 @@ export const MOCK_CHART_TREE: ChartNode[] = [
   { id: "g60", parentId: "t6", code: "60", name: "Tržby", debit: 0, credit: 0 },
   { id: "s602", parentId: "g60", code: "602", name: "Tržby z prodeje služeb", debit: 0, credit: 0 },
   { id: "a602001", parentId: "s602", code: "602001", name: "Tržby ze služeb", debit: 18400, credit: 3894250.6 },
+];
+
+/** Ukázkové kódy DPH (pouze pro showcase). */
+export const MOCK_VAT_CODES_OUT: VatCodeOption[] = [
+  { id: "v21", code: "21V", name: "Tuzemské plnění 21 %", direction: "out", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: "343100" },
+  { id: "v12", code: "12V", name: "Tuzemské plnění 12 %", direction: "out", hasTax: true, rate: 12, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: "343100" },
+  { id: "v0", code: "0V", name: "Osvobozené plnění", direction: "out", hasTax: false, rate: null, selfAssessment: false, requiresPdpSubject: false },
+  { id: "v21x", code: "21VX", name: "Plnění bez nastavených účtů", direction: "out", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: null },
+];
+export const MOCK_VAT_CODES_IN: VatCodeOption[] = [
+  { id: "p21", code: "21P", name: "Tuzemské přijaté plnění 21 %", direction: "in", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxInAccount: "343200" },
+  { id: "p12", code: "12P", name: "Tuzemské přijaté plnění 12 %", direction: "in", hasTax: true, rate: 12, selfAssessment: false, requiresPdpSubject: false, taxInAccount: "343200" },
+  { id: "rc21", code: "RC-P21", name: "Přenesení daňové povinnosti 21 %", direction: "in", hasTax: true, rate: 21, selfAssessment: true, requiresPdpSubject: true, taxInAccount: "343200", taxOutAccount: "343100" },
+];
+export const MOCK_PDP_SUBJECTS: VatPdpSubject[] = [
+  { code: "4", name: "Stavební a montážní práce" },
+  { code: "5", name: "Zboží uvedené v příloze č. 5" },
+  { code: "21", name: "Elektřina a plyn" },
 ];
