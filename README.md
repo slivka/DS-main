@@ -5,6 +5,14 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.56.0 – opravy po prokliku DPH
+
+- „Celkem za doklad“ v režimu Sčítá se z rozpisu zahrnuje předběžnou daň (FV 1 000 → 1 210) a nezapočítá daň samovyměření; stejné číslo jako patička „Celkem s DPH“. Nová sdílená funkce `computeJournalTotals` (typy `JournalTotals`, `JournalTotalsOptions`), `JournalLinesEditor` ji používá a hlásí přes nový prop `onTotalsChange`.
+- Odznak záložky „Řádky N“ počítá jen řádky zobrazené v gridu (bez řádků daně a prázdných).
+- Buňka Kód DPH: Tab z Částky vede rovnou na Kód DPH (přepínač nedaňový je mimo pořadí Tab, zůstává Alt+N), psaní otevře výběr a filtruje.
+- `DocumentForm.vatRateField` (`DocumentVatRateField`) – Kurz DPH pod kurzem dokladu, automatický / ruční s důvodem, nebo text „stejný jako kurz dokladu“.
+- `DocumentSettingsDialog.showVatCalcMode` a `DocumentSettingsValue.vatCalcMode` – volba „Zadávat částky: Bez DPH / S DPH“.
+
 ## Changelog 2.55.0 – DPH v editoru řádků dokladu
 
 - Samovyměření respektuje nárok stejně jako DB: `full` MD vstup / DAL výstup; `none` MD účet základu / DAL výstup (`non_deductible`, stačí účet výstupu); `partial` rozdělí na část s nárokem a zbytek na účet základu. `summarizeVat` počítá rozpad nároku i u samovyměření.

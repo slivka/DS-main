@@ -204,3 +204,53 @@ export function baseFromGross(line: JournalLine, codes: VatCodeOption[], config:
   if (config.foreign) return { foreignAmount: resolved.base, amount: round2(resolved.base * (config.rate || 0) / (config.rateAmount || 1)) };
   return { amount: resolved.base };
 }
+
+export type JournalTotalsOptions = {
+  /** DPH editoru; bez něj nebo s `enabled: false` se počítá jako dříve (součet řádků). */
+  vat?: { enabled: boolean; codes: VatCodeOption[]; calcMode?: VatCalcMode; vatRate?: number | null; vatRateAmount?: number; readOnly?: boolean } | null;
+  /** Doklad je jen ke čtení – použijí se uložené řádky daně z DB. */
+  readOnly?: boolean;
+  mainAccount?: string | null;
+  mainSide?: "MD" | "D";
+  foreign?: boolean;
+  rate?: number | null;
+  rateAmount?: number;
+};
+
+export type JournalTotals = {
+  /** Součet základů (domácí měna / měna dokladu). */
+  baseHome: number;
+  base: number;
+  /** Daň vstupující do celku v měně dokladu. */
+  vat: number;
+  /** Celek řádků včetně daně bez zaokrouhlení (domácí měna / měna dokladu). */
+  grossHome: number;
+  gross: number;
+  /** Počet řádků zobrazených v gridu (bez řádků daně a prázdných). */
+  visibleLineCount: number;
+};
+
+/** Jediný výpočet celku řádků dokladu – editor (patička, lišta) i DocumentForm („Celkem za doklad“). */
+export function computeJournalTotals(lines: JournalLine[], options: JournalTotalsOptions = {}): JournalTotals {
+  const regular = lines.filter(isBaseLine);
+  const vatOn = Boolean(options.vat?.enabled);
+  const readOnly = Boolean(options.readOnly || options.vat?.readOnly);
+  let tax: JournalLine[] = [];
+  if (vatOn && options.vat) {
+    const codes = new Map(options.vat.codes.map((code) => [code.id, code]));
+    if (readOnly) {
+      const main = options.mainAccount;
+      tax = lines.filter((line) => line.isVatLine && !line.isVatPreview).map((line) => ({ ...line, excludeFromTotal: line.excludeFromTotal ?? (main ? line.debitAccount !== main && line.creditAccount !== main : Boolean(codes.get(line.vatCodeId ?? "")?.selfAssessment)) }));
+    } else {
+      tax = buildVatPreviewLines(regular, { codes: options.vat.codes, calcMode: options.vat.calcMode ?? "net", rate: options.rate ?? undefined, rateAmount: options.rateAmount, vatRate: options.vat.vatRate, vatRateAmount: options.vat.vatRateAmount, foreign: options.foreign } as VatPreviewConfig, { mainAccount: options.mainAccount, mainSide: options.mainSide }).lines;
+    }
+  }
+  const counted = tax.filter((line) => !line.excludeFromTotal);
+  const sumHome = (items: JournalLine[]) => round2(items.reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
+  const sumDoc = (items: JournalLine[]) => options.foreign ? round2(items.reduce((sum, line) => sum + (Number(line.foreignAmount) || 0), 0)) : sumHome(items);
+  return {
+    baseHome: sumHome(regular), base: sumDoc(regular), vat: sumDoc(counted),
+    grossHome: sumHome([...regular, ...counted]), gross: sumDoc([...regular, ...counted]),
+    visibleLineCount: lines.filter((line) => !line.isVatLine && !line.isVatPreview && !line.isBlank).length,
+  };
+}

@@ -367,3 +367,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Editor řádků zapínejte propem `vat`; kódy DPH filtruje aplikace (směr, aktivní, platnost k Datu DPH). Ukládejte přes `toJournalRows` – nikdy neposílá `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
 - Přepínač „Bez DPH | S DPH“ je v liště gridu; v režimu S DPH je Částka jen ke čtení.
 - Značky měn v popiscích DPH vždy z dat (pravidlo 18); kód DPH ve výběru jako „kód – název“ (pravidlo 9).
+
+
+## DPH – celek dokladu (2.56.0)
+- Celek řádků dokladu počítej vždy přes `computeJournalTotals` (nebo převezmi z `JournalLinesEditor.onTotalsChange`) – nikdy ručním součtem `line.amount`, jinak chybí předběžná daň nebo se započte samovyměření.
+- Kurz DPH předávej přes `DocumentForm.vatRateField`; volbu Bez / S DPH v nastavení dokladu přes `DocumentSettingsDialog showVatCalcMode`.

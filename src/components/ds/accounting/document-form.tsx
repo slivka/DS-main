@@ -27,6 +27,7 @@ import { DocumentStatusBadge, type DocumentStatus } from "./document-status-badg
 import { documentFieldsForType, mainAccountLabelForType, partnerLabelForType, type DocumentFields, type DocumentTypeCode } from "./document-fields";
 import { JournalLinesEditor, type JournalLinesEditorProps } from "./journal-lines-editor";
 import type { JournalLine } from "./journal-lines";
+import { computeJournalTotals } from "./journal-vat";
 import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import { CounterpartyField, type CounterpartySeed } from "./counterparty-field";
@@ -100,7 +101,7 @@ export type DocumentFormTexts = {
   status: string; approved: string; yes: string; no: string;
   accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
-  description: string; currency: string; rate: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
+  description: string; currency: string; rate: string; vatRate: string; vatRateSameAsDocument: string; vatRateNote: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
@@ -114,10 +115,24 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
-  description: "Popis", currency: "Měna", rate: "Kurz", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
+  description: "Popis", currency: "Měna", rate: "Kurz", vatRate: "Kurz DPH", vatRateSameAsDocument: "stejný jako kurz dokladu", vatRateNote: "Důvod ručního kurzu DPH", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
   linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku",
 };
+
+/** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
+export interface DocumentVatRateField {
+  value: number | null;
+  onChange: (next: { rate?: number | null; manual?: boolean; note?: string | null }) => void;
+  manual?: boolean;
+  note?: string | null;
+  suggestedRate?: number | null;
+  suggestedInfo?: string;
+  rateAmount?: number;
+  readOnly?: boolean;
+  /** Kurz DPH je stejný jako kurz dokladu – zobrazí se jen text. */
+  sameAsDocument?: boolean;
+}
 
 export interface DocumentFormProps {
   title: string;
@@ -150,6 +165,8 @@ export interface DocumentFormProps {
   accountingDateLink?: DocumentAccountingDateLink;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;
   vat?: DocumentVatConfig;
+  /** Kurz DPH pod kurzem dokladu (jen u cizí měny, jen když jej aplikace předá). */
+  vatRateField?: DocumentVatRateField;
   linesEditorProps?: Partial<Omit<JournalLinesEditorProps, "lines" | "onChange" | "accounts" | "partners" | "dimensions" | "mode" | "mainSide" | "mainAccount">>;
   roundingLimit?: number;
   roundingLabel?: string;
@@ -214,7 +231,7 @@ export function DocumentForm({
   title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
-  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, linesEditorProps, roundingLimit = 1, roundingLabel,
+  onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, vatRateField, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], settings, error, readOnly = false, readOnlyReason, texts, className,
 }: DocumentFormProps) {
@@ -243,7 +260,12 @@ export function DocumentForm({
   const documentLinesSum = Math.round(lines.filter((line) => !line.isRounding && !line.isFxRounding).reduce((sum, line) => sum + (line.foreignAmount ?? line.amount ?? 0), 0) * 100) / 100;
   const lineRounding = lines.find((line) => line.isRounding)?.amount;
   const roundedLinesSum = Math.round((linesSum + (lineRounding ?? value.roundingAmount ?? 0)) * 100) / 100;
-  const total = totalMode === "sum" ? (value.currency !== homeCurrency ? documentLinesSum : roundedLinesSum) : value.amountTotal;
+  const editorVat = linesEditorProps?.vat;
+  const vatTotals = computeJournalTotals(lines, { vat: editorVat?.enabled ? editorVat : null, readOnly: readOnly || linesEditorProps?.editableFields?.length === 0, mainAccount: f.mainAccount && mainSide ? value.mainAccountId : null, mainSide, foreign: value.currency !== homeCurrency, rate: value.rate, rateAmount });
+  const sumTotal = editorVat?.enabled
+    ? (value.currency !== homeCurrency ? vatTotals.gross : Math.round((vatTotals.grossHome + (lineRounding ?? value.roundingAmount ?? 0) + lines.filter((line) => line.isFxRounding).reduce((sum, line) => sum + (line.amount || 0), 0)) * 100) / 100)
+    : (value.currency !== homeCurrency ? documentLinesSum : roundedLinesSum);
+  const total = totalMode === "sum" ? sumTotal : value.amountTotal;
   const partner = partners.find((item) => item.id === value.partnerId);
   const account = accounts.find((item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""));
   const mode = f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
@@ -281,7 +303,7 @@ export function DocumentForm({
   };
 
   const allTabs: DocumentFormTab[] = [{
-    id: "lines", label: t.linesTab, badge: lines.length || undefined,
+    id: "lines", label: t.linesTab, badge: vatTotals.visibleLineCount || undefined,
     content: <JournalLinesEditor lines={lines} onChange={onLinesChange} accounts={accounts} dimensions={dimensions} partners={partners}
       mode={mode} mainSide={mainSide} mainAccount={value.mainAccountId} totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
       documentCurrency={value.currency} documentCurrencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rate={value.rate} rateAmount={rateAmount}
@@ -331,6 +353,8 @@ export function DocumentForm({
           {showMainAccount ? field("document-main-account", mainAccountLabel, accountLocked ? <ReadField id="document-main-account" value={<div className="flex min-w-0 items-center gap-2"><span className="min-w-0 truncate"><span className="font-mono tabular-nums">{account ? formatAccountCode(account.code) : value.mainAccountId ? formatAccountCode(value.mainAccountId) : "—"}</span>{account ? <span>{` - ${account.name}`}</span> : null}</span>{side}</div>} /> : <AccountSelect accounts={accounts} value={value.mainAccountId ?? ""} suffix={side} onChange={(mainAccountId) => patch({ mainAccountId })} />, 20) : null}
            {!hideIdentityCurrency ? field("document-currency", t.currency, currencies && can("currency") ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.label ? `${item.code} – ${item.label}` : item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3) : null}
             {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full @min-[40rem]:w-36" />, 3) : null}
+          {foreign && vatRateField ? field("document-vat-rate", t.vatRate, vatRateField.sameAsDocument ? <ReadField id="document-vat-rate" value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>} /> : <RateField id="document-vat-rate" value={vatRateField.value ?? null} currency={value.currency} currencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={vatRateField.rateAmount ?? rateAmount} suggestedRate={vatRateField.suggestedRate} suggestedInfo={vatRateField.suggestedInfo} manual={!!vatRateField.manual} note={vatRateField.note ?? ""} showNote={false} noteLabel={t.vatRateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={readOnly || vatRateField.readOnly} readOnly={readOnly || vatRateField.readOnly} onChange={(rate) => vatRateField.onChange({ rate, manual: true })} onNoteChange={(note) => vatRateField.onChange({ note })} onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })} className="w-full @min-[40rem]:w-36" />, 3, false, "@min-[40rem]:col-start-1") : null}
+          {foreign && vatRateField && !vatRateField.sameAsDocument && vatRateField.manual ? field("document-vat-rate-note", t.vatRateNote, <><Input id="document-vat-rate-note" value={vatRateField.note ?? ""} maxLength={200} required aria-invalid={!vatRateField.note?.trim()} disabled={readOnly || vatRateField.readOnly} onChange={(event) => vatRateField.onChange({ note: event.target.value })} />{!vatRateField.note?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
           {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
             {foreign ? field("document-total-home", t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency), <div className="text-right"><ReadField id="document-total-home" value={<span className="ml-auto font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</span>} /></div>, 3, false, "text-right [&_label]:text-right") : null}
             {field("document-amountTotal", <span className="flex w-full items-center justify-between gap-2 whitespace-nowrap"><span className="min-w-0 truncate">{`${t.amountTotal} (${currencies?.find((item) => item.code === value.currency)?.symbol ?? value.currency})`}</span>{totalMode === "sum" ? <span className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground">{t.sumFromLines}</span> : null}</span>, <div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>, 6, false, "@min-[40rem]:col-start-15")}
