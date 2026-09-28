@@ -2392,6 +2392,7 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `recapTabs` | any | `—` |
 | `texts` | any | `—` |
 | `className` | string | `cursor-grab text-muted-foreground active:cursor-grabbing` |
+| `vat` | any | `—` |
 
 **Examples:**
 
@@ -2400,10 +2401,17 @@ _Rozpis se zkrácenými účty_
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay="number" onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
+_Řádky s DPH (2.55.0)_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
+// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
+```
+
 **Avoid:**
 
 - Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
 - Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
+- Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
 
 ### JournalLinesRecap
 
@@ -2431,6 +2439,7 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `recapTabs` | any | `—` |
 | `zoom` | number | `1` |
 | `texts` | any | `—` |
+| `vatSummary` | any | `—` |
 
 **Examples:**
 
@@ -4334,6 +4343,42 @@ _Základní použití_
 **Avoid:**
 
 - Nevkládejte pracovní prostory do vnořeného podmenu.
+
+### VatCodeSelect
+
+```ts
+import { VatCodeSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `codes` | any | `—` |
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `placeholder` | string | `Vyberte kód DPH` |
+| `searchPlaceholder` | string | `Hledat kód nebo název…` |
+| `emptyText` | string | `Žádný kód DPH nenalezen` |
+| `disabled` | boolean | `—` |
+| `defaultOpen` | boolean | `false` |
+| `initialSearch` | string | `—` |
+| `onOpenChange` | function | `—` |
+| `onKeyDown` | any | `—` |
+| `className` | string | `font-mono tabular-nums` |
+
+**Examples:**
+
+_Buňka Kód DPH v editoru řádků_
+```tsx
+<VatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) => { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className="journal-cell-editor" />
+```
+
+**Avoid:**
+
+- Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním.
 
 ### VatStatusBadge
 
