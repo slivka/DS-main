@@ -5,6 +5,10 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.57.1 – výchozí kód DPH nového řádku
+
+- Nový řádek editoru (Enter na konci, ＋ Přidat řádek; duplikace kód kopíruje sama) přebírá kód DPH z předchozího řádku; teprve když předchozí řádek kód nemá (nebo žádný není), použije se výchozí kód knihy (`vat.defaultCodeId`). Počáteční prázdný řádek (`fillInitialVatCode`) beze změny. Bez změny API.
+
 ## Changelog 2.57.0 – opravy editoru řádků s DPH
 
 - Samovyměření (RC-P21, EU-PS21, DOV-S21) v režimu „S DPH“: zadaná částka = základ, daň navrch (343/343 mimo celek), Celkem s DPH = základ; `resolveLineVat`, `baseFromGross`, `applyVatCalcMode`, náhled, součty i rekapitulace. Nové `isSelfAssessed`.

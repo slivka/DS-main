@@ -1,3 +1,6 @@
+## Verze 2.57.1 (výchozí kód DPH nového řádku)
+- [x] Nový řádek přebírá kód DPH z předchozího řádku, teprve pak výchozí kód knihy (`makeLine`); bez změny API.
+
 ## Verze 2.57.0 (opravy editoru řádků s DPH)
 - [x] Samovyměření v režimu S DPH, nárok u samovyměření, opožděný výchozí kód, neaktivní přepínač při readOnly, hláška chybějícího kurzu DPH, předběžné Kurzové zaokrouhlení.
 - [ ] Tisk a export do Excelu s DPH (dříve odloženo).
