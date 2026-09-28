@@ -181,9 +181,9 @@ describe("DPH v editoru", () => {
       { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, grossAmount: 560, vatCodeId: "v12" },
     ];
     const html = render({ lines: base, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1770, totalMode: "entered", vat: { enabled: true, codes: OUT, calcMode: "gross" } });
-    expect(html).toContain('data-slot="journal-lines-total-base">1 500,00');
-    expect(html).toContain('data-slot="journal-lines-total-vat">270,00');
-    expect(html).toContain('data-slot="journal-lines-total-gross">1 770,00');
+    expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1 500,00/);
+    expect(html).toMatch(/data-slot="journal-lines-total-vat"[^>]*>270,00/);
+    expect(html).toMatch(/data-slot="journal-lines-total-gross"[^>]*>1 770,00/);
   });
   it("rekapitulace DPH používá značky měn z dat", () => {
     const summary = summarizeVat([{ id: "a", foreignAmount: 100, amount: 2500, vatCodeId: "p21" }], { codes: IN, foreign: true, rate: 25 });
@@ -206,7 +206,7 @@ describe("DPH v editoru", () => {
   });
   it("bez DPH zůstává původní součet v Částce", () => {
     const html = render({ lines: [{ id: "a", amount: 1000 }, { id: "r", amount: 0.4, isRounding: true }] });
-    expect(html).toContain('data-slot="journal-lines-total-base">1 000,40');
+    expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1 000,40/);
     expect(html).not.toContain('data-slot="journal-lines-toolbar-total"');
   });
 });
