@@ -135,6 +135,7 @@ export * from "./accounting/fiscal-period-select";
 /* Formátování a pomocné funkce */
 export * from "./accounting/partner-select";
 export * from "./accounting/counterparty-field";
+export * from "./accounting/vat-code-select";
 export * from "./accounting/dimension-select";
 export * from "./accounting/unit-select";
 export * from "./accounting/book-select";

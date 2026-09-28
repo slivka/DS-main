@@ -13,8 +13,9 @@ Minor verze bez breaking změn: bez propu `vat` (nebo s `vat.enabled = false`) s
 - Předběžné řádky daně: dokud je doklad editovatelný, součet, „Zbývá rozepsat“, Zaokrouhlení i rekapitulace počítají vždy z `buildVatPreviewLines`; řádky `isVatLine` z DB se použijí jen u dokladu jen ke čtení. Řádky daně se v gridu nezobrazují.
 - Režim „S DPH“: řádek drží v `amount` / `foreignAmount` předběžný základ, `toJournalRow` posílá `amount_gross` i základ.
 - Duplikace řádku kopíruje kód, nárok i PDP, ruční daň ne.
+- Výběr Kódu DPH v buňce gridu se otevírá hned při vstupu do editace a psaní rovnou filtruje podle kódu i názvu (nová komponenta `VatCodeSelect`).
 - Rekapitulace: vestavěná záložka „DPH“ (`JournalLinesRecap.vatSummary`).
-- Nové exporty: typy `VatCodeOption`, `VatPdpSubject`, `VatCalcMode`, `VatDeduction`, `VatLineKind`, `JournalLinesVat`, `VatSummaryRow`, `ResolvedLineVat`, `VatPreviewConfig`, `VatPreviewResult`; funkce `toJournalRows`, `buildVatPreviewLines`, `resolveLineVat`, `summarizeVat`, `sumJournalTotal`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromBase`, `calculateVatFromGross`.
+- Nové exporty: typy `VatCodeOption`, `VatPdpSubject`, `VatCalcMode`, `VatDeduction`, `VatLineKind`, `JournalLinesVat`, `VatSummaryRow`, `ResolvedLineVat`, `VatPreviewConfig`, `VatPreviewResult`; funkce `toJournalRows`, `buildVatPreviewLines`, `resolveLineVat`, `summarizeVat`, `sumJournalTotal`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromBase`, `calculateVatFromGross`; komponenta `VatCodeSelect` (a `filterVatCodes`).
 
 ## Changelog 2.54.0 – grid řádků a nezalamování
 

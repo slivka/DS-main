@@ -1,6 +1,6 @@
 ## Řádky dokladu s DPH (2.55.0)
 
-`JournalLinesEditor vat={{ enabled, codes, calcMode, onCalcModeChange, defaultCodeId, pdpSubjects, vatRate, vatRateAmount, readOnly, isCodeRequired }}`. Kódy filtruje aplikace. Řádky daně vytváří jen databáze; editor je nezobrazuje a do uložení je nikdy neposílá (`toJournalRows`). Předběžná daň (`buildVatPreviewLines`) platí vždy, dokud je doklad editovatelný. Ukládejte přes `toJournalRows(lines, { mainSide, sharedSide, vat: { calcMode } })`.
+`JournalLinesEditor vat={{ enabled, codes, calcMode, onCalcModeChange, defaultCodeId, pdpSubjects, vatRate, vatRateAmount, readOnly, isCodeRequired }}`. Kódy filtruje aplikace. Řádky daně vytváří jen databáze; editor je nezobrazuje a do uložení je nikdy neposílá (`toJournalRows`). Předběžná daň (`buildVatPreviewLines`) platí vždy, dokud je doklad editovatelný. Ukládejte přes `toJournalRows(lines, { mainSide, sharedSide, vat: { calcMode } })`. Kód DPH v buňce vybírá `VatCodeSelect` – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu.
 
 ## Grid řádků a nezalamování (2.54.0)
 
