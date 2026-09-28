@@ -5,6 +5,15 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.57.0 – opravy editoru řádků s DPH
+
+- Samovyměření (RC-P21, EU-PS21, DOV-S21) v režimu „S DPH“: zadaná částka = základ, daň navrch (343/343 mimo celek), Celkem s DPH = základ; `resolveLineVat`, `baseFromGross`, `applyVatCalcMode`, náhled, součty i rekapitulace. Nové `isSelfAssessed`.
+- „Nárok na odpočet“ v detailu řádku i u samovyměření (nárok mění jen řádek odpočtu).
+- Výchozí kód DPH (`vat.defaultCodeId`) se doplní do počátečního prázdného řádku i opožděně (`fillInitialVatCode`).
+- Přepínač Bez DPH | S DPH je při `vat.readOnly` neaktivní (`GridSegmentedToggle.disabled`).
+- `DocumentForm.vatRateField`: hláška `texts.vatRateMissing`, když chybí kurz ČNB a kurz není ruční.
+- Cizí měna s odlišným kurzem DPH: předběžný řádek „Kurzové zaokrouhlení – dopočítá se při uložení“ (`isFxRounding` + `isVatPreview`, bez účtů, neukládá se; `texts.fxRoundingPreview`).
+
 ## Changelog 2.56.0 – opravy po prokliku DPH
 
 - „Celkem za doklad“ v režimu Sčítá se z rozpisu zahrnuje předběžnou daň (FV 1 000 → 1 210) a nezapočítá daň samovyměření; stejné číslo jako patička „Celkem s DPH“. Nová sdílená funkce `computeJournalTotals` (typy `JournalTotals`, `JournalTotalsOptions`), `JournalLinesEditor` ji používá a hlásí přes nový prop `onTotalsChange`.

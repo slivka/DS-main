@@ -16,6 +16,8 @@ export interface GridSegmentedToggleProps<Value extends string = string>
   defaultValue: Value;
   label?: string;
   ariaLabel: string;
+  /** Neaktivní přepínač (jen ke čtení). */
+  disabled?: boolean;
 }
 
 export function nextGridSegmentValue<Value extends string>(
@@ -30,11 +32,12 @@ export function nextGridSegmentValue<Value extends string>(
 
 /** Segmentový filtr pro pravou část kontextového řádku gridu. */
 export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmentedToggleProps>(function GridSegmentedToggle(
-  { options, value, onChange, defaultValue, label, ariaLabel, className, ...props },
+  { options, value, onChange, defaultValue, label, ariaLabel, disabled, className, ...props },
   ref,
 ) {
   const active = value !== defaultValue;
   const move = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (disabled) return;
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
     const nextValue = nextGridSegmentValue(options, value, event.key === "ArrowRight" ? 1 : -1);
@@ -49,6 +52,7 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
       <div
         role="radiogroup"
         aria-label={ariaLabel}
+        aria-disabled={disabled || undefined}
         className={cn("grid-segmented grid-toolbar-control inline-flex overflow-hidden border border-grid-chrome bg-card p-0", active && "grid-toolbar-active")}
       >
         {options.map((option, index) => (
@@ -58,6 +62,7 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
             variant="ghost"
             role="radio"
             aria-checked={option.value === value}
+            disabled={disabled}
             tabIndex={option.value === value ? 0 : -1}
             className={cn(
               "h-full min-h-0 rounded-none border-0 px-[0.7em] text-[1em] font-normal shadow-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",

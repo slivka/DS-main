@@ -371,4 +371,5 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## DPH – celek dokladu (2.56.0)
 - Celek řádků dokladu počítej vždy přes `computeJournalTotals` (nebo převezmi z `JournalLinesEditor.onTotalsChange`) – nikdy ručním součtem `line.amount`, jinak chybí předběžná daň nebo se započte samovyměření.
+- Samovyměření (PDP, EU, dovoz) v režimu „S DPH“: zadaná částka je základ, daň se počítá navrch a celek dokladu nemění (Celkem s DPH = základ). Předběžné Kurzové zaokrouhlení (`isFxRounding` + `isVatPreview`) se nikdy neukládá.
 - Kurz DPH předávej přes `DocumentForm.vatRateField`; volbu Bez / S DPH v nastavení dokladu přes `DocumentSettingsDialog showVatCalcMode`.
