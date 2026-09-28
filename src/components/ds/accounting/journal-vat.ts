@@ -13,6 +13,9 @@ export const calculateVatFromBase = (base: number, rate: number | null | undefin
 /** Daň z částky s DPH: round(celkem × sazba / (100 + sazba), 2). */
 export const calculateVatFromGross = (gross: number, rate: number | null | undefined) => rate ? round2(gross * rate / (100 + rate)) : 0;
 
+/** Kód se samovyměřením (PDP, pořízení z EU, dovoz) – daň se počítá navrch ze základu a celek dokladu nemění. */
+export const isSelfAssessed = (code: VatCodeOption | null | undefined) => Boolean(code?.hasTax && code.selfAssessment);
+
 export type ResolvedLineVat = {
   code?: VatCodeOption;
   rate: number | null;
@@ -36,6 +39,14 @@ export function resolveLineVat(line: JournalLine, codes: VatCodeOption[] | Map<s
   const rate = code?.hasTax ? code.rate ?? line.vatRate ?? null : null;
   const manual = Boolean(line.vatManual && line.vatAmount != null && code?.hasTax);
   const storedBase = Number(options.foreign ? line.foreignAmount : line.amount) || 0;
+  const selfAssessed = isSelfAssessed(code);
+  if (options.calcMode === "gross" && line.grossAmount != null && selfAssessed) {
+    // Dodavatel DPH neúčtuje: zadaná částka je základ, daň navrch, celek = základ.
+    const base = Number(line.grossAmount) || 0;
+    const calculated = calculateVatFromBase(base, rate);
+    const vat = manual ? Number(line.vatAmount) : calculated;
+    return { code, rate, base, calculated, vat, gross: base, deviation: manual ? round2(vat - calculated) : 0 };
+  }
   if (options.calcMode === "gross" && line.grossAmount != null) {
     const gross = Number(line.grossAmount) || 0;
     const calculated = calculateVatFromGross(gross, rate);
@@ -44,7 +55,7 @@ export function resolveLineVat(line: JournalLine, codes: VatCodeOption[] | Map<s
   }
   const calculated = calculateVatFromBase(storedBase, rate);
   const vat = manual ? Number(line.vatAmount) : calculated;
-  return { code, rate, base: storedBase, calculated, vat, gross: round2(storedBase + vat), deviation: manual ? round2(vat - calculated) : 0 };
+  return { code, rate, base: storedBase, calculated, vat, gross: selfAssessed ? storedBase : round2(storedBase + vat), deviation: manual ? round2(vat - calculated) : 0 };
 }
 
 export type VatPreviewConfig = {
@@ -134,6 +145,16 @@ export function buildVatPreviewLines(lines: JournalLine[], config: VatPreviewCon
       continue;
     }
     push(code.taxInAccount, line.creditAccount, resolved.vat, "deductible", "in");
+  }
+  // Cizí měna s kurzem DPH odlišným od kurzu dokladu: předběžné Kurzové zaokrouhlení (DB ho dopočítá při uložení).
+  const docConversion = (config.rate || 0) / (config.rateAmount || 1);
+  if (config.foreign && config.vatRate && Math.abs(conversion - docConversion) > 1e-9) {
+    const base = lines.filter(isBaseLine);
+    const counted = [...base, ...result.filter((item) => !item.excludeFromTotal)];
+    const docTotal = round2(counted.reduce((sum, item) => sum + (Number(item.foreignAmount) || 0), 0));
+    const home = round2(counted.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
+    const diff = round2(round2(docTotal * docConversion) - home);
+    if (diff) result.push({ id: "fx-rounding:preview", debitAccount: null, creditAccount: null, amount: diff, foreignAmount: 0, isFxRounding: true, isVatPreview: true });
   }
   return { lines: result, missingAccounts };
 }
