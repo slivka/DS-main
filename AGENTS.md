@@ -26,3 +26,5 @@
 - Neaktivní položky filtruje každý výběr sám přes sdílené `InactiveTag` / `selectableItems`, aby se chování nelišilo mezi výběry.
 - Hodnota jen ke čtení v řádku formuláře patří do `FieldValue` uvnitř `Field`, aby měla popisek a správné zarovnání.
 - Volbu 2–3 vzájemně výlučných typů řeší `SegmentedField`; `GridSegmentedToggle` zůstává jen pro gridy.
+
+- Řádky daně (DPH) vytváří jen DB; DS je jen zobrazuje a počítá předběžně (`journal-vat.ts`) – aby klient nikdy neposlal účetní zápis, který DB odmítne.

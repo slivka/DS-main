@@ -1,3 +1,7 @@
+## Řádky dokladu s DPH (2.55.0)
+
+`JournalLinesEditor vat={{ enabled, codes, calcMode, onCalcModeChange, defaultCodeId, pdpSubjects, vatRate, vatRateAmount, readOnly, isCodeRequired }}`. Kódy filtruje aplikace. Řádky daně vytváří jen databáze; editor je nezobrazuje a do uložení je nikdy neposílá (`toJournalRows`). Předběžná daň (`buildVatPreviewLines`) platí vždy, dokud je doklad editovatelný. Ukládejte přes `toJournalRows(lines, { mainSide, sharedSide, vat: { calcMode } })`.
+
 ## Grid řádků a nezalamování (2.54.0)
 
 - `Label`, `SectionHeading`, `PageHeader` a titulky dialogů jsou vždy jednořádkové; při nedostatku místa se zkrátí a plný text je v tooltipu.

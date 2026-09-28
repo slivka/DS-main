@@ -19,7 +19,39 @@ export type JournalLineColumn =
   | "rate"
   | "quantity"
   | "unitId"
-  | "unitPrice";
+  | "unitPrice"
+  | "vatCodeId"
+  | "vatRate"
+  | "vatAmount"
+  | "grossAmount"
+  | "vatDeduction"
+  | "vatDeductionShare"
+  | "pdpSubjectCode";
+
+/** Nárok na odpočet DPH u vstupního kódu. */
+export type VatDeduction = "full" | "none" | "partial";
+/** Druh řádku daně vytvořeného databází. */
+export type VatLineKind = "deductible" | "non_deductible";
+/** Režim zadání částky: bez DPH (základ) nebo s DPH (celkem). */
+export type VatCalcMode = "net" | "gross";
+/** Kód DPH použitelný pro doklad – filtruje aplikace (směr, aktivní, platnost k Datu DPH). */
+export type VatCodeOption = {
+  id: string;
+  code: string;
+  name: string;
+  direction: "out" | "in";
+  hasTax: boolean;
+  /** Sazba k Datu DPH; null u kódu bez daně. */
+  rate: number | null;
+  selfAssessment: boolean;
+  requiresPdpSubject: boolean;
+  /** Čísla účtů pro období; null = účet chybí (daň se nezaúčtuje). */
+  taxOutAccount?: string | null;
+  taxInAccount?: string | null;
+  inactive?: boolean;
+};
+/** Předmět plnění v režimu přenesení daňové povinnosti. */
+export type VatPdpSubject = { code: string; name: string };
 
 /** Strana, na kterou se zapisují společné údaje (VS, partner, zakázka). */
 export type JournalSharedSide = "debit" | "credit" | "both";
@@ -55,6 +87,28 @@ export type JournalLine = {
   rate?: number;
   /** Nedotčený prázdný řádek, který aplikace při ukládání vynechá. */
   isBlank?: boolean;
+  /** DPH – kód, sazba (jen čtení z DB) a daň v měně dokladu. */
+  vatCodeId?: string | null;
+  vatRate?: number | null;
+  vatAmount?: number;
+  /** Jen čtení z DB: daň a základ v domácí měně kurzem DPH. */
+  vatAmountHome?: number;
+  vatBaseHome?: number;
+  /** Daň zadaná ručně (jinak se počítá ze sazby). */
+  vatManual?: boolean;
+  vatDeduction?: VatDeduction;
+  vatDeductionShare?: number;
+  pdpSubjectCode?: string | null;
+  /** Zadaná částka s DPH (režim „s DPH“), v měně dokladu. */
+  grossAmount?: number;
+  /** Řádek daně vytvořený databází – v gridu se nezobrazuje a neukládá se. */
+  isVatLine?: boolean;
+  vatParentLineId?: string | null;
+  vatLineKind?: VatLineKind;
+  /** Předběžný řádek daně spočtený v editoru (neukládá se). */
+  isVatPreview?: boolean;
+  /** Řádek daně, který se nedotýká hlavního účtu (samovyměření) – nevstupuje do celku. */
+  excludeFromTotal?: boolean;
 };
 
 /** Databázový řádek zápisu – jedna předkontace = jeden řádek. */
@@ -79,6 +133,23 @@ export type JournalRow = {
   unit_id: string | null;
   unit_price: number | null;
   is_fx_rounding: boolean;
+  /** DPH – posílá se jen při zapnutém DPH. */
+  vat_code_id?: string | null;
+  vat_manual?: boolean;
+  vat_amount_foreign?: number | null;
+  vat_deduction?: VatDeduction;
+  vat_deduction_share?: number | null;
+  pdp_subject_code?: string | null;
+  /** Zadaná částka s DPH v režimu „s DPH“. */
+  amount_gross?: number | null;
+  /** Jen čtení z DB – klient je nikdy neposílá. */
+  vat_rate?: number | null;
+  vat_amount?: number | null;
+  vat_base_dom?: number | null;
+  vat_gross_foreign?: number | null;
+  is_vat_line?: boolean;
+  vat_parent_line_id?: string | null;
+  vat_line_kind?: VatLineKind | null;
 };
 
 export type JournalRowOptions = {
@@ -86,6 +157,8 @@ export type JournalRowOptions = {
   sharedSide?: JournalSharedSide;
   /** Strana hlavního účtu knihy – protiúčtem je pak druhá strana. */
   mainSide?: "MD" | "D";
+  /** Zapnuté DPH – přidá DPH sloupce; v režimu „gross“ i `amount_gross`. */
+  vat?: { calcMode: VatCalcMode };
 };
 
 /** Kategorie účtu z osnovy (sloupec `accounts.category`). */
@@ -153,6 +226,16 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   const sharedSide = options.sharedSide ?? "both";
   const debit = emptyToNull(line.debitAccount);
   const credit = emptyToNull(line.creditAccount);
+  const vatColumns: Partial<JournalRow> = {};
+  if (options.vat) {
+    vatColumns.vat_code_id = emptyToNull(line.vatCodeId);
+    vatColumns.vat_manual = Boolean(line.vatManual);
+    if (line.vatManual && line.vatAmount != null) vatColumns.vat_amount_foreign = line.vatAmount;
+    vatColumns.vat_deduction = line.vatDeduction ?? "full";
+    if (line.vatDeduction === "partial") vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
+    vatColumns.pdp_subject_code = emptyToNull(line.pdpSubjectCode);
+    if (options.vat.calcMode === "gross") vatColumns.amount_gross = line.grossAmount ?? null;
+  }
   const counter =
     emptyToNull(line.counterAccount) ??
     (options.mainSide === "MD" ? credit : options.mainSide === "D" ? debit : null);
@@ -178,7 +261,13 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     unit_id: emptyToNull(line.unitId),
     unit_price: line.unitPrice ?? null,
     is_fx_rounding: Boolean(line.isFxRounding),
+    ...vatColumns,
   };
+}
+
+/** Převede řádky editoru na řádky k uložení – vynechá řádky daně, předběžné a nedotčené prázdné řádky. */
+export function toJournalRows(lines: JournalLine[], options: JournalRowOptions = {}): JournalRow[] {
+  return lines.filter((line) => !line.isVatLine && !line.isVatPreview && !line.isBlank).map((line) => toJournalRow(line, options));
 }
 
 /** Převede databázový řádek na řádek editoru (1:1). */
@@ -208,5 +297,20 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     unitId: row.unit_id,
     unitPrice: row.unit_price ?? undefined,
     isFxRounding: row.is_fx_rounding,
+    ...(row.vat_code_id !== undefined || row.is_vat_line !== undefined ? {
+      vatCodeId: row.vat_code_id ?? null,
+      vatRate: row.vat_rate ?? null,
+      vatAmount: row.vat_amount_foreign ?? undefined,
+      vatAmountHome: row.vat_amount ?? undefined,
+      vatBaseHome: row.vat_base_dom ?? undefined,
+      vatManual: Boolean(row.vat_manual),
+      vatDeduction: row.vat_deduction ?? undefined,
+      vatDeductionShare: row.vat_deduction_share ?? undefined,
+      pdpSubjectCode: row.pdp_subject_code ?? null,
+      grossAmount: row.vat_gross_foreign ?? undefined,
+      isVatLine: Boolean(row.is_vat_line),
+      vatParentLineId: row.vat_parent_line_id ?? null,
+      vatLineKind: row.vat_line_kind ?? undefined,
+    } : {}),
   };
 }
