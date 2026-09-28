@@ -1080,14 +1080,6 @@
   gap: 0.3em;
 }
 
-.zoom-grid.journal-lines-grid
-  :is(tbody, tfoot)
-  :is(th, td)
-  .journal-line-detail-grid
-  :is(input, button[role="combobox"]) {
-  height: 2.25em !important;
-  min-height: 2.25em !important;
-}
 
 /* Stav vložený přímo vedle čísla půjčky zabírá jen šířku textu a celý se
    mění spolu se zoomem gridu. */
@@ -1114,15 +1106,20 @@
   padding: 0 !important;
 }
 
+/* Detail řádku: vstupy i výběry (combobox) mají jednotnou výšku a stejné
+   vnitřní odsazení jako vstupní pole. Zdvojená třída přebíjí obecné pravidlo
+   pro tlačítka v gridu (řetězec čtyř :not má specifičnost 0,6,3). */
 .zoom-grid.journal-lines-grid
   :is(tbody, tfoot)
   :is(th, td)
-  .journal-line-detail-grid
+  .journal-line-detail-grid.journal-line-detail-grid.journal-line-detail-grid
   :is(input, button[role="combobox"], [role="combobox"]) {
   height: 2.25em !important;
   min-height: 2.25em !important;
   max-height: 2.25em !important;
+  padding: 0 0.35em !important;
 }
+
 
 /* Prázdný stav gridu – tlačítko je nižší a škáluje se se zoomem gridu. */
 .zoom-grid :is(th, td) [data-grid-cta] {
