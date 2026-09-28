@@ -54,8 +54,8 @@ const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentF
 
 describe("DocumentForm 2.56.0", () => {
   it("Celkem za doklad ze rozpisu zahrnuje předběžnou daň", () => {
-    expect(form({ linesEditorProps: { vat } })).toContain("1 210,00");
-    expect(form({})).not.toContain("1 210,00");
+    expect(form({ linesEditorProps: { vat } })).toMatch(/value="1.210,00"/);
+    expect(form({})).not.toMatch(/value="1.210,00"/);
   });
   it("Kurz DPH se zobrazí jen u předaného propu a cizí měny", () => {
     const eur = { ...value, currency: "EUR", rate: 25 };
