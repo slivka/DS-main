@@ -2085,6 +2085,7 @@ Segmentový filtr pro pravou část kontextového řádku. Výchozí hodnota je 
 | `defaultValue` | any | `—` |
 | `label` | string | `—` |
 | `ariaLabel` | string | `—` |
+| `disabled` | boolean | `—` |
 
 **Examples:**
 
