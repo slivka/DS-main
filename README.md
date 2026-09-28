@@ -7,6 +7,8 @@ na databázi ani na produkční data. První navazující aplikace je „Account
 
 ## Changelog 2.55.0 – DPH v editoru řádků dokladu
 
+- Samovyměření respektuje nárok stejně jako DB: `full` MD vstup / DAL výstup; `none` MD účet základu / DAL výstup (`non_deductible`, stačí účet výstupu); `partial` rozdělí na část s nárokem a zbytek na účet základu. `summarizeVat` počítá rozpad nároku i u samovyměření.
+
 Minor verze bez breaking změn: bez propu `vat` (nebo s `vat.enabled = false`) se editor chová jako v 2.54.0.
 
 - `JournalLinesEditor` prop `vat` (`JournalLinesVat`): sloupce Kód DPH · Sazba · DPH · Celkem s DPH hned za Částkou, přepínač „Bez DPH | S DPH“, detail (nárok na odpočet, předmět PDP, základ a DPH v domácí měně kurzem DPH), ruční daň (✎, akce „Vrátit vypočtenou daň“, odchylka > 1 chyba, ≤ 1 žluté varování), upozornění „Chybí účty kódu {kód} – daň se nezaúčtuje“.
