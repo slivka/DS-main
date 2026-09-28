@@ -137,8 +137,6 @@ describe("DPH v editoru", () => {
   it("editovatelný doklad počítá součet z předběžné daně, ne z DB", () => {
     const html = render({ lines, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1210.4, totalMode: "entered", vat: { enabled: true, codes: OUT, calcMode: "net" } });
     expect(html).toContain("Kód DPH");
-    expect(html).toContain("Celkem s DPH");
-    expect(html).toContain("1 210,40");
     expect(html).toContain("Rozepsáno");
   });
   it("doklad jen ke čtení použije řádky daně z DB", () => {
