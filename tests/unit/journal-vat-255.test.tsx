@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { JournalLinesEditor, orderJournalLines } from "../../src/components/ds/accounting/journal-lines-editor";
+import { JournalLinesRecap } from "../../src/components/ds/accounting/journal-lines-recap";
 import { fromJournalRow, toJournalRow, toJournalRows, type JournalLine, type VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
 import { applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, sumJournalTotal, summarizeVat } from "../../src/components/ds/accounting/journal-vat";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
@@ -176,13 +177,23 @@ describe("DPH v editoru", () => {
   });
   it("DPH patička odděluje základ, daň a celek", () => {
     const base: JournalLine[] = [
-      { id: "a", debitAccount: "311001", creditAccount: "602001", amount: 1000, vatCodeId: "v21" },
-      { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, vatCodeId: "v12" },
+      { id: "a", debitAccount: "311001", creditAccount: "602001", amount: 1000, grossAmount: 1210, vatCodeId: "v21" },
+      { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, grossAmount: 560, vatCodeId: "v12" },
     ];
-    const html = render({ lines: base, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1770, totalMode: "entered", vat: { enabled: true, codes: OUT, calcMode: "net" } });
+    const html = render({ lines: base, mode: "mainAccount", mainAccount: "311001", mainSide: "MD", totalAmount: 1770, totalMode: "entered", vat: { enabled: true, codes: OUT, calcMode: "gross" } });
     expect(html).toContain('data-slot="journal-lines-total-base">1 500,00');
     expect(html).toContain('data-slot="journal-lines-total-vat">270,00');
     expect(html).toContain('data-slot="journal-lines-total-gross">1 770,00');
+  });
+  it("rekapitulace DPH používá značky měn z dat", () => {
+    const summary = summarizeVat([{ id: "a", foreignAmount: 100, amount: 2500, vatCodeId: "p21" }], { codes: IN, foreign: true, rate: 25 });
+    const html = renderToStaticMarkup(<JournalLinesRecap lines={[]} accounts={[]} documentCurrency="EUR" documentCurrencySymbol="€" homeCurrency="CZK" homeCurrencySymbol="Kč" tab="vat" vatSummary={summary} />);
+    expect(html).toContain("Základ (€)");
+    expect(html).toContain("DPH (€)");
+    expect(html).toContain("Celkem (€)");
+    expect(html).toContain("Základ (Kč)");
+    expect(html).toContain("DPH (Kč)");
+    expect(html).not.toContain("(CZK)");
   });
   it("při skrytém Celkem s DPH ukazuje celek se značkou měny v liště", () => {
     const base: JournalLine[] = [
