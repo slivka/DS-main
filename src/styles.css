@@ -1106,6 +1106,14 @@
   width: auto !important;
 }
 
+.zoom-grid.journal-lines-grid
+  :is(tbody, tfoot)
+  :is(th, td).journal-row-cell
+  button:not([role="checkbox"]):not([data-grid-cta]):not([data-slot="grid-action"]) {
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+
 /* Prázdný stav gridu – tlačítko je nižší a škáluje se se zoomem gridu. */
 .zoom-grid :is(th, td) [data-grid-cta] {
   font-size: 0.95em;
