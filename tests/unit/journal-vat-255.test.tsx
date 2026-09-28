@@ -90,6 +90,32 @@ describe("DPH – předběžný výpočet (2.55.0)", () => {
     expect(rows.find((row) => row.code === "21P")).toMatchObject({ base: 1000, vat: 210, gross: 1210, deductible: 126, nonDeductible: 84 });
     expect(rows.find((row) => row.code === "RC-P21")).toMatchObject({ vat: 210, gross: 1000, selfAssessment: true });
   });
+  it("RC-P21 bez nároku → 518/343.100 210 mimo celek", () => {
+    const base: JournalLine[] = [{ id: "a", debitAccount: "518001", creditAccount: "321001", amount: 1000, vatCodeId: "rc", vatDeduction: "none" }];
+    const preview = buildVatPreviewLines(base, { codes: IN }, FP);
+    expect(preview.lines).toEqual([expect.objectContaining({ debitAccount: "518001", creditAccount: "343100", amount: 210, vatLineKind: "non_deductible", excludeFromTotal: true })]);
+    expect(total(base, preview.lines)).toBe(1000);
+  });
+  it("RC-P21 poměrný 60 % → 126 (343/343) + 84 (518/343)", () => {
+    const base: JournalLine[] = [{ id: "a", debitAccount: "518001", creditAccount: "321001", amount: 1000, vatCodeId: "rc", vatDeduction: "partial", vatDeductionShare: 60 }];
+    const lines = buildVatPreviewLines(base, { codes: IN }, FP).lines;
+    expect(lines.map((l) => [l.debitAccount, l.creditAccount, l.amount, l.vatLineKind])).toEqual([["343200", "343100", 126, "deductible"], ["518001", "343100", 84, "non_deductible"]]);
+    expect(total(base, lines)).toBe(1000);
+  });
+  it("RC chybějící účty: výstup vždy, vstup jen s nárokem", () => {
+    const noIn: VatCodeOption[] = [{ ...IN[1]!, taxInAccount: null }];
+    const noOut: VatCodeOption[] = [{ ...IN[1]!, taxOutAccount: null }];
+    const line: JournalLine = { id: "a", debitAccount: "518001", creditAccount: "321001", amount: 1000, vatCodeId: "rc" };
+    expect(buildVatPreviewLines([line], { codes: noIn }, FP).missingAccounts).toHaveLength(1);
+    expect(buildVatPreviewLines([{ ...line, vatDeduction: "partial", vatDeductionShare: 60 }], { codes: noIn }, FP)).toMatchObject({ lines: [], missingAccounts: [{ lineId: "a" }] });
+    expect(buildVatPreviewLines([{ ...line, vatDeduction: "none" }], { codes: noIn }, FP).lines).toHaveLength(1);
+    expect(buildVatPreviewLines([{ ...line, vatDeduction: "none" }], { codes: noOut }, FP)).toMatchObject({ lines: [], missingAccounts: [{ lineId: "a" }] });
+  });
+  it("rekapitulace: rozpad nároku i u samovyměření", () => {
+    const rows = summarizeVat([{ id: "b", amount: 1000, vatCodeId: "rc", vatDeduction: "partial", vatDeductionShare: 60 }], { codes: IN });
+    expect(rows[0]).toMatchObject({ deductible: 126, nonDeductible: 84 });
+    expect(summarizeVat([{ id: "b", amount: 1000, vatCodeId: "rc" }], { codes: IN })[0]).toMatchObject({ deductible: 210, nonDeductible: 0 });
+  });
 });
 
 describe("DPH – ukládání a načtení", () => {
