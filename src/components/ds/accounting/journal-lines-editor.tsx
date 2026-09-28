@@ -22,7 +22,7 @@ import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { SegmentedField } from "../form/segmented-field";
 import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
-import { applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, summarizeVat, type VatPreviewConfig } from "./journal-vat";
+import { applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, summarizeVat, computeJournalTotals, type JournalTotals, type VatPreviewConfig } from "./journal-vat";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { ColumnPicker } from "../grid/column-picker";
 import { GridAction, GridActions } from "../grid/grid-action";
@@ -218,7 +218,7 @@ function SortableRow({ id, disabled, children }: { id: string; disabled: boolean
 export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesEditorProps>(function JournalLinesEditor({
   lines, onChange, accounts, dimensions = [], partners = [], units = [], onCreateUnit, documentCurrency, documentCurrencySymbol, homeCurrency, homeCurrencySymbol, rate = 1, rateAmount = 1,
   sideFields = "split", sharedSide = "both", mode = "internal", mainSide, mainAccount: mainAccountId, sideFieldRules = defaultSideFieldRules, dimensionRequired = false,
-  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, onValidationChange, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className, vat,
+  isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, onValidationChange, onTotalsChange, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className, vat,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = React.useMemo(() => ({ ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }), [texts]); const rootRef = React.useRef<HTMLDivElement | null>(null);
   const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
@@ -293,7 +293,6 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   // Dokud je doklad editovatelný, daň se počítá vždy předběžně z aktuálních řádků základu (řádky daně z DB se ignorují).
   const vatPreview = vatOn && !vatReadOnly ? buildVatPreviewLines(regularLines, vatConfig, { mainAccount: mainAccount?.accountId, mainSide: mainAccount?.side }) : { lines: [] as JournalLine[], missingAccounts: [] as { lineId: string; code: string }[] };
   const taxLines: JournalLine[] = !vatOn ? [] : vatReadOnly ? lines.filter((line) => line.isVatLine).map((line) => ({ ...line, excludeFromTotal: line.excludeFromTotal ?? (mainAccount ? line.debitAccount !== mainAccount.accountId && line.creditAccount !== mainAccount.accountId : Boolean(vatCodeMap.get(line.vatCodeId ?? "")?.selfAssessment)) })) : vatPreview.lines;
-  const countedTax = taxLines.filter((line) => !line.excludeFromTotal);
   const missingVatAccounts = new Map(vatPreview.missingAccounts.map((item) => [item.lineId, item.code]));
   const journalTotals = computeJournalTotals(lines, { vat: vatOn ? { enabled: true, codes: vatCodes, calcMode, vatRate: vat?.vatRate, vatRateAmount: vat?.vatRateAmount } : null, readOnly: vatReadOnly, mainAccount: mainAccount?.accountId, mainSide: mainAccount?.side, foreign, rate, rateAmount });
   const baseTotal = journalTotals.baseHome; const documentBaseTotal = journalTotals.base; const linesTotal = journalTotals.grossHome; const documentLinesTotal = journalTotals.gross;
