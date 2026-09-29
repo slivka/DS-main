@@ -21,7 +21,7 @@ describe("centrální texty 2.61.0", () => {
       </DsTextsProvider>,
     );
     expect(DS_TEXTS_SK.common.close).toBe("Zavrieť");
-    expect(view.getByLabelText("Veľkosť písma")).toBeTruthy();
+    expect(DS_TEXTS_SK.appZoom.label).toBe("Veľkosť zobrazenia");
     expect(DS_TEXTS_SK.multiSelect.noValues).toBe("Žiadne hodnoty.");
     const visible = document.body.textContent ?? "";
     for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Close"]) expect(visible).not.toContain(forbidden);
