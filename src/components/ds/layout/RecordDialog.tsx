@@ -295,10 +295,10 @@ export function Field({
   className = "",
   children,
 }: {
-  label?: string;
+  label?: ReactNode;
   htmlFor?: string;
-  hint?: string;
-  error?: string | undefined;
+  hint?: ReactNode;
+  error?: ReactNode;
   /** Šířka pole v dvanáctisloupcové mřížce; pod 40 rem zůstává pole jednou ze dvou položek řádku. */
   span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   className?: string;
@@ -307,24 +307,24 @@ export function Field({
   return (
     <div
       data-invalid={error ? "true" : undefined}
-      className={`${label ? "space-y-1" : ""} ${fieldSpanClass(span)} ${
+      className={`${label ? "flex min-w-0 flex-col gap-1" : ""} ${fieldSpanClass(span)} ${
         error
           ? "[&_.border-input]:border-destructive [&_input]:border-destructive [&_select]:border-destructive [&_textarea]:border-destructive"
           : ""
       } ${className}`}
     >
       {label ? (
-        <Label htmlFor={htmlFor} title={label} className={error ? "text-destructive" : undefined}>
+        <Label htmlFor={htmlFor} title={typeof label === "string" ? label : undefined} className={error ? "text-destructive" : undefined}>
           {label}
         </Label>
       ) : null}
       {children}
       {error ? (
-        <p role="alert" className="text-xs font-medium text-destructive">
+        <p data-slot="field-error" role="alert" className="text-xs font-medium text-destructive">
           {error}
         </p>
       ) : hint ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <p data-slot="field-hint" className="text-xs text-muted-foreground">{hint}</p>
       ) : null}
     </div>
   );

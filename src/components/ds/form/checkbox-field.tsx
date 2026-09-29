@@ -27,7 +27,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
   const hintId = hint ? `${controlId}-hint` : undefined;
   return (
     <div data-slot="checkbox-field" data-align={align} className={cn(align === "input" && "@min-[40rem]:pt-6", className)}>
-      <div className={cn("flex items-start gap-2", align === "input" && "items-center @min-[40rem]:min-h-9")}>
+      <div className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-x-2", align === "input" && "@min-[40rem]:min-h-9")}>
         <Checkbox
           ref={ref}
           id={controlId}
@@ -35,14 +35,14 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
           disabled={disabled}
           aria-describedby={hintId}
           onCheckedChange={(value) => onCheckedChange(value === true)}
-          className={cn(align !== "input" && "mt-0.5")}
+          className="mt-[0.0625rem]"
           {...props}
         />
-        <div className="min-w-0 space-y-0.5">
-          <Label htmlFor={controlId} title={typeof label === "string" ? label : undefined} className={cn("font-normal", disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")}>
+        <div className="min-w-0">
+          <Label htmlFor={controlId} title={typeof label === "string" ? label : undefined} className={cn("whitespace-normal font-normal", disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")}>
             {label}
           </Label>
-          {hint ? <p id={hintId} className="text-xs text-muted-foreground">{hint}</p> : null}
+          {hint ? <p id={hintId} className="mt-0.5 text-xs text-muted-foreground">{hint}</p> : null}
         </div>
       </div>
     </div>
