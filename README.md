@@ -1,4 +1,10 @@
 
+## Changelog 2.62.0 – sjednocení formulářů karty záznamu
+
+- `Field` je společná definice pole pro karty záznamů i `DocumentForm`: popisek 12 px polotučně, jednotná mezera a společné hinty, chyby a hodnoty jen pro čtení.
+- Nový `RecordActionBar` nabízí přilepené uložení, primární a další akce, stav práce a pevné pořadí chyba → upozornění; `DocumentForm` jej používá interně beze změny veřejného chování.
+- `CheckboxField` zarovnává čtvereček na první řádek i u víceřádkového popisku a nápovědu odsazuje k textu.
+
 ## Changelog 2.61.0
 
 - Nové exporty `DsTextsProvider`, `useDsTexts`, `DsTexts`, `DS_TEXTS_CS` a `DS_TEXTS_SK`; bez provideru zůstávají české výchozí texty.
