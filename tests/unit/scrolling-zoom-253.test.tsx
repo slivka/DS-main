@@ -19,9 +19,9 @@ describe("DS 2.53 – výška gridu", () => {
 });
 
 describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
-  it("zoom a hustotu gridu neukládá do záložky ani localStorage", () => {
+  it("zoom a hustotu gridu drží jen koncept záložky v paměti (bez localStorage a IndexedDB)", () => {
     const source = readFileSync("src/components/ds/grid/grid-zoom.tsx", "utf8");
-    expect(source).not.toContain("gridPreferences");
+    expect(source).toContain("`gridPreferences:${storageKey}`, { persist: false }");
     expect(source).not.toContain("localStorage");
     expect(source).toContain('density: "normal"');
   });

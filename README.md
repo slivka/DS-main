@@ -1,6 +1,10 @@
 
 ## Changelog 2.64.0 – zoom aplikace, automatický zoom gridů a šířka menu
 
+- Opravy po kontrole: zoom aplikace se spočítá jednou při startu a mění ho jen uživatel; tažení posuvníků se ukončí i při zrušení ukazatele nebo ztrátě fokusu okna.
+- Ruční zoom a hustota gridů se drží v paměti záložky (přežijí přepnutí záložek, ne zavření ani F5); „Auto“ se ukazuje jen u vypočtené hodnoty.
+- Editor řádků používá jeden zoom pro písmo, šířky i kaskádu; formulářové gridy počítají potřebnou šířku ze šířek sloupců a reagují jen na změnu šířky.
+- Posuvník menu má hodnoty pro čtečky, ovládání šipkami po 0,5 rem a stejný vzhled jako posuvník mezi panely.
 - Nový zoom celé aplikace 70–200 % se ukládá pro zařízení a ovládá z uživatelské nabídky nebo zkratkami Ctrl+Alt++/−/0.
 - Formulářové gridy automaticky volí 75–100 %, potom přesouvají sloupce do detailu a až nakonec zapínají vodorovné rolování.
 - Šířky sloupců zůstávají v px při 100 %; vykreslení v rem respektuje zoom aplikace i gridu. Klíč uložených šířek se nemění.

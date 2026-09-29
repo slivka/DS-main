@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
-import { beginResize } from "../../../lib/resize-lock";
+import { startPointerDrag } from "../../../lib/resize-lock";
 
 /**
  * Úchyt na pravém okraji záhlaví sloupce – tažením myší mění šířku sloupce,
@@ -31,21 +31,18 @@ export function ColumnResizeHandle({
     if (!head) return;
     const startX = e.clientX;
     const startWidth = head.getBoundingClientRect().width;
-    const releaseResize = beginResize();
     const move = (ev: PointerEvent) => {
       onResize(Math.max(60, Math.round((startWidth + ev.clientX - startX) / Math.max(scale, 0.01))));
     };
-    const up = () => {
-      document.removeEventListener("pointermove", move);
-      document.removeEventListener("pointerup", up);
-      document.body.style.userSelect = "";
-      document.body.style.cursor = "";
-      releaseResize();
-    };
-    document.addEventListener("pointermove", move);
-    document.addEventListener("pointerup", up);
     document.body.style.userSelect = "none";
     document.body.style.cursor = "col-resize";
+    startPointerDrag(e, {
+      onMove: move,
+      onEnd: () => {
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+      },
+    });
   };
 
   return (

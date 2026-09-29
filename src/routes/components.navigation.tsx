@@ -141,7 +141,7 @@ function NavigationPage() {
   const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
 
   return (
-    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]} defaultCollapsed>
+    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Navigace" }]}>
       <ShowcaseSection
         title="Horní lišta"
         description="Kontext aplikace začíná úplně vlevo. Vpravo následuje hledání, panely, oznámění, motiv a uživatelská nabídka. Horní lišta této stránky ukazuje tři nepřečtená oznámění a tmavý režim."
@@ -249,12 +249,9 @@ function NavigationPage() {
 
       <ShowcaseSection
         title="Předvolby vzhledu"
-        description="Velikost písma a motiv jsou samostatné volby pro stránku Předvolby, nikoli trvalá tlačítka v horní liště."
+        description="Motiv je samostatná volba pro stránku Předvolby. Velikost zobrazení (70–200 %) se nastavuje v uživatelském menu vpravo nahoře nebo klávesami Ctrl+Alt+Plus / Minus / 0."
       >
-        <div className="grid gap-6 rounded-lg border bg-card p-4 md:grid-cols-2">
-          <div>
-            <div className="mb-2 text-sm font-medium">Velikost písma</div>
-          </div>
+        <div className="rounded-lg border bg-card p-4">
           <ThemeSetting />
         </div>
       </ShowcaseSection>

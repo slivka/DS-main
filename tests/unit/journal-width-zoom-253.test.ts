@@ -8,7 +8,7 @@ describe("2.53.0 – druhá kontrola", () => {
     expect(src).toContain('scale={(rootRemPx / 16) * zoom}');
     expect(src).toContain("columns.setWidth(column.id, width)");
     expect(src).not.toContain("minWidth: `${columnLayout.textMinRem");
-    expect(src).toContain("Math.max(columnLayout.textMinRem * resolvedZoom, effectiveWidthRem - fixed - 0.25)");
+    expect(src).toContain("Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25)");
   });
   test("useGridVirtual odvozuje režim z PageLayout", () => {
     const src = readFileSync("src/components/ds/grid/grid-virtual.tsx", "utf8");

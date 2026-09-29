@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
 import { applyAppZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, useAppZoom } from "../../../lib/app-zoom";
-import { beginResize, isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
+import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
@@ -339,6 +339,18 @@ function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, qu
 }
 
 /** Společný rám aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely. */
+/** Maximum šířky menu v rem: nesmí vzít místo panelům (`data-required-width`); rozsah 12,5–26,25 rem. */
+export function resolveMenuMaximum(bodyWidthPx: number, requiredPaneWidthPx: number | undefined, rootPx: number) {
+  if (!requiredPaneWidthPx) return 26.25;
+  return Math.max(12.5, Math.min(26.25, (bodyWidthPx - requiredPaneWidthPx - 4) / (rootPx || 16)));
+}
+
+/** Šířka menu k vykreslení – uloženou hodnotu jen omezí, nikdy ji nepřepisuje. */
+export function resolveMenuWidth(stored: number, maximum: number) {
+  return Math.min(maximum, Math.max(12.5, stored));
+}
+const formatMenuRem = (value: number) => value.toLocaleString("cs-CZ", { maximumFractionDigits: 2 });
+
 export function AppShell({
   children,
   navGroups,
@@ -403,8 +415,9 @@ export function AppShell({
   const searchOverlayRef = useRef<HTMLDivElement>(null);
   const shellBodyRef = useRef<HTMLDivElement>(null);
 
+  // Zoom aplikace se aplikuje jen jednou při startu; další změny dělá setAppZoom / resetAppZoom.
+  useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
   useEffect(() => {
-    applyAppZoom(getAppZoom());
     document.title = appName;
   }, [appName]);
 
@@ -482,7 +495,7 @@ export function AppShell({
       const required = Number(body.querySelector<HTMLElement>('[data-slot="pane-layout"]')?.dataset["requiredWidth"]);
       if (!required) { setMenuMaximum(26.25); return; }
       const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      setMenuMaximum(Math.max(12.5, Math.min(26.25, (body.getBoundingClientRect().width - required - 4) / rootPx)));
+      setMenuMaximum(resolveMenuMaximum(body.getBoundingClientRect().width, required, rootPx));
     };
     update();
     const observer = new ResizeObserver(update);
@@ -491,28 +504,35 @@ export function AppShell({
     return () => { observer.disconnect(); window.removeEventListener(RESIZE_END_EVENT, update); };
   }, [isCollapsed, hasPaneLayout, appZoom.zoom]);
 
-  const menuWidth = Math.min(menuMaximum, Math.max(12.5, draftMenuWidth ?? storedMenuWidth));
+  const [menuDragging, setMenuDragging] = useState(false);
+  const menuWidth = resolveMenuWidth(draftMenuWidth ?? storedMenuWidth, menuMaximum);
+  const saveMenuWidth = (width: number) => {
+    setStoredMenuWidth(width);
+    try { localStorage.setItem("app:menu-width", String(width)); } catch { /* úložiště nemusí být dostupné */ }
+  };
   const onMenuDividerDown = (event: React.PointerEvent) => {
     if (event.button !== 0) return;
     event.preventDefault();
     const startX = event.clientX;
     const startWidth = menuWidth;
     let finalWidth = startWidth;
-    const release = beginResize();
-    const move = (moveEvent: PointerEvent) => {
-      finalWidth = Math.min(menuMaximum, Math.max(12.5, startWidth + (moveEvent.clientX - startX) / 16 / appZoom.zoom));
-      setDraftMenuWidth(finalWidth);
-    };
-    const up = () => {
-      setDraftMenuWidth(null);
-      setStoredMenuWidth(finalWidth);
-      try { localStorage.setItem("app:menu-width", String(finalWidth)); } catch { /* úložiště nemusí být dostupné */ }
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      release();
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
+    setMenuDragging(true);
+    startPointerDrag(event, {
+      onMove: (moveEvent) => {
+        finalWidth = Math.min(menuMaximum, Math.max(12.5, startWidth + (moveEvent.clientX - startX) / 16 / appZoom.zoom));
+        setDraftMenuWidth(finalWidth);
+      },
+      onEnd: () => {
+        setDraftMenuWidth(null);
+        setMenuDragging(false);
+        saveMenuWidth(finalWidth);
+      },
+    });
+  };
+  const onMenuDividerKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    saveMenuWidth(Math.min(menuMaximum, Math.max(12.5, menuWidth + (event.key === "ArrowRight" ? 0.5 : -0.5))));
   };
 
   useEffect(() => {
@@ -626,7 +646,7 @@ export function AppShell({
   return (
     <div data-slot="app-shell" className="app-shell-root flex flex-col overflow-hidden bg-background">
       <header ref={headerRef} className="relative z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
-        {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed && "w-14 justify-center px-2")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
+        {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 md:flex", !menuDragging && "transition-[width]", isCollapsed && "w-14 justify-center px-2")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           {logo}
           {!isCollapsed ? <span className="truncate font-semibold tracking-tight">{appName}</span> : null}
         </div> : null}
@@ -684,13 +704,13 @@ export function AppShell({
       ) : null}
 
       <div ref={shellBodyRef} className="flex min-h-0 flex-1 overflow-hidden">
-        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
+        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r md:flex md:flex-col", !menuDragging && "transition-[width]", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
-        {!isCollapsed ? <div role="separator" aria-orientation="vertical" aria-label={dsTexts.appShell.resizeMenu} tabIndex={0} onPointerDown={onMenuDividerDown} onDoubleClick={() => { setStoredMenuWidth(15); try { localStorage.setItem("app:menu-width", "15"); } catch { /* noop */ } }} className="hidden w-1 shrink-0 cursor-col-resize bg-border/50 hover:bg-primary/40 md:block" /> : null}
+        {!isCollapsed ? <div role="separator" aria-orientation="vertical" aria-label={dsTexts.appShell.resizeMenu} aria-valuemin={12.5} aria-valuemax={Number(menuMaximum.toFixed(2))} aria-valuenow={Number(menuWidth.toFixed(2))} aria-valuetext={`${formatMenuRem(menuWidth)} rem`} tabIndex={0} onPointerDown={onMenuDividerDown} onKeyDown={onMenuDividerKeyDown} onDoubleClick={() => saveMenuWidth(15)} className="hidden w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40 focus-visible:bg-primary/40 focus-visible:outline-none md:block" /> : null}
         {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden min-h-0 w-60 flex-col overflow-hidden border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
         <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
           <AppShellContentProvider value={setHasPaneLayout}>{children}</AppShellContentProvider>

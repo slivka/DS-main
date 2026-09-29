@@ -30,13 +30,19 @@ function storedZoom() {
   }
 }
 
+let currentZoom: number | null = null;
+
+/** Zoom aplikace – spočítá se jednou (uložená hodnota, jinak odhad při startu); mění ho jen setAppZoom / resetAppZoom. */
 export function getAppZoom() {
   if (typeof window === "undefined") return 1;
-  return storedZoom() ?? estimateAppZoom(window.innerWidth);
+  if (currentZoom == null) currentZoom = storedZoom() ?? estimateAppZoom(window.innerWidth);
+  return currentZoom;
 }
 
+/** Nastaví písmo kořene podle zoomu a oznámí změnu. Volá ho AppShell při startu a setAppZoom / resetAppZoom. */
 export function applyAppZoom(value: number) {
   const zoom = clampAppZoom(value);
+  currentZoom = zoom;
   if (typeof document !== "undefined") document.documentElement.style.fontSize = `${16 * zoom}px`;
   if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(APP_ZOOM_EVENT, { detail: zoom }));
   return zoom;
@@ -56,11 +62,16 @@ export function resetAppZoom() {
   return applyAppZoom(estimateAppZoom(window.innerWidth));
 }
 
+/** Jen pro testy: zapomene spočítanou hodnotu. */
+export function resetAppZoomCacheForTests() {
+  currentZoom = null;
+}
+
+/** Čte zoom aplikace a poslouchá jeho změny; nic neaplikuje. */
 export function useAppZoom() {
   const [zoom, setZoomState] = useState(getAppZoom);
   useLayoutEffect(() => {
-    const initial = applyAppZoom(getAppZoom());
-    setZoomState(initial);
+    setZoomState(getAppZoom());
     const onChange = (event: Event) => setZoomState(clampAppZoom((event as CustomEvent<number>).detail));
     window.addEventListener(APP_ZOOM_EVENT, onChange);
     return () => window.removeEventListener(APP_ZOOM_EVENT, onChange);
