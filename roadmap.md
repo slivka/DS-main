@@ -2,7 +2,7 @@
 - [x] DocumentForm: `titleBadges`, `notices`, `readOnlyTitle` a `readOnlyActions` v pevném pořadí pruhů.
 - [x] Nový `NoticeBar` se čtyřmi tóny, akcemi, zavřením a interakčními testy.
 - [x] DataGrid: popisek skrytého seskupovacího sloupce v čipu i záhlaví skupiny.
-- [ ] Ukázky, katalog, pravidla, všechny testy, typy, produkční build a vizuální kontrola.
+- [x] Ukázky, katalog, pravidla, všechny testy, typy, produkční build a vizuální kontrola.
 
 ## Verze 2.58.0 (párování P2a – část B)
 - [x] groupTotals, řízený výběr, sumSelected, editor + GridAmountEditor, ukázka Saldokonto / Párování.
