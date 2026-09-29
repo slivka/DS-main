@@ -1,4 +1,12 @@
 
+## Changelog 2.64.0 – zoom aplikace, automatický zoom gridů a šířka menu
+
+- Nový zoom celé aplikace 70–200 % se ukládá pro zařízení a ovládá z uživatelské nabídky nebo zkratkami Ctrl+Alt++/−/0.
+- Formulářové gridy automaticky volí 75–100 %, potom přesouvají sloupce do detailu a až nakonec zapínají vodorovné rolování.
+- Šířky sloupců zůstávají v px při 100 %; vykreslení v rem respektuje zoom aplikace i gridu. Klíč uložených šířek se nemění.
+- Menu je sbalitelné a nastavitelné tažením; preference zařízení jsou `app:menu-collapsed` a `app:menu-width`.
+- BREAKING: odstraněny `FontSizeSetting`, `AppFontSizeControl`, `useAppFontSize`, `GridPreferencesProvider`, `AppShell.collapsed` a `AppShell.onCollapsedChange`.
+
 ## Changelog 2.62.0 – sjednocení formulářů karty záznamu
 
 - `Field` je společná definice pole pro karty záznamů i `DocumentForm`: popisek 12 px polotučně, jednotná mezera a společné hinty, chyby a hodnoty jen pro čtení.
