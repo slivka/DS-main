@@ -659,7 +659,7 @@ import { Checkbox } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { CheckboxField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Zaškrtávátko s popiskem pro hodnotu formuláře ukládanou tlačítkem Uložit, výběr více položek nebo volbu před akcí.
+Zaškrtávátko formuláře; čtvereček se zarovná na první řádek i u víceřádkového popisku a hint je odsazen na úroveň textu. Platí pro natural i input.
 
 **Props:**
 
@@ -676,6 +676,11 @@ Zaškrtávátko s popiskem pro hodnotu formuláře ukládanou tlačítkem Uloži
 _Vedle polí_
 ```tsx
 <FieldGrid cols={4}>…<CheckboxField align="input" label="Plátce DPH" checked={v} onCheckedChange={setV} /></FieldGrid>
+```
+
+_Víceřádkový popisek s nápovědou_
+```tsx
+<CheckboxField label={<>Majetek používaný také soukromě<br />se sledováním poměru</>} hint="Poměr se uplatní při odpisech." checked={v} onCheckedChange={setV} />
 ```
 
 **Avoid:**
@@ -1715,7 +1720,7 @@ import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Obal formulářového ovládání s popiskem, nápovědou a chybou. V FieldGrid cols={12} řídí prop span šířku pole od kontejneru 40 rem.
+Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení.
 
 **Examples:**
 
@@ -1734,7 +1739,7 @@ _Pole přes čtyři sloupce_
 import { FieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Responzivní mřížka polí. Varianta cols={12} skládá pod 40 rem pole po dvojicích a nad hranicí respektuje Field.span.
+Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem.
 
 **Examples:**
 
@@ -3409,6 +3414,46 @@ _Kurz EUR_
 ```ts
 import { ReadOnlyBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### RecordActionBar
+
+```ts
+import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `leftContent` | any | `—` |
+| `saveAction` | any | `—` |
+| `primaryAction` | any | `—` |
+| `moreActions` | any | `—` |
+| `busy` | boolean | `false` |
+| `error` | any | `—` |
+| `notices` | any | `—` |
+| `saveLabel` | string | `—` |
+| `moreActionsLabel` | string | `—` |
+| `errorTitle` | any | `—` |
+| `closeErrorLabel` | string | `—` |
+| `className` | string | `animate-spin` |
+| `dataSlot` | string | `record-action-bar` |
+| `errorDataSlot` | string | `record-action-error` |
+| `noticesDataSlot` | string | `record-action-notices` |
+
+**Examples:**
+
+_Karta majetku_
+```tsx
+<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} notices={<NoticeBar tone="info">Informace</NoticeBar>} />
+```
+
+**Avoid:**
+
+- Nevykreslujte Uložit ani akce záznamu volně pod poli.
+- Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
 
 ### RecordDialog
 
