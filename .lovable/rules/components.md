@@ -204,12 +204,6 @@ import { AmountCell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { AmountInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### AppFontSizeControl
-
-```ts
-import { AppFontSizeControl } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
 ### AppShell
 
 ```ts
@@ -239,8 +233,6 @@ Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozov
 | `activePanel` | string | `—` |
 | `onActivePanelChange` | function | `—` |
 | `closeLabel` | string | `Zavřít` |
-| `collapsed` | boolean | `—` |
-| `onCollapsedChange` | function | `—` |
 | `menuLabel` | string | `Menu` |
 | `collapseLabel` | string | `Sbalit menu` |
 | `expandLabel` | string | `Rozbalit menu` |
@@ -1811,20 +1803,6 @@ _Filtry_
 import { FiscalPeriodSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### FontSizeSetting
-
-```ts
-import { FontSizeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `placeholder` | string | `—` |
-| `label` | string | `—` |
-| `className` | string | `w-[220px]` |
-
 ### Form
 
 ```ts
@@ -2064,18 +2042,6 @@ import { GridPeriodFilter } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 ```
 
 Volba celého, měsíčního, čtvrtletního, pololetního, YTD nebo vlastního rozsahu v mezích účetního období.
-
-### GridPreferencesProvider
-
-```ts
-import { GridPreferencesProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `children` | any | `—` |
 
 ### GridProgress
 
