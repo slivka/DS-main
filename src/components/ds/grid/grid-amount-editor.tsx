@@ -43,6 +43,7 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
 ) {
   const [draft, setDraft] = React.useState<string | null>(null);
   const original = React.useRef<number | null>(value);
+  const skipCommit = React.useRef(false);
   const shown = draft ?? (value == null ? "" : fmtAmount(value, decimals));
 
   const commit = () => {
@@ -73,16 +74,22 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
         onFocus?.(event);
       }}
       onChange={(event) => setDraft(event.target.value)}
-      onBlur={(event) => { commit(); onBlur?.(event); }}
+      onBlur={(event) => {
+        if (skipCommit.current) {
+          skipCommit.current = false;
+          setDraft(null);
+        } else commit();
+        onBlur?.(event);
+      }}
       onKeyDown={(event) => {
         onKeyDown?.(event);
         if (event.defaultPrevented) return;
         if (event.key === "Enter") {
           event.preventDefault();
           commit();
-          setDraft(value == null ? "" : String(value).replace(".", ","));
         } else if (event.key === "Escape") {
           event.preventDefault();
+          skipCommit.current = true;
           setDraft(null);
           if (original.current !== value) onChange(original.current);
           event.currentTarget.blur();
@@ -107,11 +114,12 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
       {currencySymbol ? <span className="shrink-0 text-muted-foreground">{currencySymbol}</span> : null}
     </span>
   );
-  if (!invalid || !invalidMessage) return cell;
+  // Tooltip vykreslujeme vždy, aby se input při změně platnosti nepřemontoval.
+  const showError = Boolean(invalid && invalidMessage);
   return (
-    <Tooltip>
+    <Tooltip {...(showError ? {} : { open: false })}>
       <TooltipTrigger asChild>{cell}</TooltipTrigger>
-      <TooltipContent>{invalidMessage}</TooltipContent>
+      {showError ? <TooltipContent>{invalidMessage}</TooltipContent> : null}
     </Tooltip>
   );
 });
