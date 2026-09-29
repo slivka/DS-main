@@ -1,5 +1,2 @@
 [install]
 saveTextLockfile = true
-
-[test]
-preload = ["./tests/unit/dom-setup.ts"]

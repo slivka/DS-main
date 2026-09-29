@@ -1,12 +1,17 @@
-import "./dom-setup";
-import { afterEach, describe, expect, it } from "bun:test";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { afterAll, afterEach, describe, expect, it } from "bun:test";
 import * as React from "react";
-import { act, cleanup, fireEvent, render } from "@testing-library/react";
-import { TooltipProvider } from "../../src/components/ui/tooltip";
-import { DataGrid, type DataGridColumn } from "../../src/components/ds/grid/DataGrid";
-import { GridAmountEditor } from "../../src/components/ds/grid/grid-amount-editor";
+import type { DataGridColumn } from "../../src/components/ds/grid/DataGrid";
+
+// DOM musí existovat dřív, než se načte react-dom (jinak React nezaregistruje události input).
+if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
+const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
+const { TooltipProvider } = await import("../../src/components/ui/tooltip");
+const { DataGrid } = await import("../../src/components/ds/grid/DataGrid");
+const { GridAmountEditor } = await import("../../src/components/ds/grid/grid-amount-editor");
 
 afterEach(() => cleanup());
+afterAll(async () => { if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister(); });
 
 function Editor({ initial = 100, max, onValue }: { initial?: number; max?: number; onValue?: (v: number | null) => void }) {
   const [value, setValue] = React.useState<number | null>(initial);
@@ -36,7 +41,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
   it("Esc vrátí původní hodnotu", () => {
     const { getByLabelText, getByTestId } = render(<Editor />);
     const input = getByLabelText("A") as HTMLInputElement;
-    fireEvent.focus(input);
+    act(() => input.focus());
     fireEvent.input(input, { target: { value: "999" } });
     fireEvent.keyDown(input, { key: "Escape" });
     fireEvent.blur(input);
@@ -54,7 +59,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
   it("změna platnosti nepřemontuje input a fokus zůstane", () => {
     const { getByLabelText } = render(<Editor max={200} />);
     const input = getByLabelText("A") as HTMLInputElement;
-    act(() => input.focus()); fireEvent.focus(input);
+    act(() => input.focus());
     fireEvent.input(input, { target: { value: "300" } });
     fireEvent.keyDown(input, { key: "Enter" });
     const after = getByLabelText("A");
