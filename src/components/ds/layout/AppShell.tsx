@@ -339,6 +339,16 @@ function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, qu
 }
 
 /** Společný rám aplikace s horní lištou, sbalitelnou navigací a přepínatelnými panely. */
+/** Maximum šířky menu v rem: nesmí vzít místo panelům (`data-required-width`); rozsah 12,5–26,25 rem. */
+export function resolveMenuMaximum(bodyWidthPx: number, requiredPaneWidthPx: number | undefined, rootPx: number) {
+  if (!requiredPaneWidthPx) return 26.25;
+  return Math.max(12.5, Math.min(26.25, (bodyWidthPx - requiredPaneWidthPx - 4) / (rootPx || 16)));
+}
+
+/** Šířka menu k vykreslení – uloženou hodnotu jen omezí, nikdy ji nepřepisuje. */
+export function resolveMenuWidth(stored: number, maximum: number) {
+  return Math.min(maximum, Math.max(12.5, stored));
+}
 const formatMenuRem = (value: number) => value.toLocaleString("cs-CZ", { maximumFractionDigits: 2 });
 
 export function AppShell({
@@ -485,7 +495,7 @@ export function AppShell({
       const required = Number(body.querySelector<HTMLElement>('[data-slot="pane-layout"]')?.dataset["requiredWidth"]);
       if (!required) { setMenuMaximum(26.25); return; }
       const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      setMenuMaximum(Math.max(12.5, Math.min(26.25, (body.getBoundingClientRect().width - required - 4) / rootPx)));
+      setMenuMaximum(resolveMenuMaximum(body.getBoundingClientRect().width, required, rootPx));
     };
     update();
     const observer = new ResizeObserver(update);
@@ -495,7 +505,7 @@ export function AppShell({
   }, [isCollapsed, hasPaneLayout, appZoom.zoom]);
 
   const [menuDragging, setMenuDragging] = useState(false);
-  const menuWidth = Math.min(menuMaximum, Math.max(12.5, draftMenuWidth ?? storedMenuWidth));
+  const menuWidth = resolveMenuWidth(draftMenuWidth ?? storedMenuWidth, menuMaximum);
   const saveMenuWidth = (width: number) => {
     setStoredMenuWidth(width);
     try { localStorage.setItem("app:menu-width", String(width)); } catch { /* úložiště nemusí být dostupné */ }
