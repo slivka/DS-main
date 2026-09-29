@@ -113,7 +113,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Každou stránku v panelu obalte do `PageLayout`: `variant="list"` pro seznam, jehož grid vyplní zbytek panelu, a `variant="form"` pro formulář rolovaný jako celek.
 - V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu `height="fill"` na listové stránce. Výjimkou jsou dialogy, popovery a seznamy výběrů.
-- Zoom a hustota jsou stav konkrétní instance gridu; v panelu patří záložce. Firemní výchozí hodnoty dodává `GridPreferencesProvider`. Nikdy nesynchronizujte otevřené gridy globální událostí.
+- Zoom formulářového gridu je automatický a dočasný; pořadí je plná sada sloupců při 100 % → zoom nejméně 75 % → kaskáda → vodorovné rolování.
 
 - Nadpis gridu je ve výchozím stavu skrytý; zobrazuj ho pouze na výslovné
   vyžádání přes `showTitle`. Lišta, hlavička a součtový řádek tvoří jeden spojený blok.
@@ -254,7 +254,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   předchozí volby uživatele automaticky sbalí. Pod 768 px zůstává menu v Sheetu.
   Horní lišta se nikdy nezalamuje ani nevytváří vodorovný posuvník.
 - Sbalení menu ovládá tlačítko na jeho spodním okraji nebo zkratka Ctrl+B;
-  respektuj řízené vlastnosti `collapsed` a `onCollapsedChange`.
+  sbalení a šířku menu spravuje `AppShell` pro dané zařízení.
 - Oznámení vkládej přes prezentační `NotificationBell`; data a všechny akce
   dodává aplikace. Rychlé přepnutí motivu dělej přes `ThemeToggleButton`, který
   sdílí uloženou volbu s `ThemeSetting`.
@@ -263,7 +263,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Pro nový kód používá AppShell navigaci přes `navGroups`; administrační a jiné
   režimy přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy a
   plochý seznam jsou pouze dočasná zpětná kompatibilita a jsou deprecated.
-- `FontSizeSetting` a `ThemeSetting` patří na stránku Předvolby, ne do horní lišty.
+- Ovládání „Velikost zobrazení“ patří do uživatelské nabídky; `ThemeSetting` patří na stránku Předvolby.
 - AppShell ve výchozím stavu nabízí hledání v menu; zkratka `/` je vyhrazena pro něj. Sbalení skupin ukládej přes `navStateKey`, aby se aplikace a její panely navzájem neovlivňovaly.
 - Nedostupné akce obaluj `PermissionGate`, důvod zamčení formuláře ukazuj
   `ReadOnlyBanner`, prázdný stav chystaného modulu `ComingSoon`.
@@ -273,7 +273,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `src/components/ds/` – design systém, jediný veřejný vstup `ds/index.ts`
   (layout, grid, form, feedback, data-display, accounting)
 - `src/components/ui/` – shadcn primitiva
-- `src/hooks/`, `src/lib/` – hooky a pomocné funkce (format, period, font-scale,
+- `src/hooks/`, `src/lib/` – hooky a pomocné funkce (format, period, app-zoom,
   theme, grid-prefs, date-time-preferences, regions, postal-code,
   person-name, form-errors, utils)
 - `src/routes/` – ukázkové stránky (showcase), jen náhled, není součástí knihovny
@@ -348,7 +348,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Stránka jako celek nikdy neroluje; rolují menu, `main` (stránky mimo panely) a obsah každé záložky panelu zvlášť.
 - V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu, který vyplňuje celý panel (`PageLayout variant="list"`, `height="fill"`). Výjimky: rozbalovací výběry, dialogy, popovery.
-- Zoom a hustota gridu platí jen pro instanci v záložce; výchozí hodnoty dodává aplikace přes `GridPreferencesProvider`.
+- Zoom formulářového gridu je automatický a neukládá se; hustota nového gridu je normální.
 
 ### BREAKING pro aplikace – migrace na 2.53.0
 
@@ -356,7 +356,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Seznamové stránky obalte `<PageLayout variant="list">` (PageHeader + lišta + grid) – grid pak vyplní panel (`fill`), roluje jen jeho tělo a záhlaví i součty jsou přilepené. Formuláře a karty obalte `<PageLayout variant="form">`.
 - Odstraňte ruční `maxHeight`, `calc(100vh …)` a výšky odvozené z `window.innerHeight` ve stránkách i u gridů; výšku určuje rodič.
 - Odstraňte `ListScrollRestore` a jiné vlastní obnovy pozice rolování – `PaneLayout` obnovuje pozici každé záložky (per krok historie) sám. Pro výjimečné potřeby je `usePaneScrollElement()`.
-- Napojte `GridPreferencesProvider` (`getDefaults(storageKey)`, `onDefaultsChange(storageKey, { zoom, density })`, volá se s debounce 400 ms) na uložení předvoleb uživatele v aplikaci; bez něj se výchozí zoom/hustota drží jen v localStorage prohlížeče.
+- Zoom gridu ani hustota se neukládají. Formulářový grid přepočítá zoom z dostupné šířky; při 75 % pokračuje kaskádou sloupců a nakonec rolováním.
 - Událost `grid-zoom-change` byla zrušena – zoom a hustota platí jen pro instanci gridu v záložce.
 - `PaneLayout` má být přímý obsah `AppShell`, ne vnořený v jiné rolovací stránce (ohlásí se sám, main pak nemá padding ani rolování). Ovládá main jen když je skutečně zobrazený – skrytý (`hidden`) PaneLayout main uvolní. Vložený PaneLayout (ukázky, náhledy ve stránce) = prop `embedded` + kontejner s pevnou výškou; neregistruje se a stránka kolem roluje normálně.
 - Na stránce s `DocumentActionBar` (DocumentForm) se přilepuje jen pruh akcí; `PageHeader` odroluje, aby se oba přilepené pruhy nepřekryly. `--pane-sticky-top` = výška pruhu akcí.
@@ -369,7 +369,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `ZoomGrid.overflowFallback?: boolean` – nouzové vodorovné rolování gridu, který jinak sloupce přesouvá do detailu (když se nevejde ani minimum).
 - `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
 - `usePaneScrollElement()` – rolovací prvek aktuální záložky.
-- `GridPreferencesProvider` – `getDefaults`, `onDefaultsChange`.
+- Formulářové gridy automaticky volí zoom 75–100 %; seznamové gridy ponechávají ruční zoom jen pro aktuální zobrazení.
 
 ## Pravidlo 20 – nadpisy a popisky (2.54.0, závazné)
 
@@ -402,3 +402,11 @@ Aplikace nastaví jazyk jednou v kořeni:
 ```
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
+
+
+## DS 2.64.0
+
+- Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
+- `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
+- Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
+- Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.

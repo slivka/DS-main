@@ -610,9 +610,9 @@
 - [ ] Ověřit typy, lint, testy, sestavení a formuláře v obou motivech a šířkách
 
 ## Verze 2.64.0 (zoom aplikace, automatický zoom gridů a šířka menu)
-- [ ] Nahradit oba mechanismy velikosti písma jediným zoomem aplikace 70–200 % uloženým pro zařízení
-- [ ] Doplnit automatický neukládaný zoom formulářových gridů s pořadím plné sloupce → zoom → kaskáda → rolování
-- [ ] Zachovat veřejné šířky sloupců v px při 100 % a vykreslovat je přes rem bez migrace definic aplikací
-- [ ] Převzít šířku a sbalení menu do AppShell, doplnit přístupný posuvník a ochranu počtu panelů
-- [ ] Odstranit staré exporty, persistence a mrtvý kód; aktualizovat ukázku a dokumentaci pro BREAKING 2.64.0
-- [ ] Ověřit návrat sloupců a zoomu při 3 → 1 panelu, produkční ukázku, všechny testy, typy, lint a build
+- [x] Nahradit oba mechanismy velikosti písma jediným zoomem aplikace 70–200 % uloženým pro zařízení
+- [x] Doplnit automatický neukládaný zoom formulářových gridů s pořadím plné sloupce → zoom → kaskáda → rolování
+- [x] Zachovat veřejné šířky sloupců v px při 100 % a vykreslovat je přes rem bez migrace definic aplikací
+- [x] Převzít šířku a sbalení menu do AppShell, doplnit přístupný posuvník a ochranu počtu panelů
+- [x] Odstranit staré exporty, persistence a mrtvý kód; aktualizovat ukázku a dokumentaci pro BREAKING 2.64.0
+- [x] Ověřit návrat sloupců a zoomu při 3 → 1 panelu, produkční ukázku, všechny testy, typy, lint a build

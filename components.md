@@ -14,7 +14,7 @@
 
 - `PageLayout variant="list" | "form"` nastavuje model výšky stránky. `list` dává gridu zbývající výšku panelu; `form` roluje celý obsah.
 - `DataGrid`, `TreeGrid`, `ZoomGrid` a `ZoomPane` přijímají `height?: "fill" | "auto"`; bez prop se řídí nejbližším `PageLayout`.
-- `GridPreferencesProvider` přijímá `getDefaults(storageKey)` a `onDefaultsChange(storageKey, { zoom, density })`. V otevřených panelech ukládá `useGridZoom` hodnoty po záložkách.
+- Zoom formulářových gridů se počítá automaticky a neukládá se; hustota nové tabulky zůstává normální.
 - `usePaneScrollElement()` vrací rolovací prvek aktuální záložky; běžná aplikace jej nepotřebuje, protože obnovu zajišťuje `PaneLayout`.
 - V režimu `auto` se virtualizace nepoužívá; celý obsah roluje panel. `fill` zachovává vlastní rolovací tělo gridu, sticky záhlaví, součty a připnuté sloupce.
 
@@ -26,7 +26,7 @@
 - `ZoomGrid.overflowFallback?: boolean` – nouzové vodorovné rolování gridu, který jinak sloupce přesouvá do detailu (když se nevejde ani minimum).
 - `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
 - `usePaneScrollElement()` – rolovací prvek aktuální záložky.
-- `GridPreferencesProvider` – `getDefaults`, `onDefaultsChange`.
+- Formulářové gridy automaticky volí zoom 75–100 %; seznamové gridy ponechávají ruční zoom jen pro aktuální zobrazení.
 
 #### BREAKING pro aplikace – migrace na 2.53.0
 
@@ -34,7 +34,7 @@
 - Seznamové stránky obalte `<PageLayout variant="list">` (PageHeader + lišta + grid) – grid pak vyplní panel (`fill`), roluje jen jeho tělo a záhlaví i součty jsou přilepené. Formuláře a karty obalte `<PageLayout variant="form">`.
 - Odstraňte ruční `maxHeight`, `calc(100vh …)` a výšky odvozené z `window.innerHeight` ve stránkách i u gridů; výšku určuje rodič.
 - Odstraňte `ListScrollRestore` a jiné vlastní obnovy pozice rolování – `PaneLayout` obnovuje pozici každé záložky (per krok historie) sám. Pro výjimečné potřeby je `usePaneScrollElement()`.
-- Napojte `GridPreferencesProvider` (`getDefaults(storageKey)`, `onDefaultsChange(storageKey, { zoom, density })`, volá se s debounce 400 ms) na uložení předvoleb uživatele v aplikaci; bez něj se výchozí zoom/hustota drží jen v localStorage prohlížeče.
+- Zoom gridu ani hustota se neukládají. Formulářový grid přepočítá zoom z dostupné šířky; při 75 % pokračuje kaskádou sloupců a nakonec rolováním.
 - Událost `grid-zoom-change` byla zrušena – zoom a hustota platí jen pro instanci gridu v záložce.
 - `PaneLayout` má být přímý obsah `AppShell`, ne vnořený v jiné rolovací stránce (ohlásí se sám, main pak nemá padding ani rolování). Ovládá main jen když je skutečně zobrazený – skrytý (`hidden`) PaneLayout main uvolní. Vložený PaneLayout (ukázky, náhledy ve stránce) = prop `embedded` + kontejner s pevnou výškou; neregistruje se a stránka kolem roluje normálně.
 - Na stránce s `DocumentActionBar` (DocumentForm) se přilepuje jen pruh akcí; `PageHeader` odroluje, aby se oba přilepené pruhy nepřekryly. `--pane-sticky-top` = výška pruhu akcí.
@@ -304,3 +304,11 @@ Aplikace nastaví jazyk jednou v kořeni:
 ```
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
+
+
+## DS 2.64.0
+
+- Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
+- `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
+- Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
+- Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.
