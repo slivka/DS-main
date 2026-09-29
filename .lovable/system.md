@@ -410,6 +410,13 @@ Aplikace nastaví jazyk jednou v kořeni:
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
 
+## DS 2.66.0
+
+- BREAKING: aplikace odstraní `JournalLinesEditor.accountDisplay`, typ
+  `JournalAccountDisplay` a `DocumentSettingsValue.accountDisplay` včetně textů.
+- Přibývá veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`.
+- Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
+
 ## DS 2.64.0
 
 - Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
