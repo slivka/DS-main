@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+const keepVisibleState = <Id extends string>(value: Record<Id, boolean>) => value;
+
 export type ColumnView = {
   id: string;
   name: string;
@@ -130,7 +132,7 @@ export type GridColumnGroup = { section: string; span: number };
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
 export function useGridColumns<Id extends string>(storageKey: string, columns: GridColumn<Id>[], options: { normalizeVisible?: (visible: Record<Id, boolean>) => Record<Id, boolean> } = {}) {
-  const normalizeVisible = options.normalizeVisible ?? ((value: Record<Id, boolean>) => value);
+  const normalizeVisible = options.normalizeVisible ?? keepVisibleState;
   const persistentIds = useMemo(() => new Set(columns.filter((column) => !column.transient).map((column) => column.id)), [columns]);
   const persistentRecord = useCallback(<Value,>(record: Partial<Record<Id, Value>>) => Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))), [persistentIds]);
   const persistentOrder = useCallback((ids: Id[]) => ids.filter((id) => persistentIds.has(id)), [persistentIds]);

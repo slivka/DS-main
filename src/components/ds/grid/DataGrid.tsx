@@ -487,6 +487,7 @@ export function DataGrid<Row>({
           ...(c.section !== undefined ? { section: c.section } : {}),
           ...(c.branchVisibility !== undefined ? { branchVisibility: c.branchVisibility } : {}),
           ...(c.transient !== undefined ? { transient: c.transient } : {}),
+          ...(c.disableToggleReason !== undefined ? { disableToggleReason: c.disableToggleReason } : {}),
           align: (c.align ?? (c.numeric ? "right" : "left")) as "left" | "right" | "center",
         })),
     [effectiveColumns, allBranches],
