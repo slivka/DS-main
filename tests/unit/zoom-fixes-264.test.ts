@@ -61,7 +61,6 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
     target.setPointerCapture = () => undefined;
     target.hasPointerCapture = () => false;
     target.releasePointerCapture = () => undefined;
-    Object.setPrototypeOf(target, Object.assign(Object.create(EventTarget.prototype), {}));
     return target;
   };
 
