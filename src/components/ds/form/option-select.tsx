@@ -9,6 +9,8 @@ export type SelectOption = {
   disabled?: boolean;
   muted?: boolean;
   trailingLabel?: ReactNode;
+  /** Kratší text ve spouštěči vybrané položky (v nabídce zůstává `label`). */
+  selectedLabel?: ReactNode;
   /** Neaktivní položka se nenabízí; vybraná se ukáže se štítkem „neaktivní“. */
   inactive?: boolean;
 };
@@ -51,7 +53,7 @@ export function OptionSelect({
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
   const emptyValueLabel = placeholderValueLabel ?? emptyLabel;
-  const selectedLabel = current === "" && allowEmpty ? emptyValueLabel : selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.label;
+  const selectedLabel = current === "" && allowEmpty ? emptyValueLabel : selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.selectedLabel ?? selectedOption?.label;
   const offered = options.filter((option) => !option.inactive || option.value === current);
 
   return (
