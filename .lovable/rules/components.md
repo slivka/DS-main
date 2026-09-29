@@ -1,6 +1,6 @@
 # Components
 
-Component catalog for **Design System**. Import all components from `@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b`.
+Component catalog for **DS - main**. Import all components from `@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b`.
 
 ### Accordion
 
@@ -1184,6 +1184,10 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | `selectionActions` | function | `—` |
 | `selectMode` | boolean | `—` |
 | `onSelectedRowsChange` | function | `—` |
+| `selectedKeys` | any | `—` |
+| `onSelectedKeysChange` | function | `—` |
+| `selectionSummary` | function | `—` |
+| `groupTotals` | header · row | `header` |
 | `hideSelectionToggle` | boolean | `—` |
 | `sidePanel` | any | `—` |
 | `activeRowKey` | string | `—` |
@@ -1198,6 +1202,15 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 _Akce řádků s vysvětlením zákazu_
 ```tsx
 <DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? "Zaúčtovaný doklad nelze odstranit." : undefined} />
+```
+
+_Párování s editovatelnou částkou_
+```tsx
+<DataGrid storageKey="matching" rows={items} rowKey={(r) => r.id} selectMode
+  selectedKeys={keys} onSelectedKeysChange={setKeys}
+  selectionSummary={(rows) => <span>Vybráno {rows.length}</span>}
+  columns={[{ id: "amount", label: "Párovat částkou", numeric: true, total: "sumSelected",
+    value: (r) => amounts[r.id], editor: (r) => <GridAmountEditor ariaLabel="Párovat částkou" value={amounts[r.id]} max={r.remaining} currencySymbol={r.currencySymbol} invalid={exceedsMax(amounts[r.id], r.remaining)} invalidMessage="Převyšuje zbývající částku" onChange={(v) => setAmount(r.id, v)} /> }]} />
 ```
 
 **Avoid:**
@@ -1847,6 +1860,40 @@ import { GridActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 ```ts
 import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### GridAmountEditor
+
+```ts
+import { GridAmountEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Číselná editovatelná buňka v obecném DataGrid – vrací se ze sloupce editor (zobrazí se jen u vybraných řádků). Enter potvrdí, Esc vrátí, Tab / Shift+Tab přechází mezi editory, chyba = červený roh s tooltipem.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | number | `—` |
+| `onChange` | function | `—` |
+| `max` | number | `—` |
+| `currencySymbol` | string | `—` |
+| `decimals` | number | `2` |
+| `invalid` | boolean | `—` |
+| `invalidMessage` | string | `—` |
+| `ariaLabel` | string | `—` |
+
+**Examples:**
+
+_Částka k párování s maximem_
+```tsx
+<GridAmountEditor ariaLabel="Párovat částkou" value={amount} max={remaining} currencySymbol={row.currencySymbol} invalid={exceedsMax(amount, remaining)} invalidMessage="Převyšuje zbývající částku" onChange={setAmount} />
+```
+
+**Avoid:**
+
+- Nepoužívej pro řádky účetního zápisu – ty edituje jen JournalLinesEditor.
+- Nepoužívej mimo grid ve formulářích – tam patří AmountInput / DecimalInput.
+- Nepiš natvrdo Kč – currencySymbol vždy z dat.
 
 ### GridBody
 

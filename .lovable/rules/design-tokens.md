@@ -1,6 +1,6 @@
 # Design Tokens
 
-Token reference for **Design System**. Use utility classes and CSS variables — never raw values.
+Token reference for **DS - main**. Use utility classes and CSS variables — never raw values.
 
 ## Colors
 
