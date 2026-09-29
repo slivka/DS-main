@@ -86,7 +86,7 @@ export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}
   const [localValue, setLocalValue] = useState(initial);
   const current = options.auto ? localValue : pane?.tabId ? tabPreferences[storageKey] ?? initial() : localValue;
 
-  const save = useCallback((next: Required<GridPreferenceValues>) => {
+  const save = useCallback((next: { zoom: number; density: GridDensity }) => {
     const tabId = options.auto ? undefined : pane?.tabId;
     if (tabId) setTabPreferences((latest) => ({ ...latest, [storageKey]: next }));
     else setLocalValue(next);
