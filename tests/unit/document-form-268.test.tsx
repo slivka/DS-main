@@ -62,6 +62,9 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     fireEvent.keyDown(search, { key: "Escape" });
     expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
+    fireEvent.pointerDown(document.body);
+    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
     expect(last.mainAccountId).toBe("311100");
     expect(view.getByText("311.100 - Odběratelé tuzemsko")).toBeTruthy();

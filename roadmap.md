@@ -634,4 +634,4 @@
 - [x] Při změně účtu odvodit okamžitý popisek z `mainAccountOptions`; invoice bez účtu nesmí mít koncový oddělovač ani štítek.
 - [x] Rozšířit typy dokladů, texty, ukázky, testy, katalog a BREAKING dokumentaci.
 - [x] Verze 2.68.0; `.lovable/meta.yaml` beze změny; Release neprovádět.
-- [ ] Ověřit unit testy, typy, build a produkční sestavení náhledu v běžné i úzké šířce.
+- [x] Ověřit unit testy, typy, build a produkční sestavení náhledu v běžné i úzké šířce.
