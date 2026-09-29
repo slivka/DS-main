@@ -77,7 +77,7 @@ export function useGridZoomContext() {
   return useContext(GridZoomContext);
 }
 
-/** Ruční volby gridu v konceptu záložky (jen paměť – bez localStorage a bez IndexedDB). */
+/** Ruční volby gridu v konceptu záložky (jen paměť – bez trvalého úložiště). */
 export type GridTabPreferences = { zoom: number | null; density: GridDensity };
 
 const DEFAULT_GRID_TAB_PREFERENCES: GridTabPreferences = { zoom: null, density: "normal" };
