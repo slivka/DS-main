@@ -126,4 +126,20 @@ describe("JournalLinesEditor 2.66", () => {
     expect(source).toContain('{ id: "counterAccount", label: counterShortLabel }');
     expect(source).toContain('{ id: "counterAccountName", label: counterNameLabel, defaultVisible: false }');
   });
+
+  it("obě formy editují stejnou hodnotu a kompaktní rozšířená forma dostane krátký nadpis", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain("accountDataColumn(accountColumn)");
+    expect(source).toContain("const heading = compactHeading ?");
+    expect(source).toContain("zkráceno kvůli šířce");
+  });
+
+  it("rekapitulace používá DataGrid, účetní dvojice, export, součty a vlastní storageKey", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-recap.tsx", "utf8");
+    expect(source).toContain("accountColumns<");
+    expect(source).toContain("<DataGrid");
+    expect(source).toContain('storageKey = "journal-recap"');
+    expect(source).toContain('total: "sum"');
+    expect(source).toContain("exportName=");
+  });
 });

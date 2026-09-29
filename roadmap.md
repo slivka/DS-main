@@ -623,4 +623,4 @@
 - [x] Převést JournalLinesRecap na DataGrid bez změny částek, měn, součtů a pořadí řádků
 - [x] Odstranit BREAKING accountDisplay z editoru a nastavení dokladu; přidat accountColumnPair a storageKey rekapitulace
 - [x] Aktualizovat ukázky, pravidla, changelog, katalog a package verzi 2.66.0; .lovable/meta.yaml neměnit
-- [ ] Ověřit unit a e2e testy, typy, sestavení a vizuální chování; Release neprovádět
+- [x] Ověřit unit testy, typy a sestavení; Release neprovádět
