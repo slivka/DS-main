@@ -66,6 +66,8 @@ export interface GridTexts {
   moreActions: string;
   treeView: string;
   tableView: string;
+  /** Popisek řádku součtů skupiny (`groupTotals="row"`). */
+  groupTotal: (label: string) => string;
 }
 
 export const DEFAULT_GRID_TEXTS: GridTexts = {
@@ -136,6 +138,7 @@ export const DEFAULT_GRID_TEXTS: GridTexts = {
   moreActions: "Další akce",
   treeView: "Stromové zobrazení",
   tableView: "Tabulkové zobrazení",
+  groupTotal: (label) => `Celkem ${label}`,
 };
 
 export function resolveGridTexts(texts?: Partial<GridTexts>): GridTexts {

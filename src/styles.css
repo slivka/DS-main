@@ -2073,3 +2073,17 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   flex: 1 1 6em;
   min-width: 6em;
 }
+
+/* GridAmountEditor – číslo v buňce bez rámečku, chyba = červený roh (jako editor řádků dokladu). */
+.grid-amount-editor-cell { min-height: 1.8em; }
+.grid-amount-editor:focus { background-color: color-mix(in oklch, var(--primary) 8%, transparent); }
+.grid-amount-editor-cell[data-invalid="true"]::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 0.45em solid var(--destructive);
+  border-left: 0.45em solid transparent;
+  content: "";
+}

@@ -37,6 +37,7 @@ import {
   useGridGrouping,
   useGroupedRows,
 } from "./grid-grouping";
+import { insertGroupTotalRows, isInteractiveTarget, resolveSelectedRows, toggleVisibleSelection } from "./grid-selection";
 import { GridTitleBar } from "./grid-title";
 import { GridAction, GridActions } from "./grid-action";
 import { Pencil, Trash2 } from "lucide-react";
