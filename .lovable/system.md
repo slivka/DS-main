@@ -432,6 +432,13 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
   sdílené `DsTexts.columnPicker.accountFormRequired` / `compactAccountHeading`.
 - Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
 
+## DS 2.68.0
+
+- BREAKING: volné `identity.items` nahradil `DocumentIdentity` s variantami `cashBank`, `invoice` a `internal`, knihou, kódem období a volitelným účtem a číslem.
+- Hlavní účet je pouze v identifikačním řádku; `mainAccountLocked` vždy skryje jeho změnu. Faktura mění účet přes `mainAccountOptions` a ukládá `mainAccountId` až s formulářem.
+- Měna faktur a interních dokladů je vedle Celkem. `currencyLocked` ji ponechá jako text, `currencyDisabledReason` vysvětlí zákaz změny; pokladna a banka ji mají pouze v identitě.
+- Nové druhy `DDPZ` a `DDPOZ` používají fakturační variantu, `KR` a `ZAP` interní variantu. Změna účtu ani měny nepřepočítává řádky v prohlížeči.
+
 ## DS 2.64.0
 
 - Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
