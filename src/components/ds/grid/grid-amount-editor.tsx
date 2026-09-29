@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { fmtAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { parseDecimalInput } from "../form/decimal-input";
@@ -117,9 +117,11 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
   // Tooltip vykreslujeme vždy, aby se input při změně platnosti nepřemontoval.
   const showError = Boolean(invalid && invalidMessage);
   return (
+    <TooltipProvider>
     <Tooltip {...(showError ? {} : { open: false })}>
       <TooltipTrigger asChild>{cell}</TooltipTrigger>
       {showError ? <TooltipContent>{invalidMessage}</TooltipContent> : null}
     </Tooltip>
+    </TooltipProvider>
   );
 });

@@ -27,7 +27,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
     const { getByLabelText, getByTestId } = render(<Editor />);
     const input = getByLabelText("A") as HTMLInputElement;
     fireEvent.focus(input);
-    input.value = "250"; fireEvent.input(input);
+    fireEvent.input(input, { target: { value: "250" } });
     fireEvent.keyDown(input, { key: "Enter" });
     fireEvent.blur(input);
     expect(getByTestId("val").textContent).toBe("250");
@@ -37,7 +37,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
     const { getByLabelText, getByTestId } = render(<Editor />);
     const input = getByLabelText("A") as HTMLInputElement;
     act(() => input.focus());
-    input.value = "999"; fireEvent.input(input);
+    fireEvent.input(input, { target: { value: "999" } });
     fireEvent.keyDown(input, { key: "Escape" });
     fireEvent.blur(input);
     expect(getByTestId("val").textContent).toBe("100");
@@ -55,7 +55,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
     const { getByLabelText } = render(<Editor max={200} />);
     const input = getByLabelText("A") as HTMLInputElement;
     act(() => input.focus());
-    input.value = "300"; fireEvent.input(input);
+    fireEvent.input(input, { target: { value: "300" } });
     fireEvent.keyDown(input, { key: "Enter" });
     const after = getByLabelText("A");
     expect(after).toBe(input);
