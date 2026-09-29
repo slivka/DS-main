@@ -299,8 +299,8 @@ export function Field({
   htmlFor?: string;
   hint?: ReactNode;
   error?: ReactNode;
-  /** Šířka pole v dvanáctisloupcové mřížce; pod 40 rem zůstává pole jednou ze dvou položek řádku. */
-  span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+  /** Šířka pole v mřížce; pod 40 rem zůstává pole jednou ze dvou položek řádku. */
+  span?: keyof typeof FIELD_SPAN_CLASSES;
   className?: string;
   children: ReactNode;
 }) {
@@ -335,6 +335,9 @@ const FIELD_SPAN_CLASSES = {
   4: "@min-[40rem]:col-span-4", 5: "@min-[40rem]:col-span-5", 6: "@min-[40rem]:col-span-6",
   7: "@min-[40rem]:col-span-7", 8: "@min-[40rem]:col-span-8", 9: "@min-[40rem]:col-span-9",
   10: "@min-[40rem]:col-span-10", 11: "@min-[40rem]:col-span-11", 12: "@min-[40rem]:col-span-12",
+  13: "@min-[40rem]:col-span-13", 14: "@min-[40rem]:col-span-14", 15: "@min-[40rem]:col-span-15",
+  16: "@min-[40rem]:col-span-16", 17: "@min-[40rem]:col-span-17", 18: "@min-[40rem]:col-span-18",
+  19: "@min-[40rem]:col-span-19", 20: "@min-[40rem]:col-span-20",
 } as const;
 
 export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
@@ -348,7 +351,7 @@ export function FieldGrid({
   className = "",
   children,
 }: {
-  cols?: 1 | 2 | 3 | 4 | 6 | 12;
+  cols?: 1 | 2 | 3 | 4 | 6 | 12 | 20;
   title?: ReactNode;
   className?: string;
   children: ReactNode;
@@ -358,7 +361,9 @@ export function FieldGrid({
       ? "grid-cols-1"
       : cols === 12
         ? "grid-cols-2 @min-[40rem]:grid-cols-12"
-      : cols === 3
+       : cols === 20
+        ? "grid-cols-20"
+       : cols === 3
         ? "@min-[40rem]:grid-cols-3"
         : cols === 4
           ? "@min-[40rem]:grid-cols-4"
