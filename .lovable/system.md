@@ -87,6 +87,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   odkud byl vyvolán.
 - Potvrzení vždy přes `ConfirmDialog`, nikdy `window.confirm`.
 - Chyby formuláře vždy zobrazuj přes `DocumentForm.error` jako pruh pod přilepeným pruhem akcí; nepoužívej holý `Alert` nad stránkou.
+- Pruhy dokladu mají pevné pořadí: akce → `error` → `notices` → `ReadOnlyBanner`. `NoticeBar` je pro provozní informaci, varování nebo úspěch s volitelnou akcí; `error` jen pro chybu bránící uložení a `ReadOnlyBanner` jen pro důvod nepřístupné editace. Pokud `DocumentForm.notices` existuje, aplikace nesmí upozornění k dokladu vykreslovat mimo `DocumentForm`.
 - Výběry vždy `OptionSelect` / `EntitySelect` / `AccountSelect`, nikdy nativní
   `select`.
 - Výběr s jedinou možností se nezobrazuje jako zakázaný select, ale jako text hodnoty.

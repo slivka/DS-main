@@ -1,7 +1,7 @@
 ## Verze 2.60.0 (párování P2b – část B)
-- [ ] DocumentForm: `titleBadges`, `notices`, `readOnlyTitle` a `readOnlyActions` v pevném pořadí pruhů.
-- [ ] Nový `NoticeBar` se čtyřmi tóny, akcemi, zavřením a interakčními testy.
-- [ ] DataGrid: popisek skrytého seskupovacího sloupce v čipu i záhlaví skupiny.
+- [x] DocumentForm: `titleBadges`, `notices`, `readOnlyTitle` a `readOnlyActions` v pevném pořadí pruhů.
+- [x] Nový `NoticeBar` se čtyřmi tóny, akcemi, zavřením a interakčními testy.
+- [x] DataGrid: popisek skrytého seskupovacího sloupce v čipu i záhlaví skupiny.
 - [ ] Ukázky, katalog, pravidla, všechny testy, typy, produkční build a vizuální kontrola.
 
 ## Verze 2.58.0 (párování P2a – část B)
