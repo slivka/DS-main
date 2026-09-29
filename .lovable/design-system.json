@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.60.0",
+    "version": "2.61.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -7547,6 +7547,39 @@
       ],
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
+      ]
+    },
+    {
+      "name": "DsTextsProvider",
+      "file": "src/ds-texts.tsx",
+      "import_path": "@/ds-texts",
+      "props": [
+        {
+          "name": "texts",
+          "type": "Partial<DsTexts>",
+          "required": false
+        },
+        {
+          "name": "locale",
+          "type": "\"cs\" | \"sk\"",
+          "required": false,
+          "default": "cs"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true
+        }
+      ],
+      "usage": "Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové props mají vyšší prioritu.",
+      "examples": [
+        {
+          "label": "Slovenská aplikace",
+          "code": "<DsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"><App /></DsTextsProvider>"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte uživatelsky viditelné texty knihovny natvrdo; přidejte klíč do DsTexts, DS_TEXTS_CS a DS_TEXTS_SK."
       ]
     }
   ],
