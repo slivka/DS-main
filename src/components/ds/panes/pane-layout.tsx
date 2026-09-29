@@ -184,10 +184,16 @@ function PaneLayoutInner({
   useEffect(() => {
     const element = containerRef.current;
     if (!element) return;
-    const observer = new ResizeObserver((entries) => setContainerWidth(entries[0].contentRect.width));
+    const update = () => {
+      if (isResizeLocked()) return;
+      const width = element.getBoundingClientRect().width;
+      if (width > 0) setContainerWidth(width);
+    };
+    const observer = new ResizeObserver(update);
     observer.observe(element);
-    setContainerWidth(element.getBoundingClientRect().width);
-    return () => observer.disconnect();
+    update();
+    window.addEventListener(RESIZE_END_EVENT, update);
+    return () => { observer.disconnect(); window.removeEventListener(RESIZE_END_EVENT, update); };
   }, []);
 
   const maxLayout = containerWidth ? maxPaneLayout(containerWidth, minPaneWidth, fontScale) : null;
