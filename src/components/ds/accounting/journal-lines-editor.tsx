@@ -141,12 +141,12 @@ const ACCOUNT_COLUMN_IDS = new Set<ColumnId>(["counterAccount", "counterAccountN
 
 /** Opraví i staré výchozí nastavení a uložené pohledy tak, aby každá strana měla alespoň jednu formu účtu. */
 export function normalizeJournalAccountVisibility<T extends Record<string, boolean>>(visible: T, mode: JournalLinesMode): T {
-  const next = { ...visible };
+  const next = { ...visible } as Record<string, boolean>;
   const pairs: [JournalAccountColumnId, JournalAccountColumnId][] = mode === "mainAccount"
     ? [["counterAccount", "counterAccountName"]]
     : [["debitAccount", "debitAccountName"], ["creditAccount", "creditAccountName"]];
   for (const [shortId, nameId] of pairs) if (!next[shortId] && !next[nameId]) next[shortId] = true;
-  return next;
+  return next as T;
 }
 
 export type JournalColumnLayoutInput = {
@@ -193,9 +193,10 @@ export function resolveJournalColumnLayout({ availableWidthRem: availableRaw, mo
     ids.forEach((id) => { if (visibleColumnIds.includes(id) && !protectedIds.has(id)) hidden.add(id); });
   };
 
+  // Samotná rozšířená forma účtu se nejdřív zkrátí; teprve poté pokračuje stávající kaskáda.
+  if (required() > availableWidthRem && visibleColumnIds.some((id) => isAccountNameColumn(id))) compactAccounts = true;
   hideGroup([...QUANTITY_COLUMNS]);
   hideGroup(["vatRate", "grossAmount"]);
-  if (required() > availableWidthRem && visibleColumnIds.some((id) => isAccountNameColumn(id))) compactAccounts = true;
   hideGroup(sideColumns);
   // Ručně rozšířené sloupce se při nedostatku místa vrátí na výchozí šířku.
   if (required() > availableWidthRem) useCustomWidths = false;
