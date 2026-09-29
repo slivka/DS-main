@@ -1236,9 +1236,9 @@ export function DataGrid<Row>({
                               ? { whiteSpace: "nowrap" as const }
                               : c.width
                                 ? {
-                                    width: `${c.width}px`,
-                                    maxWidth: `${c.width}px`,
-                                    minWidth: `${c.width}px`,
+                              width: `${c.width / 16}rem`,
+                              maxWidth: `${c.width / 16}rem`,
+                              minWidth: `${c.width / 16}rem`,
                                     boxSizing: "border-box" as const,
                                   }
                                 : undefined;

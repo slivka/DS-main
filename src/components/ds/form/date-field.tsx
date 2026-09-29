@@ -242,7 +242,7 @@ export function DateField({
         <PopoverContent
           className={cn("w-auto p-0", gridZoom != null && "grid-date-popover")}
           align="start"
-          style={gridZoom != null ? { fontSize: `${(13 * gridZoom).toFixed(2)}px` } : undefined}
+          style={gridZoom != null ? { fontSize: `${(0.8125 * gridZoom).toFixed(4)}rem` } : undefined}
         >
           <Calendar
             mode="single"

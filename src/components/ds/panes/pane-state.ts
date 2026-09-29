@@ -700,7 +700,7 @@ export type LayoutSnapshotTab = {
   title?: string;
   shortTitle?: string;
   icon?: string;
-  /** Stav gridu včetně zoomu a hustoty této záložky. */
+  /** Stav gridu bez dočasného zoomu formulářových gridů. */
   grid?: unknown;
 };
 
