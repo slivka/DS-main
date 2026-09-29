@@ -14,11 +14,16 @@ import {
   LegalFormField,
   LookupField,
   OptionSelect,
+  NoticeBar,
+  PageHeader,
+  RecordActionBar,
   RecordDialog,
+  SectionHeading,
   SegmentedField,
   SettingsSection,
   ShowInactiveToggle,
   SwitchField,
+  StatusBadge,
   VatStatusBadge,
   activeStatusColumn,
   activeToggleMenuItem,
@@ -116,6 +121,25 @@ export function PartnerShowcase() {
               </Field>
             </FieldGrid>
           </FormSection>
+        </div>
+
+        <div className="@container space-y-4 rounded-md border bg-card p-4">
+          <PageHeader title="Karta majetku" titleBadge={<StatusBadge status="active" config={{ active: { label: "V užívání", tone: "success" } }} />} />
+          <RecordActionBar
+            saveAction={{ onSave: () => toast.success("Uloženo"), dirty }}
+            primaryAction={{ label: "Vyřadit", onClick: () => toast.info("Majetek byl vyřazen") }}
+            moreActions={[{ id: "duplicate", label: "Duplikovat", onClick: () => toast.info("Karta byla duplikována") }]}
+            notices={<NoticeBar tone="info">Odpisový plán je připravený.</NoticeBar>}
+          />
+          <SectionHeading>Základní údaje</SectionHeading>
+          <FieldGrid cols={2}>
+            <Field label="Název majetku"><Input defaultValue="Dodávkový automobil" /></Field>
+            <Field label="Inventární číslo" hint="Interní označení karty."><Input defaultValue="MAJ-2026-018" /></Field>
+          </FieldGrid>
+          <SectionHeading>Vlastnosti</SectionHeading>
+          <CheckboxGroup>
+            <CheckboxField label={<>Majetek používaný také pro soukromé účely<br />se sledováním poměru</>} hint="Poměr se uplatní při výpočtu odpisů." checked={flags.customer} onCheckedChange={(customer) => setFlags((current) => ({ ...current, customer }))} />
+          </CheckboxGroup>
         </div>
       </div>
 

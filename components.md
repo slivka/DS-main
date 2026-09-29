@@ -54,6 +54,20 @@
 
 # Komponenty design systému
 
+## Karta záznamu a jednotná pole (2.62.0)
+
+- `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint`, `error` a `FieldValue` používají stejné rozvržení.
+- `CheckboxField` drží čtvereček u prvního řádku zalomeného popisku; nápověda začíná pod textem. Platí pro `align="natural"` i `align="input"`.
+- `RecordActionBar` má `leftContent`, `saveAction`, `primaryAction`, `moreActions`, `busy`, `error` a `notices`. Uložení s `dirty={false}` je zakázané. `DocumentForm` jej používá interně.
+
+```tsx
+<PageHeader title="Karta majetku" titleBadge={<StatusBadge status="active" config={statuses} />} />
+<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} />
+<SectionHeading>Základní údaje</SectionHeading>
+<FieldGrid><Field label="Název"><Input /></Field></FieldGrid>
+<CheckboxGroup><CheckboxField label="Daňově odpisovat" /></CheckboxGroup>
+```
+
 ## Pruhy a stav dokladu (2.60.0)
 
 - `DocumentForm.titleBadges?: ReactNode` přidá další stavové štítky hned za `DocumentStatusBadge` ve stejné výšce a bez zalamování.

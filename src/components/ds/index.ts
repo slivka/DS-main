@@ -28,6 +28,7 @@ export * from "./layout/section-heading";
 export * from "./layout/page-tabs";
 export * from "./layout/nav-search";
 export * from "./layout/settings-section";
+export * from "./layout/record-action-bar";
 
 /* Panely (režim více oken) */
 export * from "./panes/pane-state";

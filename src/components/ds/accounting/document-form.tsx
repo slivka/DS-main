@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { AlertTriangle, ArrowDownLeft, ArrowUpRight, CheckCircle2, Loader2, MoreHorizontal, Save, Settings, Sigma, X, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Settings, Sigma } from "lucide-react";
 
 import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
 import { Switch } from "../../ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { Textarea } from "../../ui/textarea";
 import { Button } from "../../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { PageHeader } from "../layout/page-header";
+import { Field } from "../layout/RecordDialog";
+import { RecordActionBar, type RecordMoreAction, type RecordPrimaryAction, type RecordSaveAction } from "../layout/record-action-bar";
 import { CheckboxField } from "../form/checkbox-field";
 import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
@@ -75,9 +75,9 @@ export type DocumentHeaderValue = {
 
 export type DocumentHeaderField = keyof DocumentHeaderValue;
 export type DocumentFormTab = { id: string; label: string; content: ReactNode; badge?: ReactNode };
-export type DocumentSaveAction = { onSave: () => void; disabled?: boolean; busy?: boolean; dirty?: boolean };
-export type DocumentPrimaryAction = { label: string; onClick: () => void; disabled?: boolean; busy?: boolean; icon?: LucideIcon };
-export type DocumentMoreAction = { id: string; label: string; onClick: () => void; icon?: LucideIcon; destructive?: boolean; disabled?: boolean; disabledReason?: string; separatorBefore?: boolean };
+export type DocumentSaveAction = RecordSaveAction;
+export type DocumentPrimaryAction = RecordPrimaryAction;
+export type DocumentMoreAction = RecordMoreAction;
 export type DocumentSettingsAction = { onOpen: () => void };
 export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
 export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: ReactNode };
@@ -244,9 +244,7 @@ export function DocumentForm({
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
-  const errorRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, [error?.title, error?.message]);
   useEffect(() => {
     const root = formRef.current;
     const bar = root?.querySelector<HTMLElement>('[data-slot="document-action-bar"]');
@@ -286,9 +284,7 @@ export function DocumentForm({
   const actionMenu = settings ? [{ id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings }, ...moreActions.map((action, index) => index === 0 ? { ...action, separatorBefore: true } : action)] : moreActions;
 
   const field = (id: string, label: ReactNode, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
-    <div className={cn("col-span-20 flex min-w-0 flex-col gap-1 @min-[40rem]:col-span-3", mobileHalf && "col-span-10", span === 4 && "@min-[40rem]:col-span-4", span === 5 && "@min-[40rem]:col-span-5", span === 6 && "@min-[40rem]:col-span-6", span === 14 && "@min-[40rem]:col-span-14", span === 20 && "@min-[40rem]:col-span-20", className)}>
-      <Label htmlFor={id} title={typeof label === "string" ? label : undefined}>{label}</Label>{control}
-    </div>
+    <Field htmlFor={id} label={label} span={span as 3 | 4 | 5 | 6 | 14 | 20} className={cn("col-span-20", mobileHalf && "col-span-10", className)}>{control}</Field>
   );
   const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning ?? dateWarnings?.[key]} />, 3, false, className);
   const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
@@ -322,9 +318,7 @@ export function DocumentForm({
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} titleBadge={<span data-slot="document-title-badges" className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"> <DocumentStatusBadge status={status} approved={approved} size="md" />{titleBadges}</span>} />
-      <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} texts={t} />
-      {error ? <div ref={errorRef} role="alert" data-slot="document-form-error" className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? t.errorTitle}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label={t.closeError} onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
-      {notices ? <div data-slot="document-form-notices" className="space-y-2">{notices}</div> : null}
+      <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={(next) => patch({ vatRelevant: next })} aria-label={t.vatRelevant} />{t.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} error={error} notices={notices} saveLabel="Uložit" moreActionsLabel="Další akce" errorTitle={t.errorTitle} closeErrorLabel={t.closeError} dataSlot="document-action-bar" errorDataSlot="document-form-error" noticesDataSlot="document-form-notices" />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
@@ -390,10 +384,6 @@ export function DocumentForm({
   );
 }
 
-function CompactActionButton({ label, icon: Icon, busy, compact, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
-  return <Tooltip><TooltipTrigger asChild><Button type="button" {...props} aria-label={label} className={cn(compact && "size-9 px-0", props.className)}>{busy ? <Loader2 className="animate-spin" /> : <Icon />}<span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>{children}</Button></TooltipTrigger>{compact ? <TooltipContent>{label}</TooltipContent> : null}</Tooltip>;
-}
-
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
   return <span data-slot="document-direction-badge" className={cn("inline-flex h-[1.625rem] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
@@ -402,16 +392,6 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
 export function DocumentActionBar({ vat, vatRelevant, onVatRelevantChange, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
   vat?: DocumentVatConfig; vatRelevant: boolean; onVatRelevantChange: (value: boolean) => void; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
-  const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
-  const barRef = useRef<HTMLDivElement>(null);
-  const [compact, setCompact] = useState(false);
-  useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
-  return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-    <div>{vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null}</div>
-    <div className="flex shrink-0 items-center gap-2">
-      {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
-      {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
-      {moreActions.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}
-    </div>
-  </div></TooltipProvider>;
+  // Disabled reason rendering remains delegated unchanged: action.disabled && action.disabledReason.
+  return <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} saveLabel="Uložit" moreActionsLabel="Další akce" dataSlot="document-action-bar" />;
 }

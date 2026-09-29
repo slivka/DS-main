@@ -1,4 +1,11 @@
 
+## Verze 2.62.0 (sjednocení formulářů karty záznamu)
+
+- [x] Společný vzhled `Field` pro karty a účetní doklady včetně hintu, chyby a `FieldValue`.
+- [x] `CheckboxField` zarovnaný k prvnímu řádku víceřádkového popisku.
+- [x] Nový obecný `RecordActionBar`; `DocumentForm` jej používá interně.
+- [x] Ukázka karty majetku a závazná pravidla skládání karet.
+
 ## Verze 2.61.0 (centrální texty a slovenština)
 
 - Nové exporty `DsTextsProvider`, `useDsTexts`, `DsTexts`, `DS_TEXTS_CS` a `DS_TEXTS_SK`; bez provideru zůstávají české výchozí texty.

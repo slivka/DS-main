@@ -56,6 +56,21 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## Zaškrtávátka, přepínače a stav záznamu (2.46.0)
 
+### Karta záznamu (2.62.0)
+
+- Stav záznamu je vždy v `PageHeader.titleBadge`, nikdy jako pole formuláře.
+- Zaškrtávátka jsou vždy v `CheckboxGroup` nebo v `FieldGrid` s `align="input"`, nikdy ve vlastním `div`.
+- Tlačítka Uložit a akce záznamu jsou vždy v `RecordActionBar`, nikdy volně pod poli.
+- Pole se skládají přes `Field`: popisek 12 px polotučně, mezera 4 px, ovládací prvek a případný `hint` nebo `error`. Hodnotu jen pro čtení vložte jako `FieldValue`.
+
+```tsx
+<PageHeader title="Karta majetku" titleBadge={<StatusBadge status="active" config={statuses} />} />
+<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} />
+<SectionHeading>Základní údaje</SectionHeading>
+<FieldGrid><Field label="Název"><Input /></Field></FieldGrid>
+<CheckboxGroup><CheckboxField label="Daňově odpisovat" /></CheckboxGroup>
+```
+
 1. **Checkbox** (`CheckboxField`, `CheckboxGroup`) = hodnota formuláře ukládaná tlačítkem Uložit / Potvrdit; výběr více položek; volba před akcí (import, výkaz, „Založit vybrané“).
 2. **Přepínač** (`SwitchField` v `SettingsSection`) = nastavení, které platí a uloží se hned po kliknutí, bez Uložit; sekce má nápovědu „Změny se ukládají hned“; nikdy se nemíchá s poli čekajícími na Uložit.
 3. Výjimka: matice v gridu (oprávnění, uzávěrka) = Checkbox s okamžitým uložením a potvrzujícím toastem.
