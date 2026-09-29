@@ -127,17 +127,15 @@ export type GridColumnGroup = { section: string; span: number };
  * Nastavení se ukládá do prohlížeče pod `columns:<storageKey>`.
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
-export function useGridColumns<Id extends string>(storageKey: string, columns: GridColumn<Id>[]) {
+export function useGridColumns<Id extends string>(storageKey: string, columns: GridColumn<Id>[], options: { normalizeVisible?: (visible: Record<Id, boolean>) => Record<Id, boolean> } = {}) {
+  const normalizeVisible = options.normalizeVisible ?? ((value: Record<Id, boolean>) => value);
   const persistentIds = useMemo(() => new Set(columns.filter((column) => !column.transient).map((column) => column.id)), [columns]);
   const persistentRecord = useCallback(<Value,>(record: Partial<Record<Id, Value>>) => Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))), [persistentIds]);
   const persistentOrder = useCallback((ids: Id[]) => ids.filter((id) => persistentIds.has(id)), [persistentIds]);
   const defaults = useMemo(
     () =>
-      Object.fromEntries(columns.map((c) => [c.id, c.defaultVisible !== false])) as Record<
-        Id,
-        boolean
-      >,
-    [columns],
+      normalizeVisible(Object.fromEntries(columns.map((c) => [c.id, c.defaultVisible !== false])) as Record<Id, boolean>),
+    [columns, normalizeVisible],
   );
 
   const [visible, setVisible] = useState<Record<Id, boolean>>(defaults);
@@ -162,13 +160,13 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
         for (const c of columns) {
           if (typeof saved[c.id] === "boolean") next[c.id] = c.locked ? true : saved[c.id]!;
         }
-        return next;
+        return normalizeVisible(next);
       });
     } catch {
       /* poškozené nastavení ignorujeme */
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey]);
+  }, [storageKey, normalizeVisible]);
 
   useEffect(() => {
     let saved: Id[] = [];
@@ -189,11 +187,11 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   useEffect(() => {
     const sync = (event: Event) => {
       const detail = (event as CustomEvent<{ storageKey: string; visible: Record<Id, boolean> }>).detail;
-      if (detail?.storageKey === storageKey && detail.visible) setVisible(detail.visible);
+      if (detail?.storageKey === storageKey && detail.visible) setVisible(normalizeVisible(detail.visible));
     };
     window.addEventListener("grid-columns-change", sync);
     return () => window.removeEventListener("grid-columns-change", sync);
-  }, [storageKey]);
+  }, [storageKey, normalizeVisible]);
 
   /** Nové (dynamické) sloupce doplníme do stavu s výchozí viditelností. */
   useEffect(() => {
@@ -202,21 +200,22 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       if (!missing.length) return cur;
       const next = { ...cur };
       for (const c of missing) next[c.id] = defaults[c.id]!;
-      return next;
+      return normalizeVisible(next);
     });
-  }, [columns, defaults]);
+  }, [columns, defaults, normalizeVisible]);
 
   const persist = useCallback(
     (next: Record<Id, boolean>) => {
-      setVisible(next);
+      const safe = normalizeVisible(next);
+      setVisible(safe);
       try {
-        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(persistentRecord(next)));
+        localStorage.setItem(`columns:${storageKey}`, JSON.stringify(persistentRecord(safe)));
       } catch {
         /* úložiště není dostupné */
       }
-      window.dispatchEvent(new CustomEvent("grid-columns-change", { detail: { storageKey, visible: next } }));
+      window.dispatchEvent(new CustomEvent("grid-columns-change", { detail: { storageKey, visible: safe } }));
     },
-    [storageKey, persistentRecord],
+    [storageKey, persistentRecord, normalizeVisible],
   );
 
   const toggle = useCallback(
