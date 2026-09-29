@@ -234,12 +234,12 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencyCo
 }
 
 export function DocumentForm({
-  title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
+  title, titleBadges, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, vatRateField, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
-  saveAction, primaryAction, moreActions = [], settings, error, readOnly = false, readOnlyReason, texts, className,
+  saveAction, primaryAction, moreActions = [], settings, error, notices, readOnly = false, readOnlyReason, readOnlyTitle, readOnlyActions, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };

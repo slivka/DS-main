@@ -3,14 +3,19 @@ import { toast } from "sonner";
 
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
+  DataGrid,
   DocumentForm,
   DocumentSettingsDialog,
+  NoticeBar,
   PaymentScheduleEditor,
+  StatusBadge,
+  type DataGridColumn,
   type DocumentSettingsValue,
   type DocumentHeaderValue,
   type JournalLine,
   type PaymentScheduleItem,
 } from "@/components/ds";
+import { Button } from "@/components/ui/button";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 
 const CURRENCIES = [
@@ -41,6 +46,17 @@ const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s2", kind: "installment", dueDate: "2026-11-08", amount: 3630, description: "Splátka 2/3" },
   { id: "s3", kind: "installment", dueDate: "2026-12-08", amount: 3630, description: "Splátka 3/3" },
   { id: "s4", kind: "retention", dueDate: "2027-09-08", amount: 1210, description: "Pozastávka 10 %", responsibleUserId: "u2" },
+];
+
+type HiddenGroupRow = { id: string; source: string; document: string; amount: number };
+const HIDDEN_GROUP_ROWS: HiddenGroupRow[] = [
+  { id: "hg1", source: "Párování P-2026-014", document: "KR2026000041", amount: 0.24 },
+  { id: "hg2", source: "Párování P-2026-014", document: "KR2026000042", amount: -0.11 },
+];
+const HIDDEN_GROUP_COLUMNS: DataGridColumn<HiddenGroupRow>[] = [
+  { id: "source", label: "Zdroj párování", defaultVisible: false, value: (row) => row.source },
+  { id: "document", label: "Doklad", value: (row) => row.document },
+  { id: "amount", label: "Částka", numeric: true, decimals: 2, value: (row) => row.amount },
 ];
 
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
@@ -111,6 +127,10 @@ export function DocumentFormShowcase() {
   const [idCp, setIdCp] = useState<DocumentHeaderValue>({
     bookId: "b-id", number: "ID2026000032", accountingDate: "2026-09-30", issueDate: "2026-09-30",
     counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
+  });
+  const [exchangeDifference, setExchangeDifference] = useState<DocumentHeaderValue>({
+    bookId: "b-id", number: "KR2026000041", accountingDate: "2026-09-30", issueDate: "2026-09-30",
+    description: "Kurzový rozdíl z párování", currency: "CZK", rate: 1, amountTotal: 0.24, totalMode: "entered",
   });
   const common = { accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, homeCurrency: "CZK", homeCurrencySymbol: "Kč", onLinesChange: () => {} };
   const units = [{ id: "hour", code: "hod", name: "hodina", isActive: true }, { id: "piece", code: "ks", name: "kus", isActive: true }];
@@ -183,6 +203,8 @@ export function DocumentFormShowcase() {
           editableFields={["mainAccountId", "description", "dueDate", "variableSymbol", "constantSymbol", "specificSymbol", "bankAccount", "excludeFromPaymentOrders"]}
           linesEditorProps={{ editableFields: ["text", "debitVs", "creditVs", "debitPartnerId", "creditPartnerId", "debitDimensionId", "creditDimensionId", "nonTax"], storageKey: "showcase-doc-posted" }}
           status="posted" approved
+          titleBadges={<StatusBadge status="partial" config={{ partial: { label: "Částečně uhrazeno", tone: "warning" } }} />}
+          notices={<NoticeBar tone="info" title="Otevřený přeplatek" actions={<Button type="button" variant="outline" size="sm" onClick={() => toast.success("VS 1001 byl použit")}>Použít VS</Button>}>Partner ALFA servis s.r.o. má na 311.001 otevřený přeplatek 200,00 Kč (VS 1001).</NoticeBar>}
           changedBy="Jana Nováková" changedAt="12.09.2026 14:05"
           tabs={[{
             id: "schedule", label: "Platební kalendář",
@@ -218,6 +240,39 @@ export function DocumentFormShowcase() {
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           linesEditorProps={{ storageKey: "showcase-doc-internal" }}
           status="filed"
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Kurzový rozdíl vzniklý párováním" description="Doklad je jen pro čtení a navádí zpět na původní párování.">
+        <DocumentForm
+          title="Doklad kurzových rozdílů"
+          value={exchangeDifference}
+          onChange={setExchangeDifference}
+          lines={[]}
+          onLinesChange={() => {}}
+          books={MOCK_BOOKS}
+          accounts={MOCK_ACCOUNTS}
+          partners={MOCK_PARTNERS}
+          dimensions={MOCK_DIMENSIONS}
+          documentType="ID"
+          homeCurrency="CZK"
+          homeCurrencySymbol="Kč"
+          status="posted"
+          readOnly
+          readOnlyTitle="Vznikl párováním"
+          readOnlyReason="Ruší se zrušením párování."
+          readOnlyActions={<Button type="button" variant="outline" size="sm" onClick={() => toast.info("Otevřeno párování P-2026-014")}>Otevřít párování</Button>}
+        />
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Seskupení podle skrytého sloupce" description="Skrytý sloupec Zdroj párování zůstává pojmenovaný v čipu i záhlaví skupiny.">
+        <DataGrid
+          storageKey="showcase-hidden-group-label-260"
+          rows={HIDDEN_GROUP_ROWS}
+          columns={HIDDEN_GROUP_COLUMNS}
+          rowKey={(row) => row.id}
+          defaultGroupBy="source"
+          paginated={false}
         />
       </ShowcaseSection>
     </>
