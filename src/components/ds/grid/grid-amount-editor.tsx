@@ -41,14 +41,21 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
   { value, onChange, max, currencySymbol, decimals = 2, invalid, invalidMessage, ariaLabel, className, onKeyDown, onFocus, onBlur, onClick, ...props },
   ref,
 ) {
-  const [draft, setDraft] = React.useState<string | null>(null);
+  const [draft, setDraftState] = React.useState<string | null>(null);
+  // Ref drží rozepsaný text synchronně – commit tak nikdy nevidí zastaralý draft (Esc, blur uvnitř handleru).
+  const draftRef = React.useRef<string | null>(null);
+  const setDraft = (next: string | null) => {
+    draftRef.current = next;
+    setDraftState(next);
+  };
   const original = React.useRef<number | null>(value);
   const skipCommit = React.useRef(false);
   const shown = draft ?? (value == null ? "" : fmtAmount(value, decimals));
 
   const commit = () => {
-    if (draft === null) return;
-    const parsed = parseDecimalInput(draft);
+    const current = draftRef.current;
+    if (current === null) return;
+    const parsed = parseDecimalInput(current);
     const rounded = parsed == null ? null : Math.round(parsed * 10 ** decimals) / 10 ** decimals;
     setDraft(null);
     if (rounded !== value) onChange(rounded);
