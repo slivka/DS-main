@@ -1068,9 +1068,9 @@ export function DataGrid<Row>({
                       ? { width: "1px", whiteSpace: "nowrap" as const }
                       : width
                         ? {
-                            width: `${width}px`,
-                            maxWidth: `${width}px`,
-                            minWidth: `${width}px`,
+                            width: `${width / 16}rem`,
+                            maxWidth: `${width / 16}rem`,
+                            minWidth: `${width / 16}rem`,
                             boxSizing: "border-box" as const,
                           }
                         : undefined;
@@ -1078,6 +1078,7 @@ export function DataGrid<Row>({
                       isPinned || isBranch || isBook || compact ? null : (
                         <ColumnResizeHandle
                           onResize={(w) => cols.setWidth(c.id, w)}
+                          scale={(typeof document === "undefined" ? 1 : Number.parseFloat(getComputedStyle(document.documentElement).fontSize) / 16) * zoom}
                           onReset={() => cols.clearWidth(c.id)}
                           texts={texts}
                         />
