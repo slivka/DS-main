@@ -29,7 +29,7 @@ export function startPointerDrag(
   handlers: { onMove: (event: PointerEvent) => void; onEnd?: () => void },
 ) {
   const release = beginResize();
-  const target = event.currentTarget instanceof Element ? event.currentTarget : null;
+  const target = (event.currentTarget as Element | null)?.addEventListener ? (event.currentTarget as Element) : null;
   try { target?.setPointerCapture?.(event.pointerId); } catch { /* ukazatel už nemusí existovat */ }
   let ended = false;
   const end = () => {
