@@ -4,6 +4,7 @@ import { Check, GripVertical, RotateCcw, SlidersHorizontal, Trash2 } from "lucid
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { gridFontSize } from "./grid-zoom";
 import type { ColumnViewsApi } from "./grid-columns";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
@@ -222,7 +223,6 @@ export function ColumnPicker<Id extends string>({
                       : undefined
                   }
                   onDragEnd={onReorder ? endDrag : undefined}
-                  title={c.disableToggleReason}
                   className={`group/col flex items-center gap-[0.7em] px-[1em] py-[0.4em] transition-colors hover-surface ${
                     sectionOff ? "opacity-50" : ""
                   } ${dragId === c.id ? "opacity-40" : ""} ${
@@ -246,11 +246,22 @@ export function ColumnPicker<Id extends string>({
                       toggleDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
                     }`}
                   >
-                    <Checkbox
-                      checked={!!visible[c.id]}
-                      disabled={toggleDisabled}
-                      onCheckedChange={() => !toggleDisabled && onToggle(c.id)}
-                    />
+                    {c.disableToggleReason ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span tabIndex={0} data-slot="column-toggle-disabled" aria-label={c.disableToggleReason} className="inline-flex">
+                            <Checkbox checked={!!visible[c.id]} disabled aria-label={c.label} />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{c.disableToggleReason}</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Checkbox
+                        checked={!!visible[c.id]}
+                        disabled={toggleDisabled}
+                        onCheckedChange={() => !toggleDisabled && onToggle(c.id)}
+                      />
+                    )}
                     <span className="truncate text-[1em] text-foreground">
                       {c.label
                         ? c.label.replace(/\b(md|dal)\b/gi, (value) => value.toLocaleUpperCase("cs"))

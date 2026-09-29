@@ -68,7 +68,7 @@ export type JournalLineErrors = Partial<Record<JournalLineColumn, string>>;
 export interface JournalLinesRounding { value: number; onChange?: (value: number) => void; readOnly?: boolean; label?: string; limit?: number }
 export interface JournalLinesRecapState { open?: boolean; onOpenChange?: (open: boolean) => void; tab?: string; onTabChange?: (tab: string) => void }
 export interface JournalLinesEditorTexts {
-  row: string; debitAccount: string; creditAccount: string; counterAccount: string; accountFormRequired: string; amount: string; homeAmount: string; foreignAmount: string; text: string;
+  row: string; debitAccount: string; creditAccount: string; counterAccount: string; /** Přepíše sdílený text `DsTexts.columnPicker.accountFormRequired`. */ accountFormRequired?: string; amount: string; homeAmount: string; foreignAmount: string; text: string;
   quantity: string; unit: string; unitPrice: string; dimension: string; vs: string; partner: string; debitDimension: string; creditDimension: string;
   debitVs: string; creditVs: string; debitPartner: string; creditPartner: string; nonTax: string; nonTaxOn: string; nonTaxOff: string;
   rounding: string; fxRounding: string; fxRoundingPreview: string; fxRoundingHint: string; detail: string; showDetail: string; hideDetail: string; sideDebit: string; sideCredit: string;
@@ -80,7 +80,7 @@ export interface JournalLinesEditorTexts {
   vatCodeRequired: string; vatDeviation: string; pdpRequired: string; deductionShareRange: string; vatMissingAccounts: string;
 }
 export const DEFAULT_JOURNAL_LINES_TEXTS: JournalLinesEditorTexts = {
-  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", counterAccount: "Protiúčet", accountFormRequired: "Aspoň jedna forma účtu musí zůstat zobrazená", amount: "Částka", homeAmount: "Částka v {symbol}", foreignAmount: "Částka v {symbol}",
+  row: "Ř.", debitAccount: "MD účet", creditAccount: "DAL účet", counterAccount: "Protiúčet", amount: "Částka", homeAmount: "Částka v {symbol}", foreignAmount: "Částka v {symbol}",
   text: "Text", quantity: "Množství", unit: "MJ", unitPrice: "Cena za MJ", dimension: "Zakázka", vs: "VS", partner: "Partner",
   debitDimension: "MD zakázka", creditDimension: "DAL zakázka", debitVs: "MD VS", creditVs: "DAL VS", debitPartner: "MD partner", creditPartner: "DAL partner",
   nonTax: "Nedaňový", nonTaxOn: "Nedaňový", nonTaxOff: "Daňový – klikněte pro nedaňový", rounding: "Zaokrouhlení",
