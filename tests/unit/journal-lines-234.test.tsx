@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
+import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, normalizeJournalAccountVisibility, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
@@ -105,6 +105,11 @@ describe("JournalLinesEditor 2.54", () => {
 });
 
 describe("JournalLinesEditor 2.66", () => {
+  it("obnoví krátkou formu, pokud uložené rozložení skryje obě formy strany", () => {
+    expect(normalizeJournalAccountVisibility({ debitAccount: false, debitAccountName: false, creditAccount: false, creditAccountName: true }, "internal")).toEqual({ debitAccount: true, debitAccountName: false, creditAccount: false, creditAccountName: true });
+    expect(normalizeJournalAccountVisibility({ counterAccount: false, counterAccountName: false }, "mainAccount")).toEqual({ counterAccount: true, counterAccountName: false });
+  });
+
   it("má výchozí krátké a volitelné rozšířené účetní sloupce s novým klíčem", () => {
     const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
     expect(source).toContain('{ id: "debitAccount", label: t.sideDebit }');
