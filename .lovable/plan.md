@@ -26,7 +26,7 @@ V projektu je nyní `package.json` 2.62.0 a katalog `.lovable/design-system.json
 - `AppShellProps.collapsed` a `AppShellProps.onCollapsedChange`;
 - zoomové `preferences` v uloženém `LayoutSnapshot` a podpora jejich obnovení.
 
-`useGridZoom`, `ZoomControl`, `ZoomGrid`, `ZoomPane`, zoom 60–140 % a hustota řádků zůstanou, ale jejich uložení se změní podle typu stránky. `DataGridColumn.width` a `TreeGridColumn.width` zůstanou číselné, nově budou znamenat **rem při 100 %**, nikoli px; to bude výslovně označeno jako breaking změna.
+`useGridZoom`, `ZoomControl`, `ZoomGrid`, `ZoomPane`, zoom 60–140 % a hustota řádků zůstanou, ale jejich uložení se změní podle typu stránky. `ZoomPane` zachová současné CSS zoomování netabulkových zobrazení, jen přestane ukládat výchozí hodnotu. `DataGridColumn.width` a `TreeGridColumn.width` zůstávají číselné v **px při 100 %**; jejich veřejný význam se nemění.
 
 ## Technické řešení
 
@@ -44,9 +44,9 @@ V projektu je nyní `package.json` 2.62.0 a katalog `.lovable/design-system.json
 
 ### Převod rozměrů na rem/em
 - `grid-zoom.tsx`: `GRID_BASE_FONT` bude 0,8125 rem; gridový zoom bude násobit rem základ.
-- `DataGrid.tsx`, `TreeGrid.tsx`, `grid-columns.tsx`, `grid-column-resize.tsx` a účetní gridy převedou šířky sloupců, výběrový sloupec, připnuté/systemové sloupce, pobočku a minimum 60 px na rem ekvivalenty.
-- Klíč uložených šířek se zvýší na novou verzi. Při prvním načtení se staré px hodnoty převedou `px / 16` a uloží pod nový klíč; díky oddělenému klíči nevznikne směs jednotek.
-- `use-resizable-width.ts` bude ukládat a vracet rem; vizuální měření se přepočítá přes aktuální kořenové písmo a gridový zoom.
+- `DataGrid.tsx`, `TreeGrid.tsx`, `grid-columns.tsx`, `grid-column-resize.tsx` a účetní gridy ponechají všechny definice v px při 100 % a vykreslí je jako `${width / 16}rem`; stejně se převedou výběrový sloupec 40, pobočka 78, připnuté/systemové šířky 84/118 a minimum 60.
+- Uložené ruční šířky zůstanou ve stejné jednotce jako veřejné definice: px při root 16 px a grid zoomu 1. Změřená šířka se uloží jako `measuredPx / (rootFontPx / 16) / gridZoom`. Klíč se zvýší pouze tehdy, pokud implementace skutečně mění dnešní uloženou jednotku; výsledek kontroly bude v závěrečné zprávě.
+- `use-resizable-width.ts` zachová veřejnou px jednotku při 100 %; vizuální měření se normalizuje přes aktuální kořenové písmo a příslušný zoom.
 - Pevné typografické px v menu se převedou na rem. Rohy v `styles.css` zůstanou záměrně v px.
 
 ### B. Automatický zoom gridů ve formuláři
@@ -66,12 +66,12 @@ nevleze se při 0,75 → jednou kaskáda JournalLinesEditor při 0,75
 stále nevleze → overflowFallback / vodorovné rolování
 ```
 
-- Výpočet bude jednosměrný a deterministický: po kaskádě se zoom znovu nezvyšuje a kaskáda znovu nespouští zoom.
-- Obecný `DataGrid`/`TreeGrid` získá potřebnou šířku ze zobrazených definic a ručních šířek; u automatických obsahových sloupců proběhne skryté měření při 100 % v layout efektu. Grid zůstane do prvního výpočtu skrytý, takže se uživateli neukáže mezisnímek 100 %.
+- Každý přepočet začne od nuly: plná požadovaná sada sloupců při 100 % → zoom → jednorázová kaskáda při 0,75 → rolování. Po rozšíření panelu se proto sloupce vrátí z detailu a zoom může vystoupat zpět na 100 %; po kaskádě se zoom v témže průchodu znovu nezvyšuje.
+- Obecný `DataGrid`/`TreeGrid` získá potřebnou šířku ze zobrazených definic a ručních šířek. První měření a výpočet proběhnou v `useLayoutEffect`; grid se nikdy nebude skrývat. Při šířce kontejneru 0 se výpočet přeskočí a zůstane poslední stabilní hodnota, u nového gridu 100 %, dokud nebude šířka kladná.
 - `JournalLinesEditor` spočítá šířku z požadovaných sloupců a ručních rem šířek. `resolveJournalColumnLayout` se zavolá až tehdy, když výpočet při 0,75 nestačí; dostane pevně 0,75. `overflowFallback` se určí až z výsledku tohoto jediného průchodu.
 - `ResizeObserver` bude mít debounce 150 ms; přepočet vyvolá také `app:zoom-change` a změna viditelnosti, pořadí nebo ruční šířky sloupců.
 - Ruční −/+ a Ctrl+kolečko ve formulářovém gridu přepnou stav na ruční 60–140 % a popisek z „Auto 85 %“ na „85 %“. Hodnota bude pouze v paměti záložky, přežije její přepnutí, ale ne zavření/F5. Následující změna šířky, sloupců nebo zoomu aplikace ruční stav přepíše novou automatickou hodnotou.
-- Seznamový grid bude dál držet zoom a hustotu v konceptu konkrétní záložky. Nová záložka začne zoomem 100 % a hustotou `normal`; bez panelů bude stav jen lokální. Žádná výchozí hodnota se nebude číst ani ukládat. `serializeLayout` zachová ostatní stav gridu, ale vynechá zoomové `preferences`.
+- Seznamový grid bude dál držet zoom a hustotu v konceptu konkrétní záložky. Nová záložka začne zoomem 100 %; výchozí hustota se převezme přesně ze současného fallbacku ověřeného v kódu. Bez panelů bude stav jen lokální. Žádná výchozí hodnota se nebude číst ani ukládat. `serializeLayout` zachová ostatní stav gridu, ale vynechá zoomové `preferences`.
 
 ### Zámek během tažení a pořadí přepočtů
 Nový interní modul `src/lib/resize-lock.ts` sjednotí `beginResize()` / `endResize()`:
@@ -93,6 +93,7 @@ Nový interní modul `src/lib/resize-lock.ts` sjednotí `beginResize()` / `endRe
 2. Oddělovač bude mít `role="separator"`, úplné `aria-valuemin/max/now`, pointer capture a klávesy ←/→ po 0,5 rem. Během tažení se mění jen vizuální šířka; localStorage a přepočty se provedou na konci.
 3. `PaneLayout` nahlásí do `AppShell` aktuální počet panelů a `minPaneWidth`. Maximum menu se omezí podle `requiredPaneWidth`; zámek zabrání dočasnému sloučení během pohybu a vypočtené maximum zajistí, že se panely kvůli menu nesloučí ani po puštění.
 4. Položky, skupiny, štítky a stav „Připravujeme“ budou v jednom nezalamovaném řádku. Zkrácený název dostane tooltip i u zakázané položky.
+5. Uložená šířka větší než aktuální maximum se omezí jen pro vykreslení; hodnota v localStorage se nepřepíše a po uvolnění omezení se vrátí. Změna zoomu aplikace smí změnit počet panelů, změna šířky menu nikoli.
 
 ## Konkrétní soubory
 
@@ -108,7 +109,7 @@ Nový interní modul `src/lib/resize-lock.ts` sjednotí `beginResize()` / `endRe
 ### Upravené – běhové části
 - `src/components/ds/grid/grid-zoom.tsx` – rem základ, režimy list/form, „Auto %“, odstranění defaults/localStorage a transientní ruční stav formuláře.
 - `src/components/ds/grid/DataGrid.tsx`, `TreeGrid.tsx` – automatický režim pro form+auto, rem šířky a přepočet po změně sloupců.
-- `src/components/ds/grid/grid-columns.tsx`, `grid-column-resize.tsx` – rem persistence, migrace klíče a resize v rem.
+- `src/components/ds/grid/grid-columns.tsx`, `grid-column-resize.tsx` – px-at-100% persistence a normalizovaný resize přes root font a grid zoom; klíč jen při skutečné změně uložené jednotky.
 - `src/components/ds/accounting/journal-lines-editor.tsx` a `journal-lines-recap.tsx` – pevné pořadí zoom/kaskáda/overflow, rem šířky a zamrznutí při tažení.
 - `src/components/ds/layout/page-layout.tsx` – kontext typu stránky a auto-zoom pravidla.
 - `src/components/ds/layout/AppShell.tsx` – inicializace zoomu, efektivní breakpointy, interní menu, oddělovač, zkratky a registrace požadavků panelů.
@@ -133,7 +134,7 @@ Nový interní modul `src/lib/resize-lock.ts` sjednotí `beginResize()` / `endRe
 - `.lovable/meta.yaml` zůstane beze změny.
 
 ## Testy a dokončení
-- Jednotkové testy: přesné hranice `estimateAppZoom`, clamp/krok/reset, bezpečné úložiště, `event.code`, AltGraph, efektivní breakpointy, auto zoom a zaokrouhlení dolů po 0,05, kaskáda až při 0,75, overflow až po kaskádě, odložený jediný přepočet po resize locku, transientní formulářový zoom, seznamový zoom 100 %/normal a snapshot bez preferences, maximum menu podle počtu panelů.
+- Jednotkové testy: přesné hranice `estimateAppZoom`, clamp/krok/reset, bezpečné úložiště, `event.code`, AltGraph, efektivní breakpointy, auto zoom a zaokrouhlení dolů po 0,05, kaskáda až při 0,75, overflow až po kaskádě, odložený jediný přepočet po resize locku, 3 → 1 panel vrátí sloupce i zoom, nulová šířka zachová poslední stabilní stav, transientní formulářový zoom, současný výchozí stav hustoty, snapshot bez preferences a maximum menu bez přepsání uložené šířky.
 - Vizuální/pravidlo 20: při 70 % i 200 % ověřit nadpisy, popisky, panelové záložky a menu bez zalomení, s výpustkou a tooltipem.
 - V náhledu projít „Režim více oken“: 1 → 3 → 1 panel, oba 40řádkové doklady, změny Auto %, posuvník menu a panelů bez poskakování; zkontrolovat konzoli.
 - Spustit všechny jednotkové testy, lint, kontrolu typů a produkční build. Produkční výstup spustit a stejnou ukázku ověřit proklikem i tam.
