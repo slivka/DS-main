@@ -61,6 +61,7 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 | `onOpenChange` | function | `—` |
 | `onKeyDown` | any | `—` |
 | `suffix` | any | `—` |
+| `ariaLabel` | string | `—` |
 | `className` | string | `font-mono tabular-nums` |
 
 **Examples:**
@@ -1337,7 +1338,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový účetní doklad se stavovými štítky, přilepenými akcemi, chybou, provozními upozorněními, omezením editace a editorem řádků.
+Jednotný formulář dokladu s typovaným identifikačním řádkem; hlavní účet se zobrazuje pouze v něm a měna faktury stojí vedle Celkem.
 
 **Props:**
 
@@ -1354,6 +1355,7 @@ Celostránkový účetní doklad se stavovými štítky, přilepenými akcemi, c
 | `onLinesChange` | function | `—` |
 | `books` | any | `—` |
 | `accounts` | any | `—` |
+| `mainAccountOptions` | any | `—` |
 | `partners` | any | `—` |
 | `dimensions` | any | `—` |
 | `currencies` | any | `—` |
@@ -1367,6 +1369,7 @@ Celostránkový účetní doklad se stavovými štítky, přilepenými akcemi, c
 | `homeCurrency` | string | `—` |
 | `homeCurrencySymbol` | string | `—` |
 | `currencyLocked` | boolean | `false` |
+| `currencyDisabledReason` | string | `—` |
 | `onCreatePartner` | function | `—` |
 | `icoLinkTarget` | any | `auto` |
 | `handedOverBySuggest` | any | `—` |
@@ -1394,19 +1397,19 @@ Celostránkový účetní doklad se stavovými štítky, přilepenými akcemi, c
 | `readOnlyTitle` | any | `—` |
 | `readOnlyActions` | any | `—` |
 | `texts` | any | `—` |
-| `className` | string | `rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground` |
+| `className` | string | `whitespace-nowrap` |
 
 **Examples:**
 
-_Doklad se stavem úhrady a upozorněním_
+_Faktura s editovatelným účtem_
 ```tsx
-<DocumentForm {...props} titleBadges={<StatusBadge status="partial" config={paymentStatus} />} notices={<NoticeBar tone="info">Partner má otevřený přeplatek.</NoticeBar>} />
+<DocumentForm {...props} identity={{ variant: "invoice", book: "FV - Vydané faktury", period: "2026", account: { side: "MD", label: "311.001 - Odběratelé", editable: true }, number: "FV2026000420" }} mainAccountOptions={allowedAccounts} />
 ```
 
 **Avoid:**
 
-- Nevykreslujte upozornění k dokladu mimo DocumentForm, pokud lze použít notices.
-- Nezaměňujte notices za error bránící uložení ani za důvod režimu jen pro čtení.
+- Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
+- Při změně účtu nebo měny nepřepočítávejte řádky v prohlížeči.
 
 ### DocumentSettingsDialog
 
@@ -3780,12 +3783,6 @@ _Grid_
 **Avoid:**
 
 - Switch nebo OptionSelect pro filtr neaktivních
-
-### SideBadge
-
-```ts
-import { SideBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
 
 ### Sidebar
 
