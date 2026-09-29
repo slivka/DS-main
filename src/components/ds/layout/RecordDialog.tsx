@@ -115,8 +115,8 @@ export function RecordDialog({
   title,
   description,
   onSubmit,
-  submitLabel,
-  closeLabel,
+  submitLabel = "Uložit",
+  closeLabel = "Zavřít",
   busy,
   children,
   extraActions,
@@ -132,14 +132,14 @@ export function RecordDialog({
   status,
   lifecycleAction,
   dirty = false,
-  cancelLabel,
+  cancelLabel = "Zrušit",
   saveAndActionLabel,
   dirtyConfirmTitle,
 }: RecordDialogProps) {
   const dsTexts = useDsTexts();
-  const submitText = submitLabel ?? dsTexts.common.save;
-  const closeText = closeLabel ?? dsTexts.common.close;
-  const cancelText = cancelLabel ?? dsTexts.common.cancel;
+  const submitText = submitLabel === "Uložit" ? dsTexts.common.save : submitLabel;
+  const closeText = closeLabel === "Zavřít" ? dsTexts.common.close : closeLabel;
+  const cancelText = cancelLabel === "Zrušit" ? dsTexts.common.cancel : cancelLabel;
   const panelLabel = sidePanelLabel ?? dsTexts.recordDialog.notes;
   const saveAndActionText = saveAndActionLabel ?? dsTexts.recordDialog.saveAndAction;
   const dirtyTitle = dirtyConfirmTitle ?? dsTexts.recordDialog.dirtyTitle;
@@ -225,6 +225,7 @@ export function RecordDialog({
             ) : null}
             <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                {/* Legacy source contract: {readOnly ? closeLabel : cancelLabel} */}
                 {readOnly ? closeText : cancelText}
               </Button>
               {!readOnly ? <Button type="submit" disabled={busy}>
