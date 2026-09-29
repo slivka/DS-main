@@ -1339,13 +1339,14 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celostránkový účetní doklad s identitou, přilepenými akcemi, jednotným chybovým pruhem a editorem řádků.
+Celostránkový účetní doklad se stavovými štítky, přilepenými akcemi, chybou, provozními upozorněními, omezením editace a editorem řádků.
 
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
 | `title` | string | `—` |
+| `titleBadges` | any | `—` |
 | `description` | any | `—` |
 | `identity` | any | `—` |
 | `directionBadge` | in · out | `—` |
@@ -1389,21 +1390,25 @@ Celostránkový účetní doklad s identitou, přilepenými akcemi, jednotným c
 | `moreActions` | any | `—` |
 | `settings` | any | `—` |
 | `error` | any | `—` |
+| `notices` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `readOnlyReason` | any | `—` |
+| `readOnlyTitle` | any | `—` |
+| `readOnlyActions` | any | `—` |
 | `texts` | any | `—` |
 | `className` | string | `rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground` |
 
 **Examples:**
 
-_Doklad s chybou uložení_
+_Doklad se stavem úhrady a upozorněním_
 ```tsx
-<DocumentForm {...props} error={{ message: "Doplňte povinné údaje." }} />
+<DocumentForm {...props} titleBadges={<StatusBadge status="partial" config={paymentStatus} />} notices={<NoticeBar tone="info">Partner má otevřený přeplatek.</NoticeBar>} />
 ```
 
 **Avoid:**
 
-- Nezobrazujte chybu formuláře samostatným Alertem nad stránkou; použijte prop error.
+- Nevykreslujte upozornění k dokladu mimo DocumentForm, pokud lze použít notices.
+- Nezaměňujte notices za error bránící uložení ani za důvod režimu jen pro čtení.
 
 ### DocumentSettingsDialog
 
@@ -2796,6 +2801,37 @@ import { NotesGridAction } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 ```ts
 import { NotesPanel } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### NoticeBar
+
+```ts
+import { NoticeBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Provozní informace, upozornění, potvrzení nebo problém v kontextu formuláře; může nabídnout navazující textovou akci.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `tone` | info · warning · success · danger | `—` |
+| `title` | any | `—` |
+| `children` | any | `—` |
+| `actions` | any | `—` |
+| `onClose` | function | `—` |
+
+**Examples:**
+
+_Přeplatek partnera_
+```tsx
+<NoticeBar tone="info" title="Otevřený přeplatek" actions={<Button>Použít VS</Button>}>Partner má otevřený přeplatek.</NoticeBar>
+```
+
+**Avoid:**
+
+- Nepoužívejte pro chybu, která brání uložení dokladu; patří do DocumentForm.error.
+- Nepoužívejte pro důvod režimu jen pro čtení; patří do ReadOnlyBanner.
+- Nevykreslujte upozornění k dokladu mimo DocumentForm.notices.
 
 ### NotificationBell
 
