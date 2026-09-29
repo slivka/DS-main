@@ -43,9 +43,10 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
     expect(shown).toContain("DAL");
     expect(shown).not.toContain("MD účet");
     expect(shown).not.toContain("DAL účet");
-    expect(view.container.textContent).toContain("518.001");
-    expect(view.container.textContent).not.toContain("518.001 - Služby");
-    fireEvent.click(view.getByRole("button", { name: /Sloupce/i }));
+    const grid = view.container.querySelector("table[role=grid]")!;
+    expect(grid.textContent).toContain("518.001");
+    expect(grid.textContent).not.toContain("518.001 - Služby");
+    fireEvent.click(view.getAllByRole("button", { name: /Sloupce/i })[0]!);
     const menu = await view.findByRole("dialog");
     const row = (label: string) => [...menu.querySelectorAll("label")].find((item) => item.textContent?.trim() === label)!;
     expect(row("MD účet").querySelector("[role=checkbox]")?.getAttribute("aria-checked")).toBe("false");
@@ -54,7 +55,7 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
 
   it("nedovolí odškrtnout poslední formu strany – zakázané zaškrtávátko s tooltipem", async () => {
     const view = render(<Editor storageKey="r266-last" />);
-    fireEvent.click(view.getByRole("button", { name: /Sloupce/i }));
+    fireEvent.click(view.getAllByRole("button", { name: /Sloupce/i })[0]!);
     const menu = await view.findByRole("dialog");
     const locked = [...menu.querySelectorAll("[data-slot=column-toggle-disabled]")];
     expect(locked.length).toBe(2);
@@ -82,7 +83,7 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
     const compact = view.container.querySelector("[data-slot=compact-account-heading]");
     expect(compact?.textContent).toBe("MD");
     expect(compact?.closest("th")?.hasAttribute("title")).toBe(false);
-    fireEvent.click(view.getByRole("button", { name: /Sloupce/i }));
+    fireEvent.click(view.getAllByRole("button", { name: /Sloupce/i })[0]!);
     const menu = await view.findByRole("dialog");
     const labels = [...menu.querySelectorAll("label")].map((item) => item.textContent?.trim());
     expect(labels).toContain("MD účet");
@@ -94,6 +95,8 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
     const view = render(<Editor storageKey={key} onLines={(lines) => { last = lines; }} />);
     const cell = [...view.container.querySelectorAll("td")].find((td) => td.textContent?.includes("518.001"))!;
     fireEvent.click(cell);
+    await new Promise((r) => setTimeout(r, 50));
+    console.log("DBG", document.body.innerHTML.slice(-3000));
     const option = await view.findByRole("option", { name: /343\.100/ });
     await act(async () => { fireEvent.click(option); });
     expect(last[0]?.debitAccount).toBe("343100");
@@ -120,7 +123,7 @@ describe("JournalLinesRecap 2.66 – vykreslení", () => {
     expect(body[0]).toContain("518.001 - Služby");
     expect(body[1]).toContain("343.100 - DPH");
     expect(body[2]).toContain("321.100 - Závazky");
-    expect(body[3]).toContain("548.001 - Zaokrouhlení Zaokrouhlení");
+    expect(view.container.querySelectorAll("tbody tr")[3]!.querySelector("td [title]")?.getAttribute("title")).toBe("548.001 - Zaokrouhlení Zaokrouhlení");
     expect(body[3]).toContain("—");
     const pinned = view.container.querySelectorAll("tbody tr")[3]!;
     expect(pinned.className).toContain("bg-muted");
