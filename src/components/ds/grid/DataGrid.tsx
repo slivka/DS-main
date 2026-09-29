@@ -256,7 +256,10 @@ export type DataGridProps<Row> = {
   exportName?: string | undefined;
   /** Volitelné údaje v hlavičce Excel sestavy. */
   exportMeta?: ExcelExportMeta | undefined;
-  defaultSort?: string | undefined;
+  /** Výchozí řazení; `null` = bez výchozího řazení (pořadí dat). Bez hodnoty první sloupec. */
+  defaultSort?: string | null | undefined;
+  /** Doplňková třída řádku (např. odlišení systémových řádků). */
+  rowClassName?: ((row: Row) => string | undefined) | undefined;
   /** Úprava řádku – ikona v ukotveném sloupci akcií vpravo. */
   onEditRow?: ((row: Row) => void) | undefined;
   /** Odstranění řádku – ikona v ukotveném sloupci akcií vpravo. */
@@ -411,6 +414,7 @@ export function DataGrid<Row>({
   printParams,
   exportMeta,
   defaultSort,
+  rowClassName,
   onEditRow,
   onDeleteRow,
   deleteConfirm,
@@ -536,7 +540,7 @@ export function DataGrid<Row>({
     return placeGridBookColumnFirst([...books, ...branch, ...pinned, ...middle, ...pinnedRight]);
   }, [cols.columns, cols.visible, byId]);
 
-  const sort = useGridSort<string>(storageKey, defaultSort ?? effectiveColumns[0]?.id ?? null);
+  const sort = useGridSort<string>(storageKey, defaultSort === null ? null : defaultSort ?? effectiveColumns[0]?.id ?? null);
 
   const valueOf = (row: Row, id: string) => {
     const col = byId.get(id);
@@ -1224,7 +1228,7 @@ export function DataGrid<Row>({
                             activeRowKey === rowKey(item.row)
                               ? "border-l-2 border-l-primary/60 bg-primary/[0.04] [&>td]:bg-primary/[0.02]"
                               : ""
-                          }`}
+                          } ${rowClassName?.(item.row) ?? ""}`}
                         >
                           {selectMode ? (
                             <TableCell className="text-center">
