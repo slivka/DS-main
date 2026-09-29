@@ -210,6 +210,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   `JournalLinesEditor`, kde jsou výchozí krátké formy. Výjimka se netýká jiných
   gridů u dokladů a karet, předkontací v záložkách, `JournalLinesRecap`, deníku
   ani sestav. V editoru musí být pro každou stranu viditelná alespoň jedna forma.
+  Řazení používá číselný kód účtu.
 - Stav dokladu vždy přes `DocumentStatusBadge`. Stavy: `draft` = Koncept
   (přerušovaný rámeček, doklad se nikde nepočítá), `filed` = Zařazen (má číslo,
   počítá se, není zaúčtován, informační tón), `posted` = Zaúčtován (success),
@@ -239,8 +240,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Řádky účetního zápisu vždy `JournalLinesEditor`: dvojice MD / MD účet a DAL /
   DAL účet editují stejnou hodnotu přes `AccountSelect`; výchozí jsou krátké,
   alespoň jedna forma každé strany zůstává zapnutá a nadpis odpovídá formě.
-  `compactAccounts` zkrátí rozšířenou formu i nadpis při nedostatku místa.
-  částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
+  Při nedostatku místa se nejdřív skryjí Množství / MJ / Cena, pak Sazba DPH /
+  Celkem s DPH; teprve potom se rozšířená forma strany bez viditelné krátké
+  formy zkrátí na číslo (krátký nadpis jen v záhlaví, ve Sloupce původní název),
+  je-li krátká forma strany viditelná, rozšířená se přesune do detailu. Pak
+  následují stranová pole a nakonec Text. Částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
   `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu
   se hlídá průběžně; režim jen pro čtení se předává propem `readOnly`.
 - Částka v cizí měně vždy `CurrencyAmount` (částka 2 desetinná místa, kurz 6).
@@ -414,7 +418,17 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - BREAKING: aplikace odstraní `JournalLinesEditor.accountDisplay`, typ
   `JournalAccountDisplay` a `DocumentSettingsValue.accountDisplay` včetně textů.
-- Přibývá veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`.
+- BREAKING: `formatJournalAccountDisplay(code, name, display, compact)` má nyní
+  signaturu `(code, name?, extended?)`. Pozor: staré volání s třetím argumentem
+  `"number"` je pravdivá hodnota, a vrátí proto i název účtu.
+- BREAKING: `resolveJournalColumnLayout` už nepřijímá `accountDisplay`; výsledek
+  přidává `compactAccountIds` (zkrácené rozšířené formy po stranách).
+- Nové exporty: `accountColumnPair()`, `normalizeJournalAccountVisibility()`,
+  `JournalLinesRecap.storageKey`, `GridColumn.disableToggleReason`,
+  `DataGrid.defaultSort={null}` (bez výchozího řazení) a `DataGrid.rowClassName`.
+- Pořadí sloupců `accountColumns()` je nově MD, MD účet, DAL, DAL účet.
+- Texty: `DsTexts.journalRecap` (krátké i rozšířené názvy účtů rekapitulace) a
+  sdílené `DsTexts.columnPicker.accountFormRequired` / `compactAccountHeading`.
 - Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
 
 ## DS 2.64.0

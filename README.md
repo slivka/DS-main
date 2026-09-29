@@ -151,8 +151,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.49.0 – doplnění editace dokladu 7
 
-- `JournalLinesEditor` nabízí pro každou stranu krátkou a rozšířenou formu účtu; v editoru jsou výchozí krátké sloupce. `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ.
-- Detail řádku se skládá do jednoho, nejvýše dvou řádků.
+- `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ a Zakázka je v režimu hlavního účtu výchozí.
+- `DocumentSettingsDialog.value.accountDisplay` ukládá volbu Zkráceně / Celý; detail řádku se skládá do jednoho, nejvýše dvou řádků.
 - `DocumentForm.error` přidává jednotný zavíratelný chybový pruh pod akcemi formuláře.
 - Uživatelské popisky jsou sjednocené na „IČO“.
 
@@ -740,4 +740,9 @@ Doplnění pro výkazy účetnictví.
 ## DS 2.66.0
 
 - BREAKING: `JournalLinesEditor.accountDisplay`, `JournalAccountDisplay` a volba účtu v `DocumentSettingsDialog` byly odstraněny.
-- Přibyl veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`; rekapitulace používá DataGrid.
+- BREAKING: `formatJournalAccountDisplay(code, name, display, compact)` → `(code, name?, extended?)`; staré volání s `"number"` nyní vrací i název účtu.
+- BREAKING: `resolveJournalColumnLayout` bez `accountDisplay`; nový výstup `compactAccountIds`.
+- `JournalLinesEditor` má dvojice `MD` / `MD účet` a `DAL` / `DAL účet` (v režimu hlavního účtu `counterAccount` / `counterAccountName`); výchozí jsou krátké formy a alespoň jedna forma každé strany zůstává viditelná.
+- Kaskáda šířek: Množství / MJ / Cena → Sazba DPH / Celkem s DPH → zkrácení účtů po stranách → stranová pole → Text.
+- Nové: `accountColumnPair()`, `normalizeJournalAccountVisibility()`, `JournalLinesRecap.storageKey`, `GridColumn.disableToggleReason`, `DataGrid.defaultSort={null}`, `DataGrid.rowClassName`, `DsTexts.journalRecap`.
+- Rekapitulace používá DataGrid se zachovaným pořadím řádků; pořadí sloupců `accountColumns()` je MD, MD účet, DAL, DAL účet.
