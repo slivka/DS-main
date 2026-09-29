@@ -36,7 +36,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
   it("Esc vrátí původní hodnotu", () => {
     const { getByLabelText, getByTestId } = render(<Editor />);
     const input = getByLabelText("A") as HTMLInputElement;
-    act(() => input.focus());
+    fireEvent.focus(input);
     fireEvent.input(input, { target: { value: "999" } });
     fireEvent.keyDown(input, { key: "Escape" });
     fireEvent.blur(input);
@@ -54,7 +54,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
   it("změna platnosti nepřemontuje input a fokus zůstane", () => {
     const { getByLabelText } = render(<Editor max={200} />);
     const input = getByLabelText("A") as HTMLInputElement;
-    act(() => input.focus());
+    act(() => input.focus()); fireEvent.focus(input);
     fireEvent.input(input, { target: { value: "300" } });
     fireEvent.keyDown(input, { key: "Enter" });
     const after = getByLabelText("A");
