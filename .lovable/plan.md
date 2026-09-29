@@ -1,134 +1,98 @@
-# DS 2.66.0 – sloupce účtů MD / DAL (pravidlo 23)
+# DS 2.68.0 – jednotný identifikační řádek dokladů
 
-## Cíl a ověřený výchozí stav
+## Cíl a hranice změny
 
-Sjednotit všechny gridy se zaúčtováním tak, aby nabízely krátkou i rozšířenou formu účtu ve **Sloupce**. Všude bude výchozí rozšířená forma; pouze `JournalLinesEditor` bude výchozí krátký a nedovolí skrýt obě formy jedné strany.
+Sjednotit horní identifikační řádek všech dokladů, ponechat hlavní účet pouze v něm a u faktur a interních dokladů přesunout měnu vedle celkové částky. Jde o BREAKING změnu veřejného API knihovny.
 
-Ověřený stav projektu:
-- `accountColumns()` už vrací krátké „MD“ / „DAL“ skryté a rozšířené „MD účet“ / „DAL účet“ viditelné, s textovým exportem a číselným řazením.
-- `JournalLinesEditor` má nyní jen jeden zamčený účetní sloupec na stranu, jeho obsah řídí `accountDisplay`, a používá klíč `${storageKey}:v3`.
-- `ColumnPicker` umí pouze statické `locked`; zatím neumí dynamicky zakázat poslední volbu a ukázat důvod.
-- `JournalLinesRecap` nyní vykresluje ruční tabulky. Stav otevření a záložky už přijímá řízeně přes `recap` z editoru.
-- `DocumentSettingsDialog` stále obsahuje `accountDisplay` i příslušné texty; ukázka je stále předává.
-- `package.json` a katalog v projektu aktuálně uvádějí 2.64.0. Čísla vydání se od package liší: poslední vydání v2.65.0 odpovídá package 2.64.0; nové změny nastaví package 2.66.0.
+Rozhodnutí M1–M4 se promítnou jako smlouva komponenty a dokumentace:
+- změna měny ani hlavního účtu v DS nepřepočítá řádky;
+- DS pouze změní hodnotu formuláře a aplikace ji uloží spolu s dokladem;
+- výchozí měnu nové knihy a přepočet částek po uložení řeší aplikace/DB;
+- hlavička zobrazuje kód období předaný aplikací;
+- hlavní účet zůstává nastavením knihy a období mimo DS.
+
+`.lovable/meta.yaml` zůstane beze změny a Release se neprovede.
 
 ## Implementace
 
-### 1. Pravidlo 23 a dokumentace
+### 1. Typovaná identita a varianty
 
-- V `.lovable/system.md` nahradit dosavadní účetní pravidlo úplným zněním pravidla 23, včetně jediné výjimky editoru řádků a výslovného vymezení, na které gridy se výjimka nevztahuje.
-- Do části o řádcích účetního zápisu doplnit dvojice účetních sloupců, výchozí krátkou formu, ochranu alespoň jedné formy, nadpis podle právě zobrazené formy a chování `compactAccounts`.
-- Přidat sekci **DS 2.66.0** s migrací aplikací a BREAKING odstraněním `accountDisplay`.
-- Stejné pravidlo promítnout do komentáře `account-columns.tsx`, changelogu v `README.md`, uživatelské dokumentace `components.md`, katalogu a nové položky roadmapy.
-- `.lovable/meta.yaml` vůbec neměnit.
+- Nahradit `DocumentIdentityItem` a `identity.items` novými veřejnými typy `DocumentIdentityVariant` a `DocumentIdentity` podle zadání.
+- Identifikační řádek bude jediný renderer pro tři varianty:
+  - `cashBank`: Kniha · Období · značka měny · štítek MD/DAL + účet;
+  - `invoice`: Kniha · Období · volitelný štítek MD/DAL + účet a případná tužka;
+  - `internal`: Kniha · Období.
+- Zachovat směr Příjem/Výdej vlevo, oddělovače, vycentrovaný štítek strany a číslo dokladu vpravo.
+- `identity` zůstane volitelný. Když jej aplikace nepředá, interní varianta se odvodí z `documentType`; dostupný název knihy, období a číslo se vezmou z dat formuláře. Explicitně předaná identita má přednost a její `period` je autoritativní kód období.
+- Typy dokladů se mapují: PO/BA → `cashBank`; FV/FP/ZFV/ZFP/DDPZ/DDPOZ → `invoice`; ID/UZ/KR/ZAP a neznámé → `internal`.
+- Texty a popisky se nebudou zalamovat; při malé šířce se přesunou celé položky, nikoli jejich vnitřní obsah.
 
-### 2. Obecné účetní sloupce
+### 2. Účet v identifikačním řádku
 
-- Zachovat chování `accountColumns()`: rozšířené sloupce viditelné, krátké skryté, tečka v hodnotě/filtru/exportu, textový export a číselné řazení.
-- Přidat veřejný typovaný helper `accountColumnPair<Row>({ id, label, shortLabel, getCode, accountName, section? })`, který vrátí:
-  - `${id}Name`: rozšířený, výchozí viditelný sloupec `číslo - název`;
-  - `${id}`: krátký, výchozí skrytý sloupec s číslem a tečkou.
-- Helper exportovat přes veřejný vstup design systému a doplnit jeho ukázku.
+- Úplně odstranit dolní pole „Hlavní účet“ a sekci vždy pojmenovat „Částka“.
+- Pro `invoice` zobrazit tužku jen při `identity.account.editable`, pokud formulář není jen pro čtení a `mainAccountId` je povolené pole.
+- Přidat `mainAccountOptions?: AccountOption[]`; výběr nabídne pouze tyto aplikací povolené účty.
+- Tužka přepne text účtu na otevřený `AccountSelect` s fokusem. Výběr provede pouze `patch({ mainAccountId })`, ihned zobrazí nový popisek a nezasáhne řádky.
+- Escape nebo zavření/ztráta fokusu bez výběru vrátí původní text.
+- `disabledReason` ponechá tužku viditelnou, ale zakázanou, s tooltipem. Tooltip i přístupný název budou z textů knihovny.
+- `mainAccountLocked` lze ponechat pouze jako starší přepínač „jen pro čtení“; nebude už rozhodovat o skrývání účtu.
 
-### 3. JournalLinesEditor
+### 3. Měna a kurz v části Částka
 
-- Nahradit každý účetní sloupec dvojicí krátká/rozšířená:
-  - interní režim: `debitAccount` + `debitAccountName`, `creditAccount` + `creditAccountName`;
-  - režim hlavního účtu: `counterAccount` + `counterAccountName`, se správnými nadpisy „MD“ / „MD účet“ nebo „DAL“ / „DAL účet“ podle strany protiúčtu.
-- ID všech ostatních sloupců (text, částka, zakázka, VS, partner, DPH a další) ponechat beze změny.
-- Krátké sloupce budou výchozí viditelné (~6 rem), rozšířené výchozí skryté (~13 rem); obě formy budou přes společné mapování číst a měnit stejnou hodnotu řádku.
-- Oddělit prezentační ID sloupce od ukládaného pole řádku, aby se `JournalLine`, `toJournalRow(s)` ani datový model neměnily.
-- Zapojit obě formy do stejného `AccountSelect`, hledání číselným prefixem, navigace Tab / Shift+Tab / Enter, editace, tooltipu názvu a validace; chyba základního účtu se zobrazí na každé právě viditelné formě dané strany.
-- Rozšířit `ColumnPicker` o obecný, volitelný dynamický zákaz vypnutí s vysvětlením; výchozí chování všech ostatních gridů zůstane beze změny. V editoru zakázat vypnutí poslední viditelné formy MD nebo DAL a zobrazit lokalizovaný tooltip „Aspoň jedna forma účtu musí zůstat zobrazená“.
-- Stejnou ochranu normalizovat při načtení uloženého rozložení, při „Obnovit výchozí“ a při použití uloženého pohledu; pokud by byly obě formy strany skryté, zobrazit krátkou.
-- `compactAccounts` aplikovat jen na osamocený rozšířený sloupec: hodnota se zkrátí na číslo, nadpis na „MD“ / „DAL“, nadpis dostane tooltip „MD účet – zkráceno kvůli šířce“ / „DAL účet – zkráceno kvůli šířce“ a buňka zachová tooltip názvu účtu. Pokud je viditelná krátká forma, její nadpis i obsah už jsou krátké bez přeznačení jiné formy.
-- Kaskádu šířek rozšířit pouze o nové účetní dvojice; ostatní pořadí zoom → kaskáda → rolování, DPH, ND, zaokrouhlení a detail řádku ponechat beze změny.
-- Změnit klíč nastavení sloupců na `${storageKey}:v4`, aby stará rozložení nepřepsala nové výchozí hodnoty.
+- U variant `invoice` a `internal` vykreslit nerozdělitelnou dvojici `[Celkem za doklad][Měna]`; měna bude hned za částkou, úzká přibližně 6,5 rem a zobrazí kód.
+- U `cashBank` dolní výběr měny vůbec nevykreslit, protože značka měny je v identifikačním řádku.
+- Přidat `currencyDisabledReason?: string`; zakázaný výběr zobrazí důvod v tooltipu. `currencyLocked` případně zůstane jen jako stav „jen pro čtení“, nikoli jako spínač skrývání.
+- Kurz bude mít stabilní šířku přibližně 9 rem a nezalamovanou nápovědu. Kurz, důvod ručního kurzu, celková částka v měně účetnictví a kurz DPH se vykreslí pouze pro cizí měnu.
+- Značky měn se vždy vezmou z `currencies`, `homeCurrencySymbol` nebo dat; žádné pevné `Kč`/`CZK` v komponentě.
+- Změna měny pouze zavolá `patch({ currency })`; nepřepočítá hodnoty řádků ani celkovou částku.
 
-### 4. Odstranění staré volby účtu – BREAKING
+### 4. Typy dokladů a pole
 
-- Odstranit `JournalLinesEditor.accountDisplay`, veřejný typ `JournalAccountDisplay` a závislost formátování na této volbě.
-- `formatJournalAccountDisplay` upravit na formátování určené konkrétní krátkou/rozšířenou formou sloupce; změnu signatury uvést jako BREAKING.
-- Z `DocumentSettingsValue`, `DocumentSettingsDialogTexts`, výchozích textů a dialogu odstranit volbu „Účet v gridu řádků“.
-- Odstranit související hodnoty a předávání z ukázek a testovacích dat. Centrální české a slovenské texty doplnit pouze o nové tooltipy ochrany a zkráceného nadpisu; staré texty volby účtu nesmí zůstat v žádném veřejném textovém typu ani katalogu.
+- Rozšířit `DocumentTypeCode` o `DDPZ`, `DDPOZ`, `KR` a `ZAP`.
+- `DDPZ`/`DDPOZ` dostanou fakturační sadu polí s hlavním účtem; `KR`/`ZAP` stejnou sadu jako ID.
+- Zachovat existující účetní, DPH, datumová, zaokrouhlovací a řádková pravidla beze změny.
 
-### 5. JournalLinesRecap jako DataGrid
+### 5. Lokalizace a veřejné API
 
-- Převést vestavěné záložky rekapitulace z ručních tabulek na `DataGrid` při zachování záložek Účtování, Zakázky, volitelné DPH, vlastních záložek a rozbalovače vpravo.
-- Účtování sestavit přes `accountColumns()` s výchozí rozšířenou formou a dostupnými krátkými sloupci ve **Sloupce**.
-- Zakázky a DPH převést na stejné gridové chování se součtovým řádkem; pokud Zakázky obsahují účty, použít pro ně rovněž účetní helper, nikoli vlastní formátování. U záložky DPH změnit pouze vykreslení na DataGrid, nikoli sloupce ani výpočet.
-- Zachovat beze změny částky, značky měn, součty a pořadí řádků, včetně řádků DPH a Zaokrouhlení; porovnat je regresním testem na stejné vstupní sadě.
-- Zapnout běžný výběr sloupců a export; použít automatický zoom formulářového gridu. Stávající `zoom` zachovat pro obal záložek, aby se nezaváděla další nepožadovaná změna API.
-- Přidat `JournalLinesRecap.storageKey?: string` s výchozím `journal-recap` a odvodit z něj oddělené stabilní klíče jednotlivých záložek.
-- Editor předá rekapitulaci klíč odvozený od svého `storageKey`; řízené `open`, `tab` a callbacky zůstanou beze změny, takže aplikace dál ukládá `ui_panel_state.journalRecap` mimo design systém.
+- Doplnit texty identifikačního řádku, změny účtu a důvodu zákazu přes prioritu `texts` → `DsTextsProvider` → české výchozí texty, včetně slovenského překladu.
+- Zvýšit `package.json` a katalog na `2.68.0`.
+- Aktualizovat veřejný barrel, katalog komponenty `DocumentForm` včetně usage/examples/antipatterns a zdrojovou dokumentaci.
 
-## Změny veřejného API
+## Ukázka Účetní formuláře
 
-### Přibývá
-- `accountColumnPair<Row>()` a jeho veřejný options typ.
-- `JournalLinesRecapProps.storageKey?: string` s výchozí hodnotou `journal-recap`.
-- Obecná možnost `ColumnPicker` označit konkrétní volbu jako právě nevypnutelnou a předat důvod; použije se pro ochranu účetních dvojic.
-- Nové lokalizované texty pro zákaz skrytí poslední formy a pro nadpis zkrácený kvůli šířce.
+Přestavět ukázky na požadovaných osm stavů:
+1. PO CZK – příjem;
+2. BA EUR – výdej;
+3. FV CZK – účet s aktivní tužkou;
+4. FV EUR – kurz a Celkem v měně účetnictví;
+5. FV spárovaná – účet i měna zakázané s tooltipy;
+6. FP s pevným účtem – bez tužky;
+7. ZFV bez účtu;
+8. ID.
 
-### Mizí / mění se – BREAKING
-- Mizí `JournalLinesEditorProps.accountDisplay`.
-- Mizí typ `JournalAccountDisplay`.
-- Mění se signatura `formatJournalAccountDisplay`, protože formu určuje sloupec, ne globální prop.
-- Mizí `DocumentSettingsValue.accountDisplay` a texty `accountDisplay`, `accountDisplayNumber`, `accountDisplayNumberName` z `DocumentSettingsDialogTexts` i katalogu.
-- Persistenční prostor sloupců editoru přechází z `:v3` na `:v4`; staré uživatelské rozložení se záměrně nepřenese.
+Nad sadou přidat přepínač velikosti textu 0,8125 / 1 / 1,125 a režim běžné/úzké šířky odpovídající třem panelům. Ověřit, že identita, dvojice částka–měna, kurzové údaje a číslo dokladu nepřetékají ani se nevhodně nezalamují.
 
-## Dotčené soubory
+## Testy
 
-### Knihovna
-- `src/components/ds/accounting/account-columns.tsx`
-- `src/components/ds/accounting/journal-lines-editor.tsx`
-- `src/components/ds/accounting/journal-lines-recap.tsx`
-- `src/components/ds/accounting/document-settings-dialog.tsx`
-- `src/components/ds/grid/column-picker.tsx`
-- `src/components/ds/grid/grid-columns.tsx` pouze pokud bude nutné bezpečně prosadit omezení i při resetu/pohledu, ne jen v nabídce
-- `src/ds-texts.tsx`
-- `src/components/ds/index.ts` a `src/index.ts` pro ověření veřejného exportu
+Doplnit renderovací a interakční testy:
+- přesné pořadí položek pro `cashBank`, `invoice` a `internal`;
+- odvození varianty pro všechny skupiny `documentType`;
+- tužka pouze při `editable`, její skrytí při read-only/oprávnění, zákaz s tooltipem;
+- Escape a ztráta fokusu bez výběru vrátí text účtu;
+- výběr účtu volá změnu formuláře s novým `mainAccountId` a nemění řádky;
+- dolní pole Hlavní účet neexistuje a sekce se vždy jmenuje Částka;
+- měna je u invoice/internal hned za Celkem, u cashBank dole chybí;
+- zákaz měny ukáže tooltip a změna měny zachová částky i řádky;
+- kurzové údaje a kurz DPH se zobrazí jen v cizí měně;
+- nové typy dokladů mají správné předvolby polí;
+- české a slovenské texty projdou providerem.
 
-### Ukázky
-- `src/components/showcase/DocumentFormShowcase.tsx`
-- `src/routes/components.accounting-forms.tsx`
-- `src/routes/components.grid.tsx` pro potvrzení nezměněného účetního deníku a ukázku `accountColumnPair`
-- případně `src/routes/components.excel-export.tsx` pouze pro regresní potvrzení obou forem v exportu
+Po cílených testech spustit celou unit sadu, kontrolu typů a sestavení. Ukázku ověřit v prohlížeči v běžné i úzké šířce a ve všech třech velikostech textu.
 
-### Verze a dokumentace
-- `package.json`
-- `.lovable/design-system.json` (verze 2.66.0, odebrané/přidané API a aktualizované usage/examples/antipatterns)
-- `.lovable/system.md`
-- `README.md`
-- `components.md`
-- `roadmap.md`
-- `AGENTS.md` pouze pokud vznikne nové trvalé technické pravidlo
+## Dokumentace a evidence
 
-### Testy
-- upravit stávající testy editoru, dokumentového dialogu a DPH, které dnes používají `accountDisplay`;
-- doplnit cílené unit/DOM testy pro účetní helpery, viditelnost, zákaz vypnutí, kompaktní nadpis a rekapitulaci;
-- rozšířit Playwright test editoru o skutečnou editaci obou forem a klávesovou navigaci.
-
-## Ověření
-
-1. `accountColumns()`:
-   - rozšířené sloupce jsou výchozí, krátké skryté;
-   - filtr krátkého sloupce nabízí přesně `321.100`;
-   - export krátké i rozšířené formy je text a řazení používá normalizovaný kód.
-2. `accountColumnPair()`:
-   - správná ID, nadpisy, výchozí viditelnost, hodnoty, tooltip, export a řazení.
-3. `JournalLinesEditor`:
-   - interní i hlavní účet mají správné dvojice a výchozí krátkou formu;
-   - nelze vypnout poslední formu žádné zobrazené strany, včetně resetu nebo uloženého pohledu;
-   - `compactAccounts` mění zároveň obsah, nadpis a tooltip podle zadání;
-   - krátká i rozšířená buňka upraví stejný účet; funguje prefixové hledání, Tab, Shift+Tab, Enter a červený roh validace;
-   - zapnutí obou forem nezduplikuje data a `toJournalRow(s)` zůstane beze změny;
-   - zoom, kaskáda, DPH, ND, zaokrouhlení a detail projdou regresními testy.
-4. `JournalLinesRecap`:
-   - vykresluje DataGrid, nabízí Sloupce a export, má rozšířené účty jako výchozí a správný součtový řádek;
-   - zachová záložky, rozbalovač, řízený stav a automatický zoom;
-   - účetní, zakázkové i DPH součty, měnové značky a pořadí řádků včetně DPH a Zaokrouhlení zůstanou pro stejná data stejné.
-5. `DocumentSettingsDialog`:
-   - veřejný typ, česká i slovenská sada a vykreslený dialog neobsahují volbu účtu.
-6. Vizuálně ověřit stránku Účetní formuláře a Účetní deník na široké i úzké ploše, včetně nabídky Sloupce a zkráceného nadpisu.
-7. Spustit všechny unit testy, cílené prohlížečové testy, kontrolu typů a sestavení. Verze bude 2.66.0; Release se neprovede.
+- V `.lovable/system.md` přidat pravidlo „Identifikační řádek dokladu“ a BREAKING migraci `identity.items` → typovaný tvar.
+- Popsat změněnou roli `mainAccountLocked` a `currencyLocked`, nové `mainAccountOptions` a `currencyDisabledReason`, odstranění dolního hlavního účtu a přesun měny.
+- Doplnit sekci 2.68.0 do README/CHANGELOG a uživatelské dokumentace bez přepisování historických sekcí.
+- Zapsat DS 2.68.0 do `roadmap.md` a nahradit odpovídající trvalé pravidlo v `AGENTS.md`.
+- Na konci uvést seznam změněných souborů, změny veřejného API, počet testů, výsledek typů a sestavení a konkrétní stavy ověřené v ukázce.
