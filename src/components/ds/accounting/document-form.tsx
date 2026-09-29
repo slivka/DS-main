@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowDownLeft, ArrowUpRight, Settings, Sigma } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Pencil, Settings, Sigma } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { Switch } from "../../ui/switch";
@@ -35,6 +35,7 @@ import { VsField } from "./vs-field";
 import { convertAmount } from "./currency-amount";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 
 export type DocumentDirection = "in" | "out";
 
@@ -80,8 +81,15 @@ export type DocumentPrimaryAction = RecordPrimaryAction;
 export type DocumentMoreAction = RecordMoreAction;
 export type DocumentSettingsAction = { onOpen: () => void };
 export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
-export type DocumentIdentityItem = ReactNode | { side?: "MD" | "DAL"; text: ReactNode };
-export type DocumentIdentity = { items: DocumentIdentityItem[]; number?: string | null; numberPending?: string };
+export type DocumentIdentityVariant = "cashBank" | "invoice" | "internal";
+export interface DocumentIdentity {
+  variant: DocumentIdentityVariant;
+  book: string;
+  period: string;
+  account?: { side: "MD" | "DAL"; label: string; editable?: boolean; disabledReason?: string };
+  number?: string | null;
+  numberPending?: string;
+}
 export type DocumentSuggestConfig = { enabled: boolean; onEnabledChange: (enabled: boolean) => void; load: (query: string) => Promise<string[]> };
 export type DocumentAccountingDateLink = { locked: boolean; onToggle: (locked: boolean) => void; hint?: string };
 export type DocumentDateField = "issueDate" | "accountingDate" | "taxDate" | "dueDate" | "vatDate";
@@ -105,7 +113,7 @@ export type DocumentFormTexts = {
   mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
-  errorTitle: string; closeError: string;
+  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
@@ -117,7 +125,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", vatRate: "Kurz DPH", vatRateSameAsDocument: "stejný jako kurz dokladu", vatRateNote: "Důvod ručního kurzu DPH", vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit",
 };
 
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
@@ -147,6 +155,8 @@ export interface DocumentFormProps {
   onLinesChange: (lines: JournalLine[]) => void;
   books: BookOption[];
   accounts: AccountOption[];
+  /** Účty povolené pro změnu hlavního účtu přímo v identifikačním řádku. */
+  mainAccountOptions?: AccountOption[];
   partners?: PartnerOption[];
   dimensions?: DimensionOption[];
   currencies?: CurrencyOption[];
@@ -160,6 +170,8 @@ export interface DocumentFormProps {
   homeCurrency: string;
   homeCurrencySymbol?: string;
   currencyLocked?: boolean;
+  /** Důvod, proč měnu nelze změnit; zobrazí se v tooltipu zakázaného výběru. */
+  currencyDisabledReason?: string;
   onCreatePartner?: (seed: CounterpartySeed) => void;
   icoLinkTarget?: IcoLinkTarget;
   handedOverBySuggest?: DocumentSuggestConfig;
@@ -202,26 +214,34 @@ export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side:
   </span>
 );
 
-function DocumentIdentityLine({ identity, direction, fallback, texts, currencyCode, currencySymbol }: { identity?: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencyCode: string; currencySymbol?: string }) {
-  const number = identity?.number || null;
-  const [firstItem, ...remainingItems] = identity?.items ?? [];
-  const renderItem = (item: DocumentIdentityItem) => {
-    if (typeof item === "object" && item !== null && !Array.isArray(item) && "text" in item) return <span className="inline-flex min-w-0 items-center gap-1.5">{item.side ? <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{item.side}</span> : null}<span className="min-w-0 break-words">{item.text}</span></span>;
-    return <span className="min-w-0 break-words">{typeof item === "string" && item === currencyCode ? currencySymbol ?? currencyCode : item}</span>;
-  };
+function DocumentIdentityLine({ identity, direction, fallback, texts, currencySymbol, accountLabel, editingAccount, onStartAccountEdit, onAccountChange, onAccountOpenChange, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencySymbol?: string; accountLabel?: string; editingAccount: boolean; onStartAccountEdit?: () => void; onAccountChange: (code: string) => void; onAccountOpenChange: (open: boolean) => void; accountOptions: AccountOption[] }) {
+  const number = identity.number || null;
+  const account = identity.account;
+  const items: ReactNode[] = [
+    <span key="book" className="whitespace-nowrap">{identity.book}</span>,
+    <span key="period" className="whitespace-nowrap">{identity.period}</span>,
+  ];
+  if (identity.variant === "cashBank") items.push(<span key="currency" className="whitespace-nowrap font-mono tabular-nums">{currencySymbol}</span>);
+  if (account) items.push(
+    <span key="account" className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+      <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{account.side}</span>
+      {editingAccount ? <span className="w-[18rem] max-w-full"><AccountSelect accounts={accountOptions} value={undefined} onChange={onAccountChange} defaultOpen onOpenChange={onAccountOpenChange} /></span> : <span data-slot="document-identity-account" className="truncate">{accountLabel ?? account.label}</span>}
+      {!editingAccount && onStartAccountEdit ? account.disabledReason ? <Tooltip><TooltipTrigger asChild><span><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={account.disabledReason} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip> : <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip> : null}
+    </span>,
+  );
   return (
     <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-y-1 text-[0.9375rem] font-semibold text-foreground">
           {direction ? <DocumentDirectionBadge direction={direction} inLabel={texts.directionIn} outLabel={texts.directionOut} /> : null}
-          {firstItem != null ? <span className="flex min-w-0 items-center">
+          {items[0] != null ? <span className="flex min-w-0 items-center">
             {direction ? <span aria-hidden="true" className="mx-2 h-4 w-px bg-border" /> : null}
-            {renderItem(firstItem)}
+            {items[0]}
           </span> : null}
-          {remainingItems.length ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
-            {remainingItems.map((item, index) => <span key={index} className="flex min-w-0 items-center">
+          {items.length > 1 ? <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
+            {items.slice(1).map((item, index) => <span key={index} className="flex min-w-0 items-center">
               <span aria-hidden="true" className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")} />
-               {renderItem(item)}
+               {item}
             </span>)}
           </span> : null}
         </div>
