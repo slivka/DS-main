@@ -8,9 +8,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../.
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
-import { APP_ZOOM_EVENT, applyAppZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, useAppZoom } from "../../../lib/app-zoom";
+import { applyAppZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, useAppZoom } from "../../../lib/app-zoom";
 import { beginResize } from "../../../lib/resize-lock";
-import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
 import type { OpenTabTarget } from "../panes/pane-state";
@@ -385,7 +384,8 @@ export function AppShell({
   const [storedMenuWidth, setStoredMenuWidth] = useState(() => { try { return Number(localStorage.getItem("app:menu-width")) || 15; } catch { return 15; } });
   const [draftMenuWidth, setDraftMenuWidth] = useState<number | null>(null);
   const appZoom = useAppZoom();
-  const effectiveWidth = typeof window === "undefined" ? 1280 : effectiveViewportWidth(window.innerWidth, appZoom.zoom);
+  const [viewportWidth, setViewportWidth] = useState(() => typeof window === "undefined" ? 1280 : window.innerWidth);
+  const effectiveWidth = effectiveViewportWidth(viewportWidth, appZoom.zoom);
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
   const [collapseWasChosen, setCollapseWasChosen] = useState(false);
   const isNarrow = effectiveWidth < 1280;
@@ -405,6 +405,12 @@ export function AppShell({
     applyAppZoom(getAppZoom());
     document.title = appName;
   }, [appName]);
+
+  useEffect(() => {
+    const update = () => setViewportWidth(window.innerWidth);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   useEffect(() => {
     const html = document.documentElement;

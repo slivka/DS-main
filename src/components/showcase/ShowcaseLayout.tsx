@@ -97,7 +97,7 @@ const WORKSPACE_PANEL = [{
 export function ShowcaseLayout({
   children,
   breadcrumbs,
-  defaultCollapsed = false,
+  defaultCollapsed: _defaultCollapsed = false,
   darkPreview = false,
 }: {
   children: ReactNode;

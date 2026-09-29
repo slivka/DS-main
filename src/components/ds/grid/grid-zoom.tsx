@@ -5,8 +5,6 @@ import { cn } from "../../../lib/utils";
 import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
-import { usePane } from "../panes/pane-context";
-import { useTabDraft } from "../panes/pane-tab-store";
 import { usePageLayoutVariant } from "../layout/page-layout";
 
 const MIN = 0.6;
@@ -77,20 +75,14 @@ export function useGridZoomContext() {
   return useContext(GridZoomContext);
 }
 
-type GridPreferenceMap = Record<string, { zoom: number; density: GridDensity }>;
-
-export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}) {
-  const pane = usePane();
+export function useGridZoom(_storageKey: string, options: { auto?: boolean } = {}) {
   const initial = useCallback(() => ({ zoom: 1, density: "normal" as GridDensity }), []);
-  const [tabPreferences, setTabPreferences] = useTabDraft<GridPreferenceMap>(options.auto ? undefined : pane?.tabId, () => ({ [storageKey]: initial() }), "gridPreferences");
   const [localValue, setLocalValue] = useState(initial);
-  const current = options.auto ? localValue : pane?.tabId ? tabPreferences[storageKey] ?? initial() : localValue;
+  const current = localValue;
 
   const save = useCallback((next: { zoom: number; density: GridDensity }) => {
-    const tabId = options.auto ? undefined : pane?.tabId;
-    if (tabId) setTabPreferences((latest) => ({ ...latest, [storageKey]: next }));
-    else setLocalValue(next);
-  }, [options.auto, pane?.tabId, setTabPreferences, storageKey]);
+    setLocalValue(next);
+  }, []);
 
   const updateDensity = useCallback(
     (next: GridDensity) => {

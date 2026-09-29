@@ -280,7 +280,7 @@ function PaneLayoutInner({
       onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
     >
-      <div ref={rootRef} data-slot="pane-layout" className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
+      <div ref={rootRef} data-slot="pane-layout" data-required-width={requiredPaneWidth(state.layout, minPaneWidth, fontScale)} className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
       {maximizedIndex !== null ? (
         <div role="status" className="flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground">
           <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
