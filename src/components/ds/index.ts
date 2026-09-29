@@ -73,6 +73,8 @@ export * from "./grid/filter-chips";
 export * from "./grid/grid-period";
 export * from "./grid/grid-context-bar";
 export * from "./grid/grid-segmented-toggle";
+export * from "./grid/grid-amount-editor";
+export * from "./grid/grid-selection";
 export * from "./grid/grid-active-status";
 
 /* Formuláře */

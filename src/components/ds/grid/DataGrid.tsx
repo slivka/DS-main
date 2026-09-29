@@ -37,6 +37,7 @@ import {
   useGridGrouping,
   useGroupedRows,
 } from "./grid-grouping";
+import { insertGroupTotalRows, isInteractiveTarget, resolveSelectedRows, toggleVisibleSelection } from "./grid-selection";
 import { GridTitleBar } from "./grid-title";
 import { GridAction, GridActions } from "./grid-action";
 import { Pencil, Trash2 } from "lucide-react";
@@ -131,6 +132,8 @@ export type DataGridColumn<Row> = {
   sortValue?: ((row: Row) => string | number | null | undefined) | undefined;
   /** Vlastní vykreslení buňky. */
   render?: ((row: Row) => ReactNode) | undefined;
+  /** Editor buňky (např. GridAmountEditor) – jen u vybraných řádků v režimu výběru; jinak render / value. */
+  editor?: ((row: Row) => ReactNode) | undefined;
   /** Číselný sloupec – zarovnání vpravo a oddělování tisícov. */
   numeric?: boolean | undefined;
   decimals?: number | undefined;
@@ -140,9 +143,10 @@ export type DataGridColumn<Row> = {
   format?: "ico" | undefined;
   /**
    * Součtový riadok: „sum" (predvojené pri číselných sloupcích), „avg", „count",
+   * „sumSelected" (jen vybrané řádky; v exportu bez součtu),
    * "none" pro vypnutí alebo vlastní funkcia nad filtrovanými řádky.
    */
-  total?: "sum" | "avg" | "count" | "none" | ((rows: Row[]) => ReactNode) | undefined;
+  total?: "sum" | "sumSelected" | "avg" | "count" | "none" | ((rows: Row[]) => ReactNode) | undefined;
   /** Vypnúť radene sloupce. */
   sortable?: boolean | undefined;
   /** Sloupec sa nedá skryť. */
@@ -290,6 +294,14 @@ export type DataGridProps<Row> = {
   selectMode?: boolean | undefined;
   /** Oznámi nadradenému stromu vybrané řádky. */
   onSelectedRowsChange?: ((rows: Row[]) => void) | undefined;
+  /** Řízený výběr – klíče vybraných řádků; grid výběr jen zobrazuje a změny hlásí přes onSelectedKeysChange. */
+  selectedKeys?: string[] | undefined;
+  /** Změna výběru (řízený i neřízený režim). */
+  onSelectedKeysChange?: ((keys: string[]) => void) | undefined;
+  /** Obsah pruhu pod tabulkou v režimu výběru – dostane vybrané řádky z celé množiny `rows`. */
+  selectionSummary?: ((rows: Row[]) => ReactNode) | undefined;
+  /** Součty skupiny: „header“ v záhlaví skupiny (výchozí), „row“ jako řádek pod sloupci za skupinou. */
+  groupTotals?: "header" | "row" | undefined;
   /** Skryje místní tlačítko, pokud výběr ovládá nadřazená lišta. */
   hideSelectionToggle?: boolean | undefined;
   /** Obsah bočného panelu patriaceho ku gridu. */
@@ -411,6 +423,10 @@ export function DataGrid<Row>({
   selectionActions,
   selectMode: controlledSelectMode,
   onSelectedRowsChange,
+  selectedKeys: controlledSelectedKeys,
+  onSelectedKeysChange,
+  selectionSummary,
+  groupTotals = "header",
   hideSelectionToggle,
   sidePanel,
   activeRowKey,
@@ -583,30 +599,40 @@ export function DataGrid<Row>({
 
   const sorted = useSortedRows(filtered, sort, valueOf);
   const pagination = useGridPagination(storageKey, sorted, { defaultPageSize: 50 });
+  /** Bez stránkování zobrazujeme (a seskupujeme) všechny filtrované řádky. */
+  const pageRows = paginated ? pagination.rows : sorted;
 
   // --- hromadný výběr řádků ----------------------------------------------
+  const keySet = useMemo(
+    () => (controlledSelectedKeys ? new Set(controlledSelectedKeys) : selectedKeys),
+    [controlledSelectedKeys, selectedKeys],
+  );
   const selectedRows = useMemo(
-    () => sorted.filter((r) => selectedKeys.has(rowKey(r))),
+    () => resolveSelectedRows(rows, keySet, rowKey),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sorted, selectedKeys],
+    [rows, keySet],
   );
   const selectedRowsChangeRef = useRef(onSelectedRowsChange);
   selectedRowsChangeRef.current = onSelectedRowsChange;
   useEffect(() => selectedRowsChangeRef.current?.(selectedRows), [selectedRows]);
+  const updateSelection = (next: Set<string>) => {
+    if (!controlledSelectedKeys) setSelectedKeys(next);
+    onSelectedKeysChange?.([...next]);
+  };
   useEffect(() => {
-    if (!selectMode) setSelectedKeys(new Set());
+    if (!selectMode && !controlledSelectedKeys) setSelectedKeys(new Set());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectMode]);
-  const clearSelection = () => setSelectedKeys(new Set());
-  const toggleRowKey = (key: string) =>
-    setSelectedKeys((cur) => {
-      const next = new Set(cur);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  const allSelected = sorted.length > 0 && sorted.every((r) => selectedKeys.has(rowKey(r)));
-  const toggleAll = () =>
-    setSelectedKeys(allSelected ? new Set() : new Set(sorted.map((r) => rowKey(r))));
+  const clearSelection = () => updateSelection(new Set());
+  const toggleRowKey = (key: string) => {
+    const next = new Set(keySet);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    updateSelection(next);
+  };
+  const visibleKeys = sorted.map((r) => rowKey(r));
+  const allSelected = visibleKeys.length > 0 && visibleKeys.every((key) => keySet.has(key));
+  const toggleAll = () => updateSelection(toggleVisibleSelection(keySet, visibleKeys));
   const exitSelectMode = () => {
     setOwnSelectMode(false);
     clearSelection();
@@ -615,11 +641,15 @@ export function DataGrid<Row>({
 
   const groupColumns = useMemo(() => shown.map((c) => ({ id: c.id, label: c.label })), [shown]);
   const dateColumns = useMemo(
-    () => detectDateColumns(pagination.rows, groupColumns, valueOf),
+    () => detectDateColumns(pageRows, groupColumns, valueOf),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pagination.rows, groupColumns],
+    [pageRows, groupColumns],
   );
-  const grouped = useGroupedRows(pagination.rows, grouping, groupColumns, valueOf);
+  const grouped = useGroupedRows(pageRows, grouping, groupColumns, valueOf);
+  const displayItems = useMemo(
+    () => (groupTotals === "row" && grouping.active ? insertGroupTotalRows(grouped) : grouped),
+    [grouped, groupTotals, grouping.active],
+  );
   const groupKeys = grouped.flatMap((item) => item.type === "group" ? [item.key] : []);
   const exportGrouped = useGroupedRows(
     sorted,
@@ -814,22 +844,25 @@ export function DataGrid<Row>({
         if (typeof mode === "function") return mode(sorted);
         if (mode === "count") return fmtAmount(sorted.length, 0);
         const nums: number[] = [];
-        for (const row of sorted) {
+        // „sumSelected“ sčítá vybrané řádky včetně těch skrytých filtrem.
+        for (const row of mode === "sumSelected" ? selectedRows : sorted) {
           const v = c.value?.(row);
           if (typeof v === "number" && Number.isFinite(v)) nums.push(v);
         }
-        if (!nums.length) return null;
+        if (!nums.length) return mode === "sumSelected" ? fmtAmount(0, c.decimals ?? 2) : null;
         const sum = nums.reduce((a, b) => a + b, 0);
         const value = mode === "avg" ? sum / nums.length : sum;
         return fmtAmount(value, c.decimals ?? 2);
 
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [shown, sorted],
+    [shown, sorted, selectedRows],
   );
   const hasTotals = totalCells.some((v) => v !== null && v !== undefined && v !== "");
   /** První sloupec bez součtu – sem umístíme popis „Celkem“. */
   const totalLabelIndex = totalCells.findIndex((v) => v === null);
+  /** První textový sloupec – popisek „Celkem {skupina}“ v řádku součtů skupiny. */
+  const groupTotalLabelIndex = Math.max(0, shown.findIndex((c) => !c.numeric && (c.total ?? "none") === "none"));
 
   return (
     <GridZoomContext.Provider value={{ zoom, setZoom, density }}>
@@ -1102,11 +1135,25 @@ export function DataGrid<Row>({
                     onAction={onEmptyAction}
                     texts={texts}
                   >
-                    {grouped.map((item, i) =>
-                      item.type === "group" ? (
+                    {displayItems.map((item, i) =>
+                      item.type === "groupTotal" ? (
+                        <TableRow key={`gt-${item.key}-${i}`} data-slot="grid-group-total" className="bg-muted/30 font-semibold hover:bg-muted/30">
+                          {selectMode ? <TableCell /> : null}
+                          {shown.map((c, index) => {
+                            const mode = c.total ?? (c.numeric ? "sum" : "none");
+                            const sum = mode === "sum" ? item.sums.find((s) => s.id === c.id) : undefined;
+                            return (
+                              <TableCell key={c.id} className={`${c.align === "right" || (c.numeric && !c.align) ? "text-right num" : c.align === "center" ? "text-center" : "text-left"} whitespace-nowrap ${cols.sectionSeparators.has(c.id) ? "border-l" : ""}`}>
+                                {sum ? fmtAmount(sum.total, c.decimals ?? 2) : index === groupTotalLabelIndex ? texts.groupTotal(item.label) : null}
+                              </TableCell>
+                            );
+                          })}
+                          {hasRowActions ? <TableCell className="sticky right-0 z-[1] border-l bg-card" /> : null}
+                        </TableRow>
+                      ) : item.type === "group" ? (
                         <GroupHeaderRow
                           key={`g-${item.key}-${i}`}
-                          item={item}
+                          item={groupTotals === "row" ? { ...item, sums: [] } : item}
                           colSpan={shown.length + (hasRowActions ? 1 : 0) + selectColSpan}
                           onToggle={grouping.toggleKey}
                         />
@@ -1124,13 +1171,16 @@ export function DataGrid<Row>({
                           }
                           onClick={
                             selectMode
-                              ? () => toggleRowKey(rowKey(item.row))
+                              ? (event) => {
+                                  if (isInteractiveTarget(event.target as HTMLElement, event.currentTarget)) return;
+                                  toggleRowKey(rowKey(item.row));
+                                }
                               : onRowClick
                                 ? () => onRowClick(item.row)
                                 : undefined
                           }
                           data-state={
-                            selectMode && selectedKeys.has(rowKey(item.row))
+                            selectMode && keySet.has(rowKey(item.row))
                               ? "selected"
                               : undefined
                           }
@@ -1144,7 +1194,7 @@ export function DataGrid<Row>({
                           {selectMode ? (
                             <TableCell className="text-center">
                               <Checkbox
-                                checked={selectedKeys.has(rowKey(item.row))}
+                                checked={keySet.has(rowKey(item.row))}
                                 onCheckedChange={() => toggleRowKey(rowKey(item.row))}
                                 onClick={(e) => e.stopPropagation()}
                                 aria-label={texts.selectRow}
@@ -1177,7 +1227,9 @@ export function DataGrid<Row>({
                                 } ${cols.sectionSeparators.has(c.id) ? "border-l" : ""} ${c.className ?? ""}`}
                                 {...(cellStyle ? { style: cellStyle } : {})}
                               >
-                                {c.render ? (
+                                {selectMode && c.editor && keySet.has(rowKey(item.row)) ? (
+                                  c.editor(item.row)
+                                ) : c.render ? (
                                   c.render(item.row)
                                 ) : (c.format === "ico" || c.id === "ico") &&
                                   v !== null &&
@@ -1280,6 +1332,12 @@ export function DataGrid<Row>({
             </aside>
           ) : null}
         </div>
+
+        {selectMode && selectionSummary ? (
+          <div data-slot="grid-selection-summary" className="flex flex-wrap items-center gap-2 border border-t-0 bg-secondary/50 px-2 py-1.5 text-sm">
+            {selectionSummary(selectedRows)}
+          </div>
+        ) : null}
 
         {paginated ? (
           <GridPagination

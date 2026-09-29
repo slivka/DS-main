@@ -5,6 +5,17 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.58.0 – saldokonto a párování (DataGrid)
+
+- `DataGrid.groupTotals?: "header" | "row"` – „row“ přidá za skupinu řádek součtů pod číselnými sloupci s popiskem „Celkem {skupina}“ (`texts.groupTotal`); výchozí „header“ beze změny.
+- `paginated={false}` nyní zobrazuje a seskupuje všechny filtrované řádky (dříve se řezalo na první stránku).
+- Řízený výběr: `selectedKeys`, `onSelectedKeysChange`; výběr skrytý filtrem zůstává a callbacky vracejí řádky z celé množiny `rows`; „Vybrat vše“ přepíná jen viditelné.
+- `selectionSummary?: (rows) => ReactNode` – pruh pod tabulkou v režimu výběru.
+- `DataGridColumn.total: "sumSelected"` (v exportu bez součtu) a `DataGridColumn.editor` (jen u vybraných řádků).
+- Klik do interaktivního prvku v buňce (input, button, …) v režimu výběru řádek nepřepíná.
+- Nová komponenta `GridAmountEditor` + `exceedsMax`; pomocné funkce `resolveSelectedRows`, `toggleVisibleSelection`, `isInteractiveTarget`, `nextEditorIndex`, `insertGroupTotalRows`.
+- Ukázka Saldokonto a Párování (`/components/matching`).
+
 ## Changelog 2.57.1 – výchozí kód DPH nového řádku
 
 - Nový řádek editoru (Enter na konci, ＋ Přidat řádek; duplikace kód kopíruje sama) přebírá kód DPH z předchozího řádku; teprve když předchozí řádek kód nemá (nebo žádný není), použije se výchozí kód knihy (`vat.defaultCodeId`). Počáteční prázdný řádek (`fillInitialVatCode`) beze změny. Bez změny API.
