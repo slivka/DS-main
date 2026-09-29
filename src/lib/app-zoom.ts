@@ -15,7 +15,7 @@ export function estimateAppZoom(innerWidth: number) {
 
 export function clampAppZoom(value: number) {
   const safe = Number.isFinite(value) ? value : 1;
-  return Math.round(Math.min(APP_ZOOM_MAX, Math.max(APP_ZOOM_MIN, safe)) / APP_ZOOM_STEP) * APP_ZOOM_STEP;
+  return Number((Math.round(Math.min(APP_ZOOM_MAX, Math.max(APP_ZOOM_MIN, safe)) / APP_ZOOM_STEP) * APP_ZOOM_STEP).toFixed(2));
 }
 
 function storedZoom() {

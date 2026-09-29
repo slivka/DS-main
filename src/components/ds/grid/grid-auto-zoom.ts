@@ -9,7 +9,7 @@ export const AUTO_GRID_STEP = 0.05;
 export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100: number) {
   if (!(availableWidth > 0) || !(requiredWidthAt100 > 0)) return null;
   const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, availableWidth / requiredWidthAt100));
-  return Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP);
+  return Number(Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2));
 }
 
 /** Změří tabulku při 100 % synchronně před vykreslením snímku a nastaví automatický zoom. */
