@@ -105,7 +105,7 @@ export function RecordActionBar({
 
   useEffect(() => {
     if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [error?.title, error?.message]);
+  }, [error]);
 
   const allBusy = busy || saveAction?.busy || primaryAction?.busy;
 
