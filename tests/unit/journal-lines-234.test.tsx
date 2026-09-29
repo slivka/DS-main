@@ -103,3 +103,22 @@ describe("JournalLinesEditor 2.54", () => {
     expect(source).not.toContain("`${t.errors}: ${errorCount}`");
   });
 });
+
+describe("JournalLinesEditor 2.66", () => {
+  it("má výchozí krátké a volitelné rozšířené účetní sloupce s novým klíčem", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain('{ id: "debitAccount", label: t.sideDebit }');
+    expect(source).toContain('{ id: "debitAccountName", label: t.debitAccount, defaultVisible: false }');
+    expect(source).toContain('{ id: "creditAccount", label: t.sideCredit }');
+    expect(source).toContain('{ id: "creditAccountName", label: t.creditAccount, defaultVisible: false }');
+    expect(source).toContain('`${storageKey}:v4`');
+    expect(source).toContain("normalizeAccountVisibility");
+    expect(source).toContain("disableToggleReason");
+  });
+
+  it("v režimu hlavního účtu používá ID counterAccount a counterAccountName", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain('{ id: "counterAccount", label: counterShortLabel }');
+    expect(source).toContain('{ id: "counterAccountName", label: counterNameLabel, defaultVisible: false }');
+  });
+});
