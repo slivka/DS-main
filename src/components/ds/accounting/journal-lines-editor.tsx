@@ -162,7 +162,10 @@ export type JournalColumnLayoutInput = {
 
 export type JournalColumnLayout = {
   hiddenColumnIds: ColumnId[];
+  /** True, pokud se zkrátila alespoň jedna rozšířená forma účtu. */
   compactAccounts: boolean;
+  /** Rozšířené formy účtu zobrazené zkráceně (jen strany bez viditelné krátké formy). */
+  compactAccountIds: ColumnId[];
   /** Potřebná šířka v rem po započtení zoomu (porovnatelná s availableWidthRem). */
   requiredWidthRem: number;
   /** Minimální šířka sloupce Text (rem před zoomem); zužuje se jako poslední krok. */
@@ -180,11 +183,11 @@ export function resolveJournalColumnLayout({ availableWidthRem: availableRaw, mo
   let useCustomWidths = true;
   const hidden = new Set<ColumnId>();
   const protectedIds = new Set(protectedColumnIds);
-  let compactAccounts = false;
+  const compact = new Set<ColumnId>();
   const sideColumns: ColumnId[] = mode === "mainAccount" ? ["dimensionId"] : sharedSideFields ? ["partnerId", "vs", "dimensionId"] : ["debitDimensionId", "creditDimensionId"];
   const widthFor = (id: ColumnId) => {
     if (id === "text") return textMin;
-    if (compactAccounts && ACCOUNT_COLUMN_IDS.has(id)) return COMPACT_ACCOUNT_WIDTH_REM;
+    if (compact.has(id)) return COMPACT_ACCOUNT_WIDTH_REM;
     return (useCustomWidths ? widths[id] : undefined) ?? WIDTHS[id];
   };
   const required = () => visibleColumnIds.reduce((sum, id) => sum + (hidden.has(id) ? 0 : widthFor(id)), 0);
@@ -193,10 +196,16 @@ export function resolveJournalColumnLayout({ availableWidthRem: availableRaw, mo
     ids.forEach((id) => { if (visibleColumnIds.includes(id) && !protectedIds.has(id)) hidden.add(id); });
   };
 
-  // Samotná rozšířená forma účtu se nejdřív zkrátí; teprve poté pokračuje stávající kaskáda.
-  if (required() > availableWidthRem && visibleColumnIds.some((id) => isAccountNameColumn(id))) compactAccounts = true;
   hideGroup([...QUANTITY_COLUMNS]);
   hideGroup(["vatRate", "grossAmount"]);
+  // Účty po stranách: má-li strana viditelnou krátkou formu, rozšířená se přesune do detailu
+  // (jinak by vznikly dva sloupce „MD“); bez krátké formy se rozšířená jen zkrátí na číslo.
+  const accountPairs: [ColumnId, ColumnId][] = mode === "mainAccount" ? [["counterAccount", "counterAccountName"]] : [["debitAccount", "debitAccountName"], ["creditAccount", "creditAccountName"]];
+  for (const [shortId, nameId] of accountPairs) {
+    if (required() <= availableWidthRem || !visibleColumnIds.includes(nameId) || hidden.has(nameId)) continue;
+    if (visibleColumnIds.includes(shortId) && !hidden.has(shortId)) hidden.add(nameId);
+    else compact.add(nameId);
+  }
   hideGroup(sideColumns);
   // Ručně rozšířené sloupce se při nedostatku místa vrátí na výchozí šířku.
   if (required() > availableWidthRem) useCustomWidths = false;
@@ -205,7 +214,7 @@ export function resolveJournalColumnLayout({ availableWidthRem: availableRaw, mo
     textMin = Math.max(TEXT_SHRUNK_MIN_WIDTH_REM, TEXT_MIN_WIDTH_REM - (required() - availableWidthRem));
   }
 
-  return { hiddenColumnIds: [...hidden], compactAccounts, requiredWidthRem: required() * scale, textMinRem: textMin, customWidthsApplied: useCustomWidths };
+  return { hiddenColumnIds: [...hidden], compactAccounts: compact.size > 0, compactAccountIds: [...compact], requiredWidthRem: required() * scale, textMinRem: textMin, customWidthsApplied: useCustomWidths };
 }
 
 /** Pořadí výpočtu: plná sada sloupců při 100 % → zoom (≥ 75 %, nebo ruční) → kaskáda sloupců při tomto zoomu → rolování. */
@@ -308,7 +317,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     autoInitialized.current = true;
   }, [autoInputsKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
-  const compactAccounts = columnLayout.compactAccounts;
+  const compactAccountIds = React.useMemo(() => new Set<ColumnId>(columnLayout.compactAccountIds), [columnLayout.compactAccountIds]);
   const visibleColumns = columns.columns.filter((column) => columns.visible[column.id] && !autoHidden.has(column.id)).sort((a, b) => a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0);
   // Šířky sloupců v rem včetně zoomu. Uložené šířky jsou v px při zoomu 100 % (úchyt ukládá šířku ÷ zoom),
   // proto se zoom násobí jen jednou. Text dostane explicitní zbytek šířky, nejméně textMinRem –
@@ -319,13 +328,13 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     for (const column of visibleColumns) {
       if (column.id === "text") continue;
       const savedWidth = columns.widths[column.id];
-      const base = compactAccounts && ACCOUNT_COLUMN_IDS.has(column.id) ? COMPACT_ACCOUNT_WIDTH_REM : typeof savedWidth === "number" && columnLayout.customWidthsApplied ? savedWidth / 16 : WIDTHS[column.id];
+      const base = compactAccountIds.has(column.id) ? COMPACT_ACCOUNT_WIDTH_REM : typeof savedWidth === "number" && columnLayout.customWidthsApplied ? savedWidth / 16 : WIDTHS[column.id];
        result[column.id] = base * zoom;
        fixed += base * zoom;
     }
      result.text = Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25);
     return result;
-   }, [visibleColumns, columns.widths, compactAccounts, columnLayout.customWidthsApplied, columnLayout.textMinRem, zoom, effectiveWidthRem]);
+   }, [visibleColumns, columns.widths, compactAccountIds, columnLayout.customWidthsApplied, columnLayout.textMinRem, zoom, effectiveWidthRem]);
   const regularLines = lines.filter((line) => isGridLine(line) && !line.isRounding && !line.isFxRounding);
   const vatConfig: VatPreviewConfig = { codes: vatCodes, calcMode, rate, rateAmount, vatRate: vat?.vatRate, vatRateAmount: vat?.vatRateAmount, foreign };
   const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);
@@ -413,7 +422,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const validationChangeRef = React.useRef(onValidationChange);
   React.useEffect(() => { validationChangeRef.current = onValidationChange; }, [onValidationChange]);
   React.useEffect(() => { validationChangeRef.current?.(validationErrors.length, validationErrors); }, [validationSignature]); // eslint-disable-line react-hooks/exhaustive-deps
-  const displayValue = (line: JournalLine, column: ColumnId) => { if (VAT_COLUMNS.has(column as JournalLineColumn)) { const resolved = resolveLineVat(line, vatCodeMap, { calcMode, foreign }); if (column === "vatCodeId") return resolved.code?.code ?? ""; if (column === "vatRate") return resolved.code ? resolved.rate == null ? "—" : `${new Intl.NumberFormat("cs-CZ").format(resolved.rate)} %` : ""; if (column === "vatAmount") return resolved.code?.hasTax ? formatAmount(resolved.vat, 2) : resolved.code ? "—" : ""; if (column === "grossAmount") return resolved.code || line.grossAmount != null ? formatAmount(resolved.gross, 2) : ""; if (column === "pdpSubjectCode") return line.pdpSubjectCode ?? ""; return ""; } if (ACCOUNT_COLUMNS.has(column as JournalAccountColumnId)) { const accountColumn = column as JournalAccountColumnId; const code = accountFor(line, accountColumn); const account = code ? accountByCode.get(code) : undefined; const extended = isAccountNameColumn(accountColumn) && !compactAccounts; return code ? formatJournalAccountDisplay(code, account?.name, extended) : ""; } if (DIMENSION_COLUMNS.has(column as JournalLineColumn)) return dimensions.find((item) => item.id === line[column as "dimensionId"])?.name ?? ""; if (PARTNER_COLUMNS.has(column as JournalLineColumn)) return partners.find((item) => item.id === line[column as "partnerId"])?.name ?? ""; if (column === "unitId") return units.find((item) => item.id === line.unitId)?.code ?? ""; if (column === "homeAmount") return line.amount == null && line.foreignAmount == null ? "" : formatAmount(Number(line.amount) || roundJournalAmount((line.foreignAmount || 0) * (rate || 0) / rateAmount), 2); if (column === "amount") { const amount = foreign ? line.foreignAmount : line.amount; return amount == null ? "" : formatAmount(Number(amount), 2); } if (column === "quantity") return line.quantity == null ? "" : new Intl.NumberFormat("cs-CZ", { maximumFractionDigits: 4 }).format(line.quantity); if (column === "unitPrice") return line.unitPrice == null ? "" : new Intl.NumberFormat("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(line.unitPrice); return String(line[column as JournalLineColumn] ?? ""); };
+  const displayValue = (line: JournalLine, column: ColumnId) => { if (VAT_COLUMNS.has(column as JournalLineColumn)) { const resolved = resolveLineVat(line, vatCodeMap, { calcMode, foreign }); if (column === "vatCodeId") return resolved.code?.code ?? ""; if (column === "vatRate") return resolved.code ? resolved.rate == null ? "—" : `${new Intl.NumberFormat("cs-CZ").format(resolved.rate)} %` : ""; if (column === "vatAmount") return resolved.code?.hasTax ? formatAmount(resolved.vat, 2) : resolved.code ? "—" : ""; if (column === "grossAmount") return resolved.code || line.grossAmount != null ? formatAmount(resolved.gross, 2) : ""; if (column === "pdpSubjectCode") return line.pdpSubjectCode ?? ""; return ""; } if (ACCOUNT_COLUMNS.has(column as JournalAccountColumnId)) { const accountColumn = column as JournalAccountColumnId; const code = accountFor(line, accountColumn); const account = code ? accountByCode.get(code) : undefined; const extended = isAccountNameColumn(accountColumn) && !compactAccountIds.has(accountColumn); return code ? formatJournalAccountDisplay(code, account?.name, extended) : ""; } if (DIMENSION_COLUMNS.has(column as JournalLineColumn)) return dimensions.find((item) => item.id === line[column as "dimensionId"])?.name ?? ""; if (PARTNER_COLUMNS.has(column as JournalLineColumn)) return partners.find((item) => item.id === line[column as "partnerId"])?.name ?? ""; if (column === "unitId") return units.find((item) => item.id === line.unitId)?.code ?? ""; if (column === "homeAmount") return line.amount == null && line.foreignAmount == null ? "" : formatAmount(Number(line.amount) || roundJournalAmount((line.foreignAmount || 0) * (rate || 0) / rateAmount), 2); if (column === "amount") { const amount = foreign ? line.foreignAmount : line.amount; return amount == null ? "" : formatAmount(Number(amount), 2); } if (column === "quantity") return line.quantity == null ? "" : new Intl.NumberFormat("cs-CZ", { maximumFractionDigits: 4 }).format(line.quantity); if (column === "unitPrice") return line.unitPrice == null ? "" : new Intl.NumberFormat("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(line.unitPrice); return String(line[column as JournalLineColumn] ?? ""); };
   const finish = () => setEditing(null); const cancel = () => { if (editing) onChange(lines.map((line) => line.id === editing.rowId ? editing.original : line)); setEditing(null); };
   const focusRelative = (rowId: string, column: ColumnId, delta: number) => requestAnimationFrame(() => { const cells = [...(rootRef.current?.querySelectorAll<HTMLElement>("[data-cell-key][tabindex='0']") ?? [])]; const index = cells.findIndex((cell) => cell.dataset.cellKey === `${rowId}:${column}`); const target = cells[index + delta]; if (target) target.focus(); else if (delta > 0 && index === cells.length - 1) addLine(true); });
   const renderEditor = (line: JournalLine, column: ColumnId) => {
