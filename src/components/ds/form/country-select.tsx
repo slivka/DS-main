@@ -10,6 +10,7 @@ import {
   CommandList,
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 export type Country = { code: string; code3?: string; name: string; is_eu?: boolean };
 
@@ -95,9 +96,10 @@ export function CountrySelect({
   value,
   onChange,
   disabled,
-  placeholder = "Vyberte stát",
+  placeholder,
   className,
 }: Props) {
+  const dsTexts = useDsTexts();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
@@ -115,7 +117,7 @@ export function CountrySelect({
       .map((c) => ({ c, s: scoreCountry(c, tokens, query) }))
       .filter((x) => x.s > 0);
     if (tokens.length > 0) {
-      scored.sort((a, b) => b.s - a.s || a.c.name.localeCompare(b.c.name, "cs"));
+      scored.sort((a, b) => b.s - a.s || a.c.name.localeCompare(b.c.name, dsTexts.intlLocale));
     }
     const hits = scored.map((x) => x.c);
     const recentHits = recent
@@ -128,7 +130,7 @@ export function CountrySelect({
       eu: others.filter((c) => c.is_eu),
       rest: others.filter((c) => !c.is_eu),
     };
-  }, [countries, query, recent]);
+  }, [countries, query, recent, dsTexts.intlLocale]);
 
   const total = recentHits.length + eu.length + rest.length;
 
@@ -170,7 +172,7 @@ export function CountrySelect({
           )}
         >
           <span className="truncate">
-            {selected ? `${selected.name} (${selected.code})` : placeholder}
+            {selected ? `${selected.name} (${selected.code})` : placeholder ?? dsTexts.country.choose}
           </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
@@ -179,7 +181,7 @@ export function CountrySelect({
         {/* Filtrování si řídíme sami (diakritika + ISO kódy), proto shouldFilter=false. */}
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Hledat stát nebo kód…"
+            placeholder={dsTexts.country.search}
             value={query}
             onValueChange={setQuery}
           />
@@ -189,7 +191,7 @@ export function CountrySelect({
                 <div className="flex flex-col items-center gap-2 px-6 py-8 text-center">
                   <SearchX className="size-7 text-muted-foreground" />
 
-                  <p className="text-sm font-medium">Nic jsme nenašli</p>
+                  <p className="text-sm font-medium">{dsTexts.country.emptyTitle}</p>
                   <p className="text-xs text-muted-foreground">
                     Pro „{query.trim()}“ neodpovídá žádný stát. Zkuste jiný název nebo ISO kód
                     (např. CR).
@@ -198,16 +200,16 @@ export function CountrySelect({
               </CommandEmpty>
             )}
             {recentHits.length > 0 && (
-              <CommandGroup heading="Nedávno použité">
+              <CommandGroup heading={dsTexts.country.recent}>
                 {recentHits.map((c) => renderItem(c, "recent:"))}
               </CommandGroup>
             )}
             {eu.length > 0 && (
-              <CommandGroup heading="Evropská une">{eu.map((c) => renderItem(c))}</CommandGroup>
+              <CommandGroup heading={dsTexts.country.eu}>{eu.map((c) => renderItem(c))}</CommandGroup>
             )}
             {rest.length > 0 && (
               <CommandGroup
-                heading={eu.length > 0 || recentHits.length > 0 ? "Ostatní státy" : undefined}
+                heading={eu.length > 0 || recentHits.length > 0 ? dsTexts.country.other : undefined}
               >
                 {rest.map((c) => renderItem(c))}
               </CommandGroup>

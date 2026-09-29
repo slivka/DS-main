@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
 export type TreeItem = {
@@ -95,6 +96,7 @@ export function TreeView({
   variant?: "default" | "grid";
   emptyLabel?: string;
 }) {
+  const texts = useDsTexts();
   const tree = useMemo(() => buildTree(items), [items]);
   const [ownCollapsed, setOwnCollapsed] = useState<Record<string, boolean>>({});
   const collapsed = collapsedProp ?? ownCollapsed;
@@ -127,7 +129,7 @@ export function TreeView({
           {canExpand ? (
             <button
               type="button"
-              aria-label={isCollapsed ? "Rozbalit" : "Sbalit"}
+              aria-label={isCollapsed ? texts.tree.expand : texts.tree.collapse}
               className="flex size-5 shrink-0 items-center justify-center rounded"
               onClick={(e) => {
                 e.stopPropagation();

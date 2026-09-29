@@ -1,3 +1,4 @@
+import { useDsTexts } from "../../../ds-texts";
 import type { ReactNode } from "react";
 import { useResizableWidth } from "../../../hooks/use-resizable-width";
 import type { PointerEvent as ReactPointerEvent } from "react";
@@ -8,6 +9,7 @@ export function ComboboxResizeHandle({
 }: {
   onPointerDown: (e: ReactPointerEvent<HTMLElement>) => void;
 }) {
+  const texts = useDsTexts();
   return (
     <span
       role="separator"
