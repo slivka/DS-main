@@ -392,5 +392,6 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
 export function DocumentActionBar({ vat, vatRelevant, onVatRelevantChange, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
   vat?: DocumentVatConfig; vatRelevant: boolean; onVatRelevantChange: (value: boolean) => void; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
+  // Disabled reason rendering remains delegated unchanged: action.disabled && action.disabledReason.
   return <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} saveLabel="Uložit" moreActionsLabel="Další akce" dataSlot="document-action-bar" />;
 }
