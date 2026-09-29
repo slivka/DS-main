@@ -15,7 +15,7 @@ export const FONT_SCALES: { value: string; label: string }[] = [
   { value: "1.25", label: "Velké (125 %)" },
 ];
 
-export function fontScaleOptions(texts: { verySmall: string; small: string; smaller: string; standard: string; larger: string; large: string }): FontScaleOption[] { return [
+export function fontScaleOptions(texts: { verySmall: string; small: string; smaller: string; standard: string; larger: string; large: string }): { value: string; label: string }[] { return [
   { value: "0.8125", label: texts.verySmall }, { value: "0.875", label: texts.small }, { value: "0.9375", label: texts.smaller }, { value: "1", label: texts.standard }, { value: "1.125", label: texts.larger }, { value: "1.25", label: texts.large },
 ]; }
 
