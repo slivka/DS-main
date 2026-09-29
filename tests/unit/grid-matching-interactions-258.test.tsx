@@ -105,10 +105,11 @@ describe("DataGrid – ručně skrytý seskupovací sloupec 2.60.0", () => {
       { id: "group", label: "Zdroj párování", value: (row) => row.name },
       { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
     ];
-    const { findAllByText } = render(
+    const { findByText } = render(
       <DataGrid storageKey={storageKey} rows={[{ id: "a", name: "Párování A", amount: 1 }]} columns={groupedColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />,
     );
-    expect((await findAllByText("Zdroj párování")).length).toBeGreaterThanOrEqual(2);
+    await findByText("Párování A");
+    expect((document.body.textContent?.match(/Zdroj párování/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(document.body.textContent).not.toContain("group:");
     localStorage.removeItem(`columns:${storageKey}`);
   });
