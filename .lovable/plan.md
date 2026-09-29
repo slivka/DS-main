@@ -1,70 +1,140 @@
-# Párování P2b – část B, verze 2.60.0
+# DS 2.64.0 – zoom aplikace, automatický zoom gridů a šířka menu
 
-## Cíl
-Rozšířit formulář dokladu o stavové štítky a informační pruhy, doplnit univerzální `NoticeBar` a opravit názvy seskupení podle skrytých sloupců. Vše bude zpětně kompatibilní; nové vlastnosti zůstanou volitelné. Verze balíčku bude 2.60.0, `.lovable/meta.yaml` zůstane bez neprázdných `upstream_versions` a vydání provede Petr.
+## Cíl a ověřený výchozí stav
+Realizovat tři oddělené mechanismy bez vrstvy zpětné kompatibility:
+
+- **A – zoom aplikace** uložený pro zařízení;
+- **B – automatický zoom gridů ve formulářích**, který se neukládá;
+- **C – šířka a sbalení menu** uložené pro zařízení.
+
+V projektu je nyní `package.json` 2.62.0 a katalog `.lovable/design-system.json` 2.63.0; obě verze se sjednotí na **2.64.0**. Ověřené staré mechanismy jsou zapojené současně přes `font-scale.ts`, `useAppFontSize.ts`, `FontSizeSetting`, `AppFontSizeControl`, `GridPreferencesProvider`, stav `gridPreferences` v záložkách a řízené props sbalení menu. `.lovable/meta.yaml` se nebude měnit.
 
 ## Veřejné API
-- `DocumentForm.titleBadges?: ReactNode`
-  - vykreslit bezprostředně za `DocumentStatusBadge` v jednom nezalamovaném řádku;
-  - sjednotit výšku vložených stavových štítků s hlavním stavem dokladu.
-- Nový exportovaný `NoticeBar`:
-  - `tone: "info" | "warning" | "success" | "danger"`;
-  - `title?: ReactNode`, `children: ReactNode`, `actions?: ReactNode`, `onClose?: () => void`, `className?: string`;
-  - tónová ikona, barevný levý okraj, jemné tokenové pozadí, tmavý režim a přístupné zavření;
-  - na úzké šířce budou akce pod textem, jinak vpravo.
-- `DocumentForm.notices?: ReactNode`
-  - oblast pod chybovým pruhem a nad `ReadOnlyBanner`;
-  - více vložených pruhů dostane jednotné mezery.
-- `DocumentForm.readOnlyTitle?: ReactNode` a `readOnlyActions?: ReactNode`
-  - předat přímo do existujícího `ReadOnlyBanner`.
-- `DataGrid` bez nového prop:
-  - seskupovací čip, záhlaví skupiny i volby úrovní budou hledat popisek v úplné definici sloupců, nikoli jen mezi právě viditelnými;
-  - stávající použití a exporty zůstanou beze změny.
 
-## Provedení a ukázky
-1. Vytvořit samostatný `NoticeBar` s pojmenovaným typem props, tokenovými variantami tónů a veřejným exportem.
-2. Upravit hlavičku `DocumentForm` a pořadí pruhů na: akce → chyba → notices → jen pro čtení.
-3. Opravit zdroj popisků seskupení v `DataGrid`; hodnoty a tabulkové sloupce zůstanou řízené dosavadní viditelností.
-4. Rozšířit ukázku Účetní formuláře:
-   - faktura: stav + „Částečně uhrazeno“;
-   - informační `NoticeBar` o přeplatku 200,00 Kč a textová akce „Použít VS“;
-   - doklad kurzových rozdílů pouze pro čtení s vlastním nadpisem a akcí „Otevřít párování“;
-   - grid seskupený podle výchozího skrytého sloupce, kde čip i záhlaví ukážou jeho český popisek.
-5. Zachovat měnové značky z ukázkových dat a nezalamování nadpisů/popisků.
+### Nové exporty
+- `APP_ZOOM_MIN`, `APP_ZOOM_MAX`, `APP_ZOOM_STEP`, `APP_ZOOM_STORAGE_KEY`.
+- `getAppZoom()`, `setAppZoom(value)`, `resetAppZoom()`, `estimateAppZoom(innerWidth)` z nového `lib/app-zoom.ts`.
+- `useAppZoom()` pro jednotné napojení `UserMenu`, `AppShell` a výpočtů panelů na `app:zoom-change`.
+- Čisté pomocné funkce automatického zoomu a omezení šířky menu budou exportované jen tehdy, pokud jsou součástí testovatelného veřejného chování; komponentové API gridů se kvůli automatice rozšiřovat nebude.
 
-## Dotčené soubory
-- Nový prvek zpětné vazby v `src/components/ds/feedback/`.
-- `src/components/ds/accounting/document-form.tsx`.
-- `src/components/ds/grid/DataGrid.tsx`; případně pouze cílené testovací zpřístupnění v `grid-grouping.tsx`, bude-li potřeba.
-- Veřejné exporty v `src/components/ds/index.ts` (kořenový export jej převezme automaticky).
-- Ukázka v `src/components/showcase/DocumentFormShowcase.tsx`, případně malý ukázkový grid ve stejné sekci.
-- Testy formuláře/oznámení a seskupení v `tests/unit/`.
-- `components.md`, `.lovable/system.md`, `.lovable/design-system.json`, `README.md`, `roadmap.md`, `package.json`.
-- `AGENTS.md` pouze pokud při realizaci vznikne nové trvalé konstrukční pravidlo; jinak beze změny.
-- `.lovable/meta.yaml` se nebude měnit.
+### Odstraněné API – BREAKING
+- komponenty `FontSizeSetting`, `FontSizeSettingProps`, `AppFontSizeControl`;
+- celý modul a exporty `font-scale`: `FONT_SCALE_KEY`, `FONT_SCALES`, `getFontScale`, `applyFontScale`, `setFontScale` a událost `app:font-scale`;
+- celý hook a exporty `useAppFontSize`: `APP_FONT_SIZES`, `DEFAULT_APP_FONT_SIZE`, `readAppFontSize`, `applyAppFontSize`, `useAppFontSize`;
+- `GridPreferencesProvider`, `GridPreferencesProviderProps`, `GridPreferencesContextValue`, `GridPreferenceValues`, `useGridPreferences`;
+- `GRID_DEFAULTS_DEBOUNCE_MS`, `createDebouncedCall` a poskytovatelské/localStorage výchozí hodnoty `zoom:<key>` / `density:<key>`;
+- `AppShellProps.collapsed` a `AppShellProps.onCollapsedChange`;
+- zoomové `preferences` v uloženém `LayoutSnapshot` a podpora jejich obnovení.
 
-## Dokumentace a katalog
-- Popsat nové props `DocumentForm` a úplné API `NoticeBar`.
-- Do `system.md` doplnit volbu:
-  - `NoticeBar` pro provozní informaci/varování a volitelnou akci;
-  - `DocumentForm.error` pro chybu bránící uložení;
-  - `ReadOnlyBanner` pro důvod nepřístupné editace.
-- V katalogu nastavit verzi 2.60.0 a u `NoticeBar` doplnit použití, realistický příklad i případy, kdy jej nepoužít; aktualizovat props `DocumentForm`.
-- Zapsat verzi 2.60.0 a stručný přehled změn bez přidání `upstream_versions`.
+`useGridZoom`, `ZoomControl`, `ZoomGrid`, `ZoomPane`, zoom 60–140 % a hustota řádků zůstanou, ale jejich uložení se změní podle typu stránky. `DataGridColumn.width` a `TreeGridColumn.width` zůstanou číselné, nově budou znamenat **rem při 100 %**, nikoli px; to bude výslovně označeno jako breaking změna.
 
-## Testy a ověření
-- `DocumentForm`:
-  - `titleBadges` je v HTML za stavem a v nezalamovaném společném obalu;
-  - `notices` je za `error` a před bannerem jen pro čtení;
-  - `readOnlyTitle` a `readOnlyActions` se objeví v banneru.
-- `NoticeBar`:
-  - všechny čtyři tóny mají správný stav, ikonu a tokenovou variantu;
-  - vykreslí titulek, obsah a akce;
-  - zavírací tlačítko zavolá `onClose` a má český přístupný popisek.
-- `DataGrid`:
-  - sloupec s `defaultVisible: false` zobrazí svůj `label` v seskupovacím čipu i záhlaví skupiny;
-  - totéž po uživatelském vypnutí sloupce;
-  - nikde se nezobrazí technické id typu `group:`.
-- Spustit všechny jednotkové testy, kontrolu typů a uživatelem požadovaný produkční build.
-- Prokliknout ukázku na široké i úzké šířce, ověřit pořadí pruhů, nezalamování štítků, přesun akcí a popisek skrytého seskupení; zkontrolovat konzoli.
-- Na závěr uvést změněné soubory, nové props, počty testů a výsledek produkčního buildu.
+## Technické řešení
+
+### A. Jediný zoom aplikace
+1. `src/lib/app-zoom.ts` bude jediný zdroj pravdy:
+   - clamp 0,70–2,00 a krok 0,05;
+   - odhad 0,90 / 1,00 / 1,10 / 1,25 podle zadaných hranic;
+   - ruční změna uloží `app:zoom`, reset klíč smaže a použije aktuální jednorázový odhad;
+   - čtení i zápis úložiště bude v `try/catch`;
+   - aplikace nastaví kořenové písmo na `16 × zoom px` a vyšle `app:zoom-change` s hodnotou zoomu.
+2. `AppShell` použije zoom při prvním layout efektu, aby se obsah nevykreslil ve staré velikosti. Resize okna během relace odhad nemění.
+3. `UserMenu` dostane nezavírající řádek „Velikost zobrazení“ s −, celými procenty, + a „Obnovit“; texty se doplní do `DsTexts`, českého i slovenského balíku, aby zůstalo zachované pravidlo knihovny.
+4. Globální zkratky budou v `AppShell` vyhodnocovat `event.code`: Ctrl+Alt/Option + plus, minus a nula. `AltGraph` se vždy ignoruje a `preventDefault` proběhne jen po skutečném zásahu. Ctrl+kolečko mimo grid se nepřevezme.
+5. Nový sdílený hook efektivní šířky bude vracet `innerWidth / appZoom`. `AppShell` podle něj rozhodne mobil pod 768, automatické sbalení pod 1 280 a desktopové zobrazení; `PaneLayout` podle stejné veličiny rozhodne dostupný počet panelů. CSS media query už nebudou rozhodovat tyto tři behaviorální zlomy.
+
+### Převod rozměrů na rem/em
+- `grid-zoom.tsx`: `GRID_BASE_FONT` bude 0,8125 rem; gridový zoom bude násobit rem základ.
+- `DataGrid.tsx`, `TreeGrid.tsx`, `grid-columns.tsx`, `grid-column-resize.tsx` a účetní gridy převedou šířky sloupců, výběrový sloupec, připnuté/systemové sloupce, pobočku a minimum 60 px na rem ekvivalenty.
+- Klíč uložených šířek se zvýší na novou verzi. Při prvním načtení se staré px hodnoty převedou `px / 16` a uloží pod nový klíč; díky oddělenému klíči nevznikne směs jednotek.
+- `use-resizable-width.ts` bude ukládat a vracet rem; vizuální měření se přepočítá přes aktuální kořenové písmo a gridový zoom.
+- Pevné typografické px v menu se převedou na rem. Rohy v `styles.css` zůstanou záměrně v px.
+
+### B. Automatický zoom gridů ve formuláři
+`PageLayout variant="form"` rozšíří kontext o režim automatického zoomu. `DataGrid`, `TreeGrid`, `ZoomGrid` a `JournalLinesEditor` jej použijí automaticky pouze při výsledném `height="auto"`; seznamy `variant="list"` zůstanou ruční.
+
+Nový modul `src/components/ds/grid/grid-auto-zoom.ts` oddělí čistý výpočet od React napojení:
+
+```text
+viditelné sloupce + ruční šířky při 100 %
+                    ↓
+zoom = floor_0,05(clamp(volná šířka / potřebná šířka, 0,75, 1,00))
+                    ↓
+zoom >= 0,75 a vše se vejde → hotovo
+                    ↓
+nevleze se při 0,75 → jednou kaskáda JournalLinesEditor při 0,75
+                    ↓
+stále nevleze → overflowFallback / vodorovné rolování
+```
+
+- Výpočet bude jednosměrný a deterministický: po kaskádě se zoom znovu nezvyšuje a kaskáda znovu nespouští zoom.
+- Obecný `DataGrid`/`TreeGrid` získá potřebnou šířku ze zobrazených definic a ručních šířek; u automatických obsahových sloupců proběhne skryté měření při 100 % v layout efektu. Grid zůstane do prvního výpočtu skrytý, takže se uživateli neukáže mezisnímek 100 %.
+- `JournalLinesEditor` spočítá šířku z požadovaných sloupců a ručních rem šířek. `resolveJournalColumnLayout` se zavolá až tehdy, když výpočet při 0,75 nestačí; dostane pevně 0,75. `overflowFallback` se určí až z výsledku tohoto jediného průchodu.
+- `ResizeObserver` bude mít debounce 150 ms; přepočet vyvolá také `app:zoom-change` a změna viditelnosti, pořadí nebo ruční šířky sloupců.
+- Ruční −/+ a Ctrl+kolečko ve formulářovém gridu přepnou stav na ruční 60–140 % a popisek z „Auto 85 %“ na „85 %“. Hodnota bude pouze v paměti záložky, přežije její přepnutí, ale ne zavření/F5. Následující změna šířky, sloupců nebo zoomu aplikace ruční stav přepíše novou automatickou hodnotou.
+- Seznamový grid bude dál držet zoom a hustotu v konceptu konkrétní záložky. Nová záložka začne zoomem 100 % a hustotou `normal`; bez panelů bude stav jen lokální. Žádná výchozí hodnota se nebude číst ani ukládat. `serializeLayout` zachová ostatní stav gridu, ale vynechá zoomové `preferences`.
+
+### Zámek během tažení a pořadí přepočtů
+Nový interní modul `src/lib/resize-lock.ts` sjednotí `beginResize()` / `endResize()`:
+
+- při `pointerdown` nastaví `document.documentElement.dataset.resizing = "true"`;
+- při `pointerup`, `pointercancel` i `lostpointercapture` zámek odstraní a vyšle právě jednu událost `app:resize-end`;
+- během zámku `ResizeObserver` pouze označí odložený přepočet; automatický zoom i `resolveJournalColumnLayout` ponechají poslední stabilní výsledek;
+- po `app:resize-end` každý dotčený grid provede jeden přepočet v pořadí **zoom → případná kaskáda při 0,75 → rozhodnutí o rolování**.
+
+`PaneLayout` bude při tažení držet zvláštní vizuální `draftWidths`; `api.setWidths` se zavolá pouze na konci tažení. Stejný zámek použije nový posuvník menu. Obsluhy budou uklízet capture i globální listenery ve všech ukončovacích cestách.
+
+### C. Vlastní šířka menu
+1. `AppShell` převezme vlastnictví sbalení a šířky:
+   - `app:menu-width` v rem, rozsah 12,5–26,25 rem, výchozí 15 rem;
+   - `app:menu-collapsed`, sbalená šířka 3,5 rem;
+   - dvojklik na oddělovač obnoví 15 rem;
+   - Ctrl+B zůstane a mění interní stav;
+   - automatické sbalení pod 1 280 efektivních px platí, dokud uživatel v aktuální relaci sám nerozhodne.
+2. Oddělovač bude mít `role="separator"`, úplné `aria-valuemin/max/now`, pointer capture a klávesy ←/→ po 0,5 rem. Během tažení se mění jen vizuální šířka; localStorage a přepočty se provedou na konci.
+3. `PaneLayout` nahlásí do `AppShell` aktuální počet panelů a `minPaneWidth`. Maximum menu se omezí podle `requiredPaneWidth`; zámek zabrání dočasnému sloučení během pohybu a vypočtené maximum zajistí, že se panely kvůli menu nesloučí ani po puštění.
+4. Položky, skupiny, štítky a stav „Připravujeme“ budou v jednom nezalamovaném řádku. Zkrácený název dostane tooltip i u zakázané položky.
+
+## Konkrétní soubory
+
+### Nové
+- `src/lib/app-zoom.ts` – stav, odhad, persistence, událost a hook zoomu aplikace.
+- `src/lib/resize-lock.ts` – společný zámek tažení a `app:resize-end`.
+- `src/components/ds/grid/grid-auto-zoom.ts` – čistý výpočet, měření a stav auto/ručního zoomu.
+- `tests/unit/app-zoom-264.test.ts` – hranice, clamp, krok, persistence a AltGraph/zkratky.
+- `tests/unit/grid-auto-zoom-264.test.tsx` – automatika, první výpočet, pořadí kaskády a zámek.
+- `tests/unit/appshell-menu-264.test.tsx` – šířka, klávesy, persistence a maximum podle panelů.
+- `tests/e2e/zoom-layout-264.spec.ts` – viditelná kontrola 70/200 %, menu, 1↔3 panely, Auto % a stabilita tažení.
+
+### Upravené – běhové části
+- `src/components/ds/grid/grid-zoom.tsx` – rem základ, režimy list/form, „Auto %“, odstranění defaults/localStorage a transientní ruční stav formuláře.
+- `src/components/ds/grid/DataGrid.tsx`, `TreeGrid.tsx` – automatický režim pro form+auto, rem šířky a přepočet po změně sloupců.
+- `src/components/ds/grid/grid-columns.tsx`, `grid-column-resize.tsx` – rem persistence, migrace klíče a resize v rem.
+- `src/components/ds/accounting/journal-lines-editor.tsx` a `journal-lines-recap.tsx` – pevné pořadí zoom/kaskáda/overflow, rem šířky a zamrznutí při tažení.
+- `src/components/ds/layout/page-layout.tsx` – kontext typu stránky a auto-zoom pravidla.
+- `src/components/ds/layout/AppShell.tsx` – inicializace zoomu, efektivní breakpointy, interní menu, oddělovač, zkratky a registrace požadavků panelů.
+- `src/components/ds/layout/user-menu.tsx` – ovladač „Velikost zobrazení“.
+- `src/components/ds/panes/pane-layout.tsx` – app zoom, hlášení potřebné šířky, draft šířek a resize lock.
+- `src/components/ds/panes/pane-context.tsx`, `pane-state.ts`, `layout-menu.tsx`, `pane-tab-store.ts` – odstranění zoomových preferences ze snapshotů a oddělená krátkodobá paměť formulářových gridů.
+- `src/hooks/use-resizable-width.ts`, `src/lib/grid-prefs.ts`, `src/ds-texts.tsx`, `src/styles.css` – rem comboboxy, odstranění prefixů zoom/density, nové texty a nezalamování.
+- `src/components/ds/index.ts`, `src/index.ts`, `src/hooks/index.ts` – nové exporty a odstranění starých.
+- `src/components/showcase/ShowcaseLayout.tsx`, `PaneShowcase.tsx`, `src/routes/components.navigation.tsx` – odstranění řízeného sbalení/staré volby písma a funkční ukázka 3 panelů, dvou 40řádkových dokladů, posuvníku menu a Auto %.
+
+### Odstraněné soubory
+- `src/lib/font-scale.ts`.
+- `src/hooks/useAppFontSize.ts`.
+- `src/components/ds/layout/FontSizeSetting.tsx`.
+- `src/components/ds/layout/app-font-size.tsx`.
+- `src/components/ds/grid/grid-preferences.tsx`.
+
+### Testy a dokumentace
+- Přepsat zastaralé testy `scrolling-zoom-253.test.tsx`, `scrolling-fixes-253.test.ts`, `journal-width-zoom-253.test.ts` a doplnit kontroly `PaneLayout`/`AppShell`.
+- `components.md`, `.lovable/system.md`, `README.md`, `roadmap.md`, `AGENTS.md` – tři mechanismy, rem pravidla, zámek, zkratky, hustota `normal`, zákaz persistence auto zoomu a BREAKING migrační seznam.
+- `package.json` a `.lovable/design-system.json` – verze 2.64.0, nové/odstraněné exporty a aktualizované příklady/použití.
+- `.lovable/meta.yaml` zůstane beze změny.
+
+## Testy a dokončení
+- Jednotkové testy: přesné hranice `estimateAppZoom`, clamp/krok/reset, bezpečné úložiště, `event.code`, AltGraph, efektivní breakpointy, auto zoom a zaokrouhlení dolů po 0,05, kaskáda až při 0,75, overflow až po kaskádě, odložený jediný přepočet po resize locku, transientní formulářový zoom, seznamový zoom 100 %/normal a snapshot bez preferences, maximum menu podle počtu panelů.
+- Vizuální/pravidlo 20: při 70 % i 200 % ověřit nadpisy, popisky, panelové záložky a menu bez zalomení, s výpustkou a tooltipem.
+- V náhledu projít „Režim více oken“: 1 → 3 → 1 panel, oba 40řádkové doklady, změny Auto %, posuvník menu a panelů bez poskakování; zkontrolovat konzoli.
+- Spustit všechny jednotkové testy, lint, kontrolu typů a produkční build. Produkční výstup spustit a stejnou ukázku ověřit proklikem i tam.
+- Na konci uvést verzi, přesný seznam změněných souborů, nové a odstraněné exporty, výsledky testů/lintu/typů/buildu a potvrzení, že vydání zůstává na Petrovi.
