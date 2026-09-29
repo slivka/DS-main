@@ -233,7 +233,7 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencySy
     <span key="account" className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
       <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{account.side}</span>
       {editingAccount ? <span className="w-[18rem] max-w-full"><AccountSelect accounts={accountOptions} value={accountValue} onChange={onAccountChange} defaultOpen onOpenChange={onAccountOpenChange} onKeyDown={(event) => { if (event.key === "Escape") onAccountOpenChange(false); }} /></span> : <span data-slot="document-identity-account" className="truncate">{accountLabel ?? account.label}</span>}
-      {!editingAccount && onStartAccountEdit ? account.disabledReason ? <Tooltip><TooltipTrigger asChild><span><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={account.disabledReason} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip> : <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip> : null}
+      {!editingAccount && onStartAccountEdit ? account.disabledReason ? <Tooltip><TooltipTrigger asChild><span><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip> : <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip> : null}
     </span>,
   );
   return (
@@ -274,6 +274,7 @@ export function DocumentForm({
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
   const [selectedIdentityAccountLabel, setSelectedIdentityAccountLabel] = useState<string>();
+  useEffect(() => setSelectedIdentityAccountLabel(undefined), [identity]);
   const formRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = formRef.current;
