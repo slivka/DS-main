@@ -19,7 +19,7 @@ describe("centrální texty 2.61.0", () => {
       <DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
         <Dialog open><DialogContent><DialogTitle>Detail</DialogTitle></DialogContent></Dialog>
         <FontSizeSetting />
-        <MultiSelect options={[]} value={[]} onChange={() => {}} />
+        <MultiSelect options={[]} selected={[]} onChange={() => {}} allLabel="Všetko" itemsLabel="položky" />
       </DsTextsProvider>,
     );
     expect(screen.getByText("Zavrieť")).toBeTruthy();
