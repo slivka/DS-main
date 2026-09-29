@@ -921,6 +921,8 @@ export function DataGrid<Row>({
                   if (depth > grouping.groups.length) grouping.expandAll();
                   else grouping.collapseAll(grouped.flatMap((item) => item.type === "group" && item.level >= depth ? [item.key] : []));
                 }}
+                expandLabel={texts.expand}
+                collapseLabel={texts.collapse}
                 onCollapse={() => {
                   setGroupExpandDepth(0);
                   grouping.collapseAll(groupKeys);
@@ -1073,6 +1075,7 @@ export function DataGrid<Row>({
                         <ColumnResizeHandle
                           onResize={(w) => cols.setWidth(c.id, w)}
                           onReset={() => cols.clearWidth(c.id)}
+                          texts={texts}
                         />
                       );
                     const headClass = `relative ${isPinned ? (c.align === "left" ? "" : "text-center") : c.align === "center" ? "text-center" : "cursor-grab"} select-none ${dropClass(c.id)} ${c.className ?? ""}`;
