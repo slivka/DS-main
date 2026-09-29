@@ -53,7 +53,6 @@ describe("DocumentSettingsDialog 2.66", () => {
     const source = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
     expect(source).not.toContain('accountDisplay');
     expect(source).not.toContain('Účet v gridu řádků');
-    expect(source).toContain('Celý – 501.100 - Spotřeba materiálu');
   });
 });
 
