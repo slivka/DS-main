@@ -57,6 +57,7 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
     act(() => input.focus()); fireEvent.focus(input);
     fireEvent.input(input, { target: { value: "300" } });
     fireEvent.keyDown(input, { key: "Enter" });
+    console.log("VAL", document.querySelector("output")?.textContent, input.value);
     const after = getByLabelText("A");
     expect(after).toBe(input);
     expect(document.activeElement).toBe(input);
