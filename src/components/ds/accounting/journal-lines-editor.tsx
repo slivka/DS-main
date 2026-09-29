@@ -271,6 +271,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const widthsRem = React.useMemo(() => Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / 16 : undefined])), [columns.widths]);
   const fullLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: Number.MAX_SAFE_INTEGER, zoom: 1, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, widthsRem]);
   const automaticZoom = calculateAutoGridZoom(effectiveWidthRem, fullLayout.requiredWidthRem) ?? zoom;
+  const resolvedZoom = effectiveWidthRem > 0 ? automaticZoom : zoom;
   React.useLayoutEffect(() => { if (effectiveWidthRem > 0) setAutoZoom(automaticZoom); }, [automaticZoom, effectiveWidthRem, setAutoZoom]);
   const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, zoom: automaticZoom, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [effectiveWidthRem, automaticZoom, mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, widthsRem]);
   const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
@@ -286,12 +287,12 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
       if (column.id === "text") continue;
       const savedWidth = columns.widths[column.id];
       const base = compactAccounts && ACCOUNT_COLUMN_IDS.has(column.id) ? COMPACT_ACCOUNT_WIDTH_REM : typeof savedWidth === "number" && columnLayout.customWidthsApplied ? savedWidth / 16 : WIDTHS[column.id];
-      result[column.id] = base * zoom;
-      fixed += base * zoom;
+       result[column.id] = base * resolvedZoom;
+       fixed += base * resolvedZoom;
     }
-    result.text = Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25);
+     result.text = Math.max(columnLayout.textMinRem * resolvedZoom, effectiveWidthRem - fixed - 0.25);
     return result;
-  }, [visibleColumns, columns.widths, compactAccounts, columnLayout.customWidthsApplied, columnLayout.textMinRem, rootRemPx, zoom, effectiveWidthRem]);
+   }, [visibleColumns, columns.widths, compactAccounts, columnLayout.customWidthsApplied, columnLayout.textMinRem, resolvedZoom, effectiveWidthRem]);
   const regularLines = lines.filter((line) => isGridLine(line) && !line.isRounding && !line.isFxRounding);
   const vatConfig: VatPreviewConfig = { codes: vatCodes, calcMode, rate, rateAmount, vatRate: vat?.vatRate, vatRateAmount: vat?.vatRateAmount, foreign };
   const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);

@@ -5,7 +5,7 @@ import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
-import { beginResize } from "../../../lib/resize-lock";
+import { beginResize, isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
 import {
   buildTabMenuActions,
   PaneApiContext,

@@ -383,6 +383,7 @@ export function AppShell({
   const [ownCollapsed, setOwnCollapsed] = useState(() => { try { return localStorage.getItem("app:menu-collapsed") === "true"; } catch { return false; } });
   const [storedMenuWidth, setStoredMenuWidth] = useState(() => { try { return Number(localStorage.getItem("app:menu-width")) || 15; } catch { return 15; } });
   const [draftMenuWidth, setDraftMenuWidth] = useState<number | null>(null);
+  const [menuMaximum, setMenuMaximum] = useState(26.25);
   const appZoom = useAppZoom();
   const [viewportWidth, setViewportWidth] = useState(() => typeof window === "undefined" ? 1280 : window.innerWidth);
   const effectiveWidth = effectiveViewportWidth(viewportWidth, appZoom.zoom);
@@ -400,6 +401,7 @@ export function AppShell({
   const [focusSearch, setFocusSearch] = useState(0);
   const [hasPaneLayout, setHasPaneLayout] = useState(false);
   const searchOverlayRef = useRef<HTMLDivElement>(null);
+  const shellBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     applyAppZoom(getAppZoom());
@@ -472,7 +474,24 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   }, [appZoom, isCollapsed]);
 
-  const menuWidth = Math.min(26.25, Math.max(12.5, draftMenuWidth ?? storedMenuWidth));
+  useLayoutEffect(() => {
+    const body = shellBodyRef.current;
+    if (!body || isCollapsed) { setMenuMaximum(26.25); return; }
+    const update = () => {
+      if (isResizeLocked()) return;
+      const required = Number(body.querySelector<HTMLElement>('[data-slot="pane-layout"]')?.dataset["requiredWidth"]);
+      if (!required) { setMenuMaximum(26.25); return; }
+      const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      setMenuMaximum(Math.max(12.5, Math.min(26.25, (body.getBoundingClientRect().width - required - 4) / rootPx)));
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(body);
+    window.addEventListener(RESIZE_END_EVENT, update);
+    return () => { observer.disconnect(); window.removeEventListener(RESIZE_END_EVENT, update); };
+  }, [isCollapsed, hasPaneLayout, appZoom.zoom]);
+
+  const menuWidth = Math.min(menuMaximum, Math.max(12.5, draftMenuWidth ?? storedMenuWidth));
   const onMenuDividerDown = (event: React.PointerEvent) => {
     if (event.button !== 0) return;
     event.preventDefault();
@@ -481,7 +500,7 @@ export function AppShell({
     let finalWidth = startWidth;
     const release = beginResize();
     const move = (moveEvent: PointerEvent) => {
-      finalWidth = Math.min(26.25, Math.max(12.5, startWidth + (moveEvent.clientX - startX) / 16 / appZoom.zoom));
+      finalWidth = Math.min(menuMaximum, Math.max(12.5, startWidth + (moveEvent.clientX - startX) / 16 / appZoom.zoom));
       setDraftMenuWidth(finalWidth);
     };
     const up = () => {
@@ -664,7 +683,7 @@ export function AppShell({
         </div>
       ) : null}
 
-      <div className="flex min-h-0 flex-1 overflow-hidden">
+      <div ref={shellBodyRef} className="flex min-h-0 flex-1 overflow-hidden">
         <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
