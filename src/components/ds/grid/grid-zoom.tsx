@@ -6,6 +6,8 @@ import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { usePageLayoutVariant } from "../layout/page-layout";
+import { usePane } from "../panes/pane-context";
+import { useTabDraft } from "../panes/pane-tab-store";
 
 const MIN = 0.6;
 const MAX = 1.4;
@@ -75,37 +77,43 @@ export function useGridZoomContext() {
   return useContext(GridZoomContext);
 }
 
-export function useGridZoom(_storageKey: string, options: { auto?: boolean } = {}) {
-  const initial = useCallback(() => ({ zoom: 1, density: "normal" as GridDensity }), []);
-  const [localValue, setLocalValue] = useState(initial);
-  const current = localValue;
+/** Ruční volby gridu v konceptu záložky (jen paměť – bez localStorage a bez IndexedDB). */
+export type GridTabPreferences = { zoom: number | null; density: GridDensity };
 
-  const save = useCallback((next: { zoom: number; density: GridDensity }) => {
-    setLocalValue(next);
-  }, []);
+const DEFAULT_GRID_TAB_PREFERENCES: GridTabPreferences = { zoom: null, density: "normal" };
 
-  const updateDensity = useCallback(
-    (next: GridDensity) => {
-      save({ zoom: current.zoom, density: next });
-    },
-    [current.zoom, save],
-  );
+/**
+ * Zoom a hustota gridu. Ruční hodnoty drží koncept záložky (`gridPreferences:<storageKey>`),
+ * takže přežijí přepnutí záložek, ale ne zavření záložky ani obnovení stránky.
+ * S `auto` platí vypočtený zoom, dokud ho uživatel ručně nezmění; další automatický
+ * přepočet (změna šířky, sloupců nebo zoomu aplikace) ruční hodnotu zruší.
+ */
+export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}) {
+  const pane = usePane();
+  const [prefs, setPrefs] = useTabDraft<GridTabPreferences>(pane?.tabId, DEFAULT_GRID_TAB_PREFERENCES, `gridPreferences:${storageKey}`, { persist: false });
+  const [autoValue, setAutoValue] = useState(1);
+  const auto = options.auto === true;
+  const manualZoom = prefs.zoom;
+  const zoom = manualZoom ?? (auto ? autoValue : 1);
 
-  const update = useCallback(
-    (next: number) => {
-      const v = clamp(next);
-      save({ zoom: v, density: current.density });
-    },
-    [current.density, save],
-  );
+  const setZoom = useCallback((next: number) => setPrefs((value) => ({ ...value, zoom: clamp(next) })), [setPrefs]);
+  const setDensity = useCallback((next: GridDensity) => setPrefs((value) => ({ ...value, density: next })), [setPrefs]);
+  /** Nastaví vypočtený zoom; `resetManual` zruší ruční hodnotu (nový přepočet ze šířky / sloupců / zoomu aplikace). */
+  const setAutoZoom = useCallback((next: number, resetManual = true) => {
+    setAutoValue(clamp(next));
+    if (resetManual) setPrefs((value) => (value.zoom == null ? value : { ...value, zoom: null }));
+  }, [setPrefs]);
 
   return {
-    zoom: current.zoom,
-    setZoom: update,
-    density: current.density,
-    setDensity: updateDensity,
-    setAutoZoom: (next: number) => setLocalValue((value) => ({ ...value, zoom: clamp(next) })),
-    auto: options.auto === true,
+    zoom,
+    setZoom,
+    manualZoom,
+    density: prefs.density,
+    setDensity,
+    setAutoZoom,
+    auto,
+    /** Platí vypočtená hodnota – ZoomControl ukáže „Auto“. */
+    isAuto: auto && manualZoom == null,
     min: MIN,
     max: MAX,
     step: STEP,
