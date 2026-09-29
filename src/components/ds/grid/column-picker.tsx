@@ -12,6 +12,8 @@ export type PickerColumn<Id extends string = string> = {
   id: Id;
   label: string;
   locked?: boolean;
+  /** Volitelný dynamický důvod, proč nyní nelze viditelný sloupec vypnout. */
+  disableToggleReason?: string;
   /** Připnutý sloupec – ve výběru zůstává na svém okraji a nejde přesouvat. */
   pinned?: boolean | "start" | "end";
   /** Sekce, do které sloupec patří (oddělovač v seznamu). */
@@ -156,6 +158,7 @@ export function ColumnPicker<Id extends string>({
             const section = c.section ?? "";
             const sectionStart = section && sortedColumns[i - 1]?.section !== section;
             const sectionOff = !!section && hiddenSections.includes(section);
+            const toggleDisabled = Boolean(c.locked || c.disableToggleReason);
             return (
               <div key={c.id}>
                 {sectionStart ? (
@@ -219,6 +222,7 @@ export function ColumnPicker<Id extends string>({
                       : undefined
                   }
                   onDragEnd={onReorder ? endDrag : undefined}
+                  title={c.disableToggleReason}
                   className={`group/col flex items-center gap-[0.7em] px-[1em] py-[0.4em] transition-colors hover-surface ${
                     sectionOff ? "opacity-50" : ""
                   } ${dragId === c.id ? "opacity-40" : ""} ${
@@ -239,13 +243,13 @@ export function ColumnPicker<Id extends string>({
                   ) : null}
                   <label
                     className={`flex min-w-0 flex-1 items-center gap-[0.7em] ${
-                      c.locked ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                      toggleDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
                     }`}
                   >
                     <Checkbox
                       checked={!!visible[c.id]}
-                      disabled={c.locked}
-                      onCheckedChange={() => !c.locked && onToggle(c.id)}
+                      disabled={toggleDisabled}
+                      onCheckedChange={() => !toggleDisabled && onToggle(c.id)}
                     />
                     <span className="truncate text-[1em] text-foreground">
                       {c.label
