@@ -13,6 +13,7 @@ import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ComponentsPrintRouteImport } from './routes/components.print'
 import { Route as ComponentsNavigationRouteImport } from './routes/components.navigation'
+import { Route as ComponentsMatchingRouteImport } from './routes/components.matching'
 import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
@@ -39,6 +40,11 @@ const ComponentsPrintRoute = ComponentsPrintRouteImport.update({
 const ComponentsNavigationRoute = ComponentsNavigationRouteImport.update({
   id: '/components/navigation',
   path: '/components/navigation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsMatchingRoute = ComponentsMatchingRouteImport.update({
+  id: '/components/matching',
+  path: '/components/matching',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsGridRoute = ComponentsGridRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
+  '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/matching'
     | '/components/navigation'
     | '/components/print'
     | '/__component/preview/$'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/matching'
     | '/components/navigation'
     | '/components/print'
     | '/__component/preview/$'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/components/feedback'
     | '/components/forms'
     | '/components/grid'
+    | '/components/matching'
     | '/components/navigation'
     | '/components/print'
     | '/__component/preview/$'
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
   ComponentsGridRoute: typeof ComponentsGridRoute
+  ComponentsMatchingRoute: typeof ComponentsMatchingRoute
   ComponentsNavigationRoute: typeof ComponentsNavigationRoute
   ComponentsPrintRoute: typeof ComponentsPrintRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       path: '/components/navigation'
       fullPath: '/components/navigation'
       preLoaderRoute: typeof ComponentsNavigationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/matching': {
+      id: '/components/matching'
+      path: '/components/matching'
+      fullPath: '/components/matching'
+      preLoaderRoute: typeof ComponentsMatchingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/components/grid': {
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,
   ComponentsGridRoute: ComponentsGridRoute,
+  ComponentsMatchingRoute: ComponentsMatchingRoute,
   ComponentsNavigationRoute: ComponentsNavigationRoute,
   ComponentsPrintRoute: ComponentsPrintRoute,
   Char91__componentChar93PreviewSplatRoute:
