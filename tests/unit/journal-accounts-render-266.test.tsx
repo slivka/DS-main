@@ -126,7 +126,8 @@ describe("JournalLinesRecap 2.66 – vykreslení", () => {
     const pinned = view.container.querySelectorAll("tbody tr")[3]!;
     expect(pinned.className).toContain("bg-muted");
     const text = view.container.textContent ?? "";
-    expect(text).toContain("1 260,40");
+    expect(text.replace(/\u00a0/g, " ")).toContain("1 260,40");
+    expect(body[3]).toContain("0,40 | 0,00");
     expect(text).toContain("50,40");
   });
 

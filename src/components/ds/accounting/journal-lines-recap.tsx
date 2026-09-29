@@ -144,24 +144,24 @@ export function JournalLinesRecap({
       ...base.map((column) => column.id.startsWith("debit")
         ? { ...column, value: (row: Row) => withLabel(accountValue(column.id, row), row), render: (row: Row) => renderLabel(accountValue(column.id, row), row) }
         : { ...column, value: (row: Row) => accountValue(column.id, row) || "—", render: (row: Row) => renderLabel(accountValue(column.id, row), { ...row, label: undefined }) }),
-      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, numeric: true, decimals: 2, total: "sum" as const },
-      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, numeric: true, decimals: 2, total: "sum" as const }] : []),
+      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, render: (row: Row) => money(row.amount), numeric: true, decimals: 2, total: "sum" as const },
+      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, render: (row: Row) => money(row.foreignAmount), numeric: true, decimals: 2, total: "sum" as const }] : []),
     ];
   }, [accountMap, accounting, documentMark, foreign, homeMark, t.total, t.debitShort, t.creditShort, t.debitAccount, t.creditAccount]);
   const jobColumns = React.useMemo<DataGridColumn<(typeof jobs)[number]>[]>(() => [
     { id: "dimension", label: t.dimension, value: (row) => dimensionLabel(row.id), total: () => t.total },
     { id: "side", label: t.side, value: (row) => row.side },
-    { id: "amount", label: `${t.total} (${homeMark})`, value: (row) => row.amount, numeric: true, decimals: 2, total: "sum" },
+    { id: "amount", label: `${t.total} (${homeMark})`, value: (row) => row.amount, render: (row) => money(row.amount), numeric: true, decimals: 2, total: "sum" },
   ], [homeMark, jobs, t.dimension, t.side, t.total]);
   const vatColumns = React.useMemo<DataGridColumn<VatSummaryRow>[]>(() => [
     { id: "code", label: t.vatCode, value: (row) => `${row.code}${row.name ? ` – ${row.name}` : ""}`, total: () => t.total, render: (row) => <>{row.code}{row.name ? ` – ${row.name}` : ""}{row.selfAssessment ? <span className="block text-xs text-muted-foreground">{t.selfAssessmentNote}</span> : null}{row.nonDeductible ? <span className="block text-xs text-muted-foreground">{`${t.deductible} ${money(row.deductible)} · ${t.nonDeductible} ${money(row.nonDeductible)}`}</span> : null}</> },
     { id: "rate", label: t.vatRate, value: (row) => row.rate, numeric: true, render: (row) => row.rate == null ? "—" : `${row.rate} %` },
-    { id: "base", label: `${t.vatBase} (${documentMark})`, value: (row) => row.base, numeric: true, decimals: 2, total: "sum" },
-    { id: "vat", label: `${t.vatAmount} (${documentMark})`, value: (row) => row.vat, numeric: true, decimals: 2, total: "sum" },
-    { id: "gross", label: `${t.total} (${documentMark})`, value: (row) => row.gross, numeric: true, decimals: 2, total: "sum" },
+    { id: "base", label: `${t.vatBase} (${documentMark})`, value: (row) => row.base, render: (row) => money(row.base), numeric: true, decimals: 2, total: "sum" },
+    { id: "vat", label: `${t.vatAmount} (${documentMark})`, value: (row) => row.vat, render: (row) => money(row.vat), numeric: true, decimals: 2, total: "sum" },
+    { id: "gross", label: `${t.total} (${documentMark})`, value: (row) => row.gross, render: (row) => money(row.gross), numeric: true, decimals: 2, total: "sum" },
     ...(foreign ? [
-      { id: "baseHome", label: `${t.vatBase} (${homeMark})`, value: (row: VatSummaryRow) => row.baseHome, numeric: true, decimals: 2, total: "sum" as const },
-      { id: "vatHome", label: `${t.vatAmount} (${homeMark})`, value: (row: VatSummaryRow) => row.vatHome, numeric: true, decimals: 2, total: "sum" as const },
+      { id: "baseHome", label: `${t.vatBase} (${homeMark})`, value: (row: VatSummaryRow) => row.baseHome, render: (row: VatSummaryRow) => money(row.baseHome), numeric: true, decimals: 2, total: "sum" as const },
+      { id: "vatHome", label: `${t.vatAmount} (${homeMark})`, value: (row: VatSummaryRow) => row.vatHome, render: (row: VatSummaryRow) => money(row.vatHome), numeric: true, decimals: 2, total: "sum" as const },
     ] : []),
   ], [documentMark, foreign, homeMark, t]);
   const tabs = React.useMemo(() => [{ id: "accounting", label: t.accounting }, { id: "jobs", label: t.jobs }, ...(vatSummary ? [{ id: "vat", label: t.vat }] : []), ...recapTabs], [recapTabs, t.accounting, t.jobs, t.vat, vatSummary]);
