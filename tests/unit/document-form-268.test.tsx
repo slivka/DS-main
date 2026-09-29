@@ -4,7 +4,7 @@ import * as React from "react";
 
 mock.module("@radix-ui/react-use-layout-effect", () => ({ useLayoutEffect: React.useLayoutEffect }));
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { DocumentForm, documentIdentityVariantForType } = await import("../../src/components/ds/accounting/document-form");
 
 const accounts = [{ code: "311001", name: "Odběratelé" }, { code: "311100", name: "Odběratelé tuzemsko" }];
@@ -62,8 +62,8 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     fireEvent.keyDown(search, { key: "Escape" });
     expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
-    fireEvent.pointerDown(document.body);
-    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    await act(async () => { fireEvent.pointerDown(document.body); fireEvent.click(document.body); });
+    await waitFor(() => expect(view.getByText("311.001 - Odběratelé")).toBeTruthy());
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
     expect(last.mainAccountId).toBe("311100");
