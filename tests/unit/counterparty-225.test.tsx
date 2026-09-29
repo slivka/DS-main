@@ -31,7 +31,7 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(foreign).toContain("Kč za 1 EUR");
   });
   it("currencyLocked = text", () => {
-    const html = render({ ...base, currency: "EUR", rate: 24.38 }, { currencies: [{ code: "CZK" }, { code: "EUR" }], currencyLocked: true });
+    const html = render({ ...base, currency: "EUR", rate: 24.38 }, { documentType: "FP", currencies: [{ code: "CZK" }, { code: "EUR" }], currencyLocked: true });
     const cur = html.match(/id="document-currency"[\s\S]*?<\/div>/)?.[0] ?? "";
     expect(cur).not.toContain("combobox");
     expect(cur).toContain("EUR");
