@@ -1,3 +1,6 @@
+## Verze 2.58.0 (párování P2a – část B)
+- [x] groupTotals, řízený výběr, sumSelected, editor + GridAmountEditor, ukázka Saldokonto / Párování.
+
 ## Verze 2.57.1 (výchozí kód DPH nového řádku)
 - [x] Nový řádek přebírá kód DPH z předchozího řádku, teprve pak výchozí kód knihy (`makeLine`); bez změny API.
 

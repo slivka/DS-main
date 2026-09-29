@@ -273,6 +273,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Řádky účetního zápisu
 
 - `JournalLinesEditor` je specializovaný in-place grid. Obecný `DataGrid` se pro editaci řádků zápisu nemění.
+- Editovatelná buňka v obecném DataGrid jen přes `editor` (+ `GridAmountEditor`); editace řádků zápisu dál jen JournalLinesEditor.
 - Řádek obrazovky je předkontace MD účet / DAL účet / částka a odpovídá právě jednomu řádku v `journal_lines`. Ukládání vždy přes `toJournalRow`, načítání přes `fromJournalRow` (camelCase v komponentě, snake_case v databázi).
 - Převod řádků jen přes `toJournalRow` / `fromJournalRow` (1:1 s databází). JournalLinesEditor: `mode` ('internal' | 'mainAccount'), `mainSide` ('MD' | 'D'), `mainAccount` (číslo účtu), `sideFieldRules` (vlastní pravidla stranových polí). DocumentForm tyto props předává editoru přímo.
 - Dva režimy jedné komponenty: bez `mainAccount` jde o interní doklad (MD i DAL účet na řádku, `sideFields="split"` je výchozí); s `mainAccount` je hlavní strana jen ke čtení a zadává se pouze protiúčet.

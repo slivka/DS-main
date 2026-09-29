@@ -237,3 +237,25 @@ Protistrana jako volný text s volitelným propojením na partnera. „Nový par
 - `fillInitialVatCode` – výchozí kód do počátečního řádku i opožděně.
 - `GridSegmentedToggle.disabled` – přepínač Bez/S DPH neaktivní při `vat.readOnly`.
 - `DocumentForm.texts.vatRateMissing`, `JournalLinesEditor.texts.fxRoundingPreview` – předběžné Kurzové zaokrouhlení u cizí měny.
+
+
+## DataGrid – párování (2.58.0)
+
+- `groupTotals="row"` – řádek součtů skupiny pod sloupci; `paginated={false}` seskupuje všechny řádky.
+- `selectedKeys` / `onSelectedKeysChange` – řízený výběr; výběr skrytý filtrem zůstává.
+- `selectionSummary(rows)` – pruh pod tabulkou v režimu výběru.
+- `total: "sumSelected"` – součet vybraných řádků.
+- `editor(row)` – buňka editovatelná jen u vybraných řádků.
+
+### GridAmountEditor
+
+Číselný editor v buňce DataGrid. Props: `value`, `onChange`, `max?`, `currencySymbol?`, `decimals?` (2), `invalid?`, `invalidMessage?`, `ariaLabel`.
+Tab / Shift+Tab mezi editory, Enter potvrdí, Esc vrátí. Převýšení maxima zjistíte `exceedsMax(value, max)` a předáte jako `invalid`.
+
+```tsx
+{ id: "pay", label: "Párovat částkou", numeric: true, total: "sumSelected", value: (r) => amount(r),
+  editor: (r) => <GridAmountEditor value={amount(r)} max={remaining(r)} onChange={(v) => setAmount(r.id, v)}
+    invalid={exceedsMax(amount(r), remaining(r))} invalidMessage="Částka převyšuje zbývající" ariaLabel={`Párovat ${r.document}`} /> }
+```
+
+Nepoužívejte pro řádky účetního zápisu – ty patří do `JournalLinesEditor`.
