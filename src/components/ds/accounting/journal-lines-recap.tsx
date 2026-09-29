@@ -126,7 +126,7 @@ export function JournalLinesRecap({
     return [...grouped.values()];
   }, [lines]);
   const accountingColumns = React.useMemo(() => [
-    ...accountColumns<(typeof accounting)[number]>({ getDebit: (row) => row.debit, getCredit: (row) => row.credit, accountName: (code) => accountMap.get(code) }).map((column) => column.id === "debitAccountName" ? { ...column, render: (row: (typeof accounting)[number]) => <>{column.render?.(row)}{row.label ? <span className="ml-2 text-muted-foreground">{row.label}</span> : null}</> } : column),
+    ...accountColumns<(typeof accounting)[number]>({ debit: (row) => row.debit, credit: (row) => row.credit, accountName: (code) => accountMap.get(code) }).map((column) => column.id === "debitAccountName" ? { ...column, render: (row: (typeof accounting)[number]) => <>{column.render?.(row)}{row.label ? <span className="ml-2 text-muted-foreground">{row.label}</span> : null}</> } : column),
     { id: "amount", label: `${t.total} (${homeMark})`, value: (row: (typeof accounting)[number]) => row.amount, numeric: true, decimals: 2, total: "sum" as const },
     ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: (typeof accounting)[number]) => row.foreignAmount, numeric: true, decimals: 2, total: "sum" as const }] : []),
   ], [accountMap, accounting, documentMark, foreign, homeMark, t.total]);
