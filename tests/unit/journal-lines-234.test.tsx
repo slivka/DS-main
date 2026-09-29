@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
+import { calculateLineAmount, DEFAULT_JOURNAL_LINES_TEXTS, formatJournalAccountDisplay, JournalLinesEditor, journalAmountLabels, normalizeJournalAccountVisibility, orderJournalLines, reorderJournalLines, roundingSuggestion } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 
@@ -37,8 +37,8 @@ describe("JournalLinesEditor 2.48", () => {
 
 describe("JournalLinesEditor 2.49", () => {
   it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
-    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "number")).toBe("501.100");
-    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", "numberName")).toBe("501.100 - Spotřeba materiálu");
+    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu")).toBe("501.100");
+    expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", true)).toBe("501.100 - Spotřeba materiálu");
   });
   it("ve sdíleném režimu zobrazí společné sloupce a obnoví jejich validaci", () => {
     const html = renderToStaticMarkup(<TooltipProvider><JournalLinesEditor
@@ -101,5 +101,45 @@ describe("JournalLinesEditor 2.54", () => {
     expect(source).toContain("onValidationChange?: (count: number, errors:");
     expect(source).toContain("validationChangeRef.current?.(validationErrors.length, validationErrors)");
     expect(source).not.toContain("`${t.errors}: ${errorCount}`");
+  });
+});
+
+describe("JournalLinesEditor 2.66", () => {
+  it("obnoví krátkou formu, pokud uložené rozložení skryje obě formy strany", () => {
+    expect(normalizeJournalAccountVisibility({ debitAccount: false, debitAccountName: false, creditAccount: false, creditAccountName: true }, "internal")).toEqual({ debitAccount: true, debitAccountName: false, creditAccount: false, creditAccountName: true });
+    expect(normalizeJournalAccountVisibility({ counterAccount: false, counterAccountName: false }, "mainAccount")).toEqual({ counterAccount: true, counterAccountName: false });
+  });
+
+  it("má výchozí krátké a volitelné rozšířené účetní sloupce s novým klíčem", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain('{ id: "debitAccount", label: t.sideDebit }');
+    expect(source).toContain('{ id: "debitAccountName", label: t.debitAccount, defaultVisible: false }');
+    expect(source).toContain('{ id: "creditAccount", label: t.sideCredit }');
+    expect(source).toContain('{ id: "creditAccountName", label: t.creditAccount, defaultVisible: false }');
+    expect(source).toContain('`${storageKey}:v4`');
+    expect(source).toContain("normalizeAccountVisibility");
+    expect(source).toContain("disableToggleReason");
+  });
+
+  it("v režimu hlavního účtu používá ID counterAccount a counterAccountName", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain('{ id: "counterAccount", label: counterShortLabel }');
+    expect(source).toContain('{ id: "counterAccountName", label: counterNameLabel, defaultVisible: false }');
+  });
+
+  it("obě formy editují stejnou hodnotu a kompaktní rozšířená forma dostane krátký nadpis", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    expect(source).toContain("accountDataColumn(accountColumn)");
+    expect(source).toContain("const heading = compactHeading ?");
+    expect(source).toContain("zkráceno kvůli šířce");
+  });
+
+  it("rekapitulace používá DataGrid, účetní dvojice, export, součty a vlastní storageKey", () => {
+    const source = readFileSync("src/components/ds/accounting/journal-lines-recap.tsx", "utf8");
+    expect(source).toContain("accountColumns<");
+    expect(source).toContain("<DataGrid");
+    expect(source).toContain('storageKey = "journal-recap"');
+    expect(source).toContain('total: "sum"');
+    expect(source).toContain("exportName=");
   });
 });

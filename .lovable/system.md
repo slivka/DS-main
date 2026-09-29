@@ -203,10 +203,13 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Číslo účtu se ukládá jako `221001`, zobrazuje se jako `221.001` (`AccountCode`);
   analytika má proměnnou délku.
-- Každý grid se zaúčtováním používá `accountColumns()`: viditelné jsou sloupce
-  „MD účet“ / „DAL účet“ ve tvaru `321.100 - Závazky`, krátké „MD“ / „DAL“ jsou
-  výchozí skryté. Čísla účtů se zobrazují, filtrují a exportují vždy s tečkou
-  jako text; řazení používá číselný kód účtu.
+- Každý grid se sloupci zaúčtování nabízí obě formy a lze mezi nimi přepínat ve
+  Sloupce: rozšířená „MD účet“ / „DAL účet“ má tvar `321.100 - Závazky`, krátká
+  „MD“ / „DAL“ obsahuje jen `321.100`, a to i ve filtru a exportu jako text.
+  Nadpis odpovídá formě a výchozí je všude rozšířená forma. Jedinou výjimkou je
+  `JournalLinesEditor`, kde jsou výchozí krátké formy. Výjimka se netýká jiných
+  gridů u dokladů a karet, předkontací v záložkách, `JournalLinesRecap`, deníku
+  ani sestav. V editoru musí být pro každou stranu viditelná alespoň jedna forma.
 - Stav dokladu vždy přes `DocumentStatusBadge`. Stavy: `draft` = Koncept
   (přerušovaný rámeček, doklad se nikde nepočítá), `filed` = Zařazen (má číslo,
   počítá se, není zaúčtován, informační tón), `posted` = Zaúčtován (success),
@@ -233,7 +236,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - `DocumentForm.identity` nahrazuje viditelný nadpis identifikačním řádkem a
   `directionBadge` zobrazuje Příjem/Výdej vlevo v pruhu akcí. Kurz cizí měny
   zadávej přes `RateField`; ruční kurz vždy vyžaduje důvod.
-- Řádky účetního zápisu vždy `JournalLinesEditor`: MD/DAL účet přes `AccountSelect`,
+- Řádky účetního zápisu vždy `JournalLinesEditor`: dvojice MD / MD účet a DAL /
+  DAL účet editují stejnou hodnotu přes `AccountSelect`; výchozí jsou krátké,
+  alespoň jedna forma každé strany zůstává zapnutá a nadpis odpovídá formě.
+  `compactAccounts` zkrátí rozšířenou formu i nadpis při nedostatku místa.
   částka přes `DecimalInput`, zakázka přes `DimensionSelect`, partner přes
   `PartnerSelect`, variabilní symbol přes `VsField`. Rozdíl proti částce dokladu
   se hlídá průběžně; režim jen pro čtení se předává propem `readOnly`.
@@ -403,6 +409,13 @@ Aplikace nastaví jazyk jednou v kořeni:
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
+
+## DS 2.66.0
+
+- BREAKING: aplikace odstraní `JournalLinesEditor.accountDisplay`, typ
+  `JournalAccountDisplay` a `DocumentSettingsValue.accountDisplay` včetně textů.
+- Přibývá veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`.
+- Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
 
 ## DS 2.64.0
 

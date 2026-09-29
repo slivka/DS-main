@@ -616,3 +616,11 @@
 - [x] Převzít šířku a sbalení menu do AppShell, doplnit přístupný posuvník a ochranu počtu panelů
 - [x] Odstranit staré exporty, persistence a mrtvý kód; aktualizovat ukázku a dokumentaci pro BREAKING 2.64.0
 - [x] Ověřit návrat sloupců a zoomu při 3 → 1 panelu, produkční ukázku, všechny testy, typy, lint a build
+
+## Verze 2.66.0 (sloupce účtů MD / DAL – pravidlo 23)
+- [x] Nabídnout v každém gridu krátkou i rozšířenou formu účtu; výchozí rozšířená kromě editoru řádků
+- [x] Přestavět JournalLinesEditor na dvojice účetních sloupců a chránit poslední formu i v uložených rozloženích a pohledech
+- [x] Převést JournalLinesRecap na DataGrid bez změny částek, měn, součtů a pořadí řádků
+- [x] Odstranit BREAKING accountDisplay z editoru a nastavení dokladu; přidat accountColumnPair a storageKey rekapitulace
+- [x] Aktualizovat ukázky, pravidla, changelog, katalog a package verzi 2.66.0; .lovable/meta.yaml neměnit
+- [x] Ověřit unit testy, typy a sestavení; Release neprovádět

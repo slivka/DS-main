@@ -16,6 +16,15 @@ export interface AccountColumnsOptions<Row> {
   creditNameLabel?: string;
 }
 
+export interface AccountColumnPairOptions<Row> {
+  id: string;
+  label: string;
+  shortLabel: string;
+  getCode: (row: Row) => string | null;
+  accountName: (code: string) => string | undefined;
+  section?: string;
+}
+
 function accountText(code: string | null, accountName: (code: string) => string | undefined) {
   const normalized = normalizeAccountCode(code);
   if (!normalized) return "";
@@ -32,9 +41,20 @@ function AccountColumnValue({ value }: { value: string }) {
   );
 }
 
+/** Jedna účetní dvojice: rozšířená forma je výchozí, krátká zůstává dostupná ve Sloupce. */
+export function accountColumnPair<Row>({ id, label, shortLabel, getCode, accountName, section }: AccountColumnPairOptions<Row>): DataGridColumn<Row>[] {
+  const codeValue = (row: Row) => formatAccountCode(getCode(row));
+  const nameValue = (row: Row) => accountText(getCode(row), accountName);
+  const sortValue = (row: Row) => normalizeAccountCode(getCode(row)) || null;
+  return [
+    { id, label: shortLabel, section, defaultVisible: false, fitContent: true, exportType: "text", value: codeValue, sortValue },
+    { id: `${id}Name`, label, section, width: 220, exportType: "text", value: nameValue, sortValue, render: (row) => <AccountColumnValue value={nameValue(row)} /> },
+  ];
+}
+
 /**
- * Standardní čtveřice sloupců účtů MD / DAL pro gridy se zaúčtováním.
- * Krátké kódy jsou výchozí skryté, úplné názvy účtů výchozí viditelné.
+ * Standardní čtveřice sloupců účtů MD / DAL. Obě formy jsou ve Sloupce;
+ * rozšířená je výchozí všude kromě JournalLinesEditoru.
  */
 export function accountColumns<Row>({
   debit,
@@ -50,55 +70,8 @@ export function accountColumns<Row>({
   debitNameLabel = "MD účet",
   creditNameLabel = "DAL účet",
 }: AccountColumnsOptions<Row>): DataGridColumn<Row>[] {
-  const codeValue = (getCode: (row: Row) => string | null) => (row: Row) =>
-    formatAccountCode(getCode(row));
-  const nameValue = (getCode: (row: Row) => string | null) => (row: Row) =>
-    accountText(getCode(row), accountName);
-  const numericSortValue = (getCode: (row: Row) => string | null) => (row: Row) => {
-    const normalized = normalizeAccountCode(getCode(row));
-    return normalized || null;
-  };
-
   return [
-    {
-      id: debitId,
-      label: debitLabel,
-      section,
-      defaultVisible: false,
-      fitContent: true,
-      exportType: "text",
-      value: codeValue(debit),
-      sortValue: numericSortValue(debit),
-    },
-    {
-      id: creditId,
-      label: creditLabel,
-      section,
-      defaultVisible: false,
-      fitContent: true,
-      exportType: "text",
-      value: codeValue(credit),
-      sortValue: numericSortValue(credit),
-    },
-    {
-      id: debitNameId,
-      label: debitNameLabel,
-      section,
-      width: 220,
-      exportType: "text",
-      value: nameValue(debit),
-      sortValue: numericSortValue(debit),
-      render: (row) => <AccountColumnValue value={accountText(debit(row), accountName)} />,
-    },
-    {
-      id: creditNameId,
-      label: creditNameLabel,
-      section,
-      width: 220,
-      exportType: "text",
-      value: nameValue(credit),
-      sortValue: numericSortValue(credit),
-      render: (row) => <AccountColumnValue value={accountText(credit(row), accountName)} />,
-    },
-  ];
+    ...accountColumnPair({ id: debitId, label: debitNameLabel, shortLabel: debitLabel, getCode: debit, accountName, section }),
+    ...accountColumnPair({ id: creditId, label: creditNameLabel, shortLabel: creditLabel, getCode: credit, accountName, section }),
+  ].map((column) => column.id === `${debitId}Name` ? { ...column, id: debitNameId } : column.id === `${creditId}Name` ? { ...column, id: creditNameId } : column);
 }

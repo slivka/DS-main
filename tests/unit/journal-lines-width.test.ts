@@ -2,8 +2,8 @@ import { describe, expect, it } from "bun:test";
 
 import { resolveJournalColumnLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 
-const poColumns = ["row", "text", "counterAccount", "quantity", "unitId", "unitPrice", "amount", "dimensionId", "actions"] as const;
-const idColumns = ["row", "text", "debitAccount", "creditAccount", "quantity", "unitId", "unitPrice", "amount", "debitDimensionId", "creditDimensionId", "actions"] as const;
+const poColumns = ["row", "text", "counterAccountName", "quantity", "unitId", "unitPrice", "amount", "dimensionId", "actions"] as const;
+const idColumns = ["row", "text", "debitAccountName", "creditAccountName", "quantity", "unitId", "unitPrice", "amount", "debitDimensionId", "creditDimensionId", "actions"] as const;
 
 describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
   it("přesouvá PO skupiny podle skutečného součtu šířek", () => {
