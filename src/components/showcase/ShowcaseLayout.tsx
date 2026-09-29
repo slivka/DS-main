@@ -97,7 +97,7 @@ const WORKSPACE_PANEL = [{
 export function ShowcaseLayout({
   children,
   breadcrumbs,
-  defaultCollapsed = false,
+  defaultCollapsed: _defaultCollapsed = false,
   darkPreview = false,
 }: {
   children: ReactNode;
@@ -109,7 +109,6 @@ export function ShowcaseLayout({
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
   const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
   const [activePanel, setActivePanel] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -142,8 +141,6 @@ export function ShowcaseLayout({
       ]}
       activePanel={activePanel}
       onActivePanelChange={setActivePanel}
-      collapsed={collapsed}
-      onCollapsedChange={setCollapsed}
       notificationBell={<NotificationBell items={notifications} onItemClick={() => undefined} onMarkAllRead={() => undefined} onShowAll={() => undefined} />}
       themeToggleButton={<ThemeToggleButton />}
       userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} onSignOut={() => undefined} />}

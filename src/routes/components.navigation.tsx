@@ -7,7 +7,6 @@ import {
   ComingSoon,
   PermissionGate,
   ReadOnlyBanner,
-  FontSizeSetting,
   NotificationBell,
   ThemeSetting,
   CompanySwitcher,
@@ -255,7 +254,6 @@ function NavigationPage() {
         <div className="grid gap-6 rounded-lg border bg-card p-4 md:grid-cols-2">
           <div>
             <div className="mb-2 text-sm font-medium">Velikost písma</div>
-            <FontSizeSetting />
           </div>
           <ThemeSetting />
         </div>

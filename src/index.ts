@@ -68,7 +68,7 @@ export * from "./lib/person-name";
 export * from "./lib/postal-code";
 export * from "./lib/date-time-preferences";
 export * from "./lib/excel-export";
-export * from "./lib/font-scale";
+export * from "./lib/app-zoom";
 export * from "./lib/font-links";
 export * from "./lib/format";
 export * from "./lib/tokens";

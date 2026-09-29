@@ -1,6 +1,6 @@
 /**
  * Uložení nastavení gridů (poradí, šířky, viditelnost sloupců, seskupení,
- * třídění, zoom…) v prohlížeči. Design systém nepoužívá žádné úložiště na
+ * třídění…) v prohlížeči. Design systém nepoužívá žádné úložiště na
  * serveru – nastavení zůstává u uživatele v localStorage.
  */
 
@@ -14,8 +14,6 @@ const PREFIXES = [
   "columnSections:",
   "grouping:",
   "sort:",
-  "zoom:",
-  "density:",
   "page:",
 ];
 

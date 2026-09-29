@@ -19,13 +19,11 @@ describe("DS 2.53 – výška gridu", () => {
 });
 
 describe("DS 2.53 – izolace zoomu a obnova rolování", () => {
-  it("nepoužívá globální grid-zoom-change a ukládá preference do záložky", () => {
+  it("zoom a hustotu gridu neukládá do záložky ani localStorage", () => {
     const source = readFileSync("src/components/ds/grid/grid-zoom.tsx", "utf8");
-    expect(source).not.toContain("grid-zoom-change");
-    expect(source).toContain('useTabDraft<GridPreferenceMap>(pane?.tabId');
-    expect(source).toContain("mergeGridPreference(tabId, storageKey, next)");
-    expect(source).toContain("preferences?.getDefaults(storageKey)");
-    expect(source).toContain('localStorage.getItem(`zoom:${storageKey}`)');
+    expect(source).not.toContain("gridPreferences");
+    expect(source).not.toContain("localStorage");
+    expect(source).toContain('density: "normal"');
   });
 
   it("obnovuje scroll podle tabId i po reloadu", () => {

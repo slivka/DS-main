@@ -51,13 +51,13 @@ describe("kontextový řádek gridu", () => {
   it("použije bez kontextu normální hustotu a zoom 100 %", () => {
     const html = renderToStaticMarkup(createElement(GridContextBar, { book }));
     expect(html).toContain('data-density="normal"');
-    expect(html).toContain('font-size:13.00px');
+    expect(html).toContain('font-size:0.8125rem');
   });
 
   it("převezme zoom a hustotu z GridZoomContext", () => {
     const html = renderToStaticMarkup(createElement(GridZoomContext.Provider, { value: { zoom: 0.6, density: "compact", setZoom: () => {} } }, createElement(GridContextBar, { book })));
     expect(html).toContain('data-density="compact"');
-    expect(html).toContain('font-size:7.80px');
+    expect(html).toContain('font-size:0.4875rem');
   });
 
   it("řadí knihu, oddělovač a období zleva a oddělovač bez dvojice nezobrazí", () => {

@@ -5,10 +5,7 @@ import { cn } from "../../../lib/utils";
 import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
-import { usePane } from "../panes/pane-context";
-import { getTabDraft, useTabDraft } from "../panes/pane-tab-store";
 import { usePageLayoutVariant } from "../layout/page-layout";
-import { useGridPreferences, type GridPreferenceValues } from "./grid-preferences";
 
 const MIN = 0.6;
 const MAX = 1.4;
@@ -49,10 +46,10 @@ export function useWheelZoom(
 }
 
 /** Základní velikost písma gridu při zoomu 100 %. */
-export const GRID_BASE_FONT_PX = 13;
+export const GRID_BASE_FONT_REM = 0.8125;
 
-/** Velikost písma odpovídající aktuálnímu zoomu gridu (px string). */
-export const gridFontSize = (zoom = 1) => `${(GRID_BASE_FONT_PX * clamp(zoom)).toFixed(2)}px`;
+/** Velikost písma odpovídající aktuálnímu zoomu gridu v rem. */
+export const gridFontSize = (zoom = 1) => `${(GRID_BASE_FONT_REM * clamp(zoom)).toFixed(4)}rem`;
 
 /** Určuje, zda pod pravým ukotveným sloupcem zůstává skrytý obsah tabulky. */
 export function hasOverflowRight({
@@ -63,7 +60,7 @@ export function hasOverflowRight({
   return scrollLeft + clientWidth < scrollWidth - 1;
 }
 
-/** Zoom tabulky uložený v prohlížeči pod vlastním klíčem. */
+/** Hustota tabulky; nová instance začíná vždy normální hustotou. */
 export type GridDensity = "compact" | "normal";
 
 type GridZoomContextValue = {
@@ -78,84 +75,14 @@ export function useGridZoomContext() {
   return useContext(GridZoomContext);
 }
 
-type GridPreferenceMap = Record<string, Required<GridPreferenceValues>>;
+export function useGridZoom(_storageKey: string, options: { auto?: boolean } = {}) {
+  const initial = useCallback(() => ({ zoom: 1, density: "normal" as GridDensity }), []);
+  const [localValue, setLocalValue] = useState(initial);
+  const current = localValue;
 
-/**
- * Zapíše preference jednoho gridu do stavu záložky nad aktuálním obsahem úložiště
- * (read-modify-write jen vlastního storageKey), aby si gridy v jedné záložce
- * nepřepisovaly hodnoty starou kopií.
- */
-export function mergeGridPreference(tabId: string, storageKey: string, next: Required<GridPreferenceValues>): GridPreferenceMap {
-  const latest = getTabDraft<GridPreferenceMap>(tabId, "gridPreferences") ?? {};
-  return { ...latest, [storageKey]: next };
-}
-
-/** Prodleva, po které se poslední zoom / hustota ohlásí aplikaci jako výchozí. */
-export const GRID_DEFAULTS_DEBOUNCE_MS = 400;
-
-/** Odloží volání – předá jen poslední hodnotu po uplynutí `delay` bez další změny. */
-export function createDebouncedCall<A extends unknown[]>(fn: (...args: A) => void, delay = GRID_DEFAULTS_DEBOUNCE_MS) {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  let pending: A | null = null;
-  const flush = () => {
-    if (timer) clearTimeout(timer);
-    timer = undefined;
-    if (pending) { const args = pending; pending = null; fn(...args); }
-  };
-  const call = (...args: A) => {
-    pending = args;
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(flush, delay);
-  };
-  return { call, flush, cancel: () => { if (timer) clearTimeout(timer); timer = undefined; pending = null; } };
-}
-
-export function useGridZoom(storageKey: string) {
-  const pane = usePane();
-  const preferences = useGridPreferences();
-  const initialDefaults = useRef<Required<GridPreferenceValues> | null>(null);
-  const readDefaults = useCallback((): Required<GridPreferenceValues> => {
-    if (initialDefaults.current) return initialDefaults.current;
-    const provided = preferences?.getDefaults(storageKey);
-    if (provided) {
-      initialDefaults.current = { zoom: clamp(provided.zoom ?? 1), density: provided.density === "compact" ? "compact" : "normal" };
-      return initialDefaults.current;
-    }
-    try {
-      const raw = localStorage.getItem(`zoom:${storageKey}`);
-      const density = localStorage.getItem(`density:${storageKey}`);
-      initialDefaults.current = { zoom: clamp(Number(raw) || 1), density: density === "compact" ? "compact" : "normal" };
-    } catch {
-      initialDefaults.current = { zoom: 1, density: "normal" };
-    }
-    return initialDefaults.current;
-  }, [preferences, storageKey]);
-  const [tabPreferences, setTabPreferences] = useTabDraft<GridPreferenceMap>(pane?.tabId, () => ({ [storageKey]: readDefaults() }), "gridPreferences");
-  const [localValue, setLocalValue] = useState<Required<GridPreferenceValues>>(readDefaults);
-  const current = pane?.tabId ? tabPreferences[storageKey] ?? readDefaults() : localValue;
-
-  // Výchozí hodnota pro nové gridy se ohlásí s prodlevou – ne při každém kroku kolečka.
-  const reportRef = useRef<ReturnType<typeof createDebouncedCall<[string, Required<GridPreferenceValues>]>> | null>(null);
-  const preferencesRef = useRef(preferences);
-  preferencesRef.current = preferences;
-  if (!reportRef.current) {
-    reportRef.current = createDebouncedCall((key: string, value: Required<GridPreferenceValues>) => {
-      const provider = preferencesRef.current;
-      if (provider) { provider.onDefaultsChange(key, value); return; }
-      try {
-        localStorage.setItem(`zoom:${key}`, String(value.zoom));
-        localStorage.setItem(`density:${key}`, value.density);
-      } catch { /* úložiště nemusí být dostupné */ }
-    });
-  }
-  useEffect(() => () => reportRef.current?.flush(), []);
-
-  const save = useCallback((next: Required<GridPreferenceValues>) => {
-    const tabId = pane?.tabId;
-    if (tabId) setTabPreferences(mergeGridPreference(tabId, storageKey, next));
-    else setLocalValue(next);
-    reportRef.current?.call(storageKey, next);
-  }, [pane?.tabId, setTabPreferences, storageKey]);
+  const save = useCallback((next: { zoom: number; density: GridDensity }) => {
+    setLocalValue(next);
+  }, []);
 
   const updateDensity = useCallback(
     (next: GridDensity) => {
@@ -177,6 +104,8 @@ export function useGridZoom(storageKey: string) {
     setZoom: update,
     density: current.density,
     setDensity: updateDensity,
+    setAutoZoom: (next: number) => setLocalValue((value) => ({ ...value, zoom: clamp(next) })),
+    auto: options.auto === true,
     min: MIN,
     max: MAX,
     step: STEP,
@@ -188,12 +117,14 @@ export function ZoomControl({
   setZoom,
   density,
   setDensity,
+  auto = false,
   texts: textOverrides,
 }: {
   zoom: number;
   setZoom: (v: number) => void;
   density?: GridDensity;
   setDensity?: (v: GridDensity) => void;
+  auto?: boolean;
   texts?: Partial<GridTexts>;
 }) {
   const texts = useResolvedGridTexts(textOverrides);
@@ -227,7 +158,7 @@ export function ZoomControl({
         title={texts.zoomReset}
         className="zoom-value num min-w-[1.3em] px-[0.05em] text-[0.9em] text-muted-foreground transition-colors hover:text-foreground"
       >
-        {Math.round(zoom * 100)} %
+        <span className="whitespace-nowrap">{auto ? "Auto " : ""}{Math.round(zoom * 100)}&nbsp;%</span>
       </button>
       <Button
         variant="ghost"

@@ -37,3 +37,5 @@ Aplikace nastaví jazyk jednou v kořeni:
 ```
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
+
+- DS 2.64.0: zoom aplikace ukládá zařízení; formulářové gridy počítají zoom dočasně, šířky sloupců zůstávají px při 100 %.

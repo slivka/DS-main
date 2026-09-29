@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, Pencil, Trash2 } from "lucide-react";
 
 import {
@@ -43,6 +43,7 @@ import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBoo
 import { gridPeriodLabel } from "./grid-period";
 import { GridAction, GridActions } from "./grid-action";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { useAutoGridZoom } from "./grid-auto-zoom";
 
 export type TreeGridRow = { id: string; parentId?: string | null };
 
@@ -262,9 +263,11 @@ export function TreeGrid<Row extends TreeGridRow>({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const hasRowActions = Boolean((onEditRow && !hideDefaultActions) || (onDeleteRow && !hideDefaultActions) || rowActions) && !selectMode;
   const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? title}` : key);
-  const { zoom, setZoom, density, setDensity } = useGridZoom(zoomKey);
+  const autoZoom = pageVariant === "form" && resolvedHeight === "auto";
+  const { zoom, setZoom, setAutoZoom, density, setDensity } = useGridZoom(zoomKey, { auto: autoZoom });
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
+  const applyAutoZoom = useCallback((next: number) => setAutoZoom(next), [setAutoZoom]);
 
   const effectiveColumns = useMemo<TreeGridColumn<Row>[]>(() => book?.value === "all" && book.getRowBookId ? [createGridBookColumn(book), ...columns] : columns, [book, columns]);
   const hierarchyColumnId = columns[0]?.id;
@@ -280,6 +283,7 @@ export function TreeGrid<Row extends TreeGridRow>({
     [effectiveColumns, hierarchyColumnId],
   );
   const cols = useGridColumns(key, colDefs);
+  useAutoGridZoom(blockRef, autoZoom, zoom, applyAutoZoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
   const byColumnId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
   const shown = useMemo(
     () => {
@@ -506,10 +510,10 @@ export function TreeGrid<Row extends TreeGridRow>({
           <div className="grid-toolbar-wide hidden @min-[640px]:contents">
             <span data-toolbar-measure="display" data-toolbar-group="display" className="grid-toolbar-display-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
             <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} texts={sharedTexts} />
-            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></span>
+            <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} auto={autoZoom} /></span>
             {(selectable || actions || exportName) ? <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [sharedTexts.exportSearch(query.trim())] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</span> : null}
           </div>
-          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [sharedTexts.exportSearch(query.trim())] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
+          <span data-toolbar-measure="menu" data-toolbar-group="menu" className="contents"><GridMoreMenu responsiveOverflow items={moreActions} zoom={zoom} texts={sharedTexts} compact={<>{viewMode && onViewModeChange ? <ViewModeToggle mode={viewMode} onChange={onViewModeChange} texts={sharedTexts} /> : null}<GridExpandControls levels={availableLevels} activeDepth={activeDepth} disabled={Boolean(matched)} onExpand={selectDepth} onCollapse={() => selectDepth(0)} expandLabel={t.expandAll} collapseLabel={t.collapseAll} />{asOf ? <AsOfDateToggle {...asOf} /> : null}{toolbarLeft}</>} tools={<><ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked ? { locked: true } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} zoom={zoom} title={t.columnsTitle} /><ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} auto={autoZoom} /></>} secondary={(selectable || actions || exportName) ? <>{selectable ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={sharedTexts} onToggle={setSelectMode} /> : null}{actions}{exportName ? <GridExport getData={() => exportData()} getPrintData={() => exportData(true)} print={printConfig} fijename={exportName} title={title} meta={{ ...exportMeta, filters: [...(exportMeta?.filters ?? []), ...(period ? [gridPeriodLabel(period.value)] : []), ...(query.trim() ? [sharedTexts.exportSearch(query.trim())] : [])] }} zoom={zoom} texts={sharedTexts} pdfExport={pdfExport} extraExports={extraExports} /> : null}</> : null} className="grid-toolbar-overflow-menu" /></span>
           {onRefresh ? <span data-toolbar-measure="refresh" data-toolbar-group="refresh" className="grid-toolbar-refresh-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} /><GridRefreshButton onRefresh={onRefresh} refreshing={refreshing} zoom={zoom} texts={sharedTexts} /></span> : null}
         </>}
       />
@@ -526,7 +530,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               {shown.map((column) => (
                 <TableHead
                   key={column.id}
-                  style={column.width ? { width: `${column.width / 13}em` } : undefined}
+                   style={column.width ? { width: `${column.width / 16}rem` } : undefined}
                   className={alignClass(column)}
                 >
                   {column.label}

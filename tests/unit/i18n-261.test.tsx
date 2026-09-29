@@ -9,7 +9,6 @@ import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { DsTextsProvider, DS_TEXTS_SK } from "../../src/ds-texts";
 import { Dialog, DialogContent, DialogTitle } from "../../src/components/ui/dialog";
-import { FontSizeSetting } from "../../src/components/ds/layout/FontSizeSetting";
 import { MultiSelect } from "../../src/components/ds/form/multi-select";
 
 describe("centrální texty 2.61.0", () => {
@@ -18,12 +17,11 @@ describe("centrální texty 2.61.0", () => {
     const view = render(
       <DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
         <Dialog open><DialogContent><DialogTitle>Detail</DialogTitle></DialogContent></Dialog>
-        <FontSizeSetting />
         <MultiSelect options={[]} selected={[]} onChange={() => {}} allLabel="Všetko" itemsLabel="položky" />
       </DsTextsProvider>,
     );
     expect(DS_TEXTS_SK.common.close).toBe("Zavrieť");
-    expect(view.getByLabelText("Veľkosť písma")).toBeTruthy();
+    expect(DS_TEXTS_SK.appZoom.label).toBe("Veľkosť zobrazenia");
     expect(DS_TEXTS_SK.multiSelect.noValues).toBe("Žiadne hodnoty.");
     const visible = document.body.textContent ?? "";
     for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Close"]) expect(visible).not.toContain(forbidden);

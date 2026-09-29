@@ -1,4 +1,12 @@
 
+## Changelog 2.64.0 – zoom aplikace, automatický zoom gridů a šířka menu
+
+- Nový zoom celé aplikace 70–200 % se ukládá pro zařízení a ovládá z uživatelské nabídky nebo zkratkami Ctrl+Alt++/−/0.
+- Formulářové gridy automaticky volí 75–100 %, potom přesouvají sloupce do detailu a až nakonec zapínají vodorovné rolování.
+- Šířky sloupců zůstávají v px při 100 %; vykreslení v rem respektuje zoom aplikace i gridu. Klíč uložených šířek se nemění.
+- Menu je sbalitelné a nastavitelné tažením; preference zařízení jsou `app:menu-collapsed` a `app:menu-width`.
+- BREAKING: odstraněny `FontSizeSetting`, `AppFontSizeControl`, `useAppFontSize`, `GridPreferencesProvider`, `AppShell.collapsed` a `AppShell.onCollapsedChange`.
+
 ## Changelog 2.62.0 – sjednocení formulářů karty záznamu
 
 - `Field` je společná definice pole pro karty záznamů i `DocumentForm`: popisek 12 px polotučně, jednotná mezera a společné hinty, chyby a hodnoty jen pro čtení.
@@ -98,7 +106,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `AppShell` drží výšku okna; menu, běžná stránka a každý panel rolují nezávisle. `PaneLayout` se ohlásí automaticky, takže aplikace nenastavuje odsazení ani overflow.
 - Nové `PageLayout variant="list" | "form"` rozlišuje seznam s gridem vyplňujícím panel a formulář rolovaný jako celek.
 - `DataGrid`, `TreeGrid`, `ZoomGrid` a `ZoomPane` přijímají `height="fill" | "auto"`; uvnitř listu je výchozí `fill`, jinde `auto`.
-- `GridPreferencesProvider` dodává a ukládá výchozí zoom a hustotu. V panelu jsou tyto hodnoty izolované v záložce a ukládají se i do snímku rozložení.
+- Zoom formulářových gridů se počítá automaticky a neukládá se; hustota nového gridu zůstává normální.
 - `PaneLayout` obnovuje pozici každé záložky i po obnovení stránky a exportuje `usePaneScrollElement`.
 - `JournalLinesEditor` roste s formulářem bez vlastního svislého posuvníku; záhlaví se drží pod skutečnou výškou pruhu akcí.
 
@@ -108,7 +116,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - Seznamové stránky obalte `<PageLayout variant="list">` (PageHeader + lišta + grid) – grid pak vyplní panel (`fill`), roluje jen jeho tělo a záhlaví i součty jsou přilepené. Formuláře a karty obalte `<PageLayout variant="form">`.
 - Odstraňte ruční `maxHeight`, `calc(100vh …)` a výšky odvozené z `window.innerHeight` ve stránkách i u gridů; výšku určuje rodič.
 - Odstraňte `ListScrollRestore` a jiné vlastní obnovy pozice rolování – `PaneLayout` obnovuje pozici každé záložky (per krok historie) sám. Pro výjimečné potřeby je `usePaneScrollElement()`.
-- Napojte `GridPreferencesProvider` (`getDefaults(storageKey)`, `onDefaultsChange(storageKey, { zoom, density })`, volá se s debounce 400 ms) na uložení předvoleb uživatele v aplikaci; bez něj se výchozí zoom/hustota drží jen v localStorage prohlížeče.
+- Zoom gridu ani hustota se neukládají. Formulářový grid přepočítá zoom z dostupné šířky; při 75 % pokračuje kaskádou sloupců a nakonec rolováním.
 - Událost `grid-zoom-change` byla zrušena – zoom a hustota platí jen pro instanci gridu v záložce.
 - `PaneLayout` má být přímý obsah `AppShell`, ne vnořený v jiné rolovací stránce (ohlásí se sám, main pak nemá padding ani rolování). Ovládá main jen když je skutečně zobrazený – skrytý (`hidden`) PaneLayout main uvolní. Vložený PaneLayout (ukázky, náhledy ve stránce) = prop `embedded` + kontejner s pevnou výškou; neregistruje se a stránka kolem roluje normálně.
 - Na stránce s `DocumentActionBar` (DocumentForm) se přilepuje jen pruh akcí; `PageHeader` odroluje, aby se oba přilepené pruhy nepřekryly. `--pane-sticky-top` = výška pruhu akcí.
@@ -121,7 +129,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `ZoomGrid.overflowFallback?: boolean` – nouzové vodorovné rolování gridu, který jinak sloupce přesouvá do detailu (když se nevejde ani minimum).
 - `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
 - `usePaneScrollElement()` – rolovací prvek aktuální záložky.
-- `GridPreferencesProvider` – `getDefaults`, `onDefaultsChange`.
+- Formulářové gridy automaticky volí zoom 75–100 %; seznamové gridy ponechávají ruční zoom jen pro aktuální zobrazení.
 
 ## Changelog 2.52.0 – Partneři D, část B
 
@@ -410,7 +418,7 @@ src/
 - **CommandPalette** – rychlé hledání stránek (Ctrl/Cmd + K).
 - **ThemeToggle** – přepínač světlého a tmavého režimu.
 - **ThemeSetting** – volba Světlý / Tmavý / Podle systému pro stránku Předvolby.
-- **FontSizeSetting** – volba velikosti písma celé aplikace.
+- **Velikost zobrazení** – ovládání 70–200 % v uživatelské nabídce; nastavení se ukládá pro zařízení.
 
 ### Datová mřížka
 - **DataGrid** – kompletní mřížka: hledání, řazení, filtry, výběr sloupců, seskupení,
@@ -715,3 +723,11 @@ Doplnění pro výkazy účetnictví.
 - `/components/forms` – editační dialog dokladu se všemi vstupy
 - `/components/feedback` – dialogy, potvrzení, hlášky, prázdné a chybové stavy
 - `/guidelines` – pravidla použití
+
+
+## DS 2.64.0
+
+- Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
+- `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
+- Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
+- Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.

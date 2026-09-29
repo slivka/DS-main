@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 /** Typ dat při přetahování záhlaví sloupce (změna pořadí). */
 const COLUMN_MIME = "application/x-grid-column";
@@ -68,6 +68,7 @@ import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
 import { cn } from "../../../lib/utils";
+import { useAutoGridZoom } from "./grid-auto-zoom";
 
 /** Sloupec pobočky řídí explicitně branchVisibility; zobrazuje se jen v režimu „Všechny pobočky“, vždy jako první. */
 const isBranchColumn = (c: { branchVisibility?: "auto" | "always" }) =>
@@ -459,9 +460,11 @@ export function DataGrid<Row>({
   const [filtersOpen, setFiltersOpen] = useState(defaultFiltersOpen);
   const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
   const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? exportTitle ?? title ?? storageKey}` : storageKey);
-  const { zoom, setZoom, density, setDensity } = useGridZoom(zoomKey);
+  const autoZoom = pageVariant === "form" && resolvedHeight === "auto";
+  const { zoom, setZoom, setAutoZoom, density, setDensity } = useGridZoom(zoomKey, { auto: autoZoom });
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
+  const applyAutoZoom = useCallback((next: number) => setAutoZoom(next), [setAutoZoom]);
 
   const allBranches = true;
   const effectiveColumns = useMemo<DataGridColumn<Row>[]>(() => book?.value === "all" && book.getRowBookId ? [createGridBookColumn(book), ...columns] : columns, [book, columns]);
@@ -489,6 +492,7 @@ export function DataGrid<Row>({
   );
 
   const cols = useGridColumns(storageKey, colDefs);
+  useAutoGridZoom(blockRef, autoZoom, zoom, applyAutoZoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
   const defaultGroups = useMemo(
     () => (defaultGroupBy ? [{ id: defaultGroupBy, granularity: "month" as const }] : []),
     [defaultGroupBy],
@@ -951,7 +955,7 @@ export function DataGrid<Row>({
                <span data-toolbar-measure="display" data-toolbar-group="display" className="grid-toolbar-display-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
               {groupable ? <GroupControl grouping={grouping} texts={texts} /> : null}
               <ColumnPicker columns={cols.columns.filter((c) => !c.transient).map((c) => ({ id: c.id, label: c.label, ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(isPinnedColumn(c.id) ? { pinned: true } : {}), ...(c.section !== undefined ? { section: c.section } : {}) }))} visible={cols.columnVisible} onToggle={cols.toggle} onReorder={cols.reorder} onReset={cols.reset} onSaveDefault={cols.saveDefault} onClearDefault={cols.clearDefault} hasCustomDefault={cols.hasCustomDefault} hiddenSections={cols.hiddenSections} onToggleSection={cols.toggleSection} views={cols.views} zoom={zoom} title={texts.columnsTitle} texts={texts} />
-              <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} texts={texts} /></span>
+              <ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} auto={autoZoom} texts={texts} /></span>
                <span data-toolbar-measure="data" data-toolbar-group="data" className="grid-toolbar-data-group inline-flex shrink-0 items-center gap-2"><GridToolbarSeparator density={density} />
               {selectable && !hideSelectionToggle ? <GridSelectionToggle active={selectMode} count={selectedRows.length} zoom={zoom} texts={texts} onToggle={(next) => next ? setOwnSelectMode(true) : exitSelectMode()} /> : null}
               {actions}
@@ -1002,7 +1006,7 @@ export function DataGrid<Row>({
           >
             <Table className="w-full">
               <colgroup>
-                {selectMode ? <col style={{ width: "40px" }} /> : null}
+              {selectMode ? <col style={{ width: `${40 / 16}rem` }} /> : null}
                 {shown.map((c) => {
                   const compact = isCompactColumn(c);
                   const w = isBranchColumn(c)
@@ -1015,7 +1019,7 @@ export function DataGrid<Row>({
                    return compact ? (
                     <col key={c.id} style={{ width: "1px", whiteSpace: "nowrap" }} />
                   ) : (
-                    <col key={c.id} {...(w ? { style: { width: `${w}px` } } : {})} />
+                    <col key={c.id} {...(w ? { style: { width: `${w / 16}rem` } } : {})} />
                   );
                 })}
                 {hasRowActions ? <col style={{ width: "auto", whiteSpace: "nowrap" }} /> : null}
@@ -1064,9 +1068,9 @@ export function DataGrid<Row>({
                       ? { width: "1px", whiteSpace: "nowrap" as const }
                       : width
                         ? {
-                            width: `${width}px`,
-                            maxWidth: `${width}px`,
-                            minWidth: `${width}px`,
+                            width: `${width / 16}rem`,
+                            maxWidth: `${width / 16}rem`,
+                            minWidth: `${width / 16}rem`,
                             boxSizing: "border-box" as const,
                           }
                         : undefined;
@@ -1074,6 +1078,7 @@ export function DataGrid<Row>({
                       isPinned || isBranch || isBook || compact ? null : (
                         <ColumnResizeHandle
                           onResize={(w) => cols.setWidth(c.id, w)}
+                          scale={(typeof document === "undefined" ? 1 : Number.parseFloat(getComputedStyle(document.documentElement).fontSize) / 16) * zoom}
                           onReset={() => cols.clearWidth(c.id)}
                           texts={texts}
                         />
@@ -1227,13 +1232,14 @@ export function DataGrid<Row>({
                           {shown.map((c) => {
                             const v = c.value?.(item.row);
                             const compact = isCompactColumn(c);
+                            const resolvedCellWidth = cols.widths[c.id] ?? c.width;
                             const cellStyle = compact
                               ? { whiteSpace: "nowrap" as const }
-                              : c.width
+                              : resolvedCellWidth
                                 ? {
-                                    width: `${c.width}px`,
-                                    maxWidth: `${c.width}px`,
-                                    minWidth: `${c.width}px`,
+                              width: `${resolvedCellWidth / 16}rem`,
+                              maxWidth: `${resolvedCellWidth / 16}rem`,
+                              minWidth: `${resolvedCellWidth / 16}rem`,
                                     boxSizing: "border-box" as const,
                                   }
                                 : undefined;

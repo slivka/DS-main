@@ -4,6 +4,8 @@ import { DndContext, PointerSensor, closestCenter, pointerWithin, type Collision
 import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
+import { beginResize, isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
 import {
   buildTabMenuActions,
   PaneApiContext,
@@ -73,16 +75,13 @@ export function requiredPaneWidth(count: number, minPaneWidth: number, fontScale
   return (count * minPaneWidth + (count - 1) * PANE_DIVIDER_WIDTH) * (fontScale || 1);
 }
 
-function useFontScale() {
-  const [scale, setScale] = useState(1);
+function useAppZoomScale() {
+  const [scale, setScale] = useState(getAppZoom);
   useEffect(() => {
-    const read = () => {
-      const size = parseFloat(getComputedStyle(document.documentElement).fontSize || "16");
-      setScale(size / 16 || 1);
-    };
+    const read = () => setScale(getAppZoom());
     read();
-    window.addEventListener("app:font-scale", read as EventListener);
-    return () => window.removeEventListener("app:font-scale", read as EventListener);
+    window.addEventListener(APP_ZOOM_EVENT, read as EventListener);
+    return () => window.removeEventListener(APP_ZOOM_EVENT, read as EventListener);
   }, []);
   return scale;
 }
@@ -171,7 +170,8 @@ function PaneLayoutInner({
   const emptyHint = t.emptyHint;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);
-  const fontScale = useFontScale();
+  const [draftWidths, setDraftWidths] = useState<number[] | null>(null);
+  const fontScale = useAppZoomScale();
   const maximizedIndex = api.maximized !== null && state.panes[api.maximized] ? api.maximized : null;
   const maximized = maximizedIndex !== null ? state.panes[maximizedIndex].id : null;
   const collision: CollisionDetection = (args) => {
@@ -184,10 +184,16 @@ function PaneLayoutInner({
   useEffect(() => {
     const element = containerRef.current;
     if (!element) return;
-    const observer = new ResizeObserver((entries) => setContainerWidth(entries[0].contentRect.width));
+    const update = () => {
+      if (isResizeLocked()) return;
+      const width = element.getBoundingClientRect().width;
+      if (width > 0) setContainerWidth(width);
+    };
+    const observer = new ResizeObserver(update);
     observer.observe(element);
-    setContainerWidth(element.getBoundingClientRect().width);
-    return () => observer.disconnect();
+    update();
+    window.addEventListener(RESIZE_END_EVENT, update);
+    return () => { observer.disconnect(); window.removeEventListener(RESIZE_END_EVENT, update); };
   }, []);
 
   const maxLayout = containerWidth ? maxPaneLayout(containerWidth, minPaneWidth, fontScale) : null;
@@ -213,15 +219,18 @@ function PaneLayoutInner({
 
   const shownPanes = maximized ? state.panes.filter((pane) => pane.id === maximized) : state.panes;
   const resolvedWidths = useMemo(() => {
+    if (draftWidths?.length === shownPanes.length) return draftWidths;
     if (shownPanes.length === 1) return [1];
     const base = state.widths && state.widths.length === shownPanes.length ? state.widths : evenWidths(shownPanes.length);
     const sum = base.reduce((total, value) => total + value, 0) || 1;
     return base.map((value) => value / sum);
-  }, [state.widths, shownPanes.length]);
+  }, [draftWidths, state.widths, shownPanes.length]);
 
   const onDividerDown = (index: number) => (event: React.PointerEvent) => {
     event.preventDefault();
     const start = { x: event.clientX, widths: resolvedWidths };
+    const releaseResize = beginResize();
+    let finalWidths = start.widths;
     const onMove = (moveEvent: PointerEvent) => {
       if (!containerRef.current) return;
       const total = containerRef.current.getBoundingClientRect().width;
@@ -233,11 +242,15 @@ function PaneLayoutInner({
       if (left < minShare || right < minShare) return;
       next[index] = left;
       next[index + 1] = right;
-      onWidths(next);
+      finalWidths = next;
+      setDraftWidths(next);
     };
     const onUp = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      setDraftWidths(null);
+      onWidths(finalWidths);
+      releaseResize();
     };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
@@ -273,7 +286,7 @@ function PaneLayoutInner({
       onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
     >
-      <div ref={rootRef} data-slot="pane-layout" className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
+      <div ref={rootRef} data-slot="pane-layout" data-required-width={requiredPaneWidth(state.layout, minPaneWidth, fontScale)} className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
       {maximizedIndex !== null ? (
         <div role="status" className="flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground">
           <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
