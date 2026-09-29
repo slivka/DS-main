@@ -5,7 +5,7 @@ import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export interface GridRefreshButtonProps {
   onRefresh: () => void | Promise<unknown>;
@@ -17,7 +17,7 @@ export interface GridRefreshButtonProps {
 
 /** Sdílené tlačítko ručního obnovení dat v liště gridu. */
 export function GridRefreshButton({ onRefresh, refreshing, zoom = 1, className, texts: textOverrides }: GridRefreshButtonProps) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const [pending, setPending] = useState(false);
   const busy = refreshing === true || pending;
   const run = async () => {

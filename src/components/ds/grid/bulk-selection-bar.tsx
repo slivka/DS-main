@@ -2,7 +2,7 @@ import { CheckSquare, X } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { cn } from "../../../lib/utils";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type BulkSelectionBarProps = {
   /** Počet vybraných záznamů. */
@@ -45,7 +45,7 @@ export function BulkSelectionBar({
   clearLabel = "Zrušit",
   texts: textOverrides,
 }: BulkSelectionBarProps) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   if (count <= 0 && !showZero) return null;
 
   const label = count > 0 ? czechCount(count, entity.one, entity.few, entity.many) : "";

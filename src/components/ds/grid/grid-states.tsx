@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 
 import { Button } from "../../ui/button";
 import { TableCell, TableRow } from "../../ui/table";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /** Skeleton řádky – místo prázdné plochy během načítání gridu. */
 export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: number }) {
@@ -49,7 +49,7 @@ export function GridEmptyRow({
   children?: ReactNode;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const hasActions = Boolean(
     (filtered && onClearFilter) || (!filtered && actionLabel && onAction) || children,
   );
@@ -127,7 +127,7 @@ export function GridProgress({
   label?: string;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const progressLabel = label ?? texts.loading;
   if (!show) return null;
   return (
@@ -186,7 +186,7 @@ export function GridErrorRow({
   onRetry?: () => void;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const { title, detail } = friendlyErrorMessage(error);
   return (
     <TableRow className="hover:bg-transparent">

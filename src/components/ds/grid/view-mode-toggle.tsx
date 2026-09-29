@@ -2,7 +2,7 @@ import { ListTree, Table } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type GridViewMode = "grid" | "tree";
 
@@ -19,7 +19,7 @@ export function ViewModeToggle({
   onChange: (mode: GridViewMode) => void;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const next: GridViewMode = mode === "grid" ? "tree" : "grid";
   const label = next === "tree" ? texts.treeView : texts.tableView;
   const Icon = next === "tree" ? ListTree : Table;

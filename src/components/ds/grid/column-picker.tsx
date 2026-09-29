@@ -5,7 +5,7 @@ import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
 import type { ColumnViewsApi } from "./grid-columns";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type PickerColumn<Id extends string = string> = {
   id: Id;
@@ -58,7 +58,7 @@ export function ColumnPicker<Id extends string>({
   onToggleSection?: (section: string) => void;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const [newName, setNewName] = useState("");
   const [savedDefault, setSavedDefault] = useState(false);

@@ -22,7 +22,7 @@ import { gridFontSize } from "./grid-zoom";
 import { compareValues } from "./grid-sort";
 import { fmtAmount } from "../../../lib/format";
 import { formatUserDate } from "../../../lib/date-time-preferences";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /** Granularita seskupení podle data. */
 export type GroupGranularity = "day" | "month" | "quarter" | "year";
@@ -203,7 +203,7 @@ export function GroupControl({
   hidden?: boolean;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   if (hidden) return null;
   // Skrytá lišta, ale seskupení stále platí → oranžový stav zužující pohled na data.
   const hiddenActive = !grouping.enabled && grouping.groups.length > 0;
@@ -451,7 +451,7 @@ export function GroupBar({
   zoom?: number;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const [over, setOver] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);

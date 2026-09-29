@@ -33,7 +33,7 @@ import {
   type AsOfDateConfig,
   type GridAddAction,
 } from "./grid-toolbar";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { amountClass, formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { usePageLayoutVariant } from "../layout/page-layout";
@@ -248,7 +248,7 @@ export function TreeGrid<Row extends TreeGridRow>({
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const t = { ...DEFAULT_TREE_GRID_TEXTS, ...texts };
-  const sharedTexts = resolveGridTexts(gridTexts);
+  const sharedTexts = useResolvedGridTexts(gridTexts);
   const { confirm, confirmDialog } = useConfirmDialog();
   const key = storageKey ?? `tree:${exportName ?? title}`;
   const [query, setQuery] = useState("");

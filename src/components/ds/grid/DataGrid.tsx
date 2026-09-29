@@ -63,7 +63,7 @@ import {
 } from "../../../lib/date-time-preferences";
 import { IcoLink } from "../form/ico-link";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import type { ExcelColumnType, ExcelExportMeta } from "../../../lib/excel-export";
 import { createGridBookColumn, GridContextBar, GRID_BOOK_COLUMN_ID, placeGridBookColumnFirst, type GridBookConfig, type GridPeriodConfig } from "./grid-context-bar";
 import { gridPeriodLabel } from "./grid-period";
@@ -443,7 +443,7 @@ export function DataGrid<Row>({
 }: DataGridProps<Row>) {
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
-  const texts = useMemo(() => resolveGridTexts(textOverrides), [textOverrides]);
+  const texts = useMemo(() => useResolvedGridTexts(textOverrides), [textOverrides]);
   const { confirm, confirmDialog } = useConfirmDialog();
   const [ownSelectMode, setOwnSelectMode] = useState(false);
   const selectMode = controlledSelectMode ?? ownSelectMode;

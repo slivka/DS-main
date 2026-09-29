@@ -2,7 +2,7 @@ import { CheckSquare } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Přepínač režimu hromadného výběru řádků v gridu.
@@ -23,7 +23,7 @@ export function GridSelectionToggle({
   className?: string;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const label = active ? texts.cancelSelection : texts.selectMore;
   return (

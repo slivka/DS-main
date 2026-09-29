@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { GridToolbarOverflowContext } from "./grid-toolbar";
 
 export type GridMoreItem = {
@@ -46,7 +46,7 @@ export function GridMoreMenu({
   responsiveOverflow?: boolean;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const overflowLevel = useContext(GridToolbarOverflowContext);
   const shownTools = !responsiveOverflow || overflowLevel >= 1 ? tools : null;
   const shownSecondary = !responsiveOverflow || overflowLevel >= 2 ? secondary : null;

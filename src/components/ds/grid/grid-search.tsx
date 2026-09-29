@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { GridToolbarOverflowContext } from "./grid-toolbar";
 
 /**
@@ -26,7 +26,7 @@ export function GridSearch({
   /** Zpětná kompatibilita; zvýraznění se vždy řídí pouze hledaným textem. */
   active?: boolean;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const isActive = value.trim().length > 0;
   const [open, setOpen] = useState(!!value);

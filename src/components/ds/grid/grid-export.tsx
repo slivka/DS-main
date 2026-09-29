@@ -25,7 +25,7 @@ import {
   type ExportCell,
   type GridExportData,
 } from "../../../lib/excel-export";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type { ExcelColumnMeta, ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
 
@@ -276,7 +276,7 @@ export function GridExport({
   /** Volitelné údaje v hlavičce Excel sestavy. */
   meta?: ExcelExportMeta;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
   const fontSize = gridFontSize(zoom);
   const [menuOpen, setMenuOpen] = useState(false);

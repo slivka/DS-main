@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export function GridFilterToggle({
   open,
@@ -28,7 +28,7 @@ export function GridFilterToggle({
   zoom?: number;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const active = activeCount > 0;
   const hasDefault = defaultFilters.length > 0;
   const showDefault = !active && hasDefault;
@@ -181,7 +181,7 @@ export function GridResultCount({
   className?: string;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const filtered = shown !== total;
   return (
     <div
