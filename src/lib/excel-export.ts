@@ -183,7 +183,7 @@ function numberFormat(meta: ExcelColumnMeta) {
   return EXCEL_NUMBER_FORMAT;
 }
 
-function displayValue(value: ExportCell, meta: ExcelColumnMeta) {
+function displayValue(value: ExportCell, meta: ExcelColumnMeta, locale = "cs-CZ") {
   if (value === null || value === undefined || value === "") return "";
   if (meta.type === "date" || meta.type === "datetime") {
     const date = parseDate(value);
@@ -192,9 +192,9 @@ function displayValue(value: ExportCell, meta: ExcelColumnMeta) {
   if (typeof value === "number") {
     const normalized = nzero(roundTo(value, meta.type === "integer" || meta.type === "year" ? 0 : 2));
     if (meta.type === "percent") {
-      return normalized.toLocaleString("cs-CZ", { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return normalized.toLocaleString(locale, { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    return normalized.toLocaleString("cs-CZ", {
+    return normalized.toLocaleString(locale, {
       minimumFractionDigits: meta.type === "number" ? 2 : 0,
       maximumFractionDigits: meta.type === "number" ? 2 : 0,
     });
@@ -440,7 +440,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     sheet.getColumn(index + 1).width = width;
     if (columnMeta.type === "text") {
       for (let rowIndex = firstDataRow; rowIndex < firstDataRow + data.rows.length; rowIndex += 1) {
-        const displayed = displayValue(data.rows[rowIndex - firstDataRow]?.[index], columnMeta);
+        const displayed = displayValue(data.rows[rowIndex - firstDataRow]?.[index], columnMeta, options.locale);
         if (displayed.length <= EXCEL_LONG_TEXT_LENGTH) continue;
         const cell = sheet.getCell(rowIndex, index + 1);
         cell.alignment = { ...cell.alignment, wrapText: true };
