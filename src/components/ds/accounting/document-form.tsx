@@ -384,10 +384,6 @@ export function DocumentForm({
   );
 }
 
-function CompactActionButton({ label, icon: Icon, busy, compact, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & React.ComponentPropsWithoutRef<typeof Button>) {
-  return <Tooltip><TooltipTrigger asChild><Button type="button" {...props} aria-label={label} className={cn(compact && "size-9 px-0", props.className)}>{busy ? <Loader2 className="animate-spin" /> : <Icon />}<span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>{children}</Button></TooltipTrigger>{compact ? <TooltipContent>{label}</TooltipContent> : null}</Tooltip>;
-}
-
 export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLabel = "Výdej" }: { direction: DocumentDirection; inLabel?: string; outLabel?: string }) {
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
   return <span data-slot="document-direction-badge" className={cn("inline-flex h-[1.625rem] items-center gap-1 rounded-md px-2 text-sm font-semibold", direction === "in" ? "bg-success-soft text-success-strong" : "bg-destructive-soft text-destructive-strong")}><Icon className="size-3.5" aria-hidden="true" />{direction === "in" ? inLabel : outLabel}</span>;
@@ -396,16 +392,5 @@ export function DocumentDirectionBadge({ direction, inLabel = "Příjem", outLab
 export function DocumentActionBar({ vat, vatRelevant, onVatRelevantChange, saveAction, primaryAction, moreActions = [], texts = DEFAULT_DOCUMENT_FORM_TEXTS }: {
   vat?: DocumentVatConfig; vatRelevant: boolean; onVatRelevantChange: (value: boolean) => void; saveAction?: DocumentSaveAction; primaryAction?: DocumentPrimaryAction; moreActions?: DocumentMoreAction[]; texts?: DocumentFormTexts;
 }) {
-  const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
-  const barRef = useRef<HTMLDivElement>(null);
-  const [compact, setCompact] = useState(false);
-  useEffect(() => { const node = barRef.current; if (!node) return; const update = () => setCompact(node.getBoundingClientRect().width < 640); update(); const observer = new ResizeObserver(update); observer.observe(node); return () => observer.disconnect(); }, []);
-  return <TooltipProvider><div ref={barRef} data-slot="document-action-bar" data-compact={compact || undefined} className="sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-    <div>{vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null}</div>
-    <div className="flex shrink-0 items-center gap-2">
-      {saveAction ? <CompactActionButton label="Uložit" icon={Save} compact={compact} busy={saveAction.busy} disabled={saveAction.disabled || saveAction.busy} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label="Neuložené změny" className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
-      {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={primaryAction.busy} disabled={primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
-      {moreActions.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label="Další akce"><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}
-    </div>
-  </div></TooltipProvider>;
+  return <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={onVatRelevantChange} aria-label={texts.vatRelevant} />{texts.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={moreActions} saveLabel="Uložit" moreActionsLabel="Další akce" dataSlot="document-action-bar" />;
 }
