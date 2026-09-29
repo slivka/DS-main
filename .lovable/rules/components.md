@@ -247,8 +247,8 @@ Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozov
 | `disabledHint` | string | `—` |
 | `navStateKey` | string | `—` |
 | `navSearch` | boolean | `true` |
-| `navSearchPlaceholder` | string | `Hledat v menu…` |
-| `navSearchEmptyText` | string | `Nic nenalezeno` |
+| `navSearchPlaceholder` | string | `—` |
+| `navSearchEmptyText` | string | `—` |
 | `navSearchMenu` | any | `—` |
 | `items` | any | `—` |
 | `adminNav` | any | `—` |
@@ -464,7 +464,7 @@ import { BulkSelectionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `className` | string | `whitespace-nowrap` |
 | `entity` | object | `—` |
 | `showZero` | boolean | `—` |
-| `clearLabel` | string | `Zrušit` |
+| `clearLabel` | string | `—` |
 | `texts` | any | `—` |
 
 ### Button
@@ -1100,7 +1100,7 @@ import { CountrySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 | `value` | string | `—` |
 | `onChange` | function | `—` |
 | `disabled` | boolean | `—` |
-| `placeholder` | string | `Vyberte stát` |
+| `placeholder` | string | `—` |
 | `className` | string | `truncate` |
 
 ### CurrencyAmount
@@ -1231,7 +1231,7 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `id` | string | `—` |
 | `value` | string | `—` |
 | `onChange` | function | `—` |
-| `placeholder` | string | `Vyberte datum` |
+| `placeholder` | string | `—` |
 | `disabled` | boolean | `—` |
 | `className` | string | `relative` |
 | `inputClassName` | string | `—` |
@@ -1644,6 +1644,33 @@ import { DropdownMenuSubTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DropdownMenuTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### DsTextsProvider
+
+```ts
+import { DsTextsProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové props mají vyšší prioritu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+| `locale` | cs · sk | `—` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Slovenská aplikace_
+```tsx
+<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"><App /></DsTextsProvider>
+```
+
+**Avoid:**
+
+- Nevkládejte uživatelsky viditelné texty knihovny natvrdo; přidejte klíč do DsTexts, DS_TEXTS_CS a DS_TEXTS_SK.
+
 ### EntitySwitcher
 
 ```ts
@@ -1789,8 +1816,8 @@ import { FontSizeSetting } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 
 | Prop | Type | Default |
 |---|---|---|
-| `placeholder` | string | `Vyberte velikost písma` |
-| `label` | string | `Velikost písma` |
+| `placeholder` | string | `—` |
+| `label` | string | `—` |
 | `className` | string | `w-[220px]` |
 
 ### Form
@@ -3408,7 +3435,7 @@ Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte
 | `wide` | boolean | `—` |
 | `contentClassName` | string | `—` |
 | `sidePanel` | any | `—` |
-| `sidePanelLabel` | string | `Poznámky` |
+| `sidePanelLabel` | string | `—` |
 | `sidePanelTitle` | any | `—` |
 | `headerExtra` | any | `—` |
 | `sidePanelExtra` | any | `—` |
@@ -3933,6 +3960,8 @@ import { SlivkaProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | `queryClient` | any | `—` |
 | `tooltipDelayDuration` | number | `300` |
 | `toasterProps` | any | `—` |
+| `locale` | any | `—` |
+| `texts` | any | `—` |
 
 ### SortHead
 

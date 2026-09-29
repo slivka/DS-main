@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.61.0",
+    "version": "2.62.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -18,7 +18,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "f04a149826be8daa1f4e1bea4413af8d6c62325b541269ecaeb473d330dedec3",
+      "#enrichment": "7ed8f3102264e97ff5703e73914ea88b65bac125cc7de22ee8da5ad60bfd25d4",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
@@ -61,20 +61,20 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "92ba8782782ffe377204dfecfc20e19b",
-      "AGENTS.md": "3a1418c88eaec81d514b8b7c35b01468",
-      "README.md": "95ce0c8a13f6093e3b0996b54ae6a2d6",
+      ".lovable/system.md": "d458197d3731a75e9aa569a89877b50a",
+      "AGENTS.md": "3ed2010e307e513c3da2d84788395e16",
+      "README.md": "f49cce1c2af8d0e2ffa71d8cee16dd5a",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "a6f8b2430af44826fd689ebc05c89074",
+      "components.md": "629ab2b9e69022afae71cf0e7d4d3752",
       "eslint.config.js": "07a67437fb1a45ab36d6de0145ff09de",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "a5b94a4ef6711dd4cf53422015162e2a",
       "null": "143ba1347e89d2deb46ef48cd38f8556",
-      "package.json": "3f5bc66e7d88365ffcf9b84a7a499c12",
+      "package.json": "5ac99c750e86920174ea80cead369aac",
       "playwright.config.ts": "468c8ffdc4c996ed9653ac5b8ac987ae",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "0d78f40fc26b00f9df9cd95121b656b4",
+      "roadmap.md": "e8095ae55e23f23ab1f428e3e11a6e2d",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -84,7 +84,7 @@
       "src/components/ds/accounting/account-select.tsx": "d423eef32e570b800dbbdefe6a6d7ffe",
       "src/components/ds/accounting/amount.tsx": "e578c7150ee580ee26d439f27de72d96",
       "src/components/ds/accounting/book-select.tsx": "c30a0ef4883b355f7c0088305ae6ebed",
-      "src/components/ds/accounting/counterparty-field.tsx": "47efb4c859c57a377e965a1dee4f3664",
+      "src/components/ds/accounting/counterparty-field.tsx": "45fa10dbc0f332d1a35f1d148d024005",
       "src/components/ds/accounting/currency-amount.tsx": "7740650c27b424085693c218202f24e7",
       "src/components/ds/accounting/debit-credit-cells.tsx": "50bbce886038a4f7555a86dba291f6cf",
       "src/components/ds/accounting/dimension-select.tsx": "a0eeea29e7a402c22dca46d50a32d746",
@@ -103,98 +103,98 @@
       "src/components/ds/accounting/unit-select.tsx": "0bad840831849b0659137e1db8d9e1e0",
       "src/components/ds/accounting/vat-code-select.tsx": "cb5a02d431e6fda1ed845941203198d6",
       "src/components/ds/accounting/vs-field.tsx": "5bb222411945aba5fb1fc506781a7350",
-      "src/components/ds/data-display/bar-breakdown-chart.tsx": "6398ddf573f699e405dfd5424478e0ee",
+      "src/components/ds/data-display/bar-breakdown-chart.tsx": "38a0a19a1959bd361e232d1490963dd8",
       "src/components/ds/data-display/inactive-tag.tsx": "dabd6f2880fefe7eefb2ebc83718a424",
       "src/components/ds/data-display/status-badge.tsx": "6855847b7ed41d55227625e047389bab",
       "src/components/ds/data-display/status-dot.tsx": "60e37500a6392e750db2b1d6a1d98054",
-      "src/components/ds/data-display/tree-view.tsx": "9909b62d30c0c10b2290ec91b9d09f3d",
+      "src/components/ds/data-display/tree-view.tsx": "9b038e47bd288e8339af00fb6f87270a",
       "src/components/ds/data-display/truncated-text.tsx": "3f2941be66ffaa67a2b011d5659a3b86",
       "src/components/ds/data-display/vat-status-badge.tsx": "692374f0746f8b37ebe8f7381c7e9579",
-      "src/components/ds/feedback/audit-history.tsx": "f69fad1e727de83185c6d2c471a21094",
+      "src/components/ds/feedback/audit-history.tsx": "e28cd6569a6c1b64a069b8d5a4049438",
       "src/components/ds/feedback/coming-soon.tsx": "3503730dc738a0041597819bf8adf39c",
-      "src/components/ds/feedback/confirm-dialog.tsx": "ffb6642999835512b52dc51da79164e6",
+      "src/components/ds/feedback/confirm-dialog.tsx": "49ea9fede92909515cdabc9451a14a04",
       "src/components/ds/feedback/error-boundary.tsx": "e1558a9f082dbad62f68569c1bedaf9d",
       "src/components/ds/feedback/loading-overlay.tsx": "fab56d2553a5c41a7baf0745ed32603d",
       "src/components/ds/feedback/notice-bar.tsx": "c3605a3c76f8e7e3f52f78e3c1c97f89",
       "src/components/ds/feedback/permission-gate.tsx": "6222d22eb51fdae2cf0450ce54782810",
       "src/components/ds/feedback/read-only-banner.tsx": "588bd9d3c5a72411c07da122524aec5d",
-      "src/components/ds/feedback/record-notes-dialog.tsx": "afc4995bb4c597ba47ad41577bf85ee0",
+      "src/components/ds/feedback/record-notes-dialog.tsx": "1356fb20f545201c7942e1e55ee7d21a",
       "src/components/ds/feedback/record-notes.tsx": "7af2faa49eed09ce9b26a2718027dc50",
       "src/components/ds/form/TagPicker.tsx": "01cd86bc90e0f0533beded2a1fd8460c",
       "src/components/ds/form/address-fields.tsx": "29d3e29ee9ce8ae8845540dd2a920f1b",
       "src/components/ds/form/as-of-date-field.tsx": "806c8ee49a6289104c75bef8fe41902f",
-      "src/components/ds/form/calendar-picker.tsx": "6603b85c1cb73351d9d61de5713e75d0",
+      "src/components/ds/form/calendar-picker.tsx": "d21f3ea67f4bc189a5d7ba7f04b51888",
       "src/components/ds/form/category-select.tsx": "910bfb28cc6a09916b061aaea20529e0",
       "src/components/ds/form/checkbox-field.tsx": "7d8c9279f69fa8b7e32d2d5f395bfa5b",
-      "src/components/ds/form/chip-multi-select.tsx": "842d634b88adc16f08b63f72768e840e",
-      "src/components/ds/form/country-select.tsx": "2770593e6b6fe14aa0b31918fe15f093",
-      "src/components/ds/form/date-field.tsx": "bbebf77cbdce21b5f6bff8a3e8776bad",
-      "src/components/ds/form/date-range-field.tsx": "4ef63bfcd99ed31915967318fc9ff9fb",
+      "src/components/ds/form/chip-multi-select.tsx": "cf116ed3059818cc6028458035e5883d",
+      "src/components/ds/form/country-select.tsx": "2bfd9fa13fe1c65854dde9f9b64c4e26",
+      "src/components/ds/form/date-field.tsx": "5db649495d84172902cc8a4c6865c55c",
+      "src/components/ds/form/date-range-field.tsx": "85ba360e79f4ef30b5d87178b2e8b2e9",
       "src/components/ds/form/decimal-input.tsx": "49f323be6711ed70177c0359495d0af6",
       "src/components/ds/form/entity-select.tsx": "2256513262869c88bca91e8c559984ac",
       "src/components/ds/form/field-value.tsx": "10bb52c27cab2f8abe7a51400fe65ac7",
       "src/components/ds/form/ico-field.tsx": "b4c3cacff36a14ba61bc49d861b94d2b",
-      "src/components/ds/form/ico-link.tsx": "19739f8fb7b2886cabad5dbe029a0a62",
+      "src/components/ds/form/ico-link.tsx": "b0e80debb8db39520c4b1411c2f4625d",
       "src/components/ds/form/legal-form-field.tsx": "0b98e65b2d215d8de801110efb5f5741",
       "src/components/ds/form/lookup-field.tsx": "4ab07fba29d4e1fc8d9f2bee90a4b133",
-      "src/components/ds/form/month-year-select.tsx": "2e3093ace2fa030b414a1af85d7d34aa",
-      "src/components/ds/form/multi-select.tsx": "e220c3c6f9f5287c3b9c18d8302d8855",
+      "src/components/ds/form/month-year-select.tsx": "5e37cbe24122e0b9d07bd6379e693cc5",
+      "src/components/ds/form/multi-select.tsx": "8b09a3c7d24589a103ecd0272c52a6e6",
       "src/components/ds/form/option-select.tsx": "3b520c4f9062014b837dcc99e257ff98",
-      "src/components/ds/form/period-filter.tsx": "bb7f33078edbd9ee42568af68e0fea5e",
+      "src/components/ds/form/period-filter.tsx": "68455aa9c05a34652005f169c94e6d74",
       "src/components/ds/form/rate-field.tsx": "82c774c0027fac24463344eacfe90bb3",
-      "src/components/ds/form/resizable-combobox.tsx": "b74b12e7e69f0c52d4528c57ca51251e",
+      "src/components/ds/form/resizable-combobox.tsx": "da92124f0ec87975062f75107d8eb569",
       "src/components/ds/form/segmented-field.tsx": "6b7cb9b7bdb9ee0a95c689316aa8be78",
       "src/components/ds/form/suggest-input.tsx": "b947f66dc704b5d78a1b0f5a79a6f9d4",
-      "src/components/ds/form/time-input-right.tsx": "7c8f5aeb1de132d5eb4935df9e6c93ec",
-      "src/components/ds/grid/ColumnFilter.tsx": "ecc87fbacc813e4a5dd7349852739018",
-      "src/components/ds/grid/DataGrid.tsx": "ab59f5c60a84c2cfcc18f7cae831e58e",
-      "src/components/ds/grid/TreeGrid.tsx": "321d391e517145d94060ec1649c44771",
-      "src/components/ds/grid/bulk-selection-bar.tsx": "29e75cc590df969cb8f82859c74b7b58",
-      "src/components/ds/grid/column-picker.tsx": "43bb5f5c304f5d3b60395d20312d6395",
+      "src/components/ds/form/time-input-right.tsx": "a8b0de159316a00226bbd2348c0f6c2f",
+      "src/components/ds/grid/ColumnFilter.tsx": "30ba4616b3a3f079910b51a028019bec",
+      "src/components/ds/grid/DataGrid.tsx": "7a7a93ee73b351b488515af1603d6ef1",
+      "src/components/ds/grid/TreeGrid.tsx": "031c30bc38c4108d2d8878ddc1c0d2b3",
+      "src/components/ds/grid/bulk-selection-bar.tsx": "27275195708d8e0e61e02ec7ca05dfa1",
+      "src/components/ds/grid/column-picker.tsx": "dee281b14610f7d13c08db7d52c5ea07",
       "src/components/ds/grid/filter-chips.tsx": "d2cc10580ef83219c0cf23213320949d",
       "src/components/ds/grid/grid-action.tsx": "9dad9ab2b2e63c77b16bad1d0b82ddc9",
       "src/components/ds/grid/grid-active-status.tsx": "6b77972bc02f42d7eed477d32ecd8207",
       "src/components/ds/grid/grid-amount-editor.tsx": "fd22752fd9a554218b093f45b9e0f882",
-      "src/components/ds/grid/grid-column-resize.tsx": "23f476a582ecaba4ee1166293ee2b82c",
+      "src/components/ds/grid/grid-column-resize.tsx": "af08e3add55e1398825b0f47253c13ea",
       "src/components/ds/grid/grid-columns.tsx": "4d4e8ad46fc6a3b43919b361b0ce5b6e",
       "src/components/ds/grid/grid-context-bar.tsx": "9f18a3dffc46927b14deb2d977e4264e",
-      "src/components/ds/grid/grid-export.tsx": "ea58070ed498b83068eb7679d614c1cd",
-      "src/components/ds/grid/grid-filters.tsx": "cc183be2b2f5fbfd0d58dec0a613deb6",
-      "src/components/ds/grid/grid-grouping.tsx": "95545ab5c370fa01253a5491d29dcd50",
-      "src/components/ds/grid/grid-more-menu.tsx": "43d5cc3d635b5b3be9a4b1ea7f7a66f2",
-      "src/components/ds/grid/grid-pagination.tsx": "e7e6eef33aec4ea729741ea534eb75d4",
+      "src/components/ds/grid/grid-export.tsx": "d8af4502bd745c7048744b126f115a9a",
+      "src/components/ds/grid/grid-filters.tsx": "21981aed46c94f074a434c49fb2a8858",
+      "src/components/ds/grid/grid-grouping.tsx": "39018935c037602751d55802b5189298",
+      "src/components/ds/grid/grid-more-menu.tsx": "2421ff840112ee7b3410d0a42ee82a69",
+      "src/components/ds/grid/grid-pagination.tsx": "fe664cb66606620953f024c976c0ef40",
       "src/components/ds/grid/grid-period.ts": "577ac3b586c7c6ba80e47dbef9d3d001",
       "src/components/ds/grid/grid-preferences.tsx": "74c6f259130d78b3ef65cc7d9c753f46",
-      "src/components/ds/grid/grid-print.tsx": "60cf44f2df155060e51ed8b650e9dec0",
-      "src/components/ds/grid/grid-refresh.tsx": "16454a2f53dbdce34162a6630a8dd0ca",
-      "src/components/ds/grid/grid-search.tsx": "c939f18619ae419b790969d2fba8250a",
+      "src/components/ds/grid/grid-print.tsx": "4f98a360ce2f45523047999981327ffd",
+      "src/components/ds/grid/grid-refresh.tsx": "51c06b4711f8a38c8f704063e852a24d",
+      "src/components/ds/grid/grid-search.tsx": "33434899c4b9b2c06fd424cb2dd6b653",
       "src/components/ds/grid/grid-sections.tsx": "7186337750209d575c12c257d5246c3e",
       "src/components/ds/grid/grid-segmented-toggle.tsx": "67abd1550b08302bdac10272ef322d25",
-      "src/components/ds/grid/grid-selection-toggle.tsx": "5f940aa7ffd303951f2adcf151ce12a0",
+      "src/components/ds/grid/grid-selection-toggle.tsx": "f39970745c777e8482ecaf6db1badf5f",
       "src/components/ds/grid/grid-selection.ts": "951707a3ceea961bef2b76339e47d09f",
-      "src/components/ds/grid/grid-sort.tsx": "812db962a23ded94013ec06ac6fc32e6",
-      "src/components/ds/grid/grid-states.tsx": "42dfb8c20c50d4d884fb1d71f9e19db0",
-      "src/components/ds/grid/grid-texts.ts": "8c3e027ad919c545fb16d15656103f83",
+      "src/components/ds/grid/grid-sort.tsx": "255c5896776d93d603c0b50d7dd3bdf4",
+      "src/components/ds/grid/grid-states.tsx": "05cbb3b31ad772abcdf60edcf6c137bb",
+      "src/components/ds/grid/grid-texts.ts": "edbafe745d3c7c39167869e869405d96",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
       "src/components/ds/grid/grid-toolbar.tsx": "fb756e0a398457588d08cb64e2fb1190",
       "src/components/ds/grid/grid-virtual.tsx": "5108097c9dd1061e16355e50dac2ed54",
-      "src/components/ds/grid/grid-zoom.tsx": "728fc58e310a449114c13e68b878f2b2",
-      "src/components/ds/grid/view-mode-toggle.tsx": "0274321aa2a701445b7dec4fbff0fd1c",
+      "src/components/ds/grid/grid-zoom.tsx": "fd73e5695757aa79c9104825f093319e",
+      "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
       "src/components/ds/index.ts": "0c2031a8ce336732e10b18d4002e476e",
-      "src/components/ds/layout/AppShell.tsx": "1fd175ef3f2fcebe23ff4cd9e15f8d69",
-      "src/components/ds/layout/FontSizeSetting.tsx": "08a4e1938f19a9631288ef96d4c2633f",
-      "src/components/ds/layout/RecordDialog.tsx": "40d9681a30eb8d763dec806445fa8960",
+      "src/components/ds/layout/AppShell.tsx": "07a3857bed9bc58b70c97a8ebdbe380c",
+      "src/components/ds/layout/FontSizeSetting.tsx": "b1462ff50a0ab0b2cadb7f2d10ebefc6",
+      "src/components/ds/layout/RecordDialog.tsx": "1376b7a57934802a998687c9f74c949a",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
       "src/components/ds/layout/WorkspaceCompanySwitcher.tsx": "573aa6e518f70a8738530defb8f0dfd4",
-      "src/components/ds/layout/app-font-size.tsx": "92a269349c98eca6df7999e34a433068",
-      "src/components/ds/layout/breadcrumbs.tsx": "5fac09b70fad6fc3c317fba2c6ba8960",
+      "src/components/ds/layout/app-font-size.tsx": "573d0f74f857d44fd4b5dec5ff607599",
+      "src/components/ds/layout/breadcrumbs.tsx": "ae5f25ed563ea042cdd334c74b429e21",
       "src/components/ds/layout/collapsible-section.tsx": "dde17797471f4a39a73b72fca1a23ea6",
       "src/components/ds/layout/command-palette.tsx": "bab8cca4b149eb81fb611b64bee1a09e",
       "src/components/ds/layout/company-switcher.tsx": "93ffbf4ebca78855abee2dd27984cf6c",
       "src/components/ds/layout/context-pill.tsx": "a02786206a69bb8efa555d8c06792f3d",
       "src/components/ds/layout/nav-search.tsx": "bc48b789b22a9b5cd023176b85ca0d40",
-      "src/components/ds/layout/notification-bell.tsx": "2d49a01366e060df86283cd9af0c0b76",
-      "src/components/ds/layout/page-header.tsx": "1a676b068091347df06935ab74d31c57",
+      "src/components/ds/layout/notification-bell.tsx": "e189ee145685776bd9cff2f9a2d0ff2e",
+      "src/components/ds/layout/page-header.tsx": "a4f6379637fd192c422b25007cd802df",
       "src/components/ds/layout/page-layout.tsx": "29112e5705a251f61f408a96a7a25408",
       "src/components/ds/layout/page-tabs.tsx": "9e90b911648aa36d42dab2c342e3c4ff",
       "src/components/ds/layout/period-switcher.tsx": "3e037c273789cf5df59e0f2624d9cc97",
@@ -208,7 +208,7 @@
       "src/components/ds/panes/layout-menu.tsx": "b9aaef49a24e7c91485d1e36553cafd6",
       "src/components/ds/panes/pane-context.tsx": "d5298b61a020b4bbac8a1a9b6d792d89",
       "src/components/ds/panes/pane-layout-switcher.tsx": "a4e5eb53d508003985c54e4063313b50",
-      "src/components/ds/panes/pane-layout.tsx": "91f795a8248766f2283ce2bdbb479e7e",
+      "src/components/ds/panes/pane-layout.tsx": "e6b5bad3fb5b8cb57b0eb076f5499ebf",
       "src/components/ds/panes/pane-link.tsx": "46c8b301eb472f9082a241b66cd53d04",
       "src/components/ds/panes/pane-state.ts": "a0a84bd4643440afd36395951f57f637",
       "src/components/ds/panes/pane-tab-bar.tsx": "5492af43ae6a82425e404daac4ffdb58",
@@ -216,7 +216,7 @@
       "src/components/ds/panes/pinned-bar.tsx": "b7e2ccfc975506426cf113f1e4dfc8c5",
       "src/components/ds/print/cash-receipt-pdf.tsx": "8c0b4f8ddbfec494c8133e565d68f239",
       "src/components/ds/print/print-preview-dialog.tsx": "6bd5b921b454abf04ceb7bf524319b4d",
-      "src/components/ds/print/report-pdf.ts": "0a80d6084c058ba4c56520bf0b6f80c0",
+      "src/components/ds/print/report-pdf.ts": "ba8a309d384173e3923c4d730e24b613",
       "src/components/showcase/DocumentFormShowcase.tsx": "83781973c866c9c74271d5b20003d967",
       "src/components/showcase/MatchingShowcase.tsx": "1f5628ffa41f37b58b12e39e1389041e",
       "src/components/showcase/PaneShowcase.tsx": "ed1d83c36e16e9e1073278fa9fab6f76",
@@ -233,7 +233,7 @@
       "src/components/ui/badge.tsx": "3120d0d51b48128d0dfb4ff4c076297a",
       "src/components/ui/breadcrumb.tsx": "a4a763e0287065780233f73c9f068df5",
       "src/components/ui/button.tsx": "39a3efc9c5fedb2ceeccaea8daa69e5d",
-      "src/components/ui/calendar.tsx": "eabf4cf0b9284917a29f8a67bf1b3419",
+      "src/components/ui/calendar.tsx": "677b07012a75a3635c0c04f92a50a06d",
       "src/components/ui/card.tsx": "5bfc620869331afc90ee06cc6a7ed3e7",
       "src/components/ui/carousel.tsx": "7b276264215afc0dcc291126272bb4fe",
       "src/components/ui/chart.tsx": "c80b03f5217f0c13fb4ee21abb21a51c",
@@ -241,7 +241,7 @@
       "src/components/ui/collapsible.tsx": "767631bbc344945c236f185f4078d71d",
       "src/components/ui/command.tsx": "dd221fddaf8235daf2a4fe531f610901",
       "src/components/ui/context-menu.tsx": "7aa6ee7356f69a2328c968ec2450039d",
-      "src/components/ui/dialog.tsx": "49cb8e9cd946da2951e1f0fb99c63df8",
+      "src/components/ui/dialog.tsx": "17bf5468d5014418032ad2a83a36012f",
       "src/components/ui/drawer.tsx": "85e416583f889d5fd7e8dc6d2478713a",
       "src/components/ui/dropdown-menu.tsx": "725fabcdb3b2521e11c3df4c7ef070d8",
       "src/components/ui/form.tsx": "c346789c40b1c8e2a48f4b8a037bdd71",
@@ -259,7 +259,7 @@
       "src/components/ui/scroll-area.tsx": "8b840c6ef7c1f355d4978607da789cc9",
       "src/components/ui/select.tsx": "2ae32d44aa028a70c64c44eac86e46a2",
       "src/components/ui/separator.tsx": "c0dff391f650ce5594eb69a8d7f8b858",
-      "src/components/ui/sheet.tsx": "363b4d06649ba8433c080aab17b60824",
+      "src/components/ui/sheet.tsx": "f23baefb27624e5322db4423d2e22434",
       "src/components/ui/sidebar.tsx": "81b4e83e861bdf161cb102e29cd0ff9a",
       "src/components/ui/skeleton.tsx": "772af88dc23c93b7be0a45f285b166d7",
       "src/components/ui/slider.tsx": "e49efad1f9aab7129d13b11fc86c863f",
@@ -271,6 +271,7 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
+      "src/ds-texts.tsx": "20e708a9b475f6cad93ce4bf450c9373",
       "src/hooks/index.ts": "e88cacd07a70966d9e513fdbebb3e229",
       "src/hooks/use-dialog-back-close.ts": "2843b8d11ca7811fe8f8f10f78cadb29",
       "src/hooks/use-grid-keyboard-nav.ts": "8ba15428a0f0b2b36dcf50d2ec8849ee",
@@ -279,13 +280,13 @@
       "src/hooks/use-resizable-width.ts": "5d3d99e7f03af5886c89a57e8723bd3d",
       "src/hooks/useAppFontSize.ts": "d398940559036ef7fe234e1fb06378d7",
       "src/hooks/useDebouncedValue.ts": "cab9b103af8661da4fc88dd54185fc59",
-      "src/index.ts": "b4973baaf1f18af783bbb0929136de7f",
+      "src/index.ts": "eabbf3966978181971d8f55cbb39f025",
       "src/lib/accounting-utils.ts": "3b7e2effb4c20d64948a9cd2d7cace72",
       "src/lib/bank-account.ts": "1bebdcd4d6108c768d3f1430383a0a35",
       "src/lib/date-time-preferences.ts": "8a11026c129512934474281fd9340c4f",
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
       "src/lib/error-page.ts": "c3f17e6ac5b1215ded9b9589840381a9",
-      "src/lib/excel-export.ts": "c8ddee95a54f1e6e6b893c068b72ca97",
+      "src/lib/excel-export.ts": "996547e0d1492ccbebcc37310e242cf9",
       "src/lib/font-links.ts": "100aa0679f828068d4d078bbdf73d639",
       "src/lib/font-scale.ts": "3182f555aa17adbb10c559079ba67057",
       "src/lib/form-errors.ts": "41b47f81a38f38feb89efb7fb09cd8cb",
@@ -319,7 +320,7 @@
       "src/routes/guidelines.tsx": "53a5b4b7f10207463bfe1871da64316d",
       "src/routes/index.tsx": "b989e778f05c49b2ad91e100e9fe8e60",
       "src/slivka-head.tsx": "a05000c7f1d8ad96c7f7bec63ae281c4",
-      "src/slivka-provider.tsx": "0abea4d01f700ba202e3f775f1616b7b",
+      "src/slivka-provider.tsx": "a23541672fc23d1b7f97e9c44cb98fac",
       "src/start.ts": "5684c6ddeec813f1264536f3228817b1",
       "src/styles.css": "6a25f2bdfaa5e1ed213fe387b2e13761",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
@@ -345,6 +346,7 @@
       "tests/unit/grid-period.test.ts": "df75b8e3321f1d1bb6706e350cd47849",
       "tests/unit/grid-print-227.test.ts": "5779194524d28ce74635ac0a101ea3ac",
       "tests/unit/grid-toolbar-2211.test.ts": "a845b961ead2af2799f810f4307036e0",
+      "tests/unit/i18n-261.test.tsx": "11db2cefd36f151f636866e96f61b613",
       "tests/unit/journal-lines-234.test.tsx": "ac2f04af0fe5f3e57f33fb8c47fffcf1",
       "tests/unit/journal-lines-width.test.ts": "530732d3d4517edfd7dd4a28d484422c",
       "tests/unit/journal-vat-255.test.tsx": "0242e4cdf1f7bd943ae9f88d331a7ac9",
@@ -926,6 +928,14 @@
         {
           "name": "toasterProps",
           "type": "any"
+        },
+        {
+          "name": "locale",
+          "type": "any"
+        },
+        {
+          "name": "texts",
+          "type": "any"
         }
       ]
     },
@@ -954,6 +964,40 @@
       "name": "Toaster",
       "file": "src/components/ui/sonner",
       "import_path": ""
+    },
+    {
+      "name": "DsTextsProvider",
+      "file": "src/ds-texts.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "locale",
+          "type": "enum",
+          "values": [
+            "cs",
+            "sk"
+          ]
+        },
+        {
+          "name": "texts",
+          "type": "any"
+        }
+      ],
+      "usage": "Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové props mají vyšší prioritu.",
+      "examples": [
+        {
+          "label": "Slovenská aplikace",
+          "code": "\u003cDsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"\u003e\u003cApp /\u003e\u003c/DsTextsProvider\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte uživatelsky viditelné texty knihovny natvrdo; přidejte klíč do DsTexts, DS_TEXTS_CS a DS_TEXTS_SK."
+      ]
     },
     {
       "name": "Tooltip",
@@ -2408,13 +2452,11 @@
         },
         {
           "name": "navSearchPlaceholder",
-          "type": "string",
-          "default": "Hledat v menu…"
+          "type": "string"
         },
         {
           "name": "navSearchEmptyText",
-          "type": "string",
-          "default": "Nic nenalezeno"
+          "type": "string"
         },
         {
           "name": "navSearchMenu",
@@ -2560,8 +2602,7 @@
         },
         {
           "name": "sidePanelLabel",
-          "type": "string",
-          "default": "Poznámky"
+          "type": "string"
         },
         {
           "name": "sidePanelTitle",
@@ -2843,13 +2884,11 @@
       "props": [
         {
           "name": "placeholder",
-          "type": "string",
-          "default": "Vyberte velikost písma"
+          "type": "string"
         },
         {
           "name": "label",
-          "type": "string",
-          "default": "Velikost písma"
+          "type": "string"
         },
         {
           "name": "className",
@@ -4245,8 +4284,7 @@
         },
         {
           "name": "clearLabel",
-          "type": "string",
-          "default": "Zrušit"
+          "type": "string"
         },
         {
           "name": "texts",
@@ -5342,8 +5380,7 @@
         },
         {
           "name": "placeholder",
-          "type": "string",
-          "default": "Vyberte datum"
+          "type": "string"
         },
         {
           "name": "disabled",
@@ -5877,8 +5914,7 @@
         },
         {
           "name": "placeholder",
-          "type": "string",
-          "default": "Vyberte stát"
+          "type": "string"
         },
         {
           "name": "className",
@@ -7546,39 +7582,6 @@
       ],
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
-      ]
-    },
-    {
-      "name": "DsTextsProvider",
-      "file": "src/ds-texts.tsx",
-      "import_path": "@/ds-texts",
-      "props": [
-        {
-          "name": "texts",
-          "type": "Partial<DsTexts>",
-          "required": false
-        },
-        {
-          "name": "locale",
-          "type": "\"cs\" | \"sk\"",
-          "required": false,
-          "default": "cs"
-        },
-        {
-          "name": "children",
-          "type": "ReactNode",
-          "required": true
-        }
-      ],
-      "usage": "Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové props mají vyšší prioritu.",
-      "examples": [
-        {
-          "label": "Slovenská aplikace",
-          "code": "<DsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"><App /></DsTextsProvider>"
-        }
-      ],
-      "antipatterns": [
-        "Nevkládejte uživatelsky viditelné texty knihovny natvrdo; přidejte klíč do DsTexts, DS_TEXTS_CS a DS_TEXTS_SK."
       ]
     }
   ],
