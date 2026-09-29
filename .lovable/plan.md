@@ -10,7 +10,7 @@ Ověřený stav projektu:
 - `ColumnPicker` umí pouze statické `locked`; zatím neumí dynamicky zakázat poslední volbu a ukázat důvod.
 - `JournalLinesRecap` nyní vykresluje ruční tabulky. Stav otevření a záložky už přijímá řízeně přes `recap` z editoru.
 - `DocumentSettingsDialog` stále obsahuje `accountDisplay` i příslušné texty; ukázka je stále předává.
-- `package.json` a katalog v projektu aktuálně uvádějí 2.64.0. Podle zadání je poslední vydání 2.65.0; nové změny nastaví 2.66.0.
+- `package.json` a katalog v projektu aktuálně uvádějí 2.64.0. Čísla vydání se od package liší: poslední vydání v2.65.0 odpovídá package 2.64.0; nové změny nastaví package 2.66.0.
 
 ## Implementace
 
@@ -20,7 +20,7 @@ Ověřený stav projektu:
 - Do části o řádcích účetního zápisu doplnit dvojice účetních sloupců, výchozí krátkou formu, ochranu alespoň jedné formy, nadpis podle právě zobrazené formy a chování `compactAccounts`.
 - Přidat sekci **DS 2.66.0** s migrací aplikací a BREAKING odstraněním `accountDisplay`.
 - Stejné pravidlo promítnout do komentáře `account-columns.tsx`, changelogu v `README.md`, uživatelské dokumentace `components.md`, katalogu a nové položky roadmapy.
-- `.lovable/meta.yaml` ponechat bez změny a bez neprázdného `upstream_versions`.
+- `.lovable/meta.yaml` vůbec neměnit.
 
 ### 2. Obecné účetní sloupce
 
@@ -34,11 +34,13 @@ Ověřený stav projektu:
 
 - Nahradit každý účetní sloupec dvojicí krátká/rozšířená:
   - interní režim: `debitAccount` + `debitAccountName`, `creditAccount` + `creditAccountName`;
-  - režim hlavního účtu: dvojice odpovídající skutečné straně protiúčtu, se správnými nadpisy MD nebo DAL.
+  - režim hlavního účtu: `counterAccount` + `counterAccountName`, se správnými nadpisy „MD“ / „MD účet“ nebo „DAL“ / „DAL účet“ podle strany protiúčtu.
+- ID všech ostatních sloupců (text, částka, zakázka, VS, partner, DPH a další) ponechat beze změny.
 - Krátké sloupce budou výchozí viditelné (~6 rem), rozšířené výchozí skryté (~13 rem); obě formy budou přes společné mapování číst a měnit stejnou hodnotu řádku.
 - Oddělit prezentační ID sloupce od ukládaného pole řádku, aby se `JournalLine`, `toJournalRow(s)` ani datový model neměnily.
 - Zapojit obě formy do stejného `AccountSelect`, hledání číselným prefixem, navigace Tab / Shift+Tab / Enter, editace, tooltipu názvu a validace; chyba základního účtu se zobrazí na každé právě viditelné formě dané strany.
-- Rozšířit `ColumnPicker` o obecný dynamický zákaz vypnutí s vysvětlením. V editoru zakázat vypnutí poslední viditelné formy MD nebo DAL a zobrazit lokalizovaný tooltip „Aspoň jedna forma účtu musí zůstat zobrazená“.
+- Rozšířit `ColumnPicker` o obecný, volitelný dynamický zákaz vypnutí s vysvětlením; výchozí chování všech ostatních gridů zůstane beze změny. V editoru zakázat vypnutí poslední viditelné formy MD nebo DAL a zobrazit lokalizovaný tooltip „Aspoň jedna forma účtu musí zůstat zobrazená“.
+- Stejnou ochranu normalizovat při načtení uloženého rozložení, při „Obnovit výchozí“ a při použití uloženého pohledu; pokud by byly obě formy strany skryté, zobrazit krátkou.
 - `compactAccounts` aplikovat jen na osamocený rozšířený sloupec: hodnota se zkrátí na číslo, nadpis na „MD“ / „DAL“, nadpis dostane tooltip „MD účet – zkráceno kvůli šířce“ / „DAL účet – zkráceno kvůli šířce“ a buňka zachová tooltip názvu účtu. Pokud je viditelná krátká forma, její nadpis i obsah už jsou krátké bez přeznačení jiné formy.
 - Kaskádu šířek rozšířit pouze o nové účetní dvojice; ostatní pořadí zoom → kaskáda → rolování, DPH, ND, zaokrouhlení a detail řádku ponechat beze změny.
 - Změnit klíč nastavení sloupců na `${storageKey}:v4`, aby stará rozložení nepřepsala nové výchozí hodnoty.
@@ -54,7 +56,8 @@ Ověřený stav projektu:
 
 - Převést vestavěné záložky rekapitulace z ručních tabulek na `DataGrid` při zachování záložek Účtování, Zakázky, volitelné DPH, vlastních záložek a rozbalovače vpravo.
 - Účtování sestavit přes `accountColumns()` s výchozí rozšířenou formou a dostupnými krátkými sloupci ve **Sloupce**.
-- Zakázky a DPH převést na stejné gridové chování se součtovým řádkem; pokud Zakázky obsahují účty, použít pro ně rovněž účetní helper, nikoli vlastní formátování.
+- Zakázky a DPH převést na stejné gridové chování se součtovým řádkem; pokud Zakázky obsahují účty, použít pro ně rovněž účetní helper, nikoli vlastní formátování. U záložky DPH změnit pouze vykreslení na DataGrid, nikoli sloupce ani výpočet.
+- Zachovat beze změny částky, značky měn, součty a pořadí řádků, včetně řádků DPH a Zaokrouhlení; porovnat je regresním testem na stejné vstupní sadě.
 - Zapnout běžný výběr sloupců a export; použít automatický zoom formulářového gridu. Stávající `zoom` zachovat pro obal záložek, aby se nezaváděla další nepožadovaná změna API.
 - Přidat `JournalLinesRecap.storageKey?: string` s výchozím `journal-recap` a odvodit z něj oddělené stabilní klíče jednotlivých záložek.
 - Editor předá rekapitulaci klíč odvozený od svého `storageKey`; řízené `open`, `tab` a callbacky zůstanou beze změny, takže aplikace dál ukládá `ui_panel_state.journalRecap` mimo design systém.
@@ -124,7 +127,7 @@ Ověřený stav projektu:
 4. `JournalLinesRecap`:
    - vykresluje DataGrid, nabízí Sloupce a export, má rozšířené účty jako výchozí a správný součtový řádek;
    - zachová záložky, rozbalovač, řízený stav a automatický zoom;
-   - účetní, zakázkové i DPH součty a měnové značky zůstanou stejné.
+   - účetní, zakázkové i DPH součty, měnové značky a pořadí řádků včetně DPH a Zaokrouhlení zůstanou pro stejná data stejné.
 5. `DocumentSettingsDialog`:
    - veřejný typ, česká i slovenská sada a vykreslený dialog neobsahují volbu účtu.
 6. Vizuálně ověřit stránku Účetní formuláře a Účetní deník na široké i úzké ploše, včetně nabídky Sloupce a zkráceného nadpisu.
