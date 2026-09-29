@@ -222,7 +222,7 @@ export function ListError({ error, onRetry }: { error: unknown; onRetry?: () => 
       {detail ? <p className="typo-body text-muted-foreground">{detail}</p> : null}
       {onRetry ? (
         <Button type="button" size="sm" variant="outline" onClick={onRetry}>
-          {dsTexts.errors.retry}
+          {dsTexts.grid.retry}
         </Button>
       ) : null}
     </div>
