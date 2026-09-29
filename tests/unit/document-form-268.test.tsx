@@ -130,7 +130,14 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await view.findByPlaceholderText("Hledat účet nebo číslo…");
     await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)); });
-    await act(async () => { fireEvent.pointerDown(document.body, { button: 0, pointerType: "mouse" }); fireEvent.pointerUp(document.body, { button: 0, pointerType: "mouse" }); });
+    const outside = document.createElement("button");
+    document.body.appendChild(outside);
+    await act(async () => {
+      outside.dispatchEvent(new window.PointerEvent("pointerdown", { bubbles: true, button: 0, pointerType: "mouse" }));
+      outside.dispatchEvent(new window.PointerEvent("pointerup", { bubbles: true, button: 0, pointerType: "mouse" }));
+      outside.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+    });
+    outside.remove();
     expect(view.queryByPlaceholderText("Hledat účet nebo číslo…") === null).toBe(true);
     expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
