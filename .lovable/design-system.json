@@ -7172,11 +7172,6 @@
       ]
     },
     {
-      "name": "SideBadge",
-      "file": "src/components/ds/accounting/document-form.tsx",
-      "import_path": ""
-    },
-    {
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form.tsx",
       "import_path": "",

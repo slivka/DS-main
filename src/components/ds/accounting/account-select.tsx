@@ -67,6 +67,8 @@ export interface AccountSelectProps {
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   /** Obsah uvnitř spouštěče před šipkou, např. strana MD / DAL. */
   suffix?: ReactNode;
+  /** Přístupný název spouštěče, když výběr nemá viditelný popisek. */
+  ariaLabel?: string;
   className?: string;
 }
 
@@ -99,6 +101,7 @@ export function AccountSelect({
   onOpenChange,
   onKeyDown,
   suffix,
+  ariaLabel,
   className,
 }: AccountSelectProps) {
   const [open, setOpen] = useState(defaultOpen);
@@ -157,6 +160,7 @@ export function AccountSelect({
           type="button"
           variant="outline"
           role="combobox"
+          aria-label={ariaLabel}
           disabled={disabled}
           onPointerDownCapture={() => {
             pointerDown.current = true;

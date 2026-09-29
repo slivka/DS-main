@@ -24,7 +24,9 @@ import { formatAccountCode } from "./account-code";
 import type { BookOption } from "./book-select";
 import type { CurrencyOption } from "./currency-amount";
 import { DocumentStatusBadge, type DocumentStatus } from "./document-status-badge";
-import { documentFieldsForType, mainAccountLabelForType, partnerLabelForType, type DocumentFields, type DocumentTypeCode } from "./document-fields";
+import { documentFieldsForType, documentIdentityVariantForType, partnerLabelForType, type DocumentFields, type DocumentIdentityVariant, type DocumentTypeCode } from "./document-fields";
+
+export { documentIdentityVariantForType, type DocumentIdentityVariant };
 import { JournalLinesEditor, type JournalLinesEditorProps } from "./journal-lines-editor";
 import type { JournalLine } from "./journal-lines";
 import { computeJournalTotals } from "./journal-vat";
@@ -81,7 +83,6 @@ export type DocumentPrimaryAction = RecordPrimaryAction;
 export type DocumentMoreAction = RecordMoreAction;
 export type DocumentSettingsAction = { onOpen: () => void };
 export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
-export type DocumentIdentityVariant = "cashBank" | "invoice" | "internal";
 export interface DocumentIdentity {
   variant: DocumentIdentityVariant;
   book: string;
@@ -104,28 +105,27 @@ export type DocumentVatConfig = {
 };
 
 export type DocumentFormTexts = {
-  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string; accountingSection: string;
+  headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
   accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; vatRate: string; vatRateSameAsDocument: string; vatRateNote: string; vatRateMissing: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
-  mainAccount: string; mainSide: string; sideDebit: string; sideCredit: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
-  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string;
+  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string; mainAccountSelect: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   headerSection: "Základní údaje", datesSection: "Datumy", paymentSection: "Platební údaje", propertiesSection: "Vlastnosti dokladu",
-  rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka", accountingSection: "Účtování a částka",
+  rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
   accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", vatRate: "Kurz DPH", vatRateSameAsDocument: "stejný jako kurz dokladu", vatRateNote: "Důvod ručního kurzu DPH", vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
-  mainAccount: "Hlavní účet", mainSide: "Strana", sideDebit: "MD", sideCredit: "DAL", excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit",
+  excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit", mainAccountSelect: "Hlavní účet",
 };
 
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
@@ -208,32 +208,24 @@ const ReadField = ({ id, value, muted, mono }: { id: string; value: ReactNode; m
   <div id={id} aria-readonly="true" className={cn("flex min-h-9 items-center text-sm", muted && "italic text-muted-foreground", mono && "font-mono tabular-nums")}>{value}</div>
 );
 
-export const SideBadge = ({ side, texts = DEFAULT_DOCUMENT_FORM_TEXTS }: { side: "MD" | "D"; texts?: DocumentFormTexts }) => (
-  <span title={texts.mainSide} className="rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
-    {side === "MD" ? texts.sideDebit : texts.sideCredit}
-  </span>
-);
-
-export function documentIdentityVariantForType(documentType: DocumentTypeCode | string): DocumentIdentityVariant {
-  const code = documentType.toUpperCase();
-  if (code === "PO" || code === "BA") return "cashBank";
-  if (["FV", "FP", "ZFV", "ZFP", "DDPZ", "DDPOZ"].includes(code)) return "invoice";
-  return "internal";
-}
-
-function DocumentIdentityLine({ identity, direction, fallback, texts, currencySymbol, accountLabel, accountValue, editingAccount, onStartAccountEdit, onAccountChange, onAccountOpenChange, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencySymbol?: string; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; onStartAccountEdit?: () => void; onAccountChange: (code: string) => void; onAccountOpenChange: (open: boolean) => void; accountOptions: AccountOption[] }) {
+function DocumentIdentityLine({ identity, direction, fallback, texts, currencySymbol, accountLabel, accountValue, editingAccount, canEditAccount, pencilRef, onStartAccountEdit, onAccountChange, onAccountClose, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencySymbol?: string; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; canEditAccount: boolean; pencilRef: React.RefObject<HTMLButtonElement | null>; onStartAccountEdit: () => void; onAccountChange: (code: string) => void; onAccountClose: () => void; accountOptions: AccountOption[] }) {
   const number = identity.number || null;
-  const account = identity.account;
+  // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
+  const account = identity.variant === "internal" ? undefined : identity.account;
   const items: ReactNode[] = [
     <span key="book" className="whitespace-nowrap">{identity.book}</span>,
     <span key="period" className="whitespace-nowrap">{identity.period}</span>,
   ];
   if (identity.variant === "cashBank") items.push(<span key="currency" className="whitespace-nowrap font-mono tabular-nums">{currencySymbol}</span>);
+  const pencil = !editingAccount && canEditAccount && account ? account.disabledReason
+    ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={`${texts.changeAccount}: ${account.disabledReason}`} data-slot="document-identity-account-locked" className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} tabIndex={-1} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip>
+    : <Tooltip><TooltipTrigger asChild><Button ref={pencilRef} type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip>
+    : null;
   if (account) items.push(
     <span key="account" className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
       <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">{account.side}</span>
-      {editingAccount ? <span className="w-[18rem] max-w-full"><AccountSelect accounts={accountOptions} value={accountValue} onChange={onAccountChange} defaultOpen onOpenChange={onAccountOpenChange} onKeyDown={(event) => { if (event.key === "Escape") onAccountOpenChange(false); }} /></span> : <span data-slot="document-identity-account" className="truncate">{accountLabel ?? account.label}</span>}
-      {!editingAccount && onStartAccountEdit ? account.disabledReason ? <Tooltip><TooltipTrigger asChild><span><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip> : <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip> : null}
+      {editingAccount ? <span className="w-[18rem] max-w-full"><AccountSelect ariaLabel={texts.mainAccountSelect} accounts={accountOptions} value={accountValue} onChange={onAccountChange} defaultOpen onOpenChange={(open) => { if (!open) onAccountClose(); }} /></span> : <span data-slot="document-identity-account" className="truncate">{accountLabel ?? account.label}</span>}
+      {pencil}
     </span>,
   );
   return (
@@ -269,18 +261,20 @@ export function DocumentForm({
   saveAction, primaryAction, moreActions = [], settings, error, notices, readOnly = false, readOnlyReason, readOnlyTitle, readOnlyActions, texts, className,
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
-  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, changeAccount: dsTexts.documentForm.changeAccount, currencyDisabled: dsTexts.documentForm.currencyDisabled, ...texts };
+  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, changeAccount: dsTexts.documentForm.changeAccount, currencyDisabled: dsTexts.documentForm.currencyDisabled, mainAccountSelect: dsTexts.documentForm.mainAccountSelect, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
-  const [selectedIdentityAccountLabel, setSelectedIdentityAccountLabel] = useState<string>();
-  const identityKey = identity ? `${identity.variant}|${identity.book}|${identity.period}|${identity.account?.side ?? ""}|${identity.account?.label ?? ""}|${identity.number ?? ""}` : "";
-  const previousIdentityKey = useRef(identityKey);
+  // Popisek vybraného účtu platí jen, dokud value.mainAccountId odpovídá vybranému kódu.
+  const [selectedIdentityAccount, setSelectedIdentityAccount] = useState<{ code: string; label: string } | null>(null);
+  const pencilRef = useRef<HTMLButtonElement>(null);
+  const returnFocusToPencil = useRef(false);
   useEffect(() => {
-    if (previousIdentityKey.current === identityKey) return;
-    previousIdentityKey.current = identityKey;
-    setSelectedIdentityAccountLabel(undefined);
-  }, [identityKey]);
+    if (editingIdentityAccount || !returnFocusToPencil.current) return;
+    returnFocusToPencil.current = false;
+    pencilRef.current?.focus();
+  }, [editingIdentityAccount]);
+  const closeIdentityAccount = () => { returnFocusToPencil.current = true; setEditingIdentityAccount(false); };
   const formRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = formRef.current;
@@ -308,12 +302,14 @@ export function DocumentForm({
     : (value.currency !== homeCurrency ? documentLinesSum : roundedLinesSum);
   const total = totalMode === "sum" ? sumTotal : value.amountTotal;
   const partner = partners.find((item) => item.id === value.partnerId);
-  const allowedMainAccounts = mainAccountOptions ?? accounts;
-  const account = allowedMainAccounts.find((item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""));
+  const sameAccount = (a?: string | null, b?: string | null) => !!a && !!b && a.replace(/\D/g, "") === b.replace(/\D/g, "");
+  const allowedMainAccounts = mainAccountOptions ?? [];
+  const account = [...allowedMainAccounts, ...accounts].find((item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""));
   const mode = f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
   const partnerLabel = texts?.partner ?? partnerLabelForType(documentType, value.direction);
   const foreign = value.currency !== homeCurrency;
   const currencySymbol = currencies?.find((item) => item.code === value.currency)?.symbol;
+  const currencyOptions = (currencies ?? []).map((item) => ({ value: item.code, label: item.label ? `${item.code} - ${item.label}` : item.code, selectedLabel: item.code }));
   const currentBook = books.find((item) => item.id === value.bookId);
   const identityVariant = identity?.variant ?? documentIdentityVariantForType(documentType);
   const effectiveIdentity: DocumentIdentity = identity ?? {
@@ -323,8 +319,8 @@ export function DocumentForm({
     ...(f.mainAccount && value.mainAccountId && mainSide ? { account: { side: mainSide === "MD" ? "MD" : "DAL", label: account ? `${formatAccountCode(account.code)} - ${account.name}` : formatAccountCode(value.mainAccountId) } } : {}),
     number: value.number,
   };
-  const identityAccountLabel = selectedIdentityAccountLabel ?? effectiveIdentity.account?.label;
-  const canEditIdentityAccount = effectiveIdentity.variant === "invoice" && !!effectiveIdentity.account?.editable && !mainAccountLocked && can("mainAccountId");
+  const identityAccountLabel = selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId) ? selectedIdentityAccount.label : effectiveIdentity.account?.label;
+  const canEditIdentityAccount = effectiveIdentity.variant === "invoice" && !!effectiveIdentity.account?.editable && !mainAccountLocked && can("mainAccountId") && allowedMainAccounts.length > 0;
   const actionMenu = settings ? [{ id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings }, ...moreActions.map((action, index) => index === 0 ? { ...action, separatorBefore: true } : action)] : moreActions;
 
   const field = (id: string, label: ReactNode, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
@@ -365,7 +361,7 @@ export function DocumentForm({
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
-          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} currencySymbol={currencySymbol ?? value.currency} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} onStartAccountEdit={canEditIdentityAccount ? () => setEditingIdentityAccount(true) : undefined} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => item.code.replace(/\D/g, "") === mainAccountId.replace(/\D/g, "")); setSelectedIdentityAccountLabel(selected ? `${formatAccountCode(selected.code)} - ${selected.name}` : formatAccountCode(mainAccountId)); patch({ mainAccountId }); setEditingIdentityAccount(false); }} onAccountOpenChange={(open) => { if (!open) setEditingIdentityAccount(false); }} accountOptions={allowedMainAccounts} />
+          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} currencySymbol={currencySymbol ?? value.currency} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} canEditAccount={canEditIdentityAccount} pencilRef={pencilRef} onStartAccountEdit={() => setEditingIdentityAccount(true)} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => sameAccount(item.code, mainAccountId)); if (!selected) return; setSelectedIdentityAccount({ code: mainAccountId, label: `${formatAccountCode(selected.code)} - ${selected.name}` }); patch({ mainAccountId }); closeIdentityAccount(); }} onAccountClose={closeIdentityAccount} accountOptions={allowedMainAccounts} />
         {f.partner ? (
           <>
              <SectionHeading>{t.headerSection}</SectionHeading>
@@ -394,9 +390,9 @@ export function DocumentForm({
 
         <SectionHeading>{t.amountOnlySection}</SectionHeading>
         <div className="grid grid-cols-20 gap-3">
-          <div data-slot="document-amount-currency" className="col-span-20 flex flex-nowrap items-start justify-end gap-3 @min-[40rem]:col-start-12 @min-[40rem]:col-span-9">
-            <div className="w-[18rem] max-w-full">{field("document-amountTotal", <span className="flex w-full items-center justify-between gap-2 whitespace-nowrap"><span className="min-w-0 truncate">{`${t.amountTotal} (${currencySymbol ?? value.currency})`}</span>{totalMode === "sum" ? <span className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground">{t.sumFromLines}</span> : null}</span>, <div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>, 6)}</div>
-            {identityVariant !== "cashBank" ? <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyLocked ? <ReadField id="document-currency" mono value={value.currency} /> : currencies && (!can("currency") || currencyDisabledReason) ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason ?? t.currencyDisabled}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencies.map((item) => ({ value: item.code, label: item.code }))} /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason ?? t.currencyDisabled}</TooltipContent></Tooltip> : currencies ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencies.map((item) => ({ value: item.code, label: item.code }))} /> : <ReadField id="document-currency" mono value={value.currency} />, 3)}</div> : null}
+          <div data-slot="document-amount-currency" className="col-span-20 flex min-w-0 flex-nowrap items-start justify-end gap-3">
+            <div className="min-w-0 flex-[0_1_18rem]">{field("document-amountTotal", <span className="flex w-full items-center justify-between gap-2 whitespace-nowrap"><span className="min-w-0 truncate">{`${t.amountTotal} (${currencySymbol ?? value.currency})`}</span>{totalMode === "sum" ? <span className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground">{t.sumFromLines}</span> : null}</span>, <div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>, 6)}</div>
+            {identityVariant !== "cashBank" ? <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyLocked ? <ReadField id="document-currency" mono value={value.currency} /> : currencies && (!can("currency") || currencyDisabledReason) ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason ?? t.currencyDisabled}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencyOptions} /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason ?? t.currencyDisabled}</TooltipContent></Tooltip> : currencies ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} /> : <ReadField id="document-currency" mono value={value.currency} />, 3)}</div> : null}
           </div>
              {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-[9rem]" />, 3, false, "[&_p]:whitespace-nowrap") : null}
           {foreign && vatRateField ? field("document-vat-rate", t.vatRate, vatRateField.sameAsDocument ? <ReadField id="document-vat-rate" value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>} /> : <><RateField id="document-vat-rate" value={vatRateField.value ?? null} currency={value.currency} currencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={vatRateField.rateAmount ?? rateAmount} suggestedRate={vatRateField.suggestedRate} suggestedInfo={vatRateField.suggestedInfo} manual={!!vatRateField.manual} note={vatRateField.note ?? ""} showNote={false} noteLabel={t.vatRateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={readOnly || vatRateField.readOnly} readOnly={readOnly || vatRateField.readOnly} onChange={(rate) => vatRateField.onChange({ rate, manual: true })} onNoteChange={(note) => vatRateField.onChange({ note })} onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })} className="w-full @min-[40rem]:w-36" />{!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? <p role="status" data-slot="document-vat-rate-missing" className="text-xs font-medium text-destructive">{t.vatRateMissing}</p> : null}</>, 3, false, "@min-[40rem]:col-start-1") : null}

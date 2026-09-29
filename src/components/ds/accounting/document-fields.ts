@@ -31,6 +31,17 @@ export function mainAccountLabelForType(code: DocumentTypeCode | string): string
   return labels[code.toUpperCase() as DocumentTypeCode] ?? "Hlavní účet";
 }
 
+/** Varianta identifikačního řádku dokladu. */
+export type DocumentIdentityVariant = "cashBank" | "invoice" | "internal";
+
+/** Výchozí varianta identifikačního řádku podle druhu dokladu. */
+export function documentIdentityVariantForType(documentType: DocumentTypeCode | string): DocumentIdentityVariant {
+  const code = documentType.toUpperCase();
+  if (code === "PO" || code === "BA") return "cashBank";
+  if (["FV", "FP", "ZFV", "ZFP", "DDPZ", "DDPOZ"].includes(code)) return "invoice";
+  return "internal";
+}
+
 /** Popisek partnera podle druhu a směru dokladu. */
 export function partnerLabelForType(code: DocumentTypeCode | string, _direction?: "in" | "out" | null): string {
   const normalized = code.toUpperCase();
