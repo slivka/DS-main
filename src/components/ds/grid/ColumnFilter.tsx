@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type FilterOption = { value: string; label: string; section?: string };
 
@@ -28,7 +28,7 @@ type ColumnFilterProps = {
  * / Clear actions. An empty selection means "no filter".
  */
 export function ColumnFilter({ options, selected, onChange, label, children, texts: textOverrides }: ColumnFilterProps) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const [search, setSearch] = useState("");
 
   const active = selected.size > 0;

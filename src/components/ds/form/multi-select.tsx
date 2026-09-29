@@ -5,6 +5,7 @@ import { Input } from "../../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "../grid/grid-zoom";
 import { useResizableWidth } from "../../../hooks/use-resizable-width";
+import { useDsTexts } from "../../../ds-texts";
 import { ComboboxResizeHandle } from "./resizable-combobox";
 
 export type MultiSelectOption = { value: string; label: string };
@@ -24,7 +25,7 @@ export function MultiSelect({
   zoom,
   showSearch = true,
   showSelectAll = true,
-  clearLabel = "Vymazat",
+  clearLabel,
 }: {
   options: MultiSelectOption[];
   selected: string[];
@@ -39,11 +40,13 @@ export function MultiSelect({
   zoom?: number;
   /** Zobrazit řádek hledání (výchozí true). */
   showSearch?: boolean;
-  /** Zobrazit tlačítko „Vybrat vše“ (výchozí true). */
+  /** Zobrazit tlačítko „{dsTexts.multiSelect.selectAll}“ (výchozí true). */
   showSelectAll?: boolean;
   /** Text tlačítka pro vymazání výběru. */
   clearLabel?: string;
 }) {
+  const dsTexts = useDsTexts();
+  const resolvedClearLabel = clearLabel ?? dsTexts.grid.clear;
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -108,13 +111,13 @@ export function MultiSelect({
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder={placeholder ?? "Hledat…"}
+                  placeholder={placeholder ?? dsTexts.grid.searchPlaceholder}
                   className="h-[2.2em] pl-[2em] text-[0.95em]"
                 />
               </div>
             </div>
           ) : null}
-          {showSelectAll || clearLabel ? (
+          {showSelectAll || resolvedClearLabel ? (
             <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
               {showSelectAll ? (
                 <button
@@ -122,7 +125,7 @@ export function MultiSelect({
                   className="typo-action text-primary hover:underline"
                   onClick={() => onChange(options.map((o) => o.value))}
                 >
-                  Vybrat vše
+                  {dsTexts.multiSelect.selectAll}
                 </button>
               ) : (
                 <span />
@@ -132,13 +135,13 @@ export function MultiSelect({
                 className="typo-action text-muted-foreground hover:underline"
                 onClick={() => onChange([])}
               >
-                {clearLabel}
+                {resolvedClearLabel}
               </button>
             </div>
           ) : null}
           <div className="max-h-[20em] overflow-auto py-1">
             {filtered.length === 0 ? (
-              <p className="px-3 py-2 text-[0.9em] text-muted-foreground">Žádné hodnoty.</p>
+              <p className="px-3 py-2 text-[0.9em] text-muted-foreground">{dsTexts.multiSelect.noValues}</p>
             ) : (
               filtered.map((opt) => {
                 const checked = selected.includes(opt.value);

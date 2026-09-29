@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { GridToolbarOverflowContext } from "./grid-toolbar";
 
 export type GridMoreItem = {
@@ -46,7 +46,7 @@ export function GridMoreMenu({
   responsiveOverflow?: boolean;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const overflowLevel = useContext(GridToolbarOverflowContext);
   const shownTools = !responsiveOverflow || overflowLevel >= 1 ? tools : null;
   const shownSecondary = !responsiveOverflow || overflowLevel >= 2 ? secondary : null;
@@ -70,8 +70,8 @@ export function GridMoreMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[18em] p-[0.35em]" style={{ fontSize }}>
-        {shownCompact ? <div className={`grid-more-compact pb-[0.5em] ${(shownTools || shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Parametry</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownCompact}</div></div> : null}
-        {shownTools ? <div className={`grid-more-tools pb-[0.5em] ${(shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">Nástroje</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownTools}</div></div> : null}
+        {shownCompact ? <div className={`grid-more-compact pb-[0.5em] ${(shownTools || shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">{texts.moreParameters}</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownCompact}</div></div> : null}
+        {shownTools ? <div className={`grid-more-tools pb-[0.5em] ${(shownSecondary || shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}><div className="px-[0.6em] pb-[0.25em] pt-[0.45em] text-[0.8em] font-semibold text-muted-foreground">{texts.moreTools}</div><div className="flex flex-wrap items-center gap-[0.35em] px-[0.35em]">{shownTools}</div></div> : null}
         {shownSecondary ? <div className={`flex flex-wrap items-center gap-[0.35em] px-[0.35em] pb-[0.5em] ${(shownItems.length) ? "mb-[0.35em] border-b border-border/50" : ""}`}>{shownSecondary}</div> : null}
         {shownItems.map((item, i) => {
           const key = item.label ? `${item.label}-${i}` : `item-${i}`;

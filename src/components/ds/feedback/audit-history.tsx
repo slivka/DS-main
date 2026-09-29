@@ -1,5 +1,6 @@
 import { History } from "lucide-react";
 
+import { useDsTexts } from "../../../ds-texts";
 import { Button } from "../../ui/button";
 import { GridAction } from "../grid/grid-action";
 import { formatUserDateTime } from "../../../lib/date-time-preferences";
@@ -22,9 +23,9 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   delete: "Odstranění",
 };
 
-const shortValue = (value: unknown): string => {
+const shortValue = (value: unknown, yes = "ano", no = "ne"): string => {
   if (value == null || value === "") return "—";
-  if (typeof value === "boolean") return value ? "ano" : "ne";
+  if (typeof value === "boolean") return value ? yes : no;
   const text = String(value);
   return text.length > 60 ? `${text.slice(0, 60)}…` : text;
 };
@@ -34,9 +35,9 @@ export function HistoryPanel({
   entries,
   title,
   onClose,
-  heading = "Historie změn",
-  emptyText = "Zatím bez zaznamenaných změn.",
-  closeLabel = "Zavřít",
+  heading,
+  emptyText,
+  closeLabel,
   fieldLabel = (key: string) => key,
   actionLabels = AUDIT_ACTION_LABELS,
 }: {
@@ -49,6 +50,10 @@ export function HistoryPanel({
   fieldLabel?: (key: string) => string;
   actionLabels?: Record<string, string>;
 }) {
+  const dsTexts = useDsTexts();
+  const resolvedHeading = heading ?? dsTexts.recordDialog.history;
+  const resolvedEmpty = emptyText ?? dsTexts.recordDialog.noHistory;
+  const resolvedClose = closeLabel ?? dsTexts.common.close;
   return (
     <div
       className="flex flex-col gap-4"
@@ -57,16 +62,16 @@ export function HistoryPanel({
     >
       <div className="flex items-start justify-between gap-3 border-b pb-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold uppercase">{heading}</h2>
+          <h2 className="text-sm font-semibold uppercase">{resolvedHeading}</h2>
           {title ? <p className="truncate text-sm text-muted-foreground">{title}</p> : null}
         </div>
         <Button type="button" variant="ghost" size="sm" onClick={onClose}>
-          {closeLabel}
+          {resolvedClose}
         </Button>
       </div>
 
       {entries.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{emptyText}</p>
+        <p className="text-sm text-muted-foreground">{resolvedEmpty}</p>
       ) : (
         <ol className="space-y-3">
           {entries.map((row) => (
@@ -77,16 +82,16 @@ export function HistoryPanel({
                   {formatUserDateTime(row.createdAt)}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">{row.author ?? "Systém"}</p>
+              <p className="text-xs text-muted-foreground">{row.author ?? dsTexts.recordDialog.system}</p>
               {row.action === "update" && row.changedFields?.length ? (
                 <ul className="mt-2 space-y-1">
                   {row.changedFields.map((field) => (
                     <li key={field} className="text-xs">
                       <span className="font-medium">{fieldLabel(field)}: </span>
                       <span className="text-muted-foreground line-through">
-                        {shortValue(row.oldData?.[field])}
+                        {shortValue(row.oldData?.[field], dsTexts.recordDialog.yes, dsTexts.recordDialog.no)}
                       </span>
-                      <span> → {shortValue(row.newData?.[field])}</span>
+                      <span> → {shortValue(row.newData?.[field], dsTexts.recordDialog.yes, dsTexts.recordDialog.no)}</span>
                     </li>
                   ))}
                 </ul>

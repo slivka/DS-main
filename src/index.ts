@@ -1,5 +1,6 @@
 import "./styles.css";
 
+export * from "./ds-texts";
 export { SlivkaProvider, type SlivkaProviderProps } from "./slivka-provider";
 export { SlivkaHead, type SlivkaHeadProps } from "./slivka-head";
 

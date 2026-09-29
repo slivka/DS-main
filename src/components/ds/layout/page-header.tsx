@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { DEFAULT_PANE_CHROME_TEXTS, usePaneChrome, type PaneChrome, type PaneChromeTexts } from "../panes/pane-context";
 
@@ -46,7 +47,8 @@ export interface PageHeaderMenuAction {
  */
 export function PageHeader({ title, titleSlot, titleBadge, description, actions, menuActions = [], paneTexts, className, ...props }: PageHeaderProps) {
   const chrome = usePaneChrome();
-  const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...paneTexts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...(dsTexts.paneChrome ?? {}), ...paneTexts };
   React.useEffect(() => {
     if (import.meta.env.DEV && chrome && actions) console.warn("PageHeader: v panelu použijte menuActions místo actions.");
     if (import.meta.env.DEV && description) console.warn("PageHeader: description se nezobrazuje – kontext patří do GridContextBar / horní lišty.");
@@ -204,7 +206,7 @@ function RecordNavButtons({ chrome, t }: ChromeProps) {
           <ArrowUp className="size-4" />
         </IconButton>
         <span className="min-w-12 text-center text-sm tabular-nums text-muted-foreground">
-          {(nav.index + 1).toLocaleString("cs-CZ")} / {nav.total.toLocaleString("cs-CZ")}
+          {(nav.index + 1).toLocaleString()} / {nav.total.toLocaleString()}
         </span>
         <IconButton label={t.nextRecord} disabled={nav.index >= nav.total - 1} onClick={nav.next}>
           <ArrowDown className="size-4" />

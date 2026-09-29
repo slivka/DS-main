@@ -278,3 +278,15 @@ Tab / Shift+Tab mezi editory, Enter potvrdí, Esc vrátí. Převýšení maxima 
 ```
 
 Nepoužívejte pro řádky účetního zápisu – ty patří do `JournalLinesEditor`.
+
+## Jazyk knihovny (2.61.0)
+
+Aplikace nastaví jazyk jednou v kořeni:
+
+```tsx
+<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
+  <App />
+</DsTextsProvider>
+```
+
+Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.

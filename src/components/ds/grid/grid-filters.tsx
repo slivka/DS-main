@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { gridFontSize } from "./grid-zoom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export function GridFilterToggle({
   open,
@@ -28,7 +28,7 @@ export function GridFilterToggle({
   zoom?: number;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const active = activeCount > 0;
   const hasDefault = defaultFilters.length > 0;
   const showDefault = !active && hasDefault;
@@ -109,7 +109,7 @@ export function GridFilterToggle({
                 {active && (
                   <>
                     <p className="font-semibold pt-1">{texts.activeFilters}</p>
-                    {(activeFilters.length ? activeFilters : [`${activeCount} aktivní`]).map(
+                    {(activeFilters.length ? activeFilters : [texts.activeCount(activeCount)]).map(
                       (filter) => (
                         <p key={filter} className="font-normal">
                           {filter}
@@ -181,7 +181,7 @@ export function GridResultCount({
   className?: string;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const filtered = shown !== total;
   return (
     <div
@@ -211,8 +211,8 @@ export function GridResultCount({
           {chip.onRemove ? (
             <button
               type="button"
-              aria-label={`Zrušit filtr ${chip.label}`}
-              title={`Zrušit filtr ${chip.label}`}
+              aria-label={texts.removeFilter(chip.label)}
+              title={texts.removeFilter(chip.label)}
               onClick={chip.onRemove}
               className="rounded-full hover:text-destructive"
             >

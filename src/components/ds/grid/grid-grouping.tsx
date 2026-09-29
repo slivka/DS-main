@@ -22,7 +22,7 @@ import { gridFontSize } from "./grid-zoom";
 import { compareValues } from "./grid-sort";
 import { fmtAmount } from "../../../lib/format";
 import { formatUserDate } from "../../../lib/date-time-preferences";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /** Granularita seskupení podle data. */
 export type GroupGranularity = "day" | "month" | "quarter" | "year";
@@ -203,14 +203,14 @@ export function GroupControl({
   hidden?: boolean;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   if (hidden) return null;
   // Skrytá lišta, ale seskupení stále platí → oranžový stav zužující pohled na data.
   const hiddenActive = !grouping.enabled && grouping.groups.length > 0;
   const label = grouping.enabled
     ? texts.groupingDisable
     : hiddenActive
-      ? `Skrytý pruh se seskupením (${grouping.groups.length}) – zobrazit`
+      ? texts.groupingHidden(grouping.groups.length)
       : texts.groupingEnable;
   return (
     <Button
@@ -228,7 +228,7 @@ export function GroupControl({
       onClick={() => grouping.setEnabled(!grouping.enabled)}
     >
       <Layers className="size-[1.2em]" />
-      {hiddenActive && <span className="typo-action">Seskupeno ({grouping.groups.length})</span>}
+      {hiddenActive && <span className="typo-action">{texts.groupedCount(grouping.groups.length)}</span>}
     </Button>
   );
 }
@@ -239,23 +239,8 @@ function isoDate(value: unknown): string | null {
   return /^\d{4}-\d{2}-\d{2}/.test(value) ? value : null;
 }
 
-const MONTHS = [
-  "leden",
-  "únor",
-  "březen",
-  "duben",
-  "květen",
-  "červen",
-  "červenec",
-  "srpen",
-  "září",
-  "říjen",
-  "listopad",
-  "prosinec",
-];
-
 /** Klíč a popisek skupiny pro jednu hodnotu podle zvojené granularity. */
-function bucket(value: unknown, granularity: GroupGranularity, emptyLabel = "(nevyplněno)"): { key: string; label: string } {
+function bucket(value: unknown, granularity: GroupGranularity, texts: GridTexts): { key: string; label: string } {
   const iso = isoDate(value);
   if (iso) {
     const [y, m] = iso.slice(0, 10).split("-") as [string, string, string];
@@ -265,16 +250,16 @@ function bucket(value: unknown, granularity: GroupGranularity, emptyLabel = "(ne
         return { key: y, label: y };
       case "quarter": {
         const q = Math.floor((month - 1) / 3) + 1;
-        return { key: `${y}-Q${q}`, label: `${q}. čtvrtletí ${y}` };
+        return { key: `${y}-Q${q}`, label: texts.quarterLabel(q, y) };
       }
       case "day":
         return { key: iso.slice(0, 10), label: formatUserDate(iso.slice(0, 10)) };
       default:
-        return { key: `${y}-${m}`, label: `${MONTHS[month - 1] ?? m} ${y}` };
+        return { key: `${y}-${m}`, label: `${new Intl.DateTimeFormat(texts.locale, { month: "long" }).format(new Date(Number(y), month - 1, 1))} ${y}` };
     }
   }
   const text = value === null || value === undefined || value === "" ? "" : String(value);
-  return { key: text || "\u0000", label: text || emptyLabel };
+  return { key: text || "\u0000", label: text || texts.groupingEmpty };
 }
 
 /** Vrátí id sloupců, jejichž hodnoty jsou datumy (podle prvního vyplněného řádku). */
@@ -318,8 +303,10 @@ export function useGroupedRows<T>(
   grouping: GroupingApi,
   columns: { id: string; label: string }[],
   getValue: (row: T, id: string) => unknown,
+  textOverrides?: Partial<GridTexts>,
 ): GroupedItem<T>[] {
   const { active, groups, collapsed } = grouping;
+  const texts = useResolvedGridTexts(textOverrides);
   return useMemo(() => {
     if (!active) return rows.map((row) => ({ type: "row", row }) as GroupedItem<T>);
 
@@ -346,7 +333,7 @@ export function useGroupedRows<T>(
       }
       const map = new Map<string, { label: string; items: T[] }>();
       for (const row of items) {
-        const b = bucket(getValue(row, spec.id), spec.granularity);
+        const b = bucket(getValue(row, spec.id), spec.granularity, texts);
         const entry = map.get(b.key) ?? { label: b.label, items: [] };
         entry.items.push(row);
         map.set(b.key, entry);
@@ -382,7 +369,7 @@ export function useGroupedRows<T>(
     walk(rows, 0, "", false);
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rows, active, groups, collapsed, columns]);
+  }, [rows, active, groups, collapsed, columns, texts]);
 }
 
 /** Záhlaví jedné skupiny v tabulce. */
@@ -451,7 +438,7 @@ export function GroupBar({
   zoom?: number;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const [over, setOver] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -556,9 +543,9 @@ export function GroupBar({
                 <button
                   type="button"
                   className="text-primary-foreground/70 hover:text-primary-foreground"
-                  title="Seskupit datum podle"
+                  title={texts.groupingDateBy}
                 >
-                  {GROUP_GRANULARITIES.find((x) => x.value === g.granularity)?.label}
+                  {{ day: texts.groupDay, month: texts.groupMonth, quarter: texts.groupQuarter, year: texts.groupYear }[g.granularity]}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
@@ -578,7 +565,7 @@ export function GroupBar({
           <button
             type="button"
             onClick={() => grouping.remove(g.id)}
-            title="Zrušit seskupení podle sloupce"
+            title={texts.groupingRemoveColumn}
             className="text-primary-foreground/70 hover:text-primary-foreground"
           >
             <X className="size-[1em]" />

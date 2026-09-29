@@ -7547,6 +7547,39 @@
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
       ]
+    },
+    {
+      "name": "DsTextsProvider",
+      "file": "src/ds-texts.tsx",
+      "import_path": "@/ds-texts",
+      "props": [
+        {
+          "name": "texts",
+          "type": "Partial<DsTexts>",
+          "required": false
+        },
+        {
+          "name": "locale",
+          "type": "\"cs\" | \"sk\"",
+          "required": false,
+          "default": "cs"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true
+        }
+      ],
+      "usage": "Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové props mají vyšší prioritu.",
+      "examples": [
+        {
+          "label": "Slovenská aplikace",
+          "code": "<DsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"><App /></DsTextsProvider>"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte uživatelsky viditelné texty knihovny natvrdo; přidejte klíč do DsTexts, DS_TEXTS_CS a DS_TEXTS_SK."
+      ]
     }
   ],
   "assets": [

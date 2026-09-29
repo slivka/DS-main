@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { gridFontSize } from "./grid-zoom";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /** 0 = zobrazit vše (výchozí hodnota). */
 export const PAGE_SIZE_OPTIONS = [0, 25, 50, 100, 200];
@@ -89,7 +89,7 @@ export function GridPagination({
   className = "",
   texts: textOverrides,
 }: Props) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const label = (size: number) => (size === 0 ? texts.all : String(size));
   const from = total === 0 ? 0 : pageSize === 0 ? 1 : (page - 1) * pageSize + 1;
   const to = pageSize === 0 ? total : Math.min(page * pageSize, total);

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { DndContext, PointerSensor, closestCenter, pointerWithin, type CollisionDetection, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 
 import { Button } from "../../ui/button";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import {
   buildTabMenuActions,
@@ -165,7 +166,8 @@ function PaneLayoutInner({
   rootRef,
 }: PaneLayoutProps & { api: PaneTabsApi; minPaneWidth: number; rootRef: React.Ref<HTMLDivElement> }) {
   const { state } = api;
-  const t = { ...DEFAULT_PANE_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_PANE_TEXTS, ...dsTexts.paneChrome, ...dsTexts.panes, ...texts };
   const emptyHint = t.emptyHint;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState(0);

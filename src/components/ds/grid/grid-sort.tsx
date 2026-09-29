@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { TableHead } from "../../ui/table";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type SortDir = "asc" | "desc";
 
@@ -122,7 +122,7 @@ export function SortHead<Id extends string>({
   children,
   texts: textOverrides,
 }: SortHeadProps<Id>) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const active = sort.key === id;
   return (
     <TableHead
@@ -142,7 +142,7 @@ export function SortHead<Id extends string>({
           className={`typo-action inline-flex items-center gap-1 hover:text-foreground ${
             active ? "text-foreground" : ""
           }`}
-          aria-label={`Seřadit podle ${label}`}
+          aria-label={texts.sortBy(label)}
         >
           {label}
           {active &&

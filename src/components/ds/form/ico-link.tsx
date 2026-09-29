@@ -1,5 +1,6 @@
 import { ExternalLink } from "lucide-react";
 
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
 export type IcoLinkTarget = "auto" | "or" | "ares";
@@ -35,10 +36,11 @@ export interface IcoLinkProps {
 /** České IČO s ověřeným odkazem do obchodního rejstříku nebo ARES. */
 export function IcoLink({ ico: icoProp, value, country, kind = "company", target = "auto", className }: IcoLinkProps) {
   const ico = (icoProp || value || "").trim();
+  const dsTexts = useDsTexts();
   if (!ico) return null;
   const resolved = target === "auto" ? (kind === "person" ? "ares" : "or") : target;
   const linked = (!country || country.toUpperCase() === "CZ") && isValidCzIco(ico);
-  const label = resolved === "ares" ? "Otevřít v ARES" : "Otevřít v obchodním rejstříku";
+  const label = resolved === "ares" ? dsTexts.contacts.openAres : dsTexts.contacts.openRegistry;
   if (!linked) return <span className={cn("font-mono tabular-nums", className)}>{ico}</span>;
   return (
     <a

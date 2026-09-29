@@ -1,25 +1,6 @@
 import { OptionSelect, type SelectOption } from "./option-select";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-
-const MONTH_LABELS_CS = [
-  "Leden",
-  "Únor",
-  "Březen",
-  "Duben",
-  "Květen",
-  "Červen",
-  "Červenec",
-  "Srpen",
-  "Září",
-  "Říjen",
-  "Listopad",
-  "Prosinec",
-];
-
-const MONTH_OPTIONS: SelectOption[] = MONTH_LABELS_CS.map((label, index) => ({
-  value: String(index + 1),
-  label,
-}));
 
 /**
  * Výběr měsíce a roku – např. pro účetní období. Hodnota je „YYYY-MM“
@@ -31,8 +12,8 @@ export function MonthYearSelect({
   minYear = new Date().getFullYear() - 10,
   maxYear = new Date().getFullYear() + 5,
   emptyLabel = "— nevybráno —",
-  monthLabel = "Měsíc",
-  yearLabel = "Rok",
+  monthLabel,
+  yearLabel,
   disabled,
   className,
   yearClassName,
@@ -55,6 +36,8 @@ export function MonthYearSelect({
   yearClassName?: string;
   monthClassName?: string;
 }) {
+  const dsTexts = useDsTexts();
+  const monthOptions: SelectOption[] = Array.from({ length: 12 }, (_, index) => ({ value: String(index + 1), label: new Intl.DateTimeFormat(dsTexts.intlLocale, { month: "long" }).format(new Date(2020, index, 1)) }));
   const year = value ? Number(value.slice(0, 4)) : null;
   const month = value ? Number(value.slice(5, 7)) : null;
   const currentYear = new Date().getFullYear();
@@ -75,8 +58,8 @@ export function MonthYearSelect({
       <OptionSelect
         value={month ? String(month) : null}
         onChange={(m) => onChange(m === "" ? null : compose(Number(m), year))}
-        options={MONTH_OPTIONS}
-        placeholder={monthLabel}
+        options={monthOptions}
+        placeholder={monthLabel ?? dsTexts.date.month}
         emptyLabel={emptyLabel}
         disabled={disabled}
         className={cn("min-w-0 flex-1", monthClassName)}
@@ -85,7 +68,7 @@ export function MonthYearSelect({
         value={year ? String(year) : null}
         onChange={(y) => onChange(y === "" ? null : compose(month, Number(y)))}
         options={yearOptions}
-        placeholder={yearLabel}
+        placeholder={yearLabel ?? dsTexts.date.year}
         emptyLabel={emptyLabel}
         disabled={disabled}
         className={cn("w-[7rem] shrink-0", yearClassName)}

@@ -1,3 +1,10 @@
+
+## Verze 2.61.0 (centrální texty a slovenština)
+
+- Nové exporty `DsTextsProvider`, `useDsTexts`, `DsTexts`, `DS_TEXTS_CS` a `DS_TEXTS_SK`; bez provideru zůstávají české výchozí texty.
+- `SlivkaProvider` přijímá volitelné `locale` a `texts`. Lokální props komponent mají prioritu před providerem.
+- `locale` sjednocuje kalendáře, `Intl`, tisk/export a slovní vyjádření částek.
+- Slovenská aplikace nastaví v kořeni `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">`.
 ## Verze 2.60.0 (párování P2b – část B)
 - [x] DocumentForm: `titleBadges`, `notices`, `readOnlyTitle` a `readOnlyActions` v pevném pořadí pruhů.
 - [x] Nový `NoticeBar` se čtyřmi tóny, akcemi, zavřením a interakčními testy.

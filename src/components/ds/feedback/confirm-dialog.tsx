@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { useDsTexts } from "../../../ds-texts";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +30,7 @@ type ConfirmOptions = {
  *   ... v JSX: {confirmDialog}
  */
 export function useConfirmDialog() {
+  const dsTexts = useDsTexts();
   const [opts, setOpts] = useState<ConfirmOptions | null>(null);
 
   const confirm = (o: ConfirmOptions) => setOpts(o);
@@ -61,16 +63,16 @@ export function useConfirmDialog() {
         <AlertDialogFooter>
           {opts?.info ? (
             <AlertDialogAction onClick={confirmCurrent}>
-              {opts?.confirmLabel ?? "Rozumím"}
+              {opts?.confirmLabel ?? dsTexts.common.understand}
             </AlertDialogAction>
           ) : (
             <>
-              <AlertDialogCancel>{opts?.cancelLabel ?? "Zrušit"}</AlertDialogCancel>
+              <AlertDialogCancel>{opts?.cancelLabel ?? dsTexts.common.cancel}</AlertDialogCancel>
               <AlertDialogAction
                 className={opts?.destructive ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : undefined}
                 onClick={confirmCurrent}
               >
-                {opts?.confirmLabel ?? "Potvrdit"}
+                {opts?.confirmLabel ?? dsTexts.common.confirm}
               </AlertDialogAction>
             </>
           )}

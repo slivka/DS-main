@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { GridProgress } from "./grid-states";
 import { useGridKeyboardNav } from "../../../hooks/use-grid-keyboard-nav";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 import { usePane } from "../panes/pane-context";
 import { getTabDraft, useTabDraft } from "../panes/pane-tab-store";
 import { usePageLayoutVariant } from "../layout/page-layout";
@@ -196,7 +196,7 @@ export function ZoomControl({
   setDensity?: (v: GridDensity) => void;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   return (
     <div className="grid-toolbar-control grid-toolbar-group zoom-control flex shrink-0 items-center rounded-md border border-border bg-card">
       {density && setDensity && (

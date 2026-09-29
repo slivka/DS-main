@@ -1,4 +1,6 @@
+import { useDsTexts } from "../../../ds-texts";
 import { MessageSquare } from "lucide-react";
+import type React from "react";
 
 import { Button } from "../../ui/button";
 import { GridAction } from "../grid/grid-action";
@@ -14,6 +16,7 @@ export function NotesPanel({
   onAdd,
   onUpdate,
   onRemove,
+  texts,
 }: {
   notes: RecordNote[];
   onClose: () => void;
@@ -23,7 +26,11 @@ export function NotesPanel({
   onAdd?: (body: string) => void | Promise<void>;
   onUpdate?: (id: string, body: string) => void | Promise<void>;
   onRemove?: (id: string) => void | Promise<void>;
+  texts?: React.ComponentProps<typeof RecordNotes>["texts"];
 }) {
+  const dsTexts = useDsTexts();
+  heading ??= dsTexts.recordDialog.notes;
+  closeLabel ??= dsTexts.common.close;
   return (
     <div
       className="flex flex-col gap-4"
@@ -45,7 +52,7 @@ export function NotesPanel({
           {closeLabel}
         </Button>
       </div>
-      <RecordNotes notes={notes} onAdd={onAdd} onUpdate={onUpdate} onRemove={onRemove} />
+      <RecordNotes notes={notes} onAdd={onAdd} onUpdate={onUpdate} onRemove={onRemove} texts={texts} />
     </div>
   );
 }

@@ -28,3 +28,15 @@
 - Volbu 2–3 vzájemně výlučných typů řeší `SegmentedField`; `GridSegmentedToggle` zůstává jen pro gridy.
 
 - Řádky DPH vytváří jen DB; DS je zobrazuje a počítá předběžně (`journal-vat.ts`).
+
+## Jazyk knihovny (2.61.0)
+
+Aplikace nastaví jazyk jednou v kořeni:
+
+```tsx
+<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
+  <App />
+</DsTextsProvider>
+```
+
+Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.

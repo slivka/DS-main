@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { resolveGridTexts, type GridTexts } from "./grid-texts";
+import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 /**
  * Úchyt na pravém okraji záhlaví sloupce – tažením myší mění šířku sloupce,
@@ -16,7 +16,7 @@ export function ColumnResizeHandle({
   onReset?: () => void;
   texts?: Partial<GridTexts>;
 }) {
-  const texts = resolveGridTexts(textOverrides);
+  const texts = useResolvedGridTexts(textOverrides);
   const ref = useRef<HTMLSpanElement>(null);
 
   const start = (e: React.PointerEvent) => {

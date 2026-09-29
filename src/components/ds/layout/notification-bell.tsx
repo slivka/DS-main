@@ -3,6 +3,7 @@ import { Bell, CheckCircle2, CircleAlert, CircleX, Info, LoaderCircle } from "lu
 
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
 export type NotificationType = "info" | "success" | "warning" | "error";
@@ -53,10 +54,10 @@ const typeIcons = {
   error: { icon: CircleX, className: "text-destructive" },
 } as const;
 
-function relativeTime(value: Date | string) {
+function relativeTime(value: Date | string, locale = "cs") {
   const date = value instanceof Date ? value : new Date(value);
   const seconds = Math.round((date.getTime() - Date.now()) / 1000);
-  const formatter = new Intl.RelativeTimeFormat("cs", { numeric: "auto" });
+  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   if (Math.abs(seconds) < 60) return formatter.format(seconds, "second");
   const minutes = Math.round(seconds / 60);
   if (Math.abs(minutes) < 60) return formatter.format(minutes, "minute");
@@ -76,7 +77,8 @@ export function NotificationBell({
   texts,
   className,
 }: NotificationBellProps) {
-  const t = { ...DEFAULT_NOTIFICATION_BELL_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_NOTIFICATION_BELL_TEXTS, ...dsTexts.notification, ...texts };
   const [locallyRead, setLocallyRead] = useState<string[]>([]);
   const derivedUnread = items.filter((item) => !item.readAt && !locallyRead.includes(item.id)).length;
   const newlyReadCount = items.filter((item) => !item.readAt && locallyRead.includes(item.id)).length;
@@ -117,7 +119,7 @@ export function NotificationBell({
                   <span className="min-w-0 flex-1">
                     <span className={cn("block truncate text-sm", unread && "font-semibold")}>{item.title}</span>
                     {item.body ? <span className="line-clamp-2 text-sm text-muted-foreground">{item.body}</span> : null}
-                    <span className="mt-1 block text-xs text-muted-foreground">{relativeTime(item.createdAt)}</span>
+                    <span className="mt-1 block text-xs text-muted-foreground">{relativeTime(item.createdAt, dsTexts.intlLocale)}</span>
                   </span>
                   {unread ? <span className="mt-2 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" /> : null}
                 </Button>

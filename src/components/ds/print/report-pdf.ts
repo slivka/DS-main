@@ -221,3 +221,13 @@ export function amountInWordsCs(amount: number, currency = "CZK") {
   const heller = cents ? ` a ${wholeWords(cents, "m")}${groupForm(cents, "haléř", "haléře", "haléřů")}` : "";
   return `${negative}${wholeWords(whole)}${crowns}${heller}`;
 }
+
+const SK_ONES = ["", "jedna", "dva", "tri", "štyri", "päť", "šesť", "sedem", "osem", "deväť"];
+const SK_TEENS = ["desať", "jedenásť", "dvanásť", "trinásť", "štrnásť", "pätnásť", "šestnásť", "sedemnásť", "osemnásť", "devätnásť"];
+const SK_TENS = ["", "", "dvadsať", "tridsať", "štyridsať", "päťdesiat", "šesťdesiat", "sedemdesiat", "osemdesiat", "deväťdesiat"];
+const SK_HUNDREDS = ["", "sto", "dvesto", "tristo", "štyristo", "päťsto", "šesťsto", "sedemsto", "osemsto", "deväťsto"];
+function underThousandSk(value: number) { const h=Math.floor(value/100), r=value%100; return SK_HUNDREDS[h] + (r>=10&&r<20 ? SK_TEENS[r-10] : SK_TENS[Math.floor(r/10)] + SK_ONES[r%10]); }
+function groupFormSk(value:number, one:string, few:string, many:string) { const tail=value%100; const digit=value%10; return tail>=11&&tail<=19 ? many : digit===1 ? one : digit>=2&&digit<=4 ? few : many; }
+function wholeWordsSk(value:number) { if(value===0)return "nula"; if(!Number.isSafeInteger(value)||value>999_999_999_999) throw new RangeError("Sumu možno previesť najviac do 999 999 999 999."); const b=Math.floor(value/1e9),m=Math.floor(value/1e6)%1000,t=Math.floor(value/1000)%1000,r=value%1000; let out=""; if(b)out+=`${underThousandSk(b)}${groupFormSk(b,"miliarda","miliardy","miliárd")}`; if(m)out+=`${underThousandSk(m)}${groupFormSk(m,"milión","milióny","miliónov")}`; if(t)out+=`${underThousandSk(t)}${groupFormSk(t,"tisíc","tisíce","tisíc")}`; return out+underThousandSk(r); }
+export function amountInWordsSk(amount:number,currency="EUR") { if(!Number.isFinite(amount)) throw new RangeError("Suma musí byť konečné číslo."); const negative=amount<0?"mínus ":""; const units=Math.round(Math.abs(amount)*100); const whole=Math.floor(units/100), cents=units%100; const currencyWords:Record<string,[string,string,string]>={EUR:["euro","eurá","eur"],CZK:["koruna","koruny","korún"]}; const forms=currencyWords[currency.toUpperCase()]??[currency,currency,currency]; return `${negative}${wholeWordsSk(whole)} ${groupFormSk(whole,...forms)} ${String(cents).padStart(2,"0")}/100`; }
+export function amountInWords(amount:number,currency="CZK",locale:"cs"|"sk"="cs") { return locale === "sk" ? amountInWordsSk(amount,currency) : amountInWordsCs(amount,currency); }

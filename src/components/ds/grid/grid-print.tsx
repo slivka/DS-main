@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ExportCell, GridExportData } from "../../../lib/excel-export";
+import { useDsTexts, DS_TEXTS_CS, type DsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { PrintPreviewDialog } from "../print/print-preview-dialog";
 import { buildReportPdf, type PrintColumn, type PrintContext, type PrintRowStyle, type PrintSection } from "../print/report-pdf";
@@ -39,20 +40,22 @@ export function gridPrintParams({ book, period, periodRange, search, filters = [
   filters?: string[];
   asOf?: { enabled: boolean; value?: string | null | undefined } | undefined;
   extra?: GridPrintParam[] | undefined;
+  texts?: DsTexts;
 }): GridPrintParam[] {
+  const t = arguments[0].texts ?? DS_TEXTS_CS;
   const out: GridPrintParam[] = [];
   if (book) {
     const found = book.value === "all" ? null : book.books.find((item) => item.id === book.value);
-    out.push({ label: "Kniha", value: found ? found.name : book.allBooksLabel ?? "Všechny knihy" });
+    out.push({ label: t.print.book, value: found ? found.name : book.allBooksLabel ?? t.print.allBooks });
   }
   if (period) {
     const label = gridPeriodLabel(period);
-    out.push({ label: "Období", value: periodRange === false ? label : `${label} (${fmtDate(period.from)} – ${fmtDate(period.to)})` });
+    out.push({ label: t.print.period, value: periodRange === false ? label : `${label} (${fmtDate(period.from)} – ${fmtDate(period.to)})` });
   }
-  if (search?.trim()) out.push({ label: "Hledání", value: search.trim() });
+  if (search?.trim()) out.push({ label: t.print.search, value: search.trim() });
   const activeFilters = filters.filter(Boolean);
-  if (activeFilters.length) out.push({ label: "Filtr", value: activeFilters.join("; ") });
-  if (asOf?.enabled && asOf.value) out.push({ label: "Stav k datu", value: fmtDate(asOf.value) });
+  if (activeFilters.length) out.push({ label: t.print.filter, value: activeFilters.join("; ") });
+  if (asOf?.enabled && asOf.value) out.push({ label: t.print.asOf, value: fmtDate(asOf.value) });
   return [...out, ...extra];
 }
 
@@ -163,13 +166,10 @@ export function buildGridPrintPdf(data: GridExportData, config: GridPrintConfig,
   return buildReportPdf({ title: config.title, params: config.params, context: config.context, orientation, sections: [buildGridPrintSection(data)] });
 }
 
-const ORIENTATION_OPTIONS: GridSegmentedToggleOption<GridPrintOrientation>[] = [
-  { value: "portrait", label: "Na výšku" },
-  { value: "landscape", label: "Na šířku" },
-];
-
 /** Hook pro položku „Tisk (PDF)…“: potvrzení velkého objemu a náhled s volbou orientace. */
 export function useGridPrint(getData: () => GridExportData | Promise<GridExportData>, config: GridPrintConfig | undefined) {
+  const dsTexts = useDsTexts();
+  const orientationOptions: GridSegmentedToggleOption<GridPrintOrientation>[] = [{ value: "portrait", label: dsTexts.print.portrait }, { value: "landscape", label: dsTexts.print.landscape }];
   const { confirm, confirmDialog } = useConfirmDialog();
   const [data, setData] = useState<GridExportData | null>(null);
   const [orientation, setOrientation] = useState<GridPrintOrientation>("portrait");
@@ -191,9 +191,9 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
     const auto = gridPrintOrientation(gridPrintColumnWidths(next));
     const show = () => { setData(next); setOrientation(auto); setOpen(true); };
     if (next.rows.length > GRID_PRINT_LARGE_ROWS) {
-      const count = next.rows.length.toLocaleString("cs-CZ");
-      const pages = gridPrintPageEstimate(next.rows.length, auto).toLocaleString("cs-CZ");
-      confirm({ title: "Tisk velkého objemu dat", description: `Sestava má ${count} řádků, odhadem ${pages} stran. Příprava PDF může chvíli trvat. Pokračovat?`, confirmLabel: "Vytisknout", onConfirm: show });
+      const count = next.rows.length.toLocaleString(dsTexts.intlLocale);
+      const pages = gridPrintPageEstimate(next.rows.length, auto).toLocaleString(dsTexts.intlLocale);
+      confirm({ title: dsTexts.print.largeTitle, description: dsTexts.print.largeDescription(count, pages), confirmLabel: dsTexts.print.print, onConfirm: show });
     } else show();
   };
 
@@ -206,7 +206,7 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
         blob={blob}
         title={config.title}
         companyName={config.context.company.name}
-        settings={<GridSegmentedToggle options={ORIENTATION_OPTIONS} value={orientation} defaultValue="portrait" onChange={(value) => setOrientation(value as GridPrintOrientation)} ariaLabel="Orientace stránky" />}
+        settings={<GridSegmentedToggle options={orientationOptions} value={orientation} defaultValue="portrait" onChange={(value) => setOrientation(value as GridPrintOrientation)} ariaLabel={dsTexts.print.orientation} />}
       />
     </>
   ) : null;
