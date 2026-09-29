@@ -241,7 +241,7 @@ Protistrana jako volný text s volitelným propojením na partnera. „Nový par
 
 ## DataGrid – párování (2.58.0)
 
-- `groupTotals="row"` – řádek součtů skupiny pod sloupci; `paginated={false}` seskupuje všechny řádky.
+- `groupTotals="row"` – řádek součtů skupiny pod sloupci; patří k `paginated={false}` (seskupuje všechny řádky). Se stránkováním by součty byly jen za aktuální stránku – ve vývojovém režimu grid vypíše varování.
 - `selectedKeys` / `onSelectedKeysChange` – řízený výběr; výběr skrytý filtrem zůstává.
 - `selectionSummary(rows)` – pruh pod tabulkou v režimu výběru.
 - `total: "sumSelected"` – součet vybraných řádků.

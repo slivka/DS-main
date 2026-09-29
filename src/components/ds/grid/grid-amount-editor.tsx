@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { fmtAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { parseDecimalInput } from "../form/decimal-input";
@@ -41,13 +41,21 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
   { value, onChange, max, currencySymbol, decimals = 2, invalid, invalidMessage, ariaLabel, className, onKeyDown, onFocus, onBlur, onClick, ...props },
   ref,
 ) {
-  const [draft, setDraft] = React.useState<string | null>(null);
+  const [draft, setDraftState] = React.useState<string | null>(null);
+  // Ref drží rozepsaný text synchronně – commit tak nikdy nevidí zastaralý draft (Esc, blur uvnitř handleru).
+  const draftRef = React.useRef<string | null>(null);
+  const setDraft = (next: string | null) => {
+    draftRef.current = next;
+    setDraftState(next);
+  };
   const original = React.useRef<number | null>(value);
+  const skipCommit = React.useRef(false);
   const shown = draft ?? (value == null ? "" : fmtAmount(value, decimals));
 
   const commit = () => {
-    if (draft === null) return;
-    const parsed = parseDecimalInput(draft);
+    const current = draftRef.current;
+    if (current === null) return;
+    const parsed = parseDecimalInput(current);
     const rounded = parsed == null ? null : Math.round(parsed * 10 ** decimals) / 10 ** decimals;
     setDraft(null);
     if (rounded !== value) onChange(rounded);
@@ -73,16 +81,22 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
         onFocus?.(event);
       }}
       onChange={(event) => setDraft(event.target.value)}
-      onBlur={(event) => { commit(); onBlur?.(event); }}
+      onBlur={(event) => {
+        if (skipCommit.current) {
+          skipCommit.current = false;
+          setDraft(null);
+        } else commit();
+        onBlur?.(event);
+      }}
       onKeyDown={(event) => {
         onKeyDown?.(event);
         if (event.defaultPrevented) return;
         if (event.key === "Enter") {
           event.preventDefault();
           commit();
-          setDraft(value == null ? "" : String(value).replace(".", ","));
         } else if (event.key === "Escape") {
           event.preventDefault();
+          skipCommit.current = true;
           setDraft(null);
           if (original.current !== value) onChange(original.current);
           event.currentTarget.blur();
@@ -107,11 +121,14 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
       {currencySymbol ? <span className="shrink-0 text-muted-foreground">{currencySymbol}</span> : null}
     </span>
   );
-  if (!invalid || !invalidMessage) return cell;
+  // Tooltip vykreslujeme vždy, aby se input při změně platnosti nepřemontoval.
+  const showError = Boolean(invalid && invalidMessage);
   return (
-    <Tooltip>
+    <TooltipProvider>
+    <Tooltip {...(showError ? {} : { open: false })}>
       <TooltipTrigger asChild>{cell}</TooltipTrigger>
-      <TooltipContent>{invalidMessage}</TooltipContent>
+      {showError ? <TooltipContent>{invalidMessage}</TooltipContent> : null}
     </Tooltip>
+    </TooltipProvider>
   );
 });

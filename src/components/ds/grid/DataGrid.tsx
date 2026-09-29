@@ -300,7 +300,10 @@ export type DataGridProps<Row> = {
   onSelectedKeysChange?: ((keys: string[]) => void) | undefined;
   /** Obsah pruhu pod tabulkou v režimu výběru – dostane vybrané řádky z celé množiny `rows`. */
   selectionSummary?: ((rows: Row[]) => ReactNode) | undefined;
-  /** Součty skupiny: „header“ v záhlaví skupiny (výchozí), „row“ jako řádek pod sloupci za skupinou. */
+  /**
+   * Součty skupiny: „header“ v záhlaví skupiny (výchozí), „row“ jako řádek pod sloupci za skupinou.
+   * „row“ patří k `paginated={false}` – se stránkováním by součty byly jen za stránku (ve vývoji varování).
+   */
   groupTotals?: "header" | "row" | undefined;
   /** Skryje místní tlačítko, pokud výběr ovládá nadřazená lišta. */
   hideSelectionToggle?: boolean | undefined;
@@ -616,9 +619,17 @@ export function DataGrid<Row>({
   selectedRowsChangeRef.current = onSelectedRowsChange;
   useEffect(() => selectedRowsChangeRef.current?.(selectedRows), [selectedRows]);
   const updateSelection = (next: Set<string>) => {
-    if (!controlledSelectedKeys) setSelectedKeys(next);
-    onSelectedKeysChange?.([...next]);
+    // Klíče řádků, které už v `rows` nejsou, vyřadíme (skryté filtrem zůstávají).
+    const existing = new Set(rows.map((r) => rowKey(r)));
+    const pruned = new Set([...next].filter((key) => existing.has(key)));
+    if (!controlledSelectedKeys) setSelectedKeys(pruned);
+    onSelectedKeysChange?.([...pruned]);
   };
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production" && groupTotals === "row" && paginated) {
+      console.warn('DataGrid: groupTotals="row" patří k paginated={false}; se stránkováním jsou součty skupin jen za aktuální stránku.');
+    }
+  }, [groupTotals, paginated]);
   useEffect(() => {
     if (!selectMode && !controlledSelectedKeys) setSelectedKeys(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
