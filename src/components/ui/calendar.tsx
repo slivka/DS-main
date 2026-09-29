@@ -6,7 +6,7 @@ import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 
 import { cn } from "../../lib/utils";
 import { Button, buttonVariants } from "./button";
-import { cs } from "date-fns/locale";
+import { useDsTexts } from "../../ds-texts";
 
 function Calendar({
   className,
@@ -22,10 +22,11 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }) {
   const defaultClassNames = getDefaultClassNames();
+  const dsTexts = useDsTexts();
 
   return (
     <DayPicker
-      locale={locale ?? cs}
+      locale={locale ?? dsTexts.dateLocale}
       showOutsideDays={showOutsideDays}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
@@ -35,7 +36,7 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) => date.toLocaleString("cs-CZ", { month: "short" }),
+        formatMonthDropdown: (date) => date.toLocaleString(dsTexts.intlLocale, { month: "short" }),
         ...formatters,
       }}
       classNames={{
@@ -146,6 +147,7 @@ function CalendarDayButton({
   ...props
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames();
+  const dsTexts = useDsTexts();
 
   const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {

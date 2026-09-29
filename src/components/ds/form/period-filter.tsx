@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import { Button } from "../../ui/button";
 import { DateField } from "./date-field";
-import { PERIOD_LABEL, periodRange, type PeriodKey } from "../../../lib/period";
+import { useDsTexts, DS_TEXTS_CS, type DsTexts } from "../../../ds-texts";
+import { periodRange, type PeriodKey } from "../../../lib/period";
 
 export type GridPeriodKey = PeriodKey | "all";
 
@@ -14,11 +15,6 @@ export type PeriodFilterValue = {
 };
 
 const PERIODS: GridPeriodKey[] = ["all", "day", "week", "month", "year", "custom"];
-
-const LABELS: Record<GridPeriodKey, string> = {
-  all: "Vše",
-  ...PERIOD_LABEL,
-};
 
 /** Sdílený filtr období pro gridy – stejné ovládání jako v přehledech. */
 export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterValue & {
@@ -63,6 +59,8 @@ export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterVal
 /** Panel filtra období – tlačidlá období + vlastný rozsah Od/Do. */
 export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilter> }) {
   const { period, from, to, setPeriod, setFrom, setTo } = value;
+  const dsTexts = useDsTexts();
+  const labels: Record<GridPeriodKey, string> = { all: dsTexts.date.all, day: dsTexts.date.day, week: dsTexts.date.week, month: dsTexts.date.month, year: dsTexts.date.year, custom: dsTexts.date.custom };
   return (
     <div className="flex flex-wrap items-center gap-1">
       {PERIODS.map((p) => (
@@ -72,7 +70,7 @@ export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilt
           variant={period === p ? "default" : "outline"}
           onClick={() => setPeriod(p)}
         >
-          {LABELS[p]}
+          {labels[p]}
         </Button>
       ))}
       <DateField
@@ -80,14 +78,14 @@ export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilt
         onChange={(v) => setFrom(v ?? "")}
         className="w-36"
         inputClassName="h-9"
-        placeholder="Od"
+        placeholder={dsTexts.date.from}
       />
       <DateField
         value={to ?? ""}
         onChange={(v) => setTo(v ?? "")}
         className="w-36"
         inputClassName="h-9"
-        placeholder="Do"
+        placeholder={dsTexts.date.to}
       />
     </div>
   );
@@ -111,8 +109,9 @@ export function filterByPeriod<Row>(
 }
 
 /** Textový popis zvoleného období pre exporty. */
-export function periodLabel(value: PeriodFilterValue): string {
-  if (value.period === "all") return "Vše";
+export function periodLabel(value: PeriodFilterValue, texts: DsTexts = DS_TEXTS_CS): string {
+  const labels: Record<GridPeriodKey, string> = { all: texts.date.all, day: texts.date.day, week: texts.date.week, month: texts.date.month, year: texts.date.year, custom: texts.date.custom };
+  if (value.period === "all") return texts.date.all;
   if (value.period === "custom") return `${value.from ?? "…"} – ${value.to ?? "…"}`;
-  return LABELS[value.period];
+  return labels[value.period];
 }

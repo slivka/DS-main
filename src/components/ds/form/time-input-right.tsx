@@ -2,6 +2,7 @@ import * as React from "react";
 import { Clock } from "lucide-react";
 
 import { Input } from "../../ui/input";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
 export interface TimeInputRightProps
@@ -13,6 +14,7 @@ export const TimeInputRight = React.forwardRef<
   HTMLInputElement,
   TimeInputRightProps
 >(({ wrapperClassName, className, ...props }, ref) => {
+  const dsTexts = useDsTexts();
   const innerRef = React.useRef<HTMLInputElement | null>(null);
 
   const openPicker = () => {
@@ -50,7 +52,7 @@ export const TimeInputRight = React.forwardRef<
       />
       <Clock
         role="button"
-        aria-label="Otevřít výběr času"
+        aria-label={dsTexts.date.openTime}
         className="pointer-events-auto absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-muted-foreground"
         onClick={openPicker}
       />

@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import { Calendar } from "../../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
 
 /** Rozsah dat v kanonickém formátu YYYY-MM-DD; null = nevybráno. */
@@ -33,13 +34,13 @@ function toISO(date: Date): string {
 export function DateRangeField({
   value,
   onChange,
-  placeholder = "Vyberte období",
+  placeholder,
   months = 1,
   disabled,
   minDate,
   maxDate,
   className,
-  label = "Rozsah dat",
+  label,
 }: {
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
@@ -56,6 +57,7 @@ export function DateRangeField({
   label?: string;
 }) {
   const preferences = useDateTimePreferences();
+  const dsTexts = useDsTexts();
   const { formatDate } = preferences;
   const [open, setOpen] = React.useState(false);
 
@@ -90,7 +92,7 @@ export function DateRangeField({
           type="button"
           variant="outline"
           disabled={disabled}
-          aria-label={label}
+          aria-label={label ?? dsTexts.date.rangeLabel}
           className={cn(
             "h-9 w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
@@ -98,11 +100,12 @@ export function DateRangeField({
           )}
         >
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{text || placeholder}</span>
+          <span className="truncate">{text || placeholder || dsTexts.date.rangePlaceholder}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          locale={dsTexts.dateLocale}
           mode="range"
           captionLayout="dropdown"
           startMonth={startMonth}
@@ -135,7 +138,7 @@ export function DateRangeField({
               className="h-7 px-2 text-muted-foreground"
               onClick={() => onChange({ from: null, to: null })}
             >
-              Vymazat
+              {dsTexts.date.clear}
             </Button>
           ) : (
             <span />
@@ -145,7 +148,7 @@ export function DateRangeField({
               {formatDate(value.from)} – {formatDate(value.to)}
             </span>
           ) : (
-            <span className="text-xs text-muted-foreground">Vyberte konec rozsahu</span>
+            <span className="text-xs text-muted-foreground">{dsTexts.date.chooseRangeEnd}</span>
           )}
         </div>
       </PopoverContent>

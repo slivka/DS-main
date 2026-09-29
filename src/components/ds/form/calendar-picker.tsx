@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import { Calendar } from "../../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 import { useDateTimePreferences } from "../../../lib/date-time-preferences";
 
 function parseISO(value?: string | null): Date | undefined {
@@ -27,12 +28,12 @@ function toISO(date: Date): string {
 export function CalendarPicker({
   value,
   onChange,
-  placeholder = "Vyberte datum",
+  placeholder,
   disabled,
   minDate,
   maxDate,
   className,
-  label = "Výběr data",
+  label,
 }: {
   /** Hodnota ve formátu YYYY-MM-DD, prázdný řetězec = nevybráno. */
   value?: string | null;
@@ -48,6 +49,7 @@ export function CalendarPicker({
   label?: string;
 }) {
   const preferences = useDateTimePreferences();
+  const dsTexts = useDsTexts();
   const { formatDate } = preferences;
   const [open, setOpen] = React.useState(false);
   const selected = parseISO(value);
@@ -74,7 +76,7 @@ export function CalendarPicker({
           type="button"
           variant="outline"
           disabled={disabled}
-          aria-label={label}
+          aria-label={label ?? dsTexts.date.dateSelection}
           className={cn(
             "h-9 w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
@@ -82,11 +84,12 @@ export function CalendarPicker({
           )}
         >
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{text || placeholder}</span>
+          <span className="truncate">{text || placeholder || dsTexts.date.chooseDate}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          locale={dsTexts.dateLocale}
           mode="single"
           captionLayout="dropdown"
           startMonth={startMonth}

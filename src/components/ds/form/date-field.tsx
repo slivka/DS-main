@@ -1,12 +1,12 @@
 import * as React from "react";
 import { CalendarIcon, Lock, LockOpen } from "lucide-react";
-import { cs } from "date-fns/locale";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Calendar } from "../../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { useDsTexts } from "../../../ds-texts";
 import { parseUserDate, useDateTimePreferences } from "../../../lib/date-time-preferences";
 
 function parseISO(value?: string | null): Date | undefined {
@@ -96,7 +96,7 @@ export function DateField({
   id,
   value,
   onChange,
-  placeholder = "Vyberte datum",
+  placeholder,
   disabled,
   className,
   inputClassName,
@@ -109,7 +109,9 @@ export function DateField({
   warning,
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
+  const dsTexts = useDsTexts();
   const { dateFormat, formatDate } = preferences;
+  const resolvedPlaceholder = placeholder ?? dsTexts.date.chooseDate;
   const [open, setOpen] = React.useState(false);
   const selected = parseISO(value);
   const [text, setText] = React.useState(value ? formatDate(value) : "");
@@ -160,8 +162,8 @@ export function DateField({
     if (!nextLocked) requestAnimationFrame(() => inputRef.current?.focus());
   };
 
-  const lockedHint = link?.lockedHint ?? "Stejné jako datum vystavení – klikněte pro úpravu";
-  const unlockedHint = link?.unlockedHint ?? "Znovu svázat s datem vystavení";
+  const lockedHint = link?.lockedHint ?? dsTexts.date.sameAsIssue;
+  const unlockedHint = link?.unlockedHint ?? dsTexts.date.relinkIssue;
 
   return (
     <TooltipProvider><div className={cn("min-w-0", className)}><div className="relative">
@@ -171,10 +173,10 @@ export function DateField({
         inputMode="numeric"
         disabled={disabled || link?.locked}
         readOnly={link?.locked}
-        placeholder={placeholder === "Vyberte datum" ? dateFormat.toLowerCase() : placeholder}
+        placeholder={resolvedPlaceholder === dsTexts.date.chooseDate ? dateFormat.toLowerCase() : resolvedPlaceholder}
         value={text}
         aria-invalid={invalid}
-        title={invalid ? `Zadejte platné datum ve formátu ${dateFormat.toLowerCase()}.` : undefined}
+        title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
         onChange={(e) => {
           const next = e.target.value;
           const masked = maskDateInput(next, dateFormat, next.length < text.length);
@@ -231,7 +233,7 @@ export function DateField({
             variant="ghost"
             size="icon"
             disabled={disabled}
-            aria-label="Otevřít kalendář"
+            aria-label={dsTexts.date.openCalendar}
             className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
           >
             <CalendarIcon className="size-[1.05em]" />
@@ -244,7 +246,7 @@ export function DateField({
         >
           <Calendar
             mode="single"
-            locale={cs}
+            locale={dsTexts.dateLocale}
             captionLayout="dropdown"
             startMonth={minDate ?? new Date(1900, 0)}
             endMonth={maxDate ?? new Date(new Date().getFullYear() + 10, 11)}
