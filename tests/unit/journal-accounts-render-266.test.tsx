@@ -1,5 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import * as React from "react";
 
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
@@ -20,6 +20,7 @@ const ACCOUNTS = [
 const originalRect = HTMLElement.prototype.getBoundingClientRect;
 let width = 1600;
 
+beforeAll(() => { if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" }); });
 beforeEach(() => {
   localStorage.clear();
   width = 1600;
