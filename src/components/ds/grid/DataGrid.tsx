@@ -1232,13 +1232,14 @@ export function DataGrid<Row>({
                           {shown.map((c) => {
                             const v = c.value?.(item.row);
                             const compact = isCompactColumn(c);
+                            const resolvedCellWidth = cols.widths[c.id] ?? c.width;
                             const cellStyle = compact
                               ? { whiteSpace: "nowrap" as const }
-                              : c.width
+                              : resolvedCellWidth
                                 ? {
-                              width: `${c.width / 16}rem`,
-                              maxWidth: `${c.width / 16}rem`,
-                              minWidth: `${c.width / 16}rem`,
+                              width: `${resolvedCellWidth / 16}rem`,
+                              maxWidth: `${resolvedCellWidth / 16}rem`,
+                              minWidth: `${resolvedCellWidth / 16}rem`,
                                     boxSizing: "border-box" as const,
                                   }
                                 : undefined;
