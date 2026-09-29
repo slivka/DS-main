@@ -1161,6 +1161,7 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 | `exportName` | string | `—` |
 | `exportMeta` | any | `—` |
 | `defaultSort` | string | `—` |
+| `rowClassName` | function | `—` |
 | `onEditRow` | function | `—` |
 | `onDeleteRow` | function | `—` |
 | `deleteConfirm` | function | `—` |
@@ -2491,6 +2492,7 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `onTabChange` | function | `—` |
 | `recapTabs` | any | `—` |
 | `zoom` | number | `1` |
+| `storageKey` | string | `journal-recap` |
 | `texts` | any | `—` |
 | `vatSummary` | any | `—` |
 
