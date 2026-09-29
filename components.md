@@ -41,9 +41,9 @@
 
 ## Doplnění editace dokladu 7 (2.49.0)
 
-- `JournalLinesEditor.accountDisplay?: "number" | "numberName"` má výchozí `number`; při zkrácení je název účtu v tooltipu.
+- `JournalLinesEditor` má dvojice `MD` / `MD účet` a `DAL` / `DAL účet`; výchozí jsou krátké formy a alespoň jedna forma každé strany zůstává viditelná.
 - Zakázka je volitelný sloupec a uživatelem zapnuté volitelné sloupce zůstávají viditelné. Detail řádku se skládá do jednoho, nejvýše dvou řádků.
-- `DocumentSettingsValue.accountDisplay` ukládá volbu Zkráceně / Celý.
+- `JournalLinesRecap.storageKey` odděluje rozložení sloupců rekapitulace.
 - `DocumentForm.error?: { title?: string; message: ReactNode; onClose?(): void }` zobrazuje jednotný chybový pruh pod akcemi formuláře.
 
 ## Editace dokladu 7 (2.48.0)
@@ -312,3 +312,9 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
 - Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
 - Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.
+
+
+## DS 2.66.0
+
+- BREAKING: `JournalLinesEditor.accountDisplay`, `JournalAccountDisplay` a volba účtu v `DocumentSettingsDialog` byly odstraněny.
+- Přibyl veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`; rekapitulace používá DataGrid.

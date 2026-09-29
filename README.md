@@ -151,8 +151,8 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 
 ## Changelog 2.49.0 – doplnění editace dokladu 7
 
-- `JournalLinesEditor.accountDisplay` volí číslo účtu nebo číslo s názvem; `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ a Zakázka je v režimu hlavního účtu výchozí.
-- `DocumentSettingsDialog.value.accountDisplay` ukládá volbu Zkráceně / Celý; detail řádku se skládá do jednoho, nejvýše dvou řádků.
+- `JournalLinesEditor` nabízí pro každou stranu krátkou a rozšířenou formu účtu; v editoru jsou výchozí krátké sloupce. `showQuantityColumns` nastavuje výchozí Množství / MJ / Cenu za MJ.
+- Detail řádku se skládá do jednoho, nejvýše dvou řádků.
 - `DocumentForm.error` přidává jednotný zavíratelný chybový pruh pod akcemi formuláře.
 - Uživatelské popisky jsou sjednocené na „IČO“.
 
@@ -735,3 +735,9 @@ Doplnění pro výkazy účetnictví.
 - `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
 - Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
 - Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.
+
+
+## DS 2.66.0
+
+- BREAKING: `JournalLinesEditor.accountDisplay`, `JournalAccountDisplay` a volba účtu v `DocumentSettingsDialog` byly odstraněny.
+- Přibyl veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`; rekapitulace používá DataGrid.

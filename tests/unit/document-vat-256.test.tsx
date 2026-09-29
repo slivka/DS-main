@@ -77,7 +77,7 @@ describe("Buňka Kód DPH – Tab (2.56.0)", () => {
 });
 
 describe("DocumentSettingsDialog – Zadávat částky (2.56.0)", () => {
-  const settings: DocumentSettingsValue = { suggestDescription: false, descriptionScope: "company", suggestCounterparty: false, counterpartyScope: "company", amountFromLines: "book", showQuantityColumns: false, accountDisplay: "number", offerPrintAfterSave: false, printTwoPerPage: false, printDocumentNumber: false, copies: 1, vatCalcMode: "gross" };
+  const settings: DocumentSettingsValue = { suggestDescription: false, descriptionScope: "company", suggestCounterparty: false, counterpartyScope: "company", amountFromLines: "book", showQuantityColumns: false, offerPrintAfterSave: false, printTwoPerPage: false, printDocumentNumber: false, copies: 1, vatCalcMode: "gross" };
   it("volba se zobrazí jen při showVatCalcMode", () => {
     const src = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
     expect(src).toContain("showVatCalcMode ?");
