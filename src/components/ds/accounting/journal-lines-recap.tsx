@@ -4,7 +4,6 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
-import { cn } from "../../../lib/utils";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
 import type { JournalLine } from "./journal-lines";
