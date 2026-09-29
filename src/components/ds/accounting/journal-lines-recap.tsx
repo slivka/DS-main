@@ -10,6 +10,8 @@ import type { JournalLine } from "./journal-lines";
 import type { VatSummaryRow } from "./journal-vat";
 import { DataGrid, type DataGridColumn } from "../grid/DataGrid";
 import { accountColumns } from "./account-columns";
+import { useDsTexts } from "../../../ds-texts";
+import { formatAccountCode } from "./account-code";
 
 export interface JournalRecapTab {
   id: string;
@@ -39,13 +41,13 @@ export interface JournalLinesRecapProps {
 }
 
 export interface JournalLinesRecapTexts {
-  accounting: string; jobs: string; debitAccount: string; creditAccount: string; total: string;
+  accounting: string; jobs: string; debitShort: string; creditShort: string; debitAccount: string; creditAccount: string; total: string;
   dimension: string; side: string; rounding: string; fxRounding: string; collapse: string; expand: string;
   vat: string; vatCode: string; vatRate: string; vatBase: string; vatAmount: string; selfAssessmentNote: string; deductible: string; nonDeductible: string;
 }
 
 export const DEFAULT_JOURNAL_LINES_RECAP_TEXTS: JournalLinesRecapTexts = {
-  accounting: "Účtování", jobs: "Zakázky", debitAccount: "MD účet", creditAccount: "DAL účet", total: "Celkem",
+  accounting: "Účtování", jobs: "Zakázky", debitShort: "MD", creditShort: "DAL", debitAccount: "MD účet", creditAccount: "DAL účet", total: "Celkem",
   dimension: "Zakázka", side: "Strana", rounding: "Zaokrouhlení", fxRounding: "Kurzové zaokrouhlení", collapse: "Sbalit rekapitulaci", expand: "Rozbalit rekapitulaci",
   vat: "DPH", vatCode: "Kód", vatRate: "Sazba", vatBase: "Základ", vatAmount: "DPH", selfAssessmentNote: "daň na výstupu i odpočet – celek dokladu nemění", deductible: "s nárokem", nonDeductible: "bez nároku",
 };
@@ -71,7 +73,8 @@ export function JournalLinesRecap({
   texts,
   vatSummary,
 }: JournalLinesRecapProps) {
-  const t = { ...DEFAULT_JOURNAL_LINES_RECAP_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_JOURNAL_LINES_RECAP_TEXTS, ...dsTexts.journalRecap, ...texts };
   const [localOpen, setLocalOpen] = React.useState(true);
   const [localTab, setLocalTab] = React.useState("accounting");
   const shown = open ?? localOpen;
@@ -125,11 +128,26 @@ export function JournalLinesRecap({
     }
     return [...grouped.values()];
   }, [lines]);
-  const accountingColumns = React.useMemo(() => [
-    ...accountColumns<(typeof accounting)[number]>({ debit: (row) => row.debit, credit: (row) => row.credit, accountName: (code) => accountMap.get(code) }).map((column) => column.id === "debitAccountName" ? { ...column, render: (row: (typeof accounting)[number]) => <>{column.render?.(row)}{row.label ? <span className="ml-2 text-muted-foreground">{row.label}</span> : null}</> } : column),
-    { id: "amount", label: `${t.total} (${homeMark})`, value: (row: (typeof accounting)[number]) => row.amount, numeric: true, decimals: 2, total: "sum" as const },
-    ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: (typeof accounting)[number]) => row.foreignAmount, numeric: true, decimals: 2, total: "sum" as const }] : []),
-  ], [accountMap, accounting, documentMark, foreign, homeMark, t.total]);
+  const accountingColumns = React.useMemo<DataGridColumn<(typeof accounting)[number]>[]>(() => {
+    type Row = (typeof accounting)[number];
+    // Prázdný účet se zobrazí jako „—“; popisek systémového řádku (Zaokrouhlení, DPH) je součástí hodnoty
+    // u obou forem strany MD, takže je v exportu, hledání i po přepnutí na krátkou formu.
+    const withLabel = (value: string, row: Row) => row.label ? `${value || "—"} ${row.label}` : value || "—";
+    const renderLabel = (value: string, row: Row) => <span className="block truncate" title={withLabel(value, row)}><span className="font-mono tabular-nums">{value || "—"}</span>{row.label ? <span className="ml-2">{row.label}</span> : null}</span>;
+    const base = accountColumns<Row>({ debit: (row) => row.debit, credit: (row) => row.credit, accountName: (code) => accountMap.get(code), debitLabel: t.debitShort, creditLabel: t.creditShort, debitNameLabel: t.debitAccount, creditNameLabel: t.creditAccount });
+    const accountValue = (id: string, row: Row) => {
+      const code = id.startsWith("debit") ? row.debit : row.credit;
+      if (!code) return "";
+      return id.endsWith("Name") ? `${formatAccountCode(code)}${accountMap.get(code) ? ` - ${accountMap.get(code)}` : ""}` : formatAccountCode(code);
+    };
+    return [
+      ...base.map((column) => column.id.startsWith("debit")
+        ? { ...column, value: (row: Row) => withLabel(accountValue(column.id, row), row), render: (row: Row) => renderLabel(accountValue(column.id, row), row) }
+        : { ...column, value: (row: Row) => accountValue(column.id, row) || "—", render: (row: Row) => renderLabel(accountValue(column.id, row), { ...row, label: undefined }) }),
+      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, numeric: true, decimals: 2, total: "sum" as const },
+      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, numeric: true, decimals: 2, total: "sum" as const }] : []),
+    ];
+  }, [accountMap, accounting, documentMark, foreign, homeMark, t.total, t.debitShort, t.creditShort, t.debitAccount, t.creditAccount]);
   const jobColumns = React.useMemo<DataGridColumn<(typeof jobs)[number]>[]>(() => [
     { id: "dimension", label: t.dimension, value: (row) => dimensionLabel(row.id), total: () => t.total },
     { id: "side", label: t.side, value: (row) => row.side },
@@ -158,9 +176,9 @@ export function JournalLinesRecap({
     <Tabs value={activeTab} onValueChange={(next) => { changeTab(next); if (!shown) changeOpen(true); }}>
       <div className="flex items-center border-b"><TabsList className="h-9 flex-1 justify-start rounded-none bg-transparent px-2">{tabs.map((item) => <TabsTrigger key={item.id} value={item.id} onClick={() => { if (!shown && item.id === activeTab) changeOpen(true); }} className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">{item.label}</TabsTrigger>)}</TabsList><Button type="button" variant="ghost" size="icon" onClick={() => changeOpen(!shown)} aria-label={shown ? t.collapse : t.expand} aria-expanded={shown} className="mr-1 size-8">{shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</Button></div>
       {shown ? <>
-       <TabsContent value="accounting" className="m-0"><DataGrid storageKey={`${storageKey}:accounting`} exportName="journal-recap-accounting" rows={accounting} columns={accountingColumns} rowKey={(row) => row.key} height="auto" paginated={false} showTotalRow plain /></TabsContent>
-       <TabsContent value="jobs" className="m-0"><DataGrid storageKey={`${storageKey}:jobs`} exportName="journal-recap-jobs" rows={jobs} columns={jobColumns} rowKey={(row) => `${row.id}|${row.side}`} height="auto" paginated={false} showTotalRow plain /></TabsContent>
-       {vatSummary ? <TabsContent value="vat" className="m-0" data-slot="journal-vat-recap"><DataGrid storageKey={`${storageKey}:vat`} exportName="journal-recap-vat" rows={vatSummary} columns={vatColumns} rowKey={(row) => row.codeId} height="auto" paginated={false} showTotalRow plain /></TabsContent> : null}
+       <TabsContent value="accounting" className="m-0"><DataGrid storageKey={`${storageKey}:accounting`} exportName="journal-recap-accounting" rows={accounting} columns={accountingColumns} rowKey={(row) => row.key} rowClassName={(row) => row.label ? "bg-muted text-muted-foreground" : undefined} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent>
+       <TabsContent value="jobs" className="m-0"><DataGrid storageKey={`${storageKey}:jobs`} exportName="journal-recap-jobs" rows={jobs} columns={jobColumns} rowKey={(row) => `${row.id}|${row.side}`} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent>
+       {vatSummary ? <TabsContent value="vat" className="m-0" data-slot="journal-vat-recap"><DataGrid storageKey={`${storageKey}:vat`} exportName="journal-recap-vat" rows={vatSummary} columns={vatColumns} rowKey={(row) => row.codeId} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent> : null}
       {recapTabs.map((item) => <TabsContent key={item.id} value={item.id} className="m-0 border-t p-3">{typeof item.content === "function" ? item.content(lines) : item.content}</TabsContent>)}
       </> : null}
     </Tabs>
