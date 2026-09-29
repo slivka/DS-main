@@ -1,3 +1,10 @@
+
+## Changelog 2.61.0
+
+- Nové exporty `DsTextsProvider`, `useDsTexts`, `DsTexts`, `DS_TEXTS_CS` a `DS_TEXTS_SK`; bez provideru zůstávají české výchozí texty.
+- `SlivkaProvider` přijímá volitelné `locale` a `texts`. Lokální props komponent mají prioritu před providerem.
+- `locale` sjednocuje kalendáře, `Intl`, tisk/export a slovní vyjádření částek.
+- Slovenská aplikace nastaví v kořeni `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">`.
 # Slivka Design System
 
 Sdílený základ pro firemní aplikace Slivka. Obsahuje vzhled (Navy Trust),

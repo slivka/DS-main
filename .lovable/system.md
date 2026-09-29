@@ -375,3 +375,15 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Celek řádků dokladu počítej vždy přes `computeJournalTotals` (nebo převezmi z `JournalLinesEditor.onTotalsChange`) – nikdy ručním součtem `line.amount`, jinak chybí předběžná daň nebo se započte samovyměření.
 - Samovyměření (PDP, EU, dovoz) v režimu „S DPH“: zadaná částka je základ, daň se počítá navrch a celek dokladu nemění (Celkem s DPH = základ). Předběžné Kurzové zaokrouhlení (`isFxRounding` + `isVatPreview`) se nikdy neukládá.
 - Kurz DPH předávej přes `DocumentForm.vatRateField`; volbu Bez / S DPH v nastavení dokladu přes `DocumentSettingsDialog showVatCalcMode`.
+
+## Jazyk knihovny (2.61.0)
+
+Aplikace nastaví jazyk jednou v kořeni:
+
+```tsx
+<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
+  <App />
+</DsTextsProvider>
+```
+
+Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
