@@ -624,3 +624,14 @@
 - [x] Odstranit BREAKING accountDisplay z editoru a nastavení dokladu; přidat accountColumnPair a storageKey rekapitulace
 - [x] Aktualizovat ukázky, pravidla, changelog, katalog a package verzi 2.66.0; .lovable/meta.yaml neměnit
 - [x] Ověřit unit testy, typy a sestavení; Release neprovádět
+
+## DS 2.68.0 – jednotný identifikační řádek dokladů
+
+- [ ] Nahradit `identity.items` typovanou identitou variant cashBank / invoice / internal.
+- [ ] Přesunout hlavní účet výhradně do identifikačního řádku; `mainAccountLocked` vždy skryje tužku.
+- [ ] U invoice/internal přesunout měnu vedle Celkem; `currencyLocked` ji zobrazí jako text.
+- [ ] Zachovat M1–M4: bez přepočtu řádků ve FE, období jako kód, účet per kniha a období.
+- [ ] Při změně účtu odvodit okamžitý popisek z `mainAccountOptions`; invoice bez účtu nesmí mít koncový oddělovač ani štítek.
+- [ ] Rozšířit typy dokladů, texty, ukázky, testy, katalog a BREAKING dokumentaci.
+- [ ] Verze 2.68.0; `.lovable/meta.yaml` beze změny; Release neprovádět.
+- [ ] Ověřit unit testy, typy, build a produkční sestavení náhledu v běžné i úzké šířce.
