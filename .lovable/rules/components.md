@@ -2440,7 +2440,6 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `initialEmptyLine` | boolean | `false` |
 | `showAllErrors` | boolean | `false` |
 | `showQuantityColumns` | boolean | `false` |
-| `accountDisplay` | number · numberName | `number` |
 | `storageKey` | string | `journal-lines` |
 | `recap` | any | `—` |
 | `recapTabs` | any | `—` |
@@ -2452,7 +2451,7 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 
 _Rozpis se zkrácenými účty_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} accountDisplay="number" onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
 _Řádky s DPH (2.55.0)_

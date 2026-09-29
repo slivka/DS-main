@@ -110,36 +110,5 @@ describe("JournalLinesEditor 2.66", () => {
     expect(normalizeJournalAccountVisibility({ counterAccount: false, counterAccountName: false }, "mainAccount")).toEqual({ counterAccount: true, counterAccountName: false });
   });
 
-  it("má výchozí krátké a volitelné rozšířené účetní sloupce s novým klíčem", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(source).toContain('{ id: "debitAccount", label: t.sideDebit }');
-    expect(source).toContain('{ id: "debitAccountName", label: t.debitAccount, defaultVisible: false }');
-    expect(source).toContain('{ id: "creditAccount", label: t.sideCredit }');
-    expect(source).toContain('{ id: "creditAccountName", label: t.creditAccount, defaultVisible: false }');
-    expect(source).toContain('`${storageKey}:v4`');
-    expect(source).toContain("normalizeAccountVisibility");
-    expect(source).toContain("disableToggleReason");
-  });
-
-  it("v režimu hlavního účtu používá ID counterAccount a counterAccountName", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(source).toContain('{ id: "counterAccount", label: counterShortLabel }');
-    expect(source).toContain('{ id: "counterAccountName", label: counterNameLabel, defaultVisible: false }');
-  });
-
-  it("obě formy editují stejnou hodnotu a kompaktní rozšířená forma dostane krátký nadpis", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(source).toContain("accountDataColumn(accountColumn)");
-    expect(source).toContain("const heading = compactHeading ?");
-    expect(source).toContain("zkráceno kvůli šířce");
-  });
-
-  it("rekapitulace používá DataGrid, účetní dvojice, export, součty a vlastní storageKey", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-recap.tsx", "utf8");
-    expect(source).toContain("accountColumns<");
-    expect(source).toContain("<DataGrid");
-    expect(source).toContain('storageKey = "journal-recap"');
-    expect(source).toContain('total: "sum"');
-    expect(source).toContain("exportName=");
-  });
+  // Výchozí viditelnost, nadpisy, ochrana poslední formy, editace a rekapitulace: journal-accounts-render-266.test.tsx.
 });

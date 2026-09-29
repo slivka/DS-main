@@ -41,9 +41,9 @@
 
 ## Doplnění editace dokladu 7 (2.49.0)
 
-- `JournalLinesEditor` má dvojice `MD` / `MD účet` a `DAL` / `DAL účet`; výchozí jsou krátké formy a alespoň jedna forma každé strany zůstává viditelná.
+- `JournalLinesEditor.accountDisplay?: "number" | "numberName"` má výchozí `number`; při zkrácení je název účtu v tooltipu.
 - Zakázka je volitelný sloupec a uživatelem zapnuté volitelné sloupce zůstávají viditelné. Detail řádku se skládá do jednoho, nejvýše dvou řádků.
-- `JournalLinesRecap.storageKey` odděluje rozložení sloupců rekapitulace.
+- `DocumentSettingsValue.accountDisplay` ukládá volbu Zkráceně / Celý.
 - `DocumentForm.error?: { title?: string; message: ReactNode; onClose?(): void }` zobrazuje jednotný chybový pruh pod akcemi formuláře.
 
 ## Editace dokladu 7 (2.48.0)
@@ -317,4 +317,9 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ## DS 2.66.0
 
 - BREAKING: `JournalLinesEditor.accountDisplay`, `JournalAccountDisplay` a volba účtu v `DocumentSettingsDialog` byly odstraněny.
-- Přibyl veřejný `accountColumnPair()` a `JournalLinesRecap.storageKey`; rekapitulace používá DataGrid.
+- BREAKING: `formatJournalAccountDisplay(code, name, display, compact)` → `(code, name?, extended?)`; staré volání s `"number"` nyní vrací i název účtu.
+- BREAKING: `resolveJournalColumnLayout` bez `accountDisplay`; nový výstup `compactAccountIds`.
+- `JournalLinesEditor` má dvojice `MD` / `MD účet` a `DAL` / `DAL účet` (v režimu hlavního účtu `counterAccount` / `counterAccountName`); výchozí jsou krátké formy a alespoň jedna forma každé strany zůstává viditelná.
+- Kaskáda šířek: Množství / MJ / Cena → Sazba DPH / Celkem s DPH → zkrácení účtů po stranách → stranová pole → Text.
+- Nové: `accountColumnPair()`, `normalizeJournalAccountVisibility()`, `JournalLinesRecap.storageKey`, `GridColumn.disableToggleReason`, `DataGrid.defaultSort={null}`, `DataGrid.rowClassName`, `DsTexts.journalRecap`.
+- Rekapitulace používá DataGrid se zachovaným pořadím řádků; pořadí sloupců `accountColumns()` je MD, MD účet, DAL, DAL účet.

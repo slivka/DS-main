@@ -7147,6 +7147,11 @@
         {
           "name": "vatSummary",
           "type": "any"
+        },
+        {
+          "name": "storageKey",
+          "type": "string",
+          "default": "\"journal-recap\""
         }
       ],
       "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",
@@ -7617,6 +7622,53 @@
       ],
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
+      ]
+    },
+    {
+      "name": "accountColumnPair",
+      "file": "src/components/ds/accounting/account-columns.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "shortLabel",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "getCode",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "accountName",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "section",
+          "type": "string"
+        }
+      ],
+      "usage": "Dvojice sloupců jednoho účtu pro DataGrid: rozšířená forma (číslo - název) je výchozí, krátká (jen číslo) je dostupná ve Sloupce.",
+      "examples": [
+        {
+          "label": "Účet v gridu",
+          "code": "const columns = accountColumnPair<Row>({ id: \"account\", label: \"Účet\", shortLabel: \"Účet č.\", getCode: (r) => r.account, accountName: (code) => names.get(code) });"
+        }
+      ],
+      "antipatterns": [
+        "Neformátuj účet ručně v render – hodnota musí zůstat textem pro filtr a export.",
+        "Pro MD/DAL použij accountColumns(), ne dvě volání accountColumnPair."
       ]
     }
   ],

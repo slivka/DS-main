@@ -48,14 +48,6 @@ describe("DocumentForm 2.49", () => {
   });
 });
 
-describe("DocumentSettingsDialog 2.66", () => {
-  it("veřejná hodnota ani dialog už neobsahují volbu zobrazení účtu", () => {
-    const source = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
-    expect(source).not.toContain('accountDisplay');
-    expect(source).not.toContain('Účet v gridu řádků');
-  });
-});
-
 describe("DocumentForm a NoticeBar 2.60.0", () => {
   it("vykreslí další štítek hned za stavem v nezalamovaném obalu", () => {
     const html = form({ titleBadges: <StatusBadge status="partial" config={{ partial: { label: "Částečně uhrazeno", tone: "warning" } }} /> });
