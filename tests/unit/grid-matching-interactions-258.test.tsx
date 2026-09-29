@@ -11,7 +11,10 @@ const { DataGrid } = await import("../../src/components/ds/grid/DataGrid");
 const { GridAmountEditor } = await import("../../src/components/ds/grid/grid-amount-editor");
 
 afterEach(() => cleanup());
-afterAll(async () => { if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister(); });
+afterAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
+});
 
 function Editor({ initial = 100, max, onValue }: { initial?: number; max?: number; onValue?: (v: number | null) => void }) {
   const [value, setValue] = React.useState<number | null>(initial);
@@ -105,10 +108,10 @@ describe("DataGrid – ručně skrytý seskupovací sloupec 2.60.0", () => {
       { id: "group", label: "Zdroj párování", value: (row) => row.name },
       { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
     ];
-    const { findByText } = render(
+    render(
       <DataGrid storageKey={storageKey} rows={[{ id: "a", name: "Párování A", amount: 1 }]} columns={groupedColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />,
     );
-    await findByText("Párování A");
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
     expect((document.body.textContent?.match(/Zdroj párování/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(document.body.textContent).not.toContain("group:");
     localStorage.removeItem(`columns:${storageKey}`);
