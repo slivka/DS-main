@@ -13,7 +13,7 @@ const columns: DataGridColumn<R>[] = [
 
 describe("B1 součty skupiny pod sloupci 2.58.0", () => {
   it("groupTotals=row přidá řádek součtů s popiskem přes všechny řádky bez stránkování", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="gt-row" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" groupTotals="row" paginated={false} />);
+    const html = renderToStaticMarkup(<DataGrid storageKey="gt-row" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" groupTotals="row" paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
     expect((html.match(/data-slot="grid-group-total"/g) ?? []).length).toBe(2);
     expect(html).toContain("Celkem ALFA");
     expect(html).toContain("3 000,00");
@@ -21,7 +21,7 @@ describe("B1 součty skupiny pod sloupci 2.58.0", () => {
     expect(html).toContain("6 000,00");
   });
   it("výchozí header zachová součty v záhlaví a nemá řádky součtů", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="gt-header" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" paginated={false} />);
+    const html = renderToStaticMarkup(<DataGrid storageKey="gt-header" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
     expect(html).not.toContain("grid-group-total");
     expect(html).toContain("Částka:");
   });
@@ -44,7 +44,7 @@ describe("B2 řízený výběr 2.58.0", () => {
   });
   it("řízený selectedKeys se zobrazí a sumSelected sečte jen vybrané", () => {
     const cols: DataGridColumn<R>[] = [columns[0]!, { ...columns[1]!, total: "sumSelected" }];
-    const html = renderToStaticMarkup(<DataGrid storageKey="sel" rows={rows.slice(0, 5)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r0", "r2"]} groupable={false} paginated={false} selectionSummary={(sel) => <span>Vybráno {sel.length}</span>} />);
+    const html = renderToStaticMarkup(<DataGrid storageKey="sel" rows={rows.slice(0, 5)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r0", "r2"]} groupable={false} paginated={false} selectionSummary={(sel) => <span>Vybráno {sel.length}</span>} />).replace(/[\u00a0\u202f]/g, " ");
     expect((html.match(/data-state="selected"/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(html).toContain("200,00");
     expect(html).toContain("Vybráno 2");
@@ -60,7 +60,7 @@ describe("B2 řízený výběr 2.58.0", () => {
 describe("B3 editovatelný sloupec 2.58.0", () => {
   const cols: DataGridColumn<R>[] = [columns[0]!, { id: "pay", label: "Párovat", numeric: true, value: (r) => r.amount, editor: (r) => <GridAmountEditor value={r.amount} onChange={() => {}} ariaLabel={`Editor ${r.id}`} invalid={r.id === "r1"} /> }];
   it("editor se vykreslí jen u vybraných řádků", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="ed" rows={rows.slice(0, 3)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r1"]} groupable={false} paginated={false} />);
+    const html = renderToStaticMarkup(<DataGrid storageKey="ed" rows={rows.slice(0, 3)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r1"]} groupable={false} paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
     expect(html).toContain('aria-label="Editor r1"');
     expect(html).not.toContain('aria-label="Editor r0"');
     expect(html).toContain('data-invalid="true"');
