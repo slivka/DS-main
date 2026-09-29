@@ -55,7 +55,7 @@ export function DocumentFormShowcase() {
       <div className="w-[18rem]"><SegmentedField ariaLabel="Velikost písma" label="Velikost písma" value={fontSize} onChange={setFontSize} options={[{ value: "0.8125", label: "0,8125" }, { value: "1", label: "1" }, { value: "1.125", label: "1,125" }]} /></div>
       <Button type="button" variant={narrow ? "default" : "outline"} onClick={() => setNarrow((current) => !current)}>Úzká šířka</Button>
     </div>
-    <div className={narrow ? "grid grid-cols-1 gap-6 @min-[75rem]:grid-cols-3" : "space-y-8"}>
+    <div className={narrow ? "grid grid-cols-1 gap-6 xl:grid-cols-3" : "space-y-8"}>
       {SCENARIOS.map((scenario) => <DocumentForm key={scenario.id} {...common} title={scenario.title} status="draft" documentType={scenario.type} identity={scenario.identity} directionBadge={scenario.directionBadge} mainSide={scenario.mainSide} mainAccountLocked={scenario.mainAccountLocked} currencyDisabledReason={scenario.currencyDisabledReason} value={values[scenario.id] ?? scenario.value} onChange={(next) => setValues((current) => ({ ...current, [scenario.id]: next }))} />)}
     </div>
   </ShowcaseSection>;

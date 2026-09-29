@@ -274,7 +274,13 @@ export function DocumentForm({
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
   const [selectedIdentityAccountLabel, setSelectedIdentityAccountLabel] = useState<string>();
-  useEffect(() => setSelectedIdentityAccountLabel(undefined), [identity]);
+  const identityKey = identity ? `${identity.variant}|${identity.book}|${identity.period}|${identity.account?.side ?? ""}|${identity.account?.label ?? ""}|${identity.number ?? ""}` : "";
+  const previousIdentityKey = useRef(identityKey);
+  useEffect(() => {
+    if (previousIdentityKey.current === identityKey) return;
+    previousIdentityKey.current = identityKey;
+    setSelectedIdentityAccountLabel(undefined);
+  }, [identityKey]);
   const formRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = formRef.current;

@@ -323,3 +323,11 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Kaskáda šířek: Množství / MJ / Cena → Sazba DPH / Celkem s DPH → zkrácení účtů po stranách → stranová pole → Text.
 - Nové: `accountColumnPair()`, `normalizeJournalAccountVisibility()`, `JournalLinesRecap.storageKey`, `GridColumn.disableToggleReason`, `DataGrid.defaultSort={null}`, `DataGrid.rowClassName`, `DsTexts.journalRecap`.
 - Rekapitulace používá DataGrid se zachovaným pořadím řádků; pořadí sloupců `accountColumns()` je MD, MD účet, DAL, DAL účet.
+
+## DS 2.68.0
+
+- BREAKING: `DocumentForm.identity.items` nahradil typovaný `DocumentIdentity` s variantami `cashBank`, `invoice` a `internal`, povinnou knihou a obdobím a volitelným účtem a číslem.
+- Hlavní účet se zobrazuje a případně mění jen v identifikačním řádku. `mainAccountOptions` omezuje nabízené účty; změna pouze upraví `mainAccountId` a nepřepočítává řádky.
+- U faktur a interních dokladů je měna bezprostředně za Celkem. `currencyLocked` ji zobrazí jako text, `currencyDisabledReason` jako zakázaný výběr s vysvětlením; pokladna a banka mají měnu pouze v identitě.
+- `DocumentTypeCode` nově zahrnuje `DDPZ`, `DDPOZ`, `KR` a `ZAP`; `documentIdentityVariantForType()` vrací výchozí variantu podle druhu dokladu.
+- `mainAccountLocked` a `currencyLocked` už neskrývají údaje. První vždy skryje změnu účtu, druhý ponechá měnu jako text vedle Celkem.

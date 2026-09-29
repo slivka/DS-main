@@ -143,6 +143,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ### Formulář dokladu
 
+- Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. Pořadí je Kniha · Období · u pokladny/banky Měna · účet; hlavní účet se nikde jinde ve formuláři nezobrazuje. Faktury a interní doklady mají měnu vždy bezprostředně za Celkem, pokladna a banka pouze v identifikačním řádku.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
