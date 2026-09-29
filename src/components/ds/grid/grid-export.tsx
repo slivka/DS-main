@@ -659,6 +659,7 @@ export function ExcelExportButton({
   label = "Stáhnout vzorový export",
   className,
 }: ExcelExportButtonProps) {
+  const dsTexts = useDsTexts();
   const onClick = async () => {
     const created = new Date();
     const workbook = await buildExcelWorkbook(await getData(), {

@@ -69,6 +69,7 @@ export const BarBreakdownChart = forwardRef<HTMLDivElement, BarBreakdownChartPro
   },
   ref,
 ) {
+  const dsTexts = useDsTexts();
   const t = { ...DEFAULT_BAR_BREAKDOWN_TEXTS, ...texts };
   const max = Math.max(0, ...items.map((item) => Math.abs(item.value)));
   const base = total ?? items.reduce((sum, item) => sum + Math.abs(item.value), 0);
@@ -97,7 +98,7 @@ export const BarBreakdownChart = forwardRef<HTMLDivElement, BarBreakdownChartPro
             type="button"
             data-bar-id={item.id}
             aria-pressed={onSelect ? selected : undefined}
-            aria-label={t.barLabel(item.label, value, formatShare(share))}
+            aria-label={t.barLabel(item.label, value, formatShare(share, dsTexts.intlLocale))}
             disabled={!onSelect}
             onClick={() => onSelect?.(selected ? null : item.id, selected ? null : item)}
             className={cn(
@@ -126,7 +127,7 @@ export const BarBreakdownChart = forwardRef<HTMLDivElement, BarBreakdownChartPro
             <span className="flex items-baseline gap-2 whitespace-nowrap">
               <span className={cn("num tabular-nums", negative && "text-destructive")}>{value}</span>
               <span className="num w-14 text-right text-xs tabular-nums text-muted-foreground">
-                {formatShare(share)}
+                {formatShare(share, dsTexts.intlLocale)}
               </span>
             </span>
           </button>
