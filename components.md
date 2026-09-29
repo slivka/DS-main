@@ -329,5 +329,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - BREAKING: `DocumentForm.identity.items` nahradil typovaný `DocumentIdentity` s variantami `cashBank`, `invoice` a `internal`, povinnou knihou a obdobím a volitelným účtem a číslem.
 - Hlavní účet se zobrazuje a případně mění jen v identifikačním řádku. `mainAccountOptions` omezuje nabízené účty; změna pouze upraví `mainAccountId` a nepřepočítává řádky.
 - U faktur a interních dokladů je měna bezprostředně za Celkem. `currencyLocked` ji zobrazí jako text, `currencyDisabledReason` jako zakázaný výběr s vysvětlením; pokladna a banka mají měnu pouze v identitě.
-- `DocumentTypeCode` nově zahrnuje `DDPZ`, `DDPOZ`, `KR` a `ZAP`; `documentIdentityVariantForType()` vrací výchozí variantu podle druhu dokladu.
+- `DocumentTypeCode` nově zahrnuje `DDPZ`, `DDPOZ`, `KR` a `ZAP`; `documentIdentityVariantForType()` (v `document-fields.ts`, re-export z formuláře) vrací výchozí variantu podle druhu dokladu. Tužka změny účtu se ukáže jen u `invoice` s `account.editable`, bez `mainAccountLocked`, s oprávněním a neprázdným `mainAccountOptions`; nabídka obsahuje výhradně `mainAccountOptions`. Varianta `internal` účet nikdy nezobrazí. `SideBadge` byl odstraněn.
 - `mainAccountLocked` a `currencyLocked` už neskrývají údaje. První vždy skryje změnu účtu, druhý ponechá měnu jako text vedle Celkem.

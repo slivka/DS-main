@@ -1,3 +1,12 @@
+## Verze 2.68.0 – opravy po kontrole kódu
+- [x] Změna hlavního účtu jen z neprázdných `mainAccountOptions`; popisek svázaný s `value.mainAccountId`.
+- [x] Návrat fokusu na „Změnit účet“, zaměřitelná zamčená tužka, `AccountSelect.ariaLabel` „Hlavní účet“.
+- [x] `internal` nikdy nevykreslí účet; dvojice Celkem + Měna na vlastním řádku bez přetečení.
+- [x] Měna: ve spouštěči kód, v nabídce „kód - název“ (`SelectOption.selectedLabel`).
+- [x] Úklid: `SideBadge`, mrtvé texty, `documentIdentityVariantForType` v `document-fields.ts` (re-export zůstává).
+- [x] Obnovená ukázka formulářů včetně gridu se skrytým seskupením; osm stavů hlavičky jako samostatná sekce.
+- [x] Nové testy (336/336), typy.
+
 
 ## Verze 2.62.0 (sjednocení formulářů karty záznamu)
 
