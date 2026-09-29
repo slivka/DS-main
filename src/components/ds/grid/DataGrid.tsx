@@ -791,7 +791,7 @@ export function DataGrid<Row>({
   const exportFilterLabels = [
     ...(exportMeta?.filters ?? []),
     ...(period ? [gridPeriodLabel(period.value)] : []),
-    ...(search.trim() ? [`Hledání: ${search.trim()}`] : []),
+    ...(search.trim() ? [texts.exportSearch(search.trim())] : []),
     ...activeFilterLabels,
   ];
   const printConfig = printContext ? {
