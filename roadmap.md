@@ -5,7 +5,8 @@
 - [x] Měna: ve spouštěči kód, v nabídce „kód - název“ (`SelectOption.selectedLabel`).
 - [x] Úklid: `SideBadge`, mrtvé texty, `documentIdentityVariantForType` v `document-fields.ts` (re-export zůstává).
 - [x] Obnovená ukázka formulářů včetně gridu se skrytým seskupením; osm stavů hlavičky jako samostatná sekce.
-- [x] Nové testy (336/336), typy.
+- [x] Nové testy (337/337), typy.
+- [x] Druhá kontrola: nezkracované Celkem s nápovědou pod polem, zalamování měny, nový popisek účtu z aplikace, úplný seznam BREAKING změn a opravená FP ukázka.
 
 
 ## Verze 2.62.0 (sjednocení formulářů karty záznamu)

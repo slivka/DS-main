@@ -43,6 +43,12 @@ const INVOICE_LINES: JournalLine[] = [
   { id: "f3", debitAccount: "311001", creditAccount: "604001", amount: 2161.37, foreignAmount: 89, quantity: 1, unitId: "piece", unitPrice: 89, text: "Materiál" },
   { id: "fx1", debitAccount: "311001", creditAccount: "663001", amount: -0.01, text: "Kurzové zaokrouhlení", isFxRounding: true },
 ];
+const PURCHASE_INVOICE_HEADER: DocumentHeaderValue = { ...INVOICE_HEADER, mainAccountId: "321001" };
+const PURCHASE_INVOICE_LINES: JournalLine[] = INVOICE_LINES.map((line) => ({
+  ...line,
+  debitAccount: line.creditAccount,
+  creditAccount: "321001",
+}));
 const SCHEDULE: PaymentScheduleItem[] = [
   { id: "s1", kind: "installment", dueDate: "2026-10-08", amount: 3630, description: "Splátka 1/3" },
   { id: "s2", kind: "installment", dueDate: "2026-11-08", amount: 3630, description: "Splátka 2/3" },
@@ -129,8 +135,8 @@ export function DocumentFormShowcase() {
   const [descriptionSuggestions, setDescriptionSuggestions] = useState(true);
   const suggestNames = async (query: string) => ["Jan Veselý", "Jana Nováková", "Petr Svoboda"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
   const suggestDescriptions = async (query: string) => ["Doprava zásilky", "Nákup kancelářských potřeb", "Úhrada faktury v hotovosti"].filter((item) => item.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs")));
-  const [invoice, setInvoice] = useState(INVOICE_HEADER);
-  const [invoiceLines, setInvoiceLines] = useState(INVOICE_LINES);
+  const [invoice, setInvoice] = useState(PURCHASE_INVOICE_HEADER);
+  const [invoiceLines, setInvoiceLines] = useState(PURCHASE_INVOICE_LINES);
   const [schedule, setSchedule] = useState(SCHEDULE);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [formError, setFormError] = useState(true);
@@ -236,7 +242,7 @@ export function DocumentFormShowcase() {
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           vat={{ visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" }}
           dateWarnings={{ taxDate: "DUZP a zaúčtování jsou v různých letech" }}
-          mainSide="MD"
+          mainSide="D"
           linesEditorProps={{ dimensionRequired: true, storageKey: "showcase-doc-fp", units }}
           status="filed"
           tabs={[{
