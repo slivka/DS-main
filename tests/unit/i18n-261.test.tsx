@@ -26,8 +26,9 @@ describe("centrální texty 2.61.0", () => {
     expect(view.getByLabelText("Veľkosť písma")).toBeTruthy();
     expect(DS_TEXTS_SK.multiSelect.noValues).toBe("Žiadne hodnoty.");
     const visible = document.body.textContent ?? "";
-    for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Vše", "Close"]) expect(visible).not.toContain(forbidden);
+    for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Close"]) expect(visible).not.toContain(forbidden);
     expect(visible).not.toMatch(/[řůě]/);
+    expect(visible).not.toMatch(/(^|\s)Vše($|\s)/);
     cleanup();
   });
 
