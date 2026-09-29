@@ -405,8 +405,9 @@ export function AppShell({
   const searchOverlayRef = useRef<HTMLDivElement>(null);
   const shellBodyRef = useRef<HTMLDivElement>(null);
 
+  // Zoom aplikace se aplikuje jen jednou při startu; další změny dělá setAppZoom / resetAppZoom.
+  useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
   useEffect(() => {
-    applyAppZoom(getAppZoom());
     document.title = appName;
   }, [appName]);
 
