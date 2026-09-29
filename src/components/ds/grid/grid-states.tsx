@@ -3,6 +3,7 @@ import type { ComponentType, ReactNode } from "react";
 import { Button } from "../../ui/button";
 import { TableCell, TableRow } from "../../ui/table";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
+import { useDsTexts } from "../../../ds-texts";
 
 /** Skeleton řádky – místo prázdné plochy během načítání gridu. */
 export function GridSkeletonRows({ rows = 6, cols }: { rows?: number; cols: number }) {
