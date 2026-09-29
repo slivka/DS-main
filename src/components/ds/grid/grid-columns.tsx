@@ -107,6 +107,8 @@ export type GridColumn<Id extends string = string> = {
   label: string;
   /** Sloupec nelze skrýt. */
   locked?: boolean;
+  /** Volitelný dynamický důvod, proč nyní nelze změnit viditelnost sloupce. */
+  disableToggleReason?: string;
   /** Výchozí viditelnost (výchozí true). */
   defaultVisible?: boolean;
   /** Sekce pro spojený horní řádek hlavičky (např. „Smlouva“). */

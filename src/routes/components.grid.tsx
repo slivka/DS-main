@@ -14,6 +14,7 @@ import {
   GridToggleButton,
   gridPeriodRange,
   accountColumns,
+  accountColumnPair,
   debitCreditColumns,
   type DataGridColumn,
   type TreeGridColumn,
@@ -109,6 +110,10 @@ function GridPage() {
     ],
     [accountNames],
   );
+  const singleAccountColumns = useMemo<DataGridColumn<JournalEntry>[]>(() => [
+    { id: "document", label: "Doklad", value: (row) => row.document },
+    ...accountColumnPair<JournalEntry>({ id: "account", label: "Účet", shortLabel: "Účet č.", getCode: (row) => row.debitAccount, accountName: (code) => accountNames.get(code) }),
+  ], [accountNames]);
   const treeColumns = useMemo<TreeGridColumn<JournalEntry>[]>(() => columns.map((column) => ({ id: column.id, label: column.label, ...(column.align ? { align: column.align } : {}), ...(column.numeric ? { numeric: true, total: column.total === "none" ? "none" : "sum" as const } : {}), ...(column.decimals !== undefined ? { decimals: column.decimals } : {}), ...(column.value ? { value: column.value } : {}), ...(column.render ? { render: (row) => column.render?.(row) } : {}), ...(column.width ? { width: column.width } : {}) })), [columns]);
 
   return (
@@ -167,6 +172,7 @@ function GridPage() {
         deleteConfirm={(r) => `Odstranit doklad ${r.document}?`}
         deleteDisabledReason={(r) => r.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
       />
+      <DataGrid<JournalEntry> storageKey="ds-account-column-pair" title="Jednoúčtový grid" rows={MOCK_JOURNAL.slice(0, 5)} columns={singleAccountColumns} rowKey={(row) => row.id} paginated={false} />
       <div className="mt-8">
         <TreeGrid<JournalEntry>
           title="Účetní deník – strom"
