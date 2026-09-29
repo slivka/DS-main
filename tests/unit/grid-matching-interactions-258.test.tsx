@@ -96,3 +96,20 @@ describe("DataGrid – řízený výběr, interakce 2.58.0", () => {
     expect(calls.at(-1)?.sort()).toEqual(["a", "b"]);
   });
 });
+
+describe("DataGrid – ručně skrytý seskupovací sloupec 2.60.0", () => {
+  it("ponechá český popisek v čipu i záhlaví skupiny", async () => {
+    const storageKey = "hidden-group-user-260";
+    localStorage.setItem(`columns:${storageKey}`, JSON.stringify({ group: false, amount: true }));
+    const groupedColumns: DataGridColumn<R>[] = [
+      { id: "group", label: "Zdroj párování", value: (row) => row.name },
+      { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
+    ];
+    const { findAllByText } = render(
+      <DataGrid storageKey={storageKey} rows={[{ id: "a", name: "Párování A", amount: 1 }]} columns={groupedColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />,
+    );
+    expect((await findAllByText("Zdroj párování")).length).toBeGreaterThanOrEqual(2);
+    expect(document.body.textContent).not.toContain("group:");
+    localStorage.removeItem(`columns:${storageKey}`);
+  });
+});
