@@ -48,7 +48,7 @@ export function useWheelZoom(
 /** Základní velikost písma gridu při zoomu 100 %. */
 export const GRID_BASE_FONT_REM = 0.8125;
 
-/** Velikost písma odpovídající aktuálnímu zoomu gridu (px string). */
+/** Velikost písma odpovídající aktuálnímu zoomu gridu v rem. */
 export const gridFontSize = (zoom = 1) => `${(GRID_BASE_FONT_REM * clamp(zoom)).toFixed(4)}rem`;
 
 /** Určuje, zda pod pravým ukotveným sloupcem zůstává skrytý obsah tabulky. */
@@ -60,7 +60,7 @@ export function hasOverflowRight({
   return scrollLeft + clientWidth < scrollWidth - 1;
 }
 
-/** Zoom tabulky uložený v prohlížeči pod vlastním klíčem. */
+/** Hustota tabulky; nová instance začíná vždy normální hustotou. */
 export type GridDensity = "compact" | "normal";
 
 type GridZoomContextValue = {

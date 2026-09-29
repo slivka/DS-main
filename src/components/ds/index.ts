@@ -56,6 +56,7 @@ export * from "./grid/grid-grouping";
 export * from "./grid/grid-sections";
 export * from "./grid/grid-states";
 export * from "./grid/grid-zoom";
+export * from "./grid/grid-auto-zoom";
 export * from "./grid/grid-toolbar";
 export * from "./grid/grid-pagination";
 export * from "./grid/grid-selection-toggle";
