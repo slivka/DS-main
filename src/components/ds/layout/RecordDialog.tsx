@@ -338,6 +338,9 @@ const FIELD_SPAN_CLASSES = {
   13: "@min-[40rem]:col-span-13", 14: "@min-[40rem]:col-span-14", 15: "@min-[40rem]:col-span-15",
   16: "@min-[40rem]:col-span-16", 17: "@min-[40rem]:col-span-17", 18: "@min-[40rem]:col-span-18",
   19: "@min-[40rem]:col-span-19", 20: "@min-[40rem]:col-span-20",
+  13: "@min-[40rem]:col-span-13", 14: "@min-[40rem]:col-span-14", 15: "@min-[40rem]:col-span-15",
+  16: "@min-[40rem]:col-span-16", 17: "@min-[40rem]:col-span-17", 18: "@min-[40rem]:col-span-18",
+  19: "@min-[40rem]:col-span-19", 20: "@min-[40rem]:col-span-20",
 } as const;
 
 export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
@@ -363,7 +366,9 @@ export function FieldGrid({
         ? "grid-cols-2 @min-[40rem]:grid-cols-12"
        : cols === 20
         ? "grid-cols-20"
-       : cols === 3
+       : cols === 20
+        ? "grid-cols-20"
+      : cols === 3
         ? "@min-[40rem]:grid-cols-3"
         : cols === 4
           ? "@min-[40rem]:grid-cols-4"
