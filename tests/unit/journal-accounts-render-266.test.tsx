@@ -1,6 +1,10 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
+
+// Radix vybírá useLayoutEffect při prvním načtení modulu; pokud jej dřívější SSR test načetl bez DOM,
+// portály (Popover, Dialog) by se nikdy nepřipojily. Vynutíme skutečný useLayoutEffect.
+mock.module("@radix-ui/react-use-layout-effect", () => ({ useLayoutEffect: React.useLayoutEffect }));
 
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { cleanup, fireEvent, render, within, act } = await import("@testing-library/react");
