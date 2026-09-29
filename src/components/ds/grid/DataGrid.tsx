@@ -664,7 +664,7 @@ export function DataGrid<Row>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pageRows, groupColumns],
   );
-  const grouped = useGroupedRows(pageRows, grouping, groupColumns, valueOf);
+  const grouped = useGroupedRows(pageRows, grouping, groupColumns, valueOf, texts);
   const displayItems = useMemo(
     () => (groupTotals === "row" && grouping.active ? insertGroupTotalRows(grouped) : grouped),
     [grouped, groupTotals, grouping.active],
@@ -675,9 +675,10 @@ export function DataGrid<Row>({
     { ...grouping, collapsed: [] },
     groupColumns,
     valueOf,
+    texts,
   );
 
-  const printGrouped = useGroupedRows(sorted, grouping, groupColumns, valueOf);
+  const printGrouped = useGroupedRows(sorted, grouping, groupColumns, valueOf, texts);
   const exportData = (forPrint = false): GridExportData => {
     const hasSections = shown.some((column) => column.section);
     const exportItems = grouping.active
