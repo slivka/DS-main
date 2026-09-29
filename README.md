@@ -248,7 +248,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 ## Changelog 2.30.0 – identita v těle formuláře (dříve 2.28.1)
 
 - `PageHeader` vždy zobrazuje nadpis dokladu; identita jej už nenahrazuje.
-- Identifikační řádek je první uvnitř formulářové karty: obsahuje směr, všechny položky identity a číslo dokladu nebo čekající text. V úzkém panelu se doplňující položky zalomí, ale nezmizí.
+- Identifikační řádek je první uvnitř formulářové karty: obsahuje směr, knihu, kód období, podle varianty měnu a účet a vpravo číslo dokladu nebo čekající text. V úzkém panelu se celé údaje zalomí, ale nezmizí.
 - Přilepený pruh akcí má vlevo stav a Schváleno, vpravo Uložit, hlavní akci a nabídku dalších akcí. Směr se v něm již neopakuje.
 - Veřejné API zůstává beze změny.
 
