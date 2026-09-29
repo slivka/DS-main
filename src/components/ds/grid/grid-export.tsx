@@ -471,7 +471,7 @@ export function GridExport({
     const td = (v: ExportCell, i: number, tag = "td") =>
       `<${tag}${numeric[i] ? ' class="num"' : ""}>${esc(
         typeof v === "number"
-          ? fmtNumber(v)
+          ? fmtNumber(v, dsTexts.intlLocale)
           : displayExportCell(v, dates[i]?.isDate ?? false, dates[i]?.hasTime ?? false),
       )}</${tag}>`;
     // součtové řádky se sloučeným popiskem zarovnaným doprava
