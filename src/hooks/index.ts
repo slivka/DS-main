@@ -1,5 +1,4 @@
 export * from "./use-mobile";
-export * from "./useAppFontSize";
 export * from "./useDebouncedValue";
 export * from "./use-dialog-back-close";
 export * from "./use-grid-keyboard-nav";

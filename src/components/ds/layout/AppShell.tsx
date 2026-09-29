@@ -8,7 +8,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../.
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
-import { applyFontScale } from "../../../lib/font-scale";
+import { APP_ZOOM_EVENT, applyAppZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, useAppZoom } from "../../../lib/app-zoom";
+import { beginResize } from "../../../lib/resize-lock";
 import { useMediaQuery } from "../../../hooks/use-mobile";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
@@ -72,8 +73,6 @@ export interface AppShellProps {
   activePanel?: string | null;
   onActivePanelChange?: (id: string | null) => void;
   closeLabel?: string;
-  collapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
   menuLabel?: string;
   collapseLabel?: string;
   expandLabel?: string;
@@ -359,8 +358,6 @@ export function AppShell({
   activePanel,
   onActivePanelChange,
   closeLabel = "Zavřít",
-  collapsed,
-  onCollapsedChange,
   menuLabel = "Menu",
   collapseLabel = "Sbalit menu",
   expandLabel = "Rozbalit menu",
@@ -384,11 +381,15 @@ export function AppShell({
   const resolvedSearchEmptyText = navSearchEmptyText ?? dsTexts.appShell.searchEmpty;
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
-  const [ownCollapsed, setOwnCollapsed] = useState(false);
+  const [ownCollapsed, setOwnCollapsed] = useState(() => { try { return localStorage.getItem("app:menu-collapsed") === "true"; } catch { return false; } });
+  const [storedMenuWidth, setStoredMenuWidth] = useState(() => { try { return Number(localStorage.getItem("app:menu-width")) || 15; } catch { return 15; } });
+  const [draftMenuWidth, setDraftMenuWidth] = useState<number | null>(null);
+  const appZoom = useAppZoom();
+  const effectiveWidth = typeof window === "undefined" ? 1280 : effectiveViewportWidth(window.innerWidth, appZoom.zoom);
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
   const [collapseWasChosen, setCollapseWasChosen] = useState(false);
-  const isNarrow = useMediaQuery("(max-width: 1279px)");
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isNarrow = effectiveWidth < 1280;
+  const isMobile = effectiveWidth < 768;
   const collapsedRef = useRef(false);
   const headerRef = useRef<HTMLElement>(null);
   const contextRef = useRef<HTMLDivElement>(null);
@@ -401,7 +402,7 @@ export function AppShell({
   const searchOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    applyFontScale();
+    applyAppZoom(getAppZoom());
     document.title = appName;
   }, [appName]);
 
@@ -430,7 +431,7 @@ export function AppShell({
   const legacyActivePanel = adminMode ? "admin" : null;
   const resolvedActivePanel = activePanel !== undefined ? activePanel : adminMode !== undefined ? legacyActivePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
-  const requestedCollapsed = collapsed ?? ownCollapsed;
+  const requestedCollapsed = ownCollapsed;
   const isCollapsed = collapseWasChosen ? requestedCollapsed : isNarrow || requestedCollapsed;
   collapsedRef.current = isCollapsed;
 
@@ -441,21 +442,53 @@ export function AppShell({
   };
   const setCollapsed = (next: boolean) => {
     setCollapseWasChosen(true);
-    onCollapsedChange?.(next);
-    if (collapsed === undefined) setOwnCollapsed(next);
+    setOwnCollapsed(next);
+    try { localStorage.setItem("app:menu-collapsed", String(next)); } catch { /* úložiště nemusí být dostupné */ }
   };
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target;
       const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      const zoomAction = isAppZoomShortcut(event);
+      if (zoomAction && !isEditing) {
+        event.preventDefault();
+        if (zoomAction === "increase") appZoom.setZoom(appZoom.zoom + appZoom.step);
+        else if (zoomAction === "decrease") appZoom.setZoom(appZoom.zoom - appZoom.step);
+        else appZoom.reset();
+        return;
+      }
       if (!event.ctrlKey || event.altKey || event.metaKey || event.key.toLowerCase() !== "b" || isEditing) return;
       event.preventDefault();
       setCollapsed(!collapsedRef.current);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [appZoom, isCollapsed]);
+
+  const menuWidth = Math.min(26.25, Math.max(12.5, draftMenuWidth ?? storedMenuWidth));
+  const onMenuDividerDown = (event: React.PointerEvent) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = menuWidth;
+    let finalWidth = startWidth;
+    const release = beginResize();
+    const move = (moveEvent: PointerEvent) => {
+      finalWidth = Math.min(26.25, Math.max(12.5, startWidth + (moveEvent.clientX - startX) / 16 / appZoom.zoom));
+      setDraftMenuWidth(finalWidth);
+    };
+    const up = () => {
+      setDraftMenuWidth(null);
+      setStoredMenuWidth(finalWidth);
+      try { localStorage.setItem("app:menu-width", String(finalWidth)); } catch { /* úložiště nemusí být dostupné */ }
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      release();
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -568,7 +601,7 @@ export function AppShell({
   return (
     <div data-slot="app-shell" className="app-shell-root flex flex-col overflow-hidden bg-background">
       <header ref={headerRef} className="relative z-30 flex h-14 shrink-0 items-center overflow-hidden border-b bg-card">
-        {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed ? "w-14 justify-center px-2" : "w-60")}>
+        {showBrand ? <div className={cn("hidden h-full shrink-0 items-center gap-2 border-r px-4 transition-[width] md:flex", isCollapsed && "w-14 justify-center px-2")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           {logo}
           {!isCollapsed ? <span className="truncate font-semibold tracking-tight">{appName}</span> : null}
         </div> : null}
@@ -626,12 +659,13 @@ export function AppShell({
       ) : null}
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed ? "w-14" : "w-60")}>
+        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r transition-[width] md:flex md:flex-col", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
+        {!isCollapsed ? <div role="separator" aria-orientation="vertical" aria-label="Změnit šířku menu" tabIndex={0} onPointerDown={onMenuDividerDown} onDoubleClick={() => { setStoredMenuWidth(15); try { localStorage.setItem("app:menu-width", "15"); } catch { /* noop */ } }} className="hidden w-1 shrink-0 cursor-col-resize bg-border/50 hover:bg-primary/40 md:block" /> : null}
         {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden min-h-0 w-60 flex-col overflow-hidden border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
         <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
           <AppShellContentProvider value={setHasPaneLayout}>{children}</AppShellContentProvider>

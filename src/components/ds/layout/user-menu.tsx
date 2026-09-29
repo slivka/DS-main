@@ -1,6 +1,6 @@
 import { useMemo, useState, type ComponentType } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, LogOut, Search } from "lucide-react";
+import { Check, LogOut, Minus, Plus, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { Input } from "../../ui/input";
+import { useDsTexts } from "../../../ds-texts";
+import { useAppZoom } from "../../../lib/app-zoom";
 
 export type UserMenuWorkspace = { id: string; name: string };
 export type UserMenuItem = {
@@ -56,6 +58,8 @@ export function UserMenu({
   signOutLabel = "Odhlásit",
   menuLabel = "Uživatelská nabídka",
 }: UserMenuProps) {
+  const texts = useDsTexts();
+  const appZoom = useAppZoom();
   const [query, setQuery] = useState("");
   const visible = useMemo(
     () => workspaces.filter((workspace) => workspace.name.toLocaleLowerCase("cs").includes(query.toLocaleLowerCase("cs"))),
@@ -75,6 +79,14 @@ export function UserMenu({
           <span className="block truncate">{name}</span>
           <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <div className="flex items-center gap-1 px-2 py-1.5" onPointerDown={(event) => event.preventDefault()}>
+          <span className="mr-auto text-sm">{texts.appZoom.label}</span>
+          <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.appZoom.decrease} disabled={appZoom.zoom <= appZoom.min} onClick={() => appZoom.setZoom(appZoom.zoom - appZoom.step)}><Minus className="size-3.5" /></Button>
+          <span className="w-12 text-center text-sm tabular-nums">{Math.round(appZoom.zoom * 100)}&nbsp;%</span>
+          <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.appZoom.increase} disabled={appZoom.zoom >= appZoom.max} onClick={() => appZoom.setZoom(appZoom.zoom + appZoom.step)}><Plus className="size-3.5" /></Button>
+          <Button type="button" variant="ghost" size="sm" onClick={appZoom.reset}>{texts.appZoom.reset}</Button>
+        </div>
         {workspaces.length ? (
           <>
             <DropdownMenuSeparator />
