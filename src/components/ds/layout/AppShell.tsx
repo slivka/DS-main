@@ -16,6 +16,7 @@ import type { OpenTabTarget } from "../panes/pane-state";
 import { filterNavGroups, highlightNavMatch, withNavSections } from "./nav-search";
 import { StatusBadge, type StatusTone } from "../data-display/status-badge";
 import { TruncatedText } from "../data-display/truncated-text";
+import { useDsTexts } from "../../../ds-texts";
 import { AppShellContentProvider } from "./page-layout";
 
 export type NavItem = {
@@ -121,6 +122,9 @@ type ShellNavProps = {
   focusSearch?: number;
   onDismissSearch?: () => void;
   searchMenu?: ReactNode;
+  clearSearchLabel: string;
+  mainMenuLabel: string;
+  containsActivePageLabel: string;
 };
 
 function readGroupCollapsed(storageKey: string, fallback: boolean) {
@@ -139,7 +143,7 @@ function badgeTotal(group: NavGroup) {
   return total > 0 ? total : null;
 }
 
-function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0, onDismissSearch, searchMenu }: ShellNavProps) {
+function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGroups, disabledHint, onNavigate, navStateKey, searchEnabled, searchPlaceholder, searchEmptyText, onExpandSearch, focusSearch = 0, onDismissSearch, searchMenu, clearSearchLabel, mainMenuLabel, containsActivePageLabel }: ShellNavProps) {
   // V režimu záložek otevírá navigace stránky do záložek (Cmd/Ctrl + klik = nová záložka, + Shift = sousední panel).
   const paneTabs = usePaneTabs();
   const activeTab = useActivePaneTab();
@@ -264,11 +268,11 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
           <div className="flex shrink-0 flex-col gap-1 p-2"><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="w-full text-sidebar-foreground" aria-label={searchPlaceholder} onClick={onExpandSearch}><Search className="size-4" /></Button></TooltipTrigger><TooltipContent side="right">{searchPlaceholder}</TooltipContent></Tooltip>{searchMenu}</div>
         ) : (
           <div className="shrink-0 px-2 pb-1 pt-2">
-            <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label="Smazat hledání" onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
+            <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label={clearSearchLabel} onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
           </div>
         ) : null}
         <div className="relative min-h-0 flex-1">
-          <nav ref={navRef} onScroll={updateNavEdges} className="ds-scroll-area flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-2" aria-label="Hlavní menu">
+          <nav ref={navRef} onScroll={updateNavEdges} className="ds-scroll-area flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-2" aria-label={mainMenuLabel}>
             <div className="flex min-h-full flex-col">
               {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
               {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
@@ -325,7 +329,7 @@ function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, qu
             <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
               <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
               {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}
-              {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label="Obsahuje aktivní stránku" /> : null}
+              {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label={containsActivePageLabel} /> : null}
               <ChevronRight className={cn("size-3.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none", !hidden && "rotate-90")} />
             </button>
           ) : <div className="shell-nav-group mb-1 flex h-8 items-center px-3 text-[0.8rem] font-semibold text-sidebar-muted">{group.label}</div>
@@ -360,7 +364,7 @@ export function AppShell({
   menuLabel = "Menu",
   collapseLabel = "Sbalit menu",
   expandLabel = "Rozbalit menu",
-  disabledHint = NAV_DISABLED_HINT,
+  disabledHint,
   items,
   adminNav,
   adminMode,
@@ -370,10 +374,14 @@ export function AppShell({
   onAdminModeChange,
   navStateKey,
   navSearch = true,
-  navSearchPlaceholder = "Hledat v menu…",
-  navSearchEmptyText = "Nic nenalezeno",
+  navSearchPlaceholder,
+  navSearchEmptyText,
   navSearchMenu,
 }: AppShellProps) {
+  const dsTexts = useDsTexts();
+  const resolvedDisabledHint = disabledHint ?? dsTexts.appShell.disabledHint;
+  const resolvedSearchPlaceholder = navSearchPlaceholder ?? dsTexts.appShell.searchPlaceholder;
+  const resolvedSearchEmptyText = navSearchEmptyText ?? dsTexts.appShell.searchEmpty;
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const [ownCollapsed, setOwnCollapsed] = useState(false);
@@ -484,7 +492,7 @@ export function AppShell({
   const visibleGroups = currentPanel?.nav ?? resolvedGroups;
   const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}` : navStateKey ?? appName;
   const nav = (compact: boolean, onNavigate = () => setMenuOpen(false), onDismissSearch?: () => void) => (
-    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={disabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={navSearchPlaceholder} searchEmptyText={navSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} searchMenu={navSearchMenu} />
+    <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={resolvedDisabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={resolvedSearchPlaceholder} searchEmptyText={resolvedSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} searchMenu={navSearchMenu} clearSearchLabel={dsTexts.appShell.clearSearch} mainMenuLabel={dsTexts.appShell.mainMenu} containsActivePageLabel={dsTexts.appShell.containsActivePage} />
   );
   const hasContext = Boolean(contextLeft);
   const hasActions = Boolean(actions);

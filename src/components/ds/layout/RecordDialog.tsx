@@ -16,6 +16,7 @@ import { SectionHeading } from "./section-heading";
 import { PageTabs } from "./page-tabs";
 import { TabsContent } from "../../ui/tabs";
 import { StatusBadge } from "../data-display/status-badge";
+import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 
 export interface RecordDialogTab {
@@ -114,15 +115,15 @@ export function RecordDialog({
   title,
   description,
   onSubmit,
-  submitLabel = "Uložit",
-  closeLabel = "Zavřít",
+  submitLabel,
+  closeLabel,
   busy,
   children,
   extraActions,
   wide,
   contentClassName,
   sidePanel,
-  sidePanelLabel = "Poznámky",
+  sidePanelLabel,
   sidePanelTitle,
   headerExtra,
   sidePanelExtra,
@@ -131,24 +132,31 @@ export function RecordDialog({
   status,
   lifecycleAction,
   dirty = false,
-  cancelLabel = "Zrušit",
-  saveAndActionLabel = "Uložit změny a {label}",
-  dirtyConfirmTitle = "Formulář obsahuje neuložené změny",
+  cancelLabel,
+  saveAndActionLabel,
+  dirtyConfirmTitle,
 }: RecordDialogProps) {
+  const dsTexts = useDsTexts();
+  const submitText = submitLabel ?? dsTexts.common.save;
+  const closeText = closeLabel ?? dsTexts.common.close;
+  const cancelText = cancelLabel ?? dsTexts.common.cancel;
+  const panelLabel = sidePanelLabel ?? dsTexts.recordDialog.notes;
+  const saveAndActionText = saveAndActionLabel ?? dsTexts.recordDialog.saveAndAction;
+  const dirtyTitle = dirtyConfirmTitle ?? dsTexts.recordDialog.dirtyTitle;
   const { confirm, confirmDialog } = useConfirmDialog();
   const runLifecycle = () => {
     if (!lifecycleAction) return;
-    const plan = resolveLifecycleConfirm(lifecycleAction, dirty, saveAndActionLabel, dirtyConfirmTitle);
+    const plan = resolveLifecycleConfirm(lifecycleAction, dirty, saveAndActionText, dirtyTitle);
     if (!plan) {
       void lifecycleAction.onClick({ saveFirst: false });
       return;
     }
-    confirm({ title: plan.title, ...(plan.description ? { description: plan.description } : {}), confirmLabel: plan.confirmLabel, cancelLabel, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
+    confirm({ title: plan.title, ...(plan.description ? { description: plan.description } : {}), confirmLabel: plan.confirmLabel, cancelLabel: cancelText, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
   };
   const statusBadge = status ? (
     <StatusBadge
       status={status.active ? "active" : "inactive"}
-      config={{ active: { label: status.activeLabel ?? "Aktivní", tone: "success" }, inactive: { label: status.inactiveLabel ?? "Neaktivní", tone: "neutral" } }}
+      config={{ active: { label: status.activeLabel ?? dsTexts.recordDialog.active, tone: "success" }, inactive: { label: status.inactiveLabel ?? dsTexts.recordDialog.inactive, tone: "neutral" } }}
     />
   ) : null;
   const [panelOpen, setPanelOpen] = useState(false);
@@ -180,10 +188,10 @@ export function RecordDialog({
           size="sm"
           className="absolute right-12 top-3 gap-1.5"
           onClick={() => setPanelOpen((v) => !v)}
-          title={panelVisible ? `Skrýt ${sidePanelLabel.toLowerCase()}` : sidePanelLabel}
+          title={panelVisible ? dsTexts.recordDialog.hidePanel(panelLabel.toLowerCase()) : panelLabel}
         >
           {panelVisible ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
-          {sidePanelTitle ?? sidePanelLabel}
+          {sidePanelTitle ?? panelLabel}
         </Button>
       ) : null}
       {sidePanel && sidePanelExtra ? (
@@ -200,7 +208,7 @@ export function RecordDialog({
         >
           {children}
           {tabs?.length ? (
-            <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel="Sekce detailu">
+            <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel={dsTexts.recordDialog.detailSections}>
               {tabs.map((tab) => <TabsContent key={tab.value} value={tab.value} className="mt-3">{tab.content}</TabsContent>)}
             </PageTabs>
           ) : null}
@@ -217,10 +225,10 @@ export function RecordDialog({
             ) : null}
             <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                {readOnly ? closeLabel : cancelLabel}
+                {readOnly ? closeText : cancelText}
               </Button>
               {!readOnly ? <Button type="submit" disabled={busy}>
-                {submitLabel}
+                {submitText}
               </Button> : null}
             </div>
           </div>
