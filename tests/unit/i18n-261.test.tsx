@@ -6,7 +6,7 @@ afterAll(() => GlobalRegistrator.unregister());
 afterEach(() => { document.body.innerHTML = ""; });
 
 import React from "react";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import { DsTextsProvider, DS_TEXTS_SK } from "../../src/ds-texts";
 import { Dialog, DialogContent, DialogTitle } from "../../src/components/ui/dialog";
 import { FontSizeSetting } from "../../src/components/ds/layout/FontSizeSetting";
@@ -15,16 +15,16 @@ import { MultiSelect } from "../../src/components/ds/form/multi-select";
 describe("centrální texty 2.61.0", () => {
   it("slovenský provider překládá hlavní sdílené komponenty", async () => {
 
-    render(
+    const view = render(
       <DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
         <Dialog open><DialogContent><DialogTitle>Detail</DialogTitle></DialogContent></Dialog>
         <FontSizeSetting />
         <MultiSelect options={[]} selected={[]} onChange={() => {}} allLabel="Všetko" itemsLabel="položky" />
       </DsTextsProvider>,
     );
-    expect(screen.getByText("Zavrieť")).toBeTruthy();
-    expect(screen.getByLabelText("Veľkosť písma")).toBeTruthy();
-    expect(screen.getByText("Žiadne hodnoty.")).toBeTruthy();
+    expect(view.getByText("Zavrieť")).toBeTruthy();
+    expect(view.getByLabelText("Veľkosť písma")).toBeTruthy();
+    expect(view.getByText("Žiadne hodnoty.")).toBeTruthy();
     const visible = document.body.textContent ?? "";
     for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Vše", "Close"]) expect(visible).not.toContain(forbidden);
     expect(visible).not.toMatch(/[řůě]/);
