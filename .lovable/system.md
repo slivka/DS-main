@@ -143,6 +143,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ### Formulář dokladu
 
+- Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. Pořadí je Kniha · Období · u pokladny/banky Měna · účet; hlavní účet se nikde jinde ve formuláři nezobrazuje. Faktury a interní doklady mají měnu vždy bezprostředně za Celkem, pokladna a banka pouze v identifikačním řádku.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
@@ -430,6 +431,13 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Texty: `DsTexts.journalRecap` (krátké i rozšířené názvy účtů rekapitulace) a
   sdílené `DsTexts.columnPicker.accountFormRequired` / `compactAccountHeading`.
 - Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
+
+## DS 2.68.0
+
+- BREAKING: volné `identity.items` nahradil `DocumentIdentity` s variantami `cashBank`, `invoice` a `internal`, knihou, kódem období a volitelným účtem a číslem.
+- Hlavní účet je pouze v identifikačním řádku; `mainAccountLocked` vždy skryje jeho změnu. Faktura mění účet přes `mainAccountOptions` a ukládá `mainAccountId` až s formulářem.
+- Měna faktur a interních dokladů je vedle Celkem. `currencyLocked` ji ponechá jako text, `currencyDisabledReason` vysvětlí zákaz změny; pokladna a banka ji mají pouze v identitě.
+- Nové druhy `DDPZ` a `DDPOZ` používají fakturační variantu, `KR` a `ZAP` interní variantu. Změna účtu ani měny nepřepočítává řádky v prohlížeči.
 
 ## DS 2.64.0
 

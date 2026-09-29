@@ -25,6 +25,14 @@
 - Slovenská aplikace nastaví v kořeni `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">`.
 # Slivka Design System
 
+## Changelog 2.68.0 – jednotný identifikační řádek dokladu
+
+- **BREAKING:** `DocumentForm.identity.items` nahrazuje typovaný `DocumentIdentity` (`cashBank` / `invoice` / `internal`) s knihou, kódem období, volitelným účtem a číslem dokladu.
+- Hlavní účet je jen v identifikačním řádku. Faktura může účet měnit přes `mainAccountOptions`; změna nastaví `mainAccountId` a řádky ani částky nepřepočítává.
+- Měna faktur a interních dokladů stojí vedle Celkem. `currencyLocked` ji ponechá jako text a `currencyDisabledReason` vysvětlí zákaz změny; pokladna a banka mají měnu v identitě.
+- `mainAccountLocked` už není spínač skrytí pole, ale vždy skryje tužku účtu. `currencyLocked` už není spínač skrytí měny, ale mění výběr na text.
+- Nové veřejné typy a API: `DocumentIdentityVariant`, `DocumentIdentity`, `DocumentForm.mainAccountOptions`, `DocumentForm.currencyDisabledReason`, `documentIdentityVariantForType()`; druhy dokladů doplněny o `DDPZ`, `DDPOZ`, `KR` a `ZAP`.
+
 Sdílený základ pro firemní aplikace Slivka. Obsahuje vzhled (Navy Trust),
 datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
@@ -240,7 +248,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 ## Changelog 2.30.0 – identita v těle formuláře (dříve 2.28.1)
 
 - `PageHeader` vždy zobrazuje nadpis dokladu; identita jej už nenahrazuje.
-- Identifikační řádek je první uvnitř formulářové karty: obsahuje směr, všechny položky identity a číslo dokladu nebo čekající text. V úzkém panelu se doplňující položky zalomí, ale nezmizí.
+- Identifikační řádek je první uvnitř formulářové karty: obsahuje směr, knihu, kód období, podle varianty měnu a účet a vpravo číslo dokladu nebo čekající text. V úzkém panelu se celé údaje zalomí, ale nezmizí.
 - Přilepený pruh akcí má vlevo stav a Schváleno, vpravo Uložit, hlavní akci a nabídku dalších akcí. Směr se v něm již neopakuje.
 - Veřejné API zůstává beze změny.
 

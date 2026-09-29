@@ -13,17 +13,17 @@ const form = (extra: Record<string, unknown>) => renderToStaticMarkup(<DocumentF
 
 describe("DocumentForm 2.31.0", () => {
   it("vykreslí viditelný nadpis a identitu s číslem v těle", () => {
-    const html = form({ identity: { items: ["PO - Pokladna", "CZK"], number: "POP20260012" }, directionBadge: "in" });
+    const html = form({ identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026", account: { side: "MD", label: "211.001 - Pokladna" }, number: "POP20260012" }, directionBadge: "in" });
     expect(html).toContain("document-identity");
     expect(html).toContain("POP20260012");
     expect(html).toContain(">Pokladní doklad</h1>");
     expect(html.indexOf("Pokladní doklad")).toBeLessThan(html.indexOf("document-identity"));
-    expect(html.indexOf("document-direction-badge")).toBeGreaterThan(html.indexOf("document-identity"));
+    expect(html.indexOf("document-direction-badge")).toBeGreaterThan(html.indexOf('data-slot="document-identity"'));
     expect(html.indexOf("document-direction-badge")).toBeLessThan(html.indexOf("PO - Pokladna"));
   });
   it("vykreslí výchozí i vlastní text čekajícího čísla", () => {
-    expect(form({ identity: { items: ["PO - Pokladna"] } })).toContain("Koncept – číslo při zařazení");
-    expect(form({ identity: { items: ["PO - Pokladna"], numberPending: "Čeká na číslo" } })).toContain("Čeká na číslo");
+    expect(form({ identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026" } })).toContain("Koncept – číslo při zařazení");
+    expect(form({ identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026", numberPending: "Čeká na číslo" } })).toContain("Čeká na číslo");
   });
   it("vykreslí směr v těle bez identity a ne v pruhu akcí", () => {
     const html = form({ directionBadge: "out" });
@@ -72,18 +72,19 @@ describe("DocumentForm 2.31.0", () => {
   });
   it("použije nadpis Částka bez viditelného hlavního účtu", () => {
     expect(form({ documentType: "ID" })).toContain(">Částka</h2>");
-    expect(form({ documentType: "FP" })).toContain(">Účtování a částka</h2>");
+    expect(form({ documentType: "FP" })).toContain(">Částka</h2>");
+    expect(form({ documentType: "FP" })).not.toContain(">Hlavní účet<");
   });
   it("přesune haléřové vyrovnání do lišty řádků", () => {
     const html = form({ documentType: "PO", value: { ...value, roundingAmount: 0.4 } });
-    const amountSection = html.slice(html.indexOf(">Účtování a částka</h2>"), html.indexOf("role=\"tablist\""));
+    const amountSection = html.slice(html.indexOf(">Částka</h2>"), html.indexOf("role=\"tablist\""));
     expect(amountSection).not.toContain('id="document-roundingAmount"');
     expect(html).toContain('data-slot="journal-lines-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Zaokrouhlení");
   });
   it("zobrazuje ruční Celkem se symbolem součtu a boční štítek identity", () => {
-    const html = form({ documentType: "PO", identity: { items: [{ side: "MD", text: "211.001 - Pokladna" }] } });
+    const html = form({ documentType: "PO", identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026", account: { side: "MD", label: "211.001 - Pokladna" } } });
     expect(html).toContain('id="document-amountTotal"');
     expect(html).toContain("MD");
     expect(html).toContain("211.001 - Pokladna");

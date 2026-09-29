@@ -41,7 +41,7 @@ describe("DocumentForm 2.24.0", () => {
 
   it("zobrazí měnu a kurz za množství", () => {
     const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč" title="Přijatá faktura" documentType="FP" rateAmount={100} value={{ ...value, currency: "JPY", rate: 15.9 }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} currencies={[{ code: "JPY", label: "Japonský jen" }]} status="draft" />);
-    expect(html).toContain("JPY – Japonský jen");
+    expect(html).toContain(">JPY<");
     expect(html).toContain("15,900");
     expect(html).toContain("Kč za 100 JPY");
   });

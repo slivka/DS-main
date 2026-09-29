@@ -14,7 +14,7 @@ export type DocumentFields = {
 };
 
 /** Kódy typů dokladů s předvolbou polí. */
-export type DocumentTypeCode = "ID" | "FV" | "FP" | "PO" | "BA" | "ZFV" | "ZFP" | "UZ";
+export type DocumentTypeCode = "ID" | "FV" | "FP" | "PO" | "BA" | "ZFV" | "ZFP" | "DDPZ" | "DDPOZ" | "KR" | "ZAP" | "UZ";
 
 /** Popisek hlavního účtu podle druhu dokladu. */
 export function mainAccountLabelForType(code: DocumentTypeCode | string): string {
@@ -25,6 +25,8 @@ export function mainAccountLabelForType(code: DocumentTypeCode | string): string
     FP: "Účet závazku",
     ZFV: "Účet přijaté zálohy",
     ZFP: "Účet poskytnuté zálohy",
+    DDPZ: "Účet pohledávky",
+    DDPOZ: "Účet závazku",
   };
   return labels[code.toUpperCase() as DocumentTypeCode] ?? "Hlavní účet";
 }
@@ -45,10 +47,14 @@ const NONE: DocumentFields = {
 const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
   ID: NONE,
   UZ: NONE,
+  KR: NONE,
+  ZAP: NONE,
   FV: { ...NONE, taxDate: true, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true },
   FP: { ...NONE, taxDate: true, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true, paymentOrders: true },
   ZFV: { ...NONE, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true },
   ZFP: { ...NONE, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, paymentOrders: true },
+  DDPZ: { ...NONE, taxDate: true, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true },
+  DDPOZ: { ...NONE, taxDate: true, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true, paymentOrders: true },
   PO: { ...NONE, taxDate: true, externalNumber: true, partner: true, mainAccount: true, direction: true, rounding: true, handedOverBy: true },
   BA: { ...NONE, symbols: true, bankAccount: true, partner: true, mainAccount: true, direction: true },
 };

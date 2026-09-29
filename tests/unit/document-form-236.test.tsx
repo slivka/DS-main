@@ -25,7 +25,7 @@ describe("DocumentForm 2.36.0 – limit a popisek haléřového vyrovnání", ()
 
 describe("DocumentForm 2.48", () => {
   it("zobrazí symbol měny v identifikačním řádku a Nastavení v menu", () => {
-    const html = form({ currencies: [{ code: "CZK", symbol: "Kč" }], identity: { items: ["PO", "CZK"], number: "PO1" }, settings: { onOpen: () => {} } });
+    const html = form({ currencies: [{ code: "CZK", symbol: "Kč" }], identity: { variant: "cashBank", book: "PO", period: "2026", number: "PO1" }, settings: { onOpen: () => {} } });
     expect(html).toContain(">Kč<");
     expect(html).toContain('aria-label="Další akce"');
   });
