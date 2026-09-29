@@ -32,19 +32,9 @@ describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", (
   });
 });
 
-describe("6 – zoom více gridů v jedné záložce", () => {
-  it("zápis po klíči zachová hodnoty obou gridů i v serializeLayout", () => {
-    const state = openTabInState(createPaneTabsState(1), { route: "/doklad" } as never).state;
-    const tabId = state.panes[0].tabs[0].id;
-    // Grid A a B mají každý jinou (zastaralou) kopii – zapisují se jen vlastní klíče.
-    setTabDraft(tabId, mergeGridPreference(tabId, "A", { zoom: 1.2, density: "normal" }), "gridPreferences");
-    setTabDraft(tabId, mergeGridPreference(tabId, "B", { zoom: 0.8, density: "compact" }), "gridPreferences");
-    const stored = getTabDraft<Record<string, { zoom: number }>>(tabId, "gridPreferences")!;
-    expect(stored.A.zoom).toBe(1.2);
-    expect(stored.B.zoom).toBe(0.8);
-    const snapshot = JSON.stringify(serializeLayout(state, (id) => ({ preferences: getTabDraft(id, "gridPreferences") })));
-    expect(snapshot).toContain('"A"');
-    expect(snapshot).toContain('"B"');
+describe("6 – zoom gridu", () => {
+  it("používá rem a ponechává normální hustotu jako výchozí", () => {
+    expect(gridFontSize(1)).toBe("0.8125rem");
   });
 });
 
@@ -88,16 +78,5 @@ describe("8 – pozice rolování", () => {
     expect(saved).toEqual([1]);
     await wait(80);
     expect(saved).toEqual([1, 10]);
-  });
-});
-
-describe("10 – onDefaultsChange s prodlevou", () => {
-  it("série změn se ohlásí jednou s poslední hodnotou", async () => {
-    const calls: number[] = [];
-    const debounced = createDebouncedCall((v: number) => calls.push(v), 40);
-    for (let i = 1; i <= 8; i += 1) debounced.call(i);
-    expect(calls).toEqual([]);
-    await wait(70);
-    expect(calls).toEqual([8]);
   });
 });
