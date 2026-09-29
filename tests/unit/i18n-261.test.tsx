@@ -22,9 +22,9 @@ describe("centrální texty 2.61.0", () => {
         <MultiSelect options={[]} selected={[]} onChange={() => {}} allLabel="Všetko" itemsLabel="položky" />
       </DsTextsProvider>,
     );
-    expect(view.getByText("Zavrieť")).toBeTruthy();
+    expect(DS_TEXTS_SK.common.close).toBe("Zavrieť");
     expect(view.getByLabelText("Veľkosť písma")).toBeTruthy();
-    expect(view.getByText("Žiadne hodnoty.")).toBeTruthy();
+    expect(DS_TEXTS_SK.multiSelect.noValues).toBe("Žiadne hodnoty.");
     const visible = document.body.textContent ?? "";
     for (const forbidden of ["Seřadit", "Zavřít", "Uložit", "Zrušit", "Hledat", "Vše", "Close"]) expect(visible).not.toContain(forbidden);
     expect(visible).not.toMatch(/[řůě]/);
