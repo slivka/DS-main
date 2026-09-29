@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { DocumentForm, SegmentedField, type DocumentHeaderValue } from "@/components/ds";
@@ -32,13 +32,18 @@ export function DocumentFormShowcase() {
   const [narrow, setNarrow] = useState(false);
   const [values, setValues] = useState<Record<string, DocumentHeaderValue>>(() => Object.fromEntries(SCENARIOS.map((scenario) => [scenario.id, scenario.value])));
   const common = { books: MOCK_BOOKS, accounts: MOCK_ACCOUNTS, mainAccountOptions: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, currencies: CURRENCIES, homeCurrency: "CZK", homeCurrencySymbol: "Kč", lines: [], onLinesChange: () => {} };
+  useEffect(() => {
+    const previous = document.documentElement.style.fontSize;
+    document.documentElement.style.fontSize = `${fontSize}rem`;
+    return () => { document.documentElement.style.fontSize = previous; };
+  }, [fontSize]);
 
   return <ShowcaseSection title="Jednotný identifikační řádek dokladů" description="Osm stavů dokladu při běžné i úzké šířce a při osobním nastavení velikosti písma.">
     <div className="mb-4 flex flex-wrap items-end gap-3">
       <div className="w-[18rem]"><SegmentedField ariaLabel="Velikost písma" label="Velikost písma" value={fontSize} onChange={setFontSize} options={[{ value: "0.8125", label: "0,8125" }, { value: "1", label: "1" }, { value: "1.125", label: "1,125" }]} /></div>
       <Button type="button" variant={narrow ? "default" : "outline"} onClick={() => setNarrow((current) => !current)}>Úzká šířka</Button>
     </div>
-    <div className={narrow ? "grid grid-cols-1 gap-6 @min-[75rem]:grid-cols-3" : "space-y-8"} style={{ fontSize: `${fontSize}rem` }}>
+    <div className={narrow ? "grid grid-cols-1 gap-6 @min-[75rem]:grid-cols-3" : "space-y-8"}>
       {SCENARIOS.map((scenario) => <DocumentForm key={scenario.id} {...common} title={scenario.title} documentType={scenario.type} identity={scenario.identity} directionBadge={scenario.directionBadge} mainSide={scenario.mainSide} mainAccountLocked={scenario.mainAccountLocked} currencyDisabledReason={scenario.currencyDisabledReason} value={values[scenario.id] ?? scenario.value} onChange={(next) => setValues((current) => ({ ...current, [scenario.id]: next }))} />)}
     </div>
   </ShowcaseSection>;
