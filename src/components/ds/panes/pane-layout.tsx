@@ -5,7 +5,7 @@ import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { APP_ZOOM_EVENT, getAppZoom } from "../../../lib/app-zoom";
-import { beginResize, isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
+import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 import {
   buildTabMenuActions,
   PaneApiContext,
@@ -229,7 +229,6 @@ function PaneLayoutInner({
   const onDividerDown = (index: number) => (event: React.PointerEvent) => {
     event.preventDefault();
     const start = { x: event.clientX, widths: resolvedWidths };
-    const releaseResize = beginResize();
     let finalWidths = start.widths;
     const onMove = (moveEvent: PointerEvent) => {
       if (!containerRef.current) return;
@@ -245,15 +244,13 @@ function PaneLayoutInner({
       finalWidths = next;
       setDraftWidths(next);
     };
-    const onUp = () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-      setDraftWidths(null);
-      onWidths(finalWidths);
-      releaseResize();
-    };
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
+    startPointerDrag(event, {
+      onMove,
+      onEnd: () => {
+        setDraftWidths(null);
+        onWidths(finalWidths);
+      },
+    });
   };
   const onWidths = (widths: number[]) => api.setWidths(widths);
 
