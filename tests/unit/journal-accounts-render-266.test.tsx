@@ -95,8 +95,6 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
     const view = render(<Editor storageKey={key} onLines={(lines) => { last = lines; }} />);
     const cell = [...view.container.querySelectorAll("table[role=grid] td")].find((td) => td.textContent?.includes("518.001"))!;
     fireEvent.click(cell.querySelector(".cursor-cell") ?? cell);
-    await new Promise((r) => setTimeout(r, 50));
-    console.log("DBG", document.activeElement?.outerHTML.slice(0,400), "|||", [...document.querySelectorAll("[role=option],[role=listbox],[cmdk-item],input")].map((e) => e.outerHTML.slice(0,200)).join("\n"));
     const option = await view.findByRole("option", { name: /343\.100/ });
     await act(async () => { fireEvent.click(option); });
     expect(last[0]?.debitAccount).toBe("343100");
