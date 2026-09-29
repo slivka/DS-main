@@ -106,7 +106,7 @@ Roboto TTF zůstává interní součástí pouze kvůli českým znakům v PDF e
 - `AppShell` drží výšku okna; menu, běžná stránka a každý panel rolují nezávisle. `PaneLayout` se ohlásí automaticky, takže aplikace nenastavuje odsazení ani overflow.
 - Nové `PageLayout variant="list" | "form"` rozlišuje seznam s gridem vyplňujícím panel a formulář rolovaný jako celek.
 - `DataGrid`, `TreeGrid`, `ZoomGrid` a `ZoomPane` přijímají `height="fill" | "auto"`; uvnitř listu je výchozí `fill`, jinde `auto`.
-- `GridPreferencesProvider` dodává a ukládá výchozí zoom a hustotu. V panelu jsou tyto hodnoty izolované v záložce a ukládají se i do snímku rozložení.
+- Zoom formulářových gridů se počítá automaticky a neukládá se; hustota nového gridu zůstává normální.
 - `PaneLayout` obnovuje pozici každé záložky i po obnovení stránky a exportuje `usePaneScrollElement`.
 - `JournalLinesEditor` roste s formulářem bez vlastního svislého posuvníku; záhlaví se drží pod skutečnou výškou pruhu akcí.
 
