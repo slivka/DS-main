@@ -187,7 +187,7 @@ export function GridErrorRow({
   texts?: Partial<GridTexts>;
 }) {
   const texts = useResolvedGridTexts(textOverrides);
-  const { title, detail } = friendlyErrorMessage(error);
+  const { title, detail } = friendlyErrorMessage(error, dsTexts.errors);
   return (
     <TableRow className="hover:bg-transparent">
       <TableCell colSpan={colSpan} className="px-4 py-16 sm:py-20">
@@ -212,14 +212,14 @@ export function GridErrorRow({
 
 /** Chybový stav mimo tabulku (karty, seznamy). */
 export function ListError({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
-  const { title, detail } = friendlyErrorMessage(error);
+  const { title, detail } = friendlyErrorMessage(error, dsTexts.errors);
   return (
     <div role="alert" className="flex flex-col items-start gap-2 p-4">
       <p className="typo-label text-destructive">{title}</p>
       {detail ? <p className="typo-body text-muted-foreground">{detail}</p> : null}
       {onRetry ? (
         <Button type="button" size="sm" variant="outline" onClick={onRetry}>
-          Zkusit znovu
+          {dsTexts.errors.retry}
         </Button>
       ) : null}
     </div>

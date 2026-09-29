@@ -32,7 +32,7 @@ function czechCount(n: number, one: string, few: string, many: string) {
 /**
  * Výrazný informační pruh o počtu vybraných záznamů při hromadných operacích.
  * Zobrazuje se jako výrazná pilulka v liště gridu a obsahuje rychlé akce
- * „Vybrat vše“ a „Zrušit výběr“.
+ * „{texts.selectAll}“ a „Zrušit výběr“.
  */
 export function BulkSelectionBar({
   count,
@@ -42,10 +42,11 @@ export function BulkSelectionBar({
   className,
   entity = { one: "záznam", few: "záznamy", many: "záznamů" },
   showZero,
-  clearLabel = "Zrušit",
+  clearLabel,
   texts: textOverrides,
 }: BulkSelectionBarProps) {
   const texts = useResolvedGridTexts(textOverrides);
+  const resolvedClearLabel = clearLabel ?? texts.cancelSelection;
   if (count <= 0 && !showZero) return null;
 
   const label = count > 0 ? czechCount(count, entity.one, entity.few, entity.many) : "";
@@ -61,7 +62,7 @@ export function BulkSelectionBar({
         aria-live="polite"
         aria-atomic="true"
       >
-        <span className="whitespace-nowrap">Není vybrán žádný řádek</span>
+        <span className="whitespace-nowrap">{texts.noRowsSelected}</span>
         {onClear && (
           <Button
             type="button"
@@ -72,7 +73,7 @@ export function BulkSelectionBar({
             title={texts.cancelSelection}
           >
             <X className="size-[1.1em]" />
-            <span>{clearLabel}</span>
+            <span>{resolvedClearLabel}</span>
           </Button>
         )}
       </div>
@@ -103,7 +104,7 @@ export function BulkSelectionBar({
           size="sm"
           className="h-auto px-[0.4em] py-[0.2em] text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
           onClick={onSelectAll}
-          title="Vybrat všechny záznamy na stránce"
+          title="{texts.selectAll}chny záznamy na stránce"
         >
           <CheckSquare className="size-[1.1em]" />
           <span>{texts.selectAll}</span>
@@ -119,7 +120,7 @@ export function BulkSelectionBar({
           title={texts.cancelSelection}
         >
           <X className="size-[1.1em]" />
-          <span>{clearLabel}</span>
+          <span>{resolvedClearLabel}</span>
         </Button>
       )}
     </div>
