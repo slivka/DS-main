@@ -274,7 +274,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
         <div className="relative min-h-0 flex-1">
           <nav ref={navRef} onScroll={updateNavEdges} className="ds-scroll-area flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-2" aria-label={mainMenuLabel}>
             <div className="flex min-h-full flex-col">
-              {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} />)}
+              {sectionedGroups.map(({ group, sectionStart }, index) => <ShellNavGroup key={`${navStateKey}:${group.id}`} group={group} groupIndex={index} sectionStart={sectionStart} active={group.items.some(isActive)} forcedOpen={Boolean(query)} query={query} collapsed={collapsed} collapsible={collapsibleGroups} navStateKey={navStateKey} renderItem={(item) => navItem(item, group.label)} containsActivePageLabel={containsActivePageLabel} />)}
               {query && filteredGroups.length === 0 ? <p className="px-3 py-6 text-center text-sm text-sidebar-muted">{searchEmptyText}</p> : null}
               {!query && bottomItems.length ? <div className="mt-auto flex flex-col gap-0.5 border-t pt-2">{bottomItems.map((item) => navItem(item, ""))}</div> : null}
             </div>
@@ -309,7 +309,7 @@ function ShellNavSection({ label, first, collapsed }: { label: string; first: bo
   );
 }
 
-function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem }: { group: NavGroup; groupIndex: number; sectionStart: string | null; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode }) {
+function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem, containsActivePageLabel }: { group: NavGroup; groupIndex: number; sectionStart: string | null; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode; containsActivePageLabel: string }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
   const [groupCollapsed, setGroupCollapsed] = useState(group.defaultCollapsed === true);
   useEffect(() => setGroupCollapsed(readGroupCollapsed(storageKey, group.defaultCollapsed === true)), [storageKey, group.defaultCollapsed]);

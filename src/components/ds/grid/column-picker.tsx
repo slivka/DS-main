@@ -132,7 +132,7 @@ export function ColumnPicker<Id extends string>({
                 title={dsTexts.columnPicker.clearCustomTitle}
                 className="text-[0.9em] text-muted-foreground transition-colors hover:text-destructive"
               >
-                Zrušit vlastní
+                {dsTexts.columnPicker.clearCustom}
               </button>
             ) : null}
             <button
@@ -140,13 +140,13 @@ export function ColumnPicker<Id extends string>({
               onClick={handleReset}
               title={
                 hasCustomDefault
-                  ? "Obnovit uložené výchozí nastavení"
-                  : "Obnovit tovární výchozí nastavení"
+                  ? dsTexts.columnPicker.restoreSaved
+                  : dsTexts.columnPicker.restoreFactory
               }
               className="flex items-center gap-[0.4em] text-[0.9em] text-muted-foreground transition-colors hover:text-foreground"
             >
               <RotateCcw className="size-[1.1em]" />
-              Výchozí
+              {dsTexts.columnPicker.default}
             </button>
           </span>
         </div>
@@ -279,12 +279,12 @@ export function ColumnPicker<Id extends string>({
         {views && (
           <div className="border-t bg-secondary/30">
             <div className="typo-label px-[1em] pb-[0.3em] pt-[0.6em] text-[0.85em] text-muted-foreground">
-              Uložené pohledy
+              {dsTexts.columnPicker.savedViews}
             </div>
 
             {views.views.length === 0 ? (
               <p className="px-[1em] pb-[0.4em] text-[0.85em] text-muted-foreground">
-                Zatím nemáte uložený žádný pohled.
+                {dsTexts.columnPicker.noSavedViews}
               </p>
             ) : (
               <div className="max-h-[12em] overflow-y-auto pb-[0.3em]">
@@ -312,7 +312,7 @@ export function ColumnPicker<Id extends string>({
                       title={dsTexts.columnPicker.overwriteTitle}
                       className="shrink-0 text-[0.85em] text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
                     >
-                      Přepsat
+                      {dsTexts.columnPicker.overwrite}
                     </button>
                     <button
                       type="button"
@@ -347,7 +347,7 @@ export function ColumnPicker<Id extends string>({
                 title={dsTexts.columnPicker.saveView}
                 className="typo-action flex h-[2em] shrink-0 items-center gap-[0.3em] rounded-md bg-primary px-[0.7em] text-[0.9em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
               >
-                Uložit
+                {dsTexts.columnPicker.save}
               </button>
             </div>
           </div>
