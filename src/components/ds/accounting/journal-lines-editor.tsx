@@ -24,6 +24,9 @@ import { SegmentedField } from "../form/segmented-field";
 import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
 import { fillInitialVatCode, mergeFxRoundingPreview, applyVatCalcMode, baseFromGross, buildVatPreviewLines, resolveLineVat, summarizeVat, computeJournalTotals, type JournalTotals, type VatPreviewConfig } from "./journal-vat";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
+import { calculateAutoGridZoom } from "../grid/grid-auto-zoom";
+import { APP_ZOOM_EVENT } from "../../../lib/app-zoom";
+import { isResizeLocked, RESIZE_END_EVENT } from "../../../lib/resize-lock";
 import { ColumnPicker } from "../grid/column-picker";
 import { GridAction, GridActions } from "../grid/grid-action";
 import { useGridColumns, type GridColumn } from "../grid/grid-columns";
@@ -221,7 +224,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   isNonTaxAllowed, editableFields, totalAmount, totalMode = "computed", rounding, defaults, validate, onValidationChange, onTotalsChange, reorderable, initialEmptyLine = false, showAllErrors = false, showQuantityColumns = false, accountDisplay = "number", storageKey = "journal-lines", recap = {}, recapTabs = [], texts, className, vat,
 }, forwardedRef) {
   const paneActive = useIsActivePane(); const t = React.useMemo(() => ({ ...DEFAULT_JOURNAL_LINES_TEXTS, ...texts }), [texts]); const rootRef = React.useRef<HTMLDivElement | null>(null);
-  const { zoom, setZoom, density, setDensity } = useGridZoom(storageKey); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
+  const { zoom, setZoom, setAutoZoom, density, setDensity } = useGridZoom(storageKey, { auto: true }); const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
   const [active, setActive] = React.useState<{ rowId: string; column: JournalLineColumn } | null>(null); const [editing, setEditing] = React.useState<EditState | null>(null);
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({}); const [search, setSearch] = React.useState("");
   const [containerWidth, setContainerWidth] = React.useState(0);
@@ -229,7 +232,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const initializedEmptyLine = React.useRef(false);
   const [rootRemPx, setRootRemPx] = React.useState(16);
   const setRootRef = React.useCallback((node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; }, [forwardedRef]);
-  React.useEffect(() => { const node = rootRef.current; if (!node) return; const update = () => { setContainerWidth(node.getBoundingClientRect().width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; update(); const observer = new ResizeObserver(update); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", update); return () => { observer.disconnect(); window.removeEventListener("resize", update); }; }, []);
+  React.useLayoutEffect(() => { const node = rootRef.current; if (!node) return; let timer: ReturnType<typeof setTimeout> | undefined; const update = () => { if (isResizeLocked()) return; const width = node.getBoundingClientRect().width; if (width <= 0) return; setContainerWidth(width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; const delayed = () => { if (timer) clearTimeout(timer); timer = setTimeout(update, 150); }; update(); const observer = new ResizeObserver(delayed); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", delayed); window.addEventListener(APP_ZOOM_EVENT, delayed); window.addEventListener(RESIZE_END_EVENT, update); return () => { if (timer) clearTimeout(timer); observer.disconnect(); window.removeEventListener("resize", delayed); window.removeEventListener(APP_ZOOM_EVENT, delayed); window.removeEventListener(RESIZE_END_EVENT, update); }; }, []);
   const foreign = documentCurrency !== homeCurrency; const canReorder = (reorderable ?? editable.size > 0) && !search;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const accountByCode = React.useMemo(() => new Map(accounts.map((account) => [account.code, account])), [accounts]);
@@ -265,7 +268,11 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const protectedColumns = columns.columns.filter((column) => columns.visible[column.id] && (column.defaultVisible === false || columns.explicitVisibility.includes(column.id) || (calcMode === "gross" && column.id === "grossAmount"))).map((column) => column.id);
   const effectiveWidthRem = containerWidth / rootRemPx;
   const requestedColumnIds = columns.columns.filter((column) => columns.visible[column.id]).map((column) => column.id);
-  const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, zoom, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / rootRemPx : undefined])) }), [effectiveWidthRem, zoom, mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, columns.widths, rootRemPx]);
+  const widthsRem = React.useMemo(() => Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / 16 : undefined])), [columns.widths]);
+  const fullLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: Number.MAX_SAFE_INTEGER, zoom: 1, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, widthsRem]);
+  const automaticZoom = calculateAutoGridZoom(effectiveWidthRem, fullLayout.requiredWidthRem) ?? zoom;
+  React.useLayoutEffect(() => { if (effectiveWidthRem > 0) setAutoZoom(automaticZoom); }, [automaticZoom, effectiveWidthRem, setAutoZoom]);
+  const columnLayout = React.useMemo(() => resolveJournalColumnLayout({ availableWidthRem: effectiveWidthRem, zoom: automaticZoom, mode, visibleColumnIds: requestedColumnIds, accountDisplay, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [effectiveWidthRem, automaticZoom, mode, requestedColumnIds, accountDisplay, protectedColumns, sideFields, widthsRem]);
   const autoHidden = new Set<ColumnId>(columnLayout.hiddenColumnIds);
   const compactAccounts = columnLayout.compactAccounts;
   const visibleColumns = columns.columns.filter((column) => columns.visible[column.id] && !autoHidden.has(column.id)).sort((a, b) => a.id === "actions" ? 1 : b.id === "actions" ? -1 : 0);
@@ -278,7 +285,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     for (const column of visibleColumns) {
       if (column.id === "text") continue;
       const savedWidth = columns.widths[column.id];
-      const base = compactAccounts && ACCOUNT_COLUMN_IDS.has(column.id) ? COMPACT_ACCOUNT_WIDTH_REM : typeof savedWidth === "number" && columnLayout.customWidthsApplied ? savedWidth / rootRemPx : WIDTHS[column.id];
+      const base = compactAccounts && ACCOUNT_COLUMN_IDS.has(column.id) ? COMPACT_ACCOUNT_WIDTH_REM : typeof savedWidth === "number" && columnLayout.customWidthsApplied ? savedWidth / 16 : WIDTHS[column.id];
       result[column.id] = base * zoom;
       fixed += base * zoom;
     }
