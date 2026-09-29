@@ -142,7 +142,7 @@ export function SortHead<Id extends string>({
           className={`typo-action inline-flex items-center gap-1 hover:text-foreground ${
             active ? "text-foreground" : ""
           }`}
-          aria-label={`Seřadit podle ${label}`}
+          aria-label={texts.sortBy(label)}
         >
           {label}
           {active &&

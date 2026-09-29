@@ -109,7 +109,7 @@ export function GridFilterToggle({
                 {active && (
                   <>
                     <p className="font-semibold pt-1">{texts.activeFilters}</p>
-                    {(activeFilters.length ? activeFilters : [`${activeCount} aktivní`]).map(
+                    {(activeFilters.length ? activeFilters : [texts.activeCount(activeCount)]).map(
                       (filter) => (
                         <p key={filter} className="font-normal">
                           {filter}
@@ -211,8 +211,8 @@ export function GridResultCount({
           {chip.onRemove ? (
             <button
               type="button"
-              aria-label={`Zrušit filtr ${chip.label}`}
-              title={`Zrušit filtr ${chip.label}`}
+              aria-label={texts.removeFilter(chip.label)}
+              title={texts.removeFilter(chip.label)}
               onClick={chip.onRemove}
               className="rounded-full hover:text-destructive"
             >

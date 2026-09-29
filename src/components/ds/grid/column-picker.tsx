@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDsTexts } from "../../../ds-texts";
 import { Check, GripVertical, RotateCcw, SlidersHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
@@ -58,6 +59,7 @@ export function ColumnPicker<Id extends string>({
   onToggleSection?: (section: string) => void;
   texts?: Partial<GridTexts>;
 }) {
+  const dsTexts = useDsTexts();
   const texts = useResolvedGridTexts(textOverrides);
   const fontSize = gridFontSize(zoom);
   const [newName, setNewName] = useState("");
@@ -127,7 +129,7 @@ export function ColumnPicker<Id extends string>({
               <button
                 type="button"
                 onClick={onClearDefault}
-                title="Zruší uložené vlastní výchozí nastavení sloupců"
+                title={dsTexts.columnPicker.clearCustomTitle}
                 className="text-[0.9em] text-muted-foreground transition-colors hover:text-destructive"
               >
                 Zrušit vlastní
@@ -170,9 +172,9 @@ export function ColumnPicker<Id extends string>({
                         type="button"
                         onClick={() => onToggleSection(section)}
                         className="text-[0.8em] text-muted-foreground transition-colors hover:text-foreground"
-                        title={sectionOff ? `Zobrazit sekci ${section}` : `Skrýt sekci ${section}`}
+                        title={sectionOff ? dsTexts.columnPicker.showSection(section) : dsTexts.columnPicker.hideSection(section)}
                       >
-                        {sectionOff ? "Zobrazit" : "Skrýt"}
+                        {sectionOff ? dsTexts.columnPicker.show : dsTexts.columnPicker.hide}
                       </button>
                     ) : null}
                   </div>
@@ -261,16 +263,16 @@ export function ColumnPicker<Id extends string>({
             <button
               type="button"
               onClick={saveDefault}
-              title="Uložit aktuální viditelnost i pořadí sloupců jako výchozí"
+              title={dsTexts.columnPicker.saveDefault}
               className="typo-action flex h-[2em] items-center gap-[0.35em] rounded-md px-[0.7em] text-[0.9em] text-foreground transition-colors hover-surface"
             >
               {savedDefault ? <Check className="size-[1.1em] text-primary" /> : null}
-              {savedDefault ? "Uloženo" : "Uložit nastavení sloupců"}
+              {savedDefault ? dsTexts.columnPicker.saved : dsTexts.columnPicker.saveColumns}
             </button>
           </div>
         ) : onReorder ? (
           <p className="border-t px-[1em] py-[0.45em] text-[0.8em] text-muted-foreground">
-            Pořadí i viditelnost se ukládají jako výchozí zobrazení.
+            {dsTexts.columnPicker.persistenceHint}
           </p>
         ) : null}
 
@@ -295,7 +297,7 @@ export function ColumnPicker<Id extends string>({
                       type="button"
                       onClick={() => views.apply(v.id)}
                       className="flex min-w-0 flex-1 items-center gap-[0.5em] text-left"
-                      title="Použít pohled"
+                      title={dsTexts.columnPicker.applyView}
                     >
                       <Check
                         className={`size-[1.1em] shrink-0 ${
@@ -307,7 +309,7 @@ export function ColumnPicker<Id extends string>({
                     <button
                       type="button"
                       onClick={() => views.overwrite(v.id)}
-                      title="Přepsat aktuálním nastavením"
+                      title={dsTexts.columnPicker.overwriteTitle}
                       className="shrink-0 text-[0.85em] text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
                     >
                       Přepsat
@@ -315,7 +317,7 @@ export function ColumnPicker<Id extends string>({
                     <button
                       type="button"
                       onClick={() => views.remove(v.id)}
-                      title="Smazat pohled"
+                      title={dsTexts.columnPicker.deleteView}
                       className="shrink-0 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
                     >
                       <Trash2 className="size-[1.1em]" />
@@ -335,14 +337,14 @@ export function ColumnPicker<Id extends string>({
                     saveView();
                   }
                 }}
-                placeholder="Název pohledu"
+                placeholder={dsTexts.columnPicker.viewName}
                 className="typo-body h-[2em] min-w-0 flex-1 rounded-md border border-input bg-background px-[0.6em] text-[0.95em] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring"
               />
               <button
                 type="button"
                 onClick={saveView}
                 disabled={!newName.trim()}
-                title="Uložit aktuální zobrazení"
+                title={dsTexts.columnPicker.saveView}
                 className="typo-action flex h-[2em] shrink-0 items-center gap-[0.3em] rounded-md bg-primary px-[0.7em] text-[0.9em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
               >
                 Uložit
