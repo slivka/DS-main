@@ -5,11 +5,12 @@ import { Button } from "../../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
-import { formatAccountCode } from "./account-code";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
 import type { JournalLine } from "./journal-lines";
 import type { VatSummaryRow } from "./journal-vat";
+import { DataGrid, type DataGridColumn } from "../grid/DataGrid";
+import { accountColumns } from "./account-columns";
 
 export interface JournalRecapTab {
   id: string;
@@ -31,6 +32,8 @@ export interface JournalLinesRecapProps {
   onTabChange?: (tab: string) => void;
   recapTabs?: JournalRecapTab[];
   zoom?: number;
+  /** Samostatný klíč rozložení sloupců rekapitulace. */
+  storageKey?: string;
   texts?: Partial<JournalLinesRecapTexts>;
   /** Rekapitulace DPH po kódech – s ní se zobrazí vestavěná záložka „DPH“. */
   vatSummary?: VatSummaryRow[];
@@ -65,6 +68,7 @@ export function JournalLinesRecap({
   onTabChange,
   recapTabs = [],
   zoom = 1,
+  storageKey = "journal-recap",
   texts,
   vatSummary,
 }: JournalLinesRecapProps) {
@@ -122,6 +126,27 @@ export function JournalLinesRecap({
     }
     return [...grouped.values()];
   }, [lines]);
+  const accountingColumns = React.useMemo(() => [
+    ...accountColumns<(typeof accounting)[number]>({ getDebit: (row) => row.debit, getCredit: (row) => row.credit, accountName: (code) => accountMap.get(code) }).map((column) => column.id === "debitAccountName" ? { ...column, render: (row: (typeof accounting)[number]) => <>{column.render?.(row)}{row.label ? <span className="ml-2 text-muted-foreground">{row.label}</span> : null}</> } : column),
+    { id: "amount", label: `${t.total} (${homeMark})`, value: (row: (typeof accounting)[number]) => row.amount, numeric: true, decimals: 2, total: "sum" as const },
+    ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: (typeof accounting)[number]) => row.foreignAmount, numeric: true, decimals: 2, total: "sum" as const }] : []),
+  ], [accountMap, accounting, documentMark, foreign, homeMark, t.total]);
+  const jobColumns = React.useMemo<DataGridColumn<(typeof jobs)[number]>[]>(() => [
+    { id: "dimension", label: t.dimension, value: (row) => dimensionLabel(row.id), total: () => t.total },
+    { id: "side", label: t.side, value: (row) => row.side },
+    { id: "amount", label: `${t.total} (${homeMark})`, value: (row) => row.amount, numeric: true, decimals: 2, total: "sum" },
+  ], [homeMark, jobs, t.dimension, t.side, t.total]);
+  const vatColumns = React.useMemo<DataGridColumn<VatSummaryRow>[]>(() => [
+    { id: "code", label: t.vatCode, value: (row) => `${row.code}${row.name ? ` – ${row.name}` : ""}`, total: () => t.total, render: (row) => <>{row.code}{row.name ? ` – ${row.name}` : ""}{row.selfAssessment ? <span className="block text-xs text-muted-foreground">{t.selfAssessmentNote}</span> : null}{row.nonDeductible ? <span className="block text-xs text-muted-foreground">{`${t.deductible} ${money(row.deductible)} · ${t.nonDeductible} ${money(row.nonDeductible)}`}</span> : null}</> },
+    { id: "rate", label: t.vatRate, value: (row) => row.rate, numeric: true, render: (row) => row.rate == null ? "—" : `${row.rate} %` },
+    { id: "base", label: `${t.vatBase} (${documentMark})`, value: (row) => row.base, numeric: true, decimals: 2, total: "sum" },
+    { id: "vat", label: `${t.vatAmount} (${documentMark})`, value: (row) => row.vat, numeric: true, decimals: 2, total: "sum" },
+    { id: "gross", label: `${t.total} (${documentMark})`, value: (row) => row.gross, numeric: true, decimals: 2, total: "sum" },
+    ...(foreign ? [
+      { id: "baseHome", label: `${t.vatBase} (${homeMark})`, value: (row: VatSummaryRow) => row.baseHome, numeric: true, decimals: 2, total: "sum" as const },
+      { id: "vatHome", label: `${t.vatAmount} (${homeMark})`, value: (row: VatSummaryRow) => row.vatHome, numeric: true, decimals: 2, total: "sum" as const },
+    ] : []),
+  ], [documentMark, foreign, homeMark, t]);
   const tabs = React.useMemo(() => [{ id: "accounting", label: t.accounting }, { id: "jobs", label: t.jobs }, ...(vatSummary ? [{ id: "vat", label: t.vat }] : []), ...recapTabs], [recapTabs, t.accounting, t.jobs, t.vat, vatSummary]);
   React.useEffect(() => {
     if (!tabs.some((item) => item.id === activeTab)) {
@@ -134,9 +159,9 @@ export function JournalLinesRecap({
     <Tabs value={activeTab} onValueChange={(next) => { changeTab(next); if (!shown) changeOpen(true); }}>
       <div className="flex items-center border-b"><TabsList className="h-9 flex-1 justify-start rounded-none bg-transparent px-2">{tabs.map((item) => <TabsTrigger key={item.id} value={item.id} onClick={() => { if (!shown && item.id === activeTab) changeOpen(true); }} className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">{item.label}</TabsTrigger>)}</TabsList><Button type="button" variant="ghost" size="icon" onClick={() => changeOpen(!shown)} aria-label={shown ? t.collapse : t.expand} aria-expanded={shown} className="mr-1 size-8">{shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</Button></div>
       {shown ? <>
-      <TabsContent value="accounting" className="m-0 overflow-x-auto"><table className="w-full min-w-[36rem] text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">{t.debitAccount}</th><th className="p-2 text-left">{t.creditAccount}</th><th className="p-2 text-right">{`${t.total} (${homeMark})`}</th>{foreign ? <th className="p-2 text-right">{`${t.total} (${documentMark})`}</th> : null}</tr></thead><tbody>{accounting.map((row) => <tr key={row.key} className={cn("border-t", row.label && "bg-muted text-muted-foreground")}><td className="p-2"><span className="font-mono">{row.debit ? formatAccountCode(row.debit) : "—"}</span>{row.debit ? ` - ${accountMap.get(row.debit) ?? "—"}` : ""}{row.label ? <span className="ml-2">{row.label}</span> : null}</td><td className="p-2"><span className="font-mono">{row.credit ? formatAccountCode(row.credit) : "—"}</span>{row.credit ? ` - ${accountMap.get(row.credit) ?? "—"}` : ""}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(row.foreignAmount)}</td> : null}</tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">{t.total}</td><td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.amount, 0))}</td>{foreign ? <td className="p-2 text-right tabular-nums">{money(accounting.reduce((sum, row) => sum + row.foreignAmount, 0))}</td> : null}</tr></tfoot></table></TabsContent>
-      <TabsContent value="jobs" className="m-0 overflow-x-auto"><table className="w-full text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="p-2 text-left">{t.dimension}</th><th className="p-2 text-left">{t.side}</th><th className="p-2 text-right">{`${t.total} (${homeMark})`}</th></tr></thead><tbody>{jobs.map((row) => <tr key={`${row.id}|${row.side}`} className="border-t"><td className="p-2">{dimensionLabel(row.id)}</td><td className="p-2 font-mono">{row.side}</td><td className="p-2 text-right tabular-nums">{money(row.amount)}</td></tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">{t.total}</td><td className="p-2 text-right tabular-nums">{money(jobs.reduce((sum, row) => sum + row.amount, 0))}</td></tr></tfoot></table></TabsContent>
-      {vatSummary ? <TabsContent value="vat" className="m-0 overflow-x-auto"><table data-slot="journal-vat-recap" className="w-full min-w-[36rem] text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr className="whitespace-nowrap"><th className="p-2 text-left">{t.vatCode}</th><th className="p-2 text-right">{t.vatRate}</th><th className="p-2 text-right">{`${t.vatBase} (${documentMark})`}</th><th className="p-2 text-right">{`${t.vatAmount} (${documentMark})`}</th><th className="p-2 text-right">{`${t.total} (${documentMark})`}</th>{foreign ? <><th className="p-2 text-right">{`${t.vatBase} (${homeMark})`}</th><th className="p-2 text-right">{`${t.vatAmount} (${homeMark})`}</th></> : null}</tr></thead><tbody>{vatSummary.map((row) => <tr key={row.codeId} className="border-t"><td className="p-2"><span className="font-mono">{row.code}</span>{row.name ? ` – ${row.name}` : ""}{row.selfAssessment ? <span className="block text-xs text-muted-foreground">{t.selfAssessmentNote}</span> : null}{row.nonDeductible ? <span className="block text-xs text-muted-foreground">{`${t.deductible} ${money(row.deductible)} · ${t.nonDeductible} ${money(row.nonDeductible)}`}</span> : null}</td><td className="p-2 text-right tabular-nums">{row.rate == null ? "—" : `${row.rate} %`}</td><td className="p-2 text-right tabular-nums">{money(row.base)}</td><td className="p-2 text-right tabular-nums">{money(row.vat)}</td><td className="p-2 text-right tabular-nums">{money(row.gross)}</td>{foreign ? <><td className="p-2 text-right tabular-nums">{money(row.baseHome)}</td><td className="p-2 text-right tabular-nums">{money(row.vatHome)}</td></> : null}</tr>)}</tbody><tfoot className="border-t bg-muted/50 font-bold"><tr><td colSpan={2} className="p-2">{t.total}</td><td className="p-2 text-right tabular-nums">{money(vatSummary.reduce((sum, row) => sum + row.base, 0))}</td><td className="p-2 text-right tabular-nums">{money(vatSummary.reduce((sum, row) => sum + row.vat, 0))}</td><td className="p-2 text-right tabular-nums">{money(vatSummary.reduce((sum, row) => sum + row.gross, 0))}</td>{foreign ? <><td className="p-2 text-right tabular-nums">{money(vatSummary.reduce((sum, row) => sum + row.baseHome, 0))}</td><td className="p-2 text-right tabular-nums">{money(vatSummary.reduce((sum, row) => sum + row.vatHome, 0))}</td></> : null}</tr></tfoot></table></TabsContent> : null}
+       <TabsContent value="accounting" className="m-0"><DataGrid storageKey={`${storageKey}:accounting`} exportName="journal-recap-accounting" rows={accounting} columns={accountingColumns} rowKey={(row) => row.key} paginated={false} showTotalRow plain /></TabsContent>
+       <TabsContent value="jobs" className="m-0"><DataGrid storageKey={`${storageKey}:jobs`} exportName="journal-recap-jobs" rows={jobs} columns={jobColumns} rowKey={(row) => `${row.id}|${row.side}`} paginated={false} showTotalRow plain /></TabsContent>
+       {vatSummary ? <TabsContent value="vat" className="m-0" data-slot="journal-vat-recap"><DataGrid storageKey={`${storageKey}:vat`} exportName="journal-recap-vat" rows={vatSummary} columns={vatColumns} rowKey={(row) => row.codeId} paginated={false} showTotalRow plain /></TabsContent> : null}
       {recapTabs.map((item) => <TabsContent key={item.id} value={item.id} className="m-0 border-t p-3">{typeof item.content === "function" ? item.content(lines) : item.content}</TabsContent>)}
       </> : null}
     </Tabs>
