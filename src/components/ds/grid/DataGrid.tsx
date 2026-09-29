@@ -650,7 +650,15 @@ export function DataGrid<Row>({
   };
   const selectColSpan = selectMode ? 1 : 0;
 
-  const groupColumns = useMemo(() => shown.map((c) => ({ id: c.id, label: c.label })), [shown]);
+  /** Seskupovací sloupec může být skrytý; jeho popisek proto bereme z úplné definice. */
+  const allGroupColumns = useMemo(() => effectiveColumns.map((c) => ({ id: c.id, label: c.label })), [effectiveColumns]);
+  /** Součty skupin zůstávají jen nad viditelnými sloupci; aktivní skrytý sloupec přidáme pouze kvůli popisku. */
+  const groupColumns = useMemo(() => [
+    ...shown.map((c) => ({ id: c.id, label: c.label })),
+    ...grouping.groups
+      .filter((group) => !shown.some((column) => column.id === group.id))
+      .map((group) => allGroupColumns.find((column) => column.id === group.id) ?? { id: group.id, label: group.id }),
+  ], [shown, grouping.groups, allGroupColumns]);
   const dateColumns = useMemo(
     () => detectDateColumns(pageRows, groupColumns, valueOf),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -902,7 +910,7 @@ export function DataGrid<Row>({
             {grouping.active ? (
               <GridExpandControls
                 levels={[
-                  ...grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${groupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 })),
+                  ...grouping.groups.map((group, index) => ({ id: group.id, label: `Úroveň ${index + 1} – ${allGroupColumns.find((column) => column.id === group.id)?.label ?? group.id}`, depth: index + 1 })),
                   ...(grouping.groups.length > 1 ? [{ id: "all", label: "Vše", depth: grouping.groups.length + 1 }] : []),
                 ]}
                 activeDepth={groupExpandDepth}
@@ -973,7 +981,7 @@ export function DataGrid<Row>({
         {groupable ? (
           <GroupBar
             grouping={grouping}
-            columns={groupColumns}
+            columns={allGroupColumns}
             dateColumns={dateColumns}
             zoom={zoom}
             texts={texts}

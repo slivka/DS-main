@@ -5,6 +5,14 @@ datové mřížky, formulářové vstupy, dialogy a účetní komponenty.
 Projekt běží výhradně na ukázkových datech v paměti – nemá žádné napojení
 na databázi ani na produkční data. První navazující aplikace je „Accounting“.
 
+## Changelog 2.60.0 – informační pruhy dokladu a skryté seskupení
+
+- `DocumentForm.titleBadges` přidává další stejně vysoké nezalamované stavové štítky za stav dokladu.
+- Nový `NoticeBar` se čtyřmi tóny, titulkem, obsahem, akcemi a volitelným zavřením; akce se na úzké ploše přesunou pod text.
+- `DocumentForm.notices`, `readOnlyTitle` a `readOnlyActions` dodržují pořadí akce → chyba → upozornění → jen pro čtení.
+- `DataGrid` v čipu i záhlaví seskupení používá popisek sloupce také při skrytém seskupovacím sloupci.
+- Rozšířená ukázka Účetní formuláře a testy pořadí, tónů, akcí, zavření a skrytého seskupení.
+
 ## Changelog 2.58.0 – saldokonto a párování (DataGrid)
 
 - `DataGrid.groupTotals?: "header" | "row"` – „row“ přidá za skupinu řádek součtů pod číselnými sloupci s popiskem „Celkem {skupina}“ (`texts.groupTotal`); výchozí „header“ beze změny.

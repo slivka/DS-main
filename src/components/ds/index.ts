@@ -114,6 +114,7 @@ export * from "./feedback/record-notes";
 export * from "./feedback/record-notes-dialog";
 export * from "./feedback/permission-gate";
 export * from "./feedback/read-only-banner";
+export * from "./feedback/notice-bar";
 export * from "./feedback/coming-soon";
 
 /* Zobrazení dat */

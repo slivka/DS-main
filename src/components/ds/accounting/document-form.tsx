@@ -136,6 +136,8 @@ export interface DocumentVatRateField {
 
 export interface DocumentFormProps {
   title: string;
+  /** Další stavové štítky bezprostředně za stavem dokladu. */
+  titleBadges?: ReactNode;
   description?: ReactNode;
   identity?: DocumentIdentity;
   directionBadge?: DocumentDirection;
@@ -180,8 +182,12 @@ export interface DocumentFormProps {
   moreActions?: DocumentMoreAction[];
   settings?: DocumentSettingsAction;
   error?: DocumentFormError;
+  /** Provozní informace pod chybou a nad bannerem jen pro čtení. */
+  notices?: ReactNode;
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
+  readOnlyTitle?: ReactNode;
+  readOnlyActions?: ReactNode;
   texts?: Partial<DocumentFormTexts>;
   className?: string;
 }
@@ -228,12 +234,12 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencyCo
 }
 
 export function DocumentForm({
-  title, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
+  title, titleBadges, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
   partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, vatRateField, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
-  saveAction, primaryAction, moreActions = [], settings, error, readOnly = false, readOnlyReason, texts, className,
+  saveAction, primaryAction, moreActions = [], settings, error, notices, readOnly = false, readOnlyReason, readOnlyTitle, readOnlyActions, texts, className,
 }: DocumentFormProps) {
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
@@ -315,10 +321,11 @@ export function DocumentForm({
     <TooltipProvider><div ref={formRef} className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
-      <PageHeader title={title} titleBadge={<DocumentStatusBadge status={status} approved={approved} size="md" />} />
+      <PageHeader title={title} titleBadge={<span data-slot="document-title-badges" className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"> <DocumentStatusBadge status={status} approved={approved} size="md" />{titleBadges}</span>} />
       <DocumentActionBar vat={vat} vatRelevant={vatRelevant} onVatRelevantChange={(vatRelevant) => patch({ vatRelevant })} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} texts={t} />
       {error ? <div ref={errorRef} role="alert" data-slot="document-form-error" className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? t.errorTitle}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label={t.closeError} onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
-      {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} /> : null}
+      {notices ? <div data-slot="document-form-notices" className="space-y-2">{notices}</div> : null}
+      {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
          {identity || directionBadge ? <DocumentIdentityLine identity={identity} direction={directionBadge} fallback={t.numberPending} texts={t} currencyCode={value.currency} currencySymbol={currencySymbol} /> : null}

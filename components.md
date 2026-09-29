@@ -54,6 +54,25 @@
 
 # Komponenty design systému
 
+## Pruhy a stav dokladu (2.60.0)
+
+- `DocumentForm.titleBadges?: ReactNode` přidá další stavové štítky hned za `DocumentStatusBadge` ve stejné výšce a bez zalamování.
+- `DocumentForm.notices?: ReactNode` vkládá jeden nebo více `NoticeBar` pod chybu a nad banner jen pro čtení. Pořadí je vždy akce → `error` → `notices` → jen pro čtení.
+- `DocumentForm.readOnlyTitle?: ReactNode` a `readOnlyActions?: ReactNode` nastaví titulek a akce `ReadOnlyBanner`.
+- `NoticeBar` používá `tone: "info" | "warning" | "success" | "danger"`, volitelný `title`, obsah v `children`, `actions` a `onClose`. Na úzké ploše přesune akce pod text.
+- `NoticeBar` používejte pro provozní informace a upozornění. Chybu bránící uložení předávejte přes `DocumentForm.error`; důvod zamčení přes `ReadOnlyBanner`. Pokud je k dispozici `DocumentForm.notices`, nevykreslujte upozornění k dokladu mimo formulář.
+- Seskupení `DataGrid` vždy zobrazuje `label` sloupce v čipu i záhlaví skupiny, také když je seskupovací sloupec skrytý.
+
+```tsx
+<DocumentForm
+  {...props}
+  titleBadges={<StatusBadge status="partial" config={paymentStatus} />}
+  notices={<NoticeBar tone="info" actions={<Button>Použít VS</Button>}>Partner má otevřený přeplatek.</NoticeBar>}
+  readOnlyTitle="Vznikl párováním"
+  readOnlyActions={<Button>Otevřít párování</Button>}
+/>
+```
+
 ## Doplnění editace dokladu 6 (2.44.0)
 
 - `DocumentForm` ukládá DPH do `value.vatRelevant` a `value.vatDate`. Přepínač je vlevo v přilepeném pruhu; DUZP a Datum DPH jsou vpravo v sekci Datumy.

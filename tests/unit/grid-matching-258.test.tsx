@@ -73,3 +73,15 @@ describe("B3 editovatelný sloupec 2.58.0", () => {
     expect(exceedsMax(100, 100)).toBe(false);
   });
 });
+
+describe("DataGrid 2.60.0 – popisek skrytého seskupení", () => {
+  it("ukáže label v čipu i záhlaví, nikoli id skrytého sloupce", () => {
+    const hiddenColumns: DataGridColumn<R>[] = [
+      { id: "group", label: "Zdroj párování", defaultVisible: false, value: (row) => row.partner },
+      { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
+    ];
+    const html = renderToStaticMarkup(<DataGrid storageKey="hidden-group-260" rows={rows.slice(0, 2)} columns={hiddenColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />);
+    expect((html.match(/Zdroj párování/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    expect(html).not.toContain(">group:<");
+  });
+});
