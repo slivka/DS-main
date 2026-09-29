@@ -62,7 +62,7 @@ export function BulkSelectionBar({
         aria-live="polite"
         aria-atomic="true"
       >
-        <span className="whitespace-nowrap">{texts.noRowsSelected}</span>
+        <span className="whitespace-nowrap">{texts.selectedCount(0)}</span>
         {onClear && (
           <Button
             type="button"
