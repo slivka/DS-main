@@ -11,7 +11,7 @@
 
 <!-- LOVABLE:END -->
 
-- `DocumentForm`: nadpis v `PageHeader`; pruhy akce → error → notices → jen pro čtení; identita v kartě.
+- `DocumentForm`: typovaná identita; účet jen v ní, měna faktur vedle Celkem.
 - `DocumentForm` má běžná pole v mřížce 14/3/3, ale Datumy ve flex řádku s DPH vpravo, aby se přesouvala celá pole.
 - Data DPH jsou vpravo; „Vstupuje do DPH“ je vlevo v pruhu akcí, vypnutí údaje jen skryje a svázané datum ukazuje zámek.
 - Značky měn v částkách a kurzech pocházejí vždy z dat; nepoužívejte pevné `Kč` ani `CZK`.
