@@ -18,6 +18,7 @@ import {
   PageHeader,
   RecordActionBar,
   RecordDialog,
+  SectionHeading,
   SegmentedField,
   SettingsSection,
   ShowInactiveToggle,
