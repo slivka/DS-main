@@ -97,12 +97,10 @@ const WORKSPACE_PANEL = [{
 export function ShowcaseLayout({
   children,
   breadcrumbs,
-  defaultCollapsed: _defaultCollapsed = false,
   darkPreview = false,
 }: {
   children: ReactNode;
   breadcrumbs?: Crumb[];
-  defaultCollapsed?: boolean;
   darkPreview?: boolean;
 }) {
   const [workspaceId, setWorkspaceId] = useState(MOCK_WORKSPACES[0].id);
