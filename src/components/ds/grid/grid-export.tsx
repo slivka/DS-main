@@ -25,6 +25,7 @@ import {
   type ExportCell,
   type GridExportData,
 } from "../../../lib/excel-export";
+import { useDsTexts } from "../../../ds-texts";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
 export type { ExcelColumnMeta, ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
@@ -38,11 +39,11 @@ export type GridExtraExport = {
 
 const cell = (v: ExportCell) => (v === null || v === undefined ? "" : v);
 
-const fmtNumber = (v: number) => {
+const fmtNumber = (v: number, locale = "cs-CZ") => {
   const n = nzero(roundTo(v, 2));
   return n === 0
     ? "–"
-    : n.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    : n.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 /** Sjednotí ISO datum/čas vložený v nadpisu, záhlaví nebo popisu filtru. */
@@ -276,6 +277,7 @@ export function GridExport({
   /** Volitelné údaje v hlavičce Excel sestavy. */
   meta?: ExcelExportMeta;
 }) {
+  const dsTexts = useDsTexts();
   const texts = useResolvedGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
   const fontSize = gridFontSize(zoom);
@@ -291,6 +293,8 @@ export function GridExport({
       meta,
       totalLabel: texts.total,
       created,
+      locale: dsTexts.intlLocale,
+      texts: dsTexts.export,
     });
     await downloadWorkbook(workbook, fijename, created);
   };
@@ -310,7 +314,7 @@ export function GridExport({
       const displayed = displayExportCell(v, dates[i]?.isDate ?? false, dates[i]?.hasTime ?? false);
       return typeof displayed === "number"
         ? numeric[i]
-          ? fmtNumber(displayed)
+          ? fmtNumber(displayed, dsTexts.intlLocale)
           : String(displayed)
         : String(cell(displayed));
     };
@@ -384,7 +388,7 @@ export function GridExport({
       ...(hasSums
         ? [
             columns.map((_, i) =>
-              i === 0 ? texts.total : sums[i] === null ? "" : fmtNumber(sums[i] as number),
+              i === 0 ? texts.total : sums[i] === null ? "" : fmtNumber(sums[i] as number, dsTexts.intlLocale),
             ),
           ]
         : []),
@@ -432,7 +436,7 @@ export function GridExport({
         doc.setFontSize(8);
         doc.setTextColor(110);
         const meta = [
-          `${formatDateTime(new Date())} · ${rows.length} záznamů`,
+          `${formatDateTime(new Date())} · ${texts.recordsCount(rows.length)}`,
           data.note?.trim() || null,
         ]
           .filter(Boolean)
@@ -482,7 +486,7 @@ export function GridExport({
       .join("");
 
     const html = `<!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><title>${esc(heading)}</title>
+<html lang="${dsTexts.locale}"><head><meta charset="utf-8"><title>${esc(heading)}</title>
 <style>
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:24px;color:#18181b}
 h1{font-size:18px;margin:0 0 4px}
@@ -495,7 +499,7 @@ tfoot td{background:#e4e4e7;font-weight:600}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 </style></head><body>
 <h1>${esc(heading)}</h1>
-<div class="meta">${esc(formatDateTime(new Date()))} · ${rows.length} záznamů${data.note?.trim() ? ` · ${esc(data.note.trim())}` : ""}</div>
+<div class="meta">${esc(formatDateTime(new Date()))} · ${texts.recordsCount(rows.length)}${data.note?.trim() ? ` · ${esc(data.note.trim())}` : ""}</div>
 <table>
 <thead>${headerRows.map((header) => `<tr>${header.map((c, i) => td(c, i, "th")).join("")}</tr>`).join("")}</thead>
 <tbody>${rows.map((r) => `<tr>${columns.map((_, i) => td(r[i], i)).join("")}</tr>`).join("")}</tbody>
@@ -662,6 +666,8 @@ export function ExcelExportButton({
       exportName,
       meta,
       created,
+      locale: dsTexts.intlLocale,
+      texts: dsTexts.export,
     });
     await downloadWorkbook(workbook, exportName, created);
   };

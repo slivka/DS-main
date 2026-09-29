@@ -1,6 +1,7 @@
 import { forwardRef, type HTMLAttributes } from "react";
 
 import { formatAmount } from "../../../lib/format";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
 export type BarBreakdownItem = {
@@ -46,8 +47,8 @@ const BAR_VARIANTS = {
   revenue: "bg-success",
 } as const;
 
-const formatShare = (share: number) =>
-  `${share.toLocaleString("cs-CZ", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
+const formatShare = (share: number, locale: string) =>
+  `${share.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
 
 /**
  * Vodorovné pruhy po skupinách pro rozbor nákladů / výnosů – hodnota + podíl %,

@@ -64,6 +64,8 @@ export interface BuildExcelWorkbookOptions {
   meta?: ExcelExportMeta;
   totalLabel?: string;
   created?: Date;
+  locale?: string;
+  texts?: { parametersSheet: string; parameter: string; value: string; reportName: string; company: string; period: string; exportedAt: string; user: string; activeFilters: string; pageFooter: string; fallbackColumn: (index: number) => string };
 }
 
 export const EXCEL_NUMBER_FORMAT = "#,##0.00;[Red]-#,##0.00";
@@ -106,15 +108,15 @@ function tableName(value: string) {
   return /^[A-Za-z]/.test(cleaned) ? cleaned : `Tabulka_${cleaned || "Export"}`;
 }
 
-function uniqueHeaders(data: GridExportData) {
+function uniqueHeaders(data: GridExportData, fallbackColumn = (index: number) => `Sloupec ${index}`) {
   const rows = data.headerRows?.length ? data.headerRows : [data.columns];
   const used = new Set<string>();
   return data.columns.map((fallback, index) => {
     const parts = rows
       .map((row) => String(row[index] ?? "").trim())
       .filter((part, partIndex, all) => part && all.indexOf(part) === partIndex);
-    const raw = parts.join(" – ") || fallback || `Sloupec ${index + 1}`;
-    const base = raw.replace(/[[\]#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || `Sloupec ${index + 1}`;
+    const raw = parts.join(" – ") || fallback || fallbackColumn(index + 1);
+    const base = raw.replace(/[[\]#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || fallbackColumn(index + 1);
     let name = base;
     let suffix = 2;
     while (used.has(name.toLocaleLowerCase("cs"))) {
@@ -241,7 +243,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   const ExcelJS = await loadExcelJs();
   const created = options.created ?? new Date();
   const title = options.title.trim() || "Export";
-  const headers = uniqueHeaders(data);
+  const headers = uniqueHeaders(data, options.texts?.fallbackColumn);
   const meta = resolveColumnMeta(data);
   const totalLabel = options.totalLabel ?? "Celkem";
   const totalsRow = meta.some((column) => column.total !== "none") && data.summarize !== false;
@@ -464,17 +466,17 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     printTitlesRow: `${firstHeaderRow}:${firstHeaderRow}`,
     margins: { left: 0.394, right: 0.394, top: 0.394, bottom: 0.394, header: 0.2, footer: 0.2 },
   };
-  sheet.headerFooter = { oddFooter: `&L${title}&RStrana &P z &N` };
+  sheet.headerFooter = { oddFooter: `&L${title}&R${options.texts?.pageFooter ?? "Strana &P z &N"}` };
 
   const parameterRows = [
-    ["Název sestavy", title],
-    ...(options.meta?.company ? [["Firma", options.meta.company]] : []),
-    ...(options.meta?.period ? [["Období", options.meta.period]] : []),
-    ["Exportováno", formatUserDateTime(created)],
-    ...(options.meta?.user ? [["Uživatel", options.meta.user]] : []),
-    ...(options.meta?.filters?.length ? [["Aktivní filtry", options.meta.filters.join("; ")]] : []),
+    [options.texts?.reportName ?? "Název sestavy", title],
+    ...(options.meta?.company ? [[options.texts?.company ?? "Firma", options.meta.company]] : []),
+    ...(options.meta?.period ? [[options.texts?.period ?? "Období", options.meta.period]] : []),
+    [options.texts?.exportedAt ?? "Exportováno", formatUserDateTime(created)],
+    ...(options.meta?.user ? [[options.texts?.user ?? "Uživatel", options.meta.user]] : []),
+    ...(options.meta?.filters?.length ? [[options.texts?.activeFilters ?? "Aktivní filtry", options.meta.filters.join("; ")]] : []),
   ];
-  const parameterSheet = workbook.addWorksheet("Parametry exportu", {
+  const parameterSheet = workbook.addWorksheet(options.texts?.parametersSheet ?? "Parametry exportu", {
     views: [{ state: "frozen", ySplit: 1 }],
   });
   parameterSheet.addTable({
@@ -483,7 +485,7 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     headerRow: true,
     totalsRow: false,
     style: { theme: "TableStyleLight1", showRowStripes: false, showColumnStripes: false },
-    columns: [{ name: "Parametr", filterButton: false }, { name: "Hodnota", filterButton: false }],
+    columns: [{ name: options.texts?.parameter ?? "Parametr", filterButton: false }, { name: options.texts?.value ?? "Hodnota", filterButton: false }],
     rows: parameterRows,
   });
   parameterSheet.getColumn(1).width = 22;

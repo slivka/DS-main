@@ -14,8 +14,8 @@ export function ComboboxResizeHandle({
     <span
       role="separator"
       aria-orientation="vertical"
-      aria-label="Změnit šířku tažením"
-      title="Změnit šířku tažením"
+      aria-label={texts.accessibility.resizeCombobox}
+      title={texts.accessibility.resizeCombobox}
       onPointerDown={onPointerDown}
       onClick={(e) => {
         e.preventDefault();
