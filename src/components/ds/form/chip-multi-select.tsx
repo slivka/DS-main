@@ -17,8 +17,8 @@ export function ChipMultiSelect({
   onChange,
   addLabel = "Přidat",
   searchPlaceholder = "Hledat…",
-  emptyLabel = "Žádné hodnoty.",
-  allLabel = "Vybrat vše",
+  emptyLabel,
+  allLabel,
   clearLabel = "Zrušit výběr",
   placeholder,
 }: {

@@ -3,6 +3,7 @@ import { ChevronDown, Link2, X } from "lucide-react";
 
 import { Input } from "../../ui/input";
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import type { PartnerOption } from "./partner-select";
 
@@ -58,6 +59,7 @@ export function CounterpartyField({
   value, onChange, partners, onCreatePartner, disabled, placeholder = "Název protistrany", id, className,
   linkedLabel = "Partner", unlinkLabel = "Zrušit propojení", createLabel = "Nový partner", favoriteIds = [],
 }: CounterpartyFieldProps) {
+  const dsTexts = useDsTexts();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const linked = !!value.partnerId;
