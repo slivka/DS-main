@@ -1,0 +1,7 @@
+dist
+.output
+node_modules
+bun.lock
+.lovable
+*.md
+public
