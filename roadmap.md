@@ -681,4 +681,4 @@
 - [x] Zavřít panel včetně záložek, kontroly změn, zásobníku a obnovy
 - [x] Dodržet limit záložek při slučování rozložení
 - [x] Přeskupit UserMenu, přidat workspaceAction a odebrat ikonu z nadpisu panelu
-- [ ] Ověřit všechny testy, typy, sestavení a ukázku
+- [x] Ověřit všechny testy, typy, sestavení a ukázku
