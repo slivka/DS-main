@@ -929,7 +929,7 @@ Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, říz
 | `emptyText` | string | `Žádná firma nebyla nalezena.` |
 | `createLabel` | string | `Nová firma` |
 | `onCreate` | function | `—` |
-| `actions` | CompanySwitcherAction[] | `—` |
+| `actions` | any | `—` |
 | `className` | string | `min-w-0 flex-1` |
 | `open` | boolean | `—` |
 | `onOpenChange` | function | `—` |
@@ -939,14 +939,54 @@ Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, říz
 _Řízený výběr firmy_
 ```tsx
 <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />
-// Akce pro správce pod oddělovačem (volitelné):
-<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} actions={[{ id: "manage", label: "Spravovat firmy…", onSelect: openManage }]} />
+```
+
+_Akce pro správce_
+```tsx
+<CompanySwitcher items={firmy} value={id} onChange={setId} actions={[{ id: "manage", label: "Spravovat firmy…", onSelect: openManage }]} />
 ```
 
 **Avoid:**
 
 - Nevytvářejte skupinu posledních firem.
 - Nenahrazujte nativním selectem.
+
+### ConfirmByTypingDialog
+
+```ts
+import { ConfirmByTypingDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Potvrzení nevratné akce opsáním textu (a volitelným zaškrtnutím); během běhu nejde zavřít, chyba zůstane v dialogu, po úspěchu se zavře.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `title` | string | `—` |
+| `description` | any | `—` |
+| `summary` | any | `—` |
+| `confirmText` | string | `—` |
+| `acknowledgement` | string | `—` |
+| `confirmLabel` | string | `—` |
+| `cancelLabel` | string | `—` |
+| `instruction` | string | `—` |
+| `destructive` | boolean | `true` |
+| `onConfirm` | function | `—` |
+
+**Examples:**
+
+_Odstranění prostoru_
+```tsx
+<ConfirmByTypingDialog open={open} onOpenChange={setOpen} title="Odstranit prostor" description="Akci nelze vrátit." confirmText="Test" acknowledgement="Rozumím, že data budou smazána" confirmLabel="Odstranit prostor" onConfirm={remove} />
+```
+
+**Avoid:**
+
+- Nepoužívejte pro běžné potvrzení – to je ConfirmDialog.
+- Chybu nehlaste toastem; vyhoďte ji z onConfirm.
 
 ### ContactSelect
 
@@ -1086,6 +1126,44 @@ _Řízené otevření_
 - Nepoužívejte pro běžná formulářová pole.
 - Neobcházejte zavírání změnou key podle cesty.
 
+### ContextSwitcher
+
+```ts
+import { ContextSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, název, popis a popover s hledáním od prahu, tečkou aktuálního a akcemi. Esc zavře jen popover.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | string | `—` |
+| `description` | any | `—` |
+| `icon` | any | `—` |
+| `items` | any | `—` |
+| `value` | string | `—` |
+| `onValueChange` | function | `—` |
+| `actions` | any | `—` |
+| `searchThreshold` | number | `6` |
+| `searchPlaceholder` | string | `—` |
+| `emptyText` | string | `—` |
+| `currentLabel` | string | `—` |
+| `open` | boolean | `—` |
+| `onOpenChange` | function | `—` |
+| `className` | string | `flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [&_svg]:size-4` |
+
+**Examples:**
+
+_Přepínač prostoru_
+```tsx
+<ContextSwitcher label="Slivka Group" description="3 firmy" items={spaces} value={id} onValueChange={setId} actions={[{ id: "new", label: "Nový prostor…", icon: Plus, onSelect: create }]} />
+```
+
+**Avoid:**
+
+- Nepoužívejte pro výběr firmy v AppShell – tam je CompanySwitcher.
+
 ### CounterpartyField
 
 ```ts
@@ -1145,6 +1223,32 @@ import { CountrySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```ts
 import { CurrencyAmount } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### DangerZone
+
+```ts
+import { DangerZone } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Sekce nevratných akcí s červeným okrajem; každá položka má nadpis, popis a akci vpravo.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | string | `—` |
+| `items` | any | `—` |
+
+**Examples:**
+
+_Prostor_
+```tsx
+<DangerZone items={[{ title: "Odstranit prostor", description: "Smaže všechny firmy.", action: <Button variant="destructive" onClick={ask}>Odstranit</Button> }]} />
+```
+
+**Avoid:**
+
+- Nevkládejte sem vratné akce.
 
 ### DataGrid
 
@@ -2878,6 +2982,7 @@ Provozní informace, upozornění, potvrzení nebo problém v kontextu formulá�
 | `children` | any | `—` |
 | `actions` | any | `—` |
 | `onClose` | function | `—` |
+| `closeLabel` | string | `—` |
 
 **Examples:**
 
@@ -4051,6 +4156,68 @@ import { SortHead } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 | `children` | any | `—` |
 | `texts` | any | `—` |
 
+### StandaloneNav
+
+```ts
+import { StandaloneNav } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Menu stránek v levém sloupci StandaloneShell se stejným vzhledem jako menu panelů; aktivní položka podle trasy, pod md výběr stránek.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `groups` | any | `—` |
+| `pathname` | string | `—` |
+| `label` | string | `—` |
+| `selectPlaceholder` | string | `—` |
+| `className` | string | `w-full bg-background text-foreground` |
+
+**Examples:**
+
+_Stránky prostoru_
+```tsx
+<StandaloneNav groups={[{ id: "ws", label: "", section: "Prostor", items: [{ to: "/ws/udaje", label: "Údaje prostoru" }] }]} />
+```
+
+**Avoid:**
+
+- Nepoužívejte uvnitř AppShell – tam slouží navGroups / views panelu.
+
+### StandaloneShell
+
+```ts
+import { StandaloneShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Rám obrazovky nad úrovní firmy (nastavení prostoru) mimo AppShell: horní lišta s logem, nadpisem, uživatelským menu a Zavřít, šedý levý sloupec a samostatně rolovaný obsah. Esc zavře jen bez otevřeného překryvu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `brand` | any | `—` |
+| `title` | string | `—` |
+| `userMenu` | any | `—` |
+| `onClose` | function | `—` |
+| `closeLabel` | string | `—` |
+| `sidebar` | any | `—` |
+| `children` | any | `—` |
+
+**Examples:**
+
+_Nastavení prostoru_
+```tsx
+<StandaloneShell brand={<Logo />} title="Nastavení prostoru" userMenu={<UserMenu … />} onClose={close} sidebar={<><ContextSwitcher … /><StandaloneNav groups={groups} /></>}>{page}</StandaloneShell>
+```
+
+**Avoid:**
+
+- Nepoužívejte pro nastavení firmy – to patří do panelu AppShell.
+- Neskládejte vlastní lištu a sloupec místo tohoto rámu.
+- Neuložené změny ohlídejte v onClose, rám je sám nekontroluje.
+
 ### StatusBadge
 
 ```ts
@@ -4648,178 +4815,3 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### StandaloneShell
-
-```ts
-import { StandaloneShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Rám obrazovky nad úrovní firmy (nastavení prostoru) mimo AppShell: horní lišta s logem, nadpisem, uživatelským menu a Zavřít, šedý levý sloupec a samostatně rolovaný obsah. Esc zavře jen bez otevřeného překryvu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `brand` | any | `—` |
-| `title` | string | `—` |
-| `userMenu` | any | `—` |
-| `onClose` | function | `—` |
-| `closeLabel` | string | `Zavřít` |
-| `sidebar` | any | `—` |
-| `children` | any | `—` |
-
-**Examples:**
-
-_Nastavení prostoru_
-```tsx
-<StandaloneShell brand={<Logo />} title="Nastavení prostoru" userMenu={<UserMenu … />} onClose={close} sidebar={<><ContextSwitcher … /><StandaloneNav groups={groups} /></>}>{page}</StandaloneShell>
-```
-
-**Avoid:**
-
-- Nepoužívejte pro nastavení firmy – to patří do panelu AppShell.
-- Neskládejte vlastní lištu a sloupec místo tohoto rámu.
-- Neuložené změny ohlídejte v onClose, rám je sám nekontroluje.
-
-### StandaloneNav
-
-```ts
-import { StandaloneNav } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Menu stránek v levém sloupci StandaloneShell se stejným vzhledem jako menu panelů; aktivní položka podle trasy, pod md výběr stránek.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `groups` | NavGroup[] | `—` |
-| `pathname` | string | `—` |
-| `label` | string | `—` |
-| `selectPlaceholder` | string | `—` |
-
-**Examples:**
-
-_Stránky prostoru_
-```tsx
-<StandaloneNav groups={[{ id: "ws", label: "", section: "Prostor", items: [{ to: "/ws/udaje", label: "Údaje prostoru" }] }]} />
-```
-
-**Avoid:**
-
-- Nepoužívejte uvnitř AppShell – tam slouží navGroups / views panelu.
-
-### ContextSwitcher
-
-```ts
-import { ContextSwitcher } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, název, popis a popover s hledáním od prahu, tečkou aktuálního a akcemi. Esc zavře jen popover.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `label` | string | `—` |
-| `description` | string | `—` |
-| `icon` | any | `—` |
-| `items` | ContextSwitcherItem[] | `—` |
-| `value` | string | `—` |
-| `onValueChange` | function | `—` |
-| `actions` | ContextSwitcherAction[] | `—` |
-| `searchThreshold` | number | `6` |
-| `open` | boolean | `—` |
-| `onOpenChange` | function | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-_Přepínač prostoru_
-```tsx
-<ContextSwitcher label="Slivka Group" description="3 firmy" items={spaces} value={id} onValueChange={setId} actions={[{ id: "new", label: "Nový prostor…", icon: Plus, onSelect: create }]} />
-```
-
-**Avoid:**
-
-- Nepoužívejte pro výběr firmy v AppShell – tam je CompanySwitcher.
-
-### ConfirmByTypingDialog
-
-```ts
-import { ConfirmByTypingDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Potvrzení nevratné akce opsáním textu (a volitelným zaškrtnutím); během běhu nejde zavřít, chyba zůstane v dialogu, po úspěchu se zavře.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `open` | boolean | `—` |
-| `onOpenChange` | function | `—` |
-| `title` | string | `—` |
-| `description` | any | `—` |
-| `summary` | any | `—` |
-| `confirmText` | string | `—` |
-| `acknowledgement` | string | `—` |
-| `confirmLabel` | string | `—` |
-| `destructive` | boolean | `true` |
-| `onConfirm` | () => Promise<void> | `—` |
-
-**Examples:**
-
-_Odstranění prostoru_
-```tsx
-<ConfirmByTypingDialog open={open} onOpenChange={setOpen} title="Odstranit prostor" description="Akci nelze vrátit." confirmText="Test" acknowledgement="Rozumím, že data budou smazána" confirmLabel="Odstranit prostor" onConfirm={remove} />
-```
-
-**Avoid:**
-
-- Nepoužívejte pro běžné potvrzení – to je ConfirmDialog.
-- Chybu nehlaste toastem; vyhoďte ji z onConfirm.
-
-### DangerZone
-
-```ts
-import { DangerZone } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Sekce nevratných akcí s červeným okrajem; každá položka má nadpis, popis a akci vpravo.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `title` | string | `Nebezpečná zóna` |
-| `items` | DangerZoneItem[] | `—` |
-
-**Examples:**
-
-_Prostor_
-```tsx
-<DangerZone items={[{ title: "Odstranit prostor", description: "Smaže všechny firmy.", action: <Button variant="destructive" onClick={ask}>Odstranit</Button> }]} />
-```
-
-**Avoid:**
-
-- Nevkládejte sem vratné akce.
-
-### useAppZoomShortcuts
-
-```ts
-import { useAppZoomShortcuts } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Hook sdíleného zoomu aplikace (Cmd/Ctrl + plus/minus/0, Ctrl/Cmd + kolečko); používají ho AppShell i StandaloneShell.
-
-**Examples:**
-
-_Vlastní rám_
-```tsx
-useAppZoomShortcuts();
-```
-
-**Avoid:**
-
-- Nevolejte uvnitř AppShell ani StandaloneShell – už ho obsahují.
