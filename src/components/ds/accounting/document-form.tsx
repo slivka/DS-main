@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDownLeft, ArrowUpRight, Pencil, Settings, Sigma } from "lucide-react";
 
 import { Input } from "../../ui/input";
@@ -13,6 +13,7 @@ import { RecordActionBar, type RecordMoreAction, type RecordPrimaryAction, type 
 import { CheckboxField } from "../form/checkbox-field";
 import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
+import { NoticeBar } from "../feedback/notice-bar";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
 import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../form/ico-link";
@@ -34,6 +35,7 @@ import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import { CounterpartyField, type CounterpartySeed } from "./counterparty-field";
 import { VsField } from "./vs-field";
+import { BankAccountField, type BankAccountOption } from "./bank-account-field";
 import { convertAmount } from "./currency-amount";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -104,16 +106,22 @@ export type DocumentVatConfig = {
   filedWarning?: string;
 };
 
+/** Vytvoří VS ze všech číslic čísla dokladu; neplatná délka návrh nevytvoří. */
+export function vsFromDocumentNumber(text: string): string | null {
+  const digits = text.replace(/\D/g, "");
+  return digits.length > 0 && digits.length <= 10 ? digits : null;
+}
+
 export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
-  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
+  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string; supplierTaxDocumentNumber: string; documentNumberTooLongForVs: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; vatRate: string; vatRateSameAsDocument: string; vatRateNote: string; vatRateMissing: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
-  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string; mainAccountSelect: string;
+  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string; mainAccountSelect: string; bankAccountInvalid: string; bankCodeInvalid: string; otherBankAccount: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
@@ -121,11 +129,11 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
-  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
+  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele", supplierTaxDocumentNumber: "Číslo daňového dokladu", documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", vatRate: "Kurz DPH", vatRateSameAsDocument: "stejný jako kurz dokladu", vatRateNote: "Důvod ručního kurzu DPH", vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit", mainAccountSelect: "Hlavní účet",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit", mainAccountSelect: "Hlavní účet", bankAccountInvalid: "Číslo účtu není platné.", bankCodeInvalid: "Kód banky není platný.", otherBankAccount: "Jiný účet",
 };
 
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
@@ -160,6 +168,10 @@ export interface DocumentFormProps {
   partners?: PartnerOption[];
   dimensions?: DimensionOption[];
   currencies?: CurrencyOption[];
+  /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */
+  bankAccountOptions?: BankAccountOption[];
+  /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
+  bankCodes?: string[];
   documentType?: DocumentTypeCode | string;
   fields?: Partial<DocumentFields>;
   editableFields?: DocumentHeaderField[];
@@ -208,7 +220,7 @@ const ReadField = ({ id, value, muted, mono }: { id: string; value: ReactNode; m
   <div id={id} aria-readonly="true" className={cn("flex min-h-9 items-center text-sm", muted && "italic text-muted-foreground", mono && "font-mono tabular-nums")}>{value}</div>
 );
 
-function DocumentIdentityLine({ identity, direction, fallback, texts, currencySymbol, accountLabel, accountValue, editingAccount, canEditAccount, pencilRef, onStartAccountEdit, onAccountChange, onAccountClose, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencySymbol?: string; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; canEditAccount: boolean; pencilRef: React.RefObject<HTMLButtonElement | null>; onStartAccountEdit: () => void; onAccountChange: (code: string) => void; onAccountClose: () => void; accountOptions: AccountOption[] }) {
+function DocumentIdentityLine({ identity, direction, fallback, texts, accountLabel, accountValue, editingAccount, canEditAccount, pencilRef, onStartAccountEdit, onAccountChange, onAccountClose, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; canEditAccount: boolean; pencilRef: React.RefObject<HTMLButtonElement | null>; onStartAccountEdit: () => void; onAccountChange: (code: string) => void; onAccountClose: () => void; accountOptions: AccountOption[] }) {
   const number = identity.number || null;
   // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
   const account = identity.variant === "internal" ? undefined : identity.account;
@@ -216,7 +228,6 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencySy
     <span key="book" className="whitespace-nowrap">{identity.book}</span>,
     <span key="period" className="whitespace-nowrap">{identity.period}</span>,
   ];
-  if (identity.variant === "cashBank") items.push(<span key="currency" className="whitespace-nowrap font-mono tabular-nums">{currencySymbol}</span>);
   const pencil = !editingAccount && canEditAccount && account ? account.disabledReason
     ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={`${texts.changeAccount}: ${account.disabledReason}`} data-slot="document-identity-account-locked" className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} tabIndex={-1} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip>
     : <Tooltip><TooltipTrigger asChild><Button ref={pencilRef} type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip>
