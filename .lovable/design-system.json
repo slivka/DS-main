@@ -591,6 +591,16 @@
         "source": "src/styles.css"
       },
       {
+        "name": "--sidebar-badge-active",
+        "raw": "oklch(0.985 0.005 250)",
+        "source": "src/styles.css"
+      },
+      {
+        "name": "--sidebar-badge-active-foreground",
+        "raw": "oklch(0.25 0.05 245)",
+        "source": "src/styles.css"
+      },
+      {
         "name": "--company",
         "raw": "oklch(0.5 0.1 250)",
         "source": "src/styles.css"
