@@ -1,4 +1,4 @@
-import { forwardRef, useState, type ComponentType, type ReactNode } from "react";
+import { forwardRef, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
@@ -44,7 +44,7 @@ export interface ContextSwitcherProps {
   className?: string;
 }
 
-export function contextInitials(label: string) {
+function contextInitials(label: string) {
   const words = label.trim().split(/\s+/).filter(Boolean);
   return words.slice(0, 2).map((word) => word[0]!.toLocaleUpperCase("cs-CZ")).join("") || "?";
 }
@@ -62,6 +62,8 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
     onOpenChange?.(next);
   };
   const searchable = items.length >= searchThreshold;
+  const commandRef = useRef<HTMLDivElement>(null);
+  const selectedValue = value != null && items.some((item) => item.id === value) ? `item-${value}` : undefined;
 
   return (
     <Popover open={isOpen} onOpenChange={setOpen}>
@@ -89,19 +91,31 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
         align="start"
         data-slot="context-switcher-content"
         className="w-[max(var(--radix-popover-trigger-width),16rem)] max-w-[22rem] p-0 max-md:w-[calc(100vw-1rem)] max-md:max-w-[calc(100vw-1rem)]"
+        onOpenAutoFocus={(event) => {
+          // Bez pole hledání musí fokus dostat kořen Command, jinak nefungují šipky a Enter.
+          if (searchable) return;
+          event.preventDefault();
+          commandRef.current?.focus();
+        }}
         onEscapeKeyDown={(event) => {
           // Esc zavře jen popover – nesmí se dostat k rámu (StandaloneShell).
           event.preventDefault();
           setOpen(false);
         }}
       >
-        <Command>
+        <Command
+          ref={commandRef}
+          tabIndex={-1}
+          defaultValue={selectedValue}
+          className="outline-none"
+          filter={(_value, search, keywords) => (keywords ?? []).join(" ").toLocaleLowerCase("cs-CZ").includes(search.trim().toLocaleLowerCase("cs-CZ")) ? 1 : 0}
+        >
           {searchable ? <CommandInput placeholder={searchPlaceholder ?? texts.search} /> : null}
           <CommandList>
             <CommandEmpty>{emptyText ?? texts.empty}</CommandEmpty>
             <CommandGroup>
               {items.map((item) => (
-                <CommandItem key={item.id} value={`${item.label} ${item.id}`} onSelect={() => { onValueChange(item.id); setOpen(false); }} data-selected-item={item.id === value || undefined}>
+                <CommandItem key={item.id} value={`item-${item.id}`} keywords={[item.label]} onSelect={() => { onValueChange(item.id); setOpen(false); }} data-selected-item={item.id === value || undefined}>
                   <span className="flex size-4 shrink-0 items-center justify-center">
                     {item.id === value ? <Check aria-label={texts.selected} className="size-4 text-primary" /> : null}
                   </span>
@@ -118,7 +132,7 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
                   {actions.map((action) => {
                     const Icon = action.icon;
                     return (
-                      <CommandItem key={action.id} value={`__action ${action.label}`} onSelect={() => { setOpen(false); action.onSelect(); }}>
+                      <CommandItem key={action.id} value={`action-${action.id}`} keywords={[action.label]} onSelect={() => { setOpen(false); action.onSelect(); }}>
                         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
                         <span className="min-w-0 flex-1 truncate">{action.label}</span>
                       </CommandItem>

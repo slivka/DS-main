@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -6,6 +7,14 @@ import { cn } from "../../../lib/utils";
 import { ContextPill, useContextPillClose } from "./context-pill";
 
 export type CompanySwitcherItem = { id: string; name: string; ico?: string };
+
+/** Doplňková akce pod oddělovačem (např. „Spravovat firmy…“ pro správce). */
+export interface CompanySwitcherAction {
+  id: string;
+  label: string;
+  icon?: ComponentType<{ className?: string }>;
+  onSelect: () => void;
+}
 
 export interface CompanySwitcherProps {
   items: CompanySwitcherItem[];
@@ -16,6 +25,8 @@ export interface CompanySwitcherProps {
   emptyText?: string;
   createLabel?: string;
   onCreate?: () => void;
+  /** Akce pod oddělovačem, pod „Nová firma“. Bez nich vzhled i chování beze změny. */
+  actions?: CompanySwitcherAction[];
   className?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -30,6 +41,7 @@ function CompanySwitcherContent({
   emptyText,
   createLabel,
   onCreate,
+  actions = [],
 }: {
   items: CompanySwitcherItem[];
   value: string;
@@ -38,6 +50,7 @@ function CompanySwitcherContent({
   emptyText: string;
   createLabel: string;
   onCreate?: () => void;
+  actions?: CompanySwitcherAction[];
 }) {
   const close = useContextPillClose();
   const row = (item: CompanySwitcherItem) => (
@@ -67,6 +80,19 @@ function CompanySwitcherContent({
           </Button>
         </div>
       ) : null}
+      {actions.length ? (
+        <div data-slot="company-switcher-actions" className="border-t p-2">
+          {actions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <Button key={action.id} type="button" variant="ghost" className="w-full justify-start" onClick={() => { close(); action.onSelect(); }}>
+                {Icon ? <Icon className="size-4" /> : <span className="size-4" />}
+                <span className="min-w-0 truncate">{action.label}</span>
+              </Button>
+            );
+          })}
+        </div>
+      ) : null}
     </>
   );
 }
@@ -81,6 +107,7 @@ export function CompanySwitcher({
   emptyText = "Žádná firma nebyla nalezena.",
   createLabel = "Nová firma",
   onCreate,
+  actions,
   className,
   open,
   onOpenChange,
@@ -110,6 +137,7 @@ export function CompanySwitcher({
         emptyText={emptyText}
         createLabel={createLabel}
         onCreate={onCreate}
+        actions={actions}
       />
     </ContextPill>
   );

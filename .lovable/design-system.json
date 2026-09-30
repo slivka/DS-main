@@ -3128,6 +3128,12 @@
         {
           "name": "onOpenChange",
           "type": "function"
+        },
+        {
+          "name": "actions",
+          "type": "CompanySwitcherAction[]",
+          "required": false,
+          "description": "Akce pod oddělovačem pod „Nová firma“ (např. „Spravovat firmy…“). Bez nich beze změny."
         }
       ],
       "usage": "Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě.",
@@ -3135,6 +3141,10 @@
         {
           "label": "Řízený výběr firmy",
           "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />"
+        },
+        {
+          "label": "Akce pro správce",
+          "code": "<CompanySwitcher items={firmy} value={id} onChange={setId} actions={[{ id: \"manage\", label: \"Spravovat firmy…\", onSelect: openManage }]} />"
         }
       ],
       "antipatterns": [
