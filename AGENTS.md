@@ -24,18 +24,10 @@
 - LayoutMenu, nabídka záložky a UserMenu mají pevné pořadí; další položku přidej jen na výslovný požadavek. Nadpis panelu nemá ikonu.
 - Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
-- Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; akce v `RecordActionBar`.
-- Karta: Uložit a akce vždy v `RecordActionBar`, nikdy volně pod poli.
+- Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` / `FieldGrid align="input"`; Uložit a akce vždy v `RecordActionBar`.
 
-## Jazyk knihovny (2.61.0)
+- Nastavení nad úrovní firmy = `StandaloneShell` mimo AppShell, ne panel.
 
-Aplikace nastaví jazyk jednou v kořeni:
+## Jazyk knihovny
 
-```tsx
-<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
-  <App />
-</DsTextsProvider>
-```
-
-Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
-- Nastavení nad úrovní firmy: vlastní rám StandaloneShell mimo AppShell, ne panel – prostory nemají firmu ani období.
+`<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">` jednou v kořeni; bez něj česky. Priorita: prop → provider → `DS_TEXTS_CS`. Nový text = klíč v `DsTexts` + CS + SK, nikdy natvrdo.
