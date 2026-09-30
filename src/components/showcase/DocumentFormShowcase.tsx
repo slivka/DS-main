@@ -31,8 +31,8 @@ const USERS = [
 ];
 const INVOICE_HEADER: DocumentHeaderValue = {
   bookId: "b-fp", number: "FP2026000712", accountingDate: "2026-09-10", issueDate: "2026-09-08",
-    taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "2026-0451", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
-  variableSymbol: "20260451", constantSymbol: "0308", bankAccount: "123456789/0100",
+    taxDate: "2026-09-08", dueDate: "2026-10-08", externalNumber: "FA-2026/0123", partnerId: "p1", counterpartyIco: "27182818", counterpartyDic: "CZ27182818",
+  variableSymbol: "20260123", constantSymbol: "0308", bankAccount: "19-2000145399/0800",
      description: "Výkony a materiál", currency: "EUR", rate: 24.285, rateInfo: "Ruční kurz", rateManual: true, vatDate: "2026-08-01",
    rateNote: "Kurz podle dodavatelského dokladu", suggestedRate: 24.72, suggestedRateInfo: "ČNB 10. 9. 2026",
   amountTotal: 174.7, totalMode: "sum", roundingAmount: 0, mainAccountId: "311001",
@@ -100,6 +100,10 @@ const SCENARIOS: ShowcaseScenario[] = [
 
 /** Povolené hlavní účty faktury – aplikace je omezuje nastavením knihy a období. */
 const MAIN_ACCOUNT_OPTIONS = MOCK_ACCOUNTS.filter((account) => account.code.startsWith("311"));
+const BANK_ACCOUNT_OPTIONS = [
+  { number: "19-2000145399", bankCode: "0800", label: "Provozní účet", currency: "CZK", default: true },
+  { number: "123456789", bankCode: "0100", label: "Eurový účet", currency: "EUR" },
+];
 
 /** Identitu skládá aplikace z aktuální hodnoty dokladu – popisek účtu podle value.mainAccountId. */
 function identityFromValue(scenario: ShowcaseScenario, value: DocumentHeaderValue): DocumentIdentity {
@@ -110,14 +114,14 @@ function identityFromValue(scenario: ShowcaseScenario, value: DocumentHeaderValu
 }
 
 function DocumentHeaderScenarios() {
-  const [fontSize, setFontSize] = useState<"0.8125" | "1" | "1.125">("1");
+  const [fontSize, setFontSize] = useState<"0.8" | "1" | "1.25">("1");
   const [narrow, setNarrow] = useState(false);
   const [values, setValues] = useState<Record<string, DocumentHeaderValue>>(() => Object.fromEntries(SCENARIOS.map((scenario) => [scenario.id, scenario.value])));
   const common = { books: MOCK_BOOKS, accounts: MOCK_ACCOUNTS, partners: MOCK_PARTNERS, dimensions: MOCK_DIMENSIONS, currencies: CURRENCIES, homeCurrency: "CZK", homeCurrencySymbol: "Kč", lines: [], onLinesChange: () => {} };
 
   return <ShowcaseSection title="Jednotný identifikační řádek dokladů" description="Osm stavů hlavičky při běžné i úzké šířce. Velikost písma se mění jen uvnitř této ukázky; změna účtu nabízí jen povolené účty 311.">
     <div className="mb-4 flex flex-wrap items-end gap-3">
-      <div className="w-[18rem]"><SegmentedField ariaLabel="Velikost písma" label="Velikost písma" value={fontSize} onChange={setFontSize} options={[{ value: "0.8125", label: "0,8125" }, { value: "1", label: "1" }, { value: "1.125", label: "1,125" }]} /></div>
+      <div className="w-[18rem]"><SegmentedField ariaLabel="Velikost písma" label="Velikost písma" value={fontSize} onChange={setFontSize} options={[{ value: "0.8", label: "80 %" }, { value: "1", label: "100 %" }, { value: "1.25", label: "125 %" }]} /></div>
       <Button type="button" variant={narrow ? "default" : "outline"} onClick={() => setNarrow((current) => !current)}>Úzká šířka</Button>
     </div>
     <div data-slot="showcase-font-scale" style={{ zoom: Number(fontSize) }} className={narrow ? "grid grid-cols-1 gap-6 xl:grid-cols-3" : "space-y-8"}>
@@ -238,6 +242,8 @@ export function DocumentFormShowcase() {
           lines={invoiceLines} onLinesChange={setInvoiceLines}
           books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
+          bankAccountOptions={BANK_ACCOUNT_OPTIONS}
+          bankCodes={["0100", "0800"]}
           documentType="FP" rateAmount={1}
           homeCurrency="CZK" homeCurrencySymbol="Kč"
           vat={{ visible: true, periodLabel: "KH srpen 2026 · DPH 3.Q 2026" }}
