@@ -694,7 +694,7 @@ export function TreeGrid<Row extends TreeGridRow>({
                       getData={() => exportData()}
                       getPrintData={() => exportData(true)}
                       print={printConfig}
-                      fijename={exportName}
+                      fileName={exportName}
                       title={title}
                       meta={{
                         ...exportMeta,
@@ -785,7 +785,7 @@ export function TreeGrid<Row extends TreeGridRow>({
                           getData={() => exportData()}
                           getPrintData={() => exportData(true)}
                           print={printConfig}
-                          fijename={exportName}
+                          fileName={exportName}
                           title={title}
                           meta={{
                             ...exportMeta,

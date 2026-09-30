@@ -1,5 +1,6 @@
 import { useMemo, useState, type ComponentType } from "react";
 import { Link } from "@tanstack/react-router";
+import type { LinkProps } from "@tanstack/react-router";
 import { LogOut, Minus, Plus, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../ui/avatar";
@@ -114,7 +115,7 @@ export function UserMenu({
           );
           return item.to ? (
             <DropdownMenuItem key={item.label} asChild>
-              <Link to={item.to as never}>{content}</Link>
+              <Link to={item.to as LinkProps["to"]}>{content}</Link>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem key={item.label} onSelect={item.onSelect}>
@@ -205,7 +206,7 @@ function WorkspaceAction({ action }: { action: NonNullable<UserMenuProps["worksp
       className="w-9 shrink-0 justify-center px-0"
       aria-label={action.label}
     >
-      <Link to={action.to as never} onClick={() => action.onSelect?.()}>
+      <Link to={action.to as LinkProps["to"]} onClick={() => action.onSelect?.()}>
         <Icon className="size-4" />
       </Link>
     </DropdownMenuItem>

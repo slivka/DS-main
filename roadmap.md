@@ -1,3 +1,9 @@
+## DS 2.82.0 – Úklid 1C: pojistky kvality
+- [x] Skripty test a typecheck (tsgo přes @typescript/native-preview), test grid-toolbar na bun:test
+- [x] ESLint pravidla; any / as unknown as / as never v src opraveny typem, kde to šlo bez změny logiky
+- [x] CHANGELOG.md vyčleněn z README a system.md, seřazen, doplněny 2.70–2.80
+- [x] GridExport.fileName + zastaralý alias fijename; smazán soubor null
+- [x] Pravidla kvality v src/components/ds/AGENTS.md + odkaz v kořenovém AGENTS.md
 ## DS 2.73.0 – Edit dokladu 8 a panely
 - [x] Zapracovat kontrolu commit 3e0e121c: VS, měna, úzké rozložení, datumy, bankovní účet, changelog a regresní testy
 - [x] Upravit částky, měnu, datumy a pořadí sekcí dokladu; živá varování řadit podle polí

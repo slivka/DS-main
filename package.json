@@ -1,6 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
-  "version": "2.81.0",
+  "version": "2.82.0",
   "private": true,
   "sideEffects": [
     "**/*.css"
@@ -12,6 +12,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
+    "test": "bun test tests/unit",
+    "typecheck": "tsgo --noEmit",
     "test:excel": "playwright test tests/e2e/excel-download.spec.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -90,6 +92,7 @@
     "@types/node": "22.19.19",
     "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "5.2.0",
     "eslint": "9.39.4",
     "eslint-plugin-react-hooks": "5.2.0",

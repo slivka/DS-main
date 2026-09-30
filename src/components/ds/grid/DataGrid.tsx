@@ -1178,7 +1178,7 @@ export function DataGrid<Row>({
                       getData={() => exportData()}
                       getPrintData={() => exportData(true)}
                       print={printConfig}
-                      fijename={exportName ?? storageKey}
+                      fileName={exportName ?? storageKey}
                       title={exportTitle ?? (typeof title === "string" ? title : "")}
                       zoom={zoom}
                       texts={texts}
@@ -1283,7 +1283,7 @@ export function DataGrid<Row>({
                           getData={() => exportData()}
                           getPrintData={() => exportData(true)}
                           print={printConfig}
-                          fijename={exportName ?? storageKey}
+                          fileName={exportName ?? storageKey}
                           title={exportTitle ?? (typeof title === "string" ? title : "")}
                           zoom={zoom}
                           texts={texts}
