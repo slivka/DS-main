@@ -3,7 +3,7 @@
 - [x] Ctrl/Cmd + kolečko podle polohy: grid × aplikace; otevřený nativní `<select>` se nezachytává.
 - [x] Automat gridů nekompenzuje zoom aplikace; kaskáda editoru řádků se přepočítá po každé změně zoomu aplikace; ruční zoom gridu zůstává.
 - [x] Testy se skutečnými událostmi v AppShell, dokumentace a ukázka.
-- [ ] Opravit vnitřní šířku, pořadí kaskáda → zoom → rolování a auto zoom DataGrid/TreeGrid podle zoomu aplikace.
+- [x] Opravit vnitřní šířku, pořadí kaskáda → zoom → rolování a auto zoom DataGrid/TreeGrid podle zoomu aplikace.
 - [ ] Doplnit regresní testy a Playwright matici 2 gridy × 5 šířek × 5 zoomů.
 
 ## Verze 2.68.0 – opravy po kontrole kódu
