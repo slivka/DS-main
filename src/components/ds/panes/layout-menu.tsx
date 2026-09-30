@@ -143,32 +143,42 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>
         </Tooltip>
-        <DropdownMenuContent align="end" className="min-w-64">
-          <DropdownMenuLabel>{t.saved}</DropdownMenuLabel>
-          {items.length ? (
-            items.map((item) => {
-              const Icon = PANE_ICONS[item.panes];
-              return (
-                <DropdownMenuItem key={item.id} onSelect={() => onApply(item.id)}>
-                  <Icon className="size-4" aria-label={t.panes.replace("{count}", String(item.panes))} />
-                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
-                  {item.isDefault ? <Star className="size-3.5 fill-current text-primary" aria-label={t.isDefault} /> : null}
+        <DropdownMenuContent align="end" className="min-w-72">
+          <div className="flex items-center">
+            <DropdownMenuItem
+              className="min-w-0 flex-1"
+              onSelect={() => {
+                setName("");
+                setSaveOpen(true);
+              }}
+            >
+              {t.saveCurrent}
+            </DropdownMenuItem>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuItem className="w-9 shrink-0 justify-center px-0" aria-label={t.manage} disabled={!items.length} onSelect={() => setManageOpen(true)}>
+                  <Settings2 className="size-4" aria-hidden="true" />
                 </DropdownMenuItem>
-              );
-            })
+              </TooltipTrigger>
+              <TooltipContent>{t.manage}</TooltipContent>
+            </Tooltip>
+          </div>
+          <DropdownMenuSeparator />
+          {items.length ? (
+            items.map((item) => (
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <DropdownMenuItem onSelect={() => onApply(item.id)}>
+                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                  </DropdownMenuItem>
+                </TooltipTrigger>
+                <TooltipContent>{item.name}</TooltipContent>
+              </Tooltip>
+            ))
           ) : (
             <DropdownMenuItem disabled>{t.empty}</DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={() => {
-              setName("");
-              setIsDefault(false);
-              setSaveOpen(true);
-            }}
-          >
-            {t.saveCurrent}
-          </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger disabled={!items.length}>{t.overwrite}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -179,9 +189,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuItem disabled={!items.length} onSelect={() => setManageOpen(true)}>
-            {t.manage}
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -194,10 +201,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             <div className="space-y-1.5">
               <Label htmlFor="layout-menu-name">{t.nameLabel}</Label>
               <Input id="layout-menu-name" value={name} autoFocus onChange={(event) => setName(event.target.value)} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox id="layout-menu-default" checked={isDefault} onCheckedChange={(value) => setIsDefault(value === true)} />
-              <Label htmlFor="layout-menu-default">{t.defaultLabel}</Label>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setSaveOpen(false)}>
@@ -218,10 +221,8 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </DialogHeader>
           <ul className="space-y-1.5">
             {items.map((item, index) => {
-              const Icon = PANE_ICONS[item.panes];
               return (
                 <li key={item.id} className="flex items-center gap-1.5">
-                  <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <Input
                     aria-label={t.nameLabel}
                     defaultValue={item.name}
@@ -231,9 +232,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
                       if (value && value !== item.name) onUpdate(item.id, { name: value });
                     }}
                   />
-                  <ManageIcon label={item.isDefault ? t.isDefault : t.setDefault} onClick={() => onUpdate(item.id, { isDefault: !item.isDefault })} pressed={!!item.isDefault}>
-                    <Star className={cn("size-4", item.isDefault && "fill-current text-primary")} />
-                  </ManageIcon>
                   {onReorder ? (
                     <>
                       <ManageIcon label={t.moveUp} disabled={index === 0} onClick={() => move(index, -1)}>
@@ -276,11 +274,11 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   );
 }
 
-function ManageIcon({ label, onClick, disabled, pressed, className, children }: { label: string; onClick: () => void; disabled?: boolean; pressed?: boolean; className?: string; children: React.ReactNode }) {
+function ManageIcon({ label, onClick, disabled, className, children }: { label: string; onClick: () => void; disabled?: boolean; className?: string; children: React.ReactNode }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" className={cn("size-8", className)} aria-label={label} aria-pressed={pressed} disabled={disabled} onClick={onClick}>
+        <Button type="button" variant="ghost" size="icon" className={cn("size-8", className)} aria-label={label} disabled={disabled} onClick={onClick}>
           {children}
         </Button>
       </TooltipTrigger>

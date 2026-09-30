@@ -809,7 +809,6 @@ export function AppShell({
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {currentPanel ? (
             <div data-slot="app-shell-panel-header" className={cn("flex min-h-11 shrink-0 flex-wrap items-center gap-2 border-b px-3 py-1 md:flex-nowrap", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
-              <currentPanel.icon className="order-1 size-4 shrink-0" />
               {panelViewSwitch}
               {panelHeading}
               <Button type="button" variant="default" size="sm" className="order-3 ml-auto shrink-0 whitespace-nowrap md:order-4" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
