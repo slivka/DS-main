@@ -147,6 +147,8 @@ describe("AppShell panely 2.71.0 – chování", () => {
     expect(order(views)).toBe("4");
     expect(views?.className).toContain("basis-full");
     expect(header.querySelector('[data-slot="app-shell-panel-heading"]')?.previousElementSibling).toBe(views);
+    expect(header.querySelector(".lucide-settings")).toBeNull();
+    expect(document.querySelector(".lucide-settings")).not.toBeNull();
   });
 
   it("titulek stránky mění jen při manageDocumentTitle", () => {

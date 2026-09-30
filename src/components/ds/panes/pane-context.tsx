@@ -154,6 +154,8 @@ export type PaneTabsTexts = {
   limitEvicted: string;
   /** {max} se nahradí. */
   limitRejected: string;
+  /** Jedno upozornění po slučování panelů; {count} a {max} se nahradí. */
+  limitClosed: string;
   narrowed: string;
   restored: string;
   untitled: string;
@@ -172,6 +174,7 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   closeConfirm: "Zahodit změny",
   limitEvicted: "Záložka „{title}“ byla zavřena – v panelu může být nejvýše {max} záložek.",
   limitRejected: "V panelu je {max} rozepsaných záložek. Nejprve některou uložte nebo zavřete.",
+  limitClosed: "Zavřeno {count} záložek – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
   narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdějení obnoví.",
   restored: "Rozdějení panelů obnoveno.",
   untitled: "Bez názvu",
@@ -364,12 +367,13 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   };
 
   const closePane = (paneId: string) => {
-    const current = stateRef.current;
-    const pane = current.panes.find((item) => item.id === paneId);
+    const pane = stateRef.current.panes.find((item) => item.id === paneId);
     if (!pane) return;
-    const ids = pane.tabs.map((tab) => tab.id);
-    guardDiscard(ids, () => {
+    guardDiscard(pane.tabs.map((tab) => tab.id), () => {
       const before = stateRef.current;
+      const current = before.panes.find((item) => item.id === paneId);
+      if (!current) return;
+      const ids = current.tabs.map((tab) => tab.id);
       rememberClosed(ids, before);
       setMaximized(null);
       commit(closePaneInState(before, paneId));
@@ -537,16 +541,10 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       setMaximized(null);
       const before = stateRef.current;
       const result = setLayoutWithLimitInState(before, layout, isTabDirty);
-      if (result.rejected) {
-        toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
-        return;
-      }
       if (result.closedTabIds.length) {
         rememberClosed(result.closedTabIds, before);
-        result.closedTabIds.forEach((id) => {
-          toast.info(t.limitEvicted.replace("{title}", titleOf(id)).replace("{max}", String(MAX_TABS_PER_PANE)));
-          clearTabState(id);
-        });
+        result.closedTabIds.forEach(clearTabState);
+        toast.info(t.limitClosed.replace("{count}", String(result.closedTabIds.length)).replace("{max}", String(MAX_TABS_PER_PANE)));
       }
       commit(result.state);
     },
