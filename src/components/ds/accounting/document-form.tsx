@@ -44,6 +44,8 @@ import { useDsTexts } from "../../../ds-texts";
 export type DocumentDirection = "in" | "out";
 
 export type DocumentHeaderValue = {
+  /** Identita dokladu; při změně formulář znovu odvodí paměť automatického VS. */
+  id?: string | null;
   bookId?: string | null;
   number?: string | null;
   direction?: DocumentDirection | null;
@@ -346,7 +348,9 @@ export function DocumentForm({
   );
   const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => {
     const warning = options?.warning ?? dateWarnings?.[key];
-    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, className);
+    // Varovná ikona potřebuje vlastní místo, aby se celé datum vešlo.
+    const widthClass = warning ? "[&_input]:w-[calc(8.5rem+1.3em)]" : undefined;
+    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, cn(className, widthClass));
   };
   const text = (key: "constantSymbol" | "specificSymbol" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
@@ -371,6 +375,11 @@ export function DocumentForm({
   const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
   const automaticVsRef = useRef<string | null>(value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null);
+  // Při přepnutí na jiný doklad znovu odvodíme, zda je VS automatický.
+  useEffect(() => {
+    const suggested = vsFromDocumentNumber(value.externalNumber ?? "");
+    automaticVsRef.current = suggested !== null && value.variableSymbol === suggested ? suggested : null;
+  }, [value.id, value.number]); // eslint-disable-line react-hooks/exhaustive-deps
   const changeExternalNumber = (externalNumber: string) => {
     const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
     const nextSuggested = vsFromDocumentNumber(externalNumber);
@@ -379,10 +388,12 @@ export function DocumentForm({
     const nextDigits = externalNumber.replace(/\D/g, "");
     const canApplySuggestion = nextSuggested !== null || nextDigits.length === 0;
     if (receivedDocument && mayUpdateVs && canApplySuggestion) {
-      const variableSymbol = nextSuggested ?? "";
       automaticVsRef.current = nextSuggested;
-      patch({ externalNumber, variableSymbol });
-      return;
+      const variableSymbol = nextSuggested ?? null;
+      if ((value.variableSymbol || null) !== variableSymbol) {
+        patch({ externalNumber, variableSymbol });
+        return;
+      }
     }
     patch({ externalNumber });
   };
@@ -425,9 +436,9 @@ export function DocumentForm({
 
   const renderAmountSection = () => <Fragment>
     <SectionHeading>{t.amountOnlySection}</SectionHeading>
-    <div data-slot="document-amount-currency" data-section="document-amount-section" className="flex max-w-full flex-wrap items-start justify-end gap-3 overflow-x-clip">
+    <div data-slot="document-amount-currency" data-section="document-amount-section" className="flex max-w-full flex-wrap items-start justify-end min-w-0 gap-3">
       {foreign ? <div data-slot="document-foreign-amounts" className="order-2 flex min-w-0 max-w-full flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1">
-        <div className="w-[9rem] shrink-0">{field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full" />, 3, false, "[&_p]:whitespace-nowrap")}</div>
+        <div className="w-[9rem] shrink-0">{field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full" />, 3, false, "[&_p]:truncate @min-[30rem]:[&_p]:overflow-visible")}</div>
         <div className="w-[9rem] shrink-0 text-right @min-[30rem]:w-[11.5rem]">{field("document-total-home", <span className="whitespace-nowrap">{t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}</span>, <div id="document-total-home" aria-readonly="true" className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</div>, 3, false, "text-right [&_label]:text-right")}</div>
       </div> : null}
       <div data-slot="document-total-currency-pair" className="order-1 flex min-w-0 max-w-full shrink-0 items-start gap-3">

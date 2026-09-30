@@ -140,4 +140,42 @@ describe("BankAccountField 2.73", () => {
     view.rerender(<BankAccountField aria-label="Bankovní účet" value="19-2000145399/0800" onChange={() => {}} options={options} />);
     expect(view.queryByRole("textbox", { name: "Bankovní účet" })).toBeNull();
   });
+
+  it("v režimu Jiný účet vstup zůstane po smazání i po shodě s nabídkou", () => {
+    const options = [{ number: "19-2000145399", bankCode: "0800" }];
+    function Harness() {
+      const [account, setAccount] = React.useState("");
+      return <BankAccountField aria-label="Účet" value={account} onChange={setAccount} options={options} />;
+    }
+    const view = render(<Harness />);
+    fireEvent.click(view.getByRole("combobox", { name: "Účet" }));
+    fireEvent.click(view.getByRole("option", { name: "Jiný účet" }));
+    const input = view.getByRole("textbox", { name: "Účet" });
+    fireEvent.change(input, { target: { value: "123" } });
+    fireEvent.change(input, { target: { value: "" } });
+    expect(view.getByRole("textbox", { name: "Účet" })).toBe(input);
+    fireEvent.change(input, { target: { value: "19-2000145399/0800" } });
+    expect(view.getByRole("textbox", { name: "Účet" })).toBe(input);
+  });
+});
+
+describe("DocumentForm 2.73 – druhá kontrola", () => {
+  it("VS do patche nedá, když se nemění, a paměť obnoví při jiném dokladu", () => {
+    const patches: Array<Record<string, unknown>> = [];
+    const initial = { ...base, externalNumber: "FA-1", variableSymbol: "" };
+    function Tracked({ doc }: { doc: typeof base & { id?: string } }) {
+      const [value, setValue] = React.useState(doc);
+      React.useEffect(() => setValue(doc), [doc]);
+      return <DocumentForm title="FP" status="draft" documentType="FP" value={value} onChange={(next: Record<string, unknown>) => { patches.push(next); setValue(next as typeof doc); }} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} currencies={[{ code: "EUR", label: "Euro", symbol: "€" }]} homeCurrency="CZK" homeCurrencySymbol="Kč" mainSide="D" />;
+    }
+    const view = render(<Tracked doc={{ ...initial, externalNumber: "ABC" }} />);
+    const number = () => view.container.querySelector("#document-externalNumber") as HTMLInputElement;
+    fireEvent.change(number(), { target: { value: "ABCD" } });
+    expect(patches.at(-1)?.variableSymbol).toBe("");
+    // druhý doklad s ručním VS: paměť z prvního se nesmí přenést
+    view.rerender(<Tracked doc={{ ...base, id: "2", number: "FP2", externalNumber: "FA-5", variableSymbol: "5" }} />);
+    view.rerender(<Tracked doc={{ ...base, id: "3", number: "FP3", externalNumber: "FA-7", variableSymbol: "5" }} />);
+    fireEvent.change(number(), { target: { value: "FA-8" } });
+    expect((view.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("5");
+  });
 });
