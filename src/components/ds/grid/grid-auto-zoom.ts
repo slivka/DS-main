@@ -72,11 +72,7 @@ export function useAutoGridZoom(
     const appZoom = rootPx / 16;
     // Nezalomený obsah může být širší než odhad ze záhlaví. Po prvním renderu
     // odvodíme jeho šířku při 16 px z reálného scrollWidth a výpočet zpřesníme.
-    const table = surface?.querySelector<HTMLElement>("table");
-    const renderedRequired = surface && table && table.scrollWidth > surface.clientWidth
-      ? table.scrollWidth / (appZoom * Math.max(currentZoom, AUTO_GRID_MIN))
-      : 0;
-    const next = calculateAutoGridZoom(width, Math.max(requiredRef.current, renderedRequired), appZoom);
+    const next = calculateAutoGridZoom(width, requiredRef.current, appZoom);
     lastWidth.current = width;
     pending.current = false;
     if (next == null) return;

@@ -1015,7 +1015,7 @@ export function DataGrid<Row>({
             setZoom={setZoom}
             density={density}
             height={resolvedHeight}
-            overflowFallback={autoZoom && zoom <= 0.75 && overflowFallback}
+            overflowFallback={autoZoom && zoom <= 0.75}
               className={`grid-table-surface min-w-0 max-w-full flex-1 ${hideToolbar ? "rounded-none border-t-0 !shadow-none" : "rounded-t-none border-t-0"} ${plain ? "rounded-b-lg !shadow-none" : paginated ? "rounded-b-none! border-b-0" : "rounded-b-none!"} ${className ?? ""}`}
             {...(loading !== undefined ? { loading } : {})}
           >
