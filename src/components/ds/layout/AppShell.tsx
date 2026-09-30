@@ -306,6 +306,15 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   );
 }
 
+/** Kontext panelu: text i ReactNode se zkracují „…“ a mají tooltip. */
+function PanelContextText({ value, className }: { value?: ReactNode; className?: string }) {
+  if (value == null || value === false || value === "") return null;
+  if (typeof value === "string") return <TruncatedText className={className} text={value} />;
+  return (
+    <TooltipProvider><Tooltip><TooltipTrigger asChild><div className={cn("min-w-0 truncate", className)}>{value}</div></TooltipTrigger><TooltipContent>{value}</TooltipContent></Tooltip></TooltipProvider>
+  );
+}
+
 function ShellNavSection({ label, first, collapsed, query = "" }: { label: string; first: boolean; collapsed: boolean; query?: string }) {
   if (collapsed) {
     return (
@@ -649,11 +658,7 @@ export function AppShell({
           />
         ) : null}
       </div>
-      {typeof currentPanelContext === "string" ? (
-        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanelContext} />
-      ) : currentPanelContext ? (
-        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanelContext} />
-      ) : null}
+      <PanelContextText value={currentPanelContext} className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" />
     </div>
   ) : null;
   const onViewKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -736,7 +741,7 @@ export function AppShell({
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
              <SheetContent side="left" data-sidebar-tone={sidebarTone} className="shell-sidebar flex w-72 flex-col gap-0 bg-sidebar p-0 text-sidebar-foreground">
-               <SheetHeader className="min-h-14 shrink-0 justify-center border-b border-sidebar-border px-4"><SheetTitle className="text-sidebar-foreground">{currentPanelTitle || appName}</SheetTitle>{currentPanelContext ? <TruncatedText text={currentPanelContext} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
+               <SheetHeader className="min-h-14 shrink-0 justify-center border-b border-sidebar-border px-4"><SheetTitle className="text-sidebar-foreground">{currentPanelTitle || appName}</SheetTitle><PanelContextText value={currentPanelContext} className="text-xs font-normal text-sidebar-muted" /></SheetHeader>
               <div data-slot="app-shell-sheet-nav" className="flex min-h-0 flex-1 flex-col">{nav(false)}</div>
             </SheetContent>
           </Sheet>
