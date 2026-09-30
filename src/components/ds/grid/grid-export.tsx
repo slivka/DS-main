@@ -229,6 +229,7 @@ export function loadPdfFonts() {
  */
 export function GridExport({
   getData,
+  fileName: fileNameProp,
   fijename,
   title,
   zoom = 1,
@@ -251,7 +252,9 @@ export function GridExport({
   /** Vrací aktuálně zobrazená data (po filtrech a řazení). */
   getData: () => GridExportData | Promise<GridExportData>;
   /** Název souboru bez přípony. */
-  fijename: string;
+  fileName?: string;
+  /** @deprecated od 2.82.0 – použij fileName. */
+  fijename?: string;
   /** Nadpis v PDF sestavě. */
   title?: string;
   zoom?: number;
@@ -281,6 +284,7 @@ export function GridExport({
   /** Volitelné údaje v hlavičce Excel sestavy. */
   meta?: ExcelExportMeta;
 }) {
+  const fileName = fileNameProp ?? fijename ?? "";
   const dsTexts = useDsTexts();
   const texts = useResolvedGridTexts(textOverrides);
   const { formatDateTime } = useDateTimePreferences();
@@ -292,15 +296,15 @@ export function GridExport({
     const data = await getData();
     const created = new Date();
     const workbook = await buildExcelWorkbook(data, {
-      title: title || fijename,
-      exportName: fijename,
+      title: title || fileName,
+      exportName: fileName,
       meta,
       totalLabel: texts.total,
       created,
       locale: dsTexts.intlLocale,
       texts: dsTexts.export,
     });
-    await downloadWorkbook(workbook, fijename, created);
+    await downloadWorkbook(workbook, fileName, created);
   };
 
   const exportPdf = async () => {
@@ -372,7 +376,7 @@ export function GridExport({
     const landscape = neededWidth > portraitUsable;
     const doc = landscape ? makeDoc("landscape") : probe;
 
-    const heading = formatExportTextDates(title ?? fijename);
+    const heading = formatExportTextDates(title ?? fileName);
     const pageWidth = doc.internal.pageSize.getWidth();
 
     // součtové řádky tabulky – popisek sloučený a zarovnaný doprava jako v gridu
@@ -456,7 +460,7 @@ export function GridExport({
       },
     });
 
-    doc.save(`${fijename}.pdf`);
+    doc.save(`${fileName}.pdf`);
   };
 
   const exportHtml = async () => {
@@ -470,7 +474,7 @@ export function GridExport({
     const headerRows = (data.headerRows?.length ? data.headerRows : [exportColumns]).map((header) =>
       exportColumns.map((_, index) => formatExportTextDates(header[index] ?? "")),
     );
-    const heading = formatExportTextDates(title ?? fijename);
+    const heading = formatExportTextDates(title ?? fileName);
     const esc = (v: unknown) =>
       String(v ?? "")
         .replace(/&/g, "&amp;")
@@ -526,7 +530,7 @@ ${
     const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${fijename}.html`;
+    a.download = `${fileName}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };
