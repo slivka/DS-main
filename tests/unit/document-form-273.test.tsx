@@ -36,12 +36,41 @@ describe("DocumentForm 2.73", () => {
     expect((manual.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("777");
   });
 
+  it("pamatuje automatický VS přes prázdné a příliš dlouhé číslo", () => {
+    const emptyBridge = render(<Form initial={{ ...base, externalNumber: "FA-1", variableSymbol: "1" }} />);
+    const number = emptyBridge.container.querySelector("#document-externalNumber") as HTMLInputElement;
+    fireEvent.change(number, { target: { value: "" } });
+    expect((emptyBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("");
+    fireEvent.change(number, { target: { value: "FA-2" } });
+    expect((emptyBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("2");
+    cleanup();
+    const longBridge = render(<Form initial={{ ...base, externalNumber: "1234567890", variableSymbol: "1234567890" }} />);
+    const longNumber = longBridge.container.querySelector("#document-externalNumber") as HTMLInputElement;
+    fireEvent.change(longNumber, { target: { value: "123456789012" } });
+    expect((longBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("1234567890");
+    fireEvent.change(longNumber, { target: { value: "9876543210" } });
+    expect((longBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("9876543210");
+  });
+
+  it("ručně zadaný VS nepřepíše ani přes prázdné nebo dlouhé číslo", () => {
+    const view = render(<Form initial={{ ...base, externalNumber: "FA-1", variableSymbol: "777" }} />);
+    const number = view.container.querySelector("#document-externalNumber") as HTMLInputElement;
+    fireEvent.change(number, { target: { value: "" } });
+    fireEvent.change(number, { target: { value: "123456789012" } });
+    fireEvent.change(number, { target: { value: "FA-2" } });
+    expect((view.container.querySelector("#document-variableSymbol") as HTMLInputElement).value).toBe("777");
+  });
+
   it("přijatý doklad řadí Platební údaje před Částku a má číslo span 6", () => {
     const view = render(<Form />);
     const text = view.container.textContent ?? "";
     expect(text.indexOf("Platební údaje")).toBeLessThan(text.indexOf("Částka"));
     expect(view.container.querySelector("#document-externalNumber")?.closest(".col-span-20")?.className).toContain("col-span-6");
     expect(view.container.querySelector("[data-slot=document-payment-section] #document-bankAccount")).toBeNull();
+    const exclude = view.container.querySelector("#document-exclude-payment-orders")?.closest("[data-slot=checkbox-field]");
+    expect(exclude?.className).toContain("@min-[40rem]:mt-4");
+    expect(exclude?.className).toContain("[&_label]:whitespace-nowrap");
+    expect(exclude?.className).not.toContain("self-center");
   });
 
   it("mění popisek čísla podle viditelné DPH", () => {
@@ -66,6 +95,15 @@ describe("DocumentForm 2.73", () => {
     view.rerender(<Form dateWarnings={{}} vat={{ visible: true }} />);
     expect(view.container.querySelector("[data-slot=document-form-notices]")?.textContent ?? "").not.toContain("DUZP je mimo období");
   });
+
+  it("zobrazí současně varování podaného období i datumové varování", () => {
+    const view = render(<Form dateWarnings={{ vatDate: "Datum DPH je mimo období" }} vat={{ visible: true, periodFiled: true, filedWarning: "Období už bylo podáno" }} />);
+    const notices = view.container.querySelector("[data-slot=document-form-notices]")?.textContent ?? "";
+    expect(notices).toContain("Období už bylo podáno");
+    expect(notices).toContain("Datum DPH je mimo období");
+    expect(view.container.querySelector("#document-vatDate")?.getAttribute("aria-describedby")).toBeTruthy();
+    expect(view.container.querySelector("#document-vatDate")?.getAttribute("aria-invalid")).toBeNull();
+  });
 });
 
 describe("BankAccountField 2.73", () => {
@@ -82,5 +120,24 @@ describe("BankAccountField 2.73", () => {
     expect(view.getByRole("alert").textContent).toBe("Neplatný účet");
     view.rerender(<BankAccountField value="19-2000145399/0800" onChange={() => {}} bankCodes={["0800"]} invalidAccountText="Neplatný účet" invalidBankCodeText="Neplatná banka" />);
     expect(view.queryByRole("alert")).toBeNull();
+  });
+
+  it("po opuštění hlásí neúplný účet, odstraňuje mezery a vrací se z režimu Jiný účet", () => {
+    const options = [{ number: "19-2000145399", bankCode: "0800" }];
+    function AccountHarness() {
+      const [account, setAccount] = React.useState("");
+      return <BankAccountField aria-label="Bankovní účet" value={account} onChange={setAccount} options={options} invalidAccountText="Neplatný účet" />;
+    }
+    const view = render(<AccountHarness />);
+    expect(view.getByRole("combobox", { name: "Bankovní účet" })).toBeTruthy();
+    fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet" }));
+    fireEvent.click(view.getByRole("option", { name: "Jiný účet" }));
+    const input = view.getByRole("textbox", { name: "Bankovní účet" });
+    fireEvent.change(input, { target: { value: "123 456 789" } });
+    expect((input as HTMLInputElement).value).toBe("123456789");
+    fireEvent.blur(input);
+    expect(view.getByRole("alert").textContent).toBe("Neplatný účet");
+    view.rerender(<BankAccountField aria-label="Bankovní účet" value="19-2000145399/0800" onChange={() => {}} options={options} />);
+    expect(view.queryByRole("textbox", { name: "Bankovní účet" })).toBeNull();
   });
 });

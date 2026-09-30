@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ArrowDownLeft, ArrowUpRight, Pencil, Settings, Sigma } from "lucide-react";
 
 import { Input } from "../../ui/input";
@@ -354,7 +354,7 @@ export function DocumentForm({
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning = !linkedPartner && /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) && !isValidCzIco(counterpartyIco);
-  const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? t.filedWarning : undefined;
+  const filedVatDateWarning = vat?.periodFiled ? vat.filedWarning ?? t.filedWarning : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
   const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
@@ -364,15 +364,27 @@ export function DocumentForm({
     ["accountingDate", t.accountingDate, dateWarnings?.accountingDate],
     ["dueDate", t.dueDate, f.dueDate ? dateWarnings?.dueDate : undefined],
     ["taxDate", t.taxDate, showVatFields && f.taxDate ? dateWarnings?.taxDate : undefined],
-    ["vatDate", t.vatDate, showVatFields ? vatDateWarning ?? dateWarnings?.vatDate : undefined],
+    ["vatDate", t.vatDate, showVatFields ? filedVatDateWarning : undefined],
+    ["vatDate", t.vatDate, showVatFields ? dateWarnings?.vatDate : undefined],
   ];
-  const dateNoticeBars = dateWarningEntries.filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2])).map(([key, label, warning]) => <NoticeBar key={key} tone="warning" title={label}>{warning}</NoticeBar>);
+  const dateNoticeBars = dateWarningEntries.filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2])).map(([key, label, warning], index) => <NoticeBar key={`${key}-${index}`} tone="warning" title={label}>{warning}</NoticeBar>);
   const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
+  const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
+  const automaticVsRef = useRef<string | null>(value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null);
   const changeExternalNumber = (externalNumber: string) => {
     const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
     const nextSuggested = vsFromDocumentNumber(externalNumber);
-    const mayUpdateVs = can("variableSymbol") && (!value.variableSymbol || value.variableSymbol === previousSuggested);
-    patch({ externalNumber, ...(receivedDocument && mayUpdateVs && nextSuggested ? { variableSymbol: nextSuggested } : {}) });
+    const currentVs = value.variableSymbol ?? "";
+    const mayUpdateVs = can("variableSymbol") && (!currentVs || currentVs === previousSuggested || currentVs === automaticVsRef.current);
+    const nextDigits = externalNumber.replace(/\D/g, "");
+    const canApplySuggestion = nextSuggested !== null || nextDigits.length === 0;
+    if (receivedDocument && mayUpdateVs && canApplySuggestion) {
+      const variableSymbol = nextSuggested ?? "";
+      automaticVsRef.current = nextSuggested;
+      patch({ externalNumber, variableSymbol });
+      return;
+    }
+    patch({ externalNumber });
   };
   const externalNumberField = field(
     "document-externalNumber",
@@ -382,7 +394,7 @@ export function DocumentForm({
     false,
     receivedDocument || !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
   );
-  const bankAccountField = field("document-bankAccount", t.bankAccount, <BankAccountField id="document-bankAccount" value={value.bankAccount ?? ""} onChange={(bankAccount) => patch({ bankAccount })} disabled={!can("bankAccount")} options={bankAccountOptions} bankCodes={bankCodes} invalidAccountText={t.bankAccountInvalid} invalidBankCodeText={t.bankCodeInvalid} otherAccountText={t.otherBankAccount} />, receivedDocument ? 14 : 6);
+  const bankAccountField = field("document-bankAccount", t.bankAccount, <BankAccountField id="document-bankAccount" aria-label={t.bankAccount} value={value.bankAccount ?? ""} onChange={(bankAccount) => patch({ bankAccount })} disabled={!can("bankAccount")} options={bankAccountOptions} bankCodes={bankCodes} invalidAccountText={t.bankAccountInvalid} invalidBankCodeText={t.bankCodeInvalid} otherAccountText={t.otherBankAccount} />, receivedDocument ? 14 : 6, false, receivedDocument ? "@min-[40rem]:pr-3" : undefined);
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
@@ -399,23 +411,27 @@ export function DocumentForm({
       rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
-  const currencyControl = currencyLocked || readOnly || !can("currency") || identityVariant === "cashBank"
-    ? <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>
-    : currencies && currencyDisabledReason
-      ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencyOptions} triggerClassName="h-11" /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason}</TooltipContent></Tooltip>
-      : currencies
-        ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} triggerClassName="h-11" />
-        : <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>;
+  const currencyReasonId = useId();
+  const currencyFixed = currencyLocked || readOnly || !can("currency") || identityVariant === "cashBank" || Boolean(currencyDisabledReason);
+  const currencyReason = currencyDisabledReason ?? (!readOnly && !can("currency") ? t.currencyDisabled : undefined);
+  const fixedCurrency = <div id="document-currency" aria-readonly="true" aria-describedby={currencyReason ? currencyReasonId : undefined} className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>;
+  const currencyControl = currencyFixed
+    ? currencyReason
+      ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-describedby={currencyReasonId}>{fixedCurrency}<span id={currencyReasonId} className="sr-only">{currencyReason}</span></div></TooltipTrigger><TooltipContent>{currencyReason}</TooltipContent></Tooltip>
+      : fixedCurrency
+    : currencies
+      ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} triggerClassName="h-11" />
+      : fixedCurrency;
 
   const renderAmountSection = () => <Fragment>
     <SectionHeading>{t.amountOnlySection}</SectionHeading>
-    <div data-slot="document-amount-currency" data-section="document-amount-section" className="flex flex-wrap items-start justify-end gap-3">
-      {foreign ? <div data-slot="document-foreign-amounts" className="order-2 ml-auto flex shrink-0 flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1 @min-[48rem]:ml-0">
+    <div data-slot="document-amount-currency" data-section="document-amount-section" className="flex max-w-full flex-wrap items-start justify-end gap-3 overflow-x-clip">
+      {foreign ? <div data-slot="document-foreign-amounts" className="order-2 flex min-w-0 max-w-full flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1">
         <div className="w-[9rem] shrink-0">{field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full" />, 3, false, "[&_p]:whitespace-nowrap")}</div>
-        <div className="w-[11.5rem] shrink-0 text-right">{field("document-total-home", <span className="whitespace-nowrap">{t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}</span>, <div id="document-total-home" aria-readonly="true" className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</div>, 3, false, "text-right [&_label]:text-right")}</div>
+        <div className="w-[9rem] shrink-0 text-right @min-[30rem]:w-[11.5rem]">{field("document-total-home", <span className="whitespace-nowrap">{t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}</span>, <div id="document-total-home" aria-readonly="true" className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</div>, 3, false, "text-right [&_label]:text-right")}</div>
       </div> : null}
-      <div data-slot="document-total-currency-pair" className="order-1 ml-auto flex shrink-0 items-start gap-3">
-        <div data-slot="document-amount-total" className="min-w-[11.5rem] flex-[0_1_18rem]">{field("document-amountTotal", <span className="whitespace-nowrap">{t.amountTotal}</span>, <><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{totalMode === "sum" ? t.sumFromLines : t.amountTotal}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p data-slot="document-amount-sum-hint" className="mt-1 whitespace-nowrap text-xs text-muted-foreground">{t.sumFromLines}</p> : null}</>, 6)}</div>
+      <div data-slot="document-total-currency-pair" className="order-1 flex min-w-0 max-w-full shrink-0 items-start gap-3">
+        <div data-slot="document-amount-total" className="min-w-[9rem] flex-[0_1_18rem] @min-[30rem]:min-w-[11.5rem]">{field("document-amountTotal", <span className="whitespace-nowrap">{t.amountTotal}</span>, <><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{totalMode === "sum" ? t.sumFromLines : t.amountTotal}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p data-slot="document-amount-sum-hint" className="mt-1 whitespace-nowrap text-xs text-muted-foreground">{t.sumFromLines}</p> : null}</>, 6)}</div>
         <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyControl, 3)}</div>
       </div>
     </div>
@@ -433,7 +449,7 @@ export function DocumentForm({
       {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
       {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
       {f.bankAccount && !receivedDocument ? bankAccountField : null}
-      {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className={cn("col-span-20", receivedDocument && "@min-[40rem]:col-span-6 self-center whitespace-nowrap")} label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
+      {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className={cn("col-span-20", receivedDocument && "@min-[40rem]:col-span-6 @min-[40rem]:mt-4 @min-[40rem]:flex @min-[40rem]:h-9 @min-[40rem]:items-center [&_label]:whitespace-nowrap")} label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
     </div>
   </Fragment> : null;
 
@@ -464,11 +480,11 @@ export function DocumentForm({
 
         <SectionHeading>{t.datesSection}</SectionHeading>
         <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
-          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
-          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
-          {showVatFields ? date("vatDate", t.vatDate, "relative flex-none w-max min-w-[8.5rem] [&_input]:w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning ?? dateWarnings?.vatDate }) : null}
+          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full")}
+          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full")}
+          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full") : null}
+          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full") : null}
+          {showVatFields ? date("vatDate", t.vatDate, "relative flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") || undefined }) : null}
         </div>
         {!f.partner ? <div className="mt-3 grid grid-cols-20 gap-3">{suggestedText("description", t.description, descriptionSuggest, 20)}</div> : null}
 

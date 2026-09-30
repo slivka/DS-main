@@ -5,7 +5,9 @@
 - Přijaté doklady řadí sekce Základní údaje → Datumy → Platební údaje → Částka → Řádky. Bankovní účet je v základních údajích a podporuje nabídku i kontrolované volné zadání.
 - `vsFromDocumentNumber()` navrhuje VS z nejvýše deseti číslic a nepřepisuje ručně upravený symbol.
 - `AppShell` ve výchozím stavu nemění titulek stránky; opt-in `manageDocumentTitle` jej nastaví. Opraveny jsou také stabilní tooltip, jednorázová vývojová varování a kontrast odznaku aktivního menu.
-- **BREAKING:** identita `cashBank` nezobrazuje měnu, popisek Celkem už neobsahuje měnu a `dateWarnings` se nevykreslují pod polem. Nové props `bankAccountOptions` a `bankCodes` rozšiřují zadání účtu bez automatického předvyplnění.
+- **BREAKING:** identita `cashBank` nezobrazuje měnu, popisek Celkem už neobsahuje měnu a `dateWarnings` se nevykreslují pod polem. Přijaté doklady mají nové pořadí sekcí a Bankovní účet se přesunul do Základních údajů.
+- **BREAKING:** `AppShell` už bez `manageDocumentTitle` nenastavuje `document.title`; `DateField.warning` zvýrazní oranžovým rámečkem pole i při `warningDisplay="below"`.
+- **BREAKING pro vlastní kompletní `DsTexts`:** `documentForm` vyžaduje nové klíče pro číslo dodavatele, automatický VS a bankovní účet. Nové props `bankAccountOptions` a `bankCodes` rozšiřují zadání účtu bez automatického předvyplnění.
 
 ## Changelog 2.71.0 – panely AppShellu a rozsah platnosti
 

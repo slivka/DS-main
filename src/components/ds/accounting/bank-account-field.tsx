@@ -1,4 +1,4 @@
-import { forwardRef, useState, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, useEffect, useState, type ComponentPropsWithoutRef } from "react";
 
 import { Input } from "../../ui/input";
 import { OptionSelect } from "../form/option-select";
@@ -40,6 +40,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   readOnly,
   id,
   className,
+  onBlur,
   ...props
 }, ref) {
   const { documentForm: texts } = useDsTexts();
@@ -47,16 +48,22 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
   const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
   const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
+  const optionValuesKey = optionValues.join("\u0000");
   const selectedOption = optionValues.includes(value);
   const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
+  const [touched, setTouched] = useState(false);
+  useEffect(() => {
+    setOtherSelected(Boolean(value) && !optionValues.includes(value));
+  }, [optionValuesKey, value]); // seznam je odvozený z řízených možností
   const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
   const compact = value.replace(/\s/g, "");
   const [accountPart = "", bankCode = ""] = compact.split("/");
   const parsed = parseCzAccount(accountPart);
   const hasCompleteValue = compact.length > 0 && compact.includes("/") && bankCode.length === 4;
+  const incomplete = touched && compact.length > 0 && (!compact.includes("/") || bankCode.length !== 4 || compact.split("/").length !== 2);
   const bankCodeInvalid = hasCompleteValue && Boolean(bankCodes?.length) && !bankCodes?.includes(bankCode);
   const accountInvalid = hasCompleteValue && (!parsed || !isValidCzAccount(parsed.prefix, parsed.number));
-  const error = bankCodeInvalid ? resolvedInvalidBankCodeText : accountInvalid ? resolvedInvalidAccountText : undefined;
+  const error = bankCodeInvalid ? resolvedInvalidBankCodeText : accountInvalid || incomplete ? resolvedInvalidAccountText : undefined;
 
   return (
     <div className={cn("min-w-0", className)}>
@@ -69,9 +76,11 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             return;
           }
           setOtherSelected(false);
+          setTouched(false);
           onChange(next);
         }}
         allowEmpty={false}
+        ariaLabel={props["aria-label"]}
         disabled={disabled || readOnly}
         options={[
           ...options.map((option) => ({
@@ -96,7 +105,8 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
         inputMode="numeric"
         autoComplete="off"
         aria-invalid={Boolean(error)}
-        onChange={(event) => onChange(event.target.value.replace(/[^\d\-/\s]/g, ""))}
+        onChange={(event) => onChange(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))}
+        onBlur={(event) => { setTouched(true); onBlur?.(event); }}
         className={cn("h-9 font-mono tabular-nums", options.length && "mt-2")}
       /> : null}
       {error ? <p role="alert" className="mt-1 text-xs font-medium text-destructive">{error}</p> : null}
