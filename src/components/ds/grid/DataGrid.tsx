@@ -189,6 +189,8 @@ export type DataGridProps<Row> = {
   storageKey: string;
   /** Svislá výška gridu; v PageLayout list je výchozí fill, jinak auto. */
   height?: "fill" | "auto";
+  /** Automaticky přizpůsobí zoom dostupné šířce; ve formulářovém PageLayoutu je výchozí true. */
+  autoZoom?: boolean;
   /** Nadpis gridu (může být ReactNode s vlastní hlavičkou). Když chybí, hlavička se nezobrazí. */
   title?: ReactNode;
   /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
@@ -446,6 +448,7 @@ export function DataGrid<Row>({
   onColumnFiltersChange,
   onSearchChange,
   className,
+  autoZoom: autoZoomProp,
   texts: textOverrides,
 }: DataGridProps<Row>) {
   const pageVariant = usePageLayoutVariant();
@@ -466,7 +469,7 @@ export function DataGrid<Row>({
   const [filtersOpen, setFiltersOpen] = useState(defaultFiltersOpen);
   const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
   const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? exportTitle ?? title ?? storageKey}` : storageKey);
-  const autoZoom = pageVariant === "form" && resolvedHeight === "auto";
+  const autoZoom = (autoZoomProp ?? pageVariant === "form") && resolvedHeight === "auto";
   const { zoom, setZoom, setAutoZoom, density, setDensity, isAuto } = useGridZoom(zoomKey, { auto: autoZoom });
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
@@ -503,7 +506,7 @@ export function DataGrid<Row>({
     const visible = cols.columns.filter((c) => cols.visible[c.id] && c.id !== "actions").map((c) => byId.get(c.id)).filter((c): c is NonNullable<typeof c> => Boolean(c));
     return requiredGridWidthAt100(visible.map((c) => ({ label: typeof c.label === "string" ? c.label : c.id, width: cols.widths[c.id] ?? c.width })), { select: selectMode, actions: hasRowActions });
   }, [effectiveColumns, cols.columns, cols.visible, cols.widths, selectMode, hasRowActions]);
-  useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
+  useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, zoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
   const defaultGroups = useMemo(
     () => (defaultGroupBy ? [{ id: defaultGroupBy, granularity: "month" as const }] : []),
     [defaultGroupBy],
@@ -1012,12 +1015,13 @@ export function DataGrid<Row>({
             setZoom={setZoom}
             density={density}
             height={resolvedHeight}
+            overflowFallback={autoZoom && zoom <= 0.75}
               className={`grid-table-surface min-w-0 max-w-full flex-1 ${hideToolbar ? "rounded-none border-t-0 !shadow-none" : "rounded-t-none border-t-0"} ${plain ? "rounded-b-lg !shadow-none" : paginated ? "rounded-b-none! border-b-0" : "rounded-b-none!"} ${className ?? ""}`}
             {...(loading !== undefined ? { loading } : {})}
           >
             <Table className="w-full">
               <colgroup>
-              {selectMode ? <col style={{ width: `${40 / 16}rem` }} /> : null}
+              {selectMode ? <col style={{ width: `calc(${40 / 16}rem * var(--grid-zoom, 1))` }} /> : null}
                 {shown.map((c) => {
                   const compact = isCompactColumn(c);
                   const w = isBranchColumn(c)
@@ -1030,7 +1034,7 @@ export function DataGrid<Row>({
                    return compact ? (
                     <col key={c.id} style={{ width: "1px", whiteSpace: "nowrap" }} />
                   ) : (
-                    <col key={c.id} {...(w ? { style: { width: `${w / 16}rem` } } : {})} />
+                    <col key={c.id} {...(w ? { style: { width: `calc(${w / 16}rem * var(--grid-zoom, 1))` } } : {})} />
                   );
                 })}
                 {hasRowActions ? <col style={{ width: "auto", whiteSpace: "nowrap" }} /> : null}
@@ -1079,9 +1083,9 @@ export function DataGrid<Row>({
                       ? { width: "1px", whiteSpace: "nowrap" as const }
                       : width
                         ? {
-                            width: `${width / 16}rem`,
-                            maxWidth: `${width / 16}rem`,
-                            minWidth: `${width / 16}rem`,
+                            width: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
+                            maxWidth: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
+                            minWidth: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
                             boxSizing: "border-box" as const,
                           }
                         : undefined;
@@ -1248,9 +1252,9 @@ export function DataGrid<Row>({
                               ? { whiteSpace: "nowrap" as const }
                               : resolvedCellWidth
                                 ? {
-                              width: `${resolvedCellWidth / 16}rem`,
-                              maxWidth: `${resolvedCellWidth / 16}rem`,
-                              minWidth: `${resolvedCellWidth / 16}rem`,
+                              width: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
+                              maxWidth: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
+                              minWidth: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
                                     boxSizing: "border-box" as const,
                                   }
                                 : undefined;

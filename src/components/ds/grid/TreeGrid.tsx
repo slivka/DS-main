@@ -287,7 +287,7 @@ export function TreeGrid<Row extends TreeGridRow>({
     const visible = cols.columns.filter((c) => cols.visible[c.id] && c.id !== "actions").map((c) => byId.get(c.id)).filter((c): c is NonNullable<typeof c> => Boolean(c));
     return requiredGridWidthAt100(visible.map((c) => ({ label: typeof c.label === "string" ? c.label : c.id, width: cols.widths[c.id] ?? c.width })), { select: selectMode, actions: hasRowActions });
   }, [effectiveColumns, cols.columns, cols.visible, cols.widths, selectMode, hasRowActions]);
-  useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
+  useAutoGridZoom(blockRef, autoZoom, requiredWidthAt100, setAutoZoom, zoom, [cols.visible, cols.order, cols.widths, selectMode, hasRowActions]);
   const byColumnId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
   const shown = useMemo(
     () => {
@@ -534,7 +534,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               {shown.map((column) => (
                 <TableHead
                   key={column.id}
-                   style={column.width ? { width: `${column.width / 16}rem` } : undefined}
+                   style={column.width ? { width: `calc(${column.width / 16}rem * var(--grid-zoom, 1))` } : undefined}
                   className={alignClass(column)}
                 >
                   {column.label}

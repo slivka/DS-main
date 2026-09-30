@@ -131,7 +131,7 @@ describe("DS 2.64 – DataGrid / TreeGrid ve formuláři", () => {
   it("změna výšky ruční zoom nepřepíše – reaguje se jen na změnu šířky", () => {
     const source = readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8");
     expect(source).toContain("Math.abs(width - lastWidth.current) < 0.5) return;");
-    expect(source).toContain("setAutoZoom(next, initialized.current);");
+    expect(source).toContain("setAutoZoom(next, initialized.current && !fromAppZoom);");
   });
 });
 

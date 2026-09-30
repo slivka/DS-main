@@ -13,9 +13,10 @@ export const AUTO_GRID_SELECT_WIDTH = 40;
 /** Šířka sloupce akcí v px při 100 %. */
 export const AUTO_GRID_ACTIONS_WIDTH = 72;
 
-export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100: number) {
+export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100: number, appZoom = 1) {
   if (!(availableWidth > 0) || !(requiredWidthAt100 > 0)) return null;
-  const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, availableWidth / requiredWidthAt100));
+  const scale = appZoom > 0 ? appZoom : 1;
+  const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, availableWidth / (requiredWidthAt100 * scale)));
   return Number(Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2));
 }
 
@@ -41,8 +42,9 @@ export function requiredGridWidthAt100(
 
 /**
  * Automatický zoom gridu ve formuláři. Přepočítá se při změně ŠÍŘKY kontejneru,
- * a při změně sloupců (`dependencies`) – změna výšky se ignoruje. Zoom aplikace se nekompenzuje;
- * po `app:zoom-change` se přepočítá jen při změně šířky v px, takže ruční zoom gridu zůstává.
+ * a při změně sloupců (`dependencies`) – změna výšky se ignoruje. Zoom aplikace zvětší grid,
+ * dokud se vejde; teprve při přetečení sníží auto zoom nejvýš na 75 %.
+ * Po `app:zoom-change` se přepočítá auto hodnota, ale ruční zoom gridu zůstává.
  * První výpočet po připojení ruční zoom nezruší (přežije přepnutí záložek), každý další ano.
  */
 export function useAutoGridZoom(
@@ -50,6 +52,7 @@ export function useAutoGridZoom(
   enabled: boolean,
   requiredWidthAt100: number,
   setAutoZoom: (zoom: number, resetManual: boolean) => void,
+  currentZoom = 1,
   dependencies: readonly unknown[] = [],
 ) {
   const requiredRef = useRef(requiredWidthAt100);
@@ -62,18 +65,20 @@ export function useAutoGridZoom(
     if (!enabled) return;
     if (isResizeLocked()) { pending.current = true; return; }
     const root = rootRef.current;
-    const width = root?.getBoundingClientRect().width ?? 0;
+    const surface = root?.querySelector<HTMLElement>(".zoom-grid");
+    const width = surface?.clientWidth ?? root?.clientWidth ?? 0;
     if (!root || width <= 0) return;
-    // Změna zoomu aplikace bez změny šířky v px nic nemění – ruční zoom gridu zůstává.
-    if (fromAppZoom && Math.abs(width - lastWidth.current) < 0.5) { pending.current = false; return; }
-    // Bez kompenzace zoomu aplikace: potřebná šířka je v px při kořeni 16 px.
-    const next = calculateAutoGridZoom(width, requiredRef.current);
+    const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const appZoom = rootPx / 16;
+    // Nezalomený obsah může být širší než odhad ze záhlaví. Po prvním renderu
+    // odvodíme jeho šířku při 16 px z reálného scrollWidth a výpočet zpřesníme.
+    const next = calculateAutoGridZoom(width, requiredRef.current, appZoom);
     lastWidth.current = width;
     pending.current = false;
     if (next == null) return;
-    setAutoZoom(next, initialized.current);
+    setAutoZoom(next, initialized.current && !fromAppZoom);
     initialized.current = true;
-  }, [enabled, rootRef, setAutoZoom]);
+  }, [currentZoom, enabled, rootRef, setAutoZoom]);
 
   useLayoutEffect(() => { measure(); }, [measure, requiredWidthAt100, ...dependencies]); // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
@@ -88,7 +93,7 @@ export function useAutoGridZoom(
     };
     const onAppZoom = () => request(true);
     const onResize = () => {
-      const width = root.getBoundingClientRect().width;
+      const width = root.querySelector<HTMLElement>(".zoom-grid")?.clientWidth ?? root.clientWidth;
       if (width <= 0 || Math.abs(width - lastWidth.current) < 0.5) return;
       request();
     };

@@ -86,7 +86,7 @@ const DEFAULT_GRID_TAB_PREFERENCES: GridTabPreferences = { zoom: null, density: 
  * Zoom a hustota gridu. Ruční hodnoty drží koncept záložky (`gridPreferences:<storageKey>`),
  * takže přežijí přepnutí záložek, ale ne zavření záložky ani obnovení stránky.
  * S `auto` platí vypočtený zoom, dokud ho uživatel ručně nezmění; další automatický
- * přepočet (změna šířky, sloupců nebo zoomu aplikace) ruční hodnotu zruší.
+ * přepočet po změně šířky nebo sloupců ruční hodnotu zruší; změna zoomu aplikace ne.
  */
 export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}) {
   const pane = usePane();
@@ -98,7 +98,7 @@ export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}
 
   const setZoom = useCallback((next: number) => setPrefs((value) => ({ ...value, zoom: clamp(next) })), [setPrefs]);
   const setDensity = useCallback((next: GridDensity) => setPrefs((value) => ({ ...value, density: next })), [setPrefs]);
-  /** Nastaví vypočtený zoom; `resetManual` zruší ruční hodnotu (nový přepočet ze šířky / sloupců / zoomu aplikace). */
+  /** Nastaví vypočtený zoom; `resetManual` zruší ruční hodnotu při změně šířky nebo sloupců. */
   const setAutoZoom = useCallback((next: number, resetManual = true) => {
     setAutoValue(clamp(next));
     if (resetManual) setPrefs((value) => (value.zoom == null ? value : { ...value, zoom: null }));
@@ -445,7 +445,7 @@ export function ZoomGrid({
       className={
         cn("zoom-grid rounded-lg border border-border bg-card shadow-panel", resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)
       }
-      style={{ fontSize: gridFontSize(zoom), ...(maxHeight ? { maxHeight } : {}) }}
+      style={{ fontSize: gridFontSize(zoom), "--grid-zoom": zoom, ...(maxHeight ? { maxHeight } : {}) } as React.CSSProperties}
     >
       {hideCss && <style>{hideCss}</style>}
       <GridProgress show={loading} />

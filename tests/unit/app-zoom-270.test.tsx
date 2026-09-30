@@ -156,33 +156,56 @@ describe("DS 2.70 – AppShell: skutečné události", () => {
   });
 });
 
-describe("DS 2.70 – automat gridů nekompenzuje zoom aplikace", () => {
+describe("DS 2.70 – automat gridů a zoom aplikace", () => {
   const ids = ["row", "text", "debitAccount", "creditAccount", "quantity", "unitId", "unitPrice", "amount", "debitDimensionId", "creditDimensionId", "actions"] as const;
   const full = resolveJournalZoomLayout({ availableWidthRem: 1000, mode: "internal", visibleColumnIds: [...ids] }).fullRequiredWidthRem;
   const at = (appZoom: number, width = full + 1, manualZoom: number | null = null) => resolveJournalZoomLayout({ availableWidthRem: width, appZoom, manualZoom, mode: "internal", visibleColumnIds: [...ids] });
 
-  it("1 panel, zoom aplikace 1,1 → 1,3: auto zoom 1,0 a kaskáda přesune sloupce", () => {
+  it("1 panel: nejdřív kaskáda, po jejím vyčerpání auto zoom", () => {
     expect(at(1.1).autoZoom).toBe(1);
-    expect(at(1.3).autoZoom).toBe(1);
     expect(at(1.3).layout.hiddenColumnIds.length).toBeGreaterThan(0);
+    const minimumIds = ["row", "text", "debitAccount", "creditAccount", "amount", "actions"] as const;
+    const minimumFull = resolveJournalZoomLayout({ availableWidthRem: 1000, mode: "internal", visibleColumnIds: [...minimumIds] }).fullRequiredWidthRem;
+    const extreme = resolveJournalZoomLayout({ availableWidthRem: minimumFull + 1, appZoom: 2, mode: "internal", visibleColumnIds: [...minimumIds] });
+    expect(extreme.autoZoom).toBeLessThan(1);
+    expect(extreme.zoom).toBe(0.75);
+    expect(extreme.scroll).toBe(true);
   });
-  it("stejná šířka v px, zoom aplikace 1,0 → 1,4: kaskáda skryje sloupce, auto zoom zůstane 1,0", () => {
+  it("stejná šířka v px, zoom aplikace 1,0 → 1,4: kaskáda skryje sloupce", () => {
     const base = at(1);
     const big = at(1.4);
     expect(base.layout.hiddenColumnIds).toEqual([]);
-    expect(big.autoZoom).toBe(1);
     expect(big.layout.hiddenColumnIds.length).toBeGreaterThan(0);
   });
   it("úzký panel dál dává 0,75", () => {
     expect(at(1, 20).autoZoom).toBe(0.75);
     expect(at(1.3, 20).autoZoom).toBe(0.75);
   });
-  it("změna zoomu aplikace bez změny šířky nemění auto zoom ani ruční zoom gridu", () => {
-    expect(at(1, full * 0.9).autoZoom).toBe(at(1.3, full * 0.9).autoZoom);
+  it("ruční zoom zůstává a běžný grid započítá zoom aplikace", () => {
     expect(at(1.3, full, 1.2).zoom).toBe(1.2);
     expect(calculateAutoGridZoom(850, 1000)).toBe(0.85);
+    expect(calculateAutoGridZoom(850, 1000, 1.3)).toBe(0.75);
     const source = readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8");
-    expect(source).not.toContain("rootPx / 16");
-    expect(source).toContain("if (fromAppZoom && Math.abs(width - lastWidth.current) < 0.5)");
+    expect(source).toContain('querySelector<HTMLElement>(".zoom-grid")?.clientWidth');
+    expect(source).toContain("initialized.current && !fromAppZoom");
+  });
+
+  it("DataGrid a TreeGrid zmenší auto zoom až při hrozícím přetečení", () => {
+    expect(calculateAutoGridZoom(560, 500, 1)).toBe(1);
+    expect(calculateAutoGridZoom(560, 500, 1.1)).toBe(1);
+    expect(calculateAutoGridZoom(560, 500, 1.3)).toBe(0.85);
+    expect(calculateAutoGridZoom(560, 500, 1.6)).toBe(0.75);
+    expect(calculateAutoGridZoom(560, 500, 2)).toBe(0.75);
+  });
+
+  it("bez rolování se editor vejde i s rezervou zaokrouhlení", () => {
+    for (const widthPx of [560, 600, 700, 800, 1100]) for (const appZoom of [1, 1.1, 1.3, 1.6, 2]) {
+      const result = resolveJournalZoomLayout({ availableWidthRem: widthPx / 16, appZoom, mode: "internal", visibleColumnIds: [...ids] });
+      if (!result.scroll) expect(result.layout.requiredWidthRem).toBeLessThanOrEqual(widthPx / 16 - 1 / 16);
+      if (result.scroll) {
+        expect(result.zoom).toBe(0.75);
+        expect(result.layout.hiddenColumnIds.length).toBeGreaterThan(0);
+      }
+    }
   });
 });

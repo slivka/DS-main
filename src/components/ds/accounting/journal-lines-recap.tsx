@@ -144,8 +144,8 @@ export function JournalLinesRecap({
       ...base.map((column) => column.id.startsWith("debit")
         ? { ...column, value: (row: Row) => withLabel(accountValue(column.id, row), row), render: (row: Row) => renderLabel(accountValue(column.id, row), row) }
         : { ...column, value: (row: Row) => accountValue(column.id, row) || "—", render: (row: Row) => renderLabel(accountValue(column.id, row), { ...row, label: undefined }) }),
-      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, render: (row: Row) => money(row.amount), numeric: true, decimals: 2, total: "sum" as const },
-      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, render: (row: Row) => money(row.foreignAmount), numeric: true, decimals: 2, total: "sum" as const }] : []),
+      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, render: (row: Row) => money(row.amount), numeric: true, decimals: 2, total: "sum" as const, width: 140 },
+      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, render: (row: Row) => money(row.foreignAmount), numeric: true, decimals: 2, total: "sum" as const, width: 140 }] : []),
     ];
   }, [accountMap, accounting, documentMark, foreign, homeMark, t.total, t.debitShort, t.creditShort, t.debitAccount, t.creditAccount]);
   const jobColumns = React.useMemo<DataGridColumn<(typeof jobs)[number]>[]>(() => [
@@ -176,9 +176,9 @@ export function JournalLinesRecap({
     <Tabs value={activeTab} onValueChange={(next) => { changeTab(next); if (!shown) changeOpen(true); }}>
       <div className="flex items-center border-b"><TabsList className="h-9 flex-1 justify-start rounded-none bg-transparent px-2">{tabs.map((item) => <TabsTrigger key={item.id} value={item.id} onClick={() => { if (!shown && item.id === activeTab) changeOpen(true); }} className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent">{item.label}</TabsTrigger>)}</TabsList><Button type="button" variant="ghost" size="icon" onClick={() => changeOpen(!shown)} aria-label={shown ? t.collapse : t.expand} aria-expanded={shown} className="mr-1 size-8">{shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}</Button></div>
       {shown ? <>
-       <TabsContent value="accounting" className="m-0"><DataGrid storageKey={`${storageKey}:accounting`} exportName="journal-recap-accounting" rows={accounting} columns={accountingColumns} rowKey={(row) => row.key} rowClassName={(row) => row.label ? "bg-muted text-muted-foreground" : undefined} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent>
-       <TabsContent value="jobs" className="m-0"><DataGrid storageKey={`${storageKey}:jobs`} exportName="journal-recap-jobs" rows={jobs} columns={jobColumns} rowKey={(row) => `${row.id}|${row.side}`} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent>
-       {vatSummary ? <TabsContent value="vat" className="m-0" data-slot="journal-vat-recap"><DataGrid storageKey={`${storageKey}:vat`} exportName="journal-recap-vat" rows={vatSummary} columns={vatColumns} rowKey={(row) => row.codeId} defaultSort={null} height="auto" paginated={false} showTotalRow plain /></TabsContent> : null}
+       <TabsContent value="accounting" className="m-0"><DataGrid storageKey={`${storageKey}:accounting`} exportName="journal-recap-accounting" rows={accounting} columns={accountingColumns} rowKey={(row) => row.key} rowClassName={(row) => row.label ? "bg-muted text-muted-foreground" : undefined} defaultSort={null} height="auto" autoZoom paginated={false} showTotalRow plain /></TabsContent>
+       <TabsContent value="jobs" className="m-0"><DataGrid storageKey={`${storageKey}:jobs`} exportName="journal-recap-jobs" rows={jobs} columns={jobColumns} rowKey={(row) => `${row.id}|${row.side}`} defaultSort={null} height="auto" autoZoom paginated={false} showTotalRow plain /></TabsContent>
+       {vatSummary ? <TabsContent value="vat" className="m-0" data-slot="journal-vat-recap"><DataGrid storageKey={`${storageKey}:vat`} exportName="journal-recap-vat" rows={vatSummary} columns={vatColumns} rowKey={(row) => row.codeId} defaultSort={null} height="auto" autoZoom paginated={false} showTotalRow plain /></TabsContent> : null}
       {recapTabs.map((item) => <TabsContent key={item.id} value={item.id} className="m-0 border-t p-3">{typeof item.content === "function" ? item.content(lines) : item.content}</TabsContent>)}
       </> : null}
     </Tabs>
