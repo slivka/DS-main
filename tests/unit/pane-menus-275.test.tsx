@@ -264,7 +264,7 @@ describe("drobnosti DS 2.77.0", () => {
   };
 
   it("opakovaný keydown při držení klávesy nic nedělá (Alt+Shift+T, Alt+W, Alt+M)", () => {
-    const initial = createPaneTabsState(1);
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
     const tab = createTab({ route: "/a" });
     initial.panes[0] = { ...initial.panes[0], tabs: [tab], activeTab: tab.id };
     const host = mount(initial, true);
