@@ -132,12 +132,17 @@ export function UserMenu({
 
 function WorkspaceAction({ action }: { action: NonNullable<UserMenuProps["workspaceAction"]> }) {
   const Icon = action.icon;
-  const control = <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label}><Icon className="size-4" /></Button>;
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          {action.to ? <Link to={action.to as never} onClick={() => action.onSelect?.()}>{control}</Link> : <span onClick={() => action.onSelect?.()}>{control}</span>}
+          {action.to ? (
+            <Button asChild type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label}>
+              <Link to={action.to as never} onClick={() => action.onSelect?.()}><Icon className="size-4" /></Link>
+            </Button>
+          ) : (
+            <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label} onClick={action.onSelect}><Icon className="size-4" /></Button>
+          )}
         </TooltipTrigger>
         <TooltipContent>{action.label}</TooltipContent>
       </Tooltip>

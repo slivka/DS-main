@@ -524,7 +524,7 @@ function mergePaneAway(
   paneIndex: number,
   isDirty: (tabId: string) => boolean = () => false,
 ): { state: PaneTabsState; closedTabIds: string[]; rejected: boolean } {
-  if (state.panes.length < 2) return state;
+  if (state.panes.length < 2) return { state, closedTabIds: [], rejected: false };
   const source = state.panes[paneIndex];
   const targetIndex = paneIndex === 0 ? 1 : paneIndex - 1;
   const target = state.panes[targetIndex];
