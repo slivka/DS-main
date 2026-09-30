@@ -44,9 +44,12 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `sidebar` | `--sidebar` |
 | `sidebar-foreground` | `--sidebar-foreground` |
 | `sidebar-accent` | `--sidebar-accent` |
+| `sidebar-accent-foreground` | `--sidebar-accent-foreground` |
 | `sidebar-border` | `--sidebar-border` |
 | `sidebar-muted` | `--sidebar-muted` |
 | `sidebar-indicator` | `--sidebar-indicator` |
+| `sidebar-input` | `--sidebar-input` |
+| `sidebar-hover` | `--sidebar-hover` |
 | `company` | `--company` |
 | `company-foreground` | `--company-foreground` |
 | `company-muted` | `--company-muted` |
@@ -69,6 +72,10 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `grid-steel` | `--grid-steel` |
 | `grid-frost` | `--grid-frost` |
 | `grid-chrome-border` | `--grid-chrome-border` |
+| `sidebar-badge` | `--sidebar-badge` |
+| `sidebar-badge-foreground` | `--sidebar-badge-foreground` |
+| `sidebar-active` | `--sidebar-active` |
+| `sidebar-active-foreground` | `--sidebar-active-foreground` |
 | `success-border` | `--success-border` |
 | `info-border` | `--info-border` |
 | `warning-border` | `--warning-border` |

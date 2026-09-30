@@ -211,7 +211,7 @@ import { AmountInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozovatele použijte badge tónu accent; nastavení prostoru a firmy vždy pojmenuje objekt přes context.
+Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint).
 
 **Props:**
 
@@ -242,6 +242,7 @@ Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozov
 | `navSearch` | boolean | `true` |
 | `navSearchPlaceholder` | string | `—` |
 | `navSearchEmptyText` | string | `—` |
+| `contextDisabledHint` | string | `—` |
 | `navSearchMenu` | any | `—` |
 | `items` | any | `—` |
 | `adminNav` | any | `—` |
@@ -255,15 +256,16 @@ Společný rám aplikace s navigací a kontextovými panely. Pro pohled provozov
 
 **Examples:**
 
-_Panely se stavem a kontextem_
+_Řízené části Nastavení_
 ```tsx
-<AppShell panels={[{ id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace", nav, badge: { label: "Provozovatel · všechny prostory", tone: "accent" } }, { id: "workspace", title: "Nastavení prostoru", icon: Settings, tooltip: "Nastavení prostoru", nav, context: workspace.name }]}>{children}</AppShell>
+<AppShell panels={[{ id: "settings", title: "Nastavení", icon: Settings, tooltip: "Nastavení", activeView, onViewChange: setActiveView, views: [{ id: "company", label: "Firma", title: "Nastavení firmy", context: company.name, scope: "company", nav: companyNav }, { id: "workspace", label: "Prostor", title: "Nastavení prostoru", context: workspace.name, scope: "workspace", nav: workspaceNav }] }]}>{children}</AppShell>
 ```
 
 **Avoid:**
 
-- Nezobrazujte pohled napříč prostory bez štítku provozovatele.
-- Nezobrazujte nastavení prostoru nebo firmy bez context.
+- Neřiďte aktivní část panelu lokálně uvnitř navigace; použijte activeView a onViewChange.
+- Nezobrazujte panelové menu v aplikačním tónu bez výslovného sidebarTone="app".
+- Nezakrývejte výběr firmy a období pro workspace/platform; AppShell jej sám ponechá a zakáže.
 
 ### AppShellContentProvider
 
