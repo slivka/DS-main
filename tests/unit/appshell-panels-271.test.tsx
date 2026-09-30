@@ -88,6 +88,17 @@ describe("AppShell panely 2.71.0 – chování", () => {
     if (import.meta.env?.DEV) expect(warn).toHaveBeenCalledTimes(2);
   });
 
+  it("stejné upozornění na chybějící onViewChange vypíše jen jednou", () => {
+    const warn = mock(() => undefined);
+    const original = console.warn; console.warn = warn;
+    const views = [{ id: "firma", label: "Firma", title: "A", nav: nav("a") }, { id: "prostor", label: "Prostor", title: "B", nav: nav("b") }];
+    const shell = <AppShell navGroups={[]} navSearch={false} panels={[{ id: "s", title: "S", icon: Settings, tooltip: "S", views, activeView: "firma" }]} activePanel="s" onActivePanelChange={() => undefined}><div /></AppShell>;
+    const view = render(shell);
+    view.rerender(shell);
+    console.warn = original;
+    if (import.meta.env?.DEV) expect(warn).toHaveBeenCalledTimes(1);
+  });
+
   it("scope platform na úrovni panelu zašední kontext, nápověda je dostupná klávesnicí a přepsatelná", () => {
     const view = render(<AppShell navGroups={[]} navSearch={false} contextDisabledHint="Vlastní nápověda" contextLeft={<><button type="button">Firma</button><button type="button">Období</button></>} panels={[{ id: "a", title: "Admin", icon: Settings, tooltip: "A", scope: "platform", nav: nav("x") }]} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
     const wrapper = view.getByText("Firma").closest("[aria-disabled=true]") as HTMLElement;
@@ -149,6 +160,8 @@ describe("AppShell panely 2.71.0 – chování", () => {
   it("aktivní položka označí kontrastní variantu odznaku", () => {
     const view = render(<AppShell navGroups={[{ id: "g", label: "", items: [{ to: "/", label: "Doklady", badge: 12 }] }]}><div /></AppShell>);
     const active = view.getByText("Doklady").closest("[data-active=true]");
-    expect(active?.querySelector('[data-slot="shell-nav-badge"]')).toBeTruthy();
+    const badge = active?.querySelector('[data-slot="shell-nav-badge"]');
+    expect(active?.getAttribute("data-active")).toBe("true");
+    expect(badge?.textContent).toBe("12");
   });
 });

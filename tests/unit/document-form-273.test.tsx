@@ -123,15 +123,18 @@ describe("BankAccountField 2.73", () => {
   });
 
   it("po opuštění hlásí neúplný účet, odstraňuje mezery a vrací se z režimu Jiný účet", () => {
-    let changed = "";
     const options = [{ number: "19-2000145399", bankCode: "0800" }];
-    const view = render(<BankAccountField aria-label="Bankovní účet" value="" onChange={(next) => { changed = next; }} options={options} invalidAccountText="Neplatný účet" />);
+    function AccountHarness() {
+      const [account, setAccount] = React.useState("");
+      return <BankAccountField aria-label="Bankovní účet" value={account} onChange={setAccount} options={options} invalidAccountText="Neplatný účet" />;
+    }
+    const view = render(<AccountHarness />);
     expect(view.getByRole("combobox", { name: "Bankovní účet" })).toBeTruthy();
     fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet" }));
     fireEvent.click(view.getByRole("option", { name: "Jiný účet" }));
     const input = view.getByRole("textbox", { name: "Bankovní účet" });
     fireEvent.change(input, { target: { value: "123 456 789" } });
-    expect(changed).toBe("123456789");
+    expect((input as HTMLInputElement).value).toBe("123456789");
     fireEvent.blur(input);
     expect(view.getByRole("alert").textContent).toBe("Neplatný účet");
     view.rerender(<BankAccountField aria-label="Bankovní účet" value="19-2000145399/0800" onChange={() => {}} options={options} />);
