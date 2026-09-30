@@ -11,6 +11,14 @@ const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 const { resolveJournalZoomLayout } = await import("../../src/components/ds/accounting/journal-lines-editor");
 const { calculateAutoGridZoom } = await import("../../src/components/ds/grid/grid-auto-zoom");
 const { readFileSync } = await import("node:fs");
+const { RouterProvider, createMemoryHistory, createRootRoute, createRouter } = await import("@tanstack/react-router");
+
+async function renderShell() {
+  const router = createRouter({ routeTree: createRootRoute({ component: Shell }), history: createMemoryHistory({ initialEntries: ["/"] }) });
+  const view = render(<RouterProvider router={router} />);
+  await view.findByLabelText("Pole");
+  return view;
+}
 
 const setPlatform = (platform: string) => Object.defineProperty(navigator, "platform", { value: platform, configurable: true });
 
@@ -99,8 +107,8 @@ const wheel = (target: Element, init: WheelEventInit) => {
 };
 
 describe("DS 2.70 – AppShell: skutečné události", () => {
-  it("Ctrl + „+“ v poli změní zoom aplikace a potlačí prohlížeč", () => {
-    const view = render(<Shell />);
+  it("Ctrl + „+“ v poli změní zoom aplikace a potlačí prohlížeč", async () => {
+    const view = await renderShell();
     setAppZoom(1);
     const input = view.getByLabelText("Pole");
     input.focus();
@@ -111,9 +119,9 @@ describe("DS 2.70 – AppShell: skutečné události", () => {
     expect(getAppZoom()).toBe(1);
   });
 
-  it("na Macu Cmd + „+“ v poli", () => {
+  it("na Macu Cmd + „+“ v poli", async () => {
     setPlatform("MacIntel");
-    const view = render(<Shell />);
+    const view = await renderShell();
     setAppZoom(1);
     const input = view.getByLabelText("Pole");
     expect(keydown(input, { key: "+", code: "Equal", ctrlKey: true }).defaultPrevented).toBe(false);
@@ -123,7 +131,7 @@ describe("DS 2.70 – AppShell: skutečné události", () => {
   });
 
   it("kolečko nad gridem mění jen grid, mimo grid aplikaci", async () => {
-    const view = render(<Shell />);
+    const view = await renderShell();
     setAppZoom(1);
     wheel(view.getByTestId("cell"), { deltaY: -200, ctrlKey: true });
     expect(Number(view.getByTestId("grid-zoom").textContent)).toBeGreaterThan(1);
@@ -133,8 +141,8 @@ describe("DS 2.70 – AppShell: skutečné události", () => {
     expect(getAppZoom()).toBe(1.05);
   });
 
-  it("kolečko bez Ctrl/Cmd nic nemění", () => {
-    const view = render(<Shell />);
+  it("kolečko bez Ctrl/Cmd nic nemění", async () => {
+    const view = await renderShell();
     setAppZoom(1);
     expect(wheel(view.getByTestId("outside"), { deltaY: -200 }).defaultPrevented).toBe(false);
     expect(getAppZoom()).toBe(1);
