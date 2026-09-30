@@ -5520,7 +5520,22 @@
         {
           "name": "warning",
           "type": "string"
+        },
+        {
+          "name": "warningDisplay",
+          "type": "\"below\" | \"indicator\"",
+          "default": "below"
         }
+      ],
+      "usage": "Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay=\"indicator\" jej zobrazí v tooltipu ikony.",
+      "examples": [
+        {
+          "label": "Datum s varováním v indikátoru",
+          "code": "<DateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" />"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu."
       ]
     },
     {
@@ -5543,15 +5558,21 @@
       "name": "OptionSelect",
       "file": "src/components/ds/form/option-select.tsx",
       "import_path": "",
-      "usage": "Standardní výběr ze seznamu. placeholderValueLabel mění text prázdné položky i zobrazené prázdné hodnoty.",
+      "usage": "Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.",
       "examples": [
         {
-          "label": "Vlastní prázdná hodnota",
-          "code": "<OptionSelect value={value} onChange={setValue} options={options} placeholderValueLabel=\"Neověřeno\" />"
+          "label": "Pojmenovaný výběr",
+          "code": "<OptionSelect ariaLabel=\"Bankovní účet\" value={value} onChange={setValue} options={options} />"
         }
       ],
       "antipatterns": [
         "Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField."
+      ],
+      "props": [
+        {
+          "name": "ariaLabel",
+          "type": "string"
+        }
       ]
     },
     {
@@ -7267,16 +7288,16 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr bankovního účtu z možností aplikace s volným zadáním jiného účtu. Český účet ověřuje modulo 11 a volitelně předané bankCodes; příznak default pouze popisuje data a komponenta podle něj sama hodnotu nenastaví.",
+      "usage": "Výběr nabídnutého českého účtu nebo ruční zadání. Neúplný ruční účet ověří po opuštění pole a vstup ukládá bez mezer.",
       "examples": [
         {
-          "label": "Účty dodavatele a jiné zadání",
-          "code": "<BankAccountField value={bankAccount} onChange={setBankAccount} options={supplierAccounts} bankCodes={bankCodes} />"
+          "label": "Účet dodavatele",
+          "code": "<BankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />"
         }
       ],
       "antipatterns": [
-        "Nepředvyplňujte první ani defaultní účet uvnitř komponenty; počáteční hodnotu řídí aplikace.",
-        "Nepoužívejte pole pro IBAN bez odpovídající validace."
+        "Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.",
+        "Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole."
       ]
     },
     {

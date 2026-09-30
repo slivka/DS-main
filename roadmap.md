@@ -1,5 +1,5 @@
 ## DS 2.73.0 – Edit dokladu 8 a panely
-- [ ] Zapracovat kontrolu commit 3e0e121c: VS, měna, úzké rozložení, datumy, bankovní účet, changelog a regresní testy
+- [x] Zapracovat kontrolu commit 3e0e121c: VS, měna, úzké rozložení, datumy, bankovní účet, changelog a regresní testy
 - [x] Upravit částky, měnu, datumy a pořadí sekcí dokladu; živá varování řadit podle polí
 - [x] Přidat BankAccountField bez samovolného předvyplnění a automatické VS
 - [x] Rozšířit české/slovenské texty a ukázky
