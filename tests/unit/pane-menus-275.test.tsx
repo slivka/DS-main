@@ -250,3 +250,40 @@ describe("podmenu DS 2.75.0", () => {
     toast.info = originalInfo;
   });
 });
+
+describe("drobnosti DS 2.77.0", () => {
+  it("opakovaný keydown při držení klávesy nic nedělá (Alt+Shift+T, Alt+W, Alt+M)", () => {
+    const initial = createPaneTabsState(1);
+    const tab = createTab({ route: "/a" });
+    initial.panes[0] = { ...initial.panes[0], tabs: [tab], activeTab: tab.id };
+    const host = mount(initial, true);
+    act(() => host.api.closeTab(tab.id));
+    expect(host.api.closedTabCount).toBe(1);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, shiftKey: true, code: "KeyT", repeat: true }));
+    });
+    expect(host.api.state.panes[0].tabs).toHaveLength(0);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, shiftKey: true, code: "KeyT" }));
+    });
+    expect(host.api.state.panes[0].tabs).toHaveLength(1);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, code: "KeyW", repeat: true }));
+      window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, code: "KeyM", repeat: true }));
+    });
+    expect(host.api.state.panes[0].tabs).toHaveLength(1);
+    expect(host.api.maximized).toBeNull();
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, code: "KeyM" }));
+    });
+    expect(host.api.maximized).toBe(0);
+  });
+
+  it("výchozí texty nabídek odpovídají DS_TEXTS_CS (jeden zdroj)", async () => {
+    const { DEFAULT_PANE_CHROME_TEXTS } = await import("../../src/components/ds/panes/pane-context");
+    const { DEFAULT_LAYOUT_MENU_TEXTS } = await import("../../src/components/ds/panes/layout-menu");
+    const { DS_TEXTS_CS } = await import("../../src/ds-texts");
+    expect(DEFAULT_PANE_CHROME_TEXTS).toEqual(DS_TEXTS_CS.paneChrome);
+    expect(DEFAULT_LAYOUT_MENU_TEXTS).toEqual(DS_TEXTS_CS.layoutMenu);
+  });
+});
