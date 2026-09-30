@@ -10,7 +10,6 @@ mock.module("@tanstack/react-router", () => ({
   Link: ({ to, children, ...rest }: { to?: string; children?: React.ReactNode }) => <a href={to} {...rest}>{children}</a>,
 }));
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
-const { AppZoomProvider } = await import("../../src/lib/app-zoom");
 const { LayoutMenu } = await import("../../src/components/ds/panes/layout-menu");
 const { UserMenu } = await import("../../src/components/ds/layout/user-menu");
 const { buildTabMenuActions, PaneTabsProvider, usePaneTabs } = await import("../../src/components/ds/panes/pane-context");
@@ -26,7 +25,7 @@ afterAll(async () => {
 describe("podmenu DS 2.75.0", () => {
   it("LayoutMenu má nové pořadí, správu vpravo a žádné ikony panelů ani hvězdičku", () => {
     const view = render(<LayoutMenu items={[{ id: "a", name: "Velmi dlouhé uložené rozložení účetního pracoviště", panes: 2 }]} onSave={() => undefined} onApply={() => undefined} onUpdate={() => undefined} onDelete={() => undefined} />);
-    fireEvent.click(view.getByRole("button", { name: "Rozložení" }));
+    fireEvent.pointerDown(view.getByRole("button", { name: "Rozložení" }), { button: 0, ctrlKey: false });
     const menu = view.getByRole("menu");
     const save = view.getByRole("menuitem", { name: "Uložit aktuální jako nové…" });
     const manage = view.getByRole("menuitem", { name: "Spravovat rozložení" });
@@ -42,7 +41,7 @@ describe("podmenu DS 2.75.0", () => {
 
   it("LayoutMenu bez uložených rozložení zakáže správu i přepsání", () => {
     const view = render(<LayoutMenu items={[]} onSave={() => undefined} onApply={() => undefined} onUpdate={() => undefined} onDelete={() => undefined} />);
-    fireEvent.click(view.getByRole("button", { name: "Rozložení" }));
+    fireEvent.pointerDown(view.getByRole("button", { name: "Rozložení" }), { button: 0, ctrlKey: false });
     expect(view.getByRole("menuitem", { name: "Spravovat rozložení" }).getAttribute("data-disabled")).not.toBeNull();
     expect(view.getByRole("menuitem", { name: /Přepsat uložené aktuálním/ }).getAttribute("data-disabled")).not.toBeNull();
     expect(view.getByText("Zatím žádné uložené rozložení")).toBeTruthy();
@@ -70,8 +69,8 @@ describe("podmenu DS 2.75.0", () => {
   });
 
   it("UserMenu má položky hned pod záhlavím, jedinou značku prostoru a akci prostoru", () => {
-    const view = render(<AppZoomProvider><UserMenu name="petr@example.cz" email="petr@example.cz" items={[{ label: "Můj profil" }]} workspaces={[{ id: "w", name: "Hlavní prostor" }]} activeWorkspaceId="w" workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings }} onSignOut={() => undefined} /></AppZoomProvider>);
-    fireEvent.click(view.getByRole("button", { name: "Uživatelská nabídka" }));
+    const view = render(<UserMenu name="petr@example.cz" email="petr@example.cz" items={[{ label: "Můj profil" }]} workspaces={[{ id: "w", name: "Hlavní prostor" }]} activeWorkspaceId="w" workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings }} onSignOut={() => undefined} />);
+    fireEvent.pointerDown(view.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
     const email = view.getByText("petr@example.cz");
     const profile = view.getByRole("menuitem", { name: "Můj profil" });
     const zoom = view.getByText("Velikost zobrazení");
