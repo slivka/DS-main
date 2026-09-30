@@ -673,4 +673,4 @@
 - [x] Ověřit unit testy, typy, build a produkční sestavení náhledu v běžné i úzké šířce.
 
 ## DS 2.73.0 – druhá kontrola (fee28914)
-- [ ] Opravit režim Jiný účet, datum s varováním, VS patch/reset, ořez částky, README 2.66, testy B2/B4
+- [x] Opravit režim Jiný účet, datum s varováním, VS patch/reset, ořez částky, README 2.66, testy B2/B4
