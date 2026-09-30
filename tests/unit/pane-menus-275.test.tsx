@@ -206,4 +206,16 @@ describe("podmenu DS 2.75.0", () => {
     fireEvent.pointerDown(plain.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
     expect(plain.queryByText("Pracovní prostor")).toBeNull();
   });
+
+  it("UserMenu zkrátí dlouhý název prostoru i vlastní položky (truncate + title)", () => {
+    const longName = "Velmi dlouhý název pracovního prostoru, který se nemá zalomit";
+    const longLabel = "Velmi dlouhý popisek vlastní položky nabídky, který se nemá zalomit";
+    const view = render(<UserMenu email="a@example.cz" items={[{ label: longLabel }]} workspaces={[{ id: "w", name: longName }]} activeWorkspaceId="w" onSignOut={() => undefined} />);
+    fireEvent.pointerDown(view.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
+    for (const text of [longName, longLabel]) {
+      const span = view.getByText(text);
+      expect(span.className).toContain("truncate");
+      expect(span.getAttribute("title")).toBe(text);
+    }
+  });
 });
