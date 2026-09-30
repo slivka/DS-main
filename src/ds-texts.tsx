@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { Locale } from "date-fns";
 import { cs, sk } from "date-fns/locale";
 import type { PaneChromeTexts } from "./components/ds/panes/pane-context";
+import type { LayoutMenuTexts } from "./components/ds/panes/layout-menu";
 
 export type DsLocale = "cs" | "sk";
 export type TextTemplate = (...args: any[]) => string;

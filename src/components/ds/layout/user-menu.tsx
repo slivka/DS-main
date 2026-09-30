@@ -77,7 +77,7 @@ export function UserMenu({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-72 whitespace-nowrap">
+      <DropdownMenuContent align="end" className="min-w-72 max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))] whitespace-nowrap">
         <DropdownMenuLabel>
           {name && name !== email ? <span className="block truncate font-semibold">{name}</span> : null}
           <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span>
