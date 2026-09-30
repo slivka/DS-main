@@ -38,6 +38,7 @@ import {
   resolveOpenMode,
   resolveTargetPaneIndex,
   setLayoutInState,
+  setLayoutWithLimitInState,
   setTabTitleInState,
   stepTabHistory,
   MAX_TABS_PER_PANE,
@@ -367,14 +368,12 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     const current = stateRef.current;
     const pane = current.panes.find((item) => item.id === paneId);
     if (!pane) return;
-    setMaximized(null);
-    if (current.panes.length > 1) {
-      commit(closePaneInState(current, paneId));
-      return;
-    }
     const ids = pane.tabs.map((tab) => tab.id);
     guardDiscard(ids, () => {
-      commit(closePaneInState(stateRef.current, paneId));
+      const before = stateRef.current;
+      rememberClosed(ids, before);
+      setMaximized(null);
+      commit(closePaneInState(before, paneId));
       ids.forEach(clearTabState);
     });
   };
@@ -537,7 +536,20 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     setLayout: (layout) => {
       lastMax.current = null;
       setMaximized(null);
-      commit(setLayoutInState(stateRef.current, layout));
+      const before = stateRef.current;
+      const result = setLayoutWithLimitInState(before, layout, isTabDirty);
+      if (result.rejected) {
+        toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
+        return;
+      }
+      if (result.closedTabIds.length) {
+        rememberClosed(result.closedTabIds, before);
+        result.closedTabIds.forEach((id) => {
+          toast.info(t.limitEvicted.replace("{title}", titleOf(id)).replace("{max}", String(MAX_TABS_PER_PANE)));
+          clearTabState(id);
+        });
+      }
+      commit(result.state);
     },
     closePane,
     back: (tabId) => step(tabId, -1),
