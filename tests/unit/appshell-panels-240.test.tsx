@@ -32,7 +32,7 @@ describe("AppShell panely 2.40.0", () => {
     expect(dialogSource).toContain("tabs?: RecordDialogTab[]");
     expect(dialogSource).toContain("tabs.map((tab) => ( <TabsContent");
     expect(dialogSource).toContain("{readOnly ? closeLabel : cancelLabel}");
-    expect(dialogSource).toContain('{!readOnly ? <Button type="submit"');
+    expect(dialogSource).toContain('{!readOnly ? ( <Button type="submit"');
   });
 
   it("editační dialog bez nových props zachová Zrušit a Uložit", () => {
