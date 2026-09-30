@@ -264,3 +264,15 @@ describe("Doplňky po kontrole 2.79.0", () => {
     expect(done).toBe(1);
   });
 });
+
+describe("ContextSwitcher – diakritika", () => {
+  it("„treti“ najde „Třetí“", async () => {
+    const many = [...Array.from({ length: 5 }, (_, i) => ({ id: String(i), label: `Prostor ${i}` })), { id: "t", label: "Třetí" }];
+    const view = render(<ContextSwitcher label="P" items={many} value="0" onValueChange={() => undefined} />);
+    fireEvent.click(view.getByRole("button", { name: /P/ }));
+    const input = await waitFor(() => document.querySelector("[cmdk-input]") as HTMLInputElement);
+    fireEvent.change(input, { target: { value: "treti" } });
+    await waitFor(() => expect(document.querySelectorAll("[cmdk-item]:not([hidden])").length).toBe(1));
+    expect(view.getByText("Třetí")).toBeTruthy();
+  });
+});

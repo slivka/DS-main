@@ -929,6 +929,7 @@ Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, říz
 | `emptyText` | string | `Žádná firma nebyla nalezena.` |
 | `createLabel` | string | `Nová firma` |
 | `onCreate` | function | `—` |
+| `actions` | CompanySwitcherAction[] | `—` |
 | `className` | string | `min-w-0 flex-1` |
 | `open` | boolean | `—` |
 | `onOpenChange` | function | `—` |
