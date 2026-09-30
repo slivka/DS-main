@@ -13,6 +13,8 @@ import {
 import type { JournalLine, VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
 import { computeJournalTotals } from "../../src/components/ds/accounting/journal-vat";
 
+const squashSrc = (s: string) => s.replace(/\s+/g, " ");
+
 const CODES: VatCodeOption[] = [
   {
     id: "v21",
@@ -197,14 +199,16 @@ describe("DocumentForm 2.56.0", () => {
     ).toContain("stejný jako kurz dokladu");
   });
   it("odznak Řádky počítá jen řádky v gridu", () => {
-    const src = readFileSync("src/components/ds/accounting/document-form.tsx", "utf8");
+    const src = squashSrc(readFileSync("src/components/ds/accounting/document-form.tsx", "utf8"));
     expect(src).toContain("badge: vatTotals.visibleLineCount");
   });
 });
 
 describe("Buňka Kód DPH – Tab (2.56.0)", () => {
   it("přepínač nedaňový není v pořadí Tab, takže Tab z Částky vede rovnou na Kód DPH", () => {
-    const src = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    const src = squashSrc(
+      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
+    );
     expect(src).toContain("tabIndex={-1} aria-pressed={!!line.nonTax}");
   });
 });
@@ -224,7 +228,9 @@ describe("DocumentSettingsDialog – Zadávat částky (2.56.0)", () => {
     vatCalcMode: "gross",
   };
   it("volba se zobrazí jen při showVatCalcMode", () => {
-    const src = readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8");
+    const src = squashSrc(
+      readFileSync("src/components/ds/accounting/document-settings-dialog.tsx", "utf8"),
+    );
     expect(src).toContain("showVatCalcMode ?");
     expect(settings.vatCalcMode).toBe("gross");
     // Dialog je v portálu – statické vykreslení zavřeného dialogu nesmí spadnout.

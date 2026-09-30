@@ -1,29 +1,34 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const companySource = readFileSync(
-  new URL("../../src/components/ds/layout/company-switcher.tsx", import.meta.url),
-  "utf8",
+const squashSrc = (s: string) => s.replace(/\s+/g, " ");
+
+const companySource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/ds/layout/company-switcher.tsx", import.meta.url),
+    "utf8",
+  ),
 );
-const periodSource = readFileSync(
-  new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url),
-  "utf8",
+const periodSource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url),
+    "utf8",
+  ),
 );
-const contextSource = readFileSync(
-  new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url),
-  "utf8",
+const contextSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url), "utf8"),
 );
-const navigationSource = readFileSync(
-  new URL("../../src/routes/components.navigation.tsx", import.meta.url),
-  "utf8",
+const navigationSource = squashSrc(
+  readFileSync(new URL("../../src/routes/components.navigation.tsx", import.meta.url), "utf8"),
 );
-const showcaseSource = readFileSync(
-  new URL("../../src/components/showcase/ShowcaseLayout.tsx", import.meta.url),
-  "utf8",
+const showcaseSource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/showcase/ShowcaseLayout.tsx", import.meta.url),
+    "utf8",
+  ),
 );
-const appShellSource = readFileSync(
-  new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url),
-  "utf8",
+const appShellSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8"),
 );
 
 describe("CompanySwitcher 2.22.0", () => {

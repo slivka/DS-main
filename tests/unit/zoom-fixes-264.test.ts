@@ -17,6 +17,8 @@ import {
 import { resolveJournalZoomLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 import { resolveMenuMaximum, resolveMenuWidth } from "../../src/components/ds/layout/AppShell";
 
+const squashSrc = (s: string) => s.replace(/\s+/g, " ");
+
 const g = globalThis as any;
 let saved: { window: unknown; document: unknown };
 let store: Map<string, string>;
@@ -60,7 +62,7 @@ describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
   });
 
   it("useAppZoom zoom neaplikuje, jen rám při startu (useAppZoomShortcuts)", () => {
-    const zoom = readFileSync("src/lib/app-zoom.ts", "utf8");
+    const zoom = squashSrc(readFileSync("src/lib/app-zoom.ts", "utf8"));
     const hook = zoom.slice(
       zoom.indexOf("export function useAppZoom()"),
       zoom.indexOf("export function effectiveViewportWidth"),
@@ -68,7 +70,7 @@ describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
     expect(hook).not.toContain("applyAppZoom(");
     const shortcuts = zoom.slice(zoom.indexOf("export function useAppZoomShortcuts"));
     expect(shortcuts).toContain("useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);");
-    expect(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8")).toContain(
+    expect(squashSrc(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8"))).toContain(
       "useAppZoomShortcuts();",
     );
   });
@@ -119,7 +121,7 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
   });
 
   it("během zámku se přepočet odloží a po uvolnění proběhne jednou", () => {
-    const source = readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8");
+    const source = squashSrc(readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8"));
     expect(source).toContain("if (isResizeLocked()) { pending.current = true; return; }");
     expect(source).toContain("const finish = () => { if (pending.current) measure(); };");
   });
@@ -163,7 +165,9 @@ describe("DS 2.64 – editor řádků: zoom → kaskáda → rolování", () => 
     expect(auto.layout.hiddenColumnIds).toEqual([]);
     expect(manual.zoom).toBe(1.4);
     expect(manual.layout.hiddenColumnIds.length).toBeGreaterThan(0);
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
+    const source = squashSrc(
+      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
+    );
     expect(source).toContain("result[column.id] = base * zoom;");
     expect(source).toContain(
       "<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} auto={isAuto} />",
@@ -179,13 +183,13 @@ describe("DS 2.64 – DataGrid / TreeGrid ve formuláři", () => {
         actions: true,
       }),
     ).toBe(AUTO_GRID_COLUMN_MIN + 120 + AUTO_GRID_SELECT_WIDTH + AUTO_GRID_ACTIONS_WIDTH);
-    expect(readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8")).not.toContain(
-      "max-content",
-    );
+    expect(
+      squashSrc(readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8")),
+    ).not.toContain("max-content");
   });
 
   it("změna výšky ruční zoom nepřepíše – reaguje se jen na změnu šířky", () => {
-    const source = readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8");
+    const source = squashSrc(readFileSync("src/components/ds/grid/grid-auto-zoom.ts", "utf8"));
     expect(source).toContain("Math.abs(width - lastWidth.current) < 0.5) return;");
     expect(source).toContain("setAutoZoom(next, initialized.current && !fromAppZoom);");
   });
@@ -202,7 +206,7 @@ describe("DS 2.64 – šířka menu", () => {
     store.set("app:menu-width", "24");
     expect(resolveMenuWidth(Number(store.get("app:menu-width")), 18)).toBe(18);
     expect(store.get("app:menu-width")).toBe("24");
-    const shell = readFileSync("src/components/ds/layout/AppShell.tsx", "utf8");
+    const shell = squashSrc(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8"));
     expect(shell.match(/localStorage\.setItem\("app:menu-width"/g)?.length).toBe(1);
   });
 });

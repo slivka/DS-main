@@ -5,13 +5,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { StatusBadge } from "../../src/components/ds/data-display/status-badge";
 import { badgeTotal } from "../../src/components/ds/layout/AppShell";
 
-const dialogSource = readFileSync(
-  new URL("../../src/components/ds/layout/RecordDialog.tsx", import.meta.url),
-  "utf8",
+const squashSrc = (s: string) => s.replace(/\s+/g, " ");
+
+const dialogSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/RecordDialog.tsx", import.meta.url), "utf8"),
 );
-const shellSource = readFileSync(
-  new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url),
-  "utf8",
+const shellSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8"),
 );
 
 describe("AppShell panely 2.40.0", () => {
