@@ -33,7 +33,7 @@ describe("AppShell panely 2.40.0", () => {
   it("část panelu řídí nadpis, kontext, menu a má přepínač před nadpisem", () => {
     expect(shellSource).toContain("currentView?.title ?? currentPanel?.title");
     expect(shellSource).toContain("currentView?.context ?? currentPanel?.context");
-    expect(shellSource).toContain("currentView?.nav ?? currentPanel?.nav");
+    expect(shellSource).toContain("currentView?.nav ?? currentPanel.nav ?? []");
     expect(shellSource.indexOf("{panelViewSwitch}")).toBeLessThan(shellSource.lastIndexOf("{panelHeading}"));
   });
 

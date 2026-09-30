@@ -130,7 +130,7 @@ describe("AppShell panely 2.71.0 – chování", () => {
     const order = (el: Element | null) => (el?.getAttribute("class") ?? "").match(/(?:^|\s)order-(\d)/)?.[1];
     expect(order(header.querySelector("svg"))).toBe("1");
     expect(order(header.querySelector('[data-slot="app-shell-panel-heading"]'))).toBe("2");
-    expect(order(header.querySelector("button:last-child"))).toBe("3");
+    expect(order(header.lastElementChild)).toBe("3");
     const views = header.querySelector('[data-slot="app-shell-panel-views"]');
     expect(order(views)).toBe("4");
     expect(views?.className).toContain("basis-full");
