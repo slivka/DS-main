@@ -16,7 +16,8 @@ export const AUTO_GRID_ACTIONS_WIDTH = 72;
 export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100: number, appZoom = 1) {
   if (!(availableWidth > 0) || !(requiredWidthAt100 > 0)) return null;
   const scale = appZoom > 0 ? appZoom : 1;
-  const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, availableWidth / (requiredWidthAt100 * scale)));
+  // Jeden pixel rezervy zabraňuje přetečení při subpixelovém zaokrouhlení tabulky.
+  const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, (availableWidth - 1) / (requiredWidthAt100 * scale)));
   return Number(Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2));
 }
 
