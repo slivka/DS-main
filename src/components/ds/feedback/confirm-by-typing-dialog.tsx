@@ -7,6 +7,8 @@ import { Input } from "../../ui/input";
 import { CheckboxField } from "../form/checkbox-field";
 import { NoticeBar } from "./notice-bar";
 import { useDsTexts } from "../../../ds-texts";
+import { TruncatedText } from "../data-display/truncated-text";
+import { matchesConfirmText } from "./confirm-text";
 
 export interface ConfirmByTypingDialogProps {
   open: boolean;
@@ -28,10 +30,6 @@ export interface ConfirmByTypingDialogProps {
   onConfirm: () => Promise<void>;
 }
 
-/** Shoda opsaného textu: po oříznutí mezer, rozlišuje velikost písmen. */
-export function matchesConfirmText(value: string, confirmText: string) {
-  return value.trim().length > 0 && value.trim() === confirmText.trim();
-}
 
 /** Potvrzení nevratné akce opsáním názvu. */
 export function ConfirmByTypingDialog({
@@ -46,23 +44,37 @@ export function ConfirmByTypingDialog({
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const runningRef = useRef(false);
+  const runIdRef = useRef(0);
+
   useEffect(() => {
-    if (!open) { setValue(""); setAcknowledged(false); setError(null); setRunning(false); }
+    // Nový běh při každé změně otevření: výsledek dřívějšího onConfirm se zahodí.
+    runIdRef.current += 1;
+    runningRef.current = false;
+    // Stav nulujeme při otevření – při zavření by text zmizel během animace.
+    if (open) { setValue(""); setAcknowledged(false); setError(null); setRunning(false); }
   }, [open]);
 
   const canConfirm = matchesConfirmText(value, confirmText) && (!acknowledgement || acknowledged) && !running;
 
   const confirm = async () => {
-    if (!canConfirm) return;
+    if (!canConfirm || runningRef.current) return;
+    runningRef.current = true;
+    const runId = runIdRef.current;
     setRunning(true);
     setError(null);
     try {
       await onConfirm();
+      if (runId !== runIdRef.current) return;
+      runningRef.current = false;
       setRunning(false);
       onOpenChange(false);
     } catch (reason) {
+      if (runId !== runIdRef.current) return;
+      runningRef.current = false;
       setRunning(false);
       setError(reason instanceof Error ? reason.message : String(reason));
+      requestAnimationFrame(() => inputRef.current?.focus());
     }
   };
 
@@ -77,7 +89,7 @@ export function ConfirmByTypingDialog({
         onInteractOutside={(event) => { if (running) event.preventDefault(); }}
       >
         <DialogHeader>
-          <DialogTitle className="truncate">{title}</DialogTitle>
+          <DialogTitle className="min-w-0 whitespace-nowrap"><TruncatedText text={title} className="block" /></DialogTitle>
           <DialogDescription asChild><div className="text-sm text-muted-foreground">{description}</div></DialogDescription>
         </DialogHeader>
         {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
@@ -94,12 +106,12 @@ export function ConfirmByTypingDialog({
             id={inputId}
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            disabled={running}
+            readOnly={running}
+            aria-readonly={running || undefined}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
-            aria-label={t.inputLabel}
           />
           {acknowledgement ? <CheckboxField checked={acknowledged} onCheckedChange={setAcknowledged} label={acknowledgement} disabled={running} /> : null}
           <DialogFooter className="mt-2">
