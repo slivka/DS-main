@@ -1,14 +1,7 @@
 // AUTO-INSTALLED by mockupPreviewPlugin: build-servable canvas mockup preview.
 // Renders the mockup ALONE, client-only — keep __root.tsx providers-only.
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  createElement,
-  Suspense,
-  useEffect,
-  useState,
-  type ComponentType,
-  type ReactElement,
-} from "react";
+import { createElement, Suspense, useEffect, useState, type ComponentType, type ReactElement } from "react";
 
 import { mockups } from "@/.generated/mockup-components";
 
@@ -41,18 +34,12 @@ function MockupPreview(): ReactElement | null {
         if (!active) return;
         const Component = pickComponent(mod);
         setContent(
-          Component
-            ? createElement(Component)
-            : errorContent('No component exported for "' + (_splat ?? "") + '".'),
+          Component ? createElement(Component) : errorContent('No component exported for "' + (_splat ?? "") + '".'),
         );
       })
       .catch((error) => {
         if (active) {
-          setContent(
-            errorContent(
-              "Failed to load: " + (error instanceof Error ? error.message : String(error)),
-            ),
-          );
+          setContent(errorContent("Failed to load: " + (error instanceof Error ? error.message : String(error))));
         }
       });
     return () => {
@@ -63,25 +50,15 @@ function MockupPreview(): ReactElement | null {
   if (blocked) return null;
   return (
     <div
-      ref={(node) =>
-        stampSource(node, "src/components/mockups/" + (_splat ?? "") + ".tsx", 0, mockupName)
-      }
-      style={{
-        position: "fixed",
-        inset: 0,
-        overflow: "hidden",
-        background: "#fff",
-        zIndex: 2147483647,
-      }}
+      ref={(node) => stampSource(node, "src/components/mockups/" + (_splat ?? "") + ".tsx", 0, mockupName)}
+      style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#fff", zIndex: 2147483647 }}
     >
       <Suspense fallback={null}>{content}</Suspense>
     </div>
   );
 }
 
-const RENDERABLE_TYPES = new Set(
-  ["react.forward_ref", "react.memo", "react.lazy"].map((t) => Symbol.for(t)),
-);
+const RENDERABLE_TYPES = new Set(["react.forward_ref", "react.memo", "react.lazy"].map((t) => Symbol.for(t)));
 
 const JSX_SOURCE_KEY = Symbol.for("__jsxSource__");
 
@@ -89,12 +66,7 @@ const JSX_SOURCE_KEY = Symbol.for("__jsxSource__");
 // lovable-tagger never stamps it and a click on it resolves to nothing. Mirror
 // the tagger's contract: the symbol the selector reads, plus the lookup map its
 // highlight echo uses.
-function stampSource(
-  node: HTMLElement | null,
-  fileName: string,
-  columnNumber: number,
-  displayName: string,
-): void {
+function stampSource(node: HTMLElement | null, fileName: string, columnNumber: number, displayName: string): void {
   if (!node || !fileName) return;
   (node as unknown as Record<symbol, unknown>)[JSX_SOURCE_KEY] = {
     fileName: fileName,
@@ -136,14 +108,7 @@ function pickComponent(mod: Record<string, unknown>): ComponentType | undefined 
 function errorContent(message: string): ReactElement {
   return createElement(
     "pre",
-    {
-      style: {
-        color: "red",
-        padding: "2rem",
-        whiteSpace: "pre-wrap",
-        fontFamily: "ui-monospace, monospace",
-      },
-    },
+    { style: { color: "red", padding: "2rem", whiteSpace: "pre-wrap", fontFamily: "ui-monospace, monospace" } },
     message,
   );
 }
