@@ -5,6 +5,7 @@ const companySource = readFileSync(new URL("../../src/components/ds/layout/compa
 const periodSource = readFileSync(new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url), "utf8");
 const contextSource = readFileSync(new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url), "utf8");
 const navigationSource = readFileSync(new URL("../../src/routes/components.navigation.tsx", import.meta.url), "utf8");
+const showcaseSource = readFileSync(new URL("../../src/components/showcase/ShowcaseLayout.tsx", import.meta.url), "utf8");
 const appShellSource = readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8");
 
 describe("CompanySwitcher 2.22.0", () => {
@@ -36,7 +37,7 @@ describe("AppShell panel context 2.40.0", () => {
 
   it("ukázka obsahuje nové panely a všech pět stavů uživatele", () => {
     for (const label of ["Číselníky", "Administrace", "Nastavení prostoru", "Nastavení firmy", "Provozovatel · všechny prostory", "Zablokován", "Bez členství", "Nepotvrzený e-mail", "Archivovaný"]) {
-      expect(navigationSource).toContain(label);
+      expect(`${navigationSource}\n${showcaseSource}`).toContain(label);
     }
   });
 });
