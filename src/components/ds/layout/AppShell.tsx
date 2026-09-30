@@ -287,7 +287,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
           <div className="flex shrink-0 flex-col gap-1 p-2"><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className="w-full text-sidebar-foreground" aria-label={searchPlaceholder} onClick={onExpandSearch}><Search className="size-4" /></Button></TooltipTrigger><TooltipContent side="right">{searchPlaceholder}</TooltipContent></Tooltip>{searchMenu}</div>
         ) : (
           <div className="shrink-0 px-2 pb-1 pt-2">
-            <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/60 px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label={clearSearchLabel} onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
+            <div className="flex items-center gap-1"><div className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-input px-2 text-sidebar-foreground focus-within:ring-1 focus-within:ring-sidebar-indicator"><Search className="size-4 shrink-0" /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onSearchKeyDown} placeholder={searchPlaceholder} aria-label={searchPlaceholder} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-sidebar-muted" />{query ? <Button type="button" variant="ghost" size="icon" className="size-7 text-sidebar-foreground" aria-label={clearSearchLabel} onClick={() => { setQuery(""); inputRef.current?.focus(); }}><X className="size-3.5" /></Button> : null}</div>{searchMenu}</div>
           </div>
         ) : null}
         <div className="relative min-h-0 flex-1">
@@ -650,7 +650,7 @@ export function AppShell({
     </div>
   ) : null;
   const panelViewSwitch = currentPanel && currentPanel.views && currentPanel.views.length >= 2 ? (
-    <div data-slot="app-shell-panel-views" role="radiogroup" aria-label={dsTexts.appShell.panelView} className="order-4 grid w-max shrink-0 grid-flow-col auto-cols-fr overflow-hidden rounded-md border border-input bg-background md:order-2">
+    <div data-slot="app-shell-panel-views" role="radiogroup" aria-label={dsTexts.appShell.panelView} className="order-4 grid basis-full grid-flow-col auto-cols-fr overflow-hidden rounded-md border border-input bg-background md:order-2 md:basis-auto">
       {currentPanel.views.map((view, index) => (
         <Button key={view.id} type="button" variant="ghost" role="radio" aria-checked={view.id === currentView?.id} tabIndex={view.id === currentView?.id ? 0 : -1} className={cn("h-8 min-h-0 w-full whitespace-nowrap rounded-none border-0 px-3 font-normal shadow-none", index > 0 && "border-l border-l-input", view.id === currentView?.id && "bg-primary/10 font-semibold text-primary")} onClick={() => currentPanel.onViewChange?.(view.id)}>
           {view.label}

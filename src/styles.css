@@ -62,6 +62,7 @@
   --color-sidebar-muted: var(--sidebar-muted);
   --color-sidebar-indicator: var(--sidebar-indicator);
   --color-sidebar-input: var(--sidebar-input);
+  --color-sidebar-hover: var(--sidebar-hover);
   --color-company: var(--company);
   --color-company-foreground: var(--company-foreground);
   --color-company-muted: var(--company-muted);
@@ -138,6 +139,7 @@
   --sidebar-muted: oklch(0.707 0.0382 249.7);
   --sidebar-indicator: oklch(0.750 0.0922 248.7);
   --sidebar-input: oklch(0.32 0.06 245);
+  --sidebar-hover: oklch(0.34 0.06 245);
   /* Globální barvy typů kontaktů */
   --company: oklch(0.5 0.1 250);
   --company-foreground: oklch(0.99 0.008 250);
@@ -220,6 +222,7 @@
   --sidebar-muted: oklch(0.7 0.03 250);
   --sidebar-indicator: oklch(0.75 0.0922 248.7);
   --sidebar-input: oklch(0.2 0.018 250);
+  --sidebar-hover: oklch(0.24 0.025 250);
   --company: oklch(0.72 0.12 250);
   --company-foreground: oklch(0.15 0.02 250);
   --company-muted: oklch(0.32 0.04 250);
@@ -1337,6 +1340,7 @@
   --sidebar-indicator: oklch(0.32 0.08 250);
   --sidebar-border: oklch(0.86 0.005 250);
   --sidebar-input: oklch(1 0 0);
+  --sidebar-hover: oklch(0.90 0.005 250);
 }
 .dark [data-sidebar-tone="panel"] {
   --sidebar: oklch(0.25 0.004 250);
@@ -1347,6 +1351,7 @@
   --sidebar-indicator: oklch(0.68 0.08 250);
   --sidebar-border: oklch(0.32 0.004 250);
   --sidebar-input: oklch(0.29 0.004 250);
+  --sidebar-hover: oklch(0.30 0.005 250);
 }
 
 /* Minimální výška platí pro grid, ne pro stránku; když se nevejde, roluje panel. */
@@ -2064,11 +2069,11 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 .shell-sidebar .shell-nav-group { color: var(--sidebar-muted); }
 .shell-sidebar .shell-nav-group:hover { color: var(--sidebar-foreground); }
 .shell-sidebar .shell-nav-item { color: color-mix(in oklab, var(--sidebar-foreground) 88%, transparent); }
-.shell-sidebar .shell-nav-item:hover { background: color-mix(in oklab, var(--sidebar-accent) 60%, transparent); color: var(--sidebar-foreground); }
+.shell-sidebar .shell-nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
 .shell-sidebar .shell-nav-item[data-active="true"] { background: var(--sidebar-accent); color: var(--sidebar-accent-foreground); font-weight: 600; }
 .shell-sidebar .shell-nav-indicator { background: var(--sidebar-indicator); width: 3px; }
 .shell-sidebar .shell-nav-item[aria-disabled="true"] { color: var(--sidebar-muted); }
-.shell-sidebar button:not(.shell-nav-group):hover { background: color-mix(in oklab, var(--sidebar-accent) 60%, transparent); color: var(--sidebar-foreground); }
+.shell-sidebar button:not(.shell-nav-group):hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
 .shell-sidebar .border-t { border-color: color-mix(in oklab, var(--sidebar-foreground) 14%, transparent); }
 /* IBM Plex Mono má vyšší písmena – dorovnání kódů. */
 .font-mono { font-size: 0.95em; }
