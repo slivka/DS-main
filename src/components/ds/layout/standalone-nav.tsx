@@ -58,7 +58,11 @@ export function StandaloneNav({
           value={active?.to ?? ""}
           onValueChange={(to) => {
             const item = items.find((candidate) => candidate.to === to);
-            if (item) void navigate({ to: item.to as LinkProps["to"], search: item.search as LinkProps["search"] });
+            if (item)
+              void navigate({
+                to: item.to as LinkProps["to"],
+                search: item.search as LinkProps["search"],
+              });
           }}
         >
           <SelectTrigger

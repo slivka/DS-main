@@ -24,8 +24,14 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "error",
       "no-restricted-syntax": [
         "error",
-        { selector: "TSAsExpression > TSUnknownKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
-        { selector: "TSAsExpression > TSNeverKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
+        {
+          selector: "TSAsExpression > TSUnknownKeyword",
+          message: "Použij správný typ; přetypování přes unknown/never je zakázané",
+        },
+        {
+          selector: "TSAsExpression > TSNeverKeyword",
+          message: "Použij správný typ; přetypování přes unknown/never je zakázané",
+        },
       ],
       "max-lines": ["warn", { max: 500, skipBlankLines: true, skipComments: true }],
     },
