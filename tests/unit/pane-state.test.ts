@@ -82,22 +82,48 @@ describe("záložky v panelech", () => {
     for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/a-${index}`, target: "newTab" }, () => false, index + 1).state;
     state = { ...state, active: state.panes[1].id };
     for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/b-${index}`, target: "newTab" }, () => false, index + 20).state;
-    const result = setLayoutWithLimitInState(state, 1);
-    expect(result.rejected).toBe(false);
+    const dirtyId = state.panes[0].tabs[0].id;
+    const actives = [state.panes[0].activeTab, state.panes[1].activeTab];
+    const result = setLayoutWithLimitInState(state, 1, (id) => id === dirtyId);
     expect(result.state.panes[0].tabs).toHaveLength(MAX_TABS_PER_PANE);
     expect(result.closedTabIds).toHaveLength(4);
+    expect(result.closedTabIds).not.toContain(dirtyId);
+    actives.forEach((id) => expect(result.closedTabIds).not.toContain(id!));
+    // nejstarší nerozepsané: a-1..a-4 (a-0 je rozepsaná)
+    const routes = state.panes.flatMap((pane) => pane.tabs).filter((tab) => result.closedTabIds.includes(tab.id)).map((tab) => tab.route).sort();
+    expect(routes).toEqual(["/a-1", "/a-2", "/a-3", "/a-4"]);
     expect(result.state.panes[0].tabs.some((tab) => result.closedTabIds.includes(tab.id))).toBe(false);
   });
 
-  test("sloučení odmítne překročení limitu, když jsou všechny záložky rozepsané", () => {
+  test("automatické zúžení nic nezavře, ani nad limitem", () => {
+    let state = setLayoutInState(createPaneTabsState(1), 2);
+    state = { ...state, active: state.panes[0].id };
+    for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/a-${index}`, target: "newTab" }).state;
+    state = { ...state, active: state.panes[1].id };
+    for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/b-${index}`, target: "newTab" }).state;
+    const narrowed = applyMaxLayout(state, 1);
+    expect(narrowed.state.panes).toHaveLength(1);
+    expect(narrowed.state.panes[0].tabs).toHaveLength(14);
+  });
+
+  test("zavření neaktivního panelu nemění aktivní panel", () => {
+    let state = setLayoutInState(createPaneTabsState(1), 3);
+    state = { ...state, active: state.panes[0].id };
+    const closed = closePaneInState(state, state.panes[2].id);
+    expect(closed.active).toBe(state.panes[0].id);
+    const closedActive = closePaneInState(state, state.panes[0].id);
+    expect(closedActive.active).toBe(state.panes[1].id);
+  });
+
+  test("sloučení dočasně překročí limit, když jsou všechny záložky rozepsané", () => {
     let state = setLayoutInState(createPaneTabsState(1), 2);
     state = { ...state, active: state.panes[0].id };
     for (let index = 0; index < 6; index += 1) state = openTabInState(state, { route: `/a-${index}`, target: "newTab" }).state;
     state = { ...state, active: state.panes[1].id };
     for (let index = 0; index < 6; index += 1) state = openTabInState(state, { route: `/b-${index}`, target: "newTab" }).state;
     const result = setLayoutWithLimitInState(state, 1, () => true);
-    expect(result.rejected).toBe(true);
-    expect(result.state).toBe(state);
+    expect(result.closedTabIds).toHaveLength(0);
+    expect(result.state.panes[0].tabs).toHaveLength(12);
   });
 
   test("přesun záložky aktivuje cílový panel; zavření poslední nechá panel prázdný", () => {
