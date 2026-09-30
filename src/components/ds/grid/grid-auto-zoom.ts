@@ -7,7 +7,7 @@ export const AUTO_GRID_MAX = 1;
 export const AUTO_GRID_STEP = 0.05;
 
 /** Minimální šířka sloupce bez pevné šířky v px při 100 %. */
-export const AUTO_GRID_COLUMN_MIN = 60;
+export const AUTO_GRID_COLUMN_MIN = 72;
 /** Šířka výběrového sloupce v px při 100 %. */
 export const AUTO_GRID_SELECT_WIDTH = 40;
 /** Šířka sloupce akcí v px při 100 %. */
@@ -21,9 +21,9 @@ export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100
   return Number(Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2));
 }
 
-/** Odhad šířky záhlaví v px při 100 % (písmo gridu 13 px, vnitřní okraje 24 px). */
+/** Odhad šířky záhlaví v px při 100 % (písmo gridu 13 px, vnitřní okraje a třídění). */
 export function headerWidthAt100(label: string) {
-  return Math.max(AUTO_GRID_COLUMN_MIN, Math.ceil(label.length * 7 + 24));
+  return Math.max(AUTO_GRID_COLUMN_MIN, Math.ceil(label.length * 7 + 44));
 }
 
 /**
