@@ -144,8 +144,8 @@ export function JournalLinesRecap({
       ...base.map((column) => column.id.startsWith("debit")
         ? { ...column, value: (row: Row) => withLabel(accountValue(column.id, row), row), render: (row: Row) => renderLabel(accountValue(column.id, row), row) }
         : { ...column, value: (row: Row) => accountValue(column.id, row) || "—", render: (row: Row) => renderLabel(accountValue(column.id, row), { ...row, label: undefined }) }),
-      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, render: (row: Row) => money(row.amount), numeric: true, decimals: 2, total: "sum" as const },
-      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, render: (row: Row) => money(row.foreignAmount), numeric: true, decimals: 2, total: "sum" as const }] : []),
+      { id: "amount", label: `${t.total} (${homeMark})`, value: (row: Row) => row.amount, render: (row: Row) => money(row.amount), numeric: true, decimals: 2, total: "sum" as const, width: 140 },
+      ...(foreign ? [{ id: "foreignAmount", label: `${t.total} (${documentMark})`, value: (row: Row) => row.foreignAmount, render: (row: Row) => money(row.foreignAmount), numeric: true, decimals: 2, total: "sum" as const, width: 140 }] : []),
     ];
   }, [accountMap, accounting, documentMark, foreign, homeMark, t.total, t.debitShort, t.creditShort, t.debitAccount, t.creditAccount]);
   const jobColumns = React.useMemo<DataGridColumn<(typeof jobs)[number]>[]>(() => [
