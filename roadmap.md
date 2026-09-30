@@ -5,6 +5,7 @@
 - [x] Přidat řízené části panelu a rozsahy company / workspace / platform bez narušení měření horní lišty.
 - [x] Upravit skupiny, hledání a součty odznaků.
 - [x] Doplnit ukázky, dokumentaci, katalog a verzi 2.71.0; Release neprovádět.
+- [x] Opravy po kontrole kódu 2.71.0 (body 1–14).
 - [x] Doplnit testy a ověřit všechny testy, typy, sestavení a požadované viewporty/zoom.
 
 ## Verze 2.70.0 – oprava zoomu aplikace (reklamace)
