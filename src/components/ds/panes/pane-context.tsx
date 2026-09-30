@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
+import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import {
   activateTabInState,
@@ -174,7 +175,7 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   closeConfirm: "Zahodit změny",
   limitEvicted: "Záložka „{title}“ byla zavřena – v panelu může být nejvýše {max} záložek.",
   limitRejected: "V panelu je {max} rozepsaných záložek. Nejprve některou uložte nebo zavřete.",
-  limitClosed: "Zavřeno {count} záložek – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
+  limitClosed: "Zavřené záložky: {count} – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
   narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdějení obnoví.",
   restored: "Rozdějení panelů obnoveno.",
   untitled: "Bez názvu",
@@ -248,7 +249,8 @@ export interface PaneTabsProviderProps {
 
 /** Stav a akce záložek v panelech. Obalte jím AppShell i PaneLayout, aby navigace otevírala záložky. */
 export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, shortcuts = true, texts, children }: PaneTabsProviderProps) {
-  const t = { ...DEFAULT_PANE_TABS_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_PANE_TABS_TEXTS, limitClosed: dsTexts.panes.limitClosed, ...texts };
   const stateRef = useRef(state);
   stateRef.current = state;
   const { confirm, confirmDialog } = useConfirmDialog();

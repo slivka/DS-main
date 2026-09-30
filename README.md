@@ -5,6 +5,7 @@
 - `closePane` zavře všechny záložky panelu, respektuje neuložené změny a umožní jejich obnovení přes Alt+Shift+T; aktivní panel se mění jen při zavření aktivního. Přepínač počtu panelů při slučování zavře nejstarší nerozepsané neaktivní záložky nad limit s jedním upozorněním (obnovitelné Alt+Shift+T); nejde-li uvolnit místo, panel limit dočasně překročí. Automatické zúžení okna nikdy nic nezavírá.
 - `UserMenu.workspaceAction` přidává klávesnicí dostupnou akci pracovních prostorů a nabídka má pevné pořadí.
 - Řádek nadpisu otevřeného panelu už neopakuje ikonu z horní lišty.
+- Tlačítko X na záložce má popisek „Zavřít záložku“. Upozornění `limitClosed` má nový text bez skloňování počtu a je součástí `DsTexts` (`panes.limitClosed`, CS i SK); `PaneTabsProvider` jej bere z `useDsTexts`, prop `texts` má přednost. Dlouhé názvy prostorů a vlastních položek v `UserMenu` se zkracují třemi tečkami s nápovědou.
 - **BREAKING:** `SavedLayoutItem.isDefault` a související texty byly odstraněny. `LayoutMenu.onSave` přijímá `{ name, snapshot }` a `onUpdate` jen `{ name?, snapshot? }`.
 
 ## Changelog 2.73.0 – Edit dokladu 8 a opravy panelů

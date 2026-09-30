@@ -15,6 +15,8 @@ const { UserMenu } = await import("../../src/components/ds/layout/user-menu");
 const { buildTabMenuActions, PaneTabsProvider, usePaneTabs } = await import("../../src/components/ds/panes/pane-context");
 const { createPaneTabsState, createTab, reopenClosedTabInState, setLayoutInState } = await import("../../src/components/ds/panes/pane-state");
 const { setTabDirty } = await import("../../src/components/ds/panes/pane-tab-store");
+const { DsTextsProvider, DS_TEXTS_SK } = await import("../../src/ds-texts");
+const { toast } = await import("sonner");
 
 afterEach(() => cleanup());
 afterAll(async () => {
@@ -205,5 +207,46 @@ describe("podmenu DS 2.75.0", () => {
     const plain = render(<UserMenu email="a@example.cz" onSignOut={() => undefined} />);
     fireEvent.pointerDown(plain.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
     expect(plain.queryByText("Pracovní prostor")).toBeNull();
+  });
+
+  it("UserMenu zkrátí dlouhý název prostoru i vlastní položky (truncate + title)", () => {
+    const longName = "Velmi dlouhý název pracovního prostoru, který se nemá zalomit";
+    const longLabel = "Velmi dlouhý popisek vlastní položky nabídky, který se nemá zalomit";
+    const view = render(<UserMenu email="a@example.cz" items={[{ label: longLabel }]} workspaces={[{ id: "w", name: longName }]} activeWorkspaceId="w" onSignOut={() => undefined} />);
+    fireEvent.pointerDown(view.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
+    for (const text of [longName, longLabel]) {
+      const span = view.getByText(text);
+      expect(span.className).toContain("truncate");
+      expect(span.getAttribute("title")).toBe(text);
+    }
+  });
+
+  it("limitClosed bere text z DsTexts (SK) a prop texts má přednost", () => {
+    const originalInfo = toast.info;
+    const infoSpy = mock(() => "" as never);
+    toast.info = infoSpy as never;
+    const makeState = () => {
+      let state = setLayoutInState(createPaneTabsState(1), 2);
+      for (const pane of state.panes) {
+        const tabs = Array.from({ length: 7 }, (_, index) => createTab({ route: `/${pane.id}/${index}` }));
+        Object.assign(pane, { tabs, activeTab: tabs[0].id });
+      }
+      return state;
+    };
+    let api: ReturnType<typeof usePaneTabs> = null;
+    function Capture() { api = usePaneTabs(); return null; }
+    function Host({ texts }: { texts?: { limitClosed: string } }) {
+      const [state, setState] = React.useState(makeState);
+      return <DsTextsProvider texts={DS_TEXTS_SK} locale="sk"><PaneTabsProvider state={state} onChange={setState} shortcuts={false} texts={texts}><Capture /></PaneTabsProvider></DsTextsProvider>;
+    }
+    render(<Host />);
+    act(() => api?.setLayout(1));
+    expect(infoSpy).toHaveBeenCalledWith("Zavreté karty: 4 – v paneli môže byť najviac 10. Alt+Shift+T ich vráti.");
+    cleanup();
+    infoSpy.mockClear();
+    render(<Host texts={{ limitClosed: "Vlastní {count}/{max}" }} />);
+    act(() => api?.setLayout(1));
+    expect(infoSpy).toHaveBeenCalledWith("Vlastní 4/10");
+    toast.info = originalInfo;
   });
 });
