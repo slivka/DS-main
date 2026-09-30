@@ -252,6 +252,17 @@ describe("podmenu DS 2.75.0", () => {
 });
 
 describe("drobnosti DS 2.77.0", () => {
+  const mount = (initial: ReturnType<typeof createPaneTabsState>, shortcuts = false) => {
+    let api: ReturnType<typeof usePaneTabs> = null;
+    function Capture() { api = usePaneTabs(); return null; }
+    function Host() {
+      const [state, setState] = React.useState(initial);
+      return <PaneTabsProvider state={state} onChange={setState} shortcuts={shortcuts}><Capture /></PaneTabsProvider>;
+    }
+    render(<Host />);
+    return { get api() { return api!; } };
+  };
+
   it("opakovaný keydown při držení klávesy nic nedělá (Alt+Shift+T, Alt+W, Alt+M)", () => {
     const initial = createPaneTabsState(1);
     const tab = createTab({ route: "/a" });
