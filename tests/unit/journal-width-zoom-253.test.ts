@@ -5,10 +5,12 @@ import { prunePersistedScroll } from "../../src/components/ds/panes/pane-tab-sto
 describe("2.53.0 – druhá kontrola", () => {
   test("úchyt ukládá šířku bez zoomu a colgroup násobí zoomem jen jednou", () => {
     const src = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(src).toContain('scale={(rootRemPx / 16) * zoom}');
+    expect(src).toContain("scale={(rootRemPx / 16) * zoom}");
     expect(src).toContain("columns.setWidth(column.id, width)");
     expect(src).not.toContain("minWidth: `${columnLayout.textMinRem");
-    expect(src).toContain("Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25)");
+    expect(src).toContain(
+      "Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25)",
+    );
   });
   test("useGridVirtual odvozuje režim z PageLayout", () => {
     const src = readFileSync("src/components/ds/grid/grid-virtual.tsx", "utf8");
@@ -19,7 +21,9 @@ describe("2.53.0 – druhá kontrola", () => {
     beforeEach(() => {
       store.clear();
       (globalThis as any).localStorage = {
-        get length() { return store.size; },
+        get length() {
+          return store.size;
+        },
         key: (i: number) => [...store.keys()][i] ?? null,
         getItem: (k: string) => store.get(k) ?? null,
         setItem: (k: string, v: string) => void store.set(k, v),

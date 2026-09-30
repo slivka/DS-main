@@ -95,7 +95,12 @@ export function resolveLifecycleConfirm(
     };
   }
   if (!action.confirm) return null;
-  return { title: action.confirm.title, ...(action.confirm.description ? { description: action.confirm.description } : {}), confirmLabel: action.confirm.confirmLabel ?? action.label, saveFirst: false };
+  return {
+    title: action.confirm.title,
+    ...(action.confirm.description ? { description: action.confirm.description } : {}),
+    confirmLabel: action.confirm.confirmLabel ?? action.label,
+    saveFirst: false,
+  };
 }
 
 /** Pojmenovaná sekce formuláře – optické seskupení polí v editorech. */
@@ -151,12 +156,21 @@ export function RecordDialog({
       void lifecycleAction.onClick({ saveFirst: false });
       return;
     }
-    confirm({ title: plan.title, ...(plan.description ? { description: plan.description } : {}), confirmLabel: plan.confirmLabel, cancelLabel: cancelText, onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }) });
+    confirm({
+      title: plan.title,
+      ...(plan.description ? { description: plan.description } : {}),
+      confirmLabel: plan.confirmLabel,
+      cancelLabel: cancelText,
+      onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }),
+    });
   };
   const statusBadge = status ? (
     <StatusBadge
       status={status.active ? "active" : "inactive"}
-      config={{ active: { label: status.activeLabel ?? dsTexts.recordDialog.active, tone: "success" }, inactive: { label: status.inactiveLabel ?? dsTexts.recordDialog.inactive, tone: "neutral" } }}
+      config={{
+        active: { label: status.activeLabel ?? dsTexts.recordDialog.active, tone: "success" },
+        inactive: { label: status.inactiveLabel ?? dsTexts.recordDialog.inactive, tone: "neutral" },
+      }}
     />
   ) : null;
   const [panelOpen, setPanelOpen] = useState(false);
@@ -174,7 +188,8 @@ export function RecordDialog({
     if (!open) setPanelOpen(false);
   }, [open]);
   useEffect(() => {
-    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab)) setActiveTab(tabs[0]?.value ?? "");
+    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab))
+      setActiveTab(tabs[0]?.value ?? "");
   }, [activeTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
@@ -188,14 +203,22 @@ export function RecordDialog({
           size="sm"
           className="absolute right-12 top-3 gap-1.5"
           onClick={() => setPanelOpen((v) => !v)}
-          title={panelVisible ? dsTexts.recordDialog.hidePanel(panelLabel.toLowerCase()) : panelLabel}
+          title={
+            panelVisible ? dsTexts.recordDialog.hidePanel(panelLabel.toLowerCase()) : panelLabel
+          }
         >
-          {panelVisible ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
+          {panelVisible ? (
+            <PanelRightClose className="size-4" />
+          ) : (
+            <PanelRightOpen className="size-4" />
+          )}
           {sidePanelTitle ?? panelLabel}
         </Button>
       ) : null}
       {sidePanel && sidePanelExtra ? (
-        <div className="absolute right-12 top-14 flex items-center justify-end">{sidePanelExtra}</div>
+        <div className="absolute right-12 top-14 flex items-center justify-end">
+          {sidePanelExtra}
+        </div>
       ) : null}
 
       <div className="flex min-w-0 items-start gap-4">
@@ -208,8 +231,21 @@ export function RecordDialog({
         >
           {children}
           {tabs?.length ? (
-            <PageTabs value={activeTab} onValueChange={setActiveTab} items={tabs.map(({ value, label, disabled }) => ({ value, label, ...(disabled !== undefined ? { disabled } : {}) }))} listLabel={dsTexts.recordDialog.detailSections}>
-              {tabs.map((tab) => <TabsContent key={tab.value} value={tab.value} className="mt-3">{tab.content}</TabsContent>)}
+            <PageTabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              items={tabs.map(({ value, label, disabled }) => ({
+                value,
+                label,
+                ...(disabled !== undefined ? { disabled } : {}),
+              }))}
+              listLabel={dsTexts.recordDialog.detailSections}
+            >
+              {tabs.map((tab) => (
+                <TabsContent key={tab.value} value={tab.value} className="mt-3">
+                  {tab.content}
+                </TabsContent>
+              ))}
             </PageTabs>
           ) : null}
           <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
@@ -217,7 +253,14 @@ export function RecordDialog({
               <div className="flex items-center gap-2">
                 {extraActions}
                 {lifecycleAction ? (
-                  <Button type="button" variant="outline" data-slot="lifecycle-action" disabled={lifecycleAction.disabled} title={lifecycleAction.disabled ? lifecycleAction.disabledReason : undefined} onClick={runLifecycle}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    data-slot="lifecycle-action"
+                    disabled={lifecycleAction.disabled}
+                    title={lifecycleAction.disabled ? lifecycleAction.disabledReason : undefined}
+                    onClick={runLifecycle}
+                  >
                     {lifecycleAction.label}
                   </Button>
                 ) : null}
@@ -228,9 +271,11 @@ export function RecordDialog({
                 {/* Legacy source contract: {readOnly ? closeLabel : cancelLabel} */}
                 {readOnly ? closeText : cancelText}
               </Button>
-              {!readOnly ? <Button type="submit" disabled={busy}>
-                {submitText}
-              </Button> : null}
+              {!readOnly ? (
+                <Button type="submit" disabled={busy}>
+                  {submitText}
+                </Button>
+              ) : null}
             </div>
           </div>
         </form>
@@ -244,7 +289,12 @@ export function RecordDialog({
   // Uvnitř panelu se dialog vykreslí jen nad obsahem svého panelu.
   if (open && paneElement) {
     return createPortal(
-      <div className="absolute inset-0 z-40 flex items-start justify-center overflow-auto bg-black/40 p-4" onPointerDown={(event) => { if (event.target === event.currentTarget) onOpenChange(false); }}>
+      <div
+        className="absolute inset-0 z-40 flex items-start justify-center overflow-auto bg-black/40 p-4"
+        onPointerDown={(event) => {
+          if (event.target === event.currentTarget) onOpenChange(false);
+        }}
+      >
         <div
           role="dialog"
           aria-modal="true"
@@ -252,7 +302,12 @@ export function RecordDialog({
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-4 space-y-1">
-            <h2 className="flex min-w-0 flex-nowrap items-center gap-2 text-lg font-semibold"><span className="min-w-0 truncate" title={title}>{title}</span>{statusBadge}</h2>
+            <h2 className="flex min-w-0 flex-nowrap items-center gap-2 text-lg font-semibold">
+              <span className="min-w-0 truncate" title={title}>
+                {title}
+              </span>
+              {statusBadge}
+            </h2>
             {description ? <p className="sr-only">{description}</p> : null}
             {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
           </div>
@@ -271,8 +326,15 @@ export function RecordDialog({
         } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
       >
         <DialogHeader>
-          <DialogTitle className="flex min-w-0 flex-nowrap items-center gap-2"><span className="min-w-0 truncate" title={title}>{title}</span>{statusBadge}</DialogTitle>
-          {description ? <DialogDescription className="sr-only">{description}</DialogDescription> : null}
+          <DialogTitle className="flex min-w-0 flex-nowrap items-center gap-2">
+            <span className="min-w-0 truncate" title={title}>
+              {title}
+            </span>
+            {statusBadge}
+          </DialogTitle>
+          {description ? (
+            <DialogDescription className="sr-only">{description}</DialogDescription>
+          ) : null}
           {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
         </DialogHeader>
         {inner}
@@ -314,7 +376,11 @@ export function Field({
       } ${className}`}
     >
       {label ? (
-        <Label htmlFor={htmlFor} title={typeof label === "string" ? label : undefined} className={error ? "text-destructive" : undefined}>
+        <Label
+          htmlFor={htmlFor}
+          title={typeof label === "string" ? label : undefined}
+          className={error ? "text-destructive" : undefined}
+        >
           {label}
         </Label>
       ) : null}
@@ -324,20 +390,35 @@ export function Field({
           {error}
         </p>
       ) : hint ? (
-        <p data-slot="field-hint" className="text-xs text-muted-foreground">{hint}</p>
+        <p data-slot="field-hint" className="text-xs text-muted-foreground">
+          {hint}
+        </p>
       ) : null}
     </div>
   );
 }
 
 const FIELD_SPAN_CLASSES = {
-  1: "@min-[40rem]:col-span-1", 2: "@min-[40rem]:col-span-2", 3: "@min-[40rem]:col-span-3",
-  4: "@min-[40rem]:col-span-4", 5: "@min-[40rem]:col-span-5", 6: "@min-[40rem]:col-span-6",
-  7: "@min-[40rem]:col-span-7", 8: "@min-[40rem]:col-span-8", 9: "@min-[40rem]:col-span-9",
-  10: "@min-[40rem]:col-span-10", 11: "@min-[40rem]:col-span-11", 12: "@min-[40rem]:col-span-12",
-  13: "@min-[40rem]:col-span-13", 14: "@min-[40rem]:col-span-14", 15: "@min-[40rem]:col-span-15",
-  16: "@min-[40rem]:col-span-16", 17: "@min-[40rem]:col-span-17", 18: "@min-[40rem]:col-span-18",
-  19: "@min-[40rem]:col-span-19", 20: "@min-[40rem]:col-span-20",
+  1: "@min-[40rem]:col-span-1",
+  2: "@min-[40rem]:col-span-2",
+  3: "@min-[40rem]:col-span-3",
+  4: "@min-[40rem]:col-span-4",
+  5: "@min-[40rem]:col-span-5",
+  6: "@min-[40rem]:col-span-6",
+  7: "@min-[40rem]:col-span-7",
+  8: "@min-[40rem]:col-span-8",
+  9: "@min-[40rem]:col-span-9",
+  10: "@min-[40rem]:col-span-10",
+  11: "@min-[40rem]:col-span-11",
+  12: "@min-[40rem]:col-span-12",
+  13: "@min-[40rem]:col-span-13",
+  14: "@min-[40rem]:col-span-14",
+  15: "@min-[40rem]:col-span-15",
+  16: "@min-[40rem]:col-span-16",
+  17: "@min-[40rem]:col-span-17",
+  18: "@min-[40rem]:col-span-18",
+  19: "@min-[40rem]:col-span-19",
+  20: "@min-[40rem]:col-span-20",
 } as const;
 
 export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
@@ -361,14 +442,19 @@ export function FieldGrid({
       ? "grid-cols-1"
       : cols === 12
         ? "grid-cols-2 @min-[40rem]:grid-cols-12"
-       : cols === 20
-        ? "grid-cols-20"
-      : cols === 3
-        ? "@min-[40rem]:grid-cols-3"
-        : cols === 4
-          ? "@min-[40rem]:grid-cols-4"
-          : cols === 6
-            ? "@min-[40rem]:grid-cols-6"
-            : "@min-[40rem]:grid-cols-2";
-  return <div className="@container">{title ? <SectionHeading>{title}</SectionHeading> : null}<div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div></div>;
+        : cols === 20
+          ? "grid-cols-20"
+          : cols === 3
+            ? "@min-[40rem]:grid-cols-3"
+            : cols === 4
+              ? "@min-[40rem]:grid-cols-4"
+              : cols === 6
+                ? "@min-[40rem]:grid-cols-6"
+                : "@min-[40rem]:grid-cols-2";
+  return (
+    <div className="@container">
+      {title ? <SectionHeading>{title}</SectionHeading> : null}
+      <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>
+    </div>
+  );
 }

@@ -141,7 +141,9 @@ export function MultiSelect({
           ) : null}
           <div className="max-h-[20em] overflow-auto py-1">
             {filtered.length === 0 ? (
-              <p className="px-3 py-2 text-[0.9em] text-muted-foreground">{dsTexts.multiSelect.noValues}</p>
+              <p className="px-3 py-2 text-[0.9em] text-muted-foreground">
+                {dsTexts.multiSelect.noValues}
+              </p>
             ) : (
               filtered.map((opt) => {
                 const checked = selected.includes(opt.value);

@@ -107,7 +107,9 @@ export function CategorySelect({
             className,
           )}
         >
-          <span className="truncate">{selected ? selected.name : allowEmpty ? emptyLabel : placeholder}</span>
+          <span className="truncate">
+            {selected ? selected.name : allowEmpty ? emptyLabel : placeholder}
+          </span>
           <ChevronsUpDown className="ml-1 size-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -155,7 +157,10 @@ export function CategorySelect({
                   <Check
                     className={cn("mr-2 size-4", value === o.id ? "opacity-100" : "opacity-0")}
                   />
-                  <span style={{ paddingLeft: `${o.level * 14}px` }} className={cn(o.level === 0 && "font-medium")}>
+                  <span
+                    style={{ paddingLeft: `${o.level * 14}px` }}
+                    className={cn(o.level === 0 && "font-medium")}
+                  >
                     {o.name}
                   </span>
                 </CommandItem>

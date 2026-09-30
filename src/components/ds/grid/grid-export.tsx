@@ -28,7 +28,13 @@ import {
 import { useDsTexts } from "../../../ds-texts";
 import { useResolvedGridTexts, type GridTexts } from "./grid-texts";
 
-export type { ExcelColumnMeta, ExcelColumnType, ExcelExportMeta, ExportCell, GridExportData } from "../../../lib/excel-export";
+export type {
+  ExcelColumnMeta,
+  ExcelColumnType,
+  ExcelExportMeta,
+  ExportCell,
+  GridExportData,
+} from "../../../lib/excel-export";
 
 export type GridExtraExport = {
   label: string;
@@ -210,10 +216,7 @@ export function loadPdfFonts() {
       }
       return btoa(binary);
     };
-    const [regular, bold] = await Promise.all([
-      toBase64(robotoRegular),
-      toBase64(robotoBold),
-    ]);
+    const [regular, bold] = await Promise.all([toBase64(robotoRegular), toBase64(robotoBold)]);
     return { regular, bold };
   })();
   return fontsPromise;
@@ -388,7 +391,11 @@ export function GridExport({
       ...(hasSums
         ? [
             columns.map((_, i) =>
-              i === 0 ? texts.total : sums[i] === null ? "" : fmtNumber(sums[i] as number, dsTexts.intlLocale),
+              i === 0
+                ? texts.total
+                : sums[i] === null
+                  ? ""
+                  : fmtNumber(sums[i] as number, dsTexts.intlLocale),
             ),
           ]
         : []),
@@ -507,7 +514,7 @@ ${
   htmlTotals || hasSums
     ? `<tfoot>${htmlTotals}${
         hasSums
-           ? `<tr>${columns.map((_, i) => td(i === 0 ? texts.total : sums[i], i)).join("")}</tr>`
+          ? `<tr>${columns.map((_, i) => td(i === 0 ? texts.total : sums[i], i)).join("")}</tr>`
           : ""
       }</tfoot>`
     : ""
@@ -525,118 +532,121 @@ ${
 
   return (
     <>
-    <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          aria-label={texts.download}
-          title={texts.download}
-          disabled={disabled}
-          className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 ${className}`}
-          style={{ fontSize }}
-        >
-          <Download className="size-[1.25em]" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-[14em] p-[0.35em]" style={{ fontSize }}>
-        <button
-          type="button"
-          onClick={() => void exportExcel()}
-          className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
-        >
-          <img src={excelIcon} alt="" className="size-[1.5em]" />
-          {texts.downloadExcel}
-        </button>
-        <button
-          type="button"
-          onClick={() => void (pdfExport ? pdfExport() : exportPdf())}
-          className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
-        >
-          <img src={pdfIcon} alt="" className="size-[1.5em]" />
-          {texts.downloadPdf}
-        </button>
-        {print ? (
+      <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            aria-label={texts.download}
+            title={texts.download}
+            disabled={disabled}
+            className={`grid-toolbar-control grid-toolbar-icon-control shrink-0 ${className}`}
+            style={{ fontSize }}
+          >
+            <Download className="size-[1.25em]" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-[14em] p-[0.35em]" style={{ fontSize }}>
           <button
             type="button"
-            onClick={() => { setMenuOpen(false); void printer.start(); }}
+            onClick={() => void exportExcel()}
+            className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+          >
+            <img src={excelIcon} alt="" className="size-[1.5em]" />
+            {texts.downloadExcel}
+          </button>
+          <button
+            type="button"
+            onClick={() => void (pdfExport ? pdfExport() : exportPdf())}
             className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
           >
             <img src={pdfIcon} alt="" className="size-[1.5em]" />
-            {print.label ?? "Tisk (PDF)…"}
+            {texts.downloadPdf}
           </button>
-        ) : null}
-        {html && (
-          <button
-            type="button"
-            onClick={() => void exportHtml()}
-            className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
-          >
-            <FileCode2 className="size-[1.5em] text-muted-foreground" />
-            {texts.downloadHtml}
-          </button>
-        )}
-        {extraPdfExport && (
-          <>
-            <div className="my-[0.3em] border-t" />
-            {(Array.isArray(extraPdfExport) ? extraPdfExport : [extraPdfExport]).map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => void item.onExport()}
-                className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
-              >
-                {item.icon ? (
-                  <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
-                ) : (
-                  <img src={pdfIcon} alt="" className="size-[1.5em]" />
-                )}
-                {item.label}
-              </button>
-            ))}
-          </>
-        )}
-
-        {extraExcelExport && (
-          <>
-            <div className="my-[0.3em] border-t" />
+          {print ? (
             <button
               type="button"
-              onClick={() => void extraExcelExport.onExport()}
+              onClick={() => {
+                setMenuOpen(false);
+                void printer.start();
+              }}
               className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
             >
-              <img src={excelIcon} alt="" className="size-[1.5em]" />
-              {extraExcelExport.label}
+              <img src={pdfIcon} alt="" className="size-[1.5em]" />
+              {print.label ?? "Tisk (PDF)…"}
             </button>
-          </>
-        )}
-        {extraExports.length ? (
-          <>
-            <div className="my-[0.3em] border-t" />
-            {extraExports.map((item) => (
+          ) : null}
+          {html && (
+            <button
+              type="button"
+              onClick={() => void exportHtml()}
+              className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+            >
+              <FileCode2 className="size-[1.5em] text-muted-foreground" />
+              {texts.downloadHtml}
+            </button>
+          )}
+          {extraPdfExport && (
+            <>
+              <div className="my-[0.3em] border-t" />
+              {(Array.isArray(extraPdfExport) ? extraPdfExport : [extraPdfExport]).map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => void item.onExport()}
+                  className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+                >
+                  {item.icon ? (
+                    <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
+                  ) : (
+                    <img src={pdfIcon} alt="" className="size-[1.5em]" />
+                  )}
+                  {item.label}
+                </button>
+              ))}
+            </>
+          )}
+
+          {extraExcelExport && (
+            <>
+              <div className="my-[0.3em] border-t" />
               <button
-                key={`${item.kind}-${item.label}`}
                 type="button"
-                onClick={() => void item.onExport()}
+                onClick={() => void extraExcelExport.onExport()}
                 className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
               >
-                {item.icon ? (
-                  <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
-                ) : item.kind === "excel" ? (
-                  <img src={excelIcon} alt="" className="size-[1.5em]" />
-                ) : item.kind === "pdf" ? (
-                  <img src={pdfIcon} alt="" className="size-[1.5em]" />
-                ) : (
-                  <FileCode2 className="size-[1.5em] text-muted-foreground" />
-                )}
-                {item.label}
+                <img src={excelIcon} alt="" className="size-[1.5em]" />
+                {extraExcelExport.label}
               </button>
-            ))}
-          </>
-        ) : null}
-      </PopoverContent>
-    </Popover>
-    {printer.dialog}
+            </>
+          )}
+          {extraExports.length ? (
+            <>
+              <div className="my-[0.3em] border-t" />
+              {extraExports.map((item) => (
+                <button
+                  key={`${item.kind}-${item.label}`}
+                  type="button"
+                  onClick={() => void item.onExport()}
+                  className="flex w-full items-center gap-[0.6em] rounded-md px-[0.6em] py-[0.5em] text-left text-[1em] hover-surface"
+                >
+                  {item.icon ? (
+                    <span className="size-[1.5em] text-muted-foreground">{item.icon}</span>
+                  ) : item.kind === "excel" ? (
+                    <img src={excelIcon} alt="" className="size-[1.5em]" />
+                  ) : item.kind === "pdf" ? (
+                    <img src={pdfIcon} alt="" className="size-[1.5em]" />
+                  ) : (
+                    <FileCode2 className="size-[1.5em] text-muted-foreground" />
+                  )}
+                  {item.label}
+                </button>
+              ))}
+            </>
+          ) : null}
+        </PopoverContent>
+      </Popover>
+      {printer.dialog}
     </>
   );
 }

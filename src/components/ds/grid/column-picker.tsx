@@ -94,7 +94,8 @@ export function ColumnPicker<Id extends string>({
     window.setTimeout(() => setSavedDefault(false), 1600);
   };
 
-  const pinRank = (column: PickerColumn<Id>) => column.pinned === "end" ? 2 : column.pinned ? 0 : 1;
+  const pinRank = (column: PickerColumn<Id>) =>
+    column.pinned === "end" ? 2 : column.pinned ? 0 : 1;
   const sortedColumns = [...columns].sort((a, b) => pinRank(a) - pinRank(b));
 
   const saveView = () => {
@@ -176,7 +177,11 @@ export function ColumnPicker<Id extends string>({
                         type="button"
                         onClick={() => onToggleSection(section)}
                         className="text-[0.8em] text-muted-foreground transition-colors hover:text-foreground"
-                        title={sectionOff ? dsTexts.columnPicker.showSection(section) : dsTexts.columnPicker.hideSection(section)}
+                        title={
+                          sectionOff
+                            ? dsTexts.columnPicker.showSection(section)
+                            : dsTexts.columnPicker.hideSection(section)
+                        }
                       >
                         {sectionOff ? dsTexts.columnPicker.show : dsTexts.columnPicker.hide}
                       </button>
@@ -249,7 +254,12 @@ export function ColumnPicker<Id extends string>({
                     {c.disableToggleReason ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span tabIndex={0} data-slot="column-toggle-disabled" aria-label={c.disableToggleReason} className="inline-flex">
+                          <span
+                            tabIndex={0}
+                            data-slot="column-toggle-disabled"
+                            aria-label={c.disableToggleReason}
+                            className="inline-flex"
+                          >
                             <Checkbox checked={!!visible[c.id]} disabled aria-label={c.label} />
                           </span>
                         </TooltipTrigger>
@@ -264,7 +274,9 @@ export function ColumnPicker<Id extends string>({
                     )}
                     <span className="truncate text-[1em] text-foreground">
                       {c.label
-                        ? c.label.replace(/\b(md|dal)\b/gi, (value) => value.toLocaleUpperCase("cs"))
+                        ? c.label.replace(/\b(md|dal)\b/gi, (value) =>
+                            value.toLocaleUpperCase("cs"),
+                          )
                         : c.label}
                     </span>
                   </label>

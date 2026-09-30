@@ -72,7 +72,18 @@ export interface LayoutMenuProps {
 }
 
 /** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
-export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
+export function LayoutMenu({
+  items,
+  onSave,
+  onApply,
+  onUpdate,
+  onDelete,
+  onReorder,
+  shortcut = true,
+  trigger = "default",
+  texts,
+  className,
+}: LayoutMenuProps) {
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...dsTexts.layoutMenu, ...texts };
   const tabs = usePaneTabs();
@@ -86,7 +97,13 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   React.useEffect(() => {
     if (!shortcut) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && event.code === "KeyL") {
+      if (
+        event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        event.code === "KeyL"
+      ) {
         event.preventDefault();
         setOpen(true);
       }
@@ -116,11 +133,22 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               {trigger === "icon" ? (
-                <Button type="button" variant="ghost" size="icon" className={cn("size-8 shrink-0 text-sidebar-foreground", className)} aria-label={t.trigger}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className={cn("size-8 shrink-0 text-sidebar-foreground", className)}
+                  aria-label={t.trigger}
+                >
                   <MoreHorizontal className="size-4" aria-hidden="true" />
                 </Button>
               ) : (
-                <Button type="button" variant="outline" size="sm" className={cn("gap-1", className)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className={cn("gap-1", className)}
+                >
                   {t.trigger}
                   <ChevronDown className="size-4" aria-hidden="true" />
                 </Button>
@@ -129,7 +157,10 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>
         </Tooltip>
-        <DropdownMenuContent align="end" className="min-w-72 max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))]">
+        <DropdownMenuContent
+          align="end"
+          className="min-w-72 max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))]"
+        >
           <div className="flex items-center">
             <DropdownMenuItem
               className="min-w-0 flex-1"
@@ -142,7 +173,12 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             </DropdownMenuItem>
             <Tooltip>
               <TooltipTrigger asChild>
-                <DropdownMenuItem className="w-9 shrink-0 justify-center px-0" aria-label={t.manage} disabled={!items.length} onSelect={() => setManageOpen(true)}>
+                <DropdownMenuItem
+                  className="w-9 shrink-0 justify-center px-0"
+                  aria-label={t.manage}
+                  disabled={!items.length}
+                  onSelect={() => setManageOpen(true)}
+                >
                   <Settings2 className="size-4" aria-hidden="true" />
                 </DropdownMenuItem>
               </TooltipTrigger>
@@ -151,7 +187,9 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </div>
           <DropdownMenuSeparator />
           {items.length ? (
-            items.map((item) => <TruncatedItem key={item.id} name={item.name} onSelect={() => onApply(item.id)} />)
+            items.map((item) => (
+              <TruncatedItem key={item.id} name={item.name} onSelect={() => onApply(item.id)} />
+            ))
           ) : (
             <DropdownMenuItem disabled>{t.empty}</DropdownMenuItem>
           )}
@@ -160,7 +198,11 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             <DropdownMenuSubTrigger disabled={!items.length}>{t.overwrite}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent className="max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))]">
               {items.map((item) => (
-                <TruncatedItem key={item.id} name={item.name} onSelect={() => onUpdate(item.id, { snapshot: snapshot() })} />
+                <TruncatedItem
+                  key={item.id}
+                  name={item.name}
+                  onSelect={() => onUpdate(item.id, { snapshot: snapshot() })}
+                />
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
@@ -175,7 +217,12 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             </DialogHeader>
             <div className="space-y-1.5">
               <Label htmlFor="layout-menu-name">{t.nameLabel}</Label>
-              <Input id="layout-menu-name" value={name} autoFocus onChange={(event) => setName(event.target.value)} />
+              <Input
+                id="layout-menu-name"
+                value={name}
+                autoFocus
+                onChange={(event) => setName(event.target.value)}
+              />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setSaveOpen(false)}>
@@ -209,10 +256,18 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
                   />
                   {onReorder ? (
                     <>
-                      <ManageIcon label={t.moveUp} disabled={index === 0} onClick={() => move(index, -1)}>
+                      <ManageIcon
+                        label={t.moveUp}
+                        disabled={index === 0}
+                        onClick={() => move(index, -1)}
+                      >
                         <ArrowUp className="size-4" />
                       </ManageIcon>
-                      <ManageIcon label={t.moveDown} disabled={index === items.length - 1} onClick={() => move(index, 1)}>
+                      <ManageIcon
+                        label={t.moveDown}
+                        disabled={index === items.length - 1}
+                        onClick={() => move(index, 1)}
+                      >
                         <ArrowDown className="size-4" />
                       </ManageIcon>
                     </>
@@ -249,11 +304,31 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   );
 }
 
-function ManageIcon({ label, onClick, disabled, className, children }: { label: string; onClick: () => void; disabled?: boolean; className?: string; children: React.ReactNode }) {
+function ManageIcon({
+  label,
+  onClick,
+  disabled,
+  className,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" className={cn("size-8", className)} aria-label={label} disabled={disabled} onClick={onClick}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn("size-8", className)}
+          aria-label={label}
+          disabled={disabled}
+          onClick={onClick}
+        >
           {children}
         </Button>
       </TooltipTrigger>

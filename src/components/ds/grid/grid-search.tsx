@@ -57,7 +57,8 @@ export function GridSearch({
 
   if (!open) {
     return (
-      <Button data-toolbar-search
+      <Button
+        data-toolbar-search
         variant="outline"
         size="sm"
         aria-label={texts.searchLabel}
@@ -72,7 +73,8 @@ export function GridSearch({
   }
 
   return (
-    <div data-toolbar-search
+    <div
+      data-toolbar-search
       className={`grid-filter-field relative flex min-w-0 basis-[16em] items-center ${className}`}
       style={{ fontSize }}
     >
@@ -95,22 +97,24 @@ export function GridSearch({
         }}
         className={`grid-toolbar-control h-auto w-full min-w-0 rounded-md border border-input bg-background !pl-[2.35em] !pr-[2.2em] text-[1em] outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 ${
           isActive
-             ? "grid-toolbar-active focus-visible:ring-filter-active"
+            ? "grid-toolbar-active focus-visible:ring-filter-active"
             : "focus-visible:ring-ring"
         }`}
       />
-      {isActive ? <button
-        type="button"
-        aria-label={texts.clearSearchLabel}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => {
-          onChange("");
-          setOpen(false);
-        }}
-        className="absolute right-[0.5em] text-filter-active transition-colors hover:opacity-75"
-      >
-        <X className="size-[1.15em]" />
-      </button> : null}
+      {isActive ? (
+        <button
+          type="button"
+          aria-label={texts.clearSearchLabel}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            onChange("");
+            setOpen(false);
+          }}
+          className="absolute right-[0.5em] text-filter-active transition-colors hover:opacity-75"
+        >
+          <X className="size-[1.15em]" />
+        </button>
+      ) : null}
     </div>
   );
 }

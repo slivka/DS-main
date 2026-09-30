@@ -135,10 +135,14 @@ export function AccountSelect({
         const blocked = allowLevels
           ? a.active === false || !allowLevels.includes(level)
           : a.active === false ||
-            (a.postable !== undefined ? !a.postable : disableSyntheticWithAnalytics && hasAnalytics);
+            (a.postable !== undefined
+              ? !a.postable
+              : disableSyntheticWithAnalytics && hasAnalytics);
         return { ...a, code, level, blocked };
       });
-    return catalogOptions.length ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs")) : merged;
+    return catalogOptions.length
+      ? merged.sort((a, b) => a.code.localeCompare(b.code, "cs"))
+      : merged;
   }, [accounts, catalog, allowLevels, hideInactive, disableSyntheticWithAnalytics]);
 
   const selected = list.find((a) => a.code === normalizeAccountCode(value));
@@ -196,7 +200,13 @@ export function AccountSelect({
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
         <Command shouldFilter={false}>
-          <CommandInput autoFocus placeholder={searchPlaceholder} value={query} onValueChange={setQuery} onKeyDown={onKeyDown} />
+          <CommandInput
+            autoFocus
+            placeholder={searchPlaceholder}
+            value={query}
+            onValueChange={setQuery}
+            onKeyDown={onKeyDown}
+          />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

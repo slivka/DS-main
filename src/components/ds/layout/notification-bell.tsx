@@ -80,33 +80,64 @@ export function NotificationBell({
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_NOTIFICATION_BELL_TEXTS, ...dsTexts.notification, ...texts };
   const [locallyRead, setLocallyRead] = useState<string[]>([]);
-  const derivedUnread = items.filter((item) => !item.readAt && !locallyRead.includes(item.id)).length;
-  const newlyReadCount = items.filter((item) => !item.readAt && locallyRead.includes(item.id)).length;
-  const count = unreadCount === undefined ? derivedUnread : Math.max(0, unreadCount - newlyReadCount);
+  const derivedUnread = items.filter(
+    (item) => !item.readAt && !locallyRead.includes(item.id),
+  ).length;
+  const newlyReadCount = items.filter(
+    (item) => !item.readAt && locallyRead.includes(item.id),
+  ).length;
+  const count =
+    unreadCount === undefined ? derivedUnread : Math.max(0, unreadCount - newlyReadCount);
   const badge = count > 9 ? "9+" : String(count);
 
   const selectItem = (item: NotificationItem) => {
-    if (!item.readAt) setLocallyRead((ids) => ids.includes(item.id) ? ids : [...ids, item.id]);
+    if (!item.readAt) setLocallyRead((ids) => (ids.includes(item.id) ? ids : [...ids, item.id]));
     onItemClick(item);
   };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" className={cn("relative text-muted-foreground", className)} aria-label={t.label}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn("relative text-muted-foreground", className)}
+          aria-label={t.label}
+        >
           <Bell className="size-4" />
-          {count > 0 ? <span className="absolute right-0.5 top-0.5 flex min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-4 text-destructive-foreground">{badge}</span> : null}
+          {count > 0 ? (
+            <span className="absolute right-0.5 top-0.5 flex min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-4 text-destructive-foreground">
+              {badge}
+            </span>
+          ) : null}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[min(380px,calc(100vw-24px))] p-0">
         <div className="flex min-h-12 items-center gap-3 border-b px-4">
           <h2 className="font-semibold">{t.title}</h2>
-          {count > 0 ? <Button type="button" variant="link" size="sm" className="ml-auto h-auto p-0" onClick={onMarkAllRead}>{t.markAllRead}</Button> : null}
+          {count > 0 ? (
+            <Button
+              type="button"
+              variant="link"
+              size="sm"
+              className="ml-auto h-auto p-0"
+              onClick={onMarkAllRead}
+            >
+              {t.markAllRead}
+            </Button>
+          ) : null}
         </div>
         {loading ? (
-          <div className="flex min-h-32 items-center justify-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.loading}</div>
+          <div className="flex min-h-32 items-center justify-center gap-2 text-sm text-muted-foreground">
+            <LoaderCircle className="size-4 animate-spin" />
+            {t.loading}
+          </div>
         ) : items.length === 0 ? (
-          <div className="flex min-h-32 flex-col items-center justify-center gap-2 text-sm text-muted-foreground"><Bell className="size-5" />{t.empty}</div>
+          <div className="flex min-h-32 flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Bell className="size-5" />
+            {t.empty}
+          </div>
         ) : (
           <div className="max-h-96 overflow-y-auto">
             {items.map((item) => {
@@ -114,20 +145,45 @@ export function NotificationBell({
               const iconConfig = typeIcons[item.type ?? "info"];
               const Icon = iconConfig.icon;
               return (
-                <Button key={item.id} type="button" variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none border-b px-4 py-3 text-left last:border-b-0" onClick={() => selectItem(item)}>
+                <Button
+                  key={item.id}
+                  type="button"
+                  variant="ghost"
+                  className="h-auto w-full justify-start gap-3 rounded-none border-b px-4 py-3 text-left last:border-b-0"
+                  onClick={() => selectItem(item)}
+                >
                   <Icon className={cn("mt-0.5 size-4 shrink-0", iconConfig.className)} />
                   <span className="min-w-0 flex-1">
-                    <span className={cn("block truncate text-sm", unread && "font-semibold")}>{item.title}</span>
-                    {item.body ? <span className="line-clamp-2 text-sm text-muted-foreground">{item.body}</span> : null}
-                    <span className="mt-1 block text-xs text-muted-foreground">{relativeTime(item.createdAt, dsTexts.intlLocale)}</span>
+                    <span className={cn("block truncate text-sm", unread && "font-semibold")}>
+                      {item.title}
+                    </span>
+                    {item.body ? (
+                      <span className="line-clamp-2 text-sm text-muted-foreground">
+                        {item.body}
+                      </span>
+                    ) : null}
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      {relativeTime(item.createdAt, dsTexts.intlLocale)}
+                    </span>
                   </span>
-                  {unread ? <span className="mt-2 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" /> : null}
+                  {unread ? (
+                    <span
+                      className="mt-2 size-2 shrink-0 rounded-full bg-primary"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                 </Button>
               );
             })}
           </div>
         )}
-        {onShowAll ? <div className="border-t p-2"><Button type="button" variant="ghost" className="w-full" onClick={onShowAll}>{t.showAll}</Button></div> : null}
+        {onShowAll ? (
+          <div className="border-t p-2">
+            <Button type="button" variant="ghost" className="w-full" onClick={onShowAll}>
+              {t.showAll}
+            </Button>
+          </div>
+        ) : null}
       </PopoverContent>
     </Popover>
   );

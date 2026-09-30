@@ -14,7 +14,10 @@ export interface BankAccountOption {
   default?: boolean;
 }
 
-export interface BankAccountFieldProps extends Omit<ComponentPropsWithoutRef<"input">, "value" | "onChange"> {
+export interface BankAccountFieldProps extends Omit<
+  ComponentPropsWithoutRef<"input">,
+  "value" | "onChange"
+> {
   value: string;
   onChange: (value: string) => void;
   options?: BankAccountOption[];
@@ -28,96 +31,124 @@ export interface BankAccountFieldProps extends Omit<ComponentPropsWithoutRef<"in
 const OTHER = "__other_bank_account__";
 
 /** Výběr partnerského účtu s možností zadat jiný český účet a ověřit jej. */
-export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldProps>(function BankAccountField({
-  value,
-  onChange,
-  options = [],
-  bankCodes,
-  invalidAccountText,
-  invalidBankCodeText,
-  otherAccountText,
-  disabled,
-  readOnly,
-  id,
-  className,
-  onBlur,
-  ...props
-}, ref) {
-  const { documentForm: texts } = useDsTexts();
-  const resolvedInvalidAccountText = invalidAccountText ?? texts.bankAccountInvalid;
-  const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
-  const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
-  const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
-  const optionValuesKey = optionValues.join("\u0000");
-  const selectedOption = optionValues.includes(value);
-  const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
-  const [touched, setTouched] = useState(false);
-  // Hodnotu, kterou pole samo odeslalo, režim nepřepočítává (jinak by vstup „Jiný účet“ zmizel).
-  const lastEmittedRef = useRef<string | null>(null);
-  const lastOptionsKeyRef = useRef(optionValuesKey);
-  useEffect(() => {
-    const optionsChanged = lastOptionsKeyRef.current !== optionValuesKey;
-    lastOptionsKeyRef.current = optionValuesKey;
-    if (!optionsChanged && lastEmittedRef.current === value) return;
-    lastEmittedRef.current = null;
-    setOtherSelected(Boolean(value) && !optionValues.includes(value));
-  }, [optionValuesKey, value]); // seznam je odvozený z řízených možností
-  const emit = (next: string) => { lastEmittedRef.current = next; onChange(next); };
-  const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
-  const compact = value.replace(/\s/g, "");
-  const [accountPart = "", bankCode = ""] = compact.split("/");
-  const parsed = parseCzAccount(accountPart);
-  const hasCompleteValue = compact.length > 0 && compact.includes("/") && bankCode.length === 4;
-  const incomplete = touched && compact.length > 0 && (!compact.includes("/") || bankCode.length !== 4 || compact.split("/").length !== 2);
-  const bankCodeInvalid = hasCompleteValue && Boolean(bankCodes?.length) && !bankCodes?.includes(bankCode);
-  const accountInvalid = hasCompleteValue && (!parsed || !isValidCzAccount(parsed.prefix, parsed.number));
-  const error = bankCodeInvalid ? resolvedInvalidBankCodeText : accountInvalid || incomplete ? resolvedInvalidAccountText : undefined;
+export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldProps>(
+  function BankAccountField(
+    {
+      value,
+      onChange,
+      options = [],
+      bankCodes,
+      invalidAccountText,
+      invalidBankCodeText,
+      otherAccountText,
+      disabled,
+      readOnly,
+      id,
+      className,
+      onBlur,
+      ...props
+    },
+    ref,
+  ) {
+    const { documentForm: texts } = useDsTexts();
+    const resolvedInvalidAccountText = invalidAccountText ?? texts.bankAccountInvalid;
+    const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
+    const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
+    const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
+    const optionValuesKey = optionValues.join("\u0000");
+    const selectedOption = optionValues.includes(value);
+    const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
+    const [touched, setTouched] = useState(false);
+    // Hodnotu, kterou pole samo odeslalo, režim nepřepočítává (jinak by vstup „Jiný účet“ zmizel).
+    const lastEmittedRef = useRef<string | null>(null);
+    const lastOptionsKeyRef = useRef(optionValuesKey);
+    useEffect(() => {
+      const optionsChanged = lastOptionsKeyRef.current !== optionValuesKey;
+      lastOptionsKeyRef.current = optionValuesKey;
+      if (!optionsChanged && lastEmittedRef.current === value) return;
+      lastEmittedRef.current = null;
+      setOtherSelected(Boolean(value) && !optionValues.includes(value));
+    }, [optionValuesKey, value]); // seznam je odvozený z řízených možností
+    const emit = (next: string) => {
+      lastEmittedRef.current = next;
+      onChange(next);
+    };
+    const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
+    const compact = value.replace(/\s/g, "");
+    const [accountPart = "", bankCode = ""] = compact.split("/");
+    const parsed = parseCzAccount(accountPart);
+    const hasCompleteValue = compact.length > 0 && compact.includes("/") && bankCode.length === 4;
+    const incomplete =
+      touched &&
+      compact.length > 0 &&
+      (!compact.includes("/") || bankCode.length !== 4 || compact.split("/").length !== 2);
+    const bankCodeInvalid =
+      hasCompleteValue && Boolean(bankCodes?.length) && !bankCodes?.includes(bankCode);
+    const accountInvalid =
+      hasCompleteValue && (!parsed || !isValidCzAccount(parsed.prefix, parsed.number));
+    const error = bankCodeInvalid
+      ? resolvedInvalidBankCodeText
+      : accountInvalid || incomplete
+        ? resolvedInvalidAccountText
+        : undefined;
 
-  return (
-    <div className={cn("min-w-0", className)}>
-      {options.length ? <OptionSelect
-        id={manual ? undefined : id}
-        value={manual ? OTHER : value}
-        onChange={(next) => {
-          if (next === OTHER) {
-            setOtherSelected(true);
-            return;
-          }
-          setOtherSelected(false);
-          setTouched(false);
-          emit(next);
-        }}
-        allowEmpty={false}
-        ariaLabel={props["aria-label"]}
-        disabled={disabled || readOnly}
-        options={[
-          ...options.map((option) => ({
-            value: `${option.number}/${option.bankCode}`,
-            label: [
-              `${option.number}/${option.bankCode}`,
-              option.label,
-              option.currency,
-            ].filter(Boolean).join(" - "),
-            selectedLabel: `${option.number}/${option.bankCode}`,
-          })),
-          { value: OTHER, label: resolvedOtherAccountText },
-        ]}
-      /> : null}
-      {manual ? <Input
-        {...props}
-        ref={ref}
-        id={id}
-        value={value}
-        disabled={disabled}
-        readOnly={readOnly}
-        inputMode="numeric"
-        autoComplete="off"
-        aria-invalid={Boolean(error)}
-        onChange={(event) => emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))}
-        onBlur={(event) => { setTouched(true); onBlur?.(event); }}
-        className={cn("h-9 font-mono tabular-nums", options.length && "mt-2")}
-      /> : null}
-      {error ? <p role="alert" className="mt-1 text-xs font-medium text-destructive">{error}</p> : null}
-    </div>
-  );
-});
+    return (
+      <div className={cn("min-w-0", className)}>
+        {options.length ? (
+          <OptionSelect
+            id={manual ? undefined : id}
+            value={manual ? OTHER : value}
+            onChange={(next) => {
+              if (next === OTHER) {
+                setOtherSelected(true);
+                return;
+              }
+              setOtherSelected(false);
+              setTouched(false);
+              emit(next);
+            }}
+            allowEmpty={false}
+            ariaLabel={props["aria-label"]}
+            disabled={disabled || readOnly}
+            options={[
+              ...options.map((option) => ({
+                value: `${option.number}/${option.bankCode}`,
+                label: [`${option.number}/${option.bankCode}`, option.label, option.currency]
+                  .filter(Boolean)
+                  .join(" - "),
+                selectedLabel: `${option.number}/${option.bankCode}`,
+              })),
+              { value: OTHER, label: resolvedOtherAccountText },
+            ]}
+          />
+        ) : null}
+        {manual ? (
+          <Input
+            {...props}
+            ref={ref}
+            id={id}
+            value={value}
+            disabled={disabled}
+            readOnly={readOnly}
+            inputMode="numeric"
+            autoComplete="off"
+            aria-invalid={Boolean(error)}
+            onChange={(event) =>
+              emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))
+            }
+            onBlur={(event) => {
+              setTouched(true);
+              onBlur?.(event);
+            }}
+            className={cn("h-9 font-mono tabular-nums", options.length && "mt-2")}
+          />
+        ) : null}
+        {error ? (
+          <p role="alert" className="mt-1 text-xs font-medium text-destructive">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    );
+  },
+);

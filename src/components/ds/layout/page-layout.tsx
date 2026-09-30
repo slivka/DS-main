@@ -36,9 +36,13 @@ export function PageLayout({ variant = "form", children, className, ...props }: 
   useEffect(() => {
     const sentinel = sentinelRef.current;
     // Rolovací oblast panelu, mimo panely rolovací main AppShellu.
-    const root = sentinel?.closest<HTMLElement>("[data-pane-scroll], [data-slot=\"app-shell-main\"]") ?? null;
+    const root =
+      sentinel?.closest<HTMLElement>('[data-pane-scroll], [data-slot="app-shell-main"]') ?? null;
     if (!sentinel || !root) return;
-    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), { root, threshold: 1 });
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
+      root,
+      threshold: 1,
+    });
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);
@@ -48,9 +52,18 @@ export function PageLayout({ variant = "form", children, className, ...props }: 
         data-page-layout={variant}
         data-scrolled={scrolled || undefined}
         {...props}
-        className={cn("relative min-w-0", variant === "list" ? "flex h-full flex-col gap-3" : "space-y-4", className)}
+        className={cn(
+          "relative min-w-0",
+          variant === "list" ? "flex h-full flex-col gap-3" : "space-y-4",
+          className,
+        )}
       >
-        <span ref={sentinelRef} data-page-scroll-sentinel aria-hidden className="pointer-events-none absolute h-px w-px" />
+        <span
+          ref={sentinelRef}
+          data-page-scroll-sentinel
+          aria-hidden
+          className="pointer-events-none absolute h-px w-px"
+        />
         {children}
       </div>
     </PageLayoutContext.Provider>

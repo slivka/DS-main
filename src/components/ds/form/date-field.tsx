@@ -170,108 +170,179 @@ export function DateField({
   const unlockedHint = link?.unlockedHint ?? dsTexts.date.relinkIssue;
 
   return (
-    <TooltipProvider><div className={cn("min-w-0", className)}><div className="relative">
-      <Input
-        ref={inputRef}
-        id={id}
-        inputMode="numeric"
-        disabled={disabled || link?.locked}
-        readOnly={link?.locked}
-        placeholder={resolvedPlaceholder === dsTexts.date.chooseDate ? dateFormat.toLowerCase() : resolvedPlaceholder}
-        value={text}
-        aria-invalid={invalid || undefined}
-        aria-describedby={warning ? warningId : undefined}
-        title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
-        onChange={(e) => {
-          const next = e.target.value;
-          const masked = maskDateInput(next, dateFormat, next.length < text.length);
-          setText(masked);
-          if (invalid) setInvalid(false);
-          // Živý přepočet: jakmile je zapsané datum úplné a platné, ohlásíme ho hned
-          // (bez čekání na blur/Enter), aby se navázané přehledy překreslily.
-          const digits = masked.replace(/\D/g, "");
-          if (digits.length !== 8) return;
-          const parsed = parseUserDate(masked, preferences);
-          if (!parsed) return;
-          const parsedDate = parseISO(parsed);
-          if (!parsedDate || (minDate && parsedDate < minDate) || (maxDate && parsedDate > maxDate))
-            return;
-          onValidityChange?.(true);
-          onChange(parsed);
-        }}
-
-        onBlur={commitText}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            commitText();
-          }
-        }}
-        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]", warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
-      />
-      {warning ? <span id={warningId} className="sr-only">{warning}</span> : null}
-      {warning && warningDisplay === "indicator" ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={warning} className={cn("absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", link && !link.locked ? "right-[3.9em]" : "right-[2.1em]")}><AlertTriangle className="size-[1.05em]" /></span></TooltipTrigger><TooltipContent>{warning}</TooltipContent></Tooltip> : null}
-      {link?.locked ? (
-        <Tooltip><TooltipTrigger asChild><span className="absolute right-[0.3em] top-1/2 -translate-y-1/2"><Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          disabled={disabled || link.toggleDisabled}
-          aria-label={lockedHint}
-          aria-pressed="true"
-          onClick={toggleLink}
-          className="date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
-        ><Lock className="size-[1.05em]" /></Button></span></TooltipTrigger><TooltipContent>{lockedHint}</TooltipContent></Tooltip>
-      ) : <>
-      {link ? <Tooltip><TooltipTrigger asChild><Button
-        type="button"
-        variant="ghost"
-        size="icon"
-         disabled={disabled || link.toggleDisabled}
-        aria-label={unlockedHint}
-        aria-pressed="false"
-        onClick={toggleLink}
-        className="date-field-link absolute right-[2.1em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
-      ><LockOpen className="size-[1.05em]" /></Button></TooltipTrigger><TooltipContent>{unlockedHint}</TooltipContent></Tooltip> : null}
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            disabled={disabled}
-            aria-label={dsTexts.date.openCalendar}
-            className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
-          >
-            <CalendarIcon className="size-[1.05em]" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className={cn("w-auto p-0", gridZoom != null && "grid-date-popover")}
-          align="start"
-          style={gridZoom != null ? { fontSize: `${(0.8125 * gridZoom).toFixed(4)}rem` } : undefined}
-        >
-          <Calendar
-            mode="single"
-            locale={dsTexts.dateLocale}
-            captionLayout="dropdown"
-            startMonth={minDate ?? new Date(1900, 0)}
-            endMonth={maxDate ?? new Date(new Date().getFullYear() + 10, 11)}
-            disabled={disabledMatcher}
-            defaultMonth={selected ?? maxDate}
-            selected={selected}
-            onSelect={(d) => {
-              setInvalid(false);
+    <TooltipProvider>
+      <div className={cn("min-w-0", className)}>
+        <div className="relative">
+          <Input
+            ref={inputRef}
+            id={id}
+            inputMode="numeric"
+            disabled={disabled || link?.locked}
+            readOnly={link?.locked}
+            placeholder={
+              resolvedPlaceholder === dsTexts.date.chooseDate
+                ? dateFormat.toLowerCase()
+                : resolvedPlaceholder
+            }
+            value={text}
+            aria-invalid={invalid || undefined}
+            aria-describedby={warning ? warningId : undefined}
+            title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
+            onChange={(e) => {
+              const next = e.target.value;
+              const masked = maskDateInput(next, dateFormat, next.length < text.length);
+              setText(masked);
+              if (invalid) setInvalid(false);
+              // Živý přepočet: jakmile je zapsané datum úplné a platné, ohlásíme ho hned
+              // (bez čekání na blur/Enter), aby se navázané přehledy překreslily.
+              const digits = masked.replace(/\D/g, "");
+              if (digits.length !== 8) return;
+              const parsed = parseUserDate(masked, preferences);
+              if (!parsed) return;
+              const parsedDate = parseISO(parsed);
+              if (
+                !parsedDate ||
+                (minDate && parsedDate < minDate) ||
+                (maxDate && parsedDate > maxDate)
+              )
+                return;
               onValidityChange?.(true);
-              onChange(d ? toISO(d) : "");
-              setOpen(false);
+              onChange(parsed);
             }}
-            initialFocus
-            className={cn("pointer-events-auto p-3", gridZoom != null && "grid-date-calendar")}
+            onBlur={commitText}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                commitText();
+              }
+            }}
+            className={cn(
+              "pr-[2.4em]",
+              link && !link.locked && "pr-[4.2em]",
+              warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]",
+              warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]",
+              link?.locked && "bg-muted/40",
+              warning && "border-warning ring-1 ring-warning/40",
+              inputClassName,
+            )}
           />
-        </PopoverContent>
-      </Popover>
-      </>}
-    </div>{warning && warningDisplay === "below" ? <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
+          {warning ? (
+            <span id={warningId} className="sr-only">
+              {warning}
+            </span>
+          ) : null}
+          {warning && warningDisplay === "indicator" ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  tabIndex={0}
+                  aria-label={warning}
+                  className={cn(
+                    "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    link && !link.locked ? "right-[3.9em]" : "right-[2.1em]",
+                  )}
+                >
+                  <AlertTriangle className="size-[1.05em]" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{warning}</TooltipContent>
+            </Tooltip>
+          ) : null}
+          {link?.locked ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="absolute right-[0.3em] top-1/2 -translate-y-1/2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    disabled={disabled || link.toggleDisabled}
+                    aria-label={lockedHint}
+                    aria-pressed="true"
+                    onClick={toggleLink}
+                    className="date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                  >
+                    <Lock className="size-[1.05em]" />
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{lockedHint}</TooltipContent>
+            </Tooltip>
+          ) : (
+            <>
+              {link ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      disabled={disabled || link.toggleDisabled}
+                      aria-label={unlockedHint}
+                      aria-pressed="false"
+                      onClick={toggleLink}
+                      className="date-field-link absolute right-[2.1em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                    >
+                      <LockOpen className="size-[1.05em]" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{unlockedHint}</TooltipContent>
+                </Tooltip>
+              ) : null}
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    disabled={disabled}
+                    aria-label={dsTexts.date.openCalendar}
+                    className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                  >
+                    <CalendarIcon className="size-[1.05em]" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className={cn("w-auto p-0", gridZoom != null && "grid-date-popover")}
+                  align="start"
+                  style={
+                    gridZoom != null
+                      ? { fontSize: `${(0.8125 * gridZoom).toFixed(4)}rem` }
+                      : undefined
+                  }
+                >
+                  <Calendar
+                    mode="single"
+                    locale={dsTexts.dateLocale}
+                    captionLayout="dropdown"
+                    startMonth={minDate ?? new Date(1900, 0)}
+                    endMonth={maxDate ?? new Date(new Date().getFullYear() + 10, 11)}
+                    disabled={disabledMatcher}
+                    defaultMonth={selected ?? maxDate}
+                    selected={selected}
+                    onSelect={(d) => {
+                      setInvalid(false);
+                      onValidityChange?.(true);
+                      onChange(d ? toISO(d) : "");
+                      setOpen(false);
+                    }}
+                    initialFocus
+                    className={cn(
+                      "pointer-events-auto p-3",
+                      gridZoom != null && "grid-date-calendar",
+                    )}
+                  />
+                </PopoverContent>
+              </Popover>
+            </>
+          )}
+        </div>
+        {warning && warningDisplay === "below" ? (
+          <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p>
+        ) : hint ? (
+          <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p>
+        ) : null}
+      </div>
+    </TooltipProvider>
   );
 }

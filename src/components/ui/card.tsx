@@ -24,7 +24,10 @@ const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("section-heading w-full border-b pb-1 text-xs font-semibold text-muted-foreground", className)}
+      className={cn(
+        "section-heading w-full border-b pb-1 text-xs font-semibold text-muted-foreground",
+        className,
+      )}
       {...props}
     />
   ),

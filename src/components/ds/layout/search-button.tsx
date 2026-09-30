@@ -14,7 +14,14 @@ export function SearchButton({ onClick, label = "Hledat (Ctrl+K)", className }: 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" aria-label={label} onClick={onClick} className={className}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={label}
+          onClick={onClick}
+          className={className}
+        >
           <Search className="size-4" />
         </Button>
       </TooltipTrigger>

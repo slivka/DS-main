@@ -27,7 +27,14 @@ type ColumnFilterProps = {
  * panel with a search box and a checklist of distinct values, plus Select all
  * / Clear actions. An empty selection means "no filter".
  */
-export function ColumnFilter({ options, selected, onChange, label, children, texts: textOverrides }: ColumnFilterProps) {
+export function ColumnFilter({
+  options,
+  selected,
+  onChange,
+  label,
+  children,
+  texts: textOverrides,
+}: ColumnFilterProps) {
   const texts = useResolvedGridTexts(textOverrides);
   const [search, setSearch] = useState("");
 
@@ -36,7 +43,9 @@ export function ColumnFilter({ options, selected, onChange, label, children, tex
     const q = search.trim().toLowerCase();
     if (!q) return options;
     return options.filter(
-      (o) => o.label.toLocaleLowerCase(texts.locale).includes(q) || o.section?.toLocaleLowerCase(texts.locale).includes(q),
+      (o) =>
+        o.label.toLocaleLowerCase(texts.locale).includes(q) ||
+        o.section?.toLocaleLowerCase(texts.locale).includes(q),
     );
   }, [options, search]);
 

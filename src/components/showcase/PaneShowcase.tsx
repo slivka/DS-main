@@ -38,14 +38,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatAmount, formatDate } from "@/lib/format";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_JOURNAL, MOCK_PARTNERS, type JournalEntry } from "@/lib/mock/accounting";
+import {
+  MOCK_ACCOUNTS,
+  MOCK_BOOKS,
+  MOCK_DIMENSIONS,
+  MOCK_JOURNAL,
+  MOCK_PARTNERS,
+  type JournalEntry,
+} from "@/lib/mock/accounting";
 
 const PREVIEW_WIDTHS = [1100, 1440, 1920] as const;
 const MIN_PANE_WIDTH = 420;
 const STATE_KEY = "ds-showcase:pane-tabs:v216";
 const LAYOUTS_KEY = "ds-showcase:layouts:v216";
 
-const ICONS = { issued: FileText, received: ReceiptText, journal: BookOpen, partners: Users, cash: Wallet, document: LayoutGrid } as const;
+const ICONS = {
+  issued: FileText,
+  received: ReceiptText,
+  journal: BookOpen,
+  partners: Users,
+  cash: Wallet,
+  document: LayoutGrid,
+} as const;
 type IconName = keyof typeof ICONS;
 
 const BASE_PAGES: { route: string; title: string; icon: IconName }[] = [
@@ -55,7 +69,14 @@ const BASE_PAGES: { route: string; title: string; icon: IconName }[] = [
   { route: "/partneri", title: "Partneři", icon: "partners" },
   { route: "/pokladna", title: "Pokladna", icon: "cash" },
 ];
-const PAGES = [...BASE_PAGES, ...Array.from({ length: 40 }, (_, index) => ({ route: `/agenda-${index + 1}`, title: `Agenda ${index + 1}`, icon: "journal" as const }))];
+const PAGES = [
+  ...BASE_PAGES,
+  ...Array.from({ length: 40 }, (_, index) => ({
+    route: `/agenda-${index + 1}`,
+    title: `Agenda ${index + 1}`,
+    icon: "journal" as const,
+  })),
+];
 
 /** Výchozí stav: tři nezávislé panely pro zátěžovou kontrolu rolování. */
 function initialState(): PaneTabsState {
@@ -68,21 +89,36 @@ function initialState(): PaneTabsState {
     const tab: PaneTab = { ...createTab(spec, index), id: spec.id };
     return { id: `pane-${index + 1}`, activeTab: tab.id, tabs: [tab] };
   });
-  return { version: 2, layout: 3, widths: [1 / 3, 1 / 3, 1 / 3], active: "pane-1", hiddenPanes: null, panes };
+  return {
+    version: 2,
+    layout: 3,
+    widths: [1 / 3, 1 / 3, 1 / 3],
+    active: "pane-1",
+    hiddenPanes: null,
+    panes,
+  };
 }
 
-type Invoice = { id: string; number: string; date: string; partner: string; amount: number; text: string; updatedAt: string };
+type Invoice = {
+  id: string;
+  number: string;
+  date: string;
+  partner: string;
+  amount: number;
+  text: string;
+  updatedAt: string;
+};
 
 const INVOICES: Invoice[] = Array.from({ length: 500 }, (_, index) => {
   const row = MOCK_JOURNAL[index % MOCK_JOURNAL.length] as JournalEntry;
   return {
-  id: `FV${String(2026000100 + index)}`,
-  number: `FV${String(2026000100 + index)}`,
-  date: row.date,
-  partner: row.partner,
-  amount: row.debit,
-  text: row.text,
-  updatedAt: "2026-09-01T08:00:00Z",
+    id: `FV${String(2026000100 + index)}`,
+    number: `FV${String(2026000100 + index)}`,
+    date: row.date,
+    partner: row.partner,
+    amount: row.debit,
+    text: row.text,
+    updatedAt: "2026-09-01T08:00:00Z",
   };
 });
 
@@ -97,35 +133,84 @@ function InvoiceList({ title }: { title: string }) {
 
   useEffect(() => {
     if (!pane || !tabs) return;
-    return tabs.registerRecordNav(pane.tabId, () => INVOICES.map((invoice) => ({ route: "/faktura", params: { id: invoice.id }, title: detailTitle(invoice.id), icon: "document" })));
+    return tabs.registerRecordNav(pane.tabId, () =>
+      INVOICES.map((invoice) => ({
+        route: "/faktura",
+        params: { id: invoice.id },
+        title: detailTitle(invoice.id),
+        icon: "document",
+      })),
+    );
   }, [pane?.tabId]);
 
   const columns = useMemo<DataGridColumn<Invoice>[]>(
     () => [
-      { id: "number", label: "Doklad", width: 140, value: (row) => row.number, render: (row) => <span className="font-mono">{row.number}</span> },
-      { id: "date", label: "Datum", width: 110, value: (row) => row.date, render: (row) => formatDate(row.date) },
+      {
+        id: "number",
+        label: "Doklad",
+        width: 140,
+        value: (row) => row.number,
+        render: (row) => <span className="font-mono">{row.number}</span>,
+      },
+      {
+        id: "date",
+        label: "Datum",
+        width: 110,
+        value: (row) => row.date,
+        render: (row) => formatDate(row.date),
+      },
       { id: "partner", label: "Partner", width: 180, value: (row) => row.partner },
-      { id: "amount", label: "Částka", numeric: true, width: 130, value: (row) => row.amount, render: (row) => formatAmount(row.amount, 2) },
+      {
+        id: "amount",
+        label: "Částka",
+        numeric: true,
+        width: 130,
+        value: (row) => row.amount,
+        render: (row) => formatAmount(row.amount, 2),
+      },
     ],
     [],
   );
 
   const open = (id: string, isNew = false) =>
-    tabs?.openRecord("/faktura", { id }, { fromTabId: pane?.tabId, isNew, modifiers: modifiers.current, title: detailTitle(id), shortTitle: id.startsWith("new-") ? "Nová" : id, icon: "document" });
+    tabs?.openRecord(
+      "/faktura",
+      { id },
+      {
+        fromTabId: pane?.tabId,
+        isNew,
+        modifiers: modifiers.current,
+        title: detailTitle(id),
+        shortTitle: id.startsWith("new-") ? "Nová" : id,
+        icon: "document",
+      },
+    );
 
   return (
     <PageLayout
       variant="list"
       className="gap-3"
       onPointerDownCapture={(event) => {
-        modifiers.current = { metaKey: event.metaKey, ctrlKey: event.ctrlKey, shiftKey: event.shiftKey };
+        modifiers.current = {
+          metaKey: event.metaKey,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey,
+        };
       }}
     >
       <PageHeader
         title={title}
         menuActions={[{ label: "Výkazy", onClick: () => toast.info("Ukázková akce stránky") }]}
       />
-      <DataGrid<Invoice> storageKey="pane-showcase-invoices" rows={INVOICES} columns={columns} rowKey={(row) => row.id} onRowClick={(row) => open(row.id)} addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }} paginated={false} />
+      <DataGrid<Invoice>
+        storageKey="pane-showcase-invoices"
+        rows={INVOICES}
+        columns={columns}
+        rowKey={(row) => row.id}
+        onRowClick={(row) => open(row.id)}
+        addAction={{ label: "Přidat", onClick: () => open(`new-${counter.current++}`, true) }}
+        paginated={false}
+      />
     </PageLayout>
   );
 }
@@ -134,16 +219,38 @@ function InvoiceList({ title }: { title: string }) {
 function PageList({ title }: { title: string }) {
   const columns = useMemo<DataGridColumn<JournalEntry>[]>(
     () => [
-      { id: "date", label: "Datum", width: 110, value: (row) => row.date, render: (row) => formatDate(row.date) },
+      {
+        id: "date",
+        label: "Datum",
+        width: 110,
+        value: (row) => row.date,
+        render: (row) => formatDate(row.date),
+      },
       { id: "document", label: "Doklad", width: 130, value: (row) => row.document },
-      { id: "amount", label: "Částka", numeric: true, width: 140, value: (row) => row.debit, render: (row) => formatAmount(row.debit, 2) },
+      {
+        id: "amount",
+        label: "Částka",
+        numeric: true,
+        width: 140,
+        value: (row) => row.debit,
+        render: (row) => formatAmount(row.debit, 2),
+      },
     ],
     [],
   );
   return (
     <PageLayout variant="list">
-      <PageHeader title={title} menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]} />
-      <DataGrid<JournalEntry> storageKey={`pane-showcase-${title}`} rows={MOCK_JOURNAL.slice(0, 25)} columns={columns} rowKey={(row) => row.id} paginated />
+      <PageHeader
+        title={title}
+        menuActions={[{ label: "Importovat", onClick: () => toast.info("Ukázkový import") }]}
+      />
+      <DataGrid<JournalEntry>
+        storageKey={`pane-showcase-${title}`}
+        rows={MOCK_JOURNAL.slice(0, 25)}
+        columns={columns}
+        rowKey={(row) => row.id}
+        paginated
+      />
     </PageLayout>
   );
 }
@@ -158,9 +265,39 @@ const DOCUMENT_LINES: JournalLine[] = Array.from({ length: 40 }, (_, index) => (
 }));
 
 function LongDocument({ id }: { id: string }) {
-  const [value, setValue] = useState<DocumentHeaderValue>({ number: id, accountingDate: "2026-09-27", issueDate: "2026-09-27", description: "Kontrola nezávislého rolování a zoomu", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum" });
-  const [lines, setLines] = useState(() => DOCUMENT_LINES.map((line) => ({ ...line, id: `${id}-${line.id}` })));
-  return <PageLayout variant="form"><DocumentForm title={`Interní doklad ${id}`} value={value} onChange={setValue} lines={lines} onLinesChange={setLines} books={MOCK_BOOKS} accounts={MOCK_ACCOUNTS} partners={MOCK_PARTNERS} dimensions={MOCK_DIMENSIONS} documentType="ID" homeCurrency="CZK" homeCurrencySymbol="Kč" status="draft" linesEditorProps={{ storageKey: "pane-showcase-document-lines" }} /></PageLayout>;
+  const [value, setValue] = useState<DocumentHeaderValue>({
+    number: id,
+    accountingDate: "2026-09-27",
+    issueDate: "2026-09-27",
+    description: "Kontrola nezávislého rolování a zoomu",
+    currency: "CZK",
+    rate: 1,
+    amountTotal: 0,
+    totalMode: "sum",
+  });
+  const [lines, setLines] = useState(() =>
+    DOCUMENT_LINES.map((line) => ({ ...line, id: `${id}-${line.id}` })),
+  );
+  return (
+    <PageLayout variant="form">
+      <DocumentForm
+        title={`Interní doklad ${id}`}
+        value={value}
+        onChange={setValue}
+        lines={lines}
+        onLinesChange={setLines}
+        books={MOCK_BOOKS}
+        accounts={MOCK_ACCOUNTS}
+        partners={MOCK_PARTNERS}
+        dimensions={MOCK_DIMENSIONS}
+        documentType="ID"
+        homeCurrency="CZK"
+        homeCurrencySymbol="Kč"
+        status="draft"
+        linesEditorProps={{ storageKey: "pane-showcase-document-lines" }}
+      />
+    </PageLayout>
+  );
 }
 
 type InvoiceForm = { partner: string; amount: string; text: string };
@@ -169,7 +306,11 @@ type InvoiceForm = { partner: string; amount: string; text: string };
 function InvoiceDetail({ id }: { id: string }) {
   const pane = usePane();
   const invoice = INVOICES.find((item) => item.id === id);
-  const base: InvoiceForm = { partner: invoice?.partner ?? "", amount: invoice ? String(invoice.amount) : "", text: invoice?.text ?? "" };
+  const base: InvoiceForm = {
+    partner: invoice?.partner ?? "",
+    amount: invoice ? String(invoice.amount) : "",
+    text: invoice?.text ?? "",
+  };
   const [form, setForm, draft] = useTabDraft<InvoiceForm>(pane?.tabId, base, "form", {
     route: "/faktura",
     params: { id },
@@ -188,38 +329,82 @@ function InvoiceDetail({ id }: { id: string }) {
     <div className="space-y-4">
       <PageHeader
         title={detailTitle(id)}
-        menuActions={[{ label: "Uložit", disabled: !dirty, disabledReason: "Nejsou žádné změny", onClick: save }]}
+        menuActions={[
+          {
+            label: "Uložit",
+            disabled: !dirty,
+            disabledReason: "Nejsou žádné změny",
+            onClick: save,
+          },
+        ]}
       />
-      {draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}
-      {draft.conflict ? <DraftRestoredBanner variant="conflict" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}
+      {draft.restored ? (
+        <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} />
+      ) : null}
+      {draft.conflict ? (
+        <DraftRestoredBanner
+          variant="conflict"
+          savedAt={draft.conflict.savedAt}
+          onShowDraft={draft.applyConflict}
+          onDiscard={draft.discard}
+        />
+      ) : null}
       <div className="grid max-w-xl gap-3">
         <div className="space-y-1.5">
           <Label htmlFor={`partner-${id}`}>Partner</Label>
-          <Input id={`partner-${id}`} value={form.partner} onChange={(event) => setForm({ ...form, partner: event.target.value })} />
+          <Input
+            id={`partner-${id}`}
+            value={form.partner}
+            onChange={(event) => setForm({ ...form, partner: event.target.value })}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor={`text-${id}`}>Popis</Label>
-          <Textarea id={`text-${id}`} value={form.text} onChange={(event) => setForm({ ...form, text: event.target.value })} />
+          <Textarea
+            id={`text-${id}`}
+            value={form.text}
+            onChange={(event) => setForm({ ...form, text: event.target.value })}
+          />
         </div>
-        <p className="text-sm text-muted-foreground">Změňte popis a obnovte stránku prohlížeče – rozepsaná verze se po chvíli (1 s) uloží a po obnovení se nabídne zpět.</p>
+        <p className="text-sm text-muted-foreground">
+          Změňte popis a obnovte stránku prohlížeče – rozepsaná verze se po chvíli (1 s) uloží a po
+          obnovení se nabídne zpět.
+        </p>
       </div>
     </div>
   );
 }
 
 /** Ukázkové menu – klik nahrazuje aktivní záložku, Cmd/Ctrl + klik otevře novou. */
-function DemoMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void }) {
+function DemoMenu({
+  layouts,
+  setLayouts,
+}: {
+  layouts: StoredLayout[];
+  setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void;
+}) {
   const tabs = usePaneTabs();
   return (
-    <nav aria-label="Ukázkové menu" className="flex w-48 shrink-0 flex-col gap-0.5 border-r bg-card p-2 text-sm">
+    <nav
+      aria-label="Ukázkové menu"
+      className="flex w-48 shrink-0 flex-col gap-0.5 border-r bg-card p-2 text-sm"
+    >
       <div className="mb-2 flex items-center gap-1">
-        <div className="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-md border px-2 text-muted-foreground"><Search className="size-4" /><span className="truncate">Hledat v menu…</span></div>
+        <div className="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-md border px-2 text-muted-foreground">
+          <Search className="size-4" />
+          <span className="truncate">Hledat v menu…</span>
+        </div>
         <ShowcaseLayoutMenu layouts={layouts} setLayouts={setLayouts} icon />
       </div>
       {PAGES.map((page) => {
         const Icon = ICONS[page.icon];
         return (
-          <PaneLink key={page.route} route={page.route} options={{ title: page.title, icon: page.icon, kind: "list" }} className="flex h-8 items-center gap-2 rounded-md px-2 hover-surface">
+          <PaneLink
+            key={page.route}
+            route={page.route}
+            options={{ title: page.title, icon: page.icon, kind: "list" }}
+            className="flex h-8 items-center gap-2 rounded-md px-2 hover-surface"
+          >
             <Icon className="size-4" />
             {page.title}
           </PaneLink>
@@ -233,7 +418,16 @@ function DemoMenu({ layouts, setLayouts }: { layouts: StoredLayout[]; setLayouts
           className="w-full"
           onClick={() => {
             for (let index = 1; index <= 11; index += 1) {
-              tabs?.openTab("/denik", { strana: index }, { target: "newTab", title: `Účetní deník – strana ${index}`, shortTitle: `Deník ${index}`, icon: "journal" });
+              tabs?.openTab(
+                "/denik",
+                { strana: index },
+                {
+                  target: "newTab",
+                  title: `Účetní deník – strana ${index}`,
+                  shortTitle: `Deník ${index}`,
+                  icon: "journal",
+                },
+              );
             }
           }}
         >
@@ -277,9 +471,11 @@ export function PaneShowcase() {
   }, [layouts, loaded]);
 
   const renderTab = (tab: PaneTab) => {
-    if (tab.route === "/doklad-a" || tab.route === "/doklad-b") return <LongDocument id={tab.route === "/doklad-a" ? "ID2026000101" : "ID2026000102"} />;
+    if (tab.route === "/doklad-a" || tab.route === "/doklad-b")
+      return <LongDocument id={tab.route === "/doklad-a" ? "ID2026000101" : "ID2026000102"} />;
     if (tab.route === "/faktura") return <InvoiceDetail id={String(tab.params?.id ?? "")} />;
-    if (tab.route === "/faktury-vydane") return <InvoiceList title={tab.title ?? "Vydané faktury"} />;
+    if (tab.route === "/faktury-vydane")
+      return <InvoiceList title={tab.title ?? "Vydané faktury"} />;
     return <PageList title={tab.title ?? "Stránka"} />;
   };
 
@@ -292,14 +488,22 @@ export function PaneShowcase() {
         toast.success("Uloženo");
         return true;
       }}
-      onNewTabRequest={() => toast.info("Alt+T otevře vyhledávání; vybraná stránka se otevře do nové záložky.")}
+      onNewTabRequest={() =>
+        toast.info("Alt+T otevře vyhledávání; vybraná stránka se otevře do nové záložky.")
+      }
     >
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-3">
           <ShowcaseLayoutSwitcher maxLayout={maxLayout} />
           <div className="flex items-center gap-1">
             {PREVIEW_WIDTHS.map((width) => (
-              <Button key={width} type="button" size="sm" variant={previewWidth === width ? "default" : "outline"} onClick={() => setPreviewWidth(width)}>
+              <Button
+                key={width}
+                type="button"
+                size="sm"
+                variant={previewWidth === width ? "default" : "outline"}
+                onClick={() => setPreviewWidth(width)}
+              >
                 {width.toLocaleString("cs-CZ")} px
               </Button>
             ))}
@@ -315,19 +519,30 @@ export function PaneShowcase() {
           >
             Obnovit ukázku
           </Button>
-          <span className="text-sm text-muted-foreground">Alt+M maximalizace · Esc obnovit · Alt+Shift+T znovu otevřít · Alt+L rozložení · Alt+1/2/3 · Alt+W</span>
+          <span className="text-sm text-muted-foreground">
+            Alt+M maximalizace · Esc obnovit · Alt+Shift+T znovu otevřít · Alt+L rozložení ·
+            Alt+1/2/3 · Alt+W
+          </span>
         </div>
         <ol className="grid gap-1 rounded-lg border bg-card p-3 text-sm text-muted-foreground md:grid-cols-2">
-          <li>1. Lišta je viditelná i s jedinou záložkou. Klik v menu ji nahradí; ← vrátí předchozí stránku.</li>
+          <li>
+            1. Lišta je viditelná i s jedinou záložkou. Klik v menu ji nahradí; ← vrátí předchozí
+            stránku.
+          </li>
           <li>2. Cmd/Ctrl + klik otevře novou záložku; Cmd/Ctrl + Shift + klik sousední panel.</li>
-          <li>3. Ve 2 panelech další řádek nahradí čistý detail vpravo; při změně otevře nový detail.</li>
+          <li>
+            3. Ve 2 panelech další řádek nahradí čistý detail vpravo; při změně otevře nový detail.
+          </li>
           <li>4. Maximalizujte panel ikonou nebo Alt+M, obnovte Esc.</li>
           <li>5. Rozepište popis faktury a obnovte stránku – nabídne se rozepsaná verze.</li>
           <li>6. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
         </ol>
 
         <div className="overflow-x-auto rounded-lg border bg-muted p-3">
-          <div className="mx-auto overflow-hidden rounded-md border bg-card" style={{ width: `${previewWidth}px` }}>
+          <div
+            className="mx-auto overflow-hidden rounded-md border bg-card"
+            style={{ width: `${previewWidth}px` }}
+          >
             <DemoPinnedBar pinned={pinned} setPinned={setPinned} />
             <div className="flex h-[600px] min-h-0 overflow-hidden">
               <DemoMenu layouts={layouts} setLayouts={setLayouts} />
@@ -345,14 +560,27 @@ export function PaneShowcase() {
   );
 }
 
-function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: StoredLayout[]; setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void; icon?: boolean }) {
+function ShowcaseLayoutMenu({
+  layouts,
+  setLayouts,
+  icon = false,
+}: {
+  layouts: StoredLayout[];
+  setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void;
+  icon?: boolean;
+}) {
   const tabs = usePaneTabs();
   return (
     <LayoutMenu
       items={layouts}
       trigger={icon ? "icon" : "default"}
       onSave={({ name, snapshot }) => {
-        const item: StoredLayout = { id: `layout-${Date.now()}`, name, panes: snapshot?.layout ?? 1, snapshot };
+        const item: StoredLayout = {
+          id: `layout-${Date.now()}`,
+          name,
+          panes: snapshot?.layout ?? 1,
+          snapshot,
+        };
         setLayouts((items) => [...items, item]);
         toast.success(`Rozložení „${name}“ uloženo`);
       }}
@@ -360,25 +588,43 @@ function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: St
         const item = layouts.find((layout) => layout.id === id);
         if (!item?.snapshot || !tabs) return;
         const skipped = tabs.applyLayout(item.snapshot, { keepDirty: true });
-        if (skipped.length) toast.info(`Rozepsané záložky zůstaly na konci panelu 1: ${skipped.length.toLocaleString("cs-CZ")}`);
+        if (skipped.length)
+          toast.info(
+            `Rozepsané záložky zůstaly na konci panelu 1: ${skipped.length.toLocaleString("cs-CZ")}`,
+          );
       }}
       onUpdate={(id, patch) =>
         setLayouts((items) =>
           items.map((item) => {
             if (item.id !== id) return item;
             const snapshot = patch.snapshot !== undefined ? patch.snapshot : item.snapshot;
-            return { ...item, ...(patch.name ? { name: patch.name } : {}), snapshot, panes: snapshot?.layout ?? item.panes };
+            return {
+              ...item,
+              ...(patch.name ? { name: patch.name } : {}),
+              snapshot,
+              panes: snapshot?.layout ?? item.panes,
+            };
           }),
         )
       }
       onDelete={(id) => setLayouts((items) => items.filter((item) => item.id !== id))}
-      onReorder={(ids) => setLayouts((items) => ids.map((id) => items.find((item) => item.id === id)!).filter(Boolean))}
+      onReorder={(ids) =>
+        setLayouts((items) =>
+          ids.map((id) => items.find((item) => item.id === id)!).filter(Boolean),
+        )
+      }
     />
   );
 }
 
 /** Připnuté stránky – klik nahradí aktivní záložku, Ctrl/Cmd nebo prostřední tlačítko otevře novou. */
-function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (update: (ids: string[]) => string[]) => void }) {
+function DemoPinnedBar({
+  pinned,
+  setPinned,
+}: {
+  pinned: string[];
+  setPinned: (update: (ids: string[]) => string[]) => void;
+}) {
   const tabs = usePaneTabs();
   if (!tabs) return null;
   const active = tabs.state.panes.find((pane) => pane.id === tabs.state.active);
@@ -394,7 +640,12 @@ function DemoPinnedBar({ pinned, setPinned }: { pinned: string[]; setPinned: (up
       }))}
       onOpen={(id, { newPane }) => {
         const page = PAGES.find((item) => item.route === id);
-        if (page) tabs.openTab(page.route, undefined, { target: newPane ? "newTab" : "replace", title: page.title, icon: page.icon });
+        if (page)
+          tabs.openTab(page.route, undefined, {
+            target: newPane ? "newTab" : "replace",
+            title: page.title,
+            icon: page.icon,
+          });
       }}
       onUnpin={(id) => setPinned((ids) => ids.filter((item) => item !== id))}
       onReorder={(ids) => setPinned(() => ids)}
@@ -409,7 +660,10 @@ function ShowcaseLayoutSwitcher({ maxLayout }: { maxLayout: 1 | 2 | 3 }) {
     <LayoutSwitcher
       value={tabs.state.layout}
       maxLayout={maxLayout}
-      requiredWidths={{ 2: requiredPaneWidth(2, MIN_PANE_WIDTH) + 192, 3: requiredPaneWidth(3, MIN_PANE_WIDTH) + 192 }}
+      requiredWidths={{
+        2: requiredPaneWidth(2, MIN_PANE_WIDTH) + 192,
+        3: requiredPaneWidth(3, MIN_PANE_WIDTH) + 192,
+      }}
       onChange={tabs.setLayout}
     />
   );

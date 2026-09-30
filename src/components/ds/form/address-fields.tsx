@@ -84,7 +84,10 @@ export function AddressFieldGrid({
         <Input value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
       </Field>
       {showCountry ? (
-        <Field label={labels.country} className={mapAction ? "@min-[40rem]:col-span-2" : countryClassName}>
+        <Field
+          label={labels.country}
+          className={mapAction ? "@min-[40rem]:col-span-2" : countryClassName}
+        >
           {countries ? (
             <OptionSelect
               value={value.country ?? defaultCountry}
@@ -103,7 +106,13 @@ export function AddressFieldGrid({
       {mapAction ? (
         <div data-slot="address-map-action" className="flex flex-col @min-[40rem]:col-start-4">
           <span aria-hidden className="hidden h-5 @min-[40rem]:mb-1 @min-[40rem]:block" />
-          <Button type="button" variant="outline" className="h-9 w-full" onClick={mapAction.onClick} disabled={mapAction.disabled}>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 w-full"
+            onClick={mapAction.onClick}
+            disabled={mapAction.disabled}
+          >
             {mapAction.label ?? "Mapa"}
           </Button>
         </div>

@@ -3,12 +3,21 @@ import type { ExportCell, GridExportData } from "../../../lib/excel-export";
 import { useDsTexts, DS_TEXTS_CS, type DsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { PrintPreviewDialog } from "../print/print-preview-dialog";
-import { buildReportPdf, type PrintColumn, type PrintContext, type PrintRowStyle, type PrintSection } from "../print/report-pdf";
+import {
+  buildReportPdf,
+  type PrintColumn,
+  type PrintContext,
+  type PrintRowStyle,
+  type PrintSection,
+} from "../print/report-pdf";
 import { gridPeriodLabel, type GridPeriodValue } from "./grid-period";
 import { GridSegmentedToggle, type GridSegmentedToggleOption } from "./grid-segmented-toggle";
 
 export type GridPrintOrientation = "portrait" | "landscape";
-export interface GridPrintParam { label: string; value: string }
+export interface GridPrintParam {
+  label: string;
+  value: string;
+}
 
 /** Nastavení tisku gridu do PDF. Bez `context` se položka Tisk nezobrazí. */
 export interface GridPrintConfig {
@@ -31,8 +40,22 @@ const fmtDate = (iso: string) => {
 };
 
 /** Parametry záhlaví z kontextového řádku gridu, `extra` se připojí za ně. */
-export function gridPrintParams({ book, period, periodRange, search, filters = [], asOf, extra = [] }: {
-  book?: { books: { id: string; code?: string; name: string }[]; value: string; allBooksLabel?: string } | undefined;
+export function gridPrintParams({
+  book,
+  period,
+  periodRange,
+  search,
+  filters = [],
+  asOf,
+  extra = [],
+}: {
+  book?:
+    | {
+        books: { id: string; code?: string; name: string }[];
+        value: string;
+        allBooksLabel?: string;
+      }
+    | undefined;
   period?: GridPeriodValue | undefined;
   /** Zobrazit u období i rozsah datumů (výchozí ano). */
   periodRange?: boolean;
@@ -46,11 +69,20 @@ export function gridPrintParams({ book, period, periodRange, search, filters = [
   const out: GridPrintParam[] = [];
   if (book) {
     const found = book.value === "all" ? null : book.books.find((item) => item.id === book.value);
-    out.push({ label: t.print.book, value: found ? found.name : book.allBooksLabel ?? t.print.allBooks });
+    out.push({
+      label: t.print.book,
+      value: found ? found.name : (book.allBooksLabel ?? t.print.allBooks),
+    });
   }
   if (period) {
     const label = gridPeriodLabel(period);
-    out.push({ label: t.print.period, value: periodRange === false ? label : `${label} (${fmtDate(period.from)} – ${fmtDate(period.to)})` });
+    out.push({
+      label: t.print.period,
+      value:
+        periodRange === false
+          ? label
+          : `${label} (${fmtDate(period.from)} – ${fmtDate(period.to)})`,
+    });
   }
   if (search?.trim()) out.push({ label: t.print.search, value: search.trim() });
   const activeFilters = filters.filter(Boolean);
@@ -60,14 +92,22 @@ export function gridPrintParams({ book, period, periodRange, search, filters = [
 }
 
 const ACCOUNT_LABEL = /(účet|účtu|^md$|^dal$|protiúčet)/i;
-const isAccountValue = (value: ExportCell) => value == null || value === "" || /^\d{3,}$/.test(String(value));
+const isAccountValue = (value: ExportCell) =>
+  value == null || value === "" || /^\d{3,}$/.test(String(value));
 
 /** Formát tiskového sloupce podle metadat exportu. */
-export function gridPrintColumnFormat(data: GridExportData, index: number): NonNullable<PrintColumn["format"]> {
+export function gridPrintColumnFormat(
+  data: GridExportData,
+  index: number,
+): NonNullable<PrintColumn["format"]> {
   const type = data.columnMeta?.[index]?.type;
   if (type === "number") return "amount";
   if (type === "date" || type === "datetime") return "date";
-  if (ACCOUNT_LABEL.test(data.columns[index] ?? "") && data.rows.every((row) => isAccountValue(row[index]))) return "code";
+  if (
+    ACCOUNT_LABEL.test(data.columns[index] ?? "") &&
+    data.rows.every((row) => isAccountValue(row[index]))
+  )
+    return "code";
   return "text";
 }
 
@@ -77,7 +117,11 @@ export function gridPrintColumnWidths(data: GridExportData): number[] {
   return data.columns.map((label, index) => {
     const format = gridPrintColumnFormat(data, index);
     let chars = label.length;
-    for (const row of sample) chars = Math.max(chars, String(row[index] ?? "").trim().length + (format === "amount" ? 4 : 0));
+    for (const row of sample)
+      chars = Math.max(
+        chars,
+        String(row[index] ?? "").trim().length + (format === "amount" ? 4 : 0),
+      );
     const min = format === "amount" ? 24 : 14;
     return Math.min(80, Math.max(min, chars * 1.6 + 4));
   });
@@ -85,7 +129,9 @@ export function gridPrintColumnWidths(data: GridExportData): number[] {
 
 /** Více než 7 sloupců nebo součet šířek nad 180 mm → na šířku. */
 export function gridPrintOrientation(widths: number[]): GridPrintOrientation {
-  return widths.length > 7 || widths.reduce((sum, width) => sum + width, 0) > 180 ? "landscape" : "portrait";
+  return widths.length > 7 || widths.reduce((sum, width) => sum + width, 0) > 180
+    ? "landscape"
+    : "portrait";
 }
 
 export function gridPrintPageEstimate(rows: number, orientation: GridPrintOrientation) {
@@ -103,7 +149,10 @@ function printOrder(data: GridExportData): number[] {
     while (p <= to) {
       let r = p;
       while (r <= to && (levels[r] ?? 0) !== level) r += 1;
-      if (r > to) { for (let i = p; i <= to; i += 1) out.push(i); return; }
+      if (r > to) {
+        for (let i = p; i <= to; i += 1) out.push(i);
+        return;
+      }
       out.push(r);
       if (r > p) walk(p, r - 1, level + 1);
       p = r + 1;
@@ -114,7 +163,10 @@ function printOrder(data: GridExportData): number[] {
 }
 
 /** Tisková tabulka ze stejných dat jako Excel export. */
-export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem"): Extract<PrintSection, { type: "table" }> {
+export function buildGridPrintSection(
+  data: GridExportData,
+  totalLabel = "Celkem",
+): Extract<PrintSection, { type: "table" }> {
   const levels = data.rowLevels;
   const minLevel = levels?.length ? Math.min(...levels) : 0;
   const maxLevel = levels?.length ? Math.max(...levels) : 0;
@@ -135,19 +187,29 @@ export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem
       record[column.key] = index === 0 && typeof value === "string" ? value.trimStart() : value;
     });
     rows.push(record);
-    const isNode = level !== undefined && (data.outlineSummaryBelow
-      ? data.subtotalRows?.some((item) => item.row === i) ?? false
-      : level < maxLevel);
+    const isNode =
+      level !== undefined &&
+      (data.outlineSummaryBelow
+        ? (data.subtotalRows?.some((item) => item.row === i) ?? false)
+        : level < maxLevel);
     const indent = level !== undefined ? (level - minLevel) * INDENT_MM : 0;
-    rowStyles.push(isNode || indent ? { ...(isNode ? { bold: true } : {}), ...(indent ? { indent } : {}) } : undefined);
+    rowStyles.push(
+      isNode || indent
+        ? { ...(isNode ? { bold: true } : {}), ...(indent ? { indent } : {}) }
+        : undefined,
+    );
   }
   let totals: Record<string, unknown> | undefined;
-  const sumColumns = columns.filter((column, index) => column.format === "amount" && data.columnMeta?.[index]?.total !== "none");
+  const sumColumns = columns.filter(
+    (column, index) => column.format === "amount" && data.columnMeta?.[index]?.total !== "none",
+  );
   if (data.totalRows?.length) {
     const first = data.totalRows[0]!;
     const span = Math.max(1, first.labelSpan ?? 1);
     totals = { c0: first.label };
-    first.cells.forEach((value, index) => { totals![`c${span + index}`] = value; });
+    first.cells.forEach((value, index) => {
+      totals![`c${span + index}`] = value;
+    });
   } else if (data.summarize !== false && sumColumns.length) {
     totals = { c0: totalLabel };
     for (const column of sumColumns) {
@@ -162,14 +224,30 @@ export function buildGridPrintSection(data: GridExportData, totalLabel = "Celkem
   return { type: "table", columns, rows, rowStyles, ...(totals ? { totals } : {}) };
 }
 
-export function buildGridPrintPdf(data: GridExportData, config: GridPrintConfig, orientation: GridPrintOrientation) {
-  return buildReportPdf({ title: config.title, params: config.params, context: config.context, orientation, sections: [buildGridPrintSection(data)] });
+export function buildGridPrintPdf(
+  data: GridExportData,
+  config: GridPrintConfig,
+  orientation: GridPrintOrientation,
+) {
+  return buildReportPdf({
+    title: config.title,
+    params: config.params,
+    context: config.context,
+    orientation,
+    sections: [buildGridPrintSection(data)],
+  });
 }
 
 /** Hook pro položku „Tisk (PDF)…“: potvrzení velkého objemu a náhled s volbou orientace. */
-export function useGridPrint(getData: () => GridExportData | Promise<GridExportData>, config: GridPrintConfig | undefined) {
+export function useGridPrint(
+  getData: () => GridExportData | Promise<GridExportData>,
+  config: GridPrintConfig | undefined,
+) {
   const dsTexts = useDsTexts();
-  const orientationOptions: GridSegmentedToggleOption<GridPrintOrientation>[] = [{ value: "portrait", label: dsTexts.print.portrait }, { value: "landscape", label: dsTexts.print.landscape }];
+  const orientationOptions: GridSegmentedToggleOption<GridPrintOrientation>[] = [
+    { value: "portrait", label: dsTexts.print.portrait },
+    { value: "landscape", label: dsTexts.print.landscape },
+  ];
   const { confirm, confirmDialog } = useConfirmDialog();
   const [data, setData] = useState<GridExportData | null>(null);
   const [orientation, setOrientation] = useState<GridPrintOrientation>("portrait");
@@ -180,8 +258,12 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
     if (!open || !data || !config) return;
     let cancelled = false;
     setBlob(null);
-    void buildGridPrintPdf(data, config, orientation).then((next) => { if (!cancelled) setBlob(next); });
-    return () => { cancelled = true; };
+    void buildGridPrintPdf(data, config, orientation).then((next) => {
+      if (!cancelled) setBlob(next);
+    });
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, data, orientation]);
 
@@ -189,11 +271,22 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
     if (!config) return;
     const next = await getData();
     const auto = gridPrintOrientation(gridPrintColumnWidths(next));
-    const show = () => { setData(next); setOrientation(auto); setOpen(true); };
+    const show = () => {
+      setData(next);
+      setOrientation(auto);
+      setOpen(true);
+    };
     if (next.rows.length > GRID_PRINT_LARGE_ROWS) {
       const count = next.rows.length.toLocaleString(dsTexts.intlLocale);
-      const pages = gridPrintPageEstimate(next.rows.length, auto).toLocaleString(dsTexts.intlLocale);
-      confirm({ title: dsTexts.print.largeTitle, description: dsTexts.print.largeDescription(count, pages), confirmLabel: dsTexts.print.print, onConfirm: show });
+      const pages = gridPrintPageEstimate(next.rows.length, auto).toLocaleString(
+        dsTexts.intlLocale,
+      );
+      confirm({
+        title: dsTexts.print.largeTitle,
+        description: dsTexts.print.largeDescription(count, pages),
+        confirmLabel: dsTexts.print.print,
+        onConfirm: show,
+      });
     } else show();
   };
 
@@ -206,7 +299,15 @@ export function useGridPrint(getData: () => GridExportData | Promise<GridExportD
         blob={blob}
         title={config.title}
         companyName={config.context.company.name}
-        settings={<GridSegmentedToggle options={orientationOptions} value={orientation} defaultValue="portrait" onChange={(value) => setOrientation(value as GridPrintOrientation)} ariaLabel={dsTexts.print.orientation} />}
+        settings={
+          <GridSegmentedToggle
+            options={orientationOptions}
+            value={orientation}
+            defaultValue="portrait"
+            onChange={(value) => setOrientation(value as GridPrintOrientation)}
+            ariaLabel={dsTexts.print.orientation}
+          />
+        }
       />
     </>
   ) : null;

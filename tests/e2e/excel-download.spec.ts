@@ -9,12 +9,13 @@ import { spawnSync } from "node:child_process";
 const EXCEL_ERRORS = ["#REF!", "#DIV/0!", "#VALUE!", "#N/A", "#NAME?", "#NUM!", "#NULL!"];
 const REPAIR_WARNINGS = /repair|recovered|corrupt|poškozen|opraven|obnoven/i;
 
-const decodeXml = (value: string) => value
-  .replace(/&quot;/g, '"')
-  .replace(/&apos;/g, "'")
-  .replace(/&lt;/g, "<")
-  .replace(/&gt;/g, ">")
-  .replace(/&amp;/g, "&");
+const decodeXml = (value: string) =>
+  value
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 
 const rowFromRef = (ref: string) => Number(/\d+/.exec(ref)?.[0] ?? 0);
 
@@ -31,7 +32,9 @@ async function inspectOpenXml(filePath: string, original = true) {
   const sharedStringsEntry = zip.file("xl/sharedStrings.xml");
   const sharedStringsXml = sharedStringsEntry ? await sharedStringsEntry.async("text") : "";
   const sharedStrings = [...sharedStringsXml.matchAll(/<si>([\s\S]*?)<\/si>/g)].map((match) =>
-    decodeXml([...match[1].matchAll(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g)].map((part) => part[1]).join("")),
+    decodeXml(
+      [...match[1].matchAll(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g)].map((part) => part[1]).join(""),
+    ),
   );
   expect(sharedStrings, "Sdílené řetězce nesmí obsahovat prázdnou hodnotu").not.toContain("");
 
@@ -51,16 +54,27 @@ async function inspectOpenXml(filePath: string, original = true) {
       tableLastRow - totalsRowCount,
     );
   }
-  expect(autoFilterRef?.split(":")[0]?.replace(/\d+/, ""), "Filtr musí mít stejné sloupce jako tabulka").toBe(
-    tableRef?.split(":")[0]?.replace(/\d+/, ""),
+  expect(
+    autoFilterRef?.split(":")[0]?.replace(/\d+/, ""),
+    "Filtr musí mít stejné sloupce jako tabulka",
+  ).toBe(tableRef?.split(":")[0]?.replace(/\d+/, ""));
+  expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(
+    tableRef?.split(":")[1]?.replace(/\d+/, ""),
   );
-  expect(autoFilterRef?.split(":")[1]?.replace(/\d+/, "")).toBe(tableRef?.split(":")[1]?.replace(/\d+/, ""));
-  expect(/\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml), "Název tabulky musí být bezpečný pro Excel").toBe(true);
-  expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain('totalsRowFunction="none"');
-  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").not.toContain('showRowStripes="1"');
+  expect(
+    /\bname="[A-Za-z][A-Za-z0-9_]*"/.test(tableXml),
+    "Název tabulky musí být bezpečný pro Excel",
+  ).toBe(true);
+  expect(tableXml, "Sloupce bez součtu nesmí zapisovat totalsRowFunction=none").not.toContain(
+    'totalsRowFunction="none"',
+  );
+  expect(tableXml, "Tabulka nesmí používat střídání barev řádků").not.toContain(
+    'showRowStripes="1"',
+  );
 
-
-  const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) => decodeXml(match[1]));
+  const tableColumns = [...tableXml.matchAll(/<tableColumn\b[^>]*\bname="([^"]*)"/g)].map((match) =>
+    decodeXml(match[1]),
+  );
   expect(tableColumns.length).toBeGreaterThan(0);
   for (const name of tableColumns) {
     expect(name.length).toBeLessThanOrEqual(255);
@@ -73,13 +87,17 @@ async function inspectOpenXml(filePath: string, original = true) {
     const raw = /<v>([\s\S]*?)<\/v>/.exec(match[2])?.[1] ?? "";
     return type === "s" ? sharedStrings[Number(raw)] : decodeXml(raw);
   });
-  expect(headerValues, "Hlavička listu musí přesně odpovídat názvům sloupců tabulky").toEqual(tableColumns);
+  expect(headerValues, "Hlavička listu musí přesně odpovídat názvům sloupců tabulky").toEqual(
+    tableColumns,
+  );
 
   const tableEndRow = rowFromRef(tableRef?.split(":")[1] ?? "");
-  const merges = [...sheetXml.matchAll(/<mergeCell\s+ref="([A-Z]+\d+):([A-Z]+\d+)"/g)].map((match) => ({
-    start: rowFromRef(match[1]),
-    end: rowFromRef(match[2]),
-  }));
+  const merges = [...sheetXml.matchAll(/<mergeCell\s+ref="([A-Z]+\d+):([A-Z]+\d+)"/g)].map(
+    (match) => ({
+      start: rowFromRef(match[1]),
+      end: rowFromRef(match[2]),
+    }),
+  );
   expect(
     merges.filter((merge) => merge.end >= 4 && merge.start <= tableEndRow + 1),
     "Sloučení nesmí zasáhnout tabulku ani první řádek pod ní",
@@ -88,8 +106,12 @@ async function inspectOpenXml(filePath: string, original = true) {
   const rowTags = [...sheetXml.matchAll(/<row\b([^>]*)>/g)].map((match) => match[1]);
   const levels = rowTags.map((tag) => Number(/\boutlineLevel="(\d+)"/.exec(tag)?.[1] ?? 0));
   const maxLevel = Math.max(0, ...levels);
-  const declaredLevel = Number(/<sheetFormatPr\b[^>]*\boutlineLevelRow="(\d+)"/.exec(sheetXml)?.[1] ?? 0);
-  expect(declaredLevel, "Deklarovaná úroveň osnovy musí pokrýt řádky").toBeGreaterThanOrEqual(maxLevel);
+  const declaredLevel = Number(
+    /<sheetFormatPr\b[^>]*\boutlineLevelRow="(\d+)"/.exec(sheetXml)?.[1] ?? 0,
+  );
+  expect(declaredLevel, "Deklarovaná úroveň osnovy musí pokrýt řádky").toBeGreaterThanOrEqual(
+    maxLevel,
+  );
   expect(
     rowTags.filter((tag) => /\bcollapsed="1"/.test(tag) && !/\bhidden="1"/.test(tag)),
     "Nesbalený viditelný řádek nesmí být označen collapsed",
@@ -98,7 +120,9 @@ async function inspectOpenXml(filePath: string, original = true) {
   const firstDateCell = /<c\b[^>]*\br="B5"[^>]*>([\s\S]*?)<\/c>/.exec(sheetXml)?.[1] ?? "";
   const dateSerial = Number(/<v>([^<]+)<\/v>/.exec(firstDateCell)?.[1]);
   expect(dateSerial, "Datum 01.01.2026 musí být uložené bez časového posunu").toBe(46023);
-  expect(Number.isInteger(dateSerial), "Datum bez času musí být celé pořadové číslo Excelu").toBe(true);
+  expect(Number.isInteger(dateSerial), "Datum bez času musí být celé pořadové číslo Excelu").toBe(
+    true,
+  );
 }
 
 async function inspectWorkbook(filePath: string) {
@@ -125,22 +149,31 @@ async function inspectWorkbook(filePath: string) {
   sheet.eachRow((row) => {
     row.eachCell({ includeEmpty: false }, (cell) => {
       const value = cell.value;
-      if (typeof value === "object" && value && "formula" in value) formulas.push(String(value.formula));
-      if (typeof value === "string" && EXCEL_ERRORS.some((error) => value.includes(error))) errors.push(value);
+      if (typeof value === "object" && value && "formula" in value)
+        formulas.push(String(value.formula));
+      if (typeof value === "string" && EXCEL_ERRORS.some((error) => value.includes(error)))
+        errors.push(value);
     });
   });
-  expect(formulas.some((formula) => /SUBTOTAL/i.test(formula)), "Součty musí zůstat jako vzorce").toBe(true);
+  expect(
+    formulas.some((formula) => /SUBTOTAL/i.test(formula)),
+    "Součty musí zůstat jako vzorce",
+  ).toBe(true);
   expect(errors, "Sešit nesmí obsahovat chybové hodnoty Excelu").toEqual([]);
 
   const headerRow = sheet.getRow(4);
   headerRow.eachCell((cell) => {
-    expect(cell.alignment?.wrapText, "Každá buňka záhlaví se musí automaticky zalamovat").toBe(true);
+    expect(cell.alignment?.wrapText, "Každá buňka záhlaví se musí automaticky zalamovat").toBe(
+      true,
+    );
     expect(cell.alignment?.vertical, "Záhlaví musí být svisle vystředěné").toBe("middle");
     expect(cell.fill).toMatchObject({ fgColor: { argb: "FFE7E9ED" } });
   });
   sheet.eachRow((row) => {
     row.eachCell({ includeEmpty: false }, (cell) => {
-      expect(cell.alignment?.vertical, `Buňka ${cell.address} musí být svisle vystředěná`).toBe("middle");
+      expect(cell.alignment?.vertical, `Buňka ${cell.address} musí být svisle vystředěná`).toBe(
+        "middle",
+      );
     });
   });
   const headerIndex = (name: string) => {
@@ -151,7 +184,9 @@ async function inspectWorkbook(filePath: string) {
   const debitAccountNameColumn = headerIndex("MD účet");
   const debitAccountCell = sheet.getCell(5, debitAccountNameColumn);
   expect(debitAccountCell.value).toBe("321.100 - Závazky");
-  expect(debitAccountCell.type, "Účet musí být v Excelu uložen jako text").toBe(ExcelJS.ValueType.String);
+  expect(debitAccountCell.type, "Účet musí být v Excelu uložen jako text").toBe(
+    ExcelJS.ValueType.String,
+  );
 
   const dateColumn = headerIndex("Datum");
   const dateCell = sheet.getCell(5, dateColumn);
@@ -159,38 +194,77 @@ async function inspectWorkbook(filePath: string) {
   expect(dateCell.numFmt).toContain("dd");
 
   const documentColumn = headerIndex("Doklad");
-  expect(sheet.getColumn(documentColumn).width ?? 0, "Krátký sloupec se musí automaticky zúžit podle obsahu").toBeLessThan(20);
+  expect(
+    sheet.getColumn(documentColumn).width ?? 0,
+    "Krátký sloupec se musí automaticky zúžit podle obsahu",
+  ).toBeLessThan(20);
 
   const partnerColumn = headerIndex("Partner");
   const longPartnerCell = sheet.getCell(5, partnerColumn);
-  expect(String(longPartnerCell.value).length, "Vzor musí obsahovat text delší než 100 znaků").toBeGreaterThan(100);
-  expect(sheet.getColumn(partnerColumn).width ?? 0, "Dlouhý text má mít šířku přibližně 100 znaků").toBeGreaterThanOrEqual(98);
+  expect(
+    String(longPartnerCell.value).length,
+    "Vzor musí obsahovat text delší než 100 znaků",
+  ).toBeGreaterThan(100);
+  expect(
+    sheet.getColumn(partnerColumn).width ?? 0,
+    "Dlouhý text má mít šířku přibližně 100 znaků",
+  ).toBeGreaterThanOrEqual(98);
   expect(sheet.getColumn(partnerColumn).width ?? 0).toBeLessThanOrEqual(100);
-  expect(longPartnerCell.alignment?.wrapText, "Buňka s textem nad 100 znaků se musí zalamovat").toBe(true);
+  expect(
+    longPartnerCell.alignment?.wrapText,
+    "Buňka s textem nad 100 znaků se musí zalamovat",
+  ).toBe(true);
   expect(longPartnerCell.alignment?.vertical).toBe("middle");
-  expect(sheet.getRow(5).height ?? 0, "Řádek s dlouhým textem musí mít prostor pro zalomení").toBeGreaterThan(18);
+  expect(
+    sheet.getRow(5).height ?? 0,
+    "Řádek s dlouhým textem musí mít prostor pro zalomení",
+  ).toBeGreaterThan(18);
 
   const amountColumn = headerIndex("Částka");
-  const numberCells = sheet.getColumn(amountColumn).values.slice(5).filter((value) => typeof value === "number");
+  const numberCells = sheet
+    .getColumn(amountColumn)
+    .values.slice(5)
+    .filter((value) => typeof value === "number");
   expect(numberCells.length).toBeGreaterThan(0);
-  expect(sheet.getCell(5, amountColumn).numFmt.toLocaleLowerCase("en")).toBe("#,##0.00;[red]-#,##0.00");
+  expect(sheet.getCell(5, amountColumn).numFmt.toLocaleLowerCase("en")).toBe(
+    "#,##0.00;[red]-#,##0.00",
+  );
   const largestValueLength = Math.max(
-    ...numberCells.map((value) =>
-      Number(value).toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length,
+    ...numberCells.map(
+      (value) =>
+        Number(value).toLocaleString("cs-CZ", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).length,
     ),
   );
   const total = numberCells.reduce((sum, value) => sum + Number(value), 0);
-  const totalLength = total.toLocaleString("cs-CZ", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length;
-  expect(totalLength, "Součet ve vzoru musí být širší než jednotlivé hodnoty").toBeGreaterThan(largestValueLength);
-  expect(sheet.getColumn(amountColumn).width ?? 0, "Sloupec musí být dost široký pro zobrazený součet").toBeGreaterThanOrEqual(
-    totalLength + 2,
+  const totalLength = total.toLocaleString("cs-CZ", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).length;
+  expect(totalLength, "Součet ve vzoru musí být širší než jednotlivé hodnoty").toBeGreaterThan(
+    largestValueLength,
   );
+  expect(
+    sheet.getColumn(amountColumn).width ?? 0,
+    "Sloupec musí být dost široký pro zobrazený součet",
+  ).toBeGreaterThanOrEqual(totalLength + 2);
 }
 
 function verifyLibreOfficeOpen(filePath: string, outputDir: string) {
   const result = spawnSync(
     "libreoffice",
-    ["--headless", "--nologo", "--norestore", "--convert-to", "xlsx", "--outdir", outputDir, filePath],
+    [
+      "--headless",
+      "--nologo",
+      "--norestore",
+      "--convert-to",
+      "xlsx",
+      "--outdir",
+      outputDir,
+      filePath,
+    ],
     {
       encoding: "utf8",
       env: { ...process.env, SAL_USE_VCLPLUGIN: "svp" },
@@ -200,7 +274,9 @@ function verifyLibreOfficeOpen(filePath: string, outputDir: string) {
   const messages = `${result.stdout}\n${result.stderr}`;
   expect(result.error, "LibreOffice musí soubor otevřít").toBeUndefined();
   expect(result.status, messages).toBe(0);
-  expect(messages, "LibreOffice nesmí hlásit opravu nebo poškození souboru").not.toMatch(REPAIR_WARNINGS);
+  expect(messages, "LibreOffice nesmí hlásit opravu nebo poškození souboru").not.toMatch(
+    REPAIR_WARNINGS,
+  );
   return join(outputDir, basename(filePath));
 }
 

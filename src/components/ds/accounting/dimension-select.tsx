@@ -83,7 +83,10 @@ export function DimensionSelect({
     onOpenChange?.(next);
   };
 
-  const options = useMemo(() => allOptions.filter((option) => option.active !== false), [allOptions]);
+  const options = useMemo(
+    () => allOptions.filter((option) => option.active !== false),
+    [allOptions],
+  );
   const selectedAny = value ? allOptions.find((option) => option.id === value) : undefined;
   const byId = useMemo(() => new Map(options.map((o) => [o.id, o])), [options]);
   const childrenOf = useMemo(() => {
@@ -197,7 +200,10 @@ export function DimensionSelect({
           className={cn("h-9 w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? label(selected) : placeholder}{selected?.active === false ? <InactiveTag label={inactiveLabel} className="ml-2" /> : null}
+            {selected ? label(selected) : placeholder}
+            {selected?.active === false ? (
+              <InactiveTag label={inactiveLabel} className="ml-2" />
+            ) : null}
           </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>

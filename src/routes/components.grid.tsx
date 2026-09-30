@@ -51,7 +51,9 @@ function GridPage() {
   const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "all"));
   const [bookId, setBookId] = useState<string | "all">("all");
   const [cashBookId, setCashBookId] = useState<string | "all">("all");
-  const [singleBookPeriod, setSingleBookPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "month", 0));
+  const [singleBookPeriod, setSingleBookPeriod] = useState(() =>
+    gridPeriodRange("2026-07-01", "2027-06-30", "month", 0),
+  );
   const [direction, setDirection] = useState<"all" | "in" | "out">("all");
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
@@ -62,16 +64,39 @@ function GridPage() {
   const [activeFilter, setActiveFilter] = useState(true);
   const [statusFilter, setStatusFilter] = useState("posted");
   const [partnerFilter, setPartnerFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState<{ from: string | null; to: string | null }>({ from: "2026-09-01", to: "2026-09-24" });
+  const [dateFilter, setDateFilter] = useState<{ from: string | null; to: string | null }>({
+    from: "2026-09-01",
+    to: "2026-09-24",
+  });
   const [pageSection, setPageSection] = useState("statements");
-  const books = useMemo(() => [
-    { id: "pczk", code: "PCZK", name: "Pokladna CZK" },
-    { id: "peur", code: "PEUR", name: "Pokladna EUR" },
-    { id: "csob", code: "CSOB", name: "Banka ČSOB" },
-  ], []);
-  const rowBookId = (row: JournalEntry) => books[Math.abs(Number(row.id.replace(/\D/g, "")) || 0) % books.length]?.id ?? books[0]?.id;
-  const cashRows = useMemo(() => filterByDirection(MOCK_JOURNAL.slice(0, 12), direction, (row) => Number(row.id.replace(/\D/g, "")) % 2 ? "in" : "out"), [direction]);
-  const directionToggle = <GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => { if (value === "all" || value === "in" || value === "out") setDirection(value); }} defaultValue="all" ariaLabel="Směr pokladního dokladu" />;
+  const books = useMemo(
+    () => [
+      { id: "pczk", code: "PCZK", name: "Pokladna CZK" },
+      { id: "peur", code: "PEUR", name: "Pokladna EUR" },
+      { id: "csob", code: "CSOB", name: "Banka ČSOB" },
+    ],
+    [],
+  );
+  const rowBookId = (row: JournalEntry) =>
+    books[Math.abs(Number(row.id.replace(/\D/g, "")) || 0) % books.length]?.id ?? books[0]?.id;
+  const cashRows = useMemo(
+    () =>
+      filterByDirection(MOCK_JOURNAL.slice(0, 12), direction, (row) =>
+        Number(row.id.replace(/\D/g, "")) % 2 ? "in" : "out",
+      ),
+    [direction],
+  );
+  const directionToggle = (
+    <GridSegmentedToggle
+      options={GRID_DIRECTION_OPTIONS}
+      value={direction}
+      onChange={(value) => {
+        if (value === "all" || value === "in" || value === "out") setDirection(value);
+      }}
+      defaultValue="all"
+      ariaLabel="Směr pokladního dokladu"
+    />
+  );
   const accountNames = useMemo(
     () => new Map(MOCK_ACCOUNTS.map((account) => [account.code, account.name])),
     [],
@@ -110,18 +135,48 @@ function GridPage() {
     ],
     [accountNames],
   );
-  const singleAccountColumns = useMemo<DataGridColumn<JournalEntry>[]>(() => [
-    { id: "document", label: "Doklad", value: (row) => row.document },
-    ...accountColumnPair<JournalEntry>({ id: "account", label: "Účet", shortLabel: "Účet č.", getCode: (row) => row.debitAccount, accountName: (code) => accountNames.get(code) }),
-  ], [accountNames]);
-  const treeColumns = useMemo<TreeGridColumn<JournalEntry>[]>(() => columns.map((column) => ({ id: column.id, label: column.label, ...(column.align ? { align: column.align } : {}), ...(column.numeric ? { numeric: true, total: column.total === "none" ? "none" : "sum" as const } : {}), ...(column.decimals !== undefined ? { decimals: column.decimals } : {}), ...(column.value ? { value: column.value } : {}), ...(column.render ? { render: (row) => column.render?.(row) } : {}), ...(column.width ? { width: column.width } : {}) })), [columns]);
+  const singleAccountColumns = useMemo<DataGridColumn<JournalEntry>[]>(
+    () => [
+      { id: "document", label: "Doklad", value: (row) => row.document },
+      ...accountColumnPair<JournalEntry>({
+        id: "account",
+        label: "Účet",
+        shortLabel: "Účet č.",
+        getCode: (row) => row.debitAccount,
+        accountName: (code) => accountNames.get(code),
+      }),
+    ],
+    [accountNames],
+  );
+  const treeColumns = useMemo<TreeGridColumn<JournalEntry>[]>(
+    () =>
+      columns.map((column) => ({
+        id: column.id,
+        label: column.label,
+        ...(column.align ? { align: column.align } : {}),
+        ...(column.numeric
+          ? { numeric: true, total: column.total === "none" ? "none" : ("sum" as const) }
+          : {}),
+        ...(column.decimals !== undefined ? { decimals: column.decimals } : {}),
+        ...(column.value ? { value: column.value } : {}),
+        ...(column.render ? { render: (row) => column.render?.(row) } : {}),
+        ...(column.width ? { width: column.width } : {}),
+      })),
+    [columns],
+  );
 
   return (
-    <ShowcaseLayout
-      breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}
-    >
+    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}>
       <div className="mb-3">
-        <PageTabs value={pageSection} onValueChange={setPageSection} listLabel="Části banky" items={[{ value: "statements", label: "Výpisy" }, { value: "items", label: "Položky" }]} />
+        <PageTabs
+          value={pageSection}
+          onValueChange={setPageSection}
+          listLabel="Části banky"
+          items={[
+            { value: "statements", label: "Výpisy" },
+            { value: "items", label: "Položky" },
+          ]}
+        />
       </div>
       <DataGrid<JournalEntry>
         storageKey="ds-showcase-journal"
@@ -138,13 +193,72 @@ function GridPage() {
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         viewZoomKey="ds-showcase-journal-view"
-        period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
+        period={{
+          fiscalFrom: "2026-07-01",
+          fiscalTo: "2027-06-30",
+          value: period,
+          onChange: setPeriod,
+          today: "2026-09-24",
+        }}
         book={{ books, value: bookId, onChange: setBookId, getRowBookId: rowBookId }}
-        asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
+        asOf={{
+          enabled: asOfEnabled,
+          onEnabledChange: setAsOfEnabled,
+          value: asOfDate,
+          onChange: setAsOfDate,
+          defaultDate: "2026-09-24",
+        }}
         defaultFiltersOpen
-        filters={<><label className="grid-filter-label flex items-center gap-2">Stav:<OptionSelect className="min-w-[11em]" value={statusFilter} onChange={setStatusFilter} options={[{ value: "posted", label: "Zaúčtován" }, { value: "filed", label: "Zařazen" }, { value: "draft", label: "Koncept" }]} /></label><label className="grid-filter-label flex items-center gap-2">Partner:<OptionSelect className="min-w-[16em]" value={partnerFilter} onChange={setPartnerFilter} options={[{ value: "all", label: "Všichni partneři" }, { value: "alfa", label: "ALFA servis Praha s.r.o." }, { value: "beta", label: "BETA obchod a služby a.s." }]} /></label><label className="grid-filter-label flex items-center gap-2">Datum:<DateRangeField className="w-[15em]" value={dateFilter} onChange={setDateFilter} /></label><GridSegmentedToggle label="Směr:" options={GRID_DIRECTION_OPTIONS} value={direction} onChange={(value) => { if (value === "all" || value === "in" || value === "out") setDirection(value); }} defaultValue="all" ariaLabel="Směr dokladu" /></>}
+        filters={
+          <>
+            <label className="grid-filter-label flex items-center gap-2">
+              Stav:
+              <OptionSelect
+                className="min-w-[11em]"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { value: "posted", label: "Zaúčtován" },
+                  { value: "filed", label: "Zařazen" },
+                  { value: "draft", label: "Koncept" },
+                ]}
+              />
+            </label>
+            <label className="grid-filter-label flex items-center gap-2">
+              Partner:
+              <OptionSelect
+                className="min-w-[16em]"
+                value={partnerFilter}
+                onChange={setPartnerFilter}
+                options={[
+                  { value: "all", label: "Všichni partneři" },
+                  { value: "alfa", label: "ALFA servis Praha s.r.o." },
+                  { value: "beta", label: "BETA obchod a služby a.s." },
+                ]}
+              />
+            </label>
+            <label className="grid-filter-label flex items-center gap-2">
+              Datum:
+              <DateRangeField className="w-[15em]" value={dateFilter} onChange={setDateFilter} />
+            </label>
+            <GridSegmentedToggle
+              label="Směr:"
+              options={GRID_DIRECTION_OPTIONS}
+              value={direction}
+              onChange={(value) => {
+                if (value === "all" || value === "in" || value === "out") setDirection(value);
+              }}
+              defaultValue="all"
+              ariaLabel="Směr dokladu"
+            />
+          </>
+        }
         defaultFilters={["Rok 2026"]}
-        filterChips={activeFilter ? [{ id: "posted", label: "Stav: Zaúčtován", onRemove: () => setActiveFilter(false) }] : []}
+        filterChips={
+          activeFilter
+            ? [{ id: "posted", label: "Stav: Zaúčtován", onRemove: () => setActiveFilter(false) }]
+            : []
+        }
         onClearFilters={() => setActiveFilter(false)}
         refreshing={refreshing}
         onRefresh={async () => {
@@ -155,24 +269,74 @@ function GridPage() {
         }}
         showTotalRow
         moreActions={[
-          { label: "Import osnovy", onSelect: () => { toast.info("Import osnovy"); } },
-          { label: "Import deníku", onSelect: () => { toast.info("Import deníku"); } },
+          {
+            label: "Import osnovy",
+            onSelect: () => {
+              toast.info("Import osnovy");
+            },
+          },
+          {
+            label: "Import deníku",
+            onSelect: () => {
+              toast.info("Import deníku");
+            },
+          },
         ]}
-        addAction={{ label: "Nový doklad", onClick: () => { toast.info("Nový doklad"); } }}
-        pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
-        extraExports={[{ label: "Kontrolní sestava", kind: "pdf", onExport: async () => { toast.info("Kontrolní sestava"); } }]}
+        addAction={{
+          label: "Nový doklad",
+          onClick: () => {
+            toast.info("Nový doklad");
+          },
+        }}
+        pdfExport={async () => {
+          toast.success("Vlastní PDF sestava byla připravena");
+          return;
+        }}
+        extraExports={[
+          {
+            label: "Kontrolní sestava",
+            kind: "pdf",
+            onExport: async () => {
+              toast.info("Kontrolní sestava");
+            },
+          },
+        ]}
         toolbarLeft={
           <>
-            <GridToggleButton pressed={analytic} tone="mode" icon={<Building2 className="size-4" />} onClick={() => setAnalytic((value) => !value)}>Analytické účty</GridToggleButton>
-            <GridToggleButton pressed={byPartner} tone="grouping" onClick={() => setByPartner((value) => !value)}>Podle partnera</GridToggleButton>
+            <GridToggleButton
+              pressed={analytic}
+              tone="mode"
+              icon={<Building2 className="size-4" />}
+              onClick={() => setAnalytic((value) => !value)}
+            >
+              Analytické účty
+            </GridToggleButton>
+            <GridToggleButton
+              pressed={byPartner}
+              tone="grouping"
+              onClick={() => setByPartner((value) => !value)}
+            >
+              Podle partnera
+            </GridToggleButton>
           </>
         }
         onEditRow={(r) => toast.info(`Otevřít doklad ${r.document}`)}
         onDeleteRow={(r) => toast.success(`Doklad ${r.document} odstraněn`)}
         deleteConfirm={(r) => `Odstranit doklad ${r.document}?`}
-        deleteDisabledReason={(r) => r.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
+        deleteDisabledReason={(r) =>
+          r.status === "posted"
+            ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte."
+            : undefined
+        }
       />
-      <DataGrid<JournalEntry> storageKey="ds-account-column-pair" title="Jednoúčtový grid" rows={MOCK_JOURNAL.slice(0, 5)} columns={singleAccountColumns} rowKey={(row) => row.id} paginated={false} />
+      <DataGrid<JournalEntry>
+        storageKey="ds-account-column-pair"
+        title="Jednoúčtový grid"
+        rows={MOCK_JOURNAL.slice(0, 5)}
+        columns={singleAccountColumns}
+        rowKey={(row) => row.id}
+        paginated={false}
+      />
       <div className="mt-8">
         <TreeGrid<JournalEntry>
           title="Účetní deník – strom"
@@ -185,8 +349,14 @@ function GridPage() {
           addAction={{ label: "Nový doklad", onClick: () => toast.info("Nový doklad") }}
           onEditRow={(row) => toast.info(`Otevřít doklad ${row.document}`)}
           onDeleteRow={(row) => toast.success(`Doklad ${row.document} odstraněn`)}
-          deleteDisabledReason={(row) => row.status === "posted" ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte." : undefined}
-          onRefresh={() => { toast.success("Data byla obnovena"); }}
+          deleteDisabledReason={(row) =>
+            row.status === "posted"
+              ? "Zaúčtovaný doklad nelze odstranit – nejdřív ho odúčtujte."
+              : undefined
+          }
+          onRefresh={() => {
+            toast.success("Data byla obnovena");
+          }}
         />
       </div>
       <div className="mt-8 w-[39rem] max-w-full">
@@ -200,7 +370,9 @@ function GridPage() {
           onViewModeChange={setViewMode}
           addAction={{ label: "Nový doklad", onClick: () => toast.info("Nový doklad") }}
           filters={<span className="text-muted-foreground">Filtry</span>}
-          onRefresh={() => { toast.success("Data byla obnovena"); }}
+          onRefresh={() => {
+            toast.success("Data byla obnovena");
+          }}
         />
       </div>
       <div className="mt-8">
@@ -210,8 +382,19 @@ function GridPage() {
           rows={cashRows}
           columns={columns}
           rowKey={(row) => row.id}
-          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
-          book={{ books: books.slice(0, 2), value: cashBookId, onChange: setCashBookId, getRowBookId: rowBookId }}
+          period={{
+            fiscalFrom: "2026-07-01",
+            fiscalTo: "2027-06-30",
+            value: singleBookPeriod,
+            onChange: setSingleBookPeriod,
+            today: "2026-09-24",
+          }}
+          book={{
+            books: books.slice(0, 2),
+            value: cashBookId,
+            onChange: setCashBookId,
+            getRowBookId: rowBookId,
+          }}
           contextRight={directionToggle}
           showTotalRow
         />
@@ -223,7 +406,13 @@ function GridPage() {
           rows={cashRows.slice(0, 4)}
           columns={columns}
           rowKey={(row) => row.id}
-          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: singleBookPeriod, onChange: setSingleBookPeriod, today: "2026-09-24" }}
+          period={{
+            fiscalFrom: "2026-07-01",
+            fiscalTo: "2027-06-30",
+            value: singleBookPeriod,
+            onChange: setSingleBookPeriod,
+            today: "2026-09-24",
+          }}
           book={{ books: books.slice(0, 1), value: "pczk", onChange: () => {} }}
           contextRight={directionToggle}
           showTotalRow
@@ -231,7 +420,13 @@ function GridPage() {
       </div>
       <div className="mt-8 max-w-3xl">
         <GridContextBar
-          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
+          period={{
+            fiscalFrom: "2026-07-01",
+            fiscalTo: "2027-06-30",
+            value: period,
+            onChange: setPeriod,
+            today: "2026-09-24",
+          }}
           book={{ books, value: bookId, onChange: setBookId }}
           contextRight={directionToggle}
           className="rounded-t-lg border"
@@ -239,7 +434,13 @@ function GridPage() {
       </div>
       <div className="mt-8 max-w-3xl">
         <GridContextBar
-          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
+          period={{
+            fiscalFrom: "2026-07-01",
+            fiscalTo: "2027-06-30",
+            value: period,
+            onChange: setPeriod,
+            today: "2026-09-24",
+          }}
           className="rounded-t-lg border"
         />
       </div>

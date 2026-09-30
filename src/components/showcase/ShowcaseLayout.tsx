@@ -1,5 +1,26 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, Building2, Car, FileSpreadsheet, Landmark, LayoutGrid, Library, MapPin, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound, Users } from "lucide-react";
+import {
+  BookOpen,
+  Building2,
+  Car,
+  FileSpreadsheet,
+  Landmark,
+  LayoutGrid,
+  Library,
+  MapPin,
+  MessageSquare,
+  Palette,
+  Printer,
+  Receipt,
+  Route as RouteIcon,
+  Settings,
+  Settings2,
+  ShieldCheck,
+  SlidersHorizontal,
+  TextCursorInput,
+  UserRound,
+  Users,
+} from "lucide-react";
 
 import {
   AppShell,
@@ -55,43 +76,117 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Další moduly",
     section: "Ukázky aplikace",
     defaultCollapsed: true,
+    items: [{ to: "/components/navigation", label: "Majetek", icon: Settings2, disabled: true }],
+  },
+];
+
+const TARGETS = NAV_GROUPS.flatMap((group) =>
+  group.items.map((item) => ({ label: item.label, group: group.label, to: item.to })),
+);
+
+const REGISTERS_PANEL: NavGroup[] = [
+  {
+    id: "jobs",
+    label: "",
+    items: [{ to: "/components/navigation", label: "Zakázky", icon: LayoutGrid }],
+  },
+  {
+    id: "accounting",
+    label: "",
+    section: "Účetnictví",
     items: [
-      { to: "/components/navigation", label: "Majetek", icon: Settings2, disabled: true },
+      { to: "/components/accounting-forms", label: "Účtový rozvrh", icon: Landmark },
+      { to: "/components/grid", label: "Kurzy", icon: FileSpreadsheet },
+    ],
+  },
+  {
+    id: "general",
+    label: "",
+    section: "Obecné",
+    items: [{ to: "/components/forms", label: "Měrné jednotky", icon: Settings2 }],
+  },
+  {
+    id: "assets",
+    label: "",
+    section: "Majetek",
+    items: [
+      { to: "/components/navigation", label: "Inventarizační zařazení", icon: Library },
+      { to: "/components/navigation", label: "Místa uložení", icon: MapPin },
+    ],
+  },
+  {
+    id: "people",
+    label: "",
+    section: "Pracovníci a vozidla",
+    items: [
+      { to: "/components/navigation", label: "Pracovníci", icon: Users },
+      {
+        to: "/components/navigation",
+        label: "Vozidla",
+        icon: Car,
+        badge: "Připravujeme",
+        disabled: true,
+      },
     ],
   },
 ];
 
-const TARGETS = NAV_GROUPS.flatMap((group) => group.items.map((item) => ({ label: item.label, group: group.label, to: item.to })));
-
-const REGISTERS_PANEL: NavGroup[] = [
-  { id: "jobs", label: "", items: [{ to: "/components/navigation", label: "Zakázky", icon: LayoutGrid }] },
-  { id: "accounting", label: "", section: "Účetnictví", items: [{ to: "/components/accounting-forms", label: "Účtový rozvrh", icon: Landmark }, { to: "/components/grid", label: "Kurzy", icon: FileSpreadsheet }] },
-  { id: "general", label: "", section: "Obecné", items: [{ to: "/components/forms", label: "Měrné jednotky", icon: Settings2 }] },
-  { id: "assets", label: "", section: "Majetek", items: [{ to: "/components/navigation", label: "Inventarizační zařazení", icon: Library }, { to: "/components/navigation", label: "Místa uložení", icon: MapPin }] },
-  { id: "people", label: "", section: "Pracovníci a vozidla", items: [{ to: "/components/navigation", label: "Pracovníci", icon: Users }, { to: "/components/navigation", label: "Vozidla", icon: Car, badge: "Připravujeme", disabled: true }] },
-];
-
 const COMPANY_SETTINGS: NavGroup[] = [
-  { id: "company", label: "", section: "Firma", items: [{ to: "/components/navigation", label: "Základní údaje", icon: Building2 }] },
-  { id: "accounting-vat", label: "", section: "Účetnictví a DPH", items: [{ to: "/components/accounting-forms", label: "Účetní nastavení", icon: Landmark }, { to: "/components/forms", label: "DPH", icon: Receipt }] },
-  { id: "modules", label: "", section: "Moduly", items: [{ to: "/components/navigation", label: "Aktivní moduly", icon: LayoutGrid }] },
+  {
+    id: "company",
+    label: "",
+    section: "Firma",
+    items: [{ to: "/components/navigation", label: "Základní údaje", icon: Building2 }],
+  },
+  {
+    id: "accounting-vat",
+    label: "",
+    section: "Účetnictví a DPH",
+    items: [
+      { to: "/components/accounting-forms", label: "Účetní nastavení", icon: Landmark },
+      { to: "/components/forms", label: "DPH", icon: Receipt },
+    ],
+  },
+  {
+    id: "modules",
+    label: "",
+    section: "Moduly",
+    items: [{ to: "/components/navigation", label: "Aktivní moduly", icon: LayoutGrid }],
+  },
 ];
 
 const WORKSPACE_SETTINGS: NavGroup[] = [
-  { id: "workspace", label: "", section: "Prostor", items: [{ to: "/components/navigation", label: "Základní údaje", icon: Settings }] },
-  { id: "users", label: "", section: "Uživatelé", items: [{ to: "/components/navigation", label: "Členové a pozvánky", icon: Users }] },
-  { id: "templates", label: "", section: "Vzory číselníků", items: [{ to: "/components/navigation", label: "Výchozí číselníky", icon: Library }] },
+  {
+    id: "workspace",
+    label: "",
+    section: "Prostor",
+    items: [{ to: "/components/navigation", label: "Základní údaje", icon: Settings }],
+  },
+  {
+    id: "users",
+    label: "",
+    section: "Uživatelé",
+    items: [{ to: "/components/navigation", label: "Členové a pozvánky", icon: Users }],
+  },
+  {
+    id: "templates",
+    label: "",
+    section: "Vzory číselníků",
+    items: [{ to: "/components/navigation", label: "Výchozí číselníky", icon: Library }],
+  },
 ];
 
-const ADMIN_PANEL: NavGroup[] = [{
-  id: "administration",
-  label: "Administrace",
-  section: "Správa systému",
-  items: [
-    { to: "/components/navigation", label: "Uživatelé a oprávnění", icon: ShieldCheck },
-    { to: "/guidelines", label: "Pravidla systému", icon: BookOpen },
-  ],
-}];
+const ADMIN_PANEL: NavGroup[] = [
+  {
+    id: "administration",
+    label: "Administrace",
+    section: "Správa systému",
+    items: [
+      { to: "/components/navigation", label: "Uživatelé a oprávnění", icon: ShieldCheck },
+      { to: "/guidelines", label: "Pravidla systému", icon: BookOpen },
+    ],
+  },
+];
 
 /** Rám ukázkových stránek design systému. */
 export function ShowcaseLayout({
@@ -116,13 +211,35 @@ export function ShowcaseLayout({
     return () => applyTheme("light");
   }, [darkPreview]);
 
-  const companies = MOCK_COMPANIES.map((company, index) => ({ ...company, ico: ["12345678", "87654321", "11223344"][index] }));
-  const activeWorkspace = MOCK_WORKSPACES.find((workspace) => workspace.id === workspaceId) ?? MOCK_WORKSPACES[0];
+  const companies = MOCK_COMPANIES.map((company, index) => ({
+    ...company,
+    ico: ["12345678", "87654321", "11223344"][index],
+  }));
+  const activeWorkspace =
+    MOCK_WORKSPACES.find((workspace) => workspace.id === workspaceId) ?? MOCK_WORKSPACES[0];
   const activeCompany = companies.find((company) => company.id === companyId) ?? companies[0];
   const notifications = [
-    { id: "n1", title: "Doklad byl zaúčtován", body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.", type: "success" as const, createdAt: new Date(Date.now() - 5 * 60_000) },
-    { id: "n2", title: "Blíží se termín DPH", body: "Přiznání k DPH je potřeba podat do pěti dnů.", type: "warning" as const, createdAt: new Date(Date.now() - 42 * 60_000) },
-    { id: "n3", title: "Nový bankovní výpis", body: "Byl načten výpis se 24 pohyby.", type: "info" as const, createdAt: new Date(Date.now() - 2 * 3_600_000) },
+    {
+      id: "n1",
+      title: "Doklad byl zaúčtován",
+      body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.",
+      type: "success" as const,
+      createdAt: new Date(Date.now() - 5 * 60_000),
+    },
+    {
+      id: "n2",
+      title: "Blíží se termín DPH",
+      body: "Přiznání k DPH je potřeba podat do pěti dnů.",
+      type: "warning" as const,
+      createdAt: new Date(Date.now() - 42 * 60_000),
+    },
+    {
+      id: "n3",
+      title: "Nový bankovní výpis",
+      body: "Byl načten výpis se 24 pohyby.",
+      type: "info" as const,
+      createdAt: new Date(Date.now() - 2 * 3_600_000),
+    },
   ];
 
   return (
@@ -131,22 +248,103 @@ export function ShowcaseLayout({
       navGroups={NAV_GROUPS}
       navStateKey="showcase"
       breadcrumbs={breadcrumbs}
-      contextLeft={<><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></>}
+      contextLeft={
+        <>
+          <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} />
+          <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
+        </>
+      }
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
-        { id: "registers", title: "Číselníky", icon: Library, tooltip: "Číselníky", nav: REGISTERS_PANEL, scope: "company", context: activeCompany.name },
-        { id: "settings", title: "Nastavení", icon: Settings, tooltip: "Nastavení", activeView: settingsView, onViewChange: setSettingsView, views: [
-          { id: "company", label: "Firma", title: "Nastavení firmy", context: activeCompany.name, scope: "company", nav: COMPANY_SETTINGS },
-          { id: "workspace", label: "Prostor", title: "Nastavení prostoru", context: activeWorkspace.name, scope: "workspace", nav: WORKSPACE_SETTINGS },
-        ] },
-        { id: "company-settings", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy bez částí", views: [{ id: "company", label: "Firma", title: "Nastavení firmy", context: activeCompany.name, scope: "company", nav: COMPANY_SETTINGS }] },
-        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace provozovatele", nav: ADMIN_PANEL, scope: "platform", accent: "warning", badge: { label: "Provozovatel · všechny prostory", tone: "accent" } },
+        {
+          id: "registers",
+          title: "Číselníky",
+          icon: Library,
+          tooltip: "Číselníky",
+          nav: REGISTERS_PANEL,
+          scope: "company",
+          context: activeCompany.name,
+        },
+        {
+          id: "settings",
+          title: "Nastavení",
+          icon: Settings,
+          tooltip: "Nastavení",
+          activeView: settingsView,
+          onViewChange: setSettingsView,
+          views: [
+            {
+              id: "company",
+              label: "Firma",
+              title: "Nastavení firmy",
+              context: activeCompany.name,
+              scope: "company",
+              nav: COMPANY_SETTINGS,
+            },
+            {
+              id: "workspace",
+              label: "Prostor",
+              title: "Nastavení prostoru",
+              context: activeWorkspace.name,
+              scope: "workspace",
+              nav: WORKSPACE_SETTINGS,
+            },
+          ],
+        },
+        {
+          id: "company-settings",
+          title: "Nastavení firmy",
+          icon: SlidersHorizontal,
+          tooltip: "Nastavení firmy bez částí",
+          views: [
+            {
+              id: "company",
+              label: "Firma",
+              title: "Nastavení firmy",
+              context: activeCompany.name,
+              scope: "company",
+              nav: COMPANY_SETTINGS,
+            },
+          ],
+        },
+        {
+          id: "admin",
+          title: "Administrace",
+          icon: ShieldCheck,
+          tooltip: "Administrace provozovatele",
+          nav: ADMIN_PANEL,
+          scope: "platform",
+          accent: "warning",
+          badge: { label: "Provozovatel · všechny prostory", tone: "accent" },
+        },
       ]}
       activePanel={activePanel}
       onActivePanelChange={setActivePanel}
-      notificationBell={<NotificationBell items={notifications} onItemClick={() => undefined} onMarkAllRead={() => undefined} onShowAll={() => undefined} />}
+      notificationBell={
+        <NotificationBell
+          items={notifications}
+          onItemClick={() => undefined}
+          onMarkAllRead={() => undefined}
+          onShowAll={() => undefined}
+        />
+      }
       themeToggleButton={<ThemeToggleButton />}
-      userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings2, to: "/components/navigation" }} onSignOut={() => undefined} />}
+      userMenu={
+        <UserMenu
+          name="Petr Slivka"
+          email="petr@slivka.cz"
+          workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]}
+          activeWorkspaceId={workspaceId}
+          onWorkspaceChange={setWorkspaceId}
+          items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]}
+          workspaceAction={{
+            label: "Spravovat pracovní prostory",
+            icon: Settings2,
+            to: "/components/navigation",
+          }}
+          onSignOut={() => undefined}
+        />
+      }
     >
       <CommandPalette targets={TARGETS} open={searchOpen} onOpenChange={setSearchOpen} />
       {children}

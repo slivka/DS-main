@@ -13,8 +13,12 @@ export interface SlivkaHeadProps {
 export function SlivkaHead({ nonce, fonts = true, themeScript = true }: SlivkaHeadProps) {
   return (
     <Fragment>
-      {fonts ? SLIVKA_FONT_LINKS.map((link) => <link key={`${link.rel}:${link.href}`} {...link} />) : null}
-      {themeScript ? <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} /> : null}
+      {fonts
+        ? SLIVKA_FONT_LINKS.map((link) => <link key={`${link.rel}:${link.href}`} {...link} />)
+        : null}
+      {themeScript ? (
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      ) : null}
     </Fragment>
   );
 }

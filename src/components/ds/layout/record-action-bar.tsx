@@ -1,8 +1,22 @@
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
-import { AlertTriangle, CheckCircle2, Loader2, MoreHorizontal, Save, X, type LucideIcon } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Loader2,
+  MoreHorizontal,
+  Save,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
@@ -61,8 +75,33 @@ export interface RecordActionBarProps {
   noticesDataSlot?: string;
 }
 
-function CompactActionButton({ label, icon: Icon, busy, compact, children, ...props }: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & ComponentPropsWithoutRef<typeof Button>) {
-  return <Tooltip><TooltipTrigger asChild><Button type="button" {...props} aria-label={label} className={cn(compact && "size-9 px-0", props.className)}>{busy ? <Loader2 className="animate-spin" /> : <Icon />}<span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>{children}</Button></TooltipTrigger>{compact ? <TooltipContent>{label}</TooltipContent> : null}</Tooltip>;
+function CompactActionButton({
+  label,
+  icon: Icon,
+  busy,
+  compact,
+  children,
+  ...props
+}: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & ComponentPropsWithoutRef<
+  typeof Button
+>) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          {...props}
+          aria-label={label}
+          className={cn(compact && "size-9 px-0", props.className)}
+        >
+          {busy ? <Loader2 className="animate-spin" /> : <Icon />}
+          <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
+          {children}
+        </Button>
+      </TooltipTrigger>
+      {compact ? <TooltipContent>{label}</TooltipContent> : null}
+    </Tooltip>
+  );
 }
 
 /** Přilepený pruh akcí karty záznamu s jednotnou oblastí pro chybu a upozornění. */
@@ -111,16 +150,124 @@ export function RecordActionBar({
 
   return (
     <TooltipProvider>
-      <div ref={barRef} data-slot={dataSlot} data-compact={compact || undefined} aria-busy={allBusy || undefined} className={cn("sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90", className)}>
+      <div
+        ref={barRef}
+        data-slot={dataSlot}
+        data-compact={compact || undefined}
+        aria-busy={allBusy || undefined}
+        className={cn(
+          "sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90",
+          className,
+        )}
+      >
         <div className="min-w-0">{leftContent}</div>
         <div className="flex shrink-0 items-center gap-2">
-          {saveAction ? <CompactActionButton label={saveText} icon={Save} compact={compact} busy={busy || saveAction.busy} disabled={busy || saveAction.disabled || saveAction.busy || saveAction.dirty === false} onClick={saveAction.onSave}>{saveAction.dirty ? <span aria-label={dsTexts.recordAction.unsaved} className="size-1.5 rounded-full bg-primary-foreground" /> : null}</CompactActionButton> : null}
-          {primaryAction ? <CompactActionButton label={primaryAction.label} icon={PrimaryIcon} compact={compact} variant="outline" busy={busy || primaryAction.busy} disabled={busy || primaryAction.disabled || primaryAction.busy} onClick={primaryAction.onClick} /> : null}
-          {moreActions.length ? <DropdownMenu><DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label={moreText} disabled={busy}><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="min-w-56">{moreActions.map((action) => { const Icon = action.icon; return <span key={action.id}>{action.separatorBefore ? <DropdownMenuSeparator /> : null}<DropdownMenuItem disabled={busy || action.disabled} onSelect={action.onClick} className={cn("flex-col items-start gap-0.5", action.destructive && "text-destructive focus:text-destructive")}><span className="flex items-center gap-2">{Icon ? <Icon /> : null}{action.label}</span>{action.disabled && action.disabledReason ? <span className="text-xs font-normal text-muted-foreground">{action.disabledReason}</span> : null}</DropdownMenuItem></span>; })}</DropdownMenuContent></DropdownMenu> : null}
+          {saveAction ? (
+            <CompactActionButton
+              label={saveText}
+              icon={Save}
+              compact={compact}
+              busy={busy || saveAction.busy}
+              disabled={
+                busy || saveAction.disabled || saveAction.busy || saveAction.dirty === false
+              }
+              onClick={saveAction.onSave}
+            >
+              {saveAction.dirty ? (
+                <span
+                  aria-label={dsTexts.recordAction.unsaved}
+                  className="size-1.5 rounded-full bg-primary-foreground"
+                />
+              ) : null}
+            </CompactActionButton>
+          ) : null}
+          {primaryAction ? (
+            <CompactActionButton
+              label={primaryAction.label}
+              icon={PrimaryIcon}
+              compact={compact}
+              variant="outline"
+              busy={busy || primaryAction.busy}
+              disabled={busy || primaryAction.disabled || primaryAction.busy}
+              onClick={primaryAction.onClick}
+            />
+          ) : null}
+          {moreActions.length ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={moreText}
+                  disabled={busy}
+                >
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-56">
+                {moreActions.map((action) => {
+                  const Icon = action.icon;
+                  return (
+                    <span key={action.id}>
+                      {action.separatorBefore ? <DropdownMenuSeparator /> : null}
+                      <DropdownMenuItem
+                        disabled={busy || action.disabled}
+                        onSelect={action.onClick}
+                        className={cn(
+                          "flex-col items-start gap-0.5",
+                          action.destructive && "text-destructive focus:text-destructive",
+                        )}
+                      >
+                        <span className="flex items-center gap-2">
+                          {Icon ? <Icon /> : null}
+                          {action.label}
+                        </span>
+                        {action.disabled && action.disabledReason ? (
+                          <span className="text-xs font-normal text-muted-foreground">
+                            {action.disabledReason}
+                          </span>
+                        ) : null}
+                      </DropdownMenuItem>
+                    </span>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
         </div>
       </div>
-      {error ? <div ref={errorRef} role="alert" data-slot={errorDataSlot} className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"><AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="font-bold">{error.title ?? fallbackErrorTitle}</p><div className="mt-0.5 text-sm text-foreground">{error.message}</div></div>{error.onClose ? <Button type="button" variant="ghost" size="icon" aria-label={closeText} onClick={error.onClose} className="-mr-2 -mt-2 shrink-0 text-destructive-strong"><X /></Button> : null}</div> : null}
-      {notices ? <div data-slot={noticesDataSlot} className="space-y-2">{notices}</div> : null}
+      {error ? (
+        <div
+          ref={errorRef}
+          role="alert"
+          data-slot={errorDataSlot}
+          className="flex items-start gap-3 border-l-4 border-destructive bg-destructive-soft px-4 py-3 text-destructive-strong"
+        >
+          <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+          <div className="min-w-0 flex-1">
+            <p className="font-bold">{error.title ?? fallbackErrorTitle}</p>
+            <div className="mt-0.5 text-sm text-foreground">{error.message}</div>
+          </div>
+          {error.onClose ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={closeText}
+              onClick={error.onClose}
+              className="-mr-2 -mt-2 shrink-0 text-destructive-strong"
+            >
+              <X />
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+      {notices ? (
+        <div data-slot={noticesDataSlot} className="space-y-2">
+          {notices}
+        </div>
+      ) : null}
     </TooltipProvider>
   );
 }

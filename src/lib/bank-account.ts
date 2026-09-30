@@ -55,5 +55,9 @@ export function isValidIban(value: string): boolean {
 
 /** Zformátuje IBAN po 4 znacích. */
 export function formatIban(value: string): string {
-  return value.replace(/\s/g, "").toUpperCase().replace(/(.{4})/g, "$1 ").trim();
+  return value
+    .replace(/\s/g, "")
+    .toUpperCase()
+    .replace(/(.{4})/g, "$1 ")
+    .trim();
 }

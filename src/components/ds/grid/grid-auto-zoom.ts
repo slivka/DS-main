@@ -13,11 +13,20 @@ export const AUTO_GRID_SELECT_WIDTH = 40;
 /** Šířka sloupce akcí v px při 100 %. */
 export const AUTO_GRID_ACTIONS_WIDTH = 72;
 
-export function calculateAutoGridZoom(availableWidth: number, requiredWidthAt100: number, appZoom = 1) {
+export function calculateAutoGridZoom(
+  availableWidth: number,
+  requiredWidthAt100: number,
+  appZoom = 1,
+) {
   if (!(availableWidth > 0) || !(requiredWidthAt100 > 0)) return null;
   const scale = appZoom > 0 ? appZoom : 1;
-  const raw = Math.min(AUTO_GRID_MAX, Math.max(AUTO_GRID_MIN, availableWidth / (requiredWidthAt100 * scale)));
-  return Number(Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2));
+  const raw = Math.min(
+    AUTO_GRID_MAX,
+    Math.max(AUTO_GRID_MIN, availableWidth / (requiredWidthAt100 * scale)),
+  );
+  return Number(
+    Math.max(AUTO_GRID_MIN, Math.floor((raw + 1e-9) / AUTO_GRID_STEP) * AUTO_GRID_STEP).toFixed(2),
+  );
 }
 
 /** Odhad šířky záhlaví v px při 100 % (písmo gridu 13 px, vnitřní okraje 24 px). */
@@ -34,7 +43,8 @@ export function requiredGridWidthAt100(
   options: { select?: boolean; actions?: boolean } = {},
 ) {
   let total = 0;
-  for (const column of columns) total += column.width && column.width > 1 ? column.width : headerWidthAt100(column.label);
+  for (const column of columns)
+    total += column.width && column.width > 1 ? column.width : headerWidthAt100(column.label);
   if (options.select) total += AUTO_GRID_SELECT_WIDTH;
   if (options.actions) total += AUTO_GRID_ACTIONS_WIDTH;
   return total;
@@ -61,33 +71,44 @@ export function useAutoGridZoom(
   const initialized = useRef(false);
   const lastWidth = useRef(0);
 
-  const measure = useCallback((fromAppZoom = false) => {
-    if (!enabled) return;
-    if (isResizeLocked()) { pending.current = true; return; }
-    const root = rootRef.current;
-    const surface = root?.querySelector<HTMLElement>(".zoom-grid");
-    const width = surface?.clientWidth ?? root?.clientWidth ?? 0;
-    if (!root || width <= 0) return;
-    const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const appZoom = rootPx / 16;
-    // Nezalomený obsah může být širší než odhad ze záhlaví. Po prvním renderu
-    // odvodíme jeho šířku při 16 px z reálného scrollWidth a výpočet zpřesníme.
-    const next = calculateAutoGridZoom(width, requiredRef.current, appZoom);
-    lastWidth.current = width;
-    pending.current = false;
-    if (next == null) return;
-    setAutoZoom(next, initialized.current && !fromAppZoom);
-    initialized.current = true;
-  }, [currentZoom, enabled, rootRef, setAutoZoom]);
+  const measure = useCallback(
+    (fromAppZoom = false) => {
+      if (!enabled) return;
+      if (isResizeLocked()) {
+        pending.current = true;
+        return;
+      }
+      const root = rootRef.current;
+      const surface = root?.querySelector<HTMLElement>(".zoom-grid");
+      const width = surface?.clientWidth ?? root?.clientWidth ?? 0;
+      if (!root || width <= 0) return;
+      const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const appZoom = rootPx / 16;
+      // Nezalomený obsah může být širší než odhad ze záhlaví. Po prvním renderu
+      // odvodíme jeho šířku při 16 px z reálného scrollWidth a výpočet zpřesníme.
+      const next = calculateAutoGridZoom(width, requiredRef.current, appZoom);
+      lastWidth.current = width;
+      pending.current = false;
+      if (next == null) return;
+      setAutoZoom(next, initialized.current && !fromAppZoom);
+      initialized.current = true;
+    },
+    [currentZoom, enabled, rootRef, setAutoZoom],
+  );
 
-  useLayoutEffect(() => { measure(); }, [measure, requiredWidthAt100, ...dependencies]); // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => {
+    measure();
+  }, [measure, requiredWidthAt100, ...dependencies]); // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     if (!enabled) return;
     const root = rootRef.current;
     if (!root) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const request = (fromAppZoom = false) => {
-      if (isResizeLocked()) { pending.current = true; return; }
+      if (isResizeLocked()) {
+        pending.current = true;
+        return;
+      }
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => measure(fromAppZoom), 150);
     };
@@ -97,7 +118,9 @@ export function useAutoGridZoom(
       if (width <= 0 || Math.abs(width - lastWidth.current) < 0.5) return;
       request();
     };
-    const finish = () => { if (pending.current) measure(); };
+    const finish = () => {
+      if (pending.current) measure();
+    };
     const observer = new ResizeObserver(onResize);
     observer.observe(root);
     window.addEventListener(APP_ZOOM_EVENT, onAppZoom);

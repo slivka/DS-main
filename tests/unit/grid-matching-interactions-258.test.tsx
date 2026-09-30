@@ -16,15 +16,40 @@ afterAll(async () => {
   if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
-function Editor({ initial = 100, max, onValue }: { initial?: number; max?: number; onValue?: (v: number | null) => void }) {
+function Editor({
+  initial = 100,
+  max,
+  onValue,
+}: {
+  initial?: number;
+  max?: number;
+  onValue?: (v: number | null) => void;
+}) {
   const [value, setValue] = React.useState<number | null>(initial);
   const invalid = max != null && value != null && value > max;
   return (
     <TooltipProvider>
-      <table><tbody><tr>
-        <td><GridAmountEditor ariaLabel="A" value={value} invalid={invalid} invalidMessage="Převýšeno" onChange={(v) => { setValue(v); onValue?.(v); }} /></td>
-        <td><GridAmountEditor ariaLabel="B" value={5} onChange={() => {}} /></td>
-      </tr></tbody></table>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <GridAmountEditor
+                ariaLabel="A"
+                value={value}
+                invalid={invalid}
+                invalidMessage="Převýšeno"
+                onChange={(v) => {
+                  setValue(v);
+                  onValue?.(v);
+                }}
+              />
+            </td>
+            <td>
+              <GridAmountEditor ariaLabel="B" value={5} onChange={() => {}} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <output data-testid="val">{String(value)}</output>
     </TooltipProvider>
   );
@@ -68,7 +93,9 @@ describe("GridAmountEditor – interakce 2.58.0", () => {
     const after = getByLabelText("A");
     expect(after).toBe(input);
     expect(document.activeElement).toBe(input);
-    expect(input.closest("[data-slot=grid-amount-editor]")?.getAttribute("data-invalid")).toBe("true");
+    expect(input.closest("[data-slot=grid-amount-editor]")?.getAttribute("data-invalid")).toBe(
+      "true",
+    );
   });
 });
 
@@ -81,9 +108,21 @@ const columns: DataGridColumn<R>[] = [
 describe("DataGrid – řízený výběr, interakce 2.58.0", () => {
   it("klik na řádek v selectMode volá onSelectedKeysChange", () => {
     const calls: string[][] = [];
-    const rows: R[] = [{ id: "a", name: "Alfa", amount: 1 }, { id: "b", name: "Beta", amount: 2 }];
+    const rows: R[] = [
+      { id: "a", name: "Alfa", amount: 1 },
+      { id: "b", name: "Beta", amount: 2 },
+    ];
     const { getByText } = render(
-      <DataGrid storageKey="sel-click" rows={rows} columns={columns} rowKey={(r) => r.id} selectMode selectedKeys={[]} onSelectedKeysChange={(k) => calls.push(k)} paginated={false} />,
+      <DataGrid
+        storageKey="sel-click"
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        selectMode
+        selectedKeys={[]}
+        onSelectedKeysChange={(k) => calls.push(k)}
+        paginated={false}
+      />,
     );
     fireEvent.click(getByText("Beta"));
     expect(calls.at(-1)).toEqual(["b"]);
@@ -91,9 +130,21 @@ describe("DataGrid – řízený výběr, interakce 2.58.0", () => {
 
   it("klíč zmizelého řádku se v callbacku neposílá", () => {
     const calls: string[][] = [];
-    const rows: R[] = [{ id: "a", name: "Alfa", amount: 1 }, { id: "b", name: "Beta", amount: 2 }];
+    const rows: R[] = [
+      { id: "a", name: "Alfa", amount: 1 },
+      { id: "b", name: "Beta", amount: 2 },
+    ];
     const { getByText } = render(
-      <DataGrid storageKey="sel-gone" rows={rows} columns={columns} rowKey={(r) => r.id} selectMode selectedKeys={["a", "zmizel"]} onSelectedKeysChange={(k) => calls.push(k)} paginated={false} />,
+      <DataGrid
+        storageKey="sel-gone"
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        selectMode
+        selectedKeys={["a", "zmizel"]}
+        onSelectedKeysChange={(k) => calls.push(k)}
+        paginated={false}
+      />,
     );
     fireEvent.click(getByText("Beta"));
     expect(calls.at(-1)?.sort()).toEqual(["a", "b"]);
@@ -109,10 +160,21 @@ describe("DataGrid – ručně skrytý seskupovací sloupec 2.60.0", () => {
       { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
     ];
     render(
-      <DataGrid storageKey={storageKey} rows={[{ id: "a", name: "Párování A", amount: 1 }]} columns={groupedColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />,
+      <DataGrid
+        storageKey={storageKey}
+        rows={[{ id: "a", name: "Párování A", amount: 1 }]}
+        columns={groupedColumns}
+        rowKey={(row) => row.id}
+        defaultGroupBy="group"
+        paginated={false}
+      />,
     );
-    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
-    expect((document.body.textContent?.match(/Zdroj párování/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(
+      (document.body.textContent?.match(/Zdroj párování/g) ?? []).length,
+    ).toBeGreaterThanOrEqual(2);
     expect(document.body.textContent).not.toContain("group:");
     localStorage.removeItem(`columns:${storageKey}`);
   });

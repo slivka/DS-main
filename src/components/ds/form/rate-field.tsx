@@ -34,8 +34,13 @@ export interface RateFieldProps {
   className?: string;
 }
 
-export function rateValuesDiffer(value: number | null, suggestedRate: number | null | undefined): boolean {
-  return suggestedRate != null && Number(suggestedRate.toFixed(6)) !== Number((value ?? 0).toFixed(6));
+export function rateValuesDiffer(
+  value: number | null,
+  suggestedRate: number | null | undefined,
+): boolean {
+  return (
+    suggestedRate != null && Number(suggestedRate.toFixed(6)) !== Number((value ?? 0).toFixed(6))
+  );
 }
 
 /** Kurz cizí měny s doporučenou hodnotou a povinným důvodem ruční změny. */
@@ -64,11 +69,16 @@ export function RateField({
   id = "rate",
   className,
 }: RateFieldProps) {
-  const unit = Number.isInteger(rateAmount) ? formatAmount(rateAmount, 0) : formatAmount(rateAmount, 3);
+  const unit = Number.isInteger(rateAmount)
+    ? formatAmount(rateAmount, 0)
+    : formatAmount(rateAmount, 3);
   const suffix = `${homeCurrencySymbol ?? homeCurrency} za ${unit} ${currencySymbol ?? currency}`;
   const differs = rateValuesDiffer(value, suggestedRate);
-  const source = manual ? manualSourceLabel : sourceLabel ?? suggestedInfo;
-  const tooltip = suggestedRate == null ? "" : suggestedTooltip(suggestedInfo ?? "bez data", formatAmount(suggestedRate, 3));
+  const source = manual ? manualSourceLabel : (sourceLabel ?? suggestedInfo);
+  const tooltip =
+    suggestedRate == null
+      ? ""
+      : suggestedTooltip(suggestedInfo ?? "bez data", formatAmount(suggestedRate, 3));
   const noteInvalid = manual && !note.trim();
 
   if (readOnly) {
@@ -77,15 +87,19 @@ export function RateField({
         <div id={id} aria-readonly="true" className="min-h-9 text-sm font-mono tabular-nums">
           {value == null ? "—" : formatAmount(value, 3)}
         </div>
-        <p className="field-overflow-hint text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
+        <p className="field-overflow-hint text-xs text-muted-foreground">
+          {suffix}
+          {source ? ` · ${source}` : ""}
+        </p>
         {manual && note ? <p className="text-xs text-muted-foreground">{note}</p> : null}
       </div>
     );
   }
 
   return (
-    <TooltipProvider><div className={cn("space-y-2", className)}>
-      <div className="relative min-w-0">
+    <TooltipProvider>
+      <div className={cn("space-y-2", className)}>
+        <div className="relative min-w-0">
           <DecimalInput
             id={id}
             value={value}
@@ -104,7 +118,10 @@ export function RateField({
                   size="icon"
                   aria-label={tooltip}
                   aria-disabled={disabled || undefined}
-                  className={cn("absolute right-1 top-1/2 size-7 -translate-y-1/2", disabled ? "text-muted-foreground" : "text-destructive")}
+                  className={cn(
+                    "absolute right-1 top-1/2 size-7 -translate-y-1/2",
+                    disabled ? "text-muted-foreground" : "text-destructive",
+                  )}
                   onClick={disabled ? undefined : onUseSuggested}
                 >
                   <RefreshCw className="size-4" />
@@ -113,24 +130,32 @@ export function RateField({
               <TooltipContent>{tooltip}</TooltipContent>
             </Tooltip>
           ) : null}
-      </div>
-      <p className="field-overflow-hint text-xs text-muted-foreground">{suffix}{source ? ` · ${source}` : ""}</p>
-       {manual && showNote ? (
-        <div className="space-y-1">
-          <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
-          <Input
-            id={`${id}-note`}
-            value={note}
-            maxLength={200}
-            required
-            disabled={disabled}
-            aria-invalid={noteInvalid}
-            className={cn(noteInvalid && "border-destructive")}
-            onChange={(event) => onNoteChange?.(event.target.value)}
-          />
-          {noteInvalid ? <p role="alert" className="text-xs font-medium text-destructive">{requiredMessage}</p> : null}
         </div>
-      ) : null}
-    </div></TooltipProvider>
+        <p className="field-overflow-hint text-xs text-muted-foreground">
+          {suffix}
+          {source ? ` · ${source}` : ""}
+        </p>
+        {manual && showNote ? (
+          <div className="space-y-1">
+            <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
+            <Input
+              id={`${id}-note`}
+              value={note}
+              maxLength={200}
+              required
+              disabled={disabled}
+              aria-invalid={noteInvalid}
+              className={cn(noteInvalid && "border-destructive")}
+              onChange={(event) => onNoteChange?.(event.target.value)}
+            />
+            {noteInvalid ? (
+              <p role="alert" className="text-xs font-medium text-destructive">
+                {requiredMessage}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </TooltipProvider>
   );
 }

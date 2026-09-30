@@ -34,7 +34,14 @@ export interface IcoLinkProps {
 }
 
 /** České IČO s ověřeným odkazem do obchodního rejstříku nebo ARES. */
-export function IcoLink({ ico: icoProp, value, country, kind = "company", target = "auto", className }: IcoLinkProps) {
+export function IcoLink({
+  ico: icoProp,
+  value,
+  country,
+  kind = "company",
+  target = "auto",
+  className,
+}: IcoLinkProps) {
   const ico = (icoProp || value || "").trim();
   const dsTexts = useDsTexts();
   if (!ico) return null;
@@ -49,7 +56,10 @@ export function IcoLink({ ico: icoProp, value, country, kind = "company", target
       rel="noopener noreferrer"
       title={label}
       aria-label={`${ico} – ${label}`}
-      className={cn("inline-flex items-center gap-1 font-mono tabular-nums text-primary underline-offset-4 hover:underline", className)}
+      className={cn(
+        "inline-flex items-center gap-1 font-mono tabular-nums text-primary underline-offset-4 hover:underline",
+        className,
+      )}
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >

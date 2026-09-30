@@ -57,7 +57,13 @@ export function useGridVirtual(
   } = {},
 ): GridVirtual {
   const pageVariant = usePageLayoutVariant();
-  const { zoom = 1, density = "normal", overscan = 12, threshold = 60, height = pageVariant === "list" ? "fill" : "auto" } = options;
+  const {
+    zoom = 1,
+    density = "normal",
+    overscan = 12,
+    threshold = 60,
+    height = pageVariant === "list" ? "fill" : "auto",
+  } = options;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [rowHeight, setRowHeight] = useState(() => estimateRowHeight(zoom, density));
   const [range, setRange] = useState({ start: 0, end: Math.min(count, threshold) });

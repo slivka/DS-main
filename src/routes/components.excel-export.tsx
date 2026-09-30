@@ -17,12 +17,14 @@ export const Route = createFileRoute("/components/excel-export")({
       { title: "Export do Excelu – Slivka Design System" },
       {
         name: "description",
-        content: "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
+        content:
+          "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
       },
       { property: "og:title", content: "Export do Excelu – Slivka Design System" },
       {
         property: "og:description",
-        content: "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
+        content:
+          "Vzor standardního Excel exportu účetních dat včetně tabulky, součtů, formátů a tisku.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -90,7 +92,13 @@ const META = {
 const COLUMNS: DataGridColumn<ExportRow>[] = [
   { id: "document", label: "Doklad", section: "Doklad", value: (row) => row.document },
   { id: "date", label: "Datum", section: "Doklad", value: (row) => row.date, exportType: "date" },
-  { id: "partner", label: "Partner", section: "Protistrana", value: (row) => row.partner, width: 240 },
+  {
+    id: "partner",
+    label: "Partner",
+    section: "Protistrana",
+    value: (row) => row.partner,
+    width: 240,
+  },
   ...accountColumns<ExportRow>({
     debit: (row) => row.debitAccount,
     credit: (row) => row.creditAccount,
@@ -146,7 +154,10 @@ const COLUMNS: DataGridColumn<ExportRow>[] = [
 function sampleExportData(): GridExportData {
   return {
     columns: COLUMNS.map((column) => column.label),
-    headerRows: [COLUMNS.map((column) => column.section ?? ""), COLUMNS.map((column) => column.label)],
+    headerRows: [
+      COLUMNS.map((column) => column.section ?? ""),
+      COLUMNS.map((column) => column.label),
+    ],
     rows: ROWS.map((row) => COLUMNS.map((column) => column.value?.(row) ?? "")),
     columnMeta: COLUMNS.map((column) => ({
       type: column.exportType ?? (column.numeric ? "number" : "text"),
@@ -172,9 +183,7 @@ const RULES = [
 function ExcelExportPage() {
   const columns = useMemo(() => COLUMNS, []);
   return (
-    <ShowcaseLayout
-      breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Export do Excelu" }]}
-    >
+    <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Export do Excelu" }]}>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="typo-title text-primary">Export do Excelu</h1>
@@ -211,7 +220,9 @@ function ExcelExportPage() {
           {RULES.map((rule, index) => (
             <li key={rule} className="flex gap-3 border-b py-2 text-sm">
               <span className="font-mono font-semibold text-success">✓</span>
-              <span><strong>{index + 1}.</strong> {rule}</span>
+              <span>
+                <strong>{index + 1}.</strong> {rule}
+              </span>
             </li>
           ))}
         </ol>

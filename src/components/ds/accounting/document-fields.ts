@@ -14,7 +14,19 @@ export type DocumentFields = {
 };
 
 /** Kódy typů dokladů s předvolbou polí. */
-export type DocumentTypeCode = "ID" | "FV" | "FP" | "PO" | "BA" | "ZFV" | "ZFP" | "DDPZ" | "DDPOZ" | "KR" | "ZAP" | "UZ";
+export type DocumentTypeCode =
+  | "ID"
+  | "FV"
+  | "FP"
+  | "PO"
+  | "BA"
+  | "ZFV"
+  | "ZFP"
+  | "DDPZ"
+  | "DDPOZ"
+  | "KR"
+  | "ZAP"
+  | "UZ";
 
 /** Popisek hlavního účtu podle druhu dokladu. */
 export function mainAccountLabelForType(code: DocumentTypeCode | string): string {
@@ -35,7 +47,9 @@ export function mainAccountLabelForType(code: DocumentTypeCode | string): string
 export type DocumentIdentityVariant = "cashBank" | "invoice" | "internal";
 
 /** Výchozí varianta identifikačního řádku podle druhu dokladu. */
-export function documentIdentityVariantForType(documentType: DocumentTypeCode | string): DocumentIdentityVariant {
+export function documentIdentityVariantForType(
+  documentType: DocumentTypeCode | string,
+): DocumentIdentityVariant {
   const code = documentType.toUpperCase();
   if (code === "PO" || code === "BA") return "cashBank";
   if (["FV", "FP", "ZFV", "ZFP", "DDPZ", "DDPOZ"].includes(code)) return "invoice";
@@ -43,7 +57,10 @@ export function documentIdentityVariantForType(documentType: DocumentTypeCode | 
 }
 
 /** Popisek partnera podle druhu a směru dokladu. */
-export function partnerLabelForType(code: DocumentTypeCode | string, _direction?: "in" | "out" | null): string {
+export function partnerLabelForType(
+  code: DocumentTypeCode | string,
+  _direction?: "in" | "out" | null,
+): string {
   const normalized = code.toUpperCase();
   if (normalized === "FV" || normalized === "ZFV") return "Odběratel";
   if (normalized === "FP" || normalized === "ZFP" || normalized === "DDPOZ") return "Dodavatel";
@@ -51,8 +68,17 @@ export function partnerLabelForType(code: DocumentTypeCode | string, _direction?
 }
 
 const NONE: DocumentFields = {
-  taxDate: false, dueDate: false, externalNumber: false, partner: false, symbols: false,
-  bankAccount: false, mainAccount: false, direction: false, rounding: false, paymentOrders: false, handedOverBy: false,
+  taxDate: false,
+  dueDate: false,
+  externalNumber: false,
+  partner: false,
+  symbols: false,
+  bankAccount: false,
+  mainAccount: false,
+  direction: false,
+  rounding: false,
+  paymentOrders: false,
+  handedOverBy: false,
 };
 
 const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
@@ -60,14 +86,86 @@ const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
   UZ: NONE,
   KR: NONE,
   ZAP: NONE,
-  FV: { ...NONE, taxDate: true, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true },
-  FP: { ...NONE, taxDate: true, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true, paymentOrders: true },
-  ZFV: { ...NONE, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true },
-  ZFP: { ...NONE, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, paymentOrders: true },
-  DDPZ: { ...NONE, taxDate: true, dueDate: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true },
-  DDPOZ: { ...NONE, taxDate: true, dueDate: true, externalNumber: true, partner: true, symbols: true, bankAccount: true, mainAccount: true, rounding: true, paymentOrders: true },
-  PO: { ...NONE, taxDate: true, externalNumber: true, partner: true, mainAccount: true, direction: true, rounding: true, handedOverBy: true },
-  BA: { ...NONE, symbols: true, bankAccount: true, partner: true, mainAccount: true, direction: true },
+  FV: {
+    ...NONE,
+    taxDate: true,
+    dueDate: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+    rounding: true,
+  },
+  FP: {
+    ...NONE,
+    taxDate: true,
+    dueDate: true,
+    externalNumber: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+    rounding: true,
+    paymentOrders: true,
+  },
+  ZFV: {
+    ...NONE,
+    dueDate: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+  },
+  ZFP: {
+    ...NONE,
+    dueDate: true,
+    externalNumber: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+    paymentOrders: true,
+  },
+  DDPZ: {
+    ...NONE,
+    taxDate: true,
+    dueDate: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+    rounding: true,
+  },
+  DDPOZ: {
+    ...NONE,
+    taxDate: true,
+    dueDate: true,
+    externalNumber: true,
+    partner: true,
+    symbols: true,
+    bankAccount: true,
+    mainAccount: true,
+    rounding: true,
+    paymentOrders: true,
+  },
+  PO: {
+    ...NONE,
+    taxDate: true,
+    externalNumber: true,
+    partner: true,
+    mainAccount: true,
+    direction: true,
+    rounding: true,
+    handedOverBy: true,
+  },
+  BA: {
+    ...NONE,
+    symbols: true,
+    bankAccount: true,
+    partner: true,
+    mainAccount: true,
+    direction: true,
+  },
 };
 
 /** Výchozí viditelné skupiny polí pro typ dokladu (neznámý kód = interní doklad). */

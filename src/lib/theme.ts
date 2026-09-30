@@ -38,7 +38,9 @@ export function useTheme() {
       applyTheme(mode);
       setIsDark(mode === "dark" || (mode === "system" && prefersDark()));
     };
-    const observer = new MutationObserver(() => setIsDark(document.documentElement.classList.contains("dark")));
+    const observer = new MutationObserver(() =>
+      setIsDark(document.documentElement.classList.contains("dark")),
+    );
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     window.addEventListener(THEME_EVENT, sync);
     window.addEventListener("storage", sync);

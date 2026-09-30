@@ -43,7 +43,16 @@ const TONES = {
 } satisfies Record<NoticeBarTone, { icon: typeof Info; className: string }>;
 
 /** Provozní informace nebo upozornění v kontextu formuláře, případně s navazující akcí. */
-export function NoticeBar({ tone, title, children, actions, onClose, closeLabel, className, ...props }: NoticeBarProps) {
+export function NoticeBar({
+  tone,
+  title,
+  children,
+  actions,
+  onClose,
+  closeLabel,
+  className,
+  ...props
+}: NoticeBarProps) {
   const texts = useDsTexts();
   const config = TONES[tone];
   const Icon = config.icon;
@@ -53,7 +62,11 @@ export function NoticeBar({ tone, title, children, actions, onClose, closeLabel,
       role={tone === "danger" ? "alert" : "status"}
       data-slot="notice-bar"
       data-tone={tone}
-      className={cn("@container flex items-start gap-3 border-l-4 px-4 py-3", config.className, className)}
+      className={cn(
+        "@container flex items-start gap-3 border-l-4 px-4 py-3",
+        config.className,
+        className,
+      )}
       {...props}
     >
       <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
@@ -62,10 +75,24 @@ export function NoticeBar({ tone, title, children, actions, onClose, closeLabel,
           {title ? <p className="font-bold text-current">{title}</p> : null}
           <div className={cn(title && "mt-0.5")}>{children}</div>
         </div>
-        {actions ? <div data-slot="notice-bar-actions" className="mt-2 flex shrink-0 flex-wrap items-center gap-2 @min-[32rem]:mt-0">{actions}</div> : null}
+        {actions ? (
+          <div
+            data-slot="notice-bar-actions"
+            className="mt-2 flex shrink-0 flex-wrap items-center gap-2 @min-[32rem]:mt-0"
+          >
+            {actions}
+          </div>
+        ) : null}
       </div>
       {onClose ? (
-        <Button type="button" variant="ghost" size="icon" aria-label={closeLabel ?? texts.noticeBar.close} onClick={onClose} className="-mr-2 -mt-2 shrink-0 text-current">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={closeLabel ?? texts.noticeBar.close}
+          onClick={onClose}
+          className="-mr-2 -mt-2 shrink-0 text-current"
+        >
           <X aria-hidden="true" />
         </Button>
       ) : null}

@@ -150,9 +150,7 @@ export function GridPagination({
           >
             <ChevronLeft />
           </Button>
-          <span className="num text-muted-foreground">
-            {texts.page(page, pageCount)}
-          </span>
+          <span className="num text-muted-foreground">{texts.page(page, pageCount)}</span>
           <Button
             variant="ghost"
             size="icon"

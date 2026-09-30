@@ -8,7 +8,9 @@ import type { OpenTabTarget } from "./pane-state";
  * Cmd/Ctrl + Shift + klik → sousední panel, Cmd/Ctrl + klik nebo prostřední tlačítko → nová záložka,
  * jinak 'replace' – nahradí aktivní záložku novým krokem historie.
  */
-export function getOpenTarget(event: Pick<MouseEvent, "ctrlKey" | "metaKey" | "shiftKey" | "button">): OpenTabTarget {
+export function getOpenTarget(
+  event: Pick<MouseEvent, "ctrlKey" | "metaKey" | "shiftKey" | "button">,
+): OpenTabTarget {
   const modifier = event.ctrlKey || event.metaKey;
   if (modifier && event.shiftKey) return "adjacentPane";
   if (modifier || event.button === 1) return "newTab";
@@ -49,7 +51,9 @@ export const PaneLink = forwardRef<HTMLAnchorElement, PaneLinkProps>(function Pa
   ref,
 ) {
   const tabs = usePaneTabs();
-  const open = tabs ? (target: OpenTabTarget) => tabs.openTab(route, params, { ...options, target }) : null;
+  const open = tabs
+    ? (target: OpenTabTarget) => tabs.openTab(route, params, { ...options, target })
+    : null;
   return (
     <a
       ref={ref}

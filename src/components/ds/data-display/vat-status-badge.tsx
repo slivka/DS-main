@@ -36,7 +36,13 @@ export interface VatStatusBadgeProps {
 }
 
 /** Stav DPH partnera: registrace, příznak nespolehlivého plátce a datum ověření. */
-export function VatStatusBadge({ status, unreliableSince, checkedAt, texts: overrides, className }: VatStatusBadgeProps) {
+export function VatStatusBadge({
+  status,
+  unreliableSince,
+  checkedAt,
+  texts: overrides,
+  className,
+}: VatStatusBadgeProps) {
   const t = { ...DEFAULT_VAT_STATUS_TEXTS, ...overrides };
   const config: StatusConfig<VatStatus> = {
     payer: { label: t.payer, tone: "success" },
@@ -46,14 +52,31 @@ export function VatStatusBadge({ status, unreliableSince, checkedAt, texts: over
     unverified: { label: t.unverified, tone: "neutral" },
   };
   return (
-    <span data-slot="vat-status" className={cn("inline-flex flex-wrap items-center gap-2", className)}>
-      <StatusBadge status={status} config={config} className={status === "unverified" ? "border-border bg-transparent text-muted-foreground" : undefined} />
+    <span
+      data-slot="vat-status"
+      className={cn("inline-flex flex-wrap items-center gap-2", className)}
+    >
+      <StatusBadge
+        status={status}
+        config={config}
+        className={
+          status === "unverified" ? "border-border bg-transparent text-muted-foreground" : undefined
+        }
+      />
       {unreliableSince ? (
-        <span data-slot="badge" data-vat-unreliable className="inline-flex items-center rounded-sm border border-destructive bg-destructive px-2 py-0.5 text-xs font-medium leading-tight text-destructive-foreground">
+        <span
+          data-slot="badge"
+          data-vat-unreliable
+          className="inline-flex items-center rounded-sm border border-destructive bg-destructive px-2 py-0.5 text-xs font-medium leading-tight text-destructive-foreground"
+        >
           {t.unreliableSince.replace("{date}", formatDate(unreliableSince))}
         </span>
       ) : null}
-      {checkedAt ? <span className="text-xs text-muted-foreground">{t.checkedAt.replace("{date}", formatDate(checkedAt))}</span> : null}
+      {checkedAt ? (
+        <span className="text-xs text-muted-foreground">
+          {t.checkedAt.replace("{date}", formatDate(checkedAt))}
+        </span>
+      ) : null}
     </span>
   );
 }

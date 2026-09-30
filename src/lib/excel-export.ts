@@ -65,7 +65,19 @@ export interface BuildExcelWorkbookOptions {
   totalLabel?: string;
   created?: Date;
   locale?: string;
-  texts?: { parametersSheet: string; parameter: string; value: string; reportName: string; company: string; period: string; exportedAt: string; user: string; activeFilters: string; pageFooter: string; fallbackColumn: (index: number) => string };
+  texts?: {
+    parametersSheet: string;
+    parameter: string;
+    value: string;
+    reportName: string;
+    company: string;
+    period: string;
+    exportedAt: string;
+    user: string;
+    activeFilters: string;
+    pageFooter: string;
+    fallbackColumn: (index: number) => string;
+  };
 }
 
 export const EXCEL_NUMBER_FORMAT = "#,##0.00;[Red]-#,##0.00";
@@ -96,19 +108,29 @@ function loadExcelJs() {
   return excelJsPromise;
 }
 
-const emptyCell = (value: ExportCell) => (value === null || value === undefined || value === "" ? null : value);
+const emptyCell = (value: ExportCell) =>
+  value === null || value === undefined || value === "" ? null : value;
 
 function safeWorksheetName(title: string) {
-  const safe = title.replace(/[\\/:?*[\]]/g, "-").replace(/^'+|'+$/g, "").trim();
+  const safe = title
+    .replace(/[\\/:?*[\]]/g, "-")
+    .replace(/^'+|'+$/g, "")
+    .trim();
   return (safe || "Data").slice(0, 31);
 }
 
 function tableName(value: string) {
-  const cleaned = value.normalize("NFKD").replace(/[^A-Za-z0-9_]/g, "").slice(0, 240);
+  const cleaned = value
+    .normalize("NFKD")
+    .replace(/[^A-Za-z0-9_]/g, "")
+    .slice(0, 240);
   return /^[A-Za-z]/.test(cleaned) ? cleaned : `Tabulka_${cleaned || "Export"}`;
 }
 
-function uniqueHeaders(data: GridExportData, fallbackColumn = (index: number) => `Sloupec ${index}`) {
+function uniqueHeaders(
+  data: GridExportData,
+  fallbackColumn = (index: number) => `Sloupec ${index}`,
+) {
   const rows = data.headerRows?.length ? data.headerRows : [data.columns];
   const used = new Set<string>();
   return data.columns.map((fallback, index) => {
@@ -116,7 +138,12 @@ function uniqueHeaders(data: GridExportData, fallbackColumn = (index: number) =>
       .map((row) => String(row[index] ?? "").trim())
       .filter((part, partIndex, all) => part && all.indexOf(part) === partIndex);
     const raw = parts.join(" – ") || fallback || fallbackColumn(index + 1);
-    const base = raw.replace(/[[\]#']/g, " ").replace(/\s+/g, " ").trim().slice(0, 255) || fallbackColumn(index + 1);
+    const base =
+      raw
+        .replace(/[[\]#']/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 255) || fallbackColumn(index + 1);
     let name = base;
     let suffix = 2;
     while (used.has(name.toLocaleLowerCase("cs"))) {
@@ -143,7 +170,9 @@ function parseDate(value: ExportCell) {
       Number(second ?? 0),
     );
   }
-  const cz = /^(\d{1,2})\.\s?(\d{1,2})\.\s?(\d{4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/.exec(value.trim());
+  const cz = /^(\d{1,2})\.\s?(\d{1,2})\.\s?(\d{4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/.exec(
+    value.trim(),
+  );
   if (!cz) return null;
   const [, day, month, year, hour, minute, second] = cz;
   return new Date(
@@ -157,22 +186,28 @@ function parseDate(value: ExportCell) {
 }
 
 function inferredType(data: GridExportData, index: number): ExcelColumnType {
-  const values = data.rows.map((row) => row[index]).filter((value) => value !== "" && value != null);
-  return values.length > 0 && values.every((value) => typeof value === "number") ? "number" : "text";
+  const values = data.rows
+    .map((row) => row[index])
+    .filter((value) => value !== "" && value != null);
+  return values.length > 0 && values.every((value) => typeof value === "number")
+    ? "number"
+    : "text";
 }
 
 function resolveColumnMeta(data: GridExportData) {
-  return data.columns.map((_, index): Required<Pick<ExcelColumnMeta, "type" | "align" | "total">> & ExcelColumnMeta => {
-    const source = data.columnMeta?.[index];
-    const type = source?.type ?? inferredType(data, index);
-    const numeric = ["number", "integer", "percent", "year"].includes(type);
-    return {
-      ...source,
-      type,
-      align: source?.align ?? (numeric ? "right" : "left"),
-      total: source?.total ?? (numeric && data.summarize !== false ? "sum" : "none"),
-    };
-  });
+  return data.columns.map(
+    (_, index): Required<Pick<ExcelColumnMeta, "type" | "align" | "total">> & ExcelColumnMeta => {
+      const source = data.columnMeta?.[index];
+      const type = source?.type ?? inferredType(data, index);
+      const numeric = ["number", "integer", "percent", "year"].includes(type);
+      return {
+        ...source,
+        type,
+        align: source?.align ?? (numeric ? "right" : "left"),
+        total: source?.total ?? (numeric && data.summarize !== false ? "sum" : "none"),
+      };
+    },
+  );
 }
 
 function numberFormat(meta: ExcelColumnMeta) {
@@ -190,9 +225,15 @@ function displayValue(value: ExportCell, meta: ExcelColumnMeta, locale = "cs-CZ"
     if (date) return meta.type === "datetime" ? formatUserDateTime(date) : formatUserDate(date);
   }
   if (typeof value === "number") {
-    const normalized = nzero(roundTo(value, meta.type === "integer" || meta.type === "year" ? 0 : 2));
+    const normalized = nzero(
+      roundTo(value, meta.type === "integer" || meta.type === "year" ? 0 : 2),
+    );
     if (meta.type === "percent") {
-      return normalized.toLocaleString(locale, { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return normalized.toLocaleString(locale, {
+        style: "percent",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
     }
     return normalized.toLocaleString(locale, {
       minimumFractionDigits: meta.type === "number" ? 2 : 0,
@@ -217,15 +258,17 @@ function excelValue(value: ExportCell, meta: ExcelColumnMeta) {
   if (meta.type === "date" || meta.type === "datetime") {
     const date = parseDate(value);
     if (!date) return emptyCell(value);
-    return new Date(Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      meta.type === "datetime" ? date.getHours() : 0,
-      meta.type === "datetime" ? date.getMinutes() : 0,
-      meta.type === "datetime" ? date.getSeconds() : 0,
-      meta.type === "datetime" ? date.getMilliseconds() : 0,
-    ));
+    return new Date(
+      Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        meta.type === "datetime" ? date.getHours() : 0,
+        meta.type === "datetime" ? date.getMinutes() : 0,
+        meta.type === "datetime" ? date.getSeconds() : 0,
+        meta.type === "datetime" ? date.getMilliseconds() : 0,
+      ),
+    );
   }
   if (typeof value === "number") {
     const decimals = meta.type === "integer" || meta.type === "year" ? 0 : 2;
@@ -235,7 +278,7 @@ function excelValue(value: ExportCell, meta: ExcelColumnMeta) {
 }
 
 function excelColumnName(name: string) {
-  return name.replace(/]/g, "]]" );
+  return name.replace(/]/g, "]]");
 }
 
 /** Sestaví kompletní Excel sešit bez vazby na React nebo DOM. */
@@ -261,7 +304,9 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
   workbook.calcProperties.fullCalcOnLoad = true;
 
   const sheet = workbook.addWorksheet(safeWorksheetName(title), {
-    properties: { outlineProperties: { summaryBelow: data.outlineSummaryBelow === true, summaryRight: false } },
+    properties: {
+      outlineProperties: { summaryBelow: data.outlineSummaryBelow === true, summaryRight: false },
+    },
     views: [{ state: "frozen", ySplit: firstHeaderRow }],
   });
 
@@ -285,7 +330,10 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
 
   const subtotalByRow = new Map(
     (data.subtotalRows ?? [])
-      .filter((entry) => entry.from <= entry.to && entry.to < data.rows.length && entry.row < data.rows.length)
+      .filter(
+        (entry) =>
+          entry.from <= entry.to && entry.to < data.rows.length && entry.row < data.rows.length,
+      )
       .map((entry) => [entry.row, entry]),
   );
   sheet.addTable({
@@ -309,12 +357,15 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     ),
   });
 
-  const requestedLevels = (data.rowLevels ?? []).map((level) => Math.max(0, Math.min(7, Math.trunc(level))));
+  const requestedLevels = (data.rowLevels ?? []).map((level) =>
+    Math.max(0, Math.min(7, Math.trunc(level))),
+  );
   const hasSummaryBoundary = requestedLevels.some((level) => level === 0);
   const appliedLevels = hasSummaryBoundary ? requestedLevels : [];
   const maxOutlineLevel = Math.max(0, ...appliedLevels);
   appliedLevels.forEach((level, rowIndex) => {
-    if (level > 0 && rowIndex < data.rows.length) sheet.getRow(firstDataRow + rowIndex).outlineLevel = level;
+    if (level > 0 && rowIndex < data.rows.length)
+      sheet.getRow(firstDataRow + rowIndex).outlineLevel = level;
   });
   sheet.properties.outlineLevelRow = maxOutlineLevel;
 
@@ -329,7 +380,8 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       const columnIndex = labelSpan + cellIndex;
       if (columnIndex >= headers.length) return;
       const columnMeta = meta[columnIndex];
-      if (columnMeta.total !== "sum" && (value === null || value === undefined || value === "")) return;
+      if (columnMeta.total !== "sum" && (value === null || value === undefined || value === ""))
+        return;
       row.getCell(columnIndex + 1).value =
         columnMeta.total === "sum"
           ? { formula: `SUBTOTAL(109,${name}[${excelColumnName(headers[columnIndex])}])` }
@@ -365,10 +417,14 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       target.alignment = {
         horizontal,
         vertical: "middle",
-        wrapText: isHeader || (columnMeta.type === "text" && (sheet.getColumn(columnIndex + 1).width ?? 0) >= 60),
+        wrapText:
+          isHeader ||
+          (columnMeta.type === "text" && (sheet.getColumn(columnIndex + 1).width ?? 0) >= 60),
       };
-      if (isHeader) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.header } };
-      if (isTableTotal) target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
+      if (isHeader)
+        target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.header } };
+      if (isTableTotal)
+        target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
       target.border = {
         top: { style: "thin", color: { argb: NAVY_TRUST.border } },
         bottom: { style: "thin", color: { argb: NAVY_TRUST.border } },
@@ -390,7 +446,11 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     definition.cells.forEach((value, cellIndex) => {
       const columnIndex = labelSpan + cellIndex;
       const columnMeta = meta[columnIndex];
-      if (columnIndex < headers.length && columnMeta && (columnMeta.total === "sum" || (value !== null && value !== undefined && value !== ""))) {
+      if (
+        columnIndex < headers.length &&
+        columnMeta &&
+        (columnMeta.total === "sum" || (value !== null && value !== undefined && value !== ""))
+      ) {
         populatedColumns.add(columnIndex + 1);
       }
     });
@@ -400,32 +460,37 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       target.font = { name: "Arial", bold: true };
       target.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAVY_TRUST.total } };
       target.alignment = { horizontal: columnMeta?.align, vertical: "middle" };
-      if (columnMeta && ["number", "integer", "percent", "year"].includes(columnMeta.type)) target.numFmt = numberFormat(columnMeta);
+      if (columnMeta && ["number", "integer", "percent", "year"].includes(columnMeta.type))
+        target.numFmt = numberFormat(columnMeta);
     });
   });
 
-  const sampledRows = data.rows.length <= 2_000
-    ? data.rows
-    : Array.from({ length: 2_000 }, (_, index) => data.rows[Math.floor((index * data.rows.length) / 2_000)]);
+  const sampledRows =
+    data.rows.length <= 2_000
+      ? data.rows
+      : Array.from(
+          { length: 2_000 },
+          (_, index) => data.rows[Math.floor((index * data.rows.length) / 2_000)],
+        );
   headers.forEach((header, index) => {
     const columnMeta = meta[index];
     const displayedValues = sampledRows.map((row) => displayValue(row[index], columnMeta));
     const contentLengths = displayedValues.map((value) => value.length);
-    const automaticTotalLength = columnMeta.total === "sum"
-      ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).length
-      : columnMeta.total === "count"
-        ? displayValue(data.rows.length, { ...columnMeta, type: "integer" }).length
-        : index === 0 && totalsRow
-          ? totalLabel.length
-          : 0;
+    const automaticTotalLength =
+      columnMeta.total === "sum"
+        ? displayValue(summedColumnValue(data, index, columnMeta), columnMeta).length
+        : columnMeta.total === "count"
+          ? displayValue(data.rows.length, { ...columnMeta, type: "integer" }).length
+          : index === 0 && totalsRow
+            ? totalLabel.length
+            : 0;
     const totalLengths = (data.totalRows ?? []).map((row) => {
       const labelSpan = Math.max(1, Math.min(row.labelSpan ?? 1, headers.length));
       if (index === 0) return row.label.length;
       if (index < labelSpan) return 0;
       const value = row.cells[index - labelSpan];
-      const displayed = columnMeta.total === "sum"
-        ? summedColumnValue(data, index, columnMeta)
-        : value;
+      const displayed =
+        columnMeta.total === "sum" ? summedColumnValue(data, index, columnMeta) : value;
       return displayValue(displayed, columnMeta).length;
     });
     totalLengths.push(automaticTotalLength);
@@ -435,17 +500,25 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
       ...contentLengths.map((length) => length + EXCEL_CELL_PADDING),
       ...totalLengths.map((length) => length + EXCEL_CELL_PADDING),
     );
-    const preferred = columnMeta.width === undefined ? measured : Math.max(measured, columnMeta.width);
+    const preferred =
+      columnMeta.width === undefined ? measured : Math.max(measured, columnMeta.width);
     const width = Math.max(EXCEL_MIN_COLUMN_WIDTH, Math.min(EXCEL_MAX_COLUMN_WIDTH, preferred));
     sheet.getColumn(index + 1).width = width;
     if (columnMeta.type === "text") {
       for (let rowIndex = firstDataRow; rowIndex < firstDataRow + data.rows.length; rowIndex += 1) {
-        const displayed = displayValue(data.rows[rowIndex - firstDataRow]?.[index], columnMeta, options.locale);
+        const displayed = displayValue(
+          data.rows[rowIndex - firstDataRow]?.[index],
+          columnMeta,
+          options.locale,
+        );
         if (displayed.length <= EXCEL_LONG_TEXT_LENGTH) continue;
         const cell = sheet.getCell(rowIndex, index + 1);
         cell.alignment = { ...cell.alignment, wrapText: true };
         const row = sheet.getRow(rowIndex);
-        row.height = Math.max(row.height ?? 18, Math.ceil(displayed.length / EXCEL_LONG_TEXT_LENGTH) * 18);
+        row.height = Math.max(
+          row.height ?? 18,
+          Math.ceil(displayed.length / EXCEL_LONG_TEXT_LENGTH) * 18,
+        );
       }
     }
   });
@@ -466,7 +539,9 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     printTitlesRow: `${firstHeaderRow}:${firstHeaderRow}`,
     margins: { left: 0.394, right: 0.394, top: 0.394, bottom: 0.394, header: 0.2, footer: 0.2 },
   };
-  sheet.headerFooter = { oddFooter: `&L${title}&R${options.texts?.pageFooter ?? "Strana &P z &N"}` };
+  sheet.headerFooter = {
+    oddFooter: `&L${title}&R${options.texts?.pageFooter ?? "Strana &P z &N"}`,
+  };
 
   const parameterRows = [
     [options.texts?.reportName ?? "Název sestavy", title],
@@ -474,18 +549,26 @@ export async function buildExcelWorkbook(data: GridExportData, options: BuildExc
     ...(options.meta?.period ? [[options.texts?.period ?? "Období", options.meta.period]] : []),
     [options.texts?.exportedAt ?? "Exportováno", formatUserDateTime(created)],
     ...(options.meta?.user ? [[options.texts?.user ?? "Uživatel", options.meta.user]] : []),
-    ...(options.meta?.filters?.length ? [[options.texts?.activeFilters ?? "Aktivní filtry", options.meta.filters.join("; ")]] : []),
+    ...(options.meta?.filters?.length
+      ? [[options.texts?.activeFilters ?? "Aktivní filtry", options.meta.filters.join("; ")]]
+      : []),
   ];
-  const parameterSheet = workbook.addWorksheet(options.texts?.parametersSheet ?? "Parametry exportu", {
-    views: [{ state: "frozen", ySplit: 1 }],
-  });
+  const parameterSheet = workbook.addWorksheet(
+    options.texts?.parametersSheet ?? "Parametry exportu",
+    {
+      views: [{ state: "frozen", ySplit: 1 }],
+    },
+  );
   parameterSheet.addTable({
     name: `${name.slice(0, 230)}_Parametry`,
     ref: "A1",
     headerRow: true,
     totalsRow: false,
     style: { theme: "TableStyleLight1", showRowStripes: false, showColumnStripes: false },
-    columns: [{ name: options.texts?.parameter ?? "Parametr", filterButton: false }, { name: options.texts?.value ?? "Hodnota", filterButton: false }],
+    columns: [
+      { name: options.texts?.parameter ?? "Parametr", filterButton: false },
+      { name: options.texts?.value ?? "Hodnota", filterButton: false },
+    ],
     rows: parameterRows,
   });
   parameterSheet.getColumn(1).width = 22;
@@ -551,27 +634,38 @@ function reorderSheetPrChildren(xml: string) {
  * Rozsah filtru zapisuje ExcelJS správně – končí posledním datovým řádkem,
  * ne řádkem souhrnů.
  */
-export async function finalizeWorkbookBuffer(buffer: ArrayBuffer | Uint8Array): Promise<Uint8Array> {
+export async function finalizeWorkbookBuffer(
+  buffer: ArrayBuffer | Uint8Array,
+): Promise<Uint8Array> {
   const bytes = buffer instanceof Uint8Array ? new Uint8Array(buffer) : new Uint8Array(buffer);
   const zip = await JSZip.loadAsync(bytes);
-  await Promise.all(Object.keys(zip.files).map(async (path) => {
-    const entry = zip.file(path);
-    if (!entry) return;
-    if (/^xl\/tables\/table\d+\.xml$/.test(path)) {
-      const xml = await entry.async("text");
-      const cleaned = xml
-        .replace(/\s+totalsRowFunction="none"/g, "")
-        .replace(
-          /(<table\b[^>]*\bref="[A-Z]+(\d+):[A-Z]+(\d+)"[^>]*\btotalsRowCount="1"[^>]*>[\s\S]*?<autoFilter\s+ref="([A-Z]+)\d+:([A-Z]+))\d+("[^>]*>)/,
-          (_match, prefix: string, start: string, end: string, firstColumn: string, lastColumn: string, suffix: string) =>
-            `${prefix}${Number(end) - 1}${suffix}`,
-        );
-      zip.file(path, cleaned);
-    } else if (/^xl\/worksheets\/sheet\d+\.xml$/.test(path)) {
-      const xml = await entry.async("text");
-      zip.file(path, reorderSheetPrChildren(xml));
-    }
-  }));
+  await Promise.all(
+    Object.keys(zip.files).map(async (path) => {
+      const entry = zip.file(path);
+      if (!entry) return;
+      if (/^xl\/tables\/table\d+\.xml$/.test(path)) {
+        const xml = await entry.async("text");
+        const cleaned = xml
+          .replace(/\s+totalsRowFunction="none"/g, "")
+          .replace(
+            /(<table\b[^>]*\bref="[A-Z]+(\d+):[A-Z]+(\d+)"[^>]*\btotalsRowCount="1"[^>]*>[\s\S]*?<autoFilter\s+ref="([A-Z]+)\d+:([A-Z]+))\d+("[^>]*>)/,
+            (
+              _match,
+              prefix: string,
+              start: string,
+              end: string,
+              firstColumn: string,
+              lastColumn: string,
+              suffix: string,
+            ) => `${prefix}${Number(end) - 1}${suffix}`,
+          );
+        zip.file(path, cleaned);
+      } else if (/^xl\/worksheets\/sheet\d+\.xml$/.test(path)) {
+        const xml = await entry.async("text");
+        zip.file(path, reorderSheetPrChildren(xml));
+      }
+    }),
+  );
   return zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
 }
 
@@ -582,8 +676,13 @@ export async function downloadWorkbook(
   created = workbook.created ?? new Date(),
 ) {
   const buffer = await workbook.xlsx.writeBuffer();
-  const finalized = await finalizeWorkbookBuffer(buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer as ArrayBuffer));
-  const finalizedBuffer = finalized.buffer.slice(finalized.byteOffset, finalized.byteOffset + finalized.byteLength) as ArrayBuffer;
+  const finalized = await finalizeWorkbookBuffer(
+    buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer as ArrayBuffer),
+  );
+  const finalizedBuffer = finalized.buffer.slice(
+    finalized.byteOffset,
+    finalized.byteOffset + finalized.byteLength,
+  ) as ArrayBuffer;
   const blob = new Blob([finalizedBuffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });

@@ -17,7 +17,9 @@ export function AmountCell({
 }) {
   const empty = value == null || !Number.isFinite(value);
   return (
-    <span className={cn("amount-cell block text-right tabular-nums", amountClass(value), className)}>
+    <span
+      className={cn("amount-cell block text-right tabular-nums", amountClass(value), className)}
+    >
       {empty ? emptyText : formatAmount(value, decimals)}
     </span>
   );

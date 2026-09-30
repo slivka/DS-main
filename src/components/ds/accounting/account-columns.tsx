@@ -42,13 +42,38 @@ function AccountColumnValue({ value }: { value: string }) {
 }
 
 /** Jedna účetní dvojice: rozšířená forma je výchozí, krátká zůstává dostupná ve Sloupce. */
-export function accountColumnPair<Row>({ id, label, shortLabel, getCode, accountName, section }: AccountColumnPairOptions<Row>): DataGridColumn<Row>[] {
+export function accountColumnPair<Row>({
+  id,
+  label,
+  shortLabel,
+  getCode,
+  accountName,
+  section,
+}: AccountColumnPairOptions<Row>): DataGridColumn<Row>[] {
   const codeValue = (row: Row) => formatAccountCode(getCode(row));
   const nameValue = (row: Row) => accountText(getCode(row), accountName);
   const sortValue = (row: Row) => normalizeAccountCode(getCode(row)) || null;
   return [
-    { id, label: shortLabel, section, defaultVisible: false, fitContent: true, exportType: "text", value: codeValue, sortValue },
-    { id: `${id}Name`, label, section, width: 220, exportType: "text", value: nameValue, sortValue, render: (row) => <AccountColumnValue value={nameValue(row)} /> },
+    {
+      id,
+      label: shortLabel,
+      section,
+      defaultVisible: false,
+      fitContent: true,
+      exportType: "text",
+      value: codeValue,
+      sortValue,
+    },
+    {
+      id: `${id}Name`,
+      label,
+      section,
+      width: 220,
+      exportType: "text",
+      value: nameValue,
+      sortValue,
+      render: (row) => <AccountColumnValue value={nameValue(row)} />,
+    },
   ];
 }
 
@@ -71,7 +96,27 @@ export function accountColumns<Row>({
   creditNameLabel = "DAL účet",
 }: AccountColumnsOptions<Row>): DataGridColumn<Row>[] {
   return [
-    ...accountColumnPair({ id: debitId, label: debitNameLabel, shortLabel: debitLabel, getCode: debit, accountName, section }),
-    ...accountColumnPair({ id: creditId, label: creditNameLabel, shortLabel: creditLabel, getCode: credit, accountName, section }),
-  ].map((column) => column.id === `${debitId}Name` ? { ...column, id: debitNameId } : column.id === `${creditId}Name` ? { ...column, id: creditNameId } : column);
+    ...accountColumnPair({
+      id: debitId,
+      label: debitNameLabel,
+      shortLabel: debitLabel,
+      getCode: debit,
+      accountName,
+      section,
+    }),
+    ...accountColumnPair({
+      id: creditId,
+      label: creditNameLabel,
+      shortLabel: creditLabel,
+      getCode: credit,
+      accountName,
+      section,
+    }),
+  ].map((column) =>
+    column.id === `${debitId}Name`
+      ? { ...column, id: debitNameId }
+      : column.id === `${creditId}Name`
+        ? { ...column, id: creditNameId }
+        : column,
+  );
 }

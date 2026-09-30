@@ -172,7 +172,9 @@ export function CountrySelect({
           )}
         >
           <span className="truncate">
-            {selected ? `${selected.name} (${selected.code})` : placeholder ?? dsTexts.country.choose}
+            {selected
+              ? `${selected.name} (${selected.code})`
+              : (placeholder ?? dsTexts.country.choose)}
           </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
@@ -205,7 +207,9 @@ export function CountrySelect({
               </CommandGroup>
             )}
             {eu.length > 0 && (
-              <CommandGroup heading={dsTexts.country.eu}>{eu.map((c) => renderItem(c))}</CommandGroup>
+              <CommandGroup heading={dsTexts.country.eu}>
+                {eu.map((c) => renderItem(c))}
+              </CommandGroup>
             )}
             {rest.length > 0 && (
               <CommandGroup

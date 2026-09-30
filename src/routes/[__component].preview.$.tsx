@@ -17,7 +17,13 @@ import { components } from "@/.generated/mockup-components";
 
 type PreviewEntry = (typeof components)[string];
 type SpecimenProps = Record<string, string | number | boolean>;
-type SchemaProp = { name: string; type?: string; values?: string[]; default?: string; required?: boolean };
+type SchemaProp = {
+  name: string;
+  type?: string;
+  values?: string[];
+  default?: string;
+  required?: boolean;
+};
 
 export const Route = createFileRoute("/__component/preview/$")({
   component: ComponentPreview,
@@ -30,7 +36,8 @@ function ComponentPreview(): ReactElement | null {
 }
 
 function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement | null {
-  const sourceEntry = previewPath && Object.hasOwn(components, previewPath) ? components[previewPath] : undefined;
+  const sourceEntry =
+    previewPath && Object.hasOwn(components, previewPath) ? components[previewPath] : undefined;
   const sourceFile = (sourceEntry as { file?: string } | undefined)?.file ?? "";
   const sourceName = sourceEntry?.name ?? "";
   const [content, setContent] = useState<ReactElement | null>(null);
@@ -40,7 +47,10 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
   const specimenRef = useRef<SpecimenProps>({});
   const reportPreviewStatus = (status: "ready" | "error", message?: string) => {
     const revision = new URLSearchParams(window.location.search).get("revision");
-    window.parent?.postMessage({ type: "lov-canvas-preview-status", previewPath, revision, status, message }, "*");
+    window.parent?.postMessage(
+      { type: "lov-canvas-preview-status", previewPath, revision, status, message },
+      "*",
+    );
   };
 
   const renderSpecimen = () => {
@@ -50,7 +60,8 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
     setContent(
       createElement(RetryWithoutChildren, {
         key: JSON.stringify(specimenRef.current),
-        mount: (withChildren: boolean) => mountContent(Component, entry, specimenRef.current, withChildren),
+        mount: (withChildren: boolean) =>
+          mountContent(Component, entry, specimenRef.current, withChildren),
         onReady: () => reportPreviewStatus("ready"),
         onError: () => reportPreviewStatus("error", "Component threw while rendering."),
       }),
@@ -64,7 +75,8 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
     }
     window.parent?.postMessage({ type: "lov-canvas-preview-ready" }, "*");
     let active = true;
-    const entry = previewPath && Object.hasOwn(components, previewPath) ? components[previewPath] : undefined;
+    const entry =
+      previewPath && Object.hasOwn(components, previewPath) ? components[previewPath] : undefined;
     if (!entry) {
       const message = 'Component "' + previewPath + '" not found.';
       setContent(errorContent(message));
@@ -94,7 +106,8 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
       })
       .catch((error) => {
         if (active) {
-          const message = "Failed to load: " + (error instanceof Error ? error.message : String(error));
+          const message =
+            "Failed to load: " + (error instanceof Error ? error.message : String(error));
           setContent(errorContent(message));
           reportPreviewStatus("error", message);
         }
@@ -109,7 +122,8 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.source !== parent) return;
-      const schemaProps = (entryRef.current as { schemaProps?: SchemaProp[] } | null)?.schemaProps ?? [];
+      const schemaProps =
+        (entryRef.current as { schemaProps?: SchemaProp[] } | null)?.schemaProps ?? [];
       const props = specimenPropsFromMessage(event.data, schemaProps);
       if (!props) return;
       specimenRef.current = props;
@@ -142,10 +156,17 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
   );
 }
 
-const RENDERABLE_TYPES = new Set(["react.forward_ref", "react.memo", "react.lazy"].map((type) => Symbol.for(type)));
+const RENDERABLE_TYPES = new Set(
+  ["react.forward_ref", "react.memo", "react.lazy"].map((type) => Symbol.for(type)),
+);
 const JSX_SOURCE_KEY = Symbol.for("__jsxSource__");
 
-function stampSource(node: HTMLElement | null, fileName: string, columnNumber: number, displayName: string): void {
+function stampSource(
+  node: HTMLElement | null,
+  fileName: string,
+  columnNumber: number,
+  displayName: string,
+): void {
   if (!node || !fileName) return;
   (node as unknown as Record<symbol, unknown>)[JSX_SOURCE_KEY] = {
     fileName,
@@ -171,7 +192,10 @@ function isLovablePreviewHost(hostname: string): boolean {
   return /^(id-)?preview(-[0-9a-f]+)?--/.test(hostname.split(".")[0]);
 }
 
-function specimenPropsFromMessage(message: unknown, schemaProps: readonly SchemaProp[]): SpecimenProps | null {
+function specimenPropsFromMessage(
+  message: unknown,
+  schemaProps: readonly SchemaProp[],
+): SpecimenProps | null {
   if (!message || typeof message !== "object") return null;
   const candidate = message as { type?: unknown; payload?: { props?: unknown } };
   if (candidate.type !== "DS_SPECIMEN_PROPS") return null;
@@ -219,7 +243,11 @@ function pascalCaseFromFileName(name: string): string {
     .join("");
 }
 
-function pickComponent(mod: Record<string, unknown>, name: string, isDefault: boolean): ComponentType | undefined {
+function pickComponent(
+  mod: Record<string, unknown>,
+  name: string,
+  isDefault: boolean,
+): ComponentType | undefined {
   const canonical = name.includes("-candidate-") ? mod[displayNameOf(name)] : undefined;
   const named = mod[pascalCaseFromFileName(name)] ?? mod[name];
   const primary = canonical ?? (isDefault ? (mod.default ?? named) : (named ?? mod.default));
@@ -287,7 +315,14 @@ function noticeContent(message: string): ReactElement {
 function textContent(message: string, color: string): ReactElement {
   return createElement(
     "pre",
-    { style: { color, padding: "2rem", whiteSpace: "pre-wrap", fontFamily: "ui-monospace, monospace" } },
+    {
+      style: {
+        color,
+        padding: "2rem",
+        whiteSpace: "pre-wrap",
+        fontFamily: "ui-monospace, monospace",
+      },
+    },
     message,
   );
 }

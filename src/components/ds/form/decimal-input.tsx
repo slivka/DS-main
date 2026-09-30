@@ -37,11 +37,18 @@ export function DecimalInput({
   seed?: string;
 } & Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type">) {
   const [text, setText] = useState<string | null>(seed ?? null);
-  useEffect(() => { if (seed !== undefined) setText(seed); }, [seed]);
+  useEffect(() => {
+    if (seed !== undefined) setText(seed);
+  }, [seed]);
 
   const num = typeof value === "string" ? parseDecimalInput(value) : (value ?? null);
   const shown =
-    text ?? (num != null ? fmtAmount(num, displayDecimals ?? decimals) : value != null ? String(value) : "");
+    text ??
+    (num != null
+      ? fmtAmount(num, displayDecimals ?? decimals)
+      : value != null
+        ? String(value)
+        : "");
 
   return (
     <Input
@@ -64,7 +71,10 @@ export function DecimalInput({
         onChange(n == null ? "" : String(n));
       }}
       {...props}
-      onBlur={(event) => { setText(null); onBlur?.(event); }}
+      onBlur={(event) => {
+        setText(null);
+        onBlur?.(event);
+      }}
     />
   );
 }

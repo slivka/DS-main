@@ -5,10 +5,51 @@ import { filterVatCodes, VatCodeSelect } from "../../src/components/ds/accountin
 import type { VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
 
 const codes: VatCodeOption[] = [
-  { id: "v21", code: "21V", name: "Základní sazba", direction: "out", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: "343100" },
-  { id: "v12", code: "12V", name: "Snížená sazba", direction: "out", hasTax: true, rate: 12, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: "343100" },
-  { id: "vx", code: "21VX", name: "bez nároku", direction: "out", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxOutAccount: null, inactive: true },
-  { id: "p21", code: "21P", name: "Základní sazba", direction: "in", hasTax: true, rate: 21, selfAssessment: false, requiresPdpSubject: false, taxInAccount: "343200" },
+  {
+    id: "v21",
+    code: "21V",
+    name: "Základní sazba",
+    direction: "out",
+    hasTax: true,
+    rate: 21,
+    selfAssessment: false,
+    requiresPdpSubject: false,
+    taxOutAccount: "343100",
+  },
+  {
+    id: "v12",
+    code: "12V",
+    name: "Snížená sazba",
+    direction: "out",
+    hasTax: true,
+    rate: 12,
+    selfAssessment: false,
+    requiresPdpSubject: false,
+    taxOutAccount: "343100",
+  },
+  {
+    id: "vx",
+    code: "21VX",
+    name: "bez nároku",
+    direction: "out",
+    hasTax: true,
+    rate: 21,
+    selfAssessment: false,
+    requiresPdpSubject: false,
+    taxOutAccount: null,
+    inactive: true,
+  },
+  {
+    id: "p21",
+    code: "21P",
+    name: "Základní sazba",
+    direction: "in",
+    hasTax: true,
+    rate: 21,
+    selfAssessment: false,
+    requiresPdpSubject: false,
+    taxInAccount: "343200",
+  },
 ];
 
 describe("VatCodeSelect – otevírání a filtrování (2.55.0)", () => {
@@ -24,13 +65,19 @@ describe("VatCodeSelect – otevírání a filtrování (2.55.0)", () => {
     expect(filterVatCodes(codes, "", "v21").map((c) => c.id)).not.toContain("vx");
   });
   it("v buňce gridu se otevírá hned (defaultOpen)", () => {
-    const open = renderToStaticMarkup(<VatCodeSelect defaultOpen codes={codes} value="v21" onChange={() => {}} />);
+    const open = renderToStaticMarkup(
+      <VatCodeSelect defaultOpen codes={codes} value="v21" onChange={() => {}} />,
+    );
     expect(open).toContain('data-state="open"');
-    const closed = renderToStaticMarkup(<VatCodeSelect codes={codes} value="v21" onChange={() => {}} />);
+    const closed = renderToStaticMarkup(
+      <VatCodeSelect codes={codes} value="v21" onChange={() => {}} />,
+    );
     expect(closed).toContain('data-state="closed"');
   });
   it("zobrazuje kód i název vybrané hodnoty", () => {
-    const html = renderToStaticMarkup(<VatCodeSelect codes={codes} value="v21" onChange={() => {}} />);
+    const html = renderToStaticMarkup(
+      <VatCodeSelect codes={codes} value="v21" onChange={() => {}} />,
+    );
     expect(html).toContain("21V");
     expect(html).toContain("Základní sazba");
   });

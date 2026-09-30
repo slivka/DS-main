@@ -8,7 +8,9 @@ const { NoticeBar } = await import("../../src/components/ds/feedback/notice-bar"
 const { Button } = await import("../../src/components/ui/button");
 
 afterEach(() => cleanup());
-afterAll(async () => { if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister(); });
+afterAll(async () => {
+  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
+});
 
 describe("NoticeBar 2.60.0 – interakce", () => {
   it("klikne na vloženou akci a zavření", () => {
@@ -18,8 +20,19 @@ describe("NoticeBar 2.60.0 – interakce", () => {
       <NoticeBar
         tone="info"
         title="Přeplatek"
-        actions={<Button type="button" onClick={() => { actionClicks += 1; }}>Použít VS</Button>}
-        onClose={() => { closeClicks += 1; }}
+        actions={
+          <Button
+            type="button"
+            onClick={() => {
+              actionClicks += 1;
+            }}
+          >
+            Použít VS
+          </Button>
+        }
+        onClose={() => {
+          closeClicks += 1;
+        }}
       >
         Partner má otevřený přeplatek.
       </NoticeBar>,

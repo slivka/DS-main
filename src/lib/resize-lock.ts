@@ -29,8 +29,14 @@ export function startPointerDrag(
   handlers: { onMove: (event: PointerEvent) => void; onEnd?: () => void },
 ) {
   const release = beginResize();
-  const target = (event.currentTarget as Element | null)?.addEventListener ? (event.currentTarget as Element) : null;
-  try { target?.setPointerCapture?.(event.pointerId); } catch { /* ukazatel už nemusí existovat */ }
+  const target = (event.currentTarget as Element | null)?.addEventListener
+    ? (event.currentTarget as Element)
+    : null;
+  try {
+    target?.setPointerCapture?.(event.pointerId);
+  } catch {
+    /* ukazatel už nemusí existovat */
+  }
   let ended = false;
   const end = () => {
     if (ended) return;
@@ -40,7 +46,12 @@ export function startPointerDrag(
     window.removeEventListener("pointercancel", end);
     window.removeEventListener("blur", end);
     target?.removeEventListener("lostpointercapture", end);
-    try { if (target?.hasPointerCapture?.(event.pointerId)) target.releasePointerCapture(event.pointerId); } catch { /* noop */ }
+    try {
+      if (target?.hasPointerCapture?.(event.pointerId))
+        target.releasePointerCapture(event.pointerId);
+    } catch {
+      /* noop */
+    }
     handlers.onEnd?.();
     release();
   };

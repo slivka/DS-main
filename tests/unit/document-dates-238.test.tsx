@@ -1,14 +1,18 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { DocumentForm, type DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
+import {
+  DocumentForm,
+  type DocumentHeaderValue,
+} from "../../src/components/ds/accounting/document-form";
 import { DateField } from "../../src/components/ds/form/date-field";
 
 const baseValue: DocumentHeaderValue = {
   issueDate: "2026-09-26",
   accountingDate: "2026-09-26",
   taxDate: "2026-09-26",
-  vatDate: "2026-08-15", vatRelevant: true,
+  vatDate: "2026-08-15",
+  vatRelevant: true,
   dueDate: "2026-10-10",
   currency: "CZK",
   amountTotal: 1_000,
@@ -16,25 +20,33 @@ const baseValue: DocumentHeaderValue = {
 };
 
 function form(extra: Record<string, unknown> = {}) {
-  return renderToStaticMarkup(<DocumentForm homeCurrency="CZK" homeCurrencySymbol="Kč"
-    title="Doklad"
-    documentType="FP"
-    value={baseValue}
-    onChange={() => {}}
-    lines={[]}
-    onLinesChange={() => {}}
-    books={[]}
-    accounts={[]}
-    status="draft"
-    {...extra}
-  />);
+  return renderToStaticMarkup(
+    <DocumentForm
+      homeCurrency="CZK"
+      homeCurrencySymbol="Kč"
+      title="Doklad"
+      documentType="FP"
+      value={baseValue}
+      onChange={() => {}}
+      lines={[]}
+      onLinesChange={() => {}}
+      books={[]}
+      accounts={[]}
+      status="draft"
+      {...extra}
+    />,
+  );
 }
-
-
 
 describe("DateField link 2.38.0", () => {
   it("zamčené datum je jen pro čtení, nabízí odemčení a nezobrazuje kalendář", () => {
-    const html = renderToStaticMarkup(<DateField value="2026-09-26" onChange={() => {}} link={{ locked: true, onToggle: () => {} }} />);
+    const html = renderToStaticMarkup(
+      <DateField
+        value="2026-09-26"
+        onChange={() => {}}
+        link={{ locked: true, onToggle: () => {} }}
+      />,
+    );
     expect(html).toContain("readOnly");
     expect(html).toContain('aria-pressed="true"');
     expect(html).toContain("Stejné jako datum vystavení – klikněte pro úpravu");
@@ -42,7 +54,13 @@ describe("DateField link 2.38.0", () => {
   });
 
   it("odemčené datum zobrazuje kalendář i akci pro nové svázání", () => {
-    const html = renderToStaticMarkup(<DateField value="2026-09-26" onChange={() => {}} link={{ locked: false, onToggle: () => {} }} />);
+    const html = renderToStaticMarkup(
+      <DateField
+        value="2026-09-26"
+        onChange={() => {}}
+        link={{ locked: false, onToggle: () => {} }}
+      />,
+    );
     expect(html).toContain('aria-pressed="false"');
     expect(html).toContain("Znovu svázat s datem vystavení");
     expect(html).toContain("Otevřít kalendář");
@@ -61,7 +79,10 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
-    const dates = html.slice(html.indexOf('data-slot="document-dates"'), html.indexOf(">Účtování a částka</h2>"));
+    const dates = html.slice(
+      html.indexOf('data-slot="document-dates"'),
+      html.indexOf(">Účtování a částka</h2>"),
+    );
     expect(dates).toContain("flex flex-wrap items-start gap-3");
     expect(dates).not.toContain("ml-auto flex flex-wrap items-start gap-3");
     expect(dates).toContain("min-w-[8.5rem]");
@@ -69,14 +90,24 @@ describe("DocumentForm DPH 2.43.0", () => {
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {
-    const html = form({ vat: { visible: true, dateLink: { locked: true, onToggle: () => {} }, dateLockReadOnly: true, periodFiled: true } });
+    const html = form({
+      vat: {
+        visible: true,
+        dateLink: { locked: true, onToggle: () => {} },
+        dateLockReadOnly: true,
+        periodFiled: true,
+      },
+    });
     expect(html).toContain('id="document-vatDate"');
     expect(html).toContain("Daň na výstupu patří do období DUZP");
     expect(html).toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
 
   it("přebírá upozornění podaného období z texts", () => {
-    const html = form({ vat: { visible: true, periodFiled: true }, texts: { filedWarning: "Vlastní upozornění" } });
+    const html = form({
+      vat: { visible: true, periodFiled: true },
+      texts: { filedWarning: "Vlastní upozornění" },
+    });
     expect(html).toContain("Vlastní upozornění");
     expect(html).not.toContain("Období je podané – doklad půjde do dodatečného přiznání");
   });
@@ -90,7 +121,13 @@ describe("DocumentForm DPH 2.43.0", () => {
   });
 
   it("řadí varování dat v pruhu a nevykreslí je pod poli", () => {
-    const dateWarnings = { issueDate: "Vystavení", accountingDate: "Zaúčtování", dueDate: "Splatnost", taxDate: "DUZP a zaúčtování jsou v různých letech", vatDate: "Datum DPH" };
+    const dateWarnings = {
+      issueDate: "Vystavení",
+      accountingDate: "Zaúčtování",
+      dueDate: "Splatnost",
+      taxDate: "DUZP a zaúčtování jsou v různých letech",
+      vatDate: "Datum DPH",
+    };
     const html = form({ vat: { visible: true }, dateWarnings });
     Object.values(dateWarnings).forEach((warning) => expect(html).toContain(warning));
     expect(html.indexOf("Vystavení")).toBeLessThan(html.indexOf("Zaúčtování"));
@@ -99,8 +136,13 @@ describe("DocumentForm DPH 2.43.0", () => {
   });
 
   it("předá zámek do Data účetního případu", () => {
-    const html = form({ accountingDateLink: { locked: true, onToggle: () => {}, hint: "Vlastní nápověda" } });
-    const accountingDate = html.slice(html.indexOf("Datum účetního případu"), html.indexOf("Splatnost"));
+    const html = form({
+      accountingDateLink: { locked: true, onToggle: () => {}, hint: "Vlastní nápověda" },
+    });
+    const accountingDate = html.slice(
+      html.indexOf("Datum účetního případu"),
+      html.indexOf("Splatnost"),
+    );
     expect(accountingDate).toContain('aria-pressed="true"');
     expect(accountingDate).toContain("Vlastní nápověda");
     expect(accountingDate).not.toContain("Otevřít kalendář");
@@ -118,7 +160,21 @@ describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
   });
 
   it("plátci s vypnutým příznakem ponechá jen vypnutý přepínač", () => {
-    const html = renderToStaticMarkup(<DocumentForm homeCurrency="CZK" title="Doklad" documentType="FP" value={{ ...baseValue, vatRelevant: false }} onChange={() => {}} lines={[]} onLinesChange={() => {}} books={[]} accounts={[]} status="draft" vat={{ visible: true }} />);
+    const html = renderToStaticMarkup(
+      <DocumentForm
+        homeCurrency="CZK"
+        title="Doklad"
+        documentType="FP"
+        value={{ ...baseValue, vatRelevant: false }}
+        onChange={() => {}}
+        lines={[]}
+        onLinesChange={() => {}}
+        books={[]}
+        accounts={[]}
+        status="draft"
+        vat={{ visible: true }}
+      />,
+    );
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="false"');
     expect(html).not.toContain(">DUZP<");
@@ -140,7 +196,9 @@ describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
 
   it("přepínač je součástí pruhu akcí a stav je ve value", () => {
     const html = form({ vat: { visible: true } });
-    expect(html.indexOf("Vstupuje do DPH")).toBeLessThan(html.indexOf('data-slot="document-dates"'));
+    expect(html.indexOf("Vstupuje do DPH")).toBeLessThan(
+      html.indexOf('data-slot="document-dates"'),
+    );
     expect(html).toContain(">DUZP<");
     expect(html).toContain(">Datum DPH<");
   });

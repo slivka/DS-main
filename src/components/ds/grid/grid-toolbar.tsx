@@ -37,14 +37,22 @@ export function calculateGridToolbarOverflowLevel(
   current: 0 | 1 | 2 | 3 = 0,
   hysteresis = 16,
 ): 0 | 1 | 2 | 3 {
-  const sum = (...values: number[]) => values.filter((value) => value > 0).reduce((total, value) => total + value, 0);
+  const sum = (...values: number[]) =>
+    values.filter((value) => value > 0).reduce((total, value) => total + value, 0);
   const withGaps = (...values: number[]) => {
     const visible = values.filter((value) => value > 0);
     return sum(...visible) + Math.max(0, visible.length - 1) * widths.gap + widths.padding;
   };
   const menuAtZero = widths.hasMenuItems ? widths.menu : 0;
   const required: Record<0 | 1 | 2 | 3, number> = {
-    0: withGaps(widths.leftFull, widths.findFull, widths.display, widths.data, menuAtZero, widths.refresh),
+    0: withGaps(
+      widths.leftFull,
+      widths.findFull,
+      widths.display,
+      widths.data,
+      menuAtZero,
+      widths.refresh,
+    ),
     1: withGaps(widths.leftFull, widths.findFull, widths.data, widths.menu, widths.refresh),
     2: withGaps(widths.leftFull, widths.findFull, widths.menu, widths.refresh),
     3: withGaps(widths.leftCompact, widths.findCompact, widths.menu, widths.refresh),
@@ -52,7 +60,10 @@ export function calculateGridToolbarOverflowLevel(
   const minimum: 0 | 2 = widths.container < 640 ? 2 : 0;
   let next: 0 | 1 | 2 | 3 = 3;
   for (const level of [minimum, ...(minimum === 0 ? [1, 2, 3] : [3])] as (0 | 1 | 2 | 3)[]) {
-    if (required[level] <= widths.container) { next = level; break; }
+    if (required[level] <= widths.container) {
+      next = level;
+      break;
+    }
   }
   if (next < current && required[next] + hysteresis > widths.container) return current;
   return next;
@@ -72,11 +83,14 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
 ) {
   const ownRef = React.useRef<HTMLDivElement | null>(null);
   const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2 | 3>(0);
-  const setRefs = React.useCallback((node: HTMLDivElement | null) => {
-    ownRef.current = node;
-    if (typeof ref === "function") ref(node);
-    else if (ref) ref.current = node;
-  }, [ref]);
+  const setRefs = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      ownRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
   React.useLayoutEffect(() => {
     const node = ownRef.current;
     if (!node) return;
@@ -91,7 +105,10 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       if (!target) return 0;
       const ownWidth = target.getBoundingClientRect().width;
       if (ownWidth > 0) return ownWidth;
-      return Array.from(target.children).reduce((total, child) => total + (child as HTMLElement).getBoundingClientRect().width, 0);
+      return Array.from(target.children).reduce(
+        (total, child) => total + (child as HTMLElement).getBoundingClientRect().width,
+        0,
+      );
     };
     const naturalWidths = () => {
       const copy = node.cloneNode(true) as HTMLElement;
@@ -100,24 +117,42 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       copy.querySelectorAll("[id]").forEach((item) => item.removeAttribute("id"));
       copy.classList.add("grid-toolbar-measure-copy");
       Object.assign(copy.style, { position: "static", width: "max-content", maxWidth: "none" });
-      copy.querySelectorAll<HTMLElement>(".grid-toolbar-wide").forEach((item) => { item.style.display = "contents"; });
-      copy.querySelectorAll<HTMLElement>(".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional").forEach((item) => { item.style.display = "inline-flex"; });
+      copy.querySelectorAll<HTMLElement>(".grid-toolbar-wide").forEach((item) => {
+        item.style.display = "contents";
+      });
+      copy
+        .querySelectorAll<HTMLElement>(
+          ".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional",
+        )
+        .forEach((item) => {
+          item.style.display = "inline-flex";
+        });
       // Kopie leží uvnitř kontejneru gridu v obalu se stejnou šířkou a vlastním
       // container query – třídy @min-[640px]:… se v ní vyhodnotí jako v řádku.
       const holder = document.createElement("div");
       holder.setAttribute("aria-hidden", "true");
       holder.setAttribute("inert", "");
       Object.assign(holder.style, {
-        position: "absolute", left: "0", top: "0", height: "0", overflow: "hidden",
-        width: `${node.getBoundingClientRect().width}px`, containerType: "inline-size",
-        visibility: "hidden", pointerEvents: "none", zIndex: "-1",
+        position: "absolute",
+        left: "0",
+        top: "0",
+        height: "0",
+        overflow: "hidden",
+        width: `${node.getBoundingClientRect().width}px`,
+        containerType: "inline-size",
+        visibility: "hidden",
+        pointerEvents: "none",
+        zIndex: "-1",
       });
       holder.append(copy);
       (node.parentElement ?? document.body).append(holder);
       const result = {
-        leftFull: widthOf(copy, "left"), findFull: widthOf(copy, "find"),
-        display: widthOf(copy, "display"), data: widthOf(copy, "data"),
-        menu: widthOf(copy, "menu"), refresh: widthOf(copy, "refresh"),
+        leftFull: widthOf(copy, "left"),
+        findFull: widthOf(copy, "find"),
+        display: widthOf(copy, "display"),
+        data: widthOf(copy, "data"),
+        menu: widthOf(copy, "menu"),
+        refresh: widthOf(copy, "refresh"),
       };
       const add = copy.querySelector<HTMLElement>("[data-toolbar-add]");
       const search = copy.querySelector<HTMLElement>("[data-toolbar-search]");
@@ -133,8 +168,10 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
         const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
         const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
-        const padding = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
-        const measured = cachedWidths ??= naturalWidths();
+        const padding =
+          (Number.parseFloat(style.paddingLeft) || 0) +
+          (Number.parseFloat(style.paddingRight) || 0);
+        const measured = (cachedWidths ??= naturalWidths());
         if (current < 3 || !fullLeft) fullLeft = measured.leftFull;
         const leftFull = current === 3 ? Math.max(fullLeft, measured.leftFull) : measured.leftFull;
         const findFull = measured.findFull;
@@ -143,14 +180,33 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const addCount = node.querySelectorAll("[data-toolbar-add]").length;
         const leftCompact = addCount ? addCount * controlSize + Math.max(0, addCount - 1) * gap : 0;
         // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
-        const searchHasText = Boolean(node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim());
-        const searchCompact = searchHasText ? Math.min(measured.searchWidth, 6 * fontSize) : controlSize;
-        const findCompact = Math.max(0, findFull - Math.max(0, measured.searchWidth - searchCompact));
-        const next = calculateGridToolbarOverflowLevel({
-          container: node.clientWidth, leftFull, leftCompact, findFull, findCompact,
-          display: measured.display, data: measured.data, menu: Math.max(measured.menu, controlSize), refresh: measured.refresh,
-          gap, padding, hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
-        }, current);
+        const searchHasText = Boolean(
+          node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),
+        );
+        const searchCompact = searchHasText
+          ? Math.min(measured.searchWidth, 6 * fontSize)
+          : controlSize;
+        const findCompact = Math.max(
+          0,
+          findFull - Math.max(0, measured.searchWidth - searchCompact),
+        );
+        const next = calculateGridToolbarOverflowLevel(
+          {
+            container: node.clientWidth,
+            leftFull,
+            leftCompact,
+            findFull,
+            findCompact,
+            display: measured.display,
+            data: measured.data,
+            menu: Math.max(measured.menu, controlSize),
+            refresh: measured.refresh,
+            gap,
+            padding,
+            hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
+          },
+          current,
+        );
         setOverflowLevel(next);
         current = next;
         node.dataset.overflowLevel = String(next);
@@ -158,15 +214,24 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     };
     const observer = new ResizeObserver(() => {
       const width = node.getBoundingClientRect().width;
-      if (Math.abs(width - lastWidth) > 0.5) { lastWidth = width; cachedWidths = null; }
+      if (Math.abs(width - lastWidth) > 0.5) {
+        lastWidth = width;
+        cachedWidths = null;
+      }
       update();
     });
     observer.observe(node);
     // Přeměření jen při změně sady nástrojů / stavů (ne při psaní v hledání).
     let signature = "";
-    const toolSignature = () => Array.from(node.querySelectorAll<HTMLElement>("button, [data-toolbar-search], [data-toolbar-measure]"))
-      .map((item) => `${item.tagName}:${item.getAttribute("aria-label") ?? ""}:${item.getAttribute("aria-pressed") ?? ""}:${item.getAttribute("aria-expanded") ?? ""}:${item.className}:${item.textContent?.length ?? 0}`)
-      .join("|");
+    const toolSignature = () =>
+      Array.from(
+        node.querySelectorAll<HTMLElement>("button, [data-toolbar-search], [data-toolbar-measure]"),
+      )
+        .map(
+          (item) =>
+            `${item.tagName}:${item.getAttribute("aria-label") ?? ""}:${item.getAttribute("aria-pressed") ?? ""}:${item.getAttribute("aria-expanded") ?? ""}:${item.className}:${item.textContent?.length ?? 0}`,
+        )
+        .join("|");
     const mutations = new MutationObserver(() => {
       const next = toolSignature();
       if (next === signature) return;
@@ -175,27 +240,52 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       update();
     });
     signature = toolSignature();
-    mutations.observe(node, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "aria-pressed", "aria-expanded"] });
+    mutations.observe(node, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["class", "aria-pressed", "aria-expanded"],
+    });
     update();
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); mutations.disconnect(); };
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      mutations.disconnect();
+    };
   }, [zoom, density]);
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
-    <div
-      ref={setRefs}
-      data-slot="grid-toolbar"
-      data-density={density}
-      className={cn(
-        "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
-        right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
-        className,
-      )}
-      style={{ fontSize: gridFontSize(zoom) }}
-      {...props}
-    >
-      <div data-toolbar-measure="left" className={cn("grid-toolbar-left items-center gap-2", right ? "flex shrink-0 flex-nowrap" : "contents")}>{left ?? children}</div>
-      {right ? <div data-slot="grid-toolbar-right" className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible">{right}</div> : null}
-    </div>
+      <div
+        ref={setRefs}
+        data-slot="grid-toolbar"
+        data-density={density}
+        className={cn(
+          "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
+          right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
+          className,
+        )}
+        style={{ fontSize: gridFontSize(zoom) }}
+        {...props}
+      >
+        <div
+          data-toolbar-measure="left"
+          className={cn(
+            "grid-toolbar-left items-center gap-2",
+            right ? "flex shrink-0 flex-nowrap" : "contents",
+          )}
+        >
+          {left ?? children}
+        </div>
+        {right ? (
+          <div
+            data-slot="grid-toolbar-right"
+            className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+          >
+            {right}
+          </div>
+        ) : null}
+      </div>
     </GridToolbarOverflowContext.Provider>
   );
 });
@@ -214,32 +304,38 @@ export function GridToolbarSeparator({ density = "normal" }: { density?: GridDen
   );
 }
 
-export interface GridToggleButtonProps extends Omit<React.ComponentPropsWithoutRef<typeof Button>, "variant"> {
+export interface GridToggleButtonProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof Button>,
+  "variant"
+> {
   pressed: boolean;
   tone?: "mode" | "grouping";
   icon?: React.ReactNode;
 }
 
 /** Textový přepínač hlavního režimu (modrý) nebo seskupení dat (oranžový). */
-export const GridToggleButton = React.forwardRef<HTMLButtonElement, GridToggleButtonProps>(function GridToggleButton(
-  { pressed, tone = "mode", icon, className, children, ...props },
-  ref,
-) {
-  return (
-    <Button
-      ref={ref}
-      type="button"
-      size="sm"
-      variant={pressed && tone === "mode" ? "default" : "outline"}
-      aria-pressed={pressed}
-      className={cn("grid-toolbar-control", pressed && tone === "grouping" && "grid-toolbar-active", className)}
-      {...props}
-    >
-      {icon}
-      {children}
-    </Button>
-  );
-});
+export const GridToggleButton = React.forwardRef<HTMLButtonElement, GridToggleButtonProps>(
+  function GridToggleButton({ pressed, tone = "mode", icon, className, children, ...props }, ref) {
+    return (
+      <Button
+        ref={ref}
+        type="button"
+        size="sm"
+        variant={pressed && tone === "mode" ? "default" : "outline"}
+        aria-pressed={pressed}
+        className={cn(
+          "grid-toolbar-control",
+          pressed && tone === "grouping" && "grid-toolbar-active",
+          className,
+        )}
+        {...props}
+      >
+        {icon}
+        {children}
+      </Button>
+    );
+  },
+);
 
 export interface AsOfDateTexts {
   label: string;
@@ -326,7 +422,14 @@ export function GridExpandControls({
   collapseLabel?: string;
 }) {
   const trigger = (
-    <Button type="button" variant="outline" size="icon" className="grid-toolbar-icon-control" disabled={disabled} aria-label={expandLabel}>
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      className="grid-toolbar-icon-control"
+      disabled={disabled}
+      aria-label={expandLabel}
+    >
       <ChevronsUpDown className="size-[1.2em]" />
     </Button>
   );
@@ -335,19 +438,25 @@ export function GridExpandControls({
       <div className="grid-toolbar-group flex items-center gap-1">
         {levels.length <= 1 ? (
           <Tooltip>
-            <TooltipTrigger asChild>{React.cloneElement(trigger, { onClick: () => onExpand(levels[0]?.depth ?? 99) })}</TooltipTrigger>
+            <TooltipTrigger asChild>
+              {React.cloneElement(trigger, { onClick: () => onExpand(levels[0]?.depth ?? 99) })}
+            </TooltipTrigger>
             <TooltipContent>{expandLabel}</TooltipContent>
           </Tooltip>
         ) : (
           <DropdownMenu>
             <Tooltip>
-              <TooltipTrigger asChild><DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger></TooltipTrigger>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+              </TooltipTrigger>
               <TooltipContent>{expandLabel}</TooltipContent>
             </Tooltip>
             <DropdownMenuContent align="start">
               {levels.map((level) => (
                 <DropdownMenuItem key={level.id} onSelect={() => onExpand(level.depth)}>
-                  <span className="flex size-4 items-center justify-center">{activeDepth === level.depth ? <Check className="size-4" /> : null}</span>
+                  <span className="flex size-4 items-center justify-center">
+                    {activeDepth === level.depth ? <Check className="size-4" /> : null}
+                  </span>
                   {level.label}
                 </DropdownMenuItem>
               ))}
@@ -356,7 +465,15 @@ export function GridExpandControls({
         )}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button type="button" variant="outline" size="icon" className="grid-toolbar-icon-control" disabled={disabled} aria-label={collapseLabel} onClick={onCollapse}>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="grid-toolbar-icon-control"
+              disabled={disabled}
+              aria-label={collapseLabel}
+              onClick={onCollapse}
+            >
               <ChevronsDownUp className="size-[1.2em]" />
             </Button>
           </TooltipTrigger>
@@ -377,7 +494,7 @@ export interface GridAddAction {
 /** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
-  const list = React.useMemo(() => Array.isArray(actions) ? actions : [actions], [actions]);
+  const list = React.useMemo(() => (Array.isArray(actions) ? actions : [actions]), [actions]);
   // Zkratka N reaguje jen v aktivním panelu a jen když není otevřený dialog,
   // aby jeden stisk neklikl na Přidat ve všech gridových lištách najednou.
   const paneActive = useIsActivePane();
@@ -385,9 +502,17 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
     const onKeyDown = (event: KeyboardEvent) => {
       if (!paneActive) return;
       if (event.defaultPrevented) return;
-      if (event.key.toLocaleLowerCase("cs") !== "n" || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      if (
+        event.key.toLocaleLowerCase("cs") !== "n" ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        event.shiftKey
+      )
+        return;
       const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]")) return;
+      if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]"))
+        return;
       if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
       const action = list[0];
       if (!action || action.disabled) return;
@@ -401,13 +526,29 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
     <TooltipProvider delayDuration={250}>
       {list.map((action) => {
         const actionLabel = `${action.label} (N)`;
-        const label = action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
+        const label =
+          action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
         return (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
-              <Button data-toolbar-add type="button" size="sm" disabled={action.disabled} onClick={action.onClick} aria-label={actionLabel} className="grid-toolbar-control grid-toolbar-primary shrink-0">
+              <Button
+                data-toolbar-add
+                type="button"
+                size="sm"
+                disabled={action.disabled}
+                onClick={action.onClick}
+                aria-label={actionLabel}
+                className="grid-toolbar-control grid-toolbar-primary shrink-0"
+              >
                 <Plus className="size-[1.2em]" />
-                <span className={cn("hidden @min-[640px]:inline", overflowLevel >= 3 && "@min-[640px]:hidden")}>{action.label}</span>
+                <span
+                  className={cn(
+                    "hidden @min-[640px]:inline",
+                    overflowLevel >= 3 && "@min-[640px]:hidden",
+                  )}
+                >
+                  {action.label}
+                </span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>{label}</TooltipContent>

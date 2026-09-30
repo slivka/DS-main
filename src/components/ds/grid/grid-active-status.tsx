@@ -4,7 +4,13 @@ import { StatusBadge } from "../data-display/status-badge";
 import { GridAction } from "./grid-action";
 import { GridToggleButton } from "./grid-toolbar";
 import type { DataGridColumn } from "./DataGrid";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 
 export interface ActiveStatusTexts {
   column: string;
@@ -27,12 +33,21 @@ export const DEFAULT_ACTIVE_STATUS_TEXTS: ActiveStatusTexts = {
 };
 
 /** Štítek Aktivní / Neaktivní – stejný v gridu i v hlavičce dialogu. */
-export function ActiveStatusBadge({ active, texts }: { active: boolean; texts?: Partial<ActiveStatusTexts> }) {
+export function ActiveStatusBadge({
+  active,
+  texts,
+}: {
+  active: boolean;
+  texts?: Partial<ActiveStatusTexts>;
+}) {
   const t = { ...DEFAULT_ACTIVE_STATUS_TEXTS, ...texts };
   return (
     <StatusBadge
       status={active ? "active" : "inactive"}
-      config={{ active: { label: t.active, tone: "success" }, inactive: { label: t.inactive, tone: "neutral" } }}
+      config={{
+        active: { label: t.active, tone: "success" },
+        inactive: { label: t.inactive, tone: "neutral" },
+      }}
     />
   );
 }
@@ -53,12 +68,24 @@ export function activeStatusColumn<Row>(
 }
 
 /** Čistý filtr řádků: bez „Zobrazit neaktivní“ se neaktivní skryjí. */
-export function filterInactiveRows<Row>(rows: Row[], showInactive: boolean, isActive: (row: Row) => boolean): Row[] {
+export function filterInactiveRows<Row>(
+  rows: Row[],
+  showInactive: boolean,
+  isActive: (row: Row) => boolean,
+): Row[] {
   return showInactive ? rows : rows.filter(isActive);
 }
 
 /** Standardní přepínač „Zobrazit neaktivní“ nad gridem (výchozí vypnuto, zapnuto oranžově). */
-export function ShowInactiveToggle({ pressed, onPressedChange, label }: { pressed: boolean; onPressedChange: (pressed: boolean) => void; label?: string }) {
+export function ShowInactiveToggle({
+  pressed,
+  onPressedChange,
+  label,
+}: {
+  pressed: boolean;
+  onPressedChange: (pressed: boolean) => void;
+  label?: string;
+}) {
   return (
     <GridToggleButton tone="grouping" pressed={pressed} onClick={() => onPressedChange(!pressed)}>
       {label ?? DEFAULT_ACTIVE_STATUS_TEXTS.showInactive}
@@ -76,13 +103,29 @@ export interface GridRowMenuItem {
 }
 
 /** Položka menu řádku Aktivovat / Deaktivovat podle stavu. */
-export function activeToggleMenuItem(active: boolean, onToggle: (nextActive: boolean) => void, texts?: Partial<ActiveStatusTexts>): GridRowMenuItem {
+export function activeToggleMenuItem(
+  active: boolean,
+  onToggle: (nextActive: boolean) => void,
+  texts?: Partial<ActiveStatusTexts>,
+): GridRowMenuItem {
   const t = { ...DEFAULT_ACTIVE_STATUS_TEXTS, ...texts };
-  return { id: "toggle-active", label: active ? t.deactivate : t.activate, onSelect: () => onToggle(!active) };
+  return {
+    id: "toggle-active",
+    label: active ? t.deactivate : t.activate,
+    onSelect: () => onToggle(!active),
+  };
 }
 
 /** Ikonové menu řádku gridu (…) pro `rowActions`. */
-export function GridRowMenu({ items, label = DEFAULT_ACTIVE_STATUS_TEXTS.rowMenu, children }: { items: GridRowMenuItem[]; label?: string; children?: ReactNode }) {
+export function GridRowMenu({
+  items,
+  label = DEFAULT_ACTIVE_STATUS_TEXTS.rowMenu,
+  children,
+}: {
+  items: GridRowMenuItem[];
+  label?: string;
+  children?: ReactNode;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -95,7 +138,11 @@ export function GridRowMenu({ items, label = DEFAULT_ACTIVE_STATUS_TEXTS.rowMenu
         {items.map((item) => (
           <div key={item.id}>
             {item.separatorBefore ? <DropdownMenuSeparator /> : null}
-            <DropdownMenuItem disabled={item.disabled} className={item.destructive ? "text-destructive focus:text-destructive" : undefined} onSelect={item.onSelect}>
+            <DropdownMenuItem
+              disabled={item.disabled}
+              className={item.destructive ? "text-destructive focus:text-destructive" : undefined}
+              onSelect={item.onSelect}
+            >
               {item.label}
             </DropdownMenuItem>
           </div>

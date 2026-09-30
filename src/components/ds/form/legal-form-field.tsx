@@ -88,7 +88,9 @@ export function LegalFormField({
                   <Check
                     className={cn("mr-2 size-4", current === f.code ? "opacity-100" : "opacity-0")}
                   />
-                  <span className="w-14 shrink-0 font-mono text-xs text-muted-foreground">{f.code}</span>
+                  <span className="w-14 shrink-0 font-mono text-xs text-muted-foreground">
+                    {f.code}
+                  </span>
                   <span className="min-w-0 flex-1">{f.name}</span>
                 </CommandItem>
               ))}

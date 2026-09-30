@@ -107,9 +107,9 @@
   /* Primární: tmavá námořnická modrá. */
   --primary: oklch(0.45 0.11 250);
   --primary-foreground: oklch(0.985 0.005 250);
-  --secondary: oklch(0.970 0.0029 264.5);
+  --secondary: oklch(0.97 0.0029 264.5);
   --secondary-foreground: oklch(0.32 0.05 245);
-  --muted: oklch(0.970 0.0029 264.5);
+  --muted: oklch(0.97 0.0029 264.5);
   --muted-foreground: oklch(0.5 0.035 245);
   /* Accent = jemná modrá plocha pro hover/aktivní stavy. */
   --accent: oklch(0.959 0.0069 247.9);
@@ -139,11 +139,11 @@
   /* Chrome: hluboká námořnická modrá se světlým textem. */
   --sidebar: oklch(0.28 0.06 245);
   --sidebar-foreground: oklch(0.96 0.01 250);
-  --sidebar-accent: oklch(0.380 0.0846 244.6);
+  --sidebar-accent: oklch(0.38 0.0846 244.6);
   --sidebar-accent-foreground: oklch(0.985 0.005 250);
   --sidebar-border: oklch(0.39 0.055 245);
   --sidebar-muted: oklch(0.707 0.0382 249.7);
-  --sidebar-indicator: oklch(0.750 0.0922 248.7);
+  --sidebar-indicator: oklch(0.75 0.0922 248.7);
   --sidebar-input: oklch(0.32 0.06 245);
   --sidebar-hover: oklch(0.34 0.06 245);
   --sidebar-active: var(--sidebar-accent);
@@ -168,7 +168,7 @@
   --surface-hover: oklch(0.979 0.0029 264.5);
   --surface-active: oklch(0.959 0.0069 247.9);
   --surface-selected: oklch(0.955 0.0131 251.6);
-  --surface-subtle: oklch(0.970 0.0029 264.5);
+  --surface-subtle: oklch(0.97 0.0029 264.5);
   --row-stripe: oklch(0.988 0.0017 247.8);
   --focus-ring-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
   --switch-unchecked: oklch(0.6 0 0);
@@ -177,7 +177,7 @@
   --grid-navy-deep: oklch(0.2333 0.0673 266.58);
   --grid-navy: oklch(0.3462 0.0736 256.04);
   --grid-steel: oklch(0.5281 0.0957 248.81);
-  --grid-frost: oklch(0.970 0.0029 264.5);
+  --grid-frost: oklch(0.97 0.0029 264.5);
   --grid-title-surface: white;
   --grid-toolbar-surface: white;
   --grid-heading-surface: var(--grid-frost);
@@ -480,7 +480,14 @@
   border-color: var(--grid-chrome-border);
 }
 
-.grid-connected-block > :is(.grid-title-bar, [data-slot="grid-context-bar"], [data-slot="grid-toolbar"], .zoom-grid, .zoom-pagination) {
+.grid-connected-block
+  > :is(
+    .grid-title-bar,
+    [data-slot="grid-context-bar"],
+    [data-slot="grid-toolbar"],
+    .zoom-grid,
+    .zoom-pagination
+  ) {
   border-inline: 0;
   border-radius: 0;
   box-shadow: none;
@@ -561,14 +568,19 @@
   color: var(--grid-frost);
 }
 
-
 .grid-toolbar-row .grid-toolbar-icon-control:hover {
   border-color: var(--color-border);
   background-color: var(--background);
   color: var(--color-primary);
 }
 
-.field-overflow-hint { width: max-content; max-width: calc(100cqw - 2rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.field-overflow-hint {
+  width: max-content;
+  max-width: calc(100cqw - 2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .zoom-grid.journal-lines-grid :is(thead, tbody, tfoot) tr > :is(th, td).journal-row-cell {
   padding-inline: 0.4em !important;
 }
@@ -576,10 +588,17 @@
   min-width: 0 !important;
   padding: 0 !important;
 }
-.journal-grid-cell:focus:not(:has(.journal-cell-editor)) { background-color: color-mix(in oklch, var(--primary) 8%, transparent); }
+.journal-grid-cell:focus:not(:has(.journal-cell-editor)) {
+  background-color: color-mix(in oklch, var(--primary) 8%, transparent);
+}
 .journal-grid-cell:has(.journal-cell-editor),
-.journal-grid-cell[data-invalid="true"]:has(.journal-cell-editor) { box-shadow: none; }
-.journal-grid-cell[data-invalid="true"]:not(:has(.journal-cell-editor)) { position: relative; box-shadow: none; }
+.journal-grid-cell[data-invalid="true"]:has(.journal-cell-editor) {
+  box-shadow: none;
+}
+.journal-grid-cell[data-invalid="true"]:not(:has(.journal-cell-editor)) {
+  position: relative;
+  box-shadow: none;
+}
 .journal-grid-cell[data-invalid="true"]:not(:has(.journal-cell-editor))::after {
   position: absolute;
   top: 0;
@@ -591,8 +610,12 @@
   content: "";
 }
 /* Varování (např. ruční DPH s malou odchylkou) – žlutý roh, chyba má přednost. */
-.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(:has(.journal-cell-editor)) { position: relative; }
-.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(:has(.journal-cell-editor))::after {
+.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(:has(.journal-cell-editor)) {
+  position: relative;
+}
+.journal-grid-cell[data-warning="true"]:not([data-invalid="true"]):not(
+    :has(.journal-cell-editor)
+  )::after {
   position: absolute;
   top: 0;
   right: 0;
@@ -602,7 +625,16 @@
   border-left: 0.45em solid transparent;
   content: "";
 }
-.journal-cell-editor, .journal-cell-editor :is(button, input, [role="combobox"]) { width: 100%; min-width: 0; border-color: transparent !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
+.journal-cell-editor,
+.journal-cell-editor :is(button, input, [role="combobox"]) {
+  width: 100%;
+  min-width: 0;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
 
 /* Jednotný aktivní stav vyhledávání a filtrů ve všech gridech. */
 .zoom-filters .grid-toolbar-active {
@@ -1054,7 +1086,10 @@
   font-weight: 700;
 }
 
-.zoom-grid .grid-column-header :is(th, td):has(button[aria-label^="Seřadit"]) button.text-foreground {
+.zoom-grid
+  .grid-column-header
+  :is(th, td):has(button[aria-label^="Seřadit"])
+  button.text-foreground {
   color: var(--color-foreground);
 }
 
@@ -1121,7 +1156,6 @@
   gap: 0.3em;
 }
 
-
 /* Stav vložený přímo vedle čísla půjčky zabírá jen šířku textu a celý se
    mění spolu se zoomem gridu. */
 .zoom-grid [data-loan-status-compact="true"] {
@@ -1160,7 +1194,6 @@
   max-height: 2.25em !important;
   padding: 0 0.35em !important;
 }
-
 
 /* Prázdný stav gridu – tlačítko je nižší a škáluje se se zoomem gridu. */
 .zoom-grid :is(th, td) [data-grid-cta] {
@@ -1308,7 +1341,10 @@
 .zoom-grid[data-grid-height="auto"] tfoot tr > :is(th, td) {
   bottom: auto !important;
 }
-.zoom-grid[data-grid-height="auto"] tfoot tr > :is(th, td):not(.grid-pin-cell):not(.grid-pin-right-cell):not(:last-child) {
+.zoom-grid[data-grid-height="auto"]
+  tfoot
+  tr
+  > :is(th, td):not(.grid-pin-cell):not(.grid-pin-right-cell):not(:last-child) {
   position: static;
 }
 
@@ -1322,7 +1358,9 @@
 .journal-lines-grid[data-grid-height="auto"][data-overflow="true"] {
   overflow-x: auto;
 }
-.journal-lines-grid td { min-width: 0; }
+.journal-lines-grid td {
+  min-width: 0;
+}
 
 .app-shell-root {
   height: 100vh;
@@ -1345,9 +1383,17 @@
   opacity: 0;
   transition: opacity 150ms ease;
 }
-[data-nav-fade][data-visible="true"] { opacity: 1; }
-[data-nav-fade="top"] { top: 0; background: linear-gradient(to bottom, var(--sidebar), transparent); }
-[data-nav-fade="bottom"] { bottom: 0; background: linear-gradient(to top, var(--sidebar), transparent); }
+[data-nav-fade][data-visible="true"] {
+  opacity: 1;
+}
+[data-nav-fade="top"] {
+  top: 0;
+  background: linear-gradient(to bottom, var(--sidebar), transparent);
+}
+[data-nav-fade="bottom"] {
+  bottom: 0;
+  background: linear-gradient(to top, var(--sidebar), transparent);
+}
 
 [data-sidebar-tone="panel"] {
   --sidebar: oklch(0.935 0.004 250);
@@ -1358,13 +1404,13 @@
   --sidebar-active: var(--primary);
   --sidebar-active-foreground: var(--primary-foreground);
   --sidebar-badge: oklch(0.87 0.006 250);
-  --sidebar-badge-foreground: oklch(0.30 0.02 250);
+  --sidebar-badge-foreground: oklch(0.3 0.02 250);
   --sidebar-badge-active: oklch(0.985 0.005 250);
   --sidebar-badge-active-foreground: oklch(0.25 0.05 245);
   --sidebar-indicator: oklch(0.32 0.08 250);
   --sidebar-border: oklch(0.86 0.005 250);
   --sidebar-input: oklch(1 0 0);
-  --sidebar-hover: oklch(0.90 0.005 250);
+  --sidebar-hover: oklch(0.9 0.005 250);
 }
 
 .shell-nav-item[data-active="true"] [data-slot="shell-nav-badge"] {
@@ -1375,30 +1421,42 @@
   --sidebar: oklch(0.25 0.004 250);
   --sidebar-foreground: oklch(0.92 0.006 250);
   --sidebar-muted: oklch(0.72 0.008 250);
-  --sidebar-accent: oklch(0.30 0.005 250);
+  --sidebar-accent: oklch(0.3 0.005 250);
   --sidebar-accent-foreground: oklch(0.96 0.004 250);
   --sidebar-active: oklch(0.36 0.006 250);
   --sidebar-active-foreground: oklch(0.98 0.003 250);
   --sidebar-badge: oklch(0.34 0.006 250);
   --sidebar-badge-foreground: oklch(0.92 0.006 250);
   --sidebar-badge-active: oklch(0.92 0.01 250);
-  --sidebar-badge-active-foreground: oklch(0.20 0.02 250);
+  --sidebar-badge-active-foreground: oklch(0.2 0.02 250);
   --sidebar-indicator: oklch(0.68 0.08 250);
   --sidebar-border: oklch(0.32 0.004 250);
   --sidebar-input: oklch(0.29 0.004 250);
-  --sidebar-hover: oklch(0.30 0.005 250);
+  --sidebar-hover: oklch(0.3 0.005 250);
 }
 
 /* Minimální výška platí pro grid, ne pro stránku; když se nevejde, roluje panel. */
 [data-page-layout="list"] > [data-slot="data-grid"],
 [data-page-layout="list"] > [data-slot="tree-grid"],
-[data-page-layout="list"] > [data-grid-height="fill"] { min-height: 15rem; flex: 1 1 0%; }
+[data-page-layout="list"] > [data-grid-height="fill"] {
+  min-height: 15rem;
+  flex: 1 1 0%;
+}
 [data-page-layout="list"] [data-grid-height="fill"] .zoom-grid,
-[data-page-layout="list"] .zoom-grid[data-grid-height="fill"] { min-height: 8rem; }
+[data-page-layout="list"] .zoom-grid[data-grid-height="fill"] {
+  min-height: 8rem;
+}
 /* Na stránce s pruhem akcí dokladu se přilepuje jen pruh akcí; PageHeader odroluje
    (jinak by se oba sticky top-0 překryly a --pane-sticky-top by nesouhlasil). */
-[data-page-layout]:has([data-slot="document-action-bar"]) [data-slot="page-header"][data-sticky="true"] { position: static; box-shadow: none; }
-[data-page-layout][data-scrolled="true"] :is([data-slot="document-action-bar"], [data-slot="page-header"][data-sticky="true"]) { box-shadow: var(--shadow-sm); }
+[data-page-layout]:has([data-slot="document-action-bar"])
+  [data-slot="page-header"][data-sticky="true"] {
+  position: static;
+  box-shadow: none;
+}
+[data-page-layout][data-scrolled="true"]
+  :is([data-slot="document-action-bar"], [data-slot="page-header"][data-sticky="true"]) {
+  box-shadow: var(--shadow-sm);
+}
 
 /* Vizuální oddělení rolovaných řádků od ukotveného záhlaví. */
 .zoom-grid thead tr:last-child > :is(th, td) {
@@ -1591,7 +1649,10 @@
   border-left: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
   transition: box-shadow 120ms ease;
 }
-.zoom-grid[data-overflow-right="true"] table:has([data-slot="grid-actions"]) tr > :is(th, td):last-child {
+.zoom-grid[data-overflow-right="true"]
+  table:has([data-slot="grid-actions"])
+  tr
+  > :is(th, td):last-child {
   box-shadow: -6px 0 6px -6px color-mix(in oklab, var(--foreground) 30%, transparent);
 }
 
@@ -2068,7 +2129,11 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 
 /* Akční tlačítka v buňce gridu nesmějí mít vnitřní odsazení – drží se jen na ikoně. */
-.zoom-grid :is(tbody, tfoot) :is(th, td) [data-slot="grid-actions"] > [data-slot="grid-action"].grid-action {
+.zoom-grid
+  :is(tbody, tfoot)
+  :is(th, td)
+  [data-slot="grid-actions"]
+  > [data-slot="grid-action"].grid-action {
   padding: 0 !important;
 }
 
@@ -2077,21 +2142,31 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   gap: 0.7em;
 }
 
-
-
-
 /* Tisk v režimu více oken: tiskne se jen panel, ze kterého byl tisk spuštěn. */
 @media print {
   [data-pane][data-print-hide="true"] {
     display: none !important;
   }
-  html, body, [data-slot="app-shell"], [data-slot="app-shell-main"], [data-pane-scroll], [data-grid-height="fill"], [data-page-layout="list"] {
+  html,
+  body,
+  [data-slot="app-shell"],
+  [data-slot="app-shell-main"],
+  [data-pane-scroll],
+  [data-grid-height="fill"],
+  [data-page-layout="list"] {
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
   }
-  [data-slot="app-shell"] > header, .shell-sidebar, [data-slot="app-shell-panel-header"] { display: none !important; }
-  [data-slot="app-shell-main"], [data-pane-scroll] { padding: 0 !important; }
+  [data-slot="app-shell"] > header,
+  .shell-sidebar,
+  [data-slot="app-shell-panel-header"] {
+    display: none !important;
+  }
+  [data-slot="app-shell-main"],
+  [data-pane-scroll] {
+    padding: 0 !important;
+  }
 }
 
 /* Bílý vzhled 2.12: tmavě modré boční menu. */
@@ -2101,17 +2176,42 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   border-color: var(--sidebar-border);
 }
 .shell-sidebar .text-muted-foreground,
-.shell-sidebar .shell-nav-group { color: var(--sidebar-muted); }
-.shell-sidebar .shell-nav-group:hover { color: var(--sidebar-foreground); }
-.shell-sidebar .shell-nav-item { color: color-mix(in oklab, var(--sidebar-foreground) 88%, transparent); }
-.shell-sidebar .shell-nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
-.shell-sidebar .shell-nav-item[data-active="true"] { background: var(--sidebar-active); color: var(--sidebar-active-foreground); font-weight: 600; }
-.shell-sidebar .shell-nav-indicator { background: var(--sidebar-indicator); width: 3px; }
-.shell-sidebar .shell-nav-item[aria-disabled="true"] { color: var(--sidebar-muted); }
-.shell-sidebar button:not(.shell-nav-group):hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
-.shell-sidebar .border-t { border-color: color-mix(in oklab, var(--sidebar-foreground) 14%, transparent); }
+.shell-sidebar .shell-nav-group {
+  color: var(--sidebar-muted);
+}
+.shell-sidebar .shell-nav-group:hover {
+  color: var(--sidebar-foreground);
+}
+.shell-sidebar .shell-nav-item {
+  color: color-mix(in oklab, var(--sidebar-foreground) 88%, transparent);
+}
+.shell-sidebar .shell-nav-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-foreground);
+}
+.shell-sidebar .shell-nav-item[data-active="true"] {
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-foreground);
+  font-weight: 600;
+}
+.shell-sidebar .shell-nav-indicator {
+  background: var(--sidebar-indicator);
+  width: 3px;
+}
+.shell-sidebar .shell-nav-item[aria-disabled="true"] {
+  color: var(--sidebar-muted);
+}
+.shell-sidebar button:not(.shell-nav-group):hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-foreground);
+}
+.shell-sidebar .border-t {
+  border-color: color-mix(in oklab, var(--sidebar-foreground) 14%, transparent);
+}
 /* IBM Plex Mono má vyšší písmena – dorovnání kódů. */
-.font-mono { font-size: 0.95em; }
+.font-mono {
+  font-size: 0.95em;
+}
 
 /* Krátké zvýraznění panelu po otevření záznamu v jiném panelu (2.16.0). */
 @keyframes pane-flash {
@@ -2144,8 +2244,12 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 
 /* GridAmountEditor – číslo v buňce bez rámečku, chyba = červený roh (jako editor řádků dokladu). */
-.grid-amount-editor-cell { min-height: 1.8em; }
-.grid-amount-editor:focus { background-color: color-mix(in oklch, var(--primary) 8%, transparent); }
+.grid-amount-editor-cell {
+  min-height: 1.8em;
+}
+.grid-amount-editor:focus {
+  background-color: color-mix(in oklch, var(--primary) 8%, transparent);
+}
 .grid-amount-editor-cell[data-invalid="true"]::after {
   position: absolute;
   top: 0;

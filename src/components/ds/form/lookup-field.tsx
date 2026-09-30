@@ -29,7 +29,10 @@ export function resolveLookupIcon(mode: LookupFieldMode, resolved: boolean): "se
   return mode;
 }
 
-export interface LookupFieldProps extends Omit<ComponentPropsWithoutRef<typeof Input>, "value" | "onChange"> {
+export interface LookupFieldProps extends Omit<
+  ComponentPropsWithoutRef<typeof Input>,
+  "value" | "onChange"
+> {
   value: string;
   onChange: (value: string) => void;
   /** `search` = lupa, `refresh` = ⟳, `auto` (výchozí) podle hodnoty a výsledku akce. */
@@ -64,7 +67,9 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
   },
   ref,
 ) {
-  const [resolved, setResolved] = useState(() => nextLookupResolved(false, { type: "reset", value }));
+  const [resolved, setResolved] = useState(() =>
+    nextLookupResolved(false, { type: "reset", value }),
+  );
 
   useEffect(() => {
     setResolved(nextLookupResolved(false, { type: "reset", value }));
@@ -81,7 +86,11 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
   const showAction = !hideAction && Boolean(onAction);
 
   return (
-    <div className={cn("relative", className)} data-slot="lookup-field" data-lookup-icon={showAction ? icon : undefined}>
+    <div
+      className={cn("relative", className)}
+      data-slot="lookup-field"
+      data-lookup-icon={showAction ? icon : undefined}
+    >
       <Input
         ref={ref}
         value={value}

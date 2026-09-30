@@ -1,12 +1,6 @@
 import { Lock, LockOpen, Hourglass } from "lucide-react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 
@@ -55,7 +49,10 @@ export function FiscalPeriodSelect({
 }) {
   return (
     <Select value={value ?? undefined} onValueChange={onChange}>
-      <SelectTrigger className={cn("grid-toolbar-control h-9 w-[260px]", className)} aria-label={label}>
+      <SelectTrigger
+        className={cn("grid-toolbar-control h-9 w-[260px]", className)}
+        aria-label={label}
+      >
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>
@@ -67,9 +64,7 @@ export function FiscalPeriodSelect({
               <span className="text-xs text-muted-foreground">
                 {formatDate(p.from)} – {formatDate(p.to)}
               </span>
-              <span className="ml-auto text-xs text-muted-foreground">
-                {stateLabels[p.state]}
-              </span>
+              <span className="ml-auto text-xs text-muted-foreground">{stateLabels[p.state]}</span>
             </span>
           </SelectItem>
         ))}

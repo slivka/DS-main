@@ -104,7 +104,6 @@ export function formatWorkerName(
   return profile.email?.trim() || "—";
 }
 
-
 /** Formát částky bez desetinných míst. Nula nebo hodnota blízká nule -> pomlčka. */
 export function fmtMoney0(value: number | null | undefined): string {
   if (value == null) return "–";

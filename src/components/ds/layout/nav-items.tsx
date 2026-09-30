@@ -29,36 +29,95 @@ export function isNavItemActive(item: NavItem, path: string) {
 }
 
 /** Třídy řádku položky menu. */
-export function navItemClassName({ active, collapsed = false, disabled = false }: { active: boolean; collapsed?: boolean; disabled?: boolean }) {
+export function navItemClassName({
+  active,
+  collapsed = false,
+  disabled = false,
+}: {
+  active: boolean;
+  collapsed?: boolean;
+  disabled?: boolean;
+}) {
   return cn(
     "shell-nav-item relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
     collapsed ? "justify-center px-2" : "px-3",
-    active ? "bg-sidebar-active font-semibold text-sidebar-active-foreground" : "text-sidebar-foreground/90",
+    active
+      ? "bg-sidebar-active font-semibold text-sidebar-active-foreground"
+      : "text-sidebar-foreground/90",
     disabled && "cursor-not-allowed text-sidebar-muted opacity-80",
   );
 }
 
 /** Vnitřek položky menu: indikátor, ikona, popisek, značka nedostupnosti a odznak. */
 /** `truncatedTooltip` (StandaloneNav): zkrácený popisek ukáže celý text v tooltipu. AppShell ho nepoužívá. */
-export function NavItemContent({ item, active, collapsed = false, label, truncatedTooltip = false }: { item: NavItem; active: boolean; collapsed?: boolean; label?: ReactNode; truncatedTooltip?: boolean }) {
+export function NavItemContent({
+  item,
+  active,
+  collapsed = false,
+  label,
+  truncatedTooltip = false,
+}: {
+  item: NavItem;
+  active: boolean;
+  collapsed?: boolean;
+  label?: ReactNode;
+  truncatedTooltip?: boolean;
+}) {
   const Icon = item.icon;
   return (
     <>
-      <span className={cn("shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-sidebar-indicator transition-opacity", active ? "opacity-100" : "opacity-0")} />
+      <span
+        className={cn(
+          "shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-sidebar-indicator transition-opacity",
+          active ? "opacity-100" : "opacity-0",
+        )}
+      />
       {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
-      {!collapsed ? (truncatedTooltip && label == null ? <TruncatedText text={item.label} className="min-w-0 flex-1" /> : <span className="min-w-0 flex-1 truncate">{label ?? item.label}</span>) : null}
-      {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" /> : null}
-      {!collapsed && item.badge != null ? <span data-slot="shell-nav-badge" className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{item.badge}</span> : null}
+      {!collapsed ? (
+        truncatedTooltip && label == null ? (
+          <TruncatedText text={item.label} className="min-w-0 flex-1" />
+        ) : (
+          <span className="min-w-0 flex-1 truncate">{label ?? item.label}</span>
+        )
+      ) : null}
+      {!collapsed && item.disabled ? (
+        <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" />
+      ) : null}
+      {!collapsed && item.badge != null ? (
+        <span
+          data-slot="shell-nav-badge"
+          className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground"
+        >
+          {item.badge}
+        </span>
+      ) : null}
     </>
   );
 }
 
 /** Nadpis sekce menu verzálkami (neklikací). */
-export function NavSectionLabel({ label, first, children, truncatedTooltip = false }: { label: string; first: boolean; children?: ReactNode; truncatedTooltip?: boolean }) {
+export function NavSectionLabel({
+  label,
+  first,
+  children,
+  truncatedTooltip = false,
+}: {
+  label: string;
+  first: boolean;
+  children?: ReactNode;
+  truncatedTooltip?: boolean;
+}) {
   return (
-    <div data-nav-section={label} className={cn(!first && "mt-4 border-t border-sidebar-border pt-4")}>
+    <div
+      data-nav-section={label}
+      className={cn(!first && "mt-4 border-t border-sidebar-border pt-4")}
+    >
       <div className="flex h-7 items-center px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-sidebar-muted">
-        {truncatedTooltip && children == null ? <TruncatedText text={label} className="min-w-0" /> : <span className="truncate">{children ?? label}</span>}
+        {truncatedTooltip && children == null ? (
+          <TruncatedText text={label} className="min-w-0" />
+        ) : (
+          <span className="truncate">{children ?? label}</span>
+        )}
       </div>
     </div>
   );

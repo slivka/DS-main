@@ -9,23 +9,95 @@ export type TextTemplate = (...args: any[]) => string;
 export type TextTree = { [key: string]: string | TextTemplate | TextTree };
 
 export interface GridTexts {
-  locale: string; searchPlaceholder: string; searchLabel: string; clearSearchLabel: string; refresh: string; columnsTitle: string;
-  selectMore: string; cancelSelection: string; selectedRecords: (count: string) => string; selectAllRows: string; selectRow: string;
-  actions: string; edit: string; remove: string; removeConfirm: string; cancel: string; emptyTitle: string; searchEmptyTitle: string;
-  emptyValue: string; valuesCount: (count: number) => string; total: string; sidePanelLabel: string; filterLabel: (label: string) => string;
-  filterSearchPlaceholder: string; selectAll: string; clear: string; noValues: string; dateFilterYears: string; dateFilterQuarters: string;
-  dateFilterMonths: string; dateFilterDates: string; dateFilterQuarter: (quarter: number, year: number) => string; showFilters: string;
-  activeFilters: string; activeCount: (count: number) => string; defaultFilters: string; clearAllFilters: string; clearFilter: string;
-  removeFilter: (label: string) => string; clearAll: string; rowsLabel: string; show: string; all: string; pageSize: string; noRecords: string;
-  page: (page: number, pageCount: number) => string; previousPage: string; nextPage: string; download: string; downloadExcel: string;
-  downloadPdf: string; downloadHtml: string; retry: string; loading: string; groupingEnable: string; groupingDisable: string;
-  groupingDropHint: string; groupingAddColumn: string; groupingClear: string; groupingEmpty: string; groupingHidden: (count: number) => string;
-  groupedCount: (count: number) => string; groupingMoveLeft: string; groupingMoveRight: string; groupingDateBy: string;
-  groupingRemoveColumn: string; groupDay: string; groupMonth: string; groupQuarter: string; groupYear: string;
-  quarterLabel: (quarter: number, year: string | number) => string; zoomOut: string; zoomIn: string; zoomReset: string;
-  normalDensity: string; compactDensity: string; resizeColumn: string; resizeColumnHint: string; moreActions: string; moreParameters: string;
-  moreTools: string; treeView: string; tableView: string; groupTotal: (label: string) => string; sortBy: (label: string) => string;
-  expand: string; collapse: string; expandLevel: (level: number, label: string) => string; exportSearch: (query: string) => string;
+  locale: string;
+  searchPlaceholder: string;
+  searchLabel: string;
+  clearSearchLabel: string;
+  refresh: string;
+  columnsTitle: string;
+  selectMore: string;
+  cancelSelection: string;
+  selectedRecords: (count: string) => string;
+  selectAllRows: string;
+  selectRow: string;
+  actions: string;
+  edit: string;
+  remove: string;
+  removeConfirm: string;
+  cancel: string;
+  emptyTitle: string;
+  searchEmptyTitle: string;
+  emptyValue: string;
+  valuesCount: (count: number) => string;
+  total: string;
+  sidePanelLabel: string;
+  filterLabel: (label: string) => string;
+  filterSearchPlaceholder: string;
+  selectAll: string;
+  clear: string;
+  noValues: string;
+  dateFilterYears: string;
+  dateFilterQuarters: string;
+  dateFilterMonths: string;
+  dateFilterDates: string;
+  dateFilterQuarter: (quarter: number, year: number) => string;
+  showFilters: string;
+  activeFilters: string;
+  activeCount: (count: number) => string;
+  defaultFilters: string;
+  clearAllFilters: string;
+  clearFilter: string;
+  removeFilter: (label: string) => string;
+  clearAll: string;
+  rowsLabel: string;
+  show: string;
+  all: string;
+  pageSize: string;
+  noRecords: string;
+  page: (page: number, pageCount: number) => string;
+  previousPage: string;
+  nextPage: string;
+  download: string;
+  downloadExcel: string;
+  downloadPdf: string;
+  downloadHtml: string;
+  retry: string;
+  loading: string;
+  groupingEnable: string;
+  groupingDisable: string;
+  groupingDropHint: string;
+  groupingAddColumn: string;
+  groupingClear: string;
+  groupingEmpty: string;
+  groupingHidden: (count: number) => string;
+  groupedCount: (count: number) => string;
+  groupingMoveLeft: string;
+  groupingMoveRight: string;
+  groupingDateBy: string;
+  groupingRemoveColumn: string;
+  groupDay: string;
+  groupMonth: string;
+  groupQuarter: string;
+  groupYear: string;
+  quarterLabel: (quarter: number, year: string | number) => string;
+  zoomOut: string;
+  zoomIn: string;
+  zoomReset: string;
+  normalDensity: string;
+  compactDensity: string;
+  resizeColumn: string;
+  resizeColumnHint: string;
+  moreActions: string;
+  moreParameters: string;
+  moreTools: string;
+  treeView: string;
+  tableView: string;
+  groupTotal: (label: string) => string;
+  sortBy: (label: string) => string;
+  expand: string;
+  collapse: string;
+  expandLevel: (level: number, label: string) => string;
+  exportSearch: (query: string) => string;
   recordsCount: (count: number) => string;
 }
 
@@ -34,13 +106,45 @@ export interface DsTexts {
   intlLocale: string;
   dateLocale: Locale;
   grid: GridTexts;
-  common: { close: string; cancel: string; confirm: string; understand: string; save: string; yes: string; no: string; system: string };
+  common: {
+    close: string;
+    cancel: string;
+    confirm: string;
+    understand: string;
+    save: string;
+    yes: string;
+    no: string;
+    system: string;
+  };
   recordAction: { moreActions: string; unsaved: string; errorTitle: string; closeError: string };
-  appShell: { clearSearch: string; mainMenu: string; containsActivePage: string; disabledHint: string; searchPlaceholder: string; searchEmpty: string; resizeMenu: string; panelView: string; contextDisabledHint: string };
+  appShell: {
+    clearSearch: string;
+    mainMenu: string;
+    containsActivePage: string;
+    disabledHint: string;
+    searchPlaceholder: string;
+    searchEmpty: string;
+    resizeMenu: string;
+    panelView: string;
+    contextDisabledHint: string;
+  };
   paneChrome?: Partial<PaneChromeTexts>;
   layoutMenu?: Partial<LayoutMenuTexts>;
-  panes: { panel: (index: number) => string; emptyHint: string; maximizedBanner: string; restoreLayout: string; limitClosed: string };
-  notification: { label: string; title: string; markAllRead: string; empty: string; showAll: string; loading: string };
+  panes: {
+    panel: (index: number) => string;
+    emptyHint: string;
+    maximizedBanner: string;
+    restoreLayout: string;
+    limitClosed: string;
+  };
+  notification: {
+    label: string;
+    title: string;
+    markAllRead: string;
+    empty: string;
+    showAll: string;
+    loading: string;
+  };
   appZoom: { label: string; decrease: string; increase: string; reset: string };
   /** Rám mimo AppShell (nastavení prostoru). */
   standalone: { close: string; pages: string; pagesSelect: string };
@@ -48,79 +152,865 @@ export interface DsTexts {
   confirmByTyping: { instruction: string; cancel: string; running: string };
   dangerZone: { title: string };
   noticeBar: { close: string };
-  recordDialog: { detailSections: string; hidePanel: (panel: string) => string; notes: string; active: string; inactive: string; saveAndAction: string; dirtyTitle: string; history: string; noHistory: string; system: string; yes: string; no: string };
-  date: { chooseDate: string; dateSelection: string; openCalendar: string; invalidFormat: (format: string) => string; sameAsIssue: string; relinkIssue: string; rangePlaceholder: string; rangeLabel: string; clear: string; chooseRangeEnd: string; openTime: string; all: string; day: string; week: string; month: string; year: string; custom: string; from: string; to: string };
-  country: { choose: string; search: string; emptyTitle: string; emptyDescription: (query: string) => string; recent: string; eu: string; other: string };
+  recordDialog: {
+    detailSections: string;
+    hidePanel: (panel: string) => string;
+    notes: string;
+    active: string;
+    inactive: string;
+    saveAndAction: string;
+    dirtyTitle: string;
+    history: string;
+    noHistory: string;
+    system: string;
+    yes: string;
+    no: string;
+  };
+  date: {
+    chooseDate: string;
+    dateSelection: string;
+    openCalendar: string;
+    invalidFormat: (format: string) => string;
+    sameAsIssue: string;
+    relinkIssue: string;
+    rangePlaceholder: string;
+    rangeLabel: string;
+    clear: string;
+    chooseRangeEnd: string;
+    openTime: string;
+    all: string;
+    day: string;
+    week: string;
+    month: string;
+    year: string;
+    custom: string;
+    from: string;
+    to: string;
+  };
+  country: {
+    choose: string;
+    search: string;
+    emptyTitle: string;
+    emptyDescription: (query: string) => string;
+    recent: string;
+    eu: string;
+    other: string;
+  };
   multiSelect: { selectAll: string; noValues: string };
   tree: { expand: string; collapse: string; breadcrumbs: string };
-  contacts: { blacklist: string; companyId: string; personalId: string; openRegistry: string; openAres: string };
+  contacts: {
+    blacklist: string;
+    companyId: string;
+    personalId: string;
+    openRegistry: string;
+    openAres: string;
+  };
   accessibility: { resizeCombobox: string };
   company: { companyId: string };
-  errors: { load: string; network: string; networkDetail: string; expired: string; expiredDetail: string; forbidden: string; forbiddenDetail: string; timeout: string; timeoutDetail: string };
-  columnPicker: { clearCustom: string; clearCustomTitle: string; default: string; restoreSaved: string; restoreFactory: string; showSection: (section: string) => string; hideSection: (section: string) => string; show: string; hide: string; saveDefault: string; saved: string; saveColumns: string; persistenceHint: string; savedViews: string; noSavedViews: string; applyView: string; overwrite: string; overwriteTitle: string; deleteView: string; viewName: string; saveView: string; save: string; accountFormRequired: string; compactAccountHeading: (label: string) => string };
+  errors: {
+    load: string;
+    network: string;
+    networkDetail: string;
+    expired: string;
+    expiredDetail: string;
+    forbidden: string;
+    forbiddenDetail: string;
+    timeout: string;
+    timeoutDetail: string;
+  };
+  columnPicker: {
+    clearCustom: string;
+    clearCustomTitle: string;
+    default: string;
+    restoreSaved: string;
+    restoreFactory: string;
+    showSection: (section: string) => string;
+    hideSection: (section: string) => string;
+    show: string;
+    hide: string;
+    saveDefault: string;
+    saved: string;
+    saveColumns: string;
+    persistenceHint: string;
+    savedViews: string;
+    noSavedViews: string;
+    applyView: string;
+    overwrite: string;
+    overwriteTitle: string;
+    deleteView: string;
+    viewName: string;
+    saveView: string;
+    save: string;
+    accountFormRequired: string;
+    compactAccountHeading: (label: string) => string;
+  };
   /** Rekapitulace účetních řádků – názvy sloupců účtů (krátká / rozšířená forma). */
-  journalRecap: { debitShort: string; creditShort: string; debitAccount: string; creditAccount: string };
-  documentForm: { changeAccount: string; currencyDisabled: string; mainAccountSelect: string; supplierNumber: string; supplierTaxDocumentNumber: string; documentNumberTooLongForVs: string; bankAccountInvalid: string; bankCodeInvalid: string; otherBankAccount: string };
-  export: { parametersSheet: string; parameter: string; value: string; reportName: string; company: string; period: string; exportedAt: string; user: string; activeFilters: string; pageFooter: string; fallbackColumn: (index: number) => string; printPdf: string };
-  print: { book: string; allBooks: string; period: string; search: string; filter: string; asOf: string; total: string; portrait: string; landscape: string; orientation: string; largeTitle: string; largeDescription: (rows: string, pages: string) => string; print: string; printTitle: string; downloadPdf: string; preview: string; preparing: string; printedBy: string; page: (page: number, pages: number) => string };
+  journalRecap: {
+    debitShort: string;
+    creditShort: string;
+    debitAccount: string;
+    creditAccount: string;
+  };
+  documentForm: {
+    changeAccount: string;
+    currencyDisabled: string;
+    mainAccountSelect: string;
+    supplierNumber: string;
+    supplierTaxDocumentNumber: string;
+    documentNumberTooLongForVs: string;
+    bankAccountInvalid: string;
+    bankCodeInvalid: string;
+    otherBankAccount: string;
+  };
+  export: {
+    parametersSheet: string;
+    parameter: string;
+    value: string;
+    reportName: string;
+    company: string;
+    period: string;
+    exportedAt: string;
+    user: string;
+    activeFilters: string;
+    pageFooter: string;
+    fallbackColumn: (index: number) => string;
+    printPdf: string;
+  };
+  print: {
+    book: string;
+    allBooks: string;
+    period: string;
+    search: string;
+    filter: string;
+    asOf: string;
+    total: string;
+    portrait: string;
+    landscape: string;
+    orientation: string;
+    largeTitle: string;
+    largeDescription: (rows: string, pages: string) => string;
+    print: string;
+    printTitle: string;
+    downloadPdf: string;
+    preview: string;
+    preparing: string;
+    printedBy: string;
+    page: (page: number, pages: number) => string;
+  };
 }
 
 export const DS_TEXTS_CS: DsTexts = {
-  locale: "cs", intlLocale: "cs-CZ", dateLocale: cs,
-  paneChrome:{back:"Zpět (Alt+←)",forward:"Vpřed (Alt+→)",history:"Historie záložky",openInNewTab:"Otevřít v nové záložce",unsaved:"Neuložené změny",prevRecord:"Předchozí záznam (Alt+↑)",nextRecord:"Další záznam (Alt+↓)",maximize:"Maximalizovat panel (Alt+M)",restore:"Obnovit rozložení (Esc)",more:"Další akce záložky",closeTab:"Zavřít záložku",closeOthers:"Zavřít ostatní",moveToPane:"Přesunout záložku do panelu {index}",duplicate:"Duplikovat záložku",reopenClosed:"Znovu otevřít zavřenou záložku",closePane:"Zavřít panel",pageActions:"Akce stránky",untitled:"Bez názvu"},
-  layoutMenu:{trigger:"Rozložení",empty:"Zatím žádné uložené rozložení",saveCurrent:"Uložit aktuální jako nové…",overwrite:"Přepsat uložené aktuálním",manage:"Spravovat rozložení",saveTitle:"Uložit rozložení",nameLabel:"Název",save:"Uložit",cancel:"Zrušit",manageTitle:"Uložená rozložení",close:"Zavřít",delete:"Odstranit",deleteTitle:"Odstranit rozložení?",deleteDescription:"Rozložení „{name}“ bude odstraněno.",moveUp:"Posunout nahoru",moveDown:"Posunout dolů"},
-    common: { close: "Zavřít", cancel: "Zrušit", confirm: "Potvrdit", understand: "Rozumím", save: "Uložit", yes: "ano", no: "ne", system: "Systém" },
-  recordAction: { moreActions: "Další akce", unsaved: "Neuložené změny", errorTitle: "Záznam nelze uložit", closeError: "Zavřít chybovou hlášku" },
-  grid: {
-    locale:"cs-CZ",searchPlaceholder:"Hledat…",searchLabel:"Hledat",clearSearchLabel:"Zrušit hledání",refresh:"Obnovit data",columnsTitle:"Sloupce",selectMore:"Vybrat více",cancelSelection:"Zrušit výběr",selectedRecords:(c)=>`Vybraných záznamů: ${c}`,selectAllRows:"Vybrat všechny řádky",selectRow:"Vybrat řádek",actions:"Akce",edit:"Upravit",remove:"Odstranit",removeConfirm:"Opravdu odstranit tento záznam?",cancel:"Zrušit",emptyTitle:"Zatím zde nejsou žádné záznamy",searchEmptyTitle:"Hledání neodpovídá žádný záznam",emptyValue:"(prázdné)",valuesCount:(c)=>`${c} hodnot`,total:"Celkem",sidePanelLabel:"Poznámky k vybranému záznamu",filterLabel:(l)=>`Filtrovat ${l}`,filterSearchPlaceholder:"Hledat…",selectAll:"Vybrat vše",clear:"Vymazat",noValues:"Žádné hodnoty.",dateFilterYears:"Roky",dateFilterQuarters:"Čtvrtletí",dateFilterMonths:"Měsíce",dateFilterDates:"Jednotlivá data",dateFilterQuarter:(q,y)=>`${q}. čtvrtletí ${y}`,showFilters:"Zobrazit filtry",activeFilters:"Aktivní filtry",activeCount:(c)=>`${c} aktivní`,defaultFilters:"Výchozí filtry",clearAllFilters:"Zrušit všechny filtry",clearFilter:"Zrušit filtr",removeFilter:(l)=>`Zrušit filtr ${l}`,clearAll:"Zrušit vše",rowsLabel:"řádků",show:"Zobrazit",all:"Vše",pageSize:"Počet záznamů na stránku",noRecords:"žádné záznamy",page:(p,n)=>`Strana ${p} / ${n}`,previousPage:"Předchozí stránka",nextPage:"Další stránka",download:"Stáhnout",downloadExcel:"Stáhnout do Excelu",downloadPdf:"Stáhnout do PDF",downloadHtml:"Stáhnout do HTML",retry:"Zkusit znovu",loading:"Načítám data…",groupingEnable:"Seskupit podle sloupce",groupingDisable:"Vypnout seskupení",groupingDropHint:"Přetáhněte sem záhlaví sloupce pro seskupení",groupingAddColumn:"+ Přidat sloupec",groupingClear:"Zrušit seskupení",groupingEmpty:"(nevyplněno)",groupingHidden:(c)=>`Skrytý pruh se seskupením (${c}) – zobrazit`,groupedCount:(c)=>`Seskupeno (${c})`,groupingMoveLeft:"Posunout doleva",groupingMoveRight:"Posunout doprava",groupingDateBy:"Seskupit datum podle",groupingRemoveColumn:"Zrušit seskupení podle sloupce",groupDay:"Den",groupMonth:"Měsíc",groupQuarter:"Čtvrtletí",groupYear:"Rok",quarterLabel:(q,y)=>`${q}. čtvrtletí ${y}`,zoomOut:"Zmenšit tabulku",zoomIn:"Zvětšit tabulku",zoomReset:"Výchozí velikost",normalDensity:"Normální hustota řádků",compactDensity:"Kompaktní hustota řádků",resizeColumn:"Změnit šířku sloupce",resizeColumnHint:"Tažením změníte šířku, dvojklik vrátí automatickou šířku",moreActions:"Další akce",moreParameters:"Parametry",moreTools:"Nástroje",treeView:"Stromové zobrazení",tableView:"Tabulkové zobrazení",groupTotal:(l)=>`Celkem ${l}`,sortBy:(l)=>`Seřadit podle ${l}`,expand:"Rozbalit",collapse:"Sbalit",expandLevel:(n,l)=>`Úroveň ${n} – ${l}`,exportSearch:(q)=>`Hledání: ${q}`,recordsCount:(c)=>`${c} záznamů`
+  locale: "cs",
+  intlLocale: "cs-CZ",
+  dateLocale: cs,
+  paneChrome: {
+    back: "Zpět (Alt+←)",
+    forward: "Vpřed (Alt+→)",
+    history: "Historie záložky",
+    openInNewTab: "Otevřít v nové záložce",
+    unsaved: "Neuložené změny",
+    prevRecord: "Předchozí záznam (Alt+↑)",
+    nextRecord: "Další záznam (Alt+↓)",
+    maximize: "Maximalizovat panel (Alt+M)",
+    restore: "Obnovit rozložení (Esc)",
+    more: "Další akce záložky",
+    closeTab: "Zavřít záložku",
+    closeOthers: "Zavřít ostatní",
+    moveToPane: "Přesunout záložku do panelu {index}",
+    duplicate: "Duplikovat záložku",
+    reopenClosed: "Znovu otevřít zavřenou záložku",
+    closePane: "Zavřít panel",
+    pageActions: "Akce stránky",
+    untitled: "Bez názvu",
   },
-  appShell:{clearSearch:"Smazat hledání",mainMenu:"Hlavní menu",containsActivePage:"Obsahuje aktivní stránku",disabledHint:"Připravujeme",searchPlaceholder:"Hledat v menu…",searchEmpty:"Nic nenalezeno",resizeMenu:"Změnit šířku menu",panelView:"Část panelu",contextDisabledHint:"Firma a období se tady neuplatní – nastavení platí pro celý prostor"},
-  panes:{panel:(i)=>`Panel ${i}`,emptyHint:"Otevřete položku z menu",maximizedBanner:"Panel {index} je maximalizovaný",restoreLayout:"Obnovit rozložení",limitClosed:"Zavřené záložky: {count} – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí."},
-  notification:{label:"Oznámení",title:"Oznámení",markAllRead:"Označit vše jako přečtené",empty:"Žádná oznámení",showAll:"Zobrazit vše",loading:"Načítání oznámení"},
-standalone:{close:"Zavřít",pages:"Stránky",pagesSelect:"Vyberte stránku"},contextSwitcher:{search:"Hledat…",empty:"Nic nenalezeno",current:"Aktuální",selected:"Vybráno"},confirmByTyping:{instruction:"Pro potvrzení opište:",cancel:"Zrušit",running:"Probíhá…"},dangerZone:{title:"Nebezpečná zóna"},noticeBar:{close:"Zavřít upozornění"},
-  appZoom:{label:"Velikost zobrazení",decrease:"Zmenšit zobrazení",increase:"Zvětšit zobrazení",reset:"Obnovit"},
-  recordDialog:{detailSections:"Sekce detailu",hidePanel:(p)=>`Skrýt ${p}`,notes:"Poznámky",active:"Aktivní",inactive:"Neaktivní",saveAndAction:"Uložit změny a {label}",dirtyTitle:"Formulář obsahuje neuložené změny",history:"Historie změn",noHistory:"Zatím bez zaznamenaných změn.",system:"Systém",yes:"ano",no:"ne"},
-  date:{chooseDate:"Vyberte datum",dateSelection:"Výběr data",openCalendar:"Otevřít kalendář",invalidFormat:(f)=>`Zadejte platné datum ve formátu ${f}.`,sameAsIssue:"Stejné jako datum vystavení – klikněte pro úpravu",relinkIssue:"Znovu svázat s datem vystavení",rangePlaceholder:"Vyberte období",rangeLabel:"Rozsah dat",clear:"Vymazat",chooseRangeEnd:"Vyberte konec rozsahu",openTime:"Otevřít výběr času",all:"Vše",day:"Den",week:"Týden",month:"Měsíc",year:"Rok",custom:"Vlastní",from:"Od",to:"Do"},
-  country:{choose:"Vyberte stát",search:"Hledat stát nebo kód…",emptyTitle:"Nic jsme nenašli",emptyDescription:(q)=>`Pro „${q}“ neodpovídá žádný stát. Zkuste jiný název nebo ISO kód (např. CR).`,recent:"Nedávno použité",eu:"Evropská unie",other:"Ostatní státy"},
-  multiSelect:{selectAll:"Vybrat vše",noValues:"Žádné hodnoty."}, tree:{expand:"Rozbalit",collapse:"Sbalit",breadcrumbs:"Drobečková navigace"}, contacts:{blacklist:"Blacklist",companyId:"IČO:",personalId:"RČ:",openRegistry:"Otevřít v obchodním rejstříku",openAres:"Otevřít v ARES"}, accessibility:{resizeCombobox:"Změnit šířku tažením"}, company:{companyId:"IČO"},
-  errors:{load:"Data se nepodařilo načíst.",network:"Spojení se serverem se nezdařilo.",networkDetail:"Zkontrolujte připojení k internetu a zkuste to znovu.",expired:"Přihlášení vypršelo.",expiredDetail:"Přihlaste se prosím znovu a akci zopakujte.",forbidden:"K těmto datům nemáte oprávnění.",forbiddenDetail:"Požádejte správce účtu o přidělení role.",timeout:"Načítání trvalo příliš dlouho.",timeoutDetail:"Zkuste zúžit období nebo akci opakovat."},
-  columnPicker:{clearCustom:"Zrušit vlastní",clearCustomTitle:"Zruší uložené vlastní výchozí nastavení sloupců",default:"Výchozí",restoreSaved:"Obnovit uložené výchozí nastavení",restoreFactory:"Obnovit tovární výchozí nastavení",showSection:(s)=>`Zobrazit sekci ${s}`,hideSection:(s)=>`Skrýt sekci ${s}`,show:"Zobrazit",hide:"Skrýt",saveDefault:"Uložit aktuální viditelnost i pořadí sloupců jako výchozí",saved:"Uloženo",saveColumns:"Uložit nastavení sloupců",persistenceHint:"Pořadí i viditelnost se ukládají jako výchozí zobrazení.",savedViews:"Uložené pohledy",noSavedViews:"Zatím nemáte uložený žádný pohled.",applyView:"Použít pohled",overwrite:"Přepsat",overwriteTitle:"Přepsat aktuálním nastavením",deleteView:"Smazat pohled",viewName:"Název pohledu",saveView:"Uložit aktuální zobrazení",save:"Uložit",accountFormRequired:"Aspoň jedna forma účtu musí zůstat zobrazená",compactAccountHeading:(l)=>`${l} – zkráceno kvůli šířce`},
-  journalRecap:{debitShort:"MD",creditShort:"DAL",debitAccount:"MD účet",creditAccount:"DAL účet"},
-  documentForm:{changeAccount:"Změnit účet",currencyDisabled:"Měnu nelze změnit",mainAccountSelect:"Hlavní účet",supplierNumber:"Číslo dokladu dodavatele",supplierTaxDocumentNumber:"Číslo daňového dokladu",documentNumberTooLongForVs:"Číslo má víc než 10 číslic – VS doplňte ručně",bankAccountInvalid:"Číslo účtu není platné.",bankCodeInvalid:"Kód banky není platný.",otherBankAccount:"Jiný účet"},
-  export:{parametersSheet:"Parametry exportu",parameter:"Parametr",value:"Hodnota",reportName:"Název sestavy",company:"Firma",period:"Období",exportedAt:"Exportováno",user:"Uživatel",activeFilters:"Aktivní filtry",pageFooter:"Strana &P z &N",fallbackColumn:(i)=>`Sloupec ${i}`,printPdf:"Tisk (PDF)…"},
-  print:{book:"Kniha",allBooks:"Všechny knihy",period:"Období",search:"Hledání",filter:"Filtr",asOf:"Stav k datu",total:"Celkem",portrait:"Na výšku",landscape:"Na šířku",orientation:"Orientace stránky",largeTitle:"Tisk velkého objemu dat",largeDescription:(r,p)=>`Sestava má ${r} řádků, odhadem ${p} stran. Příprava PDF může chvíli trvat. Pokračovat?`,print:"Vytisknout",printTitle:"Tisk",downloadPdf:"Stáhnout PDF",preview:"Náhled",preparing:"Připravuji náhled…",printedBy:"Vytiskl:",page:(p,n)=>`Strana ${p} z ${n}`}
+  layoutMenu: {
+    trigger: "Rozložení",
+    empty: "Zatím žádné uložené rozložení",
+    saveCurrent: "Uložit aktuální jako nové…",
+    overwrite: "Přepsat uložené aktuálním",
+    manage: "Spravovat rozložení",
+    saveTitle: "Uložit rozložení",
+    nameLabel: "Název",
+    save: "Uložit",
+    cancel: "Zrušit",
+    manageTitle: "Uložená rozložení",
+    close: "Zavřít",
+    delete: "Odstranit",
+    deleteTitle: "Odstranit rozložení?",
+    deleteDescription: "Rozložení „{name}“ bude odstraněno.",
+    moveUp: "Posunout nahoru",
+    moveDown: "Posunout dolů",
+  },
+  common: {
+    close: "Zavřít",
+    cancel: "Zrušit",
+    confirm: "Potvrdit",
+    understand: "Rozumím",
+    save: "Uložit",
+    yes: "ano",
+    no: "ne",
+    system: "Systém",
+  },
+  recordAction: {
+    moreActions: "Další akce",
+    unsaved: "Neuložené změny",
+    errorTitle: "Záznam nelze uložit",
+    closeError: "Zavřít chybovou hlášku",
+  },
+  grid: {
+    locale: "cs-CZ",
+    searchPlaceholder: "Hledat…",
+    searchLabel: "Hledat",
+    clearSearchLabel: "Zrušit hledání",
+    refresh: "Obnovit data",
+    columnsTitle: "Sloupce",
+    selectMore: "Vybrat více",
+    cancelSelection: "Zrušit výběr",
+    selectedRecords: (c) => `Vybraných záznamů: ${c}`,
+    selectAllRows: "Vybrat všechny řádky",
+    selectRow: "Vybrat řádek",
+    actions: "Akce",
+    edit: "Upravit",
+    remove: "Odstranit",
+    removeConfirm: "Opravdu odstranit tento záznam?",
+    cancel: "Zrušit",
+    emptyTitle: "Zatím zde nejsou žádné záznamy",
+    searchEmptyTitle: "Hledání neodpovídá žádný záznam",
+    emptyValue: "(prázdné)",
+    valuesCount: (c) => `${c} hodnot`,
+    total: "Celkem",
+    sidePanelLabel: "Poznámky k vybranému záznamu",
+    filterLabel: (l) => `Filtrovat ${l}`,
+    filterSearchPlaceholder: "Hledat…",
+    selectAll: "Vybrat vše",
+    clear: "Vymazat",
+    noValues: "Žádné hodnoty.",
+    dateFilterYears: "Roky",
+    dateFilterQuarters: "Čtvrtletí",
+    dateFilterMonths: "Měsíce",
+    dateFilterDates: "Jednotlivá data",
+    dateFilterQuarter: (q, y) => `${q}. čtvrtletí ${y}`,
+    showFilters: "Zobrazit filtry",
+    activeFilters: "Aktivní filtry",
+    activeCount: (c) => `${c} aktivní`,
+    defaultFilters: "Výchozí filtry",
+    clearAllFilters: "Zrušit všechny filtry",
+    clearFilter: "Zrušit filtr",
+    removeFilter: (l) => `Zrušit filtr ${l}`,
+    clearAll: "Zrušit vše",
+    rowsLabel: "řádků",
+    show: "Zobrazit",
+    all: "Vše",
+    pageSize: "Počet záznamů na stránku",
+    noRecords: "žádné záznamy",
+    page: (p, n) => `Strana ${p} / ${n}`,
+    previousPage: "Předchozí stránka",
+    nextPage: "Další stránka",
+    download: "Stáhnout",
+    downloadExcel: "Stáhnout do Excelu",
+    downloadPdf: "Stáhnout do PDF",
+    downloadHtml: "Stáhnout do HTML",
+    retry: "Zkusit znovu",
+    loading: "Načítám data…",
+    groupingEnable: "Seskupit podle sloupce",
+    groupingDisable: "Vypnout seskupení",
+    groupingDropHint: "Přetáhněte sem záhlaví sloupce pro seskupení",
+    groupingAddColumn: "+ Přidat sloupec",
+    groupingClear: "Zrušit seskupení",
+    groupingEmpty: "(nevyplněno)",
+    groupingHidden: (c) => `Skrytý pruh se seskupením (${c}) – zobrazit`,
+    groupedCount: (c) => `Seskupeno (${c})`,
+    groupingMoveLeft: "Posunout doleva",
+    groupingMoveRight: "Posunout doprava",
+    groupingDateBy: "Seskupit datum podle",
+    groupingRemoveColumn: "Zrušit seskupení podle sloupce",
+    groupDay: "Den",
+    groupMonth: "Měsíc",
+    groupQuarter: "Čtvrtletí",
+    groupYear: "Rok",
+    quarterLabel: (q, y) => `${q}. čtvrtletí ${y}`,
+    zoomOut: "Zmenšit tabulku",
+    zoomIn: "Zvětšit tabulku",
+    zoomReset: "Výchozí velikost",
+    normalDensity: "Normální hustota řádků",
+    compactDensity: "Kompaktní hustota řádků",
+    resizeColumn: "Změnit šířku sloupce",
+    resizeColumnHint: "Tažením změníte šířku, dvojklik vrátí automatickou šířku",
+    moreActions: "Další akce",
+    moreParameters: "Parametry",
+    moreTools: "Nástroje",
+    treeView: "Stromové zobrazení",
+    tableView: "Tabulkové zobrazení",
+    groupTotal: (l) => `Celkem ${l}`,
+    sortBy: (l) => `Seřadit podle ${l}`,
+    expand: "Rozbalit",
+    collapse: "Sbalit",
+    expandLevel: (n, l) => `Úroveň ${n} – ${l}`,
+    exportSearch: (q) => `Hledání: ${q}`,
+    recordsCount: (c) => `${c} záznamů`,
+  },
+  appShell: {
+    clearSearch: "Smazat hledání",
+    mainMenu: "Hlavní menu",
+    containsActivePage: "Obsahuje aktivní stránku",
+    disabledHint: "Připravujeme",
+    searchPlaceholder: "Hledat v menu…",
+    searchEmpty: "Nic nenalezeno",
+    resizeMenu: "Změnit šířku menu",
+    panelView: "Část panelu",
+    contextDisabledHint: "Firma a období se tady neuplatní – nastavení platí pro celý prostor",
+  },
+  panes: {
+    panel: (i) => `Panel ${i}`,
+    emptyHint: "Otevřete položku z menu",
+    maximizedBanner: "Panel {index} je maximalizovaný",
+    restoreLayout: "Obnovit rozložení",
+    limitClosed:
+      "Zavřené záložky: {count} – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
+  },
+  notification: {
+    label: "Oznámení",
+    title: "Oznámení",
+    markAllRead: "Označit vše jako přečtené",
+    empty: "Žádná oznámení",
+    showAll: "Zobrazit vše",
+    loading: "Načítání oznámení",
+  },
+  standalone: { close: "Zavřít", pages: "Stránky", pagesSelect: "Vyberte stránku" },
+  contextSwitcher: {
+    search: "Hledat…",
+    empty: "Nic nenalezeno",
+    current: "Aktuální",
+    selected: "Vybráno",
+  },
+  confirmByTyping: { instruction: "Pro potvrzení opište:", cancel: "Zrušit", running: "Probíhá…" },
+  dangerZone: { title: "Nebezpečná zóna" },
+  noticeBar: { close: "Zavřít upozornění" },
+  appZoom: {
+    label: "Velikost zobrazení",
+    decrease: "Zmenšit zobrazení",
+    increase: "Zvětšit zobrazení",
+    reset: "Obnovit",
+  },
+  recordDialog: {
+    detailSections: "Sekce detailu",
+    hidePanel: (p) => `Skrýt ${p}`,
+    notes: "Poznámky",
+    active: "Aktivní",
+    inactive: "Neaktivní",
+    saveAndAction: "Uložit změny a {label}",
+    dirtyTitle: "Formulář obsahuje neuložené změny",
+    history: "Historie změn",
+    noHistory: "Zatím bez zaznamenaných změn.",
+    system: "Systém",
+    yes: "ano",
+    no: "ne",
+  },
+  date: {
+    chooseDate: "Vyberte datum",
+    dateSelection: "Výběr data",
+    openCalendar: "Otevřít kalendář",
+    invalidFormat: (f) => `Zadejte platné datum ve formátu ${f}.`,
+    sameAsIssue: "Stejné jako datum vystavení – klikněte pro úpravu",
+    relinkIssue: "Znovu svázat s datem vystavení",
+    rangePlaceholder: "Vyberte období",
+    rangeLabel: "Rozsah dat",
+    clear: "Vymazat",
+    chooseRangeEnd: "Vyberte konec rozsahu",
+    openTime: "Otevřít výběr času",
+    all: "Vše",
+    day: "Den",
+    week: "Týden",
+    month: "Měsíc",
+    year: "Rok",
+    custom: "Vlastní",
+    from: "Od",
+    to: "Do",
+  },
+  country: {
+    choose: "Vyberte stát",
+    search: "Hledat stát nebo kód…",
+    emptyTitle: "Nic jsme nenašli",
+    emptyDescription: (q) =>
+      `Pro „${q}“ neodpovídá žádný stát. Zkuste jiný název nebo ISO kód (např. CR).`,
+    recent: "Nedávno použité",
+    eu: "Evropská unie",
+    other: "Ostatní státy",
+  },
+  multiSelect: { selectAll: "Vybrat vše", noValues: "Žádné hodnoty." },
+  tree: { expand: "Rozbalit", collapse: "Sbalit", breadcrumbs: "Drobečková navigace" },
+  contacts: {
+    blacklist: "Blacklist",
+    companyId: "IČO:",
+    personalId: "RČ:",
+    openRegistry: "Otevřít v obchodním rejstříku",
+    openAres: "Otevřít v ARES",
+  },
+  accessibility: { resizeCombobox: "Změnit šířku tažením" },
+  company: { companyId: "IČO" },
+  errors: {
+    load: "Data se nepodařilo načíst.",
+    network: "Spojení se serverem se nezdařilo.",
+    networkDetail: "Zkontrolujte připojení k internetu a zkuste to znovu.",
+    expired: "Přihlášení vypršelo.",
+    expiredDetail: "Přihlaste se prosím znovu a akci zopakujte.",
+    forbidden: "K těmto datům nemáte oprávnění.",
+    forbiddenDetail: "Požádejte správce účtu o přidělení role.",
+    timeout: "Načítání trvalo příliš dlouho.",
+    timeoutDetail: "Zkuste zúžit období nebo akci opakovat.",
+  },
+  columnPicker: {
+    clearCustom: "Zrušit vlastní",
+    clearCustomTitle: "Zruší uložené vlastní výchozí nastavení sloupců",
+    default: "Výchozí",
+    restoreSaved: "Obnovit uložené výchozí nastavení",
+    restoreFactory: "Obnovit tovární výchozí nastavení",
+    showSection: (s) => `Zobrazit sekci ${s}`,
+    hideSection: (s) => `Skrýt sekci ${s}`,
+    show: "Zobrazit",
+    hide: "Skrýt",
+    saveDefault: "Uložit aktuální viditelnost i pořadí sloupců jako výchozí",
+    saved: "Uloženo",
+    saveColumns: "Uložit nastavení sloupců",
+    persistenceHint: "Pořadí i viditelnost se ukládají jako výchozí zobrazení.",
+    savedViews: "Uložené pohledy",
+    noSavedViews: "Zatím nemáte uložený žádný pohled.",
+    applyView: "Použít pohled",
+    overwrite: "Přepsat",
+    overwriteTitle: "Přepsat aktuálním nastavením",
+    deleteView: "Smazat pohled",
+    viewName: "Název pohledu",
+    saveView: "Uložit aktuální zobrazení",
+    save: "Uložit",
+    accountFormRequired: "Aspoň jedna forma účtu musí zůstat zobrazená",
+    compactAccountHeading: (l) => `${l} – zkráceno kvůli šířce`,
+  },
+  journalRecap: {
+    debitShort: "MD",
+    creditShort: "DAL",
+    debitAccount: "MD účet",
+    creditAccount: "DAL účet",
+  },
+  documentForm: {
+    changeAccount: "Změnit účet",
+    currencyDisabled: "Měnu nelze změnit",
+    mainAccountSelect: "Hlavní účet",
+    supplierNumber: "Číslo dokladu dodavatele",
+    supplierTaxDocumentNumber: "Číslo daňového dokladu",
+    documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
+    bankAccountInvalid: "Číslo účtu není platné.",
+    bankCodeInvalid: "Kód banky není platný.",
+    otherBankAccount: "Jiný účet",
+  },
+  export: {
+    parametersSheet: "Parametry exportu",
+    parameter: "Parametr",
+    value: "Hodnota",
+    reportName: "Název sestavy",
+    company: "Firma",
+    period: "Období",
+    exportedAt: "Exportováno",
+    user: "Uživatel",
+    activeFilters: "Aktivní filtry",
+    pageFooter: "Strana &P z &N",
+    fallbackColumn: (i) => `Sloupec ${i}`,
+    printPdf: "Tisk (PDF)…",
+  },
+  print: {
+    book: "Kniha",
+    allBooks: "Všechny knihy",
+    period: "Období",
+    search: "Hledání",
+    filter: "Filtr",
+    asOf: "Stav k datu",
+    total: "Celkem",
+    portrait: "Na výšku",
+    landscape: "Na šířku",
+    orientation: "Orientace stránky",
+    largeTitle: "Tisk velkého objemu dat",
+    largeDescription: (r, p) =>
+      `Sestava má ${r} řádků, odhadem ${p} stran. Příprava PDF může chvíli trvat. Pokračovat?`,
+    print: "Vytisknout",
+    printTitle: "Tisk",
+    downloadPdf: "Stáhnout PDF",
+    preview: "Náhled",
+    preparing: "Připravuji náhled…",
+    printedBy: "Vytiskl:",
+    page: (p, n) => `Strana ${p} z ${n}`,
+  },
 };
 
 export const DS_TEXTS_SK: DsTexts = {
-  ...DS_TEXTS_CS, layoutMenu:{trigger:"Rozloženie",empty:"Zatiaľ žiadne uložené rozloženie",saveCurrent:"Uložiť aktuálne ako nové…",overwrite:"Prepísať uložené aktuálnym",manage:"Spravovať rozloženia",saveTitle:"Uložiť rozloženie",nameLabel:"Názov",save:"Uložiť",cancel:"Zrušiť",manageTitle:"Uložené rozloženia",close:"Zavrieť",delete:"Odstrániť",deleteTitle:"Odstrániť rozloženie?",deleteDescription:"Rozloženie „{name}“ bude odstránené.",moveUp:"Posunúť nahor",moveDown:"Posunúť nadol"}, paneChrome:{back:"Späť (Alt+←)",forward:"Dopredu (Alt+→)",history:"História karty",openInNewTab:"Otvoriť v novej karte",unsaved:"Neuložené zmeny",prevRecord:"Predchádzajúci záznam (Alt+↑)",nextRecord:"Ďalší záznam (Alt+↓)",maximize:"Maximalizovať panel (Alt+M)",restore:"Obnoviť rozloženie (Esc)",more:"Ďalšie akcie karty",closeTab:"Zavrieť kartu",closeOthers:"Zavrieť ostatné",moveToPane:"Presunúť kartu do panela {index}",duplicate:"Duplikovať kartu",reopenClosed:"Znova otvoriť zavretú kartu",closePane:"Zavrieť panel",pageActions:"Akcie stránky",untitled:"Bez názvu"}, locale:"sk", intlLocale:"sk-SK", dateLocale:sk,
-  common:{close:"Zavrieť",cancel:"Zrušiť",confirm:"Potvrdiť",understand:"Rozumiem",save:"Uložiť",yes:"áno",no:"nie",system:"Systém"},
-  recordAction:{moreActions:"Ďalšie akcie",unsaved:"Neuložené zmeny",errorTitle:"Záznam nie je možné uložiť",closeError:"Zavrieť chybové hlásenie"},
-  grid:{...DS_TEXTS_CS.grid,locale:"sk-SK",searchPlaceholder:"Hľadať…",searchLabel:"Hľadať",clearSearchLabel:"Zrušiť hľadanie",refresh:"Obnoviť údaje",columnsTitle:"Stĺpce",selectMore:"Vybrať viac",cancelSelection:"Zrušiť výber",selectedRecords:(c)=>`Vybraných záznamov: ${c}`,selectAllRows:"Vybrať všetky riadky",selectRow:"Vybrať riadok",actions:"Akcie",edit:"Upraviť",remove:"Odstrániť",removeConfirm:"Naozaj odstrániť tento záznam?",cancel:"Zrušiť",emptyTitle:"Zatiaľ tu nie sú žiadne záznamy",searchEmptyTitle:"Hľadaniu nezodpovedá žiadny záznam",emptyValue:"(prázdne)",valuesCount:(c)=>`${c} hodnôt`,total:"Celkom",sidePanelLabel:"Poznámky k vybranému záznamu",filterLabel:(l)=>`Filtrovať ${l}`,filterSearchPlaceholder:"Hľadať…",selectAll:"Vybrať všetko",clear:"Vymazať",noValues:"Žiadne hodnoty.",dateFilterYears:"Roky",dateFilterQuarters:"Štvrťroky",dateFilterMonths:"Mesiace",dateFilterDates:"Jednotlivé dátumy",dateFilterQuarter:(q,y)=>`${q}. štvrťrok ${y}`,showFilters:"Zobraziť filtre",activeFilters:"Aktívne filtre",activeCount:(c)=>`${c} aktívne`,defaultFilters:"Predvolené filtre",clearAllFilters:"Zrušiť všetky filtre",clearFilter:"Zrušiť filter",removeFilter:(l)=>`Zrušiť filter ${l}`,clearAll:"Zrušiť všetko",rowsLabel:"riadkov",show:"Zobraziť",all:"Všetko",pageSize:"Počet záznamov na stránku",noRecords:"žiadne záznamy",page:(p,n)=>`Strana ${p} / ${n}`,previousPage:"Predchádzajúca strana",nextPage:"Ďalšia strana",download:"Stiahnuť",downloadExcel:"Stiahnuť do Excelu",downloadPdf:"Stiahnuť do PDF",downloadHtml:"Stiahnuť do HTML",retry:"Skúsiť znova",loading:"Načítavam údaje…",groupingEnable:"Zoskupiť podľa stĺpca",groupingDisable:"Vypnúť zoskupenie",groupingDropHint:"Presuňte sem záhlavie stĺpca na zoskupenie",groupingAddColumn:"+ Pridať stĺpec",groupingClear:"Zrušiť zoskupenie",groupingEmpty:"(nevyplnené)",groupingHidden:(c)=>`Skrytý pruh so zoskupením (${c}) – zobraziť`,groupedCount:(c)=>`Zoskupené (${c})`,groupingMoveLeft:"Posunúť doľava",groupingMoveRight:"Posunúť doprava",groupingDateBy:"Zoskupiť dátum podľa",groupingRemoveColumn:"Zrušiť zoskupenie podľa stĺpca",groupDay:"Deň",groupMonth:"Mesiac",groupQuarter:"Štvrťrok",groupYear:"Rok",quarterLabel:(q,y)=>`${q}. štvrťrok ${y}`,zoomOut:"Zmenšiť tabuľku",zoomIn:"Zväčšiť tabuľku",zoomReset:"Predvolená veľkosť",normalDensity:"Normálna hustota riadkov",compactDensity:"Kompaktná hustota riadkov",resizeColumn:"Zmeniť šírku stĺpca",resizeColumnHint:"Ťahaním zmeníte šírku, dvojklik obnoví automatickú šírku",moreActions:"Ďalšie akcie",moreParameters:"Parametre",moreTools:"Nástroje",treeView:"Stromové zobrazenie",tableView:"Tabuľkové zobrazenie",groupTotal:(l)=>`Celkom ${l}`,sortBy:(l)=>`Zoradiť podľa ${l}`,expand:"Rozbaliť",collapse:"Zbaliť",expandLevel:(n,l)=>`Úroveň ${n} – ${l}`,exportSearch:(q)=>`Hľadanie: ${q}`,recordsCount:(c)=>`${c} záznamov`},
-  appShell:{clearSearch:"Vymazať hľadanie",mainMenu:"Hlavné menu",containsActivePage:"Obsahuje aktívnu stránku",disabledHint:"Pripravujeme",searchPlaceholder:"Hľadať v menu…",searchEmpty:"Nič sa nenašlo",resizeMenu:"Zmeniť šírku menu",panelView:"Časť panela",contextDisabledHint:"Firma a obdobie sa tu neuplatnia – nastavenie platí pre celý priestor"}, panes:{panel:(i)=>`Panel ${i}`,emptyHint:"Otvorte položku z menu",maximizedBanner:"Panel {index} je maximalizovaný",restoreLayout:"Obnoviť rozloženie",limitClosed:"Zavreté karty: {count} – v paneli môže byť najviac {max}. Alt+Shift+T ich vráti."}, notification:{label:"Oznámenia",title:"Oznámenia",markAllRead:"Označiť všetko ako prečítané",empty:"Žiadne oznámenia",showAll:"Zobraziť všetko",loading:"Načítavanie oznámení"},
-  standalone:{close:"Zavrieť",pages:"Stránky",pagesSelect:"Vyberte stránku"},contextSwitcher:{search:"Hľadať…",empty:"Nič sa nenašlo",current:"Aktuálny",selected:"Vybrané"},confirmByTyping:{instruction:"Na potvrdenie opíšte:",cancel:"Zrušiť",running:"Prebieha…"},dangerZone:{title:"Nebezpečná zóna"},noticeBar:{close:"Zavrieť upozornenie"}, appZoom:{label:"Veľkosť zobrazenia",decrease:"Zmenšiť zobrazenie",increase:"Zväčšiť zobrazenie",reset:"Obnoviť"}, recordDialog:{detailSections:"Sekcie detailu",hidePanel:(p)=>`Skryť ${p}`,notes:"Poznámky",active:"Aktívny",inactive:"Neaktívny",saveAndAction:"Uložiť zmeny a {label}",dirtyTitle:"Formulár obsahuje neuložené zmeny",history:"História zmien",noHistory:"Zatiaľ bez zaznamenaných zmien.",system:"Systém",yes:"áno",no:"nie"},
-  date:{chooseDate:"Vyberte dátum",dateSelection:"Výber dátumu",openCalendar:"Otvoriť kalendár",invalidFormat:(f)=>`Zadajte platný dátum vo formáte ${f}.`,sameAsIssue:"Rovnaké ako dátum vystavenia – kliknite na úpravu",relinkIssue:"Znova prepojiť s dátumom vystavenia",rangePlaceholder:"Vyberte obdobie",rangeLabel:"Rozsah dátumov",clear:"Vymazať",chooseRangeEnd:"Vyberte koniec rozsahu",openTime:"Otvoriť výber času",all:"Všetko",day:"Deň",week:"Týždeň",month:"Mesiac",year:"Rok",custom:"Vlastné",from:"Od",to:"Do"}, country:{choose:"Vyberte štát",search:"Hľadať štát alebo kód…",emptyTitle:"Nič sme nenašli",emptyDescription:(q)=>`Pre „${q}“ nezodpovedá žiadny štát. Skúste iný názov alebo ISO kód (napr. CR).`,recent:"Nedávno použité",eu:"Európska únia",other:"Ostatné štáty"}, multiSelect:{selectAll:"Vybrať všetko",noValues:"Žiadne hodnoty."}, tree:{expand:"Rozbaliť",collapse:"Zbaliť",breadcrumbs:"Omrvinková navigácia"}, contacts:{blacklist:"Blokovaný",companyId:"IČO:",personalId:"RČ:",openRegistry:"Otvoriť v obchodnom registri",openAres:"Otvoriť v ARES"},accessibility:{resizeCombobox:"Zmeniť šírku ťahaním"},company:{companyId:"IČO"},
-  errors:{load:"Údaje sa nepodarilo načítať.",network:"Spojenie so serverom zlyhalo.",networkDetail:"Skontrolujte internetové pripojenie a skúste to znova.",expired:"Prihlásenie vypršalo.",expiredDetail:"Prihláste sa znova a akciu zopakujte.",forbidden:"K týmto údajom nemáte oprávnenie.",forbiddenDetail:"Požiadajte správcu účtu o pridelenie roly.",timeout:"Načítavanie trvalo príliš dlho.",timeoutDetail:"Skúste zúžiť obdobie alebo akciu zopakovať."},
-  columnPicker:{clearCustom:"Zrušiť vlastné",clearCustomTitle:"Zruší uložené vlastné predvolené nastavenie stĺpcov",default:"Predvolené",restoreSaved:"Obnoviť uložené predvolené nastavenie",restoreFactory:"Obnoviť továrenské predvolené nastavenie",showSection:(s)=>`Zobraziť sekciu ${s}`,hideSection:(s)=>`Skryť sekciu ${s}`,show:"Zobraziť",hide:"Skryť",saveDefault:"Uložiť aktuálnu viditeľnosť a poradie stĺpcov ako predvolené",saved:"Uložené",saveColumns:"Uložiť nastavenie stĺpcov",persistenceHint:"Poradie aj viditeľnosť sa ukladajú ako predvolené zobrazenie.",savedViews:"Uložené pohľady",noSavedViews:"Zatiaľ nemáte uložený žiadny pohľad.",applyView:"Použiť pohľad",overwrite:"Prepísať",overwriteTitle:"Prepísať aktuálnym nastavením",deleteView:"Odstrániť pohľad",viewName:"Názov pohľadu",saveView:"Uložiť aktuálne zobrazenie",save:"Uložiť",accountFormRequired:"Aspoň jedna forma účtu musí zostať zobrazená",compactAccountHeading:(l)=>`${l} – skrátené kvôli šírke`},
-  journalRecap:{debitShort:"MD",creditShort:"DAL",debitAccount:"MD účet",creditAccount:"DAL účet"},
-  documentForm:{changeAccount:"Zmeniť účet",currencyDisabled:"Menu nie je možné zmeniť",mainAccountSelect:"Hlavný účet",supplierNumber:"Číslo dokladu dodávateľa",supplierTaxDocumentNumber:"Číslo daňového dokladu",documentNumberTooLongForVs:"Číslo má viac ako 10 číslic – VS doplňte ručne",bankAccountInvalid:"Číslo účtu nie je platné.",bankCodeInvalid:"Kód banky nie je platný.",otherBankAccount:"Iný účet"},
-  export:{parametersSheet:"Parametre exportu",parameter:"Parameter",value:"Hodnota",reportName:"Názov zostavy",company:"Firma",period:"Obdobie",exportedAt:"Exportované",user:"Používateľ",activeFilters:"Aktívne filtre",pageFooter:"Strana &P z &N",fallbackColumn:(i)=>`Stĺpec ${i}`,printPdf:"Tlač (PDF)…"}, print:{book:"Kniha",allBooks:"Všetky knihy",period:"Obdobie",search:"Hľadanie",filter:"Filter",asOf:"Stav k dátumu",total:"Celkom",portrait:"Na výšku",landscape:"Na šírku",orientation:"Orientácia strany",largeTitle:"Tlač veľkého objemu údajov",largeDescription:(r,p)=>`Zostava má ${r} riadkov, odhadom ${p} strán. Príprava PDF môže chvíľu trvať. Pokračovať?`,print:"Vytlačiť",printTitle:"Tlač",downloadPdf:"Stiahnuť PDF",preview:"Náhľad",preparing:"Pripravujem náhľad…",printedBy:"Vytlačil:",page:(p,n)=>`Strana ${p} z ${n}`}
+  ...DS_TEXTS_CS,
+  layoutMenu: {
+    trigger: "Rozloženie",
+    empty: "Zatiaľ žiadne uložené rozloženie",
+    saveCurrent: "Uložiť aktuálne ako nové…",
+    overwrite: "Prepísať uložené aktuálnym",
+    manage: "Spravovať rozloženia",
+    saveTitle: "Uložiť rozloženie",
+    nameLabel: "Názov",
+    save: "Uložiť",
+    cancel: "Zrušiť",
+    manageTitle: "Uložené rozloženia",
+    close: "Zavrieť",
+    delete: "Odstrániť",
+    deleteTitle: "Odstrániť rozloženie?",
+    deleteDescription: "Rozloženie „{name}“ bude odstránené.",
+    moveUp: "Posunúť nahor",
+    moveDown: "Posunúť nadol",
+  },
+  paneChrome: {
+    back: "Späť (Alt+←)",
+    forward: "Dopredu (Alt+→)",
+    history: "História karty",
+    openInNewTab: "Otvoriť v novej karte",
+    unsaved: "Neuložené zmeny",
+    prevRecord: "Predchádzajúci záznam (Alt+↑)",
+    nextRecord: "Ďalší záznam (Alt+↓)",
+    maximize: "Maximalizovať panel (Alt+M)",
+    restore: "Obnoviť rozloženie (Esc)",
+    more: "Ďalšie akcie karty",
+    closeTab: "Zavrieť kartu",
+    closeOthers: "Zavrieť ostatné",
+    moveToPane: "Presunúť kartu do panela {index}",
+    duplicate: "Duplikovať kartu",
+    reopenClosed: "Znova otvoriť zavretú kartu",
+    closePane: "Zavrieť panel",
+    pageActions: "Akcie stránky",
+    untitled: "Bez názvu",
+  },
+  locale: "sk",
+  intlLocale: "sk-SK",
+  dateLocale: sk,
+  common: {
+    close: "Zavrieť",
+    cancel: "Zrušiť",
+    confirm: "Potvrdiť",
+    understand: "Rozumiem",
+    save: "Uložiť",
+    yes: "áno",
+    no: "nie",
+    system: "Systém",
+  },
+  recordAction: {
+    moreActions: "Ďalšie akcie",
+    unsaved: "Neuložené zmeny",
+    errorTitle: "Záznam nie je možné uložiť",
+    closeError: "Zavrieť chybové hlásenie",
+  },
+  grid: {
+    ...DS_TEXTS_CS.grid,
+    locale: "sk-SK",
+    searchPlaceholder: "Hľadať…",
+    searchLabel: "Hľadať",
+    clearSearchLabel: "Zrušiť hľadanie",
+    refresh: "Obnoviť údaje",
+    columnsTitle: "Stĺpce",
+    selectMore: "Vybrať viac",
+    cancelSelection: "Zrušiť výber",
+    selectedRecords: (c) => `Vybraných záznamov: ${c}`,
+    selectAllRows: "Vybrať všetky riadky",
+    selectRow: "Vybrať riadok",
+    actions: "Akcie",
+    edit: "Upraviť",
+    remove: "Odstrániť",
+    removeConfirm: "Naozaj odstrániť tento záznam?",
+    cancel: "Zrušiť",
+    emptyTitle: "Zatiaľ tu nie sú žiadne záznamy",
+    searchEmptyTitle: "Hľadaniu nezodpovedá žiadny záznam",
+    emptyValue: "(prázdne)",
+    valuesCount: (c) => `${c} hodnôt`,
+    total: "Celkom",
+    sidePanelLabel: "Poznámky k vybranému záznamu",
+    filterLabel: (l) => `Filtrovať ${l}`,
+    filterSearchPlaceholder: "Hľadať…",
+    selectAll: "Vybrať všetko",
+    clear: "Vymazať",
+    noValues: "Žiadne hodnoty.",
+    dateFilterYears: "Roky",
+    dateFilterQuarters: "Štvrťroky",
+    dateFilterMonths: "Mesiace",
+    dateFilterDates: "Jednotlivé dátumy",
+    dateFilterQuarter: (q, y) => `${q}. štvrťrok ${y}`,
+    showFilters: "Zobraziť filtre",
+    activeFilters: "Aktívne filtre",
+    activeCount: (c) => `${c} aktívne`,
+    defaultFilters: "Predvolené filtre",
+    clearAllFilters: "Zrušiť všetky filtre",
+    clearFilter: "Zrušiť filter",
+    removeFilter: (l) => `Zrušiť filter ${l}`,
+    clearAll: "Zrušiť všetko",
+    rowsLabel: "riadkov",
+    show: "Zobraziť",
+    all: "Všetko",
+    pageSize: "Počet záznamov na stránku",
+    noRecords: "žiadne záznamy",
+    page: (p, n) => `Strana ${p} / ${n}`,
+    previousPage: "Predchádzajúca strana",
+    nextPage: "Ďalšia strana",
+    download: "Stiahnuť",
+    downloadExcel: "Stiahnuť do Excelu",
+    downloadPdf: "Stiahnuť do PDF",
+    downloadHtml: "Stiahnuť do HTML",
+    retry: "Skúsiť znova",
+    loading: "Načítavam údaje…",
+    groupingEnable: "Zoskupiť podľa stĺpca",
+    groupingDisable: "Vypnúť zoskupenie",
+    groupingDropHint: "Presuňte sem záhlavie stĺpca na zoskupenie",
+    groupingAddColumn: "+ Pridať stĺpec",
+    groupingClear: "Zrušiť zoskupenie",
+    groupingEmpty: "(nevyplnené)",
+    groupingHidden: (c) => `Skrytý pruh so zoskupením (${c}) – zobraziť`,
+    groupedCount: (c) => `Zoskupené (${c})`,
+    groupingMoveLeft: "Posunúť doľava",
+    groupingMoveRight: "Posunúť doprava",
+    groupingDateBy: "Zoskupiť dátum podľa",
+    groupingRemoveColumn: "Zrušiť zoskupenie podľa stĺpca",
+    groupDay: "Deň",
+    groupMonth: "Mesiac",
+    groupQuarter: "Štvrťrok",
+    groupYear: "Rok",
+    quarterLabel: (q, y) => `${q}. štvrťrok ${y}`,
+    zoomOut: "Zmenšiť tabuľku",
+    zoomIn: "Zväčšiť tabuľku",
+    zoomReset: "Predvolená veľkosť",
+    normalDensity: "Normálna hustota riadkov",
+    compactDensity: "Kompaktná hustota riadkov",
+    resizeColumn: "Zmeniť šírku stĺpca",
+    resizeColumnHint: "Ťahaním zmeníte šírku, dvojklik obnoví automatickú šírku",
+    moreActions: "Ďalšie akcie",
+    moreParameters: "Parametre",
+    moreTools: "Nástroje",
+    treeView: "Stromové zobrazenie",
+    tableView: "Tabuľkové zobrazenie",
+    groupTotal: (l) => `Celkom ${l}`,
+    sortBy: (l) => `Zoradiť podľa ${l}`,
+    expand: "Rozbaliť",
+    collapse: "Zbaliť",
+    expandLevel: (n, l) => `Úroveň ${n} – ${l}`,
+    exportSearch: (q) => `Hľadanie: ${q}`,
+    recordsCount: (c) => `${c} záznamov`,
+  },
+  appShell: {
+    clearSearch: "Vymazať hľadanie",
+    mainMenu: "Hlavné menu",
+    containsActivePage: "Obsahuje aktívnu stránku",
+    disabledHint: "Pripravujeme",
+    searchPlaceholder: "Hľadať v menu…",
+    searchEmpty: "Nič sa nenašlo",
+    resizeMenu: "Zmeniť šírku menu",
+    panelView: "Časť panela",
+    contextDisabledHint: "Firma a obdobie sa tu neuplatnia – nastavenie platí pre celý priestor",
+  },
+  panes: {
+    panel: (i) => `Panel ${i}`,
+    emptyHint: "Otvorte položku z menu",
+    maximizedBanner: "Panel {index} je maximalizovaný",
+    restoreLayout: "Obnoviť rozloženie",
+    limitClosed: "Zavreté karty: {count} – v paneli môže byť najviac {max}. Alt+Shift+T ich vráti.",
+  },
+  notification: {
+    label: "Oznámenia",
+    title: "Oznámenia",
+    markAllRead: "Označiť všetko ako prečítané",
+    empty: "Žiadne oznámenia",
+    showAll: "Zobraziť všetko",
+    loading: "Načítavanie oznámení",
+  },
+  standalone: { close: "Zavrieť", pages: "Stránky", pagesSelect: "Vyberte stránku" },
+  contextSwitcher: {
+    search: "Hľadať…",
+    empty: "Nič sa nenašlo",
+    current: "Aktuálny",
+    selected: "Vybrané",
+  },
+  confirmByTyping: { instruction: "Na potvrdenie opíšte:", cancel: "Zrušiť", running: "Prebieha…" },
+  dangerZone: { title: "Nebezpečná zóna" },
+  noticeBar: { close: "Zavrieť upozornenie" },
+  appZoom: {
+    label: "Veľkosť zobrazenia",
+    decrease: "Zmenšiť zobrazenie",
+    increase: "Zväčšiť zobrazenie",
+    reset: "Obnoviť",
+  },
+  recordDialog: {
+    detailSections: "Sekcie detailu",
+    hidePanel: (p) => `Skryť ${p}`,
+    notes: "Poznámky",
+    active: "Aktívny",
+    inactive: "Neaktívny",
+    saveAndAction: "Uložiť zmeny a {label}",
+    dirtyTitle: "Formulár obsahuje neuložené zmeny",
+    history: "História zmien",
+    noHistory: "Zatiaľ bez zaznamenaných zmien.",
+    system: "Systém",
+    yes: "áno",
+    no: "nie",
+  },
+  date: {
+    chooseDate: "Vyberte dátum",
+    dateSelection: "Výber dátumu",
+    openCalendar: "Otvoriť kalendár",
+    invalidFormat: (f) => `Zadajte platný dátum vo formáte ${f}.`,
+    sameAsIssue: "Rovnaké ako dátum vystavenia – kliknite na úpravu",
+    relinkIssue: "Znova prepojiť s dátumom vystavenia",
+    rangePlaceholder: "Vyberte obdobie",
+    rangeLabel: "Rozsah dátumov",
+    clear: "Vymazať",
+    chooseRangeEnd: "Vyberte koniec rozsahu",
+    openTime: "Otvoriť výber času",
+    all: "Všetko",
+    day: "Deň",
+    week: "Týždeň",
+    month: "Mesiac",
+    year: "Rok",
+    custom: "Vlastné",
+    from: "Od",
+    to: "Do",
+  },
+  country: {
+    choose: "Vyberte štát",
+    search: "Hľadať štát alebo kód…",
+    emptyTitle: "Nič sme nenašli",
+    emptyDescription: (q) =>
+      `Pre „${q}“ nezodpovedá žiadny štát. Skúste iný názov alebo ISO kód (napr. CR).`,
+    recent: "Nedávno použité",
+    eu: "Európska únia",
+    other: "Ostatné štáty",
+  },
+  multiSelect: { selectAll: "Vybrať všetko", noValues: "Žiadne hodnoty." },
+  tree: { expand: "Rozbaliť", collapse: "Zbaliť", breadcrumbs: "Omrvinková navigácia" },
+  contacts: {
+    blacklist: "Blokovaný",
+    companyId: "IČO:",
+    personalId: "RČ:",
+    openRegistry: "Otvoriť v obchodnom registri",
+    openAres: "Otvoriť v ARES",
+  },
+  accessibility: { resizeCombobox: "Zmeniť šírku ťahaním" },
+  company: { companyId: "IČO" },
+  errors: {
+    load: "Údaje sa nepodarilo načítať.",
+    network: "Spojenie so serverom zlyhalo.",
+    networkDetail: "Skontrolujte internetové pripojenie a skúste to znova.",
+    expired: "Prihlásenie vypršalo.",
+    expiredDetail: "Prihláste sa znova a akciu zopakujte.",
+    forbidden: "K týmto údajom nemáte oprávnenie.",
+    forbiddenDetail: "Požiadajte správcu účtu o pridelenie roly.",
+    timeout: "Načítavanie trvalo príliš dlho.",
+    timeoutDetail: "Skúste zúžiť obdobie alebo akciu zopakovať.",
+  },
+  columnPicker: {
+    clearCustom: "Zrušiť vlastné",
+    clearCustomTitle: "Zruší uložené vlastné predvolené nastavenie stĺpcov",
+    default: "Predvolené",
+    restoreSaved: "Obnoviť uložené predvolené nastavenie",
+    restoreFactory: "Obnoviť továrenské predvolené nastavenie",
+    showSection: (s) => `Zobraziť sekciu ${s}`,
+    hideSection: (s) => `Skryť sekciu ${s}`,
+    show: "Zobraziť",
+    hide: "Skryť",
+    saveDefault: "Uložiť aktuálnu viditeľnosť a poradie stĺpcov ako predvolené",
+    saved: "Uložené",
+    saveColumns: "Uložiť nastavenie stĺpcov",
+    persistenceHint: "Poradie aj viditeľnosť sa ukladajú ako predvolené zobrazenie.",
+    savedViews: "Uložené pohľady",
+    noSavedViews: "Zatiaľ nemáte uložený žiadny pohľad.",
+    applyView: "Použiť pohľad",
+    overwrite: "Prepísať",
+    overwriteTitle: "Prepísať aktuálnym nastavením",
+    deleteView: "Odstrániť pohľad",
+    viewName: "Názov pohľadu",
+    saveView: "Uložiť aktuálne zobrazenie",
+    save: "Uložiť",
+    accountFormRequired: "Aspoň jedna forma účtu musí zostať zobrazená",
+    compactAccountHeading: (l) => `${l} – skrátené kvôli šírke`,
+  },
+  journalRecap: {
+    debitShort: "MD",
+    creditShort: "DAL",
+    debitAccount: "MD účet",
+    creditAccount: "DAL účet",
+  },
+  documentForm: {
+    changeAccount: "Zmeniť účet",
+    currencyDisabled: "Menu nie je možné zmeniť",
+    mainAccountSelect: "Hlavný účet",
+    supplierNumber: "Číslo dokladu dodávateľa",
+    supplierTaxDocumentNumber: "Číslo daňového dokladu",
+    documentNumberTooLongForVs: "Číslo má viac ako 10 číslic – VS doplňte ručne",
+    bankAccountInvalid: "Číslo účtu nie je platné.",
+    bankCodeInvalid: "Kód banky nie je platný.",
+    otherBankAccount: "Iný účet",
+  },
+  export: {
+    parametersSheet: "Parametre exportu",
+    parameter: "Parameter",
+    value: "Hodnota",
+    reportName: "Názov zostavy",
+    company: "Firma",
+    period: "Obdobie",
+    exportedAt: "Exportované",
+    user: "Používateľ",
+    activeFilters: "Aktívne filtre",
+    pageFooter: "Strana &P z &N",
+    fallbackColumn: (i) => `Stĺpec ${i}`,
+    printPdf: "Tlač (PDF)…",
+  },
+  print: {
+    book: "Kniha",
+    allBooks: "Všetky knihy",
+    period: "Obdobie",
+    search: "Hľadanie",
+    filter: "Filter",
+    asOf: "Stav k dátumu",
+    total: "Celkom",
+    portrait: "Na výšku",
+    landscape: "Na šírku",
+    orientation: "Orientácia strany",
+    largeTitle: "Tlač veľkého objemu údajov",
+    largeDescription: (r, p) =>
+      `Zostava má ${r} riadkov, odhadom ${p} strán. Príprava PDF môže chvíľu trvať. Pokračovať?`,
+    print: "Vytlačiť",
+    printTitle: "Tlač",
+    downloadPdf: "Stiahnuť PDF",
+    preview: "Náhľad",
+    preparing: "Pripravujem náhľad…",
+    printedBy: "Vytlačil:",
+    page: (p, n) => `Strana ${p} z ${n}`,
+  },
 };
 
 const DsTextsContext = createContext<DsTexts>(DS_TEXTS_CS);
-export interface DsTextsProviderProps { children: ReactNode; locale?: DsLocale; texts?: Partial<DsTexts> }
+export interface DsTextsProviderProps {
+  children: ReactNode;
+  locale?: DsLocale;
+  texts?: Partial<DsTexts>;
+}
 function mergeTexts(base: DsTexts, patch?: Partial<DsTexts>): DsTexts {
   if (!patch) return base;
   const result: Record<string, unknown> = { ...base };
   for (const [key, value] of Object.entries(patch)) {
     const current = result[key];
-    result[key] = value && typeof value === "object" && !Array.isArray(value) && current && typeof current === "object"
-      ? { ...(current as object), ...(value as object) }
-      : value;
+    result[key] =
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      current &&
+      typeof current === "object"
+        ? { ...(current as object), ...(value as object) }
+        : value;
   }
   return result as unknown as DsTexts;
 }
 export function DsTextsProvider({ children, locale, texts }: DsTextsProviderProps) {
-  const value = useMemo(() => mergeTexts(locale === "sk" ? DS_TEXTS_SK : DS_TEXTS_CS, texts), [locale, texts]);
+  const value = useMemo(
+    () => mergeTexts(locale === "sk" ? DS_TEXTS_SK : DS_TEXTS_CS, texts),
+    [locale, texts],
+  );
   return <DsTextsContext.Provider value={value}>{children}</DsTextsContext.Provider>;
 }
-export function useDsTexts() { return useContext(DsTextsContext); }
+export function useDsTexts() {
+  return useContext(DsTextsContext);
+}

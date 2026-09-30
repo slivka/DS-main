@@ -46,9 +46,7 @@ export const VsField = forwardRef<
       readOnly={readOnly}
       placeholder={placeholder}
       maxLength={maxLength}
-      onChange={(event) =>
-        onChange(event.target.value.replace(/\D/g, "").slice(0, maxLength))
-      }
+      onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, maxLength))}
       className={cn("h-9 text-right font-mono tabular-nums", className)}
     />
   );
