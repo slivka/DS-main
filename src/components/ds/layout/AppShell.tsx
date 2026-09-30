@@ -38,17 +38,36 @@ export type NavGroup = {
   section?: string;
 };
 
+export type AppShellScope = "company" | "workspace" | "platform";
+
+export type AppShellPanelView = {
+  id: string;
+  label: string;
+  title: string;
+  context?: ReactNode | string;
+  scope?: AppShellScope;
+  nav: NavGroup[];
+};
+
 export type AppShellPanel = {
   id: string;
   title: string;
   icon: LucideIcon;
   tooltip: string;
   nav: NavGroup[];
+  /** Barvy menu aplikace nebo neutrální barvy panelu. Výchozí je `panel`. */
+  sidebarTone?: "app" | "panel";
+  /** Rozsah, pro který panel platí. Výchozí je `company`. */
+  scope?: AppShellScope;
+  /** Řízené části panelu; při dvou a více se zobrazí segmentový přepínač. */
+  views?: AppShellPanelView[];
+  activeView?: string;
+  onViewChange?: (id: string) => void;
   accent?: "default" | "warning";
   /** Volitelný stavový štítek vedle názvu panelu. */
   badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> };
   /** Název prostoru, firmy nebo jiného objektu, kterého se panel týká. */
-  context?: string;
+  context?: ReactNode | string;
 };
 
 export const NAV_DISABLED_HINT = "Připravujeme";
@@ -82,6 +101,8 @@ export interface AppShellProps {
   navSearch?: boolean;
   navSearchPlaceholder?: string;
   navSearchEmptyText?: string;
+  /** Vysvětlení zakázaného kontextu firmy a období mimo firemní rozsah. */
+  contextDisabledHint?: string;
   /** Nabídka uložených rozložení vedle hledání v menu. */
   navSearchMenu?: ReactNode;
   /** @deprecated Použijte navGroups. */
@@ -135,8 +156,8 @@ function readGroupCollapsed(storageKey: string, fallback: boolean) {
   }
 }
 
-function badgeTotal(group: NavGroup) {
-  const values = group.items.map((item) => typeof item.badge === "number" ? item.badge : typeof item.badge === "string" && /^\d+$/.test(item.badge) ? Number(item.badge) : item.badge ? 1 : 0);
+export function badgeTotal(group: NavGroup) {
+  const values = group.items.map((item) => typeof item.badge === "number" ? item.badge : typeof item.badge === "string" && /^\d+$/.test(item.badge) ? Number(item.badge) : 0);
   const total = values.reduce((sum, value) => sum + value, 0);
   return total > 0 ? total : null;
 }
@@ -215,18 +236,18 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     const active = isActive(item);
     const content = (
       <>
-        <span className={cn("shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-primary transition-opacity", active ? "opacity-100" : "opacity-0")} />
+        <span className={cn("shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-sidebar-indicator transition-opacity", active ? "opacity-100" : "opacity-0")} />
         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
         {!collapsed ? <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(item.label, query) : item.label}</span> : null}
-        {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-muted-foreground/40" /> : null}
-        {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{item.badge}</span> : null}
+        {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" /> : null}
+        {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-sidebar-accent px-2 py-0.5 text-xs text-sidebar-accent-foreground">{item.badge}</span> : null}
       </>
     );
     const base = cn(
       "shell-nav-item relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
       collapsed ? "justify-center px-2" : "px-3",
-      active ? "bg-primary/10 font-semibold text-primary" : "text-foreground/80",
-      item.disabled && "cursor-not-allowed text-muted-foreground opacity-70",
+      active ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground" : "text-sidebar-foreground/90",
+      item.disabled && "cursor-not-allowed text-sidebar-muted opacity-80",
     );
     const node = item.disabled ? (
       <span aria-disabled="true" data-active="false" className={base}>{content}</span>
@@ -309,21 +330,22 @@ function ShellNavSection({ label, first, collapsed }: { label: string; first: bo
 
 function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem, containsActivePageLabel }: { group: NavGroup; groupIndex: number; sectionStart: string | null; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode; containsActivePageLabel: string }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
-  const [groupCollapsed, setGroupCollapsed] = useState(group.defaultCollapsed === true);
-  useEffect(() => setGroupCollapsed(readGroupCollapsed(storageKey, group.defaultCollapsed === true)), [storageKey, group.defaultCollapsed]);
+  const canCollapse = collapsible && Boolean(group.label);
+  const [groupCollapsed, setGroupCollapsed] = useState(Boolean(group.label) && group.defaultCollapsed === true);
+  useEffect(() => setGroupCollapsed(canCollapse && readGroupCollapsed(storageKey, group.defaultCollapsed === true)), [storageKey, group.defaultCollapsed, canCollapse]);
   const setStoredCollapsed = () => {
     const next = !groupCollapsed;
     setGroupCollapsed(next);
     try { window.localStorage.setItem(storageKey, String(next)); } catch { /* úložiště nemusí být dostupné */ }
   };
   const total = badgeTotal(group);
-  const hidden = groupCollapsed && !forcedOpen;
+  const hidden = canCollapse && groupCollapsed && !forcedOpen;
   return (
     <>
       {sectionStart ? <ShellNavSection label={sectionStart} first={groupIndex === 0} collapsed={collapsed} /> : null}
       <div className={cn("flex flex-col", group.label && groupIndex > 0 && !sectionStart && "mt-2 border-t border-sidebar-border pt-2")}>
         {group.label && !collapsed ? (
-          collapsible ? (
+          canCollapse ? (
             <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
               <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
               {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}

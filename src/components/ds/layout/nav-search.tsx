@@ -22,13 +22,14 @@ export function withNavSections<T extends NavSectionGroup>(groups: T[]): NavSect
   }));
 }
 
-/** Filtruje skupiny podle názvu skupiny a položek; název sekce se záměrně neprohledává. */
+/** Filtruje skupiny podle názvu sekce, skupiny a položek. */
 export function filterNavGroups<T extends SearchableNavGroup>(groups: T[], query: string): T[] {
   if (!query) return groups;
   const normalizedQuery = normalizeNavSearch(query);
   return groups.map((group) => {
-    const groupMatch = normalizeNavSearch(group.label).includes(normalizedQuery);
-    return { ...group, items: group.items.filter((item) => groupMatch || matchesNavSearch(item.label, group.label, query)) };
+    const context = `${group.section ?? ""} ${group.label}`.trim();
+    const groupMatch = normalizeNavSearch(context).includes(normalizedQuery);
+    return { ...group, items: group.items.filter((item) => groupMatch || matchesNavSearch(item.label, context, query)) };
   }).filter((group) => group.items.length > 0) as T[];
 }
 
