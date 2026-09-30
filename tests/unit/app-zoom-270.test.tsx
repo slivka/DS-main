@@ -1,8 +1,15 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { afterAll, afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/", width: 1600, height: 1000 });
+// Navigace není předmětem testu; AppShell potřebuje jen aktuální cestu a Link.
+const realRouter = await import("@tanstack/react-router");
+mock.module("@tanstack/react-router", () => ({
+  ...realRouter,
+  useRouterState: ({ select }: { select: (state: unknown) => unknown }) => select({ location: { pathname: "/" } }),
+  Link: ({ to, children, ...rest }: { to?: string; children?: React.ReactNode }) => <a href={to} {...rest}>{children}</a>,
+}));
 const { act, cleanup, render } = await import("@testing-library/react");
 const { APP_WHEEL_INTERVAL, createAppWheelZoom, getAppZoom, isAppZoomShortcut, resetAppZoomCacheForTests, setAppZoom } = await import("../../src/lib/app-zoom");
 const { AppShell } = await import("../../src/components/ds/layout/AppShell");
@@ -11,11 +18,8 @@ const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 const { resolveJournalZoomLayout } = await import("../../src/components/ds/accounting/journal-lines-editor");
 const { calculateAutoGridZoom } = await import("../../src/components/ds/grid/grid-auto-zoom");
 const { readFileSync } = await import("node:fs");
-const { RouterProvider, createMemoryHistory, createRootRoute, createRouter } = await import("@tanstack/react-router");
-
 async function renderShell() {
-  const router = createRouter({ routeTree: createRootRoute({ component: Shell }), history: createMemoryHistory({ initialEntries: ["/"] }) });
-  const view = render(<RouterProvider router={router} />);
+  const view = render(<Shell />);
   await view.findByLabelText("Pole");
   return view;
 }
