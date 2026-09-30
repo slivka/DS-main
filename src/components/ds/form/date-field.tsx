@@ -207,7 +207,7 @@ export function DateField({
             commitText();
           }
         }}
-        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", warningDisplay === "indicator" && warning && !link && "pr-[3.7em]", warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
+        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]", warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
       />
       {warning ? <span id={warningId} className="sr-only">{warning}</span> : null}
       {warning && warningDisplay === "indicator" ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={warning} className={cn("absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", link && !link.locked ? "right-[3.9em]" : "right-[2.1em]")}><AlertTriangle className="size-[1.05em]" /></span></TooltipTrigger><TooltipContent>{warning}</TooltipContent></Tooltip> : null}

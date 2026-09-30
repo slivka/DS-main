@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 
 import { Input } from "../../ui/input";
 import { OptionSelect } from "../form/option-select";
@@ -52,9 +52,17 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   const selectedOption = optionValues.includes(value);
   const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
   const [touched, setTouched] = useState(false);
+  // Hodnotu, kterou pole samo odeslalo, režim nepřepočítává (jinak by vstup „Jiný účet“ zmizel).
+  const lastEmittedRef = useRef<string | null>(null);
+  const lastOptionsKeyRef = useRef(optionValuesKey);
   useEffect(() => {
+    const optionsChanged = lastOptionsKeyRef.current !== optionValuesKey;
+    lastOptionsKeyRef.current = optionValuesKey;
+    if (!optionsChanged && lastEmittedRef.current === value) return;
+    lastEmittedRef.current = null;
     setOtherSelected(Boolean(value) && !optionValues.includes(value));
   }, [optionValuesKey, value]); // seznam je odvozený z řízených možností
+  const emit = (next: string) => { lastEmittedRef.current = next; onChange(next); };
   const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
   const compact = value.replace(/\s/g, "");
   const [accountPart = "", bankCode = ""] = compact.split("/");
@@ -77,7 +85,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
           }
           setOtherSelected(false);
           setTouched(false);
-          onChange(next);
+          emit(next);
         }}
         allowEmpty={false}
         ariaLabel={props["aria-label"]}
@@ -105,7 +113,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
         inputMode="numeric"
         autoComplete="off"
         aria-invalid={Boolean(error)}
-        onChange={(event) => onChange(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))}
+        onChange={(event) => emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))}
         onBlur={(event) => { setTouched(true); onBlur?.(event); }}
         className={cn("h-9 font-mono tabular-nums", options.length && "mt-2")}
       /> : null}

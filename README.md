@@ -48,7 +48,7 @@
 
 - **BREAKING:** `DocumentForm.identity.items` nahrazuje typovaný `DocumentIdentity` (`cashBank` / `invoice` / `internal`) s knihou, kódem období, volitelným účtem a číslem dokladu.
 - Hlavní účet je jen v identifikačním řádku. Faktura může účet měnit přes `mainAccountOptions`; změna nastaví `mainAccountId` a řádky ani částky nepřepočítává.
-- Měna faktur a interních dokladů stojí vedle Celkem. `currencyLocked` ji ponechá jako text a `currencyDisabledReason` vysvětlí zákaz změny. Od 2.73.0 stojí měna u Celkem také u pokladny a banky.
+- Měna faktur a interních dokladů stojí vedle Celkem. `currencyLocked` ji ponechá jako text a `currencyDisabledReason` vysvětlí zákaz změny.
 - `mainAccountLocked` už není spínač skrytí pole, ale vždy skryje tužku účtu. `currencyLocked` už není spínač skrytí měny, ale mění výběr na text.
 - Nové veřejné typy a API: `DocumentIdentityVariant`, `DocumentIdentity`, `DocumentForm.mainAccountOptions`, `DocumentForm.currencyDisabledReason`, `documentIdentityVariantForType()`; druhy dokladů doplněny o `DDPZ`, `DDPOZ`, `KR` a `ZAP`.
 

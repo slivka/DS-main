@@ -44,6 +44,8 @@ import { useDsTexts } from "../../../ds-texts";
 export type DocumentDirection = "in" | "out";
 
 export type DocumentHeaderValue = {
+  /** Identita dokladu; při změně formulář znovu odvodí paměť automatického VS. */
+  id?: string | null;
   bookId?: string | null;
   number?: string | null;
   direction?: DocumentDirection | null;
