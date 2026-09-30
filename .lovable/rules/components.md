@@ -211,7 +211,7 @@ import { AmountInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint).
+Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint). AppShell ve výchozím stavu nemění document.title; opt-in manageDocumentTitle jej nastaví podle appName.
 
 **Props:**
 
@@ -221,6 +221,7 @@ Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely
 | `navGroups` | any | `—` |
 | `bottomItems` | any | `—` |
 | `appName` | string | `Aplikace` |
+| `manageDocumentTitle` | boolean | `false` |
 | `logo` | any | `—` |
 | `showBrand` | boolean | `false` |
 | `breadcrumbs` | any | `—` |
@@ -326,6 +327,39 @@ import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 | Prop | Type | Default |
 |---|---|---|
 | `variant` | default · secondary · destructive · outline · success · warning · info | `default` |
+
+### BankAccountField
+
+```ts
+import { BankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Výběr nabídnutého českého účtu nebo ruční zadání. Neúplný ruční účet ověří po opuštění pole a vstup ukládá bez mezer.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `options` | any | `—` |
+| `bankCodes` | any | `—` |
+| `invalidAccountText` | string | `—` |
+| `invalidBankCodeText` | string | `—` |
+| `otherAccountText` | string | `—` |
+| `className` | string | `mt-1 text-xs font-medium text-destructive` |
+
+**Examples:**
+
+_Účet dodavatele_
+```tsx
+<BankAccountField aria-label="Bankovní účet" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />
+```
+
+**Avoid:**
+
+- Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.
+- Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.
 
 ### BarBreakdownChart
 
@@ -1226,6 +1260,8 @@ _Párování s editovatelnou částkou_
 import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay="indicator" jej zobrazí v tooltipu ikony.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -1244,6 +1280,18 @@ import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 | `link` | any | `—` |
 | `hint` | string | `—` |
 | `warning` | string | `—` |
+| `warningDisplay` | below · indicator | `below` |
+
+**Examples:**
+
+_Datum s varováním v indikátoru_
+```tsx
+<DateField value={date} onChange={setDate} warning="Datum je mimo období" warningDisplay="indicator" />
+```
+
+**Avoid:**
+
+- Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu.
 
 ### DateRangeField
 
@@ -1341,7 +1389,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovaným identifikačním řádkem; hlavní účet se zobrazuje pouze v něm a měna faktury stojí vedle Celkem.
+Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Přijaté doklady řadí základní údaje, datumy, platební údaje, částku a řádky; bankAccountOptions nabízí známé účty bez automatického předvyplnění, bankCodes ověřuje kód ručně zadaného účtu a dateWarnings přesouvá do pruhu upozornění.
 
 **Props:**
 
@@ -1362,6 +1410,8 @@ Jednotný formulář dokladu s typovaným identifikačním řádkem; hlavní ú�
 | `partners` | any | `—` |
 | `dimensions` | any | `—` |
 | `currencies` | any | `—` |
+| `bankAccountOptions` | any | `—` |
+| `bankCodes` | any | `—` |
 | `documentType` | any | `ID` |
 | `fields` | any | `—` |
 | `editableFields` | any | `—` |
@@ -1412,7 +1462,8 @@ _Faktura s editovatelným účtem_
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
-- Při změně účtu nebo měny nepřepočítávejte řádky v prohlížeči.
+- Nevkládejte měnu do popisku Celkem ani do identity cashBank.
+- Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
 
 ### DocumentSettingsDialog
 
@@ -2876,13 +2927,13 @@ _Tři nepřečtená oznámení_
 import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Standardní výběr ze seznamu. placeholderValueLabel mění text prázdné položky i zobrazené prázdné hodnoty.
+Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.
 
 **Examples:**
 
-_Vlastní prázdná hodnota_
+_Pojmenovaný výběr_
 ```tsx
-<OptionSelect value={value} onChange={setValue} options={options} placeholderValueLabel="Neověřeno" />
+<OptionSelect ariaLabel="Bankovní účet" value={value} onChange={setValue} options={options} />
 ```
 
 **Avoid:**
