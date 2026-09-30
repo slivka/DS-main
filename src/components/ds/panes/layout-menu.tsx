@@ -18,6 +18,7 @@ import { Label } from "../../ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { useDsTexts } from "../../../ds-texts";
 import { usePaneTabs } from "./pane-context";
 import type { LayoutSnapshot, PaneLayoutCount } from "./pane-state";
 
@@ -88,7 +89,8 @@ export interface LayoutMenuProps {
 
 /** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
 export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
-  const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...dsTexts.layoutMenu, ...texts };
   const tabs = usePaneTabs();
   const [open, setOpen] = React.useState(false);
   const [saveOpen, setSaveOpen] = React.useState(false);
@@ -143,7 +145,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>
         </Tooltip>
-        <DropdownMenuContent align="end" className="min-w-72">
+        <DropdownMenuContent align="end" className="min-w-72 max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))]">
           <div className="flex items-center">
             <DropdownMenuItem
               className="min-w-0 flex-1"
@@ -165,27 +167,16 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </div>
           <DropdownMenuSeparator />
           {items.length ? (
-            items.map((item) => (
-              <Tooltip key={item.id}>
-                <TooltipTrigger asChild>
-                  <DropdownMenuItem onSelect={() => onApply(item.id)}>
-                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
-                  </DropdownMenuItem>
-                </TooltipTrigger>
-                <TooltipContent>{item.name}</TooltipContent>
-              </Tooltip>
-            ))
+            items.map((item) => <TruncatedItem key={item.id} name={item.name} onSelect={() => onApply(item.id)} />)
           ) : (
             <DropdownMenuItem disabled>{t.empty}</DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger disabled={!items.length}>{t.overwrite}</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
+            <DropdownMenuSubContent className="max-w-[min(24rem,var(--radix-dropdown-menu-content-available-width))]">
               {items.map((item) => (
-                <DropdownMenuItem key={item.id} onSelect={() => onUpdate(item.id, { snapshot: snapshot() })}>
-                  {item.name}
-                </DropdownMenuItem>
+                <TruncatedItem key={item.id} name={item.name} onSelect={() => onUpdate(item.id, { snapshot: snapshot() })} />
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
@@ -283,6 +274,28 @@ function ManageIcon({ label, onClick, disabled, className, children }: { label: 
         </Button>
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+/** Položka s názvem rozložení; tooltip jen když je název skutečně zkrácený. */
+function TruncatedItem({ name, onSelect }: { name: string; onSelect: () => void }) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const onOpenChange = (next: boolean) => {
+    const el = ref.current;
+    setOpen(next && !!el && el.scrollWidth > el.clientWidth);
+  };
+  return (
+    <Tooltip open={open} onOpenChange={onOpenChange}>
+      <TooltipTrigger asChild>
+        <DropdownMenuItem onSelect={onSelect}>
+          <span ref={ref} className="min-w-0 flex-1 truncate">
+            {name}
+          </span>
+        </DropdownMenuItem>
+      </TooltipTrigger>
+      <TooltipContent>{name}</TooltipContent>
     </Tooltip>
   );
 }
