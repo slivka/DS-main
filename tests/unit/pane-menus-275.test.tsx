@@ -1,5 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterAll, afterEach, describe, expect, it, mock, spyOn } from "bun:test";
 import * as React from "react";
 import { Settings } from "lucide-react";
 
