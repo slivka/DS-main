@@ -158,7 +158,7 @@ describe("JournalLinesEditor 2.54", () => {
     const source = squashSrc(
       readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
     );
-    expect(source).toContain("onValidationChange?: (count: number, errors:");
+    expect(source).toContain("onValidationChange?: ( count: number, errors:");
     expect(source).toContain(
       "validationChangeRef.current?.(validationErrors.length, validationErrors)",
     );

@@ -30,7 +30,7 @@ describe("AppShell panely 2.40.0", () => {
   it("detail jen pro čtení vykresluje záložky a skrývá Uložit", () => {
     expect(dialogSource).toContain("readOnly?: boolean");
     expect(dialogSource).toContain("tabs?: RecordDialogTab[]");
-    expect(dialogSource).toContain("tabs.map((tab) => <TabsContent");
+    expect(dialogSource).toContain("tabs.map((tab) => ( <TabsContent");
     expect(dialogSource).toContain("{readOnly ? closeLabel : cancelLabel}");
     expect(dialogSource).toContain('{!readOnly ? <Button type="submit"');
   });
