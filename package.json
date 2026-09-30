@@ -1,6 +1,6 @@
 {
   "name": "custom_design_system_tanstack",
-  "version": "2.81.0",
+  "version": "2.82.0",
   "private": true,
   "sideEffects": [
     "**/*.css"
@@ -12,6 +12,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
+    "test": "bun test tests/unit",
+    "typecheck": "tsgo --noEmit",
     "test:excel": "playwright test tests/e2e/excel-download.spec.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

@@ -20,7 +20,28 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
+      "no-restricted-syntax": [
+        "error",
+        { selector: "TSAsExpression > TSUnknownKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
+        { selector: "TSAsExpression > TSNeverKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
+      ],
+      "max-lines": ["warn", { max: 500, skipBlankLines: true, skipComments: true }],
+    },
+  },
+  {
+    files: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "warn",
+        {
+          paths: [
+            { name: "node:fs", message: "Testy ověřují chování, ne zdrojový text" },
+            { name: "fs", message: "Testy ověřují chování, ne zdrojový text" },
+          ],
+        },
+      ],
     },
   },
 );
