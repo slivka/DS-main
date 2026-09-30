@@ -249,7 +249,7 @@ function NavigationPage() {
 
       <ShowcaseSection
         title="Předvolby vzhledu"
-        description="Motiv je samostatná volba pro stránku Předvolby. Velikost zobrazení (70–200 %) se nastavuje v uživatelském menu vpravo nahoře nebo klávesami Ctrl+Alt+Plus / Minus / 0."
+        description="Motiv je samostatná volba pro stránku Předvolby. Velikost zobrazení (70–200 %) se nastavuje v uživatelském menu vpravo nahoře nebo klávesami Ctrl (Mac: Cmd) + plus / minus / 0 nebo Ctrl/Cmd + kolečkem mimo tabulku."
       >
         <div className="rounded-lg border bg-card p-4">
           <ThemeSetting />

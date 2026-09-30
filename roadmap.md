@@ -1,3 +1,9 @@
+## Verze 2.70.0 – oprava zoomu aplikace (reklamace)
+- [x] Zkratky Cmd (Mac) / Ctrl + plus / minus / 0 podle `event.key`, i v polích; BREAKING: Ctrl+Alt zrušeno.
+- [x] Ctrl/Cmd + kolečko podle polohy: grid × aplikace; otevřený nativní `<select>` se nezachytává.
+- [x] Automat gridů nekompenzuje zoom aplikace; kaskáda editoru řádků se přepočítá po každé změně zoomu aplikace; ruční zoom gridu zůstává.
+- [x] Testy se skutečnými událostmi v AppShell, dokumentace a ukázka.
+
 ## Verze 2.68.0 – opravy po kontrole kódu
 - [x] Změna hlavního účtu jen z neprázdných `mainAccountOptions`; popisek svázaný s `value.mainAccountId`.
 - [x] Návrat fokusu na „Změnit účet“, zaměřitelná zamčená tužka, `AccountSelect.ariaLabel` „Hlavní účet“.
