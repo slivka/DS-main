@@ -121,4 +121,89 @@ describe("podmenu DS 2.75.0", () => {
     expect(api?.state.panes).toHaveLength(2);
     expect(api?.state.panes[0].tabs[0].id).toBe(tab.id);
   });
+
+  const mount = (initial: ReturnType<typeof createPaneTabsState>, shortcuts = false) => {
+    let api: ReturnType<typeof usePaneTabs> = null;
+    function Capture() { api = usePaneTabs(); return null; }
+    function Host() {
+      const [state, setState] = React.useState(initial);
+      return <PaneTabsProvider state={state} onChange={setState} shortcuts={shortcuts}><Capture /></PaneTabsProvider>;
+    }
+    const view = render(<Host />);
+    return { view, get api() { return api!; } };
+  };
+
+  it("Alt+Shift+W zavře aktivní panel i jeho záložky", () => {
+    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const tab = createTab({ route: "/a" });
+    initial.panes[1] = { ...initial.panes[1], tabs: [tab], activeTab: tab.id };
+    initial = { ...initial, active: initial.panes[1].id };
+    const host = mount(initial, true);
+    act(() => { window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, shiftKey: true, code: "KeyW" })); });
+    expect(host.api.state.panes).toHaveLength(1);
+    expect(host.api.closedTabCount).toBe(1);
+  });
+
+  it("zavření jediného panelu nechá prázdný panel a záložky uloží pro obnovu", () => {
+    const initial = createPaneTabsState(1);
+    const tabs = [createTab({ route: "/a" }), createTab({ route: "/b" })];
+    initial.panes[0] = { ...initial.panes[0], tabs, activeTab: tabs[0].id };
+    const host = mount(initial);
+    act(() => host.api.closePane(initial.panes[0].id));
+    expect(host.api.state.panes).toHaveLength(1);
+    expect(host.api.state.panes[0].tabs).toHaveLength(0);
+    expect(host.api.closedTabCount).toBe(2);
+  });
+
+  it("zavření panelu zruší maximalizaci", () => {
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
+    const host = mount(initial);
+    act(() => host.api.toggleMaximize(1));
+    expect(host.api.maximized).toBe(1);
+    act(() => host.api.closePane(host.api.state.panes[1].id));
+    expect(host.api.maximized).toBeNull();
+  });
+
+  it("slučování přepínačem zavře nejstarší nerozepsané neaktivní záložky a vrátí je Alt+Shift+T", () => {
+    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const left = Array.from({ length: 7 }, (_, i) => ({ ...createTab({ route: `/a-${i}` }), lastUsed: i + 1 }));
+    const right = Array.from({ length: 7 }, (_, i) => ({ ...createTab({ route: `/b-${i}` }), lastUsed: i + 20 }));
+    initial.panes[0] = { ...initial.panes[0], tabs: left, activeTab: left[0].id };
+    initial.panes[1] = { ...initial.panes[1], tabs: right, activeTab: right[6].id };
+    const host = mount(initial);
+    act(() => setTabDirty(left[1].id, true));
+    act(() => host.api.setLayout(1));
+    const routes = host.api.state.panes[0].tabs.map((tab) => tab.route);
+    expect(routes).toHaveLength(10);
+    expect(routes).toContain("/a-0");
+    expect(routes).toContain("/a-1");
+    expect(routes).not.toContain("/a-2");
+    expect(host.api.closedTabCount).toBe(4);
+    act(() => setTabDirty(left[1].id, false));
+  });
+
+  it("Alt+L otevře nabídku rozložení", () => {
+    const view = render(<LayoutMenu items={[]} onSave={() => undefined} onApply={() => undefined} onUpdate={() => undefined} onDelete={() => undefined} />);
+    expect(view.queryByRole("menu")).toBeNull();
+    act(() => { window.dispatchEvent(new KeyboardEvent("keydown", { altKey: true, code: "KeyL" })); });
+    expect(view.getByRole("menu")).toBeTruthy();
+  });
+
+  it("UserMenu bez jména ukáže jen e-mail", () => {
+    const view = render(<UserMenu email="jen@example.cz" onSignOut={() => undefined} />);
+    fireEvent.pointerDown(view.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
+    const email = view.getByText("jen@example.cz");
+    expect(email.parentElement?.querySelectorAll("span")).toHaveLength(1);
+  });
+
+  it("UserMenu ukáže sekci Pracovní prostor jen s workspaceAction bez prostorů", () => {
+    const view = render(<UserMenu email="a@example.cz" workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings }} onSignOut={() => undefined} />);
+    fireEvent.pointerDown(view.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
+    expect(view.getByText("Pracovní prostor")).toBeTruthy();
+    expect(view.getByRole("menuitem", { name: "Spravovat pracovní prostory" })).toBeTruthy();
+    cleanup();
+    const plain = render(<UserMenu email="a@example.cz" onSignOut={() => undefined} />);
+    fireEvent.pointerDown(plain.getByRole("button", { name: "Uživatelská nabídka" }), { button: 0, ctrlKey: false });
+    expect(plain.queryByText("Pracovní prostor")).toBeNull();
+  });
 });
