@@ -11,33 +11,18 @@
 
 <!-- LOVABLE:END -->
 
-- `DocumentForm`: typovaná identita; účet jen v ní, měna faktur vedle Celkem.
-- `DocumentForm` má běžná pole v mřížce 14/3/3, ale Datumy ve flex řádku s DPH vpravo, aby se přesouvala celá pole.
-- Data DPH jsou vpravo; „Vstupuje do DPH“ je vlevo v pruhu akcí, vypnutí údaje jen skryje a svázané datum ukazuje zámek.
-- Značky měn v částkách a kurzech pocházejí vždy z dat; nepoužívejte pevné `Kč` ani `CZK`.
-- Zaokrouhlení je připnutý poslední řádek `JournalLinesEditor`; lišta obsahuje jen akci pro jeho návrh a stav rozepsání.
-- Sbalitelné panely mají šipku vpravo a jejich stav řídí aplikace přes props, nikdy `localStorage`.
-- AppShell: menu aplikace tmavé, panely šedé; view řídí titul, nav, scope a `context` pojmenuje objekt nastavení; provozovatel = `badge` + accent warning.
+- `DocumentForm`: typovaná identita; účet jen v ní, měna vždy vedle Celkem; přijaté doklady řadí Základní údaje → Datumy → Platební údaje → Částka → Řádky.
+- Běžná pole dokladu mají mřížku 14/3/3; data jsou ve flex řádku. DPH je vpravo, „Vstupuje do DPH“ vlevo; skrytí nemaže data a vazba ukazuje zámek.
+- Značky měn pocházejí z dat; nikdy nevkládej pevné `Kč` ani `CZK`.
+- Varování dat jdou přes `dateWarnings` do NoticeBar; období DPH patří do `vat.periodLabel`.
+- Řádky DPH vytváří DB; DS je jen zobrazuje a předběžně počítá v `journal-vat.ts`.
+- Zaokrouhlení je poslední připnutý řádek `JournalLinesEditor`; lišta nabízí jen návrh a stav rozepsání.
 - `JournalLinesEditor` měří vnitřní šířku; po kaskádě sníží auto zoom nejvýš na 0,75 a až pak roluje.
-- Varování k datům dokladu předávej přes `DocumentForm.dateWarnings`; období DPH patří do `vat.periodLabel` a podané období jej nahrazuje výstrahou.
-- Neaktivní položky filtruje každý výběr sám přes sdílené `InactiveTag` / `selectableItems`, aby se chování nelišilo mezi výběry.
-- Hodnota jen ke čtení v řádku formuláře patří do `FieldValue` uvnitř `Field`, aby měla popisek a správné zarovnání.
-- Karta: stav vždy v `PageHeader.titleBadge`; checkboxy jen v `CheckboxGroup` nebo `FieldGrid` s `align="input"`; Uložit a akce vždy v `RecordActionBar`, nikdy volně pod poli.
-
-- Řádky DPH vytváří jen DB; DS je zobrazuje a počítá předběžně (`journal-vat.ts`).
-
-## Jazyk knihovny (2.61.0)
-
-Aplikace nastaví jazyk jednou v kořeni:
-
-```tsx
-<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">
-  <App />
-</DsTextsProvider>
-```
-
-Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
-
-- DS 2.70.0: zoom aplikace ukládá zařízení; Ctrl/Cmd+kolečko podle polohy (grid × aplikace); automat gridů počítá z px při kořeni 16 px bez kompenzace zoomu aplikace – aby se zvětšení aplikace vždy projevilo.
-
-- DocumentForm drží měnu vždy vedle Celkem, datumová varování v NoticeBar a u přijatých dokladů pořadí Základní údaje → Datumy → Platební údaje → Částka → Řádky.
+- Zoom aplikace ukládá zařízení; Ctrl/Cmd+kolečko rozlišuje grid a aplikaci; automat gridů počítá z px při kořeni 16 px.
+- Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
+- AppShell: aplikace má tmavé menu, panely šedé; view řídí titul, nav, scope a `context` pojmenuje objekt; provozovatel = `badge` + warning accent.
+- LayoutMenu, nabídka záložky a UserMenu mají pevné pořadí; další položku přidej jen na výslovný požadavek. Nadpis panelu nemá ikonu.
+- Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
+- Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
+- Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; akce v `RecordActionBar`.
+- Jazyk nastavuje kořen přes `DsTextsProvider`; priorita je prop → provider → `DS_TEXTS_CS`. Každý nový text doplň do typu, CS i SK, nikdy natvrdo.
