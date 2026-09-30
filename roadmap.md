@@ -1,6 +1,6 @@
 ## DS 2.73.0 – Edit dokladu 8 a panely
-- [ ] Upravit částky, měnu, datumy a pořadí sekcí dokladu
-- [ ] Přidat BankAccountField a automatické VS
+- [ ] Upravit částky, měnu, datumy a pořadí sekcí dokladu; živá varování řadit podle polí
+- [ ] Přidat BankAccountField bez samovolného předvyplnění a automatické VS
 - [ ] Rozšířit české/slovenské texty a ukázky
 - [ ] Opravit titulek, tooltip, varování a odznaky AppShellu
 - [ ] Doplnit veřejné exporty, dokumentaci, katalog a verzi 2.73.0
