@@ -121,8 +121,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Klávesy: Cmd (Mac) / Ctrl (jinde) + plus / minus / 0 podle `event.key` (CZ i US rozložení), numerická klávesnice podle `code`. Aplikace je přebírá od prohlížeče (`preventDefault`) a fungují i s kurzorem v poli. Alt a AltGr se ignorují.
 - BREAKING: zkratky Ctrl+Alt (Ctrl+Option) + plus / minus / 0 byly zrušeny bez náhrady; `isAppZoomShortcut(event, mac?)` rozpoznává jen nové zkratky.
 - Převzetí Cmd/Ctrl + plus / minus / 0 od prohlížeče bylo ověřeno v Chromiu (Playwright). Kdyby ho některý prohlížeč nepustil, zůstává ovladač „Velikost zobrazení“ v uživatelském menu.
-- Automatický zoom gridů ve formuláři zoom aplikace nekompenzuje: počítá z dostupné šířky v px a potřebné šířky při kořeni 16 px. Zvětšení aplikace tak vždy zvětší i grid; když se nevejde, kaskáda přesune sloupce do detailu a teprve nakonec se roluje.
-- Kaskáda a rolování editoru řádků porovnávají skutečné vykreslení (šířka při 100 % × zoom aplikace × zoom gridu) s dostupnou šířkou a přepočítají se po každé změně zoomu aplikace.
+- `DataGrid` a `TreeGrid` ve formuláři nemají kaskádu: auto zoom = dostupná vnitřní šířka / (potřebná šířka při 16 px × zoom aplikace), omezený na 75–100 %. Grid roste se zoomem aplikace, dokud se vejde; pod 75 % teprve roluje.
+- Editor řádků měří `clientWidth` vlastní plochy bez rámečků a ponechává rezervu na zaokrouhlení. Pořadí je: základní auto zoom podle šířky panelu bez kompenzace zoomu aplikace → kaskáda sloupců → po jejím vyčerpání zmenšení gridu se započtením zoomu aplikace nejvýš na 75 % → vodorovné rolování. Když `scroll` není aktivní, obsah se nesmí oříznout ani o jediný pixel.
 - Ruční zoom gridu změna zoomu aplikace neruší; ruší ho jen změna šířky v px nebo změna Sloupců.
 
 - Nadpis gridu je ve výchozím stavu skrytý; zobrazuj ho pouze na výslovné

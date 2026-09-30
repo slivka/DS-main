@@ -18,7 +18,7 @@
 - Zaokrouhlení je připnutý poslední řádek `JournalLinesEditor`; lišta obsahuje jen akci pro jeho návrh a stav rozepsání.
 - Sbalitelné panely mají šipku vpravo a jejich stav řídí aplikace přes props, nikdy `localStorage`.
 - Pohled provozovatele má accent štítek; panely nastavení pojmenují objekt přes `context`.
-- `JournalLinesEditor` vychází z měřené šířky; Zakázka, VS a Partner se sbalí do detailu, ručně zapnuté sloupce zůstávají.
+- `JournalLinesEditor` měří vnitřní šířku; po kaskádě sníží auto zoom nejvýš na 0,75 a až pak roluje.
 - Varování k datům dokladu předávej přes `DocumentForm.dateWarnings`; období DPH patří do `vat.periodLabel` a podané období jej nahrazuje výstrahou.
 - Neaktivní položky filtruje každý výběr sám přes sdílené `InactiveTag` / `selectableItems`, aby se chování nelišilo mezi výběry.
 - Hodnota jen ke čtení v řádku formuláře patří do `FieldValue` uvnitř `Field`, aby měla popisek a správné zarovnání.

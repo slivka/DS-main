@@ -189,6 +189,8 @@ export type DataGridProps<Row> = {
   storageKey: string;
   /** Svislá výška gridu; v PageLayout list je výchozí fill, jinak auto. */
   height?: "fill" | "auto";
+  /** Automaticky přizpůsobí zoom dostupné šířce; ve formulářovém PageLayoutu je výchozí true. */
+  autoZoom?: boolean;
   /** Nadpis gridu (může být ReactNode s vlastní hlavičkou). Když chybí, hlavička se nezobrazí. */
   title?: ReactNode;
   /** Zobrazí nadpis nad lištou. Výchozí je false; title se dál používá pro export. */
@@ -446,6 +448,7 @@ export function DataGrid<Row>({
   onColumnFiltersChange,
   onSearchChange,
   className,
+  autoZoom: autoZoomProp,
   texts: textOverrides,
 }: DataGridProps<Row>) {
   const pageVariant = usePageLayoutVariant();
@@ -466,7 +469,7 @@ export function DataGrid<Row>({
   const [filtersOpen, setFiltersOpen] = useState(defaultFiltersOpen);
   const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
   const zoomKey = viewZoomKey ?? (viewMode ? `view:${exportName ?? exportTitle ?? title ?? storageKey}` : storageKey);
-  const autoZoom = pageVariant === "form" && resolvedHeight === "auto";
+  const autoZoom = (autoZoomProp ?? pageVariant === "form") && resolvedHeight === "auto";
   const { zoom, setZoom, setAutoZoom, density, setDensity, isAuto } = useGridZoom(zoomKey, { auto: autoZoom });
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
