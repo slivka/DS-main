@@ -131,7 +131,6 @@ const DETAIL_ROWS = {
 };
 
 function NavigationPage() {
-  const [activePanel, setActivePanel] = useState<string | null>(null);
   const [canEdit, setCanEdit] = useState(false);
   const [previewWidth, setPreviewWidth] = useState<(typeof PREVIEW_WIDTHS)[number]>(1100);
   const [periodId, setPeriodId] = useState<string | null>(null);
@@ -203,23 +202,8 @@ function NavigationPage() {
         </div>
       </ShowcaseSection>
 
-      <ShowcaseSection
-        title="Panely aplikace"
-        description="Horní lišta má samostatné panely Administrace, Nastavení prostoru a Nastavení firmy. Provozovatel je označen napříč prostory a nastavení vždy uvádí svůj kontext."
-      >
-        <div className="overflow-hidden rounded-lg border bg-card">
-          <div className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
-            <Button variant={activePanel === "admin" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "admin" ? null : "admin")}>Administrace</Button>
-            <Button variant={activePanel === "workspace" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "workspace" ? null : "workspace")}>Nastavení prostoru</Button>
-            <Button variant={activePanel === "company" ? "default" : "outline"} size="sm" onClick={() => setActivePanel(activePanel === "company" ? null : "company")}>Nastavení firmy</Button>
-          </div>
-          <div className="flex min-h-14 items-center gap-2 bg-muted px-3 py-2">
-            {activePanel === "admin" ? <><ShieldCheck className="size-4" /><strong>Administrace</strong><StatusBadge status="operator" config={{ operator: { label: "Provozovatel · všechny prostory", tone: "accent" } }} /></> : null}
-            {activePanel === "workspace" ? <><Settings className="size-4" /><div><strong className="block">Nastavení prostoru</strong><span className="block text-xs text-muted-foreground">Slivka Holding</span></div></> : null}
-            {activePanel === "company" ? <><SlidersHorizontal className="size-4" /><div><strong className="block">Nastavení firmy</strong><span className="block text-xs text-muted-foreground">Slivka Accounting s.r.o.</span></div></> : null}
-            {!activePanel ? <span className="text-sm text-muted-foreground">Vyberte panel v horní liště.</span> : null}
-          </div>
-        </div>
+      <ShowcaseSection title="Panely aplikace" description="Tlačítka v horní liště otevírají skutečné panely Číselníky, Nastavení ve dvou částech, Nastavení bez přepínače a Administraci.">
+        <p className="text-sm text-muted-foreground">Panel Nastavení přepíná mezi firmou a prostorem. Prostor a Administrace ponechají výběr firmy a období na místě, ale dočasně jej zakážou.</p>
       </ShowcaseSection>
 
       <ShowcaseSection title="Uživatelé napříč prostory" description="Administrace provozovatele rozlišuje bezpečnostní stav a členství každého uživatele.">

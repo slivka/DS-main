@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { BookOpen, Building2, FileSpreadsheet, Landmark, LayoutGrid, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound, Users } from "lucide-react";
+import { BookOpen, Building2, Car, FileSpreadsheet, Landmark, LayoutGrid, Library, MapPin, MessageSquare, Palette, Printer, Receipt, Route as RouteIcon, Settings, Settings2, ShieldCheck, SlidersHorizontal, TextCursorInput, UserRound, Users } from "lucide-react";
 
 import {
   AppShell,
@@ -62,17 +62,27 @@ const NAV_GROUPS: NavGroup[] = [
 
 const TARGETS = NAV_GROUPS.flatMap((group) => group.items.map((item) => ({ label: item.label, group: group.label, to: item.to })));
 
-const COMPANY_PANEL = [{
-  id: "company-settings",
-  label: "Nastavení firmy",
-  section: "Firma",
-  items: [
-    { to: "/components/navigation", label: "Základní údaje", icon: SlidersHorizontal },
-    { to: "/components/forms", label: "Předvolby dokladů", icon: Settings2 },
-  ],
-}];
+const REGISTERS_PANEL: NavGroup[] = [
+  { id: "jobs", label: "", items: [{ to: "/components/navigation", label: "Zakázky", icon: LayoutGrid }] },
+  { id: "accounting", label: "", section: "Účetnictví", items: [{ to: "/components/accounting-forms", label: "Účtový rozvrh", icon: Landmark }, { to: "/components/grid", label: "Kurzy", icon: FileSpreadsheet }] },
+  { id: "general", label: "", section: "Obecné", items: [{ to: "/components/forms", label: "Měrné jednotky", icon: Settings2 }] },
+  { id: "assets", label: "", section: "Majetek", items: [{ to: "/components/navigation", label: "Inventarizační zařazení", icon: Library }, { to: "/components/navigation", label: "Místa uložení", icon: MapPin }] },
+  { id: "people", label: "", section: "Pracovníci a vozidla", items: [{ to: "/components/navigation", label: "Pracovníci", icon: Users }, { to: "/components/navigation", label: "Vozidla", icon: Car, badge: "Připravujeme", disabled: true }] },
+];
 
-const ADMIN_PANEL = [{
+const COMPANY_SETTINGS: NavGroup[] = [
+  { id: "company", label: "", section: "Firma", items: [{ to: "/components/navigation", label: "Základní údaje", icon: Building2 }] },
+  { id: "accounting-vat", label: "", section: "Účetnictví a DPH", items: [{ to: "/components/accounting-forms", label: "Účetní nastavení", icon: Landmark }, { to: "/components/forms", label: "DPH", icon: Receipt }] },
+  { id: "modules", label: "", section: "Moduly", items: [{ to: "/components/navigation", label: "Aktivní moduly", icon: LayoutGrid }] },
+];
+
+const WORKSPACE_SETTINGS: NavGroup[] = [
+  { id: "workspace", label: "", section: "Prostor", items: [{ to: "/components/navigation", label: "Základní údaje", icon: Settings }] },
+  { id: "users", label: "", section: "Uživatelé", items: [{ to: "/components/navigation", label: "Členové a pozvánky", icon: Users }] },
+  { id: "templates", label: "", section: "Vzory číselníků", items: [{ to: "/components/navigation", label: "Výchozí číselníky", icon: Library }] },
+];
+
+const ADMIN_PANEL: NavGroup[] = [{
   id: "administration",
   label: "Administrace",
   section: "Správa systému",
@@ -107,6 +117,7 @@ export function ShowcaseLayout({
   const [companyId, setCompanyId] = useState(MOCK_COMPANIES[0].id);
   const [periodId, setPeriodId] = useState(MOCK_PERIODS[0].id);
   const [activePanel, setActivePanel] = useState<string | null>(null);
+  const [settingsView, setSettingsView] = useState("company");
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -133,9 +144,13 @@ export function ShowcaseLayout({
       contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
-        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace provozovatele", nav: ADMIN_PANEL, badge: { label: "Provozovatel · všechny prostory", tone: "accent" } },
-        { id: "workspace", title: "Nastavení prostoru", icon: Settings, tooltip: "Nastavení prostoru", nav: WORKSPACE_PANEL, context: activeWorkspace.name },
-        { id: "company", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy", nav: COMPANY_PANEL, context: activeCompany.name },
+        { id: "registers", title: "Číselníky", icon: Library, tooltip: "Číselníky", nav: REGISTERS_PANEL, scope: "company", context: activeCompany.name },
+        { id: "settings", title: "Nastavení", icon: Settings, tooltip: "Nastavení", activeView: settingsView, onViewChange: setSettingsView, views: [
+          { id: "company", label: "Firma", title: "Nastavení firmy", context: activeCompany.name, scope: "company", nav: COMPANY_SETTINGS },
+          { id: "workspace", label: "Prostor", title: "Nastavení prostoru", context: activeWorkspace.name, scope: "workspace", nav: WORKSPACE_SETTINGS },
+        ] },
+        { id: "company-settings", title: "Nastavení firmy", icon: SlidersHorizontal, tooltip: "Nastavení firmy bez částí", views: [{ id: "company", label: "Firma", title: "Nastavení firmy", context: activeCompany.name, scope: "company", nav: COMPANY_SETTINGS }] },
+        { id: "admin", title: "Administrace", icon: ShieldCheck, tooltip: "Administrace provozovatele", nav: ADMIN_PANEL, scope: "platform", accent: "warning", badge: { label: "Provozovatel · všechny prostory", tone: "accent" } },
       ]}
       activePanel={activePanel}
       onActivePanelChange={setActivePanel}
