@@ -988,21 +988,25 @@ export interface DsTextsProviderProps {
   locale?: DsLocale;
   texts?: Partial<DsTexts>;
 }
+function mergeTextKey<K extends keyof DsTexts>(result: DsTexts, key: K, value: DsTexts[K]) {
+  const current = result[key];
+  result[key] =
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    current &&
+    typeof current === "object"
+      ? { ...current, ...value }
+      : value;
+}
 function mergeTexts(base: DsTexts, patch?: Partial<DsTexts>): DsTexts {
   if (!patch) return base;
-  const result: Record<string, unknown> = { ...base };
-  for (const [key, value] of Object.entries(patch)) {
-    const current = result[key];
-    result[key] =
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      current &&
-      typeof current === "object"
-        ? { ...(current as object), ...(value as object) }
-        : value;
+  const result: DsTexts = { ...base };
+  for (const key of Object.keys(patch) as (keyof DsTexts)[]) {
+    const value = patch[key];
+    if (value !== undefined) mergeTextKey(result, key, value);
   }
-  return result as unknown as DsTexts;
+  return result;
 }
 export function DsTextsProvider({ children, locale, texts }: DsTextsProviderProps) {
   const value = useMemo(

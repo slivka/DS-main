@@ -1,6 +1,7 @@
 import { Download, FileCode2 } from "lucide-react";
 import { PAGE_SURFACE_LIGHT } from "../../../lib/tokens";
 import { useState, type ReactNode } from "react";
+import type { RowInput } from "jspdf-autotable";
 import { useGridPrint, type GridPrintConfig } from "./grid-print";
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
@@ -386,7 +387,7 @@ export function GridExport({
       ];
     });
 
-    const pdfFoot = [
+    const pdfFoot: RowInput[] = [
       ...pdfTotals,
       ...(hasSums
         ? [
@@ -404,7 +405,7 @@ export function GridExport({
     autoTable(doc, {
       head: pdfHeaders,
       body: pdfRows,
-      foot: pdfFoot.length ? (pdfFoot as never) : undefined,
+      foot: pdfFoot.length ? pdfFoot : undefined,
 
       startY: 22,
       margin: { top: 22, right: 10, bottom: 14, left: 10 },
