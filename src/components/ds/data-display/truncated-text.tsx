@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, type LinkProps } from "@tanstack/react-router";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 
@@ -67,10 +67,10 @@ export function TruncatedLink({
 
   const anchor = (
     <Link
-      ref={ref as never}
-      to={to as never}
-      params={params as never}
-      search={search as never}
+      ref={ref}
+      to={to as LinkProps["to"]}
+      params={params as LinkProps["params"]}
+      search={search as LinkProps["search"]}
       onMouseEnter={check}
       onFocus={check}
       className="block truncate text-primary underline-offset-2 hover:underline"

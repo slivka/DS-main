@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import type { LinkProps } from "@tanstack/react-router";
 
 import {
   Select,
@@ -57,7 +58,7 @@ export function StandaloneNav({
           value={active?.to ?? ""}
           onValueChange={(to) => {
             const item = items.find((candidate) => candidate.to === to);
-            if (item) void navigate({ to: item.to as never, search: item.search as never });
+            if (item) void navigate({ to: item.to as LinkProps["to"], search: item.search as LinkProps["search"] });
           }}
         >
           <SelectTrigger
@@ -117,8 +118,8 @@ export function StandaloneNav({
                 ) : (
                   <Link
                     key={item.to}
-                    to={item.to as never}
-                    search={item.search as never}
+                    to={item.to as LinkProps["to"]}
+                    search={item.search as LinkProps["search"]}
                     aria-current={itemActive ? "page" : undefined}
                     data-active={itemActive ? "true" : "false"}
                     className={className}

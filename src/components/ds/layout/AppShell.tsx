@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import type { LinkProps } from "@tanstack/react-router";
 import {
   useCallback,
   useEffect,
@@ -313,8 +314,8 @@ function ShellNav({
       </span>
     ) : (
       <Link
-        to={item.to as never}
-        search={item.search as never}
+        to={item.to as LinkProps["to"]}
+        search={item.search as LinkProps["search"]}
         ref={(node) => {
           resultRefs.current[flatIndex] = node;
         }}

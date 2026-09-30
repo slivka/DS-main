@@ -5,7 +5,7 @@ import type { PaneChromeTexts } from "./components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "./components/ds/panes/layout-menu";
 
 export type DsLocale = "cs" | "sk";
-export type TextTemplate = (...args: any[]) => string;
+export type TextTemplate = (...args: never[]) => string;
 export type TextTree = { [key: string]: string | TextTemplate | TextTree };
 
 export interface GridTexts {

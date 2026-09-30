@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, type LinkProps } from "@tanstack/react-router";
 
 import {
   CommandDialog,
@@ -49,7 +49,7 @@ export function CommandPalette({
 
   const go = (t: CommandTarget) => {
     setOpen(false);
-    navigate({ to: t.to, search: t.search } as never);
+    navigate({ to: t.to as LinkProps["to"], search: t.search as LinkProps["search"] });
   };
 
   return (
