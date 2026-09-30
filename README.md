@@ -1,3 +1,8 @@
+## Changelog 2.77.0 – drobnosti podmenu
+
+- Klávesové zkratky panelů (Alt+W, Alt+Shift+W, Alt+Shift+T, Alt+M, Alt+T, Alt+1–3) ignorují opakování při držení klávesy – podržené T už nevyprázdní zásobník zavřených záložek ani nezavře víc záložek či panelů. Šipky (Alt+←/→/↑/↓) opakování záměrně ponechávají.
+- Výchozí texty nabídky rozložení a nabídky záložky mají jediný zdroj: `DEFAULT_LAYOUT_MENU_TEXTS` a `DEFAULT_PANE_CHROME_TEXTS` berou hodnoty z `DS_TEXTS_CS` (`layoutMenu`, `paneChrome`), bez změny obsahu.
+
 ## Changelog 2.75.0 – nabídky rozložení, záložek a uživatele
 
 - `LayoutMenu` řadí uložení a správu nahoru, uložená rozložení zobrazuje bez ikon panelů a nabízí samostatné přepsání.

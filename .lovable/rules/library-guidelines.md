@@ -16,8 +16,6 @@ These rules apply at all times when working in this project:
 - Běžný klik v menu nahrazuje aktivní záložku; Cmd/Ctrl otevře novou a Cmd/Ctrl+Shift sousední panel.
 - Akce stránky v panelu patří do PageHeader.menuActions; akce Nový patří do gridového addAction.
 - LayoutMenu patří jako ikonové menu do AppShell.navSearchMenu, ne do horní lišty.
-- Nabídky LayoutMenu, záložky a UserMenu mají pevné pořadí; další položku přidávejte jen po výslovném schválení.
-- Řádek nadpisu otevřeného panelu nemá ikonu; ikona panelu patří jen do horní lišty.
 
 ## Stack Dependencies
 

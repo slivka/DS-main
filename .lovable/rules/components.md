@@ -2576,7 +2576,7 @@ import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 import { LayoutMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Nabídka uložených rozložení v pevném pořadí: Uložit aktuální jako nové… s ikonou Spravovat vpravo, uložená rozložení a Přepsat uložené aktuálním. Varianta trigger="icon" patří vedle hledání.
+Nabídka uložených rozložení v pevném pořadí: Uložit aktuální jako nové… s ikonou Spravovat vpravo, uložená rozložení (jen názvy) a Přepsat uložené aktuálním. Varianta trigger="icon" patří vedle hledání. Bez výchozího rozložení (isDefault zrušeno).
 
 **Props:**
 
@@ -4508,7 +4508,7 @@ Uživatelská nabídka v pevném pořadí: identita, vlastní položky, velikost
 | `workspaceLabel` | string | `Pracovní prostor` |
 | `workspaceSearchPlaceholder` | string | `Hledat pracovní prostor…` |
 | `items` | any | `—` |
-| `workspaceAction` | function | `—` |
+| `workspaceAction` | object | `—` |
 | `onSignOut` | function | `—` |
 | `signOutLabel` | string | `Odhlásit` |
 | `menuLabel` | string | `Uživatelská nabídka` |
