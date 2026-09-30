@@ -399,6 +399,44 @@ export function DocumentForm({
       rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
+  const currencyControl = currencyLocked || readOnly || !can("currency") || identityVariant === "cashBank"
+    ? <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>
+    : currencies && currencyDisabledReason
+      ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencyOptions} triggerClassName="h-11" /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason}</TooltipContent></Tooltip>
+      : currencies
+        ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} triggerClassName="h-11" />
+        : <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>;
+
+  const renderAmountSection = () => <Fragment>
+    <SectionHeading>{t.amountOnlySection}</SectionHeading>
+    <div data-slot="document-amount-section" className="flex flex-wrap items-start justify-end gap-3">
+      {foreign ? <div data-slot="document-foreign-amounts" className="order-2 ml-auto flex shrink-0 flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1 @min-[48rem]:ml-0">
+        <div className="w-[9rem] shrink-0">{field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full" />, 3, false, "[&_p]:whitespace-nowrap")}</div>
+        <div className="w-[11.5rem] shrink-0 text-right">{field("document-total-home", <span className="whitespace-nowrap">{t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}</span>, <div id="document-total-home" aria-readonly="true" className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</div>, 3, false, "text-right [&_label]:text-right")}</div>
+      </div> : null}
+      <div data-slot="document-total-currency-pair" className="order-1 ml-auto flex shrink-0 items-start gap-3">
+        <div data-slot="document-amount-total" className="min-w-[11.5rem] flex-[0_1_18rem]">{field("document-amountTotal", <span className="whitespace-nowrap">{t.amountTotal}</span>, <><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{totalMode === "sum" ? t.sumFromLines : t.amountTotal}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p data-slot="document-amount-sum-hint" className="mt-1 whitespace-nowrap text-xs text-muted-foreground">{t.sumFromLines}</p> : null}</>, 6)}</div>
+        <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyControl, 3)}</div>
+      </div>
+    </div>
+    {foreign ? <div data-slot="document-rate-details" className="mt-3 grid grid-cols-20 gap-3">
+      {foreign && vatRateField ? field("document-vat-rate", t.vatRate, vatRateField.sameAsDocument ? <ReadField id="document-vat-rate" value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>} /> : <><RateField id="document-vat-rate" value={vatRateField.value ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={vatRateField.rateAmount ?? rateAmount} suggestedRate={vatRateField.suggestedRate} suggestedInfo={vatRateField.suggestedInfo} manual={!!vatRateField.manual} note={vatRateField.note ?? ""} showNote={false} noteLabel={t.vatRateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={readOnly || vatRateField.readOnly} readOnly={readOnly || vatRateField.readOnly} onChange={(rate) => vatRateField.onChange({ rate, manual: true })} onNoteChange={(note) => vatRateField.onChange({ note })} onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })} className="w-full @min-[40rem]:w-36" />{!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? <p role="status" data-slot="document-vat-rate-missing" className="text-xs font-medium text-destructive">{t.vatRateMissing}</p> : null}</>, 3) : null}
+      {foreign && vatRateField && !vatRateField.sameAsDocument && vatRateField.manual ? field("document-vat-rate-note", t.vatRateNote, <><Input id="document-vat-rate-note" value={vatRateField.note ?? ""} maxLength={200} required aria-invalid={!vatRateField.note?.trim()} disabled={readOnly || vatRateField.readOnly} onChange={(event) => vatRateField.onChange({ note: event.target.value })} />{!vatRateField.note?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
+      {value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
+    </div> : null}
+  </Fragment>;
+
+  const renderPaymentSection = () => f.symbols || f.bankAccount || f.paymentOrders ? <Fragment>
+    <SectionHeading>{t.paymentSection}</SectionHeading>
+    <div data-slot="document-payment-section" className="grid grid-cols-20 items-start gap-3">
+      {f.symbols ? field("document-variableSymbol", t.variableSymbol, <VsField id="document-variableSymbol" value={value.variableSymbol ?? ""} onChange={(variableSymbol) => patch({ variableSymbol })} disabled={!can("variableSymbol")} />) : null}
+      {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
+      {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
+      {f.bankAccount && !receivedDocument ? bankAccountField : null}
+      {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className={cn("col-span-20", receivedDocument && "@min-[40rem]:col-span-6 self-center whitespace-nowrap")} label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
+    </div>
+  </Fragment> : null;
+
   return (
     <TooltipProvider><div ref={formRef} className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
