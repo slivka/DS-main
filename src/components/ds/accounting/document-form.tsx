@@ -265,14 +265,14 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, accountLab
 
 export function DocumentForm({
   title, titleBadges, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
-  mainAccountOptions, partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
+  mainAccountOptions, partners = [], dimensions = [], currencies, bankAccountOptions = [], bankCodes, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false, currencyDisabledReason,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, vatRateField, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], settings, error, notices, readOnly = false, readOnlyReason, readOnlyTitle, readOnlyActions, texts, className,
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
-  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, changeAccount: dsTexts.documentForm.changeAccount, currencyDisabled: dsTexts.documentForm.currencyDisabled, mainAccountSelect: dsTexts.documentForm.mainAccountSelect, ...texts };
+  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
@@ -300,6 +300,7 @@ export function DocumentForm({
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
   const normalizedType = documentType.toUpperCase();
+  const receivedDocument = normalizedType === "FP" || normalizedType === "ZFP" || normalizedType === "DDPOZ";
   const forcedSum = normalizedType === "ID" || normalizedType === "UZ" || normalizedType === "KR" || normalizedType === "ZAP";
   const totalMode = forcedSum ? "sum" : value.totalMode;
   const linesSum = Math.round(lines.filter((line) => !line.isRounding && !line.isFxRounding).reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
@@ -343,8 +344,11 @@ export function DocumentForm({
   const field = (id: string, label: ReactNode, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
     <Field htmlFor={id} label={label} span={span as 3 | 4 | 5 | 6 | 14 | 20} className={cn("col-span-20", mobileHalf && "col-span-10", className)}>{control}</Field>
   );
-  const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning ?? dateWarnings?.[key]} />, 3, false, className);
-  const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
+  const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => {
+    const warning = options?.warning ?? dateWarnings?.[key];
+    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, className);
+  };
+  const text = (key: "constantSymbol" | "specificSymbol" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
   const linkedPartner = !!value.partnerId;
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
@@ -353,6 +357,17 @@ export function DocumentForm({
   const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? t.filedWarning : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
+  const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
+  const externalNumberVsWarning = receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
+  const dateWarningEntries: Array<[DocumentDateField, string, string | undefined]> = [
+    ["issueDate", t.issueDate, dateWarnings?.issueDate],
+    ["accountingDate", t.accountingDate, dateWarnings?.accountingDate],
+    ["dueDate", t.dueDate, f.dueDate ? dateWarnings?.dueDate : undefined],
+    ["taxDate", t.taxDate, showVatFields && f.taxDate ? dateWarnings?.taxDate : undefined],
+    ["vatDate", t.vatDate, showVatFields ? vatDateWarning ?? dateWarnings?.vatDate : undefined],
+  ];
+  const dateNoticeBars = dateWarningEntries.filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2])).map(([key, label, warning]) => <NoticeBar key={key} tone="warning" title={label}>{warning}</NoticeBar>);
+  const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
