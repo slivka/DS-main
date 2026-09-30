@@ -1,3 +1,20 @@
+## Changelog 2.79.0 – nastavení nad úrovní firmy
+
+- Nové: `StandaloneShell` (rám mimo `AppShell`: logo, nadpis, uživatelské menu, Zavřít, šedý sloupec), `StandaloneNav` (menu stránek, pod `md` výběr), `ContextSwitcher` (přepínač prostoru s hledáním od 6 položek a akcemi), `ConfirmByTypingDialog`, `DangerZone`.
+- `NoticeBar` má tón `neutral` s akcí vpravo.
+- Zoom aplikace je ve sdíleném hooku `useAppZoomShortcuts()`; `AppShell` se chová beze změny. `CompanySwitcher` beze změny.
+- Esc v `StandaloneShell` zavře rám jen bez otevřeného překryvu. **Zavření s neuloženými změnami neohlídá rám – ohlídejte ho v `onClose`.**
+- Nové texty `standalone`, `contextSwitcher`, `confirmByTyping`, `dangerZone`, `noticeBar` v `DsTexts` (CS i SK, volitelné s výchozími). BREAKING: ne.
+
+```tsx
+<StandaloneShell brand={<Logo />} title="Nastavení prostoru" userMenu={<UserMenu … />} onClose={() => navigate({ to: "/" })}
+  sidebar={<><ContextSwitcher label={space.name} description="3 firmy" items={spaces} value={space.id} onValueChange={setSpace} />
+    <StandaloneNav groups={workspaceNav} /></>}>
+  <DangerZone items={[{ title: "Odstranit prostor", description: "Nevratné.", action: <Button variant="destructive" onClick={() => setOpen(true)}>Odstranit</Button> }]} />
+  <ConfirmByTypingDialog open={open} onOpenChange={setOpen} title="Odstranit prostor" description="Akci nelze vrátit." confirmText={space.name} confirmLabel="Odstranit prostor" onConfirm={removeSpace} />
+</StandaloneShell>
+```
+
 ## Changelog 2.77.0 – drobnosti podmenu
 
 - Klávesové zkratky panelů (Alt+W, Alt+Shift+W, Alt+Shift+T, Alt+M, Alt+T, Alt+1–3) ignorují opakování při držení klávesy – podržené T už nevyprázdní zásobník zavřených záložek ani nezavře víc záložek či panelů. Šipky (Alt+←/→/↑/↓) opakování záměrně ponechávají.
