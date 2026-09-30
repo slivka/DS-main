@@ -6,6 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { TruncatedText } from "../data-display/truncated-text";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
+import { normalizeNavSearch } from "./nav-search";
 
 export interface ContextSwitcherItem {
   id: string;
@@ -108,7 +109,7 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
           tabIndex={-1}
           defaultValue={selectedValue}
           className="outline-none"
-          filter={(_value, search, keywords) => (keywords ?? []).join(" ").toLocaleLowerCase("cs-CZ").includes(search.trim().toLocaleLowerCase("cs-CZ")) ? 1 : 0}
+          filter={(_value, search, keywords) => normalizeNavSearch((keywords ?? []).join(" ")).includes(normalizeNavSearch(search)) ? 1 : 0}
         >
           {searchable ? <CommandInput placeholder={searchPlaceholder ?? texts.search} /> : null}
           <CommandList>

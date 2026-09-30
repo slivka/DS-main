@@ -69,7 +69,8 @@ export function resetAppZoomCacheForTests() {
 
 /** Čte zoom aplikace a poslouchá jeho změny; nic neaplikuje. */
 export function useAppZoom() {
-  const [zoom, setZoomState] = useState(getAppZoom);
+  // Stejný počáteční stav na serveru i v prohlížeči; skutečná hodnota v useLayoutEffect.
+  const [zoom, setZoomState] = useState(1);
   useLayoutEffect(() => {
     setZoomState(getAppZoom());
     const onChange = (event: Event) => setZoomState(clampAppZoom((event as CustomEvent<number>).detail));
@@ -190,7 +191,7 @@ export function useAppZoomShortcuts() {
 /** Mobilní rozložení rámu podle efektivní šířky (šířka okna / zoom aplikace) – stejně jako AppShell. */
 export function useEffectiveIsMobile(breakpoint = 768) {
   const { zoom } = useAppZoom();
-  const [width, setWidth] = useState(() => typeof window === "undefined" ? 1280 : window.innerWidth);
+  const [width, setWidth] = useState(1280);
   useLayoutEffect(() => {
     const onResize = () => setWidth(window.innerWidth);
     onResize();

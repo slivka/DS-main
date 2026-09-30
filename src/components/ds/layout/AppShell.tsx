@@ -398,7 +398,7 @@ export function AppShell({
   const [draftMenuWidth, setDraftMenuWidth] = useState<number | null>(null);
   const [menuMaximum, setMenuMaximum] = useState(26.25);
   const appZoom = useAppZoom();
-  const [viewportWidth, setViewportWidth] = useState(() => typeof window === "undefined" ? 1280 : window.innerWidth);
+  const [viewportWidth, setViewportWidth] = useState(1280);
   const effectiveWidth = effectiveViewportWidth(viewportWidth, appZoom.zoom);
   const [ownActivePanel, setOwnActivePanel] = useState<string | null>(null);
   const [collapseWasChosen, setCollapseWasChosen] = useState(false);

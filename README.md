@@ -2,7 +2,7 @@
 
 - Nové: `StandaloneShell` (rám mimo `AppShell`: logo, nadpis, uživatelské menu, Zavřít, šedý sloupec), `StandaloneNav` (menu stránek, pod `md` výběr), `ContextSwitcher` (přepínač prostoru s hledáním od 6 položek a akcemi), `ConfirmByTypingDialog`, `DangerZone`.
 - `NoticeBar` má tón `neutral` s akcí vpravo.
-- Zoom aplikace je ve sdíleném hooku `useAppZoomShortcuts()`; `AppShell` se chová beze změny. `CompanySwitcher` beze změny.
+- Zoom aplikace je ve sdíleném hooku `useAppZoomShortcuts()`; `AppShell` se chová beze změny. `CompanySwitcher` má nové volitelné `actions`; bez nich vzhled i chování beze změny.
 - Esc v `StandaloneShell` zavře rám jen bez otevřeného překryvu. **Zavření s neuloženými změnami neohlídá rám – ohlídejte ho v `onClose`.**
 - `CompanySwitcher.actions?: { id, label, icon?, onSelect }[]` – akce pod oddělovačem pod „Nová firma“ (např. „Spravovat firmy…“ pro správce); bez nich vzhled i chování beze změny.
 - Přepínání mobil / desktop ve `StandaloneShell` a `StandaloneNav` podle efektivní šířky (okno / zoom) jako `AppShell`; nadpis lišty není `h1`. `ContextSwitcher` ovladatelný šipkami a Enterem i bez hledání. Posluchače zoomu registruje jen první rám (dva rámy = jeden krok).
