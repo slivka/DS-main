@@ -3132,8 +3132,7 @@
         {
           "name": "actions",
           "type": "CompanySwitcherAction[]",
-          "required": false,
-          "description": "Akce pod oddělovačem pod „Nová firma“ (např. „Spravovat firmy…“). Bez nich beze změny."
+          "required": false
         }
       ],
       "usage": "Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě.",
