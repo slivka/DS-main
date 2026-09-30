@@ -1,6 +1,6 @@
 import { useMemo, useState, type ComponentType } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, LogOut, Minus, Plus, Search } from "lucide-react";
+import { LogOut, Minus, Plus, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { Input } from "../../ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { useAppZoom } from "../../../lib/app-zoom";
 
@@ -27,7 +28,7 @@ export type UserMenuItem = {
 };
 
 export interface UserMenuProps {
-  name: string;
+  name?: string;
   email: string;
   workspaces?: UserMenuWorkspace[];
   activeWorkspaceId?: string;
@@ -35,6 +36,7 @@ export interface UserMenuProps {
   workspaceLabel?: string;
   workspaceSearchPlaceholder?: string;
   items?: UserMenuItem[];
+  workspaceAction?: { label: string; icon: ComponentType<{ className?: string }>; to?: string; onSelect?: () => void };
   onSignOut?: () => void;
   signOutLabel?: string;
   menuLabel?: string;
@@ -54,6 +56,7 @@ export function UserMenu({
   workspaceLabel = "Pracovní prostor",
   workspaceSearchPlaceholder = "Hledat pracovní prostor…",
   items = [],
+  workspaceAction,
   onSignOut,
   signOutLabel = "Odhlásit",
   menuLabel = "Uživatelská nabídka",
@@ -74,23 +77,34 @@ export function UserMenu({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72">
+      <DropdownMenuContent align="end" className="min-w-72 whitespace-nowrap">
         <DropdownMenuLabel>
-          <span className="block truncate">{name}</span>
+          {name && name !== email ? <span className="block truncate font-semibold">{name}</span> : null}
           <span className="block truncate text-xs font-normal text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {items.map((item) => {
+          const Icon = item.icon;
+          const content = <>{Icon ? <Icon className="size-4" /> : null}{item.label}</>;
+          return item.to ? (
+            <DropdownMenuItem key={item.label} asChild><Link to={item.to as never}>{content}</Link></DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem key={item.label} onSelect={item.onSelect}>{content}</DropdownMenuItem>
+          );
+        })}
         <div className="flex items-center gap-1 px-2 py-1.5" onPointerDown={(event) => event.preventDefault()}>
-          <span className="mr-auto text-sm">{texts.appZoom.label}</span>
+          <span className="mr-auto whitespace-nowrap text-sm">{texts.appZoom.label}</span>
           <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.appZoom.decrease} disabled={appZoom.zoom <= appZoom.min} onClick={() => appZoom.setZoom(appZoom.zoom - appZoom.step)}><Minus className="size-3.5" /></Button>
           <span className="w-12 text-center text-sm tabular-nums">{Math.round(appZoom.zoom * 100)}&nbsp;%</span>
           <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.appZoom.increase} disabled={appZoom.zoom >= appZoom.max} onClick={() => appZoom.setZoom(appZoom.zoom + appZoom.step)}><Plus className="size-3.5" /></Button>
           <Button type="button" variant="ghost" size="sm" onClick={appZoom.reset}>{texts.appZoom.reset}</Button>
         </div>
-        {workspaces.length ? (
+        {workspaces.length || workspaceAction ? (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">{workspaceLabel}</DropdownMenuLabel>
+            <DropdownMenuLabel className="flex items-center text-xs font-medium text-muted-foreground">
+              <span className="mr-auto">{workspaceLabel}</span>
+              {workspaceAction ? <WorkspaceAction action={workspaceAction} /> : null}
+            </DropdownMenuLabel>
             {workspaces.length > 8 ? (
               <div className="relative px-1 pb-1">
                 <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
@@ -101,24 +115,11 @@ export function UserMenu({
               {visible.map((workspace) => (
                 <DropdownMenuRadioItem key={workspace.id} value={workspace.id}>
                   {workspace.name}
-                  {workspace.id === activeWorkspaceId ? <Check className="ml-auto size-4" /> : null}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
           </>
         ) : null}
-        {items.length ? <DropdownMenuSeparator /> : null}
-        {items.map((item) => {
-          const Icon = item.icon;
-          const content = <>{Icon ? <Icon className="size-4" /> : null}{item.label}</>;
-          return item.to ? (
-            <DropdownMenuItem key={item.label} asChild>
-              <Link to={item.to as never}>{content}</Link>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem key={item.label} onSelect={item.onSelect}>{content}</DropdownMenuItem>
-          );
-        })}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onSignOut} className="text-destructive focus:text-destructive">
           <LogOut className="size-4" />
@@ -126,5 +127,20 @@ export function UserMenu({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function WorkspaceAction({ action }: { action: NonNullable<UserMenuProps["workspaceAction"]> }) {
+  const Icon = action.icon;
+  const control = <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label}><Icon className="size-4" /></Button>;
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {action.to ? <Link to={action.to as never} onClick={() => action.onSelect?.()}>{control}</Link> : <span onClick={() => action.onSelect?.()}>{control}</span>}
+        </TooltipTrigger>
+        <TooltipContent>{action.label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

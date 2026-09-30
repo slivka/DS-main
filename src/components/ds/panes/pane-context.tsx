@@ -761,33 +761,21 @@ export function buildTabMenuActions(
   if (!found) return [];
   const { tab, pane, paneIndex } = found;
   const count = api.state.panes.length;
-  const actions: PaneMenuAction[] = [
-    { id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) },
-    { id: "closeOthers", label: t.closeOthers, disabled: pane.tabs.length < 2, onSelect: () => api.closeOtherTabs(tabId) },
-  ];
+  const groups: PaneMenuAction[][] = [[{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }]];
+  const tabActions: PaneMenuAction[] = [];
   Array.from({ length: count }, (_, index) => index)
     .filter((index) => index !== paneIndex)
-    .forEach((index, order) =>
-      actions.push({
+    .forEach((index) =>
+      tabActions.push({
         id: `move-${index}`,
         label: t.moveToPane.replace("{index}", String(index + 1)),
         onSelect: () => api.moveTab(tabId, api.state.panes[index].id),
-        separatorBefore: order === 0,
       }),
     );
-  if (tab.kind === "list") actions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
-  if (count > 1) {
-    actions.push({
-      id: "maximize",
-      label: api.maximized !== null ? t.restore.replace(" (Esc)", "") : t.maximize.replace(" (Alt+M)", ""),
-      shortcut: api.maximized !== null ? "Esc" : "Alt+M",
-      onSelect: () => api.toggleMaximize(paneIndex),
-      separatorBefore: true,
-    });
-  }
-  actions.push({ id: "reopen", label: t.reopenClosed, shortcut: "Alt+Shift+T", disabled: api.closedTabCount === 0, onSelect: api.reopenClosedTab, separatorBefore: count < 2 });
-  actions.push({ id: "closePane", label: t.closePane, shortcut: "Alt+Shift+W", onSelect: () => api.closePane(pane.id), separatorBefore: true });
-  return actions;
+  if (tab.kind === "list") tabActions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
+  if (tabActions.length) groups.push(tabActions);
+  groups.push([{ id: "closePane", label: t.closePane, shortcut: "Alt+Shift+W", onSelect: () => api.closePane(pane.id) }]);
+  return groups.flatMap((group, groupIndex) => group.map((action, actionIndex) => ({ ...action, separatorBefore: groupIndex > 0 && actionIndex === 0 })));
 }
 
 /** Kontext panelu pro záhlaví stránky (usePaneChrome). */

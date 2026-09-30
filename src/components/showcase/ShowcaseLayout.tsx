@@ -145,7 +145,7 @@ export function ShowcaseLayout({
       onActivePanelChange={setActivePanel}
       notificationBell={<NotificationBell items={notifications} onItemClick={() => undefined} onMarkAllRead={() => undefined} onShowAll={() => undefined} />}
       themeToggleButton={<ThemeToggleButton />}
-      userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} onSignOut={() => undefined} />}
+      userMenu={<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={[...MOCK_WORKSPACES, { id: "ws-audit", name: "Auditní prostor" }]} activeWorkspaceId={workspaceId} onWorkspaceChange={setWorkspaceId} items={[{ label: "Můj profil", icon: UserRound, to: "/components/navigation" }]} workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings2, to: "/components/navigation" }} onSignOut={() => undefined} />}
     >
       <CommandPalette targets={TARGETS} open={searchOpen} onOpenChange={setSearchOpen} />
       {children}
