@@ -46,7 +46,7 @@ export type AppShellPanelView = {
   title: string;
   context?: ReactNode | string;
   scope?: AppShellScope;
-  nav?: NavGroup[];
+  nav: NavGroup[];
 };
 
 export type AppShellPanel = {
@@ -54,7 +54,7 @@ export type AppShellPanel = {
   title: string;
   icon: LucideIcon;
   tooltip: string;
-  nav: NavGroup[];
+  nav?: NavGroup[];
   /** Barvy menu aplikace nebo neutrální barvy panelu. Výchozí je `panel`. */
   sidebarTone?: "app" | "panel";
   /** Rozsah, pro který panel platí. Výchozí je `company`. */
