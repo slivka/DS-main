@@ -244,6 +244,11 @@ function NavigationPage() {
         title="Režim více oken"
         description="Každý panel má záložky s vlastní historií. Záložky jdou přetahovat v liště i mezi panely, rozepsaný doklad se při přesunu neztratí. Cmd/Ctrl + klik v menu otevře novou záložku, Cmd/Ctrl + Shift + klik sousední panel. Stejný doklad se otevře jen jednou."
       >
+        <ul data-slot="zoom-guide" className="mb-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+          <li>Ctrl (Mac: Cmd) + kolečko nad tabulkou mění jen tuto tabulku; nad menu, horní lištou nebo dialogem zvětší celou aplikaci.</li>
+          <li>Ctrl (Mac: Cmd) + plus / minus / 0 zvětší, zmenší a vrátí celou aplikaci – i když píšete do pole.</li>
+          <li>Doklad v jednom panelu při 110 → 130 %: písmo řádků roste, méně důležité sloupce přejdou do detailu řádku, stránka se vodorovně neroluje.</li>
+        </ul>
         <PaneShowcase />
       </ShowcaseSection>
 
