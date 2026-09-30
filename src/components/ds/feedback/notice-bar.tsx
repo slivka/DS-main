@@ -3,8 +3,9 @@ import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 
-export type NoticeBarTone = "info" | "warning" | "success" | "danger";
+export type NoticeBarTone = "info" | "warning" | "success" | "danger" | "neutral";
 
 export interface NoticeBarProps extends Omit<ComponentPropsWithoutRef<"div">, "title"> {
   /** Význam pruhu; určuje ikonu a tokenové barvy. */
@@ -14,6 +15,8 @@ export interface NoticeBarProps extends Omit<ComponentPropsWithoutRef<"div">, "t
   /** Volitelné textové akce; na úzkém panelu se přesunou pod text. */
   actions?: ReactNode;
   onClose?: () => void;
+  /** Přístupnostní název zavíracího tlačítka; výchozí z DsTexts. */
+  closeLabel?: string;
 }
 
 const TONES = {
@@ -29,6 +32,10 @@ const TONES = {
     icon: CheckCircle2,
     className: "border-l-success bg-success-soft text-success-strong",
   },
+  neutral: {
+    icon: Info,
+    className: "border-l-border bg-muted text-muted-foreground",
+  },
   danger: {
     icon: XCircle,
     className: "border-l-destructive bg-destructive-soft text-destructive-strong",
@@ -36,7 +43,8 @@ const TONES = {
 } satisfies Record<NoticeBarTone, { icon: typeof Info; className: string }>;
 
 /** Provozní informace nebo upozornění v kontextu formuláře, případně s navazující akcí. */
-export function NoticeBar({ tone, title, children, actions, onClose, className, ...props }: NoticeBarProps) {
+export function NoticeBar({ tone, title, children, actions, onClose, closeLabel, className, ...props }: NoticeBarProps) {
+  const texts = useDsTexts();
   const config = TONES[tone];
   const Icon = config.icon;
 
@@ -57,7 +65,7 @@ export function NoticeBar({ tone, title, children, actions, onClose, className, 
         {actions ? <div data-slot="notice-bar-actions" className="mt-2 flex shrink-0 flex-wrap items-center gap-2 @min-[32rem]:mt-0">{actions}</div> : null}
       </div>
       {onClose ? (
-        <Button type="button" variant="ghost" size="icon" aria-label="Zavřít upozornění" onClick={onClose} className="-mr-2 -mt-2 shrink-0 text-current">
+        <Button type="button" variant="ghost" size="icon" aria-label={closeLabel ?? texts.noticeBar.close} onClick={onClose} className="-mr-2 -mt-2 shrink-0 text-current">
           <X aria-hidden="true" />
         </Button>
       ) : null}

@@ -27,6 +27,10 @@ export * from "./layout/page-tabs";
 export * from "./layout/nav-search";
 export * from "./layout/settings-section";
 export * from "./layout/record-action-bar";
+export * from "./layout/standalone-shell";
+export * from "./layout/standalone-nav";
+export * from "./layout/context-switcher";
+export { isNavItemActive } from "./layout/nav-items";
 
 /* Panely (režim více oken) */
 export * from "./panes/pane-state";
@@ -114,6 +118,8 @@ export * from "./feedback/record-notes-dialog";
 export * from "./feedback/permission-gate";
 export * from "./feedback/read-only-banner";
 export * from "./feedback/notice-bar";
+export * from "./feedback/confirm-by-typing-dialog";
+export * from "./feedback/danger-zone";
 export * from "./feedback/coming-soon";
 
 /* Zobrazení dat */

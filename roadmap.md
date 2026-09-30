@@ -684,3 +684,5 @@
 - [x] Ověřit všechny testy, typy, sestavení a ukázku
 
 - 2.77.0: zkratky panelů ignorují opakování při držení klávesy (kromě šipek); výchozí texty nabídek rozložení a záložek mají jediný zdroj v DS_TEXTS_CS.
+
+- [x] 2.79.0 – StandaloneShell, StandaloneNav, ContextSwitcher, ConfirmByTypingDialog, DangerZone, NoticeBar neutral, useAppZoomShortcuts (Release dělá uživatel)

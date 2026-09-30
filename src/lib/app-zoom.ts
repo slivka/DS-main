@@ -127,3 +127,44 @@ export function createAppWheelZoom(step: (direction: 1 | -1) => void, now: () =>
     return true;
   };
 }
+
+const APP_ZOOM_KEY_STEP = APP_ZOOM_STEP;
+
+/** Otevřený nativní `<select>` si kolečko ponechá. */
+function isNativeSelectOpen() {
+  const active = document.activeElement;
+  if (!(active instanceof HTMLSelectElement)) return false;
+  try { return active.matches(":open"); } catch { return false; }
+}
+
+/**
+ * Sdílená obsluha zoomu aplikace pro rámy (AppShell, StandaloneShell):
+ * start podle uložené hodnoty, Cmd/Ctrl + plus / minus / 0 (i v polích)
+ * a Ctrl/Cmd + kolečko mimo grid (grid událost zpracuje dřív – defaultPrevented).
+ */
+export function useAppZoomShortcuts() {
+  useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
+  useLayoutEffect(() => {
+    const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
+    const onWheel = (event: WheelEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      if (isNativeSelectOpen()) return;
+      event.preventDefault();
+      step(event);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      const action = isAppZoomShortcut(event);
+      if (!action) return;
+      event.preventDefault();
+      if (action === "increase") setAppZoom(getAppZoom() + APP_ZOOM_KEY_STEP);
+      else if (action === "decrease") setAppZoom(getAppZoom() - APP_ZOOM_KEY_STEP);
+      else resetAppZoom();
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+}

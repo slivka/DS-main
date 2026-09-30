@@ -47,11 +47,13 @@ describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
     expect(getAppZoom()).toBe(1.3);
   });
 
-  it("useAppZoom zoom neaplikuje, jen AppShell při startu", () => {
+  it("useAppZoom zoom neaplikuje, jen rám při startu (useAppZoomShortcuts)", () => {
     const zoom = readFileSync("src/lib/app-zoom.ts", "utf8");
-    const hook = zoom.slice(zoom.indexOf("export function useAppZoom"));
+    const hook = zoom.slice(zoom.indexOf("export function useAppZoom()"), zoom.indexOf("export function effectiveViewportWidth"));
     expect(hook).not.toContain("applyAppZoom(");
-    expect(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8")).toContain("useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);");
+    const shortcuts = zoom.slice(zoom.indexOf("export function useAppZoomShortcuts"));
+    expect(shortcuts).toContain("useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);");
+    expect(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8")).toContain("useAppZoomShortcuts();");
   });
 });
 

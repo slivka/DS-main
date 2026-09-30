@@ -470,3 +470,12 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
 - Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
 - Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.
+
+## Nastavení nad úrovní firmy (2.79.0)
+
+- Nastavení prostoru (a všeho nad firmou) = `StandaloneShell` mimo `AppShell`, nikdy panel AppShellu. Bez menu aplikace, výběru firmy/období, panelů a záložek.
+- Levý sloupec: nahoře `ContextSwitcher` (přepnutí prostoru), pod ním `StandaloneNav` (stránky prostoru). Pod `md` je sloupec nad obsahem a menu se mění na výběr stránek.
+- Esc zavře rám jen bez otevřeného překryvu; neuložené změny hlídá aplikace v `onClose`.
+- Nevratné akce = `DangerZone` + `ConfirmByTypingDialog` (opsání názvu, u závažných i `acknowledgement`). Chyba se ukáže v dialogu, ne toastem.
+- Upozornění „pracujete v jiném prostoru“ = `NoticeBar tone="neutral"` s textovou akcí vpravo.
+- Vlastní rám mimo AppShell / StandaloneShell volá `useAppZoomShortcuts()`, aby zoom fungoval stejně.

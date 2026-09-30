@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkspaceSettingsRouteImport } from './routes/workspace-settings'
 import { Route as GuidelinesRouteImport } from './routes/guidelines'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkspaceSettingsPageRouteImport } from './routes/workspace-settings.$page'
 import { Route as ComponentsPrintRouteImport } from './routes/components.print'
 import { Route as ComponentsNavigationRouteImport } from './routes/components.navigation'
 import { Route as ComponentsMatchingRouteImport } from './routes/components.matching'
@@ -22,6 +24,11 @@ import { Route as ComponentsAccountingFormsRouteImport } from './routes/componen
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
+const WorkspaceSettingsRoute = WorkspaceSettingsRouteImport.update({
+  id: '/workspace-settings',
+  path: '/workspace-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidelinesRoute = GuidelinesRouteImport.update({
   id: '/guidelines',
   path: '/guidelines',
@@ -31,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceSettingsPageRoute = WorkspaceSettingsPageRouteImport.update({
+  id: '/$page',
+  path: '/$page',
+  getParentRoute: () => WorkspaceSettingsRoute,
 } as any)
 const ComponentsPrintRoute = ComponentsPrintRouteImport.update({
   id: '/components/print',
@@ -89,6 +101,7 @@ const Char91__componentChar93PreviewSplatRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
@@ -97,12 +110,14 @@ export interface FileRoutesByFullPath {
   '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
+  '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
@@ -111,6 +126,7 @@ export interface FileRoutesByTo {
   '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
+  '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -118,6 +134,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
+  '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
@@ -126,6 +143,7 @@ export interface FileRoutesById {
   '/components/matching': typeof ComponentsMatchingRoute
   '/components/navigation': typeof ComponentsNavigationRoute
   '/components/print': typeof ComponentsPrintRoute
+  '/workspace-settings/$page': typeof WorkspaceSettingsPageRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -134,6 +152,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/guidelines'
+    | '/workspace-settings'
     | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
@@ -142,12 +161,14 @@ export interface FileRouteTypes {
     | '/components/matching'
     | '/components/navigation'
     | '/components/print'
+    | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/guidelines'
+    | '/workspace-settings'
     | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
@@ -156,12 +177,14 @@ export interface FileRouteTypes {
     | '/components/matching'
     | '/components/navigation'
     | '/components/print'
+    | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   id:
     | '__root__'
     | '/'
     | '/guidelines'
+    | '/workspace-settings'
     | '/components/accounting-forms'
     | '/components/excel-export'
     | '/components/feedback'
@@ -170,6 +193,7 @@ export interface FileRouteTypes {
     | '/components/matching'
     | '/components/navigation'
     | '/components/print'
+    | '/workspace-settings/$page'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
@@ -177,6 +201,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuidelinesRoute: typeof GuidelinesRoute
+  WorkspaceSettingsRoute: typeof WorkspaceSettingsRouteWithChildren
   ComponentsAccountingFormsRoute: typeof ComponentsAccountingFormsRoute
   ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
@@ -191,6 +216,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workspace-settings': {
+      id: '/workspace-settings'
+      path: '/workspace-settings'
+      fullPath: '/workspace-settings'
+      preLoaderRoute: typeof WorkspaceSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guidelines': {
       id: '/guidelines'
       path: '/guidelines'
@@ -204,6 +236,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/workspace-settings/$page': {
+      id: '/workspace-settings/$page'
+      path: '/$page'
+      fullPath: '/workspace-settings/$page'
+      preLoaderRoute: typeof WorkspaceSettingsPageRouteImport
+      parentRoute: typeof WorkspaceSettingsRoute
     }
     '/components/print': {
       id: '/components/print'
@@ -278,9 +317,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface WorkspaceSettingsRouteChildren {
+  WorkspaceSettingsPageRoute: typeof WorkspaceSettingsPageRoute
+}
+
+const WorkspaceSettingsRouteChildren: WorkspaceSettingsRouteChildren = {
+  WorkspaceSettingsPageRoute: WorkspaceSettingsPageRoute,
+}
+
+const WorkspaceSettingsRouteWithChildren =
+  WorkspaceSettingsRoute._addFileChildren(WorkspaceSettingsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuidelinesRoute: GuidelinesRoute,
+  WorkspaceSettingsRoute: WorkspaceSettingsRouteWithChildren,
   ComponentsAccountingFormsRoute: ComponentsAccountingFormsRoute,
   ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
