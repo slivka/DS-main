@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../.
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
-import { applyAppZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, useAppZoom } from "../../../lib/app-zoom";
+import { applyAppZoom, createAppWheelZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, resetAppZoom, setAppZoom, useAppZoom } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
@@ -351,6 +351,8 @@ export function resolveMenuWidth(stored: number, maximum: number) {
 }
 const formatMenuRem = (value: number) => value.toLocaleString("cs-CZ", { maximumFractionDigits: 2 });
 
+const APP_ZOOM_KEY_STEP = 0.05;
+
 export function AppShell({
   children,
   navGroups,
@@ -417,6 +419,18 @@ export function AppShell({
 
   // Zoom aplikace se aplikuje jen jednou při startu; další změny dělá setAppZoom / resetAppZoom.
   useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
+  // Ctrl/Cmd + kolečko mimo grid = zoom aplikace. Grid událost zpracuje dřív (defaultPrevented).
+  useEffect(() => {
+    const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
+    const onWheel = (event: WheelEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      if (document.activeElement instanceof HTMLSelectElement && document.activeElement.matches(":open")) return;
+      event.preventDefault();
+      step(event);
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
   useEffect(() => {
     document.title = appName;
   }, [appName]);
@@ -471,12 +485,13 @@ export function AppShell({
     const onKey = (event: KeyboardEvent) => {
       const target = event.target;
       const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+      // Zoom aplikace funguje i s kurzorem v poli; klávesy přebíráme od prohlížeče.
       const zoomAction = isAppZoomShortcut(event);
-      if (zoomAction && !isEditing) {
+      if (zoomAction) {
         event.preventDefault();
-        if (zoomAction === "increase") appZoom.setZoom(appZoom.zoom + appZoom.step);
-        else if (zoomAction === "decrease") appZoom.setZoom(appZoom.zoom - appZoom.step);
-        else appZoom.reset();
+        if (zoomAction === "increase") setAppZoom(getAppZoom() + APP_ZOOM_KEY_STEP);
+        else if (zoomAction === "decrease") setAppZoom(getAppZoom() - APP_ZOOM_KEY_STEP);
+        else resetAppZoom();
         return;
       }
       if (!event.ctrlKey || event.altKey || event.metaKey || event.key.toLowerCase() !== "b" || isEditing) return;

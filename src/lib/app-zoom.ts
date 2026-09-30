@@ -85,10 +85,45 @@ export function effectiveViewportWidth(innerWidth: number, zoom: number) {
   return innerWidth / (zoom > 0 ? zoom : 1);
 }
 
-export function isAppZoomShortcut(event: Pick<KeyboardEvent, "code" | "ctrlKey" | "altKey" | "metaKey" | "getModifierState">) {
-  if (!event.ctrlKey || !event.altKey || event.metaKey || event.getModifierState("AltGraph")) return null;
-  if (event.code === "NumpadAdd" || event.code === "Equal") return "increase" as const;
-  if (event.code === "NumpadSubtract" || event.code === "Minus") return "decrease" as const;
-  if (event.code === "Numpad0" || event.code === "Digit0") return "reset" as const;
+type ZoomKeyEvent = Pick<KeyboardEvent, "key" | "code" | "ctrlKey" | "altKey" | "metaKey" | "getModifierState">;
+
+/** Mac poznáme podle `navigator.userAgentData.platform`, jinak `navigator.platform`. */
+export function isMacPlatform() {
+  if (typeof navigator === "undefined") return false;
+  const platform = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ?? navigator.platform ?? "";
+  return /mac|iphone|ipad|ipod/i.test(platform);
+}
+
+/**
+ * Zkratky zoomu aplikace: Cmd (Mac) / Ctrl (jinde) + plus / minus / 0, rozpoznané podle `key`
+ * (funguje na CZ i US rozložení), numerická klávesnice podle `code`. Alt a AltGr se ignorují, Shift je povolen.
+ */
+export function isAppZoomShortcut(event: ZoomKeyEvent, mac = isMacPlatform()) {
+  if (event.altKey || event.getModifierState("AltGraph")) return null;
+  const primary = mac ? event.metaKey : event.ctrlKey;
+  const other = mac ? event.ctrlKey : event.metaKey;
+  if (!primary || other) return null;
+  if (event.key === "+" || event.key === "=" || event.code === "NumpadAdd") return "increase" as const;
+  if (event.key === "-" || event.code === "NumpadSubtract") return "decrease" as const;
+  if (event.key === "0" || event.code === "Digit0" || event.code === "Numpad0") return "reset" as const;
   return null;
+}
+
+export const APP_WHEEL_THRESHOLD = 100;
+export const APP_WHEEL_INTERVAL = 80;
+
+/** Ctrl/Cmd + kolečko: sčítá delty, po prahu udělá jeden krok ±5 %, nejvýš jeden za 80 ms; zbytek zahodí. */
+export function createAppWheelZoom(step: (direction: 1 | -1) => void, now: () => number = () => Date.now()) {
+  let accumulated = 0;
+  let lastStep = -Infinity;
+  return (event: Pick<WheelEvent, "deltaY" | "deltaMode">) => {
+    accumulated += event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
+    if (Math.abs(accumulated) < APP_WHEEL_THRESHOLD) return false;
+    const time = now();
+    if (time - lastStep < APP_WHEEL_INTERVAL) { accumulated = 0; return false; }
+    step(accumulated < 0 ? 1 : -1);
+    accumulated = 0;
+    lastStep = time;
+    return true;
+  };
 }
