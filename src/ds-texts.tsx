@@ -988,7 +988,11 @@ export interface DsTextsProviderProps {
   locale?: DsLocale;
   texts?: Partial<DsTexts>;
 }
-function mergeTextKey<K extends keyof DsTexts>(result: DsTexts, key: K, value: DsTexts[K]) {
+function mergeTextKey<K extends keyof DsTexts>(
+  result: DsTexts,
+  key: K,
+  value: DsTexts[K] | undefined,
+) {
   const current = result[key];
   result[key] =
     value &&
@@ -997,14 +1001,13 @@ function mergeTextKey<K extends keyof DsTexts>(result: DsTexts, key: K, value: D
     current &&
     typeof current === "object"
       ? { ...current, ...value }
-      : value;
+      : (value as DsTexts[K]);
 }
 function mergeTexts(base: DsTexts, patch?: Partial<DsTexts>): DsTexts {
   if (!patch) return base;
   const result: DsTexts = { ...base };
   for (const key of Object.keys(patch) as (keyof DsTexts)[]) {
-    const value = patch[key];
-    if (value !== undefined) mergeTextKey(result, key, value);
+    mergeTextKey(result, key, patch[key]);
   }
   return result;
 }

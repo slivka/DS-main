@@ -55,7 +55,8 @@ export const PANE_FOCUS_EXCLUDED =
   "input,textarea,select,button,a[href],label,summary,[contenteditable]:not([contenteditable=false]),[role=menu],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=combobox],[role=tab],[role=slider],[role=grid],[role=dialog],[role=alertdialog],[role=listbox],[role=textbox],[role=button],[role=switch],[role=checkbox],[role=radio]";
 
 type FocusNode = { closest?: (selector: string) => unknown };
-type FocusContainer = { contains(node: FocusNode | null): boolean };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FocusContainer = { contains: (node: any) => boolean };
 
 /**
  * Rozhodne, zda po kliku přesunout fokus na rolovací oblast panelu.
