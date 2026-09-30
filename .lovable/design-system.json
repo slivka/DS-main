@@ -2405,8 +2405,7 @@
         },
         {
           "name": "panels",
-          "type": "any",
-          "description": "Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu."
+          "type": "any"
         },
         {
           "name": "activePanel",
@@ -2459,8 +2458,7 @@
         },
         {
           "name": "contextDisabledHint",
-          "type": "string",
-          "description": "Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint)."
+          "type": "string"
         },
         {
           "name": "navSearchMenu",
@@ -2505,7 +2503,7 @@
           "type": "boolean"
         }
       ],
-      "usage": "Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti.",
+      "usage": "Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint).",
       "examples": [
         {
           "label": "Řízené části Nastavení",
