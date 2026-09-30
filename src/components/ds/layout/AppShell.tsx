@@ -353,6 +353,13 @@ const formatMenuRem = (value: number) => value.toLocaleString("cs-CZ", { maximum
 
 const APP_ZOOM_KEY_STEP = 0.05;
 
+/** Otevřený nativní `<select>` si kolečko ponechá. */
+function isNativeSelectOpen() {
+  const active = document.activeElement;
+  if (!(active instanceof HTMLSelectElement)) return false;
+  try { return active.matches(":open"); } catch { return false; }
+}
+
 export function AppShell({
   children,
   navGroups,
@@ -424,7 +431,7 @@ export function AppShell({
     const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
     const onWheel = (event: WheelEvent) => {
       if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
-      if (document.activeElement instanceof HTMLSelectElement && document.activeElement.matches(":open")) return;
+      if (isNativeSelectOpen()) return;
       event.preventDefault();
       step(event);
     };
