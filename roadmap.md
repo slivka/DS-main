@@ -682,3 +682,5 @@
 - [x] Dodržet limit záložek při slučování rozložení
 - [x] Přeskupit UserMenu, přidat workspaceAction a odebrat ikonu z nadpisu panelu
 - [x] Ověřit všechny testy, typy, sestavení a ukázku
+
+- 2.77.0: zkratky panelů ignorují opakování při držení klávesy (kromě šipek); výchozí texty nabídek rozložení a záložek mají jediný zdroj v DS_TEXTS_CS.
