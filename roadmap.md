@@ -1,3 +1,12 @@
+## Verze 2.71.0 – AppShell panely a rozsah platnosti
+
+- [x] Přeskládat panelové menu a pevný řádek panelu včetně mobilního pořadí.
+- [x] Přidat šedý tón panelových menu, tokeny a čitelné stavy v obou motivech.
+- [x] Přidat řízené části panelu a rozsahy company / workspace / platform bez narušení měření horní lišty.
+- [x] Upravit skupiny, hledání a součty odznaků.
+- [x] Doplnit ukázky, dokumentaci, katalog a verzi 2.71.0; Release neprovádět.
+- [x] Doplnit testy a ověřit všechny testy, typy, sestavení a požadované viewporty/zoom.
+
 ## Verze 2.70.0 – oprava zoomu aplikace (reklamace)
 - [x] Zkratky Cmd (Mac) / Ctrl + plus / minus / 0 podle `event.key`, i v polích; BREAKING: Ctrl+Alt zrušeno.
 - [x] Ctrl/Cmd + kolečko podle polohy: grid × aplikace; otevřený nativní `<select>` se nezachytává.

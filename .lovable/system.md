@@ -281,6 +281,12 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   sdílí uloženou volbu s `ThemeSetting`.
 - Nastavení firmy, administraci a další režimy skládej přes `panels`; otevřený
   panel nahradí hlavní navigaci a zavírá se tlačítkem nebo klávesou Esc.
+- Hlavní menu aplikace je tmavě modré, menu panelů je neutrálně šedé. V panelu
+  mají sekce nesbalitelné nadpisy verzálkami a pořadí řádku je ikona → přepínač
+  částí → nadpis s kontextem → Zavřít; na mobilu jsou segmenty pod prvním řádkem.
+- Části panelu předávej řízeně přes `views`, `activeView` a `onViewChange`.
+  Rozsah `workspace` nebo `platform` zašedí volbu firmy a období bez změny
+  jejich rozměrů a centrování; `company` zachovává běžné ovládání.
 - Pro nový kód používá AppShell navigaci přes `navGroups`; administrační a jiné
   režimy přes `panels`, `activePanel` a `onActivePanelChange`. Staré aliasy a
   plochý seznam jsou pouze dočasná zpětná kompatibilita a jsou deprecated.
