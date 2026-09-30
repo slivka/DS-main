@@ -12,6 +12,7 @@
 <!-- LOVABLE:END -->
 
 - Pravidla dokladů, DPH a editoru řádků: `src/components/ds/accounting/AGENTS.md`.
+- Pravidla kvality DS: `src/components/ds/AGENTS.md`.
 - Značky měn pocházejí z dat; nikdy nevkládej pevné `Kč` ani `CZK`.
 - Zoom aplikace ukládá zařízení; Ctrl/Cmd+kolečko rozlišuje grid a aplikaci; automat gridů počítá z px při kořeni 16 px.
 - Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
