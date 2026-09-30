@@ -217,13 +217,18 @@ export function resolveJournalColumnLayout({ availableWidthRem: availableRaw, mo
   return { hiddenColumnIds: [...hidden], compactAccounts: compact.size > 0, compactAccountIds: [...compact], requiredWidthRem: required() * scale, textMinRem: textMin, customWidthsApplied: useCustomWidths };
 }
 
-/** Pořadí výpočtu: plná sada sloupců při 100 % → zoom (≥ 75 %, nebo ruční) → kaskáda sloupců při tomto zoomu → rolování. */
-export function resolveJournalZoomLayout(input: Omit<JournalColumnLayoutInput, "zoom"> & { manualZoom?: number | null }) {
-  const { manualZoom = null, ...layoutInput } = input;
+/**
+ * Pořadí výpočtu: plná sada sloupců při 100 % → zoom (≥ 75 %, nebo ruční) → kaskáda sloupců → rolování.
+ * `availableWidthRem` je dostupná šířka v px / 16 (kořen 16 px). Auto zoom zoom aplikace nekompenzuje;
+ * kaskáda a rolování porovnávají skutečné vykreslení = šířka při 100 % × `appZoom` × zoom gridu.
+ */
+export function resolveJournalZoomLayout(input: Omit<JournalColumnLayoutInput, "zoom"> & { manualZoom?: number | null; appZoom?: number }) {
+  const { manualZoom = null, appZoom: rawAppZoom = 1, ...layoutInput } = input;
+  const appZoom = rawAppZoom > 0 ? rawAppZoom : 1;
   const full = resolveJournalColumnLayout({ ...layoutInput, availableWidthRem: Number.MAX_SAFE_INTEGER, zoom: 1 });
   const autoZoom = calculateAutoGridZoom(layoutInput.availableWidthRem, full.requiredWidthRem) ?? 1;
   const zoom = manualZoom ?? autoZoom;
-  const layout = resolveJournalColumnLayout({ ...layoutInput, zoom });
+  const layout = resolveJournalColumnLayout({ ...layoutInput, zoom: zoom * appZoom });
   return { autoZoom, zoom, fullRequiredWidthRem: full.requiredWidthRem, layout, scroll: layoutInput.availableWidthRem > 0 && layout.requiredWidthRem > layoutInput.availableWidthRem + 0.25 };
 }
 
@@ -263,7 +268,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const initializedEmptyLine = React.useRef(false);
   const [rootRemPx, setRootRemPx] = React.useState(16);
   const setRootRef = React.useCallback((node: HTMLDivElement | null) => { rootRef.current = node; if (typeof forwardedRef === "function") forwardedRef(node); else if (forwardedRef) forwardedRef.current = node; }, [forwardedRef]);
-  React.useLayoutEffect(() => { const node = rootRef.current; if (!node) return; let timer: ReturnType<typeof setTimeout> | undefined; const update = () => { if (isResizeLocked()) return; const width = node.getBoundingClientRect().width; if (width <= 0) return; setContainerWidth(width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; const delayed = () => { if (timer) clearTimeout(timer); timer = setTimeout(update, 150); }; update(); const observer = new ResizeObserver(delayed); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", delayed); window.addEventListener(APP_ZOOM_EVENT, delayed); window.addEventListener(RESIZE_END_EVENT, update); return () => { if (timer) clearTimeout(timer); observer.disconnect(); window.removeEventListener("resize", delayed); window.removeEventListener(APP_ZOOM_EVENT, delayed); window.removeEventListener(RESIZE_END_EVENT, update); }; }, []);
+  React.useLayoutEffect(() => { const node = rootRef.current; if (!node) return; let timer: ReturnType<typeof setTimeout> | undefined; const update = () => { if (isResizeLocked()) return; const width = node.getBoundingClientRect().width; if (width <= 0) return; setContainerWidth(width); setRootRemPx(Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16); }; const delayed = () => { if (timer) clearTimeout(timer); timer = setTimeout(update, 150); }; update(); const frame = requestAnimationFrame(update); const observer = new ResizeObserver(delayed); observer.observe(node); observer.observe(document.documentElement); window.addEventListener("resize", delayed); window.addEventListener(APP_ZOOM_EVENT, delayed); window.addEventListener(RESIZE_END_EVENT, update); return () => { cancelAnimationFrame(frame); if (timer) clearTimeout(timer); observer.disconnect(); window.removeEventListener("resize", delayed); window.removeEventListener(APP_ZOOM_EVENT, delayed); window.removeEventListener(RESIZE_END_EVENT, update); }; }, []);
   const foreign = documentCurrency !== homeCurrency; const canReorder = (reorderable ?? editable.size > 0) && !search;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const accountByCode = React.useMemo(() => new Map(accounts.map((account) => [account.code, account])), [accounts]);
@@ -303,16 +308,19 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   const effectiveWidthRem = containerWidth / rootRemPx;
   const requestedColumnIds = columns.columns.filter((column) => columns.visible[column.id]).map((column) => column.id);
   const widthsRem = React.useMemo(() => Object.fromEntries(Object.entries(columns.widths).map(([id, width]) => [id, typeof width === "number" ? width / 16 : undefined])), [columns.widths]);
-  const zoomLayout = React.useMemo(() => resolveJournalZoomLayout({ availableWidthRem: effectiveWidthRem, manualZoom, mode, visibleColumnIds: requestedColumnIds, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [effectiveWidthRem, manualZoom, mode, requestedColumnIds, protectedColumns, sideFields, widthsRem]);
+  const availableWidthPx16 = containerWidth / 16;
+  const appZoomFactor = rootRemPx / 16;
+  const zoomLayout = React.useMemo(() => resolveJournalZoomLayout({ availableWidthRem: availableWidthPx16, appZoom: appZoomFactor, manualZoom, mode, visibleColumnIds: requestedColumnIds, protectedColumnIds: protectedColumns, sharedSideFields: sideFields === "shared", widths: widthsRem }), [availableWidthPx16, appZoomFactor, manualZoom, mode, requestedColumnIds, protectedColumns, sideFields, widthsRem]);
   const automaticZoom = zoomLayout.autoZoom;
   // Jeden efektivní zoom pro písmo, šířky sloupců i kaskádu: ruční hodnota, jinak vypočtená.
   const zoom = zoomLayout.zoom;
   const columnLayout = zoomLayout.layout;
-  const autoInputsKey = `${Math.round(effectiveWidthRem * 100)}|${rootRemPx}|${requestedColumnIds.join(",")}|${zoomLayout.fullRequiredWidthRem}`;
+  // Auto zoom a rušení ručního zoomu závisí jen na šířce v px a sloupcích; kaskáda (zoomLayout) se přepočítá i po změně zoomu aplikace.
+  const autoInputsKey = `${Math.round(containerWidth)}|${requestedColumnIds.join(",")}|${zoomLayout.fullRequiredWidthRem}`;
   const autoInitialized = React.useRef(false);
   React.useLayoutEffect(() => {
     if (effectiveWidthRem <= 0) return;
-    // První výpočet po připojení ruční zoom ponechá (přepnutí záložky); každá další změna šířky / sloupců / zoomu aplikace jej zruší.
+    // První výpočet po připojení ruční zoom ponechá (přepnutí záložky); každá další změna šířky v px nebo sloupců jej zruší, zoom aplikace ne.
     setAutoZoom(automaticZoom, autoInitialized.current);
     autoInitialized.current = true;
   }, [autoInputsKey]); // eslint-disable-line react-hooks/exhaustive-deps

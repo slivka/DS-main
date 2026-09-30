@@ -115,6 +115,16 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu `height="fill"` na listové stránce. Výjimkou jsou dialogy, popovery a seznamy výběrů.
 - Zoom formulářového gridu je automatický a dočasný; pořadí je plná sada sloupců při 100 % → zoom nejméně 75 % → kaskáda → vodorovné rolování.
 
+### Zoom aplikace a gridu (2.70.0, BREAKING)
+
+- Ctrl/Cmd + kolečko (i roztažení dvěma prsty na trackpadu) se řídí polohou myši: nad gridem (`ZoomGrid`, `ZoomPane`, `useWheelZoom`, editor řádků) mění jen zoom toho gridu, kdekoli jinde (menu, horní lišta, dialog, rozbalovač, formulář) zoom aplikace po 5 % (práh ~100 px, nejvýš krok za 80 ms, 70–200 %). Otevřený nativní `<select>` kolečko nezachytává.
+- Klávesy: Cmd (Mac) / Ctrl (jinde) + plus / minus / 0 podle `event.key` (CZ i US rozložení), numerická klávesnice podle `code`. Aplikace je přebírá od prohlížeče (`preventDefault`) a fungují i s kurzorem v poli. Alt a AltGr se ignorují.
+- BREAKING: zkratky Ctrl+Alt (Ctrl+Option) + plus / minus / 0 byly zrušeny bez náhrady; `isAppZoomShortcut(event, mac?)` rozpoznává jen nové zkratky.
+- Převzetí Cmd/Ctrl + plus / minus / 0 od prohlížeče bylo ověřeno v Chromiu (Playwright). Kdyby ho některý prohlížeč nepustil, zůstává ovladač „Velikost zobrazení“ v uživatelském menu.
+- Automatický zoom gridů ve formuláři zoom aplikace nekompenzuje: počítá z dostupné šířky v px a potřebné šířky při kořeni 16 px. Zvětšení aplikace tak vždy zvětší i grid; když se nevejde, kaskáda přesune sloupce do detailu a teprve nakonec se roluje.
+- Kaskáda a rolování editoru řádků porovnávají skutečné vykreslení (šířka při 100 % × zoom aplikace × zoom gridu) s dostupnou šířkou a přepočítají se po každé změně zoomu aplikace.
+- Ruční zoom gridu změna zoomu aplikace neruší; ruší ho jen změna šířky v px nebo změna Sloupců.
+
 - Nadpis gridu je ve výchozím stavu skrytý; zobrazuj ho pouze na výslovné
   vyžádání přes `showTitle`. Lišta, hlavička a součtový řádek tvoří jeden spojený blok.
 - Filtr datumového sloupce s `exportType: "date" | "datetime"` nabízí vedle
