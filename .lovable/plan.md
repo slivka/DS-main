@@ -1,56 +1,50 @@
-# DS 2.71.0 – AppShell panely a rozsah platnosti
+# DS 2.73.0 – Edit dokladu 8 a opravy panelů
 
 ## Výsledek
-- Panelové menu bude od horní lišty až dolů; řádek panelu bude pouze nad pravým obsahem a bude pevný při rolování stránky.
-- Hlavní menu zůstane tmavě modré, menu panelů bude ve světlém i tmavém motivu neutrálně šedé a čitelné.
-- Panel může nabídnout řízené části, například „Firma | Prostor“, které současně přepnou nadpis, kontext, rozsah platnosti a menu.
-- U nastavení prostoru nebo celé platformy zůstane firma a období na místě, ale budou zřetelně zakázané s vysvětlující nápovědou.
+- Formulář dokladu sjednotí řádek částky: vpravo bude vždy nerozdělitelná dvojice Celkem a Měna, u cizí měny před ní Kurz a přepočtený domácí součet.
+- Identita pokladny a banky už nebude obsahovat měnu; měna bude stejně jako u ostatních dokladů pouze vedle Celkem.
+- Datumová varování se přesunou do společného pruhu upozornění a příslušná pole zůstanou viditelně označena s nápovědou.
+- Přijaté doklady dostanou požadované pořadí sekcí, rozložení základních a platebních údajů, bankovní účet s nabídkou i ručním zadáním a bezpečné předvyplnění VS.
+- AppShell přestane přepisovat titulek stránky, stabilizuje tooltip a vývojová varování a zvýší kontrast odznaku aktivní položky.
 
-## Veřejné rozhraní AppShellu
-- Přidat `AppShellScope = "company" | "workspace" | "platform"`.
-- Rozšířit `AppShellPanel` o `sidebarTone?: "app" | "panel"`, `scope?`, `views?`, `activeView?` a `onViewChange?`; výchozí tón panelu bude `panel`, výchozí rozsah `company`.
-- Jedna část nebo panel bez `views` zachová dnešní chování bez přepínače; neplatné `activeView` bezpečně použije první část.
-- Přidat `AppShell.contextDisabledHint`; výchozí český i slovenský text bude v centrálních textech knihovny.
-- Jde o rozšíření API bez plánované BREAKING změny. Pokud kontrola odhalí nutnou nekompatibilitu, bude výslovně uvedena v changelogu.
+## Formulář dokladu
+- Upravit veřejné texty formuláře v českém i slovenském katalogu; uživatelské texty nebudou vložené přímo v komponentách.
+- Odebrat měnu z `cashBank` identity a upravit pořadí na Směr → Kniha → Období → účet.
+- Přestavět částkový blok do dvou nerozdělitelných dvojic. Celkem a Měna budou vždy vpravo a stejně vysoké; cizoměnový Kurz a domácí přepočet se při zúžení přesunou jako celek pod ně doprava.
+- Neměnnou měnu zobrazit jako rámeček pole jen pro čtení; dostupný výběr ponechat jako kód se seznamem „kód - název“ a zachovat tooltip důvodu zákazu.
+- Sjednotit všechna data do jediného pružného řádku v zadaném pořadí a zmenšit minimum pole na 8,5 rem. Nápovědu období ukotvit k pravému okraji bez vlivu na šířku.
+- Datumová varování převést na `NoticeBar` položky v pruhu formuláře; `DateField` dostane jen varovný stav, ikonu a tooltip. Zámky dat zůstanou beze změny.
+- Pro přijaté doklady upravit základní údaje na řádky 14/3/3, 14/6 a 20; číslo dokladu dostane span 6 a dynamický popisek podle viditelnosti DPH.
+- Přesunout Platební údaje přijatých dokladů před Částku. Bankovní účet u nich bude jen v Základních údajích; platební řádek bude VS, KS, SS a nezalamovaný příznak bez platebních příkazů v šířce 6.
 
-## Rozložení a chování
-- Přeskládat tělo na levé `<aside>` a pravý sloupec, ve kterém je panelový řádek a `<main>`; odstranit pevné mezery nezávislé na nastavitelné šířce menu.
-- Panelový řádek uspořádat: ikona → segmenty → nadpis s kontextem → Zavřít. Na mobilu ponechat nadpis v prvním řádku a segmenty přesunout pod něj.
-- Segmentům dát stejnou stabilní šířku podle nejdelšího popisku; nezalamovat ikonu, segmenty, nadpis ani Zavřít. Kontext se smí zkrátit s tooltipem.
-- Aktivní část určí menu, nadpis, kontext, rozsah i klíč uloženého sbalení skupin.
-- Pro rozsah `workspace` a `platform` obalit kontext firmy a období neměnným kontejnerem s `aria-disabled`, `inert`, nižší neprůhledností, vypnutými událostmi a tooltipem.
-- Mobilní nabídka převezme aktivní část, tón menu a její nadpis i kontext.
+## Bankovní účet a VS
+- Přidat samostatný `BankAccountField` s typovanými možnostmi účtu, výchozím účtem, měnou a volbou jiného účtu.
+- Ruční účet ověřit existující kontrolou modulo 11 a volitelným seznamem kódů bank; chybu zobrazit pod polem. Prázdná nabídka otevře přímo volné zadání.
+- Doplnit veřejné props `bankAccountOptions` a `bankCodes` do `DocumentForm`; komponentu použít u přijatých i vydaných faktur a bankovních dokladů.
+- Přidat čistou exportovanou funkci `vsFromDocumentNumber`. Při změně čísla přijatého dokladu aktualizovat VS jen tehdy, když je prázdný nebo stále automaticky odvozený z předchozí hodnoty.
+- Při více než 10 číslicích ponechat VS beze změny a zobrazit lokalizovanou nápovědu pod číslem dokladu.
 
-## Barvy menu
-- Doplnit do tématu chybějící `sidebar-muted`, `sidebar-indicator` a nový `sidebar-accent-foreground`.
-- Opravit viditelnost čar hlavního menu bez změny jeho dosavadního charakteru.
-- Přidat tokenové přepsání pro `[data-sidebar-tone="panel"]` ve světlém i tmavém motivu podle zadaných odstínů.
-- Na každé desktopové i mobilní menu přidat `data-sidebar-tone`; aktivní položky, odznaky, text „Připravujeme“, hledání a přechody rolování budou používat výhradně sidebar tokeny.
-- Zachovat varovné tónování řádku Administrace nezávisle na šedém menu.
+## AppShell a vzhled menu
+- Přidat `manageDocumentTitle?: boolean` s výchozí hodnotou `false`; titulek se bude měnit jen při výslovném zapnutí.
+- Tooltip zakázaného kontextu držet po celý život komponenty v jednom řízeném režimu.
+- Shodná vývojová varování panelů evidovat a vypsat jen jednou.
+- Doplnit tokeny aktivní varianty odznaku a použít je na aktivním řádku tmavého i šedého menu; kontrast ověřit pro oba motivy.
 
-## Pravidla skupin a hledání
-- Skupinu s prázdným názvem vždy zobrazit rozbalenou a ignorovat pro ni uložené i výchozí sbalení.
-- Povolit první nepojmenovanou skupinu bez sekce a následné pojmenované sekce.
-- Rozšířit hledání o názvy sekcí při zachování hledání bez diakritiky a po více slovech.
-- Do součtu sbalené skupiny započítat pouze číselné odznaky.
+## Ukázky a dokumentace
+- Rozšířit Účetní formuláře o PO CZK, BA EUR, FV CZK/EUR, FP EUR plátce a FP neplátce včetně dvou bankovních účtů, automatického i ručního VS, dlouhého čísla, pruhu varování a nového pořadí sekcí.
+- Zachovat ukázky při 80 %, 100 %, 125 % a ve třech úzkých panelech; odstranit pevné měnové značky z komponent knihovny, data ukázky smějí značky obsahovat jako vstupní data.
+- Zvýšit `package.json` na 2.73.0, doplnit README changelog, systémová pravidla, veřejné exporty a katalog komponent. `.lovable/meta.yaml` zůstane beze změny a Release se neprovede.
+- V changelogu označit BREAKING změny: identita `cashBank` bez měny, popisek Celkem bez měny a datumová varování mimo pole; nové props bankovního účtu jsou rozšíření API.
 
-## Ukázky
-- Nahradit panely v hlavní ukázce sadou Číselníky, Nastavení se dvěma částmi a Administrace přesně podle zadání.
-- Doplnit samostatnou variantu Nastavení s jedinou částí, kde se přepínač nezobrazí.
-- Na stránce Navigace předvést světlý i tmavý panel, rozbalené a sbalené menu, úzké rozložení a krajní zoom 70 % / 200 %.
-- Ukázky budou používat skutečný AppShell, aby se ověřilo rozložení, rozsahy i přepínání, ne ručně napodobené bloky.
-
-## Dokumentace a verze
-- Zvýšit `package.json` na `2.71.0` a zapsat dokončení do `roadmap.md`.
-- Doplnit README changelog 2.71.0 včetně výslovného údaje, zda je změna BREAKING.
-- Aktualizovat `.lovable/system.md`: tmavé hlavní menu, šedé panelové menu, nesbalitelné názvy sekcí verzálkami, pořadí panelového řádku a rozsahy platnosti.
-- Aktualizovat veřejný katalog AppShellu o nové typy, vlastnosti, příklad použití a nevhodná použití; automaticky generované soubory pravidel neupravovat.
-- `.lovable/meta.yaml` ponechat bez změny a bez `upstream_versions`. Release neprovádět.
+## Technické provedení
+- Zachovat řízení hodnot výhradně přes `value` / `onChange`; komponenta nebude ukládat stav dokladu mimo formulář.
+- `BankAccountField` bude samostatná typovaná, ref-forwarding komponenta se standardním `className`, sémantikou popisku a vstupu a tokenovými stavy.
+- Rozložení použije kontejnerové hranice a šířky v rem; popisky a nápovědy se nezalamují, zalomí se vždy celé pole nebo dvojice polí.
+- Aktualizovat obohacení změněných komponent v katalogu (`usage`, příklad, antipatterns) bez ručního přepisování generovaných pravidel.
 
 ## Ověření
-- Vitest: přepnutí části mění nadpis, kontext i menu; přepínač je před nadpisem; jedna část nemá přepínač.
-- Vitest: `workspace` a `platform` zakážou kontext firmy a období, `company` nikoli.
-- Vitest: prázdná skupina se nesbalí ani z uloženého stavu; hledání najde sekci; textový odznak nezvýší součet.
-- Vitest: desktopové i mobilní `<aside>` dostane tón `panel` v panelu a `app` v běžném menu.
-- Spustit všechny testy, typovou kontrolu a ověřit aktuální sestavení.
-- V prohlížeči ověřit světlý/tmavý motiv, Administraci s warning řádkem, sbalené menu, mobil, úzké okno a zoom 70 % / 200 % bez překryvů a posunů horní lišty.
+- Doplnit jednotkové testy pro popisek a polohu měny, všechny identity, výšku polí, pořadí sekcí, span 6, dynamický popisek čísla, pruh datumových varování a validaci bankovního účtu.
+- Otestovat `vsFromDocumentNumber` pro běžné číslo, úvodní nuly, mezery, žádné číslice a 11 číslic; otestovat zachování ručně zadaného VS.
+- Doplnit regresní testy AppShellu pro titulek, stabilní tooltip, jednorázová varování a token aktivního odznaku.
+- Spustit všechny jednotkové testy, kontrolu typů a sestavení.
+- V prohlížeči ověřit požadované doklady při 80/100/125 %, tři panely, zalamování dvojic, datumová upozornění a kontrast odznaků ve světlém i tmavém menu.

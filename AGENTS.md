@@ -39,3 +39,5 @@ Aplikace nastaví jazyk jednou v kořeni:
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
 - DS 2.70.0: zoom aplikace ukládá zařízení; Ctrl/Cmd+kolečko podle polohy (grid × aplikace); automat gridů počítá z px při kořeni 16 px bez kompenzace zoomu aplikace – aby se zvětšení aplikace vždy projevilo.
+
+- DocumentForm drží měnu vždy vedle Celkem, datumová varování v NoticeBar a u přijatých dokladů pořadí Základní údaje → Datumy → Platební údaje → Částka → Řádky.
