@@ -69,8 +69,10 @@ describe("StandaloneShell – Esc", () => {
     fireEvent.click(view.getByRole("button", { name: /Test/ }));
     await waitFor(() => expect(view.getByText("Slivka Group")).toBeTruthy());
     fireEvent.keyDown(document.activeElement ?? document.body, { key: "Escape" });
-    escape();
     expect(closed).toBe(0);
+    await waitFor(() => expect(view.queryByText("Slivka Group")).toBeNull());
+    escape();
+    expect(closed).toBe(1);
   });
 });
 
