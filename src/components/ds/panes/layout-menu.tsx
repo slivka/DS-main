@@ -1,14 +1,12 @@
 import * as React from "react";
-import { ArrowDown, ArrowUp, ChevronDown, Columns2, Columns3, MoreHorizontal, Square, Star, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -27,22 +25,18 @@ import type { LayoutSnapshot, PaneLayoutCount } from "./pane-state";
 export type SavedLayoutItem = {
   id: string;
   name: string;
-  /** Počet panelů – určuje ikonu. */
+  /** Počet panelů uloženého snímku. */
   panes: PaneLayoutCount;
-  /** Výchozí po přihlášení. */
-  isDefault?: boolean;
 };
 
 export type LayoutMenuTexts = {
   trigger: string;
-  saved: string;
   empty: string;
   saveCurrent: string;
   overwrite: string;
   manage: string;
   saveTitle: string;
   nameLabel: string;
-  defaultLabel: string;
   save: string;
   cancel: string;
   manageTitle: string;
@@ -53,22 +47,16 @@ export type LayoutMenuTexts = {
   deleteDescription: string;
   moveUp: string;
   moveDown: string;
-  setDefault: string;
-  isDefault: string;
-  /** {count} se nahradí. */
-  panes: string;
 };
 
 export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = {
   trigger: "Rozložení",
-  saved: "Uložená rozložení",
   empty: "Zatím žádné uložené rozložení",
-  saveCurrent: "Uložit aktuální…",
-  overwrite: "Přepsat aktuálním",
-  manage: "Spravovat",
+  saveCurrent: "Uložit aktuální jako nové…",
+  overwrite: "Přepsat uložené aktuálním",
+  manage: "Spravovat rozložení",
   saveTitle: "Uložit rozložení",
   nameLabel: "Název",
-  defaultLabel: "Výchozí po přihlášení",
   save: "Uložit",
   cancel: "Zrušit",
   manageTitle: "Uložená rozložení",
@@ -78,19 +66,16 @@ export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = {
   deleteDescription: "Rozložení „{name}“ bude odstraněno.",
   moveUp: "Posunout nahoru",
   moveDown: "Posunout dolů",
-  setDefault: "Nastavit jako výchozí",
-  isDefault: "Výchozí po přihlášení",
-  panes: "Panely: {count}",
 };
 
 export interface LayoutMenuProps {
   items: SavedLayoutItem[];
   /** Uložení aktuálního rozložení. `snapshot` je serializeLayout(state), když je menu uvnitř PaneTabsProvider. */
-  onSave: (input: { name: string; isDefault: boolean; snapshot: LayoutSnapshot | null }) => void;
+  onSave: (input: { name: string; snapshot: LayoutSnapshot | null }) => void;
   /** Použití uloženého rozložení – aplikace zavolá usePaneTabs().applyLayout(snapshot). */
   onApply: (id: string) => void;
-  /** Přejjménování, změna výchozího nebo přepsání aktuálním (`snapshot`). */
-  onUpdate: (id: string, patch: { name?: string; isDefault?: boolean; snapshot?: LayoutSnapshot | null }) => void;
+  /** Přejmenování nebo přepsání aktuálním (`snapshot`). */
+  onUpdate: (id: string, patch: { name?: string; snapshot?: LayoutSnapshot | null }) => void;
   onDelete: (id: string) => void;
   onReorder?: (ids: string[]) => void;
   /** Zkratka Alt+L otevře nabídku. Výchozí true. */
@@ -101,8 +86,6 @@ export interface LayoutMenuProps {
   className?: string;
 }
 
-const PANE_ICONS = { 1: Square, 2: Columns2, 3: Columns3 } as const;
-
 /** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
 export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
   const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...texts };
@@ -111,7 +94,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   const [saveOpen, setSaveOpen] = React.useState(false);
   const [manageOpen, setManageOpen] = React.useState(false);
   const [name, setName] = React.useState("");
-  const [isDefault, setIsDefault] = React.useState(false);
   const { confirm, confirmDialog } = useConfirmDialog();
   const snapshot = () => tabs?.serializeLayout() ?? null;
 
@@ -130,7 +112,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   const submitSave = (event: React.FormEvent) => {
     event.preventDefault();
     if (!name.trim()) return;
-    onSave({ name: name.trim(), isDefault, snapshot: snapshot() });
+    onSave({ name: name.trim(), snapshot: snapshot() });
     setSaveOpen(false);
   };
 
