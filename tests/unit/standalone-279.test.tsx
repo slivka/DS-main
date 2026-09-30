@@ -20,6 +20,7 @@ const { matchesConfirmText } = await import("../../src/components/ds/feedback/co
 const { CompanySwitcher } = await import("../../src/components/ds/layout/company-switcher");
 const { DangerZone } = await import("../../src/components/ds/feedback/danger-zone");
 const { NoticeBar } = await import("../../src/components/ds/feedback/notice-bar");
+const { setAppZoom } = await import("../../src/lib/app-zoom");
 const { AppShell } = await import("../../src/components/ds/layout/AppShell");
 const { Dialog, DialogContent, DialogTitle } = await import("../../src/components/ui/dialog");
 
@@ -150,7 +151,7 @@ describe("StandaloneNav, DangerZone, NoticeBar", () => {
     setMobile(true);
     const view = render(<StandaloneNav groups={groups} />);
     await waitFor(() => expect(view.container.querySelector("[data-slot=standalone-nav-select]")).toBeTruthy());
-    expect(view.queryByRole("navigation")).toBeNull();
+    expect(view.getByRole("navigation").querySelector("a")).toBeNull();
   });
 
   it("DangerZone má výchozí nadpis a NoticeBar neutrální tón s akcí", () => {
@@ -179,6 +180,7 @@ describe("useAppZoomShortcuts v obou rámech", () => {
   it("dva rámy zároveň = jeden krok 5 %", () => {
     localStorage.setItem("app:zoom", "1");
     render(<><AppShell navGroups={[]} navSearch={false}><div>x</div></AppShell><StandaloneShell brand="S" title="T">x</StandaloneShell></>);
+    act(() => { setAppZoom(1); });
     ctrlPlus();
     expect(localStorage.getItem("app:zoom")).toBe("1.05");
     expect(document.documentElement.style.fontSize).toBe("16.8px");
