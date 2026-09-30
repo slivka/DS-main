@@ -164,4 +164,29 @@ describe("AppShell panely 2.71.0 – chování", () => {
     expect(active?.getAttribute("data-active")).toBe("true");
     expect(badge?.textContent).toBe("12");
   });
+
+  it("tooltip kontextu jen při contextDisabled a bez přepnutí režimu", () => {
+    const errors: unknown[] = [];
+    const original = console.error; console.error = (...a: unknown[]) => { errors.push(a); };
+    const panels = (scope: "company" | "workspace") => [{ id: "a", title: "A", icon: Settings, tooltip: "A", scope, nav: [] }];
+    const shell = (scope: "company" | "workspace", active: string | null) => <AppShell navGroups={[]} navSearch={false} contextLeft={<button type="button">Firma</button>} panels={panels(scope)} activePanel={active} onActivePanelChange={() => undefined}><div /></AppShell>;
+    const view = render(shell("company", "a"));
+    expect(view.queryByText(/Firma a období se tady neuplatní/)).toBeNull();
+    view.rerender(shell("workspace", "a"));
+    expect(view.getByText(/Firma a období se tady neuplatní/)).toBeTruthy();
+    view.rerender(shell("workspace", null));
+    expect(view.queryByText(/Firma a období se tady neuplatní/)).toBeNull();
+    console.error = original;
+    expect(errors.filter((e) => String(e).includes("controlled"))).toHaveLength(0);
+  });
+
+  it("aktivní odznak používá token --sidebar-badge-active", async () => {
+    const view = render(<AppShell navGroups={[{ id: "g", label: "", items: [{ to: "/", label: "Doklady", badge: 3 }] }]}><div /></AppShell>);
+    const badge = view.getByText("Doklady").closest("[data-active=true]")?.querySelector('[data-slot="shell-nav-badge"]') as HTMLElement;
+    const css = await Bun.file("src/styles.css").text();
+    const cls = badge.className;
+    const viaClass = cls.includes("sidebar-badge-active");
+    const viaCss = /\[data-active=["']?true["']?\][^{]*shell-nav-badge[^{]*\{[^}]*--sidebar-badge-active/.test(css);
+    expect(viaClass || viaCss).toBe(true);
+  });
 });
