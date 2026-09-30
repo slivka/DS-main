@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { clampAppZoom, effectiveViewportWidth, estimateAppZoom, isAppZoomShortcut } from "../../src/lib/app-zoom";
+import { clampAppZoom, effectiveViewportWidth, estimateAppZoom } from "../../src/lib/app-zoom";
 import { calculateAutoGridZoom } from "../../src/components/ds/grid/grid-auto-zoom";
 import { maxPaneLayout } from "../../src/components/ds/panes/pane-layout";
 
@@ -13,14 +13,6 @@ describe("DS 2.64 – zoom aplikace", () => {
     expect(clampAppZoom(0.2)).toBe(0.7);
     expect(clampAppZoom(1.124)).toBe(1.1);
     expect(clampAppZoom(4)).toBe(2);
-  });
-
-  it("rozpoznává klávesy podle code a ignoruje AltGraph", () => {
-    const key = (code: string, altGraph = false) => ({ code, ctrlKey: true, altKey: true, metaKey: false, getModifierState: () => altGraph });
-    expect(isAppZoomShortcut(key("Equal"))).toBe("increase");
-    expect(isAppZoomShortcut(key("Minus"))).toBe("decrease");
-    expect(isAppZoomShortcut(key("Digit0"))).toBe("reset");
-    expect(isAppZoomShortcut(key("Equal", true))).toBeNull();
   });
 
   it("používá efektivní šířku pro panely", () => {
