@@ -60,3 +60,79 @@ describe("AppShell panely 2.71.0", () => {
     expect(view.queryByRole("radiogroup", { name: "Část panelu" })).toBeNull();
   });
 });
+describe("AppShell panely 2.71.0 – chování", () => {
+  const nav = (label: string) => [{ id: label, label: "", items: [{ to: "/", label }] }];
+
+  it("šipky, Home a End v přepínači volají onViewChange a přesouvají fokus", () => {
+    const calls: string[] = [];
+    const views = [{ id: "firma", label: "Firma", title: "A", nav: nav("a") }, { id: "prostor", label: "Prostor", title: "B", nav: nav("b") }];
+    const view = render(<AppShell navGroups={[]} navSearch={false} panels={[{ id: "s", title: "S", icon: Settings, tooltip: "S", views, activeView: "firma", onViewChange: (id) => calls.push(id) }]} activePanel="s" onActivePanelChange={() => undefined}><div /></AppShell>);
+    const firma = view.getByRole("radio", { name: "Firma" });
+    fireEvent.keyDown(firma, { key: "ArrowRight" });
+    expect(calls).toEqual(["prostor"]);
+    expect(document.activeElement?.textContent).toBe("Prostor");
+    fireEvent.keyDown(firma, { key: "End" });
+    fireEvent.keyDown(firma, { key: "Home" });
+    expect(calls).toEqual(["prostor", "prostor", "firma"]);
+  });
+
+  it("neplatné activeView použije první část a ve vývoji varuje", () => {
+    const warn = mock(() => undefined);
+    const original = console.warn; console.warn = warn;
+    const views = [{ id: "firma", label: "Firma", title: "Nastavení firmy", nav: nav("a") }, { id: "prostor", label: "Prostor", title: "B", nav: nav("b") }];
+    const view = render(<AppShell navGroups={[]} navSearch={false} panels={[{ id: "s", title: "S", icon: Settings, tooltip: "S", views, activeView: "neni" }]} activePanel="s" onActivePanelChange={() => undefined}><div /></AppShell>);
+    console.warn = original;
+    expect(view.getByText("Nastavení firmy")).toBeTruthy();
+    if (import.meta.env?.DEV) expect(warn).toHaveBeenCalled();
+  });
+
+  it("scope platform na úrovni panelu zašední kontext, nápověda je dostupná klávesnicí a přepsatelná", () => {
+    const view = render(<AppShell navGroups={[]} navSearch={false} contextDisabledHint="Vlastní nápověda" contextLeft={<><button type="button">Firma</button><button type="button">Období</button></>} panels={[{ id: "a", title: "Admin", icon: Settings, tooltip: "A", scope: "platform", nav: nav("x") }]} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
+    const wrapper = view.getByText("Firma").closest("[aria-disabled=true]") as HTMLElement;
+    expect(wrapper).toBeTruthy();
+    expect(wrapper.getAttribute("tabindex")).toBe("0");
+    const hint = document.getElementById(wrapper.getAttribute("aria-describedby") ?? "");
+    expect(hint?.textContent).toBe("Vlastní nápověda");
+  });
+
+  it("výchozí text nápovědy a scope company bez aria-describedby", () => {
+    const panel = (scope: "company" | "workspace") => [{ id: "a", title: "A", icon: Settings, tooltip: "A", scope, nav: nav("x") }];
+    const ws = render(<AppShell navGroups={[]} navSearch={false} contextLeft={<button type="button">Firma</button>} panels={panel("workspace")} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
+    expect(ws.getByText(/Firma a období se tady neuplatní/)).toBeTruthy();
+    cleanup();
+    const co = render(<AppShell navGroups={[]} navSearch={false} contextLeft={<button type="button">Firma</button>} panels={panel("company")} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
+    expect(co.getByText("Firma").closest("[aria-describedby]")).toBeNull();
+  });
+
+  it("fragment v contextLeft dostane mezeru mezi pilulkami", () => {
+    const view = render(<AppShell navGroups={[]} navSearch={false} contextLeft={<><button type="button">Firma</button><button type="button">Období</button></>}><div /></AppShell>);
+    const inner = view.getByText("Firma").parentElement as HTMLElement;
+    expect(inner.getAttribute("data-slot")).toBe("app-shell-context");
+    expect(inner.className).toContain("md:gap-5");
+    expect(view.getByText("Období").parentElement).toBe(inner);
+  });
+
+  it("sidebarTone app ponechá tmavé menu i v panelu; panel bez nav má prázdné menu", () => {
+    const view = render(<AppShell navGroups={[{ id: "m", label: "Hlavní", items: [{ to: "/", label: "Položka aplikace" }] }]} navSearch={false} panels={[{ id: "a", title: "A", icon: Settings, tooltip: "A", sidebarTone: "app" }]} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
+    expect(document.querySelector("aside")?.getAttribute("data-sidebar-tone")).toBe("app");
+    expect(view.queryByText("Položka aplikace")).toBeNull();
+  });
+
+  it("skupina bez popisku ignoruje localStorage i defaultCollapsed", () => {
+    localStorage.setItem("ds:nav-groups:t:a:g", "true");
+    const view = render(<AppShell navGroups={[]} navSearch={false} navStateKey="t" panels={[{ id: "a", title: "A", icon: Settings, tooltip: "A", nav: [{ id: "g", label: "", defaultCollapsed: true, items: [{ to: "/", label: "Zakázky" }] }] }]} activePanel="a" onActivePanelChange={() => undefined}><div /></AppShell>);
+    expect(view.getByText("Zakázky")).toBeTruthy();
+  });
+
+  it("mobilní pořadí: ikona → nadpis → Zavřít, přepínač na dalším řádku", () => {
+    render(<Shell />);
+    const header = document.querySelector('[data-slot="app-shell-panel-header"]') as HTMLElement;
+    const order = (el: Element | null) => (el?.getAttribute("class") ?? "").match(/(?:^|\s)order-(\d)/)?.[1];
+    expect(order(header.querySelector("svg"))).toBe("1");
+    expect(order(header.querySelector('[data-slot="app-shell-panel-heading"]'))).toBe("2");
+    expect(order(header.lastElementChild)).toBe("3");
+    const views = header.querySelector('[data-slot="app-shell-panel-views"]');
+    expect(order(views)).toBe("4");
+    expect(views?.className).toContain("basis-full");
+  });
+});

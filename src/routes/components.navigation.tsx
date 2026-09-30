@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, Settings, ShieldCheck, SlidersHorizontal, Users } from "lucide-react";
+import { BarChart3, Building2, FileText, Home, KeyRound, LayoutGrid, Receipt, SlidersHorizontal, Users } from "lucide-react";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
