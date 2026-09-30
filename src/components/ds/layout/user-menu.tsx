@@ -84,7 +84,7 @@ export function UserMenu({
         </DropdownMenuLabel>
         {items.map((item) => {
           const Icon = item.icon;
-          const content = <>{Icon ? <Icon className="size-4" /> : null}{item.label}</>;
+          const content = <>{Icon ? <Icon className="size-4" /> : null}<span className="min-w-0 truncate" title={item.label}>{item.label}</span></>;
           return item.to ? (
             <DropdownMenuItem key={item.label} asChild><Link to={item.to as never}>{content}</Link></DropdownMenuItem>
           ) : (
@@ -114,7 +114,7 @@ export function UserMenu({
             <DropdownMenuRadioGroup value={activeWorkspaceId} onValueChange={onWorkspaceChange}>
               {visible.map((workspace) => (
                 <DropdownMenuRadioItem key={workspace.id} value={workspace.id}>
-                  {workspace.name}
+                  <span className="min-w-0 truncate" title={workspace.name}>{workspace.name}</span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>

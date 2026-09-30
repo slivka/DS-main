@@ -174,7 +174,7 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   closeConfirm: "Zahodit změny",
   limitEvicted: "Záložka „{title}“ byla zavřena – v panelu může být nejvýše {max} záložek.",
   limitRejected: "V panelu je {max} rozepsaných záložek. Nejprve některou uložte nebo zavřete.",
-  limitClosed: "Zavřeno {count} záložek – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
+  limitClosed: "Zavřené záložky: {count} – v panelu může být nejvýše {max}. Alt+Shift+T je vrátí.",
   narrowed: "Málo místa – panely byly sloučeny. Po zvětšení okna se rozdějení obnoví.",
   restored: "Rozdějení panelů obnoveno.",
   untitled: "Bez názvu",
