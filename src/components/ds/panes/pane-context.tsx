@@ -37,7 +37,7 @@ import {
   otherTabIds,
   resolveOpenMode,
   resolveTargetPaneIndex,
-  setLayoutInState,
+  setLayoutWithLimitInState,
   setTabTitleInState,
   stepTabHistory,
   MAX_TABS_PER_PANE,
@@ -367,14 +367,12 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     const current = stateRef.current;
     const pane = current.panes.find((item) => item.id === paneId);
     if (!pane) return;
-    setMaximized(null);
-    if (current.panes.length > 1) {
-      commit(closePaneInState(current, paneId));
-      return;
-    }
     const ids = pane.tabs.map((tab) => tab.id);
     guardDiscard(ids, () => {
-      commit(closePaneInState(stateRef.current, paneId));
+      const before = stateRef.current;
+      rememberClosed(ids, before);
+      setMaximized(null);
+      commit(closePaneInState(before, paneId));
       ids.forEach(clearTabState);
     });
   };
@@ -537,7 +535,20 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     setLayout: (layout) => {
       lastMax.current = null;
       setMaximized(null);
-      commit(setLayoutInState(stateRef.current, layout));
+      const before = stateRef.current;
+      const result = setLayoutWithLimitInState(before, layout, isTabDirty);
+      if (result.rejected) {
+        toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
+        return;
+      }
+      if (result.closedTabIds.length) {
+        rememberClosed(result.closedTabIds, before);
+        result.closedTabIds.forEach((id) => {
+          toast.info(t.limitEvicted.replace("{title}", titleOf(id)).replace("{max}", String(MAX_TABS_PER_PANE)));
+          clearTabState(id);
+        });
+      }
+      commit(result.state);
     },
     closePane,
     back: (tabId) => step(tabId, -1),
@@ -732,8 +743,8 @@ export const DEFAULT_PANE_CHROME_TEXTS: PaneChromeTexts = {
   more: "Další akce záložky",
   closeTab: "Zavřít záložku",
   closeOthers: "Zavřít ostatní",
-  moveToPane: "Přesunout do panelu {index}",
-  duplicate: "Duplikovat",
+  moveToPane: "Přesunout záložku do panelu {index}",
+  duplicate: "Duplikovat záložku",
   reopenClosed: "Znovu otevřít zavřenou záložku",
   closePane: "Zavřít panel",
   pageActions: "Akce stránky",
@@ -761,33 +772,21 @@ export function buildTabMenuActions(
   if (!found) return [];
   const { tab, pane, paneIndex } = found;
   const count = api.state.panes.length;
-  const actions: PaneMenuAction[] = [
-    { id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) },
-    { id: "closeOthers", label: t.closeOthers, disabled: pane.tabs.length < 2, onSelect: () => api.closeOtherTabs(tabId) },
-  ];
+  const groups: PaneMenuAction[][] = [[{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }]];
+  const tabActions: PaneMenuAction[] = [];
   Array.from({ length: count }, (_, index) => index)
     .filter((index) => index !== paneIndex)
-    .forEach((index, order) =>
-      actions.push({
+    .forEach((index) =>
+      tabActions.push({
         id: `move-${index}`,
         label: t.moveToPane.replace("{index}", String(index + 1)),
         onSelect: () => api.moveTab(tabId, api.state.panes[index].id),
-        separatorBefore: order === 0,
       }),
     );
-  if (tab.kind === "list") actions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
-  if (count > 1) {
-    actions.push({
-      id: "maximize",
-      label: api.maximized !== null ? t.restore.replace(" (Esc)", "") : t.maximize.replace(" (Alt+M)", ""),
-      shortcut: api.maximized !== null ? "Esc" : "Alt+M",
-      onSelect: () => api.toggleMaximize(paneIndex),
-      separatorBefore: true,
-    });
-  }
-  actions.push({ id: "reopen", label: t.reopenClosed, shortcut: "Alt+Shift+T", disabled: api.closedTabCount === 0, onSelect: api.reopenClosedTab, separatorBefore: count < 2 });
-  actions.push({ id: "closePane", label: t.closePane, shortcut: "Alt+Shift+W", onSelect: () => api.closePane(pane.id), separatorBefore: true });
-  return actions;
+  if (tab.kind === "list") tabActions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
+  if (tabActions.length) groups.push(tabActions);
+  groups.push([{ id: "closePane", label: t.closePane, shortcut: "Alt+Shift+W", onSelect: () => api.closePane(pane.id) }]);
+  return groups.flatMap((group, groupIndex) => group.map((action, actionIndex) => ({ ...action, separatorBefore: groupIndex > 0 && actionIndex === 0 })));
 }
 
 /** Kontext panelu pro záhlaví stránky (usePaneChrome). */

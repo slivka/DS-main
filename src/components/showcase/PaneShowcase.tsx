@@ -351,9 +351,9 @@ function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: St
     <LayoutMenu
       items={layouts}
       trigger={icon ? "icon" : "default"}
-      onSave={({ name, isDefault, snapshot }) => {
-        const item: StoredLayout = { id: `layout-${Date.now()}`, name, isDefault, panes: snapshot?.layout ?? 1, snapshot };
-        setLayouts((items) => [...items.map((other) => (isDefault ? { ...other, isDefault: false } : other)), item]);
+      onSave={({ name, snapshot }) => {
+        const item: StoredLayout = { id: `layout-${Date.now()}`, name, panes: snapshot?.layout ?? 1, snapshot };
+        setLayouts((items) => [...items, item]);
         toast.success(`Rozložení „${name}“ uloženo`);
       }}
       onApply={(id) => {
@@ -365,9 +365,9 @@ function ShowcaseLayoutMenu({ layouts, setLayouts, icon = false }: { layouts: St
       onUpdate={(id, patch) =>
         setLayouts((items) =>
           items.map((item) => {
-            if (item.id !== id) return patch.isDefault ? { ...item, isDefault: false } : item;
+            if (item.id !== id) return item;
             const snapshot = patch.snapshot !== undefined ? patch.snapshot : item.snapshot;
-            return { ...item, ...(patch.name ? { name: patch.name } : {}), ...(patch.isDefault !== undefined ? { isDefault: patch.isDefault } : {}), snapshot, panes: snapshot?.layout ?? item.panes };
+            return { ...item, ...(patch.name ? { name: patch.name } : {}), snapshot, panes: snapshot?.layout ?? item.panes };
           }),
         )
       }

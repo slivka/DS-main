@@ -50,8 +50,6 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 | `sidebar-indicator` | `--sidebar-indicator` |
 | `sidebar-input` | `--sidebar-input` |
 | `sidebar-hover` | `--sidebar-hover` |
-| `sidebar-badge-active` | `--sidebar-badge-active` |
-| `sidebar-badge-active-foreground` | `--sidebar-badge-active-foreground` |
 | `company` | `--company` |
 | `company-foreground` | `--company-foreground` |
 | `company-muted` | `--company-muted` |

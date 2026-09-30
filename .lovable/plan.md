@@ -1,19 +1,21 @@
-# DS 2.73.0 – druhá kontrola před vydáním
+# DS 2.75.0 – podmenu a zavírání panelů
 
 ## Úpravy
-- Stabilizovat režim „Jiný účet“: vlastní změny hodnoty nebudou přepínat zpět na nabídku; změna možností nebo skutečná změna hodnoty z aplikace režim znovu správně odvodí.
-- Upravit datum s varováním tak, aby se celý text vešel u zamčené i odemčené vazby; rozšířit vstup ve formuláři pouze o prostor varovné ikony.
-- Z automatického VS posílat změnu jen tehdy, když se VS skutečně mění, a automatickou paměť znovu odvodit při přepnutí na jiný doklad.
-- Odebrat ořezávání řádku Částka, aby nebyly useknuté rámečky fokusu ani nápovědy.
-- Opravit historický záznam 2.66 v README bez zásahu do ostatních změn 2.73.0.
+- Přestavět nabídku uložených rozložení, odstranit výchozí rozložení i ikony počtu panelů a upravit veřejné typy bez zpětné kompatibility.
+- Zjednodušit nabídku záložky na zavření, přesun, volitelné duplikování a zavření panelu se správnými oddělovači.
+- Změnit Zavřít panel tak, aby zavřel všechny jeho záložky, hlídal neuložené změny, ukládal zavřené záložky pro obnovení a aktivoval sousední panel.
+- Při slučování rozložení dodržet limit deseti záložek a zavřít nejstarší čisté přebytky s upozorněním.
+- Přeskupit uživatelskou nabídku, přidat akci pracovního prostoru a odstranit duplicitní značku vybraného prostoru.
+- Odebrat ikonu z nadpisového řádku panelu, zachovat ji v horní liště.
 
-## Testy a kontrola
-- Doplnit stavový test BankAccountField: po volbě „Jiný účet“ zůstane vstup otevřený po smazání i po napsání hodnoty shodné s nabídkou.
-- Doplnit test automatického VS bez zbytečné změny a po přepnutí identity dokladu.
-- Doplnit regresní test AppShellu: tooltip existuje pouze při zakázaném kontextu a aktivní odznak používá token `--sidebar-badge-active`.
-- Ověřit datum 30.09.2026 s varováním u zamčeného i odemčeného pole, úzký řádek Částka, všechny testy, typy a sestavení.
+## Ukázka a dokumentace
+- Upravit ukázku Navigace a rozložení na nové nabídky.
+- Zvýšit verzi na 2.75.0 a doplnit README, systémová pravidla, katalog komponent, roadmapu a technická pravidla.
+
+## Ověření
+- Doplnit testy pořadí nabídek, oddělovačů, odstraněných ikon, uživatelské nabídky, zavření panelu, potvrzení rozepsané záložky a limitu při slučování.
+- Spustit všechny testy, kontrolu typů a ověřit náhled včetně uživatelské nabídky při zoomu 70 % a 200 %.
 
 ## Omezení
-- Verze zůstane 2.73.0.
 - Release se neprovede.
 - `.lovable/meta.yaml` se nemění.

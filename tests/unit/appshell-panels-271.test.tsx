@@ -137,16 +137,16 @@ describe("AppShell panely 2.71.0 – chování", () => {
     expect(view.getByText("Zakázky")).toBeTruthy();
   });
 
-  it("mobilní pořadí: ikona → nadpis → Zavřít, přepínač na dalším řádku", () => {
+  it("mobilní pořadí: nadpis → Zavřít, přepínač na dalším řádku a bez ikony panelu", () => {
     render(<Shell />);
     const header = document.querySelector('[data-slot="app-shell-panel-header"]') as HTMLElement;
     const order = (el: Element | null) => (el?.getAttribute("class") ?? "").match(/(?:^|\s)order-(\d)/)?.[1];
-    expect(order(header.querySelector("svg"))).toBe("1");
     expect(order(header.querySelector('[data-slot="app-shell-panel-heading"]'))).toBe("2");
     expect(order(header.lastElementChild)).toBe("3");
     const views = header.querySelector('[data-slot="app-shell-panel-views"]');
     expect(order(views)).toBe("4");
     expect(views?.className).toContain("basis-full");
+    expect(header.querySelector('[data-slot="app-shell-panel-heading"]')?.previousElementSibling).toBe(views);
   });
 
   it("titulek stránky mění jen při manageDocumentTitle", () => {

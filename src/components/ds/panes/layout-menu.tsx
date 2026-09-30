@@ -1,14 +1,12 @@
 import * as React from "react";
-import { ArrowDown, ArrowUp, ChevronDown, Columns2, Columns3, MoreHorizontal, Square, Star, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, MoreHorizontal, Settings2, Trash2 } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -27,22 +25,18 @@ import type { LayoutSnapshot, PaneLayoutCount } from "./pane-state";
 export type SavedLayoutItem = {
   id: string;
   name: string;
-  /** Počet panelů – určuje ikonu. */
+  /** Počet panelů uloženého snímku. */
   panes: PaneLayoutCount;
-  /** Výchozí po přihlášení. */
-  isDefault?: boolean;
 };
 
 export type LayoutMenuTexts = {
   trigger: string;
-  saved: string;
   empty: string;
   saveCurrent: string;
   overwrite: string;
   manage: string;
   saveTitle: string;
   nameLabel: string;
-  defaultLabel: string;
   save: string;
   cancel: string;
   manageTitle: string;
@@ -53,22 +47,16 @@ export type LayoutMenuTexts = {
   deleteDescription: string;
   moveUp: string;
   moveDown: string;
-  setDefault: string;
-  isDefault: string;
-  /** {count} se nahradí. */
-  panes: string;
 };
 
 export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = {
   trigger: "Rozložení",
-  saved: "Uložená rozložení",
   empty: "Zatím žádné uložené rozložení",
-  saveCurrent: "Uložit aktuální…",
-  overwrite: "Přepsat aktuálním",
-  manage: "Spravovat",
+  saveCurrent: "Uložit aktuální jako nové…",
+  overwrite: "Přepsat uložené aktuálním",
+  manage: "Spravovat rozložení",
   saveTitle: "Uložit rozložení",
   nameLabel: "Název",
-  defaultLabel: "Výchozí po přihlášení",
   save: "Uložit",
   cancel: "Zrušit",
   manageTitle: "Uložená rozložení",
@@ -78,19 +66,16 @@ export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = {
   deleteDescription: "Rozložení „{name}“ bude odstraněno.",
   moveUp: "Posunout nahoru",
   moveDown: "Posunout dolů",
-  setDefault: "Nastavit jako výchozí",
-  isDefault: "Výchozí po přihlášení",
-  panes: "Panely: {count}",
 };
 
 export interface LayoutMenuProps {
   items: SavedLayoutItem[];
   /** Uložení aktuálního rozložení. `snapshot` je serializeLayout(state), když je menu uvnitř PaneTabsProvider. */
-  onSave: (input: { name: string; isDefault: boolean; snapshot: LayoutSnapshot | null }) => void;
+  onSave: (input: { name: string; snapshot: LayoutSnapshot | null }) => void;
   /** Použití uloženého rozložení – aplikace zavolá usePaneTabs().applyLayout(snapshot). */
   onApply: (id: string) => void;
-  /** Přejjménování, změna výchozího nebo přepsání aktuálním (`snapshot`). */
-  onUpdate: (id: string, patch: { name?: string; isDefault?: boolean; snapshot?: LayoutSnapshot | null }) => void;
+  /** Přejmenování nebo přepsání aktuálním (`snapshot`). */
+  onUpdate: (id: string, patch: { name?: string; snapshot?: LayoutSnapshot | null }) => void;
   onDelete: (id: string) => void;
   onReorder?: (ids: string[]) => void;
   /** Zkratka Alt+L otevře nabídku. Výchozí true. */
@@ -101,8 +86,6 @@ export interface LayoutMenuProps {
   className?: string;
 }
 
-const PANE_ICONS = { 1: Square, 2: Columns2, 3: Columns3 } as const;
-
 /** Nabídka uložených rozložení; ikonová varianta patří do AppShell.navSearchMenu. */
 export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReorder, shortcut = true, trigger = "default", texts, className }: LayoutMenuProps) {
   const t = { ...DEFAULT_LAYOUT_MENU_TEXTS, ...texts };
@@ -111,7 +94,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   const [saveOpen, setSaveOpen] = React.useState(false);
   const [manageOpen, setManageOpen] = React.useState(false);
   const [name, setName] = React.useState("");
-  const [isDefault, setIsDefault] = React.useState(false);
   const { confirm, confirmDialog } = useConfirmDialog();
   const snapshot = () => tabs?.serializeLayout() ?? null;
 
@@ -130,7 +112,7 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   const submitSave = (event: React.FormEvent) => {
     event.preventDefault();
     if (!name.trim()) return;
-    onSave({ name: name.trim(), isDefault, snapshot: snapshot() });
+    onSave({ name: name.trim(), snapshot: snapshot() });
     setSaveOpen(false);
   };
 
@@ -161,32 +143,42 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </TooltipTrigger>
           <TooltipContent>{`${t.trigger} (Alt+L)`}</TooltipContent>
         </Tooltip>
-        <DropdownMenuContent align="end" className="min-w-64">
-          <DropdownMenuLabel>{t.saved}</DropdownMenuLabel>
-          {items.length ? (
-            items.map((item) => {
-              const Icon = PANE_ICONS[item.panes];
-              return (
-                <DropdownMenuItem key={item.id} onSelect={() => onApply(item.id)}>
-                  <Icon className="size-4" aria-label={t.panes.replace("{count}", String(item.panes))} />
-                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
-                  {item.isDefault ? <Star className="size-3.5 fill-current text-primary" aria-label={t.isDefault} /> : null}
+        <DropdownMenuContent align="end" className="min-w-72">
+          <div className="flex items-center">
+            <DropdownMenuItem
+              className="min-w-0 flex-1"
+              onSelect={() => {
+                setName("");
+                setSaveOpen(true);
+              }}
+            >
+              {t.saveCurrent}
+            </DropdownMenuItem>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuItem className="w-9 shrink-0 justify-center px-0" aria-label={t.manage} disabled={!items.length} onSelect={() => setManageOpen(true)}>
+                  <Settings2 className="size-4" aria-hidden="true" />
                 </DropdownMenuItem>
-              );
-            })
+              </TooltipTrigger>
+              <TooltipContent>{t.manage}</TooltipContent>
+            </Tooltip>
+          </div>
+          <DropdownMenuSeparator />
+          {items.length ? (
+            items.map((item) => (
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <DropdownMenuItem onSelect={() => onApply(item.id)}>
+                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                  </DropdownMenuItem>
+                </TooltipTrigger>
+                <TooltipContent>{item.name}</TooltipContent>
+              </Tooltip>
+            ))
           ) : (
             <DropdownMenuItem disabled>{t.empty}</DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={() => {
-              setName("");
-              setIsDefault(false);
-              setSaveOpen(true);
-            }}
-          >
-            {t.saveCurrent}
-          </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger disabled={!items.length}>{t.overwrite}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
@@ -197,9 +189,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuItem disabled={!items.length} onSelect={() => setManageOpen(true)}>
-            {t.manage}
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -212,10 +201,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
             <div className="space-y-1.5">
               <Label htmlFor="layout-menu-name">{t.nameLabel}</Label>
               <Input id="layout-menu-name" value={name} autoFocus onChange={(event) => setName(event.target.value)} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox id="layout-menu-default" checked={isDefault} onCheckedChange={(value) => setIsDefault(value === true)} />
-              <Label htmlFor="layout-menu-default">{t.defaultLabel}</Label>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setSaveOpen(false)}>
@@ -236,10 +221,8 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
           </DialogHeader>
           <ul className="space-y-1.5">
             {items.map((item, index) => {
-              const Icon = PANE_ICONS[item.panes];
               return (
                 <li key={item.id} className="flex items-center gap-1.5">
-                  <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <Input
                     aria-label={t.nameLabel}
                     defaultValue={item.name}
@@ -249,9 +232,6 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
                       if (value && value !== item.name) onUpdate(item.id, { name: value });
                     }}
                   />
-                  <ManageIcon label={item.isDefault ? t.isDefault : t.setDefault} onClick={() => onUpdate(item.id, { isDefault: !item.isDefault })} pressed={!!item.isDefault}>
-                    <Star className={cn("size-4", item.isDefault && "fill-current text-primary")} />
-                  </ManageIcon>
                   {onReorder ? (
                     <>
                       <ManageIcon label={t.moveUp} disabled={index === 0} onClick={() => move(index, -1)}>
@@ -294,11 +274,11 @@ export function LayoutMenu({ items, onSave, onApply, onUpdate, onDelete, onReord
   );
 }
 
-function ManageIcon({ label, onClick, disabled, pressed, className, children }: { label: string; onClick: () => void; disabled?: boolean; pressed?: boolean; className?: string; children: React.ReactNode }) {
+function ManageIcon({ label, onClick, disabled, className, children }: { label: string; onClick: () => void; disabled?: boolean; className?: string; children: React.ReactNode }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" className={cn("size-8", className)} aria-label={label} aria-pressed={pressed} disabled={disabled} onClick={onClick}>
+        <Button type="button" variant="ghost" size="icon" className={cn("size-8", className)} aria-label={label} disabled={disabled} onClick={onClick}>
           {children}
         </Button>
       </TooltipTrigger>
