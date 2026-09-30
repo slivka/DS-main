@@ -5,7 +5,7 @@
 - [x] Přidat řízené části panelu a rozsahy company / workspace / platform bez narušení měření horní lišty.
 - [x] Upravit skupiny, hledání a součty odznaků.
 - [x] Doplnit ukázky, dokumentaci, katalog a verzi 2.71.0; Release neprovádět.
-- [ ] Doplnit testy a ověřit všechny testy, typy, sestavení a požadované viewporty/zoom.
+- [ ] Doplnit testy a ověřit všechny testy, typy, sestavení a požadované viewporty/zoom. (Testy doplněny; probíhá úplné a vizuální ověření.)
 
 ## Verze 2.70.0 – oprava zoomu aplikace (reklamace)
 - [x] Zkratky Cmd (Mac) / Ctrl + plus / minus / 0 podle `event.key`, i v polích; BREAKING: Ctrl+Alt zrušeno.
