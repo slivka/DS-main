@@ -41,7 +41,8 @@ export function requiredGridWidthAt100(
 
 /**
  * Automatický zoom gridu ve formuláři. Přepočítá se při změně ŠÍŘKY kontejneru,
- * při změně sloupců (`dependencies`) a při změně zoomu aplikace – změna výšky se ignoruje.
+ * a při změně sloupců (`dependencies`) – změna výšky se ignoruje. Zoom aplikace se nekompenzuje;
+ * po `app:zoom-change` se přepočítá jen při změně šířky v px, takže ruční zoom gridu zůstává.
  * První výpočet po připojení ruční zoom nezruší (přežije přepnutí záložek), každý další ano.
  */
 export function useAutoGridZoom(
@@ -57,14 +58,16 @@ export function useAutoGridZoom(
   const initialized = useRef(false);
   const lastWidth = useRef(0);
 
-  const measure = useCallback(() => {
+  const measure = useCallback((fromAppZoom = false) => {
     if (!enabled) return;
     if (isResizeLocked()) { pending.current = true; return; }
     const root = rootRef.current;
     const width = root?.getBoundingClientRect().width ?? 0;
     if (!root || width <= 0) return;
-    const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const next = calculateAutoGridZoom(width, requiredRef.current * (rootPx / 16));
+    // Změna zoomu aplikace bez změny šířky v px nic nemění – ruční zoom gridu zůstává.
+    if (fromAppZoom && Math.abs(width - lastWidth.current) < 0.5) { pending.current = false; return; }
+    // Bez kompenzace zoomu aplikace: potřebná šířka je v px při kořeni 16 px.
+    const next = calculateAutoGridZoom(width, requiredRef.current);
     lastWidth.current = width;
     pending.current = false;
     if (next == null) return;
@@ -78,11 +81,12 @@ export function useAutoGridZoom(
     const root = rootRef.current;
     if (!root) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
-    const request = () => {
+    const request = (fromAppZoom = false) => {
       if (isResizeLocked()) { pending.current = true; return; }
       if (timer) clearTimeout(timer);
-      timer = setTimeout(measure, 150);
+      timer = setTimeout(() => measure(fromAppZoom), 150);
     };
+    const onAppZoom = () => request(true);
     const onResize = () => {
       const width = root.getBoundingClientRect().width;
       if (width <= 0 || Math.abs(width - lastWidth.current) < 0.5) return;
@@ -91,12 +95,12 @@ export function useAutoGridZoom(
     const finish = () => { if (pending.current) measure(); };
     const observer = new ResizeObserver(onResize);
     observer.observe(root);
-    window.addEventListener(APP_ZOOM_EVENT, request);
+    window.addEventListener(APP_ZOOM_EVENT, onAppZoom);
     window.addEventListener(RESIZE_END_EVENT, finish);
     return () => {
       if (timer) clearTimeout(timer);
       observer.disconnect();
-      window.removeEventListener(APP_ZOOM_EVENT, request);
+      window.removeEventListener(APP_ZOOM_EVENT, onAppZoom);
       window.removeEventListener(RESIZE_END_EVENT, finish);
     };
   }, [enabled, measure, rootRef]);
