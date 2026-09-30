@@ -4,7 +4,7 @@
 - [x] Rozšířit české/slovenské texty a ukázky
 - [x] Opravit titulek, tooltip, varování a odznaky AppShellu
 - [x] Doplnit veřejné exporty, dokumentaci, katalog a verzi 2.73.0
-- [ ] Doplnit a spustit testy, typy, sestavení a vizuální kontrolu
+- [x] Doplnit a spustit testy, typy, sestavení a vizuální kontrolu
 ## Verze 2.71.0 – AppShell panely a rozsah platnosti
 
 - [x] Přeskládat panelové menu a pevný řádek panelu včetně mobilního pořadí.
