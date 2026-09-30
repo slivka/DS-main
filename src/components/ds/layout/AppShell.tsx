@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
 import { ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, Search, X, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -240,13 +240,13 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
         {!collapsed ? <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(item.label, query) : item.label}</span> : null}
         {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" /> : null}
-        {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-sidebar-accent px-2 py-0.5 text-xs text-sidebar-accent-foreground">{item.badge}</span> : null}
+        {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{item.badge}</span> : null}
       </>
     );
     const base = cn(
       "shell-nav-item relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
       collapsed ? "justify-center px-2" : "px-3",
-      active ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground" : "text-sidebar-foreground/90",
+      active ? "bg-sidebar-active font-semibold text-sidebar-active-foreground" : "text-sidebar-foreground/90",
       item.disabled && "cursor-not-allowed text-sidebar-muted opacity-80",
     );
     const node = item.disabled ? (
@@ -306,7 +306,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   );
 }
 
-function ShellNavSection({ label, first, collapsed }: { label: string; first: boolean; collapsed: boolean }) {
+function ShellNavSection({ label, first, collapsed, query = "" }: { label: string; first: boolean; collapsed: boolean; query?: string }) {
   if (collapsed) {
     return (
       <Tooltip>
@@ -322,7 +322,7 @@ function ShellNavSection({ label, first, collapsed }: { label: string; first: bo
   return (
     <div data-nav-section={label} className={cn(!first && "mt-4 border-t border-sidebar-border pt-4")}>
       <div className="flex h-7 items-center px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-sidebar-muted">
-        <span className="truncate">{label}</span>
+        <span className="truncate">{query ? highlightNavMatch(label, query) : label}</span>
       </div>
     </div>
   );
@@ -342,13 +342,13 @@ function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, qu
   const hidden = canCollapse && groupCollapsed && !forcedOpen;
   return (
     <>
-      {sectionStart ? <ShellNavSection label={sectionStart} first={groupIndex === 0} collapsed={collapsed} /> : null}
+      {sectionStart ? <ShellNavSection label={sectionStart} first={groupIndex === 0} collapsed={collapsed} query={query} /> : null}
       <div className={cn("flex flex-col", group.label && groupIndex > 0 && !sectionStart && "mt-2 border-t border-sidebar-border pt-2")}>
         {group.label && !collapsed ? (
           canCollapse ? (
-            <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground">
+            <button type="button" onClick={setStoredCollapsed} aria-expanded={!hidden} className="shell-nav-group mb-1 flex h-8 w-full items-center gap-2 rounded-md px-3 text-left text-[0.8rem] font-semibold text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground">
               <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(group.label, query) : group.label}</span>
-              {hidden && total ? <span className="rounded-md bg-sidebar-accent px-1.5 py-0.5 text-xs text-sidebar-foreground">{total}</span> : null}
+              {hidden && total ? <span className="rounded-md bg-sidebar-badge px-1.5 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{total}</span> : null}
               {hidden && active ? <span className="size-2 rounded-full bg-sidebar-indicator" aria-label={containsActivePageLabel} /> : null}
               <ChevronRight className={cn("size-3.5 shrink-0 transition-transform duration-150 motion-reduce:transition-none", !hidden && "rotate-90")} />
             </button>
@@ -497,7 +497,14 @@ export function AppShell({
   const legacyActivePanel = adminMode ? "admin" : null;
   const resolvedActivePanel = activePanel !== undefined ? activePanel : adminMode !== undefined ? legacyActivePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
-  const currentView = currentPanel?.views?.find((view) => view.id === currentPanel.activeView) ?? currentPanel?.views?.[0] ?? null;
+  const matchedView = currentPanel?.views?.find((view) => view.id === currentPanel.activeView);
+  const currentView = matchedView ?? currentPanel?.views?.[0] ?? null;
+  const contextHintId = useId();
+  useEffect(() => {
+    if (!import.meta.env?.DEV || !currentPanel?.views?.length) return;
+    if (currentPanel.activeView !== undefined && !matchedView) console.warn(`[AppShell] Panel "${currentPanel.id}": activeView "${currentPanel.activeView}" neodpovídá žádné části, použije se první.`);
+    if (currentPanel.views.length >= 2 && !currentPanel.onViewChange) console.warn(`[AppShell] Panel "${currentPanel.id}" má více částí bez onViewChange – přepínač nebude fungovat.`);
+  }, [currentPanel, matchedView]);
   const currentPanelTitle = currentView?.title ?? currentPanel?.title ?? "";
   const currentPanelContext = currentView?.context ?? currentPanel?.context;
   const currentScope = currentView?.scope ?? currentPanel?.scope ?? "company";
@@ -619,7 +626,7 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const visibleGroups = currentView?.nav ?? currentPanel?.nav ?? resolvedGroups;
+  const visibleGroups = currentPanel ? (currentView?.nav ?? currentPanel.nav ?? []) : resolvedGroups;
   const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}${currentView ? `:${currentView.id}` : ""}` : navStateKey ?? appName;
   const nav = (compact: boolean, onNavigate = () => setMenuOpen(false), onDismissSearch?: () => void) => (
     <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={resolvedDisabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={resolvedSearchPlaceholder} searchEmptyText={resolvedSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} searchMenu={navSearchMenu} clearSearchLabel={dsTexts.appShell.clearSearch} mainMenuLabel={dsTexts.appShell.mainMenu} containsActivePageLabel={dsTexts.appShell.containsActivePage} />
@@ -645,14 +652,26 @@ export function AppShell({
       {typeof currentPanelContext === "string" ? (
         <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanelContext} />
       ) : currentPanelContext ? (
-        <div className="truncate text-[0.75rem] leading-tight text-muted-foreground">{currentPanelContext}</div>
+        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanelContext} />
       ) : null}
     </div>
   ) : null;
+  const onViewKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const views = currentPanel?.views ?? [];
+    const last = views.length - 1;
+    const next = event.key === "ArrowRight" || event.key === "ArrowDown" ? (index >= last ? 0 : index + 1)
+      : event.key === "ArrowLeft" || event.key === "ArrowUp" ? (index <= 0 ? last : index - 1)
+      : event.key === "Home" ? 0 : event.key === "End" ? last : -1;
+    if (next < 0 || !views[next]) return;
+    event.preventDefault();
+    currentPanel?.onViewChange?.(views[next].id);
+    const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+    buttons?.[next]?.focus();
+  };
   const panelViewSwitch = currentPanel && currentPanel.views && currentPanel.views.length >= 2 ? (
     <div data-slot="app-shell-panel-views" role="radiogroup" aria-label={dsTexts.appShell.panelView} className="order-4 grid basis-full grid-flow-col auto-cols-fr overflow-hidden rounded-md border border-input bg-background md:order-2 md:basis-auto">
       {currentPanel.views.map((view, index) => (
-        <Button key={view.id} type="button" variant="ghost" role="radio" aria-checked={view.id === currentView?.id} tabIndex={view.id === currentView?.id ? 0 : -1} className={cn("h-8 min-h-0 w-full whitespace-nowrap rounded-none border-0 px-3 font-normal shadow-none", index > 0 && "border-l border-l-input", view.id === currentView?.id && "bg-primary/10 font-semibold text-primary")} onClick={() => currentPanel.onViewChange?.(view.id)}>
+        <Button key={view.id} type="button" variant="ghost" role="radio" aria-checked={view.id === currentView?.id} tabIndex={view.id === currentView?.id ? 0 : -1} onKeyDown={(event) => onViewKeyDown(event, index)} className={cn("h-8 min-h-0 w-full whitespace-nowrap rounded-none border-0 px-3 font-normal shadow-none", index > 0 && "border-l border-l-input", view.id === currentView?.id && "bg-primary/10 font-semibold text-primary")} onClick={() => currentPanel.onViewChange?.(view.id)}>
           {view.label}
         </Button>
       ))}
@@ -717,20 +736,23 @@ export function AppShell({
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
              <SheetContent side="left" data-sidebar-tone={sidebarTone} className="shell-sidebar flex w-72 flex-col gap-0 bg-sidebar p-0 text-sidebar-foreground">
-               <SheetHeader className="min-h-14 shrink-0 justify-center border-b border-sidebar-border px-4"><SheetTitle className="text-sidebar-foreground">{currentPanelTitle || appName}</SheetTitle>{typeof currentPanelContext === "string" ? <TruncatedText text={currentPanelContext} className="text-xs font-normal text-sidebar-muted" /> : currentPanelContext}</SheetHeader>
+               <SheetHeader className="min-h-14 shrink-0 justify-center border-b border-sidebar-border px-4"><SheetTitle className="text-sidebar-foreground">{currentPanelTitle || appName}</SheetTitle>{currentPanelContext ? <TruncatedText text={currentPanelContext} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
               <div data-slot="app-shell-sheet-nav" className="flex min-h-0 flex-1 flex-col">{nav(false)}</div>
             </SheetContent>
           </Sheet>
-           <TooltipProvider><Tooltip><TooltipTrigger asChild><div
+           <TooltipProvider><Tooltip open={contextDisabled ? undefined : false}><TooltipTrigger asChild><div
              ref={contextRef}
              aria-disabled={contextDisabled || undefined}
+             tabIndex={contextDisabled ? 0 : undefined}
+             aria-describedby={contextDisabled ? contextHintId : undefined}
             className={cn(
-              "relative z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden md:gap-5",
+              "relative z-10 flex min-w-0 shrink items-center overflow-hidden focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               centerContext && "absolute left-1/2 -translate-x-1/2",
             )}
           >
             <span ref={contextSeparatorRef} hidden aria-hidden className="pointer-events-none absolute top-1/2 h-6 w-px -translate-x-1/2 -translate-y-1/2 bg-border" />
-             <span inert={contextDisabled || undefined} className={cn("flex min-w-0 items-center", contextDisabled && "pointer-events-none opacity-45")}>{contextLeft}</span>
+             <span inert={contextDisabled || undefined} data-slot="app-shell-context" className={cn("flex min-w-0 items-center gap-1 md:gap-5", contextDisabled && "pointer-events-none opacity-45")}>{contextLeft}</span>
+             {contextDisabled ? <span id={contextHintId} className="sr-only">{resolvedContextDisabledHint}</span> : null}
            </div></TooltipTrigger>{contextDisabled ? <TooltipContent>{resolvedContextDisabledHint}</TooltipContent> : null}</Tooltip></TooltipProvider>
           {hasContext && !centerContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}
           <div className="hidden min-w-0 flex-1 2xl:block">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
@@ -773,7 +795,7 @@ export function AppShell({
               <currentPanel.icon className="order-1 size-4 shrink-0" />
               {panelViewSwitch}
               {panelHeading}
-              <Button type="button" variant="default" size="sm" className="order-3 ml-auto shrink-0 whitespace-nowrap md:order-4" onClick={() => setPanel(null)}>{adminBackLabel ?? closeLabel}</Button>
+              <Button type="button" variant="default" size="sm" className="order-3 ml-auto shrink-0 whitespace-nowrap md:order-4" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
             </div>
           ) : null}
           <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
