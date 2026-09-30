@@ -416,11 +416,13 @@ export function AppShell({
   navSearchPlaceholder,
   navSearchEmptyText,
   navSearchMenu,
+  contextDisabledHint,
 }: AppShellProps) {
   const dsTexts = useDsTexts();
   const resolvedDisabledHint = disabledHint ?? dsTexts.appShell.disabledHint;
   const resolvedSearchPlaceholder = navSearchPlaceholder ?? dsTexts.appShell.searchPlaceholder;
   const resolvedSearchEmptyText = navSearchEmptyText ?? dsTexts.appShell.searchEmpty;
+  const resolvedContextDisabledHint = contextDisabledHint ?? dsTexts.appShell.contextDisabledHint;
   const pathname = useRouterState({ select: (state) => state.resolvedLocation?.pathname ?? state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const [ownCollapsed, setOwnCollapsed] = useState(() => { try { return localStorage.getItem("app:menu-collapsed") === "true"; } catch { return false; } });
@@ -495,6 +497,12 @@ export function AppShell({
   const legacyActivePanel = adminMode ? "admin" : null;
   const resolvedActivePanel = activePanel !== undefined ? activePanel : adminMode !== undefined ? legacyActivePanel : ownActivePanel;
   const currentPanel = resolvedPanels.find((panel) => panel.id === resolvedActivePanel) ?? null;
+  const currentView = currentPanel?.views?.find((view) => view.id === currentPanel.activeView) ?? currentPanel?.views?.[0] ?? null;
+  const currentPanelTitle = currentView?.title ?? currentPanel?.title ?? "";
+  const currentPanelContext = currentView?.context ?? currentPanel?.context;
+  const currentScope = currentView?.scope ?? currentPanel?.scope ?? "company";
+  const sidebarTone = currentPanel?.sidebarTone ?? (currentPanel ? "panel" : "app");
+  const contextDisabled = Boolean(currentPanel && currentScope !== "company");
   const requestedCollapsed = ownCollapsed;
   const isCollapsed = collapseWasChosen ? requestedCollapsed : isNarrow || requestedCollapsed;
   collapsedRef.current = isCollapsed;
@@ -611,8 +619,8 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const visibleGroups = currentPanel?.nav ?? resolvedGroups;
-  const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}` : navStateKey ?? appName;
+  const visibleGroups = currentView?.nav ?? currentPanel?.nav ?? resolvedGroups;
+  const resolvedNavStateKey = currentPanel ? `${navStateKey ?? appName}:${currentPanel.id}${currentView ? `:${currentView.id}` : ""}` : navStateKey ?? appName;
   const nav = (compact: boolean, onNavigate = () => setMenuOpen(false), onDismissSearch?: () => void) => (
     <ShellNav groups={visibleGroups} bottomItems={currentPanel ? [] : bottomItems} pathname={pathname} collapsed={compact} collapsibleGroups disabledHint={resolvedDisabledHint} onNavigate={onNavigate} navStateKey={resolvedNavStateKey} searchEnabled={navSearch} searchPlaceholder={resolvedSearchPlaceholder} searchEmptyText={resolvedSearchEmptyText} onExpandSearch={() => { setSearchOverlay(true); setFocusSearch((value) => value + 1); }} focusSearch={focusSearch} onDismissSearch={onDismissSearch} searchMenu={navSearchMenu} clearSearchLabel={dsTexts.appShell.clearSearch} mainMenuLabel={dsTexts.appShell.mainMenu} containsActivePageLabel={dsTexts.appShell.containsActivePage} />
   );
@@ -623,9 +631,9 @@ export function AppShell({
   const hasThemeToggle = Boolean(themeToggleButton);
   const hasUser = Boolean(userMenu);
   const panelHeading = currentPanel ? (
-    <div className="min-w-0 flex-1 py-1">
+    <div data-slot="app-shell-panel-heading" className="order-2 min-w-0 flex-1 py-1 md:order-3">
       <div className="flex min-w-0 items-center gap-2">
-        <span className="truncate font-semibold">{currentPanel.title}</span>
+        <span className="truncate whitespace-nowrap font-semibold">{currentPanelTitle}</span>
         {currentPanel.badge ? (
           <StatusBadge
             status="panel"
@@ -634,9 +642,20 @@ export function AppShell({
           />
         ) : null}
       </div>
-      {currentPanel.context ? (
-        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanel.context} />
+      {typeof currentPanelContext === "string" ? (
+        <TruncatedText className="max-w-full text-[0.75rem] leading-tight text-muted-foreground" text={currentPanelContext} />
+      ) : currentPanelContext ? (
+        <div className="truncate text-[0.75rem] leading-tight text-muted-foreground">{currentPanelContext}</div>
       ) : null}
+    </div>
+  ) : null;
+  const panelViewSwitch = currentPanel && currentPanel.views && currentPanel.views.length >= 2 ? (
+    <div data-slot="app-shell-panel-views" role="radiogroup" aria-label={dsTexts.appShell.panelView} className="order-4 grid w-max shrink-0 grid-flow-col auto-cols-fr overflow-hidden rounded-md border border-input bg-background md:order-2">
+      {currentPanel.views.map((view, index) => (
+        <Button key={view.id} type="button" variant="ghost" role="radio" aria-checked={view.id === currentView?.id} tabIndex={view.id === currentView?.id ? 0 : -1} className={cn("h-8 min-h-0 w-full whitespace-nowrap rounded-none border-0 px-3 font-normal shadow-none", index > 0 && "border-l border-l-input", view.id === currentView?.id && "bg-primary/10 font-semibold text-primary")} onClick={() => currentPanel.onViewChange?.(view.id)}>
+          {view.label}
+        </Button>
+      ))}
     </div>
   ) : null;
 
@@ -697,21 +716,22 @@ export function AppShell({
         <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-1 overflow-hidden pl-3 pr-2 xl:gap-2 xl:pr-3">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden" aria-label={menuLabel}><Menu className="size-5" /></Button></SheetTrigger>
-            <SheetContent side="left" className="shell-sidebar flex w-72 flex-col gap-0 p-0">
-              <SheetHeader className="min-h-14 shrink-0 justify-center border-b px-4"><SheetTitle>{currentPanel?.title ?? appName}</SheetTitle>{currentPanel?.context ? <TruncatedText text={currentPanel.context} className="text-xs font-normal text-sidebar-muted" /> : null}</SheetHeader>
+             <SheetContent side="left" data-sidebar-tone={sidebarTone} className="shell-sidebar flex w-72 flex-col gap-0 bg-sidebar p-0 text-sidebar-foreground">
+               <SheetHeader className="min-h-14 shrink-0 justify-center border-b border-sidebar-border px-4"><SheetTitle className="text-sidebar-foreground">{currentPanelTitle || appName}</SheetTitle>{typeof currentPanelContext === "string" ? <TruncatedText text={currentPanelContext} className="text-xs font-normal text-sidebar-muted" /> : currentPanelContext}</SheetHeader>
               <div data-slot="app-shell-sheet-nav" className="flex min-h-0 flex-1 flex-col">{nav(false)}</div>
             </SheetContent>
           </Sheet>
-          <div
-            ref={contextRef}
+           <TooltipProvider><Tooltip><TooltipTrigger asChild><div
+             ref={contextRef}
+             aria-disabled={contextDisabled || undefined}
             className={cn(
               "relative z-10 flex min-w-0 shrink items-center gap-1 overflow-hidden md:gap-5",
               centerContext && "absolute left-1/2 -translate-x-1/2",
             )}
           >
             <span ref={contextSeparatorRef} hidden aria-hidden className="pointer-events-none absolute top-1/2 h-6 w-px -translate-x-1/2 -translate-y-1/2 bg-border" />
-            {contextLeft}
-          </div>
+             <span inert={contextDisabled || undefined} className={cn("flex min-w-0 items-center", contextDisabled && "pointer-events-none opacity-45")}>{contextLeft}</span>
+           </div></TooltipTrigger>{contextDisabled ? <TooltipContent>{resolvedContextDisabledHint}</TooltipContent> : null}</Tooltip></TooltipProvider>
           {hasContext && !centerContext ? <Separator orientation="vertical" className="hidden h-6 shrink-0 xl:block" /> : null}
           <div className="hidden min-w-0 flex-1 2xl:block">{breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}</div>
           <div className="min-w-0 flex-1 2xl:hidden" />
@@ -738,27 +758,28 @@ export function AppShell({
 
       {!currentPanel ? <div className="shrink-0">{subHeader}</div> : null}
 
-      {currentPanel ? (
-        <div data-slot="app-shell-panel-header" className={cn("flex min-h-11 shrink-0 items-center gap-2 border-b px-3", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
-          <div className={cn("hidden shrink-0 items-center md:flex", isCollapsed ? "w-11 justify-center" : "w-[14.25rem]")}><currentPanel.icon className="size-4" /></div>
-          <div className="flex min-w-0 flex-1 items-center gap-2 md:hidden"><currentPanel.icon className="size-4 shrink-0" />{panelHeading}</div>
-          <div className="hidden min-w-0 flex-1 md:flex">{panelHeading}</div>
-          <Button type="button" variant="default" size="sm" className="ml-auto shrink-0" onClick={() => setPanel(null)}><X className="size-4" />{adminBackLabel ?? closeLabel}</Button>
-        </div>
-      ) : null}
-
       <div ref={shellBodyRef} className="flex min-h-0 flex-1 overflow-hidden">
-        <aside className={cn("shell-sidebar relative hidden shrink-0 border-r md:flex md:flex-col", !menuDragging && "transition-[width]", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
+        <aside data-sidebar-tone={sidebarTone} className={cn("shell-sidebar relative hidden shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex md:flex-col", !menuDragging && "transition-[width]", isCollapsed && "w-14")} style={!isCollapsed ? { width: `${menuWidth}rem` } : undefined}>
           <div className="min-h-0 flex-1">{nav(isCollapsed)}</div>
           <div className="border-t p-2">
             <TooltipProvider><Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon" className={cn(isCollapsed ? "w-full" : "ml-auto flex")} aria-label={isCollapsed ? expandLabel : collapseLabel} onClick={() => setCollapsed(!isCollapsed)}>{isCollapsed ? <PanelLeftOpen className="size-4" /> : <><PanelLeftClose className="size-4" /><span className="sr-only">{collapseLabel}</span></>}</Button></TooltipTrigger><TooltipContent side="right">{isCollapsed ? expandLabel : collapseLabel}</TooltipContent></Tooltip></TooltipProvider>
           </div>
         </aside>
         {!isCollapsed ? <div role="separator" aria-orientation="vertical" aria-label={dsTexts.appShell.resizeMenu} aria-valuemin={12.5} aria-valuemax={Number(menuMaximum.toFixed(2))} aria-valuenow={Number(menuWidth.toFixed(2))} aria-valuetext={`${formatMenuRem(menuWidth)} rem`} tabIndex={0} onPointerDown={onMenuDividerDown} onKeyDown={onMenuDividerKeyDown} onDoubleClick={() => saveMenuWidth(15)} className="hidden w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40 focus-visible:bg-primary/40 focus-visible:outline-none md:block" /> : null}
-        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden min-h-0 w-60 flex-col overflow-hidden border-r shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
-        <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
-          <AppShellContentProvider value={setHasPaneLayout}>{children}</AppShellContentProvider>
-        </main>
+        {isCollapsed && searchOverlay ? <div ref={searchOverlayRef} data-sidebar-tone={sidebarTone} className="shell-sidebar fixed bottom-0 left-14 top-14 z-40 hidden min-h-0 w-60 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-panel md:flex">{nav(false, () => setSearchOverlay(false), () => setSearchOverlay(false))}</div> : null}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          {currentPanel ? (
+            <div data-slot="app-shell-panel-header" className={cn("flex min-h-11 shrink-0 flex-wrap items-center gap-2 border-b px-3 py-1 md:flex-nowrap", currentPanel.accent === "warning" ? "bg-warning/10" : "bg-muted")}>
+              <currentPanel.icon className="order-1 size-4 shrink-0" />
+              {panelViewSwitch}
+              {panelHeading}
+              <Button type="button" variant="default" size="sm" className="order-3 ml-auto shrink-0 whitespace-nowrap md:order-4" onClick={() => setPanel(null)}>{adminBackLabel ?? closeLabel}</Button>
+            </div>
+          ) : null}
+          <main data-slot="app-shell-main" className={cn("ds-scroll-area flex min-h-0 min-w-0 flex-1 flex-col overscroll-contain", hasPaneLayout ? "overflow-hidden" : "overflow-y-auto p-4")}>
+            <AppShellContentProvider value={setHasPaneLayout}>{children}</AppShellContentProvider>
+          </main>
+        </div>
       </div>
     </div>
   );
