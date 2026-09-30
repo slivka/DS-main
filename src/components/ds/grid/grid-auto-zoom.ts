@@ -52,6 +52,7 @@ export function useAutoGridZoom(
   enabled: boolean,
   requiredWidthAt100: number,
   setAutoZoom: (zoom: number, resetManual: boolean) => void,
+  currentZoom = 1,
   dependencies: readonly unknown[] = [],
 ) {
   const requiredRef = useRef(requiredWidthAt100);
@@ -73,7 +74,7 @@ export function useAutoGridZoom(
     // odvodíme jeho šířku při 16 px z reálného scrollWidth a výpočet zpřesníme.
     const table = surface?.querySelector<HTMLElement>("table");
     const renderedRequired = surface && table && table.scrollWidth > surface.clientWidth
-      ? table.scrollWidth / appZoom
+      ? table.scrollWidth / (appZoom * Math.max(currentZoom, AUTO_GRID_MIN))
       : 0;
     const next = calculateAutoGridZoom(width, Math.max(requiredRef.current, renderedRequired), appZoom);
     lastWidth.current = width;
@@ -81,7 +82,7 @@ export function useAutoGridZoom(
     if (next == null) return;
     setAutoZoom(next, initialized.current && !fromAppZoom);
     initialized.current = true;
-  }, [enabled, rootRef, setAutoZoom]);
+  }, [currentZoom, enabled, rootRef, setAutoZoom]);
 
   useLayoutEffect(() => { measure(); }, [measure, requiredWidthAt100, ...dependencies]); // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
