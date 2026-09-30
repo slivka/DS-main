@@ -153,12 +153,15 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ### Formulář dokladu
 
-- Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. Pořadí je Kniha · Období · u pokladny/banky Měna · účet; hlavní účet se nikde jinde ve formuláři nezobrazuje. Faktury a interní doklady mají měnu vždy bezprostředně za Celkem, pokladna a banka pouze v identifikačním řádku.
+- Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. U pokladny a banky je pořadí Směr · Kniha · Období · účet, bez měny. Hlavní účet se nikde jinde ve formuláři nezobrazuje.
+- Měna je u všech druhů dokladů vždy bezprostředně za polem Celkem. Zamčená měna se zobrazí v rámečku stejné výšky jako částka; nepoužívejte holý text ani měnu v popisku Celkem.
+- Varování k datům předávejte přes `dateWarnings`; `DocumentForm` je řadí podle polí do společného pruhu upozornění a pole označí varovným stavem. Nevkládejte varování pod datumové pole.
+- Přijaté doklady řadí sekce Základní údaje → Datumy → Platební údaje → Částka → Řádky. Bankovní účet patří do Základních údajů; výchozí účet vybírá aplikace, nikoli `BankAccountField`.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
 - Sbalitelné panely mají šipku vpravo a celý nadpis je klikací. Trvalý stav spravuje aplikace přes řízené props, nikoli komponenta přes `localStorage`.
-- Data DPH (`DUZP`, `Datum DPH`) jsou ve formuláři dokladu vždy vpravo; svázané datum se zobrazuje se zámkem místo kalendáře.
+- Data DPH (`DUZP`, `Datum DPH`) navazují ve společném pružném řádku za ostatními daty; svázané datum se zobrazuje se zámkem místo kalendáře.
 
 ### Kontextový řádek gridu
 

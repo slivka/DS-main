@@ -87,7 +87,7 @@ interface ShowcaseScenario {
 }
 
 const SCENARIOS: ShowcaseScenario[] = [
-  { id: "po", title: "PO CZK – příjem", type: "PO", identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026", account: { side: "MD", label: "211.001 - Pokladna CZK" }, number: "PO2026000118" }, value: { ...BASE, bookId: "b-pd", number: "PO2026000118", direction: "in", mainAccountId: "211001" }, directionBadge: "in", mainSide: "MD", mainAccountLocked: true },
+  { id: "po", title: "PO CZK – příjem", type: "PO", identity: { variant: "cashBank", book: "PO - Pokladna", period: "2026", account: { side: "MD", label: "211.001 - Pokladna" }, number: "PO2026000118" }, value: { ...BASE, bookId: "b-pd", number: "PO2026000118", direction: "in", mainAccountId: "211001" }, directionBadge: "in", mainSide: "MD", mainAccountLocked: true },
   { id: "ba", title: "BA EUR – výdej", type: "BA", identity: { variant: "cashBank", book: "BA - Banka EUR", period: "2026", account: { side: "DAL", label: "221.002 - Běžný účet EUR" }, number: "BA2026000091" }, value: { ...BASE, bookId: "b-bv", number: "BA2026000091", direction: "out", currency: "EUR", rate: 24.38, rateManual: true, rateNote: "Kurz dle výpisu", amountTotal: 180, mainAccountId: "221002" }, directionBadge: "out", mainSide: "D", mainAccountLocked: true },
   { id: "fv", title: "FV CZK – účet lze změnit", type: "FV", identity: { variant: "invoice", book: "FV - Vydané faktury", period: "2026", account: { side: "MD", label: "311.001 - Odběratelé", editable: true }, number: "FV2026000420" }, value: BASE, mainSide: "MD" },
   { id: "fv-eur", title: "FV EUR – kurz a přepočet", type: "FV", identity: { variant: "invoice", book: "FV - Vydané faktury", period: "2026", account: { side: "MD", label: "311.001 - Odběratelé", editable: true }, number: "FV2026000421" }, value: { ...BASE, number: "FV2026000421", currency: "EUR", rate: 24.285, rateManual: true, rateNote: "Kurz dle smlouvy", amountTotal: 174.7 }, mainSide: "MD" },
@@ -195,6 +195,7 @@ export function DocumentFormShowcase() {
     dueDate: "2026-10-08", partnerId: "p2", counterpartyName: MOCK_PARTNERS.find((p) => p.id === "p2")?.name ?? null,
     variableSymbol: "2026000420", description: "Konzultační služby", currency: "CZK", rate: 1, amountTotal: 24200, totalMode: "entered", mainAccountId: "311001",
   });
+  const [fpNonPayer, setFpNonPayer] = useState<DocumentHeaderValue>({ ...PURCHASE_INVOICE_HEADER, number: "FP2026000713", vatRelevant: false });
   const [idCp, setIdCp] = useState<DocumentHeaderValue>({
     bookId: "b-id", number: "ID2026000032", accountingDate: "2026-09-30", issueDate: "2026-09-30",
     counterpartyName: "Finanční úřad pro Prahu 1", partnerId: null, description: "Předpis daně z nemovitostí", currency: "CZK", rate: 1, amountTotal: 0, totalMode: "sum",
@@ -262,6 +263,10 @@ export function DocumentFormShowcase() {
           primaryAction={{ label: "Zaúčtovat", onClick: () => toast.success("Doklad zaúčtován") }}
           moreActions={[{ id: "duplicate", label: "Duplikovat", onClick: () => toast.info("Doklad zduplikován") }]}
         />
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Přijatá faktura – neplátce" description="Číslo dodavatele má obecný popisek a pole DPH zůstávají skrytá.">
+        <DocumentForm title="Přijatá faktura" value={fpNonPayer} onChange={setFpNonPayer} lines={[]} {...common} currencies={CURRENCIES} bankAccountOptions={BANK_ACCOUNT_OPTIONS} bankCodes={["0100", "0800"]} books={MOCK_BOOKS} documentType="FP" mainSide="D" status="draft" vat={{ visible: false }} />
       </ShowcaseSection>
 
       <ShowcaseSection title="Vydaná faktura – odběratel s IČO a DIČ"

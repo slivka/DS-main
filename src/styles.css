@@ -1367,11 +1367,6 @@
   --sidebar-hover: oklch(0.90 0.005 250);
 }
 
-.dark [data-sidebar-tone="panel"] {
-  --sidebar-badge-active: oklch(0.92 0.01 250);
-  --sidebar-badge-active-foreground: oklch(0.20 0.02 250);
-}
-
 .shell-nav-item[data-active="true"] [data-slot="shell-nav-badge"] {
   background: var(--sidebar-badge-active);
   color: var(--sidebar-badge-active-foreground);
@@ -1386,6 +1381,8 @@
   --sidebar-active-foreground: oklch(0.98 0.003 250);
   --sidebar-badge: oklch(0.34 0.006 250);
   --sidebar-badge-foreground: oklch(0.92 0.006 250);
+  --sidebar-badge-active: oklch(0.92 0.01 250);
+  --sidebar-badge-active-foreground: oklch(0.20 0.02 250);
   --sidebar-indicator: oklch(0.68 0.08 250);
   --sidebar-border: oklch(0.32 0.004 250);
   --sidebar-input: oklch(0.29 0.004 250);

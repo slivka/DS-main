@@ -4,6 +4,7 @@ import { Input } from "../../ui/input";
 import { OptionSelect } from "../form/option-select";
 import { isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 
 export interface BankAccountOption {
   number: string;
@@ -32,15 +33,19 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   onChange,
   options = [],
   bankCodes,
-  invalidAccountText = "Číslo účtu není platné.",
-  invalidBankCodeText = "Kód banky není platný.",
-  otherAccountText = "Jiný účet",
+  invalidAccountText,
+  invalidBankCodeText,
+  otherAccountText,
   disabled,
   readOnly,
   id,
   className,
   ...props
 }, ref) {
+  const { documentForm: texts } = useDsTexts();
+  const resolvedInvalidAccountText = invalidAccountText ?? texts.bankAccountInvalid;
+  const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
+  const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
   const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
   const selectedOption = optionValues.includes(value);
   const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
@@ -51,7 +56,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   const hasCompleteValue = compact.length > 0 && compact.includes("/") && bankCode.length === 4;
   const bankCodeInvalid = hasCompleteValue && Boolean(bankCodes?.length) && !bankCodes?.includes(bankCode);
   const accountInvalid = hasCompleteValue && (!parsed || !isValidCzAccount(parsed.prefix, parsed.number));
-  const error = bankCodeInvalid ? invalidBankCodeText : accountInvalid ? invalidAccountText : undefined;
+  const error = bankCodeInvalid ? resolvedInvalidBankCodeText : accountInvalid ? resolvedInvalidAccountText : undefined;
 
   return (
     <div className={cn("min-w-0", className)}>
@@ -78,7 +83,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             ].filter(Boolean).join(" - "),
             selectedLabel: `${option.number}/${option.bankCode}`,
           })),
-          { value: OTHER, label: otherAccountText },
+          { value: OTHER, label: resolvedOtherAccountText },
         ]}
       /> : null}
       {manual ? <Input

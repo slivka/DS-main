@@ -178,7 +178,7 @@ export function DateField({
         readOnly={link?.locked}
         placeholder={resolvedPlaceholder === dsTexts.date.chooseDate ? dateFormat.toLowerCase() : resolvedPlaceholder}
         value={text}
-        aria-invalid={invalid}
+        aria-invalid={invalid || Boolean(warning)}
         title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
         onChange={(e) => {
           const next = e.target.value;
