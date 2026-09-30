@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
+import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import {
   activateTabInState,
@@ -248,7 +249,8 @@ export interface PaneTabsProviderProps {
 
 /** Stav a akce záložek v panelech. Obalte jím AppShell i PaneLayout, aby navigace otevírala záložky. */
 export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, shortcuts = true, texts, children }: PaneTabsProviderProps) {
-  const t = { ...DEFAULT_PANE_TABS_TEXTS, ...texts };
+  const dsTexts = useDsTexts();
+  const t = { ...DEFAULT_PANE_TABS_TEXTS, limitClosed: dsTexts.panes.limitClosed, ...texts };
   const stateRef = useRef(state);
   stateRef.current = state;
   const { confirm, confirmDialog } = useConfirmDialog();
