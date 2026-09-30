@@ -102,6 +102,9 @@ const keydown = (target: Element, init: KeyboardEventInit) => {
 };
 const wheel = (target: Element, init: WheelEventInit) => {
   const event = new WheelEvent("wheel", { bubbles: true, cancelable: true, ...init });
+  // happy-dom nepřenáší modifikátory do WheelEvent.
+  Object.defineProperty(event, "ctrlKey", { value: Boolean(init.ctrlKey) });
+  Object.defineProperty(event, "metaKey", { value: Boolean(init.metaKey) });
   act(() => { target.dispatchEvent(event); });
   return event;
 };
