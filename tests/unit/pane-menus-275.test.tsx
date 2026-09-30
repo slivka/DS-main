@@ -9,12 +9,13 @@ mock.module("@tanstack/react-router", () => ({
   ...realRouter,
   Link: ({ to, children, ...rest }: { to?: string; children?: React.ReactNode }) => <a href={to} {...rest}>{children}</a>,
 }));
-const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 const { AppZoomProvider } = await import("../../src/lib/app-zoom");
 const { LayoutMenu } = await import("../../src/components/ds/panes/layout-menu");
 const { UserMenu } = await import("../../src/components/ds/layout/user-menu");
-const { buildTabMenuActions } = await import("../../src/components/ds/panes/pane-context");
-const { createPaneTabsState, createTab } = await import("../../src/components/ds/panes/pane-state");
+const { buildTabMenuActions, PaneTabsProvider, usePaneTabs } = await import("../../src/components/ds/panes/pane-context");
+const { createPaneTabsState, createTab, reopenClosedTabInState, setLayoutInState } = await import("../../src/components/ds/panes/pane-state");
+const { setTabDirty } = await import("../../src/components/ds/panes/pane-tab-store");
 
 afterEach(() => cleanup());
 afterAll(async () => {
@@ -79,5 +80,46 @@ describe("podmenu DS 2.75.0", () => {
     expect(view.getByRole("button", { name: "Spravovat pracovní prostory" })).toBeTruthy();
     expect(view.getByRole("menuitemradio", { name: "Hlavní prostor" }).querySelectorAll("svg")).toHaveLength(1);
     expect(email.parentElement?.querySelectorAll("span")).toHaveLength(1);
+  });
+
+  it("Zavřít panel odstraní všechny jeho záložky, uloží je pro obnovu a aktivuje souseda", () => {
+    let initial = setLayoutInState(createPaneTabsState(1), 3);
+    const tabs = [createTab({ route: "/a" }), createTab({ route: "/b" })];
+    initial.panes[1] = { ...initial.panes[1], tabs, activeTab: tabs[1].id };
+    initial = { ...initial, active: initial.panes[1].id };
+    let api: ReturnType<typeof usePaneTabs> = null;
+    function Capture() { api = usePaneTabs(); return null; }
+    function Host() {
+      const [state, setState] = React.useState(initial);
+      return <PaneTabsProvider state={state} onChange={setState} shortcuts={false}><Capture /></PaneTabsProvider>;
+    }
+    render(<Host />);
+    act(() => api?.closePane(initial.panes[1].id));
+    expect(api?.state.panes).toHaveLength(2);
+    expect(api?.state.panes.flatMap((pane) => pane.tabs)).toHaveLength(0);
+    expect(api?.state.active).toBe(initial.panes[2].id);
+    expect(api?.closedTabCount).toBe(2);
+    act(() => api?.reopenClosedTab());
+    act(() => api?.reopenClosedTab());
+    expect(api?.state.panes.flatMap((pane) => pane.tabs).map((tab) => tab.route).sort()).toEqual(["/a", "/b"]);
+  });
+
+  it("rozepsaná záložka při zavření panelu zobrazí dotaz a Zrušit nic nezmění", () => {
+    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const tab = createTab({ route: "/dirty" });
+    initial.panes[0] = { ...initial.panes[0], tabs: [tab], activeTab: tab.id };
+    let api: ReturnType<typeof usePaneTabs> = null;
+    function Capture() { api = usePaneTabs(); return null; }
+    function Host() {
+      const [state, setState] = React.useState(initial);
+      return <PaneTabsProvider state={state} onChange={setState} shortcuts={false}><Capture /></PaneTabsProvider>;
+    }
+    const view = render(<Host />);
+    act(() => setTabDirty(tab.id, true));
+    act(() => api?.closePane(initial.panes[0].id));
+    expect(view.getByRole("alertdialog")).toBeTruthy();
+    fireEvent.click(view.getByRole("button", { name: "Zrušit" }));
+    expect(api?.state.panes).toHaveLength(2);
+    expect(api?.state.panes[0].tabs[0].id).toBe(tab.id);
   });
 });
