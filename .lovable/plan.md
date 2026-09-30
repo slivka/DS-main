@@ -1,45 +1,61 @@
-# DS 2.79.0 – Nastavení nad úrovní firmy
+# Úklid 1C – pojistky kvality a pravidla DS (verze 2.82.0)
 
-Verze `package.json` 2.79.0, Release nedělám, `.lovable/meta.yaml` beze změny. Změna je rozšíření, ne BREAKING.
+Bez změny chování a veřejného API (kromě nového aliasu `fileName`). Release se nedělá, `.lovable/meta.yaml` zůstává beze změny.
 
-## 1. Sdílený zoom – `useAppZoomShortcuts()`
-- Z `AppShell` přesunu do `lib/app-zoom.ts` (hook): start `applyAppZoom(getAppZoom())`, klávesy přes `isAppZoomShortcut` (i v polích, `event.repeat` jako dnes), Ctrl/Cmd + kolečko přes `createAppWheelZoom` (nad gridem nechá zoom gridu).
-- `AppShell` volá hook místo vlastních efektů; chování stejné, dosavadní testy zoomu musí projít. Export z balíku i `hooks/index.ts`.
+## Nejdřív se změří výchozí stav
+Před úpravami se spustí `typecheck`, `lint`, `test`, `format:check` a `build` a zapíšou se počty. Totéž se spustí po úpravách a obojí se porovná ve shrnutí.
 
-## 2. `StandaloneShell` (`layout/standalone-shell.tsx`)
-- Props `brand`, `title`, `userMenu?`, `onClose?`, `closeLabel?`, `sidebar?`, `children`, spread + `className`.
-- `h-dvh`, horní lišta se stejnými třídami/tokeny jako lišta `AppShell` (výšku a styl vytáhnu do sdílené konstanty), bez kontextu, panelů a hledání. Zavřít = textové tlačítko s X jako u panelu, jen s `onClose`.
-- Levý sloupec `<nav data-sidebar-tone="panel">`, šířka čtená z `app:menu-width` (bez táhla), sloupec i `main` rolují zvlášť.
-- Esc: listener na `window`, ignoruje `defaultPrevented` a otevřený překryv (`[data-state=open]` u `role=dialog|menu|listbox`, popover obsah radix).
-- Pod `md`: sloupec nad obsahem, `overflow-x-hidden`. Nadpis `truncate` + `title`.
+## Soubory, které se změní
 
-## 3. `StandaloneNav`
-- Vykreslení položky a nadpisu sekce vytáhnu z `ShellNav` (`ShellNavSection`, položka s odznakem, `isActive` podle trasy) do sdíleného modulu `layout/nav-items.tsx`; `AppShell` i `StandaloneNav` ho používají.
-- Skupiny nesbalitelné, tón panelu. Pod `md` (`useIsMobile`) `OptionSelect`/Select s položkami ve skupinách podle sekce; výběr naviguje přes `to`.
+| Soubor | Změna |
+|---|---|
+| `package.json` | verze 2.82.0; `"test": "bun test tests/unit"`; `"typecheck": "tsgo --noEmit"`. Do `node_modules/.bin` je teď vidět jen `tsc`, proto se nejdřív ověří, jestli jde `tsgo` spustit v projektu. Když ne, použije se `tsc --noEmit` a zapíše se to do shrnutí. |
+| `tests/unit/grid-toolbar-2211.test.ts` | import `vitest` se nahradí za `bun:test`, nic jiného se nemění |
+| `eslint.config.js` | nová pravidla, přesné znění je níže |
+| `src/**` (33 výskytů v 13 souborech) | `any`, `as unknown as` a `as never` se nahradí jen správným typem (generika, `satisfies`, zúžení). Místa, kde by to znamenalo změnit logiku, zůstanou a vypíšou se. |
+| `src/components/ds/grid/grid-export.tsx` | nový prop `fileName`; `fijename` zůstane jako alias `/** @deprecated od 2.82.0 – použij fileName */`. Použije se `fileName ?? fijename` a jeden z nich musí být zadaný. Typ se zapíše jako sjednocení, aby veřejné API zůstalo zpětně kompatibilní. |
+| `src/components/ds/grid/DataGrid.tsx` | na řádku 1181 se `fijename=` přepne na `fileName=` |
+| ukázky a testy s `fijename` | přepnou se na `fileName` (najdou se přes `rg`) |
+| `.lovable/design-system.json`, `.lovable/rules/components.md` | doplní se `fileName` a u `fijename` se označí, že je zastaralý. Obsah všech dosavadních pravidel zůstane. |
+| `CHANGELOG.md` (nový) | celý changelog z README, seřazený od nejnovější verze. Doplní se chybějící verze 2.70, 2.72, 2.74, 2.76, 2.78 a 2.80, každá jednou větou podle historie commitů, a 2.81 a 2.82. Přibudou sem i poznámky k vydání ze `system.md`. |
+| `README.md` | zůstane jen účel, instalace, použití (současné ukázky), skripty a odkazy na `CHANGELOG.md`, `.lovable/system.md` a `AGENTS.md` |
+| `.lovable/system.md` | poznámky k vydání se přesunou do CHANGELOG, pravidla zůstanou doslova (podrobnosti níže) |
+| `null` (v kořeni) | smazat |
+| `AGENTS.md` (kořenový) | jen přidat jeden odkazový řádek (viz níže) |
+| `src/components/ds/AGENTS.md` (nový) | 13 pravidel doslova podle zadání |
+| `roadmap.md` | záznam 2.82.0 |
 
-## 4. `ContextSwitcher`
-- Rozšíření místo duplikace: seznam s hledáním z `CompanySwitcher` vytáhnu do sdíleného `ContextSwitcherList` (Command, prázdný stav, ✓, klávesnice). `CompanySwitcher` ho dál používá beze změny vzhledu i API; `ContextSwitcher` = jiné tlačítko (varianta „block“ přes celou šířku sloupce: čtvereček s iniciálami/ikonou · label tučně · description šedě · ▾) nad stejným seznamem.
-- Props `label`, `description?`, `icon?`, `items {id,label,trailing?,current?}`, `value`, `onValueChange`, `actions {id,label,icon,onSelect}`, `searchThreshold=6`, `texts?`.
-- Zelená tečka u `current` (token `success`), hledání jen od prahu, akce pod oddělovačem. Esc zavře jen popover (`stopPropagation` + `preventDefault`, shell tedy nereaguje).
-- Popover `min-w-[var(--radix-popover-trigger-width)] max-w-[22rem]`, názvy `TruncatedText`. Texty `DsTexts.contextSwitcher` CS/SK.
+## Pravidla ESLint (přesné znění)
+```js
+"@typescript-eslint/no-explicit-any": "error",
+"@typescript-eslint/no-unused-vars": "warn",
+"max-lines": ["warn", { max: 500, skipBlankLines: true, skipComments: true }],
+"no-restricted-syntax": ["error",
+  { selector: "TSAsExpression > TSUnknownKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
+  { selector: "TSAsExpression > TSNeverKeyword",  message: "Použij správný typ; přetypování přes unknown/never je zakázané" }],
+```
+Pro `**/*.test.{ts,tsx}` přibude zvláštní blok:
+```js
+"no-restricted-imports": ["warn", { paths: [
+  { name: "node:fs", message: "Testy ověřují chování, ne zdrojový text" },
+  { name: "fs",      message: "Testy ověřují chování, ne zdrojový text" }] }]
+```
+Poznámka: `no-explicit-any` a `no-restricted-syntax` platí jako chyba i v testech a ve složce `src/components/ui` (shadcn). Když tam něco zůstane, vypíše se to ve shrnutí jako počet chyb. Lint se v tomto kroku nevynucuje, testy ani soubory shadcn se kvůli tomu neupravují.
 
-## 5. `ConfirmByTypingDialog`
-- Dialog na shadcn `Dialog`, props dle zadání. Pokyn „Pro potvrzení opište: **{confirmText}**“, pole `Input`, volitelný `CheckboxField`.
-- Tlačítko aktivní jen při `value.trim() === confirmText` a zaškrtnutí; během běhu spinner, `onOpenChange`/Esc/overlay zablokované; chyba → `NoticeBar tone="danger"` v dialogu; úspěch zavře a vynuluje stav. Tlačítka jen textová, destruktivní červené. Texty v `DsTexts`.
+## `.lovable/system.md` – co se přesune
+- Do CHANGELOG se celé přesunou tyto sekce: „DS 2.64.0“, „DS 2.66.0“, „DS 2.68.0“, „BREAKING pro aplikace – migrace na 2.53.0“ a „Nové API 2.53.0“. Také věty typu „od 2.xx…“, které vysvětlují historii a nejsou pravidlem.
+- Z nadpisů pravidel se odebere číslo verze, například „Pravidlo 20 – nadpisy a popisky (2.54.0, závazné)“ se změní na „Pravidlo 20 – nadpisy a popisky (závazné)“. Text pravidel se nemění.
+- Když sekce „DS 2.6x“ obsahuje i závazné pravidlo, pravidlo zůstane v system.md pod věcným nadpisem a jen popis vydání se přesune.
 
-## 6. `DangerZone`
-- Sekce s okrajem `border-destructive`, nadpis přes `SectionHeading` (výchozí „Nebezpečná zóna“ z `DsTexts`), řádky title/description/action, oddělené linkou; nezalamuje nadpisy, tmavý motiv přes tokeny.
+## Pravidla pro AGENTS.md
+Kořenový `AGENTS.md` má dnes 1 994 bajtů a limit je 2 048, takže se do něj 13 pravidel nevejde. Proto:
+- Pravidla se doslova v zadaném znění vloží do nového souboru `src/components/ds/AGENTS.md`. Je to pravidlový soubor DS, obdoba `src/components/ds/accounting/AGENTS.md`.
+- Do kořenového `AGENTS.md` se přidá jen řádek: `- Pravidla kvality DS: src/components/ds/AGENTS.md.` Nic se v něm nemaže ani nepřeformulovává. Pokud by i tento řádek překročil limit, zkrátí se na `- Kvalita DS: src/components/ds/AGENTS.md.`
 
-## 7. `NoticeBar`
-- Akce vpravo už umí (`actions`). Chybí neutrální varianta → přidám `tone="neutral"` (ikona Info, `border-l-border bg-muted`), zavírací aria-label přesunu do `texts`/DsTexts.
+Pokud chcete pravidla přímo v kořenovém souboru, musely by se z něj přesunout jiné řádky, což zadání zakazuje. Proto navrhuji tento postup.
 
-## 8. Ukázka „Nastavení prostoru“
-- Nová trasa v náhledu + odkaz v navigaci ukázek: shell s `ContextSwitcher` (3 prostory, 2 akce), `StandaloneNav` se třemi sekcemi dle zadání, `NoticeBar` neutral s akcí, grid firem, přepínač role „člen“ (jen Údaje prostoru), stav bez prostoru, `DangerZone` s oběma variantami `ConfirmByTypingDialog`.
-- Ověření v prohlížeči: úzké okno, zoom 70 % a 200 %.
+## Co se nemění
+Komponenty, texty pro uživatele, logika, testy (kromě importu `bun:test` a přepnutí na `fileName`) a `.lovable/meta.yaml`. Dlouhé soubory ani komponenty s mnoha props (DataGrid) se teď nedělí. Pravidla to jen ohlašují a lint na to upozorní varováním.
 
-## 9. Dokumentace a testy
-- `system.md`: pravidla o prostorech, `ContextSwitcher`, nevratných akcích; README changelog 2.79.0 + ukázka; AGENTS.md pravidlo o sdíleném zoomu a vykreslení menu; roadmap.
-- `design-system.json`: nové komponenty s usage/examples/antipatterns, verze 2.79.0.
-- `.lovable/rules/*.md`: doplním nové komponenty a `tone="neutral"` do stávajících souborů, nic nemažu; porovnám s předchozí verzí (git diff), že žádná sekce nezmizela.
-- Testy (`tests/unit/standalone-279.test.tsx`): Esc s otevřeným popoverem/dialogem shell nezavře, bez překryvu zavře; Esc v `ContextSwitcher` zavře jen popover; potvrzení jen při shodě + zaškrtnutí; chyba nechá dialog otevřený; úspěch zavře; hook zoomu v obou shellech (Ctrl+plus mění kořen); `StandaloneNav` pod `md` = Select; hledání až od prahu; `CompanySwitcher` beze změny.
-- Na konci `bun test tests/unit`, `bunx tsgo --noEmit`, shrnutí a počet testů.
+## Ověření na konci
+`typecheck`, `lint` (chyby a varování před a po), `test` (počet před a po, všechny musí projít), `format:check` a `build`. Kontrola, že v CHANGELOG nic nechybí: každý nadpis verze z původního README a každá přesunutá sekce ze system.md se v něm dohledá. Shrnutí uvede, co se změnilo, kde a proč, co se nezměnilo a proč, a co se neověřilo.
