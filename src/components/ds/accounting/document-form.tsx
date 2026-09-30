@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowDownLeft, ArrowUpRight, Pencil, Settings, Sigma } from "lucide-react";
 
 import { Input } from "../../ui/input";
@@ -13,6 +13,7 @@ import { RecordActionBar, type RecordMoreAction, type RecordPrimaryAction, type 
 import { CheckboxField } from "../form/checkbox-field";
 import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
+import { NoticeBar } from "../feedback/notice-bar";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
 import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../form/ico-link";
@@ -34,6 +35,7 @@ import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
 import { CounterpartyField, type CounterpartySeed } from "./counterparty-field";
 import { VsField } from "./vs-field";
+import { BankAccountField, type BankAccountOption } from "./bank-account-field";
 import { convertAmount } from "./currency-amount";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -104,16 +106,22 @@ export type DocumentVatConfig = {
   filedWarning?: string;
 };
 
+/** Vytvoří VS ze všech číslic čísla dokladu; neplatná délka návrh nevytvoří. */
+export function vsFromDocumentNumber(text: string): string | null {
+  const digits = text.replace(/\D/g, "");
+  return digits.length > 0 && digits.length <= 10 ? digits : null;
+}
+
 export type DocumentFormTexts = {
   headerSection: string; datesSection: string; paymentSection: string; propertiesSection: string; rateSection: string; currencySection: string; periodHint: string; amountSection: string; amountOnlySection: string;
   book: string; period: string; number: string; numberPending: string; direction: string; directionIn: string; directionOut: string;
   status: string; approved: string; yes: string; no: string;
-  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string;
+  accountingDate: string; issueDate: string; taxDate: string; vatRelevant: string; vatDate: string; dueDate: string; externalNumber: string; supplierNumber: string; supplierTaxDocumentNumber: string; documentNumberTooLongForVs: string;
   partner: string; ico: string; dic: string; handedOverByIn: string; handedOverByOut: string; invalidIco: string; variableSymbol: string; constantSymbol: string; specificSymbol: string; bankAccount: string;
   description: string; currency: string; rate: string; vatRate: string; vatRateSameAsDocument: string; vatRateNote: string; vatRateMissing: string; amountTotal: string; totalHome: string; amountSum: string; sumFromLines: string; rounding: string; vatDateLockedHint: string; filedWarning: string;
   excludeFromPaymentOrders: string; linesTab: string; changedBy: string; changedAt: string; settings: string;
   rateNote: string; manualRate: string; rateNoteRequired: string;
-  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string; mainAccountSelect: string;
+  errorTitle: string; closeError: string; changeAccount: string; currencyDisabled: string; mainAccountSelect: string; bankAccountInvalid: string; bankCodeInvalid: string; otherBankAccount: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
@@ -121,11 +129,11 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   rateSection: "Kurz dokladu", currencySection: "Měna", periodHint: "Období se řídí datem účetního případu", amountSection: "Částka dokladu", amountOnlySection: "Částka",
   book: "Kniha", period: "Období", number: "Číslo dokladu", numberPending: "Koncept – číslo při zařazení",
   direction: "Směr", directionIn: "Příjem", directionOut: "Výdej", status: "Stav", approved: "Schváleno", yes: "Ano", no: "Ne",
-  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele",
+  accountingDate: "Datum účetního případu", issueDate: "Datum vystavení", taxDate: "DUZP", vatRelevant: "Vstupuje do DPH", vatDate: "Datum DPH", dueDate: "Splatnost", externalNumber: "Externí číslo", supplierNumber: "Číslo dokladu dodavatele", supplierTaxDocumentNumber: "Číslo daňového dokladu", documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
   partner: "Partner", ico: "IČO", dic: "DIČ", handedOverByIn: "Přijato od", handedOverByOut: "Vyplaceno komu", invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.", variableSymbol: "Variabilní symbol", constantSymbol: "Konstantní symbol", specificSymbol: "Specifický symbol", bankAccount: "Bankovní účet",
   description: "Popis", currency: "Měna", rate: "Kurz", vatRate: "Kurz DPH", vatRateSameAsDocument: "stejný jako kurz dokladu", vatRateNote: "Důvod ručního kurzu DPH", vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.", amountTotal: "Celkem za doklad", totalHome: "Celkem v {symbol}", amountSum: "Celkem za doklad", sumFromLines: "Sčítá se z rozpisu", rounding: "Zaokrouhlení", vatDateLockedHint: "Daň na výstupu patří do období DUZP", filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit", mainAccountSelect: "Hlavní účet",
+  linesTab: "Řádky", changedBy: "Změnil", changedAt: "Změněno", settings: "Nastavení…", rateNote: "Důvod ručního kurzu", manualRate: "Ruční kurz", rateNoteRequired: "Uveďte důvod ručního kurzu.", errorTitle: "Doklad nelze uložit", closeError: "Zavřít chybovou hlášku", changeAccount: "Změnit účet", currencyDisabled: "Měnu nelze změnit", mainAccountSelect: "Hlavní účet", bankAccountInvalid: "Číslo účtu není platné.", bankCodeInvalid: "Kód banky není platný.", otherBankAccount: "Jiný účet",
 };
 
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
@@ -160,6 +168,10 @@ export interface DocumentFormProps {
   partners?: PartnerOption[];
   dimensions?: DimensionOption[];
   currencies?: CurrencyOption[];
+  /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */
+  bankAccountOptions?: BankAccountOption[];
+  /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
+  bankCodes?: string[];
   documentType?: DocumentTypeCode | string;
   fields?: Partial<DocumentFields>;
   editableFields?: DocumentHeaderField[];
@@ -208,7 +220,7 @@ const ReadField = ({ id, value, muted, mono }: { id: string; value: ReactNode; m
   <div id={id} aria-readonly="true" className={cn("flex min-h-9 items-center text-sm", muted && "italic text-muted-foreground", mono && "font-mono tabular-nums")}>{value}</div>
 );
 
-function DocumentIdentityLine({ identity, direction, fallback, texts, currencySymbol, accountLabel, accountValue, editingAccount, canEditAccount, pencilRef, onStartAccountEdit, onAccountChange, onAccountClose, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; currencySymbol?: string; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; canEditAccount: boolean; pencilRef: React.RefObject<HTMLButtonElement | null>; onStartAccountEdit: () => void; onAccountChange: (code: string) => void; onAccountClose: () => void; accountOptions: AccountOption[] }) {
+function DocumentIdentityLine({ identity, direction, fallback, texts, accountLabel, accountValue, editingAccount, canEditAccount, pencilRef, onStartAccountEdit, onAccountChange, onAccountClose, accountOptions }: { identity: DocumentIdentity; direction?: DocumentDirection; fallback: string; texts: DocumentFormTexts; accountLabel?: string; accountValue?: string | null; editingAccount: boolean; canEditAccount: boolean; pencilRef: React.RefObject<HTMLButtonElement | null>; onStartAccountEdit: () => void; onAccountChange: (code: string) => void; onAccountClose: () => void; accountOptions: AccountOption[] }) {
   const number = identity.number || null;
   // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
   const account = identity.variant === "internal" ? undefined : identity.account;
@@ -216,7 +228,6 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencySy
     <span key="book" className="whitespace-nowrap">{identity.book}</span>,
     <span key="period" className="whitespace-nowrap">{identity.period}</span>,
   ];
-  if (identity.variant === "cashBank") items.push(<span key="currency" className="whitespace-nowrap font-mono tabular-nums">{currencySymbol}</span>);
   const pencil = !editingAccount && canEditAccount && account ? account.disabledReason
     ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={`${texts.changeAccount}: ${account.disabledReason}`} data-slot="document-identity-account-locked" className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Button type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} tabIndex={-1} disabled><Pencil className="size-3.5" /></Button></span></TooltipTrigger><TooltipContent>{account.disabledReason}</TooltipContent></Tooltip>
     : <Tooltip><TooltipTrigger asChild><Button ref={pencilRef} type="button" variant="ghost" size="icon" className="size-7" aria-label={texts.changeAccount} onClick={onStartAccountEdit}><Pencil className="size-3.5" /></Button></TooltipTrigger><TooltipContent>{texts.changeAccount}</TooltipContent></Tooltip>
@@ -254,14 +265,14 @@ function DocumentIdentityLine({ identity, direction, fallback, texts, currencySy
 
 export function DocumentForm({
   title, titleBadges, description: _description, identity, directionBadge, value, onChange, lines, onLinesChange, books, accounts,
-  mainAccountOptions, partners = [], dimensions = [], currencies, documentType = "ID", fields, editableFields, isNew = false,
+  mainAccountOptions, partners = [], dimensions = [], currencies, bankAccountOptions = [], bankCodes, documentType = "ID", fields, editableFields, isNew = false,
   mainSide, mainAccountLocked = false, rateAmount = 1, homeCurrency, homeCurrencySymbol, currencyLocked = false, currencyDisabledReason,
   onCreatePartner, icoLinkTarget = "auto", handedOverBySuggest, descriptionSuggest, accountingDateLink, dateWarnings, vat, vatRateField, linesEditorProps, roundingLimit = 1, roundingLabel,
   tabs = [], status, approved, changedBy, changedAt,
   saveAction, primaryAction, moreActions = [], settings, error, notices, readOnly = false, readOnlyReason, readOnlyTitle, readOnlyActions, texts, className,
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
-  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, changeAccount: dsTexts.documentForm.changeAccount, currencyDisabled: dsTexts.documentForm.currencyDisabled, mainAccountSelect: dsTexts.documentForm.mainAccountSelect, ...texts };
+  const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
@@ -289,6 +300,7 @@ export function DocumentForm({
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
   const normalizedType = documentType.toUpperCase();
+  const receivedDocument = normalizedType === "FP" || normalizedType === "ZFP" || normalizedType === "DDPOZ";
   const forcedSum = normalizedType === "ID" || normalizedType === "UZ" || normalizedType === "KR" || normalizedType === "ZAP";
   const totalMode = forcedSum ? "sum" : value.totalMode;
   const linesSum = Math.round(lines.filter((line) => !line.isRounding && !line.isFxRounding).reduce((sum, line) => sum + (line.amount || 0), 0) * 100) / 100;
@@ -332,8 +344,11 @@ export function DocumentForm({
   const field = (id: string, label: ReactNode, control: ReactNode, span = 3, mobileHalf = false, className?: string) => (
     <Field htmlFor={id} label={label} span={span as 3 | 4 | 5 | 6 | 14 | 20} className={cn("col-span-20", mobileHalf && "col-span-10", className)}>{control}</Field>
   );
-  const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={options?.warning ?? dateWarnings?.[key]} />, 3, false, className);
-  const text = (key: "externalNumber" | "constantSymbol" | "specificSymbol" | "bankAccount" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
+  const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => {
+    const warning = options?.warning ?? dateWarnings?.[key];
+    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, className);
+  };
+  const text = (key: "constantSymbol" | "specificSymbol" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
   const linkedPartner = !!value.partnerId;
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
@@ -342,6 +357,32 @@ export function DocumentForm({
   const vatDateWarning = vat?.periodFiled ? vat.filedWarning ?? t.filedWarning : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
+  const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
+  const externalNumberVsWarning = receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
+  const dateWarningEntries: Array<[DocumentDateField, string, string | undefined]> = [
+    ["issueDate", t.issueDate, dateWarnings?.issueDate],
+    ["accountingDate", t.accountingDate, dateWarnings?.accountingDate],
+    ["dueDate", t.dueDate, f.dueDate ? dateWarnings?.dueDate : undefined],
+    ["taxDate", t.taxDate, showVatFields && f.taxDate ? dateWarnings?.taxDate : undefined],
+    ["vatDate", t.vatDate, showVatFields ? vatDateWarning ?? dateWarnings?.vatDate : undefined],
+  ];
+  const dateNoticeBars = dateWarningEntries.filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2])).map(([key, label, warning]) => <NoticeBar key={key} tone="warning" title={label}>{warning}</NoticeBar>);
+  const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
+  const changeExternalNumber = (externalNumber: string) => {
+    const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
+    const nextSuggested = vsFromDocumentNumber(externalNumber);
+    const mayUpdateVs = can("variableSymbol") && (!value.variableSymbol || value.variableSymbol === previousSuggested);
+    patch({ externalNumber, ...(receivedDocument && mayUpdateVs && nextSuggested ? { variableSymbol: nextSuggested } : {}) });
+  };
+  const externalNumberField = field(
+    "document-externalNumber",
+    receivedDocument ? (showVatFields ? t.supplierTaxDocumentNumber : t.supplierNumber) : t.externalNumber,
+    <><Input id="document-externalNumber" value={value.externalNumber ?? ""} onChange={(event) => changeExternalNumber(event.target.value)} disabled={!can("externalNumber")} className="h-9 font-mono tabular-nums" />{externalNumberVsWarning ? <p data-slot="document-external-number-vs-warning" className="mt-1 whitespace-nowrap text-xs text-warning-strong">{externalNumberVsWarning}</p> : null}</>,
+    6,
+    false,
+    receivedDocument || !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
+  );
+  const bankAccountField = field("document-bankAccount", t.bankAccount, <BankAccountField id="document-bankAccount" value={value.bankAccount ?? ""} onChange={(bankAccount) => patch({ bankAccount })} disabled={!can("bankAccount")} options={bankAccountOptions} bankCodes={bankCodes} invalidAccountText={t.bankAccountInvalid} invalidBankCodeText={t.bankCodeInvalid} otherAccountText={t.otherBankAccount} />, receivedDocument ? 14 : 6);
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
@@ -358,16 +399,54 @@ export function DocumentForm({
       rounding={f.rounding ? { value: lineRounding ?? value.roundingAmount ?? 0, onChange: can("roundingAmount") ? changeRounding : undefined, readOnly: !can("roundingAmount"), label: roundingLabel ?? t.rounding, limit: roundingLimit } : undefined} />,
   }, ...tabs.filter((item) => item.id !== "lines")];
 
+  const currencyControl = currencyLocked || readOnly || !can("currency") || identityVariant === "cashBank"
+    ? <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>
+    : currencies && currencyDisabledReason
+      ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencyOptions} triggerClassName="h-11" /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason}</TooltipContent></Tooltip>
+      : currencies
+        ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} triggerClassName="h-11" />
+        : <div id="document-currency" aria-readonly="true" className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums">{value.currency}</div>;
+
+  const renderAmountSection = () => <Fragment>
+    <SectionHeading>{t.amountOnlySection}</SectionHeading>
+    <div data-slot="document-amount-currency" data-section="document-amount-section" className="flex flex-wrap items-start justify-end gap-3">
+      {foreign ? <div data-slot="document-foreign-amounts" className="order-2 ml-auto flex shrink-0 flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1 @min-[48rem]:ml-0">
+        <div className="w-[9rem] shrink-0">{field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-full" />, 3, false, "[&_p]:whitespace-nowrap")}</div>
+        <div className="w-[11.5rem] shrink-0 text-right">{field("document-total-home", <span className="whitespace-nowrap">{t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}</span>, <div id="document-total-home" aria-readonly="true" className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</div>, 3, false, "text-right [&_label]:text-right")}</div>
+      </div> : null}
+      <div data-slot="document-total-currency-pair" className="order-1 ml-auto flex shrink-0 items-start gap-3">
+        <div data-slot="document-amount-total" className="min-w-[11.5rem] flex-[0_1_18rem]">{field("document-amountTotal", <span className="whitespace-nowrap">{t.amountTotal}</span>, <><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{totalMode === "sum" ? t.sumFromLines : t.amountTotal}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p data-slot="document-amount-sum-hint" className="mt-1 whitespace-nowrap text-xs text-muted-foreground">{t.sumFromLines}</p> : null}</>, 6)}</div>
+        <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyControl, 3)}</div>
+      </div>
+    </div>
+    {foreign ? <div data-slot="document-rate-details" className="mt-3 grid grid-cols-20 gap-3">
+      {foreign && vatRateField ? field("document-vat-rate", t.vatRate, vatRateField.sameAsDocument ? <ReadField id="document-vat-rate" value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>} /> : <><RateField id="document-vat-rate" value={vatRateField.value ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={vatRateField.rateAmount ?? rateAmount} suggestedRate={vatRateField.suggestedRate} suggestedInfo={vatRateField.suggestedInfo} manual={!!vatRateField.manual} note={vatRateField.note ?? ""} showNote={false} noteLabel={t.vatRateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={readOnly || vatRateField.readOnly} readOnly={readOnly || vatRateField.readOnly} onChange={(rate) => vatRateField.onChange({ rate, manual: true })} onNoteChange={(note) => vatRateField.onChange({ note })} onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })} className="w-full @min-[40rem]:w-36" />{!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? <p role="status" data-slot="document-vat-rate-missing" className="text-xs font-medium text-destructive">{t.vatRateMissing}</p> : null}</>, 3) : null}
+      {foreign && vatRateField && !vatRateField.sameAsDocument && vatRateField.manual ? field("document-vat-rate-note", t.vatRateNote, <><Input id="document-vat-rate-note" value={vatRateField.note ?? ""} maxLength={200} required aria-invalid={!vatRateField.note?.trim()} disabled={readOnly || vatRateField.readOnly} onChange={(event) => vatRateField.onChange({ note: event.target.value })} />{!vatRateField.note?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
+      {value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
+    </div> : null}
+  </Fragment>;
+
+  const renderPaymentSection = () => f.symbols || f.bankAccount || f.paymentOrders ? <Fragment>
+    <SectionHeading>{t.paymentSection}</SectionHeading>
+    <div data-slot="document-payment-section" className="grid grid-cols-20 items-start gap-3">
+      {f.symbols ? field("document-variableSymbol", t.variableSymbol, <VsField id="document-variableSymbol" value={value.variableSymbol ?? ""} onChange={(variableSymbol) => patch({ variableSymbol })} disabled={!can("variableSymbol")} />) : null}
+      {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
+      {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
+      {f.bankAccount && !receivedDocument ? bankAccountField : null}
+      {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className={cn("col-span-20", receivedDocument && "@min-[40rem]:col-span-6 self-center whitespace-nowrap")} label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
+    </div>
+  </Fragment> : null;
+
   return (
     <TooltipProvider><div ref={formRef} className={cn("@container space-y-4", className)} onKeyDown={(event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} titleBadge={<span data-slot="document-title-badges" className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"> <DocumentStatusBadge status={status} approved={approved} size="md" />{titleBadges}</span>} />
-      <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={(next) => patch({ vatRelevant: next })} aria-label={t.vatRelevant} />{t.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} error={error} notices={notices} saveLabel="Uložit" moreActionsLabel="Další akce" errorTitle={t.errorTitle} closeErrorLabel={t.closeError} dataSlot="document-action-bar" errorDataSlot="document-form-error" noticesDataSlot="document-form-notices" />
+      <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={(next) => patch({ vatRelevant: next })} aria-label={t.vatRelevant} />{t.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} error={error} notices={combinedNotices} saveLabel={dsTexts.common.save} moreActionsLabel={dsTexts.recordAction.moreActions} errorTitle={t.errorTitle} closeErrorLabel={t.closeError} dataSlot="document-action-bar" errorDataSlot="document-form-error" noticesDataSlot="document-form-notices" />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
-          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} currencySymbol={currencySymbol ?? value.currency} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} canEditAccount={canEditIdentityAccount} pencilRef={pencilRef} onStartAccountEdit={() => setEditingIdentityAccount(true)} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => sameAccount(item.code, mainAccountId)); if (!selected) return; setSelectedIdentityAccount({ code: mainAccountId, label: `${formatAccountCode(selected.code)} - ${selected.name}`, sourceLabel: effectiveIdentity.account?.label }); patch({ mainAccountId }); closeIdentityAccount(); }} onAccountClose={closeIdentityAccount} accountOptions={allowedMainAccounts} />
+          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} canEditAccount={canEditIdentityAccount} pencilRef={pencilRef} onStartAccountEdit={() => setEditingIdentityAccount(true)} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => sameAccount(item.code, mainAccountId)); if (!selected) return; setSelectedIdentityAccount({ code: mainAccountId, label: `${formatAccountCode(selected.code)} - ${selected.name}`, sourceLabel: effectiveIdentity.account?.label }); patch({ mainAccountId }); closeIdentityAccount(); }} onAccountClose={closeIdentityAccount} accountOptions={allowedMainAccounts} />
         {f.partner ? (
           <>
              <SectionHeading>{t.headerSection}</SectionHeading>
@@ -376,7 +455,8 @@ export function DocumentForm({
               {field("document-partner-ico", t.ico, linkedPartner ? <ReadField id="document-partner-ico" mono value={counterpartyIco ? <IcoLink ico={counterpartyIco} country={partner?.country} kind={partner?.kind} target={icoLinkTarget} /> : "—"} /> : <><Input id="document-partner-ico" value={counterpartyIco} onChange={(event) => patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })} disabled={!can("counterpartyIco")} className="h-9 font-mono tabular-nums" />{icoWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{t.invalidIco}</p> : null}</>, 3, true)}
               {field("document-partner-dic", t.dic, linkedPartner ? <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} /> : <Input id="document-partner-dic" value={counterpartyDic} onChange={(event) => patch({ counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase() })} disabled={!can("counterpartyDic")} className="h-9 font-mono uppercase tabular-nums" />, 3, true)}
                {f.handedOverBy ? suggestedText("handedOverBy", value.direction === "in" ? t.handedOverByIn : t.handedOverByOut, handedOverBySuggest, 14, "@min-[40rem]:pr-3") : null}
-              {f.externalNumber ? text("externalNumber", normalizedType === "FP" || normalizedType === "ZFP" ? t.supplierNumber : t.externalNumber, 3, f.handedOverBy ? undefined : "@min-[40rem]:col-start-15") : null}
+               {receivedDocument && f.bankAccount ? bankAccountField : null}
+               {f.externalNumber ? externalNumberField : null}
                {suggestedText("description", t.description, descriptionSuggest, 20)}
             </div>
           </>
@@ -384,39 +464,17 @@ export function DocumentForm({
 
         <SectionHeading>{t.datesSection}</SectionHeading>
         <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-          {date("issueDate", t.issueDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full")}
-          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full") : null}
-          {showVatFields ? <div className="ml-auto flex flex-wrap items-start gap-3">
-            {f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full") : null}
-            {date("vatDate", t.vatDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning })}
-          </div> : null}
+          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
+          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
+          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
+          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
+          {showVatFields ? date("vatDate", t.vatDate, "relative flex-none w-max min-w-[8.5rem] [&_input]:w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning ?? dateWarnings?.vatDate }) : null}
         </div>
         {!f.partner ? <div className="mt-3 grid grid-cols-20 gap-3">{suggestedText("description", t.description, descriptionSuggest, 20)}</div> : null}
 
-        <SectionHeading>{t.amountOnlySection}</SectionHeading>
-        <div className="grid grid-cols-20 gap-3">
-          <div data-slot="document-amount-currency" className="col-span-20 flex flex-wrap items-start justify-end gap-3">
-            <div data-slot="document-amount-total" className="min-w-[11.5rem] flex-[0_1_18rem]">{field("document-amountTotal", <span className="whitespace-nowrap">{`${t.amountTotal} (${currencySymbol ?? value.currency})`}</span>, <><div className="relative"><DecimalInput id="document-amountTotal" value={total} onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })} readOnly={totalMode === "sum" || !can("amountTotal")} className={cn("h-11 pr-12 text-right text-xl font-bold tabular-nums", totalMode === "sum" && "bg-muted")} /><Tooltip><TooltipTrigger asChild><Button type="button" variant={totalMode === "sum" ? "default" : "outline"} size="icon" aria-label={t.sumFromLines} aria-pressed={totalMode === "sum"} disabled={forcedSum || !can("totalMode")} onClick={() => patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })} className="absolute right-1 top-1 size-9"><span className="relative"><Sigma className="size-4" />{totalMode !== "sum" ? <span aria-hidden className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" /> : null}</span></Button></TooltipTrigger><TooltipContent>{forcedSum ? "U tohoto druhu dokladu se vždy sčítá" : totalMode === "sum" ? "Částka se sčítá z řádků rozpisu" : "Částka je zadaná ručně"}</TooltipContent></Tooltip></div>{totalMode === "sum" ? <p data-slot="document-amount-sum-hint" className="mt-1 whitespace-nowrap text-xs text-muted-foreground">{t.sumFromLines}</p> : null}</>, 6)}</div>
-            {identityVariant !== "cashBank" ? <div className="w-[6.5rem] shrink-0">{field("document-currency", t.currency, currencyLocked ? <ReadField id="document-currency" mono value={value.currency} /> : currencies && (!can("currency") || currencyDisabledReason) ? <Tooltip><TooltipTrigger asChild><div tabIndex={0} aria-label={currencyDisabledReason ?? t.currencyDisabled}><OptionSelect id="document-currency" allowEmpty={false} disabled value={value.currency} onChange={() => {}} options={currencyOptions} /></div></TooltipTrigger><TooltipContent>{currencyDisabledReason ?? t.currencyDisabled}</TooltipContent></Tooltip> : currencies ? <OptionSelect id="document-currency" allowEmpty={false} value={value.currency} onChange={(currency) => patch({ currency })} options={currencyOptions} /> : <ReadField id="document-currency" mono value={value.currency} />, 3)}</div> : null}
-          </div>
-             {foreign ? field("document-rate", t.rate, <RateField id="document-rate" value={value.rate ?? null} currency={value.currency} currencySymbol={currencySymbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={rateAmount} suggestedRate={value.suggestedRate} suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined} manual={!!value.rateManual} note={value.rateNote ?? ""} showNote={false} noteLabel={t.rateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={!can("rate")} readOnly={!can("rate") && !can("rateNote")} onChange={(rate) => patch({ rate, rateManual: true })} onNoteChange={(rateNote) => patch({ rateNote })} onUseSuggested={() => patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })} className="w-[9rem]" />, 3, false, "[&_p]:whitespace-nowrap") : null}
-          {foreign && vatRateField ? field("document-vat-rate", t.vatRate, vatRateField.sameAsDocument ? <ReadField id="document-vat-rate" value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>} /> : <><RateField id="document-vat-rate" value={vatRateField.value ?? null} currency={value.currency} currencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} rateAmount={vatRateField.rateAmount ?? rateAmount} suggestedRate={vatRateField.suggestedRate} suggestedInfo={vatRateField.suggestedInfo} manual={!!vatRateField.manual} note={vatRateField.note ?? ""} showNote={false} noteLabel={t.vatRateNote} manualSourceLabel={t.manualRate} requiredMessage={t.rateNoteRequired} disabled={readOnly || vatRateField.readOnly} readOnly={readOnly || vatRateField.readOnly} onChange={(rate) => vatRateField.onChange({ rate, manual: true })} onNoteChange={(note) => vatRateField.onChange({ note })} onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })} className="w-full @min-[40rem]:w-36" />{!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? <p role="status" data-slot="document-vat-rate-missing" className="text-xs font-medium text-destructive">{t.vatRateMissing}</p> : null}</>, 3, false, "@min-[40rem]:col-start-1") : null}
-          {foreign && vatRateField && !vatRateField.sameAsDocument && vatRateField.manual ? field("document-vat-rate-note", t.vatRateNote, <><Input id="document-vat-rate-note" value={vatRateField.note ?? ""} maxLength={200} required aria-invalid={!vatRateField.note?.trim()} disabled={readOnly || vatRateField.readOnly} onChange={(event) => vatRateField.onChange({ note: event.target.value })} />{!vatRateField.note?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14) : null}
-          {foreign && value.rateManual ? field("document-rate-note", t.rateNote, <><Input id="document-rate-note" value={value.rateNote ?? ""} maxLength={200} required aria-invalid={!value.rateNote?.trim()} disabled={!can("rateNote")} onChange={(event) => patch({ rateNote: event.target.value })} />{!value.rateNote?.trim() ? <p role="alert" className="text-xs font-medium text-destructive">{t.rateNoteRequired}</p> : null}</>, 14, false, "@min-[40rem]:col-start-1") : null}
-            {foreign ? field("document-total-home", t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency), <div className="text-right"><ReadField id="document-total-home" value={<span className="ml-auto font-semibold tabular-nums">{formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}</span>} /></div>, 3, false, "text-right [&_label]:text-right") : null}
-        </div>
-
-        {f.symbols || f.bankAccount || f.paymentOrders ? <>
-          <SectionHeading>{t.paymentSection}</SectionHeading>
-          <div className="grid grid-cols-20 gap-3">
-            {f.symbols ? field("document-variableSymbol", t.variableSymbol, <VsField id="document-variableSymbol" value={value.variableSymbol ?? ""} onChange={(variableSymbol) => patch({ variableSymbol })} disabled={!can("variableSymbol")} />) : null}
-            {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
-            {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
-            {f.bankAccount ? text("bankAccount", t.bankAccount, 6) : null}
-            {f.paymentOrders ? <CheckboxField id="document-exclude-payment-orders" className="col-span-20" label={t.excludeFromPaymentOrders} checked={!!value.excludeFromPaymentOrders} disabled={!can("excludeFromPaymentOrders")} onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })} /> : null}
-          </div>
-        </> : null}
+        {receivedDocument ? renderPaymentSection() : null}
+        {renderAmountSection()}
+        {!receivedDocument ? renderPaymentSection() : null}
       </section>
 
       {allTabs.length === 1 ? <><SectionHeading>{t.linesTab}</SectionHeading><div className="mt-2">{allTabs[0]?.content}</div></> : <Tabs value={tab} onValueChange={setTab}>

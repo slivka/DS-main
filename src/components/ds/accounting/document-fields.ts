@@ -46,7 +46,7 @@ export function documentIdentityVariantForType(documentType: DocumentTypeCode | 
 export function partnerLabelForType(code: DocumentTypeCode | string, _direction?: "in" | "out" | null): string {
   const normalized = code.toUpperCase();
   if (normalized === "FV" || normalized === "ZFV") return "Odběratel";
-  if (normalized === "FP" || normalized === "ZFP") return "Dodavatel";
+  if (normalized === "FP" || normalized === "ZFP" || normalized === "DDPOZ") return "Dodavatel";
   return "Partner";
 }
 

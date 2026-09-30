@@ -32,8 +32,8 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const view = render(<Form identity={{ variant: "cashBank", book: "PO - Pokladna", period: "2026", account: { side: "MD", label: "211.001 - Pokladna" }, number: "PO1" }} directionBadge="in" value={{ ...base, currency: "EUR" }} />);
     const cash = view.container.querySelector("[data-slot=document-identity]")?.textContent ?? "";
     expect(cash.indexOf("PO - Pokladna")).toBeLessThan(cash.indexOf("2026"));
-    expect(cash.indexOf("2026")).toBeLessThan(cash.indexOf("€"));
-    expect(cash.indexOf("€")).toBeLessThan(cash.indexOf("211.001 - Pokladna"));
+    expect(cash.indexOf("2026")).toBeLessThan(cash.indexOf("211.001 - Pokladna"));
+    expect(cash).not.toContain("€");
     view.rerender(<Form identity={{ variant: "invoice", book: "ZFV - Zálohy", period: "2026", number: "ZFV1" }} />);
     const invoice = view.container.querySelector("[data-slot=document-identity]")?.textContent ?? "";
     expect(invoice).toContain("ZFV - Zálohy");
@@ -83,7 +83,7 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     view.rerender(<Form value={{ ...base, currency: "EUR", rate: 24.3 }} />);
     expect(view.container.querySelector("#document-rate")).toBeTruthy();
     view.rerender(<Form documentType="PO" identity={{ variant: "cashBank", book: "PO", period: "2026", account: { side: "MD", label: "211.001" } }} />);
-    expect(view.container.querySelector("[data-slot=document-amount-currency] #document-currency")).toBeNull();
+    expect(view.container.querySelector("[data-slot=document-amount-currency] #document-currency")?.getAttribute("aria-readonly")).toBe("true");
   });
 
   it("skryje tužku při readOnly, bez oprávnění, u cashBank a bez mainAccountOptions", () => {

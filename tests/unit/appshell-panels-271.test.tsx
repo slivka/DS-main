@@ -135,4 +135,18 @@ describe("AppShell panely 2.71.0 – chování", () => {
     expect(order(views)).toBe("4");
     expect(views?.className).toContain("basis-full");
   });
+
+  it("titulek stránky mění jen při manageDocumentTitle", () => {
+    document.title = "Doklady | TEMPO";
+    const view = render(<AppShell appName="TEMPO"><div /></AppShell>);
+    expect(document.title).toBe("Doklady | TEMPO");
+    view.rerender(<AppShell appName="TEMPO" manageDocumentTitle><div /></AppShell>);
+    expect(document.title).toBe("TEMPO");
+  });
+
+  it("aktivní položka označí kontrastní variantu odznaku", () => {
+    const view = render(<AppShell navGroups={[{ id: "g", label: "", items: [{ to: "/", label: "Doklady", badge: 12 }] }]}><div /></AppShell>);
+    const active = view.getByText("Doklady").closest("[data-active=true]");
+    expect(active?.querySelector('[data-slot="shell-nav-badge"]')).toBeTruthy();
+  });
 });

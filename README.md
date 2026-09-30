@@ -1,3 +1,12 @@
+## Changelog 2.73.0 – Edit dokladu 8 a opravy panelů
+
+- Měna je u všech dokladů bezprostředně za polem Celkem; uzamčená měna má stejně vysoký rámeček a identita pokladny či banky už měnu neobsahuje.
+- Datumová pole jsou v jednom pružném řádku. Jejich varování označí pole a zobrazí se v pruhu upozornění ve stejném pořadí jako data.
+- Přijaté doklady řadí sekce Základní údaje → Datumy → Platební údaje → Částka → Řádky. Bankovní účet je v základních údajích a podporuje nabídku i kontrolované volné zadání.
+- `vsFromDocumentNumber()` navrhuje VS z nejvýše deseti číslic a nepřepisuje ručně upravený symbol.
+- `AppShell` ve výchozím stavu nemění titulek stránky; opt-in `manageDocumentTitle` jej nastaví. Opraveny jsou také stabilní tooltip, jednorázová vývojová varování a kontrast odznaku aktivního menu.
+- **BREAKING:** identita `cashBank` nezobrazuje měnu, popisek Celkem už neobsahuje měnu a `dateWarnings` se nevykreslují pod polem. Nové props `bankAccountOptions` a `bankCodes` rozšiřují zadání účtu bez automatického předvyplnění.
+
 ## Changelog 2.71.0 – panely AppShellu a rozsah platnosti
 
 - Panelové menu vede od horní lišty až dolů; panelový řádek je pevně jen nad obsahem a respektuje nastavitelnou šířku menu.
@@ -37,7 +46,7 @@
 
 - **BREAKING:** `DocumentForm.identity.items` nahrazuje typovaný `DocumentIdentity` (`cashBank` / `invoice` / `internal`) s knihou, kódem období, volitelným účtem a číslem dokladu.
 - Hlavní účet je jen v identifikačním řádku. Faktura může účet měnit přes `mainAccountOptions`; změna nastaví `mainAccountId` a řádky ani částky nepřepočítává.
-- Měna faktur a interních dokladů stojí vedle Celkem. `currencyLocked` ji ponechá jako text a `currencyDisabledReason` vysvětlí zákaz změny; pokladna a banka mají měnu v identitě.
+- Měna faktur a interních dokladů stojí vedle Celkem. `currencyLocked` ji ponechá jako text a `currencyDisabledReason` vysvětlí zákaz změny. Od 2.73.0 stojí měna u Celkem také u pokladny a banky.
 - `mainAccountLocked` už není spínač skrytí pole, ale vždy skryje tužku účtu. `currencyLocked` už není spínač skrytí měny, ale mění výběr na text.
 - Nové veřejné typy a API: `DocumentIdentityVariant`, `DocumentIdentity`, `DocumentForm.mainAccountOptions`, `DocumentForm.currencyDisabledReason`, `documentIdentityVariantForType()`; druhy dokladů doplněny o `DDPZ`, `DDPOZ`, `KR` a `ZAP`.
 

@@ -56,15 +56,15 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html).not.toContain(">Datum DPH<");
   });
 
-  it("drží DUZP a Datum DPH v pružné pravé skupině za levými daty", () => {
+  it("drží všechna data v jediném pružném řádku v pořadí polí", () => {
     const html = form({ vat: { visible: true } });
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
     expect(html.indexOf("Splatnost")).toBeLessThan(html.indexOf(">DUZP<"));
     const dates = html.slice(html.indexOf('data-slot="document-dates"'), html.indexOf(">Účtování a částka</h2>"));
     expect(dates).toContain("flex flex-wrap items-start gap-3");
-    expect(dates).toContain("ml-auto flex flex-wrap items-start gap-3");
-    expect(dates).toContain("min-w-[10.5rem]");
+    expect(dates).not.toContain("ml-auto flex flex-wrap items-start gap-3");
+    expect(dates).toContain("min-w-[8.5rem]");
     expect(dates).not.toContain("col-start-15");
   });
 
@@ -86,13 +86,16 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(form({ vat: { visible: true, periodLabel: period } })).toContain(period);
     const filed = form({ vat: { visible: true, periodLabel: period, periodFiled: true } });
     expect(filed).toContain("Období je podané – doklad půjde do dodatečného přiznání");
-    expect(filed).not.toContain(period);
+    expect(filed).toContain(period);
   });
 
-  it("předá varování všem datovým polím", () => {
+  it("řadí varování dat v pruhu a nevykreslí je pod poli", () => {
     const dateWarnings = { issueDate: "Vystavení", accountingDate: "Zaúčtování", dueDate: "Splatnost", taxDate: "DUZP a zaúčtování jsou v různých letech", vatDate: "Datum DPH" };
     const html = form({ vat: { visible: true }, dateWarnings });
     Object.values(dateWarnings).forEach((warning) => expect(html).toContain(warning));
+    expect(html.indexOf("Vystavení")).toBeLessThan(html.indexOf("Zaúčtování"));
+    const dates = html.slice(html.indexOf('data-slot="document-dates"'));
+    expect(dates).not.toContain(">Vystavení</p>");
   });
 
   it("předá zámek do Data účetního případu", () => {

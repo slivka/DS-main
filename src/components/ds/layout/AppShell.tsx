@@ -77,6 +77,8 @@ export interface AppShellProps {
   navGroups?: NavGroup[];
   bottomItems?: NavItem[];
   appName?: string;
+  /** Volitelně spravuje titulek dokumentu; výchozí false ponechá titul aplikaci. */
+  manageDocumentTitle?: boolean;
   logo?: ReactNode;
   showBrand?: boolean;
   breadcrumbs?: Crumb[];
@@ -240,7 +242,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
         {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
         {!collapsed ? <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(item.label, query) : item.label}</span> : null}
         {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" /> : null}
-        {!collapsed && item.badge != null ? <span className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{item.badge}</span> : null}
+        {!collapsed && item.badge != null ? <span data-slot="shell-nav-badge" className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{item.badge}</span> : null}
       </>
     );
     const base = cn(
@@ -396,6 +398,7 @@ export function AppShell({
   navGroups,
   bottomItems = [],
   appName = "Aplikace",
+  manageDocumentTitle = false,
   logo,
   showBrand = false,
   breadcrumbs,
@@ -472,8 +475,8 @@ export function AppShell({
     return () => window.removeEventListener("wheel", onWheel);
   }, []);
   useEffect(() => {
-    document.title = appName;
-  }, [appName]);
+    if (manageDocumentTitle) document.title = appName;
+  }, [appName, manageDocumentTitle]);
 
   useEffect(() => {
     const update = () => setViewportWidth(window.innerWidth);
@@ -509,10 +512,19 @@ export function AppShell({
   const matchedView = currentPanel?.views?.find((view) => view.id === currentPanel.activeView);
   const currentView = matchedView ?? currentPanel?.views?.[0] ?? null;
   const contextHintId = useId();
+  const warnedPanelIssues = useRef(new Set<string>());
   useEffect(() => {
     if (!import.meta.env?.DEV || !currentPanel?.views?.length) return;
-    if (currentPanel.activeView !== undefined && !matchedView) console.warn(`[AppShell] Panel "${currentPanel.id}": activeView "${currentPanel.activeView}" neodpovídá žádné části, použije se první.`);
-    if (currentPanel.views.length >= 2 && !currentPanel.onViewChange) console.warn(`[AppShell] Panel "${currentPanel.id}" má více částí bez onViewChange – přepínač nebude fungovat.`);
+    const invalidKey = `${currentPanel.id}:invalid:${currentPanel.activeView ?? ""}`;
+    if (currentPanel.activeView !== undefined && !matchedView && !warnedPanelIssues.current.has(invalidKey)) {
+      warnedPanelIssues.current.add(invalidKey);
+      console.warn(`[AppShell] Panel "${currentPanel.id}": activeView "${currentPanel.activeView}" neodpovídá žádné části, použije se první.`);
+    }
+    const handlerKey = `${currentPanel.id}:missing-handler`;
+    if (currentPanel.views.length >= 2 && !currentPanel.onViewChange && !warnedPanelIssues.current.has(handlerKey)) {
+      warnedPanelIssues.current.add(handlerKey);
+      console.warn(`[AppShell] Panel "${currentPanel.id}" má více částí bez onViewChange – přepínač nebude fungovat.`);
+    }
   }, [currentPanel, matchedView]);
   const currentPanelTitle = currentView?.title ?? currentPanel?.title ?? "";
   const currentPanelContext = currentView?.context ?? currentPanel?.context;
@@ -745,7 +757,7 @@ export function AppShell({
               <div data-slot="app-shell-sheet-nav" className="flex min-h-0 flex-1 flex-col">{nav(false)}</div>
             </SheetContent>
           </Sheet>
-           <TooltipProvider><Tooltip open={contextDisabled ? undefined : false}><TooltipTrigger asChild><div
+            <TooltipProvider><Tooltip><TooltipTrigger asChild><div
              ref={contextRef}
              aria-disabled={contextDisabled || undefined}
              tabIndex={contextDisabled ? 0 : undefined}

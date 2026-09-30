@@ -142,6 +142,7 @@ export * from "./accounting/dimension-select";
 export * from "./accounting/unit-select";
 export * from "./accounting/book-select";
 export * from "./accounting/vs-field";
+export * from "./accounting/bank-account-field";
 export * from "./accounting/currency-amount";
 export * from "./accounting/journal-lines";
 export * from "./accounting/journal-vat";

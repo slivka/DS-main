@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarIcon, Lock, LockOpen } from "lucide-react";
+import { AlertTriangle, CalendarIcon, Lock, LockOpen } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -89,6 +89,8 @@ export type DateFieldProps = {
   hint?: string;
   /** Výstraha pod polem; má přednost před hintem. */
   warning?: string;
+  /** Ve formuláři dokladu označí pole a zobrazí výstrahu jen v tooltipu. */
+  warningDisplay?: "below" | "indicator";
 };
 
 /** Jednotná komponenta pro zadání data v celé aplikaci. */
@@ -107,6 +109,7 @@ export function DateField({
   link,
   hint,
   warning,
+  warningDisplay = "below",
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
@@ -175,7 +178,7 @@ export function DateField({
         readOnly={link?.locked}
         placeholder={resolvedPlaceholder === dsTexts.date.chooseDate ? dateFormat.toLowerCase() : resolvedPlaceholder}
         value={text}
-        aria-invalid={invalid}
+        aria-invalid={invalid || Boolean(warning)}
         title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
         onChange={(e) => {
           const next = e.target.value;
@@ -202,8 +205,9 @@ export function DateField({
             commitText();
           }
         }}
-        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", link?.locked && "bg-muted/40", inputClassName)}
+        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
       />
+      {warning && warningDisplay === "indicator" ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={warning} className={cn("absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", link && !link.locked ? "right-[3.9em]" : "right-[2.1em]")}><AlertTriangle className="size-[1.05em]" /></span></TooltipTrigger><TooltipContent>{warning}</TooltipContent></Tooltip> : null}
       {link?.locked ? (
         <Tooltip><TooltipTrigger asChild><span className="absolute right-[0.3em] top-1/2 -translate-y-1/2"><Button
           type="button"
@@ -265,6 +269,6 @@ export function DateField({
         </PopoverContent>
       </Popover>
       </>}
-    </div>{warning ? <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
+    </div>{warning && warningDisplay === "below" ? <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p> : hint ? <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p> : null}</div></TooltipProvider>
   );
 }
