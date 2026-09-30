@@ -422,8 +422,9 @@ export function AppShell({
     if (manageDocumentTitle) document.title = appName;
   }, [appName, manageDocumentTitle]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const update = () => setViewportWidth(window.innerWidth);
+    update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
