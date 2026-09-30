@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.73.0",
+    "version": "2.75.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -3220,8 +3220,7 @@
       "props": [
         {
           "name": "name",
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         {
           "name": "email",
@@ -3255,6 +3254,10 @@
           "type": "any"
         },
         {
+          "name": "workspaceAction",
+          "type": "object"
+        },
+        {
           "name": "onSignOut",
           "type": "function"
         },
@@ -3269,15 +3272,16 @@
           "default": "Uživatelská nabídka"
         }
       ],
-      "usage": "Uživatelská nabídka s přímým přepínáním pracovních prostorů.",
+      "usage": "Uživatelská nabídka v pevném pořadí: identita, vlastní položky, velikost zobrazení, pracovní prostor a odhlášení. workspaceAction přidá klávesnicí dostupnou správu prostorů.",
       "examples": [
         {
-          "label": "Základní použití",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} />"
+          "label": "S akcí pracovních prostorů",
+          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} workspaceAction={{ label: \"Spravovat pracovní prostory\", icon: Settings, onSelect: openWorkspaceSettings }} />"
         }
       ],
       "antipatterns": [
-        "Nevkládejte pracovní prostory do vnořeného podmenu."
+        "Nevkládejte pracovní prostory do vnořeného podmenu.",
+        "Neměňte pevné pořadí položek ani nepřidávejte další bez schválení."
       ]
     },
     {
@@ -3929,17 +3933,17 @@
           "default": "size-4"
         }
       ],
-      "usage": "Nabídka uložených rozložení. Varianta trigger=\"icon\" patří do AppShell.navSearchMenu vedle hledání; data a ukládání dodává aplikace.",
+      "usage": "Nabídka uložených rozložení v pevném pořadí Uložit jako nové, Spravovat, uložená rozložení a Přepsat uložené aktuálním. Varianta trigger=\"icon\" patří vedle hledání.",
       "examples": [
         {
           "label": "Vedle hledání v menu",
-          "code": "<AppShell navSearchMenu={<LayoutMenu trigger=\"icon\" items={layouts} onSave={save} onApply={apply} onUpdate={update} onDelete={remove} />} />"
+          "code": "<AppShell navSearchMenu={<LayoutMenu trigger=\"icon\" items={layouts} onSave={({ name, snapshot }) => save(name, snapshot)} onApply={apply} onUpdate={update} onDelete={remove} />} />"
         }
       ],
       "antipatterns": [
         "Vkládat nabídku rozložení do horní lišty",
-        "Ukládat do rozložení koncepty nebo nové neuložené záznamy",
-        "Zavírat rozepsané záložky při použití rozložení"
+        "Přidávat výchozí rozložení nebo ikony počtu panelů",
+        "Ukládat koncepty nebo nové neuložené záznamy"
       ]
     },
     {
@@ -7798,6 +7802,8 @@
     "Lišta záložek panelu je vždy viditelná; dočasné a ponechané záložky se nepoužívají.",
     "Běžný klik v menu nahrazuje aktivní záložku; Cmd/Ctrl otevře novou a Cmd/Ctrl+Shift sousední panel.",
     "Akce stránky v panelu patří do PageHeader.menuActions; akce Nový patří do gridového addAction.",
-    "LayoutMenu patří jako ikonové menu do AppShell.navSearchMenu, ne do horní lišty."
+    "LayoutMenu patří jako ikonové menu do AppShell.navSearchMenu, ne do horní lišty.",
+    "Nabídky LayoutMenu, záložky a UserMenu mají pevné pořadí; další položku přidávejte jen po výslovném schválení.",
+    "Řádek nadpisu otevřeného panelu nemá ikonu; ikona panelu patří jen do horní lišty."
   ]
 }
