@@ -938,6 +938,8 @@ Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, říz
 _Řízený výběr firmy_
 ```tsx
 <CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />
+// Akce pro správce pod oddělovačem (volitelné):
+<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} actions={[{ id: "manage", label: "Spravovat firmy…", onSelect: openManage }]} />
 ```
 
 **Avoid:**
