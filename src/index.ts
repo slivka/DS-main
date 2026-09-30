@@ -69,6 +69,7 @@ export * from "./lib/postal-code";
 export * from "./lib/date-time-preferences";
 export * from "./lib/excel-export";
 export * from "./lib/app-zoom";
+export * from "./lib/resize-lock";
 export * from "./lib/font-links";
 export * from "./lib/format";
 export * from "./lib/tokens";
