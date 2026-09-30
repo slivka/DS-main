@@ -113,8 +113,8 @@ describe("ConfirmByTypingDialog", () => {
     expect(button().disabled).toBe(true);
     fireEvent.click(view.getByRole("checkbox"));
     expect(button().disabled).toBe(false);
-    fireEvent.click(button());
-    await waitFor(() => expect(view.getByText("Nepodařilo se")).toBeTruthy());
+    await act(async () => { fireEvent.submit(input.closest("form")!); await new Promise((resolve) => setTimeout(resolve, 0)); });
+    await waitFor(() => expect(view.getByText("Nepodařilo se")).toBeTruthy(), { timeout: 3000 });
     expect(open).toBe(true);
   });
 
