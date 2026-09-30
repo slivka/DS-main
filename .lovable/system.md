@@ -54,9 +54,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
     prostory má vždy štítek provozovatele v tónu `accent`. Nastavení prostoru
     a firmy vždy předává název upravovaného objektu přes `AppShellPanel.context`.
 
-## Zaškrtávátka, přepínače a stav záznamu (2.46.0)
+## Zaškrtávátka, přepínače a stav záznamu
 
-### Karta záznamu (2.62.0)
+### Karta záznamu
 
 - Stav záznamu je vždy v `PageHeader.titleBadge`, nikdy jako pole formuláře.
 - Zaškrtávátka jsou vždy v `CheckboxGroup` nebo v `FieldGrid` s `align="input"`, nikdy ve vlastním `div`.
@@ -115,12 +115,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu `height="fill"` na listové stránce. Výjimkou jsou dialogy, popovery a seznamy výběrů.
 - Zoom formulářového gridu je automatický a dočasný; pořadí je plná sada sloupců při 100 % → zoom nejméně 75 % → kaskáda → vodorovné rolování.
 
-### Zoom aplikace a gridu (2.70.0, BREAKING)
+### Zoom aplikace a gridu
 
 - Ctrl/Cmd + kolečko (i roztažení dvěma prsty na trackpadu) se řídí polohou myši: nad gridem (`ZoomGrid`, `ZoomPane`, `useWheelZoom`, editor řádků) mění jen zoom toho gridu, kdekoli jinde (menu, horní lišta, dialog, rozbalovač, formulář) zoom aplikace po 5 % (práh ~100 px, nejvýš krok za 80 ms, 70–200 %). Otevřený nativní `<select>` kolečko nezachytává.
 - Klávesy: Cmd (Mac) / Ctrl (jinde) + plus / minus / 0 podle `event.key` (CZ i US rozložení), numerická klávesnice podle `code`. Aplikace je přebírá od prohlížeče (`preventDefault`) a fungují i s kurzorem v poli. Alt a AltGr se ignorují.
-- BREAKING: zkratky Ctrl+Alt (Ctrl+Option) + plus / minus / 0 byly zrušeny bez náhrady; `isAppZoomShortcut(event, mac?)` rozpoznává jen nové zkratky.
-- Převzetí Cmd/Ctrl + plus / minus / 0 od prohlížeče bylo ověřeno v Chromiu (Playwright). Kdyby ho některý prohlížeč nepustil, zůstává ovladač „Velikost zobrazení“ v uživatelském menu.
 - `DataGrid` a `TreeGrid` ve formuláři nemají kaskádu: auto zoom = dostupná vnitřní šířka / (potřebná šířka při 16 px × zoom aplikace), omezený na 75–100 %. Grid roste se zoomem aplikace, dokud se vejde; pod 75 % teprve roluje.
 - Editor řádků měří `clientWidth` vlastní plochy bez rámečků a ponechává rezervu na zaokrouhlení. Pořadí je: základní auto zoom podle šířky panelu bez kompenzace zoomu aplikace → kaskáda sloupců → po jejím vyčerpání zmenšení gridu se započtením zoomu aplikace nejvýš na 75 % → vodorovné rolování. Když `scroll` není aktivní, obsah se nesmí oříznout ani o jediný pixel.
 - Ruční zoom gridu změna zoomu aplikace neruší; ruší ho jen změna šířky v px nebo změna Sloupců.
@@ -243,7 +241,6 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
   období. Výběr firmy má jediný seznam bez skupiny posledních položek. Oba výběry
   zavírej přes řízené `open` / `onOpenChange`, ne změnou React `key` podle cesty.
 
-
 ## Doklady, číselníky a navigace
 
 - Číselníky (partneři, zakázky, knihy) se editují v `RecordDialog`; doklady vždy
@@ -360,8 +357,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Rozepsané formuláře: `useTabDraft(tabId, initial, key, { route, params, recordVersion: updated_at })`, po uložení `meta.markSaved()`, nad formulářem `DraftRestoredBanner`. `persistDrafts({ userKey, companyId })` volej po přihlášení / změně firmy.
 - Zkratky navíc: Alt+M, Esc (jen při maximalizaci), Alt+Shift+T, Alt+L (LayoutMenu).
 
-
-## Doklady a platební kalendář (2.7.0)
+## Doklady a platební kalendář
 - Doklad vždy `DocumentForm`; typ předávejte přes `documentType`, který sám zvolí pole a účetní popisky. `fields` použijte jen pro výjimku. Číslo, kurz, kniha po založení a směr jsou jen pro čtení.
 - Hlavička `DocumentForm` má základní a platební údaje vlevo a vlastnosti, kurz a částku vpravo. Zamčený hlavní účet je text se stranou MD/DAL, nikoli zakázaný výběr; ID a UZ mají režim součtu řádků vždy zamčený.
 - U plátce DPH řiďte příznak přes `value.vatRelevant`; vypnutí jen skryje DUZP a Datum DPH, jejich hodnoty nemažte. Přepínač patří vlevo do přilepeného pruhu akcí. Neplátci předejte `vat.visible: false`.
@@ -372,41 +368,20 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
 - Platební kalendář vždy `PaymentScheduleEditor`; rozložení přes `generatePaymentSchedule`. Ukládá se celé pole jedním voláním.
 
-## Editace dokladu 2.48.0
+## Editace dokladu
 
 - Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
 - Sekce Datumy je pružný řádek: každé datum je celé pole s minimální šířkou 10,5 rem, DUZP a Datum DPH tvoří pravou skupinu. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
 - Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.
 
-## Rolovací oblasti a typy stránek (2.53.0, BREAKING)
+## Rolovací oblasti a typy stránek
 
 - Stránka jako celek nikdy neroluje; rolují menu, `main` (stránky mimo panely) a obsah každé záložky panelu zvlášť.
 - V jedné rolovací oblasti smí být vnořená svislá rolovací oblast jen u gridu, který vyplňuje celý panel (`PageLayout variant="list"`, `height="fill"`). Výjimky: rozbalovací výběry, dialogy, popovery.
 - Zoom formulářového gridu je automatický a neukládá se; hustota nového gridu je normální.
 
-### BREAKING pro aplikace – migrace na 2.53.0
-
-- Grid v panelu **bez** `PageLayout variant="list"` má nově `height="auto"`: roste podle obsahu, nemá vlastní svislé rolování a jeho záhlaví se nepřilepuje (roluje celý panel). Virtualizace je v `auto` vypnutá.
-- Seznamové stránky obalte `<PageLayout variant="list">` (PageHeader + lišta + grid) – grid pak vyplní panel (`fill`), roluje jen jeho tělo a záhlaví i součty jsou přilepené. Formuláře a karty obalte `<PageLayout variant="form">`.
-- Odstraňte ruční `maxHeight`, `calc(100vh …)` a výšky odvozené z `window.innerHeight` ve stránkách i u gridů; výšku určuje rodič.
-- Odstraňte `ListScrollRestore` a jiné vlastní obnovy pozice rolování – `PaneLayout` obnovuje pozici každé záložky (per krok historie) sám. Pro výjimečné potřeby je `usePaneScrollElement()`.
-- Zoom gridu ani hustota se neukládají. Formulářový grid přepočítá zoom z dostupné šířky; při 75 % pokračuje kaskádou sloupců a nakonec rolováním.
-- Událost `grid-zoom-change` byla zrušena – zoom a hustota platí jen pro instanci gridu v záložce.
-- `PaneLayout` má být přímý obsah `AppShell`, ne vnořený v jiné rolovací stránce (ohlásí se sám, main pak nemá padding ani rolování). Ovládá main jen když je skutečně zobrazený – skrytý (`hidden`) PaneLayout main uvolní. Vložený PaneLayout (ukázky, náhledy ve stránce) = prop `embedded` + kontejner s pevnou výškou; neregistruje se a stránka kolem roluje normálně.
-- Na stránce s `DocumentActionBar` (DocumentForm) se přilepuje jen pruh akcí; `PageHeader` odroluje, aby se oba přilepené pruhy nepřekryly. `--pane-sticky-top` = výška pruhu akcí.
-
-### Nové API 2.53.0
-
-- `PageLayout` – `variant?: "list" | "form"` (výchozí `"form"`), děti PageHeader + obsah; `usePageLayoutVariant()`.
-- `height?: "fill" | "auto"` na `ZoomGrid`, `DataGrid`, `TreeGrid`, `ZoomPane` – bez prop podle nejbližšího `PageLayout` (list → fill, jinak auto).
-- `ZoomGrid.stickyHeader?: "grid" | "pane" | "none"` – `grid` = záhlaví přilepené v rolovacím gridu (výchozí pro `fill`); `pane` = opt-in přilepení pod pruh akcí v rolovací oblasti panelu (`--pane-sticky-top`), používá jen `JournalLinesEditor`; `none` = nepřilepené (výchozí pro `auto`).
-- `ZoomGrid.overflowFallback?: boolean` – nouzové vodorovné rolování gridu, který jinak sloupce přesouvá do detailu (když se nevejde ani minimum).
-- `useGridVirtual(count, { height? })` – bez `height` bere režim ze stejného zdroje jako `ZoomGrid` (PageLayout); v `auto` nevirtualizuje.
-- `usePaneScrollElement()` – rolovací prvek aktuální záložky.
-- Formulářové gridy automaticky volí zoom 75–100 %; seznamové gridy ponechávají ruční zoom jen pro aktuální zobrazení.
-
-## Pravidlo 20 – nadpisy a popisky (2.54.0, závazné)
+## Pravidlo 20 – nadpisy a popisky (závazné)
 
 - Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
@@ -414,19 +389,18 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
 
-## DPH na řádcích dokladu (2.55.0)
+## DPH na řádcích dokladu
 - Řádky daně vytváří výhradně databáze; DS je jen zobrazuje (doklad jen ke čtení) nebo počítá předběžně. Nikdy je neposílejte ani needitujte.
 - Editor řádků zapínejte propem `vat`; kódy DPH filtruje aplikace (směr, aktivní, platnost k Datu DPH). Ukládejte přes `toJournalRows` – nikdy neposílá `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
 - Přepínač „Bez DPH | S DPH“ je v liště gridu; v režimu S DPH je Částka jen ke čtení.
 - Značky měn v popiscích DPH vždy z dat (pravidlo 18); kód DPH ve výběru jako „kód – název“ (pravidlo 9).
 
-
-## DPH – celek dokladu (2.56.0)
+## DPH – celek dokladu
 - Celek řádků dokladu počítej vždy přes `computeJournalTotals` (nebo převezmi z `JournalLinesEditor.onTotalsChange`) – nikdy ručním součtem `line.amount`, jinak chybí předběžná daň nebo se započte samovyměření.
 - Samovyměření (PDP, EU, dovoz) v režimu „S DPH“: zadaná částka je základ, daň se počítá navrch a celek dokladu nemění (Celkem s DPH = základ). Předběžné Kurzové zaokrouhlení (`isFxRounding` + `isVatPreview`) se nikdy neukládá.
 - Kurz DPH předávej přes `DocumentForm.vatRateField`; volbu Bez / S DPH v nastavení dokladu přes `DocumentSettingsDialog showVatCalcMode`.
 
-## Jazyk knihovny (2.61.0)
+## Jazyk knihovny
 
 Aplikace nastaví jazyk jednou v kořeni:
 
@@ -438,40 +412,7 @@ Aplikace nastaví jazyk jednou v kořeni:
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
-
-## DS 2.66.0
-
-- BREAKING: aplikace odstraní `JournalLinesEditor.accountDisplay`, typ
-  `JournalAccountDisplay` a `DocumentSettingsValue.accountDisplay` včetně textů.
-- BREAKING: `formatJournalAccountDisplay(code, name, display, compact)` má nyní
-  signaturu `(code, name?, extended?)`. Pozor: staré volání s třetím argumentem
-  `"number"` je pravdivá hodnota, a vrátí proto i název účtu.
-- BREAKING: `resolveJournalColumnLayout` už nepřijímá `accountDisplay`; výsledek
-  přidává `compactAccountIds` (zkrácené rozšířené formy po stranách).
-- Nové exporty: `accountColumnPair()`, `normalizeJournalAccountVisibility()`,
-  `JournalLinesRecap.storageKey`, `GridColumn.disableToggleReason`,
-  `DataGrid.defaultSort={null}` (bez výchozího řazení) a `DataGrid.rowClassName`.
-- Pořadí sloupců `accountColumns()` je nově MD, MD účet, DAL, DAL účet.
-- Texty: `DsTexts.journalRecap` (krátké i rozšířené názvy účtů rekapitulace) a
-  sdílené `DsTexts.columnPicker.accountFormRequired` / `compactAccountHeading`.
-- Uložená rozložení editoru se kvůli klíči `${storageKey}:v4` jednorázově obnoví.
-
-## DS 2.68.0
-
-- BREAKING: volné `identity.items` nahradil `DocumentIdentity` s variantami `cashBank`, `invoice` a `internal`, knihou, kódem období a volitelným účtem a číslem.
-- BREAKING: odstraněna komponenta `SideBadge` a klíče `DocumentFormTexts.mainAccount`, `mainSide`, `sideDebit`, `sideCredit` a `accountingSection`.
-- Hlavní účet je pouze v identifikačním řádku; `mainAccountLocked` vždy skryje jeho změnu. Faktura mění účet přes `mainAccountOptions` a ukládá `mainAccountId` až s formulářem.
-- Měna faktur a interních dokladů je vedle Celkem. `currencyLocked` ji ponechá jako text, `currencyDisabledReason` vysvětlí zákaz změny; pokladna a banka ji mají pouze v identitě.
-- Nové druhy `DDPZ` a `DDPOZ` používají fakturační variantu, `KR` a `ZAP` interní variantu. Změna účtu ani měny nepřepočítává řádky v prohlížeči.
-
-## DS 2.64.0
-
-- Zoom aplikace používá `useAppZoom` a ovládání v `UserMenu`; staré ovládání velikosti písma bylo odstraněno.
-- `AppShell` vlastní šířku i sbalení menu (`app:menu-width`, `app:menu-collapsed`); staré řízené props byly odstraněny.
-- Šířky sloupců zůstávají v px při 100 %, ale vykreslují se relativně k zoomu aplikace a gridu.
-- Formulářové gridy se automaticky přizpůsobují bez ukládání: zoom, kaskáda, rolování.
-
-## Nastavení nad úrovní firmy (2.79.0)
+## Nastavení nad úrovní firmy
 
 - Nastavení prostoru (a všeho nad firmou) = `StandaloneShell` mimo `AppShell`, nikdy panel AppShellu. Bez menu aplikace, výběru firmy/období, panelů a záložek.
 - Levý sloupec: nahoře `ContextSwitcher` (přepnutí prostoru), pod ním `StandaloneNav` (stránky prostoru). Pod `md` je sloupec nad obsahem a menu se mění na výběr stránek.
