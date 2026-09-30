@@ -89,7 +89,7 @@ export function ConfirmByTypingDialog({
         onInteractOutside={(event) => { if (running) event.preventDefault(); }}
       >
         <DialogHeader>
-          <DialogTitle className="min-w-0 whitespace-nowrap"><TruncatedText text={title} className="block" /></DialogTitle>
+          <DialogTitle className="min-w-0 whitespace-nowrap"><TruncatedText text={title} /></DialogTitle>
           <DialogDescription asChild><div className="text-sm text-muted-foreground">{description}</div></DialogDescription>
         </DialogHeader>
         {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
