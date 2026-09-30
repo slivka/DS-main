@@ -92,17 +92,6 @@ const ADMIN_PANEL: NavGroup[] = [{
   ],
 }];
 
-const WORKSPACE_PANEL = [{
-  id: "workspace-settings",
-  label: "Nastavení prostoru",
-  section: "Pracovní prostor",
-  items: [
-    { to: "/components/navigation", label: "Základní údaje", icon: Settings },
-    { to: "/components/navigation", label: "Čjenové a pozvánky", icon: Users },
-    { to: "/components/navigation", label: "Firmy", icon: Building2 },
-  ],
-}];
-
 /** Rám ukázkových stránek design systému. */
 export function ShowcaseLayout({
   children,
@@ -141,7 +130,7 @@ export function ShowcaseLayout({
       navGroups={NAV_GROUPS}
       navStateKey="showcase"
       breadcrumbs={breadcrumbs}
-      contextLeft={<div className="flex min-w-0 items-center gap-6"><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></div>}
+      contextLeft={<><CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} /><PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} /></>}
       actions={<SearchButton onClick={() => setSearchOpen(true)} />}
       panels={[
         { id: "registers", title: "Číselníky", icon: Library, tooltip: "Číselníky", nav: REGISTERS_PANEL, scope: "company", context: activeCompany.name },
