@@ -61,7 +61,7 @@ export interface DsTexts {
 
 export const DS_TEXTS_CS: DsTexts = {
   locale: "cs", intlLocale: "cs-CZ", dateLocale: cs,
-  paneChrome:{closeTab:"Zavřít záložku",moveToPane:"Přesunout záložku do panelu {index}",duplicate:"Duplikovat záložku",closePane:"Zavřít panel"},
+  paneChrome:{back:"Zpět (Alt+←)",forward:"Vpřed (Alt+→)",history:"Historie záložky",openInNewTab:"Otevřít v nové záložce",unsaved:"Neuložené změny",prevRecord:"Předchozí záznam (Alt+↑)",nextRecord:"Další záznam (Alt+↓)",maximize:"Maximalizovat panel (Alt+M)",restore:"Obnovit rozložení (Esc)",more:"Další akce záložky",closeTab:"Zavřít záložku",closeOthers:"Zavřít ostatní",moveToPane:"Přesunout záložku do panelu {index}",duplicate:"Duplikovat záložku",reopenClosed:"Znovu otevřít zavřenou záložku",closePane:"Zavřít panel",pageActions:"Akce stránky",untitled:"Bez názvu"},
   layoutMenu:{trigger:"Rozložení",empty:"Zatím žádné uložené rozložení",saveCurrent:"Uložit aktuální jako nové…",overwrite:"Přepsat uložené aktuálním",manage:"Spravovat rozložení",saveTitle:"Uložit rozložení",nameLabel:"Název",save:"Uložit",cancel:"Zrušit",manageTitle:"Uložená rozložení",close:"Zavřít",delete:"Odstranit",deleteTitle:"Odstranit rozložení?",deleteDescription:"Rozložení „{name}“ bude odstraněno.",moveUp:"Posunout nahoru",moveDown:"Posunout dolů"},
     common: { close: "Zavřít", cancel: "Zrušit", confirm: "Potvrdit", understand: "Rozumím", save: "Uložit", yes: "ano", no: "ne", system: "Systém" },
   recordAction: { moreActions: "Další akce", unsaved: "Neuložené změny", errorTitle: "Záznam nelze uložit", closeError: "Zavřít chybovou hlášku" },

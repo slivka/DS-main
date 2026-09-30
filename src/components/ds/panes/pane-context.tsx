@@ -579,6 +579,8 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     if (!shortcuts) return;
     const onKey = (event: KeyboardEvent) => {
       if (!event.altKey || event.ctrlKey || event.metaKey) return;
+      // Držená klávesa nesmí opakovat akce (zavírání, obnova, maximalizace); šipky opakování potřebují.
+      if (event.repeat && !event.code.startsWith("Arrow")) return;
       const current = stateRef.current;
       const a = apiRef.current;
       const pane = current.panes.find((item) => item.id === current.active) ?? current.panes[0];
