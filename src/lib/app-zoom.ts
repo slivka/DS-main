@@ -142,29 +142,60 @@ function isNativeSelectOpen() {
  * start podle uložené hodnoty, Cmd/Ctrl + plus / minus / 0 (i v polích)
  * a Ctrl/Cmd + kolečko mimo grid (grid událost zpracuje dřív – defaultPrevented).
  */
+let zoomShortcutMounts = 0;
+let detachZoomShortcuts: (() => void) | null = null;
+
+function attachZoomShortcuts() {
+  const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
+  const onWheel = (event: WheelEvent) => {
+    if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+    if (isNativeSelectOpen()) return;
+    event.preventDefault();
+    step(event);
+  };
+  const onKey = (event: KeyboardEvent) => {
+    const action = isAppZoomShortcut(event);
+    if (!action) return;
+    event.preventDefault();
+    if (action === "increase") setAppZoom(getAppZoom() + APP_ZOOM_KEY_STEP);
+    else if (action === "decrease") setAppZoom(getAppZoom() - APP_ZOOM_KEY_STEP);
+    else resetAppZoom();
+  };
+  window.addEventListener("wheel", onWheel, { passive: false });
+  window.addEventListener("keydown", onKey);
+  return () => {
+    window.removeEventListener("wheel", onWheel);
+    window.removeEventListener("keydown", onKey);
+  };
+}
+
+/**
+ * Sdílená obsluha zoomu aplikace pro rámy (AppShell, StandaloneShell):
+ * start podle uložené hodnoty, Cmd/Ctrl + plus / minus / 0 (i v polích)
+ * a Ctrl/Cmd + kolečko mimo grid (grid událost zpracuje dřív – defaultPrevented).
+ * Posluchače registruje jen první připojený rám a ruší poslední odpojený (jeden krok i při dvou rámech).
+ */
 export function useAppZoomShortcuts() {
   useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
   useLayoutEffect(() => {
-    const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
-    const onWheel = (event: WheelEvent) => {
-      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
-      if (isNativeSelectOpen()) return;
-      event.preventDefault();
-      step(event);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      const action = isAppZoomShortcut(event);
-      if (!action) return;
-      event.preventDefault();
-      if (action === "increase") setAppZoom(getAppZoom() + APP_ZOOM_KEY_STEP);
-      else if (action === "decrease") setAppZoom(getAppZoom() - APP_ZOOM_KEY_STEP);
-      else resetAppZoom();
-    };
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("keydown", onKey);
+    zoomShortcutMounts += 1;
+    if (zoomShortcutMounts === 1) detachZoomShortcuts = attachZoomShortcuts();
     return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("keydown", onKey);
+      zoomShortcutMounts -= 1;
+      if (zoomShortcutMounts === 0) { detachZoomShortcuts?.(); detachZoomShortcuts = null; }
     };
   }, []);
+}
+
+/** Mobilní rozložení rámu podle efektivní šířky (šířka okna / zoom aplikace) – stejně jako AppShell. */
+export function useEffectiveIsMobile(breakpoint = 768) {
+  const { zoom } = useAppZoom();
+  const [width, setWidth] = useState(() => typeof window === "undefined" ? 1280 : window.innerWidth);
+  useLayoutEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return effectiveViewportWidth(width, zoom) < breakpoint;
 }
