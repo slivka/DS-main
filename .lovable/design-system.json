@@ -2459,7 +2459,8 @@
         },
         {
           "name": "contextDisabledHint",
-          "type": "string"
+          "type": "string",
+          "description": "Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint)."
         },
         {
           "name": "navSearchMenu",
