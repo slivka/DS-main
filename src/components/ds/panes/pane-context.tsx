@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
-import { useDsTexts } from "../../../ds-texts";
+import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import {
   activateTabInState,
@@ -732,26 +732,8 @@ export type PaneChromeTexts = {
   untitled: string;
 };
 
-export const DEFAULT_PANE_CHROME_TEXTS: PaneChromeTexts = {
-  back: "Zpět (Alt+←)",
-  forward: "Vpřed (Alt+→)",
-  history: "Historie záložky",
-  openInNewTab: "Otevřít v nové záložce",
-  unsaved: "Neuložené změny",
-  prevRecord: "Předchozí záznam (Alt+↑)",
-  nextRecord: "Další záznam (Alt+↓)",
-  maximize: "Maximalizovat panel (Alt+M)",
-  restore: "Obnovit rozložení (Esc)",
-  more: "Další akce záložky",
-  closeTab: "Zavřít záložku",
-  closeOthers: "Zavřít ostatní",
-  moveToPane: "Přesunout záložku do panelu {index}",
-  duplicate: "Duplikovat záložku",
-  reopenClosed: "Znovu otevřít zavřenou záložku",
-  closePane: "Zavřít panel",
-  pageActions: "Akce stránky",
-  untitled: "Bez názvu",
-};
+/** Výchozí (české) texty – jediný zdroj je DS_TEXTS_CS.paneChrome. */
+export const DEFAULT_PANE_CHROME_TEXTS: PaneChromeTexts = DS_TEXTS_CS.paneChrome as PaneChromeTexts;
 
 /** Položka menu záložky (⋯ v záhlaví i kontextové menu záložky). */
 export type PaneMenuAction = {
