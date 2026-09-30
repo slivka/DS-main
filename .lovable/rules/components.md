@@ -1121,6 +1121,7 @@ Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a indiv
 |---|---|---|
 | `storageKey` | string | `—` |
 | `height` | fill · auto | `—` |
+| `autoZoom` | boolean | `—` |
 | `title` | any | `—` |
 | `showTitle` | boolean | `false` |
 | `hideTitleMark` | boolean | `—` |
