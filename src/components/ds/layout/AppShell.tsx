@@ -46,7 +46,7 @@ export type AppShellPanelView = {
   title: string;
   context?: ReactNode | string;
   scope?: AppShellScope;
-  nav: NavGroup[];
+  nav?: NavGroup[];
 };
 
 export type AppShellPanel = {

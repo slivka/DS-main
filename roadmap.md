@@ -1,9 +1,9 @@
 ## Verze 2.71.0 – AppShell panely a rozsah platnosti
 
-- [ ] Přeskládat panelové menu a pevný řádek panelu včetně mobilního pořadí.
-- [ ] Přidat šedý tón panelových menu, tokeny a čitelné stavy v obou motivech.
-- [ ] Přidat řízené části panelu a rozsahy company / workspace / platform bez narušení měření horní lišty.
-- [ ] Upravit skupiny, hledání a součty odznaků.
+- [x] Přeskládat panelové menu a pevný řádek panelu včetně mobilního pořadí.
+- [x] Přidat šedý tón panelových menu, tokeny a čitelné stavy v obou motivech.
+- [x] Přidat řízené části panelu a rozsahy company / workspace / platform bez narušení měření horní lišty.
+- [x] Upravit skupiny, hledání a součty odznaků.
 - [ ] Doplnit ukázky, dokumentaci, katalog a verzi 2.71.0; Release neprovádět.
 - [ ] Doplnit testy a ověřit všechny testy, typy, sestavení a požadované viewporty/zoom.
 

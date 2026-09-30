@@ -1,3 +1,11 @@
+## Changelog 2.71.0 – panely AppShellu a rozsah platnosti
+
+- Panelové menu vede od horní lišty až dolů; panelový řádek je pevně jen nad obsahem a respektuje nastavitelnou šířku menu.
+- `AppShellPanel.views`, `activeView` a `onViewChange` přidávají řízené části panelu; aktivní část řídí titul, kontext, menu a stav skupin.
+- Nový `AppShellScope` (`company` / `workspace` / `platform`) určuje platnost panelu. Mimo firmu zůstávají volby firmy a období na místě, ale jsou zakázané s nápovědou.
+- Panely používají výchozí šedé menu přes `sidebarTone="panel"`; hlavní menu zůstává tmavě modré.
+- Prázdná skupina se nesbaluje, hledání zahrnuje názvy sekcí a součet skupiny ignoruje nečíselné odznaky.
+- **BREAKING:** žádná změna; dosavadní panely bez nových props zůstávají funkční.
 
 ## Changelog 2.64.0 – zoom aplikace, automatický zoom gridů a šířka menu
 
