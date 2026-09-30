@@ -33,6 +33,7 @@ export function OptionSelect({
   id,
   className,
   triggerClassName,
+  ariaLabel,
   inactiveLabel = "neaktivní",
 }: {
   value: string | null | undefined;
@@ -47,6 +48,8 @@ export function OptionSelect({
   id?: string;
   className?: string;
   triggerClassName?: string;
+  /** Přístupný název výběru, pokud jej neposkytuje navázaný popisek. */
+  ariaLabel?: string;
   inactiveLabel?: string;
 }) {
   const current = value ?? "";
@@ -62,7 +65,7 @@ export function OptionSelect({
       onValueChange={(v) => onChange(v === EMPTY ? "" : v)}
       disabled={disabled}
     >
-      <SelectTrigger id={id} className={cn("h-9 w-full min-w-0", className, triggerClassName)}>
+      <SelectTrigger id={id} aria-label={ariaLabel} className={cn("h-9 w-full min-w-0", className, triggerClassName)}>
         <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>

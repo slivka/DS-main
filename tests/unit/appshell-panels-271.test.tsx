@@ -80,10 +80,12 @@ describe("AppShell panely 2.71.0 – chování", () => {
     const warn = mock(() => undefined);
     const original = console.warn; console.warn = warn;
     const views = [{ id: "firma", label: "Firma", title: "Nastavení firmy", nav: nav("a") }, { id: "prostor", label: "Prostor", title: "B", nav: nav("b") }];
-    const view = render(<AppShell navGroups={[]} navSearch={false} panels={[{ id: "s", title: "S", icon: Settings, tooltip: "S", views, activeView: "neni" }]} activePanel="s" onActivePanelChange={() => undefined}><div /></AppShell>);
+    const shell = <AppShell navGroups={[]} navSearch={false} panels={[{ id: "s", title: "S", icon: Settings, tooltip: "S", views, activeView: "neni" }]} activePanel="s" onActivePanelChange={() => undefined}><div /></AppShell>;
+    const view = render(shell);
+    view.rerender(shell);
     console.warn = original;
     expect(view.getByText("Nastavení firmy")).toBeTruthy();
-    if (import.meta.env?.DEV) expect(warn).toHaveBeenCalled();
+    if (import.meta.env?.DEV) expect(warn).toHaveBeenCalledTimes(2);
   });
 
   it("scope platform na úrovni panelu zašední kontext, nápověda je dostupná klávesnicí a přepsatelná", () => {

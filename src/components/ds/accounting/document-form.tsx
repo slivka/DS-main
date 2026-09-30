@@ -480,10 +480,10 @@ export function DocumentForm({
 
         <SectionHeading>{t.datesSection}</SectionHeading>
         <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
-          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
-          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
+          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full")}
+          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full")}
+          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full") : null}
+          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full") : null}
           {showVatFields ? date("vatDate", t.vatDate, "relative flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") || undefined }) : null}
         </div>
         {!f.partner ? <div className="mt-3 grid grid-cols-20 gap-3">{suggestedText("description", t.description, descriptionSuggest, 20)}</div> : null}

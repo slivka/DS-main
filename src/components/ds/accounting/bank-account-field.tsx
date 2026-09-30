@@ -48,12 +48,13 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
   const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
   const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
   const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
+  const optionValuesKey = optionValues.join("\u0000");
   const selectedOption = optionValues.includes(value);
   const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
   const [touched, setTouched] = useState(false);
   useEffect(() => {
     setOtherSelected(Boolean(value) && !optionValues.includes(value));
-  }, [options, value]); // optionValues are derived from options and value is the controlled source of truth
+  }, [optionValuesKey, value]); // seznam je odvozený z řízených možností
   const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
   const compact = value.replace(/\s/g, "");
   const [accountPart = "", bankCode = ""] = compact.split("/");
@@ -75,10 +76,11 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             return;
           }
           setOtherSelected(false);
+          setTouched(false);
           onChange(next);
         }}
         allowEmpty={false}
-        ariaLabel={props["aria-label"] ?? texts.bankAccount}
+        ariaLabel={props["aria-label"]}
         disabled={disabled || readOnly}
         options={[
           ...options.map((option) => ({

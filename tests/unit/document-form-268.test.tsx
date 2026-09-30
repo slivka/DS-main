@@ -163,9 +163,13 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     expect(read?.getAttribute("aria-readonly")).toBe("true");
     expect(read?.textContent).toBe("CZK");
     view.rerender(<Form currencyDisabledReason="Doklad je spárovaný" />);
-    const wrap = view.container.querySelector("[data-slot=document-amount-currency] [aria-label='Doklad je spárovaný']");
+    const wrap = view.container.querySelector("[data-slot=document-amount-currency] [tabindex='0']");
     expect(wrap?.getAttribute("tabindex")).toBe("0");
-    expect(wrap?.querySelector("button")?.hasAttribute("disabled")).toBe(true);
+    expect(wrap?.getAttribute("aria-describedby")).toBeTruthy();
+    expect(wrap?.querySelector("#document-currency")?.getAttribute("aria-readonly")).toBe("true");
+    expect(document.getElementById(wrap?.getAttribute("aria-describedby") ?? "")?.textContent).toBe("Doklad je spárovaný");
+    view.rerender(<Form editableFields={["description"]} />);
+    expect(view.container.querySelector("[data-slot=document-amount-currency] [tabindex='0']")?.textContent).toContain("Měnu nelze změnit");
   });
 
   it("výběr měny: ve spouštěči kód, v nabídce kód - název", async () => {
