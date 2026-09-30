@@ -2576,7 +2576,7 @@ import { Label } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 import { LayoutMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Nabídka uložených rozložení. Varianta trigger="icon" patří do AppShell.navSearchMenu vedle hledání; data a ukládání dodává aplikace.
+Nabídka uložených rozložení v pevném pořadí: Uložit aktuální jako nové… s ikonou Spravovat vpravo, uložená rozložení (jen názvy) a Přepsat uložené aktuálním. Varianta trigger="icon" patří vedle hledání. Bez výchozího rozložení (isDefault zrušeno).
 
 **Props:**
 
@@ -2597,14 +2597,14 @@ Nabídka uložených rozložení. Varianta trigger="icon" patří do AppShell.na
 
 _Vedle hledání v menu_
 ```tsx
-<AppShell navSearchMenu={<LayoutMenu trigger="icon" items={layouts} onSave={save} onApply={apply} onUpdate={update} onDelete={remove} />} />
+<AppShell navSearchMenu={<LayoutMenu trigger="icon" items={layouts} onSave={({ name, snapshot }) => save(name, snapshot)} onApply={apply} onUpdate={update} onDelete={remove} />} />
 ```
 
 **Avoid:**
 
 - Vkládat nabídku rozložení do horní lišty
-- Ukládat do rozložení koncepty nebo nové neuložené záznamy
-- Zavírat rozepsané záložky při použití rozložení
+- Přidávat výchozí rozložení nebo ikony počtu panelů
+- Ukládat koncepty nebo nové neuložené záznamy
 
 ### LayoutSwitcher
 
@@ -4494,7 +4494,7 @@ import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { UserMenu } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Uživatelská nabídka s přímým přepínáním pracovních prostorů.
+Uživatelská nabídka v pevném pořadí: identita, vlastní položky, velikost zobrazení, pracovní prostor a odhlášení. workspaceAction přidá klávesnicí dostupnou správu prostorů.
 
 **Props:**
 
@@ -4508,20 +4508,22 @@ Uživatelská nabídka s přímým přepínáním pracovních prostorů.
 | `workspaceLabel` | string | `Pracovní prostor` |
 | `workspaceSearchPlaceholder` | string | `Hledat pracovní prostor…` |
 | `items` | any | `—` |
+| `workspaceAction` | object | `—` |
 | `onSignOut` | function | `—` |
 | `signOutLabel` | string | `Odhlásit` |
 | `menuLabel` | string | `Uživatelská nabídka` |
 
 **Examples:**
 
-_Základní použití_
+_S akcí pracovních prostorů_
 ```tsx
-<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={workspaces} />
+<UserMenu name="Petr Slivka" email="petr@slivka.cz" workspaces={workspaces} workspaceAction={{ label: "Spravovat pracovní prostory", icon: Settings, onSelect: openWorkspaceSettings }} />
 ```
 
 **Avoid:**
 
 - Nevkládejte pracovní prostory do vnořeného podmenu.
+- Neměňte pevné pořadí položek ani nepřidávejte další bez schválení.
 
 ### VatCodeSelect
 
