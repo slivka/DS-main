@@ -67,6 +67,8 @@
   --color-sidebar-active-foreground: var(--sidebar-active-foreground);
   --color-sidebar-badge: var(--sidebar-badge);
   --color-sidebar-badge-foreground: var(--sidebar-badge-foreground);
+  --color-sidebar-badge-active: var(--sidebar-badge-active);
+  --color-sidebar-badge-active-foreground: var(--sidebar-badge-active-foreground);
   --color-company: var(--company);
   --color-company-foreground: var(--company-foreground);
   --color-company-muted: var(--company-muted);
@@ -148,6 +150,8 @@
   --sidebar-active-foreground: var(--sidebar-accent-foreground);
   --sidebar-badge: var(--sidebar-accent);
   --sidebar-badge-foreground: var(--sidebar-accent-foreground);
+  --sidebar-badge-active: oklch(0.985 0.005 250);
+  --sidebar-badge-active-foreground: oklch(0.25 0.05 245);
   /* Globální barvy typů kontaktů */
   --company: oklch(0.5 0.1 250);
   --company-foreground: oklch(0.99 0.008 250);
@@ -235,6 +239,8 @@
   --sidebar-active-foreground: var(--sidebar-accent-foreground);
   --sidebar-badge: var(--sidebar-accent);
   --sidebar-badge-foreground: var(--sidebar-accent-foreground);
+  --sidebar-badge-active: oklch(0.9 0.012 250);
+  --sidebar-badge-active-foreground: oklch(0.18 0.02 250);
   --company: oklch(0.72 0.12 250);
   --company-foreground: oklch(0.15 0.02 250);
   --company-muted: oklch(0.32 0.04 250);
@@ -1353,10 +1359,22 @@
   --sidebar-active-foreground: var(--primary-foreground);
   --sidebar-badge: oklch(0.87 0.006 250);
   --sidebar-badge-foreground: oklch(0.30 0.02 250);
+  --sidebar-badge-active: oklch(0.985 0.005 250);
+  --sidebar-badge-active-foreground: oklch(0.25 0.05 245);
   --sidebar-indicator: oklch(0.32 0.08 250);
   --sidebar-border: oklch(0.86 0.005 250);
   --sidebar-input: oklch(1 0 0);
   --sidebar-hover: oklch(0.90 0.005 250);
+}
+
+.dark [data-sidebar-tone="panel"] {
+  --sidebar-badge-active: oklch(0.92 0.01 250);
+  --sidebar-badge-active-foreground: oklch(0.20 0.02 250);
+}
+
+.shell-nav-item[data-active="true"] [data-slot="shell-nav-badge"] {
+  background: var(--sidebar-badge-active);
+  color: var(--sidebar-badge-active-foreground);
 }
 .dark [data-sidebar-tone="panel"] {
   --sidebar: oklch(0.25 0.004 250);
