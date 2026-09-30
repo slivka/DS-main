@@ -5,3 +5,7 @@ bun.lock
 .lovable
 *.md
 public
+src/routeTree.gen.ts
+src/tailwind.config.lov.json
+src/routes/[__component].preview.$.tsx
+src/routes/[__mockup].preview.$.tsx
