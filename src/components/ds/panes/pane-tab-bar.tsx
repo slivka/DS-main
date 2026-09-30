@@ -5,8 +5,20 @@ import { CSS } from "@dnd-kit/utilities";
 import { ChevronsRight, X } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "../../ui/context-menu";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "../../ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 import { buildTabMenuActions, type PaneChromeTexts, type PaneTabsApi } from "./pane-context";
@@ -43,18 +55,31 @@ export interface PaneTabBarProps {
 }
 
 /** Lišta záložek panelu: jen záložky a nabídka „»“ (historie a menu ⋯ jsou od 2.16.0 v PageHeader). */
-export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize, texts, className }: PaneTabBarProps) {
+export function PaneTabBar({
+  pane,
+  paneIndex,
+  api,
+  getTabIcon,
+  onToggleMaximize,
+  texts,
+  className,
+}: PaneTabBarProps) {
   const t = { ...DEFAULT_PANE_TAB_BAR_TEXTS, ...texts };
   const stripRef = useRef<HTMLDivElement | null>(null);
   const [capacity, setCapacity] = useState(pane.tabs.length || 1);
-  const { setNodeRef: setBarDropRef, isOver } = useDroppable({ id: `bar:${pane.id}`, data: { paneId: pane.id } });
+  const { setNodeRef: setBarDropRef, isOver } = useDroppable({
+    id: `bar:${pane.id}`,
+    data: { paneId: pane.id },
+  });
 
   useEffect(() => {
     const element = stripRef.current;
     if (!element) return;
     const measure = () => {
       const rootSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      setCapacity(Math.max(1, Math.floor(element.clientWidth / (PANE_TAB_MIN_WIDTH_REM * rootSize))));
+      setCapacity(
+        Math.max(1, Math.floor(element.clientWidth / (PANE_TAB_MIN_WIDTH_REM * rootSize))),
+      );
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -76,13 +101,29 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
         ref={setBarDropRef}
         role="toolbar"
         aria-label={`Panel ${paneIndex + 1}`}
-        className={cn("flex h-9 shrink-0 items-stretch gap-1 border-b bg-muted/60 pl-1 pr-1", isOver && "bg-primary/10", className)}
+        className={cn(
+          "flex h-9 shrink-0 items-stretch gap-1 border-b bg-muted/60 pl-1 pr-1",
+          isOver && "bg-primary/10",
+          className,
+        )}
         onDoubleClick={(event) => {
-          if (event.target === event.currentTarget || (event.target as HTMLElement).dataset.tabStrip !== undefined) onToggleMaximize?.();
+          if (
+            event.target === event.currentTarget ||
+            (event.target as HTMLElement).dataset.tabStrip !== undefined
+          )
+            onToggleMaximize?.();
         }}
       >
-        <div ref={stripRef} role="tablist" data-tab-strip="" className="flex min-w-0 flex-1 items-stretch overflow-hidden">
-          <SortableContext items={visible.map((tab) => tab.id)} strategy={horizontalListSortingStrategy}>
+        <div
+          ref={stripRef}
+          role="tablist"
+          data-tab-strip=""
+          className="flex min-w-0 flex-1 items-stretch overflow-hidden"
+        >
+          <SortableContext
+            items={visible.map((tab) => tab.id)}
+            strategy={horizontalListSortingStrategy}
+          >
             {visible.map((tab) => (
               <SortableTab
                 key={tab.id}
@@ -103,7 +144,13 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
             <Tooltip>
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
-                  <Button type="button" variant="ghost" size="sm" className="my-1 h-7 gap-1 px-2 text-xs" aria-label={t.overflow}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="my-1 h-7 gap-1 px-2 text-xs"
+                    aria-label={t.overflow}
+                  >
                     <ChevronsRight className="size-4" />
                     {hidden.length}
                   </Button>
@@ -118,7 +165,12 @@ export function PaneTabBar({ pane, paneIndex, api, getTabIcon, onToggleMaximize,
                   <DropdownMenuItem key={tab.id} onSelect={() => api.activateTab(tab.id)}>
                     {Icon ? <Icon className="size-4" /> : null}
                     <span className="truncate">{titleOf(tab)}</span>
-                    {api.isTabDirty(tab.id) ? <span aria-label={t.unsaved} className="ml-auto size-2 rounded-full bg-primary" /> : null}
+                    {api.isTabDirty(tab.id) ? (
+                      <span
+                        aria-label={t.unsaved}
+                        className="ml-auto size-2 rounded-full bg-primary"
+                      />
+                    ) : null}
                   </DropdownMenuItem>
                 );
               })}
@@ -149,7 +201,10 @@ function SortableTab({
   texts: PaneTabBarTexts & Partial<PaneChromeTexts>;
   title: string;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id, data: { paneId, tabId: tab.id } });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: tab.id,
+    data: { paneId, tabId: tab.id },
+  });
   const label = tab.shortTitle ?? title;
   const actions = buildTabMenuActions(api, tab.id, texts);
 
@@ -159,10 +214,18 @@ function SortableTab({
         <div
           ref={setNodeRef}
           data-tab-id={tab.id}
-          style={{ transform: CSS.Translate.toString(transform), transition, flex: `1 1 ${PANE_TAB_MAX_WIDTH_REM}rem`, minWidth: `${PANE_TAB_MIN_WIDTH_REM}rem`, maxWidth: `${PANE_TAB_MAX_WIDTH_REM}rem` }}
+          style={{
+            transform: CSS.Translate.toString(transform),
+            transition,
+            flex: `1 1 ${PANE_TAB_MAX_WIDTH_REM}rem`,
+            minWidth: `${PANE_TAB_MIN_WIDTH_REM}rem`,
+            maxWidth: `${PANE_TAB_MAX_WIDTH_REM}rem`,
+          }}
           className={cn(
             "group relative flex items-center border-r text-sm transition-colors",
-            active ? "bg-card font-semibold text-foreground shadow-[inset_0_2px_0_var(--primary)]" : "text-muted-foreground hover-surface",
+            active
+              ? "bg-card font-semibold text-foreground shadow-[inset_0_2px_0_var(--primary)]"
+              : "text-muted-foreground hover-surface",
             isDragging && "z-10 opacity-70",
           )}
           onAuxClick={(event) => {
@@ -190,20 +253,33 @@ function SortableTab({
                 <span className="truncate">{label}</span>
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              {title}
-            </TooltipContent>
+            <TooltipContent>{title}</TooltipContent>
           </Tooltip>
           <button
             type="button"
-                    aria-label={dirty ? `${texts.closeTab} (${texts.unsaved.charAt(0).toLocaleLowerCase("cs")}${texts.unsaved.slice(1)})` : texts.closeTab}
+            aria-label={
+              dirty
+                ? `${texts.closeTab} (${texts.unsaved.charAt(0).toLocaleLowerCase("cs")}${texts.unsaved.slice(1)})`
+                : texts.closeTab
+            }
             className="relative mr-1 flex size-5 shrink-0 items-center justify-center rounded-full text-foreground/70 hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             onPointerDown={(event) => event.stopPropagation()}
             onDoubleClick={(event) => event.stopPropagation()}
             onClick={() => api.closeTab(tab.id)}
           >
-            {dirty ? <span className="size-2 rounded-full bg-primary group-hover:hidden" aria-hidden="true" /> : null}
-            <X className={cn("size-3.5", active && "text-foreground", dirty && "hidden group-hover:block")} />
+            {dirty ? (
+              <span
+                className="size-2 rounded-full bg-primary group-hover:hidden"
+                aria-hidden="true"
+              />
+            ) : null}
+            <X
+              className={cn(
+                "size-3.5",
+                active && "text-foreground",
+                dirty && "hidden group-hover:block",
+              )}
+            />
           </button>
         </div>
       </ContextMenuTrigger>
@@ -213,7 +289,9 @@ function SortableTab({
             {action.separatorBefore ? <ContextMenuSeparator /> : null}
             <ContextMenuItem disabled={action.disabled} onSelect={action.onSelect}>
               {action.label}
-              {action.shortcut ? <ContextMenuShortcut>{action.shortcut}</ContextMenuShortcut> : null}
+              {action.shortcut ? (
+                <ContextMenuShortcut>{action.shortcut}</ContextMenuShortcut>
+              ) : null}
             </ContextMenuItem>
           </Fragment>
         ))}

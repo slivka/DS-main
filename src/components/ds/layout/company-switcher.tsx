@@ -2,7 +2,14 @@ import type { ComponentType } from "react";
 import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../../ui/command";
 import { cn } from "../../../lib/utils";
 import { ContextPill, useContextPillClose } from "./context-pill";
 
@@ -54,10 +61,19 @@ function CompanySwitcherContent({
 }) {
   const close = useContextPillClose();
   const row = (item: CompanySwitcherItem) => (
-    <CommandItem key={item.id} value={`${item.name} ${item.ico ?? ""}`} onSelect={() => { onChange(item.id); close(); }}>
+    <CommandItem
+      key={item.id}
+      value={`${item.name} ${item.ico ?? ""}`}
+      onSelect={() => {
+        onChange(item.id);
+        close();
+      }}
+    >
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{item.name}</span>
-        {item.ico ? <span className="block text-xs text-muted-foreground">IČO {item.ico}</span> : null}
+        {item.ico ? (
+          <span className="block text-xs text-muted-foreground">IČO {item.ico}</span>
+        ) : null}
       </span>
       {item.id === value ? <Check className="size-4 text-primary" /> : null}
     </CommandItem>
@@ -74,7 +90,15 @@ function CompanySwitcherContent({
       </Command>
       {onCreate ? (
         <div className="border-t p-2">
-          <Button type="button" variant="ghost" className="w-full justify-start" onClick={() => { close(); onCreate(); }}>
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => {
+              close();
+              onCreate();
+            }}
+          >
             <Plus className="size-4" />
             {createLabel}
           </Button>
@@ -85,7 +109,16 @@ function CompanySwitcherContent({
           {actions.map((action) => {
             const Icon = action.icon;
             return (
-              <Button key={action.id} type="button" variant="ghost" className="w-full justify-start" onClick={() => { close(); action.onSelect(); }}>
+              <Button
+                key={action.id}
+                type="button"
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => {
+                  close();
+                  action.onSelect();
+                }}
+              >
                 {Icon ? <Icon className="size-4" /> : <span className="size-4" />}
                 <span className="min-w-0 truncate">{action.label}</span>
               </Button>
@@ -122,9 +155,16 @@ export function CompanySwitcher({
       compactValue={selected?.name ?? emptyText}
       icon={Building2}
       iconClassName="text-primary"
-      tooltip={selected ? `${label}: ${selected.name}${selected.ico ? ` · IČO ${selected.ico}` : ""}` : `${label}: ${emptyText}`}
+      tooltip={
+        selected
+          ? `${label}: ${selected.name}${selected.ico ? ` · IČO ${selected.ico}` : ""}`
+          : `${label}: ${emptyText}`
+      }
       valueClassName="text-base font-semibold"
-      className={cn("max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]", className)}
+      className={cn(
+        "max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]",
+        className,
+      )}
       contentClassName="w-[380px]"
       open={open}
       onOpenChange={onOpenChange}

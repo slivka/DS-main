@@ -110,7 +110,9 @@ export function CurrencyAmount({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor={`${idPrefix}-base`}>{`${baseLabel} (${homeCurrencySymbol ?? baseCurrency})`}</Label>
+        <Label
+          htmlFor={`${idPrefix}-base`}
+        >{`${baseLabel} (${homeCurrencySymbol ?? baseCurrency})`}</Label>
         <output
           id={`${idPrefix}-base`}
           className="flex h-9 items-center justify-end rounded-md border bg-muted/40 px-3 font-sans text-sm tabular-nums"

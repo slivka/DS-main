@@ -23,7 +23,10 @@ export function useDialogBackClose(open: boolean, onOpenChange: (open: boolean) 
     if (open && !pushedRef.current) {
       markerRef.current = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
       pushedRef.current = true;
-      window.history.pushState({ ...(window.history.state ?? {}), __dialog: markerRef.current }, "");
+      window.history.pushState(
+        { ...(window.history.state ?? {}), __dialog: markerRef.current },
+        "",
+      );
     } else if (!open && pushedRef.current) {
       // Bežné zatvorene (Zrušiť, krížik, Esc, programové): odstránime náš
       // záznam z historie cez history.back(), aby sa nekupili „slepé" záznamy

@@ -1,12 +1,6 @@
 import { Building2, Layers } from "lucide-react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
 
 export type WorkspaceOption = { id: string; name: string };
@@ -34,9 +28,7 @@ export function WorkspaceCompanySwitcher({
   companyLabel?: string;
   className?: string;
 }) {
-  const visibleCompanies = companies.filter(
-    (c) => !c.workspaceId || c.workspaceId === workspaceId,
-  );
+  const visibleCompanies = companies.filter((c) => !c.workspaceId || c.workspaceId === workspaceId);
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -54,14 +46,24 @@ export function WorkspaceCompanySwitcher({
         </SelectContent>
       </Select>
       <Select value={companyId} onValueChange={onCompanyChange}>
-        <SelectTrigger className="h-9 w-[200px] border-grid-chrome bg-background px-2.5 py-1 text-base font-semibold hover:border-input hover:bg-surface-hover focus-visible:border-primary" aria-label={companyLabel}>
+        <SelectTrigger
+          className="h-9 w-[200px] border-grid-chrome bg-background px-2.5 py-1 text-base font-semibold hover:border-input hover:bg-surface-hover focus-visible:border-primary"
+          aria-label={companyLabel}
+        >
           <Building2 className="size-4 text-primary" />
           <SelectValue placeholder={companyLabel} />
         </SelectTrigger>
         <SelectContent>
           {visibleCompanies.map((c) => (
             <SelectItem key={c.id} value={c.id}>
-              <span className="min-w-0"><span className="block truncate">{c.name}</span>{c.ico ? <span className="block text-xs font-normal text-muted-foreground">IČO {c.ico}</span> : null}</span>
+              <span className="min-w-0">
+                <span className="block truncate">{c.name}</span>
+                {c.ico ? (
+                  <span className="block text-xs font-normal text-muted-foreground">
+                    IČO {c.ico}
+                  </span>
+                ) : null}
+              </span>
             </SelectItem>
           ))}
         </SelectContent>

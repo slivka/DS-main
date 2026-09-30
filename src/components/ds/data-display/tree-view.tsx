@@ -119,7 +119,9 @@ export function TreeView({
         <div
           className={cn(
             "hover-surface group flex items-center gap-1 py-1 pr-2",
-            variant === "default" ? "rounded-md" : "min-h-[2.4em] border-b bg-grid-heading py-[0.35em]",
+            variant === "default"
+              ? "rounded-md"
+              : "min-h-[2.4em] border-b bg-grid-heading py-[0.35em]",
             isSelected && "bg-muted shadow-[inset_3px_0_0_var(--color-primary)]",
           )}
           style={{ paddingLeft: `${level * 20 + 4}px` }}
@@ -133,7 +135,7 @@ export function TreeView({
               className="flex size-5 shrink-0 items-center justify-center rounded"
               onClick={(e) => {
                 e.stopPropagation();
-                 if (selectOnToggle) onSelect?.(node.id);
+                if (selectOnToggle) onSelect?.(node.id);
                 setCollapsed({ ...collapsed, [node.id]: !isCollapsed });
               }}
             >
@@ -150,14 +152,21 @@ export function TreeView({
             className={cn(
               "max-w-full truncate",
               variant === "default" ? "text-sm" : "text-[1em]",
-               canExpand && "font-medium",
+              canExpand && "font-medium",
               node.muted && "text-muted-foreground",
             )}
           >
             {node.label}
           </span>
           {node.meta ? (
-            <span className={cn("shrink-0 text-muted-foreground", variant === "default" ? "text-xs" : "text-[0.9em]")}>{node.meta}</span>
+            <span
+              className={cn(
+                "shrink-0 text-muted-foreground",
+                variant === "default" ? "text-xs" : "text-[0.9em]",
+              )}
+            >
+              {node.meta}
+            </span>
           ) : null}
           <span className="min-w-0 flex-1" />
           {actions ? (
@@ -176,5 +185,9 @@ export function TreeView({
     );
   };
 
-  return <ul className={variant === "default" ? "py-1" : undefined}>{tree.map((n) => renderNode(n, 0))}</ul>;
+  return (
+    <ul className={variant === "default" ? "py-1" : undefined}>
+      {tree.map((n) => renderNode(n, 0))}
+    </ul>
+  );
 }

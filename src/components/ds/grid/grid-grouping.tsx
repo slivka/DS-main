@@ -70,7 +70,9 @@ export function useGridGrouping(
 ): GroupingApi {
   const disabled = opts?.disabled ?? false;
   const defaultGroups = opts?.defaultGroups ?? [];
-  const defaultGroupsKey = defaultGroups.map((group) => `${group.id}:${group.granularity}`).join("|");
+  const defaultGroupsKey = defaultGroups
+    .map((group) => `${group.id}:${group.granularity}`)
+    .join("|");
   const [enabled, setEnabledState] = useState(defaultGroups.length > 0);
   const [groups, setGroups] = useState<GroupSpec[]>(defaultGroups);
   const [collapsed, setCollapsed] = useState<string[]>([]);
@@ -228,7 +230,9 @@ export function GroupControl({
       onClick={() => grouping.setEnabled(!grouping.enabled)}
     >
       <Layers className="size-[1.2em]" />
-      {hiddenActive && <span className="typo-action">{texts.groupedCount(grouping.groups.length)}</span>}
+      {hiddenActive && (
+        <span className="typo-action">{texts.groupedCount(grouping.groups.length)}</span>
+      )}
     </Button>
   );
 }
@@ -240,7 +244,11 @@ function isoDate(value: unknown): string | null {
 }
 
 /** Klíč a popisek skupiny pro jednu hodnotu podle zvojené granularity. */
-function bucket(value: unknown, granularity: GroupGranularity, texts: GridTexts): { key: string; label: string } {
+function bucket(
+  value: unknown,
+  granularity: GroupGranularity,
+  texts: GridTexts,
+): { key: string; label: string } {
   const iso = isoDate(value);
   if (iso) {
     const [y, m] = iso.slice(0, 10).split("-") as [string, string, string];
@@ -255,7 +263,10 @@ function bucket(value: unknown, granularity: GroupGranularity, texts: GridTexts)
       case "day":
         return { key: iso.slice(0, 10), label: formatUserDate(iso.slice(0, 10)) };
       default:
-        return { key: `${y}-${m}`, label: `${new Intl.DateTimeFormat(texts.locale, { month: "long" }).format(new Date(Number(y), month - 1, 1))} ${y}` };
+        return {
+          key: `${y}-${m}`,
+          label: `${new Intl.DateTimeFormat(texts.locale, { month: "long" }).format(new Date(Number(y), month - 1, 1))} ${y}`,
+        };
     }
   }
   const text = value === null || value === undefined || value === "" ? "" : String(value);
@@ -472,9 +483,7 @@ export function GroupBar({
       }}
     >
       {grouping.groups.length === 0 && (
-        <span className="typo-label text-muted-foreground">
-          {texts.groupingDropHint}
-        </span>
+        <span className="typo-label text-muted-foreground">{texts.groupingDropHint}</span>
       )}
       {grouping.groups.map((g, i) => (
         <span
@@ -545,7 +554,14 @@ export function GroupBar({
                   className="text-primary-foreground/70 hover:text-primary-foreground"
                   title={texts.groupingDateBy}
                 >
-                  {{ day: texts.groupDay, month: texts.groupMonth, quarter: texts.groupQuarter, year: texts.groupYear }[g.granularity]}
+                  {
+                    {
+                      day: texts.groupDay,
+                      month: texts.groupMonth,
+                      quarter: texts.groupQuarter,
+                      year: texts.groupYear,
+                    }[g.granularity]
+                  }
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">

@@ -56,7 +56,17 @@ export function OptionSelect({
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
   const emptyValueLabel = placeholderValueLabel ?? emptyLabel;
-  const selectedLabel = current === "" && allowEmpty ? emptyValueLabel : selectedOption?.inactive ? <span className="flex min-w-0 items-center gap-2"><span className="truncate">{selectedOption.label}</span><InactiveTag label={inactiveLabel} /></span> : selectedOption?.selectedLabel ?? selectedOption?.label;
+  const selectedLabel =
+    current === "" && allowEmpty ? (
+      emptyValueLabel
+    ) : selectedOption?.inactive ? (
+      <span className="flex min-w-0 items-center gap-2">
+        <span className="truncate">{selectedOption.label}</span>
+        <InactiveTag label={inactiveLabel} />
+      </span>
+    ) : (
+      (selectedOption?.selectedLabel ?? selectedOption?.label)
+    );
   const offered = options.filter((option) => !option.inactive || option.value === current);
 
   return (
@@ -65,15 +75,31 @@ export function OptionSelect({
       onValueChange={(v) => onChange(v === EMPTY ? "" : v)}
       disabled={disabled}
     >
-      <SelectTrigger id={id} aria-label={ariaLabel} className={cn("h-9 w-full min-w-0", className, triggerClassName)}>
+      <SelectTrigger
+        id={id}
+        aria-label={ariaLabel}
+        className={cn("h-9 w-full min-w-0", className, triggerClassName)}
+      >
         <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
         {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
         {offered.map((o) => (
-          <SelectItem key={o.value} value={o.value} disabled={o.disabled || o.inactive} className={cn(o.muted && "text-muted-foreground")}>
-            <span className="flex min-w-0 items-center justify-between gap-3"><span className="truncate">{o.label}</span>{o.inactive ? <InactiveTag label={inactiveLabel} /> : o.trailingLabel ? <span className="shrink-0 text-xs">{o.trailingLabel}</span> : null}</span>
+          <SelectItem
+            key={o.value}
+            value={o.value}
+            disabled={o.disabled || o.inactive}
+            className={cn(o.muted && "text-muted-foreground")}
+          >
+            <span className="flex min-w-0 items-center justify-between gap-3">
+              <span className="truncate">{o.label}</span>
+              {o.inactive ? (
+                <InactiveTag label={inactiveLabel} />
+              ) : o.trailingLabel ? (
+                <span className="shrink-0 text-xs">{o.trailingLabel}</span>
+              ) : null}
+            </span>
           </SelectItem>
         ))}
       </SelectContent>

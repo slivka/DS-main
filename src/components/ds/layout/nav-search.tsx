@@ -18,7 +18,8 @@ type SearchableNavGroup = NavSectionGroup & {
 export function withNavSections<T extends NavSectionGroup>(groups: T[]): NavSectionEntry<T>[] {
   return groups.map((group, index) => ({
     group,
-    sectionStart: group.section && group.section !== groups[index - 1]?.section ? group.section : null,
+    sectionStart:
+      group.section && group.section !== groups[index - 1]?.section ? group.section : null,
   }));
 }
 
@@ -26,16 +27,27 @@ export function withNavSections<T extends NavSectionGroup>(groups: T[]): NavSect
 export function filterNavGroups<T extends SearchableNavGroup>(groups: T[], query: string): T[] {
   if (!query) return groups;
   const normalizedQuery = normalizeNavSearch(query);
-  return groups.map((group) => {
-    const context = `${group.section ?? ""} ${group.label}`.trim();
-    const groupMatch = normalizeNavSearch(context).includes(normalizedQuery);
-    return { ...group, items: group.items.filter((item) => groupMatch || matchesNavSearch(item.label, context, query)) };
-  }).filter((group) => group.items.length > 0) as T[];
+  return groups
+    .map((group) => {
+      const context = `${group.section ?? ""} ${group.label}`.trim();
+      const groupMatch = normalizeNavSearch(context).includes(normalizedQuery);
+      return {
+        ...group,
+        items: group.items.filter(
+          (item) => groupMatch || matchesNavSearch(item.label, context, query),
+        ),
+      };
+    })
+    .filter((group) => group.items.length > 0) as T[];
 }
 
 /** Text pro hledání v menu bez rozdílů diakritiky a velikosti písmen. */
 export function normalizeNavSearch(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("cs-CZ").trim();
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("cs-CZ")
+    .trim();
 }
 
 export function navSearchTokens(value: string) {
@@ -59,7 +71,8 @@ export function highlightNavMatch(label: string, query: string): ReactNode {
     while (from < normalized.length) {
       const index = normalized.indexOf(token, from);
       if (index < 0) break;
-      for (let position = index; position < index + token.length; position += 1) marked.add(position);
+      for (let position = index; position < index + token.length; position += 1)
+        marked.add(position);
       from = index + token.length;
     }
   }

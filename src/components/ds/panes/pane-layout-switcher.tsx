@@ -47,13 +47,21 @@ export function LayoutSwitcher({
 
   return (
     <TooltipProvider>
-      <div className={cn("flex shrink-0 items-center gap-0.5", className)} role="group" aria-label={t.two}>
+      <div
+        className={cn("flex shrink-0 items-center gap-0.5", className)}
+        role="group"
+        aria-label={t.two}
+      >
         {options.map(({ layout, label, icon: Icon }) => {
           const disabled = layout > maxLayout;
-          const required = requiredWidths && layout > 1 ? requiredWidths[layout as 2 | 3] : undefined;
-          const tooltip = disabled && required
-            ? t.needsWidth.replace("{count}", String(layout)).replace("{width}", String(Math.round(required)))
-            : label;
+          const required =
+            requiredWidths && layout > 1 ? requiredWidths[layout as 2 | 3] : undefined;
+          const tooltip =
+            disabled && required
+              ? t.needsWidth
+                  .replace("{count}", String(layout))
+                  .replace("{width}", String(Math.round(required)))
+              : label;
           return (
             <Tooltip key={layout}>
               <TooltipTrigger asChild>

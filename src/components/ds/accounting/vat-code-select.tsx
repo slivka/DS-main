@@ -32,7 +32,11 @@ export interface VatCodeSelectProps {
 }
 
 /** Filtrování kódů DPH podle kódu i názvu (nerozlišuje velikost písmen); neaktivní jen když jsou vybrané. */
-export function filterVatCodes(codes: VatCodeOption[], query: string, selectedId?: string | null): VatCodeOption[] {
+export function filterVatCodes(
+  codes: VatCodeOption[],
+  query: string,
+  selectedId?: string | null,
+): VatCodeOption[] {
   const list = codes.filter((code) => !code.inactive || code.id === selectedId);
   const q = query.trim().toLocaleLowerCase("cs");
   if (!q) return list;
@@ -69,10 +73,7 @@ export function VatCodeSelect({
     onOpenChange?.(next);
   };
 
-  const filtered = useMemo(
-    () => filterVatCodes(codes, query, value),
-    [codes, query, value],
-  );
+  const filtered = useMemo(() => filterVatCodes(codes, query, value), [codes, query, value]);
   const selected = codes.find((code) => code.id === value);
 
   return (
@@ -114,7 +115,13 @@ export function VatCodeSelect({
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[280px] p-0" align="start">
         <Command shouldFilter={false}>
-          <CommandInput autoFocus placeholder={searchPlaceholder} value={query} onValueChange={setQuery} onKeyDown={onKeyDown} />
+          <CommandInput
+            autoFocus
+            placeholder={searchPlaceholder}
+            value={query}
+            onValueChange={setQuery}
+            onKeyDown={onKeyDown}
+          />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>

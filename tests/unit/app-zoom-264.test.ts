@@ -6,7 +6,9 @@ import { maxPaneLayout } from "../../src/components/ds/panes/pane-layout";
 
 describe("DS 2.64 – zoom aplikace", () => {
   it("odhaduje zoom podle šířky zařízení", () => {
-    expect([1365, 1366, 1919, 1920, 2559, 2560].map(estimateAppZoom)).toEqual([0.9, 1, 1, 1.1, 1.1, 1.25]);
+    expect([1365, 1366, 1919, 1920, 2559, 2560].map(estimateAppZoom)).toEqual([
+      0.9, 1, 1, 1.1, 1.1, 1.25,
+    ]);
   });
 
   it("omezuje a zaokrouhluje rozsah 70–200 % po 5 %", () => {

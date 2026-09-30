@@ -83,9 +83,7 @@ function FeedbackPage() {
           </Button>
           <Button
             variant="outline"
-            onClick={() =>
-              confirm({ title: "Období je uzavřené", info: true })
-            }
+            onClick={() => confirm({ title: "Období je uzavřené", info: true })}
           >
             Informační dialog
           </Button>
@@ -145,7 +143,13 @@ function FeedbackPage() {
               notes={notes}
               onAdd={(body) =>
                 setNotes((n) => [
-                  { id: crypto.randomUUID(), body, author: "Já", createdAt: new Date().toISOString(), editable: true },
+                  {
+                    id: crypto.randomUUID(),
+                    body,
+                    author: "Já",
+                    createdAt: new Date().toISOString(),
+                    editable: true,
+                  },
                   ...n,
                 ])
               }

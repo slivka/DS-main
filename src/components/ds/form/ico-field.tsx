@@ -6,7 +6,10 @@ export function normalizeIcoInput(value: string): string {
   return value.replace(/\D/g, "").slice(0, 8);
 }
 
-export interface IcoFieldProps extends Omit<LookupFieldProps, "onAction" | "searchLabel" | "refreshLabel"> {
+export interface IcoFieldProps extends Omit<
+  LookupFieldProps,
+  "onAction" | "searchLabel" | "refreshLabel"
+> {
   /**
    * Vyhledání v registru. Vraťte `true`, pokud se údaje podařilo doplnit –
    * ikona se potom přepne na „Aktualizovat z rejstříku“; `false` ji nechá beze změny.

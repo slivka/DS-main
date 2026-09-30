@@ -50,21 +50,21 @@ export function GridFilterToggle({
               aria-controls="grid-filter-panel"
               aria-label={tooltipLabel}
               onClick={() => onOpenChange(!open)}
-                className={`grid-toolbar-control relative ${!active ? "grid-toolbar-icon-control" : ""} ${
+              className={`grid-toolbar-control relative ${!active ? "grid-toolbar-icon-control" : ""} ${
                 active
                   ? "grid-toolbar-active"
                   : showDefault
                     ? "border-primary text-primary hover:bg-primary/10 hover:text-primary"
-                     : open
-                       ? "border-primary/50 bg-primary/10 text-primary"
-                       : ""
+                    : open
+                      ? "border-primary/50 bg-primary/10 text-primary"
+                      : ""
               }`}
               style={{ fontSize: gridFontSize(zoom) }}
             >
               <Filter className="size-[1.2em]" />
               {active ? (
                 <>
-                   <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-full bg-filter-active px-1 text-[0.72em] leading-[1.45em] font-semibold text-white">
+                  <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-full bg-filter-active px-1 text-[0.72em] leading-[1.45em] font-semibold text-white">
                     {activeCount}
                   </span>
                   {onClear ? (
@@ -84,7 +84,7 @@ export function GridFilterToggle({
                           onClear();
                         }
                       }}
-                       className="inline-flex items-center justify-center hover:opacity-75"
+                      className="inline-flex items-center justify-center hover:opacity-75"
                     >
                       <X className="size-[1.15em]" />
                     </span>
@@ -191,13 +191,17 @@ export function GridResultCount({
       <span className="shrink-0 text-muted-foreground" aria-live="polite">
         {filtered ? (
           <>
-            <span className="font-semibold text-foreground">{shown.toLocaleString(texts.locale)}</span>
+            <span className="font-semibold text-foreground">
+              {shown.toLocaleString(texts.locale)}
+            </span>
             {" z "}
             {total.toLocaleString(texts.locale)} {texts.rowsLabel}
           </>
         ) : (
           <>
-            <span className="font-semibold text-foreground">{total.toLocaleString(texts.locale)}</span>
+            <span className="font-semibold text-foreground">
+              {total.toLocaleString(texts.locale)}
+            </span>
             {` ${texts.rowsLabel}`}
           </>
         )}

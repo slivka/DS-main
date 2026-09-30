@@ -27,7 +27,12 @@ const LEVELS: TreeGridExpandLevel[] = [
 ];
 
 const COLUMNS: TreeGridColumn<ChartNode>[] = [
-  { id: "account", label: "Účet", width: 360, value: (row) => `${formatAccountCode(row.code)} – ${row.name}` },
+  {
+    id: "account",
+    label: "Účet",
+    width: 360,
+    value: (row) => `${formatAccountCode(row.code)} – ${row.name}`,
+  },
   { id: "debit", label: "MD částka", numeric: true, width: 160, value: (row) => row.debit },
   { id: "credit", label: "DAL částka", numeric: true, width: 160, value: (row) => row.credit },
   {
@@ -71,15 +76,27 @@ export function ReportsShowcase() {
   const [viewMode, setViewMode] = useState<GridViewMode>("tree");
   const [asOfEnabled, setAsOfEnabled] = useState(true);
   const [asOfDate, setAsOfDate] = useState("2026-09-24");
-  const [period, setPeriod] = useState(() => gridPeriodRange("2026-07-01", "2027-06-30", "quarter", 0));
+  const [period, setPeriod] = useState(() =>
+    gridPeriodRange("2026-07-01", "2027-06-30", "quarter", 0),
+  );
 
   const chips = useMemo<FilterChip[]>(() => {
     const list: FilterChip[] = [{ id: "period", label: "Období", value: "01–09/2026" }];
     if (group) {
       const item = COSTS.find((cost) => cost.id === group);
-      list.push({ id: "group", label: "Skupina", value: `${group} – ${item?.label ?? ""}`, onRemove: () => setGroup(null) });
+      list.push({
+        id: "group",
+        label: "Skupina",
+        value: `${group} – ${item?.label ?? ""}`,
+        onRemove: () => setGroup(null),
+      });
     }
-    if (onlyActive) list.push({ id: "active", label: "Jen účty s pohybem", onRemove: () => setOnlyActive(false) });
+    if (onlyActive)
+      list.push({
+        id: "active",
+        label: "Jen účty s pohybem",
+        onRemove: () => setOnlyActive(false),
+      });
     return list;
   }, [group, onlyActive]);
 
@@ -100,19 +117,58 @@ export function ReportsShowcase() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           viewZoomKey="showcase-chart-view"
-          period={{ fiscalFrom: "2026-07-01", fiscalTo: "2027-06-30", value: period, onChange: setPeriod, today: "2026-09-24" }}
-          asOf={{ enabled: asOfEnabled, onEnabledChange: setAsOfEnabled, value: asOfDate, onChange: setAsOfDate, defaultDate: "2026-09-24" }}
+          period={{
+            fiscalFrom: "2026-07-01",
+            fiscalTo: "2027-06-30",
+            value: period,
+            onChange: setPeriod,
+            today: "2026-09-24",
+          }}
+          asOf={{
+            enabled: asOfEnabled,
+            onEnabledChange: setAsOfEnabled,
+            value: asOfDate,
+            onChange: setAsOfDate,
+            defaultDate: "2026-09-24",
+          }}
           filters={<span className="text-sm text-muted-foreground">Filtry účtové osnovy</span>}
           defaultFilters={["Rok 2026"]}
           filterChips={chips}
-          onClearFilters={() => { setGroup(null); setOnlyActive(false); }}
+          onClearFilters={() => {
+            setGroup(null);
+            setOnlyActive(false);
+          }}
           exportName="uctova-osnova"
           exportMeta={{ company: "Slivka Accounting s.r.o.", period: "Rok 2026" }}
           onRowOpen={(row) => toast.info(`Otevřít účet ${formatAccountCode(row.code)}`)}
-          moreActions={[{ label: "Archivovat účet", icon: <Archive className="size-4" />, onSelect: () => { toast.info("Archivace"); } }]}
-          addAction={{ label: "Přidat účet", onClick: () => { toast.info("Nový účet"); } }}
-          pdfExport={async () => { toast.success("Vlastní PDF sestava byla připravena"); return; }}
-          extraExports={[{ label: "Analytický přehled", kind: "pdf", onExport: async () => { toast.info("Analytický přehled"); } }]}
+          moreActions={[
+            {
+              label: "Archivovat účet",
+              icon: <Archive className="size-4" />,
+              onSelect: () => {
+                toast.info("Archivace");
+              },
+            },
+          ]}
+          addAction={{
+            label: "Přidat účet",
+            onClick: () => {
+              toast.info("Nový účet");
+            },
+          }}
+          pdfExport={async () => {
+            toast.success("Vlastní PDF sestava byla připravena");
+            return;
+          }}
+          extraExports={[
+            {
+              label: "Analytický přehled",
+              kind: "pdf",
+              onExport: async () => {
+                toast.info("Analytický přehled");
+              },
+            },
+          ]}
         />
       </ShowcaseSection>
 
@@ -126,7 +182,12 @@ export function ReportsShowcase() {
           rows={MOCK_CHART_TREE}
           columns={COLUMNS}
           exportName="zakazky-strom"
-          addAction={{ label: "Přidat zakázku", onClick: () => { toast.info("Nová zakázka"); } }}
+          addAction={{
+            label: "Přidat zakázku",
+            onClick: () => {
+              toast.info("Nová zakázka");
+            },
+          }}
         />
       </ShowcaseSection>
 
@@ -159,7 +220,12 @@ export function ReportsShowcase() {
               setOnlyActive(false);
             }}
           />
-          <BarBreakdownChart items={COSTS} variant="cost" selectedId={group} onSelect={(id) => setGroup(id)} />
+          <BarBreakdownChart
+            items={COSTS}
+            variant="cost"
+            selectedId={group}
+            onSelect={(id) => setGroup(id)}
+          />
         </div>
       </ShowcaseSection>
     </>

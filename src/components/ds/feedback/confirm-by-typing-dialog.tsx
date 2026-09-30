@@ -2,7 +2,14 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import { CheckboxField } from "../form/checkbox-field";
 import { NoticeBar } from "./notice-bar";
@@ -30,10 +37,20 @@ export interface ConfirmByTypingDialogProps {
   onConfirm: () => Promise<void>;
 }
 
-
 /** Potvrzení nevratné akce opsáním názvu. */
 export function ConfirmByTypingDialog({
-  open, onOpenChange, title, description, summary, confirmText, acknowledgement, confirmLabel, cancelLabel, instruction, destructive = true, onConfirm,
+  open,
+  onOpenChange,
+  title,
+  description,
+  summary,
+  confirmText,
+  acknowledgement,
+  confirmLabel,
+  cancelLabel,
+  instruction,
+  destructive = true,
+  onConfirm,
 }: ConfirmByTypingDialogProps) {
   const texts = useDsTexts();
   const t = texts.confirmByTyping;
@@ -52,10 +69,16 @@ export function ConfirmByTypingDialog({
     runIdRef.current += 1;
     runningRef.current = false;
     // Stav nulujeme při otevření – při zavření by text zmizel během animace.
-    if (open) { setValue(""); setAcknowledged(false); setError(null); setRunning(false); }
+    if (open) {
+      setValue("");
+      setAcknowledged(false);
+      setError(null);
+      setRunning(false);
+    }
   }, [open]);
 
-  const canConfirm = matchesConfirmText(value, confirmText) && (!acknowledgement || acknowledged) && !running;
+  const canConfirm =
+    matchesConfirmText(value, confirmText) && (!acknowledgement || acknowledged) && !running;
 
   const confirm = async () => {
     if (!canConfirm || runningRef.current) return;
@@ -79,24 +102,47 @@ export function ConfirmByTypingDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(next) => { if (!running) onOpenChange(next); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!running) onOpenChange(next);
+      }}
+    >
       <DialogContent
         data-slot="confirm-by-typing-dialog"
         className="sm:max-w-lg"
-        onOpenAutoFocus={(event) => { event.preventDefault(); inputRef.current?.focus(); }}
-        onEscapeKeyDown={(event) => { if (running) event.preventDefault(); }}
-        onPointerDownOutside={(event) => { if (running) event.preventDefault(); }}
-        onInteractOutside={(event) => { if (running) event.preventDefault(); }}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          inputRef.current?.focus();
+        }}
+        onEscapeKeyDown={(event) => {
+          if (running) event.preventDefault();
+        }}
+        onPointerDownOutside={(event) => {
+          if (running) event.preventDefault();
+        }}
+        onInteractOutside={(event) => {
+          if (running) event.preventDefault();
+        }}
       >
         <DialogHeader>
-          <DialogTitle className="min-w-0 whitespace-nowrap"><TruncatedText text={title} /></DialogTitle>
-          <DialogDescription asChild><div className="text-sm text-muted-foreground">{description}</div></DialogDescription>
+          <DialogTitle className="min-w-0 whitespace-nowrap">
+            <TruncatedText text={title} />
+          </DialogTitle>
+          <DialogDescription asChild>
+            <div className="text-sm text-muted-foreground">{description}</div>
+          </DialogDescription>
         </DialogHeader>
         {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
-        {summary ? <div className="rounded-md border bg-muted/40 p-3 text-sm">{summary}</div> : null}
+        {summary ? (
+          <div className="rounded-md border bg-muted/40 p-3 text-sm">{summary}</div>
+        ) : null}
         <form
           className="flex flex-col gap-3"
-          onSubmit={(event) => { event.preventDefault(); void confirm(); }}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void confirm();
+          }}
         >
           <label htmlFor={inputId} className="text-sm">
             {instruction ?? t.instruction} <strong className="font-semibold">{confirmText}</strong>
@@ -113,10 +159,29 @@ export function ConfirmByTypingDialog({
             autoCapitalize="off"
             spellCheck={false}
           />
-          {acknowledgement ? <CheckboxField checked={acknowledged} onCheckedChange={setAcknowledged} label={acknowledgement} disabled={running} /> : null}
+          {acknowledgement ? (
+            <CheckboxField
+              checked={acknowledged}
+              onCheckedChange={setAcknowledged}
+              label={acknowledgement}
+              disabled={running}
+            />
+          ) : null}
           <DialogFooter className="mt-2">
-            <Button type="button" variant="outline" disabled={running} onClick={() => onOpenChange(false)}>{cancelLabel ?? t.cancel}</Button>
-            <Button type="submit" variant={destructive ? "destructive" : "default"} disabled={!canConfirm} aria-busy={running || undefined}>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={running}
+              onClick={() => onOpenChange(false)}
+            >
+              {cancelLabel ?? t.cancel}
+            </Button>
+            <Button
+              type="submit"
+              variant={destructive ? "destructive" : "default"}
+              disabled={!canConfirm}
+              aria-busy={running || undefined}
+            >
               {running ? <Loader2 aria-label={t.running} className="animate-spin" /> : null}
               {confirmLabel}
             </Button>

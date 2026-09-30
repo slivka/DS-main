@@ -34,12 +34,22 @@ export function GridAction({
           : "hover:border-primary/30 hover:bg-primary/10 hover:text-primary active:bg-primary/20 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/10 data-[state=open]:text-primary",
         className,
       )}
-
       {...props}
     />
   );
   if (!disabledReason) return action;
-  return <TooltipProvider delayDuration={250}><Tooltip><TooltipTrigger asChild><span className="inline-flex" tabIndex={0}>{action}</span></TooltipTrigger><TooltipContent>{disabledReason}</TooltipContent></Tooltip></TooltipProvider>;
+  return (
+    <TooltipProvider delayDuration={250}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-flex" tabIndex={0}>
+            {action}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>{disabledReason}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }
 
 /** Obal pro skupinu akcí v buňce – drží je vpravo a s jednotnou mezerou. */

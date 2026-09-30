@@ -46,7 +46,9 @@ export function DocumentStatusBadge({
   className,
 }: DocumentStatusBadgeProps) {
   const sizeClass = size === "md" ? "h-[1.625rem] px-2.5 text-sm font-medium" : undefined;
-  const badge = <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />;
+  const badge = (
+    <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />
+  );
   if (!approved) return badge;
   return (
     <span className="inline-flex items-center gap-1.5">

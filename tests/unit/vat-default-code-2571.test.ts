@@ -6,7 +6,9 @@ const source = readFileSync("src/components/ds/accounting/journal-lines-editor.t
 
 describe("Výchozí kód DPH nového řádku (2.57.1)", () => {
   it("předchozí řádek má přednost před výchozím kódem knihy", () => {
-    expect(source).toContain("regularLines[regularLines.length - 1]?.vatCodeId ?? vat?.defaultCodeId ?? null");
+    expect(source).toContain(
+      "regularLines[regularLines.length - 1]?.vatCodeId ?? vat?.defaultCodeId ?? null",
+    );
     expect(source).not.toContain("vat?.defaultCodeId ?? regularLines[");
   });
 });

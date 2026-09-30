@@ -1,11 +1,7 @@
 import { ChevronDown } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../../ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../ui/collapsible";
 import { cn } from "../../../lib/utils";
 
 interface CollapsibleSectionProps {

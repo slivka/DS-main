@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type RefObject,
+} from "react";
 
 /**
  * Úložiště konceptů a neuložených změn podle id záložky.
@@ -155,12 +162,17 @@ export function prunePersistedScroll(historyLengths: Record<string, number>) {
       if (!item?.startsWith("paneScroll:")) continue;
       const rest = item.slice("paneScroll:".length);
       const id = ids.find((tabId) => rest.startsWith(`${tabId}:`));
-      if (!id) { remove.push(item); continue; }
+      if (!id) {
+        remove.push(item);
+        continue;
+      }
       const step = /^pane-scroll:(\d+):/.exec(rest.slice(id.length + 1));
       if (step && Number(step[1]) >= historyLengths[id]) remove.push(item);
     }
     remove.forEach((item) => localStorage.removeItem(item));
-  } catch { /* úložiště nemusí být dostupné */ }
+  } catch {
+    /* úložiště nemusí být dostupné */
+  }
 }
 
 /** Uložené koncepty aktuálního uživatele a firmy, jejichž záložka už neexistuje. */
@@ -182,14 +194,20 @@ export async function clearDrafts(userKey: string): Promise<void> {
   await persistReady;
   const adapter = persist?.adapter;
   if (!adapter) return;
-  for (const key of await adapter.keys()) if (key.startsWith(userPrefix(userKey))) await adapter.del(key);
+  for (const key of await adapter.keys())
+    if (key.startsWith(userPrefix(userKey))) await adapter.del(key);
 }
 
 /** Načte trvalý koncept záložky. */
-export async function loadPersistedDraft<T>(tabId: string, key = "default"): Promise<StoredDraft<T> | null> {
+export async function loadPersistedDraft<T>(
+  tabId: string,
+  key = "default",
+): Promise<StoredDraft<T> | null> {
   await persistReady;
   if (!persist) return null;
-  return ((await persist.adapter.get(storageKey(tabId, key))) as StoredDraft<T> | undefined) ?? null;
+  return (
+    ((await persist.adapter.get(storageKey(tabId, key))) as StoredDraft<T> | undefined) ?? null
+  );
 }
 
 /** Uloží trvalý koncept s debounce 1 s. */
@@ -201,7 +219,11 @@ export function schedulePersistDraft(draft: Omit<StoredDraft, "savedAt">) {
     id,
     setTimeout(() => {
       saveTimers.delete(id);
-      if (persist) void persist.adapter.set(storageKey(draft.tabId, draft.key), { ...draft, savedAt: Date.now() });
+      if (persist)
+        void persist.adapter.set(storageKey(draft.tabId, draft.key), {
+          ...draft,
+          savedAt: Date.now(),
+        });
     }, DRAFT_DEBOUNCE_MS),
   );
 }
@@ -245,7 +267,11 @@ export function dirtyTabIds(): string[] {
 
 /** Přerenderuje komponentu při změně příznaků neuložených změn. */
 export function useTabDirtyVersion(): number {
-  return useSyncExternalStore(subscribe, () => version, () => 0);
+  return useSyncExternalStore(
+    subscribe,
+    () => version,
+    () => 0,
+  );
 }
 
 /**
@@ -276,7 +302,12 @@ export type TabDraftMeta<T> = {
   markSaved: () => void;
 };
 
-export function useTabDraft<T>(tabId: string | null | undefined, initial: T | (() => T), key = "default", options: TabDraftOptions = {}) {
+export function useTabDraft<T>(
+  tabId: string | null | undefined,
+  initial: T | (() => T),
+  key = "default",
+  options: TabDraftOptions = {},
+) {
   const [value, setValue] = useState<T>(() => {
     if (tabId) {
       const stored = getTabDraft<T>(tabId, key);
@@ -316,7 +347,11 @@ export function useTabDraft<T>(tabId: string | null | undefined, initial: T | ((
     void loadPersistedDraft<T>(tabId, key).then((stored) => {
       if (cancelled || !stored || touched.current) return;
       const expected = optionsRef.current.recordVersion;
-      if (expected != null && stored.recordVersion != null && String(expected) !== String(stored.recordVersion)) {
+      if (
+        expected != null &&
+        stored.recordVersion != null &&
+        String(expected) !== String(stored.recordVersion)
+      ) {
         setConflict({ savedAt: stored.savedAt, data: stored.data });
         return;
       }
@@ -334,7 +369,14 @@ export function useTabDraft<T>(tabId: string | null | undefined, initial: T | ((
       const id = tabRef.current;
       const opts = optionsRef.current;
       if (!id || opts.persist === false) return;
-      schedulePersistDraft({ tabId: id, key, route: opts.route, params: opts.params, data: next, recordVersion: opts.recordVersion ?? null });
+      schedulePersistDraft({
+        tabId: id,
+        key,
+        route: opts.route,
+        params: opts.params,
+        data: next,
+        recordVersion: opts.recordVersion ?? null,
+      });
     },
     [key],
   );
@@ -352,7 +394,10 @@ export function useTabDraft<T>(tabId: string | null | undefined, initial: T | ((
   );
 
   const resetValue = () => {
-    const base = typeof initialRef.current === "function" ? (initialRef.current as () => T)() : initialRef.current;
+    const base =
+      typeof initialRef.current === "function"
+        ? (initialRef.current as () => T)()
+        : initialRef.current;
     if (tabRef.current) setTabDraft(tabRef.current, base, key);
     setValue(base);
   };
@@ -398,21 +443,30 @@ export function clearPersistedScroll(tabId: string) {
       if (item?.startsWith(prefix)) keys.push(item);
     }
     keys.forEach((item) => localStorage.removeItem(item));
-  } catch { /* úložiště nemusí být dostupné */ }
+  } catch {
+    /* úložiště nemusí být dostupné */
+  }
 }
 
 /** Interval ukládání pozice rolování. */
 export const SCROLL_SAVE_THROTTLE_MS = 200;
 
 /** Throttle: první volání hned, další nejvýš jednou za `wait`; poslední hodnota se vždy uloží. */
-export function createThrottle<A extends unknown[]>(fn: (...args: A) => void, wait = SCROLL_SAVE_THROTTLE_MS) {
+export function createThrottle<A extends unknown[]>(
+  fn: (...args: A) => void,
+  wait = SCROLL_SAVE_THROTTLE_MS,
+) {
   let last = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pending: A | null = null;
   const run = () => {
     timer = undefined;
     last = Date.now();
-    if (pending) { const args = pending; pending = null; fn(...args); }
+    if (pending) {
+      const args = pending;
+      pending = null;
+      fn(...args);
+    }
   };
   const call = (...args: A) => {
     pending = args;
@@ -420,7 +474,18 @@ export function createThrottle<A extends unknown[]>(fn: (...args: A) => void, wa
     if (remaining <= 0) run();
     else if (!timer) timer = setTimeout(run, remaining);
   };
-  return { call, flush: () => { if (timer) clearTimeout(timer); run(); }, cancel: () => { if (timer) clearTimeout(timer); timer = undefined; pending = null; } };
+  return {
+    call,
+    flush: () => {
+      if (timer) clearTimeout(timer);
+      run();
+    },
+    cancel: () => {
+      if (timer) clearTimeout(timer);
+      timer = undefined;
+      pending = null;
+    },
+  };
 }
 
 /**
@@ -428,7 +493,11 @@ export function createThrottle<A extends unknown[]>(fn: (...args: A) => void, wa
  * `key` odlišuje krok historie záložky – bez uložené pozice začne obsah nahoře.
  * Ukládání je throttlované (~200 ms).
  */
-export function useTabScrollRestore(tabId: string | null | undefined, ref: RefObject<HTMLElement | null>, key = "scroll") {
+export function useTabScrollRestore(
+  tabId: string | null | undefined,
+  ref: RefObject<HTMLElement | null>,
+  key = "scroll",
+) {
   useEffect(() => {
     const element = ref.current;
     if (!element || !tabId) return;
@@ -437,13 +506,19 @@ export function useTabScrollRestore(tabId: string | null | undefined, ref: RefOb
     try {
       const raw = localStorage.getItem(storageId);
       if (raw) persisted = JSON.parse(raw) as { top: number; left: number };
-    } catch { /* poškozený nebo nedostupný stav ignorujeme */ }
+    } catch {
+      /* poškozený nebo nedostupný stav ignorujeme */
+    }
     const saved = getTabDraft<{ top: number; left: number }>(tabId, key) ?? persisted;
     element.scrollTop = saved?.top ?? 0;
     element.scrollLeft = saved?.left ?? 0;
     const saver = createThrottle((value: { top: number; left: number }) => {
       setTabDraft(tabId, value, key);
-      try { localStorage.setItem(storageId, JSON.stringify(value)); } catch { /* úložiště nemusí být dostupné */ }
+      try {
+        localStorage.setItem(storageId, JSON.stringify(value));
+      } catch {
+        /* úložiště nemusí být dostupné */
+      }
     });
     const onScroll = () => saver.call({ top: element.scrollTop, left: element.scrollLeft });
     element.addEventListener("scroll", onScroll, { passive: true });

@@ -90,19 +90,33 @@ const DEFAULT_GRID_TAB_PREFERENCES: GridTabPreferences = { zoom: null, density: 
  */
 export function useGridZoom(storageKey: string, options: { auto?: boolean } = {}) {
   const pane = usePane();
-  const [prefs, setPrefs] = useTabDraft<GridTabPreferences>(pane?.tabId, DEFAULT_GRID_TAB_PREFERENCES, `gridPreferences:${storageKey}`, { persist: false });
+  const [prefs, setPrefs] = useTabDraft<GridTabPreferences>(
+    pane?.tabId,
+    DEFAULT_GRID_TAB_PREFERENCES,
+    `gridPreferences:${storageKey}`,
+    { persist: false },
+  );
   const [autoValue, setAutoValue] = useState(1);
   const auto = options.auto === true;
   const manualZoom = prefs.zoom;
   const zoom = manualZoom ?? (auto ? autoValue : 1);
 
-  const setZoom = useCallback((next: number) => setPrefs((value) => ({ ...value, zoom: clamp(next) })), [setPrefs]);
-  const setDensity = useCallback((next: GridDensity) => setPrefs((value) => ({ ...value, density: next })), [setPrefs]);
+  const setZoom = useCallback(
+    (next: number) => setPrefs((value) => ({ ...value, zoom: clamp(next) })),
+    [setPrefs],
+  );
+  const setDensity = useCallback(
+    (next: GridDensity) => setPrefs((value) => ({ ...value, density: next })),
+    [setPrefs],
+  );
   /** Nastaví vypočtený zoom; `resetManual` zruší ruční hodnotu při změně šířky nebo sloupců. */
-  const setAutoZoom = useCallback((next: number, resetManual = true) => {
-    setAutoValue(clamp(next));
-    if (resetManual) setPrefs((value) => (value.zoom == null ? value : { ...value, zoom: null }));
-  }, [setPrefs]);
+  const setAutoZoom = useCallback(
+    (next: number, resetManual = true) => {
+      setAutoValue(clamp(next));
+      if (resetManual) setPrefs((value) => (value.zoom == null ? value : { ...value, zoom: null }));
+    },
+    [setPrefs],
+  );
 
   return {
     zoom,
@@ -166,7 +180,10 @@ export function ZoomControl({
         title={texts.zoomReset}
         className="zoom-value num min-w-[1.3em] px-[0.05em] text-[0.9em] text-muted-foreground transition-colors hover:text-foreground"
       >
-        <span className="whitespace-nowrap">{auto ? "Auto " : ""}{Math.round(zoom * 100)}&nbsp;%</span>
+        <span className="whitespace-nowrap">
+          {auto ? "Auto " : ""}
+          {Math.round(zoom * 100)}&nbsp;%
+        </span>
       </button>
       <Button
         variant="ghost"
@@ -233,10 +250,13 @@ export function ZoomGrid({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   // Stabilní ref callback (React 19 jinak při každém commitu odpojí a znovu připojí).
-  const setRootRef = useCallback((node: HTMLDivElement | null) => {
-    ref.current = node;
-    if (scrollRef) scrollRef.current = node;
-  }, [scrollRef]);
+  const setRootRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      ref.current = node;
+      if (scrollRef) scrollRef.current = node;
+    },
+    [scrollRef],
+  );
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
   const resolvedSticky = stickyHeader ?? (resolvedHeight === "fill" ? "grid" : "none");
@@ -251,7 +271,7 @@ export function ZoomGrid({
     const onWheel = (e: WheelEvent) => {
       if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-       setZoom(wheelZoom(zoomRef.current, e));
+      setZoom(wheelZoom(zoomRef.current, e));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
@@ -269,7 +289,10 @@ export function ZoomGrid({
     observer.observe(el);
     const table = el.querySelector("table");
     if (table) observer.observe(table);
-    return () => { el.removeEventListener("scroll", update); observer.disconnect(); };
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
   }, [children, zoom]);
 
   // Přeuspořádání sloupců podle uživatelského nastavení – tabulky renderují
@@ -437,15 +460,24 @@ export function ZoomGrid({
     <div
       ref={setRootRef}
       id={gridId}
-
       data-density={density ?? "normal"}
       data-grid-height={resolvedHeight}
       data-sticky-header={resolvedSticky}
       data-overflow={overflowFallback ? "true" : undefined}
-      className={
-        cn("zoom-grid rounded-lg border border-border bg-card shadow-panel", resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)
+      className={cn(
+        "zoom-grid rounded-lg border border-border bg-card shadow-panel",
+        resolvedHeight === "fill"
+          ? "min-h-0 flex-1 overflow-auto overscroll-contain"
+          : "overflow-x-auto overflow-y-visible",
+        className,
+      )}
+      style={
+        {
+          fontSize: gridFontSize(zoom),
+          "--grid-zoom": zoom,
+          ...(maxHeight ? { maxHeight } : {}),
+        } as React.CSSProperties
       }
-      style={{ fontSize: gridFontSize(zoom), "--grid-zoom": zoom, ...(maxHeight ? { maxHeight } : {}) } as React.CSSProperties}
     >
       {hideCss && <style>{hideCss}</style>}
       <GridProgress show={loading} />
@@ -477,7 +509,17 @@ export function ZoomPane({
   useWheelZoom(ref, setZoom, zoom);
 
   return (
-    <div ref={ref} data-grid-height={resolvedHeight} className={cn(resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)} style={maxHeight ? { maxHeight } : undefined}>
+    <div
+      ref={ref}
+      data-grid-height={resolvedHeight}
+      className={cn(
+        resolvedHeight === "fill"
+          ? "min-h-0 flex-1 overflow-auto overscroll-contain"
+          : "overflow-x-auto overflow-y-visible",
+        className,
+      )}
+      style={maxHeight ? { maxHeight } : undefined}
+    >
       <div style={{ zoom: clamp(zoom) }}>{children}</div>
     </div>
   );

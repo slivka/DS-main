@@ -13,9 +13,18 @@ export const FieldValue = React.forwardRef<HTMLDivElement, FieldValueProps>(func
   ref,
 ) {
   return (
-    <div ref={ref} data-slot="field-value" className={cn("typo-body flex h-9 min-w-0 items-center gap-2 text-sm", className)} {...props}>
+    <div
+      ref={ref}
+      data-slot="field-value"
+      className={cn("typo-body flex h-9 min-w-0 items-center gap-2 text-sm", className)}
+      {...props}
+    >
       <div className="min-w-0 flex-1">{children}</div>
-      {trailing ? <div data-slot="field-value-trailing" className="flex shrink-0 items-center">{trailing}</div> : null}
+      {trailing ? (
+        <div data-slot="field-value-trailing" className="flex shrink-0 items-center">
+          {trailing}
+        </div>
+      ) : null}
     </div>
   );
 });

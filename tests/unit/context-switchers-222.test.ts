@@ -1,12 +1,35 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const companySource = readFileSync(new URL("../../src/components/ds/layout/company-switcher.tsx", import.meta.url), "utf8");
-const periodSource = readFileSync(new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url), "utf8");
-const contextSource = readFileSync(new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url), "utf8");
-const navigationSource = readFileSync(new URL("../../src/routes/components.navigation.tsx", import.meta.url), "utf8");
-const showcaseSource = readFileSync(new URL("../../src/components/showcase/ShowcaseLayout.tsx", import.meta.url), "utf8");
-const appShellSource = readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8");
+const squashSrc = (s: string) => s.replace(/\s+/g, " ");
+
+const companySource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/ds/layout/company-switcher.tsx", import.meta.url),
+    "utf8",
+  ),
+);
+const periodSource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/ds/layout/period-switcher.tsx", import.meta.url),
+    "utf8",
+  ),
+);
+const contextSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/context-pill.tsx", import.meta.url), "utf8"),
+);
+const navigationSource = squashSrc(
+  readFileSync(new URL("../../src/routes/components.navigation.tsx", import.meta.url), "utf8"),
+);
+const showcaseSource = squashSrc(
+  readFileSync(
+    new URL("../../src/components/showcase/ShowcaseLayout.tsx", import.meta.url),
+    "utf8",
+  ),
+);
+const appShellSource = squashSrc(
+  readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8"),
+);
 
 describe("CompanySwitcher 2.22.0", () => {
   it("nemá poslední firmy ani nadpis jediného seznamu", () => {
@@ -30,13 +53,25 @@ describe("CompanySwitcher 2.22.0", () => {
 
 describe("AppShell panel context 2.40.0", () => {
   it("nabízí badge a context a zkracuje kontext přes TruncatedText", () => {
-    expect(appShellSource).toContain('badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> }');
+    expect(appShellSource).toContain(
+      'badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> }',
+    );
     expect(appShellSource).toContain("context?: ReactNode | string");
     expect(appShellSource).toContain("<TruncatedText");
   });
 
   it("ukázka obsahuje nové panely a všech pět stavů uživatele", () => {
-    for (const label of ["Číselníky", "Administrace", "Nastavení prostoru", "Nastavení firmy", "Provozovatel · všechny prostory", "Zablokován", "Bez členství", "Nepotvrzený e-mail", "Archivovaný"]) {
+    for (const label of [
+      "Číselníky",
+      "Administrace",
+      "Nastavení prostoru",
+      "Nastavení firmy",
+      "Provozovatel · všechny prostory",
+      "Zablokován",
+      "Bez členství",
+      "Nepotvrzený e-mail",
+      "Archivovaný",
+    ]) {
       expect(`${navigationSource}\n${showcaseSource}`).toContain(label);
     }
   });
@@ -60,11 +95,21 @@ describe("PeriodSwitcher 2.22.0", () => {
 
 describe("ukázka horní lišty", () => {
   it("obsahuje pět stavů, světlý, tmavý a kompaktní náhled", () => {
-    for (const label of ["Otevřené", "V uzávěrce", "Uzavřené", "Bez výběru", "Firma bez období", "Světlý režim", "Tmavý režim"]) {
+    for (const label of [
+      "Otevřené",
+      "V uzávěrce",
+      "Uzavřené",
+      "Bez výběru",
+      "Firma bez období",
+      "Světlý režim",
+      "Tmavý režim",
+    ]) {
       expect(navigationSource).toContain(label);
     }
     expect(navigationSource).toContain("PREVIEW_WIDTHS = [1440, 1100, 390]");
-    expect(navigationSource).toContain("open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen}");
+    expect(navigationSource).toContain(
+      "open={companyPreviewOpen} onOpenChange={setCompanyPreviewOpen}",
+    );
   });
 
   it("ContextPill předává řízený stav popoveru", () => {

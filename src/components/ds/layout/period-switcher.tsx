@@ -36,7 +36,8 @@ const stateClass: Record<FiscalPeriodState, string> = {
 
 const triggerStateClass: Record<FiscalPeriodState, string> = {
   open: "border-success/35 bg-success/12 text-success hover:border-success/50 hover:bg-success/16",
-  closing: "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24",
+  closing:
+    "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24",
   closed: "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80",
 };
 
@@ -49,7 +50,8 @@ function formatPeriodTooltipDate(value: string) {
 function formatPeriodRange(from: string, to: string) {
   const [fromYear, fromMonth, fromDay] = from.split("-").map(Number);
   const [toYear, toMonth, toDay] = to.split("-").map(Number);
-  if (!fromYear || !fromMonth || !fromDay || !toYear || !toMonth || !toDay) return `${from} – ${to}`;
+  if (!fromYear || !fromMonth || !fromDay || !toYear || !toMonth || !toDay)
+    return `${from} – ${to}`;
   return `${fromDay}. ${fromMonth}. – ${toDay}. ${toMonth}. ${toYear}`;
 }
 
@@ -81,7 +83,18 @@ function PeriodSwitcherContent({
     return (
       <div className="p-3">
         <p className="text-sm text-muted-foreground">{emptyText}</p>
-        {onCreate ? <Button type="button" className="mt-3 w-full" onClick={() => { close(); onCreate(); }}>{createLabel}</Button> : null}
+        {onCreate ? (
+          <Button
+            type="button"
+            className="mt-3 w-full"
+            onClick={() => {
+              close();
+              onCreate();
+            }}
+          >
+            {createLabel}
+          </Button>
+        ) : null}
       </div>
     );
   }
@@ -94,7 +107,10 @@ function PeriodSwitcherContent({
             <CommandItem
               key={period.id}
               disabled={disableClosed && period.state === "closed"}
-              onSelect={() => { onChange(period.id); close(); }}
+              onSelect={() => {
+                onChange(period.id);
+                close();
+              }}
               value={`${period.name} ${stateLabels[period.state]}`}
             >
               <span className={cn("size-2 shrink-0 rounded-full", stateClass[period.state])} />
@@ -132,12 +148,19 @@ export function PeriodSwitcher({
 }: PeriodSwitcherProps) {
   const selected = periods.find((period) => period.id === value);
   const isEmpty = periods.length === 0;
-  const displayValue = isEmpty ? emptyText : selected?.name ?? placeholder;
-  const indicator = selected?.state === "closed"
-    ? <Lock className="size-3.5 shrink-0" aria-hidden="true" />
-    : selected || !isEmpty
-      ? <span className={cn("size-2 shrink-0 rounded-full", selected ? stateClass[selected.state] : "bg-warning")} aria-hidden="true" />
-      : null;
+  const displayValue = isEmpty ? emptyText : (selected?.name ?? placeholder);
+  const indicator =
+    selected?.state === "closed" ? (
+      <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+    ) : selected || !isEmpty ? (
+      <span
+        className={cn(
+          "size-2 shrink-0 rounded-full",
+          selected ? stateClass[selected.state] : "bg-warning",
+        )}
+        aria-hidden="true"
+      />
+    ) : null;
   const tooltip = selected
     ? `${label} ${selected.name.replace(/^Rok\s+/i, "")} · ${formatPeriodTooltipDate(selected.from)} – ${formatPeriodTooltipDate(selected.to)} · ${stateLabels[selected.state]}`
     : `${label}: ${displayValue}`;
@@ -153,7 +176,15 @@ export function PeriodSwitcher({
       detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
       valueClassName="text-base xl:text-base"
       valueContainerClassName="gap-2"
-      className={cn("max-w-[112px] border shadow-sm data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]", selected ? triggerStateClass[selected.state] : isEmpty ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80" : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24", className)}
+      className={cn(
+        "max-w-[112px] border shadow-sm data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]",
+        selected
+          ? triggerStateClass[selected.state]
+          : isEmpty
+            ? "border-border bg-muted text-muted-foreground hover:border-input hover:bg-muted/80"
+            : "border-warning/40 bg-warning/18 text-warning-strong hover:border-warning/55 hover:bg-warning/24",
+        className,
+      )}
       contentClassName="w-[380px]"
       open={open}
       onOpenChange={onOpenChange}

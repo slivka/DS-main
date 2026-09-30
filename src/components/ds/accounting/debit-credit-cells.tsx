@@ -36,7 +36,10 @@ export function debitCreditColumns<Row>({
     const value = side === "debit" ? d : c;
     return (
       <span
-        className={cn("block text-right tabular-nums font-semibold", !balanced && "text-destructive")}
+        className={cn(
+          "block text-right tabular-nums font-semibold",
+          !balanced && "text-destructive",
+        )}
         title={balanced ? undefined : `Rozdíl MD/DAL: ${formatAmount(d - c, decimals)}`}
       >
         {formatAmount(value, decimals)}

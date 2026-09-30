@@ -1,13 +1,20 @@
 /** Pomocné funkce výběru řádků a součtů skupin v DataGrid (bez DOM závislostí). */
 
 /** Vybrané řádky z CELÉ množiny řádků – výběr skrytý filtrem zůstává. */
-export function resolveSelectedRows<Row>(rows: Row[], keys: ReadonlySet<string>, rowKey: (row: Row) => string): Row[] {
+export function resolveSelectedRows<Row>(
+  rows: Row[],
+  keys: ReadonlySet<string>,
+  rowKey: (row: Row) => string,
+): Row[] {
   if (keys.size === 0) return [];
   return rows.filter((row) => keys.has(rowKey(row)));
 }
 
 /** „Vybrat vše“ – přidá nebo odebere jen viditelné (filtrované) řádky, ostatní výběr ponechá. */
-export function toggleVisibleSelection(current: ReadonlySet<string>, visibleKeys: string[]): Set<string> {
+export function toggleVisibleSelection(
+  current: ReadonlySet<string>,
+  visibleKeys: string[],
+): Set<string> {
   const allVisible = visibleKeys.length > 0 && visibleKeys.every((key) => current.has(key));
   const next = new Set(current);
   for (const key of visibleKeys) {
@@ -38,9 +45,22 @@ export function nextEditorIndex(current: number, count: number, backwards: boole
   return next >= 0 && next < count ? next : null;
 }
 
-type GroupLike = { type: "group"; key: string; label: string; level: number; collapsed: boolean; sums: { id: string; total: number }[] };
+type GroupLike = {
+  type: "group";
+  key: string;
+  label: string;
+  level: number;
+  collapsed: boolean;
+  sums: { id: string; total: number }[];
+};
 type RowLike<Row> = { type: "row"; row: Row };
-export type GroupTotalItem = { type: "groupTotal"; key: string; label: string; level: number; sums: { id: string; total: number }[] };
+export type GroupTotalItem = {
+  type: "groupTotal";
+  key: string;
+  label: string;
+  level: number;
+  sums: { id: string; total: number }[];
+};
 
 /**
  * Vloží za poslední řádek každé rozbalené skupiny řádek součtů (DataGrid `groupTotals="row"`).
@@ -54,7 +74,14 @@ export function insertGroupTotalRows<Row, G extends GroupLike>(
   const close = (level: number) => {
     while (stack.length && stack[stack.length - 1]!.level >= level) {
       const group = stack.pop()!;
-      if (!group.collapsed) out.push({ type: "groupTotal", key: group.key, label: group.label, level: group.level, sums: group.sums });
+      if (!group.collapsed)
+        out.push({
+          type: "groupTotal",
+          key: group.key,
+          label: group.label,
+          level: group.level,
+          sums: group.sums,
+        });
     }
   };
   for (const item of items) {

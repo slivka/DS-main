@@ -67,7 +67,7 @@ function formatAddress(c: ContactOption, homeCountries: string[]) {
 
 function formatIdDoc(c: ContactOption, labels: Record<string, string>) {
   if (!c.id_doc_number) return null;
-  const type = c.id_doc_type ? labels[c.id_doc_type] ?? c.id_doc_type : "";
+  const type = c.id_doc_type ? (labels[c.id_doc_type] ?? c.id_doc_type) : "";
   return [type, c.id_doc_number].filter(Boolean).join(" ");
 }
 
@@ -115,7 +115,12 @@ export function ContactSelect({
   createLabel = "Nový kontakt",
   homeCountries = ["Slovensko", "SK"],
   inactiveLabel = "neaktivní",
-  idDocumentLabels = { op: "OP", pas: "Pas", vodicsky: "Řidičský", povojene_pobyt: "Povolený pobyt" },
+  idDocumentLabels = {
+    op: "OP",
+    pas: "Pas",
+    vodicsky: "Řidičský",
+    povojene_pobyt: "Povolený pobyt",
+  },
 }: {
   contacts: ContactOption[];
   value: string;
@@ -180,11 +185,13 @@ export function ContactSelect({
             "w-full justify-between font-normal",
             isBlacklisted &&
               "border-destructive text-destructive hover:border-destructive hover:bg-destructive/10 hover:text-destructive",
-            className
+            className,
           )}
         >
           <span className="truncate">{formatContactName(selected) ?? placeholder}</span>
-          {selected?.active === false ? <InactiveTag label={inactiveLabel} className="ml-2" /> : null}
+          {selected?.active === false ? (
+            <InactiveTag label={inactiveLabel} className="ml-2" />
+          ) : null}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -222,8 +229,8 @@ export function ContactSelect({
               <CommandEmpty>{noResultsText}</CommandEmpty>
               <CommandGroup>
                 {filtered.map((c) => {
-                   const address = formatAddress(c, homeCountries);
-                   const idDoc = formatIdDoc(c, idDocumentLabels);
+                  const address = formatAddress(c, homeCountries);
+                  const idDoc = formatIdDoc(c, idDocumentLabels);
                   return (
                     <CommandItem
                       key={c.id}
@@ -245,7 +252,7 @@ export function ContactSelect({
                         <Check
                           className={cn(
                             "ml-auto h-4 w-4 shrink-0",
-                            value === c.id ? "opacity-100" : "opacity-0"
+                            value === c.id ? "opacity-100" : "opacity-0",
                           )}
                         />
                       </div>

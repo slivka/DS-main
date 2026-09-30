@@ -11,7 +11,12 @@ export interface SettingsSectionProps {
 }
 
 /** Sekce okamžitých nastavení (`SwitchField`) – nikdy nemíchat s poli čekajícími na Uložit. */
-export function SettingsSection({ title, children, instantSaveHint = "Změny se ukládají hned", className }: SettingsSectionProps) {
+export function SettingsSection({
+  title,
+  children,
+  instantSaveHint = "Změny se ukládají hned",
+  className,
+}: SettingsSectionProps) {
   return (
     <section data-slot="settings-section" className={cn("space-y-2", className)}>
       <div>

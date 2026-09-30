@@ -29,12 +29,12 @@ export function SlivkaProvider({
 
   return (
     <DsTextsProvider locale={locale} texts={texts}>
-    <QueryClientProvider client={queryClient ?? fallbackClient}>
-      <TooltipProvider delayDuration={tooltipDelayDuration}>
-        {children}
-        <Toaster richColors position="top-right" {...toasterProps} />
-      </TooltipProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient ?? fallbackClient}>
+        <TooltipProvider delayDuration={tooltipDelayDuration}>
+          {children}
+          <Toaster richColors position="top-right" {...toasterProps} />
+        </TooltipProvider>
+      </QueryClientProvider>
     </DsTextsProvider>
   );
 }

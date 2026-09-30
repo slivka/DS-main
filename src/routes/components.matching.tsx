@@ -4,7 +4,8 @@ import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { MatchingShowcase } from "@/components/showcase/MatchingShowcase";
 
 const TITLE = "Saldokonto a párování – Slivka Design System";
-const DESCRIPTION = "Otevřené položky seskupené po partnerech, věková struktura a párování protipoložek s úpravou částek.";
+const DESCRIPTION =
+  "Otevřené položky seskupené po partnerech, věková struktura a párování protipoložek s úpravou částek.";
 
 export const Route = createFileRoute("/components/matching")({
   head: () => ({
@@ -22,7 +23,12 @@ export const Route = createFileRoute("/components/matching")({
 
 function MatchingPage() {
   return (
-    <ShowcaseLayout breadcrumbs={[{ label: "Účetní formuláře", to: "/components/accounting-forms" }, { label: "Párování" }]}>
+    <ShowcaseLayout
+      breadcrumbs={[
+        { label: "Účetní formuláře", to: "/components/accounting-forms" },
+        { label: "Párování" },
+      ]}
+    >
       <MatchingShowcase />
     </ShowcaseLayout>
   );

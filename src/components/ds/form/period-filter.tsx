@@ -60,7 +60,14 @@ export function usePeriodFilter(initial: GridPeriodKey = "all"): PeriodFilterVal
 export function PeriodFilter({ value }: { value: ReturnType<typeof usePeriodFilter> }) {
   const { period, from, to, setPeriod, setFrom, setTo } = value;
   const dsTexts = useDsTexts();
-  const labels: Record<GridPeriodKey, string> = { all: dsTexts.date.all, day: dsTexts.date.day, week: dsTexts.date.week, month: dsTexts.date.month, year: dsTexts.date.year, custom: dsTexts.date.custom };
+  const labels: Record<GridPeriodKey, string> = {
+    all: dsTexts.date.all,
+    day: dsTexts.date.day,
+    week: dsTexts.date.week,
+    month: dsTexts.date.month,
+    year: dsTexts.date.year,
+    custom: dsTexts.date.custom,
+  };
   return (
     <div className="flex flex-wrap items-center gap-1">
       {PERIODS.map((p) => (
@@ -110,7 +117,14 @@ export function filterByPeriod<Row>(
 
 /** Textový popis zvoleného období pre exporty. */
 export function periodLabel(value: PeriodFilterValue, texts: DsTexts = DS_TEXTS_CS): string {
-  const labels: Record<GridPeriodKey, string> = { all: texts.date.all, day: texts.date.day, week: texts.date.week, month: texts.date.month, year: texts.date.year, custom: texts.date.custom };
+  const labels: Record<GridPeriodKey, string> = {
+    all: texts.date.all,
+    day: texts.date.day,
+    week: texts.date.week,
+    month: texts.date.month,
+    year: texts.date.year,
+    custom: texts.date.custom,
+  };
   if (value.period === "all") return texts.date.all;
   if (value.period === "custom") return `${value.from ?? "…"} – ${value.to ?? "…"}`;
   return labels[value.period];

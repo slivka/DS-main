@@ -3,13 +3,7 @@ import { useEffect } from "react";
 import { OptionSelect } from "../form/option-select";
 import { cn } from "../../../lib/utils";
 
-export type DocumentBookType =
-  | "invoiceIn"
-  | "invoiceOut"
-  | "bank"
-  | "cash"
-  | "internal"
-  | "other";
+export type DocumentBookType = "invoiceIn" | "invoiceOut" | "bank" | "cash" | "internal" | "other";
 
 /** Výchozí české popisky typů dokladů knihy. */
 export const DOCUMENT_BOOK_TYPE_LABELS: Record<DocumentBookType, string> = {
@@ -75,7 +69,17 @@ export function BookSelect({
   }, [onChange, single, value]);
 
   if (single) {
-    return <output id={id} className={cn("flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground", className)}>{formatBook(single, typeLabels)}</output>;
+    return (
+      <output
+        id={id}
+        className={cn(
+          "flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground",
+          className,
+        )}
+      >
+        {formatBook(single, typeLabels)}
+      </output>
+    );
   }
 
   return (
@@ -87,7 +91,11 @@ export function BookSelect({
       placeholder={placeholder}
       disabled={disabled}
       className={className}
-      options={books.map((book) => ({ value: book.id, label: formatBook(book, typeLabels), inactive: book.active === false }))}
+      options={books.map((book) => ({
+        value: book.id,
+        label: formatBook(book, typeLabels),
+        inactive: book.active === false,
+      }))}
     />
   );
 }

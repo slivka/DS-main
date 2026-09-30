@@ -174,16 +174,31 @@ export type AccountCategory =
 /** Typ účtu z osnovy (sloupec `accounts.account_type`). */
 export type AccountTypeCode = "nakladovy" | "vynosovy" | "rozvahovy" | (string & {});
 
-export type AccountLike = { category?: AccountCategory | null; accountType?: AccountTypeCode | null };
+export type AccountLike = {
+  category?: AccountCategory | null;
+  accountType?: AccountTypeCode | null;
+};
 
 const VS_REQUIRED_CATEGORIES = new Set<string>([
-  "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
+  "pohledavky",
+  "zavazky",
+  "poskytnute_zalohy",
+  "prijate_zalohy",
+  "saldokonto",
 ]);
 const SALDO_CATEGORIES = new Set<string>([
-  "pohledavky", "zavazky", "poskytnute_zalohy", "prijate_zalohy", "saldokonto",
+  "pohledavky",
+  "zavazky",
+  "poskytnute_zalohy",
+  "prijate_zalohy",
+  "saldokonto",
 ]);
 
-export type SideFieldRules = { vsRequired: boolean; dimensionRequired: boolean; partnerOffered: boolean };
+export type SideFieldRules = {
+  vsRequired: boolean;
+  dimensionRequired: boolean;
+  partnerOffered: boolean;
+};
 export type SideFieldRulesFn = (
   account: AccountLike | undefined,
   options?: { dimensionRequired?: boolean },
@@ -204,7 +219,8 @@ export function sideFieldRules(
 
 /** Nákladový nebo výnosový účet – tam má příznak Nedaňový smysl. */
 export function isResultAccountType(account?: AccountLike, code?: string | null): boolean {
-  if (account?.accountType) return account.accountType === "nakladovy" || account.accountType === "vynosovy";
+  if (account?.accountType)
+    return account.accountType === "nakladovy" || account.accountType === "vynosovy";
   return !!code && (code.startsWith("5") || code.startsWith("6"));
 }
 
@@ -232,7 +248,8 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     vatColumns.vat_manual = Boolean(line.vatManual);
     if (line.vatManual && line.vatAmount != null) vatColumns.vat_amount_foreign = line.vatAmount;
     vatColumns.vat_deduction = line.vatDeduction ?? "full";
-    if (line.vatDeduction === "partial") vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
+    if (line.vatDeduction === "partial")
+      vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
     vatColumns.pdp_subject_code = emptyToNull(line.pdpSubjectCode);
     if (options.vat.calcMode === "gross") vatColumns.amount_gross = line.grossAmount ?? null;
   }
@@ -246,12 +263,42 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
     counter_account_id: counter,
     amount: Math.abs(Number(line.amount) || 0),
     description: emptyToNull(line.text),
-    debit_variable_symbol: sideValue(emptyToNull(line.debitVs), emptyToNull(line.vs), "debit", sharedSide),
-    credit_variable_symbol: sideValue(emptyToNull(line.creditVs), emptyToNull(line.vs), "credit", sharedSide),
-    debit_partner_id: sideValue(emptyToNull(line.debitPartnerId), emptyToNull(line.partnerId), "debit", sharedSide),
-    credit_partner_id: sideValue(emptyToNull(line.creditPartnerId), emptyToNull(line.partnerId), "credit", sharedSide),
-    debit_dimension_id: sideValue(emptyToNull(line.debitDimensionId), emptyToNull(line.dimensionId), "debit", sharedSide),
-    credit_dimension_id: sideValue(emptyToNull(line.creditDimensionId), emptyToNull(line.dimensionId), "credit", sharedSide),
+    debit_variable_symbol: sideValue(
+      emptyToNull(line.debitVs),
+      emptyToNull(line.vs),
+      "debit",
+      sharedSide,
+    ),
+    credit_variable_symbol: sideValue(
+      emptyToNull(line.creditVs),
+      emptyToNull(line.vs),
+      "credit",
+      sharedSide,
+    ),
+    debit_partner_id: sideValue(
+      emptyToNull(line.debitPartnerId),
+      emptyToNull(line.partnerId),
+      "debit",
+      sharedSide,
+    ),
+    credit_partner_id: sideValue(
+      emptyToNull(line.creditPartnerId),
+      emptyToNull(line.partnerId),
+      "credit",
+      sharedSide,
+    ),
+    debit_dimension_id: sideValue(
+      emptyToNull(line.debitDimensionId),
+      emptyToNull(line.dimensionId),
+      "debit",
+      sharedSide,
+    ),
+    credit_dimension_id: sideValue(
+      emptyToNull(line.creditDimensionId),
+      emptyToNull(line.dimensionId),
+      "credit",
+      sharedSide,
+    ),
     non_tax: Boolean(line.nonTax),
     is_rounding: Boolean(line.isRounding),
     currency_code: emptyToNull(line.currency),
@@ -267,7 +314,9 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
 
 /** Převede řádky editoru na řádky k uložení – vynechá řádky daně, předběžné a nedotčené prázdné řádky. */
 export function toJournalRows(lines: JournalLine[], options: JournalRowOptions = {}): JournalRow[] {
-  return lines.filter((line) => !line.isVatLine && !line.isVatPreview && !line.isBlank).map((line) => toJournalRow(line, options));
+  return lines
+    .filter((line) => !line.isVatLine && !line.isVatPreview && !line.isBlank)
+    .map((line) => toJournalRow(line, options));
 }
 
 /** Převede databázový řádek na řádek editoru (1:1). */
@@ -297,20 +346,22 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     unitId: row.unit_id,
     unitPrice: row.unit_price ?? undefined,
     isFxRounding: row.is_fx_rounding,
-    ...(row.vat_code_id !== undefined || row.is_vat_line !== undefined ? {
-      vatCodeId: row.vat_code_id ?? null,
-      vatRate: row.vat_rate ?? null,
-      vatAmount: row.vat_amount_foreign ?? undefined,
-      vatAmountHome: row.vat_amount ?? undefined,
-      vatBaseHome: row.vat_base_dom ?? undefined,
-      vatManual: Boolean(row.vat_manual),
-      vatDeduction: row.vat_deduction ?? undefined,
-      vatDeductionShare: row.vat_deduction_share ?? undefined,
-      pdpSubjectCode: row.pdp_subject_code ?? null,
-      grossAmount: row.vat_gross_foreign ?? undefined,
-      isVatLine: Boolean(row.is_vat_line),
-      vatParentLineId: row.vat_parent_line_id ?? null,
-      vatLineKind: row.vat_line_kind ?? undefined,
-    } : {}),
+    ...(row.vat_code_id !== undefined || row.is_vat_line !== undefined
+      ? {
+          vatCodeId: row.vat_code_id ?? null,
+          vatRate: row.vat_rate ?? null,
+          vatAmount: row.vat_amount_foreign ?? undefined,
+          vatAmountHome: row.vat_amount ?? undefined,
+          vatBaseHome: row.vat_base_dom ?? undefined,
+          vatManual: Boolean(row.vat_manual),
+          vatDeduction: row.vat_deduction ?? undefined,
+          vatDeductionShare: row.vat_deduction_share ?? undefined,
+          pdpSubjectCode: row.pdp_subject_code ?? null,
+          grossAmount: row.vat_gross_foreign ?? undefined,
+          isVatLine: Boolean(row.is_vat_line),
+          vatParentLineId: row.vat_parent_line_id ?? null,
+          vatLineKind: row.vat_line_kind ?? undefined,
+        }
+      : {}),
   };
 }

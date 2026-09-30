@@ -1,3 +1,5 @@
+2.81.0 – zavedení Prettieru a přeformátování zdrojů, bez změny chování a API.
+
 ## Changelog 2.79.0 – nastavení nad úrovní firmy
 
 - Nové: `StandaloneShell` (rám mimo `AppShell`: logo, nadpis, uživatelské menu, Zavřít, šedý sloupec), `StandaloneNav` (menu stránek, pod `md` výběr), `ContextSwitcher` (přepínač prostoru s hledáním od 6 položek a akcemi), `ConfirmByTypingDialog`, `DangerZone`.

@@ -133,7 +133,9 @@ export function SortHead<Id extends string>({
       {...(style ? { style } : {})}
     >
       <span
-        className={align === "right" || align === "center" ? "block" : "inline-flex items-center gap-1"}
+        className={
+          align === "right" || align === "center" ? "block" : "inline-flex items-center gap-1"
+        }
         style={{ textAlign: align === "right" ? "right" : align === "center" ? "center" : "left" }}
       >
         <button

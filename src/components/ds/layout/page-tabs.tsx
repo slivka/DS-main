@@ -22,9 +22,17 @@ export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function
 ) {
   return (
     <Tabs ref={ref} className={cn("min-w-0", className)} {...props}>
-      <TabsList aria-label={listLabel} className="h-10 gap-1 rounded-none border-b bg-transparent p-0">
+      <TabsList
+        aria-label={listLabel}
+        className="h-10 gap-1 rounded-none border-b bg-transparent p-0"
+      >
         {items.map((item) => (
-          <TabsTrigger key={item.value} value={item.value} disabled={item.disabled} className="relative h-10 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none">
+          <TabsTrigger
+            key={item.value}
+            value={item.value}
+            disabled={item.disabled}
+            className="relative h-10 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none"
+          >
             {item.label}
           </TabsTrigger>
         ))}

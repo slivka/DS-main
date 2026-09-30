@@ -15,7 +15,12 @@ export function estimateAppZoom(innerWidth: number) {
 
 export function clampAppZoom(value: number) {
   const safe = Number.isFinite(value) ? value : 1;
-  return Number((Math.round(Math.min(APP_ZOOM_MAX, Math.max(APP_ZOOM_MIN, safe)) / APP_ZOOM_STEP) * APP_ZOOM_STEP).toFixed(2));
+  return Number(
+    (
+      Math.round(Math.min(APP_ZOOM_MAX, Math.max(APP_ZOOM_MIN, safe)) / APP_ZOOM_STEP) *
+      APP_ZOOM_STEP
+    ).toFixed(2),
+  );
 }
 
 function storedZoom() {
@@ -44,21 +49,30 @@ export function applyAppZoom(value: number) {
   const zoom = clampAppZoom(value);
   currentZoom = zoom;
   if (typeof document !== "undefined") document.documentElement.style.fontSize = `${16 * zoom}px`;
-  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(APP_ZOOM_EVENT, { detail: zoom }));
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new CustomEvent(APP_ZOOM_EVENT, { detail: zoom }));
   return zoom;
 }
 
 export function setAppZoom(value: number) {
   const zoom = clampAppZoom(value);
   if (typeof window !== "undefined") {
-    try { window.localStorage.setItem(APP_ZOOM_STORAGE_KEY, String(zoom)); } catch { /* úložiště nemusí být dostupné */ }
+    try {
+      window.localStorage.setItem(APP_ZOOM_STORAGE_KEY, String(zoom));
+    } catch {
+      /* úložiště nemusí být dostupné */
+    }
   }
   return applyAppZoom(zoom);
 }
 
 export function resetAppZoom() {
   if (typeof window === "undefined") return 1;
-  try { window.localStorage.removeItem(APP_ZOOM_STORAGE_KEY); } catch { /* úložiště nemusí být dostupné */ }
+  try {
+    window.localStorage.removeItem(APP_ZOOM_STORAGE_KEY);
+  } catch {
+    /* úložiště nemusí být dostupné */
+  }
   return applyAppZoom(estimateAppZoom(window.innerWidth));
 }
 
@@ -73,7 +87,8 @@ export function useAppZoom() {
   const [zoom, setZoomState] = useState(1);
   useLayoutEffect(() => {
     setZoomState(getAppZoom());
-    const onChange = (event: Event) => setZoomState(clampAppZoom((event as CustomEvent<number>).detail));
+    const onChange = (event: Event) =>
+      setZoomState(clampAppZoom((event as CustomEvent<number>).detail));
     window.addEventListener(APP_ZOOM_EVENT, onChange);
     return () => window.removeEventListener(APP_ZOOM_EVENT, onChange);
   }, []);
@@ -86,12 +101,18 @@ export function effectiveViewportWidth(innerWidth: number, zoom: number) {
   return innerWidth / (zoom > 0 ? zoom : 1);
 }
 
-type ZoomKeyEvent = Pick<KeyboardEvent, "key" | "code" | "ctrlKey" | "altKey" | "metaKey" | "getModifierState">;
+type ZoomKeyEvent = Pick<
+  KeyboardEvent,
+  "key" | "code" | "ctrlKey" | "altKey" | "metaKey" | "getModifierState"
+>;
 
 /** Mac poznáme podle `navigator.userAgentData.platform`, jinak `navigator.platform`. */
 export function isMacPlatform() {
   if (typeof navigator === "undefined") return false;
-  const platform = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ?? navigator.platform ?? "";
+  const platform =
+    (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ??
+    navigator.platform ??
+    "";
   return /mac|iphone|ipad|ipod/i.test(platform);
 }
 
@@ -104,9 +125,11 @@ export function isAppZoomShortcut(event: ZoomKeyEvent, mac = isMacPlatform()) {
   const primary = mac ? event.metaKey : event.ctrlKey;
   const other = mac ? event.ctrlKey : event.metaKey;
   if (!primary || other) return null;
-  if (event.key === "+" || event.key === "=" || event.code === "NumpadAdd") return "increase" as const;
+  if (event.key === "+" || event.key === "=" || event.code === "NumpadAdd")
+    return "increase" as const;
   if (event.key === "-" || event.code === "NumpadSubtract") return "decrease" as const;
-  if (event.key === "0" || event.code === "Digit0" || event.code === "Numpad0") return "reset" as const;
+  if (event.key === "0" || event.code === "Digit0" || event.code === "Numpad0")
+    return "reset" as const;
   return null;
 }
 
@@ -114,14 +137,20 @@ export const APP_WHEEL_THRESHOLD = 100;
 export const APP_WHEEL_INTERVAL = 80;
 
 /** Ctrl/Cmd + kolečko: sčítá delty, po prahu udělá jeden krok ±5 %, nejvýš jeden za 80 ms; zbytek zahodí. */
-export function createAppWheelZoom(step: (direction: 1 | -1) => void, now: () => number = () => Date.now()) {
+export function createAppWheelZoom(
+  step: (direction: 1 | -1) => void,
+  now: () => number = () => Date.now(),
+) {
   let accumulated = 0;
   let lastStep = -Infinity;
   return (event: Pick<WheelEvent, "deltaY" | "deltaMode">) => {
     accumulated += event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
     if (Math.abs(accumulated) < APP_WHEEL_THRESHOLD) return false;
     const time = now();
-    if (time - lastStep < APP_WHEEL_INTERVAL) { accumulated = 0; return false; }
+    if (time - lastStep < APP_WHEEL_INTERVAL) {
+      accumulated = 0;
+      return false;
+    }
     step(accumulated < 0 ? 1 : -1);
     accumulated = 0;
     lastStep = time;
@@ -135,7 +164,11 @@ const APP_ZOOM_KEY_STEP = APP_ZOOM_STEP;
 function isNativeSelectOpen() {
   const active = document.activeElement;
   if (!(active instanceof HTMLSelectElement)) return false;
-  try { return active.matches(":open"); } catch { return false; }
+  try {
+    return active.matches(":open");
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -147,7 +180,9 @@ let zoomShortcutMounts = 0;
 let detachZoomShortcuts: (() => void) | null = null;
 
 function attachZoomShortcuts() {
-  const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
+  const step = createAppWheelZoom((direction) =>
+    setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP),
+  );
   const onWheel = (event: WheelEvent) => {
     if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
     if (isNativeSelectOpen()) return;
@@ -177,13 +212,18 @@ function attachZoomShortcuts() {
  * Posluchače registruje jen první připojený rám a ruší poslední odpojený (jeden krok i při dvou rámech).
  */
 export function useAppZoomShortcuts() {
-  useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
+  useLayoutEffect(() => {
+    applyAppZoom(getAppZoom());
+  }, []);
   useLayoutEffect(() => {
     zoomShortcutMounts += 1;
     if (zoomShortcutMounts === 1) detachZoomShortcuts = attachZoomShortcuts();
     return () => {
       zoomShortcutMounts -= 1;
-      if (zoomShortcutMounts === 0) { detachZoomShortcuts?.(); detachZoomShortcuts = null; }
+      if (zoomShortcutMounts === 0) {
+        detachZoomShortcuts?.();
+        detachZoomShortcuts = null;
+      }
     };
   }, []);
 }

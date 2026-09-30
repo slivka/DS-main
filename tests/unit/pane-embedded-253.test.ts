@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { isPaneLayoutVisible, shouldRegisterPaneLayout } from "../../src/components/ds/panes/pane-layout";
+import {
+  isPaneLayoutVisible,
+  shouldRegisterPaneLayout,
+} from "../../src/components/ds/panes/pane-layout";
 
-const el = (rects: number, w: number, h: number) => ({ getClientRects: () => ({ length: rects }), getBoundingClientRect: () => ({ width: w, height: h }) });
+const el = (rects: number, w: number, h: number) => ({
+  getClientRects: () => ({ length: rects }),
+  getBoundingClientRect: () => ({ width: w, height: h }),
+});
 
 describe("PaneLayout – registrace v AppShellu", () => {
   test("(a) skrytý PaneLayout (hidden) main neblokuje", () => {

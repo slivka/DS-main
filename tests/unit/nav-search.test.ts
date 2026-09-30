@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { filterNavGroups, highlightNavMatch, matchesNavSearch, normalizeNavSearch, withNavSections } from "../../src/components/ds/layout/nav-search";
+import {
+  filterNavGroups,
+  highlightNavMatch,
+  matchesNavSearch,
+  normalizeNavSearch,
+  withNavSections,
+} from "../../src/components/ds/layout/nav-search";
 
 const groups = [
   { id: "overview", label: "Přehled", items: [{ label: "Domů" }] },
@@ -25,12 +31,22 @@ describe("hledání v menu", () => {
   });
 
   it("vykreslí nadpis jen na začátku každého po sobě jdoucího bloku", () => {
-    expect(withNavSections(groups).map((entry) => entry.sectionStart)).toEqual([null, "Doklady", null, "Přehledy a evidence"]);
+    expect(withNavSections(groups).map((entry) => entry.sectionStart)).toEqual([
+      null,
+      "Doklady",
+      null,
+      "Přehledy a evidence",
+    ]);
   });
 
   it("skryje prázdný blok při hledání a prohledává i název sekce", () => {
-    expect(filterNavGroups(groups, "faktury").map((group) => group.id)).toEqual(["issued", "received"]);
-    expect(withNavSections(filterNavGroups(groups, "faktury")).map((entry) => entry.sectionStart)).toEqual(["Doklady", null]);
+    expect(filterNavGroups(groups, "faktury").map((group) => group.id)).toEqual([
+      "issued",
+      "received",
+    ]);
+    expect(
+      withNavSections(filterNavGroups(groups, "faktury")).map((entry) => entry.sectionStart),
+    ).toEqual(["Doklady", null]);
     expect(filterNavGroups(groups, "evidence").map((group) => group.id)).toEqual(["reports"]);
   });
 

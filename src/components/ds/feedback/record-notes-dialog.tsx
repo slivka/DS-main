@@ -52,7 +52,13 @@ export function NotesPanel({
           {closeLabel}
         </Button>
       </div>
-      <RecordNotes notes={notes} onAdd={onAdd} onUpdate={onUpdate} onRemove={onRemove} texts={texts} />
+      <RecordNotes
+        notes={notes}
+        onAdd={onAdd}
+        onUpdate={onUpdate}
+        onRemove={onRemove}
+        texts={texts}
+      />
     </div>
   );
 }

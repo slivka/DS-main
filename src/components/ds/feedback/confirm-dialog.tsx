@@ -69,7 +69,11 @@ export function useConfirmDialog() {
             <>
               <AlertDialogCancel>{opts?.cancelLabel ?? dsTexts.common.cancel}</AlertDialogCancel>
               <AlertDialogAction
-                className={opts?.destructive ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : undefined}
+                className={
+                  opts?.destructive
+                    ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    : undefined
+                }
                 onClick={confirmCurrent}
               >
                 {opts?.confirmLabel ?? dsTexts.common.confirm}

@@ -3,14 +3,20 @@ import { describe, expect, it } from "bun:test";
 import { resolveJournalColumnLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 import { gridFontSize } from "../../src/components/ds/grid/grid-zoom";
 import { shouldFocusPaneScroll } from "../../src/components/ds/panes/pane-layout";
-import { clearTabState, createThrottle, paneScrollStorageKey } from "../../src/components/ds/panes/pane-tab-store";
+import {
+  clearTabState,
+  createThrottle,
+  paneScrollStorageKey,
+} from "../../src/components/ds/panes/pane-tab-store";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Jednoduchý localStorage pro prostředí bez DOM.
 const memory = new Map<string, string>();
 (globalThis as { localStorage?: Storage }).localStorage = {
-  get length() { return memory.size; },
+  get length() {
+    return memory.size;
+  },
   key: (i: number) => [...memory.keys()][i] ?? null,
   getItem: (k: string) => memory.get(k) ?? null,
   setItem: (k: string, v: string) => void memory.set(k, v),
@@ -20,14 +26,36 @@ const memory = new Map<string, string>();
 
 describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", () => {
   it("úzký panel + zoom 1,4 + rozšířený sloupec → požadovaná šířka ≤ dostupná", () => {
-    const layout = resolveJournalColumnLayout({ availableWidthRem: 48, zoom: 1.4, mode: "mainAccount", visibleColumnIds: ["row", "text", "counterAccount", "quantity", "unitId", "unitPrice", "amount", "dimensionId", "actions"], widths: { amount: 14 } });
+    const layout = resolveJournalColumnLayout({
+      availableWidthRem: 48,
+      zoom: 1.4,
+      mode: "mainAccount",
+      visibleColumnIds: [
+        "row",
+        "text",
+        "counterAccount",
+        "quantity",
+        "unitId",
+        "unitPrice",
+        "amount",
+        "dimensionId",
+        "actions",
+      ],
+      widths: { amount: 14 },
+    });
     expect(layout.requiredWidthRem).toBeLessThanOrEqual(48);
     expect(layout.hiddenColumnIds).toContain("dimensionId");
     expect(layout.textMinRem).toBeLessThan(12);
   });
   it("zoom zvětší potřebnou šířku", () => {
-    const base = { availableWidthRem: 200, mode: "mainAccount" as const, visibleColumnIds: ["row", "text", "counterAccount", "amount", "actions"] as never[] };
-    expect(resolveJournalColumnLayout({ ...base, zoom: 1.4 }).requiredWidthRem).toBeCloseTo(resolveJournalColumnLayout(base).requiredWidthRem * 1.4);
+    const base = {
+      availableWidthRem: 200,
+      mode: "mainAccount" as const,
+      visibleColumnIds: ["row", "text", "counterAccount", "amount", "actions"] as never[],
+    };
+    expect(resolveJournalColumnLayout({ ...base, zoom: 1.4 }).requiredWidthRem).toBeCloseTo(
+      resolveJournalColumnLayout(base).requiredWidthRem * 1.4,
+    );
   });
 });
 
@@ -38,7 +66,9 @@ describe("6 – zoom gridu", () => {
 });
 
 describe("7 – panel nebere fokus", () => {
-  const makeNode = (interactive: boolean) => ({ closest: (selector: string) => (interactive && selector.includes("button") ? {} : null) });
+  const makeNode = (interactive: boolean) => ({
+    closest: (selector: string) => (interactive && selector.includes("button") ? {} : null),
+  });
   const button = makeNode(true);
   const text = makeNode(false);
   const outside = makeNode(false);

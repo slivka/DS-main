@@ -1,5 +1,25 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from "react";
-import { DndContext, PointerSensor, closestCenter, pointerWithin, type CollisionDetection, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from "react";
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  pointerWithin,
+  type CollisionDetection,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
 
 import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
@@ -18,13 +38,21 @@ import {
   type PaneTabsApi,
 } from "./pane-context";
 import { PaneTabBar, type PaneTabBarTexts } from "./pane-tab-bar";
-import { evenWidths, findTab, paneKey, type PaneLayoutCount, type PaneTab, type TabPane } from "./pane-state";
+import {
+  evenWidths,
+  findTab,
+  paneKey,
+  type PaneLayoutCount,
+  type PaneTab,
+  type TabPane,
+} from "./pane-state";
 import { useTabScrollRestore } from "./pane-tab-store";
 
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /** Prvky, kterým panel nikdy nebere fokus. */
-export const PANE_FOCUS_EXCLUDED = "input,textarea,select,button,a[href],label,summary,[contenteditable]:not([contenteditable=false]),[role=menu],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=combobox],[role=tab],[role=slider],[role=grid],[role=dialog],[role=alertdialog],[role=listbox],[role=textbox],[role=button],[role=switch],[role=checkbox],[role=radio]";
+export const PANE_FOCUS_EXCLUDED =
+  "input,textarea,select,button,a[href],label,summary,[contenteditable]:not([contenteditable=false]),[role=menu],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=combobox],[role=tab],[role=slider],[role=grid],[role=dialog],[role=alertdialog],[role=listbox],[role=textbox],[role=button],[role=switch],[role=checkbox],[role=radio]";
 
 type FocusNode = { closest?: (selector: string) => unknown };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,11 +63,23 @@ type FocusContainer = { contains: (node: any) => boolean };
  * Jen když cíl leží skutečně v panelu (ne v portálu, jehož události bublají Reactem),
  * není interaktivní a klik fokus nepřesunul jinam (aktivní je body nebo prvek mimo panel).
  */
-export function shouldFocusPaneScroll(section: FocusContainer, target: unknown, activeElement: unknown, body: unknown, scrollElement?: unknown): boolean {
+export function shouldFocusPaneScroll(
+  section: FocusContainer,
+  target: unknown,
+  activeElement: unknown,
+  body: unknown,
+  scrollElement?: unknown,
+): boolean {
   if (!target || !section.contains(target)) return false;
   const node = target as FocusNode;
   if (typeof node.closest === "function" && node.closest(PANE_FOCUS_EXCLUDED)) return false;
-  if (activeElement && activeElement !== body && activeElement !== scrollElement && section.contains(activeElement)) return false;
+  if (
+    activeElement &&
+    activeElement !== body &&
+    activeElement !== scrollElement &&
+    section.contains(activeElement)
+  )
+    return false;
   return true;
 }
 import { useAppShellPaneRegistration } from "../layout/page-layout";
@@ -52,7 +92,10 @@ export type PaneLayoutTexts = PaneTabBarTexts &
     restoreLayout: string;
   };
 
-export const DEFAULT_PANE_TEXTS: Pick<PaneLayoutTexts, "emptyHint" | "maximizedBanner" | "restoreLayout"> = {
+export const DEFAULT_PANE_TEXTS: Pick<
+  PaneLayoutTexts,
+  "emptyHint" | "maximizedBanner" | "restoreLayout"
+> = {
   emptyHint: "Otevřete položku z menu",
   maximizedBanner: "Panel {index} je maximalizovaný",
   restoreLayout: "Obnovit rozložení",
@@ -64,7 +107,8 @@ export const PANE_DIVIDER_WIDTH = 8;
 export function maxPaneLayout(width: number, minPaneWidth: number, fontScale = 1): PaneLayoutCount {
   if (width < 768) return 1;
   const effective = width / (fontScale || 1);
-  const fits = (count: number) => effective >= count * minPaneWidth + (count - 1) * PANE_DIVIDER_WIDTH;
+  const fits = (count: number) =>
+    effective >= count * minPaneWidth + (count - 1) * PANE_DIVIDER_WIDTH;
   if (fits(3)) return 3;
   if (fits(2)) return 2;
   return 1;
@@ -104,7 +148,12 @@ export interface PaneLayoutProps {
 }
 
 /** Je prvek skutečně zobrazený (ne display:none, ne nulová velikost)? */
-export function isPaneLayoutVisible(element: { getClientRects: () => { length: number }; getBoundingClientRect: () => { width: number; height: number } } | null): boolean {
+export function isPaneLayoutVisible(
+  element: {
+    getClientRects: () => { length: number };
+    getBoundingClientRect: () => { width: number; height: number };
+  } | null,
+): boolean {
   if (!element || element.getClientRects().length === 0) return false;
   const rect = element.getBoundingClientRect();
   return rect.width > 0 && rect.height > 0;
@@ -116,7 +165,15 @@ export function shouldRegisterPaneLayout(embedded: boolean, visible: boolean) {
 }
 
 /** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
-export function PaneLayout({ renderTab, getTabIcon, renderEmpty, minPaneWidth = 560, texts, className, embedded = false }: PaneLayoutProps) {
+export function PaneLayout({
+  renderTab,
+  getTabIcon,
+  renderEmpty,
+  minPaneWidth = 560,
+  texts,
+  className,
+  embedded = false,
+}: PaneLayoutProps) {
   const api = usePaneTabs();
   const register = useAppShellPaneRegistration();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -163,7 +220,11 @@ function PaneLayoutInner({
   texts,
   className,
   rootRef,
-}: PaneLayoutProps & { api: PaneTabsApi; minPaneWidth: number; rootRef: React.Ref<HTMLDivElement> }) {
+}: PaneLayoutProps & {
+  api: PaneTabsApi;
+  minPaneWidth: number;
+  rootRef: React.Ref<HTMLDivElement>;
+}) {
   const { state } = api;
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_PANE_TEXTS, ...dsTexts.paneChrome, ...dsTexts.panes, ...texts };
@@ -172,7 +233,8 @@ function PaneLayoutInner({
   const [containerWidth, setContainerWidth] = useState(0);
   const [draftWidths, setDraftWidths] = useState<number[] | null>(null);
   const fontScale = useAppZoomScale();
-  const maximizedIndex = api.maximized !== null && state.panes[api.maximized] ? api.maximized : null;
+  const maximizedIndex =
+    api.maximized !== null && state.panes[api.maximized] ? api.maximized : null;
   const maximized = maximizedIndex !== null ? state.panes[maximizedIndex].id : null;
   const collision: CollisionDetection = (args) => {
     // Rozhoduje místo, kde je ukazatel; plocha panelu má přednost před záložkami jiného panelu.
@@ -193,7 +255,10 @@ function PaneLayoutInner({
     observer.observe(element);
     update();
     window.addEventListener(RESIZE_END_EVENT, update);
-    return () => { observer.disconnect(); window.removeEventListener(RESIZE_END_EVENT, update); };
+    return () => {
+      observer.disconnect();
+      window.removeEventListener(RESIZE_END_EVENT, update);
+    };
   }, []);
 
   const maxLayout = containerWidth ? maxPaneLayout(containerWidth, minPaneWidth, fontScale) : null;
@@ -205,10 +270,16 @@ function PaneLayoutInner({
   useEffect(() => {
     const onBefore = () => {
       document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => {
-        element.setAttribute("data-print-hide", element.dataset.pane === state.active ? "false" : "true");
+        element.setAttribute(
+          "data-print-hide",
+          element.dataset.pane === state.active ? "false" : "true",
+        );
       });
     };
-    const onAfter = () => document.querySelectorAll<HTMLElement>("[data-pane]").forEach((element) => element.removeAttribute("data-print-hide"));
+    const onAfter = () =>
+      document
+        .querySelectorAll<HTMLElement>("[data-pane]")
+        .forEach((element) => element.removeAttribute("data-print-hide"));
     window.addEventListener("beforeprint", onBefore);
     window.addEventListener("afterprint", onAfter);
     return () => {
@@ -221,7 +292,10 @@ function PaneLayoutInner({
   const resolvedWidths = useMemo(() => {
     if (draftWidths?.length === shownPanes.length) return draftWidths;
     if (shownPanes.length === 1) return [1];
-    const base = state.widths && state.widths.length === shownPanes.length ? state.widths : evenWidths(shownPanes.length);
+    const base =
+      state.widths && state.widths.length === shownPanes.length
+        ? state.widths
+        : evenWidths(shownPanes.length);
     const sum = base.reduce((total, value) => total + value, 0) || 1;
     return base.map((value) => value / sum);
   }, [draftWidths, state.widths, shownPanes.length]);
@@ -256,7 +330,9 @@ function PaneLayoutInner({
 
   const onDragEnd = (event: DragEndEvent) => {
     // Úchyt v nadpisu stránky má id "header:<tabId>" a tabId v datech.
-    const tabId = String((event.active.data.current as { tabId?: string } | undefined)?.tabId ?? event.active.id);
+    const tabId = String(
+      (event.active.data.current as { tabId?: string } | undefined)?.tabId ?? event.active.id,
+    );
     const over = event.over;
     if (!over) return;
     const overId = String(over.id);
@@ -283,44 +359,64 @@ function PaneLayoutInner({
       onDragCancel={() => undefined}
       onDragEnd={onDragEnd}
     >
-      <div ref={rootRef} data-slot="pane-layout" data-required-width={requiredPaneWidth(state.layout, minPaneWidth, fontScale)} className={cn("flex min-h-0 w-full flex-1 flex-col", className)}>
-      {maximizedIndex !== null ? (
-        <div role="status" className="flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground">
-          <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
-          <Button type="button" size="sm" variant="outline" className="h-7" onClick={api.restoreLayout}>
-            {t.restoreLayout}
-            <kbd className="ml-1 font-mono text-xs text-muted-foreground">Esc</kbd>
-          </Button>
-        </div>
-      ) : null}
-      <div ref={containerRef} className="flex min-h-0 w-full flex-1 items-stretch">
-        {shownPanes.map((pane, index) => (
-          <div key={pane.id} className="flex min-w-0" style={{ flex: `${resolvedWidths[index] ?? 1} 1 0%` }}>
-            <PaneColumn
-              pane={pane}
-              paneIndex={state.panes.indexOf(pane)}
-              api={api}
-              renderTab={renderTab}
-              renderEmpty={renderEmpty}
-              getTabIcon={getTabIcon}
-              emptyHint={emptyHint}
-              texts={{ ...dsTexts.paneChrome, ...texts }}
-              maximized={maximized === pane.id}
-              flashing={api.flashPaneId === pane.id}
-              getIconByName={(name) => (getTabIcon ? getTabIcon({ icon: name } as PaneTab) : undefined)}
-            />
-            {index < shownPanes.length - 1 ? (
-              <div
-                role="separator"
-                aria-orientation="vertical"
-                onPointerDown={onDividerDown(index)}
-                onDoubleClick={() => onWidths(evenWidths(shownPanes.length))}
-                className="w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40"
-              />
-            ) : null}
+      <div
+        ref={rootRef}
+        data-slot="pane-layout"
+        data-required-width={requiredPaneWidth(state.layout, minPaneWidth, fontScale)}
+        className={cn("flex min-h-0 w-full flex-1 flex-col", className)}
+      >
+        {maximizedIndex !== null ? (
+          <div
+            role="status"
+            className="flex h-9 shrink-0 items-center justify-between gap-3 border-b bg-accent px-3 text-sm text-accent-foreground"
+          >
+            <span>{t.maximizedBanner.replace("{index}", String(maximizedIndex + 1))}</span>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="h-7"
+              onClick={api.restoreLayout}
+            >
+              {t.restoreLayout}
+              <kbd className="ml-1 font-mono text-xs text-muted-foreground">Esc</kbd>
+            </Button>
           </div>
-        ))}
-      </div>
+        ) : null}
+        <div ref={containerRef} className="flex min-h-0 w-full flex-1 items-stretch">
+          {shownPanes.map((pane, index) => (
+            <div
+              key={pane.id}
+              className="flex min-w-0"
+              style={{ flex: `${resolvedWidths[index] ?? 1} 1 0%` }}
+            >
+              <PaneColumn
+                pane={pane}
+                paneIndex={state.panes.indexOf(pane)}
+                api={api}
+                renderTab={renderTab}
+                renderEmpty={renderEmpty}
+                getTabIcon={getTabIcon}
+                emptyHint={emptyHint}
+                texts={{ ...dsTexts.paneChrome, ...texts }}
+                maximized={maximized === pane.id}
+                flashing={api.flashPaneId === pane.id}
+                getIconByName={(name) =>
+                  getTabIcon ? getTabIcon({ icon: name } as PaneTab) : undefined
+                }
+              />
+              {index < shownPanes.length - 1 ? (
+                <div
+                  role="separator"
+                  aria-orientation="vertical"
+                  onPointerDown={onDividerDown(index)}
+                  onDoubleClick={() => onWidths(evenWidths(shownPanes.length))}
+                  className="w-2 shrink-0 cursor-col-resize bg-border/60 transition-colors hover:bg-primary/40"
+                />
+              ) : null}
+            </div>
+          ))}
+        </div>
       </div>
     </DndContext>
   );
@@ -355,24 +451,41 @@ function PaneColumn({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
   // Stabilní ref callback – inline funkce by se v React 19 při každém commitu odpojila a znovu připojila.
-  const setScrollRef = useCallback((node: HTMLDivElement | null) => {
-    setNodeRef(node);
-    scrollRef.current = node;
-    setScrollElement((current) => (current === node ? current : node));
-  }, [setNodeRef]);
+  const setScrollRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      setNodeRef(node);
+      scrollRef.current = node;
+      setScrollElement((current) => (current === node ? current : node));
+    },
+    [setNodeRef],
+  );
   const activeId = pane.activeTab;
-  const drag = useDraggable({ id: `header:${activeId ?? pane.id}`, data: { tabId: activeId, paneId: pane.id }, disabled: !activeId });
+  const drag = useDraggable({
+    id: `header:${activeId ?? pane.id}`,
+    data: { tabId: activeId, paneId: pane.id },
+    disabled: !activeId,
+  });
   const isActive = api.state.active === pane.id;
   const tab = pane.tabs.find((item) => item.id === pane.activeTab) ?? null;
   // Pozice rolování per krok historie záložky – nová stránka začne nahoře, Zpět vrátí pozici.
-  useTabScrollRestore(tab?.id, scrollRef, tab ? `pane-scroll:${tab.historyIndex}:${paneKey(tab)}` : "pane-scroll");
+  useTabScrollRestore(
+    tab?.id,
+    scrollRef,
+    tab ? `pane-scroll:${tab.historyIndex}:${paneKey(tab)}` : "pane-scroll",
+  );
   const sectionRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     if (!isActive) return;
     const focused = document.activeElement;
     const section = sectionRef.current;
     // Fokus už je v panelu (pole, tlačítko…) nebo v dialogu / výběru – nebereme ho.
-    if (focused instanceof HTMLElement && focused !== document.body && focused !== scrollRef.current && (section?.contains(focused) || focused.closest(PANE_FOCUS_EXCLUDED))) return;
+    if (
+      focused instanceof HTMLElement &&
+      focused !== document.body &&
+      focused !== scrollRef.current &&
+      (section?.contains(focused) || focused.closest(PANE_FOCUS_EXCLUDED))
+    )
+      return;
     scrollRef.current?.focus({ preventScroll: true });
   }, [isActive, tab?.id]);
   const tabApi: PaneApi | null = tab
@@ -404,7 +517,12 @@ function PaneColumn({
         canForward: tab.historyIndex < tab.history.length - 1,
         back: () => api.back(tab.id),
         forward: () => api.forward(tab.id),
-        history: tab.history.map((entry, index) => ({ index, title: entry.title ?? entry.route, icon: entry.icon ?? tab.icon, current: index === tab.historyIndex })),
+        history: tab.history.map((entry, index) => ({
+          index,
+          title: entry.title ?? entry.route,
+          icon: entry.icon ?? tab.icon,
+          current: index === tab.historyIndex,
+        })),
         goToHistory: (index) => api.goToHistory(tab.id, index),
         openFromHistory: (index) => api.openFromHistory(tab.id, index),
         dirty: api.isTabDirty(tab.id),
@@ -424,12 +542,23 @@ function PaneColumn({
       data-pane={pane.id}
       data-active={isActive ? "true" : undefined}
       onPointerDownCapture={(event) => {
-        if (!isActive && sectionRef.current?.contains(event.target as Node)) api.activatePane(pane.id);
+        if (!isActive && sectionRef.current?.contains(event.target as Node))
+          api.activatePane(pane.id);
       }}
       onClick={(event) => {
         // Až po kliku: prohlížeč už fokus přesunul, pokud cíl fokus přijímá.
         const section = sectionRef.current;
-        if (section && shouldFocusPaneScroll(section, event.target, document.activeElement, document.body, scrollRef.current)) scrollRef.current?.focus({ preventScroll: true });
+        if (
+          section &&
+          shouldFocusPaneScroll(
+            section,
+            event.target,
+            document.activeElement,
+            document.body,
+            scrollRef.current,
+          )
+        )
+          scrollRef.current?.focus({ preventScroll: true });
       }}
       data-flash={flashing ? "true" : undefined}
       className={cn(
@@ -449,7 +578,15 @@ function PaneColumn({
           texts={texts}
         />
       ) : null}
-      <div ref={setScrollRef} data-pane-scroll tabIndex={-1} className={cn("ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none", isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40")}>
+      <div
+        ref={setScrollRef}
+        data-pane-scroll
+        tabIndex={-1}
+        className={cn(
+          "ds-scroll-area min-h-0 flex-1 overflow-auto overscroll-contain p-4 outline-none",
+          isOver && "bg-primary/5 outline-2 -outline-offset-2 outline-dashed outline-primary/40",
+        )}
+      >
         {tab && tabApi ? (
           <PaneApiContext.Provider value={tabApi}>
             <PaneChromeContext.Provider value={chrome}>
@@ -461,7 +598,7 @@ function PaneColumn({
             </PaneChromeContext.Provider>
           </PaneApiContext.Provider>
         ) : (
-          renderEmpty?.(pane) ?? <PaneEmpty hint={emptyHint} />
+          (renderEmpty?.(pane) ?? <PaneEmpty hint={emptyHint} />)
         )}
       </div>
     </section>
@@ -475,5 +612,14 @@ export interface PaneEmptyProps {
 
 /** Výchozí obsah prázdného panelu. */
 export function PaneEmpty({ hint = DEFAULT_PANE_TEXTS.emptyHint, className }: PaneEmptyProps) {
-  return <div className={cn("flex h-full min-h-40 items-center justify-center text-center text-sm text-muted-foreground", className)}>{hint}</div>;
+  return (
+    <div
+      className={cn(
+        "flex h-full min-h-40 items-center justify-center text-center text-sm text-muted-foreground",
+        className,
+      )}
+    >
+      {hint}
+    </div>
+  );
 }

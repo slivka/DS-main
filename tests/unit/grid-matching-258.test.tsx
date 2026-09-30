@@ -2,10 +2,20 @@ import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { DataGrid, type DataGridColumn } from "../../src/components/ds/grid/DataGrid";
 import { GridAmountEditor, exceedsMax } from "../../src/components/ds/grid/grid-amount-editor";
-import { insertGroupTotalRows, isInteractiveTarget, nextEditorIndex, resolveSelectedRows, toggleVisibleSelection } from "../../src/components/ds/grid/grid-selection";
+import {
+  insertGroupTotalRows,
+  isInteractiveTarget,
+  nextEditorIndex,
+  resolveSelectedRows,
+  toggleVisibleSelection,
+} from "../../src/components/ds/grid/grid-selection";
 
 type R = { id: string; partner: string; amount: number };
-const rows: R[] = Array.from({ length: 60 }, (_, i) => ({ id: `r${i}`, partner: i < 30 ? "ALFA" : "BETA", amount: 100 }));
+const rows: R[] = Array.from({ length: 60 }, (_, i) => ({
+  id: `r${i}`,
+  partner: i < 30 ? "ALFA" : "BETA",
+  amount: 100,
+}));
 const columns: DataGridColumn<R>[] = [
   { id: "partner", label: "Partner", value: (r) => r.partner },
   { id: "amount", label: "Částka", numeric: true, decimals: 2, value: (r) => r.amount },
@@ -13,7 +23,17 @@ const columns: DataGridColumn<R>[] = [
 
 describe("B1 součty skupiny pod sloupci 2.58.0", () => {
   it("groupTotals=row přidá řádek součtů s popiskem přes všechny řádky bez stránkování", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="gt-row" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" groupTotals="row" paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
+    const html = renderToStaticMarkup(
+      <DataGrid
+        storageKey="gt-row"
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        defaultGroupBy="partner"
+        groupTotals="row"
+        paginated={false}
+      />,
+    ).replace(/[\u00a0\u202f]/g, " ");
     expect((html.match(/data-slot="grid-group-total"/g) ?? []).length).toBe(2);
     expect(html).toContain("Celkem ALFA");
     expect(html).toContain("3 000,00");
@@ -21,14 +41,45 @@ describe("B1 součty skupiny pod sloupci 2.58.0", () => {
     expect(html).toContain("6 000,00");
   });
   it("výchozí header zachová součty v záhlaví a nemá řádky součtů", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="gt-header" rows={rows} columns={columns} rowKey={(r) => r.id} defaultGroupBy="partner" paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
+    const html = renderToStaticMarkup(
+      <DataGrid
+        storageKey="gt-header"
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        defaultGroupBy="partner"
+        paginated={false}
+      />,
+    ).replace(/[\u00a0\u202f]/g, " ");
     expect(html).not.toContain("grid-group-total");
     expect(html).toContain("Částka:");
   });
   it("insertGroupTotalRows vynechá sbalené skupiny a uzavírá vnořené", () => {
-    const g = (key: string, level: number, collapsed = false) => ({ type: "group" as const, key, label: key, level, collapsed, sums: [] });
-    const out = insertGroupTotalRows([g("A", 0), g("A1", 1), { type: "row" as const, row: 1 }, g("A2", 1, true), g("B", 0)]);
-    expect(out.map((i) => `${i.type}:${"key" in i ? i.key : ""}`)).toEqual(["group:A", "group:A1", "row:", "groupTotal:A1", "group:A2", "groupTotal:A", "group:B", "groupTotal:B"]);
+    const g = (key: string, level: number, collapsed = false) => ({
+      type: "group" as const,
+      key,
+      label: key,
+      level,
+      collapsed,
+      sums: [],
+    });
+    const out = insertGroupTotalRows([
+      g("A", 0),
+      g("A1", 1),
+      { type: "row" as const, row: 1 },
+      g("A2", 1, true),
+      g("B", 0),
+    ]);
+    expect(out.map((i) => `${i.type}:${"key" in i ? i.key : ""}`)).toEqual([
+      "group:A",
+      "group:A1",
+      "row:",
+      "groupTotal:A1",
+      "group:A2",
+      "groupTotal:A",
+      "group:B",
+      "groupTotal:B",
+    ]);
   });
 });
 
@@ -44,7 +95,19 @@ describe("B2 řízený výběr 2.58.0", () => {
   });
   it("řízený selectedKeys se zobrazí a sumSelected sečte jen vybrané", () => {
     const cols: DataGridColumn<R>[] = [columns[0]!, { ...columns[1]!, total: "sumSelected" }];
-    const html = renderToStaticMarkup(<DataGrid storageKey="sel" rows={rows.slice(0, 5)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r0", "r2"]} groupable={false} paginated={false} selectionSummary={(sel) => <span>Vybráno {sel.length}</span>} />).replace(/[\u00a0\u202f]/g, " ");
+    const html = renderToStaticMarkup(
+      <DataGrid
+        storageKey="sel"
+        rows={rows.slice(0, 5)}
+        columns={cols}
+        rowKey={(r) => r.id}
+        selectMode
+        selectedKeys={["r0", "r2"]}
+        groupable={false}
+        paginated={false}
+        selectionSummary={(sel) => <span>Vybráno {sel.length}</span>}
+      />,
+    ).replace(/[\u00a0\u202f]/g, " ");
     expect((html.match(/data-state="selected"/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(html).toContain("200,00");
     expect(html).toContain("Vybráno 2");
@@ -58,9 +121,36 @@ describe("B2 řízený výběr 2.58.0", () => {
 });
 
 describe("B3 editovatelný sloupec 2.58.0", () => {
-  const cols: DataGridColumn<R>[] = [columns[0]!, { id: "pay", label: "Párovat", numeric: true, value: (r) => r.amount, editor: (r) => <GridAmountEditor value={r.amount} onChange={() => {}} ariaLabel={`Editor ${r.id}`} invalid={r.id === "r1"} /> }];
+  const cols: DataGridColumn<R>[] = [
+    columns[0]!,
+    {
+      id: "pay",
+      label: "Párovat",
+      numeric: true,
+      value: (r) => r.amount,
+      editor: (r) => (
+        <GridAmountEditor
+          value={r.amount}
+          onChange={() => {}}
+          ariaLabel={`Editor ${r.id}`}
+          invalid={r.id === "r1"}
+        />
+      ),
+    },
+  ];
   it("editor se vykreslí jen u vybraných řádků", () => {
-    const html = renderToStaticMarkup(<DataGrid storageKey="ed" rows={rows.slice(0, 3)} columns={cols} rowKey={(r) => r.id} selectMode selectedKeys={["r1"]} groupable={false} paginated={false} />).replace(/[\u00a0\u202f]/g, " ");
+    const html = renderToStaticMarkup(
+      <DataGrid
+        storageKey="ed"
+        rows={rows.slice(0, 3)}
+        columns={cols}
+        rowKey={(r) => r.id}
+        selectMode
+        selectedKeys={["r1"]}
+        groupable={false}
+        paginated={false}
+      />,
+    ).replace(/[\u00a0\u202f]/g, " ");
     expect(html).toContain('aria-label="Editor r1"');
     expect(html).not.toContain('aria-label="Editor r0"');
     expect(html).toContain('data-invalid="true"');
@@ -80,7 +170,16 @@ describe("DataGrid 2.60.0 – popisek skrytého seskupení", () => {
       { id: "group", label: "Zdroj párování", defaultVisible: false, value: (row) => row.partner },
       { id: "amount", label: "Částka", numeric: true, value: (row) => row.amount },
     ];
-    const html = renderToStaticMarkup(<DataGrid storageKey="hidden-group-260" rows={rows.slice(0, 2)} columns={hiddenColumns} rowKey={(row) => row.id} defaultGroupBy="group" paginated={false} />);
+    const html = renderToStaticMarkup(
+      <DataGrid
+        storageKey="hidden-group-260"
+        rows={rows.slice(0, 2)}
+        columns={hiddenColumns}
+        rowKey={(row) => row.id}
+        defaultGroupBy="group"
+        paginated={false}
+      />,
+    );
     expect((html.match(/Zdroj párování/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(html).not.toContain(">group:<");
   });

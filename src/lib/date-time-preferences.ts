@@ -249,7 +249,6 @@ export function useDateTimePreferences() {
     [],
   );
 
-
   // Synchronizace probíhá už během renderu nadřazeného provideru, aby i čisté
   // exportní utility a tabulkové formátovače použily nový profil bez mezisnímku.
   activePreferences = preferences;

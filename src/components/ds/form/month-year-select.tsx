@@ -37,7 +37,12 @@ export function MonthYearSelect({
   monthClassName?: string;
 }) {
   const dsTexts = useDsTexts();
-  const monthOptions: SelectOption[] = Array.from({ length: 12 }, (_, index) => ({ value: String(index + 1), label: new Intl.DateTimeFormat(dsTexts.intlLocale, { month: "long" }).format(new Date(2020, index, 1)) }));
+  const monthOptions: SelectOption[] = Array.from({ length: 12 }, (_, index) => ({
+    value: String(index + 1),
+    label: new Intl.DateTimeFormat(dsTexts.intlLocale, { month: "long" }).format(
+      new Date(2020, index, 1),
+    ),
+  }));
   const year = value ? Number(value.slice(0, 4)) : null;
   const month = value ? Number(value.slice(5, 7)) : null;
   const currentYear = new Date().getFullYear();

@@ -1,4 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from "react";
 import { toast } from "sonner";
 
 import {
@@ -47,7 +56,16 @@ import {
   type PaneTabsState,
   type TabKind,
 } from "./pane-state";
-import { clearTabState, dirtyTabIds, getTabDraft, isTabDirty, registerLiveTabs, setTabDirty, setTabDraft, useTabDirtyVersion } from "./pane-tab-store";
+import {
+  clearTabState,
+  dirtyTabIds,
+  getTabDraft,
+  isTabDirty,
+  registerLiveTabs,
+  setTabDirty,
+  setTabDraft,
+  useTabDirtyVersion,
+} from "./pane-tab-store";
 
 export type OpenTabOptions = {
   target?: OpenTabTarget;
@@ -74,7 +92,14 @@ export type OpenRecordOptions = {
 };
 
 /** Položka pořadí záznamů pro listování ↑ ↓ (registerRecordNav). */
-export type RecordNavItem = { route: string; params?: Record<string, unknown>; recordKey?: string; title?: string; shortTitle?: string; icon?: string };
+export type RecordNavItem = {
+  route: string;
+  params?: Record<string, unknown>;
+  recordKey?: string;
+  title?: string;
+  shortTitle?: string;
+  icon?: string;
+};
 
 export type RecordNav = { index: number; total: number; prev: () => void; next: () => void };
 
@@ -117,7 +142,11 @@ export type PaneTabsApi = {
   /** Nejvyšší rozložení podle šířky – hlásí PaneLayout. */
   reportMaxLayout: (maxLayout: PaneLayoutCount) => void;
   /** Otevření záznamu ze seznamu podle pravidel a–f. */
-  openRecord: (route: string, params?: Record<string, unknown>, options?: OpenRecordOptions) => void;
+  openRecord: (
+    route: string,
+    params?: Record<string, unknown>,
+    options?: OpenRecordOptions,
+  ) => void;
   /** Otevře krok historie jako novou záložku. */
   openFromHistory: (tabId: string, index: number) => void;
   /** Přejde na krok historie v téže záložce. */
@@ -232,7 +261,12 @@ export function useTabDirty(isDirty: boolean, key = "default") {
   }, [tabId, isDirty]);
 }
 
-type PendingReplace = { tabId: string; route: string; params?: Record<string, unknown>; options: OpenTabOptions };
+type PendingReplace = {
+  tabId: string;
+  route: string;
+  params?: Record<string, unknown>;
+  options: OpenTabOptions;
+};
 
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
@@ -248,7 +282,15 @@ export interface PaneTabsProviderProps {
 }
 
 /** Stav a akce záložek v panelech. Obalte jím AppShell i PaneLayout, aby navigace otevírala záložky. */
-export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, shortcuts = true, texts, children }: PaneTabsProviderProps) {
+export function PaneTabsProvider({
+  state,
+  onChange,
+  onSaveTab,
+  onNewTabRequest,
+  shortcuts = true,
+  texts,
+  children,
+}: PaneTabsProviderProps) {
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_PANE_TABS_TEXTS, limitClosed: dsTexts.panes.limitClosed, ...texts };
   const stateRef = useRef(state);
@@ -268,7 +310,10 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   useEffect(() => {
     const tabs = state.panes.flatMap((pane) => pane.tabs);
     // Zároveň uklidí pozice rolování zavřených záložek a vypadlých kroků historie.
-    registerLiveTabs(tabs.map((tab) => tab.id), Object.fromEntries(tabs.map((tab) => [tab.id, tab.history.length])));
+    registerLiveTabs(
+      tabs.map((tab) => tab.id),
+      Object.fromEntries(tabs.map((tab) => [tab.id, tab.history.length])),
+    );
   }, [state]);
   useEffect(() => {
     if (maximized !== null && maximized >= state.panes.length) setMaximized(null);
@@ -284,7 +329,12 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     let stack = closedRef.current;
     tabIds.forEach((id) => {
       const found = findTab(from, id);
-      if (found) stack = pushClosedTab(stack, { tab: found.tab, paneId: found.pane.id, index: found.tabIndex });
+      if (found)
+        stack = pushClosedTab(stack, {
+          tab: found.tab,
+          paneId: found.pane.id,
+          index: found.tabIndex,
+        });
     });
     closedRef.current = stack;
     setClosedStack(stack);
@@ -300,17 +350,28 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
 
   const titleOf = (tabId: string) => findTab(stateRef.current, tabId)?.tab.title ?? t.untitled;
 
-  const doOpen = (route: string, params: Record<string, unknown> | undefined, options: OpenTabOptions) => {
+  const doOpen = (
+    route: string,
+    params: Record<string, unknown> | undefined,
+    options: OpenTabOptions,
+  ) => {
     const current = stateRef.current;
     const mode = resolveOpenMode(current, options.target ?? "replace");
-    const replacedId = mode === "replace" ? current.panes[resolveTargetPaneIndex(current, "replace")].activeTab : null;
+    const replacedId =
+      mode === "replace"
+        ? current.panes[resolveTargetPaneIndex(current, "replace")].activeTab
+        : null;
     const result = openTabInState(current, { route, params, ...options }, isTabDirty);
     if (result.outcome === "rejected") {
       toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
       return;
     }
     if (result.evictedTabId) {
-      toast.info(t.limitEvicted.replace("{title}", titleOf(result.evictedTabId)).replace("{max}", String(MAX_TABS_PER_PANE)));
+      toast.info(
+        t.limitEvicted
+          .replace("{title}", titleOf(result.evictedTabId))
+          .replace("{max}", String(MAX_TABS_PER_PANE)),
+      );
       clearTabState(result.evictedTabId);
     }
     const clearedTabId = result.tabId ?? replacedId;
@@ -323,7 +384,11 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   const openTab: PaneTabsApi["openTab"] = (route, params, options = {}) => {
     const current = stateRef.current;
     const target = options.target ?? "replace";
-    if (target === "replace" && !findRecordTab(current, { route, params, ...options }) && resolveOpenMode(current, target) === "replace") {
+    if (
+      target === "replace" &&
+      !findRecordTab(current, { route, params, ...options }) &&
+      resolveOpenMode(current, target) === "replace"
+    ) {
       const tabId = current.panes[resolveTargetPaneIndex(current, target)]?.activeTab;
       if (tabId && isTabDirty(tabId)) {
         setPending({ tabId, route, params, options });
@@ -371,16 +436,19 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   const closePane = (paneId: string) => {
     const pane = stateRef.current.panes.find((item) => item.id === paneId);
     if (!pane) return;
-    guardDiscard(pane.tabs.map((tab) => tab.id), () => {
-      const before = stateRef.current;
-      const current = before.panes.find((item) => item.id === paneId);
-      if (!current) return;
-      const ids = current.tabs.map((tab) => tab.id);
-      rememberClosed(ids, before);
-      setMaximized(null);
-      commit(closePaneInState(before, paneId));
-      ids.forEach(clearTabState);
-    });
+    guardDiscard(
+      pane.tabs.map((tab) => tab.id),
+      () => {
+        const before = stateRef.current;
+        const current = before.panes.find((item) => item.id === paneId);
+        if (!current) return;
+        const ids = current.tabs.map((tab) => tab.id);
+        rememberClosed(ids, before);
+        setMaximized(null);
+        commit(closePaneInState(before, paneId));
+        ids.forEach(clearTabState);
+      },
+    );
   };
 
   const step = (tabId: string, delta: number) =>
@@ -403,11 +471,24 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   const openRecord: PaneTabsApi["openRecord"] = (route, params, options = {}) => {
     const current = stateRef.current;
     const raw = (options.modifiers ?? {}) as Record<string, boolean | undefined>;
-    const modifiers: OpenRecordModifiers = { mod: !!(raw.mod || raw.metaKey || raw.ctrlKey), shift: !!raw.shift || !!raw.shiftKey };
-    const fromPane = options.fromTabId ? findTab(current, options.fromTabId)?.pane.id : current.active;
+    const modifiers: OpenRecordModifiers = {
+      mod: !!(raw.mod || raw.metaKey || raw.ctrlKey),
+      shift: !!raw.shift || !!raw.shiftKey,
+    };
+    const fromPane = options.fromTabId
+      ? findTab(current, options.fromTabId)?.pane.id
+      : current.active;
     const result = openRecordInState(
       current,
-      { route, params, recordKey: options.recordKey, title: options.title, shortTitle: options.shortTitle, icon: options.icon, kind: "record" },
+      {
+        route,
+        params,
+        recordKey: options.recordKey,
+        title: options.title,
+        shortTitle: options.shortTitle,
+        icon: options.icon,
+        kind: "record",
+      },
       { fromTabId: options.fromTabId, isNew: options.isNew, modifiers, maximized },
       isTabDirty,
     );
@@ -416,7 +497,11 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       return;
     }
     if (result.evictedTabId) {
-      toast.info(t.limitEvicted.replace("{title}", titleOf(result.evictedTabId)).replace("{max}", String(MAX_TABS_PER_PANE)));
+      toast.info(
+        t.limitEvicted
+          .replace("{title}", titleOf(result.evictedTabId))
+          .replace("{max}", String(MAX_TABS_PER_PANE)),
+      );
       clearTabState(result.evictedTabId);
     }
     if (result.outcome === "replaced" && result.tabId) clearTabState(result.tabId);
@@ -458,10 +543,12 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   const getRecordNav = (tabId: string): RecordNav | null => {
     const found = findTab(stateRef.current, tabId);
     if (!found || found.tab.kind !== "record") return null;
-    const source = recordNavs.current.get(found.tab.openerTabId ?? "") ?? recordNavs.current.get(tabId);
+    const source =
+      recordNavs.current.get(found.tab.openerTabId ?? "") ?? recordNavs.current.get(tabId);
     if (!source) return null;
     const items = source();
-    const keyOf = (item: { route: string; params?: Record<string, unknown>; recordKey?: string }) => item.recordKey ?? paneKey(item);
+    const keyOf = (item: { route: string; params?: Record<string, unknown>; recordKey?: string }) =>
+      item.recordKey ?? paneKey(item);
     const index = items.findIndex((item) => keyOf(item) === keyOf(found.tab));
     if (index < 0) return null;
     const go = (delta: number) => {
@@ -512,9 +599,10 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       };
     },
     getRecordNav,
-    serializeLayout: () => serializeLayout(stateRef.current, (tabId) => ({
-      state: getTabDraft(tabId, "grid"),
-    })),
+    serializeLayout: () =>
+      serializeLayout(stateRef.current, (tabId) => ({
+        state: getTabDraft(tabId, "grid"),
+      })),
     applyLayout: (snapshot, options) => {
       const result = applyLayoutInState(stateRef.current, snapshot, options, isTabDirty);
       result.closedTabIds.forEach(clearTabState);
@@ -532,7 +620,8 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
     openTab,
     closeTab,
     closeOtherTabs,
-    moveTab: (tabId, toPaneId, index) => commit(moveTabInState(stateRef.current, tabId, toPaneId, index)),
+    moveTab: (tabId, toPaneId, index) =>
+      commit(moveTabInState(stateRef.current, tabId, toPaneId, index)),
     activateTab: (tabId) => commit(activateTabInState(stateRef.current, tabId)),
     activatePane: (paneId) => {
       if (stateRef.current.active !== paneId) commit({ ...stateRef.current, active: paneId });
@@ -546,14 +635,19 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
       if (result.closedTabIds.length) {
         rememberClosed(result.closedTabIds, before);
         result.closedTabIds.forEach(clearTabState);
-        toast.info(t.limitClosed.replace("{count}", String(result.closedTabIds.length)).replace("{max}", String(MAX_TABS_PER_PANE)));
+        toast.info(
+          t.limitClosed
+            .replace("{count}", String(result.closedTabIds.length))
+            .replace("{max}", String(MAX_TABS_PER_PANE)),
+        );
       }
       commit(result.state);
     },
     closePane,
     back: (tabId) => step(tabId, -1),
     forward: (tabId) => step(tabId, 1),
-    setTabTitle: (tabId, title, shortTitle) => commit(setTabTitleInState(stateRef.current, tabId, title, shortTitle)),
+    setTabTitle: (tabId, title, shortTitle) =>
+      commit(setTabTitleInState(stateRef.current, tabId, title, shortTitle)),
     setWidths: (widths) => commit({ ...stateRef.current, widths }),
     isTabDirty,
     requestNewTab: () => onNewTabRequest?.(),
@@ -639,10 +733,27 @@ export function PaneTabsProvider({ state, onChange, onSaveTab, onNewTabRequest, 
   useEffect(() => {
     if (!shortcuts || maximized === null) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
-      if (document.querySelector('[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]')) return;
+      if (
+        event.key !== "Escape" ||
+        event.defaultPrevented ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey
+      )
+        return;
+      if (
+        document.querySelector(
+          '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]',
+        )
+      )
+        return;
       const target = event.target as HTMLElement | null;
-      if (target?.closest('input, textarea, select, [contenteditable="true"], [role="combobox"], [role="grid"], [data-own-escape]')) return;
+      if (
+        target?.closest(
+          'input, textarea, select, [contenteditable="true"], [role="combobox"], [role="grid"], [data-own-escape]',
+        )
+      )
+        return;
       event.preventDefault();
       setMaximized(null);
     };
@@ -756,7 +867,9 @@ export function buildTabMenuActions(
   if (!found) return [];
   const { tab, pane, paneIndex } = found;
   const count = api.state.panes.length;
-  const groups: PaneMenuAction[][] = [[{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }]];
+  const groups: PaneMenuAction[][] = [
+    [{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }],
+  ];
   const tabActions: PaneMenuAction[] = [];
   Array.from({ length: count }, (_, index) => index)
     .filter((index) => index !== paneIndex)
@@ -767,10 +880,27 @@ export function buildTabMenuActions(
         onSelect: () => api.moveTab(tabId, api.state.panes[index].id),
       }),
     );
-  if (tab.kind === "list") tabActions.push({ id: "duplicate", label: t.duplicate, onSelect: () => api.duplicateTab(tabId) });
+  if (tab.kind === "list")
+    tabActions.push({
+      id: "duplicate",
+      label: t.duplicate,
+      onSelect: () => api.duplicateTab(tabId),
+    });
   if (tabActions.length) groups.push(tabActions);
-  groups.push([{ id: "closePane", label: t.closePane, shortcut: "Alt+Shift+W", onSelect: () => api.closePane(pane.id) }]);
-  return groups.flatMap((group, groupIndex) => group.map((action, actionIndex) => ({ ...action, separatorBefore: groupIndex > 0 && actionIndex === 0 })));
+  groups.push([
+    {
+      id: "closePane",
+      label: t.closePane,
+      shortcut: "Alt+Shift+W",
+      onSelect: () => api.closePane(pane.id),
+    },
+  ]);
+  return groups.flatMap((group, groupIndex) =>
+    group.map((action, actionIndex) => ({
+      ...action,
+      separatorBefore: groupIndex > 0 && actionIndex === 0,
+    })),
+  );
 }
 
 /** Kontext panelu pro záhlaví stránky (usePaneChrome). */

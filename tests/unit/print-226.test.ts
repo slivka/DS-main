@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import { amountInWordsCs, reportPageLabel } from "../../src/components/ds/print/report-pdf";
-import { cashReceiptNumberLabel, formatCashReceiptMoney, planCashReceiptPages } from "../../src/components/ds/print/cash-receipt-pdf";
+import {
+  cashReceiptNumberLabel,
+  formatCashReceiptMoney,
+  planCashReceiptPages,
+} from "../../src/components/ds/print/cash-receipt-pdf";
 
 describe("české částky slovy", () => {
   it.each([
@@ -16,7 +20,10 @@ describe("české částky slovy", () => {
     [1001, "jedentisícjednakorunčeských"],
     [2.999, "třikorunyčeské"],
     [1_000_000_000, "jednamiliardakorunčeských"],
-    [1234567.89, "jedenmiliondvěstětřicetčtyřitisícpětsetšedesátsedmkorunčeských a osmdesátdevěthaléřů"],
+    [
+      1234567.89,
+      "jedenmiliondvěstětřicetčtyřitisícpětsetšedesátsedmkorunčeských a osmdesátdevěthaléřů",
+    ],
     [-2, "minus dvěkorunyčeské"],
     [1.01, "jednakorunačeská a jedenhaléř"],
     [2.02, "dvěkorunyčeské a dvahaléře"],
@@ -29,7 +36,8 @@ describe("české částky slovy", () => {
     expect(amountInWordsCs(1, "EUR")).toBe("jedna EUR");
     expect(amountInWordsCs(180.5, "GBP")).toBe("stoosmdesát GBP a 50/100");
   });
-  it("odmítne bilion a vyšší částky", () => expect(() => amountInWordsCs(1_000_000_000_000)).toThrow());
+  it("odmítne bilion a vyšší částky", () =>
+    expect(() => amountInWordsCs(1_000_000_000_000)).toThrow());
 });
 
 describe("číslování stran sestavy", () => {
@@ -48,8 +56,10 @@ describe("měnové značky pokladního dokladu 2.44.0", () => {
 describe("tisk pokladního dokladu podle nastavení 2.51.0", () => {
   it("skládá kopie po dvou na stránku", () => {
     expect(planCashReceiptPages(5, true, false)).toEqual([
-      { page: 0, slot: 0, copy: false }, { page: 0, slot: 1, copy: true },
-      { page: 1, slot: 0, copy: true }, { page: 1, slot: 1, copy: true },
+      { page: 0, slot: 0, copy: false },
+      { page: 0, slot: 1, copy: true },
+      { page: 1, slot: 0, copy: true },
+      { page: 1, slot: 1, copy: true },
       { page: 2, slot: 0, copy: true },
     ]);
   });
@@ -59,7 +69,9 @@ describe("tisk pokladního dokladu podle nastavení 2.51.0", () => {
     expect(planCashReceiptPages(1, true, false)).toEqual([{ page: 0, slot: 0, copy: false }]);
   });
   it("vypnutý tisk čísla nechává pole prázdné", () => {
-    expect(cashReceiptNumberLabel({ number: "PPD1", status: "filed", printNumber: false })).toBe("");
+    expect(cashReceiptNumberLabel({ number: "PPD1", status: "filed", printNumber: false })).toBe(
+      "",
+    );
     expect(cashReceiptNumberLabel({ number: "PPD1", status: "filed" })).toBe("PPD1");
     expect(cashReceiptNumberLabel({ number: "PPD1", status: "draft" })).toBe("—");
   });

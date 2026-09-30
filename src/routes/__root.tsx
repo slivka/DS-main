@@ -80,7 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Slivka Design System" },
-      { name: "description", content: "Firemní design systém pro aplikace Slivka – komponenty, gridy, formuláře a pravidla." },
+      {
+        name: "description",
+        content:
+          "Firemní design systém pro aplikace Slivka – komponenty, gridy, formuláře a pravidla.",
+      },
       { property: "og:title", content: "Slivka Design System" },
       { property: "og:description", content: "Firemní design systém pro aplikace Slivka." },
       { property: "og:type", content: "website" },
@@ -88,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
-        // Fonty do head() přidává SlivkaHead; zde zůstává jen CSS ukázkové aplikace.
+      // Fonty do head() přidává SlivkaHead; zde zůstává jen CSS ukázkové aplikace.
       {
         rel: "stylesheet",
         href: appCss,

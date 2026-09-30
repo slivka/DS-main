@@ -131,14 +131,33 @@ export type GridColumnGroup = { section: string; span: number };
  * Nastavení se ukládá do prohlížeče pod `columns:<storageKey>`.
  * Vrací i `hiddenIndexes` pro `ZoomGrid`, takže grid nemusí podmiňovat jednotlivé buňky.
  */
-export function useGridColumns<Id extends string>(storageKey: string, columns: GridColumn<Id>[], options: { normalizeVisible?: (visible: Record<Id, boolean>) => Record<Id, boolean> } = {}) {
+export function useGridColumns<Id extends string>(
+  storageKey: string,
+  columns: GridColumn<Id>[],
+  options: { normalizeVisible?: (visible: Record<Id, boolean>) => Record<Id, boolean> } = {},
+) {
   const normalizeVisible = options.normalizeVisible ?? keepVisibleState;
-  const persistentIds = useMemo(() => new Set(columns.filter((column) => !column.transient).map((column) => column.id)), [columns]);
-  const persistentRecord = useCallback(<Value,>(record: Partial<Record<Id, Value>>) => Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))), [persistentIds]);
-  const persistentOrder = useCallback((ids: Id[]) => ids.filter((id) => persistentIds.has(id)), [persistentIds]);
+  const persistentIds = useMemo(
+    () => new Set(columns.filter((column) => !column.transient).map((column) => column.id)),
+    [columns],
+  );
+  const persistentRecord = useCallback(
+    <Value,>(record: Partial<Record<Id, Value>>) =>
+      Object.fromEntries(Object.entries(record).filter(([id]) => persistentIds.has(id as Id))),
+    [persistentIds],
+  );
+  const persistentOrder = useCallback(
+    (ids: Id[]) => ids.filter((id) => persistentIds.has(id)),
+    [persistentIds],
+  );
   const defaults = useMemo(
     () =>
-      normalizeVisible(Object.fromEntries(columns.map((c) => [c.id, c.defaultVisible !== false])) as Record<Id, boolean>),
+      normalizeVisible(
+        Object.fromEntries(columns.map((c) => [c.id, c.defaultVisible !== false])) as Record<
+          Id,
+          boolean
+        >,
+      ),
     [columns, normalizeVisible],
   );
 
@@ -190,8 +209,10 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
 
   useEffect(() => {
     const sync = (event: Event) => {
-      const detail = (event as CustomEvent<{ storageKey: string; visible: Record<Id, boolean> }>).detail;
-      if (detail?.storageKey === storageKey && detail.visible) setVisible(normalizeVisible(detail.visible));
+      const detail = (event as CustomEvent<{ storageKey: string; visible: Record<Id, boolean> }>)
+        .detail;
+      if (detail?.storageKey === storageKey && detail.visible)
+        setVisible(normalizeVisible(detail.visible));
     };
     window.addEventListener("grid-columns-change", sync);
     return () => window.removeEventListener("grid-columns-change", sync);
@@ -217,7 +238,9 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       } catch {
         /* úložiště není dostupné */
       }
-      window.dispatchEvent(new CustomEvent("grid-columns-change", { detail: { storageKey, visible: safe } }));
+      window.dispatchEvent(
+        new CustomEvent("grid-columns-change", { detail: { storageKey, visible: safe } }),
+      );
     },
     [storageKey, persistentRecord, normalizeVisible],
   );
@@ -227,7 +250,11 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       persist({ ...visible, [id]: !visible[id] });
       setExplicitVisibility((current) => {
         const next = current.includes(id) ? current : [...current, id];
-        try { localStorage.setItem(visibilityOverridesKey, JSON.stringify(next)); } catch { /* úložiště není dostupné */ }
+        try {
+          localStorage.setItem(visibilityOverridesKey, JSON.stringify(next));
+        } catch {
+          /* úložiště není dostupné */
+        }
         return next;
       });
     },
@@ -282,7 +309,9 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
       } catch {
         /* úložiště není dostupné */
       }
-      window.dispatchEvent(new CustomEvent("grid-column-order-change", { detail: { storageKey, order: next } }));
+      window.dispatchEvent(
+        new CustomEvent("grid-column-order-change", { detail: { storageKey, order: next } }),
+      );
     },
     [storageKey, persistentOrder],
   );
@@ -335,7 +364,8 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
 
   useEffect(() => {
     const onShared = (e: Event) => {
-      const detail = (e as CustomEvent<{ key: string; widths: Partial<Record<Id, number>> }>).detail;
+      const detail = (e as CustomEvent<{ key: string; widths: Partial<Record<Id, number>> }>)
+        .detail;
       if (!detail || detail.key !== widthsKey) return;
       setWidths(detail.widths);
     };
@@ -391,7 +421,6 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     [storeWidths],
   );
 
-
   // --- vlastní výchozí nastavení ----------------------------------------
   const defaultKey = `columnsDefault:${storageKey}`;
   const [hasCustomDefault, setHasCustomDefault] = useState(false);
@@ -407,7 +436,14 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
   /** Uloží aktuální viditelnost, pořadí i šířky jako výchozí zobrazení gridu. */
   const saveDefault = useCallback(() => {
     try {
-      localStorage.setItem(defaultKey, JSON.stringify({ visible: persistentRecord(visible), order: persistentOrder(order), widths: persistentRecord(widths) }));
+      localStorage.setItem(
+        defaultKey,
+        JSON.stringify({
+          visible: persistentRecord(visible),
+          order: persistentOrder(order),
+          widths: persistentRecord(widths),
+        }),
+      );
       setHasCustomDefault(true);
     } catch {
       /* úložiště není dostupné */
@@ -459,10 +495,29 @@ export function useGridColumns<Id extends string>(storageKey: string, columns: G
     }
     persistWidths(saved?.widths ?? {});
     setExplicitVisibility([]);
-    try { localStorage.removeItem(visibilityOverridesKey); } catch { /* úložiště není dostupné */ }
-  }, [defaultKey, defaults, columns, persist, persistOrder, persistWidths, defaultOrder, visibilityOverridesKey]);
+    try {
+      localStorage.removeItem(visibilityOverridesKey);
+    } catch {
+      /* úložiště není dostupné */
+    }
+  }, [
+    defaultKey,
+    defaults,
+    columns,
+    persist,
+    persistOrder,
+    persistWidths,
+    defaultOrder,
+    visibilityOverridesKey,
+  ]);
 
-  const views = useColumnViews(storageKey, persistentRecord(visible) as Record<Id, boolean>, persist, persistentOrder(order), persistOrder);
+  const views = useColumnViews(
+    storageKey,
+    persistentRecord(visible) as Record<Id, boolean>,
+    persist,
+    persistentOrder(order),
+    persistOrder,
+  );
 
   // --- sekce sloupců -----------------------------------------------------
   const sections = useMemo(

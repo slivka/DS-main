@@ -89,10 +89,7 @@ export function PartnerSelect({
     onOpenChange?.(next);
   };
 
-  const list = useMemo(
-    () => partners.filter((partner) => partner.active !== false),
-    [partners],
-  );
+  const list = useMemo(() => partners.filter((partner) => partner.active !== false), [partners]);
   const selected = partners.find((partner) => partner.id === value);
 
   return (

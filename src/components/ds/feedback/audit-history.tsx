@@ -82,16 +82,30 @@ export function HistoryPanel({
                   {formatUserDateTime(row.createdAt)}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">{row.author ?? dsTexts.recordDialog.system}</p>
+              <p className="text-xs text-muted-foreground">
+                {row.author ?? dsTexts.recordDialog.system}
+              </p>
               {row.action === "update" && row.changedFields?.length ? (
                 <ul className="mt-2 space-y-1">
                   {row.changedFields.map((field) => (
                     <li key={field} className="text-xs">
                       <span className="font-medium">{fieldLabel(field)}: </span>
                       <span className="text-muted-foreground line-through">
-                        {shortValue(row.oldData?.[field], dsTexts.recordDialog.yes, dsTexts.recordDialog.no)}
+                        {shortValue(
+                          row.oldData?.[field],
+                          dsTexts.recordDialog.yes,
+                          dsTexts.recordDialog.no,
+                        )}
                       </span>
-                      <span> → {shortValue(row.newData?.[field], dsTexts.recordDialog.yes, dsTexts.recordDialog.no)}</span>
+                      <span>
+                        {" "}
+                        →{" "}
+                        {shortValue(
+                          row.newData?.[field],
+                          dsTexts.recordDialog.yes,
+                          dsTexts.recordDialog.no,
+                        )}
+                      </span>
                     </li>
                   ))}
                 </ul>

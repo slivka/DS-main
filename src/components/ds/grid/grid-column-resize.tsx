@@ -32,7 +32,9 @@ export function ColumnResizeHandle({
     const startX = e.clientX;
     const startWidth = head.getBoundingClientRect().width;
     const move = (ev: PointerEvent) => {
-      onResize(Math.max(60, Math.round((startWidth + ev.clientX - startX) / Math.max(scale, 0.01))));
+      onResize(
+        Math.max(60, Math.round((startWidth + ev.clientX - startX) / Math.max(scale, 0.01))),
+      );
     };
     document.body.style.userSelect = "none";
     document.body.style.cursor = "col-resize";

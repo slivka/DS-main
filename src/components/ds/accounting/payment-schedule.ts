@@ -58,20 +58,25 @@ export function addDaysIso(iso: string, days: number): string {
  * Rozloží částku k úhradě na splátky a volitelnou pozastávku – stejně jako databáze.
  * Částky se zaokrouhlí na 2 desetinná místa, rozdíl ze zaokrouhlení jde do poslední splátky.
  */
-export function generatePaymentSchedule(total: number, params: PaymentScheduleParams): PaymentScheduleItem[] {
+export function generatePaymentSchedule(
+  total: number,
+  params: PaymentScheduleParams,
+): PaymentScheduleItem[] {
   const count = Math.max(1, Math.floor(params.count));
-  const retention = params.retentionPercent != null && params.retentionPercent > 0
-    ? round2((total * params.retentionPercent) / 100)
-    : params.retentionAmount != null && params.retentionAmount > 0
-      ? round2(params.retentionAmount)
-      : 0;
+  const retention =
+    params.retentionPercent != null && params.retentionPercent > 0
+      ? round2((total * params.retentionPercent) / 100)
+      : params.retentionAmount != null && params.retentionAmount > 0
+        ? round2(params.retentionAmount)
+        : 0;
   const toSplit = round2(total - retention);
   const base = round2(toSplit / count);
   const items: PaymentScheduleItem[] = [];
   for (let i = 0; i < count; i += 1) {
-    const dueDate = params.interval === "days"
-      ? addDaysIso(params.firstDueDate, i * Math.max(1, params.intervalDays ?? 30))
-      : addMonthsIso(params.firstDueDate, i * (params.interval === "quarter" ? 3 : 1));
+    const dueDate =
+      params.interval === "days"
+        ? addDaysIso(params.firstDueDate, i * Math.max(1, params.intervalDays ?? 30))
+        : addMonthsIso(params.firstDueDate, i * (params.interval === "quarter" ? 3 : 1));
     const amount = i === count - 1 ? round2(toSplit - base * (count - 1)) : base;
     items.push({
       kind: "installment",
@@ -93,5 +98,7 @@ export function generatePaymentSchedule(total: number, params: PaymentSchedulePa
 
 /** Součet částek kalendáře zaokrouhlený na haléře. */
 export function sumPaymentSchedule(items: PaymentScheduleItem[]): number {
-  return round2(items.reduce((sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0), 0));
+  return round2(
+    items.reduce((sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0), 0),
+  );
 }
