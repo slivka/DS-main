@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../.
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 import { cn } from "../../../lib/utils";
-import { applyAppZoom, createAppWheelZoom, effectiveViewportWidth, getAppZoom, isAppZoomShortcut, resetAppZoom, setAppZoom, useAppZoom } from "../../../lib/app-zoom";
+import { effectiveViewportWidth, isAppZoomShortcut, useAppZoom, useAppZoomShortcuts } from "../../../lib/app-zoom";
 import { isResizeLocked, RESIZE_END_EVENT, startPointerDrag } from "../../../lib/resize-lock";
 import { usePaneTabs, useActivePaneTab } from "../panes/pane-context";
 import { handlePaneLinkEvent } from "../panes/pane-link";
@@ -18,25 +18,9 @@ import { StatusBadge, type StatusTone } from "../data-display/status-badge";
 import { TruncatedText } from "../data-display/truncated-text";
 import { useDsTexts } from "../../../ds-texts";
 import { AppShellContentProvider } from "./page-layout";
+import { isNavItemActive, navItemClassName, NavItemContent, NavSectionLabel, type NavGroup, type NavItem } from "./nav-items";
 
-export type NavItem = {
-  to: string;
-  label: string;
-  icon?: ComponentType<{ className?: string }>;
-  search?: Record<string, string>;
-  badge?: ReactNode;
-  disabled?: boolean;
-  disabledHint?: string;
-};
-
-export type NavGroup = {
-  id: string;
-  label: string;
-  items: NavItem[];
-  defaultCollapsed?: boolean;
-  /** Nadpis vizuálního bloku; po sobě jdoucí skupiny se stejnou hodnotou tvoří jeden blok. */
-  section?: string;
-};
+export type { NavItem, NavGroup } from "./nav-items";
 
 export type AppShellScope = "company" | "workspace" | "platform";
 
@@ -169,7 +153,7 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
   const paneTabs = usePaneTabs();
   const activeTab = useActivePaneTab();
   const currentPath = paneTabs ? activeTab?.route ?? "" : pathname;
-  const isActive = (item: NavItem) => !item.disabled && (currentPath === item.to || currentPath.startsWith(`${item.to}/`));
+  const isActive = (item: NavItem) => isNavItemActive(item, currentPath);
   const paneOpen = (item: NavItem) =>
     paneTabs ? (target: OpenTabTarget) => paneTabs.openTab(item.to, item.search, { target, title: item.label }) : null;
 
@@ -234,23 +218,9 @@ function ShellNav({ groups, bottomItems = [], pathname, collapsed, collapsibleGr
     resultIndex += 1;
     const flatIndex = resultIndex;
     const enabledIndex = enabledResults.indexOf(item);
-    const Icon = item.icon;
     const active = isActive(item);
-    const content = (
-      <>
-        <span className={cn("shell-nav-indicator absolute inset-y-1 left-0 w-0.5 rounded-r bg-sidebar-indicator transition-opacity", active ? "opacity-100" : "opacity-0")} />
-        {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4 shrink-0" />}
-        {!collapsed ? <span className="min-w-0 flex-1 truncate">{query ? highlightNavMatch(item.label, query) : item.label}</span> : null}
-        {!collapsed && item.disabled ? <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-sidebar-muted/50" /> : null}
-        {!collapsed && item.badge != null ? <span data-slot="shell-nav-badge" className="ml-auto shrink-0 rounded-full bg-sidebar-badge px-2 py-0.5 text-xs font-medium text-sidebar-badge-foreground">{item.badge}</span> : null}
-      </>
-    );
-    const base = cn(
-      "shell-nav-item relative flex h-9 items-center gap-2 rounded-md text-sm transition-colors hover-surface",
-      collapsed ? "justify-center px-2" : "px-3",
-      active ? "bg-sidebar-active font-semibold text-sidebar-active-foreground" : "text-sidebar-foreground/90",
-      item.disabled && "cursor-not-allowed text-sidebar-muted opacity-80",
-    );
+    const content = <NavItemContent item={item} active={active} collapsed={collapsed} label={query ? highlightNavMatch(item.label, query) : item.label} />;
+    const base = navItemClassName({ active, collapsed, disabled: item.disabled });
     const node = item.disabled ? (
       <span aria-disabled="true" data-active="false" className={base}>{content}</span>
     ) : (
@@ -330,14 +300,9 @@ function ShellNavSection({ label, first, collapsed, query = "" }: { label: strin
       </Tooltip>
     );
   }
-  return (
-    <div data-nav-section={label} className={cn(!first && "mt-4 border-t border-sidebar-border pt-4")}>
-      <div className="flex h-7 items-center px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-sidebar-muted">
-        <span className="truncate">{query ? highlightNavMatch(label, query) : label}</span>
-      </div>
-    </div>
-  );
+  return <NavSectionLabel label={label} first={first}>{query ? highlightNavMatch(label, query) : label}</NavSectionLabel>;
 }
+
 
 function ShellNavGroup({ group, groupIndex, sectionStart, active, forcedOpen, query, collapsed, collapsible, navStateKey, renderItem, containsActivePageLabel }: { group: NavGroup; groupIndex: number; sectionStart: string | null; active: boolean; forcedOpen: boolean; query: string; collapsed: boolean; collapsible: boolean; navStateKey: string; renderItem: (item: NavItem) => ReactNode; containsActivePageLabel: string }) {
   const storageKey = `ds:nav-groups:${navStateKey}:${group.id}`;
@@ -383,15 +348,6 @@ export function resolveMenuWidth(stored: number, maximum: number) {
   return Math.min(maximum, Math.max(12.5, stored));
 }
 const formatMenuRem = (value: number) => value.toLocaleString("cs-CZ", { maximumFractionDigits: 2 });
-
-const APP_ZOOM_KEY_STEP = 0.05;
-
-/** Otevřený nativní `<select>` si kolečko ponechá. */
-function isNativeSelectOpen() {
-  const active = document.activeElement;
-  if (!(active instanceof HTMLSelectElement)) return false;
-  try { return active.matches(":open"); } catch { return false; }
-}
 
 export function AppShell({
   children,
@@ -460,20 +416,8 @@ export function AppShell({
   const searchOverlayRef = useRef<HTMLDivElement>(null);
   const shellBodyRef = useRef<HTMLDivElement>(null);
 
-  // Zoom aplikace se aplikuje jen jednou při startu; další změny dělá setAppZoom / resetAppZoom.
-  useLayoutEffect(() => { applyAppZoom(getAppZoom()); }, []);
-  // Ctrl/Cmd + kolečko mimo grid = zoom aplikace. Grid událost zpracuje dřív (defaultPrevented).
-  useEffect(() => {
-    const step = createAppWheelZoom((direction) => setAppZoom(getAppZoom() + direction * APP_ZOOM_KEY_STEP));
-    const onWheel = (event: WheelEvent) => {
-      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
-      if (isNativeSelectOpen()) return;
-      event.preventDefault();
-      step(event);
-    };
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onWheel);
-  }, []);
+  // Zoom aplikace (start, klávesy, kolečko) sdílí AppShell i StandaloneShell.
+  useAppZoomShortcuts();
   useEffect(() => {
     if (manageDocumentTitle) document.title = appName;
   }, [appName, manageDocumentTitle]);
@@ -550,15 +494,7 @@ export function AppShell({
     const onKey = (event: KeyboardEvent) => {
       const target = event.target;
       const isEditing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
-      // Zoom aplikace funguje i s kurzorem v poli; klávesy přebíráme od prohlížeče.
-      const zoomAction = isAppZoomShortcut(event);
-      if (zoomAction) {
-        event.preventDefault();
-        if (zoomAction === "increase") setAppZoom(getAppZoom() + APP_ZOOM_KEY_STEP);
-        else if (zoomAction === "decrease") setAppZoom(getAppZoom() - APP_ZOOM_KEY_STEP);
-        else resetAppZoom();
-        return;
-      }
+      if (isAppZoomShortcut(event)) return;
       if (!event.ctrlKey || event.altKey || event.metaKey || event.key.toLowerCase() !== "b" || isEditing) return;
       event.preventDefault();
       setCollapsed(!collapsedRef.current);
