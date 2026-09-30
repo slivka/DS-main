@@ -518,37 +518,41 @@ export function setTabTitleInState(state: PaneTabsState, tabId: string, title: s
   return replacePane(state, { ...found.pane, tabs: found.pane.tabs.map((item) => (item.id === tabId ? tab : item)) });
 }
 
-/** Sloučí záložky panelu do sousedního (vlevo, u prvního vpravo) a panel odebere. */
+/**
+ * Sloučí záložky panelu do sousedního (vlevo, u prvního vpravo) a panel odebere.
+ * S `limit` zavře nejstarší nerozepsané neaktivní záložky nad MAX_TABS_PER_PANE;
+ * když to nestačí, panel limit dočasně překročí. Bez `limit` nic nezavírá.
+ */
 function mergePaneAway(
   state: PaneTabsState,
   paneIndex: number,
-  isDirty: (tabId: string) => boolean = () => false,
-): { state: PaneTabsState; closedTabIds: string[]; rejected: boolean } {
-  if (state.panes.length < 2) return { state, closedTabIds: [], rejected: false };
+  limit?: { isDirty: (tabId: string) => boolean },
+): { state: PaneTabsState; closedTabIds: string[] } {
+  if (state.panes.length < 2) return { state, closedTabIds: [] };
   const source = state.panes[paneIndex];
   const targetIndex = paneIndex === 0 ? 1 : paneIndex - 1;
   const target = state.panes[targetIndex];
   let tabs = paneIndex === 0 ? [...source.tabs, ...target.tabs] : [...target.tabs, ...source.tabs];
   const closedTabIds: string[] = [];
-  while (tabs.length > MAX_TABS_PER_PANE) {
-    const victim = pickEvictionVictim(tabs, isDirty);
-    if (!victim) return { state, closedTabIds: [], rejected: true };
-    closedTabIds.push(victim.id);
-    tabs = tabs.filter((tab) => tab.id !== victim.id);
+  if (limit) {
+    const protectedIds = [source.activeTab, target.activeTab].filter((id): id is string => !!id);
+    while (tabs.length > MAX_TABS_PER_PANE) {
+      const victim = pickEvictionVictim(tabs, limit.isDirty, protectedIds);
+      if (!victim) break;
+      closedTabIds.push(victim.id);
+      tabs = tabs.filter((tab) => tab.id !== victim.id);
+    }
   }
   const merged: TabPane = { ...target, tabs, activeTab: target.activeTab ?? source.activeTab };
   const panes = state.panes.map((pane) => (pane.id === target.id ? merged : pane)).filter((pane) => pane.id !== source.id);
   const layout = clampLayout(panes.length);
-  return { state: {
-      ...state,
-      panes,
-      layout,
-      widths: evenWidths(layout),
-      active: state.active === source.id ? merged.id : state.active,
-    }, closedTabIds, rejected: false };
+  return {
+    state: { ...state, panes, layout, widths: evenWidths(layout), active: state.active === source.id ? merged.id : state.active },
+    closedTabIds,
+  };
 }
 
-export type SetLayoutResult = { state: PaneTabsState; closedTabIds: string[]; rejected: boolean };
+export type SetLayoutResult = { state: PaneTabsState; closedTabIds: string[] };
 
 /** Změní počet panelů a při slučování dodrží limit záložek. */
 export function setLayoutWithLimitInState(state: PaneTabsState, layout: PaneLayoutCount, isDirty: (tabId: string) => boolean = () => false): SetLayoutResult {
@@ -556,15 +560,14 @@ export function setLayoutWithLimitInState(state: PaneTabsState, layout: PaneLayo
   const closedTabIds: string[] = [];
   if (layout > next.panes.length) {
     const added = Array.from({ length: layout - next.panes.length }, emptyPane);
-    return { state: { ...next, panes: [...next.panes, ...added], layout, widths: evenWidths(layout), active: added[0].id }, closedTabIds, rejected: false };
+    return { state: { ...next, panes: [...next.panes, ...added], layout, widths: evenWidths(layout), active: added[0].id }, closedTabIds };
   }
   while (next.panes.length > layout) {
-    const merged = mergePaneAway(next, next.panes.length - 1, isDirty);
-    if (merged.rejected) return { state, closedTabIds: [], rejected: true };
+    const merged = mergePaneAway(next, next.panes.length - 1, { isDirty });
     next = merged.state;
     closedTabIds.push(...merged.closedTabIds);
   }
-  return { state: { ...next, layout, widths: evenWidths(layout) }, closedTabIds, rejected: false };
+  return { state: { ...next, layout, widths: evenWidths(layout) }, closedTabIds };
 }
 
 /** Změna počtu panelů: přidané jsou prázdné a první z nich aktivní; ubrané přesunou záložky doleva. */
@@ -579,7 +582,7 @@ export function closePaneInState(state: PaneTabsState, paneId: string): PaneTabs
   if (state.panes.length === 1) return { ...state, panes: [{ ...state.panes[0], tabs: [], activeTab: null }], hiddenPanes: null };
   const panes = state.panes.filter((pane) => pane.id !== paneId);
   const adjacentIndex = Math.min(index, panes.length - 1);
-  const active = panes[adjacentIndex]?.id ?? panes[0]?.id ?? state.active;
+  const active = state.active === paneId ? (panes[adjacentIndex]?.id ?? panes[0].id) : state.active;
   const layout = clampLayout(panes.length);
   return { ...state, panes, active, layout, widths: evenWidths(layout), hiddenPanes: null };
 }
@@ -595,6 +598,7 @@ export function applyMaxLayout(state: PaneTabsState, maxLayout: PaneLayoutCount)
       panes: state.panes.map((pane) => ({ id: pane.id, tabIds: pane.tabs.map((tab) => tab.id), activeTab: pane.activeTab })),
     };
     let next = state;
+    // Automatické zúžení nikdy nic nezavírá – panel smí dočasně překročit limit.
     while (next.panes.length > maxLayout) next = mergePaneAway(next, next.panes.length - 1).state;
     return { state: { ...next, hiddenPanes: snapshot }, notice: "narrowed" };
   }

@@ -304,7 +304,7 @@ function PaneLayoutInner({
               renderEmpty={renderEmpty}
               getTabIcon={getTabIcon}
               emptyHint={emptyHint}
-              texts={texts}
+              texts={{ ...dsTexts.paneChrome, ...texts }}
               maximized={maximized === pane.id}
               flashing={api.flashPaneId === pane.id}
               getIconByName={(name) => (getTabIcon ? getTabIcon({ icon: name } as PaneTab) : undefined)}
