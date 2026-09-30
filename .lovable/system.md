@@ -352,6 +352,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Záznamy ze seznamu vždy otevírej přes `openRecord(route, params, { fromTabId: usePane().tabId, isNew, modifiers: event })`. Čistý detail ze stejného seznamu se nahradí; při neuložených změnách se otevře další záložka; nový záznam vždy další záložka.
 - Stránka v panelu vždy začíná `PageHeader`: vlevo má jen nadpis a dirty tečku, vpravo jen ↑/↓, ←/→, maximalizaci a ⋯. Akce celé stránky dávej do `menuActions`; `actions` je jen pro stránky mimo panel. „Nový“ patří do `DataGrid.addAction`.
 - `LayoutMenu trigger="icon"` patří přes `AppShell.navSearchMenu` vedle hledání v menu, nikdy do horní lišty.
+- Nabídka rozložení má pevně Uložit jako nové + ikonovou Správu, uložená rozložení a Přepsat uložené aktuálním; výchozí rozložení se zde neurčuje.
+- Nabídka záložky má jen Zavřít záložku, přesun do jiného panelu, Duplikovat záložku pro seznam a Zavřít panel. Novou položku nepřidávej bez souhlasu.
+- Uživatelská nabídka řadí záhlaví, vlastní položky, Velikost zobrazení, Pracovní prostor a Odhlásit. Novou položku nepřidávej bez souhlasu.
+- Řádek nadpisu panelu nemá ikonu; ikona patří jen do tlačítka panelu v horní liště.
+- Zavřít panel zavře všechny jeho záložky po společné kontrole změn a uloží je pro Alt+Shift+T. Zmenšení rozložení panely nadále slučuje.
 - Rozepsané formuláře: `useTabDraft(tabId, initial, key, { route, params, recordVersion: updated_at })`, po uložení `meta.markSaved()`, nad formulářem `DraftRestoredBanner`. `persistDrafts({ userKey, companyId })` volej po přihlášení / změně firmy.
 - Zkratky navíc: Alt+M, Esc (jen při maximalizaci), Alt+Shift+T, Alt+L (LayoutMenu).
 

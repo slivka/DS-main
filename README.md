@@ -1,3 +1,12 @@
+## Changelog 2.75.0 – nabídky rozložení, záložek a uživatele
+
+- `LayoutMenu` řadí uložení a správu nahoru, uložená rozložení zobrazuje bez ikon panelů a nabízí samostatné přepsání.
+- Nabídka záložky obsahuje jen zavření, přesun, duplikování seznamu a zavření panelu; ostatní funkce zůstávají přes tlačítka a zkratky.
+- `closePane` zavře všechny záložky panelu, respektuje neuložené změny a umožní jejich obnovení přes Alt+Shift+T. Přepínač počtu panelů nadále slučuje a dodržuje limit.
+- `UserMenu.workspaceAction` přidává klávesnicí dostupnou akci pracovních prostorů a nabídka má pevné pořadí.
+- Řádek nadpisu otevřeného panelu už neopakuje ikonu z horní lišty.
+- **BREAKING:** `SavedLayoutItem.isDefault` a související texty byly odstraněny. `LayoutMenu.onSave` přijímá `{ name, snapshot }` a `onUpdate` jen `{ name?, snapshot? }`.
+
 ## Changelog 2.73.0 – Edit dokladu 8 a opravy panelů
 
 - Měna je u všech dokladů bezprostředně za polem Celkem; uzamčená měna má stejně vysoký rámeček a identita pokladny či banky už měnu neobsahuje.

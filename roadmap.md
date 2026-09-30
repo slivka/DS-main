@@ -674,3 +674,11 @@
 
 ## DS 2.73.0 – druhá kontrola (fee28914)
 - [x] Opravit režim Jiný účet, datum s varováním, VS patch/reset, ořez částky, README 2.66, testy B2/B4
+
+## DS 2.75.0 – podmenu a zavírání panelů
+- [x] Přestavět LayoutMenu bez výchozího rozložení a ikon počtu panelů
+- [x] Zjednodušit nabídku záložky a zachovat bezpečné oddělovače
+- [x] Zavřít panel včetně záložek, kontroly změn, zásobníku a obnovy
+- [x] Dodržet limit záložek při slučování rozložení
+- [x] Přeskupit UserMenu, přidat workspaceAction a odebrat ikonu z nadpisu panelu
+- [ ] Ověřit všechny testy, typy, sestavení a ukázku

@@ -101,10 +101,10 @@ export function UserMenu({
         {workspaces.length || workspaceAction ? (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="flex items-center text-xs font-medium text-muted-foreground">
-              <span className="mr-auto">{workspaceLabel}</span>
+            <div className="flex items-center">
+              <DropdownMenuLabel className="min-w-0 flex-1 text-xs font-medium text-muted-foreground">{workspaceLabel}</DropdownMenuLabel>
               {workspaceAction ? <WorkspaceAction action={workspaceAction} /> : null}
-            </DropdownMenuLabel>
+            </div>
             {workspaces.length > 8 ? (
               <div className="relative px-1 pb-1">
                 <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
@@ -132,18 +132,17 @@ export function UserMenu({
 
 function WorkspaceAction({ action }: { action: NonNullable<UserMenuProps["workspaceAction"]> }) {
   const Icon = action.icon;
+  const item = action.to ? (
+    <DropdownMenuItem asChild className="w-9 shrink-0 justify-center px-0" aria-label={action.label}>
+      <Link to={action.to as never} onClick={() => action.onSelect?.()}><Icon className="size-4" /></Link>
+    </DropdownMenuItem>
+  ) : (
+    <DropdownMenuItem className="w-9 shrink-0 justify-center px-0" aria-label={action.label} onSelect={action.onSelect}><Icon className="size-4" /></DropdownMenuItem>
+  );
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          {action.to ? (
-            <Button asChild type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label}>
-              <Link to={action.to as never} onClick={() => action.onSelect?.()}><Icon className="size-4" /></Link>
-            </Button>
-          ) : (
-            <Button type="button" variant="ghost" size="icon" className="size-7" aria-label={action.label} onClick={action.onSelect}><Icon className="size-4" /></Button>
-          )}
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{item}</TooltipTrigger>
         <TooltipContent>{action.label}</TooltipContent>
       </Tooltip>
     </TooltipProvider>

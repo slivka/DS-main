@@ -76,7 +76,7 @@ describe("podmenu DS 2.75.0", () => {
     const zoom = view.getByText("Velikost zobrazení");
     expect(email.compareDocumentPosition(profile) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(profile.compareDocumentPosition(zoom) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(view.getByRole("button", { name: "Spravovat pracovní prostory" })).toBeTruthy();
+    expect(view.getByRole("menuitem", { name: "Spravovat pracovní prostory" })).toBeTruthy();
     expect(view.getByRole("menuitemradio", { name: "Hlavní prostor" }).querySelectorAll("svg")).toHaveLength(1);
     expect(email.parentElement?.querySelectorAll("span")).toHaveLength(1);
   });
