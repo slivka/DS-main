@@ -222,7 +222,9 @@ describe("podmenu DS 2.75.0", () => {
   });
 
   it("limitClosed bere text z DsTexts (SK) a prop texts má přednost", () => {
-    const infoSpy = spyOn(toast, "info").mockImplementation(() => "");
+    const originalInfo = toast.info;
+    const infoSpy = mock(() => "" as never);
+    toast.info = infoSpy as never;
     const makeState = () => {
       let state = setLayoutInState(createPaneTabsState(1), 2);
       for (const pane of state.panes) {
@@ -245,6 +247,6 @@ describe("podmenu DS 2.75.0", () => {
     render(<Host texts={{ limitClosed: "Vlastní {count}/{max}" }} />);
     act(() => api?.setLayout(1));
     expect(infoSpy).toHaveBeenCalledWith("Vlastní 4/10");
-    infoSpy.mockRestore();
+    toast.info = originalInfo;
   });
 });
