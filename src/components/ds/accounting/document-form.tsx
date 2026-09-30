@@ -368,6 +368,21 @@ export function DocumentForm({
   ];
   const dateNoticeBars = dateWarningEntries.filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2])).map(([key, label, warning]) => <NoticeBar key={key} tone="warning" title={label}>{warning}</NoticeBar>);
   const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
+  const changeExternalNumber = (externalNumber: string) => {
+    const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
+    const nextSuggested = vsFromDocumentNumber(externalNumber);
+    const mayUpdateVs = can("variableSymbol") && (!value.variableSymbol || value.variableSymbol === previousSuggested);
+    patch({ externalNumber, ...(receivedDocument && mayUpdateVs && nextSuggested ? { variableSymbol: nextSuggested } : {}) });
+  };
+  const externalNumberField = field(
+    "document-externalNumber",
+    receivedDocument ? (showVatFields ? t.supplierTaxDocumentNumber : t.supplierNumber) : t.externalNumber,
+    <><Input id="document-externalNumber" value={value.externalNumber ?? ""} onChange={(event) => changeExternalNumber(event.target.value)} disabled={!can("externalNumber")} className="h-9 font-mono tabular-nums" />{externalNumberVsWarning ? <p data-slot="document-external-number-vs-warning" className="mt-1 whitespace-nowrap text-xs text-warning-strong">{externalNumberVsWarning}</p> : null}</>,
+    6,
+    false,
+    receivedDocument || !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
+  );
+  const bankAccountField = field("document-bankAccount", t.bankAccount, <BankAccountField id="document-bankAccount" value={value.bankAccount ?? ""} onChange={(bankAccount) => patch({ bankAccount })} disabled={!can("bankAccount")} options={bankAccountOptions} bankCodes={bankCodes} invalidAccountText={t.bankAccountInvalid} invalidBankCodeText={t.bankCodeInvalid} otherAccountText={t.otherBankAccount} />, receivedDocument ? 14 : 6);
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
@@ -389,11 +404,11 @@ export function DocumentForm({
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && saveAction && !saveAction.disabled && !saveAction.busy) { event.preventDefault(); saveAction.onSave(); }
     }}>
       <PageHeader title={title} titleBadge={<span data-slot="document-title-badges" className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"> <DocumentStatusBadge status={status} approved={approved} size="md" />{titleBadges}</span>} />
-      <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={(next) => patch({ vatRelevant: next })} aria-label={t.vatRelevant} />{t.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} error={error} notices={notices} saveLabel="Uložit" moreActionsLabel="Další akce" errorTitle={t.errorTitle} closeErrorLabel={t.closeError} dataSlot="document-action-bar" errorDataSlot="document-form-error" noticesDataSlot="document-form-notices" />
+      <RecordActionBar leftContent={vat?.visible ? <label className="flex items-center gap-2 text-sm font-medium"><Switch checked={vatRelevant} disabled={vat.relevantReadOnly} onCheckedChange={(next) => patch({ vatRelevant: next })} aria-label={t.vatRelevant} />{t.vatRelevant}</label> : null} saveAction={saveAction} primaryAction={primaryAction} moreActions={actionMenu} error={error} notices={combinedNotices} saveLabel="Uložit" moreActionsLabel="Další akce" errorTitle={t.errorTitle} closeErrorLabel={t.closeError} dataSlot="document-action-bar" errorDataSlot="document-form-error" noticesDataSlot="document-form-notices" />
       {readOnly && readOnlyReason ? <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} /> : null}
 
       <section className="rounded-lg border bg-card p-4">
-          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} currencySymbol={currencySymbol ?? value.currency} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} canEditAccount={canEditIdentityAccount} pencilRef={pencilRef} onStartAccountEdit={() => setEditingIdentityAccount(true)} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => sameAccount(item.code, mainAccountId)); if (!selected) return; setSelectedIdentityAccount({ code: mainAccountId, label: `${formatAccountCode(selected.code)} - ${selected.name}`, sourceLabel: effectiveIdentity.account?.label }); patch({ mainAccountId }); closeIdentityAccount(); }} onAccountClose={closeIdentityAccount} accountOptions={allowedMainAccounts} />
+          <DocumentIdentityLine identity={effectiveIdentity} direction={directionBadge} fallback={t.numberPending} texts={t} accountLabel={identityAccountLabel} accountValue={value.mainAccountId} editingAccount={editingIdentityAccount} canEditAccount={canEditIdentityAccount} pencilRef={pencilRef} onStartAccountEdit={() => setEditingIdentityAccount(true)} onAccountChange={(mainAccountId) => { const selected = allowedMainAccounts.find((item) => sameAccount(item.code, mainAccountId)); if (!selected) return; setSelectedIdentityAccount({ code: mainAccountId, label: `${formatAccountCode(selected.code)} - ${selected.name}`, sourceLabel: effectiveIdentity.account?.label }); patch({ mainAccountId }); closeIdentityAccount(); }} onAccountClose={closeIdentityAccount} accountOptions={allowedMainAccounts} />
         {f.partner ? (
           <>
              <SectionHeading>{t.headerSection}</SectionHeading>
@@ -402,7 +417,8 @@ export function DocumentForm({
               {field("document-partner-ico", t.ico, linkedPartner ? <ReadField id="document-partner-ico" mono value={counterpartyIco ? <IcoLink ico={counterpartyIco} country={partner?.country} kind={partner?.kind} target={icoLinkTarget} /> : "—"} /> : <><Input id="document-partner-ico" value={counterpartyIco} onChange={(event) => patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })} disabled={!can("counterpartyIco")} className="h-9 font-mono tabular-nums" />{icoWarning ? <p role="alert" className="text-xs font-medium text-warning-strong">{t.invalidIco}</p> : null}</>, 3, true)}
               {field("document-partner-dic", t.dic, linkedPartner ? <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} /> : <Input id="document-partner-dic" value={counterpartyDic} onChange={(event) => patch({ counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase() })} disabled={!can("counterpartyDic")} className="h-9 font-mono uppercase tabular-nums" />, 3, true)}
                {f.handedOverBy ? suggestedText("handedOverBy", value.direction === "in" ? t.handedOverByIn : t.handedOverByOut, handedOverBySuggest, 14, "@min-[40rem]:pr-3") : null}
-              {f.externalNumber ? text("externalNumber", normalizedType === "FP" || normalizedType === "ZFP" ? t.supplierNumber : t.externalNumber, 3, f.handedOverBy ? undefined : "@min-[40rem]:col-start-15") : null}
+               {receivedDocument && f.bankAccount ? bankAccountField : null}
+               {f.externalNumber ? externalNumberField : null}
                {suggestedText("description", t.description, descriptionSuggest, 20)}
             </div>
           </>
@@ -410,13 +426,11 @@ export function DocumentForm({
 
         <SectionHeading>{t.datesSection}</SectionHeading>
         <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-          {date("issueDate", t.issueDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full")}
-          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full") : null}
-          {showVatFields ? <div className="ml-auto flex flex-wrap items-start gap-3">
-            {f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full") : null}
-            {date("vatDate", t.vatDate, "flex-none w-max min-w-[10.5rem] [&_input]:w-full", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning })}
-          </div> : null}
+          {date("issueDate", t.issueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
+          {date("accountingDate", t.accountingDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full")}
+          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
+          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max min-w-[8.5rem] [&_input]:w-full") : null}
+          {showVatFields ? date("vatDate", t.vatDate, "relative flex-none w-max min-w-[8.5rem] [&_input]:w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right", { link: vat?.dateLink ? { ...vat.dateLink, toggleDisabled: vat.dateLockReadOnly, lockedHint: vat.dateLockReadOnly ? t.vatDateLockedHint : vat.dateLink.lockedHint } : undefined, hint: vat?.periodLabel, warning: vatDateWarning ?? dateWarnings?.vatDate }) : null}
         </div>
         {!f.partner ? <div className="mt-3 grid grid-cols-20 gap-3">{suggestedText("description", t.description, descriptionSuggest, 20)}</div> : null}
 
