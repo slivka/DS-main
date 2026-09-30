@@ -120,6 +120,7 @@ export function DateField({
   const [text, setText] = React.useState(value ? formatDate(value) : "");
   const [invalid, setInvalid] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const warningId = React.useId();
   const disabledMatcher = React.useMemo(() => {
     if (maxDate && minDate) return { before: minDate, after: maxDate };
     if (maxDate) return { after: maxDate };
@@ -178,7 +179,8 @@ export function DateField({
         readOnly={link?.locked}
         placeholder={resolvedPlaceholder === dsTexts.date.chooseDate ? dateFormat.toLowerCase() : resolvedPlaceholder}
         value={text}
-        aria-invalid={invalid || Boolean(warning)}
+        aria-invalid={invalid || undefined}
+        aria-describedby={warning ? warningId : undefined}
         title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
         onChange={(e) => {
           const next = e.target.value;
@@ -205,8 +207,9 @@ export function DateField({
             commitText();
           }
         }}
-        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
+        className={cn("pr-[2.4em]", link && !link.locked && "pr-[4.2em]", warningDisplay === "indicator" && warning && !link && "pr-[3.7em]", warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]", link?.locked && "bg-muted/40", warning && "border-warning ring-1 ring-warning/40", inputClassName)}
       />
+      {warning ? <span id={warningId} className="sr-only">{warning}</span> : null}
       {warning && warningDisplay === "indicator" ? <Tooltip><TooltipTrigger asChild><span tabIndex={0} aria-label={warning} className={cn("absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", link && !link.locked ? "right-[3.9em]" : "right-[2.1em]")}><AlertTriangle className="size-[1.05em]" /></span></TooltipTrigger><TooltipContent>{warning}</TooltipContent></Tooltip> : null}
       {link?.locked ? (
         <Tooltip><TooltipTrigger asChild><span className="absolute right-[0.3em] top-1/2 -translate-y-1/2"><Button
