@@ -18,7 +18,7 @@ import { Label } from "../../ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import { useDsTexts } from "../../../ds-texts";
+import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { usePaneTabs } from "./pane-context";
 import type { LayoutSnapshot, PaneLayoutCount } from "./pane-state";
 
@@ -50,24 +50,8 @@ export type LayoutMenuTexts = {
   moveDown: string;
 };
 
-export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = {
-  trigger: "Rozložení",
-  empty: "Zatím žádné uložené rozložení",
-  saveCurrent: "Uložit aktuální jako nové…",
-  overwrite: "Přepsat uložené aktuálním",
-  manage: "Spravovat rozložení",
-  saveTitle: "Uložit rozložení",
-  nameLabel: "Název",
-  save: "Uložit",
-  cancel: "Zrušit",
-  manageTitle: "Uložená rozložení",
-  close: "Zavřít",
-  delete: "Odstranit",
-  deleteTitle: "Odstranit rozložení?",
-  deleteDescription: "Rozložení „{name}“ bude odstraněno.",
-  moveUp: "Posunout nahoru",
-  moveDown: "Posunout dolů",
-};
+/** Výchozí (české) texty – jediný zdroj je DS_TEXTS_CS.layoutMenu. */
+export const DEFAULT_LAYOUT_MENU_TEXTS: LayoutMenuTexts = DS_TEXTS_CS.layoutMenu as LayoutMenuTexts;
 
 export interface LayoutMenuProps {
   items: SavedLayoutItem[];
