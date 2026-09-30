@@ -28,10 +28,10 @@ describe("hledání v menu", () => {
     expect(withNavSections(groups).map((entry) => entry.sectionStart)).toEqual([null, "Doklady", null, "Přehledy a evidence"]);
   });
 
-  it("skryje prázdný blok při hledání a neprohledává název sekce", () => {
+  it("skryje prázdný blok při hledání a prohledává i název sekce", () => {
     expect(filterNavGroups(groups, "faktury").map((group) => group.id)).toEqual(["issued", "received"]);
     expect(withNavSections(filterNavGroups(groups, "faktury")).map((entry) => entry.sectionStart)).toEqual(["Doklady", null]);
-    expect(filterNavGroups(groups, "evidence")).toEqual([]);
+    expect(filterNavGroups(groups, "evidence").map((group) => group.id)).toEqual(["reports"]);
   });
 
   it("ponechá skupiny bez section beze změny", () => {
