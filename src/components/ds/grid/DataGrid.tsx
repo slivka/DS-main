@@ -1021,7 +1021,7 @@ export function DataGrid<Row>({
           >
             <Table className="w-full">
               <colgroup>
-              {selectMode ? <col style={{ width: `${40 / 16}rem` }} /> : null}
+              {selectMode ? <col style={{ width: `calc(${40 / 16}rem * var(--grid-zoom, 1))` }} /> : null}
                 {shown.map((c) => {
                   const compact = isCompactColumn(c);
                   const w = isBranchColumn(c)
@@ -1034,7 +1034,7 @@ export function DataGrid<Row>({
                    return compact ? (
                     <col key={c.id} style={{ width: "1px", whiteSpace: "nowrap" }} />
                   ) : (
-                    <col key={c.id} {...(w ? { style: { width: `${w / 16}rem` } } : {})} />
+                    <col key={c.id} {...(w ? { style: { width: `calc(${w / 16}rem * var(--grid-zoom, 1))` } } : {})} />
                   );
                 })}
                 {hasRowActions ? <col style={{ width: "auto", whiteSpace: "nowrap" }} /> : null}
@@ -1083,9 +1083,9 @@ export function DataGrid<Row>({
                       ? { width: "1px", whiteSpace: "nowrap" as const }
                       : width
                         ? {
-                            width: `${width / 16}rem`,
-                            maxWidth: `${width / 16}rem`,
-                            minWidth: `${width / 16}rem`,
+                            width: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
+                            maxWidth: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
+                            minWidth: `calc(${width / 16}rem * var(--grid-zoom, 1))`,
                             boxSizing: "border-box" as const,
                           }
                         : undefined;
@@ -1252,9 +1252,9 @@ export function DataGrid<Row>({
                               ? { whiteSpace: "nowrap" as const }
                               : resolvedCellWidth
                                 ? {
-                              width: `${resolvedCellWidth / 16}rem`,
-                              maxWidth: `${resolvedCellWidth / 16}rem`,
-                              minWidth: `${resolvedCellWidth / 16}rem`,
+                              width: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
+                              maxWidth: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
+                              minWidth: `calc(${resolvedCellWidth / 16}rem * var(--grid-zoom, 1))`,
                                     boxSizing: "border-box" as const,
                                   }
                                 : undefined;

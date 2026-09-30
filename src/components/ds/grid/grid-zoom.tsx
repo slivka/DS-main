@@ -445,7 +445,7 @@ export function ZoomGrid({
       className={
         cn("zoom-grid rounded-lg border border-border bg-card shadow-panel", resolvedHeight === "fill" ? "min-h-0 flex-1 overflow-auto overscroll-contain" : "overflow-x-auto overflow-y-visible", className)
       }
-      style={{ fontSize: gridFontSize(zoom), ...(maxHeight ? { maxHeight } : {}) }}
+      style={{ fontSize: gridFontSize(zoom), "--grid-zoom": zoom, ...(maxHeight ? { maxHeight } : {}) } as React.CSSProperties}
     >
       {hideCss && <style>{hideCss}</style>}
       <GridProgress show={loading} />

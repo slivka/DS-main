@@ -534,7 +534,7 @@ export function TreeGrid<Row extends TreeGridRow>({
               {shown.map((column) => (
                 <TableHead
                   key={column.id}
-                   style={column.width ? { width: `${column.width / 16}rem` } : undefined}
+                   style={column.width ? { width: `calc(${column.width / 16}rem * var(--grid-zoom, 1))` } : undefined}
                   className={alignClass(column)}
                 >
                   {column.label}
