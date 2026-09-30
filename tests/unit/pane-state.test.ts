@@ -13,6 +13,7 @@ import {
   serializeActiveTabUrl,
   serializePaneTabs,
   setLayoutInState,
+  setLayoutWithLimitInState,
   stepTabHistory,
   MAX_TABS_PER_PANE,
 } from "../../src/components/ds/panes/pane-state";
@@ -64,14 +65,39 @@ describe("záložky v panelech", () => {
     expect(rejected.outcome).toBe("rejected");
   });
 
-  test("ubrání a zavření panelu přesune záložky doleva, u prvního doprava", () => {
+  test("ubrání panelu přes přepínač přesune záložky; Zavřít panel je odstraní", () => {
     let state = setLayoutInState(open(createPaneTabsState(1), "/a"), 2);
     state = open(state, "/b");
     expect(state.panes[1].tabs[0].route).toBe("/b");
     const reduced = setLayoutInState(state, 1);
     expect(reduced.panes[0].tabs.map((tab) => tab.route)).toEqual(["/a", "/b"]);
     const closedFirst = closePaneInState(state, state.panes[0].id);
-    expect(closedFirst.panes[0].tabs.map((tab) => tab.route)).toEqual(["/a", "/b"]);
+    expect(closedFirst.panes).toHaveLength(1);
+    expect(closedFirst.panes[0].tabs.map((tab) => tab.route)).toEqual(["/b"]);
+  });
+
+  test("sloučení rozložení nepřekročí limit a zavře nejstarší čisté záložky", () => {
+    let state = setLayoutInState(createPaneTabsState(1), 2);
+    state = { ...state, active: state.panes[0].id };
+    for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/a-${index}`, target: "newTab" }, () => false, index + 1).state;
+    state = { ...state, active: state.panes[1].id };
+    for (let index = 0; index < 7; index += 1) state = openTabInState(state, { route: `/b-${index}`, target: "newTab" }, () => false, index + 20).state;
+    const result = setLayoutWithLimitInState(state, 1);
+    expect(result.rejected).toBe(false);
+    expect(result.state.panes[0].tabs).toHaveLength(MAX_TABS_PER_PANE);
+    expect(result.closedTabIds).toHaveLength(4);
+    expect(result.state.panes[0].tabs.some((tab) => result.closedTabIds.includes(tab.id))).toBe(false);
+  });
+
+  test("sloučení odmítne překročení limitu, když jsou všechny záložky rozepsané", () => {
+    let state = setLayoutInState(createPaneTabsState(1), 2);
+    state = { ...state, active: state.panes[0].id };
+    for (let index = 0; index < 6; index += 1) state = openTabInState(state, { route: `/a-${index}`, target: "newTab" }).state;
+    state = { ...state, active: state.panes[1].id };
+    for (let index = 0; index < 6; index += 1) state = openTabInState(state, { route: `/b-${index}`, target: "newTab" }).state;
+    const result = setLayoutWithLimitInState(state, 1, () => true);
+    expect(result.rejected).toBe(true);
+    expect(result.state).toBe(state);
   });
 
   test("přesun záložky aktivuje cílový panel; zavření poslední nechá panel prázdný", () => {
