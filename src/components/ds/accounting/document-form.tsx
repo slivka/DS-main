@@ -346,7 +346,9 @@ export function DocumentForm({
   );
   const date = (key: DocumentDateField, label: string, className?: string, options?: { link?: React.ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string }) => {
     const warning = options?.warning ?? dateWarnings?.[key];
-    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, className);
+    // Varovná ikona potřebuje vlastní místo, aby se celé datum vešlo.
+    const widthClass = warning ? "[&_input]:w-[calc(8.5rem+1.3em)]" : undefined;
+    return field(`document-${key}`, label, <DateField id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next || null })} disabled={!can(key)} link={options?.link ?? (key === "accountingDate" && accountingDateLink ? { locked: accountingDateLink.locked, onToggle: accountingDateLink.onToggle, lockedHint: accountingDateLink.hint } : undefined)} hint={options?.hint} warning={warning} warningDisplay="indicator" />, 3, false, cn(className, widthClass));
   };
   const text = (key: "constantSymbol" | "specificSymbol" | "handedOverBy", label: string, span = 3, className?: string) => field(`document-${key}`, label, <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} className="h-9 font-mono tabular-nums" />, span, false, className);
   const suggestedText = (key: "handedOverBy" | "description", label: string, config: DocumentSuggestConfig | undefined, span: number, className?: string) => field(`document-${key}`, label, config ? <SuggestInput id={`document-${key}`} value={value[key] ?? ""} onChange={(next) => patch({ [key]: next })} loadSuggestions={config.load} enabled={config.enabled} onEnabledChange={config.onEnabledChange} disabled={!can(key)} maxLength={key === "description" ? 500 : 200} /> : key === "description" ? <Textarea id={`document-${key}`} rows={2} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} /> : <Input id={`document-${key}`} value={value[key] ?? ""} onChange={(event) => patch({ [key]: event.target.value })} disabled={!can(key)} />, span, false, className);
@@ -371,6 +373,11 @@ export function DocumentForm({
   const combinedNotices = notices || dateNoticeBars.length ? <>{notices}{dateNoticeBars}</> : undefined;
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
   const automaticVsRef = useRef<string | null>(value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null);
+  // Při přepnutí na jiný doklad znovu odvodíme, zda je VS automatický.
+  useEffect(() => {
+    const suggested = vsFromDocumentNumber(value.externalNumber ?? "");
+    automaticVsRef.current = suggested !== null && value.variableSymbol === suggested ? suggested : null;
+  }, [value.id, value.number]); // eslint-disable-line react-hooks/exhaustive-deps
   const changeExternalNumber = (externalNumber: string) => {
     const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
     const nextSuggested = vsFromDocumentNumber(externalNumber);
@@ -379,10 +386,12 @@ export function DocumentForm({
     const nextDigits = externalNumber.replace(/\D/g, "");
     const canApplySuggestion = nextSuggested !== null || nextDigits.length === 0;
     if (receivedDocument && mayUpdateVs && canApplySuggestion) {
-      const variableSymbol = nextSuggested ?? "";
       automaticVsRef.current = nextSuggested;
-      patch({ externalNumber, variableSymbol });
-      return;
+      const variableSymbol = nextSuggested ?? null;
+      if ((value.variableSymbol || null) !== variableSymbol) {
+        patch({ externalNumber, variableSymbol });
+        return;
+      }
     }
     patch({ externalNumber });
   };
