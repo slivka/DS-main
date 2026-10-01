@@ -1,8 +1,12 @@
 import { useState } from "react";
 
 import {
+  AccountSelect,
   AmountInput,
+  BankAccountField,
   CheckboxField,
+  DateField,
+  DecimalInput,
   Field,
   FieldGrid,
   FieldTable,
@@ -14,6 +18,7 @@ import {
   SectionHeading,
   StatusBadge,
 } from "../ds";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
@@ -24,12 +29,20 @@ const STATUS_CONFIG = {
   active: { label: "Aktivní", tone: "success" as const },
 };
 
+const ACCOUNT_OPTIONS = [{ code: "221001", name: "Bankovní účet", postable: true }];
+const YEAR_OPTIONS = [{ value: "year", label: "Ročně" }];
+const DEFAULT_OPTIONS = [{ value: "default", label: "Výchozí" }];
+
 /** Čtyři vzorové dialogy ověřující společnou výšku, mřížku, tabulku a záložky. */
 export function RecordDialogShowcase() {
   const [dialog, setDialog] = useState<DialogKind>(null);
   const [gridVisible, setGridVisible] = useState(false);
   const [amount, setAmount] = useState("12500");
   const [approved, setApproved] = useState(true);
+  const [bankAccount, setBankAccount] = useState("123456789/0100");
+  const [openingDate, setOpeningDate] = useState("2026-01-01");
+  const [account, setAccount] = useState("221001");
+  const [sequenceFrom, setSequenceFrom] = useState("1");
   const [maskIn, setMaskIn] = useState("P-{RRRR}-{###}");
   const [maskOut, setMaskOut] = useState("V-{RRRR}-{###}");
   const gridClass = gridVisible
@@ -50,25 +63,39 @@ export function RecordDialogShowcase() {
         </label>
       </div>
 
-      <RecordDialog open={dialog === "basic"} onOpenChange={close} title="Vlastnosti knihy">
+      <RecordDialog
+        open={dialog === "basic"}
+        onOpenChange={close}
+        title="Vlastnosti knihy"
+        size="md"
+      >
         <FormSection title="Základní údaje">
           <FieldGrid cols={12} className={gridClass}>
             <Field label="Kód" span={2}>
-              <FieldValue lockedReason="Kód po založení nelze změnit">FP</FieldValue>
+              <Input defaultValue="FP" />
             </Field>
             <Field label="Název" span={6}>
-              <FieldValue lockedReason="Název po založení nelze změnit">Přijaté faktury</FieldValue>
+              <Input defaultValue="Přijaté faktury" />
             </Field>
             <Field label="Typ" span={4}>
-              <FieldValue>Přijatá faktura</FieldValue>
+              <FieldValue lockedReason="Typ knihy po založení nelze změnit.">
+                Přijatá faktura
+              </FieldValue>
             </Field>
             <Field label="Měna" span={2}>
-              <FieldValue lockedReason="Měnu knihy nelze po založení změnit.">CZK</FieldValue>
+              <FieldValue>CZK</FieldValue>
             </Field>
             <Field label="Výchozí částka" span={6}>
-              <AmountInput value={amount} onChange={setAmount} />
+              <OptionSelect
+                value={amount}
+                onChange={setAmount}
+                options={[
+                  { value: "12500", label: "12 500,00" },
+                  { value: "25000", label: "25 000,00" },
+                ]}
+              />
             </Field>
-            <Field span={4}>
+            <Field label="Schválení" span={4}>
               <CheckboxField
                 align="input"
                 checked={approved}
@@ -80,36 +107,45 @@ export function RecordDialogShowcase() {
         </FormSection>
       </RecordDialog>
 
-      <RecordDialog open={dialog === "bank"} onOpenChange={close} title="Kniha v období">
-        <FormSection title="Bankovní účet">
-          <FieldGrid cols={12} className={gridClass}>
-            <Field label="Účet" span={8}>
-              <OptionSelect
-                value="main"
-                onChange={() => {}}
-                options={[{ value: "main", label: "123456789/0100" }]}
-              />
-            </Field>
-            <Field label="Měna" span={4}>
-              <FieldValue>CZK</FieldValue>
-            </Field>
-            <Field label="Protiúčet" span={8}>
-              <Input defaultValue="221.001" />
-            </Field>
-            <Field label="Stav" span={4}>
-              <FieldValue>Aktivní</FieldValue>
-            </Field>
-          </FieldGrid>
-        </FormSection>
-        <FormSection title="Počáteční stav">
-          <FieldGrid cols={12} className={gridClass}>
-            {["Datum", "Částka", "Zdroj"].map((label) => (
-              <Field key={label} label={label} span={4}>
-                <FieldValue>{label === "Částka" ? "25 000,00" : "—"}</FieldValue>
-              </Field>
-            ))}
-          </FieldGrid>
-        </FormSection>
+      <RecordDialog
+        open={dialog === "bank"}
+        onOpenChange={close}
+        title="Kniha v období"
+        size="md"
+      >
+        <SectionHeading aside="Hlavní účet">Bankovní účet</SectionHeading>
+        <FieldGrid cols={12} className={gridClass}>
+          <Field label="Bankovní účet" span={8}>
+            <BankAccountField
+              value={bankAccount}
+              onChange={setBankAccount}
+              options={[{ number: "123456789", bankCode: "0100", label: "Hlavní účet" }]}
+            />
+          </Field>
+          <Field label="Banka" span={4}>
+            <FieldValue>Komerční banka</FieldValue>
+          </Field>
+          <Field label="IBAN" span={8}>
+            <FieldValue>CZ65 0100 0000 0012 3456 7890</FieldValue>
+          </Field>
+          <Field label="BIC" span={4}>
+            <FieldValue>KOMBCZPP</FieldValue>
+          </Field>
+        </FieldGrid>
+        <SectionHeading aside={<Badge variant="outline">K 1. 1. 2026</Badge>}>
+          Počáteční stav
+        </SectionHeading>
+        <FieldGrid cols={12} className={gridClass}>
+          <Field label="Datum" span={4}>
+            <DateField value={openingDate} onChange={setOpeningDate} />
+          </Field>
+          <Field label="Částka" span={4}>
+            <AmountInput value={amount} onChange={setAmount} />
+          </Field>
+          <Field label="Rozdíl" span={4}>
+            <FieldValue>0,00</FieldValue>
+          </Field>
+        </FieldGrid>
       </RecordDialog>
 
       <RecordDialog
@@ -120,7 +156,7 @@ export function RecordDialogShowcase() {
         titleBadges={<StatusBadge status="active" config={STATUS_CONFIG} />}
         headerExtra="Číslování dokladů pro účetní období 2026"
       >
-        <FormSection title="Číselné řady">
+        <FormSection title="Číslování">
           <FieldTable
             ariaLabel="Číselné řady"
             columns={[
@@ -134,39 +170,66 @@ export function RecordDialogShowcase() {
               {
                 key: "in",
                 cells: {
-                  series: <FieldValue variant="plain">Příjem</FieldValue>,
+                  series: <Badge variant="outline">Příjem</Badge>,
                   mask: <MaskInput value={maskIn} onChange={setMaskIn} preview="P-2026-001" />,
-                  period: <FieldValue variant="plain">Ročně</FieldValue>,
-                  from: <FieldValue variant="plain">1</FieldValue>,
-                  next: <FieldValue variant="plain">18</FieldValue>,
+                  period: (
+                    <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />
+                  ),
+                  from: (
+                    <DecimalInput
+                      value={sequenceFrom}
+                      onChange={setSequenceFrom}
+                      decimals={0}
+                    />
+                  ),
+                  next: (
+                    <FieldValue variant="plain" className="font-mono tabular-nums">
+                      18
+                    </FieldValue>
+                  ),
                 },
               },
               {
                 key: "out",
                 cells: {
-                  series: <FieldValue variant="plain">Výdej</FieldValue>,
+                  series: <Badge variant="outline">Výdej</Badge>,
                   mask: <MaskInput value={maskOut} onChange={setMaskOut} preview="V-2026-001" />,
-                  period: <FieldValue variant="plain">Ročně</FieldValue>,
-                  from: <FieldValue variant="plain">1</FieldValue>,
-                  next: <FieldValue variant="plain">9</FieldValue>,
+                  period: (
+                    <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />
+                  ),
+                  from: <DecimalInput value="1" onChange={() => {}} decimals={0} />,
+                  next: (
+                    <FieldValue variant="plain" className="font-mono tabular-nums">
+                      9
+                    </FieldValue>
+                  ),
                 },
               },
             ]}
           />
         </FormSection>
+        <SectionHeading>Účet</SectionHeading>
         <FieldGrid cols={12} className={gridClass}>
           <Field label="Účet" span={8}>
-            <Input defaultValue="221.001" />
+            <AccountSelect
+              accounts={ACCOUNT_OPTIONS}
+              value={account}
+              onChange={setAccount}
+            />
           </Field>
-          <Field span={4}>
+          <Field label="Na dokladu" span={4}>
             <CheckboxField align="input" checked onCheckedChange={() => {}} label="Lze změnit" />
           </Field>
         </FieldGrid>
         <SectionHeading>DPH</SectionHeading>
-        <FieldGrid cols={12} className={gridClass}>
-          {["Režim", "Kód", "Zaokrouhlení"].map((label) => (
+        <FieldGrid
+          cols={12}
+          className={gridClass}
+          hint="Nastavení DPH se použije jako výchozí hodnota nových dokladů."
+        >
+          {["Režim", "Členění", "Zaokrouhlení"].map((label) => (
             <Field key={label} label={label} span={4}>
-              <FieldValue>{label === "Režim" ? "Automaticky" : "—"}</FieldValue>
+              <OptionSelect value="default" onChange={() => {}} options={DEFAULT_OPTIONS} />
             </Field>
           ))}
         </FieldGrid>
