@@ -34,7 +34,7 @@ import { useDataGridSelection } from "./useDataGridSelection";
 import { useColumnDrag } from "./useColumnDrag";
 import { useDataGridFilters } from "./useDataGridFilters";
 import { DataGridColGroup, DataGridHead, type DataGridLayout } from "./DataGridHead";
-import { DataGridRows, DataGridTotals } from "./DataGridBody";
+import { DataGridRows, DataGridSidePanel, DataGridSummary, DataGridTotals } from "./DataGridBody";
 import { buildExportData, totalCells as computeTotalCells } from "./data-grid-model";
 import type { DataGridColumn, DataGridProps } from "./data-grid-types";
 
@@ -474,26 +474,11 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
               ) : null}
             </Table>
           </ZoomGrid>
-          {props.sidePanel ? (
-            <aside
-              data-grid-side-panel
-              className="w-[24rem] shrink-0 overflow-y-auto border border-l-0 border-t-0 bg-card p-4"
-              aria-label={texts.sidePanelLabel}
-            >
-              {props.sidePanel}
-            </aside>
-          ) : null}
+          <DataGridSidePanel label={texts.sidePanelLabel}>{props.sidePanel}</DataGridSidePanel>
         </div>
-
         {selectMode && props.selectionSummary ? (
-          <div
-            data-slot="grid-selection-summary"
-            className="flex flex-wrap items-center gap-2 border border-t-0 bg-secondary/50 px-2 py-1.5 text-sm"
-          >
-            {props.selectionSummary(selection.selectedRows)}
-          </div>
+          <DataGridSummary>{props.selectionSummary(selection.selectedRows)}</DataGridSummary>
         ) : null}
-
         {paginated ? (
           <GridPagination
             page={pagination.page}
