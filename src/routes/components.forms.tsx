@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
+import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
 import {
   AccountSelect,
   AmountInput,
@@ -70,6 +71,13 @@ function FormsPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Formuláře" }]}>
+      <ShowcaseSection
+        title="Dialog záznamu"
+        description="Společná mřížka, stejné výšky polí, číselné řady a stálá výška záložek."
+      >
+        <RecordDialogShowcase />
+      </ShowcaseSection>
+
       <ShowcaseSection
         title="Editační dialog dokladu"
         description="Stejný dialog používají všechny editace: tlačítko Odstranit vlevo, Zrušit a Uložit vpravo."
