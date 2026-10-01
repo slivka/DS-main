@@ -142,6 +142,13 @@ describe("JournalLinesEditor – řádky", () => {
     expect(latest).toHaveLength(4);
   });
 
+  it("s initialEmptyLine založí prázdný doklad jedním prázdným řádkem", () => {
+    let latest: JournalLine[] = [];
+    render(<Editor initial={[]} initialEmptyLine onLines={(lines) => (latest = lines)} />);
+    expect(latest).toHaveLength(1);
+    expect(latest[0]?.isBlank).toBe(true);
+  });
+
   it("duplikuje řádek pod originál a odebere řádek", () => {
     let latest: JournalLine[] = [];
     const view = render(<Editor onLines={(lines) => (latest = lines)} />);
