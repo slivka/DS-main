@@ -29,7 +29,7 @@ export interface BuildDocumentTabsArgs {
   can: (key: keyof DocumentFormProps["value"]) => boolean;
   changeRounding: (v: number) => void;
   roundingLabel?: string;
-  t: DocumentFormTexts;
+  t: DocumentFormTexts & { counterpartyTab: string; printTab: string };
   roundingLimit: number;
   vatTotals: { visibleLineCount: number };
   tabs: DocumentFormTab[];
