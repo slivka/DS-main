@@ -253,6 +253,19 @@ export function DocumentForm({
     mainAccountLocked,
   });
   const partnerLabel = texts?.partner ?? partnerLabelForType(documentType, value.direction);
+  useEffect(() => {
+    if (!selectedIdentityAccount) return;
+    if (
+      !sameAccount(selectedIdentityAccount.code, value.mainAccountId) ||
+      effectiveIdentity.account?.label !== selectedIdentityAccount.sourceLabel
+    ) {
+      setSelectedIdentityAccount(null);
+    }
+  }, [effectiveIdentity.account?.label, selectedIdentityAccount, value.mainAccountId]);
+  const identityAccountLabel =
+    selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
+      ? selectedIdentityAccount.label
+      : effectiveIdentity.account?.label;
   const actionMenu = settings
     ? [
         { id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings },

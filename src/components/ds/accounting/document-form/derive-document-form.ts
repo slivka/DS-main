@@ -112,8 +112,8 @@ export function deriveDocumentForm(a: DerivedArgs) {
   const account = [...allowedMainAccounts, ...accounts].find(
     (item) => item.code.replace(/\D/g, "") === (value.mainAccountId ?? "").replace(/\D/g, ""),
   );
-  const mode = f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
-  const partnerLabel = texts?.partner ?? partnerLabelForType(documentType, value.direction);
+  const mode: "mainAccount" | "internal" =
+    f.mainAccount && value.mainAccountId && mainSide ? "mainAccount" : "internal";
   const foreign = value.currency !== homeCurrency;
   const currencySymbol = currencies?.find((item) => item.code === value.currency)?.symbol;
   const currencyOptions = (currencies ?? []).map((item) => ({
@@ -139,19 +139,6 @@ export function deriveDocumentForm(a: DerivedArgs) {
       : {}),
     number: value.number,
   };
-  useEffect(() => {
-    if (!selectedIdentityAccount) return;
-    if (
-      !sameAccount(selectedIdentityAccount.code, value.mainAccountId) ||
-      effectiveIdentity.account?.label !== selectedIdentityAccount.sourceLabel
-    ) {
-      setSelectedIdentityAccount(null);
-    }
-  }, [effectiveIdentity.account?.label, selectedIdentityAccount, value.mainAccountId]);
-  const identityAccountLabel =
-    selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
-      ? selectedIdentityAccount.label
-      : effectiveIdentity.account?.label;
   const canEditIdentityAccount =
     effectiveIdentity.variant === "invoice" &&
     !!effectiveIdentity.account?.editable &&
