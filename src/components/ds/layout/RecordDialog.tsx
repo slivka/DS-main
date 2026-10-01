@@ -11,12 +11,14 @@ import {
   DialogTitle,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
 import { PageTabs } from "./page-tabs";
 import { StatusBadge } from "../data-display/status-badge";
 import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { cn } from "../../../lib/utils";
+
+export { Field, FieldGrid, fieldSpanClass } from "./form-field-layout";
 
 export interface RecordDialogTab {
   value: string;
@@ -117,7 +119,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
   );
 }
 
-/** Jednotný formulářůý dialóg pre všechny úpravy v aplikácii. */
+/** Jednotný formulářový dialog pro všechny úpravy v aplikaci. */
 export function RecordDialog({
   open,
   onOpenChange,
@@ -387,120 +389,3 @@ export function RecordDialog({
 }
 
 /**
- * Pole formuláře s popiskem a jednotnými rozestupy.
- * Při chybě (`error`) se pole orámuje červeně a pod ním zobrazí hláška.
- */
-export function Field({
-  label,
-  htmlFor,
-  hint,
-  error,
-  span,
-  className = "",
-  children,
-}: {
-  label?: ReactNode;
-  htmlFor?: string;
-  hint?: ReactNode;
-  error?: ReactNode;
-  /** Šířka pole v mřížce; pod 40 rem zůstává pole jednou ze dvou položek řádku. */
-  span?: keyof typeof FIELD_SPAN_CLASSES;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      data-invalid={error ? "true" : undefined}
-      className={`${label ? "flex min-w-0 flex-col gap-1" : ""} ${fieldSpanClass(span)} ${
-        error
-          ? "[&_.border-input]:border-destructive [&_input]:border-destructive [&_select]:border-destructive [&_textarea]:border-destructive"
-          : ""
-      } ${className}`}
-    >
-      {label ? (
-        <Label
-          htmlFor={htmlFor}
-          title={typeof label === "string" ? label : undefined}
-          className={error ? "text-destructive" : undefined}
-        >
-          {label}
-        </Label>
-      ) : null}
-      {children}
-      {error ? (
-        <p data-slot="field-error" role="alert" className="text-xs font-medium text-destructive">
-          {error}
-        </p>
-      ) : hint ? (
-        <p data-slot="field-hint" className="text-xs text-muted-foreground">
-          {hint}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-const FIELD_SPAN_CLASSES = {
-  1: "@min-[40rem]:col-span-1",
-  2: "@min-[40rem]:col-span-2",
-  3: "@min-[40rem]:col-span-3",
-  4: "@min-[40rem]:col-span-4",
-  5: "@min-[40rem]:col-span-5",
-  6: "@min-[40rem]:col-span-6",
-  7: "@min-[40rem]:col-span-7",
-  8: "@min-[40rem]:col-span-8",
-  9: "@min-[40rem]:col-span-9",
-  10: "@min-[40rem]:col-span-10",
-  11: "@min-[40rem]:col-span-11",
-  12: "@min-[40rem]:col-span-12",
-  13: "@min-[40rem]:col-span-13",
-  14: "@min-[40rem]:col-span-14",
-  15: "@min-[40rem]:col-span-15",
-  16: "@min-[40rem]:col-span-16",
-  17: "@min-[40rem]:col-span-17",
-  18: "@min-[40rem]:col-span-18",
-  19: "@min-[40rem]:col-span-19",
-  20: "@min-[40rem]:col-span-20",
-} as const;
-
-export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
-  return span ? FIELD_SPAN_CLASSES[span] : "";
-}
-
-/** Mřížka polí formuláře se společnými svislicemi a nápovědou celé skupiny. */
-export function FieldGrid({
-  cols = 2,
-  title,
-  hint,
-  className = "",
-  children,
-}: {
-  cols?: 1 | 2 | 3 | 4 | 6 | 12 | 20;
-  title?: ReactNode;
-  /** Jedna vysvětlující věta pod celou mřížkou. */
-  hint?: ReactNode;
-  className?: string;
-  children: ReactNode;
-}) {
-  const cls =
-    cols === 1
-      ? "grid-cols-1"
-      : cols === 12
-        ? "grid-cols-2 @min-[40rem]:grid-cols-12"
-        : cols === 20
-          ? "grid-cols-20"
-          : cols === 3
-            ? "@min-[40rem]:grid-cols-3"
-            : cols === 4
-              ? "@min-[40rem]:grid-cols-4"
-              : cols === 6
-                ? "@min-[40rem]:grid-cols-6"
-                : "@min-[40rem]:grid-cols-2";
-  return (
-    <div className="@container">
-      {title ? <SectionHeading>{title}</SectionHeading> : null}
-      <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>
-      {hint ? <p className="mt-2 text-xs text-muted-foreground">{hint}</p> : null}
-    </div>
-  );
-}

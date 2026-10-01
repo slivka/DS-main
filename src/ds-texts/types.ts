@@ -243,6 +243,12 @@ export interface DsTexts {
   confirmByTyping: { instruction: string; cancel: string; running: string };
   dangerZone: { title: string };
   noticeBar: { close: string };
+  maskInput: {
+    /** Popisek náhledu příštího čísla. */
+    preview: string;
+    /** Výchozí tokeny masky čísla dokladu. */
+    tokens: { token: string; label: string }[];
+  };
   recordDialog: {
     detailSections: string;
     hidePanel: (panel: string) => string;
