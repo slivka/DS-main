@@ -6,11 +6,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 
-import {
-  detectDateColumns,
-  useGridGrouping,
-  useGroupedRows,
-} from "./grid-grouping";
+import { detectDateColumns, useGridGrouping, useGroupedRows } from "./grid-grouping";
 import { insertGroupTotalRows } from "./grid-selection";
 import type { GridTexts } from "./grid-texts";
 import { GridExpandControls } from "./grid-toolbar";
