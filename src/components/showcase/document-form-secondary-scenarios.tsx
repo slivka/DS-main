@@ -1,6 +1,12 @@
 /** Navazující scénáře ukázky účetních formulářů. */
 import { Button } from "@/components/ui/button";
-import { DataGrid, DocumentForm, NoticeBar, PaymentScheduleEditor, StatusBadge } from "@/components/ds";
+import {
+  DataGrid,
+  DocumentForm,
+  NoticeBar,
+  PaymentScheduleEditor,
+  StatusBadge,
+} from "@/components/ds";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import { toast } from "sonner";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
