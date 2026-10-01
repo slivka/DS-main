@@ -1756,7 +1756,10 @@ export function DocumentForm({
               {date("accountingDate", t.accountingDate, "flex-none w-max")}
               {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
             </div>
-            <div className="ml-auto flex flex-wrap items-start justify-end gap-3">
+            <div
+              data-slot="document-vat-dates"
+              className="ml-auto flex flex-wrap items-start justify-end gap-3"
+            >
               {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
               {showVatFields
                 ? date(
