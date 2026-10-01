@@ -1,5 +1,4 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   calculateLineAmount,
@@ -14,8 +13,6 @@ import {
 } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
-
-const squashSrc = (s: string) => s.replace(/\s+/g, " ");
 
 describe("JournalLinesEditor 2.34.0", () => {
   it("navrhne vyrovnání z rozdílu jen v limitu", () => {
@@ -53,9 +50,6 @@ describe("JournalLinesEditor 2.34.0", () => {
     ]);
   });
 });
-describe("JournalLinesEditor 2.48", () => {
-});
-
 describe("JournalLinesEditor 2.49", () => {
   it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu")).toBe("501.100");

@@ -204,9 +204,6 @@ describe("DocumentForm 2.56.0", () => {
   });
 });
 
-describe("Buňka Kód DPH – Tab (2.56.0)", () => {
-});
-
 describe("DocumentSettingsDialog – Zadávat částky (2.56.0)", () => {
   const settings: DocumentSettingsValue = {
     suggestDescription: false,
