@@ -1,58 +1,56 @@
-# DS 2.83.0 – rozdělení JournalLinesEditor, StrictMode u dialogů, vnořený formulář v RecordDialog
+# DS 5b + 5d – společný rám gridů a klávesy AppShell (zůstává 2.83.0)
 
-Veřejné API beze změny (žádný prop neubývá, importní cesty zůstávají). Release nedělám, `meta.yaml` nedotčeno.
+Beze změny chování a veřejného API. Žádné props se neodstraňují (3.0.0). Nevydávat, meta.yaml nedotčeno.
 
 ## Zjištěný stav
-- `journal-lines-editor.tsx` má po Prettieru **2 706 řádků**; samotná komponenta (`forwardRef`) je ř. 709–2706, props má 41 (nad limitem 30 – dělení props je API změna, patří do 3.0.0, zůstává).
-- Texty editoru jsou dnes v souboru (`JournalLinesEditorTexts`, `DEFAULT_JOURNAL_LINES_TEXTS`, ř. 147–300), ne v `DsTexts`.
-- Chyby řádků jdou ven přes `onValidationChange([{ line, field, message }])` – „radek=N“ v kódu není; test ověří správné číslo řádku v tomto výstupu.
 
-## 1. Testy nejdřív (proti dnešnímu kódu, musí projít před i po)
-`tests/unit/journal-editor-behavior.test.tsx` (render + Testing Library):
-- přidání řádku, duplikace, smazání a vrácení (Zpět);
-- posun řádku (`moveRow` přes klávesovou zkratku / `reorderJournalLines`);
-- klávesnice: Tab na další buňku, Enter potvrdí a skočí dolů, Esc vrátí hodnotu, F2 editace;
-- součty MD / Dal a rozdíl, `onTotalsChange`;
-- režim `mainAccount` (jen protiúčet, hlavní účet jen ke čtení) vs. `internal` (MD i Dal);
-- chyba řádku: `onValidationChange` hlásí `line: N` u správného řádku.
+| Soubor | Řádků | Poznámka |
+|---|---|---|
+| grid/DataGrid.tsx | 1 793 | lišta (ř. ~1014–1360) skládá GridContextBar, GridToolbar, Collapsible, oddělovače, ZoomGrid |
+| grid/TreeGrid.tsx | 1 079 | stejná skladba lišty (ř. ~568–855) téměř 1 : 1 |
+| layout/AppShell.tsx | 1 372 | 3 globální `keydown` posluchače (ř. 818, 908, 948) |
+| grid/grid-virtual.tsx | 142 | `useGridVirtual` dnes v gridech nezapojen |
 
-`tests/unit/journal-lines-model.test.ts` (čisté vstup → výstup): součty, platnost řádku, pořadí/přečíslování, návrh zaokrouhlení, layout sloupců.
+- Doménová ID natvrdo v DataGrid: `PINNED_COLUMN_IDS` (`status`, `is_active`, `is_system`, `source`) a `COMPACT_COLUMN_IDS` (`status`, `date`, `document`, `vs`, `symbol`, `md`, `dal`, `debit`, `credit`, …).
+- Efekt bez pole závislostí: AppShell ř. 948–955 (Escape zavře panel) – posluchač se přepojuje při každém renderu.
+- Ctrl+B efekt (ř. 818) má zbytečné závislosti `[appZoom, isCollapsed]` (čte ref).
+- `activeToggleMenuItem` v DataGrid/TreeGrid přímo nenajdu – před refaktorem dohledám, kde vzniká (pravděpodobně grid-action), a `useRowActions` ho použije, ne zduplikuje.
+- Uložení sloupců se v API jmenuje `storageKey` (ne `stateKey`); testy proto na `storageKey`.
 
-Stávajících 6 journal testů + e2e `journal-editor.spec.ts` beze změny.
+## Postup
 
-## 2. Mapa souborů 5a (před → po)
+1. **Testy proti dnešnímu kódu** (musí projít před refaktorem):
+   - `tests/unit/data-grid-behavior.test.tsx`: řazení, sloupcový filtr, výběr sloupců + uložení přes `storageKey` (po novém připojení zůstane), výběr řádků + `selectionSummary`, `groupTotals`, menu řádku (upravit / odstranit s potvrzením / zakázaný důvod), Obnovit volá `onRefresh`, připnuté a kompaktní sloupce mají dnešní šířky.
+   - `tests/unit/tree-grid-behavior.test.tsx`: rozbalení/sbalení uzlu, menu řádku, Obnovit.
+   - `tests/unit/app-shell-shortcuts.test.tsx`: Ctrl+B sbalí menu (ne v poli), „/“ zaměří hledání, Escape zavře panel, zoom zkratky beze změny, Alt+Shift+T obnoví zavřenou záložku (pokud jde přes AppShell).
+2. **5b refaktor gridů** (mapa níže), pak stejné testy beze změny.
+3. **Virtualizace** pro `paginated={false}` v režimu výšky „fill“: test 5 000 řádků → vykreslí jen viditelné + rezervu; po rolování se okno posune. Režim „auto“ (formuláře) zůstává bez virtualizace jako dnes.
+4. **Doménová ID ven**: nové exportované konstanty `DEFAULT_PINNED_COLUMNS` a `DEFAULT_COMPACT_COLUMNS` (v novém `grid-column-presets.ts`), nové volitelné props `pinnedColumnIds` / `compactColumnIds` s dnešními hodnotami jako výchozí. `isPinnedColumn` zůstává (jen nové doplnění API = minor, verze se nemění dle zadání).
+5. **5d AppShell**: hook `useGlobalShortcuts` s registrem (jeden `window` posluchač, záznamy `{ id, match, run, allowInEditing }` přes ref, odregistrace při odpojení). Escape efekt dostane závislost `[currentPanel]`, Ctrl+B prázdné závislosti přes ref. Test: `addEventListener("keydown")` zavolán právě 1× za AppShell, `removeEventListener` při odpojení. Zoom zkratky z `useAppZoomShortcuts` se připojí do registru jen pokud dnes běží ve stejném AppShell; jinak hook zoomu beze změny (ověřím a uvedu).
+6. Texty nových prvků přes `DsTexts` (CS + SK) – předpoklad: žádné nové viditelné texty nevzniknou.
+7. Závěr: format, typecheck, lint (0 chyb v nových/změněných), test, build; CHANGELOG 2.83.0 doplnit (5b, 5d – pro APP nic povinného; nové konstanty a volitelné props); tabulka souborů s řádky; co nezměněno a proč.
 
-| Soubor (po) | Odpovědnost | Z dnešních řádků | Odhad |
-|---|---|---|---|
-| `journal-lines-editor.tsx` | jen re-export (zachová importní cesty a `index.ts`) | – | ~25 |
-| `JournalLinesEditor.tsx` | skládání: props → hooky → tabulka, lišta, patička | 709–815, 2215–2260 | ≤ 300 |
-| `journal-editor-types.ts` | veřejné typy a props (`JournalLinesEditorProps`, `JournalLinesVat`, …) | 97–146, 628–674 | ~150 |
-| `journal-lines-model.ts` | čisté: zaokrouhlení, `calculateLineAmount`, `orderJournalLines`, `reorderJournalLines`, `roundingSuggestion`, `journalAmountLabels`, platnost řádku (`sideIssues`, `vatIssues`), přečíslování, `displayValue` | 302–427, 1381–1530 | ~380 |
-| `journal-column-layout.ts` | šířky, `resolveJournalColumnLayout`, `resolveJournalZoomLayout`, `normalizeJournalAccountVisibility` | 428–627 | ~230 |
-| `journal-columns.ts` | definice sloupců podle režimu, popisky účtů | 881–990 | ~180 |
-| `useJournalEditorState.ts` | stav řádků (add/duplicate/remove/move/patch, VAT patch), editace buňky, dirty/touched, validace a hlášení rodiči | 1076–1475 (bez čistých funkcí) | ~450 |
-| `useJournalKeyboard.ts` | Tab/Enter/Esc/F2, šipky, Ctrl+D, Ctrl+Delete, `focusRelative` | 1529–1545, 2220–2300 | ~250 |
-| `useJournalLayout.ts` | měření šířky, auto zoom (kaskáda do 0,75), viditelné sloupce | 773–813, 988–1075 | ~220 |
-| `JournalCell.tsx` | zobrazení jedné buňky podle typu sloupce | 1474–1528, 2400–2600 | ~300 |
-| `JournalCellEditor.tsx` | editor buňky podle typu (účet, částka, DPH, výběry, text) | 1546–1910 | ~400 |
-| `JournalRow.tsx` | řádek (`SortableRow`), akce řádku, rozbalený detail | 675–708, 1912–2110, 2600–2706 | ~350 |
-| `JournalFooter.tsx` | součtový řádek MD/Dal, rozdíl, zaokrouhlení, návrh vyrovnání | 1141–1192, 2109–2214 | ~250 |
+## Mapa souborů před → po (odhad)
 
-Proti zadání navíc: `useJournalKeyboard.ts`, `useJournalLayout.ts`, `journal-column-layout.ts`, `journal-columns.ts`, `JournalCellEditor.tsx`, `journal-editor-types.ts` – jinak by stav nebo buňka přesáhly 500 řádků. Každý soubor: hlavička (co · vlastní · nesmí), JSDoc česky, bez `any`/`as never`.
+| Soubor | Odpovědnost | Řádků |
+|---|---|---|
+| grid/DataGrid.tsx | skládání, data (řazení, filtr, stránky, skupiny) | 1 793 → ~480 |
+| grid/data-grid-types.ts | `DataGridProps`, `DataGridColumn` (re-export z DataGrid zachován) | nový ~300 |
+| grid/data-grid-columns.ts | šířky, připnuté/kompaktní, odvození viditelných | nový ~200 |
+| grid/DataGridBody.tsx | tělo tabulky, skupiny, součtový řádek, virtualizace | nový ~400 |
+| grid/TreeGrid.tsx | skládání stromu | 1 079 → ~450 |
+| grid/TreeGridBody.tsx | řádky stromu, rozbalení | nový ~350 |
+| grid/GridFrame.tsx | lišta akcí, hledání, Sloupce, Obnovit, zoom/hustota, kontextový řádek, pruh zkrácení, ZoomGrid – jednou pro oba | nový ~300 |
+| grid/grid-base-props.ts | `GridBaseProps` – společné props (typ, API beze změny) | nový ~150 |
+| grid/useRowActions.tsx | menu řádku, `activeToggleMenuItem`, potvrzení odstranění | nový ~150 |
+| grid/grid-column-presets.ts | `DEFAULT_PINNED_COLUMNS`, `DEFAULT_COMPACT_COLUMNS` | nový ~40 |
+| layout/AppShell.tsx | rám aplikace | 1 372 → ~1 250 (pod 500 až v 3.0.0, viz níže) |
+| layout/useGlobalShortcuts.ts | registr globálních zkratek, jeden posluchač | nový ~90 |
 
-**Texty:** nový klíč `DsTexts.journalEditor` (CS + SK překlad). `DEFAULT_JOURNAL_LINES_TEXTS` zůstane exportovaný jako `DS_TEXTS_CS.journalEditor`; priorita prop `texts` → provider → CS. `ds-texts.tsx` je už dnes nad 500 řádků (existující soubor, roste o ~3×75 ř.); jeho dělení je samostatný úkol.
+Každý nový soubor: hlavička (co · vlastní · nesmí), JSDoc česky ke každému exportu a propu.
 
-## 3. 5c `useDialogBackClose` a StrictMode
-Předpokládaná příčina (potvrdí nejdřív test s `<StrictMode>`): při simulovaném odpojení úklid zavolá `history.back()`, znovupřipojení vloží nový záznam a opožděný `popstate` pak dialog zavře.
-Oprava: úklid při odpojení odloží `history.back()` (mikroúloha) a zruší jej, pokud se komponenta hned znovu připojí; vložení záznamu je idempotentní (jeden marker na otevření).
-Test `tests/unit/dialog-back-close-strict.test.tsx`: StrictMode → jeden záznam historie, dialog zůstane otevřený; Zpět jej zavře; zavření tlačítkem záznam odebere; vnořené dialogy dál fungují.
+## Co se nemění a proč
 
-**Pro APP po vydání:** vrátit `<StrictMode>` v kořeni a smazat `dialog-history-guard` (soubor, jeho import a obal/volání v kořeni či dialozích). Bezpečnost potvrdím až po zeleném testu.
-
-## 4. Chyba z APP: vnořený RecordDialog odešle vnější formulář
-Příčina: dialog je sice v portálu (DOM mimo vnější `<form>`), ale React události bublají podle stromu komponent, takže `submit` vnitřního formuláře dojde k `onSubmit` vnějšího.
-Oprava: `onSubmit` formuláře v `RecordDialog` volá `event.stopPropagation()` (oba způsoby vykreslení – Dialog i portál panelu).
-Test `tests/unit/record-dialog-nested.test.tsx`: dva vnořené `RecordDialog`, Uložit vnitřního zavolá jen vnitřní `onSubmit`; Uložit vnějšího funguje dál.
-
-## 5. Závěr
-`format`, `typecheck`, `lint` (0 chyb v nových/změněných), `test`, `build` s počty; `CHANGELOG.md` 2.83.0 (API beze změny, oprava vnořeného formuláře, StrictMode, rozdělení editoru); `package.json` 2.83.0; `roadmap.md`; tabulka souborů se skutečnými řádky; co nezměněno a proč (41 props editoru → 3.0.0, `ds-texts.tsx` délka). Nevydávám.
+- AppShell zůstane nad 500 řádků: zadání 5d je jen efekty a klávesy; rozdělení panelů/navigace je samostatný úklid (navrhnu jako 5e).
+- Žádné props se neodstraňují ani nepřejmenovávají; zastaralé props AppShell zůstávají.
+- `storageKey` formát uložení beze změny – existující uložené sloupce v APP platí dál.
