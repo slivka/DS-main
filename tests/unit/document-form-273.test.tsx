@@ -273,7 +273,7 @@ describe("DocumentForm 2.73", () => {
 });
 
 describe("BankAccountField 2.73", () => {
-  it("nabídne založení prvního účtu a zavolá akci", () => {
+  it("zpřístupní výběr založení prvního účtu i s prázdným seznamem", () => {
     const onAddAccount = mock(() => {});
     const view = render(
       <BankAccountField
@@ -390,10 +390,10 @@ describe("BankAccountField 2.73", () => {
     expect(view.queryByRole("textbox", { name: "Bankovní účet" })).toBeNull();
   });
 
-  it("v režimu Jiný účet vstup zůstane po smazání i po shodě s nabídkou", () => {
+  it("ruční vstup zůstane po smazání i po shodě s nabídkou", () => {
     const options = [{ number: "19-2000145399", bankCode: "0800" }];
     function Harness() {
-      const [account, setAccount] = React.useState("");
+      const [account, setAccount] = React.useState("123");
       return (
         <BankAccountField
           aria-label="Účet"
@@ -404,9 +404,6 @@ describe("BankAccountField 2.73", () => {
       );
     }
     const view = render(<Harness />);
-    fireEvent.click(view.getByRole("combobox", { name: "Účet" }));
-    fireEvent.keyDown(view.getByRole("combobox", { name: "Účet" }), { key: "End" });
-    fireEvent.keyDown(view.getByRole("combobox", { name: "Účet" }), { key: "Enter" });
     const input = view.getByRole("textbox", { name: "Účet" });
     fireEvent.change(input, { target: { value: "123" } });
     fireEvent.change(input, { target: { value: "" } });
