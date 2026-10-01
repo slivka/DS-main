@@ -200,7 +200,7 @@ describe("podmenu DS 2.75.0", () => {
   });
 
   it("rozepsaná záložka při zavření panelu zobrazí dotaz a Zrušit nic nezmění", () => {
-    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
     const tab = createTab({ route: "/dirty" });
     initial.panes[0] = { ...initial.panes[0], tabs: [tab], activeTab: tab.id };
     let api: ReturnType<typeof usePaneTabs> = null;
