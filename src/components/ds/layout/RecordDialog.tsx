@@ -387,5 +387,3 @@ export function RecordDialog({
     </Dialog>
   );
 }
-
-/**
