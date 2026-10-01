@@ -4,6 +4,14 @@
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
 
+- Kód a název oddělujte výhradně řetězcem „ – “ přes `formatCodeName`; ruční skládání je zakázané.
+- Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu.
+- Ovládací prvky, segmenty, štítky a ikonová tlačítka používají poloměr `0.25rem`; dialogy, karty, panely a nabídky `0.375rem`.
+- Pruh akcí řadí hlavní krok `outline`, poté plné primární Uložit a nakonec nabídku dalších akcí.
+- Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
+- Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
+- Sekce dokladu řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+
 ## Filozofie
 
 Slivka Design System je sdílený základ firemních aplikací Slivka. Vizuální identita

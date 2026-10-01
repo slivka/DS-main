@@ -96,30 +96,47 @@ export function DocumentCounterpartyTab({
 
 /** Volby tisku dokladu. */
 export interface DocumentPrintOptions {
+  /** Tisknout záhlaví. */
   showHeader: boolean;
+  /** Tisknout zápatí. */
   showFooter: boolean;
+  /** Tisknout rekapitulaci DPH. */
   showVatRecap: boolean;
+  /** Tisknout poznámku. */
   showNote: boolean;
+  /** Tisknout nadpisy sloupců. */
   showColumnHeadings: boolean;
+  /** Tisknout součtový řádek. */
   showTotalsRow: boolean;
+  /** Tisknout platební kalendář. */
   showPaymentSchedule: boolean;
 }
 
 /** Hodnoty záložky tiskových údajů. */
 export interface DocumentPrintValue {
+  /** Přepínače obsahu tisku. */
   options: DocumentPrintOptions;
+  /** Vlastní záhlaví. */
   headerText: string;
+  /** Vlastní zápatí. */
   footerText: string;
+  /** Poznámka pro tisk. */
   note: string;
+  /** Jméno vystavující osoby. */
   issuedByName: string;
+  /** Telefon vystavující osoby. */
   issuedByPhone: string;
+  /** E-mail vystavující osoby. */
   issuedByEmail: string;
 }
 
 /** Vlastnosti záložky tiskových údajů. */
 export interface DocumentPrintTabProps {
+  /** Řízená hodnota. */
   value: DocumentPrintValue;
+  /** Změna hodnoty. */
   onChange: (value: DocumentPrintValue) => void;
+  /** Zakáže editaci. */
   readOnly?: boolean;
 }
 

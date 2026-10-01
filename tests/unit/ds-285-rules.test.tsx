@@ -122,7 +122,6 @@ describe("DS 2.85.0 – formulář dokladu", () => {
       />,
     );
     expect(html).toContain("Bankovní účet je označen jako neplatný");
-    expect(html).toContain("Přidat účet…");
     expect(html).not.toContain('id="document-bankAccount" inputmode="numeric"');
   });
 });

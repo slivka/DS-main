@@ -86,8 +86,11 @@ export type DocumentHeaderValue = {
   constantSymbol?: string | null;
   specificSymbol?: string | null;
   bankAccount?: string | null;
+  /** Identifikátor vybraného účtu partnera. */
   partnerBankAccountId?: string | null;
+  /** Identifikátor účtu vlastní firmy. */
   companyBankAccountId?: string | null;
+  /** Identifikátor způsobu platby. */
   paymentMethodId?: string | null;
   description?: string | null;
   currency: string;
@@ -102,6 +105,7 @@ export type DocumentHeaderValue = {
   roundingAmount?: number | null;
   mainAccountId?: string | null;
   excludeFromPaymentOrders?: boolean;
+  /** Tiskové údaje uložené s dokladem. */
   print?: DocumentPrintValue;
 };
 
