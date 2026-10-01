@@ -94,6 +94,7 @@ import {
   type DocumentFormTab,
   type DocumentFormTexts,
   type DocumentHeaderField,
+  type DocumentHeaderValue,
   type DocumentIdentity,
   type DocumentMoreAction,
   type DocumentPrimaryAction,
