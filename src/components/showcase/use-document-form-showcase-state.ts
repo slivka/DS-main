@@ -368,3 +368,5 @@ export function useDocumentFormShowcaseState() {
     units,
   };
 }
+
+export type ReturnTypeOfDocumentShowcaseState = ReturnType<typeof useDocumentFormShowcaseState>;
