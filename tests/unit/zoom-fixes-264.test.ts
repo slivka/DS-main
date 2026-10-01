@@ -107,9 +107,9 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
       },
     );
     expect(isResizeLocked()).toBe(true);
-    g.window.dispatchEvent(new Event("pointercancel"));
-    g.window.dispatchEvent(new Event("pointerup"));
-    g.window.dispatchEvent(new Event("blur"));
+    globalThis.window.dispatchEvent(new Event("pointercancel"));
+    globalThis.window.dispatchEvent(new Event("pointerup"));
+    globalThis.window.dispatchEvent(new Event("blur"));
     expect(isResizeLocked()).toBe(false);
     expect(ends).toBe(1);
     expect(finished).toBe(1);
@@ -121,7 +121,7 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
       ends += 1;
     });
     startPointerDrag({ pointerId: 2, currentTarget: null }, { onMove: () => undefined });
-    g.window.dispatchEvent(new Event("blur"));
+    globalThis.window.dispatchEvent(new Event("blur"));
     expect(isResizeLocked()).toBe(false);
     expect(ends).toBe(1);
   });
