@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
-
 import { Switch } from "../../../ui/switch";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
@@ -15,7 +14,6 @@ import {
   partnerLabelForType,
   type DocumentFields,
 } from "../document-fields";
-
 import { BankAccountField } from "../bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
@@ -26,7 +24,6 @@ import {
   type DocumentHeaderField,
   type DocumentHeaderValue,
 } from "./document-form-types";
-
 import { useCurrencyControl } from "./use-currency-control";
 import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
@@ -39,11 +36,10 @@ import { DocumentBasicSection } from "./BasicSection";
 import { DocumentAmountSection } from "./AmountSection";
 import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
-
 export function DocumentForm({
   title,
   titleBadges,
-  description: _description,
+  description,
   identity,
   directionBadge,
   value,
@@ -68,7 +64,7 @@ export function DocumentForm({
   documentType = "ID",
   fields,
   editableFields,
-  isNew = false,
+  isNew,
   mainSide,
   mainAccountLocked = false,
   rateAmount = 1,
@@ -105,7 +101,7 @@ export function DocumentForm({
   texts,
   className,
 }: DocumentFormProps) {
-  void _description;
+  void description;
   void isNew;
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
@@ -203,7 +199,6 @@ export function DocumentForm({
         ),
       ]
     : moreActions;
-
   const { field, date, text, suggestedText } = useDocumentFieldRenderers({
     value,
     patch,
@@ -286,7 +281,6 @@ export function DocumentForm({
         },
       ]);
   };
-
   const allTabs = buildDocumentTabs({
     lines,
     onLinesChange,
@@ -317,7 +311,6 @@ export function DocumentForm({
     printTab,
     total,
   });
-
   const currencyControl = useCurrencyControl({
     value,
     patch,
@@ -330,7 +323,6 @@ export function DocumentForm({
     currenciesPresent: Boolean(currencies),
     t,
   });
-
   return (
     <TooltipProvider>
       <div
@@ -407,7 +399,6 @@ export function DocumentForm({
         {readOnly && readOnlyReason ? (
           <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} />
         ) : null}
-
         <section className="rounded-lg border bg-card p-4">
           <DocumentIdentityLine
             identity={effectiveIdentity}
@@ -459,7 +450,6 @@ export function DocumentForm({
               externalNumberField={externalNumberField}
             />
           ) : null}
-
           <DocumentDatesSection
             t={t}
             f={f}
@@ -474,7 +464,6 @@ export function DocumentForm({
               {suggestedText("description", t.description, descriptionSuggest, 20)}
             </div>
           ) : null}
-
           <DocumentPaymentSection
             f={f}
             t={t}
@@ -509,7 +498,6 @@ export function DocumentForm({
             field={field}
           />
         </section>
-
         <DocumentFormTabs
           tabs={allTabs}
           value={tab}
