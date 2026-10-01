@@ -84,6 +84,7 @@ import {
   type DocumentVatConfig,
 } from "./document-form-types";
 
+import { useCurrencyControl } from "./use-currency-control";
 import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
@@ -374,53 +375,18 @@ export function DocumentForm({
     total,
   });
 
-  const currencyReasonId = useId();
-  const currencyFixed =
-    currencyLocked ||
-    readOnly ||
-    !can("currency") ||
-    identityVariant === "cashBank" ||
-    Boolean(currencyDisabledReason);
-  const currencyReason =
-    currencyDisabledReason ?? (!readOnly && !can("currency") ? t.currencyDisabled : undefined);
-  const fixedCurrency = (
-    <div
-      id="document-currency"
-      aria-readonly="true"
-      aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-11 items-center px-3 font-mono text-sm font-bold tabular-nums"
-    >
-      {value.currency}
-    </div>
-  );
-  const currencyControl = currencyFixed ? (
-    currencyReason ? (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div tabIndex={0} aria-describedby={currencyReasonId}>
-            {fixedCurrency}
-            <span id={currencyReasonId} className="sr-only">
-              {currencyReason}
-            </span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>{currencyReason}</TooltipContent>
-      </Tooltip>
-    ) : (
-      fixedCurrency
-    )
-  ) : currencies ? (
-    <OptionSelect
-      id="document-currency"
-      allowEmpty={false}
-      value={value.currency}
-      onChange={(currency) => patch({ currency })}
-      options={currencyOptions}
-      triggerClassName="h-11"
-    />
-  ) : (
-    fixedCurrency
-  );
+  const currencyControl = useCurrencyControl({
+    value,
+    patch,
+    can,
+    currencyLocked,
+    readOnly,
+    identityVariant,
+    currencyDisabledReason,
+    currencyOptions,
+    currenciesPresent: Boolean(currencies),
+    t,
+  });
 
   return (
     <TooltipProvider>
