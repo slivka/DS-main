@@ -109,8 +109,9 @@ describe("RecordDialog 2.84", () => {
     expect(panels).toHaveLength(2);
     expect(panels[1]?.hasAttribute("inert")).toBe(true);
     fireEvent.click(view.getByRole("tab", { name: "Dlouhá" }));
-    expect(panels[0]?.hasAttribute("inert")).toBe(true);
-    expect(panels[1]?.hasAttribute("inert")).toBe(false);
+    const updatedPanels = view.getAllByRole("tabpanel", { hidden: true });
+    expect(updatedPanels[0]?.hasAttribute("inert")).toBe(true);
+    expect(updatedPanels[1]?.hasAttribute("inert")).toBe(false);
   });
 
   it("velikost lg, titulkové štítky a doplňkový řádek jsou veřejnou součástí", () => {
