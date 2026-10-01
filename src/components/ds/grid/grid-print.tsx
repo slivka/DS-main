@@ -48,6 +48,7 @@ export function gridPrintParams({
   filters = [],
   asOf,
   extra = [],
+  texts,
 }: {
   book?:
     | {
@@ -65,7 +66,7 @@ export function gridPrintParams({
   extra?: GridPrintParam[] | undefined;
   texts?: DsTexts;
 }): GridPrintParam[] {
-  const t = arguments[0].texts ?? DS_TEXTS_CS;
+  const t = texts ?? DS_TEXTS_CS;
   const out: GridPrintParam[] = [];
   if (book) {
     const found = book.value === "all" ? null : book.books.find((item) => item.id === book.value);

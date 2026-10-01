@@ -58,6 +58,8 @@ export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
 export function Field({ label, htmlFor, hint, error, span, className = "", children }: FieldProps) {
   return (
     <div
+      data-slot="field"
+      data-field-has-label={label ? "true" : "false"}
       data-invalid={error ? "true" : undefined}
       className={`${label ? "flex min-w-0 flex-col gap-1" : ""} ${fieldSpanClass(span)} ${
         error

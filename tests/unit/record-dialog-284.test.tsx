@@ -17,6 +17,7 @@ import {
 } from "../../src/components/ds";
 import { Input } from "../../src/components/ui/input";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
+import { RecordDialogShowcase } from "../../src/components/showcase/RecordDialogShowcase";
 
 const noop = () => {};
 
@@ -67,6 +68,7 @@ describe("formulářové prvky dialogu záznamu", () => {
     );
     expect(html).toContain("Vysvětlení skupiny");
     expect(html).toContain("Stav");
+    expect(html).toContain("normal-case tracking-normal");
   });
 
   it("CheckboxField v režimu input drží šestnáctibodové ovládání v řádku pole", () => {
@@ -76,10 +78,45 @@ describe("formulářové prvky dialogu záznamu", () => {
     expect(html).toContain('data-align="input"');
     expect(html).toContain("min-h-[var(--control-h)]");
     expect(html).toContain("size-4");
+    expect(html).toContain("pt-5");
   });
 });
 
 describe("RecordDialog 2.84", () => {
+  it("ukázka A používá širokou mřížku a přesné rozložení polí", () => {
+    const view = render(
+      <TooltipProvider>
+        <RecordDialogShowcase />
+      </TooltipProvider>,
+    );
+    fireEvent.click(view.getByRole("button", { name: "Bez záložek" }));
+    const dialog = view.getByRole("dialog");
+    expect(dialog.className).toContain("sm:max-w-3xl");
+    expect(view.getByLabelText("Typ knihy po založení nelze změnit.")).toBeTruthy();
+    expect(view.getByText("Schválení")).toBeTruthy();
+    expect(view.getByText("Vyžaduje schválení").closest('[data-align="input"]')).toBeTruthy();
+  });
+
+  it("ukázka C používá lg, FieldTable a stejné dvanáctisloupcové spany", () => {
+    const view = render(
+      <TooltipProvider>
+        <RecordDialogShowcase />
+      </TooltipProvider>,
+    );
+    fireEvent.click(view.getByRole("button", { name: "Číselné řady" }));
+    expect(view.getByRole("dialog", { name: /Číselné řady knihy/ }).className).toContain(
+      "sm:max-w-4xl",
+    );
+    expect(view.getByRole("table", { name: "Číselné řady" })).toBeTruthy();
+    expect(view.getByRole("columnheader", { name: "Řada" }).className).toContain("col-span-2");
+    expect(view.getByRole("columnheader", { name: "Maska" }).className).toContain("col-span-4");
+    expect(view.getByText("Účet", { selector: "label" }).parentElement?.className).toContain(
+      "col-span-8",
+    );
+    expect(view.getByText("Na dokladu").parentElement?.className).toContain("col-span-4");
+    expect(view.getByText(/Nastavení DPH se použije/)).toBeTruthy();
+  });
+
   it("jediná záložka ukáže přímo obsah bez lišty", () => {
     const view = render(
       <RecordDialog

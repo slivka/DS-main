@@ -19,37 +19,43 @@ import { resolveMenuMaximum, resolveMenuWidth } from "../../src/components/ds/la
 
 const squashSrc = (s: string) => s.replace(/\s+/g, " ");
 
-const g = globalThis as any;
 let saved: { window: unknown; document: unknown };
 let store: Map<string, string>;
 
 beforeEach(() => {
-  saved = { window: g.window, document: g.document };
+  saved = { window: globalThis.window, document: globalThis.document };
   store = new Map();
-  const win = new EventTarget() as any;
-  win.innerWidth = 1600;
-  win.localStorage = {
-    getItem: (k: string) => store.get(k) ?? null,
-    setItem: (k: string, v: string) => void store.set(k, v),
-    removeItem: (k: string) => void store.delete(k),
-  };
-  g.window = win;
-  g.document = {
-    documentElement: { dataset: {} as Record<string, string>, style: {} as Record<string, string> },
-  };
+  const win = Object.assign(new EventTarget(), {
+    innerWidth: 1600,
+    localStorage: {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    },
+  });
+  Object.defineProperty(globalThis, "window", { configurable: true, value: win });
+  Object.defineProperty(globalThis, "document", {
+    configurable: true,
+    value: {
+      documentElement: {
+        dataset: {} as Record<string, string>,
+        style: {} as Record<string, string>,
+      },
+    },
+  });
   resetAppZoomCacheForTests();
 });
 
 afterEach(() => {
-  g.window = saved.window;
-  g.document = saved.document;
+  Object.defineProperty(globalThis, "window", { configurable: true, value: saved.window });
+  Object.defineProperty(globalThis, "document", { configurable: true, value: saved.document });
   resetAppZoomCacheForTests();
 });
 
 describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
   it("getAppZoom se po změně innerWidth bez uloženého klíče nezmění", () => {
     expect(getAppZoom()).toBe(1);
-    g.window.innerWidth = 2800;
+    Object.assign(globalThis.window, { innerWidth: 2800 });
     expect(getAppZoom()).toBe(1);
     expect(store.has(APP_ZOOM_STORAGE_KEY)).toBe(false);
   });
@@ -57,7 +63,7 @@ describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
   it("mění ho jen setAppZoom", () => {
     getAppZoom();
     setAppZoom(1.3);
-    g.window.innerWidth = 1000;
+    Object.assign(globalThis.window, { innerWidth: 1000 });
     expect(getAppZoom()).toBe(1.3);
   });
 
@@ -78,17 +84,17 @@ describe("DS 2.64 – zoom aplikace se nepřepočítává podle okna", () => {
 
 describe("DS 2.64 – zámek tažení se nezasekne", () => {
   const handle = () => {
-    const target = new EventTarget() as any;
-    target.setPointerCapture = () => undefined;
-    target.hasPointerCapture = () => false;
-    target.releasePointerCapture = () => undefined;
-    return target;
+    return Object.assign(new EventTarget(), {
+      setPointerCapture: () => undefined,
+      hasPointerCapture: () => false,
+      releasePointerCapture: () => undefined,
+    });
   };
 
   it("pointercancel uvolní zámek a vyšle app:resize-end právě jednou", () => {
     let ends = 0;
     let finished = 0;
-    g.window.addEventListener(RESIZE_END_EVENT, () => {
+    globalThis.window.addEventListener(RESIZE_END_EVENT, () => {
       ends += 1;
     });
     startPointerDrag(
@@ -101,9 +107,9 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
       },
     );
     expect(isResizeLocked()).toBe(true);
-    g.window.dispatchEvent(new Event("pointercancel"));
-    g.window.dispatchEvent(new Event("pointerup"));
-    g.window.dispatchEvent(new Event("blur"));
+    globalThis.window.dispatchEvent(new Event("pointercancel"));
+    globalThis.window.dispatchEvent(new Event("pointerup"));
+    globalThis.window.dispatchEvent(new Event("blur"));
     expect(isResizeLocked()).toBe(false);
     expect(ends).toBe(1);
     expect(finished).toBe(1);
@@ -111,11 +117,11 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
 
   it("ztráta fokusu okna tažení také ukončí", () => {
     let ends = 0;
-    g.window.addEventListener(RESIZE_END_EVENT, () => {
+    globalThis.window.addEventListener(RESIZE_END_EVENT, () => {
       ends += 1;
     });
     startPointerDrag({ pointerId: 2, currentTarget: null }, { onMove: () => undefined });
-    g.window.dispatchEvent(new Event("blur"));
+    globalThis.window.dispatchEvent(new Event("blur"));
     expect(isResizeLocked()).toBe(false);
     expect(ends).toBe(1);
   });

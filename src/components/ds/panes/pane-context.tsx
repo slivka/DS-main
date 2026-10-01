@@ -857,8 +857,13 @@ export type PaneMenuAction = {
 };
 
 /** Sestaví menu záložky – stejné pro ⋯ v PageHeader i kontextové menu v PaneTabBar. */
+type TabMenuApi = Pick<
+  PaneTabsApi,
+  "state" | "closeTab" | "moveTab" | "duplicateTab" | "closePane"
+>;
+
 export function buildTabMenuActions(
-  api: PaneTabsApi,
+  api: TabMenuApi,
   tabId: string,
   texts: Partial<PaneChromeTexts> = {},
 ): PaneMenuAction[] {

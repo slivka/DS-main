@@ -39,7 +39,11 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
       <div
         data-slot="checkbox-field"
         data-align={align}
-        className={cn(align === "input" && "@min-[40rem]:pt-6", className)}
+        className={cn(
+          align === "input" &&
+            "@min-[40rem]:pt-5 @min-[40rem]:[[data-field-has-label=true]_&]:pt-0",
+          className,
+        )}
       >
         <div
           className={cn(

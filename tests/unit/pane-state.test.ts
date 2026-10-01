@@ -16,13 +16,14 @@ import {
   setLayoutWithLimitInState,
   stepTabHistory,
   MAX_TABS_PER_PANE,
+  type CreateTabInput,
 } from "../../src/components/ds/panes/pane-state";
 
 const open = (
   state: ReturnType<typeof createPaneTabsState>,
   route: string,
-  extra: Record<string, unknown> = {},
-) => openTabInState(state, { route, ...extra } as never).state;
+  extra: Omit<Partial<CreateTabInput>, "route"> = {},
+) => openTabInState(state, { route, ...extra }).state;
 
 describe("záložky v panelech", () => {
   test("prázdný panel dostane novou záložku, další klik ji nahradí s historií", () => {

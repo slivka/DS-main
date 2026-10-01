@@ -11,15 +11,18 @@ describe("2.53.0 – druhá kontrola", () => {
     const store = new Map<string, string>();
     beforeEach(() => {
       store.clear();
-      (globalThis as any).localStorage = {
-        get length() {
-          return store.size;
+      Object.defineProperty(globalThis, "localStorage", {
+        configurable: true,
+        value: {
+          get length() {
+            return store.size;
+          },
+          key: (i: number) => [...store.keys()][i] ?? null,
+          getItem: (k: string) => store.get(k) ?? null,
+          setItem: (k: string, v: string) => void store.set(k, v),
+          removeItem: (k: string) => void store.delete(k),
         },
-        key: (i: number) => [...store.keys()][i] ?? null,
-        getItem: (k: string) => store.get(k) ?? null,
-        setItem: (k: string, v: string) => void store.set(k, v),
-        removeItem: (k: string) => void store.delete(k),
-      };
+      });
     });
     test("maže zavřené záložky a vypadlé kroky historie", () => {
       store.set("paneScroll:a:pane-scroll:0:x", "1");

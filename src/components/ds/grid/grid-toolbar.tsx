@@ -494,6 +494,7 @@ export interface GridAddAction {
 /** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
 export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
+  const primaryActionRef = React.useRef<HTMLButtonElement>(null);
   const list = React.useMemo(() => (Array.isArray(actions) ? actions : [actions]), [actions]);
   // Zkratka N reaguje jen v aktivním panelu a jen když není otevřený dialog,
   // aby jeden stisk neklikl na Přidat ve všech gridových lištách najednou.
@@ -517,14 +518,14 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
       const action = list[0];
       if (!action || action.disabled) return;
       event.preventDefault();
-      action.onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+      primaryActionRef.current?.click();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [list, paneActive]);
   return (
     <TooltipProvider delayDuration={250}>
-      {list.map((action) => {
+      {list.map((action, index) => {
         const actionLabel = `${action.label} (N)`;
         const label =
           action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
@@ -532,6 +533,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>
               <Button
+                ref={index === 0 ? primaryActionRef : undefined}
                 data-toolbar-add
                 type="button"
                 size="sm"

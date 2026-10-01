@@ -23,7 +23,11 @@ export const SectionHeading = React.forwardRef<HTMLHeadingElement, SectionHeadin
         {...props}
       >
         <span className="min-w-0 truncate whitespace-nowrap">{children}</span>
-        {aside ? <span className="shrink-0 font-normal text-muted-foreground">{aside}</span> : null}
+        {aside ? (
+          <span className="shrink-0 text-left font-normal normal-case tracking-normal text-muted-foreground">
+            {aside}
+          </span>
+        ) : null}
       </Heading>
     );
   },
