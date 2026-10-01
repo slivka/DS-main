@@ -220,12 +220,7 @@ describe("BankAccountField 2.73", () => {
 
   it("neplatný a chybějící účet popíše bez surového identifikátoru", () => {
     const view = render(
-      <BankAccountField
-        value="invalid-id"
-        onChange={() => {}}
-        options={[]}
-        selectionOnly
-      />,
+      <BankAccountField value="invalid-id" onChange={() => {}} options={[]} selectionOnly />,
     );
     expect(view.getByRole("combobox").textContent).toContain("Účet není v číselníku partnera");
     expect(view.getByRole("combobox").textContent).not.toContain("invalid-id");
