@@ -3,7 +3,7 @@ import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm, vsFromDocumentNumber } =
   await import("../../src/components/ds/accounting/document-form");
@@ -56,7 +56,7 @@ afterAll(async () => {
 });
 
 describe("DocumentForm 2.73", () => {
-  it("mění číselníkový KS a identifikátor firemního účtu bez volného vstupu", () => {
+  it("mění číselníkový KS a identifikátor firemního účtu bez volného vstupu", async () => {
     const patches: Array<Record<string, unknown>> = [];
     const view = render(
       <Form
@@ -72,7 +72,8 @@ describe("DocumentForm 2.73", () => {
     expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain("9999");
     expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
     fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet firmy" }));
-    fireEvent.click(view.getByRole("option", { name: /Hlavní/ }));
+    await waitFor(() => expect(document.body.querySelector('[role="option"]')).toBeTruthy());
+    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
     expect(patches.at(-1)?.companyBankAccountId).toBe("company-1");
   });
 
@@ -273,7 +274,7 @@ describe("DocumentForm 2.73", () => {
 });
 
 describe("BankAccountField 2.73", () => {
-  it("zpřístupní výběr založení prvního účtu i s prázdným seznamem", () => {
+  it("zpřístupní výběr založení prvního účtu i s prázdným seznamem", async () => {
     const onAddAccount = mock(() => {});
     const view = render(
       <BankAccountField
@@ -289,6 +290,9 @@ describe("BankAccountField 2.73", () => {
     fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     expect(trigger.hasAttribute("disabled")).toBe(false);
+    await waitFor(() => expect(document.body.querySelector('[role="option"]')).toBeTruthy());
+    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
+    expect(onAddAccount).toHaveBeenCalledTimes(1);
   });
 
   it("neplatný a chybějící účet popíše bez surového identifikátoru", () => {
