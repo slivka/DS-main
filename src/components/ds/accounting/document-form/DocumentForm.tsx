@@ -4,14 +4,9 @@ import { Settings } from "lucide-react";
 import { Switch } from "../../../ui/switch";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
-import {
-  RecordActionBar,
-  type RecordMoreAction,
-  type RecordPrimaryAction,
-  type RecordSaveAction,
-} from "../../layout/record-action-bar";
+import { RecordActionBar } from "../../layout/record-action-bar";
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
-import { VatStatusBadge, type VatStatus } from "../../data-display/vat-status-badge";
+import { VatStatusBadge } from "../../data-display/vat-status-badge";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
@@ -43,7 +38,6 @@ import { DocumentDatesSection } from "./DatesSection";
 import { DocumentBasicSection } from "./BasicSection";
 import { DocumentAmountSection } from "./AmountSection";
 import { DocumentPaymentSection } from "./PaymentSection";
-import { DocumentDirectionBadge } from "./document-form-actions";
 import { DocumentIdentityLine } from "./document-identity-line";
 
 export function DocumentForm({
@@ -111,6 +105,8 @@ export function DocumentForm({
   texts,
   className,
 }: DocumentFormProps) {
+  void _description;
+  void isNew;
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
@@ -149,7 +145,6 @@ export function DocumentForm({
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
   const {
-    normalizedType,
     receivedDocument,
     issuedDocument,
     forcedSum,
@@ -195,7 +190,7 @@ export function DocumentForm({
     ) {
       setSelectedIdentityAccount(null);
     }
-  }, [effectiveIdentity.account?.label, selectedIdentityAccount, value.mainAccountId]);
+  }, [effectiveIdentity.account?.label, sameAccount, selectedIdentityAccount, value.mainAccountId]);
   const identityAccountLabel =
     selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
       ? selectedIdentityAccount.label
