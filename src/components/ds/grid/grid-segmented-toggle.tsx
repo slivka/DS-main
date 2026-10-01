@@ -62,9 +62,9 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
       const nextValue = nextGridSegmentValue(options, value, event.key === "ArrowRight" ? 1 : -1);
       const nextIndex = options.findIndex((option) => option.value === nextValue);
       onChange(nextValue);
-      event.currentTarget.parentElement
-        ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-        [nextIndex]?.focus();
+      const buttons =
+        event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+      buttons?.[nextIndex]?.focus();
     };
 
     return (

@@ -82,9 +82,11 @@ export function SegmentedField<Value extends string = string>({
             const nextValue = nextSegmentedFieldValue(options, value, direction);
             const nextIndex = options.findIndex((item) => item.value === nextValue);
             onChange(nextValue);
-            event.currentTarget.parentElement
-              ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-              [nextIndex]?.focus();
+            const buttons =
+              event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                '[role="radio"]',
+              );
+            buttons?.[nextIndex]?.focus();
           }}
         >
           {option.label}

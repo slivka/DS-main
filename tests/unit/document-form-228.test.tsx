@@ -141,7 +141,7 @@ describe("DocumentForm 2.31.0", () => {
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
   });
   it("použije nadpis Částka bez viditelného hlavního účtu", () => {
-    expect(form({ documentType: "ID" })).toContain(">Částka</h2>");
+    expect(form({ documentType: "ID" })).toContain(">Částka</span></h2>");
     expect(form({ documentType: "FP" })).toContain(">Částka</h2>");
     expect(form({ documentType: "FP" })).not.toContain(">Hlavní účet<");
   });
