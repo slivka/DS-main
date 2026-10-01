@@ -213,48 +213,6 @@ import { AppShell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 
 Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint). AppShell ve výchozím stavu nemění document.title; opt-in manageDocumentTitle jej nastaví podle appName.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `children` | any | `—` |
-| `navGroups` | any | `—` |
-| `bottomItems` | any | `—` |
-| `appName` | string | `Aplikace` |
-| `manageDocumentTitle` | boolean | `false` |
-| `logo` | any | `—` |
-| `showBrand` | boolean | `false` |
-| `breadcrumbs` | any | `—` |
-| `contextLeft` | any | `—` |
-| `subHeader` | any | `—` |
-| `actions` | any | `—` |
-| `notificationBell` | any | `—` |
-| `themeToggleButton` | any | `—` |
-| `userMenu` | any | `—` |
-| `panels` | any | `—` |
-| `activePanel` | string | `—` |
-| `onActivePanelChange` | function | `—` |
-| `closeLabel` | string | `Zavřít` |
-| `menuLabel` | string | `Menu` |
-| `collapseLabel` | string | `Sbalit menu` |
-| `expandLabel` | string | `Rozbalit menu` |
-| `disabledHint` | string | `—` |
-| `navStateKey` | string | `—` |
-| `navSearch` | boolean | `true` |
-| `navSearchPlaceholder` | string | `—` |
-| `navSearchEmptyText` | string | `—` |
-| `contextDisabledHint` | string | `—` |
-| `navSearchMenu` | any | `—` |
-| `items` | any | `—` |
-| `adminNav` | any | `—` |
-| `adminMode` | boolean | `—` |
-| `adminTitle` | string | `Administrace` |
-| `adminButtonLabel` | string | `Administrace` |
-| `adminBackLabel` | string | `—` |
-| `adminBasePath` | string | `—` |
-| `onAdminModeChange` | function | `—` |
-| `showLegacyToolbar` | boolean | `—` |
-
 **Examples:**
 
 _Řízené části Nastavení_
@@ -1258,88 +1216,6 @@ import { DataGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 
 Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a individuální Upravit/Odstranit pouze ve sticky sloupci akcí řádku.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `storageKey` | string | `—` |
-| `height` | fill · auto | `—` |
-| `autoZoom` | boolean | `—` |
-| `title` | any | `—` |
-| `showTitle` | boolean | `false` |
-| `hideTitleMark` | boolean | `—` |
-| `exportTitle` | string | `—` |
-| `rows` | any | `—` |
-| `columns` | any | `—` |
-| `rowKey` | function | `—` |
-| `loading` | boolean | `—` |
-| `error` | any | `—` |
-| `onRetry` | function | `—` |
-| `onRefresh` | function | `—` |
-| `refreshing` | boolean | `—` |
-| `onRowClick` | function | `—` |
-| `actions` | any | `—` |
-| `toolbarLeft` | any | `—` |
-| `period` | any | `—` |
-| `book` | any | `—` |
-| `contextRight` | any | `—` |
-| `filters` | any | `—` |
-| `defaultFiltersOpen` | boolean | `false` |
-| `filterChips` | any | `—` |
-| `onClearFilters` | function | `—` |
-| `defaultFilters` | any | `—` |
-| `viewMode` | any | `—` |
-| `onViewModeChange` | function | `—` |
-| `viewZoomKey` | string | `—` |
-| `asOf` | any | `—` |
-| `addAction` | any | `—` |
-| `moreActions` | any | `—` |
-| `pdfExport` | function | `—` |
-| `printContext` | any | `—` |
-| `printTitle` | string | `—` |
-| `printParams` | any | `—` |
-| `extraExports` | any | `—` |
-| `emptyTitle` | string | `—` |
-| `emptyDescription` | string | `—` |
-| `emptyActionLabel` | string | `—` |
-| `onEmptyAction` | function | `—` |
-| `exportName` | string | `—` |
-| `exportMeta` | any | `—` |
-| `defaultSort` | string | `—` |
-| `rowClassName` | function | `—` |
-| `onEditRow` | function | `—` |
-| `onDeleteRow` | function | `—` |
-| `deleteConfirm` | function | `—` |
-| `rowActions` | function | `—` |
-| `actionsLabel` | string | `—` |
-| `columnFilters` | boolean | `true` |
-| `groupable` | boolean | `true` |
-| `defaultGroupBy` | string | `—` |
-| `paginated` | boolean | `true` |
-| `plain` | boolean | `—` |
-| `hideToolbar` | boolean | `—` |
-| `hideDefaultActions` | boolean | `—` |
-| `canEditRow` | function | `—` |
-| `editDisabledReason` | function | `—` |
-| `canDeleteRow` | function | `—` |
-| `deleteDisabledReason` | function | `—` |
-| `selectable` | boolean | `—` |
-| `selectionActions` | function | `—` |
-| `selectMode` | boolean | `—` |
-| `onSelectedRowsChange` | function | `—` |
-| `selectedKeys` | any | `—` |
-| `onSelectedKeysChange` | function | `—` |
-| `selectionSummary` | function | `—` |
-| `groupTotals` | header · row | `header` |
-| `hideSelectionToggle` | boolean | `—` |
-| `sidePanel` | any | `—` |
-| `activeRowKey` | string | `—` |
-| `showTotalRow` | boolean | `true` |
-| `onColumnFiltersChange` | function | `—` |
-| `onSearchChange` | function | `—` |
-| `className` | string | `grid-toolbar-optional contents` |
-| `texts` | any | `—` |
-
 **Examples:**
 
 _Akce řádků s vysvětlením zákazu_
@@ -1819,7 +1695,7 @@ Centrální texty a locale. Obalte aplikaci jednou v kořeni; lokální textové
 | Prop | Type | Default |
 |---|---|---|
 | `children` | any | `—` |
-| `locale` | cs · sk | `—` |
+| `locale` | any | `—` |
 | `texts` | any | `—` |
 
 **Examples:**
@@ -2567,50 +2443,6 @@ import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 ```
 
 Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `lines` | any | `—` |
-| `onChange` | function | `—` |
-| `accounts` | any | `—` |
-| `dimensions` | any | `—` |
-| `partners` | any | `—` |
-| `units` | any | `—` |
-| `onCreateUnit` | function | `—` |
-| `documentCurrency` | string | `—` |
-| `documentCurrencySymbol` | string | `—` |
-| `homeCurrency` | string | `—` |
-| `homeCurrencySymbol` | string | `—` |
-| `rate` | number | `1` |
-| `rateAmount` | number | `1` |
-| `sideFields` | shared · split | `split` |
-| `sharedSide` | any | `both` |
-| `mode` | internal · mainAccount | `internal` |
-| `mainSide` | MD · D | `—` |
-| `mainAccount` | string | `—` |
-| `sideFieldRules` | any | `—` |
-| `dimensionRequired` | boolean | `false` |
-| `isNonTaxAllowed` | function | `—` |
-| `editableFields` | any | `—` |
-| `totalAmount` | number | `—` |
-| `totalMode` | entered · computed | `computed` |
-| `rounding` | any | `—` |
-| `defaults` | any | `—` |
-| `validate` | function | `—` |
-| `onTotalsChange` | function | `—` |
-| `onValidationChange` | function | `—` |
-| `reorderable` | boolean | `—` |
-| `initialEmptyLine` | boolean | `false` |
-| `showAllErrors` | boolean | `false` |
-| `showQuantityColumns` | boolean | `false` |
-| `storageKey` | string | `journal-lines` |
-| `recap` | any | `—` |
-| `recapTabs` | any | `—` |
-| `texts` | any | `—` |
-| `className` | string | `cursor-grab text-muted-foreground active:cursor-grabbing` |
-| `vat` | any | `—` |
 
 **Examples:**
 
@@ -4541,66 +4373,6 @@ import { TreeGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```
 
 Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako DataGrid; onRowOpen má při dvojkliku přednost před úpravou.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `rows` | any | `—` |
-| `columns` | any | `—` |
-| `title` | string | `—` |
-| `showTitle` | boolean | `false` |
-| `storageKey` | string | `—` |
-| `height` | fill · auto | `—` |
-| `exportName` | string | `—` |
-| `exportMeta` | any | `—` |
-| `defaultCollapsed` | boolean | `false` |
-| `expandLevels` | any | `—` |
-| `expandDepth` | number | `—` |
-| `onExpandDepthChange` | function | `—` |
-| `highlightedRowId` | string | `—` |
-| `onRowClick` | function | `—` |
-| `onRowOpen` | function | `—` |
-| `actions` | any | `—` |
-| `toolbarLeft` | any | `—` |
-| `period` | any | `—` |
-| `book` | any | `—` |
-| `contextRight` | any | `—` |
-| `filters` | any | `—` |
-| `defaultFiltersOpen` | boolean | `false` |
-| `filterChips` | any | `—` |
-| `onClearFilters` | function | `—` |
-| `defaultFilters` | any | `—` |
-| `viewMode` | any | `—` |
-| `onViewModeChange` | function | `—` |
-| `viewZoomKey` | string | `—` |
-| `asOf` | any | `—` |
-| `addAction` | any | `—` |
-| `moreActions` | any | `—` |
-| `pdfExport` | function | `—` |
-| `printContext` | any | `—` |
-| `printTitle` | string | `—` |
-| `printParams` | any | `—` |
-| `extraExports` | any | `—` |
-| `onRefresh` | function | `—` |
-| `refreshing` | boolean | `—` |
-| `onEditRow` | function | `—` |
-| `onDeleteRow` | function | `—` |
-| `deleteConfirm` | function | `—` |
-| `rowActions` | function | `—` |
-| `canEditRow` | function | `—` |
-| `canDeleteRow` | function | `—` |
-| `editDisabledReason` | function | `—` |
-| `deleteDisabledReason` | function | `—` |
-| `actionsLabel` | string | `—` |
-| `hideDefaultActions` | boolean | `—` |
-| `selectable` | boolean | `—` |
-| `selectionActions` | function | `—` |
-| `onSelectedRowsChange` | function | `—` |
-| `gridTexts` | any | `—` |
-| `texts` | any | `—` |
-| `loading` | boolean | `—` |
-| `className` | string | `rounded-t-lg border bg-card px-3 py-2 font-semibold` |
 
 **Examples:**
 

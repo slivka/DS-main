@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.81.0",
+    "version": "2.82.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -22,7 +22,7 @@
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
-      ".lovable/plan.md": "b221acf7166e7f09ba5f44069cd41279",
+      ".lovable/plan.md": "770e514612f59f12148e9727054f33dd",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
       ".lovable/plan/appshell-2-3-0-adaptivní-lišta-a-období-2026-09-23.md": "cff0cd14c533151ad08b061cfce05b5d",
@@ -64,8 +64,8 @@
       ".lovable/system.md": "4a4745ae4efc29d0f5791306de79f3a0",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "18ac59f830aba1c2f765f2fb983072dc",
-      "CHANGELOG.md": "0a68de35211f436f7ab6d53ed847e552",
+      "AGENTS.md": "3858f0227b445f16e8fbe0221bd72cdc",
+      "CHANGELOG.md": "df7355ba98019b5fce3a1ab7257c0467",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -73,16 +73,23 @@
       "eslint.config.js": "ca6f9da15ee46b4588e4f62ff08b9af6",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "7b44c186fd2fd1fb43bd33332b1b0325",
-      "package.json": "36048b838312c2de7d82720d5ffc9352",
+      "package.json": "e612eaad625953b592baf015da5abe02",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "be85bc61ea16f0a390b7b565c6b93ece",
+      "roadmap.md": "c9b4889d6235aaf3da2bdeea496016d0",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
       "src/components/ds/AGENTS.md": "904ea8dd759e883da202c3c09b82ef44",
       "src/components/ds/accounting/AGENTS.md": "b1bf701277dda5fb991901ba3b956dcf",
+      "src/components/ds/accounting/JournalCell.tsx": "e5910ab6f05d085d4823e203e6c103ab",
+      "src/components/ds/accounting/JournalCellEditor.tsx": "eac4b49006b4808df08df55118172dcc",
+      "src/components/ds/accounting/JournalFooter.tsx": "6246d256cdc9afbf4d19223935033268",
+      "src/components/ds/accounting/JournalLinesEditor.tsx": "8131a5cf77f8bddf023b8c488c038259",
+      "src/components/ds/accounting/JournalRow.tsx": "dc3fc74bf8cd46928eca6f01fea3bbef",
+      "src/components/ds/accounting/JournalRowDetail.tsx": "5992e4f7e3902d36bb8a9b958d7c249b",
+      "src/components/ds/accounting/JournalToolbar.tsx": "236c2fa140cdf1434e831d05b6268527",
       "src/components/ds/accounting/account-code.tsx": "466a25df04f1bca7965483f9fa83be42",
       "src/components/ds/accounting/account-columns.tsx": "2659003add7103aec8cfb05770ffef58",
       "src/components/ds/accounting/account-select.tsx": "b39ea6c225d771e73172ee85c1f43867",
@@ -98,14 +105,24 @@
       "src/components/ds/accounting/document-settings-dialog.tsx": "46e6090a793cb28ec5b4ba74a6dd5932",
       "src/components/ds/accounting/document-status-badge.tsx": "51d8845160fc14334257c0b4e47152cd",
       "src/components/ds/accounting/fiscal-period-select.tsx": "8df31c8efe297b39377248b4b034ece1",
-      "src/components/ds/accounting/journal-lines-editor.tsx": "f20f33685ca69d6ea8af6bf166220841",
+      "src/components/ds/accounting/journal-column-layout.ts": "c0a992f56743953ea016306e913b2390",
+      "src/components/ds/accounting/journal-columns.ts": "85951863d539f2c4997c4debce350b6a",
+      "src/components/ds/accounting/journal-editor-context.ts": "1b7c14bfd0f1469a73ea8075820abe4a",
+      "src/components/ds/accounting/journal-editor-types.ts": "28429155dae36650b5420ca70b780cb3",
+      "src/components/ds/accounting/journal-lines-editor.tsx": "e94991b6c05675d9c4d1b0be081867d0",
+      "src/components/ds/accounting/journal-lines-model.ts": "bb2197ab8f38289a5f52816626c82f24",
       "src/components/ds/accounting/journal-lines-recap.tsx": "cc6a80e92e92bea9a7ba235fcdf043a4",
+      "src/components/ds/accounting/journal-lines-validation.ts": "5f16e64483c3d19ea35fcb13f34f6e33",
       "src/components/ds/accounting/journal-lines.ts": "037cf858f6053a062ff537a7f75fb4d5",
       "src/components/ds/accounting/journal-vat.ts": "e7bc2585c0566045408642747a429650",
       "src/components/ds/accounting/partner-select.tsx": "a8d87a4740948ed6719cef07d4040ed5",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "dec52321584002071359ae6202c55486",
       "src/components/ds/accounting/payment-schedule.ts": "118b8345f9fb659f08f14f7e98ca85c1",
       "src/components/ds/accounting/unit-select.tsx": "ea3e6877c361114ff91b061bc75057e0",
+      "src/components/ds/accounting/useJournalEditorState.ts": "4bd91ab83d1bd1831b6f7b41bdb47ceb",
+      "src/components/ds/accounting/useJournalKeyboard.ts": "8513816d9ba6d0b643bbafee9a949a0b",
+      "src/components/ds/accounting/useJournalLayout.ts": "8423b162aaf2c6e5f1c57a11391452f6",
+      "src/components/ds/accounting/useJournalTotals.ts": "39ad1e780b7f162f1588818f54802f2e",
       "src/components/ds/accounting/vat-code-select.tsx": "17bd31667867e80badcbf645d7e66ef6",
       "src/components/ds/accounting/vs-field.tsx": "783b1576aa5e48fed13b8e5a0800ce3b",
       "src/components/ds/data-display/bar-breakdown-chart.tsx": "8d848fa82f3f945789f0ad19e6cf07c5",
@@ -155,15 +172,23 @@
       "src/components/ds/form/suggest-input.tsx": "8e9c575eff849d7d334e9a512fef9ab7",
       "src/components/ds/form/time-input-right.tsx": "fb61260958a00ff005e0703a6300d043",
       "src/components/ds/grid/ColumnFilter.tsx": "c78c219efd15cc95b742a69518a8f093",
-      "src/components/ds/grid/DataGrid.tsx": "c7c6281b7380fb2872f2662aea17b7aa",
-      "src/components/ds/grid/TreeGrid.tsx": "9c1fe700d08e36e0ffe738e98424b3da",
+      "src/components/ds/grid/DataGrid.tsx": "2dfb671314efc940ec9b87a5a6ddefc9",
+      "src/components/ds/grid/DataGridBody.tsx": "b5d1cedd4d1fc45397330cdafc87d9fd",
+      "src/components/ds/grid/DataGridHead.tsx": "5df1b9abd0674b6c50b271a8fea7ac0e",
+      "src/components/ds/grid/GridFrame.tsx": "43829d08862b5f98e8a6a2d8c49ecf96",
+      "src/components/ds/grid/TreeGrid.tsx": "c288a6ed86423cd1739baa894fce9f64",
+      "src/components/ds/grid/TreeGridBody.tsx": "036c46547fd40239117d01e0dcb743f2",
       "src/components/ds/grid/bulk-selection-bar.tsx": "27275195708d8e0e61e02ec7ca05dfa1",
       "src/components/ds/grid/column-picker.tsx": "f3809ce62c486adb02748b9112a9914d",
+      "src/components/ds/grid/data-grid-model.ts": "06fa84622a1e6456b031f84a5b342487",
+      "src/components/ds/grid/data-grid-types.ts": "d0d2726390bf48a51564bb0f6740e3cc",
       "src/components/ds/grid/filter-chips.tsx": "3b9c5142b2a740fd72b6cb7f5228e27f",
       "src/components/ds/grid/grid-action.tsx": "607b8c6c39069b0b7e48307f9536fd9b",
       "src/components/ds/grid/grid-active-status.tsx": "180d06afdb453ee0efbf51660e29b097",
       "src/components/ds/grid/grid-amount-editor.tsx": "9d73cbbc32ee38661c2088b8c58e64c2",
       "src/components/ds/grid/grid-auto-zoom.ts": "e487b62afff021ccb4961153d6e342bc",
+      "src/components/ds/grid/grid-base-props.ts": "e0909b5cffae26ee626f88cb0cc77724",
+      "src/components/ds/grid/grid-column-presets.ts": "45e6709ff826bd910fd79dbf77d6eb07",
       "src/components/ds/grid/grid-column-resize.tsx": "03080e3e48c53d7cbcc4889db06dce64",
       "src/components/ds/grid/grid-columns.tsx": "6ce0d6aeb8ca9012bfa7459758f2bd94",
       "src/components/ds/grid/grid-context-bar.tsx": "ba8f23b8d3cd22c82276fbfd8d505be2",
@@ -185,14 +210,28 @@
       "src/components/ds/grid/grid-texts.ts": "edbafe745d3c7c39167869e869405d96",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
       "src/components/ds/grid/grid-toolbar.tsx": "93b35f0fc5868c272f12770f5cb3db73",
-      "src/components/ds/grid/grid-virtual.tsx": "4fd99233c2532967e27c0f932a934c8a",
+      "src/components/ds/grid/grid-virtual.tsx": "8460d3867b0d0dc5ee9a91c16b671089",
       "src/components/ds/grid/grid-zoom.tsx": "e4961e532b868a5b429547e6cd936e8b",
+      "src/components/ds/grid/tree-grid-model.ts": "6a5a25e97137cc3625233ea0afb931c7",
+      "src/components/ds/grid/tree-grid-types.ts": "f369f89a198584278226f414894ca3cc",
+      "src/components/ds/grid/useColumnDrag.ts": "5b4edc8e08411c30e003dfc31939a3c7",
+      "src/components/ds/grid/useDataGridColumns.ts": "58d0c7e9d8f9e6851a7b3e8259832a30",
+      "src/components/ds/grid/useDataGridFilters.ts": "849411934eef24e32dfa3f7fcabce3df",
+      "src/components/ds/grid/useDataGridGroups.tsx": "8e188da6859ad1f64beb056c36726169",
+      "src/components/ds/grid/useDataGridSelection.ts": "11a7b1e905501e6ce123c8d93059ecb0",
+      "src/components/ds/grid/useRowActions.tsx": "38a55e87390e351ac2524d4bfd2efac6",
       "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
       "src/components/ds/index.ts": "32370ae4b5c9f5d14cc2b9e9486519d8",
-      "src/components/ds/layout/AppShell.tsx": "5fee1017f57e758d92222d01dcfddcd8",
-      "src/components/ds/layout/RecordDialog.tsx": "f586cb640b0d322376a10721504c3037",
+      "src/components/ds/layout/AppShell.tsx": "f2661ffe97493c3dc7fc9567a2af51d5",
+      "src/components/ds/layout/AppShellNav.tsx": "ca091ea04506319a704f3ad8edaa2710",
+      "src/components/ds/layout/AppShellNavGroup.tsx": "0a865c7cf895855e9da6a06d1f8fc1e8",
+      "src/components/ds/layout/AppShellPanels.tsx": "de6b74dd71296d9b4f6263d6c117d9a2",
+      "src/components/ds/layout/AppShellSidebar.tsx": "80b336b5fb1c35c019756d6b41ab47e7",
+      "src/components/ds/layout/AppShellTopBar.tsx": "c79a0e9cdd85a077de73225671f68368",
+      "src/components/ds/layout/RecordDialog.tsx": "abfa0c9354cbbfca84dc152454e552e3",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
       "src/components/ds/layout/WorkspaceCompanySwitcher.tsx": "b3b881b303773be54297519bc8702ba8",
+      "src/components/ds/layout/app-shell-types.ts": "f6ccbfeaa926b41ac79706a8db8c265a",
       "src/components/ds/layout/breadcrumbs.tsx": "ae5f25ed563ea042cdd334c74b429e21",
       "src/components/ds/layout/collapsible-section.tsx": "bc64af06fb6ca49740ff78ae5183ed44",
       "src/components/ds/layout/command-palette.tsx": "bd937b82c4a530ca05eaf9f179d90feb",
@@ -214,6 +253,7 @@
       "src/components/ds/layout/standalone-shell.tsx": "f370ada8b4dffed112ffd16900f23cc0",
       "src/components/ds/layout/theme-setting.tsx": "aee9040c0e909fcbf040407bfa445358",
       "src/components/ds/layout/theme-toggle-button.tsx": "8565feaf350fcdd6bc7561f76b5c3865",
+      "src/components/ds/layout/useAppShellMenuWidth.ts": "63989d6d383f452e89e3781c654e68c2",
       "src/components/ds/layout/user-menu.tsx": "560130d9b1a8adbdb077b9f315d20863",
       "src/components/ds/panes/draft-restored-banner.tsx": "b60c2a29071528883653bf281c3b77e6",
       "src/components/ds/panes/layout-menu.tsx": "96437ef51778d14c4fee315d50b5f20e",
@@ -283,9 +323,12 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
-      "src/ds-texts.tsx": "3a10a72ba4b6dce3d8a78646590d2328",
+      "src/ds-texts/cs.ts": "3c14806852952e028d2108218a7405c9",
+      "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
+      "src/ds-texts/sk.ts": "77367d0ae7a21a6be40ea7c51c9af646",
+      "src/ds-texts/types.ts": "fe7d044ac6320bc006bad39c844188cc",
       "src/hooks/index.ts": "6fece027b973135a96e5c7ae9a978a3e",
-      "src/hooks/use-dialog-back-close.ts": "94959021b72779a8db70b68a7251d724",
+      "src/hooks/use-dialog-back-close.ts": "d3a0a16f8bc86d6133a313901508f2b0",
       "src/hooks/use-grid-keyboard-nav.ts": "8ba15428a0f0b2b36dcf50d2ec8849ee",
       "src/hooks/use-grid-state-memory.ts": "e64481e101b55f8cee9f1d2becd69403",
       "src/hooks/use-mobile.tsx": "9119ed87ff1b71713e6357f90358e85a",
@@ -293,7 +336,7 @@
       "src/hooks/useDebouncedValue.ts": "cab9b103af8661da4fc88dd54185fc59",
       "src/index.ts": "23039f62e3f6181b7c9dd03273a86b9b",
       "src/lib/accounting-utils.ts": "3b7e2effb4c20d64948a9cd2d7cace72",
-      "src/lib/app-zoom.ts": "908b06cbef7f2e5b8dad5ac8089e6d06",
+      "src/lib/app-zoom.ts": "5afb417e2e3cd99a7b5225ffd2dbd839",
       "src/lib/bank-account.ts": "e7fbb84f64fabe9f84cbaca7649a1603",
       "src/lib/date-time-preferences.ts": "dc9a3d3a0f5f3a1497ac7f9e9f9bd9df",
       "src/lib/error-capture.ts": "f630d9686a9a989170f22eff4de7b30d",
@@ -302,6 +345,7 @@
       "src/lib/font-links.ts": "103bfb2f06388789f8ce0a4dc4f1ec58",
       "src/lib/form-errors.ts": "41b47f81a38f38feb89efb7fb09cd8cb",
       "src/lib/format.ts": "6f9d7ab862d3e34175d23209c750ff0b",
+      "src/lib/global-shortcuts.ts": "c0567a2de60bb1ad4f3a15629f1e69b0",
       "src/lib/grid-prefs.ts": "3ebf9d57a40b9f582f345a6851420ba9",
       "src/lib/http-retry.ts": "ff678ce4d5cdb0632496f054ee6f08f6",
       "src/lib/lovable-error-reporting.ts": "0367e03b7d71917510e4dc1cdae172ec",
@@ -347,19 +391,22 @@
       "tests/e2e/reports.spec.ts": "155b2ee434a7ddd4749babc725cc4c2c",
       "tests/e2e/vat-code-tab-256.spec.ts": "29932c1da5124282eb16c74c9d888553",
       "tests/unit/account-columns-266.test.tsx": "44d770d95d1424a0f83ddd0759654bcf",
+      "tests/unit/app-shell-behavior.test.tsx": "b348b3a186aef0fd564a7acbeb8b4c25",
       "tests/unit/app-zoom-264.test.ts": "3440099754a804b035c3c664e1fc1e1f",
       "tests/unit/app-zoom-270.test.tsx": "ebca88770cffbe35477058bb67b6d458",
-      "tests/unit/appshell-panels-240.test.tsx": "228824ebfa975e424b7521a1e72d02a4",
+      "tests/unit/appshell-panels-240.test.tsx": "e7333426189a2d1e3aa597a4af52ccc9",
       "tests/unit/appshell-panels-271.test.tsx": "207f53b6766e2082f3bd126c5a4e2906",
-      "tests/unit/context-switchers-222.test.ts": "98a86c063370bf5229e6576c54a17453",
+      "tests/unit/context-switchers-222.test.ts": "7db72cf010d8a9eb695590b707d65375",
       "tests/unit/counterparty-225.test.tsx": "a9916d2c1a0abd7e1e04811c612842b0",
+      "tests/unit/data-grid-behavior.test.tsx": "d142e77e727f12d6998e2f5aa85aadd2",
+      "tests/unit/dialog-strict-nested.test.tsx": "d49e1a707cadb7a169f8468432b75863",
       "tests/unit/document-dates-238.test.tsx": "faec2475de2a862f7585dbccccc1a023",
       "tests/unit/document-form-224.test.tsx": "d1560df90d48bcbb1ecb651455386c58",
       "tests/unit/document-form-228.test.tsx": "517321a4fe1489c60904713b1c663567",
       "tests/unit/document-form-236.test.tsx": "7ef7dcd8165ad941fe24c39eb7cf2883",
       "tests/unit/document-form-268.test.tsx": "d379e294df1ab59e287d618567e45609",
       "tests/unit/document-form-273.test.tsx": "e737ad5e5ab9bc5e1d1631b7cbd5bbda",
-      "tests/unit/document-vat-256.test.tsx": "4de287f2d787648433caa44814e24f54",
+      "tests/unit/document-vat-256.test.tsx": "048fb559f5994390eccf88bf8049fa98",
       "tests/unit/grid-actions-226.test.tsx": "bc71317a906195c55aac5480a826c089",
       "tests/unit/grid-matching-258.test.tsx": "58b8a978f8d15d8226189e7405422c45",
       "tests/unit/grid-matching-interactions-258.test.tsx": "971cacc378b8fd1d6bd29b85d961edff",
@@ -368,11 +415,13 @@
       "tests/unit/grid-toolbar-2211.test.ts": "89564c72aa2143cbc970f2446174b033",
       "tests/unit/i18n-261.test.tsx": "9bccbbd66451db35f1acea29ef7c618d",
       "tests/unit/journal-accounts-render-266.test.tsx": "e8f895958a8bb1c4fb43d8e61c5a1975",
-      "tests/unit/journal-lines-234.test.tsx": "eada5a09ec0a4b7d34f378287f08736e",
+      "tests/unit/journal-editor-behavior.test.tsx": "68618827010261e7aa5ac6e653be38d5",
+      "tests/unit/journal-lines-234.test.tsx": "c1b6ac1e660d88cb1ac0d2b625134273",
+      "tests/unit/journal-lines-model.test.ts": "fa60259768dc109e94f6e3e832045f9b",
       "tests/unit/journal-lines-width.test.ts": "cc51eeb3c40e0a64a245e4a5344c6d36",
       "tests/unit/journal-vat-255.test.tsx": "279a74adce82bc15da29d73b5c460bbb",
-      "tests/unit/journal-vat-257.test.tsx": "c9146ec3756fab4c27513a488efd883f",
-      "tests/unit/journal-width-zoom-253.test.ts": "e71f27ae26dcaaeb82c51308d05ae956",
+      "tests/unit/journal-vat-257.test.tsx": "48f1995d0636140339ce53d0c753ec16",
+      "tests/unit/journal-width-zoom-253.test.ts": "5bade78b2ddbd2c255b0e74c6b502f0f",
       "tests/unit/nav-search.test.ts": "6ef518ebf57a29fc34af0e47123e47fb",
       "tests/unit/notice-bar-260.test.tsx": "2ba471cd90b77677ecf6a29f20450dec",
       "tests/unit/pane-embedded-253.test.ts": "beaf54a04555a7ba4434820bac3996b5",
@@ -388,8 +437,7 @@
       "tests/unit/standalone-279.test.tsx": "d2bbe7500f9292eb1185c666b1ef03a0",
       "tests/unit/suggest-input-232.test.tsx": "81fe8ceb127d02ed2ff191e4c30dc94d",
       "tests/unit/vat-code-select-255.test.tsx": "c0b19cd8e358a660cf12fa391807d12b",
-      "tests/unit/vat-default-code-2571.test.ts": "92bd0f44ab1f1cb0d7a572626fab18db",
-      "tests/unit/zoom-fixes-264.test.ts": "513507bfa71d8283f7232b8d46053823",
+      "tests/unit/zoom-fixes-264.test.ts": "1038a824bc4b67f59ed74c32525bc847",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
@@ -1037,7 +1085,7 @@
     },
     {
       "name": "DsTextsProvider",
-      "file": "src/ds-texts.tsx",
+      "file": "src/ds-texts/index.tsx",
       "import_path": "",
       "props": [
         {
@@ -1047,11 +1095,7 @@
         },
         {
           "name": "locale",
-          "type": "enum",
-          "values": [
-            "cs",
-            "sk"
-          ]
+          "type": "any"
         },
         {
           "name": "texts",
@@ -2411,167 +2455,6 @@
       "name": "AppShell",
       "file": "src/components/ds/layout/AppShell.tsx",
       "import_path": "",
-      "props": [
-        {
-          "name": "children",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "navGroups",
-          "type": "any"
-        },
-        {
-          "name": "bottomItems",
-          "type": "any"
-        },
-        {
-          "name": "appName",
-          "type": "string",
-          "default": "Aplikace"
-        },
-        {
-          "name": "manageDocumentTitle",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "logo",
-          "type": "any"
-        },
-        {
-          "name": "showBrand",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "breadcrumbs",
-          "type": "any"
-        },
-        {
-          "name": "contextLeft",
-          "type": "any"
-        },
-        {
-          "name": "subHeader",
-          "type": "any"
-        },
-        {
-          "name": "actions",
-          "type": "any"
-        },
-        {
-          "name": "notificationBell",
-          "type": "any"
-        },
-        {
-          "name": "themeToggleButton",
-          "type": "any"
-        },
-        {
-          "name": "userMenu",
-          "type": "any"
-        },
-        {
-          "name": "panels",
-          "type": "any"
-        },
-        {
-          "name": "activePanel",
-          "type": "string"
-        },
-        {
-          "name": "onActivePanelChange",
-          "type": "function"
-        },
-        {
-          "name": "closeLabel",
-          "type": "string",
-          "default": "Zavřít"
-        },
-        {
-          "name": "menuLabel",
-          "type": "string",
-          "default": "Menu"
-        },
-        {
-          "name": "collapseLabel",
-          "type": "string",
-          "default": "Sbalit menu"
-        },
-        {
-          "name": "expandLabel",
-          "type": "string",
-          "default": "Rozbalit menu"
-        },
-        {
-          "name": "disabledHint",
-          "type": "string"
-        },
-        {
-          "name": "navStateKey",
-          "type": "string"
-        },
-        {
-          "name": "navSearch",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "navSearchPlaceholder",
-          "type": "string"
-        },
-        {
-          "name": "navSearchEmptyText",
-          "type": "string"
-        },
-        {
-          "name": "contextDisabledHint",
-          "type": "string"
-        },
-        {
-          "name": "navSearchMenu",
-          "type": "any"
-        },
-        {
-          "name": "items",
-          "type": "any"
-        },
-        {
-          "name": "adminNav",
-          "type": "any"
-        },
-        {
-          "name": "adminMode",
-          "type": "boolean"
-        },
-        {
-          "name": "adminTitle",
-          "type": "string",
-          "default": "Administrace"
-        },
-        {
-          "name": "adminButtonLabel",
-          "type": "string",
-          "default": "Administrace"
-        },
-        {
-          "name": "adminBackLabel",
-          "type": "string"
-        },
-        {
-          "name": "adminBasePath",
-          "type": "string"
-        },
-        {
-          "name": "onAdminModeChange",
-          "type": "function"
-        },
-        {
-          "name": "showLegacyToolbar",
-          "type": "boolean"
-        }
-      ],
       "usage": "Společný rám aplikace s tmavým hlavním menu a šedými kontextovými panely. Části panelu řídí titul, kontext, navigaci a rozsah platnosti. Panely: Panely (Číselníky / Nastavení / Administrace). AppShellPanel: id, title, icon, tooltip, nav?, context?, badge?, accent?; views?: {id,label,title,context?,scope?,nav}[] – části panelu se segmentovým přepínačem (≥ 2); activeView? + onViewChange? (řízené, šipky/Home/End); scope?: 'company' | 'workspace' | 'platform' – mimo company zašedne contextLeft; sidebarTone?: 'app' | 'panel' (výchozí 'panel' = šedé menu). Otevřený panel bez nav/views má prázdné menu. Nápověda u zašedlé firmy a období v panelu se scope workspace/platform (výchozí z DsTexts appShell.contextDisabledHint). AppShell ve výchozím stavu nemění document.title; opt-in manageDocumentTitle jej nastaví podle appName.",
       "examples": [
         {
@@ -4154,336 +4037,6 @@
       "name": "DataGrid",
       "file": "src/components/ds/grid/DataGrid.tsx",
       "import_path": "",
-      "props": [
-        {
-          "name": "storageKey",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "height",
-          "type": "enum",
-          "values": [
-            "fill",
-            "auto"
-          ]
-        },
-        {
-          "name": "autoZoom",
-          "type": "boolean"
-        },
-        {
-          "name": "title",
-          "type": "any"
-        },
-        {
-          "name": "showTitle",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "hideTitleMark",
-          "type": "boolean"
-        },
-        {
-          "name": "exportTitle",
-          "type": "string"
-        },
-        {
-          "name": "rows",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "columns",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "rowKey",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "loading",
-          "type": "boolean"
-        },
-        {
-          "name": "error",
-          "type": "any"
-        },
-        {
-          "name": "onRetry",
-          "type": "function"
-        },
-        {
-          "name": "onRefresh",
-          "type": "function"
-        },
-        {
-          "name": "refreshing",
-          "type": "boolean"
-        },
-        {
-          "name": "onRowClick",
-          "type": "function"
-        },
-        {
-          "name": "actions",
-          "type": "any"
-        },
-        {
-          "name": "toolbarLeft",
-          "type": "any"
-        },
-        {
-          "name": "period",
-          "type": "any"
-        },
-        {
-          "name": "book",
-          "type": "any"
-        },
-        {
-          "name": "contextRight",
-          "type": "any"
-        },
-        {
-          "name": "filters",
-          "type": "any"
-        },
-        {
-          "name": "defaultFiltersOpen",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "filterChips",
-          "type": "any"
-        },
-        {
-          "name": "onClearFilters",
-          "type": "function"
-        },
-        {
-          "name": "defaultFilters",
-          "type": "any"
-        },
-        {
-          "name": "viewMode",
-          "type": "any"
-        },
-        {
-          "name": "onViewModeChange",
-          "type": "function"
-        },
-        {
-          "name": "viewZoomKey",
-          "type": "string"
-        },
-        {
-          "name": "asOf",
-          "type": "any"
-        },
-        {
-          "name": "addAction",
-          "type": "any"
-        },
-        {
-          "name": "moreActions",
-          "type": "any"
-        },
-        {
-          "name": "pdfExport",
-          "type": "function"
-        },
-        {
-          "name": "printContext",
-          "type": "any"
-        },
-        {
-          "name": "printTitle",
-          "type": "string"
-        },
-        {
-          "name": "printParams",
-          "type": "any"
-        },
-        {
-          "name": "extraExports",
-          "type": "any"
-        },
-        {
-          "name": "emptyTitle",
-          "type": "string"
-        },
-        {
-          "name": "emptyDescription",
-          "type": "string"
-        },
-        {
-          "name": "emptyActionLabel",
-          "type": "string"
-        },
-        {
-          "name": "onEmptyAction",
-          "type": "function"
-        },
-        {
-          "name": "exportName",
-          "type": "string"
-        },
-        {
-          "name": "exportMeta",
-          "type": "any"
-        },
-        {
-          "name": "defaultSort",
-          "type": "string"
-        },
-        {
-          "name": "rowClassName",
-          "type": "function"
-        },
-        {
-          "name": "onEditRow",
-          "type": "function"
-        },
-        {
-          "name": "onDeleteRow",
-          "type": "function"
-        },
-        {
-          "name": "deleteConfirm",
-          "type": "function"
-        },
-        {
-          "name": "rowActions",
-          "type": "function"
-        },
-        {
-          "name": "actionsLabel",
-          "type": "string"
-        },
-        {
-          "name": "columnFilters",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "groupable",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "defaultGroupBy",
-          "type": "string"
-        },
-        {
-          "name": "paginated",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "plain",
-          "type": "boolean"
-        },
-        {
-          "name": "hideToolbar",
-          "type": "boolean"
-        },
-        {
-          "name": "hideDefaultActions",
-          "type": "boolean"
-        },
-        {
-          "name": "canEditRow",
-          "type": "function"
-        },
-        {
-          "name": "editDisabledReason",
-          "type": "function"
-        },
-        {
-          "name": "canDeleteRow",
-          "type": "function"
-        },
-        {
-          "name": "deleteDisabledReason",
-          "type": "function"
-        },
-        {
-          "name": "selectable",
-          "type": "boolean"
-        },
-        {
-          "name": "selectionActions",
-          "type": "function"
-        },
-        {
-          "name": "selectMode",
-          "type": "boolean"
-        },
-        {
-          "name": "onSelectedRowsChange",
-          "type": "function"
-        },
-        {
-          "name": "selectedKeys",
-          "type": "any"
-        },
-        {
-          "name": "onSelectedKeysChange",
-          "type": "function"
-        },
-        {
-          "name": "selectionSummary",
-          "type": "function"
-        },
-        {
-          "name": "groupTotals",
-          "type": "enum",
-          "values": [
-            "header",
-            "row"
-          ],
-          "default": "header"
-        },
-        {
-          "name": "hideSelectionToggle",
-          "type": "boolean"
-        },
-        {
-          "name": "sidePanel",
-          "type": "any"
-        },
-        {
-          "name": "activeRowKey",
-          "type": "string"
-        },
-        {
-          "name": "showTotalRow",
-          "type": "boolean",
-          "default": "true"
-        },
-        {
-          "name": "onColumnFiltersChange",
-          "type": "function"
-        },
-        {
-          "name": "onSearchChange",
-          "type": "function"
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "default": "grid-toolbar-optional contents"
-        },
-        {
-          "name": "texts",
-          "type": "any"
-        }
-      ],
       "usage": "Datový grid se sjednocenou lištou: Nový vlevo, Obnovit úplně vpravo a individuální Upravit/Odstranit pouze ve sticky sloupci akcí řádku.",
       "examples": [
         {
@@ -5051,239 +4604,6 @@
       "name": "TreeGrid",
       "file": "src/components/ds/grid/TreeGrid.tsx",
       "import_path": "",
-      "props": [
-        {
-          "name": "rows",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "columns",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "title",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "showTitle",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "storageKey",
-          "type": "string"
-        },
-        {
-          "name": "height",
-          "type": "enum",
-          "values": [
-            "fill",
-            "auto"
-          ]
-        },
-        {
-          "name": "exportName",
-          "type": "string"
-        },
-        {
-          "name": "exportMeta",
-          "type": "any"
-        },
-        {
-          "name": "defaultCollapsed",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "expandLevels",
-          "type": "any"
-        },
-        {
-          "name": "expandDepth",
-          "type": "number"
-        },
-        {
-          "name": "onExpandDepthChange",
-          "type": "function"
-        },
-        {
-          "name": "highlightedRowId",
-          "type": "string"
-        },
-        {
-          "name": "onRowClick",
-          "type": "function"
-        },
-        {
-          "name": "onRowOpen",
-          "type": "function"
-        },
-        {
-          "name": "actions",
-          "type": "any"
-        },
-        {
-          "name": "toolbarLeft",
-          "type": "any"
-        },
-        {
-          "name": "period",
-          "type": "any"
-        },
-        {
-          "name": "book",
-          "type": "any"
-        },
-        {
-          "name": "contextRight",
-          "type": "any"
-        },
-        {
-          "name": "filters",
-          "type": "any"
-        },
-        {
-          "name": "defaultFiltersOpen",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "filterChips",
-          "type": "any"
-        },
-        {
-          "name": "onClearFilters",
-          "type": "function"
-        },
-        {
-          "name": "defaultFilters",
-          "type": "any"
-        },
-        {
-          "name": "viewMode",
-          "type": "any"
-        },
-        {
-          "name": "onViewModeChange",
-          "type": "function"
-        },
-        {
-          "name": "viewZoomKey",
-          "type": "string"
-        },
-        {
-          "name": "asOf",
-          "type": "any"
-        },
-        {
-          "name": "addAction",
-          "type": "any"
-        },
-        {
-          "name": "moreActions",
-          "type": "any"
-        },
-        {
-          "name": "pdfExport",
-          "type": "function"
-        },
-        {
-          "name": "printContext",
-          "type": "any"
-        },
-        {
-          "name": "printTitle",
-          "type": "string"
-        },
-        {
-          "name": "printParams",
-          "type": "any"
-        },
-        {
-          "name": "extraExports",
-          "type": "any"
-        },
-        {
-          "name": "onRefresh",
-          "type": "function"
-        },
-        {
-          "name": "refreshing",
-          "type": "boolean"
-        },
-        {
-          "name": "onEditRow",
-          "type": "function"
-        },
-        {
-          "name": "onDeleteRow",
-          "type": "function"
-        },
-        {
-          "name": "deleteConfirm",
-          "type": "function"
-        },
-        {
-          "name": "rowActions",
-          "type": "function"
-        },
-        {
-          "name": "canEditRow",
-          "type": "function"
-        },
-        {
-          "name": "canDeleteRow",
-          "type": "function"
-        },
-        {
-          "name": "editDisabledReason",
-          "type": "function"
-        },
-        {
-          "name": "deleteDisabledReason",
-          "type": "function"
-        },
-        {
-          "name": "actionsLabel",
-          "type": "string"
-        },
-        {
-          "name": "hideDefaultActions",
-          "type": "boolean"
-        },
-        {
-          "name": "selectable",
-          "type": "boolean"
-        },
-        {
-          "name": "selectionActions",
-          "type": "function"
-        },
-        {
-          "name": "onSelectedRowsChange",
-          "type": "function"
-        },
-        {
-          "name": "gridTexts",
-          "type": "any"
-        },
-        {
-          "name": "texts",
-          "type": "any"
-        },
-        {
-          "name": "loading",
-          "type": "boolean"
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "default": "rounded-t-lg border bg-card px-3 py-2 font-semibold"
-        }
-      ],
       "usage": "Stromový grid se součty, rozbalováním a shodným sticky sloupcem akcí jako DataGrid; onRowOpen má při dvojkliku přednost před úpravou.",
       "examples": [
         {
@@ -7315,199 +6635,8 @@
     },
     {
       "name": "JournalLinesEditor",
-      "file": "src/components/ds/accounting/journal-lines-editor.tsx",
+      "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "props": [
-        {
-          "name": "lines",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "onChange",
-          "type": "function",
-          "required": true
-        },
-        {
-          "name": "accounts",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "dimensions",
-          "type": "any"
-        },
-        {
-          "name": "partners",
-          "type": "any"
-        },
-        {
-          "name": "units",
-          "type": "any"
-        },
-        {
-          "name": "onCreateUnit",
-          "type": "function"
-        },
-        {
-          "name": "documentCurrency",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "documentCurrencySymbol",
-          "type": "string"
-        },
-        {
-          "name": "homeCurrency",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "homeCurrencySymbol",
-          "type": "string"
-        },
-        {
-          "name": "rate",
-          "type": "number",
-          "default": "1"
-        },
-        {
-          "name": "rateAmount",
-          "type": "number",
-          "default": "1"
-        },
-        {
-          "name": "sideFields",
-          "type": "enum",
-          "values": [
-            "shared",
-            "split"
-          ],
-          "default": "split"
-        },
-        {
-          "name": "sharedSide",
-          "type": "any",
-          "default": "both"
-        },
-        {
-          "name": "mode",
-          "type": "enum",
-          "values": [
-            "internal",
-            "mainAccount"
-          ],
-          "default": "internal"
-        },
-        {
-          "name": "mainSide",
-          "type": "enum",
-          "values": [
-            "MD",
-            "D"
-          ]
-        },
-        {
-          "name": "mainAccount",
-          "type": "string"
-        },
-        {
-          "name": "sideFieldRules",
-          "type": "any"
-        },
-        {
-          "name": "dimensionRequired",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "isNonTaxAllowed",
-          "type": "function"
-        },
-        {
-          "name": "editableFields",
-          "type": "any"
-        },
-        {
-          "name": "totalAmount",
-          "type": "number"
-        },
-        {
-          "name": "totalMode",
-          "type": "enum",
-          "values": [
-            "entered",
-            "computed"
-          ],
-          "default": "computed"
-        },
-        {
-          "name": "rounding",
-          "type": "any"
-        },
-        {
-          "name": "defaults",
-          "type": "any"
-        },
-        {
-          "name": "validate",
-          "type": "function"
-        },
-        {
-          "name": "onTotalsChange",
-          "type": "function"
-        },
-        {
-          "name": "onValidationChange",
-          "type": "function"
-        },
-        {
-          "name": "reorderable",
-          "type": "boolean"
-        },
-        {
-          "name": "initialEmptyLine",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "showAllErrors",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "showQuantityColumns",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "storageKey",
-          "type": "string",
-          "default": "journal-lines"
-        },
-        {
-          "name": "recap",
-          "type": "any"
-        },
-        {
-          "name": "recapTabs",
-          "type": "any"
-        },
-        {
-          "name": "texts",
-          "type": "any"
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "default": "cursor-grab text-muted-foreground active:cursor-grabbing"
-        },
-        {
-          "name": "vat",
-          "type": "any"
-        }
-      ],
       "usage": "Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.",
       "examples": [
         {
