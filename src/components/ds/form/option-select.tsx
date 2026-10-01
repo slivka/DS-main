@@ -89,7 +89,11 @@ export function OptionSelect({
       </SelectTrigger>
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
-        {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
+        {!known && current !== "" ? (
+          <SelectItem value={current} disabled>
+            {current}
+          </SelectItem>
+        ) : null}
         {offered.map((o) => (
           <SelectItem
             key={o.value}
