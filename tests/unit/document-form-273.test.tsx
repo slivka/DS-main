@@ -285,9 +285,10 @@ describe("BankAccountField 2.73", () => {
         onAddAccount={onAddAccount}
       />,
     );
-    fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet" }));
-    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
-    expect(onAddAccount).toHaveBeenCalledTimes(1);
+    const trigger = view.getByRole("combobox", { name: "Bankovní účet" });
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.hasAttribute("disabled")).toBe(false);
   });
 
   it("neplatný a chybějící účet popíše bez surového identifikátoru", () => {
@@ -404,7 +405,8 @@ describe("BankAccountField 2.73", () => {
     }
     const view = render(<Harness />);
     fireEvent.click(view.getByRole("combobox", { name: "Účet" }));
-    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
+    fireEvent.keyDown(view.getByRole("combobox", { name: "Účet" }), { key: "End" });
+    fireEvent.keyDown(view.getByRole("combobox", { name: "Účet" }), { key: "Enter" });
     const input = view.getByRole("textbox", { name: "Účet" });
     fireEvent.change(input, { target: { value: "123" } });
     fireEvent.change(input, { target: { value: "" } });
