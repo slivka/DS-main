@@ -87,7 +87,7 @@ export function OptionSelect({
       >
       <SelectValue className="sr-only" placeholder={placeholder} />
       <span aria-hidden="true" className="min-w-0 truncate">
-        {selectedLabel ?? placeholder}
+        {selectedLabel ?? (current || placeholder)}
       </span>
       </SelectTrigger>
       <SelectContent>
