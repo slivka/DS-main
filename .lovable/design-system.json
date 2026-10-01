@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.82.0",
+    "version": "2.83.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -18,7 +18,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "6798ea0fb4c88db140b53e6abdaf44bc679cac7a82128457fd90fb6108228da1",
+      "#enrichment": "ee3aca9845a2d03b0cbdba36b64d11966712e7f8afd9ea7f453110862d688f52",
       ".dsignore": "c298547d61eb1767a5f4c89664c1039e",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
@@ -61,11 +61,11 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "4a4745ae4efc29d0f5791306de79f3a0",
+      ".lovable/system.md": "1976f13b1d4874829fdc443034270cc5",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
       "AGENTS.md": "3858f0227b445f16e8fbe0221bd72cdc",
-      "CHANGELOG.md": "df7355ba98019b5fce3a1ab7257c0467",
+      "CHANGELOG.md": "4aed61e9db0d3d4c98ea575687d889ab",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "25f4c8696b22b0943db7191e0cdf7942",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -73,15 +73,15 @@
       "eslint.config.js": "ca6f9da15ee46b4588e4f62ff08b9af6",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "7b44c186fd2fd1fb43bd33332b1b0325",
-      "package.json": "e612eaad625953b592baf015da5abe02",
+      "package.json": "189c00b4127ba8901b559e9fdefb2d51",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "c9b4889d6235aaf3da2bdeea496016d0",
+      "roadmap.md": "d207da70d21163fd35180d06fb97d3ca",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
-      "src/components/ds/AGENTS.md": "904ea8dd759e883da202c3c09b82ef44",
+      "src/components/ds/AGENTS.md": "585ffed6a0aaa1660d1a7e071e548caf",
       "src/components/ds/accounting/AGENTS.md": "b1bf701277dda5fb991901ba3b956dcf",
       "src/components/ds/accounting/JournalCell.tsx": "e5910ab6f05d085d4823e203e6c103ab",
       "src/components/ds/accounting/JournalCellEditor.tsx": "eac4b49006b4808df08df55118172dcc",
@@ -92,19 +92,19 @@
       "src/components/ds/accounting/JournalToolbar.tsx": "236c2fa140cdf1434e831d05b6268527",
       "src/components/ds/accounting/account-code.tsx": "466a25df04f1bca7965483f9fa83be42",
       "src/components/ds/accounting/account-columns.tsx": "2659003add7103aec8cfb05770ffef58",
-      "src/components/ds/accounting/account-select.tsx": "b39ea6c225d771e73172ee85c1f43867",
+      "src/components/ds/accounting/account-select.tsx": "b485be34a615e665fa3322f3f5feecda",
       "src/components/ds/accounting/amount.tsx": "235cd7f60996275ea08d28941405f757",
-      "src/components/ds/accounting/bank-account-field.tsx": "07c983a12db546592f34e1ad268c0a4a",
-      "src/components/ds/accounting/book-select.tsx": "e504f7b30d54785bc48da7064ab0cd44",
+      "src/components/ds/accounting/bank-account-field.tsx": "e15ae8e3edb18104dd80dead01406123",
+      "src/components/ds/accounting/book-select.tsx": "a5ef32e14816a80a86c01f482da4e680",
       "src/components/ds/accounting/counterparty-field.tsx": "f21ba31d20d7227fbbc4f4472ba31373",
       "src/components/ds/accounting/currency-amount.tsx": "e6683b81d6eaf5d072de30a7e0e2614c",
       "src/components/ds/accounting/debit-credit-cells.tsx": "8580f9d3dba573dc97df44a0f79d64c4",
-      "src/components/ds/accounting/dimension-select.tsx": "43375504550a46f39a439eb07ca23ed9",
+      "src/components/ds/accounting/dimension-select.tsx": "dfec15e272958162e38d343e9d4255ef",
       "src/components/ds/accounting/document-fields.ts": "f90c3ce3cd0166db35352f9ca51f66f0",
       "src/components/ds/accounting/document-form.tsx": "caca598befae349d7eea6be1fda6bfb9",
       "src/components/ds/accounting/document-settings-dialog.tsx": "46e6090a793cb28ec5b4ba74a6dd5932",
       "src/components/ds/accounting/document-status-badge.tsx": "51d8845160fc14334257c0b4e47152cd",
-      "src/components/ds/accounting/fiscal-period-select.tsx": "8df31c8efe297b39377248b4b034ece1",
+      "src/components/ds/accounting/fiscal-period-select.tsx": "5fce1d75cf94c0fa21b0b99188fc6829",
       "src/components/ds/accounting/journal-column-layout.ts": "c0a992f56743953ea016306e913b2390",
       "src/components/ds/accounting/journal-columns.ts": "85951863d539f2c4997c4debce350b6a",
       "src/components/ds/accounting/journal-editor-context.ts": "1b7c14bfd0f1469a73ea8075820abe4a",
@@ -115,16 +115,16 @@
       "src/components/ds/accounting/journal-lines-validation.ts": "5f16e64483c3d19ea35fcb13f34f6e33",
       "src/components/ds/accounting/journal-lines.ts": "037cf858f6053a062ff537a7f75fb4d5",
       "src/components/ds/accounting/journal-vat.ts": "e7bc2585c0566045408642747a429650",
-      "src/components/ds/accounting/partner-select.tsx": "a8d87a4740948ed6719cef07d4040ed5",
+      "src/components/ds/accounting/partner-select.tsx": "fc34c6bfdbb28e8c4d869a70cb8f2049",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "dec52321584002071359ae6202c55486",
       "src/components/ds/accounting/payment-schedule.ts": "118b8345f9fb659f08f14f7e98ca85c1",
-      "src/components/ds/accounting/unit-select.tsx": "ea3e6877c361114ff91b061bc75057e0",
+      "src/components/ds/accounting/unit-select.tsx": "1a3cc052ac3d594f9c954ff8ac796aa3",
       "src/components/ds/accounting/useJournalEditorState.ts": "4bd91ab83d1bd1831b6f7b41bdb47ceb",
       "src/components/ds/accounting/useJournalKeyboard.ts": "8513816d9ba6d0b643bbafee9a949a0b",
       "src/components/ds/accounting/useJournalLayout.ts": "8423b162aaf2c6e5f1c57a11391452f6",
       "src/components/ds/accounting/useJournalTotals.ts": "39ad1e780b7f162f1588818f54802f2e",
-      "src/components/ds/accounting/vat-code-select.tsx": "17bd31667867e80badcbf645d7e66ef6",
-      "src/components/ds/accounting/vs-field.tsx": "783b1576aa5e48fed13b8e5a0800ce3b",
+      "src/components/ds/accounting/vat-code-select.tsx": "983327a37f051ccb5d7996a1bada6782",
+      "src/components/ds/accounting/vs-field.tsx": "0ad17678357f4137d86826743645e515",
       "src/components/ds/data-display/bar-breakdown-chart.tsx": "8d848fa82f3f945789f0ad19e6cf07c5",
       "src/components/ds/data-display/inactive-tag.tsx": "0943cca6830f144cf0425b713bc50d7c",
       "src/components/ds/data-display/status-badge.tsx": "6855847b7ed41d55227625e047389bab",
@@ -149,27 +149,29 @@
       "src/components/ds/form/address-fields.tsx": "1822d81354a0b862a7c7236ceb9a568d",
       "src/components/ds/form/as-of-date-field.tsx": "806c8ee49a6289104c75bef8fe41902f",
       "src/components/ds/form/calendar-picker.tsx": "d21f3ea67f4bc189a5d7ba7f04b51888",
-      "src/components/ds/form/category-select.tsx": "934f527f4cb4b879de9ed4e0ab25c31a",
-      "src/components/ds/form/checkbox-field.tsx": "3700e9bee2ad162dd24428a1a50821f7",
+      "src/components/ds/form/category-select.tsx": "19394ce6baa85d725d9fb33abcaa30a7",
+      "src/components/ds/form/checkbox-field.tsx": "43e1d76aee8fae099f702a604bc45dcd",
       "src/components/ds/form/chip-multi-select.tsx": "cf116ed3059818cc6028458035e5883d",
-      "src/components/ds/form/country-select.tsx": "718573c85c1d263fd914a8b1c6856a37",
+      "src/components/ds/form/country-select.tsx": "e2e93d4bc01a6f936cb6bdea2679e4ce",
       "src/components/ds/form/date-field.tsx": "1462dbf9266098aadee208747abf6df7",
       "src/components/ds/form/date-range-field.tsx": "85ba360e79f4ef30b5d87178b2e8b2e9",
       "src/components/ds/form/decimal-input.tsx": "c0ab5d5e2a98ef7edab798a6022eb512",
-      "src/components/ds/form/entity-select.tsx": "2e8495ffad84267714747bf224eab027",
-      "src/components/ds/form/field-value.tsx": "b049610a0875b436bd582ef7773a4a0c",
+      "src/components/ds/form/entity-select.tsx": "198313553ebdfe5199dd800ed01375a5",
+      "src/components/ds/form/field-table.tsx": "6fbac22923d3981830287415ff27f894",
+      "src/components/ds/form/field-value.tsx": "6484d2061f081215a6756cdf28175724",
       "src/components/ds/form/ico-field.tsx": "9e332b2e2ef8b48a3d46c98e1ef626f0",
       "src/components/ds/form/ico-link.tsx": "f670fd77992d3a9fca915dc15581645a",
-      "src/components/ds/form/legal-form-field.tsx": "d5346e497376176c92ddb1e1b74fe34f",
+      "src/components/ds/form/legal-form-field.tsx": "f60eada925514f22c88684373baa4574",
       "src/components/ds/form/lookup-field.tsx": "216b34484d92661311761315f85d5091",
+      "src/components/ds/form/mask-input.tsx": "20264f23b6f5c15f3eca7b5ed77c566c",
       "src/components/ds/form/month-year-select.tsx": "5c8df966af89ff0e32915e72f48312f0",
       "src/components/ds/form/multi-select.tsx": "d87e6c4353ffe4c40010d43f62094582",
-      "src/components/ds/form/option-select.tsx": "dd7fd4a2bac18f9432dfa0bb45a7e7cb",
+      "src/components/ds/form/option-select.tsx": "411b7f968fb6f8cac02ed7506a89bf06",
       "src/components/ds/form/period-filter.tsx": "90db263e3984bd773df61cf3ef0ba2cc",
-      "src/components/ds/form/rate-field.tsx": "1b7bde9bb9a78a41b7fe8f5ac0489c11",
+      "src/components/ds/form/rate-field.tsx": "a1d0b3e3b10a2e91d0c5b806953be93a",
       "src/components/ds/form/resizable-combobox.tsx": "da92124f0ec87975062f75107d8eb569",
-      "src/components/ds/form/segmented-field.tsx": "d877551dd351139142222d48379ea766",
-      "src/components/ds/form/suggest-input.tsx": "8e9c575eff849d7d334e9a512fef9ab7",
+      "src/components/ds/form/segmented-field.tsx": "78e11850a7fce7b2ce11e5667d1e7944",
+      "src/components/ds/form/suggest-input.tsx": "c6ec23ca0e3e8f79b098a28a026bfc03",
       "src/components/ds/form/time-input-right.tsx": "fb61260958a00ff005e0703a6300d043",
       "src/components/ds/grid/ColumnFilter.tsx": "c78c219efd15cc95b742a69518a8f093",
       "src/components/ds/grid/DataGrid.tsx": "2dfb671314efc940ec9b87a5a6ddefc9",
@@ -198,18 +200,18 @@
       "src/components/ds/grid/grid-more-menu.tsx": "ec0beca5e85e2676a666aa5e919f87ed",
       "src/components/ds/grid/grid-pagination.tsx": "4ad6d2606a1d36cb1e5322957d52a9d1",
       "src/components/ds/grid/grid-period.ts": "646ab8a9c30fa7f6ecdcd58bd8363238",
-      "src/components/ds/grid/grid-print.tsx": "1bc684ef9e52afcd1923fd42323ff96d",
+      "src/components/ds/grid/grid-print.tsx": "3cd385d9a0b191348e05099f4805a29d",
       "src/components/ds/grid/grid-refresh.tsx": "7a0252aaa5caf18f7ee8f1f3568f7481",
       "src/components/ds/grid/grid-search.tsx": "db848f1ebb6613da460369103a6ee352",
       "src/components/ds/grid/grid-sections.tsx": "7186337750209d575c12c257d5246c3e",
-      "src/components/ds/grid/grid-segmented-toggle.tsx": "58c6e0ef4c70b92d5a4e1373801a3d20",
+      "src/components/ds/grid/grid-segmented-toggle.tsx": "dcb0b4e7dcee0269fbf8e484de19cd9f",
       "src/components/ds/grid/grid-selection-toggle.tsx": "dfd1b71d148bf361cb5e57ba52d92d67",
       "src/components/ds/grid/grid-selection.ts": "1929f00423eda2d0bc983bfd90af3fe4",
       "src/components/ds/grid/grid-sort.tsx": "68d9ad0219deca8f264ec05d33e9b1e4",
       "src/components/ds/grid/grid-states.tsx": "05cbb3b31ad772abcdf60edcf6c137bb",
       "src/components/ds/grid/grid-texts.ts": "edbafe745d3c7c39167869e869405d96",
       "src/components/ds/grid/grid-title.tsx": "bf7b461aa487ac04156a2e84e32756fb",
-      "src/components/ds/grid/grid-toolbar.tsx": "93b35f0fc5868c272f12770f5cb3db73",
+      "src/components/ds/grid/grid-toolbar.tsx": "f0efdc8d0c410d21f94d5217f874705f",
       "src/components/ds/grid/grid-virtual.tsx": "8460d3867b0d0dc5ee9a91c16b671089",
       "src/components/ds/grid/grid-zoom.tsx": "e4961e532b868a5b429547e6cd936e8b",
       "src/components/ds/grid/tree-grid-model.ts": "6a5a25e97137cc3625233ea0afb931c7",
@@ -221,14 +223,14 @@
       "src/components/ds/grid/useDataGridSelection.ts": "11a7b1e905501e6ce123c8d93059ecb0",
       "src/components/ds/grid/useRowActions.tsx": "38a55e87390e351ac2524d4bfd2efac6",
       "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
-      "src/components/ds/index.ts": "32370ae4b5c9f5d14cc2b9e9486519d8",
+      "src/components/ds/index.ts": "1f0500847c2407b196aeb351c08e8adc",
       "src/components/ds/layout/AppShell.tsx": "f2661ffe97493c3dc7fc9567a2af51d5",
       "src/components/ds/layout/AppShellNav.tsx": "ca091ea04506319a704f3ad8edaa2710",
       "src/components/ds/layout/AppShellNavGroup.tsx": "0a865c7cf895855e9da6a06d1f8fc1e8",
       "src/components/ds/layout/AppShellPanels.tsx": "de6b74dd71296d9b4f6263d6c117d9a2",
       "src/components/ds/layout/AppShellSidebar.tsx": "80b336b5fb1c35c019756d6b41ab47e7",
       "src/components/ds/layout/AppShellTopBar.tsx": "c79a0e9cdd85a077de73225671f68368",
-      "src/components/ds/layout/RecordDialog.tsx": "abfa0c9354cbbfca84dc152454e552e3",
+      "src/components/ds/layout/RecordDialog.tsx": "2aace018a047efde2db171451f4fe00c",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
       "src/components/ds/layout/WorkspaceCompanySwitcher.tsx": "b3b881b303773be54297519bc8702ba8",
       "src/components/ds/layout/app-shell-types.ts": "f6ccbfeaa926b41ac79706a8db8c265a",
@@ -238,16 +240,17 @@
       "src/components/ds/layout/company-switcher.tsx": "539e04c95c973876db83df21b3b1bfc9",
       "src/components/ds/layout/context-pill.tsx": "c55f372643df2b57c8f5309eedc5af77",
       "src/components/ds/layout/context-switcher.tsx": "a07aea0bd3ee1b86dedb9e8468ba0efe",
+      "src/components/ds/layout/form-field-layout.tsx": "5a6f11557485cc3a985341bfd08c5924",
       "src/components/ds/layout/nav-items.tsx": "cd5ec31101ce6e15d56052fe53155161",
       "src/components/ds/layout/nav-search.tsx": "d61280d97dbe6932a6e3a4499d88ee7e",
       "src/components/ds/layout/notification-bell.tsx": "eb9f9c046c98dc23a8b0cdc15f15b53e",
       "src/components/ds/layout/page-header.tsx": "0b06ae9b51f0404c14658a1bab953ff7",
       "src/components/ds/layout/page-layout.tsx": "5a769bd27dadd8bdd889318075e37204",
-      "src/components/ds/layout/page-tabs.tsx": "a89cf4aab07e044d19bb8ec9714b71e3",
+      "src/components/ds/layout/page-tabs.tsx": "cacea831d285c3f6653f0e7d845fc2c7",
       "src/components/ds/layout/period-switcher.tsx": "0ede0651812f61cdc6077d73ae2a38e4",
       "src/components/ds/layout/record-action-bar.tsx": "d13bc8c84d31571525ebf3b6c38df4fb",
       "src/components/ds/layout/search-button.tsx": "5aa5ad81f7b4f78d1a68d20d34534810",
-      "src/components/ds/layout/section-heading.tsx": "613b2e717095b3bd698c7f839a6ca17f",
+      "src/components/ds/layout/section-heading.tsx": "a8d2efeff43eb28a370ef2416cc200f8",
       "src/components/ds/layout/settings-section.tsx": "d927fc8474cb253c87366215b2033f26",
       "src/components/ds/layout/standalone-nav.tsx": "71280f4c43026f25281e5a35507c5f17",
       "src/components/ds/layout/standalone-shell.tsx": "f370ada8b4dffed112ffd16900f23cc0",
@@ -257,7 +260,7 @@
       "src/components/ds/layout/user-menu.tsx": "560130d9b1a8adbdb077b9f315d20863",
       "src/components/ds/panes/draft-restored-banner.tsx": "b60c2a29071528883653bf281c3b77e6",
       "src/components/ds/panes/layout-menu.tsx": "96437ef51778d14c4fee315d50b5f20e",
-      "src/components/ds/panes/pane-context.tsx": "a3bde0797937e2d1ff7ced825e8853f4",
+      "src/components/ds/panes/pane-context.tsx": "6c78a2a163904c517f979a50398c84c7",
       "src/components/ds/panes/pane-layout-switcher.tsx": "2a18e9baafe76169327e1361dc4a5818",
       "src/components/ds/panes/pane-layout.tsx": "7b43480eb529f85442bd535047933131",
       "src/components/ds/panes/pane-link.tsx": "f9f31199006bec7103160b9be1e1054f",
@@ -273,6 +276,7 @@
       "src/components/showcase/PaneShowcase.tsx": "79c11473f11e91be8f37d743c948c1b4",
       "src/components/showcase/PartnerShowcase.tsx": "a42b9f5d59a66a020cd9cb53b76e3bd1",
       "src/components/showcase/PrintShowcase.tsx": "073bf4488b718bf63c2a3bdc190ef3ad",
+      "src/components/showcase/RecordDialogShowcase.tsx": "eccfab1b39face4004573b88fe6d98ad",
       "src/components/showcase/ReportsShowcase.tsx": "4c040e7fc138f71096d6d7cd7a36c587",
       "src/components/showcase/ShowcaseLayout.tsx": "a28cc9cb60c4cc83e339d2f3f4043daa",
       "src/components/showcase/VatJournalShowcase.tsx": "8bb96dcc889ee8e9856c33936f72ecf7",
@@ -284,7 +288,7 @@
       "src/components/ui/avatar.tsx": "1ecf053bd46a2984b1aa6ce64f2cf68a",
       "src/components/ui/badge.tsx": "3120d0d51b48128d0dfb4ff4c076297a",
       "src/components/ui/breadcrumb.tsx": "a4a763e0287065780233f73c9f068df5",
-      "src/components/ui/button.tsx": "39a3efc9c5fedb2ceeccaea8daa69e5d",
+      "src/components/ui/button.tsx": "9f391d0b3290b7158c3fde6c1052889d",
       "src/components/ui/calendar.tsx": "677b07012a75a3635c0c04f92a50a06d",
       "src/components/ui/card.tsx": "a3ac9a12fad9e3d7e4238c13bcbc3a91",
       "src/components/ui/carousel.tsx": "7b276264215afc0dcc291126272bb4fe",
@@ -299,7 +303,7 @@
       "src/components/ui/form.tsx": "c346789c40b1c8e2a48f4b8a037bdd71",
       "src/components/ui/hover-card.tsx": "1f4ca143d9f75cc9858425e9e6eba7f8",
       "src/components/ui/input-otp.tsx": "e73af750feaebc6bbc38f226f644392c",
-      "src/components/ui/input.tsx": "6d191b5e54262a53f90177d34782fd06",
+      "src/components/ui/input.tsx": "864a5f9a319296dfca6a03d372f2462b",
       "src/components/ui/label.tsx": "047ac9d0d6075ad8682e1862d39ffe5d",
       "src/components/ui/menubar.tsx": "f9256bbcccc3d9cacf87da66fdc3589c",
       "src/components/ui/navigation-menu.tsx": "651e23496a146e12513c8a449ef958d1",
@@ -309,7 +313,7 @@
       "src/components/ui/radio-group.tsx": "04a2471cdbc80050a06dfd3d40716e0e",
       "src/components/ui/resizable.tsx": "241d25a7b82c83537b6cdb78bc9df45a",
       "src/components/ui/scroll-area.tsx": "8b840c6ef7c1f355d4978607da789cc9",
-      "src/components/ui/select.tsx": "2ae32d44aa028a70c64c44eac86e46a2",
+      "src/components/ui/select.tsx": "3164af5ff8654ad244466d7eb0d1843a",
       "src/components/ui/separator.tsx": "c0dff391f650ce5594eb69a8d7f8b858",
       "src/components/ui/sheet.tsx": "afdc65d04c57ecb259d6c9395172fba0",
       "src/components/ui/sidebar.tsx": "86b324210bc55e47a15053d03ab96b9e",
@@ -323,10 +327,10 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
-      "src/ds-texts/cs.ts": "3c14806852952e028d2108218a7405c9",
+      "src/ds-texts/cs.ts": "4b8a57aef42f29e6f1a71955726adfc2",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
-      "src/ds-texts/sk.ts": "77367d0ae7a21a6be40ea7c51c9af646",
-      "src/ds-texts/types.ts": "fe7d044ac6320bc006bad39c844188cc",
+      "src/ds-texts/sk.ts": "d1617dac0c7c4ecfc7237df3300b1102",
+      "src/ds-texts/types.ts": "476bd12ca8bca437f6d9171865afc1af",
       "src/hooks/index.ts": "6fece027b973135a96e5c7ae9a978a3e",
       "src/hooks/use-dialog-back-close.ts": "d3a0a16f8bc86d6133a313901508f2b0",
       "src/hooks/use-grid-keyboard-nav.ts": "8ba15428a0f0b2b36dcf50d2ec8849ee",
@@ -368,7 +372,7 @@
       "src/routes/components.accounting-forms.tsx": "f5f85f5be43a08a214f3e416f951902a",
       "src/routes/components.excel-export.tsx": "80244190af373b08a2f2351d84989262",
       "src/routes/components.feedback.tsx": "31a72d168443b0c9bdb3799d6c2276a5",
-      "src/routes/components.forms.tsx": "95ad7b9983b8008f7182229f9def6c48",
+      "src/routes/components.forms.tsx": "63a085f3c17c62497eb6b9337d6a0ebd",
       "src/routes/components.grid.tsx": "8299bf4a4e08cf9ddd06da286ffdf45b",
       "src/routes/components.matching.tsx": "1119e7287264e60ee4f8a45fbe59ba56",
       "src/routes/components.navigation.tsx": "bef3db7f230a43db68b2f1144f04dced",
@@ -380,7 +384,7 @@
       "src/slivka-head.tsx": "a126065cc8ea1f5bc5be4d79afae31dc",
       "src/slivka-provider.tsx": "534ba72d2302fa980a607e0cba6ecd69",
       "src/start.ts": "3b877c99f5f4668ccc3694f7a09a1f07",
-      "src/styles.css": "40f33ad1b26cbe465e35dc71d703ccbd",
+      "src/styles.css": "2418f2f238056fc70573ef76bde3317d",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "f489ce71bed4bf62da4f6ea918d5d560",
       "tests/e2e/document-date-link.spec.ts": "776f86832b4bb6e62b5f5c7d30e136e1",
@@ -394,7 +398,7 @@
       "tests/unit/app-shell-behavior.test.tsx": "b348b3a186aef0fd564a7acbeb8b4c25",
       "tests/unit/app-zoom-264.test.ts": "3440099754a804b035c3c664e1fc1e1f",
       "tests/unit/app-zoom-270.test.tsx": "ebca88770cffbe35477058bb67b6d458",
-      "tests/unit/appshell-panels-240.test.tsx": "e7333426189a2d1e3aa597a4af52ccc9",
+      "tests/unit/appshell-panels-240.test.tsx": "ec0604eb1c735aac6aadfb92797f3457",
       "tests/unit/appshell-panels-271.test.tsx": "207f53b6766e2082f3bd126c5a4e2906",
       "tests/unit/context-switchers-222.test.ts": "7db72cf010d8a9eb695590b707d65375",
       "tests/unit/counterparty-225.test.tsx": "a9916d2c1a0abd7e1e04811c612842b0",
@@ -402,7 +406,7 @@
       "tests/unit/dialog-strict-nested.test.tsx": "d49e1a707cadb7a169f8468432b75863",
       "tests/unit/document-dates-238.test.tsx": "faec2475de2a862f7585dbccccc1a023",
       "tests/unit/document-form-224.test.tsx": "d1560df90d48bcbb1ecb651455386c58",
-      "tests/unit/document-form-228.test.tsx": "517321a4fe1489c60904713b1c663567",
+      "tests/unit/document-form-228.test.tsx": "451f16e2ad4fbd8b64145d3cd727184e",
       "tests/unit/document-form-236.test.tsx": "7ef7dcd8165ad941fe24c39eb7cf2883",
       "tests/unit/document-form-268.test.tsx": "d379e294df1ab59e287d618567e45609",
       "tests/unit/document-form-273.test.tsx": "e737ad5e5ab9bc5e1d1631b7cbd5bbda",
@@ -414,30 +418,31 @@
       "tests/unit/grid-print-227.test.ts": "7bf99be2fcb72c039271d0fc79a4c299",
       "tests/unit/grid-toolbar-2211.test.ts": "89564c72aa2143cbc970f2446174b033",
       "tests/unit/i18n-261.test.tsx": "9bccbbd66451db35f1acea29ef7c618d",
-      "tests/unit/journal-accounts-render-266.test.tsx": "e8f895958a8bb1c4fb43d8e61c5a1975",
+      "tests/unit/journal-accounts-render-266.test.tsx": "dc29283f4a7a295c1b7f97ba4f18f3f5",
       "tests/unit/journal-editor-behavior.test.tsx": "68618827010261e7aa5ac6e653be38d5",
       "tests/unit/journal-lines-234.test.tsx": "c1b6ac1e660d88cb1ac0d2b625134273",
       "tests/unit/journal-lines-model.test.ts": "fa60259768dc109e94f6e3e832045f9b",
       "tests/unit/journal-lines-width.test.ts": "cc51eeb3c40e0a64a245e4a5344c6d36",
       "tests/unit/journal-vat-255.test.tsx": "279a74adce82bc15da29d73b5c460bbb",
       "tests/unit/journal-vat-257.test.tsx": "48f1995d0636140339ce53d0c753ec16",
-      "tests/unit/journal-width-zoom-253.test.ts": "5bade78b2ddbd2c255b0e74c6b502f0f",
+      "tests/unit/journal-width-zoom-253.test.ts": "df52e350d1edccb808dafe3e936cd62b",
       "tests/unit/nav-search.test.ts": "6ef518ebf57a29fc34af0e47123e47fb",
       "tests/unit/notice-bar-260.test.tsx": "2ba471cd90b77677ecf6a29f20450dec",
       "tests/unit/pane-embedded-253.test.ts": "beaf54a04555a7ba4434820bac3996b5",
-      "tests/unit/pane-menus-275.test.tsx": "fc6b86de0d8ccf9d412b86a7cb0fecd3",
-      "tests/unit/pane-state.test.ts": "756eee0143c862a2d93e0fc3733742e4",
+      "tests/unit/pane-menus-275.test.tsx": "f635cbb007a92b7b5b821ca2a0222e24",
+      "tests/unit/pane-state.test.ts": "833b9690641b71cd5c0e9b791fcb013c",
       "tests/unit/pane-tab-bar-228.test.ts": "1b899e95fc96ccb4d7b58ff01f1bafda",
       "tests/unit/pane-tabs-217.test.ts": "dfd8fc337ea6a41bb44cf6b6388e8923",
-      "tests/unit/partners-246.test.tsx": "9487e37d13eaa34a584544f1b37f7bc6",
+      "tests/unit/partners-246.test.tsx": "e9cce678fc5664539babaf960a175548",
       "tests/unit/print-226.test.ts": "bbf381ca80a9649c500efb773dde50bc",
-      "tests/unit/record-form-262.test.tsx": "c6ff074e746a5687926f3b89e80e39d4",
-      "tests/unit/scrolling-fixes-253.test.ts": "7ce0c6e6ddd96cf0f416e79e99ac3911",
+      "tests/unit/record-dialog-284.test.tsx": "a42288a54d734a623974654abb3c27dc",
+      "tests/unit/record-form-262.test.tsx": "1a65888bfa9b86dafd25cef4361ae743",
+      "tests/unit/scrolling-fixes-253.test.ts": "3fcf6dff4487f30ea18933f79c57bfb0",
       "tests/unit/scrolling-zoom-253.test.tsx": "467c76353bd136e130b2dbcf7d668729",
-      "tests/unit/standalone-279.test.tsx": "d2bbe7500f9292eb1185c666b1ef03a0",
+      "tests/unit/standalone-279.test.tsx": "889d8f8390ca664573639af2f214aeed",
       "tests/unit/suggest-input-232.test.tsx": "81fe8ceb127d02ed2ff191e4c30dc94d",
       "tests/unit/vat-code-select-255.test.tsx": "c0b19cd8e358a660cf12fa391807d12b",
-      "tests/unit/zoom-fixes-264.test.ts": "1038a824bc4b67f59ed74c32525bc847",
+      "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
@@ -921,6 +926,11 @@
       }
     ],
     "other": [
+      {
+        "name": "--control-h",
+        "raw": "2.25rem",
+        "source": "src/styles.css"
+      },
       {
         "name": "--grid-title-surface",
         "raw": "white",
@@ -2489,6 +2499,113 @@
       "import_path": ""
     },
     {
+      "name": "Field",
+      "file": "src/components/ds/layout/form-field-layout",
+      "import_path": "",
+      "props": [
+        {
+          "name": "label",
+          "type": "any"
+        },
+        {
+          "name": "htmlFor",
+          "type": "string"
+        },
+        {
+          "name": "hint",
+          "type": "any"
+        },
+        {
+          "name": "error",
+          "type": "any"
+        },
+        {
+          "name": "span",
+          "type": "enum",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20"
+          ]
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení.",
+      "examples": [
+        {
+          "label": "Pole přes čtyři sloupce",
+          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Jméno\" span={4}\u003e\u003cInput /\u003e\u003c/Field\u003e\u003c/FieldGrid\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue."
+      ]
+    },
+    {
+      "name": "FieldGrid",
+      "file": "src/components/ds/layout/form-field-layout",
+      "import_path": "",
+      "props": [
+        {
+          "name": "cols",
+          "type": "any",
+          "default": "2"
+        },
+        {
+          "name": "title",
+          "type": "any"
+        },
+        {
+          "name": "hint",
+          "type": "any"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "children",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "usage": "Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem.",
+      "examples": [
+        {
+          "label": "Jméno osoby",
+          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Titul před\" span={2}\u003e…\u003c/Field\u003e\u003cField label=\"Jméno\" span={4}\u003e…\u003c/Field\u003e\u003c/FieldGrid\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte ruční CSS grid pro standardní formulářové řádky."
+      ]
+    },
+    {
       "name": "FormSection",
       "file": "src/components/ds/layout/RecordDialog.tsx",
       "import_path": ""
@@ -2544,6 +2661,15 @@
           "type": "any"
         },
         {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "md",
+            "lg"
+          ],
+          "default": "sm"
+        },
+        {
           "name": "wide",
           "type": "boolean"
         },
@@ -2565,6 +2691,10 @@
         },
         {
           "name": "headerExtra",
+          "type": "any"
+        },
+        {
+          "name": "titleBadges",
           "type": "any"
         },
         {
@@ -2623,36 +2753,6 @@
       "antipatterns": [
         "Nevykreslujte tlačítko Uložit v režimu readOnly.",
         "Nevytvářejte vlastní lištu záložek mimo tabs."
-      ]
-    },
-    {
-      "name": "Field",
-      "file": "src/components/ds/layout/RecordDialog.tsx",
-      "import_path": "",
-      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení.",
-      "examples": [
-        {
-          "label": "Pole přes čtyři sloupce",
-          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Jméno\" span={4}\u003e\u003cInput /\u003e\u003c/Field\u003e\u003c/FieldGrid\u003e"
-        }
-      ],
-      "antipatterns": [
-        "Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue."
-      ]
-    },
-    {
-      "name": "FieldGrid",
-      "file": "src/components/ds/layout/RecordDialog.tsx",
-      "import_path": "",
-      "usage": "Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem.",
-      "examples": [
-        {
-          "label": "Jméno osoby",
-          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Titul před\" span={2}\u003e…\u003c/Field\u003e\u003cField label=\"Jméno\" span={4}\u003e…\u003c/Field\u003e\u003c/FieldGrid\u003e"
-        }
-      ],
-      "antipatterns": [
-        "Nepoužívejte ruční CSS grid pro standardní formulářové řádky."
       ]
     },
     {
@@ -3316,6 +3416,10 @@
           "name": "level",
           "type": "any",
           "default": "2"
+        },
+        {
+          "name": "aside",
+          "type": "any"
         }
       ],
       "usage": "Nadpis sekce formuláře, dialogu, karty nebo panelu; nepoužívejte pro nadpis stránky ani záhlaví gridu.",
@@ -3347,7 +3451,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "h-10 gap-1 rounded-none border-b bg-transparent p-0"
+          "default": "flex h-10 w-full justify-start gap-1 rounded-none border-b bg-transparent p-0"
         }
       ]
     },
@@ -4755,6 +4859,15 @@
         {
           "name": "disabled",
           "type": "boolean"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "values": [
+            "default",
+            "row"
+          ],
+          "default": "default"
         }
       ],
       "usage": "Segmentový filtr pro pravou část kontextového řádku. Výchozí hodnota je neutrální; jiná hodnota je oranžová, protože zužuje data.",
@@ -4971,7 +5084,7 @@
         {
           "name": "className",
           "type": "string",
-          "default": "min-h-9 text-sm font-mono tabular-nums"
+          "default": "font-mono tabular-nums"
         }
       ],
       "usage": "Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního kurzu.",
@@ -5109,6 +5222,19 @@
         {
           "name": "trailing",
           "type": "any"
+        },
+        {
+          "name": "variant",
+          "type": "enum",
+          "values": [
+            "field",
+            "plain"
+          ],
+          "default": "field"
+        },
+        {
+          "name": "lockedReason",
+          "type": "string"
         }
       ],
       "usage": "Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input.",
@@ -5120,6 +5246,66 @@
       ],
       "antipatterns": [
         "Nevkládejte FieldValue bez nadřazeného Field a popisku."
+      ]
+    },
+    {
+      "name": "FieldTable",
+      "file": "src/components/ds/form/field-table.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "columns",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "rows",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "hidden @min-[40rem]:block"
+        }
+      ]
+    },
+    {
+      "name": "MaskInput",
+      "file": "src/components/ds/form/mask-input.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "onChange",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "tokens",
+          "type": "any"
+        },
+        {
+          "name": "preview",
+          "type": "string"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean"
+        },
+        {
+          "name": "lockedReason",
+          "type": "string"
+        }
       ]
     },
     {
@@ -5318,6 +5504,7 @@
         {
           "name": "label",
           "type": "any",
+          "default": "true",
           "required": true
         },
         {
@@ -5404,6 +5591,7 @@
         {
           "name": "label",
           "type": "any",
+          "default": "true",
           "required": true
         },
         {

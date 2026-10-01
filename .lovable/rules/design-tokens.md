@@ -136,6 +136,7 @@ Reference via `var(--name)` in inline styles or CSS.
 
 | CSS variable |
 |---|
+| `--control-h` |
 | `--grid-title-surface` |
 | `--grid-toolbar-surface` |
 | `--grid-total-surface` |

@@ -654,7 +654,7 @@ Zaškrtávátko formuláře; čtvereček se zarovná na první řádek i u více
 |---|---|---|
 | `checked` | boolean | `—` |
 | `onCheckedChange` | function | `—` |
-| `label` | any | `—` |
+| `label` | any | `true` |
 | `hint` | any | `—` |
 | `align` | natural · input | `natural` |
 
@@ -1755,6 +1755,18 @@ import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 
 Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | any | `—` |
+| `htmlFor` | string | `—` |
+| `hint` | any | `—` |
+| `error` | any | `—` |
+| `span` | 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 19 · 20 | `—` |
+| `className` | string | `—` |
+| `children` | any | `—` |
+
 **Examples:**
 
 _Pole přes čtyři sloupce_
@@ -1774,6 +1786,16 @@ import { FieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 
 Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `cols` | any | `2` |
+| `title` | any | `—` |
+| `hint` | any | `—` |
+| `className` | string | `—` |
+| `children` | any | `—` |
+
 **Examples:**
 
 _Jméno osoby_
@@ -1784,6 +1806,21 @@ _Jméno osoby_
 **Avoid:**
 
 - Nepoužívejte ruční CSS grid pro standardní formulářové řádky.
+
+### FieldTable
+
+```ts
+import { FieldTable } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `ariaLabel` | string | `—` |
+| `columns` | any | `—` |
+| `rows` | any | `—` |
+| `className` | string | `hidden @min-[40rem]:block` |
 
 ### FieldValue
 
@@ -1798,6 +1835,8 @@ Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním
 | Prop | Type | Default |
 |---|---|---|
 | `trailing` | any | `—` |
+| `variant` | field · plain | `field` |
+| `lockedReason` | string | `—` |
 
 **Examples:**
 
@@ -2177,6 +2216,7 @@ Segmentový filtr pro pravou část kontextového řádku. Výchozí hodnota je 
 | `label` | string | `—` |
 | `ariaLabel` | string | `—` |
 | `disabled` | boolean | `—` |
+| `size` | default · row | `default` |
 
 **Examples:**
 
@@ -2623,6 +2663,23 @@ _Název z registru_
 - Tlačítko registru vedle pole místo v poli
 - Vlastní input s absolutně umístěnou ikonou
 
+### MaskInput
+
+```ts
+import { MaskInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `tokens` | any | `—` |
+| `preview` | string | `—` |
+| `readOnly` | boolean | `—` |
+| `lockedReason` | string | `—` |
+
 ### Menubar
 
 ```ts
@@ -2932,7 +2989,7 @@ import { PageTabs } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 |---|---|---|
 | `items` | any | `—` |
 | `listLabel` | string | `Sekce stránky` |
-| `className` | string | `h-10 gap-1 rounded-none border-b bg-transparent p-0` |
+| `className` | string | `flex h-10 w-full justify-start gap-1 rounded-none border-b bg-transparent p-0` |
 
 ### Pagination
 
@@ -3359,7 +3416,7 @@ Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního
 | `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
 | `showNote` | boolean | `true` |
 | `id` | string | `rate` |
-| `className` | string | `min-h-9 text-sm font-mono tabular-nums` |
+| `className` | string | `font-mono tabular-nums` |
 
 **Examples:**
 
@@ -3441,12 +3498,14 @@ Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte
 | `busy` | boolean | `—` |
 | `children` | any | `—` |
 | `extraActions` | any | `—` |
+| `size` | md · lg | `sm` |
 | `wide` | boolean | `—` |
 | `contentClassName` | string | `—` |
 | `sidePanel` | any | `—` |
 | `sidePanelLabel` | string | `—` |
 | `sidePanelTitle` | any | `—` |
 | `headerExtra` | any | `—` |
+| `titleBadges` | any | `—` |
 | `sidePanelExtra` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `tabs` | any | `—` |
@@ -3556,6 +3615,7 @@ Nadpis sekce formuláře, dialogu, karty nebo panelu; nepoužívejte pro nadpis 
 | Prop | Type | Default |
 |---|---|---|
 | `level` | any | `2` |
+| `aside` | any | `—` |
 
 **Examples:**
 
@@ -4128,7 +4188,7 @@ import { SwitchField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 |---|---|---|
 | `checked` | boolean | `—` |
 | `onCheckedChange` | function | `—` |
-| `label` | any | `—` |
+| `label` | any | `true` |
 | `hint` | any | `—` |
 | `busy` | boolean | `false` |
 
