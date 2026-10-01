@@ -201,6 +201,46 @@ describe("DocumentForm 2.73", () => {
 });
 
 describe("BankAccountField 2.73", () => {
+  it("nabídne založení prvního účtu a zavolá akci", () => {
+    const onAddAccount = mock(() => {});
+    const view = render(
+      <BankAccountField
+        aria-label="Bankovní účet"
+        value=""
+        onChange={() => {}}
+        options={[]}
+        selectionOnly
+        onAddAccount={onAddAccount}
+      />,
+    );
+    fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet" }));
+    fireEvent.click(view.getByRole("option", { name: "Přidat účet…" }));
+    expect(onAddAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it("neplatný a chybějící účet popíše bez surového identifikátoru", () => {
+    const view = render(
+      <BankAccountField
+        value="invalid-id"
+        onChange={() => {}}
+        options={[]}
+        selectionOnly
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain("Účet není v číselníku partnera");
+    expect(view.getByRole("combobox").textContent).not.toContain("invalid-id");
+    view.rerender(
+      <BankAccountField
+        value="bank-1"
+        onChange={() => {}}
+        options={[{ id: "bank-1", number: "123", bankCode: "0100", invalid: true }]}
+        selectionOnly
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain("neplatný");
+    expect(view.getByRole("combobox").querySelector(".line-through")).toBeTruthy();
+  });
+
   it("nemění prázdnou hodnotu podle výchozí možnosti", () => {
     let value = "";
     render(

@@ -184,6 +184,32 @@ describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
     expect(html).not.toContain(">Datum DPH<");
   });
 
+  it("stav partnera ukáže jen při zapnutém vstupu do DPH", () => {
+    const shown = form({
+      vat: { visible: true },
+      vatPartnerStatus: { status: "payer", checkedAt: "24.09.2026" },
+    });
+    const hidden = renderToStaticMarkup(
+      <DocumentForm
+        homeCurrency="CZK"
+        title="Doklad"
+        documentType="FP"
+        value={{ ...baseValue, vatRelevant: false }}
+        onChange={() => {}}
+        lines={[]}
+        onLinesChange={() => {}}
+        books={[]}
+        accounts={[]}
+        status="draft"
+        vat={{ visible: true }}
+        vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+      />,
+    );
+    expect(shown).toContain("Plátce DPH");
+    expect(shown).toContain("Ověřeno 24.09.2026");
+    expect(hidden).not.toContain("Plátce DPH");
+  });
+
   it("neplátci skryje celý blok DPH včetně přepínače", () => {
     const html = form({ vat: { visible: false } });
     expect(html).not.toContain("Vstupuje do DPH");
