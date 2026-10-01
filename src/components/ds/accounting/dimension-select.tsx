@@ -13,6 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
+import { formatCodeName } from "../../../lib/code-format";
 
 export type DimensionOption = {
   id: string;
@@ -28,8 +29,7 @@ export type DimensionOption = {
   active?: boolean;
 };
 
-const label = (option: DimensionOption) =>
-  option.code ? `${option.code} – ${option.name}` : option.name;
+const label = (option: DimensionOption) => formatCodeName(option.code, option.name);
 
 /** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
 export function DimensionSelect({

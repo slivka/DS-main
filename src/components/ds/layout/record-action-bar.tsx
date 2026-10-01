@@ -162,6 +162,17 @@ export function RecordActionBar({
       >
         <div className="min-w-0">{leftContent}</div>
         <div className="flex shrink-0 items-center gap-2">
+          {primaryAction ? (
+            <CompactActionButton
+              label={primaryAction.label}
+              icon={PrimaryIcon}
+              compact={compact}
+              variant="outline"
+              busy={busy || primaryAction.busy}
+              disabled={busy || primaryAction.disabled || primaryAction.busy}
+              onClick={primaryAction.onClick}
+            />
+          ) : null}
           {saveAction ? (
             <CompactActionButton
               label={saveText}
@@ -180,17 +191,6 @@ export function RecordActionBar({
                 />
               ) : null}
             </CompactActionButton>
-          ) : null}
-          {primaryAction ? (
-            <CompactActionButton
-              label={primaryAction.label}
-              icon={PrimaryIcon}
-              compact={compact}
-              variant="outline"
-              busy={busy || primaryAction.busy}
-              disabled={busy || primaryAction.disabled || primaryAction.busy}
-              onClick={primaryAction.onClick}
-            />
           ) : null}
           {moreActions.length ? (
             <DropdownMenu>

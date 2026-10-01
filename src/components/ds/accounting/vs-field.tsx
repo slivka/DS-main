@@ -23,7 +23,7 @@ export const VsField = forwardRef<
     value,
     onChange,
     maxLength = 10,
-    placeholder = "Variabilní symbol",
+    placeholder,
     required,
     disabled,
     readOnly,

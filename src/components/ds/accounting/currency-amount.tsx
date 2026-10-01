@@ -3,6 +3,7 @@ import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 
 export type CurrencyOption = { code: string; label?: string; symbol?: string };
 
@@ -83,7 +84,7 @@ export function CurrencyAmount({
             disabled={disabled || readOnly}
             options={currencies.map((item) => ({
               value: item.code,
-              label: item.label ? `${item.code} – ${item.label}` : item.code,
+              label: formatCodeName(item.code, item.label),
             }))}
           />
         ) : (

@@ -1,4 +1,5 @@
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 
 /**
  * Zobrazení čísla účtu: první tři znaky jsou syntetika, zbytek je analytika
@@ -22,21 +23,28 @@ export function isSyntheticAccount(code: string | null | undefined): boolean {
   return normalizeAccountCode(code).length === 3;
 }
 
-/** Číslo účtu v jednotném tvaru. */
+export interface AccountCodeProps {
+  /** Uložené číslo účtu. */
+  code: string | null | undefined;
+  /** Volitelný název účtu zobrazený za číslem. */
+  name?: string | null;
+  /** Další třídy obalu. */
+  className?: string;
+}
+
+/** Číslo účtu v jednotném tvaru, volitelně s názvem za typografickou pomlčkou. */
 export function AccountCode({
   code,
   name,
   className,
-}: {
-  code: string | null | undefined;
-  /** Volitelný název účtu zobrazený za číslem. */
-  name?: string | null;
-  className?: string;
-}) {
+}: AccountCodeProps) {
+  const formattedCode = formatAccountCode(code);
   return (
-    <span className={cn("inline-flex items-baseline gap-2", className)}>
-      <span className="font-mono tabular-nums">{formatAccountCode(code)}</span>
-      {name ? <span className="truncate text-muted-foreground">{name}</span> : null}
+    <span className={cn("inline-flex min-w-0 items-baseline", className)}>
+      <span className="truncate font-mono tabular-nums" title={formatCodeName(formattedCode, name)}>
+        {formattedCode}
+        {name ? <span className="font-sans text-muted-foreground">{formatCodeName("", name).replace(name, ` – ${name}`)}</span> : null}
+      </span>
     </span>
   );
 }
