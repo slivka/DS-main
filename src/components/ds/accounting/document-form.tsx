@@ -40,7 +40,6 @@ import {
   type DocumentTypeCode,
 } from "./document-fields";
 
-export { documentIdentityVariantForType, type DocumentIdentityVariant };
 import { JournalLinesEditor, type JournalLinesEditorProps } from "./journal-lines-editor";
 import type { JournalLine } from "./journal-lines";
 import { computeJournalTotals } from "./journal-vat";
@@ -62,357 +61,46 @@ import {
   type DocumentPrintValue,
 } from "./document-detail-tabs";
 
-export type DocumentDirection = "in" | "out";
-
-export type DocumentHeaderValue = {
-  /** Identita dokladu; při změně formulář znovu odvodí paměť automatického VS. */
-  id?: string | null;
-  bookId?: string | null;
-  number?: string | null;
-  direction?: DocumentDirection | null;
-  accountingDate?: string | null;
-  issueDate?: string | null;
-  taxDate?: string | null;
-  vatDate?: string | null;
-  vatRelevant?: boolean;
-  dueDate?: string | null;
-  externalNumber?: string | null;
-  partnerId?: string | null;
-  counterpartyName?: string | null;
-  counterpartyIco?: string | null;
-  counterpartyDic?: string | null;
-  handedOverBy?: string | null;
-  variableSymbol?: string | null;
-  constantSymbol?: string | null;
-  specificSymbol?: string | null;
-  bankAccount?: string | null;
-  /** Identifikátor vybraného účtu partnera. */
-  partnerBankAccountId?: string | null;
-  /** Identifikátor účtu vlastní firmy. */
-  companyBankAccountId?: string | null;
-  /** Identifikátor způsobu platby. */
-  paymentMethodId?: string | null;
-  description?: string | null;
-  currency: string;
-  rate?: number | null;
-  rateInfo?: string | null;
-  rateManual?: boolean;
-  rateNote?: string | null;
-  suggestedRate?: number | null;
-  suggestedRateInfo?: string | null;
-  amountTotal: number;
-  totalMode: "entered" | "sum";
-  roundingAmount?: number | null;
-  mainAccountId?: string | null;
-  excludeFromPaymentOrders?: boolean;
-  /** Tiskové údaje uložené s dokladem. */
-  print?: DocumentPrintValue;
-};
-
-export type DocumentHeaderField = keyof DocumentHeaderValue;
-export type DocumentFormTab = { id: string; label: string; content: ReactNode; badge?: ReactNode };
-export type DocumentSaveAction = RecordSaveAction;
-export type DocumentPrimaryAction = RecordPrimaryAction;
-export type DocumentMoreAction = RecordMoreAction;
-export type DocumentSettingsAction = { onOpen: () => void };
-export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
-export interface DocumentIdentity {
-  variant: DocumentIdentityVariant;
-  book: string;
-  period: string;
-  account?: { side: "MD" | "DAL"; label: string; editable?: boolean; disabledReason?: string };
-  number?: string | null;
-  numberPending?: string;
-}
-export type DocumentSuggestConfig = {
-  enabled: boolean;
-  onEnabledChange: (enabled: boolean) => void;
-  load: (query: string) => Promise<string[]>;
-};
-export type DocumentAccountingDateLink = {
-  locked: boolean;
-  onToggle: (locked: boolean) => void;
-  hint?: string;
-};
-export type DocumentDateField = "issueDate" | "accountingDate" | "taxDate" | "dueDate" | "vatDate";
-export type DocumentVatConfig = {
-  visible: boolean;
-  relevantReadOnly?: boolean;
-  periodLabel?: string;
-  periodFiled?: boolean;
-  dateLink?: {
-    locked: boolean;
-    onToggle: (locked: boolean) => void;
-    lockedHint?: string;
-    unlockedHint?: string;
-  };
-  dateLockReadOnly?: boolean;
-  filedWarning?: string;
-};
-
-/** Vytvoří VS ze všech číslic čísla dokladu; neplatná délka návrh nevytvoří. */
-export function vsFromDocumentNumber(text: string): string | null {
-  const digits = text.replace(/\D/g, "");
-  return digits.length > 0 && digits.length <= 10 ? digits : null;
-}
-
-export type DocumentFormTexts = {
-  headerSection: string;
-  datesSection: string;
-  paymentSection: string;
-  propertiesSection: string;
-  rateSection: string;
-  currencySection: string;
-  periodHint: string;
-  amountSection: string;
-  amountOnlySection: string;
-  book: string;
-  period: string;
-  number: string;
-  numberPending: string;
-  direction: string;
-  directionIn: string;
-  directionOut: string;
-  status: string;
-  approved: string;
-  yes: string;
-  no: string;
-  accountingDate: string;
-  issueDate: string;
-  taxDate: string;
-  vatRelevant: string;
-  vatDate: string;
-  dueDate: string;
-  externalNumber: string;
-  supplierNumber: string;
-  supplierTaxDocumentNumber: string;
-  documentNumberTooLongForVs: string;
-  partner: string;
-  ico: string;
-  dic: string;
-  handedOverByIn: string;
-  handedOverByOut: string;
-  invalidIco: string;
-  variableSymbol: string;
-  constantSymbol: string;
-  specificSymbol: string;
-  bankAccount: string;
-  description: string;
-  currency: string;
-  rate: string;
-  vatRate: string;
-  vatRateSameAsDocument: string;
-  vatRateNote: string;
-  vatRateMissing: string;
-  amountTotal: string;
-  totalHome: string;
-  amountSum: string;
-  sumFromLines: string;
-  rounding: string;
-  vatDateLockedHint: string;
-  filedWarning: string;
-  excludeFromPaymentOrders: string;
-  linesTab: string;
-  changedBy: string;
-  changedAt: string;
-  settings: string;
-  rateNote: string;
-  manualRate: string;
-  rateNoteRequired: string;
-  errorTitle: string;
-  closeError: string;
-  changeAccount: string;
-  currencyDisabled: string;
-  mainAccountSelect: string;
-  bankAccountInvalid: string;
-  bankCodeInvalid: string;
-  otherBankAccount: string;
-};
-
-export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
-  headerSection: "Základní údaje",
-  datesSection: "Datumy",
-  paymentSection: "Platební údaje",
-  propertiesSection: "Vlastnosti dokladu",
-  rateSection: "Kurz dokladu",
-  currencySection: "Měna",
-  periodHint: "Období se řídí datem účetního případu",
-  amountSection: "Částka dokladu",
-  amountOnlySection: "Částka",
-  book: "Kniha",
-  period: "Období",
-  number: "Číslo dokladu",
-  numberPending: "Koncept – číslo při zařazení",
-  direction: "Směr",
-  directionIn: "Příjem",
-  directionOut: "Výdej",
-  status: "Stav",
-  approved: "Schváleno",
-  yes: "Ano",
-  no: "Ne",
-  accountingDate: "Datum účetního případu",
-  issueDate: "Datum vystavení",
-  taxDate: "DUZP",
-  vatRelevant: "Vstupuje do DPH",
-  vatDate: "Datum DPH",
-  dueDate: "Splatnost",
-  externalNumber: "Externí číslo",
-  supplierNumber: "Číslo dokladu dodavatele",
-  supplierTaxDocumentNumber: "Číslo daňového dokladu",
-  documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
-  partner: "Partner",
-  ico: "IČO",
-  dic: "DIČ",
-  handedOverByIn: "Přijato od",
-  handedOverByOut: "Vyplaceno komu",
-  invalidIco: "IČO neprošlo kontrolou CZ – zkontrolujte ho.",
-  variableSymbol: "Variabilní symbol",
-  constantSymbol: "Konstantní symbol",
-  specificSymbol: "Specifický symbol",
-  bankAccount: "Bankovní účet",
-  description: "Popis",
-  currency: "Měna",
-  rate: "Kurz",
-  vatRate: "Kurz DPH",
-  vatRateSameAsDocument: "stejný jako kurz dokladu",
-  vatRateNote: "Důvod ručního kurzu DPH",
-  vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.",
-  amountTotal: "Celkem za doklad",
-  totalHome: "Celkem v {symbol}",
-  amountSum: "Celkem za doklad",
-  sumFromLines: "Sčítá se z rozpisu",
-  rounding: "Zaokrouhlení",
-  vatDateLockedHint: "Daň na výstupu patří do období DUZP",
-  filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
-  excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  linesTab: "Řádky",
-  changedBy: "Změnil",
-  changedAt: "Změněno",
-  settings: "Nastavení…",
-  rateNote: "Důvod ručního kurzu",
-  manualRate: "Ruční kurz",
-  rateNoteRequired: "Uveďte důvod ručního kurzu.",
-  errorTitle: "Doklad nelze uložit",
-  closeError: "Zavřít chybovou hlášku",
-  changeAccount: "Změnit účet",
-  currencyDisabled: "Měnu nelze změnit",
-  mainAccountSelect: "Hlavní účet",
-  bankAccountInvalid: "Číslo účtu není platné.",
-  bankCodeInvalid: "Kód banky není platný.",
-  otherBankAccount: "Jiný účet",
-};
-
-/** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
-export interface DocumentVatRateField {
-  value: number | null;
-  onChange: (next: { rate?: number | null; manual?: boolean; note?: string | null }) => void;
-  manual?: boolean;
-  note?: string | null;
-  suggestedRate?: number | null;
-  suggestedInfo?: string;
-  rateAmount?: number;
-  readOnly?: boolean;
-  /** Kurz DPH je stejný jako kurz dokladu – zobrazí se jen text. */
-  sameAsDocument?: boolean;
-}
-
-export interface DocumentFormProps {
-  title: string;
-  /** Další stavové štítky bezprostředně za stavem dokladu. */
-  titleBadges?: ReactNode;
-  description?: ReactNode;
-  identity?: DocumentIdentity;
-  directionBadge?: DocumentDirection;
-  value: DocumentHeaderValue;
-  onChange: (value: DocumentHeaderValue) => void;
-  lines: JournalLine[];
-  onLinesChange: (lines: JournalLine[]) => void;
-  books: BookOption[];
-  accounts: AccountOption[];
-  /** Účty povolené pro změnu hlavního účtu přímo v identifikačním řádku. */
-  mainAccountOptions?: AccountOption[];
-  partners?: PartnerOption[];
-  dimensions?: DimensionOption[];
-  currencies?: CurrencyOption[];
-  /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */
-  bankAccountOptions?: BankAccountOption[];
-  /** Konstantní symboly nabídnuté bez volného zadání. */
-  constantSymbolOptions?: Array<{ value: string; label: string }>;
-  /** Způsoby platby; bez propu se pole nezobrazí. */
-  paymentMethodOptions?: Array<{ value: string; label: string }>;
-  /** Firemní účty vydaných dokladů. */
-  companyBankAccountOptions?: Array<{
-    id: string;
-    label: string;
-    account: string;
-    currency: string;
-    isDefault?: boolean;
-  }>;
-  /** Založí nový účet partnera z výběru přijatého dokladu. */
-  onAddBankAccount?: () => void;
-  /** Stav plátce DPH zobrazený v pruhu akcí. */
-  vatPartnerStatus?: { status: VatStatus; checkedAt?: string };
-  /** Hotová záložka odběratele; zobrazí se jen u vydaného dokladu. */
-  counterpartyTab?: Omit<DocumentCounterpartyTabProps, "partnerId" | "readOnly">;
-  /** Hotová záložka tiskových údajů; zobrazí se jen u vydaného dokladu. */
-  printTab?: Omit<DocumentPrintTabProps, "readOnly">;
-  /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
-  bankCodes?: string[];
-  documentType?: DocumentTypeCode | string;
-  fields?: Partial<DocumentFields>;
-  editableFields?: DocumentHeaderField[];
-  isNew?: boolean;
-  mainSide?: "MD" | "D";
-  mainAccountLocked?: boolean;
-  rateAmount?: number;
-  homeCurrency: string;
-  homeCurrencySymbol?: string;
-  currencyLocked?: boolean;
-  /** Důvod, proč měnu nelze změnit; zobrazí se v tooltipu zakázaného výběru. */
-  currencyDisabledReason?: string;
-  onCreatePartner?: (seed: CounterpartySeed) => void;
-  icoLinkTarget?: IcoLinkTarget;
-  handedOverBySuggest?: DocumentSuggestConfig;
-  descriptionSuggest?: DocumentSuggestConfig;
-  accountingDateLink?: DocumentAccountingDateLink;
-  dateWarnings?: Partial<Record<DocumentDateField, string>>;
-  vat?: DocumentVatConfig;
-  /** Kurz DPH pod kurzem dokladu (jen u cizí měny, jen když jej aplikace předá). */
-  vatRateField?: DocumentVatRateField;
-  linesEditorProps?: Partial<
-    Omit<
-      JournalLinesEditorProps,
-      | "lines"
-      | "onChange"
-      | "accounts"
-      | "partners"
-      | "dimensions"
-      | "mode"
-      | "mainSide"
-      | "mainAccount"
-    >
-  >;
-  roundingLimit?: number;
-  roundingLabel?: string;
-  tabs?: DocumentFormTab[];
-  status: DocumentStatus;
-  approved?: boolean;
-  changedBy?: string;
-  changedAt?: string;
-  saveAction?: DocumentSaveAction;
-  primaryAction?: DocumentPrimaryAction;
-  moreActions?: DocumentMoreAction[];
-  settings?: DocumentSettingsAction;
-  error?: DocumentFormError;
-  /** Provozní informace pod chybou a nad bannerem jen pro čtení. */
-  notices?: ReactNode;
-  readOnly?: boolean;
-  readOnlyReason?: ReactNode;
-  readOnlyTitle?: ReactNode;
-  readOnlyActions?: ReactNode;
-  texts?: Partial<DocumentFormTexts>;
-  className?: string;
-}
+export { documentIdentityVariantForType, type DocumentIdentityVariant } from "./document-fields";
+export {
+  DEFAULT_DOCUMENT_FORM_TEXTS,
+  vsFromDocumentNumber,
+} from "./document-form/document-form-types";
+export type {
+  DocumentAccountingDateLink,
+  DocumentDateField,
+  DocumentDirection,
+  DocumentFormError,
+  DocumentFormProps,
+  DocumentFormTab,
+  DocumentFormTexts,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+  DocumentIdentity,
+  DocumentMoreAction,
+  DocumentPrimaryAction,
+  DocumentSaveAction,
+  DocumentSettingsAction,
+  DocumentSuggestConfig,
+  DocumentVatConfig,
+  DocumentVatRateField,
+} from "./document-form/document-form-types";
+import {
+  DEFAULT_DOCUMENT_FORM_TEXTS,
+  vsFromDocumentNumber,
+  type DocumentDateField,
+  type DocumentDirection,
+  type DocumentFormProps,
+  type DocumentFormTab,
+  type DocumentFormTexts,
+  type DocumentHeaderField,
+  type DocumentIdentity,
+  type DocumentMoreAction,
+  type DocumentPrimaryAction,
+  type DocumentSaveAction,
+  type DocumentSuggestConfig,
+  type DocumentVatConfig,
+} from "./document-form/document-form-types";
 
 const ReadField = ({
   id,
