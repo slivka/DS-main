@@ -6,14 +6,14 @@
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { Button } from "../../ui/button";
-import { AddressFieldGrid, type AddressFieldsValue } from "../form/address-fields";
+import { AddressFieldGrid, type AddressValue } from "../form/address-fields";
 import { CheckboxField, CheckboxGroup } from "../form/checkbox-field";
 import { Field, FieldGrid } from "../layout/RecordDialog";
 import { SectionHeading } from "../layout/section-heading";
 import { useDsTexts } from "../../../ds-texts";
 
 /** Hodnoty záložky odběratele. */
-export interface DocumentCounterpartyValue extends AddressFieldsValue {
+export interface DocumentCounterpartyValue extends AddressValue {
   /** Název odběratele. */
   name: string;
   /** Identifikační číslo. */
@@ -63,7 +63,7 @@ export function DocumentCounterpartyTab({
         <Field label={texts.ico} span={3}><Input value={value.ico} readOnly={readOnly} onChange={(event) => patch({ ico: event.target.value })} /></Field>
         <Field label={texts.dic} span={3}><Input value={value.dic} readOnly={readOnly} onChange={(event) => patch({ dic: event.target.value })} /></Field>
       </FieldGrid>
-      <AddressFieldGrid value={value} onChange={(address) => patch(address)} disabled={readOnly} />
+      <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
       <Field label={texts.email}><Input type="email" value={value.email} readOnly={readOnly} onChange={(event) => patch({ email: event.target.value })} /></Field>
     </div>
   );
@@ -108,8 +108,8 @@ export function DocumentPrintTab({ value, onChange, readOnly = false }: Document
   return (
     <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="grid gap-5 @container @min-[48rem]:grid-cols-3">
-        <CheckboxGroup legend={texts.printGeneral}>{option("showHeader", texts.printHeader)}{option("showFooter", texts.printFooter)}{option("showVatRecap", texts.printVatRecap)}{option("showNote", texts.printNote)}</CheckboxGroup>
-        <CheckboxGroup legend={texts.printItems}>{option("showColumnHeadings", texts.printColumnHeadings)}{option("showTotalsRow", texts.printTotalsRow)}{option("showPaymentSchedule", texts.printPaymentSchedule)}</CheckboxGroup>
+        <CheckboxGroup title={texts.printGeneral}>{option("showHeader", texts.printHeader)}{option("showFooter", texts.printFooter)}{option("showVatRecap", texts.printVatRecap)}{option("showNote", texts.printNote)}</CheckboxGroup>
+        <CheckboxGroup title={texts.printItems}>{option("showColumnHeadings", texts.printColumnHeadings)}{option("showTotalsRow", texts.printTotalsRow)}{option("showPaymentSchedule", texts.printPaymentSchedule)}</CheckboxGroup>
         <FieldGrid cols={1} title={texts.issuedBy}><Field label={texts.name}><Input value={value.issuedByName} readOnly={readOnly} onChange={(event) => patch({ issuedByName: event.target.value })} /></Field><Field label={texts.phone}><Input value={value.issuedByPhone} readOnly={readOnly} onChange={(event) => patch({ issuedByPhone: event.target.value })} /></Field><Field label={texts.email}><Input value={value.issuedByEmail} readOnly={readOnly} onChange={(event) => patch({ issuedByEmail: event.target.value })} /></Field></FieldGrid>
       </div>
       <div className="grid gap-3 @container @min-[48rem]:grid-cols-2">
