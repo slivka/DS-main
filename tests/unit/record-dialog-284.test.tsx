@@ -104,7 +104,9 @@ describe("RecordDialog 2.84", () => {
       </TooltipProvider>,
     );
     fireEvent.click(view.getByRole("button", { name: "Číselné řady" }));
-    expect(view.getByRole("dialog").className).toContain("sm:max-w-4xl");
+    expect(view.getByRole("dialog", { name: "Číselné řady knihy" }).className).toContain(
+      "sm:max-w-4xl",
+    );
     expect(view.getByRole("table", { name: "Číselné řady" })).toBeTruthy();
     expect(view.getByRole("columnheader", { name: "Řada" }).className).toContain("col-span-2");
     expect(view.getByRole("columnheader", { name: "Maska" }).className).toContain("col-span-4");

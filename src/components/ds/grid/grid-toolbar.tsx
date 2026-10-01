@@ -517,7 +517,7 @@ export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAc
       const action = list[0];
       if (!action || action.disabled) return;
       event.preventDefault();
-      action.onClick(event as unknown as React.MouseEvent<HTMLButtonElement>);
+      (action.onClick as (keyboardEvent: KeyboardEvent) => void)(event);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);

@@ -16,6 +16,8 @@ const { JournalLinesRecap } =
   await import("../../src/components/ds/accounting/journal-lines-recap");
 const { DocumentSettingsDialog } =
   await import("../../src/components/ds/accounting/document-settings-dialog");
+type DocumentSettingsValue =
+  import("../../src/components/ds/accounting/document-settings-dialog").DocumentSettingsValue;
 const { DsTextsProvider } = await import("../../src/ds-texts");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 type JournalLine = import("../../src/components/ds/accounting/journal-lines").JournalLine;
@@ -274,7 +276,7 @@ describe("JournalLinesRecap 2.66 – vykreslení", () => {
 
 describe("DocumentSettingsDialog 2.66 – vykreslení", () => {
   it.each(["cs", "sk"] as const)("v jazyce %s nenabízí volbu zobrazení účtu", (locale) => {
-    const value = {
+    const value: DocumentSettingsValue = {
       suggestDescription: true,
       descriptionScope: "company",
       suggestCounterparty: false,
@@ -283,7 +285,9 @@ describe("DocumentSettingsDialog 2.66 – vykreslení", () => {
       showQuantityColumns: false,
       offerPrintAfterSave: false,
       printTwoPerPage: false,
-    } as never;
+      printDocumentNumber: true,
+      copies: 1,
+    };
     render(
       <DsTextsProvider locale={locale}>
         <DocumentSettingsDialog

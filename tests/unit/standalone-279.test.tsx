@@ -36,7 +36,7 @@ const { Dialog, DialogContent, DialogTitle } = await import("../../src/component
 const originalMatchMedia = window.matchMedia;
 const setMobile = (mobile: boolean) => {
   window.innerWidth = mobile ? 500 : 1440;
-  window.matchMedia = ((query: string) => ({
+  window.matchMedia = (query: string): MediaQueryList => ({
     matches: mobile && query.includes("max-width"),
     media: query,
     addEventListener() {},
@@ -45,7 +45,7 @@ const setMobile = (mobile: boolean) => {
     removeListener() {},
     onchange: null,
     dispatchEvent: () => false,
-  })) as never;
+  });
 };
 
 beforeEach(() => {
