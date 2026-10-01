@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronRight, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
