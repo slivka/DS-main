@@ -19,6 +19,7 @@ import { CheckboxField } from "../form/checkbox-field";
 import { SectionHeading } from "../layout/section-heading";
 import { ReadOnlyBanner } from "../feedback/read-only-banner";
 import { NoticeBar } from "../feedback/notice-bar";
+import { VatStatusBadge, type VatStatus } from "../data-display/vat-status-badge";
 import { DateField } from "../form/date-field";
 import { DecimalInput } from "../form/decimal-input";
 import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../form/ico-link";
@@ -52,6 +53,14 @@ import { convertAmount } from "./currency-amount";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
+import { formatCodeName } from "../../../lib/code-format";
+import {
+  DocumentCounterpartyTab,
+  DocumentPrintTab,
+  type DocumentCounterpartyTabProps,
+  type DocumentPrintTabProps,
+  type DocumentPrintValue,
+} from "./document-detail-tabs";
 
 export type DocumentDirection = "in" | "out";
 
@@ -77,6 +86,12 @@ export type DocumentHeaderValue = {
   constantSymbol?: string | null;
   specificSymbol?: string | null;
   bankAccount?: string | null;
+  /** Identifikátor vybraného účtu partnera. */
+  partnerBankAccountId?: string | null;
+  /** Identifikátor účtu vlastní firmy. */
+  companyBankAccountId?: string | null;
+  /** Identifikátor způsobu platby. */
+  paymentMethodId?: string | null;
   description?: string | null;
   currency: string;
   rate?: number | null;
@@ -90,6 +105,8 @@ export type DocumentHeaderValue = {
   roundingAmount?: number | null;
   mainAccountId?: string | null;
   excludeFromPaymentOrders?: boolean;
+  /** Tiskové údaje uložené s dokladem. */
+  print?: DocumentPrintValue;
 };
 
 export type DocumentHeaderField = keyof DocumentHeaderValue;
@@ -319,6 +336,26 @@ export interface DocumentFormProps {
   currencies?: CurrencyOption[];
   /** Účty nabídnuté aplikací. Pole samo výchozí účet nikdy nepředvyplňuje. */
   bankAccountOptions?: BankAccountOption[];
+  /** Konstantní symboly nabídnuté bez volného zadání. */
+  constantSymbolOptions?: Array<{ value: string; label: string }>;
+  /** Způsoby platby; bez propu se pole nezobrazí. */
+  paymentMethodOptions?: Array<{ value: string; label: string }>;
+  /** Firemní účty vydaných dokladů. */
+  companyBankAccountOptions?: Array<{
+    id: string;
+    label: string;
+    account: string;
+    currency: string;
+    isDefault?: boolean;
+  }>;
+  /** Založí nový účet partnera z výběru přijatého dokladu. */
+  onAddBankAccount?: () => void;
+  /** Stav plátce DPH zobrazený v pruhu akcí. */
+  vatPartnerStatus?: { status: VatStatus; checkedAt?: string };
+  /** Hotová záložka odběratele; zobrazí se jen u vydaného dokladu. */
+  counterpartyTab?: Omit<DocumentCounterpartyTabProps, "partnerId" | "readOnly">;
+  /** Hotová záložka tiskových údajů; zobrazí se jen u vydaného dokladu. */
+  printTab?: Omit<DocumentPrintTabProps, "readOnly">;
   /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
   bankCodes?: string[];
   documentType?: DocumentTypeCode | string;
@@ -577,6 +614,13 @@ export function DocumentForm({
   dimensions = [],
   currencies,
   bankAccountOptions = [],
+  constantSymbolOptions,
+  paymentMethodOptions,
+  companyBankAccountOptions,
+  onAddBankAccount,
+  vatPartnerStatus,
+  counterpartyTab,
+  printTab,
   bankCodes,
   documentType = "ID",
   fields,
@@ -658,6 +702,8 @@ export function DocumentForm({
   const normalizedType = documentType.toUpperCase();
   const receivedDocument =
     normalizedType === "FP" || normalizedType === "ZFP" || normalizedType === "DDPOZ";
+  const issuedDocument =
+    normalizedType === "FV" || normalizedType === "ZFV" || normalizedType === "DDPZ";
   const forcedSum =
     normalizedType === "ID" ||
     normalizedType === "UZ" ||
@@ -717,21 +763,21 @@ export function DocumentForm({
   const currencySymbol = currencies?.find((item) => item.code === value.currency)?.symbol;
   const currencyOptions = (currencies ?? []).map((item) => ({
     value: item.code,
-    label: item.label ? `${item.code} - ${item.label}` : item.code,
+    label: formatCodeName(item.code, item.label),
     selectedLabel: item.code,
   }));
   const currentBook = books.find((item) => item.id === value.bookId);
   const identityVariant = identity?.variant ?? documentIdentityVariantForType(documentType);
   const effectiveIdentity: DocumentIdentity = identity ?? {
     variant: identityVariant,
-    book: currentBook ? `${currentBook.code} - ${currentBook.name}` : "—",
+    book: currentBook ? formatCodeName(currentBook.code, currentBook.name) : "—",
     period: value.accountingDate?.slice(0, 4) || "—",
     ...(f.mainAccount && value.mainAccountId && mainSide
       ? {
           account: {
             side: mainSide === "MD" ? "MD" : "DAL",
             label: account
-              ? `${formatAccountCode(account.code)} - ${account.name}`
+              ? formatCodeName(formatAccountCode(account.code), account.name)
               : formatAccountCode(value.mainAccountId),
           },
         }
@@ -912,11 +958,18 @@ export function DocumentForm({
         {warning}
       </NoticeBar>
     ));
+  const selectedPartnerBankAccount = bankAccountOptions.find(
+    (option) => (option.id ?? `${option.number}/${option.bankCode}`) === value.partnerBankAccountId,
+  );
+  const invalidBankAccountNotice = selectedPartnerBankAccount?.invalid ? (
+    <NoticeBar tone="warning">{t.invalidBankAccountWarning}</NoticeBar>
+  ) : null;
   const combinedNotices =
-    notices || dateNoticeBars.length ? (
+    notices || dateNoticeBars.length || invalidBankAccountNotice ? (
       <>
         {notices}
         {dateNoticeBars}
+        {invalidBankAccountNotice}
       </>
     ) : undefined;
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
@@ -982,18 +1035,24 @@ export function DocumentForm({
     <BankAccountField
       id="document-bankAccount"
       aria-label={t.bankAccount}
-      value={value.bankAccount ?? ""}
-      onChange={(bankAccount) => patch({ bankAccount })}
-      disabled={!can("bankAccount")}
+      value={receivedDocument ? (value.partnerBankAccountId ?? "") : (value.bankAccount ?? "")}
+      onChange={(next) =>
+        receivedDocument ? patch({ partnerBankAccountId: next }) : patch({ bankAccount: next })
+      }
+      disabled={!can("bankAccount") || (receivedDocument && !value.partnerId)}
       options={bankAccountOptions}
       bankCodes={bankCodes}
       invalidAccountText={t.bankAccountInvalid}
       invalidBankCodeText={t.bankCodeInvalid}
       otherAccountText={t.otherBankAccount}
+      selectionOnly={receivedDocument}
+      onAddAccount={receivedDocument ? onAddBankAccount : undefined}
+      addAccountText={t.addBankAccount}
+      title={receivedDocument && !value.partnerId ? t.selectSupplierFirst : undefined}
     />,
-    receivedDocument ? 14 : 6,
+    receivedDocument ? 20 : 6,
     false,
-    receivedDocument ? "@min-[40rem]:pr-3" : undefined,
+    undefined,
   );
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
@@ -1056,6 +1115,30 @@ export function DocumentForm({
       ),
     },
     ...tabs.filter((item) => item.id !== "lines"),
+    ...(issuedDocument && counterpartyTab
+      ? [
+          {
+            id: "counterparty",
+            label: t.counterpartyTab,
+            content: (
+              <DocumentCounterpartyTab
+                {...counterpartyTab}
+                partnerId={value.partnerId}
+                readOnly={readOnly}
+              />
+            ),
+          },
+        ]
+      : []),
+    ...(issuedDocument && printTab
+      ? [
+          {
+            id: "print",
+            label: t.printTab,
+            content: <DocumentPrintTab {...printTab} readOnly={readOnly} />,
+          },
+        ]
+      : []),
   ];
 
   const currencyReasonId = useId();
@@ -1072,7 +1155,7 @@ export function DocumentForm({
       id="document-currency"
       aria-readonly="true"
       aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-11 items-center rounded-md border bg-muted/40 px-3 font-mono text-sm tabular-nums"
+      className="flex h-11 items-center px-3 font-mono text-sm font-bold tabular-nums"
     >
       {value.currency}
     </div>
@@ -1183,7 +1266,17 @@ export function DocumentForm({
           >
             {field(
               "document-amountTotal",
-              <span className="whitespace-nowrap">{t.amountTotal}</span>,
+              <span className="flex min-w-0 items-center justify-between gap-2 whitespace-nowrap">
+                <span>{t.amountTotal}</span>
+                {totalMode === "sum" ? (
+                  <span
+                    className="min-w-0 truncate text-xs font-normal text-muted-foreground"
+                    title={t.sumFromLines}
+                  >
+                    {t.sumFromLines}
+                  </span>
+                ) : null}
+              </span>,
               <>
                 <div className="relative">
                   <DecimalInput
@@ -1226,14 +1319,6 @@ export function DocumentForm({
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                {totalMode === "sum" ? (
-                  <p
-                    data-slot="document-amount-sum-hint"
-                    className="mt-1 whitespace-nowrap text-xs text-muted-foreground"
-                  >
-                    {t.sumFromLines}
-                  </p>
-                ) : null}
               </>,
               6,
             )}
@@ -1369,9 +1454,63 @@ export function DocumentForm({
                 />,
               )
             : null}
-          {f.symbols ? text("constantSymbol", t.constantSymbol) : null}
+          {f.symbols
+            ? field(
+                "document-constantSymbol",
+                t.constantSymbol,
+                constantSymbolOptions ? (
+                  <OptionSelect
+                    id="document-constantSymbol"
+                    value={value.constantSymbol}
+                    onChange={(constantSymbol) => patch({ constantSymbol })}
+                    disabled={!can("constantSymbol")}
+                    options={constantSymbolOptions}
+                  />
+                ) : (
+                  <Input
+                    id="document-constantSymbol"
+                    value={value.constantSymbol ?? ""}
+                    onChange={(event) => patch({ constantSymbol: event.target.value })}
+                    disabled={!can("constantSymbol")}
+                    className="font-mono tabular-nums"
+                  />
+                ),
+              )
+            : null}
           {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
-          {f.bankAccount && !receivedDocument ? bankAccountField : null}
+          {paymentMethodOptions
+            ? field(
+                "document-paymentMethodId",
+                t.paymentMethod,
+                <OptionSelect
+                  id="document-paymentMethodId"
+                  value={value.paymentMethodId}
+                  onChange={(paymentMethodId) => patch({ paymentMethodId })}
+                  options={paymentMethodOptions}
+                  disabled={!can("paymentMethodId")}
+                />,
+              )
+            : null}
+          {f.bankAccount && receivedDocument ? bankAccountField : null}
+          {f.bankAccount && issuedDocument && companyBankAccountOptions
+            ? field(
+                "document-companyBankAccountId",
+                t.companyBankAccount,
+                <OptionSelect
+                  id="document-companyBankAccountId"
+                  value={value.companyBankAccountId}
+                  onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+                  options={companyBankAccountOptions.map((option) => ({
+                    value: option.id,
+                    label: [option.label, option.account, option.currency].join(" · "),
+                  }))}
+                  disabled={!can("companyBankAccountId")}
+                />,
+                20,
+              )
+            : f.bankAccount && !receivedDocument
+              ? bankAccountField
+              : null}
           {f.paymentOrders ? (
             <CheckboxField
               id="document-exclude-payment-orders"
@@ -1424,15 +1563,30 @@ export function DocumentForm({
         <RecordActionBar
           leftContent={
             vat?.visible ? (
-              <label className="flex items-center gap-2 text-sm font-medium">
-                <Switch
-                  checked={vatRelevant}
-                  disabled={vat.relevantReadOnly}
-                  onCheckedChange={(next) => patch({ vatRelevant: next })}
-                  aria-label={t.vatRelevant}
-                />
-                {t.vatRelevant}
-              </label>
+              <div className="flex min-w-0 items-center gap-2">
+                <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
+                  <Switch
+                    checked={vatRelevant}
+                    disabled={vat.relevantReadOnly}
+                    onCheckedChange={(next) => patch({ vatRelevant: next })}
+                    aria-label={t.vatRelevant}
+                  />
+                  {t.vatRelevant}
+                </label>
+                {vatRelevant && vatPartnerStatus ? (
+                  <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+                    <VatStatusBadge status={vatPartnerStatus.status} />
+                    {vatPartnerStatus.checkedAt ? (
+                      <span
+                        className="hidden truncate text-xs text-muted-foreground @min-[44rem]:inline"
+                        title={t.vatVerified(vatPartnerStatus.checkedAt)}
+                      >
+                        {t.vatVerified(vatPartnerStatus.checkedAt)}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
+              </div>
             ) : null
           }
           saveAction={saveAction}
@@ -1471,7 +1625,7 @@ export function DocumentForm({
               if (!selected) return;
               setSelectedIdentityAccount({
                 code: mainAccountId,
-                label: `${formatAccountCode(selected.code)} - ${selected.name}`,
+                label: formatCodeName(formatAccountCode(selected.code), selected.name),
                 sourceLabel: effectiveIdentity.account?.label,
               });
               patch({ mainAccountId });
@@ -1591,7 +1745,6 @@ export function DocumentForm({
                       "@min-[40rem]:pr-3",
                     )
                   : null}
-                {receivedDocument && f.bankAccount ? bankAccountField : null}
                 {f.externalNumber ? externalNumberField : null}
                 {suggestedText("description", t.description, descriptionSuggest, 20)}
               </div>
@@ -1600,30 +1753,34 @@ export function DocumentForm({
 
           <SectionHeading>{t.datesSection}</SectionHeading>
           <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-            {date(
-              "issueDate",
-              t.issueDate,
-              "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-            )}
-            {date(
-              "accountingDate",
-              t.accountingDate,
-              "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-            )}
-            {f.dueDate
-              ? date(
-                  "dueDate",
-                  t.dueDate,
-                  "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-                )
-              : null}
-            {showVatFields && f.taxDate
-              ? date(
-                  "taxDate",
-                  t.taxDate,
-                  "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-                )
-              : null}
+            <div className="flex flex-wrap items-start gap-3">
+              {date(
+                "issueDate",
+                t.issueDate,
+                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+              )}
+              {date(
+                "accountingDate",
+                t.accountingDate,
+                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+              )}
+              {f.dueDate
+                ? date(
+                    "dueDate",
+                    t.dueDate,
+                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                  )
+                : null}
+            </div>
+            <div className="ml-auto flex flex-wrap items-start justify-end gap-3">
+              {showVatFields && f.taxDate
+                ? date(
+                    "taxDate",
+                    t.taxDate,
+                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                  )
+                : null}
+            </div>
             {showVatFields
               ? date(
                   "vatDate",
@@ -1653,9 +1810,8 @@ export function DocumentForm({
             </div>
           ) : null}
 
-          {receivedDocument ? renderPaymentSection() : null}
+          {renderPaymentSection()}
           {renderAmountSection()}
-          {!receivedDocument ? renderPaymentSection() : null}
         </section>
 
         {allTabs.length === 1 ? (
@@ -1671,7 +1827,7 @@ export function DocumentForm({
                   <TabsTrigger
                     key={item.id}
                     value={item.id}
-                    className="h-10 gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none"
+                    className="h-10 gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 text-sm font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none"
                   >
                     {item.label}
                     {item.badge != null ? (

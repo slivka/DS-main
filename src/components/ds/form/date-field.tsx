@@ -114,7 +114,6 @@ export function DateField({
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const { dateFormat, formatDate } = preferences;
-  const resolvedPlaceholder = placeholder ?? dsTexts.date.chooseDate;
   const [open, setOpen] = React.useState(false);
   const selected = parseISO(value);
   const [text, setText] = React.useState(value ? formatDate(value) : "");
@@ -179,11 +178,7 @@ export function DateField({
             inputMode="numeric"
             disabled={disabled || link?.locked}
             readOnly={link?.locked}
-            placeholder={
-              resolvedPlaceholder === dsTexts.date.chooseDate
-                ? dateFormat.toLowerCase()
-                : resolvedPlaceholder
-            }
+            placeholder={placeholder}
             value={text}
             aria-invalid={invalid || undefined}
             aria-describedby={warning ? warningId : undefined}
@@ -216,7 +211,12 @@ export function DateField({
                 commitText();
               }
             }}
+            data-visible-icons={1 + (link && !link.locked ? 1 : 0) + (warning ? 1 : 0)}
             className={cn(
+              "min-w-[calc(7.5rem+1.9rem)]",
+              link && !link.locked && "min-w-[calc(7.5rem+3.8rem)]",
+              warning && (!link || link.locked) && "min-w-[calc(7.5rem+3.8rem)]",
+              warning && link && !link.locked && "min-w-[calc(7.5rem+5.7rem)]",
               "pr-[2.4em]",
               link && !link.locked && "pr-[4.2em]",
               warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]",

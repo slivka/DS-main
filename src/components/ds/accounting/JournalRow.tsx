@@ -86,7 +86,7 @@ function RowNumberCell({
   const pinned = isPinnedLine(line);
   return (
     <TableCell key="row" className="journal-row-cell text-muted-foreground">
-      <div className="flex items-center justify-start gap-[0.25em]">
+      <div className="flex items-center justify-center gap-[0.125rem]">
         {pinned ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -101,7 +101,7 @@ function RowNumberCell({
         ) : (
           handle
         )}
-        <span className="min-w-[3ch] text-right tabular-nums">{pinned ? "" : rowIndex + 1}</span>
+        <span className="min-w-[2ch] text-center tabular-nums">{pinned ? "" : rowIndex + 1}</span>
         {!pinned ? (
           <button
             type="button"

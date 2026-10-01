@@ -31,7 +31,7 @@ export const PageTabs = React.forwardRef<HTMLDivElement, PageTabsProps>(function
             key={item.value}
             value={item.value}
             disabled={item.disabled}
-            className="relative h-10 rounded-none border-b-2 border-transparent px-3 py-2 text-base font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none"
+            className="relative h-10 rounded-none border-b-2 border-transparent px-3 py-2 text-sm font-medium shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-primary data-[state=active]:shadow-none"
           >
             <span className="grid">
               <span className="col-start-1 row-start-1">{item.label}</span>

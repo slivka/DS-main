@@ -22,7 +22,7 @@ describe("account columns 2.66", () => {
     ]);
     expect(cols[0]?.value?.({ debit: "321100", credit: "311200", account: "" })).toBe("321.100");
     expect(cols[1]?.value?.({ debit: "321100", credit: "311200", account: "" })).toBe(
-      "321.100 - Závazky",
+      "321.100 – Závazky",
     );
   });
 
@@ -37,7 +37,7 @@ describe("account columns 2.66", () => {
     expect(cols.map((c) => c.id)).toEqual(["account", "accountName"]);
     expect(cols[0]?.value?.({ debit: "", credit: "", account: "321100" })).toBe("321.100");
     expect(cols[1]?.value?.({ debit: "", credit: "", account: "321100" })).toBe(
-      "321.100 - Závazky",
+      "321.100 – Závazky",
     );
   });
 });

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { OptionSelect } from "../form/option-select";
 import { FieldValue } from "../form/field-value";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 
 export type DocumentBookType = "invoiceIn" | "invoiceOut" | "bank" | "cash" | "internal" | "other";
 
@@ -31,7 +32,7 @@ export function formatBook(
   typeLabels: Record<DocumentBookType, string> = DOCUMENT_BOOK_TYPE_LABELS,
 ) {
   if (!book) return "";
-  const base = `${book.code} – ${book.name}`;
+  const base = formatCodeName(book.code, book.name);
   return book.type ? `${base} (${typeLabels[book.type]})` : base;
 }
 

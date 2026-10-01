@@ -12,6 +12,7 @@ import {
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 import type { VatCodeOption } from "./journal-lines";
 
 export interface VatCodeSelectProps {
@@ -40,7 +41,9 @@ export function filterVatCodes(
   const list = codes.filter((code) => !code.inactive || code.id === selectedId);
   const q = query.trim().toLocaleLowerCase("cs");
   if (!q) return list;
-  return list.filter((code) => `${code.code} ${code.name}`.toLocaleLowerCase("cs").includes(q));
+  return list.filter((code) =>
+    formatCodeName(code.code, code.name).toLocaleLowerCase("cs").includes(q),
+  );
 }
 
 /** Výběr kódu DPH – kód a název; v buňce gridu se otevírá hned při vstupu do editace a psaní filtruje. */

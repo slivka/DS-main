@@ -136,6 +136,6 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
       widths: { amount: 20, text: 40 },
     });
     expect(layout.hiddenColumnIds).toEqual([]);
-    expect(layout.requiredWidthRem).toBe(58.75);
+    expect(layout.requiredWidthRem).toBe(58.25);
   });
 });

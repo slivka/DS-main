@@ -11,6 +11,7 @@ import {
   CommandList,
 } from "../../ui/command";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 
 export type LegalFormOption = { code: string; name: string };
 
@@ -54,7 +55,7 @@ export function LegalFormField({
           className={cn("hover-surface w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !current && "text-muted-foreground")}>
-            {selected ? `${selected.code} – ${selected.name}` : placeholder}
+            {selected ? formatCodeName(selected.code, selected.name) : placeholder}
           </span>
           <ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>

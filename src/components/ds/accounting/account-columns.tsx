@@ -1,5 +1,6 @@
 import type { DataGridColumn } from "../grid/DataGrid";
 import { formatAccountCode, normalizeAccountCode } from "./account-code";
+import { formatCodeName } from "../../../lib/code-format";
 
 export interface AccountColumnsOptions<Row> {
   debit: (row: Row) => string | null;
@@ -30,7 +31,7 @@ function accountText(code: string | null, accountName: (code: string) => string 
   if (!normalized) return "";
   const formatted = formatAccountCode(normalized);
   const name = accountName(normalized);
-  return name ? `${formatted} - ${name}` : formatted;
+  return formatCodeName(formatted, name);
 }
 
 function AccountColumnValue({ value }: { value: string }) {

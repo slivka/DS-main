@@ -12,6 +12,7 @@ import { DataGrid, type DataGridColumn } from "../grid/DataGrid";
 import { accountColumns } from "./account-columns";
 import { useDsTexts } from "../../../ds-texts";
 import { formatAccountCode } from "./account-code";
+import { formatCodeName } from "../../../lib/code-format";
 
 export interface JournalRecapTab {
   id: string;
@@ -134,7 +135,7 @@ export function JournalLinesRecap({
     const visited = new Set<string>();
     while (current && !visited.has(current.id)) {
       visited.add(current.id);
-      parts.unshift(`${current.code ? `${current.code} - ` : ""}${current.name}`);
+      parts.unshift(formatCodeName(current.code, current.name));
       current = current.parentId ? dimensionMap.get(current.parentId) : undefined;
     }
     return parts.join(" / ");
@@ -216,7 +217,7 @@ export function JournalLinesRecap({
       const code = id.startsWith("debit") ? row.debit : row.credit;
       if (!code) return "";
       return id.endsWith("Name")
-        ? `${formatAccountCode(code)}${accountMap.get(code) ? ` - ${accountMap.get(code)}` : ""}`
+        ? formatCodeName(formatAccountCode(code), accountMap.get(code))
         : formatAccountCode(code);
     };
     return [
@@ -297,12 +298,11 @@ export function JournalLinesRecap({
       {
         id: "code",
         label: t.vatCode,
-        value: (row) => `${row.code}${row.name ? ` – ${row.name}` : ""}`,
+        value: (row) => formatCodeName(row.code, row.name),
         total: () => t.total,
         render: (row) => (
           <>
-            {row.code}
-            {row.name ? ` – ${row.name}` : ""}
+            {formatCodeName(row.code, row.name)}
             {row.selfAssessment ? (
               <span className="block text-xs text-muted-foreground">{t.selfAssessmentNote}</span>
             ) : null}
@@ -443,6 +443,7 @@ export function JournalLinesRecap({
                 paginated={false}
                 showTotalRow
                 plain
+                hideToolbar
               />
             </TabsContent>
             <TabsContent value="jobs" className="m-0">
@@ -458,6 +459,7 @@ export function JournalLinesRecap({
                 paginated={false}
                 showTotalRow
                 plain
+                hideToolbar
               />
             </TabsContent>
             {vatSummary ? (
@@ -474,6 +476,7 @@ export function JournalLinesRecap({
                   paginated={false}
                   showTotalRow
                   plain
+                  hideToolbar
                 />
               </TabsContent>
             ) : null}

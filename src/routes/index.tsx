@@ -12,6 +12,8 @@ import {
   PageHeader,
   StatusBadge,
   StatusDot,
+  DocumentDirectionBadge,
+  GridSegmentedToggle,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,6 +71,7 @@ function OverviewPage() {
   const [amount, setAmount] = useState<string>("1234567.89");
   const [decimal, setDecimal] = useState<string>("42.5");
   const [option, setOption] = useState("a");
+  const [roundingMode, setRoundingMode] = useState("a");
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Design systém", to: "/" }, { label: "Přehled" }]}>
@@ -123,6 +126,37 @@ function OverviewPage() {
           <Button variant="secondary">Sekundární</Button>
           <Button variant="ghost">Nenápadné</Button>
           <Button variant="destructive">Odstranit</Button>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Zaoblení">
+        <div data-slot="radius-showcase" className="flex flex-wrap items-center gap-3">
+          <Button>Tlačítko</Button>
+          <Input aria-label="Pole v ukázce zaoblení" className="w-40" />
+          <OptionSelect
+            value="a"
+            onChange={() => {}}
+            className="w-40"
+            options={[{ value: "a", label: "Výběr" }]}
+          />
+          <GridSegmentedToggle
+            ariaLabel="Režim"
+            value={roundingMode}
+            defaultValue="a"
+            onChange={setRoundingMode}
+            options={[
+              { value: "a", label: "A" },
+              { value: "b", label: "B" },
+            ]}
+          />
+          <DocumentStatusBadge status="posted" />
+          <DocumentDirectionBadge direction="in" />
+          <Button size="icon" variant="outline" aria-label="Kalendář">
+            ◫
+          </Button>
+          <Button size="icon" variant="outline" aria-label="Součet">
+            Σ
+          </Button>
         </div>
       </ShowcaseSection>
 

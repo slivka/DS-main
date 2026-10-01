@@ -78,7 +78,7 @@ describe("formulářové prvky dialogu záznamu", () => {
     expect(html).toContain('data-align="input"');
     expect(html).toContain("min-h-[var(--control-h)]");
     expect(html).toContain("size-4");
-    expect(html).toContain("pt-5");
+    expect(html).toContain("pt-[calc(1.25rem+0.25rem)]");
   });
 });
 

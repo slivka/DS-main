@@ -7,6 +7,7 @@
 import { arrayMove } from "@dnd-kit/sortable";
 
 import { formatAccountCode } from "./account-code";
+import { formatCodeName } from "../../../lib/code-format";
 import type { JournalLine, JournalLineColumn } from "./journal-lines";
 import type { JournalEditorTexts } from "../../../ds-texts";
 
@@ -122,7 +123,7 @@ export const roundJournalAmount = (value: number) =>
   Math.round((value + Number.EPSILON) * 100) / 100;
 /** Účet ve tvaru 221.001, rozšířená forma i s názvem. */
 export const formatJournalAccountDisplay = (code: string, name?: string, extended = false) =>
-  `${formatAccountCode(code)}${name && extended ? ` - ${name}` : ""}`;
+  formatCodeName(formatAccountCode(code), extended ? name : undefined);
 /** Částka řádku z množství a ceny za MJ; bez obou hodnot `undefined`. */
 export const calculateLineAmount = (quantity?: number, unitPrice?: number) =>
   quantity != null && unitPrice != null ? roundJournalAmount(quantity * unitPrice) : undefined;

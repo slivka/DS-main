@@ -41,7 +41,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
         data-align={align}
         className={cn(
           align === "input" &&
-            "@min-[40rem]:pt-5 @min-[40rem]:[[data-field-has-label=true]_&]:pt-0",
+            "@min-[40rem]:pt-[calc(1.25rem+0.25rem)] @min-[40rem]:[[data-field-has-label=true]_&]:pt-0",
           className,
         )}
       >
@@ -58,7 +58,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
             disabled={disabled}
             aria-describedby={hintId}
             onCheckedChange={(value) => onCheckedChange(value === true)}
-            className={cn("size-4", align === "input" && "mt-[calc((var(--control-h)-1rem)/2)]")}
+            className="mt-[0.125rem] size-4"
             {...props}
           />
           <div className="min-w-0">
@@ -156,14 +156,14 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
       <div
         data-slot="switch-field"
         aria-busy={busy || undefined}
-        className={cn("flex items-center justify-between gap-4 py-1", className)}
+        className={cn("grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 py-1", className)}
       >
         <div className="min-w-0 space-y-0.5">
           <Label
             htmlFor={controlId}
             title={typeof label === "string" ? label : undefined}
             className={cn(
-              "font-medium",
+              "whitespace-normal font-medium leading-5",
               inactive ? "cursor-not-allowed" : "cursor-pointer",
               disabled && "opacity-60",
             )}
@@ -183,7 +183,7 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
           disabled={inactive}
           aria-describedby={hintId}
           onCheckedChange={onCheckedChange}
-          className={cn(busy && "animate-pulse")}
+          className={cn("mt-[0.125rem]", busy && "animate-pulse")}
           {...props}
         />
       </div>

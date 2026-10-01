@@ -23,6 +23,7 @@
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
 - Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; akce v `RecordActionBar`.
 - Karta: Uložit a akce vždy v `RecordActionBar`, nikdy volně pod poli.
+- Kód a název formátujte pouze přes `formatCodeName`; proč: UI, gridy a exporty musí mít jeden typografický standard.
 
 ## Jazyk knihovny (2.61.0)
 

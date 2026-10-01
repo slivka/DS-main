@@ -54,7 +54,7 @@ describe("JournalLinesEditor 2.49", () => {
   it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu")).toBe("501.100");
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu", true)).toBe(
-      "501.100 - Spotřeba materiálu",
+      "501.100 – Spotřeba materiálu",
     );
   });
   it("ve sdíleném režimu zobrazí společné sloupce a obnoví jejich validaci", () => {

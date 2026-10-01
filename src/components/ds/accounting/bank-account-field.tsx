@@ -7,11 +7,15 @@ import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
 
 export interface BankAccountOption {
+  /** Stabilní identifikátor účtu partnera. */
+  id?: string;
   number: string;
   bankCode: string;
   label?: string;
   currency?: string;
   default?: boolean;
+  /** Neplatný účet se nenabízí; pokud je vybraný, zůstane viditelný. */
+  invalid?: boolean;
 }
 
 export interface BankAccountFieldProps extends Omit<
@@ -26,6 +30,12 @@ export interface BankAccountFieldProps extends Omit<
   invalidBankCodeText?: string;
   otherAccountText?: string;
   className?: string;
+  /** Režim pouze výběru bez volného zadání. */
+  selectionOnly?: boolean;
+  /** Poslední akce v nabídce. */
+  onAddAccount?: () => void;
+  /** Text akce přidání účtu. */
+  addAccountText?: string;
 }
 
 const OTHER = "__other_bank_account__";
@@ -45,6 +55,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       readOnly,
       id,
       className,
+      selectionOnly = false,
+      onAddAccount,
+      addAccountText = "Přidat účet…",
       onBlur,
       ...props
     },
@@ -54,7 +67,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     const resolvedInvalidAccountText = invalidAccountText ?? texts.bankAccountInvalid;
     const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
     const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
-    const optionValues = options.map((option) => `${option.number}/${option.bankCode}`);
+    const optionValue = (option: BankAccountOption) =>
+      option.id ?? `${option.number}/${option.bankCode}`;
+    const optionValues = options.map(optionValue);
     const optionValuesKey = optionValues.join("\u0000");
     const selectedOption = optionValues.includes(value);
     const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
@@ -73,7 +88,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       lastEmittedRef.current = next;
       onChange(next);
     };
-    const manual = options.length === 0 || otherSelected || (Boolean(value) && !selectedOption);
+    const manual =
+      !selectionOnly &&
+      (options.length === 0 || otherSelected || (Boolean(value) && !selectedOption));
     const compact = value.replace(/\s/g, "");
     const [accountPart = "", bankCode = ""] = compact.split("/");
     const parsed = parseCzAccount(accountPart);
@@ -99,6 +116,10 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             id={manual ? undefined : id}
             value={manual ? OTHER : value}
             onChange={(next) => {
+              if (next === OTHER && onAddAccount) {
+                onAddAccount();
+                return;
+              }
               if (next === OTHER) {
                 setOtherSelected(true);
                 return;
@@ -111,14 +132,21 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             ariaLabel={props["aria-label"]}
             disabled={disabled || readOnly}
             options={[
-              ...options.map((option) => ({
-                value: `${option.number}/${option.bankCode}`,
-                label: [`${option.number}/${option.bankCode}`, option.label, option.currency]
-                  .filter(Boolean)
-                  .join(" - "),
-                selectedLabel: `${option.number}/${option.bankCode}`,
-              })),
-              { value: OTHER, label: resolvedOtherAccountText },
+              ...options
+                .filter((option) => !option.invalid || optionValue(option) === value)
+                .map((option) => ({
+                  value: optionValue(option),
+                  label: [option.label, `${option.number}/${option.bankCode}`, option.currency]
+                    .filter(Boolean)
+                    .join(" · "),
+                  selectedLabel: `${option.number}/${option.bankCode}`,
+                  inactive: option.invalid,
+                })),
+              ...(onAddAccount
+                ? [{ value: OTHER, label: addAccountText }]
+                : selectionOnly
+                  ? []
+                  : [{ value: OTHER, label: resolvedOtherAccountText }]),
             ]}
           />
         ) : null}

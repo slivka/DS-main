@@ -133,8 +133,8 @@ describe("journal-column-layout – šířky sloupců", () => {
       zoom: 2,
       effectiveWidthRem: 100,
     });
-    expect(widths.row).toBe(9.5);
+    expect(widths.row).toBe(8.5);
     expect(widths.amount).toBe(20);
-    expect(widths.text).toBe(100 - 29.5 - 0.25);
+    expect(widths.text).toBe(100 - 28.5 - 0.25);
   });
 });

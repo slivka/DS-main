@@ -11,7 +11,7 @@ export type JournalLinesMode = "internal" | "mainAccount";
 
 /** Výchozí šířky sloupců v rem při zoomu 100 %. */
 export const JOURNAL_COLUMN_WIDTHS: Record<ColumnId, number> = {
-  row: 4.75,
+  row: 4.25,
   text: 15,
   quantity: 7,
   unitId: 5,

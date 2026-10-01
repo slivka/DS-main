@@ -8,6 +8,7 @@ import type * as React from "react";
 
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { DecimalInput } from "../form/decimal-input";
@@ -146,7 +147,7 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
             disabled={readOnly}
             options={(vat?.pdpSubjects ?? []).map((item) => ({
               value: item.code,
-              label: `${item.code} – ${item.name}`,
+              label: formatCodeName(item.code, item.name),
             }))}
             onChange={(value) => editor.patch(line.id, { pdpSubjectCode: value || null })}
           />
