@@ -4,6 +4,7 @@
  * Nesmí: držet vlastní hodnotu ani rozhodovat o druhu dokladu.
  */
 import type { ReactNode } from "react";
+import type { DsTexts } from "../../../../ds-texts";
 import { Fragment } from "react";
 import { Input } from "../../../ui/input";
 import { CheckboxField } from "../../form/checkbox-field";
@@ -28,7 +29,7 @@ type FieldRenderer = (
 ) => ReactNode;
 export interface DocumentPaymentSectionProps {
   f: DocumentFields;
-  t: DocumentFormTexts;
+  t: DocumentFormTexts & Pick<DsTexts["documentForm"], "paymentMethod" | "companyBankAccount">;
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (key: DocumentHeaderField) => boolean;
