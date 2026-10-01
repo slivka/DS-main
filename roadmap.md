@@ -1,9 +1,9 @@
 ## DS 2.83.0 – Úklid 5b + 5d + 5e
-- [ ] Behavior testy DataGrid / TreeGrid / AppShell proti dnešnímu kódu
-- [ ] GridFrame, useRowActions, GridBaseProps; doménová ID sloupců jako exportované výchozí konstanty
-- [ ] Virtualizace pro paginated={false} (test 5 000 řádků, výběr, groupTotals, sticky hlavička)
-- [ ] AppShell: useGlobalShortcuts (1 posluchač), efekty se závislostmi, rozdělení na části ≤ 500 ř.
-- [ ] CHANGELOG 2.83.0, kontroly
+- [x] Behavior testy DataGrid / TreeGrid / AppShell proti dnešnímu kódu
+- [x] GridFrame, useRowActions, GridBaseProps; doménová ID sloupců jako exportované výchozí konstanty
+- [x] Virtualizace pro paginated={false} (test 5 000 řádků, výběr, groupTotals, sticky hlavička)
+- [x] AppShell: useGlobalShortcuts (1 posluchač), efekty se závislostmi, rozdělení na části ≤ 500 ř.
+- [x] CHANGELOG 2.83.0, kontroly
 ## DS 2.83.0 – Úklid 5a + 5c
 - [x] Behavior testy editoru řádků proti původnímu kódu, rozdělení JournalLinesEditor beze změny API
 - [x] Texty editoru do DsTexts (CS + SK), ds-texts rozdělen na cs / sk / types / index
