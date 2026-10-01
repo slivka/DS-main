@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronDown, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -94,7 +94,7 @@ export function UnitSelect({
             {selected?.code ?? placeholder}
           </span>
           {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
-          <ChevronsUpDown className="size-3.5 shrink-0 opacity-50" />
+          <ChevronDown className="size-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">

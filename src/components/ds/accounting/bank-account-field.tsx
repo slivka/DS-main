@@ -140,7 +140,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
               setTouched(true);
               onBlur?.(event);
             }}
-            className={cn("h-9 font-mono tabular-nums", options.length && "mt-2")}
+            className={cn("h-[var(--control-h)] font-mono tabular-nums", options.length && "mt-2")}
           />
         ) : null}
         {error ? (

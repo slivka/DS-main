@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronRight, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -197,7 +197,7 @@ export function DimensionSelect({
             suppressFocusOpen.current = false;
             pointerDown.current = false;
           }}
-          className={cn("h-9 w-full justify-between font-normal", className)}
+          className={cn("h-[var(--control-h)] w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
             {selected ? label(selected) : placeholder}
@@ -205,7 +205,7 @@ export function DimensionSelect({
               <InactiveTag label={inactiveLabel} className="ml-2" />
             ) : null}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+          <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">

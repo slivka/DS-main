@@ -78,7 +78,7 @@ export function OptionSelect({
       <SelectTrigger
         id={id}
         aria-label={ariaLabel}
-        className={cn("h-9 w-full min-w-0", className, triggerClassName)}
+        className={cn("h-[var(--control-h)] w-full min-w-0", className, triggerClassName)}
       >
         <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
       </SelectTrigger>
