@@ -108,7 +108,7 @@ export function FieldGrid({ cols = 2, title, hint, className = "", children }: F
     cols === 1
       ? "grid-cols-1"
       : cols === 12
-        ? "grid-cols-1 @min-[40rem]:grid-cols-12"
+        ? "grid-cols-2 @min-[40rem]:grid-cols-12"
         : cols === 20
           ? "grid-cols-1 @min-[40rem]:grid-cols-20"
           : cols === 3

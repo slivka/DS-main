@@ -266,7 +266,7 @@ describe("Partneři D – formulářové rozvržení 2.52.0", () => {
         </Field>
       </FieldGrid>,
     );
-    expect(html).toContain("grid-cols-1");
+    expect(html).toContain("grid-cols-2");
     expect(html).toContain("@min-[40rem]:grid-cols-12");
     expect(html).toContain("@min-[40rem]:col-span-4");
   });
