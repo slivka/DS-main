@@ -9,12 +9,21 @@ import { VatStatusBadge } from "../../data-display/vat-status-badge";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
-import { documentFieldsForType, partnerLabelForType, type DocumentFields } from "../document-fields";
+import {
+  documentFieldsForType,
+  partnerLabelForType,
+  type DocumentFields,
+} from "../document-fields";
 import { BankAccountField } from "../bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
-import { DEFAULT_DOCUMENT_FORM_TEXTS, type DocumentFormProps, type DocumentHeaderField, type DocumentHeaderValue } from "./document-form-types";
+import {
+  DEFAULT_DOCUMENT_FORM_TEXTS,
+  type DocumentFormProps,
+  type DocumentHeaderField,
+  type DocumentHeaderValue,
+} from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
@@ -129,7 +138,8 @@ export function DocumentForm({
     return () => observer.disconnect();
   }, []);
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
-  const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
+  const can = (key: DocumentHeaderField) =>
+    !readOnly && (!editableFields || editableFields.includes(key));
   const {
     receivedDocument,
     issuedDocument,
@@ -446,7 +456,8 @@ export function DocumentForm({
             showVatFields={showVatFields}
             vat={vat}
             filedVatDateWarning={filedVatDateWarning}
-            dateWarnings={dateWarnings} date={date}
+            dateWarnings={dateWarnings}
+            date={date}
           />
           {!f.partner ? (
             <div className="mt-3 grid grid-cols-20 gap-3">
@@ -464,7 +475,9 @@ export function DocumentForm({
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
-            bankAccountField={bankAccountField} field={field} text={text}
+            bankAccountField={bankAccountField}
+            field={field}
+            text={text}
           />
           <DocumentAmountSection
             t={t}
@@ -481,13 +494,15 @@ export function DocumentForm({
             rateAmount={rateAmount}
             vatRateField={vatRateField}
             readOnly={readOnly}
-            currencyControl={currencyControl} field={field}
+            currencyControl={currencyControl}
+            field={field}
           />
         </section>
         <DocumentFormTabs
           tabs={allTabs}
           value={tab}
-          onValueChange={setTab} linesLabel={t.linesTab}
+          onValueChange={setTab}
+          linesLabel={t.linesTab}
         />
         <DocumentChangeMeta
           changedBy={changedBy}
