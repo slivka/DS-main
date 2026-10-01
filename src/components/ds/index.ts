@@ -157,6 +157,7 @@ export * from "./accounting/journal-vat";
 export * from "./accounting/journal-lines-editor";
 export * from "./accounting/journal-lines-recap";
 export * from "./accounting/document-form";
+export * from "./accounting/document-detail-tabs";
 export * from "./accounting/document-settings-dialog";
 export * from "./accounting/document-fields";
 export * from "./accounting/payment-schedule";

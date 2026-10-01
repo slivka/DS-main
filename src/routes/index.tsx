@@ -142,6 +142,7 @@ function OverviewPage() {
           <GridSegmentedToggle
             ariaLabel="Režim"
             value={roundingMode}
+            defaultValue="a"
             onChange={setRoundingMode}
             options={[{ value: "a", label: "A" }, { value: "b", label: "B" }]}
           />
