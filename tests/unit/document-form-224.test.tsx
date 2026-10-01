@@ -140,8 +140,7 @@ describe("DocumentForm 2.24.0", () => {
       />,
     );
     expect((html.match(/Zařazen/g) ?? []).length).toBe(1);
-    const source = readFileSync("src/components/ds/accounting/document-form.tsx", "utf8");
-    expect(source).toContain("action.disabled && action.disabledReason");
-    expect(source).not.toContain("title={action.disabledReason}");
+    expect(html).toContain("Doklad je uzamčen.");
+    expect(html).toContain('aria-disabled="true"');
   });
 });

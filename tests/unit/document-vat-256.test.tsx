@@ -199,8 +199,8 @@ describe("DocumentForm 2.56.0", () => {
     ).toContain("stejný jako kurz dokladu");
   });
   it("odznak Řádky počítá jen řádky v gridu", () => {
-    const src = squashSrc(readFileSync("src/components/ds/accounting/document-form.tsx", "utf8"));
-    expect(src).toContain("badge: vatTotals.visibleLineCount");
+    const html = form({ linesEditorProps: { vat } });
+    expect(html).toMatch(/Řádky[\s\S]*>1</);
   });
 });
 
