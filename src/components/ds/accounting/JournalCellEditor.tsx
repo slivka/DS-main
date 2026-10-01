@@ -11,9 +11,7 @@ import { DimensionSelect } from "./dimension-select";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
 import {
-  DIMENSION_COLUMNS,
   NUMERIC_COLUMNS,
-  PARTNER_COLUMNS,
   VAT_NUMERIC,
   VS_COLUMNS,
   accountDataColumn,
@@ -219,5 +217,3 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
     />
   );
 }
-
-export { DIMENSION_COLUMNS, PARTNER_COLUMNS };
