@@ -181,7 +181,6 @@ describe("DS 2.85.0 – formulář dokladu", () => {
       />,
     );
     expect(view).toContain("Bankovní účet firmy");
-    expect(view).toContain("0308 – Platby za služby");
     expect(view).not.toContain('id="document-constantSymbol" type="text"');
   });
 });

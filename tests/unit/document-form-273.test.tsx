@@ -72,8 +72,7 @@ describe("DocumentForm 2.73", () => {
     expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain("9999");
     expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
     fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet firmy" }));
-    await waitFor(() => expect(document.body.querySelector('[role="option"]')).toBeTruthy());
-    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
+    fireEvent.click(await view.findByRole("option", { name: /Hlavní/ }));
     expect(patches.at(-1)?.companyBankAccountId).toBe("company-1");
   });
 
@@ -290,8 +289,7 @@ describe("BankAccountField 2.73", () => {
     fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     expect(trigger.hasAttribute("disabled")).toBe(false);
-    await waitFor(() => expect(document.body.querySelector('[role="option"]')).toBeTruthy());
-    fireEvent.click(document.body.querySelector('[role="option"]') as HTMLElement);
+    fireEvent.click(await view.findByRole("option", { name: "Přidat účet…" }));
     expect(onAddAccount).toHaveBeenCalledTimes(1);
   });
 
