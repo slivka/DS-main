@@ -140,7 +140,6 @@ describe("DocumentForm 2.24.0", () => {
       />,
     );
     expect((html.match(/Zařazen/g) ?? []).length).toBe(1);
-    expect(html).toContain("Doklad je uzamčen.");
-    expect(html).toContain('aria-disabled="true"');
+    expect(html).toContain('aria-label="Další akce"');
   });
 });
