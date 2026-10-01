@@ -1,10 +1,8 @@
-import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ArrowDownLeft, ArrowUpRight, Pencil, Settings, Sigma } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { Settings } from "lucide-react";
 
 import { Input } from "../../../ui/input";
 import { Switch } from "../../../ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../ui/tabs";
-import { Textarea } from "../../../ui/textarea";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
@@ -15,18 +13,11 @@ import {
   type RecordPrimaryAction,
   type RecordSaveAction,
 } from "../../layout/record-action-bar";
-import { CheckboxField } from "../../form/checkbox-field";
-import { SectionHeading } from "../../layout/section-heading";
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
-import { NoticeBar } from "../../feedback/notice-bar";
 import { VatStatusBadge, type VatStatus } from "../../data-display/vat-status-badge";
-import { DateField } from "../../form/date-field";
-import { DecimalInput } from "../../form/decimal-input";
-import { IcoLink, isValidCzIco, type IcoLinkTarget } from "../../form/ico-link";
+import { isValidCzIco } from "../../form/ico-link";
 import { OptionSelect } from "../../form/option-select";
-import { RateField } from "../../form/rate-field";
-import { SuggestInput } from "../../form/suggest-input";
-import { AccountSelect, type AccountOption } from "../account-select";
+import type { AccountOption } from "../account-select";
 import { formatAccountCode } from "../account-code";
 import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
@@ -40,16 +31,9 @@ import {
   type DocumentTypeCode,
 } from "../document-fields";
 
-import { JournalLinesEditor, type JournalLinesEditorProps } from "../journal-lines-editor";
-import type { JournalLine } from "../journal-lines";
-import { computeJournalTotals } from "../journal-vat";
 import type { DimensionOption } from "../dimension-select";
 import type { PartnerOption } from "../partner-select";
-import { CounterpartyField, type CounterpartySeed } from "../counterparty-field";
-import { VsField } from "../vs-field";
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
-import { convertAmount } from "../currency-amount";
-import { formatAmount } from "../../../../lib/format";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -110,7 +94,7 @@ import { DocumentBasicSection } from "./BasicSection";
 import { DocumentAmountSection } from "./AmountSection";
 import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentDirectionBadge } from "./document-form-actions";
-import { DocumentIdentityLine, ReadField } from "./document-identity-line";
+import { DocumentIdentityLine } from "./document-identity-line";
 
 export function DocumentForm({
   title,
