@@ -14,7 +14,6 @@ import { Button } from "../../ui/button";
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
 import { PageTabs } from "./page-tabs";
-import { TabsContent } from "../../ui/tabs";
 import { StatusBadge } from "../data-display/status-badge";
 import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
@@ -54,12 +53,17 @@ export interface RecordDialogProps {
   busy?: boolean;
   children?: ReactNode;
   extraActions?: ReactNode;
+  /** Šířka dialogu: `md` odpovídá původnímu `wide`, `lg` je pro širší formuláře. */
+  size?: "md" | "lg";
+  /** @deprecated od 2.84.0; použijte `size="md"`. */
   wide?: boolean;
   contentClassName?: string;
   sidePanel?: ReactNode;
   sidePanelLabel?: string;
   sidePanelTitle?: ReactNode;
   headerExtra?: ReactNode;
+  /** Stavové štítky zobrazené přímo vedle titulku. */
+  titleBadges?: ReactNode;
   sidePanelExtra?: ReactNode;
   /** Detail bez editace: skryje Uložit a ponechá pouze Zavřít. */
   readOnly?: boolean;
@@ -125,12 +129,14 @@ export function RecordDialog({
   busy,
   children,
   extraActions,
+  size,
   wide,
   contentClassName,
   sidePanel,
   sidePanelLabel,
   sidePanelTitle,
   headerExtra,
+  titleBadges,
   sidePanelExtra,
   readOnly = false,
   tabs,
@@ -173,6 +179,7 @@ export function RecordDialog({
       }}
     />
   ) : null;
+  const resolvedSize = size ?? (wide ? "md" : undefined);
   const [panelOpen, setPanelOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs?.[0]?.value ?? "");
   const pane = usePane();
@@ -233,7 +240,8 @@ export function RecordDialog({
           }}
         >
           {children}
-          {tabs?.length ? (
+          {tabs?.length === 1 ? tabs[0]?.content : null}
+          {tabs && tabs.length > 1 ? (
             <PageTabs
               value={activeTab}
               onValueChange={setActiveTab}
@@ -244,11 +252,25 @@ export function RecordDialog({
               }))}
               listLabel={dsTexts.recordDialog.detailSections}
             >
-              {tabs.map((tab) => (
-                <TabsContent key={tab.value} value={tab.value} className="mt-3">
-                  {tab.content}
-                </TabsContent>
-              ))}
+              <div className="mt-3 grid">
+                {tabs.map((tab) => {
+                  const active = tab.value === activeTab;
+                  return (
+                    <div
+                      key={tab.value}
+                      role="tabpanel"
+                      aria-hidden={!active}
+                      inert={!active}
+                      className={cn(
+                        "col-start-1 row-start-1 min-w-0",
+                        !active && "invisible pointer-events-none",
+                      )}
+                    >
+                      {tab.content}
+                    </div>
+                  );
+                })}
+              </div>
             </PageTabs>
           ) : null}
           <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
@@ -301,7 +323,11 @@ export function RecordDialog({
         <div
           role="dialog"
           aria-modal="true"
-          className={`@container relative w-full max-w-3xl rounded-lg border bg-background p-6 shadow-lg ${contentClassName ?? ""}`}
+           className={cn(
+             "@container relative w-full rounded-lg border bg-background p-6 shadow-lg",
+             resolvedSize === "lg" ? "max-w-4xl" : "max-w-3xl",
+             contentClassName,
+           )}
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-4 space-y-1">
@@ -310,9 +336,14 @@ export function RecordDialog({
                 {title}
               </span>
               {statusBadge}
+              {titleBadges}
             </h2>
             {description ? <p className="sr-only">{description}</p> : null}
-            {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
+            {headerExtra ? (
+              <div className="flex items-center pt-1 text-[0.78125rem] text-muted-foreground">
+                {headerExtra}
+              </div>
+            ) : null}
           </div>
           {inner}
         </div>
@@ -324,9 +355,13 @@ export function RecordDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`@container max-h-[90dvh] overflow-y-auto overflow-x-hidden ${
-          contentClassName ?? (wide ? "sm:max-w-3xl" : "")
-        } ${panelVisible ? "lg:!max-w-[min(96vw,1520px)]" : ""}`}
+        className={cn(
+          "@container max-h-[90dvh] overflow-y-auto overflow-x-hidden",
+          !contentClassName && resolvedSize === "md" && "sm:max-w-3xl",
+          !contentClassName && resolvedSize === "lg" && "sm:max-w-4xl",
+          panelVisible && "lg:!max-w-[min(96vw,1520px)]",
+          contentClassName,
+        )}
       >
         <DialogHeader>
           <DialogTitle className="flex min-w-0 flex-nowrap items-center gap-2">
@@ -334,11 +369,16 @@ export function RecordDialog({
               {title}
             </span>
             {statusBadge}
+            {titleBadges}
           </DialogTitle>
           {description ? (
             <DialogDescription className="sr-only">{description}</DialogDescription>
           ) : null}
-          {headerExtra ? <div className="flex items-center pt-1">{headerExtra}</div> : null}
+          {headerExtra ? (
+            <div className="flex items-center pt-1 text-[0.78125rem] text-muted-foreground">
+              {headerExtra}
+            </div>
+          ) : null}
         </DialogHeader>
         {inner}
       </DialogContent>
@@ -347,9 +387,8 @@ export function RecordDialog({
 }
 
 /**
- * Pole formulára s popiskom a jednotnými rozstupmi.
- * Pri chybe (`error`) sa pole orámuje červeno a pod ním sa zobrazí hláška –
- * rovnako vo všech formulároch aplikácie.
+ * Pole formuláře s popiskem a jednotnými rozestupy.
+ * Při chybě (`error`) se pole orámuje červeně a pod ním zobrazí hláška.
  */
 export function Field({
   label,
@@ -428,15 +467,18 @@ export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
   return span ? FIELD_SPAN_CLASSES[span] : "";
 }
 
-/** Mriežka polí formulára. */
+/** Mřížka polí formuláře se společnými svislicemi a nápovědou celé skupiny. */
 export function FieldGrid({
   cols = 2,
   title,
+  hint,
   className = "",
   children,
 }: {
   cols?: 1 | 2 | 3 | 4 | 6 | 12 | 20;
   title?: ReactNode;
+  /** Jedna vysvětlující věta pod celou mřížkou. */
+  hint?: ReactNode;
   className?: string;
   children: ReactNode;
 }) {
@@ -458,6 +500,7 @@ export function FieldGrid({
     <div className="@container">
       {title ? <SectionHeading>{title}</SectionHeading> : null}
       <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>
+      {hint ? <p className="mt-2 text-xs text-muted-foreground">{hint}</p> : null}
     </div>
   );
 }
