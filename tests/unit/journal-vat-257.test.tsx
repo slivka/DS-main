@@ -1,5 +1,4 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import {
@@ -110,11 +109,6 @@ describe("Samovyměření v režimu S DPH (2.57.0)", () => {
       ["343200", "343100", 126],
       ["518001", "343100", 84],
     ]);
-  });
-  it("detail řádku nabízí nárok i u samovyměření", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(source).not.toContain("!code.selfAssessment");
-    expect(source).toContain('(code?.direction === "in" || code?.selfAssessment) && code?.hasTax');
   });
 });
 

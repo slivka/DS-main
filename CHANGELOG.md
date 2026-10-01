@@ -2,6 +2,21 @@
 
 Verze seřazené od nejnovější. BREAKING změny obsahují návod na migraci.
 
+## 2.83.0 – rozdělení editoru řádků, dialogy ve StrictMode, vnořený formulář
+
+Pro APP: veřejné API beze změny (žádný prop ani export neubyl, importní cesty platí).
+
+- Oprava: potvrzení vnořeného `RecordDialog` (např. nový bankovní účet v dialogu partnera) už neodešle vnější formulář.
+- Oprava: návrat prohlížeče zavírající dialog snese dvojí připojení efektů ve `StrictMode` – žádný druhý záznam historie, dialog se sám nezavře.
+- `JournalLinesEditor` rozdělen do menších souborů beze změny chování; texty editoru jsou v `DsTexts.journalEditor` (CS i SK). `DEFAULT_JOURNAL_LINES_TEXTS` je zastaralý alias (`@deprecated od 2.83.0`, náhrada `DS_TEXTS_CS.journalEditor`).
+- Texty knihovny rozděleny na `ds-texts/cs.ts`, `sk.ts`, `types.ts`; import `ds-texts` beze změny.
+
+Co má APP udělat po Update:
+
+1. V kořeni aplikace (vstupní soubor s `createRoot`/routerem) znovu obalit aplikaci `<React.StrictMode>`.
+2. Smazat soubor `dialog-history-guard` (pojistka historie dialogů) a všechna jeho volání a importy – vyhledat `dialog-history-guard` v celém projektu, výsledek musí být prázdný.
+3. Ověřit: otevřít dialog, stisknout Zpět (dialog se zavře, stránka zůstane), otevřít vnořený dialog a potvrdit jej (vnější zůstane otevřený a neuloží se).
+
 ## 2.82.0 – pojistky kvality a pravidla DS
 
 - Skripty `test` (`bun test tests/unit`) a `typecheck` (`tsgo --noEmit`, nový dev balíček `@typescript/native-preview`).

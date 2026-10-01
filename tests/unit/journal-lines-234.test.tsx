@@ -1,5 +1,4 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   calculateLineAmount,
@@ -14,8 +13,6 @@ import {
 } from "../../src/components/ds/accounting/journal-lines-editor";
 import type { JournalLine } from "../../src/components/ds/accounting/journal-lines";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
-
-const squashSrc = (s: string) => s.replace(/\s+/g, " ");
 
 describe("JournalLinesEditor 2.34.0", () => {
   it("navrhne vyrovnání z rozdílu jen v limitu", () => {
@@ -53,18 +50,6 @@ describe("JournalLinesEditor 2.34.0", () => {
     ]);
   });
 });
-describe("JournalLinesEditor 2.48", () => {
-  it("má veřejné props pro prázdný řádek a úplný přístupný název tlačítka", () => {
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("initialEmptyLine?: boolean");
-    expect(source).toContain("showAllErrors?: boolean");
-    expect(source).toContain("isBlank: true");
-    expect(source).toContain("(Ctrl+Enter)");
-  });
-});
-
 describe("JournalLinesEditor 2.49", () => {
   it("zobrazuje účet výchozí zkráceně a na přání včetně názvu", () => {
     expect(formatJournalAccountDisplay("501100", "Spotřeba materiálu")).toBe("501.100");
@@ -93,26 +78,9 @@ describe("JournalLinesEditor 2.49", () => {
     expect(html).not.toContain(">MD zakázka<");
     expect(html).not.toContain("Počet chyb:");
   });
-  it("má Zakázku výchozí viditelnou a množstevní sloupce řídí prop", () => {
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("showQuantityColumns?: boolean");
-    expect(source).toContain('{ id: "dimensionId", label: t.dimension }');
-    expect(source).toContain("defaultVisible: showQuantityColumns");
-  });
 });
 
 describe("JournalLinesEditor 2.54", () => {
-  it("rezervuje pro Ř. 4,75 rem a místo pro trojciferné číslo", () => {
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("row: 4.75");
-    expect(source).toContain("min-w-[3ch] text-right tabular-nums");
-    expect(source).toContain("journal-row-cell");
-  });
-
   it("u EUR používá Částka a domácí popisek Částka v Kč", () => {
     expect(journalAmountLabels(DEFAULT_JOURNAL_LINES_TEXTS, "€", "Kč")).toEqual({
       amount: "Částka",
@@ -143,26 +111,6 @@ describe("JournalLinesEditor 2.54", () => {
     );
     expect(html).toContain(">Částka<");
     expect(html).not.toContain("Částka v €");
-  });
-
-  it("skládá dvě detailní pole do jednoho pružného řádku", () => {
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("journal-line-detail-grid flex flex-wrap items-end gap-3");
-    expect(source).not.toContain("journal-detail-columns-");
-    expect(source).toContain("<VsField");
-  });
-
-  it("předává viditelné chyby přes onValidationChange", () => {
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("onValidationChange?: ( count: number, errors:");
-    expect(source).toContain(
-      "validationChangeRef.current?.(validationErrors.length, validationErrors)",
-    );
-    expect(source).not.toContain("`${t.errors}: ${errorCount}`");
   });
 });
 

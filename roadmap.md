@@ -1,3 +1,8 @@
+## DS 2.83.0 – Úklid 5a + 5c
+- [x] Behavior testy editoru řádků proti původnímu kódu, rozdělení JournalLinesEditor beze změny API
+- [x] Texty editoru do DsTexts (CS + SK), ds-texts rozdělen na cs / sk / types / index
+- [x] useDialogBackClose bezpečný ve StrictMode (test)
+- [x] RecordDialog: vnořený submit neodešle vnější formulář (test i s editorem a DocumentForm)
 ## DS 2.82.0 – Úklid 1C: pojistky kvality
 - [x] Skripty test a typecheck (tsgo přes @typescript/native-preview), test grid-toolbar na bun:test
 - [x] ESLint pravidla; any / as unknown as / as never v src opraveny typem, kde to šlo bez změny logiky

@@ -1,0 +1,393 @@
+/**
+ * Typy textů design systému.
+ * Vlastní: tvar všech textů knihovny (DsTexts) a dílčí rozhraní.
+ * Nesmí: obsahovat hodnoty textů ani React kód.
+ */
+import type { Locale } from "date-fns";
+import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
+import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
+
+export type DsLocale = "cs" | "sk";
+export type TextTemplate = (...args: never[]) => string;
+export type TextTree = { [key: string]: string | TextTemplate | TextTree };
+
+export interface GridTexts {
+  locale: string;
+  searchPlaceholder: string;
+  searchLabel: string;
+  clearSearchLabel: string;
+  refresh: string;
+  columnsTitle: string;
+  selectMore: string;
+  cancelSelection: string;
+  selectedRecords: (count: string) => string;
+  selectAllRows: string;
+  selectRow: string;
+  actions: string;
+  edit: string;
+  remove: string;
+  removeConfirm: string;
+  cancel: string;
+  emptyTitle: string;
+  searchEmptyTitle: string;
+  emptyValue: string;
+  valuesCount: (count: number) => string;
+  total: string;
+  sidePanelLabel: string;
+  filterLabel: (label: string) => string;
+  filterSearchPlaceholder: string;
+  selectAll: string;
+  clear: string;
+  noValues: string;
+  dateFilterYears: string;
+  dateFilterQuarters: string;
+  dateFilterMonths: string;
+  dateFilterDates: string;
+  dateFilterQuarter: (quarter: number, year: number) => string;
+  showFilters: string;
+  activeFilters: string;
+  activeCount: (count: number) => string;
+  defaultFilters: string;
+  clearAllFilters: string;
+  clearFilter: string;
+  removeFilter: (label: string) => string;
+  clearAll: string;
+  rowsLabel: string;
+  show: string;
+  all: string;
+  pageSize: string;
+  noRecords: string;
+  page: (page: number, pageCount: number) => string;
+  previousPage: string;
+  nextPage: string;
+  download: string;
+  downloadExcel: string;
+  downloadPdf: string;
+  downloadHtml: string;
+  retry: string;
+  loading: string;
+  groupingEnable: string;
+  groupingDisable: string;
+  groupingDropHint: string;
+  groupingAddColumn: string;
+  groupingClear: string;
+  groupingEmpty: string;
+  groupingHidden: (count: number) => string;
+  groupedCount: (count: number) => string;
+  groupingMoveLeft: string;
+  groupingMoveRight: string;
+  groupingDateBy: string;
+  groupingRemoveColumn: string;
+  groupDay: string;
+  groupMonth: string;
+  groupQuarter: string;
+  groupYear: string;
+  quarterLabel: (quarter: number, year: string | number) => string;
+  zoomOut: string;
+  zoomIn: string;
+  zoomReset: string;
+  normalDensity: string;
+  compactDensity: string;
+  resizeColumn: string;
+  resizeColumnHint: string;
+  moreActions: string;
+  moreParameters: string;
+  moreTools: string;
+  treeView: string;
+  tableView: string;
+  groupTotal: (label: string) => string;
+  sortBy: (label: string) => string;
+  expand: string;
+  collapse: string;
+  expandLevel: (level: number, label: string) => string;
+  exportSearch: (query: string) => string;
+  recordsCount: (count: number) => string;
+}
+
+/** Texty editoru řádků dokladu; prop `texts` editoru je částečný přepis. */
+export interface JournalEditorTexts {
+  row: string;
+  debitAccount: string;
+  creditAccount: string;
+  counterAccount: string;
+  /** Přepíše sdílený text `DsTexts.columnPicker.accountFormRequired`. */
+  accountFormRequired?: string;
+  amount: string;
+  homeAmount: string;
+  foreignAmount: string;
+  text: string;
+  quantity: string;
+  unit: string;
+  unitPrice: string;
+  dimension: string;
+  vs: string;
+  partner: string;
+  debitDimension: string;
+  creditDimension: string;
+  debitVs: string;
+  creditVs: string;
+  debitPartner: string;
+  creditPartner: string;
+  nonTax: string;
+  nonTaxOn: string;
+  nonTaxOff: string;
+  rounding: string;
+  fxRounding: string;
+  fxRoundingPreview: string;
+  fxRoundingHint: string;
+  detail: string;
+  showDetail: string;
+  hideDetail: string;
+  sideDebit: string;
+  sideCredit: string;
+  actions: string;
+  addLine: string;
+  duplicateLine: string;
+  removeLine: string;
+  undo: string;
+  removed: string;
+  total: string;
+  remaining: string;
+  balanced: string;
+  roundingExists: string;
+  /** @deprecated Od 2.54; počet chyb předejte přes onValidationChange. Odstraní se ve 3.0.0. */
+  errors: string;
+  empty: string;
+  debitRequired: string;
+  creditRequired: string;
+  amountRequired: string;
+  missingVs: string;
+  missingDimension: string;
+  search: string;
+  searchResult: string;
+  clearSearch: string;
+  quantityPriceHint: string;
+  vatCode: string;
+  vatRate: string;
+  vatAmount: string;
+  grossAmount: string;
+  vatMode: string;
+  vatModeNet: string;
+  vatModeGross: string;
+  vatManual: string;
+  resetVat: string;
+  vatDeduction: string;
+  deductionFull: string;
+  deductionNone: string;
+  deductionPartial: string;
+  deductionShare: string;
+  pdpSubject: string;
+  vatBaseHome: string;
+  vatHome: string;
+  vatCodeRequired: string;
+  vatDeviation: string;
+  pdpRequired: string;
+  deductionShareRange: string;
+  vatMissingAccounts: string;
+  /** Popisek sloupce kurzu. */
+  rate: string;
+  /** Přístupný název úchytu pro přesun řádku. */
+  moveRow: string;
+  /** Zkratka nedaňového řádku na přepínači. */
+  nonTaxShort: string;
+}
+
+export interface DsTexts {
+  locale: DsLocale;
+  intlLocale: string;
+  dateLocale: Locale;
+  grid: GridTexts;
+  common: {
+    close: string;
+    cancel: string;
+    confirm: string;
+    understand: string;
+    save: string;
+    yes: string;
+    no: string;
+    system: string;
+  };
+  recordAction: { moreActions: string; unsaved: string; errorTitle: string; closeError: string };
+  appShell: {
+    clearSearch: string;
+    mainMenu: string;
+    containsActivePage: string;
+    disabledHint: string;
+    searchPlaceholder: string;
+    searchEmpty: string;
+    resizeMenu: string;
+    panelView: string;
+    contextDisabledHint: string;
+  };
+  paneChrome?: Partial<PaneChromeTexts>;
+  layoutMenu?: Partial<LayoutMenuTexts>;
+  panes: {
+    panel: (index: number) => string;
+    emptyHint: string;
+    maximizedBanner: string;
+    restoreLayout: string;
+    limitClosed: string;
+  };
+  notification: {
+    label: string;
+    title: string;
+    markAllRead: string;
+    empty: string;
+    showAll: string;
+    loading: string;
+  };
+  appZoom: { label: string; decrease: string; increase: string; reset: string };
+  /** Rám mimo AppShell (nastavení prostoru). */
+  standalone: { close: string; pages: string; pagesSelect: string };
+  contextSwitcher: { search: string; empty: string; current: string; selected: string };
+  confirmByTyping: { instruction: string; cancel: string; running: string };
+  dangerZone: { title: string };
+  noticeBar: { close: string };
+  recordDialog: {
+    detailSections: string;
+    hidePanel: (panel: string) => string;
+    notes: string;
+    active: string;
+    inactive: string;
+    saveAndAction: string;
+    dirtyTitle: string;
+    history: string;
+    noHistory: string;
+    system: string;
+    yes: string;
+    no: string;
+  };
+  date: {
+    chooseDate: string;
+    dateSelection: string;
+    openCalendar: string;
+    invalidFormat: (format: string) => string;
+    sameAsIssue: string;
+    relinkIssue: string;
+    rangePlaceholder: string;
+    rangeLabel: string;
+    clear: string;
+    chooseRangeEnd: string;
+    openTime: string;
+    all: string;
+    day: string;
+    week: string;
+    month: string;
+    year: string;
+    custom: string;
+    from: string;
+    to: string;
+  };
+  country: {
+    choose: string;
+    search: string;
+    emptyTitle: string;
+    emptyDescription: (query: string) => string;
+    recent: string;
+    eu: string;
+    other: string;
+  };
+  multiSelect: { selectAll: string; noValues: string };
+  tree: { expand: string; collapse: string; breadcrumbs: string };
+  contacts: {
+    blacklist: string;
+    companyId: string;
+    personalId: string;
+    openRegistry: string;
+    openAres: string;
+  };
+  accessibility: { resizeCombobox: string };
+  company: { companyId: string };
+  errors: {
+    load: string;
+    network: string;
+    networkDetail: string;
+    expired: string;
+    expiredDetail: string;
+    forbidden: string;
+    forbiddenDetail: string;
+    timeout: string;
+    timeoutDetail: string;
+  };
+  columnPicker: {
+    clearCustom: string;
+    clearCustomTitle: string;
+    default: string;
+    restoreSaved: string;
+    restoreFactory: string;
+    showSection: (section: string) => string;
+    hideSection: (section: string) => string;
+    show: string;
+    hide: string;
+    saveDefault: string;
+    saved: string;
+    saveColumns: string;
+    persistenceHint: string;
+    savedViews: string;
+    noSavedViews: string;
+    applyView: string;
+    overwrite: string;
+    overwriteTitle: string;
+    deleteView: string;
+    viewName: string;
+    saveView: string;
+    save: string;
+    accountFormRequired: string;
+    compactAccountHeading: (label: string) => string;
+  };
+  /** Rekapitulace účetních řádků – názvy sloupců účtů (krátká / rozšířená forma). */
+  /** Texty editoru řádků dokladu (`JournalLinesEditor`). */
+  journalEditor: JournalEditorTexts;
+  journalRecap: {
+    debitShort: string;
+    creditShort: string;
+    debitAccount: string;
+    creditAccount: string;
+  };
+  documentForm: {
+    changeAccount: string;
+    currencyDisabled: string;
+    mainAccountSelect: string;
+    supplierNumber: string;
+    supplierTaxDocumentNumber: string;
+    documentNumberTooLongForVs: string;
+    bankAccountInvalid: string;
+    bankCodeInvalid: string;
+    otherBankAccount: string;
+  };
+  export: {
+    parametersSheet: string;
+    parameter: string;
+    value: string;
+    reportName: string;
+    company: string;
+    period: string;
+    exportedAt: string;
+    user: string;
+    activeFilters: string;
+    pageFooter: string;
+    fallbackColumn: (index: number) => string;
+    printPdf: string;
+  };
+  print: {
+    book: string;
+    allBooks: string;
+    period: string;
+    search: string;
+    filter: string;
+    asOf: string;
+    total: string;
+    portrait: string;
+    landscape: string;
+    orientation: string;
+    largeTitle: string;
+    largeDescription: (rows: string, pages: string) => string;
+    print: string;
+    printTitle: string;
+    downloadPdf: string;
+    preview: string;
+    preparing: string;
+    printedBy: string;
+    page: (page: number, pages: number) => string;
+  };
+}

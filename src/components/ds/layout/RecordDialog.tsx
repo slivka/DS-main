@@ -226,6 +226,9 @@ export function RecordDialog({
           className="min-w-0 flex-1 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
+            // React posílá submit stromem komponent i přes portál; vnořený dialog nesmí odeslat
+            // formulář dialogu, ve kterém je otevřený (např. nový účet v dialogu partnera).
+            e.stopPropagation();
             if (!readOnly) onSubmit?.();
           }}
         >
