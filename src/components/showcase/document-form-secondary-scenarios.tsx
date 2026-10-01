@@ -1,14 +1,18 @@
 /** Navazující scénáře ukázky účetních formulářů. */
 import { Button } from "@/components/ui/button";
-import { DataGrid } from "@/components/ds/grid/DataGrid";
-import { DocumentForm } from "@/components/ds/accounting/document-form";
-import { PaymentScheduleEditor } from "@/components/ds/accounting/payment-schedule";
-import { NoticeBar } from "@/components/ds/feedback/notice-bar";
-import { StatusBadge } from "@/components/ds/status/status-badge";
+import { DataGrid, DocumentForm, NoticeBar, PaymentScheduleEditor, StatusBadge } from "@/components/ds";
 import { ShowcaseSection } from "./ShowcaseLayout";
 import { toast } from "sonner";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
-import { HIDDEN_GROUP_COLUMNS, HIDDEN_GROUP_ROWS, USERS } from "./document-form-showcase-data";
+import {
+  BANK_ACCOUNT_OPTIONS,
+  CONSTANT_SYMBOL_OPTIONS,
+  CURRENCIES,
+  HIDDEN_GROUP_COLUMNS,
+  HIDDEN_GROUP_ROWS,
+  PAYMENT_METHOD_OPTIONS,
+  USERS,
+} from "./document-form-showcase-data";
 import type { ReturnTypeOfDocumentShowcaseState } from "./use-document-form-showcase-state";
 
 /** Vykreslí scénáře přijatých, pokladních a interních dokladů. */
