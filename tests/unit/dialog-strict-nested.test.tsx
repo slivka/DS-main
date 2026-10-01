@@ -164,7 +164,7 @@ describe("RecordDialog – vnořený formulář", () => {
     fireEvent.click(await view.findByRole("button", { name: "Přidat účet" }));
     expect(innerSubmit).toHaveBeenCalledTimes(1);
     expect(outerSubmit).not.toHaveBeenCalled();
-    const outerButton = view.getAllByRole("button", { name: "Uložit" })[0]!;
+    const outerButton = view.getAllByRole("button", { name: "Uložit", hidden: true })[0]!;
     fireEvent.click(outerButton);
     expect(outerSubmit).toHaveBeenCalledTimes(1);
     expect(innerSubmit).toHaveBeenCalledTimes(1);
