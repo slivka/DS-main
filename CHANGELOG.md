@@ -7,6 +7,8 @@
 - **BREAKING:** `BankAccountField` přijatého dokladu je pouze výběr účtu partnera; aplikace předává stabilní id a obsluhu „Přidat účet…“.
 - Formulář řadí Částku vždy jako poslední sekci, doplňuje způsob platby, KS z číselníku, firemní účet, stav DPH partnera a hotové záložky Odběratel / Tiskové údaje.
 - Rekapitulace nepoužívá lištu nástrojů a účty zobrazuje v rozšířené formě.
+- Opraven výběr účtu partnera bez položek, důvody zákazu, neplatné a chybějící účty, šířka data podle ikon, seskupení dat DPH a pružná šířka sloupce Ř.
+- Checkboxy a přepínače se vystřeďují podle prvního řádku popisku; doplněny zbývající oddělovače, tlumené výzvy, read-only adresa a jednotné zaoblení filtrů.
 
 ## 2.84.0
 

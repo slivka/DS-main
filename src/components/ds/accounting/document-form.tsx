@@ -840,8 +840,6 @@ export function DocumentForm({
     },
   ) => {
     const warning = options?.warning ?? dateWarnings?.[key];
-    // Varovná ikona potřebuje vlastní místo, aby se celé datum vešlo.
-    const widthClass = warning ? "[&_input]:w-[calc(8.5rem+1.3em)]" : undefined;
     return field(
       `document-${key}`,
       label,
@@ -866,7 +864,7 @@ export function DocumentForm({
       />,
       3,
       false,
-      cn(className, widthClass),
+      className,
     );
   };
   const text = (
@@ -1048,7 +1046,7 @@ export function DocumentForm({
       selectionOnly={receivedDocument}
       onAddAccount={receivedDocument ? onAddBankAccount : undefined}
       addAccountText={t.addBankAccount}
-      title={receivedDocument && !value.partnerId ? t.selectSupplierFirst : undefined}
+      disabledReason={receivedDocument && !value.partnerId ? t.selectSupplierFirst : undefined}
     />,
     receivedDocument ? 20 : 6,
     false,
@@ -1270,7 +1268,7 @@ export function DocumentForm({
                 <span>{t.amountTotal}</span>
                 {totalMode === "sum" ? (
                   <span
-                    className="min-w-0 truncate text-xs font-normal text-muted-foreground"
+                    className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground"
                     title={t.sumFromLines}
                   >
                     {t.sumFromLines}
@@ -1757,18 +1755,18 @@ export function DocumentForm({
               {date(
                 "issueDate",
                 t.issueDate,
-                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                "flex-none w-max",
               )}
               {date(
                 "accountingDate",
                 t.accountingDate,
-                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                "flex-none w-max",
               )}
               {f.dueDate
                 ? date(
                     "dueDate",
                     t.dueDate,
-                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                    "flex-none w-max",
                   )
                 : null}
             </div>
@@ -1777,32 +1775,32 @@ export function DocumentForm({
                 ? date(
                     "taxDate",
                     t.taxDate,
-                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                    "flex-none w-max",
+                  )
+                : null}
+              {showVatFields
+                ? date(
+                    "vatDate",
+                    t.vatDate,
+                    "relative flex-none w-max [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right",
+                    {
+                      link: vat?.dateLink
+                        ? {
+                            ...vat.dateLink,
+                            toggleDisabled: vat.dateLockReadOnly,
+                            lockedHint: vat.dateLockReadOnly
+                              ? t.vatDateLockedHint
+                              : vat.dateLink.lockedHint,
+                          }
+                        : undefined,
+                      hint: vat?.periodLabel,
+                      warning:
+                        [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
+                        undefined,
+                    },
                   )
                 : null}
             </div>
-            {showVatFields
-              ? date(
-                  "vatDate",
-                  t.vatDate,
-                  "relative flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right",
-                  {
-                    link: vat?.dateLink
-                      ? {
-                          ...vat.dateLink,
-                          toggleDisabled: vat.dateLockReadOnly,
-                          lockedHint: vat.dateLockReadOnly
-                            ? t.vatDateLockedHint
-                            : vat.dateLink.lockedHint,
-                        }
-                      : undefined,
-                    hint: vat?.periodLabel,
-                    warning:
-                      [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
-                      undefined,
-                  },
-                )
-              : null}
           </div>
           {!f.partner ? (
             <div className="mt-3 grid grid-cols-20 gap-3">

@@ -364,6 +364,8 @@ export interface DsTexts {
     addBankAccount: string;
     selectSupplierFirst: string;
     invalidBankAccountWarning: string;
+    invalidBankAccount: string;
+    bankAccountMissing: string;
     paymentMethod: string;
     companyBankAccount: string;
     vatVerified: (date: string) => string;

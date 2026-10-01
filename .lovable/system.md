@@ -11,6 +11,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
 - Sekce dokladu řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+- Zaškrtávátko a přepínač vystřeďte obalem výšky prvního řádku popisku (`h-5`); nepoužívejte pevný svislý posun.
 
 ## Filozofie
 

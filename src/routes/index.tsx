@@ -164,7 +164,7 @@ function OverviewPage() {
         <div className="grid max-w-3xl gap-4 sm:grid-cols-3">
           <div className="space-y-1">
             <Label>Text</Label>
-            <Input placeholder="Zadejte text" />
+            <Input />
           </div>
           <div className="space-y-1">
             <Label>Číslo</Label>

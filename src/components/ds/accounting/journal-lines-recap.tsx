@@ -221,7 +221,7 @@ export function JournalLinesRecap({
         : formatAccountCode(code);
     };
     return [
-      ...base.map((column) =>
+      ...base.filter((column) => column.id.endsWith("Name")).map((column) =>
         column.id.startsWith("debit")
           ? {
               ...column,
@@ -409,7 +409,7 @@ export function JournalLinesRecap({
                 onClick={() => {
                   if (!shown && item.id === activeTab) changeOpen(true);
                 }}
-                className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="h-9 rounded-none border-b-2 border-transparent text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold"
               >
                 {item.label}
               </TabsTrigger>

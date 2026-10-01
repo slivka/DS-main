@@ -1,4 +1,5 @@
 ## DS 2.85.0 – Edit dokladu 9 + obecná pravidla
+- [ ] Opravy po kontrole Clauda: body 1–18, rozdělení formuláře a ukázky pod 500 řádků
 - [x] A1–A8: společné formátování kódů, prázdná pole, radius, volby, datumy a akce
 - [x] A: ukázka zaoblení, pravidla, BREAKING dokumentace a behavior testy
 - [x] B9–B19: pořadí sekcí, částka, datumy, rekapitulace, řádky, DPH a platební údaje

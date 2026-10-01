@@ -21,6 +21,8 @@ import {
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
+import { formatCodeName } from "@/lib/code-format";
+import { formatAccountCode } from "@/components/ds/accounting/account-code";
 
 const CURRENCIES = [
   { code: "CZK", label: "Česká koruna", symbol: "Kč" },
@@ -188,9 +190,9 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "PO",
     identity: {
       variant: "cashBank",
-      book: "PO - Pokladna",
+      book: formatCodeName("PO", "Pokladna"),
       period: "2026",
-      account: { side: "MD", label: "211.001 - Pokladna" },
+      account: { side: "MD", label: formatCodeName("211.001", "Pokladna") },
       number: "PO2026000118",
     },
     value: {
@@ -210,9 +212,9 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "BA",
     identity: {
       variant: "cashBank",
-      book: "BA - Banka EUR",
+      book: formatCodeName("BA", "Banka EUR"),
       period: "2026",
-      account: { side: "DAL", label: "221.002 - Běžný účet EUR" },
+      account: { side: "DAL", label: formatCodeName("221.002", "Běžný účet EUR") },
       number: "BA2026000091",
     },
     value: {
@@ -237,9 +239,9 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "FV",
     identity: {
       variant: "invoice",
-      book: "FV - Vydané faktury",
+      book: formatCodeName("FV", "Vydané faktury"),
       period: "2026",
-      account: { side: "MD", label: "311.001 - Odběratelé", editable: true },
+      account: { side: "MD", label: formatCodeName("311.001", "Odběratelé"), editable: true },
       number: "FV2026000420",
     },
     value: BASE,
@@ -381,7 +383,7 @@ function identityFromValue(
     account: {
       ...account,
       label: selected
-        ? `${selected.code.slice(0, 3)}.${selected.code.slice(3)} - ${selected.name}`
+        ? formatCodeName(formatAccountCode(selected.code), selected.name)
         : account.label,
     },
   };
@@ -908,6 +910,7 @@ export function DocumentFormShowcase() {
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
           vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+          vat={{ visible: true }}
           counterpartyTab={{
             value: counterpartyPrint,
             onChange: setCounterpartyPrint,
