@@ -21,7 +21,8 @@ import type { JournalEditorState } from "./useJournalEditorState";
 
 /** Klávesové akce editoru nad sdíleným stavem. */
 export function useJournalKeyboard(editor: JournalEditorState) {
-  const { layout, lines } = { layout: editor.layout, lines: editor.props.lines };
+  const { layout } = editor;
+  const { lines } = editor.props;
 
   /** Fokus na buňku o `delta` dál; za poslední buňkou založí nový řádek. */
   const focusRelative = (rowId: string, column: ColumnId, delta: number) =>
