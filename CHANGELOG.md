@@ -1,5 +1,13 @@
 # Changelog – Slivka Design System
 
+## 2.85.0 – Edit dokladu 9 a obecná pravidla
+
+- **BREAKING:** kód a název se všude oddělují ` – `; migrace: ruční skládání nahraďte `formatCodeName`.
+- **BREAKING:** prázdné vstupy nemají placeholder a všechna ovládání používají sjednocené zaoblení.
+- **BREAKING:** `BankAccountField` přijatého dokladu je pouze výběr účtu partnera; aplikace předává stabilní id a obsluhu „Přidat účet…“.
+- Formulář řadí Částku vždy jako poslední sekci, doplňuje způsob platby, KS z číselníku, firemní účet, stav DPH partnera a hotové záložky Odběratel / Tiskové údaje.
+- Rekapitulace nepoužívá lištu nástrojů a účty zobrazuje v rozšířené formě.
+
 ## 2.84.0
 
 - Sjednocena výška formulářových ovládacích prvků a hodnot `FieldValue` tokenem `--control-h`.

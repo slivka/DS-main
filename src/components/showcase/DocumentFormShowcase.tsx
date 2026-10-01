@@ -16,6 +16,8 @@ import {
   SegmentedField,
   type JournalLine,
   type PaymentScheduleItem,
+  type DocumentCounterpartyValue,
+  type DocumentPrintValue,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
@@ -347,6 +349,18 @@ const BANK_ACCOUNT_OPTIONS = [
   },
   { number: "123456789", bankCode: "0100", label: "Eurový účet", currency: "EUR" },
 ];
+const CONSTANT_SYMBOL_OPTIONS = [
+  { value: "0308", label: "0308 – Platby za služby" },
+  { value: "0558", label: "0558 – Ostatní platby" },
+];
+const PAYMENT_METHOD_OPTIONS = [
+  { value: "transfer", label: "Bankovní převod" },
+  { value: "cash", label: "Hotově" },
+];
+const COMPANY_BANK_ACCOUNT_OPTIONS = [
+  { id: "company-czk", label: "Hlavní účet", account: "123456789/0100", currency: "CZK", isDefault: true },
+  { id: "company-eur", label: "Eurový účet", account: "987654321/0100", currency: "EUR" },
+];
 
 /** Identitu skládá aplikace z aktuální hodnoty dokladu – popisek účtu podle value.mainAccountId. */
 function identityFromValue(
@@ -642,6 +656,15 @@ export function DocumentFormShowcase() {
     amountTotal: 24200,
     totalMode: "entered",
     mainAccountId: "311001",
+    companyBankAccountId: "company-czk",
+    paymentMethodId: "transfer",
+  });
+  const [counterpartyPrint, setCounterpartyPrint] = useState<DocumentCounterpartyValue>({
+    name: "Beta služby s.r.o.", ico: "27074358", dic: "CZ27074358", street: "Hlavní", house_number: "12", zip: "11000", city: "Praha", country: "CZ", email: "fakturace@example.cz",
+  });
+  const [printData, setPrintData] = useState<DocumentPrintValue>({
+    options: { showHeader: true, showFooter: true, showVatRecap: true, showNote: true, showColumnHeadings: true, showTotalsRow: true, showPaymentSchedule: false },
+    headerText: "Děkujeme za objednávku.", footerText: "Splatnost dle dohody.", note: "Poznámka pro odběratele", issuedByName: "Jana Nováková", issuedByPhone: "+420 123 456 789", issuedByEmail: "jana@example.cz",
   });
   const [fpNonPayer, setFpNonPayer] = useState<DocumentHeaderValue>({
     ...PURCHASE_INVOICE_HEADER,
@@ -800,6 +823,12 @@ export function DocumentFormShowcase() {
           mainSide="MD"
           mainAccountLocked
           status="filed"
+          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
+          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
+          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
+          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+          counterpartyTab={{ value: counterpartyPrint, onChange: setCounterpartyPrint, onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny") }}
+          printTab={{ value: printData, onChange: setPrintData }}
         />
       </ShowcaseSection>
       <ShowcaseSection
