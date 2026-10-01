@@ -10,6 +10,7 @@ const { DocumentForm } = await import("../../src/components/ds/accounting/docume
 
 afterEach(() => cleanup());
 afterAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 50));
   if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 

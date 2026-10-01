@@ -9,6 +9,7 @@ const { Button } = await import("../../src/components/ui/button");
 
 afterEach(() => cleanup());
 afterAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 50));
   if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
