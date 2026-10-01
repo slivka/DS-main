@@ -57,9 +57,7 @@ export function RecordDialogShowcase() {
               <FieldValue lockedReason="Kód po založení nelze změnit">FP</FieldValue>
             </Field>
             <Field label="Název" span={6}>
-              <FieldValue lockedReason="Název po založení nelze změnit">
-                Přijaté faktury
-              </FieldValue>
+              <FieldValue lockedReason="Název po založení nelze změnit">Přijaté faktury</FieldValue>
             </Field>
             <Field label="Typ" span={4}>
               <FieldValue>Přijatá faktura</FieldValue>
