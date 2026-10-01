@@ -72,7 +72,11 @@ export function AddressFieldGrid({
   return (
     <FieldGrid cols={4} className={className}>
       <Field label={labels.street} className="@min-[40rem]:col-span-3">
-        <Input readOnly={readOnly} value={value.street ?? ""} onChange={(e) => onChange({ street: e.target.value })} />
+        <Input
+          readOnly={readOnly}
+          value={value.street ?? ""}
+          onChange={(e) => onChange({ street: e.target.value })}
+        />
       </Field>
       <Field label={labels.houseNumber} className="@min-[40rem]:col-span-1">
         <Input
@@ -82,10 +86,18 @@ export function AddressFieldGrid({
         />
       </Field>
       <Field label={labels.zip} className="@min-[40rem]:col-span-1">
-        <Input readOnly={readOnly} value={value.zip ?? ""} onChange={(e) => onChange({ zip: e.target.value })} />
+        <Input
+          readOnly={readOnly}
+          value={value.zip ?? ""}
+          onChange={(e) => onChange({ zip: e.target.value })}
+        />
       </Field>
       <Field label={labels.city} className="@min-[40rem]:col-span-3">
-        <Input readOnly={readOnly} value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
+        <Input
+          readOnly={readOnly}
+          value={value.city ?? ""}
+          onChange={(e) => onChange({ city: e.target.value })}
+        />
       </Field>
       {showCountry ? (
         <Field

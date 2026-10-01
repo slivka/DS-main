@@ -251,9 +251,9 @@ export function journalColumnWidthsRem(input: JournalColumnWidthsInput) {
       ? COMPACT_ACCOUNT_WIDTH_REM
       : id === "row"
         ? journalRowColumnWidthRem(input.rowCount ?? 0)
-      : typeof savedWidth === "number" && layout.customWidthsApplied
-        ? savedWidth / 16
-        : JOURNAL_COLUMN_WIDTHS[id];
+        : typeof savedWidth === "number" && layout.customWidthsApplied
+          ? savedWidth / 16
+          : JOURNAL_COLUMN_WIDTHS[id];
     result[id] = base * zoom;
     fixed += base * zoom;
   }

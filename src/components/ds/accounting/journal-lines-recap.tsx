@@ -221,20 +221,22 @@ export function JournalLinesRecap({
         : formatAccountCode(code);
     };
     return [
-      ...base.filter((column) => column.id.endsWith("Name")).map((column) =>
-        column.id.startsWith("debit")
-          ? {
-              ...column,
-              value: (row: Row) => withLabel(accountValue(column.id, row), row),
-              render: (row: Row) => renderLabel(accountValue(column.id, row), row),
-            }
-          : {
-              ...column,
-              value: (row: Row) => accountValue(column.id, row) || "—",
-              render: (row: Row) =>
-                renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
-            },
-      ),
+      ...base
+        .filter((column) => column.id.endsWith("Name"))
+        .map((column) =>
+          column.id.startsWith("debit")
+            ? {
+                ...column,
+                value: (row: Row) => withLabel(accountValue(column.id, row), row),
+                render: (row: Row) => renderLabel(accountValue(column.id, row), row),
+              }
+            : {
+                ...column,
+                value: (row: Row) => accountValue(column.id, row) || "—",
+                render: (row: Row) =>
+                  renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
+              },
+        ),
       {
         id: "amount",
         label: `${t.total} (${homeMark})`,
