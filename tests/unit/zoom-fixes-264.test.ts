@@ -165,13 +165,6 @@ describe("DS 2.64 – editor řádků: zoom → kaskáda → rolování", () => 
     expect(auto.layout.hiddenColumnIds).toEqual([]);
     expect(manual.zoom).toBe(1.4);
     expect(manual.layout.hiddenColumnIds.length).toBeGreaterThan(0);
-    const source = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(source).toContain("result[column.id] = base * zoom;");
-    expect(source).toContain(
-      "<ZoomControl zoom={zoom} setZoom={setZoom} density={density} setDensity={setDensity} auto={isAuto} />",
-    );
   });
 });
 

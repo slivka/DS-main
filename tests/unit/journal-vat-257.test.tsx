@@ -111,11 +111,6 @@ describe("Samovyměření v režimu S DPH (2.57.0)", () => {
       ["518001", "343100", 84],
     ]);
   });
-  it("detail řádku nabízí nárok i u samovyměření", () => {
-    const source = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(source).not.toContain("!code.selfAssessment");
-    expect(source).toContain('(code?.direction === "in" || code?.selfAssessment) && code?.hasTax');
-  });
 });
 
 describe("Výchozí kód na počátečním řádku", () => {

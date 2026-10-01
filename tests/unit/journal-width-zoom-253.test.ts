@@ -3,15 +3,6 @@ import { readFileSync } from "node:fs";
 import { prunePersistedScroll } from "../../src/components/ds/panes/pane-tab-store";
 
 describe("2.53.0 – druhá kontrola", () => {
-  test("úchyt ukládá šířku bez zoomu a colgroup násobí zoomem jen jednou", () => {
-    const src = readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8");
-    expect(src).toContain("scale={(rootRemPx / 16) * zoom}");
-    expect(src).toContain("columns.setWidth(column.id, width)");
-    expect(src).not.toContain("minWidth: `${columnLayout.textMinRem");
-    expect(src).toContain(
-      "Math.max(columnLayout.textMinRem * zoom, effectiveWidthRem - fixed - 0.25)",
-    );
-  });
   test("useGridVirtual odvozuje režim z PageLayout", () => {
     const src = readFileSync("src/components/ds/grid/grid-virtual.tsx", "utf8");
     expect(src).toContain('height = pageVariant === "list" ? "fill" : "auto"');

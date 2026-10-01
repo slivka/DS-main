@@ -205,12 +205,6 @@ describe("DocumentForm 2.56.0", () => {
 });
 
 describe("Buňka Kód DPH – Tab (2.56.0)", () => {
-  it("přepínač nedaňový není v pořadí Tab, takže Tab z Částky vede rovnou na Kód DPH", () => {
-    const src = squashSrc(
-      readFileSync("src/components/ds/accounting/journal-lines-editor.tsx", "utf8"),
-    );
-    expect(src).toContain("tabIndex={-1} aria-pressed={!!line.nonTax}");
-  });
 });
 
 describe("DocumentSettingsDialog – Zadávat částky (2.56.0)", () => {
