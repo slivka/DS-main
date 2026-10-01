@@ -1,61 +1,58 @@
-# Úklid 1C – pojistky kvality a pravidla DS (verze 2.82.0)
+# DS 2.83.0 – rozdělení JournalLinesEditor, StrictMode u dialogů, vnořený formulář v RecordDialog
 
-Bez změny chování a veřejného API (kromě nového aliasu `fileName`). Release se nedělá, `.lovable/meta.yaml` zůstává beze změny.
+Veřejné API beze změny (žádný prop neubývá, importní cesty zůstávají). Release nedělám, `meta.yaml` nedotčeno.
 
-## Nejdřív se změří výchozí stav
-Před úpravami se spustí `typecheck`, `lint`, `test`, `format:check` a `build` a zapíšou se počty. Totéž se spustí po úpravách a obojí se porovná ve shrnutí.
+## Zjištěný stav
+- `journal-lines-editor.tsx` má po Prettieru **2 706 řádků**; samotná komponenta (`forwardRef`) je ř. 709–2706, props má 41 (nad limitem 30 – dělení props je API změna, patří do 3.0.0, zůstává).
+- Texty editoru jsou dnes v souboru (`JournalLinesEditorTexts`, `DEFAULT_JOURNAL_LINES_TEXTS`, ř. 147–300), ne v `DsTexts`.
+- Chyby řádků jdou ven přes `onValidationChange([{ line, field, message }])` – „radek=N“ v kódu není; test ověří správné číslo řádku v tomto výstupu.
 
-## Soubory, které se změní
+## 1. Testy nejdřív (proti dnešnímu kódu, musí projít před i po)
+`tests/unit/journal-editor-behavior.test.tsx` (render + Testing Library):
+- přidání řádku, duplikace, smazání a vrácení (Zpět);
+- posun řádku (`moveRow` přes klávesovou zkratku / `reorderJournalLines`);
+- klávesnice: Tab na další buňku, Enter potvrdí a skočí dolů, Esc vrátí hodnotu, F2 editace;
+- součty MD / Dal a rozdíl, `onTotalsChange`;
+- režim `mainAccount` (jen protiúčet, hlavní účet jen ke čtení) vs. `internal` (MD i Dal);
+- chyba řádku: `onValidationChange` hlásí `line: N` u správného řádku.
 
-| Soubor | Změna |
-|---|---|
-| `package.json` | verze 2.82.0; `"test": "bun test tests/unit"`; `"typecheck": "tsgo --noEmit"`. Do `node_modules/.bin` je teď vidět jen `tsc`, proto se nejdřív ověří, jestli jde `tsgo` spustit v projektu. Když ne, použije se `tsc --noEmit` a zapíše se to do shrnutí. |
-| `tests/unit/grid-toolbar-2211.test.ts` | import `vitest` se nahradí za `bun:test`, nic jiného se nemění |
-| `eslint.config.js` | nová pravidla, přesné znění je níže |
-| `src/**` (33 výskytů v 13 souborech) | `any`, `as unknown as` a `as never` se nahradí jen správným typem (generika, `satisfies`, zúžení). Místa, kde by to znamenalo změnit logiku, zůstanou a vypíšou se. |
-| `src/components/ds/grid/grid-export.tsx` | nový prop `fileName`; `fijename` zůstane jako alias `/** @deprecated od 2.82.0 – použij fileName */`. Použije se `fileName ?? fijename` a jeden z nich musí být zadaný. Typ se zapíše jako sjednocení, aby veřejné API zůstalo zpětně kompatibilní. |
-| `src/components/ds/grid/DataGrid.tsx` | na řádku 1181 se `fijename=` přepne na `fileName=` |
-| ukázky a testy s `fijename` | přepnou se na `fileName` (najdou se přes `rg`) |
-| `.lovable/design-system.json`, `.lovable/rules/components.md` | doplní se `fileName` a u `fijename` se označí, že je zastaralý. Obsah všech dosavadních pravidel zůstane. |
-| `CHANGELOG.md` (nový) | celý changelog z README, seřazený od nejnovější verze. Doplní se chybějící verze 2.70, 2.72, 2.74, 2.76, 2.78 a 2.80, každá jednou větou podle historie commitů, a 2.81 a 2.82. Přibudou sem i poznámky k vydání ze `system.md`. |
-| `README.md` | zůstane jen účel, instalace, použití (současné ukázky), skripty a odkazy na `CHANGELOG.md`, `.lovable/system.md` a `AGENTS.md` |
-| `.lovable/system.md` | poznámky k vydání se přesunou do CHANGELOG, pravidla zůstanou doslova (podrobnosti níže) |
-| `null` (v kořeni) | smazat |
-| `AGENTS.md` (kořenový) | jen přidat jeden odkazový řádek (viz níže) |
-| `src/components/ds/AGENTS.md` (nový) | 13 pravidel doslova podle zadání |
-| `roadmap.md` | záznam 2.82.0 |
+`tests/unit/journal-lines-model.test.ts` (čisté vstup → výstup): součty, platnost řádku, pořadí/přečíslování, návrh zaokrouhlení, layout sloupců.
 
-## Pravidla ESLint (přesné znění)
-```js
-"@typescript-eslint/no-explicit-any": "error",
-"@typescript-eslint/no-unused-vars": "warn",
-"max-lines": ["warn", { max: 500, skipBlankLines: true, skipComments: true }],
-"no-restricted-syntax": ["error",
-  { selector: "TSAsExpression > TSUnknownKeyword", message: "Použij správný typ; přetypování přes unknown/never je zakázané" },
-  { selector: "TSAsExpression > TSNeverKeyword",  message: "Použij správný typ; přetypování přes unknown/never je zakázané" }],
-```
-Pro `**/*.test.{ts,tsx}` přibude zvláštní blok:
-```js
-"no-restricted-imports": ["warn", { paths: [
-  { name: "node:fs", message: "Testy ověřují chování, ne zdrojový text" },
-  { name: "fs",      message: "Testy ověřují chování, ne zdrojový text" }] }]
-```
-Poznámka: `no-explicit-any` a `no-restricted-syntax` platí jako chyba i v testech a ve složce `src/components/ui` (shadcn). Když tam něco zůstane, vypíše se to ve shrnutí jako počet chyb. Lint se v tomto kroku nevynucuje, testy ani soubory shadcn se kvůli tomu neupravují.
+Stávajících 6 journal testů + e2e `journal-editor.spec.ts` beze změny.
 
-## `.lovable/system.md` – co se přesune
-- Do CHANGELOG se celé přesunou tyto sekce: „DS 2.64.0“, „DS 2.66.0“, „DS 2.68.0“, „BREAKING pro aplikace – migrace na 2.53.0“ a „Nové API 2.53.0“. Také věty typu „od 2.xx…“, které vysvětlují historii a nejsou pravidlem.
-- Z nadpisů pravidel se odebere číslo verze, například „Pravidlo 20 – nadpisy a popisky (2.54.0, závazné)“ se změní na „Pravidlo 20 – nadpisy a popisky (závazné)“. Text pravidel se nemění.
-- Když sekce „DS 2.6x“ obsahuje i závazné pravidlo, pravidlo zůstane v system.md pod věcným nadpisem a jen popis vydání se přesune.
+## 2. Mapa souborů 5a (před → po)
 
-## Pravidla pro AGENTS.md
-Kořenový `AGENTS.md` má dnes 1 994 bajtů a limit je 2 048, takže se do něj 13 pravidel nevejde. Proto:
-- Pravidla se doslova v zadaném znění vloží do nového souboru `src/components/ds/AGENTS.md`. Je to pravidlový soubor DS, obdoba `src/components/ds/accounting/AGENTS.md`.
-- Do kořenového `AGENTS.md` se přidá jen řádek: `- Pravidla kvality DS: src/components/ds/AGENTS.md.` Nic se v něm nemaže ani nepřeformulovává. Pokud by i tento řádek překročil limit, zkrátí se na `- Kvalita DS: src/components/ds/AGENTS.md.`
+| Soubor (po) | Odpovědnost | Z dnešních řádků | Odhad |
+|---|---|---|---|
+| `journal-lines-editor.tsx` | jen re-export (zachová importní cesty a `index.ts`) | – | ~25 |
+| `JournalLinesEditor.tsx` | skládání: props → hooky → tabulka, lišta, patička | 709–815, 2215–2260 | ≤ 300 |
+| `journal-editor-types.ts` | veřejné typy a props (`JournalLinesEditorProps`, `JournalLinesVat`, …) | 97–146, 628–674 | ~150 |
+| `journal-lines-model.ts` | čisté: zaokrouhlení, `calculateLineAmount`, `orderJournalLines`, `reorderJournalLines`, `roundingSuggestion`, `journalAmountLabels`, platnost řádku (`sideIssues`, `vatIssues`), přečíslování, `displayValue` | 302–427, 1381–1530 | ~380 |
+| `journal-column-layout.ts` | šířky, `resolveJournalColumnLayout`, `resolveJournalZoomLayout`, `normalizeJournalAccountVisibility` | 428–627 | ~230 |
+| `journal-columns.ts` | definice sloupců podle režimu, popisky účtů | 881–990 | ~180 |
+| `useJournalEditorState.ts` | stav řádků (add/duplicate/remove/move/patch, VAT patch), editace buňky, dirty/touched, validace a hlášení rodiči | 1076–1475 (bez čistých funkcí) | ~450 |
+| `useJournalKeyboard.ts` | Tab/Enter/Esc/F2, šipky, Ctrl+D, Ctrl+Delete, `focusRelative` | 1529–1545, 2220–2300 | ~250 |
+| `useJournalLayout.ts` | měření šířky, auto zoom (kaskáda do 0,75), viditelné sloupce | 773–813, 988–1075 | ~220 |
+| `JournalCell.tsx` | zobrazení jedné buňky podle typu sloupce | 1474–1528, 2400–2600 | ~300 |
+| `JournalCellEditor.tsx` | editor buňky podle typu (účet, částka, DPH, výběry, text) | 1546–1910 | ~400 |
+| `JournalRow.tsx` | řádek (`SortableRow`), akce řádku, rozbalený detail | 675–708, 1912–2110, 2600–2706 | ~350 |
+| `JournalFooter.tsx` | součtový řádek MD/Dal, rozdíl, zaokrouhlení, návrh vyrovnání | 1141–1192, 2109–2214 | ~250 |
 
-Pokud chcete pravidla přímo v kořenovém souboru, musely by se z něj přesunout jiné řádky, což zadání zakazuje. Proto navrhuji tento postup.
+Proti zadání navíc: `useJournalKeyboard.ts`, `useJournalLayout.ts`, `journal-column-layout.ts`, `journal-columns.ts`, `JournalCellEditor.tsx`, `journal-editor-types.ts` – jinak by stav nebo buňka přesáhly 500 řádků. Každý soubor: hlavička (co · vlastní · nesmí), JSDoc česky, bez `any`/`as never`.
 
-## Co se nemění
-Komponenty, texty pro uživatele, logika, testy (kromě importu `bun:test` a přepnutí na `fileName`) a `.lovable/meta.yaml`. Dlouhé soubory ani komponenty s mnoha props (DataGrid) se teď nedělí. Pravidla to jen ohlašují a lint na to upozorní varováním.
+**Texty:** nový klíč `DsTexts.journalEditor` (CS + SK překlad). `DEFAULT_JOURNAL_LINES_TEXTS` zůstane exportovaný jako `DS_TEXTS_CS.journalEditor`; priorita prop `texts` → provider → CS. `ds-texts.tsx` je už dnes nad 500 řádků (existující soubor, roste o ~3×75 ř.); jeho dělení je samostatný úkol.
 
-## Ověření na konci
-`typecheck`, `lint` (chyby a varování před a po), `test` (počet před a po, všechny musí projít), `format:check` a `build`. Kontrola, že v CHANGELOG nic nechybí: každý nadpis verze z původního README a každá přesunutá sekce ze system.md se v něm dohledá. Shrnutí uvede, co se změnilo, kde a proč, co se nezměnilo a proč, a co se neověřilo.
+## 3. 5c `useDialogBackClose` a StrictMode
+Předpokládaná příčina (potvrdí nejdřív test s `<StrictMode>`): při simulovaném odpojení úklid zavolá `history.back()`, znovupřipojení vloží nový záznam a opožděný `popstate` pak dialog zavře.
+Oprava: úklid při odpojení odloží `history.back()` (mikroúloha) a zruší jej, pokud se komponenta hned znovu připojí; vložení záznamu je idempotentní (jeden marker na otevření).
+Test `tests/unit/dialog-back-close-strict.test.tsx`: StrictMode → jeden záznam historie, dialog zůstane otevřený; Zpět jej zavře; zavření tlačítkem záznam odebere; vnořené dialogy dál fungují.
+
+**Pro APP po vydání:** vrátit `<StrictMode>` v kořeni a smazat `dialog-history-guard` (soubor, jeho import a obal/volání v kořeni či dialozích). Bezpečnost potvrdím až po zeleném testu.
+
+## 4. Chyba z APP: vnořený RecordDialog odešle vnější formulář
+Příčina: dialog je sice v portálu (DOM mimo vnější `<form>`), ale React události bublají podle stromu komponent, takže `submit` vnitřního formuláře dojde k `onSubmit` vnějšího.
+Oprava: `onSubmit` formuláře v `RecordDialog` volá `event.stopPropagation()` (oba způsoby vykreslení – Dialog i portál panelu).
+Test `tests/unit/record-dialog-nested.test.tsx`: dva vnořené `RecordDialog`, Uložit vnitřního zavolá jen vnitřní `onSubmit`; Uložit vnějšího funguje dál.
+
+## 5. Závěr
+`format`, `typecheck`, `lint` (0 chyb v nových/změněných), `test`, `build` s počty; `CHANGELOG.md` 2.83.0 (API beze změny, oprava vnořeného formuláře, StrictMode, rozdělení editoru); `package.json` 2.83.0; `roadmap.md`; tabulka souborů se skutečnými řádky; co nezměněno a proč (41 props editoru → 3.0.0, `ds-texts.tsx` délka). Nevydávám.
