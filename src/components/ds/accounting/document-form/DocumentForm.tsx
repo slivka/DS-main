@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
-import { Switch } from "../../../ui/switch";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar } from "../../layout/record-action-bar";
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
-import { VatStatusBadge } from "../../data-display/vat-status-badge";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
@@ -37,6 +35,7 @@ import { DocumentAmountSection } from "./AmountSection";
 import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
+import { DocumentVatActionStatus } from "./document-vat-action-status";
 export function DocumentForm({
   title,
   titleBadges,
@@ -356,30 +355,13 @@ export function DocumentForm({
         <RecordActionBar
           leftContent={
             vat?.visible ? (
-              <div className="flex min-w-0 items-center gap-2">
-                <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
-                  <Switch
-                    checked={vatRelevant}
-                    disabled={vat.relevantReadOnly}
-                    onCheckedChange={(next) => patch({ vatRelevant: next })}
-                    aria-label={t.vatRelevant}
-                  />
-                  {t.vatRelevant}
-                </label>
-                {vatRelevant && vatPartnerStatus ? (
-                  <span className="flex min-w-0 items-center gap-2 overflow-hidden">
-                    <VatStatusBadge status={vatPartnerStatus.status} />
-                    {vatPartnerStatus.checkedAt ? (
-                      <span
-                        className="hidden truncate text-xs text-muted-foreground @min-[44rem]:inline"
-                        title={t.vatVerified(vatPartnerStatus.checkedAt)}
-                      >
-                        {t.vatVerified(vatPartnerStatus.checkedAt)}
-                      </span>
-                    ) : null}
-                  </span>
-                ) : null}
-              </div>
+              <DocumentVatActionStatus
+                checked={vatRelevant}
+                readOnly={vat.relevantReadOnly}
+                onCheckedChange={(next) => patch({ vatRelevant: next })}
+                status={vatPartnerStatus}
+                texts={t}
+              />
             ) : null
           }
           saveAction={saveAction}
