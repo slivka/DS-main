@@ -59,12 +59,37 @@ export function DocumentCounterpartyTab({
         ) : null}
       </div>
       <FieldGrid cols={12}>
-        <Field label={texts.name} span={6}><Input value={value.name} readOnly={readOnly} onChange={(event) => patch({ name: event.target.value })} /></Field>
-        <Field label={texts.ico} span={3}><Input value={value.ico} readOnly={readOnly} onChange={(event) => patch({ ico: event.target.value })} /></Field>
-        <Field label={texts.dic} span={3}><Input value={value.dic} readOnly={readOnly} onChange={(event) => patch({ dic: event.target.value })} /></Field>
+        <Field label={texts.name} span={6}>
+          <Input
+            value={value.name}
+            readOnly={readOnly}
+            onChange={(event) => patch({ name: event.target.value })}
+          />
+        </Field>
+        <Field label={texts.ico} span={3}>
+          <Input
+            value={value.ico}
+            readOnly={readOnly}
+            onChange={(event) => patch({ ico: event.target.value })}
+          />
+        </Field>
+        <Field label={texts.dic} span={3}>
+          <Input
+            value={value.dic}
+            readOnly={readOnly}
+            onChange={(event) => patch({ dic: event.target.value })}
+          />
+        </Field>
       </FieldGrid>
       <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
-      <Field label={texts.email}><Input type="email" value={value.email} readOnly={readOnly} onChange={(event) => patch({ email: event.target.value })} /></Field>
+      <Field label={texts.email}>
+        <Input
+          type="email"
+          value={value.email}
+          readOnly={readOnly}
+          onChange={(event) => patch({ email: event.target.value })}
+        />
+      </Field>
     </div>
   );
 }
@@ -103,18 +128,78 @@ export function DocumentPrintTab({ value, onChange, readOnly = false }: Document
   const texts = useDsTexts().documentForm;
   const patch = (next: Partial<DocumentPrintValue>) => onChange({ ...value, ...next });
   const option = (key: keyof DocumentPrintOptions, label: string) => (
-    <CheckboxField label={label} checked={value.options[key]} disabled={readOnly} onCheckedChange={(checked) => patch({ options: { ...value.options, [key]: checked } })} />
+    <CheckboxField
+      label={label}
+      checked={value.options[key]}
+      disabled={readOnly}
+      onCheckedChange={(checked) => patch({ options: { ...value.options, [key]: checked } })}
+    />
   );
   return (
     <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="grid gap-5 @container @min-[48rem]:grid-cols-3">
-        <CheckboxGroup title={texts.printGeneral}>{option("showHeader", texts.printHeader)}{option("showFooter", texts.printFooter)}{option("showVatRecap", texts.printVatRecap)}{option("showNote", texts.printNote)}</CheckboxGroup>
-        <CheckboxGroup title={texts.printItems}>{option("showColumnHeadings", texts.printColumnHeadings)}{option("showTotalsRow", texts.printTotalsRow)}{option("showPaymentSchedule", texts.printPaymentSchedule)}</CheckboxGroup>
-        <FieldGrid cols={1} title={texts.issuedBy}><Field label={texts.name}><Input value={value.issuedByName} readOnly={readOnly} onChange={(event) => patch({ issuedByName: event.target.value })} /></Field><Field label={texts.phone}><Input value={value.issuedByPhone} readOnly={readOnly} onChange={(event) => patch({ issuedByPhone: event.target.value })} /></Field><Field label={texts.email}><Input value={value.issuedByEmail} readOnly={readOnly} onChange={(event) => patch({ issuedByEmail: event.target.value })} /></Field></FieldGrid>
+        <CheckboxGroup title={texts.printGeneral}>
+          {option("showHeader", texts.printHeader)}
+          {option("showFooter", texts.printFooter)}
+          {option("showVatRecap", texts.printVatRecap)}
+          {option("showNote", texts.printNote)}
+        </CheckboxGroup>
+        <CheckboxGroup title={texts.printItems}>
+          {option("showColumnHeadings", texts.printColumnHeadings)}
+          {option("showTotalsRow", texts.printTotalsRow)}
+          {option("showPaymentSchedule", texts.printPaymentSchedule)}
+        </CheckboxGroup>
+        <FieldGrid cols={1} title={texts.issuedBy}>
+          <Field label={texts.name}>
+            <Input
+              value={value.issuedByName}
+              readOnly={readOnly}
+              onChange={(event) => patch({ issuedByName: event.target.value })}
+            />
+          </Field>
+          <Field label={texts.phone}>
+            <Input
+              value={value.issuedByPhone}
+              readOnly={readOnly}
+              onChange={(event) => patch({ issuedByPhone: event.target.value })}
+            />
+          </Field>
+          <Field label={texts.email}>
+            <Input
+              value={value.issuedByEmail}
+              readOnly={readOnly}
+              onChange={(event) => patch({ issuedByEmail: event.target.value })}
+            />
+          </Field>
+        </FieldGrid>
       </div>
       <div className="grid gap-3 @container @min-[48rem]:grid-cols-2">
-        <div className="space-y-3"><Field label={texts.headerText}><Textarea rows={3} value={value.headerText} readOnly={readOnly} onChange={(event) => patch({ headerText: event.target.value })} /></Field><Field label={texts.footerText}><Textarea rows={3} value={value.footerText} readOnly={readOnly} onChange={(event) => patch({ footerText: event.target.value })} /></Field></div>
-        <Field label={texts.note}><Textarea className="h-full min-h-[9rem]" value={value.note} readOnly={readOnly} onChange={(event) => patch({ note: event.target.value })} /></Field>
+        <div className="space-y-3">
+          <Field label={texts.headerText}>
+            <Textarea
+              rows={3}
+              value={value.headerText}
+              readOnly={readOnly}
+              onChange={(event) => patch({ headerText: event.target.value })}
+            />
+          </Field>
+          <Field label={texts.footerText}>
+            <Textarea
+              rows={3}
+              value={value.footerText}
+              readOnly={readOnly}
+              onChange={(event) => patch({ footerText: event.target.value })}
+            />
+          </Field>
+        </div>
+        <Field label={texts.note}>
+          <Textarea
+            className="h-full min-h-[9rem]"
+            value={value.note}
+            readOnly={readOnly}
+            onChange={(event) => patch({ note: event.target.value })}
+          />
+        </Field>
       </div>
     </div>
   );

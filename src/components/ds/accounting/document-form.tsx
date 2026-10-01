@@ -1112,10 +1112,28 @@ export function DocumentForm({
     },
     ...tabs.filter((item) => item.id !== "lines"),
     ...(issuedDocument && counterpartyTab
-      ? [{ id: "counterparty", label: t.counterpartyTab, content: <DocumentCounterpartyTab {...counterpartyTab} partnerId={value.partnerId} readOnly={readOnly} /> }]
+      ? [
+          {
+            id: "counterparty",
+            label: t.counterpartyTab,
+            content: (
+              <DocumentCounterpartyTab
+                {...counterpartyTab}
+                partnerId={value.partnerId}
+                readOnly={readOnly}
+              />
+            ),
+          },
+        ]
       : []),
     ...(issuedDocument && printTab
-      ? [{ id: "print", label: t.printTab, content: <DocumentPrintTab {...printTab} readOnly={readOnly} /> }]
+      ? [
+          {
+            id: "print",
+            label: t.printTab,
+            content: <DocumentPrintTab {...printTab} readOnly={readOnly} />,
+          },
+        ]
       : []),
   ];
 
@@ -1247,7 +1265,10 @@ export function DocumentForm({
               <span className="flex min-w-0 items-center justify-between gap-2 whitespace-nowrap">
                 <span>{t.amountTotal}</span>
                 {totalMode === "sum" ? (
-                  <span className="min-w-0 truncate text-xs font-normal text-muted-foreground" title={t.sumFromLines}>
+                  <span
+                    className="min-w-0 truncate text-xs font-normal text-muted-foreground"
+                    title={t.sumFromLines}
+                  >
                     {t.sumFromLines}
                   </span>
                 ) : null}
@@ -1453,10 +1474,36 @@ export function DocumentForm({
               )
             : null}
           {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
-          {paymentMethodOptions ? field("document-paymentMethodId", t.paymentMethod, <OptionSelect id="document-paymentMethodId" value={value.paymentMethodId} onChange={(paymentMethodId) => patch({ paymentMethodId })} options={paymentMethodOptions} disabled={!can("paymentMethodId")} />) : null}
+          {paymentMethodOptions
+            ? field(
+                "document-paymentMethodId",
+                t.paymentMethod,
+                <OptionSelect
+                  id="document-paymentMethodId"
+                  value={value.paymentMethodId}
+                  onChange={(paymentMethodId) => patch({ paymentMethodId })}
+                  options={paymentMethodOptions}
+                  disabled={!can("paymentMethodId")}
+                />,
+              )
+            : null}
           {f.bankAccount && receivedDocument ? bankAccountField : null}
           {f.bankAccount && issuedDocument && companyBankAccountOptions
-            ? field("document-companyBankAccountId", t.companyBankAccount, <OptionSelect id="document-companyBankAccountId" value={value.companyBankAccountId} onChange={(companyBankAccountId) => patch({ companyBankAccountId })} options={companyBankAccountOptions.map((option) => ({ value: option.id, label: [option.label, option.account, option.currency].join(" · ") }))} disabled={!can("companyBankAccountId")} />, 20)
+            ? field(
+                "document-companyBankAccountId",
+                t.companyBankAccount,
+                <OptionSelect
+                  id="document-companyBankAccountId"
+                  value={value.companyBankAccountId}
+                  onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+                  options={companyBankAccountOptions.map((option) => ({
+                    value: option.id,
+                    label: [option.label, option.account, option.currency].join(" · "),
+                  }))}
+                  disabled={!can("companyBankAccountId")}
+                />,
+                20,
+              )
             : f.bankAccount && !receivedDocument
               ? bankAccountField
               : null}
@@ -1513,25 +1560,28 @@ export function DocumentForm({
           leftContent={
             vat?.visible ? (
               <div className="flex min-w-0 items-center gap-2">
-              <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
-                <Switch
-                  checked={vatRelevant}
-                  disabled={vat.relevantReadOnly}
-                  onCheckedChange={(next) => patch({ vatRelevant: next })}
-                  aria-label={t.vatRelevant}
-                />
-                {t.vatRelevant}
-              </label>
-              {vatRelevant && vatPartnerStatus ? (
-                <span className="flex min-w-0 items-center gap-2 overflow-hidden">
-                  <VatStatusBadge status={vatPartnerStatus.status} />
-                  {vatPartnerStatus.checkedAt ? (
-                    <span className="hidden truncate text-xs text-muted-foreground @min-[44rem]:inline" title={t.vatVerified(vatPartnerStatus.checkedAt)}>
-                      {t.vatVerified(vatPartnerStatus.checkedAt)}
-                    </span>
-                  ) : null}
-                </span>
-              ) : null}
+                <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
+                  <Switch
+                    checked={vatRelevant}
+                    disabled={vat.relevantReadOnly}
+                    onCheckedChange={(next) => patch({ vatRelevant: next })}
+                    aria-label={t.vatRelevant}
+                  />
+                  {t.vatRelevant}
+                </label>
+                {vatRelevant && vatPartnerStatus ? (
+                  <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+                    <VatStatusBadge status={vatPartnerStatus.status} />
+                    {vatPartnerStatus.checkedAt ? (
+                      <span
+                        className="hidden truncate text-xs text-muted-foreground @min-[44rem]:inline"
+                        title={t.vatVerified(vatPartnerStatus.checkedAt)}
+                      >
+                        {t.vatVerified(vatPartnerStatus.checkedAt)}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
               </div>
             ) : null
           }
@@ -1700,32 +1750,32 @@ export function DocumentForm({
           <SectionHeading>{t.datesSection}</SectionHeading>
           <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
             <div className="flex flex-wrap items-start gap-3">
-            {date(
-              "issueDate",
-              t.issueDate,
-              "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-            )}
-            {date(
-              "accountingDate",
-              t.accountingDate,
-              "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-            )}
-            {f.dueDate
-              ? date(
-                  "dueDate",
-                  t.dueDate,
-                  "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-                )
-              : null}
+              {date(
+                "issueDate",
+                t.issueDate,
+                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+              )}
+              {date(
+                "accountingDate",
+                t.accountingDate,
+                "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+              )}
+              {f.dueDate
+                ? date(
+                    "dueDate",
+                    t.dueDate,
+                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                  )
+                : null}
             </div>
             <div className="ml-auto flex flex-wrap items-start justify-end gap-3">
-            {showVatFields && f.taxDate
-              ? date(
-                  "taxDate",
-                  t.taxDate,
-                  "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
-                )
-              : null}
+              {showVatFields && f.taxDate
+                ? date(
+                    "taxDate",
+                    t.taxDate,
+                    "flex-none w-max min-w-[8.5rem] [&_input]:w-[8.5rem] [&_input]:min-w-full",
+                  )
+                : null}
             </div>
             {showVatFields
               ? date(

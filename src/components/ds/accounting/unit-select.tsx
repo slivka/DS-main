@@ -67,7 +67,8 @@ export function UnitSelect({
   const filtered = options.filter(
     (item) =>
       item.isActive &&
-      (!normalized || formatCodeName(item.code, item.name).toLocaleLowerCase("cs").includes(normalized)),
+      (!normalized ||
+        formatCodeName(item.code, item.name).toLocaleLowerCase("cs").includes(normalized)),
   );
   const canCreate = Boolean(
     onCreateUnit &&

@@ -89,7 +89,8 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       onChange(next);
     };
     const manual =
-      !selectionOnly && (options.length === 0 || otherSelected || (Boolean(value) && !selectedOption));
+      !selectionOnly &&
+      (options.length === 0 || otherSelected || (Boolean(value) && !selectedOption));
     const compact = value.replace(/\s/g, "");
     const [accountPart = "", bankCode = ""] = compact.split("/");
     const parsed = parseCzAccount(accountPart);
@@ -134,13 +135,13 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
               ...options
                 .filter((option) => !option.invalid || optionValue(option) === value)
                 .map((option) => ({
-                value: optionValue(option),
-                label: [option.label, `${option.number}/${option.bankCode}`, option.currency]
-                  .filter(Boolean)
-                  .join(" · "),
-                selectedLabel: `${option.number}/${option.bankCode}`,
-                inactive: option.invalid,
-              })),
+                  value: optionValue(option),
+                  label: [option.label, `${option.number}/${option.bankCode}`, option.currency]
+                    .filter(Boolean)
+                    .join(" · "),
+                  selectedLabel: `${option.number}/${option.bankCode}`,
+                  inactive: option.invalid,
+                })),
               ...(onAddAccount
                 ? [{ value: OTHER, label: addAccountText }]
                 : selectionOnly

@@ -144,12 +144,19 @@ function OverviewPage() {
             value={roundingMode}
             defaultValue="a"
             onChange={setRoundingMode}
-            options={[{ value: "a", label: "A" }, { value: "b", label: "B" }]}
+            options={[
+              { value: "a", label: "A" },
+              { value: "b", label: "B" },
+            ]}
           />
           <DocumentStatusBadge status="posted" />
           <DocumentDirectionBadge direction="in" />
-          <Button size="icon" variant="outline" aria-label="Kalendář">◫</Button>
-          <Button size="icon" variant="outline" aria-label="Součet">Σ</Button>
+          <Button size="icon" variant="outline" aria-label="Kalendář">
+            ◫
+          </Button>
+          <Button size="icon" variant="outline" aria-label="Součet">
+            Σ
+          </Button>
         </div>
       </ShowcaseSection>
 

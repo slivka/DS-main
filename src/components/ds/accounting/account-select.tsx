@@ -189,7 +189,9 @@ export function AccountSelect({
               selected ? "font-mono tabular-nums text-foreground" : "text-muted-foreground",
             )}
           >
-            {selected ? formatCodeName(formatAccountCode(selected.code), selected.name) : placeholder}
+            {selected
+              ? formatCodeName(formatAccountCode(selected.code), selected.name)
+              : placeholder}
           </span>
           <span className="ml-auto flex shrink-0 items-center gap-2">
             {suffix}

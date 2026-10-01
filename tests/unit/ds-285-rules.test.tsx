@@ -20,9 +20,7 @@ describe("DS 2.85.0 – obecná pravidla", () => {
   });
 
   it("zobrazuje prázdnou volbu tlumeně a vstup bez placeholderu", () => {
-    const select = renderToStaticMarkup(
-      <OptionSelect value="" onChange={vi.fn()} options={[]} />,
-    );
+    const select = renderToStaticMarkup(<OptionSelect value="" onChange={vi.fn()} options={[]} />);
     const date = renderToStaticMarkup(<DateField value="" onChange={vi.fn()} />);
     expect(select).toContain("text-muted-foreground");
     expect(date).not.toContain("placeholder=");
@@ -30,13 +28,26 @@ describe("DS 2.85.0 – obecná pravidla", () => {
 
   it("počítá šířku data podle právě viditelných ikon", () => {
     const locked = renderToStaticMarkup(
-      <DateField value="2026-10-01" onChange={vi.fn()} link={{ locked: true, onToggle: vi.fn() }} />,
+      <DateField
+        value="2026-10-01"
+        onChange={vi.fn()}
+        link={{ locked: true, onToggle: vi.fn() }}
+      />,
     );
     const unlocked = renderToStaticMarkup(
-      <DateField value="2026-10-01" onChange={vi.fn()} link={{ locked: false, onToggle: vi.fn() }} />,
+      <DateField
+        value="2026-10-01"
+        onChange={vi.fn()}
+        link={{ locked: false, onToggle: vi.fn() }}
+      />,
     );
     const warned = renderToStaticMarkup(
-      <DateField value="2026-10-01" onChange={vi.fn()} warning="Pozor" warningDisplay="indicator" />,
+      <DateField
+        value="2026-10-01"
+        onChange={vi.fn()}
+        warning="Pozor"
+        warningDisplay="indicator"
+      />,
     );
     expect(locked).toContain('data-visible-icons="1"');
     expect(unlocked).toContain('data-visible-icons="2"');
@@ -45,7 +56,10 @@ describe("DS 2.85.0 – obecná pravidla", () => {
 
   it("řadí hlavní krok před uložením a nabízí editaci vybraného záznamu", () => {
     const bar = renderToStaticMarkup(
-      <RecordActionBar primaryAction={{ label: "Zaúčtovat", onClick: vi.fn() }} saveAction={{ onSave: vi.fn() }} />,
+      <RecordActionBar
+        primaryAction={{ label: "Zaúčtovat", onClick: vi.fn() }}
+        saveAction={{ onSave: vi.fn() }}
+      />,
     );
     const lookup = renderToStaticMarkup(
       <LookupField value="42" onChange={vi.fn()} onEditSelected={vi.fn()} />,
@@ -73,14 +87,39 @@ describe("DS 2.85.0 – formulář dokladu", () => {
 
   it("řadí platební údaje před poslední sekci Částka", () => {
     const html = renderToStaticMarkup(
-      <DocumentForm title="Doklad" documentType="FP" value={value} onChange={vi.fn()} lines={[]} onLinesChange={vi.fn()} books={[]} accounts={[]} homeCurrency="CZK" status="draft" paymentMethodOptions={[{ value: "transfer", label: "Převod" }]} />,
+      <DocumentForm
+        title="Doklad"
+        documentType="FP"
+        value={value}
+        onChange={vi.fn()}
+        lines={[]}
+        onLinesChange={vi.fn()}
+        books={[]}
+        accounts={[]}
+        homeCurrency="CZK"
+        status="draft"
+        paymentMethodOptions={[{ value: "transfer", label: "Převod" }]}
+      />,
     );
     expect(html.indexOf("Platební údaje")).toBeLessThan(html.indexOf(">Částka<"));
   });
 
   it("zobrazuje nový účet partnera jen jako výběr a varuje u neplatného", () => {
     const html = renderToStaticMarkup(
-      <DocumentForm title="Doklad" documentType="FP" value={value} onChange={vi.fn()} lines={[]} onLinesChange={vi.fn()} books={[]} accounts={[]} homeCurrency="CZK" status="draft" bankAccountOptions={[{ id: "bank-1", number: "123", bankCode: "0100", invalid: true }]} onAddBankAccount={vi.fn()} />,
+      <DocumentForm
+        title="Doklad"
+        documentType="FP"
+        value={value}
+        onChange={vi.fn()}
+        lines={[]}
+        onLinesChange={vi.fn()}
+        books={[]}
+        accounts={[]}
+        homeCurrency="CZK"
+        status="draft"
+        bankAccountOptions={[{ id: "bank-1", number: "123", bankCode: "0100", invalid: true }]}
+        onAddBankAccount={vi.fn()}
+      />,
     );
     expect(html).toContain("Bankovní účet je označen jako neplatný");
     expect(html).toContain("Přidat účet…");

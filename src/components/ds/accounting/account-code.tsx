@@ -33,11 +33,7 @@ export interface AccountCodeProps {
 }
 
 /** Číslo účtu v jednotném tvaru, volitelně s názvem za typografickou pomlčkou. */
-export function AccountCode({
-  code,
-  name,
-  className,
-}: AccountCodeProps) {
+export function AccountCode({ code, name, className }: AccountCodeProps) {
   const formattedCode = formatAccountCode(code);
   return (
     <span className={cn("inline-flex min-w-0 items-baseline", className)}>

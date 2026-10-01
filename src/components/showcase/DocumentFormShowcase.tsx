@@ -358,7 +358,13 @@ const PAYMENT_METHOD_OPTIONS = [
   { value: "cash", label: "Hotově" },
 ];
 const COMPANY_BANK_ACCOUNT_OPTIONS = [
-  { id: "company-czk", label: "Hlavní účet", account: "123456789/0100", currency: "CZK", isDefault: true },
+  {
+    id: "company-czk",
+    label: "Hlavní účet",
+    account: "123456789/0100",
+    currency: "CZK",
+    isDefault: true,
+  },
   { id: "company-eur", label: "Eurový účet", account: "987654321/0100", currency: "EUR" },
 ];
 
@@ -660,11 +666,32 @@ export function DocumentFormShowcase() {
     paymentMethodId: "transfer",
   });
   const [counterpartyPrint, setCounterpartyPrint] = useState<DocumentCounterpartyValue>({
-    name: "Beta služby s.r.o.", ico: "27074358", dic: "CZ27074358", street: "Hlavní", house_number: "12", zip: "11000", city: "Praha", country: "CZ", email: "fakturace@example.cz",
+    name: "Beta služby s.r.o.",
+    ico: "27074358",
+    dic: "CZ27074358",
+    street: "Hlavní",
+    house_number: "12",
+    zip: "11000",
+    city: "Praha",
+    country: "CZ",
+    email: "fakturace@example.cz",
   });
   const [printData, setPrintData] = useState<DocumentPrintValue>({
-    options: { showHeader: true, showFooter: true, showVatRecap: true, showNote: true, showColumnHeadings: true, showTotalsRow: true, showPaymentSchedule: false },
-    headerText: "Děkujeme za objednávku.", footerText: "Splatnost dle dohody.", note: "Poznámka pro odběratele", issuedByName: "Jana Nováková", issuedByPhone: "+420 123 456 789", issuedByEmail: "jana@example.cz",
+    options: {
+      showHeader: true,
+      showFooter: true,
+      showVatRecap: true,
+      showNote: true,
+      showColumnHeadings: true,
+      showTotalsRow: true,
+      showPaymentSchedule: false,
+    },
+    headerText: "Děkujeme za objednávku.",
+    footerText: "Splatnost dle dohody.",
+    note: "Poznámka pro odběratele",
+    issuedByName: "Jana Nováková",
+    issuedByPhone: "+420 123 456 789",
+    issuedByEmail: "jana@example.cz",
   });
   const [fpNonPayer, setFpNonPayer] = useState<DocumentHeaderValue>({
     ...PURCHASE_INVOICE_HEADER,
@@ -827,7 +854,11 @@ export function DocumentFormShowcase() {
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
           vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
-          counterpartyTab={{ value: counterpartyPrint, onChange: setCounterpartyPrint, onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny") }}
+          counterpartyTab={{
+            value: counterpartyPrint,
+            onChange: setCounterpartyPrint,
+            onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny"),
+          }}
           printTab={{ value: printData, onChange: setPrintData }}
         />
       </ShowcaseSection>
