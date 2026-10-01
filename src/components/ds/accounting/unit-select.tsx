@@ -13,6 +13,7 @@ import {
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 import { InactiveTag } from "../data-display/inactive-tag";
 
 export interface UnitOption {
@@ -66,7 +67,7 @@ export function UnitSelect({
   const filtered = options.filter(
     (item) =>
       item.isActive &&
-      (!normalized || `${item.code} ${item.name}`.toLocaleLowerCase("cs").includes(normalized)),
+      (!normalized || formatCodeName(item.code, item.name).toLocaleLowerCase("cs").includes(normalized)),
   );
   const canCreate = Boolean(
     onCreateUnit &&

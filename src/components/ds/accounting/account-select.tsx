@@ -13,6 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { formatAccountCode, normalizeAccountCode } from "./account-code";
 import { cn } from "../../../lib/utils";
+import { formatCodeName } from "../../../lib/code-format";
 
 export type AccountType = "asset" | "liability" | "equity" | "revenue" | "expense" | "offBalance";
 
@@ -182,15 +183,13 @@ export function AccountSelect({
           }}
           className={cn("w-full justify-between font-normal", className)}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? (
-              <>
-                <span className="font-mono tabular-nums">{formatAccountCode(selected.code)}</span>
-                <span className="ml-2 text-muted-foreground">{selected.name}</span>
-              </>
-            ) : (
-              placeholder
+          <span
+            className={cn(
+              "truncate",
+              selected ? "font-mono tabular-nums text-foreground" : "text-muted-foreground",
             )}
+          >
+            {selected ? formatCodeName(formatAccountCode(selected.code), selected.name) : placeholder}
           </span>
           <span className="ml-auto flex shrink-0 items-center gap-2">
             {suffix}
@@ -224,13 +223,12 @@ export function AccountSelect({
                 >
                   <span
                     className={cn(
-                      "w-20 shrink-0 font-mono tabular-nums",
+                      "min-w-0 flex-1 truncate font-mono tabular-nums",
                       (a.level === "class" || a.level === "group") && "font-semibold",
                     )}
                   >
-                    {formatAccountCode(a.code)}
+                    {formatCodeName(formatAccountCode(a.code), a.name)}
                   </span>
-                  <span className="min-w-0 flex-1 truncate">{a.name}</span>
                   {a.type ? (
                     <span className="shrink-0 text-xs text-muted-foreground">
                       {typeLabels[a.type]}

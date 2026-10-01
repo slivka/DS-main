@@ -1,5 +1,5 @@
 import { cn } from "../../../lib/utils";
-import { formatCodeName } from "../../../lib/code-format";
+import { CODE_SEPARATOR, formatCodeName } from "../../../lib/code-format";
 
 /**
  * Zobrazení čísla účtu: první tři znaky jsou syntetika, zbytek je analytika
@@ -43,7 +43,9 @@ export function AccountCode({
     <span className={cn("inline-flex min-w-0 items-baseline", className)}>
       <span className="truncate font-mono tabular-nums" title={formatCodeName(formattedCode, name)}>
         {formattedCode}
-        {name ? <span className="font-sans text-muted-foreground">{formatCodeName("", name).replace(name, ` – ${name}`)}</span> : null}
+        {name ? (
+          <span className="font-sans text-muted-foreground">{`${CODE_SEPARATOR}${name}`}</span>
+        ) : null}
       </span>
     </span>
   );

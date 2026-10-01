@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState, type ComponentPropsWithoutRef } from "react";
-import { RefreshCw, Search } from "lucide-react";
+import { Pencil, RefreshCw, Search } from "lucide-react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
@@ -47,6 +47,10 @@ export interface LookupFieldProps extends Omit<
   resetKey?: string | number;
   searchLabel?: string;
   refreshLabel?: string;
+  /** Otevře editaci právě vybraného záznamu; jako identifikátor předá aktuální hodnotu. */
+  onEditSelected?: (id: string) => void;
+  /** Přístupný název tlačítka editace vybraného záznamu. */
+  editSelectedLabel?: string;
 }
 
 /** Vstup s ikonovou akcí v pravé části pole (vyhledání / obnovení z registru). */
@@ -62,6 +66,9 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
     resetKey,
     searchLabel = "Vyhledat",
     refreshLabel = "Aktualizovat",
+    onEditSelected,
+    editSelectedLabel = "Upravit vybraný záznam",
+    readOnly = false,
     className,
     ...inputProps
   },
@@ -84,6 +91,7 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
   const label = icon === "refresh" ? refreshLabel : searchLabel;
   const Icon = icon === "refresh" ? RefreshCw : Search;
   const showAction = !hideAction && Boolean(onAction);
+  const showEdit = Boolean(value && onEditSelected && !disabled && !readOnly);
 
   return (
     <div
@@ -96,7 +104,8 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className={cn(showAction && "pr-9")}
+        readOnly={readOnly}
+        className={cn(showAction && "pr-9", showEdit && (showAction ? "pr-16" : "pr-9"))}
         {...inputProps}
       />
       {showAction ? (
@@ -114,6 +123,22 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
           aria-label={label}
         >
           <Icon className={cn("size-4", busy && "animate-spin")} />
+        </Button>
+      ) : null}
+      {showEdit ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "absolute top-0 h-full w-7 text-muted-foreground hover:text-foreground",
+            showAction ? "right-9" : "right-0",
+          )}
+          onClick={() => onEditSelected?.(value)}
+          title={editSelectedLabel}
+          aria-label={editSelectedLabel}
+        >
+          <Pencil className="size-4" />
         </Button>
       ) : null}
     </div>
