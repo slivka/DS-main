@@ -102,7 +102,7 @@ describe("DS 2.85.0 – obecná pravidla", () => {
       />,
     );
     expect(available).toContain('role="combobox"');
-    expect(available).not.toContain("disabled=\"\"");
+    expect(available).not.toContain('disabled=""');
     expect(disabled).toContain("Nejdřív vyberte dodavatele");
   });
 
