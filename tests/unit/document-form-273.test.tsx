@@ -135,7 +135,8 @@ describe("DocumentForm 2.73", () => {
     ).toContain("col-span-6");
     expect(
       view.container.querySelector("[data-slot=document-payment-section] #document-bankAccount"),
-    ).toBeNull();
+    ).toBeTruthy();
+    expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
     const exclude = view.container
       .querySelector("#document-exclude-payment-orders")
       ?.closest("[data-slot=checkbox-field]");
