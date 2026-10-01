@@ -309,7 +309,6 @@ export function DocumentForm({
     issuedDocument,
     counterpartyTab,
     printTab,
-    total,
   });
   const currencyControl = useCurrencyControl({
     value,
