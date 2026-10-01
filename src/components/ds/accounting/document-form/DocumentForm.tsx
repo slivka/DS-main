@@ -108,7 +108,6 @@ export function DocumentForm({
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
-  // Dočasný popisek platí jen do chvíle, než aplikace vrátí nový popisek identity.
   const [selectedIdentityAccount, setSelectedIdentityAccount] = useState<{
     code: string;
     label: string;
