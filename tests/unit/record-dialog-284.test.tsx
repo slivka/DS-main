@@ -84,18 +84,25 @@ describe("formulářové prvky dialogu záznamu", () => {
 
 describe("RecordDialog 2.84", () => {
   it("ukázka A používá širokou mřížku a přesné rozložení polí", () => {
-    const view = render(<RecordDialogShowcase />);
+    const view = render(
+      <TooltipProvider>
+        <RecordDialogShowcase />
+      </TooltipProvider>,
+    );
     fireEvent.click(view.getByRole("button", { name: "Bez záložek" }));
     const dialog = view.getByRole("dialog");
     expect(dialog.className).toContain("sm:max-w-3xl");
-    expect(view.getByText("Typ knihy po založení nelze změnit.", { selector: "[role=tooltip]" }))
-      .toBeTruthy;
+    expect(view.getByLabelText("Typ knihy po založení nelze změnit.")).toBeTruthy();
     expect(view.getByText("Schválení")).toBeTruthy();
     expect(view.getByText("Vyžaduje schválení").closest('[data-align="input"]')).toBeTruthy();
   });
 
   it("ukázka C používá lg, FieldTable a stejné dvanáctisloupcové spany", () => {
-    const view = render(<RecordDialogShowcase />);
+    const view = render(
+      <TooltipProvider>
+        <RecordDialogShowcase />
+      </TooltipProvider>,
+    );
     fireEvent.click(view.getByRole("button", { name: "Číselné řady" }));
     expect(view.getByRole("dialog").className).toContain("sm:max-w-4xl");
     expect(view.getByRole("table", { name: "Číselné řady" })).toBeTruthy();
