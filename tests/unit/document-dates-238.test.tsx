@@ -205,7 +205,7 @@ describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
         vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
       />,
     );
-    expect(shown).toContain("Plátce DPH");
+    expect(shown).toContain(">Plátce<");
     expect(shown).toContain("Ověřeno 24.09.2026");
     expect(hidden).not.toContain("Plátce DPH");
   });
