@@ -55,8 +55,7 @@ describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", (
       availableWidthRem: 200,
       mode: "mainAccount" as const,
       visibleColumnIds: ["row", "text", "counterAccount", "amount", "actions"] as never[],
-  },
-});
+    };
     expect(resolveJournalColumnLayout({ ...base, zoom: 1.4 }).requiredWidthRem).toBeCloseTo(
       resolveJournalColumnLayout(base).requiredWidthRem * 1.4,
     );
