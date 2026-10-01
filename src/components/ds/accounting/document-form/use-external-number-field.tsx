@@ -35,6 +35,9 @@ export function useExternalNumberField({
   t,
   field,
 }: Args) {
+  const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
+  const externalNumberVsWarning =
+    receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
   const automaticVsRef = useRef<string | null>(
     value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null,
