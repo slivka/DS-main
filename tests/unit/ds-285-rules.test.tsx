@@ -11,6 +11,8 @@ import {
   OptionSelect,
   RecordActionBar,
   formatCodeName,
+  DocumentCounterpartyTab,
+  DocumentPrintTab,
 } from "../../src";
 import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
 
@@ -159,5 +161,77 @@ describe("DS 2.85.0 – formulář dokladu", () => {
     );
     expect(html).toContain("Bankovní účet je označen jako neplatný");
     expect(html).not.toContain('id="document-bankAccount" inputmode="numeric"');
+  });
+
+  it("odesílá identifikátor firemního účtu a neznámý KS nenabízí k volnému zápisu", () => {
+    let changed = value;
+    const view = renderToStaticMarkup(
+      <DocumentForm
+        title="FV"
+        documentType="FV"
+        value={value}
+        onChange={(next) => (changed = next)}
+        lines={[]}
+        onLinesChange={vi.fn()}
+        books={[]}
+        accounts={[]}
+        homeCurrency="CZK"
+        status="draft"
+        constantSymbolOptions={[{ value: "0308", label: "0308 – Platby za služby" }]}
+        companyBankAccountOptions={[
+          { id: "company-1", label: "Hlavní", account: "123/0100", currency: "CZK" },
+        ]}
+      />,
+    );
+    expect(view).toContain("Bankovní účet firmy");
+    expect(view).toContain("0308 – Platby za služby");
+    expect(changed.companyBankAccountId).toBeUndefined();
+  });
+
+  it("záložka odběratele respektuje readOnly a tisk vrací celý tvar value.print", () => {
+    const counterparty = {
+      name: "Firma",
+      ico: "12345678",
+      dic: "CZ12345678",
+      street: "Ulice 1",
+      zip: "11000",
+      city: "Praha",
+      country: "CZ",
+      email: "a@example.cz",
+    };
+    const readOnly = renderToStaticMarkup(
+      <DocumentCounterpartyTab
+        value={counterparty}
+        onChange={vi.fn()}
+        partnerId="p1"
+        onReloadFromPartner={vi.fn()}
+        readOnly
+      />,
+    );
+    expect(readOnly).not.toContain("Načíst znovu z partnera");
+    expect((readOnly.match(/readonly/g) ?? []).length).toBeGreaterThan(3);
+
+    const print = {
+      options: {
+        showHeader: false,
+        showFooter: false,
+        showVatRecap: false,
+        showNote: false,
+        showColumnHeadings: false,
+        showTotalsRow: false,
+        showPaymentSchedule: false,
+      },
+      headerText: "",
+      footerText: "",
+      note: "",
+      issuedByName: "",
+      issuedByPhone: "",
+      issuedByEmail: "",
+    };
+    let nextPrint = print;
+    renderToStaticMarkup(
+      <DocumentPrintTab value={print} onChange={(next) => (nextPrint = next)} readOnly />,
+    );
+    expect(nextPrint).toEqual(print);
   });
 });
