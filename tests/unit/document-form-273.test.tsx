@@ -52,6 +52,7 @@ function Form({ initial = base, ...props }: { initial?: typeof base } & Record<s
 
 afterEach(() => cleanup());
 afterAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 50));
   if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 

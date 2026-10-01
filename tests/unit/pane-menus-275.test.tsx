@@ -28,6 +28,7 @@ const { toast } = await import("sonner");
 afterEach(() => cleanup());
 afterAll(async () => {
   await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 50));
   if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 

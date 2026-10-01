@@ -27,7 +27,10 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 afterEach(cleanup);
-afterAll(() => GlobalRegistrator.unregister());
+afterAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
+});
 
 describe("formulářové prvky dialogu záznamu", () => {
   it("sdílí standardní výšku ovládání a hodnoty jen ke čtení", () => {
