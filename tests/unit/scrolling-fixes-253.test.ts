@@ -13,7 +13,9 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Jednoduchý localStorage pro prostředí bez DOM.
 const memory = new Map<string, string>();
-(globalThis as { localStorage?: Storage }).localStorage = {
+Object.defineProperty(globalThis, "localStorage", {
+  configurable: true,
+  value: {
   get length() {
     return memory.size;
   },
@@ -52,7 +54,8 @@ describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", (
       availableWidthRem: 200,
       mode: "mainAccount" as const,
       visibleColumnIds: ["row", "text", "counterAccount", "amount", "actions"] as never[],
-    };
+  },
+});
     expect(resolveJournalColumnLayout({ ...base, zoom: 1.4 }).requiredWidthRem).toBeCloseTo(
       resolveJournalColumnLayout(base).requiredWidthRem * 1.4,
     );

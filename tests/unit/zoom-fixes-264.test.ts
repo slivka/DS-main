@@ -94,7 +94,7 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
   it("pointercancel uvolní zámek a vyšle app:resize-end právě jednou", () => {
     let ends = 0;
     let finished = 0;
-    g.window.addEventListener(RESIZE_END_EVENT, () => {
+    globalThis.window.addEventListener(RESIZE_END_EVENT, () => {
       ends += 1;
     });
     startPointerDrag(
@@ -117,7 +117,7 @@ describe("DS 2.64 – zámek tažení se nezasekne", () => {
 
   it("ztráta fokusu okna tažení také ukončí", () => {
     let ends = 0;
-    g.window.addEventListener(RESIZE_END_EVENT, () => {
+    globalThis.window.addEventListener(RESIZE_END_EVENT, () => {
       ends += 1;
     });
     startPointerDrag({ pointerId: 2, currentTarget: null }, { onMove: () => undefined });
