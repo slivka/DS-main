@@ -50,7 +50,7 @@ export function FiscalPeriodSelect({
   return (
     <Select value={value ?? undefined} onValueChange={onChange}>
       <SelectTrigger
-        className={cn("grid-toolbar-control h-9 w-[260px]", className)}
+        className={cn("grid-toolbar-control h-[var(--control-h)] w-[260px]", className)}
         aria-label={label}
       >
         <SelectValue placeholder={label} />

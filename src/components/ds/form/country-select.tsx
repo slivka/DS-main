@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, ChevronsUpDown, SearchX } from "lucide-react";
+import { Check, ChevronDown, SearchX } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
   Command,
@@ -176,7 +176,7 @@ export function CountrySelect({
               ? `${selected.name} (${selected.code})`
               : (placeholder ?? dsTexts.country.choose)}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+          <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">

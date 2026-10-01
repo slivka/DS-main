@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -102,7 +102,7 @@ export function CategorySelect({
             "w-full justify-between font-normal",
             variant === "cell"
               ? "h-7 rounded-none border-transparent bg-transparent px-1 text-[1em] shadow-none hover:bg-transparent focus-visible:border-input focus-visible:bg-background"
-              : "h-9",
+              : "h-[var(--control-h)]",
             !selected && "text-muted-foreground",
             className,
           )}
@@ -110,7 +110,7 @@ export function CategorySelect({
           <span className="truncate">
             {selected ? selected.name : allowEmpty ? emptyLabel : placeholder}
           </span>
-          <ChevronsUpDown className="ml-1 size-3.5 shrink-0 opacity-50" />
+          <ChevronDown className="ml-1 size-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent

@@ -1,5 +1,9 @@
 # Pravidla kvality DS
 
+## Dialogy záznamů
+
+Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
+
 - Před implementací vyhledej existující komponenty, hooky, typy a pomocné funkce a použij je; druhou implementaci stejného pravidla nevytvářej. Proč: jedno místo pravidla.
 - Zachovávej existující chování mimo rozsah zadání; závažný problém ohlas a navrhni řešení, nevyžádaný refaktoring nedělej. Proč: každá zpráva má jedno téma a kontroluje se diffem.
 - Soubor nad 300 řádků posuď a v plánu napiš, proč zůstává pohromadě; nad 500 řádků lint varuje a nový soubor nad 500 se nepřijme; komponenta ≤ 300, funkce ≤ 60 řádků; řádek ≤ 100 znaků (Prettier). Proč: soubor, který nejde přečíst za 10 minut, nejde zkontrolovat.

@@ -44,7 +44,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
         <div
           className={cn(
             "grid grid-cols-[auto_minmax(0,1fr)] gap-x-2",
-            align === "input" && "@min-[40rem]:min-h-9",
+            align === "input" && "min-h-[var(--control-h)] items-start",
           )}
         >
           <Checkbox
@@ -54,7 +54,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
             disabled={disabled}
             aria-describedby={hintId}
             onCheckedChange={(value) => onCheckedChange(value === true)}
-            className="mt-[0.0625rem]"
+            className={cn("size-4", align === "input" && "mt-[calc((var(--control-h)-1rem)/2)]")}
             {...props}
           />
           <div className="min-w-0">
@@ -62,7 +62,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
               htmlFor={controlId}
               title={typeof label === "string" ? label : undefined}
               className={cn(
-                "whitespace-normal font-normal",
+                "whitespace-normal text-sm font-normal leading-5",
                 disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
               )}
             >

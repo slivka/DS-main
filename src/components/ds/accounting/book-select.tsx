@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { OptionSelect } from "../form/option-select";
+import { FieldValue } from "../form/field-value";
 import { cn } from "../../../lib/utils";
 
 export type DocumentBookType = "invoiceIn" | "invoiceOut" | "bank" | "cash" | "internal" | "other";
@@ -70,15 +71,9 @@ export function BookSelect({
 
   if (single) {
     return (
-      <output
-        id={id}
-        className={cn(
-          "flex min-h-11 items-center rounded-md border bg-muted px-3 text-sm font-medium text-foreground",
-          className,
-        )}
-      >
+      <FieldValue id={id} className={cn("font-medium text-foreground", className)}>
         {formatBook(single, typeLabels)}
-      </output>
+      </FieldValue>
     );
   }
 

@@ -20,6 +20,8 @@ export interface GridSegmentedToggleProps<Value extends string = string> extends
   ariaLabel: string;
   /** Neaktivní přepínač (jen ke čtení). */
   disabled?: boolean;
+  /** `row` drží přepínač uvnitř výšky řádku gridu. */
+  size?: "default" | "row";
 }
 
 export function nextGridSegmentValue<Value extends string>(
@@ -38,7 +40,18 @@ export function nextGridSegmentValue<Value extends string>(
 /** Segmentový filtr pro pravou část kontextového řádku gridu. */
 export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmentedToggleProps>(
   function GridSegmentedToggle(
-    { options, value, onChange, defaultValue, label, ariaLabel, disabled, className, ...props },
+    {
+      options,
+      value,
+      onChange,
+      defaultValue,
+      label,
+      ariaLabel,
+      disabled,
+      size = "default",
+      className,
+      ...props
+    },
     ref,
   ) {
     const active = value !== defaultValue;
@@ -49,9 +62,9 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
       const nextValue = nextGridSegmentValue(options, value, event.key === "ArrowRight" ? 1 : -1);
       const nextIndex = options.findIndex((option) => option.value === nextValue);
       onChange(nextValue);
-      event.currentTarget.parentElement
-        ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-        [nextIndex]?.focus();
+      const buttons =
+        event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+      buttons?.[nextIndex]?.focus();
     };
 
     return (
@@ -64,6 +77,7 @@ export const GridSegmentedToggle = React.forwardRef<HTMLDivElement, GridSegmente
           className={cn(
             "grid-segmented grid-toolbar-control inline-flex overflow-hidden border border-grid-chrome bg-card p-0",
             active && "grid-toolbar-active",
+            size === "row" && "h-[1.5em] max-h-full",
           )}
         >
           {options.map((option, index) => (

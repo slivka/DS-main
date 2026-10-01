@@ -49,7 +49,7 @@ export function SegmentedField<Value extends string = string>({
       role="radiogroup"
       aria-label={ariaLabel ?? label ?? "Výběr typu"}
       className={cn(
-        "inline-flex h-9 w-fit overflow-hidden rounded-md border border-input bg-background",
+        "inline-flex h-[var(--control-h)] w-fit overflow-hidden rounded-md border border-input bg-background",
         className,
       )}
       {...props}
@@ -82,9 +82,11 @@ export function SegmentedField<Value extends string = string>({
             const nextValue = nextSegmentedFieldValue(options, value, direction);
             const nextIndex = options.findIndex((item) => item.value === nextValue);
             onChange(nextValue);
-            event.currentTarget.parentElement
-              ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
-              [nextIndex]?.focus();
+            const buttons =
+              event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>(
+                '[role="radio"]',
+              );
+            buttons?.[nextIndex]?.focus();
           }}
         >
           {option.label}

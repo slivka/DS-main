@@ -93,6 +93,8 @@
 }
 
 :root {
+  /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
+  --control-h: 2.25rem;
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 6px;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */

@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { DecimalInput } from "./decimal-input";
+import { FieldValue } from "./field-value";
 
 export interface RateFieldProps {
   value: number | null;
@@ -84,9 +85,9 @@ export function RateField({
   if (readOnly) {
     return (
       <div className={cn("space-y-1", className)}>
-        <div id={id} aria-readonly="true" className="min-h-9 text-sm font-mono tabular-nums">
+        <FieldValue id={id} className="font-mono tabular-nums">
           {value == null ? "—" : formatAmount(value, 3)}
-        </div>
+        </FieldValue>
         <p className="field-overflow-hint text-xs text-muted-foreground">
           {suffix}
           {source ? ` · ${source}` : ""}
@@ -106,7 +107,7 @@ export function RateField({
             decimals={6}
             displayDecimals={3}
             disabled={disabled}
-            className={cn("h-9 pr-9", differs && "border-destructive")}
+            className={cn("h-[var(--control-h)] pr-9", differs && "border-destructive")}
             onChange={(next) => onChange(next === "" ? null : Number(next))}
           />
           {differs ? (

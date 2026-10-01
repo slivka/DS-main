@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -194,7 +194,7 @@ export function AccountSelect({
           </span>
           <span className="ml-auto flex shrink-0 items-center gap-2">
             {suffix}
-            <ChevronsUpDown className="size-4 opacity-50" />
+            <ChevronDown className="size-4 opacity-50" />
           </span>
         </Button>
       </PopoverTrigger>

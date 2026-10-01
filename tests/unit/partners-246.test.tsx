@@ -231,8 +231,8 @@ describe("Partneři D – formulářové rozvržení 2.52.0", () => {
     const value = renderToStaticMarkup(
       <FieldValue trailing={<button aria-label="Akce" />}>Hodnota</FieldValue>,
     );
-    expect(input).toContain("h-9");
-    expect(value).toContain("h-9");
+    expect(input).toContain('data-control-height="standard"');
+    expect(value).toContain('data-control-height="standard"');
     expect(value).toContain('data-slot="field-value-trailing"');
   });
 

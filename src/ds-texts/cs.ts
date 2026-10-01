@@ -195,6 +195,19 @@ export const DS_TEXTS_CS: DsTexts = {
   confirmByTyping: { instruction: "Pro potvrzení opište:", cancel: "Zrušit", running: "Probíhá…" },
   dangerZone: { title: "Nebezpečná zóna" },
   noticeBar: { close: "Zavřít upozornění" },
+  maskInput: {
+    preview: "Náhled příštího čísla",
+    tokens: [
+      { token: "{KOD}", label: "Kód číselné řady" },
+      { token: "{SMER}", label: "Směr dokladu" },
+      { token: "{OBD}", label: "Účetní období" },
+      { token: "{RRRR}", label: "Rok čtyřmi číslicemi" },
+      { token: "{RR}", label: "Rok dvěma číslicemi" },
+      { token: "{MM}", label: "Měsíc" },
+      { token: "{Q}", label: "Čtvrtletí" },
+      { token: "{###}", label: "Pořadové číslo" },
+    ],
+  },
   appZoom: {
     label: "Velikost zobrazení",
     decrease: "Zmenšit zobrazení",

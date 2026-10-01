@@ -128,7 +128,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
                     setOpen(next);
                   }}
                   className={cn(
-                    "absolute right-0 top-0 size-9",
+                    "absolute right-0 top-0 size-[var(--control-h)]",
                     enabled
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "text-muted-foreground",
