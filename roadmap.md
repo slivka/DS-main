@@ -1,3 +1,10 @@
+## DS 2.84.0 – dialogy záznamů
+- [ ] Jednotný token výšky a shodné ikony výběrů
+- [ ] FieldValue, CheckboxField, FieldGrid, SectionHeading a GridSegmentedToggle
+- [ ] RecordDialog: velikosti, titulkové štítky, jedna/stabilní záložka
+- [ ] Nové FieldTable a MaskInput včetně CS/SK textů
+- [ ] Čtyři dialogové ukázky a zobrazení mřížky
+- [ ] Pravidla, CHANGELOG, verze 2.84.0 a úplné kontroly
 ## DS 2.83.0 – Úklid 5b + 5d + 5e
 - [x] Behavior testy DataGrid / TreeGrid / AppShell proti dnešnímu kódu
 - [x] GridFrame, useRowActions, GridBaseProps; doménová ID sloupců jako exportované výchozí konstanty
