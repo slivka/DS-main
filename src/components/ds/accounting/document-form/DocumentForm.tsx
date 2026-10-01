@@ -277,9 +277,6 @@ export function DocumentForm({
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = vat?.visible && vatRelevant;
-  const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
-  const externalNumberVsWarning =
-    receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
   const combinedNotices = buildDocumentNotices({
     value,
     dateWarnings,
