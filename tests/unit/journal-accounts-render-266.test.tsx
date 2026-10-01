@@ -100,7 +100,7 @@ describe("JournalLinesEditor 2.66 – vykreslení", () => {
     expect(shown).not.toContain("DAL účet");
     const grid = view.container.querySelector("table[role=grid]")!;
     expect(grid.textContent).toContain("518.001");
-    expect(grid.textContent).not.toContain("518.001 - Služby");
+    expect(grid.textContent).not.toContain("518.001 – Služby");
     fireEvent.click(view.getAllByRole("button", { name: /Sloupce/i })[0]!);
     const menu = await view.findByRole("dialog");
     const row = (label: string) =>
@@ -224,15 +224,15 @@ describe("JournalLinesRecap 2.66 – vykreslení", () => {
     expect(shown.join("|")).toContain("Celkem (Kč)");
     expect(shown.join("|")).toContain("Celkem (€)");
     const body = rows(view.container).map((cells) => cells.join(" | "));
-    expect(body[0]).toContain("518.001 - Služby");
-    expect(body[1]).toContain("343.100 - DPH");
-    expect(body[2]).toContain("321.100 - Závazky");
+    expect(body[0]).toContain("518.001 – Služby");
+    expect(body[1]).toContain("343.100 – DPH");
+    expect(body[2]).toContain("321.100 – Závazky");
     expect(
       view.container
         .querySelectorAll("tbody tr")[3]!
         .querySelector("td [title]")
         ?.getAttribute("title"),
-    ).toBe("548.001 - Zaokrouhlení Zaokrouhlení");
+    ).toBe("548.001 – Zaokrouhlení Zaokrouhlení");
     expect(body[3]).toContain("—");
     const pinned = view.container.querySelectorAll("tbody tr")[3]!;
     expect(pinned.className).toContain("bg-muted");

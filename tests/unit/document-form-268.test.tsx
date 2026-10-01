@@ -33,7 +33,7 @@ const identity = {
   variant: "invoice" as const,
   book: "FV - Vydané faktury",
   period: "2026",
-  account: { side: "MD" as const, label: "311.001 - Odběratelé", editable: true },
+  account: { side: "MD" as const, label: "311.001 – Odběratelé", editable: true },
   number: "FV1",
 };
 
@@ -160,12 +160,12 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     await act(async () => {
       fireEvent.keyDown(search, { key: "Escape" });
     });
-    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
     expect(last.mainAccountId).toBe("311100");
-    expect(view.getByText("311.100 - Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 
@@ -244,22 +244,22 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const view = render(<Host docValue={base} />);
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText("311.100 - Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
     view.rerender(<Host docValue={{ ...base }} />);
-    expect(view.queryByText("311.100 - Odběratelé tuzemsko")).toBeNull();
-    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    expect(view.queryByText("311.100 – Odběratelé tuzemsko")).toBeNull();
+    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
     view.rerender(<Host docValue={{ ...base, number: "FV2" }} />);
-    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText("311.100 - Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
     view.rerender(
       <Host
         docValue={{ ...base, number: "FV2", mainAccountId: "311100" }}
         accountLabel="311.100 - Závazný popisek aplikace"
       />,
     );
-    expect(view.queryByText("311.100 - Odběratelé tuzemsko")).toBeNull();
+    expect(view.queryByText("311.100 – Odběratelé tuzemsko")).toBeNull();
     expect(view.getByText("311.100 - Závazný popisek aplikace")).toBeTruthy();
   });
 
@@ -283,7 +283,7 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     });
     outside.remove();
     expect(view.queryByPlaceholderText("Hledat účet nebo číslo…") === null).toBe(true);
-    expect(view.getByText("311.001 - Odběratelé")).toBeTruthy();
+    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 
@@ -326,7 +326,7 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     ).toContain("Měnu nelze změnit");
   });
 
-  it("výběr měny: ve spouštěči kód, v nabídce kód - název", async () => {
+  it("výběr měny: ve spouštěči kód, v nabídce kód – název", async () => {
     const view = render(
       <Form
         currencies={[
@@ -339,8 +339,8 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     expect(trigger?.textContent).toContain("CZK");
     expect(trigger?.textContent).not.toContain("Česká koruna");
     fireEvent.click(trigger as HTMLElement);
-    expect(await view.findByRole("option", { name: "CZK - Česká koruna" })).toBeTruthy();
-    expect(view.getByRole("option", { name: "EUR - Euro" })).toBeTruthy();
+    expect(await view.findByRole("option", { name: "CZK – Česká koruna" })).toBeTruthy();
+    expect(view.getByRole("option", { name: "EUR – Euro" })).toBeTruthy();
   });
 
   it("Celkem má minimální šířku, nezalamovaný popisek a nápovědu pod polem jen v režimu součtu", () => {
@@ -351,18 +351,18 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     expect(
       view.container.querySelector("[data-slot=document-amount-currency]")?.className,
     ).toContain("flex-wrap");
-    expect(view.queryByText("Sčítá se z rozpisu", { selector: "p" })).toBeNull();
+    expect(view.queryByText("Sčítá se z rozpisu")).toBeNull();
     view.rerender(
       <Form
         value={{ ...base, amountTotal: 1234567.89, totalMode: "sum" }}
         lines={[{ id: "1", amount: 1234567.89 }]}
       />,
     );
-    const hint = view.getByText("Sčítá se z rozpisu", { selector: "p" });
-    expect(hint.className).toContain("whitespace-nowrap");
+    const aside = view.getByText("Sčítá se z rozpisu");
+    expect(aside.className).toContain("whitespace-nowrap");
     expect(
       view.container.querySelector("[data-slot=document-amount-total] label")?.textContent,
-    ).not.toContain("Sčítá se z rozpisu");
+    ).toContain("Sčítá se z rozpisu");
   });
 
   it("internal má měnu vedle Celkem a nikdy nevykreslí účet", () => {

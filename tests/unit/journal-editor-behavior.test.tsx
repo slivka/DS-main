@@ -325,12 +325,12 @@ describe("JournalLinesEditor – detail a DPH", () => {
     expect(view.container.textContent).toContain("Nárok na odpočet");
   });
 
-  it("sloupec Ř. má pevnou šířku 4,75 rem", () => {
+  it("sloupec Ř. má kompaktní šířku 4,25 rem", () => {
     const layout = resolveJournalColumnLayout({
       availableWidthRem: 100,
       mode: "internal",
       visibleColumnIds: ["row"],
     });
-    expect(layout.requiredWidthRem).toBe(4.75);
+    expect(layout.requiredWidthRem).toBe(4.25);
   });
 });
