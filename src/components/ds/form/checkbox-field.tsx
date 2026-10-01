@@ -54,10 +54,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
             disabled={disabled}
             aria-describedby={hintId}
             onCheckedChange={(value) => onCheckedChange(value === true)}
-            className={cn(
-              "size-4",
-              align === "input" && "mt-[calc((var(--control-h)-1rem)/2)]",
-            )}
+            className={cn("size-4", align === "input" && "mt-[calc((var(--control-h)-1rem)/2)]")}
             {...props}
           />
           <div className="min-w-0">

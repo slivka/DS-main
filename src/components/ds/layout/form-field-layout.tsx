@@ -55,15 +55,7 @@ export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
 }
 
 /** Pole formuláře s popiskem a jednotným umístěním chyby nebo nápovědy. */
-export function Field({
-  label,
-  htmlFor,
-  hint,
-  error,
-  span,
-  className = "",
-  children,
-}: FieldProps) {
+export function Field({ label, htmlFor, hint, error, span, className = "", children }: FieldProps) {
   return (
     <div
       data-invalid={error ? "true" : undefined}
@@ -111,13 +103,7 @@ export interface FieldGridProps {
 }
 
 /** Mřížka polí formuláře se společnými svislicemi a nápovědou celé skupiny. */
-export function FieldGrid({
-  cols = 2,
-  title,
-  hint,
-  className = "",
-  children,
-}: FieldGridProps) {
+export function FieldGrid({ cols = 2, title, hint, className = "", children }: FieldGridProps) {
   const cls =
     cols === 1
       ? "grid-cols-1"
