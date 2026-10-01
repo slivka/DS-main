@@ -9,21 +9,12 @@ import { VatStatusBadge } from "../../data-display/vat-status-badge";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
-import {
-  documentFieldsForType,
-  partnerLabelForType,
-  type DocumentFields,
-} from "../document-fields";
+import { documentFieldsForType, partnerLabelForType, type DocumentFields } from "../document-fields";
 import { BankAccountField } from "../bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
-import {
-  DEFAULT_DOCUMENT_FORM_TEXTS,
-  type DocumentFormProps,
-  type DocumentHeaderField,
-  type DocumentHeaderValue,
-} from "./document-form-types";
+import { DEFAULT_DOCUMENT_FORM_TEXTS, type DocumentFormProps, type DocumentHeaderField, type DocumentHeaderValue } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
@@ -137,8 +128,7 @@ export function DocumentForm({
     return () => observer.disconnect();
   }, []);
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
-  const can = (key: DocumentHeaderField) =>
-    !readOnly && (!editableFields || editableFields.includes(key));
+  const can = (key: DocumentHeaderField) => !readOnly && (!editableFields || editableFields.includes(key));
   const {
     receivedDocument,
     issuedDocument,
