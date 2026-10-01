@@ -1,5 +1,12 @@
 # Changelog – Slivka Design System
 
+## 2.84.0
+
+- Sjednocena výška formulářových ovládacích prvků a hodnot `FieldValue` tokenem `--control-h`.
+- `RecordDialog` skrývá jedinou záložku, drží stálou výšku panelů a přidává velikosti, titulkové štítky a sjednocený doplňkový řádek.
+- Přidány `FieldTable`, `MaskInput`, nápověda `FieldGrid`, doplněk `SectionHeading` a řádková velikost `GridSegmentedToggle`.
+- Výběry používají jednotnou ikonu rozbalení a `CheckboxField` lze zarovnat na osu vstupu.
+
 Verze seřazené od nejnovější. BREAKING změny obsahují návod na migraci.
 
 ## 2.83.0 – rozdělení editoru řádků, dialogy ve StrictMode, vnořený formulář

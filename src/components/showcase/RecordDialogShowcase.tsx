@@ -54,10 +54,12 @@ export function RecordDialogShowcase() {
         <FormSection title="Základní údaje">
           <FieldGrid cols={12} className={gridClass}>
             <Field label="Kód" span={2}>
-              <Input defaultValue="FP" />
+              <FieldValue lockedReason="Kód po založení nelze změnit">FP</FieldValue>
             </Field>
             <Field label="Název" span={6}>
-              <Input defaultValue="Přijaté faktury" />
+              <FieldValue lockedReason="Název po založení nelze změnit">
+                Přijaté faktury
+              </FieldValue>
             </Field>
             <Field label="Typ" span={4}>
               <FieldValue>Přijatá faktura</FieldValue>
