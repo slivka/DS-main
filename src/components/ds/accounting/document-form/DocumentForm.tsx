@@ -84,6 +84,7 @@ import {
   type DocumentVatConfig,
 } from "./document-form-types";
 
+import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
@@ -289,63 +290,16 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
-  const automaticVsRef = useRef<string | null>(
-    value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null,
-  );
-  // Při přepnutí na jiný doklad znovu odvodíme, zda je VS automatický.
-  useEffect(() => {
-    const suggested = vsFromDocumentNumber(value.externalNumber ?? "");
-    automaticVsRef.current =
-      suggested !== null && value.variableSymbol === suggested ? suggested : null;
-  }, [value.id, value.number]); // eslint-disable-line react-hooks/exhaustive-deps
-  const changeExternalNumber = (externalNumber: string) => {
-    const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
-    const nextSuggested = vsFromDocumentNumber(externalNumber);
-    const currentVs = value.variableSymbol ?? "";
-    const mayUpdateVs =
-      can("variableSymbol") &&
-      (!currentVs || currentVs === previousSuggested || currentVs === automaticVsRef.current);
-    const nextDigits = externalNumber.replace(/\D/g, "");
-    const canApplySuggestion = nextSuggested !== null || nextDigits.length === 0;
-    if (receivedDocument && mayUpdateVs && canApplySuggestion) {
-      automaticVsRef.current = nextSuggested;
-      const variableSymbol = nextSuggested ?? null;
-      if ((value.variableSymbol || null) !== variableSymbol) {
-        patch({ externalNumber, variableSymbol });
-        return;
-      }
-    }
-    patch({ externalNumber });
-  };
-  const externalNumberField = field(
-    "document-externalNumber",
-    receivedDocument
-      ? showVatFields
-        ? t.supplierTaxDocumentNumber
-        : t.supplierNumber
-      : t.externalNumber,
-    <>
-      <Input
-        id="document-externalNumber"
-        value={value.externalNumber ?? ""}
-        onChange={(event) => changeExternalNumber(event.target.value)}
-        disabled={!can("externalNumber")}
-        className="h-9 font-mono tabular-nums"
-      />
-      {externalNumberVsWarning ? (
-        <p
-          data-slot="document-external-number-vs-warning"
-          className="mt-1 whitespace-nowrap text-xs text-warning-strong"
-        >
-          {externalNumberVsWarning}
-        </p>
-      ) : null}
-    </>,
-    6,
-    false,
-    receivedDocument || !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
-  );
+  const externalNumberField = useExternalNumberField({
+    value,
+    patch,
+    can,
+    receivedDocument,
+    showVatFields,
+    f,
+    t,
+    field,
+  });
   const bankAccountField = field(
     "document-bankAccount",
     t.bankAccount,
