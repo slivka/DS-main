@@ -665,6 +665,14 @@ export function DocumentFormShowcase() {
     companyBankAccountId: "company-czk",
     paymentMethodId: "transfer",
   });
+  const [fvEur, setFvEur] = useState<DocumentHeaderValue>({
+    ...fvCzk,
+    number: "FV2026000421",
+    currency: "EUR",
+    rate: 24.38,
+    amountTotal: 1000,
+    companyBankAccountId: "company-eur",
+  });
   const [counterpartyPrint, setCounterpartyPrint] = useState<DocumentCounterpartyValue>({
     name: "Beta služby s.r.o.",
     ico: "27074358",
@@ -850,16 +858,6 @@ export function DocumentFormShowcase() {
           mainSide="MD"
           mainAccountLocked
           status="filed"
-          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
-          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
-          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
-          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
-          counterpartyTab={{
-            value: counterpartyPrint,
-            onChange: setCounterpartyPrint,
-            onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny"),
-          }}
-          printTab={{ value: printData, onChange: setPrintData }}
         />
       </ShowcaseSection>
       <ShowcaseSection
@@ -906,6 +904,39 @@ export function DocumentFormShowcase() {
           documentType="FV"
           mainSide="MD"
           status="filed"
+          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
+          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
+          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
+          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+          counterpartyTab={{
+            value: counterpartyPrint,
+            onChange: setCounterpartyPrint,
+            onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny"),
+          }}
+          printTab={{ value: printData, onChange: setPrintData }}
+        />
+      </ShowcaseSection>
+      <ShowcaseSection
+        title="Vydaná faktura v EUR"
+        description="Firemní eurový účet je přes celou šířku; platební údaje používají číselníky."
+      >
+        <DocumentForm
+          title="Vydaná faktura EUR"
+          value={fvEur}
+          onChange={setFvEur}
+          lines={[]}
+          {...common}
+          currencies={CURRENCIES}
+          books={MOCK_BOOKS}
+          documentType="FV"
+          mainSide="MD"
+          status="draft"
+          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
+          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
+          companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
+          vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+          counterpartyTab={{ value: counterpartyPrint, onChange: setCounterpartyPrint }}
+          printTab={{ value: printData, onChange: setPrintData }}
         />
       </ShowcaseSection>
       <ShowcaseSection
@@ -943,6 +974,9 @@ export function DocumentFormShowcase() {
           dimensions={MOCK_DIMENSIONS}
           currencies={CURRENCIES}
           bankAccountOptions={BANK_ACCOUNT_OPTIONS}
+          onAddBankAccount={() => toast.success("Otevřeno založení účtu partnera")}
+          constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
+          paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           bankCodes={["0100", "0800"]}
           documentType="FP"
           rateAmount={1}
