@@ -16,15 +16,16 @@ const memory = new Map<string, string>();
 Object.defineProperty(globalThis, "localStorage", {
   configurable: true,
   value: {
-  get length() {
-    return memory.size;
-  },
-  key: (i: number) => [...memory.keys()][i] ?? null,
-  getItem: (k: string) => memory.get(k) ?? null,
-  setItem: (k: string, v: string) => void memory.set(k, v),
-  removeItem: (k: string) => void memory.delete(k),
-  clear: () => memory.clear(),
-} as Storage;
+    get length() {
+      return memory.size;
+    },
+    key: (i: number) => [...memory.keys()][i] ?? null,
+    getItem: (k: string) => memory.get(k) ?? null,
+    setItem: (k: string, v: string) => void memory.set(k, v),
+    removeItem: (k: string) => void memory.delete(k),
+    clear: () => memory.clear(),
+  } satisfies Storage,
+});
 
 describe("5 – grid řádků se vejde i při zoomu a rozšířeném sloupci", () => {
   it("úzký panel + zoom 1,4 + rozšířený sloupec → požadovaná šířka ≤ dostupná", () => {
