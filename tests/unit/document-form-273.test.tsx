@@ -94,9 +94,9 @@ describe("DocumentForm 2.73", () => {
       />,
     );
     expect(readonlyView.queryByRole("button", { name: "Načíst znovu z partnera" })).toBeNull();
-    expect(readonlyView.getAllByRole("textbox").every((input) => input.hasAttribute("readonly"))).toBe(
-      true,
-    );
+    expect(
+      readonlyView.getAllByRole("textbox").every((input) => input.hasAttribute("readonly")),
+    ).toBe(true);
     cleanup();
     const print = {
       options: {

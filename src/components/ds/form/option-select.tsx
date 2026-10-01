@@ -85,10 +85,10 @@ export function OptionSelect({
           triggerClassName,
         )}
       >
-      <SelectValue className="sr-only" placeholder={placeholder} />
-      <span aria-hidden="true" className="min-w-0 truncate">
-        {selectedLabel ?? (current || placeholder)}
-      </span>
+        <SelectValue className="sr-only" placeholder={placeholder} />
+        <span aria-hidden="true" className="min-w-0 truncate">
+          {selectedLabel ?? (current || placeholder)}
+        </span>
       </SelectTrigger>
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
