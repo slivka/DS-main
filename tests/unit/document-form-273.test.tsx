@@ -7,6 +7,8 @@ const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm, vsFromDocumentNumber } =
   await import("../../src/components/ds/accounting/document-form");
+const { DocumentCounterpartyTab, DocumentPrintTab } =
+  await import("../../src/components/ds/accounting/document-detail-tabs");
 
 const base = {
   bookId: "fp",
@@ -54,6 +56,76 @@ afterAll(async () => {
 });
 
 describe("DocumentForm 2.73", () => {
+  it("mění číselníkový KS a identifikátor firemního účtu bez volného vstupu", () => {
+    const patches: Array<Record<string, unknown>> = [];
+    const view = render(
+      <Form
+        initial={{ ...base, constantSymbol: "9999", companyBankAccountId: null }}
+        documentType="FV"
+        constantSymbolOptions={[{ value: "0308", label: "0308 – Platby za služby" }]}
+        companyBankAccountOptions={[
+          { id: "company-1", label: "Hlavní", account: "123/0100", currency: "CZK" },
+        ]}
+        onChange={(next: Record<string, unknown>) => patches.push(next)}
+      />,
+    );
+    expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain("9999");
+    expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
+    fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet firmy" }));
+    fireEvent.click(view.getByRole("option", { name: /Hlavní/ }));
+    expect(patches.at(-1)?.companyBankAccountId).toBe("company-1");
+  });
+
+  it("readOnly odběratel nenačítá partnera a tisk mění celý value.print", () => {
+    const counterparty = {
+      name: "Firma",
+      ico: "12345678",
+      dic: "CZ12345678",
+      street: "Ulice 1",
+      zip: "11000",
+      city: "Praha",
+      country: "CZ",
+      email: "a@example.cz",
+    };
+    const readonlyView = render(
+      <DocumentCounterpartyTab
+        value={counterparty}
+        onChange={() => {}}
+        partnerId="p1"
+        onReloadFromPartner={() => {}}
+        readOnly
+      />,
+    );
+    expect(readonlyView.queryByRole("button", { name: "Načíst znovu z partnera" })).toBeNull();
+    expect(readonlyView.getAllByRole("textbox").every((input) => input.hasAttribute("readonly"))).toBe(
+      true,
+    );
+    cleanup();
+    const print = {
+      options: {
+        showHeader: false,
+        showFooter: false,
+        showVatRecap: false,
+        showNote: false,
+        showColumnHeadings: false,
+        showTotalsRow: false,
+        showPaymentSchedule: false,
+      },
+      headerText: "",
+      footerText: "",
+      note: "",
+      issuedByName: "",
+      issuedByPhone: "",
+      issuedByEmail: "",
+    };
+    let changed = print;
+    const printView = render(
+      <DocumentPrintTab value={print} onChange={(next) => (changed = next)} />,
+    );
+    fireEvent.click(printView.getByRole("checkbox", { name: "Tisknout záhlaví" }));
+    expect(changed).toEqual({ ...print, options: { ...print.options, showHeader: true } });
+  });
+
   it("odvodí VS jen z 1 až 10 číslic", () => {
     expect(vsFromDocumentNumber("FA-2026/0123")).toBe("20260123");
     expect(vsFromDocumentNumber("0012")).toBe("0012");
