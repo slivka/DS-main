@@ -83,18 +83,27 @@ describe("DS 2.85.0 – obecná pravidla", () => {
   });
 
   it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {
-    const html = renderToStaticMarkup(
+    const available = renderToStaticMarkup(
       <BankAccountField
         value=""
         onChange={vi.fn()}
         options={[]}
         selectionOnly
         onAddAccount={vi.fn()}
+      />,
+    );
+    const disabled = renderToStaticMarkup(
+      <BankAccountField
+        value=""
+        onChange={vi.fn()}
+        options={[]}
+        selectionOnly
         disabledReason="Nejdřív vyberte dodavatele"
       />,
     );
-    expect(html).toContain("Přidat účet…");
-    expect(html).toContain("Nejdřív vyberte dodavatele");
+    expect(available).toContain('role="combobox"');
+    expect(available).not.toContain("disabled=\"\"");
+    expect(disabled).toContain("Nejdřív vyberte dodavatele");
   });
 
   it("rozšiřuje sloupec pořadí až od třetí číslice", () => {
