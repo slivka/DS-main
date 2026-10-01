@@ -103,6 +103,7 @@ import {
   type DocumentVatConfig,
 } from "./document-form/document-form-types";
 
+import { buildDocumentTabs } from "./document-form/build-document-tabs";
 import { DocumentFormTabs } from "./document-form/Tabs";
 import { DocumentDatesSection } from "./document-form/DatesSection";
 import { DocumentBasicSection } from "./document-form/BasicSection";
@@ -587,71 +588,36 @@ export function DocumentForm({
       ]);
   };
 
-  const allTabs: DocumentFormTab[] = [
-    {
-      id: "lines",
-      label: t.linesTab,
-      badge: vatTotals.visibleLineCount || undefined,
-      content: (
-        <JournalLinesEditor
-          lines={lines}
-          onChange={onLinesChange}
-          accounts={accounts}
-          dimensions={dimensions}
-          partners={partners}
-          mode={mode}
-          mainSide={mainSide}
-          mainAccount={value.mainAccountId}
-          totalAmount={totalMode === "entered" ? value.amountTotal : undefined}
-          documentCurrency={value.currency}
-          documentCurrencySymbol={currencies?.find((item) => item.code === value.currency)?.symbol}
-          homeCurrency={homeCurrency}
-          homeCurrencySymbol={homeCurrencySymbol}
-          rate={value.rate}
-          rateAmount={rateAmount}
-          totalMode={totalMode === "entered" ? "entered" : "computed"}
-          {...linesEditorProps}
-          editableFields={readOnly ? [] : linesEditorProps?.editableFields}
-          rounding={
-            f.rounding
-              ? {
-                  value: lineRounding ?? value.roundingAmount ?? 0,
-                  onChange: can("roundingAmount") ? changeRounding : undefined,
-                  readOnly: !can("roundingAmount"),
-                  label: roundingLabel ?? t.rounding,
-                  limit: roundingLimit,
-                }
-              : undefined
-          }
-        />
-      ),
-    },
-    ...tabs.filter((item) => item.id !== "lines"),
-    ...(issuedDocument && counterpartyTab
-      ? [
-          {
-            id: "counterparty",
-            label: t.counterpartyTab,
-            content: (
-              <DocumentCounterpartyTab
-                {...counterpartyTab}
-                partnerId={value.partnerId}
-                readOnly={readOnly}
-              />
-            ),
-          },
-        ]
-      : []),
-    ...(issuedDocument && printTab
-      ? [
-          {
-            id: "print",
-            label: t.printTab,
-            content: <DocumentPrintTab {...printTab} readOnly={readOnly} />,
-          },
-        ]
-      : []),
-  ];
+  const allTabs = buildDocumentTabs({
+    lines,
+    onLinesChange,
+    accounts,
+    dimensions,
+    partners,
+    mode,
+    mainSide,
+    value,
+    totalMode,
+    currencies,
+    homeCurrency,
+    homeCurrencySymbol,
+    rateAmount,
+    linesEditorProps,
+    readOnly,
+    f,
+    lineRounding,
+    can,
+    changeRounding,
+    roundingLabel,
+    t,
+    roundingLimit,
+    vatTotals,
+    tabs,
+    issuedDocument,
+    counterpartyTab,
+    printTab,
+    total,
+  });
 
   const currencyReasonId = useId();
   const currencyFixed =
