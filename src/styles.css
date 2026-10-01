@@ -1153,7 +1153,6 @@
   min-height: 0 !important;
   line-height: 1.2 !important;
   padding: 0.15em 0.5em !important;
-  border-radius: var(--radius-sm);
   gap: 0.3em;
 }
 

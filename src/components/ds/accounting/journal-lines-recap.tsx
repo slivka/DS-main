@@ -221,6 +221,8 @@ export function JournalLinesRecap({
         : formatAccountCode(code);
     };
     return [
+      // Rekapitulace záměrně vůbec neposkytuje krátké účetní sloupce. Staré
+      // uložené viditelnosti je proto nemohou obnovit bez dostupné lišty.
       ...base
         .filter((column) => column.id.endsWith("Name"))
         .map((column) =>
