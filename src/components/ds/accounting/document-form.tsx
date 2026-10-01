@@ -103,6 +103,7 @@ import {
   type DocumentVatConfig,
 } from "./document-form/document-form-types";
 
+import { DocumentBasicSection } from "./document-form/BasicSection";
 import { DocumentAmountSection } from "./document-form/AmountSection";
 import { DocumentPaymentSection } from "./document-form/PaymentSection";
 import { DocumentDirectionBadge } from "./document-form/document-form-actions";
@@ -804,120 +805,27 @@ export function DocumentForm({
             accountOptions={allowedMainAccounts}
           />
           {f.partner ? (
-            <>
-              <SectionHeading>{t.headerSection}</SectionHeading>
-              <div className="grid grid-cols-20 gap-3">
-                {field(
-                  "document-partner",
-                  partnerLabel,
-                  <CounterpartyField
-                    id="document-partner"
-                    partners={partners}
-                    value={{
-                      name: value.counterpartyName ?? partner?.name ?? "",
-                      partnerId: value.partnerId ?? null,
-                      ico: counterpartyIco,
-                      dic: counterpartyDic,
-                    }}
-                    onChange={(next) =>
-                      patch({
-                        counterpartyName: next.name,
-                        partnerId: next.partnerId,
-                        counterpartyIco: next.ico ?? null,
-                        counterpartyDic: next.dic ?? null,
-                      })
-                    }
-                    onCreatePartner={
-                      onCreatePartner
-                        ? (seed) =>
-                            onCreatePartner({
-                              ...seed,
-                              ico: counterpartyIco || seed.ico,
-                              dic: counterpartyDic || seed.dic,
-                            })
-                        : undefined
-                    }
-                    disabled={!can("partnerId")}
-                  />,
-                  14,
-                  false,
-                  "@min-[40rem]:pr-3",
-                )}
-                {field(
-                  "document-partner-ico",
-                  t.ico,
-                  linkedPartner ? (
-                    <ReadField
-                      id="document-partner-ico"
-                      mono
-                      value={
-                        counterpartyIco ? (
-                          <IcoLink
-                            ico={counterpartyIco}
-                            country={partner?.country}
-                            kind={partner?.kind}
-                            target={icoLinkTarget}
-                          />
-                        ) : (
-                          "—"
-                        )
-                      }
-                    />
-                  ) : (
-                    <>
-                      <Input
-                        id="document-partner-ico"
-                        value={counterpartyIco}
-                        onChange={(event) =>
-                          patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })
-                        }
-                        disabled={!can("counterpartyIco")}
-                        className="h-9 font-mono tabular-nums"
-                      />
-                      {icoWarning ? (
-                        <p role="alert" className="text-xs font-medium text-warning-strong">
-                          {t.invalidIco}
-                        </p>
-                      ) : null}
-                    </>
-                  ),
-                  3,
-                  true,
-                )}
-                {field(
-                  "document-partner-dic",
-                  t.dic,
-                  linkedPartner ? (
-                    <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} />
-                  ) : (
-                    <Input
-                      id="document-partner-dic"
-                      value={counterpartyDic}
-                      onChange={(event) =>
-                        patch({
-                          counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase(),
-                        })
-                      }
-                      disabled={!can("counterpartyDic")}
-                      className="h-9 font-mono uppercase tabular-nums"
-                    />
-                  ),
-                  3,
-                  true,
-                )}
-                {f.handedOverBy
-                  ? suggestedText(
-                      "handedOverBy",
-                      value.direction === "in" ? t.handedOverByIn : t.handedOverByOut,
-                      handedOverBySuggest,
-                      14,
-                      "@min-[40rem]:pr-3",
-                    )
-                  : null}
-                {f.externalNumber ? externalNumberField : null}
-                {suggestedText("description", t.description, descriptionSuggest, 20)}
-              </div>
-            </>
+            <DocumentBasicSection
+              f={f}
+              t={t}
+              value={value}
+              patch={patch}
+              partner={partner}
+              partners={partners}
+              partnerLabel={partnerLabel}
+              counterpartyIco={counterpartyIco}
+              counterpartyDic={counterpartyDic}
+              linkedPartner={linkedPartner}
+              icoWarning={icoWarning}
+              icoLinkTarget={icoLinkTarget}
+              can={can}
+              onCreatePartner={onCreatePartner}
+              field={field}
+              suggestedText={suggestedText}
+              handedOverBySuggest={handedOverBySuggest}
+              descriptionSuggest={descriptionSuggest}
+              externalNumberField={externalNumberField}
+            />
           ) : null}
 
           <SectionHeading>{t.datesSection}</SectionHeading>
