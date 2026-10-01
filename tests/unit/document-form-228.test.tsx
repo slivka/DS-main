@@ -142,12 +142,15 @@ describe("DocumentForm 2.31.0", () => {
   });
   it("použije nadpis Částka bez viditelného hlavního účtu", () => {
     expect(form({ documentType: "ID" })).toContain(">Částka</span></h2>");
-    expect(form({ documentType: "FP" })).toContain(">Částka</h2>");
+    expect(form({ documentType: "FP" })).toContain(">Částka</span></h2>");
     expect(form({ documentType: "FP" })).not.toContain(">Hlavní účet<");
   });
   it("přesune haléřové vyrovnání do lišty řádků", () => {
     const html = form({ documentType: "PO", value: { ...value, roundingAmount: 0.4 } });
-    const amountSection = html.slice(html.indexOf(">Částka</h2>"), html.indexOf('role="tablist"'));
+    const amountSection = html.slice(
+      html.indexOf(">Částka</span></h2>"),
+      html.indexOf('role="tablist"'),
+    );
     expect(amountSection).not.toContain('id="document-roundingAmount"');
     expect(html).toContain('data-slot="journal-lines-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
