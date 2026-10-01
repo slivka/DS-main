@@ -1,10 +1,10 @@
 ## DS 2.85.0 – Edit dokladu 9 + obecná pravidla
 - [x] A1–A8: společné formátování kódů, prázdná pole, radius, volby, datumy a akce
-- [ ] A: ukázka zaoblení, pravidla, BREAKING dokumentace a behavior testy
+- [x] A: ukázka zaoblení, pravidla, BREAKING dokumentace a behavior testy
 - [x] B9–B19: pořadí sekcí, částka, datumy, rekapitulace, řádky, DPH a platební údaje
 - [x] B20: hotové záložky Odběratel a Tiskové údaje včetně řízených hodnot
-- [ ] B21: ukázky FV CZK/EUR, FP, PO a ID; kontrola zoomů a úzkého panelu
-- [ ] Verze 2.85.0, format, typecheck, lint bez chyb, testy a build; Release neprovádět
+- [x] B21: ukázky FV CZK/EUR, FP, PO a ID; kontrola zoomů a úzkého panelu
+- [x] Verze 2.85.0, format, typecheck, lint bez chyb, testy a build; Release neprovádět
 
 ## DS 2.84.0 – dialogy záznamů
 - [ ] Opravit ukázky A–D přesně podle kontroly v náhledu
