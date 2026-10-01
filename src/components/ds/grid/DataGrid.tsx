@@ -106,7 +106,6 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
   const texts = useResolvedGridTexts(props.texts);
   useDateTimePreferences();
   const [filtersOpen, setFiltersOpen] = useState(props.defaultFiltersOpen ?? false);
-  const [groupExpandDepth, setGroupExpandDepth] = useState<number | null>(null);
   const zoomKey =
     props.viewZoomKey ??
     (viewMode ? `view:${exportName ?? exportTitle ?? title ?? storageKey}` : storageKey);
@@ -115,60 +114,12 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
   const { zoom, setZoom, setAutoZoom, density } = zoomState;
   const blockRef = useRef<HTMLDivElement>(null);
   useWheelZoom(blockRef, setZoom, zoom);
-  const pinned = useMemo(() => new Set(pinnedColumnIds), [pinnedColumnIds]);
-
-  const effectiveColumns = useMemo<DataGridColumn<Row>[]>(
-    () =>
-      book?.value === "all" && book.getRowBookId
-        ? [createGridBookColumn(book), ...columns]
-        : columns,
-    [book, columns],
-  );
-  const colDefs = useMemo(
-    () =>
-      effectiveColumns.map((c) => ({
-        id: c.id,
-        label: c.label,
-        // Sloupec akcí se nesmí dát skrýt; sloupec pobočky řídí přepínač poboček.
-        locked:
-          pinned.has(c.id) || c.id === "actions" || c.label === "Akcie" || isBranchColumn(c)
-            ? true
-            : c.locked,
-        ...(c.defaultVisible !== undefined ? { defaultVisible: c.defaultVisible } : {}),
-        ...(c.section !== undefined ? { section: c.section } : {}),
-        ...(c.branchVisibility !== undefined ? { branchVisibility: c.branchVisibility } : {}),
-        ...(c.transient !== undefined ? { transient: c.transient } : {}),
-        ...(c.disableToggleReason !== undefined
-          ? { disableToggleReason: c.disableToggleReason }
-          : {}),
-        align: (c.align ?? (c.numeric ? "right" : "left")) as "left" | "right" | "center",
-      })),
-    [effectiveColumns, pinned],
-  );
-  const cols = useGridColumns(storageKey, colDefs);
-  const byId = useMemo(() => new Map(effectiveColumns.map((c) => [c.id, c])), [effectiveColumns]);
-  /** Sloupce v uloženém pořadí a jen viditelné; pobočka, připnuté, ostatní, vpravo ukotvené. */
-  const shown = useMemo(() => {
-    const list = cols.columns
-      .filter((c) => cols.visible[c.id] || isBranchColumn(c))
-      .flatMap((c) => byId.get(c.id) ?? []);
-    const books = list.filter((c) => c.id === GRID_BOOK_COLUMN_ID);
-    const branch = list.filter((c) => isBranchColumn(c));
-    const rest = list.filter((c) => !isBranchColumn(c) && c.id !== GRID_BOOK_COLUMN_ID);
-    const pinnedCols = rest.filter((c) => pinned.has(c.id));
-    const middle = rest.filter((c) => !pinned.has(c.id) && !c.pinRight);
-    const pinnedRight = rest.filter((c) => !pinned.has(c.id) && c.pinRight);
-    return placeGridBookColumnFirst([
-      ...books,
-      ...branch,
-      ...pinnedCols,
-      ...middle,
-      ...pinnedRight,
-    ]);
-  }, [cols.columns, cols.visible, byId, pinned]);
-  const compact = useMemo(
-    () => new Set(shown.filter((c) => isCompactColumn(c, compactColumnIds)).map((c) => c.id)),
-    [shown, compactColumnIds],
+  const { effectiveColumns, cols, byId, shown, compact, pinned } = useDataGridColumns(
+    storageKey,
+    columns,
+    book,
+    pinnedColumnIds,
+    compactColumnIds,
   );
 
   const sort = useGridSort<string>(
@@ -225,71 +176,29 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
     selectMode,
     hasRowActions,
   ]);
-  const defaultGroups = useMemo(
-    () => (defaultGroupBy ? [{ id: defaultGroupBy, granularity: "month" as const }] : []),
-    [defaultGroupBy],
-  );
-  const grouping = useGridGrouping(storageKey, { disabled: !groupable, defaultGroups });
-  useEffect(() => {
-    if (process.env.NODE_ENV !== "production" && groupTotals === "row" && paginated) {
-      console.warn(
-        'DataGrid: groupTotals="row" patří k paginated={false}; se stránkováním jsou součty skupin jen za aktuální stránku.',
-      );
-    }
-  }, [groupTotals, paginated]);
-
-  /** Seskupovací sloupec může být skrytý; jeho popisek proto bereme z úplné definice. */
-  const allGroupColumns = useMemo(
-    () => effectiveColumns.map((c) => ({ id: c.id, label: c.label })),
-    [effectiveColumns],
-  );
-  /** Součty skupin jen nad viditelnými sloupci; aktivní skrytý sloupec kvůli popisku. */
-  const groupColumns = useMemo(
-    () => [
-      ...shown.map((c) => ({ id: c.id, label: c.label })),
-      ...grouping.groups
-        .filter((group) => !shown.some((column) => column.id === group.id))
-        .map(
-          (group) =>
-            allGroupColumns.find((column) => column.id === group.id) ?? {
-              id: group.id,
-              label: group.id,
-            },
-        ),
-    ],
-    [shown, grouping.groups, allGroupColumns],
-  );
-  const dateColumns = useMemo(
-    () => detectDateColumns(pageRows, groupColumns, valueOf),
-    // valueOf je odvozená z byId, který se mění se sloupci (groupColumns).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pageRows, groupColumns],
-  );
-  const grouped = useGroupedRows(pageRows, grouping, groupColumns, valueOf, texts);
-  const displayItems = useMemo(
-    () => (groupTotals === "row" && grouping.active ? insertGroupTotalRows(grouped) : grouped),
-    [grouped, groupTotals, grouping.active],
-  );
-  const groupKeys = grouped.flatMap((item) => (item.type === "group" ? [item.key] : []));
-  const exportGrouped = useGroupedRows(
+  const groups = useDataGridGroups({
+    storageKey,
+    groupable,
+    defaultGroupBy,
+    groupTotals,
+    paginated,
+    effectiveColumns,
+    shown,
+    pageRows,
     sorted,
-    { ...grouping, collapsed: [] },
-    groupColumns,
     valueOf,
     texts,
-  );
-  const printGrouped = useGroupedRows(sorted, grouping, groupColumns, valueOf, texts);
+    searching: Boolean(filter.search),
+  });
+  const { grouping, displayItems } = groups;
   const exportData = (forPrint = false) =>
     buildExportData(
       shown,
-      grouping.active
-        ? forPrint
-          ? printGrouped
-          : exportGrouped
-        : sorted.map((row) => ({ type: "row" as const, row })),
+      groups.exportItems(forPrint),
       grouping.active ? grouping.groups.length : null,
       forPrint,
     );
+
   // Virtualizace jen bez stránkování; v režimu auto ji hook sám vypne.
   const virtual = useGridVirtual(displayItems.length, {
     zoom,
@@ -343,22 +252,6 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
   );
   const layout: DataGridLayout<Row> = { shown, cols, pinned, compact, selectMode, hasRowActions };
   const colSpan = shown.length + (hasRowActions ? 1 : 0) + (selectMode ? 1 : 0);
-  const expandLevel = (depth: number) => {
-    setGroupExpandDepth(depth);
-    if (depth > grouping.groups.length) grouping.expandAll();
-  };
-  const collapseGroups = () => {
-    setGroupExpandDepth(0);
-    grouping.collapseAll(groupKeys);
-  };
-  const levels = grouping.groups.map((group, index) => ({
-    id: group.id,
-    label: texts.expandLevel(
-      index + 1,
-      allGroupColumns.find((column) => column.id === group.id)?.label ?? group.id,
-    ),
-    depth: index + 1,
-  }));
   const hasHeaderAbove = Boolean((showTitle && title) || period || book || contextRight);
 
   return (
@@ -403,46 +296,7 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
               ? { mode: viewMode, onChange: props.onViewModeChange }
               : undefined
           }
-          expand={
-            grouping.active
-              ? {
-                  separator: true,
-                  wide: (
-                    <GridExpandControls
-                      levels={[
-                        ...levels,
-                        ...(grouping.groups.length > 1
-                          ? [{ id: "all", label: texts.all, depth: grouping.groups.length + 1 }]
-                          : []),
-                      ]}
-                      activeDepth={groupExpandDepth}
-                      disabled={Boolean(filter.search)}
-                      onExpand={(depth) => {
-                        expandLevel(depth);
-                        if (depth <= grouping.groups.length)
-                          grouping.collapseAll(
-                            grouped.flatMap((item) =>
-                              item.type === "group" && item.level >= depth ? [item.key] : [],
-                            ),
-                          );
-                      }}
-                      onCollapse={collapseGroups}
-                      expandLabel={texts.expand}
-                      collapseLabel={texts.collapse}
-                    />
-                  ),
-                  compact: (
-                    <GridExpandControls
-                      levels={levels}
-                      activeDepth={groupExpandDepth}
-                      disabled={Boolean(filter.search)}
-                      onExpand={expandLevel}
-                      onCollapse={collapseGroups}
-                    />
-                  ),
-                }
-              : undefined
-          }
+          expand={groups.expand}
           asOf={props.asOf}
           toolbarLeft={props.toolbarLeft}
           search={{ value: filter.search, onChange: filter.setSearch }}
@@ -535,8 +389,8 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
         {groupable ? (
           <GroupBar
             grouping={grouping}
-            columns={allGroupColumns}
-            dateColumns={dateColumns}
+            columns={groups.allGroupColumns}
+            dateColumns={groups.dateColumns}
             zoom={zoom}
             texts={texts}
           />
