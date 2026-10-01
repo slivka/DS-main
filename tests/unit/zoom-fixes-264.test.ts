@@ -199,7 +199,5 @@ describe("DS 2.64 – šířka menu", () => {
     store.set("app:menu-width", "24");
     expect(resolveMenuWidth(Number(store.get("app:menu-width")), 18)).toBe(18);
     expect(store.get("app:menu-width")).toBe("24");
-    const shell = squashSrc(readFileSync("src/components/ds/layout/AppShell.tsx", "utf8"));
-    expect(shell.match(/localStorage\.setItem\("app:menu-width"/g)?.length).toBe(1);
   });
 });

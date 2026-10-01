@@ -98,7 +98,8 @@ export function useGridVirtual(
     const head = el.querySelector<HTMLElement>("thead")?.getBoundingClientRect().height ?? 0;
     const top = Math.max(0, el.scrollTop - head);
     const visible = Math.ceil(el.clientHeight / h) + overscan * 2;
-    const start = Math.max(0, Math.floor(top / h) - overscan);
+    // Okno nikdy nepřeteče za konec seznamu (rolování až na konec, zmenšení počtu řádků).
+    const start = Math.max(0, Math.min(Math.floor(top / h) - overscan, count - visible));
     const end = Math.min(count, start + visible);
     setRange((prev) => (prev.start === start && prev.end === end ? prev : { start, end }));
   }, [count, enabled, overscan, rowHeight, zoom, density]);

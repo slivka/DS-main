@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useState } from "react";
+import { registerGlobalShortcut } from "./global-shortcuts";
 
 export const APP_ZOOM_MIN = 0.7;
 export const APP_ZOOM_MAX = 2;
@@ -198,10 +199,11 @@ function attachZoomShortcuts() {
     else resetAppZoom();
   };
   window.addEventListener("wheel", onWheel, { passive: false });
-  window.addEventListener("keydown", onKey);
+  // Klávesy jdou přes společný registr – jeden posluchač keydown pro celou aplikaci.
+  const unregisterKey = registerGlobalShortcut(onKey);
   return () => {
     window.removeEventListener("wheel", onWheel);
-    window.removeEventListener("keydown", onKey);
+    unregisterKey();
   };
 }
 
