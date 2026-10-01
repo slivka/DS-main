@@ -52,7 +52,7 @@ export function DocumentCounterpartyTab({
     <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between gap-3">
         <SectionHeading>{texts.counterpartyTab}</SectionHeading>
-        {partnerId && onReloadFromPartner ? (
+        {partnerId && onReloadFromPartner && !readOnly ? (
           <Button type="button" variant="outline" onClick={onReloadFromPartner}>
             {texts.reloadFromPartner}
           </Button>
@@ -81,7 +81,7 @@ export function DocumentCounterpartyTab({
           />
         </Field>
       </FieldGrid>
-      <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
+      <AddressFieldGrid value={value} onChange={(address) => patch(address)} readOnly={readOnly} />
       <Field label={texts.email}>
         <Input
           type="email"

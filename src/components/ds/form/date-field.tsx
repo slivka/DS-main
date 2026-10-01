@@ -120,6 +120,10 @@ export function DateField({
   const [invalid, setInvalid] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const warningId = React.useId();
+  const visibleIcons = 1 + (link && !link.locked ? 1 : 0) + (warning ? 1 : 0);
+  const inputStyle: React.CSSProperties & Record<"--date-field-icons", number> = {
+    "--date-field-icons": visibleIcons,
+  };
   const disabledMatcher = React.useMemo(() => {
     if (maxDate && minDate) return { before: minDate, after: maxDate };
     if (maxDate) return { after: maxDate };
@@ -211,12 +215,10 @@ export function DateField({
                 commitText();
               }
             }}
-            data-visible-icons={1 + (link && !link.locked ? 1 : 0) + (warning ? 1 : 0)}
+            data-visible-icons={visibleIcons}
+            style={inputStyle}
             className={cn(
-              "min-w-[calc(7.5rem+1.9rem)]",
-              link && !link.locked && "min-w-[calc(7.5rem+3.8rem)]",
-              warning && (!link || link.locked) && "min-w-[calc(7.5rem+3.8rem)]",
-              warning && link && !link.locked && "min-w-[calc(7.5rem+5.7rem)]",
+              "min-w-[calc(7.5rem+var(--date-field-icons)*1.9rem)]",
               "pr-[2.4em]",
               link && !link.locked && "pr-[4.2em]",
               warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]",

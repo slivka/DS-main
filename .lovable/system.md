@@ -11,6 +11,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
 - Sekce dokladu řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+- Zaškrtávátko a přepínač vystřeďte obalem výšky prvního řádku popisku (`h-5`); nepoužívejte pevný svislý posun.
 
 ## Filozofie
 
@@ -89,7 +90,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 4. Výjimka: „Vstupuje do DPH“ v `DocumentForm` zůstává přepínač v pruhu akcí, i když se ukládá s Uložit – mění, co formulář zobrazuje (DUZP, Datum DPH, sloupce DPH).
 5. „Aktivní“ u číselníků nikdy jako pole formuláře (ani Checkbox, ani Switch) – vždy stav záznamu: `RecordDialog.status` (štítek vedle nadpisu) + `lifecycleAction` (Deaktivovat / Aktivovat vlevo vedle Odstranit, s `dirty` nabídne „Uložit změny a …“); u nového záznamu se nepředává. V gridu `activeStatusColumn()`, `ShowInactiveToggle` (výchozí vypnuto = neaktivní skryté) a `GridRowMenu` s `activeToggleMenuItem()`. Výběry neaktivní položky nenabízejí, již vybranou ukážou se štítkem „neaktivní“ (`InactiveTag`).
 6. Filtr ano/ne nad gridem = vždy `GridToggleButton` (ne Switch, ne OptionSelect).
-7. Ve stránkách jen `CheckboxField` / `CheckboxGroup` / `SwitchField` (a buňky gridu); holé `Checkbox`, `Switch` a nativní `<label>` ne. `CheckboxField align="input"` zarovná zaškrtávátko ve `FieldGrid` na výšku pole.
+7. Ve stránkách jen `CheckboxField` / `CheckboxGroup` / `SwitchField` (a buňky gridu); holé `Checkbox`, `Switch` a nativní `<label>` ne. Checkbox i switch jsou ve flex obalu výšky prvního řádku popisku (`h-5 items-center`), bez pevného horního posunu; zůstávají proto vystředěné při každém zoomu. `CheckboxField align="input"` navíc zarovná ovládací prvek ve `FieldGrid` na výšku sousedního pole.
 
 **Vyhledávací pole:** `LookupField` (lupa / ⟳ v poli, `mode="auto"`), `IcoField` na něm s `digitsOnly`. **Adresa:** `AddressFieldGrid.mapAction` = Země 2/4 · prázdná 1/4 · „Mapa“ 1/4 vpravo, textové outline tlačítko. **Bankovní účty:** `parseCzAccount`, `isValidCzAccount` (modulo 11), `czIban`, `isValidIban`, `formatIban`. **Stav DPH:** `VatStatusBadge` (nespolehlivý plátce plně červeně).
 

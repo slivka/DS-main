@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  BankAccountField,
   CODE_SEPARATOR,
   CheckboxField,
   DateField,
@@ -11,6 +12,7 @@ import {
   RecordActionBar,
   formatCodeName,
 } from "../../src";
+import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
 
 describe("DS 2.85.0 – obecná pravidla", () => {
   it("skládá kód a název jediným oddělovačem", () => {
@@ -52,6 +54,9 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(locked).toContain('data-visible-icons="1"');
     expect(unlocked).toContain('data-visible-icons="2"');
     expect(warned).toContain('data-visible-icons="2"');
+    const lockedWidth = /--date-field-icons:(\d+)/.exec(locked)?.[1];
+    const unlockedWidth = /--date-field-icons:(\d+)/.exec(unlocked)?.[1];
+    expect(Number(unlockedWidth)).toBeGreaterThan(Number(lockedWidth));
   });
 
   it("řadí hlavní krok před uložením a nabízí editaci vybraného záznamu", () => {
@@ -68,11 +73,42 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(lookup).toContain("Upravit vybraný záznam");
   });
 
-  it("zarovnává checkbox podle prvního řádku popisku", () => {
+  it("obalí checkbox výškou prvního řádku popisku", () => {
     const html = renderToStaticMarkup(
       <CheckboxField label="Jednořádkový popisek" hint="Popis" checked onCheckedChange={vi.fn()} />,
     );
-    expect(html).toContain("mt-[0.125rem]");
+    const controlLine = /<span class="([^"]*)"><button[^>]*role="checkbox"/.exec(html)?.[1] ?? "";
+    expect(controlLine.split(" ")).toEqual(expect.arrayContaining(["flex", "h-5", "items-center"]));
+    expect(controlLine.split(" ").some((token) => token.startsWith("mt-"))).toBe(false);
+  });
+
+  it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {
+    const available = renderToStaticMarkup(
+      <BankAccountField
+        value=""
+        onChange={vi.fn()}
+        options={[]}
+        selectionOnly
+        onAddAccount={vi.fn()}
+      />,
+    );
+    const disabled = renderToStaticMarkup(
+      <BankAccountField
+        value=""
+        onChange={vi.fn()}
+        options={[]}
+        selectionOnly
+        disabledReason="Nejdřív vyberte dodavatele"
+      />,
+    );
+    expect(available).toContain('role="combobox"');
+    expect(available).not.toContain('disabled=""');
+    expect(disabled).toContain("Nejdřív vyberte dodavatele");
+  });
+
+  it("rozšiřuje sloupec pořadí až od třetí číslice", () => {
+    expect(journalRowColumnWidthRem(9)).toBe(journalRowColumnWidthRem(99));
+    expect(journalRowColumnWidthRem(100)).toBeGreaterThan(journalRowColumnWidthRem(99));
   });
 });
 
@@ -123,5 +159,28 @@ describe("DS 2.85.0 – formulář dokladu", () => {
     );
     expect(html).toContain("Bankovní účet je označen jako neplatný");
     expect(html).not.toContain('id="document-bankAccount" inputmode="numeric"');
+  });
+
+  it("číselníkový KS a firemní účet vykreslí jako výběry", () => {
+    const view = renderToStaticMarkup(
+      <DocumentForm
+        title="FV"
+        documentType="FV"
+        value={value}
+        onChange={vi.fn()}
+        lines={[]}
+        onLinesChange={vi.fn()}
+        books={[]}
+        accounts={[]}
+        homeCurrency="CZK"
+        status="draft"
+        constantSymbolOptions={[{ value: "0308", label: "0308 – Platby za služby" }]}
+        companyBankAccountOptions={[
+          { id: "company-1", label: "Hlavní", account: "123/0100", currency: "CZK" },
+        ]}
+      />,
+    );
+    expect(view).toContain("Bankovní účet firmy");
+    expect(view).not.toContain('id="document-constantSymbol" type="text"');
   });
 });

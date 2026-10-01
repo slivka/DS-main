@@ -81,7 +81,7 @@ export function CounterpartyField({
   partners,
   onCreatePartner,
   disabled,
-  placeholder = "Název protistrany",
+  placeholder,
   id,
   className,
   linkedLabel = "Partner",

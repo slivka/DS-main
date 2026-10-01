@@ -160,6 +160,7 @@ export function useJournalEditorState(
     mode,
     sideFields,
     grossProtected: calcMode === "gross",
+    rowCount: lines.length,
   });
   const { rootRef, visibleColumns, compactAccountIds } = layout;
   const regularLines = lines.filter(isRegularLine);

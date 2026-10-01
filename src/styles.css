@@ -888,7 +888,6 @@
   height: calc(var(--p-h) - 0.9em) !important;
   padding-inline: 0.35em !important;
   gap: 0.15em;
-  border-radius: var(--radius-sm);
   line-height: 1;
   color: var(--foreground);
 }
@@ -1154,7 +1153,6 @@
   min-height: 0 !important;
   line-height: 1.2 !important;
   padding: 0.15em 0.5em !important;
-  border-radius: var(--radius-sm);
   gap: 0.3em;
 }
 

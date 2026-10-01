@@ -85,11 +85,18 @@ export function OptionSelect({
           triggerClassName,
         )}
       >
-        <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
+        <SelectValue className="sr-only" placeholder={placeholder} />
+        <span aria-hidden="true" className="min-w-0 truncate">
+          {selectedLabel ?? (current || placeholder)}
+        </span>
       </SelectTrigger>
       <SelectContent>
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
-        {!known && current !== "" ? <SelectItem value={current}>{current}</SelectItem> : null}
+        {!known && current !== "" ? (
+          <SelectItem value={current} disabled>
+            {current}
+          </SelectItem>
+        ) : null}
         {offered.map((o) => (
           <SelectItem
             key={o.value}

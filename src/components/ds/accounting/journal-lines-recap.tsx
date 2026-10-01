@@ -221,20 +221,24 @@ export function JournalLinesRecap({
         : formatAccountCode(code);
     };
     return [
-      ...base.map((column) =>
-        column.id.startsWith("debit")
-          ? {
-              ...column,
-              value: (row: Row) => withLabel(accountValue(column.id, row), row),
-              render: (row: Row) => renderLabel(accountValue(column.id, row), row),
-            }
-          : {
-              ...column,
-              value: (row: Row) => accountValue(column.id, row) || "—",
-              render: (row: Row) =>
-                renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
-            },
-      ),
+      // Rekapitulace záměrně vůbec neposkytuje krátké účetní sloupce. Staré
+      // uložené viditelnosti je proto nemohou obnovit bez dostupné lišty.
+      ...base
+        .filter((column) => column.id.endsWith("Name"))
+        .map((column) =>
+          column.id.startsWith("debit")
+            ? {
+                ...column,
+                value: (row: Row) => withLabel(accountValue(column.id, row), row),
+                render: (row: Row) => renderLabel(accountValue(column.id, row), row),
+              }
+            : {
+                ...column,
+                value: (row: Row) => accountValue(column.id, row) || "—",
+                render: (row: Row) =>
+                  renderLabel(accountValue(column.id, row), { ...row, label: undefined }),
+              },
+        ),
       {
         id: "amount",
         label: `${t.total} (${homeMark})`,
@@ -409,7 +413,7 @@ export function JournalLinesRecap({
                 onClick={() => {
                   if (!shown && item.id === activeTab) changeOpen(true);
                 }}
-                className="h-9 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="h-9 rounded-none border-b-2 border-transparent text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold"
               >
                 {item.label}
               </TabsTrigger>

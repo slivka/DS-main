@@ -359,7 +359,7 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
       />,
     );
     const aside = view.getByText("Sčítá se z rozpisu");
-    expect(aside.className).toContain("truncate");
+    expect(aside.textContent).toBe("Sčítá se z rozpisu");
     expect(
       view.container.querySelector("[data-slot=document-amount-total] label")?.textContent,
     ).toContain("Sčítá se z rozpisu");

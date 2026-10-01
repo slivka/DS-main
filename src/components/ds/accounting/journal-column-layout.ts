@@ -46,6 +46,10 @@ export const JOURNAL_COLUMN_WIDTHS: Record<ColumnId, number> = {
   vatDeductionShare: 0,
   pdpSubjectCode: 0,
 };
+/** Šířka sloupce Ř. podle nejvyššího pořadového čísla; minimum pohodlně pojme 99. */
+export function journalRowColumnWidthRem(rowCount: number): number {
+  return 4.25 + Math.max(0, String(Math.max(1, rowCount)).length - 2) * 0.625;
+}
 const TEXT_MIN_WIDTH_REM = 12;
 const TEXT_SHRUNK_MIN_WIDTH_REM = 6;
 /** Šířka zkrácené rozšířené formy účtu (jen číslo). */
@@ -227,6 +231,8 @@ export interface JournalColumnWidthsInput {
   zoom: number;
   /** Vnitřní šířka gridu v rem. */
   effectiveWidthRem: number;
+  /** Počet řádků určující šířku pořadového čísla. */
+  rowCount?: number;
 }
 
 /**
@@ -243,9 +249,11 @@ export function journalColumnWidthsRem(input: JournalColumnWidthsInput) {
     const savedWidth = input.savedWidths[id];
     const base = input.compactAccountIds.has(id)
       ? COMPACT_ACCOUNT_WIDTH_REM
-      : typeof savedWidth === "number" && layout.customWidthsApplied
-        ? savedWidth / 16
-        : JOURNAL_COLUMN_WIDTHS[id];
+      : id === "row"
+        ? journalRowColumnWidthRem(input.rowCount ?? 0)
+        : typeof savedWidth === "number" && layout.customWidthsApplied
+          ? savedWidth / 16
+          : JOURNAL_COLUMN_WIDTHS[id];
     result[id] = base * zoom;
     fixed += base * zoom;
   }

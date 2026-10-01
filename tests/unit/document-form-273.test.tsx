@@ -1,5 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it } from "bun:test";
+import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
@@ -7,6 +7,8 @@ const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm, vsFromDocumentNumber } =
   await import("../../src/components/ds/accounting/document-form");
+const { DocumentCounterpartyTab, DocumentPrintTab } =
+  await import("../../src/components/ds/accounting/document-detail-tabs");
 
 const base = {
   bookId: "fp",
@@ -54,6 +56,73 @@ afterAll(async () => {
 });
 
 describe("DocumentForm 2.73", () => {
+  it("zobrazuje neznámý číselníkový KS bez volného vstupu a firemní účet jako výběr", () => {
+    const view = render(
+      <Form
+        initial={{ ...base, constantSymbol: "9999", companyBankAccountId: null }}
+        documentType="FV"
+        constantSymbolOptions={[{ value: "0308", label: "0308 – Platby za služby" }]}
+        companyBankAccountOptions={[
+          { id: "company-1", label: "Hlavní", account: "123/0100", currency: "CZK" },
+        ]}
+        onChange={() => {}}
+      />,
+    );
+    expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain("9999");
+    expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
+    expect(view.getByRole("combobox", { name: "Bankovní účet firmy" })).toBeTruthy();
+  });
+
+  it("readOnly odběratel nenačítá partnera a tisk mění celý value.print", () => {
+    const counterparty = {
+      name: "Firma",
+      ico: "12345678",
+      dic: "CZ12345678",
+      street: "Ulice 1",
+      zip: "11000",
+      city: "Praha",
+      country: "CZ",
+      email: "a@example.cz",
+    };
+    const readonlyView = render(
+      <DocumentCounterpartyTab
+        value={counterparty}
+        onChange={() => {}}
+        partnerId="p1"
+        onReloadFromPartner={() => {}}
+        readOnly
+      />,
+    );
+    expect(readonlyView.queryByRole("button", { name: "Načíst znovu z partnera" })).toBeNull();
+    expect(
+      readonlyView.getAllByRole("textbox").every((input) => input.hasAttribute("readonly")),
+    ).toBe(true);
+    cleanup();
+    const print = {
+      options: {
+        showHeader: false,
+        showFooter: false,
+        showVatRecap: false,
+        showNote: false,
+        showColumnHeadings: false,
+        showTotalsRow: false,
+        showPaymentSchedule: false,
+      },
+      headerText: "",
+      footerText: "",
+      note: "",
+      issuedByName: "",
+      issuedByPhone: "",
+      issuedByEmail: "",
+    };
+    let changed = print;
+    const printView = render(
+      <DocumentPrintTab value={print} onChange={(next) => (changed = next)} />,
+    );
+    fireEvent.click(printView.getByRole("checkbox", { name: "Tisknout záhlaví" }));
+    expect(changed).toEqual({ ...print, options: { ...print.options, showHeader: true } });
+  });
+
   it("odvodí VS jen z 1 až 10 číslic", () => {
     expect(vsFromDocumentNumber("FA-2026/0123")).toBe("20260123");
     expect(vsFromDocumentNumber("0012")).toBe("0012");
@@ -135,7 +204,8 @@ describe("DocumentForm 2.73", () => {
     ).toContain("col-span-6");
     expect(
       view.container.querySelector("[data-slot=document-payment-section] #document-bankAccount"),
-    ).toBeNull();
+    ).toBeTruthy();
+    expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
     const exclude = view.container
       .querySelector("#document-exclude-payment-orders")
       ?.closest("[data-slot=checkbox-field]");
@@ -200,6 +270,43 @@ describe("DocumentForm 2.73", () => {
 });
 
 describe("BankAccountField 2.73", () => {
+  it("zpřístupní výběr založení prvního účtu i s prázdným seznamem", () => {
+    const onAddAccount = mock(() => {});
+    const view = render(
+      <BankAccountField
+        aria-label="Bankovní účet"
+        value=""
+        onChange={() => {}}
+        options={[]}
+        selectionOnly
+        onAddAccount={onAddAccount}
+      />,
+    );
+    const trigger = view.getByRole("combobox", { name: "Bankovní účet" });
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.hasAttribute("disabled")).toBe(false);
+    expect(onAddAccount).not.toHaveBeenCalled();
+  });
+
+  it("neplatný a chybějící účet popíše bez surového identifikátoru", () => {
+    const view = render(
+      <BankAccountField value="invalid-id" onChange={() => {}} options={[]} selectionOnly />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain("Účet není v číselníku partnera");
+    expect(view.getByRole("combobox").textContent).not.toContain("invalid-id");
+    view.rerender(
+      <BankAccountField
+        value="bank-1"
+        onChange={() => {}}
+        options={[{ id: "bank-1", number: "123", bankCode: "0100", invalid: true }]}
+        selectionOnly
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain("neplatný");
+    expect(view.getByRole("combobox").querySelector(".line-through")).toBeTruthy();
+  });
+
   it("nemění prázdnou hodnotu podle výchozí možnosti", () => {
     let value = "";
     render(
@@ -250,7 +357,7 @@ describe("BankAccountField 2.73", () => {
   it("po opuštění hlásí neúplný účet, odstraňuje mezery a vrací se z režimu Jiný účet", () => {
     const options = [{ number: "19-2000145399", bankCode: "0800" }];
     function AccountHarness() {
-      const [account, setAccount] = React.useState("");
+      const [account, setAccount] = React.useState("123");
       return (
         <BankAccountField
           aria-label="Bankovní účet"
@@ -262,9 +369,6 @@ describe("BankAccountField 2.73", () => {
       );
     }
     const view = render(<AccountHarness />);
-    expect(view.getByRole("combobox", { name: "Bankovní účet" })).toBeTruthy();
-    fireEvent.click(view.getByRole("combobox", { name: "Bankovní účet" }));
-    fireEvent.click(view.getByRole("option", { name: "Jiný účet" }));
     const input = view.getByRole("textbox", { name: "Bankovní účet" });
     fireEvent.change(input, { target: { value: "123 456 789" } });
     expect((input as HTMLInputElement).value).toBe("123456789");
@@ -281,10 +385,10 @@ describe("BankAccountField 2.73", () => {
     expect(view.queryByRole("textbox", { name: "Bankovní účet" })).toBeNull();
   });
 
-  it("v režimu Jiný účet vstup zůstane po smazání i po shodě s nabídkou", () => {
+  it("ruční vstup zůstane po smazání i po shodě s nabídkou", () => {
     const options = [{ number: "19-2000145399", bankCode: "0800" }];
     function Harness() {
-      const [account, setAccount] = React.useState("");
+      const [account, setAccount] = React.useState("123");
       return (
         <BankAccountField
           aria-label="Účet"
@@ -295,8 +399,6 @@ describe("BankAccountField 2.73", () => {
       );
     }
     const view = render(<Harness />);
-    fireEvent.click(view.getByRole("combobox", { name: "Účet" }));
-    fireEvent.click(view.getByRole("option", { name: "Jiný účet" }));
     const input = view.getByRole("textbox", { name: "Účet" });
     fireEvent.change(input, { target: { value: "123" } });
     fireEvent.change(input, { target: { value: "" } });

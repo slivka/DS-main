@@ -407,6 +407,8 @@ export const DS_TEXTS_CS: DsTexts = {
     addBankAccount: "Přidat účet…",
     selectSupplierFirst: "Nejdřív vyberte dodavatele",
     invalidBankAccountWarning: "Bankovní účet je označen jako neplatný",
+    invalidBankAccount: "neplatný",
+    bankAccountMissing: "Účet není v číselníku partnera",
     paymentMethod: "Způsob platby",
     companyBankAccount: "Bankovní účet firmy",
     vatVerified: (date) => `Ověřeno ${date}`,

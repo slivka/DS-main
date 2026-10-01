@@ -74,7 +74,7 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(html).not.toContain(">Datum DPH<");
   });
 
-  it("drží všechna data v jediném pružném řádku v pořadí polí", () => {
+  it("drží hlavní data vlevo a obě data DPH ve společné pravé skupině", () => {
     const html = form({ vat: { visible: true } });
     expect(html.indexOf("Datum vystavení")).toBeLessThan(html.indexOf("Datum účetního případu"));
     expect(html.indexOf("Datum účetního případu")).toBeLessThan(html.indexOf("Splatnost"));
@@ -84,9 +84,12 @@ describe("DocumentForm DPH 2.43.0", () => {
       html.indexOf(">Účtování a částka</h2>"),
     );
     expect(dates).toContain("flex flex-wrap items-start gap-3");
-    expect(dates).not.toContain("ml-auto flex flex-wrap items-start gap-3");
-    expect(dates).toContain("min-w-[8.5rem]");
-    expect(dates).not.toContain("col-start-15");
+    const vatGroup = dates.slice(dates.indexOf('data-slot="document-vat-dates"'));
+    expect(vatGroup).toContain('id="document-taxDate"');
+    expect(vatGroup).toContain('id="document-vatDate"');
+    expect(vatGroup.indexOf('id="document-taxDate"')).toBeLessThan(
+      vatGroup.indexOf('id="document-vatDate"'),
+    );
   });
 
   it("období jen pro čtení má vysvětlení a podané období ukáže upozornění", () => {
@@ -179,6 +182,32 @@ describe("DocumentForm Vstupuje do DPH 2.43.0", () => {
     expect(html).toContain('aria-checked="false"');
     expect(html).not.toContain(">DUZP<");
     expect(html).not.toContain(">Datum DPH<");
+  });
+
+  it("stav partnera ukáže jen při zapnutém vstupu do DPH", () => {
+    const shown = form({
+      vat: { visible: true },
+      vatPartnerStatus: { status: "payer", checkedAt: "24.09.2026" },
+    });
+    const hidden = renderToStaticMarkup(
+      <DocumentForm
+        homeCurrency="CZK"
+        title="Doklad"
+        documentType="FP"
+        value={{ ...baseValue, vatRelevant: false }}
+        onChange={() => {}}
+        lines={[]}
+        onLinesChange={() => {}}
+        books={[]}
+        accounts={[]}
+        status="draft"
+        vat={{ visible: true }}
+        vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+      />,
+    );
+    expect(shown).toContain(">Plátce<");
+    expect(shown).toContain("Ověřeno 24.09.2026");
+    expect(hidden).not.toContain("Plátce DPH");
   });
 
   it("neplátci skryje celý blok DPH včetně přepínače", () => {

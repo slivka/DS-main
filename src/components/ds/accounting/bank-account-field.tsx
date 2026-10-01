@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 
 import { Input } from "../../ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { OptionSelect } from "../form/option-select";
 import { isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
@@ -36,6 +37,8 @@ export interface BankAccountFieldProps extends Omit<
   onAddAccount?: () => void;
   /** Text akce přidání účtu. */
   addAccountText?: string;
+  /** Důvod, proč výběr nelze použít; zobrazí se v nápovědě i pod polem. */
+  disabledReason?: string;
 }
 
 const OTHER = "__other_bank_account__";
@@ -57,7 +60,8 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       className,
       selectionOnly = false,
       onAddAccount,
-      addAccountText = "Přidat účet…",
+      addAccountText,
+      disabledReason,
       onBlur,
       ...props
     },
@@ -67,11 +71,13 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     const resolvedInvalidAccountText = invalidAccountText ?? texts.bankAccountInvalid;
     const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
     const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
+    const resolvedAddAccountText = addAccountText ?? texts.addBankAccount;
     const optionValue = (option: BankAccountOption) =>
       option.id ?? `${option.number}/${option.bankCode}`;
     const optionValues = options.map(optionValue);
     const optionValuesKey = optionValues.join("\u0000");
     const selectedOption = optionValues.includes(value);
+    const missingSelected = selectionOnly && Boolean(value) && !selectedOption;
     const [otherSelected, setOtherSelected] = useState(() => Boolean(value) && !selectedOption);
     const [touched, setTouched] = useState(false);
     // Hodnotu, kterou pole samo odeslalo, režim nepřepočítává (jinak by vstup „Jiný účet“ zmizel).
@@ -111,44 +117,73 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
 
     return (
       <div className={cn("min-w-0", className)}>
-        {options.length ? (
-          <OptionSelect
-            id={manual ? undefined : id}
-            value={manual ? OTHER : value}
-            onChange={(next) => {
-              if (next === OTHER && onAddAccount) {
-                onAddAccount();
-                return;
-              }
-              if (next === OTHER) {
-                setOtherSelected(true);
-                return;
-              }
-              setOtherSelected(false);
-              setTouched(false);
-              emit(next);
-            }}
-            allowEmpty={false}
-            ariaLabel={props["aria-label"]}
-            disabled={disabled || readOnly}
-            options={[
-              ...options
-                .filter((option) => !option.invalid || optionValue(option) === value)
-                .map((option) => ({
-                  value: optionValue(option),
-                  label: [option.label, `${option.number}/${option.bankCode}`, option.currency]
-                    .filter(Boolean)
-                    .join(" · "),
-                  selectedLabel: `${option.number}/${option.bankCode}`,
-                  inactive: option.invalid,
-                })),
-              ...(onAddAccount
-                ? [{ value: OTHER, label: addAccountText }]
-                : selectionOnly
-                  ? []
-                  : [{ value: OTHER, label: resolvedOtherAccountText }]),
-            ]}
-          />
+        {options.length || selectionOnly ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div tabIndex={disabledReason ? 0 : undefined}>
+                  <OptionSelect
+                    id={manual ? undefined : id}
+                    value={manual ? OTHER : value}
+                    onChange={(next) => {
+                      if (next === OTHER && onAddAccount) {
+                        onAddAccount();
+                        return;
+                      }
+                      if (next === OTHER) {
+                        setOtherSelected(true);
+                        return;
+                      }
+                      setOtherSelected(false);
+                      setTouched(false);
+                      emit(next);
+                    }}
+                    allowEmpty={false}
+                    ariaLabel={props["aria-label"]}
+                    disabled={disabled || readOnly || Boolean(disabledReason)}
+                    inactiveLabel={texts.invalidBankAccount}
+                    options={[
+                      ...(missingSelected
+                        ? [
+                            {
+                              value,
+                              label: (
+                                <span className="line-through">{texts.bankAccountMissing}</span>
+                              ),
+                              inactive: true,
+                            },
+                          ]
+                        : []),
+                      ...options
+                        .filter((option) => !option.invalid || optionValue(option) === value)
+                        .map((option) => ({
+                          value: optionValue(option),
+                          label: (
+                            <span className={cn(option.invalid && "line-through")}>
+                              {[
+                                option.label,
+                                `${option.number}/${option.bankCode}`,
+                                option.currency,
+                              ]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                          ),
+                          selectedLabel: `${option.number}/${option.bankCode}`,
+                          inactive: option.invalid,
+                        })),
+                      ...(onAddAccount
+                        ? [{ value: OTHER, label: resolvedAddAccountText }]
+                        : selectionOnly
+                          ? []
+                          : [{ value: OTHER, label: resolvedOtherAccountText }]),
+                    ]}
+                  />
+                </div>
+              </TooltipTrigger>
+              {disabledReason ? <TooltipContent>{disabledReason}</TooltipContent> : null}
+            </Tooltip>
+          </TooltipProvider>
         ) : null}
         {manual ? (
           <Input
@@ -175,6 +210,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
           <p role="alert" className="mt-1 text-xs font-medium text-destructive">
             {error}
           </p>
+        ) : null}
+        {disabledReason ? (
+          <p className="mt-1 text-xs text-muted-foreground">{disabledReason}</p>
         ) : null}
       </div>
     );

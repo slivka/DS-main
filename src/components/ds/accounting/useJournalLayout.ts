@@ -31,6 +31,8 @@ export interface JournalLayoutInput {
   sideFields: "shared" | "split";
   /** V režimu s DPH je sloupec s DPH chráněný před skrytím. */
   grossProtected: boolean;
+  /** Počet řádků pro pružnou šířku sloupce Ř. */
+  rowCount: number;
 }
 
 /** Sleduje šířku gridu (ResizeObserver, změna zoomu aplikace, konec tažení) a velikost rem. */
@@ -173,6 +175,7 @@ export function useJournalLayout(input: JournalLayoutInput) {
     layout: columnLayout,
     zoom,
     effectiveWidthRem,
+    rowCount: input.rowCount,
   });
   return {
     rootRef,
