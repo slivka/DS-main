@@ -170,7 +170,11 @@ export function journalAccountColumnLabel(
       : data === "debitAccount"
         ? t.debitAccount
         : counter.name;
-  return data === "creditAccount" ? t.sideCredit : data === "debitAccount" ? t.sideDebit : counter.short;
+  return data === "creditAccount"
+    ? t.sideCredit
+    : data === "debitAccount"
+      ? t.sideDebit
+      : counter.short;
 }
 
 /** Účet zobrazený ve sloupci; protiúčet má zálohu ve straně proti hlavnímu účtu. */
@@ -273,4 +277,3 @@ export function journalDisplayValue(
   if (column === "row" || column === "actions") return "";
   return String(line[column] ?? "");
 }
-

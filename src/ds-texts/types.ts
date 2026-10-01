@@ -391,4 +391,3 @@ export interface DsTexts {
     page: (page: number, pages: number) => string;
   };
 }
-

@@ -45,7 +45,12 @@ export type JournalAccountColumnId =
   | "creditAccount"
   | "creditAccountName";
 /** Všechny sloupce mřížky editoru včetně systémových. */
-export type ColumnId = JournalLineColumn | JournalAccountColumnId | "row" | "homeAmount" | "actions";
+export type ColumnId =
+  | JournalLineColumn
+  | JournalAccountColumnId
+  | "row"
+  | "homeAmount"
+  | "actions";
 /** Rozpracovaná editace buňky; `original` slouží k vrácení přes Esc. */
 export type EditState = { rowId: string; column: ColumnId; seed?: string; original: JournalLine };
 
@@ -80,7 +85,11 @@ export const dataColumnOf = (column: ColumnId): JournalLineColumn =>
     : // Systémové sloupce (row, homeAmount, actions) v datech nejsou; vyhledání v mapách vrátí undefined.
       (column as JournalLineColumn);
 /** Sloupce zakázky. */
-export const DIMENSION_COLUMNS = new Set<string>(["dimensionId", "debitDimensionId", "creditDimensionId"]);
+export const DIMENSION_COLUMNS = new Set<string>([
+  "dimensionId",
+  "debitDimensionId",
+  "creditDimensionId",
+]);
 /** Sloupce partnera. */
 export const PARTNER_COLUMNS = new Set<string>(["partnerId", "debitPartnerId", "creditPartnerId"]);
 /** Sloupce variabilního symbolu. */

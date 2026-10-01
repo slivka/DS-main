@@ -6,7 +6,15 @@
 import type * as React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronRight, Copy, GripVertical, Pin, RotateCcw, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  GripVertical,
+  Pin,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { TableCell, TableRow } from "../../ui/table";
@@ -98,7 +106,9 @@ function RowNumberCell({
           <button
             type="button"
             aria-label={expanded[line.id] ? t.hideDetail : t.showDetail}
-            onClick={() => editor.setExpanded((state) => ({ ...state, [line.id]: !state[line.id] }))}
+            onClick={() =>
+              editor.setExpanded((state) => ({ ...state, [line.id]: !state[line.id] }))
+            }
           >
             {expanded[line.id] ? (
               <ChevronDown className="size-[0.95em]" />

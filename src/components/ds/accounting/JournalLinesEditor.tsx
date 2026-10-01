@@ -32,7 +32,8 @@ function JournalHeader() {
       <TableRow>
         {layout.visibleColumns.map((column) => {
           const compact = layout.compactAccountIds.has(column.id) && isAccountColumn(column.id);
-          const dataId = compact && isAccountColumn(column.id) ? accountDataColumn(column.id) : null;
+          const dataId =
+            compact && isAccountColumn(column.id) ? accountDataColumn(column.id) : null;
           const heading =
             dataId === "debitAccount"
               ? t.sideDebit

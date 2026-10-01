@@ -108,7 +108,8 @@ function NumericCellEditor({ line, column }: JournalCellEditorProps) {
     );
   }
   const numericColumn = column === "quantity" || column === "unitPrice" ? column : "amount";
-  const current = numericColumn === "amount" && editor.foreign ? line.foreignAmount : line[numericColumn];
+  const current =
+    numericColumn === "amount" && editor.foreign ? line.foreignAmount : line[numericColumn];
   return (
     <DecimalInput
       autoFocus
@@ -153,11 +154,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
     editor.patch(line.id, values);
     editor.finish();
   };
-  if (
-    column === "dimensionId" ||
-    column === "debitDimensionId" ||
-    column === "creditDimensionId"
-  )
+  if (column === "dimensionId" || column === "debitDimensionId" || column === "creditDimensionId")
     return (
       <DimensionSelect
         {...selectProps}

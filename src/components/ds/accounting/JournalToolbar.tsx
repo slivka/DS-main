@@ -120,7 +120,12 @@ function ToolbarRight() {
   const { columns, zoom } = layout;
   return (
     <>
-      <GridSearch value={editor.search} onChange={editor.setSearch} zoom={zoom} placeholder={t.search} />
+      <GridSearch
+        value={editor.search}
+        onChange={editor.setSearch}
+        zoom={zoom}
+        placeholder={t.search}
+      />
       <ColumnPicker
         columns={columns.columns.map((column) => {
           const dataId = isAccountColumn(column.id) ? accountDataColumn(column.id) : null;
@@ -164,7 +169,12 @@ export function JournalToolbar() {
   const { t, search } = editor;
   return (
     <>
-      <GridToolbar zoom={editor.layout.zoom} density={editor.layout.density} left={<ToolbarLeft />} right={<ToolbarRight />} />
+      <GridToolbar
+        zoom={editor.layout.zoom}
+        density={editor.layout.density}
+        left={<ToolbarLeft />}
+        right={<ToolbarRight />}
+      />
       {search ? (
         <div className="flex items-center justify-between border-b bg-filter-active/10 px-3 py-1 text-xs text-filter-active">
           <span>

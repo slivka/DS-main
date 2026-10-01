@@ -280,7 +280,9 @@ describe("JournalLinesEditor – chyby řádků", () => {
         onValidationChange={(_count, errors) => calls.push(errors)}
       />,
     );
-    expect(calls.at(-1)).toEqual([{ line: 2, field: "creditAccount", message: "Vyberte účet DAL" }]);
+    expect(calls.at(-1)).toEqual([
+      { line: 2, field: "creditAccount", message: "Vyberte účet DAL" },
+    ]);
     expect(cell(view.container, "l2:creditAccount")?.getAttribute("data-invalid")).toBe("true");
     expect(cell(view.container, "l1:creditAccount")?.hasAttribute("data-invalid")).toBe(false);
   });

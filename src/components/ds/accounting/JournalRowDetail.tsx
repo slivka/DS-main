@@ -78,7 +78,11 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
     <>
       {!shown.has("vatRate") && code ? (
         <DetailField label={t.vatRate} width="flex-none w-[6rem]">
-          <Input readOnly value={editor.displayValue(line, "vatRate")} className={READ_ONLY_AMOUNT} />
+          <Input
+            readOnly
+            value={editor.displayValue(line, "vatRate")}
+            className={READ_ONLY_AMOUNT}
+          />
         </DetailField>
       ) : null}
       {!shown.has("grossAmount") && code ? (
@@ -280,7 +284,11 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
       {editor.vatOn ? <VatDetail line={line} shown={shown} /> : null}
       {foreign && !shown.has("homeAmount") ? (
         <DetailField label={homeAmountLabel} width="w-[9.5rem] flex-none">
-          <Input readOnly value={editor.displayValue(line, "homeAmount")} className={READ_ONLY_AMOUNT} />
+          <Input
+            readOnly
+            value={editor.displayValue(line, "homeAmount")}
+            className={READ_ONLY_AMOUNT}
+          />
         </DetailField>
       ) : null}
     </div>

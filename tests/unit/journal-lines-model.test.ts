@@ -115,7 +115,11 @@ describe("journal-lines-model – platnost a přečíslování", () => {
     expect(errors.get("n")).toEqual({});
     expect(errors.get("r")).toEqual({});
     const touched = validateJournalLines([blank], ctx, { ...scope, touched: new Set(["n"]) });
-    expect(Object.keys(touched.get("n") ?? {})).toEqual(["debitAccount", "creditAccount", "amount"]);
+    expect(Object.keys(touched.get("n") ?? {})).toEqual([
+      "debitAccount",
+      "creditAccount",
+      "amount",
+    ]);
   });
 });
 

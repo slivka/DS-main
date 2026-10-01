@@ -256,7 +256,8 @@ export function useJournalEditorState(
     if (next) onChange(next);
   };
   const onDragEnd = ({ active: dragged, over }: DragEndEvent) => {
-    if (canReorder && over) onChange(reorderJournalLines(lines, String(dragged.id), String(over.id)));
+    if (canReorder && over)
+      onChange(reorderJournalLines(lines, String(dragged.id), String(over.id)));
   };
   /** Částka v měně dokladu; u cizí měny dopočítá i domácí částku. */
   const amountValues = (value: number | undefined): Partial<JournalLine> =>
@@ -368,7 +369,12 @@ export function useJournalEditorState(
     setEditing(null);
   };
   const startEditing = (line: JournalLine, column: ColumnId, seed?: string) =>
-    setEditing({ rowId: line.id, column, ...(seed !== undefined ? { seed } : {}), original: { ...line } });
+    setEditing({
+      rowId: line.id,
+      column,
+      ...(seed !== undefined ? { seed } : {}),
+      original: { ...line },
+    });
   return {
     props,
     t,
