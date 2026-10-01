@@ -249,7 +249,7 @@ describe("podmenu DS 2.75.0", () => {
   };
 
   it("Alt+Shift+W zavře aktivní panel i jeho záložky", () => {
-    const initial = setLayoutInState(createPaneTabsState(1), 2);
+    let initial = setLayoutInState(createPaneTabsState(1), 2);
     const tab = createTab({ route: "/a" });
     initial.panes[1] = { ...initial.panes[1], tabs: [tab], activeTab: tab.id };
     initial = { ...initial, active: initial.panes[1].id };
