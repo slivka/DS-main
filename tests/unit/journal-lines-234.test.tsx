@@ -81,7 +81,6 @@ describe("JournalLinesEditor 2.49", () => {
 });
 
 describe("JournalLinesEditor 2.54", () => {
-
   it("u EUR používá Částka a domácí popisek Částka v Kč", () => {
     expect(journalAmountLabels(DEFAULT_JOURNAL_LINES_TEXTS, "€", "Kč")).toEqual({
       amount: "Částka",
@@ -113,8 +112,7 @@ describe("JournalLinesEditor 2.54", () => {
     expect(html).toContain(">Částka<");
     expect(html).not.toContain("Částka v €");
   });
-
-
+});
 
 describe("JournalLinesEditor 2.66", () => {
   it("obnoví krátkou formu, pokud uložené rozložení skryje obě formy strany", () => {
