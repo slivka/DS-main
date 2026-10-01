@@ -65,7 +65,7 @@ export function FieldTable({ ariaLabel, columns, rows, className }: FieldTablePr
               key={column.key}
               role="columnheader"
               className={cn(
-                "text-xs font-medium text-foreground",
+                "text-[0.75rem] font-semibold leading-none text-foreground",
                 SPAN_CLASSES[column.span],
                 column.align === "end" && "text-right",
               )}
@@ -93,7 +93,7 @@ export function FieldTable({ ariaLabel, columns, rows, className }: FieldTablePr
                   column.align === "end" && "@min-[40rem]:justify-end @min-[40rem]:text-right",
                 )}
               >
-                <span className="text-xs font-medium text-muted-foreground @min-[40rem]:hidden">
+                <span className="text-[0.75rem] font-semibold leading-none text-muted-foreground @min-[40rem]:hidden">
                   {column.label}
                 </span>
                 <div className="min-w-0 flex-1">{row.cells[column.key]}</div>

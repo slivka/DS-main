@@ -1,4 +1,7 @@
 ## DS 2.84.0 – dialogy záznamů
+- [ ] Opravit ukázky A–D přesně podle kontroly v náhledu
+- [ ] Ověřit shodné pozice ovládání a svislice FieldTable / FieldGrid v DOM
+- [ ] Opravit lint chyby celého projektu nebo přesně doložit jejich původ
 - [x] Jednotný token výšky a shodné ikony výběrů
 - [x] FieldValue, CheckboxField, FieldGrid, SectionHeading a GridSegmentedToggle
 - [x] RecordDialog: velikosti, titulkové štítky, jedna/stabilní záložka
