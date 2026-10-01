@@ -11,6 +11,13 @@ Pro APP: veřejné API beze změny (žádný prop ani export neubyl, importní c
 - `JournalLinesEditor` rozdělen do menších souborů beze změny chování; texty editoru jsou v `DsTexts.journalEditor` (CS i SK). `DEFAULT_JOURNAL_LINES_TEXTS` je zastaralý alias (`@deprecated od 2.83.0`, náhrada `DS_TEXTS_CS.journalEditor`).
 - Texty knihovny rozděleny na `ds-texts/cs.ts`, `sk.ts`, `types.ts`; import `ds-texts` beze změny.
 
+- Gridy (5b): `DataGrid` a `TreeGrid` sdílí rám `GridFrame` (kontextový řádek, lišta, hledání, filtry, Sloupce, zoom/hustota, Obnovit, výběr), hook `useRowActions` (menu řádku a potvrzení) a typ `GridBaseProps`; logika rozdělena do souborů ≤ 500 řádků. Chování i props beze změny.
+- Nové exporty: `DEFAULT_PINNED_COLUMNS` a `DEFAULT_COMPACT_COLUMNS` (dnešní doménové sady id sloupců) a volitelné props `DataGrid.pinnedColumnIds` / `compactColumnIds` s nimi jako výchozí hodnotou. Grid sám id sloupců natvrdo nezná.
+- `DataGrid` s `paginated={false}` virtualizuje dlouhé seznamy (vykreslí jen viditelné řádky + rezervu); výška řádku, přilepená hlavička, výběr všech řádků a součty skupin počítají se všemi řádky, ne s oknem.
+- `AppShell` (5d, 5e): rozdělen na horní lištu, menu a panely; klávesové zkratky (Ctrl+B, `/`, Esc, zoom) jdou přes jeden společný posluchač `keydown`, který se při odpojení odregistruje. Efekty mají úplné závislosti. Zastaralé props zůstávají do 3.0.0.
+
+Pro APP po 5b/5d/5e: nic povinného; konstanty sloupců lze použít při vlastních gridech.
+
 Co má APP udělat po Update:
 
 1. V kořeni aplikace (vstupní soubor s `createRoot`/routerem) znovu obalit aplikaci `<React.StrictMode>`.

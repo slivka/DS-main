@@ -18,6 +18,7 @@
 - Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
 - AppShell: aplikace má tmavé menu, panely šedé; view řídí titul, nav, scope a `context` pojmenuje objekt; provozovatel = `badge` + warning accent.
 - LayoutMenu, nabídka záložky a UserMenu mají pevné pořadí; další položku přidej jen na výslovný požadavek. Nadpis panelu nemá ikonu.
+- Gridy skládají lištu přes `GridFrame` a menu řádku přes `useRowActions`; globální klávesy přes `useGlobalShortcuts` (jeden posluchač). Proč: jedno místo chování pro všechny gridy a rámy.
 - Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
 - Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; akce v `RecordActionBar`.
