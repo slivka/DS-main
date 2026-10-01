@@ -253,9 +253,9 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "FV",
     identity: {
       variant: "invoice",
-      book: "FV - Vydané faktury",
+      book: formatCodeName("FV", "Vydané faktury"),
       period: "2026",
-      account: { side: "MD", label: "311.001 - Odběratelé", editable: true },
+      account: { side: "MD", label: formatCodeName("311.001", "Odběratelé"), editable: true },
       number: "FV2026000421",
     },
     value: {
@@ -275,11 +275,11 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "FV",
     identity: {
       variant: "invoice",
-      book: "FV - Vydané faktury",
+      book: formatCodeName("FV", "Vydané faktury"),
       period: "2026",
       account: {
         side: "MD",
-        label: "311.001 - Odběratelé",
+        label: formatCodeName("311.001", "Odběratelé"),
         editable: true,
         disabledReason: "Doklad je spárovaný, nejdřív zrušte párování",
       },
@@ -295,9 +295,9 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "FP",
     identity: {
       variant: "invoice",
-      book: "FP - Přijaté faktury",
+      book: formatCodeName("FP", "Přijaté faktury"),
       period: "2026",
-      account: { side: "DAL", label: "321.001 - Dodavatelé" },
+      account: { side: "DAL", label: formatCodeName("321.001", "Dodavatelé") },
       number: "FP2026000712",
     },
     value: { ...BASE, bookId: "b-fp", number: "FP2026000712", mainAccountId: "321001" },
@@ -311,7 +311,7 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "ZFV",
     identity: {
       variant: "invoice",
-      book: "ZFV - Zálohové faktury vydané",
+      book: formatCodeName("ZFV", "Zálohové faktury vydané"),
       period: "2026",
       number: "ZFV2026000018",
     },
@@ -324,7 +324,7 @@ const SCENARIOS: ShowcaseScenario[] = [
     type: "ID",
     identity: {
       variant: "internal",
-      book: "ID - Interní doklady",
+      book: formatCodeName("ID", "Interní doklady"),
       period: "2026",
       number: "ID2026000031",
     },
@@ -756,9 +756,9 @@ export function DocumentFormShowcase() {
           title="Pokladní doklad – výdej"
           identity={{
             variant: "cashBank",
-            book: "PO - Pokladna",
+            book: formatCodeName("PO", "Pokladna"),
             period: "2026",
-            account: { side: "DAL", label: "211.001 - Pokladna CZK" },
+            account: { side: "DAL", label: formatCodeName("211.001", "Pokladna CZK") },
             number: courier.number,
           }}
           currencies={CURRENCIES}
@@ -844,9 +844,9 @@ export function DocumentFormShowcase() {
           title="Pokladní doklad – příjem"
           identity={{
             variant: "cashBank",
-            book: "PO - Pokladna",
+            book: formatCodeName("PO", "Pokladna"),
             period: "2026",
-            account: { side: "MD", label: "211.001 - Pokladna CZK" },
+            account: { side: "MD", label: formatCodeName("211.001", "Pokladna CZK") },
             number: cashIn.number,
           }}
           currencies={CURRENCIES}
@@ -870,9 +870,9 @@ export function DocumentFormShowcase() {
           title="Bankovní doklad EUR"
           identity={{
             variant: "cashBank",
-            book: "BV - Banka EUR",
+            book: formatCodeName("BV", "Banka EUR"),
             period: "2026",
-            account: { side: "DAL", label: "221.002 - Běžný účet EUR" },
+            account: { side: "DAL", label: formatCodeName("221.002", "Běžný účet EUR") },
             number: cashEur.number,
           }}
           directionBadge="out"

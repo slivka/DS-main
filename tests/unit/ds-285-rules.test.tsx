@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  BankAccountField,
   CODE_SEPARATOR,
   CheckboxField,
   DateField,
@@ -11,6 +12,7 @@ import {
   RecordActionBar,
   formatCodeName,
 } from "../../src";
+import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
 
 describe("DS 2.85.0 – obecná pravidla", () => {
   it("skládá kód a název jediným oddělovačem", () => {
@@ -52,6 +54,9 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(locked).toContain('data-visible-icons="1"');
     expect(unlocked).toContain('data-visible-icons="2"');
     expect(warned).toContain('data-visible-icons="2"');
+    const lockedWidth = /--date-field-icons:(\d+)/.exec(locked)?.[1];
+    const unlockedWidth = /--date-field-icons:(\d+)/.exec(unlocked)?.[1];
+    expect(Number(unlockedWidth)).toBeGreaterThan(Number(lockedWidth));
   });
 
   it("řadí hlavní krok před uložením a nabízí editaci vybraného záznamu", () => {
@@ -68,11 +73,33 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(lookup).toContain("Upravit vybraný záznam");
   });
 
-  it("zarovnává checkbox podle prvního řádku popisku", () => {
+  it("obalí checkbox výškou prvního řádku popisku", () => {
     const html = renderToStaticMarkup(
       <CheckboxField label="Jednořádkový popisek" hint="Popis" checked onCheckedChange={vi.fn()} />,
     );
-    expect(html).toContain("mt-[0.125rem]");
+    const controlLine = /<span class="([^"]*)"><button[^>]*role="checkbox"/.exec(html)?.[1] ?? "";
+    expect(controlLine.split(" ")).toEqual(expect.arrayContaining(["flex", "h-5", "items-center"]));
+    expect(controlLine.split(" ").some((token) => token.startsWith("mt-"))).toBe(false);
+  });
+
+  it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {
+    const html = renderToStaticMarkup(
+      <BankAccountField
+        value=""
+        onChange={vi.fn()}
+        options={[]}
+        selectionOnly
+        onAddAccount={vi.fn()}
+        disabledReason="Nejdřív vyberte dodavatele"
+      />,
+    );
+    expect(html).toContain("Přidat účet…");
+    expect(html).toContain("Nejdřív vyberte dodavatele");
+  });
+
+  it("rozšiřuje sloupec pořadí až od třetí číslice", () => {
+    expect(journalRowColumnWidthRem(9)).toBe(journalRowColumnWidthRem(99));
+    expect(journalRowColumnWidthRem(100)).toBeGreaterThan(journalRowColumnWidthRem(99));
   });
 });
 
