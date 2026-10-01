@@ -107,12 +107,7 @@ export function RecordDialogShowcase() {
         </FormSection>
       </RecordDialog>
 
-      <RecordDialog
-        open={dialog === "bank"}
-        onOpenChange={close}
-        title="Kniha v období"
-        size="md"
-      >
+      <RecordDialog open={dialog === "bank"} onOpenChange={close} title="Kniha v období" size="md">
         <SectionHeading aside="Hlavní účet">Bankovní účet</SectionHeading>
         <FieldGrid cols={12} className={gridClass}>
           <Field label="Bankovní účet" span={8}>
@@ -172,15 +167,9 @@ export function RecordDialogShowcase() {
                 cells: {
                   series: <Badge variant="outline">Příjem</Badge>,
                   mask: <MaskInput value={maskIn} onChange={setMaskIn} preview="P-2026-001" />,
-                  period: (
-                    <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />
-                  ),
+                  period: <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />,
                   from: (
-                    <DecimalInput
-                      value={sequenceFrom}
-                      onChange={setSequenceFrom}
-                      decimals={0}
-                    />
+                    <DecimalInput value={sequenceFrom} onChange={setSequenceFrom} decimals={0} />
                   ),
                   next: (
                     <FieldValue variant="plain" className="font-mono tabular-nums">
@@ -194,9 +183,7 @@ export function RecordDialogShowcase() {
                 cells: {
                   series: <Badge variant="outline">Výdej</Badge>,
                   mask: <MaskInput value={maskOut} onChange={setMaskOut} preview="V-2026-001" />,
-                  period: (
-                    <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />
-                  ),
+                  period: <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />,
                   from: <DecimalInput value="1" onChange={() => {}} decimals={0} />,
                   next: (
                     <FieldValue variant="plain" className="font-mono tabular-nums">
@@ -211,11 +198,7 @@ export function RecordDialogShowcase() {
         <SectionHeading>Účet</SectionHeading>
         <FieldGrid cols={12} className={gridClass}>
           <Field label="Účet" span={8}>
-            <AccountSelect
-              accounts={ACCOUNT_OPTIONS}
-              value={account}
-              onChange={setAccount}
-            />
+            <AccountSelect accounts={ACCOUNT_OPTIONS} value={account} onChange={setAccount} />
           </Field>
           <Field label="Na dokladu" span={4}>
             <CheckboxField align="input" checked onCheckedChange={() => {}} label="Lze změnit" />
