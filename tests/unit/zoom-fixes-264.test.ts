@@ -28,15 +28,21 @@ beforeEach(() => {
   const win = Object.assign(new EventTarget(), {
     innerWidth: 1600,
     localStorage: {
-    getItem: (k: string) => store.get(k) ?? null,
-    setItem: (k: string, v: string) => void store.set(k, v),
-    removeItem: (k: string) => void store.delete(k),
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
     },
   });
   Object.defineProperty(globalThis, "window", { configurable: true, value: win });
-  Object.defineProperty(globalThis, "document", { configurable: true, value: {
-    documentElement: { dataset: {} as Record<string, string>, style: {} as Record<string, string> },
-  } });
+  Object.defineProperty(globalThis, "document", {
+    configurable: true,
+    value: {
+      documentElement: {
+        dataset: {} as Record<string, string>,
+        style: {} as Record<string, string>,
+      },
+    },
+  });
   resetAppZoomCacheForTests();
 });
 
