@@ -145,7 +145,7 @@ describe("FieldTable, MaskInput a řádkový segment", () => {
     expect(html).toContain('aria-label="Maska"');
   });
 
-  it("MaskInput vloží token na pozici kurzoru a zobrazí náhled", () => {
+  it("MaskInput vloží token na pozici kurzoru a zobrazí náhled", async () => {
     const change = mock(() => {});
     const view = render(<MaskInput value="A-B" onChange={change} preview="A-2026-B" />);
     const input = view.getByRole("textbox") as HTMLInputElement;
