@@ -445,8 +445,7 @@ export function DocumentForm({
             showVatFields={showVatFields}
             vat={vat}
             filedVatDateWarning={filedVatDateWarning}
-            dateWarnings={dateWarnings}
-            date={date}
+            dateWarnings={dateWarnings} date={date}
           />
           {!f.partner ? (
             <div className="mt-3 grid grid-cols-20 gap-3">
