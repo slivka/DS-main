@@ -103,6 +103,7 @@ import {
   type DocumentVatConfig,
 } from "./document-form/document-form-types";
 
+import { buildDocumentNotices } from "./document-form/build-document-notices";
 import { useDocumentFieldRenderers } from "./document-form/use-document-field-renderers";
 import { buildDocumentTabs } from "./document-form/build-document-tabs";
 import { DocumentFormTabs } from "./document-form/Tabs";
@@ -348,35 +349,16 @@ export function DocumentForm({
   const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
   const externalNumberVsWarning =
     receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
-  const dateWarningEntries: Array<[DocumentDateField, string, string | undefined]> = [
-    ["issueDate", t.issueDate, dateWarnings?.issueDate],
-    ["accountingDate", t.accountingDate, dateWarnings?.accountingDate],
-    ["dueDate", t.dueDate, f.dueDate ? dateWarnings?.dueDate : undefined],
-    ["taxDate", t.taxDate, showVatFields && f.taxDate ? dateWarnings?.taxDate : undefined],
-    ["vatDate", t.vatDate, showVatFields ? filedVatDateWarning : undefined],
-    ["vatDate", t.vatDate, showVatFields ? dateWarnings?.vatDate : undefined],
-  ];
-  const dateNoticeBars = dateWarningEntries
-    .filter((entry): entry is [DocumentDateField, string, string] => Boolean(entry[2]))
-    .map(([key, label, warning], index) => (
-      <NoticeBar key={`${key}-${index}`} tone="warning" title={label}>
-        {warning}
-      </NoticeBar>
-    ));
-  const selectedPartnerBankAccount = bankAccountOptions.find(
-    (option) => (option.id ?? `${option.number}/${option.bankCode}`) === value.partnerBankAccountId,
-  );
-  const invalidBankAccountNotice = selectedPartnerBankAccount?.invalid ? (
-    <NoticeBar tone="warning">{t.invalidBankAccountWarning}</NoticeBar>
-  ) : null;
-  const combinedNotices =
-    notices || dateNoticeBars.length || invalidBankAccountNotice ? (
-      <>
-        {notices}
-        {dateNoticeBars}
-        {invalidBankAccountNotice}
-      </>
-    ) : undefined;
+  const combinedNotices = buildDocumentNotices({
+    value,
+    dateWarnings,
+    f,
+    showVatFields,
+    filedVatDateWarning,
+    notices,
+    bankAccountOptions,
+    t,
+  });
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
   const automaticVsRef = useRef<string | null>(
     value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null,
