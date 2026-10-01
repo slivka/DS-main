@@ -182,7 +182,13 @@ export function RecordDialogShowcase() {
           {
             value: "two",
             label: "Nastavení",
-            content: <div className="space-y-3">{Array.from({ length: 6 }, (_, index) => <Input key={index} defaultValue={`Řádek ${index + 1}`} />)}</div>,
+            content: (
+              <div className="space-y-3">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <Input key={index} defaultValue={`Řádek ${index + 1}`} />
+                ))}
+              </div>
+            ),
           },
           {
             value: "three",

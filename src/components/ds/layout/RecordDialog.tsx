@@ -325,11 +325,11 @@ export function RecordDialog({
         <div
           role="dialog"
           aria-modal="true"
-           className={cn(
-             "@container relative w-full rounded-lg border bg-background p-6 shadow-lg",
-             resolvedSize === "lg" ? "max-w-4xl" : "max-w-3xl",
-             contentClassName,
-           )}
+          className={cn(
+            "@container relative w-full rounded-lg border bg-background p-6 shadow-lg",
+            resolvedSize === "lg" ? "max-w-4xl" : "max-w-3xl",
+            contentClassName,
+          )}
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-4 space-y-1">
