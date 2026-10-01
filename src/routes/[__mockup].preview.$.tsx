@@ -68,12 +68,12 @@ const JSX_SOURCE_KEY = Symbol.for("__jsxSource__");
 // highlight echo uses.
 function stampSource(node: HTMLElement | null, fileName: string, columnNumber: number, displayName: string): void {
   if (!node || !fileName) return;
-  (node as unknown as Record<symbol, unknown>)[JSX_SOURCE_KEY] = {
+  Object.defineProperty(node, JSX_SOURCE_KEY, { value: {
     fileName: fileName,
     lineNumber: 1,
     columnNumber: columnNumber,
     displayName: displayName || undefined,
-  };
+  }, configurable: true });
   const host = window as Window & { sourceElementMap?: Map<string, Set<WeakRef<HTMLElement>>> };
   const map = host.sourceElementMap ?? new Map<string, Set<WeakRef<HTMLElement>>>();
   host.sourceElementMap = map;
