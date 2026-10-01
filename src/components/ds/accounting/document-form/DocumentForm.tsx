@@ -30,7 +30,7 @@ import { AccountSelect, type AccountOption } from "../account-select";
 import { formatAccountCode } from "../account-code";
 import type { BookOption } from "../book-select";
 import type { CurrencyOption } from "../currency-amount";
-import { DocumentStatusBadge, type DocumentStatus } from "./status-badge";
+import { DocumentStatusBadge, type DocumentStatus } from "../document-status-badge";
 import {
   documentFieldsForType,
   documentIdentityVariantForType,
@@ -38,7 +38,7 @@ import {
   type DocumentFields,
   type DocumentIdentityVariant,
   type DocumentTypeCode,
-} from "./fields";
+} from "../document-fields";
 
 import { JournalLinesEditor, type JournalLinesEditorProps } from "../journal-lines-editor";
 import type { JournalLine } from "../journal-lines";
@@ -59,10 +59,10 @@ import {
   type DocumentCounterpartyTabProps,
   type DocumentPrintTabProps,
   type DocumentPrintValue,
-} from "./detail-tabs";
+} from "../document-detail-tabs";
 
-export { documentIdentityVariantForType, type DocumentIdentityVariant } from "./fields";
-export { DEFAULT_DOCUMENT_FORM_TEXTS, vsFromDocumentNumber } from "./form/document-form-types";
+export { documentIdentityVariantForType, type DocumentIdentityVariant } from "../document-fields";
+export { DEFAULT_DOCUMENT_FORM_TEXTS, vsFromDocumentNumber } from "./document-form-types";
 export type {
   DocumentAccountingDateLink,
   DocumentDateField,
@@ -81,7 +81,7 @@ export type {
   DocumentSuggestConfig,
   DocumentVatConfig,
   DocumentVatRateField,
-} from "./form/document-form-types";
+} from "./document-form-types";
 import {
   DEFAULT_DOCUMENT_FORM_TEXTS,
   vsFromDocumentNumber,
@@ -98,18 +98,18 @@ import {
   type DocumentSaveAction,
   type DocumentSuggestConfig,
   type DocumentVatConfig,
-} from "./form/document-form-types";
+} from "./document-form-types";
 
-import { buildDocumentNotices } from "./form/build-document-notices";
-import { useDocumentFieldRenderers } from "./form/use-document-field-renderers";
-import { buildDocumentTabs } from "./form/build-document-tabs";
-import { DocumentFormTabs } from "./form/Tabs";
-import { DocumentDatesSection } from "./form/DatesSection";
-import { DocumentBasicSection } from "./form/BasicSection";
-import { DocumentAmountSection } from "./form/AmountSection";
-import { DocumentPaymentSection } from "./form/PaymentSection";
-import { DocumentDirectionBadge } from "./form/document-form-actions";
-import { DocumentIdentityLine, ReadField } from "./form/document-identity-line";
+import { buildDocumentNotices } from "./build-document-notices";
+import { useDocumentFieldRenderers } from "./use-document-field-renderers";
+import { buildDocumentTabs } from "./build-document-tabs";
+import { DocumentFormTabs } from "./Tabs";
+import { DocumentDatesSection } from "./DatesSection";
+import { DocumentBasicSection } from "./BasicSection";
+import { DocumentAmountSection } from "./AmountSection";
+import { DocumentPaymentSection } from "./PaymentSection";
+import { DocumentDirectionBadge } from "./document-form-actions";
+import { DocumentIdentityLine, ReadField } from "./document-identity-line";
 
 export function DocumentForm({
   title,
@@ -734,4 +734,4 @@ export function DocumentForm({
   );
 }
 
-export { DocumentActionBar, DocumentDirectionBadge } from "./form/document-form-actions";
+export { DocumentActionBar, DocumentDirectionBadge } from "./document-form-actions";
