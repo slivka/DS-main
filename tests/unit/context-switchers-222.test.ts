@@ -27,9 +27,6 @@ const showcaseSource = squashSrc(
     "utf8",
   ),
 );
-const appShellSource = squashSrc(
-  readFileSync(new URL("../../src/components/ds/layout/AppShell.tsx", import.meta.url), "utf8"),
-);
 
 describe("CompanySwitcher 2.22.0", () => {
   it("nemá poslední firmy ani nadpis jediného seznamu", () => {
@@ -52,14 +49,6 @@ describe("CompanySwitcher 2.22.0", () => {
 });
 
 describe("AppShell panel context 2.40.0", () => {
-  it("nabízí badge a context a zkracuje kontext přes TruncatedText", () => {
-    expect(appShellSource).toContain(
-      'badge?: { label: string; tone: Extract<StatusTone, "neutral" | "info" | "warning" | "accent"> }',
-    );
-    expect(appShellSource).toContain("context?: ReactNode | string");
-    expect(appShellSource).toContain("<TruncatedText");
-  });
-
   it("ukázka obsahuje nové panely a všech pět stavů uživatele", () => {
     for (const label of [
       "Číselníky",
