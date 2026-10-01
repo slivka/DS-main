@@ -36,7 +36,6 @@ export interface BuildDocumentTabsArgs {
   issuedDocument: boolean;
   counterpartyTab: DocumentFormProps["counterpartyTab"];
   printTab: DocumentFormProps["printTab"];
-  total: number;
 }
 /** Sestaví vestavěné a aplikační záložky ve stabilním pořadí. */
 export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
@@ -68,7 +67,6 @@ export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
     issuedDocument,
     counterpartyTab,
     printTab,
-    total,
   } = a;
   return [
     {

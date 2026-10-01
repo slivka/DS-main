@@ -1,5 +1,7 @@
 /** Skupiny dat formuláře dokladu. */
 import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
+import type { DateField } from "../../form/date-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
 import type {
@@ -18,7 +20,7 @@ export interface DocumentDatesSectionProps {
     key: DocumentDateField,
     label: string,
     className?: string,
-    options?: { link?: any; hint?: string; warning?: string },
+    options?: { link?: ComponentProps<typeof DateField>["link"]; hint?: string; warning?: string },
   ) => ReactNode;
 }
 /** Vykreslí data se společně ukotvenou skupinou DUZP a data DPH. */

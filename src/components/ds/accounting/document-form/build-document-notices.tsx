@@ -6,7 +6,6 @@ import type {
   DocumentDateField,
   DocumentFormTexts,
   DocumentHeaderValue,
-  DocumentVatConfig,
 } from "./document-form-types";
 export interface DocumentNoticesArgs {
   value: DocumentHeaderValue;

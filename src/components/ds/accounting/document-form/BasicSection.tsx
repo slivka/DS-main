@@ -11,7 +11,11 @@ import { SectionHeading } from "../../layout/section-heading";
 import { ReadField } from "./document-identity-line";
 import type { PartnerOption } from "../partner-select";
 import type { DocumentFields } from "../document-fields";
-import type { DocumentFormTexts, DocumentHeaderValue } from "./document-form-types";
+import type {
+  DocumentFormTexts,
+  DocumentHeaderValue,
+  DocumentSuggestConfig,
+} from "./document-form-types";
 
 type FieldRenderer = (
   id: string,
@@ -40,12 +44,12 @@ export interface DocumentBasicSectionProps {
   suggestedText: (
     key: "handedOverBy" | "description",
     label: string,
-    config: any,
+    config: DocumentSuggestConfig | undefined,
     span: number,
     className?: string,
   ) => ReactNode;
-  handedOverBySuggest: any;
-  descriptionSuggest: any;
+  handedOverBySuggest?: DocumentSuggestConfig;
+  descriptionSuggest?: DocumentSuggestConfig;
   externalNumberField: ReactNode;
 }
 /** Vykreslí základní údaje dokladu. */
