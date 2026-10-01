@@ -27,6 +27,7 @@ import { DocumentBasicSection } from "./BasicSection";
 import { DocumentAmountSection } from "./AmountSection";
 import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
+import { DocumentChangeMeta } from "./document-change-meta";
 export function DocumentForm({
   title,
   titleBadges,
@@ -488,12 +489,12 @@ export function DocumentForm({
           value={tab}
           onValueChange={setTab} linesLabel={t.linesTab}
         />
-        {changedBy || changedAt ? (
-          <div className="flex flex-wrap justify-end gap-x-4 text-xs text-muted-foreground">
-            {changedBy ? <span>{`${t.changedBy}: ${changedBy}`}</span> : null}
-            {changedAt ? <span>{`${t.changedAt}: ${changedAt}`}</span> : null}
-          </div>
-        ) : null}
+        <DocumentChangeMeta
+          changedBy={changedBy}
+          changedAt={changedAt}
+          changedByLabel={t.changedBy}
+          changedAtLabel={t.changedAt}
+        />
       </div>
     </TooltipProvider>
   );
