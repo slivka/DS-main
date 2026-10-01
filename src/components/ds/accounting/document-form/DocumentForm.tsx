@@ -1,12 +1,9 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
 
-import { Input } from "../../../ui/input";
 import { Switch } from "../../../ui/switch";
-import { Button } from "../../../ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../ui/tooltip";
+import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
-import { Field } from "../../layout/RecordDialog";
 import {
   RecordActionBar,
   type RecordMoreAction,
@@ -16,72 +13,23 @@ import {
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { VatStatusBadge, type VatStatus } from "../../data-display/vat-status-badge";
 import { isValidCzIco } from "../../form/ico-link";
-import { OptionSelect } from "../../form/option-select";
-import type { AccountOption } from "../account-select";
 import { formatAccountCode } from "../account-code";
-import type { BookOption } from "../book-select";
-import type { CurrencyOption } from "../currency-amount";
-import { DocumentStatusBadge, type DocumentStatus } from "../document-status-badge";
+import { DocumentStatusBadge } from "../document-status-badge";
 import {
   documentFieldsForType,
-  documentIdentityVariantForType,
   partnerLabelForType,
   type DocumentFields,
-  type DocumentIdentityVariant,
-  type DocumentTypeCode,
 } from "../document-fields";
 
-import type { DimensionOption } from "../dimension-select";
-import type { PartnerOption } from "../partner-select";
-import { BankAccountField, type BankAccountOption } from "../bank-account-field";
+import { BankAccountField } from "../bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
 import {
-  DocumentCounterpartyTab,
-  DocumentPrintTab,
-  type DocumentCounterpartyTabProps,
-  type DocumentPrintTabProps,
-  type DocumentPrintValue,
-} from "../document-detail-tabs";
-
-export { documentIdentityVariantForType, type DocumentIdentityVariant } from "../document-fields";
-export { DEFAULT_DOCUMENT_FORM_TEXTS, vsFromDocumentNumber } from "./document-form-types";
-export type {
-  DocumentAccountingDateLink,
-  DocumentDateField,
-  DocumentDirection,
-  DocumentFormError,
-  DocumentFormProps,
-  DocumentFormTab,
-  DocumentFormTexts,
-  DocumentHeaderField,
-  DocumentHeaderValue,
-  DocumentIdentity,
-  DocumentMoreAction,
-  DocumentPrimaryAction,
-  DocumentSaveAction,
-  DocumentSettingsAction,
-  DocumentSuggestConfig,
-  DocumentVatConfig,
-  DocumentVatRateField,
-} from "./document-form-types";
-import {
   DEFAULT_DOCUMENT_FORM_TEXTS,
-  vsFromDocumentNumber,
-  type DocumentDateField,
-  type DocumentDirection,
   type DocumentFormProps,
-  type DocumentFormTab,
-  type DocumentFormTexts,
   type DocumentHeaderField,
   type DocumentHeaderValue,
-  type DocumentIdentity,
-  type DocumentMoreAction,
-  type DocumentPrimaryAction,
-  type DocumentSaveAction,
-  type DocumentSuggestConfig,
-  type DocumentVatConfig,
 } from "./document-form-types";
 
 import { useCurrencyControl } from "./use-currency-control";
@@ -583,5 +531,3 @@ export function DocumentForm({
     </TooltipProvider>
   );
 }
-
-export { DocumentActionBar, DocumentDirectionBadge } from "./document-form-actions";
