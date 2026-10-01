@@ -284,7 +284,7 @@ describe("podmenu DS 2.75.0", () => {
   });
 
   it("slučování přepínačem zavře nejstarší nerozepsané neaktivní záložky a vrátí je Alt+Shift+T", () => {
-    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
     const left = Array.from({ length: 7 }, (_, i) => ({
       ...createTab({ route: `/a-${i}` }),
       lastUsed: i + 1,
