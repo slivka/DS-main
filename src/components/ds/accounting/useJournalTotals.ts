@@ -62,7 +62,6 @@ function taxLinesFor(input: JournalTotalsInput, previewLines: JournalLine[]) {
 export function useJournalTotals(input: JournalTotalsInput) {
   const { props, t, vatOn, vatReadOnly, vatConfig, mainAccount, foreign } = input;
   const { lines, rounding, totalAmount, totalMode = "computed" } = props;
-  const rate = props.rate ?? 1;
   const rateAmount = props.rateAmount ?? 1;
   // Dokud je doklad editovatelný, daň se počítá vždy předběžně z aktuálních řádků základu (řádky daně z DB se ignorují).
   const vatPreview =
@@ -140,7 +139,6 @@ export function useJournalTotals(input: JournalTotalsInput) {
     vatSummary,
     documentVatTotal: roundJournalAmount(vatSummary.reduce((sum, row) => sum + row.vat, 0)),
     documentGrossTotal: foreign ? documentLinesTotal : total,
-    rate,
   };
 }
 
