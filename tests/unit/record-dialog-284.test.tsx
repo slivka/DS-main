@@ -1,5 +1,6 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import {
@@ -19,8 +20,11 @@ import { TooltipProvider } from "../../src/components/ui/tooltip";
 
 const noop = () => {};
 
+mock.module("@radix-ui/react-use-layout-effect", () => ({
+  useLayoutEffect: React.useLayoutEffect,
+}));
 if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 afterEach(cleanup);
 afterAll(() => GlobalRegistrator.unregister());
 
@@ -145,7 +149,9 @@ describe("FieldTable, MaskInput a řádkový segment", () => {
     const change = mock(() => {});
     const view = render(<MaskInput value="A-B" onChange={change} preview="A-2026-B" />);
     const input = view.getByRole("textbox") as HTMLInputElement;
-    input.focus();
+    await act(async () => {
+      input.focus();
+    });
     input.setSelectionRange(2, 2);
     fireEvent.click(view.getByRole("button", { name: "{RRRR}" }));
     expect(change).toHaveBeenCalledWith("A-{RRRR}B");
