@@ -27,6 +27,8 @@ export interface AddressFieldGridProps {
   defaultCountry?: string;
   /** Tlačítko Mapa v posledním řádku (Země 2/4 · prázdná 1/4 · Mapa 1/4). */
   mapAction?: AddressMapAction;
+  /** Zobrazí všechna adresní pole pouze pro čtení. */
+  readOnly?: boolean;
 }
 
 export interface AddressMapAction {
@@ -64,24 +66,26 @@ export function AddressFieldGrid({
   labels: labelOverrides,
   defaultCountry = "SK",
   mapAction,
+  readOnly = false,
 }: AddressFieldGridProps) {
   const labels = { ...DEFAULT_ADDRESS_FIELD_LABELS, ...labelOverrides };
   return (
     <FieldGrid cols={4} className={className}>
       <Field label={labels.street} className="@min-[40rem]:col-span-3">
-        <Input value={value.street ?? ""} onChange={(e) => onChange({ street: e.target.value })} />
+        <Input readOnly={readOnly} value={value.street ?? ""} onChange={(e) => onChange({ street: e.target.value })} />
       </Field>
       <Field label={labels.houseNumber} className="@min-[40rem]:col-span-1">
         <Input
           value={value.house_number ?? ""}
+          readOnly={readOnly}
           onChange={(e) => onChange({ house_number: e.target.value })}
         />
       </Field>
       <Field label={labels.zip} className="@min-[40rem]:col-span-1">
-        <Input value={value.zip ?? ""} onChange={(e) => onChange({ zip: e.target.value })} />
+        <Input readOnly={readOnly} value={value.zip ?? ""} onChange={(e) => onChange({ zip: e.target.value })} />
       </Field>
       <Field label={labels.city} className="@min-[40rem]:col-span-3">
-        <Input value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
+        <Input readOnly={readOnly} value={value.city ?? ""} onChange={(e) => onChange({ city: e.target.value })} />
       </Field>
       {showCountry ? (
         <Field
@@ -93,11 +97,13 @@ export function AddressFieldGrid({
               value={value.country ?? defaultCountry}
               onChange={(v) => onChange({ country: v })}
               allowEmpty={false}
+              disabled={readOnly}
               options={countries.map((c) => ({ value: c.code, label: c.name }))}
             />
           ) : (
             <Input
               value={value.country ?? ""}
+              readOnly={readOnly}
               onChange={(e) => onChange({ country: e.target.value })}
             />
           )}
@@ -111,7 +117,7 @@ export function AddressFieldGrid({
             variant="outline"
             className="h-9 w-full"
             onClick={mapAction.onClick}
-            disabled={mapAction.disabled}
+            disabled={readOnly || mapAction.disabled}
           >
             {mapAction.label ?? "Mapa"}
           </Button>

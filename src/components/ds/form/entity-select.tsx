@@ -188,7 +188,9 @@ export function ContactSelect({
             className,
           )}
         >
-          <span className="truncate">{formatContactName(selected) ?? placeholder}</span>
+          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+            {formatContactName(selected) ?? placeholder}
+          </span>
           {selected?.active === false ? (
             <InactiveTag label={inactiveLabel} className="ml-2" />
           ) : null}

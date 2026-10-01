@@ -104,14 +104,7 @@ export function VatCodeSelect({
           className={cn("w-full justify-between font-normal", className)}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? (
-              <>
-                <span className="font-mono tabular-nums">{selected.code}</span>
-                <span className="ml-2 text-muted-foreground">{selected.name}</span>
-              </>
-            ) : (
-              placeholder
-            )}
+            {selected ? formatCodeName(selected.code, selected.name) : placeholder}
           </span>
           <ChevronDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
@@ -131,7 +124,7 @@ export function VatCodeSelect({
               {filtered.map((code) => (
                 <CommandItem
                   key={code.id}
-                  value={`${code.code} ${code.name}`}
+                  value={formatCodeName(code.code, code.name)}
                   disabled={code.inactive}
                   onSelect={() => {
                     if (code.inactive) return;
@@ -140,8 +133,9 @@ export function VatCodeSelect({
                   }}
                   className={cn("gap-2", code.inactive && "opacity-50")}
                 >
-                  <span className="w-14 shrink-0 font-mono tabular-nums">{code.code}</span>
-                  <span className="min-w-0 flex-1 truncate">{code.name}</span>
+                  <span className="min-w-0 flex-1 truncate font-mono tabular-nums">
+                    {formatCodeName(code.code, code.name)}
+                  </span>
                   {selected?.id === code.id ? <Check className="size-4" /> : null}
                 </CommandItem>
               ))}

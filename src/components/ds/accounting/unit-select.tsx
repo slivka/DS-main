@@ -113,14 +113,15 @@ export function UnitSelect({
               {filtered.map((item) => (
                 <CommandItem
                   key={item.id}
-                  value={`${item.code} ${item.name}`}
+                  value={formatCodeName(item.code, item.name)}
                   onSelect={() => {
                     onChange(item.id);
                     setOpen(false);
                   }}
                 >
-                  <span className="w-16 font-mono font-semibold">{item.code}</span>
-                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                  <span className="min-w-0 flex-1 truncate font-mono font-semibold">
+                    {formatCodeName(item.code, item.name)}
+                  </span>
                   {item.id === value ? <Check /> : null}
                 </CommandItem>
               ))}

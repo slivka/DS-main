@@ -51,16 +51,18 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
             align === "input" && "min-h-[var(--control-h)] items-start",
           )}
         >
-          <Checkbox
-            ref={ref}
-            id={controlId}
-            checked={checked}
-            disabled={disabled}
-            aria-describedby={hintId}
-            onCheckedChange={(value) => onCheckedChange(value === true)}
-            className="mt-[0.125rem] size-4"
-            {...props}
-          />
+          <span className="flex h-5 items-center">
+            <Checkbox
+              ref={ref}
+              id={controlId}
+              checked={checked}
+              disabled={disabled}
+              aria-describedby={hintId}
+              onCheckedChange={(value) => onCheckedChange(value === true)}
+              className="size-4"
+              {...props}
+            />
+          </span>
           <div className="min-w-0">
             <Label
               htmlFor={controlId}
@@ -176,16 +178,18 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
             </p>
           ) : null}
         </div>
-        <Switch
-          ref={ref}
-          id={controlId}
-          checked={checked}
-          disabled={inactive}
-          aria-describedby={hintId}
-          onCheckedChange={onCheckedChange}
-          className={cn("mt-[0.125rem]", busy && "animate-pulse")}
-          {...props}
-        />
+        <span className="flex h-5 items-center">
+          <Switch
+            ref={ref}
+            id={controlId}
+            checked={checked}
+            disabled={inactive}
+            aria-describedby={hintId}
+            onCheckedChange={onCheckedChange}
+            className={cn(busy && "animate-pulse")}
+            {...props}
+          />
+        </span>
       </div>
     );
   },

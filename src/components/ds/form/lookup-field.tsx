@@ -3,6 +3,7 @@ import { Pencil, RefreshCw, Search } from "lucide-react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 
 export type LookupFieldMode = "search" | "refresh" | "auto";
 
@@ -67,13 +68,15 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
     searchLabel = "Vyhledat",
     refreshLabel = "Aktualizovat",
     onEditSelected,
-    editSelectedLabel = "Upravit vybraný záznam",
+    editSelectedLabel,
     readOnly = false,
     className,
     ...inputProps
   },
   ref,
 ) {
+  const texts = useDsTexts().documentForm;
+  const resolvedEditSelectedLabel = editSelectedLabel ?? texts.editSelected;
   const [resolved, setResolved] = useState(() =>
     nextLookupResolved(false, { type: "reset", value }),
   );
@@ -135,8 +138,8 @@ export const LookupField = forwardRef<HTMLInputElement, LookupFieldProps>(functi
             showAction ? "right-9" : "right-0",
           )}
           onClick={() => onEditSelected?.(value)}
-          title={editSelectedLabel}
-          aria-label={editSelectedLabel}
+          title={resolvedEditSelectedLabel}
+          aria-label={resolvedEditSelectedLabel}
         >
           <Pencil className="size-4" />
         </Button>

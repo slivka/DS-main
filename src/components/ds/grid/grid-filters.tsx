@@ -64,7 +64,7 @@ export function GridFilterToggle({
               <Filter className="size-[1.2em]" />
               {active ? (
                 <>
-                  <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-full bg-filter-active px-1 text-[0.72em] leading-[1.45em] font-semibold text-white">
+                  <span className="inline-flex min-w-[1.45em] items-center justify-center rounded-md bg-filter-active px-1 text-[0.72em] leading-[1.45em] font-semibold text-white">
                     {activeCount}
                   </span>
                   {onClear ? (
@@ -209,7 +209,7 @@ export function GridResultCount({
       {chips.map((chip) => (
         <span
           key={chip.id}
-          className="inline-flex max-w-[16em] items-center gap-[0.3em] rounded-full border border-primary/40 bg-primary/10 px-[0.6em] py-[0.1em] text-primary"
+          className="inline-flex max-w-[16em] items-center gap-[0.3em] rounded-md border border-primary/40 bg-primary/10 px-[0.6em] py-[0.1em] text-primary"
         >
           <span className="truncate">{chip.label}</span>
           {chip.onRemove ? (
@@ -218,7 +218,7 @@ export function GridResultCount({
               aria-label={texts.removeFilter(chip.label)}
               title={texts.removeFilter(chip.label)}
               onClick={chip.onRemove}
-              className="rounded-full hover:text-destructive"
+              className="rounded-md hover:text-destructive"
             >
               <X className="size-[1em]" />
             </button>
