@@ -34,7 +34,7 @@ describe("formulářové prvky dialogu záznamu", () => {
         </Field>
       </FieldGrid>,
     );
-    expect((html.match(/data-control-height="standard"/g) ?? [])).toHaveLength(3);
+    expect(html.match(/data-control-height="standard"/g) ?? []).toHaveLength(3);
   });
 
   it("FieldValue zkrátí hodnotu, podporuje prostou variantu a vysvětlí zámek", () => {
@@ -46,7 +46,7 @@ describe("formulářové prvky dialogu záznamu", () => {
     );
     expect(html).toContain('title="Dlouhá hodnota"');
     expect(html).toContain('aria-label="Neměnné po založení"');
-    expect((html.match(/bg-muted/g) ?? [])).toHaveLength(1);
+    expect(html.match(/bg-muted/g) ?? []).toHaveLength(1);
   });
 
   it("FieldGrid zobrazí společnou nápovědu a SectionHeading obsah vpravo", () => {
