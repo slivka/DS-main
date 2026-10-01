@@ -67,7 +67,7 @@ export function useCurrencyControl({
     ) : (
       fixedCurrency
     )
-  ) : currencies ? (
+  ) : currenciesPresent ? (
     <OptionSelect
       id="document-currency"
       allowEmpty={false}
