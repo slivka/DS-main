@@ -464,9 +464,7 @@ export function DocumentForm({
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
-            bankAccountField={bankAccountField}
-            field={field}
-            text={text}
+            bankAccountField={bankAccountField} field={field} text={text}
           />
           <DocumentAmountSection
             t={t}
@@ -483,15 +481,13 @@ export function DocumentForm({
             rateAmount={rateAmount}
             vatRateField={vatRateField}
             readOnly={readOnly}
-            currencyControl={currencyControl}
-            field={field}
+            currencyControl={currencyControl} field={field}
           />
         </section>
         <DocumentFormTabs
           tabs={allTabs}
           value={tab}
-          onValueChange={setTab}
-          linesLabel={t.linesTab}
+          onValueChange={setTab} linesLabel={t.linesTab}
         />
         {changedBy || changedAt ? (
           <div className="flex flex-wrap justify-end gap-x-4 text-xs text-muted-foreground">
