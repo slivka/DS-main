@@ -110,7 +110,9 @@ describe("RecordDialog 2.84", () => {
     expect(view.getByRole("table", { name: "Číselné řady" })).toBeTruthy();
     expect(view.getByRole("columnheader", { name: "Řada" }).className).toContain("col-span-2");
     expect(view.getByRole("columnheader", { name: "Maska" }).className).toContain("col-span-4");
-    expect(view.getByText("Účet").parentElement?.className).toContain("col-span-8");
+    expect(view.getByText("Účet", { selector: "label" }).parentElement?.className).toContain(
+      "col-span-8",
+    );
     expect(view.getByText("Na dokladu").parentElement?.className).toContain("col-span-4");
     expect(view.getByText(/Nastavení DPH se použije/)).toBeTruthy();
   });
