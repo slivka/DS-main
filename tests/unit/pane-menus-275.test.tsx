@@ -95,15 +95,10 @@ describe("podmenu DS 2.75.0", () => {
     const api = {
       state,
       closeTab() {},
-      closeOtherTabs() {},
       moveTab() {},
       duplicateTab() {},
       closePane() {},
-      maximized: null,
-      closedTabCount: 0,
-      reopenClosedTab() {},
-      toggleMaximize() {},
-    } as never;
+    };
     const actions = buildTabMenuActions(api, list.id);
     expect(actions.map((action) => action.label)).toEqual([
       "Zavřít záložku",
@@ -133,15 +128,10 @@ describe("podmenu DS 2.75.0", () => {
     const api = {
       state,
       closeTab() {},
-      closeOtherTabs() {},
       moveTab() {},
       duplicateTab() {},
       closePane() {},
-      maximized: null,
-      closedTabCount: 0,
-      reopenClosedTab() {},
-      toggleMaximize() {},
-    } as never;
+    };
     const actions = buildTabMenuActions(api, record.id);
     expect(actions.map((action) => action.label)).toEqual(["Zavřít záložku", "Zavřít panel"]);
     expect(actions.map((action) => !!action.separatorBefore)).toEqual([false, true]);
@@ -210,7 +200,7 @@ describe("podmenu DS 2.75.0", () => {
   });
 
   it("rozepsaná záložka při zavření panelu zobrazí dotaz a Zrušit nic nezmění", () => {
-    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
     const tab = createTab({ route: "/dirty" });
     initial.panes[0] = { ...initial.panes[0], tabs: [tab], activeTab: tab.id };
     let api: ReturnType<typeof usePaneTabs> = null;
@@ -259,7 +249,7 @@ describe("podmenu DS 2.75.0", () => {
   };
 
   it("Alt+Shift+W zavře aktivní panel i jeho záložky", () => {
-    let initial = setLayoutInState(createPaneTabsState(1), 2);
+    const initial = setLayoutInState(createPaneTabsState(1), 2);
     const tab = createTab({ route: "/a" });
     initial.panes[1] = { ...initial.panes[1], tabs: [tab], activeTab: tab.id };
     initial = { ...initial, active: initial.panes[1].id };
@@ -392,10 +382,10 @@ describe("podmenu DS 2.75.0", () => {
 
   it("limitClosed bere text z DsTexts (SK) a prop texts má přednost", () => {
     const originalInfo = toast.info;
-    const infoSpy = mock(() => "" as never);
-    toast.info = infoSpy as never;
+    const infoSpy = mock(originalInfo);
+    toast.info = infoSpy;
     const makeState = () => {
-      let state = setLayoutInState(createPaneTabsState(1), 2);
+      const state = setLayoutInState(createPaneTabsState(1), 2);
       for (const pane of state.panes) {
         const tabs = Array.from({ length: 7 }, (_, index) =>
           createTab({ route: `/${pane.id}/${index}` }),
