@@ -74,7 +74,6 @@ export type DocumentHeaderValue = {
   totalMode: "entered" | "sum";
   roundingAmount?: number | null;
   mainAccountId?: string | null;
-  excludeFromPaymentOrders?: boolean;
   /** Ručně zadaný účet přijatého dokladu. */
   manualBankAccount?: ManualBankAccountValue;
   /** Tiskové údaje uložené s dokladem. */

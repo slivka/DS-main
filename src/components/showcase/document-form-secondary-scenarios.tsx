@@ -182,7 +182,6 @@ export function DocumentFormSecondaryScenarios({
             "constantSymbol",
             "specificSymbol",
             "bankAccount",
-            "excludeFromPaymentOrders",
           ]}
           linesEditorProps={{
             editableFields: [
