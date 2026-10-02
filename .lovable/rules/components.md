@@ -32,6 +32,14 @@ import { AccordionTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 import { AccountCode } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `code` | string | `—` |
+| `name` | string | `—` |
+| `className` | string | `truncate font-mono tabular-nums` |
+
 ### AccountSelect
 
 ```ts
@@ -62,7 +70,7 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 | `onKeyDown` | any | `—` |
 | `suffix` | any | `—` |
 | `ariaLabel` | string | `—` |
-| `className` | string | `font-mono tabular-nums` |
+| `className` | string | `ml-auto flex shrink-0 items-center gap-2` |
 
 **Examples:**
 
@@ -102,6 +110,7 @@ import { AddressFieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 | `labels` | any | `—` |
 | `defaultCountry` | string | `SK` |
 | `mapAction` | any | `—` |
+| `readOnly` | boolean | `false` |
 
 ### Alert
 
@@ -305,7 +314,11 @@ Výběr nabídnutého českého účtu nebo ruční zadání. Neúplný ruční 
 | `invalidAccountText` | string | `—` |
 | `invalidBankCodeText` | string | `—` |
 | `otherAccountText` | string | `—` |
-| `className` | string | `mt-1 text-xs font-medium text-destructive` |
+| `className` | string | `line-through` |
+| `selectionOnly` | boolean | `false` |
+| `onAddAccount` | function | `—` |
+| `addAccountText` | string | `—` |
+| `disabledReason` | string | `—` |
 
 **Examples:**
 
@@ -1139,7 +1152,7 @@ Volný text protistrany s volitelným propojením; prázdný dotaz zobrazí akti
 | `partners` | any | `—` |
 | `onCreatePartner` | function | `—` |
 | `disabled` | boolean | `—` |
-| `placeholder` | string | `Název protistrany` |
+| `placeholder` | string | `—` |
 | `id` | string | `—` |
 | `className` | string | `inline-flex shrink-0 items-center gap-1 rounded-sm border border-border bg-muted/60 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground` |
 | `linkedLabel` | string | `Partner` |
@@ -1360,6 +1373,22 @@ import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { DocumentActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### DocumentCounterpartyTab
+
+```ts
+import { DocumentCounterpartyTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `partnerId` | string | `—` |
+| `onReloadFromPartner` | function | `—` |
+| `readOnly` | boolean | `false` |
+
 ### DocumentDirectionBadge
 
 ```ts
@@ -1374,67 +1403,6 @@ import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 
 Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Všechny doklady řadí základní údaje, datumy, platební údaje, částku a záložky; partnerské i firemní bankovní účty jsou v platebních údajích a dateWarnings se zobrazují ve společném pruhu.
 
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `title` | string | `—` |
-| `titleBadges` | any | `—` |
-| `description` | any | `—` |
-| `identity` | any | `—` |
-| `directionBadge` | in · out | `—` |
-| `value` | any | `—` |
-| `onChange` | function | `—` |
-| `lines` | any | `—` |
-| `onLinesChange` | function | `—` |
-| `books` | any | `—` |
-| `accounts` | any | `—` |
-| `mainAccountOptions` | any | `—` |
-| `partners` | any | `—` |
-| `dimensions` | any | `—` |
-| `currencies` | any | `—` |
-| `bankAccountOptions` | any | `—` |
-| `bankCodes` | any | `—` |
-| `documentType` | any | `ID` |
-| `fields` | any | `—` |
-| `editableFields` | any | `—` |
-| `isNew` | boolean | `false` |
-| `mainSide` | MD · D | `—` |
-| `mainAccountLocked` | boolean | `false` |
-| `rateAmount` | number | `1` |
-| `homeCurrency` | string | `—` |
-| `homeCurrencySymbol` | string | `—` |
-| `currencyLocked` | boolean | `false` |
-| `currencyDisabledReason` | string | `—` |
-| `onCreatePartner` | function | `—` |
-| `icoLinkTarget` | any | `auto` |
-| `handedOverBySuggest` | any | `—` |
-| `descriptionSuggest` | any | `—` |
-| `accountingDateLink` | any | `—` |
-| `dateWarnings` | any | `—` |
-| `vat` | any | `—` |
-| `vatRateField` | any | `—` |
-| `linesEditorProps` | any | `—` |
-| `roundingLimit` | number | `1` |
-| `roundingLabel` | string | `—` |
-| `tabs` | any | `—` |
-| `status` | any | `—` |
-| `approved` | boolean | `—` |
-| `changedBy` | string | `—` |
-| `changedAt` | string | `—` |
-| `saveAction` | any | `—` |
-| `primaryAction` | any | `—` |
-| `moreActions` | any | `—` |
-| `settings` | any | `—` |
-| `error` | any | `—` |
-| `notices` | any | `—` |
-| `readOnly` | boolean | `false` |
-| `readOnlyReason` | any | `—` |
-| `readOnlyTitle` | any | `—` |
-| `readOnlyActions` | any | `—` |
-| `texts` | any | `—` |
-| `className` | string | `whitespace-nowrap` |
-
 **Examples:**
 
 _Faktura s editovatelným účtem_
@@ -1447,6 +1415,20 @@ _Faktura s editovatelným účtem_
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
 - Nevkládejte měnu do popisku Celkem ani do identity cashBank.
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
+
+### DocumentPrintTab
+
+```ts
+import { DocumentPrintTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `readOnly` | boolean | `false` |
 
 ### DocumentSettingsDialog
 
@@ -2650,6 +2632,8 @@ Vstup s ikonovou akcí vpravo (lupa / ⟳) pro vyhledání nebo obnovení údaj�
 | `resetKey` | any | `—` |
 | `searchLabel` | string | `Vyhledat` |
 | `refreshLabel` | string | `Aktualizovat` |
+| `onEditSelected` | function | `—` |
+| `editSelectedLabel` | string | `—` |
 
 **Examples:**
 
@@ -4550,7 +4534,7 @@ Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijt
 | `initialSearch` | string | `—` |
 | `onOpenChange` | function | `—` |
 | `onKeyDown` | any | `—` |
-| `className` | string | `font-mono tabular-nums` |
+| `className` | string | `ml-auto size-4 shrink-0 opacity-50` |
 
 **Examples:**
 
