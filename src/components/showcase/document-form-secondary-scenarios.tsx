@@ -89,12 +89,6 @@ export function DocumentFormSecondaryScenarios({
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           bankCodes={["0100", "0800"]}
           documentType="FP"
-          counterpartyInput="manual"
-          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
-          paymentOrderEnabled={false}
-          onPaymentOrderEnabledChange={(enabled) =>
-            toast.info(enabled ? "Platit příkazem" : "Neplatit příkazem")
-          }
           rateAmount={1}
           homeCurrency="CZK"
           homeCurrencySymbol="Kč"
@@ -150,6 +144,12 @@ export function DocumentFormSecondaryScenarios({
           bankCodes={["0100", "0800"]}
           books={MOCK_BOOKS}
           documentType="FP"
+          counterpartyInput="manual"
+          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
+          paymentOrderEnabled={false}
+          onPaymentOrderEnabledChange={(enabled) =>
+            toast.info(enabled ? "Platit příkazem" : "Neplatit příkazem")
+          }
           mainSide="D"
           status="draft"
           vat={{ visible: false }}
