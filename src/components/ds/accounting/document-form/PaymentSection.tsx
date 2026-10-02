@@ -88,7 +88,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 onChange={(variableSymbol) => patch({ variableSymbol })}
                 disabled={!can("variableSymbol")}
               />,
-            , undefined, undefined, "@min-[32rem]:col-span-1")
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
+            )
           : null}
         {f.symbols && paymentOrderEnabled
           ? field(
@@ -117,7 +120,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   className="font-mono tabular-nums"
                 />
               ),
-            , undefined, undefined, "@min-[32rem]:col-span-1")
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
+            )
           : null}
         {f.symbols && paymentOrderEnabled
           ? text("specificSymbol", t.specificSymbol, 3, "@min-[32rem]:col-span-1")
@@ -134,7 +140,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 searchable
                 disabled={!can("paymentMethodId")}
               />,
-            , undefined, undefined, "@min-[32rem]:col-span-1")
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
+            )
           : null}
         {f.bankAccount && issuedDocument && !issuedBankAccountAbove && companyBankAccountOptions
           ? field(

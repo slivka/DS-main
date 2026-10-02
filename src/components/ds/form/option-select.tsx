@@ -43,7 +43,7 @@ export function OptionSelect({
   searchable,
   searchPlaceholder,
   noResultsLabel,
-  selectedLabel,
+  selectedLabel: renderSelectedLabel,
 }: {
   value: string | null | undefined;
   onChange: (value: string) => void;
@@ -80,7 +80,7 @@ export function OptionSelect({
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
   const emptyValueLabel = placeholderValueLabel ?? resolvedEmptyLabel;
-  const selectedLabel =
+  const selectedContent =
     current === "" && allowEmpty ? (
       emptyValueLabel
     ) : selectedOption?.inactive ? (
@@ -91,7 +91,7 @@ export function OptionSelect({
     ) : (
       (selectedOption?.selectedLabel ?? selectedOption?.label)
     );
-  const triggerLabel = known || current === "" ? selectedLabel : resolvedUnknownValueLabel;
+  const triggerLabel = known || current === "" ? selectedContent : resolvedUnknownValueLabel;
   const offered = options.filter((option) => !option.inactive || option.value === current);
   const useSearch = searchable ?? options.length >= 8;
 
@@ -111,7 +111,7 @@ export function OptionSelect({
         unknownValueLabel={resolvedUnknownValueLabel}
         searchPlaceholder={searchPlaceholder ?? texts.searchPlaceholder}
         noResultsLabel={noResultsLabel ?? texts.noResults}
-        selectedLabel={selectedLabel}
+        selectedLabel={renderSelectedLabel}
       />
     );
 
