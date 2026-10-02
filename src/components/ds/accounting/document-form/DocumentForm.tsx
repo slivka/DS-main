@@ -7,21 +7,12 @@ import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
-import {
-  documentFieldsForType,
-  partnerLabelForType,
-  type DocumentFields,
-} from "../document-fields";
+import { documentFieldsForType, partnerLabelForType, type DocumentFields } from "../document-fields";
 import { CompanyAccountControl, ReceivedAccountControl } from "./BankAccountControls";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
-import {
-  DEFAULT_DOCUMENT_FORM_TEXTS,
-  type DocumentFormProps,
-  type DocumentHeaderField,
-  type DocumentHeaderValue,
-} from "./document-form-types";
+import { DEFAULT_DOCUMENT_FORM_TEXTS, type DocumentFormProps, type DocumentHeaderField, type DocumentHeaderValue } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
