@@ -402,6 +402,10 @@ export interface DocumentFormProps {
   roundingLimit?: number;
   roundingLabel?: string;
   tabs?: DocumentFormTab[];
+  /** Řízená aktivní záložka spodní části formuláře. */
+  activeDetailTab?: string;
+  /** Změna aktivní záložky spodní části; bez řízené hodnoty pouze oznamuje změnu. */
+  onActiveDetailTabChange?: (tabId: string) => void;
   status: DocumentStatus;
   approved?: boolean;
   changedBy?: string;

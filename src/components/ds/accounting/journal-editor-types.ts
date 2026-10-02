@@ -95,6 +95,10 @@ export interface JournalLinesEditorProps {
   units?: UnitOption[];
   /** Založení nové měrné jednotky z výběru. */
   onCreateUnit?: (code: string) => Promise<UnitOption>;
+  /** Otevře úpravu vybrané měrné jednotky z buňky nebo detailu řádku. */
+  onEditUnit?: (unitId: string) => void;
+  /** Otevře úpravu vybrané zakázky z buňky nebo detailu řádku. */
+  onEditDimension?: (dimensionId: string) => void;
   /** Kód měny dokladu. */
   documentCurrency: string;
   /** Značka měny dokladu (z dat). */

@@ -55,6 +55,32 @@ export interface PaneTabBarProps {
   className?: string;
 }
 
+/** Rozdělí záložky podle viditelné kapacity; aktivní a nejnovější rozepsané mají přednost. */
+export function resolvePaneTabVisibility(
+  pane: TabPane,
+  capacity: number,
+  dirty: (tabId: string) => boolean,
+) {
+  if (pane.tabs.length <= capacity) return { visible: pane.tabs, hidden: [] as PaneTab[] };
+  const slots = Math.max(1, capacity - 1);
+  const priority = [...pane.tabs].sort((left, right) => {
+    const leftActive = left.id === pane.activeTab;
+    const rightActive = right.id === pane.activeTab;
+    if (leftActive !== rightActive) return leftActive ? -1 : 1;
+    const leftDirty = dirty(left.id);
+    const rightDirty = dirty(right.id);
+    if (leftDirty !== rightDirty) return leftDirty ? -1 : 1;
+    return right.lastUsed - left.lastUsed;
+  });
+  const visibleIds = new Set(priority.slice(0, slots).map((tab) => tab.id));
+  return {
+    visible: pane.tabs.filter((tab) => visibleIds.has(tab.id)),
+    hidden: pane.tabs
+      .filter((tab) => !visibleIds.has(tab.id))
+      .sort((left, right) => Number(dirty(right.id)) - Number(dirty(left.id))),
+  };
+}
+
 /** Lišta záložek panelu: jen záložky a nabídka „»“ (historie a menu ⋯ jsou od 2.16.0 v PageHeader). */
 export function PaneTabBar({
   pane,
@@ -88,12 +114,8 @@ export function PaneTabBar({
     return () => observer.disconnect();
   }, []);
 
-  const activeIndex = pane.tabs.findIndex((tab) => tab.id === pane.activeTab);
-  const overflowing = pane.tabs.length > capacity;
-  const slots = overflowing ? Math.max(1, capacity - 1) : pane.tabs.length;
-  let visible = pane.tabs.slice(0, slots);
-  if (activeIndex >= slots) visible = [...pane.tabs.slice(0, slots - 1), pane.tabs[activeIndex]];
-  const hidden = pane.tabs.filter((tab) => !visible.includes(tab));
+  const { visible, hidden } = resolvePaneTabVisibility(pane, capacity, api.isTabDirty);
+  const hiddenDirtyCount = hidden.filter((tab) => api.isTabDirty(tab.id)).length;
   const titleOf = (tab: PaneTab) => tab.title ?? t.untitled;
   const dsTexts = useDsTexts();
 
@@ -157,6 +179,13 @@ export function PaneTabBar({
                     aria-label={t.overflow}
                   >
                     <ChevronsRight className="size-4" />
+                    {hiddenDirtyCount ? (
+                      <span
+                        role="img"
+                        aria-label={t.unsaved}
+                        className="size-2 rounded-full bg-primary"
+                      />
+                    ) : null}
                     {hidden.length}
                   </Button>
                 </DropdownMenuTrigger>

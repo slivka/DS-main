@@ -18,6 +18,7 @@ type PendingUnsaved = {
   tabIds: string[];
   intent: string;
   proceed: () => void;
+  onOpenInNewTab?: () => void;
 };
 
 export interface PaneTabsProviderProps {
@@ -166,6 +167,7 @@ export function PaneTabsProvider({
             commit(activateTabInState(stateRef.current, tabId));
             doOpen(route, params, { ...options, target: "replace" });
           },
+          onOpenInNewTab: options.onOpenInNewTab,
         });
         return;
       }
@@ -480,6 +482,15 @@ export function PaneTabsProvider({
         onSave={onSaveTab ? () => void resolvePending("save") : undefined}
         onDiscard={() => void resolvePending("discard")}
         onBack={() => setPending(null)}
+        onOpenInNewTab={
+          pending?.onOpenInNewTab
+            ? () => {
+                const action = pending.onOpenInNewTab;
+                setPending(null);
+                action?.();
+              }
+            : undefined
+        }
       />
     </PaneTabsContext.Provider>
   );

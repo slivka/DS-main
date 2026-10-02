@@ -205,7 +205,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
           </div>
           <div
             data-slot="document-currency-cell"
-            className="w-[6.5rem] shrink-0 has-[[data-currency-fixed]]:w-max"
+            className="w-[6.5rem] shrink-0 has-[[data-currency-fixed]]:w-max has-[[data-currency-fixed]]:[&_[data-slot=field]]:relative has-[[data-currency-fixed]]:[&_label]:absolute has-[[data-currency-fixed]]:[&_label]:right-0 has-[[data-currency-fixed]]:[&_label]:top-0 has-[[data-currency-fixed]]:[_[data-currency-fixed]]:mt-5"
           >
             {field("document-currency", t.currency, currencyControl, 3)}
           </div>

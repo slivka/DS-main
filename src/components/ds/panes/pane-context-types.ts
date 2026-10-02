@@ -15,6 +15,8 @@ export type OpenTabOptions = {
   icon?: string;
   /** Záložka, ze které se otevírá (pro návrat po zavření). */
   openerTabId?: string | null;
+  /** Nabídne v dialogu limitu otevření odkazu jako další záložky. */
+  onOpenInNewTab?: () => void;
 };
 
 export type OpenRecordOptions = {
