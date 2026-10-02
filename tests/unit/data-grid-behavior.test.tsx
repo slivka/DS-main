@@ -1,5 +1,4 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 // Radix vybírá useLayoutEffect při prvním načtení modulu; vynutíme skutečný efekt i po SSR testech.
@@ -7,7 +6,6 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render, waitFor, within } = await import("@testing-library/react");
 const { DataGrid, TreeGrid, DEFAULT_PINNED_COLUMNS, DEFAULT_COMPACT_COLUMNS, isPinnedColumn } =
   await import("../../src/components/ds");
@@ -33,9 +31,6 @@ let keyCounter = 0;
 const nextKey = () => `behavior-grid-${++keyCounter}`;
 const originalRect = HTMLElement.prototype.getBoundingClientRect;
 
-beforeAll(() => {
-  if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-});
 beforeEach(() => {
   localStorage.clear();
   HTMLElement.prototype.getBoundingClientRect = function () {
@@ -55,11 +50,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   HTMLElement.prototype.getBoundingClientRect = originalRect;
-});
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
 type GridProps = React.ComponentProps<typeof DataGrid<Row>>;

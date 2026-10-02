@@ -1,5 +1,4 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 // Radix vybírá useLayoutEffect při prvním načtení modulu; vynutíme skutečný efekt i po SSR testech.
@@ -7,7 +6,6 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { JournalLinesEditor, resolveJournalColumnLayout } =
   await import("../../src/components/ds/accounting/journal-lines-editor");
@@ -61,9 +59,6 @@ const originalRect = HTMLElement.prototype.getBoundingClientRect;
 const originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "clientWidth");
 let storageCounter = 0;
 
-beforeAll(() => {
-  if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-});
 beforeEach(() => {
   localStorage.clear();
   Object.defineProperty(HTMLElement.prototype, "clientWidth", {
@@ -89,12 +84,6 @@ afterEach(() => {
   HTMLElement.prototype.getBoundingClientRect = originalRect;
   if (originalClientWidth)
     Object.defineProperty(HTMLElement.prototype, "clientWidth", originalClientWidth);
-});
-afterAll(async () => {
-  // Doběhnout naplánované práci Reactu dřív, než zmizí globální window.
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
 /** Řízený obal editoru: drží řádky ve stavu a hlásí každou změnu. */

@@ -1,11 +1,9 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeAll, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 const { DocumentForm, documentIdentityVariantForType } =
   await import("../../src/components/ds/accounting/document-form");
@@ -61,14 +59,7 @@ function Form(props: Record<string, unknown> = {}) {
   );
 }
 
-beforeAll(() => {
-  if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-});
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 describe("DocumentForm 2.68 – jednotná identita", () => {
   it("odvodí tři varianty včetně nových typů", () => {

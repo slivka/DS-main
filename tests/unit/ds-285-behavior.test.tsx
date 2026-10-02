@@ -1,18 +1,12 @@
 /** Testy chování DS 2.85.0: výběry KS, účtu firmy a přidání účtu partnera. */
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm } = await import("../../src/components/ds/accounting/document-form");
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 /** Otevře výběr kliknutím na spouštěč a klikne na položku podle názvu. */
 async function pick(view: ReturnType<typeof render>, trigger: Element, name: string | RegExp) {

@@ -1,10 +1,7 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 import { Settings } from "lucide-react";
 
-if (!GlobalRegistrator.isRegistered)
-  GlobalRegistrator.register({ url: "http://localhost/", width: 1440, height: 1000 });
 const realRouter = await import("@tanstack/react-router");
 mock.module("@tanstack/react-router", () => ({
   ...realRouter,
@@ -75,11 +72,6 @@ function Shell({
 
 beforeEach(() => localStorage.clear());
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 describe("AppShell – vykreslení", () => {
   it("vykreslí horní lištu, menu a obsah", () => {

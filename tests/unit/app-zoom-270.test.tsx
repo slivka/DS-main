@@ -1,9 +1,6 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered)
-  GlobalRegistrator.register({ url: "http://localhost/", width: 1600, height: 1000 });
 // Navigace není předmětem testu; AppShell potřebuje jen aktuální cestu a Link.
 const realRouter = await import("@tanstack/react-router");
 mock.module("@tanstack/react-router", () => ({
@@ -47,11 +44,6 @@ beforeEach(() => {
   setPlatform("Win32");
 });
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 type K = {
   key: string;

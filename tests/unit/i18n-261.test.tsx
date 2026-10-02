@@ -1,11 +1,5 @@
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { afterEach, describe, expect, it } from "bun:test";
 
-beforeAll(() => GlobalRegistrator.register());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 afterEach(() => {
   document.body.innerHTML = "";
 });

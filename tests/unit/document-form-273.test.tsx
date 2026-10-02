@@ -1,8 +1,6 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm, vsFromDocumentNumber } =
@@ -51,10 +49,6 @@ function Form({ initial = base, ...props }: { initial?: typeof base } & Record<s
 }
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 describe("DocumentForm 2.73", () => {
   it("zobrazuje neznámý číselníkový KS bez volného vstupu a firemní účet jako výběr", () => {

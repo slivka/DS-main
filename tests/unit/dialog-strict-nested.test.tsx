@@ -1,12 +1,10 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { useDialogBackClose } = await import("../../src/hooks/use-dialog-back-close");
 const { RecordDialog } = await import("../../src/components/ds/layout/RecordDialog");
@@ -57,11 +55,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   history.restore();
-});
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
 const flush = () => act(() => new Promise((resolve) => setTimeout(resolve, 20)));
