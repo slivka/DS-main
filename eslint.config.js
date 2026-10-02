@@ -14,8 +14,8 @@ export default tseslint.config(
       ".wrangler",
       "src/routeTree.gen.ts",
       // Náhledové trasy generuje platforma a při synchronizaci je přepisuje.
-      "src/routes/[__component].preview.$.tsx",
-      "src/routes/[__mockup].preview.$.tsx",
+      "src/routes/\\[__component\\].preview.$.tsx",
+      "src/routes/\\[__mockup\\].preview.$.tsx",
     ],
   },
   {
