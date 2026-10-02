@@ -170,7 +170,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. U pokladny a banky je pořadí Směr · Kniha · Období · účet, bez měny. Hlavní účet se nikde jinde ve formuláři nezobrazuje.
 - Měna je u všech druhů dokladů vždy bezprostředně za polem Celkem. Zamčená měna se zobrazí jako tučný text kódu bez rámečku, svisle vystředěný vůči částce a s tooltipem důvodu. Měnitelná měna je výběr stejné výšky jako Celkem.
 - Varování k datům předávejte přes `dateWarnings`; `DocumentForm` je řadí podle polí do společného pruhu upozornění a pole označí varovným stavem. Nevkládejte varování pod datumové pole.
-- Všechny doklady řadí sekce Základní údaje → Datumy → Platební údaje, pokud je druh má → Částka → záložky. Partnerský i firemní bankovní účet patří do Platebních údajů; Částka je vždy poslední sekce před záložkami.
+- FV/ZFV začínají firemním účtem přes celou šířku. Přijaté doklady mají účet v Základních údajích vedle čísla dodavatele; DDPZ jej ponechává v Platebních údajích. Ostatní sekce řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
