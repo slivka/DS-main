@@ -3,7 +3,7 @@
  * Vlastní: volbu mezi účtem přijatého dokladu a volným zadáním (BA, vydané bez firemních účtů).
  * Nesmí: rozhodovat o umístění pole ve formuláři.
  */
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
 import type { ManualBankAccountErrors } from "../received-bank-account-field";
@@ -22,8 +22,8 @@ interface Args {
   patch: (v: Partial<DocumentHeaderValue>) => void;
   /** Smí se pole měnit. */
   can: (k: DocumentHeaderField) => boolean;
-  /** Texty formuláře. */
-  t: DocumentFormTexts;
+  /** Texty formuláře včetně textů účtu z DsTexts. */
+  t: DocumentFormTexts & ComponentProps<typeof ReceivedAccountControl>["texts"];
   /** Obal pole s popiskem. */
   field: (
     id: string,
