@@ -57,6 +57,11 @@ export interface ReceivedAccountControlProps {
     payByOrder: string;
     excludeFromPaymentOrders: string;
     paymentOrderDisabled: string;
+    manualAccountNumber: string;
+    manualAccountWithoutIban: string;
+    invalidIban: string;
+    invalidSwift: string;
+    swiftRequired: string;
   };
 }
 
@@ -87,6 +92,15 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
         bankCodes={props.bankCodes}
         disabled={props.disabled}
         onValidationChange={props.onValidationChange}
+        texts={{
+          accountLabel: props.texts.manualAccountNumber,
+          accountWithoutIbanLabel: props.texts.manualAccountWithoutIban,
+          accountInvalid: props.texts.bankAccountInvalid,
+          bankCodeInvalid: props.texts.bankCodeInvalid,
+          ibanInvalid: props.texts.invalidIban,
+          swiftInvalid: props.texts.invalidSwift,
+          swiftRequired: props.texts.swiftRequired,
+        }}
       />
     );
   return (

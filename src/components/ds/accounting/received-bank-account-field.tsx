@@ -32,23 +32,36 @@ export function validateManualBankAccount(
   value: ManualBankAccountValue,
   isHomeCurrency: boolean,
   bankCodes: string[] = [],
+  texts = {
+    account: "Číslo účtu není platné",
+    bankCode: "Kód banky není platný",
+    iban: "IBAN není platný",
+    swift: "SWIFT/BIC musí mít 8 nebo 11 znaků",
+    swiftRequired: "Doplňte SWIFT/BIC",
+  },
 ): ManualBankAccountErrors {
   const errors: ManualBankAccountErrors = {};
   const compactText = value.text.replace(/\s/g, "");
   const compactIban = value.iban.replace(/\s/g, "").toUpperCase();
   const compactSwift = value.swift.replace(/\s/g, "").toUpperCase();
-  if (compactIban && !isValidIban(compactIban)) errors.iban = "IBAN není platný";
+  if (compactIban && !isValidIban(compactIban)) errors.iban = texts.iban;
+  else if (
+    compactIban.startsWith("CZ") &&
+    bankCodes.length &&
+    !bankCodes.includes(compactIban.slice(4, 8))
+  )
+    errors.iban = texts.bankCode;
   if (compactSwift && !/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(compactSwift))
-    errors.swift = "SWIFT/BIC musí mít 8 nebo 11 znaků";
+    errors.swift = texts.swift;
   if (isHomeCurrency && compactText) {
     const [account = "", code = ""] = compactText.split("/");
     const parsed = parseCzAccount(account);
     if (!parsed || !isValidCzAccount(parsed.prefix, parsed.number))
-      errors.text = "Číslo účtu není platné";
-    else if (bankCodes.length && !bankCodes.includes(code)) errors.text = "Kód banky není platný";
+      errors.text = texts.account;
+    else if (bankCodes.length && !bankCodes.includes(code)) errors.text = texts.bankCode;
   }
   if (!isHomeCurrency && !compactIban && compactText && !compactSwift)
-    errors.swift = "Doplňte SWIFT/BIC";
+    errors.swift = texts.swiftRequired;
   return errors;
 }
 
@@ -66,23 +79,48 @@ export interface ReceivedBankAccountFieldProps {
   disabled?: boolean;
   /** Hlášení validačních chyb. */
   onValidationChange?: (errors: ManualBankAccountErrors) => void;
+  /** Texty pole a validace. */
+  texts: {
+    accountLabel: string;
+    accountWithoutIbanLabel: string;
+    accountInvalid: string;
+    bankCodeInvalid: string;
+    ibanInvalid: string;
+    swiftInvalid: string;
+    swiftRequired: string;
+  };
 }
 
 /** Ruční účet s validací českého účtu nebo IBAN a SWIFT. */
 export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
-  const errors = validateManualBankAccount(props.value, props.isHomeCurrency, props.bankCodes);
+  const bankCodes = props.bankCodes ?? [];
+  const validationTexts = {
+    account: props.texts.accountInvalid,
+    bankCode: props.texts.bankCodeInvalid,
+    iban: props.texts.ibanInvalid,
+    swift: props.texts.swiftInvalid,
+    swiftRequired: props.texts.swiftRequired,
+  };
+  const errors = validateManualBankAccount(
+    props.value,
+    props.isHomeCurrency,
+    bankCodes,
+    validationTexts,
+  );
   const patch = (next: Partial<ManualBankAccountValue>) => {
     const value = { ...props.value, ...next };
     props.onChange(value);
     props.onValidationChange?.(
-      validateManualBankAccount(value, props.isHomeCurrency, props.bankCodes),
+      validateManualBankAccount(value, props.isHomeCurrency, bankCodes, validationTexts),
     );
   };
   return (
     <div className="grid min-w-0 gap-2 @container @min-[32rem]:grid-cols-2">
       <div className={cn("min-w-0", !props.isHomeCurrency && "@min-[32rem]:col-span-2")}>
         <Input
-          aria-label={props.isHomeCurrency ? "Číslo účtu" : "Číslo účtu bez IBAN"}
+          aria-label={
+            props.isHomeCurrency ? props.texts.accountLabel : props.texts.accountWithoutIbanLabel
+          }
           value={props.value.text}
           disabled={props.disabled}
           inputMode={props.isHomeCurrency ? "numeric" : "text"}

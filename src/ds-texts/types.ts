@@ -368,6 +368,11 @@ export interface DsTexts {
     bankCodeInvalid: string;
     otherBankAccount: string;
     editSelected: string;
+    manualAccountNumber: string;
+    manualAccountWithoutIban: string;
+    invalidIban: string;
+    invalidSwift: string;
+    swiftRequired: string;
     addBankAccount: string;
     selectSupplierFirst: string;
     invalidBankAccountWarning: string;
