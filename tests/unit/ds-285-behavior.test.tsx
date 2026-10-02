@@ -97,9 +97,7 @@ describe("DS 2.85.0 – chování výběrů", () => {
     const triggerWrapper = view.getByRole("combobox").parentElement;
     expect(triggerWrapper).toBeTruthy();
     fireEvent.focus(triggerWrapper as Element);
-    expect((await view.findByRole("tooltip")).textContent).toContain(
-      "Nejdřív vyberte dodavatele",
-    );
+    expect((await view.findByRole("tooltip")).textContent).toContain("Nejdřív vyberte dodavatele");
   });
 
   it("tužka upraví jen vybranou editovatelnou hodnotu", () => {
