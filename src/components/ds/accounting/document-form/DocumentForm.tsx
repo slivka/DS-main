@@ -36,6 +36,7 @@ import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
+import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
 export function DocumentForm({
   title,
   titleBadges,
@@ -133,18 +134,7 @@ export function DocumentForm({
     returnFocusToPencil.current = true;
     setEditingIdentityAccount(false);
   };
-  const formRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const root = formRef.current;
-    const bar = root?.querySelector<HTMLElement>('[data-slot="document-action-bar"]');
-    if (!root || !bar) return;
-    const update = () =>
-      root.style.setProperty("--pane-sticky-top", `${bar.getBoundingClientRect().height}px`);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(bar);
-    return () => observer.disconnect();
-  }, []);
+  const formRef = useDocumentFormStickyTop();
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
@@ -287,23 +277,7 @@ export function DocumentForm({
       : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
-    const roundingLine = lines.find((line) => line.isRounding);
-    if (roundingLine)
-      onLinesChange(
-        lines.map((line) =>
-          line.id === roundingLine.id ? { ...line, amount: roundingAmount } : line,
-        ),
-      );
-    else if (roundingAmount)
-      onLinesChange([
-        ...lines,
-        {
-          id: `rounding-${Date.now()}`,
-          amount: roundingAmount,
-          text: roundingLabel ?? t.rounding,
-          isRounding: true,
-        },
-      ]);
+    onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
   };
   const allTabs = buildDocumentTabs({
     lines,

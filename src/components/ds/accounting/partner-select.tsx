@@ -13,6 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
+import { useDsTexts } from "../../../ds-texts";
 
 export type PartnerOption = {
   id: string;
@@ -55,7 +56,7 @@ export function PartnerSelect({
   id,
   className,
   onEditSelected,
-  editSelectedLabel = "Upravit vybraný záznam",
+  editSelectedLabel,
 }: {
   partners: PartnerOption[];
   value: string | null | undefined;
@@ -82,6 +83,7 @@ export function PartnerSelect({
   /** Přístupný název tužky. */
   editSelectedLabel?: string;
 }) {
+  const resolvedEditSelectedLabel = editSelectedLabel ?? useDsTexts().lookupField.editSelected;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
@@ -131,8 +133,8 @@ export function PartnerSelect({
             <span
               role="button"
               tabIndex={0}
-              title={editSelectedLabel}
-              aria-label={editSelectedLabel}
+              title={resolvedEditSelectedLabel}
+              aria-label={resolvedEditSelectedLabel}
               className="rounded-md p-1 hover:bg-muted"
               onClick={(event) => {
                 event.stopPropagation();

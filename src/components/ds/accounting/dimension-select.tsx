@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { formatCodeName } from "../../../lib/code-format";
+import { useDsTexts } from "../../../ds-texts";
 
 export type DimensionOption = {
   id: string;
@@ -51,7 +52,7 @@ export function DimensionSelect({
   className,
   inactiveLabel = "neaktivní",
   onEditSelected,
-  editSelectedLabel = "Upravit vybraný záznam",
+  editSelectedLabel,
 }: {
   options: DimensionOption[];
   inactiveLabel?: string;
@@ -75,6 +76,7 @@ export function DimensionSelect({
   /** Přístupný název tužky. */
   editSelectedLabel?: string;
 }) {
+  const resolvedEditSelectedLabel = editSelectedLabel ?? useDsTexts().lookupField.editSelected;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -215,8 +217,8 @@ export function DimensionSelect({
             <span
               role="button"
               tabIndex={0}
-              title={editSelectedLabel}
-              aria-label={editSelectedLabel}
+              title={resolvedEditSelectedLabel}
+              aria-label={resolvedEditSelectedLabel}
               className="rounded-md p-1 hover:bg-muted"
               onClick={(event) => {
                 event.stopPropagation();

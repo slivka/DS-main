@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import { InactiveTag } from "../data-display/inactive-tag";
+import { useDsTexts } from "../../../ds-texts";
 
 export interface UnitOption {
   id: string;
@@ -63,8 +64,9 @@ export function UnitSelect({
   className,
   inactiveLabel = "neaktivní",
   onEditSelected,
-  editSelectedLabel = "Upravit vybraný záznam",
+  editSelectedLabel,
 }: UnitSelectProps) {
+  const resolvedEditSelectedLabel = editSelectedLabel ?? useDsTexts().lookupField.editSelected;
   const [open, setOpen] = React.useState(defaultOpen);
   const [query, setQuery] = React.useState(initialSearch);
   const [creating, setCreating] = React.useState(false);
@@ -106,8 +108,8 @@ export function UnitSelect({
             <span
               role="button"
               tabIndex={0}
-              title={editSelectedLabel}
-              aria-label={editSelectedLabel}
+              title={resolvedEditSelectedLabel}
+              aria-label={resolvedEditSelectedLabel}
               className="rounded-md p-1 hover:bg-muted"
               onClick={(event) => {
                 event.stopPropagation();
