@@ -11,6 +11,7 @@ import { PaneTabsContext } from "./pane-context-hooks";
 import { DEFAULT_PANE_TABS_TEXTS, type OpenTabOptions, type PaneTabsApi, type PaneTabsTexts, type RecordNav, type RecordNavItem } from "./pane-context-types";
 import { activateTabInState, applyLayoutInState, applyMaxLayout, closePaneInState, closeTabInState, duplicateTabInState, findRecordTab, findTab, moveTabInState, openFromHistoryInState, openRecordInState, openTabInState, otherTabIds, paneKey, pushClosedTab, reopenClosedTabInState, replaceTabContentInState, resolveOpenMode, resolveTargetPaneIndex, serializeLayout, setLayoutWithLimitInState, setTabTitleInState, stepTabHistory, MAX_TABS_PER_PANE, type ClosedTabRecord, type OpenRecordModifiers, type PaneLayoutCount, type PaneTab, type PaneTabsState } from "./pane-state";
 import { clearTabState, dirtyTabIds, getTabDraft, isTabDirty, registerLiveTabs, setTabDirty, setTabDraft, useTabDirtyVersion } from "./pane-tab-store";
+import { usePaneProviderEffects } from "./use-pane-provider-effects";
 
 /** Čekající akce nad záložkami s neuloženými změnami. */
 type PendingUnsaved = {
@@ -432,110 +433,14 @@ export function PaneTabsProvider({
   const apiRef = useRef(api);
   apiRef.current = api;
 
-  // Zavření okna prohlížeče s rozepsanými záložkami.
-  const hasDirty = dirtyTabIds().some((id) => findTab(state, id));
-  useEffect(() => {
-    if (!hasDirty) return;
-    const onBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [hasDirty]);
-
-  // Zkratky Alt/Option + … (kontrola event.code kvůli Macu a rozložení klávesnice).
-  useEffect(() => {
-    if (!shortcuts) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (!event.altKey || event.ctrlKey || event.metaKey) return;
-      // Držená klávesa nesmí opakovat akce (zavírání, obnova, maximalizace); šipky opakování potřebují.
-      if (event.repeat && !event.code.startsWith("Arrow")) return;
-      const current = stateRef.current;
-      const a = apiRef.current;
-      const pane = current.panes.find((item) => item.id === current.active) ?? current.panes[0];
-      const digit = /^Digit([1-3])$/.exec(event.code);
-      if (digit && !event.shiftKey) {
-        const index = Number(digit[1]) - 1;
-        const target = current.panes[index];
-        if (!target) return;
-        event.preventDefault();
-        if (a.maximized !== null) a.maximizePane(index);
-        else a.activatePane(target.id);
-        return;
-      }
-      if (event.code === "KeyM" && !event.shiftKey) {
-        event.preventDefault();
-        a.toggleMaximize(Math.max(0, current.panes.indexOf(pane)));
-        return;
-      }
-      if (event.code === "KeyT" && event.shiftKey) {
-        event.preventDefault();
-        a.reopenClosedTab();
-        return;
-      }
-      if ((event.code === "ArrowLeft" || event.code === "ArrowRight") && !event.shiftKey) {
-        event.preventDefault();
-        if (!pane.activeTab) return;
-        if (event.code === "ArrowLeft") a.back(pane.activeTab);
-        else a.forward(pane.activeTab);
-        return;
-      }
-      if ((event.code === "ArrowUp" || event.code === "ArrowDown") && !event.shiftKey) {
-        if (!pane.activeTab) return;
-        const nav = a.getRecordNav(pane.activeTab);
-        if (!nav) return;
-        event.preventDefault();
-        if (event.code === "ArrowUp") nav.prev();
-        else nav.next();
-        return;
-      }
-      if (event.code === "KeyW") {
-        event.preventDefault();
-        if (event.shiftKey) a.closePane(pane.id);
-        else if (pane.activeTab) a.closeTab(pane.activeTab);
-        return;
-      }
-      if (event.code === "KeyT" && !event.shiftKey) {
-        event.preventDefault();
-        a.requestNewTab();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [shortcuts]);
-
-  // Esc obnoví rozložení – jen při maximalizaci, bez otevřeného dialogu a mimo editory s vlastním Esc.
-  useEffect(() => {
-    if (!shortcuts || maximized === null) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (
-        event.key !== "Escape" ||
-        event.defaultPrevented ||
-        event.altKey ||
-        event.ctrlKey ||
-        event.metaKey
-      )
-        return;
-      if (
-        document.querySelector(
-          '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]',
-        )
-      )
-        return;
-      const target = event.target as HTMLElement | null;
-      if (
-        target?.closest(
-          'input, textarea, select, [contenteditable="true"], [role="combobox"], [role="grid"], [data-own-escape]',
-        )
-      )
-        return;
-      event.preventDefault();
-      setMaximized(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [shortcuts, maximized]);
+  usePaneProviderEffects({
+    state,
+    stateRef,
+    apiRef,
+    shortcuts,
+    maximized,
+    restoreMaximized: () => setMaximized(null),
+  });
 
   const resolvePending = async (choice: "save" | "discard") => {
     if (!pending) return;
