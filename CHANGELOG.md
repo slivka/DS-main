@@ -1,5 +1,20 @@
 # Changelog – Slivka Design System
 
+## 2.86.0 – Edit dokladu 10
+
+- **BREAKING:** přijaté doklady už nepoužívají samostatný checkbox „Nezahrnovat do platebních příkazů“. Aplikace předává `paymentOrderEnabled` a obsluhu `onPaymentOrderEnabledChange`; přepínač je přímo v poli účtu.
+- **BREAKING:** bankovní účet přijatých dokladů je v Základních údajích vedle čísla dodavatele. U FV/ZFV je firemní účet prvním údajem nad Základními údaji; DDPZ jej ponechává v Platebních údajích.
+- **BREAKING:** KS a způsob platby používají hledatelný `OptionSelect`; KS zobrazuje po výběru jen kód. Aplikace nadále předává stejné identifikátory hodnot.
+- Protistrana podporuje řízený režim „Vybraný / Ručně“ s potvrzením před nahrazením ručních údajů; DS při přepnutí data samo nemaže.
+- Ruční účet přijatého dokladu podporuje český účet s kontrolou modulo 11, IBAN modulo 97 a SWIFT/BIC o 8 nebo 11 znacích.
+- Záložka Odběratel je editovatelná v obou režimech; zamčení, ručně upravená pole, aktualizaci z partnera a datum zmrazení řídí aplikace.
+- DUZP a Datum DPH zůstávají společnou skupinou: na širokém formuláři vpravo, po zalomení vlevo. Platební údaje využijí celou šířku.
+- VS je ve formuláři, editoru řádků, detailu i `vsColumn()` zarovnaný vlevo při zachování tabulkových číslic.
+- `PartnerSelect`, `DimensionSelect` a `UnitSelect` podporují `onEditSelected`; stav DPH partnera umí datum nespolehlivosti.
+- Holá tlačítka mimo záložky a vnitřní hrany segmentů používají jednotné zaoblení `0.25rem`.
+
+Migrace: odstraňte `excludeFromPaymentOrders`, předejte řízené `paymentOrderEnabled`; přesuňte mapování účtů na `partnerBankAccountId`, `manualBankAccount` nebo `companyBankAccountId` podle druhu dokladu.
+
 ## 2.85.0 – Edit dokladu 9 a obecná pravidla
 
 - **BREAKING:** kód a název se všude oddělují ` – `; migrace: ruční skládání nahraďte `formatCodeName`.

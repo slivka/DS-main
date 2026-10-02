@@ -10,7 +10,10 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Pruh akcí řadí hlavní krok `outline`, poté plné primární Uložit a nakonec nabídku dalších akcí.
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
-- Sekce dokladu řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+- FV/ZFV začínají polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+- Protistrana používá řízený ikonový přepínač Vybraný/Ručně. DS při změně režimu data nemaže; při návratu k adresáři potvrzuje nahrazení ručních údajů.
+- Přijatý doklad má účet v Základních údajích vedle čísla dodavatele. Přepínač platebního příkazu je uvnitř pole; vypnutí skryje KS a SS.
+- VS je vždy zarovnaný vlevo a používá tabulkové číslice; gridy skládají sloupec přes `vsColumn()`.
 - Zaškrtávátko a přepínač vystřeďte obalem výšky prvního řádku popisku (`h-5`); nepoužívejte pevný svislý posun.
 
 ## Filozofie
@@ -376,7 +379,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Hlavička `DocumentForm` má základní a platební údaje vlevo a vlastnosti, kurz a částku vpravo. Zamčený hlavní účet je text se stranou MD/DAL, nikoli zakázaný výběr; ID a UZ mají režim součtu řádků vždy zamčený.
 - U plátce DPH řiďte příznak přes `value.vatRelevant`; vypnutí jen skryje DUZP a Datum DPH, jejich hodnoty nemažte. Přepínač patří vlevo do přilepeného pruhu akcí. Neplátci předejte `vat.visible: false`.
 - Popisky částek a jednotky kurzu vždy používají značku měny z dat (`CurrencyOption.symbol`, `homeCurrencySymbol`), nikdy pevný text Kč nebo CZK; bez značky použijte kód.
-- Ikonový přepínač v poli je zapnutý jako plné primární tlačítko s bílou ikonou, vypnutý jako obrys s přeškrtnutou ikonou; tooltip vždy pojmenuje stav.
+- Ikonové přepínače v poli (Σ, Vybraný/Ručně a Platit příkazem) jsou zapnuté jako plné primární tlačítko s bílou ikonou, vypnuté jako obrys s přeškrtnutou nebo alternativní ikonou; tooltip vždy pojmenuje stav.
 - Záložky panelu jsou stejně široké v rozsahu 7,5–12,5 rem. `shortTitle` začíná rozlišujícím údajem; nový záznam „Nový · kontext“, koncept „Koncept · kontext“, existující záznam identifikátorem. Nepoužívejte „Úprava“ ani zkratku druhu. `title` je úplný tooltip druhu, identifikátoru a kontextu.
 - Stav Zaúčtován řiďte přes `editableFields` (hlavička) a `linesEditorProps.editableFields` (řádky); `readOnly` jen pro uzamčené doklady.
 - Další obsah dokladu (Platební kalendář, Historie) přidávejte přes `tabs`; Řádky jsou vždy první.
@@ -385,7 +388,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Editace dokladu
 
 - Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
-- Sekce Datumy je pružný řádek: minimální šířku každého data počítá `DateField` z šířky celého data a počtu právě viditelných ikon. DUZP a Datum DPH tvoří jednu pravou skupinu. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
+- Sekce Datumy je pružný řádek: minimální šířku každého data počítá `DateField` z šířky celého data a počtu právě viditelných ikon. DUZP a Datum DPH tvoří jednu skupinu, která je na širokém formuláři vpravo a po zalomení vlevo. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
+- KS a způsob platby jsou hledatelné výběry. KS po výběru ukazuje jen kód; plný text zůstává v nabídce a tooltipu.
+- Záložka Odběratel je editovatelná v režimu adresáře i ručním režimu. Jen aplikace ji může zamknout přes důvod, označit ručně změněná pole nebo nabídnout důrazné obnovení z partnera.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
 - Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.
 
