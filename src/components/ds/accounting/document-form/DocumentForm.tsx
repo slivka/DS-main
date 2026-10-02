@@ -11,8 +11,8 @@ import {
   partnerLabelForType,
   type DocumentFields,
 } from "../document-fields";
-import { CompanyAccountControl, ReceivedAccountControl } from "./BankAccountControls";
-import { BankAccountField } from "../bank-account-field";
+import { CompanyAccountControl } from "./BankAccountControls";
+import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -227,47 +227,23 @@ export function DocumentForm({
     t,
     field,
   });
-  const bankAccountField = field(
-    "document-bankAccount",
-    t.bankAccount,
-    receivedDocument ? (
-      <ReceivedAccountControl
-        counterpartyInput={counterpartyInput}
-        partnerAccountId={value.partnerBankAccountId}
-        manualValue={value.manualBankAccount}
-        options={bankAccountOptions}
-        bankCodes={bankCodes}
-        hasPartner={Boolean(value.partnerId)}
-        isHomeCurrency={homeCurrencyDocument}
-        paymentOrdersApplicable={Boolean(f.paymentOrders)}
-        paymentOrderEnabled={paymentOrderOn}
-        onPaymentOrderEnabledChange={onPaymentOrderEnabledChange}
-        onPartnerAccountChange={(partnerBankAccountId) => patch({ partnerBankAccountId })}
-        onManualChange={(manualBankAccount) => patch({ manualBankAccount })}
-        onValidationChange={onManualBankAccountValidationChange}
-        onAddAccount={onAddBankAccount}
-        disabled={!can("bankAccount")}
-        texts={t}
-      />
-    ) : (
-      // Ostatní doklady (BA, vydané bez číselníku firemních účtů): volné zadání.
-      <BankAccountField
-        id="document-bankAccount"
-        aria-label={t.bankAccount}
-        value={value.bankAccount ?? ""}
-        onChange={(bankAccount) => patch({ bankAccount })}
-        disabled={!can("bankAccount")}
-        options={bankAccountOptions}
-        bankCodes={bankCodes}
-        invalidAccountText={t.bankAccountInvalid}
-        invalidBankCodeText={t.bankCodeInvalid}
-        otherAccountText={t.otherBankAccount}
-      />
-    ),
-    receivedDocument ? 14 : 6,
-    false,
-    receivedDocument ? "@min-[40rem]:col-span-14" : "min-w-[12rem] flex-[1_1_12rem]",
-  );
+  const bankAccountField = useBankAccountField({
+    value,
+    patch,
+    can,
+    t,
+    field,
+    receivedDocument,
+    counterpartyInput,
+    bankAccountOptions,
+    bankCodes,
+    isHomeCurrency: homeCurrencyDocument,
+    paymentOrdersApplicable: Boolean(f.paymentOrders),
+    paymentOrderEnabled: paymentOrderOn,
+    onPaymentOrderEnabledChange,
+    onManualBankAccountValidationChange,
+    onAddBankAccount,
+  });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
   const companyAccountField =
