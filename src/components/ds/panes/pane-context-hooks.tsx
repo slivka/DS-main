@@ -56,4 +56,3 @@ export function useTabDirty(isDirty: boolean, key = "default") {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [tabId, isDirty]);
 }
-

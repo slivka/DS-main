@@ -8,9 +8,55 @@ import { toast } from "sonner";
 import { useDsTexts } from "../../../ds-texts";
 import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 import { PaneTabsContext } from "./pane-context-hooks";
-import { DEFAULT_PANE_TABS_TEXTS, type OpenTabOptions, type PaneTabsApi, type PaneTabsTexts, type RecordNav, type RecordNavItem } from "./pane-context-types";
-import { activateTabInState, applyLayoutInState, applyMaxLayout, closePaneInState, closeTabInState, duplicateTabInState, findRecordTab, findTab, moveTabInState, openFromHistoryInState, openRecordInState, openTabInState, otherTabIds, paneKey, pushClosedTab, reopenClosedTabInState, replaceTabContentInState, resolveOpenMode, resolveTargetPaneIndex, serializeLayout, setLayoutWithLimitInState, setTabTitleInState, stepTabHistory, MAX_TABS_PER_PANE, type ClosedTabRecord, type OpenRecordModifiers, type PaneLayoutCount, type PaneTab, type PaneTabsState } from "./pane-state";
-import { clearTabState, dirtyTabIds, getTabDraft, isTabDirty, registerLiveTabs, setTabDirty, setTabDraft, useTabDirtyVersion } from "./pane-tab-store";
+import {
+  DEFAULT_PANE_TABS_TEXTS,
+  type OpenTabOptions,
+  type PaneTabsApi,
+  type PaneTabsTexts,
+  type RecordNav,
+  type RecordNavItem,
+} from "./pane-context-types";
+import {
+  activateTabInState,
+  applyLayoutInState,
+  applyMaxLayout,
+  closePaneInState,
+  closeTabInState,
+  duplicateTabInState,
+  findRecordTab,
+  findTab,
+  moveTabInState,
+  openFromHistoryInState,
+  openRecordInState,
+  openTabInState,
+  otherTabIds,
+  paneKey,
+  pushClosedTab,
+  reopenClosedTabInState,
+  replaceTabContentInState,
+  resolveOpenMode,
+  resolveTargetPaneIndex,
+  serializeLayout,
+  setLayoutWithLimitInState,
+  setTabTitleInState,
+  stepTabHistory,
+  MAX_TABS_PER_PANE,
+  type ClosedTabRecord,
+  type OpenRecordModifiers,
+  type PaneLayoutCount,
+  type PaneTab,
+  type PaneTabsState,
+} from "./pane-state";
+import {
+  clearTabState,
+  dirtyTabIds,
+  getTabDraft,
+  isTabDirty,
+  registerLiveTabs,
+  setTabDirty,
+  setTabDraft,
+  useTabDirtyVersion,
+} from "./pane-tab-store";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 
 /** Čekající akce nad záložkami s neuloženými změnami. */
@@ -495,4 +541,3 @@ export function PaneTabsProvider({
     </PaneTabsContext.Provider>
   );
 }
-

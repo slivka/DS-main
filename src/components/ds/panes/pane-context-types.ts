@@ -4,7 +4,15 @@
  * Nesmí: obsahovat React stav ani měnit záložky.
  */
 import type { ComponentType } from "react";
-import type { LayoutSnapshot, OpenRecordModifiers, PaneTab, PaneLayoutCount, PaneTabsState, OpenTabTarget, TabKind } from "./pane-state";
+import type {
+  LayoutSnapshot,
+  OpenRecordModifiers,
+  PaneTab,
+  PaneLayoutCount,
+  PaneTabsState,
+  OpenTabTarget,
+  TabKind,
+} from "./pane-state";
 
 export type OpenTabOptions = {
   target?: OpenTabTarget;
@@ -156,4 +164,3 @@ export const DEFAULT_PANE_TABS_TEXTS: PaneTabsTexts = {
   untitled: "Bez názvu",
   recordNavDirty: "Nejprve uložte nebo zahoďte neuložené změny",
 };
-
