@@ -53,10 +53,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 11. **Exporty a tisk používají firemní ikony.** Pro Excel vždy použij dodanou
     ikonu Microsoft Excel a pro PDF nebo tiskovou sestavu dodanou ikonu Adobe
     Acrobat Reader ze sdílených assetů design systému; nenahrazuj je obecnými ikonami.
-12. **Zaoblení rohů je pevné a jednotné.** Používej výhradně tokenovou škálu
-    `rounded-sm` / `rounded-md` / `rounded-lg` (4 / 6 / 6 px; větší plochy nejvýše
-    8 px). Poloměr nikdy neodvozuj z `em`, `rem`, velikosti písma, výšky prvku ani
-    zoomu. Běžná tlačítka, výběry a pole používají `rounded-md` (6 px).
+12. **Zaoblení rohů je pevné a jednotné.** Ovládací prvky, segmenty, štítky a
+    ikonová tlačítka používají tokeny `rounded-sm` / `rounded-md` / `rounded-lg`
+    s hodnotou `0.25rem`. Dialogy, karty, panely a nabídky používají
+    `rounded-xl` / `rounded-2xl` s hodnotou `0.375rem`. Jiné poloměry nepřidávej.
 13. **Sekční nadpisy jsou verzálkami.** Nadpisy sekcí formulářů, dialogů, karet
     a panelů vždy skládej přes `SectionHeading`. Nadpisy stránek v `PageHeader`
     a záhlaví gridů zůstávají bez verzálek.
@@ -165,9 +165,9 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ### Formulář dokladu
 
 - Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. U pokladny a banky je pořadí Směr · Kniha · Období · účet, bez měny. Hlavní účet se nikde jinde ve formuláři nezobrazuje.
-- Měna je u všech druhů dokladů vždy bezprostředně za polem Celkem. Zamčená měna se zobrazí v rámečku stejné výšky jako částka; nepoužívejte holý text ani měnu v popisku Celkem.
+- Měna je u všech druhů dokladů vždy bezprostředně za polem Celkem. Zamčená měna se zobrazí jako tučný text kódu bez rámečku, svisle vystředěný vůči částce a s tooltipem důvodu. Měnitelná měna je výběr stejné výšky jako Celkem.
 - Varování k datům předávejte přes `dateWarnings`; `DocumentForm` je řadí podle polí do společného pruhu upozornění a pole označí varovným stavem. Nevkládejte varování pod datumové pole.
-- Přijaté doklady řadí sekce Základní údaje → Datumy → Platební údaje → Částka → Řádky. Bankovní účet patří do Základních údajů; výchozí účet vybírá aplikace, nikoli `BankAccountField`.
+- Všechny doklady řadí sekce Základní údaje → Datumy → Platební údaje, pokud je druh má → Částka → záložky. Partnerský i firemní bankovní účet patří do Platebních údajů; Částka je vždy poslední sekce před záložkami.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotky, zdroj kurzu a pomocné vysvětlení patří pod pole.
@@ -185,7 +185,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Kontextový řádek se škáluje se zoomem a hustotou gridu stejně jako řádek akcí.
 - Popisky Kniha, Období a popisek pravého kontextu mají jediný styl. Výběry i segmentový přepínač mají stejnou výšku a písmo jako prvky řádku akcí.
 - Panel pomocných filtrů stojí bezprostředně pod řádkem akcí. Ovládací prvky mají přirozenou šířku podle obsahu, popisek vlevo a zalamují se až při nedostatku místa.
-- Záložky sekcí stránky a formuláře používají 15–16px střední řez; aktivní záložka je tučná a podtržená primární barvou.
+- Záložky sekcí stránky a formuláře používají `text-sm`; aktivní záložka je tučná bez posunu ostatních a podtržená primární barvou.
 
 ## Export do Excelu
 
@@ -228,13 +228,14 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Číslo účtu se ukládá jako `221001`, zobrazuje se jako `221.001` (`AccountCode`);
   analytika má proměnnou délku.
-- Každý grid se sloupci zaúčtování nabízí obě formy a lze mezi nimi přepínat ve
-  Sloupce: rozšířená „MD účet“ / „DAL účet“ má tvar `321.100 - Závazky`, krátká
+- Každý běžný grid se sloupci zaúčtování nabízí obě formy a lze mezi nimi přepínat ve
+  Sloupce: rozšířená „MD účet“ / „DAL účet“ má tvar `321.100 – Závazky`, krátká
   „MD“ / „DAL“ obsahuje jen `321.100`, a to i ve filtru a exportu jako text.
   Nadpis odpovídá formě a výchozí je všude rozšířená forma. Jedinou výjimkou je
   `JournalLinesEditor`, kde jsou výchozí krátké formy. Výjimka se netýká jiných
-  gridů u dokladů a karet, předkontací v záložkách, `JournalLinesRecap`, deníku
-  ani sestav. V editoru musí být pro každou stranu viditelná alespoň jedna forma.
+  gridů u dokladů a karet, předkontací v záložkách, deníku ani sestav. Rekapitulace
+  `JournalLinesRecap` je vždy bez lišty a zobrazuje pouze rozšířenou formu; uložené
+  volby krátkých sloupců ignoruje. V editoru musí být pro každou stranu viditelná alespoň jedna forma.
   Řazení používá číselný kód účtu.
 - Stav dokladu vždy přes `DocumentStatusBadge`. Stavy: `draft` = Koncept
   (přerušovaný rámeček, doklad se nikde nepočítá), `filed` = Zařazen (má číslo,
@@ -384,7 +385,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Editace dokladu
 
 - Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
-- Sekce Datumy je pružný řádek: každé datum je celé pole s minimální šířkou 10,5 rem, DUZP a Datum DPH tvoří pravou skupinu. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
+- Sekce Datumy je pružný řádek: minimální šířku každého data počítá `DateField` z šířky celého data a počtu právě viditelných ikon. DUZP a Datum DPH tvoří jednu pravou skupinu. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
 - Nastavení dokladu se otevírá přes `DocumentForm.settings` a edituje v `DocumentSettingsDialog`; protože se ukládá tlačítkem Uložit, používá CheckboxField a radio, nikdy Switch.
 
@@ -398,7 +399,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
-- `DocumentForm` skládá Datumy přes `flex flex-wrap items-start gap-3`; každé datum je `flex-none w-max min-w-[10.5rem]`, DUZP a Datum DPH jsou v pravé skupině `ml-auto flex gap-3`.
+- `DocumentForm` skládá Datumy jako pružný řádek; šířku polí určuje centrálně `DateField` podle počtu viditelných ikon. DUZP a Datum DPH zůstávají společně v pravé skupině.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
 
