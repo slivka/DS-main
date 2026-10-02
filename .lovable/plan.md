@@ -1,56 +1,52 @@
-# DS 5b + 5d – společný rám gridů a klávesy AppShell (zůstává 2.83.0)
+# DS 2.86.0 – Edit dokladu 10
 
-Beze změny chování a veřejného API. Žádné props se neodstraňují (3.0.0). Nevydávat, meta.yaml nedotčeno.
-
-## Zjištěný stav
-
-| Soubor | Řádků | Poznámka |
-|---|---|---|
-| grid/DataGrid.tsx | 1 793 | lišta (ř. ~1014–1360) skládá GridContextBar, GridToolbar, Collapsible, oddělovače, ZoomGrid |
-| grid/TreeGrid.tsx | 1 079 | stejná skladba lišty (ř. ~568–855) téměř 1 : 1 |
-| layout/AppShell.tsx | 1 372 | 3 globální `keydown` posluchače (ř. 818, 908, 948) |
-| grid/grid-virtual.tsx | 142 | `useGridVirtual` dnes v gridech nezapojen |
-
-- Doménová ID natvrdo v DataGrid: `PINNED_COLUMN_IDS` (`status`, `is_active`, `is_system`, `source`) a `COMPACT_COLUMN_IDS` (`status`, `date`, `document`, `vs`, `symbol`, `md`, `dal`, `debit`, `credit`, …).
-- Efekt bez pole závislostí: AppShell ř. 948–955 (Escape zavře panel) – posluchač se přepojuje při každém renderu.
-- Ctrl+B efekt (ř. 818) má zbytečné závislosti `[appZoom, isCollapsed]` (čte ref).
-- `activeToggleMenuItem` v DataGrid/TreeGrid přímo nenajdu – před refaktorem dohledám, kde vzniká (pravděpodobně grid-action), a `useRowActions` ho použije, ne zduplikuje.
-- Uložení sloupců se v API jmenuje `storageKey` (ne `stateKey`); testy proto na `storageKey`.
+## Cíl
+Dokončit všech 14 bodů jako jednu verzi 2.86.0, zachovat stávající chování mimo zadání, aktualizovat pravidla a nic nevydávat.
 
 ## Postup
 
-1. **Testy proti dnešnímu kódu** (musí projít před refaktorem):
-   - `tests/unit/data-grid-behavior.test.tsx`: řazení, sloupcový filtr, výběr sloupců + uložení přes `storageKey` (po novém připojení zůstane), výběr řádků + `selectionSummary`, `groupTotals`, menu řádku (upravit / odstranit s potvrzením / zakázaný důvod), Obnovit volá `onRefresh`, připnuté a kompaktní sloupce mají dnešní šířky.
-   - `tests/unit/tree-grid-behavior.test.tsx`: rozbalení/sbalení uzlu, menu řádku, Obnovit.
-   - `tests/unit/app-shell-shortcuts.test.tsx`: Ctrl+B sbalí menu (ne v poli), „/“ zaměří hledání, Escape zavře panel, zoom zkratky beze změny, Alt+Shift+T obnoví zavřenou záložku (pokud jde přes AppShell).
-2. **5b refaktor gridů** (mapa níže), pak stejné testy beze změny.
-3. **Virtualizace** pro `paginated={false}` v režimu výšky „fill“: test 5 000 řádků → vykreslí jen viditelné + rezervu; po rolování se okno posune. Režim „auto“ (formuláře) zůstává bez virtualizace jako dnes.
-4. **Doménová ID ven**: nové exportované konstanty `DEFAULT_PINNED_COLUMNS` a `DEFAULT_COMPACT_COLUMNS` (v novém `grid-column-presets.ts`), nové volitelné props `pinnedColumnIds` / `compactColumnIds` s dnešními hodnotami jako výchozí. `isPinnedColumn` zůstává (jen nové doplnění API = minor, verze se nemění dle zadání).
-5. **5d AppShell**: hook `useGlobalShortcuts` s registrem (jeden `window` posluchač, záznamy `{ id, match, run, allowInEditing }` přes ref, odregistrace při odpojení). Escape efekt dostane závislost `[currentPanel]`, Ctrl+B prázdné závislosti přes ref. Test: `addEventListener("keydown")` zavolán právě 1× za AppShell, `removeEventListener` při odpojení. Zoom zkratky z `useAppZoomShortcuts` se připojí do registru jen pokud dnes běží ve stejném AppShell; jinak hook zoomu beze změny (ověřím a uvedu).
-6. Texty nových prvků přes `DsTexts` (CS + SK) – předpoklad: žádné nové viditelné texty nevzniknou.
-7. Závěr: format, typecheck, lint (0 chyb v nových/změněných), test, build; CHANGELOG 2.83.0 doplnit (5b, 5d – pro APP nic povinného; nové konstanty a volitelné props); tabulka souborů s řádky; co nezměněno a proč.
+1. **Veřejné API a texty**
+   - Rozšířit `DocumentFormProps` o řízení firemního účtu, ruční nápovědu odběratele a režim záložky Odběratel.
+   - Rozšířit stav DPH o datum nespolehlivosti.
+   - Doplnit texty CS i SK; slovenská sada zůstane záměrně obsahově shodná s českou.
+   - Rozšířit `OptionSelect` o hledání a zkrácený popisek vybrané hodnoty; výchozí hledání od 8 položek.
+   - Doplnit `onEditSelected` do výběrů partnera, zakázky a měrné jednotky a předat jej i pro místo/pracovníka přes jejich sdílenou implementaci.
 
-## Mapa souborů před → po (odhad)
+2. **Rozložení DocumentForm**
+   - Data DPH ponechat vpravo na široké ploše, ale po zalomení celé skupiny je zarovnat vlevo; ověřit ve třech šířkách.
+   - Zarovnat částku se zamčenou měnou k pravému okraji a sjednotit levé hrany popisku a hodnoty měny.
+   - Přesunout účet partnera u přijatých dokladů do Základních údajů vedle externího čísla.
+   - Platební údaje převést na pružné poměrové rozložení bez prázdného pravého prostoru.
+   - U FV/ZFV přesunout účet firmy před Základní údaje, přidat skrytí/zašednutí s důvodem; DDPZ ponechat v Platebních údajích.
+   - Doplnit nápovědu ručního odběratele pouze bez vybraného partnera.
 
-| Soubor | Odpovědnost | Řádků |
-|---|---|---|
-| grid/DataGrid.tsx | skládání, data (řazení, filtr, stránky, skupiny) | 1 793 → ~480 |
-| grid/data-grid-types.ts | `DataGridProps`, `DataGridColumn` (re-export z DataGrid zachován) | nový ~300 |
-| grid/data-grid-columns.ts | šířky, připnuté/kompaktní, odvození viditelných | nový ~200 |
-| grid/DataGridBody.tsx | tělo tabulky, skupiny, součtový řádek, virtualizace | nový ~400 |
-| grid/TreeGrid.tsx | skládání stromu | 1 079 → ~450 |
-| grid/TreeGridBody.tsx | řádky stromu, rozbalení | nový ~350 |
-| grid/GridFrame.tsx | lišta akcí, hledání, Sloupce, Obnovit, zoom/hustota, kontextový řádek, pruh zkrácení, ZoomGrid – jednou pro oba | nový ~300 |
-| grid/grid-base-props.ts | `GridBaseProps` – společné props (typ, API beze změny) | nový ~150 |
-| grid/useRowActions.tsx | menu řádku, `activeToggleMenuItem`, potvrzení odstranění | nový ~150 |
-| grid/grid-column-presets.ts | `DEFAULT_PINNED_COLUMNS`, `DEFAULT_COMPACT_COLUMNS` | nový ~40 |
-| layout/AppShell.tsx | rám aplikace | 1 372 → ~1 250 (pod 500 až v 3.0.0, viz níže) |
-| layout/useGlobalShortcuts.ts | registr globálních zkratek, jeden posluchač | nový ~90 |
+3. **Záložka Odběratel**
+   - Režim `partner` vykreslit přes `FieldValue` s důvodem zamčení, režim `manual` ponechat editovatelný.
+   - Přidat řízené potvrzení „Aktualizovat z partnera“ s důraznou variantou a textem dodaným aplikací.
+   - Přidat odznak zmrazení údajů při zařazení.
 
-Každý nový soubor: hlavička (co · vlastní · nesmí), JSDoc česky ke každému exportu a propu.
+4. **Výběry a VS**
+   - Zarovnat VS vlevo ve formuláři, editoru řádků, detailu, rekapitulacích a gridech; přidat sdílený `vsColumn()` pro DataGrid.
+   - Konstantní symbol vykreslit jako hledatelný číselník: hledání kódu/názvu, v poli jen kód, v nabídce celý název, možnost vymazání.
+   - Způsob platby vykreslit stejným hledatelným výběrem s názvem po výběru.
 
-## Co se nemění a proč
+5. **Zaoblení a pravidla**
+   - Nahradit holá tlačítka v DS sdíleným `Button`, nebo jim výslovně přidat tokenové zaoblení tam, kde HTML tlačítko vyžaduje speciální struktura.
+   - Zachovat výjimky pro vnitřní hrany segmentů a záložky.
+   - Uvést přesný počet opravených míst.
+   - Aktualizovat `system.md`, účetní pravidla, `CHANGELOG.md`, `roadmap.md` a verzi balíčku na 2.86.0; BREAKING změny označit a doplnit migraci.
 
-- AppShell zůstane nad 500 řádků: zadání 5d je jen efekty a klávesy; rozdělení panelů/navigace je samostatný úklid (navrhnu jako 5e).
-- Žádné props se neodstraňují ani nepřejmenovávají; zastaralé props AppShell zůstávají.
-- `storageKey` formát uložení beze změny – existující uložené sloupce v APP platí dál.
+6. **Ukázky a ověření**
+   - Rozšířit účetní formuláře tak, aby byl vidět každý bod: tři šířky dat, pevná měna, přijatý/vydaný účet, pružné platební údaje, ruční odběratel, oba režimy záložky, VS, oba hledatelné číselníky, tužky, nespolehlivý plátce a zaoblení.
+   - Přidat testy chování pro každý bod; rozložení ověřit měřením DOM, ne názvy tříd.
+   - Spustit formátování, typecheck, lint celého projektu s 0 chybami, všechny testy a build.
+   - Náhled ověřit v prohlížeči ve třech šířkách a zkontrolovat přetečení.
+
+## Technické poznámky
+- `DocumentForm.tsx` je nyní 497 řádků, proto z něj přesunu sestavení bankovních polí a nové rozhodování do malých pomocných modulů; nesmí překročit 500 řádků.
+- `DocumentFormShowcase.tsx` má 333 řádků; nové scénáře rozdělím do samostatného showcase souboru, aby zůstal pod limitem.
+- Stávající `OptionSelect` je založený na prostém Selectu. Hledatelnou větev složím ze stávajících `Popover` + `Command`, nehledatelnou větev zachovám kvůli kompatibilitě.
+- Veřejné exporty a katalogová metadata komponent upravím ve stejné změně jako API.
+
+## Výstup
+Závěrečný report bude obsahovat stav každého bodu, tabulku **bod → soubor → test**, počty testů a výsledky všech kontrol. Release nebude proveden.
