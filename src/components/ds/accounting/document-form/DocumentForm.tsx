@@ -40,7 +40,6 @@ import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document
 export function DocumentForm({
   title,
   titleBadges,
-  description,
   identity,
   directionBadge,
   value,
@@ -73,7 +72,6 @@ export function DocumentForm({
   documentType = "ID",
   fields,
   editableFields,
-  isNew,
   mainSide,
   mainAccountLocked = false,
   rateAmount = 1,
@@ -110,8 +108,6 @@ export function DocumentForm({
   texts,
   className,
 }: DocumentFormProps) {
-  void description;
-  void isNew;
   const dsTexts = useDsTexts();
   const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };

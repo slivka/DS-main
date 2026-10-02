@@ -47,7 +47,7 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
             onToggle();
           }}
           className={cn(
-            "order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded px-1 text-[0.65rem] font-bold",
+            "order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[0.65rem] font-bold",
             line.nonTax
               ? "bg-warning-soft text-warning-strong"
               : "text-muted-foreground hover:bg-muted",

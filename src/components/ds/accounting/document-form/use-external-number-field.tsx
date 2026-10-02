@@ -93,7 +93,7 @@ export function useExternalNumberField({
     </>,
     6,
     false,
-    receivedDocument || !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
+    receivedDocument ? "@min-[40rem]:col-span-6" : !f.handedOverBy ? "@min-[40rem]:col-start-15" : undefined,
   );
   return externalNumberField;
 }

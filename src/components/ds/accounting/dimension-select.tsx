@@ -147,7 +147,7 @@ export function DimensionSelect({
       >
         {children.length ? (
           <div
-            className="flex size-5 shrink-0 items-center justify-center rounded hover:bg-accent/50"
+            className="flex size-5 shrink-0 items-center justify-center rounded-md hover:bg-accent/50"
             onClick={(event) => {
               event.stopPropagation();
               setCollapsed({ ...collapsed, [option.id]: !isCollapsed });

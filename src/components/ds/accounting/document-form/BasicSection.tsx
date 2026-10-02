@@ -148,7 +148,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                   id="document-partner-ico"
                   value={counterpartyIco}
                   onChange={(event) =>
-                    patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })
+                    patch({ counterpartyIco: event.target.value.replace(/\D/g, "") })
                   }
                   disabled={!can("counterpartyIco")}
                   className="h-9 font-mono tabular-nums"
