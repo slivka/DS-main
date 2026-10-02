@@ -17,11 +17,14 @@ Dokončit všech 14 bodů jako jednu verzi 2.86.0, zachovat stávající chován
    - Zarovnat částku se zamčenou měnou k pravému okraji a sjednotit levé hrany popisku a hodnoty měny.
    - Přesunout účet partnera u přijatých dokladů do Základních údajů vedle externího čísla.
    - Platební údaje převést na pružné poměrové rozložení bez prázdného pravého prostoru.
-   - U FV/ZFV přesunout účet firmy před Základní údaje, přidat skrytí/zašednutí s důvodem; DDPZ ponechat v Platebních údajích.
-   - Doplnit nápovědu ručního odběratele pouze bez vybraného partnera.
+   - U FV/ZFV přesunout účet firmy před Základní údaje; `companyBankAccountDisabledReason` zobrazí prázdné zašedlé pole s tooltipem. DDPZ ponechat v Platebních údajích.
+   - Nahradit nápovědu přepínačem-ikonou „Vybraný │ Ručně“ přímo v poli protistrany, včetně zamčení a potvrzení při přechodu na adresář.
+   - U přijatých dokladů přidat do účtu přepínač platebního příkazu; při vypnutí skrýt KS/SS a účet vyprázdnit a zašednout.
+   - Pro ruční protistranu podporovat řízené CZ číslo/IBAN/SWIFT podle měny a validace modulo 11/modulo 97.
 
 3. **Záložka Odběratel**
-   - Režim `partner` vykreslit přes `FieldValue` s důvodem zamčení, režim `manual` ponechat editovatelný.
+   - Pole ponechat editovatelná v obou režimech protistrany; na `FieldValue` je převést pouze při `counterpartyLocked`.
+   - U polí uvedených v `counterpartyManualFields` zobrazit odznak „upraveno ručně“.
    - Přidat řízené potvrzení „Aktualizovat z partnera“ s důraznou variantou a textem dodaným aplikací.
    - Přidat odznak zmrazení údajů při zařazení.
 
@@ -37,7 +40,7 @@ Dokončit všech 14 bodů jako jednu verzi 2.86.0, zachovat stávající chován
    - Aktualizovat `system.md`, účetní pravidla, `CHANGELOG.md`, `roadmap.md` a verzi balíčku na 2.86.0; BREAKING změny označit a doplnit migraci.
 
 6. **Ukázky a ověření**
-   - Rozšířit účetní formuláře tak, aby byl vidět každý bod: tři šířky dat, pevná měna, přijatý/vydaný účet, pružné platební údaje, ruční odběratel, oba režimy záložky, VS, oba hledatelné číselníky, tužky, nespolehlivý plátce a zaoblení.
+   - Rozšířit účetní formuláře tak, aby byl vidět každý bod: tři šířky dat, pevná měna, přijatý/vydaný účet, pružné platební údaje, oba režimy protistrany a jejich zamčení, oba stavy záložky Odběratel, VS, oba hledatelné číselníky, tužky, nespolehlivý plátce a zaoblení.
    - Přidat testy chování pro každý bod; rozložení ověřit měřením DOM, ne názvy tříd.
    - Spustit formátování, typecheck, lint celého projektu s 0 chybami, všechny testy a build.
    - Náhled ověřit v prohlížeči ve třech šířkách a zkontrolovat přetečení.
