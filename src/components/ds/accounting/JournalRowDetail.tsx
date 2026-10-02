@@ -207,6 +207,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
         value={line[id]}
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
+        onEditSelected={props.onEditDimension}
       />
     );
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
@@ -226,6 +227,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
         disabled={disabled}
         onChange={(value) => set({ unitId: value })}
         onCreateUnit={props.onCreateUnit}
+        onEditSelected={props.onEditUnit}
       />
     );
   if (id === "quantity" || id === "unitPrice")

@@ -1,4 +1,5 @@
 /** Navazující scénáře ukázky účetních formulářů. */
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DataGrid,
@@ -27,6 +28,7 @@ export function DocumentFormSecondaryScenarios({
 }: {
   state: ReturnTypeOfDocumentShowcaseState;
 }) {
+  const [invoiceDetailTab, setInvoiceDetailTab] = useState("lines");
   const {
     invoiceVatRelevant,
     setInvoiceVatRelevant,
@@ -80,7 +82,26 @@ export function DocumentFormSecondaryScenarios({
           bankAccountOptions={BANK_ACCOUNT_OPTIONS}
           onAddBankAccount={() => toast.success("Otevřeno založení účtu partnera")}
           counterpartyInput="partner"
-          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
+          onCounterpartyInputChange={(mode) => {
+            toast.info(`Režim protistrany: ${mode}`);
+            if (mode === "manual") setInvoiceDetailTab("counterparty");
+          }}
+          activeDetailTab={invoiceDetailTab}
+          onActiveDetailTabChange={setInvoiceDetailTab}
+          counterpartyTab={{
+            value: {
+              name: "Dodavatel s.r.o.",
+              ico: "12345678",
+              dic: "CZ12345678",
+              street: "Dlouhá",
+              house_number: "1",
+              zip: "11000",
+              city: "Praha",
+              country: "CZ",
+              email: "fakturace@dodavatel.cz",
+            },
+            onChange: () => {},
+          }}
           paymentOrderEnabled
           onPaymentOrderEnabledChange={(enabled) =>
             toast.info(enabled ? "Platit příkazem" : "Neplatit příkazem")

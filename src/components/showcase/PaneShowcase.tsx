@@ -417,6 +417,23 @@ function DemoMenu({
           variant="outline"
           className="w-full"
           onClick={() => {
+            for (let index = 1; index <= 8; index += 1) {
+              tabs?.openTab(`/agenda-${index}`, undefined, {
+                target: "newTab",
+                title: `Agenda ${index}`,
+              });
+            }
+            toast.info("Ukázka přeplnění: aktivní a rozepsané záložky zůstávají viditelné.");
+          }}
+        >
+          Ukázka přeplnění lišty
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="w-full"
+          onClick={() => {
             for (let index = 1; index <= 11; index += 1) {
               tabs?.openTab(
                 "/denik",
@@ -535,7 +552,12 @@ export function PaneShowcase() {
           </li>
           <li>4. Maximalizujte panel ikonou nebo Alt+M, obnovte Esc.</li>
           <li>5. Rozepište popis faktury a obnovte stránku – nabídne se rozepsaná verze.</li>
-          <li>6. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
+          <li>6. Tlačítko přeplnění otevře osm záložek; rozepsané zůstávají viditelné.</li>
+          <li>
+            7. Při limitu může aplikace v dialogu nabídnout „Otevřít v nové záložce“; bez callbacku
+            se akce nezobrazí.
+          </li>
+          <li>8. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
         </ol>
 
         <div className="overflow-x-auto rounded-lg border bg-muted p-3">

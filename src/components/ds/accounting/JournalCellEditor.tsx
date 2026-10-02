@@ -163,6 +163,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
         options={props.dimensions ?? []}
         value={line[column]}
         onChange={(value) => choose({ [column]: value })}
+        onEditSelected={props.onEditDimension}
       />
     );
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")
@@ -182,6 +183,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
         value={line.unitId}
         onChange={(value) => choose({ unitId: value })}
         onCreateUnit={props.onCreateUnit}
+        onEditSelected={props.onEditUnit}
       />
     );
   if (column === "vatCodeId")

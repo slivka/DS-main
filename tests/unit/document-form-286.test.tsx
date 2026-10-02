@@ -70,6 +70,21 @@ const cpValue = {
 };
 
 describe("DocumentForm 2.86.0 – chování", () => {
+  it("řízená záložka otevře Odběratele z aplikace a hlásí uživatelskou změnu", () => {
+    const change = mock();
+    const view = render(
+      <Form
+        documentType="FV"
+        activeDetailTab="counterparty"
+        onActiveDetailTabChange={change}
+        counterpartyTab={{ value: cpValue, onChange: () => {} }}
+      />,
+    );
+    expect(view.getByText("Odběratel s.r.o.")).toBeTruthy();
+    fireEvent.click(view.getByRole("tab", { name: /Řádky/ }));
+    expect(change).toHaveBeenCalledWith("lines");
+  });
+
   it("ručně → partner s vyplněnými údaji vyžádá potvrzení", () => {
     const change = mock();
     const view = render(

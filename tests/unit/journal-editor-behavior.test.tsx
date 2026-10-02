@@ -259,6 +259,21 @@ describe("JournalLinesEditor – režimy", () => {
     const shown = render(<Editor showQuantityColumns />);
     expect(cell(shown.container, "l1:quantity")).not.toBeNull();
   });
+
+  it("tužka v editoru vybrané měrné jednotky předá její id aplikaci", () => {
+    const edit = mock();
+    const view = render(
+      <Editor
+        initial={[{ ...LINES[0]!, unitId: "piece", quantity: 1, unitPrice: 1000 }]}
+        showQuantityColumns
+        units={[{ id: "piece", code: "ks", name: "kus", isActive: true }]}
+        onEditUnit={edit}
+      />,
+    );
+    fireEvent.doubleClick(cell(view.container, "l1:unitId")!);
+    fireEvent.click(view.getByRole("button", { name: "Upravit vybraný záznam" }));
+    expect(edit).toHaveBeenCalledWith("piece");
+  });
 });
 
 describe("JournalLinesEditor – chyby řádků", () => {

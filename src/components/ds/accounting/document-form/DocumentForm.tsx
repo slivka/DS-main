@@ -94,6 +94,8 @@ export function DocumentForm({
   roundingLimit = 1,
   roundingLabel,
   tabs = [],
+  activeDetailTab,
+  onActiveDetailTabChange,
   status,
   approved,
   changedBy,
@@ -115,7 +117,12 @@ export function DocumentForm({
   const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
-  const [tab, setTab] = useState("lines");
+  const [uncontrolledTab, setUncontrolledTab] = useState("lines");
+  const tab = activeDetailTab ?? uncontrolledTab;
+  const setTab = (next: string) => {
+    if (activeDetailTab === undefined) setUncontrolledTab(next);
+    onActiveDetailTabChange?.(next);
+  };
   const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
   const [selectedIdentityAccount, setSelectedIdentityAccount] = useState<{
     code: string;

@@ -363,6 +363,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Stav panelů serializuj přes `serializePaneTabs` / `parsePaneTabs` (databáze) a `serializeActiveTabUrl` (URL).
 - Lišta záložek je v každém panelu vždy viditelná, i s jedinou nebo žádnou záložkou. Všechny záložky jsou rovnocenné; nepoužívej dočasné/ponechané záložky ani špendlík v záhlaví.
 - Aktivní záložka aktivního panelu je výrazná (plná linka, tučný název), aktivní záložky ostatních panelů tlumené. Neuložené změny = tečka před názvem s přístupným názvem „neuložené změny“.
+- Při přeplnění lišty zůstává aktivní a co nejvíce naposledy použitých rozepsaných záložek viditelných. Uložené nejdéle nepoužité se schovávají první; rozepsané jsou v nabídce „Další záložky“ nahoře a tlačítko ukazuje jejich tečku i počet skrytých záložek.
 - Dialog neuložených změn: nadpis „{záložka} – neuložené změny“, text = co se chystá + „Změny zatím nejsou uložené.“; tlačítka „Uložit a pokračovat“ (hlavní), „Pokračovat bez uložení“ (červené, vlevo), „Zpět k dokladu“. Akce vždy patří dotčené záložce, ta je po dobu dialogu zvýrazněná; neúspěšné uložení nic nezahodí. Odhlášení přes `guardUnsaved`.
 - Rozepsanou záložku nic z menu nenahradí: otevře se nová záložka v témže panelu a `onNotice` to ohlásí; dialog jen při limitu záložek.
 - Běžný klik v menu používá `openTab(..., { target: 'replace' })`: aktivní (čistou) záložku nahradí jako nový krok historie. Cmd/Ctrl+klik používá `newTab`, Cmd/Ctrl+Shift+klik `adjacentPane`.
