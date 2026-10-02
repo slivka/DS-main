@@ -3,6 +3,7 @@
  * Vlastní: řízená pole odběratele a tiskových údajů.
  * Nesmí: ukládat data ani znát konkrétní aplikaci.
  */
+import type { ReactNode } from "react";
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { Button } from "../../ui/button";
@@ -84,7 +85,7 @@ export function DocumentCounterpartyTab({
   );
   const control = (
     key: keyof DocumentCounterpartyValue,
-    input: React.ReactNode,
+    input: ReactNode,
     display: string,
   ) => (locked ? <FieldValue lockedReason={counterpartyLockedReason}>{display}</FieldValue> : input);
   const refresh = onRefreshCounterparty ?? onReloadFromPartner;
@@ -146,7 +147,27 @@ export function DocumentCounterpartyTab({
           )}
         </Field>
       </FieldGrid>
-      <AddressFieldGrid value={value} onChange={(address) => patch(address)} readOnly={locked} />
+      {locked ? (
+        <FieldGrid cols={12}>
+          <Field label={label("street", "Ulice")} span={6}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.street}</FieldValue>
+          </Field>
+          <Field label={label("house_number", "Číslo")} span={2}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.house_number}</FieldValue>
+          </Field>
+          <Field label={label("zip", "PSČ")} span={2}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.zip}</FieldValue>
+          </Field>
+          <Field label={label("city", "Město")} span={6}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.city}</FieldValue>
+          </Field>
+          <Field label={label("country", "Země")} span={4}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.country}</FieldValue>
+          </Field>
+        </FieldGrid>
+      ) : (
+        <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
+      )}
       <Field label={label("email", texts.email)}>
         {control(
           "email",

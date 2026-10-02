@@ -277,12 +277,16 @@ export function DocumentFormShowcase() {
           constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
+          counterpartyInput="partner"
+          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
           vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
           vat={{ visible: true }}
           counterpartyTab={{
             value: counterpartyPrint,
             onChange: setCounterpartyPrint,
-            onReloadFromPartner: () => toast.success("Údaje odběratele obnoveny"),
+            onRefreshCounterparty: () => toast.success("Údaje odběratele obnoveny"),
+            refreshCounterpartyWarning: "Aktualizovat ruční změny údaji partnera?",
+            counterpartyManualFields: ["email", "street"],
           }}
           printTab={{ value: printData, onChange: setPrintData }}
         />
@@ -305,9 +309,17 @@ export function DocumentFormShowcase() {
           constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
+          counterpartyInput="manual"
+          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
           vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
           vat={{ visible: true }}
-          counterpartyTab={{ value: counterpartyPrint, onChange: setCounterpartyPrint }}
+          counterpartyTab={{
+            value: counterpartyPrint,
+            onChange: setCounterpartyPrint,
+            counterpartyLocked: true,
+            counterpartyLockedReason: "Doklad je zařazen",
+            counterpartyFrozenAt: "24. 9. 2026",
+          }}
           printTab={{ value: printData, onChange: setPrintData }}
         />
       </ShowcaseSection>

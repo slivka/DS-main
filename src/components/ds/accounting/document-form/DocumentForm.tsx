@@ -37,6 +37,7 @@ import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
+/** Kompletní formulář účetního dokladu. */
 export function DocumentForm({
   title,
   titleBadges,
