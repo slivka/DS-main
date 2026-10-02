@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
+import { useDsTexts } from "../../../ds-texts";
 
 export type SelectOption = {
   value: string;
@@ -25,8 +26,8 @@ export function OptionSelect({
   value,
   onChange,
   options,
-  placeholder = "— nevybráno —",
-  emptyLabel = "— nevybráno —",
+  placeholder,
+  emptyLabel,
   placeholderValueLabel,
   allowEmpty = true,
   disabled,
@@ -34,7 +35,8 @@ export function OptionSelect({
   className,
   triggerClassName,
   ariaLabel,
-  inactiveLabel = "neaktivní",
+  inactiveLabel,
+  unknownValueLabel,
 }: {
   value: string | null | undefined;
   onChange: (value: string) => void;
@@ -51,22 +53,30 @@ export function OptionSelect({
   /** Přístupný název výběru, pokud jej neposkytuje navázaný popisek. */
   ariaLabel?: string;
   inactiveLabel?: string;
+  /** Čitelná náhrada za hodnotu, která už není v nabídce. */
+  unknownValueLabel?: string;
 }) {
+  const texts = useDsTexts().optionSelect;
+  const resolvedPlaceholder = placeholder ?? texts.emptyValue;
+  const resolvedEmptyLabel = emptyLabel ?? texts.emptyValue;
+  const resolvedInactiveLabel = inactiveLabel ?? texts.inactive;
+  const resolvedUnknownValueLabel = unknownValueLabel ?? texts.unknownValue;
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
-  const emptyValueLabel = placeholderValueLabel ?? emptyLabel;
+  const emptyValueLabel = placeholderValueLabel ?? resolvedEmptyLabel;
   const selectedLabel =
     current === "" && allowEmpty ? (
       emptyValueLabel
     ) : selectedOption?.inactive ? (
       <span className="flex min-w-0 items-center gap-2">
         <span className="truncate">{selectedOption.label}</span>
-        <InactiveTag label={inactiveLabel} />
+        <InactiveTag label={resolvedInactiveLabel} />
       </span>
     ) : (
       (selectedOption?.selectedLabel ?? selectedOption?.label)
     );
+  const triggerLabel = known || current === "" ? selectedLabel : resolvedUnknownValueLabel;
   const offered = options.filter((option) => !option.inactive || option.value === current);
 
   return (
@@ -85,9 +95,12 @@ export function OptionSelect({
           triggerClassName,
         )}
       >
-        <SelectValue placeholder={placeholder}>
-          <span className="block min-w-0 truncate">
-            {selectedLabel ?? (current || placeholder)}
+        <SelectValue placeholder={resolvedPlaceholder}>
+          <span className="flex min-w-0 items-center justify-between gap-3">
+            <span className="truncate">{triggerLabel ?? resolvedPlaceholder}</span>
+            {selectedOption?.trailingLabel && !selectedOption.inactive ? (
+              <span className="shrink-0 text-xs">{selectedOption.trailingLabel}</span>
+            ) : null}
           </span>
         </SelectValue>
       </SelectTrigger>
@@ -95,7 +108,7 @@ export function OptionSelect({
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
         {!known && current !== "" ? (
           <SelectItem value={current} disabled>
-            {current}
+            {resolvedUnknownValueLabel}
           </SelectItem>
         ) : null}
         {offered.map((o) => (
@@ -108,7 +121,7 @@ export function OptionSelect({
             <span className="flex min-w-0 items-center justify-between gap-3">
               <span className="truncate">{o.label}</span>
               {o.inactive ? (
-                <InactiveTag label={inactiveLabel} />
+                <InactiveTag label={resolvedInactiveLabel} />
               ) : o.trailingLabel ? (
                 <span className="shrink-0 text-xs">{o.trailingLabel}</span>
               ) : null}

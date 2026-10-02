@@ -294,6 +294,7 @@ export interface DsTexts {
     other: string;
   };
   multiSelect: { selectAll: string; noValues: string };
+  optionSelect: { emptyValue: string; inactive: string; unknownValue: string };
   tree: { expand: string; collapse: string; breadcrumbs: string };
   contacts: {
     blacklist: string;
