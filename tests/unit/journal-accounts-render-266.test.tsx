@@ -1,5 +1,4 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
 // Radix vybírá useLayoutEffect při prvním načtení modulu; pokud jej dřívější SSR test načetl bez DOM,
@@ -8,7 +7,6 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
   useLayoutEffect: React.useLayoutEffect,
 }));
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { cleanup, fireEvent, render, within, act } = await import("@testing-library/react");
 const { JournalLinesEditor } =
   await import("../../src/components/ds/accounting/journal-lines-editor");
@@ -31,9 +29,6 @@ const ACCOUNTS = [
 const originalRect = HTMLElement.prototype.getBoundingClientRect;
 let width = 1600;
 
-beforeAll(() => {
-  if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
-});
 beforeEach(() => {
   localStorage.clear();
   width = 1600;
@@ -54,10 +49,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   HTMLElement.prototype.getBoundingClientRect = originalRect;
-});
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
 const headers = (root: HTMLElement) =>

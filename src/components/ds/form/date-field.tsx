@@ -120,7 +120,8 @@ export function DateField({
   const [invalid, setInvalid] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const warningId = React.useId();
-  const visibleIcons = 1 + (link && !link.locked ? 1 : 0) + (warning ? 1 : 0);
+  const visibleIcons =
+    1 + (link && !link.locked ? 1 : 0) + (warning && warningDisplay === "indicator" ? 1 : 0);
   const inputStyle: React.CSSProperties & Record<"--date-field-icons", number> = {
     "--date-field-icons": visibleIcons,
   };
@@ -219,10 +220,7 @@ export function DateField({
             style={inputStyle}
             className={cn(
               "min-w-[calc(7.5rem+var(--date-field-icons)*1.9rem)]",
-              "pr-[2.4em]",
-              link && !link.locked && "pr-[4.2em]",
-              warningDisplay === "indicator" && warning && (!link || link.locked) && "pr-[3.7em]",
-              warningDisplay === "indicator" && warning && link && !link.locked && "pr-[5.5em]",
+              "pr-[calc(0.5em+var(--date-field-icons)*1.9em)]",
               link?.locked && "bg-muted/40",
               warning && "border-warning ring-1 ring-warning/40",
               inputClassName,

@@ -83,6 +83,8 @@ export type JournalColumnLayoutInput = {
   sharedSideFields?: boolean;
   /** Zoom gridu – šířky sloupců v rem se jím násobí. Výchozí 1. */
   zoom?: number;
+  /** Počet řádků určující šířku pořadového čísla. */
+  rowCount?: number;
 };
 
 /** Výsledek kaskády sloupců. */
@@ -109,6 +111,7 @@ export function resolveJournalColumnLayout({
   protectedColumnIds = [],
   sharedSideFields = false,
   zoom = 1,
+  rowCount = 0,
 }: JournalColumnLayoutInput): JournalColumnLayout {
   // Šířky sloupců jsou v rem násobených zoomem gridu – porovnáváme v jednotkách před zoomem.
   const scale = zoom > 0 ? zoom : 1;
@@ -127,6 +130,7 @@ export function resolveJournalColumnLayout({
   const widthFor = (id: ColumnId) => {
     if (id === "text") return textMin;
     if (compact.has(id)) return COMPACT_ACCOUNT_WIDTH_REM;
+    if (id === "row") return journalRowColumnWidthRem(rowCount);
     return (useCustomWidths ? widths[id] : undefined) ?? JOURNAL_COLUMN_WIDTHS[id];
   };
   const required = () =>

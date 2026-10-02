@@ -138,4 +138,23 @@ describe("JournalLinesEditor adaptivní sloupce 2.43.0", () => {
     expect(layout.hiddenColumnIds).toEqual([]);
     expect(layout.requiredWidthRem).toBe(58.25);
   });
+
+  it("započítá rozšíření sloupce pořadí do celé kaskády", () => {
+    const input = {
+      availableWidthRem: 100,
+      mode: "mainAccount" as const,
+      visibleColumnIds: ["row"] as const,
+    };
+    const rows99 = resolveJournalColumnLayout({
+      ...input,
+      visibleColumnIds: [...input.visibleColumnIds],
+      rowCount: 99,
+    });
+    const rows100 = resolveJournalColumnLayout({
+      ...input,
+      visibleColumnIds: [...input.visibleColumnIds],
+      rowCount: 100,
+    });
+    expect(rows100.requiredWidthRem).toBeGreaterThan(rows99.requiredWidthRem);
+  });
 });

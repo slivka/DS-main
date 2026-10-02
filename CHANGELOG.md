@@ -9,6 +9,7 @@
 - Rekapitulace nepoužívá lištu nástrojů a účty zobrazuje v rozšířené formě.
 - Opraven výběr účtu partnera bez položek, důvody zákazu, neplatné a chybějící účty, šířka data podle ikon, seskupení dat DPH a pružná šířka sloupce Ř.
 - Checkboxy a přepínače se vystřeďují podle prvního řádku popisku; doplněny zbývající oddělovače, tlumené výzvy, read-only adresa a jednotné zaoblení filtrů.
+- Poslední kontrola sjednotila pravidla 2.85.0, výpočet šířky a odsazení data, šířku sloupce Ř. v kaskádě, texty výběrů a společné DOM prostředí testů.
 
 ## 2.84.0
 

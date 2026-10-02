@@ -1,21 +1,14 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it } from "bun:test";
 import * as React from "react";
 import type { DataGridColumn } from "../../src/components/ds/grid/DataGrid";
 
 // DOM musí existovat dřív, než se načte react-dom (jinak React nezaregistruje události input).
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 const { DataGrid } = await import("../../src/components/ds/grid/DataGrid");
 const { GridAmountEditor } = await import("../../src/components/ds/grid/grid-amount-editor");
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 function Editor({
   initial = 100,

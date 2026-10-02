@@ -1,10 +1,7 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 import { Settings } from "lucide-react";
 
-if (!GlobalRegistrator.isRegistered)
-  GlobalRegistrator.register({ url: "http://localhost/", width: 1440, height: 1000 });
 const realRouter = await import("@tanstack/react-router");
 mock.module("@tanstack/react-router", () => ({
   ...realRouter,
@@ -26,11 +23,6 @@ const { DsTextsProvider, DS_TEXTS_SK } = await import("../../src/ds-texts");
 const { toast } = await import("sonner");
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 describe("podmenu DS 2.75.0", () => {
   it("LayoutMenu má nové pořadí, správu vpravo a žádné ikony panelů ani hvězdičku", () => {

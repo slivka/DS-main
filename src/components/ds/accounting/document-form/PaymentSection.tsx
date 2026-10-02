@@ -11,7 +11,6 @@ import { CheckboxField } from "../../form/checkbox-field";
 import { OptionSelect } from "../../form/option-select";
 import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
-import { cn } from "../../../../lib/utils";
 import type { DocumentFields } from "../document-fields";
 import type {
   DocumentFormTexts,
@@ -98,6 +97,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   onChange={(constantSymbol) => patch({ constantSymbol })}
                   disabled={!can("constantSymbol")}
                   options={constantSymbolOptions}
+                  unknownValueLabel={value.constantSymbol ?? undefined}
                 />
               ) : (
                 <Input
@@ -147,11 +147,8 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
         {f.paymentOrders ? (
           <CheckboxField
             id="document-exclude-payment-orders"
-            className={cn(
-              "col-span-20",
-              receivedDocument &&
-                "@min-[40rem]:col-span-6 @min-[40rem]:mt-4 @min-[40rem]:flex @min-[40rem]:h-9 @min-[40rem]:items-center [&_label]:whitespace-nowrap",
-            )}
+            className="col-span-20 @min-[40rem]:col-span-6 [&_label]:whitespace-nowrap"
+            align="input"
             label={t.excludeFromPaymentOrders}
             checked={!!value.excludeFromPaymentOrders}
             disabled={!can("excludeFromPaymentOrders")}

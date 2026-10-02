@@ -260,8 +260,8 @@ export function DocumentFormShowcase() {
         />
       </ShowcaseSection>
       <ShowcaseSection
-        title="Neplátce – vydaná faktura v CZK"
-        description="Firma není plátce, proto se nezobrazuje přepínač, DUZP ani Datum DPH."
+        title="Plátce – vydaná faktura v CZK"
+        description="Zapnuté DPH zobrazuje stav partnera, DUZP i Datum DPH."
       >
         <DocumentForm
           title="Vydaná faktura"
@@ -306,6 +306,7 @@ export function DocumentFormShowcase() {
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           companyBankAccountOptions={COMPANY_BANK_ACCOUNT_OPTIONS}
           vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+          vat={{ visible: true }}
           counterpartyTab={{ value: counterpartyPrint, onChange: setCounterpartyPrint }}
           printTab={{ value: printData, onChange: setPrintData }}
         />

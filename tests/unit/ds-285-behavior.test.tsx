@@ -1,18 +1,14 @@
 /** Testy chování DS 2.85.0: výběry KS, účtu firmy a přidání účtu partnera. */
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { act, cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm } = await import("../../src/components/ds/accounting/document-form");
+const { LookupField } = await import("../../src/components/ds/form/lookup-field");
+const { OptionSelect } = await import("../../src/components/ds/form/option-select");
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 /** Otevře výběr kliknutím na spouštěč a klikne na položku podle názvu. */
 async function pick(view: ReturnType<typeof render>, trigger: Element, name: string | RegExp) {
@@ -86,4 +82,109 @@ describe("DS 2.85.0 – chování výběrů", () => {
     expect(onAddAccount).toHaveBeenCalledTimes(1);
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it("zakázaný účet zobrazí důvod pod polem i v tooltipu", async () => {
+    const view = render(
+      <BankAccountField
+        value=""
+        onChange={() => {}}
+        options={[]}
+        selectionOnly
+        disabledReason="Nejdřív vyberte dodavatele"
+      />,
+    );
+    expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
+    const triggerWrapper = view.getByRole("combobox").parentElement;
+    expect(triggerWrapper).toBeTruthy();
+    fireEvent.focus(triggerWrapper as Element);
+    expect((await view.findByRole("tooltip")).textContent).toContain("Nejdřív vyberte dodavatele");
+  });
+
+  it("tužka upraví jen vybranou editovatelnou hodnotu", () => {
+    const onEditSelected = mock();
+    const view = render(
+      <LookupField value="partner-1" onChange={() => {}} onEditSelected={onEditSelected} />,
+    );
+    fireEvent.click(view.getByRole("button", { name: "Upravit vybraný záznam" }));
+    expect(onEditSelected).toHaveBeenCalledWith("partner-1");
+    view.rerender(
+      <LookupField
+        value="partner-1"
+        onChange={() => {}}
+        onEditSelected={onEditSelected}
+        disabled
+      />,
+    );
+    expect(view.queryByRole("button", { name: "Upravit vybraný záznam" })).toBeNull();
+    view.rerender(
+      <LookupField
+        value="partner-1"
+        onChange={() => {}}
+        onEditSelected={onEditSelected}
+        readOnly
+      />,
+    );
+    expect(view.queryByRole("button", { name: "Upravit vybraný záznam" })).toBeNull();
+    view.rerender(<LookupField value="" onChange={() => {}} onEditSelected={onEditSelected} />);
+    expect(view.queryByRole("button", { name: "Upravit vybraný záznam" })).toBeNull();
+  });
+
+  it("neznámou volbu popíše čitelně a zachová doplněk vybrané položky", () => {
+    const view = render(<OptionSelect value="raw-id" onChange={() => {}} options={[]} />);
+    expect(view.getByRole("combobox").textContent).toContain("Hodnota není v číselníku");
+    expect(view.getByRole("combobox").textContent).not.toContain("raw-id");
+    view.rerender(
+      <OptionSelect
+        value="eur"
+        onChange={() => {}}
+        options={[{ value: "eur", label: "Euro", trailingLabel: "EUR" }]}
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain("Euro");
+    expect(view.getByRole("combobox").textContent).toContain("EUR");
+  });
+
+  it("skryje stav DPH partnera po vypnutí přepínače", () => {
+    const view = render(<IssuedFormWithVatStatus />);
+    expect(view.getByText("Ověřeno 24.09.2026")).toBeTruthy();
+    fireEvent.click(view.getByRole("switch", { name: "Vstupuje do DPH" }));
+    expect(view.queryByText("Ověřeno 24.09.2026")).toBeNull();
+  });
+
+  it("drží DUZP a Datum DPH v jedné pravé skupině", () => {
+    const view = render(<IssuedFormWithVatStatus />);
+    const taxDate = view.container.querySelector("#document-taxDate");
+    const vatDate = view.container.querySelector("#document-vatDate");
+    const group = view.container.querySelector('[data-slot="document-vat-dates"]');
+    expect(group).toBeTruthy();
+    expect(taxDate?.closest('[data-slot="document-vat-dates"]')).toBe(group);
+    expect(vatDate?.closest('[data-slot="document-vat-dates"]')).toBe(group);
+  });
 });
+
+function IssuedFormWithVatStatus() {
+  const [value, setValue] = React.useState<Record<string, unknown>>({
+    currency: "CZK",
+    amountTotal: 1_000,
+    totalMode: "entered",
+    vatRelevant: true,
+    taxDate: "2026-09-24",
+    vatDate: "2026-09-24",
+  });
+  return (
+    <DocumentForm
+      title="FV"
+      status="draft"
+      documentType="FV"
+      value={value}
+      onChange={(next) => setValue(next as Record<string, unknown>)}
+      lines={[]}
+      onLinesChange={() => {}}
+      books={[]}
+      accounts={[]}
+      homeCurrency="CZK"
+      vat={{ visible: true }}
+      vatPartnerStatus={{ status: "payer", checkedAt: "24.09.2026" }}
+    />
+  );
+}

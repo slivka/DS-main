@@ -1,8 +1,6 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered) GlobalRegistrator.register({ url: "http://localhost/" });
 const { cleanup, fireEvent, render } = await import("@testing-library/react");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
 const { DocumentForm, vsFromDocumentNumber } =
@@ -51,10 +49,6 @@ function Form({ initial = base, ...props }: { initial?: typeof base } & Record<s
 }
 
 afterEach(() => cleanup());
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
-});
 
 describe("DocumentForm 2.73", () => {
   it("zobrazuje neznámý číselníkový KS bez volného vstupu a firemní účet jako výběr", () => {
@@ -210,9 +204,8 @@ describe("DocumentForm 2.73", () => {
     const exclude = view.container
       .querySelector("#document-exclude-payment-orders")
       ?.closest("[data-slot=checkbox-field]");
-    expect(exclude?.className).toContain("@min-[40rem]:mt-4");
-    expect(exclude?.className).toContain("[&_label]:whitespace-nowrap");
-    expect(exclude?.className).not.toContain("self-center");
+    expect(exclude?.getAttribute("data-align")).toBe("input");
+    expect(exclude?.querySelector('[role="checkbox"]')).toBeTruthy();
   });
 
   it("mění popisek čísla podle viditelné DPH", () => {

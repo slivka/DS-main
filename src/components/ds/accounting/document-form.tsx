@@ -1,6 +1,7 @@
 /**
  * Veřejný vstup formuláře dokladu.
- * Zachovává importní cestu a exportuje rozdělenou implementaci beze změny API.
+ * Skládá sekce Základní údaje, Datumy, Platební údaje, Částka a záložky; měnu drží
+ * vedle Celkem a partnerské i firemní bankovní účty v Platebních údajích.
  */
 export { DocumentForm } from "./document-form/DocumentForm";
 export { DocumentActionBar, DocumentDirectionBadge } from "./document-form/document-form-actions";

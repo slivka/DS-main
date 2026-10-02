@@ -262,6 +262,11 @@ export const DS_TEXTS_SK: DsTexts = {
     other: "Ostatné štáty",
   },
   multiSelect: { selectAll: "Vybrať všetko", noValues: "Žiadne hodnoty." },
+  optionSelect: {
+    emptyValue: "— nevybráno —",
+    inactive: "neaktivní",
+    unknownValue: "Hodnota není v číselníku",
+  },
   tree: { expand: "Rozbaliť", collapse: "Zbaliť", breadcrumbs: "Omrvinková navigácia" },
   contacts: {
     blacklist: "Blokovaný",

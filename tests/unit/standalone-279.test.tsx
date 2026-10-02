@@ -1,9 +1,6 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-if (!GlobalRegistrator.isRegistered)
-  GlobalRegistrator.register({ url: "http://localhost/", width: 1440, height: 1000 });
 const navigateCalls: unknown[] = [];
 const realRouter = await import("@tanstack/react-router");
 mock.module("@tanstack/react-router", () => ({
@@ -56,11 +53,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   window.matchMedia = originalMatchMedia;
-});
-afterAll(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if (GlobalRegistrator.isRegistered) await GlobalRegistrator.unregister();
 });
 
 const items = [

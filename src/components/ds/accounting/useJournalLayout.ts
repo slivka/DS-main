@@ -135,6 +135,7 @@ export function useJournalLayout(input: JournalLayoutInput) {
         protectedColumnIds: protectedColumns,
         sharedSideFields: sideFields === "shared",
         widths: widthsRem,
+        rowCount: input.rowCount,
       }),
     [
       availableWidthPx16,
@@ -145,6 +146,7 @@ export function useJournalLayout(input: JournalLayoutInput) {
       protectedColumns,
       sideFields,
       widthsRem,
+      input.rowCount,
     ],
   );
   const automaticZoom = zoomLayout.autoZoom;
