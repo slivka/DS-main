@@ -1372,7 +1372,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Přijaté doklady řadí základní údaje, datumy, platební údaje, částku a řádky; bankAccountOptions nabízí známé účty bez automatického předvyplnění, bankCodes ověřuje kód ručně zadaného účtu a dateWarnings přesouvá do pruhu upozornění.
+Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Všechny doklady řadí základní údaje, datumy, platební údaje, částku a záložky; partnerské i firemní bankovní účty jsou v platebních údajích a dateWarnings se zobrazují ve společném pruhu.
 
 **Props:**
 
