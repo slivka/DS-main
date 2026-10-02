@@ -108,11 +108,21 @@ describe("DS 2.85.0 – chování výběrů", () => {
     fireEvent.click(view.getByRole("button", { name: "Upravit vybraný záznam" }));
     expect(onEditSelected).toHaveBeenCalledWith("partner-1");
     view.rerender(
-      <LookupField value="partner-1" onChange={() => {}} onEditSelected={onEditSelected} disabled />,
+      <LookupField
+        value="partner-1"
+        onChange={() => {}}
+        onEditSelected={onEditSelected}
+        disabled
+      />,
     );
     expect(view.queryByRole("button", { name: "Upravit vybraný záznam" })).toBeNull();
     view.rerender(
-      <LookupField value="partner-1" onChange={() => {}} onEditSelected={onEditSelected} readOnly />,
+      <LookupField
+        value="partner-1"
+        onChange={() => {}}
+        onEditSelected={onEditSelected}
+        readOnly
+      />,
     );
     expect(view.queryByRole("button", { name: "Upravit vybraný záznam" })).toBeNull();
     view.rerender(<LookupField value="" onChange={() => {}} onEditSelected={onEditSelected} />);
@@ -135,9 +145,7 @@ describe("DS 2.85.0 – chování výběrů", () => {
   });
 
   it("skryje stav DPH partnera po vypnutí přepínače", () => {
-    const view = render(
-      <IssuedFormWithVatStatus />,
-    );
+    const view = render(<IssuedFormWithVatStatus />);
     expect(view.getByText("Ověřeno 24.09.2026")).toBeTruthy();
     fireEvent.click(view.getByRole("switch", { name: "Vstupuje do DPH" }));
     expect(view.queryByText("Ověřeno 24.09.2026")).toBeNull();

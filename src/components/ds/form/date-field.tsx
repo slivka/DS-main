@@ -121,9 +121,7 @@ export function DateField({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const warningId = React.useId();
   const visibleIcons =
-    1 +
-    (link && !link.locked ? 1 : 0) +
-    (warning && warningDisplay === "indicator" ? 1 : 0);
+    1 + (link && !link.locked ? 1 : 0) + (warning && warningDisplay === "indicator" ? 1 : 0);
   const inputStyle: React.CSSProperties & Record<"--date-field-icons", number> = {
     "--date-field-icons": visibleIcons,
   };
