@@ -4,14 +4,14 @@
  * Nesmí: spouštět akce ani řídit jejich viditelnost.
  */
 import { Settings } from "lucide-react";
-import type { RecordActionItem } from "../../layout/record-action-bar";
+import type { RecordMoreAction } from "../../layout/record-action-bar";
 
 /** Sestaví nabídku akcí formuláře dokladu. */
 export function buildDocumentActionMenu(
-  actions: RecordActionItem[],
+  actions: RecordMoreAction[],
   settings: { onOpen: () => void } | undefined,
   settingsLabel: string,
-): RecordActionItem[] {
+): RecordMoreAction[] {
   if (!settings) return actions;
   return [
     { id: "document-settings", label: settingsLabel, onClick: settings.onOpen, icon: Settings },
