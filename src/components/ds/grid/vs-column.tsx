@@ -15,6 +15,7 @@ export function vsColumn<Row>(
     label: "VS",
     fitContent: true,
     align: "left",
+    format: "vs",
     className: "font-mono tabular-nums text-left",
     value,
     ...options,

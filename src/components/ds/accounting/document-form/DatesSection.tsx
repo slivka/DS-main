@@ -44,7 +44,7 @@ export function DocumentDatesSection({
         </div>
         <div
           data-slot="document-vat-dates"
-          className="ml-auto flex flex-wrap items-start justify-end gap-3"
+          className="flex flex-wrap items-start justify-start gap-3 @min-[42rem]:ml-auto @min-[42rem]:justify-end"
         >
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
           {showVatFields

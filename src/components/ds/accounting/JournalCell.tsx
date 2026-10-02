@@ -119,7 +119,13 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
           className="mr-1 size-[0.85em] shrink-0 text-muted-foreground"
         />
       ) : null}
-      <span className="min-w-0 flex-1 truncate">
+      <span
+        className={cn(
+          "min-w-0 flex-1 truncate",
+          (column === "vs" || column === "debitVs" || column === "creditVs") &&
+            "text-left font-mono tabular-nums",
+        )}
+      >
         {isEditing ? (
           <JournalCellEditor line={line} column={column} />
         ) : (

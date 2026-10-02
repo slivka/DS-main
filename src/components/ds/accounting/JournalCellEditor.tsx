@@ -63,7 +63,7 @@ function AccountCellEditor({ line, column }: JournalCellEditorProps) {
         editor.finish();
       }}
       onOpenChange={closeSelect}
-      className="journal-cell-editor"
+      className={VS_COLUMNS.has(dataColumn) ? "journal-cell-editor text-left" : "journal-cell-editor"}
     />
   );
 }

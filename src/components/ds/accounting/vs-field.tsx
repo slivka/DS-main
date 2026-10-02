@@ -47,7 +47,7 @@ export const VsField = forwardRef<
       placeholder={placeholder}
       maxLength={maxLength}
       onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, maxLength))}
-      className={cn("h-[var(--control-h)] text-right font-mono tabular-nums", className)}
+      className={cn("h-[var(--control-h)] text-left font-mono tabular-nums", className)}
     />
   );
 });

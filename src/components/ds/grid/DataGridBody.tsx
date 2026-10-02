@@ -74,6 +74,8 @@ function cellContent<Row>(c: DataGridColumn<Row>, row: Row, editing: boolean) {
   if ((c.format === "ico" || c.id === "ico") && v !== null && v !== undefined) {
     if (cellText(v).trim() !== "") return <IcoLink value={cellText(v)} />;
   }
+  if (c.format === "vs")
+    return <span className="font-mono tabular-nums text-left">{cellText(v)}</span>;
   if (c.numeric && typeof v === "number") return fmtAmount(v, c.decimals ?? 0);
   return cellText(v);
 }

@@ -31,7 +31,7 @@ export type DataGridColumn<Row> = {
   /** Explicitní datový typ pro Excel export; bez hodnoty se použije numeric/text. */
   exportType?: ExcelColumnType | undefined;
   /** Vestavěné zobrazení hodnoty; `ico` přidá ověřený odkaz do českého registru. */
-  format?: "ico" | undefined;
+  format?: "ico" | "vs" | undefined;
   /**
    * Součtový riadok: „sum" (predvojené pri číselných sloupcích), „avg", „count",
    * „sumSelected" (jen vybrané řádky; v exportu bez součtu),
