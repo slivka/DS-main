@@ -201,7 +201,7 @@ export function DocumentForm({
     dateWarnings,
     accountingDateLink,
   });
-  const linkedPartner = !!value.partnerId;
+  const linkedPartner = Boolean(value.partnerId);
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning =
@@ -210,7 +210,7 @@ export function DocumentForm({
     !isValidCzIco(counterpartyIco);
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
   const vatRelevant = value.vatRelevant !== false;
-  const showVatFields = vat?.visible && vatRelevant;
+  const showVatFields = Boolean(vat?.visible && vatRelevant);
   const combinedNotices = buildDocumentNotices({
     value,
     dateWarnings,
