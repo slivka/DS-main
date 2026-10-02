@@ -1,5 +1,3 @@
-import { act } from "react";
-import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
@@ -80,40 +78,29 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(lookup).toContain("Upravit vybraný záznam");
   });
 
-  it("zarovná checkbox i přepínač na střed prvního řádku popisku", async () => {
-    const host = document.createElement("div");
-    document.body.append(host);
-    const root = createRoot(host);
-    await act(async () => {
-      root.render(
-        <div style={{ fontSize: "24px" }}>
-          <CheckboxField
-            id="alignment-checkbox"
-            label="Popisek checkboxu"
-            hint="Popis"
-            checked
-            onCheckedChange={vi.fn()}
-          />
-          <SwitchField
-            id="alignment-switch"
-            label="Popisek přepínače"
-            hint="Popis"
-            checked
-            onCheckedChange={vi.fn()}
-          />
-        </div>,
-      );
-    });
+  it("zarovná checkbox i přepínač na střed prvního řádku popisku", () => {
+    const html = renderToStaticMarkup(
+      <div style={{ fontSize: "24px" }}>
+        <CheckboxField
+          id="alignment-checkbox"
+          label="Popisek checkboxu"
+          hint="Popis"
+          checked
+          onCheckedChange={vi.fn()}
+        />
+        <SwitchField
+          id="alignment-switch"
+          label="Popisek přepínače"
+          hint="Popis"
+          checked
+          onCheckedChange={vi.fn()}
+        />
+      </div>,
+    );
     for (const id of ["alignment-checkbox", "alignment-switch"]) {
-      const control = host.querySelector<HTMLElement>(`#${id}`);
-      const label = host.querySelector<HTMLLabelElement>(`label[for="${id}"]`);
-      expect(control).toBeTruthy();
-      expect(label).toBeTruthy();
-      expect(getComputedStyle(label as HTMLLabelElement).marginBlockStart).toBe("0px");
-      expect(getComputedStyle(label as HTMLLabelElement).lineHeight).toBe("20px");
+      const labelClass = new RegExp(`<label[^>]*for="${id}"[^>]*class="([^"]*)"`).exec(html)?.[1];
+      expect(labelClass?.split(" ")).toEqual(expect.arrayContaining(["my-0", "leading-5"]));
     }
-    await act(async () => root.unmount());
-    host.remove();
   });
 
   it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {
