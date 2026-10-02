@@ -51,13 +51,11 @@ export function validateManualBankAccount(
     !bankCodes.includes(compactIban.slice(4, 8))
   )
     errors.iban = texts.bankCode;
-  if (compactSwift && !/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(compactSwift))
-    errors.swift = texts.swift;
+  if (compactSwift && !/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(compactSwift)) errors.swift = texts.swift;
   if (isHomeCurrency && compactText) {
     const [account = "", code = ""] = compactText.split("/");
     const parsed = parseCzAccount(account);
-    if (!parsed || !isValidCzAccount(parsed.prefix, parsed.number))
-      errors.text = texts.account;
+    if (!parsed || !isValidCzAccount(parsed.prefix, parsed.number)) errors.text = texts.account;
     else if (bankCodes.length && !bankCodes.includes(code)) errors.text = texts.bankCode;
   }
   if (!isHomeCurrency && !compactIban && compactText && !compactSwift)

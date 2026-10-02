@@ -27,8 +27,7 @@ type FieldRenderer = (
 ) => ReactNode;
 export interface DocumentPaymentSectionProps {
   f: DocumentFields;
-  t: DocumentFormTexts &
-    Pick<DsTexts["documentForm"], "paymentMethod" | "companyBankAccount">;
+  t: DocumentFormTexts & Pick<DsTexts["documentForm"], "paymentMethod" | "companyBankAccount">;
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (key: DocumentHeaderField) => boolean;

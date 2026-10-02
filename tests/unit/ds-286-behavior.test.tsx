@@ -22,18 +22,20 @@ describe("DS 2.86.0", () => {
     const partnerChange = mock();
     const nameChange = mock();
     const view = render(
-      <TooltipProvider><CounterpartyInputField
-        mode="partner"
-        partnerId="p1"
-        name="Firma"
-        partners={[{ id: "p1", code: "P1", name: "Firma" }]}
-        onPartnerChange={partnerChange}
-        onNameChange={nameChange}
-        onModeChange={change}
-        partnerModeLabel="Vybrat z adresáře"
-        manualModeLabel="Zadat ručně"
-        replaceManualWarning="Ručně zadané údaje budou nahrazeny údaji partnera"
-      /></TooltipProvider>,
+      <TooltipProvider>
+        <CounterpartyInputField
+          mode="partner"
+          partnerId="p1"
+          name="Firma"
+          partners={[{ id: "p1", code: "P1", name: "Firma" }]}
+          onPartnerChange={partnerChange}
+          onNameChange={nameChange}
+          onModeChange={change}
+          partnerModeLabel="Vybrat z adresáře"
+          manualModeLabel="Zadat ručně"
+          replaceManualWarning="Ručně zadané údaje budou nahrazeny údaji partnera"
+        />
+      </TooltipProvider>,
     );
     fireEvent.click(view.getByRole("button", { name: "Zadat ručně" }));
     expect(change).toHaveBeenCalledWith("manual");
@@ -49,11 +51,8 @@ describe("DS 2.86.0", () => {
     );
     expect(validCz).toEqual({});
     expect(
-      validateManualBankAccount(
-        { text: "19-2000145398/0800", iban: "", swift: "" },
-        true,
-        ["0800"],
-      ).text,
+      validateManualBankAccount({ text: "19-2000145398/0800", iban: "", swift: "" }, true, ["0800"])
+        .text,
     ).toBeTruthy();
     expect(
       validateManualBankAccount(
@@ -63,25 +62,24 @@ describe("DS 2.86.0", () => {
       ),
     ).toEqual({});
     expect(
-      validateManualBankAccount(
-        { text: "12345", iban: "", swift: "BAD" },
-        false,
-      ).swift,
+      validateManualBankAccount({ text: "12345", iban: "", swift: "BAD" }, false).swift,
     ).toBeTruthy();
   });
 
   it("vypnutý platební příkaz schová účet, ale zachová řízenou hodnotu", () => {
     const change = mock();
     const view = render(
-      <TooltipProvider><PaymentOrderAccountField
-        enabled={false}
-        onEnabledChange={change}
-        enabledLabel="Platit příkazem"
-        disabledLabel="Nezahrnovat do platebních příkazů"
-        disabledReason="Doklad se nezahrnuje do platebních příkazů"
-      >
-        <span>19-2000145399/0800</span>
-      </PaymentOrderAccountField></TooltipProvider>,
+      <TooltipProvider>
+        <PaymentOrderAccountField
+          enabled={false}
+          onEnabledChange={change}
+          enabledLabel="Platit příkazem"
+          disabledLabel="Nezahrnovat do platebních příkazů"
+          disabledReason="Doklad se nezahrnuje do platebních příkazů"
+        >
+          <span>19-2000145399/0800</span>
+        </PaymentOrderAccountField>
+      </TooltipProvider>,
     );
     expect(view.queryByText("19-2000145399/0800")).toBeNull();
     fireEvent.click(view.getByRole("button", { name: "Nezahrnovat do platebních příkazů" }));
@@ -96,7 +94,9 @@ describe("DS 2.86.0", () => {
         onChange={change}
         searchable
         selectedLabel={(option) => option.value}
-        options={[{ value: "0308", label: "0308 – Platby za zboží", searchText: "0308 platby za zboží" }]}
+        options={[
+          { value: "0308", label: "0308 – Platby za zboží", searchText: "0308 platby za zboží" },
+        ]}
       />,
     );
     fireEvent.click(view.getByRole("combobox"));
@@ -107,9 +107,9 @@ describe("DS 2.86.0", () => {
 
   it("definuje všechny sloupce VS vlevo", () => {
     const t = DS_TEXTS_CS.journalEditor;
-    const labels = Object.fromEntries(
-      Object.keys(t).map((key) => [key, key]),
-    ) as Parameters<typeof journalColumnDefs>[0]["labels"];
+    const labels = Object.fromEntries(Object.keys(t).map((key) => [key, key])) as Parameters<
+      typeof journalColumnDefs
+    >[0]["labels"];
     const columns = journalColumnDefs({
       t,
       mode: "internal",
@@ -123,9 +123,8 @@ describe("DS 2.86.0", () => {
       sideFields: "split",
       hasValue: () => true,
     });
-    expect(columns.filter((column) => /Vs$|^vs$/.test(column.id)).map((column) => column.align)).toEqual([
-      "left",
-      "left",
-    ]);
+    expect(
+      columns.filter((column) => /Vs$|^vs$/.test(column.id)).map((column) => column.align),
+    ).toEqual(["left", "left"]);
   });
 });

@@ -57,7 +57,9 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const selected = props.options.find((option) => option.value === props.value);
-  const offered = props.options.filter((option) => !option.inactive || option.value === props.value);
+  const offered = props.options.filter(
+    (option) => !option.inactive || option.value === props.value,
+  );
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase("cs");
     if (!needle) return offered;

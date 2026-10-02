@@ -83,11 +83,8 @@ export function DocumentCounterpartyTab({
       ) : null}
     </span>
   );
-  const control = (
-    key: keyof DocumentCounterpartyValue,
-    input: ReactNode,
-    display: string,
-  ) => (locked ? <FieldValue lockedReason={counterpartyLockedReason}>{display}</FieldValue> : input);
+  const control = (key: keyof DocumentCounterpartyValue, input: ReactNode, display: string) =>
+    locked ? <FieldValue lockedReason={counterpartyLockedReason}>{display}</FieldValue> : input;
   const refresh = onRefreshCounterparty ?? onReloadFromPartner;
   const runRefresh = () => {
     if (!refresh) return;

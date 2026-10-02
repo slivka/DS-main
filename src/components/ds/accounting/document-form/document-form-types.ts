@@ -21,7 +21,10 @@ import type { DocumentStatus } from "../document-status-badge";
 import type { JournalLine } from "../journal-lines";
 import type { PartnerOption } from "../partner-select";
 import type { CounterpartySeed } from "../counterparty-field";
-import type { ManualBankAccountErrors, ManualBankAccountValue } from "../received-bank-account-field";
+import type {
+  ManualBankAccountErrors,
+  ManualBankAccountValue,
+} from "../received-bank-account-field";
 import type { IcoLinkTarget } from "../../form/ico-link";
 import type {
   DocumentCounterpartyTabProps,
@@ -348,7 +351,11 @@ export interface DocumentFormProps {
   /** Důvod zakázání firemního účtu; hodnota se v tomto stavu nezobrazuje. */
   companyBankAccountDisabledReason?: string;
   /** Stav plátce DPH zobrazený v pruhu akcí. */
-  vatPartnerStatus?: { status: VatStatus; checkedAt?: string; unreliableSince?: string | Date | null };
+  vatPartnerStatus?: {
+    status: VatStatus;
+    checkedAt?: string;
+    unreliableSince?: string | Date | null;
+  };
   /** Hotová záložka odběratele; zobrazí se jen u vydaného dokladu. */
   counterpartyTab?: Omit<DocumentCounterpartyTabProps, "partnerId" | "readOnly">;
   /** Hotová záložka tiskových údajů; zobrazí se jen u vydaného dokladu. */

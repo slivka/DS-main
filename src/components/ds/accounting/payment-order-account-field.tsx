@@ -54,7 +54,11 @@ export function PaymentOrderAccountField(props: PaymentOrderAccountFieldProps) {
     </Tooltip>
   );
   return (
-    <div data-slot="payment-order-account" data-enabled={props.enabled} className="relative min-w-0">
+    <div
+      data-slot="payment-order-account"
+      data-enabled={props.enabled}
+      className="relative min-w-0"
+    >
       {props.enabled ? (
         <div className="[&_[role=combobox]]:pr-11 [&_input]:pr-11">{props.children}</div>
       ) : (
