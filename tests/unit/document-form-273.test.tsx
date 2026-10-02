@@ -202,7 +202,9 @@ describe("DocumentForm 2.73", () => {
     expect(
       view.container.querySelector("#document-externalNumber")?.closest(".col-span-20")?.className,
     ).toContain("col-span-6");
-    const account = view.getByText("Bankovní účet").closest('[data-slot="field"]');
+    const account = view.container
+      .querySelector('label[for="document-bankAccount"]')
+      ?.closest('[data-slot="field"]');
     const supplierNumber = view.container.querySelector("#document-externalNumber");
     expect(account).toBeTruthy();
     expect(
