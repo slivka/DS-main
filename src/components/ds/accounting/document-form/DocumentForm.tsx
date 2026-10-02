@@ -204,7 +204,7 @@ export function DocumentForm({
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning =
-    !Boolean(value.partnerId) &&
+    !value.partnerId &&
     /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) &&
     !isValidCzIco(counterpartyIco);
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;

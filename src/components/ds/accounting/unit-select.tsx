@@ -66,7 +66,8 @@ export function UnitSelect({
   onEditSelected,
   editSelectedLabel,
 }: UnitSelectProps) {
-  const resolvedEditSelectedLabel = editSelectedLabel ?? useDsTexts().documentForm.editSelected;
+  const dsTexts = useDsTexts();
+  const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
   const [open, setOpen] = React.useState(defaultOpen);
   const [query, setQuery] = React.useState(initialSearch);
   const [creating, setCreating] = React.useState(false);

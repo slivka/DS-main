@@ -76,7 +76,8 @@ export function DimensionSelect({
   /** Přístupný název tužky. */
   editSelectedLabel?: string;
 }) {
-  const resolvedEditSelectedLabel = editSelectedLabel ?? useDsTexts().documentForm.editSelected;
+  const dsTexts = useDsTexts();
+  const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
