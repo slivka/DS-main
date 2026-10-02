@@ -419,7 +419,7 @@ export function DocumentForm({
               partnerLabel={partnerLabel}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
-              Boolean(value.partnerId)={Boolean(value.partnerId)}
+              linkedPartner={Boolean(value.partnerId)}
               icoWarning={icoWarning}
               icoLinkTarget={icoLinkTarget}
               can={can}
