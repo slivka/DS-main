@@ -97,7 +97,9 @@ describe("DS 2.85.0 – chování výběrů", () => {
     const triggerWrapper = view.getByRole("combobox").parentElement;
     expect(triggerWrapper).toBeTruthy();
     fireEvent.focus(triggerWrapper as Element);
-    expect(await view.findByRole("tooltip")).toHaveTextContent("Nejdřív vyberte dodavatele");
+    expect((await view.findByRole("tooltip")).textContent).toContain(
+      "Nejdřív vyberte dodavatele",
+    );
   });
 
   it("tužka upraví jen vybranou editovatelnou hodnotu", () => {
@@ -131,8 +133,8 @@ describe("DS 2.85.0 – chování výběrů", () => {
 
   it("neznámou volbu popíše čitelně a zachová doplněk vybrané položky", () => {
     const view = render(<OptionSelect value="raw-id" onChange={() => {}} options={[]} />);
-    expect(view.getByRole("combobox")).toHaveTextContent("Hodnota není v číselníku");
-    expect(view.getByRole("combobox")).not.toHaveTextContent("raw-id");
+    expect(view.getByRole("combobox").textContent).toContain("Hodnota není v číselníku");
+    expect(view.getByRole("combobox").textContent).not.toContain("raw-id");
     view.rerender(
       <OptionSelect
         value="eur"
@@ -140,8 +142,8 @@ describe("DS 2.85.0 – chování výběrů", () => {
         options={[{ value: "eur", label: "Euro", trailingLabel: "EUR" }]}
       />,
     );
-    expect(view.getByRole("combobox")).toHaveTextContent("Euro");
-    expect(view.getByRole("combobox")).toHaveTextContent("EUR");
+    expect(view.getByRole("combobox").textContent).toContain("Euro");
+    expect(view.getByRole("combobox").textContent).toContain("EUR");
   });
 
   it("skryje stav DPH partnera po vypnutí přepínače", () => {

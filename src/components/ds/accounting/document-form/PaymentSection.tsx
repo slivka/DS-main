@@ -97,6 +97,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   onChange={(constantSymbol) => patch({ constantSymbol })}
                   disabled={!can("constantSymbol")}
                   options={constantSymbolOptions}
+                  unknownValueLabel={value.constantSymbol ?? undefined}
                 />
               ) : (
                 <Input
