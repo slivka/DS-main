@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { useDsTexts } from "../../../ds-texts";
+import { SearchableOptionSelect } from "./searchable-option-select";
 
 export type SelectOption = {
   value: string;
@@ -14,6 +15,8 @@ export type SelectOption = {
   selectedLabel?: ReactNode;
   /** Neaktivní položka se nenabízí; vybraná se ukáže se štítkem „neaktivní“. */
   inactive?: boolean;
+  /** Text použitý pro hledání, pokud `label` není řetězec. */
+  searchText?: string;
 };
 
 const EMPTY = "__empty__";
@@ -37,6 +40,10 @@ export function OptionSelect({
   ariaLabel,
   inactiveLabel,
   unknownValueLabel,
+  searchable,
+  searchPlaceholder,
+  noResultsLabel,
+  selectedLabel,
 }: {
   value: string | null | undefined;
   onChange: (value: string) => void;
@@ -55,6 +62,14 @@ export function OptionSelect({
   inactiveLabel?: string;
   /** Čitelná náhrada za hodnotu, která už není v nabídce. */
   unknownValueLabel?: string;
+  /** Zapne hledání; bez hodnoty se zapne od osmi položek. */
+  searchable?: boolean;
+  /** Výzva v hledání. */
+  searchPlaceholder?: string;
+  /** Text prázdného výsledku hledání. */
+  noResultsLabel?: string;
+  /** Určí zkrácený obsah vybrané hodnoty. */
+  selectedLabel?: (option: SelectOption) => ReactNode;
 }) {
   const texts = useDsTexts().optionSelect;
   const resolvedPlaceholder = placeholder ?? texts.emptyValue;
@@ -78,6 +93,27 @@ export function OptionSelect({
     );
   const triggerLabel = known || current === "" ? selectedLabel : resolvedUnknownValueLabel;
   const offered = options.filter((option) => !option.inactive || option.value === current);
+  const useSearch = searchable ?? options.length >= 8;
+
+  if (useSearch)
+    return (
+      <SearchableOptionSelect
+        id={id}
+        value={current}
+        options={options}
+        onChange={onChange}
+        allowEmpty={allowEmpty}
+        disabled={disabled}
+        ariaLabel={ariaLabel}
+        className={cn(className, triggerClassName)}
+        emptyValueLabel={emptyValueLabel}
+        inactiveLabel={resolvedInactiveLabel}
+        unknownValueLabel={resolvedUnknownValueLabel}
+        searchPlaceholder={searchPlaceholder ?? texts.searchPlaceholder}
+        noResultsLabel={noResultsLabel ?? texts.noResults}
+        selectedLabel={selectedLabel}
+      />
+    );
 
   return (
     <Select

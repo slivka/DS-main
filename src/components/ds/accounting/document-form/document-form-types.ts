@@ -21,6 +21,7 @@ import type { DocumentStatus } from "../document-status-badge";
 import type { JournalLine } from "../journal-lines";
 import type { PartnerOption } from "../partner-select";
 import type { CounterpartySeed } from "../counterparty-field";
+import type { ManualBankAccountErrors, ManualBankAccountValue } from "../received-bank-account-field";
 import type { IcoLinkTarget } from "../../form/ico-link";
 import type {
   DocumentCounterpartyTabProps,
@@ -71,6 +72,8 @@ export type DocumentHeaderValue = {
   roundingAmount?: number | null;
   mainAccountId?: string | null;
   excludeFromPaymentOrders?: boolean;
+  /** Ručně zadaný účet přijatého dokladu. */
+  manualBankAccount?: ManualBankAccountValue;
   /** Tiskové údaje uložené s dokladem. */
   print?: DocumentPrintValue;
 };
@@ -316,6 +319,22 @@ export interface DocumentFormProps {
   }>;
   /** Založí nový účet partnera z výběru přijatého dokladu. */
   onAddBankAccount?: () => void;
+  /** Zvolený způsob zadání protistrany. */
+  counterpartyInput?: "partner" | "manual";
+  /** Změna způsobu zadání protistrany. */
+  onCounterpartyInputChange?: (mode: "partner" | "manual") => void;
+  /** Důvod zamčení způsobu zadání protistrany. */
+  counterpartyInputLockedReason?: string;
+  /** Zda se přijatý doklad zahrne do platebních příkazů. */
+  paymentOrderEnabled?: boolean;
+  /** Změna zahrnutí přijatého dokladu do platebních příkazů. */
+  onPaymentOrderEnabledChange?: (enabled: boolean) => void;
+  /** Doklad používá domácí měnu. */
+  isHomeCurrency?: boolean;
+  /** Hlášení chyb ručně zadaného účtu. */
+  onManualBankAccountValidationChange?: (errors: ManualBankAccountErrors) => void;
+  /** Důvod zakázání firemního účtu; hodnota se v tomto stavu nezobrazuje. */
+  companyBankAccountDisabledReason?: string;
   /** Stav plátce DPH zobrazený v pruhu akcí. */
   vatPartnerStatus?: { status: VatStatus; checkedAt?: string };
   /** Hotová záložka odběratele; zobrazí se jen u vydaného dokladu. */

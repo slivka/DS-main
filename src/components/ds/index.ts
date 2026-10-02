@@ -79,6 +79,7 @@ export * from "./grid/grid-segmented-toggle";
 export * from "./grid/grid-amount-editor";
 export * from "./grid/grid-selection";
 export * from "./grid/grid-active-status";
+export * from "./grid/vs-column";
 
 /* Formuláře */
 export * from "./form/decimal-input";
@@ -151,6 +152,7 @@ export * from "./accounting/unit-select";
 export * from "./accounting/book-select";
 export * from "./accounting/vs-field";
 export * from "./accounting/bank-account-field";
+export * from "./accounting/received-bank-account-field";
 export * from "./accounting/currency-amount";
 export * from "./accounting/journal-lines";
 export * from "./accounting/journal-vat";

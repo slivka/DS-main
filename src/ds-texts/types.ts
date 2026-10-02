@@ -294,7 +294,13 @@ export interface DsTexts {
     other: string;
   };
   multiSelect: { selectAll: string; noValues: string };
-  optionSelect: { emptyValue: string; inactive: string; unknownValue: string };
+  optionSelect: {
+    emptyValue: string;
+    inactive: string;
+    unknownValue: string;
+    searchPlaceholder: string;
+    noResults: string;
+  };
   tree: { expand: string; collapse: string; breadcrumbs: string };
   contacts: {
     blacklist: string;
@@ -391,6 +397,17 @@ export interface DsTexts {
     headerText: string;
     footerText: string;
     note: string;
+    selectFromDirectory: string;
+    enterManually: string;
+    replaceManualCounterparty: string;
+    counterpartyLocked: string;
+    manuallyEdited: string;
+    refreshCounterparty: string;
+    frozenAt: (date: string) => string;
+    payByOrder: string;
+    excludeFromPaymentOrders: string;
+    paymentOrderDisabled: string;
+    payToBankAccount: string;
   };
   export: {
     parametersSheet: string;
