@@ -6,8 +6,11 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useDsTexts } from "../../../ds-texts";
-import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 import { PaneTabsContext } from "./pane-context-hooks";
+import {
+  PaneUnsavedController,
+  type PendingUnsaved,
+} from "./pane-unsaved-controller";
 import {
   DEFAULT_PANE_TABS_TEXTS,
   type OpenTabOptions,
@@ -59,14 +62,6 @@ import {
 } from "./pane-tab-store";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 
-/** Čekající akce nad záložkami s neuloženými změnami. */
-type PendingUnsaved = {
-  tabIds: string[];
-  intent: string;
-  proceed: () => void;
-  onOpenInNewTab?: () => void;
-};
-
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
   onChange: (state: PaneTabsState) => void;
@@ -99,7 +94,6 @@ export function PaneTabsProvider({
   const stateRef = useRef(state);
   stateRef.current = state;
   const [pending, setPending] = useState<PendingUnsaved | null>(null);
-  const [saving, setSaving] = useState(false);
   const [maximized, setMaximized] = useState<number | null>(null);
   const [flashPaneId, setFlashPaneId] = useState<string | null>(null);
   const [closedStack, setClosedStack] = useState<ClosedTabRecord[]>([]);
@@ -490,53 +484,14 @@ export function PaneTabsProvider({
     restoreMaximized: () => setMaximized(null),
   });
 
-  const resolvePending = async (choice: "save" | "discard") => {
-    if (!pending) return;
-    const { tabIds, proceed } = pending;
-    if (choice === "save") {
-      if (!onSaveTab) return;
-      setSaving(true);
-      try {
-        for (const tabId of tabIds) {
-          // Ukládá se vždy dotčená záložka; neúspěch dialog zavře a nic nezahodí.
-          if (!(await onSaveTab(tabId))) {
-            setPending(null);
-            return;
-          }
-          setTabDirty(tabId, false);
-        }
-      } catch {
-        setPending(null);
-        return;
-      } finally {
-        setSaving(false);
-      }
-    }
-    tabIds.forEach(clearTabState);
-    setPending(null);
-    proceed();
-  };
-
   return (
     <PaneTabsContext.Provider value={api}>
       {children}
-      <UnsavedChangesDialog
-        open={!!pending}
-        tabTitle={pending ? pending.tabIds.map(titleOf).join(", ") : ""}
-        intent={pending?.intent ?? ""}
-        saving={saving}
-        onSave={onSaveTab ? () => void resolvePending("save") : undefined}
-        onDiscard={() => void resolvePending("discard")}
-        onBack={() => setPending(null)}
-        onOpenInNewTab={
-          pending?.onOpenInNewTab
-            ? () => {
-                const action = pending.onOpenInNewTab;
-                setPending(null);
-                action?.();
-              }
-            : undefined
-        }
+      <PaneUnsavedController
+        pending={pending}
+        setPending={setPending}
+        titleOf={titleOf}
+        onSaveTab={onSaveTab}
       />
     </PaneTabsContext.Provider>
   );
