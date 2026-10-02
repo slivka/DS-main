@@ -7,6 +7,7 @@ const { DndContext } = await import("@dnd-kit/core");
 const { PaneTabsProvider, usePaneTabs } =
   await import("../../src/components/ds/panes/pane-context");
 const { PaneTabBar } = await import("../../src/components/ds/panes/pane-tab-bar");
+const { resolvePaneTabVisibility } = await import("../../src/components/ds/panes/pane-tab-bar");
 const { createPaneTabsState, createTab, setLayoutInState } =
   await import("../../src/components/ds/panes/pane-state");
 const { isTabDirty, setTabDirty } = await import("../../src/components/ds/panes/pane-tab-store");
@@ -66,6 +67,34 @@ function Bars() {
 }
 
 describe("neuložené změny v panelech (2.86.0)", () => {
+  it("při kapacitě šesti ponechá aktivní a předposlední rozepsanou záložku viditelné", () => {
+    const tabs = Array.from({ length: 8 }, (_, index) => ({
+      ...createTab({ route: `/t-${index}`, title: `T ${index}` }, index),
+      id: `t-${index}`,
+      lastUsed: index,
+    }));
+    const pane = { id: "pane", activeTab: "t-7", tabs };
+    const result = resolvePaneTabVisibility(pane, 6, (id) => id === "t-6");
+    expect(result.visible.map((tab) => tab.id)).toContain("t-6");
+    expect(result.visible.map((tab) => tab.id)).toContain("t-7");
+    expect(result.hidden.map((tab) => tab.id)).not.toContain("t-6");
+  });
+
+  it("při dvou rozepsaných a aktivní ponechá nejnověji použité priority viditelné", () => {
+    const tabs = Array.from({ length: 8 }, (_, index) => ({
+      ...createTab({ route: `/t-${index}`, title: `T ${index}` }, index),
+      id: `t-${index}`,
+      lastUsed: index,
+    }));
+    const result = resolvePaneTabVisibility(
+      { id: "pane", activeTab: "t-7", tabs },
+      6,
+      (id) => id === "t-5" || id === "t-6",
+    );
+    expect(result.visible.map((tab) => tab.id)).toEqual(["t-4", "t-5", "t-6", "t-7"]);
+    expect(result.hidden.map((tab) => tab.id)).toEqual(["t-0", "t-1", "t-2", "t-3"]);
+  });
+
   it("Uložit a pokračovat volá obsluhu pro dotčenou záložku, ne aktivní panel", async () => {
     const { state, dirty, other } = twoPanes();
     const onSaveTab = mock(async () => true);
@@ -116,6 +145,23 @@ describe("neuložené změny v panelech (2.86.0)", () => {
     expect(onNotice).toHaveBeenCalledWith(
       "Faktury otevřeno v nové záložce – FP 2026/15 má neuložené změny",
     );
+  });
+
+  it("při limitu nabídne aplikací předanou akci otevření v nové záložce", () => {
+    const { state, dirty } = twoPanes();
+    state.panes[0].tabs = Array.from({ length: 12 }, (_, index) =>
+      index === 0
+        ? dirty
+        : { ...createTab({ route: `/x-${index}`, title: `X ${index}` }), id: `x-${index}` },
+    );
+    state.panes[0].activeTab = dirty.id;
+    const open = mock();
+    const { view, api } = mount({ ...state, active: state.panes[0].id });
+    act(() => setTabDirty(dirty.id, true));
+    act(() => api().openTab("/novy", undefined, { title: "Nový", onOpenInNewTab: open }));
+    fireEvent.click(view.getByRole("button", { name: "Otevřít v nové záložce" }));
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(view.queryByRole("alertdialog")).toBeNull();
   });
 
   it("dotčená záložka se po dobu dialogu zvýrazní; aktivní panel výrazně, ostatní tlumeně", () => {

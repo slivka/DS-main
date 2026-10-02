@@ -1,5 +1,13 @@
 # Changelog – Slivka Design System
 
+## 2.88.0 – Dodělávky Edit dokladu 10
+
+- Přeplněná lišta upřednostní aktivní a naposledy použité rozepsané záložky; nabídka ukazuje rozepsané nahoře a tečku s počtem skrytých.
+- `DocumentForm` podporuje řízenou spodní záložku přes `activeDetailTab` a `onActiveDetailTabChange`.
+- `JournalLinesEditor` předává úpravu vybrané jednotky a zakázky přes `onEditUnit` a `onEditDimension`.
+- Dialog neuložených změn může nabídnout aplikační `onOpenInNewTab`; pevná měna končí na pravém okraji sekce.
+- `pane-context` je rozdělený na veřejné typy, kontexty, provider, efekty a chrome; veřejná importní cesta zůstává zachována.
+
 ## 2.86.0 – Edit dokladu 10
 
 - **BREAKING:** přijaté doklady už nepoužívají samostatný checkbox „Nezahrnovat do platebních příkazů“. Aplikace předává `paymentOrderEnabled` a obsluhu `onPaymentOrderEnabledChange`; přepínač je přímo v poli účtu.
