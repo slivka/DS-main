@@ -10,6 +10,7 @@ import {
   LookupField,
   OptionSelect,
   RecordActionBar,
+  SwitchField,
   formatCodeName,
 } from "../../src";
 import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
@@ -77,13 +78,33 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(lookup).toContain("Upravit vybraný záznam");
   });
 
-  it("obalí checkbox výškou prvního řádku popisku", () => {
+  it("zarovná checkbox i přepínač na střed prvního řádku popisku", () => {
     const html = renderToStaticMarkup(
-      <CheckboxField label="Jednořádkový popisek" hint="Popis" checked onCheckedChange={vi.fn()} />,
+      <div style={{ fontSize: "24px" }}>
+        <CheckboxField
+          id="alignment-checkbox"
+          label="Popisek checkboxu"
+          hint="Popis"
+          checked
+          onCheckedChange={vi.fn()}
+        />
+        <SwitchField
+          id="alignment-switch"
+          label="Popisek přepínače"
+          hint="Popis"
+          checked
+          onCheckedChange={vi.fn()}
+        />
+      </div>,
     );
-    const controlLine = /<span class="([^"]*)"><button[^>]*role="checkbox"/.exec(html)?.[1] ?? "";
-    expect(controlLine.split(" ")).toEqual(expect.arrayContaining(["flex", "h-5", "items-center"]));
-    expect(controlLine.split(" ").some((token) => token.startsWith("mt-"))).toBe(false);
+    const host = document.createElement("div");
+    host.innerHTML = html;
+    for (const id of ["alignment-checkbox", "alignment-switch"]) {
+      const label = host.querySelector<HTMLLabelElement>(`label[for="${id}"]`);
+      expect(label).toBeTruthy();
+      expect(label?.classList.contains("my-0")).toBe(true);
+      expect(label?.classList.contains("leading-5")).toBe(true);
+    }
   });
 
   it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {

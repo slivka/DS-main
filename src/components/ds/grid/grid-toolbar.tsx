@@ -389,7 +389,6 @@ export function AsOfDateToggle({
           onChange={onChange}
           minDate={minDate}
           maxDate={maxDate}
-          placeholder={t.dateLabel}
           className="w-[11.5em]"
           inputClassName="grid-toolbar-control"
         />

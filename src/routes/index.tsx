@@ -6,12 +6,14 @@ import {
   AccountCode,
   AmountCell,
   AmountInput,
+  CheckboxField,
   DecimalInput,
   DocumentStatusBadge,
   OptionSelect,
   PageHeader,
   StatusBadge,
   StatusDot,
+  SwitchField,
   DocumentDirectionBadge,
   GridSegmentedToggle,
 } from "@/components/ds";
@@ -72,6 +74,8 @@ function OverviewPage() {
   const [decimal, setDecimal] = useState<string>("42.5");
   const [option, setOption] = useState("a");
   const [roundingMode, setRoundingMode] = useState("a");
+  const [checkboxes, setCheckboxes] = useState({ single: true, hint: true, large: true });
+  const [switchValue, setSwitchValue] = useState(true);
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Design systém", to: "/" }, { label: "Přehled" }]}>
@@ -186,6 +190,35 @@ function OverviewPage() {
               ]}
             />
           </div>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection title="Zaškrtávátka">
+        <div data-slot="checkbox-alignment-showcase" className="max-w-xl space-y-4">
+          <CheckboxField
+            checked={checkboxes.single}
+            onCheckedChange={(single) => setCheckboxes((current) => ({ ...current, single }))}
+            label="Jednořádkový popisek"
+          />
+          <CheckboxField
+            checked={checkboxes.hint}
+            onCheckedChange={(hint) => setCheckboxes((current) => ({ ...current, hint }))}
+            label="Popisek s vysvětlením"
+            hint="Doplňující informace zůstává pod prvním řádkem."
+          />
+          <div className="text-lg">
+            <CheckboxField
+              checked={checkboxes.large}
+              onCheckedChange={(large) => setCheckboxes((current) => ({ ...current, large }))}
+              label="Popisek při větším písmu"
+            />
+          </div>
+          <SwitchField
+            checked={switchValue}
+            onCheckedChange={setSwitchValue}
+            label="Přepínač s popiskem"
+            hint="Stejné zarovnání podle prvního řádku."
+          />
         </div>
       </ShowcaseSection>
 
