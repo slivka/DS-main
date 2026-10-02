@@ -100,6 +100,9 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
         >
           <span className="min-w-0 flex-1 truncate text-left">{triggerLabel}</span>
           <span className="flex shrink-0 items-center gap-1">
+            {selected?.trailingLabel && !selected.inactive ? (
+              <span className="text-xs">{selected.trailingLabel}</span>
+            ) : null}
             {props.value && props.allowEmpty ? (
               <span
                 role="button"

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Settings } from "lucide-react";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar } from "../../layout/record-action-bar";
@@ -37,6 +36,7 @@ import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
+import { buildDocumentActionMenu } from "./document-action-menu";
 /** Kompletní formulář účetního dokladu. */
 export function DocumentForm({
   title,
@@ -186,14 +186,7 @@ export function DocumentForm({
     selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
       ? selectedIdentityAccount.label
       : effectiveIdentity.account?.label;
-  const actionMenu = settings
-    ? [
-        { id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings },
-        ...moreActions.map((action, index) =>
-          index === 0 ? { ...action, separatorBefore: true } : action,
-        ),
-      ]
-    : moreActions;
+  const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
   const { field, date, text, suggestedText } = useDocumentFieldRenderers({
     value,
     patch,

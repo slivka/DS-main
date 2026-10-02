@@ -94,9 +94,7 @@ describe("DocumentForm 2.73", () => {
     expect(
       readonlyView.getAllByText(/Firma|12345678|CZ12345678|Ulice 1|Praha/).length,
     ).toBeGreaterThan(0);
-    expect(
-      readonlyView.container.querySelectorAll('[aria-readonly="true"]').length,
-    ).toBeGreaterThan(0);
+    expect(readonlyView.container.querySelectorAll('[data-slot="field-value"]').length).toBeGreaterThan(0);
     cleanup();
     const print = {
       options: {
@@ -202,9 +200,10 @@ describe("DocumentForm 2.73", () => {
     expect(
       view.container.querySelector("#document-externalNumber")?.closest(".col-span-20")?.className,
     ).toContain("col-span-6");
-    expect(
-      view.container.querySelector("[data-section=document-basic-section] #document-bankAccount"),
-    ).toBeTruthy();
+    const account = view.container.querySelector("#document-bankAccount");
+    const supplierNumber = view.container.querySelector("#document-externalNumber");
+    expect(account).toBeTruthy();
+    expect(supplierNumber?.compareDocumentPosition(account as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
     expect(view.queryByRole("checkbox", { name: /platebních příkazů/i })).toBeNull();
     expect(view.getByRole("button", { name: "Platit příkazem" })).toBeTruthy();
