@@ -737,3 +737,12 @@
 - [x] Přidat testy chování a DOM měření; ověřit format, typecheck, lint, testy, build a limit 500 řádků.
 - [x] Opravy po kontrole kódu (73a7ade) body 1–17.
 - [x] Dialog neuložených změn, nová záložka místo nahrazení rozepsané, vzhled aktivní záložky (18–20).
+## DS 2.88.0 – dokončení Edit dokladu 10
+- [ ] Prioritizovat rozepsané a aktivní záložky při přeplnění lišty.
+- [ ] Doplnit řízenou spodní záložku DocumentForm.
+- [ ] Doplnit úpravu měrné jednotky a zakázky z editoru řádků.
+- [ ] Zapojit volitelnou akci otevření v nové záložce do dialogu změn.
+- [ ] Zarovnat pevnou měnu k pravému okraji a změřit náhled.
+- [ ] Rozdělit pane-context pod 500 řádků bez změny chování.
+- [ ] Doplnit ukázky, testy, dokumentaci, verzi a závěrečné kontroly; nevydávat.
+
