@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Pencil } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { formatCodeName } from "../../../lib/code-format";
+import { useDsTexts } from "../../../ds-texts";
 
 export type DimensionOption = {
   id: string;
@@ -50,6 +51,8 @@ export function DimensionSelect({
   id,
   className,
   inactiveLabel = "neaktivní",
+  onEditSelected,
+  editSelectedLabel,
 }: {
   options: DimensionOption[];
   inactiveLabel?: string;
@@ -68,7 +71,13 @@ export function DimensionSelect({
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   id?: string;
   className?: string;
+  /** Otevře úpravu vybraného záznamu. */
+  onEditSelected?: (id: string) => void;
+  /** Přístupný název tužky. */
+  editSelectedLabel?: string;
 }) {
+  const dsTexts = useDsTexts();
+  const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -139,7 +148,7 @@ export function DimensionSelect({
       >
         {children.length ? (
           <div
-            className="flex size-5 shrink-0 items-center justify-center rounded hover:bg-accent/50"
+            className="flex size-5 shrink-0 items-center justify-center rounded-md hover:bg-accent/50"
             onClick={(event) => {
               event.stopPropagation();
               setCollapsed({ ...collapsed, [option.id]: !isCollapsed });
@@ -205,6 +214,27 @@ export function DimensionSelect({
               <InactiveTag label={inactiveLabel} className="ml-2" />
             ) : null}
           </span>
+          {selected && onEditSelected && !disabled ? (
+            <span
+              role="button"
+              tabIndex={0}
+              title={resolvedEditSelectedLabel}
+              aria-label={resolvedEditSelectedLabel}
+              className="rounded-md p-1 hover:bg-muted"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+            >
+              <Pencil className="size-3.5" />
+            </span>
+          ) : null}
           <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

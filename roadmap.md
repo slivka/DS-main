@@ -724,3 +724,14 @@
 - 2.77.0: zkratky panelů ignorují opakování při držení klávesy (kromě šipek); výchozí texty nabídek rozložení a záložek mají jediný zdroj v DS_TEXTS_CS.
 
 - [x] 2.79.0 – StandaloneShell, StandaloneNav, ContextSwitcher, ConfirmByTypingDialog, DangerZone, NoticeBar neutral, useAppZoomShortcuts (Release dělá uživatel)
+
+## DS 2.86.0 – Edit dokladu 10
+- [x] Přidat přepínač protistrany Vybraný/Ručně včetně potvrzení a zamčení.
+- [x] Upravit záložku Odběratel: editace, zamčení aplikací, ručně upravená pole, obnovení a zmrazení.
+- [x] Přesunout a rozšířit účet přijatých dokladů včetně přepínače platebního příkazu a validace CZ/IBAN/SWIFT.
+- [x] Přesunout účet FV/ZFV před Základní údaje a podporovat zakázání s důvodem.
+- [x] Dokončit rozložení dat, částky/měny a pružné Platební údaje.
+- [x] Zarovnat VS vlevo, přidat vsColumn a hledatelné KS/způsob platby.
+- [x] Doplnit tužky výběrů, datum nespolehlivosti DPH a sjednotit holá tlačítka.
+- [x] Aktualizovat texty, system.md, AGENTS, CHANGELOG, ukázky a verzi 2.86.0.
+- [ ] Přidat testy chování a DOM měření; ověřit format, typecheck, lint, testy, build a limit 500 řádků.

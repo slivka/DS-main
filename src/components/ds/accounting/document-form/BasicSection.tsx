@@ -5,7 +5,8 @@
  */
 import type { ReactNode } from "react";
 import { Input } from "../../../ui/input";
-import { CounterpartyField, type CounterpartySeed } from "../counterparty-field";
+import type { CounterpartySeed } from "../counterparty-field";
+import { CounterpartyInputField } from "../counterparty-input-field";
 import { IcoLink, type IcoLinkTarget } from "../../form/ico-link";
 import { SectionHeading } from "../../layout/section-heading";
 import { ReadField } from "./document-identity-line";
@@ -51,6 +52,11 @@ export interface DocumentBasicSectionProps {
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;
   externalNumberField: ReactNode;
+  receivedDocument: boolean;
+  bankAccountField?: ReactNode;
+  counterpartyInput: "partner" | "manual";
+  onCounterpartyInputChange?: (mode: "partner" | "manual") => void;
+  counterpartyInputLockedReason?: string;
 }
 /** Vykreslí základní údaje dokladu. */
 export function DocumentBasicSection(p: DocumentBasicSectionProps) {
@@ -74,6 +80,11 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
     handedOverBySuggest,
     descriptionSuggest,
     externalNumberField,
+    receivedDocument,
+    bankAccountField,
+    counterpartyInput,
+    onCounterpartyInputChange,
+    counterpartyInputLockedReason,
   } = p;
   return (
     <>
@@ -83,33 +94,28 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner",
             partnerLabel,
-            <CounterpartyField
+            <CounterpartyInputField
               id="document-partner"
               partners={partners}
-              value={{
-                name: value.counterpartyName ?? partner?.name ?? "",
-                partnerId: value.partnerId ?? null,
-                ico: counterpartyIco,
-                dic: counterpartyDic,
-              }}
-              onChange={(next) =>
+              mode={counterpartyInput}
+              partnerId={value.partnerId}
+              name={value.counterpartyName ?? partner?.name ?? ""}
+              onPartnerChange={(partnerId) => {
+                const selected = partners.find((item) => item.id === partnerId);
                 patch({
-                  counterpartyName: next.name,
-                  partnerId: next.partnerId,
-                  counterpartyIco: next.ico ?? null,
-                  counterpartyDic: next.dic ?? null,
-                })
-              }
-              onCreatePartner={
-                onCreatePartner
-                  ? (seed) =>
-                      onCreatePartner({
-                        ...seed,
-                        ico: counterpartyIco || seed.ico,
-                        dic: counterpartyDic || seed.dic,
-                      })
-                  : undefined
-              }
+                  partnerId,
+                  counterpartyName: selected?.name ?? value.counterpartyName,
+                  counterpartyIco: selected?.ico ?? null,
+                  counterpartyDic: selected?.dic ?? null,
+                });
+              }}
+              onNameChange={(counterpartyName) => patch({ counterpartyName })}
+              onModeChange={onCounterpartyInputChange}
+              lockedReason={counterpartyInputLockedReason}
+              partnerModeLabel={t.selectFromDirectory}
+              manualModeLabel={t.enterManually}
+              replaceManualWarning={t.replaceManualCounterparty}
+              hasManualData={Boolean(value.counterpartyName || counterpartyIco || counterpartyDic)}
               disabled={!can("partnerId")}
             />,
             14,
@@ -119,7 +125,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner-ico",
             t.ico,
-            linkedPartner ? (
+            counterpartyInput === "partner" ? (
               <ReadField
                 id="document-partner-ico"
                 mono
@@ -142,7 +148,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                   id="document-partner-ico"
                   value={counterpartyIco}
                   onChange={(event) =>
-                    patch({ counterpartyIco: event.target.value.replace(/\s/g, "") })
+                    patch({ counterpartyIco: event.target.value.replace(/\D/g, "") })
                   }
                   disabled={!can("counterpartyIco")}
                   className="h-9 font-mono tabular-nums"
@@ -160,7 +166,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner-dic",
             t.dic,
-            linkedPartner ? (
+            counterpartyInput === "partner" ? (
               <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} />
             ) : (
               <Input
@@ -188,6 +194,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               )
             : null}
           {f.externalNumber ? externalNumberField : null}
+          {receivedDocument && f.bankAccount ? bankAccountField : null}
           {suggestedText("description", t.description, descriptionSuggest, 20)}
         </div>
       </>

@@ -205,7 +205,7 @@ describe("DS 2.85.0 – formulář dokladu", () => {
         ]}
       />,
     );
-    expect(view).toContain("Bankovní účet firmy");
+    expect(view).toContain("Uhradit na bankovní účet");
     expect(view).not.toContain('id="document-constantSymbol" type="text"');
   });
 });

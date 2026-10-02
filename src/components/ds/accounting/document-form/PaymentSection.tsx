@@ -7,7 +7,6 @@ import type { ReactNode } from "react";
 import type { DsTexts } from "../../../../ds-texts";
 import { Fragment } from "react";
 import { Input } from "../../../ui/input";
-import { CheckboxField } from "../../form/checkbox-field";
 import { OptionSelect } from "../../form/option-select";
 import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
@@ -32,8 +31,9 @@ export interface DocumentPaymentSectionProps {
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (key: DocumentHeaderField) => boolean;
-  receivedDocument: boolean;
   issuedDocument: boolean;
+  issuedBankAccountAbove: boolean;
+  paymentOrderEnabled: boolean;
   constantSymbolOptions?: Array<{ value: string; label: string }>;
   paymentMethodOptions?: Array<{ value: string; label: string }>;
   companyBankAccountOptions?: Array<{
@@ -61,8 +61,9 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     value,
     patch,
     can,
-    receivedDocument,
     issuedDocument,
+    issuedBankAccountAbove,
+    paymentOrderEnabled,
     constantSymbolOptions,
     paymentMethodOptions,
     companyBankAccountOptions,
@@ -73,7 +74,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
   return f.symbols || f.bankAccount || f.paymentOrders ? (
     <Fragment>
       <SectionHeading>{t.paymentSection}</SectionHeading>
-      <div data-slot="document-payment-section" className="grid grid-cols-20 items-start gap-3">
+      <div
+        data-slot="document-payment-section"
+        className="grid grid-cols-1 items-start gap-3 @min-[32rem]:grid-cols-3"
+      >
         {f.symbols
           ? field(
               "document-variableSymbol",
@@ -84,9 +88,12 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 onChange={(variableSymbol) => patch({ variableSymbol })}
                 disabled={!can("variableSymbol")}
               />,
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
             )
           : null}
-        {f.symbols
+        {f.symbols && paymentOrderEnabled
           ? field(
               "document-constantSymbol",
               t.constantSymbol,
@@ -96,8 +103,13 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   value={value.constantSymbol}
                   onChange={(constantSymbol) => patch({ constantSymbol })}
                   disabled={!can("constantSymbol")}
-                  options={constantSymbolOptions}
-                  unknownValueLabel={value.constantSymbol ?? undefined}
+                  options={constantSymbolOptions.map((option) => ({
+                    ...option,
+                    selectedLabel: option.value,
+                    searchText: option.label,
+                  }))}
+                  searchable
+                  selectedLabel={(option) => option.value}
                 />
               ) : (
                 <Input
@@ -108,9 +120,14 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   className="font-mono tabular-nums"
                 />
               ),
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
             )
           : null}
-        {f.symbols ? text("specificSymbol", t.specificSymbol) : null}
+        {f.symbols && paymentOrderEnabled
+          ? text("specificSymbol", t.specificSymbol, 3, "@min-[32rem]:col-span-1")
+          : null}
         {paymentMethodOptions
           ? field(
               "document-paymentMethodId",
@@ -120,12 +137,15 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 value={value.paymentMethodId}
                 onChange={(paymentMethodId) => patch({ paymentMethodId })}
                 options={paymentMethodOptions}
+                searchable
                 disabled={!can("paymentMethodId")}
               />,
+              undefined,
+              undefined,
+              "@min-[32rem]:col-span-1",
             )
           : null}
-        {f.bankAccount && receivedDocument ? bankAccountField : null}
-        {f.bankAccount && issuedDocument && companyBankAccountOptions
+        {f.bankAccount && issuedDocument && !issuedBankAccountAbove && companyBankAccountOptions
           ? field(
               "document-companyBankAccountId",
               t.companyBankAccount,
@@ -140,21 +160,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 disabled={!can("companyBankAccountId")}
               />,
               20,
+              false,
+              "@min-[32rem]:col-span-3",
             )
-          : f.bankAccount && !receivedDocument
-            ? bankAccountField
-            : null}
-        {f.paymentOrders ? (
-          <CheckboxField
-            id="document-exclude-payment-orders"
-            className="col-span-20 @min-[40rem]:col-span-6 [&_label]:whitespace-nowrap"
-            align="input"
-            label={t.excludeFromPaymentOrders}
-            checked={!!value.excludeFromPaymentOrders}
-            disabled={!can("excludeFromPaymentOrders")}
-            onCheckedChange={(checked) => patch({ excludeFromPaymentOrders: checked })}
-          />
-        ) : null}
+          : null}
       </div>
     </Fragment>
   ) : null;

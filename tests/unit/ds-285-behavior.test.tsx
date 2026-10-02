@@ -56,14 +56,15 @@ describe("DS 2.85.0 – chování výběrů", () => {
     expect(onValue.mock.calls.at(-1)?.[0]).toMatchObject({ companyBankAccountId: "company-1" });
   });
 
-  it("KS z číselníku zobrazí „0308 – Platby za služby“ a zapíše kód", async () => {
+  it("KS v nabídce zobrazí název, po výběru jen kód a zapíše jej", async () => {
     const onValue = mock();
     const view = render(<IssuedForm onValue={onValue} />);
     const trigger = view.container.querySelector("#document-constantSymbol");
     expect(trigger?.getAttribute("role")).toBe("combobox");
     await pick(view, trigger as Element, "0308 – Platby za služby");
     expect(onValue.mock.calls.at(-1)?.[0]).toMatchObject({ constantSymbol: "0308" });
-    expect(trigger?.textContent).toContain("0308 – Platby za služby");
+    expect(trigger?.textContent?.trim()).toBe("0308");
+    expect(trigger?.getAttribute("title")).toBe("0308 – Platby za služby");
   });
 
   it("klik na „Přidat účet…“ zavolá onAddAccount i bez položek", async () => {

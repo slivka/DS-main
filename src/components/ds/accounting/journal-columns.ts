@@ -135,7 +135,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
       { id: "counterAccountName", label: input.counterNameLabel, defaultVisible: false },
       ...amountColumns,
       { id: "dimensionId", label: t.dimension },
-      { id: "vs", label: t.vs, defaultVisible: false },
+      { id: "vs", label: t.vs, defaultVisible: false, align: "left" },
       { id: "partnerId", label: t.partner, defaultVisible: false },
       actions,
     ];
@@ -147,11 +147,16 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     { id: "creditAccountName", label: t.creditAccount, defaultVisible: false },
     ...amountColumns,
     ...(input.sideFields === "shared"
-      ? SHARED_COLUMNS.map((id) => ({ id, label: input.labels[id] }))
+      ? SHARED_COLUMNS.map((id) => ({
+          id,
+          label: input.labels[id],
+          align: id === "vs" ? ("left" as const) : undefined,
+        }))
       : SPLIT_COLUMNS.map((id) => ({
           id,
           label: input.labels[id],
           defaultVisible: input.hasValue(id),
+          align: id === "debitVs" || id === "creditVs" ? ("left" as const) : undefined,
         }))),
     actions,
   ];

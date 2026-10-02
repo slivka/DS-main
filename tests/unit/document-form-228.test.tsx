@@ -113,6 +113,7 @@ describe("DocumentForm 2.31.0", () => {
     const manual = form({
       documentType: "PO",
       partners,
+      counterpartyInput: "manual",
       value: {
         ...value,
         partnerId: null,

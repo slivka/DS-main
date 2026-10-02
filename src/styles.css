@@ -693,6 +693,10 @@
   border-radius: var(--radius-md);
 }
 
+button:not([role="tab"]):not([role="radio"]):not(.grid-segmented > button) {
+  border-radius: var(--radius-md);
+}
+
 .zoom-filters .grid-toolbar-group {
   height: var(--f-h);
   min-height: var(--f-h);

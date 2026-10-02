@@ -79,6 +79,12 @@ export function DocumentFormSecondaryScenarios({
           currencies={CURRENCIES}
           bankAccountOptions={BANK_ACCOUNT_OPTIONS}
           onAddBankAccount={() => toast.success("Otevřeno založení účtu partnera")}
+          counterpartyInput="partner"
+          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
+          paymentOrderEnabled
+          onPaymentOrderEnabledChange={(enabled) =>
+            toast.info(enabled ? "Platit příkazem" : "Neplatit příkazem")
+          }
           constantSymbolOptions={CONSTANT_SYMBOL_OPTIONS}
           paymentMethodOptions={PAYMENT_METHOD_OPTIONS}
           bankCodes={["0100", "0800"]}
@@ -138,6 +144,12 @@ export function DocumentFormSecondaryScenarios({
           bankCodes={["0100", "0800"]}
           books={MOCK_BOOKS}
           documentType="FP"
+          counterpartyInput="manual"
+          onCounterpartyInputChange={(mode) => toast.info(`Režim protistrany: ${mode}`)}
+          paymentOrderEnabled={false}
+          onPaymentOrderEnabledChange={(enabled) =>
+            toast.info(enabled ? "Platit příkazem" : "Neplatit příkazem")
+          }
           mainSide="D"
           status="draft"
           vat={{ visible: false }}
@@ -170,7 +182,6 @@ export function DocumentFormSecondaryScenarios({
             "constantSymbol",
             "specificSymbol",
             "bankAccount",
-            "excludeFromPaymentOrders",
           ]}
           linesEditorProps={{
             editableFields: [

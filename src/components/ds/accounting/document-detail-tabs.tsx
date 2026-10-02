@@ -3,6 +3,7 @@
  * Vlastní: řízená pole odběratele a tiskových údajů.
  * Nesmí: ukládat data ani znát konkrétní aplikaci.
  */
+import type { ReactNode } from "react";
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { Button } from "../../ui/button";
@@ -11,6 +12,9 @@ import { CheckboxField, CheckboxGroup } from "../form/checkbox-field";
 import { Field, FieldGrid } from "../layout/RecordDialog";
 import { SectionHeading } from "../layout/section-heading";
 import { useDsTexts } from "../../../ds-texts";
+import { FieldValue } from "../form/field-value";
+import { StatusBadge } from "../data-display/status-badge";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
 
 /** Hodnoty záložky odběratele. */
 export interface DocumentCounterpartyValue extends AddressValue {
@@ -36,6 +40,18 @@ export interface DocumentCounterpartyTabProps {
   onReloadFromPartner?: () => void;
   /** Zakáže editaci. */
   readOnly?: boolean;
+  /** Aplikace zamkla údaje protistrany, typicky po zařazení. */
+  counterpartyLocked?: boolean;
+  /** Důvod zamčení všech údajů protistrany. */
+  counterpartyLockedReason?: string;
+  /** Názvy polí, která uživatel upravil ručně. */
+  counterpartyManualFields?: Array<keyof DocumentCounterpartyValue>;
+  /** Aktualizuje údaje z partnera po potvrzení. */
+  onRefreshCounterparty?: () => void;
+  /** Varování dodané aplikací před aktualizací. */
+  refreshCounterpartyWarning?: string;
+  /** Datum zmrazení údajů při zařazení. */
+  counterpartyFrozenAt?: string;
 }
 
 /** Hotová záložka odběratele vydaného dokladu. */
@@ -45,51 +61,122 @@ export function DocumentCounterpartyTab({
   partnerId,
   onReloadFromPartner,
   readOnly = false,
+  counterpartyLocked = false,
+  counterpartyLockedReason,
+  counterpartyManualFields = [],
+  onRefreshCounterparty,
+  refreshCounterpartyWarning,
+  counterpartyFrozenAt,
 }: DocumentCounterpartyTabProps) {
   const texts = useDsTexts().documentForm;
+  const { confirm, confirmDialog } = useConfirmDialog();
+  const locked = readOnly || counterpartyLocked;
   const patch = (next: Partial<DocumentCounterpartyValue>) => onChange({ ...value, ...next });
+  const label = (key: keyof DocumentCounterpartyValue, text: string) => (
+    <span className="flex min-w-0 items-center gap-2">
+      <span className="truncate">{text}</span>
+      {counterpartyManualFields.includes(key) ? (
+        <StatusBadge
+          status="manual"
+          config={{ manual: { label: texts.manuallyEdited, tone: "warning" } }}
+        />
+      ) : null}
+    </span>
+  );
+  const control = (key: keyof DocumentCounterpartyValue, input: ReactNode, display: string) =>
+    locked ? <FieldValue lockedReason={counterpartyLockedReason}>{display}</FieldValue> : input;
+  const refresh = onRefreshCounterparty ?? onReloadFromPartner;
+  const runRefresh = () => {
+    if (!refresh) return;
+    if (!refreshCounterpartyWarning) {
+      refresh();
+      return;
+    }
+    confirm({
+      title: refreshCounterpartyWarning,
+      destructive: true,
+      onConfirm: refresh,
+    });
+  };
   return (
     <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between gap-3">
-        <SectionHeading>{texts.counterpartyTab}</SectionHeading>
-        {partnerId && onReloadFromPartner && !readOnly ? (
-          <Button type="button" variant="outline" onClick={onReloadFromPartner}>
-            {texts.reloadFromPartner}
+        <SectionHeading
+          aside={
+            counterpartyFrozenAt ? (
+              <StatusBadge
+                status="frozen"
+                config={{
+                  frozen: { label: texts.frozenAt(counterpartyFrozenAt), tone: "neutral" },
+                }}
+              />
+            ) : null
+          }
+        >
+          {texts.counterpartyTab}
+        </SectionHeading>
+        {partnerId && refresh && !locked ? (
+          <Button type="button" variant="outline" onClick={runRefresh}>
+            {texts.refreshCounterparty}
           </Button>
         ) : null}
       </div>
       <FieldGrid cols={12}>
-        <Field label={texts.name} span={6}>
-          <Input
-            value={value.name}
-            readOnly={readOnly}
-            onChange={(event) => patch({ name: event.target.value })}
-          />
+        <Field label={label("name", texts.name)} span={6}>
+          {control(
+            "name",
+            <Input value={value.name} onChange={(event) => patch({ name: event.target.value })} />,
+            value.name,
+          )}
         </Field>
-        <Field label={texts.ico} span={3}>
-          <Input
-            value={value.ico}
-            readOnly={readOnly}
-            onChange={(event) => patch({ ico: event.target.value })}
-          />
+        <Field label={label("ico", texts.ico)} span={3}>
+          {control(
+            "ico",
+            <Input value={value.ico} onChange={(event) => patch({ ico: event.target.value })} />,
+            value.ico,
+          )}
         </Field>
-        <Field label={texts.dic} span={3}>
-          <Input
-            value={value.dic}
-            readOnly={readOnly}
-            onChange={(event) => patch({ dic: event.target.value })}
-          />
+        <Field label={label("dic", texts.dic)} span={3}>
+          {control(
+            "dic",
+            <Input value={value.dic} onChange={(event) => patch({ dic: event.target.value })} />,
+            value.dic,
+          )}
         </Field>
       </FieldGrid>
-      <AddressFieldGrid value={value} onChange={(address) => patch(address)} readOnly={readOnly} />
-      <Field label={texts.email}>
-        <Input
-          type="email"
-          value={value.email}
-          readOnly={readOnly}
-          onChange={(event) => patch({ email: event.target.value })}
-        />
+      {locked ? (
+        <FieldGrid cols={12}>
+          <Field label={label("street", "Ulice")} span={6}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.street}</FieldValue>
+          </Field>
+          <Field label={label("house_number", "Číslo")} span={2}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.house_number}</FieldValue>
+          </Field>
+          <Field label={label("zip", "PSČ")} span={2}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.zip}</FieldValue>
+          </Field>
+          <Field label={label("city", "Město")} span={6}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.city}</FieldValue>
+          </Field>
+          <Field label={label("country", "Země")} span={4}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{value.country}</FieldValue>
+          </Field>
+        </FieldGrid>
+      ) : (
+        <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
+      )}
+      <Field label={label("email", texts.email)}>
+        {control(
+          "email",
+          <Input
+            type="email"
+            value={value.email}
+            onChange={(event) => patch({ email: event.target.value })}
+          />,
+          value.email,
+        )}
       </Field>
+      {confirmDialog}
     </div>
   );
 }

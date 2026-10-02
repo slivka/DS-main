@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Settings } from "lucide-react";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar } from "../../layout/record-action-bar";
@@ -12,7 +11,7 @@ import {
   partnerLabelForType,
   type DocumentFields,
 } from "../document-fields";
-import { BankAccountField } from "../bank-account-field";
+import { CompanyAccountControl, ReceivedAccountControl } from "./BankAccountControls";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -36,10 +35,12 @@ import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
+import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
+import { buildDocumentActionMenu } from "./document-action-menu";
+/** Kompletní formulář účetního dokladu. */
 export function DocumentForm({
   title,
   titleBadges,
-  description,
   identity,
   directionBadge,
   value,
@@ -57,6 +58,14 @@ export function DocumentForm({
   paymentMethodOptions,
   companyBankAccountOptions,
   onAddBankAccount,
+  counterpartyInput = "partner",
+  onCounterpartyInputChange,
+  counterpartyInputLockedReason,
+  paymentOrderEnabled = true,
+  onPaymentOrderEnabledChange,
+  isHomeCurrency,
+  onManualBankAccountValidationChange,
+  companyBankAccountDisabledReason,
   vatPartnerStatus,
   counterpartyTab,
   printTab,
@@ -64,7 +73,6 @@ export function DocumentForm({
   documentType = "ID",
   fields,
   editableFields,
-  isNew,
   mainSide,
   mainAccountLocked = false,
   rateAmount = 1,
@@ -101,9 +109,8 @@ export function DocumentForm({
   texts,
   className,
 }: DocumentFormProps) {
-  void description;
-  void isNew;
   const dsTexts = useDsTexts();
+  const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
@@ -124,18 +131,7 @@ export function DocumentForm({
     returnFocusToPencil.current = true;
     setEditingIdentityAccount(false);
   };
-  const formRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const root = formRef.current;
-    const bar = root?.querySelector<HTMLElement>('[data-slot="document-action-bar"]');
-    if (!root || !bar) return;
-    const update = () =>
-      root.style.setProperty("--pane-sticky-top", `${bar.getBoundingClientRect().height}px`);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(bar);
-    return () => observer.disconnect();
-  }, []);
+  const formRef = useDocumentFormStickyTop();
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
@@ -190,14 +186,7 @@ export function DocumentForm({
     selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
       ? selectedIdentityAccount.label
       : effectiveIdentity.account?.label;
-  const actionMenu = settings
-    ? [
-        { id: "document-settings", label: t.settings, onClick: settings.onOpen, icon: Settings },
-        ...moreActions.map((action, index) =>
-          index === 0 ? { ...action, separatorBefore: true } : action,
-        ),
-      ]
-    : moreActions;
+  const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
   const { field, date, text, suggestedText } = useDocumentFieldRenderers({
     value,
     patch,
@@ -205,16 +194,15 @@ export function DocumentForm({
     dateWarnings,
     accountingDateLink,
   });
-  const linkedPartner = !!value.partnerId;
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning =
-    !linkedPartner &&
+    !value.partnerId &&
     /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) &&
     !isValidCzIco(counterpartyIco);
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
   const vatRelevant = value.vatRelevant !== false;
-  const showVatFields = vat?.visible && vatRelevant;
+  const showVatFields = Boolean(vat?.visible && vatRelevant);
   const combinedNotices = buildDocumentNotices({
     value,
     dateWarnings,
@@ -238,47 +226,45 @@ export function DocumentForm({
   const bankAccountField = field(
     "document-bankAccount",
     t.bankAccount,
-    <BankAccountField
-      id="document-bankAccount"
-      aria-label={t.bankAccount}
-      value={receivedDocument ? (value.partnerBankAccountId ?? "") : (value.bankAccount ?? "")}
-      onChange={(next) =>
-        receivedDocument ? patch({ partnerBankAccountId: next }) : patch({ bankAccount: next })
-      }
-      disabled={!can("bankAccount") || (receivedDocument && !value.partnerId)}
-      options={bankAccountOptions}
-      bankCodes={bankCodes}
-      invalidAccountText={t.bankAccountInvalid}
-      invalidBankCodeText={t.bankCodeInvalid}
-      otherAccountText={t.otherBankAccount}
-      selectionOnly={receivedDocument}
-      onAddAccount={receivedDocument ? onAddBankAccount : undefined}
-      addAccountText={t.addBankAccount}
-      disabledReason={receivedDocument && !value.partnerId ? t.selectSupplierFirst : undefined}
-    />,
-    receivedDocument ? 20 : 6,
+    receivedDocument ? (
+      <ReceivedAccountControl
+        counterpartyInput={counterpartyInput}
+        partnerAccountId={value.partnerBankAccountId}
+        manualValue={value.manualBankAccount}
+        options={bankAccountOptions}
+        bankCodes={bankCodes}
+        hasPartner={Boolean(value.partnerId)}
+        isHomeCurrency={homeCurrencyDocument}
+        paymentOrderEnabled={paymentOrderEnabled}
+        onPaymentOrderEnabledChange={onPaymentOrderEnabledChange}
+        onPartnerAccountChange={(partnerBankAccountId) => patch({ partnerBankAccountId })}
+        onManualChange={(manualBankAccount) => patch({ manualBankAccount })}
+        onValidationChange={onManualBankAccountValidationChange}
+        onAddAccount={onAddBankAccount}
+        disabled={!can("bankAccount")}
+        texts={t}
+      />
+    ) : null,
+    receivedDocument ? 14 : 6,
     false,
-    undefined,
+    receivedDocument ? "@min-[40rem]:col-span-14" : undefined,
   );
+  const issuedBankAccountAbove =
+    issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
+  const companyAccountField =
+    issuedBankAccountAbove && f.bankAccount && companyBankAccountOptions ? (
+      <CompanyAccountControl
+        value={value.companyBankAccountId}
+        onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+        options={companyBankAccountOptions}
+        disabled={!can("companyBankAccountId")}
+        disabledReason={companyBankAccountDisabledReason}
+        label={t.payToBankAccount}
+      />
+    ) : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
-    const roundingLine = lines.find((line) => line.isRounding);
-    if (roundingLine)
-      onLinesChange(
-        lines.map((line) =>
-          line.id === roundingLine.id ? { ...line, amount: roundingAmount } : line,
-        ),
-      );
-    else if (roundingAmount)
-      onLinesChange([
-        ...lines,
-        {
-          id: `rounding-${Date.now()}`,
-          amount: roundingAmount,
-          text: roundingLabel ?? t.rounding,
-          isRounding: true,
-        },
-      ]);
+    onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
   };
   const allTabs = buildDocumentTabs({
     lines,
@@ -408,6 +394,11 @@ export function DocumentForm({
             onAccountClose={closeIdentityAccount}
             accountOptions={allowedMainAccounts}
           />
+          {companyAccountField ? (
+            <div data-slot="company-bank-account-above" className="grid grid-cols-20 gap-3">
+              {companyAccountField}
+            </div>
+          ) : null}
           {f.partner ? (
             <DocumentBasicSection
               f={f}
@@ -419,7 +410,7 @@ export function DocumentForm({
               partnerLabel={partnerLabel}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
-              linkedPartner={linkedPartner}
+              linkedPartner={Boolean(value.partnerId)}
               icoWarning={icoWarning}
               icoLinkTarget={icoLinkTarget}
               can={can}
@@ -429,6 +420,11 @@ export function DocumentForm({
               handedOverBySuggest={handedOverBySuggest}
               descriptionSuggest={descriptionSuggest}
               externalNumberField={externalNumberField}
+              receivedDocument={receivedDocument}
+              bankAccountField={bankAccountField}
+              counterpartyInput={counterpartyInput}
+              onCounterpartyInputChange={onCounterpartyInputChange}
+              counterpartyInputLockedReason={counterpartyInputLockedReason}
             />
           ) : null}
           <DocumentDatesSection
@@ -451,8 +447,9 @@ export function DocumentForm({
             value={value}
             patch={patch}
             can={can}
-            receivedDocument={receivedDocument}
             issuedDocument={issuedDocument}
+            issuedBankAccountAbove={issuedBankAccountAbove}
+            paymentOrderEnabled={paymentOrderEnabled}
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}

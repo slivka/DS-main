@@ -29,7 +29,7 @@ export function DocumentVatActionStatus({
       </label>
       {checked && status ? (
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
-          <VatStatusBadge status={status.status} />
+          <VatStatusBadge status={status.status} unreliableSince={status.unreliableSince} />
           {status.checkedAt ? (
             <span
               className="hidden truncate text-xs text-muted-foreground @min-[44rem]:inline"

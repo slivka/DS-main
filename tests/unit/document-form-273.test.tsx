@@ -63,9 +63,11 @@ describe("DocumentForm 2.73", () => {
         onChange={() => {}}
       />,
     );
-    expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain("9999");
+    expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain(
+      "Hodnota není v číselníku",
+    );
     expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
-    expect(view.getByRole("combobox", { name: "Bankovní účet firmy" })).toBeTruthy();
+    expect(view.getByRole("combobox", { name: "Uhradit na bankovní účet" })).toBeTruthy();
   });
 
   it("readOnly odběratel nenačítá partnera a tisk mění celý value.print", () => {
@@ -90,8 +92,11 @@ describe("DocumentForm 2.73", () => {
     );
     expect(readonlyView.queryByRole("button", { name: "Načíst znovu z partnera" })).toBeNull();
     expect(
-      readonlyView.getAllByRole("textbox").every((input) => input.hasAttribute("readonly")),
-    ).toBe(true);
+      readonlyView.getAllByText(/Firma|12345678|CZ12345678|Ulice 1|Praha/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      readonlyView.container.querySelectorAll('[data-slot="field-value"]').length,
+    ).toBeGreaterThan(0);
     cleanup();
     const print = {
       options: {
@@ -197,15 +202,17 @@ describe("DocumentForm 2.73", () => {
     expect(
       view.container.querySelector("#document-externalNumber")?.closest(".col-span-20")?.className,
     ).toContain("col-span-6");
+    const account = view.container
+      .querySelector('label[for="document-bankAccount"]')
+      ?.closest('[data-slot="field"]');
+    const supplierNumber = view.container.querySelector("#document-externalNumber");
+    expect(account).toBeTruthy();
     expect(
-      view.container.querySelector("[data-slot=document-payment-section] #document-bankAccount"),
+      supplierNumber?.compareDocumentPosition(account as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
-    const exclude = view.container
-      .querySelector("#document-exclude-payment-orders")
-      ?.closest("[data-slot=checkbox-field]");
-    expect(exclude?.getAttribute("data-align")).toBe("input");
-    expect(exclude?.querySelector('[role="checkbox"]')).toBeTruthy();
+    expect(view.getAllByText("Nejdřív vyberte dodavatele")).toHaveLength(1);
+    expect(view.queryByRole("checkbox", { name: /platebních příkazů/i })).toBeNull();
+    expect(view.getByRole("button", { name: "Platit příkazem" })).toBeTruthy();
   });
 
   it("mění popisek čísla podle viditelné DPH", () => {

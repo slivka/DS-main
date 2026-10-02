@@ -61,7 +61,7 @@ function SortableRow({
     <button
       type="button"
       aria-label={label}
-      className="cursor-grab text-muted-foreground active:cursor-grabbing"
+      className="rounded-md cursor-grab text-muted-foreground active:cursor-grabbing"
       {...sortable.attributes}
       {...sortable.listeners}
     >
@@ -105,6 +105,7 @@ function RowNumberCell({
         {!pinned ? (
           <button
             type="button"
+            className="rounded-md"
             aria-label={expanded[line.id] ? t.hideDetail : t.showDetail}
             onClick={() =>
               editor.setExpanded((state) => ({ ...state, [line.id]: !state[line.id] }))
