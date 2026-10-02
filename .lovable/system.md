@@ -362,7 +362,10 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Klávesové zkratky mřížek a editorů platí jen v aktivním panelu. Globální zůstávají Ctrl+K a Ctrl+B; panely a záložky ovládá Alt(Option)+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T (kontrola přes `event.code`). Cmd/Ctrl+W ani Ctrl+1–9 nepřepisuj.
 - Stav panelů serializuj přes `serializePaneTabs` / `parsePaneTabs` (databáze) a `serializeActiveTabUrl` (URL).
 - Lišta záložek je v každém panelu vždy viditelná, i s jedinou nebo žádnou záložkou. Všechny záložky jsou rovnocenné; nepoužívej dočasné/ponechané záložky ani špendlík v záhlaví.
-- Běžný klik v menu používá `openTab(..., { target: 'replace' })`: aktivní záložku nahradí jako nový krok historie. Cmd/Ctrl+klik používá `newTab`, Cmd/Ctrl+Shift+klik `adjacentPane`.
+- Aktivní záložka aktivního panelu je výrazná (plná linka, tučný název), aktivní záložky ostatních panelů tlumené. Neuložené změny = tečka před názvem s přístupným názvem „neuložené změny“.
+- Dialog neuložených změn: nadpis „{záložka} – neuložené změny“, text = co se chystá + „Změny zatím nejsou uložené.“; tlačítka „Uložit a pokračovat“ (hlavní), „Pokračovat bez uložení“ (červené, vlevo), „Zpět k dokladu“. Akce vždy patří dotčené záložce, ta je po dobu dialogu zvýrazněná; neúspěšné uložení nic nezahodí. Odhlášení přes `guardUnsaved`.
+- Rozepsanou záložku nic z menu nenahradí: otevře se nová záložka v témže panelu a `onNotice` to ohlásí; dialog jen při limitu záložek.
+- Běžný klik v menu používá `openTab(..., { target: 'replace' })`: aktivní (čistou) záložku nahradí jako nový krok historie. Cmd/Ctrl+klik používá `newTab`, Cmd/Ctrl+Shift+klik `adjacentPane`.
 - Záznamy ze seznamu vždy otevírej přes `openRecord(route, params, { fromTabId: usePane().tabId, isNew, modifiers: event })`. Čistý detail ze stejného seznamu se nahradí; při neuložených změnách se otevře další záložka; nový záznam vždy další záložka.
 - Stránka v panelu vždy začíná `PageHeader`: vlevo má jen nadpis a dirty tečku, vpravo jen ↑/↓, ←/→, maximalizaci a ⋯. Akce celé stránky dávej do `menuActions`; `actions` je jen pro stránky mimo panel. „Nový“ patří do `DataGrid.addAction`.
 - `LayoutMenu trigger="icon"` patří přes `AppShell.navSearchMenu` vedle hledání v menu, nikdy do horní lišty.
