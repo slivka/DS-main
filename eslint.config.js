@@ -5,7 +5,19 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".nitro", ".tanstack", ".wrangler", "src/routeTree.gen.ts"] },
+  {
+    ignores: [
+      "dist",
+      ".output",
+      ".nitro",
+      ".tanstack",
+      ".wrangler",
+      "src/routeTree.gen.ts",
+      // Náhledové trasy generuje platforma a při synchronizaci je přepisuje.
+      "src/routes/\\[__component\\].preview.$.tsx",
+      "src/routes/\\[__mockup\\].preview.$.tsx",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],

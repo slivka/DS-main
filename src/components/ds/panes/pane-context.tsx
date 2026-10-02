@@ -10,17 +10,8 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../ui/alert-dialog";
-import { Button } from "../../ui/button";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
-import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
 import {
   activateTabInState,
   activeTabOf,
@@ -161,6 +152,10 @@ export type PaneTabsApi = {
   toggleMaximize: (index: number) => void;
   /** Panel, který právě bliká (otevření záznamu v jiném panelu). */
   flashPaneId: string | null;
+  /** Záložky dotčené otevřeným dialogem neuložených změn (zvýrazní se). */
+  attentionTabIds: string[];
+  /** Spustí akci (typicky odhlášení), rozepsané záložky nejprve potvrdí dialogem. */
+  guardUnsaved: (action: () => void) => void;
   /** Aplikace dodá pořadí záznamů pro listování ↑ ↓ v detailech otevřených ze záložky `tabId`. Vrací odregistraci. */
   registerRecordNav: (tabId: string, getOrderedItems: () => RecordNavItem[]) => () => void;
   getRecordNav: (tabId: string) => RecordNav | null;
@@ -171,6 +166,7 @@ export type PaneTabsApi = {
 };
 
 export type PaneTabsTexts = {
+  /** @deprecated 2.86.0 – dialog čte `DsTexts.panes`; odstraní se ve 3.0.0. */
   unsavedTitle: string;
   unsavedDescription: string;
   save: string;
@@ -261,11 +257,11 @@ export function useTabDirty(isDirty: boolean, key = "default") {
   }, [tabId, isDirty]);
 }
 
-type PendingReplace = {
-  tabId: string;
-  route: string;
-  params?: Record<string, unknown>;
-  options: OpenTabOptions;
+/** Čekající akce nad záložkami s neuloženými změnami. */
+type PendingUnsaved = {
+  tabIds: string[];
+  intent: string;
+  proceed: () => void;
 };
 
 export interface PaneTabsProviderProps {
@@ -278,6 +274,8 @@ export interface PaneTabsProviderProps {
   /** Klávesové zkratky Alt+1/2/3, Alt+←/→, Alt+W, Alt+Shift+W, Alt+T. Výchozí true. */
   shortcuts?: boolean;
   texts?: Partial<PaneTabsTexts>;
+  /** Oznámení (např. otevření v nové záložce místo nahrazení rozepsané); výchozí toast. */
+  onNotice?: (message: string) => void;
   children: ReactNode;
 }
 
@@ -289,14 +287,15 @@ export function PaneTabsProvider({
   onNewTabRequest,
   shortcuts = true,
   texts,
+  onNotice,
   children,
 }: PaneTabsProviderProps) {
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_PANE_TABS_TEXTS, limitClosed: dsTexts.panes.limitClosed, ...texts };
+  const p = dsTexts.panes;
   const stateRef = useRef(state);
   stateRef.current = state;
-  const { confirm, confirmDialog } = useConfirmDialog();
-  const [pending, setPending] = useState<PendingReplace | null>(null);
+  const [pending, setPending] = useState<PendingUnsaved | null>(null);
   const [saving, setSaving] = useState(false);
   const [maximized, setMaximized] = useState<number | null>(null);
   const [flashPaneId, setFlashPaneId] = useState<string | null>(null);
@@ -391,30 +390,44 @@ export function PaneTabsProvider({
     ) {
       const tabId = current.panes[resolveTargetPaneIndex(current, target)]?.activeTab;
       if (tabId && isTabDirty(tabId)) {
-        setPending({ tabId, route, params, options });
+        const targetTitle = options.title ?? route;
+        // Rozepsanou záložku nikdy nenahradíme: nová záložka v témže panelu bez dialogu.
+        const trial = openTabInState(
+          current,
+          { route, params, ...options, target: "newTab" },
+          isTabDirty,
+        );
+        if (trial.outcome !== "rejected") {
+          doOpen(route, params, { ...options, target: "newTab" });
+          (onNotice ?? toast.info)(p.openedInNewTab(targetTitle, titleOf(tabId)));
+          return;
+        }
+        // Limit záložek: dialog; akce se vždy vztahuje k dotčené záložce, ne k aktivnímu panelu.
+        setPending({
+          tabIds: [tabId],
+          intent: p.intentReplace(targetTitle),
+          proceed: () => {
+            commit(activateTabInState(stateRef.current, tabId));
+            doOpen(route, params, { ...options, target: "replace" });
+          },
+        });
         return;
       }
     }
     doOpen(route, params, options);
   };
 
-  const guardDiscard = (tabIds: string[], action: () => void) => {
-    if (!tabIds.some(isTabDirty)) {
+  const guardDiscard = (tabIds: string[], intent: string, action: () => void) => {
+    const dirty = tabIds.filter(isTabDirty);
+    if (!dirty.length) {
       action();
       return;
     }
-    confirm({
-      title: t.closeTitle,
-      description: t.closeDescription,
-      confirmLabel: t.closeConfirm,
-      cancelLabel: t.cancel,
-      destructive: true,
-      onConfirm: action,
-    });
+    setPending({ tabIds: dirty, intent, proceed: action });
   };
 
   const closeTab = (tabId: string) =>
-    guardDiscard([tabId], () => {
+    guardDiscard([tabId], p.intentCloseTab, () => {
       rememberClosed([tabId], stateRef.current);
       commit(closeTabInState(stateRef.current, tabId));
       clearTabState(tabId);
@@ -422,7 +435,7 @@ export function PaneTabsProvider({
 
   const closeOtherTabs = (tabId: string) => {
     const ids = otherTabIds(stateRef.current, tabId);
-    guardDiscard(ids, () => {
+    guardDiscard(ids, p.intentCloseTab, () => {
       let next = stateRef.current;
       rememberClosed(ids, next);
       ids.forEach((id) => {
@@ -438,6 +451,7 @@ export function PaneTabsProvider({
     if (!pane) return;
     guardDiscard(
       pane.tabs.map((tab) => tab.id),
+      p.intentClosePane,
       () => {
         const before = stateRef.current;
         const current = before.panes.find((item) => item.id === paneId);
@@ -452,7 +466,7 @@ export function PaneTabsProvider({
   };
 
   const step = (tabId: string, delta: number) =>
-    guardDiscard([tabId], () => {
+    guardDiscard([tabId], p.intentHistory, () => {
       const next = stepTabHistory(stateRef.current, tabId, delta);
       if (next !== stateRef.current) clearTabState(tabId);
       commit(next);
@@ -592,6 +606,13 @@ export function PaneTabsProvider({
       else apiRef.current.maximizePane(index);
     },
     flashPaneId,
+    attentionTabIds: pending?.tabIds ?? [],
+    guardUnsaved: (action) =>
+      guardDiscard(
+        stateRef.current.panes.flatMap((pane) => pane.tabs.map((tab) => tab.id)),
+        p.intentLogout,
+        action,
+      ),
     registerRecordNav: (tabId, getItems) => {
       recordNavs.current.set(tabId, getItems);
       return () => {
@@ -761,59 +782,45 @@ export function PaneTabsProvider({
     return () => window.removeEventListener("keydown", onKey);
   }, [shortcuts, maximized]);
 
-  const resolvePending = async (choice: "save" | "discard" | "newTab") => {
+  const resolvePending = async (choice: "save" | "discard") => {
     if (!pending) return;
-    const { tabId, route, params, options } = pending;
+    const { tabIds, proceed } = pending;
     if (choice === "save") {
       if (!onSaveTab) return;
       setSaving(true);
       try {
-        if (!(await onSaveTab(tabId))) return;
+        for (const tabId of tabIds) {
+          // Ukládá se vždy dotčená záložka; neúspěch dialog zavře a nic nezahodí.
+          if (!(await onSaveTab(tabId))) {
+            setPending(null);
+            return;
+          }
+          setTabDirty(tabId, false);
+        }
+      } catch {
+        setPending(null);
+        return;
       } finally {
         setSaving(false);
       }
-      setTabDirty(tabId, false);
-      clearTabState(tabId);
-      doOpen(route, params, options);
-    } else if (choice === "discard") {
-      clearTabState(tabId);
-      doOpen(route, params, options);
-    } else {
-      doOpen(route, params, { ...options, target: "newTab" });
     }
+    tabIds.forEach(clearTabState);
     setPending(null);
+    proceed();
   };
 
   return (
     <PaneTabsContext.Provider value={api}>
       {children}
-      {confirmDialog}
-      <AlertDialog open={!!pending} onOpenChange={(open) => !open && setPending(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t.unsavedTitle}</AlertDialogTitle>
-            <AlertDialogDescription>{t.unsavedDescription}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="sm:justify-between">
-            <Button type="button" variant="destructive" onClick={() => resolvePending("discard")}>
-              {t.discard}
-            </Button>
-            <div className="flex flex-col-reverse gap-2 sm:flex-row">
-              <Button type="button" variant="outline" onClick={() => setPending(null)}>
-                {t.cancel}
-              </Button>
-              <Button type="button" variant="outline" onClick={() => resolvePending("newTab")}>
-                {t.openInNewTab}
-              </Button>
-              {onSaveTab ? (
-                <Button type="button" disabled={saving} onClick={() => resolvePending("save")}>
-                  {t.save}
-                </Button>
-              ) : null}
-            </div>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <UnsavedChangesDialog
+        open={!!pending}
+        tabTitle={pending ? pending.tabIds.map(titleOf).join(", ") : ""}
+        intent={pending?.intent ?? ""}
+        saving={saving}
+        onSave={onSaveTab ? () => void resolvePending("save") : undefined}
+        onDiscard={() => void resolvePending("discard")}
+        onBack={() => setPending(null)}
+      />
     </PaneTabsContext.Provider>
   );
 }

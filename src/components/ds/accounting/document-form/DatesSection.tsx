@@ -42,9 +42,12 @@ export function DocumentDatesSection({
           {date("accountingDate", t.accountingDate, "flex-none w-max")}
           {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
         </div>
+        {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,
+            po zalomení zůstane na prvním řádku a skupina začne vlevo – bez prahu. */}
+        <div data-slot="document-dates-spacer" aria-hidden className="h-0 min-w-0 flex-1 basis-0" />
         <div
           data-slot="document-vat-dates"
-          className="flex flex-wrap items-start justify-start gap-3 @min-[42rem]:ml-auto @min-[42rem]:justify-end"
+          className="flex flex-wrap items-start justify-start gap-3"
         >
           {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
           {showVatFields

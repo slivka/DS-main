@@ -16,6 +16,7 @@ import {
   RecordDialog,
   StatusBadge,
   exceedsMax,
+  vsColumn,
   type DataGridColumn,
   type StatusConfig,
 } from "@/components/ds";
@@ -113,7 +114,7 @@ function LedgerView({ onOpen }: { onOpen: (item: OpenItem, tab: "counter" | "his
         value: (r) => r.account,
         render: (r) => <AccountCode code={r.account} />,
       },
-      { id: "vs", label: "VS", value: (r) => r.vs },
+      vsColumn((r) => r.vs, "VS"),
       { id: "document", label: "Doklad", width: 130, value: (r) => r.document },
       {
         id: "date",
@@ -367,7 +368,7 @@ function MatchingView({
         render: (r) => formatDate(r.date),
       },
       { id: "partner", label: "Partner", width: 220, value: (r) => r.partner },
-      { id: "vs", label: "VS", value: (r) => r.vs },
+      vsColumn((r) => r.vs, "VS"),
       {
         id: "account",
         label: "Účet",
@@ -432,7 +433,7 @@ function MatchingView({
           <span className={r.cancelled ? "text-muted-foreground" : undefined}>{r.document}</span>
         ),
       },
-      { id: "vs", label: "VS", value: (r) => r.vs },
+      vsColumn((r) => r.vs, "VS"),
       {
         id: "amount",
         label: "Částka",

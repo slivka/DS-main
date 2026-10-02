@@ -213,7 +213,7 @@ describe("podmenu DS 2.75.0", () => {
     act(() => setTabDirty(tab.id, true));
     act(() => api?.closePane(initial.panes[0].id));
     expect(view.getByRole("alertdialog")).toBeTruthy();
-    fireEvent.click(view.getByRole("button", { name: "Zrušit" }));
+    fireEvent.click(view.getByRole("button", { name: "Zpět k dokladu" }));
     expect(api?.state.panes).toHaveLength(2);
     expect(api?.state.panes[0].tabs[0].id).toBe(tab.id);
   });

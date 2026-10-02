@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, ChevronRight, Pencil } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
+import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
 import {
@@ -184,91 +185,85 @@ export function DimensionSelect({
   };
 
   return (
-    <Popover open={open} onOpenChange={changeOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          disabled={disabled}
-          onPointerDownCapture={() => {
-            pointerDown.current = true;
-          }}
-          onPointerUp={() => {
-            pointerDown.current = false;
-          }}
-          onFocus={() => {
-            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
-            changeOpen(true);
-          }}
-          onBlur={() => {
-            suppressFocusOpen.current = false;
-            pointerDown.current = false;
-          }}
-          className={cn("h-[var(--control-h)] w-full justify-between font-normal", className)}
-        >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? label(selected) : placeholder}
-            {selected?.active === false ? (
-              <InactiveTag label={inactiveLabel} className="ml-2" />
-            ) : null}
-          </span>
-          {selected && onEditSelected && !disabled ? (
-            <span
-              role="button"
-              tabIndex={0}
-              title={resolvedEditSelectedLabel}
-              aria-label={resolvedEditSelectedLabel}
-              className="rounded-md p-1 hover:bg-muted"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return;
-                event.preventDefault();
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-            >
-              <Pencil className="size-3.5" />
-            </span>
-          ) : null}
-          <ChevronDown className="size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
-        <Command loop>
-          <CommandInput
-            placeholder={searchPlaceholder}
-            value={query}
-            onValueChange={setQuery}
-            onKeyDown={onKeyDown}
-          />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            {allowClear && !query && (
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    onChange("");
-                    changeOpen(false);
-                  }}
-                  className="text-muted-foreground"
-                >
-                  {clearLabel}
-                </CommandItem>
-              </CommandGroup>
+    <div className="relative min-w-0">
+      <Popover open={open} onOpenChange={changeOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            disabled={disabled}
+            onPointerDownCapture={() => {
+              pointerDown.current = true;
+            }}
+            onPointerUp={() => {
+              pointerDown.current = false;
+            }}
+            onFocus={() => {
+              if (disabled || suppressFocusOpen.current || pointerDown.current) return;
+              changeOpen(true);
+            }}
+            onBlur={() => {
+              suppressFocusOpen.current = false;
+              pointerDown.current = false;
+            }}
+            className={cn(
+              "h-[var(--control-h)] w-full justify-between font-normal",
+              selected && onEditSelected && !disabled && "pr-14",
+              className,
             )}
-            <CommandGroup>
-              {(childrenOf.get("") ?? [])
-                .filter((option) => !matched || matched.has(option.id))
-                .map((option) => renderCommandNode(option, 0))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          >
+            <span className={cn("truncate", !selected && "text-muted-foreground")}>
+              {selected ? label(selected) : placeholder}
+              {selected?.active === false ? (
+                <InactiveTag label={inactiveLabel} className="ml-2" />
+              ) : null}
+            </span>
+            <ChevronDown className="size-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[--radix-popover-trigger-width] min-w-[320px] p-0"
+          align="start"
+        >
+          <Command loop>
+            <CommandInput
+              placeholder={searchPlaceholder}
+              value={query}
+              onValueChange={setQuery}
+              onKeyDown={onKeyDown}
+            />
+            <CommandList>
+              <CommandEmpty>{emptyText}</CommandEmpty>
+              {allowClear && !query && (
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => {
+                      onChange("");
+                      changeOpen(false);
+                    }}
+                    className="text-muted-foreground"
+                  >
+                    {clearLabel}
+                  </CommandItem>
+                </CommandGroup>
+              )}
+              <CommandGroup>
+                {(childrenOf.get("") ?? [])
+                  .filter((option) => !matched || matched.has(option.id))
+                  .map((option) => renderCommandNode(option, 0))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {selected && onEditSelected && !disabled ? (
+        <FieldInlineActions
+          onEdit={() => onEditSelected(selected.id)}
+          editLabel={resolvedEditSelectedLabel}
+        />
+      ) : null}
+    </div>
   );
 }

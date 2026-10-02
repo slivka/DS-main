@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Check, ChevronDown, Pencil, Plus } from "lucide-react";
+import { Check, ChevronDown, Plus } from "lucide-react";
+import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
 import {
@@ -86,105 +87,97 @@ export function UnitSelect({
   );
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next);
-        onOpenChange?.(next);
-      }}
-    >
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          role="combobox"
-          disabled={disabled}
-          className={cn("h-full w-full justify-between rounded-sm px-1 font-normal", className)}
-        >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected?.code ?? placeholder}
-          </span>
-          {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
-          {selected && onEditSelected && !disabled ? (
-            <span
-              role="button"
-              tabIndex={0}
-              title={resolvedEditSelectedLabel}
-              aria-label={resolvedEditSelectedLabel}
-              className="rounded-md p-1 hover:bg-muted"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return;
-                event.preventDefault();
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-            >
-              <Pencil className="size-3.5" />
+    <div className="relative h-full min-w-0">
+      <Popover
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next);
+          onOpenChange?.(next);
+        }}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            role="combobox"
+            disabled={disabled}
+            className={cn(
+              "h-full w-full justify-between rounded-sm px-1 font-normal",
+              selected && onEditSelected && !disabled && "pr-14",
+              className,
+            )}
+          >
+            <span className={cn("truncate", !selected && "text-muted-foreground")}>
+              {selected?.code ?? placeholder}
             </span>
-          ) : null}
-          <ChevronDown className="size-3.5 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
-        <Command shouldFilter={false}>
-          <CommandInput
-            value={query}
-            onValueChange={setQuery}
-            placeholder={searchPlaceholder}
-            onKeyDown={onKeyDown}
-          />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {filtered.map((item) => (
-                <CommandItem
-                  key={item.id}
-                  value={formatCodeName(item.code, item.name)}
-                  onSelect={() => {
-                    onChange(item.id);
-                    setOpen(false);
-                  }}
-                >
-                  <span className="min-w-0 flex-1 truncate font-mono font-semibold">
-                    {formatCodeName(item.code, item.name)}
-                  </span>
-                  {item.id === value ? <Check /> : null}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-            {canCreate ? (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
+            {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
+            <ChevronDown className="size-3.5 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
+          <Command shouldFilter={false}>
+            <CommandInput
+              value={query}
+              onValueChange={setQuery}
+              placeholder={searchPlaceholder}
+              onKeyDown={onKeyDown}
+            />
+            <CommandList>
+              <CommandEmpty>{emptyText}</CommandEmpty>
+              <CommandGroup>
+                {filtered.map((item) => (
                   <CommandItem
-                    disabled={creating}
-                    onSelect={async () => {
-                      const code = query.trim();
-                      if (!onCreateUnit) return;
-                      setCreating(true);
-                      try {
-                        const created = await onCreateUnit(code);
-                        onChange(created.id);
-                        setOpen(false);
-                        setQuery("");
-                      } finally {
-                        setCreating(false);
-                      }
+                    key={item.id}
+                    value={formatCodeName(item.code, item.name)}
+                    onSelect={() => {
+                      onChange(item.id);
+                      setOpen(false);
                     }}
                   >
-                    <Plus />
-                    {createLabel(query.trim())}
+                    <span className="min-w-0 flex-1 truncate font-mono font-semibold">
+                      {formatCodeName(item.code, item.name)}
+                    </span>
+                    {item.id === value ? <Check /> : null}
                   </CommandItem>
-                </CommandGroup>
-              </>
-            ) : null}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                ))}
+              </CommandGroup>
+              {canCreate ? (
+                <>
+                  <CommandSeparator />
+                  <CommandGroup>
+                    <CommandItem
+                      disabled={creating}
+                      onSelect={async () => {
+                        const code = query.trim();
+                        if (!onCreateUnit) return;
+                        setCreating(true);
+                        try {
+                          const created = await onCreateUnit(code);
+                          onChange(created.id);
+                          setOpen(false);
+                          setQuery("");
+                        } finally {
+                          setCreating(false);
+                        }
+                      }}
+                    >
+                      <Plus />
+                      {createLabel(query.trim())}
+                    </CommandItem>
+                  </CommandGroup>
+                </>
+              ) : null}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {selected && onEditSelected && !disabled ? (
+        <FieldInlineActions
+          className="right-6"
+          onEdit={() => onEditSelected(selected.id)}
+          editLabel={resolvedEditSelectedLabel}
+        />
+      ) : null}
+    </div>
   );
 }

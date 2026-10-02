@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from "react";
 import { Input } from "../../../ui/input";
-import type { CounterpartySeed } from "../counterparty-field";
+import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-field";
 import { CounterpartyInputField } from "../counterparty-input-field";
 import { IcoLink, type IcoLinkTarget } from "../../form/ico-link";
 import { SectionHeading } from "../../layout/section-heading";
@@ -41,6 +41,8 @@ export interface DocumentBasicSectionProps {
   icoLinkTarget: IcoLinkTarget;
   can: (key: keyof DocumentHeaderValue) => boolean;
   onCreatePartner?: (seed: CounterpartySeed) => void;
+  onEditCounterparty?: (partnerId: string) => void;
+  readOnly?: boolean;
   field: FieldRenderer;
   suggestedText: (
     key: "handedOverBy" | "description",
@@ -75,6 +77,8 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
     icoLinkTarget,
     can,
     onCreatePartner,
+    onEditCounterparty,
+    readOnly,
     field,
     suggestedText,
     handedOverBySuggest,
@@ -117,6 +121,13 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               replaceManualWarning={t.replaceManualCounterparty}
               hasManualData={Boolean(value.counterpartyName || counterpartyIco || counterpartyDic)}
               disabled={!can("partnerId")}
+              readOnly={readOnly}
+              onCreatePartner={
+                onCreatePartner
+                  ? (query) => onCreatePartner(counterpartyCreateSeed(query))
+                  : undefined
+              }
+              onEditPartner={onEditCounterparty}
             />,
             14,
             false,
@@ -148,7 +159,12 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                   id="document-partner-ico"
                   value={counterpartyIco}
                   onChange={(event) =>
-                    patch({ counterpartyIco: event.target.value.replace(/\D/g, "") })
+                    patch({
+                      counterpartyIco: normalizeManualIco(
+                        event.target.value,
+                        value.counterpartyCountry,
+                      ),
+                    })
                   }
                   disabled={!can("counterpartyIco")}
                   className="h-9 font-mono tabular-nums"
@@ -200,4 +216,10 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
       </>
     </>
   );
+}
+
+/** IČO ručního režimu: u CZ / SK nebo bez země jen číslice, u ciziny i písmena. */
+export function normalizeManualIco(input: string, country?: string | null): string {
+  const domestic = !country || ["CZ", "SK"].includes(country.toUpperCase());
+  return domestic ? input.replace(/\D/g, "") : input.replace(/[^0-9A-Za-z]/g, "").toUpperCase();
 }

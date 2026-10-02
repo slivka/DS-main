@@ -13,7 +13,18 @@
 - `PartnerSelect`, `DimensionSelect` a `UnitSelect` podporují `onEditSelected`; stav DPH partnera umí datum nespolehlivosti.
 - Holá tlačítka mimo záložky a vnitřní hrany segmentů používají jednotné zaoblení `0.25rem`.
 
-Migrace: odstraňte `excludeFromPaymentOrders`, předejte řízené `paymentOrderEnabled`; přesuňte mapování účtů na `partnerBankAccountId`, `manualBankAccount` nebo `companyBankAccountId` podle druhu dokladu.
+- **BREAKING:** `CounterpartyField` ve formuláři dokladu nahradil `CounterpartyInputField` (režim partner/ručně, „Nový partner…“, tužka `onEditCounterparty`).
+- **BREAKING:** `vsColumn(value, label, options)` – popisek předává aplikace (`useDsTexts().documentForm.vsColumn`).
+- **BREAKING:** `validateManualBankAccount(value, isHomeCurrency, bankCodes, texts)` přijímá texty chyb; domácí měna vyžaduje kód banky vždy, cizí měna účet nebo IBAN (ne obojí) a u IBANu SWIFT.
+- **BREAKING:** dialog neuložených změn v panelech: nadpis „{záložka} – neuložené změny“, tlačítka „Uložit a pokračovat“ / „Pokračovat bez uložení“ / „Zpět k dokladu“; texty z `DsTexts.panes`, klíče `PaneTabsTexts.unsaved*`, `save`, `discard` jsou zastaralé (odstraní se ve 3.0.0).
+- **BREAKING:** položka menu rozepsanou záložku nenahradí – otevře novou záložku v témže panelu a ohlásí to přes `onNotice` (výchozí toast); dialog jen při limitu záložek.
+- Oprava: akce dialogu neuložených změn se vždy vztahují k dotčené záložce, ne k aktivní záložce aktivního panelu (dříve při více panelech Uložit/Zahodit nereagovalo). Neúspěšné `onSaveTab` dialog zavře a nic nezahodí.
+- Aktivní záložka aktivního panelu je výrazná, aktivní záložky ostatních panelů tlumené; neuložené změny = tečka před názvem; `guardUnsaved(action)` pro odhlášení; nový `UnsavedChangesDialog`.
+- Oprava: bankovní doklad a vydaný doklad bez firemních účtů mají opět pole účtu v Platebních údajích; přepínač „Platit příkazem“ jen u druhů s příznakem platebních příkazů.
+- `OptionSelect.searchable="auto"` (od 8 položek), hledání bez diakritiky; hodnota mimo číselník je vidět s označením. Křížek a tužka ve výběrech jsou samostatná tlačítka (`FieldInlineActions`).
+- Výchozí zaoblení tlačítek je ve vrstvě base – nepřebije `rounded-full` ani spojené hrany segmentů.
+
+Migrace: odstraňte `excludeFromPaymentOrders`, předejte řízené `paymentOrderEnabled`; `vsColumn` doplňte popiskem; `validateManualBankAccount` volejte s texty; vlastní texty dialogu neuložených změn přesuňte do `DsTextsProvider` (`panes`); kdo spoléhal na nahrazení rozepsané záložky z menu, obslouží `onNotice`. Přesuňte mapování účtů na `partnerBankAccountId`, `manualBankAccount` nebo `companyBankAccountId` podle druhu dokladu.
 
 ## 2.85.0 – Edit dokladu 9 a obecná pravidla
 

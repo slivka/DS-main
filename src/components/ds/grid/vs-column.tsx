@@ -5,14 +5,18 @@
  */
 import type { DataGridColumn } from "./data-grid-types";
 
-/** Vytvoří jednotný sloupec VS zarovnaný vlevo. */
+/**
+ * Vytvoří jednotný sloupec VS zarovnaný vlevo.
+ * Popisek předává aplikace (typicky `useDsTexts().documentForm.vsColumn`).
+ */
 export function vsColumn<Row>(
   value: (row: Row) => string | null | undefined,
+  label: string,
   options: Partial<DataGridColumn<Row>> = {},
 ): DataGridColumn<Row> {
   return {
     id: "vs",
-    label: "VS",
+    label,
     fitContent: true,
     align: "left",
     format: "vs",

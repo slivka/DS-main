@@ -157,7 +157,7 @@ export function DocumentFormSecondaryScenarios({
       </ShowcaseSection>
 
       <ShowcaseSection
-        title="Vydaná faktura – odběratel s IČO a DIČ"
+        title="Vydaná faktura – zakázaný firemní účet, tužka partnera, nespolehlivý plátce"
         description="editableFields povolí pouze popis a platební údaje; řádky mění jen popisné údaje. Uvolněná pozastávka je jen ke čtení."
       >
         <DocumentForm
@@ -222,6 +222,16 @@ export function DocumentFormSecondaryScenarios({
               Partner ALFA servis s.r.o. má na 311.001 otevřený přeplatek 200,00 Kč (VS 1001).
             </NoticeBar>
           }
+          companyBankAccountOptions={[
+            { id: "c1", label: "Hlavní účet", account: "2001234567/2010", currency: "CZK" },
+          ]}
+          companyBankAccountDisabledReason="Faktura se hradí zápočtem – účet se netiskne"
+          onEditCounterparty={(id) => toast.info(`Karta partnera ${id}`)}
+          vatPartnerStatus={{
+            status: "payer",
+            checkedAt: "2026-09-12",
+            unreliableSince: "2026-03-01",
+          }}
           changedBy="Jana Nováková"
           changedAt="12.09.2026 14:05"
           tabs={[

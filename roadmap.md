@@ -734,4 +734,6 @@
 - [x] Zarovnat VS vlevo, přidat vsColumn a hledatelné KS/způsob platby.
 - [x] Doplnit tužky výběrů, datum nespolehlivosti DPH a sjednotit holá tlačítka.
 - [x] Aktualizovat texty, system.md, AGENTS, CHANGELOG, ukázky a verzi 2.86.0.
-- [ ] Přidat testy chování a DOM měření; ověřit format, typecheck, lint, testy, build a limit 500 řádků.
+- [x] Přidat testy chování a DOM měření; ověřit format, typecheck, lint, testy, build a limit 500 řádků.
+- [x] Opravy po kontrole kódu (73a7ade) body 1–17.
+- [x] Dialog neuložených změn, nová záložka místo nahrazení rozepsané, vzhled aktivní záložky (18–20).

@@ -21,6 +21,7 @@ import {
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
 import { buildTabMenuActions, type PaneChromeTexts, type PaneTabsApi } from "./pane-context";
 import type { PaneTab, TabPane } from "./pane-state";
 
@@ -94,6 +95,7 @@ export function PaneTabBar({
   if (activeIndex >= slots) visible = [...pane.tabs.slice(0, slots - 1), pane.tabs[activeIndex]];
   const hidden = pane.tabs.filter((tab) => !visible.includes(tab));
   const titleOf = (tab: PaneTab) => tab.title ?? t.untitled;
+  const dsTexts = useDsTexts();
 
   return (
     <TooltipProvider>
@@ -131,6 +133,9 @@ export function PaneTabBar({
                 paneId={pane.id}
                 active={tab.id === pane.activeTab}
                 dirty={api.isTabDirty(tab.id)}
+                paneActive={api.state.active === pane.id}
+                attention={api.attentionTabIds.includes(tab.id)}
+                unsavedLabel={dsTexts.panes.unsavedChanges}
                 Icon={getTabIcon?.(tab)}
                 api={api}
                 texts={t}
@@ -187,6 +192,9 @@ function SortableTab({
   paneId,
   active,
   dirty,
+  paneActive,
+  attention,
+  unsavedLabel,
   Icon,
   api,
   texts,
@@ -196,6 +204,12 @@ function SortableTab({
   paneId: string;
   active: boolean;
   dirty: boolean;
+  /** Panel záložky je aktivní – aktivní záložka výrazně, jinak tlumeně. */
+  paneActive: boolean;
+  /** Záložka je dotčená dialogem neuložených změn. */
+  attention: boolean;
+  /** Přístupný název tečky neuložených změn. */
+  unsavedLabel: string;
   Icon?: ComponentType<{ className?: string }>;
   api: PaneTabsApi;
   texts: PaneTabBarTexts & Partial<PaneChromeTexts>;
@@ -223,9 +237,12 @@ function SortableTab({
           }}
           className={cn(
             "group relative flex items-center border-r text-sm transition-colors",
-            active
+            active && paneActive
               ? "bg-card font-semibold text-foreground shadow-[inset_0_2px_0_var(--primary)]"
-              : "text-muted-foreground hover-surface",
+              : active
+                ? "bg-card/70 text-foreground/80 shadow-[inset_0_2px_0_var(--border)]"
+                : "text-muted-foreground hover-surface",
+            attention && "ring-2 ring-inset ring-destructive",
             isDragging && "z-10 opacity-70",
           )}
           onAuxClick={(event) => {
@@ -239,6 +256,8 @@ function SortableTab({
           {...attributes}
           {...listeners}
           role="presentation"
+          data-active-pane={active && paneActive ? "" : undefined}
+          data-attention={attention ? "" : undefined}
         >
           <Tooltip>
             <TooltipTrigger asChild>
@@ -249,6 +268,13 @@ function SortableTab({
                 className="flex h-full min-w-0 flex-1 items-center gap-1.5 pl-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => api.activateTab(tab.id)}
               >
+                {dirty ? (
+                  <span
+                    role="img"
+                    aria-label={unsavedLabel}
+                    className="size-2 shrink-0 rounded-full bg-primary"
+                  />
+                ) : null}
                 {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
                 <span className="truncate">{label}</span>
               </button>
@@ -267,19 +293,7 @@ function SortableTab({
             onDoubleClick={(event) => event.stopPropagation()}
             onClick={() => api.closeTab(tab.id)}
           >
-            {dirty ? (
-              <span
-                className="size-2 rounded-full bg-primary group-hover:hidden"
-                aria-hidden="true"
-              />
-            ) : null}
-            <X
-              className={cn(
-                "size-3.5",
-                active && "text-foreground",
-                dirty && "hidden group-hover:block",
-              )}
-            />
+            <X className={cn("size-3.5", active && "text-foreground")} />
           </button>
         </div>
       </ContextMenuTrigger>

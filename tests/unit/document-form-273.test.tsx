@@ -63,9 +63,9 @@ describe("DocumentForm 2.73", () => {
         onChange={() => {}}
       />,
     );
-    expect(view.getByRole("combobox", { name: "Konstantní symbol" }).textContent).toContain(
-      "Hodnota není v číselníku",
-    );
+    const ks = view.getByRole("combobox", { name: "Konstantní symbol" }).textContent;
+    expect(ks).toContain("9999");
+    expect(ks).toContain("Hodnota není v číselníku");
     expect(view.queryByRole("textbox", { name: "Konstantní symbol" })).toBeNull();
     expect(view.getByRole("combobox", { name: "Uhradit na bankovní účet" })).toBeTruthy();
   });

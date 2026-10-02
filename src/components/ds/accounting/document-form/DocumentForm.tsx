@@ -11,7 +11,8 @@ import {
   partnerLabelForType,
   type DocumentFields,
 } from "../document-fields";
-import { CompanyAccountControl, ReceivedAccountControl } from "./BankAccountControls";
+import { CompanyAccountControl } from "./BankAccountControls";
+import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -81,6 +82,7 @@ export function DocumentForm({
   currencyLocked = false,
   currencyDisabledReason,
   onCreatePartner,
+  onEditCounterparty,
   icoLinkTarget = "auto",
   handedOverBySuggest,
   descriptionSuggest,
@@ -213,6 +215,8 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
+  // Přepínač platebního příkazu platí jen u druhů s příznakem paymentOrders.
+  const paymentOrderOn = f.paymentOrders ? paymentOrderEnabled : true;
   const externalNumberField = useExternalNumberField({
     value,
     patch,
@@ -223,32 +227,23 @@ export function DocumentForm({
     t,
     field,
   });
-  const bankAccountField = field(
-    "document-bankAccount",
-    t.bankAccount,
-    receivedDocument ? (
-      <ReceivedAccountControl
-        counterpartyInput={counterpartyInput}
-        partnerAccountId={value.partnerBankAccountId}
-        manualValue={value.manualBankAccount}
-        options={bankAccountOptions}
-        bankCodes={bankCodes}
-        hasPartner={Boolean(value.partnerId)}
-        isHomeCurrency={homeCurrencyDocument}
-        paymentOrderEnabled={paymentOrderEnabled}
-        onPaymentOrderEnabledChange={onPaymentOrderEnabledChange}
-        onPartnerAccountChange={(partnerBankAccountId) => patch({ partnerBankAccountId })}
-        onManualChange={(manualBankAccount) => patch({ manualBankAccount })}
-        onValidationChange={onManualBankAccountValidationChange}
-        onAddAccount={onAddBankAccount}
-        disabled={!can("bankAccount")}
-        texts={t}
-      />
-    ) : null,
-    receivedDocument ? 14 : 6,
-    false,
-    receivedDocument ? "@min-[40rem]:col-span-14" : undefined,
-  );
+  const bankAccountField = useBankAccountField({
+    value,
+    patch,
+    can,
+    t,
+    field,
+    receivedDocument,
+    counterpartyInput,
+    bankAccountOptions,
+    bankCodes,
+    isHomeCurrency: homeCurrencyDocument,
+    paymentOrdersApplicable: Boolean(f.paymentOrders),
+    paymentOrderEnabled: paymentOrderOn,
+    onPaymentOrderEnabledChange,
+    onManualBankAccountValidationChange,
+    onAddBankAccount,
+  });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
   const companyAccountField =
@@ -415,6 +410,8 @@ export function DocumentForm({
               icoLinkTarget={icoLinkTarget}
               can={can}
               onCreatePartner={onCreatePartner}
+              onEditCounterparty={onEditCounterparty}
+              readOnly={readOnly}
               field={field}
               suggestedText={suggestedText}
               handedOverBySuggest={handedOverBySuggest}
@@ -448,8 +445,9 @@ export function DocumentForm({
             patch={patch}
             can={can}
             issuedDocument={issuedDocument}
+            receivedDocument={receivedDocument}
             issuedBankAccountAbove={issuedBankAccountAbove}
-            paymentOrderEnabled={paymentOrderEnabled}
+            paymentOrderEnabled={paymentOrderOn}
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
