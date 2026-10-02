@@ -1,4 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
+import { createRoot } from "react-dom/client";
+import { act } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -77,13 +79,40 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(lookup).toContain("Upravit vybraný záznam");
   });
 
-  it("obalí checkbox výškou prvního řádku popisku", () => {
-    const html = renderToStaticMarkup(
-      <CheckboxField label="Jednořádkový popisek" hint="Popis" checked onCheckedChange={vi.fn()} />,
-    );
-    const controlLine = /<span class="([^"]*)"><button[^>]*role="checkbox"/.exec(html)?.[1] ?? "";
-    expect(controlLine.split(" ")).toEqual(expect.arrayContaining(["flex", "h-5", "items-center"]));
-    expect(controlLine.split(" ").some((token) => token.startsWith("mt-"))).toBe(false);
+  it("zarovná checkbox i přepínač na střed prvního řádku popisku", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const root = createRoot(host);
+    await act(async () => {
+      root.render(
+        <div style={{ fontSize: "24px" }}>
+          <CheckboxField
+            id="alignment-checkbox"
+            label="Popisek checkboxu"
+            hint="Popis"
+            checked
+            onCheckedChange={vi.fn()}
+          />
+          <SwitchField
+            id="alignment-switch"
+            label="Popisek přepínače"
+            hint="Popis"
+            checked
+            onCheckedChange={vi.fn()}
+          />
+        </div>,
+      );
+    });
+    for (const id of ["alignment-checkbox", "alignment-switch"]) {
+      const control = host.querySelector<HTMLElement>(`#${id}`);
+      const label = host.querySelector<HTMLLabelElement>(`label[for="${id}"]`);
+      expect(control).toBeTruthy();
+      expect(label).toBeTruthy();
+      expect(getComputedStyle(label as HTMLLabelElement).marginBlockStart).toBe("0px");
+      expect(getComputedStyle(label as HTMLLabelElement).lineHeight).toBe("20px");
+    }
+    await act(async () => root.unmount());
+    host.remove();
   });
 
   it("zpřístupní přidání účtu i bez položek a vysvětlí zakázaný výběr", () => {
