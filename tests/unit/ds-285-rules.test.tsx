@@ -1,6 +1,6 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { createRoot } from "react-dom/client";
 import { act } from "react";
+import { createRoot } from "react-dom/client";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -12,6 +12,7 @@ import {
   LookupField,
   OptionSelect,
   RecordActionBar,
+  SwitchField,
   formatCodeName,
 } from "../../src";
 import { journalRowColumnWidthRem } from "../../src/components/ds/accounting/journal-column-layout";
