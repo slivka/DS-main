@@ -263,6 +263,10 @@ function AccountingFormsPage() {
           documentCurrency="CZK"
           homeCurrency="CZK"
           homeCurrencySymbol="Kč"
+          showQuantityColumns
+          units={[{ id: "piece", code: "ks", name: "kus", isActive: true }]}
+          onEditUnit={(id) => toast.info(`Úprava měrné jednotky ${id}`)}
+          onEditDimension={(id) => toast.info(`Úprava zakázky ${id}`)}
         />
         <p className="mt-2 text-xs text-muted-foreground" data-testid="journal-roundtrip">
           {`Jedna předkontace = jeden databázový řádek; zpětný převod vrací částku ${formatAmount(roundtrip.amount, 2)}.`}
