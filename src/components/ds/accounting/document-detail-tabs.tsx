@@ -15,6 +15,7 @@ import { useDsTexts } from "../../../ds-texts";
 import { FieldValue } from "../form/field-value";
 import { StatusBadge } from "../data-display/status-badge";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { formatCodeName } from "../../../lib/code-format";
 
 /** Hodnoty záložky odběratele. */
 export interface DocumentCounterpartyValue extends AddressValue {
@@ -52,6 +53,10 @@ export interface DocumentCounterpartyTabProps {
   refreshCounterpartyWarning?: string;
   /** Datum zmrazení údajů při zařazení. */
   counterpartyFrozenAt?: string;
+  /** Číselník zemí; zamčené pole Země pak ukáže název místo kódu. */
+  countries?: Array<{ code: string; name: string }>;
+  /** Zobrazit u názvu země i kód („CZ – Česko“). */
+  showCountryCode?: boolean;
 }
 
 /** Hotová záložka odběratele vydaného dokladu. */
@@ -67,6 +72,8 @@ export function DocumentCounterpartyTab({
   onRefreshCounterparty,
   refreshCounterpartyWarning,
   counterpartyFrozenAt,
+  countries,
+  showCountryCode = false,
 }: DocumentCounterpartyTabProps) {
   const texts = useDsTexts().documentForm;
   const { confirm, confirmDialog } = useConfirmDialog();
@@ -88,16 +95,19 @@ export function DocumentCounterpartyTab({
   const refresh = onRefreshCounterparty ?? onReloadFromPartner;
   const runRefresh = () => {
     if (!refresh) return;
-    if (!refreshCounterpartyWarning) {
-      refresh();
-      return;
-    }
+    // Potvrzení vždy: výchozí text z DsTexts, aplikace ho může nahradit.
     confirm({
-      title: refreshCounterpartyWarning,
+      title: refreshCounterpartyWarning ?? texts.refreshCounterpartyConfirm,
       destructive: true,
       onConfirm: refresh,
     });
   };
+  const countryName = countries?.find((item) => item.code === value.country)?.name;
+  const countryDisplay = countryName
+    ? showCountryCode
+      ? formatCodeName(value.country ?? "", countryName)
+      : countryName
+    : (value.country ?? "");
   return (
     <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between gap-3">
@@ -115,7 +125,8 @@ export function DocumentCounterpartyTab({
         >
           {texts.counterpartyTab}
         </SectionHeading>
-        {partnerId && refresh && !locked ? (
+        {/* Aktualizace je jediná cesta změny i po zamčení; skrytá jen u dokladu jen pro čtení. */}
+        {partnerId && refresh && !readOnly ? (
           <Button type="button" variant="outline" onClick={runRefresh}>
             {texts.refreshCounterparty}
           </Button>
@@ -146,24 +157,35 @@ export function DocumentCounterpartyTab({
       </FieldGrid>
       {locked ? (
         <FieldGrid cols={12}>
-          <Field label={label("street", "Ulice")} span={6}>
+          <Field label={label("street", texts.street)} span={6}>
             <FieldValue lockedReason={counterpartyLockedReason}>{value.street}</FieldValue>
           </Field>
-          <Field label={label("house_number", "Číslo")} span={2}>
+          <Field label={label("house_number", texts.houseNumber)} span={2}>
             <FieldValue lockedReason={counterpartyLockedReason}>{value.house_number}</FieldValue>
           </Field>
-          <Field label={label("zip", "PSČ")} span={2}>
+          <Field label={label("zip", texts.zip)} span={2}>
             <FieldValue lockedReason={counterpartyLockedReason}>{value.zip}</FieldValue>
           </Field>
-          <Field label={label("city", "Město")} span={6}>
+          <Field label={label("city", texts.city)} span={6}>
             <FieldValue lockedReason={counterpartyLockedReason}>{value.city}</FieldValue>
           </Field>
-          <Field label={label("country", "Země")} span={4}>
-            <FieldValue lockedReason={counterpartyLockedReason}>{value.country}</FieldValue>
+          <Field label={label("country", texts.country)} span={4}>
+            <FieldValue lockedReason={counterpartyLockedReason}>{countryDisplay}</FieldValue>
           </Field>
         </FieldGrid>
       ) : (
-        <AddressFieldGrid value={value} onChange={(address) => patch(address)} />
+        <AddressFieldGrid
+          value={value}
+          onChange={(address) => patch(address)}
+          countries={countries}
+          labels={{
+            street: texts.street,
+            houseNumber: texts.houseNumber,
+            zip: texts.zip,
+            city: texts.city,
+            country: texts.country,
+          }}
+        />
       )}
       <Field label={label("email", texts.email)}>
         {control(

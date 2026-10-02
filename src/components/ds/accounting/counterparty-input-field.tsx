@@ -43,6 +43,12 @@ export interface CounterpartyInputFieldProps {
   hasManualData?: boolean;
   /** Identifikátor pole. */
   id?: string;
+  /** Doklad jen pro čtení – režim nejde přepnout. */
+  readOnly?: boolean;
+  /** Nabídka „Nový partner…“ ve výběru (režim partner). */
+  onCreatePartner?: (query: string) => void;
+  /** Tužka u vybraného partnera. */
+  onEditPartner?: (id: string) => void;
 }
 
 /** Pole protistrany s ikonou přepnutí režimu. */
@@ -51,7 +57,7 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
   const targetMode = props.mode === "partner" ? "manual" : "partner";
   const label = targetMode === "partner" ? props.partnerModeLabel : props.manualModeLabel;
   const switchMode = () => {
-    if (!props.onModeChange || props.lockedReason) return;
+    if (!props.onModeChange || props.lockedReason || props.readOnly) return;
     if (targetMode === "partner" && props.hasManualData) {
       confirm({
         title: props.replaceManualWarning,
@@ -70,7 +76,9 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
           variant={props.mode === "partner" ? "default" : "outline"}
           size="icon"
           aria-label={props.lockedReason ?? label}
-          disabled={!props.onModeChange}
+          aria-pressed={props.mode === "manual"}
+          disabled={!props.onModeChange || props.readOnly}
+          aria-disabled={Boolean(props.lockedReason) || undefined}
           onClick={switchMode}
           className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
         >
@@ -93,8 +101,10 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
             partners={props.partners}
             value={props.partnerId}
             onChange={props.onPartnerChange}
-            disabled={props.disabled}
-            className="pr-10"
+            disabled={props.disabled || props.readOnly}
+            onCreate={props.onCreatePartner}
+            onEditSelected={props.onEditPartner}
+            className={props.onEditPartner && props.partnerId ? "pr-20" : "pr-10"}
           />
         ) : (
           <Input
@@ -102,6 +112,7 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
             value={props.name}
             onChange={(event) => props.onNameChange(event.target.value)}
             disabled={props.disabled}
+            readOnly={props.readOnly}
             aria-label={props.ariaLabel}
             className="pr-10"
           />

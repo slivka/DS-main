@@ -43,27 +43,54 @@ describe("DS 2.86.0", () => {
     expect(nameChange).not.toHaveBeenCalled();
   });
 
-  it("ověří modulo 11, IBAN modulo 97, český kód banky a SWIFT", () => {
-    const validCz = validateManualBankAccount(
-      { text: "19-2000145399/0800", iban: "", swift: "" },
-      true,
-      ["0800"],
-    );
-    expect(validCz).toEqual({});
-    expect(
-      validateManualBankAccount({ text: "19-2000145398/0800", iban: "", swift: "" }, true, ["0800"])
-        .text,
-    ).toBeTruthy();
-    expect(
-      validateManualBankAccount(
-        { text: "", iban: "CZ6508000000192000145399", swift: "GIBACZPX" },
-        false,
-        ["0800"],
-      ),
-    ).toEqual({});
-    expect(
-      validateManualBankAccount({ text: "12345", iban: "", swift: "BAD" }, false).swift,
-    ).toBeTruthy();
+  describe("validace ručního účtu", () => {
+    const d = DS_TEXTS_CS.documentForm;
+    const texts = {
+      account: d.bankAccountInvalid,
+      bankCode: d.bankCodeInvalid,
+      bankCodeRequired: d.bankCodeRequired,
+      iban: d.invalidIban,
+      swift: d.invalidSwift,
+      swiftRequired: d.swiftRequired,
+      accountRequired: d.accountRequired,
+      accountOrIban: d.accountOrIban,
+    };
+    const v = (text: string, iban: string, swift: string, home: boolean, codes?: string[]) =>
+      validateManualBankAccount({ text, iban, swift }, home, codes ?? [], texts);
+
+    it("domácí měna: platný účet s modulo 11 a povoleným kódem banky", () => {
+      expect(v("19-2000145399/0800", "", "", true, ["0800"])).toEqual({});
+    });
+    it("domácí měna: chybný modulo 11", () => {
+      expect(v("19-2000145398/0800", "", "", true, ["0800"]).text).toBe(texts.account);
+    });
+    it("domácí měna: kód banky je povinný vždy, i bez číselníku", () => {
+      expect(v("19-2000145399", "", "", true).text).toBe(texts.bankCodeRequired);
+    });
+    it("domácí měna: kód banky mimo předaný číselník", () => {
+      expect(v("19-2000145399/0800", "", "", true, ["0100"]).text).toBe(texts.bankCode);
+    });
+    it("cizí měna: platný IBAN mod 97 se SWIFT", () => {
+      expect(v("", "CZ6508000000192000145399", "GIBACZPX", false, ["0800"])).toEqual({});
+    });
+    it("cizí měna: neplatný IBAN", () => {
+      expect(v("", "CZ6508000000192000145398", "GIBACZPX", false).iban).toBe(texts.iban);
+    });
+    it("cizí měna: IBAN vyžaduje SWIFT", () => {
+      expect(v("", "CZ6508000000192000145399", "", false).swift).toBe(texts.swiftRequired);
+    });
+    it("cizí měna: SWIFT 8 nebo 11 znaků podle vzoru", () => {
+      expect(v("12345", "", "BAD", false).swift).toBe(texts.swift);
+      expect(v("12345", "", "GIBACZPX123", false).swift).toBeUndefined();
+      expect(v("12345", "", "GIBACZ1X", false).swift).toBeUndefined();
+      expect(v("12345", "", "GIBA1ZPX", false).swift).toBe(texts.swift);
+    });
+    it("cizí měna: účet nesmí být prázdný a číslo účtu jen bez IBANu", () => {
+      expect(v("", "", "GIBACZPX", false).text).toBe(texts.accountRequired);
+      expect(v("12345", "CZ6508000000192000145399", "GIBACZPX", false).text).toBe(
+        texts.accountOrIban,
+      );
+    });
   });
 
   it("vypnutý platební příkaz schová účet, ale zachová řízenou hodnotu", () => {

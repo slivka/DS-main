@@ -685,16 +685,13 @@
   border-radius: var(--radius-md) !important;
 }
 
-/* Bezohraničená a ikonová tlačítka používají při zvýraznění stejné zaoblení
-   jako ostatní ovládací prvky. Segmenty a záložky si řídí vnitřní hrany samy. */
-[data-slot="button"]:is([data-variant="ghost"], [data-size="icon"]):not([role="radio"]):not(
-    [role="tab"]
-  ) {
-  border-radius: var(--radius-md);
-}
-
-button:not([role="tab"]):not([role="radio"]):not(.grid-segmented > button) {
-  border-radius: var(--radius-md);
+/* Výchozí zaoblení tlačítek je ve vrstvě base: každá třída zaoblení
+   (rounded-full u Switch a kulatých ikon, rounded-none u spojených hran segmentů)
+   ji přebije. Záložky a segmenty jsou vyloučeny úplně. */
+@layer base {
+  button:where(:not([role="tab"]):not([role="radio"]):not(.grid-segmented > button)) {
+    border-radius: var(--radius-md);
+  }
 }
 
 .zoom-filters .grid-toolbar-group {

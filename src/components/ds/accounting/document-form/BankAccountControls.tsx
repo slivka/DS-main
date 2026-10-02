@@ -32,6 +32,8 @@ export interface ReceivedAccountControlProps {
   hasPartner: boolean;
   /** Doklad je v domácí měně. */
   isHomeCurrency: boolean;
+  /** Druh dokladu zná platební příkazy; jinak se přepínač nevykreslí. */
+  paymentOrdersApplicable?: boolean;
   /** Zahrnout do platebních příkazů. */
   paymentOrderEnabled: boolean;
   /** Změna zahrnutí. */
@@ -62,6 +64,9 @@ export interface ReceivedAccountControlProps {
     invalidIban: string;
     invalidSwift: string;
     swiftRequired: string;
+    bankCodeRequired: string;
+    accountRequired: string;
+    accountOrIban: string;
   };
 }
 
@@ -95,14 +100,20 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
         texts={{
           accountLabel: props.texts.manualAccountNumber,
           accountWithoutIbanLabel: props.texts.manualAccountWithoutIban,
-          accountInvalid: props.texts.bankAccountInvalid,
-          bankCodeInvalid: props.texts.bankCodeInvalid,
-          ibanInvalid: props.texts.invalidIban,
-          swiftInvalid: props.texts.invalidSwift,
-          swiftRequired: props.texts.swiftRequired,
+          validation: {
+            account: props.texts.bankAccountInvalid,
+            bankCode: props.texts.bankCodeInvalid,
+            bankCodeRequired: props.texts.bankCodeRequired,
+            iban: props.texts.invalidIban,
+            swift: props.texts.invalidSwift,
+            swiftRequired: props.texts.swiftRequired,
+            accountRequired: props.texts.accountRequired,
+            accountOrIban: props.texts.accountOrIban,
+          },
         }}
       />
     );
+  if (props.paymentOrdersApplicable === false) return content;
   return (
     <PaymentOrderAccountField
       enabled={props.paymentOrderEnabled}

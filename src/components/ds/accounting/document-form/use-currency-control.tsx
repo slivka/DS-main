@@ -41,12 +41,15 @@ export function useCurrencyControl({
     Boolean(currencyDisabledReason);
   const currencyReason =
     currencyDisabledReason ?? (!readOnly && !can("currency") ? t.currencyDisabled : undefined);
+  // Bez vnitřního odsazení a se šířkou podle obsahu: popisek „Měna“ začíná nad
+  // prvním znakem a text končí u pravého okraje sekce.
   const fixedCurrency = (
     <div
       id="document-currency"
+      data-currency-fixed=""
       aria-readonly="true"
       aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-11 items-center px-3 font-mono text-sm font-bold tabular-nums"
+      className="flex h-11 w-max items-center font-mono text-sm font-bold tabular-nums"
     >
       {value.currency}
     </div>

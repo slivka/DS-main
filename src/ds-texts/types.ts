@@ -227,6 +227,23 @@ export interface DsTexts {
     maximizedBanner: string;
     restoreLayout: string;
     limitClosed: string;
+    /** Nadpis dialogu neuložených změn. */
+    unsavedTitle: (tab: string) => string;
+    /** Druhá věta dialogu. */
+    unsavedNotSaved: string;
+    saveAndContinue: string;
+    continueWithoutSaving: string;
+    backToRecord: string;
+    openInNewTab: string;
+    intentCloseTab: string;
+    intentClosePane: string;
+    intentReplace: (target: string) => string;
+    intentHistory: string;
+    intentLogout: string;
+    /** Oznámení po otevření v nové záložce místo nahrazení rozepsané. */
+    openedInNewTab: (target: string, tab: string) => string;
+    /** Přístupný název tečky neuložených změn. */
+    unsavedChanges: string;
   };
   notification: {
     label: string;
@@ -413,6 +430,17 @@ export interface DsTexts {
     excludeFromPaymentOrders: string;
     paymentOrderDisabled: string;
     payToBankAccount: string;
+    street: string;
+    houseNumber: string;
+    zip: string;
+    city: string;
+    country: string;
+    refreshCounterpartyConfirm: string;
+    bankCodeRequired: string;
+    accountRequired: string;
+    accountOrIban: string;
+    vsColumn: string;
+    clear: string;
   };
   export: {
     parametersSheet: string;

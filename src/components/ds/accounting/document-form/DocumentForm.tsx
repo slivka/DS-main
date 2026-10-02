@@ -12,6 +12,7 @@ import {
   type DocumentFields,
 } from "../document-fields";
 import { CompanyAccountControl, ReceivedAccountControl } from "./BankAccountControls";
+import { BankAccountField } from "../bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -81,6 +82,7 @@ export function DocumentForm({
   currencyLocked = false,
   currencyDisabledReason,
   onCreatePartner,
+  onEditCounterparty,
   icoLinkTarget = "auto",
   handedOverBySuggest,
   descriptionSuggest,
@@ -213,6 +215,8 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
+  // Přepínač platebního příkazu platí jen u druhů s příznakem paymentOrders.
+  const paymentOrderOn = f.paymentOrders ? paymentOrderEnabled : true;
   const externalNumberField = useExternalNumberField({
     value,
     patch,
@@ -235,7 +239,8 @@ export function DocumentForm({
         bankCodes={bankCodes}
         hasPartner={Boolean(value.partnerId)}
         isHomeCurrency={homeCurrencyDocument}
-        paymentOrderEnabled={paymentOrderEnabled}
+        paymentOrdersApplicable={Boolean(f.paymentOrders)}
+        paymentOrderEnabled={paymentOrderOn}
         onPaymentOrderEnabledChange={onPaymentOrderEnabledChange}
         onPartnerAccountChange={(partnerBankAccountId) => patch({ partnerBankAccountId })}
         onManualChange={(manualBankAccount) => patch({ manualBankAccount })}
@@ -244,10 +249,24 @@ export function DocumentForm({
         disabled={!can("bankAccount")}
         texts={t}
       />
-    ) : null,
+    ) : (
+      // Ostatní doklady (BA, vydané bez číselníku firemních účtů): volné zadání.
+      <BankAccountField
+        id="document-bankAccount"
+        aria-label={t.bankAccount}
+        value={value.bankAccount ?? ""}
+        onChange={(bankAccount) => patch({ bankAccount })}
+        disabled={!can("bankAccount")}
+        options={bankAccountOptions}
+        bankCodes={bankCodes}
+        invalidAccountText={t.bankAccountInvalid}
+        invalidBankCodeText={t.bankCodeInvalid}
+        otherAccountText={t.otherBankAccount}
+      />
+    ),
     receivedDocument ? 14 : 6,
     false,
-    receivedDocument ? "@min-[40rem]:col-span-14" : undefined,
+    receivedDocument ? "@min-[40rem]:col-span-14" : "min-w-[12rem] flex-[1_1_12rem]",
   );
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
@@ -415,6 +434,8 @@ export function DocumentForm({
               icoLinkTarget={icoLinkTarget}
               can={can}
               onCreatePartner={onCreatePartner}
+              onEditCounterparty={onEditCounterparty}
+              readOnly={readOnly}
               field={field}
               suggestedText={suggestedText}
               handedOverBySuggest={handedOverBySuggest}
@@ -448,8 +469,9 @@ export function DocumentForm({
             patch={patch}
             can={can}
             issuedDocument={issuedDocument}
+            receivedDocument={receivedDocument}
             issuedBankAccountAbove={issuedBankAccountAbove}
-            paymentOrderEnabled={paymentOrderEnabled}
+            paymentOrderEnabled={paymentOrderOn}
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}

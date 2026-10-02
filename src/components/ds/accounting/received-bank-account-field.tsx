@@ -27,18 +27,40 @@ export interface ManualBankAccountErrors {
   swift?: string;
 }
 
-/** Ověří český účet, IBAN a SWIFT podle měny dokladu. */
+/** Texty chyb ručního účtu – aplikace je bere z DsTexts. */
+export interface ManualBankAccountValidationTexts {
+  /** Neplatné české číslo účtu. */
+  account: string;
+  /** Kód banky není v povoleném číselníku. */
+  bankCode: string;
+  /** Chybí kód banky. */
+  bankCodeRequired: string;
+  /** Neplatný IBAN. */
+  iban: string;
+  /** Neplatný SWIFT/BIC. */
+  swift: string;
+  /** Chybí SWIFT/BIC. */
+  swiftRequired: string;
+  /** Chybí účet i IBAN. */
+  accountRequired: string;
+  /** Souběžně IBAN i číslo účtu. */
+  accountOrIban: string;
+}
+
+/** Tvar SWIFT/BIC: 6 písmen, 2 znaky lokality, volitelně 3 znaky pobočky. */
+const SWIFT_PATTERN = /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
+
+/**
+ * Ověří český účet, IBAN a SWIFT podle měny dokladu.
+ * Domácí měna: účet `prefix-číslo/kód` (modulo 11, kód 4 číslice povinný, proti
+ * `bankCodes`, jsou-li předané), nebo platný IBAN. Cizí měna: IBAN + SWIFT, nebo
+ * číslo účtu + SWIFT, když IBAN chybí; obojí souběžně ne.
+ */
 export function validateManualBankAccount(
   value: ManualBankAccountValue,
   isHomeCurrency: boolean,
-  bankCodes: string[] = [],
-  texts = {
-    account: "Číslo účtu není platné",
-    bankCode: "Kód banky není platný",
-    iban: "IBAN není platný",
-    swift: "SWIFT/BIC musí mít 8 nebo 11 znaků",
-    swiftRequired: "Doplňte SWIFT/BIC",
-  },
+  bankCodes: string[],
+  texts: ManualBankAccountValidationTexts,
 ): ManualBankAccountErrors {
   const errors: ManualBankAccountErrors = {};
   const compactText = value.text.replace(/\s/g, "");
@@ -47,18 +69,24 @@ export function validateManualBankAccount(
   if (compactIban && !isValidIban(compactIban)) errors.iban = texts.iban;
   else if (
     compactIban.startsWith("CZ") &&
-    bankCodes.length &&
+    bankCodes.length > 0 &&
     !bankCodes.includes(compactIban.slice(4, 8))
   )
     errors.iban = texts.bankCode;
-  if (compactSwift && !/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(compactSwift)) errors.swift = texts.swift;
-  if (isHomeCurrency && compactText) {
-    const [account = "", code = ""] = compactText.split("/");
-    const parsed = parseCzAccount(account);
-    if (!parsed || !isValidCzAccount(parsed.prefix, parsed.number)) errors.text = texts.account;
-    else if (bankCodes.length && !bankCodes.includes(code)) errors.text = texts.bankCode;
+  if (compactSwift && !SWIFT_PATTERN.test(compactSwift)) errors.swift = texts.swift;
+  if (isHomeCurrency) {
+    if (compactText) {
+      const [account = "", code = ""] = compactText.split("/");
+      const parsed = parseCzAccount(account);
+      if (!parsed || !isValidCzAccount(parsed.prefix, parsed.number)) errors.text = texts.account;
+      else if (!/^\d{4}$/.test(code)) errors.text = texts.bankCodeRequired;
+      else if (bankCodes.length > 0 && !bankCodes.includes(code)) errors.text = texts.bankCode;
+    }
+    return errors;
   }
-  if (!isHomeCurrency && !compactIban && compactText && !compactSwift)
+  if (!compactText && !compactIban) errors.text = texts.accountRequired;
+  else if (compactText && compactIban) errors.text = texts.accountOrIban;
+  if (!errors.swift && !compactSwift && (compactIban || compactText))
     errors.swift = texts.swiftRequired;
   return errors;
 }
@@ -81,24 +109,14 @@ export interface ReceivedBankAccountFieldProps {
   texts: {
     accountLabel: string;
     accountWithoutIbanLabel: string;
-    accountInvalid: string;
-    bankCodeInvalid: string;
-    ibanInvalid: string;
-    swiftInvalid: string;
-    swiftRequired: string;
+    validation: ManualBankAccountValidationTexts;
   };
 }
 
 /** Ruční účet s validací českého účtu nebo IBAN a SWIFT. */
 export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
   const bankCodes = props.bankCodes ?? [];
-  const validationTexts = {
-    account: props.texts.accountInvalid,
-    bankCode: props.texts.bankCodeInvalid,
-    iban: props.texts.ibanInvalid,
-    swift: props.texts.swiftInvalid,
-    swiftRequired: props.texts.swiftRequired,
-  };
+  const validationTexts = props.texts.validation;
   const errors = validateManualBankAccount(
     props.value,
     props.isHomeCurrency,

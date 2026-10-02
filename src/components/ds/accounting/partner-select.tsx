@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, Download, Pencil, Plus } from "lucide-react";
+import { Check, ChevronDown, Download, Plus } from "lucide-react";
+import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
 import {
@@ -102,124 +103,118 @@ export function PartnerSelect({
   const selected = partners.find((partner) => partner.id === value);
 
   return (
-    <Popover open={open} onOpenChange={changeOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          disabled={disabled}
-          onPointerDownCapture={() => {
-            pointerDown.current = true;
-          }}
-          onPointerUp={() => {
-            pointerDown.current = false;
-          }}
-          onFocus={() => {
-            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
-            changeOpen(true);
-          }}
-          onBlur={() => {
-            suppressFocusOpen.current = false;
-            pointerDown.current = false;
-          }}
-          className={cn("h-[var(--control-h)] w-full justify-between font-normal", className)}
-        >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
-            {selected ? formatPartner(selected) : placeholder}
-          </span>
-          {selected?.active === false ? <InactiveTag label={inactiveLabel} /> : null}
-          {selected && onEditSelected && !disabled ? (
-            <span
-              role="button"
-              tabIndex={0}
-              title={resolvedEditSelectedLabel}
-              aria-label={resolvedEditSelectedLabel}
-              className="rounded-md p-1 hover:bg-muted"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return;
-                event.preventDefault();
-                event.stopPropagation();
-                onEditSelected(selected.id);
-              }}
-            >
-              <Pencil className="size-3.5" />
+    <div className="relative min-w-0">
+      <Popover open={open} onOpenChange={changeOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            disabled={disabled}
+            onPointerDownCapture={() => {
+              pointerDown.current = true;
+            }}
+            onPointerUp={() => {
+              pointerDown.current = false;
+            }}
+            onFocus={() => {
+              if (disabled || suppressFocusOpen.current || pointerDown.current) return;
+              changeOpen(true);
+            }}
+            onBlur={() => {
+              suppressFocusOpen.current = false;
+              pointerDown.current = false;
+            }}
+            className={cn(
+              "h-[var(--control-h)] w-full justify-between font-normal",
+              selected && onEditSelected && !disabled && "pr-14",
+              className,
+            )}
+          >
+            <span className={cn("truncate", !selected && "text-muted-foreground")}>
+              {selected ? formatPartner(selected) : placeholder}
             </span>
-          ) : null}
-          <ChevronDown className="size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
-        <Command>
-          <CommandInput
-            placeholder={searchPlaceholder}
-            value={query}
-            onValueChange={setQuery}
-            onKeyDown={onKeyDown}
-          />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {list.map((partner) => (
-                <CommandItem
-                  key={partner.id}
-                  value={`${partner.name} ${partner.ico ?? ""}`}
-                  onSelect={() => {
-                    onChange(partner.id);
-                    changeOpen(false);
-                  }}
-                  className="gap-2"
-                >
-                  <span className="min-w-0 flex-1 truncate">{partner.name}</span>
-                  {partner.ico ? (
-                    <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
-                      {partner.ico}
-                    </span>
+            {selected?.active === false ? <InactiveTag label={inactiveLabel} /> : null}
+            <ChevronDown className="size-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[--radix-popover-trigger-width] min-w-[320px] p-0"
+          align="start"
+        >
+          <Command>
+            <CommandInput
+              placeholder={searchPlaceholder}
+              value={query}
+              onValueChange={setQuery}
+              onKeyDown={onKeyDown}
+            />
+            <CommandList>
+              <CommandEmpty>{emptyText}</CommandEmpty>
+              <CommandGroup>
+                {list.map((partner) => (
+                  <CommandItem
+                    key={partner.id}
+                    value={`${partner.name} ${partner.ico ?? ""}`}
+                    onSelect={() => {
+                      onChange(partner.id);
+                      changeOpen(false);
+                    }}
+                    className="gap-2"
+                  >
+                    <span className="min-w-0 flex-1 truncate">{partner.name}</span>
+                    {partner.ico ? (
+                      <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+                        {partner.ico}
+                      </span>
+                    ) : null}
+                    {selected?.id === partner.id ? <Check className="size-4" /> : null}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              {onCreate || onLoadFromAres ? (
+                <div className="flex flex-wrap gap-2 border-t p-2">
+                  {onCreate ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        changeOpen(false);
+                        onCreate(query);
+                      }}
+                    >
+                      <Plus className="size-4" />
+                      {createLabel}
+                    </Button>
                   ) : null}
-                  {selected?.id === partner.id ? <Check className="size-4" /> : null}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-            {onCreate || onLoadFromAres ? (
-              <div className="flex flex-wrap gap-2 border-t p-2">
-                {onCreate ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      changeOpen(false);
-                      onCreate(query);
-                    }}
-                  >
-                    <Plus className="size-4" />
-                    {createLabel}
-                  </Button>
-                ) : null}
-                {onLoadFromAres ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      changeOpen(false);
-                      onLoadFromAres(query);
-                    }}
-                  >
-                    <Download className="size-4" />
-                    {aresLabel}
-                  </Button>
-                ) : null}
-              </div>
-            ) : null}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                  {onLoadFromAres ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        changeOpen(false);
+                        onLoadFromAres(query);
+                      }}
+                    >
+                      <Download className="size-4" />
+                      {aresLabel}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {selected && onEditSelected && !disabled ? (
+        <FieldInlineActions
+          onEdit={() => onEditSelected(selected.id)}
+          editLabel={resolvedEditSelectedLabel}
+        />
+      ) : null}
+    </div>
   );
 }

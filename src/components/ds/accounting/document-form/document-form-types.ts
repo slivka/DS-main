@@ -51,6 +51,8 @@ export type DocumentHeaderValue = {
   counterpartyName?: string | null;
   counterpartyIco?: string | null;
   counterpartyDic?: string | null;
+  /** Země protistrany v ručním režimu (kód ISO); řídí tvar IČO. */
+  counterpartyCountry?: string | null;
   handedOverBy?: string | null;
   variableSymbol?: string | null;
   constantSymbol?: string | null;
@@ -374,6 +376,8 @@ export interface DocumentFormProps {
   /** Důvod, proč měnu nelze změnit; zobrazí se v tooltipu zakázaného výběru. */
   currencyDisabledReason?: string;
   onCreatePartner?: (seed: CounterpartySeed) => void;
+  /** Tužka u vybraného partnera – otevře jeho kartu. */
+  onEditCounterparty?: (partnerId: string) => void;
   icoLinkTarget?: IcoLinkTarget;
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;

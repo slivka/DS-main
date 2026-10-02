@@ -62,8 +62,8 @@ export function OptionSelect({
   inactiveLabel?: string;
   /** Čitelná náhrada za hodnotu, která už není v nabídce. */
   unknownValueLabel?: string;
-  /** Zapne hledání; bez hodnoty se zapne od osmi položek. */
-  searchable?: boolean;
+  /** Zapne hledání; `"auto"` jej zapne od osmi položek, bez hodnoty je vypnuté. */
+  searchable?: boolean | "auto";
   /** Výzva v hledání. */
   searchPlaceholder?: string;
   /** Text prázdného výsledku hledání. */
@@ -91,9 +91,14 @@ export function OptionSelect({
     ) : (
       (selectedOption?.selectedLabel ?? selectedOption?.label)
     );
-  const triggerLabel = known || current === "" ? selectedContent : resolvedUnknownValueLabel;
+  const triggerLabel =
+    known || current === "" ? (
+      selectedContent
+    ) : (
+      <UnknownValue value={current} label={resolvedUnknownValueLabel} />
+    );
   const offered = options.filter((option) => !option.inactive || option.value === current);
-  const useSearch = searchable ?? options.length >= 8;
+  const useSearch = searchable === "auto" ? options.length >= 8 : Boolean(searchable);
 
   if (useSearch)
     return (
@@ -166,5 +171,15 @@ export function OptionSelect({
         ))}
       </SelectContent>
     </Select>
+  );
+}
+
+/** Hodnota mimo nabídku: zobrazí se sama a s tlumeným označením. */
+export function UnknownValue({ value, label }: { value: string; label: string }) {
+  return (
+    <span data-slot="unknown-value" className="flex min-w-0 items-center gap-2">
+      <span className="truncate font-mono tabular-nums">{value}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{label}</span>
+    </span>
   );
 }

@@ -133,7 +133,8 @@ describe("DS 2.85.0 – chování výběrů", () => {
   it("neznámou volbu popíše čitelně a zachová doplněk vybrané položky", () => {
     const view = render(<OptionSelect value="raw-id" onChange={() => {}} options={[]} />);
     expect(view.getByRole("combobox").textContent).toContain("Hodnota není v číselníku");
-    expect(view.getByRole("combobox").textContent).not.toContain("raw-id");
+    // 2.86.0: hodnota mimo číselník zůstane vidět spolu s označením.
+    expect(view.getByRole("combobox").textContent).toContain("raw-id");
     view.rerender(
       <OptionSelect
         value="eur"

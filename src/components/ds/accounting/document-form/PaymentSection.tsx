@@ -32,6 +32,7 @@ export interface DocumentPaymentSectionProps {
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (key: DocumentHeaderField) => boolean;
   issuedDocument: boolean;
+  receivedDocument: boolean;
   issuedBankAccountAbove: boolean;
   paymentOrderEnabled: boolean;
   constantSymbolOptions?: Array<{ value: string; label: string }>;
@@ -53,6 +54,9 @@ export interface DocumentPaymentSectionProps {
   ) => ReactNode;
 }
 
+/** Pole Platebních údajů: stejný podíl šířky, minimum pro čitelný obsah. */
+const PAYMENT_ITEM = "min-w-[12rem] flex-[1_1_12rem]";
+
 /** Vykreslí platební údaje v pořadí společném všem dokladům. */
 export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
   const {
@@ -62,6 +66,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     patch,
     can,
     issuedDocument,
+    receivedDocument,
     issuedBankAccountAbove,
     paymentOrderEnabled,
     constantSymbolOptions,
@@ -76,7 +81,9 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
       <SectionHeading>{t.paymentSection}</SectionHeading>
       <div
         data-slot="document-payment-section"
-        className="grid grid-cols-1 items-start gap-3 @min-[32rem]:grid-cols-3"
+        // Pole se dělí o celou šířku podle počtu viditelných; při nedostatku místa
+        // se zalomí celé pole (pravidlo 20), nikdy nezůstane prázdná třetina.
+        className="flex flex-wrap items-start gap-3"
       >
         {f.symbols
           ? field(
@@ -90,7 +97,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               />,
               undefined,
               undefined,
-              "@min-[32rem]:col-span-1",
+              PAYMENT_ITEM,
             )
           : null}
         {f.symbols && paymentOrderEnabled
@@ -122,11 +129,11 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               ),
               undefined,
               undefined,
-              "@min-[32rem]:col-span-1",
+              PAYMENT_ITEM,
             )
           : null}
         {f.symbols && paymentOrderEnabled
-          ? text("specificSymbol", t.specificSymbol, 3, "@min-[32rem]:col-span-1")
+          ? text("specificSymbol", t.specificSymbol, 3, PAYMENT_ITEM)
           : null}
         {paymentMethodOptions
           ? field(
@@ -142,7 +149,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               />,
               undefined,
               undefined,
-              "@min-[32rem]:col-span-1",
+              PAYMENT_ITEM,
             )
           : null}
         {f.bankAccount && issuedDocument && !issuedBankAccountAbove && companyBankAccountOptions
@@ -161,8 +168,11 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               />,
               20,
               false,
-              "@min-[32rem]:col-span-3",
+              "basis-full",
             )
+          : null}
+        {f.bankAccount && !receivedDocument && !(issuedDocument && companyBankAccountOptions)
+          ? bankAccountField
           : null}
       </div>
     </Fragment>

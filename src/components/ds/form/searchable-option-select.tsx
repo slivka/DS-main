@@ -4,7 +4,8 @@
  * Nesmí: rozhodovat o doménovém významu hodnot.
  */
 import { useMemo, useState, type ReactNode } from "react";
-import { Check, ChevronDown, X } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import { FieldInlineActions } from "./field-inline-actions";
 
 import { Button } from "../../ui/button";
 import {
@@ -18,7 +19,16 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
-import type { SelectOption } from "./option-select";
+import { UnknownValue, type SelectOption } from "./option-select";
+import { useDsTexts } from "../../../ds-texts";
+
+/** Text pro hledání bez ohledu na diakritiku a velikost písmen. */
+export function normalizeSearchText(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase("cs");
+}
 
 /** Vlastnosti hledatelné větve OptionSelect. */
 export interface SearchableOptionSelectProps {
@@ -61,18 +71,28 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
     (option) => !option.inactive || option.value === props.value,
   );
   const filtered = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase("cs");
+    const needle = normalizeSearchText(query.trim());
     if (!needle) return offered;
     return offered.filter((option) => {
-      const text = typeof option.label === "string" ? option.label : option.searchText;
-      return (text ?? option.value).toLocaleLowerCase("cs").includes(needle);
+      const text = [
+        option.value,
+        option.searchText,
+        typeof option.label === "string" ? option.label : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      return normalizeSearchText(text).includes(needle);
     });
   }, [offered, query]);
-  const triggerLabel = selected
-    ? (props.selectedLabel?.(selected) ?? selected.selectedLabel ?? selected.label)
-    : props.value
-      ? props.unknownValueLabel
-      : props.emptyValueLabel;
+  const triggerLabel = selected ? (
+    (props.selectedLabel?.(selected) ?? selected.selectedLabel ?? selected.label)
+  ) : props.value ? (
+    <UnknownValue value={props.value} label={props.unknownValueLabel} />
+  ) : (
+    props.emptyValueLabel
+  );
+  const clearLabel = useDsTexts().documentForm.clear;
+  const showClear = Boolean(props.value && props.allowEmpty && !props.disabled);
 
   const choose = (value: string) => {
     props.onChange(value);
@@ -81,79 +101,69 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={props.id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-label={props.ariaLabel}
-          aria-expanded={open}
-          disabled={props.disabled}
-          className={cn(
-            "h-[var(--control-h)] w-full min-w-0 justify-between font-normal",
-            props.value ? "text-foreground" : "text-muted-foreground",
-            props.className,
-          )}
-          title={selected && typeof selected.label === "string" ? selected.label : undefined}
-        >
-          <span className="min-w-0 flex-1 truncate text-left">{triggerLabel}</span>
-          <span className="flex shrink-0 items-center gap-1">
-            {selected?.trailingLabel && !selected.inactive ? (
-              <span className="text-xs">{selected.trailingLabel}</span>
-            ) : null}
-            {props.value && props.allowEmpty ? (
-              <span
-                role="button"
-                tabIndex={0}
-                aria-label={String(props.emptyValueLabel)}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  choose("");
-                }}
-                onKeyDown={(event) => {
-                  if (event.key !== "Enter" && event.key !== " ") return;
-                  event.preventDefault();
-                  event.stopPropagation();
-                  choose("");
-                }}
-                className="rounded-md p-1 hover:bg-muted"
-              >
-                <X className="size-3.5" />
-              </span>
-            ) : null}
-            <ChevronDown className="size-4 opacity-50" />
-          </span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
-        <Command shouldFilter={false}>
-          <CommandInput
-            autoFocus
-            value={query}
-            onValueChange={setQuery}
-            placeholder={props.searchPlaceholder}
-          />
-          <CommandList>
-            <CommandEmpty>{props.noResultsLabel}</CommandEmpty>
-            <CommandGroup>
-              {filtered.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.searchText ?? String(option.label)}
-                  disabled={option.disabled || option.inactive}
-                  onSelect={() => choose(option.value)}
-                >
-                  <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                  {option.inactive ? <InactiveTag label={props.inactiveLabel} /> : null}
-                  {option.value === props.value ? <Check className="size-4" /> : null}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <div className="relative min-w-0">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            id={props.id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-label={props.ariaLabel}
+            aria-expanded={open}
+            disabled={props.disabled}
+            className={cn(
+              "h-[var(--control-h)] w-full min-w-0 justify-between font-normal",
+              props.value ? "text-foreground" : "text-muted-foreground",
+              showClear && "pr-10",
+              props.className,
+            )}
+            title={selected && typeof selected.label === "string" ? selected.label : undefined}
+          >
+            <span className="min-w-0 flex-1 truncate text-left">{triggerLabel}</span>
+            <span className="flex shrink-0 items-center gap-1">
+              {selected?.trailingLabel && !selected.inactive ? (
+                <span className="text-xs">{selected.trailingLabel}</span>
+              ) : null}
+              <ChevronDown className="size-4 opacity-50" />
+            </span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
+          <Command shouldFilter={false}>
+            <CommandInput
+              autoFocus
+              value={query}
+              onValueChange={setQuery}
+              placeholder={props.searchPlaceholder}
+            />
+            <CommandList>
+              <CommandEmpty>{props.noResultsLabel}</CommandEmpty>
+              <CommandGroup>
+                {filtered.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.searchText ?? String(option.label)}
+                    disabled={option.disabled || option.inactive}
+                    onSelect={() => choose(option.value)}
+                  >
+                    <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                    {option.inactive ? <InactiveTag label={props.inactiveLabel} /> : null}
+                    {option.value === props.value ? <Check className="size-4" /> : null}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {showClear ? (
+        <FieldInlineActions
+          className="right-8"
+          onClear={() => choose("")}
+          clearLabel={clearLabel}
+        />
+      ) : null}
+    </div>
   );
 }
