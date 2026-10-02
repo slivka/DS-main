@@ -685,6 +685,14 @@
   border-radius: var(--radius-md) !important;
 }
 
+/* Bezohraničená a ikonová tlačítka používají při zvýraznění stejné zaoblení
+   jako ostatní ovládací prvky. Segmenty a záložky si řídí vnitřní hrany samy. */
+[data-slot="button"]:is([data-variant="ghost"], [data-size="icon"]):not([role="radio"]):not(
+    [role="tab"]
+  ) {
+  border-radius: var(--radius-md);
+}
+
 .zoom-filters .grid-toolbar-group {
   height: var(--f-h);
   min-height: var(--f-h);

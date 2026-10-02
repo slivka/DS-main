@@ -68,7 +68,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
               htmlFor={controlId}
               title={typeof label === "string" ? label : undefined}
               className={cn(
-                "whitespace-normal text-sm font-normal leading-5",
+                "my-0 whitespace-normal text-sm font-normal leading-5",
                 disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
               )}
             >
@@ -165,7 +165,7 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
             htmlFor={controlId}
             title={typeof label === "string" ? label : undefined}
             className={cn(
-              "whitespace-normal font-medium leading-5",
+              "my-0 whitespace-normal font-medium leading-5",
               inactive ? "cursor-not-allowed" : "cursor-pointer",
               disabled && "opacity-60",
             )}
