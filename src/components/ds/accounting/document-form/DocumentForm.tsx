@@ -66,7 +66,7 @@ export function DocumentForm({
   counterpartyInputLockedReason,
   paymentOrderEnabled = true,
   onPaymentOrderEnabledChange,
-  isHomeCurrency = value.currency === homeCurrency,
+  isHomeCurrency,
   onManualBankAccountValidationChange,
   companyBankAccountDisabledReason,
   vatPartnerStatus,
@@ -116,6 +116,7 @@ export function DocumentForm({
   void description;
   void isNew;
   const dsTexts = useDsTexts();
+  const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [tab, setTab] = useState("lines");
@@ -269,7 +270,7 @@ export function DocumentForm({
     <ReceivedBankAccountField
       value={value.manualBankAccount ?? { text: "", iban: "", swift: "" }}
       onChange={(manualBankAccount) => patch({ manualBankAccount })}
-      isHomeCurrency={isHomeCurrency}
+      isHomeCurrency={homeCurrencyDocument}
       bankCodes={bankCodes}
       disabled={!can("bankAccount")}
       onValidationChange={onManualBankAccountValidationChange}

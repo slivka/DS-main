@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronDown, Plus } from "lucide-react";
+import { Check, ChevronDown, Pencil, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -39,6 +39,10 @@ export interface UnitSelectProps {
   createLabel?: (code: string) => string;
   className?: string;
   inactiveLabel?: string;
+  /** Otevře úpravu vybrané měrné jednotky. */
+  onEditSelected?: (id: string) => void;
+  /** Přístupný název tužky. */
+  editSelectedLabel?: string;
 }
 
 /** Výběr měrné jednotky s možností založit chybějící kód. */
@@ -58,6 +62,8 @@ export function UnitSelect({
   createLabel = (code) => `Přidat MJ „${code}“`,
   className,
   inactiveLabel = "neaktivní",
+  onEditSelected,
+  editSelectedLabel = "Upravit vybraný záznam",
 }: UnitSelectProps) {
   const [open, setOpen] = React.useState(defaultOpen);
   const [query, setQuery] = React.useState(initialSearch);
@@ -96,6 +102,27 @@ export function UnitSelect({
             {selected?.code ?? placeholder}
           </span>
           {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
+          {selected && onEditSelected && !disabled ? (
+            <span
+              role="button"
+              tabIndex={0}
+              title={editSelectedLabel}
+              aria-label={editSelectedLabel}
+              className="rounded-md p-1 hover:bg-muted"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+            >
+              <Pencil className="size-3.5" />
+            </span>
+          ) : null}
           <ChevronDown className="size-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

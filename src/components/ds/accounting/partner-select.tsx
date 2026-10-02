@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, Download, Plus } from "lucide-react";
+import { Check, ChevronDown, Download, Pencil, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import {
@@ -54,6 +54,8 @@ export function PartnerSelect({
   onKeyDown,
   id,
   className,
+  onEditSelected,
+  editSelectedLabel = "Upravit vybraný záznam",
 }: {
   partners: PartnerOption[];
   value: string | null | undefined;
@@ -75,6 +77,10 @@ export function PartnerSelect({
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   id?: string;
   className?: string;
+  /** Otevře úpravu právě vybraného partnera. */
+  onEditSelected?: (id: string) => void;
+  /** Přístupný název tužky. */
+  editSelectedLabel?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
@@ -121,6 +127,27 @@ export function PartnerSelect({
             {selected ? formatPartner(selected) : placeholder}
           </span>
           {selected?.active === false ? <InactiveTag label={inactiveLabel} /> : null}
+          {selected && onEditSelected && !disabled ? (
+            <span
+              role="button"
+              tabIndex={0}
+              title={editSelectedLabel}
+              aria-label={editSelectedLabel}
+              className="rounded-md p-1 hover:bg-muted"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                event.stopPropagation();
+                onEditSelected(selected.id);
+              }}
+            >
+              <Pencil className="size-3.5" />
+            </span>
+          ) : null}
           <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

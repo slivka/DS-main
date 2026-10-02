@@ -75,7 +75,10 @@ export function DocumentCounterpartyTab({
     <span className="flex min-w-0 items-center gap-2">
       <span className="truncate">{text}</span>
       {counterpartyManualFields.includes(key) ? (
-        <StatusBadge status="warning" label={texts.manuallyEdited} />
+        <StatusBadge
+          status="manual"
+          config={{ manual: { label: texts.manuallyEdited, tone: "warning" } }}
+        />
       ) : null}
     </span>
   );
@@ -104,8 +107,10 @@ export function DocumentCounterpartyTab({
           aside={
             counterpartyFrozenAt ? (
               <StatusBadge
-                status="neutral"
-                label={texts.frozenAt(counterpartyFrozenAt)}
+                status="frozen"
+                config={{
+                  frozen: { label: texts.frozenAt(counterpartyFrozenAt), tone: "neutral" },
+                }}
               />
             ) : null
           }
