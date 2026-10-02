@@ -163,9 +163,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               false,
               "@min-[32rem]:col-span-3",
             )
-          : f.bankAccount && !issuedDocument
-            ? bankAccountField
-            : null}
+          : null}
       </div>
     </Fragment>
   ) : null;

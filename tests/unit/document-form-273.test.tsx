@@ -210,7 +210,7 @@ describe("DocumentForm 2.73", () => {
     expect(
       supplierNumber?.compareDocumentPosition(account as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
+    expect(view.getAllByText("Nejdřív vyberte dodavatele")).toHaveLength(1);
     expect(view.queryByRole("checkbox", { name: /platebních příkazů/i })).toBeNull();
     expect(view.getByRole("button", { name: "Platit příkazem" })).toBeTruthy();
   });
