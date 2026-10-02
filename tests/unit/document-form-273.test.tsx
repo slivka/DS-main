@@ -204,9 +204,8 @@ describe("DocumentForm 2.73", () => {
     const exclude = view.container
       .querySelector("#document-exclude-payment-orders")
       ?.closest("[data-slot=checkbox-field]");
-    expect(exclude?.className).toContain("@min-[40rem]:mt-4");
-    expect(exclude?.className).toContain("[&_label]:whitespace-nowrap");
-    expect(exclude?.className).not.toContain("self-center");
+    expect(exclude?.getAttribute("data-align")).toBe("input");
+    expect(exclude?.querySelector('[role="checkbox"]')).toBeTruthy();
   });
 
   it("mění popisek čísla podle viditelné DPH", () => {

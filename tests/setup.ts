@@ -6,5 +6,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 if (!GlobalRegistrator.isRegistered) {
-  GlobalRegistrator.register({ url: "http://localhost/", width: 1600, height: 1000 });
+  GlobalRegistrator.register({ url: "http://localhost/", width: 1440, height: 1000 });
 }
