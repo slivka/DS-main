@@ -1217,7 +1217,6 @@
   width: 1.35em !important;
   min-height: 0 !important;
   padding: 0 !important;
-  border-radius: var(--radius-sm) !important;
   flex: none;
 }
 

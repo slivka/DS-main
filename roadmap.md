@@ -1,6 +1,6 @@
 ## DS 2.85.0 – Edit dokladu 9 + obecná pravidla
 - [x] Opravy po kontrole Clauda: body 1–18, rozdělení formuláře a ukázky pod 500 řádků
-- [ ] Poslední kontrola 2.85.0: pravidla, datum, platební checkbox, šířka Ř., ukázky, výběry a společné DOM testů
+- [x] Poslední kontrola 2.85.0: pravidla, datum, platební checkbox, šířka Ř., ukázky, výběry a společné DOM testů
 - [x] A1–A8: společné formátování kódů, prázdná pole, radius, volby, datumy a akce
 - [x] A: ukázka zaoblení, pravidla, BREAKING dokumentace a behavior testy
 - [x] B9–B19: pořadí sekcí, částka, datumy, rekapitulace, řádky, DPH a platební údaje
