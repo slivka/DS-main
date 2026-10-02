@@ -196,6 +196,12 @@ export type DocumentFormTexts = {
   bankAccountInvalid: string;
   bankCodeInvalid: string;
   otherBankAccount: string;
+  selectFromDirectory: string;
+  enterManually: string;
+  replaceManualCounterparty: string;
+  payByOrder: string;
+  paymentOrderDisabled: string;
+  payToBankAccount: string;
 };
 
 export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
@@ -269,6 +275,12 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   bankAccountInvalid: "Číslo účtu není platné.",
   bankCodeInvalid: "Kód banky není platný.",
   otherBankAccount: "Jiný účet",
+  selectFromDirectory: "Vybrat z adresáře",
+  enterManually: "Zadat ručně",
+  replaceManualCounterparty: "Ručně zadané údaje budou nahrazeny údaji partnera",
+  payByOrder: "Platit příkazem",
+  paymentOrderDisabled: "Doklad se nezahrnuje do platebních příkazů",
+  payToBankAccount: "Uhradit na bankovní účet",
 };
 
 /** Kurz DPH – stejný prvek jako kurz dokladu (automatický / ruční s důvodem). */
@@ -336,7 +348,7 @@ export interface DocumentFormProps {
   /** Důvod zakázání firemního účtu; hodnota se v tomto stavu nezobrazuje. */
   companyBankAccountDisabledReason?: string;
   /** Stav plátce DPH zobrazený v pruhu akcí. */
-  vatPartnerStatus?: { status: VatStatus; checkedAt?: string };
+  vatPartnerStatus?: { status: VatStatus; checkedAt?: string; unreliableSince?: string | Date | null };
   /** Hotová záložka odběratele; zobrazí se jen u vydaného dokladu. */
   counterpartyTab?: Omit<DocumentCounterpartyTabProps, "partnerId" | "readOnly">;
   /** Hotová záložka tiskových údajů; zobrazí se jen u vydaného dokladu. */

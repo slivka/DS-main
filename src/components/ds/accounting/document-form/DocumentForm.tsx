@@ -13,6 +13,10 @@ import {
   type DocumentFields,
 } from "../document-fields";
 import { BankAccountField } from "../bank-account-field";
+import { ReceivedBankAccountField } from "../received-bank-account-field";
+import { PaymentOrderAccountField } from "../payment-order-account-field";
+import { OptionSelect } from "../../form/option-select";
+import { FieldValue } from "../../form/field-value";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -57,6 +61,14 @@ export function DocumentForm({
   paymentMethodOptions,
   companyBankAccountOptions,
   onAddBankAccount,
+  counterpartyInput = "partner",
+  onCounterpartyInputChange,
+  counterpartyInputLockedReason,
+  paymentOrderEnabled = true,
+  onPaymentOrderEnabledChange,
+  isHomeCurrency = value.currency === homeCurrency,
+  onManualBankAccountValidationChange,
+  companyBankAccountDisabledReason,
   vatPartnerStatus,
   counterpartyTab,
   printTab,
@@ -235,31 +247,77 @@ export function DocumentForm({
     t,
     field,
   });
-  const bankAccountField = field(
-    "document-bankAccount",
-    t.bankAccount,
+  const activePartnerAccount = (
     <BankAccountField
       id="document-bankAccount"
       aria-label={t.bankAccount}
-      value={receivedDocument ? (value.partnerBankAccountId ?? "") : (value.bankAccount ?? "")}
-      onChange={(next) =>
-        receivedDocument ? patch({ partnerBankAccountId: next }) : patch({ bankAccount: next })
-      }
-      disabled={!can("bankAccount") || (receivedDocument && !value.partnerId)}
+      value={value.partnerBankAccountId ?? ""}
+      onChange={(partnerBankAccountId) => patch({ partnerBankAccountId })}
+      disabled={!can("bankAccount") || !value.partnerId}
       options={bankAccountOptions}
       bankCodes={bankCodes}
       invalidAccountText={t.bankAccountInvalid}
       invalidBankCodeText={t.bankCodeInvalid}
       otherAccountText={t.otherBankAccount}
-      selectionOnly={receivedDocument}
-      onAddAccount={receivedDocument ? onAddBankAccount : undefined}
+      selectionOnly
+      onAddAccount={onAddBankAccount}
       addAccountText={t.addBankAccount}
-      disabledReason={receivedDocument && !value.partnerId ? t.selectSupplierFirst : undefined}
-    />,
-    receivedDocument ? 20 : 6,
-    false,
-    undefined,
+      disabledReason={!value.partnerId ? t.selectSupplierFirst : undefined}
+    />
   );
+  const activeManualAccount = (
+    <ReceivedBankAccountField
+      value={value.manualBankAccount ?? { text: "", iban: "", swift: "" }}
+      onChange={(manualBankAccount) => patch({ manualBankAccount })}
+      isHomeCurrency={isHomeCurrency}
+      bankCodes={bankCodes}
+      disabled={!can("bankAccount")}
+      onValidationChange={onManualBankAccountValidationChange}
+    />
+  );
+  const receivedBankControl = (
+    <PaymentOrderAccountField
+      enabled={paymentOrderEnabled}
+      onEnabledChange={onPaymentOrderEnabledChange}
+      enabledLabel={t.payByOrder}
+      disabledLabel={t.excludeFromPaymentOrders}
+      disabledReason={t.paymentOrderDisabled}
+    >
+      {counterpartyInput === "partner" ? activePartnerAccount : activeManualAccount}
+    </PaymentOrderAccountField>
+  );
+  const bankAccountField = field(
+    "document-bankAccount",
+    t.bankAccount,
+    receivedDocument ? receivedBankControl : null,
+    receivedDocument ? 14 : 6,
+    false,
+    receivedDocument ? "@min-[40rem]:col-span-14" : undefined,
+  );
+  const issuedBankAccountAbove =
+    issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
+  const companyAccountField =
+    issuedBankAccountAbove && f.bankAccount && companyBankAccountOptions
+      ? field(
+          "document-companyBankAccountId",
+          t.payToBankAccount,
+          companyBankAccountDisabledReason ? (
+            <FieldValue lockedReason={companyBankAccountDisabledReason} />
+          ) : (
+            <OptionSelect
+              id="document-companyBankAccountId"
+              value={value.companyBankAccountId}
+              onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+              options={companyBankAccountOptions.map((option) => ({
+                value: option.id,
+                label: [option.label, option.account, option.currency].join(" · "),
+              }))}
+              disabled={!can("companyBankAccountId")}
+            />
+          ),
+          20,
+        )
+      : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     const roundingLine = lines.find((line) => line.isRounding);
@@ -408,6 +466,11 @@ export function DocumentForm({
             onAccountClose={closeIdentityAccount}
             accountOptions={allowedMainAccounts}
           />
+          {companyAccountField ? (
+            <div data-slot="company-bank-account-above" className="grid grid-cols-20 gap-3">
+              {companyAccountField}
+            </div>
+          ) : null}
           {f.partner ? (
             <DocumentBasicSection
               f={f}
@@ -429,6 +492,11 @@ export function DocumentForm({
               handedOverBySuggest={handedOverBySuggest}
               descriptionSuggest={descriptionSuggest}
               externalNumberField={externalNumberField}
+              receivedDocument={receivedDocument}
+              bankAccountField={bankAccountField}
+              counterpartyInput={counterpartyInput}
+              onCounterpartyInputChange={onCounterpartyInputChange}
+              counterpartyInputLockedReason={counterpartyInputLockedReason}
             />
           ) : null}
           <DocumentDatesSection
@@ -451,8 +519,9 @@ export function DocumentForm({
             value={value}
             patch={patch}
             can={can}
-            receivedDocument={receivedDocument}
             issuedDocument={issuedDocument}
+            issuedBankAccountAbove={issuedBankAccountAbove}
+            paymentOrderEnabled={paymentOrderEnabled}
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
