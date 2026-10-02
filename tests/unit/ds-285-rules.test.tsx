@@ -97,9 +97,13 @@ describe("DS 2.85.0 – obecná pravidla", () => {
         />
       </div>,
     );
+    const host = document.createElement("div");
+    host.innerHTML = html;
     for (const id of ["alignment-checkbox", "alignment-switch"]) {
-      const labelClass = new RegExp(`<label[^>]*for="${id}"[^>]*class="([^"]*)"`).exec(html)?.[1];
-      expect(labelClass?.split(" ")).toEqual(expect.arrayContaining(["my-0", "leading-5"]));
+      const label = host.querySelector<HTMLLabelElement>(`label[for="${id}"]`);
+      expect(label).toBeTruthy();
+      expect(label?.classList.contains("my-0")).toBe(true);
+      expect(label?.classList.contains("leading-5")).toBe(true);
     }
   });
 
