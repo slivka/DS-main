@@ -12,6 +12,7 @@ const { PaymentOrderAccountField } =
 const { OptionSelect } = await import("../../src/components/ds/form/option-select");
 const { journalColumnDefs } = await import("../../src/components/ds/accounting/journal-columns");
 const { DS_TEXTS_CS } = await import("../../src/ds-texts");
+const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 
 afterEach(cleanup);
 
@@ -21,7 +22,7 @@ describe("DS 2.86.0", () => {
     const partnerChange = mock();
     const nameChange = mock();
     const view = render(
-      <CounterpartyInputField
+      <TooltipProvider><CounterpartyInputField
         mode="partner"
         partnerId="p1"
         name="Firma"
@@ -32,7 +33,7 @@ describe("DS 2.86.0", () => {
         partnerModeLabel="Vybrat z adresáře"
         manualModeLabel="Zadat ručně"
         replaceManualWarning="Ručně zadané údaje budou nahrazeny údaji partnera"
-      />,
+      /></TooltipProvider>,
     );
     fireEvent.click(view.getByRole("button", { name: "Zadat ručně" }));
     expect(change).toHaveBeenCalledWith("manual");
@@ -72,7 +73,7 @@ describe("DS 2.86.0", () => {
   it("vypnutý platební příkaz schová účet, ale zachová řízenou hodnotu", () => {
     const change = mock();
     const view = render(
-      <PaymentOrderAccountField
+      <TooltipProvider><PaymentOrderAccountField
         enabled={false}
         onEnabledChange={change}
         enabledLabel="Platit příkazem"
@@ -80,7 +81,7 @@ describe("DS 2.86.0", () => {
         disabledReason="Doklad se nezahrnuje do platebních příkazů"
       >
         <span>19-2000145399/0800</span>
-      </PaymentOrderAccountField>,
+      </PaymentOrderAccountField></TooltipProvider>,
     );
     expect(view.queryByText("19-2000145399/0800")).toBeNull();
     fireEvent.click(view.getByRole("button", { name: "Nezahrnovat do platebních příkazů" }));
@@ -99,7 +100,7 @@ describe("DS 2.86.0", () => {
       />,
     );
     fireEvent.click(view.getByRole("combobox"));
-    fireEvent.change(view.getByRole("searchbox"), { target: { value: "zboží" } });
+    fireEvent.change(view.getAllByRole("combobox")[1], { target: { value: "zboží" } });
     fireEvent.click(view.getByRole("option", { name: "0308 – Platby za zboží" }));
     expect(change).toHaveBeenCalledWith("0308");
   });
