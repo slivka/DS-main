@@ -91,8 +91,8 @@ describe("neuložené změny v panelech (2.86.0)", () => {
       6,
       (id) => id === "t-5" || id === "t-6",
     );
-    expect(result.visible.map((tab) => tab.id)).toEqual(["t-4", "t-5", "t-6", "t-7"]);
-    expect(result.hidden.map((tab) => tab.id)).toEqual(["t-0", "t-1", "t-2", "t-3"]);
+    expect(result.visible.map((tab) => tab.id)).toEqual(["t-3", "t-4", "t-5", "t-6", "t-7"]);
+    expect(result.hidden.map((tab) => tab.id)).toEqual(["t-0", "t-1", "t-2"]);
   });
 
   it("Uložit a pokračovat volá obsluhu pro dotčenou záložku, ne aktivní panel", async () => {
@@ -149,7 +149,7 @@ describe("neuložené změny v panelech (2.86.0)", () => {
 
   it("při limitu nabídne aplikací předanou akci otevření v nové záložce", () => {
     const { state, dirty } = twoPanes();
-    state.panes[0].tabs = Array.from({ length: 12 }, (_, index) =>
+    state.panes[0].tabs = Array.from({ length: 10 }, (_, index) =>
       index === 0
         ? dirty
         : { ...createTab({ route: `/x-${index}`, title: `X ${index}` }), id: `x-${index}` },
@@ -157,7 +157,7 @@ describe("neuložené změny v panelech (2.86.0)", () => {
     state.panes[0].activeTab = dirty.id;
     const open = mock();
     const { view, api } = mount({ ...state, active: state.panes[0].id });
-    act(() => setTabDirty(dirty.id, true));
+    act(() => state.panes[0].tabs.forEach((tab) => setTabDirty(tab.id, true)));
     act(() => api().openTab("/novy", undefined, { title: "Nový", onOpenInNewTab: open }));
     fireEvent.click(view.getByRole("button", { name: "Otevřít v nové záložce" }));
     expect(open).toHaveBeenCalledTimes(1);
