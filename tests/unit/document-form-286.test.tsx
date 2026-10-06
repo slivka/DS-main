@@ -80,7 +80,7 @@ describe("DocumentForm 2.86.0 – chování", () => {
         counterpartyTab={{ value: cpValue, onChange: () => {} }}
       />,
     );
-    expect(view.getByText("Odběratel s.r.o.")).toBeTruthy();
+    expect(view.getByDisplayValue("Odběratel s.r.o.")).toBeTruthy();
     fireEvent.click(view.getByRole("tab", { name: /Řádky/ }));
     expect(change).toHaveBeenCalledWith("lines");
   });
