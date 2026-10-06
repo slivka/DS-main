@@ -81,7 +81,7 @@ describe("DocumentForm 2.86.0 – chování", () => {
       />,
     );
     expect(view.getByDisplayValue("Odběratel s.r.o.")).toBeTruthy();
-    fireEvent.click(view.getByRole("tab", { name: /Řádky/ }));
+    fireEvent.mouseDown(view.getByRole("tab", { name: /Řádky/ }), { button: 0 });
     expect(change).toHaveBeenCalledWith("lines");
   });
 
