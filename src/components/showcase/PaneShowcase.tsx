@@ -21,6 +21,7 @@ import {
   requiredPaneWidth,
   serializePaneTabs,
   setTabDirty,
+  UnsavedChangesDialog,
   usePane,
   usePaneTabs,
   useTabDirty,
@@ -384,6 +385,7 @@ function DemoMenu({
   setLayouts: (update: (items: StoredLayout[]) => StoredLayout[]) => void;
 }) {
   const tabs = usePaneTabs();
+  const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <nav
       aria-label="Ukázkové menu"
@@ -428,6 +430,27 @@ function DemoMenu({
         >
           Ukázka přeplnění lišty
         </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="w-full"
+          onClick={() => setDialogOpen(true)}
+        >
+          Dialog s novou záložkou
+        </Button>
+        <UnsavedChangesDialog
+          open={dialogOpen}
+          tabTitle="FP 2026/15"
+          intent="Obsah záložky se nahradí dokladem FV 2026/3."
+          onSave={() => setDialogOpen(false)}
+          onDiscard={() => setDialogOpen(false)}
+          onBack={() => setDialogOpen(false)}
+          onOpenInNewTab={() => {
+            setDialogOpen(false);
+            tabs?.openTab("/faktury", undefined, { target: "newTab", title: "FV 2026/3" });
+          }}
+        />
         <Button
           type="button"
           size="sm"
