@@ -7,10 +7,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { toast } from "sonner";
 import { useDsTexts } from "../../../ds-texts";
 import { PaneTabsContext } from "./pane-context-hooks";
-import {
-  PaneUnsavedController,
-  type PendingUnsaved,
-} from "./pane-unsaved-controller";
+import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
 import {
   DEFAULT_PANE_TABS_TEXTS,
   type OpenTabOptions,
