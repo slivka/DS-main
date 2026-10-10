@@ -1843,7 +1843,8 @@ import { FieldInlineActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `editLabel` | string | `—` |
 | `onClear` | function | `—` |
 | `clearLabel` | string | `—` |
-| `className` | string | `size-7` |
+| `size` | "default" \| "compact" | `default` |
+| `className` | string | `—` |
 
 ### FieldTable
 

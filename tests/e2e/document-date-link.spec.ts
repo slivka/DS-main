@@ -8,10 +8,13 @@ test("svázané datum se kliknutím odemkne a dostane fokus", async ({ page }) =
   });
   await expect(unlock).toHaveAttribute("aria-pressed", "true");
   await expect(section.getByRole("button", { name: "Otevřít kalendář" })).toHaveCount(2);
-  await unlock.click();
-  await expect(
-    section.getByRole("button", { name: "Znovu svázat s datem vystavení" }),
-  ).toHaveAttribute("aria-pressed", "false");
+  // Velká stránka: klik před hydratací nic neudělá, proto opakujeme až do odezvy.
+  await expect(async () => {
+    if ((await unlock.count()) > 0) await unlock.click();
+    await expect(
+      section.getByRole("button", { name: "Znovu svázat s datem vystavení" }),
+    ).toHaveAttribute("aria-pressed", "false", { timeout: 1000 });
+  }).toPass({ timeout: 30_000 });
   await expect(section.locator("#document-accountingDate")).toBeFocused();
   await expect(section.getByRole("button", { name: "Otevřít kalendář" })).toHaveCount(3);
 });

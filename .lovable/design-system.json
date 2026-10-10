@@ -5383,9 +5383,15 @@
           "type": "string"
         },
         {
+          "name": "size",
+          "type": "\"default\" | \"compact\"",
+          "default": "default",
+          "description": "Velikost tlačítek: výchozí pro pole, kompaktní pro buňku gridu."
+        },
+        {
           "name": "className",
           "type": "string",
-          "default": "size-7"
+          "description": "Umístění (výchozí vpravo před šipkou rozbalení)."
         }
       ],
       "usage": "Samostatné ikonové akce výběru v pevně vyhrazeném místě vlevo od šipky. Hodnotu a nabídku řídí rodič.",

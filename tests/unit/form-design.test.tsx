@@ -107,6 +107,28 @@ describe("Design formulářů", () => {
       ).toBeTruthy();
     }
   });
+  it("přijatý doklad bez Bankovního účtu drží číslo dokladu vlevo bez col-start-15", () => {
+    const view = render(
+      <TooltipProvider>
+        <DocumentForm {...formProps} fields={{ bankAccount: false }} />
+      </TooltipProvider>,
+    );
+    expect(view.queryByRole("combobox", { name: "Bankovní účet" })).toBeNull();
+    const input = view.container.querySelector("#document-externalNumber");
+    const cell = input?.closest('[class*="col-span"]');
+    expect(cell).toBeTruthy();
+    expect(cell?.className).not.toContain("col-start-15");
+    expect(cell?.className).toContain("@min-[40rem]:col-span-6");
+    view.rerender(
+      <TooltipProvider>
+        <DocumentForm {...formProps} />
+      </TooltipProvider>,
+    );
+    const withAccount = view.container
+      .querySelector("#document-externalNumber")
+      ?.closest('[class*="col-span"]');
+    expect(withAccount?.className).toContain("@min-[40rem]:col-start-15");
+  });
   it("pevná měna má čitelnou hodnotu bez šipky; změna režimu vrací výběr", () => {
     const view = render(
       <TooltipProvider>
