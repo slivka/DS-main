@@ -183,7 +183,7 @@ async function inspectWorkbook(filePath: string) {
   };
   const debitAccountNameColumn = headerIndex("MD účet");
   const debitAccountCell = sheet.getCell(5, debitAccountNameColumn);
-  expect(debitAccountCell.value).toBe("321.100 - Závazky");
+  expect(debitAccountCell.value).toBe("321.100 – Závazky");
   expect(debitAccountCell.type, "Účet musí být v Excelu uložen jako text").toBe(
     ExcelJS.ValueType.String,
   );
