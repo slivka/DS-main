@@ -301,7 +301,7 @@ import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 import { BankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr nabídnutého českého účtu nebo ruční zadání. Neúplný ruční účet ověří po opuštění pole a vstup ukládá bez mezer.
+Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem.
 
 **Props:**
 
@@ -318,10 +318,8 @@ Výběr nabídnutého českého účtu nebo ruční zadání. Neúplný ruční 
 | `selectionOnly` | boolean | `false` |
 | `onAddAccount` | function | `—` |
 | `addAccountText` | string | `—` |
-| `disabledReason` | string | `—` |
 | `placeholder` | string | `—` |
-
-V režimu výběru se `disabledReason` (jinak `placeholder`) zobrazí jako tlumená výzva uvnitř pole; pod polem ani v tooltipu se neopakuje. V ručním režimu zůstává pole prázdné.
+| `disabledReason` | string | `—` |
 
 **Examples:**
 
@@ -334,6 +332,7 @@ _Účet dodavatele_
 
 - Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.
 - Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.
+- Neopakujte disabledReason pod polem ani v duplicitním tooltipu.
 
 ### BarBreakdownChart
 
@@ -1399,6 +1398,19 @@ import { DialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.
+
+**Examples:**
+
+_Výběr hodnoty_
+```tsx
+<DimensionSelect value={value} onChange={setValue} options={options} />
+```
+
+**Avoid:**
+
+- Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+
 ### DocumentActionBar
 
 ```ts
@@ -1835,6 +1847,8 @@ _Jméno osoby_
 import { FieldInlineActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Samostatné ikonové akce výběru v pevně vyhrazeném místě vlevo od šipky. Hodnotu a nabídku řídí rodič.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -1843,8 +1857,20 @@ import { FieldInlineActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-
 | `editLabel` | string | `—` |
 | `onClear` | function | `—` |
 | `clearLabel` | string | `—` |
-| `size` | "default" \| "compact" | `default` |
-| `className` | string | `—` |
+| `size` | default · compact | `default` |
+| `className` | string | `size-3.5` |
+
+**Examples:**
+
+_Vymazání výběru_
+```tsx
+<FieldInlineActions onClear={() => setValue("")} clearLabel={texts.documentForm.clear} />
+```
+
+**Avoid:**
+
+- Nevnořujte do tlačítka spouštěče.
+- Nevyhraďte místo odsazením, které zároveň posune šipku.
 
 ### FieldTable
 
@@ -2491,7 +2517,7 @@ _Výběr_
 import { Input } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Textový vstup. Krátký vzor zápisu hodnoty předávejte přes `formatPattern` (vykreslí se tlumeně jako placeholder); holý `placeholder` u vstupů nepoužívejte. Vysvětlení patří pod sekci (`FieldGrid.hint`).
+Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci.
 
 **Props:**
 
@@ -2501,6 +2527,7 @@ Textový vstup. Krátký vzor zápisu hodnoty předávejte přes `formatPattern`
 
 **Examples:**
 
+_Vzor čísla účtu_
 ```tsx
 <Input value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} />
 ```
@@ -2995,6 +3022,7 @@ _Pojmenovaný výběr_
 **Avoid:**
 
 - Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.
+- Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
 ### PageHeader
 
@@ -3270,6 +3298,17 @@ import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```
 
 Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.
+
+**Examples:**
+
+_Výběr hodnoty_
+```tsx
+<PartnerSelect value={value} onChange={setValue} options={options} />
+```
+
+**Avoid:**
+
+- Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
 ### PaymentOrderAccountField
 
@@ -4565,6 +4604,8 @@ import { TruncatedText } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -4586,6 +4627,17 @@ import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `inactiveLabel` | string | `neaktivní` |
 | `onEditSelected` | function | `—` |
 | `editSelectedLabel` | string | `—` |
+
+**Examples:**
+
+_Výběr hodnoty_
+```tsx
+<UnitSelect value={value} onChange={setValue} options={options} />
+```
+
+**Avoid:**
+
+- Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
 ### UnknownValue
 
