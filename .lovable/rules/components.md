@@ -1171,35 +1171,6 @@ _Výběr partnera_
 
 - Nepoužívejte prázdný vlastní seznam místo předání všech aktivních partnerů.
 
-### CounterpartyInputField
-
-```ts
-import { CounterpartyInputField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `mode` | partner · manual | `—` |
-| `partnerId` | string | `—` |
-| `name` | string | `—` |
-| `partners` | any | `—` |
-| `onPartnerChange` | function | `—` |
-| `onNameChange` | function | `—` |
-| `onModeChange` | function | `—` |
-| `lockedReason` | string | `—` |
-| `disabled` | boolean | `—` |
-| `ariaLabel` | string | `—` |
-| `partnerModeLabel` | string | `—` |
-| `manualModeLabel` | string | `—` |
-| `replaceManualWarning` | string | `—` |
-| `hasManualData` | boolean | `—` |
-| `id` | string | `—` |
-| `readOnly` | boolean | `—` |
-| `onCreatePartner` | function | `—` |
-| `onEditPartner` | function | `—` |
-
 ### CountrySelect
 
 ```ts
@@ -1417,14 +1388,6 @@ import { DocumentCounterpartyTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-
 | `partnerId` | string | `—` |
 | `onReloadFromPartner` | function | `—` |
 | `readOnly` | boolean | `false` |
-| `counterpartyLocked` | boolean | `false` |
-| `counterpartyLockedReason` | string | `—` |
-| `counterpartyManualFields` | any | `—` |
-| `onRefreshCounterparty` | function | `—` |
-| `refreshCounterpartyWarning` | string | `—` |
-| `counterpartyFrozenAt` | string | `—` |
-| `countries` | any | `—` |
-| `showCountryCode` | boolean | `false` |
 
 ### DocumentDirectionBadge
 
@@ -1825,22 +1788,6 @@ _Jméno osoby_
 **Avoid:**
 
 - Nepoužívejte ruční CSS grid pro standardní formulářové řádky.
-
-### FieldInlineActions
-
-```ts
-import { FieldInlineActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `onEdit` | function | `—` |
-| `editLabel` | string | `—` |
-| `onClear` | function | `—` |
-| `clearLabel` | string | `—` |
-| `className` | string | `size-7` |
 
 ### FieldTable
 
@@ -3219,13 +3166,12 @@ Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; 
 
 | Prop | Type | Default |
 |---|---|---|
-| `state` | any | `—` |
+| `state` | any | `open` |
 | `onChange` | function | `—` |
 | `onSaveTab` | function | `—` |
 | `onNewTabRequest` | function | `—` |
 | `shortcuts` | boolean | `true` |
 | `texts` | any | `—` |
-| `onNotice` | function | `—` |
 | `children` | any | `—` |
 
 **Examples:**
@@ -3248,23 +3194,6 @@ import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 ```
 
 Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.
-
-### PaymentOrderAccountField
-
-```ts
-import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `enabled` | boolean | `—` |
-| `onEnabledChange` | function | `—` |
-| `children` | any | `—` |
-| `enabledLabel` | string | `—` |
-| `disabledLabel` | string | `—` |
-| `disabledReason` | string | `—` |
 
 ### PaymentScheduleEditor
 
@@ -3490,24 +3419,6 @@ _Kurz EUR_
 ```ts
 import { ReadOnlyBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-### ReceivedBankAccountField
-
-```ts
-import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | any | `—` |
-| `onChange` | function | `—` |
-| `isHomeCurrency` | boolean | `—` |
-| `bankCodes` | any | `—` |
-| `disabled` | boolean | `—` |
-| `onValidationChange` | function | `—` |
-| `texts` | object | `—` |
 
 ### RecordActionBar
 
@@ -4560,35 +4471,8 @@ import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `searchPlaceholder` | string | `Hledat kód nebo název…` |
 | `emptyText` | string | `Žádná měrná jednotka nenalezena` |
 | `createLabel` | function | `—` |
-| `className` | string | `relative h-full min-w-0` |
+| `className` | string | `size-3.5 shrink-0 opacity-50` |
 | `inactiveLabel` | string | `neaktivní` |
-| `onEditSelected` | function | `—` |
-| `editSelectedLabel` | string | `—` |
-
-### UnknownValue
-
-```ts
-import { UnknownValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-### UnsavedChangesDialog
-
-```ts
-import { UnsavedChangesDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `open` | boolean | `—` |
-| `tabTitle` | string | `—` |
-| `intent` | string | `—` |
-| `saving` | boolean | `—` |
-| `onSave` | function | `—` |
-| `onDiscard` | function | `—` |
-| `onBack` | function | `—` |
-| `onOpenInNewTab` | function | `—` |
 
 ### UserMenu
 

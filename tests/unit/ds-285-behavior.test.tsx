@@ -84,7 +84,7 @@ describe("DS 2.85.0 – chování výběrů", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("zakázaný účet zobrazí důvod pod polem i v tooltipu", async () => {
+  it("zakázaný účet zobrazí důvod uvnitř pole bez duplicitního tooltipu", () => {
     const view = render(
       <BankAccountField
         value=""
@@ -95,10 +95,11 @@ describe("DS 2.85.0 – chování výběrů", () => {
       />,
     );
     expect(view.getByText("Nejdřív vyberte dodavatele")).toBeTruthy();
-    const triggerWrapper = view.getByRole("combobox").parentElement;
-    expect(triggerWrapper).toBeTruthy();
-    fireEvent.focus(triggerWrapper as Element);
-    expect((await view.findByRole("tooltip")).textContent).toContain("Nejdřív vyberte dodavatele");
+    const trigger = view.getByRole("combobox");
+    expect(trigger.textContent).toBe("Nejdřív vyberte dodavatele");
+    expect(view.container.querySelector("p")).toBeNull();
+    fireEvent.focus(trigger);
+    expect(view.queryByRole("tooltip")).toBeNull();
   });
 
   it("tužka upraví jen vybranou editovatelnou hodnotu", () => {

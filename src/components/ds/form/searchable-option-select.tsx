@@ -113,20 +113,28 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
             aria-expanded={open}
             disabled={props.disabled}
             className={cn(
-              "h-[var(--control-h)] w-full min-w-0 justify-between font-normal",
+              "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
               props.value ? "text-foreground" : "text-muted-foreground",
-              showClear && "pr-10",
+              showClear && "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
               props.className,
             )}
             title={selected && typeof selected.label === "string" ? selected.label : undefined}
           >
-            <span className="min-w-0 flex-1 truncate text-left">{triggerLabel}</span>
+            <span
+              className="min-w-0 flex-1 truncate text-left"
+              title={!props.value && typeof triggerLabel === "string" ? triggerLabel : undefined}
+            >
+              {triggerLabel}
+            </span>
             <span className="flex shrink-0 items-center gap-1">
               {selected?.trailingLabel && !selected.inactive ? (
                 <span className="text-xs">{selected.trailingLabel}</span>
               ) : null}
-              <ChevronDown className="size-4 opacity-50" />
             </span>
+            <ChevronDown
+              data-slot="select-chevron"
+              className="absolute right-4 top-1/2 size-4 -translate-y-1/2 opacity-50"
+            />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
@@ -157,13 +165,7 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      {showClear ? (
-        <FieldInlineActions
-          className="right-8"
-          onClear={() => choose("")}
-          clearLabel={clearLabel}
-        />
-      ) : null}
+      {showClear ? <FieldInlineActions onClear={() => choose("")} clearLabel={clearLabel} /> : null}
     </div>
   );
 }

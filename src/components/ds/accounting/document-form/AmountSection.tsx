@@ -138,11 +138,11 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         ) : null}
         <div
           data-slot="document-total-currency-pair"
-          className="order-1 flex min-w-0 max-w-full shrink-0 items-start gap-3"
+          className="order-1 flex min-w-0 max-w-full shrink-0 flex-wrap items-start justify-end gap-3"
         >
           <div
             data-slot="document-amount-total"
-            className="min-w-[9rem] flex-[0_1_18rem] @min-[30rem]:min-w-[11.5rem]"
+            className="min-w-[min(11.5rem,100%)] flex-[0_1_18rem]"
           >
             {field(
               "document-amountTotal",
@@ -203,10 +203,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
               6,
             )}
           </div>
-          <div
-            data-slot="document-currency-cell"
-            className="w-[6.5rem] shrink-0 has-[[data-currency-fixed]]:w-max has-[[data-currency-fixed]]:[&_[data-slot=field]]:relative has-[[data-currency-fixed]]:[&_label]:absolute has-[[data-currency-fixed]]:[&_label]:right-0 has-[[data-currency-fixed]]:[&_label]:top-0 has-[[data-currency-fixed]]:[&_label]:max-w-none has-[[data-currency-fixed]]:[&_label]:overflow-visible has-[[data-currency-fixed]]:[&_[data-currency-fixed]]:mt-5"
-          >
+          <div data-slot="document-currency-cell" className="w-[6.5rem] shrink-0">
             {field("document-currency", t.currency, currencyControl, 3)}
           </div>
         </div>

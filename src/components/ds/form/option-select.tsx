@@ -1,3 +1,4 @@
+/** Výběr DS; vlastní nabídku a výzvu, nesmí znát význam doménových hodnot. */
 import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
@@ -23,7 +24,7 @@ const EMPTY = "__empty__";
 
 /**
  * Sdílený výběr ze seznamu (nahrazuje nativní <select>).
- * Prázdná hodnota sa mapuje na interní klíč, lebo Radix Select nepodporuje prázdný value.
+ * Prázdná hodnota se mapuje na interní klíč, protože Radix Select nepodporuje prázdný value.
  */
 export function OptionSelect({
   value,
@@ -79,7 +80,7 @@ export function OptionSelect({
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
-  const emptyValueLabel = placeholderValueLabel ?? resolvedEmptyLabel;
+  const emptyValueLabel = placeholderValueLabel ?? placeholder ?? resolvedEmptyLabel;
   const selectedContent =
     current === "" && allowEmpty ? (
       emptyValueLabel
@@ -137,8 +138,10 @@ export function OptionSelect({
         )}
       >
         <SelectValue placeholder={resolvedPlaceholder}>
-          <span className="flex min-w-0 items-center justify-between gap-3">
-            <span className="truncate">{triggerLabel ?? resolvedPlaceholder}</span>
+          <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+            <span className="truncate" title={current === "" ? resolvedPlaceholder : undefined}>
+              {triggerLabel ?? resolvedPlaceholder}
+            </span>
             {selectedOption?.trailingLabel && !selectedOption.inactive ? (
               <span className="shrink-0 text-xs">{selectedOption.trailingLabel}</span>
             ) : null}
@@ -159,7 +162,7 @@ export function OptionSelect({
             disabled={o.disabled || o.inactive}
             className={cn(o.muted && "text-muted-foreground")}
           >
-            <span className="flex min-w-0 items-center justify-between gap-3">
+            <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
               <span className="truncate">{o.label}</span>
               {o.inactive ? (
                 <InactiveTag label={resolvedInactiveLabel} />

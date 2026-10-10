@@ -2,17 +2,17 @@
 
 ## Dialogy záznamů
 
-Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
+Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nikdy nesmí rozhodit výšku řádku polí. Vzor formátu patří do pole přes `Input.formatPattern`, vysvětlení pod sekci přes `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
 
 - Kód a název oddělujte výhradně řetězcem „ – “ přes `formatCodeName`; ruční skládání je zakázané.
-- Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu.
+- Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu. Jediná výjimka pro vstup: krátký vzor zápisu hodnoty (např. „předčíslí-číslo“) přes `Input.formatPattern`, tlumeně `placeholder:text-muted-foreground`; nikdy popisná nápověda, příklad hodnoty ani opakování popisku. Holý `placeholder` pro tento účel nepoužívej.
 - Ovládací prvky, segmenty, štítky a ikonová tlačítka používají poloměr `0.25rem`; dialogy, karty, panely a nabídky `0.375rem`.
 - Pruh akcí řadí hlavní krok `outline`, poté plné primární Uložit a nakonec nabídku dalších akcí.
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
 - FV/ZFV začínají polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
 - Protistrana používá řízený ikonový přepínač Vybraný/Ručně. DS při změně režimu data nemaže; při návratu k adresáři potvrzuje nahrazení ručních údajů.
-- Přijatý doklad má účet v Základních údajích vedle čísla dodavatele. Přepínač platebního příkazu je uvnitř pole; vypnutí skryje KS a SS.
+- Přijatý doklad má účet v Základních údajích pod Dodavatelem vlevo; číslo dokladu je pod IČO + DIČ vpravo. DOM a Tab pořadí: Dodavatel → IČO → DIČ → případně Předal/Převzal → účet → číslo dokladu → Popis; pod 40rem stejná posloupnost pod sebou. Přepínač platebního příkazu je uvnitř pole; vypnutí skryje KS a SS.
 - VS je vždy zarovnaný vlevo a používá tabulkové číslice; gridy skládají sloupec přes `vsColumn()`.
 - Zaškrtávátko a přepínač vystřeďte obalem výšky prvního řádku popisku (`h-5`); nepoužívejte pevný svislý posun.
 

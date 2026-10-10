@@ -1,3 +1,12 @@
+## DS 2.90.0 – Design formulářů
+- [x] Pořadí účtu a čísla přijatého dokladu, lícování a Tab
+- [x] Výzva účtu bez dodavatele uvnitř pole
+- [x] Křížek a šipka všech výběrů bez překrytí
+- [x] Pevná měna rozměrově shodná s výběrem
+- [x] Input.formatPattern, pravidla a CS/SK
+- [x] Ukázky, testy, zoom 70–200 %, lint a ověření
+- [x] Sjednotit verzi 2.90.0 a CHANGELOG; nevydávat
+
 ## DS 2.85.0 – Edit dokladu 9 + obecná pravidla
 - [x] Drobnosti z DOM měření: zarovnání checkboxů, radius ghost/ikon, prázdné datum stavu
 - [x] Opravy po kontrole Clauda: body 1–18, rozdělení formuláře a ukázky pod 500 řádků

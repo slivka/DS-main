@@ -102,16 +102,27 @@ export function UnitSelect({
             role="combobox"
             disabled={disabled}
             className={cn(
-              "h-full w-full justify-between rounded-sm px-1 font-normal",
-              selected && onEditSelected && !disabled && "pr-14",
+              "relative h-full w-full min-w-0 justify-between rounded-sm pl-1 pr-9 font-normal",
+              selected &&
+                onEditSelected &&
+                !disabled &&
+                "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
               className,
             )}
           >
-            <span className={cn("truncate", !selected && "text-muted-foreground")}>
+            <span
+              className={cn(
+                "min-w-0 flex-1 truncate text-left",
+                !selected && "text-muted-foreground",
+              )}
+            >
               {selected?.code ?? placeholder}
             </span>
             {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
-            <ChevronDown className="size-3.5 shrink-0 opacity-50" />
+            <ChevronDown
+              data-slot="select-chevron"
+              className="absolute right-4 top-1/2 size-4 -translate-y-1/2 opacity-50"
+            />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
@@ -173,7 +184,6 @@ export function UnitSelect({
       </Popover>
       {selected && onEditSelected && !disabled ? (
         <FieldInlineActions
-          className="right-6"
           onEdit={() => onEditSelected(selected.id)}
           editLabel={resolvedEditSelectedLabel}
         />

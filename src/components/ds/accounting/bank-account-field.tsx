@@ -1,7 +1,11 @@
+/**
+ * Výběr nebo ruční zadání bankovního účtu.
+ * Vlastní: režim a validaci účtu; důvod zákazu jako výzvu výběru.
+ * Nesmí: měnit hodnotu podle dodavatele ani zobrazovat důvod pod polem.
+ */
 import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 
 import { Input } from "../../ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { OptionSelect } from "../form/option-select";
 import { isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
@@ -21,7 +25,7 @@ export interface BankAccountOption {
 
 export interface BankAccountFieldProps extends Omit<
   ComponentPropsWithoutRef<"input">,
-  "value" | "onChange"
+  "value" | "onChange" | "placeholder"
 > {
   value: string;
   onChange: (value: string) => void;
@@ -37,7 +41,9 @@ export interface BankAccountFieldProps extends Omit<
   onAddAccount?: () => void;
   /** Text akce přidání účtu. */
   addAccountText?: string;
-  /** Důvod, proč výběr nelze použít; zobrazí se v nápovědě i pod polem. */
+  /** Výzva prázdného výběru; ruční vstup zůstává prázdný. */
+  placeholder?: string;
+  /** Důvod zákazu uvnitř výběru místo prázdné hodnoty; nikdy pod polem. */
   disabledReason?: string;
 }
 
@@ -62,6 +68,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       onAddAccount,
       addAccountText,
       disabledReason,
+      placeholder,
       onBlur,
       ...props
     },
@@ -118,72 +125,59 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     return (
       <div className={cn("min-w-0", className)}>
         {options.length || selectionOnly ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div tabIndex={disabledReason ? 0 : undefined}>
-                  <OptionSelect
-                    id={manual ? undefined : id}
-                    value={manual ? OTHER : value}
-                    onChange={(next) => {
-                      if (next === OTHER && onAddAccount) {
-                        onAddAccount();
-                        return;
-                      }
-                      if (next === OTHER) {
-                        setOtherSelected(true);
-                        return;
-                      }
-                      setOtherSelected(false);
-                      setTouched(false);
-                      emit(next);
-                    }}
-                    allowEmpty={false}
-                    ariaLabel={props["aria-label"]}
-                    disabled={disabled || readOnly || Boolean(disabledReason)}
-                    inactiveLabel={texts.invalidBankAccount}
-                    options={[
-                      ...(missingSelected
-                        ? [
-                            {
-                              value,
-                              label: (
-                                <span className="line-through">{texts.bankAccountMissing}</span>
-                              ),
-                              inactive: true,
-                            },
-                          ]
-                        : []),
-                      ...options
-                        .filter((option) => !option.invalid || optionValue(option) === value)
-                        .map((option) => ({
-                          value: optionValue(option),
-                          label: (
-                            <span className={cn(option.invalid && "line-through")}>
-                              {[
-                                option.label,
-                                `${option.number}/${option.bankCode}`,
-                                option.currency,
-                              ]
-                                .filter(Boolean)
-                                .join(" · ")}
-                            </span>
-                          ),
-                          selectedLabel: `${option.number}/${option.bankCode}`,
-                          inactive: option.invalid,
-                        })),
-                      ...(onAddAccount
-                        ? [{ value: OTHER, label: resolvedAddAccountText }]
-                        : selectionOnly
-                          ? []
-                          : [{ value: OTHER, label: resolvedOtherAccountText }]),
-                    ]}
-                  />
-                </div>
-              </TooltipTrigger>
-              {disabledReason ? <TooltipContent>{disabledReason}</TooltipContent> : null}
-            </Tooltip>
-          </TooltipProvider>
+          <OptionSelect
+            id={manual ? undefined : id}
+            value={!manual && disabledReason ? "" : manual ? OTHER : value}
+            placeholder={disabledReason ?? placeholder}
+            placeholderValueLabel={disabledReason ?? placeholder}
+            onChange={(next) => {
+              if (next === OTHER && onAddAccount) {
+                onAddAccount();
+                return;
+              }
+              if (next === OTHER) {
+                setOtherSelected(true);
+                return;
+              }
+              setOtherSelected(false);
+              setTouched(false);
+              emit(next);
+            }}
+            allowEmpty={false}
+            ariaLabel={props["aria-label"]}
+            disabled={disabled || readOnly || Boolean(disabledReason)}
+            inactiveLabel={texts.invalidBankAccount}
+            options={[
+              ...(missingSelected
+                ? [
+                    {
+                      value,
+                      label: <span className="line-through">{texts.bankAccountMissing}</span>,
+                      inactive: true,
+                    },
+                  ]
+                : []),
+              ...options
+                .filter((option) => !option.invalid || optionValue(option) === value)
+                .map((option) => ({
+                  value: optionValue(option),
+                  label: (
+                    <span className={cn(option.invalid && "line-through")}>
+                      {[option.label, `${option.number}/${option.bankCode}`, option.currency]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  ),
+                  selectedLabel: `${option.number}/${option.bankCode}`,
+                  inactive: option.invalid,
+                })),
+              ...(onAddAccount
+                ? [{ value: OTHER, label: resolvedAddAccountText }]
+                : selectionOnly
+                  ? []
+                  : [{ value: OTHER, label: resolvedOtherAccountText }]),
+            ]}
+          />
         ) : null}
         {manual ? (
           <Input
@@ -210,9 +204,6 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
           <p role="alert" className="mt-1 text-xs font-medium text-destructive">
             {error}
           </p>
-        ) : null}
-        {disabledReason ? (
-          <p className="mt-1 text-xs text-muted-foreground">{disabledReason}</p>
         ) : null}
       </div>
     );

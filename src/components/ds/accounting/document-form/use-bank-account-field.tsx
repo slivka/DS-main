@@ -97,6 +97,8 @@ export function useBankAccountField(a: Args): ReactNode {
     control,
     a.receivedDocument ? 14 : 6,
     false,
-    a.receivedDocument ? "@min-[40rem]:col-span-14" : "min-w-[12rem] flex-[1_1_12rem]",
+    a.receivedDocument
+      ? "@min-[40rem]:col-span-14 @min-[40rem]:pr-3"
+      : "min-w-[12rem] flex-[1_1_12rem]",
   );
 }
