@@ -1,3 +1,4 @@
+/** Výběr DS; vlastní nabídku a výzvu, nesmí znát význam doménových hodnot. */
 import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
@@ -23,7 +24,7 @@ const EMPTY = "__empty__";
 
 /**
  * Sdílený výběr ze seznamu (nahrazuje nativní <select>).
- * Prázdná hodnota sa mapuje na interní klíč, lebo Radix Select nepodporuje prázdný value.
+ * Prázdná hodnota se mapuje na interní klíč, protože Radix Select nepodporuje prázdný value.
  */
 export function OptionSelect({
   value,
