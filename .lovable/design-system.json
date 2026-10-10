@@ -7320,6 +7320,40 @@
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
       ]
+    },
+    {
+      "name": "FieldInlineActions",
+      "file": "src/components/ds/form/field-inline-actions.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "onEdit",
+          "type": "function"
+        },
+        {
+          "name": "onClear",
+          "type": "function"
+        },
+        {
+          "name": "editLabel",
+          "type": "string"
+        },
+        {
+          "name": "clearLabel",
+          "type": "string"
+        }
+      ],
+      "usage": "Samostatné ikonové akce výběru v pevně vyhrazeném místě vlevo od šipky. Hodnotu a nabídku řídí rodič.",
+      "examples": [
+        {
+          "label": "Vymazání výběru",
+          "code": "<FieldInlineActions onClear={() => setValue(\"\")} clearLabel={texts.documentForm.clear} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevnořujte do tlačítka spouštěče.",
+        "Nevyhraďte místo odsazením, které zároveň posune šipku."
+      ]
     }
   ],
   "assets": [

@@ -83,6 +83,7 @@ export * from "./grid/grid-active-status";
 export * from "./grid/vs-column";
 
 /* Formuláře */
+export * from "./form/field-inline-actions";
 export * from "./form/decimal-input";
 export * from "./form/rate-field";
 export * from "./form/date-field";
