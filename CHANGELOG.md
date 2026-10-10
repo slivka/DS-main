@@ -1,5 +1,15 @@
 # Changelog – Slivka Design System
 
+## 2.90.0 – Design formulářů (nevydáno)
+
+- **Změna chování:** přijatý doklad řadí účet pod Dodavatele, číslo dodavatele pod IČO + DIČ; DOM i Tab mají stejné pořadí i pod 40rem.
+- **Změna chování:** `BankAccountField.disabledReason` v režimu výběru nahrazuje výzvu uvnitř pole. Odstavec pod polem a duplicitní tooltip jsou odstraněny. Ruční vstup zůstává prázdný.
+- Nový `BankAccountField.placeholder?: string` pro výzvu výběru; bez něj zůstává `optionSelect.emptyValue`.
+- Křížek/tužka mají oddělený pevný rem slot vlevo od šipky; šipka nemění místo při výběru ani vymazání. Doplňkový štítek předchází akcím.
+- Pevná měna má stejný rámeček, výšku a šířku jako výběr, běžnou váhu a normální popisek.
+- Nový `Input.formatPattern?: string` pro krátký vzor zápisu, nikoli příklad či nápovědu. Vysvětlení patří pod sekci; nápověda pole nesmí měnit výšku řádku.
+- Ukázky a behavior testy pokrývají účet bez/s dodavatelem, křížek se šipkou, oba režimy měny a vzor formátu.
+
 ## 2.88.0 – Dodělávky Edit dokladu 10
 
 - Přeplněná lišta upřednostní aktivní a naposledy použité rozepsané záložky; nabídka ukazuje rozepsané nahoře a tečku s počtem skrytých.

@@ -209,18 +209,29 @@ export function DimensionSelect({
               pointerDown.current = false;
             }}
             className={cn(
-              "h-[var(--control-h)] w-full justify-between font-normal",
-              selected && onEditSelected && !disabled && "pr-14",
+              "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
+              selected &&
+                onEditSelected &&
+                !disabled &&
+                "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
               className,
             )}
           >
-            <span className={cn("truncate", !selected && "text-muted-foreground")}>
+            <span
+              className={cn(
+                "min-w-0 flex-1 truncate text-left",
+                !selected && "text-muted-foreground",
+              )}
+            >
               {selected ? label(selected) : placeholder}
               {selected?.active === false ? (
                 <InactiveTag label={inactiveLabel} className="ml-2" />
               ) : null}
             </span>
-            <ChevronDown className="size-4 shrink-0 opacity-50" />
+            <ChevronDown
+              data-slot="select-chevron"
+              className="absolute right-4 top-1/2 size-4 -translate-y-1/2 opacity-50"
+            />
           </Button>
         </PopoverTrigger>
         <PopoverContent

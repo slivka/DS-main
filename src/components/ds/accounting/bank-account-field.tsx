@@ -125,65 +125,59 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     return (
       <div className={cn("min-w-0", className)}>
         {options.length || selectionOnly ? (
-                  <OptionSelect
-                    id={manual ? undefined : id}
-                    value={!manual && disabledReason ? "" : manual ? OTHER : value}
-                    placeholder={disabledReason ?? placeholder}
-                    placeholderValueLabel={disabledReason ?? placeholder}
-                    onChange={(next) => {
-                      if (next === OTHER && onAddAccount) {
-                        onAddAccount();
-                        return;
-                      }
-                      if (next === OTHER) {
-                        setOtherSelected(true);
-                        return;
-                      }
-                      setOtherSelected(false);
-                      setTouched(false);
-                      emit(next);
-                    }}
-                    allowEmpty={false}
-                    ariaLabel={props["aria-label"]}
-                    disabled={disabled || readOnly || Boolean(disabledReason)}
-                    inactiveLabel={texts.invalidBankAccount}
-                    options={[
-                      ...(missingSelected
-                        ? [
-                            {
-                              value,
-                              label: (
-                                <span className="line-through">{texts.bankAccountMissing}</span>
-                              ),
-                              inactive: true,
-                            },
-                          ]
-                        : []),
-                      ...options
-                        .filter((option) => !option.invalid || optionValue(option) === value)
-                        .map((option) => ({
-                          value: optionValue(option),
-                          label: (
-                            <span className={cn(option.invalid && "line-through")}>
-                              {[
-                                option.label,
-                                `${option.number}/${option.bankCode}`,
-                                option.currency,
-                              ]
-                                .filter(Boolean)
-                                .join(" · ")}
-                            </span>
-                          ),
-                          selectedLabel: `${option.number}/${option.bankCode}`,
-                          inactive: option.invalid,
-                        })),
-                      ...(onAddAccount
-                        ? [{ value: OTHER, label: resolvedAddAccountText }]
-                        : selectionOnly
-                          ? []
-                          : [{ value: OTHER, label: resolvedOtherAccountText }]),
-                    ]}
-                  />
+          <OptionSelect
+            id={manual ? undefined : id}
+            value={!manual && disabledReason ? "" : manual ? OTHER : value}
+            placeholder={disabledReason ?? placeholder}
+            placeholderValueLabel={disabledReason ?? placeholder}
+            onChange={(next) => {
+              if (next === OTHER && onAddAccount) {
+                onAddAccount();
+                return;
+              }
+              if (next === OTHER) {
+                setOtherSelected(true);
+                return;
+              }
+              setOtherSelected(false);
+              setTouched(false);
+              emit(next);
+            }}
+            allowEmpty={false}
+            ariaLabel={props["aria-label"]}
+            disabled={disabled || readOnly || Boolean(disabledReason)}
+            inactiveLabel={texts.invalidBankAccount}
+            options={[
+              ...(missingSelected
+                ? [
+                    {
+                      value,
+                      label: <span className="line-through">{texts.bankAccountMissing}</span>,
+                      inactive: true,
+                    },
+                  ]
+                : []),
+              ...options
+                .filter((option) => !option.invalid || optionValue(option) === value)
+                .map((option) => ({
+                  value: optionValue(option),
+                  label: (
+                    <span className={cn(option.invalid && "line-through")}>
+                      {[option.label, `${option.number}/${option.bankCode}`, option.currency]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  ),
+                  selectedLabel: `${option.number}/${option.bankCode}`,
+                  inactive: option.invalid,
+                })),
+              ...(onAddAccount
+                ? [{ value: OTHER, label: resolvedAddAccountText }]
+                : selectionOnly
+                  ? []
+                  : [{ value: OTHER, label: resolvedOtherAccountText }]),
+            ]}
+          />
         ) : null}
         {manual ? (
           <Input
