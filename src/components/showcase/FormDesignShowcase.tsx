@@ -4,7 +4,7 @@
  * Nesmí: zavádět vlastní varianty ovládání ani produkční data.
  */
 import { useState } from "react";
-import { DocumentForm, Field, OptionSelect, type DocumentHeaderValue } from "../ds";
+import { CheckboxField, DocumentForm, Field, OptionSelect, type DocumentHeaderValue } from "../ds";
 import { Input } from "../ui/input";
 import { useDsTexts } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";
@@ -74,14 +74,11 @@ export function FormDesignShowcase() {
             )}
           </section>
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={locked}
-            onChange={(event) => setLocked(event.target.checked)}
-          />
-          {texts.documentForm.currencyDisabled}
-        </label>
+        <CheckboxField
+          checked={locked}
+          onCheckedChange={(checked) => setLocked(Boolean(checked))}
+          label={texts.documentForm.currencyDisabled}
+        />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3" data-testid="selection-comparison">
           <Field label="Konstantní symbol" htmlFor="symbol-selected">
             <OptionSelect

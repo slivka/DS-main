@@ -1212,8 +1212,7 @@
       "props": [
         {
           "name": "formatPattern",
-          "type": "string",
-          "description": "Krátký vzor zápisu prázdného vstupu; nikoli příklad či nápověda."
+          "type": "string"
         }
       ],
       "usage": "Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci.",
@@ -5253,7 +5252,8 @@
         }
       ],
       "antipatterns": [
-        "Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField."
+        "Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.",
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
       ]
     },
     {
@@ -6538,7 +6538,16 @@
       "name": "PartnerSelect",
       "file": "src/components/ds/accounting/partner-select.tsx",
       "import_path": "",
-      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři."
+      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.",
+      "examples": [
+        {
+          "label": "Výběr hodnoty",
+          "code": "<PartnerSelect value={value} onChange={setValue} options={options} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+      ]
     },
     {
       "name": "CounterpartyField",
@@ -6688,7 +6697,17 @@
     {
       "name": "DimensionSelect",
       "file": "src/components/ds/accounting/dimension-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.",
+      "examples": [
+        {
+          "label": "Výběr hodnoty",
+          "code": "<DimensionSelect value={value} onChange={setValue} options={options} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+      ]
     },
     {
       "name": "UnitSelect",
@@ -6763,6 +6782,16 @@
           "type": "string",
           "default": "neaktivní"
         }
+      ],
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.",
+      "examples": [
+        {
+          "label": "Výběr hodnoty",
+          "code": "<UnitSelect value={value} onChange={setValue} options={options} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
       ]
     },
     {
@@ -6892,8 +6921,7 @@
         },
         {
           "name": "placeholder",
-          "type": "string",
-          "description": "Výzva výběru účtu; ruční vstup ji nepoužívá."
+          "type": "string"
         }
       ],
       "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem.",

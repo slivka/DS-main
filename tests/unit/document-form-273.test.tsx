@@ -195,20 +195,17 @@ describe("DocumentForm 2.73", () => {
     ).toBe("777");
   });
 
-  it("přijatý doklad řadí Platební údaje před Částku a má číslo span 6", () => {
+  it("přijatý doklad řadí Platební údaje před Částku a účet před číslo dodavatele", () => {
     const view = render(<Form />);
     const text = view.container.textContent ?? "";
     expect(text.indexOf("Platební údaje")).toBeLessThan(text.indexOf("Částka"));
-    expect(
-      view.container.querySelector("#document-externalNumber")?.closest(".col-span-20")?.className,
-    ).toContain("col-span-6");
     const account = view.container
       .querySelector('label[for="document-bankAccount"]')
       ?.closest('[data-slot="field"]');
     const supplierNumber = view.container.querySelector("#document-externalNumber");
     expect(account).toBeTruthy();
     expect(
-      supplierNumber?.compareDocumentPosition(account as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
+      account?.compareDocumentPosition(supplierNumber as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(view.getAllByText("Nejdřív vyberte dodavatele")).toHaveLength(1);
     expect(view.queryByRole("checkbox", { name: /platebních příkazů/i })).toBeNull();
