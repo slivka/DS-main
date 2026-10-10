@@ -21,6 +21,8 @@ export interface FieldInlineActionsProps extends ComponentPropsWithoutRef<"span"
   onClear?: () => void;
   /** Přístupný název křížku. */
   clearLabel?: string;
+  /** Velikost tlačítek: výchozí pro pole, kompaktní pro buňku gridu. */
+  size?: "default" | "compact";
   /** Umístění (výchozí vpravo před šipkou rozbalení). */
   className?: string;
 }
@@ -28,7 +30,15 @@ export interface FieldInlineActionsProps extends ComponentPropsWithoutRef<"span"
 /** Tlačítka tužky a křížku absolutně v pravé části pole. */
 export const FieldInlineActions = forwardRef<HTMLSpanElement, FieldInlineActionsProps>(
   function FieldInlineActions(
-    { onEdit, editLabel, onClear, clearLabel, className, ...props }: FieldInlineActionsProps,
+    {
+      onEdit,
+      editLabel,
+      onClear,
+      clearLabel,
+      size = "default",
+      className,
+      ...props
+    }: FieldInlineActionsProps,
     ref,
   ) {
     const texts = useDsTexts().documentForm;
@@ -42,7 +52,7 @@ export const FieldInlineActions = forwardRef<HTMLSpanElement, FieldInlineActions
             size="icon"
             aria-label={label}
             onClick={onClick}
-            className="size-7"
+            className={size === "compact" ? "size-6" : "size-7"}
           >
             {icon}
           </Button>

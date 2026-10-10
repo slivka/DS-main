@@ -80,7 +80,7 @@ export function OptionSelect({
   const current = value ?? "";
   const known = options.some((o) => o.value === current);
   const selectedOption = options.find((option) => option.value === current);
-  const emptyValueLabel = placeholderValueLabel ?? placeholder ?? resolvedEmptyLabel;
+  const emptyValueLabel = placeholderValueLabel ?? resolvedEmptyLabel;
   const selectedContent =
     current === "" && allowEmpty ? (
       emptyValueLabel
@@ -137,7 +137,13 @@ export function OptionSelect({
           triggerClassName,
         )}
       >
-        <SelectValue placeholder={resolvedPlaceholder}>
+        <SelectValue
+          placeholder={
+            <span className="block min-w-0 truncate" title={resolvedPlaceholder}>
+              {resolvedPlaceholder}
+            </span>
+          }
+        >
           <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
             <span className="truncate" title={current === "" ? resolvedPlaceholder : undefined}>
               {triggerLabel ?? resolvedPlaceholder}

@@ -10,6 +10,16 @@
 - Pevná měna má stejný rámeček, výšku a šířku jako výběr, běžnou váhu a normální popisek.
 - Nový `Input.formatPattern?: string` pro krátký vzor zápisu, nikoli příklad či nápovědu. Vysvětlení patří pod sekci; nápověda pole nesmí měnit výšku řádku.
 - Ukázky a behavior testy pokrývají účet bez/s dodavatelem, křížek se šipkou, oba režimy měny a vzor formátu.
+- Hlavní vstup nově exportuje `./lib/bank-account`.
+- `FieldInlineActions` je `forwardRef` (ref míří na obal tlačítek); výchozí popisky bere z `DsTexts`.
+- `OptionSelect` vykresluje výzvu prázdného výběru vlastním zkracovaným prvkem s plným textem v `title`; `placeholder` se nestává prázdnou položkou nabídky.
+- `UnitSelect` v buňce zachovává kompaktní geometrii; tužka má vlastní kompaktní slot.
+- Číslo dokladu přijatého dokladu je vpravo jen vedle Bankovního účtu; bez účtu zůstává vlevo.
+- Texty ukázek nejsou součástí veřejného `DsTexts`.
+
+## 2.89.0 – jen číslo metadat
+
+- Číslo 2.89.0 se objevilo pouze v metadatech knihovny; nebylo vydáno a nemá vlastní změny. Následuje 2.90.0.
 
 ## 2.88.0 – Dodělávky Edit dokladu 10
 

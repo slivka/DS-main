@@ -13,7 +13,7 @@ interface Args {
   can: (k: DocumentHeaderField) => boolean;
   receivedDocument: boolean;
   showVatFields?: boolean;
-  f: { handedOverBy?: boolean };
+  f: { handedOverBy?: boolean; bankAccount?: boolean };
   t: DocumentFormTexts;
   field: (
     id: string,
@@ -94,7 +94,10 @@ export function useExternalNumberField({
     6,
     false,
     receivedDocument
-      ? "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
+      ? // Vpravo jen vedle Bankovního účtu ve stejném řádku; jinak bez díry vlevo.
+        f.bankAccount
+        ? "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
+        : "@min-[40rem]:col-span-6"
       : !f.handedOverBy
         ? "@min-[40rem]:col-start-15"
         : undefined,
