@@ -28,7 +28,10 @@ test("měna nemění rozměry ani polohu při zamčení", async ({ page }) => {
       });
     });
   const before = await geometry();
-  await page.getByRole("checkbox", { name: "Měnu nelze změnit" }).check();
+  const toggle = page.getByRole("checkbox", { name: "Měnu nelze změnit" });
+  await toggle.focus();
+  await toggle.press("Space");
+  await expect(toggle).toHaveAttribute("aria-checked", "true");
   expect(await geometry()).toEqual(before);
   expect(before[0]?.slice(2)).toEqual([104, 44]);
 });
@@ -84,7 +87,10 @@ test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí
 test("pevná měna nepřeteče v úzkém panelu při pěti aplikačních zoomech", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   await page.waitForTimeout(1000);
-  await page.getByRole("checkbox", { name: "Měnu nelze změnit" }).check();
+  const toggle = page.getByRole("checkbox", { name: "Měnu nelze změnit" });
+  await toggle.focus();
+  await toggle.press("Space");
+  await expect(toggle).toHaveAttribute("aria-checked", "true");
   const section = page.getByTestId("form-with-supplier");
   for (const value of [0.7, 1, 1.25, 1.5, 2]) {
     await zoom(page, value);
