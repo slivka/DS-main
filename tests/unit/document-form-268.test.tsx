@@ -335,8 +335,17 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     expect(view.getByRole("option", { name: "EUR – Euro" })).toBeTruthy();
   });
 
-  it("Celkem zobrazí formátovanou částku a vysvětlení jen v režimu součtu", () => {
+  it("Celkem má minimální šířku, nezalamovaný popisek a nápovědu pod polem jen v režimu součtu", () => {
     const view = render(<Form value={{ ...base, amountTotal: 1234567.89 }} />);
+    const cell = view.container.querySelector("[data-slot=document-amount-total]");
+    expect(cell?.className).toContain("min-w-[11.5rem]");
+    expect(cell?.querySelector("label span")?.className).toContain("whitespace-nowrap");
+    expect(
+      view.container.querySelector("[data-slot=document-amount-currency]")?.className,
+    ).toContain("flex-wrap");
+    expect(
+      view.container.querySelector("[data-slot=document-total-currency-pair]")?.className,
+    ).not.toContain("flex-wrap");
     const amount = view.container.querySelector("#document-amountTotal") as HTMLInputElement;
     expect(amount.value.replace(/\s/g, "")).toBe("1234567,89");
     expect(amount.readOnly).toBe(false);

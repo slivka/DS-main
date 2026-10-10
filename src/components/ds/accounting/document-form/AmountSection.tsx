@@ -138,11 +138,11 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         ) : null}
         <div
           data-slot="document-total-currency-pair"
-          className="order-1 flex min-w-0 max-w-full shrink-0 flex-wrap items-start justify-end gap-3"
+          className="order-1 flex min-w-0 max-w-full shrink-0 items-start gap-3"
         >
           <div
             data-slot="document-amount-total"
-            className="min-w-[min(11.5rem,100%)] flex-[0_1_18rem]"
+            className="min-w-[9rem] flex-[0_1_18rem] @min-[30rem]:min-w-[11.5rem]"
           >
             {field(
               "document-amountTotal",

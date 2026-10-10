@@ -102,11 +102,12 @@ export function UnitSelect({
             role="combobox"
             disabled={disabled}
             className={cn(
-              "relative h-full w-full min-w-0 justify-between rounded-sm pl-1 pr-9 font-normal",
+              // Kompaktní buňka: šipka 0,875rem na 0,125rem od okraje, tužka 1,5rem těsně vlevo od ní.
+              "relative h-full w-full min-w-0 justify-between rounded-sm px-1 pr-[1.25rem] font-normal",
               selected &&
                 onEditSelected &&
                 !disabled &&
-                "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
+                "pr-[calc(0.125rem+0.875rem+0.125rem+1.5rem+0.125rem)]",
               className,
             )}
           >
@@ -121,7 +122,7 @@ export function UnitSelect({
             {selected && !selected.isActive ? <InactiveTag label={inactiveLabel} /> : null}
             <ChevronDown
               data-slot="select-chevron"
-              className="absolute right-4 top-1/2 size-4 -translate-y-1/2 opacity-50"
+              className="absolute right-0.5 top-1/2 size-3.5 -translate-y-1/2 opacity-50"
             />
           </Button>
         </PopoverTrigger>
@@ -184,6 +185,8 @@ export function UnitSelect({
       </Popover>
       {selected && onEditSelected && !disabled ? (
         <FieldInlineActions
+          size="compact"
+          className="right-[calc(0.125rem+0.875rem+0.125rem)]"
           onEdit={() => onEditSelected(selected.id)}
           editLabel={resolvedEditSelectedLabel}
         />

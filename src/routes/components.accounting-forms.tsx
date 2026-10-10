@@ -14,9 +14,8 @@ import {
   toJournalRow,
   type JournalLine,
 } from "@/components/ds";
-import { Button } from "@/components/ui/button";
 import { formatAmount } from "@/lib/format";
-import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
+import { MOCK_ACCOUNTS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 
 export const Route = createFileRoute("/components/accounting-forms")({
   head: () => ({

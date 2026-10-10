@@ -177,7 +177,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               </>
             ),
             3,
-            false,
+            true,
           )}
           {field(
             "document-partner-dic",
@@ -198,7 +198,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               />
             ),
             3,
-            false,
+            true,
           )}
           {f.handedOverBy
             ? suggestedText(

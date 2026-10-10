@@ -8,6 +8,8 @@ import { CheckboxField, DocumentForm, Field, OptionSelect, type DocumentHeaderVa
 import { Input } from "../ui/input";
 import { useDsTexts } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";
+import { useFormDesignShowcaseTexts } from "./form-design-texts";
+import { FormDesignNarrowFields } from "./form-design-narrow";
 
 const currencies = [{ code: "CZK", label: "Česká koruna", symbol: "Kč" }];
 const initial: DocumentHeaderValue = {
@@ -29,6 +31,7 @@ const options = [{ value: "0008", label: "0008 – Platby za zboží", selectedL
 /** Porovnání obou režimů formuláře a hledatelných výběrů. */
 export function FormDesignShowcase() {
   const texts = useDsTexts();
+  const showcase = useFormDesignShowcaseTexts();
   const [without, setWithout] = useState(initial);
   const [withSupplier, setWithSupplier] = useState({ ...initial, partnerId: "supplier" });
   const [symbol, setSymbol] = useState("0008");
@@ -42,7 +45,7 @@ export function FormDesignShowcase() {
     currencyLocked: boolean,
   ) => (
     <DocumentForm
-      title={texts.documentForm.receivedDocumentTitle}
+      title={showcase.receivedDocument}
       documentType="FP"
       status="draft"
       value={value}
@@ -62,7 +65,7 @@ export function FormDesignShowcase() {
     />
   );
   return (
-    <ShowcaseSection title={texts.documentForm.formDesignTitle}>
+    <ShowcaseSection title={showcase.title}>
       <div data-testid="form-design-showcase" className="space-y-6">
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <section data-testid="form-without-supplier">{form(without, setWithout, true)}</section>
@@ -80,7 +83,7 @@ export function FormDesignShowcase() {
           label={texts.documentForm.currencyDisabled}
         />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3" data-testid="selection-comparison">
-          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-selected">
+          <Field label={showcase.constantSymbol} htmlFor="symbol-selected">
             <OptionSelect
               id="symbol-selected"
               value={symbol}
@@ -90,7 +93,7 @@ export function FormDesignShowcase() {
               allowEmpty
             />
           </Field>
-          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-empty">
+          <Field label={showcase.constantSymbol} htmlFor="symbol-empty">
             <OptionSelect
               id="symbol-empty"
               value={empty}
@@ -100,7 +103,7 @@ export function FormDesignShowcase() {
               allowEmpty
             />
           </Field>
-          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-standard">
+          <Field label={showcase.constantSymbol} htmlFor="symbol-standard">
             <OptionSelect
               id="symbol-standard"
               value={standard}
@@ -109,12 +112,13 @@ export function FormDesignShowcase() {
             />
           </Field>
         </div>
+        <FormDesignNarrowFields />
         <Field label={texts.documentForm.manualAccountNumber} htmlFor="account-pattern">
           <Input
             id="account-pattern"
             value={pattern}
             onChange={(event) => setPattern(event.target.value)}
-            formatPattern={texts.documentForm.accountNumberPattern}
+            formatPattern={showcase.accountNumberPattern}
           />
         </Field>
       </div>

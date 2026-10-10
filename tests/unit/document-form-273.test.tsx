@@ -199,6 +199,11 @@ describe("DocumentForm 2.73", () => {
     const view = render(<Form />);
     const text = view.container.textContent ?? "";
     expect(text.indexOf("Platební údaje")).toBeLessThan(text.indexOf("Částka"));
+    const numberCell = view.container
+      .querySelector("#document-externalNumber")
+      ?.closest(".col-span-20")?.className;
+    expect(numberCell).toContain("col-span-6");
+    expect(numberCell).toContain("col-start-15");
     const account = view.container
       .querySelector('label[for="document-bankAccount"]')
       ?.closest('[data-slot="field"]');

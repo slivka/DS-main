@@ -153,7 +153,7 @@ describe("Design formulářů", () => {
     const view = render(
       <Input
         ref={ref}
-        formatPattern={DS_TEXTS_CS.documentForm.accountNumberPattern}
+        formatPattern="předčíslí-číslo"
         value=""
         onChange={change}
         aria-label="Účet"
@@ -173,10 +173,40 @@ describe("Design formulářů", () => {
           onChange={() => {}}
           disabledReason={DS_TEXTS_SK.documentForm.selectSupplierFirst}
         />
-        <Input formatPattern={DS_TEXTS_SK.documentForm.accountNumberPattern} />
+        <Input formatPattern="predčíslie-číslo" />
       </DsTextsProvider>,
     );
     expect(view.getByRole("combobox").textContent).toBe("Najskôr vyberte dodávateľa");
     expect(view.getByRole("textbox").getAttribute("placeholder")).toBe("predčíslie-číslo");
+  });
+});
+
+describe("OptionSelect – výzva bez prázdné položky", () => {
+  it("při allowEmpty={false} vykreslí výzvu ve vlastním prvku s plným textem v title", () => {
+    const view = render(
+      <OptionSelect
+        value=""
+        onChange={() => {}}
+        allowEmpty={false}
+        disabled
+        placeholder="Nejdřív vyberte dodavatele"
+        options={[{ value: "a", label: "A" }]}
+      />,
+    );
+    const prompt = view.getByTitle("Nejdřív vyberte dodavatele");
+    expect(prompt.textContent).toBe("Nejdřív vyberte dodavatele");
+    expect(view.getByRole("combobox").contains(prompt)).toBe(true);
+  });
+  it("placeholder se nestane prázdnou položkou nabídky", () => {
+    const view = render(
+      <OptionSelect
+        value=""
+        onChange={() => {}}
+        allowEmpty
+        placeholder="Vyberte"
+        options={[{ value: "a", label: "A" }]}
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).not.toBe("Vyberte");
   });
 });
