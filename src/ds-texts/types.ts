@@ -386,6 +386,8 @@ export interface DsTexts {
     otherBankAccount: string;
     editSelected: string;
     manualAccountNumber: string;
+    /** Krátký vzor zápisu čísla účtu, nikoli příklad hodnoty. */
+    accountNumberPattern: string;
     manualAccountWithoutIban: string;
     invalidIban: string;
     invalidSwift: string;

@@ -26,45 +26,48 @@ export interface FieldInlineActionsProps extends ComponentPropsWithoutRef<"span"
 }
 
 /** Tlačítka tužky a křížku absolutně v pravé části pole. */
-export const FieldInlineActions = forwardRef<HTMLSpanElement, FieldInlineActionsProps>(function FieldInlineActions({
-  onEdit,
-  editLabel,
-  onClear,
-  clearLabel,
-  className,
-  ...props
-}: FieldInlineActionsProps, ref) {
-  const texts = useDsTexts().documentForm;
-  if (!onEdit && !onClear) return null;
-  const item = (label: string | undefined, onClick: () => void, icon: ReactNode) => (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={label}
-          onClick={onClick}
-          className="size-7"
+export const FieldInlineActions = forwardRef<HTMLSpanElement, FieldInlineActionsProps>(
+  function FieldInlineActions(
+    { onEdit, editLabel, onClear, clearLabel, className, ...props }: FieldInlineActionsProps,
+    ref,
+  ) {
+    const texts = useDsTexts().documentForm;
+    if (!onEdit && !onClear) return null;
+    const item = (label: string | undefined, onClick: () => void, icon: ReactNode) => (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={label}
+            onClick={onClick}
+            className="size-7"
+          >
+            {icon}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{label}</TooltipContent>
+      </Tooltip>
+    );
+    // Vlastní provider: pole funguje i mimo kořenový TooltipProvider aplikace.
+    return (
+      <TooltipProvider>
+        <span
+          ref={ref}
+          {...props}
+          data-slot="field-inline-actions"
+          className={cn(
+            "absolute right-9 top-1/2 flex -translate-y-1/2 items-center gap-1",
+            className,
+          )}
         >
-          {icon}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  );
-  // Vlastní provider: pole funguje i mimo kořenový TooltipProvider aplikace.
-  return (
-    <TooltipProvider>
-      <span
-        ref={ref}
-        {...props}
-        data-slot="field-inline-actions"
-        className={cn("absolute right-9 top-1/2 flex -translate-y-1/2 items-center gap-1", className)}
-      >
-        {onEdit ? item(editLabel ?? texts.editSelected, onEdit, <Pencil className="size-3.5" />) : null}
-        {onClear ? item(clearLabel ?? texts.clear, onClear, <X className="size-3.5" />) : null}
-      </span>
-    </TooltipProvider>
-  );
-});
+          {onEdit
+            ? item(editLabel ?? texts.editSelected, onEdit, <Pencil className="size-3.5" />)
+            : null}
+          {onClear ? item(clearLabel ?? texts.clear, onClear, <X className="size-3.5" />) : null}
+        </span>
+      </TooltipProvider>
+    );
+  },
+);

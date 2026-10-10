@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
+import { FormDesignShowcase } from "@/components/showcase/FormDesignShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
 import { VatJournalShowcase } from "@/components/showcase/VatJournalShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
@@ -243,6 +244,7 @@ function AccountingFormsPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}>
+      <FormDesignShowcase />
       <DocumentFormShowcase />
       <VatJournalShowcase />
 

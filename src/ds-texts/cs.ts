@@ -426,6 +426,7 @@ export const DS_TEXTS_CS: DsTexts = {
     otherBankAccount: "Jiný účet",
     editSelected: "Upravit vybraný záznam",
     manualAccountNumber: "Číslo účtu",
+    accountNumberPattern: "předčíslí-číslo",
     manualAccountWithoutIban: "Číslo účtu bez IBAN",
     invalidIban: "IBAN není platný",
     invalidSwift: "SWIFT/BIC musí mít 8 nebo 11 znaků",
