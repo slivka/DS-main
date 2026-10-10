@@ -67,4 +67,4 @@ export const FieldInlineActions = forwardRef<HTMLSpanElement, FieldInlineActions
       </span>
     </TooltipProvider>
   );
-);
+});
