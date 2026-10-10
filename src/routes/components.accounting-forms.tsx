@@ -3,23 +3,18 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
+import { AccountingFieldsShowcase } from "@/components/showcase/AccountingFieldsShowcase";
 import { FormDesignShowcase } from "@/components/showcase/FormDesignShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
 import { VatJournalShowcase } from "@/components/showcase/VatJournalShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
-  BookSelect,
-  CurrencyAmount,
-  DimensionSelect,
   JournalLinesEditor,
-  PartnerSelect,
-  VsField,
   fromJournalRow,
   toJournalRow,
   type JournalLine,
 } from "@/components/ds";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { formatAmount } from "@/lib/format";
 import { MOCK_ACCOUNTS, MOCK_BOOKS, MOCK_DIMENSIONS, MOCK_PARTNERS } from "@/lib/mock/accounting";
 
@@ -44,12 +39,6 @@ export const Route = createFileRoute("/components/accounting-forms")({
   }),
   component: AccountingFormsPage,
 });
-
-const CURRENCIES = [
-  { code: "CZK", label: "Česká koruna", symbol: "Kč" },
-  { code: "EUR", label: "Euro", symbol: "€" },
-  { code: "USD", label: "Americký dolar" },
-];
 
 function AccountingFormsPage() {
   const [lines, setLines] = useState<JournalLine[]>([
@@ -463,64 +452,22 @@ function AccountingFormsPage() {
         />
       </ShowcaseSection>
 
-      <ShowcaseSection
-        title="Jednotlivé prvky"
-        description="Výběr partnera, knihy a zakázky, variabilní symbol a částka v měně dokladu."
-      >
-        <div className="grid gap-4 rounded-lg border bg-card p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="demo-partner">Partner</Label>
-            <PartnerSelect
-              id="demo-partner"
-              partners={MOCK_PARTNERS}
-              value={partnerId}
-              onChange={setPartnerId}
-              onCreate={() => toast.info("Otevře se formulář nového partnera")}
-              onLoadFromAres={() => toast.info("Načtení údajů z ARES")}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="demo-book">Kniha</Label>
-            <BookSelect id="demo-book" books={MOCK_BOOKS} value={bookId} onChange={setBookId} />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="demo-single-book">Jediná dostupná kniha</Label>
-            <BookSelect
-              id="demo-single-book"
-              books={MOCK_BOOKS.slice(0, 1)}
-              value={bookId}
-              onChange={setBookId}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="demo-dimension">Zakázka</Label>
-            <DimensionSelect
-              id="demo-dimension"
-              options={MOCK_DIMENSIONS}
-              value={dimensionId}
-              onChange={setDimensionId}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="demo-vs">Variabilní symbol</Label>
-            <VsField id="demo-vs" value={vs} onChange={setVs} />
-          </div>
-        </div>
-
-        <CurrencyAmount
-          className="mt-4 rounded-lg border bg-card p-4"
-          amount={amount}
-          onAmountChange={setAmount}
-          currency={currency}
-          onCurrencyChange={setCurrency}
-          currencies={CURRENCIES}
-          baseCurrency="CZK"
-          homeCurrencySymbol="Kč"
-          rate={rate}
-          onRateChange={setRate}
-          idPrefix="demo-currency"
-        />
-      </ShowcaseSection>
+      <AccountingFieldsShowcase
+        partnerId={partnerId}
+        setPartnerId={setPartnerId}
+        bookId={bookId}
+        setBookId={setBookId}
+        dimensionId={dimensionId}
+        setDimensionId={setDimensionId}
+        vs={vs}
+        setVs={setVs}
+        amount={amount}
+        setAmount={setAmount}
+        currency={currency}
+        setCurrency={setCurrency}
+        rate={rate}
+        setRate={setRate}
+      />
 
       <ReportsShowcase />
     </ShowcaseLayout>
