@@ -388,6 +388,12 @@ export interface DsTexts {
     manualAccountNumber: string;
     /** Krátký vzor zápisu čísla účtu, nikoli příklad hodnoty. */
     accountNumberPattern: string;
+    /** Nadpis ověřovací ukázky polí. */
+    formDesignTitle: string;
+    /** Nadpis přijatého dokladu. */
+    receivedDocumentTitle: string;
+    /** Popisek konstantního symbolu. */
+    constantSymbolLabel: string;
     manualAccountWithoutIban: string;
     invalidIban: string;
     invalidSwift: string;

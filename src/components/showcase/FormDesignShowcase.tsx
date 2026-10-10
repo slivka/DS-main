@@ -42,7 +42,7 @@ export function FormDesignShowcase() {
     currencyLocked: boolean,
   ) => (
     <DocumentForm
-      title="Přijatý doklad"
+      title={texts.documentForm.receivedDocumentTitle}
       documentType="FP"
       status="draft"
       value={value}
@@ -62,7 +62,7 @@ export function FormDesignShowcase() {
     />
   );
   return (
-    <ShowcaseSection title="Design formulářů – 2.90.0">
+    <ShowcaseSection title={texts.documentForm.formDesignTitle}>
       <div data-testid="form-design-showcase" className="space-y-6">
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <section data-testid="form-without-supplier">{form(without, setWithout, true)}</section>
@@ -80,7 +80,7 @@ export function FormDesignShowcase() {
           label={texts.documentForm.currencyDisabled}
         />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3" data-testid="selection-comparison">
-          <Field label="Konstantní symbol" htmlFor="symbol-selected">
+          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-selected">
             <OptionSelect
               id="symbol-selected"
               value={symbol}
@@ -90,7 +90,7 @@ export function FormDesignShowcase() {
               allowEmpty
             />
           </Field>
-          <Field label="Konstantní symbol" htmlFor="symbol-empty">
+          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-empty">
             <OptionSelect
               id="symbol-empty"
               value={empty}
@@ -100,7 +100,7 @@ export function FormDesignShowcase() {
               allowEmpty
             />
           </Field>
-          <Field label="Konstantní symbol" htmlFor="symbol-standard">
+          <Field label={texts.documentForm.constantSymbolLabel} htmlFor="symbol-standard">
             <OptionSelect
               id="symbol-standard"
               value={standard}

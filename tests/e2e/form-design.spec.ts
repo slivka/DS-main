@@ -80,3 +80,25 @@ test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí
     expect(Math.abs(s.x + s.width - a.x - (e.x + e.width - ea.x))).toBeLessThan(1);
   }
 });
+
+test("pevná měna nepřeteče v úzkém panelu při pěti aplikačních zoomech", async ({ page }) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.waitForTimeout(1000);
+  await page.getByRole("checkbox", { name: "Měnu nelze změnit" }).check();
+  const section = page.getByTestId("form-with-supplier");
+  for (const value of [0.7, 1, 1.25, 1.5, 2]) {
+    await zoom(page, value);
+    for (const width of [1000, 640, 560, 440, 360]) {
+      await section.evaluate((el, w) => {
+        el.style.width = `${w}px`;
+      }, width);
+      const overflow = await section.evaluate((el) => {
+        const currency = el.querySelector("#document-currency");
+        const amount = el.querySelector('[data-section="document-amount-section"]');
+        if (!currency || !amount) throw new Error("Částkové pole chybí");
+        return currency.getBoundingClientRect().right - amount.getBoundingClientRect().right;
+      });
+      expect(overflow).toBeLessThanOrEqual(1);
+    }
+  }
+});

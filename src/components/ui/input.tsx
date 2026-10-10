@@ -1,3 +1,4 @@
+/** Vstup DS; vlastní nativní props a vzor formátu, nesmí přidávat popisnou nápovědu. */
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
