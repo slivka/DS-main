@@ -209,8 +209,8 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                 "@min-[40rem]:pr-3",
               )
             : null}
-          {f.externalNumber ? externalNumberField : null}
           {receivedDocument && f.bankAccount ? bankAccountField : null}
+          {f.externalNumber ? externalNumberField : null}
           {suggestedText("description", t.description, descriptionSuggest, 20)}
         </div>
       </>

@@ -19,7 +19,7 @@ interface Args {
   currenciesPresent: boolean;
   t: DocumentFormTexts;
 }
-/** Vrátí výběr měny nebo prostý zamčený kód s vysvětlením. */
+/** Vrátí rozměrově shodný výběr nebo rámeček zamčené měny s vysvětlením. */
 export function useCurrencyControl({
   value,
   patch,
@@ -41,15 +41,14 @@ export function useCurrencyControl({
     Boolean(currencyDisabledReason);
   const currencyReason =
     currencyDisabledReason ?? (!readOnly && !can("currency") ? t.currencyDisabled : undefined);
-  // Bez vnitřního odsazení a se šířkou podle obsahu: popisek „Měna“ začíná nad
-  // prvním znakem a text končí u pravého okraje sekce.
+  // Pevná i volitelná měna sdílí rozměry; změna režimu neposouvá částku.
   const fixedCurrency = (
     <div
       id="document-currency"
       data-currency-fixed=""
       aria-readonly="true"
       aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-11 w-max items-center font-mono text-sm font-bold tabular-nums"
+      className="flex h-11 w-[6.5rem] items-center rounded-md border bg-muted/40 px-3 text-sm font-normal tabular-nums"
     >
       {value.currency}
     </div>
