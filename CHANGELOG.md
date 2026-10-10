@@ -2,6 +2,7 @@
 
 ## 2.90.0 – Design formulářů (nevydáno)
 
+- Pomocné funkce bankovních účtů jsou přímo exportované z hlavního vstupu; dosavadní export z komponent zůstává kompatibilní.
 - **Změna chování:** přijatý doklad řadí účet pod Dodavatele, číslo dodavatele pod IČO + DIČ; DOM i Tab mají stejné pořadí i pod 40rem.
 - **Změna chování:** `BankAccountField.disabledReason` v režimu výběru nahrazuje výzvu uvnitř pole. Odstavec pod polem a duplicitní tooltip jsou odstraněny. Ruční vstup zůstává prázdný.
 - Nový `BankAccountField.placeholder?: string` pro výzvu výběru; bez něj zůstává `optionSelect.emptyValue`.
