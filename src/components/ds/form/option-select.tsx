@@ -137,7 +137,7 @@ export function OptionSelect({
         )}
       >
         <SelectValue placeholder={resolvedPlaceholder}>
-          <span className="flex min-w-0 items-center justify-between gap-3">
+          <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
             <span className="truncate" title={current === "" ? resolvedPlaceholder : undefined}>
               {triggerLabel ?? resolvedPlaceholder}
             </span>
@@ -161,7 +161,7 @@ export function OptionSelect({
             disabled={o.disabled || o.inactive}
             className={cn(o.muted && "text-muted-foreground")}
           >
-            <span className="flex min-w-0 items-center justify-between gap-3">
+            <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
               <span className="truncate">{o.label}</span>
               {o.inactive ? (
                 <InactiveTag label={resolvedInactiveLabel} />
