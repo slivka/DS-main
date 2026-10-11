@@ -159,7 +159,8 @@ describe("Design formulářů 2", () => {
     expect(
       view.container
         .querySelector('[data-slot="journal-recap-home-total"]')
-        ?.getAttribute("aria-label"),
+        ?.getAttribute("aria-label")
+        ?.replace(/\s/g, " "),
     ).toBe("Domácí celek Kč: 30 250,00");
   });
   it("FP a DDPZ ponechávají způsob platby v Platebních údajích", () => {

@@ -3988,7 +3988,8 @@
         {
           "name": "action",
           "type": "\"close\" | \"switch\" | \"logout\" | \"navigate\"",
-          "default": "navigate"
+          "default": "navigate",
+          "description": "Typ odchodu určuje nadpis a výsledkové texty tlačítek."
         }
       ],
       "usage": "Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.",
@@ -5208,11 +5209,16 @@
         },
         {
           "name": "inputClassName",
-          "type": "string"
+          "type": "string",
+          "description": "Třídy vstupu i hodnoty jen ke čtení, například h-11."
         }
       ],
       "usage": "Kurz s důvodem; bez ikony běžný padding vpravo, readOnly zarovnaný jako DecimalInput.",
       "examples": [
+        {
+          "label": "Kurz EUR",
+          "code": "<RateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} />"
+        },
         {
           "label": "2.92.0",
           "code": "<RateField {...rateProps} inputClassName=\"h-11\" />"
@@ -7256,6 +7262,14 @@
       "usage": "Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky.",
       "examples": [
         {
+          "label": "Rozpis se zkrácenými účty",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
+        },
+        {
+          "label": "Řádky s DPH (2.55.0)",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
+        },
+        {
           "label": "2.92.0",
           "code": "<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />"
         }
@@ -7269,6 +7283,11 @@
         {
           "name": "recapTotalAmount",
           "type": "number"
+        },
+        {
+          "name": "recapTotalLabel",
+          "type": "string",
+          "description": "Popisek domácího celku; DocumentForm předá svůj text automaticky."
         }
       ]
     },
@@ -7354,6 +7373,10 @@
       ],
       "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",
       "examples": [
+        {
+          "label": "Rekapitulace",
+          "code": "<JournalLinesRecap lines={lines} accounts={accounts} storageKey=\"invoice-lines\" />"
+        },
         {
           "label": "2.92.0",
           "code": "<JournalLinesRecap {...props} headerTotal={<JournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} />} />"
@@ -7691,6 +7714,11 @@
           "name": "symbol",
           "type": "string",
           "required": true
+        },
+        {
+          "name": "labelTemplate",
+          "type": "string",
+          "description": "Přepis plného popisku s tokenem {symbol}; má přednost před DsTexts."
         }
       ],
       "usage": "Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.",
