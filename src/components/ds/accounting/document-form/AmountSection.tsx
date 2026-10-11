@@ -11,10 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { DecimalInput } from "../../form/decimal-input";
 import { RateField } from "../../form/rate-field";
 import { SectionHeading } from "../../layout/section-heading";
-import { convertAmount } from "../currency-amount";
-import { formatAmount } from "../../../../lib/format";
 import { cn } from "../../../../lib/utils";
-import { ReadField } from "./document-identity-line";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -75,12 +72,12 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
       <div
         data-slot="document-amount-currency"
         data-section="document-amount-section"
-        className="flex max-w-full flex-wrap items-start justify-end min-w-0 gap-3"
+        className="flex max-w-full flex-wrap items-start justify-between min-w-0 gap-x-3 gap-y-12"
       >
         {foreign ? (
           <div
             data-slot="document-foreign-amounts"
-            className="order-2 flex min-w-0 max-w-full flex-wrap items-start justify-end gap-3 @min-[48rem]:order-1"
+            className="order-2 flex shrink-0 items-start gap-3 @min-[48rem]:order-1"
           >
             <div className="w-[9rem] shrink-0">
               {field(
@@ -110,35 +107,49 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })
                   }
                   className="w-full"
+                  inputClassName="h-11"
                 />,
                 3,
                 false,
-                "[&_p]:truncate @min-[30rem]:[&_p]:overflow-visible",
+                "",
               )}
             </div>
-            <div className="w-[9rem] shrink-0 text-right @min-[30rem]:w-[11.5rem]">
-              {field(
-                "document-total-home",
-                <span className="whitespace-nowrap">
-                  {t.totalHome.replace("{symbol}", homeCurrencySymbol ?? homeCurrency)}
-                </span>,
-                <div
-                  id="document-total-home"
-                  aria-readonly="true"
-                  className="flex h-11 items-center justify-end rounded-md border bg-muted/40 px-3 font-semibold tabular-nums"
-                >
-                  {formatAmount(convertAmount(total, value.rate ?? 0, rateAmount), 2)}
-                </div>,
-                3,
-                false,
-                "text-right [&_label]:text-right",
-              )}
-            </div>
+            {vatRateField && !vatRateField.sameAsDocument ? (
+              <div className="w-[9rem] shrink-0">
+                {field("document-vat-rate", t.vatRate, <>
+                  <RateField
+                    id="document-vat-rate"
+                    value={vatRateField.value ?? null}
+                    currency={value.currency}
+                    currencySymbol={currencySymbol}
+                    homeCurrency={homeCurrency}
+                    homeCurrencySymbol={homeCurrencySymbol}
+                    rateAmount={vatRateField.rateAmount ?? rateAmount}
+                    suggestedRate={vatRateField.suggestedRate}
+                    suggestedInfo={vatRateField.suggestedInfo}
+                    manual={!!vatRateField.manual}
+                    note={vatRateField.note ?? ""}
+                    showNote={false}
+                    noteLabel={t.vatRateNote}
+                    manualSourceLabel={t.manualRate}
+                    requiredMessage={t.rateNoteRequired}
+                    disabled={readOnly || vatRateField.readOnly}
+                    readOnly={readOnly || vatRateField.readOnly}
+                    onChange={(rate) => vatRateField.onChange({ rate, manual: true })}
+                    onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })}
+                    inputClassName="h-11"
+                  />
+                  {!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? (
+                    <p role="status" data-slot="document-vat-rate-missing" className="mt-6 text-xs font-medium text-destructive">{t.vatRateMissing}</p>
+                  ) : null}
+                </>, 3)}
+              </div>
+            ) : null}
           </div>
         ) : null}
         <div
           data-slot="document-total-currency-pair"
-          className="order-1 flex min-w-0 max-w-full shrink-0 items-start gap-3"
+          className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[48rem]:order-2"
         >
           <div
             data-slot="document-amount-total"
@@ -209,61 +220,28 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         </div>
       </div>
       {foreign ? (
-        <div data-slot="document-rate-details" className="mt-3 grid grid-cols-20 gap-3">
-          {foreign && vatRateField
+        <div data-slot="document-rate-details" className="mt-12 grid grid-cols-20 gap-3">
+          {value.rateManual
             ? field(
-                "document-vat-rate",
-                t.vatRate,
-                vatRateField.sameAsDocument ? (
-                  <ReadField
-                    id="document-vat-rate"
-                    value={<span className="text-muted-foreground">{t.vatRateSameAsDocument}</span>}
+                "document-rate-note",
+                t.rateNote,
+                <>
+                  <Input
+                    id="document-rate-note"
+                    value={value.rateNote ?? ""}
+                    maxLength={200}
+                    required
+                    aria-invalid={!value.rateNote?.trim()}
+                    disabled={!can("rateNote")}
+                    onChange={(event) => patch({ rateNote: event.target.value })}
                   />
-                ) : (
-                  <>
-                    <RateField
-                      id="document-vat-rate"
-                      value={vatRateField.value ?? null}
-                      currency={value.currency}
-                      currencySymbol={currencySymbol}
-                      homeCurrency={homeCurrency}
-                      homeCurrencySymbol={homeCurrencySymbol}
-                      rateAmount={vatRateField.rateAmount ?? rateAmount}
-                      suggestedRate={vatRateField.suggestedRate}
-                      suggestedInfo={vatRateField.suggestedInfo}
-                      manual={!!vatRateField.manual}
-                      note={vatRateField.note ?? ""}
-                      showNote={false}
-                      noteLabel={t.vatRateNote}
-                      manualSourceLabel={t.manualRate}
-                      requiredMessage={t.rateNoteRequired}
-                      disabled={readOnly || vatRateField.readOnly}
-                      readOnly={readOnly || vatRateField.readOnly}
-                      onChange={(rate) => vatRateField.onChange({ rate, manual: true })}
-                      onNoteChange={(note) => vatRateField.onChange({ note })}
-                      onUseSuggested={() =>
-                        vatRateField.onChange({
-                          rate: vatRateField.suggestedRate ?? null,
-                          manual: false,
-                          note: null,
-                        })
-                      }
-                      className="w-full @min-[40rem]:w-36"
-                    />
-                    {!vatRateField.manual &&
-                    vatRateField.suggestedRate == null &&
-                    !(readOnly || vatRateField.readOnly) ? (
-                      <p
-                        role="status"
-                        data-slot="document-vat-rate-missing"
-                        className="text-xs font-medium text-destructive"
-                      >
-                        {t.vatRateMissing}
-                      </p>
-                    ) : null}
-                  </>
-                ),
-                3,
+                  {!value.rateNote?.trim() ? (
+                    <p role="alert" className="text-xs font-medium text-destructive">
+                      {t.rateNoteRequired}
+                    </p>
+                  ) : null}
+                </>,
+                14,
               )
             : null}
           {foreign && vatRateField && !vatRateField.sameAsDocument && vatRateField.manual
@@ -281,29 +259,6 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     onChange={(event) => vatRateField.onChange({ note: event.target.value })}
                   />
                   {!vatRateField.note?.trim() ? (
-                    <p role="alert" className="text-xs font-medium text-destructive">
-                      {t.rateNoteRequired}
-                    </p>
-                  ) : null}
-                </>,
-                14,
-              )
-            : null}
-          {value.rateManual
-            ? field(
-                "document-rate-note",
-                t.rateNote,
-                <>
-                  <Input
-                    id="document-rate-note"
-                    value={value.rateNote ?? ""}
-                    maxLength={200}
-                    required
-                    aria-invalid={!value.rateNote?.trim()}
-                    disabled={!can("rateNote")}
-                    onChange={(event) => patch({ rateNote: event.target.value })}
-                  />
-                  {!value.rateNote?.trim() ? (
                     <p role="alert" className="text-xs font-medium text-destructive">
                       {t.rateNoteRequired}
                     </p>

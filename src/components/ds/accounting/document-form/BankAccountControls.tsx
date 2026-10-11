@@ -4,6 +4,7 @@
  * Nesmí: rozhodovat o druhu dokladu ani ukládat hodnotu.
  */
 import type { ReactNode } from "react";
+import { useDsTexts } from "../../../../ds-texts";
 
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
 import { PaymentOrderAccountField } from "../payment-order-account-field";
@@ -141,14 +142,29 @@ export interface CompanyAccountControlProps {
   disabledReason?: string;
   /** Popisek. */
   label: string;
+  /** Nabídka způsobů platby; s ní účet zabírá pravých 14 sloupců. */
+  paymentMethodOptions?: Array<{ value: string; label: string }>;
+  /** Vybraný způsob platby. */
+  paymentMethodId?: string | null;
+  /** Změna způsobu platby. */
+  onPaymentMethodChange?: (id: string) => void;
+  /** Způsob platby nelze editovat. */
+  paymentMethodDisabled?: boolean;
 }
 
 /** Firemní účet FV/ZFV přes plnou šířku. */
 export function CompanyAccountControl(props: CompanyAccountControlProps): ReactNode {
+  const t = useDsTexts().documentForm;
   return (
-    <Field label={props.label} htmlFor="document-companyBankAccountId" span={20}>
+    <>
+    {props.paymentMethodOptions ? (
+      <Field label={t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
+        <OptionSelect id="document-paymentMethodId" value={props.paymentMethodId} onChange={(id) => props.onPaymentMethodChange?.(id)} options={props.paymentMethodOptions} searchable disabled={props.paymentMethodDisabled} />
+      </Field>
+    ) : null}
+    <Field label={props.label} htmlFor="document-companyBankAccountId" span={props.paymentMethodOptions ? 14 : 20}>
       {props.disabledReason ? (
-        <FieldValue lockedReason={props.disabledReason} />
+        <FieldValue id="document-companyBankAccountId" lockedReason={props.disabledReason} />
       ) : (
         <OptionSelect
           id="document-companyBankAccountId"
@@ -162,5 +178,6 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
         />
       )}
     </Field>
+    </>
   );
 }

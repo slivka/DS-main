@@ -262,6 +262,10 @@ export function DocumentForm({
         disabled={!can("companyBankAccountId")}
         disabledReason={companyBankAccountDisabledReason}
         label={t.payToBankAccount}
+        paymentMethodOptions={paymentMethodOptions}
+        paymentMethodId={value.paymentMethodId}
+        onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
+        paymentMethodDisabled={!can("paymentMethodId")}
       />
     ) : null;
   const changeRounding = (roundingAmount: number) => {
@@ -286,6 +290,7 @@ export function DocumentForm({
     readOnly,
     f,
     lineRounding,
+    total,
     can,
     changeRounding,
     roundingLabel,
@@ -456,7 +461,7 @@ export function DocumentForm({
             issuedBankAccountAbove={issuedBankAccountAbove}
             paymentOrderEnabled={paymentOrderOn}
             constantSymbolOptions={constantSymbolOptions}
-            paymentMethodOptions={paymentMethodOptions}
+            paymentMethodOptions={companyAccountField ? undefined : paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
             bankAccountField={bankAccountField}
             field={field}

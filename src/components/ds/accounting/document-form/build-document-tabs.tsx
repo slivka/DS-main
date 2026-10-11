@@ -18,6 +18,7 @@ export interface BuildDocumentTabsArgs {
   mainSide?: "MD" | "D";
   value: DocumentFormProps["value"];
   totalMode: "entered" | "sum";
+  total: number;
   currencies?: CurrencyOption[];
   homeCurrency: string;
   homeCurrencySymbol?: string;
@@ -92,6 +93,7 @@ export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
           rateAmount={rateAmount}
           totalMode={totalMode === "entered" ? "entered" : "computed"}
           {...linesEditorProps}
+          recapTotalAmount={a.total}
           editableFields={readOnly ? [] : linesEditorProps?.editableFields}
           rounding={
             f.rounding
