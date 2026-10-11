@@ -1,5 +1,16 @@
 # Changelog – Slivka Design System
 
+## 2.92.0 – Design formulářů 2 (nevydáno)
+
+- **Změna chování:** kurzy vlevo, Celkem + Měna vpravo; Kurz DPH jen při odlišném kurzu. Důvody zůstávají níže; domácí celek přesunut do hlavičky rekapitulace.
+- RateField bez ikony má standardní pravý padding; readonly má shodný sans font a zarovnání. Nové volitelné inputClassName.
+- Přepočet v DS používá celkovou částku a kurz dokladu; chybějící kurz ukáže pomlčku. DocumentForm automaticky předá odvozený celek; samostatný JournalLinesEditor může použít recapTotalAmount pro externí celek.
+- **Změna chování:** FV/ZFV mají způsob platby před účtem nahoře, bez duplicity v Platebních údajích.
+- **Změna chování:** UnsavedChangesDialog.action (close/switch/logout/navigate) pojmenuje výsledek; zahodit outline-destructive, fokus Zpět, Esc = návrat. Výchozí navigate zachovává kompatibilitu props. Při neúspěšném uložení se neprovede navazující akce; aplikace nastaví chybu v onSaveTab.
+- Aplikace: přímý dialog action="close"/"switch"/"logout"; poskytovatel záložek řeší close automaticky, přepnutí a odhlášení přes guardUnsaved(callback, "switch"/"logout"). Bez nových props se zobrazuje obecné Odejít.
+- **BREAKING:** odstraněn nepoužívaný DocumentFormTexts.vatRateSameAsDocument; odstraňte ho z vlastních úplných objektů textů. Nové klíče DsTexts jsou volitelné, CS/SK katalogy poskytují výchozí texty.
+- Poslední vydání v2.91.0 používalo package 2.90.0; toto kolo nastavuje package 2.92.0 a nic nevydává.
+
 ## 2.90.0 – Design formulářů (nevydáno)
 
 - Pomocné funkce bankovních účtů jsou přímo exportované z hlavního vstupu; dosavadní export z komponent zůstává kompatibilní.

@@ -174,7 +174,6 @@ export type DocumentFormTexts = {
   currency: string;
   rate: string;
   vatRate: string;
-  vatRateSameAsDocument: string;
   vatRateNote: string;
   vatRateMissing: string;
   amountTotal: string;
@@ -253,7 +252,6 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   currency: "Měna",
   rate: "Kurz",
   vatRate: "Kurz DPH",
-  vatRateSameAsDocument: "stejný jako kurz dokladu",
   vatRateNote: "Důvod ručního kurzu DPH",
   vatRateMissing: "Kurz ČNB k DUZP není k dispozici – zadejte ruční kurz s důvodem.",
   amountTotal: "Celkem za doklad",
