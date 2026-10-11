@@ -1,5 +1,5 @@
 /** Pole kurzu · vlastní zdroj a upozornění · nesmí měnit kurz bez akce uživatele. */
-import { forwardRef, useId } from "react";
+import { forwardRef, useId, useState } from "react";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { Info, RefreshCw } from "lucide-react";
 
@@ -99,6 +99,8 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
   const noteInvalid = manual && !note.trim();
 
   const descriptionId = useId();
+  const [sourceOpen, setSourceOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const sourceText = `${suffix}${source ? ` · ${source}` : ""}`;
   const attention = manual || sourceAttention;
   return (
@@ -108,7 +110,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
           {sourceText}
         </span>
         <div className="relative min-w-0">
-          <Tooltip>
+          <Tooltip open={sourceOpen && !updateOpen} onOpenChange={setSourceOpen}>
             <TooltipTrigger asChild>
               <div
                 className="relative min-w-0"
@@ -158,7 +160,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
             <TooltipContent>{sourceText}</TooltipContent>
           </Tooltip>
           {!readOnly && differs ? (
-            <Tooltip>
+            <Tooltip open={updateOpen} onOpenChange={setUpdateOpen}>
               <TooltipTrigger asChild>
                 <Button
                   type="button"
@@ -166,6 +168,14 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                   size="icon"
                   aria-label={tooltip}
                   aria-disabled={disabled || undefined}
+                  onPointerEnter={() => {
+                    setSourceOpen(false);
+                    setUpdateOpen(true);
+                  }}
+                  onFocus={() => {
+                    setSourceOpen(false);
+                    setUpdateOpen(true);
+                  }}
                   className={cn(
                     "absolute right-1 top-1/2 size-7 -translate-y-1/2",
                     disabled ? "text-muted-foreground" : "text-destructive",
