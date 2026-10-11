@@ -489,7 +489,31 @@
       "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
-      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
+      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
+      "src/components/ds/accounting/document-form/use-identity-account-selection.ts": "1438d64a6fedf0c6ee4b72ef9fbdfe5b",
+      "src/components/ds/accounting/journal-recap-header.tsx": "bd52abef3171cbb930cbfaf6e870afc7",
+      "src/components/ds/accounting/journal-recap-home-total.tsx": "c78384dfc3dd5faca5b90cc02b2eeae3",
+      "src/components/ds/accounting/locked-account-value.tsx": "b16548936309bfbd5cea35fc81eaf310",
+      "src/components/ds/panes/pane-record-navigation.ts": "31aa355dd35df0332841596907e5c81b",
+      "src/components/showcase/AccountingFieldsShowcase.tsx": "064e29cbf1f7899ddae16dc2f7c1aea3",
+      "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
+      "src/components/showcase/FormDesignTwoShowcase.tsx": "1126b83817d6597d3d43ea86d1da1a99",
+      "src/components/showcase/UnsavedActionsShowcase.tsx": "45469ab16f04984e5dca98809e9f4cb5",
+      "src/components/showcase/form-design-narrow.tsx": "79dc7fd50c5844de3f2dde30c2de870e",
+      "src/components/showcase/form-design-texts.ts": "6456238dcbe675dc5b9c3661d30d4a5e",
+      "src/ds-texts/cs-document-form.ts": "21c642072960d582fb6f337edabc40e8",
+      "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
+      "src/ds-texts/form-design-two-showcase.ts": "60bbb084c4dbb676c9dd2ed4ab7fb515",
+      "src/ds-texts/grid-journal-types.ts": "94ac1293c2ae2163f22f8d3d5787064e",
+      "src/ds-texts/sk-document-form.ts": "9d4c6de8f5243e8cbbc864edc8b298c0",
+      "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
+      "tests/e2e/edit-document-eleven.spec.ts": "3a7d7e93623fe7f8baafe0862158df15",
+      "tests/e2e/form-design-two.spec.ts": "4383d3d512707baf45a6da3c7ff745e4",
+      "tests/e2e/form-design.spec.ts": "5c74ad93070cc7062600bbbb6af8c1be",
+      "tests/e2e/narrow-fields-290.spec.ts": "65fd6ccd52c7e47785bf007a9d100528",
+      "tests/unit/edit-document-eleven.test.tsx": "a8cb8665aa63cfba29b9162bf517a0f7",
+      "tests/unit/form-design-two.test.tsx": "3313ba395dc31faeb6c34bacc8085fe7",
+      "tests/unit/form-design.test.tsx": "7d584b77c1a4a8c40eb16ac463b79c12"
     },
     "pipeline_version": 8
   },
@@ -5204,8 +5228,7 @@
         },
         {
           "name": "className",
-          "type": "string",
-          "default": "font-mono tabular-nums"
+          "type": "string"
         },
         {
           "name": "inputClassName",
@@ -7264,7 +7287,7 @@
           "description": "Doplňkové třídy společného obalu; ref míří na obal."
         }
       ],
-      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange zakáže přepínač.",
+      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede.",
       "examples": [
         {
           "label": "Vypnutý příkaz",
