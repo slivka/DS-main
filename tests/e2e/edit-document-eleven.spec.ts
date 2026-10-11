@@ -93,7 +93,7 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   await expect(received.locator("#document-specificSymbol")).toHaveCount(0);
   const reason = received.getByTitle("Hotovostní platba nepoužívá bankovní účet");
   await received.evaluate((el) => {
-    el.style.width = "360px";
+    el.style.width = "280px";
   });
   const geometry = await reason.evaluate((el) => {
     const text = el.firstElementChild;
