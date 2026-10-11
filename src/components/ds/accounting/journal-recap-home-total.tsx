@@ -8,6 +8,8 @@ import { formatAmount } from "../../../lib/format";
 export interface JournalRecapHomeTotalProps extends ComponentPropsWithoutRef<"span"> {
   /** Celek v měně dokladu. */
   total: number;
+  /** Přepis popisku formuláře, včetně tokenu {symbol}. */
+  labelTemplate?: string;
   /** Kurz dokladu. */
   rate?: number | null;
   /** Počet jednotek kurzu. */
@@ -18,14 +20,17 @@ export interface JournalRecapHomeTotalProps extends ComponentPropsWithoutRef<"sp
 /** Tučný přepočet celku v záhlaví rekapitulace. */
 export const JournalRecapHomeTotal = forwardRef<HTMLSpanElement, JournalRecapHomeTotalProps>(
   function JournalRecapHomeTotal(
-    { total, rate, rateAmount = 1, symbol, className, children, ...props },
+    { total, rate, rateAmount = 1, symbol, labelTemplate, className, children, ...props },
     ref,
   ) {
     const texts = useDsTexts().documentForm;
-    const label = (texts.totalHome ?? DEFAULT_DOCUMENT_FORM_TEXTS.totalHome).replace(
+    const label = (labelTemplate ?? texts.totalHome ?? DEFAULT_DOCUMENT_FORM_TEXTS.totalHome).replace(
       "{symbol}",
       symbol,
     );
+    const amount = rate == null || !Number.isFinite(rate) || rate <= 0
+      ? "—"
+      : formatAmount(convertAmount(total, rate, rateAmount), 2);
     return (
       <span
         {...props}
@@ -36,13 +41,12 @@ export const JournalRecapHomeTotal = forwardRef<HTMLSpanElement, JournalRecapHom
           className,
         )}
         title={label}
+        aria-label={`${label}: ${amount}`}
       >
         <span className="hidden @min-[48rem]:inline">{label}:</span>
         <span className="@min-[48rem]:hidden">{symbol}:</span>
         <span>
-          {rate == null || !Number.isFinite(rate) || rate <= 0
-            ? "—"
-            : formatAmount(convertAmount(total, rate, rateAmount), 2)}
+          {amount}
         </span>
         {children}
       </span>

@@ -258,6 +258,7 @@ export function DocumentForm({
           can,
           t.payToBankAccount,
           paymentMethodOptions,
+          t.paymentMethod,
         )
       : null;
   const changeRounding = (roundingAmount: number) => {

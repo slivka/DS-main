@@ -172,6 +172,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                         ? (props.totalAmount ?? totals.documentGrossTotal)
                         : totals.documentGrossTotal)
                     }
+                    labelTemplate={props.recapTotalLabel}
                     rate={props.rate}
                     rateAmount={props.rateAmount}
                     symbol={props.homeCurrencySymbol ?? props.homeCurrency}

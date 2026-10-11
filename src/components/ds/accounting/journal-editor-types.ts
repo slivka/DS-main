@@ -83,6 +83,8 @@ export type JournalLinesEditorTexts = JournalEditorTexts;
 export interface JournalLinesEditorProps {
   /** Přesný celek hlavičky pro rekapitulaci; DocumentForm doplňuje automaticky. */
   recapTotalAmount?: number;
+  /** Přepis popisku domácího celku z textů formuláře. */
+  recapTotalLabel?: string;
   /** Řádky dokladu (řízená hodnota). */
   lines: JournalLine[];
   /** Nové řádky po každé změně. */
