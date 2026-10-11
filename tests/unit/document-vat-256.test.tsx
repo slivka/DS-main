@@ -196,7 +196,7 @@ describe("DocumentForm 2.56.0", () => {
     );
     expect(
       form({ value: eur, vatRateField: { value: null, onChange: () => {}, sameAsDocument: true } }),
-    ).toContain("stejný jako kurz dokladu");
+    ).not.toContain("Kurz DPH");
   });
   it("odznak Řádky počítá jen řádky v gridu", () => {
     const html = form({ linesEditorProps: { vat } });

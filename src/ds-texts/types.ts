@@ -391,6 +391,8 @@ export interface DsTexts {
     creditAccount: string;
   };
   documentForm: {
+    /** Popisek celku v domácí měně. */
+    totalHome?: string;
     changeAccount: string;
     currencyDisabled: string;
     mainAccountSelect: string;

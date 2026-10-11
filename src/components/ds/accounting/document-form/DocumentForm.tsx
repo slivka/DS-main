@@ -114,7 +114,6 @@ export function DocumentForm({
   className,
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
-  const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
@@ -244,7 +243,7 @@ export function DocumentForm({
     counterpartyInput,
     bankAccountOptions,
     bankCodes,
-    isHomeCurrency: homeCurrencyDocument,
+    isHomeCurrency: isHomeCurrency ?? value.currency === homeCurrency,
     paymentOrdersApplicable: Boolean(f.paymentOrders),
     paymentOrderEnabled: paymentOrderOn,
     onPaymentOrderEnabledChange,
