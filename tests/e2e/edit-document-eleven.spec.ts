@@ -166,6 +166,7 @@ test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m�
       m.setAppZoom(z);
     }, zoom);
     const rate = form.locator("#document-rate");
+    await rate.fill("");
     await rate.fill("1234,567890");
     const parent = rate.locator("xpath=../..");
     const update = parent.getByRole("button");
@@ -192,7 +193,7 @@ test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m�
       };
     });
     console.log("rate geometry", geometry);
-    expect(geometry.value).toContain("567890");
+    expect(geometry.value.replace(/\s/g, "")).toBe("1234,567890");
     expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
     expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
     await rate.hover();

@@ -52,3 +52,6 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Keep recap header rendering and record-list navigation in focused internal modules. Why: orchestration stays readable without deleting whitespace or changing public exports.
 - Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
 - Keep identity account focus and selection in a focused internal hook. Why: DocumentForm remains below the file limit without changing public behavior.
+
+- Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
+- Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
