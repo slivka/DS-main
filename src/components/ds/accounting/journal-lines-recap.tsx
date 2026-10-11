@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-
 import { Button } from "../../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
@@ -13,14 +12,14 @@ import { accountColumns } from "./account-columns";
 import { useDsTexts } from "../../../ds-texts";
 import { formatAccountCode } from "./account-code";
 import { formatCodeName } from "../../../lib/code-format";
-
 export interface JournalRecapTab {
   id: string;
   label: string;
   content: React.ReactNode | ((lines: JournalLine[]) => React.ReactNode);
 }
-
 export interface JournalLinesRecapProps {
+  /** Celek v domácí měně v záhlaví, i při sbalení. */
+  headerTotal?: React.ReactNode;
   lines: JournalLine[];
   accounts: AccountOption[];
   dimensions?: DimensionOption[];
@@ -40,7 +39,6 @@ export interface JournalLinesRecapProps {
   /** Rekapitulace DPH po kódech – s ní se zobrazí vestavěná záložka „DPH“. */
   vatSummary?: VatSummaryRow[];
 }
-
 export interface JournalLinesRecapTexts {
   accounting: string;
   jobs: string;
@@ -64,7 +62,6 @@ export interface JournalLinesRecapTexts {
   deductible: string;
   nonDeductible: string;
 }
-
 export const DEFAULT_JOURNAL_LINES_RECAP_TEXTS: JournalLinesRecapTexts = {
   accounting: "Účtování",
   jobs: "Zakázky",
@@ -88,12 +85,11 @@ export const DEFAULT_JOURNAL_LINES_RECAP_TEXTS: JournalLinesRecapTexts = {
   deductible: "s nárokem",
   nonDeductible: "bez nároku",
 };
-
 const money = (value: number) => formatAmount(value, 2);
-
 /** Řízená nebo lokálně řízená rekapitulace aktuálních účetních řádků. */
 export function JournalLinesRecap({
   lines,
+  headerTotal,
   accounts,
   dimensions = [],
   documentCurrency,
@@ -390,7 +386,6 @@ export function JournalLinesRecap({
       else setLocalTab("accounting");
     }
   }, [activeTab, onTabChange, tabs]);
-
   return (
     <section
       data-slot="journal-lines-recap"
@@ -405,7 +400,7 @@ export function JournalLinesRecap({
         }}
       >
         <div className="flex items-center border-b">
-          <TabsList className="h-9 flex-1 justify-start rounded-none bg-transparent px-2">
+          <TabsList className="h-9 min-w-0 flex-1 overflow-x-auto justify-start rounded-none bg-transparent px-2">
             {tabs.map((item) => (
               <TabsTrigger
                 key={item.id}
@@ -419,6 +414,7 @@ export function JournalLinesRecap({
               </TabsTrigger>
             ))}
           </TabsList>
+          {headerTotal}
           <Button
             type="button"
             variant="ghost"

@@ -18,6 +18,7 @@ import { JournalRow } from "./JournalRow";
 import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
+import { JournalRecapHomeTotal } from "./journal-recap-home-total";
 import { JournalLinesRecap } from "./journal-lines-recap";
 import { accountDataColumn, isAccountColumn, isPinnedLine } from "./journal-lines-model";
 import { useJournalEditorState } from "./useJournalEditorState";
@@ -162,6 +163,21 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             <JournalToolbar />
             <JournalGrid />
             <JournalLinesRecap
+              headerTotal={
+                props.documentCurrency !== props.homeCurrency ? (
+                  <JournalRecapHomeTotal
+                    total={
+                      props.recapTotalAmount ??
+                      (props.totalMode === "entered"
+                        ? (props.totalAmount ?? totals.documentGrossTotal)
+                        : totals.documentGrossTotal)
+                    }
+                    rate={props.rate}
+                    rateAmount={props.rateAmount}
+                    symbol={props.homeCurrencySymbol ?? props.homeCurrency}
+                  />
+                ) : undefined
+              }
               lines={
                 vatOn
                   ? [

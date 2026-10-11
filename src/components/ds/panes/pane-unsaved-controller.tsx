@@ -1,4 +1,5 @@
 /** Řízení výsledku dialogu neuložených změn oddělené od provideru panelů. */
+import type { UnsavedChangesAction } from "../../../ds-texts";
 import { useState } from "react";
 
 import { UnsavedChangesDialog } from "./unsaved-changes-dialog";
@@ -7,6 +8,7 @@ import { clearTabState, setTabDirty } from "./pane-tab-store";
 export type PendingUnsaved = {
   tabIds: string[];
   intent: string;
+  action?: UnsavedChangesAction;
   proceed: () => void;
   onOpenInNewTab?: () => void;
 };
@@ -54,6 +56,7 @@ export function PaneUnsavedController({
   return (
     <UnsavedChangesDialog
       open={!!pending}
+      action={pending?.action}
       tabTitle={pending ? pending.tabIds.map(titleOf).join(", ") : ""}
       intent={pending?.intent ?? ""}
       saving={saving}

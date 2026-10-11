@@ -7,6 +7,13 @@ import type { Locale } from "date-fns";
 import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
 
+/** Druh potvrzovaného odchodu. */
+export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate";
+/** Přeložené volby potvrzení odchodu. */
+export type UnsavedActionTexts = Record<
+  UnsavedChangesAction,
+  { title: string; discard: string; back: string; save: string }
+>;
 export type DsLocale = "cs" | "sk";
 export type TextTemplate = (...args: never[]) => string;
 export type TextTree = { [key: string]: string | TextTemplate | TextTree };
@@ -231,6 +238,7 @@ export interface DsTexts {
     unsavedTitle: (tab: string) => string;
     /** Druhá věta dialogu. */
     unsavedNotSaved: string;
+    unsavedActions?: UnsavedActionTexts;
     saveAndContinue: string;
     continueWithoutSaving: string;
     backToRecord: string;
@@ -311,6 +319,14 @@ export interface DsTexts {
     other: string;
   };
   multiSelect: { selectAll: string; noValues: string };
+  rateField?: {
+    note: string;
+    manual: string;
+    required: string;
+    withoutDate: string;
+    unit: string;
+    suggested: (info: string, rate: string) => string;
+  };
   optionSelect: {
     emptyValue: string;
     inactive: string;

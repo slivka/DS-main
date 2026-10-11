@@ -12,12 +12,15 @@ import {
   AlertDialogTitle,
 } from "../../ui/alert-dialog";
 import { Button } from "../../ui/button";
-import { useDsTexts } from "../../../ds-texts";
+import { useRef } from "react";
+import { DS_TEXTS_CS, type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
 
 /** Vlastnosti dialogu neuložených změn. */
 export interface UnsavedChangesDialogProps {
   /** Dialog je otevřený. */
   open: boolean;
+  /** Druh odchodu; bez propu použije obecnou navigaci. */
+  action?: UnsavedChangesAction;
   /** Název dotčené záložky. */
   tabTitle: string;
   /** Co se chystá (zavření, nahrazení obsahu, odhlášení …). */
@@ -37,31 +40,68 @@ export interface UnsavedChangesDialogProps {
 /** Dialog „{záložka} – neuložené změny“. */
 export function UnsavedChangesDialog(props: UnsavedChangesDialogProps) {
   const t = useDsTexts().panes;
+  const backRef = useRef<HTMLButtonElement>(null);
+  const labels = (t.unsavedActions ?? DS_TEXTS_CS.panes.unsavedActions)?.[
+    props.action ?? "navigate"
+  ];
   return (
     <AlertDialog open={props.open} onOpenChange={(open) => !open && props.onBack()}>
-      <AlertDialogContent>
+      <AlertDialogContent
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          backRef.current?.focus();
+        }}
+        onEscapeKeyDown={(event) => {
+          event.preventDefault();
+          if (!props.saving) props.onBack();
+        }}
+      >
         <AlertDialogHeader>
-          <AlertDialogTitle>{t.unsavedTitle(props.tabTitle)}</AlertDialogTitle>
+          <AlertDialogTitle>{labels?.title}</AlertDialogTitle>
           <AlertDialogDescription>
-            {props.intent} {t.unsavedNotSaved}
+            {props.tabTitle} – {t.unsavedNotSaved}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="sm:justify-between">
-          <Button type="button" variant="destructive" onClick={props.onDiscard}>
-            {t.continueWithoutSaving}
+        <AlertDialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
+          <Button
+            type="button"
+            variant="outline-destructive"
+            disabled={props.saving}
+            className="order-3 whitespace-nowrap sm:order-1 sm:mr-auto"
+            onClick={props.onDiscard}
+          >
+            {labels?.discard}
           </Button>
-          <div className="flex flex-col-reverse gap-2 sm:flex-row">
-            <Button type="button" variant="outline" onClick={props.onBack}>
-              {t.backToRecord}
+          <div className="order-1 flex flex-col-reverse gap-2 sm:order-2 sm:flex-row">
+            <Button
+              type="button"
+              ref={backRef}
+              variant="outline"
+              disabled={props.saving}
+              className="whitespace-nowrap"
+              onClick={props.onBack}
+            >
+              {labels?.back}
             </Button>
             {props.onOpenInNewTab ? (
-              <Button type="button" variant="outline" onClick={props.onOpenInNewTab}>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={props.saving}
+                className="whitespace-nowrap"
+                onClick={props.onOpenInNewTab}
+              >
                 {t.openInNewTab}
               </Button>
             ) : null}
             {props.onSave ? (
-              <Button type="button" disabled={props.saving} onClick={props.onSave}>
-                {t.saveAndContinue}
+              <Button
+                type="button"
+                disabled={props.saving}
+                className="whitespace-nowrap"
+                onClick={props.onSave}
+              >
+                {labels?.save}
               </Button>
             ) : null}
           </div>

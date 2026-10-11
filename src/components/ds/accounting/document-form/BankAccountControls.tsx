@@ -157,27 +157,38 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
   const t = useDsTexts().documentForm;
   return (
     <>
-    {props.paymentMethodOptions ? (
-      <Field label={t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
-        <OptionSelect id="document-paymentMethodId" value={props.paymentMethodId} onChange={(id) => props.onPaymentMethodChange?.(id)} options={props.paymentMethodOptions} searchable disabled={props.paymentMethodDisabled} />
+      {props.paymentMethodOptions ? (
+        <Field label={t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
+          <OptionSelect
+            id="document-paymentMethodId"
+            value={props.paymentMethodId}
+            onChange={(id) => props.onPaymentMethodChange?.(id)}
+            options={props.paymentMethodOptions}
+            searchable
+            disabled={props.paymentMethodDisabled}
+          />
+        </Field>
+      ) : null}
+      <Field
+        label={props.label}
+        htmlFor="document-companyBankAccountId"
+        span={props.paymentMethodOptions ? 14 : 20}
+      >
+        {props.disabledReason ? (
+          <FieldValue id="document-companyBankAccountId" lockedReason={props.disabledReason} />
+        ) : (
+          <OptionSelect
+            id="document-companyBankAccountId"
+            value={props.value}
+            onChange={props.onChange}
+            options={props.options.map((option) => ({
+              value: option.id,
+              label: [option.label, option.account, option.currency].join(" · "),
+            }))}
+            disabled={props.disabled}
+          />
+        )}
       </Field>
-    ) : null}
-    <Field label={props.label} htmlFor="document-companyBankAccountId" span={props.paymentMethodOptions ? 14 : 20}>
-      {props.disabledReason ? (
-        <FieldValue id="document-companyBankAccountId" lockedReason={props.disabledReason} />
-      ) : (
-        <OptionSelect
-          id="document-companyBankAccountId"
-          value={props.value}
-          onChange={props.onChange}
-          options={props.options.map((option) => ({
-            value: option.id,
-            label: [option.label, option.account, option.currency].join(" · "),
-          }))}
-          disabled={props.disabled}
-        />
-      )}
-    </Field>
     </>
   );
 }

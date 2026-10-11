@@ -6,6 +6,7 @@
 import { sk } from "date-fns/locale";
 
 import { DS_TEXTS_CS } from "./cs";
+import { UNSAVED_ACTION_TEXTS_SK } from "./sk-unsaved-actions";
 import type { DsTexts } from "./types";
 import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 
@@ -173,7 +174,16 @@ export const DS_TEXTS_SK: DsTexts = {
     panelView: "Časť panela",
     contextDisabledHint: "Firma a obdobie sa tu neuplatnia – nastavenie platí pre celý priestor",
   },
+  rateField: {
+    note: "Dôvod ručného kurzu",
+    manual: "Ručný kurz",
+    required: "Uveďte dôvod ručného kurzu.",
+    withoutDate: "bez dátumu",
+    unit: "za",
+    suggested: (info, rate) => `Kurz v databáze (${info}) je ${rate} – kliknutím použiť`,
+  },
   panes: {
+    unsavedActions: UNSAVED_ACTION_TEXTS_SK,
     panel: (i) => `Panel ${i}`,
     emptyHint: "Otvorte položku z menu",
     maximizedBanner: "Panel {index} je maximalizovaný",

@@ -116,33 +116,52 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
             </div>
             {vatRateField && !vatRateField.sameAsDocument ? (
               <div className="w-[9rem] shrink-0">
-                {field("document-vat-rate", t.vatRate, <>
-                  <RateField
-                    id="document-vat-rate"
-                    value={vatRateField.value ?? null}
-                    currency={value.currency}
-                    currencySymbol={currencySymbol}
-                    homeCurrency={homeCurrency}
-                    homeCurrencySymbol={homeCurrencySymbol}
-                    rateAmount={vatRateField.rateAmount ?? rateAmount}
-                    suggestedRate={vatRateField.suggestedRate}
-                    suggestedInfo={vatRateField.suggestedInfo}
-                    manual={!!vatRateField.manual}
-                    note={vatRateField.note ?? ""}
-                    showNote={false}
-                    noteLabel={t.vatRateNote}
-                    manualSourceLabel={t.manualRate}
-                    requiredMessage={t.rateNoteRequired}
-                    disabled={readOnly || vatRateField.readOnly}
-                    readOnly={readOnly || vatRateField.readOnly}
-                    onChange={(rate) => vatRateField.onChange({ rate, manual: true })}
-                    onUseSuggested={() => vatRateField.onChange({ rate: vatRateField.suggestedRate ?? null, manual: false, note: null })}
-                    inputClassName="h-11"
-                  />
-                  {!vatRateField.manual && vatRateField.suggestedRate == null && !(readOnly || vatRateField.readOnly) ? (
-                    <p role="status" data-slot="document-vat-rate-missing" className="mt-6 text-xs font-medium text-destructive">{t.vatRateMissing}</p>
-                  ) : null}
-                </>, 3)}
+                {field(
+                  "document-vat-rate",
+                  t.vatRate,
+                  <>
+                    <RateField
+                      id="document-vat-rate"
+                      value={vatRateField.value ?? null}
+                      currency={value.currency}
+                      currencySymbol={currencySymbol}
+                      homeCurrency={homeCurrency}
+                      homeCurrencySymbol={homeCurrencySymbol}
+                      rateAmount={vatRateField.rateAmount ?? rateAmount}
+                      suggestedRate={vatRateField.suggestedRate}
+                      suggestedInfo={vatRateField.suggestedInfo}
+                      manual={!!vatRateField.manual}
+                      note={vatRateField.note ?? ""}
+                      showNote={false}
+                      noteLabel={t.vatRateNote}
+                      manualSourceLabel={t.manualRate}
+                      requiredMessage={t.rateNoteRequired}
+                      disabled={readOnly || vatRateField.readOnly}
+                      readOnly={readOnly || vatRateField.readOnly}
+                      onChange={(rate) => vatRateField.onChange({ rate, manual: true })}
+                      onUseSuggested={() =>
+                        vatRateField.onChange({
+                          rate: vatRateField.suggestedRate ?? null,
+                          manual: false,
+                          note: null,
+                        })
+                      }
+                      inputClassName="h-11"
+                    />
+                    {!vatRateField.manual &&
+                    vatRateField.suggestedRate == null &&
+                    !(readOnly || vatRateField.readOnly) ? (
+                      <p
+                        role="status"
+                        data-slot="document-vat-rate-missing"
+                        className="mt-6 text-xs font-medium text-destructive"
+                      >
+                        {t.vatRateMissing}
+                      </p>
+                    ) : null}
+                  </>,
+                  3,
+                )}
               </div>
             ) : null}
           </div>

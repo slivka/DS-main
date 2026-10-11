@@ -1,3 +1,4 @@
+import type { UnsavedChangesAction } from "../../../ds-texts";
 /**
  * Veřejné typy a texty panelových záložek.
  * Vlastní: datové kontrakty kontextu a výchozí texty.
@@ -113,7 +114,7 @@ export type PaneTabsApi = {
   /** Záložky dotčené otevřeným dialogem neuložených změn (zvýrazní se). */
   attentionTabIds: string[];
   /** Spustí akci (typicky odhlášení), rozepsané záložky nejprve potvrdí dialogem. */
-  guardUnsaved: (action: () => void) => void;
+  guardUnsaved: (action: () => void, actionType?: UnsavedChangesAction) => void;
   /** Aplikace dodá pořadí záznamů pro listování ↑ ↓ v detailech otevřených ze záložky `tabId`. Vrací odregistraci. */
   registerRecordNav: (tabId: string, getOrderedItems: () => RecordNavItem[]) => () => void;
   getRecordNav: (tabId: string) => RecordNav | null;
