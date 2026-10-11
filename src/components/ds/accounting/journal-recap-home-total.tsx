@@ -24,13 +24,15 @@ export const JournalRecapHomeTotal = forwardRef<HTMLSpanElement, JournalRecapHom
     ref,
   ) {
     const texts = useDsTexts().documentForm;
-    const label = (labelTemplate ?? texts.totalHome ?? DEFAULT_DOCUMENT_FORM_TEXTS.totalHome).replace(
-      "{symbol}",
-      symbol,
-    );
-    const amount = rate == null || !Number.isFinite(rate) || rate <= 0
-      ? "—"
-      : formatAmount(convertAmount(total, rate, rateAmount), 2);
+    const label = (
+      labelTemplate ??
+      texts.totalHome ??
+      DEFAULT_DOCUMENT_FORM_TEXTS.totalHome
+    ).replace("{symbol}", symbol);
+    const amount =
+      rate == null || !Number.isFinite(rate) || rate <= 0
+        ? "—"
+        : formatAmount(convertAmount(total, rate, rateAmount), 2);
     return (
       <span
         {...props}
@@ -45,9 +47,7 @@ export const JournalRecapHomeTotal = forwardRef<HTMLSpanElement, JournalRecapHom
       >
         <span className="hidden @min-[48rem]:inline">{label}:</span>
         <span className="@min-[48rem]:hidden">{symbol}:</span>
-        <span>
-          {amount}
-        </span>
+        <span>{amount}</span>
         {children}
       </span>
     );

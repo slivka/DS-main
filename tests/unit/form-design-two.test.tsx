@@ -90,6 +90,7 @@ describe("Design formulářů 2", () => {
     expect(doc.compareDocumentPosition(vat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     view.rerender(<DocumentForm {...base} vatRateField={{ value: null, onChange: () => {} }} />);
     expect(view.container.querySelector('[data-slot="document-vat-rate-missing"]')).toBeTruthy();
+    expect(view.container.querySelector('[data-slot="document-rate-details"]')).toBeNull();
   });
   it("RateField obnoví doporučený kurz a readOnly nemá akci", () => {
     const useSuggested = mock();
@@ -104,10 +105,20 @@ describe("Design formulářů 2", () => {
       onUseSuggested: useSuggested,
     };
     const view = render(<RateField {...props} />);
+    expect(view.getByRole("textbox").className).toContain("pr-9");
     fireEvent.click(view.getByRole("button"));
     expect(useSuggested).toHaveBeenCalledTimes(1);
+    view.rerender(<RateField {...props} suggestedRate={25} />);
+    expect(view.getByRole("textbox").className).not.toContain("pr-9");
+    expect(view.getByRole("textbox").className).toContain("text-right");
     view.rerender(<RateField {...props} readOnly />);
     expect(view.queryByRole("button")).toBeNull();
+    expect(view.container.querySelector('[data-slot="field-value"]')?.className).toContain(
+      "text-right",
+    );
+    expect(view.container.querySelector('[data-slot="field-value"]')?.className).toContain(
+      "font-sans",
+    );
     expect(view.container.querySelector('[data-slot="field-value"]')?.textContent).toBe("25,000");
   });
   for (const type of ["FV", "ZFV"])
@@ -133,6 +144,24 @@ describe("Design formulářů 2", () => {
         "field-value",
       );
     });
+  it("přepisy textů formuláře platí také v horním řádku a rekapitulaci", () => {
+    const view = render(
+      <DocumentForm
+        {...base}
+        texts={{ totalHome: "Domácí celek {symbol}", paymentMethod: "Forma úhrady" }}
+        paymentMethodOptions={[{ value: "bank", label: "Převodem" }]}
+        companyBankAccountOptions={[
+          { id: "1", label: "Banka", account: "123/0100", currency: "EUR" },
+        ]}
+      />,
+    );
+    expect(view.getByLabelText("Forma úhrady")).toBeTruthy();
+    expect(
+      view.container
+        .querySelector('[data-slot="journal-recap-home-total"]')
+        ?.getAttribute("aria-label"),
+    ).toBe("Domácí celek Kč: 30 250,00");
+  });
   it("FP a DDPZ ponechávají způsob platby v Platebních údajích", () => {
     for (const type of ["FP", "DDPZ"]) {
       const view = render(
@@ -194,6 +223,7 @@ describe("Konkrétní volby neuložených změn", () => {
     expect(view.getByRole("heading").textContent).toBe(
       DS_TEXTS_SK.panes.unsavedActions?.navigate.title,
     );
+    expect(view.getByRole("alertdialog").textContent).toContain("původní");
     fireEvent.keyDown(view.getByRole("alertdialog"), { key: "Escape" });
     await waitFor(() => expect(back).toHaveBeenCalled());
   });

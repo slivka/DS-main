@@ -179,4 +179,3 @@ export interface JournalEditorTexts {
   /** Zkratka nedaňového řádku na přepínači. */
   nonTaxShort: string;
 }
-

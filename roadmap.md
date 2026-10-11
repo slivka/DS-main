@@ -764,3 +764,10 @@
 - [x] Rozdělit pane-context pod 500 řádků bez změny chování.
 - [x] Doplnit ukázky, testy, dokumentaci, verzi a závěrečné kontroly; nevydávat.
 
+
+### DS 2.92.0 – opravy po kontrole 4164ecdd (nevydáno)
+- [ ] Obnovit a sladit obohacení katalogu, zachovat 426 komponent.
+- [ ] Opravit kurzové pásmo, nápovědy a mezery; změřit v prohlížeči.
+- [ ] Opravit patičku a intent dialogu, texty formuláře a přístupnost rekapitulace.
+- [ ] Smysluplně rozdělit typy, hlavičku rekapitulace a navigaci záznamů.
+- [ ] Unit, související e2e, lint a automatický typecheck/build; nevydávat.

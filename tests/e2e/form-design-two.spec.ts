@@ -11,7 +11,7 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
       const m = await import(/* @vite-ignore */ path);
       m.setAppZoom(z);
     }, zoom);
-    for (const width of [360, 640, 1600]) {
+    for (const width of [360, 640, 720, 750, 770, 800, 1600]) {
       await form.evaluate((el, w) => {
         el.style.width = `${w}px`;
         el.style.maxWidth = "none";
@@ -33,12 +33,33 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
             section: rect('[data-section="document-amount-section"]'),
             method: rect("#document-paymentMethodId"),
             account: rect("#document-companyBankAccountId"),
+            hints: [...el.querySelectorAll(".rate-field-hint")].map((hint) => {
+              const r = hint.getBoundingClientRect();
+              return {
+                x: r.x,
+                right: r.right,
+                y: r.y,
+                bottom: r.bottom,
+                width: r.width,
+                scroll: hint.scrollWidth,
+                client: hint.clientWidth,
+              };
+            }),
           };
         });
         expect(Math.abs(boxes.rate.height - boxes.total.height)).toBeLessThan(0.6);
         expect(Math.abs(boxes.vat.width - boxes.rate.width)).toBeLessThan(0.6);
         expect(Math.abs(boxes.vat.y - boxes.rate.y)).toBeLessThan(0.6);
         expect(boxes.rates.x).toBeCloseTo(boxes.section.x, 0);
+        if (Math.abs(boxes.rate.y - boxes.total.y) < 0.6)
+          expect(boxes.rates.right).toBeLessThanOrEqual(boxes.pair.x);
+        else expect(boxes.rate.y).toBeGreaterThan(boxes.total.y);
+        const [hint, vatHint] = boxes.hints;
+        if (!hint || !vatHint) throw new Error("Chybí kurzová nápověda");
+        expect(hint.right).toBeLessThanOrEqual(vatHint.x + 0.6);
+        expect(hint.scroll).toBeLessThanOrEqual(hint.client + 1);
+        expect(vatHint.scroll).toBeLessThanOrEqual(vatHint.client + 1);
+        expect(hint.width).toBeCloseTo(boxes.rate.width, 0);
         if (width === 1600) expect(Math.abs(boxes.rate.y - boxes.total.y)).toBeLessThan(0.6);
         else if (boxes.rate.y !== boxes.total.y)
           expect(boxes.rate.y).toBeGreaterThan(boxes.total.y);
@@ -116,9 +137,23 @@ test("dialogy pojmenují akci, návrat má fokus a úzká tlačítka se nepřekr
         const d = el.getBoundingClientRect();
         return [...el.querySelectorAll("button")].map((b) => {
           const r = b.getBoundingClientRect();
-          return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, bound: d.right };
+          return {
+            top: r.top,
+            bottom: r.bottom,
+            left: r.left,
+            right: r.right,
+            bound: d.right,
+            text: b.textContent,
+          };
         });
       });
+      const discard = boxes.find((b) => b.text?.includes("bez uložení"));
+      const back = boxes.find((b) => b.text?.startsWith("Zpět"));
+      const save = boxes.find((b) => b.text?.startsWith("Uložit"));
+      if (!discard || !back || !save) throw new Error("Chybí akce dialogu");
+      expect(save.top).toBeLessThan(back.top);
+      expect(back.top).toBeLessThan(discard.top);
+      expect(discard.left).toBeCloseTo(save.left, 0);
       for (const b of boxes) expect(b.right).toBeLessThanOrEqual(b.bound + 0.6);
       for (let i = 0; i < boxes.length; i++)
         for (let j = i + 1; j < boxes.length; j++) {

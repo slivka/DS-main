@@ -63,7 +63,10 @@ export function UnsavedChangesDialog(props: UnsavedChangesDialogProps) {
             {props.intent ? <span className="mt-3 block">{props.intent}</span> : null}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <div data-slot="unsaved-dialog-footer" className="flex flex-col items-start gap-2 @min-[36rem]:flex-row">
+        <div
+          data-slot="unsaved-dialog-footer"
+          className="flex flex-col items-start gap-2 @min-[36rem]:flex-row"
+        >
           <Button
             type="button"
             variant="outline-destructive"

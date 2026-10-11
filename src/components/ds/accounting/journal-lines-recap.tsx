@@ -398,7 +398,14 @@ export function JournalLinesRecap({
           if (!shown) changeOpen(true);
         }}
       >
-        <JournalRecapHeader tabs={tabs} activeTab={activeTab} shown={shown} changeOpen={changeOpen} headerTotal={headerTotal} t={t} />
+        <JournalRecapHeader
+          tabs={tabs}
+          activeTab={activeTab}
+          shown={shown}
+          changeOpen={changeOpen}
+          headerTotal={headerTotal}
+          t={t}
+        />
         {shown ? (
           <>
             <TabsContent value="accounting" className="m-0">

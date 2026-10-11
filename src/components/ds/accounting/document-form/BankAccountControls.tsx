@@ -160,7 +160,11 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
   return (
     <>
       {props.paymentMethodOptions ? (
-        <Field label={props.paymentMethodLabel ?? t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
+        <Field
+          label={props.paymentMethodLabel ?? t.paymentMethod}
+          htmlFor="document-paymentMethodId"
+          span={6}
+        >
           <OptionSelect
             id="document-paymentMethodId"
             value={props.paymentMethodId}
