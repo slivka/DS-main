@@ -5,7 +5,7 @@
 - [x] Čtyři varianty potvrzení odchodu, CS/SK, ochrana při chybě
 - [x] Ukázky, chování a související e2e ve třech prohlížečích
 - [x] Metadata přírůstkově, verze package 2.92.0; bez vydání
-- [ ] Závěrečné kontroly
+- [x] Závěrečné kontroly: 574/574 unit, 6/6 souvisejících e2e, lint 0 chyb, formát OK; harness typecheck/build OK
 
 ## DS 2.90.0 – Design formulářů
 - [x] Pořadí účtu a čísla přijatého dokladu, lícování a Tab
