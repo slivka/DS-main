@@ -5195,8 +5195,7 @@
         },
         {
           "name": "noteLabel",
-          "type": "string",
-          "default": "Důvod ručního kurzu"
+          "type": "string"
         },
         {
           "name": "sourceLabel",
@@ -5204,8 +5203,7 @@
         },
         {
           "name": "manualSourceLabel",
-          "type": "string",
-          "default": "Ruční kurz"
+          "type": "string"
         },
         {
           "name": "suggestedTooltip",
@@ -5213,8 +5211,7 @@
         },
         {
           "name": "requiredMessage",
-          "type": "string",
-          "default": "Uveďte důvod ručního kurzu."
+          "type": "string"
         },
         {
           "name": "showNote",

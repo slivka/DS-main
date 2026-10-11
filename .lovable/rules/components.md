@@ -3594,11 +3594,11 @@ Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouz
 | `readOnly` | boolean | `—` |
 | `note` | string | `—` |
 | `onNoteChange` | function | `—` |
-| `noteLabel` | string | `Důvod ručního kurzu` |
+| `noteLabel` | string | `—` |
 | `sourceLabel` | string | `—` |
-| `manualSourceLabel` | string | `Ruční kurz` |
+| `manualSourceLabel` | string | `—` |
 | `suggestedTooltip` | function | `—` |
-| `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
+| `requiredMessage` | string | `—` |
 | `showNote` | boolean | `true` |
 | `id` | string | `rate` |
 | `className` | string | `—` |
@@ -3620,7 +3620,6 @@ _2.92.0_
 
 - Nepoužívejte holý číselný input pro kurz.
 - Ruční kurz neukládejte bez důvodu.
-
 
 **2.94.0:** Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
 

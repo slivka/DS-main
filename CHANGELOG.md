@@ -8,6 +8,7 @@
 - **BREAKING:** zamčené účty přijatých i vydaných dokladů mají důvod uvnitř šedého pole s tooltipem, bez zámku. Odstraňte závislost na ikoně s aria-label důvodu; důvod je nyní text pole. Text paymentOrderDisabled se mění na „Nezahrnuje se do platebních příkazů“.
 - DocumentForm.receivedAccountDisabledReason (FP/ZFP) má přednost před příkazem i protistranou; přepínač je vypnutý a zakázaný, KS/SS skryté. Hodnoty maže jen aplikace, DS je zachová.
 - **BREAKING:** FP/ZFP/DDPOZ mají druhý řádek účet 14 + způsob platby 6 (DDPOZ bez způsobu), třetí Popis 14 + číslo 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby již není v Platebních údajích přijatých dokladů.
+- Opravy kontroly edb1cd4a: přepínač má stálý název Platit příkazem, aria-disabled a popis důvodu; DDPOZ důvod ignoruje. Zamčení vyčistí validační hlášení ručního účtu bez změny uložených hodnot. Zamčený účet a kurz jen ke čtení nemají nativní title; aktualizace kurzu má samostatný výlučný tooltip. Při současných ikonách zdroje a aktualizace má číslo kurzu kompaktní tokenovou velikost, aby se dlouhá hodnota nepřekrývala.
 - Po Update jsou nové props volitelné; aplikace dodá receivedAccountDisabledReason pro platbu bez účtu a příznaky upozornění pro starší/vlastní kurzy. Dosavadní exporty zůstávají.
 
 ## 2.93.0 – Design formulářů 2 (vydáno)
