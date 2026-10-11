@@ -1,10 +1,9 @@
-import type { UnsavedChangesAction } from "../../../ds-texts";
 /**
  * Veřejné typy a texty panelových záložek.
  * Vlastní: datové kontrakty kontextu a výchozí texty.
  * Nesmí: obsahovat React stav ani měnit záložky.
  */
-import type { ComponentType } from "react";
+import type { UnsavedChangesAction } from "../../../ds-texts";
 import type {
   LayoutSnapshot,
   OpenRecordModifiers,

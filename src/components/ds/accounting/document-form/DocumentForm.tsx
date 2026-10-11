@@ -11,7 +11,7 @@ import {
   partnerLabelForType,
   type DocumentFields,
 } from "../document-fields";
-import { CompanyAccountControl } from "./BankAccountControls";
+import { companyAccountControlForForm } from "./BankAccountControls";
 import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
@@ -253,20 +253,19 @@ export function DocumentForm({
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
   const companyAccountField =
-    issuedBankAccountAbove && f.bankAccount && companyBankAccountOptions ? (
-      <CompanyAccountControl
-        value={value.companyBankAccountId}
-        onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
-        options={companyBankAccountOptions}
-        disabled={!can("companyBankAccountId")}
-        disabledReason={companyBankAccountDisabledReason}
-        label={t.payToBankAccount}
-        paymentMethodOptions={paymentMethodOptions}
-        paymentMethodId={value.paymentMethodId}
-        onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
-        paymentMethodDisabled={!can("paymentMethodId")}
-      />
-    ) : null;
+    issuedBankAccountAbove && f.bankAccount
+      ? companyAccountControlForForm(
+          {
+            value,
+            companyBankAccountOptions,
+            paymentMethodOptions,
+            companyBankAccountDisabledReason,
+          },
+          patch,
+          can,
+          t.payToBankAccount,
+        )
+      : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
@@ -419,6 +418,7 @@ export function DocumentForm({
               partnerLabel={partnerLabel}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
+              linkedPartner={Boolean(value.partnerId)}
               icoWarning={icoWarning}
               icoLinkTarget={icoLinkTarget}
               can={can}

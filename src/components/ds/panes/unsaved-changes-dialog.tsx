@@ -47,6 +47,7 @@ export function UnsavedChangesDialog(props: UnsavedChangesDialogProps) {
   return (
     <AlertDialog open={props.open} onOpenChange={(open) => !open && props.onBack()}>
       <AlertDialogContent
+        className="@container w-[calc(100%-2rem)] max-w-4xl"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
           backRef.current?.focus();
@@ -57,22 +58,22 @@ export function UnsavedChangesDialog(props: UnsavedChangesDialogProps) {
         }}
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>{labels?.title}</AlertDialogTitle>
+          <AlertDialogTitle title={labels?.title}>{labels?.title}</AlertDialogTitle>
           <AlertDialogDescription>
             {props.tabTitle} – {t.unsavedNotSaved}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
+        <AlertDialogFooter className="flex-col gap-2 @min-[45rem]:flex-row @min-[45rem]:justify-between">
           <Button
             type="button"
             variant="outline-destructive"
             disabled={props.saving}
-            className="order-3 whitespace-nowrap sm:order-1 sm:mr-auto"
+            className="order-3 whitespace-nowrap @min-[45rem]:order-1 @min-[45rem]:mr-auto"
             onClick={props.onDiscard}
           >
             {labels?.discard}
           </Button>
-          <div className="order-1 flex flex-col-reverse gap-2 sm:order-2 sm:flex-row">
+          <div className="order-1 flex flex-col-reverse gap-2 @min-[45rem]:order-2 @min-[45rem]:flex-row">
             <Button
               type="button"
               ref={backRef}

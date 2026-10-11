@@ -196,3 +196,33 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
     </>
   );
 }
+
+/** Sestaví horní řádek FV/ZFV ze společných údajů formuláře. */
+export function companyAccountControlForForm(
+  props: Pick<
+    import("./document-form-types").DocumentFormProps,
+    | "value"
+    | "paymentMethodOptions"
+    | "companyBankAccountOptions"
+    | "companyBankAccountDisabledReason"
+  >,
+  patch: (value: Partial<import("./document-form-types").DocumentHeaderValue>) => void,
+  can: (key: import("./document-form-types").DocumentHeaderField) => boolean,
+  label: string,
+): ReactNode {
+  if (!props.companyBankAccountOptions) return null;
+  return (
+    <CompanyAccountControl
+      value={props.value.companyBankAccountId}
+      onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+      options={props.companyBankAccountOptions}
+      disabled={!can("companyBankAccountId")}
+      disabledReason={props.companyBankAccountDisabledReason}
+      label={label}
+      paymentMethodOptions={props.paymentMethodOptions}
+      paymentMethodId={props.value.paymentMethodId}
+      onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
+      paymentMethodDisabled={!can("paymentMethodId")}
+    />
+  );
+}
