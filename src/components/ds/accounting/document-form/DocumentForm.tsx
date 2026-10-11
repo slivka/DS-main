@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+/** Formulář dokladu · vlastní skládání sekcí · nesmí ukládat data aplikace. */
+import { useState } from "react";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar } from "../../layout/record-action-bar";
@@ -33,6 +34,7 @@ import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
+import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
 /** Kompletní formulář účetního dokladu. */
 export function DocumentForm({
@@ -63,6 +65,7 @@ export function DocumentForm({
   isHomeCurrency,
   onManualBankAccountValidationChange,
   companyBankAccountDisabledReason,
+  receivedAccountDisabledReason,
   vatPartnerStatus,
   counterpartyTab,
   printTab,
@@ -118,23 +121,6 @@ export function DocumentForm({
     if (activeDetailTab === undefined) setUncontrolledTab(next);
     onActiveDetailTabChange?.(next);
   };
-  const [editingIdentityAccount, setEditingIdentityAccount] = useState(false);
-  const [selectedIdentityAccount, setSelectedIdentityAccount] = useState<{
-    code: string;
-    label: string;
-    sourceLabel?: string;
-  } | null>(null);
-  const pencilRef = useRef<HTMLButtonElement>(null);
-  const returnFocusToPencil = useRef(false);
-  useEffect(() => {
-    if (editingIdentityAccount || !returnFocusToPencil.current) return;
-    returnFocusToPencil.current = false;
-    pencilRef.current?.focus();
-  }, [editingIdentityAccount]);
-  const closeIdentityAccount = () => {
-    returnFocusToPencil.current = true;
-    setEditingIdentityAccount(false);
-  };
   const formRef = useDocumentFormStickyTop();
   const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) =>
@@ -176,19 +162,18 @@ export function DocumentForm({
     can,
     mainAccountLocked,
   });
-  useEffect(() => {
-    if (!selectedIdentityAccount) return;
-    if (
-      !sameAccount(selectedIdentityAccount.code, value.mainAccountId) ||
-      effectiveIdentity.account?.label !== selectedIdentityAccount.sourceLabel
-    ) {
-      setSelectedIdentityAccount(null);
-    }
-  }, [effectiveIdentity.account?.label, sameAccount, selectedIdentityAccount, value.mainAccountId]);
-  const identityAccountLabel =
-    selectedIdentityAccount && sameAccount(selectedIdentityAccount.code, value.mainAccountId)
-      ? selectedIdentityAccount.label
-      : effectiveIdentity.account?.label;
+  const {
+    editingIdentityAccount,
+    pencilRef,
+    closeIdentityAccount,
+    startAccountEdit,
+    selectIdentityAccount,
+    identityAccountLabel,
+  } = useIdentityAccountSelection(
+    value.mainAccountId,
+    effectiveIdentity.account?.label,
+    sameAccount,
+  );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
   const { field, date, text, suggestedText } = useDocumentFieldRenderers({
     value,
@@ -216,7 +201,12 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  const paymentOrderOn = f.paymentOrders ? paymentOrderEnabled : true;
+  const paymentOrderOn =
+    receivedDocument && receivedAccountDisabledReason
+      ? false
+      : f.paymentOrders
+        ? paymentOrderEnabled
+        : true;
   const externalNumberField = useExternalNumberField({
     value,
     patch,
@@ -243,6 +233,9 @@ export function DocumentForm({
     onPaymentOrderEnabledChange,
     onManualBankAccountValidationChange,
     onAddBankAccount,
+    receivedAccountDisabledReason: ["FP", "ZFP"].includes(documentType.toUpperCase())
+      ? receivedAccountDisabledReason
+      : undefined,
   });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
@@ -376,13 +369,13 @@ export function DocumentForm({
             editingAccount={editingIdentityAccount}
             canEditAccount={canEditIdentityAccount}
             pencilRef={pencilRef}
-            onStartAccountEdit={() => setEditingIdentityAccount(true)}
+            onStartAccountEdit={startAccountEdit}
             onAccountChange={(mainAccountId) => {
               const selected = allowedMainAccounts.find((item) =>
                 sameAccount(item.code, mainAccountId),
               );
               if (!selected) return;
-              setSelectedIdentityAccount({
+              selectIdentityAccount({
                 code: mainAccountId,
                 label: formatCodeName(formatAccountCode(selected.code), selected.name),
                 sourceLabel: effectiveIdentity.account?.label,
@@ -426,6 +419,12 @@ export function DocumentForm({
               externalNumberField={externalNumberField}
               receivedDocument={receivedDocument}
               bankAccountField={bankAccountField}
+              paymentMethodOptions={
+                receivedDocument && documentType.toUpperCase() !== "DDPOZ"
+                  ? paymentMethodOptions
+                  : undefined
+              }
+              paymentMethodLabel={t.paymentMethod}
               counterpartyInput={counterpartyInput}
               onCounterpartyInputChange={onCounterpartyInputChange}
               counterpartyInputLockedReason={counterpartyInputLockedReason}
@@ -456,7 +455,9 @@ export function DocumentForm({
             issuedBankAccountAbove={issuedBankAccountAbove}
             paymentOrderEnabled={paymentOrderOn}
             constantSymbolOptions={constantSymbolOptions}
-            paymentMethodOptions={companyAccountField ? undefined : paymentMethodOptions}
+            paymentMethodOptions={
+              companyAccountField || receivedDocument ? undefined : paymentMethodOptions
+            }
             companyBankAccountOptions={companyBankAccountOptions}
             bankAccountField={bankAccountField}
             field={field}

@@ -1,3 +1,9 @@
+## DS 2.94.0 – Edit dokladu 11 (nevydáno)
+- [ ] A1 ikony menu; A2 tooltipy a stav kurzů
+- [ ] A3/A4 společné zamčené účty a priorita způsobu platby
+- [ ] A5 rozvržení přijatých dokladů a ukázky
+- [ ] Přírůstkový katalog, CHANGELOG, unit/lint a vizuální kontroly
+
 ## DS 2.92.0 – Design formulářů 2 (nevydáno)
 - [x] Kurzy vlevo, pod celkem v úzkém panelu; RateField zarovnání
 - [x] Přepočtený celek v hlavičce rekapitulace

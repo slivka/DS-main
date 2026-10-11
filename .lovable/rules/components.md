@@ -1457,7 +1457,15 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Všechny doklady řadí základní údaje, datumy, platební údaje, částku a záložky; partnerské i firemní bankovní účty jsou v platebních údajích a dateWarnings se zobrazují ve společném pruhu.
+Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu.
+
+**Nové/rozšířené props 2.94.0:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `receivedAccountDisabledReason` | string | `—` |
+| `value.rateSourceAttention` | boolean | `false` |
+| `value.vatRateSourceAttention` | boolean | `false` |
 
 **Examples:**
 
@@ -1471,6 +1479,12 @@ _Faktura s editovatelným účtem_
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
 - Nevkládejte měnu do popisku Celkem ani do identity cashBank.
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
+
+```tsx
+<DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
+```
+
+- DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
 
 ### DocumentPrintTab
 
@@ -3350,6 +3364,8 @@ Výběr hodnoty
 import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange zakáže přepínač.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -3360,6 +3376,17 @@ import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 | `enabledLabel` | string | `—` |
 | `disabledLabel` | string | `—` |
 | `disabledReason` | string | `—` |
+
+**Examples:**
+
+```tsx
+<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>
+```
+
+**Avoid:**
+
+- Při vypnutí nemažte hodnotu uvnitř této komponenty.
+- Nevykreslujte druhý zámek ani důvod pod polem.
 
 ### PaymentScheduleEditor
 
@@ -3538,7 +3565,7 @@ import { RadioGroupItem } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { RateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního kurzu.
+Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci.
 
 **Props:**
 
@@ -3554,6 +3581,7 @@ Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního
 | `suggestedRate` | number | `—` |
 | `suggestedInfo` | string | `—` |
 | `manual` | boolean | `—` |
+| `sourceAttention` | boolean | `false` |
 | `onUseSuggested` | function | `—` |
 | `disabled` | boolean | `—` |
 | `readOnly` | boolean | `—` |
@@ -3588,6 +3616,12 @@ Kurz EUR
 - Nepoužívejte holý číselný input pro kurz.
 - Ruční kurz neukládejte bez důvodu.
 
+
+**2.94.0:** Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
+
+```tsx
+<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />
+```
 
 ### ReadOnlyBanner
 
@@ -3652,6 +3686,8 @@ _Karta majetku_
 
 - Nevykreslujte Uložit ani akce záznamu volně pod poli.
 - Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
+
+Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.
 
 ### RecordDialog
 

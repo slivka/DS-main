@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.92.0",
+    "version": "2.94.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -3623,7 +3623,7 @@
           "default": "record-action-notices"
         }
       ],
-      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně.",
+      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.",
       "examples": [
         {
           "label": "Karta majetku",
@@ -5211,9 +5211,14 @@
           "name": "inputClassName",
           "type": "string",
           "description": "Třídy vstupu i hodnoty jen ke čtení, například h-11."
+        },
+        {
+          "name": "sourceAttention",
+          "type": "boolean",
+          "description": "Starší nebo vlastní zdroj zobrazí tlumenou ikonu vlevo; zdroj a jednotka jsou v tooltipu pole."
         }
       ],
-      "usage": "Kurz s důvodem; bez ikony běžný padding vpravo, readOnly zarovnaný jako DecimalInput.",
+      "usage": "Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci.",
       "examples": [
         {
           "label": "Kurz EUR",
@@ -5222,11 +5227,16 @@
         {
           "label": "2.92.0",
           "code": "<RateField {...rateProps} inputClassName=\"h-11\" />"
+        },
+        {
+          "label": "Upozorněný zdroj",
+          "code": "<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />"
         }
       ],
       "antipatterns": [
         "Nepoužívejte holý číselný input pro kurz.",
-        "Ruční kurz neukládejte bez důvodu."
+        "Ruční kurz neukládejte bez důvodu.",
+        "Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole."
       ]
     },
     {
@@ -7247,7 +7257,23 @@
           "name": "disabledReason",
           "type": "string",
           "required": true
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Doplňkové třídy společného obalu; ref míří na obal."
         }
+      ],
+      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange zakáže přepínač.",
+      "examples": [
+        {
+          "label": "Vypnutý příkaz",
+          "code": "<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>"
+        }
+      ],
+      "antipatterns": [
+        "Při vypnutí nemažte hodnotu uvnitř této komponenty.",
+        "Nevykreslujte druhý zámek ani důvod pod polem."
       ]
     },
     {
@@ -7390,17 +7416,34 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Všechny doklady řadí základní údaje, datumy, platební údaje, částku a záložky; partnerské i firemní bankovní účty jsou v platebních údajích a dateWarnings se zobrazují ve společném pruhu.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
           "code": "<DocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} />"
+        },
+        {
+          "label": "Platba přijatého dokladu bez účtu",
+          "code": "<DocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />"
         }
       ],
       "antipatterns": [
         "Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.",
         "Nevkládejte měnu do popisku Celkem ani do identity cashBank.",
-        "Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty."
+        "Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.",
+        "DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace."
+      ],
+      "props": [
+        {
+          "name": "receivedAccountDisabledReason",
+          "type": "string",
+          "description": "FP/ZFP: důvod uvnitř pole, vypnutý zakázaný příkaz, KS/SS skryté; DS hodnoty nemaže."
+        },
+        {
+          "name": "value",
+          "type": "DocumentHeaderValue",
+          "description": "Řízená hlavička; volitelné rateSourceAttention a vatRateSourceAttention upozorní na zdroj obou kurzů."
+        }
       ]
     },
     {

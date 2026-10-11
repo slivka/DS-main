@@ -94,6 +94,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                   suggestedRate={value.suggestedRate}
                   suggestedInfo={value.suggestedRateInfo ?? value.rateInfo ?? undefined}
                   manual={!!value.rateManual}
+                  sourceAttention={value.rateSourceAttention}
                   note={value.rateNote ?? ""}
                   showNote={false}
                   noteLabel={t.rateNote}
@@ -131,6 +132,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                       suggestedRate={vatRateField.suggestedRate}
                       suggestedInfo={vatRateField.suggestedInfo}
                       manual={!!vatRateField.manual}
+                      sourceAttention={value.vatRateSourceAttention}
                       note={vatRateField.note ?? ""}
                       showNote={false}
                       noteLabel={t.vatRateNote}

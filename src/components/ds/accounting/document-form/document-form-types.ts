@@ -69,6 +69,10 @@ export type DocumentHeaderValue = {
   rate?: number | null;
   rateInfo?: string | null;
   rateManual?: boolean;
+  /** Zdroj kurzu vyžaduje upozornění ikonou (starší nebo vlastní kurz). */
+  rateSourceAttention?: boolean;
+  /** Zdroj kurzu DPH vyžaduje upozornění ikonou. */
+  vatRateSourceAttention?: boolean;
   rateNote?: string | null;
   suggestedRate?: number | null;
   suggestedRateInfo?: string | null;
@@ -281,7 +285,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   enterManually: "Zadat ručně",
   replaceManualCounterparty: "Ručně zadané údaje budou nahrazeny údaji partnera",
   payByOrder: "Platit příkazem",
-  paymentOrderDisabled: "Doklad se nezahrnuje do platebních příkazů",
+  paymentOrderDisabled: "Nezahrnuje se do platebních příkazů",
   payToBankAccount: "Uhradit na bankovní účet",
 };
 
@@ -295,7 +299,7 @@ export interface DocumentVatRateField {
   suggestedInfo?: string;
   rateAmount?: number;
   readOnly?: boolean;
-  /** Kurz DPH je stejný jako kurz dokladu – zobrazí se jen text. */
+  /** Kurz DPH je stejný jako kurz dokladu – samostatné pole se nevykreslí. */
   sameAsDocument?: boolean;
 }
 
@@ -349,6 +353,8 @@ export interface DocumentFormProps {
   onManualBankAccountValidationChange?: (errors: ManualBankAccountErrors) => void;
   /** Důvod zakázání firemního účtu; hodnota se v tomto stavu nezobrazuje. */
   companyBankAccountDisabledReason?: string;
+  /** Způsob platby nepoužívá přijatý účet; má přednost před příkazem a nemaže hodnoty. */
+  receivedAccountDisabledReason?: string;
   /** Stav plátce DPH zobrazený v pruhu akcí. */
   vatPartnerStatus?: {
     status: VatStatus;

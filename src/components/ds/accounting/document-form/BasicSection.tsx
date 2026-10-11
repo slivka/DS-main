@@ -9,6 +9,7 @@ import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-f
 import { CounterpartyInputField } from "../counterparty-input-field";
 import { IcoLink, type IcoLinkTarget } from "../../form/ico-link";
 import { SectionHeading } from "../../layout/section-heading";
+import { OptionSelect } from "../../form/option-select";
 import { ReadField } from "./document-identity-line";
 import type { PartnerOption } from "../partner-select";
 import type { DocumentFields } from "../document-fields";
@@ -56,6 +57,10 @@ export interface DocumentBasicSectionProps {
   externalNumberField: ReactNode;
   receivedDocument: boolean;
   bankAccountField?: ReactNode;
+  /** Způsob platby přijatého dokladu v druhém řádku. */
+  paymentMethodOptions?: Array<{ value: string; label: string }>;
+  /** Popisek z textů formuláře. */
+  paymentMethodLabel?: string;
   counterpartyInput: "partner" | "manual";
   onCounterpartyInputChange?: (mode: "partner" | "manual") => void;
   counterpartyInputLockedReason?: string;
@@ -177,7 +182,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               </>
             ),
             3,
-            true,
+            !receivedDocument,
           )}
           {field(
             "document-partner-dic",
@@ -198,7 +203,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               />
             ),
             3,
-            true,
+            !receivedDocument,
           )}
           {f.handedOverBy
             ? suggestedText(
@@ -210,8 +215,32 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
               )
             : null}
           {receivedDocument && f.bankAccount ? bankAccountField : null}
-          {f.externalNumber ? externalNumberField : null}
-          {suggestedText("description", t.description, descriptionSuggest, 20)}
+          {receivedDocument && p.paymentMethodOptions
+            ? field(
+                "document-paymentMethodId",
+                p.paymentMethodLabel ?? "",
+                <OptionSelect
+                  id="document-paymentMethodId"
+                  value={value.paymentMethodId}
+                  onChange={(paymentMethodId) => patch({ paymentMethodId })}
+                  options={p.paymentMethodOptions}
+                  searchable
+                  disabled={!can("paymentMethodId")}
+                />,
+                6,
+                false,
+                "@min-[40rem]:col-start-15",
+              )
+            : null}
+          {!receivedDocument && f.externalNumber ? externalNumberField : null}
+          {suggestedText(
+            "description",
+            t.description,
+            descriptionSuggest,
+            receivedDocument ? 14 : 20,
+            receivedDocument ? "@min-[40rem]:col-start-1 @min-[40rem]:pr-3" : undefined,
+          )}
+          {receivedDocument && f.externalNumber ? externalNumberField : null}
         </div>
       </>
     </>

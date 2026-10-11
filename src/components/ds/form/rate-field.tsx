@@ -1,5 +1,7 @@
+/** Pole kurzu · vlastní zdroj a upozornění · nesmí měnit kurz bez akce uživatele. */
+import { forwardRef, useId } from "react";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
-import { RefreshCw } from "lucide-react";
+import { Info, RefreshCw } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -21,6 +23,8 @@ export interface RateFieldProps {
   suggestedRate?: number | null;
   suggestedInfo?: string;
   manual: boolean;
+  /** Starší nebo vlastní zdroj vyžaduje viditelné upozornění. */
+  sourceAttention?: boolean;
   onUseSuggested?: () => void;
   disabled?: boolean;
   readOnly?: boolean;
@@ -48,32 +52,36 @@ export function rateValuesDiffer(
 }
 
 /** Kurz cizí měny s doporučenou hodnotou a povinným důvodem ruční změny. */
-export function RateField({
-  value,
-  onChange,
-  currency,
-  homeCurrency,
-  homeCurrencySymbol,
-  currencySymbol,
-  rateAmount,
-  suggestedRate,
-  suggestedInfo,
-  manual,
-  onUseSuggested,
-  disabled,
-  readOnly,
-  note = "",
-  onNoteChange,
-  noteLabel,
-  sourceLabel,
-  manualSourceLabel,
-  suggestedTooltip,
-  requiredMessage,
-  showNote = true,
-  id = "rate",
-  className,
-  inputClassName,
-}: RateFieldProps) {
+export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function RateField(
+  {
+    value,
+    onChange,
+    currency,
+    homeCurrency,
+    homeCurrencySymbol,
+    currencySymbol,
+    rateAmount,
+    suggestedRate,
+    suggestedInfo,
+    manual,
+    sourceAttention = false,
+    onUseSuggested,
+    disabled,
+    readOnly,
+    note = "",
+    onNoteChange,
+    noteLabel,
+    sourceLabel,
+    manualSourceLabel,
+    suggestedTooltip,
+    requiredMessage,
+    showNote = true,
+    id = "rate",
+    className,
+    inputClassName,
+  }: RateFieldProps,
+  ref,
+) {
   const t = useDsTexts().rateField ?? DS_TEXTS_CS.rateField;
   const unit = Number.isInteger(rateAmount)
     ? formatAmount(rateAmount, 0)
@@ -90,67 +98,84 @@ export function RateField({
         ) ?? "");
   const noteInvalid = manual && !note.trim();
 
-  if (readOnly) {
-    return (
-      <div className={cn("space-y-1", className)}>
-        <FieldValue id={id} className={cn("font-sans text-right tabular-nums", inputClassName)}>
-          {value == null ? "—" : formatAmount(value, 3)}
-        </FieldValue>
-        <p className="rate-field-hint text-xs text-muted-foreground">
-          {suffix}
-          {source ? ` · ${source}` : ""}
-        </p>
-        {manual && showNote && note ? (
-          <p className="text-xs text-muted-foreground">{note}</p>
-        ) : null}
-      </div>
-    );
-  }
-
+  const descriptionId = useId();
+  const sourceText = `${suffix}${source ? ` · ${source}` : ""}`;
+  const attention = manual || sourceAttention;
   return (
     <TooltipProvider>
-      <div className={cn("space-y-2", className)}>
-        <div className="relative min-w-0">
-          <DecimalInput
-            id={id}
-            value={value}
-            decimals={6}
-            displayDecimals={3}
-            disabled={disabled}
-            className={cn(
-              "h-[var(--control-h)]",
-              differs && "pr-9 border-destructive",
-              inputClassName,
-            )}
-            onChange={(next) => onChange(next === "" ? null : Number(next))}
-          />
-          {differs ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={tooltip}
-                  aria-disabled={disabled || undefined}
+      <div ref={ref} className={cn("space-y-2", className)}>
+        <span id={descriptionId} className="sr-only">
+          {sourceText}
+        </span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div
+              className="relative min-w-0"
+              tabIndex={readOnly || disabled ? 0 : undefined}
+              aria-describedby={descriptionId}
+            >
+              {readOnly ? (
+                <FieldValue
+                  id={id}
+                  aria-describedby={descriptionId}
                   className={cn(
-                    "absolute right-1 top-1/2 size-7 -translate-y-1/2",
-                    disabled ? "text-muted-foreground" : "text-destructive",
+                    "font-sans text-right tabular-nums",
+                    attention && "pl-9",
+                    inputClassName,
                   )}
-                  onClick={disabled ? undefined : onUseSuggested}
                 >
-                  <RefreshCw className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{tooltip}</TooltipContent>
-            </Tooltip>
-          ) : null}
-        </div>
-        <p className="rate-field-hint text-xs text-muted-foreground">
-          {suffix}
-          {source ? ` · ${source}` : ""}
-        </p>
-        {manual && showNote ? (
+                  {value == null ? "—" : formatAmount(value, 3)}
+                </FieldValue>
+              ) : (
+                <DecimalInput
+                  id={id}
+                  value={value}
+                  decimals={6}
+                  displayDecimals={3}
+                  disabled={disabled}
+                  aria-describedby={descriptionId}
+                  className={cn(
+                    "h-[var(--control-h)]",
+                    attention && "pl-9",
+                    differs && "pr-9 border-destructive",
+                    inputClassName,
+                  )}
+                  onChange={(next) => onChange(next === "" ? null : Number(next))}
+                />
+              )}
+              {attention ? (
+                <Info
+                  aria-hidden="true"
+                  data-slot="rate-source-attention"
+                  className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                />
+              ) : null}
+              {!readOnly && differs ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={tooltip}
+                      aria-disabled={disabled || undefined}
+                      className={cn(
+                        "absolute right-1 top-1/2 size-7 -translate-y-1/2",
+                        disabled ? "text-muted-foreground" : "text-destructive",
+                      )}
+                      onClick={disabled ? undefined : onUseSuggested}
+                    >
+                      <RefreshCw className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{tooltip}</TooltipContent>
+                </Tooltip>
+              ) : null}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{sourceText}</TooltipContent>
+        </Tooltip>
+        {manual && showNote && !readOnly ? (
           <div className="space-y-1">
             <Label htmlFor={`${id}-note`}>{noteLabel ?? t?.note}</Label>
             <Input
@@ -170,7 +195,10 @@ export function RateField({
             ) : null}
           </div>
         ) : null}
+        {readOnly && manual && showNote && note ? (
+          <p className="text-xs text-muted-foreground">{note}</p>
+        ) : null}
       </div>
     </TooltipProvider>
   );
-}
+});

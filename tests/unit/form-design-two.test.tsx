@@ -163,7 +163,7 @@ describe("Design formulářů 2", () => {
         ?.replace(/\s/g, " "),
     ).toBe("Domácí celek Kč: 30 250,00");
   });
-  it("FP a DDPZ ponechávají způsob platby v Platebních údajích", () => {
+  it("FP přesune způsob platby nahoru, DDPZ jej ponechává v Platebních údajích", () => {
     for (const type of ["FP", "DDPZ"]) {
       const view = render(
         <DocumentForm
@@ -172,9 +172,11 @@ describe("Design formulářů 2", () => {
           paymentMethodOptions={[{ value: "bank", label: "Převodem" }]}
         />,
       );
-      expect(
-        view.getByLabelText("Způsob platby").closest('[data-slot="document-payment-section"]'),
-      ).toBeTruthy();
+      const inPayment = view
+        .getByLabelText("Způsob platby")
+        .closest('[data-slot="document-payment-section"]');
+      if (type === "FP") expect(inPayment).toBeNull();
+      else expect(inPayment).toBeTruthy();
       view.unmount();
     }
   });

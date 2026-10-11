@@ -33,18 +33,7 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
             section: rect('[data-section="document-amount-section"]'),
             method: rect("#document-paymentMethodId"),
             account: rect("#document-companyBankAccountId"),
-            hints: [...el.querySelectorAll(".rate-field-hint")].map((hint) => {
-              const r = hint.getBoundingClientRect();
-              return {
-                x: r.x,
-                right: r.right,
-                y: r.y,
-                bottom: r.bottom,
-                width: r.width,
-                scroll: hint.scrollWidth,
-                client: hint.clientWidth,
-              };
-            }),
+            hints: el.querySelectorAll(".rate-field-hint").length,
           };
         });
         expect(Math.abs(boxes.rate.height - boxes.total.height)).toBeLessThan(0.6);
@@ -54,12 +43,7 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
         if (Math.abs(boxes.rate.y - boxes.total.y) < 0.6)
           expect(boxes.rates.right).toBeLessThanOrEqual(boxes.pair.x);
         else expect(boxes.rate.y).toBeGreaterThan(boxes.total.y);
-        const [hint, vatHint] = boxes.hints;
-        if (!hint || !vatHint) throw new Error("Chybí kurzová nápověda");
-        expect(hint.right).toBeLessThanOrEqual(vatHint.x + 0.6);
-        expect(hint.scroll).toBeLessThanOrEqual(hint.client + 1);
-        expect(vatHint.scroll).toBeLessThanOrEqual(vatHint.client + 1);
-        expect(hint.width).toBeCloseTo(boxes.rate.width, 0);
+        expect(boxes.hints).toBe(0);
         if (width === 1600) expect(Math.abs(boxes.rate.y - boxes.total.y)).toBeLessThan(0.6);
         else if (boxes.rate.y !== boxes.total.y)
           expect(boxes.rate.y).toBeGreaterThan(boxes.total.y);

@@ -1,4 +1,5 @@
 /** Ukázky schválených kurzů a způsobu platby; drží pouze náhledový stav. */
+import { Settings } from "lucide-react";
 import { useState } from "react";
 import { CheckboxField, DocumentForm, type DocumentHeaderValue } from "../ds";
 import { useFormDesignTwoTexts } from "../../ds-texts/form-design-two-showcase";
@@ -25,6 +26,16 @@ const initial: DocumentHeaderValue = {
 };
 export function FormDesignTwoShowcase() {
   const t = useFormDesignTwoTexts();
+  const [received, setReceived] = useState<DocumentHeaderValue>({
+    ...initial,
+    currency: "CZK",
+    rate: 1,
+    partnerId: "supplier",
+    partnerBankAccountId: "bank",
+    externalNumber: "FP20260015",
+    description: "",
+  });
+  const [payByOrder, setPayByOrder] = useState(true);
   const [value, setValue] = useState(initial);
   const [same, setSame] = useState(false);
   const [vatRate, setVatRate] = useState<number | null>(25.1);
@@ -38,7 +49,21 @@ export function FormDesignTwoShowcase() {
           checked={same}
           onCheckedChange={(checked) => setSame(Boolean(checked))}
         />
+        <CheckboxField
+          label={t.attention}
+          checked={!!value.rateSourceAttention}
+          onCheckedChange={(checked) => setValue({ ...value, rateSourceAttention: !!checked })}
+        />
         <DocumentForm
+          settings={{ onOpen: () => {} }}
+          moreActions={[
+            {
+              id: "settings-example",
+              label: t.settings,
+              icon: Settings,
+              onClick: () => {},
+            },
+          ]}
           title={t.issued}
           documentType="FV"
           status="draft"
@@ -74,6 +99,33 @@ export function FormDesignTwoShowcase() {
             },
           }}
           linesEditorProps={{ recap: { open: false }, storageKey: "form-design-two" }}
+        />
+      </div>
+      <div data-testid="edit-document-eleven-received" className="max-w-full">
+        <DocumentForm
+          title={t.received}
+          documentType="FP"
+          status="draft"
+          value={received}
+          onChange={setReceived}
+          books={[]}
+          accounts={[]}
+          lines={[]}
+          onLinesChange={() => {}}
+          currencies={currencies}
+          homeCurrency="CZK"
+          homeCurrencySymbol={currencies[0].symbol}
+          partners={[{ id: "supplier", name: t.supplier, ico: "12345678", dic: "CZ12345678" }]}
+          bankAccountOptions={[{ id: "bank", number: "2001234567", bankCode: "2010" }]}
+          paymentMethodOptions={[
+            { value: "transfer", label: t.transfer },
+            { value: "cash", label: t.cash },
+          ]}
+          paymentOrderEnabled={payByOrder}
+          onPaymentOrderEnabledChange={setPayByOrder}
+          receivedAccountDisabledReason={received.paymentMethodId === "cash" ? t.locked : undefined}
+          vat={{ visible: true }}
+          linesEditorProps={{ recap: { open: false }, storageKey: "edit-eleven" }}
         />
       </div>
     </ShowcaseSection>

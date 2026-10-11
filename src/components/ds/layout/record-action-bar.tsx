@@ -220,7 +220,7 @@ export function RecordActionBar({
                         )}
                       >
                         <span className="flex items-center gap-2">
-                          {Icon ? <Icon /> : null}
+                          {Icon ? <Icon className="size-4 shrink-0" /> : null}
                           {action.label}
                         </span>
                         {action.disabled && action.disabledReason ? (

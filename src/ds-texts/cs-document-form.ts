@@ -57,7 +57,7 @@ export const DOCUMENT_FORM_TEXTS_CS: DsTexts["documentForm"] = {
   frozenAt: (date) => `Údaje zmrazeny při zařazení ${date}`,
   payByOrder: "Platit příkazem",
   excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",
-  paymentOrderDisabled: "Doklad se nezahrnuje do platebních příkazů",
+  paymentOrderDisabled: "Nezahrnuje se do platebních příkazů",
   payToBankAccount: "Uhradit na bankovní účet",
   street: "Ulice",
   houseNumber: "Číslo",
