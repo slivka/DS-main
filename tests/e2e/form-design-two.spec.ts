@@ -111,23 +111,25 @@ test("dialogy pojmenují akci, návrat má fokus a úzká tlačítka se nepřekr
     await dialog.evaluate((el) => {
       el.style.width = "360px";
     });
-    const boxes = await dialog.evaluate((el) => {
-      const d = el.getBoundingClientRect();
-      return [...el.querySelectorAll("button")].map((b) => {
-        const r = b.getBoundingClientRect();
-        return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, bound: d.right };
+    await expect(async () => {
+      const boxes = await dialog.evaluate((el) => {
+        const d = el.getBoundingClientRect();
+        return [...el.querySelectorAll("button")].map((b) => {
+          const r = b.getBoundingClientRect();
+          return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, bound: d.right };
+        });
       });
-    });
-    for (const b of boxes) expect(b.right).toBeLessThanOrEqual(b.bound + 0.6);
-    for (let i = 0; i < boxes.length; i++)
-      for (let j = i + 1; j < boxes.length; j++) {
-        const a = boxes[i],
-          b = boxes[j];
-        if (!a || !b) throw new Error("Tlačítko chybí");
-        expect(
-          a.bottom <= b.top || b.bottom <= a.top || a.right <= b.left || b.right <= a.left,
-        ).toBe(true);
-      }
+      for (const b of boxes) expect(b.right).toBeLessThanOrEqual(b.bound + 0.6);
+      for (let i = 0; i < boxes.length; i++)
+        for (let j = i + 1; j < boxes.length; j++) {
+          const a = boxes[i],
+            b = boxes[j];
+          if (!a || !b) throw new Error("Tlačítko chybí");
+          expect(
+            a.bottom <= b.top || b.bottom <= a.top || a.right <= b.left || b.right <= a.left,
+          ).toBe(true);
+        }
+    }).toPass();
     await page.keyboard.press("Escape");
   }
 });
