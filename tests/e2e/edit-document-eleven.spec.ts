@@ -80,7 +80,9 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   await rate.blur();
   await issued.getByRole("checkbox", { name: "Starší zdroj kurzu" }).click();
   await expect(issued.locator('[data-slot="rate-source-attention"]')).toHaveCount(1);
-  await received.getByLabel("Způsob platby").click();
+  // Ukázková stránka obsahuje více formulářů se stejnými interními id;
+  // vazbu popisku měříme uvnitř konkrétní ukázky, nikoli přes globální id dokumentu.
+  await received.locator("#document-paymentMethodId").click();
   await page.getByRole("option", { name: "Hotově", exact: true }).click();
   const toggle = received.getByRole("button", {
     name: "Hotovostní platba nepoužívá bankovní účet",
