@@ -77,7 +77,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         {foreign ? (
           <div
             data-slot="document-foreign-amounts"
-            className="order-2 grid w-full basis-full shrink-0 grid-cols-[minmax(0,9rem)_minmax(0,9rem)] items-start justify-start gap-3 @min-[48rem]:order-1 @min-[48rem]:w-[18.75rem] @min-[48rem]:basis-auto"
+            className="order-2 grid w-full basis-full shrink-0 grid-cols-[minmax(0,9rem)_minmax(0,9rem)] items-start justify-start gap-3 @min-[50rem]:order-1 @min-[50rem]:w-[18.75rem] @min-[50rem]:basis-auto"
           >
             <div className="w-full max-w-[9rem] min-w-0">
               {field(
@@ -169,7 +169,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         ) : null}
         <div
           data-slot="document-total-currency-pair"
-          className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[48rem]:order-2"
+          className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[50rem]:order-2"
         >
           <div
             data-slot="document-amount-total"
