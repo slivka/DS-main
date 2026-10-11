@@ -116,6 +116,14 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                 className="relative min-w-0"
                 tabIndex={readOnly || disabled ? 0 : undefined}
                 aria-describedby={descriptionId}
+                onPointerEnter={() => {
+                  setUpdateOpen(false);
+                  setSourceOpen(true);
+                }}
+                onFocus={() => {
+                  setUpdateOpen(false);
+                  setSourceOpen(true);
+                }}
               >
                 {readOnly ? (
                   <FieldValue
