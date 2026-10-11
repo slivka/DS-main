@@ -20,7 +20,11 @@ export const LockedAccountValue = forwardRef<HTMLDivElement, LockedAccountValueP
       setTruncated(Boolean(text && text.scrollWidth > text.clientWidth));
     };
     return (
-      <Tooltip onOpenChange={(open) => { if (open) measure(); }}>
+      <Tooltip
+        onOpenChange={(open) => {
+          if (open) measure();
+        }}
+      >
         <TooltipTrigger asChild>
           <FieldValue
             {...props}

@@ -201,14 +201,14 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  const receivedAccountReason =
-    ["FP", "ZFP"].includes(documentType.toUpperCase()) ? receivedAccountDisabledReason : undefined;
-  const paymentOrderOn =
-    receivedAccountReason
-      ? false
-      : f.paymentOrders
-        ? paymentOrderEnabled
-        : true;
+  const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
+    ? receivedAccountDisabledReason
+    : undefined;
+  const paymentOrderOn = receivedAccountReason
+    ? false
+    : f.paymentOrders
+      ? paymentOrderEnabled
+      : true;
   const externalNumberField = useExternalNumberField({
     value,
     patch,

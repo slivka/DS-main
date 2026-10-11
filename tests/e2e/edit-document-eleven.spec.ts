@@ -85,13 +85,20 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   await received.locator("#document-paymentMethodId").click();
   await page.getByRole("option", { name: "Hotově", exact: true }).click();
   const toggle = received.getByRole("button", {
-    name: "Hotovostní platba nepoužívá bankovní účet",
+    name: "Platit příkazem",
   });
-  await expect(toggle).toBeDisabled();
+  await expect(toggle).toHaveAttribute("aria-disabled", "true");
+  await toggle.focus();
+  await expect(page.getByRole("tooltip")).toContainText(
+    "Hotovostní platba nepoužívá bankovní účet",
+  );
   await expect(toggle).toHaveAttribute("aria-pressed", "false");
   await expect(received.locator("#document-constantSymbol")).toHaveCount(0);
   await expect(received.locator("#document-specificSymbol")).toHaveCount(0);
-  const reason = received.getByTitle("Hotovostní platba nepoužívá bankovní účet");
+  const reason = received
+    .locator("[data-slot=field-value]")
+    .filter({ hasText: "Hotovostní platba nepoužívá bankovní účet" });
+  await expect(reason).not.toHaveAttribute("title");
   await received.evaluate((el) => {
     el.style.width = "280px";
   });
@@ -137,5 +144,63 @@ test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page })
     expect(box?.width).toBeCloseTo(root, 0);
     expect(box?.height).toBeCloseTo(root, 0);
     await page.keyboard.press("Escape");
+  }
+});
+
+test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace má jediný tooltip", async ({
+  page,
+}) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const form = page.getByTestId("form-design-two");
+  await expect(async () => {
+    const attention = form.getByRole("checkbox", { name: "Starší zdroj kurzu" });
+    if ((await attention.getAttribute("aria-checked")) !== "true") await attention.click();
+    await expect(form.locator('[data-slot="rate-source-attention"]')).toHaveCount(1, {
+      timeout: 1000,
+    });
+  }).toPass();
+  for (const zoom of [0.7, 1, 2]) {
+    await page.evaluate(async (z) => {
+      const path = "/src/lib/app-zoom.ts";
+      const m = await import(/* @vite-ignore */ path);
+      m.setAppZoom(z);
+    }, zoom);
+    const rate = form.locator("#document-rate");
+    await rate.fill("1234,567890");
+    const parent = rate.locator("xpath=../..");
+    const update = parent.getByRole("button");
+    const geometry = await parent.evaluate((el) => {
+      const input = el.querySelector("input");
+      const icon = el.querySelector('[data-slot="rate-source-attention"]');
+      const action = el.querySelector("button");
+      if (!input || !icon || !action) throw new Error("Chybí kurz nebo ikony");
+      const style = getComputedStyle(input);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Chybí měření textu");
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const box = input.getBoundingClientRect();
+      const textRight =
+        box.right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
+      return {
+        zoom: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
+        iconRight: icon.getBoundingClientRect().right,
+        textLeft: textRight - context.measureText(input.value).width,
+        textRight,
+        actionLeft: action.getBoundingClientRect().left,
+        value: input.value,
+      };
+    });
+    console.log("rate geometry", geometry);
+    expect(geometry.value).toContain("567890");
+    expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
+    expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
+    await rate.hover();
+    await expect(page.getByRole("tooltip")).toContainText("ČNB 9. 10. 2026");
+    await update.hover();
+    await expect(page.getByRole("tooltip")).toHaveCount(1);
+    await expect(page.getByRole("tooltip")).toContainText("25,000");
+    await page.screenshot({ path: `/tmp/edit-eleven-rate-${zoom}.png` });
+    await update.click();
   }
 });

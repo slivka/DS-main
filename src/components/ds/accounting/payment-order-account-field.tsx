@@ -85,7 +85,9 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
         data-enabled={props.enabled}
         className={cn("relative min-w-0", className)}
       >
-        <span id={descriptionId} className="sr-only">{label}</span>
+        <span id={descriptionId} className="sr-only">
+          {label}
+        </span>
         {props.enabled ? (
           <div className="[&_[role=combobox]]:pr-11 [&_input]:pr-11">{props.children}</div>
         ) : (

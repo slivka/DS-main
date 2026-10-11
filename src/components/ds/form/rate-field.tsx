@@ -108,76 +108,75 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
           {sourceText}
         </span>
         <div className="relative min-w-0">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className="relative min-w-0"
-              tabIndex={readOnly || disabled ? 0 : undefined}
-              aria-describedby={descriptionId}
-            >
-              {readOnly ? (
-                <FieldValue
-                  id={id}
-                  title=""
-                  aria-describedby={descriptionId}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className="relative min-w-0"
+                tabIndex={readOnly || disabled ? 0 : undefined}
+                aria-describedby={descriptionId}
+              >
+                {readOnly ? (
+                  <FieldValue
+                    id={id}
+                    title=""
+                    aria-describedby={descriptionId}
+                    className={cn(
+                      "font-sans text-right tabular-nums",
+                      attention && "pl-9",
+                      inputClassName,
+                    )}
+                  >
+                    {value == null ? "—" : formatAmount(value, 3)}
+                  </FieldValue>
+                ) : (
+                  <DecimalInput
+                    id={id}
+                    value={value}
+                    decimals={6}
+                    displayDecimals={3}
+                    disabled={disabled}
+                    aria-describedby={descriptionId}
+                    className={cn(
+                      "h-[var(--control-h)]",
+                      attention && "pl-9",
+                      differs && "pr-9 border-destructive",
+                      inputClassName,
+                    )}
+                    onChange={(next) => onChange(next === "" ? null : Number(next))}
+                  />
+                )}
+                {attention ? (
+                  <Info
+                    aria-hidden="true"
+                    data-slot="rate-source-attention"
+                    className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  />
+                ) : null}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>{sourceText}</TooltipContent>
+          </Tooltip>
+          {!readOnly && differs ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={tooltip}
+                  aria-disabled={disabled || undefined}
                   className={cn(
-                    "font-sans text-right tabular-nums",
-                    attention && "pl-9",
-                    inputClassName,
+                    "absolute right-1 top-1/2 size-7 -translate-y-1/2",
+                    disabled ? "text-muted-foreground" : "text-destructive",
                   )}
+                  onClick={disabled ? undefined : onUseSuggested}
                 >
-                  {value == null ? "—" : formatAmount(value, 3)}
-                </FieldValue>
-              ) : (
-                <DecimalInput
-                  id={id}
-                  value={value}
-                  decimals={6}
-                  displayDecimals={3}
-                  disabled={disabled}
-                  aria-describedby={descriptionId}
-                  className={cn(
-                    "h-[var(--control-h)]",
-                    attention && "pl-9",
-                    differs && "pr-9 border-destructive",
-                    inputClassName,
-                  )}
-                  onChange={(next) => onChange(next === "" ? null : Number(next))}
-                />
-              )}
-              {attention ? (
-                <Info
-                  aria-hidden="true"
-                  data-slot="rate-source-attention"
-                  className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-              ) : null}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>{sourceText}</TooltipContent>
-        </Tooltip>
-              {!readOnly && differs ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      aria-label={tooltip}
-                      aria-disabled={disabled || undefined}
-                      className={cn(
-                        "absolute right-1 top-1/2 size-7 -translate-y-1/2",
-                        disabled ? "text-muted-foreground" : "text-destructive",
-                      )}
-                      onClick={disabled ? undefined : onUseSuggested}
-                    >
-                      <RefreshCw className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{tooltip}</TooltipContent>
-                </Tooltip>
-              ) : null}
-
+                  <RefreshCw className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{tooltip}</TooltipContent>
+            </Tooltip>
+          ) : null}
         </div>
         {manual && showNote && !readOnly ? (
           <div className="space-y-1">
