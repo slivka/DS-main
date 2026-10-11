@@ -128,10 +128,16 @@ describe("Edit dokladu 11", () => {
             receivedAccountDisabledReason={reason}
           />,
         );
-        expect(view.getByTitle(reason).textContent).toBe(reason);
-        const button = view.getByRole("button", { name: reason });
+        expect(
+          view.getByText(reason, { selector: "[data-slot=field-value] > div" }).textContent,
+        ).toBe(reason);
+        const button = view.getByRole("button", { name: "Platit příkazem" });
         expect(button.getAttribute("aria-pressed")).toBe("false");
-        expect(button.hasAttribute("disabled")).toBe(true);
+        expect(button.hasAttribute("disabled")).toBe(false);
+        expect(button.getAttribute("aria-disabled")).toBe("true");
+        expect(
+          document.getElementById(button.getAttribute("aria-describedby") ?? "")?.textContent,
+        ).toBe(reason);
         fireEvent.click(button);
         expect(toggle).not.toHaveBeenCalled();
         expect(change).not.toHaveBeenCalled();
@@ -140,7 +146,11 @@ describe("Edit dokladu 11", () => {
         expect(view.queryByLabelText("Číslo účtu bez IBAN")).toBeNull();
         expect(view.queryByRole("combobox", { name: "Bankovní účet" })).toBeNull();
         expect(view.queryByText("Nejdřív vyberte dodavatele")).toBeNull();
-        expect(view.getByTitle(reason).querySelector("svg")).toBeNull();
+        expect(
+          view
+            .getByText(reason, { selector: "[data-slot=field-value] > div" })
+            .querySelector("svg"),
+        ).toBeNull();
         view.rerender(<DocumentForm {...base} documentType={type} />);
         expect(view.getByLabelText("Konstantní symbol").getAttribute("value")).toBe("0008");
         expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("99");
@@ -152,8 +162,12 @@ describe("Edit dokladu 11", () => {
       </DsTextsProvider>,
     );
     const reason = DS_TEXTS_SK.documentForm.paymentOrderDisabled;
-    expect(view.getByTitle(reason).textContent).toBe(reason);
-    expect(view.getByTitle(reason).querySelector("svg")).toBeNull();
+    expect(view.getByText(reason, { selector: "[data-slot=field-value] > div" }).textContent).toBe(
+      reason,
+    );
+    expect(
+      view.getByText(reason, { selector: "[data-slot=field-value] > div" }).querySelector("svg"),
+    ).toBeNull();
     view.rerender(
       <DocumentForm
         {...base}
@@ -167,6 +181,53 @@ describe("Edit dokladu 11", () => {
     const account = view.getByLabelText("Uhradit na bankovní účet");
     expect(account.textContent).toBe("Hotově");
     expect(account.querySelector("svg")).toBeNull();
+    expect(account.hasAttribute("title")).toBe(false);
+  });
+  it("DDPOZ ignoruje důvod způsobu platby pro účet, přepínač i symboly", () => {
+    const toggle = mock();
+    const view = render(
+      <DocumentForm
+        {...base}
+        documentType="DDPOZ"
+        paymentOrderEnabled
+        onPaymentOrderEnabledChange={toggle}
+        receivedAccountDisabledReason="Hotově"
+      />,
+    );
+    expect(view.getByRole("combobox", { name: "Bankovní účet" })).toBeTruthy();
+    const button = view.getByRole("button", { name: "Platit příkazem" });
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+    expect(button.getAttribute("aria-disabled")).toBeNull();
+    expect(view.getByLabelText("Konstantní symbol").getAttribute("value")).toBe("0008");
+    expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("99");
+    fireEvent.click(button);
+    expect(toggle).toHaveBeenCalledWith(false);
+  });
+  it("fokus zamčeného přepínače ukáže důvod, název zůstává Platit příkazem", async () => {
+    const reason = "Hotově se neplatí na účet";
+    const view = render(<DocumentForm {...base} receivedAccountDisabledReason={reason} />);
+    const button = view.getByRole("button", { name: "Platit příkazem" });
+    fireEvent.focus(button);
+    await waitFor(() => expect(view.getByRole("tooltip").textContent).toBe(reason));
+  });
+  it("odpojení ručního účtu při zamčení vyčistí validační hlášení bez změny hodnot", () => {
+    const validation = mock();
+    const change = mock();
+    const props = {
+      ...base,
+      counterpartyInput: "manual" as const,
+      value: { ...base.value, manualBankAccount: { text: "", iban: "", swift: "" } },
+      onChange: change,
+      onPaymentOrderEnabledChange: () => {},
+      onManualBankAccountValidationChange: validation,
+    };
+    const view = render(<DocumentForm {...props} />);
+    fireEvent.change(view.getByLabelText("IBAN"), { target: { value: "invalid" } });
+    expect(validation.mock.calls.at(-1)?.[0]).not.toEqual({});
+    change.mockClear();
+    view.rerender(<DocumentForm {...props} receivedAccountDisabledReason="Hotově" />);
+    expect(validation.mock.calls.at(-1)?.[0]).toEqual({});
+    expect(change).not.toHaveBeenCalled();
   });
   it("menu zachová akci položky s ikonou", () => {
     const click = mock();

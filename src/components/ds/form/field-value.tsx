@@ -29,7 +29,7 @@ export const FieldValue = React.forwardRef<HTMLDivElement, FieldValueProps>(func
         variant === "field" && "rounded-md bg-muted px-2.5",
         className,
       )}
-      title={resolvedTitle}
+      title={resolvedTitle || undefined}
       {...props}
     >
       <div className="min-w-0 flex-1 truncate whitespace-nowrap">{children}</div>

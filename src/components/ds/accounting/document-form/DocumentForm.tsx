@@ -201,12 +201,14 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  const paymentOrderOn =
-    receivedDocument && receivedAccountDisabledReason
-      ? false
-      : f.paymentOrders
-        ? paymentOrderEnabled
-        : true;
+  const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
+    ? receivedAccountDisabledReason
+    : undefined;
+  const paymentOrderOn = receivedAccountReason
+    ? false
+    : f.paymentOrders
+      ? paymentOrderEnabled
+      : true;
   const externalNumberField = useExternalNumberField({
     value,
     patch,
@@ -233,9 +235,7 @@ export function DocumentForm({
     onPaymentOrderEnabledChange,
     onManualBankAccountValidationChange,
     onAddBankAccount,
-    receivedAccountDisabledReason: ["FP", "ZFP"].includes(documentType.toUpperCase())
-      ? receivedAccountDisabledReason
-      : undefined,
+    receivedAccountDisabledReason: receivedAccountReason,
   });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());

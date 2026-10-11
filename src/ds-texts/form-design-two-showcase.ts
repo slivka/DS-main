@@ -25,7 +25,7 @@ const SK: typeof CS = {
   title: "Dizajn formulárov 2",
   received: "Prijatá faktúra – Edit dokladu 11",
   attention: "Starší zdroj kurzu",
-  settings: "Nastavení…",
+  settings: "Nastavenia…",
   supplier: "Dodávateľ s.r.o.",
   same: "Rovnaký kurz DPH",
   issued: "Vystavená faktúra EUR",

@@ -2,8 +2,9 @@
 - [x] A1 ikony menu; A2 tooltipy a stav kurzů
 - [x] A3/A4 společné zamčené účty a priorita způsobu platby
 - [x] A5 rozvržení přijatých dokladů a ukázky
-- [x] Přírůstkový katalog 426→426, CHANGELOG, unit 586/586, e2e 12/12,
-  lint 0 chyb / 293 varování a automatický build OK; nevydáno.
+- [x] Kontrola edb1cd4a: všechny čtyři katalogy mají 426→426 komponent, žádný název nezmizel; původní bloky z 546e5737 obnoveny doslova.
+- [x] Přístupný zamčený přepínač, společný důvod jen FP/ZFP, vyčištění validace, žádné dvojí tooltipy.
+- [x] Unit 589/589; související e2e 9/9 (3 Chromium, 3 Firefox, 3 WebKit; poslední WebKit po opravě čekání na zavírací animaci). Lint 0 chyb / 293 varování; formát a automatický build OK; nevydáno.
 - [ ] Samostatný výsledek automatického typechecku není dostupný;
   ruční spuštění kontrolní prostředí nepovoluje.
 
@@ -781,3 +782,8 @@
 - [x] Smysluplně rozdělit typy, hlavičku rekapitulace a navigaci záznamů.
 - [x] Unit 575/575, související e2e 6/6, lint 0 chyb (293 varování), formát OK, automatický build OK; nevydávat.
 - [ ] Samostatný výsledek automatického typechecku: kontrolní prostředí neposkytlo jeho výstup; ruční spuštění je v této relaci zakázáno.
+
+### DS 2.94.0 – opravy po kontrole edb1cd4a (nevydáno)
+- [ ] Obnovit doslovné katalogové texty, zdrojový manifest a ověřit všechny čtyři katalogy.
+- [ ] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
+- [ ] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.

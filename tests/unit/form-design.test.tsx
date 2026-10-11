@@ -108,15 +108,26 @@ describe("Design formulářů", () => {
     }
   });
   it("přijatý doklad bez účtu ponechá číslo za Popisem ve třetím řádku", () => {
-    const view = render(<DocumentForm {...formProps} fields={{ bankAccount: false }} />);
+    const view = render(
+      <DocumentForm
+        {...formProps}
+        fields={{ bankAccount: false }}
+        paymentMethodOptions={[{ value: "bank", label: "Převodem" }]}
+      />,
+    );
     expect(view.queryByRole("combobox", { name: "Bankovní účet" })).toBeNull();
     const description = view.getByLabelText("Popis");
     const number = view.getByLabelText("Číslo dokladu dodavatele");
     expect(
       description.compareDocumentPosition(number) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    fireEvent.change(number, { target: { value: "FP99" } });
-    expect(number.getAttribute("id")).toBe("document-externalNumber");
+    const method = view.getByLabelText("Způsob platby");
+    expect(
+      method.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(number.closest("[data-slot=field]")?.parentElement).toBe(
+      description.closest("[data-slot=field]")?.parentElement,
+    );
   });
   it("pevná měna má čitelnou hodnotu bez šipky; změna režimu vrací výběr", () => {
     const view = render(

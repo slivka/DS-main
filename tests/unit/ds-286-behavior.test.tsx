@@ -109,7 +109,9 @@ describe("DS 2.86.0", () => {
       </TooltipProvider>,
     );
     expect(view.queryByText("19-2000145399/0800")).toBeNull();
-    fireEvent.click(view.getByRole("button", { name: "Nezahrnovat do platebních příkazů" }));
+    const toggle = view.getByRole("button", { name: "Platit příkazem" });
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(toggle);
     expect(change).toHaveBeenCalledWith(true);
   });
 
