@@ -13,7 +13,6 @@ import {
   type OpenTabOptions,
   type PaneTabsApi,
   type PaneTabsTexts,
-  type RecordNav,
   type RecordNavItem,
 } from "./pane-context-types";
 import {
@@ -30,10 +29,8 @@ import {
   openRecordInState,
   openTabInState,
   otherTabIds,
-  paneKey,
   pushClosedTab,
   reopenClosedTabInState,
-  replaceTabContentInState,
   resolveOpenMode,
   resolveTargetPaneIndex,
   serializeLayout,
@@ -57,6 +54,7 @@ import {
   setTabDraft,
   useTabDirtyVersion,
 } from "./pane-tab-store";
+import { recordNavigation } from "./pane-record-navigation";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
@@ -346,34 +344,8 @@ export function PaneTabsProvider({
     if (result.evictedTabId) clearTabState(result.evictedTabId);
     commit(result.state);
   };
-  const getRecordNav = (tabId: string): RecordNav | null => {
-    const found = findTab(stateRef.current, tabId);
-    if (!found || found.tab.kind !== "record") return null;
-    const source =
-      recordNavs.current.get(found.tab.openerTabId ?? "") ?? recordNavs.current.get(tabId);
-    if (!source) return null;
-    const items = source();
-    const keyOf = (item: { route: string; params?: Record<string, unknown>; recordKey?: string }) =>
-      item.recordKey ?? paneKey(item);
-    const index = items.findIndex((item) => keyOf(item) === keyOf(found.tab));
-    if (index < 0) return null;
-    const go = (delta: number) => {
-      const item = items[index + delta];
-      if (!item) return;
-      if (isTabDirty(tabId)) {
-        toast.warning(t.recordNavDirty);
-        return;
-      }
-      const other = findRecordTab(stateRef.current, { ...item, kind: "record" });
-      if (other) {
-        commit(activateTabInState(stateRef.current, other.id));
-        return;
-      }
-      clearTabState(tabId);
-      commit(replaceTabContentInState(stateRef.current, tabId, { ...item, kind: "record" }));
-    };
-    return { index, total: items.length, prev: () => go(-1), next: () => go(1) };
-  };
+  const getRecordNav = (tabId: string) =>
+    recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
   const api: PaneTabsApi = {
     state,
     openRecord,

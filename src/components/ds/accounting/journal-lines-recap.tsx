@@ -1,7 +1,6 @@
 import * as React from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { Button } from "../../ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import { JournalRecapHeader } from "./journal-recap-header";
+import { Tabs, TabsContent } from "../../ui/tabs";
 import { formatAmount } from "../../../lib/format";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
@@ -399,34 +398,14 @@ export function JournalLinesRecap({
           if (!shown) changeOpen(true);
         }}
       >
-        <div className="flex items-center border-b">
-          <TabsList className="h-9 min-w-0 flex-1 overflow-x-auto justify-start rounded-none bg-transparent px-2">
-            {tabs.map((item) => (
-              <TabsTrigger
-                key={item.id}
-                value={item.id}
-                onClick={() => {
-                  if (!shown && item.id === activeTab) changeOpen(true);
-                }}
-                className="h-9 rounded-none border-b-2 border-transparent text-sm data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold"
-              >
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {headerTotal}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => changeOpen(!shown)}
-            aria-label={shown ? t.collapse : t.expand}
-            aria-expanded={shown}
-            className="mr-1 size-8"
-          >
-            {shown ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
-          </Button>
-        </div>
+        <JournalRecapHeader
+          tabs={tabs}
+          activeTab={activeTab}
+          shown={shown}
+          changeOpen={changeOpen}
+          headerTotal={headerTotal}
+          t={t}
+        />
         {shown ? (
           <>
             <TabsContent value="accounting" className="m-0">

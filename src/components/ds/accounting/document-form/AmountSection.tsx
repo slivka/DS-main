@@ -72,14 +72,14 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
       <div
         data-slot="document-amount-currency"
         data-section="document-amount-section"
-        className="flex max-w-full flex-wrap items-start justify-between min-w-0 gap-x-3 gap-y-12"
+        className="flex min-w-0 max-w-full flex-wrap items-start justify-between gap-3"
       >
         {foreign ? (
           <div
             data-slot="document-foreign-amounts"
-            className="order-2 grid max-w-full grid-cols-2 items-start gap-3 @min-[48rem]:order-1"
+            className="order-2 grid w-full basis-full shrink-0 grid-cols-[minmax(0,9rem)_minmax(0,9rem)] items-start justify-start gap-3 @min-[50rem]:order-1 @min-[50rem]:w-[18.75rem] @min-[50rem]:basis-auto"
           >
-            <div className="w-[9rem] max-w-full min-w-0">
+            <div className="w-full max-w-[9rem] min-w-0">
               {field(
                 "document-rate",
                 t.rate,
@@ -106,7 +106,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                   onUseSuggested={() =>
                     patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })
                   }
-                  className="w-full [&_.field-overflow-hint]:w-full [&_.field-overflow-hint]:whitespace-normal [&_.field-overflow-hint]:overflow-visible"
+                  className="w-full"
                   inputClassName="h-11"
                 />,
                 3,
@@ -115,7 +115,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
               )}
             </div>
             {vatRateField && !vatRateField.sameAsDocument ? (
-              <div className="w-[9rem] max-w-full min-w-0">
+              <div className="w-full max-w-[9rem] min-w-0">
                 {field(
                   "document-vat-rate",
                   t.vatRate,
@@ -146,7 +146,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                           note: null,
                         })
                       }
-                      className="[&_.field-overflow-hint]:w-full [&_.field-overflow-hint]:whitespace-normal [&_.field-overflow-hint]:overflow-visible"
+                      className="w-full"
                       inputClassName="h-11"
                     />
                     {!vatRateField.manual &&
@@ -155,7 +155,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                       <p
                         role="status"
                         data-slot="document-vat-rate-missing"
-                        className="mt-6 text-xs font-medium text-destructive"
+                        className="mt-3 text-xs font-medium text-destructive"
                       >
                         {t.vatRateMissing}
                       </p>
@@ -169,7 +169,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         ) : null}
         <div
           data-slot="document-total-currency-pair"
-          className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[48rem]:order-2"
+          className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[50rem]:order-2"
         >
           <div
             data-slot="document-amount-total"
@@ -239,8 +239,8 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
           </div>
         </div>
       </div>
-      {foreign ? (
-        <div data-slot="document-rate-details" className="mt-12 grid grid-cols-20 gap-3">
+      {foreign && (value.rateManual || (vatRateField?.manual && !vatRateField.sameAsDocument)) ? (
+        <div data-slot="document-rate-details" className="mt-3 grid grid-cols-20 gap-3">
           {value.rateManual
             ? field(
                 "document-rate-note",

@@ -150,6 +150,8 @@ export interface CompanyAccountControlProps {
   onPaymentMethodChange?: (id: string) => void;
   /** Způsob platby nelze editovat. */
   paymentMethodDisabled?: boolean;
+  /** Popisek z textů formuláře má přednost před poskytovatelem. */
+  paymentMethodLabel?: string;
 }
 
 /** Firemní účet FV/ZFV přes plnou šířku. */
@@ -158,7 +160,11 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
   return (
     <>
       {props.paymentMethodOptions ? (
-        <Field label={t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
+        <Field
+          label={props.paymentMethodLabel ?? t.paymentMethod}
+          htmlFor="document-paymentMethodId"
+          span={6}
+        >
           <OptionSelect
             id="document-paymentMethodId"
             value={props.paymentMethodId}
@@ -210,6 +216,7 @@ export function companyAccountControlForForm(
   can: (key: import("./document-form-types").DocumentHeaderField) => boolean,
   label: string,
   paymentOptions?: Array<{ value: string; label: string }>,
+  paymentMethodLabel?: string,
 ): ReactNode {
   if (!props.companyBankAccountOptions) return null;
   return (
@@ -224,6 +231,7 @@ export function companyAccountControlForForm(
       paymentMethodId={props.value.paymentMethodId}
       onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
       paymentMethodDisabled={!can("paymentMethodId")}
+      paymentMethodLabel={paymentMethodLabel}
     />
   );
 }

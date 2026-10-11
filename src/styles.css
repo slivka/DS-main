@@ -576,6 +576,14 @@
   color: var(--color-primary);
 }
 
+/* Kurzová nápověda smí růst jen svisle, nikdy do sousedního pole. */
+.rate-field-hint {
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .field-overflow-hint {
   width: max-content;
   max-width: calc(100cqw - 2rem);

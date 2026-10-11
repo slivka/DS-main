@@ -2,6 +2,13 @@
 
 ## 2.92.0 – Design formulářů 2 (nevydáno)
 
+- Opravy po kontrole 4164ecdd: kurzy nemohou skončit vpravo od měny; nápovědy se zalamují pouze pod vlastním polem, mezery odpovídají zbytku formuláře a prázdný řádek důvodů se nevykresluje.
+- Dialog má vlastní patičku s jediným zdrojem mezer, menší šířkou a zachovaným `intent`; návrat a uložení zůstávají oddělené od zahození.
+- **BREAKING pro vlastní přepisy textů:** dialog již nečte `panes.unsavedTitle`, `saveAndContinue`, `continueWithoutSaving`, `backToRecord`. Přepisy přesuňte do `panes.unsavedActions[close|switch|logout|navigate]`.
+- `DocumentForm.texts.totalHome` a `paymentMethod` platí také v rekapitulaci a horním platebním řádku. Rekapitulace má plný přístupný název i při zkráceném popisku; samostatný editor přijímá volitelný `recapTotalLabel`.
+- Pravidlo zamčené měny v system.md bylo upřesněno na stejný rámeček a rozměry jako výběr (chování 2.90.0); toto znění zůstává zachované.
+- Interní typy textů, hlavička rekapitulace a navigace záznamů jsou oddělené bez změny dosavadních exportů.
+
 - **Změna chování:** kurzy vlevo, Celkem + Měna vpravo; Kurz DPH jen při odlišném kurzu. Důvody zůstávají níže; domácí celek přesunut do hlavičky rekapitulace.
 - RateField bez ikony má standardní pravý padding; readonly má shodný sans font a zarovnání. Nové volitelné inputClassName.
 - Přepočet v DS používá celkovou částku a kurz dokladu; chybějící kurz ukáže pomlčku. DocumentForm automaticky předá odvozený celek; samostatný JournalLinesEditor může použít recapTotalAmount pro externí celek.

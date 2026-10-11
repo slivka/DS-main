@@ -94,6 +94,7 @@ export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
           totalMode={totalMode === "entered" ? "entered" : "computed"}
           {...linesEditorProps}
           recapTotalAmount={a.total}
+          recapTotalLabel={a.t.totalHome}
           editableFields={readOnly ? [] : linesEditorProps?.editableFields}
           rounding={
             f.rounding

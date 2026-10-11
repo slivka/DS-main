@@ -96,7 +96,7 @@ export function RateField({
         <FieldValue id={id} className={cn("font-sans text-right tabular-nums", inputClassName)}>
           {value == null ? "—" : formatAmount(value, 3)}
         </FieldValue>
-        <p className="field-overflow-hint text-xs text-muted-foreground">
+        <p className="rate-field-hint text-xs text-muted-foreground">
           {suffix}
           {source ? ` · ${source}` : ""}
         </p>
@@ -146,7 +146,7 @@ export function RateField({
             </Tooltip>
           ) : null}
         </div>
-        <p className="field-overflow-hint text-xs text-muted-foreground">
+        <p className="rate-field-hint text-xs text-muted-foreground">
           {suffix}
           {source ? ` · ${source}` : ""}
         </p>
