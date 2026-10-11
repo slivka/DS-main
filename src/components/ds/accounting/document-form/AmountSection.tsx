@@ -79,7 +79,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
             data-slot="document-foreign-amounts"
             className="order-2 grid w-full max-w-[18.75rem] basis-full grid-cols-2 items-start justify-start gap-3 @min-[48rem]:order-1 @min-[48rem]:basis-auto"
           >
-            <div className="w-[9rem] max-w-full min-w-0">
+            <div className="w-full max-w-[9rem] min-w-0">
               {field(
                 "document-rate",
                 t.rate,
@@ -115,7 +115,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
               )}
             </div>
             {vatRateField && !vatRateField.sameAsDocument ? (
-              <div className="w-[9rem] max-w-full min-w-0">
+              <div className="w-full max-w-[9rem] min-w-0">
                 {field(
                   "document-vat-rate",
                   t.vatRate,
