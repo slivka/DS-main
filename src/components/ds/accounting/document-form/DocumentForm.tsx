@@ -180,7 +180,6 @@ export function DocumentForm({
     can,
     mainAccountLocked,
   });
-  const partnerLabel = texts?.partner ?? partnerLabelForType(documentType, value.direction);
   useEffect(() => {
     if (!selectedIdentityAccount) return;
     if (
@@ -221,7 +220,6 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  // Přepínač platebního příkazu platí jen u druhů s příznakem paymentOrders.
   const paymentOrderOn = f.paymentOrders ? paymentOrderEnabled : true;
   const externalNumberField = useExternalNumberField({
     value,
@@ -258,12 +256,12 @@ export function DocumentForm({
           {
             value,
             companyBankAccountOptions,
-            paymentMethodOptions,
             companyBankAccountDisabledReason,
           },
           patch,
           can,
           t.payToBankAccount,
+          paymentMethodOptions,
         )
       : null;
   const changeRounding = (roundingAmount: number) => {
@@ -337,7 +335,6 @@ export function DocumentForm({
               data-slot="document-title-badges"
               className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
             >
-              {" "}
               <DocumentStatusBadge status={status} approved={approved} size="md" />
               {titleBadges}
             </span>
@@ -415,7 +412,7 @@ export function DocumentForm({
               patch={patch}
               partner={partner}
               partners={partners}
-              partnerLabel={partnerLabel}
+              partnerLabel={texts?.partner ?? partnerLabelForType(documentType, value.direction)}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
               linkedPartner={Boolean(value.partnerId)}

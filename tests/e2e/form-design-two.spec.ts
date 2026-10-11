@@ -58,7 +58,11 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
   await expect(form.locator("#document-total-home")).toHaveCount(0);
   await expect(form.locator('[data-slot="journal-recap-home-total"]')).toContainText("30 250,00");
   await expect(form.getByLabel("Způsob platby")).toHaveCount(1);
-  await form.getByRole("checkbox", { name: "Stejný kurz DPH" }).click();
+  await expect(async () => {
+    const toggle = form.getByRole("checkbox", { name: "Stejný kurz DPH" });
+    if ((await toggle.getAttribute("aria-checked")) !== "true") await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-checked", "true", { timeout: 1000 });
+  }).toPass();
   await expect(form.locator("#document-vat-rate")).toHaveCount(0);
   await form.getByLabel("Způsob platby").click();
   await page.getByRole("option", { name: "Hotově" }).click();
@@ -79,7 +83,11 @@ test("dialogy pojmenují akci, návrat má fokus a úzká tlačítka se nepřekr
     "Odhlásit se s neuloženými změnami?",
     "Odejít s neuloženými změnami?",
   ]) {
-    await showcase.getByRole("button", { name, exact: true }).click();
+    await expect(async () => {
+      if (!(await page.getByRole("alertdialog").isVisible()))
+        await showcase.getByRole("button", { name, exact: true }).click();
+      await expect(page.getByRole("alertdialog")).toBeVisible({ timeout: 1000 });
+    }).toPass();
     const dialog = page.getByRole("alertdialog");
     await expect(dialog.getByRole("heading")).toHaveText(name);
     await expect(dialog.getByRole("button", { name: /^Zpět/ })).toBeFocused();
@@ -92,9 +100,13 @@ test("dialogy pojmenují akci, návrat má fokus a úzká tlačítka se nepřekr
       const m = await import(/* @vite-ignore */ path);
       m.setAppZoom(z);
     }, zoom);
-    await showcase
-      .getByRole("button", { name: "Přepnout s neuloženými změnami?", exact: true })
-      .click();
+    await expect(async () => {
+      if (!(await page.getByRole("alertdialog").isVisible()))
+        await showcase
+          .getByRole("button", { name: "Přepnout s neuloženými změnami?", exact: true })
+          .click();
+      await expect(page.getByRole("alertdialog")).toBeVisible({ timeout: 1000 });
+    }).toPass();
     const dialog = page.getByRole("alertdialog");
     await dialog.evaluate((el) => {
       el.style.width = "360px";

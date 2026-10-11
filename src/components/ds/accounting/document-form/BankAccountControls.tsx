@@ -209,6 +209,7 @@ export function companyAccountControlForForm(
   patch: (value: Partial<import("./document-form-types").DocumentHeaderValue>) => void,
   can: (key: import("./document-form-types").DocumentHeaderField) => boolean,
   label: string,
+  paymentOptions?: Array<{ value: string; label: string }>,
 ): ReactNode {
   if (!props.companyBankAccountOptions) return null;
   return (
@@ -219,7 +220,7 @@ export function companyAccountControlForForm(
       disabled={!can("companyBankAccountId")}
       disabledReason={props.companyBankAccountDisabledReason}
       label={label}
-      paymentMethodOptions={props.paymentMethodOptions}
+      paymentMethodOptions={paymentOptions ?? props.paymentMethodOptions}
       paymentMethodId={props.value.paymentMethodId}
       onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
       paymentMethodDisabled={!can("paymentMethodId")}
