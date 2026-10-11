@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.90.0",
+    "version": "2.92.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -3860,7 +3860,7 @@
           "required": true
         }
       ],
-      "usage": "Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.",
+      "usage": "Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout. Přepnutí a odhlášení volejte přes guardUnsaved(callback, \"switch\"/\"logout\"); close řeší DS.",
       "examples": [
         {
           "label": "Otevření záznamu",
@@ -3984,8 +3984,21 @@
         {
           "name": "onOpenInNewTab",
           "type": "function"
+        },
+        {
+          "name": "action",
+          "type": "\"close\" | \"switch\" | \"logout\" | \"navigate\"",
+          "default": "navigate"
         }
-      ]
+      ],
+      "usage": "Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.",
+      "examples": [
+        {
+          "label": "2.92.0",
+          "code": "<UnsavedChangesDialog {...props} action=\"close\" />"
+        }
+      ],
+      "antipatterns": []
     },
     {
       "name": "LayoutSwitcher",
@@ -5192,13 +5205,17 @@
           "name": "className",
           "type": "string",
           "default": "font-mono tabular-nums"
+        },
+        {
+          "name": "inputClassName",
+          "type": "string"
         }
       ],
-      "usage": "Kurz cizí měny s doporučenou hodnotou, zdrojem a povinným důvodem ručního kurzu.",
+      "usage": "Kurz s důvodem; bez ikony běžný padding vpravo, readOnly zarovnaný jako DecimalInput.",
       "examples": [
         {
-          "label": "Kurz EUR",
-          "code": "<RateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} />"
+          "label": "2.92.0",
+          "code": "<RateField {...rateProps} inputClassName=\"h-11\" />"
         }
       ],
       "antipatterns": [
@@ -7236,21 +7253,23 @@
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "usage": "Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.",
+      "usage": "Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky.",
       "examples": [
         {
-          "label": "Rozpis se zkrácenými účty",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
-        },
-        {
-          "label": "Řádky s DPH (2.55.0)",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
+          "label": "2.92.0",
+          "code": "<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />"
         }
       ],
       "antipatterns": [
         "Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.",
         "Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.",
         "Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows."
+      ],
+      "props": [
+        {
+          "name": "recapTotalAmount",
+          "type": "number"
+        }
       ]
     },
     {
@@ -7327,13 +7346,17 @@
         {
           "name": "vatSummary",
           "type": "any"
+        },
+        {
+          "name": "headerTotal",
+          "type": "ReactNode"
         }
       ],
       "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",
       "examples": [
         {
-          "label": "Rekapitulace",
-          "code": "<JournalLinesRecap lines={lines} accounts={accounts} storageKey=\"invoice-lines\" />"
+          "label": "2.92.0",
+          "code": "<JournalLinesRecap {...props} headerTotal={<JournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} />} />"
         }
       ],
       "antipatterns": [
@@ -7643,6 +7666,43 @@
       ],
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
+      ]
+    },
+    {
+      "name": "JournalRecapHomeTotal",
+      "file": "src/components/ds/accounting/journal-recap-home-total.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "total",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "rate",
+          "type": "number | null"
+        },
+        {
+          "name": "rateAmount",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "usage": "Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.",
+      "examples": [
+        {
+          "label": "Přepočtený celek",
+          "code": "<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte značku měny natvrdo.",
+        "Nevydávejte chybějící kurz za nulu."
       ]
     }
   ],
