@@ -1,3 +1,11 @@
+## Edit dokladu 11 (2.94.0)
+
+- `RateField.sourceAttention?: boolean`; `DocumentHeaderValue.rateSourceAttention` / `vatRateSourceAttention` se předávají oběma kurzům. Jednotka a zdroj jsou v přístupném tooltipu celého pole, nikoli pod polem (BREAKING pravidla).
+- `DocumentForm.receivedAccountDisabledReason?: string` má u FP/ZFP přednost před příkazem i dodavatelem; vypnutý příkaz nelze změnit, KS/SS jsou skryté. Hodnoty spravuje aplikace.
+- `PaymentOrderAccountField` a zamčený firemní účet zobrazí důvod uvnitř šedého pole bez zámku, jednořádkově s tooltipem.
+- FP/ZFP/DDPOZ: druhý řádek účet 14 + způsob platby 6 (DDPOZ bez způsobu), třetí Popis 14 + číslo 6. Pod 40rem pod sebou ve stejném pořadí.
+- `RecordActionBar` sjednocuje ikony všech položek menu na size-4 shrink-0.
+
 ## Řádky dokladu s DPH (2.55.0)
 
 `JournalLinesEditor vat={{ enabled, codes, calcMode, onCalcModeChange, defaultCodeId, pdpSubjects, vatRate, vatRateAmount, readOnly, isCodeRequired }}`. Kódy filtruje aplikace. Řádky daně vytváří jen databáze; editor je nezobrazuje a do uložení je nikdy neposílá (`toJournalRows`). Předběžná daň (`buildVatPreviewLines`) platí vždy, dokud je doklad editovatelný. Ukládejte přes `toJournalRows(lines, { mainSide, sharedSide, vat: { calcMode } })`. Kód DPH v buňce vybírá `VatCodeSelect` – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu.

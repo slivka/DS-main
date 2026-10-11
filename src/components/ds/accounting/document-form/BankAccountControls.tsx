@@ -13,7 +13,7 @@ import {
   type ManualBankAccountErrors,
   type ManualBankAccountValue,
 } from "../received-bank-account-field";
-import { FieldValue } from "../../form/field-value";
+import { LockedAccountValue } from "../locked-account-value";
 import { OptionSelect } from "../../form/option-select";
 import { Field } from "../../layout/RecordDialog";
 
@@ -49,6 +49,8 @@ export interface ReceivedAccountControlProps {
   onAddAccount?: () => void;
   /** Zakázání editace. */
   disabled?: boolean;
+  /** Způsob platby nepoužívá účet; přednost před příkazem a protistranou. */
+  accountDisabledReason?: string;
   /** Přeložené texty. */
   texts: {
     bankAccount: string;
@@ -114,14 +116,22 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
         }}
       />
     );
-  if (props.paymentOrdersApplicable === false) return content;
+  if (props.paymentOrdersApplicable === false)
+    return props.accountDisabledReason ? (
+      <LockedAccountValue
+        reason={props.accountDisabledReason}
+        aria-label={props.texts.bankAccount}
+      />
+    ) : (
+      content
+    );
   return (
     <PaymentOrderAccountField
-      enabled={props.paymentOrderEnabled}
-      onEnabledChange={props.onPaymentOrderEnabledChange}
+      enabled={!props.accountDisabledReason && props.paymentOrderEnabled}
+      onEnabledChange={props.accountDisabledReason ? undefined : props.onPaymentOrderEnabledChange}
       enabledLabel={props.texts.payByOrder}
-      disabledLabel={props.texts.excludeFromPaymentOrders}
-      disabledReason={props.texts.paymentOrderDisabled}
+      disabledLabel={props.accountDisabledReason ?? props.texts.excludeFromPaymentOrders}
+      disabledReason={props.accountDisabledReason ?? props.texts.paymentOrderDisabled}
     >
       {content}
     </PaymentOrderAccountField>
@@ -181,10 +191,10 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
         span={props.paymentMethodOptions ? 14 : 20}
       >
         {props.disabledReason ? (
-          <FieldValue
+          <LockedAccountValue
             id="document-companyBankAccountId"
             aria-label={props.label}
-            lockedReason={props.disabledReason}
+            reason={props.disabledReason}
           />
         ) : (
           <OptionSelect

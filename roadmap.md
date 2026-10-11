@@ -1,3 +1,12 @@
+## DS 2.94.0 – Edit dokladu 11 (nevydáno)
+- [x] A1 ikony menu; A2 tooltipy a stav kurzů
+- [x] A3/A4 společné zamčené účty a priorita způsobu platby
+- [x] A5 rozvržení přijatých dokladů a ukázky
+- [x] Přírůstkový katalog 426→426, CHANGELOG, unit 586/586, e2e 12/12,
+  lint 0 chyb / 293 varování a automatický build OK; nevydáno.
+- [ ] Samostatný výsledek automatického typechecku není dostupný;
+  ruční spuštění kontrolní prostředí nepovoluje.
+
 ## DS 2.92.0 – Design formulářů 2 (nevydáno)
 - [x] Kurzy vlevo, pod celkem v úzkém panelu; RateField zarovnání
 - [x] Přepočtený celek v hlavičce rekapitulace

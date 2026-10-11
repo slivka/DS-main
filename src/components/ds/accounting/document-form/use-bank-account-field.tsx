@@ -53,6 +53,8 @@ interface Args {
   onManualBankAccountValidationChange?: (errors: ManualBankAccountErrors) => void;
   /** Přidání účtu partnera. */
   onAddBankAccount?: () => void;
+  /** Zamčení přijatého účtu způsobem platby. */
+  receivedAccountDisabledReason?: string;
 }
 
 /** Vrátí pole účtu: přijatý doklad s platebním příkazem, jinak volné zadání. */
@@ -75,6 +77,7 @@ export function useBankAccountField(a: Args): ReactNode {
       onValidationChange={a.onManualBankAccountValidationChange}
       onAddAccount={a.onAddBankAccount}
       disabled={disabled}
+      accountDisabledReason={a.receivedAccountDisabledReason}
       texts={a.t}
     />
   ) : (

@@ -81,7 +81,7 @@ describe("Design formulářů", () => {
     );
     expect(view.getByRole("textbox").getAttribute("placeholder")).toBeNull();
   });
-  it("FP řadí Dodavatele, IČO, DIČ, účet, číslo a popis ve stejném DOM pořadí", () => {
+  it("FP řadí Dodavatele, IČO, DIČ, účet, popis a číslo ve stejném DOM pořadí", () => {
     const view = render(
       <TooltipProvider>
         <DocumentForm {...formProps} />
@@ -95,7 +95,7 @@ describe("Design formulářů", () => {
       "document-description",
     ].map((id) => view.container.querySelector(`#${id}`));
     const account = view.getByRole("combobox", { name: "Bankovní účet" });
-    const ordered = [nodes[0], nodes[1], nodes[2], account, nodes[3], nodes[4]];
+    const ordered = [nodes[0], nodes[1], nodes[2], account, nodes[4], nodes[3]];
     for (let i = 1; i < ordered.length; i++) {
       const previous = ordered[i - 1];
       const current = ordered[i];
@@ -107,27 +107,16 @@ describe("Design formulářů", () => {
       ).toBeTruthy();
     }
   });
-  it("přijatý doklad bez Bankovního účtu drží číslo dokladu vlevo bez col-start-15", () => {
-    const view = render(
-      <TooltipProvider>
-        <DocumentForm {...formProps} fields={{ bankAccount: false }} />
-      </TooltipProvider>,
-    );
+  it("přijatý doklad bez účtu ponechá číslo za Popisem ve třetím řádku", () => {
+    const view = render(<DocumentForm {...formProps} fields={{ bankAccount: false }} />);
     expect(view.queryByRole("combobox", { name: "Bankovní účet" })).toBeNull();
-    const input = view.container.querySelector("#document-externalNumber");
-    const cell = input?.closest('[class*="col-span"]');
-    expect(cell).toBeTruthy();
-    expect(cell?.className).not.toContain("col-start-15");
-    expect(cell?.className).toContain("@min-[40rem]:col-span-6");
-    view.rerender(
-      <TooltipProvider>
-        <DocumentForm {...formProps} />
-      </TooltipProvider>,
-    );
-    const withAccount = view.container
-      .querySelector("#document-externalNumber")
-      ?.closest('[class*="col-span"]');
-    expect(withAccount?.className).toContain("@min-[40rem]:col-start-15");
+    const description = view.getByLabelText("Popis");
+    const number = view.getByLabelText("Číslo dokladu dodavatele");
+    expect(
+      description.compareDocumentPosition(number) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    fireEvent.change(number, { target: { value: "FP99" } });
+    expect(number.getAttribute("id")).toBe("document-externalNumber");
   });
   it("pevná měna má čitelnou hodnotu bez šipky; změna režimu vrací výběr", () => {
     const view = render(

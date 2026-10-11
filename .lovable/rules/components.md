@@ -323,7 +323,8 @@ Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru u
 
 **Examples:**
 
-_Účet dodavatele_
+Účet dodavatele
+
 ```tsx
 <BankAccountField aria-label="Bankovní účet" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />
 ```
@@ -333,6 +334,7 @@ _Účet dodavatele_
 - Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.
 - Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.
 - Neopakujte disabledReason pod polem ani v duplicitním tooltipu.
+
 
 ### BarBreakdownChart
 
@@ -1402,7 +1404,8 @@ Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před p
 
 **Examples:**
 
-_Výběr hodnoty_
+Výběr hodnoty
+
 ```tsx
 <DimensionSelect value={value} onChange={setValue} options={options} />
 ```
@@ -1410,6 +1413,7 @@ _Výběr hodnoty_
 **Avoid:**
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+
 
 ### DocumentActionBar
 
@@ -1453,7 +1457,15 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou a měnou vždy vedle Celkem. Všechny doklady řadí základní údaje, datumy, platební údaje, částku a záložky; partnerské i firemní bankovní účty jsou v platebních údajích a dateWarnings se zobrazují ve společném pruhu.
+Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu.
+
+**Nové/rozšířené props 2.94.0:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `receivedAccountDisabledReason` | string | `—` |
+| `value.rateSourceAttention` | boolean | `false` |
+| `value.vatRateSourceAttention` | boolean | `false` |
 
 **Examples:**
 
@@ -1467,6 +1479,12 @@ _Faktura s editovatelným účtem_
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
 - Nevkládejte měnu do popisku Celkem ani do identity cashBank.
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
+
+```tsx
+<DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
+```
+
+- DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
 
 ### DocumentPrintTab
 
@@ -1862,7 +1880,8 @@ Samostatné ikonové akce výběru v pevně vyhrazeném místě vlevo od šipky.
 
 **Examples:**
 
-_Vymazání výběru_
+Vymazání výběru
+
 ```tsx
 <FieldInlineActions onClear={() => setValue("")} clearLabel={texts.documentForm.clear} />
 ```
@@ -1871,6 +1890,7 @@ _Vymazání výběru_
 
 - Nevnořujte do tlačítka spouštěče.
 - Nevyhraďte místo odsazením, které zároveň posune šipku.
+
 
 ### FieldTable
 
@@ -2517,7 +2537,7 @@ _Výběr_
 import { Input } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci.
+Textový vstup. Krátký vzor zápisu hodnoty předávejte přes `formatPattern` (vykreslí se tlumeně jako placeholder); holý `placeholder` u vstupů nepoužívejte. Vysvětlení patří pod sekci (`FieldGrid.hint`).
 
 **Props:**
 
@@ -2527,7 +2547,6 @@ Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPat
 
 **Examples:**
 
-_Vzor čísla účtu_
 ```tsx
 <Input value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} />
 ```
@@ -2566,22 +2585,32 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky.
+Účetní rozpis s pružnými sloupci, editací klávesnicí a validací předávanou společnému chybovému pruhu formuláře.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `recapTotalAmount` | number | `—` |
+| `recapTotalLabel` | string | `—` |
 
 **Examples:**
 
-_Rozpis se zkrácenými účty_
+Rozpis se zkrácenými účty
+
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
-_Řádky s DPH (2.55.0)_
+Řádky s DPH (2.55.0)
+
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
 // uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
 ```
 
-_2.92.0_
+2.92.0
+
 ```tsx
 <JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
 ```
@@ -2591,6 +2620,7 @@ _2.92.0_
 - Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
 - Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
 - Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
+
 
 ### JournalLinesRecap
 
@@ -2604,7 +2634,6 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 
 | Prop | Type | Default |
 |---|---|---|
-| `headerTotal` | any | `—` |
 | `lines` | any | `—` |
 | `accounts` | any | `—` |
 | `dimensions` | any | `—` |
@@ -2621,15 +2650,18 @@ Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuál
 | `storageKey` | string | `journal-recap` |
 | `texts` | any | `—` |
 | `vatSummary` | any | `—` |
+| `headerTotal` | ReactNode | `—` |
 
 **Examples:**
 
-_Rekapitulace_
+Rekapitulace
+
 ```tsx
 <JournalLinesRecap lines={lines} accounts={accounts} storageKey="invoice-lines" />
 ```
 
-_2.92.0_
+2.92.0
+
 ```tsx
 <JournalLinesRecap {...props} headerTotal={<JournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} />} />
 ```
@@ -2638,35 +2670,6 @@ _2.92.0_
 
 - Nepočítejte rekapitulaci z filtrované podmnožiny řádků.
 
-### JournalRecapHomeTotal
-
-```ts
-import { JournalRecapHomeTotal } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `total` | number | `—` |
-| `labelTemplate` | string | `—` |
-| `rate` | number | `—` |
-| `rateAmount` | number | `1` |
-| `symbol` | string | `—` |
-
-**Examples:**
-
-_Přepočtený celek_
-```tsx
-<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />
-```
-
-**Avoid:**
-
-- Nevkládejte značku měny natvrdo.
-- Nevydávejte chybějící kurz za nulu.
 
 ### Label
 
@@ -3055,7 +3058,8 @@ Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného pop
 
 **Examples:**
 
-_Pojmenovaný výběr_
+Pojmenovaný výběr
+
 ```tsx
 <OptionSelect ariaLabel="Bankovní účet" value={value} onChange={setValue} options={options} />
 ```
@@ -3064,6 +3068,7 @@ _Pojmenovaný výběr_
 
 - Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+
 
 ### PageHeader
 
@@ -3304,7 +3309,7 @@ import { PaneTabsContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { PaneTabsProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout. Přepnutí a odhlášení volejte přes guardUnsaved(callback, "switch"/"logout"); close řeší DS.
+Stav a akce záložek v panelech, dialog neuložených změn a zkratky Alt+…; obalte jím AppShell i PaneLayout.
 
 **Props:**
 
@@ -3342,7 +3347,8 @@ Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro nav
 
 **Examples:**
 
-_Výběr hodnoty_
+Výběr hodnoty
+
 ```tsx
 <PartnerSelect value={value} onChange={setValue} options={options} />
 ```
@@ -3351,11 +3357,14 @@ _Výběr hodnoty_
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
+
 ### PaymentOrderAccountField
 
 ```ts
 import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange zakáže přepínač.
 
 **Props:**
 
@@ -3367,6 +3376,17 @@ import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 | `enabledLabel` | string | `—` |
 | `disabledLabel` | string | `—` |
 | `disabledReason` | string | `—` |
+
+**Examples:**
+
+```tsx
+<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>
+```
+
+**Avoid:**
+
+- Při vypnutí nemažte hodnotu uvnitř této komponenty.
+- Nevykreslujte druhý zámek ani důvod pod polem.
 
 ### PaymentScheduleEditor
 
@@ -3545,7 +3565,7 @@ import { RadioGroupItem } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { RateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kurz s důvodem; bez ikony běžný padding vpravo, readOnly zarovnaný jako DecimalInput.
+Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci.
 
 **Props:**
 
@@ -3561,29 +3581,32 @@ Kurz s důvodem; bez ikony běžný padding vpravo, readOnly zarovnaný jako Dec
 | `suggestedRate` | number | `—` |
 | `suggestedInfo` | string | `—` |
 | `manual` | boolean | `—` |
+| `sourceAttention` | boolean | `false` |
 | `onUseSuggested` | function | `—` |
 | `disabled` | boolean | `—` |
 | `readOnly` | boolean | `—` |
 | `note` | string | `—` |
 | `onNoteChange` | function | `—` |
-| `noteLabel` | string | `—` |
+| `noteLabel` | string | `Důvod ručního kurzu` |
 | `sourceLabel` | string | `—` |
-| `manualSourceLabel` | string | `—` |
+| `manualSourceLabel` | string | `Ruční kurz` |
 | `suggestedTooltip` | function | `—` |
-| `requiredMessage` | string | `—` |
+| `requiredMessage` | string | `Uveďte důvod ručního kurzu.` |
 | `showNote` | boolean | `true` |
 | `id` | string | `rate` |
-| `className` | string | `rate-field-hint text-xs text-muted-foreground` |
+| `className` | string | `font-mono tabular-nums` |
 | `inputClassName` | string | `—` |
 
 **Examples:**
 
-_Kurz EUR_
+Kurz EUR
+
 ```tsx
 <RateField value={rate} onChange={setRate} currency="EUR" homeCurrency="CZK" rateAmount={1} suggestedRate={24.38} suggestedInfo="ČNB 25. 9. 2026" manual={manual} />
 ```
 
-_2.92.0_
+2.92.0
+
 ```tsx
 <RateField {...rateProps} inputClassName="h-11" />
 ```
@@ -3592,6 +3615,13 @@ _2.92.0_
 
 - Nepoužívejte holý číselný input pro kurz.
 - Ruční kurz neukládejte bez důvodu.
+
+
+**2.94.0:** Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
+
+```tsx
+<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />
+```
 
 ### ReadOnlyBanner
 
@@ -3656,6 +3686,8 @@ _Karta majetku_
 
 - Nevykreslujte Uložit ani akce záznamu volně pod poli.
 - Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
+
+Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.
 
 ### RecordDialog
 
@@ -4677,7 +4709,8 @@ Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před p
 
 **Examples:**
 
-_Výběr hodnoty_
+Výběr hodnoty
+
 ```tsx
 <UnitSelect value={value} onChange={setValue} options={options} />
 ```
@@ -4685,6 +4718,7 @@ _Výběr hodnoty_
 **Avoid:**
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+
 
 ### UnknownValue
 
@@ -4698,14 +4732,11 @@ import { UnknownValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { UnsavedChangesDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.
-
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
 | `open` | boolean | `—` |
-| `action` | any | `—` |
 | `tabTitle` | string | `—` |
 | `intent` | string | `—` |
 | `saving` | boolean | `—` |
@@ -4713,13 +4744,16 @@ Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destruc
 | `onDiscard` | function | `—` |
 | `onBack` | function | `—` |
 | `onOpenInNewTab` | function | `—` |
+| `action` | "close" \| "switch" \| "logout" \| "navigate" | `navigate` |
 
 **Examples:**
 
-_2.92.0_
+2.92.0
+
 ```tsx
 <UnsavedChangesDialog {...props} action="close" />
 ```
+
 
 ### UserMenu
 
@@ -4878,3 +4912,32 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+
+### JournalRecapHomeTotal
+
+```ts
+import { JournalRecapHomeTotal } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `total` | number | `—` |
+| `rate` | number \| null | `—` |
+| `rateAmount` | number | `1` |
+| `symbol` | string | `—` |
+| `labelTemplate` | string | `—` |
+
+**Examples:**
+
+Přepočtený celek
+
+```tsx
+<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />
+```
+
+**Avoid:**
+
+- Nevkládejte značku měny natvrdo.
+- Nevydávejte chybějící kurz za nulu.

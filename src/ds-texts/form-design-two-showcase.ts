@@ -2,6 +2,10 @@
 import { useDsTexts } from "./index";
 const CS = {
   title: "Design formulářů 2",
+  received: "Přijatá faktura – Edit dokladu 11",
+  attention: "Starší zdroj kurzu",
+  settings: "Nastavení…",
+  supplier: "Dodavatel s.r.o.",
   same: "Stejný kurz DPH",
   issued: "Vydaná faktura EUR",
   different: "Odlišný kurz DPH",
@@ -19,6 +23,10 @@ const CS = {
 };
 const SK: typeof CS = {
   title: "Dizajn formulárov 2",
+  received: "Prijatá faktúra – Edit dokladu 11",
+  attention: "Starší zdroj kurzu",
+  settings: "Nastavení…",
+  supplier: "Dodávateľ s.r.o.",
   same: "Rovnaký kurz DPH",
   issued: "Vystavená faktúra EUR",
   different: "Odlišný kurz DPH",

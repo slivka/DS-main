@@ -94,10 +94,8 @@ export function useExternalNumberField({
     6,
     false,
     receivedDocument
-      ? // Vpravo jen vedle Bankovního účtu ve stejném řádku; jinak bez díry vlevo.
-        f.bankAccount
-        ? "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
-        : "@min-[40rem]:col-span-6"
+      ? // Číslo následuje Popis ve třetím řádku, nikoli bankovní účet.
+        "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
       : !f.handedOverBy
         ? "@min-[40rem]:col-start-15"
         : undefined,

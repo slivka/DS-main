@@ -50,3 +50,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
 - Keep recap header rendering and record-list navigation in focused internal modules. Why: orchestration stays readable without deleting whitespace or changing public exports.
+- Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
+- Keep identity account focus and selection in a focused internal hook. Why: DocumentForm remains below the file limit without changing public behavior.
