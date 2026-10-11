@@ -6,11 +6,7 @@ import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
-import {
-  documentFieldsForType,
-  partnerLabelForType,
-  type DocumentFields,
-} from "../document-fields";
+import { documentFieldsForType, partnerLabelForType } from "../document-fields";
 import { companyAccountControlForForm } from "./BankAccountControls";
 import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
@@ -115,7 +111,7 @@ export function DocumentForm({
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
-  const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
+  const f = { ...documentFieldsForType(documentType), ...fields };
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
   const setTab = (next: string) => {
