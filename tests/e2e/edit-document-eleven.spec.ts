@@ -197,7 +197,7 @@ test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m�
     expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
     expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
     await rate.hover();
-    await expect(page.getByRole("tooltip")).toContainText("ČNB 9. 10. 2026");
+    await expect(page.getByRole("tooltip")).toContainText("Ruční kurz");
     await update.hover();
     await expect(page.getByRole("tooltip")).toHaveCount(1);
     await expect(page.getByRole("tooltip")).toContainText("25,000");
