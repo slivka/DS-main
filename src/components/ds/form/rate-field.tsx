@@ -140,6 +140,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                       "h-[var(--control-h)]",
                       attention && "pl-9",
                       differs && "pr-9 border-destructive",
+                      attention && differs && "pl-7 text-xs",
                       inputClassName,
                     )}
                     onChange={(next) => onChange(next === "" ? null : Number(next))}
