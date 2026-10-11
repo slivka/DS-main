@@ -766,8 +766,9 @@
 
 
 ### DS 2.92.0 – opravy po kontrole 4164ecdd (nevydáno)
-- [ ] Obnovit a sladit obohacení katalogu, zachovat 426 komponent.
-- [ ] Opravit kurzové pásmo, nápovědy a mezery; změřit v prohlížeči.
-- [ ] Opravit patičku a intent dialogu, texty formuláře a přístupnost rekapitulace.
-- [ ] Smysluplně rozdělit typy, hlavičku rekapitulace a navigaci záznamů.
-- [ ] Unit, související e2e, lint a automatický typecheck/build; nevydávat.
+- [x] Obnovit a sladit obohacení katalogu, zachovat 426 komponent.
+- [x] Opravit kurzové pásmo, nápovědy a mezery; změřit v prohlížeči.
+- [x] Opravit patičku a intent dialogu, texty formuláře a přístupnost rekapitulace.
+- [x] Smysluplně rozdělit typy, hlavičku rekapitulace a navigaci záznamů.
+- [x] Unit 575/575, související e2e 6/6, lint 0 chyb (293 varování), formát OK, automatický build OK; nevydávat.
+- [ ] Samostatný výsledek automatického typechecku: kontrolní prostředí neposkytlo jeho výstup; ruční spuštění je v této relaci zakázáno.
