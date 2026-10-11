@@ -2,8 +2,9 @@
 - [x] A1 ikony menu; A2 tooltipy a stav kurzů
 - [x] A3/A4 společné zamčené účty a priorita způsobu platby
 - [x] A5 rozvržení přijatých dokladů a ukázky
-- [x] Přírůstkový katalog 426→426, CHANGELOG, unit 586/586, e2e 12/12,
-  lint 0 chyb / 293 varování a automatický build OK; nevydáno.
+- [x] Kontrola edb1cd4a: všechny čtyři katalogy mají 426→426 komponent, žádný název nezmizel; původní bloky z 546e5737 obnoveny doslova.
+- [x] Přístupný zamčený přepínač, společný důvod jen FP/ZFP, vyčištění validace, žádné dvojí tooltipy.
+- [x] Unit 589/589; související e2e 9/9 (3 Chromium, 3 Firefox, 3 WebKit; poslední WebKit po opravě čekání na zavírací animaci). Lint 0 chyb / 293 varování; formát a automatický build OK; nevydáno.
 - [ ] Samostatný výsledek automatického typechecku není dostupný;
   ruční spuštění kontrolní prostředí nepovoluje.
 
