@@ -4,6 +4,7 @@
  * Nesmí: rozhodovat o druhu dokladu ani ukládat hodnotu.
  */
 import type { ReactNode } from "react";
+import { useDsTexts } from "../../../../ds-texts";
 
 import { BankAccountField, type BankAccountOption } from "../bank-account-field";
 import { PaymentOrderAccountField } from "../payment-order-account-field";
@@ -141,26 +142,88 @@ export interface CompanyAccountControlProps {
   disabledReason?: string;
   /** Popisek. */
   label: string;
+  /** Nabídka způsobů platby; s ní účet zabírá pravých 14 sloupců. */
+  paymentMethodOptions?: Array<{ value: string; label: string }>;
+  /** Vybraný způsob platby. */
+  paymentMethodId?: string | null;
+  /** Změna způsobu platby. */
+  onPaymentMethodChange?: (id: string) => void;
+  /** Způsob platby nelze editovat. */
+  paymentMethodDisabled?: boolean;
 }
 
 /** Firemní účet FV/ZFV přes plnou šířku. */
 export function CompanyAccountControl(props: CompanyAccountControlProps): ReactNode {
+  const t = useDsTexts().documentForm;
   return (
-    <Field label={props.label} htmlFor="document-companyBankAccountId" span={20}>
-      {props.disabledReason ? (
-        <FieldValue lockedReason={props.disabledReason} />
-      ) : (
-        <OptionSelect
-          id="document-companyBankAccountId"
-          value={props.value}
-          onChange={props.onChange}
-          options={props.options.map((option) => ({
-            value: option.id,
-            label: [option.label, option.account, option.currency].join(" · "),
-          }))}
-          disabled={props.disabled}
-        />
-      )}
-    </Field>
+    <>
+      {props.paymentMethodOptions ? (
+        <Field label={t.paymentMethod} htmlFor="document-paymentMethodId" span={6}>
+          <OptionSelect
+            id="document-paymentMethodId"
+            value={props.paymentMethodId}
+            onChange={(id) => props.onPaymentMethodChange?.(id)}
+            options={props.paymentMethodOptions}
+            searchable
+            disabled={props.paymentMethodDisabled}
+          />
+        </Field>
+      ) : null}
+      <Field
+        label={props.label}
+        htmlFor="document-companyBankAccountId"
+        span={props.paymentMethodOptions ? 14 : 20}
+      >
+        {props.disabledReason ? (
+          <FieldValue
+            id="document-companyBankAccountId"
+            aria-label={props.label}
+            lockedReason={props.disabledReason}
+          />
+        ) : (
+          <OptionSelect
+            id="document-companyBankAccountId"
+            value={props.value}
+            onChange={props.onChange}
+            options={props.options.map((option) => ({
+              value: option.id,
+              label: [option.label, option.account, option.currency].join(" · "),
+            }))}
+            disabled={props.disabled}
+          />
+        )}
+      </Field>
+    </>
+  );
+}
+
+/** Sestaví horní řádek FV/ZFV ze společných údajů formuláře. */
+export function companyAccountControlForForm(
+  props: Pick<
+    import("./document-form-types").DocumentFormProps,
+    | "value"
+    | "paymentMethodOptions"
+    | "companyBankAccountOptions"
+    | "companyBankAccountDisabledReason"
+  >,
+  patch: (value: Partial<import("./document-form-types").DocumentHeaderValue>) => void,
+  can: (key: import("./document-form-types").DocumentHeaderField) => boolean,
+  label: string,
+  paymentOptions?: Array<{ value: string; label: string }>,
+): ReactNode {
+  if (!props.companyBankAccountOptions) return null;
+  return (
+    <CompanyAccountControl
+      value={props.value.companyBankAccountId}
+      onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
+      options={props.companyBankAccountOptions}
+      disabled={!can("companyBankAccountId")}
+      disabledReason={props.companyBankAccountDisabledReason}
+      label={label}
+      paymentMethodOptions={paymentOptions ?? props.paymentMethodOptions}
+      paymentMethodId={props.value.paymentMethodId}
+      onPaymentMethodChange={(paymentMethodId) => patch({ paymentMethodId })}
+      paymentMethodDisabled={!can("paymentMethodId")}
+    />
   );
 }

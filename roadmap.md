@@ -1,3 +1,12 @@
+## DS 2.92.0 – Design formulářů 2 (nevydáno)
+- [x] Kurzy vlevo, pod celkem v úzkém panelu; RateField zarovnání
+- [x] Přepočtený celek v hlavičce rekapitulace
+- [x] FV/ZFV způsob platby nahoře vedle účtu
+- [x] Čtyři varianty potvrzení odchodu, CS/SK, ochrana při chybě
+- [x] Ukázky, chování a související e2e ve třech prohlížečích
+- [x] Metadata přírůstkově, verze package 2.92.0; bez vydání
+- [x] Závěrečné kontroly: 574/574 unit, 6/6 souvisejících e2e, lint 0 chyb, formát OK; harness typecheck/build OK
+
 ## DS 2.90.0 – Design formulářů
 - [x] Pořadí účtu a čísla přijatého dokladu, lícování a Tab
 - [x] Výzva účtu bez dodavatele uvnitř pole

@@ -6,12 +6,8 @@ import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
-import {
-  documentFieldsForType,
-  partnerLabelForType,
-  type DocumentFields,
-} from "../document-fields";
-import { CompanyAccountControl } from "./BankAccountControls";
+import { documentFieldsForType, partnerLabelForType } from "../document-fields";
+import { companyAccountControlForForm } from "./BankAccountControls";
 import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
@@ -114,9 +110,8 @@ export function DocumentForm({
   className,
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
-  const homeCurrencyDocument = isHomeCurrency ?? value.currency === homeCurrency;
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
-  const f: DocumentFields = { ...documentFieldsForType(documentType), ...fields };
+  const f = { ...documentFieldsForType(documentType), ...fields };
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
   const setTab = (next: string) => {
@@ -181,7 +176,6 @@ export function DocumentForm({
     can,
     mainAccountLocked,
   });
-  const partnerLabel = texts?.partner ?? partnerLabelForType(documentType, value.direction);
   useEffect(() => {
     if (!selectedIdentityAccount) return;
     if (
@@ -222,7 +216,6 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
-  // Přepínač platebního příkazu platí jen u druhů s příznakem paymentOrders.
   const paymentOrderOn = f.paymentOrders ? paymentOrderEnabled : true;
   const externalNumberField = useExternalNumberField({
     value,
@@ -244,7 +237,7 @@ export function DocumentForm({
     counterpartyInput,
     bankAccountOptions,
     bankCodes,
-    isHomeCurrency: homeCurrencyDocument,
+    isHomeCurrency: isHomeCurrency ?? value.currency === homeCurrency,
     paymentOrdersApplicable: Boolean(f.paymentOrders),
     paymentOrderEnabled: paymentOrderOn,
     onPaymentOrderEnabledChange,
@@ -254,16 +247,19 @@ export function DocumentForm({
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
   const companyAccountField =
-    issuedBankAccountAbove && f.bankAccount && companyBankAccountOptions ? (
-      <CompanyAccountControl
-        value={value.companyBankAccountId}
-        onChange={(companyBankAccountId) => patch({ companyBankAccountId })}
-        options={companyBankAccountOptions}
-        disabled={!can("companyBankAccountId")}
-        disabledReason={companyBankAccountDisabledReason}
-        label={t.payToBankAccount}
-      />
-    ) : null;
+    issuedBankAccountAbove && f.bankAccount
+      ? companyAccountControlForForm(
+          {
+            value,
+            companyBankAccountOptions,
+            companyBankAccountDisabledReason,
+          },
+          patch,
+          can,
+          t.payToBankAccount,
+          paymentMethodOptions,
+        )
+      : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
@@ -286,6 +282,7 @@ export function DocumentForm({
     readOnly,
     f,
     lineRounding,
+    total,
     can,
     changeRounding,
     roundingLabel,
@@ -334,7 +331,6 @@ export function DocumentForm({
               data-slot="document-title-badges"
               className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
             >
-              {" "}
               <DocumentStatusBadge status={status} approved={approved} size="md" />
               {titleBadges}
             </span>
@@ -397,7 +393,10 @@ export function DocumentForm({
             accountOptions={allowedMainAccounts}
           />
           {companyAccountField ? (
-            <div data-slot="company-bank-account-above" className="grid grid-cols-20 gap-3">
+            <div
+              data-slot="company-bank-account-above"
+              className="grid grid-cols-1 gap-3 @min-[40rem]:grid-cols-20"
+            >
               {companyAccountField}
             </div>
           ) : null}
@@ -409,7 +408,7 @@ export function DocumentForm({
               patch={patch}
               partner={partner}
               partners={partners}
-              partnerLabel={partnerLabel}
+              partnerLabel={texts?.partner ?? partnerLabelForType(documentType, value.direction)}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
               linkedPartner={Boolean(value.partnerId)}
@@ -456,7 +455,7 @@ export function DocumentForm({
             issuedBankAccountAbove={issuedBankAccountAbove}
             paymentOrderEnabled={paymentOrderOn}
             constantSymbolOptions={constantSymbolOptions}
-            paymentMethodOptions={paymentMethodOptions}
+            paymentMethodOptions={companyAccountField ? undefined : paymentMethodOptions}
             companyBankAccountOptions={companyBankAccountOptions}
             bankAccountField={bankAccountField}
             field={field}

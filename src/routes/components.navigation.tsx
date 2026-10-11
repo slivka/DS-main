@@ -28,6 +28,7 @@ import {
   type NavGroup,
   type NavItem,
 } from "@/components/ds";
+import { UnsavedActionsShowcase } from "@/components/showcase/UnsavedActionsShowcase";
 import { PaneShowcase } from "@/components/showcase/PaneShowcase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -449,6 +450,7 @@ function NavigationPage() {
           </li>
         </ul>
         <PaneShowcase />
+        <UnsavedActionsShowcase />
       </ShowcaseSection>
 
       <ShowcaseSection

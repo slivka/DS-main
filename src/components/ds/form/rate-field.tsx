@@ -1,3 +1,4 @@
+import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { RefreshCw } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -33,6 +34,8 @@ export interface RateFieldProps {
   showNote?: boolean;
   id?: string;
   className?: string;
+  /** Výška a vzhled vstupu i hodnoty jen ke čtení. */
+  inputClassName?: string;
 }
 
 export function rateValuesDiffer(
@@ -61,38 +64,45 @@ export function RateField({
   readOnly,
   note = "",
   onNoteChange,
-  noteLabel = "Důvod ručního kurzu",
+  noteLabel,
   sourceLabel,
-  manualSourceLabel = "Ruční kurz",
-  suggestedTooltip = (info, rate) => `Kurz v databázi (${info}) je ${rate} – kliknutím použít`,
-  requiredMessage = "Uveďte důvod ručního kurzu.",
+  manualSourceLabel,
+  suggestedTooltip,
+  requiredMessage,
   showNote = true,
   id = "rate",
   className,
+  inputClassName,
 }: RateFieldProps) {
+  const t = useDsTexts().rateField ?? DS_TEXTS_CS.rateField;
   const unit = Number.isInteger(rateAmount)
     ? formatAmount(rateAmount, 0)
     : formatAmount(rateAmount, 3);
-  const suffix = `${homeCurrencySymbol ?? homeCurrency} za ${unit} ${currencySymbol ?? currency}`;
+  const suffix = `${homeCurrencySymbol ?? homeCurrency} ${t?.unit} ${unit} ${currencySymbol ?? currency}`;
   const differs = rateValuesDiffer(value, suggestedRate);
-  const source = manual ? manualSourceLabel : (sourceLabel ?? suggestedInfo);
+  const source = manual ? (manualSourceLabel ?? t?.manual) : (sourceLabel ?? suggestedInfo);
   const tooltip =
     suggestedRate == null
       ? ""
-      : suggestedTooltip(suggestedInfo ?? "bez data", formatAmount(suggestedRate, 3));
+      : ((suggestedTooltip ?? t?.suggested)?.(
+          suggestedInfo ?? t?.withoutDate ?? "",
+          formatAmount(suggestedRate, 3),
+        ) ?? "");
   const noteInvalid = manual && !note.trim();
 
   if (readOnly) {
     return (
       <div className={cn("space-y-1", className)}>
-        <FieldValue id={id} className="font-mono tabular-nums">
+        <FieldValue id={id} className={cn("font-sans text-right tabular-nums", inputClassName)}>
           {value == null ? "—" : formatAmount(value, 3)}
         </FieldValue>
         <p className="field-overflow-hint text-xs text-muted-foreground">
           {suffix}
           {source ? ` · ${source}` : ""}
         </p>
-        {manual && note ? <p className="text-xs text-muted-foreground">{note}</p> : null}
+        {manual && showNote && note ? (
+          <p className="text-xs text-muted-foreground">{note}</p>
+        ) : null}
       </div>
     );
   }
@@ -107,7 +117,11 @@ export function RateField({
             decimals={6}
             displayDecimals={3}
             disabled={disabled}
-            className={cn("h-[var(--control-h)] pr-9", differs && "border-destructive")}
+            className={cn(
+              "h-[var(--control-h)]",
+              differs && "pr-9 border-destructive",
+              inputClassName,
+            )}
             onChange={(next) => onChange(next === "" ? null : Number(next))}
           />
           {differs ? (
@@ -138,7 +152,7 @@ export function RateField({
         </p>
         {manual && showNote ? (
           <div className="space-y-1">
-            <Label htmlFor={`${id}-note`}>{noteLabel}</Label>
+            <Label htmlFor={`${id}-note`}>{noteLabel ?? t?.note}</Label>
             <Input
               id={`${id}-note`}
               value={note}
@@ -151,7 +165,7 @@ export function RateField({
             />
             {noteInvalid ? (
               <p role="alert" className="text-xs font-medium text-destructive">
-                {requiredMessage}
+                {requiredMessage ?? t?.required}
               </p>
             ) : null}
           </div>

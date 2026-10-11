@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { useDsTexts } from "../../../ds-texts";
+import { type UnsavedChangesAction, useDsTexts } from "../../../ds-texts";
 import { PaneTabsContext } from "./pane-context-hooks";
 import { PaneUnsavedController, type PendingUnsaved } from "./pane-unsaved-controller";
 import {
@@ -58,7 +58,6 @@ import {
   useTabDirtyVersion,
 } from "./pane-tab-store";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
-
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
   onChange: (state: PaneTabsState) => void;
@@ -73,7 +72,6 @@ export interface PaneTabsProviderProps {
   onNotice?: (message: string) => void;
   children: ReactNode;
 }
-
 /** Stav a akce záložek v panelech. Obalte jím AppShell i PaneLayout, aby navigace otevírala záložky. */
 export function PaneTabsProvider({
   state,
@@ -99,7 +97,6 @@ export function PaneTabsProvider({
   const recordNavs = useRef(new Map<string, () => RecordNavItem[]>());
   const flashTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useTabDirtyVersion();
-
   useEffect(() => {
     const tabs = state.panes.flatMap((pane) => pane.tabs);
     // Zároveň uklidí pozice rolování zavřených záložek a vypadlých kroků historie.
@@ -111,13 +108,11 @@ export function PaneTabsProvider({
   useEffect(() => {
     if (maximized !== null && maximized >= state.panes.length) setMaximized(null);
   }, [maximized, state.panes.length]);
-
   const flash = (paneId: string) => {
     clearTimeout(flashTimer.current);
     setFlashPaneId(paneId);
     flashTimer.current = setTimeout(() => setFlashPaneId(null), 700);
   };
-
   const rememberClosed = (tabIds: string[], from: PaneTabsState) => {
     let stack = closedRef.current;
     tabIds.forEach((id) => {
@@ -132,7 +127,6 @@ export function PaneTabsProvider({
     closedRef.current = stack;
     setClosedStack(stack);
   };
-
   const commit = useCallback(
     (next: PaneTabsState) => {
       stateRef.current = next;
@@ -140,9 +134,7 @@ export function PaneTabsProvider({
     },
     [onChange],
   );
-
   const titleOf = (tabId: string) => findTab(stateRef.current, tabId)?.tab.title ?? t.untitled;
-
   const doOpen = (
     route: string,
     params: Record<string, unknown> | undefined,
@@ -173,7 +165,6 @@ export function PaneTabsProvider({
     if (options.target === "adjacentPane") setMaximized(null);
     commit(result.state);
   };
-
   const openTab: PaneTabsApi["openTab"] = (route, params, options = {}) => {
     const current = stateRef.current;
     const target = options.target ?? "replace";
@@ -211,36 +202,47 @@ export function PaneTabsProvider({
     }
     doOpen(route, params, options);
   };
-
-  const guardDiscard = (tabIds: string[], intent: string, action: () => void) => {
+  const guardDiscard = (
+    tabIds: string[],
+    intent: string,
+    action: () => void,
+    actionType: UnsavedChangesAction = "navigate",
+  ) => {
     const dirty = tabIds.filter(isTabDirty);
     if (!dirty.length) {
       action();
       return;
     }
-    setPending({ tabIds: dirty, intent, proceed: action });
+    setPending({ tabIds: dirty, intent, action: actionType, proceed: action });
   };
-
   const closeTab = (tabId: string) =>
-    guardDiscard([tabId], p.intentCloseTab, () => {
-      rememberClosed([tabId], stateRef.current);
-      commit(closeTabInState(stateRef.current, tabId));
-      clearTabState(tabId);
-    });
-
+    guardDiscard(
+      [tabId],
+      p.intentCloseTab,
+      () => {
+        rememberClosed([tabId], stateRef.current);
+        commit(closeTabInState(stateRef.current, tabId));
+        clearTabState(tabId);
+      },
+      "close",
+    );
   const closeOtherTabs = (tabId: string) => {
     const ids = otherTabIds(stateRef.current, tabId);
-    guardDiscard(ids, p.intentCloseTab, () => {
-      let next = stateRef.current;
-      rememberClosed(ids, next);
-      ids.forEach((id) => {
-        next = closeTabInState(next, id);
-        clearTabState(id);
-      });
-      commit(activateTabInState(next, tabId));
-    });
+    guardDiscard(
+      ids,
+      p.intentCloseTab,
+      () => {
+        let next = stateRef.current;
+        rememberClosed(ids, next);
+        ids.forEach((id) => {
+          next = closeTabInState(next, id);
+          clearTabState(id);
+        });
+        commit(activateTabInState(next, tabId));
+      },
+      "close",
+    );
   };
-
   const closePane = (paneId: string) => {
     const pane = stateRef.current.panes.find((item) => item.id === paneId);
     if (!pane) return;
@@ -257,16 +259,15 @@ export function PaneTabsProvider({
         commit(closePaneInState(before, paneId));
         ids.forEach(clearTabState);
       },
+      "close",
     );
   };
-
   const step = (tabId: string, delta: number) =>
     guardDiscard([tabId], p.intentHistory, () => {
       const next = stepTabHistory(stateRef.current, tabId, delta);
       if (next !== stateRef.current) clearTabState(tabId);
       commit(next);
     });
-
   const lastMax = useRef<PaneLayoutCount | null>(null);
   const reportMaxLayout = (maxLayout: PaneLayoutCount) => {
     if (lastMax.current === maxLayout) return;
@@ -276,7 +277,6 @@ export function PaneTabsProvider({
     toast.info(notice === "narrowed" ? t.narrowed : t.restored);
     commit(next);
   };
-
   const openRecord: PaneTabsApi["openRecord"] = (route, params, options = {}) => {
     const current = stateRef.current;
     const raw = (options.modifiers ?? {}) as Record<string, boolean | undefined>;
@@ -325,7 +325,6 @@ export function PaneTabsProvider({
       }
     }
   };
-
   const openFromHistory = (tabId: string, index: number) => {
     const result = openFromHistoryInState(stateRef.current, tabId, index, isTabDirty);
     if (result.outcome === "rejected") return;
@@ -333,7 +332,6 @@ export function PaneTabsProvider({
     result.closedTabIds?.forEach(clearTabState);
     commit(result.state);
   };
-
   const reopenClosedTab = () => {
     const stack = closedRef.current;
     const record = stack[stack.length - 1];
@@ -348,7 +346,6 @@ export function PaneTabsProvider({
     if (result.evictedTabId) clearTabState(result.evictedTabId);
     commit(result.state);
   };
-
   const getRecordNav = (tabId: string): RecordNav | null => {
     const found = findTab(stateRef.current, tabId);
     if (!found || found.tab.kind !== "record") return null;
@@ -377,7 +374,6 @@ export function PaneTabsProvider({
     };
     return { index, total: items.length, prev: () => go(-1), next: () => go(1) };
   };
-
   const api: PaneTabsApi = {
     state,
     openRecord,
@@ -402,11 +398,12 @@ export function PaneTabsProvider({
     },
     flashPaneId,
     attentionTabIds: pending?.tabIds ?? [],
-    guardUnsaved: (action) =>
+    guardUnsaved: (action, actionType = "navigate") =>
       guardDiscard(
         stateRef.current.panes.flatMap((pane) => pane.tabs.map((tab) => tab.id)),
         p.intentLogout,
         action,
+        actionType,
       ),
     registerRecordNav: (tabId, getItems) => {
       recordNavs.current.set(tabId, getItems);
@@ -471,7 +468,6 @@ export function PaneTabsProvider({
   };
   const apiRef = useRef(api);
   apiRef.current = api;
-
   usePaneProviderEffects({
     state,
     stateRef,
@@ -480,7 +476,6 @@ export function PaneTabsProvider({
     maximized,
     restoreMaximized: () => setMaximized(null),
   });
-
   return (
     <PaneTabsContext.Provider value={api}>
       {children}

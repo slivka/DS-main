@@ -95,28 +95,28 @@ describe("neuložené změny v panelech (2.86.0)", () => {
     expect(result.hidden.map((tab) => tab.id)).toEqual(["t-0", "t-1", "t-2"]);
   });
 
-  it("Uložit a pokračovat volá obsluhu pro dotčenou záložku, ne aktivní panel", async () => {
+  it("Uložit a zavřít volá obsluhu pro dotčenou záložku, ne aktivní panel", async () => {
     const { state, dirty, other } = twoPanes();
     const onSaveTab = mock(async () => true);
     const { view, api } = mount(state, { onSaveTab });
     act(() => setTabDirty(dirty.id, true));
     act(() => api().closeTab(dirty.id));
     const dialog = view.getByRole("alertdialog");
-    expect(dialog.textContent).toContain("FP 2026/15 – neuložené změny");
-    expect(dialog.textContent).toContain("Záložka se zavře. Změny zatím nejsou uložené.");
-    fireEvent.click(view.getByRole("button", { name: "Uložit a pokračovat" }));
+    expect(dialog.textContent).toContain("Zavřít záložku s neuloženými změnami?");
+    expect(dialog.textContent).toContain("FP 2026/15 – Změny zatím nejsou uložené.");
+    fireEvent.click(view.getByRole("button", { name: "Uložit a zavřít" }));
     await waitFor(() => expect(onSaveTab).toHaveBeenCalledWith(dirty.id));
     await waitFor(() => expect(view.queryByRole("alertdialog")).toBeNull());
     expect(api().state.panes[0].tabs).toHaveLength(0);
     expect(api().state.panes[1].tabs[0].id).toBe(other.id);
   });
 
-  it("Pokračovat bez uložení zavře dotčenou záložku a nechá druhý panel", () => {
+  it("Zavřít bez uložení zavře dotčenou záložku a nechá druhý panel", () => {
     const { state, dirty, other } = twoPanes();
     const { view, api } = mount(state);
     act(() => setTabDirty(dirty.id, true));
     act(() => api().closeTab(dirty.id));
-    fireEvent.click(view.getByRole("button", { name: "Pokračovat bez uložení" }));
+    fireEvent.click(view.getByRole("button", { name: "Zavřít bez uložení" }));
     expect(api().state.panes[0].tabs).toHaveLength(0);
     expect(api().state.panes[1].tabs.map((tab) => tab.id)).toEqual([other.id]);
   });
@@ -126,7 +126,7 @@ describe("neuložené změny v panelech (2.86.0)", () => {
     const { view, api } = mount(state, { onSaveTab: async () => false });
     act(() => setTabDirty(dirty.id, true));
     act(() => api().closeTab(dirty.id));
-    fireEvent.click(view.getByRole("button", { name: "Uložit a pokračovat" }));
+    fireEvent.click(view.getByRole("button", { name: "Uložit a zavřít" }));
     await waitFor(() => expect(view.queryByRole("alertdialog")).toBeNull());
     expect(api().state.panes[0].tabs[0].id).toBe(dirty.id);
     expect(isTabDirty(dirty.id)).toBe(true);

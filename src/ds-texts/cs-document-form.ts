@@ -3,6 +3,7 @@ import type { DsTexts } from "./types";
 
 /** Úplné texty formuláře dokladu v daném jazyce. */
 export const DOCUMENT_FORM_TEXTS_CS: DsTexts["documentForm"] = {
+  totalHome: "Celkem v {symbol}",
   changeAccount: "Změnit účet",
   currencyDisabled: "Měnu nelze změnit",
   mainAccountSelect: "Hlavní účet",

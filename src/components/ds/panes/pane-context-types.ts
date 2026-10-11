@@ -3,7 +3,7 @@
  * Vlastní: datové kontrakty kontextu a výchozí texty.
  * Nesmí: obsahovat React stav ani měnit záložky.
  */
-import type { ComponentType } from "react";
+import type { UnsavedChangesAction } from "../../../ds-texts";
 import type {
   LayoutSnapshot,
   OpenRecordModifiers,
@@ -113,7 +113,7 @@ export type PaneTabsApi = {
   /** Záložky dotčené otevřeným dialogem neuložených změn (zvýrazní se). */
   attentionTabIds: string[];
   /** Spustí akci (typicky odhlášení), rozepsané záložky nejprve potvrdí dialogem. */
-  guardUnsaved: (action: () => void) => void;
+  guardUnsaved: (action: () => void, actionType?: UnsavedChangesAction) => void;
   /** Aplikace dodá pořadí záznamů pro listování ↑ ↓ v detailech otevřených ze záložky `tabId`. Vrací odregistraci. */
   registerRecordNav: (tabId: string, getOrderedItems: () => RecordNavItem[]) => () => void;
   getRecordNav: (tabId: string) => RecordNav | null;

@@ -174,3 +174,8 @@ export * from "../../lib/bank-account";
 export * from "./print/report-pdf";
 export * from "./print/print-preview-dialog";
 export * from "./print/cash-receipt-pdf";
+
+export {
+  JournalRecapHomeTotal,
+  type JournalRecapHomeTotalProps,
+} from "./accounting/journal-recap-home-total";

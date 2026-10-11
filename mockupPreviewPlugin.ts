@@ -677,7 +677,7 @@ export function mockupPreviewPlugin(options: MockupPreviewPluginOptions = {}): P
       "  isDefault: boolean;",
       "  file?: string;",
       "  props: Record<string, string | number | boolean>;",
-      "  schemaProps: Array<{ name: string; type?: string; values?: string[]; default?: string; required?: boolean }>;",
+      "  schemaProps: Array<{ name: string; type?: string; values?: string[]; default?: string; required?: boolean; description?: string }>;",
       "  variants?: Record<string, string[]>;",
       "}",
       "export const mockups: Record<string, PreviewLoader> = {",
