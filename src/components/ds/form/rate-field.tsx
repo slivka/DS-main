@@ -165,7 +165,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                 ) : null}
               </div>
             </TooltipTrigger>
-            <TooltipContent>{sourceText}</TooltipContent>
+            {sourceOpen && !updateOpen ? <TooltipContent>{sourceText}</TooltipContent> : null}
           </Tooltip>
           {!readOnly && differs ? (
             <Tooltip open={updateOpen} onOpenChange={setUpdateOpen}>
@@ -184,6 +184,8 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                     setSourceOpen(false);
                     setUpdateOpen(true);
                   }}
+                  onPointerLeave={() => setUpdateOpen(false)}
+                  onBlur={() => setUpdateOpen(false)}
                   className={cn(
                     "absolute right-1 top-1/2 size-7 -translate-y-1/2",
                     disabled ? "text-muted-foreground" : "text-destructive",
@@ -193,7 +195,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                   <RefreshCw className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{tooltip}</TooltipContent>
+              {updateOpen ? <TooltipContent>{tooltip}</TooltipContent> : null}
             </Tooltip>
           ) : null}
         </div>
