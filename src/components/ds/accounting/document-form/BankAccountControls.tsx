@@ -175,7 +175,11 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
         span={props.paymentMethodOptions ? 14 : 20}
       >
         {props.disabledReason ? (
-          <FieldValue id="document-companyBankAccountId" lockedReason={props.disabledReason} />
+          <FieldValue
+            id="document-companyBankAccountId"
+            aria-label={props.label}
+            lockedReason={props.disabledReason}
+          />
         ) : (
           <OptionSelect
             id="document-companyBankAccountId"

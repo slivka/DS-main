@@ -6,7 +6,6 @@ import { DocumentForm } from "../../src/components/ds/accounting/document-form";
 import { RateField } from "../../src/components/ds/form/rate-field";
 import { UnsavedChangesDialog } from "../../src/components/ds/panes/unsaved-changes-dialog";
 import { DS_TEXTS_CS, DS_TEXTS_SK, DsTextsProvider } from "../../src/ds-texts";
-import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { PaneUnsavedController } from "../../src/components/ds/panes/pane-unsaved-controller";
 import { isTabDirty, setTabDirty } from "../../src/components/ds/panes/pane-tab-store";
 const base = {

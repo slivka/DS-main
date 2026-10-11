@@ -25,7 +25,7 @@ export function UnsavedActionsShowcase() {
           checked={fail}
           onCheckedChange={(checked) => setFail(Boolean(checked))}
         />
-        {result ? <NoticeBar tone={fail ? "error" : "info"}>{result}</NoticeBar> : null}
+        {result ? <NoticeBar tone={fail ? "danger" : "info"}>{result}</NoticeBar> : null}
         <UnsavedChangesDialog
           open={action !== null}
           action={action ?? undefined}

@@ -401,7 +401,10 @@ export function DocumentForm({
             accountOptions={allowedMainAccounts}
           />
           {companyAccountField ? (
-            <div data-slot="company-bank-account-above" className="grid grid-cols-20 gap-3">
+            <div
+              data-slot="company-bank-account-above"
+              className="grid grid-cols-1 gap-3 @min-[40rem]:grid-cols-20"
+            >
               {companyAccountField}
             </div>
           ) : null}
@@ -416,7 +419,6 @@ export function DocumentForm({
               partnerLabel={partnerLabel}
               counterpartyIco={counterpartyIco}
               counterpartyDic={counterpartyDic}
-              linkedPartner={Boolean(value.partnerId)}
               icoWarning={icoWarning}
               icoLinkTarget={icoLinkTarget}
               can={can}
