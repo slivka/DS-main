@@ -1,5 +1,5 @@
 /** Zamčený účet · vlastní důvod uvnitř pole · nesmí kreslit zámek ani měnit hodnoty. */
-import { forwardRef } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { FieldValue, type FieldValueProps } from "../form/field-value";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
@@ -13,12 +13,25 @@ interface LockedAccountValueProps extends FieldValueProps {
 /** Důvod uvnitř jednořádkového šedého pole, přístupný i klávesnicí. */
 export const LockedAccountValue = forwardRef<HTMLDivElement, LockedAccountValueProps>(
   function LockedAccountValue({ reason, className, ...props }, ref) {
+    const elementRef = useRef<HTMLDivElement | null>(null);
+    const [truncated, setTruncated] = useState(false);
+    const measure = () => {
+      const text = elementRef.current?.firstElementChild;
+      setTruncated(Boolean(text && text.scrollWidth > text.clientWidth));
+    };
     return (
-      <Tooltip>
+      <Tooltip onOpenChange={(open) => { if (open) measure(); }}>
         <TooltipTrigger asChild>
           <FieldValue
             {...props}
-            ref={ref}
+            ref={(node) => {
+              elementRef.current = node;
+              if (typeof ref === "function") ref(node);
+              else if (ref) ref.current = node;
+            }}
+            title=""
+            onPointerEnter={measure}
+            onFocus={measure}
             tabIndex={0}
             aria-disabled="true"
             className={cn("text-muted-foreground", className)}
@@ -26,7 +39,7 @@ export const LockedAccountValue = forwardRef<HTMLDivElement, LockedAccountValueP
             {reason}
           </FieldValue>
         </TooltipTrigger>
-        <TooltipContent>{reason}</TooltipContent>
+        {truncated ? <TooltipContent>{reason}</TooltipContent> : null}
       </Tooltip>
     );
   },

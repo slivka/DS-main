@@ -3,7 +3,7 @@
  * Vlastní: vizuální stav zahrnutí a zpřístupnění obsahu pole.
  * Nesmí: měnit hodnotu účtu při vypnutí.
  */
-import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Landmark } from "lucide-react";
 
 import { Button } from "../../ui/button";
@@ -51,6 +51,7 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
       disabledReason,
     };
     const label = props.enabled ? props.enabledLabel : props.disabledLabel;
+    const descriptionId = useId();
     const action = (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -58,9 +59,10 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
             type="button"
             variant={props.enabled ? "default" : "outline"}
             size="icon"
-            aria-label={label}
+            aria-label={props.enabledLabel}
+            aria-describedby={descriptionId}
             aria-pressed={props.enabled}
-            disabled={!props.onEnabledChange}
+            aria-disabled={!props.onEnabledChange || undefined}
             onClick={() => props.onEnabledChange?.(!props.enabled)}
             className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
           >
@@ -83,6 +85,7 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
         data-enabled={props.enabled}
         className={cn("relative min-w-0", className)}
       >
+        <span id={descriptionId} className="sr-only">{label}</span>
         {props.enabled ? (
           <div className="[&_[role=combobox]]:pr-11 [&_input]:pr-11">{props.children}</div>
         ) : (

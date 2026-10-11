@@ -781,3 +781,8 @@
 - [x] Smysluplně rozdělit typy, hlavičku rekapitulace a navigaci záznamů.
 - [x] Unit 575/575, související e2e 6/6, lint 0 chyb (293 varování), formát OK, automatický build OK; nevydávat.
 - [ ] Samostatný výsledek automatického typechecku: kontrolní prostředí neposkytlo jeho výstup; ruční spuštění je v této relaci zakázáno.
+
+### DS 2.94.0 – opravy po kontrole edb1cd4a (nevydáno)
+- [ ] Obnovit doslovné katalogové texty, zdrojový manifest a ověřit všechny čtyři katalogy.
+- [ ] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
+- [ ] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.

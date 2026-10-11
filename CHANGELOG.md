@@ -5,10 +5,14 @@
 - Ikony všech položek RecordActionBar mají jednotnou velikost size-4 a shrink-0.
 - **BREAKING – změna pravidla:** RateField již nevykresluje jednotku ani zdroj pod polem; oba jsou v tooltipu pole dostupném myší, fokusem a čtečkou. Migrujte vlastní popisky pod kurzem do sourceLabel/suggestedInfo. Třída rate-field-hint je odstraněna.
 - Nový volitelný RateField.sourceAttention; DocumentHeaderValue.rateSourceAttention a vatRateSourceAttention se automaticky předávají kurzům. Ruční i upozorněný kurz má ikonu vlevo; aktualizace a chyby zůstávají.
-- **Změna chování:** zamčené účty přijatých i vydaných dokladů mají důvod uvnitř šedého pole s tooltipem, bez zámku.
+- **BREAKING:** zamčené účty přijatých i vydaných dokladů mají důvod uvnitř šedého pole s tooltipem, bez zámku. Odstraňte závislost na ikoně s aria-label důvodu; důvod je nyní text pole. Text paymentOrderDisabled se mění na „Nezahrnuje se do platebních příkazů“.
 - DocumentForm.receivedAccountDisabledReason (FP/ZFP) má přednost před příkazem i protistranou; přepínač je vypnutý a zakázaný, KS/SS skryté. Hodnoty maže jen aplikace, DS je zachová.
-- **Změna chování:** FP/ZFP/DDPOZ mají druhý řádek účet 14 + způsob platby 6 (DDPOZ bez způsobu), třetí Popis 14 + číslo 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby již není v Platebních údajích přijatých dokladů.
+- **BREAKING:** FP/ZFP/DDPOZ mají druhý řádek účet 14 + způsob platby 6 (DDPOZ bez způsobu), třetí Popis 14 + číslo 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby již není v Platebních údajích přijatých dokladů.
 - Po Update jsou nové props volitelné; aplikace dodá receivedAccountDisabledReason pro platbu bez účtu a příznaky upozornění pro starší/vlastní kurzy. Dosavadní exporty zůstávají.
+
+## 2.93.0 – Design formulářů 2 (vydáno)
+
+Obsah níže uvedeného záznamu 2.92.0 byl vydán jako v2.93.0.
 
 ## 2.92.0 – Design formulářů 2 (nevydáno)
 

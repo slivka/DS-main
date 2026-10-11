@@ -3,6 +3,7 @@
  * Vlastní: volbu tuzemského nebo zahraničního tvaru a jeho okamžitou validaci.
  * Nesmí: vybírat účet partnera ani měnit režim platebního příkazu.
  */
+import { useEffect, useRef } from "react";
 import { Input } from "../../ui/input";
 import { isValidCzAccount, isValidIban, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
@@ -115,6 +116,9 @@ export interface ReceivedBankAccountFieldProps {
 
 /** Ruční účet s validací českého účtu nebo IBAN a SWIFT. */
 export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
+  const validationCallback = useRef(props.onValidationChange);
+  validationCallback.current = props.onValidationChange;
+  useEffect(() => () => validationCallback.current?.({}), []);
   const bankCodes = props.bankCodes ?? [];
   const validationTexts = props.texts.validation;
   const errors = validateManualBankAccount(

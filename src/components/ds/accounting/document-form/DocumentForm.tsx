@@ -201,8 +201,10 @@ export function DocumentForm({
     bankAccountOptions,
     t,
   });
+  const receivedAccountReason =
+    ["FP", "ZFP"].includes(documentType.toUpperCase()) ? receivedAccountDisabledReason : undefined;
   const paymentOrderOn =
-    receivedDocument && receivedAccountDisabledReason
+    receivedAccountReason
       ? false
       : f.paymentOrders
         ? paymentOrderEnabled
@@ -233,9 +235,7 @@ export function DocumentForm({
     onPaymentOrderEnabledChange,
     onManualBankAccountValidationChange,
     onAddBankAccount,
-    receivedAccountDisabledReason: ["FP", "ZFP"].includes(documentType.toUpperCase())
-      ? receivedAccountDisabledReason
-      : undefined,
+    receivedAccountDisabledReason: receivedAccountReason,
   });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());

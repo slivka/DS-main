@@ -107,6 +107,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
         <span id={descriptionId} className="sr-only">
           {sourceText}
         </span>
+        <div className="relative min-w-0">
         <Tooltip>
           <TooltipTrigger asChild>
             <div
@@ -117,6 +118,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
               {readOnly ? (
                 <FieldValue
                   id={id}
+                  title=""
                   aria-describedby={descriptionId}
                   className={cn(
                     "font-sans text-right tabular-nums",
@@ -150,6 +152,10 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                   className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                 />
               ) : null}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{sourceText}</TooltipContent>
+        </Tooltip>
               {!readOnly && differs ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -171,10 +177,8 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                   <TooltipContent>{tooltip}</TooltipContent>
                 </Tooltip>
               ) : null}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>{sourceText}</TooltipContent>
-        </Tooltip>
+
+        </div>
         {manual && showNote && !readOnly ? (
           <div className="space-y-1">
             <Label htmlFor={`${id}-note`}>{noteLabel ?? t?.note}</Label>
