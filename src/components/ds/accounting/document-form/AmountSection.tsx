@@ -72,7 +72,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
       <div
         data-slot="document-amount-currency"
         data-section="document-amount-section"
-        className="flex max-w-full flex-wrap items-start justify-between min-w-0 gap-3"
+        className="flex min-w-0 max-w-full flex-wrap items-start justify-between gap-3"
       >
         {foreign ? (
           <div
