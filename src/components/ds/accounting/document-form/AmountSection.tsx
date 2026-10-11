@@ -77,7 +77,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
         {foreign ? (
           <div
             data-slot="document-foreign-amounts"
-            className="order-2 grid basis-full grid-cols-[9rem_9rem] items-start justify-start gap-3 @min-[48rem]:order-1 @min-[48rem]:basis-auto"
+            className="order-2 grid w-full max-w-[18.75rem] basis-full grid-cols-2 items-start justify-start gap-3 @min-[48rem]:order-1 @min-[48rem]:basis-auto"
           >
             <div className="w-[9rem] max-w-full min-w-0">
               {field(
