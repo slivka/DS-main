@@ -117,6 +117,7 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   expect(geometry.scroll).toBeGreaterThan(geometry.width);
   await expect(reason.locator("svg")).toHaveCount(0);
   await reason.focus();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
   await expect(page.getByRole("tooltip")).toContainText(
     "Hotovostní platba nepoužívá bankovní účet",
   );
