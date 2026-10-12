@@ -19,24 +19,30 @@ test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page 
       const symbol = received.locator(`#${id}`);
       await expect(symbol).toBeDisabled();
       await expect(symbol).toHaveValue("");
-      await expect.poll(async () => {
-        const reference = await date.evaluate((input) => {
-          const style = getComputedStyle(input);
-          return [style.backgroundColor, style.borderColor, style.color, style.opacity];
-        });
-        const actual = await symbol.evaluate((input) => {
-          const style = getComputedStyle(input);
-          return [style.backgroundColor, style.borderColor, style.color, style.opacity];
-        });
-        return JSON.stringify(actual) === JSON.stringify(reference);
-      }).toBe(true);
-      expect(await symbol.evaluate((input) => getComputedStyle(input).backgroundColor))
-        .not.toBe("rgba(0, 0, 0, 0)");
+      await expect
+        .poll(async () => {
+          const reference = await date.evaluate((input) => {
+            const style = getComputedStyle(input);
+            return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+          });
+          const actual = await symbol.evaluate((input) => {
+            const style = getComputedStyle(input);
+            return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+          });
+          return JSON.stringify(actual) === JSON.stringify(reference);
+        })
+        .toBe(true);
+      expect(await symbol.evaluate((input) => getComputedStyle(input).backgroundColor)).not.toBe(
+        "rgba(0, 0, 0, 0)",
+      );
     }
-    await testInfo.attach(dark ? "Zakázané symboly – tmavý režim" : "Zakázané symboly – světlý režim", {
-      body: await received.locator('[data-slot="document-payment-section"]').screenshot(),
-      contentType: "image/png",
-    });
+    await testInfo.attach(
+      dark ? "Zakázané symboly – tmavý režim" : "Zakázané symboly – světlý režim",
+      {
+        body: await received.locator('[data-slot="document-payment-section"]').screenshot(),
+        contentType: "image/png",
+      },
+    );
   }
   await received.getByRole("button", { name: "Platit příkazem", exact: true }).click();
   await expect(received.locator("#document-specificSymbol")).toHaveValue("99");
