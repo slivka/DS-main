@@ -60,7 +60,7 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
     .locator(
       'input:disabled, textarea:disabled, button:disabled, button[aria-disabled="true"], ' +
         'div.ds-disabled-control[aria-disabled="true"], [data-slot="field-value"][aria-disabled="true"], ' +
-        '[role="textbox"][aria-readonly="true"], #document-amountTotal',
+        '#document-rate, #document-amountTotal',
     )
     .all();
   controls.push(...(await page.getByTestId("disabled-selects").getByRole("combobox").all()));
