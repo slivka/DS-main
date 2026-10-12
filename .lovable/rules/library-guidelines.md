@@ -58,4 +58,8 @@ Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se 
 
 ## Edit dokladu 12g (2.97.0)
 
- zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS sdílí sans, text-sm a tabular-nums.
+Zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS sdílí sans, text-sm a tabular-nums.
+
+## Edit dokladu 12h (2.97.0)
+
+Lišty používají vyloučení zakázaných prvků přes :where, aby aktivní a hover stav měly původní přednost. Vybraná zakázaná SegmentedField zachovává primary/10 a primary. Celkem zůstává readOnly a kopírovatelné; RateField bez aria-disabled na obecném div. Zakázané varianty Button jsou šedé s tlumeným textem; vnořené spany a odznaky se plošně nepřebarvují.

@@ -497,6 +497,8 @@ import { Button } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
+Edit dokladu 12h: zakázané varianty default (primary), destructive, ghost i link mají šedý podklad muted/40 a tlumený text. Vnořené spany se plošně nepřebarvují, aby odznaky zachovaly vlastní stav.
+
 ### Calendar
 
 ```ts
@@ -1522,6 +1524,8 @@ _Platba přijatého dokladu bez účtu_
 Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody.
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
+Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu.
 
 ### DocumentPrintTab
 
@@ -3695,6 +3699,8 @@ _Upozorněný zdroj_
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
+Edit dokladu 12h: hodnota jen pro čtení nemá aria-disabled na obecném div; dostupný tooltip a trvalý popis zdroje zůstávají zachovány.
+
 ### ReadOnlyBanner
 
 ```ts
@@ -3945,6 +3951,8 @@ _Typ partnera_
 - Nepoužívejte OptionSelect pro 2–3 základní typy záznamu.
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
+Edit dokladu 12h: zakázaná vybraná volba zachovává primary/10 a primary; nevybraná používá muted/40 a muted-foreground. Vybraný stav zůstává viditelný a čitelný.
 
 ### Select
 

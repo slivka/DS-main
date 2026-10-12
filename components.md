@@ -255,6 +255,8 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 **Edit dokladu 12g (2.97.0):** zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají stejné bezpatkové písmo a velikost; součet zůstává tučný.
 
+**Edit dokladu 12h (2.97.0):** Lišty zachovávají aktivní a hover zvýraznění; zakázaná vybraná segmentová volba zůstává barevně odlišená. Celkem je readOnly a lze je označit a kopírovat; kurz zachová přístupný popis bez aria-disabled na obecném div.
+
 - Formulář nemá pravý panel; používá jednotnou mřížku 70 / 15 / 15 v sekcích Partner, Data, Účtování a částka nebo Částka a volitelně Platební údaje.
 - `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.
 - `directionBadge` stojí před identitou; bez `identity` vytvoří samostatný první řádek těla. Pruh akcí drží vlevo stav a Schváleno a vpravo akce.
