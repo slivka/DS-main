@@ -338,6 +338,8 @@ _Účet dodavatele_
 
 **Edit dokladu 12c:** Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu.
 
+Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu.
+
 ### BarBreakdownChart
 
 ```ts
@@ -1336,6 +1338,8 @@ import { DateRangeField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DecimalInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Číselné pole s oddělenými tisíci a tabulkovými číslicemi. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
 ### Dialog
 
 ```ts
@@ -1488,6 +1492,8 @@ _Platba přijatého dokladu bez účtu_
 **Edit dokladu 12b:** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.
 
 **Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů.
+
+Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody.
 
 ### DocumentPrintTab
 
@@ -2559,6 +2565,8 @@ _Vzor čísla účtu_
 
 - Nevkládejte příklad hodnoty, popisek ani popisnou nápovědu do placeholderu.
 
+Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
 ### InputOTP
 
 ```ts
@@ -3087,6 +3095,8 @@ _Pojmenovaný výběr_
 
 - Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
+
+ Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
 
 ### PageHeader
 
@@ -3941,6 +3951,8 @@ import { SelectSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { SelectTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Spouštěč základního výběru. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
 ### SelectValue
 
 ```ts
@@ -4515,6 +4527,8 @@ import { TagPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 ```ts
 import { Textarea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
 
 ### ThemeSetting
 
