@@ -10,3 +10,4 @@
 - `JournalLinesEditor` měří vnitřní šířku; po kaskádě sníží auto zoom nejvýš na 0,75 a až pak roluje.
 
 - Reuse the existing numeric input typography for document totals; derive the embedded sum control size from control-h. Why: amount controls stay aligned with other form fields at every application zoom.
+- Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.

@@ -60,4 +60,3 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
 - All disabled field controls use ds-disabled-control in the canonical theme, including locked accounts. Why: one surface and readable foreground across both themes without opacity loss.
-- Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.
