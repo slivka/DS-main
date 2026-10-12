@@ -1,3 +1,8 @@
+## DS 2.97.0 – Edit dokladu 12d (nevydáno)
+- [ ] Společný zakázaný Input: stejný podklad jako zamčený datum, bez nové barvy.
+- [ ] Ověřit KS/SS, ostatní vstupy a světlý/tmavý režim.
+- [ ] Unit, související E2E, lint; cílené katalogy a seznam změn.
+
 ## DS 2.97.0 – Edit dokladu 12c (nevydáno)
 - [x] Šipka účtu při 100/200 %, filtrování účtů a formátované hledání IBAN.
 - [x] Stabilní izomorfní měření, delší datumové popisky v úzkém panelu.

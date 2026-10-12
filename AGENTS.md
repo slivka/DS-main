@@ -59,4 +59,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Measure dates per field, including labels; shrink only overflowing fields. Key observers by format/labels. Why: preserve neighbours and avoid observers on unrelated edits.
 - Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
+- Shared Input owns the disabled surface matching DateField. Why: one appearance in both themes.
 - Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.
