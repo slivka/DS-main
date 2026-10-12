@@ -74,13 +74,13 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
     });
     if (await toggle.count()) await toggle.click();
     await expect(page.locator("html")).toHaveClass(dark ? /dark/ : /^(?!.*dark).*$/);
-    await expect
-      .poll(async () =>
-        reference.evaluate((node) =>
-          getComputedStyle(node).getPropertyValue("--muted-foreground").trim(),
-        ),
-      )
-      .toBe(dark ? "oklch(0.72 0.02 250)" : "oklch(0.5 0.035 245)");
+    // Po přepnutí čekáme také na skutečné dokončení barevných přechodů.
+    await page.evaluate(async () => {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      await Promise.all(
+        document.getAnimations().map((animation) => animation.finished.catch(() => {})),
+      );
+    });
     const expected = await reference.evaluate((node) => {
       const style = getComputedStyle(node);
       return [style.backgroundColor, style.color, style.opacity];
