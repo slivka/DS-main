@@ -6,10 +6,7 @@ from collections import Counter
 from pathlib import Path
 
 BASE = "b27379e4"
-ALLOWED = {
-    "Input", "Field", "BankAccountField", "PaymentOrderAccountField", "DocumentForm",
-    "SelectTrigger", "OptionSelect", "Textarea", "DecimalInput",
-}
+ALLOWED = {'OptionSelect', 'DocumentForm', 'ResizableCombobox', 'DimensionSelect', 'TagPicker', 'CategorySelect', 'Input', 'ChipMultiSelect', 'PartnerSelect', 'DateRangeField', 'PaymentOrderAccountField', 'SelectTrigger', 'MultiSelect', 'SegmentedField', 'BankAccountField', 'Button', 'DateField', 'Field', 'CalendarPicker', 'DecimalInput', 'CountrySelect', 'UnitSelect', 'Textarea', 'RateField', 'LegalFormField', 'BookSelect', 'VsField', 'AccountSelect', 'VatCodeSelect', 'ContactSelect'}
 
 
 def baseline(path):
@@ -49,6 +46,7 @@ new = raw_components(Path(path).read_text())
 assert old.keys() == new.keys() and len(new) == 426
 changed = sorted(name for name in old if old[name] != new[name])
 assert set(changed) <= ALLOWED, changed
+assert len(new) == len(set(new)), "Duplicitní komponenty"
 print(f"JSON: 426; změněné: {', '.join(changed)}; shodné: {426 - len(changed)}")
 for path in ["components.md", ".lovable/rules/components.md", ".lovable/rules/library-guidelines.md"]:
     old = sections(baseline(path))

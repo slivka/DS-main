@@ -19,7 +19,6 @@
     "source_type": "local",
     "source_manifest": {
       "scripts/verify-edit-document-catalogs.py": "7e3e707e861b7f9e0157cec2a63c8cc3",
-      "scripts/verify-edit-document-catalogs.py": "7e3e707e861b7f9e0157cec2a63c8cc3",
       ".lovable/rules/library-guidelines.md": "56747bc3845e8e86869717711e152953",
       "tests/e2e/document-amount-section.spec.ts": "fdcf42302a96b3108d56d14cd14fb001",
       ".lovable/rules/components.md": "1eabe43859ffb891630e5fbb18a43b3d",
@@ -1256,6 +1255,16 @@
           "type": "boolean",
           "default": "false"
         }
+      ],
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cButton {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -1268,15 +1277,16 @@
           "type": "string"
         }
       ],
-      "usage": "Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci. Zakázaný vstup sdílí podklad muted/40 se zamčeným datumem; rámeček, text a průhlednost zůstávají shodné ve světlém i tmavém režimu. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.",
+      "usage": "Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci. Zakázaný vstup sdílí podklad muted/40 se zamčeným datumem; rámeček, text a průhlednost zůstávají shodné ve světlém i tmavém režimu. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Vzor čísla účtu",
-          "code": "\u003cInput value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} />"
+          "code": "\u003cInput value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nevkládejte příklad hodnoty, popisek ani popisnou nápovědu do placeholderu."
+        "Nevkládejte příklad hodnoty, popisek ani popisnou nápovědu do placeholderu.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -2269,15 +2279,16 @@
       "name": "SelectTrigger",
       "file": "src/components/ui/select.tsx",
       "import_path": "",
-      "usage": "Spouštěč základního výběru. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.",
+      "usage": "Spouštěč základního výběru. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "\u003cSelect disabled>\u003cSelectTrigger>\u003cSelectValue />\u003c/SelectTrigger>\u003c/Select>"
+          "code": "\u003cSelect disabled\u003e\u003cSelectTrigger\u003e\u003cSelectValue /\u003e\u003c/SelectTrigger\u003e\u003c/Select\u003e"
         }
       ],
       "antipatterns": [
-        "Nenastavujte lokální barvu ani průhlednost zakázaného pole."
+        "Nenastavujte lokální barvu ani průhlednost zakázaného pole.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -2528,15 +2539,16 @@
       "name": "Textarea",
       "file": "src/components/ui/textarea.tsx",
       "import_path": "",
-      "usage": "Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.",
+      "usage": "Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "\u003cTextarea disabled value={description} aria-label={texts.description} />"
+          "code": "\u003cTextarea disabled value={description} aria-label={texts.description} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nenastavujte lokální barvu ani průhlednost zakázaného pole."
+        "Nenastavujte lokální barvu ani průhlednost zakázaného pole.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -2710,16 +2722,17 @@
           "required": true
         }
       ],
-      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + \"-label\" pro aria-labelledby zamčené skupiny.",
+      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + \"-label\" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Pole přes čtyři sloupce",
-          "code": "<FieldGrid cols={12}><Field label=\"Jméno\" span={4}><Input /></Field></FieldGrid>"
+          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Jméno\" span={4}\u003e\u003cInput /\u003e\u003c/Field\u003e\u003c/FieldGrid\u003e"
         }
       ],
       "antipatterns": [
         "Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.",
-        "Důvod zákazu není jméno pole; aria-labelledby odkazuje popisek, aria-describedby důvod."
+        "Důvod zákazu není jméno pole; aria-labelledby odkazuje popisek, aria-describedby důvod.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -5190,15 +5203,16 @@
       "name": "DecimalInput",
       "file": "src/components/ds/form/decimal-input.tsx",
       "import_path": "",
-      "usage": "Číselné pole s oddělenými tisíci a tabulkovými číslicemi. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.",
+      "usage": "Číselné pole s oddělenými tisíci a tabulkovými číslicemi. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "\u003cDecimalInput disabled value={total} onChange={setTotal} />"
+          "code": "\u003cDecimalInput disabled value={total} onChange={setTotal} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nenastavujte lokální barvu ani průhlednost zakázaného pole."
+        "Nenastavujte lokální barvu ani průhlednost zakázaného pole.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -5317,25 +5331,26 @@
           "type": "string"
         }
       ],
-      "usage": "Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci.",
+      "usage": "Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Kurz EUR",
-          "code": "<RateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} />"
+          "code": "\u003cRateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} /\u003e"
         },
         {
           "label": "2.92.0",
-          "code": "<RateField {...rateProps} inputClassName=\"h-11\" />"
+          "code": "\u003cRateField {...rateProps} inputClassName=\"h-11\" /\u003e"
         },
         {
           "label": "Upozorněný zdroj",
-          "code": "<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />"
+          "code": "\u003cRateField {...rateProps} sourceAttention sourceLabel={sourceDescription} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepoužívejte holý číselný input pro kurz.",
         "Ruční kurz neukládejte bez důvodu.",
-        "Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole."
+        "Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -5411,15 +5426,16 @@
           "default": "below"
         }
       ],
-      "usage": "Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay=\"indicator\" jej zobrazí v tooltipu ikony.",
+      "usage": "Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay=\"indicator\" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Datum s varováním v indikátoru",
-          "code": "<DateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" />"
+          "code": "\u003cDateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" /\u003e"
         }
       ],
       "antipatterns": [
-        "Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu."
+        "Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -5442,16 +5458,17 @@
       "name": "OptionSelect",
       "file": "src/components/ds/form/option-select.tsx",
       "import_path": "",
-      "usage": "Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.  Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.",
+      "usage": "Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.  Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelná větev ignoruje mezery v dotazu i hledaném zápisu (také IBAN).",
       "examples": [
         {
           "label": "Pojmenovaný výběr",
-          "code": "\u003cOptionSelect ariaLabel=\"Bankovní účet\" value={value} onChange={setValue} options={options} />"
+          "code": "\u003cOptionSelect ariaLabel=\"Bankovní účet\" value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
         "Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.",
-        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -5634,32 +5651,63 @@
           "type": "string"
         }
       ],
-      "usage": "Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami.",
+      "usage": "Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Typ partnera",
-          "code": "<SegmentedField ariaLabel=\"Typ partnera\" options={[{ value: \"company\", label: \"Firma\" }, { value: \"person\", label: \"Osoba\" }]} value={kind} onChange={setKind} />"
+          "code": "\u003cSegmentedField ariaLabel=\"Typ partnera\" options={[{ value: \"company\", label: \"Firma\" }, { value: \"person\", label: \"Osoba\" }]} value={kind} onChange={setKind} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepoužívejte GridSegmentedToggle ve formuláři.",
-        "Nepoužívejte OptionSelect pro 2–3 základní typy záznamu."
+        "Nepoužívejte OptionSelect pro 2–3 základní typy záznamu.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
       "name": "CategorySelect",
       "file": "src/components/ds/form/category-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cCategorySelect {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "MultiSelect",
       "file": "src/components/ds/form/multi-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cMultiSelect {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "ChipMultiSelect",
       "file": "src/components/ds/form/chip-multi-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cChipMultiSelect {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "ComboboxResizeHandle",
@@ -5669,12 +5717,32 @@
     {
       "name": "ResizableCombobox",
       "file": "src/components/ds/form/resizable-combobox.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cResizableCombobox {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "TagPicker",
       "file": "src/components/ds/form/TagPicker.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cTagPicker {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "LookupField",
@@ -6020,6 +6088,16 @@
           "type": "string",
           "default": "Zrušit výběr"
         }
+      ],
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cLegalFormField {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -6059,6 +6137,16 @@
           "type": "string",
           "default": "truncate"
         }
+      ],
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cCountrySelect {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -6127,12 +6215,32 @@
     {
       "name": "DateRangeField",
       "file": "src/components/ds/form/date-range-field.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cDateRangeField {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "CalendarPicker",
       "file": "src/components/ds/form/calendar-picker.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cCalendarPicker {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "MonthYearSelect",
@@ -6142,7 +6250,17 @@
     {
       "name": "ContactSelect",
       "file": "src/components/ds/form/entity-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cContactSelect {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "SuggestInput",
@@ -6709,16 +6827,17 @@
           "default": "ml-auto flex shrink-0 items-center gap-2"
         }
       ],
-      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu.",
+      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
         "Nativní select pro účty",
-        "Doplňování tečky do uloženého kódu"
+        "Doplňování tečky do uloženého kódu",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -6789,15 +6908,16 @@
       "name": "PartnerSelect",
       "file": "src/components/ds/accounting/partner-select.tsx",
       "import_path": "",
-      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři.",
+      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<PartnerSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cPartnerSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -7025,30 +7145,32 @@
           "default": "ml-auto size-4 shrink-0 opacity-50"
         }
       ],
-      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu.",
+      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Buňka Kód DPH v editoru řádků",
-          "code": "<VatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) => { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className=\"journal-cell-editor\" />"
+          "code": "\u003cVatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) =\u003e { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className=\"journal-cell-editor\" /\u003e"
         }
       ],
       "antipatterns": [
-        "Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním."
+        "Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
       "name": "DimensionSelect",
       "file": "src/components/ds/accounting/dimension-select.tsx",
       "import_path": "",
-      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.",
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<DimensionSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cDimensionSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -7133,15 +7255,16 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou.",
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<UnitSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cUnitSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nevkládejte ikonová tlačítka do tlačítka spouštěče."
+        "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -7196,21 +7319,32 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr účetní knihy ve formuláři. Jedinou aktivní knihu výchozí displayWhenSingle zobrazí jako hodnotu jen pro čtení a automaticky doplní její id.",
+      "usage": "Výběr účetní knihy ve formuláři. Jedinou aktivní knihu výchozí displayWhenSingle zobrazí jako hodnotu jen pro čtení a automaticky doplní její id. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Jediná dostupná kniha",
-          "code": "<BookSelect books={books} value={bookId} onChange={setBookId} />"
+          "code": "\u003cBookSelect books={books} value={bookId} onChange={setBookId} /\u003e"
         }
       ],
       "antipatterns": [
-        "Nevykreslujte jedinou dostupnou knihu jako zakázaný select."
+        "Nevykreslujte jedinou dostupnou knihu jako zakázaný select.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
       "name": "VsField",
       "file": "src/components/ds/accounting/vs-field.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně.",
+      "examples": [
+        {
+          "label": "Použití společného stavu",
+          "code": "\u003cVsField {...props} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ]
     },
     {
       "name": "BankAccountField",
@@ -7275,22 +7409,23 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu.",
+      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Účet dodavatele",
-          "code": "\u003cBankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />"
+          "code": "\u003cBankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} /\u003e"
         },
         {
           "label": "Účet pouze s IBAN",
-          "code": "\u003cBankAccountField value={accountId} onChange={setAccountId} selectionOnly options={[{ id: \"eur\", iban: \"CZ6508000000192000145399\" }]} />"
+          "code": "\u003cBankAccountField value={accountId} onChange={setAccountId} selectionOnly options={[{ id: \"eur\", iban: \"CZ6508000000192000145399\" }]} /\u003e"
         }
       ],
       "antipatterns": [
         "Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.",
         "Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.",
         "Neopakujte disabledReason pod polem ani v duplicitním tooltipu.",
-        "Nevynechávejte účty partnera pouze s IBAN a neskládejte zápis undefined/undefined."
+        "Nevynechávejte účty partnera pouze s IBAN a neskládejte zápis undefined/undefined.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -7371,17 +7506,18 @@
           "type": "string"
         }
       ],
-      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.",
+      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
       "examples": [
         {
           "label": "Vypnutý příkaz",
-          "code": "<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>"
+          "code": "\u003cPaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}\u003e{accountControl}\u003c/PaymentOrderAccountField\u003e"
         }
       ],
       "antipatterns": [
         "Při vypnutí nemažte hodnotu uvnitř této komponenty.",
         "Nevykreslujte druhý zámek ani důvod pod polem.",
-        "Nepřekrývejte tlačítkem příkazu šipku výběru ani jeho text."
+        "Nepřekrývejte tlačítkem příkazu šipku výběru ani jeho text.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ]
     },
     {
@@ -7513,19 +7649,19 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
-          "code": "\u003cDocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} />"
+          "code": "\u003cDocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} /\u003e"
         },
         {
           "label": "Platba přijatého dokladu bez účtu",
-          "code": "\u003cDocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} /\u003e"
         },
         {
           "label": "Nepoužitá bankovní platba",
-          "code": "\u003cDocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7534,7 +7670,8 @@
         "Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.",
         "DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.",
         "Neskrývejte KS/SS ani nemažte hodnoty v DS; prázdný zakázaný vzhled není změnou uložených dat.",
-        "Nezmenšujte datumové písmo, pokud se plné pole vejde; delší popisek nesmí měnit šířky ostatních polí."
+        "Nezmenšujte datumové písmo, pokud se plné pole vejde; delší popisek nesmí měnit šířky ostatních polí.",
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
       ],
       "props": [
         {

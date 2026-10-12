@@ -84,6 +84,8 @@ _Třída nebo skupina_
 - Nativní select pro účty
 - Doplňování tečky do uloženého kódu
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### ActiveStatusBadge
 
 ```ts
@@ -340,6 +342,8 @@ _Účet dodavatele_
 
 Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### BarBreakdownChart
 
 ```ts
@@ -406,6 +410,8 @@ _Jediná dostupná kniha_
 **Avoid:**
 
 - Nevykreslujte jedinou dostupnou knihu jako zakázaný select.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### Breadcrumb
 
@@ -489,6 +495,8 @@ import { Button } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336
 | `size` | default · sm · lg · icon | `default` |
 | `asChild` | boolean | `false` |
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### Calendar
 
 ```ts
@@ -506,6 +514,8 @@ import { CalendarDayButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 ```ts
 import { CalendarPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### Card
 
@@ -619,6 +629,8 @@ _Pokladní doklad se značkami měn_
 import { CategorySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### ChartContainer
 
 ```ts
@@ -729,6 +741,8 @@ _Role_
 ```ts
 import { ChipMultiSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### Collapsible
 
@@ -972,6 +986,8 @@ _Odstranění prostoru_
 ```ts
 import { ContactSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### ContextMenu
 
@@ -1226,6 +1242,8 @@ import { CountrySelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 | `placeholder` | string | `—` |
 | `className` | string | `truncate` |
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### CurrencyAmount
 
 ```ts
@@ -1326,11 +1344,15 @@ _Datum s varováním v indikátoru_
 
 - Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### DateRangeField
 
 ```ts
 import { DateRangeField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### DecimalInput
 
@@ -1338,7 +1360,9 @@ import { DateRangeField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 import { DecimalInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Číselné pole s oddělenými tisíci a tabulkovými číslicemi. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+Číselné pole s oddělenými tisíci a tabulkovými číslicemi. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### Dialog
 
@@ -1419,6 +1443,8 @@ _Výběr hodnoty_
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### DocumentActionBar
 
 ```ts
@@ -1493,7 +1519,9 @@ _Platba přijatého dokladu bez účtu_
 
 **Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů.
 
-Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody.
+Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### DocumentPrintTab
 
@@ -1840,6 +1868,8 @@ _Pole přes čtyři sloupce_
 - Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.
 
 **Edit dokladu 12b:** Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### FieldGrid
 
@@ -2565,7 +2595,9 @@ _Vzor čísla účtu_
 
 - Nevkládejte příklad hodnoty, popisek ani popisnou nápovědu do placeholderu.
 
-Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### InputOTP
 
@@ -2767,6 +2799,8 @@ import { LegalFormField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 | `noResultsText` | string | `Nebyla nalezena žádná právní forma.` |
 | `clearLabel` | string | `Zrušit výběr` |
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### ListError
 
 ```ts
@@ -2946,6 +2980,8 @@ import { MonthYearSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { MultiSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### NavigationMenu
 
 ```ts
@@ -3096,7 +3132,10 @@ _Pojmenovaný výběr_
 - Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
- Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Hledatelná větev ignoruje mezery v dotazu i hledaném zápisu včetně IBAN.
 
 ### PageHeader
 
@@ -3384,6 +3423,8 @@ _Výběr hodnoty_
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### PaymentOrderAccountField
 
 ```ts
@@ -3417,6 +3458,8 @@ _Vypnutý příkaz_
 - Nevykreslujte druhý zámek ani důvod pod polem.
 
 **Edit dokladu 12c:** Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### PaymentScheduleEditor
 
@@ -3650,6 +3693,8 @@ _Upozorněný zdroj_
 - Ruční kurz neukládejte bez důvodu.
 - Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### ReadOnlyBanner
 
 ```ts
@@ -3783,6 +3828,8 @@ import { RecordNotes } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { ResizableCombobox } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### ResizableHandle
 
 ```ts
@@ -3897,6 +3944,8 @@ _Typ partnera_
 - Nepoužívejte GridSegmentedToggle ve formuláři.
 - Nepoužívejte OptionSelect pro 2–3 základní typy záznamu.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### Select
 
 ```ts
@@ -3951,7 +4000,9 @@ import { SelectSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 import { SelectTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Spouštěč základního výběru. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+Spouštěč základního výběru. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### SelectValue
 
@@ -4522,13 +4573,17 @@ import { TabsTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { TagPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### Textarea
 
 ```ts
 import { Textarea } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu muted-foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny.
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### ThemeSetting
 
@@ -4747,6 +4802,8 @@ _Výběr hodnoty_
 
 - Nevkládejte ikonová tlačítka do tlačítka spouštěče.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### UnknownValue
 
 ```ts
@@ -4855,6 +4912,8 @@ _Buňka Kód DPH v editoru řádků_
 
 - Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním.
 
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
 ### VatStatusBadge
 
 ```ts
@@ -4901,6 +4960,8 @@ import { VirtualPad } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 ```ts
 import { VsField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
 ### WorkspaceCompanySwitcher
 
