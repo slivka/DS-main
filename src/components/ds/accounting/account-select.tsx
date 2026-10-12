@@ -181,9 +181,14 @@ export function AccountSelect({
             suppressFocusOpen.current = false;
             pointerDown.current = false;
           }}
-          className={cn("w-full justify-between font-normal", className)}
+          className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "w-full justify-between font-normal",
+            className,
+          )}
         >
           <span
+            data-placeholder={!value ? "" : undefined}
             className={cn(
               "truncate",
               selected ? "font-mono tabular-nums text-foreground" : "text-muted-foreground",

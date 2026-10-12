@@ -11,3 +11,7 @@
 
 - Reuse the existing numeric input typography for document totals; derive the embedded sum control size from control-h. Why: amount controls stay aligned with other form fields at every application zoom.
 - Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.
+
+- Keep identity account focus and selection in a focused internal hook. Why: DocumentForm remains below the file limit without changing public behavior.
+- Scope compact date geometry to DocumentDatesSection; wrap VAT dates separately when their pair cannot fit. Why: all dates and rings stay visible without changing filters or dialogs.
+- Measure dates per field, including labels; shrink only overflowing fields. Key observers by format/labels. Why: preserve neighbours and avoid observers on unrelated edits.

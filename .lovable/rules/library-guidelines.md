@@ -55,3 +55,7 @@ Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vy
 ## Edit dokladu 12f (2.97.0)
 
 Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Dotčené: Input, SelectTrigger, OptionSelect, Textarea, DecimalInput, interní LockedAccountValue a DocumentForm.
+
+## Edit dokladu 12g (2.97.0)
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS sdílí sans, text-sm a tabular-nums.

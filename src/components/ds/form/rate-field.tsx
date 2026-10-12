@@ -120,10 +120,11 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                 {readOnly ? (
                   <FieldValue
                     id={id}
+                    aria-disabled="true"
                     title=""
                     aria-describedby={descriptionId}
                     className={cn(
-                      "font-sans text-right tabular-nums",
+                      "ds-disabled-control aria-disabled:bg-muted/40 aria-disabled:text-muted-foreground font-sans text-right tabular-nums",
                       attention && "pl-9",
                       inputClassName,
                     )}

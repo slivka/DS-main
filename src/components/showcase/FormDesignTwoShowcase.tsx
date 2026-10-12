@@ -1,4 +1,6 @@
 /** Ukázky schválených kurzů a způsobu platby; drží pouze náhledový stav. */
+import { OptionSelect } from "../ds/form/option-select";
+import { Select, SelectTrigger, SelectValue } from "../ui/select";
 import { Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CheckboxField, DocumentForm, type DocumentHeaderValue } from "../ds";
@@ -151,6 +153,7 @@ export function FormDesignTwoShowcase() {
           status="locked"
           readOnly
           value={{ ...received, currency: "EUR", description: t.supplier }}
+          partners={[{ id: "supplier", name: t.supplier }]}
           onChange={() => {}}
           books={[]}
           accounts={[]}
@@ -162,9 +165,32 @@ export function FormDesignTwoShowcase() {
           bankAccountOptions={[{ id: "bank", iban: "CZ6508000000192000145399" }]}
           paymentMethodOptions={[{ value: "transfer", label: t.transfer }]}
           receivedAccountDisabledReason={t.locked}
-          vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} } }}
+          vat={{ visible: true, periodFiled: true, dateLink: { locked: true, onToggle: () => {} } }}
           linesEditorProps={{ recap: { open: false }, storageKey: "readonly-fields" }}
         />
+      </div>
+      <div data-testid="disabled-selects" className="flex gap-3">
+        <OptionSelect
+          id="disabled-currency-select"
+          ariaLabel={currencies[1].label}
+          value="EUR"
+          options={currencies.map((item) => ({ value: item.code, label: item.code }))}
+          disabled
+          onChange={() => {}}
+        />
+        <OptionSelect
+          id="disabled-empty-select"
+          ariaLabel={currencies[1].label}
+          value=""
+          options={[]}
+          disabled
+          onChange={() => {}}
+        />
+        <Select value="EUR" disabled>
+          <SelectTrigger id="disabled-radix-select" aria-label={currencies[1].label}>
+            <SelectValue />
+          </SelectTrigger>
+        </Select>
       </div>
     </ShowcaseSection>
   );

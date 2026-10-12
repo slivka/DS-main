@@ -7,8 +7,36 @@ from pathlib import Path
 
 BASE = "b27379e4"
 ALLOWED = {
-    "Input", "Field", "BankAccountField", "PaymentOrderAccountField", "DocumentForm",
-    "SelectTrigger", "OptionSelect", "Textarea", "DecimalInput",
+    'AccountSelect',
+    'BankAccountField',
+    'BookSelect',
+    'Button',
+    'CalendarPicker',
+    'CategorySelect',
+    'ChipMultiSelect',
+    'ContactSelect',
+    'CountrySelect',
+    'DateField',
+    'DateRangeField',
+    'DecimalInput',
+    'DimensionSelect',
+    'DocumentForm',
+    'Field',
+    'Input',
+    'LegalFormField',
+    'MultiSelect',
+    'OptionSelect',
+    'PartnerSelect',
+    'PaymentOrderAccountField',
+    'RateField',
+    'ResizableCombobox',
+    'SegmentedField',
+    'SelectTrigger',
+    'TagPicker',
+    'Textarea',
+    'UnitSelect',
+    'VatCodeSelect',
+    'VsField',
 }
 
 
@@ -43,12 +71,22 @@ def sections(text):
     return result
 
 
+def unique_keys(pairs):
+    result = {}
+    for key, value in pairs:
+        assert key not in result, f"Duplicitní JSON klíč: {key}"
+        result[key] = value
+    return result
+
+
 path = ".lovable/design-system.json"
+json.loads(Path(path).read_text(), object_pairs_hook=unique_keys)
 old = raw_components(baseline(path))
 new = raw_components(Path(path).read_text())
 assert old.keys() == new.keys() and len(new) == 426
 changed = sorted(name for name in old if old[name] != new[name])
 assert set(changed) <= ALLOWED, changed
+assert len(new) == len(set(new)), "Duplicitní komponenty"
 print(f"JSON: 426; změněné: {', '.join(changed)}; shodné: {426 - len(changed)}")
 for path in ["components.md", ".lovable/rules/components.md", ".lovable/rules/library-guidelines.md"]:
     old = sections(baseline(path))

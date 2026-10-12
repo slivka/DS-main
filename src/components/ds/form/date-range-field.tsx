@@ -94,13 +94,16 @@ export function DateRangeField({
           disabled={disabled}
           aria-label={label ?? dsTexts.date.rangeLabel}
           className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "h-9 w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
             className,
           )}
         >
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{text || placeholder || dsTexts.date.rangePlaceholder}</span>
+          <span data-placeholder={!text ? "" : undefined} className="truncate">
+            {text || placeholder || dsTexts.date.rangePlaceholder}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

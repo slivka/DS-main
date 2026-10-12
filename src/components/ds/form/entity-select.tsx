@@ -182,13 +182,17 @@ export function ContactSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "w-full justify-between font-normal",
             isBlacklisted &&
               "border-destructive text-destructive hover:border-destructive hover:bg-destructive/10 hover:text-destructive",
             className,
           )}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+          <span
+            data-placeholder={!selected ? "" : undefined}
+            className={cn("truncate", !selected && "text-muted-foreground")}
+          >
             {formatContactName(selected) ?? placeholder}
           </span>
           {selected?.active === false ? (

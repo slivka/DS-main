@@ -1,3 +1,8 @@
+## DS 2.97.0 – Edit dokladu 12g (nevydáno)
+- [x] Úplná inventura zakázaných výběrů, tlumený čitelný text a stavové rámečky.
+- [x] Sjednocené písmo částky a úplné testy formuláře ve třech prohlížečích.
+- [x] Cílené katalogy, manifest, chronologie a důkaz všech sekcí proti b27379e4.
+
 ## DS 2.97.0 – Edit dokladu 12f (nevydáno)
 - [x] Odolné účty a hledání, jednotný zakázaný vzhled s kontrastem.
 - [x] Ohraničené měření datumů a testy ve třech prohlížečích.

@@ -166,12 +166,13 @@ export function CountrySelect({
           aria-expanded={open}
           disabled={disabled}
           className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "w-full justify-between font-normal",
             !selected && "text-muted-foreground",
             className,
           )}
         >
-          <span className="truncate">
+          <span data-placeholder={!selected ? "" : undefined} className="truncate">
             {selected
               ? `${selected.name} (${selected.code})`
               : (placeholder ?? dsTexts.country.choose)}

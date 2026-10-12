@@ -64,7 +64,7 @@ export function SegmentedField<Value extends string = string>({
           tabIndex={option.value === value ? 0 : -1}
           disabled={disabled}
           className={cn(
-            "h-full min-h-0 rounded-none border-0 px-3 font-normal shadow-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100 h-full min-h-0 rounded-none border-0 px-3 font-normal shadow-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
             index > 0 && "border-l border-l-input",
             option.value === value && "bg-primary/10 font-semibold text-primary",
           )}

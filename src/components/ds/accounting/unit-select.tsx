@@ -102,6 +102,7 @@ export function UnitSelect({
             role="combobox"
             disabled={disabled}
             className={cn(
+              "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
               // Kompaktní buňka: šipka 0,875rem na 0,125rem od okraje, tužka 1,5rem těsně vlevo od ní.
               "relative h-full w-full min-w-0 justify-between rounded-sm px-1 pr-[1.25rem] font-normal",
               selected &&
@@ -112,6 +113,7 @@ export function UnitSelect({
             )}
           >
             <span
+              data-placeholder={!selected ? "" : undefined}
               className={cn(
                 "min-w-0 flex-1 truncate text-left",
                 !selected && "text-muted-foreground",
