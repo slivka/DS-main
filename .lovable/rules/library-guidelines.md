@@ -38,7 +38,3 @@ The design system's theme is delivered through the following files. The author's
 - `@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b/styles.css` (source — preferred import)
 - `@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b/dist/tokens.css` (auto-generated flat list of CSS custom properties — a raw-values fallback only; does NOT carry framework-specific wiring that the source files above provide)
 
-
-## Edit dokladu 12 (2.96.0)
-
-Datumová pole v DocumentForm používají scoped kompaktní token; filtry a dialogy beze změny. KS/SS se nikdy neskrývají: nepoužitá platba je prázdná a zakázaná s důvodem. FV/ZFV předávají companyBankAccountDisabledReason, FP/ZFP receivedAccountDisabledReason. Hodnoty spravuje aplikace.
