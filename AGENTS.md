@@ -57,3 +57,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
 - Disabled fields use ds-disabled-control plus disabled token utilities; state borders win. Why: readable muted text, one surface and consumer overrides.
+
+## Vydání knihovny
+
+- Před vydáním musí `package.json` obsahovat poslední VYDANOU verzi. Dialog Release navrhuje Minor = `package.json` + 1. Bez toho vznikne duplicitní štítek a aplikace aktualizaci neuvidí.
