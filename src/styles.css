@@ -95,6 +95,8 @@
 :root {
   /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
   --control-h: 2.25rem;
+  /* Datum dokladu: deset znaků, levý okraj, tři ikonové sloty a oba rámečky. */
+  --document-date-width: calc(10ch + 0.75rem + 5.9em + 0.125rem);
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 0.25rem;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
@@ -345,6 +347,22 @@
   text-transform: none;
   letter-spacing: 0;
   line-height: 1.45;
+}
+
+/* Kompaktní šířka jen pro doklad, ostatní DateField zůstávají beze změny.
+   Tabulkové číslice drží deset znaků data bez závislosti na jejich hodnotě. */
+.document-dates-compact [data-slot="field"] {
+  font-size: var(--text-sm);
+  width: var(--document-date-width);
+  min-width: var(--document-date-width);
+}
+.document-dates-compact input {
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+.document-dates-compact label {
+  max-width: none;
+  overflow: visible;
 }
 
 /* Jednotné velikosti nadpisů a popisků – navázané na tokeny --text-*. */

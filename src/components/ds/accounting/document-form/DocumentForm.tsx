@@ -175,7 +175,7 @@ export function DocumentForm({
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
-  const { field, date, text, suggestedText } = useDocumentFieldRenderers({
+  const { field, date, suggestedText } = useDocumentFieldRenderers({
     value,
     patch,
     can,
@@ -204,11 +204,7 @@ export function DocumentForm({
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
     : undefined;
-  const paymentOrderOn = receivedAccountReason
-    ? false
-    : f.paymentOrders
-      ? paymentOrderEnabled
-      : true;
+  const paymentOrderOn = !receivedAccountReason && (!f.paymentOrders || paymentOrderEnabled);
   const externalNumberField = useExternalNumberField({
     value,
     patch,
@@ -239,6 +235,11 @@ export function DocumentForm({
   });
   const issuedBankAccountAbove =
     issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
+  const symbolsDisabledReason = receivedDocument
+    ? (receivedAccountReason ?? (!paymentOrderOn ? t.paymentOrderDisabled : undefined))
+    : issuedBankAccountAbove
+      ? companyBankAccountDisabledReason
+      : undefined;
   const companyAccountField =
     issuedBankAccountAbove && f.bankAccount
       ? companyAccountControlForForm(
@@ -453,7 +454,7 @@ export function DocumentForm({
             issuedDocument={issuedDocument}
             receivedDocument={receivedDocument}
             issuedBankAccountAbove={issuedBankAccountAbove}
-            paymentOrderEnabled={paymentOrderOn}
+            symbolsDisabledReason={symbolsDisabledReason}
             constantSymbolOptions={constantSymbolOptions}
             paymentMethodOptions={
               companyAccountField || receivedDocument ? undefined : paymentMethodOptions
@@ -461,7 +462,6 @@ export function DocumentForm({
             companyBankAccountOptions={companyBankAccountOptions}
             bankAccountField={bankAccountField}
             field={field}
-            text={text}
           />
           <DocumentAmountSection
             t={t}

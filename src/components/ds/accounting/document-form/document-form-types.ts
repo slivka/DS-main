@@ -351,7 +351,7 @@ export interface DocumentFormProps {
   isHomeCurrency?: boolean;
   /** Hlášení chyb ručně zadaného účtu. */
   onManualBankAccountValidationChange?: (errors: ManualBankAccountErrors) => void;
-  /** Důvod zakázání firemního účtu; hodnota se v tomto stavu nezobrazuje. */
+  /** FV/ZFV: důvod zakázání firemního účtu i KS/SS; hodnoty se nezobrazují ani nemažou. */
   companyBankAccountDisabledReason?: string;
   /** Způsob platby nepoužívá přijatý účet; má přednost před příkazem a nemaže hodnoty. */
   receivedAccountDisabledReason?: string;

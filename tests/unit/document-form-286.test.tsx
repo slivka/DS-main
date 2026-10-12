@@ -178,10 +178,12 @@ describe("DocumentForm 2.86.0 – chování", () => {
     expect(view.container.textContent).not.toContain("123/0100");
   });
 
-  it("vypnutý platební příkaz skryje KS a SS, VS zůstane", () => {
+  it("vypnutý platební příkaz zachová prázdné zakázané KS a SS, VS zůstane", () => {
     const view = render(<Form paymentOrderEnabled={false} />);
-    expect(view.queryByText("Konstantní symbol")).toBeNull();
-    expect(view.queryByText("Specifický symbol")).toBeNull();
+    expect(view.getByLabelText("Konstantní symbol").hasAttribute("disabled")).toBe(true);
+    expect(view.getByLabelText("Konstantní symbol").getAttribute("value")).toBe("");
+    expect(view.getByLabelText("Specifický symbol").hasAttribute("disabled")).toBe(true);
+    expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("");
     expect(view.getAllByText("Variabilní symbol").length).toBeGreaterThan(0);
   });
 

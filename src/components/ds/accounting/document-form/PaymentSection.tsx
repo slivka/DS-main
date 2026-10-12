@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import type { DsTexts } from "../../../../ds-texts";
 import { Fragment } from "react";
 import { Input } from "../../../ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
 import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
@@ -34,7 +35,8 @@ export interface DocumentPaymentSectionProps {
   issuedDocument: boolean;
   receivedDocument: boolean;
   issuedBankAccountAbove: boolean;
-  paymentOrderEnabled: boolean;
+  /** Důvod prázdných zakázaných KS/SS; uložené hodnoty se nemění. */
+  symbolsDisabledReason?: string;
   constantSymbolOptions?: Array<{ value: string; label: string }>;
   paymentMethodOptions?: Array<{ value: string; label: string }>;
   companyBankAccountOptions?: Array<{
@@ -46,12 +48,6 @@ export interface DocumentPaymentSectionProps {
   }>;
   bankAccountField: ReactNode;
   field: FieldRenderer;
-  text: (
-    key: "constantSymbol" | "specificSymbol" | "handedOverBy",
-    label: string,
-    span?: number,
-    className?: string,
-  ) => ReactNode;
 }
 
 /** Pole Platebních údajů: stejný podíl šířky, minimum pro čitelný obsah. */
@@ -68,14 +64,26 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     issuedDocument,
     receivedDocument,
     issuedBankAccountAbove,
-    paymentOrderEnabled,
+    symbolsDisabledReason,
     constantSymbolOptions,
     paymentMethodOptions,
     companyBankAccountOptions,
     bankAccountField,
     field,
-    text,
   } = p;
+  const symbolControl = (control: ReactNode) =>
+    symbolsDisabledReason ? (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div tabIndex={0} className="min-w-0" aria-label={symbolsDisabledReason}>
+            {control}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>{symbolsDisabledReason}</TooltipContent>
+      </Tooltip>
+    ) : (
+      control
+    );
   return f.symbols || f.bankAccount || f.paymentOrders ? (
     <Fragment>
       <SectionHeading>{t.paymentSection}</SectionHeading>
@@ -100,40 +108,57 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               PAYMENT_ITEM,
             )
           : null}
-        {f.symbols && paymentOrderEnabled
+        {f.symbols
           ? field(
               "document-constantSymbol",
               t.constantSymbol,
-              constantSymbolOptions ? (
-                <OptionSelect
-                  id="document-constantSymbol"
-                  value={value.constantSymbol}
-                  onChange={(constantSymbol) => patch({ constantSymbol })}
-                  disabled={!can("constantSymbol")}
-                  options={constantSymbolOptions.map((option) => ({
-                    ...option,
-                    selectedLabel: option.value,
-                    searchText: option.label,
-                  }))}
-                  searchable
-                  selectedLabel={(option) => option.value}
-                />
-              ) : (
-                <Input
-                  id="document-constantSymbol"
-                  value={value.constantSymbol ?? ""}
-                  onChange={(event) => patch({ constantSymbol: event.target.value })}
-                  disabled={!can("constantSymbol")}
-                  className="font-mono tabular-nums"
-                />
+              symbolControl(
+                constantSymbolOptions && !symbolsDisabledReason ? (
+                  <OptionSelect
+                    id="document-constantSymbol"
+                    value={value.constantSymbol}
+                    onChange={(constantSymbol) => patch({ constantSymbol })}
+                    disabled={!can("constantSymbol")}
+                    options={constantSymbolOptions.map((option) => ({
+                      ...option,
+                      selectedLabel: option.value,
+                      searchText: option.label,
+                    }))}
+                    searchable
+                    selectedLabel={(option) => option.value}
+                  />
+                ) : (
+                  <Input
+                    id="document-constantSymbol"
+                    value={symbolsDisabledReason ? "" : (value.constantSymbol ?? "")}
+                    onChange={(event) => patch({ constantSymbol: event.target.value })}
+                    disabled={Boolean(symbolsDisabledReason) || !can("constantSymbol")}
+                    className="font-mono tabular-nums"
+                  />
+                ),
               ),
               undefined,
               undefined,
               PAYMENT_ITEM,
             )
           : null}
-        {f.symbols && paymentOrderEnabled
-          ? text("specificSymbol", t.specificSymbol, 3, PAYMENT_ITEM)
+        {f.symbols
+          ? field(
+              "document-specificSymbol",
+              t.specificSymbol,
+              symbolControl(
+                <Input
+                  id="document-specificSymbol"
+                  value={symbolsDisabledReason ? "" : (value.specificSymbol ?? "")}
+                  onChange={(event) => patch({ specificSymbol: event.target.value })}
+                  disabled={Boolean(symbolsDisabledReason) || !can("specificSymbol")}
+                  className="h-9 font-mono tabular-nums"
+                />,
+              ),
+              3,
+              false,
+              PAYMENT_ITEM,
+            )
           : null}
         {paymentMethodOptions
           ? field(

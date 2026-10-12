@@ -1,5 +1,52 @@
 # Changelog – Slivka Design System
 
+## 2.96.0 – Edit dokladu 12 (nevydáno)
+
+- Poslední vydání v2.95.0; toto kolo mění package na 2.96.0 a nic nevydává.
+- **Změna chování D1:** pět datumových polí v DocumentForm má shodnou kompaktní šířku z obsahu a tří ikonových slotů. Datum ani popisek se neořízne. DUZP + Datum DPH se zalomí pouze společně; pokud je samotná dvojice širší než panel, datumový řádek vodorovně roluje. Filtry a dialogy s DateField se nemění.
+- **BREAKING – změna chování D2:** KS/SS se již neskrývají. Při vypnutém příkazu nebo nepoužitém bankovním účtu zůstávají prázdné zakázané ovládací prvky s důvodem v tooltipu. Aplikace nesmí odvozovat použitelnost od existence pole v DOM; řiďte se způsobem platby/příkazem. DS původní hodnoty nikdy nemaže.
+- FV/ZFV používají existující volitelný companyBankAccountDisabledReason také pro KS/SS; nový prop není nutný. FP/ZFP respektují receivedAccountDisabledReason; DDPOZ jej nadále ignoruje.
+- Po Update není potřeba nový povinný prop; aplikace a DB nadále zodpovídají za případné mazání neplatných platebních symbolů.
+
+
+### Ověření 2.96.0
+
+- Unit: 597/597; lint: 0 chyb, 292 varování. Automatický typecheck a build: OK (06:00:17 UTC). Samostatné tsgo/tsc nebyly spuštěny: kontrolní prostředí ruční typecheck zakazuje.
+- E2E: Edit dokladu 12 prošel 2/2 v Chromiu, 2/2 Firefoxu a 2/2 WebKitu; původní svázané datum navíc v Chromiu 1/1. Předchozí neúspěchy čekání/hydratace a překryvu zavírací animace tooltipu byly odstraněny, testy neoslabeny.
+- DateField mimo formulář beze změny. Nejvíce ikon znamená vazbu (otevřený zámek) + kalendář + varování. Zamčená vazba podle stávajícího veřejného chování kalendář nevykresluje; toto API se nemění.
+- Šířka vstupu při 70/100/125/150/200 %: 127,61 / 176,59 / 230,75 / 274,89 / 363,19 px. Naměřená minimální rezerva textu před pravým odsazením: 2,84 / 4,20 / 7,50 / 8,80 / 11,40 px. Minimální mezera text–ikona: 15,71 / 22,31 / 30,13 / 35,95 / 47,61 px. Ve všech 20 kombinacích scrollWidth ≤ clientWidth, 5 stejných šířek, bez překryvu.
+- Popisek účetního data zůstává jednořádkový: při těchto měřeních se vejde do stejného pole. V extrémně úzkém panelu se posouvá celá datumová oblast vodorovně místo roztržení dvojice DPH.
+- Tabulka je v CSS px, nikoli rozměry v kódu. Skutečný PaneLayout: celková šířka 1 920 px, dva/tři rovné panely; samostatný úzký panel 360 px. Vnitřní datumový kontejner je menší o okraje panelu/formuláře. Před/po měřeno na stejných datech a stejném maximálním počtu ikon; před je původní CSS a původní seskupení prvních tří i DPH dat z výchozího commitu.
+
+| Zoom | Panely | Kontejner px | Řádky před → po | Od šířky pro 1 řádek px |
+|---|---|---:|---:|---:|
+| 70 % | 1 | 1863.25 | 1 → 1 | 680.05 |
+| 70 % | 2 | 896.66 | 1 → 1 | 680.05 |
+| 70 % | 3 | 576.66 | 2 → 2 | 680.05 |
+| 70 % | 360 | 303.25 | 5 → 3 | 680.05 |
+| 100 % | 1 | 1844.00 | 1 → 1 | 942.97 |
+| 100 % | 2 | 875.00 | 2 → 2 | 942.97 |
+| 100 % | 3 | 555.00 | 3 → 2 | 942.97 |
+| 100 % | 360 | 284.00 | 5 → 4 | 942.97 |
+| 125 % | 1 | 1828.00 | 1 → 1 | 1228.75 |
+| 125 % | 2 | 857.00 | 3 → 2 | 1228.75 |
+| 125 % | 3 | 537.00 | 5 → 3 | 1228.75 |
+| 125 % | 360 | 268.00 | 5 → 4 | 1228.75 |
+| 150 % | 1 | 1812.00 | 1 → 1 | 1464.45 |
+| 150 % | 2 | 839.00 | 3 → 3 | 1464.45 |
+| 150 % | 3 | 519.00 | 5 → 4 | 1464.45 |
+| 150 % | 360 | 252.00 | 5 → 4 | 1464.45 |
+| 200 % | 1 | 1780.00 | 2 → 2 | 1935.94 |
+| 200 % | 2 | 803.00 | 5 → 3 | 1935.94 |
+| 200 % | 3 | 483.00 | 5 → 4 | 1935.94 |
+| 200 % | 360 | 220.00 | 5 → 4 | 1935.94 |
+
+- Katalogy: design-system.json 426, components.md 426, rules/components.md 426, rules/library-guidelines.md 426. Nedotčených 425 záznamů JSON a všech nedotčených bloků rules/components.md je doslova shodných s výchozím 894508b16815c255fafdc7983b2eb0432a41906e. Indexy components.md a library-guidelines.md zůstávají doslova stejné. Změněn pouze DocumentForm a jeho pravidla; nic nebylo přegenerováno.
+- source_manifest: skript přepočítává MD5 pouze souborů změněných oproti výchozímu commitu. Speciální #enrichment zůstává původní: jeho algoritmus nebyl dostupný; nelze tvrdit, že tento speciální otisk je aktualizovaný.
+
+**Změněné soubory:** package.json; AGENTS.md; roadmap.md; CHANGELOG.md; .lovable/system.md; .lovable/design-system.json; components.md; .lovable/rules/components.md; .lovable/rules/library-guidelines.md; src/styles.css; src/components/ds/accounting/document-form/{DatesSection.tsx,DocumentForm.tsx,PaymentSection.tsx,document-form-types.ts}; src/components/showcase/{FormDesignTwoShowcase.tsx,DocumentDatesShowcase.tsx}; src/ds-texts/form-design-two-showcase.ts; src/routes/components.accounting-forms.tsx; tests/unit/{document-form-286.test.tsx,edit-document-eleven.test.tsx,edit-document-twelve.test.tsx}; tests/e2e/edit-document-twelve.spec.ts.
+
+
 ## 2.94.0 – Edit dokladu 11 (nevydáno)
 
 - Ikony všech položek RecordActionBar mají jednotnou velikost size-4 a shrink-0.

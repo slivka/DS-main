@@ -12,7 +12,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
 - FV/ZFV začínají polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
 - Protistrana používá řízený ikonový přepínač Vybraný/Ručně. DS při změně režimu data nemaže; při návratu k adresáři potvrzuje nahrazení ručních údajů.
-- Přijatý doklad má účet v Základních údajích pod Dodavatelem vlevo; číslo dokladu je pod IČO + DIČ vpravo. DOM a Tab pořadí: Dodavatel → IČO → DIČ → případně Předal/Převzal → účet → číslo dokladu → Popis; pod 40rem stejná posloupnost pod sebou. Přepínač platebního příkazu je uvnitř pole; vypnutí skryje KS a SS.
+- Přijatý doklad má účet v Základních údajích pod Dodavatelem vlevo; číslo dokladu je pod IČO + DIČ vpravo. DOM a Tab pořadí: Dodavatel → IČO → DIČ → případně Předal/Převzal → účet → číslo dokladu → Popis; pod 40rem stejná posloupnost pod sebou. Přepínač platebního příkazu je uvnitř pole; vypnutí ponechá KS a SS viditelné, prázdné a zakázané s důvodem v tooltipu.
 - VS je vždy zarovnaný vlevo a používá tabulkové číslice; gridy skládají sloupec přes `vsColumn()`.
 - Zaškrtávátko a přepínač vystřeďte obalem výšky prvního řádku popisku (`h-5`); nepoužívejte pevný svislý posun.
 
@@ -170,7 +170,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Identifikační řádek dokladu vykresluje výhradně `DocumentForm` přes typovaný `DocumentIdentity` ve variantách `cashBank`, `invoice` a `internal`. U pokladny a banky je pořadí Směr · Kniha · Období · účet, bez měny. Hlavní účet se nikde jinde ve formuláři nezobrazuje.
 - Sekce Částka: kurzy vlevo (Kurz a případně odlišný Kurz DPH), Celkem + Měna vpravo jako nerozdělitelná dvojice. V úzkém panelu se skupina kurzů přesune pod celkem, pořadí Tab zůstává Kurz → Kurz DPH → Celkem → Měna. Kurzy mají shodnou výšku a šířku; zdroj a jednotka jsou pouze v tooltipu pole. Celkem v domácí měně patří pouze do hlavičky rekapitulace řádků. Zamčená měna má stejný rozměr a border-input jako výběr, běžný text a tooltip důvodu.
 - Varování k datům předávejte přes `dateWarnings`; `DocumentForm` je řadí podle polí do společného pruhu upozornění a pole označí varovným stavem. Nevkládejte varování pod datumové pole.
-- FV/ZFV začínají Způsobem platby (6) vlevo a Uhradit na bankovní účet (14) vpravo. Pod 40rem jsou pod sebou; bez paymentMethodOptions zůstává účet přes celou šířku. Způsob platby není v Platebních údajích podruhé. FP/ZFP/DDPOZ mají v Základních údajích Dodavatele 14 + IČO 3 + DIČ 3, pod nimi účet 14 + Způsob platby 6 (DDPOZ bez způsobu), pod nimi Popis 14 + číslo dodavatele/daňového dokladu 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby se v Platebních údajích neopakuje. Zamčený účet má důvod uvnitř šedého pole, bez zámku; receivedAccountDisabledReason má přednost a zakáže vypnutý příkaz, KS/SS skryje, hodnoty nemaže. DDPZ účet ponechává v Platebních údajích. Ostatní sekce řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky.
+- FV/ZFV začínají Způsobem platby (6) vlevo a Uhradit na bankovní účet (14) vpravo. Pod 40rem jsou pod sebou; bez paymentMethodOptions zůstává účet přes celou šířku. Způsob platby není v Platebních údajích podruhé. FP/ZFP/DDPOZ mají v Základních údajích Dodavatele 14 + IČO 3 + DIČ 3, pod nimi účet 14 + Způsob platby 6 (DDPOZ bez způsobu), pod nimi Popis 14 + číslo dodavatele/daňového dokladu 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby se v Platebních údajích neopakuje. Zamčený účet má důvod uvnitř šedého pole, bez zámku; receivedAccountDisabledReason má přednost a zakáže vypnutý příkaz, KS/SS ponechá viditelné, prázdné a zakázané se stejným důvodem, hodnoty nemaže. DDPZ účet ponechává v Platebních údajích. Ostatní sekce řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
 - Obsah pole se nesmí useknout. Jednotka a zdroj kurzu jsou v tooltipu pole kurzu. Jednotky a pomocné vysvětlení ostatních polí patří pod pole. Pod polem kurzu je jen chyba; tooltip je dostupný myší, fokusem a aria-describedby. Ruční kurz a sourceAttention mají tlumenou ikonu vlevo.
@@ -392,7 +392,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## Editace dokladu
 
 - Identifikační řádek dokladu drží badge, texty, oddělovače, MD/DAL a číslo na společné svislé ose; měna se zobrazuje značkou.
-- Sekce Datumy je pružný řádek: minimální šířku každého data počítá `DateField` z šířky celého data a počtu právě viditelných ikon. DUZP a Datum DPH tvoří jednu skupinu, která je na širokém formuláři vpravo a po zalomení vlevo. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
+- Sekce Datumy je pružný řádek: všechna data mají shodnou kompaktní šířku z deseti tabulkových znaků, odsazení a tří ikonových slotů. Změna je omezená na `DocumentDatesSection`; jiné `DateField` zůstávají beze změny. DUZP a Datum DPH tvoří jednu skupinu, která je na širokém formuláři vpravo a po zalomení vlevo. Při nedostatku místa se přesune celé pole, nikdy jeho popisek.
 - KS a způsob platby jsou hledatelné výběry. KS po výběru ukazuje jen kód; plný text zůstává v nabídce a tooltipu.
 - Záložka Odběratel je editovatelná v režimu adresáře i ručním režimu. Jen aplikace ji může zamknout přes důvod, označit ručně změněná pole nebo nabídnout důrazné obnovení z partnera.
 - Nový doklad může použít `JournalLinesEditor.initialEmptyLine`. Řádky s `isBlank` aplikace při ukládání vynechá; chyby se na nich ukážou až po zásahu nebo s `showAllErrors`.
@@ -408,7 +408,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
-- `DocumentForm` skládá Datumy jako pružný řádek; šířku polí určuje centrálně `DateField` podle počtu viditelných ikon. DUZP a Datum DPH zůstávají společně v pravé skupině.
+- `DocumentForm` skládá Datumy jako pružný řádek; shodnou šířku polí určuje token `--document-date-width` podle celého data a maximálně tří ikon. Při užším panelu než nerozdělitelná dvojice DPH řádek vodorovně roluje, data a popisky se neoříznou. DUZP a Datum DPH zůstávají společně v pravé skupině.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
 
@@ -443,3 +443,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Nevratné akce = `DangerZone` + `ConfirmByTypingDialog` (opsání názvu, u závažných i `acknowledgement`). Chyba se ukáže v dialogu, ne toastem.
 - Upozornění „pracujete v jiném prostoru“ = `NoticeBar tone="neutral"` s textovou akcí vpravo.
 - Vlastní rám mimo AppShell / StandaloneShell volá `useAppZoomShortcuts()`, aby zoom fungoval stejně.
+
+- KS/SS se u dokladů se symboly nikdy neskrývají. Při vypnutém přijatém příkazu jsou prázdné a zakázané s `paymentOrderDisabled`; FP/ZFP dávají přednost `receivedAccountDisabledReason`, FV/ZFV používají `companyBankAccountDisabledReason`. DS uložené hodnoty nemaže.
