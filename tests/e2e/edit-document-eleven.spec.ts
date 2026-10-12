@@ -208,7 +208,7 @@ test("reálný kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m
       await expect(page.getByRole("tooltip")).toContainText("Ruční kurz");
       // Posun stránky při změně zoomu zavírá tooltipy; najetí se proto opakuje po ustálení.
       await expect(async () => {
-        await rate.hover();
+        await page.mouse.move(0, 0);
         await update.hover();
         await expect(page.getByRole("tooltip")).toHaveCount(1, { timeout: 1500 });
       }).toPass();
