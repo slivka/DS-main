@@ -1,8 +1,8 @@
 ## DS 2.97.0 – Edit dokladu 12b (nevydáno)
-- [ ] Standardní písmo, aktivní formát, delší popisky a tabulka měření.
-- [ ] Přístupná jména zamčených KS/SS a účty pouze s IBAN.
-- [ ] Cílené katalogy proti b27379e4, manifest a dokumentace.
-- [ ] Unit, Chromium/Firefox/WebKit, lint, formát; samostatný typecheck zakázán prostředím.
+- [x] Standardní písmo, aktivní formát, delší popisky a tabulka měření.
+- [x] Přístupná jména zamčených KS/SS a účty pouze s IBAN.
+- [x] Cílené katalogy proti b27379e4, manifest a dokumentace.
+- [x] Unit, Chromium/Firefox/WebKit, lint, formát; samostatný typecheck zakázán prostředím.
 
 ## DS 2.96.0 – oprava kontroly b632d10b (nevydáno)
 - [x] Obnovit katalogy proti fbeae823 a doložit nedotčené záznamy.
