@@ -4,6 +4,8 @@ import { cleanup, fireEvent, render } from "@testing-library/react";
 import { PartnerSelect } from "../../src/components/ds/accounting/partner-select";
 import { OptionSelect } from "../../src/components/ds/form/option-select";
 
+import { SegmentedField } from "../../src/components/ds/form/segmented-field";
+
 afterEach(cleanup);
 
 test("PartnerSelect zakázaný partner neotevře nabídku ani nezmění hodnotu", () => {
@@ -39,4 +41,27 @@ test("OptionSelect prázdná zakázaná hodnota zůstává odlišena od vyplněn
   );
   expect(view.getByText("Bez hodnoty").getAttribute("data-placeholder")).toBe("");
   expect(view.getByRole("combobox").hasAttribute("disabled")).toBe(true);
+});
+
+test("SegmentedField zakázaná vybraná volba zachová stav a nezmění hodnotu", () => {
+  let changes = 0;
+  const view = render(
+    <SegmentedField
+      ariaLabel="Volba"
+      options={[
+        { value: "a", label: "A" },
+        { value: "b", label: "B" },
+      ]}
+      value="a"
+      disabled
+      onChange={() => {
+        changes += 1;
+      }}
+    />,
+  );
+  const selected = view.getByRole("radio", { name: "A" });
+  expect(selected.getAttribute("aria-checked")).toBe("true");
+  expect(selected.hasAttribute("disabled")).toBe(true);
+  fireEvent.click(selected);
+  expect(changes).toBe(0);
 });

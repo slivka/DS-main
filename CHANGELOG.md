@@ -1,5 +1,75 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12h (nevydáno)
+
+- Základní pravidla lišty gridu vylučují zakázané prvky přes `:where()`, bez zvýšení
+  specificity. Aktivní filtr, hledání a kontextové období zachovávají filter-active
+  a tónovaný podklad; hover Přidat i ikonového ovladače mění barvu nebo podklad.
+- Zakázaná vybraná SegmentedField zachovává primary/10 a primary. Kontrast vybrané
+  volby je **6,33 : 1 světlý / 5,35 : 1 tmavý** ve všech třech prohlížečích.
+- Celkem zůstává při zákazu editace readOnly, nikoli disabled; jde zaměřit klávesnicí,
+  označit a kopírovat. Zachovává tučný bezpatkový řez a tlumený podklad. RateField
+  nemá aria-disabled na obecném div; tooltip a trvalý přístupný popis zůstávají.
+- Radix ukázka obsahuje SelectContent a SelectItem EUR. E2E porovnává pozadí všech
+  měřených ovládání (i bez id), rámečky s DUZP stejného formuláře, vyplněné hodnoty
+  nejsou kurzívou. Datum DPH zachovává varovný rámeček. Zakázaná pole mají kontrast
+  **5,75 : 1 světlý / 6,30 : 1 tmavý**, samostatné výběry **5,75 / 7,23 : 1**.
+- Odstraněny mrtvé disabled utility na Plus a zamčeném div a duplicitní utility Input.
+  Button má zakázané varianty šedé s tlumeným textem; plošné přebarvení vnořených
+  spanů odstraněno, aby nerušilo odznaky. Duplicitní úvod 12g opraven.
+- Starší unit kontrola zdrojového textu rámečku nahrazena výpočtem skutečného stavu;
+  computed rámečky a hover kontroluje prohlížečový test. Žádné nové API ani vydání.
+- Unit **616/616**, 59 souborů, 1 939 assertions. Lint **0 chyb / 293 varování**.
+  Samostatný typecheck a ruční build nebyly spuštěny (prostředí je zakazuje);
+  automatický build OK. Finální ověření všech 30 souvisejících scénářů prošlo (Chromium 10, Firefox 10,
+  WebKit 10). Běhy byly rozdělené; úplné zakázané ovládání 6/6, vybrané segmenty
+  s kontrastem 3/3, aktivní/hover lišty 3/3, datumy 15/15 a částka 3/3.
+  První společný běh překročil limit 600 s; souběžné běhy původně kolidovaly ve
+  složce stop a krátké čekání na připravenou ukázku selhalo. Po izolaci výstupů
+  a úpravě čekání finální běhy výše prošly. Formát src/tests OK.
+- Gridová ukázka pro měření izoluje první existující grid od dalších smrštěných ukázek
+  a poskytne mu dostatečnou šířku pro plnou lištu; nemění třídy ani stavové barvy.
+  Aktivní hledání a období vznikají skutečnou interakcí; režim mění skutečný přepínač.
+- Zdrojově dotčené veřejné komponenty tohoto kola: **Button, Input, SegmentedField,
+  RateField, DocumentForm, TagPicker, ChipMultiSelect**; interní LockedAccountValue.
+  Sdílené CSS obnovuje vzhled GridToolbar/GridSearch/GridFilterToggle/GroupControl/
+  GridPeriodFilter/GridContextBar a jejich ikonových akcí, beze změny veřejného API.
+- Katalogy **426/426/426/426**; kumulativní rozdíl proti b27379e4 je 30 komponent,
+  **396 ostatních JSON objektů bajtově shodných**. Ověřují se všechny sekce ##/###,
+  včetně DocumentActionBar. Níže je přesný výstup kontrolního skriptu:
+
+```text
+JSON: 426; změněné: AccountSelect, BankAccountField, BookSelect, Button, CalendarPicker, CategorySelect, ChipMultiSelect, ContactSelect, CountrySelect, DateField, DateRangeField, DecimalInput, DimensionSelect, DocumentForm, Field, Input, LegalFormField, MultiSelect, OptionSelect, PartnerSelect, PaymentOrderAccountField, RateField, ResizableCombobox, SegmentedField, SelectTrigger, TagPicker, Textarea, UnitSelect, VatCodeSelect, VsField; shodné: 396
+components.md: 426; všech sekcí: 37; změněné: ['### DocumentForm 2.31.0 [1]']; nové: []
+.lovable/rules/components.md: 426; všech sekcí: 426; změněné: ['### AccountSelect [1]', '### BankAccountField [1]', '### BookSelect [1]', '### Button [1]', '### CalendarPicker [1]', '### CategorySelect [1]', '### ChipMultiSelect [1]', '### ContactSelect [1]', '### CountrySelect [1]', '### DateField [1]', '### DateRangeField [1]', '### DecimalInput [1]', '### DimensionSelect [1]', '### DocumentForm [1]', '### Field [1]', '### Input [1]', '### LegalFormField [1]', '### MultiSelect [1]', '### OptionSelect [1]', '### PartnerSelect [1]', '### PaymentOrderAccountField [1]', '### RateField [1]', '### ResizableCombobox [1]', '### SegmentedField [1]', '### SelectTrigger [1]', '### TagPicker [1]', '### Textarea [1]', '### UnitSelect [1]', '### VatCodeSelect [1]', '### VsField [1]']; nové: []
+.lovable/rules/library-guidelines.md: 426; všech sekcí: 10; změněné: ['## Edit dokladu 12 (2.96.0) [1]']; nové: ['## Edit dokladu 12b (2.97.0) [1]', '## Edit dokladu 12c (2.97.0) [1]', '## Edit dokladu 12f (2.97.0) [1]', '## Edit dokladu 12g (2.97.0) [1]', '## Edit dokladu 12h (2.97.0) [1]']
+DocumentActionBar i všechny neuvedené sekce a JSON objekty jsou bajtově shodné; #enrichment zachován.
+```
+
+- Soubory změněné v tomto kole proti 27cb7569:
+
+- `.lovable/design-system.json`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+- `CHANGELOG.md`
+- `components.md`
+- `roadmap.md`
+- `scripts/verify-edit-document-catalogs.py`
+- `src/components/ds/accounting/document-form/AmountSection.tsx`
+- `src/components/ds/accounting/locked-account-value.tsx`
+- `src/components/ds/form/TagPicker.tsx`
+- `src/components/ds/form/chip-multi-select.tsx`
+- `src/components/ds/form/rate-field.tsx`
+- `src/components/ds/form/segmented-field.tsx`
+- `src/components/showcase/FormDesignTwoShowcase.tsx`
+- `src/components/ui/button.tsx`
+- `src/components/ui/input.tsx`
+- `src/styles.css`
+- `tests/e2e/document-disabled-inputs.spec.ts`
+- `tests/e2e/grid-control-styles.spec.ts`
+- `tests/unit/disabled-controls.test.tsx`
+- `tests/unit/grid-toolbar-2211.test.ts`
+
 ## 2.97.0 – Edit dokladu 12g (nevydáno)
 
 - Úplná inventura spouštěčů: PartnerSelect, AccountSelect, VatCodeSelect, DimensionSelect,

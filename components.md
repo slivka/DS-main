@@ -253,7 +253,9 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 **Edit dokladu 12f (2.97.0):** Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Dotčené komponenty: Input, SelectTrigger, OptionSelect (obě větve), Textarea, DecimalInput a interní LockedAccountValue. Bankovní účty filtrují neřetězcové části a hledají IBAN bez ohledu na mezery.
 
-**Edit dokladu 12g (2.97.0):** Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají stejné bezpatkové písmo a velikost; součet zůstává tučný.
+**Edit dokladu 12g (2.97.0):** zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají stejné bezpatkové písmo a velikost; součet zůstává tučný.
+
+**Edit dokladu 12h (2.97.0):** Lišty zachovávají aktivní a hover zvýraznění; zakázaná vybraná segmentová volba zůstává barevně odlišená. Celkem je readOnly a lze je označit a kopírovat; kurz zachová přístupný popis bez aria-disabled na obecném div.
 
 - Formulář nemá pravý panel; používá jednotnou mřížku 70 / 15 / 15 v sekcích Partner, Data, Účtování a částka nebo Částka a volitelně Platební údaje.
 - `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.

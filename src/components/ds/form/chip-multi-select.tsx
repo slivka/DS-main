@@ -67,7 +67,7 @@ export function ChipMultiSelect({
       <Popover>
         <PopoverTrigger asChild>
           <Button type="button" variant="outline" size="sm">
-            <Plus className="ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100 size-3.5" />
+            <Plus className="size-3.5" />
             {addLabel}
           </Button>
         </PopoverTrigger>

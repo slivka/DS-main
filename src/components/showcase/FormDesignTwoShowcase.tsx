@@ -1,6 +1,7 @@
 /** Ukázky schválených kurzů a způsobu platby; drží pouze náhledový stav. */
+import { SegmentedField } from "../ds/form/segmented-field";
 import { OptionSelect } from "../ds/form/option-select";
-import { Select, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CheckboxField, DocumentForm, type DocumentHeaderValue } from "../ds";
@@ -169,7 +170,18 @@ export function FormDesignTwoShowcase() {
           linesEditorProps={{ recap: { open: false }, storageKey: "readonly-fields" }}
         />
       </div>
-      <div data-testid="disabled-selects" className="flex gap-3">
+      <div data-testid="disabled-selects" className="flex flex-wrap gap-3">
+        <SegmentedField
+          data-testid="disabled-segments"
+          ariaLabel={t.transfer}
+          options={[
+            { value: "transfer", label: t.transfer },
+            { value: "cash", label: t.cash },
+          ]}
+          value="transfer"
+          disabled
+          onChange={() => {}}
+        />
         <OptionSelect
           id="disabled-currency-select"
           ariaLabel={currencies[1].label}
@@ -190,6 +202,9 @@ export function FormDesignTwoShowcase() {
           <SelectTrigger id="disabled-radix-select" aria-label={currencies[1].label}>
             <SelectValue />
           </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="EUR">{currencies[1].code}</SelectItem>
+          </SelectContent>
         </Select>
       </div>
     </ShowcaseSection>

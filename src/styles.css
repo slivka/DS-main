@@ -530,7 +530,7 @@
   line-height: 1.2;
 }
 
-.grid-context-row .grid-toolbar-control:not(:disabled):not([aria-disabled="true"]) {
+.grid-context-row .grid-toolbar-control:where(:not(:disabled):not([aria-disabled="true"])) {
   border-color: var(--grid-chrome-border);
   background-color: var(--card);
   color: var(--foreground);
@@ -573,13 +573,16 @@
   border-color: var(--grid-chrome-border);
 }
 
-.grid-toolbar-row :is(.grid-toolbar-control, .grid-toolbar-icon-control, .zoom-controls) {
+.grid-toolbar-row
+  :is(.grid-toolbar-control, .grid-toolbar-icon-control, .zoom-controls):where(
+    :not(:disabled):not([aria-disabled="true"])
+  ) {
   border-color: var(--border);
   border-width: 1px;
   border-style: solid;
 }
 
-.grid-toolbar-row .grid-toolbar-control:not(:disabled):not([aria-disabled="true"]) {
+.grid-toolbar-row .grid-toolbar-control:where(:not(:disabled):not([aria-disabled="true"])) {
   background-color: var(--card);
   color: var(--foreground);
 }
@@ -614,8 +617,8 @@
 }
 
 /* Primární tlačítko v lište gridu (přidání záznamu) – modré so světlým textom. */
-.zoom-filters .grid-toolbar-primary:not(:disabled):not([aria-disabled="true"]),
-.grid-toolbar-row .grid-toolbar-primary:not(:disabled):not([aria-disabled="true"]) {
+.zoom-filters .grid-toolbar-primary:where(:not(:disabled):not([aria-disabled="true"])),
+.grid-toolbar-row .grid-toolbar-primary:where(:not(:disabled):not([aria-disabled="true"])) {
   background-color: var(--grid-steel);
   border-color: var(--grid-steel);
   color: var(--grid-frost);

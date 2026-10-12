@@ -105,7 +105,10 @@ for path in ["components.md", ".lovable/rules/components.md", ".lovable/rules/li
         count = sum(key.startswith("### ") for key in new)
     else:
         assert set(modified) <= {"## Edit dokladu 12 (2.96.0) [1]"}
-        assert all(key.startswith("## Edit dokladu 12") for key in added)
+        assert set(added) <= {
+            f"## Edit dokladu 12{round_name} (2.97.0) [1]"
+            for round_name in ["b", "c", "f", "g", "h"]
+        }
         count = len(re.findall(r"`([A-Z][A-Za-z0-9]+)`", new["## Components [1]"].decode()))
     assert count == 426, (path, count)
     print(f"{path}: {count}; všech sekcí: {len(new)-1}; změněné: {modified}; nové: {added}")
