@@ -64,10 +64,12 @@ test("aktivní lišta a hover zachovají barvy v obou režimech", async ({ page 
       await page.waitForTimeout(250);
       const before = await colors(control);
       await control.hover();
-      await expect.poll(async () => {
-        const after = await colors(control);
-        return after.background !== before.background || after.color !== before.color;
-      }).toBe(true);
+      await expect
+        .poll(async () => {
+          const after = await colors(control);
+          return after.background !== before.background || after.color !== before.color;
+        })
+        .toBe(true);
     }
     await info.attach(dark ? "Tmavá lišta" : "Světlá lišta", {
       body: await toolbar.screenshot(),

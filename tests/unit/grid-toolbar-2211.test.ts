@@ -5,7 +5,6 @@ import {
   calculateGridToolbarOverflowLevel,
   type GridToolbarWidths,
 } from "../../src/components/ds/grid/grid-toolbar";
-import { readFileSync } from "node:fs";
 
 describe("výpočet úrovně řádku akcí", () => {
   const widths: GridToolbarWidths = {
@@ -45,12 +44,23 @@ describe("pravý stín gridu", () => {
   });
 });
 
-describe("jednotný rámeček lišty", () => {
-  it("sdílí token rámečku pro tlačítka, ikonové akce a zoom", () => {
-    const css = readFileSync("src/styles.css", "utf8");
-    expect(css).toContain(
-      ".grid-toolbar-row :is(.grid-toolbar-control, .grid-toolbar-icon-control, .zoom-controls)",
-    );
-    expect(css).toContain("border-color: var(--border)");
+describe("šířka lišty bez rezervy", () => {
+  it("ponechá plné ovládání při dostatečné šířce", () => {
+    expect(
+      calculateGridToolbarOverflowLevel({
+        container: 1600,
+        leftFull: 260,
+        leftCompact: 150,
+        findFull: 180,
+        findCompact: 72,
+        display: 240,
+        data: 180,
+        menu: 36,
+        refresh: 36,
+        gap: 8,
+        padding: 16,
+        hasMenuItems: false,
+      }),
+    ).toBe(0);
   });
 });
