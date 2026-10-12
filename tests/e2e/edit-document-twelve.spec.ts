@@ -139,7 +139,6 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
         if (used + 2 * result.gap + pairOuterWidth > result.container + 1) expectedRows++;
         if (pairWidth > result.container + 1) expectedRows++;
         else expect(result.values[3]?.y).toBe(result.values[4]?.y);
-        if (result.rows !== expectedRows) console.log("ROWS", JSON.stringify({ zoom, count, expectedRows, result }));
         expect(result.rows).toBe(expectedRows);
         results.push({ language, zoom, panels: count || "360", expectedRows, ...result });
       }
@@ -281,15 +280,25 @@ test("formáty a delší popisky rozšíří pouze vlastní pole", async ({ page
         if (next && next.y === field.y) expect(field.labelRight).toBeLessThanOrEqual(next.x);
       }
       const pairWidth = (expanded[3]?.width ?? 0) + (expanded[4]?.width ?? 0) + 12;
-      const overhead = await root.evaluate((el) => el.getBoundingClientRect().width - (el.querySelector('[data-slot="document-dates"]')?.getBoundingClientRect().width ?? 0));
-      await root.evaluate((el, width) => {
-        el.style.width = `${width}px`;
-      }, pairWidth + 2 + overhead);
+      const overhead = await root.evaluate(
+        (el) =>
+          el.getBoundingClientRect().width -
+          (el.querySelector('[data-slot="document-dates"]')?.getBoundingClientRect().width ?? 0),
+      );
+      await root.evaluate(
+        (el, width) => {
+          el.style.width = `${width}px`;
+        },
+        pairWidth + 2 + overhead,
+      );
       const fits = await measure();
       expect(fits[3]?.y).toBe(fits[4]?.y);
-      await root.evaluate((el, width) => {
-        el.style.width = `${width}px`;
-      }, pairWidth - 2 + overhead);
+      await root.evaluate(
+        (el, width) => {
+          el.style.width = `${width}px`;
+        },
+        pairWidth - 2 + overhead,
+      );
       const wraps = await measure();
       expect(wraps[3]?.y).not.toBe(wraps[4]?.y);
       await button.click();

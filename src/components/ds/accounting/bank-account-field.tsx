@@ -22,8 +22,11 @@ export interface BankAccountOptionBase {
   bankCode?: string;
   /** Mezinárodní číslo účtu, s mezerami nebo bez nich. */
   iban?: string;
+  /** Název účtu v nabídce. */
   label?: string;
+  /** Značka měny z dat. */
   currency?: string;
+  /** Výchozí účet partnera; hodnotu stále řídí aplikace. */
   default?: boolean;
   /** Neplatný účet se nenabízí; pokud je vybraný, zůstane viditelný. */
   invalid?: boolean;
