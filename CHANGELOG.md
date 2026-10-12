@@ -21,7 +21,12 @@
   computed rámečky a hover kontroluje prohlížečový test. Žádné nové API ani vydání.
 - Unit **616/616**, 59 souborů, 1 939 assertions. Lint **0 chyb / 293 varování**.
   Samostatný typecheck a ruční build nebyly spuštěny (prostředí je zakazuje);
-  automatický build OK. Konečné E2E výsledky jsou doplněny po dokončení všech běhů.
+  automatický build OK. Finální ověření všech 30 souvisejících scénářů prošlo (Chromium 10, Firefox 10,
+  WebKit 10). Běhy byly rozdělené; úplné zakázané ovládání 6/6, vybrané segmenty
+  s kontrastem 3/3, aktivní/hover lišty 3/3, datumy 15/15 a částka 3/3.
+  První společný běh překročil limit 600 s; souběžné běhy původně kolidovaly ve
+  složce stop a krátké čekání na připravenou ukázku selhalo. Po izolaci výstupů
+  a úpravě čekání finální běhy výše prošly. Formát src/tests OK.
 - Gridová ukázka pro měření izoluje první existující grid od dalších smrštěných ukázek
   a poskytne mu dostatečnou šířku pro plnou lištu; nemění třídy ani stavové barvy.
   Aktivní hledání a období vznikají skutečnou interakcí; režim mění skutečný přepínač.
