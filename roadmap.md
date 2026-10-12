@@ -1,3 +1,9 @@
+## DS 2.97.0 – Edit dokladu 12d (nevydáno)
+- [x] Společný zakázaný Input: stejný podklad jako zamčený datum, bez nové barvy.
+- [x] Ověřit KS/SS, ostatní vstupy a světlý/tmavý režim.
+- [x] Unit 612/612, související E2E 18/18, lint 0 chyb / 294 varování; formát a automatický build OK.
+- [x] Cílené katalogy, seznam změn; verze 2.97.0 nevydaná.
+
 ## DS 2.97.0 – Edit dokladu 12c (nevydáno)
 - [x] Šipka účtu při 100/200 %, filtrování účtů a formátované hledání IBAN.
 - [x] Stabilní izomorfní měření, delší datumové popisky v úzkém panelu.

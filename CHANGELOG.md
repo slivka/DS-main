@@ -1,5 +1,14 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12d (nevydáno)
+
+- Sdílený Input používá v zakázaném stavu stejný podklad `muted/40` jako zamčené datum. Rámeček `input`, zděděná barva textu a průhlednost 0,5 zůstávají společné; žádná nová barva. Změna platí i pro ostatní uživatele sdíleného Input, nikoli jen lokální napodobeninu v dokladu.
+- Týká se KS/SS při vypnutém příkazu nebo důvodu nepoužitého účtu u FP/ZFP a FV/ZFV; dále VS v zaúčtovaném dokladu, ručního čísla účtu a kódu banky, IBAN, ruční protistrany, IČO/DIČ, externího čísla, předávající osoby, popisu s našeptáváním, kurzů a poznámek ke kurzu. Datumová pole a číselné vstupy postavené na Input dědí stejný stav. Samostatná Textarea, výběry a FieldValue se nemění; nejsou nativní Input.
+- Prázdné zakázané KS/SS zachovávají přístupné jméno a tooltip důvodu; uložená data se nemažou. E2E porovnává computed background, border, text a opacity s vypnutým Datum DPH ve světlém i tmavém režimu a po zapnutí ověřuje návrat SS 99.
+- Ověření: unit 612/612 (58 souborů, 1 929 assertions); související E2E 18/18 (6 Chromium, 6 Firefox, 6 WebKit). Společný běh skončil na časovém limitu po 13 úspěšných testech; zbývajících pět testů WebKitu prošlo samostatně. Lint 0 chyb / 294 varování; formát OK; automatický build OK. Samostatný typecheck a ruční build prostředí nepovoluje.
+- Soubory kola 12d: `src/components/ui/input.tsx`, `tests/e2e/document-disabled-inputs.spec.ts`, `AGENTS.md`, `roadmap.md`, `CHANGELOG.md`, `components.md`, `.lovable/design-system.json`, `.lovable/rules/components.md`. Komponenty dotčené v tomto kole: Input (implementace), DocumentForm (dokumentace zděděného vzhledu). Verze 2.97.0 zůstává nevydaná.
+- Skriptové porovnání s vydáním b27379e4: 426 / 426 / 426 / 426 položek; kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input. Ostatních 421 JSON objektů i odpovídajících markdownových bloků zůstává bajtově shodných. Indexy veřejných komponent a původní #enrichment se nemění. Skript porovnává syrové JSON objekty (nikoli jen parsované hodnoty) a celé bloky mezi nadpisy komponent.
+
 ## 2.97.0 – Edit dokladu 12c (nevydáno)
 
 - Šipka hledatelného účtu a text mají prostor vlevo od tlačítka „Platit příkazem“. E2E kontroluje jejich plochy při 100 % a 200 %; snímky jsou přílohami testu.
