@@ -38,7 +38,7 @@ export const LockedAccountValue = forwardRef<HTMLDivElement, LockedAccountValueP
             onFocus={measure}
             tabIndex={0}
             aria-disabled="true"
-            className={cn("text-muted-foreground", className)}
+            className={cn("ds-disabled-control border border-input", className)}
           >
             {reason}
           </FieldValue>

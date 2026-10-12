@@ -62,14 +62,20 @@ export function DocumentDatesSection({
         const label = field.querySelector("label");
         const labelWidth = label?.getBoundingClientRect().width ?? 0;
         const fixed = labelWidth >= width - border ? 0 : parseFloat(style.paddingLeft) + border;
-        const scale = Math.max(0, (available - fixed) / (width - fixed));
+        const scale = Math.max(0, (available - fixed) / Math.max(1, width - fixed));
         field.style.setProperty("--document-date-scale", String(Math.min(1, scale)));
         // Popisek obsahuje i pevné odsazení; korekce vychází ze skutečného výsledku.
         for (let attempt = 0; attempt < 4; attempt += 1) {
           const measuredWidth = field.getBoundingClientRect().width;
           if (measuredWidth <= available) break;
           const currentScale = Number(field.style.getPropertyValue("--document-date-scale"));
-          const correctedScale = (currentScale * (available - fixed)) / (measuredWidth - fixed);
+          const correctedScale = Math.max(
+            0,
+            Math.min(
+              1,
+              (currentScale * Math.max(0, available - fixed)) / Math.max(1, measuredWidth - fixed),
+            ),
+          );
           field.style.setProperty("--document-date-scale", String(correctedScale));
         }
       }

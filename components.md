@@ -241,6 +241,8 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 ### DocumentForm 2.31.0
 
+**Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.
+
 **Edit dokladu 12e (2.97.0):** Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole.
 
 **Edit dokladu 12d (2.97.0):** Zakázané textové a číselné vstupy dokladu včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zakázaným datumem. Rámeček, text i průhlednost zůstávají stejné v obou režimech; hodnoty a důvody se nemění.
@@ -273,8 +275,6 @@ Protistrana jako volný text s volitelným propojením na partnera. „Nový par
 `DocumentForm` používá `saveAction`, `primaryAction` a `moreActions`; stav a schválení zůstávají v přilepeném pruhu přímo pod `PageHeader`. Akce Uložit reaguje na Ctrl/Cmd+S, `dirty` a `busy`.
 
 `buildReportPdf` vytváří obecné firemní sestavy ze sekcí `table`, `text` a `custom`. `PrintPreviewDialog` zobrazuje PDF přes celou šířku a nabízí Tisk a Stáhnout PDF. `buildCashReceiptPdf` a `CashReceiptPrintDialog` vytvářejí pokladní doklady včetně dvou kopií na A4. `amountInWordsCs` převádí částky na český dokladový zápis a `companyMonogramSvg` dodává náhradní firemní monogram.
-
-**Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.
 
 ### Opravy 2.26.1
 

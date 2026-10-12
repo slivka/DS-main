@@ -101,7 +101,9 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
           });
           const gap = parseFloat(getComputedStyle(el).gap);
           return {
-            container: box.width,
+            container:
+              el.clientWidth -
+              2 * parseFloat(getComputedStyle(el.querySelector("input") ?? el).borderLeftWidth),
             scroll: el.scrollWidth,
             client: el.clientWidth,
             gap,

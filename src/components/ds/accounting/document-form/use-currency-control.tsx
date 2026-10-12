@@ -47,8 +47,9 @@ export function useCurrencyControl({
       id="document-currency"
       data-currency-fixed=""
       aria-readonly="true"
+      aria-disabled="true"
       aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-[var(--control-h)] w-[6.5rem] items-center rounded-md border border-input bg-muted/40 px-3 text-sm font-normal tabular-nums"
+      className="ds-disabled-control flex h-[var(--control-h)] w-[6.5rem] items-center rounded-md border border-input bg-muted/40 px-3 text-sm font-normal tabular-nums"
     >
       {value.currency}
     </div>

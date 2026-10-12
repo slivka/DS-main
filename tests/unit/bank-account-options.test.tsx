@@ -58,7 +58,7 @@ describe("BankAccountField", () => {
     fireEvent.click(view.getByRole("combobox"));
     const search = view.getAllByRole("combobox").find((element) => element.tagName === "INPUT");
     if (!search) throw new Error("Chybí hledání účtů");
-    fireEvent.change(search, { target: { value: "CZ65 0800" } });
+    fireEvent.change(search, { target: { value: "CZ650800  0000" } });
     expect(view.getAllByRole("option")).toHaveLength(2);
   });
   it("za běhu vyřadí neúplné účty i s vybraným ID", () => {
@@ -77,6 +77,19 @@ describe("BankAccountField", () => {
     fireEvent.click(view.getByRole("combobox"));
     expect(view.getAllByRole("option")).toHaveLength(4);
     expect(view.queryByText("123")).toBeNull();
+  });
+  it("číselné a neřetězcové části účtu nevyvolají chybu", () => {
+    const data = JSON.parse(
+      '[{"id":"bad","number":123,"bankCode":"0800"},' +
+        '{"id":"badIban","iban":123},' +
+        '{"id":"safe","number":123,"bankCode":null,"iban":"CZ6508000000192000145399"}]',
+    );
+    const view = render(
+      <BankAccountField value="" options={data} onChange={() => {}} selectionOnly />,
+    );
+    fireEvent.click(view.getByRole("combobox"));
+    expect(view.getAllByRole("option")).toHaveLength(1);
+    expect(view.getByRole("option").textContent).toBe(formatted);
   });
   it("přijatý doklad ukáže IBAN uvnitř pole platebního příkazu", () => {
     const view = render(

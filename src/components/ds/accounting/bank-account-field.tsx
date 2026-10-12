@@ -38,18 +38,24 @@ export type BankAccountOption = BankAccountOptionBase &
 
 /** Zápis účtu pro nabídku i vybranou hodnotu; tuzemská dvojice má přednost. */
 function accountDisplay(option: BankAccountOption): string {
-  return option.number && option.bankCode
+  return typeof option.number === "string" &&
+    option.number &&
+    typeof option.bankCode === "string" &&
+    option.bankCode
     ? `${option.number}/${option.bankCode}`
-    : formatIban(option.iban ?? "");
+    : formatIban(typeof option.iban === "string" ? option.iban : "");
 }
 
 /** Stabilní identifikátor výběru; IBAN bez ID se ukládá bez mezer. */
 export function bankAccountOptionValue(option: BankAccountOption): string {
   return (
     option.id ??
-    (option.number && option.bankCode
+    (typeof option.number === "string" &&
+    option.number &&
+    typeof option.bankCode === "string" &&
+    option.bankCode
       ? `${option.number}/${option.bankCode}`
-      : (option.iban ?? "").replace(/\s/g, "").toUpperCase())
+      : (typeof option.iban === "string" ? option.iban : "").replace(/\s/g, "").toUpperCase())
   );
 }
 
@@ -112,8 +118,12 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     // Typ chrání TS volání; data z API přesto mohou obsahovat neúplný účet.
     const options = suppliedOptions.filter(
       (option) =>
-        Boolean(option.number?.trim() && option.bankCode?.trim()) ||
-        Boolean(option.iban?.replace(/\s/g, "")),
+        Boolean(
+          typeof option.number === "string" &&
+          option.number.trim() &&
+          typeof option.bankCode === "string" &&
+          option.bankCode.trim(),
+        ) || Boolean(typeof option.iban === "string" && option.iban.replace(/\s/g, "")),
     );
     const optionValue = bankAccountOptionValue;
     const optionValues = options.map(optionValue);
@@ -220,7 +230,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                     accountDisplay(option),
                     option.currency,
                     option.iban,
-                    formatIban(option.iban ?? ""),
+                    formatIban(typeof option.iban === "string" ? option.iban : ""),
                     option.iban?.replace(/\s/g, ""),
                   ]
                     .filter(Boolean)

@@ -7,7 +7,7 @@
 - Interaktivní EUR ukázka má dva kurzy i oba režimy součtu. E2E při 100 / 150 / 200 % měří výšku všech polí proti VS (±0,5 px), mezeru popisku, shodnou velikost písma, tučnost ≥ 600, vnitřní tlačítko a nepřetékající částku 1 234 567,89. Screenshoty obou režimů jsou přílohami testu.
 - Ověření: unit 612/612 (58 souborů, 1 929 assertions); související E2E 6/6 (2 Chromium, 2 Firefox, 2 WebKit); lint 0 chyb / 294 varování; formát OK a automatický build OK. Samostatný typecheck prostředí nepovoluje. Verze zůstává 2.97.0, nevydáno.
 - Soubory kola 12e: `src/components/ds/accounting/document-form/AmountSection.tsx`, `src/components/ds/accounting/document-form/use-currency-control.tsx`, `src/components/showcase/FormDesignTwoShowcase.tsx`, `tests/e2e/document-amount-section.spec.ts`, `AGENTS.md`, `roadmap.md`, `CHANGELOG.md`, `components.md`, `.lovable/design-system.json`, `.lovable/rules/components.md`.
-- Dotčená veřejná komponenta kola 12e: DocumentForm (interní Částka a ovládání měny); žádná změna API. Katalogy 426 / 426 / 426 / 426. Proti b27379e4 kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input; ostatních 421 objektů a jejich dokumentačních bloků je bajtově shodných.
+- Dotčená veřejná komponenta kola 12e: DocumentForm (interní Částka a ovládání měny); žádná změna API. Katalogy 426 / 426 / 426 / 426. Proti b27379e4 kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input; 421 ostatních JSON objektů bylo bajtově shodných; původní kontrola dokumentačních sekcí byla neúplná (opraveno v 12f).
 
 ## 2.97.0 – Edit dokladu 12d (nevydáno)
 
@@ -16,7 +16,7 @@
 - Prázdné zakázané KS/SS zachovávají přístupné jméno a tooltip důvodu; uložená data se nemažou. E2E porovnává computed background, border, text a opacity s vypnutým Datum DPH ve světlém i tmavém režimu a po zapnutí ověřuje návrat SS 99.
 - Ověření: unit 612/612 (58 souborů, 1 929 assertions); související E2E 18/18 (6 Chromium, 6 Firefox, 6 WebKit). Společný běh skončil na časovém limitu po 13 úspěšných testech; zbývajících pět testů WebKitu prošlo samostatně. Lint 0 chyb / 294 varování; formát OK; automatický build OK. Samostatný typecheck a ruční build prostředí nepovoluje.
 - Soubory kola 12d: `src/components/ui/input.tsx`, `tests/e2e/document-disabled-inputs.spec.ts`, `AGENTS.md`, `roadmap.md`, `CHANGELOG.md`, `components.md`, `.lovable/design-system.json`, `.lovable/rules/components.md`. Komponenty dotčené v tomto kole: Input (implementace), DocumentForm (dokumentace zděděného vzhledu). Verze 2.97.0 zůstává nevydaná.
-- Skriptové porovnání s vydáním b27379e4: 426 / 426 / 426 / 426 položek; kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input. Ostatních 421 JSON objektů i odpovídajících markdownových bloků zůstává bajtově shodných. Indexy veřejných komponent a původní #enrichment se nemění. Skript porovnává syrové JSON objekty (nikoli jen parsované hodnoty) a celé bloky mezi nadpisy komponent.
+- Skriptové porovnání s vydáním b27379e4: 426 / 426 / 426 / 426 položek; kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input. 421 ostatních JSON objektů bylo bajtově shodných; tvrzení o všech markdownových blocích bylo nesprávné: kontrola opomenula sekci DocumentActionBar a tisk (opraveno v 12f). Indexy veřejných komponent a původní #enrichment se nemění. Skript porovnává syrové JSON objekty (nikoli jen parsované hodnoty) a celé bloky mezi nadpisy komponent.
 
 ## 2.97.0 – Edit dokladu 12c (nevydáno)
 
@@ -28,21 +28,22 @@
 - Kontrola písma platí vždy, když se celé nezmenšené pole vejde, včetně pole zabírajícího nejméně 95 % kontejneru. Test 360 CSS px při 200 % pokrývá delší CS/SK popisky.
 - Změna workspace-settings.$page.tsx v kole 12b pouze doplnila povinné titulky a metadata stránky; neměnila obsah ani chování. Byla mimo funkční zadání a zůstává kvůli povinné kontrole metadat všech obsahových stránek.
 
-### Předchozí kolo 12b
-
 ### Závěrečná kontrola 12c
 
 - Unit: 612/612, 58 souborů, 1 929 assertions. Související E2E: 15/15, Chromium 5/5, Firefox 5/5, WebKit 5/5. První běh odhalil přesah dlouhého popisku a předčasné měření ve WebKitu; po opravách jsou finální běhy zelené.
 - Lint: 0 chyb / 293 varování. Format:check OK. Automatický build OK. Samostatný typecheck ani ruční build nebyly spuštěny, protože je kontrolní prostředí nepovoluje.
-- Katalogy proti vydání b27379e4: 426/426/426/426. Skript porovnal syrové JSON objekty a markdownové bloky: změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm; 422 ostatních JSON objektů je bajtově shodných. components.md má změněn pouze blok DocumentForm; rules/components.md uvedené čtyři bloky. #enrichment zůstal zachován.
+- Katalogy proti vydání b27379e4: 426/426/426/426. Skript porovnal syrové JSON objekty a markdownové bloky: změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm; 422 ostatních JSON objektů je bajtově shodných. Původní kontrola components.md opomenula sekci DocumentActionBar a tisk s chybně vloženým odstavcem 12c; toto tvrzení o jediném změněném bloku bylo nesprávné a opraveno v 12f; rules/components.md uvedené čtyři bloky. #enrichment zůstal zachován.
 - Verze zůstává 2.97.0; knihovna nebyla vydána.
 - Soubory změněné v kole 12c proti a566b3f4: AGENTS.md, CHANGELOG.md, roadmap.md, components.md, .lovable/design-system.json, .lovable/rules/components.md, .lovable/rules/library-guidelines.md, src/components/ds/accounting/bank-account-field.tsx, src/components/ds/accounting/payment-order-account-field.tsx, src/components/ds/accounting/document-form/DatesSection.tsx, tests/e2e/edit-document-twelve.spec.ts, tests/unit/bank-account-options.test.tsx, tests/unit/edit-document-twelve.test.tsx. Úplný seznam vůči vydání je níže, doplněný o payment-order-account-field.tsx.
 
+### Kolo 12b – historický stav nahrazený kolem 12c
+
+- Následující popis zmenšování a tabulka měření 12b jsou nahrazené per-pole měřením kola 12c; nejde o aktuální měření.
 - Písmo vstupu i popisku je standardní podle zoomu, pokud se do panelu vejde alespoň jedno plné pole. Teprve pod tímto prahem se skutečně naměřená šířka přepočítá na dostupnou šířku s rezervou rámečku; žádný pevný koeficient ani předčasné omezení pomocí cqi. Tabulka zachycuje zmenšení jen u 200 % / úzkého panelu.
 - Vzorek šířky vychází z aktivního formátu dd.MM.yyyy, d.M.yyyy, yyyy-MM-dd nebo dd/MM/yyyy. Tři ikonové sloty mají společnou geometrii; text se nekříží s plochou tlačítka. Mez je 0,3em, ne vzdálenost k SVG. Dodatečná šířka delšího popisku je samostatně měřená.
 - Delší popisky předávané přes texts v CS/SK zvětšují pouze příslušné pole. E2E testuje rozšíření účetního data a DUZP, ne předpoklad pěti stejných polí; ten zůstává pouze pro výchozí popisky. Dvojice DUZP + Datum DPH se testuje těsně nad a pod skutečným součtem šířek a mezery.
 - Zamčené KS/SS mají přístupné jméno přes aria-labelledby na popisek Field a popis důvodu přes aria-describedby. Zachování hodnot a pořadí platební sekce se nemění.
-- BankAccountOption nyní přijímá úplné number + bankCode nebo iban; number a bankCode jsou v základním typu volitelné a union zaručuje alespoň jeden úplný zápis. Změna není BREAKING: dosavadní platná volání fungují beze změny. Tuzemská dvojice má při zobrazení přednost, jinak se IBAN formátuje po čtyřech znacích. Hledání zahrnuje IBAN i u účtu s oběma zápisy.
+- BankAccountOption nyní přijímá úplné number + bankCode nebo iban; number a bankCode jsou v základním typu volitelné a union zaručuje alespoň jeden úplný zápis. BREAKING (typy): option.number / option.bankCode mohou být undefined. Migrace: před čtením ověřte přítomnost řetězce; pro identitu použijte bankAccountOptionValue. Tuzemská dvojice má při zobrazení přednost, jinak se IBAN formátuje po čtyřech znacích. Hledání zahrnuje IBAN i u účtu s oběma zápisy.
 - Datový tok účtů: BankAccountField; ReceivedAccountControl / useDocumentBankAccountField a DocumentForm; buildDocumentNotices sdílí bankAccountOptionValue. PaymentOrderAccountField obaluje výběr bez převodu hodnot. Veřejný ReceivedBankAccountField používá ManualBankAccountValue, nikoli BankAccountOption, a ruční IBAN beze změny podporuje. Firemní IssuedAccountControl má vlastní typ účtu; nebyl změněn.
 - Katalogy byly upraveny cíleně proti b27379e4: 426 / 426 / 426 / 426. Změněné JSON komponenty: Field, BankAccountField, DocumentForm; 423 nedotčených objektů je bajtově shodných. Markdownové bloky: components.md pouze DocumentForm; rules/components.md uvedené tři. Zdrojový manifest obsahuje nové ukázky a testy; původní #enrichment zachován.
 - Ověření: unit 609/609 (58 souborů, 1922 assertions); související E2E 9/9 (Chromium 3, Firefox 3, WebKit 3); lint 0 chyb / 293 varování. Automatický build OK. Samostatný typecheck a ruční build nebyly spuštěny, kontrolní prostředí je nepovoluje. Formát se kontroluje jen nad podporovanými zdrojovými příponami, nikoli binárními fonty.
@@ -76,7 +77,7 @@
 
 Automaticky spravované soubory navíc: `.workspace/AGENTS.md`, `src/.generated/mockup-components.ts`, `src/tailwind.config.lov.json`, `tsconfig.tsbuildinfo`; nejsou autorskou změnou tohoto zadání. Kontrola nadpisů stránek doplnila chybějící metadata detailu nastavení prostoru.
 
-### Nová tabulka měření (Chromium, CS)
+### Historická tabulka měření 12b (Chromium, CS) – nahrazeno kolem 12c
 
 Panel „360“ znamená vnější šířku 360 CSS px, nikoli počet panelů. Práh je součet pěti aktuálních šířek a **pěti** mezer, včetně mezery rozpěrky. Všechny hodnoty jsou měření, nikoli pevné rozměry UI. CS/SK a ostatní prohlížeče byly kontrolovány samostatně; jejich zlomové šířky se mohou lišit podle skutečné sazby.
 
