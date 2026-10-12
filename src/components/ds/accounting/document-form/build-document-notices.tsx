@@ -1,7 +1,7 @@
 /** Upozornění formuláře dokladu. */
 import type { ReactNode } from "react";
 import { NoticeBar } from "../../feedback/notice-bar";
-import type { BankAccountOption } from "../bank-account-field";
+import { bankAccountOptionValue, type BankAccountOption } from "../bank-account-field";
 import type {
   DocumentDateField,
   DocumentFormTexts,
@@ -44,7 +44,7 @@ export function buildDocumentNotices({
       </NoticeBar>
     ));
   const selectedPartnerBankAccount = bankAccountOptions.find(
-    (option) => (option.id ?? `${option.number}/${option.bankCode}`) === value.partnerBankAccountId,
+    (option) => bankAccountOptionValue(option) === value.partnerBankAccountId,
   );
   const invalidBankAccountNotice = selectedPartnerBankAccount?.invalid ? (
     <NoticeBar tone="warning">{t.invalidBankAccountWarning}</NoticeBar>

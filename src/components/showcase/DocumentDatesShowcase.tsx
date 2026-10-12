@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { DocumentForm, PaneLayout, PaneTabsProvider, createTab, type PaneTabsState } from "../ds";
 import { useFormDesignTwoTexts } from "../../ds-texts/form-design-two-showcase";
 import { DsTextsProvider } from "../../ds-texts";
+import { setDateTimePreferences, type DateFormat } from "../../lib/date-time-preferences";
 import { ShowcaseSection } from "./ShowcaseLayout";
 const initialState: PaneTabsState = {
   version: 2,
@@ -23,6 +24,8 @@ export function DocumentDatesShowcase() {
   const [state, setState] = useState(initialState);
   const [narrow, setNarrow] = useState(false);
   const [locale, setLocale] = useState<"cs" | "sk">("cs");
+  const [longLabel, setLongLabel] = useState(false);
+  const [format, setFormat] = useState<DateFormat>("dd.MM.yyyy");
   return (
     <ShowcaseSection title={t.datesTitle}>
       <div
@@ -31,6 +34,26 @@ export function DocumentDatesShowcase() {
         className={narrow ? "w-[22.5rem] max-w-none" : "w-[120rem] max-w-none"}
       >
         <div className="flex gap-3">
+          {(["dd.MM.yyyy", "d.M.yyyy", "yyyy-MM-dd", "dd/MM/yyyy"] as const).map((value) => (
+            <Button
+              key={value}
+              variant="outline"
+              aria-pressed={value === format}
+              onClick={() => {
+                setDateTimePreferences({ dateFormat: value });
+                setFormat(value);
+              }}
+            >
+              {value}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            aria-pressed={longLabel}
+            onClick={() => setLongLabel(!longLabel)}
+          >
+            {t.longDateLabel}
+          </Button>
           {(["cs", "sk"] as const).map((language) => (
             <Button
               key={language}
@@ -74,7 +97,7 @@ export function DocumentDatesShowcase() {
           </Button>
         </div>
         <div className="h-[40rem]">
-          <DsTextsProvider locale={locale}>
+          <DsTextsProvider key={`${format}-${locale}`} locale={locale}>
             <PaneTabsProvider state={state} onChange={setState} shortcuts={false}>
               <PaneLayout
                 embedded
@@ -84,6 +107,15 @@ export function DocumentDatesShowcase() {
                     title={t.received}
                     documentType="FP"
                     status="draft"
+                    texts={
+                      longLabel
+                        ? {
+                            accountingDate:
+                              locale === "cs" ? t.longAccountingDate : t.longAccountingDateSk,
+                            taxDate: locale === "cs" ? t.longTaxDate : t.longTaxDateSk,
+                          }
+                        : undefined
+                    }
                     value={{
                       currency: "EUR",
                       amountTotal: 0,

@@ -41,4 +41,8 @@ The design system's theme is delivered through the following files. The author's
 
 ## Edit dokladu 12 (2.96.0)
 
-Datumová pole v DocumentForm používají scoped kompaktní token; filtry a dialogy beze změny. KS/SS se nikdy neskrývají: nepoužitá platba je prázdná a zakázaná s důvodem. FV/ZFV předávají companyBankAccountDisabledReason, FP/ZFP receivedAccountDisabledReason. Hodnoty spravuje aplikace.
+Datumová pole v DocumentForm měří aktivní formát a společnou geometrii ikon; filtry a dialogy beze změny. KS/SS se nikdy neskrývají: nepoužitá platba je prázdná a zakázaná s důvodem. FV/ZFV předávají companyBankAccountDisabledReason, FP/ZFP receivedAccountDisabledReason. Hodnoty spravuje aplikace.
+
+## Edit dokladu 12b (2.97.0)
+
+DocumentForm zachová standardní velikost písma i popisku podle zoomu; lokální zmenšení nastane jen pokud se nevejde ani jedno plné pole. Delší popisek rozšíří pouze své pole; skupina DUZP a Datum DPH se zalomí podle skutečných šířek. Zamčené skupiny KS/SS mají jméno přes aria-labelledby a důvod přes aria-describedby. BankAccountField přijímá BankAccountOption s úplnou tuzemskou dvojicí nebo IBAN; hledá i podle IBAN.

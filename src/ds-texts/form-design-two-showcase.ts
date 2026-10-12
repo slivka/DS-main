@@ -24,6 +24,11 @@ const CS = {
   datesTitle: "Datumy – Edit dokladu 12",
   panels: "{count} panelů",
   narrowPanel: "Úzký panel",
+  longDateLabel: "Delší popisky",
+  longAccountingDate: "Datum účetního případu podle podkladů",
+  longAccountingDateSk: "Dátum účtovného prípadu podľa podkladov",
+  longTaxDate: "Datum uskutečnění zdanitelného plnění",
+  longTaxDateSk: "Dátum uskutočnenia zdaniteľného plnenia",
 };
 const SK: typeof CS = {
   title: "Dizajn formulárov 2",
@@ -49,6 +54,11 @@ const SK: typeof CS = {
   datesTitle: "Dátumy – Edit dokladu 12",
   panels: "{count} panelov",
   narrowPanel: "Úzky panel",
+  longDateLabel: "Dlhšie popisky",
+  longAccountingDate: "Datum účetního případu podle podkladů",
+  longAccountingDateSk: "Dátum účtovného prípadu podľa podkladov",
+  longTaxDate: "Datum uskutečnění zdanitelného plnění",
+  longTaxDateSk: "Dátum uskutočnenia zdaniteľného plnenia",
 };
 export function useFormDesignTwoTexts() {
   return useDsTexts().locale === "sk" ? SK : CS;

@@ -72,7 +72,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     field,
   } = p;
   const reasonId = useId();
-  const symbolControl = (control: ReactNode) =>
+  const symbolControl = (control: ReactNode, id: string) =>
     symbolsDisabledReason ? (
       <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>
@@ -81,6 +81,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
             role="group"
             className="min-w-0 [&_input]:pointer-events-none"
             aria-disabled="true"
+            aria-labelledby={`${id}-label`}
             aria-describedby={reasonId}
           >
             {control}
@@ -148,6 +149,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                     className="font-mono tabular-nums"
                   />
                 ),
+                "document-constantSymbol",
               ),
               undefined,
               undefined,
@@ -166,6 +168,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   disabled={Boolean(symbolsDisabledReason) || !can("specificSymbol")}
                   className="h-9 font-mono tabular-nums"
                 />,
+                "document-specificSymbol",
               ),
               3,
               false,
