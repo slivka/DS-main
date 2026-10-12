@@ -64,19 +64,19 @@
       ".lovable/system.md": "4c4f63adf9c7ad6e452f436669d46bf9",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "ea8fd27af39878e7cc12431034f618f1",
-      "CHANGELOG.md": "2074869f4fac8146195804a226cd1fd2",
+      "AGENTS.md": "e016f9815f86153efc9246bd5235bff0",
+      "CHANGELOG.md": "42e4a44d3c7b22efaca545a26b98d50c",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "0a1517d3a174513299f7478c46f40276",
+      "components.md": "1c639dedf8575cfff7594e59ba01580c",
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
       "package.json": "b6bd79d6a1aa5c296042e73e76f3f4fd",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "a86cea13cea82bd5519eb5e3b69c7f0b",
+      "roadmap.md": "3a45aa0eca430fdc7232b10135fc88d5",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -94,7 +94,7 @@
       "src/components/ds/accounting/account-columns.tsx": "7b9dc8bf2275a4649a65c2b53c409231",
       "src/components/ds/accounting/account-select.tsx": "dda058c80516609b2368f2c9c6176e4a",
       "src/components/ds/accounting/amount.tsx": "235cd7f60996275ea08d28941405f757",
-      "src/components/ds/accounting/bank-account-field.tsx": "8e1f9a5e7b10b5b08d7a649bcb8c5551",
+      "src/components/ds/accounting/bank-account-field.tsx": "de8c09163bb8d0af1aa648816e1edf3e",
       "src/components/ds/accounting/book-select.tsx": "b6694104542133323f07e928dbe76d4d",
       "src/components/ds/accounting/counterparty-field.tsx": "45af2e8cf319bce91b0af19d5507d506",
       "src/components/ds/accounting/counterparty-input-field.tsx": "cf32a5e0bb07f25d7a445d2204328092",
@@ -107,7 +107,7 @@
       "src/components/ds/accounting/document-form/AmountSection.tsx": "d81daf82179e3b7c6f79a0975267c1c0",
       "src/components/ds/accounting/document-form/BankAccountControls.tsx": "3decaa2f686a76e7ad989941ab201fb2",
       "src/components/ds/accounting/document-form/BasicSection.tsx": "7d5726004cdc82b4a5d6aa1ac48f8913",
-      "src/components/ds/accounting/document-form/DatesSection.tsx": "2a909c1aae88a0884e281bc299573355",
+      "src/components/ds/accounting/document-form/DatesSection.tsx": "8636f9fdd0fd0351d03271bc53a33a3d",
       "src/components/ds/accounting/document-form/DocumentForm.tsx": "09b3350b32fe51698a08e3e86ebf94a1",
       "src/components/ds/accounting/document-form/PaymentSection.tsx": "a2671b8736f9ef9f7c40c384b9843322",
       "src/components/ds/accounting/document-form/Tabs.tsx": "8f5c85fee1b5cfb99bb3bb3bb8ffa95c",
@@ -143,7 +143,7 @@
       "src/components/ds/accounting/journal-vat.ts": "e7bc2585c0566045408642747a429650",
       "src/components/ds/accounting/locked-account-value.tsx": "b39c1856a7ef552f3b72b716864f5553",
       "src/components/ds/accounting/partner-select.tsx": "a3431ae6bd19a88b886471dc76c67519",
-      "src/components/ds/accounting/payment-order-account-field.tsx": "fa6467cf42008e6350ac537bc4e0240d",
+      "src/components/ds/accounting/payment-order-account-field.tsx": "4da18075856bb9ee87c7bf64e82efea4",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "dec52321584002071359ae6202c55486",
       "src/components/ds/accounting/payment-schedule.ts": "118b8345f9fb659f08f14f7e98ca85c1",
       "src/components/ds/accounting/received-bank-account-field.tsx": "fe0fcef43a5921fa763d757f7de9519b",
@@ -515,9 +515,9 @@
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
       "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
       "src/components/showcase/DocumentDatesShowcase.tsx": "147a7c0456510a3abe0c6bca437142ff",
-      "tests/e2e/edit-document-twelve.spec.ts": "6336e95e72426233c70d85d4d41cef8f",
-      "tests/unit/edit-document-twelve.test.tsx": "3bdd0b9bc160101fbcb9dfb8f54788ee",
-      "tests/unit/bank-account-options.test.tsx": "92d41c8f85c49d9c0e8f58c2bc8a0752"
+      "tests/e2e/edit-document-twelve.spec.ts": "0adb90c9c537a05a496876944f17cad1",
+      "tests/unit/edit-document-twelve.test.tsx": "88761e2e4f4b87fa859090d9a3d0058a",
+      "tests/unit/bank-account-options.test.tsx": "d9acc29f5b622640d3a207f5508487b7"
     },
     "pipeline_version": 8
   },
@@ -7239,7 +7239,7 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle.",
+      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu.",
       "examples": [
         {
           "label": "Účet dodavatele",
@@ -7335,7 +7335,7 @@
           "type": "string"
         }
       ],
-      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede.",
+      "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.",
       "examples": [
         {
           "label": "Vypnutý příkaz",
@@ -7344,7 +7344,8 @@
       ],
       "antipatterns": [
         "Při vypnutí nemažte hodnotu uvnitř této komponenty.",
-        "Nevykreslujte druhý zámek ani důvod pod polem."
+        "Nevykreslujte druhý zámek ani důvod pod polem.",
+        "Nepřekrývejte tlačítkem příkazu šipku výběru ani jeho text."
       ]
     },
     {
@@ -7476,7 +7477,7 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",

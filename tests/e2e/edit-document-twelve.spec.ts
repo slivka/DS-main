@@ -26,6 +26,13 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
           count ? 1920 : 360,
         );
         await expect(root.locator("[data-pane]")).toHaveCount(count || 1);
+        // Observer musí dokončit měření po změně panelu i v pomalejším WebKitu.
+        await page.evaluate(
+          () =>
+            new Promise<void>((resolve) => {
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+            }),
+        );
         const dates = root.locator('[data-slot="document-dates"]').first();
         const result = await dates.evaluate((el) => {
           const box = el.getBoundingClientRect();
@@ -81,6 +88,15 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
               icons: icons.length,
               labelWidth: label ? canvas.measureText(label.textContent ?? "").width : 0,
               labelFontSize: label ? parseFloat(getComputedStyle(label).fontSize) : 0,
+              fullWidth: (() => {
+                const field = input.closest<HTMLElement>('[data-slot="field"]');
+                if (!field) throw new Error("Chybí datumové pole");
+                const scale = field.style.getPropertyValue("--document-date-scale");
+                field.style.setProperty("--document-date-scale", "1");
+                const width = field.getBoundingClientRect().width;
+                field.style.setProperty("--document-date-scale", scale);
+                return width;
+              })(),
             };
           });
           const gap = parseFloat(getComputedStyle(el).gap);
@@ -102,9 +118,9 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
         expect(result.values.find((i) => i.id === "document-accountingDate")?.icons).toBe(3);
         for (const input of result.values) {
           expect(input.scroll).toBeLessThanOrEqual(input.client);
-          if (input.width < result.container * 0.95) {
-            expect(input.fontSize).toBeCloseTo(14 * zoom, 0);
-            expect(input.labelFontSize).toBeCloseTo(12 * zoom, 0);
+          if (input.fullWidth <= result.container) {
+            expect(Math.abs(input.fontSize - 14 * zoom)).toBeLessThanOrEqual(0.5);
+            expect(Math.abs(input.labelFontSize - 12 * zoom)).toBeLessThanOrEqual(0.5);
           } else {
             expect(input.width).toBeGreaterThanOrEqual(result.container * 0.95);
           }
@@ -153,6 +169,80 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
     body: JSON.stringify(results, null, 2),
     contentType: "application/json",
   });
+});
+
+test("šipka účtu nepřekrývá platební příkaz při 100 a 200 %", async ({ page }, testInfo) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const received = page.getByTestId("edit-document-eleven-received");
+  await expect(received).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  for (const zoom of [1, 2]) {
+    await page.evaluate(async (value) => {
+      const path = "/src/lib/app-zoom.ts";
+      const module = await import(/* @vite-ignore */ path);
+      module.setAppZoom(value);
+    }, zoom);
+    const account = received.locator('[data-slot="payment-order-account"]');
+    const arrow = account.locator('[data-slot="select-chevron"]');
+    const action = account.getByRole("button", { name: "Platit příkazem", exact: true });
+    await expect(arrow).toBeVisible();
+    const arrowBox = await arrow.boundingBox();
+    const actionBox = await action.boundingBox();
+    if (!arrowBox || !actionBox) throw new Error("Chybí geometrie účtu");
+    expect(arrowBox.x + arrowBox.width).toBeLessThanOrEqual(actionBox.x);
+    const textEdge = await account.locator('[role="combobox"]').evaluate((el) => {
+      const style = getComputedStyle(el);
+      return el.getBoundingClientRect().right - parseFloat(style.paddingRight);
+    });
+    expect(textEdge).toBeLessThanOrEqual(arrowBox.x);
+    await account.screenshot({
+      path: `/tmp/browser/dates/${testInfo.project.name}-account-${zoom * 100}.png`,
+    });
+    await testInfo.attach(`Účet při ${zoom * 100} %`, {
+      body: await account.screenshot(),
+      contentType: "image/png",
+    });
+  }
+});
+
+test("delší popisky v panelu 360 px při 200 % nepřetékají", async ({ page }) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const root = page.getByTestId("date-panels");
+  await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  await page.evaluate(async () => {
+    const path = "/src/lib/app-zoom.ts";
+    const module = await import(/* @vite-ignore */ path);
+    module.setAppZoom(2);
+  });
+  for (const language of ["CS", "SK"]) {
+    await root.getByRole("button", { name: language, exact: true }).click();
+    await root.getByRole("button", { name: "Úzký panel", exact: true }).click();
+    await root.evaluate((el) => {
+      el.style.width = "360px";
+    });
+    await root.getByRole("button", { name: "Delší popisky", exact: true }).click();
+    const dates = root.locator('[data-slot="document-dates"]').first();
+    await expect
+      .poll(() =>
+        dates.evaluate((el) => {
+          const box = el.getBoundingClientRect();
+          return (
+            Array.from(el.querySelectorAll<HTMLElement>('[data-slot="field"]')).every((field) => {
+              const rect = field.getBoundingClientRect();
+              const label = field.querySelector("label")?.getBoundingClientRect();
+              const input = field.querySelector("input");
+              return (
+                rect.right <= box.right + 0.5 &&
+                rect.left >= box.left - 0.5 &&
+                (!label || label.right <= rect.right + 0.5) &&
+                (!input || input.scrollWidth <= input.clientWidth)
+              );
+            }) && el.scrollWidth <= el.clientWidth
+          );
+        }),
+      )
+      .toBe(true);
+    await root.getByRole("button", { name: "Delší popisky", exact: true }).click();
+  }
 });
 test("přijaté symboly zůstávají prázdné se správným důvodem", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });

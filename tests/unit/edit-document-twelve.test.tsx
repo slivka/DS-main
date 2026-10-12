@@ -33,6 +33,31 @@ const base: DocumentFormProps = {
   vat: { visible: true },
 };
 describe("Edit dokladu 12", () => {
+  it("psaní mimo datumy nezakládá jejich ResizeObserver znovu", () => {
+    const original = globalThis.ResizeObserver;
+    const dateObservers = mock();
+    const constructor = mock(() => ({
+      observe: (target: Element) => {
+        if (target.classList.contains("document-dates-container")) dateObservers();
+      },
+      unobserve: mock(),
+      disconnect: mock(),
+    }));
+    globalThis.ResizeObserver = constructor;
+    try {
+      const view = render(<DocumentForm {...base} />);
+      const initial = dateObservers.mock.calls.length;
+      expect(initial).toBeGreaterThan(0);
+      view.rerender(<DocumentForm {...base} value={{ ...base.value, description: "a" }} />);
+      view.rerender(<DocumentForm {...base} value={{ ...base.value, description: "ab" }} />);
+      expect(dateObservers.mock.calls.length).toBe(initial);
+      view.rerender(<DocumentForm {...base} texts={{ accountingDate: "Delší datum" }} />);
+      expect(dateObservers.mock.calls.length).toBeGreaterThan(initial);
+    } finally {
+      cleanup();
+      globalThis.ResizeObserver = original;
+    }
+  });
   for (const scenario of [
     {
       documentType: "FP",

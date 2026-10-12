@@ -51,6 +51,33 @@ describe("BankAccountField", () => {
     );
     expect(view.getByRole("combobox").textContent).toBe(formatted);
   });
+  it("najde formátovaný začátek IBAN i u tuzemského účtu", () => {
+    const view = render(
+      <BankAccountField value="" options={options} onChange={() => {}} selectionOnly />,
+    );
+    fireEvent.click(view.getByRole("combobox"));
+    const search = view.getAllByRole("combobox").find((element) => element.tagName === "INPUT");
+    if (!search) throw new Error("Chybí hledání účtů");
+    fireEvent.change(search, { target: { value: "CZ65 0800" } });
+    expect(view.getAllByRole("option")).toHaveLength(2);
+  });
+  it("za běhu vyřadí neúplné účty i s vybraným ID", () => {
+    const data = JSON.parse('[{"id":"missing"},{"id":"partial","number":"123"}]');
+    const view = render(
+      <BankAccountField
+        value="missing"
+        options={[...options, ...data]}
+        onChange={() => {}}
+        selectionOnly
+      />,
+    );
+    expect(view.getByRole("combobox").textContent).toContain(
+      DS_TEXTS_CS.documentForm.bankAccountMissing,
+    );
+    fireEvent.click(view.getByRole("combobox"));
+    expect(view.getAllByRole("option")).toHaveLength(4);
+    expect(view.queryByText("123")).toBeNull();
+  });
   it("přijatý doklad ukáže IBAN uvnitř pole platebního příkazu", () => {
     const view = render(
       <DocumentForm

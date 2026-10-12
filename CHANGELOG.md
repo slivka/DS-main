@@ -1,6 +1,24 @@
 # Changelog – Slivka Design System
 
-## 2.97.0 – Edit dokladu 12b (nevydáno)
+## 2.97.0 – Edit dokladu 12c (nevydáno)
+
+- Šipka hledatelného účtu a text mají prostor vlevo od tlačítka „Platit příkazem“. E2E kontroluje jejich plochy při 100 % a 200 %; snímky jsou přílohami testu.
+- BankAccountField zůstává hledatelný i pro malý počet možností: hledání IBAN je tak dostupné nezávisle na počtu účtů. Jde o změnu chování oproti původnímu Select: nabídka má vstup hledání a položky Command, tedy jiný DOM i ovládání z klávesnice. Veřejné value/onChange zůstávají stejné.
+- Nové veřejné API: BankAccountOptionBase obsahuje společná nepovinná data účtu; bankAccountOptionValue vrací stabilní ID, jinak tuzemský zápis nebo neformátovaný IBAN. Čtenáři option.number a option.bankCode musí počítat s undefined; dosavadní úplné účty zůstávají platné.
+- Neúplné účty bez dvojice číslo + kód banky a bez IBAN se vyřadí i za běhu. Hledání obsahuje kompaktní i formátovaný IBAN, například „CZ65 0800“.
+- Datumové měření používá izomorfní efekt a stabilní klíč popisků a formátu; psaní do jiného pole nezakládá nový ResizeObserver. Každé příliš široké pole se zmenšuje podle vlastní skutečné šířky včetně delšího popisku; ostatní zachovají standardní písmo. Následná korekce měří i pevné odsazení popisku, nikoli pevný zmenšovací koeficient.
+- Kontrola písma platí vždy, když se celé nezmenšené pole vejde, včetně pole zabírajícího nejméně 95 % kontejneru. Test 360 CSS px při 200 % pokrývá delší CS/SK popisky.
+- Změna workspace-settings.$page.tsx v kole 12b pouze doplnila povinné titulky a metadata stránky; neměnila obsah ani chování. Byla mimo funkční zadání a zůstává kvůli povinné kontrole metadat všech obsahových stránek.
+
+### Předchozí kolo 12b
+
+### Závěrečná kontrola 12c
+
+- Unit: 612/612, 58 souborů, 1 929 assertions. Související E2E: 15/15, Chromium 5/5, Firefox 5/5, WebKit 5/5. První běh odhalil přesah dlouhého popisku a předčasné měření ve WebKitu; po opravách jsou finální běhy zelené.
+- Lint: 0 chyb / 293 varování. Format:check OK. Automatický build OK. Samostatný typecheck ani ruční build nebyly spuštěny, protože je kontrolní prostředí nepovoluje.
+- Katalogy proti vydání b27379e4: 426/426/426/426. Skript porovnal syrové JSON objekty a markdownové bloky: změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm; 422 ostatních JSON objektů je bajtově shodných. components.md má změněn pouze blok DocumentForm; rules/components.md uvedené čtyři bloky. #enrichment zůstal zachován.
+- Verze zůstává 2.97.0; knihovna nebyla vydána.
+- Soubory změněné v kole 12c proti a566b3f4: AGENTS.md, CHANGELOG.md, roadmap.md, components.md, .lovable/design-system.json, .lovable/rules/components.md, .lovable/rules/library-guidelines.md, src/components/ds/accounting/bank-account-field.tsx, src/components/ds/accounting/payment-order-account-field.tsx, src/components/ds/accounting/document-form/DatesSection.tsx, tests/e2e/edit-document-twelve.spec.ts, tests/unit/bank-account-options.test.tsx, tests/unit/edit-document-twelve.test.tsx. Úplný seznam vůči vydání je níže, doplněný o payment-order-account-field.tsx.
 
 - Písmo vstupu i popisku je standardní podle zoomu, pokud se do panelu vejde alespoň jedno plné pole. Teprve pod tímto prahem se skutečně naměřená šířka přepočítá na dostupnou šířku s rezervou rámečku; žádný pevný koeficient ani předčasné omezení pomocí cqi. Tabulka zachycuje zmenšení jen u 200 % / úzkého panelu.
 - Vzorek šířky vychází z aktivního formátu dd.MM.yyyy, d.M.yyyy, yyyy-MM-dd nebo dd/MM/yyyy. Tři ikonové sloty mají společnou geometrii; text se nekříží s plochou tlačítka. Mez je 0,3em, ne vzdálenost k SVG. Dodatečná šířka delšího popisku je samostatně měřená.
@@ -30,6 +48,7 @@
 - `src/routes/workspace-settings.$page.tsx`
 - `src/components/showcase/DocumentDatesShowcase.tsx`
 - `src/components/ds/accounting/bank-account-field.tsx`
+- `src/components/ds/accounting/payment-order-account-field.tsx`
 - `src/components/ds/layout/form-field-layout.tsx`
 - `src/components/ds/accounting/document-form/DatesSection.tsx`
 - `src/components/ds/accounting/document-form/PaymentSection.tsx`
