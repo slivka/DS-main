@@ -17,6 +17,7 @@ test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page 
       exact: true,
     });
     if (await theme.count()) await theme.click();
+    await expect(page.locator("html")).toHaveClass(dark ? /dark/ : /^(?!.*dark).*$/);
     for (const id of ["document-constantSymbol", "document-specificSymbol"]) {
       const symbol = received.locator(`#${id}`);
       await expect(symbol).toBeDisabled();
@@ -25,11 +26,11 @@ test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page 
         .poll(async () => {
           const reference = await date.evaluate((input) => {
             const style = getComputedStyle(input);
-            return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+            return [style.backgroundColor, style.color, style.opacity];
           });
           const actual = await symbol.evaluate((input) => {
             const style = getComputedStyle(input);
-            return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+            return [style.backgroundColor, style.color, style.opacity];
           });
           return JSON.stringify(actual) === JSON.stringify(reference);
         })
@@ -55,15 +56,17 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
   const form = page.getByTestId("document-readonly");
   await expect(form).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const reference = form.locator("#document-vatDate");
-  const controls = [
-    form.locator("#document-variableSymbol"),
-    form.locator("#document-constantSymbol"),
-    form.locator("#document-specificSymbol"),
-    form.locator("#document-paymentMethodId"),
-    form.locator("#document-currency"),
-    form.locator("#document-description"),
-    form.locator('div.ds-disabled-control[aria-disabled="true"]').first(),
-  ];
+  const controls = await form
+    .locator(
+      'input[id]:disabled, textarea:disabled, button:disabled, button[aria-disabled="true"], ' +
+        'div.ds-disabled-control[aria-disabled="true"], [data-slot="field-value"][aria-disabled="true"]',
+    )
+    .all();
+  controls.push(...(await page.getByTestId("disabled-selects").getByRole("combobox").all()));
+  expect(controls.length).toBeGreaterThanOrEqual(20);
+  await expect(form.locator("#document-partner")).toBeDisabled();
+  await expect(page.locator("#disabled-currency-select")).toBeDisabled();
+  await expect(page.locator("#disabled-radix-select")).toBeDisabled();
   for (const dark of [false, true]) {
     const toggle = page.getByRole("button", {
       name: dark ? "Tmavý režim" : "Světlý režim",
@@ -71,17 +74,45 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
     });
     if (await toggle.count()) await toggle.click();
     await expect(page.locator("html")).toHaveClass(dark ? /dark/ : /^(?!.*dark).*$/);
+    await expect
+      .poll(async () =>
+        reference.evaluate((node) =>
+          getComputedStyle(node).getPropertyValue("--muted-foreground").trim(),
+        ),
+      )
+      .toBe(dark ? "oklch(0.72 0.02 250)" : "oklch(0.5 0.035 245)");
     const expected = await reference.evaluate((node) => {
       const style = getComputedStyle(node);
-      return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+      return [style.backgroundColor, style.color, style.opacity];
     });
     const contrasts: number[] = [];
+    const enabledColor = await page
+      .getByTestId("form-design-two")
+      .locator("#document-variableSymbol")
+      .evaluate((node) => getComputedStyle(node).color);
+    expect(expected[1]).not.toBe(enabledColor);
+    const emptyStyle = await page
+      .locator("#disabled-empty-select [data-placeholder]")
+      .evaluate((node) => getComputedStyle(node).fontStyle);
+    expect(emptyStyle).toBe("italic");
+    const warning = await reference.evaluate((node) => {
+      const canvas = document.createElement("canvas").getContext("2d");
+      if (!canvas) throw new Error("Chybí měření barvy");
+      canvas.fillStyle = getComputedStyle(node).getPropertyValue("--warning");
+      canvas.fillRect(0, 0, 1, 1);
+      const expected = Array.from(canvas.getImageData(0, 0, 1, 1).data);
+      canvas.fillStyle = getComputedStyle(node).borderColor;
+      canvas.fillRect(0, 0, 1, 1);
+      return { expected, actual: Array.from(canvas.getImageData(0, 0, 1, 1).data) };
+    });
+    expect(warning.actual).toEqual(warning.expected);
     for (const control of controls) {
       const actual = await control.evaluate((node) => {
         const style = getComputedStyle(node);
-        return [style.backgroundColor, style.borderColor, style.color, style.opacity];
+        return [style.backgroundColor, style.color, style.opacity];
       });
-      expect(actual).toEqual(expected);
+      expect(actual.slice(1)).toEqual(expected.slice(1));
+      if (await control.getAttribute("id")) expect(actual[0]).toBe(expected[0]);
       const contrast = await control.evaluate((node) => {
         const context = document.createElement("canvas").getContext("2d");
         if (!context) throw new Error("Chybí měření barev");
@@ -117,6 +148,9 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
       });
       expect(contrast).toBeGreaterThanOrEqual(4.5);
       contrasts.push(contrast);
+      console.log(
+        `KONTRAST ${dark ? "tmavý" : "světlý"} ${(await control.getAttribute("id")) ?? (await control.getAttribute("aria-label")) ?? "akce"}: ${contrast.toFixed(2)}`,
+      );
     }
     await info.attach(dark ? "Tmavý kontrast" : "Světlý kontrast", {
       body: JSON.stringify(contrasts),

@@ -117,7 +117,8 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
             aria-expanded={open}
             disabled={props.disabled}
             className={cn(
-              "ds-disabled-control relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
+              "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+              "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
               props.value ? "text-foreground" : "text-muted-foreground",
               showClear && "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
               props.className,
@@ -125,6 +126,7 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
             title={selected && typeof selected.label === "string" ? selected.label : undefined}
           >
             <span
+              data-placeholder={!props.value ? "" : undefined}
               className="min-w-0 flex-1 truncate text-left"
               title={!props.value && typeof triggerLabel === "string" ? triggerLabel : undefined}
             >

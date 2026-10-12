@@ -83,7 +83,7 @@ export function OptionSelect({
   const emptyValueLabel = placeholderValueLabel ?? resolvedEmptyLabel;
   const selectedContent =
     current === "" && allowEmpty ? (
-      emptyValueLabel
+      <span data-placeholder="">{emptyValueLabel}</span>
     ) : selectedOption?.inactive ? (
       <span className="flex min-w-0 items-center gap-2">
         <span className="truncate">{selectedOption.label}</span>

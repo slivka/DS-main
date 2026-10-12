@@ -52,7 +52,11 @@ export function LegalFormField({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className={cn("hover-surface w-full justify-between font-normal", className)}
+          className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "hover-surface w-full justify-between font-normal",
+            className,
+          )}
         >
           <span className={cn("truncate", !current && "text-muted-foreground")}>
             {selected ? formatCodeName(selected.code, selected.name) : placeholder}

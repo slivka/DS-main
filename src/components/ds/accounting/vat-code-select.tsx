@@ -101,7 +101,11 @@ export function VatCodeSelect({
             suppressFocusOpen.current = false;
             pointerDown.current = false;
           }}
-          className={cn("w-full justify-between font-normal", className)}
+          className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "w-full justify-between font-normal",
+            className,
+          )}
         >
           <span className={cn("truncate", !selected && "text-muted-foreground")}>
             {selected ? formatCodeName(selected.code, selected.name) : placeholder}

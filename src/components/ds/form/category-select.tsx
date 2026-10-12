@@ -99,6 +99,7 @@ export function CategorySelect({
           aria-expanded={open}
           onClick={(e) => e.stopPropagation()}
           className={cn(
+            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "w-full justify-between font-normal",
             variant === "cell"
               ? "h-7 rounded-none border-transparent bg-transparent px-1 text-[1em] shadow-none hover:bg-transparent focus-visible:border-input focus-visible:bg-background"

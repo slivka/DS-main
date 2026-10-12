@@ -127,6 +127,7 @@ export function PartnerSelect({
               pointerDown.current = false;
             }}
             className={cn(
+              "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
               "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
               selected &&
                 onEditSelected &&

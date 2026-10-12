@@ -78,7 +78,7 @@ export function MultiSelect({
           <Button
             variant="outline"
             role="combobox"
-            className={`grid-toolbar-control grid-filter-field w-full justify-between font-normal ${
+            className={`ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100 grid-toolbar-control grid-filter-field w-full justify-between font-normal ${
               selected.length
                 ? "border-primary bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
                 : ""

@@ -530,7 +530,7 @@
   line-height: 1.2;
 }
 
-.grid-context-row .grid-toolbar-control {
+.grid-context-row .grid-toolbar-control:not(:disabled):not([aria-disabled="true"]) {
   border-color: var(--grid-chrome-border);
   background-color: var(--card);
   color: var(--foreground);
@@ -579,7 +579,7 @@
   border-style: solid;
 }
 
-.grid-toolbar-row .grid-toolbar-control {
+.grid-toolbar-row .grid-toolbar-control:not(:disabled):not([aria-disabled="true"]) {
   background-color: var(--card);
   color: var(--foreground);
 }
@@ -614,8 +614,8 @@
 }
 
 /* Primární tlačítko v lište gridu (přidání záznamu) – modré so světlým textom. */
-.zoom-filters .grid-toolbar-primary,
-.grid-toolbar-row .grid-toolbar-primary {
+.zoom-filters .grid-toolbar-primary:not(:disabled):not([aria-disabled="true"]),
+.grid-toolbar-row .grid-toolbar-primary:not(:disabled):not([aria-disabled="true"]) {
   background-color: var(--grid-steel);
   border-color: var(--grid-steel);
   color: var(--grid-frost);
@@ -2328,14 +2328,19 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   content: "";
 }
 
-/* Společný zakázaný stav: průhlednost se nesmí přenést na čitelný text. */
-.ds-disabled-control:is(:disabled, [aria-disabled="true"]) {
-  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
-  border-color: var(--input);
-  color: var(--foreground);
-  opacity: 1;
-}
-.ds-disabled-control:is(:disabled, [aria-disabled="true"])::placeholder,
-.ds-disabled-control:is(:disabled, [aria-disabled="true"]) [data-slot="unknown-value"] {
-  color: var(--foreground);
+/* Stavové utility mají přednost; tlumený text zůstává plně neprůhledný. */
+@layer components {
+  .ds-disabled-control:is(:disabled, [aria-disabled="true"]) {
+    background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+    border-color: var(--input);
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+  .ds-disabled-control:is(:disabled, [aria-disabled="true"])::placeholder,
+  .ds-disabled-control:is(:disabled, [aria-disabled="true"]) [data-placeholder],
+  .ds-disabled-control:is(:disabled, [aria-disabled="true"]) [data-slot="unknown-value"] {
+    color: var(--muted-foreground);
+    font-style: italic;
+    opacity: 1;
+  }
 }

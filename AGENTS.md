@@ -59,4 +59,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Measure dates per field, including labels; shrink only overflowing fields. Key observers by format/labels. Why: preserve neighbours and avoid observers on unrelated edits.
 - Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
-- All disabled field controls use ds-disabled-control in the canonical theme, including locked accounts. Why: one surface and readable foreground across both themes without opacity loss.
+- Disabled fields use ds-disabled-control plus disabled token utilities; state borders win. Why: readable muted text, one surface and consumer overrides.

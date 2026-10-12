@@ -299,7 +299,7 @@ export function DateField({
                     size="icon"
                     disabled={disabled}
                     aria-label={dsTexts.date.openCalendar}
-                    className="date-field-trigger absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                    className="ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100 date-field-trigger absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                   >
                     <CalendarIcon className="size-[var(--document-date-icon-size,1.05em)]" />
                   </Button>
