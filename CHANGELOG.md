@@ -1,5 +1,68 @@
 # Changelog – Slivka Design System
 
+## 2.98.0 (vydaná verze)
+
+### Edit dokladu 12i (bez nového vydání)
+
+- SegmentedField: pouze zakázaná vybraná volba nově používá plné `bg-muted`,
+  `text-foreground` a tučný řez bez primární barvy. Zakázaná nevybraná ani povolené
+  volby se nemění; žádné ikony ani nové tokeny. Segmenty gridu a sdílené CSS beze změny.
+- Ukázka porovnává shodné povolené a zakázané segmenty; lišta obsahuje zakázané
+  textové tlačítko. Unit kontroluje oba stavy a zachování ovládání povolené volby.
+- E2E nově porovnává oba zamčené segmenty s povoleným stavem a měří kontrast každého.
+  Rámečky lišty ověřuje proti sondě tokenů: běžný a ikonový prvek border, Přidat steel
+  a hover navy, otevřený neaktivní rozbalovač primary/chrome mix, kontext chrome-border,
+  zakázaný input a 1px. Příprava čeká na připojení lišty; otevřený rozbalovač sleduje
+  stabilně podle jména, nikoli podle měnícího se aria-expanded.
+- `package.json` srovnána s vydanou verzí 2.98.0. Katalogy upraveny pouze pro
+  SegmentedField proti 082c0b07; nevkládají poznámky do cizích sekcí.
+- Kontroly: unit **617/617**, 59 souborů, 1 947 assertions; lint **0 chyb / 293 varování**;
+  formát všech upravených TS/TSX souborů OK. Ruční `tsc`/typecheck ani build nebyly
+  spuštěny, protože je prostředí nepovoluje; automatický build OK.
+- Finální E2E **30/30**: `grid-control-styles.spec.ts` 9/9,
+  `document-disabled-inputs.spec.ts` 6/6, `edit-document-twelve.spec.ts` 15/15;
+  Chromium, Firefox a WebKit po 10 scénářích. Datumové běhy byly rozdělené podle
+  prohlížeče kvůli limitu příkazu. První gridový běh měl čekání na hydrataci WebKitu
+  příliš krátké; po explicitním čekání na připojenou lištu všech 9 testů prošlo.
+
+| Zakázaný segment | Světlý režim | Tmavý režim |
+|---|---:|---:|
+| Vybraný | 14,67 : 1 | 12,19 : 1 |
+| Nevybraný | 5,75 : 1 | 7,23 : 1 |
+
+Naměřeno shodně v Chromium, Firefox i WebKit; všechny hodnoty ≥ 4,5 : 1.
+Všechny požadované rámečky odpovídají CSS a tokenům, nebylo třeba měnit CSS.
+
+Výstup `python3 scripts/verify-edit-document-catalogs.py`:
+
+```text
+JSON: 426; změněné: SegmentedField; shodné: 425
+components.md: 426; všech sekcí: 38; změněné: []; nové: ['### SegmentedField 2.98.0 – Edit dokladu 12i [1]']
+.lovable/rules/components.md: 426; všech sekcí: 426; změněné: ['### SegmentedField [1]']; nové: []
+.lovable/rules/library-guidelines.md: 426; všech sekcí: 11; změněné: []; nové: ['## SegmentedField – Edit dokladu 12i (2.98.0) [1]']
+DocumentActionBar i všechny neuvedené sekce a JSON objekty jsou bajtově shodné; #enrichment zachován.
+```
+
+Změněné soubory proti 082c0b07:
+
+- `package.json`
+- `roadmap.md`
+- `CHANGELOG.md`
+- `src/components/ds/form/segmented-field.tsx`
+- `src/components/showcase/FormDesignTwoShowcase.tsx`
+- `src/routes/components.grid.tsx`
+- `tests/unit/disabled-controls.test.tsx`
+- `tests/e2e/grid-control-styles.spec.ts`
+- `scripts/verify-edit-document-catalogs.py`
+- `.lovable/design-system.json`
+- `components.md`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+
+Jediná zdrojově změněná veřejná komponenta: **SegmentedField**, bez změny API.
+Nové kontrolní poznámky mají vlastní sekce; ostatních 425 JSON objektů a všechny
+původní cizí sekce zůstaly bajtově shodné. Escapování `<` zachováno.
+
 ## 2.97.0 – Edit dokladu 12h (nevydáno)
 
 - Základní pravidla lišty gridu vylučují zakázané prvky přes `:where()`, bez zvýšení

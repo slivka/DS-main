@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Building2 } from "lucide-react";
 
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
+import { Button } from "@/components/ui/button";
 import {
   DataGrid,
   TreeGrid,
@@ -303,6 +304,16 @@ function GridPage() {
         ]}
         toolbarLeft={
           <>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled
+              data-testid="disabled-toolbar-control"
+              className="grid-toolbar-control"
+            >
+              {columns[1]?.label}
+            </Button>
             <GridToggleButton
               pressed={analytic}
               tone="mode"

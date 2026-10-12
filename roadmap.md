@@ -1,3 +1,9 @@
+## DS 2.98.0 – Edit dokladu 12i (bez nového vydání)
+- [x] Odlišit zamčenou vybranou segmentovou volbu a porovnat s povolenou.
+- [x] Ověřit rámečky lišty bez neohlášených změn CSS.
+- [x] Unit 617/617, E2E 30/30 ve třech prohlížečích, lint 0 chyb / 293 varování;
+  cílené katalogy 426 ×4 proti 082c0b07. Ruční tsc/typecheck prostředí nepovoluje.
+
 ## DS 2.97.0 – Edit dokladu 12h (nevydáno)
 - [x] Obnovit aktivní a hover stav lišt a odlišit zakázanou vybranou volbu.
 - [x] Zachovat přístupný součet, opravit kurz a doplnit úplná měření polí.
