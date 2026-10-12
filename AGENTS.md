@@ -61,3 +61,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
 - Shared Input owns the disabled surface matching DateField. Why: one appearance in both themes.
 - Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.
+
+- Reuse the existing numeric input typography for document totals; derive the embedded sum control size from control-h. Why: amount controls stay aligned with other form fields at every application zoom.

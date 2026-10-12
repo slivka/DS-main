@@ -241,6 +241,8 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 ### DocumentForm 2.31.0
 
+**Edit dokladu 12e (2.97.0):** Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole.
+
 **Edit dokladu 12d (2.97.0):** Zakázané textové a číselné vstupy dokladu včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zakázaným datumem. Rámeček, text i průhlednost zůstávají stejné v obou režimech; hodnoty a důvody se nemění.
 
 **Edit dokladu 12b (2.97.0):** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
