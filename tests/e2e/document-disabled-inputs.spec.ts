@@ -28,11 +28,8 @@ test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page 
           const style = getComputedStyle(input);
           return [style.backgroundColor, style.borderColor, style.color, style.opacity];
         });
-        return actual;
-      }).toEqual(await date.evaluate((input) => {
-        const style = getComputedStyle(input);
-        return [style.backgroundColor, style.borderColor, style.color, style.opacity];
-      }));
+        return JSON.stringify(actual) === JSON.stringify(reference);
+      }).toBe(true);
       expect(await symbol.evaluate((input) => getComputedStyle(input).backgroundColor))
         .not.toBe("rgba(0, 0, 0, 0)");
     }
