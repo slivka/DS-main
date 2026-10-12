@@ -148,7 +148,7 @@ test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page })
   }
 });
 
-test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace má jediný tooltip", async ({
+test("reálný kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace má jediný tooltip", async ({
   page,
 }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
@@ -167,42 +167,53 @@ test("dlouhý kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m�
       m.setAppZoom(z);
     }, zoom);
     const rate = form.locator("#document-rate");
-    await rate.fill("");
-    await rate.fill("1234,567890");
-    const parent = rate.locator("xpath=../..");
-    const update = parent.getByRole("button");
-    const geometry = await parent.evaluate((el) => {
-      const input = el.querySelector("input");
-      const icon = el.querySelector('[data-slot="rate-source-attention"]');
-      const action = el.querySelector("button");
-      if (!input || !icon || !action) throw new Error("Chybí kurz nebo ikony");
-      const style = getComputedStyle(input);
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      if (!context) throw new Error("Chybí měření textu");
-      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-      const box = input.getBoundingClientRect();
-      const textRight =
-        box.right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
-      return {
-        zoom: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
-        iconRight: icon.getBoundingClientRect().right,
-        textLeft: textRight - context.measureText(input.value).width,
-        textRight,
-        actionLeft: action.getBoundingClientRect().left,
-        value: input.value,
-      };
-    });
-    console.log("rate geometry", geometry);
-    expect(geometry.value.replace(/\s/g, "")).toBe("1234,567890");
-    expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
-    expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
-    await rate.hover();
-    await expect(page.getByRole("tooltip")).toContainText("Ruční kurz");
-    await update.hover();
-    await expect(page.getByRole("tooltip")).toHaveCount(1);
-    await expect(page.getByRole("tooltip")).toContainText("25,000");
-    await page.screenshot({ path: `/tmp/edit-eleven-rate-${zoom}.png` });
-    await update.click();
+    for (const real of ["24,365", "123,456"]) {
+      await rate.fill("");
+      await rate.fill(real);
+      const parent = rate.locator("xpath=../..");
+      const update = parent.getByRole("button");
+      const geometry = await parent.evaluate((el) => {
+        const input = el.querySelector("input");
+        const icon = el.querySelector('[data-slot="rate-source-attention"]');
+        const action = el.querySelector("button");
+        if (!input || !icon || !action) throw new Error("Chybí kurz nebo ikony");
+        const style = getComputedStyle(input);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Chybí měření textu");
+        context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const box = input.getBoundingClientRect();
+        const textRight =
+          box.right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
+        return {
+          zoom: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
+          iconRight: icon.getBoundingClientRect().right,
+          textLeft: textRight - context.measureText(input.value).width,
+          textRight,
+          actionLeft: action.getBoundingClientRect().left,
+          value: input.value,
+          fontSize:
+            parseFloat(style.fontSize) /
+            parseFloat(getComputedStyle(document.documentElement).fontSize),
+        };
+      });
+      expect(geometry.value.replace(/\s/g, "")).toContain(real);
+      // Písmo se nezmenšuje: standardní text-sm = 0,875rem.
+      expect(geometry.fontSize).toBeCloseTo(0.875, 2);
+      expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
+      expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
+      // Standardní Tooltip po kliknutí do pole znovu otevře až nové najetí.
+      await page.mouse.move(0, 0);
+      await rate.hover();
+      await expect(page.getByRole("tooltip")).toContainText("Ruční kurz");
+      // Posun stránky při změně zoomu zavírá tooltipy; najetí se proto opakuje po ustálení.
+      await expect(async () => {
+        await page.mouse.move(0, 0);
+        await update.hover();
+        await expect(page.getByRole("tooltip")).toHaveCount(1, { timeout: 1500 });
+      }).toPass();
+      await expect(page.getByRole("tooltip")).toContainText("25,000");
+      await update.click();
+    }
   }
 });

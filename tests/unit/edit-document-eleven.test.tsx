@@ -244,3 +244,65 @@ describe("Edit dokladu 11", () => {
     expect(click).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("Edit dokladu 11 · 2. kolo oprav", () => {
+  it("přepínač jen ke čtení je aria-disabled, bez popisu a se zakázaným vzhledem", async () => {
+    const { PaymentOrderAccountField } =
+      await import("../../src/components/ds/accounting/payment-order-account-field");
+    const { TooltipProvider } = await import("../../src/components/ui/tooltip");
+    const view = render(
+      <TooltipProvider>
+        <PaymentOrderAccountField
+          enabled
+          enabledLabel="Platit příkazem"
+          disabledLabel="Nezahrnovat"
+          disabledReason="Nezahrnuje se"
+        >
+          <input aria-label="Účet" />
+        </PaymentOrderAccountField>
+      </TooltipProvider>,
+    );
+    const button = view.getByRole("button", { name: "Platit příkazem" });
+    expect(button.getAttribute("aria-disabled")).toBe("true");
+    expect(button.getAttribute("aria-describedby")).toBeNull();
+    expect(button.className).toContain("opacity-50");
+    expect(button.className).toContain("cursor-not-allowed");
+    expect(button.className.split(" ")).not.toContain("pointer-events-none");
+    fireEvent.click(button);
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("po odpojení a připojení ručního účtu znovu ohlásí chybu IBAN", async () => {
+    const { ReceivedBankAccountField } =
+      await import("../../src/components/ds/accounting/received-bank-account-field");
+    const reports: object[] = [];
+    const texts = {
+      accountLabel: "Účet",
+      accountWithoutIbanLabel: "Účet",
+      validation: {
+        account: "a",
+        bankCode: "b",
+        bankCodeRequired: "c",
+        iban: "IBAN chyba",
+        swift: "d",
+        swiftRequired: "e",
+        accountRequired: "f",
+        accountOrIban: "g",
+      },
+    };
+    const field = (
+      <ReceivedBankAccountField
+        value={{ text: "", iban: "CZ00", swift: "" }}
+        onChange={() => {}}
+        isHomeCurrency
+        onValidationChange={(e) => reports.push(e)}
+        texts={texts}
+      />
+    );
+    const view = render(field);
+    view.rerender(<div />);
+    expect(reports.at(-1)).toEqual({});
+    view.rerender(field);
+    await waitFor(() => expect(reports.at(-1)).toEqual({ iban: "IBAN chyba" }));
+  });
+});

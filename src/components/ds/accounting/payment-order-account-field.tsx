@@ -25,6 +25,8 @@ export interface PaymentOrderAccountFieldProps extends ComponentPropsWithoutRef<
   disabledLabel: string;
   /** Důvod prázdného zakázaného pole. */
   disabledReason: string;
+  /** Důvod zamčení přepínače (např. způsob platby); jen ten je přístupný popis. */
+  lockedReason?: string;
 }
 
 /** Pole účtu s ikonou banky, která funguje stejně jako Σ u částky. */
@@ -37,6 +39,7 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
       enabledLabel,
       disabledLabel,
       disabledReason,
+      lockedReason,
       className,
       ...rest
     },
@@ -50,8 +53,9 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
       disabledLabel,
       disabledReason,
     };
-    const label = props.enabled ? props.enabledLabel : props.disabledLabel;
+    const label = lockedReason ?? (props.enabled ? props.enabledLabel : props.disabledLabel);
     const descriptionId = useId();
+    const locked = !props.onEnabledChange;
     const action = (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -60,11 +64,15 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
             variant={props.enabled ? "default" : "outline"}
             size="icon"
             aria-label={props.enabledLabel}
-            aria-describedby={descriptionId}
+            aria-describedby={lockedReason ? descriptionId : undefined}
             aria-pressed={props.enabled}
-            aria-disabled={!props.onEnabledChange || undefined}
+            aria-disabled={locked || undefined}
             onClick={() => props.onEnabledChange?.(!props.enabled)}
-            className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
+            className={cn(
+              "absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]",
+              locked && "cursor-not-allowed opacity-50",
+              locked && props.enabled && "hover:bg-primary",
+            )}
           >
             <span className="relative">
               <Landmark className="size-4" />
@@ -85,9 +93,11 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
         data-enabled={props.enabled}
         className={cn("relative min-w-0", className)}
       >
-        <span id={descriptionId} className="sr-only">
-          {label}
-        </span>
+        {lockedReason ? (
+          <span id={descriptionId} className="sr-only">
+            {lockedReason}
+          </span>
+        ) : null}
         {props.enabled ? (
           <div className="[&_[role=combobox]]:pr-11 [&_input]:pr-11">{props.children}</div>
         ) : (

@@ -784,6 +784,6 @@
 - [ ] Samostatný výsledek automatického typechecku: kontrolní prostředí neposkytlo jeho výstup; ruční spuštění je v této relaci zakázáno.
 
 ### DS 2.94.0 – opravy po kontrole edb1cd4a (nevydáno)
-- [ ] Obnovit doslovné katalogové texty, zdrojový manifest a ověřit všechny čtyři katalogy.
-- [ ] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
-- [ ] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.
+- [x] Obnovit doslovné katalogové texty, zdrojový manifest a ověřit všechny čtyři katalogy.
+- [x] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
+- [x] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.
