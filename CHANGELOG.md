@@ -1,8 +1,8 @@
 # Changelog – Slivka Design System
 
-## 2.98.0 (vydaná verze)
+## 2.99.0 – Edit dokladu 12i
 
-### Edit dokladu 12i (bez nového vydání)
+Obsah 12i byl nejdřív omylem vydán znovu pod štítkem v2.98.0, spotřebitelům se proto dodává jako v2.99.0.
 
 - SegmentedField: pouze zakázaná vybraná volba nově používá plné `bg-muted`,
   `text-foreground` a tučný řez bez primární barvy. Zakázaná nevybraná ani povolené
