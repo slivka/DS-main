@@ -48,7 +48,11 @@ export function FormDesignTwoShowcase() {
   const [note, setNote] = useState<string | null>(null);
   return (
     <ShowcaseSection title={t.title}>
-      <div data-testid="form-design-two" className="max-w-full">
+      <div
+        data-testid="form-design-two"
+        data-ready={ready ? "true" : "false"}
+        className="max-w-full"
+      >
         <CheckboxField
           label={t.same}
           checked={same}

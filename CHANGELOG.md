@@ -1,5 +1,14 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12e (nevydáno)
+
+- Kurzy, kurz DPH, Celkem a pevná i volitelná měna používají standardní výšku `var(--control-h)` místo zvýšené h-11. Tlačítko Σ má velikost odvozenou od stejné výšky a zůstává uvnitř pole.
+- Celkem zůstává tučné, bez velkého text-xl. Velikost sdílí se standardním VS přes stávající typografii font-mono; desetinné vstupy nadále používají sans písmo, tabulkové číslice a zarovnání vpravo. Stejné platí pro „Sčítá se z rozpisu“.
+- Interaktivní EUR ukázka má dva kurzy i oba režimy součtu. E2E při 100 / 150 / 200 % měří výšku všech polí proti VS (±0,5 px), mezeru popisku, shodnou velikost písma, tučnost ≥ 600, vnitřní tlačítko a nepřetékající částku 1 234 567,89. Screenshoty obou režimů jsou přílohami testu.
+- Ověření: unit 612/612 (58 souborů, 1 929 assertions); související E2E 6/6 (2 Chromium, 2 Firefox, 2 WebKit); lint 0 chyb / 294 varování; formát OK a automatický build OK. Samostatný typecheck prostředí nepovoluje. Verze zůstává 2.97.0, nevydáno.
+- Soubory kola 12e: `src/components/ds/accounting/document-form/AmountSection.tsx`, `src/components/ds/accounting/document-form/use-currency-control.tsx`, `src/components/showcase/FormDesignTwoShowcase.tsx`, `tests/e2e/document-amount-section.spec.ts`, `AGENTS.md`, `roadmap.md`, `CHANGELOG.md`, `components.md`, `.lovable/design-system.json`, `.lovable/rules/components.md`.
+- Dotčená veřejná komponenta kola 12e: DocumentForm (interní Částka a ovládání měny); žádná změna API. Katalogy 426 / 426 / 426 / 426. Proti b27379e4 kumulativně změněny Field, BankAccountField, PaymentOrderAccountField, DocumentForm a Input; ostatních 421 objektů a jejich dokumentačních bloků je bajtově shodných.
+
 ## 2.97.0 – Edit dokladu 12d (nevydáno)
 
 - Sdílený Input používá v zakázaném stavu stejný podklad `muted/40` jako zamčené datum. Rámeček `input`, zděděná barva textu a průhlednost 0,5 zůstávají společné; žádná nová barva. Změna platí i pro ostatní uživatele sdíleného Input, nikoli jen lokální napodobeninu v dokladu.

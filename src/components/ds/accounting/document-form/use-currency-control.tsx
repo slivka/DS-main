@@ -48,7 +48,7 @@ export function useCurrencyControl({
       data-currency-fixed=""
       aria-readonly="true"
       aria-describedby={currencyReason ? currencyReasonId : undefined}
-      className="flex h-11 w-[6.5rem] items-center rounded-md border border-input bg-muted/40 px-3 text-sm font-normal tabular-nums"
+      className="flex h-[var(--control-h)] w-[6.5rem] items-center rounded-md border border-input bg-muted/40 px-3 text-sm font-normal tabular-nums"
     >
       {value.currency}
     </div>
@@ -76,7 +76,7 @@ export function useCurrencyControl({
       value={value.currency}
       onChange={(currency) => patch({ currency })}
       options={currencyOptions}
-      triggerClassName="h-11"
+      triggerClassName="h-[var(--control-h)]"
     />
   ) : (
     fixedCurrency

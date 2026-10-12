@@ -1,3 +1,8 @@
+## DS 2.97.0 – Edit dokladu 12e (nevydáno)
+- [x] Částka, kurzy a měna ve standardní výšce; součet tučný se standardním písmem.
+- [x] Ukázka a ověření při 100 / 150 / 200 %, ruční i odvozený součet.
+- [x] Unit, E2E, lint, cílené katalogy a přehled změn.
+
 ## DS 2.97.0 – Edit dokladu 12d (nevydáno)
 - [x] Společný zakázaný Input: stejný podklad jako zamčený datum, bez nové barvy.
 - [x] Ověřit KS/SS, ostatní vstupy a světlý/tmavý režim.
