@@ -172,7 +172,7 @@ export function CountrySelect({
             className,
           )}
         >
-          <span className="truncate">
+          <span data-placeholder={!selected ? "" : undefined} className="truncate">
             {selected
               ? `${selected.name} (${selected.code})`
               : (placeholder ?? dsTexts.country.choose)}

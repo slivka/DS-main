@@ -58,7 +58,10 @@ export function LegalFormField({
             className,
           )}
         >
-          <span className={cn("truncate", !current && "text-muted-foreground")}>
+          <span
+            data-placeholder={!current ? "" : undefined}
+            className={cn("truncate", !current && "text-muted-foreground")}
+          >
             {selected ? formatCodeName(selected.code, selected.name) : placeholder}
           </span>
           <ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />

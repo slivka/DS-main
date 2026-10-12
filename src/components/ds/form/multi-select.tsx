@@ -85,6 +85,7 @@ export function MultiSelect({
             } ${className}`}
           >
             <span
+              data-placeholder={!selected.length ? "" : undefined}
               className={`truncate ${selected.length ? "typo-action" : "text-muted-foreground"}`}
             >
               {label}

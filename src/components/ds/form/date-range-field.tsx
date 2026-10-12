@@ -101,7 +101,9 @@ export function DateRangeField({
           )}
         >
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{text || placeholder || dsTexts.date.rangePlaceholder}</span>
+          <span data-placeholder={!text ? "" : undefined} className="truncate">
+            {text || placeholder || dsTexts.date.rangePlaceholder}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

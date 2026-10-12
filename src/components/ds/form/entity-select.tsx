@@ -189,7 +189,10 @@ export function ContactSelect({
             className,
           )}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+          <span
+            data-placeholder={!selected ? "" : undefined}
+            className={cn("truncate", !selected && "text-muted-foreground")}
+          >
             {formatContactName(selected) ?? placeholder}
           </span>
           {selected?.active === false ? (

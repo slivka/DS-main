@@ -219,6 +219,7 @@ export function DimensionSelect({
             )}
           >
             <span
+              data-placeholder={!value ? "" : undefined}
               className={cn(
                 "min-w-0 flex-1 truncate text-left",
                 !selected && "text-muted-foreground",

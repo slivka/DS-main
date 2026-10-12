@@ -6,7 +6,38 @@ from collections import Counter
 from pathlib import Path
 
 BASE = "b27379e4"
-ALLOWED = {'OptionSelect', 'DocumentForm', 'ResizableCombobox', 'DimensionSelect', 'TagPicker', 'CategorySelect', 'Input', 'ChipMultiSelect', 'PartnerSelect', 'DateRangeField', 'PaymentOrderAccountField', 'SelectTrigger', 'MultiSelect', 'SegmentedField', 'BankAccountField', 'Button', 'DateField', 'Field', 'CalendarPicker', 'DecimalInput', 'CountrySelect', 'UnitSelect', 'Textarea', 'RateField', 'LegalFormField', 'BookSelect', 'VsField', 'AccountSelect', 'VatCodeSelect', 'ContactSelect'}
+ALLOWED = {
+    'AccountSelect',
+    'BankAccountField',
+    'BookSelect',
+    'Button',
+    'CalendarPicker',
+    'CategorySelect',
+    'ChipMultiSelect',
+    'ContactSelect',
+    'CountrySelect',
+    'DateField',
+    'DateRangeField',
+    'DecimalInput',
+    'DimensionSelect',
+    'DocumentForm',
+    'Field',
+    'Input',
+    'LegalFormField',
+    'MultiSelect',
+    'OptionSelect',
+    'PartnerSelect',
+    'PaymentOrderAccountField',
+    'RateField',
+    'ResizableCombobox',
+    'SegmentedField',
+    'SelectTrigger',
+    'TagPicker',
+    'Textarea',
+    'UnitSelect',
+    'VatCodeSelect',
+    'VsField',
+}
 
 
 def baseline(path):

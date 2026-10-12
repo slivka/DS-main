@@ -107,7 +107,10 @@ export function VatCodeSelect({
             className,
           )}
         >
-          <span className={cn("truncate", !selected && "text-muted-foreground")}>
+          <span
+            data-placeholder={!selected ? "" : undefined}
+            className={cn("truncate", !selected && "text-muted-foreground")}
+          >
             {selected ? formatCodeName(selected.code, selected.name) : placeholder}
           </span>
           <ChevronDown className="ml-auto size-4 shrink-0 opacity-50" />

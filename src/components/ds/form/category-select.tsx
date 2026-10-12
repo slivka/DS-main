@@ -108,7 +108,7 @@ export function CategorySelect({
             className,
           )}
         >
-          <span className="truncate">
+          <span data-placeholder={!selected ? "" : undefined} className="truncate">
             {selected ? selected.name : allowEmpty ? emptyLabel : placeholder}
           </span>
           <ChevronDown className="ml-1 size-3.5 shrink-0 opacity-50" />

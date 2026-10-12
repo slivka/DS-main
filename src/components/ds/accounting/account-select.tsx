@@ -188,6 +188,7 @@ export function AccountSelect({
           )}
         >
           <span
+            data-placeholder={!value ? "" : undefined}
             className={cn(
               "truncate",
               selected ? "font-mono tabular-nums text-foreground" : "text-muted-foreground",

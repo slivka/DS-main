@@ -1,5 +1,113 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12g (nevydáno)
+
+- Úplná inventura spouštěčů: PartnerSelect, AccountSelect, VatCodeSelect, DimensionSelect,
+  UnitSelect, CategorySelect, CountrySelect, LegalFormField, ContactSelect, CalendarPicker,
+  DateRangeField, MultiSelect, TagPicker a ChipMultiSelect; BookSelect dědí OptionSelect,
+  ResizableCombobox je pouze obal a dědí stav vloženého výběru. Společný Button sjednocuje
+  také ikonové akce polí, přepínače a zakázané akce lišty. MultiSelect, ContactSelect,
+  TagPicker, ChipMultiSelect a ResizableCombobox nemají vlastní disabled prop; nové API
+  se nezavádí, společný stav je připravený na jejich podkladovém prvku.
+- Zakázaný text je muted-foreground bez průhlednosti. Placeholder i prázdná hodnota mají
+  navíc kurzívu. Podklad zůstává muted/40 a běžný rámeček input. Pravidlo leží ve vrstvě
+  components; stavové warning/destructive/aria-invalid a spotřebitelské utility mají přednost.
+  Starší lišta gridu již nepřebíjí barvy zakázaných akcí. E2E ověřuje warning rámeček Data DPH.
+- Celkem, Kurz i VS používají sans, text-sm a tabular-nums. Celkem zůstává tučně v obou
+  režimech součtu; při 100/150/200 % mají stejnou výšku a písmo. Horní hrany se porovnávají
+  v každém skutečném řádku: při nedostatku šířky se celé skupiny mohou přirozeně zalomit.
+- Doklad jen pro čtení ověřuje dynamicky všechna zakázaná ovládání, včetně Partnera,
+  externího čísla, všech dat a kalendářů, VS/KS/SS, Popisu, zamčeného účtu a jeho příkazu,
+  Kurzu, Celkem, Σ, Měny a akcí řádků. Samostatně je zakázaný výběr měny, prázdný výběr
+  a Radix SelectTrigger. Režim mění skutečné tlačítko, kontroluje html.dark a čeká na dokončení
+  barevných přechodů. Barva zakázaného textu se liší od povoleného, prázdný obsah od hodnoty.
+
+| Měřená skupina (Chromium / Firefox / WebKit) | Světlý kontrast | Tmavý kontrast |
+|---|---:|---:|
+| Všechna zakázaná pole a akce stejného dokladu | 5,75 : 1 | 6,30 : 1 |
+| Samostatný výběr Měna, prázdná hodnota, Radix SelectTrigger | 5,75 : 1 | 7,23 : 1 |
+
+- Výsledky: unit **615/615**, 59 souborů, 1 937 assertions; související E2E **24/24**
+  (Chromium 8, Firefox 8, WebKit 8; datumy 15, částka 3, zakázaná pole 6).
+  Finální datumový běh 15/15, finální běh zakázaných polí 6/6, částka 3/3.
+  Předchozí běhy odhalily monospace VS, starší přepis barev lišty a přechod barev WebKitu;
+  po opravách všechny uvedené finální kontroly prošly. Lint **0 chyb / 294 varování**,
+  formát src a tests OK. Automatický build OK. Samostatný typecheck a ruční build
+  nebyly spuštěny (prostředí je zakazuje). Verze zůstává 2.97.0, nevydáno.
+- Duplicitní manifestový klíč odstraněn; měření dat v system.md odpovídá per-pole opravám
+  po 12c; odstavce DocumentForm jsou chronologicky, úvodní mezera OptionSelect odstraněna,
+  hledání bez mezer popsáno v jeho veřejném katalogu. Datumový soubor zůstává nad 300 řádky:
+  tato změna pouze sdílí vzhled spouštěče a nerozděluje stávající provázané maskování/kalendář.
+- Bajtový důkaz všech JSON objektů i všech sekcí ##/###:
+  `python3 scripts/verify-edit-document-catalogs.py`. Katalogy **426/426/426/426**,
+  **396** nedotčených JSON objektů shodných s b27379e4; #enrichment zachován.
+  Kumulativně změněné komponenty proti vydání:
+
+AccountSelect, BankAccountField, BookSelect, Button, CalendarPicker, CategorySelect, ChipMultiSelect, ContactSelect, CountrySelect, DateField, DateRangeField, DecimalInput, DimensionSelect, DocumentForm, Field, Input, LegalFormField, MultiSelect, OptionSelect, PartnerSelect, PaymentOrderAccountField, RateField, ResizableCombobox, SegmentedField, SelectTrigger, TagPicker, Textarea, UnitSelect, VatCodeSelect, VsField
+
+- Markdown: components.md pouze DocumentForm 2.31.0; pravidla komponent pouze stejné
+  uvedené komponenty; guidelines změněný blok Edit dokladu 12 a nové bloky 12b/12c/12f/12g.
+  DocumentActionBar a všechny neuvedené sekce jsou bajtově shodné s b27379e4.
+- Soubory změněné kumulativně proti b27379e4 (včetně nového testu):
+
+- `.lovable/design-system.json`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+- `.lovable/system.md`
+- `AGENTS.md`
+- `CHANGELOG.md`
+- `components.md`
+- `package.json`
+- `roadmap.md`
+- `scripts/verify-edit-document-catalogs.py`
+- `src/components/ds/accounting/AGENTS.md`
+- `src/components/ds/accounting/account-select.tsx`
+- `src/components/ds/accounting/bank-account-field.tsx`
+- `src/components/ds/accounting/dimension-select.tsx`
+- `src/components/ds/accounting/document-form/AmountSection.tsx`
+- `src/components/ds/accounting/document-form/DatesSection.tsx`
+- `src/components/ds/accounting/document-form/PaymentSection.tsx`
+- `src/components/ds/accounting/document-form/build-document-notices.tsx`
+- `src/components/ds/accounting/document-form/use-currency-control.tsx`
+- `src/components/ds/accounting/locked-account-value.tsx`
+- `src/components/ds/accounting/partner-select.tsx`
+- `src/components/ds/accounting/payment-order-account-field.tsx`
+- `src/components/ds/accounting/unit-select.tsx`
+- `src/components/ds/accounting/vat-code-select.tsx`
+- `src/components/ds/accounting/vs-field.tsx`
+- `src/components/ds/form/TagPicker.tsx`
+- `src/components/ds/form/calendar-picker.tsx`
+- `src/components/ds/form/category-select.tsx`
+- `src/components/ds/form/chip-multi-select.tsx`
+- `src/components/ds/form/country-select.tsx`
+- `src/components/ds/form/date-field.tsx`
+- `src/components/ds/form/date-range-field.tsx`
+- `src/components/ds/form/entity-select.tsx`
+- `src/components/ds/form/legal-form-field.tsx`
+- `src/components/ds/form/multi-select.tsx`
+- `src/components/ds/form/option-select.tsx`
+- `src/components/ds/form/rate-field.tsx`
+- `src/components/ds/form/searchable-option-select.tsx`
+- `src/components/ds/form/segmented-field.tsx`
+- `src/components/ds/layout/form-field-layout.tsx`
+- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `src/components/showcase/FormDesignTwoShowcase.tsx`
+- `src/components/ui/button.tsx`
+- `src/components/ui/input.tsx`
+- `src/components/ui/select.tsx`
+- `src/components/ui/textarea.tsx`
+- `src/ds-texts/form-design-two-showcase.ts`
+- `src/routes/workspace-settings.$page.tsx`
+- `src/styles.css`
+- `tests/e2e/document-amount-section.spec.ts`
+- `tests/e2e/document-disabled-inputs.spec.ts`
+- `tests/e2e/edit-document-twelve.spec.ts`
+- `tests/unit/bank-account-options.test.tsx`
+- `tests/unit/document-form-286.test.tsx`
+- `tests/unit/edit-document-eleven.test.tsx`
+- `tests/unit/edit-document-twelve.test.tsx`
+- `tests/unit/disabled-controls.test.tsx`
+
 ## 2.97.0 – Edit dokladu 12f (nevydáno)
 
 - Zakázaný vzhled platí v celé knihovně: Input, SelectTrigger, OptionSelect (běžná i hledatelná větev), Textarea, DecimalInput a interní LockedAccountValue; DocumentForm sjednocuje i pevnou měnu. Stávající podklad `muted/40`, rámeček `input`, text `foreground`. Průhlednost zvýšena z 0,5 na 1 kvůli čitelnosti. Naměřený kontrast v Chromiu: světlý 15,48 : 1; tmavý 12,32 : 1. Všechny tři prohlížeče ověřují minimum 4,5 : 1.
