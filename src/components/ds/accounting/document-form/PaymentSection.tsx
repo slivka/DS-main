@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from "react";
 import type { DsTexts } from "../../../../ds-texts";
-import { Fragment } from "react";
+import { Fragment, useId } from "react";
 import { Input } from "../../../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { OptionSelect } from "../../form/option-select";
@@ -71,11 +71,18 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     bankAccountField,
     field,
   } = p;
+  const reasonId = useId();
   const symbolControl = (control: ReactNode) =>
     symbolsDisabledReason ? (
-      <Tooltip>
+      <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>
-          <div tabIndex={0} className="min-w-0" aria-label={symbolsDisabledReason}>
+          <div
+            tabIndex={0}
+            role="group"
+            className="min-w-0 [&_input]:pointer-events-none"
+            aria-disabled="true"
+            aria-describedby={reasonId}
+          >
             {control}
           </div>
         </TooltipTrigger>
@@ -86,6 +93,11 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     );
   return f.symbols || f.bankAccount || f.paymentOrders ? (
     <Fragment>
+      {symbolsDisabledReason ? (
+        <span id={reasonId} className="sr-only">
+          {symbolsDisabledReason}
+        </span>
+      ) : null}
       <SectionHeading>{t.paymentSection}</SectionHeading>
       <div
         data-slot="document-payment-section"

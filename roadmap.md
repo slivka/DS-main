@@ -1,3 +1,9 @@
+## DS 2.96.0 – oprava kontroly b632d10b (nevydáno)
+- [x] Obnovit katalogy proti fbeae823 a doložit nedotčené záznamy.
+- [x] Jednotná geometrie ikon a datumů, zalamování bez rolování, CS/SK měření.
+- [x] Přístupné zamčené symboly, hover a regresní testy FV/ZFV/DDPOZ.
+- [x] Unit, související e2e, lint, oprava CHANGELOG a manifestu.
+
 ## DS 2.94.0 – Edit dokladu 11 (nevydáno)
 - [x] A1 ikony menu; A2 tooltipy a stav kurzů
 - [x] A3/A4 společné zamčené účty a priorita způsobu platby

@@ -95,8 +95,17 @@
 :root {
   /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
   --control-h: 2.25rem;
-  /* Datum dokladu: deset znaků, levý okraj, tři ikonové sloty a oba rámečky. */
-  --document-date-width: calc(10ch + 0.75rem + 5.9em + 0.125rem);
+  /* Datum dokladu: skutečná poloha ikon je společná se šířkou i odsazením. */
+  --document-date-icon-offset: 0.3em;
+  --document-date-icon-step: 1.8em;
+  --document-date-icon-size: 1.05em;
+  --document-date-text-gap: 0.1em;
+  --document-date-left-padding: 0.5rem;
+  --document-date-font-size: min(var(--text-sm), 7.5cqi);
+  --document-date-right-padding: calc(
+    var(--document-date-icon-offset) + 2 * var(--document-date-icon-step) +
+      var(--document-date-icon-size) + var(--document-date-text-gap)
+  );
   /* Jednotná pevná škála rohů: nikdy se neodvozuje od písma ani zoomu. */
   --radius: 0.25rem;
   /* Námořnická modrá – profesionální paleta pro účetnictví. */
@@ -352,17 +361,49 @@
 /* Kompaktní šířka jen pro doklad, ostatní DateField zůstávají beze změny.
    Tabulkové číslice drží deset znaků data bez závislosti na jejich hodnotě. */
 .document-dates-compact [data-slot="field"] {
-  font-size: var(--text-sm);
-  width: var(--document-date-width);
-  min-width: var(--document-date-width);
+  font-size: var(--document-date-font-size);
+  width: max-content;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: max-content;
+}
+.document-dates-compact [data-slot="field"]::after {
+  content: "00.00.0000";
+  visibility: hidden;
+  grid-area: 2 / 1;
+  height: 0;
+  line-height: 0;
+  font-variant-numeric: tabular-nums;
+  padding-left: var(--document-date-left-padding);
+  padding-right: calc(var(--document-date-right-padding) + 0.1rem);
+  border-inline: 0.0625rem solid transparent;
+}
+.document-dates-compact [data-slot="field"] > div {
+  grid-area: 2 / 1;
+}
+.document-dates-container {
+  container-type: inline-size;
 }
 .document-dates-compact input {
-  min-width: 0;
+  font-size: inherit;
+  width: 0;
+  min-width: 100%;
+  padding-left: var(--document-date-left-padding);
+  padding-right: calc(
+    var(--document-date-icon-offset) + (var(--date-field-icons) - 1) *
+      var(--document-date-icon-step) + var(--document-date-icon-size) +
+      var(--document-date-text-gap)
+  );
   font-variant-numeric: tabular-nums;
 }
+.document-dates-compact button {
+  font-size: inherit;
+}
 .document-dates-compact label {
+  font-size: min(var(--text-xs), var(--document-date-font-size));
   max-width: none;
-  overflow: visible;
+  width: max-content;
+  overflow: hidden;
 }
 
 /* Jednotné velikosti nadpisů a popisků – navázané na tokeny --text-*. */

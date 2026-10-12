@@ -408,7 +408,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
-- `DocumentForm` skládá Datumy jako pružný řádek; shodnou šířku polí určuje token `--document-date-width` podle celého data a maximálně tří ikon. Při užším panelu než nerozdělitelná dvojice DPH řádek vodorovně roluje, data a popisky se neoříznou. DUZP a Datum DPH zůstávají společně v pravé skupině.
+- `DocumentForm` skládá Datumy jako pružný řádek; shodnou šířku polí určuje token `--document-date-width` podle celého data a maximálně tří ikon. Dvojice DPH zůstává společně jen dokud se vejde; v užším panelu se zalomí jednotlivě bez vodorovného rolování a ořezu zvýraznění. Delší popisek rozšíří své pole. Pokud zoom zvětší datum nad šířku panelu, jen datumové písmo se omezí jeho kontejnerem; padding i ikony vycházejí ze společných proměnných.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
 

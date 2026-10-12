@@ -52,6 +52,11 @@ describe("Edit dokladu 12", () => {
         expect(input.getAttribute("value")).toBe("");
         const trigger = input.parentElement;
         if (!trigger) throw new Error("Chybí tooltip symbolu");
+        expect(trigger.getAttribute("aria-disabled")).toBe("true");
+        expect(trigger.hasAttribute("aria-label")).toBe(false);
+        expect(
+          document.getElementById(trigger.getAttribute("aria-describedby") ?? "")?.textContent,
+        ).toBe(scenario.reason);
         fireEvent.focus(trigger);
         await waitFor(() => expect(view.getByRole("tooltip").textContent).toBe(scenario.reason));
         fireEvent.blur(trigger);
@@ -70,10 +75,28 @@ describe("Edit dokladu 12", () => {
       </DsTextsProvider>,
     );
     const input = view.container.querySelector("#document-specificSymbol");
-    expect(input?.parentElement?.getAttribute("aria-label")).toBe(
-      DS_TEXTS_SK.documentForm.paymentOrderDisabled,
-    );
+    expect(
+      document.getElementById(input?.parentElement?.getAttribute("aria-describedby") ?? "")
+        ?.textContent,
+    ).toBe(DS_TEXTS_SK.documentForm.paymentOrderDisabled);
   });
+  for (const documentType of ["FV", "ZFV", "DDPOZ"])
+    it(`${documentType} nechá symboly editovatelné bez použitelného důvodu`, () => {
+      const change = mock();
+      const view = render(
+        <DocumentForm
+          {...base}
+          documentType={documentType}
+          onChange={change}
+          receivedAccountDisabledReason={documentType === "DDPOZ" ? "Hotově" : undefined}
+          paymentOrderEnabled={documentType === "DDPOZ"}
+        />,
+      );
+      for (const label of ["Konstantní symbol", "Specifický symbol"])
+        expect(view.getByLabelText(label).hasAttribute("disabled")).toBe(false);
+      fireEvent.change(view.getByLabelText("Specifický symbol"), { target: { value: "88" } });
+      expect(change).toHaveBeenCalledWith({ ...base.value, specificSymbol: "88" });
+    });
   it("všech pět dat drží pořadí a vazba i varování zůstávají dostupné", () => {
     const toggle = mock();
     const view = render(

@@ -1,7 +1,7 @@
 ## Edit dokladu 11 (2.94.0)
 
 - `RateField.sourceAttention?: boolean`; `DocumentHeaderValue.rateSourceAttention` / `vatRateSourceAttention` se předávají oběma kurzům. Jednotka a zdroj jsou v přístupném tooltipu celého pole, nikoli pod polem (BREAKING pravidla).
-- `DocumentForm.receivedAccountDisabledReason?: string` má u FP/ZFP přednost před příkazem i dodavatelem; vypnutý příkaz nelze změnit, KS/SS zůstávají viditelné, prázdné a zakázané. Hodnoty spravuje aplikace.
+- `DocumentForm.receivedAccountDisabledReason?: string` má u FP/ZFP přednost před příkazem i dodavatelem; vypnutý příkaz nelze změnit, KS/SS jsou skryté. Hodnoty spravuje aplikace.
 - `PaymentOrderAccountField` a zamčený firemní účet zobrazí důvod uvnitř šedého pole bez zámku, jednořádkově s tooltipem.
 - FP/ZFP/DDPOZ: druhý řádek účet 14 + způsob platby 6 (DDPOZ bez způsobu), třetí Popis 14 + číslo 6. Pod 40rem pod sebou ve stejném pořadí.
 - `RecordActionBar` sjednocuje ikony všech položek menu na size-4 shrink-0.
@@ -240,6 +240,9 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - `CompanySwitcher`, `PeriodSwitcher` i základní `ContextPill` podporují řízené `open` / `onOpenChange`. Výběr položky a `onCreate` otevřenou nabídku vždy zavřou.
 
 ### DocumentForm 2.31.0
+
+**Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
+
 - Formulář nemá pravý panel; používá jednotnou mřížku 70 / 15 / 15 v sekcích Partner, Data, Účtování a částka nebo Částka a volitelně Platební údaje.
 - `title` se vždy zobrazí v `PageHeader`. `identity` je první řádek uvnitř karty s položkami a velkým číslem dokladu; na úzké ploše se položky zalomí a žádná se neskrývá.
 - `directionBadge` stojí před identitou; bez `identity` vytvoří samostatný první řádek těla. Pruh akcí drží vlevo stav a Schváleno a vpravo akce.
@@ -250,9 +253,6 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 - `IcoLink` odkazuje platné české IČO do obchodního rejstříku nebo ARES; `PartnerOption` podporuje `country` a `kind`.
 - `onCreatePartner` dostává `{ name, ico, dic }`; osm číslic předvyplní IČO, jiný text název a samostatná pole se zachovají.
 - Zaokrouhlení předává formulář do `JournalLinesEditor` přes `rounding`; pole je v dolní liště řádků vlevo od údaje Zbývá rozepsat a respektuje právo k úpravě.
-
-
-**Edit dokladu 12 (2.96.0):** shodná kompaktní datumová pole jen v DocumentForm; nerozdělitelná dvojice DUZP + Datum DPH. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané. `receivedAccountDisabledReason` má u FP/ZFP přednost, existující volitelný `companyBankAccountDisabledReason` stejným způsobem zamkne KS/SS u FV/ZFV. DS hodnoty nemaže.
 
 ## SectionHeading (2.28.0)
 
