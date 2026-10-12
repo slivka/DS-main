@@ -1,5 +1,14 @@
 # Changelog – Slivka Design System
 
+## 2.96.0 – Edit dokladu 12 (nevydáno)
+
+- Poslední vydání v2.95.0; toto kolo mění package na 2.96.0 a nic nevydává.
+- **Změna chování D1:** pět datumových polí v DocumentForm má shodnou kompaktní šířku z obsahu a tří ikonových slotů. Datum ani popisek se neořízne. DUZP + Datum DPH se zalomí pouze společně; pokud je samotná dvojice širší než panel, datumový řádek vodorovně roluje. Filtry a dialogy s DateField se nemění.
+- **BREAKING – změna chování D2:** KS/SS se již neskrývají. Při vypnutém příkazu nebo nepoužitém bankovním účtu zůstávají prázdné zakázané ovládací prvky s důvodem v tooltipu. Aplikace nesmí odvozovat použitelnost od existence pole v DOM; řiďte se způsobem platby/příkazem. DS původní hodnoty nikdy nemaže.
+- FV/ZFV používají existující volitelný companyBankAccountDisabledReason také pro KS/SS; nový prop není nutný. FP/ZFP respektují receivedAccountDisabledReason; DDPOZ jej nadále ignoruje.
+- Po Update není potřeba nový povinný prop; aplikace a DB nadále zodpovídají za případné mazání neplatných platebních symbolů.
+
+
 ## 2.94.0 – Edit dokladu 11 (nevydáno)
 
 - Ikony všech položek RecordActionBar mají jednotnou velikost size-4 a shrink-0.

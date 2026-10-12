@@ -55,3 +55,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
 - Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
+- Scope compact date geometry to DocumentDatesSection and keep VAT dates indivisible. Why: filters and dialogs retain their existing DateField contract.
+- Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.

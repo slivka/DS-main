@@ -36,42 +36,51 @@ export function DocumentDatesSection({
   return (
     <>
       <SectionHeading>{t.datesSection}</SectionHeading>
-      <div data-slot="document-dates" className="flex flex-wrap items-start gap-3">
-        <div className="flex flex-wrap items-start gap-3">
-          {date("issueDate", t.issueDate, "flex-none w-max")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max")}
-          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
-        </div>
-        {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,
-            po zalomení zůstane na prvním řádku a skupina začne vlevo – bez prahu. */}
-        <div data-slot="document-dates-spacer" aria-hidden className="h-0 min-w-0 flex-1 basis-0" />
+      <div className="overflow-x-auto">
         <div
-          data-slot="document-vat-dates"
-          className="flex flex-wrap items-start justify-start gap-3"
+          data-slot="document-dates"
+          className="document-dates-compact flex flex-wrap items-start gap-3"
         >
-          {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
-          {showVatFields
-            ? date(
-                "vatDate",
-                t.vatDate,
-                "relative flex-none w-max [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right",
-                {
-                  link: vat?.dateLink
-                    ? {
-                        ...vat.dateLink,
-                        toggleDisabled: vat.dateLockReadOnly,
-                        lockedHint: vat.dateLockReadOnly
-                          ? t.vatDateLockedHint
-                          : vat.dateLink.lockedHint,
-                      }
-                    : undefined,
-                  hint: vat?.periodLabel,
-                  warning:
-                    [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
-                    undefined,
-                },
-              )
-            : null}
+          <div className="contents">
+            {date("issueDate", t.issueDate, "flex-none w-max")}
+            {date("accountingDate", t.accountingDate, "flex-none w-max")}
+            {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
+          </div>
+          {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,
+            po zalomení zůstane na prvním řádku a skupina začne vlevo – bez prahu. */}
+          <div
+            data-slot="document-dates-spacer"
+            aria-hidden
+            className="h-0 min-w-0 flex-1 basis-0"
+          />
+          <div
+            data-slot="document-vat-dates"
+            className="flex flex-none items-start justify-start gap-3"
+          >
+            {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
+            {showVatFields
+              ? date(
+                  "vatDate",
+                  t.vatDate,
+                  "relative flex-none w-max [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right",
+                  {
+                    link: vat?.dateLink
+                      ? {
+                          ...vat.dateLink,
+                          toggleDisabled: vat.dateLockReadOnly,
+                          lockedHint: vat.dateLockReadOnly
+                            ? t.vatDateLockedHint
+                            : vat.dateLink.lockedHint,
+                        }
+                      : undefined,
+                    hint: vat?.periodLabel,
+                    warning:
+                      [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
+                      undefined,
+                  },
+                )
+              : null}
+          </div>
         </div>
       </div>
     </>

@@ -292,6 +292,11 @@
 - [x] Doplnit stránku Tisk, testy, dokumentaci a ověření PDF
 # Roadmap
 
+## 2.96.0 – Edit dokladu 12 (nevydáno)
+- [ ] D1: shodná kompaktní datumová pole, nerozdělitelná dvojice DPH; měření před/po při 70–200 %.
+- [ ] D2: KS/SS vždy viditelné, při nepoužité platbě prázdné a zakázané s důvodem; bez mazání dat.
+- [ ] Přírůstkové katalogy, otisky pouze změněných zdrojů, CHANGELOG a související kontroly.
+
 ## Verze 2.25.0 (protistrana v DocumentForm)
 - [x] CounterpartyField, counterpartyName, homeCurrency, currencyLocked, ID s protistranou, testy, ukázky
 

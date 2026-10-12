@@ -1,6 +1,6 @@
 /** Ukázky schválených kurzů a způsobu platby; drží pouze náhledový stav. */
 import { Settings } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckboxField, DocumentForm, type DocumentHeaderValue } from "../ds";
 import { useFormDesignTwoTexts } from "../../ds-texts/form-design-two-showcase";
 import { ShowcaseSection } from "./ShowcaseLayout";
@@ -14,6 +14,7 @@ const initial: DocumentHeaderValue = {
   accountingDate: "2026-10-10",
   issueDate: "2026-10-10",
   taxDate: "2026-10-09",
+  dueDate: "2026-10-24",
   vatDate: "2026-10-09",
   currency: "EUR",
   rate: 25,
@@ -25,6 +26,8 @@ const initial: DocumentHeaderValue = {
   companyBankAccountId: "bank",
 };
 export function FormDesignTwoShowcase() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const t = useFormDesignTwoTexts();
   const [received, setReceived] = useState<DocumentHeaderValue>({
     ...initial,
@@ -34,6 +37,8 @@ export function FormDesignTwoShowcase() {
     partnerBankAccountId: "bank",
     externalNumber: "FP20260015",
     description: "",
+    constantSymbol: "0008",
+    specificSymbol: "99",
   });
   const [payByOrder, setPayByOrder] = useState(true);
   const [value, setValue] = useState(initial);
@@ -101,7 +106,11 @@ export function FormDesignTwoShowcase() {
           linesEditorProps={{ recap: { open: false }, storageKey: "form-design-two" }}
         />
       </div>
-      <div data-testid="edit-document-eleven-received" className="max-w-full">
+      <div
+        data-testid="edit-document-eleven-received"
+        data-ready={ready ? "true" : "false"}
+        className="max-w-full"
+      >
         <DocumentForm
           title={t.received}
           documentType="FP"
@@ -124,7 +133,10 @@ export function FormDesignTwoShowcase() {
           paymentOrderEnabled={payByOrder}
           onPaymentOrderEnabledChange={setPayByOrder}
           receivedAccountDisabledReason={received.paymentMethodId === "cash" ? t.locked : undefined}
-          vat={{ visible: true }}
+          constantSymbolOptions={[{ value: "0008", label: "0008" }]}
+          accountingDateLink={{ locked: false, onToggle: () => {} }}
+          dateWarnings={{ accountingDate: t.dateWarning, vatDate: t.dateWarning }}
+          vat={{ visible: true, dateLink: { locked: false, onToggle: () => {} } }}
           linesEditorProps={{ recap: { open: false }, storageKey: "edit-eleven" }}
         />
       </div>

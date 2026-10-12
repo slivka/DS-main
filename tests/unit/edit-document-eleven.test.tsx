@@ -141,8 +141,10 @@ describe("Edit dokladu 11", () => {
         fireEvent.click(button);
         expect(toggle).not.toHaveBeenCalled();
         expect(change).not.toHaveBeenCalled();
-        expect(view.queryByLabelText("Konstantní symbol")).toBeNull();
-        expect(view.queryByLabelText("Specifický symbol")).toBeNull();
+        expect(view.getByLabelText("Konstantní symbol").getAttribute("value")).toBe("");
+        expect(view.getByLabelText("Konstantní symbol").hasAttribute("disabled")).toBe(true);
+        expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("");
+        expect(view.getByLabelText("Specifický symbol").hasAttribute("disabled")).toBe(true);
         expect(view.queryByLabelText("Číslo účtu bez IBAN")).toBeNull();
         expect(view.queryByRole("combobox", { name: "Bankovní účet" })).toBeNull();
         expect(view.queryByText("Nejdřív vyberte dodavatele")).toBeNull();

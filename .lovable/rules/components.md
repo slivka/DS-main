@@ -1482,6 +1482,9 @@ _Faktura s editovatelným účtem_
 
 - DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
 
+
+**Edit dokladu 12 (2.96.0):** shodná kompaktní datumová pole jen v DocumentForm; nerozdělitelná dvojice DUZP + Datum DPH. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané. `receivedAccountDisabledReason` má u FP/ZFP přednost, existující volitelný `companyBankAccountDisabledReason` stejným způsobem zamkne KS/SS u FV/ZFV. DS hodnoty nemaže.
+
 ### DocumentPrintTab
 
 ```ts

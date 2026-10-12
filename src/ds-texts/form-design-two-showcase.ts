@@ -20,6 +20,10 @@ const CS = {
   saved: "Uloženo",
   discarded: "Změny zahozeny",
   bank: "Banka",
+  dateWarning: "Ověřte datum dokladu",
+  datesTitle: "Datumy – Edit dokladu 12",
+  panels: "{count} panelů",
+  narrowPanel: "Úzký panel",
 };
 const SK: typeof CS = {
   title: "Dizajn formulárov 2",
@@ -41,6 +45,10 @@ const SK: typeof CS = {
   saved: "Uložené",
   discarded: "Zmeny zahodené",
   bank: "Banka",
+  dateWarning: "Overte dátum dokladu",
+  datesTitle: "Dátumy – Edit dokladu 12",
+  panels: "{count} panelov",
+  narrowPanel: "Úzky panel",
 };
 export function useFormDesignTwoTexts() {
   return useDsTexts().locale === "sk" ? SK : CS;
