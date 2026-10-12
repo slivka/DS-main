@@ -2536,7 +2536,7 @@ _Výběr_
 import { Input } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci.
+Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci. Zakázaný vstup sdílí podklad muted/40 se zamčeným datumem; rámeček, text a průhlednost zůstávají shodné ve světlém i tmavém režimu.
 
 **Props:**
 
