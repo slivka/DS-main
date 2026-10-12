@@ -293,9 +293,12 @@
 # Roadmap
 
 ## 2.96.0 – Edit dokladu 12 (nevydáno)
-- [ ] D1: shodná kompaktní datumová pole, nerozdělitelná dvojice DPH; měření před/po při 70–200 %.
-- [ ] D2: KS/SS vždy viditelné, při nepoužité platbě prázdné a zakázané s důvodem; bez mazání dat.
-- [ ] Přírůstkové katalogy, otisky pouze změněných zdrojů, CHANGELOG a související kontroly.
+- [x] D1: shodná kompaktní datumová pole, nerozdělitelná dvojice DPH; měření před/po při 70–200 %.
+- [x] D2: KS/SS vždy viditelné, při nepoužité platbě prázdné a zakázané s důvodem; bez mazání dat.
+- [x] Přírůstkové katalogy, otisky pouze změněných zdrojů, CHANGELOG a související kontroly.
+
+- [x] 597/597 unit, lint 0 chyb / 292 varování, související e2e 7/7 v posledních samostatných bězích; automatický typecheck/build OK. Samostatné tsc nebylo povoleno.
+- [ ] Speciální #enrichment: algoritmus pipeline není dostupný, původní SHA-256 zůstal zachován.
 
 ## Verze 2.25.0 (protistrana v DocumentForm)
 - [x] CounterpartyField, counterpartyName, homeCurrency, currencyLocked, ID s protistranou, testy, ukázky
