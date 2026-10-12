@@ -127,6 +127,11 @@ export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
     bankCodes,
     validationTexts,
   );
+  const errorsKey = JSON.stringify(errors);
+  // Při připojení i při změně hodnot zvenku ohlásí aktuální stav chyb.
+  useEffect(() => {
+    validationCallback.current?.(JSON.parse(errorsKey) as ManualBankAccountErrors);
+  }, [errorsKey]);
   const patch = (next: Partial<ManualBankAccountValue>) => {
     const value = { ...props.value, ...next };
     props.onChange(value);

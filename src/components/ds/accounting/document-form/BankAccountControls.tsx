@@ -130,7 +130,8 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
       enabled={!props.accountDisabledReason && props.paymentOrderEnabled}
       onEnabledChange={props.accountDisabledReason ? undefined : props.onPaymentOrderEnabledChange}
       enabledLabel={props.texts.payByOrder}
-      disabledLabel={props.accountDisabledReason ?? props.texts.excludeFromPaymentOrders}
+      disabledLabel={props.texts.excludeFromPaymentOrders}
+      lockedReason={props.accountDisabledReason}
       disabledReason={props.accountDisabledReason ?? props.texts.paymentOrderDisabled}
     >
       {content}

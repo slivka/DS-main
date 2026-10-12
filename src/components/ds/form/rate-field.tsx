@@ -116,14 +116,6 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                 className="relative min-w-0"
                 tabIndex={readOnly || disabled ? 0 : undefined}
                 aria-describedby={descriptionId}
-                onPointerEnter={() => {
-                  setUpdateOpen(false);
-                  setSourceOpen(true);
-                }}
-                onFocus={() => {
-                  setUpdateOpen(false);
-                  setSourceOpen(true);
-                }}
               >
                 {readOnly ? (
                   <FieldValue
@@ -150,7 +142,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                       "h-[var(--control-h)]",
                       attention && "pl-9",
                       differs && "pr-9 border-destructive",
-                      attention && differs && "pl-7 text-xs",
+                      attention && differs && "pl-7",
                       inputClassName,
                     )}
                     onChange={(next) => onChange(next === "" ? null : Number(next))}
