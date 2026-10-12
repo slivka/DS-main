@@ -231,7 +231,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                     option.currency,
                     option.iban,
                     formatIban(typeof option.iban === "string" ? option.iban : ""),
-                    option.iban?.replace(/\s/g, ""),
+                    typeof option.iban === "string" ? option.iban.replace(/\s/g, "") : undefined,
                   ]
                     .filter(Boolean)
                     .join(" "),
