@@ -99,7 +99,9 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
           </span>
         ) : null}
         {props.enabled ? (
-          <div className="[&_[role=combobox]]:pr-11 [&_input]:pr-11">{props.children}</div>
+          <div className="[&_[role=combobox]]:pr-[calc(var(--control-h)+2rem)] [&_[data-slot=select-chevron]]:right-[calc(var(--control-h)+0.5rem)] [&_input]:pr-[calc(var(--control-h)+0.5rem)]">
+            {props.children}
+          </div>
         ) : (
           <LockedAccountValue reason={props.disabledReason} className="pr-11" />
         )}

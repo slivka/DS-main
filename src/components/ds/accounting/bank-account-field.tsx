@@ -85,7 +85,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     {
       value,
       onChange,
-      options = [],
+      options: suppliedOptions = [],
       bankCodes,
       invalidAccountText,
       invalidBankCodeText,
@@ -109,6 +109,12 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
     const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
     const resolvedAddAccountText = addAccountText ?? texts.addBankAccount;
+    // Typ chrání TS volání; data z API přesto mohou obsahovat neúplný účet.
+    const options = suppliedOptions.filter(
+      (option) =>
+        Boolean(option.number?.trim() && option.bankCode?.trim()) ||
+        Boolean(option.iban?.replace(/\s/g, "")),
+    );
     const optionValue = bankAccountOptionValue;
     const optionValues = options.map(optionValue);
     const optionValuesKey = optionValues.join("\u0000");
@@ -214,6 +220,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                     accountDisplay(option),
                     option.currency,
                     option.iban,
+                    formatIban(option.iban ?? ""),
                     option.iban?.replace(/\s/g, ""),
                   ]
                     .filter(Boolean)

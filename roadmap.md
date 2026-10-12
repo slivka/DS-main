@@ -1,3 +1,9 @@
+## DS 2.97.0 – Edit dokladu 12c (nevydáno)
+- [ ] Šipka účtu při 100/200 %, filtrování účtů a formátované hledání IBAN.
+- [ ] Stabilní izomorfní měření, delší datumové popisky v úzkém panelu.
+- [ ] Dokumentace API, cílené katalogy, kontrola nesouvisející stránky.
+- [ ] Unit, E2E ve třech prohlížečích, lint, formát a automatická kontrola.
+
 ## DS 2.97.0 – Edit dokladu 12b (nevydáno)
 - [x] Standardní písmo, aktivní formát, delší popisky a tabulka měření.
 - [x] Přístupná jména zamčených KS/SS a účty pouze s IBAN.

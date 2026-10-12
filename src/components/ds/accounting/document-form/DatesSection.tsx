@@ -1,5 +1,5 @@
 /** Skupiny dat formuláře dokladu. */
-import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { useDateTimePreferences } from "../../../../lib/date-time-preferences";
 import type { ComponentProps } from "react";
 import type { DateField } from "../../form/date-field";
@@ -10,6 +10,8 @@ import type {
   DocumentFormTexts,
   DocumentVatConfig,
 } from "./document-form-types";
+// SSR neměří DOM; v prohlížeči měření předchází vykreslení.
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 export interface DocumentDatesSectionProps {
   t: DocumentFormTexts;
   f: DocumentFields;
@@ -37,26 +39,40 @@ export function DocumentDatesSection({
   const containerRef = useRef<HTMLDivElement>(null);
   const { dateFormat, formatDate } = useDateTimePreferences();
   const sample = formatDate("2000-11-22").replace(/\d/g, "0");
+  const labelsKey = [t.issueDate, t.accountingDate, t.dueDate, t.taxDate, t.vatDate].join("\u0000");
   const geometry: CSSProperties & Record<string, string> = {
     "--document-date-format-sample": `"${sample}"`,
   };
   // Rozměry DOM jsou vnější stav: přepočet jen při změně prostoru, písma či formátu.
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const measure = () => {
-      container.style.setProperty("--document-date-scale", "1");
       const fields = Array.from(container.querySelectorAll<HTMLElement>('[data-slot="field"]'));
-      const minimum = Math.min(...fields.map((field) => field.getBoundingClientRect().width));
-      const input = container.querySelector("input");
-      if (!input) return;
-      const style = getComputedStyle(input);
-      const available = container.clientWidth - 2 * parseFloat(style.borderLeftWidth);
-      if (!available || minimum <= available) return;
-      // Pouze rem odsazení a rámečky nerostou s lokálním písmem; ikony ano.
-      const fixed = parseFloat(style.paddingLeft) + 2 * parseFloat(style.borderLeftWidth);
-      const scale = Math.max(0, (available - fixed) / (minimum - fixed));
-      container.style.setProperty("--document-date-scale", String(Math.min(1, scale)));
+      for (const field of fields) field.style.setProperty("--document-date-scale", "1");
+      for (const field of fields) {
+        const input = field.querySelector("input");
+        if (!input) continue;
+        const style = getComputedStyle(input);
+        const border = 2 * parseFloat(style.borderLeftWidth);
+        const available = container.clientWidth - border;
+        const width = field.getBoundingClientRect().width;
+        if (!available || width <= available) continue;
+        // Každé pole se zmenší jen pokud samo přesahuje prostor; delší popisek nezmenší sousedy.
+        const label = field.querySelector("label");
+        const labelWidth = label?.getBoundingClientRect().width ?? 0;
+        const fixed = labelWidth >= width - border ? 0 : parseFloat(style.paddingLeft) + border;
+        const scale = Math.max(0, (available - fixed) / (width - fixed));
+        field.style.setProperty("--document-date-scale", String(Math.min(1, scale)));
+        // Popisek obsahuje i pevné odsazení; korekce vychází ze skutečného výsledku.
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          const measuredWidth = field.getBoundingClientRect().width;
+          if (measuredWidth <= available) break;
+          const currentScale = Number(field.style.getPropertyValue("--document-date-scale"));
+          const correctedScale = currentScale * (available - fixed) / (measuredWidth - fixed);
+          field.style.setProperty("--document-date-scale", String(correctedScale));
+        }
+      }
     };
     const observer = new ResizeObserver(measure);
     observer.observe(container);
@@ -64,7 +80,7 @@ export function DocumentDatesSection({
     measure();
     void document.fonts?.ready.then(measure);
     return () => observer.disconnect();
-  }, [dateFormat, t]);
+  }, [dateFormat, labelsKey, f.dueDate, f.taxDate, showVatFields]);
   return (
     <>
       <SectionHeading>{t.datesSection}</SectionHeading>
