@@ -144,6 +144,28 @@ export function FormDesignTwoShowcase() {
           linesEditorProps={{ recap: { open: false }, storageKey: "edit-eleven" }}
         />
       </div>
+      <div data-testid="document-readonly" data-ready={ready ? "true" : "false"}>
+        <DocumentForm
+          title={t.received}
+          documentType="FP"
+          status="locked"
+          readOnly
+          value={{ ...received, currency: "EUR", description: t.supplier }}
+          onChange={() => {}}
+          books={[]}
+          accounts={[]}
+          lines={[]}
+          onLinesChange={() => {}}
+          currencies={currencies}
+          homeCurrency={currencies[0].code}
+          homeCurrencySymbol={currencies[0].symbol}
+          bankAccountOptions={[{ id: "bank", iban: "CZ6508000000192000145399" }]}
+          paymentMethodOptions={[{ value: "transfer", label: t.transfer }]}
+          receivedAccountDisabledReason={t.locked}
+          vat={{ visible: true, dateLink: { locked: true, onToggle: () => {} } }}
+          linesEditorProps={{ recap: { open: false }, storageKey: "readonly-fields" }}
+        />
+      </div>
     </ShowcaseSection>
   );
 }

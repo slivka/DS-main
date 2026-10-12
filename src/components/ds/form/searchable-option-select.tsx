@@ -81,7 +81,11 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
       ]
         .filter(Boolean)
         .join(" ");
-      return normalizeSearchText(text).includes(needle);
+      const normalized = normalizeSearchText(text);
+      return (
+        normalized.includes(needle) ||
+        normalized.replace(/\s/g, "").includes(needle.replace(/\s/g, ""))
+      );
     });
   }, [offered, query]);
   const triggerLabel = selected ? (
@@ -113,7 +117,7 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
             aria-expanded={open}
             disabled={props.disabled}
             className={cn(
-              "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
+              "ds-disabled-control relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",
               props.value ? "text-foreground" : "text-muted-foreground",
               showClear && "pr-[calc(1rem+1rem+0.25rem+1.75rem+0.25rem)]",
               props.className,

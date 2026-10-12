@@ -2327,3 +2327,15 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   border-left: 0.45em solid transparent;
   content: "";
 }
+
+/* Společný zakázaný stav: průhlednost se nesmí přenést na čitelný text. */
+.ds-disabled-control:is(:disabled, [aria-disabled="true"]) {
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+  border-color: var(--input);
+  color: var(--foreground);
+  opacity: 1;
+}
+.ds-disabled-control:is(:disabled, [aria-disabled="true"])::placeholder,
+.ds-disabled-control:is(:disabled, [aria-disabled="true"]) [data-slot="unknown-value"] {
+  color: var(--foreground);
+}

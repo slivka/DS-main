@@ -447,3 +447,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - KS/SS se u dokladů se symboly nikdy neskrývají. Při vypnutém přijatém příkazu jsou prázdné a zakázané s `paymentOrderDisabled`; FP/ZFP dávají přednost `receivedAccountDisabledReason`, FV/ZFV používají `companyBankAccountDisabledReason`. DS uložené hodnoty nemaže.
 
 - BankAccountOption přijímá úplné number + bankCode nebo iban. Tuzemská dvojice má přednost při zobrazení, jinak použijte formatIban. Výběr hledá také podle IBAN; partnera s účtem pouze IBAN nevynechávejte. Ruční ReceivedBankAccountField a firemní account mají vlastní, beze změny zachovaný typ.
+
+- Zakázané Input, SelectTrigger, OptionSelect (obě větve), Textarea, DecimalInput a zamčený účet používají sdílenou třídu ds-disabled-control: stávající podklad muted/40, rámeček input a text foreground, průhlednost 1 kvůli kontrastu alespoň 4,5 : 1 v obou režimech. Nevytvářejte lokální barvy zakázaného stavu.
