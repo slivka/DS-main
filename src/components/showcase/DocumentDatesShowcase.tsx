@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DocumentForm, PaneLayout, PaneTabsProvider, createTab, type PaneTabsState } from "../ds";
 import { useFormDesignTwoTexts } from "../../ds-texts/form-design-two-showcase";
+import { DsTextsProvider } from "../../ds-texts";
 import { ShowcaseSection } from "./ShowcaseLayout";
 const initialState: PaneTabsState = {
   version: 2,
@@ -21,6 +22,7 @@ export function DocumentDatesShowcase() {
   const t = useFormDesignTwoTexts();
   const [state, setState] = useState(initialState);
   const [narrow, setNarrow] = useState(false);
+  const [locale, setLocale] = useState<"cs" | "sk">("cs");
   return (
     <ShowcaseSection title={t.datesTitle}>
       <div
@@ -29,6 +31,16 @@ export function DocumentDatesShowcase() {
         className={narrow ? "w-[22.5rem] max-w-none" : "w-[120rem] max-w-none"}
       >
         <div className="flex gap-3">
+          {(["cs", "sk"] as const).map((language) => (
+            <Button
+              key={language}
+              variant="outline"
+              aria-pressed={locale === language}
+              onClick={() => setLocale(language)}
+            >
+              {language.toUpperCase()}
+            </Button>
+          ))}
           {([1, 2, 3] as const).map((count) => (
             <Button
               key={count}
@@ -62,44 +74,46 @@ export function DocumentDatesShowcase() {
           </Button>
         </div>
         <div className="h-[40rem]">
-          <PaneTabsProvider state={state} onChange={setState} shortcuts={false}>
-            <PaneLayout
-              embedded
-              minPaneWidth={0}
-              renderTab={() => (
-                <DocumentForm
-                  title={t.received}
-                  documentType="FP"
-                  status="draft"
-                  value={{
-                    currency: "EUR",
-                    amountTotal: 0,
-                    totalMode: "entered",
-                    issueDate: "2026-10-12",
-                    accountingDate: "2026-10-12",
-                    dueDate: "2026-10-24",
-                    taxDate: "2026-10-12",
-                    vatDate: "2026-10-12",
-                  }}
-                  onChange={() => {}}
-                  lines={[]}
-                  onLinesChange={() => {}}
-                  books={[]}
-                  accounts={[]}
-                  homeCurrency="EUR"
-                  fields={{
-                    partner: false,
-                    symbols: false,
-                    bankAccount: false,
-                    paymentOrders: false,
-                  }}
-                  accountingDateLink={{ locked: false, onToggle: () => {} }}
-                  dateWarnings={{ accountingDate: t.dateWarning, vatDate: t.dateWarning }}
-                  vat={{ visible: true, dateLink: { locked: false, onToggle: () => {} } }}
-                />
-              )}
-            />
-          </PaneTabsProvider>
+          <DsTextsProvider locale={locale}>
+            <PaneTabsProvider state={state} onChange={setState} shortcuts={false}>
+              <PaneLayout
+                embedded
+                minPaneWidth={0}
+                renderTab={() => (
+                  <DocumentForm
+                    title={t.received}
+                    documentType="FP"
+                    status="draft"
+                    value={{
+                      currency: "EUR",
+                      amountTotal: 0,
+                      totalMode: "entered",
+                      issueDate: "2026-10-12",
+                      accountingDate: "2026-10-12",
+                      dueDate: "2026-10-24",
+                      taxDate: "2026-10-12",
+                      vatDate: "2026-10-12",
+                    }}
+                    onChange={() => {}}
+                    lines={[]}
+                    onLinesChange={() => {}}
+                    books={[]}
+                    accounts={[]}
+                    homeCurrency="EUR"
+                    fields={{
+                      partner: false,
+                      symbols: false,
+                      bankAccount: false,
+                      paymentOrders: false,
+                    }}
+                    accountingDateLink={{ locked: false, onToggle: () => {} }}
+                    dateWarnings={{ accountingDate: t.dateWarning, vatDate: t.dateWarning }}
+                    vat={{ visible: true, dateLink: { locked: false, onToggle: () => {} } }}
+                  />
+                )}
+              />
+            </PaneTabsProvider>
+          </DsTextsProvider>
         </div>
       </div>
     </ShowcaseSection>

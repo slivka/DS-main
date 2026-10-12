@@ -239,10 +239,12 @@ export function DateField({
                   aria-label={warning}
                   className={cn(
                     "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    link && !link.locked ? "right-[3.9em]" : "right-[2.1em]",
+                    link && !link.locked
+                      ? "right-[calc(var(--document-date-icon-offset,0.3em)+2*var(--document-date-icon-step,1.8em))]"
+                      : "right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))]",
                   )}
                 >
-                  <AlertTriangle className="size-[1.05em]" />
+                  <AlertTriangle className="size-[var(--document-date-icon-size,1.05em)]" />
                 </span>
               </TooltipTrigger>
               <TooltipContent>{warning}</TooltipContent>
@@ -251,7 +253,7 @@ export function DateField({
           {link?.locked ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="absolute right-[0.3em] top-1/2 -translate-y-1/2">
+                <span className="absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 -translate-y-1/2">
                   <Button
                     type="button"
                     variant="ghost"
@@ -262,7 +264,7 @@ export function DateField({
                     onClick={toggleLink}
                     className="date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                   >
-                    <Lock className="size-[1.05em]" />
+                    <Lock className="size-[var(--document-date-icon-size,1.05em)]" />
                   </Button>
                 </span>
               </TooltipTrigger>
@@ -281,9 +283,9 @@ export function DateField({
                       aria-label={unlockedHint}
                       aria-pressed="false"
                       onClick={toggleLink}
-                      className="date-field-link absolute right-[2.1em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                      className="date-field-link absolute right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                     >
-                      <LockOpen className="size-[1.05em]" />
+                      <LockOpen className="size-[var(--document-date-icon-size,1.05em)]" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>{unlockedHint}</TooltipContent>
@@ -297,9 +299,9 @@ export function DateField({
                     size="icon"
                     disabled={disabled}
                     aria-label={dsTexts.date.openCalendar}
-                    className="date-field-trigger absolute right-[0.3em] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                    className="date-field-trigger absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                   >
-                    <CalendarIcon className="size-[1.05em]" />
+                    <CalendarIcon className="size-[var(--document-date-icon-size,1.05em)]" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent

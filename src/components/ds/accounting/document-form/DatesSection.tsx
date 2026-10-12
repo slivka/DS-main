@@ -36,16 +36,14 @@ export function DocumentDatesSection({
   return (
     <>
       <SectionHeading>{t.datesSection}</SectionHeading>
-      <div className="overflow-x-auto">
+      <div className="document-dates-container">
         <div
           data-slot="document-dates"
           className="document-dates-compact flex flex-wrap items-start gap-3"
         >
-          <div className="contents">
-            {date("issueDate", t.issueDate, "flex-none w-max")}
-            {date("accountingDate", t.accountingDate, "flex-none w-max")}
-            {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
-          </div>
+          {date("issueDate", t.issueDate, "flex-none w-max")}
+          {date("accountingDate", t.accountingDate, "flex-none w-max")}
+          {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
           {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,
             po zalomení zůstane na prvním řádku a skupina začne vlevo – bez prahu. */}
           <div
@@ -55,7 +53,7 @@ export function DocumentDatesSection({
           />
           <div
             data-slot="document-vat-dates"
-            className="flex flex-none items-start justify-start gap-3"
+            className="flex max-w-full flex-wrap items-start justify-start gap-3"
           >
             {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
             {showVatFields

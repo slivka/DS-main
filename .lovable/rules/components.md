@@ -1449,19 +1449,14 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 
 ### DocumentForm
 
+**Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
+
+
 ```ts
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
 Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu.
-
-**Nové/rozšířené props 2.94.0:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `receivedAccountDisabledReason` | string | `—` |
-| `value.rateSourceAttention` | boolean | `false` |
-| `value.vatRateSourceAttention` | boolean | `false` |
 
 **Examples:**
 
@@ -1470,20 +1465,17 @@ _Faktura s editovatelným účtem_
 <DocumentForm {...props} identity={{ variant: "invoice", book: "FV - Vydané faktury", period: "2026", account: { side: "MD", label: "311.001 - Odběratelé", editable: true }, number: "FV2026000420" }} mainAccountOptions={allowedAccounts} />
 ```
 
+_Platba přijatého dokladu bez účtu_
+```tsx
+<DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
+```
+
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
 - Nevkládejte měnu do popisku Celkem ani do identity cashBank.
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
-
-```tsx
-<DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
-```
-
 - DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
-
-
-**Edit dokladu 12 (2.96.0):** shodná kompaktní datumová pole jen v DocumentForm; nerozdělitelná dvojice DUZP + Datum DPH. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané. `receivedAccountDisabledReason` má u FP/ZFP přednost, existující volitelný `companyBankAccountDisabledReason` stejným způsobem zamkne KS/SS u FV/ZFV. DS hodnoty nemaže.
 
 ### DocumentPrintTab
 
@@ -3386,9 +3378,11 @@ import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 | `enabledLabel` | string | `—` |
 | `disabledLabel` | string | `—` |
 | `disabledReason` | string | `—` |
+| `lockedReason` | string | `—` |
 
 **Examples:**
 
+_Vypnutý příkaz_
 ```tsx
 <PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>
 ```
@@ -3604,7 +3598,7 @@ Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouz
 | `requiredMessage` | string | `—` |
 | `showNote` | boolean | `true` |
 | `id` | string | `rate` |
-| `className` | string | `—` |
+| `className` | string | `sr-only` |
 | `inputClassName` | string | `—` |
 
 **Examples:**
@@ -3619,16 +3613,16 @@ _2.92.0_
 <RateField {...rateProps} inputClassName="h-11" />
 ```
 
+_Upozorněný zdroj_
+```tsx
+<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />
+```
+
 **Avoid:**
 
 - Nepoužívejte holý číselný input pro kurz.
 - Ruční kurz neukládejte bez důvodu.
-
-**2.94.0:** Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
-
-```tsx
-<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />
-```
+- Jednotku a zdroj kurzu nevykreslujte pod polem; použijte tooltip pole.
 
 ### ReadOnlyBanner
 
@@ -3660,7 +3654,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně.
+Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.
 
 **Props:**
 
@@ -3693,8 +3687,6 @@ _Karta majetku_
 
 - Nevykreslujte Uložit ani akce záznamu volně pod poli.
 - Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
-
-Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.
 
 ### RecordDialog
 

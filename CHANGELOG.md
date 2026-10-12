@@ -2,50 +2,73 @@
 
 ## 2.96.0 – Edit dokladu 12 (nevydáno)
 
-- Poslední vydání v2.95.0; toto kolo mění package na 2.96.0 a nic nevydává.
-- **Změna chování D1:** pět datumových polí v DocumentForm má shodnou kompaktní šířku z obsahu a tří ikonových slotů. Datum ani popisek se neořízne. DUZP + Datum DPH se zalomí pouze společně; pokud je samotná dvojice širší než panel, datumový řádek vodorovně roluje. Filtry a dialogy s DateField se nemění.
-- **BREAKING – změna chování D2:** KS/SS se již neskrývají. Při vypnutém příkazu nebo nepoužitém bankovním účtu zůstávají prázdné zakázané ovládací prvky s důvodem v tooltipu. Aplikace nesmí odvozovat použitelnost od existence pole v DOM; řiďte se způsobem platby/příkazem. DS původní hodnoty nikdy nemaže.
-- FV/ZFV používají existující volitelný companyBankAccountDisabledReason také pro KS/SS; nový prop není nutný. FP/ZFP respektují receivedAccountDisabledReason; DDPOZ jej nadále ignoruje.
-- Po Update není potřeba nový povinný prop; aplikace a DB nadále zodpovídají za případné mazání neplatných platebních symbolů.
+- Verze zůstává 2.96.0; nic nebylo vydáno.
+- D1: datumová pole používají společnou geometrii ikon a šířku přímo odvozenou od vysázeného data. Delší popisek rozšíří pole. DUZP + Datum DPH zůstávají společně, pouze pokud se dvojice vejde; jinak se zalomí jednotlivě. Žádné vodorovné rolování ani ořezávání zvýraznění.
+- Kompaktní geometrie platí pouze v DocumentForm, filtry a dialogy se nemění. Extrémně úzký kontejner omezuje velikost písma datumové skupiny; v měřené matici je všech pět polí stejně širokých.
+- **BREAKING – D2:** KS/SS se již neskrývají. Při vypnutém příkazu nebo nepoužitém účtu jsou prázdné a zakázané; aplikace nesmí odvozovat použitelnost z přítomnosti pole v DOM. DS uložené hodnoty nemaže.
+- **BREAKING:** existující volitelný `companyBankAccountDisabledReason` nově zamyká také KS/SS u FV/ZFV. Pro platbu na účet nepředávejte důvod. FP/ZFP respektují `receivedAccountDisabledReason`; DDPOZ jej nadále ignoruje.
+- Zakázané symboly mají fokusovatelný obal s `role="group"`, `aria-disabled` a důvodem přes `aria-describedby`; vnitřní input nepřebírá myš. Tooltip ověřen hoverem i fokusem. Mrtvý renderer `text` a obal `contents` odstraněny.
 
+### Ověření opravy b632d10b
 
-### Ověření 2.96.0
+- Unit: **600/600**; související E2E: **7/7** (Chromium 3, Firefox 2, WebKit 2). Lint: **0 chyb / 292 varování**. Samostatný tsgo/tsc nebyl spuštěn: kontrolní prostředí ruční typecheck nepovoluje; samostatný výsledek typechecku nelze potvrdit. Automatický build: OK.
+- E2E ověřuje CS i SK, všech 20 kombinací v každém jazyce a prohlížeči: scrollWidth ≤ clientWidth kontejneru i vstupů, všech pět vstupů uvnitř kontejneru, datum bez překryvu ikon, popisek uvnitř pole a očekávaný počet řádků odvozený od šířek. Test obsahuje rovněž horní limit mezery u tří ikon s rezervou 3 CSS px pro zaokrouhlení a případné rozšíření podle popisku.
+- Šířky vstupů (Chromium, široký panel) při 70/100/125/150/200 %: 112.20 / 154.30 / 200.38 / 238.44 / 316.59 CSS px. V úzkém panelu se rozměr odvozuje od menšího kontejneru; datum zůstává celé.
+- Tabulka níže obsahuje skutečné měření Chromia. „Před“ je zaznamenané opakování chybného stavu b632d10b před opravami, nikoli odhad staršího vydání. Dřívější tvrzení o bázi 894508b a vodorovném rolování jako správném chování bylo nesprávné a je nahrazeno tímto záznamem. Počty řádků po opravě jsou stejné v CS/SK i ve všech třech prohlížečích.
 
-- Unit: 597/597; lint: 0 chyb, 292 varování. Automatický typecheck a build: OK (06:00:17 UTC). Samostatné tsgo/tsc nebyly spuštěny: kontrolní prostředí ruční typecheck zakazuje.
-- E2E: Edit dokladu 12 prošel 2/2 v Chromiu, 2/2 Firefoxu a 2/2 WebKitu; původní svázané datum navíc v Chromiu 1/1. Předchozí neúspěchy čekání/hydratace a překryvu zavírací animace tooltipu byly odstraněny, testy neoslabeny.
-- DateField mimo formulář beze změny. Nejvíce ikon znamená vazbu (otevřený zámek) + kalendář + varování. Zamčená vazba podle stávajícího veřejného chování kalendář nevykresluje; toto API se nemění.
-- Šířka vstupu při 70/100/125/150/200 %: 127,61 / 176,59 / 230,75 / 274,89 / 363,19 px. Naměřená minimální rezerva textu před pravým odsazením: 2,84 / 4,20 / 7,50 / 8,80 / 11,40 px. Minimální mezera text–ikona: 15,71 / 22,31 / 30,13 / 35,95 / 47,61 px. Ve všech 20 kombinacích scrollWidth ≤ clientWidth, 5 stejných šířek, bez překryvu.
-- Popisek účetního data zůstává jednořádkový: při těchto měřeních se vejde do stejného pole. V extrémně úzkém panelu se posouvá celá datumová oblast vodorovně místo roztržení dvojice DPH.
-- Tabulka je v CSS px, nikoli rozměry v kódu. Skutečný PaneLayout: celková šířka 1 920 px, dva/tři rovné panely; samostatný úzký panel 360 px. Vnitřní datumový kontejner je menší o okraje panelu/formuláře. Před/po měřeno na stejných datech a stejném maximálním počtu ikon; před je původní CSS a původní seskupení prvních tří i DPH dat z výchozího commitu.
-
-| Zoom | Panely | Kontejner px | Řádky před → po | Od šířky pro 1 řádek px |
+| Zoom | Panely | Kontejner CSS px | Řádky před → po | Od šířky pro 1 řádek CSS px |
 |---|---|---:|---:|---:|
-| 70 % | 1 | 1863.25 | 1 → 1 | 680.05 |
-| 70 % | 2 | 896.66 | 1 → 1 | 680.05 |
-| 70 % | 3 | 576.66 | 2 → 2 | 680.05 |
-| 70 % | 360 | 303.25 | 5 → 3 | 680.05 |
-| 100 % | 1 | 1844.00 | 1 → 1 | 942.97 |
-| 100 % | 2 | 875.00 | 2 → 2 | 942.97 |
-| 100 % | 3 | 555.00 | 3 → 2 | 942.97 |
-| 100 % | 360 | 284.00 | 5 → 4 | 942.97 |
-| 125 % | 1 | 1828.00 | 1 → 1 | 1228.75 |
-| 125 % | 2 | 857.00 | 3 → 2 | 1228.75 |
-| 125 % | 3 | 537.00 | 5 → 3 | 1228.75 |
-| 125 % | 360 | 268.00 | 5 → 4 | 1228.75 |
-| 150 % | 1 | 1812.00 | 1 → 1 | 1464.45 |
-| 150 % | 2 | 839.00 | 3 → 3 | 1464.45 |
-| 150 % | 3 | 519.00 | 5 → 4 | 1464.45 |
-| 150 % | 360 | 252.00 | 5 → 4 | 1464.45 |
-| 200 % | 1 | 1780.00 | 2 → 2 | 1935.94 |
-| 200 % | 2 | 803.00 | 5 → 3 | 1935.94 |
-| 200 % | 3 | 483.00 | 5 → 4 | 1935.94 |
-| 200 % | 360 | 220.00 | 5 → 4 | 1935.94 |
+| 70 % | 1 | 1863.25 | 1 → 1 | 594.62 |
+| 70 % | 2 | 896.66 | 1 → 1 | 594.62 |
+| 70 % | 3 | 576.66 | 2 → 2 | 594.62 |
+| 70 % | 360 | 303.25 | 3 → 3 | 594.62 |
+| 100 % | 1 | 1844.00 | 1 → 1 | 819.48 |
+| 100 % | 2 | 875.00 | 2 → 1 | 819.48 |
+| 100 % | 3 | 555.00 | 2 → 2 | 819.48 |
+| 100 % | 360 | 284.00 | 4 → 5 | 819.48 |
+| 125 % | 1 | 1828.00 | 1 → 1 | 1061.88 |
+| 125 % | 2 | 857.00 | 2 → 2 | 1061.88 |
+| 125 % | 3 | 537.00 | 3 → 3 | 1061.88 |
+| 125 % | 360 | 268.00 | 4 → 5 | 1061.88 |
+| 150 % | 1 | 1812.00 | 1 → 1 | 1264.19 |
+| 150 % | 2 | 839.00 | 3 → 2 | 1264.19 |
+| 150 % | 3 | 519.00 | 4 → 3 | 1264.19 |
+| 150 % | 360 | 252.00 | 4 → 5 | 1121.22 |
+| 200 % | 1 | 1780.00 | 2 → 1 | 1678.97 |
+| 200 % | 2 | 803.00 | 3 → 3 | 1678.97 |
+| 200 % | 3 | 483.00 | 4 → 5 | 1678.97 |
+| 200 % | 360 | 220.00 | 4 → 5 | 1078.58 |
 
-- Katalogy: design-system.json 426, components.md 426, rules/components.md 426, rules/library-guidelines.md 426. Nedotčených 425 záznamů JSON a všech nedotčených bloků rules/components.md je doslova shodných s výchozím 894508b16815c255fafdc7983b2eb0432a41906e. Indexy components.md a library-guidelines.md zůstávají doslova stejné. Změněn pouze DocumentForm a jeho pravidla; nic nebylo přegenerováno.
-- source_manifest: skript přepočítává MD5 pouze souborů změněných oproti výchozímu commitu. Speciální #enrichment zůstává původní: jeho algoritmus nebyl dostupný; nelze tvrdit, že tento speciální otisk je aktualizovaný.
+- Ve Firefoxu jsou prahy jednoho řádku při 70/100/125/150/200 %: 586.68 / 833.50 / 1039.50 / 1245.42 / 1667.17 CSS px; ve WebKitu: 581.41 / 833.62 / 1039.53 / 1250.36 / 1667.17 CSS px. Rozdíly jsou dány vykreslením písma a šířkou posuvníku.
+- Katalogy: **426 / 426 / 426 / 426**. Proti **fbeae82315bb03ba31d7b57d327ee1e5b2d5c57c** se JSON záznamy a bloky rules/components.md liší jen u DocumentForm; všech 425 nedotčených záznamů i bloků je beze změny. Zachovány původní props, příklady a texty ostatních komponent, včetně lockedReason.
+- `meta.source_manifest["#enrichment"]` je doslova vydaný **00dac7fbb8089fc34c810b0f110f87248c3106a1a8eba838bbfd475a1bcb35ee**. Skript přepočítává MD5 pouze změněných souborů; ostatní manifestové položky zůstávají z vydání.
 
-**Změněné soubory:** package.json; AGENTS.md; roadmap.md; CHANGELOG.md; .lovable/system.md; .lovable/design-system.json; components.md; .lovable/rules/components.md; .lovable/rules/library-guidelines.md; src/styles.css; src/components/ds/accounting/document-form/{DatesSection.tsx,DocumentForm.tsx,PaymentSection.tsx,document-form-types.ts}; src/components/showcase/{FormDesignTwoShowcase.tsx,DocumentDatesShowcase.tsx}; src/ds-texts/form-design-two-showcase.ts; src/routes/components.accounting-forms.tsx; tests/unit/{document-form-286.test.tsx,edit-document-eleven.test.tsx,edit-document-twelve.test.tsx}; tests/e2e/edit-document-twelve.spec.ts.
+**Změněné soubory proti fbeae823:**
 
+- `.lovable/design-system.json`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+- `.lovable/system.md`
+- `AGENTS.md`
+- `CHANGELOG.md`
+- `components.md`
+- `package.json`
+- `roadmap.md`
+- `src/components/ds/accounting/document-form/DatesSection.tsx`
+- `src/components/ds/accounting/document-form/DocumentForm.tsx`
+- `src/components/ds/accounting/document-form/PaymentSection.tsx`
+- `src/components/ds/accounting/document-form/document-form-types.ts`
+- `src/components/ds/accounting/document-form/use-document-field-renderers.tsx`
+- `src/components/ds/form/date-field.tsx`
+- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `src/components/showcase/FormDesignTwoShowcase.tsx`
+- `src/ds-texts/form-design-two-showcase.ts`
+- `src/routes/components.accounting-forms.tsx`
+- `src/styles.css`
+- `tests/e2e/edit-document-twelve.spec.ts`
+- `tests/unit/document-form-286.test.tsx`
+- `tests/unit/edit-document-eleven.test.tsx`
+- `tests/unit/edit-document-twelve.test.tsx`
 
 ## 2.94.0 – Edit dokladu 11 (nevydáno)
 

@@ -18,7 +18,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "9f61b7c8741c24594a14b9963e8e0d4bea36dae6839c39444744ed1d71ba6c68",
+      "#enrichment": "00dac7fbb8089fc34c810b0f110f87248c3106a1a8eba838bbfd475a1bcb35ee",
       ".dsignore": "064818221ffbcf9369c43a13cf6bb694",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
@@ -61,22 +61,22 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "c80adb3eef4f68cc7eb0c44f6b6b96f2",
+      ".lovable/system.md": "32bffcab4f0d8f69c0c90f56a3e96c95",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "edba68e6c8564772d2c9dedde8e267ff",
-      "CHANGELOG.md": "e428c5cc70d6b75e17222ff2f680043f",
+      "AGENTS.md": "5fe00ca35ec4aa704ed5ca9286d413de",
+      "CHANGELOG.md": "3712145b7504177f6e6975a3f162ee32",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "93722298ee7ed8e1c6023d980ad1acc7",
+      "components.md": "3e196d14f207435c976f3331e1c8e002",
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
       "package.json": "cdadcf70a528d2926c2d6155defb0a86",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "fa73029bf6b985d4fa4717d130a9eeee",
+      "roadmap.md": "35862bc514c97f16b3776452d3eb52df",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -107,9 +107,9 @@
       "src/components/ds/accounting/document-form/AmountSection.tsx": "d81daf82179e3b7c6f79a0975267c1c0",
       "src/components/ds/accounting/document-form/BankAccountControls.tsx": "3decaa2f686a76e7ad989941ab201fb2",
       "src/components/ds/accounting/document-form/BasicSection.tsx": "7d5726004cdc82b4a5d6aa1ac48f8913",
-      "src/components/ds/accounting/document-form/DatesSection.tsx": "5ade6f1d55cd87e02237173b194e4bbb",
+      "src/components/ds/accounting/document-form/DatesSection.tsx": "dccfbe9aae8a53debfa7cf68a5b51077",
       "src/components/ds/accounting/document-form/DocumentForm.tsx": "09b3350b32fe51698a08e3e86ebf94a1",
-      "src/components/ds/accounting/document-form/PaymentSection.tsx": "d0d1447717418248e354b41734c67770",
+      "src/components/ds/accounting/document-form/PaymentSection.tsx": "8a7703e07f767a99f4fddb3fca7ea133",
       "src/components/ds/accounting/document-form/Tabs.tsx": "8f5c85fee1b5cfb99bb3bb3bb8ffa95c",
       "src/components/ds/accounting/document-form/build-document-notices.tsx": "89a9026c63c54268185526b099e07786",
       "src/components/ds/accounting/document-form/build-document-tabs.tsx": "b408bed4515773e411f07b645e6d5588",
@@ -122,9 +122,10 @@
       "src/components/ds/accounting/document-form/document-vat-action-status.tsx": "7896cf1ae82950729fa6ad0eb5f9aff5",
       "src/components/ds/accounting/document-form/use-bank-account-field.tsx": "052a56c131386daece6ab98a1bdb2623",
       "src/components/ds/accounting/document-form/use-currency-control.tsx": "e866f89158dd4d72ca347486e1d97dd6",
-      "src/components/ds/accounting/document-form/use-document-field-renderers.tsx": "ba48952fa357fffb6a48500e2b6fd714",
+      "src/components/ds/accounting/document-form/use-document-field-renderers.tsx": "689569778f021b90cd73c2264a023dbd",
       "src/components/ds/accounting/document-form/use-document-form-layout.ts": "26eb1c2aab7740299e65b9157193230e",
       "src/components/ds/accounting/document-form/use-external-number-field.tsx": "6215997c0b0acd713b750cfac783cc25",
+      "src/components/ds/accounting/document-form/use-identity-account-selection.ts": "1438d64a6fedf0c6ee4b72ef9fbdfe5b",
       "src/components/ds/accounting/document-settings-dialog.tsx": "46e6090a793cb28ec5b4ba74a6dd5932",
       "src/components/ds/accounting/document-status-badge.tsx": "51d8845160fc14334257c0b4e47152cd",
       "src/components/ds/accounting/fiscal-period-select.tsx": "5fce1d75cf94c0fa21b0b99188fc6829",
@@ -137,7 +138,10 @@
       "src/components/ds/accounting/journal-lines-recap.tsx": "26dcf2a4bb8ddeef6423892bfd6cfecc",
       "src/components/ds/accounting/journal-lines-validation.ts": "5f16e64483c3d19ea35fcb13f34f6e33",
       "src/components/ds/accounting/journal-lines.ts": "037cf858f6053a062ff537a7f75fb4d5",
+      "src/components/ds/accounting/journal-recap-header.tsx": "bd52abef3171cbb930cbfaf6e870afc7",
+      "src/components/ds/accounting/journal-recap-home-total.tsx": "c78384dfc3dd5faca5b90cc02b2eeae3",
       "src/components/ds/accounting/journal-vat.ts": "e7bc2585c0566045408642747a429650",
+      "src/components/ds/accounting/locked-account-value.tsx": "b39c1856a7ef552f3b72b716864f5553",
       "src/components/ds/accounting/partner-select.tsx": "a3431ae6bd19a88b886471dc76c67519",
       "src/components/ds/accounting/payment-order-account-field.tsx": "fa6467cf42008e6350ac537bc4e0240d",
       "src/components/ds/accounting/payment-schedule-editor.tsx": "dec52321584002071359ae6202c55486",
@@ -178,7 +182,7 @@
       "src/components/ds/form/checkbox-field.tsx": "798a59ffc08baafabee7416585497c20",
       "src/components/ds/form/chip-multi-select.tsx": "cf116ed3059818cc6028458035e5883d",
       "src/components/ds/form/country-select.tsx": "e2e93d4bc01a6f936cb6bdea2679e4ce",
-      "src/components/ds/form/date-field.tsx": "82bd86663a4412a7dddcb616d9baedbc",
+      "src/components/ds/form/date-field.tsx": "b9b584d1096d75cc59821c9bfe5c4070",
       "src/components/ds/form/date-range-field.tsx": "85ba360e79f4ef30b5d87178b2e8b2e9",
       "src/components/ds/form/decimal-input.tsx": "c0ab5d5e2a98ef7edab798a6022eb512",
       "src/components/ds/form/entity-select.tsx": "3ef8a47fbc2c70637af40947ad6090b8",
@@ -296,6 +300,7 @@
       "src/components/ds/panes/pane-layout-switcher.tsx": "2a18e9baafe76169327e1361dc4a5818",
       "src/components/ds/panes/pane-layout.tsx": "7b43480eb529f85442bd535047933131",
       "src/components/ds/panes/pane-link.tsx": "f9f31199006bec7103160b9be1e1054f",
+      "src/components/ds/panes/pane-record-navigation.ts": "31aa355dd35df0332841596907e5c81b",
       "src/components/ds/panes/pane-state.ts": "e2e8ddf91147fb18649e43895edf0926",
       "src/components/ds/panes/pane-tab-bar.tsx": "32e2b0c852ff5a693f430da9cc7bcdb1",
       "src/components/ds/panes/pane-tab-store.ts": "36a5263c0ed09e50995f857d301d613e",
@@ -306,7 +311,10 @@
       "src/components/ds/print/cash-receipt-pdf.tsx": "ca5e9c4ca80b77c8c051f70b5b43c9b7",
       "src/components/ds/print/print-preview-dialog.tsx": "ae64b7667855df7a2618006d754d2314",
       "src/components/ds/print/report-pdf.ts": "6bbdef1621159590836c67c2faf8a644",
+      "src/components/showcase/AccountingFieldsShowcase.tsx": "064e29cbf1f7899ddae16dc2f7c1aea3",
       "src/components/showcase/DocumentFormShowcase.tsx": "ba3c3161c724e822fb06adb451988c42",
+      "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
+      "src/components/showcase/FormDesignTwoShowcase.tsx": "bcbc4738ff58e0a93a18a35a5dd96dc8",
       "src/components/showcase/MatchingShowcase.tsx": "ef83010bf71822dd26279e4b42fa4e78",
       "src/components/showcase/PaneShowcase.tsx": "abd1af3294ab9f338001b009906b82d2",
       "src/components/showcase/PartnerShowcase.tsx": "a42b9f5d59a66a020cd9cb53b76e3bd1",
@@ -314,10 +322,13 @@
       "src/components/showcase/RecordDialogShowcase.tsx": "eccfab1b39face4004573b88fe6d98ad",
       "src/components/showcase/ReportsShowcase.tsx": "4c040e7fc138f71096d6d7cd7a36c587",
       "src/components/showcase/ShowcaseLayout.tsx": "a28cc9cb60c4cc83e339d2f3f4043daa",
+      "src/components/showcase/UnsavedActionsShowcase.tsx": "45469ab16f04984e5dca98809e9f4cb5",
       "src/components/showcase/VatJournalShowcase.tsx": "8bb96dcc889ee8e9856c33936f72ecf7",
       "src/components/showcase/WorkspaceSettingsShowcase.tsx": "f800d772e9cf9302616306ad6b4a0acd",
       "src/components/showcase/document-form-secondary-scenarios.tsx": "17f6fd9057000f87c0ef2ce9aee085ec",
       "src/components/showcase/document-form-showcase-data.tsx": "91123d8aa4a96971b9f2ea814a136ed6",
+      "src/components/showcase/form-design-narrow.tsx": "79dc7fd50c5844de3f2dde30c2de870e",
+      "src/components/showcase/form-design-texts.ts": "6456238dcbe675dc5b9c3661d30d4a5e",
       "src/components/showcase/use-document-form-showcase-state.ts": "94581a981f4da8de273d37478fd37bd3",
       "src/components/ui/accordion.tsx": "02532ed931f862fd6482540332646fa1",
       "src/components/ui/alert-dialog.tsx": "f8a585c29a73b70fc212e0e6ffe8e113",
@@ -365,8 +376,14 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
+      "src/ds-texts/cs-document-form.ts": "21c642072960d582fb6f337edabc40e8",
+      "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
       "src/ds-texts/cs.ts": "ad3979f2462fbff017099f1f3b26b19a",
+      "src/ds-texts/form-design-two-showcase.ts": "12587a9777f2f70cc0e98441a3d299c8",
+      "src/ds-texts/grid-journal-types.ts": "94ac1293c2ae2163f22f8d3d5787064e",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
+      "src/ds-texts/sk-document-form.ts": "9d4c6de8f5243e8cbbc864edc8b298c0",
+      "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
       "src/ds-texts/sk.ts": "94b4097281b5092a312e7e2aebc921df",
       "src/ds-texts/types.ts": "f3e0745d6d710fe5ac0fbb95f747a4ca",
       "src/hooks/index.ts": "6fece027b973135a96e5c7ae9a978a3e",
@@ -423,13 +440,17 @@
       "src/slivka-head.tsx": "a126065cc8ea1f5bc5be4d79afae31dc",
       "src/slivka-provider.tsx": "534ba72d2302fa980a607e0cba6ecd69",
       "src/start.ts": "3b877c99f5f4668ccc3694f7a09a1f07",
-      "src/styles.css": "929654a86244c580cae8756c1e80d543",
+      "src/styles.css": "e36a444834e8a26cf349e31124b086aa",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "f489ce71bed4bf62da4f6ea918d5d560",
       "tests/e2e/document-date-link.spec.ts": "ca36b791c5217d21fd624896d83c697a",
+      "tests/e2e/edit-document-eleven.spec.ts": "c292f7663a16f487a4c7983ae76d2b91",
       "tests/e2e/excel-download.spec.ts": "af20477259287b9dafece13ee60e4b7a",
+      "tests/e2e/form-design-two.spec.ts": "4383d3d512707baf45a6da3c7ff745e4",
+      "tests/e2e/form-design.spec.ts": "5c74ad93070cc7062600bbbb6af8c1be",
       "tests/e2e/grid-toolbar-232.spec.ts": "6d205b4bf5aea83bd838af0e645c64dc",
       "tests/e2e/journal-editor.spec.ts": "688300fb71b28ce7f451b52e25058b39",
+      "tests/e2e/narrow-fields-290.spec.ts": "65fd6ccd52c7e47785bf007a9d100528",
       "tests/e2e/payment-schedule.spec.ts": "9cbe5de6ebf98ea321833e65a3e377eb",
       "tests/e2e/reports.spec.ts": "155b2ee434a7ddd4749babc725cc4c2c",
       "tests/e2e/vat-code-tab-256.spec.ts": "19ecb9b5008afe706f7d84190c0cfc42",
@@ -455,6 +476,9 @@
       "tests/unit/ds-285-behavior.test.tsx": "d54842e090ad287f1c7cafc85f37d177",
       "tests/unit/ds-285-rules.test.tsx": "a5a523bd482d09c43b73b5ae90410da3",
       "tests/unit/ds-286-behavior.test.tsx": "4592d735fe1a47c6cf421d78e8a1b47b",
+      "tests/unit/edit-document-eleven.test.tsx": "b78502f9eb9ca1993c06b8fbb4378d13",
+      "tests/unit/form-design-two.test.tsx": "3313ba395dc31faeb6c34bacc8085fe7",
+      "tests/unit/form-design.test.tsx": "d8a34753e42516d9369db69d7f9292de",
       "tests/unit/grid-actions-226.test.tsx": "bc71317a906195c55aac5480a826c089",
       "tests/unit/grid-matching-258.test.tsx": "58b8a978f8d15d8226189e7405422c45",
       "tests/unit/grid-matching-interactions-258.test.tsx": "902d294fda2830ed2ed4211d119d4240",
@@ -489,34 +513,7 @@
       "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
-      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
-      "src/components/ds/accounting/document-form/use-identity-account-selection.ts": "1438d64a6fedf0c6ee4b72ef9fbdfe5b",
-      "src/components/ds/accounting/journal-recap-header.tsx": "bd52abef3171cbb930cbfaf6e870afc7",
-      "src/components/ds/accounting/journal-recap-home-total.tsx": "c78384dfc3dd5faca5b90cc02b2eeae3",
-      "src/components/ds/accounting/locked-account-value.tsx": "b39c1856a7ef552f3b72b716864f5553",
-      "src/components/ds/panes/pane-record-navigation.ts": "31aa355dd35df0332841596907e5c81b",
-      "src/components/showcase/AccountingFieldsShowcase.tsx": "064e29cbf1f7899ddae16dc2f7c1aea3",
-      "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
-      "src/components/showcase/FormDesignTwoShowcase.tsx": "bcbc4738ff58e0a93a18a35a5dd96dc8",
-      "src/components/showcase/UnsavedActionsShowcase.tsx": "45469ab16f04984e5dca98809e9f4cb5",
-      "src/components/showcase/form-design-narrow.tsx": "79dc7fd50c5844de3f2dde30c2de870e",
-      "src/components/showcase/form-design-texts.ts": "6456238dcbe675dc5b9c3661d30d4a5e",
-      "src/ds-texts/cs-document-form.ts": "21c642072960d582fb6f337edabc40e8",
-      "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
-      "src/ds-texts/form-design-two-showcase.ts": "12587a9777f2f70cc0e98441a3d299c8",
-      "src/ds-texts/grid-journal-types.ts": "94ac1293c2ae2163f22f8d3d5787064e",
-      "src/ds-texts/sk-document-form.ts": "9d4c6de8f5243e8cbbc864edc8b298c0",
-      "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
-      "tests/e2e/edit-document-eleven.spec.ts": "c292f7663a16f487a4c7983ae76d2b91",
-      "tests/e2e/form-design-two.spec.ts": "4383d3d512707baf45a6da3c7ff745e4",
-      "tests/e2e/form-design.spec.ts": "5c74ad93070cc7062600bbbb6af8c1be",
-      "tests/e2e/narrow-fields-290.spec.ts": "65fd6ccd52c7e47785bf007a9d100528",
-      "tests/unit/edit-document-eleven.test.tsx": "b78502f9eb9ca1993c06b8fbb4378d13",
-      "tests/unit/form-design-two.test.tsx": "3313ba395dc31faeb6c34bacc8085fe7",
-      "tests/unit/form-design.test.tsx": "d8a34753e42516d9369db69d7f9292de",
-      "src/components/showcase/DocumentDatesShowcase.tsx": "440b5b87d113a7d7b5b9b59e1161c587",
-      "tests/unit/edit-document-twelve.test.tsx": "9036d709a8eee21b15dce9600f48ba4e",
-      "tests/e2e/edit-document-twelve.spec.ts": "65ff0c808519df56f439ffb49f612ff0"
+      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
     },
     "pipeline_version": 8
   },
@@ -1255,6 +1252,12 @@
       "name": "Input",
       "file": "src/components/ui/input.tsx",
       "import_path": "",
+      "props": [
+        {
+          "name": "formatPattern",
+          "type": "string"
+        }
+      ],
       "usage": "Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci.",
       "examples": [
         {
@@ -1264,12 +1267,6 @@
       ],
       "antipatterns": [
         "Nevkládejte příklad hodnoty, popisek ani popisnou nápovědu do placeholderu."
-      ],
-      "props": [
-        {
-          "name": "formatPattern",
-          "type": "string"
-        }
       ]
     },
     {
@@ -2547,6 +2544,47 @@
       "name": "ToggleGroupItem",
       "file": "src/components/ui/toggle-group.tsx",
       "import_path": ""
+    },
+    {
+      "name": "JournalRecapHomeTotal",
+      "file": "src/components/ds/accounting/journal-recap-home-total",
+      "import_path": "",
+      "props": [
+        {
+          "name": "total",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "labelTemplate",
+          "type": "string"
+        },
+        {
+          "name": "rate",
+          "type": "number"
+        },
+        {
+          "name": "rateAmount",
+          "type": "number",
+          "default": "1"
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "usage": "Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.",
+      "examples": [
+        {
+          "label": "Přepočtený celek",
+          "code": "<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevkládejte značku měny natvrdo.",
+        "Nevydávejte chybějící kurz za nulu."
+      ]
     },
     {
       "name": "AppShell",
@@ -3981,6 +4019,10 @@
           "required": true
         },
         {
+          "name": "action",
+          "type": "any"
+        },
+        {
           "name": "tabTitle",
           "type": "string",
           "required": true
@@ -4011,12 +4053,6 @@
         {
           "name": "onOpenInNewTab",
           "type": "function"
-        },
-        {
-          "name": "action",
-          "type": "\"close\" | \"switch\" | \"logout\" | \"navigate\"",
-          "default": "navigate",
-          "description": "Typ odchodu určuje nadpis a výsledkové texty tlačítek."
         }
       ],
       "usage": "Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.",
@@ -4025,8 +4061,7 @@
           "label": "2.92.0",
           "code": "<UnsavedChangesDialog {...props} action=\"close\" />"
         }
-      ],
-      "antipatterns": []
+      ]
     },
     {
       "name": "LayoutSwitcher",
@@ -5177,6 +5212,11 @@
           "required": true
         },
         {
+          "name": "sourceAttention",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
           "name": "onUseSuggested",
           "type": "function"
         },
@@ -5228,18 +5268,12 @@
         },
         {
           "name": "className",
-          "type": "string"
+          "type": "string",
+          "default": "sr-only"
         },
         {
           "name": "inputClassName",
-          "type": "string",
-          "description": "Třídy vstupu i hodnoty jen ke čtení, například h-11."
-        },
-        {
-          "name": "sourceAttention",
-          "type": "boolean",
-          "description": "Starší nebo vlastní zdroj zobrazí tlumenou ikonu vlevo; zdroj a jednotka jsou v tooltipu pole.",
-          "default": "false"
+          "type": "string"
         }
       ],
       "usage": "Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci.",
@@ -5441,14 +5475,17 @@
         },
         {
           "name": "size",
-          "type": "\"default\" | \"compact\"",
-          "default": "default",
-          "description": "Velikost tlačítek: výchozí pro pole, kompaktní pro buňku gridu."
+          "type": "enum",
+          "values": [
+            "default",
+            "compact"
+          ],
+          "default": "default"
         },
         {
           "name": "className",
           "type": "string",
-          "description": "Umístění (výchozí vpravo před šipkou rozbalení)."
+          "default": "size-3.5"
         }
       ],
       "usage": "Samostatné ikonové akce výběru v pevně vyhrazeném místě vlevo od šipky. Hodnotu a nabídku řídí rodič.",
@@ -7188,11 +7225,11 @@
           "type": "string"
         },
         {
-          "name": "disabledReason",
+          "name": "placeholder",
           "type": "string"
         },
         {
-          "name": "placeholder",
+          "name": "disabledReason",
           "type": "string"
         }
       ],
@@ -7283,9 +7320,8 @@
           "required": true
         },
         {
-          "name": "className",
-          "type": "string",
-          "description": "Doplňkové třídy společného obalu; ref míří na obal."
+          "name": "lockedReason",
+          "type": "string"
         }
       ],
       "usage": "Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede.",
@@ -7328,17 +7364,6 @@
         "Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.",
         "Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.",
         "Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows."
-      ],
-      "props": [
-        {
-          "name": "recapTotalAmount",
-          "type": "number"
-        },
-        {
-          "name": "recapTotalLabel",
-          "type": "string",
-          "description": "Popisek domácího celku; DocumentForm předá svůj text automaticky."
-        }
       ]
     },
     {
@@ -7346,6 +7371,10 @@
       "file": "src/components/ds/accounting/journal-lines-recap.tsx",
       "import_path": "",
       "props": [
+        {
+          "name": "headerTotal",
+          "type": "any"
+        },
         {
           "name": "lines",
           "type": "any",
@@ -7415,10 +7444,6 @@
         {
           "name": "vatSummary",
           "type": "any"
-        },
-        {
-          "name": "headerTotal",
-          "type": "ReactNode"
         }
       ],
       "usage": "Sbalitelný souhrn účtování a zakázek, který se přepočítává z aktuálních řádků.",
@@ -7440,7 +7465,7 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají stejnou kompaktní šířku jen v dokladu; DUZP a Datum DPH tvoří nerozdělitelnou dvojici. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
@@ -7766,48 +7791,6 @@
       ],
       "antipatterns": [
         "Nevkládejte značku měny přímo do částky; předejte ji přes currencySymbol nebo homeCurrencySymbol."
-      ]
-    },
-    {
-      "name": "JournalRecapHomeTotal",
-      "file": "src/components/ds/accounting/journal-recap-home-total.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "total",
-          "type": "number",
-          "required": true
-        },
-        {
-          "name": "rate",
-          "type": "number | null"
-        },
-        {
-          "name": "rateAmount",
-          "type": "number",
-          "default": "1"
-        },
-        {
-          "name": "symbol",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "labelTemplate",
-          "type": "string",
-          "description": "Přepis plného popisku s tokenem {symbol}; má přednost před DsTexts."
-        }
-      ],
-      "usage": "Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.",
-      "examples": [
-        {
-          "label": "Přepočtený celek",
-          "code": "<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />"
-        }
-      ],
-      "antipatterns": [
-        "Nevkládejte značku měny natvrdo.",
-        "Nevydávejte chybějící kurz za nulu."
       ]
     }
   ],

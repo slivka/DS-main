@@ -83,26 +83,6 @@ export function useDocumentFieldRenderers({
       className,
     );
   };
-  const text = (
-    key: "constantSymbol" | "specificSymbol" | "handedOverBy",
-    label: string,
-    span = 3,
-    className?: string,
-  ) =>
-    field(
-      `document-${key}`,
-      label,
-      <Input
-        id={`document-${key}`}
-        value={value[key] ?? ""}
-        onChange={(event) => patch({ [key]: event.target.value })}
-        disabled={!can(key)}
-        className="h-9 font-mono tabular-nums"
-      />,
-      span,
-      false,
-      className,
-    );
   const suggestedText = (
     key: "handedOverBy" | "description",
     label: string,
@@ -144,5 +124,5 @@ export function useDocumentFieldRenderers({
       false,
       className,
     );
-  return { field, date, text, suggestedText };
+  return { field, date, suggestedText };
 }
