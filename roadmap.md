@@ -1,4 +1,4 @@
-## DS 2.98.0 – Edit dokladu 12i (bez nového vydání)
+## DS 2.99.0 – Edit dokladu 12i
 - [x] Odlišit zamčenou vybranou segmentovou volbu a porovnat s povolenou.
 - [x] Ověřit rámečky lišty bez neohlášených změn CSS.
 - [x] Unit 617/617, E2E 30/30 ve třech prohlížečích, lint 0 chyb / 293 varování;
