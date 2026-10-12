@@ -1,3 +1,8 @@
+## DS 2.97.0 – Edit dokladu 12h (nevydáno)
+- [ ] Obnovit aktivní a hover stav lišt a odlišit zakázanou vybranou volbu.
+- [ ] Zachovat přístupný součet, opravit kurz a doplnit úplná měření polí.
+- [ ] Unit, tři prohlížeče, lint a cílený bajtový důkaz katalogů.
+
 ## DS 2.97.0 – Edit dokladu 12g (nevydáno)
 - [x] Úplná inventura zakázaných výběrů, tlumený čitelný text a stavové rámečky.
 - [x] Sjednocené písmo částky a úplné testy formuláře ve třech prohlížečích.

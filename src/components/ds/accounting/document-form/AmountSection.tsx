@@ -195,10 +195,10 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     value={total}
                     onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })}
                     readOnly={totalMode === "sum" || !can("amountTotal")}
-                    disabled={!can("amountTotal")}
                     className={cn(
                       "h-[var(--control-h)] pr-[calc(var(--control-h)+0.5rem)] text-right text-sm font-sans font-bold tabular-nums",
                       totalMode === "sum" && "bg-muted",
+                      !can("amountTotal") && "bg-muted/40 text-muted-foreground opacity-100",
                     )}
                   />
                   <Tooltip>

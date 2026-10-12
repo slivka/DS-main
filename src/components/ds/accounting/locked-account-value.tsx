@@ -39,7 +39,7 @@ export const LockedAccountValue = forwardRef<HTMLDivElement, LockedAccountValueP
             tabIndex={0}
             aria-disabled="true"
             className={cn(
-              "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100 aria-disabled:bg-muted/40 aria-disabled:text-muted-foreground border border-input",
+              "ds-disabled-control aria-disabled:bg-muted/40 aria-disabled:text-muted-foreground border border-input",
               className,
             )}
           >

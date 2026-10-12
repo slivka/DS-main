@@ -58,8 +58,9 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
   const reference = form.locator("#document-vatDate");
   const controls = await form
     .locator(
-      'input[id]:disabled, textarea:disabled, button:disabled, button[aria-disabled="true"], ' +
-        'div.ds-disabled-control[aria-disabled="true"], [data-slot="field-value"][aria-disabled="true"]',
+      'input:disabled, textarea:disabled, button:disabled, button[aria-disabled="true"], ' +
+        'div.ds-disabled-control[aria-disabled="true"], [data-slot="field-value"][aria-disabled="true"], ' +
+        '[role="textbox"][aria-readonly="true"], #document-amountTotal',
     )
     .all();
   controls.push(...(await page.getByTestId("disabled-selects").getByRole("combobox").all()));
@@ -67,6 +68,14 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
   await expect(form.locator("#document-partner")).toBeDisabled();
   await expect(page.locator("#disabled-currency-select")).toBeDisabled();
   await expect(page.locator("#disabled-radix-select")).toBeDisabled();
+  await expect(page.locator("#disabled-radix-select")).toHaveText("EUR");
+  const total = form.locator("#document-amountTotal");
+  await expect(total).toBeEnabled();
+  await expect(total).toHaveAttribute("readonly", "");
+  await total.focus();
+  await expect(total).toBeFocused();
+  await total.evaluate((node: HTMLInputElement) => node.select());
+  expect(await total.evaluate((node: HTMLInputElement) => node.selectionEnd)).toBeGreaterThan(0);
   for (const dark of [false, true]) {
     const toggle = page.getByRole("button", {
       name: dark ? "Tmavý režim" : "Světlý režim",
@@ -112,7 +121,18 @@ test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", a
         return [style.backgroundColor, style.color, style.opacity];
       });
       expect(actual.slice(1)).toEqual(expected.slice(1));
-      if (await control.getAttribute("id")) expect(actual[0]).toBe(expected[0]);
+      expect(actual[0]).toBe(expected[0]);
+      const border = await form
+        .locator("#document-taxDate")
+        .evaluate((node) => getComputedStyle(node).borderColor);
+      const style = await control.evaluate((node) => ({
+        border: getComputedStyle(node).borderColor,
+        italic: getComputedStyle(node).fontStyle,
+      }));
+      if ((await control.getAttribute("id")) !== "document-vatDate") {
+        expect(style.border, (await control.getAttribute("id")) ?? "bez id").toBe(border);
+      }
+      expect(style.italic).not.toBe("italic");
       const contrast = await control.evaluate((node) => {
         const context = document.createElement("canvas").getContext("2d");
         if (!context) throw new Error("Chybí měření barev");
