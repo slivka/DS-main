@@ -11,6 +11,34 @@
 - Katalogy byly upraveny cíleně proti b27379e4: 426 / 426 / 426 / 426. Změněné JSON komponenty: Field, BankAccountField, DocumentForm; 423 nedotčených objektů je bajtově shodných. Markdownové bloky: components.md pouze DocumentForm; rules/components.md uvedené tři. Zdrojový manifest obsahuje nové ukázky a testy; původní #enrichment zachován.
 - Ověření: unit 609/609 (58 souborů, 1922 assertions); související E2E 9/9 (Chromium 3, Firefox 3, WebKit 3); lint 0 chyb / 293 varování. Automatický build OK. Samostatný typecheck a ruční build nebyly spuštěny, kontrolní prostředí je nepovoluje. Formát se kontroluje jen nad podporovanými zdrojovými příponami, nikoli binárními fonty.
 
+### Změněné soubory oproti b27379e4
+
+- `CHANGELOG.md`
+- `components.md`
+- `AGENTS.md`
+- `package.json`
+- `roadmap.md`
+- `.lovable/design-system.json`
+- `.lovable/system.md`
+- `src/styles.css`
+- `tests/e2e/edit-document-twelve.spec.ts`
+- `tests/unit/document-form-286.test.tsx`
+- `tests/unit/edit-document-eleven.test.tsx`
+- `tests/unit/edit-document-twelve.test.tsx`
+- `tests/unit/bank-account-options.test.tsx`
+- `src/ds-texts/form-design-two-showcase.ts`
+- `src/routes/workspace-settings.$page.tsx`
+- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `src/components/ds/accounting/bank-account-field.tsx`
+- `src/components/ds/layout/form-field-layout.tsx`
+- `src/components/ds/accounting/document-form/DatesSection.tsx`
+- `src/components/ds/accounting/document-form/PaymentSection.tsx`
+- `src/components/ds/accounting/document-form/build-document-notices.tsx`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+
+Automaticky spravované soubory navíc: `.workspace/AGENTS.md`, `src/.generated/mockup-components.ts`, `src/tailwind.config.lov.json`, `tsconfig.tsbuildinfo`; nejsou autorskou změnou tohoto zadání. Kontrola nadpisů stránek doplnila chybějící metadata detailu nastavení prostoru.
+
 ### Nová tabulka měření (Chromium, CS)
 
 Panel „360“ znamená vnější šířku 360 CSS px, nikoli počet panelů. Práh je součet pěti aktuálních šířek a **pěti** mezer, včetně mezery rozpěrky. Všechny hodnoty jsou měření, nikoli pevné rozměry UI. CS/SK a ostatní prohlížeče byly kontrolovány samostatně; jejich zlomové šířky se mohou lišit podle skutečné sazby.
