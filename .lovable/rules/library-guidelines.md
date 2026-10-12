@@ -45,4 +45,9 @@ Datumová pole v DocumentForm měří aktivní formát a společnou geometrii ik
 
 ## Edit dokladu 12b (2.97.0)
 
-DocumentForm zachová standardní velikost písma i popisku podle zoomu; lokální zmenšení nastane jen pokud se nevejde ani jedno plné pole. Delší popisek rozšíří pouze své pole; skupina DUZP a Datum DPH se zalomí podle skutečných šířek. Zamčené skupiny KS/SS mají jméno přes aria-labelledby a důvod přes aria-describedby. BankAccountField přijímá BankAccountOption s úplnou tuzemskou dvojicí nebo IBAN; hledá i podle IBAN.
+DocumentForm zachová standardní velikost písma i popisku podle zoomu; lokální zmenšení nastane jen u pole, které samo přesahuje kontejner. Delší popisek rozšíří pouze své pole; skupina DUZP a Datum DPH se zalomí podle skutečných šířek. Zamčené skupiny KS/SS mají jméno přes aria-labelledby a důvod přes aria-describedby. BankAccountField přijímá BankAccountOption s úplnou tuzemskou dvojicí nebo IBAN; hledá i podle IBAN.
+
+
+## Edit dokladu 12c (2.97.0)
+
+Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.

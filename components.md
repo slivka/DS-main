@@ -241,7 +241,7 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 ### DocumentForm 2.31.0
 
-**Edit dokladu 12b (2.97.0):** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
+**Edit dokladu 12b (2.97.0):** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
 
 **Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
 
@@ -269,6 +269,8 @@ Protistrana jako volný text s volitelným propojením na partnera. „Nový par
 `DocumentForm` používá `saveAction`, `primaryAction` a `moreActions`; stav a schválení zůstávají v přilepeném pruhu přímo pod `PageHeader`. Akce Uložit reaguje na Ctrl/Cmd+S, `dirty` a `busy`.
 
 `buildReportPdf` vytváří obecné firemní sestavy ze sekcí `table`, `text` a `custom`. `PrintPreviewDialog` zobrazuje PDF přes celou šířku a nabízí Tisk a Stáhnout PDF. `buildCashReceiptPdf` a `CashReceiptPrintDialog` vytvářejí pokladní doklady včetně dvou kopií na A4. `amountInWordsCs` převádí částky na český dokladový zápis a `companyMonogramSvg` dodává náhradní firemní monogram.
+
+**Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.
 
 ### Opravy 2.26.1
 

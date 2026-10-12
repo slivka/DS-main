@@ -69,7 +69,7 @@ export function DocumentDatesSection({
           const measuredWidth = field.getBoundingClientRect().width;
           if (measuredWidth <= available) break;
           const currentScale = Number(field.style.getPropertyValue("--document-date-scale"));
-          const correctedScale = currentScale * (available - fixed) / (measuredWidth - fixed);
+          const correctedScale = (currentScale * (available - fixed)) / (measuredWidth - fixed);
           field.style.setProperty("--document-date-scale", String(correctedScale));
         }
       }

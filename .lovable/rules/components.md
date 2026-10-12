@@ -336,6 +336,8 @@ _Účet dodavatele_
 
 **Edit dokladu 12b:** BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle.
 
+**Edit dokladu 12c:** Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu.
+
 ### BarBreakdownChart
 
 ```ts
@@ -1479,7 +1481,9 @@ _Platba přijatého dokladu bez účtu_
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
 - DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
 
-**Edit dokladu 12b:** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.
+**Edit dokladu 12b:** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.
+
+**Edit dokladu 12c:** Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů.
 
 ### DocumentPrintTab
 
@@ -3397,6 +3401,8 @@ _Vypnutý příkaz_
 
 - Při vypnutí nemažte hodnotu uvnitř této komponenty.
 - Nevykreslujte druhý zámek ani důvod pod polem.
+
+**Edit dokladu 12c:** Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech.
 
 ### PaymentScheduleEditor
 

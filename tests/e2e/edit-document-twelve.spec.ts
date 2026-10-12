@@ -27,9 +27,12 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
         );
         await expect(root.locator("[data-pane]")).toHaveCount(count || 1);
         // Observer musí dokončit měření po změně panelu i v pomalejším WebKitu.
-        await page.evaluate(() => new Promise<void>((resolve) => {
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-        }));
+        await page.evaluate(
+          () =>
+            new Promise<void>((resolve) => {
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+            }),
+        );
         const dates = root.locator('[data-slot="document-dates"]').first();
         const result = await dates.evaluate((el) => {
           const box = el.getBoundingClientRect();
