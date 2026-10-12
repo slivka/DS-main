@@ -1,7 +1,7 @@
 ## DS 2.97.0 – Edit dokladu 12f (nevydáno)
-- [ ] Odolné účty a hledání, jednotný zakázaný vzhled s kontrastem.
-- [ ] Ohraničené měření datumů a testy ve třech prohlížečích.
-- [ ] Opravit dokumentaci a doložit všechny sekce a katalogy vůči b27379e4.
+- [x] Odolné účty a hledání, jednotný zakázaný vzhled s kontrastem.
+- [x] Ohraničené měření datumů a testy ve třech prohlížečích.
+- [x] Opravit dokumentaci a doložit všechny sekce a katalogy vůči b27379e4.
 
 ## DS 2.97.0 – Edit dokladu 12e (nevydáno)
 - [x] Částka, kurzy a měna ve standardní výšce; součet tučný se standardním písmem.

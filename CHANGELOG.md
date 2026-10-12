@@ -1,5 +1,17 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12f (nevydáno)
+
+- Zakázaný vzhled platí v celé knihovně: Input, SelectTrigger, OptionSelect (běžná i hledatelná větev), Textarea, DecimalInput a interní LockedAccountValue; DocumentForm sjednocuje i pevnou měnu. Stávající podklad `muted/40`, rámeček `input`, text `foreground`. Průhlednost zvýšena z 0,5 na 1 kvůli čitelnosti. Naměřený kontrast v Chromiu: světlý 15,48 : 1; tmavý 12,32 : 1. Všechny tři prohlížeče ověřují minimum 4,5 : 1.
+- E2E přepíná režim skutečným tlačítkem, nikoli změnou třídy. Referenční Datum DPH a VS, KS, SS, Způsob platby, pevná Měna, Popis i zamčený účet jsou ve stejném dokladu jen pro čtení. Pevná měna je v tomto stavu hodnotový rámeček, nikoli interaktivní výběr. Samostatný test KS/SS zachovává kontrolu návratu SS 99 po zapnutí příkazu.
+- BankAccountField ověřuje řetězcový typ number, bankCode a iban při filtrování i tvorbě hledacího textu. Hledatelný OptionSelect ignoruje mezery v dotazu i hledaném zápisu. Unit ověřuje číselné number/iban a nepravidelné mezery dotazu.
+- Měření datumů omezuje škálu na 0–1 a opravnou smyčku na čtyři průchody; nulový dělitel ošetřen. E2E bere stejnou šířku kontejneru jako kód: clientWidth minus rámeček.
+- Oprava dokumentace: odstavec 12c přesunut do DocumentForm. DocumentActionBar a tisk je bajtově shodná s b27379e4. Historická tabulka i popis škálování 12b jsou označené jako nahrazené kolem 12c; neúplná dřívější tvrzení o markdownových blocích opravena. **BREAKING (typy): option.number / option.bankCode mohou být undefined**; před čtením ověřte hodnotu, identitu získávejte přes bankAccountOptionValue.
+- Ověření: unit **613/613**, 58 souborů, 1 931 assertions; související E2E **24/24** (Chromium 8, Firefox 8, WebKit 8). První společný WebKit narazil na časový limit; následně tři úspěšné testy z původního běhu a zbývajících pět samostatně. Lint **0 chyb / 294 varování**; formát OK; automatický build OK. Samostatný typecheck ani ruční build nebyly spuštěny, protože je prostředí zakazuje.
+- Důkaz: `python3 scripts/verify-edit-document-catalogs.py` porovnává syrové JSON objekty a všechny sekce `##` / `###` včetně opakovaných nadpisů, preambule a nových/odstraněných sekcí; bez normalizace. Katalogy **426 / 426 / 426 / 426**. Kumulativně změněné veřejné záznamy: **BankAccountField, DecimalInput, DocumentForm, Field, Input, OptionSelect, PaymentOrderAccountField, SelectTrigger, Textarea**. **417** ostatních JSON objektů je bajtově shodných; #enrichment zachován. Interní SearchableOptionSelect a LockedAccountValue nejsou nové veřejné exporty.
+- Dokumentační sekce: `components.md` pouze `### DocumentForm 2.31.0` (37 sekcí); `.lovable/rules/components.md` pouze devět výše uvedených komponentních sekcí (426); `.lovable/rules/library-guidelines.md` původní `## Edit dokladu 12 (2.96.0)` a nové `## Edit dokladu 12b`, `12c`, `12f` (8 sekcí). Ostatní sekce jsou bajtově shodné.
+- Verze zůstává **2.97.0**, nevydáno. Úplný kumulativní seznam souborů oproti b27379e4 je níže.
+
 ## 2.97.0 – Edit dokladu 12e (nevydáno)
 
 - Kurzy, kurz DPH, Celkem a pevná i volitelná měna používají standardní výšku `var(--control-h)` místo zvýšené h-11. Tlačítko Σ má velikost odvozenou od stejné výšky a zůstává uvnitř pole.
@@ -50,30 +62,42 @@
 
 ### Změněné soubory oproti b27379e4
 
+- `.lovable/design-system.json`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+- `.lovable/system.md`
+- `AGENTS.md`
 - `CHANGELOG.md`
 - `components.md`
-- `AGENTS.md`
 - `package.json`
 - `roadmap.md`
-- `.lovable/design-system.json`
-- `.lovable/system.md`
-- `src/styles.css`
-- `tests/e2e/edit-document-twelve.spec.ts`
-- `tests/unit/document-form-286.test.tsx`
-- `tests/unit/edit-document-eleven.test.tsx`
-- `tests/unit/edit-document-twelve.test.tsx`
-- `tests/unit/bank-account-options.test.tsx`
-- `src/ds-texts/form-design-two-showcase.ts`
-- `src/routes/workspace-settings.$page.tsx`
-- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `scripts/verify-edit-document-catalogs.py`
+- `src/components/ds/accounting/AGENTS.md`
 - `src/components/ds/accounting/bank-account-field.tsx`
-- `src/components/ds/accounting/payment-order-account-field.tsx`
-- `src/components/ds/layout/form-field-layout.tsx`
+- `src/components/ds/accounting/document-form/AmountSection.tsx`
 - `src/components/ds/accounting/document-form/DatesSection.tsx`
 - `src/components/ds/accounting/document-form/PaymentSection.tsx`
 - `src/components/ds/accounting/document-form/build-document-notices.tsx`
-- `.lovable/rules/components.md`
-- `.lovable/rules/library-guidelines.md`
+- `src/components/ds/accounting/document-form/use-currency-control.tsx`
+- `src/components/ds/accounting/locked-account-value.tsx`
+- `src/components/ds/accounting/payment-order-account-field.tsx`
+- `src/components/ds/form/searchable-option-select.tsx`
+- `src/components/ds/layout/form-field-layout.tsx`
+- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `src/components/showcase/FormDesignTwoShowcase.tsx`
+- `src/components/ui/input.tsx`
+- `src/components/ui/select.tsx`
+- `src/components/ui/textarea.tsx`
+- `src/ds-texts/form-design-two-showcase.ts`
+- `src/routes/workspace-settings.$page.tsx`
+- `src/styles.css`
+- `tests/e2e/document-amount-section.spec.ts`
+- `tests/e2e/document-disabled-inputs.spec.ts`
+- `tests/e2e/edit-document-twelve.spec.ts`
+- `tests/unit/bank-account-options.test.tsx`
+- `tests/unit/document-form-286.test.tsx`
+- `tests/unit/edit-document-eleven.test.tsx`
+- `tests/unit/edit-document-twelve.test.tsx`
 
 Automaticky spravované soubory navíc: `.workspace/AGENTS.md`, `src/.generated/mockup-components.ts`, `src/tailwind.config.lov.json`, `tsconfig.tsbuildinfo`; nejsou autorskou změnou tohoto zadání. Kontrola nadpisů stránek doplnila chybějící metadata detailu nastavení prostoru.
 
