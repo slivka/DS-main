@@ -99,9 +99,9 @@
   --document-date-icon-offset: 0.3em;
   --document-date-icon-step: 1.8em;
   --document-date-icon-size: 1.05em;
-  --document-date-text-gap: 0.1em;
+  --document-date-text-gap: 0em;
   --document-date-left-padding: 0.5rem;
-  --document-date-font-size: min(var(--text-sm), 7.5cqi);
+  --document-date-font-size: var(--text-sm);
   --document-date-right-padding: calc(
     var(--document-date-icon-offset) + 2 * var(--document-date-icon-step) +
       var(--document-date-icon-size) + var(--document-date-text-gap)
@@ -361,21 +361,21 @@
 /* Kompaktní šířka jen pro doklad, ostatní DateField zůstávají beze změny.
    Tabulkové číslice drží deset znaků data bez závislosti na jejich hodnotě. */
 .document-dates-compact [data-slot="field"] {
-  font-size: var(--document-date-font-size);
+  font-size: calc(var(--document-date-font-size) * var(--document-date-scale, 1));
   width: max-content;
   min-width: 0;
   display: grid;
   grid-template-columns: max-content;
 }
 .document-dates-compact [data-slot="field"]::after {
-  content: "00.00.0000";
+  content: var(--document-date-format-sample);
   visibility: hidden;
   grid-area: 2 / 1;
   height: 0;
   line-height: 0;
   font-variant-numeric: tabular-nums;
   padding-left: var(--document-date-left-padding);
-  padding-right: calc(var(--document-date-right-padding) + 0.1rem);
+  padding-right: calc(var(--document-date-right-padding) + 0.12em);
   border-inline: 0.0625rem solid transparent;
 }
 .document-dates-compact [data-slot="field"] > div {
@@ -400,7 +400,7 @@
   font-size: inherit;
 }
 .document-dates-compact label {
-  font-size: min(var(--text-xs), var(--document-date-font-size));
+  font-size: calc(var(--text-xs) * var(--document-date-scale, 1));
   max-width: none;
   width: max-content;
   overflow: hidden;

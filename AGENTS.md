@@ -56,5 +56,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
 - Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
 - Scope compact date geometry to DocumentDatesSection; wrap VAT dates separately when their pair cannot fit. Why: all dates and rings stay visible without changing filters or dialogs.
-- Derive document date padding and width from the same icon geometry tokens, and constrain only date typography by its container. Why: the entire date stays visible even when application zoom makes its intrinsic width larger than the narrow panel.
+- Measure dates from active format and shared icons; shrink text only if no full-size field fits. Why: preserve standard zoom typography.
+- Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
+- Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
 - Derive the KS/SS disabled reason once in DocumentForm and render blank disabled controls in PaymentSection. Why: payment changes preserve layout and never erase application data.

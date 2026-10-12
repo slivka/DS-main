@@ -1,5 +1,6 @@
 /** Skupiny dat formuláře dokladu. */
-import type { ReactNode } from "react";
+import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useDateTimePreferences } from "../../../../lib/date-time-preferences";
 import type { ComponentProps } from "react";
 import type { DateField } from "../../form/date-field";
 import { SectionHeading } from "../../layout/section-heading";
@@ -33,10 +34,41 @@ export function DocumentDatesSection({
   dateWarnings,
   date,
 }: DocumentDatesSectionProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { dateFormat, formatDate } = useDateTimePreferences();
+  const sample = formatDate("2000-11-22").replace(/\d/g, "0");
+  const geometry: CSSProperties & Record<string, string> = {
+    "--document-date-format-sample": `"${sample}"`,
+  };
+  // Rozměry DOM jsou vnější stav: přepočet jen při změně prostoru, písma či formátu.
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const measure = () => {
+      container.style.setProperty("--document-date-scale", "1");
+      const fields = Array.from(container.querySelectorAll<HTMLElement>('[data-slot="field"]'));
+      const minimum = Math.min(...fields.map((field) => field.getBoundingClientRect().width));
+      const input = container.querySelector("input");
+      if (!input) return;
+      const style = getComputedStyle(input);
+      const available = container.clientWidth - 2 * parseFloat(style.borderLeftWidth);
+      if (!available || minimum <= available) return;
+      // Pouze rem odsazení a rámečky nerostou s lokálním písmem; ikony ano.
+      const fixed = parseFloat(style.paddingLeft) + 2 * parseFloat(style.borderLeftWidth);
+      const scale = Math.max(0, (available - fixed) / (minimum - fixed));
+      container.style.setProperty("--document-date-scale", String(Math.min(1, scale)));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    observer.observe(document.documentElement);
+    measure();
+    void document.fonts?.ready.then(measure);
+    return () => observer.disconnect();
+  }, [dateFormat, t]);
   return (
     <>
       <SectionHeading>{t.datesSection}</SectionHeading>
-      <div className="document-dates-container">
+      <div ref={containerRef} style={geometry} className="document-dates-container">
         <div
           data-slot="document-dates"
           className="document-dates-compact flex flex-wrap items-start gap-3"

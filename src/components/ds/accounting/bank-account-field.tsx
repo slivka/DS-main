@@ -7,20 +7,50 @@ import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef 
 
 import { Input } from "../../ui/input";
 import { OptionSelect } from "../form/option-select";
-import { isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
+import { InactiveTag } from "../data-display/inactive-tag";
+import { formatIban, isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
 
-export interface BankAccountOption {
+/** Společné údaje účtu; úplnost zápisu zajišťuje BankAccountOption. */
+export interface BankAccountOptionBase {
   /** Stabilní identifikátor účtu partnera. */
   id?: string;
-  number: string;
-  bankCode: string;
+  /** Tuzemské číslo, pokud účet používá tento zápis. */
+  number?: string;
+  /** Tuzemský kód banky. */
+  bankCode?: string;
+  /** Mezinárodní číslo účtu, s mezerami nebo bez nich. */
+  iban?: string;
+  /** Název účtu v nabídce. */
   label?: string;
+  /** Značka měny z dat. */
   currency?: string;
+  /** Výchozí účet partnera; hodnotu stále řídí aplikace. */
   default?: boolean;
   /** Neplatný účet se nenabízí; pokud je vybraný, zůstane viditelný. */
   invalid?: boolean;
+}
+
+/** Účet má úplnou tuzemskou dvojici nebo IBAN; stávající zápis zůstává platný. */
+export type BankAccountOption = BankAccountOptionBase &
+  ({ number: string; bankCode: string } | { iban: string });
+
+/** Zápis účtu pro nabídku i vybranou hodnotu; tuzemská dvojice má přednost. */
+function accountDisplay(option: BankAccountOption): string {
+  return option.number && option.bankCode
+    ? `${option.number}/${option.bankCode}`
+    : formatIban(option.iban ?? "");
+}
+
+/** Stabilní identifikátor výběru; IBAN bez ID se ukládá bez mezer. */
+export function bankAccountOptionValue(option: BankAccountOption): string {
+  return (
+    option.id ??
+    (option.number && option.bankCode
+      ? `${option.number}/${option.bankCode}`
+      : (option.iban ?? "").replace(/\s/g, "").toUpperCase())
+  );
 }
 
 export interface BankAccountFieldProps extends Omit<
@@ -79,8 +109,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
     const resolvedInvalidBankCodeText = invalidBankCodeText ?? texts.bankCodeInvalid;
     const resolvedOtherAccountText = otherAccountText ?? texts.otherBankAccount;
     const resolvedAddAccountText = addAccountText ?? texts.addBankAccount;
-    const optionValue = (option: BankAccountOption) =>
-      option.id ?? `${option.number}/${option.bankCode}`;
+    const optionValue = bankAccountOptionValue;
     const optionValues = options.map(optionValue);
     const optionValuesKey = optionValues.join("\u0000");
     const selectedOption = optionValues.includes(value);
@@ -144,6 +173,17 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
               emit(next);
             }}
             allowEmpty={false}
+            searchable
+            selectedLabel={(option) =>
+              option.inactive ? (
+                <span className="flex min-w-0 items-center gap-2">
+                  <span className="truncate">{option.label}</span>
+                  <InactiveTag label={texts.invalidBankAccount} />
+                </span>
+              ) : (
+                (option.selectedLabel ?? option.label)
+              )
+            }
             ariaLabel={props["aria-label"]}
             disabled={disabled || readOnly || Boolean(disabledReason)}
             inactiveLabel={texts.invalidBankAccount}
@@ -163,12 +203,21 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                   value: optionValue(option),
                   label: (
                     <span className={cn(option.invalid && "line-through")}>
-                      {[option.label, `${option.number}/${option.bankCode}`, option.currency]
+                      {[option.label, accountDisplay(option), option.currency]
                         .filter(Boolean)
                         .join(" · ")}
                     </span>
                   ),
-                  selectedLabel: `${option.number}/${option.bankCode}`,
+                  selectedLabel: accountDisplay(option),
+                  searchText: [
+                    option.label,
+                    accountDisplay(option),
+                    option.currency,
+                    option.iban,
+                    option.iban?.replace(/\s/g, ""),
+                  ]
+                    .filter(Boolean)
+                    .join(" "),
                   inactive: option.invalid,
                 })),
               ...(onAddAccount

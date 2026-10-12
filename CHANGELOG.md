@@ -1,5 +1,72 @@
 # Changelog – Slivka Design System
 
+## 2.97.0 – Edit dokladu 12b (nevydáno)
+
+- Písmo vstupu i popisku je standardní podle zoomu, pokud se do panelu vejde alespoň jedno plné pole. Teprve pod tímto prahem se skutečně naměřená šířka přepočítá na dostupnou šířku s rezervou rámečku; žádný pevný koeficient ani předčasné omezení pomocí cqi. Tabulka zachycuje zmenšení jen u 200 % / úzkého panelu.
+- Vzorek šířky vychází z aktivního formátu dd.MM.yyyy, d.M.yyyy, yyyy-MM-dd nebo dd/MM/yyyy. Tři ikonové sloty mají společnou geometrii; text se nekříží s plochou tlačítka. Mez je 0,3em, ne vzdálenost k SVG. Dodatečná šířka delšího popisku je samostatně měřená.
+- Delší popisky předávané přes texts v CS/SK zvětšují pouze příslušné pole. E2E testuje rozšíření účetního data a DUZP, ne předpoklad pěti stejných polí; ten zůstává pouze pro výchozí popisky. Dvojice DUZP + Datum DPH se testuje těsně nad a pod skutečným součtem šířek a mezery.
+- Zamčené KS/SS mají přístupné jméno přes aria-labelledby na popisek Field a popis důvodu přes aria-describedby. Zachování hodnot a pořadí platební sekce se nemění.
+- BankAccountOption nyní přijímá úplné number + bankCode nebo iban; number a bankCode jsou v základním typu volitelné a union zaručuje alespoň jeden úplný zápis. Změna není BREAKING: dosavadní platná volání fungují beze změny. Tuzemská dvojice má při zobrazení přednost, jinak se IBAN formátuje po čtyřech znacích. Hledání zahrnuje IBAN i u účtu s oběma zápisy.
+- Datový tok účtů: BankAccountField; ReceivedAccountControl / useDocumentBankAccountField a DocumentForm; buildDocumentNotices sdílí bankAccountOptionValue. PaymentOrderAccountField obaluje výběr bez převodu hodnot. Veřejný ReceivedBankAccountField používá ManualBankAccountValue, nikoli BankAccountOption, a ruční IBAN beze změny podporuje. Firemní IssuedAccountControl má vlastní typ účtu; nebyl změněn.
+- Katalogy byly upraveny cíleně proti b27379e4: 426 / 426 / 426 / 426. Změněné JSON komponenty: Field, BankAccountField, DocumentForm; 423 nedotčených objektů je bajtově shodných. Markdownové bloky: components.md pouze DocumentForm; rules/components.md uvedené tři. Zdrojový manifest obsahuje nové ukázky a testy; původní #enrichment zachován.
+- Ověření: unit 609/609 (58 souborů, 1922 assertions); související E2E 9/9 (Chromium 3, Firefox 3, WebKit 3); lint 0 chyb / 293 varování. Automatický build OK. Samostatný typecheck a ruční build nebyly spuštěny, kontrolní prostředí je nepovoluje. Formát se kontroluje jen nad podporovanými zdrojovými příponami, nikoli binárními fonty.
+
+### Změněné soubory oproti b27379e4
+
+- `CHANGELOG.md`
+- `components.md`
+- `AGENTS.md`
+- `package.json`
+- `roadmap.md`
+- `.lovable/design-system.json`
+- `.lovable/system.md`
+- `src/styles.css`
+- `tests/e2e/edit-document-twelve.spec.ts`
+- `tests/unit/document-form-286.test.tsx`
+- `tests/unit/edit-document-eleven.test.tsx`
+- `tests/unit/edit-document-twelve.test.tsx`
+- `tests/unit/bank-account-options.test.tsx`
+- `src/ds-texts/form-design-two-showcase.ts`
+- `src/routes/workspace-settings.$page.tsx`
+- `src/components/showcase/DocumentDatesShowcase.tsx`
+- `src/components/ds/accounting/bank-account-field.tsx`
+- `src/components/ds/layout/form-field-layout.tsx`
+- `src/components/ds/accounting/document-form/DatesSection.tsx`
+- `src/components/ds/accounting/document-form/PaymentSection.tsx`
+- `src/components/ds/accounting/document-form/build-document-notices.tsx`
+- `.lovable/rules/components.md`
+- `.lovable/rules/library-guidelines.md`
+
+Automaticky spravované soubory navíc: `.workspace/AGENTS.md`, `src/.generated/mockup-components.ts`, `src/tailwind.config.lov.json`, `tsconfig.tsbuildinfo`; nejsou autorskou změnou tohoto zadání. Kontrola nadpisů stránek doplnila chybějící metadata detailu nastavení prostoru.
+
+### Nová tabulka měření (Chromium, CS)
+
+Panel „360“ znamená vnější šířku 360 CSS px, nikoli počet panelů. Práh je součet pěti aktuálních šířek a **pěti** mezer, včetně mezery rozpěrky. Všechny hodnoty jsou měření, nikoli pevné rozměry UI. CS/SK a ostatní prohlížeče byly kontrolovány samostatně; jejich zlomové šířky se mohou lišit podle skutečné sazby.
+
+| Zoom | Panely | Kontejner CSS px | Řádky | Práh 1 řádku CSS px (šířky + 5 mezer) | Písmo vstupu CSS px |
+|---|---|---:|---:|---:|---:|
+| 70 % | 1 | 1863.25 | 1 | 598.33 | 9.80 |
+| 70 % | 2 | 896.66 | 1 | 598.33 | 9.80 |
+| 70 % | 3 | 576.66 | 2 | 598.33 | 9.80 |
+| 70 % | 360 | 303.25 | 3 | 598.33 | 9.80 |
+| 100 % | 1 | 1844.00 | 1 | 824.84 | 14.00 |
+| 100 % | 2 | 875.00 | 1 | 824.84 | 14.00 |
+| 100 % | 3 | 555.00 | 2 | 824.84 | 14.00 |
+| 100 % | 360 | 284.00 | 5 | 824.84 | 14.00 |
+| 125 % | 1 | 1828.00 | 1 | 1068.59 | 17.50 |
+| 125 % | 2 | 857.00 | 2 | 1068.59 | 17.50 |
+| 125 % | 3 | 537.00 | 3 | 1068.59 | 17.50 |
+| 125 % | 360 | 268.00 | 5 | 1068.59 | 17.50 |
+| 150 % | 1 | 1812.00 | 1 | 1272.34 | 21.00 |
+| 150 % | 2 | 839.00 | 2 | 1272.34 | 21.00 |
+| 150 % | 3 | 519.00 | 3 | 1272.34 | 21.00 |
+| 150 % | 360 | 252.00 | 5 | 1272.34 | 21.00 |
+| 200 % | 1 | 1780.00 | 1 | 1689.77 | 28.00 |
+| 200 % | 2 | 803.00 | 3 | 1689.77 | 28.00 |
+| 200 % | 3 | 483.00 | 5 | 1689.77 | 28.00 |
+| 200 % | 360 | 220.00 | 5 | 1189.61 | 18.92 |
+
+
 ## 2.96.0 – Edit dokladu 12 (nevydáno)
 
 - Verze zůstává 2.96.0; nic nebylo vydáno.

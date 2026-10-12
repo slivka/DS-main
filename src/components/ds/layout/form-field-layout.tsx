@@ -69,6 +69,7 @@ export function Field({ label, htmlFor, hint, error, span, className = "", child
     >
       {label ? (
         <Label
+          id={htmlFor ? `${htmlFor}-label` : undefined}
           htmlFor={htmlFor}
           title={typeof label === "string" ? label : undefined}
           className={error ? "text-destructive" : undefined}

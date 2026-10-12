@@ -47,13 +47,14 @@ describe("Edit dokladu 12", () => {
       const change = mock();
       const view = render(<DocumentForm {...base} {...scenario} onChange={change} />);
       for (const label of ["Konstantní symbol", "Specifický symbol"]) {
-        const input = view.getByLabelText(label);
+        const input = view.getByLabelText(label, { selector: "input" });
         expect(input.hasAttribute("disabled")).toBe(true);
         expect(input.getAttribute("value")).toBe("");
         const trigger = input.parentElement;
         if (!trigger) throw new Error("Chybí tooltip symbolu");
         expect(trigger.getAttribute("aria-disabled")).toBe("true");
         expect(trigger.hasAttribute("aria-label")).toBe(false);
+        expect(view.getByRole("group", { name: label })).toBe(trigger);
         expect(
           document.getElementById(trigger.getAttribute("aria-describedby") ?? "")?.textContent,
         ).toBe(scenario.reason);
@@ -63,9 +64,15 @@ describe("Edit dokladu 12", () => {
       }
       expect(change).not.toHaveBeenCalled();
       view.rerender(<DocumentForm {...base} onChange={change} paymentOrderEnabled />);
-      expect(view.getByLabelText("Konstantní symbol").hasAttribute("disabled")).toBe(false);
-      expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("99");
-      fireEvent.change(view.getByLabelText("Specifický symbol"), { target: { value: "88" } });
+      expect(
+        view.container.querySelector("#document-constantSymbol")?.hasAttribute("disabled"),
+      ).toBe(false);
+      expect(
+        view.getByLabelText("Specifický symbol", { selector: "input" }).getAttribute("value"),
+      ).toBe("99");
+      fireEvent.change(view.getByLabelText("Specifický symbol", { selector: "input" }), {
+        target: { value: "88" },
+      });
       expect(change).toHaveBeenCalledWith({ ...base.value, specificSymbol: "88" });
     });
   it("slovenský důvod vypnutého příkazu je z katalogu", () => {
@@ -94,7 +101,9 @@ describe("Edit dokladu 12", () => {
       );
       for (const label of ["Konstantní symbol", "Specifický symbol"])
         expect(view.getByLabelText(label).hasAttribute("disabled")).toBe(false);
-      fireEvent.change(view.getByLabelText("Specifický symbol"), { target: { value: "88" } });
+      fireEvent.change(view.getByLabelText("Specifický symbol", { selector: "input" }), {
+        target: { value: "88" },
+      });
       expect(change).toHaveBeenCalledWith({ ...base.value, specificSymbol: "88" });
     });
   it("všech pět dat drží pořadí a vazba i varování zůstávají dostupné", () => {
@@ -124,4 +133,19 @@ describe("Edit dokladu 12", () => {
     fireEvent.click(buttons[0]);
     expect(toggle).toHaveBeenCalledWith(true);
   });
+  for (const locale of ["cs", "sk"] as const)
+    it(`${locale} přijme delší popisek pouze jednoho data přes texts`, () => {
+      const label =
+        locale === "cs"
+          ? "Datum účetního případu podle podkladů"
+          : "Dátum účtovného prípadu podľa podkladov";
+      const view = render(
+        <DsTextsProvider locale={locale}>
+          <DocumentForm {...base} texts={{ accountingDate: label }} />
+        </DsTextsProvider>,
+      );
+      expect(view.getByLabelText(label).id).toBe("document-accountingDate");
+      expect(view.container.querySelectorAll('[data-slot="document-dates"] label')).toHaveLength(5);
+      expect(view.getAllByText(label)).toHaveLength(1);
+    });
 });

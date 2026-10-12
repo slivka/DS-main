@@ -241,6 +241,8 @@ Slot `subHeader?: ReactNode` se vykresluje přímo pod horní lištou. Při otev
 
 ### DocumentForm 2.31.0
 
+**Edit dokladu 12b (2.97.0):** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
+
 **Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
 
 - Formulář nemá pravý panel; používá jednotnou mřížku 70 / 15 / 15 v sekcích Partner, Data, Účtování a částka nebo Částka a volitelně Platební údaje.

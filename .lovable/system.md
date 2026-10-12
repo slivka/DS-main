@@ -408,7 +408,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 - Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
-- `DocumentForm` skládá Datumy jako pružný řádek; shodnou šířku polí určuje token `--document-date-width` podle celého data a maximálně tří ikon. Dvojice DPH zůstává společně jen dokud se vejde; v užším panelu se zalomí jednotlivě bez vodorovného rolování a ořezu zvýraznění. Delší popisek rozšíří své pole. Pokud zoom zvětší datum nad šířku panelu, jen datumové písmo se omezí jeho kontejnerem; padding i ikony vycházejí ze společných proměnných.
+- `DocumentForm` skládá Datumy jako pružný řádek; šířku polí určuje vysázený vzorek aktivního formátu data, společné odsazení a maximálně tři ikonové sloty. Dvojice DPH zůstává společně jen dokud se vejde; v užším panelu se zalomí jednotlivě bez vodorovného rolování a ořezu zvýraznění. Delší popisek rozšíří své pole. Písmo vstupu i popisku zůstává standardní podle zoomu. Jen pokud se nevejde ani jedno plné pole, měření skutečné šířky sníží místní písmo o nezbytný podíl; geometrie ikon zůstává společná.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
 - `JournalLinesEditor.onValidationChange(count, errors)` předává právě zobrazené chyby pro společný chybový pruh formuláře. `texts.errors` je zastaralé a nesmí se vykreslovat v patičce gridu.
 
@@ -445,3 +445,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Vlastní rám mimo AppShell / StandaloneShell volá `useAppZoomShortcuts()`, aby zoom fungoval stejně.
 
 - KS/SS se u dokladů se symboly nikdy neskrývají. Při vypnutém přijatém příkazu jsou prázdné a zakázané s `paymentOrderDisabled`; FP/ZFP dávají přednost `receivedAccountDisabledReason`, FV/ZFV používají `companyBankAccountDisabledReason`. DS uložené hodnoty nemaže.
+
+- BankAccountOption přijímá úplné number + bankCode nebo iban. Tuzemská dvojice má přednost při zobrazení, jinak použijte formatIban. Výběr hledá také podle IBAN; partnera s účtem pouze IBAN nevynechávejte. Ruční ReceivedBankAccountField a firemní account mají vlastní, beze změny zachovaný typ.

@@ -51,7 +51,7 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
             const textWidth = probe.getBoundingClientRect().width;
             probe.remove();
             const icons = [
-              ...(input.parentElement?.querySelectorAll("button svg,span[tabindex] svg") ?? []),
+              ...(input.parentElement?.querySelectorAll("button,span[tabindex]") ?? []),
             ]
               .map((icon) => icon.getBoundingClientRect())
               .filter((icon) => icon.width);
@@ -80,6 +80,7 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
                 textWidth,
               icons: icons.length,
               labelWidth: label ? canvas.measureText(label.textContent ?? "").width : 0,
+              labelFontSize: label ? parseFloat(getComputedStyle(label).fontSize) : 0,
             };
           });
           const gap = parseFloat(getComputedStyle(el).gap);
@@ -89,7 +90,7 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
             client: el.clientWidth,
             gap,
             rows: new Set(values.map((input) => Math.round(input.y * 10) / 10)).size,
-            threshold: values.reduce((sum, input) => sum + input.width, 0) + 4 * gap,
+            threshold: values.reduce((sum, input) => sum + input.width, 0) + 5 * gap,
             values,
           };
         });
@@ -101,6 +102,12 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
         expect(result.values.find((i) => i.id === "document-accountingDate")?.icons).toBe(3);
         for (const input of result.values) {
           expect(input.scroll).toBeLessThanOrEqual(input.client);
+          if (input.width < result.container * 0.95) {
+            expect(input.fontSize).toBeCloseTo(14 * zoom, 0);
+            expect(input.labelFontSize).toBeCloseTo(12 * zoom, 0);
+          } else {
+            expect(input.width).toBeGreaterThanOrEqual(result.container * 0.95);
+          }
           expect(input.textWidth).toBeLessThanOrEqual(input.available);
           expect(input.iconGap).toBeGreaterThanOrEqual(0);
           if (input.icons === 3) {
@@ -108,7 +115,7 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
               0,
               input.labelWidth - input.textWidth - (input.width - input.available),
             );
-            expect(input.iconGap).toBeLessThanOrEqual(input.fontSize * 0.3 + 3 + labelExpansion);
+            expect(input.iconGap).toBeLessThanOrEqual(input.fontSize * 0.3 + labelExpansion + 0.01);
           }
           expect(input.labelWidth).toBeLessThanOrEqual(input.width + 1);
           expect(input.left).toBeGreaterThanOrEqual(-1);
@@ -157,6 +164,10 @@ test("přijaté symboly zůstávají prázdné se správným důvodem", async ({
     const input = received.locator(
       name === "Konstantní symbol" ? "#document-constantSymbol" : "#document-specificSymbol",
     );
+    await expect(input.locator("..")).toHaveAccessibleName(name);
+    await expect(input.locator("..")).toHaveAccessibleDescription(
+      "Nezahrnuje se do platebních příkazů",
+    );
     await expect(input).toBeDisabled();
     await expect(input).toHaveValue("");
     await expect(page.getByRole("tooltip")).toHaveCount(0);
@@ -174,4 +185,124 @@ test("přijaté symboly zůstávají prázdné se správným důvodem", async ({
   await toggle.click();
   await expect(received.locator("#document-specificSymbol")).toHaveValue("99");
   await expect(received.locator("#document-constantSymbol")).toBeEnabled();
+});
+
+test("formáty a delší popisky rozšíří pouze vlastní pole", async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const root = page.getByTestId("date-panels");
+  await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
+  for (const language of ["CS", "SK"]) {
+    await root.getByRole("button", { name: language, exact: true }).click();
+    for (const format of ["dd.MM.yyyy", "d.M.yyyy", "yyyy-MM-dd", "dd/MM/yyyy"]) {
+      await root.getByRole("button", { name: format, exact: true }).click();
+      await root.getByRole("button", { name: "1 panelů", exact: true }).click();
+      await page.evaluate(async () => {
+        const path = "/src/lib/app-zoom.ts";
+        const m = await import(/* @vite-ignore */ path);
+        m.setAppZoom(1);
+      });
+      await root.evaluate((el) => {
+        el.style.width = "1920px";
+      });
+      const dates = root.locator('[data-slot="document-dates"]').first();
+      const measure = () =>
+        dates.evaluate((el) => {
+          return Array.from(el.querySelectorAll("input")).map((input) => {
+            const rect = input.getBoundingClientRect();
+            const style = getComputedStyle(input);
+            const label = input.closest('[data-slot="field"]')?.querySelector("label");
+            const probe = document.createElement("span");
+            probe.textContent = input.value;
+            Object.assign(probe.style, {
+              position: "absolute",
+              visibility: "hidden",
+              fontFamily: style.fontFamily,
+              fontSize: style.fontSize,
+              fontWeight: style.fontWeight,
+              fontVariantNumeric: "tabular-nums",
+              whiteSpace: "nowrap",
+            });
+            document.body.append(probe);
+            const textWidth = probe.getBoundingClientRect().width;
+            probe.remove();
+            const icons = Array.from(
+              input.parentElement?.querySelectorAll("button,span[tabindex]") ?? [],
+            )
+              .map((icon) => icon.getBoundingClientRect())
+              .filter((icon) => icon.width);
+            return {
+              id: input.id,
+              width: rect.width,
+              x: rect.x,
+              y: rect.y,
+              client: input.clientWidth,
+              scroll: input.scrollWidth,
+              value: input.value,
+              labelRight: label?.getBoundingClientRect().right ?? 0,
+              right: rect.right,
+              fontSize: parseFloat(style.fontSize),
+              iconGap:
+                Math.min(...icons.map((icon) => icon.x)) -
+                rect.x -
+                textWidth -
+                parseFloat(style.paddingLeft) -
+                parseFloat(style.borderLeftWidth),
+            };
+          });
+        });
+      const normal = await measure();
+      expect(normal[1]?.value).toBe(
+        format === "yyyy-MM-dd"
+          ? "2026-10-12"
+          : format === "dd/MM/yyyy"
+            ? "12/10/2026"
+            : "12.10.2026",
+      );
+      for (const input of normal) {
+        expect(input.scroll).toBeLessThanOrEqual(input.client);
+        expect(input.iconGap).toBeGreaterThanOrEqual(0);
+        if (input.id === "document-accountingDate")
+          expect(input.iconGap).toBeLessThanOrEqual(input.fontSize * 0.3);
+      }
+      const button = root.getByRole("button", { name: "Delší popisky", exact: true });
+      await button.click();
+      const expanded = await measure();
+      for (let index = 0; index < expanded.length; index++) {
+        const field = expanded[index];
+        const previous = normal[index];
+        if (!field || !previous) throw new Error("Chybí datumové pole");
+        if (["document-accountingDate", "document-taxDate"].includes(field.id))
+          expect(field.width).toBeGreaterThan(previous.width);
+        else expect(Math.abs(field.width - previous.width)).toBeLessThan(0.01);
+        expect(field.labelRight).toBeLessThanOrEqual(field.right + 0.1);
+        const next = expanded[index + 1];
+        if (next && next.y === field.y) expect(field.labelRight).toBeLessThanOrEqual(next.x);
+      }
+      const pairWidth = (expanded[3]?.width ?? 0) + (expanded[4]?.width ?? 0) + 12;
+      const overhead = await root.evaluate(
+        (el) =>
+          el.getBoundingClientRect().width -
+          (el.querySelector('[data-slot="document-dates"]')?.getBoundingClientRect().width ?? 0),
+      );
+      await root.evaluate(
+        (el, width) => {
+          el.style.width = `${width}px`;
+        },
+        pairWidth + 2 + overhead,
+      );
+      const fits = await measure();
+      expect(fits[3]?.y).toBe(fits[4]?.y);
+      await root.evaluate(
+        (el, width) => {
+          el.style.width = `${width}px`;
+        },
+        pairWidth - 2 + overhead,
+      );
+      const wraps = await measure();
+      expect(wraps[3]?.y).not.toBe(wraps[4]?.y);
+      await button.click();
+    }
+  }
+  await root.getByRole("button", { name: "dd.MM.yyyy", exact: true }).click();
 });

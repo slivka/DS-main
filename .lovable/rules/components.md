@@ -309,7 +309,7 @@ Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru u
 |---|---|---|
 | `value` | string | `—` |
 | `onChange` | function | `—` |
-| `options` | any | `—` |
+| `options` | BankAccountOption[] | `—` |
 | `bankCodes` | any | `—` |
 | `invalidAccountText` | string | `—` |
 | `invalidBankCodeText` | string | `—` |
@@ -333,6 +333,8 @@ _Účet dodavatele_
 - Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.
 - Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.
 - Neopakujte disabledReason pod polem ani v duplicitním tooltipu.
+
+**Edit dokladu 12b:** BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle.
 
 ### BarBreakdownChart
 
@@ -1449,11 +1451,14 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 
 ### DocumentForm
 
+**Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
+
+
 ```ts
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže.
+Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu.
 
 **Examples:**
 
@@ -1467,18 +1472,14 @@ _Platba přijatého dokladu bez účtu_
 <DocumentForm {...props} documentType="FP" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />
 ```
 
-_Nepoužitá bankovní platba_
-```tsx
-<DocumentForm {...props} documentType="FV" companyBankAccountDisabledReason={paymentAccountReason} />
-```
-
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
 - Nevkládejte měnu do popisku Celkem ani do identity cashBank.
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
 - DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
-- Neskrývejte KS/SS ani nemažte hodnoty v DS; prázdný zakázaný vzhled není změnou uložených dat.
+
+**Edit dokladu 12b:** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.
 
 ### DocumentPrintTab
 
@@ -1823,6 +1824,8 @@ _Pole přes čtyři sloupce_
 **Avoid:**
 
 - Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.
+
+**Edit dokladu 12b:** Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
 
 ### FieldGrid
 

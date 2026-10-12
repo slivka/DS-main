@@ -180,10 +180,18 @@ describe("DocumentForm 2.86.0 – chování", () => {
 
   it("vypnutý platební příkaz zachová prázdné zakázané KS a SS, VS zůstane", () => {
     const view = render(<Form paymentOrderEnabled={false} />);
-    expect(view.getByLabelText("Konstantní symbol").hasAttribute("disabled")).toBe(true);
-    expect(view.getByLabelText("Konstantní symbol").getAttribute("value")).toBe("");
-    expect(view.getByLabelText("Specifický symbol").hasAttribute("disabled")).toBe(true);
-    expect(view.getByLabelText("Specifický symbol").getAttribute("value")).toBe("");
+    expect(
+      view.getByLabelText("Konstantní symbol", { selector: "input" }).hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      view.getByLabelText("Konstantní symbol", { selector: "input" }).getAttribute("value"),
+    ).toBe("");
+    expect(
+      view.getByLabelText("Specifický symbol", { selector: "input" }).hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      view.getByLabelText("Specifický symbol", { selector: "input" }).getAttribute("value"),
+    ).toBe("");
     expect(view.getAllByText("Variabilní symbol").length).toBeGreaterThan(0);
   });
 
