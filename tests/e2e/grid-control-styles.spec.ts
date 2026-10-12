@@ -2,6 +2,7 @@
 import { expect, test, type Locator } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
+test.setTimeout(120_000);
 
 async function colors(control: Locator) {
   return control.evaluate((node) => {

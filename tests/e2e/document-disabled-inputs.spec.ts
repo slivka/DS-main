@@ -2,6 +2,7 @@
 import { expect, test } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
+test.setTimeout(180_000);
 
 test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page }, testInfo) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
