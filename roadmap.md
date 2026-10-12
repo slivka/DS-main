@@ -1,8 +1,9 @@
 ## DS 2.97.0 – Edit dokladu 12c (nevydáno)
-- [ ] Šipka účtu při 100/200 %, filtrování účtů a formátované hledání IBAN.
-- [ ] Stabilní izomorfní měření, delší datumové popisky v úzkém panelu.
-- [ ] Dokumentace API, cílené katalogy, kontrola nesouvisející stránky.
-- [ ] Unit, E2E ve třech prohlížečích, lint, formát a automatická kontrola.
+- [x] Šipka účtu při 100/200 %, filtrování účtů a formátované hledání IBAN.
+- [x] Stabilní izomorfní měření, delší datumové popisky v úzkém panelu.
+- [x] Dokumentace API, cílené katalogy, vysvětlení metadat nesouvisející stránky.
+- [x] Unit 612/612; E2E 15/15 (5 v každém prohlížeči); lint 0 chyb / 293 varování;
+  formát a automatický build OK. Samostatný typecheck prostředí nepovoluje.
 
 ## DS 2.97.0 – Edit dokladu 12b (nevydáno)
 - [x] Standardní písmo, aktivní formát, delší popisky a tabulka měření.
