@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.96.0",
+    "version": "2.97.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -61,10 +61,10 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "32bffcab4f0d8f69c0c90f56a3e96c95",
+      ".lovable/system.md": "4c4f63adf9c7ad6e452f436669d46bf9",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "5fe00ca35ec4aa704ed5ca9286d413de",
+      "AGENTS.md": "ea8fd27af39878e7cc12431034f618f1",
       "CHANGELOG.md": "3712145b7504177f6e6975a3f162ee32",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
@@ -73,10 +73,10 @@
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
-      "package.json": "cdadcf70a528d2926c2d6155defb0a86",
+      "package.json": "b6bd79d6a1aa5c296042e73e76f3f4fd",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "35862bc514c97f16b3776452d3eb52df",
+      "roadmap.md": "5dd7344b8cb30582c6e1db4464f4fd71",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -94,7 +94,7 @@
       "src/components/ds/accounting/account-columns.tsx": "7b9dc8bf2275a4649a65c2b53c409231",
       "src/components/ds/accounting/account-select.tsx": "dda058c80516609b2368f2c9c6176e4a",
       "src/components/ds/accounting/amount.tsx": "235cd7f60996275ea08d28941405f757",
-      "src/components/ds/accounting/bank-account-field.tsx": "daf80da441adef33ec11175894ffdd43",
+      "src/components/ds/accounting/bank-account-field.tsx": "d761aeefe8ee48555f911f420c0ad239",
       "src/components/ds/accounting/book-select.tsx": "b6694104542133323f07e928dbe76d4d",
       "src/components/ds/accounting/counterparty-field.tsx": "45af2e8cf319bce91b0af19d5507d506",
       "src/components/ds/accounting/counterparty-input-field.tsx": "cf32a5e0bb07f25d7a445d2204328092",
@@ -107,11 +107,11 @@
       "src/components/ds/accounting/document-form/AmountSection.tsx": "d81daf82179e3b7c6f79a0975267c1c0",
       "src/components/ds/accounting/document-form/BankAccountControls.tsx": "3decaa2f686a76e7ad989941ab201fb2",
       "src/components/ds/accounting/document-form/BasicSection.tsx": "7d5726004cdc82b4a5d6aa1ac48f8913",
-      "src/components/ds/accounting/document-form/DatesSection.tsx": "dccfbe9aae8a53debfa7cf68a5b51077",
+      "src/components/ds/accounting/document-form/DatesSection.tsx": "2a909c1aae88a0884e281bc299573355",
       "src/components/ds/accounting/document-form/DocumentForm.tsx": "09b3350b32fe51698a08e3e86ebf94a1",
-      "src/components/ds/accounting/document-form/PaymentSection.tsx": "8a7703e07f767a99f4fddb3fca7ea133",
+      "src/components/ds/accounting/document-form/PaymentSection.tsx": "a2671b8736f9ef9f7c40c384b9843322",
       "src/components/ds/accounting/document-form/Tabs.tsx": "8f5c85fee1b5cfb99bb3bb3bb8ffa95c",
-      "src/components/ds/accounting/document-form/build-document-notices.tsx": "89a9026c63c54268185526b099e07786",
+      "src/components/ds/accounting/document-form/build-document-notices.tsx": "9524839e5595227ddcae8dec9c2084a9",
       "src/components/ds/accounting/document-form/build-document-tabs.tsx": "b408bed4515773e411f07b645e6d5588",
       "src/components/ds/accounting/document-form/derive-document-form.ts": "294d3ac7b0e392bf965931d2626a4d14",
       "src/components/ds/accounting/document-form/document-action-menu.ts": "bb1271e5d93d9ca914729229c3ad9090",
@@ -272,7 +272,7 @@
       "src/components/ds/layout/company-switcher.tsx": "539e04c95c973876db83df21b3b1bfc9",
       "src/components/ds/layout/context-pill.tsx": "c55f372643df2b57c8f5309eedc5af77",
       "src/components/ds/layout/context-switcher.tsx": "a07aea0bd3ee1b86dedb9e8468ba0efe",
-      "src/components/ds/layout/form-field-layout.tsx": "5a6f11557485cc3a985341bfd08c5924",
+      "src/components/ds/layout/form-field-layout.tsx": "d7ff85c4d6a1c6f6ee80063f0dd1f58b",
       "src/components/ds/layout/nav-items.tsx": "cd5ec31101ce6e15d56052fe53155161",
       "src/components/ds/layout/nav-search.tsx": "d61280d97dbe6932a6e3a4499d88ee7e",
       "src/components/ds/layout/notification-bell.tsx": "eb9f9c046c98dc23a8b0cdc15f15b53e",
@@ -379,7 +379,7 @@
       "src/ds-texts/cs-document-form.ts": "21c642072960d582fb6f337edabc40e8",
       "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
       "src/ds-texts/cs.ts": "ad3979f2462fbff017099f1f3b26b19a",
-      "src/ds-texts/form-design-two-showcase.ts": "12587a9777f2f70cc0e98441a3d299c8",
+      "src/ds-texts/form-design-two-showcase.ts": "fa5c99b6df4bf937b9c3d2d62495848e",
       "src/ds-texts/grid-journal-types.ts": "94ac1293c2ae2163f22f8d3d5787064e",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
       "src/ds-texts/sk-document-form.ts": "9d4c6de8f5243e8cbbc864edc8b298c0",
@@ -440,7 +440,7 @@
       "src/slivka-head.tsx": "a126065cc8ea1f5bc5be4d79afae31dc",
       "src/slivka-provider.tsx": "534ba72d2302fa980a607e0cba6ecd69",
       "src/start.ts": "3b877c99f5f4668ccc3694f7a09a1f07",
-      "src/styles.css": "e36a444834e8a26cf349e31124b086aa",
+      "src/styles.css": "897bc36e04d5549fef93e2a031cd93e2",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "f489ce71bed4bf62da4f6ea918d5d560",
       "tests/e2e/document-date-link.spec.ts": "ca36b791c5217d21fd624896d83c697a",
@@ -471,12 +471,12 @@
       "tests/unit/document-form-236.test.tsx": "7ef7dcd8165ad941fe24c39eb7cf2883",
       "tests/unit/document-form-268.test.tsx": "4470a6374b8c796f925ab9bb4b4f6323",
       "tests/unit/document-form-273.test.tsx": "c8a3c2c36efeaba98e296d3b2d2c3d6e",
-      "tests/unit/document-form-286.test.tsx": "dd6cc0cb6fa09ec5642f4e4903d5ae1f",
+      "tests/unit/document-form-286.test.tsx": "b46bce967c69d38e5c956359776f25b3",
       "tests/unit/document-vat-256.test.tsx": "9309cbbb0f57b058656ec55f3d6867f6",
       "tests/unit/ds-285-behavior.test.tsx": "d54842e090ad287f1c7cafc85f37d177",
       "tests/unit/ds-285-rules.test.tsx": "a5a523bd482d09c43b73b5ae90410da3",
       "tests/unit/ds-286-behavior.test.tsx": "4592d735fe1a47c6cf421d78e8a1b47b",
-      "tests/unit/edit-document-eleven.test.tsx": "b78502f9eb9ca1993c06b8fbb4378d13",
+      "tests/unit/edit-document-eleven.test.tsx": "2f45dfc175c7559d18b002684a19e4f7",
       "tests/unit/form-design-two.test.tsx": "3313ba395dc31faeb6c34bacc8085fe7",
       "tests/unit/form-design.test.tsx": "d8a34753e42516d9369db69d7f9292de",
       "tests/unit/grid-actions-226.test.tsx": "bc71317a906195c55aac5480a826c089",
@@ -513,7 +513,11 @@
       "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
-      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
+      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
+      "src/components/showcase/DocumentDatesShowcase.tsx": "147a7c0456510a3abe0c6bca437142ff",
+      "tests/e2e/edit-document-twelve.spec.ts": "82d6b6c9806478586e18687ac192bffb",
+      "tests/unit/edit-document-twelve.test.tsx": "3bdd0b9bc160101fbcb9dfb8f54788ee",
+      "tests/unit/bank-account-options.test.tsx": "92d41c8f85c49d9c0e8f58c2bc8a0752"
     },
     "pipeline_version": 8
   },
@@ -2680,7 +2684,7 @@
           "required": true
         }
       ],
-      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení.",
+      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + \"-label\" pro aria-labelledby zamčené skupiny.",
       "examples": [
         {
           "label": "Pole přes čtyři sloupce",
@@ -2688,7 +2692,8 @@
         }
       ],
       "antipatterns": [
-        "Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue."
+        "Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.",
+        "Důvod zákazu není jméno pole; aria-labelledby odkazuje popisek, aria-describedby důvod."
       ]
     },
     {
@@ -7188,7 +7193,8 @@
         },
         {
           "name": "options",
-          "type": "any"
+          "type": "BankAccountOption[]",
+          "description": "Úplná tuzemská dvojice nebo IBAN; ID nepovinné."
         },
         {
           "name": "bankCodes",
@@ -7233,17 +7239,22 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem.",
+      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle.",
       "examples": [
         {
           "label": "Účet dodavatele",
           "code": "<BankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />"
+        },
+        {
+          "label": "Účet pouze s IBAN",
+          "code": "<BankAccountField value={accountId} onChange={setAccountId} selectionOnly options={[{ id: \"eur\", iban: \"CZ6508000000192000145399\" }]} />"
         }
       ],
       "antipatterns": [
         "Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.",
         "Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.",
-        "Neopakujte disabledReason pod polem ani v duplicitním tooltipu."
+        "Neopakujte disabledReason pod polem ani v duplicitním tooltipu.",
+        "Nevynechávejte účty partnera pouze s IBAN a neskládejte zápis undefined/undefined."
       ]
     },
     {
@@ -7465,7 +7476,7 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
@@ -7485,7 +7496,8 @@
         "Nevkládejte měnu do popisku Celkem ani do identity cashBank.",
         "Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.",
         "DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.",
-        "Neskrývejte KS/SS ani nemažte hodnoty v DS; prázdný zakázaný vzhled není změnou uložených dat."
+        "Neskrývejte KS/SS ani nemažte hodnoty v DS; prázdný zakázaný vzhled není změnou uložených dat.",
+        "Nezmenšujte datumové písmo, pokud se plné pole vejde; delší popisek nesmí měnit šířky ostatních polí."
       ],
       "props": [
         {

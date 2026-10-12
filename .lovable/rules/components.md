@@ -309,7 +309,7 @@ Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru u
 |---|---|---|
 | `value` | string | `—` |
 | `onChange` | function | `—` |
-| `options` | any | `—` |
+| `options` | BankAccountOption[] | `—` |
 | `bankCodes` | any | `—` |
 | `invalidAccountText` | string | `—` |
 | `invalidBankCodeText` | string | `—` |
@@ -333,6 +333,8 @@ _Účet dodavatele_
 - Nepředvyplňujte hodnotu jen podle příznaku default; hodnotu řídí aplikace.
 - Nepřijímejte neúplný ruční účet bez kontroly po opuštění pole.
 - Neopakujte disabledReason pod polem ani v duplicitním tooltipu.
+
+**Edit dokladu 12b:** BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle.
 
 ### BarBreakdownChart
 
@@ -1477,6 +1479,8 @@ _Platba přijatého dokladu bez účtu_
 - Nevykreslujte dateWarnings pod poli a nepředvyplňujte bankovní účet uvnitř komponenty.
 - DS nemaže uložené účty a symboly při zamčení; jejich změnu řídí aplikace.
 
+**Edit dokladu 12b:** Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pokud se nevejde ani jedno plné pole. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN.
+
 ### DocumentPrintTab
 
 ```ts
@@ -1820,6 +1824,8 @@ _Pole přes čtyři sloupce_
 **Avoid:**
 
 - Nevkládejte hodnotu jen ke čtení volně do FieldGrid; použijte Field s FieldValue.
+
+**Edit dokladu 12b:** Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny.
 
 ### FieldGrid
 
