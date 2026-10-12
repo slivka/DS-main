@@ -94,6 +94,40 @@ test("zakázaná segmentová volba zůstává odlišená a čitelná", async ({ 
       const other = await colors(group.locator('[aria-checked="false"]'));
       expect(selected.color).not.toBe(other.color);
       expect(selected.background).not.toBe(other.background);
+      const contrast = await group.locator('[aria-checked="true"]').evaluate((node) => {
+        const canvas = document.createElement("canvas").getContext("2d");
+        if (!canvas) throw new Error("Chybí měření barev");
+        const rgb = (color: string) => {
+          canvas.clearRect(0, 0, 1, 1);
+          canvas.fillStyle = color;
+          canvas.fillRect(0, 0, 1, 1);
+          return Array.from(canvas.getImageData(0, 0, 1, 1).data);
+        };
+        const layers: number[][] = [];
+        let element: Element | null = node;
+        while (element) {
+          layers.unshift(rgb(getComputedStyle(element).backgroundColor));
+          element = element.parentElement;
+        }
+        let background = [255, 255, 255];
+        for (const layer of layers) {
+          background = background.map(
+            (v, i) => (layer[i] * layer[3]) / 255 + v * (1 - layer[3] / 255),
+          );
+        }
+        const luminance = (values: number[]) =>
+          values
+            .map((v) => {
+              const channel = v / 255;
+              return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+            })
+            .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+        const a = luminance(rgb(getComputedStyle(node).color).slice(0, 3));
+        const b = luminance(background);
+        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      });
+      expect(contrast).toBeGreaterThanOrEqual(4.5);
+      console.log(`KONTRAST segment ${dark ? "tmavý" : "světlý"}: ${contrast.toFixed(2)}`);
     }).toPass();
   }
 });
