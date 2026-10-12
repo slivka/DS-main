@@ -1453,6 +1453,8 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 
 ### DocumentForm
 
+**Edit dokladu 12d (2.97.0):** Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění.
+
 **Edit dokladu 12 (2.96.0):** kompaktní datumová pole jen v DocumentForm, delší popisek rozšíří pole. DUZP + Datum DPH se při nedostatku místa zalomí jednotlivě, bez vodorovného rolování. KS/SS jsou vždy viditelné, při nepoužité platbě prázdné a zakázané s přístupným popisem důvodu. `receivedAccountDisabledReason` má u FP/ZFP přednost; `companyBankAccountDisabledReason` nově zamkne KS/SS u FV/ZFV (BREAKING). DS hodnoty nemaže.
 
 
