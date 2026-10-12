@@ -71,7 +71,16 @@ def sections(text):
     return result
 
 
+def unique_keys(pairs):
+    result = {}
+    for key, value in pairs:
+        assert key not in result, f"Duplicitní JSON klíč: {key}"
+        result[key] = value
+    return result
+
+
 path = ".lovable/design-system.json"
+json.loads(Path(path).read_text(), object_pairs_hook=unique_keys)
 old = raw_components(baseline(path))
 new = raw_components(Path(path).read_text())
 assert old.keys() == new.keys() and len(new) == 426
