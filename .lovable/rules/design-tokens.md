@@ -106,6 +106,9 @@ Apply with any spacing utility: `p-<name>`, `m-<name>`, `gap-<name>`, `space-<na
 
 | Name | CSS variable |
 |---|---|
+| — | `--document-date-text-gap` |
+| — | `--document-date-left-padding` |
+| — | `--document-date-right-padding` |
 | — | `--chip-gap` |
 
 ## Border Radius
@@ -137,6 +140,9 @@ Reference via `var(--name)` in inline styles or CSS.
 | CSS variable |
 |---|
 | `--control-h` |
+| `--document-date-icon-offset` |
+| `--document-date-icon-step` |
+| `--document-date-icon-size` |
 | `--grid-title-surface` |
 | `--grid-toolbar-surface` |
 | `--grid-total-surface` |
