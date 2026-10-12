@@ -108,7 +108,6 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     patch({ rate: value.suggestedRate, rateManual: false, rateNote: null })
                   }
                   className="w-full"
-                  inputClassName="h-11"
                 />,
                 3,
                 false,
@@ -149,7 +148,6 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                         })
                       }
                       className="w-full"
-                      inputClassName="h-11"
                     />
                     {!vatRateField.manual &&
                     vatRateField.suggestedRate == null &&
@@ -198,7 +196,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })}
                     readOnly={totalMode === "sum" || !can("amountTotal")}
                     className={cn(
-                      "h-11 pr-12 text-right text-xl font-bold tabular-nums",
+                      "h-[var(--control-h)] pr-[calc(var(--control-h)+0.5rem)] text-right text-sm font-mono font-bold tabular-nums",
                       totalMode === "sum" && "bg-muted",
                     )}
                   />
@@ -214,7 +212,7 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                         onClick={() =>
                           patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })
                         }
-                        className="absolute right-1 top-1 size-9"
+                        className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
                       >
                         <span className="relative">
                           <Sigma className="size-4" />
