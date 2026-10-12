@@ -3952,7 +3952,7 @@ _Typ partnera_
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
-Edit dokladu 12h: zakázaná vybraná volba zachovává primary/10 a primary; nevybraná používá muted/40 a muted-foreground. Vybraný stav zůstává viditelný a čitelný.
+Edit dokladu 12i (2.98.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny.
 
 ### Select
 

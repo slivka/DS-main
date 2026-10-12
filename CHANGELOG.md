@@ -1,5 +1,22 @@
 # Changelog – Slivka Design System
 
+## 2.98.0 (vydaná verze)
+
+### Edit dokladu 12i (bez nového vydání)
+
+- SegmentedField: pouze zakázaná vybraná volba nově používá plné `bg-muted`,
+  `text-foreground` a tučný řez bez primární barvy. Zakázaná nevybraná ani povolené
+  volby se nemění; žádné ikony ani nové tokeny. Segmenty gridu a sdílené CSS beze změny.
+- Ukázka porovnává shodné povolené a zakázané segmenty; lišta obsahuje zakázané
+  textové tlačítko. Unit kontroluje oba stavy a zachování ovládání povolené volby.
+- E2E nově porovnává oba zamčené segmenty s povoleným stavem a měří kontrast každého.
+  Rámečky lišty ověřuje proti sondě tokenů: běžný a ikonový prvek border, Přidat steel
+  a hover navy, otevřený neaktivní rozbalovač primary/chrome mix, kontext chrome-border,
+  zakázaný input a 1px. Příprava čeká na připojení lišty; otevřený rozbalovač sleduje
+  stabilně podle jména, nikoli podle měnícího se aria-expanded.
+- `package.json` srovnána s vydanou verzí 2.98.0. Katalogy upraveny pouze pro
+  SegmentedField proti 082c0b07; nevkládají poznámky do cizích sekcí.
+
 ## 2.97.0 – Edit dokladu 12h (nevydáno)
 
 - Základní pravidla lišty gridu vylučují zakázané prvky přes `:where()`, bez zvýšení

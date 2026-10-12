@@ -182,6 +182,16 @@ export function FormDesignTwoShowcase() {
           disabled
           onChange={() => {}}
         />
+        <SegmentedField
+          data-testid="enabled-segments"
+          ariaLabel={t.transfer}
+          options={[
+            { value: "transfer", label: t.transfer },
+            { value: "cash", label: t.cash },
+          ]}
+          value="transfer"
+          onChange={() => {}}
+        />
         <OptionSelect
           id="disabled-currency-select"
           ariaLabel={currencies[1].label}

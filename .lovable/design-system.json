@@ -18,8 +18,8 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "tests/unit/disabled-controls.test.tsx": "338ca396432ca79e2014b7fe3183d3a2",
-      "scripts/verify-edit-document-catalogs.py": "91302ac3411ce6ed1b4835f62ed3736b",
+      "tests/unit/disabled-controls.test.tsx": "445c66d9f8ca3f478a627dc3701bcb85",
+      "scripts/verify-edit-document-catalogs.py": "2b09bc09dee782c22523e026fa930e70",
       ".lovable/rules/library-guidelines.md": "146b71be6dec9aeb07db8ee4cec02bc6",
       "tests/e2e/document-amount-section.spec.ts": "7def60a75319f4b3bb910d590f34d528",
       ".lovable/rules/components.md": "0f3f3f3ba36f326575019b99624849aa",
@@ -207,7 +207,7 @@
       "src/components/ds/form/rate-field.tsx": "7c8a84553af03f6bbd35d236e1cdf1c3",
       "src/components/ds/form/resizable-combobox.tsx": "da92124f0ec87975062f75107d8eb569",
       "src/components/ds/form/searchable-option-select.tsx": "035139a74c45edc0f1da1b790cd64744",
-      "src/components/ds/form/segmented-field.tsx": "c268666a9205103f193b2e0bc4cac76b",
+      "src/components/ds/form/segmented-field.tsx": "edf63dec39235c2edf4d40e95877d72f",
       "src/components/ds/form/suggest-input.tsx": "c6ec23ca0e3e8f79b098a28a026bfc03",
       "src/components/ds/form/time-input-right.tsx": "fb61260958a00ff005e0703a6300d043",
       "src/components/ds/grid/ColumnFilter.tsx": "c78c219efd15cc95b742a69518a8f093",
@@ -320,7 +320,7 @@
       "src/components/showcase/AccountingFieldsShowcase.tsx": "064e29cbf1f7899ddae16dc2f7c1aea3",
       "src/components/showcase/DocumentFormShowcase.tsx": "ba3c3161c724e822fb06adb451988c42",
       "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
-      "src/components/showcase/FormDesignTwoShowcase.tsx": "5b0cf21d997433409e9ea0bc1042036b",
+      "src/components/showcase/FormDesignTwoShowcase.tsx": "7f5c3cd3ee0a223a9aae9138ab7713ed",
       "src/components/showcase/MatchingShowcase.tsx": "ef83010bf71822dd26279e4b42fa4e78",
       "src/components/showcase/PaneShowcase.tsx": "abd1af3294ab9f338001b009906b82d2",
       "src/components/showcase/PartnerShowcase.tsx": "a42b9f5d59a66a020cd9cb53b76e3bd1",
@@ -435,7 +435,7 @@
       "src/routes/components.excel-export.tsx": "80244190af373b08a2f2351d84989262",
       "src/routes/components.feedback.tsx": "31a72d168443b0c9bdb3799d6c2276a5",
       "src/routes/components.forms.tsx": "63a085f3c17c62497eb6b9337d6a0ebd",
-      "src/routes/components.grid.tsx": "8299bf4a4e08cf9ddd06da286ffdf45b",
+      "src/routes/components.grid.tsx": "8a4c10a0cbd270fdc1ef47bc739e1949",
       "src/routes/components.matching.tsx": "1119e7287264e60ee4f8a45fbe59ba56",
       "src/routes/components.navigation.tsx": "8a837e58b02c97071690d0f76bd128c3",
       "src/routes/components.print.tsx": "d4638611b27fc96e60dc28a4e7dd895e",
@@ -524,7 +524,7 @@
       "tests/e2e/edit-document-twelve.spec.ts": "2815eadfbbe7a39a59d211a0f68ccda6",
       "tests/unit/edit-document-twelve.test.tsx": "88761e2e4f4b87fa859090d9a3d0058a",
       "tests/unit/bank-account-options.test.tsx": "369b85aaf3bb8018c6a7393a0bd8901b",
-      "tests/e2e/grid-control-styles.spec.ts": "d439996e3f6e77fd4aa71f4e67eb966d"
+      "tests/e2e/grid-control-styles.spec.ts": "734f3faa1e79c276350df381fb99d86c"
     },
     "pipeline_version": 8
   },
@@ -5653,7 +5653,7 @@
           "type": "string"
         }
       ],
-      "usage": "Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 12h: zakázaná vybraná volba zachovává primary/10 a primary; nevybraná používá muted/40 a muted-foreground. Vybraný stav zůstává viditelný a čitelný.",
+      "usage": "Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 12i (2.98.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny.",
       "examples": [
         {
           "label": "Typ partnera",

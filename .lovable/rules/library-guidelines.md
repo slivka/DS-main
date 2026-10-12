@@ -63,3 +63,6 @@ Zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti;
 ## Edit dokladu 12h (2.97.0)
 
 Lišty používají vyloučení zakázaných prvků přes :where, aby aktivní a hover stav měly původní přednost. Vybraná zakázaná SegmentedField zachovává primary/10 a primary. Celkem zůstává readOnly a kopírovatelné; RateField bez aria-disabled na obecném div. Zakázané varianty Button jsou šedé s tlumeným textem; vnořené spany a odznaky se plošně nepřebarvují.
+## SegmentedField – Edit dokladu 12i (2.98.0)
+
+Edit dokladu 12i (2.98.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny.

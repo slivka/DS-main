@@ -62,6 +62,33 @@ test("SegmentedField zakázaná vybraná volba zachová stav a nezmění hodnotu
   const selected = view.getByRole("radio", { name: "A" });
   expect(selected.getAttribute("aria-checked")).toBe("true");
   expect(selected.hasAttribute("disabled")).toBe(true);
+  expect(selected.classList.contains("text-primary")).toBe(false);
+  expect(selected.classList.contains("bg-primary/10")).toBe(false);
+  expect(selected.classList.contains("disabled:bg-muted")).toBe(true);
+  expect(selected.classList.contains("disabled:text-foreground")).toBe(true);
   fireEvent.click(selected);
   expect(changes).toBe(0);
+});
+
+test("SegmentedField povolená vybraná volba zachová primární vzhled a ovládání", () => {
+  let chosen = "a";
+  const view = render(
+    <SegmentedField
+      ariaLabel="Volba"
+      options={[
+        { value: "a", label: "A" },
+        { value: "b", label: "B" },
+      ]}
+      value="a"
+      onChange={(value) => {
+        chosen = value;
+      }}
+    />,
+  );
+  const selected = view.getByRole("radio", { name: "A" });
+  expect(selected.classList.contains("text-primary")).toBe(true);
+  expect(selected.classList.contains("bg-primary/10")).toBe(true);
+  expect(selected.hasAttribute("disabled")).toBe(false);
+  fireEvent.click(view.getByRole("radio", { name: "B" }));
+  expect(chosen).toBe("b");
 });

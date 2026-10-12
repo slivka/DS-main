@@ -5,39 +5,8 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
-BASE = "b27379e4"
-ALLOWED = {
-    'AccountSelect',
-    'BankAccountField',
-    'BookSelect',
-    'Button',
-    'CalendarPicker',
-    'CategorySelect',
-    'ChipMultiSelect',
-    'ContactSelect',
-    'CountrySelect',
-    'DateField',
-    'DateRangeField',
-    'DecimalInput',
-    'DimensionSelect',
-    'DocumentForm',
-    'Field',
-    'Input',
-    'LegalFormField',
-    'MultiSelect',
-    'OptionSelect',
-    'PartnerSelect',
-    'PaymentOrderAccountField',
-    'RateField',
-    'ResizableCombobox',
-    'SegmentedField',
-    'SelectTrigger',
-    'TagPicker',
-    'Textarea',
-    'UnitSelect',
-    'VatCodeSelect',
-    'VsField',
-}
+BASE = "082c0b07"
+ALLOWED = {"SegmentedField"}
 
 
 def baseline(path):
@@ -96,19 +65,16 @@ for path in ["components.md", ".lovable/rules/components.md", ".lovable/rules/li
     removed = sorted(old.keys() - new.keys())
     assert not removed, removed
     if path == "components.md":
-        assert set(modified) <= {"### DocumentForm 2.31.0 [1]"}
-        assert not added
+        assert not modified
+        assert set(added) == {"### SegmentedField 2.98.0 – Edit dokladu 12i [1]"}
         count = len(re.findall(r"`([A-Z][A-Za-z0-9]+)`", new["## Index veřejných komponent [1]"].decode()))
     elif path.endswith("/components.md"):
-        assert all(key.split(" [")[0][4:] in ALLOWED for key in modified)
+        assert set(modified) == {"### SegmentedField [1]"}
         assert not added
         count = sum(key.startswith("### ") for key in new)
     else:
-        assert set(modified) <= {"## Edit dokladu 12 (2.96.0) [1]"}
-        assert set(added) <= {
-            f"## Edit dokladu 12{round_name} (2.97.0) [1]"
-            for round_name in ["b", "c", "f", "g", "h"]
-        }
+        assert not modified
+        assert set(added) == {"## SegmentedField – Edit dokladu 12i (2.98.0) [1]"}
         count = len(re.findall(r"`([A-Z][A-Za-z0-9]+)`", new["## Components [1]"].decode()))
     assert count == 426, (path, count)
     print(f"{path}: {count}; všech sekcí: {len(new)-1}; změněné: {modified}; nové: {added}")
