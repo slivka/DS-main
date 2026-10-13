@@ -251,10 +251,9 @@ test("přijaté symboly zůstávají prázdné se správným důvodem", async ({
   const received = page.getByTestId("edit-document-eleven-received");
   await expect(received).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const toggle = received.getByRole("button", { name: "Platit příkazem", exact: true });
-  await expect(async () => {
-    if ((await toggle.getAttribute("aria-pressed")) === "true") await toggle.click();
-    await expect(toggle).toHaveAttribute("aria-pressed", "false");
-  }).toPass({ timeout: 60000 });
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
   for (const name of ["Konstantní symbol", "Specifický symbol"]) {
     const input = received.locator(
       name === "Konstantní symbol" ? "#document-constantSymbol" : "#document-specificSymbol",

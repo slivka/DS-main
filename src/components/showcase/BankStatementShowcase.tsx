@@ -148,6 +148,7 @@ function ToggleExamples() {
         enabled
         onEnabledChange={() => {}}
         loadSuggestions={async () => []}
+        aria-label={t.locked}
         disabled
       />
       <CounterpartyInputField

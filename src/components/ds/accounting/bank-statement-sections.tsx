@@ -34,7 +34,7 @@ export function BankStatementBasic({
   const { containerRef, geometry } = useCompactDateGeometry(t.date);
   return (
     <FieldGrid cols={12}>
-      <Field span={3} className="col-span-2">
+      <Field span={3}>
         <div ref={containerRef} className="document-dates-container">
           <div className="document-dates-compact" style={geometry}>
             <Field label={t.date} htmlFor={`${id}-date`}>
@@ -54,7 +54,6 @@ export function BankStatementBasic({
         htmlFor={hasItems || locked ? undefined : `${id}-number`}
         labelId={`${id}-number-label`}
         span={2}
-        className="col-span-2"
       >
         {hasItems || locked ? (
           <FieldValue
@@ -77,7 +76,6 @@ export function BankStatementBasic({
         htmlFor={locked ? undefined : `${id}-note`}
         labelId={`${id}-note-label`}
         span={7}
-        className="col-span-2"
       >
         {locked ? (
           <FieldValue aria-labelledby={`${id}-note-label`} id={`${id}-note`}>
@@ -124,8 +122,9 @@ export function BankStatementBalanceSection({
         {(["opening", "income", "expense", "closing"] as const).map((key) => {
           const amount = key === "closing" ? closing : balances[key];
           return (
-            <Field key={key} label={t[key]} span={3} className="col-span-2">
+            <Field key={key} label={t[key]} labelId={`${id}-${key}-label`} span={3}>
               <FieldValue
+                aria-labelledby={`${id}-${key}-label`}
                 className={cn(
                   "text-right tabular-nums",
                   key === "closing" && "font-bold",
@@ -144,7 +143,7 @@ export function BankStatementBalanceSection({
           htmlFor={locked ? undefined : `${id}-bankClosing`}
           labelId={`${id}-bankClosing-label`}
           span={6}
-          className="col-span-2 @min-[40rem]:col-start-4"
+          className="@min-[40rem]:col-start-4"
         >
           {locked ? (
             <FieldValue
@@ -162,8 +161,9 @@ export function BankStatementBalanceSection({
             />
           )}
         </Field>
-        <Field label={t.difference} span={3} className="col-span-2">
+        <Field label={t.difference} labelId={`${id}-difference-label`} span={3}>
           <FieldValue
+            aria-labelledby={`${id}-difference-label`}
             data-slot="bank-statement-difference"
             className={cn(
               "text-right tabular-nums",

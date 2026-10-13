@@ -68,4 +68,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 
-- Share compact date measurement between forms and fit only overflowing Field labels from DOM width. Why: narrow forms preserve full labels without bank-specific styles.
+- Share compact date measurement between forms; keep Field labels truncated with their full title, never dynamically shrink them. Why: text zoom remains readable and label behavior stays stable.

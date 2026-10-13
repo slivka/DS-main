@@ -161,7 +161,7 @@ export function RecordActionBar({
           className,
         )}
       >
-        <div className="min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:h-auto [&_button]:min-h-[var(--control-h)] [&_button]:py-2">
+        <div className="min-w-0 [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:max-w-full [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:whitespace-normal [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:h-auto [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:min-h-[var(--control-h)] [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:py-2">
           {leftContent}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
