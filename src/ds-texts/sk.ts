@@ -95,6 +95,7 @@ export const DS_TEXTS_SK: DsTexts = {
     ...DS_TEXTS_CS.grid,
     locale: "sk-SK",
     searchPlaceholder: "Hľadať…",
+    addMenu: "Nový – vyberte druh",
     searchLabel: "Hľadať",
     clearSearchLabel: "Zrušiť hľadanie",
     refresh: "Obnoviť údaje",

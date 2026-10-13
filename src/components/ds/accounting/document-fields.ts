@@ -160,6 +160,8 @@ const PRESETS: Record<DocumentTypeCode, DocumentFields> = {
   },
   BA: {
     ...NONE,
+    // DUZP jako u PO; zobrazí se jen při zapnutém DPH (showVatFields).
+    taxDate: true,
     symbols: true,
     bankAccount: true,
     partner: true,

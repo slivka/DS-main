@@ -53,7 +53,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 ## Vydání knihovny
 
-- `package.json` a `meta.version` v `.lovable/design-system.json` musí být vždy stejné a rovné verzi, pod kterou se kolo vydá; dialog Release bere Current z `meta.version`. CHANGELOG a roadmap nesou tutéž verzi.
+- `meta.version` v `.lovable/design-system.json` = `package.json` = poslední VYDANÁ verze; dialog Release nabídne další minor (Current z `meta.version` + 1). CHANGELOG a roadmap nesou připravovanou verzi označenou „(nevydáno)“. Po vydání, pokud se commit vydání do pracovní větve nepromítne, hned nastav obě hodnoty na právě vydanou verzi.
 
 - Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
 

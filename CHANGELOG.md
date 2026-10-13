@@ -1,6 +1,23 @@
 # Changelog – Slivka Design System
 
-## 2.102.0 – Edit dokladu 13f
+## 2.102.0 – Edit dokladu 13f a 13g (nevydáno)
+
+### 13g
+
+- BA (příjem i výdej) zobrazuje při zapnutém DPH DUZP stejně jako PO; Datum DPH se tak
+  neváže na neexistující pole. Zamčení u příjmu (`vat.dateLockReadOnly`), odemykatelná vazba
+  u výdeje (`vat.dateLink`) a výchozí hodnoty DUZP řídí aplikace – DS hodnoty nedoplňuje.
+  Kurz DPH (`vatRateField`) se u BA zobrazuje beze změny podmínek. Ukázka BA výdej EUR.
+- Lišta gridu: `GridAddAction` má nové nepovinné `shortLabel` a `icon`. Dvě a více
+  primárních akcí: plný text → zkrácený text pod 640 px → v úrovni 3 jedno modré tlačítko
+  „+ ▾“ (`aria-haspopup="menu"`) s položkami. Jedna akce beze změny. `onClick` dostane
+  z nabídky událost výběru (typ rozšířen na `SyntheticEvent | Event`, existující handlery
+  zůstávají kompatibilní). `GridAddActions` přesunuto do vlastního modulu, veřejné
+  importy beze změny. Nový povinný klíč `DsTexts.grid.addMenu` (CS/SK) – úplné vlastní
+  `DsTexts` ho musí doplnit.
+- Verze: `meta.version` a `package.json` = 2.101.0 (poslední vydaná), aby Release nabídl 2.102.0.
+
+### 13f
 
 - BankStatementForm: nový nepovinný prop `checkDisabledReason`. Vyplněný důvod zakáže
   „Zkontrolovat“ sdíleným mechanismem (aria-disabled, tlačítko zůstává fokusovatelné,

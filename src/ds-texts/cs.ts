@@ -94,6 +94,7 @@ export const DS_TEXTS_CS: DsTexts = {
     searchPlaceholder: "Hledat…",
     searchLabel: "Hledat",
     clearSearchLabel: "Zrušit hledání",
+    addMenu: "Nový – vyberte druh",
     refresh: "Obnovit data",
     columnsTitle: "Sloupce",
     selectMore: "Vybrat více",

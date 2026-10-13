@@ -364,6 +364,11 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ### SegmentedField 2.99.0 – Edit dokladu 12i
 
 Edit dokladu 12i (2.99.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny.
+### GridAddActions / DocumentForm BA 2.102.0 – Edit dokladu 13g
+
+- `GridAddAction.shortLabel` a `GridAddAction.icon`: dvě a více primárních akcí lišty se zúží na zkrácené texty a v nejužší liště sloučí do jednoho tlačítka „+ ▾“ s nabídkou. Nový text `grid.addMenu` (CS/SK).
+- `documentFieldsForType("BA").taxDate = true`: BA při zapnutém DPH ukazuje DUZP a Datum DPH; vazbu a výchozí hodnoty řídí aplikace přes `vat.dateLink`.
+
 ### BankStatementForm 2.102.0 – Edit dokladu 13f
 
 - `checkDisabledReason?: string` zakáže „Zkontrolovat“ s důvodem (aria-disabled, fokusovatelné, tooltip); „Zrušit kontrolu“ se tím neřídí.

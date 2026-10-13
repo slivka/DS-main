@@ -2169,6 +2169,12 @@ import { GridActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel pod 640 px → v nejužší liště jedno tlačítko „+ ▾“ s nabídkou (icon + shortLabel). GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason.
+
+| Prop | Type | Default |
+|---|---|---|
+| `actions` | GridAddAction \| GridAddAction[] | `—` |
+
 ### GridAmountEditor
 
 ```ts
