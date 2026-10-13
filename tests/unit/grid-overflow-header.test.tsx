@@ -23,8 +23,9 @@ describe("ZoomGrid – záhlaví ve vlastním rolovacím kontejneru", () => {
         <span>Řádky</span>
       </ZoomGrid>,
     );
-    expect(screen.getByText("Řádky").closest(".zoom-grid")?.getAttribute("data-sticky-header"))
-      .toBe("pane");
+    expect(
+      screen.getByText("Řádky").closest(".zoom-grid")?.getAttribute("data-sticky-header"),
+    ).toBe("pane");
   });
 
   it("zachová přilnutí k horní hraně vlastního gridu", () => {
@@ -33,7 +34,8 @@ describe("ZoomGrid – záhlaví ve vlastním rolovacím kontejneru", () => {
         <span>Řádky</span>
       </ZoomGrid>,
     );
-    expect(screen.getByText("Řádky").closest(".zoom-grid")?.getAttribute("data-sticky-header"))
-      .toBe("grid");
+    expect(
+      screen.getByText("Řádky").closest(".zoom-grid")?.getAttribute("data-sticky-header"),
+    ).toBe("grid");
   });
 });
