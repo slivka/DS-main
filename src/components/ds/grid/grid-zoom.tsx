@@ -259,7 +259,9 @@ export function ZoomGrid({
   );
   const pageVariant = usePageLayoutVariant();
   const resolvedHeight = height ?? (pageVariant === "list" ? "fill" : "auto");
-  const resolvedSticky = stickyHeader ?? (resolvedHeight === "fill" ? "grid" : "none");
+  const requestedSticky = stickyHeader ?? (resolvedHeight === "fill" ? "grid" : "none");
+  // Vlastní rolovací kontejner nemůže používat odsazení pruhu akcí panelu.
+  const resolvedSticky = overflowFallback && requestedSticky === "pane" ? "none" : requestedSticky;
   const zoomRef = useRef(zoom);
   zoomRef.current = zoom;
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");

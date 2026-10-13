@@ -18,6 +18,7 @@
     ],
     "source_type": "local",
     "source_manifest": {
+      ".lovable/plan/edit-dokladu-13b-opravy-bez-vydání-2026-10-13.md": "59ff36ce3f17c318be92ecc3907f72a6",
       "tests/e2e/non-tax-baseline.ts": "c89c4f70b09d58c22003be88d0eee634",
       "src/components/ds/accounting/bank-statement-form.tsx": "738ffe2a43531f294c2968280b0f5484",
       "src/components/ds/accounting/bank-statement-sections.tsx": "e57753e3b3cd7a30fcc65a6ae9ef0eba",

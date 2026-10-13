@@ -12,7 +12,7 @@
 - BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
   domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
   Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
-### BREAKING – migrace (Edit dokladu 13 a opravná kola 13b–13d)
+### BREAKING – migrace (Edit dokladu 13 a opravná kola 13b–13e)
 
 - CounterpartyInputField používá ContactRound v obou režimech; partner má
   aria-pressed=true. `partnerModeLabel` / `manualModeLabel` zůstávají jako nepovinné
@@ -38,6 +38,18 @@
   --control-h. Zamčení bez konkrétního důvodu vysvětluje fieldToggle.locked,
   nikoli text vybízející ke kliknutí.
 
+### Opravy 13e (bez vydání)
+
+- Pravidlo 20 obnoveno přesně podle 98810718: jednořádkový popisek může při
+  krajním nedostatku místa použít výpustku; plný text zůstává v title/tooltipu.
+  Sekce 13b/13c a rules prověřeny; nikde nevyžadují nezkrácené běžné popisky.
+- ZoomGrid při overflowFallback vypíná přilnutí typu pane: vlastní rolovací
+  kontejner nepřebírá posun vnější lišty a záhlaví nepřekrývá první řádek.
+  Bez nového !important, bez změny rozměrů ND a bez změny veřejného API.
+- Obnoveno tvrzení @min-[40rem]:col-span-4. Manifest doplňuje archivovaný plán 13b.
+- Záznam 13d upřesňuje skutečné toPass a časové limity; posluchač kolečka existuje.
+- Verze zůstává 2.100.0; Release ani ruční tsc/typecheck/build neproběhly.
+
 ### Opravy 13d (bez vydání)
 
 - RecordActionBar: zalamování a růst levých textových tlačítek platí jen pro
@@ -57,11 +69,14 @@
   příkazu kliká nepodmíněně a ověřuje výchozí i výsledný stav.
 - Manifest odstraňuje neexistující plán a přidává referenční ND měření.
   Katalogový skript povoluje pouze odstranění tohoto smazaného souboru, nikoli komponent.
-- Testy nepoužívají toPass ani prodloužená dílčí očekávání z 13c. Celkový limit
+- Specifikace edit-document-thirteen nepoužívá toPass. Datumová vazba v
+  document-date-link ponechává toPass s limitem 60 s; edit-document-twelve
+  ponechává celkový limit 480 s (v bázi 98810718 byl 240 s). Celkový limit
   480 s zůstává pro rozsáhlou matici 40 rozvržení a 18 ND měření v pomalých prohlížečích;
   běžné očekávání je 10 s. Dvě animationFrame po změně zoomu čekají na vykreslení.
-  ND mění zoom skutečnými tlačítky lišty a stav nativní klávesou Space; umělá wheel
-  událost na obalu byla neúčinná a automatický scroll kliku mířil pod záhlaví gridu.
+  ND mění zoom skutečnými tlačítky lišty a stav nativní klávesou Space.
+  Posluchač kolečka v grid-zoom existuje; tehdejší pokus syntetickou událostí
+  neověřil správný cíl ani odezvu. Překrytí prvního řádku záhlavím opravuje 13e.
   Geometrie přepínačů se měří ve stabilní ukázce, ne v průběžně nahrazovaných datech.
 - tsc/typecheck **neproběhl** kvůli nadřazenému zákazu prostředí; nesdělujeme úspěch.
   Verze zůstává 2.100.0 a Release nebyl proveden.
@@ -70,7 +85,8 @@
 
 - **Unit 636/636**, 61 souborů, 2 016 assertions. **E2E 48/48 jedním čistým během**
   (Chromium 16, Firefox 16, WebKit 16), 36 minut, workers=1, retries=0;
-  žádné toPass. Předchozí diagnostické běhy byly zastaveny po selhání; jejich výsledky
+  bez toPass v edit-document-thirteen; datumová vazba ponechává toPass 60 s.
+  Předchozí diagnostické běhy byly zastaveny po selhání; jejich výsledky
   nejsou připočteny. Konečný důkaz: `/tmp/13d-e2e-single.log`.
 - **Lint 0 chyb / 293 varování**, formát změněných zdrojů a testů OK, automatický build OK.
   Ruční tsc ani build neproběhl; typy po Update zůstávají neověřené.
