@@ -60,7 +60,7 @@ test.describe("JournalLinesEditor", () => {
     await expect(rows).toHaveCount(3);
     await activeCell.press("Control+Delete");
     await expect(rows).toHaveCount(2);
-    await page.getByRole("button", { name: "Zpět" }).click();
+    await page.getByRole("button", { name: "Zpět", exact: true }).click();
     await expect(rows).toHaveCount(3);
   });
 
