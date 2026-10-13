@@ -17,3 +17,15 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Testy ověřují chování (render + interakce přes Testing Library, nebo čistá funkce vstup → výstup); readFileSync na src/** v testu je zakázán; Tailwind třídy se netestují řetězcem; názvy testů podle komponenty, ne podle verze. Proč: test nad textem spadne při formátování a nic nedokazuje.
 - BREAKING změna vždy s návodem na migraci v CHANGELOG.md; system.md obsahuje jen pravidla, ne poznámky k vydání. Proč: APP se aktualizuje podle CHANGELOG.
 - Před dokončením spusť typecheck, lint, test, format:check a build a uveď počty; netvrď, že kontrola prošla, pokud neběžela. Ve shrnutí: co se změnilo a proč, jak ověřeno, co neověřeno. Proč: Claude kontroluje každý krok.
+
+## Shared field and grid contracts
+
+- Input owns `formatPattern`; never pass a bare placeholder for a format hint. Why: one shared input contract preserves empty values and separates format from help.
+- Selection actions reserve fixed rem slots beside a fixed chevron; trailing labels precede actions. Why: shared geometry prevents overlaps at every application zoom.
+- Field hints must not change a form row height; use formatPattern inside the input and FieldGrid.hint below a section. Why: adjacent control edges remain aligned.
+- Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
+- Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
+- Disabled fields use ds-disabled-control plus disabled token utilities; state borders win. Why: readable muted text, one surface and consumer overrides.
+- Use FieldToggleButton for in-field icon toggles; only NonTaxToggle cells and DateField links retain their geometry. Why: one interaction and accessibility contract.
+- Share compact date measurement between forms; keep Field labels truncated with their full title, never dynamically shrink them. Why: text zoom remains readable and label behavior stays stable.
+- Resolve pane-sticky headers centrally in ZoomGrid; overflow fallback disables pane stickiness. Why: an inner scroll container must not offset its first row by the outer action bar.

@@ -12,7 +12,7 @@
 <!-- LOVABLE:END -->
 
 - Pravidla dokladů, DPH a editoru řádků: `src/components/ds/accounting/AGENTS.md`.
-- Pravidla kvality DS: `src/components/ds/AGENTS.md`.
+- Pravidla kvality, formulářů a gridů DS: `src/components/ds/AGENTS.md`; před změnami této části je přečti.
 - Značky měn pocházejí z dat; nikdy nevkládej pevné `Kč` ani `CZK`.
 - Zoom aplikace ukládá zařízení; Ctrl/Cmd+kolečko rozlišuje grid a aplikaci; automat gridů počítá z px při kořeni 16 px.
 - Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
@@ -37,10 +37,6 @@ Aplikace nastaví jazyk jednou v kořeni:
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
-- Input owns `formatPattern`; never pass a bare placeholder for a format hint. Why: one shared input contract preserves empty values and separates format from help.
-- Selection actions reserve fixed rem slots beside a fixed chevron; trailing labels precede actions. Why: shared geometry prevents overlaps at every application zoom.
-- Field hints must not change a form row height; use formatPattern inside the input and FieldGrid.hint below a section. Why: adjacent control edges remain aligned.
-
 - Keep document-form translations in per-language modules consumed by DsTexts. Why: the central catalogs remain readable and below the source line limit.
 - Preview-only accounting examples live in showcase modules excluded by .dsignore. Why: all existing pages remain usable without leaking preview dependencies to consumers.
 - Export bank-account utilities directly from the root barrel and preserve their existing component-barrel re-export. Why: consumers get a clear utility entry without breaking existing imports.
@@ -52,22 +48,15 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Keep recap header rendering and record-list navigation in focused internal modules. Why: orchestration stays readable without deleting whitespace or changing public exports.
 - Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
 
-- Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
 - Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
-- Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
-- Disabled fields use ds-disabled-control plus disabled token utilities; state borders win. Why: readable muted text, one surface and consumer overrides.
 
 ## Vydání knihovny
 
 - Dialog Release bere „Current“ z `package.json` zdroje, který byl naposledy vydán, a navrhuje Minor = Current + 1. Proto v každém kole, které se bude vydávat, nastav `package.json` na verzi, pod kterou se toto kolo vydá (= poslední vydaný štítek + 1 minor; po v2.99.0 tedy 2.100.0). Pak se štítek vydání a `package.json` vydaného zdroje shodují a příští dialog nabídne správné číslo. Pokud `package.json` zůstane na posledním vydaném štítku, dialog nabídne znovu stejný štítek a aplikace aktualizaci neuvidí.
 
-- Use FieldToggleButton for in-field icon toggles; only NonTaxToggle cells and DateField links retain their geometry. Why: one interaction and accessibility contract.
 - Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
 
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 
-- Share compact date measurement between forms; keep Field labels truncated with their full title, never dynamically shrink them. Why: text zoom remains readable and label behavior stays stable.
-
-- Resolve pane-sticky headers centrally in ZoomGrid; overflow fallback disables pane stickiness. Why: an inner scroll container must not offset its first row by the outer action bar.
