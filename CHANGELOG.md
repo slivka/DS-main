@@ -63,6 +63,33 @@
   tohoto prostředí výslovně zakazují ruční typecheck i build. Výsledek typů nelze
   prohlásit za ověřený; po Update ověřte v aplikaci. Automatickou sestavu kontroluje platforma.
 
+- Ověření 13c: **unit 636/636**, 61 souborů, 2 004 assertions;
+  **lint 0 chyb / 293 varování**, kontrola formátu změněných souborů OK,
+  automatická sestava build OK. Ruční tsc/build neprovedeny z výše uvedeného zákazu.
+- **E2E 45/45 unikátních scénářů**, 15 na prohlížeč. Chromium 13 + dvě cílená
+  opakování ND/vsazení; Firefox 14 + opakování symbolů po čekání na skutečný stav;
+  WebKit 4 cílené + 10 zbývajících + opakovaný panelový test s delším čekáním.
+  Původní běhy měly časová selhání; nejde o jediný čistý běh 45 testů.
+  Tolerance ±0,5 px ani podmínka scrollWidth <= clientWidth nebyly zmírněny.
+- Katalogy proti **98810718**: 426 → 429, odstraněné komponenty i sekce 0;
+  devět dotčených původních objektů, **417 bajtově shodných**. Manifest 505 → 519,
+  odstraněné 0 a #enrichment zachován. Tabulky props **722 → 758**, odstraněné 0,
+  36 nových řádků; tři explicitní změny defaultů z 13b beze změny, DateField shodně
+  v JSON i tabulce bez defaultu className. Důkaz: katalogový kontrolní skript.
+
+| Bod 13c | Stav | Důkaz |
+|---|---|---|
+| 1 | Hotovo | CSS gridu přesně dle báze; ND 54 DOM konstant, oba stavy a všech devět zoomů; E2E ve 3 prohlížečích |
+| 2 | Hotovo | Bez bankovních přepisů; sdílené datumové měření a FieldGrid; CS/SK, 1/2/3 panely, 360 px, 70–200 %, úplné popisky |
+| 3 | Blokováno | Nadřazené pravidlo zakazuje ruční tsc/typecheck; příkaz nebyl spuštěn, typy po Update neověřeny |
+| 4 | Hotovo | E2E DocumentForm 360 px / 200 %, text nepřesahuje tlačítko |
+| 5 | Hotovo | lockedChecked / lockedPosted / lockedReadOnly CS/SK, stavové důvody v akcích |
+| 6 | Hotovo | Unit aria-labelledby čísla, poznámky a zůstatku dle banky |
+| 7 | Hotovo | Kontrolní skript porovnává default DateField.className JSON a tabulku |
+| 8 | Hotovo | Rezerva v @layer base, dokumentace lokálního --control-h, E2E lokální výšky |
+| 9 | Hotovo | Computed style Landmark/Sigma/History; Svázat s DUZP / Prepojiť s DUZP ve 3 prohlížečích |
+| 10 | Hotovo | Ukázka bez deprecated režimových popisků, interakce ve 3 prohlížečích |
+
 ### Opravy 13b a ověření
 
 - Výpis používá RecordActionBar bez selektorových úprav potomků. Uložit odpovídá

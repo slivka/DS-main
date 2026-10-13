@@ -1,8 +1,10 @@
 ## DS 2.100.0 – Edit dokladu 13c (bez vydání)
 
-- [ ] Obnovit vydaný vzhled ND, společné rozvržení, datumové měření a dostupné důvody.
-- [ ] Ověřit unit, E2E ve třech prohlížečích, lint a katalogy proti 98810718.
-- [ ] Zapsat omezení ruční typové kontroly a pravdivou kontrolní tabulku.
+- [x] Obnovit vydaný vzhled ND, společné rozvržení, datumové měření a dostupné důvody.
+- [x] Unit 636/636; E2E 45/45 unikátních scénářů v rozdělených bězích a opakováních; lint 0 chyb / 293 varování; formát OK.
+- [x] Katalogy 426 → 429, odstraněné 0; 417 shodných objektů; props 722 → 758, odstraněné 0; manifest 505 → 519.
+- [x] CHANGELOG: migrace, pravdivá kontrolní tabulka, omezení typové kontroly; verze 2.100.0 bez Release.
+- [ ] Ruční tsc: blokováno nadřazeným zákazem prostředí, neprovedeno.
 
 ## DS 2.100.0 – Edit dokladu 13b (bez vydání)
 
