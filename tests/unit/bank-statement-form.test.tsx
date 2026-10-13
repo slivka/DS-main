@@ -147,3 +147,36 @@ test.each(["cs", "sk"] as const)("BankStatementForm důvody stavů %s", (locale)
   expect(id).toBeTruthy();
   expect(view.container.querySelector(`[id="${id}"]`)?.textContent).toBe("Výpis je zaúčtovaný");
 });
+
+test("BankStatementForm checkDisabledReason zakáže jen Zkontrolovat", () => {
+  let calls = 0;
+  const reason = "Nelze zkontrolovat – rozdíl 120,00";
+  const view = show({ checkDisabledReason: reason, onCheckedChange: () => (calls += 1) });
+  const action = view.getByRole("button", { name: "Zkontrolovat" });
+  expect(action.getAttribute("aria-disabled")).toBe("true");
+  expect(action.hasAttribute("disabled")).toBe(false);
+  action.focus();
+  expect(document.activeElement).toBe(action);
+  fireEvent.click(action);
+  expect(calls).toBe(0);
+  const id = action.getAttribute("aria-describedby");
+  expect(view.container.querySelector(`[id="${id}"]`)?.textContent).toBe(reason);
+  view.rerender(
+    <BankStatementForm
+      {...base}
+      status="checked"
+      checkDisabledReason={reason}
+      onCheckedChange={() => (calls += 1)}
+    />,
+  );
+  const undo = view.getByRole("button", { name: "Zrušit kontrolu" });
+  expect(undo.getAttribute("aria-disabled")).toBeNull();
+  fireEvent.click(undo);
+  expect(calls).toBe(1);
+});
+test("BankStatementForm bez checkDisabledReason kontrolu povolí", () => {
+  let calls = 0;
+  const view = show({ onCheckedChange: () => (calls += 1) });
+  fireEvent.click(view.getByRole("button", { name: "Zkontrolovat" }));
+  expect(calls).toBe(1);
+});

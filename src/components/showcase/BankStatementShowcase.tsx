@@ -43,7 +43,14 @@ function StatementExample({ scenario }: { scenario: string }) {
     date: "2026-10-12",
     number: "2026/010",
     note: "Říjen",
-    bankClosing: scenario === "empty" ? null : scenario === "difference" ? 12450 : 12500,
+    bankClosing:
+      scenario === "empty"
+        ? null
+        : scenario === "difference"
+          ? 12450
+          : scenario === "cannot-check"
+            ? 12380
+            : 12500,
   });
   const [status, setStatus] = useState<BankStatementFormProps["status"]>(
     scenario === "checked" ? "checked" : scenario === "posted" ? "posted" : "open",
@@ -79,6 +86,9 @@ function StatementExample({ scenario }: { scenario: string }) {
       dirty={dirty}
       onSave={() => setDirty(false)}
       onDelete={() => setValue({ ...value, number: "" })}
+      checkDisabledReason={
+        scenario === "cannot-check" ? "Nelze zkontrolovat – rozdíl 120,00" : undefined
+      }
       onCheckedChange={(checked) => setStatus(checked ? "checked" : "open")}
       notices={
         scenario === "difference" ? (
@@ -183,18 +193,26 @@ export function BankStatementShowcase() {
         <DsTextsProvider locale={locale}>
           <ToggleExamples />
           <div className="my-3 flex flex-wrap gap-2">
-            {["empty", "equal", "difference", "eur", "checked", "items", "posted", "busy"].map(
-              (key) => (
-                <Button
-                  key={key}
-                  variant="outline"
-                  aria-pressed={scenario === key}
-                  onClick={() => setScenario(key)}
-                >
-                  {key}
-                </Button>
-              ),
-            )}
+            {[
+              "empty",
+              "equal",
+              "difference",
+              "cannot-check",
+              "eur",
+              "checked",
+              "items",
+              "posted",
+              "busy",
+            ].map((key) => (
+              <Button
+                key={key}
+                variant="outline"
+                aria-pressed={scenario === key}
+                onClick={() => setScenario(key)}
+              >
+                {key}
+              </Button>
+            ))}
             {["cs", "sk"].map((language) => (
               <Button
                 key={language}

@@ -364,7 +364,11 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ### SegmentedField 2.99.0 – Edit dokladu 12i
 
 Edit dokladu 12i (2.99.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny.
-### FieldToggleButton / BankStatementForm 2.100.0 – Edit dokladu 13
+### BankStatementForm 2.102.0 – Edit dokladu 13f
+
+- `checkDisabledReason?: string` zakáže „Zkontrolovat“ s důvodem (aria-disabled, fokusovatelné, tooltip); „Zrušit kontrolu“ se tím neřídí.
+
+### FieldToggleButton / BankStatementForm 2.101.0 – Edit dokladu 13
 
 - `CounterpartyInputField`: ContactRound v obou režimech; partner je zapnutý, ruční vypnutý s přeškrtnutím. Stálý název z DsTexts, tooltip podle stavu, lockedReason zachová fokus bez změny. Tužka jen pro vybraného partnera; šipka a křížek vlevo od FieldToggleButton.
 - `PaymentOrderAccountField`: Přepínač Landmark skládá FieldToggleButton, pravý prostor určuje --field-toggle-space. Zamčení nemění účet a zachová přístupný důvod.

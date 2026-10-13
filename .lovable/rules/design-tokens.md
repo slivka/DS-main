@@ -96,7 +96,6 @@ Typography classes (`font-*` for families, `text-*` for sizes):
 | `text-section` | `--text-section` |
 | `text-label` | `--text-label` |
 | `text-meta` | `--text-meta` |
-| `text-identity` | `--text-identity` |
 | — | `--grid-heading-surface` |
 | — | `--grid-line` |
 | — | `--warning-text` |
@@ -111,7 +110,6 @@ Apply with any spacing utility: `p-<name>`, `m-<name>`, `gap-<name>`, `space-<na
 | — | `--document-date-left-padding` |
 | — | `--document-date-right-padding` |
 | — | `--chip-gap` |
-| — | `--field-toggle-space` |
 
 ## Border Radius
 

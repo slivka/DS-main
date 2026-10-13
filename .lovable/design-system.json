@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.101.0",
+    "version": "2.102.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -18,7 +18,18 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "d62ae1d95b0758af98624d8759ab8ff1e3905e8da2bd58ab82a01d79c98c49f6",
+      ".lovable/plan/edit-dokladu-13b-opravy-bez-vydání-2026-10-13.md": "59ff36ce3f17c318be92ecc3907f72a6",
+      "tests/e2e/non-tax-baseline.ts": "c89c4f70b09d58c22003be88d0eee634",
+      "src/components/ds/accounting/bank-statement-form.tsx": "d1fe4541d005fbce273aec84a8b8ccae",
+      "src/components/ds/accounting/bank-statement-sections.tsx": "e57753e3b3cd7a30fcc65a6ae9ef0eba",
+      "src/components/ds/form/field-toggle-button.tsx": "bff9267d3f7aaa0a9c13fd6315b3b5f7",
+      "src/components/showcase/BankStatementShowcase.tsx": "a37a132a6f7dbbeb862dcce7d99869bc",
+      "src/ds-texts/bank-statement-texts.ts": "9480c312945fc42ea699587ca3f20192",
+      "tests/e2e/edit-document-thirteen.spec.ts": "6e31fbdcc4a6578fab9efc2b819dc957",
+      "tests/unit/bank-statement-form.test.tsx": "6e6e8414a160c872e11deec16a1fc9c0",
+      "tests/unit/field-toggle-button.test.tsx": "8660f7968365b6bf85af8a45f0df9f27",
+      "scripts/verify-edit-document-thirteen-catalogs.py": "66616698d46a9bcd344f7b816fd0b7c1",
+      "#enrichment": "b92dbd663cc89eba88bec904f535d7cc9a9af199199b4313cb55d33242d8f156",
       ".dsignore": "064818221ffbcf9369c43a13cf6bb694",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
@@ -43,7 +54,6 @@
       ".lovable/plan/ds-2-56-0-opravy-po-prokliku-dph-minor-bez-breaking-změn-2026-09-28.md": "1b97bde972a771d3ba942f78ca66f16a",
       ".lovable/plan/ds-2-57-0-opravy-editoru-řádků-s-dph-minor-bez-breaking-změn-2026-09-28.md": "145618e318ad0480021d8888b45b6c8e",
       ".lovable/plan/ds-2-58-0-párování-p2a-část-b-2026-09-29.md": "40eca1cb7a8ca2bdd9800348d5353761",
-      ".lovable/plan/edit-dokladu-13b-opravy-bez-vydání-2026-10-13.md": "59ff36ce3f17c318be92ecc3907f72a6",
       ".lovable/plan/excel-export-1-3-0-2026-09-22.md": "a22a933faf345d8d68b36da990499da3",
       ".lovable/plan/horní-lišta-a-výběr-firmy-další-minor-verze-2026-09-25.md": "82a6ef144dd5c012a8023a1cc1f02320",
       ".lovable/plan/kompaktní-systémové-sloupce-gridu-2026-09-22.md": "3a3ee896dd5696e92cddfc864c6c9937",
@@ -64,21 +74,20 @@
       ".lovable/system.md": "f6cf9ae9f38f5a5277a77e57a1f78e0d",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "ceef917811b90f14977cc14708811ab7",
-      "CHANGELOG.md": "b6c6a5ebab6d59a34e5ae61430fda4b3",
+      "AGENTS.md": "efab17ed3c3f6a65cdb18697d2b90060",
+      "CHANGELOG.md": "9faf8d961761712e13e0cd80fe4e3d79",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
-      "components.md": "9622ac3307217fad6380478541fc5f44",
+      "components.md": "0cf0eb5b36b85e3e02cb8f9928ab78fe",
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
-      "package.json": "01cad3587de0689dd539dd9b17f372ae",
+      "package.json": "b61ccddbb46248da05cd9508e243831c",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "002954e089354006d261d5bc5d8080d4",
+      "roadmap.md": "9341a317670a75adb57be9ca1195645c",
       "scripts/verify-edit-document-catalogs.py": "2b09bc09dee782c22523e026fa930e70",
-      "scripts/verify-edit-document-thirteen-catalogs.py": "66616698d46a9bcd344f7b816fd0b7c1",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
@@ -97,8 +106,6 @@
       "src/components/ds/accounting/account-select.tsx": "78dca892e3f95fbffd768e4cefa3eba6",
       "src/components/ds/accounting/amount.tsx": "235cd7f60996275ea08d28941405f757",
       "src/components/ds/accounting/bank-account-field.tsx": "224a54b1bd59827b3076b5f97e3a28a2",
-      "src/components/ds/accounting/bank-statement-form.tsx": "738ffe2a43531f294c2968280b0f5484",
-      "src/components/ds/accounting/bank-statement-sections.tsx": "e57753e3b3cd7a30fcc65a6ae9ef0eba",
       "src/components/ds/accounting/book-select.tsx": "b6694104542133323f07e928dbe76d4d",
       "src/components/ds/accounting/counterparty-field.tsx": "45af2e8cf319bce91b0af19d5507d506",
       "src/components/ds/accounting/counterparty-input-field.tsx": "7c2ae2d5c366e5551af1d0579242b17f",
@@ -192,7 +199,6 @@
       "src/components/ds/form/entity-select.tsx": "ec9dabccde3e95fae9cfac392626a893",
       "src/components/ds/form/field-inline-actions.tsx": "9aaf0f61cd8dac3d8d323eb70cdd2951",
       "src/components/ds/form/field-table.tsx": "6fbac22923d3981830287415ff27f894",
-      "src/components/ds/form/field-toggle-button.tsx": "bff9267d3f7aaa0a9c13fd6315b3b5f7",
       "src/components/ds/form/field-value.tsx": "28698a01de54723248507049143f1859",
       "src/components/ds/form/ico-field.tsx": "9e332b2e2ef8b48a3d46c98e1ef626f0",
       "src/components/ds/form/ico-link.tsx": "f670fd77992d3a9fca915dc15581645a",
@@ -209,7 +215,6 @@
       "src/components/ds/form/segmented-field.tsx": "edf63dec39235c2edf4d40e95877d72f",
       "src/components/ds/form/suggest-input.tsx": "c5ec88e5d023394aa1453fe28ef432b9",
       "src/components/ds/form/time-input-right.tsx": "fb61260958a00ff005e0703a6300d043",
-      "src/components/ds/form/use-compact-date-geometry.ts": "3a178f55ad446a43bac9752e78e0aa9c",
       "src/components/ds/grid/ColumnFilter.tsx": "c78c219efd15cc95b742a69518a8f093",
       "src/components/ds/grid/DataGrid.tsx": "2dfb671314efc940ec9b87a5a6ddefc9",
       "src/components/ds/grid/DataGridBody.tsx": "ff90e77256586a8016b5961eb9c5f4fe",
@@ -279,7 +284,6 @@
       "src/components/ds/layout/context-pill.tsx": "c55f372643df2b57c8f5309eedc5af77",
       "src/components/ds/layout/context-switcher.tsx": "a07aea0bd3ee1b86dedb9e8468ba0efe",
       "src/components/ds/layout/form-field-layout.tsx": "495b3661cd3cbd6f39a7612b46dd934c",
-      "src/components/ds/layout/identity-line.tsx": "021a283345ba90ded1de9353cb13063b",
       "src/components/ds/layout/nav-items.tsx": "cd5ec31101ce6e15d56052fe53155161",
       "src/components/ds/layout/nav-search.tsx": "d61280d97dbe6932a6e3a4499d88ee7e",
       "src/components/ds/layout/notification-bell.tsx": "eb9f9c046c98dc23a8b0cdc15f15b53e",
@@ -319,7 +323,6 @@
       "src/components/ds/print/print-preview-dialog.tsx": "ae64b7667855df7a2618006d754d2314",
       "src/components/ds/print/report-pdf.ts": "6bbdef1621159590836c67c2faf8a644",
       "src/components/showcase/AccountingFieldsShowcase.tsx": "064e29cbf1f7899ddae16dc2f7c1aea3",
-      "src/components/showcase/BankStatementShowcase.tsx": "ccca224d6d61da8dc809627b41bea1b9",
       "src/components/showcase/DocumentDatesShowcase.tsx": "147a7c0456510a3abe0c6bca437142ff",
       "src/components/showcase/DocumentFormShowcase.tsx": "ba3c3161c724e822fb06adb451988c42",
       "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
@@ -385,15 +388,12 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
-      "src/ds-texts/bank-statement-texts.ts": "9480c312945fc42ea699587ca3f20192",
-      "src/ds-texts/cs-bank-statement.ts": "9683476500901b3f6da0ad5c12edf777",
       "src/ds-texts/cs-document-form.ts": "6c1c94a61ba7b6d8ce6bb4745bbcc4ad",
       "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
       "src/ds-texts/cs.ts": "9ac19b9048c368c9989ca88f84e2fcba",
       "src/ds-texts/form-design-two-showcase.ts": "fa5c99b6df4bf937b9c3d2d62495848e",
       "src/ds-texts/grid-journal-types.ts": "9b87ea73b41769fb0ebde90330b2f7e9",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
-      "src/ds-texts/sk-bank-statement.ts": "38ce9b012294a615b975104bf0245335",
       "src/ds-texts/sk-document-form.ts": "431c7965a7eaa9747d41caff4ca1d72a",
       "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
       "src/ds-texts/sk.ts": "7e7dfd41cb7ca4188b457dba7ddf0ec8",
@@ -459,7 +459,6 @@
       "tests/e2e/document-date-link.spec.ts": "da86ab01d9539e3d2b1884ebd1361b69",
       "tests/e2e/document-disabled-inputs.spec.ts": "34a6679a944fb9817ae1c4793fe0e966",
       "tests/e2e/edit-document-eleven.spec.ts": "c292f7663a16f487a4c7983ae76d2b91",
-      "tests/e2e/edit-document-thirteen.spec.ts": "6e31fbdcc4a6578fab9efc2b819dc957",
       "tests/e2e/edit-document-twelve.spec.ts": "4c5a5bc301f3738524f1bd4a16da3410",
       "tests/e2e/excel-download.spec.ts": "af20477259287b9dafece13ee60e4b7a",
       "tests/e2e/form-design-two.spec.ts": "4383d3d512707baf45a6da3c7ff745e4",
@@ -468,7 +467,6 @@
       "tests/e2e/grid-toolbar-232.spec.ts": "6d205b4bf5aea83bd838af0e645c64dc",
       "tests/e2e/journal-editor.spec.ts": "9d0b738e23c2a2df7effa788b62dd8fc",
       "tests/e2e/narrow-fields-290.spec.ts": "65fd6ccd52c7e47785bf007a9d100528",
-      "tests/e2e/non-tax-baseline.ts": "c89c4f70b09d58c22003be88d0eee634",
       "tests/e2e/payment-schedule.spec.ts": "9cbe5de6ebf98ea321833e65a3e377eb",
       "tests/e2e/reports.spec.ts": "155b2ee434a7ddd4749babc725cc4c2c",
       "tests/e2e/vat-code-tab-256.spec.ts": "19ecb9b5008afe706f7d84190c0cfc42",
@@ -480,7 +478,6 @@
       "tests/unit/appshell-panels-240.test.tsx": "ec0604eb1c735aac6aadfb92797f3457",
       "tests/unit/appshell-panels-271.test.tsx": "f101f1d1ec0262db67e60a75fc4cc08e",
       "tests/unit/bank-account-options.test.tsx": "369b85aaf3bb8018c6a7393a0bd8901b",
-      "tests/unit/bank-statement-form.test.tsx": "44f8c6de5a351e1c2c9475b106b2ff5b",
       "tests/unit/context-switchers-222.test.ts": "7db72cf010d8a9eb695590b707d65375",
       "tests/unit/counterparty-225.test.tsx": "a9916d2c1a0abd7e1e04811c612842b0",
       "tests/unit/data-grid-behavior.test.tsx": "069f3df0e248518da18c8c898464d81d",
@@ -499,13 +496,11 @@
       "tests/unit/ds-286-behavior.test.tsx": "3cb714757c97db7a336703d6eb34dadc",
       "tests/unit/edit-document-eleven.test.tsx": "111fad7fb1a57f7a8fc150f2b23ff278",
       "tests/unit/edit-document-twelve.test.tsx": "88761e2e4f4b87fa859090d9a3d0058a",
-      "tests/unit/field-toggle-button.test.tsx": "8660f7968365b6bf85af8a45f0df9f27",
       "tests/unit/form-design-two.test.tsx": "3313ba395dc31faeb6c34bacc8085fe7",
       "tests/unit/form-design.test.tsx": "d8a34753e42516d9369db69d7f9292de",
       "tests/unit/grid-actions-226.test.tsx": "bc71317a906195c55aac5480a826c089",
       "tests/unit/grid-matching-258.test.tsx": "58b8a978f8d15d8226189e7405422c45",
       "tests/unit/grid-matching-interactions-258.test.tsx": "902d294fda2830ed2ed4211d119d4240",
-      "tests/unit/grid-overflow-header.test.tsx": "3f11fb957dcaf90bbd7f67833a0c6b35",
       "tests/unit/grid-period.test.ts": "db627c0a9e895a95e0c4511aa8b81f94",
       "tests/unit/grid-print-227.test.ts": "7bf99be2fcb72c039271d0fc79a4c299",
       "tests/unit/grid-toolbar-2211.test.ts": "4f34693de85a106bdd67df6c2b63a367",
@@ -537,7 +532,11 @@
       "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
-      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
+      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
+      "src/components/ds/layout/identity-line.tsx": "021a283345ba90ded1de9353cb13063b",
+      "src/ds-texts/cs-bank-statement.ts": "9683476500901b3f6da0ad5c12edf777",
+      "src/ds-texts/sk-bank-statement.ts": "38ce9b012294a615b975104bf0245335",
+      "src/components/ds/form/use-compact-date-geometry.ts": "3a178f55ad446a43bac9752e78e0aa9c"
     },
     "pipeline_version": 8
   },
@@ -916,6 +915,11 @@
     ],
     "spacing": [
       {
+        "name": "--field-toggle-space",
+        "raw": "calc(var(--control-h) + 0.5rem)",
+        "source": "src/styles.css"
+      },
+      {
         "name": "--document-date-text-gap",
         "raw": "0em",
         "source": "src/styles.css"
@@ -933,11 +937,6 @@
       {
         "name": "--chip-gap",
         "raw": "0.35em",
-        "source": "src/styles.css"
-      },
-      {
-        "name": "--field-toggle-space",
-        "raw": "calc(var(--control-h) + 0.5rem)",
         "source": "src/styles.css"
       }
     ],
@@ -978,11 +977,6 @@
         "source": "src/styles.css"
       },
       {
-        "name": "--text-identity",
-        "raw": "0.9375rem",
-        "source": "src/styles.css"
-      },
-      {
         "name": "--grid-heading-surface",
         "raw": "color-mix(in oklab, var(--grid-navy) 42%, var(--card))",
         "source": "src/styles.css"
@@ -996,6 +990,12 @@
         "name": "--warning-text",
         "raw": "oklch(0.45 0.12 75)",
         "source": "src/styles.css"
+      },
+      {
+        "name": "--text-identity",
+        "raw": "0.9375rem",
+        "source": "src/styles.css",
+        "description": "Sdílená geometrie a typografie výjimky formuláře."
       }
     ],
     "radius": [
@@ -2684,41 +2684,6 @@
       ]
     },
     {
-      "name": "IdentityLine",
-      "file": "src/components/ds/layout/identity-line.tsx",
-      "import_path": "",
-      "props": [
-        {
-          "name": "items",
-          "type": "any",
-          "required": true
-        },
-        {
-          "name": "leading",
-          "type": "any"
-        },
-        {
-          "name": "number",
-          "type": "string"
-        },
-        {
-          "name": "fallback",
-          "type": "any"
-        }
-      ],
-      "usage": "Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.",
-      "examples": [
-        {
-          "label": "Identita výpisu",
-          "code": "\u003cIdentityLine items={[book, currency, period, bankAccount]} number={statement.number} /\u003e"
-        }
-      ],
-      "antipatterns": [
-        "Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.",
-        "Nepřidávejte do identity ukládání nebo doménovou logiku."
-      ]
-    },
-    {
       "name": "AppShell",
       "file": "src/components/ds/layout/AppShell.tsx",
       "import_path": "",
@@ -2770,7 +2735,8 @@
         },
         {
           "name": "labelId",
-          "type": "string"
+          "type": "string",
+          "description": "Identifikátor popisku hodnoty pouze ke čtení."
         },
         {
           "name": "hint",
@@ -2820,7 +2786,7 @@
       "examples": [
         {
           "label": "Pole přes čtyři sloupce",
-          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Jméno\" span={4}\u003e\u003cInput /\u003e\u003c/Field\u003e\u003c/FieldGrid\u003e"
+          "code": "<FieldGrid cols={12}><Field label=\"Jméno\" span={4}><Input /></Field></FieldGrid>"
         }
       ],
       "antipatterns": [
@@ -2861,7 +2827,7 @@
       "examples": [
         {
           "label": "Jméno osoby",
-          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Titul před\" span={2}\u003e…\u003c/Field\u003e\u003cField label=\"Jméno\" span={4}\u003e…\u003c/Field\u003e\u003c/FieldGrid\u003e"
+          "code": "<FieldGrid cols={12}><Field label=\"Titul před\" span={2}>…</Field><Field label=\"Jméno\" span={4}>…</Field></FieldGrid>"
         }
       ],
       "antipatterns": [
@@ -3830,7 +3796,7 @@
       "examples": [
         {
           "label": "Karta majetku",
-          "code": "\u003cRecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} notices={\u003cNoticeBar tone=\"info\"\u003eInformace\u003c/NoticeBar\u003e} /\u003e"
+          "code": "<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} notices={<NoticeBar tone=\"info\">Informace</NoticeBar>} />"
         }
       ],
       "antipatterns": [
@@ -5475,8 +5441,7 @@
         },
         {
           "name": "className",
-          "type": "string",
-          "default": "sr-only"
+          "type": "string"
         },
         {
           "name": "inputClassName",
@@ -5524,7 +5489,7 @@
       "examples": [
         {
           "label": "Datum s varováním v indikátoru",
-          "code": "\u003cDateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" /\u003e"
+          "code": "<DateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" />"
         }
       ],
       "antipatterns": [
@@ -6409,7 +6374,7 @@
       "examples": [
         {
           "label": "Historie popisů",
-          "code": "\u003cSuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} /\u003e"
+          "code": "<SuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} />"
         }
       ],
       "antipatterns": [
@@ -7142,11 +7107,13 @@
         },
         {
           "name": "partnerModeLabel",
-          "type": "string"
+          "type": "string",
+          "description": "@deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle. Odstranění v 3.0.0."
         },
         {
           "name": "manualModeLabel",
-          "type": "string"
+          "type": "string",
+          "description": "@deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle. Odstranění v 3.0.0."
         },
         {
           "name": "replaceManualWarning",
@@ -7611,7 +7578,7 @@
       "examples": [
         {
           "label": "Vypnutý příkaz",
-          "code": "\u003cPaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}\u003e{accountControl}\u003c/PaymentOrderAccountField\u003e"
+          "code": "<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>"
         }
       ],
       "antipatterns": [
@@ -7635,15 +7602,15 @@
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) =\u003e setError(errors[0]?.message)} storageKey=\"invoice-lines\" /\u003e"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
         },
         {
           "label": "Řádky s DPH (2.55.0)",
-          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} /\u003e\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
         },
         {
           "label": "2.92.0",
-          "code": "\u003cJournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} /\u003e"
+          "code": "<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />"
         }
       ],
       "antipatterns": [
@@ -8073,7 +8040,7 @@
       "props": [
         {
           "name": "icon",
-          "type": "any",
+          "type": "LucideIcon",
           "required": true
         },
         {
@@ -8128,7 +8095,7 @@
       "props": [
         {
           "name": "value",
-          "type": "any",
+          "type": "BankStatementValue",
           "required": true
         },
         {
@@ -8139,16 +8106,16 @@
         {
           "name": "status",
           "type": "enum",
+          "required": true,
           "values": [
             "open",
             "checked",
             "posted"
-          ],
-          "required": true
+          ]
         },
         {
           "name": "book",
-          "type": "any",
+          "type": "ReactNode",
           "required": true
         },
         {
@@ -8163,22 +8130,22 @@
         },
         {
           "name": "period",
-          "type": "any",
+          "type": "ReactNode",
           "required": true
         },
         {
           "name": "bankAccount",
-          "type": "any",
+          "type": "ReactNode",
           "required": true
         },
         {
           "name": "balances",
-          "type": "any",
+          "type": "BankStatementBalances",
           "required": true
         },
         {
           "name": "home",
-          "type": "any"
+          "type": "BankStatementBalances & { currencySymbol: string; bankClosing: number | null }"
         },
         {
           "name": "onHomeBankClosingChange",
@@ -8187,6 +8154,10 @@
         {
           "name": "hasItems",
           "type": "boolean"
+        },
+        {
+          "name": "checkDisabledReason",
+          "type": "string"
         },
         {
           "name": "readOnly",
@@ -8198,7 +8169,8 @@
         },
         {
           "name": "busy",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Probíhající ukládání blokuje akce a zobrazí spinner."
         },
         {
           "name": "onSave",
@@ -8214,31 +8186,70 @@
         },
         {
           "name": "error",
-          "type": "any"
+          "type": "RecordActionError"
         },
         {
           "name": "notices",
-          "type": "any"
+          "type": "ReactNode"
         },
         {
           "name": "items",
-          "type": "any"
+          "type": "ReactNode"
         },
         {
           "name": "texts",
-          "type": "any"
+          "type": "Partial<BankStatementTexts>"
         }
       ],
-      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby.",
+      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby. 2.102.0: checkDisabledReason zakáže jen „Zkontrolovat“ (aria-disabled, fokus, tooltip důvodu); „Zrušit kontrolu“ neovlivní.",
       "examples": [
         {
           "label": "Řízený výpis",
-          "code": "\u003cBankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} /\u003e"
+          "code": "<BankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />"
         }
       ],
       "antipatterns": [
         "Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.",
         "Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění."
+      ]
+    },
+    {
+      "name": "IdentityLine",
+      "file": "src/components/ds/layout/identity-line.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "ReactNode[]",
+          "required": true
+        },
+        {
+          "name": "leading",
+          "type": "ReactNode"
+        },
+        {
+          "name": "number",
+          "type": "string | null"
+        },
+        {
+          "name": "fallback",
+          "type": "ReactNode"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.",
+      "examples": [
+        {
+          "label": "Identita výpisu",
+          "code": "\u003cIdentityLine items={[book, currency, period, bankAccount]} number={statement.number} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.",
+        "Nepřidávejte do identity ukládání nebo doménovou logiku."
       ]
     }
   ],

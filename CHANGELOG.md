@@ -1,6 +1,17 @@
 # Changelog – Slivka Design System
 
-## 2.100.0 – Edit dokladu 13 (nevydáno)
+## 2.102.0 – Edit dokladu 13f
+
+- BankStatementForm: nový nepovinný prop `checkDisabledReason`. Vyplněný důvod zakáže
+  „Zkontrolovat“ sdíleným mechanismem (aria-disabled, tlačítko zůstává fokusovatelné,
+  tooltip a aria-describedby s důvodem, klik nevolá `onCheckedChange`). „Zrušit kontrolu“
+  se tím neřídí; bez propu je chování beze změny. Ukázka „nelze zkontrolovat“.
+- Verze: `package.json` a `meta.version` jsou nově vždy stejné (dialog Release bere
+  Current z `meta.version`). Bez BREAKING změn.
+
+## 2.101.0 – Edit dokladu 13–13e
+
+- Obsah kol 13–13e byl vydán pod štítkem v2.101.0 (dříve zde uváděno jako 2.100.0).
 
 - Nové FieldToggleButton: vsazená geometrie, jednotný pravý prostor, stálý název,
   aria-pressed, fokusovatelný zakázaný stav a tooltip důvodu.
