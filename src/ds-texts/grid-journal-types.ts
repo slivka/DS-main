@@ -5,7 +5,7 @@ export interface GridTexts {
   searchLabel: string;
   clearSearchLabel: string;
   /** Název sloučeného tlačítka dvou primárních akcí lišty v nejužší šířce. */
-  addMenu: string;
+  addMenu?: string;
   refresh: string;
   columnsTitle: string;
   selectMore: string;

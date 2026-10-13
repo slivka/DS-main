@@ -60,3 +60,6 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 
+
+- Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
+- Exclude every preview-only showcase from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.

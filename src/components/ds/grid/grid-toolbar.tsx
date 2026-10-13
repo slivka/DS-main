@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { DateField } from "../form/date-field";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
-import { GridToolbarOverflowContext } from "./grid-toolbar-context";
+import { GridAddLabelContext, GridToolbarOverflowContext } from "./grid-toolbar-context";
 export { GridToolbarOverflowContext };
 export { GridAddActions, type GridAddAction, type GridAddActionsProps } from "./grid-add-actions";
 
@@ -84,6 +84,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
 ) {
   const ownRef = React.useRef<HTMLDivElement | null>(null);
   const [overflowLevel, setOverflowLevel] = React.useState<0 | 1 | 2 | 3>(0);
+  const [addLabelMode, setAddLabelMode] = React.useState<"full" | "short">("full");
   const setRefs = React.useCallback(
     (node: HTMLDivElement | null) => {
       ownRef.current = node;
@@ -128,6 +129,14 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       copy.querySelectorAll<HTMLElement>('[data-slot="grid-add-menu"]').forEach((item) => {
         item.style.display = "none";
       });
+      const setAddLabels = (mode: "full" | "short") => {
+        for (const slot of ["full", "short"]) {
+          copy.querySelectorAll<HTMLElement>(`[data-slot="grid-add-${slot}"]`).forEach((item) => {
+            item.style.display = slot === mode ? "inline" : "none";
+          });
+        }
+      };
+      setAddLabels("full");
       copy
         .querySelectorAll<HTMLElement>(
           ".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional",
@@ -166,8 +175,19 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       const search = copy.querySelector<HTMLElement>("[data-toolbar-search]");
       const addWidth = add?.getBoundingClientRect().width ?? 0;
       const searchWidth = search?.getBoundingClientRect().width ?? 0;
+      setAddLabels("short");
+      const leftShort = widthOf(copy, "left");
+      copy.querySelectorAll<HTMLElement>("[data-toolbar-add]").forEach((item) => {
+        item.style.display = "none";
+      });
+      copy.querySelectorAll<HTMLElement>('[data-slot="grid-add-menu"]').forEach((item) => {
+        item.style.display = "inline-flex";
+      });
+      const addMenuWidth =
+        copy.querySelector<HTMLElement>('[data-slot="grid-add-menu"]')?.getBoundingClientRect()
+          .width ?? 0;
       holder.remove();
-      return { ...result, addWidth, searchWidth };
+      return { ...result, leftShort, addMenuWidth, addWidth, searchWidth };
     };
     const update = () => {
       cancelAnimationFrame(frame);
@@ -187,7 +207,7 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
         const addCount = node.querySelectorAll("[data-toolbar-add]").length;
         // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“.
-        const leftCompact = addCount > 1 ? 1.5 * controlSize : addCount ? controlSize : 0;
+        const leftCompact = addCount > 1 ? measured.addMenuWidth : addCount ? controlSize : 0;
         // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
         const searchHasText = Boolean(
           node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),
@@ -199,23 +219,34 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
           0,
           findFull - Math.max(0, measured.searchWidth - searchCompact),
         );
-        const next = calculateGridToolbarOverflowLevel(
-          {
-            container: node.clientWidth,
-            leftFull,
-            leftCompact,
-            findFull,
-            findCompact,
-            display: measured.display,
-            data: measured.data,
-            menu: Math.max(measured.menu, controlSize),
-            refresh: measured.refresh,
-            gap,
-            padding,
-            hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
-          },
-          current,
-        );
+        const widths: GridToolbarWidths = {
+          container: node.clientWidth,
+          leftFull,
+          leftCompact,
+          findFull,
+          findCompact,
+          display: measured.display,
+          data: measured.data,
+          menu: Math.max(measured.menu, controlSize),
+          refresh: measured.refresh,
+          gap,
+          padding,
+          hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
+        };
+        let next = calculateGridToolbarOverflowLevel(widths, current);
+        let labels: "full" | "short" = "full";
+        if (addCount > 1 && next === 3) {
+          const shortLevel = calculateGridToolbarOverflowLevel(
+            { ...widths, leftFull: measured.leftShort },
+            current,
+          );
+          if (shortLevel < 3) {
+            next = shortLevel;
+            labels = "short";
+          }
+        }
+        setAddLabelMode(labels);
+        node.dataset.addLabels = labels;
         setOverflowLevel(next);
         current = next;
         node.dataset.overflowLevel = String(next);
@@ -265,36 +296,38 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   }, [zoom, density]);
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
-      <div
-        ref={setRefs}
-        data-slot="grid-toolbar"
-        data-density={density}
-        className={cn(
-          "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
-          right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
-          className,
-        )}
-        style={{ fontSize: gridFontSize(zoom) }}
-        {...props}
-      >
+      <GridAddLabelContext.Provider value={addLabelMode}>
         <div
-          data-toolbar-measure="left"
+          ref={setRefs}
+          data-slot="grid-toolbar"
+          data-density={density}
           className={cn(
-            "grid-toolbar-left items-center gap-2",
-            right ? "flex shrink-0 flex-nowrap" : "contents",
+            "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
+            right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
+            className,
           )}
+          style={{ fontSize: gridFontSize(zoom) }}
+          {...props}
         >
-          {left ?? children}
-        </div>
-        {right ? (
           <div
-            data-slot="grid-toolbar-right"
-            className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+            data-toolbar-measure="left"
+            className={cn(
+              "grid-toolbar-left items-center gap-2",
+              right ? "flex shrink-0 flex-nowrap" : "contents",
+            )}
           >
-            {right}
+            {left ?? children}
           </div>
-        ) : null}
-      </div>
+          {right ? (
+            <div
+              data-slot="grid-toolbar-right"
+              className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+            >
+              {right}
+            </div>
+          ) : null}
+        </div>
+      </GridAddLabelContext.Provider>
     </GridToolbarOverflowContext.Provider>
   );
 });

@@ -2169,11 +2169,22 @@ import { GridActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel pod 640 px → v nejužší liště jedno tlačítko „+ ▾“ s nabídkou (icon + shortLabel). GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason.
+Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel → jedno tlačítko „+ ▾“ podle skutečně změřené šířky lišty. Šířka nabídky se měří v kopii, neodhaduje. GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason. Zakázaná položka nabídky ukáže disabledReason v tooltipu, je dostupná klávesnicí a neprovede akci. onClick z nabídky dostane událost výběru Event, nikoli MouseEvent; nepoužívejte souřadnice myši.
 
 | Prop | Type | Default |
 |---|---|---|
 | `actions` | GridAddAction \| GridAddAction[] | `—` |
+
+**Examples:**
+
+```tsx
+<GridAddActions actions={[{ label: "Nový příjem", shortLabel: "Příjem", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: "Nový výdej", shortLabel: "Výdej", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: "Období je uzavřené" }]} />
+```
+
+**Antipatterns:**
+
+- Neskrývejte názvy dvou akcí do dvou stejných ikon.
+- Nepředpokládejte MouseEvent u výběru z nabídky ani nevynechávejte důvod zakázání.
 
 ### GridAmountEditor
 
@@ -5254,7 +5265,7 @@ Společná prezentační identita formuláře; položky a volitelný příznak v
 |---|---|---|
 | `items` | ReactNode[] | `—` |
 | `leading` | ReactNode | `—` |
-| `number` | string | null | `—` |
+| `number` | string \| null | `—` |
 | `fallback` | ReactNode | `—` |
 | `className` | string | `—` |
 

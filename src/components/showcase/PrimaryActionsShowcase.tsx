@@ -76,8 +76,8 @@ export function PrimaryActionsShowcase() {
       </p>
       {[
         { key: "wide", width: "w-[60rem]", title: "Pohyby výpisu" },
-        { key: "short", width: "w-[32rem]", title: "Pokladna" },
-        { key: "menu", width: "w-[16rem]", title: "Pokladna – úzký panel" },
+        { key: "short", width: "w-[17rem]", title: "Pokladna" },
+        { key: "menu", width: "w-[13rem]", title: "Pokladna – úzký panel" },
       ].map((item) => (
         <div
           key={item.key}
