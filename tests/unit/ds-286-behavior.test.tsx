@@ -37,7 +37,7 @@ describe("DS 2.86.0", () => {
         />
       </TooltipProvider>,
     );
-    fireEvent.click(view.getByRole("button", { name: "Zadat ručně" }));
+    fireEvent.click(view.getByRole("button", { name: "Vybrat z adresáře" }));
     expect(change).toHaveBeenCalledWith("manual");
     expect(partnerChange).not.toHaveBeenCalled();
     expect(nameChange).not.toHaveBeenCalled();

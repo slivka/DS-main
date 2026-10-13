@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { SuggestInput } from "../../src/components/ds/form/suggest-input";
 
-describe("SuggestInput 2.32.0", () => {
+describe("SuggestInput", () => {
   it("zpřístupní stav našeptávače a zachová omezení vstupu", () => {
     const html = renderToStaticMarkup(
       <TooltipProvider>
@@ -18,7 +18,7 @@ describe("SuggestInput 2.32.0", () => {
         />
       </TooltipProvider>,
     );
-    expect(html).toContain("Našeptávač z předchozích dokladů – zapnuto");
+    expect(html).toContain('aria-label="Našeptávač z předchozích dokladů"');
     expect(html).toContain('aria-pressed="true"');
     expect(html).toContain('maxLength="200"');
   });

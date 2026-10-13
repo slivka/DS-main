@@ -170,7 +170,7 @@ describe("DocumentForm 2.31.0", () => {
     expect(html).toContain('id="document-amountTotal"');
     expect(html).toContain("MD");
     expect(html).toContain("211.001 - Pokladna");
-    expect(html).toContain("Sčítá se z rozpisu");
+    expect(html).toContain('aria-label="Sčítat z rozpisu"');
   });
   it("SectionHeading používá nový styl", () =>
     expect(renderToStaticMarkup(<SectionHeading>Sekce</SectionHeading>)).toContain(

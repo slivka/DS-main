@@ -2347,3 +2347,8 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
     opacity: 1;
   }
 }
+
+/* Jedna rezervace místa pro všechny přepínače uvnitř polí. */
+:root {
+  --field-toggle-space: calc(var(--control-h) + 0.5rem);
+}

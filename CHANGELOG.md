@@ -1,5 +1,27 @@
 # Changelog – Slivka Design System
 
+## 2.100.0 – Edit dokladu 13 (nevydáno)
+
+- Nové FieldToggleButton: vsazená geometrie, jednotný pravý prostor, stálý název,
+  aria-pressed, fokusovatelný zakázaný stav a tooltip důvodu.
+- Převedeny CounterpartyInputField (ContactRound), PaymentOrderAccountField (Landmark),
+  součet v DocumentForm/AmountSection (Sigma) a všechny SuggestInput (History).
+  Jiný přepínač uvnitř polí nebyl nalezen; ND v JournalCell a DateField.link jsou výjimky.
+- ND a vazba data: stálé názvy, aria-pressed, sdílený zakázaný vzhled a důvody;
+  datumové tokeny a šířky dokladů zůstávají beze změny.
+- BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
+  domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
+  Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
+- **BREAKING – migrace:** CounterpartyInputField již nemění ikonu na PenLine;
+  partner má aria-pressed=true, ruční režim false. Přepínač vyhledávejte stálým
+  názvem „Vybrat z adresáře“, nikoli názvem cílového režimu. Stávající props zůstávají.
+  SuggestInput má vsazené, nikoli celovýškové tlačítko; odstraňte vlastní odsazení
+  a polohování historie, prostor rezervuje --field-toggle-space.
+  Název našeptávače, součtu, ND a vazby data je nově nezávislý na stavu;
+  stav a důvod čtěte z aria-pressed / aria-disabled a přístupného popisu.
+- Jednotkové testy: 631/631, 61 souborů, 1 990 assertions. Další kontroly jsou
+  doplněny v závěrečném ověření; ruční typecheck ani build se nespouští.
+
 ## 2.99.0 – Edit dokladu 12i
 
 Obsah 12i byl nejdřív omylem vydán znovu pod štítkem v2.98.0, spotřebitelům se proto dodává jako v2.99.0.

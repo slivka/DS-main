@@ -1,10 +1,10 @@
 import * as React from "react";
 import { History } from "lucide-react";
 
-import { Button } from "../../ui/button";
+import { FieldToggleButton } from "./field-toggle-button";
+import { useDsTexts } from "../../../ds-texts";
 import { Input } from "../../ui/input";
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 
 export interface SuggestInputProps extends Omit<
@@ -34,8 +34,8 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
       disabled,
       readOnly,
       debounceMs = 200,
-      enabledLabel = "Našeptávač z předchozích dokladů – zapnuto",
-      disabledLabel = "Našeptávač z předchozích dokladů – vypnuto",
+      enabledLabel,
+      disabledLabel,
       className,
       onFocus,
       onKeyDown,
@@ -43,6 +43,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
     },
     ref,
   ) {
+    const texts = useDsTexts().fieldToggle;
     const [open, setOpen] = React.useState(false);
     const [items, setItems] = React.useState<string[]>([]);
     const [active, setActive] = React.useState(0);
@@ -73,7 +74,6 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
       setOpen(false);
     };
     const visible = enabled && open && items.length > 0 && !disabled && !readOnly;
-    const tooltip = enabled ? enabledLabel : disabledLabel;
 
     return (
       <Popover open={visible} onOpenChange={setOpen}>
@@ -109,44 +109,22 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
               role="combobox"
               aria-expanded={visible}
               aria-autocomplete="list"
-              className={cn("pr-10", className)}
+              className={cn("pr-[var(--field-toggle-space)]", className)}
               {...props}
             />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant={enabled ? "default" : "outline"}
-                  size="icon"
-                  aria-label={tooltip}
-                  aria-pressed={enabled}
-                  disabled={disabled || readOnly}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => {
-                    const next = !enabled;
-                    onEnabledChange(next);
-                    setOpen(next);
-                  }}
-                  className={cn(
-                    "absolute right-0 top-0 size-[var(--control-h)]",
-                    enabled
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  <span className="relative">
-                    <History className="size-4" />
-                    {!enabled ? (
-                      <span
-                        aria-hidden
-                        className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current"
-                      />
-                    ) : null}
-                  </span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{tooltip}</TooltipContent>
-            </Tooltip>
+            <FieldToggleButton
+              icon={History}
+              pressed={enabled}
+              label={texts.suggest}
+              pressedTooltip={enabledLabel ?? texts.suggestPressed}
+              unpressedTooltip={disabledLabel ?? texts.suggestUnpressed}
+              disabled={disabled || readOnly}
+              onMouseDown={(event) => event.preventDefault()}
+              onPressedChange={(next) => {
+                onEnabledChange(next);
+                setOpen(next);
+              }}
+            />
           </div>
         </PopoverAnchor>
         <PopoverContent

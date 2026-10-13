@@ -3,11 +3,10 @@
  * Vlastní: vizuální stav zahrnutí a zpřístupnění obsahu pole.
  * Nesmí: měnit hodnotu účtu při vypnutí.
  */
-import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Landmark } from "lucide-react";
 
-import { Button } from "../../ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { FieldToggleButton } from "../form/field-toggle-button";
 import { LockedAccountValue } from "./locked-account-value";
 import { cn } from "../../../lib/utils";
 
@@ -45,67 +44,30 @@ export const PaymentOrderAccountField = forwardRef<HTMLDivElement, PaymentOrderA
     },
     ref,
   ) {
-    const props = {
-      enabled,
-      onEnabledChange,
-      children,
-      enabledLabel,
-      disabledLabel,
-      disabledReason,
-    };
-    const label = lockedReason ?? (props.enabled ? props.enabledLabel : props.disabledLabel);
-    const descriptionId = useId();
-    const locked = !props.onEnabledChange;
-    const action = (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant={props.enabled ? "default" : "outline"}
-            size="icon"
-            aria-label={props.enabledLabel}
-            aria-describedby={lockedReason ? descriptionId : undefined}
-            aria-pressed={props.enabled}
-            aria-disabled={locked || undefined}
-            onClick={() => props.onEnabledChange?.(!props.enabled)}
-            className={cn(
-              "absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]",
-              locked && "cursor-not-allowed opacity-50",
-              locked && props.enabled && "hover:bg-primary",
-            )}
-          >
-            <span className="relative">
-              <Landmark className="size-4" />
-              {!props.enabled ? (
-                <span className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current" />
-              ) : null}
-            </span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>{label}</TooltipContent>
-      </Tooltip>
-    );
     return (
       <div
         {...rest}
         ref={ref}
         data-slot="payment-order-account"
-        data-enabled={props.enabled}
+        data-enabled={enabled}
         className={cn("relative min-w-0", className)}
       >
-        {lockedReason ? (
-          <span id={descriptionId} className="sr-only">
-            {lockedReason}
-          </span>
-        ) : null}
-        {props.enabled ? (
-          <div className="[&_[role=combobox]]:pr-[calc(var(--control-h)+2rem)] [&_[data-slot=select-chevron]]:right-[calc(var(--control-h)+0.5rem)] [&_input]:pr-[calc(var(--control-h)+0.5rem)]">
-            {props.children}
+        {enabled ? (
+          <div className="[&_[role=combobox]]:pr-[calc(var(--field-toggle-space)+1.5rem)] [&_[data-slot=select-chevron]]:right-[var(--field-toggle-space)] [&_input]:pr-[var(--field-toggle-space)]">
+            {children}
           </div>
         ) : (
-          <LockedAccountValue reason={props.disabledReason} className="pr-11" />
+          <LockedAccountValue reason={disabledReason} className="pr-[var(--field-toggle-space)]" />
         )}
-        {action}
+        <FieldToggleButton
+          icon={Landmark}
+          pressed={enabled}
+          onPressedChange={onEnabledChange}
+          label={enabledLabel}
+          pressedTooltip={enabledLabel}
+          unpressedTooltip={disabledLabel}
+          lockedReason={lockedReason}
+        />
       </div>
     );
   },

@@ -6,6 +6,8 @@
  */
 import { Pencil, ReceiptText } from "lucide-react";
 
+import { Button } from "../../ui/button";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { JournalCellEditor } from "./JournalCellEditor";
@@ -34,29 +36,36 @@ export interface JournalCellProps {
 function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => void }) {
   const { editor } = useJournalEditor();
   const { t } = editor;
+  const texts = useDsTexts().fieldToggle;
+  const locked = !editor.canEditCell(line, "nonTax");
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           tabIndex={-1}
+          aria-disabled={locked || undefined}
           aria-pressed={!!line.nonTax}
-          aria-label={line.nonTax ? t.nonTaxOn : t.nonTaxOff}
+          aria-label={texts.nonTax}
           onClick={(event) => {
             event.stopPropagation();
-            onToggle();
+            if (!locked) onToggle();
           }}
           className={cn(
-            "order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[0.65rem] font-bold",
+            "ds-disabled-control order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[0.65rem] font-bold",
             line.nonTax
               ? "bg-warning-soft text-warning-strong"
               : "text-muted-foreground hover:bg-muted",
           )}
         >
           {line.nonTax ? t.nonTaxShort : <ReceiptText className="size-3.5" />}
-        </button>
+        </Button>
       </TooltipTrigger>
-      <TooltipContent>{line.nonTax ? t.nonTaxOn : t.nonTaxOff}</TooltipContent>
+      <TooltipContent>
+        {locked ? texts.nonTaxLocked : line.nonTax ? t.nonTaxOn : t.nonTaxOff}
+      </TooltipContent>
     </Tooltip>
   );
 }

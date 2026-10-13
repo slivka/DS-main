@@ -61,3 +61,6 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ## Vydání knihovny
 
 - Dialog Release bere „Current“ z `package.json` zdroje, který byl naposledy vydán, a navrhuje Minor = Current + 1. Proto v každém kole, které se bude vydávat, nastav `package.json` na verzi, pod kterou se toto kolo vydá (= poslední vydaný štítek + 1 minor; po v2.99.0 tedy 2.100.0). Pak se štítek vydání a `package.json` vydaného zdroje shodují a příští dialog nabídne správné číslo. Pokud `package.json` zůstane na posledním vydaném štítku, dialog nabídne znovu stejný štítek a aplikace aktualizaci neuvidí.
+
+- Use FieldToggleButton for in-field icon toggles; only NonTaxToggle cells and DateField links retain their geometry. Why: one interaction and accessibility contract.
+- Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.

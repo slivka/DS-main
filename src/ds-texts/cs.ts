@@ -3,6 +3,7 @@
  * Vlastní: hodnoty DS_TEXTS_CS.
  * Nesmí: obsahovat React kód ani slovenské texty.
  */
+import { BANK_STATEMENT_CS } from "./bank-statement-texts";
 import { cs } from "date-fns/locale";
 
 import { UNSAVED_ACTION_TEXTS_CS } from "./cs-unsaved-actions";
@@ -11,6 +12,23 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  bankStatement: BANK_STATEMENT_CS,
+  fieldToggle: {
+    directory: "Vybrat z adresáře",
+    directoryPressed: "Vybráno z adresáře – kliknutím zadat ručně",
+    directoryUnpressed: "Zadáno ručně – kliknutím vybrat z adresáře",
+    suggest: "Našeptávač z předchozích dokladů",
+    suggestPressed: "Našeptávač z předchozích dokladů – zapnuto",
+    suggestUnpressed: "Našeptávač z předchozích dokladů – vypnuto",
+    sum: "Sčítat z rozpisu",
+    sumPressed: "Sčítá se z rozpisu – kliknutím zadat částku",
+    sumUnpressed: "Částka zadána ručně – kliknutím sčítat z rozpisu",
+    sumLocked: "Součet z rozpisu je povinný",
+    dateLink: "Svázat s datem vystavení",
+    dateLocked: "Vazbu data nelze změnit",
+    nonTax: "Nedaňový řádek",
+    nonTaxLocked: "Řádek je jen pro čtení",
+  },
   locale: "cs",
   intlLocale: "cs-CZ",
   dateLocale: cs,

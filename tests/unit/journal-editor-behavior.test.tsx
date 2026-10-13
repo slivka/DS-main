@@ -198,7 +198,7 @@ describe("JournalLinesEditor – klávesnice", () => {
 
   it("přepínač nedaňový není v pořadí Tab", () => {
     const view = render(<Editor isNonTaxAllowed={() => true} />);
-    const toggle = view.getAllByRole("button", { name: "Daňový – klikněte pro nedaňový" })[0]!;
+    const toggle = view.getAllByRole("button", { name: "Nedaňový řádek" })[0]!;
     expect(toggle.getAttribute("tabindex")).toBe("-1");
   });
 });

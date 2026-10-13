@@ -104,7 +104,7 @@ describe("DocumentForm 2.86.0 – chování", () => {
       </TooltipProvider>,
     );
     const toggle = view.getByRole("button", { name: "Vybrat z adresáře" });
-    expect(toggle.getAttribute("aria-pressed")).toBe("true");
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
     fireEvent.click(toggle);
     expect(change).not.toHaveBeenCalled();
     const dialog = view.getByRole("alertdialog");
@@ -130,8 +130,10 @@ describe("DocumentForm 2.86.0 – chování", () => {
         />
       </TooltipProvider>,
     );
-    const toggle = view.getByRole("button", { name: "Zadat ručně" }) as HTMLButtonElement;
-    expect(toggle.disabled).toBe(true);
+    const toggle = view.getByRole("button", { name: "Vybrat z adresáře" }) as HTMLButtonElement;
+    expect(toggle.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(toggle);
+    expect(change).not.toHaveBeenCalled();
   });
 
   it("zamčená záložka Odběratel: jen hodnoty, odznaky, aktualizace s potvrzením", () => {
