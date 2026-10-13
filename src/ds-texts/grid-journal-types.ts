@@ -4,6 +4,8 @@ export interface GridTexts {
   searchPlaceholder: string;
   searchLabel: string;
   clearSearchLabel: string;
+  /** Název sloučeného tlačítka dvou primárních akcí lišty v nejužší šířce. */
+  addMenu: string;
   refresh: string;
   columnsTitle: string;
   selectMore: string;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarClock, Check, ChevronsDownUp, ChevronsUpDown, Plus } from "lucide-react";
+import { CalendarClock, Check, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
@@ -11,10 +11,11 @@ import {
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { DateField } from "../form/date-field";
-import { useIsActivePane } from "../panes/pane-context";
 import { gridFontSize, type GridDensity } from "./grid-zoom";
 
-export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
+import { GridToolbarOverflowContext } from "./grid-toolbar-context";
+export { GridToolbarOverflowContext };
+export { GridAddActions, type GridAddAction, type GridAddActionsProps } from "./grid-add-actions";
 
 export type GridToolbarWidths = {
   container: number;
@@ -120,6 +121,13 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       copy.querySelectorAll<HTMLElement>(".grid-toolbar-wide").forEach((item) => {
         item.style.display = "contents";
       });
+      // Sloučená nabídka primárních akcí se měří v nesloučené podobě (jinak by lišta kmitala).
+      copy.querySelectorAll<HTMLElement>("[data-toolbar-add]").forEach((item) => {
+        item.style.display = "inline-flex";
+      });
+      copy.querySelectorAll<HTMLElement>('[data-slot="grid-add-menu"]').forEach((item) => {
+        item.style.display = "none";
+      });
       copy
         .querySelectorAll<HTMLElement>(
           ".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional",
@@ -178,7 +186,8 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         const fontSize = Number.parseFloat(style.fontSize) || 13;
         const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
         const addCount = node.querySelectorAll("[data-toolbar-add]").length;
-        const leftCompact = addCount ? addCount * controlSize + Math.max(0, addCount - 1) * gap : 0;
+        // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“.
+        const leftCompact = addCount > 1 ? 1.5 * controlSize : addCount ? controlSize : 0;
         // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
         const searchHasText = Boolean(
           node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),
@@ -483,82 +492,6 @@ export function GridExpandControls({
   );
 }
 
-export interface GridAddAction {
-  label: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled?: boolean;
-  disabledReason?: string;
-}
-
-/** Primární akce Přidat; pod 640 px ponechá jen ikonu a nápovědu. */
-export function GridAddActions({ actions }: { actions: GridAddAction | GridAddAction[] }) {
-  const overflowLevel = React.useContext(GridToolbarOverflowContext);
-  const primaryActionRef = React.useRef<HTMLButtonElement>(null);
-  const list = React.useMemo(() => (Array.isArray(actions) ? actions : [actions]), [actions]);
-  // Zkratka N reaguje jen v aktivním panelu a jen když není otevřený dialog,
-  // aby jeden stisk neklikl na Přidat ve všech gridových lištách najednou.
-  const paneActive = useIsActivePane();
-  React.useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!paneActive) return;
-      if (event.defaultPrevented) return;
-      if (
-        event.key.toLocaleLowerCase("cs") !== "n" ||
-        event.ctrlKey ||
-        event.metaKey ||
-        event.altKey ||
-        event.shiftKey
-      )
-        return;
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, select, [contenteditable=true], [role=combobox]"))
-        return;
-      if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
-      const action = list[0];
-      if (!action || action.disabled) return;
-      event.preventDefault();
-      primaryActionRef.current?.click();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [list, paneActive]);
-  return (
-    <TooltipProvider delayDuration={250}>
-      {list.map((action, index) => {
-        const actionLabel = `${action.label} (N)`;
-        const label =
-          action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
-        return (
-          <Tooltip key={action.label}>
-            <TooltipTrigger asChild>
-              <Button
-                ref={index === 0 ? primaryActionRef : undefined}
-                data-toolbar-add
-                type="button"
-                size="sm"
-                disabled={action.disabled}
-                onClick={action.onClick}
-                aria-label={actionLabel}
-                className="grid-toolbar-control grid-toolbar-primary shrink-0"
-              >
-                <Plus className="size-[1.2em]" />
-                <span
-                  className={cn(
-                    "hidden @min-[640px]:inline",
-                    overflowLevel >= 3 && "@min-[640px]:hidden",
-                  )}
-                >
-                  {action.label}
-                </span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{label}</TooltipContent>
-          </Tooltip>
-        );
-      })}
-    </TooltipProvider>
-  );
-}
 /** Doplňky levé části řádku akcí; v úrovni 3 se nevykreslí (jsou v nabídce ⋯), aby nevznikla duplicitní id. */
 export function GridToolbarCollapsible({ children }: { children?: React.ReactNode }) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);

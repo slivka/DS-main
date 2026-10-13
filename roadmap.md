@@ -890,3 +890,4 @@
 ## 2.102.0 – Edit dokladu 13f
 - [x] BankStatementForm.checkDisabledReason, ukázka, katalogy, test
 - [x] Sjednocení package.json a meta.version, pravidlo vydání
+- [x] 13g: BA DUZP, dvě primární akce lišty (zkrácení, nabídka), verze 2.101.0 pro Release

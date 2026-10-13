@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PrimaryActionsShowcase } from "@/components/showcase/PrimaryActionsShowcase";
 import { useMemo, useState } from "react";
 import { Building2 } from "lucide-react";
 
@@ -168,6 +169,7 @@ function GridPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Datová mřížka" }]}>
+      <PrimaryActionsShowcase />
       <div className="mb-3">
         <PageTabs
           value={pageSection}

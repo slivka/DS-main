@@ -607,7 +607,9 @@
 }
 
 /* V krajně úzkém řádku zůstane vlevo jen Přidat; ostatní parametry jsou v nabídce. */
-.grid-toolbar-row[data-overflow-level="3"] .grid-toolbar-left > :not([data-toolbar-add]) {
+.grid-toolbar-row[data-overflow-level="3"]
+  .grid-toolbar-left
+  > :not([data-toolbar-add]):not([data-slot="grid-add-menu"]) {
   display: none;
 }
 

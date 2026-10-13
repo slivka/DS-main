@@ -20,6 +20,7 @@ import { Button } from "../ui/button";
 import { DsTextsProvider, useDsTexts } from "../../ds-texts";
 import { MOCK_PARTNERS } from "../../lib/mock/accounting";
 import { ShowcaseSection } from "./ShowcaseLayout";
+import { MovementsGrid } from "./PrimaryActionsShowcase";
 
 const initial: PaneTabsState = {
   version: 2,
@@ -95,11 +96,7 @@ function StatementExample({ scenario }: { scenario: string }) {
           <NoticeBar tone="warning">Zůstatek se liší.</NoticeBar>
         ) : undefined
       }
-      items={
-        scenario === "items" ? (
-          <div className="border-b border-border py-2 text-sm">Úhrada faktury · 5 000,00</div>
-        ) : null
-      }
+      items={scenario === "items" ? <MovementsGrid storageKey="bank-statement-items" /> : null}
     />
   );
 }
