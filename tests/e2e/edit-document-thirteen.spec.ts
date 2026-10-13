@@ -274,6 +274,41 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
   ).toBeVisible();
 });
 
+test("přetékající grid nezakrývá ND prvního řádku a skutečný klik přepne stav", async ({
+  page,
+}, info) => {
+  test.setTimeout(90_000);
+  await prepare(page);
+  await zoom(page, 1);
+  const nd = page.locator('[data-slot="non-tax-toggle"]').first();
+  const grid = nd.locator("xpath=ancestor::div[contains(@class,'zoom-grid')][1]");
+  const editor = grid.locator("..");
+  await editor.evaluate((node) => (node.style.width = "200px"));
+  await expect(grid).toHaveAttribute("data-overflow", "true");
+  await editor.locator(".zoom-value").first().focus();
+  await page.keyboard.press("Enter");
+  await expect
+    .poll(() => grid.evaluate((node) => getComputedStyle(node).getPropertyValue("--grid-zoom")))
+    .toBe("1");
+  await expect(grid).toHaveAttribute("data-overflow", "true");
+  await expect(grid).toHaveAttribute("data-sticky-header", "none");
+  await nd.scrollIntoViewIfNeeded();
+  expect(
+    await nd.evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return hit?.closest('[data-slot="non-tax-toggle"]') === node;
+    }),
+  ).toBe(true);
+  const pressed = await nd.getAttribute("aria-pressed");
+  await nd.click();
+  await expect(nd).toHaveAttribute("aria-pressed", String(pressed !== "true"));
+  await info.attach("ND po skutečném kliknutí v přetékajícím gridu", {
+    body: await editor.screenshot(),
+    contentType: "image/png",
+  });
+});
+
 test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
   await prepare(page);
   await page.evaluate(() => document.fonts.ready);
@@ -284,7 +319,7 @@ test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
   for (const expected of nonTaxBaseline(browser)) {
     await zoom(page, expected.app);
     if ((await nd.getAttribute("aria-pressed")) !== String(expected.pressed)) {
-      // Záhlaví gridu může překrýt klik po automatickém scrollu; nativní Space je rovnocenná akce.
+      // Referenční měření přepíná stav klávesnicí; skutečný klik ověřuje samostatný test.
       await nd.focus();
       await page.keyboard.press("Space");
     }

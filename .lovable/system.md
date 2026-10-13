@@ -406,7 +406,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 
 ## Pravidlo 20 – nadpisy a popisky (závazné)
 
-- Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; popisky formuláře musí zůstat celé (`scrollWidth <= clientWidth`); samotný tooltip ani výpustka nenahrazují dostatečný prostor.
+- Nadpisy a popisky se nikdy nezalamují, bez ohledu na zoom gridu, zoom prohlížeče nebo velikost kořenového písma. `Label`, `SectionHeading`, `PageHeader` a titulky dialogů používají jeden řádek; při krajním nedostatku místa se zkrátí a plný text zůstane v `title`/tooltipu.
 - Šířka pole musí být nejméně šířka jeho popisku a zadává se v `rem`/`ch`, aby rostla s písmem. Když se skupina nevejde, přesune se celé pole na další řádek; nikdy nezalamujte samotný popisek.
 - `DocumentForm` skládá Datumy jako pružný řádek; šířku polí určuje vysázený vzorek aktivního formátu data, společné odsazení a maximálně tři ikonové sloty. Dvojice DPH zůstává společně jen dokud se vejde; v užším panelu se zalomí jednotlivě bez vodorovného rolování a ořezu zvýraznění. Delší popisek rozšíří své pole. Písmo vstupu i popisku zůstává standardní podle zoomu. Měření se zakládá podle stabilního klíče popisků a formátu. Zmenší pouze konkrétní přetékající pole včetně delšího popisku, nejvýše čtyřmi ohraničenými opravami; ostatní pole zachovají standardní písmo a geometrie ikon zůstává společná.
 - Detail `JournalLinesEditor` je pružný jednořádkový pás, pokud se pole vejdou. VS používá `VsField`; částkové popisky jsou pouze přes `texts` a značky měn z dat.
