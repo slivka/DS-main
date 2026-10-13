@@ -5,7 +5,7 @@
  */
 import * as React from "react";
 import { ChevronDown, Plus, type LucideIcon } from "lucide-react";
-import { useDsTexts } from "../../../ds-texts";
+import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -16,7 +16,7 @@ import {
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useIsActivePane } from "../panes/pane-context";
-import { GridToolbarOverflowContext } from "./grid-toolbar-context";
+import { GridAddLabelContext, GridToolbarOverflowContext } from "./grid-toolbar-context";
 
 /** Primární akce lišty gridu. */
 export interface GridAddAction {
@@ -42,12 +42,14 @@ export interface GridAddActionsProps {
 
 /**
  * Jedna akce: plný text od 640 px, jinak jen ikona.
- * Více akcí: plný text → zkrácený text (pod 640 px) → jedno tlačítko „+ ▾“ s nabídkou
+ * Více akcí: změřený plný text → zkrácený text → jedno tlačítko „+ ▾“ s nabídkou
  * (úroveň 3 kaskády lišty). Text u dvou tlačítek nikdy úplně nezmizí.
  */
 export function GridAddActions({ actions }: GridAddActionsProps) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const texts = useDsTexts().grid;
+  const addMenuLabel = texts.addMenu ?? DS_TEXTS_CS.grid.addMenu;
+  const labelMode = React.useContext(GridAddLabelContext);
   const primaryActionRef = React.useRef<HTMLButtonElement>(null);
   const list = React.useMemo(() => (Array.isArray(actions) ? actions : [actions]), [actions]);
   const multiple = list.length > 1;
@@ -103,10 +105,10 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                 <Plus className="size-[1.2em]" />
                 {multiple ? (
                   <>
-                    <span data-slot="grid-add-full" className="hidden @min-[640px]:inline">
+                    <span data-slot="grid-add-full" className={labelMode === "full" ? "inline" : "hidden"}>
                       {action.label}
                     </span>
-                    <span data-slot="grid-add-short" className="inline @min-[640px]:hidden">
+                    <span data-slot="grid-add-short" className={labelMode === "short" ? "inline" : "hidden"}>
                       {action.shortLabel ?? action.label}
                     </span>
                   </>
@@ -126,7 +128,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
           </Tooltip>
         );
       })}
-      {merged ? (
+      {multiple ? (
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -135,23 +137,25 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                   type="button"
                   size="sm"
                   data-slot="grid-add-menu"
-                  aria-label={texts.addMenu}
-                  className="grid-toolbar-control grid-toolbar-primary shrink-0 gap-0.5"
+                  aria-label={addMenuLabel}
+                  className={cn("grid-toolbar-control grid-toolbar-primary shrink-0 gap-0.5", !merged && "hidden")}
                 >
                   <Plus className="size-[1.2em]" />
                   <ChevronDown aria-hidden className="size-[0.85em]" />
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
-            <TooltipContent>{texts.addMenu}</TooltipContent>
+            <TooltipContent>{addMenuLabel}</TooltipContent>
           </Tooltip>
           <DropdownMenuContent align="start">
             {list.map((action) => {
               const Icon = action.icon ?? Plus;
               return (
+                <Tooltip key={action.label}>
+                  <TooltipTrigger asChild>
                 <DropdownMenuItem
-                  key={action.label}
-                  disabled={action.disabled}
+                  aria-disabled={action.disabled}
+                  className={cn(action.disabled && "ds-disabled-control")}
                   onSelect={(event: Event) => {
                     if (action.disabled) return;
                     action.onClick(event);
@@ -160,6 +164,11 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                   <Icon aria-hidden className="size-[1.1em]" />
                   {action.shortLabel ?? action.label}
                 </DropdownMenuItem>
+                  </TooltipTrigger>
+                  {action.disabled && action.disabledReason ? (
+                    <TooltipContent>{action.disabledReason}</TooltipContent>
+                  ) : null}
+                </Tooltip>
               );
             })}
           </DropdownMenuContent>

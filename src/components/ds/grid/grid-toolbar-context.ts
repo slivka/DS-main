@@ -7,3 +7,6 @@ import * as React from "react";
 
 /** Úroveň zhuštění lišty: 0 vše, 3 nejužší. */
 export const GridToolbarOverflowContext = React.createContext<0 | 1 | 2 | 3>(0);
+
+/** Podoba textů primárních akcí podle změřené dostupné šířky. */
+export const GridAddLabelContext = React.createContext<"full" | "short">("full");
