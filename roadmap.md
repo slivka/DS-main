@@ -887,7 +887,9 @@
 - [x] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
 - [x] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.
 
-## 2.102.0 – Edit dokladu 13f
+## 2.102.0 – Edit dokladu 13f–13h (nevydáno)
 - [x] BankStatementForm.checkDisabledReason, ukázka, katalogy, test
 - [x] Sjednocení package.json a meta.version, pravidlo vydání
 - [x] 13g: BA DUZP, dvě primární akce lišty (zkrácení, nabídka), verze 2.101.0 pro Release
+
+- [ ] 13h: dostupná šířka primárních akcí, texty, katalogy a ověření bez ztrát.

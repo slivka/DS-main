@@ -1,6 +1,16 @@
 # Changelog – Slivka Design System
 
-## 2.102.0 – Edit dokladu 13f a 13g (nevydáno)
+## 2.102.0 – Edit dokladu 13f–13h (nevydáno)
+
+### 13h
+
+- Bez BREAKING: `DsTexts.grid.addMenu` je nepovinný s českou náhradou. Vlastní úplné
+  sady textů nemusí přidávat klíč. Kaskáda měří plné i zkrácené texty a skutečnou šířku
+  sloučeného tlačítka; pořadí plné → zkrácené → nabídka nezávisí na hranici 640 px.
+- Zakázané položky nabídky zůstávají dostupné s tooltipem důvodu a neprovedou akci.
+  Katalog doplňuje tokeny, popis checkDisabledReason a opravený typ IdentityLine.
+- Manifest vyřazuje všechny náhledové ukázky podle `.dsignore`; doplňuje existující
+  test přetečení záhlaví. Komponenty se neodstraňují.
 
 ### 13g
 
@@ -9,12 +19,12 @@
   u výdeje (`vat.dateLink`) a výchozí hodnoty DUZP řídí aplikace – DS hodnoty nedoplňuje.
   Kurz DPH (`vatRateField`) se u BA zobrazuje beze změny podmínek. Ukázka BA výdej EUR.
 - Lišta gridu: `GridAddAction` má nové nepovinné `shortLabel` a `icon`. Dvě a více
-  primárních akcí: plný text → zkrácený text pod 640 px → v úrovni 3 jedno modré tlačítko
+  primárních akcí: plný text → zkrácený text podle dostupné šířky → v úrovni 3 jedno modré tlačítko
   „+ ▾“ (`aria-haspopup="menu"`) s položkami. Jedna akce beze změny. `onClick` dostane
   z nabídky událost výběru (typ rozšířen na `SyntheticEvent | Event`, existující handlery
   zůstávají kompatibilní). `GridAddActions` přesunuto do vlastního modulu, veřejné
-  importy beze změny. Nový povinný klíč `DsTexts.grid.addMenu` (CS/SK) – úplné vlastní
-  `DsTexts` ho musí doplnit.
+  importy beze změny. Nový nepovinný klíč `DsTexts.grid.addMenu` (CS/SK) s českou náhradou,
+  bez BREAKING změny pro vlastní sady textů.
 - Verze: `meta.version` a `package.json` = 2.101.0 (poslední vydaná), aby Release nabídl 2.102.0.
 
 ### 13f
