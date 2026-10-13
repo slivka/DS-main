@@ -55,9 +55,8 @@
 - **Unit 639/639**, 62 souborů, 2 021 assertions; **lint 0 chyb / 293 varování**;
   formát všech změněných TS/TSX souborů OK, automatická sestava build OK.
 - **E2E 60/60 jedinečných scénářů**, po 20 v Chromium, Firefox a WebKit:
-  edit-document-thirteen (11), journal-editor (6), grid-control-styles (3),
-  document-date-link (1) se překrývají v součtu takto: Edit 13 má 10 scénářů,
-  tedy 10 + 6 + 3 + 1 = 20 na prohlížeč.
+  edit-document-thirteen (10), journal-editor (6), grid-control-styles (3),
+  document-date-link (1): 10 + 6 + 3 + 1 = 20 na prohlížeč.
   První běh: 57 prošlo, 3 selhaly na nejednoznačném výběru „Zpět“ v journal-editor.
   Po zpřesnění na exact:true cílený běh tří stejných scénářů prošel 3/3.
   Nejde o jeden čistý běh; workers=1, retries=0, žádné limity nebyly prodlouženy.
