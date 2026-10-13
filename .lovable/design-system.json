@@ -290,7 +290,7 @@
       "src/components/ds/layout/page-layout.tsx": "5a769bd27dadd8bdd889318075e37204",
       "src/components/ds/layout/page-tabs.tsx": "88f4a67722bfb6cd815fe588722e2eb9",
       "src/components/ds/layout/period-switcher.tsx": "0ede0651812f61cdc6077d73ae2a38e4",
-      "src/components/ds/layout/record-action-bar.tsx": "5782ac341e9b526b8a1a0504117d0348",
+      "src/components/ds/layout/record-action-bar.tsx": "2ae997a5f6a3b66aed6d9c421be9bf2a",
       "src/components/ds/layout/search-button.tsx": "5aa5ad81f7b4f78d1a68d20d34534810",
       "src/components/ds/layout/section-heading.tsx": "a8d2efeff43eb28a370ef2416cc200f8",
       "src/components/ds/layout/settings-section.tsx": "d927fc8474cb253c87366215b2033f26",
