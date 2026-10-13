@@ -1,8 +1,10 @@
 ## DS 2.100.0 – Edit dokladu 13d (bez vydání)
 
-- [ ] Obnovit popisky a velikost Switch, zpřístupnit všechny hodnoty výpisu, upravit mřížku a ukázku.
-- [ ] Unit, jeden čistý E2E běh ve třech prohlížečích, lint, formát a katalogy proti 98810718.
-- [ ] Zapsat kontrolní tabulku a omezení tsc; verze zůstává 2.100.0.
+- [x] Obnovit popisky a velikost Switch, zpřístupnit všechny hodnoty výpisu, upravit mřížku a ukázku.
+- [x] Unit 636/636; E2E 48/48 jedním čistým během (16 na prohlížeč, retries=0, bez toPass); lint 0 chyb / 293 varování; formát OK.
+- [x] Katalogy proti 98810718: 426 → 429, odstraněné 0, 416 shodných; props 722 → 758, odstraněné 0; manifest 505 → 518.
+- [x] CHANGELOG obsahuje kontrolní tabulku a pravdivé výsledky; verze 2.100.0, bez Release.
+- [ ] Ruční tsc/typecheck: blokováno nadřazeným zákazem prostředí, neprovedeno.
 
 ## DS 2.100.0 – Edit dokladu 13c (bez vydání)
 

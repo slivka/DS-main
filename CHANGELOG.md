@@ -60,10 +60,36 @@
 - Testy nepoužívají toPass ani prodloužená dílčí očekávání z 13c. Celkový limit
   480 s zůstává pro rozsáhlou matici 40 rozvržení a 18 ND měření v pomalých prohlížečích;
   běžné očekávání je 10 s. Dvě animationFrame po změně zoomu čekají na vykreslení.
-  ND mění zoom skutečnými tlačítky lišty; umělá wheel událost na obalu byla neúčinná.
+  ND mění zoom skutečnými tlačítky lišty a stav nativní klávesou Space; umělá wheel
+  událost na obalu byla neúčinná a automatický scroll kliku mířil pod záhlaví gridu.
   Geometrie přepínačů se měří ve stabilní ukázce, ne v průběžně nahrazovaných datech.
 - tsc/typecheck **neproběhl** kvůli nadřazenému zákazu prostředí; nesdělujeme úspěch.
   Verze zůstává 2.100.0 a Release nebyl proveden.
+
+#### Kontrola 13d
+
+- **Unit 636/636**, 61 souborů, 2 016 assertions. **E2E 48/48 jedním čistým během**
+  (Chromium 16, Firefox 16, WebKit 16), 36 minut, workers=1, retries=0;
+  žádné toPass. Předchozí diagnostické běhy byly zastaveny po selhání; jejich výsledky
+  nejsou připočteny. Konečný důkaz: `/tmp/13d-e2e-single.log`.
+- **Lint 0 chyb / 293 varování**, formát změněných zdrojů a testů OK, automatický build OK.
+  Ruční tsc ani build neproběhl; typy po Update zůstávají neověřené.
+- Katalogy proti **98810718**: **426 → 429**, odstraněné komponenty/sekce **0**,
+  deset dotčených původních objektů, **416 bajtově shodných**. Props **722 → 758**:
+  odstraněné 0, 36 nových, tři již povolené změny defaultů. Manifest **505 → 518**:
+  proti bázi odebrán pouze neexistující plán, nový referenční soubor zahrnut;
+  #enrichment zachován. Kontrolní skript prošel všemi čtyřmi katalogy.
+
+| Bod 13d | Stav | Důkaz |
+|---|---|---|
+| 1 | Hotovo | DPH Switch 20 × 36 / 40 × 72 px v E2E všech tří prohlížečů |
+| 2 | Hotovo | Hook odstraněn; title, výpustka, stejné písmo a hranice pole ve 40 rozvrženích CS/SK |
+| 3 | Hotovo | Osm pojmenovaných skupin přes getByRole(group, name), unit prošel |
+| 4 | Hotovo | Úzká mřížka aplikuje col-span-1 a col-start-auto na všechny přímé děti |
+| 5 | Hotovo | Obnovená obě třídová tvrzení; nepodmíněný klik a stavy příkazu ve třech prohlížečích |
+| 6 | Hotovo | Zamčený SuggestInput má aria-label, běžný test vybírá jediné tlačítko pole Popis |
+| 7 | Hotovo | Katalogový skript, referenční soubor v manifestu, bez col-span-2 výpisu |
+| 8 | Hotovo | Pravdivé cílení textových tlačítek; žádné dynamické zmenšování Field; tsc neproveden |
 
 ### Opravy 13c (bez vydání)
 
