@@ -157,11 +157,14 @@ export function RecordActionBar({
         aria-busy={allBusy || undefined}
         className={cn(
           "sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90",
+          compact && "flex-wrap",
           className,
         )}
       >
-        <div className="min-w-0">{leftContent}</div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal">
+          {leftContent}
+        </div>
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           {primaryAction ? (
             <CompactActionButton
               label={primaryAction.label}

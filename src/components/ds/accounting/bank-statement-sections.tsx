@@ -1,4 +1,6 @@
 /** Sekce výpisu · vlastní rozvržení polí · nesmí ukládat ani kontrolovat výpis. */
+import type { CSSProperties } from "react";
+import { useDateTimePreferences } from "../../../lib/date-time-preferences";
 import { Check } from "lucide-react";
 import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
@@ -30,19 +32,35 @@ export function BankStatementBasic({
   hasItems,
   texts: t,
 }: BasicSectionProps) {
+  const { formatDate } = useDateTimePreferences();
   return (
     <FieldGrid cols={12}>
-      <Field label={t.date} htmlFor={`${id}-date`} span={3} className="col-span-2">
-        <DateField
-          id={`${id}-date`}
-          value={value.date}
-          onChange={(date) => patch({ date })}
-          disabled={locked}
-          className="w-[calc(7.5rem+1.9rem)] max-w-full"
-          inputClassName="min-w-0"
-        />
+      <Field span={3} className="col-span-2">
+        <div
+          className="document-dates-compact"
+          style={
+            {
+              "--document-date-format-sample": `"${formatDate("2000-11-22").replace(/\d/g, "0")}"`,
+            } as CSSProperties
+          }
+        >
+          <Field label={t.date} htmlFor={`${id}-date`}>
+            <DateField
+              id={`${id}-date`}
+              value={value.date}
+              onChange={(date) => patch({ date })}
+              disabled={locked}
+              inputClassName="min-w-0"
+            />
+          </Field>
+        </div>
       </Field>
-      <Field label={t.number} htmlFor={`${id}-number`} span={2} className="col-span-2">
+      <Field
+        label={t.number}
+        htmlFor={hasItems || locked ? undefined : `${id}-number`}
+        span={2}
+        className="col-span-2"
+      >
         {hasItems || locked ? (
           <FieldValue id={`${id}-number`} lockedReason={hasItems ? t.hasItems : undefined}>
             {value.number}
@@ -55,7 +73,12 @@ export function BankStatementBasic({
           />
         )}
       </Field>
-      <Field label={t.note} htmlFor={`${id}-note`} span={7} className="col-span-2">
+      <Field
+        label={t.note}
+        htmlFor={locked ? undefined : `${id}-note`}
+        span={7}
+        className="col-span-2"
+      >
         {locked ? (
           <FieldValue id={`${id}-note`}>{value.note}</FieldValue>
         ) : (
@@ -116,7 +139,7 @@ export function BankStatementBalanceSection({
       <FieldGrid cols={12}>
         <Field
           label={t.bankClosing}
-          htmlFor={`${id}-bankClosing`}
+          htmlFor={locked ? undefined : `${id}-bankClosing`}
           span={6}
           className="col-span-2 @min-[40rem]:col-start-4"
         >

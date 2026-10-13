@@ -58,7 +58,10 @@ export function maskDateInput(raw: string, dateFormat: string, deleting: boolean
   return text;
 }
 
+/** Řízená vazba na zdrojové datum. */
 export type DateFieldLink = {
+  /** Stálý přístupný název; výchozí fieldToggle.dateLink. */
+  label?: string;
   locked: boolean;
   onToggle: (locked: boolean) => void;
   toggleDisabled?: boolean;
@@ -279,7 +282,7 @@ export function DateField({
                     aria-disabled={
                       Boolean(disabled || link.toggleDisabled || link.lockedReason) || undefined
                     }
-                    aria-label={dsTexts.fieldToggle.dateLink}
+                    aria-label={link.label ?? dsTexts.fieldToggle.dateLink}
                     aria-describedby={linkDescriptionId}
                     aria-pressed="true"
                     onClick={toggleLink}
@@ -303,7 +306,7 @@ export function DateField({
                       aria-disabled={
                         Boolean(disabled || link.toggleDisabled || link.lockedReason) || undefined
                       }
-                      aria-label={dsTexts.fieldToggle.dateLink}
+                      aria-label={link.label ?? dsTexts.fieldToggle.dateLink}
                       aria-describedby={linkDescriptionId}
                       aria-pressed="false"
                       onClick={toggleLink}

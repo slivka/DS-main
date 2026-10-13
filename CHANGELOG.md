@@ -12,36 +12,84 @@
 - BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
   domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
   Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
-- **BREAKING – migrace:** CounterpartyInputField již nemění ikonu na PenLine;
-  partner má aria-pressed=true, ruční režim false. Přepínač vyhledávejte stálým
-  názvem „Vybrat z adresáře“, nikoli názvem cílového režimu. Stávající props zůstávají.
-  SuggestInput má vsazené, nikoli celovýškové tlačítko; odstraňte vlastní odsazení
-  a polohování historie, prostor rezervuje --field-toggle-space.
-  Název našeptávače, součtu, ND a vazby data je nově nezávislý na stavu;
-  stav a důvod čtěte z aria-pressed / aria-disabled a přístupného popisu.
-- Jednotkové testy: **631/631**, 61 souborů, 1 990 assertions. E2E **30/30**:
-  Edit 13 9/9, datumové scénáře Edit 12 15/15, datumová vazba a Celkem 6/6;
-  Chromium/Firefox/WebKit po 10. Běhy rozdělené kvůli časovému limitu příkazu.
-  Nové testy čekají na hydrataci stránky; původní test datumové vazby rozlišuje
-  odemykatelnou účetní vazbu od zamčené vazby DPH podle aria-disabled.
-- Lint **0 chyb / 293 varování**, formát všech změněných TS/TSX/CSS OK,
-  automatický build OK; ruční typecheck ani build nebyly spuštěny.
-- Katalogový důkaz `python3 scripts/verify-edit-document-thirteen-catalogs.py` proti
-  **98810718**: všechny čtyři katalogy **426 → 428**, odstraněné **0**;
-  nové FieldToggleButton a BankStatementForm, šest dotčených komponent,
-  **420 bajtově shodných** původních komponent. Manifest neztratil žádný klíč
-  a zachovává #enrichment; DocumentActionBar a cizí sekce beze změny.
-  V katalogu byl před prací platformou změněný údaj meta.version z 2.98.0 na 2.99.0;
-  nyní odpovídá připravené 2.100.0. Verze nebyla vydána.
+### BREAKING – migrace (Edit dokladu 13 a opravné kolo 13b)
 
-| Bod | Stav | Důkaz |
+- CounterpartyInputField používá ContactRound v obou režimech; partner má
+  aria-pressed=true. `partnerModeLabel` / `manualModeLabel` zůstávají jako nepovinné
+  `@deprecated` od 2.100.0, ale jsou ignorované; přepisy přesuňte do
+  `DsTexts.fieldToggle.directory` / `directoryUnpressed`. Odstranění v 3.0.0.
+- `DocumentForm.texts.sumFromLines` / `selectFromDirectory` / `enterManually`
+  jsou nepovinné `@deprecated` od 2.100.0 a ignorované. Použijte
+  `fieldToggle.sumPressed` / `directory` / `directoryUnpressed`.
+  `journalEditor.nonTaxOn` / `nonTaxOff` jsou nepovinné `@deprecated`, ignorované;
+  jejich náhradou je `fieldToggle.nonTaxPressed` / `nonTaxUnpressed`.
+  Odstranění těchto kompatibilních klíčů je plánováno v 3.0.0.
+- Úplné `DsTexts` musí nově obsahovat povinné oblasti `bankStatement` a
+  `fieldToggle` (včetně `locked`) a `documentForm.vatDateLinkLabel`.
+  Vycházejte z DS_TEXTS_CS / DS_TEXTS_SK; částečné přepisy provideru zůstávají podporované.
+- Přístupné názvy přepínačů jsou stálé: adresář, našeptávač, součet a ND nepojmenovávají
+  cílový stav. Výchozí vazba má název „Svázat s datem vystavení“, Datum DPH
+  „Svázat s DUZP“ (CS/SK přes DsTexts); vlastní název předá `DateFieldLink.label`.
+- Přepínače polí a vazeb používají `aria-disabled` místo nativního `disabled`:
+  zamčené prvky jsou nově fokusovatelné. Stav čtěte z aria-pressed / aria-disabled,
+  důvod z aria-describedby. Neprovádějte akce na zamčeném prvku.
+- SuggestInput má vsazené, nikoli celovýškové tlačítko. Odstraňte vlastní polohování
+  historie; rezervu určuje --field-toggle-space odvozená na každém prvku z lokální
+  --control-h. Zamčení bez konkrétního důvodu vysvětluje fieldToggle.locked,
+  nikoli text vybízející ke kliknutí.
+
+### Opravy 13b a ověření
+
+- Výpis používá RecordActionBar bez selektorových úprav potomků. Uložit odpovídá
+  DocumentForm: při šířce lišty ≥ 640 px ikona + text, pod 640 px ikona s názvem
+  a tooltipem; busy vykreslí spinner. Levý obsah se ve sdílené liště drží mimo akce.
+- IdentityLine je společný veřejný řádek pro oba formuláře; jejich identita i pole
+  používají stejnou kartu sekce. Výpis podporuje Ctrl/Cmd+S a vlastní TooltipProvider.
+- ND má 24 × 24 px, ikonu 14 px a tučné písmo; obecné gridové styly tuto výjimku
+  nepřepisují. Datumové šířky dokladu ani --document-date-* se nezměnily.
+- Datum výpisu používá stejné tokenové měření aktivního formátu. Na krajně úzké
+  kartě výpisu se použije menší token popisku a datumová škála, bez ořezu textu.
+  E2E kontroluje také scrollWidth <= clientWidth, ne jen jeden řádek.
+- Texty výpisu jsou rozdělené na CS/SK moduly, sekce uložené běžným písmem;
+  verzálky zajišťuje CSS. Domácí sekce je „Zůstatky v {currency}“.
+- Odstranění a změna kontroly mají při zamčení vysvětlení; popisky jen čtených
+  hodnot nemají htmlFor ukazující na div. Jednotkový test renderuje výpis s položkami
+  bez vnějšího TooltipProvider.
+- **Unit: 633/633**, 61 souborů, 1 995 assertions. **E2E: 39/39** jedinečných
+  scénářů: Chromium / Firefox / WebKit po 13 (Edit 13b po 6, Edit 12 po 5,
+  datumová vazba a částka po 2). Běhy rozdělené kvůli časovému limitu prostředí;
+  WebKit datumový a panelový test mají delší limit, měření čeká na stabilní stav.
+- **Lint: 0 chyb / 293 varování.** Prettier kontrola změněných TS/TSX/CSS prošla.
+  Automatická sestava: build OK. **`tsc --noEmit` nebyl spuštěn**: prostředí zakazuje
+  ruční build i typové kontroly; není vykázán jako úspěšná kontrola.
+- Báze **98810718** je zdroj vydaného v2.99.0, ale její **meta.version je 2.98.0**,
+  nikoli 2.99.0. Připravené package.json i meta.version zůstávají 2.100.0; bez Release.
+- Katalogy a indexy: **426 → 429**, odstraněné **0**; nové FieldToggleButton,
+  BankStatementForm a IdentityLine. Jen sedm dotčených původních objektů,
+  **419 bajtově shodných**. Manifest **505 → 517**, odstraněné **0**,
+  #enrichment zachován. DocumentActionBar a cizí objekty/sekce zůstaly shodné.
+- Tabulky props: **722 → 757**, odstraněné původní řádky **0**, nové **35**.
+  Tři změny proti bázi jsou explicitně ověřené: DateField.className již nemá
+  výchozí `relative`; SuggestInput.enabledLabel / disabledLabel přecházejí
+  z pevných českých defaultů na DsTexts. `warningDisplay=below` a `debounceMs=200`
+  jsou obnovené a přesně shodné s bází.
+  Důkaz: `python3 scripts/verify-edit-document-thirteen-catalogs.py`.
+
+| Bod 13b | Stav | Důkaz |
 |---|---|---|
-| D1 | Hotovo | FieldToggleButton unit: ref, stálý název, pressed, zamčení bez callbacku; E2E klávesnice |
-| D2 | Hotovo | E2E měří šipku, tužku a přepínač při 70–200 %; ruční režim bez tužky |
-| D3 | Hotovo | Příkaz, součet a historie používají společný přepínač; Celkem a šipka regresně ověřeny |
-| D4 | Hotovo | Unit ND/date link; E2E datumová vazba a 15 původních datumových scénářů |
-| D5 | Hotovo | Unit zůstatků, prázdného rozdílu a zamčení; CS/SK, 1/2/3 panely a 360 px při 70–200 % |
-| D6 | Hotovo | 631 unit, 30 E2E, lint 0 chyb, přírůstkové katalogy a migrační pokyny |
+| 1 | Hotovo | E2E shoda Uložit s DocumentForm, text/ikona, tooltip a busy spinner |
+| 2 | Hotovo | E2E ND 24/24/14 při 70/100/200 % ve třech prohlížečích |
+| 3 | Hotovo | DateFieldLink.label + DPH CS/SK; date-link hledá jedinečný název |
+| 4 | Hotovo | Unit obecného důvodu CS/SK, fokus a neprovedená změna |
+| 5 | Hotovo | BankStatement unit s hasItems bez vnějšího provideru |
+| 6 | Hotovo | IdentityLine, společná karta, Ctrl/Cmd+S unit a datumové regrese |
+| 7 | Kód a dokumentace hotové; tsc neprovedeno | Nepovinné deprecated props, migrace a pravdivá meta báze; omezení prostředí |
+| 8 | Hotovo | Katalogový skript porovnává každý řádek props a oba defaulty |
+| 9 | Hotovo | E2E scrollWidth <= clientWidth pro všechny popisky CS/SK |
+| 10 | Hotovo | Landmark/Sigma/History/ContactRound rozměry + computed zakázané barvy |
+| 11 | Hotovo | CS/SK moduly a nadpis domácích zůstatků ověřen v unit/E2E |
+| 12 | Hotovo | Zamčené akce mají důvod; htmlFor jen u skutečných ovládání |
+| 13 | Hotovo | E2E lokální --control-h=3rem mění rezervu přepínače |
 
 ## 2.99.0 – Edit dokladu 12i
 

@@ -28,6 +28,12 @@ export interface DsTexts {
   bankStatement: BankStatementTexts;
   /** Přepínače uvnitř polí. */
   fieldToggle: {
+    /** Obecný důvod zamčení bez konkrétního vysvětlení. */
+    locked: string;
+    /** Zapnutý nedaňový stav. */
+    nonTaxPressed: string;
+    /** Vypnutý nedaňový stav. */
+    nonTaxUnpressed: string;
     directory: string;
     directoryPressed: string;
     directoryUnpressed: string;
@@ -234,6 +240,8 @@ export interface DsTexts {
     creditAccount: string;
   };
   documentForm: {
+    /** Stálý název vazby data DPH na DUZP. */
+    vatDateLinkLabel: string;
     /** Popisek celku v domácí měně. */
     totalHome?: string;
     changeAccount: string;
@@ -280,8 +288,10 @@ export interface DsTexts {
     headerText: string;
     footerText: string;
     note: string;
-    selectFromDirectory: string;
-    enterManually: string;
+    /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directory. Odstranění v 3.0.0. */
+    selectFromDirectory?: string;
+    /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directoryUnpressed. Odstranění v 3.0.0. */
+    enterManually?: string;
     replaceManualCounterparty: string;
     counterpartyLocked: string;
     manuallyEdited: string;

@@ -1,8 +1,10 @@
 ## DS 2.100.0 – Edit dokladu 13b (bez vydání)
 
-- [ ] Opravit body 1–13, zachovat veřejné chování mimo zadání.
-- [ ] Unit, E2E ve třech prohlížečích, lint, formát a kontrola katalogů proti 98810718.
-- [ ] Zapsat pravdivé výsledky a kontrolní tabulku; verze zůstává 2.100.0.
+- [x] Opravit body 1–13, zachovat chování mimo zadání; verze 2.100.0.
+- [x] Unit 633/633; E2E 39/39 (13 na prohlížeč); lint 0 chyb / 293 varování; formát OK.
+- [x] Katalogy proti 98810718: 426 → 429, odstraněné 0, 419 shodných; props 722 → 757, odstraněné 0, tři povolené změny, 35 nových řádků.
+- [x] CHANGELOG obsahuje migraci BREAKING a kontrolní tabulku; Release neproběhl.
+- [ ] `tsc --noEmit`: blokováno pravidly prostředí zakazujícími ruční typové kontroly; nelze vykázat úspěch.
 
 ## DS 2.100.0 – Edit dokladu 13 (bez vydání)
 - [x] D1–D3: společný přepínač a převod protistrany, příkazu, součtu a našeptávače.

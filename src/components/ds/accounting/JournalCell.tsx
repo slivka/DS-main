@@ -6,7 +6,6 @@
  */
 import { Pencil, ReceiptText } from "lucide-react";
 
-import { Button } from "../../ui/button";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
@@ -41,10 +40,9 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
+        <button
+          data-slot="non-tax-toggle"
           type="button"
-          variant="ghost"
-          size="icon"
           tabIndex={-1}
           aria-disabled={locked || undefined}
           aria-pressed={!!line.nonTax}
@@ -54,17 +52,17 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
             if (!locked) onToggle();
           }}
           className={cn(
-            "ds-disabled-control order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[0.65rem] font-bold",
+            "ds-disabled-control order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[length:var(--non-tax-font-size)] font-bold",
             line.nonTax
               ? "bg-warning-soft text-warning-strong"
               : "text-muted-foreground hover:bg-muted",
           )}
         >
           {line.nonTax ? t.nonTaxShort : <ReceiptText className="size-3.5" />}
-        </Button>
+        </button>
       </TooltipTrigger>
       <TooltipContent>
-        {locked ? texts.nonTaxLocked : line.nonTax ? t.nonTaxOn : t.nonTaxOff}
+        {locked ? texts.nonTaxLocked : line.nonTax ? texts.nonTaxPressed : texts.nonTaxUnpressed}
       </TooltipContent>
     </Tooltip>
   );

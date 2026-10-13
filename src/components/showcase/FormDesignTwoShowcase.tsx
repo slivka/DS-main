@@ -67,6 +67,7 @@ export function FormDesignTwoShowcase() {
           onCheckedChange={(checked) => setValue({ ...value, rateSourceAttention: !!checked })}
         />
         <DocumentForm
+          saveAction={{ onSave: () => {}, dirty: true }}
           settings={{ onOpen: () => {} }}
           moreActions={[
             {

@@ -6,6 +6,8 @@
 import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { IdentityLine } from "../layout/identity-line";
 import { Button } from "../../ui/button";
 import { BankStatementBasic, BankStatementBalanceSection } from "./bank-statement-sections";
 import { PageLayout } from "../layout/page-layout";
@@ -64,6 +66,8 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   readOnly?: boolean;
   /** Neuložené změny. */
   dirty?: boolean;
+  /** Probíhající ukládání; blokuje další akce. */
+  busy?: boolean;
   /** Uloží výpis. */
   onSave?: () => void;
   /** Změní stav kontroly. */
@@ -99,6 +103,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       readOnly,
       dirty,
       onSave,
+      busy,
       onCheckedChange,
       onDelete,
       error,
@@ -106,6 +111,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       items,
       texts,
       className,
+      onKeyDown,
       ...rest
     } = p;
     const ds = useDsTexts();
@@ -116,119 +122,151 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       if (!locked) onChange({ ...value, ...next });
     };
     return (
-      <div
-        {...rest}
-        ref={ref}
-        data-slot="bank-statement-form"
-        className={cn("@container min-w-0", className)}
-      >
-        <PageLayout variant="form">
-          <PageHeader
-            title={t.title}
-            titleBadge={
-              <StatusBadge
-                status={status}
-                config={{
-                  open: { label: t.open },
-                  checked: { label: t.checked, tone: "info" },
-                  posted: { label: t.posted, tone: "success" },
-                }}
-              />
-            }
-          />
-          <RecordActionBar
-            className={cn(
-              "flex-wrap [&>div:last-child]:ml-auto",
+      <TooltipProvider>
+        <div
+          {...rest}
+          ref={ref}
+          onKeyDown={(event) => {
+            onKeyDown?.(event);
+            if (
+              !event.defaultPrevented &&
+              (event.ctrlKey || event.metaKey) &&
+              event.key.toLowerCase() === "s" &&
               onSave &&
-                "[&>div:last-child>button:first-child]:w-auto [&>div:last-child>button:first-child]:px-3 [&>div:last-child>button:first-child>svg]:!hidden [&>div:last-child>button:first-child>span:first-of-type]:!not-sr-only",
-            )}
-            leftContent={
-              onCheckedChange ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={readOnly || status === "posted"}
-                  onClick={() => onCheckedChange(status === "open")}
-                >
-                  {status === "open" ? t.check : t.uncheck}
-                </Button>
-              ) : null
+              !locked &&
+              !busy
+            ) {
+              event.preventDefault();
+              onSave();
             }
-            saveAction={onSave ? { onSave, dirty, disabled: locked } : undefined}
-            moreActions={
-              onDelete
-                ? [
-                    {
-                      id: "delete",
-                      label: t.delete,
-                      destructive: true,
-                      disabled: hasItems || locked,
-                      disabledReason: hasItems ? t.hasItems : undefined,
-                      onClick: () => {
-                        if (!hasItems && !locked) onDelete();
-                      },
-                    },
-                  ]
-                : []
-            }
-            error={error}
-            notices={notices}
-          />
-          <div
-            data-slot="bank-statement-identity"
-            className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-sm font-semibold"
+          }}
+          data-slot="bank-statement-form"
+          className={cn("@container min-w-0", className)}
+        >
+          <PageLayout
+            variant="form"
+            className="@max-[20rem]:[&_label]:text-[length:var(--text-bank-label)] @max-[20rem]:[&_.document-dates-compact]:[--document-date-scale:var(--bank-date-scale)]"
           >
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              {[book, currency, period, bankAccount].map((item, index) => (
-                <span key={index} className="flex min-w-0 items-center gap-2">
-                  {index > 0 ? <span aria-hidden="true">·</span> : null}
-                  <span className="truncate">{item}</span>
-                </span>
-              ))}
-            </div>
-            <span className="tabular-nums">{value.number}</span>
-          </div>
-          <SectionHeading>{t.basic}</SectionHeading>
-          <BankStatementBasic
-            id={id}
-            value={value}
-            patch={patch}
-            locked={locked}
-            hasItems={hasItems}
-            texts={t}
-          />
-          <SectionHeading>{t.balances}</SectionHeading>
-          <BankStatementBalanceSection
-            id={id}
-            balances={balances}
-            symbol={currencySymbol}
-            bankClosing={value.bankClosing}
-            onBankClosingChange={(bankClosing) => patch({ bankClosing })}
-            locked={locked}
-            texts={t}
-          />
-          {home ? (
-            <>
-              <SectionHeading>{t.home.replace("{currency}", home.currencySymbol)}</SectionHeading>
-              <BankStatementBalanceSection
-                id={`${id}-home`}
-                balances={home}
-                symbol={home.currencySymbol}
-                bankClosing={home.bankClosing}
-                locked={locked || !onHomeBankClosingChange}
-                onBankClosingChange={(next) => {
-                  if (!locked) onHomeBankClosingChange?.(next);
-                }}
+            <PageHeader
+              title={t.title}
+              titleBadge={
+                <StatusBadge
+                  status={status}
+                  config={{
+                    open: { label: t.open },
+                    checked: { label: t.checked, tone: "info" },
+                    posted: { label: t.posted, tone: "success" },
+                  }}
+                />
+              }
+            />
+            <RecordActionBar
+              leftContent={
+                onCheckedChange ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        aria-disabled={readOnly || status === "posted" || busy || undefined}
+                        aria-describedby={
+                          readOnly || status === "posted" ? `${id}-check-reason` : undefined
+                        }
+                        onClick={() => {
+                          if (!readOnly && status !== "posted" && !busy)
+                            onCheckedChange(status === "open");
+                        }}
+                      >
+                        {status === "open" ? t.check : t.uncheck}
+                      </Button>
+                    </TooltipTrigger>
+                    {readOnly || status === "posted" ? (
+                      <TooltipContent>{ds.fieldToggle.locked}</TooltipContent>
+                    ) : null}
+                    {readOnly || status === "posted" ? (
+                      <span id={`${id}-check-reason`} className="sr-only">
+                        {ds.fieldToggle.locked}
+                      </span>
+                    ) : null}
+                  </Tooltip>
+                ) : null
+              }
+              busy={busy}
+              saveAction={onSave ? { onSave, dirty, disabled: locked, busy } : undefined}
+              moreActions={
+                onDelete
+                  ? [
+                      {
+                        id: "delete",
+                        label: t.delete,
+                        destructive: true,
+                        disabled: hasItems || locked,
+                        disabledReason: hasItems
+                          ? t.hasItems
+                          : locked
+                            ? ds.fieldToggle.locked
+                            : undefined,
+                        onClick: () => {
+                          if (!hasItems && !locked) onDelete();
+                        },
+                      },
+                    ]
+                  : []
+              }
+              error={error}
+              notices={notices}
+            />
+            <section className="rounded-lg border bg-card p-4 @max-[20rem]:p-0">
+              <IdentityLine
+                data-slot="bank-statement-identity"
+                items={[book, currency, period, bankAccount]}
+                number={value.number}
+              />
+              <SectionHeading>{t.basic}</SectionHeading>
+              <BankStatementBasic
+                id={id}
+                value={value}
+                patch={patch}
+                locked={locked}
+                hasItems={hasItems}
                 texts={t}
               />
-            </>
-          ) : null}
-          <SectionHeading>{t.items}</SectionHeading>
-          <div data-slot="bank-statement-items" className="min-w-0 max-w-full">
-            {items}
-          </div>
-        </PageLayout>
-      </div>
+              <SectionHeading>{t.balances}</SectionHeading>
+              <BankStatementBalanceSection
+                id={id}
+                balances={balances}
+                symbol={currencySymbol}
+                bankClosing={value.bankClosing}
+                onBankClosingChange={(bankClosing) => patch({ bankClosing })}
+                locked={locked}
+                texts={t}
+              />
+              {home ? (
+                <>
+                  <SectionHeading>
+                    {t.home.replace("{currency}", home.currencySymbol)}
+                  </SectionHeading>
+                  <BankStatementBalanceSection
+                    id={`${id}-home`}
+                    balances={home}
+                    symbol={home.currencySymbol}
+                    bankClosing={home.bankClosing}
+                    locked={locked || !onHomeBankClosingChange}
+                    onBankClosingChange={(next) => {
+                      if (!locked) onHomeBankClosingChange?.(next);
+                    }}
+                    texts={t}
+                  />
+                </>
+              ) : null}
+            </section>
+            <SectionHeading>{t.items}</SectionHeading>
+            <div data-slot="bank-statement-items" className="min-w-0 max-w-full">
+              {items}
+            </div>
+          </PageLayout>
+        </div>
+      </TooltipProvider>
     );
   },
 );

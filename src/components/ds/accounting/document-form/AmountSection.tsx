@@ -183,9 +183,9 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                 {totalMode === "sum" ? (
                   <span
                     className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground"
-                    title={t.sumFromLines}
+                    title={toggleTexts.sumPressed}
                   >
-                    {t.sumFromLines}
+                    {toggleTexts.sumPressed}
                   </span>
                 ) : null}
               </span>,

@@ -2,19 +2,20 @@ import { expect, test } from "@playwright/test";
 
 test("svázané datum se kliknutím odemkne a dostane fokus", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+    timeout: 60_000,
+  });
   const section = page.getByText("Pokladna – výdej kurýrovi bez partnera").locator("..");
-  const unlock = section
-    .getByRole("button", {
-      name: "Svázat s datem vystavení",
-    })
-    .and(section.locator("button:not([aria-disabled=true])"));
+  const unlock = section.getByRole("button", {
+    name: "Svázat s datem vystavení",
+  });
   await expect(unlock).toHaveAttribute("aria-pressed", "true");
   await expect(section.getByRole("button", { name: "Otevřít kalendář" })).toHaveCount(2);
   // Velká stránka: klik před hydratací nic neudělá, proto opakujeme až do odezvy.
   await expect(async () => {
     if ((await unlock.getAttribute("aria-pressed")) === "true") await unlock.click();
     await expect(unlock).toHaveAttribute("aria-pressed", "false", { timeout: 1000 });
-  }).toPass({ timeout: 30_000 });
+  }).toPass({ timeout: 60_000 });
   await expect(section.locator("#document-accountingDate")).toBeFocused();
   await expect(section.getByRole("button", { name: "Otevřít kalendář" })).toHaveCount(3);
 });

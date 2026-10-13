@@ -71,6 +71,7 @@ function StatementExample({ scenario }: { scenario: string }) {
           : undefined
       }
       hasItems={scenario === "items"}
+      busy={scenario === "busy"}
       dirty={dirty}
       onSave={() => setDirty(false)}
       onDelete={() => setValue({ ...value, number: "" })}
@@ -153,16 +154,18 @@ export function BankStatementShowcase() {
         <DsTextsProvider locale={locale}>
           <ToggleExamples />
           <div className="my-3 flex flex-wrap gap-2">
-            {["empty", "equal", "difference", "eur", "checked", "items", "posted"].map((key) => (
-              <Button
-                key={key}
-                variant="outline"
-                aria-pressed={scenario === key}
-                onClick={() => setScenario(key)}
-              >
-                {key}
-              </Button>
-            ))}
+            {["empty", "equal", "difference", "eur", "checked", "items", "posted", "busy"].map(
+              (key) => (
+                <Button
+                  key={key}
+                  variant="outline"
+                  aria-pressed={scenario === key}
+                  onClick={() => setScenario(key)}
+                >
+                  {key}
+                </Button>
+              ),
+            )}
             {["cs", "sk"].map((language) => (
               <Button
                 key={language}

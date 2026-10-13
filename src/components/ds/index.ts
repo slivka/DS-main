@@ -5,6 +5,7 @@
  */
 
 /* Layout */
+export * from "./layout/identity-line";
 export * from "./layout/AppShell";
 export * from "./layout/WorkspaceCompanySwitcher";
 export * from "./layout/RecordDialog";
