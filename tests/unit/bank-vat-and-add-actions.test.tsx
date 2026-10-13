@@ -1,6 +1,6 @@
 /** BA DPH a primární akce lišty · vlastní testy chování · nesmí testovat zdrojový text. */
 import { afterEach, expect, test } from "bun:test";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { DS_TEXTS_CS, DsTextsProvider } from "../../src/ds-texts";
 import {
   DocumentForm,
@@ -114,4 +114,26 @@ test("GridAddActions vlastní grid texty nepotřebují addMenu", () => {
     </DsTextsProvider>,
   );
   expect(view.getByRole("button", { name: "Nový – vyberte druh" })).toBeTruthy();
+});
+
+test("GridAddActions zakázaná položka nabídky má důvod, fokus a neprovede akci", async () => {
+  const log: string[] = [];
+  const list = actions(log).map((action) => ({
+    ...action, disabled: true, disabledReason: "Období je uzavřené",
+  }));
+  const view = render(
+    <GridToolbarOverflowContext.Provider value={3}>
+      <GridAddActions actions={list} />
+    </GridToolbarOverflowContext.Provider>,
+  );
+  fireEvent.keyDown(view.getByRole("button", { name: "Nový – vyberte druh" }), { key: "Enter" });
+  const item = await view.findByRole("menuitem", { name: "Příjem" });
+  expect(item.getAttribute("aria-disabled")).toBe("true");
+  item.focus();
+  expect(document.activeElement).toBe(item);
+  fireEvent.click(item);
+  fireEvent.keyDown(item, { key: "Enter" });
+  expect(log).toEqual([]);
+  fireEvent.pointerMove(item, { pointerType: "mouse" });
+  await waitFor(() => expect(view.getAllByText("Období je uzavřené").length).toBeGreaterThan(0));
 });
