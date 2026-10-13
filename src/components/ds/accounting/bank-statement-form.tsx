@@ -70,6 +70,8 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   busy?: boolean;
   /** Uloží výpis. */
   onSave?: () => void;
+  /** Důvod, proč výpis nelze zkontrolovat; zakáže jen „Zkontrolovat“, ne „Zrušit kontrolu“. */
+  checkDisabledReason?: string;
   /** Změní stav kontroly. */
   onCheckedChange?: (checked: boolean) => void;
   /** Odstraní prázdný výpis. */
@@ -105,6 +107,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       onSave,
       busy,
       onCheckedChange,
+      checkDisabledReason,
       onDelete,
       error,
       notices,
@@ -125,6 +128,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
         : status === "checked"
           ? t.lockedChecked
           : undefined;
+    const checkReason =
+      readOnly || status === "posted"
+        ? lockedReason
+        : status === "open"
+          ? checkDisabledReason || undefined
+          : undefined;
+    const checkBlocked = Boolean(checkReason) || Boolean(busy);
     const patch = (next: Partial<BankStatementValue>) => {
       if (!locked) onChange({ ...value, ...next });
     };
@@ -172,24 +182,19 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                       <Button
                         type="button"
                         variant="outline"
-                        aria-disabled={readOnly || status === "posted" || busy || undefined}
-                        aria-describedby={
-                          readOnly || status === "posted" ? `${id}-check-reason` : undefined
-                        }
+                        aria-disabled={checkBlocked || undefined}
+                        aria-describedby={checkReason ? `${id}-check-reason` : undefined}
                         onClick={() => {
-                          if (!readOnly && status !== "posted" && !busy)
-                            onCheckedChange(status === "open");
+                          if (!checkBlocked) onCheckedChange(status === "open");
                         }}
                       >
                         {status === "open" ? t.check : t.uncheck}
                       </Button>
                     </TooltipTrigger>
-                    {readOnly || status === "posted" ? (
-                      <TooltipContent>{lockedReason}</TooltipContent>
-                    ) : null}
-                    {readOnly || status === "posted" ? (
+                    {checkReason ? <TooltipContent>{checkReason}</TooltipContent> : null}
+                    {checkReason ? (
                       <span id={`${id}-check-reason`} className="sr-only">
-                        {lockedReason}
+                        {checkReason}
                       </span>
                     ) : null}
                   </Tooltip>

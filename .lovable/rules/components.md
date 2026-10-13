@@ -5191,7 +5191,7 @@ _Platit příkazem_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby.
+Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby. 2.102.0: checkDisabledReason zakáže jen „Zkontrolovat“ (aria-disabled, fokus, tooltip důvodu); „Zrušit kontrolu“ neovlivní.
 
 **Props:**
 
@@ -5209,6 +5209,7 @@ Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými z�
 | `home` | BankStatementBalances & { currencySymbol: string; bankClosing: number \| null } | `—` |
 | `onHomeBankClosingChange` | function | `—` |
 | `hasItems` | boolean | `—` |
+| `checkDisabledReason` | string | `—` |
 | `readOnly` | boolean | `—` |
 | `dirty` | boolean | `—` |
 | `busy` | boolean | `—` |

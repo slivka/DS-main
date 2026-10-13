@@ -886,3 +886,7 @@
 - [x] Obnovit doslovné katalogové texty, zdrojový manifest a ověřit všechny čtyři katalogy.
 - [x] Opravit přístupnost přepínače, společnou podmínku FP/ZFP, tooltipy a odpojení validace.
 - [x] Doplnit skutečná měření a behavior testy; unit, související e2e, lint a automatické kontroly.
+
+## 2.102.0 – Edit dokladu 13f
+- [x] BankStatementForm.checkDisabledReason, ukázka, katalogy, test
+- [x] Sjednocení package.json a meta.version, pravidlo vydání
