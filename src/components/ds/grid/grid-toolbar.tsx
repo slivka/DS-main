@@ -183,9 +183,9 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
       copy.querySelectorAll<HTMLElement>('[data-slot="grid-add-menu"]').forEach((item) => {
         item.style.display = "inline-flex";
       });
-      const addMenuWidth = copy
-        .querySelector<HTMLElement>('[data-slot="grid-add-menu"]')
-        ?.getBoundingClientRect().width ?? 0;
+      const addMenuWidth =
+        copy.querySelector<HTMLElement>('[data-slot="grid-add-menu"]')?.getBoundingClientRect()
+          .width ?? 0;
       holder.remove();
       return { ...result, leftShort, addMenuWidth, addWidth, searchWidth };
     };
@@ -220,24 +220,25 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
           findFull - Math.max(0, measured.searchWidth - searchCompact),
         );
         const widths: GridToolbarWidths = {
-            container: node.clientWidth,
-            leftFull,
-            leftCompact,
-            findFull,
-            findCompact,
-            display: measured.display,
-            data: measured.data,
-            menu: Math.max(measured.menu, controlSize),
-            refresh: measured.refresh,
-            gap,
-            padding,
-            hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
-          };
+          container: node.clientWidth,
+          leftFull,
+          leftCompact,
+          findFull,
+          findCompact,
+          display: measured.display,
+          data: measured.data,
+          menu: Math.max(measured.menu, controlSize),
+          refresh: measured.refresh,
+          gap,
+          padding,
+          hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
+        };
         let next = calculateGridToolbarOverflowLevel(widths, current);
         let labels: "full" | "short" = "full";
         if (addCount > 1 && next === 3) {
           const shortLevel = calculateGridToolbarOverflowLevel(
-            { ...widths, leftFull: measured.leftShort }, current,
+            { ...widths, leftFull: measured.leftShort },
+            current,
           );
           if (shortLevel < 3) {
             next = shortLevel;
@@ -296,36 +297,36 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
   return (
     <GridToolbarOverflowContext.Provider value={overflowLevel}>
       <GridAddLabelContext.Provider value={addLabelMode}>
-      <div
-        ref={setRefs}
-        data-slot="grid-toolbar"
-        data-density={density}
-        className={cn(
-          "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
-          right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
-          className,
-        )}
-        style={{ fontSize: gridFontSize(zoom) }}
-        {...props}
-      >
         <div
-          data-toolbar-measure="left"
+          ref={setRefs}
+          data-slot="grid-toolbar"
+          data-density={density}
           className={cn(
-            "grid-toolbar-left items-center gap-2",
-            right ? "flex shrink-0 flex-nowrap" : "contents",
+            "zoom-filters grid-toolbar-row min-w-0 items-center gap-2 border p-2",
+            right ? "flex flex-nowrap overflow-visible" : "flex flex-wrap overflow-visible",
+            className,
           )}
+          style={{ fontSize: gridFontSize(zoom) }}
+          {...props}
         >
-          {left ?? children}
-        </div>
-        {right ? (
           <div
-            data-slot="grid-toolbar-right"
-            className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+            data-toolbar-measure="left"
+            className={cn(
+              "grid-toolbar-left items-center gap-2",
+              right ? "flex shrink-0 flex-nowrap" : "contents",
+            )}
           >
-            {right}
+            {left ?? children}
           </div>
-        ) : null}
-      </div>
+          {right ? (
+            <div
+              data-slot="grid-toolbar-right"
+              className="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-2 overflow-visible"
+            >
+              {right}
+            </div>
+          ) : null}
+        </div>
       </GridAddLabelContext.Provider>
     </GridToolbarOverflowContext.Provider>
   );

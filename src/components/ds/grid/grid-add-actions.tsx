@@ -105,10 +105,16 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                 <Plus className="size-[1.2em]" />
                 {multiple ? (
                   <>
-                    <span data-slot="grid-add-full" className={labelMode === "full" ? "inline" : "hidden"}>
+                    <span
+                      data-slot="grid-add-full"
+                      className={labelMode === "full" ? "inline" : "hidden"}
+                    >
                       {action.label}
                     </span>
-                    <span data-slot="grid-add-short" className={labelMode === "short" ? "inline" : "hidden"}>
+                    <span
+                      data-slot="grid-add-short"
+                      className={labelMode === "short" ? "inline" : "hidden"}
+                    >
                       {action.shortLabel ?? action.label}
                     </span>
                   </>
@@ -138,7 +144,10 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                   size="sm"
                   data-slot="grid-add-menu"
                   aria-label={addMenuLabel}
-                  className={cn("grid-toolbar-control grid-toolbar-primary shrink-0 gap-0.5", !merged && "hidden")}
+                  className={cn(
+                    "grid-toolbar-control grid-toolbar-primary shrink-0 gap-0.5",
+                    !merged && "hidden",
+                  )}
                 >
                   <Plus className="size-[1.2em]" />
                   <ChevronDown aria-hidden className="size-[0.85em]" />
@@ -153,17 +162,17 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
               return (
                 <Tooltip key={action.label}>
                   <TooltipTrigger asChild>
-                <DropdownMenuItem
-                  aria-disabled={action.disabled}
-                  className={cn(action.disabled && "ds-disabled-control")}
-                  onSelect={(event: Event) => {
-                    if (action.disabled) return;
-                    action.onClick(event);
-                  }}
-                >
-                  <Icon aria-hidden className="size-[1.1em]" />
-                  {action.shortLabel ?? action.label}
-                </DropdownMenuItem>
+                    <DropdownMenuItem
+                      aria-disabled={action.disabled}
+                      className={cn(action.disabled && "ds-disabled-control")}
+                      onSelect={(event: Event) => {
+                        if (action.disabled) return;
+                        action.onClick(event);
+                      }}
+                    >
+                      <Icon aria-hidden className="size-[1.1em]" />
+                      {action.shortLabel ?? action.label}
+                    </DropdownMenuItem>
                   </TooltipTrigger>
                   {action.disabled && action.disabledReason ? (
                     <TooltipContent>{action.disabledReason}</TooltipContent>
