@@ -1,3 +1,9 @@
+## DS 2.100.0 – Edit dokladu 13b (bez vydání)
+
+- [ ] Opravit body 1–13, zachovat veřejné chování mimo zadání.
+- [ ] Unit, E2E ve třech prohlížečích, lint, formát a kontrola katalogů proti 98810718.
+- [ ] Zapsat pravdivé výsledky a kontrolní tabulku; verze zůstává 2.100.0.
+
 ## DS 2.100.0 – Edit dokladu 13 (bez vydání)
 - [x] D1–D3: společný přepínač a převod protistrany, příkazu, součtu a našeptávače.
 - [x] D4: dostupné zamčení ND a vazby data bez změny geometrie.
