@@ -1,6 +1,5 @@
 /** Sekce výpisu · vlastní rozvržení polí · nesmí ukládat ani kontrolovat výpis. */
-import type { CSSProperties } from "react";
-import { useDateTimePreferences } from "../../../lib/date-time-preferences";
+import { useCompactDateGeometry } from "../form/use-compact-date-geometry";
 import { Check } from "lucide-react";
 import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
@@ -32,37 +31,37 @@ export function BankStatementBasic({
   hasItems,
   texts: t,
 }: BasicSectionProps) {
-  const { formatDate } = useDateTimePreferences();
+  const { containerRef, geometry } = useCompactDateGeometry(t.date);
   return (
     <FieldGrid cols={12}>
       <Field span={3} className="col-span-2">
-        <div
-          className="document-dates-compact"
-          style={
-            {
-              "--document-date-format-sample": `"${formatDate("2000-11-22").replace(/\d/g, "0")}"`,
-            } as CSSProperties
-          }
-        >
-          <Field label={t.date} htmlFor={`${id}-date`}>
-            <DateField
-              id={`${id}-date`}
-              value={value.date}
-              onChange={(date) => patch({ date })}
-              disabled={locked}
-              inputClassName="min-w-0"
-            />
-          </Field>
+        <div ref={containerRef} className="document-dates-container">
+          <div className="document-dates-compact" style={geometry}>
+            <Field label={t.date} htmlFor={`${id}-date`}>
+              <DateField
+                id={`${id}-date`}
+                value={value.date}
+                onChange={(date) => patch({ date })}
+                disabled={locked}
+                inputClassName="min-w-0"
+              />
+            </Field>
+          </div>
         </div>
       </Field>
       <Field
         label={t.number}
         htmlFor={hasItems || locked ? undefined : `${id}-number`}
+        labelId={`${id}-number-label`}
         span={2}
         className="col-span-2"
       >
         {hasItems || locked ? (
-          <FieldValue id={`${id}-number`} lockedReason={hasItems ? t.hasItems : undefined}>
+          <FieldValue
+            aria-labelledby={`${id}-number-label`}
+            id={`${id}-number`}
+            lockedReason={hasItems ? t.hasItems : undefined}
+          >
             {value.number}
           </FieldValue>
         ) : (
@@ -76,11 +75,14 @@ export function BankStatementBasic({
       <Field
         label={t.note}
         htmlFor={locked ? undefined : `${id}-note`}
+        labelId={`${id}-note-label`}
         span={7}
         className="col-span-2"
       >
         {locked ? (
-          <FieldValue id={`${id}-note`}>{value.note}</FieldValue>
+          <FieldValue aria-labelledby={`${id}-note-label`} id={`${id}-note`}>
+            {value.note}
+          </FieldValue>
         ) : (
           <Input
             id={`${id}-note`}
@@ -140,11 +142,16 @@ export function BankStatementBalanceSection({
         <Field
           label={t.bankClosing}
           htmlFor={locked ? undefined : `${id}-bankClosing`}
+          labelId={`${id}-bankClosing-label`}
           span={6}
           className="col-span-2 @min-[40rem]:col-start-4"
         >
           {locked ? (
-            <FieldValue id={`${id}-bankClosing`} className="text-right tabular-nums">
+            <FieldValue
+              aria-labelledby={`${id}-bankClosing-label`}
+              id={`${id}-bankClosing`}
+              className="text-right tabular-nums"
+            >
               {bankClosing === null ? null : `${formatAmount(bankClosing)} ${symbol}`}
             </FieldValue>
           ) : (

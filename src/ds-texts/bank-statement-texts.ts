@@ -37,6 +37,12 @@ export interface BankStatementTexts {
   difference: string;
   /** Popisek items. */
   items: string;
+  /** Důvod zamčení zkontrolovaného výpisu. */
+  lockedChecked: string;
+  /** Důvod zamčení zaúčtovaného výpisu. */
+  lockedPosted: string;
+  /** Důvod výpisu pouze ke čtení. */
+  lockedReadOnly: string;
   /** Popisek hasItems. */
   hasItems: string;
   /** Popisek delete. */

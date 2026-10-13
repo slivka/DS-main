@@ -12,7 +12,7 @@
 - BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
   domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
   Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
-### BREAKING – migrace (Edit dokladu 13 a opravné kolo 13b)
+### BREAKING – migrace (Edit dokladu 13 a opravná kola 13b–13c)
 
 - CounterpartyInputField používá ContactRound v obou režimech; partner má
   aria-pressed=true. `partnerModeLabel` / `manualModeLabel` zůstávají jako nepovinné
@@ -38,6 +38,31 @@
   --control-h. Zamčení bez konkrétního důvodu vysvětluje fieldToggle.locked,
   nikoli text vybízející ke kliknutí.
 
+### Opravy 13c (bez vydání)
+
+- ND: žádné nové `!important`, čtyři obecná gridová pravidla přesně podle 98810718;
+  původní `text-[0.65rem]`, stálý název a samostatné `aria-describedby` při zamčení.
+  Skutečné DOM konstanty změřeny na dočasně spuštěném zdroji 98810718 po načtení písem
+  v Chromium, Firefox a WebKit: oba stavy × aplikační 70/100/200 % × gridový 60/100/140 %.
+  Test `non-tax-baseline.ts` uchovává 54 měření; tolerance rozměrů i písma ±0,5 px.
+- BankStatementForm: PageLayout a karta bez vlastních přepisů, datum měří společný
+  `useCompactDateGeometry` také použitý DocumentDatesSection. FieldGrid pod 40 rem skládá
+  pole do jediného sloupce; Field změří a zmenší pouze skutečně přetékající popisek.
+- BREAKING: hustá FieldGrid pod 40 rem nyní jeden sloupec místo mobilních dvojic;
+  přestaňte spoléhat na dvojice nebo vlastní col-span v úzkém kontejneru. Nový volitelný
+  Field.labelId slouží k aria-labelledby hodnot jen ke čtení bez nesprávného htmlFor.
+  Úplné vlastní BankStatementTexts doplňte o lockedChecked, lockedPosted, lockedReadOnly;
+  existující částečné přepisy texts zůstávají kompatibilní.
+- Levé textové tlačítko RecordActionBar může růst na výšku; zalomený text již nepřetéká.
+- Důvody akcí výpisu vyjadřují stav výpisu v CS/SK; číslo, poznámka a bankovní zůstatek
+  mají vlastní přístupné jméno z popisku. Ukázka nepoužívá zastaralé režimové popisky.
+- `--field-toggle-space` je v @layer base a na každém prvku závisí na lokálním --control-h.
+  Zrušené --non-tax-font-size, --text-bank-label a --bank-date-scale nejsou ani v katalogu.
+- DateField.className má shodně v JSON a tabulce props výchozí hodnotu neurčenou.
+- Požadovaný `bunx tsc --noEmit -p tsconfig.json` nebyl spuštěn: nadřazená pravidla
+  tohoto prostředí výslovně zakazují ruční typecheck i build. Výsledek typů nelze
+  prohlásit za ověřený; po Update ověřte v aplikaci. Automatickou sestavu kontroluje platforma.
+
 ### Opravy 13b a ověření
 
 - Výpis používá RecordActionBar bez selektorových úprav potomků. Uložit odpovídá
@@ -45,10 +70,10 @@
   a tooltipem; busy vykreslí spinner. Levý obsah se ve sdílené liště drží mimo akce.
 - IdentityLine je společný veřejný řádek pro oba formuláře; jejich identita i pole
   používají stejnou kartu sekce. Výpis podporuje Ctrl/Cmd+S a vlastní TooltipProvider.
-- ND má 24 × 24 px, ikonu 14 px a tučné písmo; obecné gridové styly tuto výjimku
-  nepřepisují. Datumové šířky dokladu ani --document-date-* se nezměnily.
-- Datum výpisu používá stejné tokenové měření aktivního formátu. Na krajně úzké
-  kartě výpisu se použije menší token popisku a datumová škála, bez ořezu textu.
+- V kole 13b byla ND chybně vynucena na 24 × 24 px a ikonu 14 px; 13c tento přepis
+  odstraňuje a obnovuje skutečnou vydanou kaskádu gridu. Datumové šířky dokladu ani --document-date-* se nezměnily.
+- Datum výpisu používá stejné tokenové měření aktivního formátu. V kole 13b měla krajně úzká
+  karta vlastní přepisy popisků a data; 13c je nahrazuje společným měřením polí.
   E2E kontroluje také scrollWidth <= clientWidth, ne jen jeden řádek.
 - Texty výpisu jsou rozdělené na CS/SK moduly, sekce uložené běžným písmem;
   verzálky zajišťuje CSS. Domácí sekce je „Zůstatky v {currency}“.
@@ -78,7 +103,7 @@
 | Bod 13b | Stav | Důkaz |
 |---|---|---|
 | 1 | Hotovo | E2E shoda Uložit s DocumentForm, text/ikona, tooltip a busy spinner |
-| 2 | Hotovo | E2E ND 24/24/14 při 70/100/200 % ve třech prohlížečích |
+| 2 | Nahrazeno v 13c | Původně vynucené rozměry neodpovídaly vydané kaskádě |
 | 3 | Hotovo | DateFieldLink.label + DPH CS/SK; date-link hledá jedinečný název |
 | 4 | Hotovo | Unit obecného důvodu CS/SK, fokus a neprovedená změna |
 | 5 | Hotovo | BankStatement unit s hasItems bez vnějšího provideru |

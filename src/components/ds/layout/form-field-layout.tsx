@@ -5,6 +5,7 @@
  */
 import type { ReactNode } from "react";
 
+import { useFieldLabelFit } from "./use-field-label-fit";
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
 
@@ -37,6 +38,8 @@ export interface FieldProps {
   label?: ReactNode;
   /** Identifikátor ovládání svázaný s popiskem. */
   htmlFor?: string;
+  /** Identifikátor popisku hodnoty pouze ke čtení, bez vazby htmlFor. */
+  labelId?: string;
   /** Výjimečná nápověda přímo pod polem. */
   hint?: ReactNode;
   /** Chyba pole; má přednost před nápovědou. */
@@ -55,9 +58,20 @@ export function fieldSpanClass(span?: keyof typeof FIELD_SPAN_CLASSES): string {
 }
 
 /** Pole formuláře s popiskem a jednotným umístěním chyby nebo nápovědy. */
-export function Field({ label, htmlFor, hint, error, span, className = "", children }: FieldProps) {
+export function Field({
+  label,
+  htmlFor,
+  labelId,
+  hint,
+  error,
+  span,
+  className = "",
+  children,
+}: FieldProps) {
+  const fieldRef = useFieldLabelFit(label);
   return (
     <div
+      ref={fieldRef}
       data-slot="field"
       data-field-has-label={label ? "true" : "false"}
       data-invalid={error ? "true" : undefined}
@@ -69,7 +83,7 @@ export function Field({ label, htmlFor, hint, error, span, className = "", child
     >
       {label ? (
         <Label
-          id={htmlFor ? `${htmlFor}-label` : undefined}
+          id={labelId ?? (htmlFor ? `${htmlFor}-label` : undefined)}
           htmlFor={htmlFor}
           title={typeof label === "string" ? label : undefined}
           className={error ? "text-destructive" : undefined}
@@ -111,7 +125,7 @@ export function FieldGrid({ cols = 2, title, hint, className = "", children }: F
     cols === 1
       ? "grid-cols-1"
       : cols === 12
-        ? "grid-cols-2 @min-[40rem]:grid-cols-12"
+        ? "grid-cols-1 @min-[40rem]:grid-cols-12"
         : cols === 20
           ? "grid-cols-1 @min-[40rem]:grid-cols-20"
           : cols === 3
@@ -124,7 +138,11 @@ export function FieldGrid({ cols = 2, title, hint, className = "", children }: F
   return (
     <div className="@container">
       {title ? <SectionHeading>{title}</SectionHeading> : null}
-      <div className={`grid grid-cols-1 gap-3 ${cls} ${className}`}>{children}</div>
+      <div
+        className={`grid grid-cols-1 gap-3 @max-[40rem]:[&>[data-slot=field]]:col-span-1 @max-[40rem]:[&>[data-slot=field]]:col-start-auto ${cls} ${className}`}
+      >
+        {children}
+      </div>
       {hint ? <p className="mt-2 text-xs text-muted-foreground">{hint}</p> : null}
     </div>
   );

@@ -1,3 +1,9 @@
+## DS 2.100.0 – Edit dokladu 13c (bez vydání)
+
+- [ ] Obnovit vydaný vzhled ND, společné rozvržení, datumové měření a dostupné důvody.
+- [ ] Ověřit unit, E2E ve třech prohlížečích, lint a katalogy proti 98810718.
+- [ ] Zapsat omezení ruční typové kontroly a pravdivou kontrolní tabulku.
+
 ## DS 2.100.0 – Edit dokladu 13b (bez vydání)
 
 - [x] Opravit body 1–13, zachovat chování mimo zadání; verze 2.100.0.

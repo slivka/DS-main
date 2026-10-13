@@ -161,7 +161,7 @@ export function RecordActionBar({
           className,
         )}
       >
-        <div className="min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal">
+        <div className="min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:h-auto [&_button]:min-h-[var(--control-h)] [&_button]:py-2">
           {leftContent}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
