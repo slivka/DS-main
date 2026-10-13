@@ -1,13 +1,17 @@
 /** BA DPH a primární akce lišty · vlastní testy chování · nesmí testovat zdrojový text. */
 import { afterEach, expect, test } from "bun:test";
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { DS_TEXTS_CS, DsTextsProvider } from "../../src/ds-texts";
 import {
   DocumentForm,
   type DocumentHeaderValue,
 } from "../../src/components/ds/accounting/document-form";
 import { documentFieldsForType } from "../../src/components/ds/accounting/document-fields";
 import { GridAddActions } from "../../src/components/ds/grid/grid-add-actions";
-import { GridToolbarOverflowContext } from "../../src/components/ds/grid/grid-toolbar-context";
+import {
+  GridAddLabelContext,
+  GridToolbarOverflowContext,
+} from "../../src/components/ds/grid/grid-toolbar-context";
 
 afterEach(cleanup);
 const value: DocumentHeaderValue = {
@@ -65,7 +69,7 @@ test("GridAddActions dvě akce mají plný i zkrácený text", () => {
   const view = render(<GridAddActions actions={actions([])} />);
   expect(view.getByText("Nový příjem")).toBeTruthy();
   expect(view.getByText("Výdej")).toBeTruthy();
-  expect(view.container.querySelector('[data-slot="grid-add-menu"]')).toBeNull();
+  expect(view.queryByRole("button", { name: "Nový – vyberte druh" })).toBeNull();
 });
 test("GridAddActions v úrovni 3 slučuje akce do menu tlačítka", () => {
   const view = render(
@@ -87,4 +91,27 @@ test("GridAddActions jedna akce se do menu neslučuje", () => {
   expect(view.container.querySelector('[data-slot="grid-add-menu"]')).toBeNull();
   fireEvent.click(view.getByRole("button", { name: "Nový příjem (N)" }));
   expect(log).toEqual(["in"]);
+});
+
+test("GridAddActions měřený kompaktní stav zachová zkrácené názvy", () => {
+  const view = render(
+    <GridAddLabelContext.Provider value="short">
+      <GridAddActions actions={actions([])} />
+    </GridAddLabelContext.Provider>,
+  );
+  expect(view.getByText("Příjem")).toBeTruthy();
+  expect(view.getByRole("button", { name: "Nový příjem (N)" })).toBeTruthy();
+});
+
+test("GridAddActions vlastní grid texty nepotřebují addMenu", () => {
+  const { addMenu, ...grid } = DS_TEXTS_CS.grid;
+  expect(addMenu).toBe("Nový – vyberte druh");
+  const view = render(
+    <DsTextsProvider texts={{ grid }}>
+      <GridToolbarOverflowContext.Provider value={3}>
+        <GridAddActions actions={actions([])} />
+      </GridToolbarOverflowContext.Provider>
+    </DsTextsProvider>,
+  );
+  expect(view.getByRole("button", { name: "Nový – vyberte druh" })).toBeTruthy();
 });

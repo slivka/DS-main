@@ -143,6 +143,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                   type="button"
                   size="sm"
                   data-slot="grid-add-menu"
+                  aria-hidden={!merged}
                   aria-label={addMenuLabel}
                   className={cn(
                     "grid-toolbar-control grid-toolbar-primary shrink-0 gap-0.5",
@@ -166,7 +167,10 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                       aria-disabled={action.disabled}
                       className={cn(action.disabled && "ds-disabled-control")}
                       onSelect={(event: Event) => {
-                        if (action.disabled) return;
+                        if (action.disabled) {
+                          event.preventDefault();
+                          return;
+                        }
                         action.onClick(event);
                       }}
                     >
