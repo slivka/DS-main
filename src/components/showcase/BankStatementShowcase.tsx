@@ -1,7 +1,11 @@
 /** Ukázky výpisů · vlastní náhledové hodnoty · nesmí být součástí spotřebitelské knihovny. */
+import { Sigma } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 import {
   BankStatementForm,
+  FieldToggleButton,
+  PaymentOrderAccountField,
+  FieldValue,
   CounterpartyInputField,
   SuggestInput,
   NoticeBar,
@@ -92,7 +96,7 @@ function StatementExample({ scenario }: { scenario: string }) {
 
 /** Přepínače ve stejném formulářovém kontextu pro ověření geometrie. */
 function ToggleExamples() {
-  const texts = useDsTexts().fieldToggle;
+  const t = useDsTexts().fieldToggle;
   const [mode, setMode] = useState<"partner" | "manual">("partner");
   const [name, setName] = useState("");
   const [suggest, setSuggest] = useState(true);
@@ -108,8 +112,6 @@ function ToggleExamples() {
         onNameChange={setName}
         onPartnerChange={() => {}}
         onEditPartner={() => {}}
-        partnerModeLabel={texts.directory}
-        manualModeLabel={texts.directoryUnpressed}
         replaceManualWarning="Nahradit ruční údaje?"
       />
       <SuggestInput
@@ -120,6 +122,34 @@ function ToggleExamples() {
         loadSuggestions={async () => ["Doprava zásilky", "Doprava materiálu"]}
         aria-label="Popis"
       />
+      <PaymentOrderAccountField
+        enabled={false}
+        enabledLabel={t.locked}
+        disabledLabel={t.locked}
+        disabledReason={t.locked}
+        lockedReason={t.locked}
+      >
+        <FieldValue />
+      </PaymentOrderAccountField>
+      <div className="relative">
+        <FieldValue />
+        <FieldToggleButton
+          icon={Sigma}
+          pressed
+          disabled
+          label={t.locked}
+          pressedTooltip={t.locked}
+          unpressedTooltip={t.locked}
+        />
+      </div>
+      <SuggestInput
+        value=""
+        onChange={() => {}}
+        enabled
+        onEnabledChange={() => {}}
+        loadSuggestions={async () => []}
+        disabled
+      />
       <CounterpartyInputField
         mode="partner"
         partnerId="p1"
@@ -129,8 +159,6 @@ function ToggleExamples() {
         onPartnerChange={() => {}}
         onModeChange={() => {}}
         lockedReason="Doklad je zařazen"
-        partnerModeLabel={texts.directory}
-        manualModeLabel={texts.directoryUnpressed}
         replaceManualWarning="Nahradit ruční údaje?"
       />
     </div>

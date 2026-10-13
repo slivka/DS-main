@@ -1,3 +1,11 @@
+## DS 2.100.0 – Edit dokladu 13c (bez vydání)
+
+- [x] Obnovit vydaný vzhled ND, společné rozvržení, datumové měření a dostupné důvody.
+- [x] Unit 636/636; E2E 45/45 unikátních scénářů v rozdělených bězích a opakováních; lint 0 chyb / 293 varování; formát OK.
+- [x] Katalogy 426 → 429, odstraněné 0; 417 shodných objektů; props 722 → 758, odstraněné 0; manifest 505 → 519.
+- [x] CHANGELOG: migrace, pravdivá kontrolní tabulka, omezení typové kontroly; verze 2.100.0 bez Release.
+- [ ] Ruční tsc: blokováno nadřazeným zákazem prostředí, neprovedeno.
+
 ## DS 2.100.0 – Edit dokladu 13b (bez vydání)
 
 - [x] Opravit body 1–13, zachovat chování mimo zadání; verze 2.100.0.

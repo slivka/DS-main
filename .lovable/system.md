@@ -460,3 +460,6 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit od šířky lišty 640 ukazuje ikonu i text, v menší šířce ikonu se stálým názvem a tooltipem; busy ukazuje spinner.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
+
+- Rezervace `--field-toggle-space` se počítá v `@layer base` na každém prvku z jeho lokálního `--control-h`; změnou této výšky řiďte celé pole i přepínač, ne ručním odsazením.
+- Úzké FieldGrid skládají pole pod sebe; Field změří přetékající popisek a zmenší jen jej, nikoli ostatní pole. Kompaktní data obou formulářů měří společný useCompactDateGeometry.

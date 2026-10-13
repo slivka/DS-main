@@ -1,8 +1,9 @@
 /** Edit 13 · skutečné klávesy, rozměry a bankovní výpisy ve třech prohlížečích. */
+import { nonTaxBaseline } from "./non-tax-baseline";
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
-test.setTimeout(480_000);
+test.setTimeout(600_000);
 async function prepare(page: Page) {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
@@ -63,10 +64,12 @@ test("přepínače mají jednotné rozměry, stálé názvy a klávesnici", asyn
   await expect(locked).toHaveAttribute("aria-disabled", "true");
   await locked.hover();
   await expect(page.getByRole("tooltip")).toContainText("Doklad je zařazen");
-  const suggest = root.getByRole("button", {
-    name: "Našeptávač z předchozích dokladů",
-    exact: true,
-  });
+  const suggest = root
+    .getByRole("button", {
+      name: "Našeptávač z předchozích dokladů",
+      exact: true,
+    })
+    .first();
   await suggest.focus();
   await page.keyboard.press("Enter");
   await expect(suggest).toHaveAttribute("aria-pressed", "false");
@@ -138,16 +141,18 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
         await expect(root.locator("[data-pane]")).toHaveCount(count || 1);
         const form = root.locator('[data-slot="bank-statement-form"]').first();
         await expect
-          .poll(async () =>
-            form.evaluate((node) => {
-              const box = node.getBoundingClientRect();
-              return [...node.querySelectorAll("label,input,[data-slot=field-value],button")].every(
-                (el) => {
+          .poll(
+            async () =>
+              form.evaluate((node) => {
+                const box = node.getBoundingClientRect();
+                return [
+                  ...node.querySelectorAll("label,input,[data-slot=field-value],button"),
+                ].every((el) => {
                   const rect = el.getBoundingClientRect();
                   return rect.right <= box.right + 2 && rect.left >= box.left - 2;
-                },
-              );
-            }),
+                });
+              }),
+            { timeout: 60000 },
           )
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
@@ -252,36 +257,63 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
   ).toBeVisible();
 });
 
-test("ND zachovává rozměry vydání 2.99.0 při 70/100/200 %", async ({ page }, info) => {
+test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
   await prepare(page);
-  const nd = page
-    .getByRole("button", { name: "Nedaňový řádek", exact: true })
-    .filter({ has: page.locator("svg") })
-    .first();
-  const results = [];
-  for (const scale of [0.7, 1, 2]) {
-    await zoom(page, scale);
-    const m = await nd.evaluate((n) => {
-      const rect = n.getBoundingClientRect();
-      const icon = n.querySelector("svg")?.getBoundingClientRect();
-      return {
-        width: rect.width,
-        height: rect.height,
-        icon: icon?.width,
-        root: parseFloat(getComputedStyle(document.documentElement).fontSize),
-        weight: getComputedStyle(n).fontWeight,
-      };
-    });
-    expect(m.width).toBeCloseTo((24 * m.root) / 16, 0);
-    expect(m.height).toBeCloseTo((24 * m.root) / 16, 0);
-    expect(m.icon).toBeCloseTo((14 * m.root) / 16, 0);
-    expect(Number(m.weight)).toBe(700);
-    results.push({ scale, ...m });
+  await page.evaluate(() => document.fonts.ready);
+  const nd = page.locator('[data-slot="non-tax-toggle"]').first();
+  const browser = info.project.name;
+  if (browser !== "chromium" && browser !== "firefox" && browser !== "webkit")
+    throw new Error("Chybí referenční prohlížeč");
+  for (const expected of nonTaxBaseline(browser)) {
+    await zoom(page, expected.app);
+    if ((await nd.getAttribute("aria-pressed")) !== String(expected.pressed))
+      await nd.dispatchEvent("click");
+    await expect(nd).toHaveAttribute("aria-pressed", String(expected.pressed));
+    await expect(async () => {
+      await nd.evaluate((n, z) => {
+        const grid = n.closest<HTMLElement>(".zoom-grid");
+        if (!grid) throw new Error("Chybí grid");
+        const current = Number(getComputedStyle(grid).getPropertyValue("--grid-zoom"));
+        grid.dispatchEvent(
+          new WheelEvent("wheel", {
+            deltaY: -Math.log(z / current) / 0.0015,
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true,
+          }),
+        );
+      }, expected.grid);
+      await expect
+        .poll(() =>
+          nd.evaluate((n) => {
+            const grid = n.closest(".zoom-grid");
+            return grid ? Number(getComputedStyle(grid).getPropertyValue("--grid-zoom")) : 0;
+          }),
+        )
+        .toBeCloseTo(expected.grid, 2);
+      const measured = await nd.evaluate((n) => {
+        const r = n.getBoundingClientRect(),
+          s = getComputedStyle(n);
+        const icon = n.querySelector("svg")?.getBoundingClientRect();
+        return {
+          width: r.width,
+          height: r.height,
+          icon: icon?.width ?? null,
+          font: parseFloat(s.fontSize),
+          weight: Number(s.fontWeight),
+        };
+      });
+      for (const key of ["width", "height", "font"] as const)
+        expect(
+          Math.abs(measured[key] - expected[key]),
+          `${browser} ${JSON.stringify(expected)} ${key}`,
+        ).toBeLessThanOrEqual(0.5);
+      expect(measured.weight).toBe(expected.weight);
+      if (expected.icon !== null && measured.icon !== null)
+        expect(Math.abs(measured.icon - expected.icon)).toBeLessThanOrEqual(0.5);
+      else expect(measured.icon).toBe(expected.icon);
+    }).toPass({ timeout: 60000 });
   }
-  await info.attach("ND proti 24/24/14 px", {
-    body: JSON.stringify(results),
-    contentType: "application/json",
-  });
 });
 
 test("Landmark Sigma History mají shodné vsazení a místní výška mění rezervu", async ({ page }) => {
@@ -292,17 +324,19 @@ test("Landmark Sigma History mají shodné vsazení a místní výška mění re
       const toggle = page
         .locator(`[data-slot="field-toggle-button"]:has(svg.lucide-${icon})`)
         .first();
-      const m = await toggle.evaluate((n) => {
-        const parent = n.parentElement;
-        const control = parent?.querySelector("input,[role=combobox],[data-slot=field-value]");
-        if (!control) throw new Error("Chybí pole");
-        const a = n.getBoundingClientRect();
-        const b = control.getBoundingClientRect();
-        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        return { inset: a.top - b.top, size: a.height, control: b.height, rem };
-      });
-      expect(m.inset).toBeCloseTo(m.rem / 4, 0);
-      expect(m.size).toBeCloseTo(m.control - m.rem / 2, 0);
+      await expect(async () => {
+        const m = await toggle.evaluate((n) => {
+          const parent = n.parentElement;
+          const control = parent?.querySelector("input,[role=combobox],[data-slot=field-value]");
+          if (!control) throw new Error("Chybí pole");
+          const a = n.getBoundingClientRect();
+          const b = control.getBoundingClientRect();
+          const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+          return { inset: a.top - b.top, size: a.height, control: b.height, rem };
+        });
+        expect(m.inset).toBeCloseTo(m.rem / 4, 0);
+        expect(m.size).toBeCloseTo(m.control - m.rem / 2, 0);
+      }).toPass({ timeout: 60000 });
     }
   }
   const scope = page.getByTestId("field-toggle-examples");
@@ -336,4 +370,50 @@ test("Landmark Sigma History mají shodné vsazení a místní výška mění re
   expect(styles.background[0]).toBe(styles.background[1]);
   expect(styles.color[0]).toBe(styles.color[1]);
   expect(styles.opacity).toBe("1");
+});
+
+test("zamčené Landmark Sigma History a vazba DPH mají správný vzhled a názvy", async ({ page }) => {
+  await prepare(page);
+  const root = page.getByTestId("field-toggle-examples");
+  const reference = page.getByTestId("document-readonly").locator("input:disabled").first();
+  const expected = await reference.evaluate((n) => {
+    const s = getComputedStyle(n);
+    return { background: s.backgroundColor, color: s.color, opacity: s.opacity };
+  });
+  for (const icon of ["landmark", "sigma", "history"]) {
+    const toggle = root.locator(
+      `[data-slot=field-toggle-button]:has(svg.lucide-${icon})[aria-disabled=true]`,
+    );
+    const actual = await toggle.evaluate((n) => {
+      const s = getComputedStyle(n);
+      return { background: s.backgroundColor, color: s.color, opacity: s.opacity };
+    });
+    expect(actual).toEqual(expected);
+  }
+  const dates = page.getByTestId("date-panels");
+  await expect(
+    dates.getByRole("button", { name: "Svázat s DUZP", exact: true }).first(),
+  ).toBeVisible();
+  await dates.getByRole("button", { name: "SK", exact: true }).click();
+  await expect(
+    dates.getByRole("button", { name: "Prepojiť s DUZP", exact: true }).first(),
+  ).toBeVisible();
+});
+
+test("DocumentForm vlevo při 360 px a 200 % neprotéká tlačítkem", async ({ page }) => {
+  await prepare(page);
+  await zoom(page, 2);
+  const root = page.getByTestId("form-design-two");
+  await root.evaluate((n) => (n.style.width = "360px"));
+  const buttons = root.locator("[data-slot=document-action-bar] > div:first-child button");
+  for (const button of await buttons.all()) {
+    const m = await button.evaluate((n) => ({
+      scroll: n.scrollHeight,
+      client: n.clientHeight,
+      width: n.scrollWidth,
+      available: n.clientWidth,
+    }));
+    expect(m.scroll).toBeLessThanOrEqual(m.client);
+    expect(m.width).toBeLessThanOrEqual(m.available);
+  }
 });

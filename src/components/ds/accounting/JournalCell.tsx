@@ -4,6 +4,7 @@
  *   tooltip s názvem účtu a zahájení editace klikem, dvojklikem a klávesnicí.
  * Nesmí: počítat hodnoty – text buňky dává journalDisplayValue, zápis JournalCellEditor.
  */
+import { useId } from "react";
 import { Pencil, ReceiptText } from "lucide-react";
 
 import { useDsTexts } from "../../../ds-texts";
@@ -37,6 +38,7 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
   const { t } = editor;
   const texts = useDsTexts().fieldToggle;
   const locked = !editor.canEditCell(line, "nonTax");
+  const reasonId = useId();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -47,12 +49,13 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
           aria-disabled={locked || undefined}
           aria-pressed={!!line.nonTax}
           aria-label={texts.nonTax}
+          aria-describedby={locked ? reasonId : undefined}
           onClick={(event) => {
             event.stopPropagation();
             if (!locked) onToggle();
           }}
           className={cn(
-            "ds-disabled-control order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[length:var(--non-tax-font-size)] font-bold",
+            "ds-disabled-control order-first mr-1 inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[0.65rem] font-bold",
             line.nonTax
               ? "bg-warning-soft text-warning-strong"
               : "text-muted-foreground hover:bg-muted",
@@ -61,6 +64,11 @@ function NonTaxToggle({ line, onToggle }: { line: JournalLine; onToggle: () => v
           {line.nonTax ? t.nonTaxShort : <ReceiptText className="size-3.5" />}
         </button>
       </TooltipTrigger>
+      {locked ? (
+        <span id={reasonId} className="sr-only">
+          {texts.nonTaxLocked}
+        </span>
+      ) : null}
       <TooltipContent>
         {locked ? texts.nonTaxLocked : line.nonTax ? texts.nonTaxPressed : texts.nonTaxUnpressed}
       </TooltipContent>

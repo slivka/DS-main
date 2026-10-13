@@ -119,3 +119,20 @@ test("BankStatementForm ukládá Ctrl/Cmd+S jen při dostupné akci", () => {
     view.getByRole("button", { name: "Uložit" }).querySelector(".lucide-loader-circle"),
   ).toBeTruthy();
 });
+
+test("BankStatementForm pouze čtené hodnoty mají jméno z popisku", () => {
+  const view = show({ status: "checked", value: { ...base.value, bankClosing: 12500 } });
+  for (const label of ["Číslo výpisu", "Poznámka", "Konečný zůstatek dle banky"]) {
+    const node = view.getByLabelText(label);
+    expect(node.getAttribute("data-slot")).toBe("field-value");
+    expect(node.getAttribute("aria-labelledby")).toBeTruthy();
+  }
+});
+test.each(["cs", "sk"] as const)("BankStatementForm důvody stavů %s", (locale) => {
+  const view = show({ status: "posted", onCheckedChange: () => {} }, locale);
+  const name = locale === "cs" ? "Zrušit kontrolu" : "Zrušiť kontrolu";
+  const action = view.getByRole("button", { name });
+  const id = action.getAttribute("aria-describedby");
+  expect(id).toBeTruthy();
+  expect(view.container.querySelector(`[id="${id}"]`)?.textContent).toBe("Výpis je zaúčtovaný");
+});

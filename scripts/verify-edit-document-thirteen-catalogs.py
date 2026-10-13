@@ -8,7 +8,7 @@ from pathlib import Path
 BASE = "98810718"
 TOUCHED = {
     "CounterpartyInputField", "PaymentOrderAccountField", "SuggestInput",
-    "DateField", "DocumentForm", "JournalLinesEditor", "RecordActionBar",
+    "DateField", "DocumentForm", "JournalLinesEditor", "RecordActionBar", "Field", "FieldGrid",
 }
 ADDED = {"FieldToggleButton", "BankStatementForm", "IdentityLine"}
 
@@ -98,6 +98,8 @@ assert all(Path(key).is_file() for key in new_manifest.keys() - old_manifest.key
 for key in ["assets", "constraints"]:
     assert old_json[key] == new_json[key], key
 print(f"source_manifest: {len(old_manifest)} → {len(new_manifest)}; odstraněné 0; #enrichment zachován")
+date_field = next(c for c in new_json["components"] if c["name"] == "DateField")
+assert next(p for p in date_field["props"] if p["name"] == "className").get("default") is None
 print("DocumentActionBar a všechny neuvedené objekty i sekce zůstaly bajtově shodné.")
 
 # Každý řádek tabulky props porovnáme s bází; existující props nesmí zmizet.

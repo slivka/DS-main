@@ -1932,7 +1932,7 @@ import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Úzké pole změří popisek a zmenší pouze přetékající text. labelId váže FieldValue přes aria-labelledby bez htmlFor.
 
 **Props:**
 
@@ -1940,6 +1940,7 @@ Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek,
 |---|---|---|
 | `label` | any | `—` |
 | `htmlFor` | string | `—` |
+| `labelId` | string | `—` |
 | `hint` | any | `—` |
 | `error` | any | `—` |
 | `span` | 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 19 · 20 | `—` |
@@ -1965,7 +1966,7 @@ _Pole přes čtyři sloupce_
 import { FieldGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem.
+Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem. Pod 40 rem se hustá mřížka skládá do jednoho sloupce včetně polí s vlastní col-span.
 
 **Props:**
 
@@ -2708,39 +2709,6 @@ import { InputOTPSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### JournalLinesEditor
-
-```ts
-import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. 13b: ND má rozměry 24 × 24, ikonu 14 a tučný text; nepřebírá rozměry obecných gridových akcí. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0.
-
-**Examples:**
-
-_Rozpis se zkrácenými účty_
-```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
-```
-
-_Řádky s DPH (2.55.0)_
-```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
-// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
-```
-
-_2.92.0_
-```tsx
-<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
-```
-
-**Avoid:**
-
-- Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
-- Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
-- Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
-- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
-
 ### JournalLinesRecap
 
 ```ts
@@ -2786,6 +2754,38 @@ _2.92.0_
 **Avoid:**
 
 - Nepočítejte rekapitulaci z filtrované podmnožiny řádků.
+
+### JournalLinesEditor
+
+```ts
+import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby.
+
+**Examples:**
+
+_Rozpis se zkrácenými účty_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
+```
+
+_Řádky s DPH (2.55.0)_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
+// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
+```
+
+_2.92.0_
+```tsx
+<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
+```
+
+**Avoid:**
+
+- Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
+- Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
+- Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
 
 ### JournalRecapHomeTotal
 
@@ -3826,7 +3826,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků.
+Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou.
 
 **Props:**
 
@@ -5191,7 +5191,7 @@ _Platit příkazem_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují ani neořezávají.
+Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují ani neořezávají. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů a popisků, vlastní důvody zamčení checked/posted/readOnly a jména hodnot z popisků.
 
 **Props:**
 

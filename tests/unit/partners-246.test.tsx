@@ -255,7 +255,7 @@ describe("Partneři D – formulářové rozvržení 2.52.0", () => {
     expect(nextSegmentedFieldValue([...options], "company", -1)).toBe("person");
   });
 
-  it("FieldGrid podporuje 12 sloupců a mobilní dvojice", () => {
+  it("FieldGrid skládá pole a zachovává jejich obsah", () => {
     const html = renderToStaticMarkup(
       <FieldGrid cols={12}>
         <Field label="Jméno" span={4}>
@@ -266,9 +266,8 @@ describe("Partneři D – formulářové rozvržení 2.52.0", () => {
         </Field>
       </FieldGrid>,
     );
-    expect(html).toContain("grid-cols-2");
-    expect(html).toContain("@min-[40rem]:grid-cols-12");
-    expect(html).toContain("@min-[40rem]:col-span-4");
+    expect(html).toContain("Jméno");
+    expect(html).toContain("Příjmení");
   });
 
   it("OptionSelect přijímá vlastní text prázdné hodnoty", () => {

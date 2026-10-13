@@ -118,6 +118,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
     const t = { ...ds.bankStatement, ...texts };
     const id = useId();
     const locked = Boolean(readOnly || status !== "open");
+    const lockedReason = readOnly
+      ? t.lockedReadOnly
+      : status === "posted"
+        ? t.lockedPosted
+        : status === "checked"
+          ? t.lockedChecked
+          : undefined;
     const patch = (next: Partial<BankStatementValue>) => {
       if (!locked) onChange({ ...value, ...next });
     };
@@ -143,10 +150,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
           data-slot="bank-statement-form"
           className={cn("@container min-w-0", className)}
         >
-          <PageLayout
-            variant="form"
-            className="@max-[20rem]:[&_label]:text-[length:var(--text-bank-label)] @max-[20rem]:[&_.document-dates-compact]:[--document-date-scale:var(--bank-date-scale)]"
-          >
+          <PageLayout variant="form">
             <PageHeader
               title={t.title}
               titleBadge={
@@ -181,11 +185,11 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                       </Button>
                     </TooltipTrigger>
                     {readOnly || status === "posted" ? (
-                      <TooltipContent>{ds.fieldToggle.locked}</TooltipContent>
+                      <TooltipContent>{lockedReason}</TooltipContent>
                     ) : null}
                     {readOnly || status === "posted" ? (
                       <span id={`${id}-check-reason`} className="sr-only">
-                        {ds.fieldToggle.locked}
+                        {lockedReason}
                       </span>
                     ) : null}
                   </Tooltip>
@@ -201,11 +205,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                         label: t.delete,
                         destructive: true,
                         disabled: hasItems || locked,
-                        disabledReason: hasItems
-                          ? t.hasItems
-                          : locked
-                            ? ds.fieldToggle.locked
-                            : undefined,
+                        disabledReason: hasItems ? t.hasItems : locked ? lockedReason : undefined,
                         onClick: () => {
                           if (!hasItems && !locked) onDelete();
                         },
@@ -216,7 +216,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
               error={error}
               notices={notices}
             />
-            <section className="rounded-lg border bg-card p-4 @max-[20rem]:p-0">
+            <section className="rounded-lg border bg-card p-4">
               <IdentityLine
                 data-slot="bank-statement-identity"
                 items={[book, currency, period, bankAccount]}
