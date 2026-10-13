@@ -892,4 +892,4 @@
 - [x] Sjednocení package.json a meta.version, pravidlo vydání
 - [x] 13g: BA DUZP, dvě primární akce lišty (zkrácení, nabídka), verze 2.101.0 pro Release
 
-- [ ] 13h: dostupná šířka primárních akcí, texty, katalogy a ověření bez ztrát.
+- [x] 13h: dostupná šířka primárních akcí, texty, katalogy; unit 650/650, E2E 9/9 ve třech prohlížečích jedním během, lint 0 chyb / 292 varování. Katalog 429 → 429, manifest 523 → 503 (21 vyloučených ukázek, 1 doplněný test); verze 2.101.0, bez Release.

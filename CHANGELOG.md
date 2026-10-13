@@ -10,7 +10,12 @@
 - Zakázané položky nabídky zůstávají dostupné s tooltipem důvodu a neprovedou akci.
   Katalog doplňuje tokeny, popis checkDisabledReason a opravený typ IdentityLine.
 - Manifest vyřazuje všechny náhledové ukázky podle `.dsignore`; doplňuje existující
-  test přetečení záhlaví. Komponenty se neodstraňují.
+  test přetečení záhlaví. Komponenty 429 → 429, žádný název nezmizel. Manifest
+  523 → 503: 21 vyloučených ukázek a 1 doplněný test, ostatní soubory zachovány.
+- Ověření 13h: unit 650/650 (63 souborů), E2E 9/9 jedním během bez opakování
+  (Chromium, Firefox, WebKit: tři šířky, menu klik/klávesnice, 15 hranic bez přetečení,
+  BA DUZP), lint 0 chyb / 292 varování. Automatická sestava OK; ruční typová kontrola
+  ani build se dle omezení prostředí nespouštěly. Verze zůstává 2.101.0, bez Release.
 
 ### 13g
 
