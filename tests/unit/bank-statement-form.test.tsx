@@ -122,9 +122,20 @@ test("BankStatementForm ukládá Ctrl/Cmd+S jen při dostupné akci", () => {
 
 test("BankStatementForm pouze čtené hodnoty mají jméno z popisku", () => {
   const view = show({ status: "checked", value: { ...base.value, bankClosing: 12500 } });
-  for (const label of ["Číslo výpisu", "Poznámka", "Konečný zůstatek dle banky"]) {
-    const node = view.getByLabelText(label);
-    expect(node.getAttribute("data-slot")).toBe("field-value");
+  for (const label of [
+    "Číslo výpisu",
+    "Poznámka",
+    "Konečný zůstatek dle banky",
+    "Počáteční zůstatek",
+    "Příjmy",
+    "Výdaje",
+    "Konečný zůstatek",
+    "Rozdíl",
+  ]) {
+    const node = view.getByRole("group", { name: label, exact: true });
+    expect(node.getAttribute("data-slot")).toBe(
+      label === "Rozdíl" ? "bank-statement-difference" : "field-value",
+    );
     expect(node.getAttribute("aria-labelledby")).toBeTruthy();
   }
 });

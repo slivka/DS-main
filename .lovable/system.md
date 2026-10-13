@@ -462,4 +462,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
 
 - Rezervace `--field-toggle-space` se počítá v `@layer base` na každém prvku z jeho lokálního `--control-h`; změnou této výšky řiďte celé pole i přepínač, ne ručním odsazením.
-- Úzké FieldGrid skládají pole pod sebe; Field změří přetékající popisek a zmenší jen jej, nikoli ostatní pole. Kompaktní data obou formulářů měří společný useCompactDateGeometry.
+- Úzké FieldGrid skládají všechny děti pod sebe. Field zachovává velikost písma; dlouhý popisek zkrátí výpustkou a celý text dá do title. Kompaktní data obou formulářů měří společný useCompactDateGeometry.

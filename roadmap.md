@@ -1,3 +1,9 @@
+## DS 2.100.0 – Edit dokladu 13d (bez vydání)
+
+- [ ] Obnovit popisky a velikost Switch, zpřístupnit všechny hodnoty výpisu, upravit mřížku a ukázku.
+- [ ] Unit, jeden čistý E2E běh ve třech prohlížečích, lint, formát a katalogy proti 98810718.
+- [ ] Zapsat kontrolní tabulku a omezení tsc; verze zůstává 2.100.0.
+
 ## DS 2.100.0 – Edit dokladu 13c (bez vydání)
 
 - [x] Obnovit vydaný vzhled ND, společné rozvržení, datumové měření a dostupné důvody.

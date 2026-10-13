@@ -1,9 +1,11 @@
+/** Hodnota pole · vlastní čtený obsah a důvod zamčení · nesmí měnit hodnotu. */
 import * as React from "react";
 import { Lock } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
+/** Vlastnosti hodnoty pouze ke čtení. */
 export interface FieldValueProps extends React.ComponentPropsWithoutRef<"div"> {
   /** Volitelný obsah zarovnaný vpravo, typicky ikonová akce. */
   trailing?: React.ReactNode;
@@ -22,6 +24,7 @@ export const FieldValue = React.forwardRef<HTMLDivElement, FieldValueProps>(func
   return (
     <div
       ref={ref}
+      role="group"
       data-slot="field-value"
       data-control-height="standard"
       className={cn(

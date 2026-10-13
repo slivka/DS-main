@@ -8,7 +8,7 @@ from pathlib import Path
 BASE = "98810718"
 TOUCHED = {
     "CounterpartyInputField", "PaymentOrderAccountField", "SuggestInput",
-    "DateField", "DocumentForm", "JournalLinesEditor", "RecordActionBar", "Field", "FieldGrid",
+    "DateField", "DocumentForm", "JournalLinesEditor", "RecordActionBar", "Field", "FieldGrid", "FieldValue",
 }
 ADDED = {"FieldToggleButton", "BankStatementForm", "IdentityLine"}
 
@@ -88,16 +88,19 @@ for path, index in [
     print(f"{path}: 426 → {count}; odstraněné sekce 0; změněné {len(modified)}; nové {len(added)}")
 old_manifest = old_json["meta"]["source_manifest"]
 new_manifest = new_json["meta"]["source_manifest"]
-assert not old_manifest.keys() - new_manifest.keys()
+assert old_manifest.keys() - new_manifest.keys() == {".lovable/plan.md"}
+assert not Path(".lovable/plan.md").exists()
+assert "tests/e2e/non-tax-baseline.ts" in new_manifest
+assert "src/components/ds/layout/use-field-label-fit.ts" not in new_manifest
 assert old_manifest["#enrichment"] == new_manifest["#enrichment"]
 changed_files = set(subprocess.check_output(
     ["git", "diff", "--name-only", BASE]).decode().splitlines())
-modified_manifest = {key for key in old_manifest if old_manifest[key] != new_manifest[key]}
+modified_manifest = {key for key in old_manifest.keys() & new_manifest.keys() if old_manifest[key] != new_manifest[key]}
 assert modified_manifest <= changed_files, modified_manifest - changed_files
 assert all(Path(key).is_file() for key in new_manifest.keys() - old_manifest.keys())
 for key in ["assets", "constraints"]:
     assert old_json[key] == new_json[key], key
-print(f"source_manifest: {len(old_manifest)} → {len(new_manifest)}; odstraněné 0; #enrichment zachován")
+print(f"source_manifest: {len(old_manifest)} → {len(new_manifest)}; odstraněný pouze smazaný .lovable/plan.md; #enrichment zachován")
 date_field = next(c for c in new_json["components"] if c["name"] == "DateField")
 assert next(p for p in date_field["props"] if p["name"] == "className").get("default") is None
 print("DocumentActionBar a všechny neuvedené objekty i sekce zůstaly bajtově shodné.")

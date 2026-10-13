@@ -12,7 +12,7 @@
 - BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
   domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
   Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
-### BREAKING – migrace (Edit dokladu 13 a opravná kola 13b–13c)
+### BREAKING – migrace (Edit dokladu 13 a opravná kola 13b–13d)
 
 - CounterpartyInputField používá ContactRound v obou režimech; partner má
   aria-pressed=true. `partnerModeLabel` / `manualModeLabel` zůstávají jako nepovinné
@@ -38,6 +38,33 @@
   --control-h. Zamčení bez konkrétního důvodu vysvětluje fieldToggle.locked,
   nikoli text vybízející ke kliknutí.
 
+### Opravy 13d (bez vydání)
+
+- RecordActionBar: zalamování a růst levých textových tlačítek platí jen pro
+  `[data-slot=button]` výslovně mimo `role=switch` a `role=checkbox`. DPH Switch
+  se neroztahuje; geometrie vydání 2.99.0 je 20 × 36 px při 100 %, 40 × 72 při 200 %.
+- Zrušeno dynamické měření a zmenšování běžných popisků Field včetně samostatného
+  hooku, importu, volání a manifestového záznamu. Písmo se nezmenšuje, dlouhý text
+  má původní výpustku a celý text v title. Sdílené kompaktní datumové měření zůstává.
+- FieldGrid v úzkém kontejneru převádí **všechny přímé děti** do jednoho sloupce,
+  nikoli jen Field. Výpis nemá zbytečné col-span-2 ani lokální vzhledové výjimky.
+- FieldValue má výchozí role group; aria-labelledby váže číslo, poznámku, všechny
+  čtyři součty, zůstatek podle banky i rozdíl na jejich popisky. Unit ověřuje osm skupin
+  přímo podle přístupného jména. Vlastní DOM props včetně role zůstávají předatelné.
+- Ukázka zamčeného našeptávače má vlastní aria-label. Test běžného našeptávače
+  vybírá pole Popis a jeho jediné tlačítko, nikoli první ze dvou stejně pojmenovaných.
+- Obnovena výslovná tvrzení grid-cols-1 a @min-[40rem]:grid-cols-12; test platebního
+  příkazu kliká nepodmíněně a ověřuje výchozí i výsledný stav.
+- Manifest odstraňuje neexistující plán a přidává referenční ND měření.
+  Katalogový skript povoluje pouze odstranění tohoto smazaného souboru, nikoli komponent.
+- Testy nepoužívají toPass ani prodloužená dílčí očekávání z 13c. Celkový limit
+  480 s zůstává pro rozsáhlou matici 40 rozvržení a 18 ND měření v pomalých prohlížečích;
+  běžné očekávání je 10 s. Dvě animationFrame po změně zoomu čekají na vykreslení.
+  ND mění zoom skutečnými tlačítky lišty; umělá wheel událost na obalu byla neúčinná.
+  Geometrie přepínačů se měří ve stabilní ukázce, ne v průběžně nahrazovaných datech.
+- tsc/typecheck **neproběhl** kvůli nadřazenému zákazu prostředí; nesdělujeme úspěch.
+  Verze zůstává 2.100.0 a Release nebyl proveden.
+
 ### Opravy 13c (bez vydání)
 
 - ND: žádné nové `!important`, čtyři obecná gridová pravidla přesně podle 98810718;
@@ -47,13 +74,14 @@
   Test `non-tax-baseline.ts` uchovává 54 měření; tolerance rozměrů i písma ±0,5 px.
 - BankStatementForm: PageLayout a karta bez vlastních přepisů, datum měří společný
   `useCompactDateGeometry` také použitý DocumentDatesSection. FieldGrid pod 40 rem skládá
-  pole do jediného sloupce; Field změří a zmenší pouze skutečně přetékající popisek.
+  pole do jediného sloupce; popisky zachovávají původní zkrácení a title.
 - BREAKING: hustá FieldGrid pod 40 rem nyní jeden sloupec místo mobilních dvojic;
   přestaňte spoléhat na dvojice nebo vlastní col-span v úzkém kontejneru. Nový volitelný
   Field.labelId slouží k aria-labelledby hodnot jen ke čtení bez nesprávného htmlFor.
   Úplné vlastní BankStatementTexts doplňte o lockedChecked, lockedPosted, lockedReadOnly;
   existující částečné přepisy texts zůstávají kompatibilní.
-- Levé textové tlačítko RecordActionBar může růst na výšku; zalomený text již nepřetéká.
+- Textová tlačítka levého obsahu RecordActionBar mohou růst na výšku; pravidlo
+  cíleně vynechává přepínače a checkboxy (oprava rozsahu v 13d).
 - Důvody akcí výpisu vyjadřují stav výpisu v CS/SK; číslo, poznámka a bankovní zůstatek
   mají vlastní přístupné jméno z popisku. Ukázka nepoužívá zastaralé režimové popisky.
 - `--field-toggle-space` je v @layer base a na každém prvku závisí na lokálním --control-h.
@@ -80,7 +108,7 @@
 | Bod 13c | Stav | Důkaz |
 |---|---|---|
 | 1 | Hotovo | CSS gridu přesně dle báze; ND 54 DOM konstant, oba stavy a všech devět zoomů; E2E ve 3 prohlížečích |
-| 2 | Hotovo | Bez bankovních přepisů; sdílené datumové měření a FieldGrid; CS/SK, 1/2/3 panely, 360 px, 70–200 %, úplné popisky |
+| 2 | Hotovo | Bez bankovních přepisů; sdílené datumové měření a FieldGrid; CS/SK, 1/2/3 panely, 360 px, 70–200 %, popisky s title |
 | 3 | Blokováno | Nadřazené pravidlo zakazuje ruční tsc/typecheck; příkaz nebyl spuštěn, typy po Update neověřeny |
 | 4 | Hotovo | E2E DocumentForm 360 px / 200 %, text nepřesahuje tlačítko |
 | 5 | Hotovo | lockedChecked / lockedPosted / lockedReadOnly CS/SK, stavové důvody v akcích |
@@ -100,8 +128,8 @@
 - V kole 13b byla ND chybně vynucena na 24 × 24 px a ikonu 14 px; 13c tento přepis
   odstraňuje a obnovuje skutečnou vydanou kaskádu gridu. Datumové šířky dokladu ani --document-date-* se nezměnily.
 - Datum výpisu používá stejné tokenové měření aktivního formátu. V kole 13b měla krajně úzká
-  karta vlastní přepisy popisků a data; 13c je nahrazuje společným měřením polí.
-  E2E kontroluje také scrollWidth <= clientWidth, ne jen jeden řádek.
+  karta vlastní přepisy popisků a data; 13c je nahrazuje společným datumovým měřením a 13d obnovuje původní popisky.
+  E2E od 13d kontroluje původní zkrácení s title a rozměry uvnitř pole, ne menší písmo.
 - Texty výpisu jsou rozdělené na CS/SK moduly, sekce uložené běžným písmem;
   verzálky zajišťuje CSS. Domácí sekce je „Zůstatky v {currency}“.
 - Odstranění a změna kontroly mají při zamčení vysvětlení; popisky jen čtených

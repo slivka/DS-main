@@ -18,20 +18,20 @@
     ],
     "source_type": "local",
     "source_manifest": {
+      "tests/e2e/non-tax-baseline.ts": "c89c4f70b09d58c22003be88d0eee634",
       "src/components/ds/accounting/bank-statement-form.tsx": "738ffe2a43531f294c2968280b0f5484",
-      "src/components/ds/accounting/bank-statement-sections.tsx": "396ba00e260a7769b3a9cc76f9151483",
+      "src/components/ds/accounting/bank-statement-sections.tsx": "e57753e3b3cd7a30fcc65a6ae9ef0eba",
       "src/components/ds/form/field-toggle-button.tsx": "bff9267d3f7aaa0a9c13fd6315b3b5f7",
-      "src/components/showcase/BankStatementShowcase.tsx": "b11ec52b22fe55d744881f9fe91842fa",
+      "src/components/showcase/BankStatementShowcase.tsx": "ccca224d6d61da8dc809627b41bea1b9",
       "src/ds-texts/bank-statement-texts.ts": "9480c312945fc42ea699587ca3f20192",
-      "tests/e2e/edit-document-thirteen.spec.ts": "a9f3d6503fd89dd24afa464341c06d12",
-      "tests/unit/bank-statement-form.test.tsx": "a26880129c81480d325391ac0320f64f",
+      "tests/e2e/edit-document-thirteen.spec.ts": "2af3be142bfae13ac50766e64074b6ea",
+      "tests/unit/bank-statement-form.test.tsx": "44f8c6de5a351e1c2c9475b106b2ff5b",
       "tests/unit/field-toggle-button.test.tsx": "8660f7968365b6bf85af8a45f0df9f27",
-      "scripts/verify-edit-document-thirteen-catalogs.py": "285567c897c7c7a0bc047147f893da0f",
+      "scripts/verify-edit-document-thirteen-catalogs.py": "66616698d46a9bcd344f7b816fd0b7c1",
       "#enrichment": "b92dbd663cc89eba88bec904f535d7cc9a9af199199b4313cb55d33242d8f156",
       ".dsignore": "064818221ffbcf9369c43a13cf6bb694",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
-      ".lovable/plan.md": "40f6fbd7178f950b98457095e115527d",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
       ".lovable/plan/appshell-2-3-0-adaptivní-lišta-a-období-2026-09-23.md": "cff0cd14c533151ad08b061cfce05b5d",
@@ -70,11 +70,11 @@
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "ec332657aa8774a76f8f562d34e25167",
+      ".lovable/system.md": "fe3f34c3efb67e793c4576c831726c32",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
-      "AGENTS.md": "f93fedd2d01d57d58d6334109e7c6b5f",
-      "CHANGELOG.md": "0502182dce40f95126a4bc25b064aa93",
+      "AGENTS.md": "aceb541dd2b613542776fed97d6cac62",
+      "CHANGELOG.md": "5342b04168cb5f6c785949a84201c98a",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -85,7 +85,7 @@
       "package.json": "9502d08af20fa115ebbc6792701a4aaf",
       "playwright.config.ts": "38fc8a2ae3277a7b7da0a9e20b6074ad",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "a541a3e79730fd8f82fb7c036c5d1faa",
+      "roadmap.md": "dc699a10a8317074d3125229ad29ea65",
       "scripts/verify-edit-document-catalogs.py": "2b09bc09dee782c22523e026fa930e70",
       "src/assets/icons/excel.svg": "4d0a13c2c80a43e0a05ea2fa3ed807bb",
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
@@ -198,7 +198,7 @@
       "src/components/ds/form/entity-select.tsx": "ec9dabccde3e95fae9cfac392626a893",
       "src/components/ds/form/field-inline-actions.tsx": "9aaf0f61cd8dac3d8d323eb70cdd2951",
       "src/components/ds/form/field-table.tsx": "6fbac22923d3981830287415ff27f894",
-      "src/components/ds/form/field-value.tsx": "93ac4add53de59dd94b1da4e7b5d1f11",
+      "src/components/ds/form/field-value.tsx": "28698a01de54723248507049143f1859",
       "src/components/ds/form/ico-field.tsx": "9e332b2e2ef8b48a3d46c98e1ef626f0",
       "src/components/ds/form/ico-link.tsx": "f670fd77992d3a9fca915dc15581645a",
       "src/components/ds/form/legal-form-field.tsx": "84190d80e472c0a910f4e0d04c25dcfa",
@@ -282,7 +282,7 @@
       "src/components/ds/layout/company-switcher.tsx": "539e04c95c973876db83df21b3b1bfc9",
       "src/components/ds/layout/context-pill.tsx": "c55f372643df2b57c8f5309eedc5af77",
       "src/components/ds/layout/context-switcher.tsx": "a07aea0bd3ee1b86dedb9e8468ba0efe",
-      "src/components/ds/layout/form-field-layout.tsx": "4442cb7e543b23b73dd0f7d7d4d0bc06",
+      "src/components/ds/layout/form-field-layout.tsx": "495b3661cd3cbd6f39a7612b46dd934c",
       "src/components/ds/layout/nav-items.tsx": "cd5ec31101ce6e15d56052fe53155161",
       "src/components/ds/layout/nav-search.tsx": "d61280d97dbe6932a6e3a4499d88ee7e",
       "src/components/ds/layout/notification-bell.tsx": "eb9f9c046c98dc23a8b0cdc15f15b53e",
@@ -290,7 +290,7 @@
       "src/components/ds/layout/page-layout.tsx": "5a769bd27dadd8bdd889318075e37204",
       "src/components/ds/layout/page-tabs.tsx": "88f4a67722bfb6cd815fe588722e2eb9",
       "src/components/ds/layout/period-switcher.tsx": "0ede0651812f61cdc6077d73ae2a38e4",
-      "src/components/ds/layout/record-action-bar.tsx": "a9cc3352544a2d60cce1d0065d8f1ca3",
+      "src/components/ds/layout/record-action-bar.tsx": "f6d253c18c28e23b468436ff157ac700",
       "src/components/ds/layout/search-button.tsx": "5aa5ad81f7b4f78d1a68d20d34534810",
       "src/components/ds/layout/section-heading.tsx": "a8d2efeff43eb28a370ef2416cc200f8",
       "src/components/ds/layout/settings-section.tsx": "d927fc8474cb253c87366215b2033f26",
@@ -458,7 +458,7 @@
       "tests/e2e/document-date-link.spec.ts": "da86ab01d9539e3d2b1884ebd1361b69",
       "tests/e2e/document-disabled-inputs.spec.ts": "34a6679a944fb9817ae1c4793fe0e966",
       "tests/e2e/edit-document-eleven.spec.ts": "c292f7663a16f487a4c7983ae76d2b91",
-      "tests/e2e/edit-document-twelve.spec.ts": "9f00a494ecf4c8bc48f00fc607d6d95b",
+      "tests/e2e/edit-document-twelve.spec.ts": "4c5a5bc301f3738524f1bd4a16da3410",
       "tests/e2e/excel-download.spec.ts": "af20477259287b9dafece13ee60e4b7a",
       "tests/e2e/form-design-two.spec.ts": "4383d3d512707baf45a6da3c7ff745e4",
       "tests/e2e/form-design.spec.ts": "5c74ad93070cc7062600bbbb6af8c1be",
@@ -519,7 +519,7 @@
       "tests/unit/pane-state.test.ts": "833b9690641b71cd5c0e9b791fcb013c",
       "tests/unit/pane-tabs-217.test.ts": "dfd8fc337ea6a41bb44cf6b6388e8923",
       "tests/unit/pane-unsaved-286.test.tsx": "cdbf4947fa39165354ac07fc84b45c0d",
-      "tests/unit/partners-246.test.tsx": "efd5ac609ab01faf954de517e035e73b",
+      "tests/unit/partners-246.test.tsx": "49c6d8301d5eee6fdc0c8b03efeb3c69",
       "tests/unit/print-226.test.ts": "bbf381ca80a9649c500efb773dde50bc",
       "tests/unit/record-dialog-284.test.tsx": "066efc8173af4e1a5b696685d1778d94",
       "tests/unit/record-form-262.test.tsx": "1a65888bfa9b86dafd25cef4361ae743",
@@ -535,8 +535,7 @@
       "src/components/ds/layout/identity-line.tsx": "021a283345ba90ded1de9353cb13063b",
       "src/ds-texts/cs-bank-statement.ts": "9683476500901b3f6da0ad5c12edf777",
       "src/ds-texts/sk-bank-statement.ts": "38ce9b012294a615b975104bf0245335",
-      "src/components/ds/form/use-compact-date-geometry.ts": "3a178f55ad446a43bac9752e78e0aa9c",
-      "src/components/ds/layout/use-field-label-fit.ts": "260352221cd4c1e3104a63a90c014ee5"
+      "src/components/ds/form/use-compact-date-geometry.ts": "3a178f55ad446a43bac9752e78e0aa9c"
     },
     "pipeline_version": 8
   },
@@ -2782,7 +2781,7 @@
           "required": true
         }
       ],
-      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + \"-label\" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Úzké pole změří popisek a zmenší pouze přetékající text. labelId váže FieldValue přes aria-labelledby bez htmlFor.",
+      "usage": "Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + \"-label\" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Popisek zachovává velikost písma; dlouhý text zkrátí výpustkou a celý text má v title. labelId váže FieldValue přes aria-labelledby bez htmlFor.",
       "examples": [
         {
           "label": "Pole přes čtyři sloupce",
@@ -2823,7 +2822,7 @@
           "required": true
         }
       ],
-      "usage": "Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem. Pod 40 rem se hustá mřížka skládá do jednoho sloupce včetně polí s vlastní col-span.",
+      "usage": "Responzivní mřížka polí; podporuje 1, 2, 3, 4, 6, 12 a 20 sloupců. Field.span určuje šířku od 40 rem. Pod 40 rem se hustá mřížka skládá do jednoho sloupce včetně všech dětí s vlastní col-span.",
       "examples": [
         {
           "label": "Jméno osoby",
@@ -3792,7 +3791,7 @@
           "default": "record-action-notices"
         }
       ],
-      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou.",
+      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %.",
       "examples": [
         {
           "label": "Karta majetku",
@@ -5559,7 +5558,7 @@
           "type": "string"
         }
       ],
-      "usage": "Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input.",
+      "usage": "Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input. Výchozí role group zpřístupňuje jméno z aria-labelledby; ID popisku předá Field.labelId.",
       "examples": [
         {
           "label": "Stav DPH",
@@ -8197,7 +8196,7 @@
           "type": "Partial<BankStatementTexts>"
         }
       ],
-      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují ani neořezávají. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů a popisků, vlastní důvody zamčení checked/posted/readOnly a jména hodnot z popisků.",
+      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby.",
       "examples": [
         {
           "label": "Řízený výpis",

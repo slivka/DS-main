@@ -5,7 +5,6 @@
  */
 import type { ReactNode } from "react";
 
-import { useFieldLabelFit } from "./use-field-label-fit";
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
 
@@ -68,10 +67,8 @@ export function Field({
   className = "",
   children,
 }: FieldProps) {
-  const fieldRef = useFieldLabelFit(label);
   return (
     <div
-      ref={fieldRef}
       data-slot="field"
       data-field-has-label={label ? "true" : "false"}
       data-invalid={error ? "true" : undefined}
@@ -139,7 +136,7 @@ export function FieldGrid({ cols = 2, title, hint, className = "", children }: F
     <div className="@container">
       {title ? <SectionHeading>{title}</SectionHeading> : null}
       <div
-        className={`grid grid-cols-1 gap-3 @max-[40rem]:[&>[data-slot=field]]:col-span-1 @max-[40rem]:[&>[data-slot=field]]:col-start-auto ${cls} ${className}`}
+        className={`grid grid-cols-1 gap-3 @max-[40rem]:[&>*]:col-span-1 @max-[40rem]:[&>*]:col-start-auto ${cls} ${className}`}
       >
         {children}
       </div>
