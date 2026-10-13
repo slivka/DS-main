@@ -1,8 +1,9 @@
 ## DS 2.100.0 – Edit dokladu 13e (bez vydání)
 
 - [x] Sjednotit pravidlo zkrácených popisků, opravit překrytí prvního řádku a obnovit tvrzení šířky pole.
-- [ ] Unit, dotčené E2E ve třech prohlížečích, lint a kontrola katalogů proti dae1b93b.
-- [ ] Doplnit pravdivé výsledky a kontrolní tabulku; verze 2.100.0, bez Release.
+- [x] Unit 639/639; E2E 60/60 jedinečných scénářů (57 v prvním běhu + 3 po zpřesnění tlačítka Zpět); všechny tři prohlížeče, retries=0.
+- [x] Lint 0 chyb / 293 varování; formát OK; katalogy 429 → 429 proti dae1b93b, pouze doplněný archivovaný plán v manifestu.
+- [x] Doplnit pravdivé výsledky a kontrolní tabulku; verze 2.100.0, bez Release. Ruční tsc/typecheck/build neprovedeny dle omezení prostředí.
 
 ## DS 2.100.0 – Edit dokladu 13d (bez vydání)
 

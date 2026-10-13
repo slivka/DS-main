@@ -50,6 +50,36 @@
 - Záznam 13d upřesňuje skutečné toPass a časové limity; posluchač kolečka existuje.
 - Verze zůstává 2.100.0; Release ani ruční tsc/typecheck/build neproběhly.
 
+#### Kontrola 13e
+
+- **Unit 639/639**, 62 souborů, 2 021 assertions; **lint 0 chyb / 293 varování**;
+  formát všech změněných TS/TSX souborů OK, automatická sestava build OK.
+- **E2E 60/60 jedinečných scénářů**, po 20 v Chromium, Firefox a WebKit:
+  edit-document-thirteen (11), journal-editor (6), grid-control-styles (3),
+  document-date-link (1) se překrývají v součtu takto: Edit 13 má 10 scénářů,
+  tedy 10 + 6 + 3 + 1 = 20 na prohlížeč.
+  První běh: 57 prošlo, 3 selhaly na nejednoznačném výběru „Zpět“ v journal-editor.
+  Po zpřesnění na exact:true cílený běh tří stejných scénářů prošel 3/3.
+  Nejde o jeden čistý běh; workers=1, retries=0, žádné limity nebyly prodlouženy.
+  Nový test ND má vlastní limit 90 s místo zděděného limitu 480 s matice.
+  Datumová vazba ponechává toPass 60 s; grid-control-styles také ponechává
+  existující toPass pro barevné stavy. Žádné nové toPass nebylo přidáno.
+- Důkazy: /tmp/13e-e2e.log (35,7 min), /tmp/13e-undo-final.log (1,9 min),
+  /tmp/13e-unit-final.log, /tmp/13e-lint-final.log. Izolované ověření nového ND
+  navíc prošlo 3/3; není připočítané k 60 jedinečným scénářům.
+- Katalogy proti **dae1b93b**: 429 → 429, všechny komponenty a props shodné;
+  components.md a oba markdownové katalogy bajtově shodné. JSON shodný kromě
+  jedné přidané položky manifestu archivovaného plánu 13b (518 → 519).
+  Kontrolní skript proti 98810718 rovněž prošel: 426 → 429, odstraněné 0,
+  props 722 → 758, odstraněné 0; žádné nové změny props v 13e.
+
+| Bod 13e | Stav | Důkaz |
+|---|---|---|
+| 1 | Hotovo | Pravidlo 20 přesně z 98810718; rules a sekce 13b/13c bez rozporného požadavku |
+| 2 | Hotovo | elementFromPoint zasáhne ND prvního řádku; jeden nd.click bez force přepne stav při zoomu 100/100 ve třech prohlížečích |
+| 3 | Hotovo | Obnovené tvrzení col-span-4; jednotkové testy prošly |
+| 4 | Hotovo | Pravdivé toPass/limity i posluchač kolečka; archivovaný plán v manifestu; katalogy beze změny |
+
 ### Opravy 13d (bez vydání)
 
 - RecordActionBar: zalamování a růst levých textových tlačítek platí jen pro
