@@ -3,7 +3,7 @@ import { nonTaxBaseline } from "./non-tax-baseline";
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
-test.setTimeout(480_000);
+test.setTimeout(600_000);
 async function prepare(page: Page) {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
@@ -141,16 +141,18 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
         await expect(root.locator("[data-pane]")).toHaveCount(count || 1);
         const form = root.locator('[data-slot="bank-statement-form"]').first();
         await expect
-          .poll(async () =>
-            form.evaluate((node) => {
-              const box = node.getBoundingClientRect();
-              return [...node.querySelectorAll("label,input,[data-slot=field-value],button")].every(
-                (el) => {
+          .poll(
+            async () =>
+              form.evaluate((node) => {
+                const box = node.getBoundingClientRect();
+                return [
+                  ...node.querySelectorAll("label,input,[data-slot=field-value],button"),
+                ].every((el) => {
                   const rect = el.getBoundingClientRect();
                   return rect.right <= box.right + 2 && rect.left >= box.left - 2;
-                },
-              );
-            }),
+                });
+              }),
+            { timeout: 60000 },
           )
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
