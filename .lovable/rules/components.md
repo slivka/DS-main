@@ -342,6 +342,54 @@ _Účet pouze s IBAN_
 - Nevynechávejte účty partnera pouze s IBAN a neskládejte zápis undefined/undefined.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
 
+### BankStatementForm
+
+```ts
+import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby. 2.102.0: checkDisabledReason zakáže jen „Zkontrolovat“ (aria-disabled, fokus, tooltip důvodu); „Zrušit kontrolu“ neovlivní.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `status` | open · checked · posted | `—` |
+| `book` | any | `—` |
+| `currency` | string | `—` |
+| `currencySymbol` | string | `—` |
+| `period` | any | `—` |
+| `bankAccount` | any | `—` |
+| `balances` | any | `—` |
+| `home` | any | `—` |
+| `onHomeBankClosingChange` | function | `—` |
+| `hasItems` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+| `dirty` | boolean | `—` |
+| `busy` | boolean | `—` |
+| `onSave` | function | `—` |
+| `checkDisabledReason` | string | `—` |
+| `onCheckedChange` | function | `—` |
+| `onDelete` | function | `—` |
+| `error` | any | `—` |
+| `notices` | any | `—` |
+| `items` | any | `—` |
+| `texts` | any | `—` |
+
+**Examples:**
+
+_Řízený výpis_
+```tsx
+<BankStatementForm value={statement} onChange={setStatement} status="open" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />
+```
+
+**Avoid:**
+
+- Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.
+- Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.
+
 ### BarBreakdownChart
 
 ```ts
@@ -1398,7 +1446,7 @@ Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpř�
 | `onChange` | function | `—` |
 | `placeholder` | string | `—` |
 | `disabled` | boolean | `—` |
-| `className` | string | `—` |
+| `className` | string | `sr-only` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
@@ -2035,6 +2083,39 @@ import { FieldTable } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 | `rows` | any | `—` |
 | `className` | string | `hidden @min-[40rem]:block` |
 
+### FieldToggleButton
+
+```ts
+import { FieldToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Jediný sdílený ikonový přepínač uvnitř pole; vstup rezervuje --field-toggle-space. Zapnutý plný, vypnutý obrys s přeškrtnutím; zamčený zůstává fokusovatelný a nevolá změnu. 13b: disabled nebo chybějící callback bez lockedReason používá fieldToggle.locked v tooltipu i aria-describedby. Rezerva --field-toggle-space reaguje na lokální --control-h; text kliknutím patří pouze odemčenému stavu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `icon` | any | `—` |
+| `pressed` | boolean | `—` |
+| `onPressedChange` | function | `—` |
+| `label` | string | `—` |
+| `pressedTooltip` | string | `—` |
+| `unpressedTooltip` | string | `—` |
+| `lockedReason` | string | `—` |
+| `disabled` | boolean | `—` |
+
+**Examples:**
+
+_Platit příkazem_
+```tsx
+<FieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} />
+```
+
+**Avoid:**
+
+- Neměňte label podle stavu; tooltipy jsou samostatné.
+- Nezaměňujte lockedReason za nativní disabled bez fokusu.
+
 ### FieldValue
 
 ```ts
@@ -2171,17 +2252,20 @@ import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel → jedno tlačítko „+ ▾“ podle skutečně změřené šířky lišty. Šířka nabídky se měří v kopii, neodhaduje. GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason. Zakázaná položka nabídky ukáže disabledReason v tooltipu, je dostupná klávesnicí a neprovede akci. onClick z nabídky dostane událost výběru Event, nikoli MouseEvent; nepoužívejte souřadnice myši.
 
+**Props:**
+
 | Prop | Type | Default |
 |---|---|---|
-| `actions` | GridAddAction \| GridAddAction[] | `—` |
+| `actions` | any | `—` |
 
 **Examples:**
 
+_Dva směry pohybu_
 ```tsx
 <GridAddActions actions={[{ label: "Nový příjem", shortLabel: "Příjem", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: "Nový výdej", shortLabel: "Výdej", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: "Období je uzavřené" }]} />
 ```
 
-**Antipatterns:**
+**Avoid:**
 
 - Neskrývejte názvy dvou akcí do dvou stejných ikon.
 - Nepředpokládejte MouseEvent u výběru z nabídky ani nevynechávejte důvod zakázání.
@@ -2657,6 +2741,35 @@ _Právnická osoba_
 
 - Nevytvářejte odkaz pro neplatné nebo zahraniční IČO.
 
+### IdentityLine
+
+```ts
+import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | any | `—` |
+| `leading` | any | `—` |
+| `number` | string | `—` |
+| `fallback` | any | `—` |
+
+**Examples:**
+
+_Identita výpisu_
+```tsx
+<IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
+```
+
+**Avoid:**
+
+- Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
+- Nepřidávejte do identity ukládání nebo doménovou logiku.
+
 ### InactiveTag
 
 ```ts
@@ -2726,6 +2839,39 @@ import { InputOTPSeparator } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### JournalLinesEditor
+
+```ts
+import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby.
+
+**Examples:**
+
+_Rozpis se zkrácenými účty_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
+```
+
+_Řádky s DPH (2.55.0)_
+```tsx
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
+// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
+```
+
+_2.92.0_
+```tsx
+<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
+```
+
+**Avoid:**
+
+- Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
+- Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
+- Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
+
 ### JournalLinesRecap
 
 ```ts
@@ -2771,38 +2917,6 @@ _2.92.0_
 **Avoid:**
 
 - Nepočítejte rekapitulaci z filtrované podmnožiny řádků.
-
-### JournalLinesEditor
-
-```ts
-import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby.
-
-**Examples:**
-
-_Rozpis se zkrácenými účty_
-```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
-```
-
-_Řádky s DPH (2.55.0)_
-```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
-// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
-```
-
-_2.92.0_
-```tsx
-<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
-```
-
-**Avoid:**
-
-- Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
-- Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
-- Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
 
 ### JournalRecapHomeTotal
 
@@ -5169,114 +5283,3 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-### FieldToggleButton
-
-```ts
-import { FieldToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Jediný sdílený ikonový přepínač uvnitř pole; vstup rezervuje --field-toggle-space. Zapnutý plný, vypnutý obrys s přeškrtnutím; zamčený zůstává fokusovatelný a nevolá změnu. 13b: disabled nebo chybějící callback bez lockedReason používá fieldToggle.locked v tooltipu i aria-describedby. Rezerva --field-toggle-space reaguje na lokální --control-h; text kliknutím patří pouze odemčenému stavu.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `icon` | LucideIcon | `—` |
-| `pressed` | boolean | `—` |
-| `onPressedChange` | function | `—` |
-| `label` | string | `—` |
-| `pressedTooltip` | string | `—` |
-| `unpressedTooltip` | string | `—` |
-| `lockedReason` | string | `—` |
-| `disabled` | boolean | `—` |
-
-**Examples:**
-
-_Platit příkazem_
-```tsx
-<FieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} />
-```
-
-**Avoid:**
-
-- Neměňte label podle stavu; tooltipy jsou samostatné.
-- Nezaměňujte lockedReason za nativní disabled bez fokusu.
-
-### BankStatementForm
-
-```ts
-import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby. 2.102.0: checkDisabledReason zakáže jen „Zkontrolovat“ (aria-disabled, fokus, tooltip důvodu); „Zrušit kontrolu“ neovlivní.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | BankStatementValue | `—` |
-| `onChange` | function | `—` |
-| `status` | open · checked · posted | `—` |
-| `book` | ReactNode | `—` |
-| `currency` | string | `—` |
-| `currencySymbol` | string | `—` |
-| `period` | ReactNode | `—` |
-| `bankAccount` | ReactNode | `—` |
-| `balances` | BankStatementBalances | `—` |
-| `home` | BankStatementBalances & { currencySymbol: string; bankClosing: number \| null } | `—` |
-| `onHomeBankClosingChange` | function | `—` |
-| `hasItems` | boolean | `—` |
-| `checkDisabledReason` | string | `—` |
-| `readOnly` | boolean | `—` |
-| `dirty` | boolean | `—` |
-| `busy` | boolean | `—` |
-| `onSave` | function | `—` |
-| `onCheckedChange` | function | `—` |
-| `onDelete` | function | `—` |
-| `error` | RecordActionError | `—` |
-| `notices` | ReactNode | `—` |
-| `items` | ReactNode | `—` |
-| `texts` | Partial&lt;BankStatementTexts> | `—` |
-
-**Examples:**
-
-_Řízený výpis_
-```tsx
-<BankStatementForm value={statement} onChange={setStatement} status="open" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />
-```
-
-**Avoid:**
-
-- Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.
-- Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.
-
-
-### IdentityLine
-
-```ts
-import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `items` | ReactNode[] | `—` |
-| `leading` | ReactNode | `—` |
-| `number` | string \| null | `—` |
-| `fallback` | ReactNode | `—` |
-| `className` | string | `—` |
-
-**Examples:**
-
-_Identita výpisu_
-```tsx
-<IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
-```
-
-**Avoid:**
-
-- Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
-- Nepřidávejte do identity ukládání nebo doménovou logiku.
