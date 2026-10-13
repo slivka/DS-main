@@ -18,11 +18,11 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "src/components/ds/accounting/bank-statement-form.tsx": "0734a297fa81de0e522d90cb6f2ec17c",
-      "src/components/ds/accounting/bank-statement-sections.tsx": "a1abe860452b8ea492718c21bff994a1",
-      "src/components/ds/form/field-toggle-button.tsx": "98c080185ef2d0f9ef7bf63fde180d15",
-      "src/components/showcase/BankStatementShowcase.tsx": "a09d2201b4e6c1e0067d194bde036959",
-      "src/ds-texts/bank-statement-texts.ts": "c11162f85b4ffc1fc12690f4026462a1",
+      "src/components/ds/accounting/bank-statement-form.tsx": "f7c9aa4e8a2f649e09d662e6528cbe7b",
+      "src/components/ds/accounting/bank-statement-sections.tsx": "1f71f6e04998280d19971024bd33acad",
+      "src/components/ds/form/field-toggle-button.tsx": "bff9267d3f7aaa0a9c13fd6315b3b5f7",
+      "src/components/showcase/BankStatementShowcase.tsx": "366cb504b68f02956f8e1d43c428cabd",
+      "src/ds-texts/bank-statement-texts.ts": "0743f21cc9321ec09c78d6266c34abb2",
       "tests/e2e/edit-document-thirteen.spec.ts": "8f2bc36f350b8f83b21c6af0eb77913a",
       "tests/unit/bank-statement-form.test.tsx": "2fd7e8ec05da3ff1370d3ff2772165c9",
       "tests/unit/field-toggle-button.test.tsx": "a55ee7a640a83a9b3e9bfc39984d2244",
@@ -93,7 +93,7 @@
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
       "src/components/ds/AGENTS.md": "04e1d6725fcb8a4afdac385d7f30a211",
       "src/components/ds/accounting/AGENTS.md": "8e587b51ccedb10f154c6771b7e7b6d8",
-      "src/components/ds/accounting/JournalCell.tsx": "52f4d2d43cca666a443f3bb2ff2f5f2e",
+      "src/components/ds/accounting/JournalCell.tsx": "60b052e9ee61665e923e583936ffb3d9",
       "src/components/ds/accounting/JournalCellEditor.tsx": "923b45ea2c142259c1c6c69039282a19",
       "src/components/ds/accounting/JournalFooter.tsx": "6246d256cdc9afbf4d19223935033268",
       "src/components/ds/accounting/JournalLinesEditor.tsx": "a0aa6c295f09c5ba703e5021c1d6075b",
@@ -107,17 +107,17 @@
       "src/components/ds/accounting/bank-account-field.tsx": "224a54b1bd59827b3076b5f97e3a28a2",
       "src/components/ds/accounting/book-select.tsx": "b6694104542133323f07e928dbe76d4d",
       "src/components/ds/accounting/counterparty-field.tsx": "45af2e8cf319bce91b0af19d5507d506",
-      "src/components/ds/accounting/counterparty-input-field.tsx": "9783033db8866180d514c0dfbf2c2a4f",
+      "src/components/ds/accounting/counterparty-input-field.tsx": "7c2ae2d5c366e5551af1d0579242b17f",
       "src/components/ds/accounting/currency-amount.tsx": "e6e783ff84b1a11c463a9ed65047847e",
       "src/components/ds/accounting/debit-credit-cells.tsx": "8580f9d3dba573dc97df44a0f79d64c4",
       "src/components/ds/accounting/dimension-select.tsx": "fbb74f04dd40d37f9255eb4719314de2",
       "src/components/ds/accounting/document-detail-tabs.tsx": "85ac6026e90d0df29c667725cd4168b2",
       "src/components/ds/accounting/document-fields.ts": "f90c3ce3cd0166db35352f9ca51f66f0",
       "src/components/ds/accounting/document-form.tsx": "0e51b1d400324199df5479c1880b6e03",
-      "src/components/ds/accounting/document-form/AmountSection.tsx": "2e8a02016c22d99ff387e496c1f78c46",
+      "src/components/ds/accounting/document-form/AmountSection.tsx": "da241167e12ba347e32dea14488c7e2b",
       "src/components/ds/accounting/document-form/BankAccountControls.tsx": "3decaa2f686a76e7ad989941ab201fb2",
       "src/components/ds/accounting/document-form/BasicSection.tsx": "7d5726004cdc82b4a5d6aa1ac48f8913",
-      "src/components/ds/accounting/document-form/DatesSection.tsx": "d0bacd6cd55d186c8210b8dd32cbbb51",
+      "src/components/ds/accounting/document-form/DatesSection.tsx": "ea0c455dc5526612b1ff8e0e05d10c05",
       "src/components/ds/accounting/document-form/DocumentForm.tsx": "09b3350b32fe51698a08e3e86ebf94a1",
       "src/components/ds/accounting/document-form/PaymentSection.tsx": "a2671b8736f9ef9f7c40c384b9843322",
       "src/components/ds/accounting/document-form/Tabs.tsx": "8f5c85fee1b5cfb99bb3bb3bb8ffa95c",
@@ -127,8 +127,8 @@
       "src/components/ds/accounting/document-form/document-action-menu.ts": "bb1271e5d93d9ca914729229c3ad9090",
       "src/components/ds/accounting/document-form/document-change-meta.tsx": "6a840f1d8e2ae4292c95ca10160fe0eb",
       "src/components/ds/accounting/document-form/document-form-actions.tsx": "95d76fe0fe659b4056b73e95753bdd1d",
-      "src/components/ds/accounting/document-form/document-form-types.ts": "b41c4735f77b32c8c71e41bff9e0f095",
-      "src/components/ds/accounting/document-form/document-identity-line.tsx": "96a802eb0c49f62d984b995dddc01b08",
+      "src/components/ds/accounting/document-form/document-form-types.ts": "75ad11a76f71be3740b7ea765c1f4415",
+      "src/components/ds/accounting/document-form/document-identity-line.tsx": "e7d0d327c732a3835bfa34509fda0077",
       "src/components/ds/accounting/document-form/document-vat-action-status.tsx": "7896cf1ae82950729fa6ad0eb5f9aff5",
       "src/components/ds/accounting/document-form/use-bank-account-field.tsx": "052a56c131386daece6ab98a1bdb2623",
       "src/components/ds/accounting/document-form/use-currency-control.tsx": "2184bd50f1589683e9bb424879efdaf2",
@@ -192,7 +192,7 @@
       "src/components/ds/form/checkbox-field.tsx": "798a59ffc08baafabee7416585497c20",
       "src/components/ds/form/chip-multi-select.tsx": "cf116ed3059818cc6028458035e5883d",
       "src/components/ds/form/country-select.tsx": "75b739a4d0e6ad1a25500aac54068519",
-      "src/components/ds/form/date-field.tsx": "947abce067aa061ba60b16ecb4566ac5",
+      "src/components/ds/form/date-field.tsx": "b93c1a11ca539aa3f5a4bb1a8810b82e",
       "src/components/ds/form/date-range-field.tsx": "d265b5d9f72dad88eb7c320433ea62ab",
       "src/components/ds/form/decimal-input.tsx": "c0ab5d5e2a98ef7edab798a6022eb512",
       "src/components/ds/form/entity-select.tsx": "ec9dabccde3e95fae9cfac392626a893",
@@ -265,7 +265,7 @@
       "src/components/ds/grid/useRowActions.tsx": "38a55e87390e351ac2524d4bfd2efac6",
       "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
       "src/components/ds/grid/vs-column.tsx": "08787750c40354104cde7445d0eb4f41",
-      "src/components/ds/index.ts": "ef218aa96e642b10ec46c3a1ad219b70",
+      "src/components/ds/index.ts": "44f11a55b71d899b93a49e59a70a466c",
       "src/components/ds/layout/AppShell.tsx": "f2661ffe97493c3dc7fc9567a2af51d5",
       "src/components/ds/layout/AppShellNav.tsx": "ca091ea04506319a704f3ad8edaa2710",
       "src/components/ds/layout/AppShellNavGroup.tsx": "0a865c7cf895855e9da6a06d1f8fc1e8",
@@ -290,7 +290,7 @@
       "src/components/ds/layout/page-layout.tsx": "5a769bd27dadd8bdd889318075e37204",
       "src/components/ds/layout/page-tabs.tsx": "88f4a67722bfb6cd815fe588722e2eb9",
       "src/components/ds/layout/period-switcher.tsx": "0ede0651812f61cdc6077d73ae2a38e4",
-      "src/components/ds/layout/record-action-bar.tsx": "5a11cff88dae5601e176b15d76f09150",
+      "src/components/ds/layout/record-action-bar.tsx": "5782ac341e9b526b8a1a0504117d0348",
       "src/components/ds/layout/search-button.tsx": "5aa5ad81f7b4f78d1a68d20d34534810",
       "src/components/ds/layout/section-heading.tsx": "a8d2efeff43eb28a370ef2416cc200f8",
       "src/components/ds/layout/settings-section.tsx": "d927fc8474cb253c87366215b2033f26",
@@ -325,7 +325,7 @@
       "src/components/showcase/DocumentDatesShowcase.tsx": "147a7c0456510a3abe0c6bca437142ff",
       "src/components/showcase/DocumentFormShowcase.tsx": "ba3c3161c724e822fb06adb451988c42",
       "src/components/showcase/FormDesignShowcase.tsx": "24a8e89225379bb21ccf24ea93133477",
-      "src/components/showcase/FormDesignTwoShowcase.tsx": "7f5c3cd3ee0a223a9aae9138ab7713ed",
+      "src/components/showcase/FormDesignTwoShowcase.tsx": "ef6c355804a57a0b2404a8f3668802a8",
       "src/components/showcase/MatchingShowcase.tsx": "ef83010bf71822dd26279e4b42fa4e78",
       "src/components/showcase/PaneShowcase.tsx": "abd1af3294ab9f338001b009906b82d2",
       "src/components/showcase/PartnerShowcase.tsx": "a42b9f5d59a66a020cd9cb53b76e3bd1",
@@ -387,16 +387,16 @@
       "src/components/ui/toggle-group.tsx": "c20ea548d18200a0cace4e25d59b5932",
       "src/components/ui/toggle.tsx": "b0cce1df7038a5cec31ec2ad0d7facf7",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
-      "src/ds-texts/cs-document-form.ts": "21c642072960d582fb6f337edabc40e8",
+      "src/ds-texts/cs-document-form.ts": "6c1c94a61ba7b6d8ce6bb4745bbcc4ad",
       "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
-      "src/ds-texts/cs.ts": "c8bff7fd15b278887c111e3c449e6805",
+      "src/ds-texts/cs.ts": "9ac19b9048c368c9989ca88f84e2fcba",
       "src/ds-texts/form-design-two-showcase.ts": "fa5c99b6df4bf937b9c3d2d62495848e",
-      "src/ds-texts/grid-journal-types.ts": "94ac1293c2ae2163f22f8d3d5787064e",
+      "src/ds-texts/grid-journal-types.ts": "9b87ea73b41769fb0ebde90330b2f7e9",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
-      "src/ds-texts/sk-document-form.ts": "9d4c6de8f5243e8cbbc864edc8b298c0",
+      "src/ds-texts/sk-document-form.ts": "431c7965a7eaa9747d41caff4ca1d72a",
       "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
-      "src/ds-texts/sk.ts": "016a2c5dd03931cbb75e519db161efe2",
-      "src/ds-texts/types.ts": "712404171c2281bd2422ca1d5e4d4fc6",
+      "src/ds-texts/sk.ts": "7e7dfd41cb7ca4188b457dba7ddf0ec8",
+      "src/ds-texts/types.ts": "6cdf2e99cd7c4cbb333526fb7675139c",
       "src/hooks/index.ts": "6fece027b973135a96e5c7ae9a978a3e",
       "src/hooks/use-dialog-back-close.ts": "d3a0a16f8bc86d6133a313901508f2b0",
       "src/hooks/use-grid-keyboard-nav.ts": "8ba15428a0f0b2b36dcf50d2ec8849ee",
@@ -451,7 +451,7 @@
       "src/slivka-head.tsx": "a126065cc8ea1f5bc5be4d79afae31dc",
       "src/slivka-provider.tsx": "534ba72d2302fa980a607e0cba6ecd69",
       "src/start.ts": "3b877c99f5f4668ccc3694f7a09a1f07",
-      "src/styles.css": "297f7c2ddabebdb558ee67bc43d2b8f5",
+      "src/styles.css": "1aaf2dbbbd8ae55a48346f564f1d1585",
       "src/types/exceljs-browser.d.ts": "afaf6efa5625bb3c75e462ef86356782",
       "tests/e2e/accounting-logic.spec.ts": "f489ce71bed4bf62da4f6ea918d5d560",
       "tests/e2e/document-amount-section.spec.ts": "a5dce248cb057bb0c3e505ecb4790b0d",
@@ -531,7 +531,10 @@
       "tests/unit/zoom-fixes-264.test.ts": "7ae60f90db8edcb0230a9ef0b7878b0b",
       "tsconfig.json": "994abf64c2b9f78b568879f80ed0170e",
       "vite.config.ts": "3fa30a9c7d774713d4f02f08596d3889",
-      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147"
+      "wrangler.jsonc": "aa31611de2d4a59e44bbf734b179d147",
+      "src/components/ds/layout/identity-line.tsx": "021a283345ba90ded1de9353cb13063b",
+      "src/ds-texts/cs-bank-statement.ts": "593776b7e97c896240a4cd074a9de3bf",
+      "src/ds-texts/sk-bank-statement.ts": "07508ba50ec19f0e2ce8e584e388b46a"
     },
     "pipeline_version": 8
   },
@@ -985,6 +988,24 @@
         "name": "--warning-text",
         "raw": "oklch(0.45 0.12 75)",
         "source": "src/styles.css"
+      },
+      {
+        "name": "--non-tax-font-size",
+        "raw": "0.65rem",
+        "source": "src/styles.css",
+        "description": "Sdílená geometrie a typografie výjimky formuláře."
+      },
+      {
+        "name": "--text-bank-label",
+        "raw": "0.625rem",
+        "source": "src/styles.css",
+        "description": "Sdílená geometrie a typografie výjimky formuláře."
+      },
+      {
+        "name": "--text-identity",
+        "raw": "0.9375rem",
+        "source": "src/styles.css",
+        "description": "Sdílená geometrie a typografie výjimky formuláře."
       }
     ],
     "radius": [
@@ -1151,6 +1172,12 @@
         "name": "--chip-icon",
         "raw": "0.9em",
         "source": "src/styles.css"
+      },
+      {
+        "name": "--bank-date-scale",
+        "raw": "0.8",
+        "source": "src/styles.css",
+        "description": "Sdílená geometrie a typografie výjimky formuláře."
       }
     ]
   },
@@ -3776,7 +3803,7 @@
           "default": "record-action-notices"
         }
       ],
-      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0.",
+      "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků.",
       "examples": [
         {
           "label": "Karta majetku",
@@ -5470,11 +5497,11 @@
           "default": "below"
         }
       ],
-      "usage": "Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay=\"indicator\" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 13: Výjimka: vazba data zachovává vlastní geometrii a --document-date-*; stálý název, aria-pressed, fokusovatelný zakázaný stav a důvod v tooltipu i přístupném popisu.",
+      "usage": "Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay=\"indicator\" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 13: Výjimka: vazba data zachovává vlastní geometrii a --document-date-*; stálý název, aria-pressed, fokusovatelný zakázaný stav a důvod v tooltipu i přístupném popisu. 13b: link.label je nepovinný stálý přístupný název; výchozí fieldToggle.dateLink. Vazba DPH přejímá vlastní název Svázat s DUZP z DocumentForm textů.",
       "examples": [
         {
           "label": "Datum s varováním v indikátoru",
-          "code": "<DateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" />"
+          "code": "\u003cDateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -7093,12 +7120,12 @@
         {
           "name": "partnerModeLabel",
           "type": "string",
-          "required": true
+          "description": "@deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle. Odstranění v 3.0.0."
         },
         {
           "name": "manualModeLabel",
           "type": "string",
-          "required": true
+          "description": "@deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle. Odstranění v 3.0.0."
         },
         {
           "name": "replaceManualWarning",
@@ -7126,11 +7153,11 @@
           "type": "function"
         }
       ],
-      "usage": "Edit dokladu 13: ContactRound v obou režimech; partner je zapnutý, ruční vypnutý s přeškrtnutím. Stálý název z DsTexts, tooltip podle stavu, lockedReason zachová fokus bez změny. Tužka jen pro vybraného partnera; šipka a křížek vlevo od FieldToggleButton.",
+      "usage": "Edit dokladu 13: ContactRound v obou režimech; partner je zapnutý, ruční vypnutý s přeškrtnutím. Stálý název z DsTexts, tooltip podle stavu, lockedReason zachová fokus bez změny. Tužka jen pro vybraného partnera; šipka a křížek vlevo od FieldToggleButton. 13b: partnerModeLabel a manualModeLabel jsou nepovinné a @deprecated od 2.100.0 (ignorované); přepisy předejte přes DsTexts.fieldToggle.directory / directoryUnpressed. Odstranění v 3.0.0.",
       "examples": [
         {
           "label": "Řízené použití",
-          "code": "<CounterpartyInputField {...props} />"
+          "code": "\u003cCounterpartyInputField {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7583,19 +7610,19 @@
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "usage": "Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení.",
+      "usage": "Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. 13b: ND má rozměry 24 × 24, ikonu 14 a tučný text; nepřebírá rozměry obecných gridových akcí. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0.",
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) =\u003e setError(errors[0]?.message)} storageKey=\"invoice-lines\" /\u003e"
         },
         {
           "label": "Řádky s DPH (2.55.0)",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} /\u003e\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
         },
         {
           "label": "2.92.0",
-          "code": "<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />"
+          "code": "\u003cJournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7704,19 +7731,19 @@
       "name": "DocumentForm",
       "file": "src/components/ds/accounting/document-form/DocumentForm",
       "import_path": "",
-      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění.",
+      "usage": "Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0.",
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
-          "code": "<DocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} />"
+          "code": "\u003cDocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} /\u003e"
         },
         {
           "label": "Platba přijatého dokladu bez účtu",
-          "code": "<DocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} /\u003e"
         },
         {
           "label": "Nepoužitá bankovní platba",
-          "code": "<DocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8061,11 +8088,11 @@
           "type": "boolean"
         }
       ],
-      "usage": "Jediný sdílený ikonový přepínač uvnitř pole; vstup rezervuje --field-toggle-space. Zapnutý plný, vypnutý obrys s přeškrtnutím; zamčený zůstává fokusovatelný a nevolá změnu.",
+      "usage": "Jediný sdílený ikonový přepínač uvnitř pole; vstup rezervuje --field-toggle-space. Zapnutý plný, vypnutý obrys s přeškrtnutím; zamčený zůstává fokusovatelný a nevolá změnu. 13b: disabled nebo chybějící callback bez lockedReason používá fieldToggle.locked v tooltipu i aria-describedby. Rezerva --field-toggle-space reaguje na lokální --control-h; text kliknutím patří pouze odemčenému stavu.",
       "examples": [
         {
           "label": "Platit příkazem",
-          "code": "<FieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} />"
+          "code": "\u003cFieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8149,6 +8176,11 @@
           "type": "boolean"
         },
         {
+          "name": "busy",
+          "type": "boolean",
+          "description": "Probíhající ukládání blokuje akce a zobrazí spinner."
+        },
+        {
           "name": "onSave",
           "type": "function"
         },
@@ -8174,19 +8206,58 @@
         },
         {
           "name": "texts",
-          "type": "Partial<BankStatementTexts>"
+          "type": "Partial\u003cBankStatementTexts\u003e"
         }
       ],
-      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props.",
+      "usage": "Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují ani neořezávají.",
       "examples": [
         {
           "label": "Řízený výpis",
-          "code": "<BankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />"
+          "code": "\u003cBankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} /\u003e"
         }
       ],
       "antipatterns": [
         "Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.",
         "Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění."
+      ]
+    },
+    {
+      "name": "IdentityLine",
+      "file": "src/components/ds/layout/identity-line.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "items",
+          "type": "ReactNode[]",
+          "required": true
+        },
+        {
+          "name": "leading",
+          "type": "ReactNode"
+        },
+        {
+          "name": "number",
+          "type": "string | null"
+        },
+        {
+          "name": "fallback",
+          "type": "ReactNode"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.",
+      "examples": [
+        {
+          "label": "Identita výpisu",
+          "code": "\u003cIdentityLine items={[book, currency, period, bankAccount]} number={statement.number} /\u003e"
+        }
+      ],
+      "antipatterns": [
+        "Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.",
+        "Nepřidávejte do identity ukládání nebo doménovou logiku."
       ]
     }
   ],

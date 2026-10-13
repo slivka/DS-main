@@ -119,6 +119,7 @@ export function DocumentDatesSection({
                     link: vat?.dateLink
                       ? {
                           ...vat.dateLink,
+                          label: vat.dateLink.label ?? t.vatDateLinkLabel,
                           toggleDisabled: vat.dateLockReadOnly,
                           lockedHint: vat.dateLockReadOnly
                             ? t.vatDateLockedHint

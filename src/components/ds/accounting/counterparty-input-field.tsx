@@ -34,9 +34,11 @@ export interface CounterpartyInputFieldProps {
   /** Přístupný popisek. */
   ariaLabel?: string;
   /** Text režimu adresáře. */
-  partnerModeLabel: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directory. Odstranění v 3.0.0. */
+  partnerModeLabel?: string;
   /** Text ručního režimu. */
-  manualModeLabel: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directoryUnpressed. Odstranění v 3.0.0. */
+  manualModeLabel?: string;
   /** Text potvrzení nahrazení ručních údajů. */
   replaceManualWarning: string;
   /** Ruční údaje, které vyžadují potvrzení. */

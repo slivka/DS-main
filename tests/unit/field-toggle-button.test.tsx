@@ -57,10 +57,9 @@ test.each(["Záznam je uzamčen", undefined])(
     expect(button.getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(button);
     expect(changes).toBe(0);
-    if (reason)
-      expect(
-        document.getElementById(button.getAttribute("aria-describedby") ?? "")?.textContent,
-      ).toBe(reason);
+    expect(
+      document.getElementById(button.getAttribute("aria-describedby") ?? "")?.textContent,
+    ).toBe(reason ?? "Pole je jen pro čtení");
   },
 );
 test("CounterpartyInputField partner je pressed a ruční režim nemá tužku", () => {
@@ -128,4 +127,23 @@ test("DateField zamčená vazba má stálý název a nemění stav", () => {
   expect(button.getAttribute("aria-disabled")).toBe("true");
   fireEvent.click(button);
   expect(changes).toBe(0);
+});
+
+test("FieldToggleButton bez důvodu používá slovenské vysvětlení místo kliknutí", () => {
+  const view = render(
+    <DsTextsProvider locale="sk">
+      <FieldToggleButton
+        icon={ContactRound}
+        pressed
+        disabled
+        label="Adresár"
+        pressedTooltip="Kliknutím změnit"
+        unpressedTooltip="Kliknutím změnit"
+      />
+    </DsTextsProvider>,
+  );
+  const button = view.getByRole("button", { name: "Adresár" });
+  expect(document.getElementById(button.getAttribute("aria-describedby") ?? "")?.textContent).toBe(
+    "Pole je iba na čítanie",
+  );
 });

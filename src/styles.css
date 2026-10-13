@@ -96,6 +96,10 @@
   /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
   --control-h: 2.25rem;
   /* Datum dokladu: skutečná poloha ikon je společná se šířkou i odsazením. */
+  --non-tax-font-size: 0.65rem;
+  --text-bank-label: 0.625rem;
+  --bank-date-scale: 0.8;
+  --text-identity: 0.9375rem;
   --document-date-icon-offset: 0.3em;
   --document-date-icon-step: 1.8em;
   --document-date-icon-size: 1.05em;
@@ -648,7 +652,7 @@
 .zoom-grid.journal-lines-grid :is(thead, tbody, tfoot) tr > :is(th, td).journal-row-cell {
   padding-inline: 0.4em !important;
 }
-.zoom-grid.journal-lines-grid td.journal-row-cell button {
+.zoom-grid.journal-lines-grid td.journal-row-cell button:not([data-slot="non-tax-toggle"]) {
   min-width: 0 !important;
   padding: 0 !important;
 }
@@ -1219,7 +1223,7 @@
   :is(th, td)
   :is(button, a, [data-slot="badge"], .badge):not([role="checkbox"]):not([role="switch"]):not(
     [data-grid-cta]
-  ):not([data-slot="grid-action"]) {
+  ):not([data-slot="grid-action"]):not([data-slot="non-tax-toggle"]) {
   height: auto !important;
   min-height: 0 !important;
   line-height: 1.2 !important;
@@ -1239,7 +1243,9 @@
 .zoom-grid
   :is(tbody, tfoot)
   :is(th, td)
-  button:has(> svg:only-child):not([role="checkbox"]):not([data-grid-cta]) {
+  button:has(> svg:only-child):not([role="checkbox"]):not([data-grid-cta]):not(
+    [data-slot="non-tax-toggle"]
+  ) {
   padding: 0.15em !important;
   width: auto !important;
 }
@@ -1247,7 +1253,9 @@
 .zoom-grid.journal-lines-grid
   :is(tbody, tfoot)
   :is(th, td).journal-row-cell
-  button:not([role="checkbox"]):not([data-grid-cta]):not([data-slot="grid-action"]) {
+  button:not([role="checkbox"]):not([data-grid-cta]):not([data-slot="grid-action"]):not(
+    [data-slot="non-tax-toggle"]
+  ) {
   min-width: 0 !important;
   padding: 0 !important;
 }
@@ -2348,7 +2356,26 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   }
 }
 
-/* Jedna rezervace místa pro všechny přepínače uvnitř polí. */
-:root {
+/* Lokální výška ovládání řídí rezervaci místa i v zanořeném formuláři. */
+* {
   --field-toggle-space: calc(var(--control-h) + 0.5rem);
+}
+
+/* ND je rozměrová výjimka: obecné akce a automatické písmo gridu ji neškálují. */
+.zoom-grid.journal-lines-grid
+  :is(tbody, tfoot)
+  :is(th, td)
+  [data-slot="non-tax-toggle"][data-slot="non-tax-toggle"][data-slot="non-tax-toggle"] {
+  height: calc(var(--spacing) * 6) !important;
+  min-width: calc(var(--spacing) * 6) !important;
+  padding: 0 var(--spacing) !important;
+  font-size: var(--non-tax-font-size) !important;
+}
+.zoom-grid.journal-lines-grid
+  :is(tbody, tfoot)
+  :is(th, td)
+  [data-slot="non-tax-toggle"][data-slot="non-tax-toggle"][data-slot="non-tax-toggle"]
+  > svg {
+  width: calc(var(--spacing) * 3.5) !important;
+  height: calc(var(--spacing) * 3.5) !important;
 }

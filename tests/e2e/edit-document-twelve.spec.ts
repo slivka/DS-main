@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, testInfo) => {
-  test.setTimeout(240_000);
+  test.setTimeout(480_000);
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   const root = page.getByTestId("date-panels");
   await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });

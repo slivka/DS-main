@@ -4,6 +4,7 @@
  * Nesmí: měnit hodnotu pole ani při zamčení volat změnu.
  */
 import { forwardRef, useId, type ComponentPropsWithoutRef } from "react";
+import { useDsTexts } from "../../../ds-texts";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
@@ -52,7 +53,9 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
   ) {
     const reasonId = useId();
     const locked = Boolean(disabled || lockedReason || !onPressedChange);
-    const tooltip = lockedReason ?? (pressed ? pressedTooltip : unpressedTooltip);
+    const texts = useDsTexts().fieldToggle;
+    const reason = locked ? (lockedReason ?? texts.locked) : undefined;
+    const tooltip = reason ?? (pressed ? pressedTooltip : unpressedTooltip);
     return (
       <TooltipProvider>
         <Tooltip>
@@ -67,7 +70,11 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
               aria-label={label}
               aria-pressed={pressed}
               aria-disabled={locked || undefined}
-              aria-describedby={lockedReason ? reasonId : rest["aria-describedby"]}
+              aria-describedby={
+                [rest["aria-describedby"], reason ? reasonId : undefined]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
               onMouseDown={onMouseDown}
               onClick={() => {
                 if (!locked) onPressedChange?.(!pressed);
@@ -86,9 +93,9 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
             </Button>
           </TooltipTrigger>
           <TooltipContent>{tooltip}</TooltipContent>
-          {lockedReason ? (
+          {reason ? (
             <span id={reasonId} className="sr-only">
-              {lockedReason}
+              {reason}
             </span>
           ) : null}
         </Tooltip>

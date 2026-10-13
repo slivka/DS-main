@@ -118,6 +118,8 @@ export type DocumentVatConfig = {
   periodLabel?: string;
   periodFiled?: boolean;
   dateLink?: {
+    /** Stálý název vazby, výchozí DocumentForm.vatDateLinkLabel. */
+    label?: string;
     locked: boolean;
     onToggle: (locked: boolean) => void;
     lockedHint?: string;
@@ -183,8 +185,11 @@ export type DocumentFormTexts = {
   amountTotal: string;
   totalHome: string;
   amountSum: string;
-  sumFromLines: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.sumPressed. Odstranění v 3.0.0. */
+  sumFromLines?: string;
   rounding: string;
+  /** Stálý název vazby data DPH na DUZP. */
+  vatDateLinkLabel: string;
   vatDateLockedHint: string;
   filedWarning: string;
   excludeFromPaymentOrders: string;
@@ -203,8 +208,10 @@ export type DocumentFormTexts = {
   bankAccountInvalid: string;
   bankCodeInvalid: string;
   otherBankAccount: string;
-  selectFromDirectory: string;
-  enterManually: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directory. Odstranění v 3.0.0. */
+  selectFromDirectory?: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte DsTexts.fieldToggle.directoryUnpressed. Odstranění v 3.0.0. */
+  enterManually?: string;
   replaceManualCounterparty: string;
   payByOrder: string;
   paymentOrderDisabled: string;
@@ -263,6 +270,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   amountSum: "Celkem za doklad",
   sumFromLines: "Sčítá se z rozpisu",
   rounding: "Zaokrouhlení",
+  vatDateLinkLabel: "Svázat s DUZP",
   vatDateLockedHint: "Daň na výstupu patří do období DUZP",
   filedWarning: "Období je podané – doklad půjde do dodatečného přiznání",
   excludeFromPaymentOrders: "Nezahrnovat do platebních příkazů",

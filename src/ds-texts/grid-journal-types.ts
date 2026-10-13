@@ -117,8 +117,10 @@ export interface JournalEditorTexts {
   debitPartner: string;
   creditPartner: string;
   nonTax: string;
-  nonTaxOn: string;
-  nonTaxOff: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte fieldToggle.nonTaxPressed. Odstranění v 3.0.0. */
+  nonTaxOn?: string;
+  /** @deprecated Od 2.100.0 ignorováno; použijte fieldToggle.nonTaxUnpressed. Odstranění v 3.0.0. */
+  nonTaxOff?: string;
   rounding: string;
   fxRounding: string;
   fxRoundingPreview: string;

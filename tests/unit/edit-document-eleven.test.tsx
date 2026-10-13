@@ -256,7 +256,7 @@ describe("Edit dokladu 11", () => {
 });
 
 describe("Edit dokladu 11 · 2. kolo oprav", () => {
-  it("přepínač jen ke čtení je aria-disabled, bez popisu a se zakázaným vzhledem", async () => {
+  it("přepínač jen ke čtení je aria-disabled, s obecným důvodem a se zakázaným vzhledem", async () => {
     const { PaymentOrderAccountField } =
       await import("../../src/components/ds/accounting/payment-order-account-field");
     const { TooltipProvider } = await import("../../src/components/ui/tooltip");
@@ -274,7 +274,9 @@ describe("Edit dokladu 11 · 2. kolo oprav", () => {
     );
     const button = view.getByRole("button", { name: "Platit příkazem" });
     expect(button.getAttribute("aria-disabled")).toBe("true");
-    expect(button.getAttribute("aria-describedby")).toBeNull();
+    expect(
+      document.getElementById(button.getAttribute("aria-describedby") ?? "")?.textContent,
+    ).toBe("Pole je jen pro čtení");
     expect(button.getAttribute("aria-disabled")).toBe("true");
     expect(button.className.split(" ")).not.toContain("pointer-events-none");
     fireEvent.click(button);

@@ -5,7 +5,6 @@ import {
   BankStatementForm,
   type BankStatementFormProps,
 } from "../../src/components/ds/accounting/bank-statement-form";
-import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { DsTextsProvider } from "../../src/ds-texts";
 
 afterEach(cleanup);
@@ -23,9 +22,7 @@ const base: BankStatementFormProps = {
 function show(props: Partial<BankStatementFormProps> = {}, locale: "cs" | "sk" = "cs") {
   return render(
     <DsTextsProvider locale={locale}>
-      <TooltipProvider>
-        <BankStatementForm {...base} {...props} />
-      </TooltipProvider>
+      <BankStatementForm {...base} {...props} />
     </DsTextsProvider>,
   );
 }
@@ -63,9 +60,10 @@ test.each(["checked", "posted"] as const)(
     const view = show({ status, onSave: () => {}, onCheckedChange: () => {} });
     expect(view.queryByRole("textbox", { name: "Poznámka" })).toBeNull();
     expect(view.getByRole("button", { name: "Uložit" }).hasAttribute("disabled")).toBe(true);
-    expect(view.getByRole("button", { name: "Zrušit kontrolu" }).hasAttribute("disabled")).toBe(
-      status === "posted",
-    );
+    expect(
+      view.getByRole("button", { name: "Zrušit kontrolu" }).getAttribute("aria-disabled") ===
+        "true",
+    ).toBe(status === "posted");
   },
 );
 test("BankStatementForm položky zamknou číslo a zachovají obsah slotu", () => {
@@ -88,9 +86,36 @@ test("BankStatementForm domácí zůstatky a slovenské texty", () => {
     "sk",
   );
   expect(view.getByRole("heading", { name: "Bankový výpis" })).toBeTruthy();
-  expect(view.getByRole("heading", { name: "v zł" })).toBeTruthy();
+  expect(view.getByRole("heading", { name: "Zostatky v zł" })).toBeTruthy();
   expect(view.container.querySelectorAll('[data-slot="bank-statement-difference"]')).toHaveLength(
     2,
   );
   expect(view.getAllByText("312 500,00 zł")).toHaveLength(2);
+});
+
+test("BankStatementForm ukládá Ctrl/Cmd+S jen při dostupné akci", () => {
+  let saves = 0;
+  const view = show({
+    onSave: () => {
+      saves += 1;
+    },
+    dirty: true,
+  });
+  fireEvent.keyDown(view.getByLabelText("Poznámka"), { key: "s", ctrlKey: true });
+  fireEvent.keyDown(view.getByLabelText("Poznámka"), { key: "s", metaKey: true });
+  expect(saves).toBe(2);
+  view.rerender(
+    <BankStatementForm
+      {...base}
+      busy
+      onSave={() => {
+        saves += 1;
+      }}
+    />,
+  );
+  fireEvent.keyDown(view.getByLabelText("Poznámka"), { key: "s", ctrlKey: true });
+  expect(saves).toBe(2);
+  expect(
+    view.getByRole("button", { name: "Uložit" }).querySelector(".lucide-loader-circle"),
+  ).toBeTruthy();
 });

@@ -349,18 +349,18 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const amount = view.container.querySelector("#document-amountTotal") as HTMLInputElement;
     expect(amount.value.replace(/\s/g, "")).toBe("1234567,89");
     expect(amount.readOnly).toBe(false);
-    expect(view.queryByText("Sčítá se z rozpisu")).toBeNull();
+    expect(view.queryByText("Sčítá se z rozpisu – kliknutím zadat částku")).toBeNull();
     view.rerender(
       <Form
         value={{ ...base, amountTotal: 1234567.89, totalMode: "sum" }}
         lines={[{ id: "1", amount: 1234567.89 }]}
       />,
     );
-    const aside = view.getByText("Sčítá se z rozpisu");
-    expect(aside.textContent).toBe("Sčítá se z rozpisu");
+    const aside = view.getByText("Sčítá se z rozpisu – kliknutím zadat částku");
+    expect(aside.textContent).toBe("Sčítá se z rozpisu – kliknutím zadat částku");
     expect(
       view.container.querySelector("[data-slot=document-amount-total] label")?.textContent,
-    ).toContain("Sčítá se z rozpisu");
+    ).toContain("Sčítá se z rozpisu – kliknutím zadat částku");
   });
 
   it("internal má měnu vedle Celkem a nikdy nevykreslí účet", () => {

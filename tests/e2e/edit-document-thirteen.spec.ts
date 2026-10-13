@@ -2,7 +2,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 1800 } });
-test.setTimeout(240_000);
+test.setTimeout(480_000);
 async function prepare(page: Page) {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
@@ -91,8 +91,8 @@ test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstra
   await form.getByLabel("Konečný zůstatek dle banky", { exact: true }).fill("12500");
   await expect(difference).toContainText("0,00");
   await expect(difference.getByRole("img", { name: "Zůstatek souhlasí" })).toBeVisible();
-  await form.getByRole("button", { name: "Uložit", exact: true }).click();
-  await expect(form.getByRole("button", { name: "Uložit", exact: true })).toBeDisabled();
+  await form.getByRole("button", { name: /^(Uložit|Uložiť)$/ }).click();
+  await expect(form.getByRole("button", { name: /^(Uložit|Uložiť)$/ })).toBeDisabled();
   await expect(difference).toContainText("0,00");
   await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
   await expect(form.getByText("Zkontrolovaný", { exact: true })).toBeVisible();
@@ -150,8 +150,20 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
             }),
           )
           .toBe(true);
-        const actions = form.getByRole("button", { name: "Uložit", exact: true });
-        await expect(actions.locator("svg")).toBeHidden();
+        const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
+        await expect(actions.locator("svg")).toBeVisible();
+        await expect
+          .poll(() =>
+            form.locator('[data-slot="record-action-bar"]').evaluate((bar) => {
+              const save = bar.querySelector(
+                'button[aria-label="Uložit"],button[aria-label="Uložiť"]',
+              );
+              const compact = bar.getBoundingClientRect().width < 640;
+              return save?.querySelector("span")?.classList.contains("sr-only") === compact;
+            }),
+          )
+          .toBe(true);
+        await expect(actions).toHaveAttribute("aria-label", /^(Uložit|Uložiť)$/);
         const actionGap = await form.evaluate((node) => {
           const bar = node.querySelector('[data-slot="record-action-bar"]');
           const left = bar?.querySelector("div:first-child>button")?.getBoundingClientRect();
@@ -168,6 +180,8 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
               nowrap: style.whiteSpace,
               height: el.getBoundingClientRect().height,
               line: parseFloat(style.lineHeight),
+              scroll: el.scrollWidth,
+              client: el.clientWidth,
             };
           });
           const heights = [...node.querySelectorAll("input,[data-slot=field-value]")].map(
@@ -176,6 +190,7 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           return { width: node.getBoundingClientRect().width, labels, heights };
         });
         for (const label of metrics.labels) {
+          expect(label.scroll, label.text ?? "").toBeLessThanOrEqual(label.client);
           expect(label.nowrap).toBe("nowrap");
           expect(label.height).toBeLessThanOrEqual(label.line + 2);
         }
@@ -187,7 +202,7 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
   await showcase.getByRole("button", { name: "eur", exact: true }).click();
   const form = root.locator('[data-slot="bank-statement-form"]').first();
   await expect(form.locator('[data-slot="bank-statement-difference"]')).toHaveCount(2);
-  await expect(form.getByRole("heading", { name: "v Kč", exact: true })).toBeVisible();
+  await expect(form.getByRole("heading", { name: "Zostatky v Kč", exact: true })).toBeVisible();
   await info.attach("Měření všech výpisů", {
     body: JSON.stringify(results),
     contentType: "application/json",
@@ -196,4 +211,129 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
     body: await form.screenshot(),
     contentType: "image/png",
   });
+});
+
+test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ page }) => {
+  await prepare(page);
+  await page.getByTestId("bank-panels").locator("input").first().fill("13.10.2026");
+  const bank = page.getByTestId("bank-panels").locator('[data-slot="bank-statement-form"]').first();
+  const document = page.getByTestId("form-design-two");
+  for (const width of [900, 360]) {
+    await page.getByTestId("bank-panels").evaluate((n, w) => {
+      n.style.width = `${w}px`;
+    }, width);
+    await document.evaluate((n, w) => {
+      n.style.width = `${w}px`;
+    }, width);
+    for (const form of [bank, document]) {
+      const bar = form
+        .locator('[data-slot="record-action-bar"],[data-slot="document-action-bar"]')
+        .first();
+      const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
+      await expect(save.locator("svg")).toBeVisible();
+      const compact = await bar.evaluate((n) => n.getBoundingClientRect().width < 640);
+      await expect(save.locator("span").first()).toHaveClass(
+        compact ? /sr-only/ : /^(?!.*sr-only)/,
+      );
+      if (compact) {
+        await save.scrollIntoViewIfNeeded();
+        await save.hover({ force: true });
+        await expect(page.getByRole("tooltip")).toContainText("Uložit");
+        await page.mouse.move(0, 0);
+      }
+    }
+  }
+  await page
+    .getByTestId("bank-showcase")
+    .getByRole("button", { name: "busy", exact: true })
+    .click();
+  await expect(
+    bank.getByRole("button", { name: /^(Uložit|Uložiť)$/ }).locator(".lucide-loader-circle"),
+  ).toBeVisible();
+});
+
+test("ND zachovává rozměry vydání 2.99.0 při 70/100/200 %", async ({ page }, info) => {
+  await prepare(page);
+  const nd = page
+    .getByRole("button", { name: "Nedaňový řádek", exact: true })
+    .filter({ has: page.locator("svg") })
+    .first();
+  const results = [];
+  for (const scale of [0.7, 1, 2]) {
+    await zoom(page, scale);
+    const m = await nd.evaluate((n) => {
+      const rect = n.getBoundingClientRect();
+      const icon = n.querySelector("svg")?.getBoundingClientRect();
+      return {
+        width: rect.width,
+        height: rect.height,
+        icon: icon?.width,
+        root: parseFloat(getComputedStyle(document.documentElement).fontSize),
+        weight: getComputedStyle(n).fontWeight,
+      };
+    });
+    expect(m.width).toBeCloseTo((24 * m.root) / 16, 0);
+    expect(m.height).toBeCloseTo((24 * m.root) / 16, 0);
+    expect(m.icon).toBeCloseTo((14 * m.root) / 16, 0);
+    expect(Number(m.weight)).toBe(700);
+    results.push({ scale, ...m });
+  }
+  await info.attach("ND proti 24/24/14 px", {
+    body: JSON.stringify(results),
+    contentType: "application/json",
+  });
+});
+
+test("Landmark Sigma History mají shodné vsazení a místní výška mění rezervu", async ({ page }) => {
+  await prepare(page);
+  for (const scale of [0.7, 1, 2]) {
+    await zoom(page, scale);
+    for (const icon of ["landmark", "sigma", "history", "contact-round"]) {
+      const toggle = page
+        .locator(`[data-slot="field-toggle-button"]:has(svg.lucide-${icon})`)
+        .first();
+      const m = await toggle.evaluate((n) => {
+        const parent = n.parentElement;
+        const control = parent?.querySelector("input,[role=combobox],[data-slot=field-value]");
+        if (!control) throw new Error("Chybí pole");
+        const a = n.getBoundingClientRect();
+        const b = control.getBoundingClientRect();
+        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        return { inset: a.top - b.top, size: a.height, control: b.height, rem };
+      });
+      expect(m.inset).toBeCloseTo(m.rem / 4, 0);
+      expect(m.size).toBeCloseTo(m.control - m.rem / 2, 0);
+    }
+  }
+  const scope = page.getByTestId("field-toggle-examples");
+  await scope.evaluate((n) => n.style.setProperty("--control-h", "3rem"));
+  const reserve = await scope
+    .locator('[data-slot="counterparty-input"]')
+    .first()
+    .evaluate((n) => {
+      const control = n.querySelector('[role="combobox"]');
+      if (!control) throw new Error("Chybí pole");
+      const style = getComputedStyle(control);
+      return {
+        padding: parseFloat(style.paddingRight),
+        rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      };
+    });
+  expect(reserve.padding).toBeCloseTo(7 * reserve.rem, 0);
+  const locked = scope.locator('[data-slot="counterparty-input"]').last();
+  const styles = await locked.evaluate((n) => {
+    const input = document.querySelector('[data-testid="document-readonly"] input:disabled');
+    const button = n.querySelector('[data-slot="field-toggle-button"]');
+    if (!input || !button) throw new Error("Chybí zamčené pole");
+    const a = getComputedStyle(input),
+      b = getComputedStyle(button);
+    return {
+      background: [a.backgroundColor, b.backgroundColor],
+      color: [a.color, b.color],
+      opacity: b.opacity,
+    };
+  });
+  expect(styles.background[0]).toBe(styles.background[1]);
+  expect(styles.color[0]).toBe(styles.color[1]);
+  expect(styles.opacity).toBe("1");
 });

@@ -4,6 +4,7 @@
  * Nesmí: měnit hodnotu dokladu mimo předané callbacky.
  */
 import type { ReactNode, RefObject } from "react";
+import { IdentityLine } from "../../layout/identity-line";
 import { Pencil } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
@@ -149,48 +150,20 @@ export function DocumentIdentityLine({
       </span>,
     );
   return (
-    <div data-slot="document-identity" className="mb-3 border-b border-border pb-3">
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-y-1 text-[0.9375rem] font-semibold text-foreground">
-          {direction ? (
-            <DocumentDirectionBadge
-              direction={direction}
-              inLabel={texts.directionIn}
-              outLabel={texts.directionOut}
-            />
-          ) : null}
-          {items[0] != null ? (
-            <span className="flex min-w-0 items-center">
-              {direction ? <span aria-hidden="true" className="mx-2 h-4 w-px bg-border" /> : null}
-              {items[0]}
-            </span>
-          ) : null}
-          {items.length > 1 ? (
-            <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
-              {items.slice(1).map((item, index) => (
-                <span key={index} className="flex min-w-0 items-center">
-                  <span
-                    aria-hidden="true"
-                    className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")}
-                  />
-                  {item}
-                </span>
-              ))}
-            </span>
-          ) : null}
-        </div>
-        {identity ? (
-          <span
-            className={cn(
-              "self-center shrink-0 text-right font-mono text-xl font-bold tabular-nums",
-              !number &&
-                "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground",
-            )}
-          >
-            {number ?? identity.numberPending ?? fallback}
-          </span>
-        ) : null}
-      </div>
-    </div>
+    <IdentityLine
+      data-slot="document-identity"
+      items={items}
+      number={number}
+      fallback={identity.numberPending ?? fallback}
+      leading={
+        direction ? (
+          <DocumentDirectionBadge
+            direction={direction}
+            inLabel={texts.directionIn}
+            outLabel={texts.directionOut}
+          />
+        ) : undefined
+      }
+    />
   );
 }
