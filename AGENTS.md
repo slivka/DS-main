@@ -53,7 +53,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 ## Vydání knihovny
 
-- Dialog Release bere „Current“ z `package.json` zdroje, který byl naposledy vydán, a navrhuje Minor = Current + 1. Proto v každém kole, které se bude vydávat, nastav `package.json` na verzi, pod kterou se toto kolo vydá (= poslední vydaný štítek + 1 minor; po v2.99.0 tedy 2.100.0). Pak se štítek vydání a `package.json` vydaného zdroje shodují a příští dialog nabídne správné číslo. Pokud `package.json` zůstane na posledním vydaném štítku, dialog nabídne znovu stejný štítek a aplikace aktualizaci neuvidí.
+- Před vydáním musí `package.json` obsahovat poslední VYDANOU verzi – dialog Release bere Current z aktuálního `package.json` a navrhuje Minor = Current + 1. `meta.version` v design-system.json, CHANGELOG a roadmap nesou verzi, která se vydá. Po vydání v dalším kole nejdřív nastav `package.json` na právě vydanou verzi.
 
 - Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
 
