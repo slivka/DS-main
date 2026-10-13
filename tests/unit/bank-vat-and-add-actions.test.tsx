@@ -119,7 +119,9 @@ test("GridAddActions vlastní grid texty nepotřebují addMenu", () => {
 test("GridAddActions zakázaná položka nabídky má důvod, fokus a neprovede akci", async () => {
   const log: string[] = [];
   const list = actions(log).map((action) => ({
-    ...action, disabled: true, disabledReason: "Období je uzavřené",
+    ...action,
+    disabled: true,
+    disabledReason: "Období je uzavřené",
   }));
   const view = render(
     <GridToolbarOverflowContext.Provider value={3}>

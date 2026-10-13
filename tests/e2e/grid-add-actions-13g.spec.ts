@@ -52,18 +52,28 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
   const toolbar = box.locator('[data-slot="grid-toolbar"]');
   const modes = new Set<string>();
   for (const width of [960, 640, 400, 340, 320, 300, 290, 280, 270, 260, 250, 240, 230, 220, 208]) {
-    await box.evaluate((node, value) => { node.style.width = `${value}px`; }, width);
-    await expect.poll(async () => toolbar.evaluate((node) => {
-      const rect = node.getBoundingClientRect();
-      return node.scrollWidth <= node.clientWidth && Array.from(
-        node.querySelectorAll<HTMLElement>("button"),
-      ).filter((button) => button.getBoundingClientRect().width > 0).every((button) => {
-        const edge = button.getBoundingClientRect();
-        return edge.left >= rect.left && edge.right <= rect.right;
-      });
-    })).toBe(true);
-    const mode = await toolbar.evaluate((node) => node.dataset.overflowLevel === "3"
-      ? "menu" : node.dataset.addLabels ?? "full");
+    await box.evaluate((node, value) => {
+      node.style.width = `${value}px`;
+    }, width);
+    await expect
+      .poll(async () =>
+        toolbar.evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return (
+            node.scrollWidth <= node.clientWidth &&
+            Array.from(node.querySelectorAll<HTMLElement>("button"))
+              .filter((button) => button.getBoundingClientRect().width > 0)
+              .every((button) => {
+                const edge = button.getBoundingClientRect();
+                return edge.left >= rect.left && edge.right <= rect.right;
+              })
+          );
+        }),
+      )
+      .toBe(true);
+    const mode = await toolbar.evaluate((node) =>
+      node.dataset.overflowLevel === "3" ? "menu" : (node.dataset.addLabels ?? "full"),
+    );
     modes.add(mode);
   }
   expect([...modes]).toEqual(["full", "short", "menu"]);
