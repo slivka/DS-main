@@ -3,6 +3,8 @@
  * Vlastní: tvar všech textů knihovny (DsTexts) a dílčí rozhraní.
  * Nesmí: obsahovat hodnoty textů ani React kód.
  */
+import type { BankStatementTexts } from "./bank-statement-texts";
+export type { BankStatementTexts } from "./bank-statement-texts";
 import type { Locale } from "date-fns";
 import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
@@ -22,6 +24,25 @@ import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 export type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Formulář bankovního výpisu. */
+  bankStatement: BankStatementTexts;
+  /** Přepínače uvnitř polí. */
+  fieldToggle: {
+    directory: string;
+    directoryPressed: string;
+    directoryUnpressed: string;
+    suggest: string;
+    suggestPressed: string;
+    suggestUnpressed: string;
+    sum: string;
+    sumPressed: string;
+    sumUnpressed: string;
+    sumLocked: string;
+    dateLink: string;
+    dateLocked: string;
+    nonTax: string;
+    nonTaxLocked: string;
+  };
   locale: DsLocale;
   intlLocale: string;
   dateLocale: Locale;

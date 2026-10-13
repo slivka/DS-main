@@ -1,5 +1,48 @@
 # Changelog – Slivka Design System
 
+## 2.100.0 – Edit dokladu 13 (nevydáno)
+
+- Nové FieldToggleButton: vsazená geometrie, jednotný pravý prostor, stálý název,
+  aria-pressed, fokusovatelný zakázaný stav a tooltip důvodu.
+- Převedeny CounterpartyInputField (ContactRound), PaymentOrderAccountField (Landmark),
+  součet v DocumentForm/AmountSection (Sigma) a všechny SuggestInput (History).
+  Jiný přepínač uvnitř polí nebyl nalezen; ND v JournalCell a DateField.link jsou výjimky.
+- ND a vazba data: stálé názvy, aria-pressed, sdílený zakázaný vzhled a důvody;
+  datumové tokeny a šířky dokladů zůstávají beze změny.
+- BankStatementForm: identita, přilepené akce, zůstatky, porovnání s bankou,
+  domácí měna, položky v řízeném slotu, readOnly/dirty a CS/SK ukázky.
+  Ukázkové Uložit pracuje jen se stavem ukázky; knihovna neukládá produkční data.
+- **BREAKING – migrace:** CounterpartyInputField již nemění ikonu na PenLine;
+  partner má aria-pressed=true, ruční režim false. Přepínač vyhledávejte stálým
+  názvem „Vybrat z adresáře“, nikoli názvem cílového režimu. Stávající props zůstávají.
+  SuggestInput má vsazené, nikoli celovýškové tlačítko; odstraňte vlastní odsazení
+  a polohování historie, prostor rezervuje --field-toggle-space.
+  Název našeptávače, součtu, ND a vazby data je nově nezávislý na stavu;
+  stav a důvod čtěte z aria-pressed / aria-disabled a přístupného popisu.
+- Jednotkové testy: **631/631**, 61 souborů, 1 990 assertions. E2E **30/30**:
+  Edit 13 9/9, datumové scénáře Edit 12 15/15, datumová vazba a Celkem 6/6;
+  Chromium/Firefox/WebKit po 10. Běhy rozdělené kvůli časovému limitu příkazu.
+  Nové testy čekají na hydrataci stránky; původní test datumové vazby rozlišuje
+  odemykatelnou účetní vazbu od zamčené vazby DPH podle aria-disabled.
+- Lint **0 chyb / 293 varování**, formát všech změněných TS/TSX/CSS OK,
+  automatický build OK; ruční typecheck ani build nebyly spuštěny.
+- Katalogový důkaz `python3 scripts/verify-edit-document-thirteen-catalogs.py` proti
+  **98810718**: všechny čtyři katalogy **426 → 428**, odstraněné **0**;
+  nové FieldToggleButton a BankStatementForm, šest dotčených komponent,
+  **420 bajtově shodných** původních komponent. Manifest neztratil žádný klíč
+  a zachovává #enrichment; DocumentActionBar a cizí sekce beze změny.
+  V katalogu byl před prací platformou změněný údaj meta.version z 2.98.0 na 2.99.0;
+  nyní odpovídá připravené 2.100.0. Verze nebyla vydána.
+
+| Bod | Stav | Důkaz |
+|---|---|---|
+| D1 | Hotovo | FieldToggleButton unit: ref, stálý název, pressed, zamčení bez callbacku; E2E klávesnice |
+| D2 | Hotovo | E2E měří šipku, tužku a přepínač při 70–200 %; ruční režim bez tužky |
+| D3 | Hotovo | Příkaz, součet a historie používají společný přepínač; Celkem a šipka regresně ověřeny |
+| D4 | Hotovo | Unit ND/date link; E2E datumová vazba a 15 původních datumových scénářů |
+| D5 | Hotovo | Unit zůstatků, prázdného rozdílu a zamčení; CS/SK, 1/2/3 panely a 360 px při 70–200 % |
+| D6 | Hotovo | 631 unit, 30 E2E, lint 0 chyb, přírůstkové katalogy a migrační pokyny |
+
 ## 2.99.0 – Edit dokladu 12i
 
 Obsah 12i byl nejdřív omylem vydán znovu pod štítkem v2.98.0, spotřebitelům se proto dodává jako v2.99.0.

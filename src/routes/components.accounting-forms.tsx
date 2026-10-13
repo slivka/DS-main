@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
 import { AccountingFieldsShowcase } from "@/components/showcase/AccountingFieldsShowcase";
 import { DocumentDatesShowcase } from "@/components/showcase/DocumentDatesShowcase";
+import { BankStatementShowcase } from "@/components/showcase/BankStatementShowcase";
 import { FormDesignTwoShowcase } from "@/components/showcase/FormDesignTwoShowcase";
 import { FormDesignShowcase } from "@/components/showcase/FormDesignShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
@@ -234,6 +235,7 @@ function AccountingFormsPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}>
+      <BankStatementShowcase />
       <FormDesignShowcase />
       <FormDesignTwoShowcase />
       <DocumentDatesShowcase />

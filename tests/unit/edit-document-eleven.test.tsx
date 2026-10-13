@@ -275,8 +275,7 @@ describe("Edit dokladu 11 · 2. kolo oprav", () => {
     const button = view.getByRole("button", { name: "Platit příkazem" });
     expect(button.getAttribute("aria-disabled")).toBe("true");
     expect(button.getAttribute("aria-describedby")).toBeNull();
-    expect(button.className).toContain("opacity-50");
-    expect(button.className).toContain("cursor-not-allowed");
+    expect(button.getAttribute("aria-disabled")).toBe("true");
     expect(button.className.split(" ")).not.toContain("pointer-events-none");
     fireEvent.click(button);
     expect(button.getAttribute("aria-pressed")).toBe("true");

@@ -1,3 +1,12 @@
+## DS 2.100.0 – Edit dokladu 13 (bez vydání)
+- [x] D1–D3: společný přepínač a převod protistrany, příkazu, součtu a našeptávače.
+- [x] D4: dostupné zamčení ND a vazby data bez změny geometrie.
+- [x] D5: formulář bankovního výpisu a ukázky.
+- [x] D6: unit 631/631; E2E 30/30 (10 na prohlížeč), lint 0 chyb / 293 varování;
+  formát OK, automatický build OK. Katalogy 426 → 428, odstraněné 0,
+  šest změněných a 420 bajtově shodných komponent; manifest bez ztrát, #enrichment zachován.
+  Samostatný typecheck/build se dle omezení nespouští; Release neproběhl.
+
 ## DS 2.99.0 – Edit dokladu 12i
 - [x] Odlišit zamčenou vybranou segmentovou volbu a porovnat s povolenou.
 - [x] Ověřit rámečky lišty bez neohlášených změn CSS.

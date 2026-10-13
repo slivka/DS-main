@@ -5,9 +5,9 @@
  */
 import { Fragment, type ReactNode } from "react";
 import { Sigma } from "lucide-react";
-import { Button } from "../../../ui/button";
+import { FieldToggleButton } from "../../form/field-toggle-button";
+import { useDsTexts } from "../../../../ds-texts";
 import { Input } from "../../../ui/input";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { DecimalInput } from "../../form/decimal-input";
 import { RateField } from "../../form/rate-field";
 import { SectionHeading } from "../../layout/section-heading";
@@ -48,6 +48,7 @@ export interface DocumentAmountSectionProps {
 
 /** Vykreslí poslední sekci částky dokladu. */
 export function DocumentAmountSection(p: DocumentAmountSectionProps) {
+  const toggleTexts = useDsTexts().fieldToggle;
   const {
     t,
     value,
@@ -196,40 +197,21 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     onChange={(next) => patch({ amountTotal: next === "" ? 0 : Number(next) })}
                     readOnly={totalMode === "sum" || !can("amountTotal")}
                     className={cn(
-                      "h-[var(--control-h)] pr-[calc(var(--control-h)+0.5rem)] text-right text-sm font-sans font-bold tabular-nums",
+                      "h-[var(--control-h)] pr-[var(--field-toggle-space)] text-right text-sm font-sans font-bold tabular-nums",
                       totalMode === "sum" && "bg-muted",
                       !can("amountTotal") && "bg-muted/40 text-muted-foreground opacity-100",
                     )}
                   />
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        type="button"
-                        variant={totalMode === "sum" ? "default" : "outline"}
-                        size="icon"
-                        aria-label={t.sumFromLines}
-                        aria-pressed={totalMode === "sum"}
-                        disabled={forcedSum || !can("totalMode")}
-                        onClick={() =>
-                          patch({ totalMode: totalMode === "sum" ? "entered" : "sum" })
-                        }
-                        className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
-                      >
-                        <span className="relative">
-                          <Sigma className="size-4" />
-                          {totalMode !== "sum" ? (
-                            <span
-                              aria-hidden
-                              className="absolute left-1/2 top-1/2 h-px w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-current"
-                            />
-                          ) : null}
-                        </span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {totalMode === "sum" ? t.sumFromLines : t.amountTotal}
-                    </TooltipContent>
-                  </Tooltip>
+                  <FieldToggleButton
+                    icon={Sigma}
+                    pressed={totalMode === "sum"}
+                    label={toggleTexts.sum}
+                    pressedTooltip={toggleTexts.sumPressed}
+                    unpressedTooltip={toggleTexts.sumUnpressed}
+                    lockedReason={forcedSum ? toggleTexts.sumLocked : undefined}
+                    disabled={!can("totalMode")}
+                    onPressedChange={(pressed) => patch({ totalMode: pressed ? "sum" : "entered" })}
+                  />
                 </div>
               </>,
               6,

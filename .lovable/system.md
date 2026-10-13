@@ -449,3 +449,10 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - BankAccountOption přijímá úplné number + bankCode nebo iban. Tuzemská dvojice má přednost při zobrazení, jinak použijte formatIban. Výběr hledá také podle IBAN; partnera s účtem pouze IBAN nevynechávejte. Ruční ReceivedBankAccountField a firemní account mají vlastní, beze změny zachovaný typ.
 
 - Zakázané Input, SelectTrigger, OptionSelect (obě větve), Textarea, DecimalInput a zamčený účet používají sdílenou třídu ds-disabled-control: stávající podklad muted/40, rámeček input a text muted-foreground, průhlednost 1 kvůli kontrastu alespoň 4,5 : 1 v obou režimech. Prázdná hodnota a placeholder jsou navíc kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost před zakázaným stavem ve vrstvě components. Spouštěče na Button dědí stejné tokenové utility. Nevytvářejte lokální barvy zakázaného stavu.
+
+## Přepínače v polích
+
+- Ikonový přepínač uvnitř pole vždy skládejte přes `FieldToggleButton`. Jediné výjimky jsou ND (`NonTaxToggle`) v buňce řádku a zámek vazby `DateField.link`; jejich rozměry včetně `--document-date-*` zůstávají vlastní.
+- Zapnutí řídí `pressed`, stálý název `label` je nezávislý na stavu. Tooltipy stavu jsou samostatné; `lockedReason` zakáže změnu, zachová fokus a zpřístupní důvod. Nevytvářejte další lokální přepínače. Vstup rezervuje pravý prostor přes `--field-toggle-space`; šipka, křížek a tužka jsou vlevo od tohoto prostoru.
+- Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
+- Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zkontrolovaný či zaúčtovaný výpis je jen ke čtení; položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.

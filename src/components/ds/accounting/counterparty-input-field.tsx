@@ -3,11 +3,11 @@
  * Vlastní: režim adresáře/ruční zadání a potvrzení nahrazení ručních údajů.
  * Nesmí: samo mazat nebo přepisovat údaje protistrany.
  */
-import { ContactRound, PenLine } from "lucide-react";
+import { ContactRound } from "lucide-react";
 
-import { Button } from "../../ui/button";
+import { FieldToggleButton } from "../form/field-toggle-button";
+import { useDsTexts } from "../../../ds-texts";
 import { Input } from "../../ui/input";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { PartnerSelect, type PartnerOption } from "./partner-select";
 
@@ -54,8 +54,8 @@ export interface CounterpartyInputFieldProps {
 /** Pole protistrany s ikonou přepnutí režimu. */
 export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
   const { confirm, confirmDialog } = useConfirmDialog();
+  const texts = useDsTexts().fieldToggle;
   const targetMode = props.mode === "partner" ? "manual" : "partner";
-  const label = targetMode === "partner" ? props.partnerModeLabel : props.manualModeLabel;
   const switchMode = () => {
     if (!props.onModeChange || props.lockedReason || props.readOnly) return;
     if (targetMode === "partner" && props.hasManualData) {
@@ -69,32 +69,24 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
     props.onModeChange(targetMode);
   };
   const toggle = (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant={props.mode === "partner" ? "default" : "outline"}
-          size="icon"
-          aria-label={props.lockedReason ?? label}
-          aria-pressed={props.mode === "manual"}
-          disabled={!props.onModeChange || props.readOnly}
-          aria-disabled={Boolean(props.lockedReason) || undefined}
-          onClick={switchMode}
-          className="absolute right-1 top-1 size-[calc(var(--control-h)-0.5rem)]"
-        >
-          {props.mode === "partner" ? (
-            <ContactRound className="size-4" />
-          ) : (
-            <PenLine className="size-4" />
-          )}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>{props.lockedReason ?? label}</TooltipContent>
-    </Tooltip>
+    <FieldToggleButton
+      icon={ContactRound}
+      pressed={props.mode === "partner"}
+      onPressedChange={switchMode}
+      label={texts.directory}
+      pressedTooltip={texts.directoryPressed}
+      unpressedTooltip={texts.directoryUnpressed}
+      lockedReason={props.lockedReason}
+      disabled={props.disabled || props.readOnly || !props.onModeChange}
+    />
   );
   return (
     <>
-      <div data-slot="counterparty-input" data-mode={props.mode} className="relative min-w-0">
+      <div
+        data-slot="counterparty-input"
+        data-mode={props.mode}
+        className="relative min-w-0 [&_[data-slot=select-chevron]]:right-[var(--field-toggle-space)] [&_[data-slot=field-inline-actions]]:right-[calc(var(--field-toggle-space)+1.5rem)]"
+      >
         {props.mode === "partner" ? (
           <PartnerSelect
             id={props.id}
@@ -104,7 +96,11 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
             disabled={props.disabled || props.readOnly}
             onCreate={props.onCreatePartner}
             onEditSelected={props.onEditPartner}
-            className={props.onEditPartner && props.partnerId ? "pr-20" : "pr-10"}
+            className={
+              props.onEditPartner && props.partnerId
+                ? "pr-[calc(var(--field-toggle-space)+3.5rem)]"
+                : "pr-[calc(var(--field-toggle-space)+1.5rem)]"
+            }
           />
         ) : (
           <Input
@@ -114,7 +110,7 @@ export function CounterpartyInputField(props: CounterpartyInputFieldProps) {
             disabled={props.disabled}
             readOnly={props.readOnly}
             aria-label={props.ariaLabel}
-            className="pr-10"
+            className="pr-[var(--field-toggle-space)]"
           />
         )}
         {toggle}

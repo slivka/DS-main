@@ -9,7 +9,7 @@ test("Částka sdílí výšku, písmo a osu popisků s VS", async ({ page }, te
   const form = page.getByTestId("form-design-two");
   await expect(form).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const total = form.locator("#document-amountTotal");
-  const sum = form.getByRole("button", { name: "Sčítá se z rozpisu", exact: true });
+  const sum = form.getByRole("button", { name: "Sčítat z rozpisu", exact: true });
   await total.fill("1234567,89");
   await total.blur();
   for (const zoom of [1, 1.5, 2]) {

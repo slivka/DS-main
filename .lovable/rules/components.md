@@ -1253,6 +1253,8 @@ _Výběr partnera_
 import { CounterpartyInputField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Edit dokladu 13: ContactRound v obou režimech; partner je zapnutý, ruční vypnutý s přeškrtnutím. Stálý název z DsTexts, tooltip podle stavu, lockedReason zachová fokus bez změny. Tužka jen pro vybraného partnera; šipka a křížek vlevo od FieldToggleButton.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -1275,6 +1277,17 @@ import { CounterpartyInputField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 | `readOnly` | boolean | `—` |
 | `onCreatePartner` | function | `—` |
 | `onEditPartner` | function | `—` |
+
+**Examples:**
+
+_Řízené použití_
+```tsx
+<CounterpartyInputField {...props} />
+```
+
+**Avoid:**
+
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### CountrySelect
 
@@ -1374,7 +1387,7 @@ _Párování s editovatelnou částkou_
 import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay="indicator" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay="indicator" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 13: Výjimka: vazba data zachovává vlastní geometrii a --document-date-*; stálý název, aria-pressed, fokusovatelný zakázaný stav a důvod v tooltipu i přístupném popisu.
 
 **Props:**
 
@@ -1385,7 +1398,7 @@ Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpř�
 | `onChange` | function | `—` |
 | `placeholder` | string | `—` |
 | `disabled` | boolean | `—` |
-| `className` | string | `relative` |
+| `className` | string | `—` |
 | `inputClassName` | string | `—` |
 | `maxDate` | any | `—` |
 | `minDate` | any | `—` |
@@ -1394,7 +1407,7 @@ Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpř�
 | `link` | any | `—` |
 | `hint` | string | `—` |
 | `warning` | string | `—` |
-| `warningDisplay` | below · indicator | `below` |
+| `warningDisplay` | below · indicator | `—` |
 
 **Examples:**
 
@@ -1407,6 +1420,7 @@ _Datum s varováním v indikátoru_
 
 - Nepoužívejte warning jako chybu vstupu; aria-invalid patří pouze neplatnému datu.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### DateRangeField
 
@@ -1569,7 +1583,7 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu.
+Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění.
 
 **Examples:**
 
@@ -1597,6 +1611,7 @@ _Nepoužitá bankovní platba_
 - Neskrývejte KS/SS ani nemažte hodnoty v DS; prázdný zakázaný vzhled není změnou uložených dat.
 - Nezmenšujte datumové písmo, pokud se plné pole vejde; delší popisek nesmí měnit šířky ostatních polí.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### DocumentPrintTab
 
@@ -2699,7 +2714,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky.
+Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení.
 
 **Examples:**
 
@@ -2724,6 +2739,7 @@ _2.92.0_
 - Neskrývejte automaticky sloupec, který uživatel výslovně zapnul ve Sloupcích.
 - Nevykreslujte počet chyb do patičky gridu; použijte onValidationChange a společný chybový pruh formuláře.
 - Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### JournalLinesRecap
 
@@ -3518,7 +3534,7 @@ _Výběr hodnoty_
 import { PaymentOrderAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Účet s přepínačem příkazu; vypnutý stav ukazuje důvod uvnitř šedého pole, bez zámku. Chybějící onEnabledChange ponechá přepínač fokusovatelný s aria-disabled; klik nic neprovede. Šipka hledatelného výběru a text mají samostatný prostor vlevo od tlačítka příkazu při všech zoomech. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 13: Přepínač Landmark skládá FieldToggleButton, pravý prostor určuje --field-toggle-space. Zamčení nemění účet a zachová přístupný důvod.
 
 **Props:**
 
@@ -3545,6 +3561,7 @@ _Vypnutý příkaz_
 - Nevykreslujte druhý zámek ani důvod pod polem.
 - Nepřekrývejte tlačítkem příkazu šipku výběru ani jeho text.
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### PaymentScheduleEditor
 
@@ -4536,7 +4553,7 @@ import { StatusDot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364
 import { SuggestInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Textové pole s přepínatelným našeptávačem z předchozích záznamů.
+Textové pole s přepínatelným našeptávačem z předchozích záznamů. Edit dokladu 13: Vsazený FieldToggleButton History místo celovýškového tlačítka. Stálý přístupný název z DsTexts, stavové tooltipy samostatné, přepnutí nemaže hodnotu.
 
 **Props:**
 
@@ -4548,9 +4565,9 @@ Textové pole s přepínatelným našeptávačem z předchozích záznamů.
 | `enabled` | boolean | `—` |
 | `onEnabledChange` | function | `—` |
 | `readOnly` | boolean | `—` |
-| `debounceMs` | number | `200` |
-| `enabledLabel` | string | `Našeptávač z předchozích dokladů – zapnuto` |
-| `disabledLabel` | string | `Našeptávač z předchozích dokladů – vypnuto` |
+| `debounceMs` | number | `—` |
+| `enabledLabel` | string | `—` |
+| `disabledLabel` | string | `—` |
 
 **Examples:**
 
@@ -4562,6 +4579,7 @@ _Historie popisů_
 **Avoid:**
 
 - Nenačítejte více než deset viditelných návrhů ani neblokujte psaní čekáním na odpověď.
+- Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 
 ### Switch
 
@@ -5133,4 +5151,83 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### FieldToggleButton
+
+```ts
+import { FieldToggleButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Jediný sdílený ikonový přepínač uvnitř pole; vstup rezervuje --field-toggle-space. Zapnutý plný, vypnutý obrys s přeškrtnutím; zamčený zůstává fokusovatelný a nevolá změnu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `icon` | LucideIcon | `—` |
+| `pressed` | boolean | `—` |
+| `onPressedChange` | function | `—` |
+| `label` | string | `—` |
+| `pressedTooltip` | string | `—` |
+| `unpressedTooltip` | string | `—` |
+| `lockedReason` | string | `—` |
+| `disabled` | boolean | `—` |
+
+**Examples:**
+
+_Platit příkazem_
+```tsx
+<FieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} />
+```
+
+**Avoid:**
+
+- Neměňte label podle stavu; tooltipy jsou samostatné.
+- Nezaměňujte lockedReason za nativní disabled bez fokusu.
+
+### BankStatementForm
+
+```ts
+import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | BankStatementValue | `—` |
+| `onChange` | function | `—` |
+| `status` | open · checked · posted | `—` |
+| `book` | ReactNode | `—` |
+| `currency` | string | `—` |
+| `currencySymbol` | string | `—` |
+| `period` | ReactNode | `—` |
+| `bankAccount` | ReactNode | `—` |
+| `balances` | BankStatementBalances | `—` |
+| `home` | BankStatementBalances & { currencySymbol: string; bankClosing: number \| null } | `—` |
+| `onHomeBankClosingChange` | function | `—` |
+| `hasItems` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+| `dirty` | boolean | `—` |
+| `onSave` | function | `—` |
+| `onCheckedChange` | function | `—` |
+| `onDelete` | function | `—` |
+| `error` | RecordActionError | `—` |
+| `notices` | ReactNode | `—` |
+| `items` | ReactNode | `—` |
+| `texts` | Partial&lt;BankStatementTexts> | `—` |
+
+**Examples:**
+
+_Řízený výpis_
+```tsx
+<BankStatementForm value={statement} onChange={setStatement} status="open" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />
+```
+
+**Avoid:**
+
+- Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.
+- Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.
 

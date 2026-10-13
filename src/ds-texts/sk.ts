@@ -3,6 +3,7 @@
  * Vlastní: hodnoty DS_TEXTS_SK (chybějící klíče doplní čeština).
  * Nesmí: obsahovat React kód.
  */
+import { BANK_STATEMENT_SK } from "./bank-statement-texts";
 import { sk } from "date-fns/locale";
 
 import { DS_TEXTS_CS } from "./cs";
@@ -13,6 +14,23 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  bankStatement: BANK_STATEMENT_SK,
+  fieldToggle: {
+    directory: "Vybrať z adresára",
+    directoryPressed: "Vybrané z adresára – kliknutím zadať ručne",
+    directoryUnpressed: "Zadané ručne – kliknutím vybrať z adresára",
+    suggest: "Našepkávač z predchádzajúcich dokladov",
+    suggestPressed: "Našepkávač z predchádzajúcich dokladov – zapnuté",
+    suggestUnpressed: "Našepkávač z predchádzajúcich dokladov – vypnuté",
+    sum: "Sčítať z rozpisu",
+    sumPressed: "Sčíta sa z rozpisu – kliknutím zadať sumu",
+    sumUnpressed: "Suma zadaná ručne – kliknutím sčítať z rozpisu",
+    sumLocked: "Súčet z rozpisu je povinný",
+    dateLink: "Prepojiť s dátumom vystavenia",
+    dateLocked: "Väzbu dátumu nemožno zmeniť",
+    nonTax: "Nedaňový riadok",
+    nonTaxLocked: "Riadok je iba na čítanie",
+  },
   layoutMenu: {
     trigger: "Rozloženie",
     empty: "Zatiaľ žiadne uložené rozloženie",

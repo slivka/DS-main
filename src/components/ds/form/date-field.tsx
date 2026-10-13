@@ -1,3 +1,4 @@
+/** Datumové pole · vlastní vstup a vazbu data · nesmí měnit rozměry dokumentové oblasti. */
 import * as React from "react";
 import { AlertTriangle, CalendarIcon, Lock, LockOpen } from "lucide-react";
 import { cn } from "../../../lib/utils";
@@ -61,6 +62,8 @@ export type DateFieldLink = {
   locked: boolean;
   onToggle: (locked: boolean) => void;
   toggleDisabled?: boolean;
+  /** Důvod zamčení přepínače vazby. */
+  lockedReason?: string;
   lockedHint?: string;
   unlockedHint?: string;
 };
@@ -164,7 +167,7 @@ export function DateField({
   };
 
   const toggleLink = () => {
-    if (!link) return;
+    if (!link || disabled || link.toggleDisabled || link.lockedReason) return;
     const nextLocked = !link.locked;
     link.onToggle(nextLocked);
     if (!nextLocked) requestAnimationFrame(() => inputRef.current?.focus());
@@ -172,10 +175,25 @@ export function DateField({
 
   const lockedHint = link?.lockedHint ?? dsTexts.date.sameAsIssue;
   const unlockedHint = link?.unlockedHint ?? dsTexts.date.relinkIssue;
+  const linkDescriptionId = React.useId();
+  const linkDescription =
+    link?.lockedReason ??
+    (link?.lockedHint && (link.locked || link.toggleDisabled)
+      ? link.lockedHint
+      : disabled || link?.toggleDisabled
+        ? dsTexts.fieldToggle.dateLocked
+        : link?.locked
+          ? lockedHint
+          : unlockedHint);
 
   return (
     <TooltipProvider>
       <div className={cn("min-w-0", className)}>
+        {link ? (
+          <span id={linkDescriptionId} className="sr-only">
+            {linkDescription}
+          </span>
+        ) : null}
         <div className="relative">
           <Input
             ref={inputRef}
@@ -252,23 +270,26 @@ export function DateField({
           ) : null}
           {link?.locked ? (
             <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 -translate-y-1/2">
+              <span className="absolute right-[var(--document-date-icon-offset,0.3em)] top-1/2 -translate-y-1/2">
+                <TooltipTrigger asChild>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    disabled={disabled || link.toggleDisabled}
-                    aria-label={lockedHint}
+                    aria-disabled={
+                      Boolean(disabled || link.toggleDisabled || link.lockedReason) || undefined
+                    }
+                    aria-label={dsTexts.fieldToggle.dateLink}
+                    aria-describedby={linkDescriptionId}
                     aria-pressed="true"
                     onClick={toggleLink}
-                    className="date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                    className="ds-disabled-control date-field-link size-[1.7em] rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                   >
                     <Lock className="size-[var(--document-date-icon-size,1.05em)]" />
                   </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>{lockedHint}</TooltipContent>
+                </TooltipTrigger>
+              </span>
+              <TooltipContent>{linkDescription}</TooltipContent>
             </Tooltip>
           ) : (
             <>
@@ -279,16 +300,19 @@ export function DateField({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      disabled={disabled || link.toggleDisabled}
-                      aria-label={unlockedHint}
+                      aria-disabled={
+                        Boolean(disabled || link.toggleDisabled || link.lockedReason) || undefined
+                      }
+                      aria-label={dsTexts.fieldToggle.dateLink}
+                      aria-describedby={linkDescriptionId}
                       aria-pressed="false"
                       onClick={toggleLink}
-                      className="date-field-link absolute right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
+                      className="ds-disabled-control date-field-link absolute right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))] top-1/2 size-[1.7em] -translate-y-1/2 rounded-sm !p-0 text-muted-foreground transition-colors hover-surface hover:text-foreground"
                     >
                       <LockOpen className="size-[var(--document-date-icon-size,1.05em)]" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>{unlockedHint}</TooltipContent>
+                  <TooltipContent>{linkDescription}</TooltipContent>
                 </Tooltip>
               ) : null}
               <Popover open={open} onOpenChange={setOpen}>
