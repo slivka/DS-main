@@ -209,6 +209,35 @@ import { AlertTitle } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { AmountCell } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### AmountDifference
+
+```ts
+import { AmountDifference } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Společný stav rozdílu částek pro editor řádků a bankovní výpis. Výpis vykresluje komponentu pouze při nenulové odchylce; popisky a značka měny pocházejí z aplikace nebo DsTexts. Vyrovnaný stav nepřipojuje měnu; editor řádků používá balancedLabel a výpis nulový rozdíl nezobrazuje.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | number | `—` |
+| `label` | string | `—` |
+| `balancedLabel` | string | `—` |
+| `currencySymbol` | string | `—` |
+
+**Examples:**
+
+_Rozdíl výpisu_
+```tsx
+{difference !== 0 && <AmountDifference value={difference} label={texts.difference} currencySymbol={currency.symbol} />}
+```
+
+**Avoid:**
+
+- Nevytvářejte vlastní styl rozdílu v jednotlivých formulářích.
+- Nevkládejte pevnou značku měny ani zde nepočítejte součty.
+
 ### AmountInput
 
 ```ts
@@ -348,7 +377,7 @@ _Účet pouze s IBAN_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu: Uložit je společná primární akce RecordActionBar s ikonou a textem v každé šířce, nikdy jen ikona; dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu.
+Formulář bankovního výpisu: Uložit je společná primární akce RecordActionBar s ikonou a textem v každé šířce, nikdy jen ikona; dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu. Bankovní zůstatek v obou měnách má na široké ploše span 3/12 vpravo; nenulový rozdíl těsně vlevo. Číslo dědí typografii IdentityLine také při zamčení. Zamčené Uložit vysvětluje lockedReason. Povolená kontrola se klikem provede bez připnutí vysvětlení; dotyk jej ukáže na 3 s.
 
 **Props:**
 
@@ -356,7 +385,7 @@ Formulář bankovního výpisu: Uložit je společná primární akce RecordActi
 |---|---|---|
 | `value` | any | `—` |
 | `onChange` | function | `—` |
-| `status` | open \| checked \| posted | `—` |
+| `status` | open · checked · posted | `—` |
 | `book` | any | `—` |
 | `currency` | string | `—` |
 | `currencySymbol` | string | `—` |
@@ -378,13 +407,14 @@ Formulář bankovního výpisu: Uložit je společná primární akce RecordActi
 | `items` | any | `—` |
 | `texts` | any | `—` |
 
-**Řízený výpis**
+**Examples:**
 
+_Řízený výpis_
 ```tsx
 <BankStatementForm value={statement} onChange={setStatement} status="open" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />
 ```
 
-**Antipatterns:**
+**Avoid:**
 
 - Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.
 - Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.
@@ -2123,23 +2153,24 @@ _Platit příkazem_
 import { FieldValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input. Výchozí role group zpřístupňuje jméno z aria-labelledby; ID popisku předá Field.labelId. lockedReason zobrazí fokusovatelné tlačítko zámku s tooltipem dostupným i klepnutím; v identitě lze použít variant="plain" a aria-label.
+Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input. Výchozí role group zpřístupňuje jméno z aria-labelledby; ID popisku předá Field.labelId. lockedReason zobrazí fokusovatelné tlačítko zámku s tooltipem dostupným i klepnutím; v identitě lze použít variant="plain" a aria-label. Zámek používá kompaktní size-4 bez podkladu v plain variantě, se zachováním tooltipu i klepnutím.
 
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
 | `trailing` | any | `—` |
-| `variant` | field \| plain | `field` |
+| `variant` | field · plain | `field` |
 | `lockedReason` | string | `—` |
 
-**Stav DPH**
+**Examples:**
 
+_Stav DPH_
 ```tsx
 <Field label="Stav DPH" hint="Ověřeno 26.09.2026"><FieldValue><VatStatusBadge status="payer" /></FieldValue></Field>
 ```
 
-**Antipatterns:**
+**Avoid:**
 
 - Nezapomeňte přístupné jméno: uvnitř Field aria-labelledby, v identitě aria-label.
 
@@ -2250,7 +2281,7 @@ import { GridActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { GridAddActions } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel → jedno tlačítko „+ ▾“ podle skutečně změřené šířky lišty. Šířka nabídky se měří v kopii, neodhaduje. GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason. Zakázaná položka nabídky ukáže disabledReason v tooltipu, je dostupná klávesnicí a neprovede akci. onClick z nabídky dostane událost výběru Event, nikoli MouseEvent; nepoužívejte souřadnice myši.
+Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: plný label → shortLabel → jedno tlačítko „+ ▾“ podle skutečně změřené šířky lišty. Šířka nabídky se měří v kopii, neodhaduje. GridAddAction má label, shortLabel, icon, onClick, disabled, disabledReason. Zakázaná položka nabídky ukáže disabledReason jako stále viditelný druhý řádek (bez tooltipu), je dostupná klávesnicí a neprovede akci. onClick z nabídky dostane událost výběru Event, nikoli MouseEvent; nepoužívejte souřadnice myši. 13j: zakázané tlačítko s disabledReason je aria-disabled, klik/klepnutí/Enter ukáže důvod a akci nespustí.
 
 **Props:**
 
@@ -2747,7 +2778,7 @@ _Právnická osoba_
 import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm. Pro editovatelné nebo zamčené číslo použijte numberContent; aplikace vlastní hodnotu a callback.
+Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm. Pro editovatelné nebo zamčené číslo použijte numberContent; aplikace vlastní hodnotu a callback. Vlastní numberContent dědí typografii čísla a zůstává omezen šířkou řádku také při zoomu.
 
 **Props:**
 
@@ -2755,17 +2786,18 @@ Společná prezentační identita formuláře; položky a volitelný příznak v
 |---|---|---|
 | `items` | any | `—` |
 | `leading` | any | `—` |
-| `number` | string \| null | `—` |
+| `number` | string | `—` |
+| `numberContent` | any | `—` |
 | `fallback` | any | `—` |
-| `numberContent` | ReactNode | `—` |
 
-**Identita výpisu**
+**Examples:**
 
+_Identita výpisu_
 ```tsx
 <IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
 ```
 
-**Antipatterns:**
+**Avoid:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
 - Nepřidávejte do identity ukládání nebo doménovou logiku.
@@ -3957,7 +3989,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko s ikonou a textem ve všech šířkách, nikdy jen ikona; busy ikonu nahrazuje spinnerem a text. Pouze sekundární akce přecházejí do kompaktního režimu.
+Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko s ikonou a textem ve všech šířkách, nikdy jen ikona; busy ikonu nahrazuje spinnerem a text. Pouze sekundární akce přecházejí do kompaktního režimu. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu.
 
 **Props:**
 
@@ -3979,13 +4011,14 @@ Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární
 | `errorDataSlot` | string | `record-action-error` |
 | `noticesDataSlot` | string | `record-action-notices` |
 
-**Karta majetku**
+**Examples:**
 
+_Karta majetku_
 ```tsx
 <RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} notices={<NoticeBar tone="info">Informace</NoticeBar>} />
 ```
 
-**Antipatterns:**
+**Avoid:**
 
 - Nevykreslujte Uložit ani akce záznamu volně pod poli.
 - Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
@@ -5281,33 +5314,4 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
-
-
-### AmountDifference
-
-```ts
-import { AmountDifference } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
-```
-
-Společný stav rozdílu částek pro editor řádků a bankovní výpis. Výpis vykresluje komponentu pouze při nenulové odchylce; popisky a značka měny pocházejí z aplikace nebo DsTexts.
-
-**Props:**
-
-| Prop | Type | Default |
-|---|---|---|
-| `value` | number | `—` |
-| `label` | string | `—` |
-| `balancedLabel` | string | `—` |
-| `currencySymbol` | string | `—` |
-
-**Rozdíl výpisu**
-
-```tsx
-{difference !== 0 && <AmountDifference value={difference} label={texts.difference} currencySymbol={currency.symbol} />}
-```
-
-**Antipatterns:**
-
-- Nevytvářejte vlastní styl rozdílu v jednotlivých formulářích.
-- Nevkládejte pevnou značku měny ani zde nepočítejte součty.
 
