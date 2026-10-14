@@ -323,7 +323,7 @@ export function useGroupedRows<T>(
 
     // Stejné pravidlo jako ukotvený součtový řádek a export: total ?? (numeric ? sum : none).
     const numericIds = columns
-      .filter((c) => (c.total ?? (c.numeric === false ? undefined : "auto")) !== "none")
+      .filter((c) => c.total !== "none" && !(c.total === undefined && c.numeric === false))
       .map((c) => c.id)
       .filter(
         (id) =>

@@ -82,10 +82,7 @@ export function DisabledReasonTooltip({ content, blocked, children }: DisabledRe
       }}
     >
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent
-        onEscapeKeyDown={unpin}
-        onPointerDownOutside={unpin}
-      >
+      <TooltipContent onEscapeKeyDown={unpin} onPointerDownOutside={unpin}>
         {content}
       </TooltipContent>
     </Tooltip>

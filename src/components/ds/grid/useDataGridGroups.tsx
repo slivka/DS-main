@@ -55,7 +55,12 @@ export function useDataGridGroups<Row>(o: DataGridGroupsOptions<Row>) {
   );
   const groupColumns = useMemo(
     () => [
-      ...shown.map((c) => ({ id: c.id, label: c.label })),
+      ...shown.map((c) => ({
+        id: c.id,
+        label: c.label,
+        total: c.total,
+        numeric: Boolean(c.numeric),
+      })),
       ...grouping.groups
         .filter((group) => !shown.some((column) => column.id === group.id))
         .map(
