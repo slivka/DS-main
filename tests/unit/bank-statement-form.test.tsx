@@ -180,3 +180,16 @@ test("BankStatementForm bez checkDisabledReason kontrolu povolí", () => {
   fireEvent.click(view.getByRole("button", { name: "Zkontrolovat" }));
   expect(calls).toBe(1);
 });
+
+test("BankStatementForm klepnutí na zablokované Zkontrolovat ukáže důvod", async () => {
+  let calls = 0;
+  const reason = "Nelze zkontrolovat – rozdíl 120,00";
+  const view = show({ checkDisabledReason: reason, onCheckedChange: () => (calls += 1) });
+  const action = view.getByRole("button", { name: "Zkontrolovat" });
+  fireEvent.pointerDown(action, { pointerType: "touch" });
+  fireEvent.pointerUp(action, { pointerType: "touch" });
+  fireEvent.click(action);
+  fireEvent.pointerLeave(action, { pointerType: "touch" });
+  expect(calls).toBe(0);
+  expect((await view.findAllByRole("tooltip")).some((n) => n.textContent === reason)).toBe(true);
+});

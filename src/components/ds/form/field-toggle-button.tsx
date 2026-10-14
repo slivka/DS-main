@@ -7,7 +7,8 @@ import { forwardRef, useId, type ComponentPropsWithoutRef } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { TooltipProvider } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { cn } from "../../../lib/utils";
 
 /** Vlastnosti jednotného přepínače v poli. */
@@ -58,8 +59,8 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
     const tooltip = reason ?? (pressed ? pressedTooltip : unpressedTooltip);
     return (
       <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+        <>
+          <DisabledReasonTooltip content={tooltip} blocked={locked}>
             <Button
               {...rest}
               ref={ref}
@@ -91,14 +92,13 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
                 ) : null}
               </span>
             </Button>
-          </TooltipTrigger>
-          <TooltipContent>{tooltip}</TooltipContent>
+          </DisabledReasonTooltip>
           {reason ? (
             <span id={reasonId} className="sr-only">
               {reason}
             </span>
           ) : null}
-        </Tooltip>
+        </>
       </TooltipProvider>
     );
   },

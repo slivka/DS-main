@@ -6,7 +6,8 @@
 import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { TooltipProvider } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { IdentityLine } from "../layout/identity-line";
 import { Button } from "../../ui/button";
 import { BankStatementBasic, BankStatementBalanceSection } from "./bank-statement-sections";
@@ -177,8 +178,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
             <RecordActionBar
               leftContent={
                 onCheckedChange ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
+                  <>
+                    <DisabledReasonTooltip content={checkReason} blocked={Boolean(checkReason)}>
                       <Button
                         type="button"
                         variant="outline"
@@ -190,14 +191,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                       >
                         {status === "open" ? t.check : t.uncheck}
                       </Button>
-                    </TooltipTrigger>
-                    {checkReason ? <TooltipContent>{checkReason}</TooltipContent> : null}
+                    </DisabledReasonTooltip>
                     {checkReason ? (
                       <span id={`${id}-check-reason`} className="sr-only">
                         {checkReason}
                       </span>
                     ) : null}
-                  </Tooltip>
+                  </>
                 ) : null
               }
               busy={busy}

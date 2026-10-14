@@ -312,7 +312,7 @@ export type GroupedItem<T> =
 export function useGroupedRows<T>(
   rows: T[],
   grouping: GroupingApi,
-  columns: { id: string; label: string }[],
+  columns: { id: string; label: string; total?: unknown; numeric?: boolean }[],
   getValue: (row: T, id: string) => unknown,
   textOverrides?: Partial<GridTexts>,
 ): GroupedItem<T>[] {
@@ -321,7 +321,9 @@ export function useGroupedRows<T>(
   return useMemo(() => {
     if (!active) return rows.map((row) => ({ type: "row", row }) as GroupedItem<T>);
 
+    // Stejné pravidlo jako ukotvený součtový řádek a export: total ?? (numeric ? sum : none).
     const numericIds = columns
+      .filter((c) => c.total !== "none" && !(c.total === undefined && c.numeric === false))
       .map((c) => c.id)
       .filter(
         (id) =>
