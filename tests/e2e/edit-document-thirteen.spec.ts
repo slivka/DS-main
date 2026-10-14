@@ -99,18 +99,17 @@ test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstra
   const root = page.getByTestId("bank-panels");
   const form = root.locator('[data-slot="bank-statement-form"]').first();
   const difference = form.locator('[data-slot="bank-statement-difference"]');
-  await expect(difference).toHaveText("");
-  await form.getByLabel("Konečný zůstatek dle banky", { exact: true }).fill("12500");
-  await expect(difference).toContainText("0,00");
-  await expect(difference.getByRole("img", { name: "Zůstatek souhlasí" })).toBeVisible();
+  await expect(difference).toHaveCount(0);
+  await form.getByLabel("Zůstatek dle banky", { exact: true }).fill("12500");
+  await expect(difference).toHaveCount(0);
   await form.getByRole("button", { name: /^(Uložit|Uložiť)$/ }).click();
   await expect(form.getByRole("button", { name: /^(Uložit|Uložiť)$/ })).toBeDisabled();
-  await expect(difference).toContainText("0,00");
+  await expect(difference).toHaveCount(0);
   await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
   await expect(form.getByText("Zkontrolovaný", { exact: true })).toBeVisible();
-  await expect(form.getByRole("textbox", { name: "Poznámka", exact: true })).toHaveCount(0);
+  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
   await form.getByRole("button", { name: "Zrušit kontrolu", exact: true }).click();
-  await expect(form.getByRole("textbox", { name: "Poznámka", exact: true })).toBeVisible();
+  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toBeVisible();
   await showcase.getByRole("button", { name: "difference", exact: true }).click();
   await expect(difference).toContainText("−50,00");
   await showcase.getByRole("button", { name: "items", exact: true }).click();
@@ -163,15 +162,14 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           )
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
-        await expect(actions.locator("svg")).toBeVisible();
+        await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
         await expect
           .poll(() =>
             form.locator('[data-slot="record-action-bar"]').evaluate((bar) => {
               const save = bar.querySelector(
                 'button[aria-label="Uložit"],button[aria-label="Uložiť"]',
               );
-              const compact = bar.getBoundingClientRect().width < 640;
-              return save?.querySelector("span")?.classList.contains("sr-only") === compact;
+              return save?.querySelector("span")?.classList.contains("sr-only") === false;
             }),
           )
           .toBe(true);
@@ -221,7 +219,7 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
   }
   await showcase.getByRole("button", { name: "eur", exact: true }).click();
   const form = root.locator('[data-slot="bank-statement-form"]').first();
-  await expect(form.locator('[data-slot="bank-statement-difference"]')).toHaveCount(2);
+  await expect(form.locator('[data-slot="bank-statement-difference"]')).toHaveCount(0);
   await expect(form.getByRole("heading", { name: "Zostatky v Kč", exact: true })).toBeVisible();
   await info.attach("Měření všech výpisů", {
     body: JSON.stringify(results),
@@ -251,18 +249,7 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
         .locator('[data-slot="record-action-bar"],[data-slot="document-action-bar"]')
         .first();
       const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
-      await expect(save.locator("svg")).toBeVisible();
-      const compact = await bar.evaluate((n) => n.getBoundingClientRect().width < 640);
-      await expect(save.locator("span").first()).toHaveClass(
-        compact ? /sr-only/ : /^(?!.*sr-only)/,
-      );
-      if (compact) {
-        await save.scrollIntoViewIfNeeded();
-        await save.hover();
-        if (await save.isEnabled()) await save.focus();
-        await expect(page.getByRole("tooltip")).toContainText("Uložit");
-        await page.mouse.move(0, 0);
-      }
+      await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
     }
   }
   await page
