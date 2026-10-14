@@ -1,3 +1,9 @@
+## DS 2.104.0 – Edit dokladu 13j (nevydáno)
+
+- [x] RecordActionBar, GridAddActions, RecordDialog lifecycle: zablokovaná akce s důvodem = aria-disabled + tooltip i klepnutím/Enter.
+- [x] Položky nabídek s důvodem: druhý řádek místo tooltipu (DisabledReasonMenuItem).
+- [x] Testy: unit 656/656, E2E Chromium 4/4; tsgo 0, lint 0 chyb; katalog 429 komponent / 759 props beze ztrát.
+
 ## DS 2.100.0 – Edit dokladu 13e (bez vydání)
 
 - [x] Sjednotit pravidlo zkrácených popisků, opravit překrytí prvního řádku a obnovit tvrzení šířky pole.
