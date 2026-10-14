@@ -8,12 +8,7 @@ import { ChevronDown, Plus, type LucideIcon } from "lucide-react";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";

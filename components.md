@@ -387,5 +387,6 @@ Edit dokladu 12i (2.99.0): zakázaná vybraná volba používá plné muted poza
 
 ### BankStatementForm / AmountDifference 2.104.0 – Edit dokladu 13k
 
-- Uložit je textové v každé šířce. Číslo se edituje v identitě; zámek vysvětlí důvod klepnutím.
+- Uložit má původní ikonu + text v každé šířce. Číslo sdílí typografii IdentityLine; kompaktní zámek vysvětlí důvod klepnutím.
+- 13l: bankovní zůstatek v obou měnách span 3/12 vpravo; nulový rozdíl se nezobrazuje. Povolený klik kontroly nepřipíná tooltip, dotyk jej ukáže na 3 s.
 - BREAKING: value.note a texts.note odstraněny. Datum a Zůstatek dle banky v základní sekci, pouze nenulový Rozdíl. Zůstatky dle pohybů mají čtyři součty. Migrace v CHANGELOG.

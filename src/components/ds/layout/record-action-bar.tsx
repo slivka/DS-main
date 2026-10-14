@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Loader2,
   MoreHorizontal,
+  Save,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -131,7 +132,7 @@ function CompactActionButton({
   if (blocked)
     return (
       <>
-        <DisabledReasonTooltip content={reason} blocked>
+        <DisabledReasonTooltip content={compact ? `${label}: ${reason}` : reason} blocked>
           {button}
         </DisabledReasonTooltip>
         <span id={reasonId} className="sr-only">
@@ -227,6 +228,7 @@ export function RecordActionBar({
           {saveAction ? (
             <CompactActionButton
               label={saveText}
+              icon={Save}
               compact={false}
               variant="default"
               busy={busy || saveAction.busy}
@@ -272,7 +274,9 @@ export function RecordActionBar({
                           disabled
                           disabledReason={action.disabledReason}
                           onSelect={action.onClick}
-                          className={cn(action.destructive && "text-destructive")}
+                          className={cn(
+                            action.destructive && "text-destructive focus:text-destructive",
+                          )}
                         >
                           {Icon ? <Icon className="size-4 shrink-0" /> : null}
                           {action.label}

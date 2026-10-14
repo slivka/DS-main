@@ -163,6 +163,7 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
         await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+        await expect(actions.locator(".lucide-save")).toBeVisible();
         await expect
           .poll(() =>
             form.locator('[data-slot="record-action-bar"]').evaluate((bar) => {
@@ -250,6 +251,7 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
         .first();
       const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
       await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+      await expect(save.locator(".lucide-save")).toBeVisible();
     }
   }
   await page

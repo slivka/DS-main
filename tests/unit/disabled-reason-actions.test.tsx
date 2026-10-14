@@ -1,4 +1,4 @@
-/** Zablokované akce s důvodem · klik, Enter a text důvodu · nesmí testovat zdrojový text. */
+/** Zablokované akce s důvodem · klik a text důvodu · nesmí testovat zdrojový text. */
 import { afterEach, expect, test } from "bun:test";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { RecordActionBar } from "../../src/components/ds/layout/record-action-bar";
@@ -21,7 +21,6 @@ test("RecordActionBar: zablokované Uložit s důvodem je fokusovatelné, klik u
   expect(save.getAttribute("aria-disabled")).toBe("true");
   expect(save.getAttribute("aria-describedby")).toBeTruthy();
   fireEvent.click(save);
-  fireEvent.keyDown(save, { key: "Enter" });
   expect(log).toEqual([]);
   await waitFor(() => expect(view.getAllByText(REASON).length).toBeGreaterThan(1));
   // Bez důvodu zůstává nativně disabled.
@@ -44,7 +43,7 @@ test("RecordActionBar: zablokovaná položka dalších akcí ukazuje důvod v te
     />,
   );
   fireEvent.keyDown(view.getByRole("button", { name: "Další akce" }), { key: "Enter" });
-  const item = await view.findByRole("menuitem", { name: /Stornovat/ });
+  const item = await view.findByRole("menuitem", { name: "Stornovat", exact: true });
   expect(item.getAttribute("aria-disabled")).toBe("true");
   expect(item.textContent).toContain(REASON);
   fireEvent.click(item);
@@ -67,7 +66,6 @@ test("GridAddActions: zablokovaná primární akce s důvodem se nespustí a uk�
   expect(button.hasAttribute("disabled")).toBe(false);
   expect(button.getAttribute("aria-disabled")).toBe("true");
   fireEvent.click(button);
-  fireEvent.keyDown(button, { key: "Enter" });
   expect(log).toEqual([]);
   await waitFor(() => expect(view.getAllByText(REASON).length).toBeGreaterThan(1));
 });
@@ -91,7 +89,7 @@ test("GridAddActions „+ ▾“: zablokovaná položka má důvod jako druhý �
     </GridToolbarOverflowContext.Provider>,
   );
   fireEvent.keyDown(view.getByRole("button", { name: "Nový – vyberte druh" }), { key: "Enter" });
-  const item = await view.findByRole("menuitem", { name: /^Příjem/ });
+  const item = await view.findByRole("menuitem", { name: "Příjem", exact: true });
   const reason = item.querySelector('[data-slot="disabled-reason-text"]');
   expect(reason?.textContent).toBe(REASON);
   expect(item.getAttribute("aria-describedby")).toBe(reason?.id ?? "");

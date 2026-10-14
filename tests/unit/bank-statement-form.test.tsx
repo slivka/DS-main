@@ -54,7 +54,7 @@ test.each(["checked", "posted"] as const)(
   (status) => {
     const view = show({ status, onSave: () => {}, onCheckedChange: () => {} });
     expect(view.queryByRole("textbox", { name: "Číslo výpisu" })).toBeNull();
-    expect(view.getByRole("button", { name: "Uložit" }).hasAttribute("disabled")).toBe(true);
+    expect(view.getByRole("button", { name: "Uložit" }).getAttribute("aria-disabled")).toBe("true");
     expect(
       view.getByRole("button", { name: "Zrušit kontrolu" }).getAttribute("aria-disabled") ===
         "true",
@@ -200,16 +200,12 @@ test("BankStatementForm zámek čísla vysvětlí důvod klepnutím", async () =
   ).toBe(true);
 });
 
-test("BankStatementForm povolená kontrola ukáže vysvětlení a zavolá akci", async () => {
+test("BankStatementForm povolený klik zavolá akci bez připnutí tooltipu", () => {
   let calls = 0;
   const view = show({ onCheckedChange: () => calls++ });
   fireEvent.click(view.getByRole("button", { name: "Zkontrolovat" }));
   expect(calls).toBe(1);
-  expect(
-    (await view.findAllByRole("tooltip")).some((node) =>
-      node.textContent?.includes("výpis zamkne"),
-    ),
-  ).toBe(true);
+  expect(view.queryByRole("tooltip")).toBeNull();
 });
 
 test("BankStatementForm čistý výpis neukládá klávesovou zkratkou", () => {

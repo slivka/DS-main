@@ -1,11 +1,45 @@
 # Changelog – Slivka Design System
 
-## 2.104.0 – Edit dokladu 13j–13k (nevydáno)
+## 2.104.0 – Edit dokladu 13j–13l (nevydáno)
+
+### 13l – opravy kontroly
+
+- Bankovní zůstatek má v obou měnách šířku 3 z 12 sloupců a stojí vpravo,
+  nenulový rozdíl těsně vlevo; úzký panel pole zalomí. Číslo výpisu dědí velikost
+  a písmo IdentityLine i při zamčení; vstup nepřetéká ani při 200 %.
+- Uložit obnovuje původní ikonu Save + text; text zůstává i pod 640 px,
+  primární varianta a dirty/disabled/busy beze změny. Busy ikonu nahrazuje spinnerem.
+  Zamčený výpis předává Uložit disabledReason = lockedReason.
+- FieldValue vrací zámek size-4 (16 px při 100 %), bez zvětšení na control-h;
+  plain zůstává bez podkladu, klik/klepnutí vysvětlí důvod.
+- Kompaktní zablokovaná primární akce: tooltip „Název: důvod“. Položky menu mají
+  přístupný název jen z prvního řádku, důvod pouze v aria-describedby.
+  PageHeader bez důvodu zachovává nativní disabled; destruktivní fokus zachován.
+- Povolené Zkontrolovat/Zrušit kontrolu používá openOnTouch, nikoli blocked:
+  běžný klik provede akci a tooltip nepřipíná; dotyk provede akci a původní
+  vysvětlení ukáže na 3 s (Escape, odchod fokusu či klepnutí mimo jej zavře).
+- Vyrovnaný AmountDifference nepřidává měnu stejně jako editor řádků;
+  výpis nulový rozdíl nevykresluje. Nepoužitý import odstraněn.
+- Manifest sladěn s .dsignore: 508 → 489, odebráno 19 náhledových cest
+  (routes, router, start, routeTree.gen a náhledové texty); ukázky již byly vyloučeny.
+  Historický rozsah 13k opraven na 526 → 508 (23 odebráno, 5 přidáno).
+- Katalog proti 1131b2b4: 429 → 430 komponent, 759 → 764 props, odstraněné
+  komponenty/props/sekce 0; 424 původních objektů shodných. Tokeny, assets,
+  constraints a #enrichment beze změny. Verze obou míst zůstává 2.103.0.
+- Lint 0 chyb / 292 varování; unit 660/660 (65 souborů). Samostatné tsgo ani
+  build neprovedeny kvůli nadřazenému zákazu prostředí.
+- E2E Chromium: 19/19 v konečných dílčích bězích (výpis 5, lišta 4,
+  matice CS/SK a zoom 1, ostatní regrese 9). Původní souhrnný běh byl časově
+  přerušen, proto se dokončil po souborech; nejde o jeden nepřerušený běh.
+  Snímky a měření 960/360 px, domácí i cizí měna, číslo při zamčení a zámek
+  při 100 % ověřeny. Skutečný Enter ověřen v Chromium, ne simulací jsdom.
+  Dotyk provede kontrolu a vysvětlení zmizí po 3 s. Formát dotčených souborů
+  OK, automatická sestava OK; Firefox/WebKit a fyzický telefon neověřeny.
 
 ### 13k – bankovní výpis
 
 - Uložit používá společný RecordActionBar jako DocumentForm: primární textové tlačítko
-  v každé šířce, společné dirty/disabled/busy. Příčinou diskety byl kompaktní režim
+  v každé šířce, společné dirty/disabled/busy; 13l obnovuje původní ikonu Save vedle textu. Příčinou diskety byl kompaktní režim
   RecordActionBar pod 640 px, který schovával text i u ukládání. Nyní krátí pouze
   sekundární akce; oprava platí pro všechny formuláře.
 - Číslo výpisu se upravuje vpravo v IdentityLine; při pohybech nebo zamčení FieldValue
@@ -33,8 +67,9 @@
   konečném běhu, původní scénáře výpisu a společného Uložit 2/2. První dotykový test
   neprošel kvůli změně vysvětlení po kontrole; tooltip nyní drží původní text klepnutí.
 - Katalog proti začátku 13k: 429 → 430 komponent, 759 → 764 props, odstraněné 0;
-  425 původních komponent beze změny. Manifest 528 → 508 položek včetně #enrichment:
-  24 náhledových ukázek vyloučeno podle .dsignore, 4 doplněné soubory. #enrichment zachován.
+  425 původních komponent beze změny. Manifest 526 → 508 položek včetně #enrichment:
+  23 náhledových ukázek odebráno, 5 souborů přidáno; toto je historický rozsah 13k.
+  Další sladění náhledových cest s .dsignore popisuje 13l. #enrichment zachován.
 - Automatická sestava OK. Samostatné tsgo ani build neprovedeny: prostředí zakazuje
   ruční typové kontroly a sestavení. Nelze vykázat úspěch tsgo. Firefox/WebKit neběžely.
 
@@ -50,7 +85,7 @@
   `DisabledReasonMenuItem`.
 - Tužka účtu v DocumentIdentityLine ukáže důvod i klepnutím.
 
-## 2.103.0 – Edit dokladu 13i (nevydáno)
+## 2.103.0 – Edit dokladu 13i
 
 - Bez BREAKING: zablokovaná akce s důvodem otevře tooltip i klikem/klepnutím (dotyk);
   zavře se po ~3 s, odchodem fokusu, Escape nebo klepnutím mimo. Klávesnice a čtečka beze

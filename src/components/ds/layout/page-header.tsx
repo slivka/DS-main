@@ -331,6 +331,18 @@ function PaneButtons({
             {pageActions.length ? <DropdownMenuLabel>{t.pageActions}</DropdownMenuLabel> : null}
             {pageActions.map((action) => {
               const Icon = action.icon;
+              if (!action.disabledReason)
+                return (
+                  <DropdownMenuItem
+                    key={action.label}
+                    disabled={action.disabled}
+                    onSelect={() => action.onClick()}
+                    className={cn(action.destructive && "text-destructive focus:text-destructive")}
+                  >
+                    {Icon ? <Icon className="size-4" /> : null}
+                    {action.label}
+                  </DropdownMenuItem>
+                );
               return (
                 <DisabledReasonMenuItem
                   key={action.label}

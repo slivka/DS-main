@@ -60,6 +60,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
-- Exclude every preview-only showcase from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
+- Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
 
 - Keep Save text visible in the shared RecordActionBar at every width; only secondary actions compact. Why: all forms inherit the same readable save action.
+- Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.

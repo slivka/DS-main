@@ -80,9 +80,7 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
   await toolbar.screenshot({ path: "/tmp/13h/toolbar-boundary.png" });
 });
 
-test("13j: zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespustí", async ({
-  page,
-}) => {
+test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespustí", async ({ page }) => {
   await page.goto("/components/grid", { waitUntil: "networkidle" });
   const reason = "Pokladna je uzavřená – výdej nelze přidat";
   const wide = page.getByTestId("primary-actions-locked");
@@ -105,9 +103,11 @@ test("13j: zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic ne
   const menu = narrow.locator('[data-slot="grid-add-menu"]');
   await expect(menu).toBeVisible();
   await menu.click();
-  const item = page.getByRole("menuitem", { name: /^Výdej/ });
+  const item = page.getByRole("menuitem", { name: "Výdej", exact: true });
   await expect(item).toHaveAttribute("aria-disabled", "true");
   await expect(item.locator('[data-slot="disabled-reason-text"]')).toHaveText(reason);
   await item.click({ force: true });
+  await item.focus();
+  await item.press("Enter");
   await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");
 });
