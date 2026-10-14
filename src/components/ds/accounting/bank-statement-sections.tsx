@@ -1,4 +1,7 @@
 /** Sekce výpisu · vlastní rozvržení polí · nesmí ukládat ani kontrolovat výpis. */
+import type { ReactNode } from "react";
+import { IdentityLine } from "../layout/identity-line";
+import { Input } from "../../ui/input";
 import { useCompactDateGeometry } from "../form/use-compact-date-geometry";
 import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
@@ -186,5 +189,58 @@ export function BankStatementBalanceSection({
         );
       })}
     </FieldGrid>
+  );
+}
+
+/** Vnitřní řízené číslo v identifikačním řádku. */
+interface StatementIdentityProps {
+  /** Identifikátor vstupu. */
+  id: string;
+  /** Části identity. */
+  items: ReactNode[];
+  /** Číslo výpisu. */
+  number: string;
+  /** Důvod neměnnosti čísla. */
+  lockedReason?: string;
+  /** Změna čísla. */
+  onNumberChange: (number: string) => void;
+  /** Přístupný název vstupu. */
+  label: string;
+}
+
+/** Sdílená identita s číslem výpisu bez duplicitního pole v základních údajích. */
+export function BankStatementIdentity({
+  id,
+  items,
+  number,
+  lockedReason,
+  onNumberChange,
+  label,
+}: StatementIdentityProps) {
+  return (
+    <IdentityLine
+      data-slot="bank-statement-identity"
+      items={items}
+      numberContent={
+        lockedReason ? (
+          <FieldValue
+            variant="plain"
+            aria-label={label}
+            lockedReason={lockedReason}
+            className="text-right font-mono font-bold tabular-nums"
+          >
+            {number}
+          </FieldValue>
+        ) : (
+          <Input
+            id={`${id}-number`}
+            aria-label={label}
+            value={number}
+            onChange={(event) => onNumberChange(event.target.value)}
+            className="w-32 max-w-full text-right font-mono tabular-nums"
+          />
+        )
+      }
+    />
   );
 }

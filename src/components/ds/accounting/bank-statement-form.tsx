@@ -8,11 +8,9 @@ import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
-import { IdentityLine } from "../layout/identity-line";
-import { FieldValue } from "../form/field-value";
-import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import {
+  BankStatementIdentity,
   BankStatementBasic,
   BankStatementBalanceSection,
   BankStatementBankClosing,
@@ -228,29 +226,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
               notices={notices}
             />
             <section className="rounded-lg border bg-card p-4">
-              <IdentityLine
-                data-slot="bank-statement-identity"
+              <BankStatementIdentity
+                id={id}
                 items={[book, currency, period, bankAccount]}
-                numberContent={
-                  hasItems || locked ? (
-                    <FieldValue
-                      variant="plain"
-                      aria-label={t.number}
-                      lockedReason={lockedReason ?? (hasItems ? t.hasItems : undefined)}
-                      className="text-right font-mono font-bold tabular-nums"
-                    >
-                      {value.number}
-                    </FieldValue>
-                  ) : (
-                    <Input
-                      id={`${id}-number`}
-                      aria-label={t.number}
-                      value={value.number}
-                      onChange={(event) => patch({ number: event.target.value })}
-                      className="w-32 max-w-full text-right font-mono tabular-nums"
-                    />
-                  )
-                }
+                number={value.number}
+                lockedReason={lockedReason ?? (hasItems ? t.hasItems : undefined)}
+                onNumberChange={(number) => patch({ number })}
+                label={t.number}
               />
               <SectionHeading>{t.basic}</SectionHeading>
               <BankStatementBasic

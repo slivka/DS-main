@@ -458,9 +458,11 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
 - Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zkontrolovaný či zaúčtovaný výpis je jen ke čtení; položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
 
-- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit od šířky lišty 640 ukazuje ikonu i text, v menší šířce ikonu se stálým názvem a tooltipem; busy ukazuje spinner.
+- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit je vždy primární textové tlačítko ve všech šířkách, bez diskety; busy ukazuje spinner a text. Kompaktní režim krátí jen sekundární akce.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
 
 - Rezervace `--field-toggle-space` se počítá v `@layer base` na každém prvku z jeho lokálního `--control-h`; změnou této výšky řiďte celé pole i přepínač, ne ručním odsazením.
 - Úzké FieldGrid skládají všechny děti pod sebe. Field zachovává velikost písma; dlouhý popisek zkrátí výpustkou a celý text dá do title. Kompaktní data obou formulářů měří společný useCompactDateGeometry.
+
+- Výpis nemá poznámku; číslo patří do IdentityLine.numberContent, zamčené do FieldValue s důvodem. Základní údaje: datum, nepovinný Zůstatek dle banky, pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty; vysvětlení kontroly je z DsTexts a dostupné i klepnutím.
