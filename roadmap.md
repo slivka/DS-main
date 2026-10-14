@@ -1,6 +1,7 @@
 ## DS 2.104.0 – Edit dokladu 13j–13l (nevydáno)
 
-- [ ] 13l: opravit geometrii, Uložit, zámky, tooltipy a přístupné názvy; testy a katalog proti 1131b2b4.
+- [x] 13l: geometrie, Uložit, zámky, tooltipy a přístupné názvy; katalog proti 1131b2b4 beze ztrát.
+- [ ] 13l: dokončit konečný běh Chromium; lint 0/292, unit 660/660; tsgo zakázáno prostředím.
 
 - [x] 13k: textové Uložit ve všech šířkách, číslo v identitě, odstranit poznámku.
 - [x] 13k: základní údaje a nenulový rozdíl, zůstatky dle pohybů, vysvětlení kontroly CS/SK.

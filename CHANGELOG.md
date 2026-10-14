@@ -23,7 +23,11 @@
 - Manifest sladěn s .dsignore: 508 → 489, odebráno 19 náhledových cest
   (routes, router, start, routeTree.gen a náhledové texty); ukázky již byly vyloučeny.
   Historický rozsah 13k opraven na 526 → 508 (23 odebráno, 5 přidáno).
-- Ověření 13l bude doplněno po konečném běhu; verze obou míst zůstává 2.103.0.
+- Katalog proti 1131b2b4: 429 → 430 komponent, 759 → 764 props, odstraněné
+  komponenty/props/sekce 0; 424 původních objektů shodných. Tokeny, assets,
+  constraints a #enrichment beze změny. Verze obou míst zůstává 2.103.0.
+- Lint 0 chyb / 292 varování; unit 660/660 (65 souborů). Samostatné tsgo ani
+  build neprovedeny kvůli nadřazenému zákazu prostředí; Chromium výsledky níže.
 
 ### 13k – bankovní výpis
 
