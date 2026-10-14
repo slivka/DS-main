@@ -4,6 +4,7 @@
  *   hledání, výběr sloupců, zoom a pruh výsledku hledání.
  * Nesmí: měnit řádky jinak než přes akce stavu editoru.
  */
+import { AmountDifference } from "./amount-difference";
 import { Plus, X } from "lucide-react";
 
 import { formatAmount } from "../../../lib/format";
@@ -88,19 +89,12 @@ function ToolbarLeft() {
       {totals.showRemaining ? (
         <>
           <GridToolbarSeparator density={editor.layout.density} />
-          <span
+          <AmountDifference
             data-slot="journal-lines-remaining"
-            className={cn(
-              "inline-flex h-8 items-center rounded-md px-2 text-xs font-semibold",
-              totals.difference === 0
-                ? "bg-success-soft text-success-strong"
-                : "bg-destructive-soft text-destructive-strong",
-            )}
-          >
-            {totals.difference === 0
-              ? `✓ ${t.balanced}`
-              : `${t.remaining} ${formatAmount(totals.difference, 2)}`}
-          </span>
+            value={totals.difference}
+            label={t.remaining}
+            balancedLabel={t.balanced}
+          />
           {vatOn && !grossColumnVisible ? (
             <span
               data-slot="journal-lines-toolbar-total"

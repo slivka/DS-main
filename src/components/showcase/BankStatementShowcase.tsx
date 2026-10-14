@@ -43,7 +43,6 @@ function StatementExample({ scenario }: { scenario: string }) {
   const [value, setValue] = useState<BankStatementValue>({
     date: "2026-10-12",
     number: "2026/010",
-    note: "Říjen",
     bankClosing:
       scenario === "empty"
         ? null

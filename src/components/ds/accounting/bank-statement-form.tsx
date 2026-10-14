@@ -9,8 +9,10 @@ import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { IdentityLine } from "../layout/identity-line";
+import { FieldValue } from "../form/field-value";
+import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import { BankStatementBasic, BankStatementBalanceSection } from "./bank-statement-sections";
+import { BankStatementBasic, BankStatementBalanceSection, BankStatementBankClosing } from "./bank-statement-sections";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
 import { SectionHeading } from "../layout/section-heading";
@@ -23,8 +25,6 @@ export interface BankStatementValue {
   date: string;
   /** Číslo výpisu. */
   number: string;
-  /** Poznámka výpisu. */
-  note: string;
   /** Nepovinný konečný zůstatek podle banky. */
   bankClosing: number | null;
 }
@@ -152,7 +152,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
               event.key.toLowerCase() === "s" &&
               onSave &&
               !locked &&
-              !busy
+              !busy &&
+              dirty !== false
             ) {
               event.preventDefault();
               onSave();
@@ -179,12 +180,15 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
               leftContent={
                 onCheckedChange ? (
                   <>
-                    <DisabledReasonTooltip content={checkReason} blocked={Boolean(checkReason)}>
+                    <DisabledReasonTooltip
+                      content={checkReason ?? (status === "open" ? t.checkHint : t.uncheckHint)}
+                      blocked
+                    >
                       <Button
                         type="button"
                         variant="outline"
                         aria-disabled={checkBlocked || undefined}
-                        aria-describedby={checkReason ? `${id}-check-reason` : undefined}
+                        aria-describedby={`${id}-check-reason`}
                         onClick={() => {
                           if (!checkBlocked) onCheckedChange(status === "open");
                         }}
@@ -192,11 +196,9 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                         {status === "open" ? t.check : t.uncheck}
                       </Button>
                     </DisabledReasonTooltip>
-                    {checkReason ? (
-                      <span id={`${id}-check-reason`} className="sr-only">
-                        {checkReason}
-                      </span>
-                    ) : null}
+                    <span id={`${id}-check-reason`} className="sr-only">
+                      {checkReason ?? (status === "open" ? t.checkHint : t.uncheckHint)}
+                    </span>
                   </>
                 ) : null
               }
@@ -225,7 +227,26 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
               <IdentityLine
                 data-slot="bank-statement-identity"
                 items={[book, currency, period, bankAccount]}
-                number={value.number}
+                numberContent={
+                  hasItems || locked ? (
+                    <FieldValue
+                      variant="plain"
+                      aria-label={t.number}
+                      lockedReason={lockedReason ?? (hasItems ? t.hasItems : undefined)}
+                      className="text-right font-mono font-bold tabular-nums"
+                    >
+                      {value.number}
+                    </FieldValue>
+                  ) : (
+                    <Input
+                      id={`${id}-number`}
+                      aria-label={t.number}
+                      value={value.number}
+                      onChange={(event) => patch({ number: event.target.value })}
+                      className="w-32 max-w-full text-right font-mono tabular-nums"
+                    />
+                  )
+                }
               />
               <SectionHeading>{t.basic}</SectionHeading>
               <BankStatementBasic
@@ -233,7 +254,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                 value={value}
                 patch={patch}
                 locked={locked}
-                hasItems={hasItems}
+                balances={balances}
+                symbol={currencySymbol}
                 texts={t}
               />
               <SectionHeading>{t.balances}</SectionHeading>
@@ -241,9 +263,6 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                 id={id}
                 balances={balances}
                 symbol={currencySymbol}
-                bankClosing={value.bankClosing}
-                onBankClosingChange={(bankClosing) => patch({ bankClosing })}
-                locked={locked}
                 texts={t}
               />
               {home ? (
@@ -251,15 +270,21 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   <SectionHeading>
                     {t.home.replace("{currency}", home.currencySymbol)}
                   </SectionHeading>
+                  <BankStatementBankClosing
+                    id={`${id}-home`}
+                    bankClosing={home.bankClosing}
+                    balances={home}
+                    symbol={home.currencySymbol}
+                    locked={locked || !onHomeBankClosingChange}
+                    onChange={(next) => {
+                      if (!locked) onHomeBankClosingChange?.(next);
+                    }}
+                    texts={t}
+                  />
                   <BankStatementBalanceSection
                     id={`${id}-home`}
                     balances={home}
                     symbol={home.currencySymbol}
-                    bankClosing={home.bankClosing}
-                    locked={locked || !onHomeBankClosingChange}
-                    onBankClosingChange={(next) => {
-                      if (!locked) onHomeBankClosingChange?.(next);
-                    }}
                     texts={t}
                   />
                 </>

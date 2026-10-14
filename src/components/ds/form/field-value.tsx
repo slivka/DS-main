@@ -3,7 +3,8 @@ import * as React from "react";
 import { Lock } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
+import { Button } from "../../ui/button";
 
 /** Vlastnosti hodnoty pouze ke čtení. */
 export interface FieldValueProps extends React.ComponentPropsWithoutRef<"div"> {
@@ -37,14 +38,17 @@ export const FieldValue = React.forwardRef<HTMLDivElement, FieldValueProps>(func
     >
       <div className="min-w-0 flex-1 truncate whitespace-nowrap">{children}</div>
       {lockedReason ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span tabIndex={0} aria-label={lockedReason} className="shrink-0 text-muted-foreground">
-              <Lock className="size-4" />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{lockedReason}</TooltipContent>
-        </Tooltip>
+        <DisabledReasonTooltip content={lockedReason} blocked>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={lockedReason}
+            className="shrink-0 text-muted-foreground"
+          >
+            <Lock className="size-4" aria-hidden="true" />
+          </Button>
+        </DisabledReasonTooltip>
       ) : null}
       {trailing ? (
         <div data-slot="field-value-trailing" className="flex shrink-0 items-center">
