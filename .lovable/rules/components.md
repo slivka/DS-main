@@ -348,7 +348,7 @@ _Účet pouze s IBAN_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu: Uložit je společná primární textová akce RecordActionBar v každé šířce, dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu.
+Formulář bankovního výpisu: Uložit je společná primární akce RecordActionBar s ikonou a textem v každé šířce, nikdy jen ikona; dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu.
 
 **Props:**
 
