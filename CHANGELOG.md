@@ -1,6 +1,17 @@
 # Changelog – Slivka Design System
 
-## 2.102.0 – Edit dokladu 13f–13h (nevydáno)
+## 2.103.0 – Edit dokladu 13i (nevydáno)
+
+- Bez BREAKING: zablokovaná akce s důvodem otevře tooltip i klikem/klepnutím (dotyk);
+  zavře se po ~3 s, odchodem fokusu, Escape nebo klepnutím mimo. Klávesnice a čtečka beze
+  změny. Jedno interní místo `DisabledReasonTooltip` pro BankStatementForm
+  (checkDisabledReason), FieldToggleButton (lockedReason a tím CounterpartyInputField,
+  PaymentOrderAccountField, AmountSection Σ, SuggestInput, DateField) a GridAction
+  (disabledReason, tedy i useRowActions). Veřejné API se nemění.
+- Oprava: součty skupin gridu (záhlaví, řádek součtu skupiny, tisk se seskupením)
+  respektují `total: "none"` stejně jako ukotvený součtový řádek a export.
+
+## 2.102.0 – Edit dokladu 13f–13h
 
 ### 13h
 
