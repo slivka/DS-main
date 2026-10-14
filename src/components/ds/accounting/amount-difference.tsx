@@ -35,7 +35,7 @@ export const AmountDifference = forwardRef<HTMLSpanElement, AmountDifferenceProp
         {...props}
       >
         {value === 0 ? `✓ ${balancedLabel ?? label}` : `${label} ${formatAmount(value, 2)}`}
-        {currencySymbol ? ` ${currencySymbol}` : null}
+        {value !== 0 && currencySymbol ? ` ${currencySymbol}` : null}
       </span>
     );
   },

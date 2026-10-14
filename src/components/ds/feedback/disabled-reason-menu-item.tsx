@@ -30,10 +30,12 @@ export function DisabledReasonMenuItem({
   className,
 }: DisabledReasonMenuItemProps) {
   const reasonId = useId();
+  const labelId = useId();
   const reason = disabled && disabledReason ? disabledReason : undefined;
   return (
     <DropdownMenuItem
       aria-disabled={disabled || undefined}
+      aria-labelledby={labelId}
       aria-describedby={reason ? reasonId : undefined}
       data-slot="disabled-reason-menu-item"
       className={cn(
@@ -49,7 +51,9 @@ export function DisabledReasonMenuItem({
         onSelect(event);
       }}
     >
-      <span className="flex items-center gap-2">{children}</span>
+      <span id={labelId} className="flex items-center gap-2">
+        {children}
+      </span>
       {reason ? (
         <span
           id={reasonId}

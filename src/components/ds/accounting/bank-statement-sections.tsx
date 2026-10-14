@@ -60,17 +60,15 @@ export function BankStatementBasic({
           </div>
         </div>
       </Field>
-      <Field span={9}>
-        <BankStatementBankClosing
-          id={id}
-          bankClosing={value.bankClosing}
-          onChange={(bankClosing) => patch({ bankClosing })}
-          locked={locked}
-          balances={balances}
-          symbol={symbol}
-          texts={texts}
-        />
-      </Field>
+      <BankStatementBankClosing
+        id={id}
+        bankClosing={value.bankClosing}
+        onChange={(bankClosing) => patch({ bankClosing })}
+        locked={locked}
+        balances={balances}
+        symbol={symbol}
+        texts={texts}
+      />
     </FieldGrid>
   );
 }
@@ -106,20 +104,23 @@ export function BankStatementBankClosing({
   const closing = balances.opening + balances.income - balances.expense;
   const difference = bankClosing === null ? null : Math.round((bankClosing - closing) * 100) / 100;
   return (
-    <div className="flex min-w-0 flex-wrap items-end justify-end gap-3">
+    <>
       {difference !== null && difference !== 0 ? (
-        <AmountDifference
-          data-slot="bank-statement-difference"
-          value={difference}
-          label={t.difference}
-          currencySymbol={symbol}
-        />
+        <Field span={6} className="@min-[40rem]:col-start-4 flex items-end justify-end">
+          <AmountDifference
+            data-slot="bank-statement-difference"
+            value={difference}
+            label={t.difference}
+            currencySymbol={symbol}
+          />
+        </Field>
       ) : null}
       <Field
         label={t.bankClosing}
         htmlFor={locked ? undefined : `${id}-bankClosing`}
         labelId={`${id}-bankClosing-label`}
-        className="min-w-0 flex-1"
+        span={3}
+        className="min-w-0 @min-[40rem]:col-start-10"
       >
         {locked ? (
           <FieldValue
@@ -145,7 +146,7 @@ export function BankStatementBankClosing({
           </div>
         )}
       </Field>
-    </div>
+    </>
   );
 }
 
@@ -227,7 +228,7 @@ export function BankStatementIdentity({
             variant="plain"
             aria-label={label}
             lockedReason={lockedReason}
-            className="text-right font-mono font-bold tabular-nums"
+            className="text-right font-mono text-[length:inherit]! font-bold tabular-nums"
           >
             {number}
           </FieldValue>
@@ -237,7 +238,7 @@ export function BankStatementIdentity({
             aria-label={label}
             value={number}
             onChange={(event) => onNumberChange(event.target.value)}
-            className="w-32 max-w-full text-right font-mono tabular-nums"
+            className="w-40 max-w-full text-right font-mono text-[length:inherit]! font-bold tabular-nums"
           />
         )
       }

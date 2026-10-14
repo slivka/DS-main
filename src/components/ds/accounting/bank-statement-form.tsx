@@ -17,6 +17,7 @@ import {
 } from "./bank-statement-sections";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
+import { FieldGrid } from "../layout/form-field-layout";
 import { SectionHeading } from "../layout/section-heading";
 import { RecordActionBar, type RecordActionError } from "../layout/record-action-bar";
 import { StatusBadge } from "../data-display/status-badge";
@@ -184,7 +185,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   <>
                     <DisabledReasonTooltip
                       content={checkReason ?? (status === "open" ? t.checkHint : t.uncheckHint)}
-                      blocked
+                      blocked={checkBlocked}
+                      openOnTouch
                     >
                       <Button
                         type="button"
@@ -205,7 +207,11 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                 ) : null
               }
               busy={busy}
-              saveAction={onSave ? { onSave, dirty, disabled: locked, busy } : undefined}
+              saveAction={
+                onSave
+                  ? { onSave, dirty, disabled: locked, disabledReason: lockedReason, busy }
+                  : undefined
+              }
               moreActions={
                 onDelete
                   ? [
@@ -256,17 +262,19 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   <SectionHeading>
                     {t.home.replace("{currency}", home.currencySymbol)}
                   </SectionHeading>
-                  <BankStatementBankClosing
-                    id={`${id}-home`}
-                    bankClosing={home.bankClosing}
-                    balances={home}
-                    symbol={home.currencySymbol}
-                    locked={locked || !onHomeBankClosingChange}
-                    onChange={(next) => {
-                      if (!locked) onHomeBankClosingChange?.(next);
-                    }}
-                    texts={t}
-                  />
+                  <FieldGrid cols={12}>
+                    <BankStatementBankClosing
+                      id={`${id}-home`}
+                      bankClosing={home.bankClosing}
+                      balances={home}
+                      symbol={home.currencySymbol}
+                      locked={locked || !onHomeBankClosingChange}
+                      onChange={(next) => {
+                        if (!locked) onHomeBankClosingChange?.(next);
+                      }}
+                      texts={t}
+                    />
+                  </FieldGrid>
                   <BankStatementBalanceSection
                     id={`${id}-home`}
                     balances={home}

@@ -52,7 +52,9 @@ describe("formulářové prvky dialogu záznamu", () => {
       </TooltipProvider>,
     );
     expect(view.getByTitle("Dlouhá hodnota")).toBeTruthy();
-    expect(view.getByText("Prostá hodnota")).toBeTruthy();
+    const plain = view.getByText("Prostá hodnota").closest("[data-slot=field-value]");
+    expect(plain).toBeTruthy();
+    expect(getComputedStyle(plain).backgroundColor).toBe("");
     fireEvent.click(view.getByRole("button", { name: "Neměnné po založení" }));
     expect(
       (await view.findAllByRole("tooltip")).some(
