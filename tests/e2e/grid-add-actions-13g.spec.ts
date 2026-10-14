@@ -89,8 +89,13 @@ test("13j: zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic ne
   await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
   const out = wide.locator("[data-toolbar-add]:visible").nth(1);
   await expect(out).toHaveAttribute("aria-disabled", "true");
-  await out.click({ force: true });
-  await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached();
+  // Lišta se po vstupu do viewportu ještě přeměřuje; klik opakujeme, dokud se důvod neukáže.
+  await expect(async () => {
+    await out.click({ force: true });
+    await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached({
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 15000 });
   await out.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");
