@@ -39,6 +39,7 @@ export interface DisabledReasonTooltipProps {
 /** Tooltip, který zablokovaná akce otevře i klepnutím; vyžaduje okolní TooltipProvider. */
 export function DisabledReasonTooltip({ content, blocked, children }: DisabledReasonTooltipProps) {
   const [open, setOpen] = useState(false);
+  const [tapContent, setTapContent] = useState<ReactNode>();
   const pinned = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clear = () => {
@@ -47,6 +48,7 @@ export function DisabledReasonTooltip({ content, blocked, children }: DisabledRe
   };
   const unpin = () => {
     pinned.current = false;
+    setTapContent(undefined);
     clear();
   };
   // Úklid časovače při odpojení.
@@ -58,6 +60,8 @@ export function DisabledReasonTooltip({ content, blocked, children }: DisabledRe
     onClick: (event: MouseEvent<HTMLElement>) => {
       child.props.onClick?.(event);
       if (!blocked) return;
+      // Akce může změnit stav i svůj popisek; vysvětlení klepnutí zůstane původní.
+      setTapContent(content);
       pinned.current = true;
       setOpen(true);
       clear();
@@ -83,7 +87,7 @@ export function DisabledReasonTooltip({ content, blocked, children }: DisabledRe
     >
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent onEscapeKeyDown={unpin} onPointerDownOutside={unpin}>
-        {content}
+        {tapContent ?? content}
       </TooltipContent>
     </Tooltip>
   );
