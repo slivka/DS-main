@@ -1,6 +1,32 @@
 # Changelog – Slivka Design System
 
-## 2.104.0 – Edit dokladu 13j (nevydáno)
+## 2.104.0 – Edit dokladu 13j–13k (nevydáno)
+
+### 13k – bankovní výpis
+
+- Uložit používá společný RecordActionBar jako DocumentForm: primární textové tlačítko
+  v každé šířce, společné dirty/disabled/busy. Příčinou diskety byl kompaktní režim
+  RecordActionBar pod 640 px, který schovával text i u ukládání. Nyní krátí pouze
+  sekundární akce; oprava platí pro všechny formuláře.
+- Číslo výpisu se upravuje vpravo v IdentityLine; při pohybech nebo zamčení FieldValue
+  ukáže číslo a zámek s důvodem dostupným i klepnutím.
+- Datum vlevo a nepovinný „Zůstatek dle banky“ vpravo. Rozdíl pouze při vyplněném
+  bankovním zůstatku a nenulové odchylce; společný AmountDifference také v editoru řádků.
+- „Zůstatky dle pohybů“ mají pouze čtyři součty. Kontrola i zrušení kontroly vysvětlují
+  svůj účel tooltipem dostupným také klepnutím; texty CS/SK.
+
+### BREAKING – migrace 13k
+
+- Odstraňte `value.note` z BankStatementValue a `texts.note` z BankStatementTexts;
+  poznámka již není součástí výpisu. Odstraněn také nepoužívaný text `matched`.
+- Číslo je pouze v identifikačním řádku: upravte cílení testů a vlastních rozšíření,
+  které očekávaly číslo mezi Základními údaji; `value.number` a onChange se nemění.
+- Vlastní úplné jazykové sady BankStatementTexts doplňte o `checkHint` a `uncheckHint`;
+  přepište `bankClosing` a `balances` na nové názvy. Partial přepisy se doplní z DS.
+- Veřejné nepovinné `IdentityLine.numberContent` umožňuje ovládání čísla;
+  AmountDifference je nový sdílený veřejný export. Verze zůstává 2.103.0, bez Release.
+
+### 13j
 
 - Bez BREAKING: `RecordSaveAction` a `RecordPrimaryAction` (tedy i `DocumentSaveAction`,
   `DocumentPrimaryAction`) mají nepovinný `disabledReason`. Zakázaná akce s důvodem v
