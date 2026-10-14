@@ -44,16 +44,21 @@ describe("formulářové prvky dialogu záznamu", () => {
     expect(html.match(/data-control-height="standard"/g) ?? []).toHaveLength(3);
   });
 
-  it("FieldValue zkrátí hodnotu, podporuje prostou variantu a vysvětlí zámek", () => {
-    const html = renderToStaticMarkup(
+  it("FieldValue zkrátí hodnotu, podporuje prostou variantu a vysvětlí zámek", async () => {
+    const view = render(
       <TooltipProvider>
         <FieldValue lockedReason="Neměnné po založení">Dlouhá hodnota</FieldValue>
         <FieldValue variant="plain">Prostá hodnota</FieldValue>
       </TooltipProvider>,
     );
-    expect(html).toContain('title="Dlouhá hodnota"');
-    expect(html).toContain('aria-label="Neměnné po založení"');
-    expect(html.match(/bg-muted/g) ?? []).toHaveLength(1);
+    expect(view.getByTitle("Dlouhá hodnota")).toBeTruthy();
+    expect(view.getByText("Prostá hodnota")).toBeTruthy();
+    fireEvent.click(view.getByRole("button", { name: "Neměnné po založení" }));
+    expect(
+      (await view.findAllByRole("tooltip")).some(
+        (node) => node.textContent === "Neměnné po založení",
+      ),
+    ).toBe(true);
   });
 
   it("FieldGrid zobrazí společnou nápovědu a SectionHeading obsah vpravo", () => {
