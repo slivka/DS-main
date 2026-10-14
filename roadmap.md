@@ -1,8 +1,10 @@
 ## DS 2.104.0 – Edit dokladu 13j–13k (nevydáno)
 
-- [ ] 13k: textové Uložit ve všech šířkách, číslo v identitě, odstranit poznámku.
-- [ ] 13k: základní údaje a nenulový rozdíl, zůstatky dle pohybů, vysvětlení kontroly CS/SK.
-- [ ] 13k: katalogy a migrace BREAKING; unit, lint, E2E Chromium, automatické kontroly.
+- [x] 13k: textové Uložit ve všech šířkách, číslo v identitě, odstranit poznámku.
+- [x] 13k: základní údaje a nenulový rozdíl, zůstatky dle pohybů, vysvětlení kontroly CS/SK.
+- [x] 13k: katalogy 429 → 430 / props 759 → 764 beze ztrát; manifest 528 → 508 dle .dsignore; migrace BREAKING.
+- [x] 13k: unit 660/660, lint 0 chyb / 293 varování, E2E Chromium 5/5 (3 nové + 2 regresní), formát dotčených souborů OK, automatická sestava OK.
+- 13k: samostatné tsgo/build neprovedeny kvůli nadřazenému zákazu prostředí; verze obou míst 2.103.0, bez Release.
 
 - [x] RecordActionBar, GridAddActions, RecordDialog lifecycle: zablokovaná akce s důvodem = aria-disabled + tooltip i klepnutím/Enter.
 - [x] Položky nabídek s důvodem: druhý řádek místo tooltipu (DisabledReasonMenuItem).

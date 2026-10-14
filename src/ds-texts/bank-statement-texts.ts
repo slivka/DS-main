@@ -49,6 +49,8 @@ export interface BankStatementTexts {
   hasItems: string;
   /** Popisek delete. */
   delete: string;
+  /** Popisek shody zůstatku pro vlastní prezentaci aplikace. */
+  matched: string;
   /** Popisek home. */
   home: string;
 }

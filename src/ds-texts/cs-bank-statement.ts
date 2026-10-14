@@ -28,5 +28,6 @@ export const BANK_STATEMENT_CS: BankStatementTexts = {
   lockedReadOnly: "Výpis je jen pro čtení",
   hasItems: "Výpis má položky",
   delete: "Odstranit",
+  matched: "Zůstatek souhlasí",
   home: "Zůstatky v {currency}",
 };
