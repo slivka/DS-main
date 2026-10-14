@@ -20,7 +20,7 @@
   vysvětlení ukáže na 3 s (Escape, odchod fokusu či klepnutí mimo jej zavře).
 - Vyrovnaný AmountDifference nepřidává měnu stejně jako editor řádků;
   výpis nulový rozdíl nevykresluje. Nepoužitý import odstraněn.
-- Manifest sladěn s .dsignore: 508 → 491, odebráno 17 náhledových cest
+- Manifest sladěn s .dsignore: 508 → 489, odebráno 19 náhledových cest
   (routes, router, start, routeTree.gen a náhledové texty); ukázky již byly vyloučeny.
   Historický rozsah 13k opraven na 526 → 508 (23 odebráno, 5 přidáno).
 - Ověření 13l bude doplněno po konečném běhu; verze obou míst zůstává 2.103.0.
