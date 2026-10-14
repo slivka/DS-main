@@ -27,7 +27,14 @@
   komponenty/props/sekce 0; 424 původních objektů shodných. Tokeny, assets,
   constraints a #enrichment beze změny. Verze obou míst zůstává 2.103.0.
 - Lint 0 chyb / 292 varování; unit 660/660 (65 souborů). Samostatné tsgo ani
-  build neprovedeny kvůli nadřazenému zákazu prostředí; Chromium výsledky níže.
+  build neprovedeny kvůli nadřazenému zákazu prostředí.
+- E2E Chromium: 19/19 v konečných dílčích bězích (výpis 5, lišta 4,
+  matice CS/SK a zoom 1, ostatní regrese 9). Původní souhrnný běh byl časově
+  přerušen, proto se dokončil po souborech; nejde o jeden nepřerušený běh.
+  Snímky a měření 960/360 px, domácí i cizí měna, číslo při zamčení a zámek
+  při 100 % ověřeny. Skutečný Enter ověřen v Chromium, ne simulací jsdom.
+  Dotyk provede kontrolu a vysvětlení zmizí po 3 s. Formát dotčených souborů
+  OK, automatická sestava OK; Firefox/WebKit a fyzický telefon neověřeny.
 
 ### 13k – bankovní výpis
 

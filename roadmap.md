@@ -1,7 +1,7 @@
 ## DS 2.104.0 – Edit dokladu 13j–13l (nevydáno)
 
 - [x] 13l: geometrie, Uložit, zámky, tooltipy a přístupné názvy; katalog proti 1131b2b4 beze ztrát.
-- [ ] 13l: dokončit konečný běh Chromium; lint 0/292, unit 660/660; tsgo zakázáno prostředím.
+- [x] 13l: Chromium 19/19 v dílčích konečných bězích, široký/úzký i CS/SK 70–200 %; lint 0/292, unit 660/660, formát a automatická sestava OK. Tsgo zakázáno prostředím; verze 2.103.0, bez Release.
 
 - [x] 13k: textové Uložit ve všech šířkách, číslo v identitě, odstranit poznámku.
 - [x] 13k: základní údaje a nenulový rozdíl, zůstatky dle pohybů, vysvětlení kontroly CS/SK.
