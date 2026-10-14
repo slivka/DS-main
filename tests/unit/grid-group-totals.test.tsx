@@ -1,7 +1,25 @@
 /** Součty skupin · vlastní test pravidla total · nesmí testovat zdrojový text. */
 import { expect, test } from "bun:test";
 import { renderHook } from "@testing-library/react";
-import { useGroupedRows } from "../../src/components/ds/grid/grid-grouping";
+import { useGroupedRows, type GroupingApi } from "../../src/components/ds/grid/grid-grouping";
+
+const noop = () => {};
+const grouping: GroupingApi = {
+  enabled: true,
+  setEnabled: noop,
+  groups: [{ id: "g", granularity: "month" }],
+  add: noop,
+  remove: noop,
+  move: noop,
+  moveTo: noop,
+  setGranularity: noop,
+  clear: noop,
+  collapsed: [],
+  toggleKey: noop,
+  collapseAll: noop,
+  expandAll: noop,
+  active: true,
+};
 
 test("useGroupedRows respektuje total none a nečíselné sloupce", () => {
   const rows = [
@@ -11,11 +29,7 @@ test("useGroupedRows respektuje total none a nečíselné sloupce", () => {
   const { result } = renderHook(() =>
     useGroupedRows(
       rows,
-      {
-        active: true,
-        groups: [{ id: "g", granularity: "month" }],
-        collapsed: [],
-      } as never,
+      grouping,
       [
         { id: "g", label: "G" },
         { id: "amount", label: "Částka", numeric: true },
