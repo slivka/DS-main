@@ -458,7 +458,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
 - Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zkontrolovaný či zaúčtovaný výpis je jen ke čtení; položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
 
-- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit je vždy primární textové tlačítko ve všech šířkách, bez diskety; busy ukazuje spinner a text. Kompaktní režim krátí jen sekundární akce.
+- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit je vždy primární tlačítko s ikonou a textem „Uložit" ve všech šířkách, nikdy jen ikona; busy ukazuje spinner a text. Kompaktní režim krátí jen sekundární akce.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
 
