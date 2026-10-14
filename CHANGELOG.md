@@ -38,8 +38,9 @@
 
 ### 13k – bankovní výpis
 
-- Uložit používá společný RecordActionBar jako DocumentForm: primární textové tlačítko
-  v každé šířce, společné dirty/disabled/busy; 13l obnovuje původní ikonu Save vedle textu. Příčinou diskety byl kompaktní režim
+- Uložit používá společný RecordActionBar jako DocumentForm: primární tlačítko
+  s ikonou a textem v každé šířce, nikdy jen ikona; společné dirty/disabled/busy.
+  Příčinou ikonové podoby byl kompaktní režim
   RecordActionBar pod 640 px, který schovával text i u ukládání. Nyní krátí pouze
   sekundární akce; oprava platí pro všechny formuláře.
 - Číslo výpisu se upravuje vpravo v IdentityLine; při pohybech nebo zamčení FieldValue
