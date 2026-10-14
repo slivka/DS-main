@@ -6,7 +6,8 @@
 import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { TooltipProvider } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { IdentityLine } from "../layout/identity-line";
 import { Button } from "../../ui/button";
 import { BankStatementBasic, BankStatementBalanceSection } from "./bank-statement-sections";

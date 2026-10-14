@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react";
 import { cn } from "../../../lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { TooltipProvider } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 
 export interface GridActionProps extends ComponentProps<"button"> {
   tone?: "default" | "destructive";
@@ -40,14 +41,11 @@ export function GridAction({
   if (!disabledReason) return action;
   return (
     <TooltipProvider delayDuration={250}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="inline-flex" tabIndex={0}>
-            {action}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>{disabledReason}</TooltipContent>
-      </Tooltip>
+      <DisabledReasonTooltip content={disabledReason} blocked={Boolean(props.disabled)}>
+        <span className="inline-flex" tabIndex={0}>
+          {action}
+        </span>
+      </DisabledReasonTooltip>
     </TooltipProvider>
   );
 }
