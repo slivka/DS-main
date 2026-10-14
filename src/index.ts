@@ -61,6 +61,10 @@ export * from "./components/ui/toggle";
 export * from "./components/ui/toggle-group";
 
 export * from "./components/ds";
+export {
+  AmountDifference,
+  type AmountDifferenceProps,
+} from "./components/ds/accounting/amount-difference";
 export * from "./lib/utils";
 export * from "./lib/theme";
 export * from "./lib/accounting-utils";

@@ -17,7 +17,10 @@ export interface AmountDifferenceProps extends ComponentPropsWithoutRef<"span"> 
 
 /** Stav rozdílu se stejnými tokeny v editoru řádků i výpisu. */
 export const AmountDifference = forwardRef<HTMLSpanElement, AmountDifferenceProps>(
-  function AmountDifference({ value, label, balancedLabel, currencySymbol, className, ...props }, ref) {
+  function AmountDifference(
+    { value, label, balancedLabel, currencySymbol, className, ...props },
+    ref,
+  ) {
     return (
       <span
         ref={ref}

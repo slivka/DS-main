@@ -9,7 +9,8 @@ export const BANK_STATEMENT_SK: BankStatementTexts = {
   posted: "Zaúčtovaný",
   check: "Skontrolovať",
   uncheck: "Zrušiť kontrolu",
-  checkHint: "Potvrdí, že výpis súhlasí s bankou (zostatok podľa banky = konečný zostatok podľa pohybov), a výpis zamkne.",
+  checkHint:
+    "Potvrdí, že výpis súhlasí s bankou (zostatok podľa banky = konečný zostatok podľa pohybov), a výpis zamkne.",
   uncheckHint: "Odomkne výpis na úpravy.",
   basic: "Základné údaje",
   balances: "Zostatky podľa pohybov",

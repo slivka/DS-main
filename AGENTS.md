@@ -63,3 +63,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
 - Exclude every preview-only showcase from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
+
+- Keep Save text visible in the shared RecordActionBar at every width; only secondary actions compact. Why: all forms inherit the same readable save action.
+- Share amount discrepancy presentation through AmountDifference in journal and bank-statement forms. Why: one component owns balance-state styling.
+- Use IdentityLine.numberContent for controlled statement-number editing and FieldValue for locked identity. Why: identity layout remains shared without domain state.

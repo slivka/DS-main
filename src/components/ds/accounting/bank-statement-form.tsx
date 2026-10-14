@@ -12,7 +12,11 @@ import { IdentityLine } from "../layout/identity-line";
 import { FieldValue } from "../form/field-value";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import { BankStatementBasic, BankStatementBalanceSection, BankStatementBankClosing } from "./bank-statement-sections";
+import {
+  BankStatementBasic,
+  BankStatementBalanceSection,
+  BankStatementBankClosing,
+} from "./bank-statement-sections";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
 import { SectionHeading } from "../layout/section-heading";

@@ -54,7 +54,8 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         <div
           className={cn(
             "self-center shrink-0 text-right font-mono text-xl font-bold tabular-nums",
-            !number && !numberContent &&
+            !number &&
+              !numberContent &&
               "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground",
           )}
         >
