@@ -10,13 +10,15 @@ export interface IdentityLineProps extends ComponentPropsWithoutRef<"div"> {
   leading?: ReactNode;
   /** Číslo vpravo; prázdné číslo nahradí fallback. */
   number?: string | null;
+  /** Volitelný ovládací prvek čísla vpravo; má přednost před number a fallback. */
+  numberContent?: ReactNode;
   /** Text před přidělením čísla. */
   fallback?: ReactNode;
 }
 
 /** Společná identita dokladu i výpisu. */
 export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(function IdentityLine(
-  { items, leading, number, fallback, className, ...props },
+  { items, leading, number, numberContent, fallback, className, ...props },
   ref,
 ) {
   return (
@@ -49,15 +51,16 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
             </span>
           ) : null}
         </div>
-        <span
+        <div
           className={cn(
             "self-center shrink-0 text-right font-mono text-xl font-bold tabular-nums",
             !number &&
+              !numberContent &&
               "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground",
           )}
         >
-          {number || fallback}
-        </span>
+          {numberContent ?? (number || fallback)}
+        </div>
       </div>
     </div>
   );

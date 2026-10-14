@@ -1,3 +1,4 @@
+/** Lišta akcí · vlastní společné ukládání a stavy · nesmí ukládat aplikační data. */
 import {
   useEffect,
   useId,
@@ -11,7 +12,6 @@ import {
   CheckCircle2,
   Loader2,
   MoreHorizontal,
-  Save,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -98,7 +98,7 @@ function CompactActionButton({
   ...props
 }: {
   label: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   busy?: boolean;
   compact: boolean;
   /** Důvod zablokování: místo nativního disabled aria-disabled + tooltip i klepnutím. */
@@ -123,7 +123,7 @@ function CompactActionButton({
       aria-label={label}
       className={cn(compact && "size-9 px-0", blocked && "cursor-not-allowed", props.className)}
     >
-      {busy ? <Loader2 className="animate-spin" /> : <Icon />}
+      {busy ? <Loader2 className="animate-spin" /> : Icon ? <Icon /> : null}
       <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
       {children}
     </Button>
@@ -227,8 +227,8 @@ export function RecordActionBar({
           {saveAction ? (
             <CompactActionButton
               label={saveText}
-              icon={Save}
-              compact={compact}
+              compact={false}
+              variant="default"
               busy={busy || saveAction.busy}
               disabled={
                 busy || saveAction.disabled || saveAction.busy || saveAction.dirty === false

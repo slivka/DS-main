@@ -1,11 +1,13 @@
 /** Sekce výpisu · vlastní rozvržení polí · nesmí ukládat ani kontrolovat výpis. */
+import type { ReactNode } from "react";
+import { IdentityLine } from "../layout/identity-line";
+import { Input } from "../../ui/input";
 import { useCompactDateGeometry } from "../form/use-compact-date-geometry";
-import { Check } from "lucide-react";
 import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
-import { Input } from "../../ui/input";
 import { AmountInput } from "./amount";
+import { AmountDifference } from "./amount-difference";
 import { DateField } from "../form/date-field";
 import { parseDecimalInput } from "../form/decimal-input";
 import { FieldValue } from "../form/field-value";
@@ -14,30 +16,39 @@ import type { BankStatementBalances, BankStatementValue } from "./bank-statement
 
 /** Vnitřní údaje základní sekce. */
 interface BasicSectionProps {
+  /** Identifikátor sekce. */
   id: string;
+  /** Hodnoty výpisu. */
   value: BankStatementValue;
+  /** Změna výpisu. */
   patch: (next: Partial<BankStatementValue>) => void;
+  /** Zamčený výpis. */
   locked: boolean;
-  hasItems?: boolean;
+  /** Součty pohybů. */
+  balances: BankStatementBalances;
+  /** Značka měny. */
+  symbol: string;
+  /** Jazykové texty. */
   texts: BankStatementTexts;
 }
 
-/** Základní údaje se stejnými svislicemi jako zůstatky. */
+/** Základní údaje: datum vlevo, porovnání s bankou vpravo. */
 export function BankStatementBasic({
   id,
   value,
   patch,
   locked,
-  hasItems,
-  texts: t,
+  balances,
+  symbol,
+  texts,
 }: BasicSectionProps) {
-  const { containerRef, geometry } = useCompactDateGeometry(t.date);
+  const { containerRef, geometry } = useCompactDateGeometry(texts.date);
   return (
     <FieldGrid cols={12}>
       <Field span={3}>
         <div ref={containerRef} className="document-dates-container">
           <div className="document-dates-compact" style={geometry}>
-            <Field label={t.date} htmlFor={`${id}-date`}>
+            <Field label={texts.date} htmlFor={`${id}-date`}>
               <DateField
                 id={`${id}-date`}
                 value={value.date}
@@ -49,143 +60,187 @@ export function BankStatementBasic({
           </div>
         </div>
       </Field>
-      <Field
-        label={t.number}
-        htmlFor={hasItems || locked ? undefined : `${id}-number`}
-        labelId={`${id}-number-label`}
-        span={2}
-      >
-        {hasItems || locked ? (
-          <FieldValue
-            aria-labelledby={`${id}-number-label`}
-            id={`${id}-number`}
-            lockedReason={hasItems ? t.hasItems : undefined}
-          >
-            {value.number}
-          </FieldValue>
-        ) : (
-          <Input
-            id={`${id}-number`}
-            value={value.number}
-            onChange={(event) => patch({ number: event.target.value })}
-          />
-        )}
-      </Field>
-      <Field
-        label={t.note}
-        htmlFor={locked ? undefined : `${id}-note`}
-        labelId={`${id}-note-label`}
-        span={7}
-      >
-        {locked ? (
-          <FieldValue aria-labelledby={`${id}-note-label`} id={`${id}-note`}>
-            {value.note}
-          </FieldValue>
-        ) : (
-          <Input
-            id={`${id}-note`}
-            value={value.note}
-            onChange={(event) => patch({ note: event.target.value })}
-          />
-        )}
+      <Field span={9}>
+        <BankStatementBankClosing
+          id={id}
+          bankClosing={value.bankClosing}
+          onChange={(bankClosing) => patch({ bankClosing })}
+          locked={locked}
+          balances={balances}
+          symbol={symbol}
+          texts={texts}
+        />
       </Field>
     </FieldGrid>
   );
 }
 
-/** Vnitřní údaje společné oběma měnám. */
-interface BalancesSectionProps {
+/** Vnitřní porovnání bankovního zůstatku s pohyby. */
+interface BankClosingProps {
+  /** Identifikátor pole. */
   id: string;
-  balances: BankStatementBalances;
-  symbol: string;
+  /** Nepovinný bankovní zůstatek. */
   bankClosing: number | null;
-  onBankClosingChange: (value: number | null) => void;
+  /** Změna zůstatku. */
+  onChange: (value: number | null) => void;
+  /** Zamčená hodnota. */
   locked: boolean;
+  /** Součty pohybů. */
+  balances: BankStatementBalances;
+  /** Značka měny. */
+  symbol: string;
+  /** Jazykové texty. */
   texts: BankStatementTexts;
 }
 
-/** Součty a rozdíl, shodně pro původní i domácí měnu. */
+/** Bankovní zůstatek vpravo; pouze nenulový rozdíl vlevo. */
+export function BankStatementBankClosing({
+  id,
+  bankClosing,
+  onChange,
+  locked,
+  balances,
+  symbol,
+  texts: t,
+}: BankClosingProps) {
+  const closing = balances.opening + balances.income - balances.expense;
+  const difference = bankClosing === null ? null : Math.round((bankClosing - closing) * 100) / 100;
+  return (
+    <div className="flex min-w-0 flex-wrap items-end justify-end gap-3">
+      {difference !== null && difference !== 0 ? (
+        <AmountDifference
+          data-slot="bank-statement-difference"
+          value={difference}
+          label={t.difference}
+          currencySymbol={symbol}
+        />
+      ) : null}
+      <Field
+        label={t.bankClosing}
+        htmlFor={locked ? undefined : `${id}-bankClosing`}
+        labelId={`${id}-bankClosing-label`}
+        className="min-w-0 flex-1"
+      >
+        {locked ? (
+          <FieldValue
+            aria-labelledby={`${id}-bankClosing-label`}
+            className="text-right tabular-nums"
+          >
+            {bankClosing === null ? null : `${formatAmount(bankClosing)} ${symbol}`}
+          </FieldValue>
+        ) : (
+          <div className="relative">
+            <AmountInput
+              id={`${id}-bankClosing`}
+              value={bankClosing}
+              onChange={(next) => onChange(parseDecimalInput(next))}
+              className="pr-10"
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-sm text-muted-foreground"
+            >
+              {symbol}
+            </span>
+          </div>
+        )}
+      </Field>
+    </div>
+  );
+}
+
+/** Vnitřní údaje společné oběma měnám. */
+interface BalancesSectionProps {
+  /** Identifikátor sekce. */
+  id: string;
+  /** Součty pohybů. */
+  balances: BankStatementBalances;
+  /** Značka měny. */
+  symbol: string;
+  /** Jazykové texty. */
+  texts: BankStatementTexts;
+}
+
+/** Čtyři zůstatky dle pohybů; porovnání s bankou sem nepatří. */
 export function BankStatementBalanceSection({
   id,
   balances,
   symbol,
-  bankClosing,
-  onBankClosingChange,
-  locked,
   texts: t,
 }: BalancesSectionProps) {
   const closing = balances.opening + balances.income - balances.expense;
-  const difference = bankClosing === null ? null : Math.round((bankClosing - closing) * 100) / 100;
   return (
-    <div className="space-y-3">
-      <FieldGrid cols={12}>
-        {(["opening", "income", "expense", "closing"] as const).map((key) => {
-          const amount = key === "closing" ? closing : balances[key];
-          return (
-            <Field key={key} label={t[key]} labelId={`${id}-${key}-label`} span={3}>
-              <FieldValue
-                aria-labelledby={`${id}-${key}-label`}
-                className={cn(
-                  "text-right tabular-nums",
-                  key === "closing" && "font-bold",
-                  amount < 0 && "text-destructive",
-                )}
-              >
-                {formatAmount(amount)} {symbol}
-              </FieldValue>
-            </Field>
-          );
-        })}
-      </FieldGrid>
-      <FieldGrid cols={12}>
-        <Field
-          label={t.bankClosing}
-          htmlFor={locked ? undefined : `${id}-bankClosing`}
-          labelId={`${id}-bankClosing-label`}
-          span={6}
-          className="@min-[40rem]:col-start-4"
-        >
-          {locked ? (
+    <FieldGrid cols={12}>
+      {(["opening", "income", "expense", "closing"] as const).map((key) => {
+        const amount = key === "closing" ? closing : balances[key];
+        return (
+          <Field key={key} label={t[key]} labelId={`${id}-${key}-label`} span={3}>
             <FieldValue
-              aria-labelledby={`${id}-bankClosing-label`}
-              id={`${id}-bankClosing`}
-              className="text-right tabular-nums"
+              aria-labelledby={`${id}-${key}-label`}
+              className={cn(
+                "text-right tabular-nums",
+                key === "closing" && "font-bold",
+                amount < 0 && "text-destructive",
+              )}
             >
-              {bankClosing === null ? null : `${formatAmount(bankClosing)} ${symbol}`}
+              {formatAmount(amount)} {symbol}
             </FieldValue>
-          ) : (
-            <AmountInput
-              id={`${id}-bankClosing`}
-              value={bankClosing}
-              onChange={(next) => onBankClosingChange(parseDecimalInput(next))}
-            />
-          )}
-        </Field>
-        <Field label={t.difference} labelId={`${id}-difference-label`} span={3}>
+          </Field>
+        );
+      })}
+    </FieldGrid>
+  );
+}
+
+/** Vnitřní řízené číslo v identifikačním řádku. */
+interface StatementIdentityProps {
+  /** Identifikátor vstupu. */
+  id: string;
+  /** Části identity. */
+  items: ReactNode[];
+  /** Číslo výpisu. */
+  number: string;
+  /** Důvod neměnnosti čísla. */
+  lockedReason?: string;
+  /** Změna čísla. */
+  onNumberChange: (number: string) => void;
+  /** Přístupný název vstupu. */
+  label: string;
+}
+
+/** Sdílená identita s číslem výpisu bez duplicitního pole v základních údajích. */
+export function BankStatementIdentity({
+  id,
+  items,
+  number,
+  lockedReason,
+  onNumberChange,
+  label,
+}: StatementIdentityProps) {
+  return (
+    <IdentityLine
+      data-slot="bank-statement-identity"
+      items={items}
+      numberContent={
+        lockedReason ? (
           <FieldValue
-            aria-labelledby={`${id}-difference-label`}
-            data-slot="bank-statement-difference"
-            className={cn(
-              "text-right tabular-nums",
-              difference !== null && difference !== 0 && "text-destructive",
-            )}
+            variant="plain"
+            aria-label={label}
+            lockedReason={lockedReason}
+            className="text-right font-mono font-bold tabular-nums"
           >
-            {difference === null ? null : (
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1",
-                  difference === 0 && "text-success-strong",
-                )}
-              >
-                {difference === 0 ? (
-                  <Check className="size-4" role="img" aria-label={t.matched} />
-                ) : null}
-                {formatAmount(difference)} {symbol}
-              </span>
-            )}
+            {number}
           </FieldValue>
-        </Field>
-      </FieldGrid>
-    </div>
+        ) : (
+          <Input
+            id={`${id}-number`}
+            aria-label={label}
+            value={number}
+            onChange={(event) => onNumberChange(event.target.value)}
+            className="w-32 max-w-full text-right font-mono tabular-nums"
+          />
+        )
+      }
+    />
   );
 }

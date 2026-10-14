@@ -13,6 +13,10 @@ export interface BankStatementTexts {
   check: string;
   /** Popisek uncheck. */
   uncheck: string;
+  /** Vysvětlení potvrzení kontroly výpisu. */
+  checkHint: string;
+  /** Vysvětlení zrušení kontroly výpisu. */
+  uncheckHint: string;
   /** Popisek basic. */
   basic: string;
   /** Popisek balances. */
@@ -21,8 +25,6 @@ export interface BankStatementTexts {
   date: string;
   /** Popisek number. */
   number: string;
-  /** Popisek note. */
-  note: string;
   /** Popisek opening. */
   opening: string;
   /** Popisek income. */
@@ -47,7 +49,7 @@ export interface BankStatementTexts {
   hasItems: string;
   /** Popisek delete. */
   delete: string;
-  /** Popisek matched. */
+  /** Popisek shody zůstatku pro vlastní prezentaci aplikace. */
   matched: string;
   /** Popisek home. */
   home: string;

@@ -348,7 +348,7 @@ _Účet pouze s IBAN_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými zůstatky a slotem items. Aplikace řídí ukládání a stavy; checked/posted i readOnly zamykají editaci, hasItems číslo a odstranění. Domácí měna je samostatná sada z props. 13b: sdílí IdentityLine a kartu sekce s DocumentForm, TooltipProvider je interní. Uložit je stejná kompaktní akce (ikona + text od šířky lišty 640, pod ní ikona s názvem a tooltipem), busy vykreslí spinner. Ctrl/Cmd+S ukládá dostupný výpis. Zamčené odstranění i změna kontroly vysvětlí důvod. Datum využívá --document-date-*; popisky se nezalamují, dlouhé mají výpustku a celý text v title. 13c: karta a PageLayout bez vlastních přepisů; společné měření datumů, vlastní důvody zamčení checked/posted/readOnly a jména všech hodnot přes role group a aria-labelledby. 2.102.0: checkDisabledReason zakáže jen „Zkontrolovat“ (aria-disabled, fokus, tooltip důvodu); „Zrušit kontrolu“ neovlivní.
+Formulář bankovního výpisu: Uložit je společná primární textová akce RecordActionBar v každé šířce, dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu.
 
 **Props:**
 
@@ -356,7 +356,7 @@ Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými z�
 |---|---|---|
 | `value` | any | `—` |
 | `onChange` | function | `—` |
-| `status` | open · checked · posted | `—` |
+| `status` | open \| checked \| posted | `—` |
 | `book` | any | `—` |
 | `currency` | string | `—` |
 | `currencySymbol` | string | `—` |
@@ -378,17 +378,18 @@ Formulář bankovního výpisu s přilepenými akcemi, identitou, odvozenými z�
 | `items` | any | `—` |
 | `texts` | any | `—` |
 
-**Examples:**
+**Řízený výpis**
 
-_Řízený výpis_
 ```tsx
 <BankStatementForm value={statement} onChange={setStatement} status="open" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />
 ```
 
-**Avoid:**
+**Antipatterns:**
 
 - Nevkládejte pevnou značku měny; použijte currencySymbol a home.currencySymbol.
 - Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.
+- Nepředávejte value.note; výpis poznámku nemá.
+- Nevykreslujte nulový rozdíl ani další pole čísla v základní sekci.
 
 ### BarBreakdownChart
 
@@ -2122,26 +2123,25 @@ _Platit příkazem_
 import { FieldValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input. Výchozí role group zpřístupňuje jméno z aria-labelledby; ID popisku předá Field.labelId.
+Hodnota nebo stav jen ke čtení uvnitř Field; výškou a svislým zarovnáním odpovídá Input. Výchozí role group zpřístupňuje jméno z aria-labelledby; ID popisku předá Field.labelId. lockedReason zobrazí fokusovatelné tlačítko zámku s tooltipem dostupným i klepnutím; v identitě lze použít variant="plain" a aria-label.
 
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
 | `trailing` | any | `—` |
-| `variant` | field · plain | `field` |
+| `variant` | field \| plain | `field` |
 | `lockedReason` | string | `—` |
 
-**Examples:**
+**Stav DPH**
 
-_Stav DPH_
 ```tsx
 <Field label="Stav DPH" hint="Ověřeno 26.09.2026"><FieldValue><VatStatusBadge status="payer" /></FieldValue></Field>
 ```
 
-**Avoid:**
+**Antipatterns:**
 
-- Nevkládejte FieldValue bez nadřazeného Field a popisku.
+- Nezapomeňte přístupné jméno: uvnitř Field aria-labelledby, v identitě aria-label.
 
 ### FilterChips
 
@@ -2747,7 +2747,7 @@ _Právnická osoba_
 import { IdentityLine } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm.
+Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm. Pro editovatelné nebo zamčené číslo použijte numberContent; aplikace vlastní hodnotu a callback.
 
 **Props:**
 
@@ -2755,17 +2755,17 @@ Společná prezentační identita formuláře; položky a volitelný příznak v
 |---|---|---|
 | `items` | any | `—` |
 | `leading` | any | `—` |
-| `number` | string | `—` |
+| `number` | string \| null | `—` |
 | `fallback` | any | `—` |
+| `numberContent` | ReactNode | `—` |
 
-**Examples:**
+**Identita výpisu**
 
-_Identita výpisu_
 ```tsx
 <IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
 ```
 
-**Avoid:**
+**Antipatterns:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
 - Nepřidávejte do identity ukládání nebo doménovou logiku.
@@ -3957,7 +3957,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %.
+Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit vždy zůstává primární textová akce bez diskety i pod 640 px; pouze sekundární akce přecházejí do kompaktního režimu.
 
 **Props:**
 
@@ -3979,14 +3979,13 @@ Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární
 | `errorDataSlot` | string | `record-action-error` |
 | `noticesDataSlot` | string | `record-action-notices` |
 
-**Examples:**
+**Karta majetku**
 
-_Karta majetku_
 ```tsx
 <RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} notices={<NoticeBar tone="info">Informace</NoticeBar>} />
 ```
 
-**Avoid:**
+**Antipatterns:**
 
 - Nevykreslujte Uložit ani akce záznamu volně pod poli.
 - Stav záznamu nedávejte do pruhu; patří do PageHeader.titleBadge.
@@ -5282,4 +5281,33 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+
+### AmountDifference
+
+```ts
+import { AmountDifference } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Společný stav rozdílu částek pro editor řádků a bankovní výpis. Výpis vykresluje komponentu pouze při nenulové odchylce; popisky a značka měny pocházejí z aplikace nebo DsTexts.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | number | `—` |
+| `label` | string | `—` |
+| `balancedLabel` | string | `—` |
+| `currencySymbol` | string | `—` |
+
+**Rozdíl výpisu**
+
+```tsx
+{difference !== 0 && <AmountDifference value={difference} label={texts.difference} currencySymbol={currency.symbol} />}
+```
+
+**Antipatterns:**
+
+- Nevytvářejte vlastní styl rozdílu v jednotlivých formulářích.
+- Nevkládejte pevnou značku měny ani zde nepočítejte součty.
 

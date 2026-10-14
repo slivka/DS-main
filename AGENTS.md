@@ -55,11 +55,11 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - `meta.version` v `.lovable/design-system.json` = `package.json` = poslední VYDANÁ verze; dialog Release nabídne další minor (Current z `meta.version` + 1). CHANGELOG a roadmap nesou připravovanou verzi označenou „(nevydáno)“. Po vydání, pokud se commit vydání do pracovní větve nepromítne, hned nastav obě hodnoty na právě vydanou verzi.
 
-- Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
-
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
 - Exclude every preview-only showcase from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
+
+- Keep Save text visible in the shared RecordActionBar at every width; only secondary actions compact. Why: all forms inherit the same readable save action.

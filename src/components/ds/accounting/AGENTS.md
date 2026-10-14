@@ -15,3 +15,7 @@
 - Keep identity account focus and selection in a focused internal hook. Why: DocumentForm remains below the file limit without changing public behavior.
 - Scope compact date geometry to DocumentDatesSection; wrap VAT dates separately when their pair cannot fit. Why: all dates and rings stay visible without changing filters or dialogs.
 - Measure dates per field, including labels; shrink only overflowing fields. Key observers by format/labels. Why: preserve neighbours and avoid observers on unrelated edits.
+
+- Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
+- Share amount discrepancy presentation through AmountDifference in journal and bank-statement forms. Why: one component owns balance-state styling.
+- Use IdentityLine.numberContent for controlled statement-number editing and FieldValue for locked identity. Why: identity layout remains shared without domain state.

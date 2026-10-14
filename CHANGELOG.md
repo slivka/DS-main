@@ -1,6 +1,44 @@
 # Changelog – Slivka Design System
 
-## 2.104.0 – Edit dokladu 13j (nevydáno)
+## 2.104.0 – Edit dokladu 13j–13k (nevydáno)
+
+### 13k – bankovní výpis
+
+- Uložit používá společný RecordActionBar jako DocumentForm: primární textové tlačítko
+  v každé šířce, společné dirty/disabled/busy. Příčinou diskety byl kompaktní režim
+  RecordActionBar pod 640 px, který schovával text i u ukládání. Nyní krátí pouze
+  sekundární akce; oprava platí pro všechny formuláře.
+- Číslo výpisu se upravuje vpravo v IdentityLine; při pohybech nebo zamčení FieldValue
+  ukáže číslo a zámek s důvodem dostupným i klepnutím.
+- Datum vlevo a nepovinný „Zůstatek dle banky“ vpravo. Rozdíl pouze při vyplněném
+  bankovním zůstatku a nenulové odchylce; společný AmountDifference také v editoru řádků.
+- „Zůstatky dle pohybů“ mají pouze čtyři součty. Kontrola i zrušení kontroly vysvětlují
+  svůj účel tooltipem dostupným také klepnutím; texty CS/SK.
+
+### BREAKING – migrace 13k
+
+- Odstraňte `value.note` z BankStatementValue a `texts.note` z BankStatementTexts;
+  poznámka již není součástí výpisu.
+- Číslo je pouze v identifikačním řádku: upravte cílení testů a vlastních rozšíření,
+  které očekávaly číslo mezi Základními údaji; `value.number` a onChange se nemění.
+- Vlastní úplné jazykové sady BankStatementTexts doplňte o `checkHint` a `uncheckHint`;
+  přepište `bankClosing` a `balances` na nové názvy. Partial přepisy se doplní z DS.
+- Veřejné nepovinné `IdentityLine.numberContent` umožňuje ovládání čísla;
+  AmountDifference je nový sdílený veřejný export. Verze zůstává 2.103.0, bez Release.
+
+### Ověření 13k
+
+- Unit 660/660 (65 souborů); lint 0 chyb / 293 varování; kontrola formátu dotčených
+  souborů prošla. E2E Chromium 5/5: nový výpis široký/úzký a dotyk 3/3 v jednom
+  konečném běhu, původní scénáře výpisu a společného Uložit 2/2. První dotykový test
+  neprošel kvůli změně vysvětlení po kontrole; tooltip nyní drží původní text klepnutí.
+- Katalog proti začátku 13k: 429 → 430 komponent, 759 → 764 props, odstraněné 0;
+  425 původních komponent beze změny. Manifest 528 → 508 položek včetně #enrichment:
+  24 náhledových ukázek vyloučeno podle .dsignore, 4 doplněné soubory. #enrichment zachován.
+- Automatická sestava OK. Samostatné tsgo ani build neprovedeny: prostředí zakazuje
+  ruční typové kontroly a sestavení. Nelze vykázat úspěch tsgo. Firefox/WebKit neběžely.
+
+### 13j
 
 - Bez BREAKING: `RecordSaveAction` a `RecordPrimaryAction` (tedy i `DocumentSaveAction`,
   `DocumentPrimaryAction`) mají nepovinný `disabledReason`. Zakázaná akce s důvodem v
