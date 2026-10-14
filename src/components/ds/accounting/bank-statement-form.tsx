@@ -177,8 +177,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
             <RecordActionBar
               leftContent={
                 onCheckedChange ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
+                  <>
+                    <DisabledReasonTooltip content={checkReason} blocked={Boolean(checkReason)}>
                       <Button
                         type="button"
                         variant="outline"
@@ -190,14 +190,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                       >
                         {status === "open" ? t.check : t.uncheck}
                       </Button>
-                    </TooltipTrigger>
-                    {checkReason ? <TooltipContent>{checkReason}</TooltipContent> : null}
+                    </DisabledReasonTooltip>
                     {checkReason ? (
                       <span id={`${id}-check-reason`} className="sr-only">
                         {checkReason}
                       </span>
                     ) : null}
-                  </Tooltip>
+                  </>
                 ) : null
               }
               busy={busy}
