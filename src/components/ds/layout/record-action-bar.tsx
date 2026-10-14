@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -19,6 +26,8 @@ import {
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
+import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { cn } from "../../../lib/utils";
 
 export interface RecordSaveAction {
@@ -26,6 +35,8 @@ export interface RecordSaveAction {
   disabled?: boolean;
   busy?: boolean;
   dirty?: boolean;
+  /** Důvod zakázání; akce zůstane fokusovatelná (aria-disabled) a klik/klepnutí ukáže důvod. */
+  disabledReason?: string;
 }
 
 export interface RecordPrimaryAction {
@@ -34,6 +45,8 @@ export interface RecordPrimaryAction {
   disabled?: boolean;
   busy?: boolean;
   icon?: LucideIcon;
+  /** Důvod zakázání; akce zůstane fokusovatelná (aria-disabled) a klik/klepnutí ukáže důvod. */
+  disabledReason?: string;
 }
 
 export interface RecordMoreAction {
@@ -80,25 +93,55 @@ function CompactActionButton({
   icon: Icon,
   busy,
   compact,
+  reason,
   children,
   ...props
-}: { label: string; icon: LucideIcon; busy?: boolean; compact: boolean } & ComponentPropsWithoutRef<
-  typeof Button
->) {
+}: {
+  label: string;
+  icon: LucideIcon;
+  busy?: boolean;
+  compact: boolean;
+  /** Důvod zablokování: místo nativního disabled aria-disabled + tooltip i klepnutím. */
+  reason?: string;
+} & ComponentPropsWithoutRef<typeof Button>) {
+  const reasonId = useId();
+  const blocked = Boolean(reason);
+  const button = (
+    <Button
+      type="button"
+      {...props}
+      disabled={blocked ? undefined : props.disabled}
+      aria-disabled={blocked || undefined}
+      aria-describedby={blocked ? reasonId : undefined}
+      onClick={(event) => {
+        if (blocked) {
+          event.preventDefault();
+          return;
+        }
+        props.onClick?.(event);
+      }}
+      aria-label={label}
+      className={cn(compact && "size-9 px-0", blocked && "cursor-not-allowed", props.className)}
+    >
+      {busy ? <Loader2 className="animate-spin" /> : <Icon />}
+      <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
+      {children}
+    </Button>
+  );
+  if (blocked)
+    return (
+      <>
+        <DisabledReasonTooltip content={reason} blocked>
+          {button}
+        </DisabledReasonTooltip>
+        <span id={reasonId} className="sr-only">
+          {reason}
+        </span>
+      </>
+    );
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          {...props}
-          aria-label={label}
-          className={cn(compact && "size-9 px-0", props.className)}
-        >
-          {busy ? <Loader2 className="animate-spin" /> : <Icon />}
-          <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
-          {children}
-        </Button>
-      </TooltipTrigger>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
       {compact ? <TooltipContent>{label}</TooltipContent> : null}
     </Tooltip>
   );
@@ -173,6 +216,11 @@ export function RecordActionBar({
               variant="outline"
               busy={busy || primaryAction.busy}
               disabled={busy || primaryAction.disabled || primaryAction.busy}
+              reason={
+                !busy && !primaryAction.busy && primaryAction.disabled
+                  ? primaryAction.disabledReason
+                  : undefined
+              }
               onClick={primaryAction.onClick}
             />
           ) : null}
@@ -184,6 +232,11 @@ export function RecordActionBar({
               busy={busy || saveAction.busy}
               disabled={
                 busy || saveAction.disabled || saveAction.busy || saveAction.dirty === false
+              }
+              reason={
+                !busy && !saveAction.busy && saveAction.disabled
+                  ? saveAction.disabledReason
+                  : undefined
               }
               onClick={saveAction.onSave}
             >
@@ -214,24 +267,31 @@ export function RecordActionBar({
                   return (
                     <span key={action.id}>
                       {action.separatorBefore ? <DropdownMenuSeparator /> : null}
-                      <DropdownMenuItem
-                        disabled={busy || action.disabled}
-                        onSelect={action.onClick}
-                        className={cn(
-                          "flex-col items-start gap-0.5",
-                          action.destructive && "text-destructive focus:text-destructive",
-                        )}
-                      >
-                        <span className="flex items-center gap-2">
+                      {action.disabled && action.disabledReason && !busy ? (
+                        <DisabledReasonMenuItem
+                          disabled
+                          disabledReason={action.disabledReason}
+                          onSelect={action.onClick}
+                          className={cn(action.destructive && "text-destructive")}
+                        >
                           {Icon ? <Icon className="size-4 shrink-0" /> : null}
                           {action.label}
-                        </span>
-                        {action.disabled && action.disabledReason ? (
-                          <span className="text-xs font-normal text-muted-foreground">
-                            {action.disabledReason}
+                        </DisabledReasonMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          disabled={busy || action.disabled}
+                          onSelect={action.onClick}
+                          className={cn(
+                            "flex-col items-start gap-0.5",
+                            action.destructive && "text-destructive focus:text-destructive",
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            {Icon ? <Icon className="size-4 shrink-0" /> : null}
+                            {action.label}
                           </span>
-                        ) : null}
-                      </DropdownMenuItem>
+                        </DropdownMenuItem>
+                      )}
                     </span>
                   );
                 })}

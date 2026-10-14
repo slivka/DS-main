@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { useIsActivePane } from "../panes/pane-context";
 import { GridAddLabelContext, GridToolbarOverflowContext } from "./grid-toolbar-context";
 
@@ -54,6 +56,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
   const list = React.useMemo(() => (Array.isArray(actions) ? actions : [actions]), [actions]);
   const multiple = list.length > 1;
   const merged = multiple && overflowLevel >= 3;
+  const reasonIdBase = React.useId();
   // Zkratka N reaguje jen v aktivním panelu a jen když není otevřený dialog,
   // aby jeden stisk neklikl na Přidat ve všech gridových lištách najednou.
   const paneActive = useIsActivePane();
@@ -85,51 +88,76 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
       {list.map((action, index) => {
         const actionLabel = index === 0 ? `${action.label} (N)` : action.label;
         const tip = action.disabled && action.disabledReason ? action.disabledReason : actionLabel;
-        return (
-          <Tooltip key={action.label}>
-            <TooltipTrigger asChild>
-              <Button
-                ref={index === 0 ? primaryActionRef : undefined}
-                data-toolbar-add
-                type="button"
-                size="sm"
-                disabled={action.disabled}
-                onClick={action.onClick}
-                aria-label={actionLabel}
-                // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
+        // Zakázaná akce s důvodem zůstává fokusovatelná (aria-disabled), aby klik,
+        // klepnutí i Enter/mezerník ukázaly důvod; bez důvodu stačí nativní disabled.
+        const blocked = Boolean(action.disabled && action.disabledReason);
+        const reasonId = `${reasonIdBase}-${index}`;
+        const button = (
+          <Button
+            ref={index === 0 ? primaryActionRef : undefined}
+            data-toolbar-add
+            type="button"
+            size="sm"
+            disabled={blocked ? undefined : action.disabled}
+            aria-disabled={blocked || undefined}
+            aria-describedby={blocked ? reasonId : undefined}
+            onClick={(event) => {
+              if (blocked) {
+                event.preventDefault();
+                return;
+              }
+              action.onClick(event);
+            }}
+            aria-label={actionLabel}
+            // Ve sloučeném stavu zůstává tlačítko v DOM skryté kvůli zkratce N a měření.
+            className={cn(
+              "grid-toolbar-control grid-toolbar-primary shrink-0",
+              blocked && "cursor-not-allowed",
+              merged && "hidden",
+            )}
+          >
+            <Plus className="size-[1.2em]" />
+            {multiple ? (
+              <>
+                <span
+                  data-slot="grid-add-full"
+                  className={labelMode === "full" ? "inline" : "hidden"}
+                >
+                  {action.label}
+                </span>
+                <span
+                  data-slot="grid-add-short"
+                  className={labelMode === "short" ? "inline" : "hidden"}
+                >
+                  {action.shortLabel ?? action.label}
+                </span>
+              </>
+            ) : (
+              <span
                 className={cn(
-                  "grid-toolbar-control grid-toolbar-primary shrink-0",
-                  merged && "hidden",
+                  "hidden @min-[640px]:inline",
+                  overflowLevel >= 3 && "@min-[640px]:hidden",
                 )}
               >
-                <Plus className="size-[1.2em]" />
-                {multiple ? (
-                  <>
-                    <span
-                      data-slot="grid-add-full"
-                      className={labelMode === "full" ? "inline" : "hidden"}
-                    >
-                      {action.label}
-                    </span>
-                    <span
-                      data-slot="grid-add-short"
-                      className={labelMode === "short" ? "inline" : "hidden"}
-                    >
-                      {action.shortLabel ?? action.label}
-                    </span>
-                  </>
-                ) : (
-                  <span
-                    className={cn(
-                      "hidden @min-[640px]:inline",
-                      overflowLevel >= 3 && "@min-[640px]:hidden",
-                    )}
-                  >
-                    {action.label}
-                  </span>
-                )}
-              </Button>
-            </TooltipTrigger>
+                {action.label}
+              </span>
+            )}
+          </Button>
+        );
+        if (blocked)
+          return (
+            <React.Fragment key={action.label}>
+              <DisabledReasonTooltip content={tip} blocked>
+                {button}
+              </DisabledReasonTooltip>
+              <span id={reasonId} className="sr-only">
+                {action.disabledReason}
+              </span>
+            </React.Fragment>
+          );
+        return (
+          <Tooltip key={action.label}>
+            <TooltipTrigger asChild>{button}</TooltipTrigger>
             <TooltipContent>{tip}</TooltipContent>
           </Tooltip>
         );
@@ -161,27 +189,15 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             {list.map((action) => {
               const Icon = action.icon ?? Plus;
               return (
-                <Tooltip key={action.label}>
-                  <TooltipTrigger asChild>
-                    <DropdownMenuItem
-                      aria-disabled={action.disabled}
-                      className={cn(action.disabled && "ds-disabled-control")}
-                      onSelect={(event: Event) => {
-                        if (action.disabled) {
-                          event.preventDefault();
-                          return;
-                        }
-                        action.onClick(event);
-                      }}
-                    >
-                      <Icon aria-hidden className="size-[1.1em]" />
-                      {action.shortLabel ?? action.label}
-                    </DropdownMenuItem>
-                  </TooltipTrigger>
-                  {action.disabled && action.disabledReason ? (
-                    <TooltipContent>{action.disabledReason}</TooltipContent>
-                  ) : null}
-                </Tooltip>
+                <DisabledReasonMenuItem
+                  key={action.label}
+                  disabled={action.disabled}
+                  disabledReason={action.disabledReason}
+                  onSelect={(event) => action.onClick(event)}
+                >
+                  <Icon aria-hidden className="size-[1.1em]" />
+                  {action.shortLabel ?? action.label}
+                </DisabledReasonMenuItem>
               );
             })}
           </DropdownMenuContent>

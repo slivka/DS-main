@@ -3,6 +3,7 @@
  * Vlastní: řádek identity a hodnotu jen pro čtení.
  * Nesmí: měnit hodnotu dokladu mimo předané callbacky.
  */
+import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import type { ReactNode, RefObject } from "react";
 import { IdentityLine } from "../../layout/identity-line";
 import { Pencil } from "lucide-react";
@@ -80,29 +81,26 @@ export function DocumentIdentityLine({
   const pencil =
     !editingAccount && canEditAccount && account ? (
       account.disabledReason ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              tabIndex={0}
-              aria-label={`${texts.changeAccount}: ${account.disabledReason}`}
-              data-slot="document-identity-account-locked"
-              className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        <DisabledReasonTooltip content={account.disabledReason} blocked>
+          <span
+            tabIndex={0}
+            aria-label={`${texts.changeAccount}: ${account.disabledReason}`}
+            data-slot="document-identity-account-locked"
+            className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7"
+              aria-label={texts.changeAccount}
+              tabIndex={-1}
+              disabled
             >
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-7"
-                aria-label={texts.changeAccount}
-                tabIndex={-1}
-                disabled
-              >
-                <Pencil className="size-3.5" />
-              </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{account.disabledReason}</TooltipContent>
-        </Tooltip>
+              <Pencil className="size-3.5" />
+            </Button>
+          </span>
+        </DisabledReasonTooltip>
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>

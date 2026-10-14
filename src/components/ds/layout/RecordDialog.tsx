@@ -1,4 +1,6 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
+import { TooltipProvider } from "../../ui/tooltip";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { createPortal } from "react-dom";
 
 import { usePane } from "../panes/pane-context";
@@ -157,6 +159,7 @@ export function RecordDialog({
   const saveAndActionText = saveAndActionLabel ?? dsTexts.recordDialog.saveAndAction;
   const dirtyTitle = dirtyConfirmTitle ?? dsTexts.recordDialog.dirtyTitle;
   const { confirm, confirmDialog } = useConfirmDialog();
+  const lifecycleReasonId = useId();
   const runLifecycle = () => {
     if (!lifecycleAction) return;
     const plan = resolveLifecycleConfirm(lifecycleAction, dirty, saveAndActionText, dirtyTitle);
@@ -280,16 +283,36 @@ export function RecordDialog({
               <div className="flex items-center gap-2">
                 {extraActions}
                 {lifecycleAction ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    data-slot="lifecycle-action"
-                    disabled={lifecycleAction.disabled}
-                    title={lifecycleAction.disabled ? lifecycleAction.disabledReason : undefined}
-                    onClick={runLifecycle}
-                  >
-                    {lifecycleAction.label}
-                  </Button>
+                  lifecycleAction.disabled && lifecycleAction.disabledReason ? (
+                    <TooltipProvider>
+                      <DisabledReasonTooltip content={lifecycleAction.disabledReason} blocked>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          data-slot="lifecycle-action"
+                          aria-disabled
+                          aria-describedby={`${lifecycleReasonId}`}
+                          className="cursor-not-allowed"
+                          onClick={(event) => event.preventDefault()}
+                        >
+                          {lifecycleAction.label}
+                        </Button>
+                      </DisabledReasonTooltip>
+                      <span id={lifecycleReasonId} className="sr-only">
+                        {lifecycleAction.disabledReason}
+                      </span>
+                    </TooltipProvider>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      data-slot="lifecycle-action"
+                      disabled={lifecycleAction.disabled}
+                      onClick={runLifecycle}
+                    >
+                      {lifecycleAction.label}
+                    </Button>
+                  )
                 ) : null}
               </div>
             ) : null}

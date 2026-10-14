@@ -1,5 +1,17 @@
 # Changelog – Slivka Design System
 
+## 2.104.0 – Edit dokladu 13j (nevydáno)
+
+- Bez BREAKING: `RecordSaveAction` a `RecordPrimaryAction` (tedy i `DocumentSaveAction`,
+  `DocumentPrimaryAction`) mají nepovinný `disabledReason`. Zakázaná akce s důvodem v
+  RecordActionBar, primární akce GridAddActions a lifecycle akce RecordDialog už nejsou
+  nativně `disabled`: `aria-disabled`, `aria-describedby` s důvodem, klik/klepnutí/Enter/
+  mezerník akci nespustí a otevřou tooltip (`DisabledReasonTooltip`). Bez důvodu beze změny.
+- Položky nabídek s důvodem (sloučené „+ ▾“, další akce RecordActionBar, nabídka PageHeader)
+  ukazují důvod jako druhý tlumený řádek; tooltip u položek zrušen. Interní
+  `DisabledReasonMenuItem`.
+- Tužka účtu v DocumentIdentityLine ukáže důvod i klepnutím.
+
 ## 2.103.0 – Edit dokladu 13i (nevydáno)
 
 - Bez BREAKING: zablokovaná akce s důvodem otevře tooltip i klikem/klepnutím (dotyk);

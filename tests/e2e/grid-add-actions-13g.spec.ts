@@ -79,3 +79,35 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
   expect([...modes]).toEqual(["full", "short", "menu"]);
   await toolbar.screenshot({ path: "/tmp/13h/toolbar-boundary.png" });
 });
+
+test("13j: zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespustí", async ({
+  page,
+}) => {
+  await page.goto("/components/grid", { waitUntil: "networkidle" });
+  const reason = "Pokladna je uzavřená – výdej nelze přidat";
+  const wide = page.getByTestId("primary-actions-locked");
+  await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
+  const out = wide.locator("[data-toolbar-add]:visible").nth(1);
+  await expect(out).toHaveAttribute("aria-disabled", "true");
+  // Lišta se po vstupu do viewportu ještě přeměřuje; klik opakujeme, dokud se důvod neukáže.
+  await expect(async () => {
+    await out.click({ force: true });
+    await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached({
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 15000 });
+  await out.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");
+
+  const narrow = page.getByTestId("primary-actions-locked-menu");
+  await narrow.evaluate((node) => node.scrollIntoView({ block: "center" }));
+  const menu = narrow.locator('[data-slot="grid-add-menu"]');
+  await expect(menu).toBeVisible();
+  await menu.click();
+  const item = page.getByRole("menuitem", { name: /^Výdej/ });
+  await expect(item).toHaveAttribute("aria-disabled", "true");
+  await expect(item.locator('[data-slot="disabled-reason-text"]')).toHaveText(reason);
+  await item.click({ force: true });
+  await expect(page.getByTestId("primary-actions-last")).toHaveText("Poslední akce: –");
+});
