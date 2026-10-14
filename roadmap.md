@@ -1,4 +1,8 @@
-## DS 2.104.0 – Edit dokladu 13j (nevydáno)
+## DS 2.104.0 – Edit dokladu 13j–13k (nevydáno)
+
+- [ ] 13k: textové Uložit ve všech šířkách, číslo v identitě, odstranit poznámku.
+- [ ] 13k: základní údaje a nenulový rozdíl, zůstatky dle pohybů, vysvětlení kontroly CS/SK.
+- [ ] 13k: katalogy a migrace BREAKING; unit, lint, E2E Chromium, automatické kontroly.
 
 - [x] RecordActionBar, GridAddActions, RecordDialog lifecycle: zablokovaná akce s důvodem = aria-disabled + tooltip i klepnutím/Enter.
 - [x] Položky nabídek s důvodem: druhý řádek místo tooltipu (DisabledReasonMenuItem).
