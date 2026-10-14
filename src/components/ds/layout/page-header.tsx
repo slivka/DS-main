@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import {
   ArrowDown,
   ArrowLeft,
@@ -331,16 +332,16 @@ function PaneButtons({
             {pageActions.map((action) => {
               const Icon = action.icon;
               return (
-                <DropdownMenuItem
+                <DisabledReasonMenuItem
                   key={action.label}
                   disabled={action.disabled}
+                  disabledReason={action.disabledReason}
                   className={cn(action.destructive && "text-destructive focus:text-destructive")}
-                  title={action.disabledReason}
-                  onSelect={action.onClick}
+                  onSelect={() => action.onClick()}
                 >
                   {Icon ? <Icon className="size-4" /> : null}
                   {action.label}
-                </DropdownMenuItem>
+                </DisabledReasonMenuItem>
               );
             })}
             {pageActions.length ? <DropdownMenuSeparator /> : null}

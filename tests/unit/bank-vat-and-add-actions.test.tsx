@@ -129,7 +129,7 @@ test("GridAddActions zakázaná položka nabídky má důvod, fokus a neprovede 
     </GridToolbarOverflowContext.Provider>,
   );
   fireEvent.keyDown(view.getByRole("button", { name: "Nový – vyberte druh" }), { key: "Enter" });
-  const item = await view.findByRole("menuitem", { name: "Příjem" });
+  const item = await view.findByRole("menuitem", { name: /^Příjem/ });
   expect(item.getAttribute("aria-disabled")).toBe("true");
   item.focus();
   expect(document.activeElement).toBe(item);
