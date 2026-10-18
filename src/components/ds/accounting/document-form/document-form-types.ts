@@ -52,6 +52,12 @@ export type DocumentHeaderValue = {
   taxDocumentNumber?: string | null;
   /** Číslo daňového dokladu sleduje číslo dokladu; výchozí true. */
   taxDocumentNumberLinked?: boolean;
+  /**
+   * VS je svázaný s číslem daňového dokladu (FP/ZFP/DDPOZ/FV/ZFV/DDPZ). Zamčený VS DS jen
+   * zobrazuje jako náhled; aplikace ho do DB neposílá (variable_symbol_auto). Výchozí: svázáno,
+   * když je VS prázdný nebo shodný s odvozeným.
+   */
+  variableSymbolLinked?: boolean;
   /** Režim protiúčtu bankovního pohybu. */
   bankAccountKind?: "domestic" | "iban";
   /** Kód banky oddělený od českého čísla účtu. */

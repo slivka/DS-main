@@ -1,12 +1,10 @@
 /** Pole externího čísla a jeho vazba na variabilní symbol. */
-import { useEffect, useRef } from "react";
 import { Input } from "../../../ui/input";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
   DocumentHeaderValue,
 } from "./document-form-types";
-import { vsFromDocumentNumber } from "./document-form-types";
 interface Args {
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;
@@ -23,17 +21,21 @@ interface Args {
     required?: boolean,
     className?: string,
   ) => React.ReactNode;
+  /** Úprava změny při uvolnění vazby VS (use-variable-symbol-link). */
+  sourcePatch?: (next: Partial<DocumentHeaderValue>) => Partial<DocumentHeaderValue>;
 }
-/** Varování, že číslo dodavatele je pro VS příliš dlouhé (pole i pruh nad formulářem). */
+/**
+ * @deprecated 2.108.0 – varování patří jen do pole VS (use-variable-symbol-link);
+ * funkce vrací undefined. Odstraní se v nejbližší major verzi.
+ */
 export function externalNumberVsWarning(
-  value: DocumentHeaderValue,
-  receivedDocument: boolean,
-  t: DocumentFormTexts,
+  _value: DocumentHeaderValue,
+  _receivedDocument: boolean,
+  _t: DocumentFormTexts,
 ): string | undefined {
-  const digits = (value.externalNumber ?? "").replace(/\D/g, "");
-  return receivedDocument && digits.length > 10 ? t.documentNumberTooLongForVs : undefined;
+  return undefined;
 }
-/** Vykreslí externí číslo a udržuje automaticky odvozený VS. */
+/** Vykreslí externí číslo; VS jen jako náhled přes vazbu. */
 export function useExternalNumberField({
   value,
   patch,
@@ -43,37 +45,10 @@ export function useExternalNumberField({
   f,
   t,
   field,
+  sourcePatch,
 }: Args) {
-  const warning = externalNumberVsWarning(value, receivedDocument, t);
-  const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
-  const automaticVsRef = useRef<string | null>(
-    value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null,
-  );
-  // Při přepnutí na jiný doklad znovu odvodíme, zda je VS automatický.
-  useEffect(() => {
-    const suggested = vsFromDocumentNumber(value.externalNumber ?? "");
-    automaticVsRef.current =
-      suggested !== null && value.variableSymbol === suggested ? suggested : null;
-  }, [value.id, value.number]); // eslint-disable-line react-hooks/exhaustive-deps
-  const changeExternalNumber = (externalNumber: string) => {
-    const previousSuggested = vsFromDocumentNumber(value.externalNumber ?? "");
-    const nextSuggested = vsFromDocumentNumber(externalNumber);
-    const currentVs = value.variableSymbol ?? "";
-    const mayUpdateVs =
-      can("variableSymbol") &&
-      (!currentVs || currentVs === previousSuggested || currentVs === automaticVsRef.current);
-    const nextDigits = externalNumber.replace(/\D/g, "");
-    const canApplySuggestion = nextSuggested !== null || nextDigits.length === 0;
-    if (receivedDocument && mayUpdateVs && canApplySuggestion) {
-      automaticVsRef.current = nextSuggested;
-      const variableSymbol = nextSuggested ?? null;
-      if ((value.variableSymbol || null) !== variableSymbol) {
-        patch({ externalNumber, variableSymbol });
-        return;
-      }
-    }
-    patch({ externalNumber });
-  };
+  const changeExternalNumber = (externalNumber: string) =>
+    patch(sourcePatch ? sourcePatch({ externalNumber }) : { externalNumber });
   const externalNumberField = field(
     "document-externalNumber",
     receivedDocument
@@ -86,7 +61,6 @@ export function useExternalNumberField({
         value={value.externalNumber ?? ""}
         onChange={(event) => changeExternalNumber(event.target.value)}
         disabled={!can("externalNumber")}
-        warning={warning}
         className="h-[var(--control-h)] font-mono tabular-nums"
       />,
     6,
