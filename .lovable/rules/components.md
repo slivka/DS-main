@@ -2342,7 +2342,7 @@ Primární akce lišty gridu. Jedna akce: ikona + text od 640 px. Dvě a více: 
 
 _Dva směry pohybu_
 ```tsx
-<GridAddActions actions={[{ label: "Nový příjem", shortLabel: "Příjem", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: "Nový výdej", shortLabel: "Výdej", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: "Období je uzavřené" }]} />
+<GridAddActions actions={[{ label: "Nový příjem", shortLabel: "Příjem", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: "Nový výdaj", shortLabel: "Výdaj", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: "Období je uzavřené" }]} />
 ```
 
 **Avoid:**

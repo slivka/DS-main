@@ -4863,7 +4863,7 @@
       "examples": [
         {
           "label": "Dva směry pohybu",
-          "code": "<GridAddActions actions={[{ label: \"Nový příjem\", shortLabel: \"Příjem\", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: \"Nový výdej\", shortLabel: \"Výdej\", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: \"Období je uzavřené\" }]} />"
+          "code": "<GridAddActions actions={[{ label: \"Nový příjem\", shortLabel: \"Příjem\", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: \"Nový výdaj\", shortLabel: \"Výdaj\", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: \"Období je uzavřené\" }]} />"
         }
       ],
       "antipatterns": [
