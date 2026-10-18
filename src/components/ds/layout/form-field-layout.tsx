@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
+import { FieldFeedbackContext, FieldFeedbackIndicator } from "../form/field-feedback";
 
 const FIELD_SPAN_CLASSES = {
   1: "@min-[40rem]:col-span-1",
@@ -43,6 +44,8 @@ export interface FieldProps {
   hint?: ReactNode;
   /** Chyba pole; má přednost před nápovědou. */
   error?: ReactNode;
+  /** Varování uvnitř ovládání; nikdy pod polem. */
+  warning?: ReactNode;
   /** Šířka pole v mřížce; pod 40 rem zůstává pole přes celý řádek. */
   span?: keyof typeof FIELD_SPAN_CLASSES;
   /** Doplňující třídy obalu. */
@@ -63,6 +66,7 @@ export function Field({
   labelId,
   hint,
   error,
+  warning,
   span,
   className = "",
   children,
@@ -72,10 +76,13 @@ export function Field({
       data-slot="field"
       data-field-has-label={label ? "true" : "false"}
       data-invalid={error ? "true" : undefined}
+      data-warning={warning && !error ? "true" : undefined}
       className={`${label ? "flex min-w-0 flex-col gap-1" : ""} ${fieldSpanClass(span)} ${
         error
           ? "[&_.border-input]:border-destructive [&_input]:border-destructive [&_select]:border-destructive [&_textarea]:border-destructive"
-          : ""
+          : warning
+            ? "[&_.border-input]:border-warning [&_input]:border-warning"
+            : ""
       } ${className}`}
     >
       {label ? (
@@ -88,12 +95,13 @@ export function Field({
           {label}
         </Label>
       ) : null}
-      {children}
-      {error ? (
-        <p data-slot="field-error" role="alert" className="text-xs font-medium text-destructive">
-          {error}
-        </p>
-      ) : hint ? (
+      <FieldFeedbackContext.Provider value={{ error, warning }}>
+        <div className="relative min-w-0 ds-field-control">
+          {children}
+          <FieldFeedbackIndicator error={error} warning={warning} />
+        </div>
+      </FieldFeedbackContext.Provider>
+      {!error && !warning && hint ? (
         <p data-slot="field-hint" className="text-xs text-muted-foreground">
           {hint}
         </p>

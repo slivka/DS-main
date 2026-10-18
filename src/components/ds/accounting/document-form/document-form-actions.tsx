@@ -3,6 +3,7 @@
  * Vlastní: směr dokladu a kompatibilní veřejný DocumentActionBar.
  * Nesmí: ukládat data formuláře ani měnit pořadí akcí RecordActionBar.
  */
+import { useDsTexts } from "../../../../ds-texts";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Switch } from "../../../ui/switch";
 import { RecordActionBar } from "../../layout/record-action-bar";
@@ -19,13 +20,14 @@ import {
 
 export function DocumentDirectionBadge({
   direction,
-  inLabel = "Příjem",
-  outLabel = "Výdej",
+  inLabel,
+  outLabel,
 }: {
   direction: DocumentDirection;
   inLabel?: string;
   outLabel?: string;
 }) {
+  const ds = useDsTexts();
   const Icon = direction === "in" ? ArrowDownLeft : ArrowUpRight;
   return (
     <span
@@ -38,7 +40,7 @@ export function DocumentDirectionBadge({
       )}
     >
       <Icon className="size-3.5" aria-hidden="true" />
-      {direction === "in" ? inLabel : outLabel}
+      {direction === "in" ? inLabel ?? ds.documentEdit.income : outLabel ?? ds.documentEdit.expense}
     </span>
   );
 }

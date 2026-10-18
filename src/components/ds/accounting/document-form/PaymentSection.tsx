@@ -99,7 +99,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
           {symbolsDisabledReason}
         </span>
       ) : null}
-      <SectionHeading>{t.paymentSection}</SectionHeading>
+      {t.paymentSection ? <SectionHeading>{t.paymentSection}</SectionHeading> : null}
       <div
         data-slot="document-payment-section"
         // Pole se dělí o celou šířku podle počtu viditelných; při nedostatku místa

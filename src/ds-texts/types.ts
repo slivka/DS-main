@@ -24,6 +24,33 @@ import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 export type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Přístupné názvy číselného krokovače. */
+  stepper: { decrease: string; increase: string };
+  /** Názvy vytváření z hledatelných výběrů. */
+  selectCreate: { item: string; partner: string; dimension: string; unit: string };
+  /** Rychlé termíny splatnosti. */
+  dateQuick: { sevenDays: string; fourteenDays: string; oneMonth: string };
+  /** Specifické texty rozšířeného formuláře dokladu. */
+  documentEdit: {
+    taxNumber: string;
+    numberPending: string;
+    numberLink: string;
+    numberLinked: string;
+    numberUnlinked: string;
+    movementDate: string;
+    movementTitle: string;
+    counteraccountSection: string;
+    accountKind: string;
+    domesticAccount: string;
+    iban: string;
+    swift: string;
+    accountNumber: string;
+    accountPattern: string;
+    bankCode: string;
+    income: string;
+    expense: string;
+    unsavedMovements: string;
+  };
   /** Formulář bankovního výpisu. */
   bankStatement: BankStatementTexts;
   /** Přepínače uvnitř polí. */

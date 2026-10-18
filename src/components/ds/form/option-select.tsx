@@ -45,6 +45,9 @@ export function OptionSelect({
   searchPlaceholder,
   noResultsLabel,
   selectedLabel: renderSelectedLabel,
+  onCreate,
+  createLabel,
+  createDisabledReason,
 }: {
   value: string | null | undefined;
   onChange: (value: string) => void;
@@ -71,6 +74,12 @@ export function OptionSelect({
   noResultsLabel?: string;
   /** Určí zkrácený obsah vybrané hodnoty. */
   selectedLabel?: (option: SelectOption) => ReactNode;
+  /** Vytvoří položku z textu hledání. */
+  onCreate?: (searchText: string) => void;
+  /** Název akce vytvoření. */
+  createLabel?: string;
+  /** Důvod zakázání vytvoření. */
+  createDisabledReason?: string;
 }) {
   const texts = useDsTexts().optionSelect;
   const resolvedPlaceholder = placeholder ?? texts.emptyValue;
@@ -99,7 +108,8 @@ export function OptionSelect({
       <UnknownValue value={current} label={resolvedUnknownValueLabel} />
     );
   const offered = options.filter((option) => !option.inactive || option.value === current);
-  const useSearch = searchable === "auto" ? options.length >= 8 : Boolean(searchable);
+  const useSearch =
+    Boolean(onCreate) || (searchable === "auto" ? options.length >= 8 : Boolean(searchable));
 
   if (useSearch)
     return (
@@ -118,6 +128,9 @@ export function OptionSelect({
         searchPlaceholder={searchPlaceholder ?? texts.searchPlaceholder}
         noResultsLabel={noResultsLabel ?? texts.noResults}
         selectedLabel={renderSelectedLabel}
+        onCreate={onCreate}
+        createLabel={createLabel}
+        createDisabledReason={createDisabledReason}
       />
     );
 
@@ -154,7 +167,7 @@ export function OptionSelect({
           </span>
         </SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="ds-select-content">
         {allowEmpty ? <SelectItem value={EMPTY}>{emptyValueLabel}</SelectItem> : null}
         {!known && current !== "" ? (
           <SelectItem value={current} disabled>
@@ -169,7 +182,9 @@ export function OptionSelect({
             className={cn(o.muted && "text-muted-foreground")}
           >
             <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
-              <span className="truncate">{o.label}</span>
+              <span className="truncate" title={typeof o.label === "string" ? o.label : undefined}>
+                {o.label}
+              </span>
               {o.inactive ? (
                 <InactiveTag label={resolvedInactiveLabel} />
               ) : o.trailingLabel ? (

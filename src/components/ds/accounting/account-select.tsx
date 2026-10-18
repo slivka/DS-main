@@ -204,7 +204,7 @@ export function AccountSelect({
           </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[320px] p-0" align="start">
+      <PopoverContent className="ds-select-popover p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
             autoFocus
@@ -229,6 +229,7 @@ export function AccountSelect({
                   className={cn("gap-2", a.blocked && "opacity-50")}
                 >
                   <span
+                    title={formatCodeName(formatAccountCode(a.code), a.name)}
                     className={cn(
                       "min-w-0 flex-1 truncate font-mono tabular-nums",
                       (a.level === "class" || a.level === "group") && "font-semibold",

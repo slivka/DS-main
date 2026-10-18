@@ -10,7 +10,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Pruh akcí řadí hlavní krok `outline`, poté plné primární Uložit a nakonec nabídku dalších akcí.
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
-- FV/ZFV začínají polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
+- FV/ZFV začínají způsobem platby a potom polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.
 - Protistrana používá řízený ikonový přepínač Vybraný/Ručně. DS při změně režimu data nemaže; při návratu k adresáři potvrzuje nahrazení ručních údajů.
 - Přijatý doklad má účet v Základních údajích pod Dodavatelem vlevo; číslo dokladu je pod IČO + DIČ vpravo. DOM a Tab pořadí: Dodavatel → IČO → DIČ → případně Předal/Převzal → účet → číslo dokladu → Popis; pod 40rem stejná posloupnost pod sebou. Přepínač platebního příkazu je uvnitř pole; vypnutí ponechá KS a SS viditelné, prázdné a zakázané s důvodem v tooltipu.
 - VS je vždy zarovnaný vlevo a používá tabulkové číslice; gridy skládají sloupec přes `vsColumn()`.
@@ -64,7 +64,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
     a panelů vždy skládej přes `SectionHeading`. Nadpisy stránek v `PageHeader`
     a záhlaví gridů zůstávají bez verzálek.
 14. **Směr peněžního pohybu má vlastní významové tóny.** Jemná zelená a červená
-    plocha je povolená pro Příjem a Výdej. Plná červená zůstává vyhrazená pro
+    plocha je povolená pro Příjem a Výdaj. Plná červená zůstává vyhrazená pro
     chyby, Odstranit a záporné částky.
 15. **Panel vždy vysvětluje rozsah pohledu.** Administrace napříč pracovními
     prostory má vždy štítek provozovatele v tónu `accent`. Nastavení prostoru
@@ -174,7 +174,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - FV/ZFV začínají Způsobem platby (6) vlevo a Uhradit na bankovní účet (14) vpravo. Pod 40rem jsou pod sebou; bez paymentMethodOptions zůstává účet přes celou šířku. Způsob platby není v Platebních údajích podruhé. FP/ZFP/DDPOZ mají v Základních údajích Dodavatele 14 + IČO 3 + DIČ 3, pod nimi účet 14 + Způsob platby 6 (DDPOZ bez způsobu), pod nimi Popis 14 + číslo dodavatele/daňového dokladu 6. Pod 40rem vše pod sebou ve stejném DOM/Tab pořadí. Způsob platby se v Platebních údajích neopakuje. Zamčený účet má důvod uvnitř šedého pole, bez zámku; receivedAccountDisabledReason má přednost a zakáže vypnutý příkaz, KS/SS ponechá viditelné, prázdné a zakázané se stejným důvodem, hodnoty nemaže. DDPZ účet ponechává v Platebních údajích. Ostatní sekce řaďte Základní údaje → Datumy → Platební údaje → Částka → záložky.
 - Formulář, editor řádků a rekapitulace používají jedinou typografickou stupnici v `rem`, aby reagovaly na osobní nastavení `html font-size`.
 - Sekce Základní údaje, Data, Částka, Platební údaje, Řádky a Rekapitulace používají `SectionHeading`; jedna sekce Řádky nemá lištu záložek.
-- Obsah pole se nesmí useknout. Jednotka a zdroj kurzu jsou v tooltipu pole kurzu. Jednotky a pomocné vysvětlení ostatních polí patří pod pole. Pod polem kurzu je jen chyba; tooltip je dostupný myší, fokusem a aria-describedby. Ruční kurz a sourceAttention mají tlumenou ikonu vlevo.
+- Obsah pole se nesmí useknout. Jednotka a zdroj kurzu jsou v tooltipu pole kurzu. Jednotky a pomocné vysvětlení ostatních polí patří pod pole. Chyby a varování jsou pouze uvnitř pole před akcemi jako výstražná ikona s barevným rámečkem a úplným tooltipem; stejný text také ve společném pruhu nad formulářem. Nikdy text pod polem; tooltip je dostupný myší, fokusem a aria-describedby. Ruční kurz a sourceAttention mají tlumenou ikonu vlevo.
 - Sbalitelné panely mají šipku vpravo a celý nadpis je klikací. Trvalý stav spravuje aplikace přes řízené props, nikoli komponenta přes `localStorage`.
 - Data DPH (`DUZP`, `Datum DPH`) navazují ve společném pružném řádku za ostatními daty; svázané datum se zobrazuje se zámkem místo kalendáře.
 
@@ -458,7 +458,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
 - Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zkontrolovaný či zaúčtovaný výpis je jen ke čtení; položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
 
-- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Uložit je vždy primární tlačítko s ikonou a textem „Uložit" ve všech šířkách, nikdy jen ikona; busy ukazuje spinner a text. Kompaktní režim krátí jen sekundární akce.
+- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Akce jsou standardně jen textové bez ikon. RecordActionBar měří dostupnou šířku: nejprve vedlejší akce na ikony, nakonec Uložit na ikonu. Uložit zůstává primární, bez změn zašedlé; vždy přístupný název a tooltip, při busy spinner.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
 
@@ -466,3 +466,8 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Úzké FieldGrid skládají všechny děti pod sebe. Field zachovává velikost písma; dlouhý popisek zkrátí výpustkou a celý text dá do title. Kompaktní data obou formulářů měří společný useCompactDateGeometry.
 
 - Výpis nemá poznámku; číslo patří do IdentityLine.numberContent, zamčené do FieldValue s důvodem. Základní údaje: datum, nepovinný Zůstatek dle banky, pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty; vysvětlení kontroly je z DsTexts a dostupné i klepnutím.
+
+- Výstrahy Field/Input/DateField/RateField a výběrů nesmějí změnit výšku řádku. Používejte error/warning a společný pruh DocumentForm.error/notices.
+- Počet kopií je StepperInput min=1 max=5. Splatnost používá DateField.baseDate a quickOptions; +14 posouvá základ o 14 dní, měsíc je kalendářní.
+- Přidání patří jako + do pravého okraje hledání a předává aktuální dotaz; bez práva DisabledReasonTooltip. Nabídky se nezalamují, rostou do dostupné šířky a nejvýše 36 rem.
+- Výpis nemá viditelný stavový štítek; isNew zobrazí prázdné pohyby a onSaveThenAdd(direction). Peněžní směr je Výdaj, nadpis BA Bankovní pohyb.

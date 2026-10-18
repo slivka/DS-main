@@ -81,6 +81,8 @@ function StatementExample({ scenario }: { scenario: string }) {
             }
           : undefined
       }
+      isNew={scenario === "empty"}
+      onSaveThenAdd={() => { setDirty(false); setValue({ ...value, number: "2026/011" }); }}
       hasItems={scenario === "items"}
       busy={scenario === "busy"}
       dirty={dirty}

@@ -1,5 +1,9 @@
 /** Formulář dokladu · vlastní skládání sekcí · nesmí ukládat data aplikace. */
+import { DocumentSections } from "./document-sections";
 import { useState } from "react";
+import { useDocumentDateLinks } from "./use-document-date-links";
+import { documentValidationFeedback } from "./document-validation-feedback";
+import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar } from "../../layout/record-action-bar";
@@ -26,10 +30,6 @@ import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
-import { DocumentDatesSection } from "./DatesSection";
-import { DocumentBasicSection } from "./BasicSection";
-import { DocumentAmountSection } from "./AmountSection";
-import { DocumentPaymentSection } from "./PaymentSection";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
 import { DocumentVatActionStatus } from "./document-vat-action-status";
@@ -86,6 +86,11 @@ export function DocumentForm({
   handedOverBySuggest,
   descriptionSuggest,
   accountingDateLink,
+  accountingDateLinked = true,
+  onAccountingDateLinkedChange,
+  taxDocumentNumberWarning,
+  fieldErrors,
+  fieldWarnings,
   dateWarnings,
   vat,
   vatRateField,
@@ -114,7 +119,26 @@ export function DocumentForm({
 }: DocumentFormProps) {
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
-  const f = { ...documentFieldsForType(documentType), ...fields };
+  const code = documentType.toUpperCase();
+  const bankMovement = code === "BA";
+  const internal = code === "ID";
+  const f = {
+    ...documentFieldsForType(documentType),
+    ...fields,
+    ...(internal ? { partner: true, taxDate: true } : {}),
+  };
+  const {
+    patch,
+    effectiveValue,
+    link: effectiveAccountingLink,
+  } = useDocumentDateLinks({
+    code,
+    value,
+    onChange,
+    accountingDateLink,
+    accountingDateLinked,
+    onAccountingDateLinkedChange,
+  });
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
   const setTab = (next: string) => {
@@ -122,7 +146,6 @@ export function DocumentForm({
     onActiveDetailTabChange?.(next);
   };
   const formRef = useDocumentFormStickyTop();
-  const patch = (values: Partial<DocumentHeaderValue>) => onChange({ ...value, ...values });
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
   const {
@@ -176,11 +199,13 @@ export function DocumentForm({
   );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
   const { field, date, suggestedText } = useDocumentFieldRenderers({
-    value,
+    value: effectiveValue,
     patch,
     can,
     dateWarnings,
-    accountingDateLink,
+    accountingDateLink: effectiveAccountingLink,
+    fieldErrors,
+    fieldWarnings,
   });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
@@ -200,6 +225,33 @@ export function DocumentForm({
     notices,
     bankAccountOptions,
     t,
+  });
+  const showTaxNumber =
+    ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
+  const taxNumberField = showTaxNumber
+    ? field(
+        "document-taxDocumentNumber",
+        dsTexts.documentEdit.taxNumber,
+        <TaxDocumentNumberField
+          value={value}
+          patch={patch}
+          warning={taxDocumentNumberWarning}
+          disabled={!can("taxDocumentNumber")}
+        />,
+        6,
+      )
+    : null;
+  const { error: effectiveError, notices: validationNotices } = documentValidationFeedback({
+    value,
+    foreign,
+    vatRateField,
+    t,
+    notices: combinedNotices,
+    error,
+    fieldErrors,
+    fieldWarnings,
+    taxDocumentNumberWarning,
+    icoWarning,
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
@@ -320,7 +372,7 @@ export function DocumentForm({
         }}
       >
         <PageHeader
-          title={title}
+          title={bankMovement ? dsTexts.documentEdit.movementTitle : title}
           titleBadge={
             <span
               data-slot="document-title-badges"
@@ -346,8 +398,8 @@ export function DocumentForm({
           saveAction={saveAction}
           primaryAction={primaryAction}
           moreActions={actionMenu}
-          error={error}
-          notices={combinedNotices}
+          error={effectiveError}
+          notices={validationNotices}
           saveLabel={dsTexts.common.save}
           moreActionsLabel={dsTexts.recordAction.moreActions}
           errorTitle={t.errorTitle}
@@ -387,99 +439,97 @@ export function DocumentForm({
             onAccountClose={closeIdentityAccount}
             accountOptions={allowedMainAccounts}
           />
-          {companyAccountField ? (
-            <div
-              data-slot="company-bank-account-above"
-              className="grid grid-cols-1 gap-3 @min-[40rem]:grid-cols-20"
-            >
-              {companyAccountField}
-            </div>
-          ) : null}
-          {f.partner ? (
-            <DocumentBasicSection
-              f={f}
-              t={t}
-              value={value}
-              patch={patch}
-              partner={partner}
-              partners={partners}
-              partnerLabel={texts?.partner ?? partnerLabelForType(documentType, value.direction)}
-              counterpartyIco={counterpartyIco}
-              counterpartyDic={counterpartyDic}
-              linkedPartner={Boolean(value.partnerId)}
-              icoWarning={icoWarning}
-              icoLinkTarget={icoLinkTarget}
-              can={can}
-              onCreatePartner={onCreatePartner}
-              onEditCounterparty={onEditCounterparty}
-              readOnly={readOnly}
-              field={field}
-              suggestedText={suggestedText}
-              handedOverBySuggest={handedOverBySuggest}
-              descriptionSuggest={descriptionSuggest}
-              externalNumberField={externalNumberField}
-              receivedDocument={receivedDocument}
-              bankAccountField={bankAccountField}
-              paymentMethodOptions={
-                receivedDocument && documentType.toUpperCase() !== "DDPOZ"
-                  ? paymentMethodOptions
-                  : undefined
-              }
-              paymentMethodLabel={t.paymentMethod}
-              counterpartyInput={counterpartyInput}
-              onCounterpartyInputChange={onCounterpartyInputChange}
-              counterpartyInputLockedReason={counterpartyInputLockedReason}
-            />
-          ) : null}
-          <DocumentDatesSection
-            t={t}
-            f={f}
-            showVatFields={showVatFields}
-            vat={vat}
-            filedVatDateWarning={filedVatDateWarning}
-            dateWarnings={dateWarnings}
-            date={date}
-          />
-          {!f.partner ? (
-            <div className="mt-3 grid grid-cols-20 gap-3">
-              {suggestedText("description", t.description, descriptionSuggest, 20)}
-            </div>
-          ) : null}
-          <DocumentPaymentSection
-            f={f}
-            t={t}
-            value={value}
-            patch={patch}
-            can={can}
-            issuedDocument={issuedDocument}
-            receivedDocument={receivedDocument}
-            issuedBankAccountAbove={issuedBankAccountAbove}
-            symbolsDisabledReason={symbolsDisabledReason}
-            constantSymbolOptions={constantSymbolOptions}
-            paymentMethodOptions={
-              companyAccountField || receivedDocument ? undefined : paymentMethodOptions
+          <DocumentSections
+            companyAccountField={companyAccountField}
+            basic={
+              f.partner
+                ? {
+                    f,
+                    t,
+                    value,
+                    patch,
+                    partner,
+                    partners,
+                    partnerLabel:
+                      texts?.partner ?? partnerLabelForType(documentType, value.direction),
+                    counterpartyIco,
+                    counterpartyDic,
+                    linkedPartner: Boolean(value.partnerId),
+                    icoWarning,
+                    icoLinkTarget,
+                    can,
+                    onCreatePartner,
+                    onEditCounterparty,
+                    readOnly,
+                    field,
+                    suggestedText,
+                    handedOverBySuggest,
+                    descriptionSuggest,
+                    externalNumberField,
+                    receivedDocument,
+                    bankAccountField,
+                    paymentMethodOptions:
+                      receivedDocument && code !== "DDPOZ" ? paymentMethodOptions : undefined,
+                    paymentMethodLabel: t.paymentMethod,
+                    counterpartyInput,
+                    onCounterpartyInputChange,
+                    taxNumberField,
+                    internal,
+                    counterpartyInputLockedReason,
+                  }
+                : undefined
             }
-            companyBankAccountOptions={companyBankAccountOptions}
-            bankAccountField={bankAccountField}
-            field={field}
-          />
-          <DocumentAmountSection
-            t={t}
-            value={value}
-            patch={patch}
-            can={can}
-            foreign={foreign}
-            total={total}
-            totalMode={totalMode}
-            forcedSum={forcedSum}
-            currencySymbol={currencySymbol}
-            homeCurrency={homeCurrency}
-            homeCurrencySymbol={homeCurrencySymbol}
-            rateAmount={rateAmount}
-            vatRateField={vatRateField}
-            readOnly={readOnly}
-            currencyControl={currencyControl}
-            field={field}
+            dates={{
+              t: bankMovement ? { ...t, accountingDate: dsTexts.documentEdit.movementDate } : t,
+              bankMovement,
+              f,
+              showVatFields,
+              vat,
+              filedVatDateWarning,
+              dateWarnings,
+              date,
+            }}
+            description={
+              !f.partner
+                ? suggestedText("description", t.description, descriptionSuggest, 20)
+                : undefined
+            }
+            bank={bankMovement ? { value, patch, bankCodes, disabled: readOnly } : undefined}
+            payment={{
+              f: bankMovement ? { ...f, bankAccount: false } : f,
+              t: bankMovement ? { ...t, paymentSection: "" } : t,
+              value,
+              patch,
+              can,
+              issuedDocument,
+              receivedDocument,
+              issuedBankAccountAbove,
+              symbolsDisabledReason,
+              constantSymbolOptions,
+              paymentMethodOptions:
+                companyAccountField || receivedDocument ? undefined : paymentMethodOptions,
+              companyBankAccountOptions,
+              bankAccountField,
+              field,
+            }}
+            amount={{
+              t,
+              value,
+              patch,
+              can,
+              foreign,
+              total,
+              totalMode,
+              forcedSum,
+              currencySymbol,
+              homeCurrency,
+              homeCurrencySymbol,
+              rateAmount,
+              vatRateField,
+              readOnly,
+              currencyControl,
+              field,
+            }}
           />
         </section>
         <DocumentFormTabs

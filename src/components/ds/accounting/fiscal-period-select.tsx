@@ -50,12 +50,12 @@ export function FiscalPeriodSelect({
   return (
     <Select value={value ?? undefined} onValueChange={onChange}>
       <SelectTrigger
-        className={cn("grid-toolbar-control h-[var(--control-h)] w-[260px]", className)}
+        className={cn("grid-toolbar-control h-[var(--control-h)] w-[16.25rem]", className)}
         aria-label={label}
       >
         <SelectValue placeholder={label} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="ds-select-content">
         {periods.map((p) => (
           <SelectItem key={p.id} value={p.id} disabled={disableClosed && p.state === "closed"}>
             <span className="flex w-full items-center gap-2">

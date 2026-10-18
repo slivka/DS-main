@@ -31,3 +31,5 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Resolve pane-sticky headers centrally in ZoomGrid; overflow fallback disables pane stickiness. Why: an inner scroll container must not offset its first row by the outer action bar.
 - Two or more grid primary actions collapse full label → shortLabel → one "+ ▾" menu (level 3) inside GridAddActions; never identical icon-only buttons. Why: actions stay distinguishable in narrow panes.
 - BankStatement/cash BA shows DUZP like PO when VAT fields are visible; date lock/link and defaults stay app-controlled via vat.dateLink. Why: the DS must not render a VAT date bound to a missing DUZP.
+
+- Errors and warnings use shared in-control indicators with borders and full tooltips, never text below fields; DocumentForm repeats messages above the form. Why: validation must not change row height.

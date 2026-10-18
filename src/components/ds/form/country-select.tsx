@@ -180,7 +180,7 @@ export function CountrySelect({
           <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+      <PopoverContent className="ds-select-popover p-0" align="start">
         {/* Filtrování si řídíme sami (diakritika + ISO kódy), proto shouldFilter=false. */}
         <Command shouldFilter={false}>
           <CommandInput

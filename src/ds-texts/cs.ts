@@ -12,6 +12,34 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  stepper: { decrease: "Snížit", increase: "Zvýšit" },
+  selectCreate: {
+    item: "Nový záznam",
+    partner: "Nový partner",
+    dimension: "Nová zakázka",
+    unit: "Nová měrná jednotka",
+  },
+  dateQuick: { sevenDays: "+7 dní", fourteenDays: "+14 dní", oneMonth: "+1 měsíc" },
+  documentEdit: {
+    taxNumber: "Číslo daňového dokladu",
+    numberPending: "přidělí se při zařazení",
+    numberLink: "Svázat s číslem dokladu",
+    numberLinked: "Číslo dokladu",
+    numberUnlinked: "Vlastní číslo daňového dokladu",
+    movementDate: "Datum pohybu",
+    movementTitle: "Bankovní pohyb",
+    counteraccountSection: "PROTIÚČET A SYMBOLY",
+    accountKind: "Druh účtu",
+    domesticAccount: "Český účet",
+    iban: "IBAN",
+    swift: "SWIFT",
+    accountNumber: "Číslo účtu",
+    accountPattern: "předčíslí-číslo",
+    bankCode: "Kód banky",
+    income: "Příjem",
+    expense: "Výdaj",
+    unsavedMovements: "Pohyby lze zadat po uložení výpisu",
+  },
   bankStatement: BANK_STATEMENT_CS,
   fieldToggle: {
     locked: "Pole je jen pro čtení",
@@ -24,7 +52,7 @@ export const DS_TEXTS_CS: DsTexts = {
     suggestPressed: "Našeptávač z předchozích dokladů – zapnuto",
     suggestUnpressed: "Našeptávač z předchozích dokladů – vypnuto",
     sum: "Sčítat z rozpisu",
-    sumPressed: "Sčítá se z rozpisu – kliknutím zadat částku",
+    sumPressed: "Sčítá částky z rozpisu",
     sumUnpressed: "Částka zadána ručně – kliknutím sčítat z rozpisu",
     sumLocked: "Součet z rozpisu je povinný",
     dateLink: "Svázat s datem vystavení",

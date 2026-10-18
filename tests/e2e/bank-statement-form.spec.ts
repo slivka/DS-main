@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 for (const width of [960, 360]) {
   test(`BankStatementForm ${width}: číslo, rozdíl, Uložit a kontrola`, async ({ page }, info) => {
     await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
     await page.evaluate(async () => {
       const path = "/src/lib/app-zoom.ts";
       const module = await import(/* @vite-ignore */ path);
@@ -21,7 +22,7 @@ for (const width of [960, 360]) {
     const form = panels.locator('[data-slot="bank-statement-form"]').first();
     const save = form.getByRole("button", { name: "Uložit", exact: true });
     await expect(save.getByText("Uložit", { exact: true })).toBeVisible();
-    await expect(save.locator(".lucide-save")).toBeVisible();
+    await expect(save.locator(".lucide-save")).toHaveCount(0);
     await expect(save).toBeDisabled();
     const identity = form.locator('[data-slot="bank-statement-identity"]');
     await identity.getByRole("textbox", { name: "Číslo výpisu" }).fill("2026/011");
@@ -65,7 +66,7 @@ for (const width of [960, 360]) {
     await save.click();
     await expect(save).toBeDisabled();
     await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
-    await expect(form.getByText("Zkontrolovaný", { exact: true })).toBeVisible();
+    await expect(form.getByText("Zkontrolovaný", { exact: true })).toHaveCount(0);
     await expect(save).toHaveAttribute("aria-disabled", "true");
     await save.focus();
     await save.press("Enter");
@@ -117,7 +118,7 @@ test("BankStatementForm dotyk ukáže vysvětlení kontroly a zámku", async ({ 
   await expect(
     page.getByRole("tooltip").filter({ hasText: "Potvrdí, že výpis souhlasí" }).first(),
   ).toBeVisible();
-  await expect(form.getByText("Zkontrolovaný", { exact: true })).toBeVisible();
+  await expect(form.getByText("Zkontrolovaný", { exact: true })).toHaveCount(0);
   await context.close();
 });
 
@@ -126,6 +127,7 @@ for (const width of [960, 360]) {
     page,
   }, info) => {
     await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
     await page.evaluate(async () => {
       const path = "/src/lib/app-zoom.ts";
       const module = await import(/* @vite-ignore */ path);

@@ -62,5 +62,8 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
 - Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
 
-- Keep Save as the primary icon + visible text in the shared RecordActionBar at every width, never icon-only; only secondary actions compact. Why: all forms inherit the same readable save action.
+- Measure form action widths centrally: text-only → secondary icons → Save icon; retain accessible names and tooltips. Why: every form inherits the same overflow cascade.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
+
+- Keep field feedback in shared in-control indicators and duplicate full messages in form banners; never below fields. Why: validation cannot change row geometry.
+- Compose document sections separately and apply date links through a focused hook and pure helper. Why: orchestration stays readable and date logic is testable.

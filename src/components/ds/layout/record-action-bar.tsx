@@ -1,12 +1,5 @@
 /** Lišta akcí · vlastní společné ukládání a stavy · nesmí ukládat aplikační data. */
-import {
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { useEffect, useId, useRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -30,6 +23,7 @@ import { useDsTexts } from "../../../ds-texts";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { cn } from "../../../lib/utils";
+import { useRecordActionWidth } from "./use-record-action-width";
 
 export interface RecordSaveAction {
   onSave: () => void;
@@ -48,6 +42,8 @@ export interface RecordPrimaryAction {
   icon?: LucideIcon;
   /** Důvod zakázání; akce zůstane fokusovatelná (aria-disabled) a klik/klepnutí ukáže důvod. */
   disabledReason?: string;
+  /** Vysvětlení povolené akce, dostupné také krátce po dotyku. */
+  tooltip?: string;
 }
 
 export interface RecordMoreAction {
@@ -95,6 +91,7 @@ function CompactActionButton({
   busy,
   compact,
   reason,
+  tooltip,
   children,
   ...props
 }: {
@@ -104,6 +101,7 @@ function CompactActionButton({
   compact: boolean;
   /** Důvod zablokování: místo nativního disabled aria-disabled + tooltip i klepnutím. */
   reason?: string;
+  tooltip?: string;
 } & ComponentPropsWithoutRef<typeof Button>) {
   const reasonId = useId();
   const blocked = Boolean(reason);
@@ -124,7 +122,7 @@ function CompactActionButton({
       aria-label={label}
       className={cn(compact && "size-9 px-0", blocked && "cursor-not-allowed", props.className)}
     >
-      {busy ? <Loader2 className="animate-spin" /> : Icon ? <Icon /> : null}
+      {busy ? <Loader2 className="animate-spin" /> : compact && Icon ? <Icon /> : null}
       <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
       {children}
     </Button>
@@ -139,6 +137,12 @@ function CompactActionButton({
           {reason}
         </span>
       </>
+    );
+  if (tooltip)
+    return (
+      <DisabledReasonTooltip content={tooltip} blocked={false} openOnTouch>
+        {button}
+      </DisabledReasonTooltip>
     );
   return (
     <Tooltip>
@@ -167,24 +171,18 @@ export function RecordActionBar({
   noticesDataSlot = "record-action-notices",
 }: RecordActionBarProps) {
   const dsTexts = useDsTexts();
-  const barRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
-  const [compact, setCompact] = useState(false);
   const saveText = saveLabel ?? dsTexts.common.save;
   const moreText = moreActionsLabel ?? dsTexts.recordAction.moreActions;
   const fallbackErrorTitle = errorTitle ?? dsTexts.recordAction.errorTitle;
   const closeText = closeErrorLabel ?? dsTexts.recordAction.closeError;
   const PrimaryIcon = primaryAction?.icon ?? CheckCircle2;
-
-  useEffect(() => {
-    const node = barRef.current;
-    if (!node) return;
-    const update = () => setCompact(node.getBoundingClientRect().width < 640);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  const { barRef, leftRef, measureRef, level } = useRecordActionWidth(
+    [saveText, primaryAction?.label, moreText, Boolean(saveAction), moreActions.length, busy].join(
+      "|",
+    ),
+  );
+  const compact = level > 0;
 
   useEffect(() => {
     if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -198,14 +196,14 @@ export function RecordActionBar({
         ref={barRef}
         data-slot={dataSlot}
         data-compact={compact || undefined}
+        data-overflow-level={level}
         aria-busy={allBusy || undefined}
         className={cn(
           "sticky top-0 z-30 -mx-1 flex min-h-12 items-center justify-between gap-3 bg-card/95 px-1 py-1.5 backdrop-blur supports-[backdrop-filter]:bg-card/90",
-          compact && "flex-wrap",
           className,
         )}
       >
-        <div className="min-w-0 [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:max-w-full [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:whitespace-normal [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:h-auto [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:min-h-[var(--control-h)] [&_[data-slot=button]:not([role=switch]):not([role=checkbox])]:py-2">
+        <div ref={leftRef} className="min-w-0 shrink [&_[data-slot=button]]:whitespace-nowrap">
           {leftContent}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
@@ -223,13 +221,14 @@ export function RecordActionBar({
                   : undefined
               }
               onClick={primaryAction.onClick}
+              tooltip={primaryAction.tooltip}
             />
           ) : null}
           {saveAction ? (
             <CompactActionButton
               label={saveText}
               icon={Save}
-              compact={false}
+              compact={level === 2}
               variant="default"
               busy={busy || saveAction.busy}
               disabled={
@@ -258,6 +257,7 @@ export function RecordActionBar({
                   variant="ghost"
                   size="icon"
                   aria-label={moreText}
+                  title={moreText}
                   disabled={busy}
                 >
                   <MoreHorizontal />
@@ -302,6 +302,36 @@ export function RecordActionBar({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}
+        </div>
+        <div
+          ref={measureRef}
+          aria-hidden="true"
+          className="pointer-events-none fixed invisible left-0 top-0 -z-10 w-max"
+        >
+          {[0, 1, 2].map((stage) => (
+            <div key={stage} className="flex w-max items-center gap-2">
+              {primaryAction ? (
+                <Button
+                  tabIndex={-1}
+                  variant="outline"
+                  className={stage > 0 ? "size-9 px-0" : undefined}
+                >
+                  {stage > 0 ? <PrimaryIcon /> : primaryAction.label}
+                </Button>
+              ) : null}
+              {saveAction ? (
+                <Button tabIndex={-1} className={stage === 2 ? "size-9 px-0" : undefined}>
+                  {stage === 2 ? <Save /> : saveText}
+                  {saveAction.dirty ? <span className="size-1.5" /> : null}
+                </Button>
+              ) : null}
+              {moreActions.length ? (
+                <Button tabIndex={-1} variant="ghost" size="icon">
+                  <MoreHorizontal />
+                </Button>
+              ) : null}
+            </div>
+          ))}
         </div>
       </div>
       {error ? (

@@ -80,14 +80,14 @@ describe("DocumentForm 2.31.0", () => {
     );
     expect(actionBar).not.toContain("document-direction-badge");
     expect(html).toContain("document-direction-badge");
-    expect(html).toContain("Výdej");
+    expect(html).toContain("Výdaj");
   });
   it("vykreslí badge obou směrů", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
     expect(incoming).toContain("h-[1.625rem]");
     expect(incoming).toContain("text-sm");
-    expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdej");
+    expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdaj");
   });
   it("má badge směru i stavu stejnou výšku", () => {
     const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);

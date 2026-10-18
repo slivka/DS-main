@@ -116,7 +116,7 @@ export function CategorySelect({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0"
+        className="ds-select-popover p-0"
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => {
           // Ruční posun – v modálním dialogu sa kolečko myši může zablokovat,

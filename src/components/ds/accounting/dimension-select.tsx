@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, ChevronRight } from "lucide-react";
+import { SelectSearchAction } from "../form/select-search-action";
 import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
@@ -38,6 +39,9 @@ export function DimensionSelect({
   options: allOptions,
   value,
   onChange,
+  onCreate,
+  createLabel,
+  createDisabledReason,
   placeholder = "Vyberte zakázku",
   searchPlaceholder = "Hledat zakázku…",
   emptyText = "Žádná zakázka nenalezena",
@@ -59,6 +63,12 @@ export function DimensionSelect({
   inactiveLabel?: string;
   value: string | null | undefined;
   onChange: (id: string) => void;
+  /** Založí položku z textu hledání. */
+  onCreate?: (searchText: string) => void;
+  /** Název přidání. */
+  createLabel?: string;
+  /** Důvod chybějícího práva. */
+  createDisabledReason?: string;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
@@ -145,7 +155,7 @@ export function DimensionSelect({
           changeOpen(false);
         }}
         className={cn("flex items-center gap-1", blocked && "opacity-50")}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
+        style={{ paddingLeft: `${level + 0.5}rem` }}
       >
         {children.length ? (
           <div
@@ -160,9 +170,11 @@ export function DimensionSelect({
         ) : (
           <span className="size-5 shrink-0" />
         )}
-        <span className="min-w-0 flex-1 truncate">{label(option)}</span>
+        <span className="min-w-0 flex-1 truncate" title={label(option)}>
+          {label(option)}
+        </span>
         {blocked ? (
-          <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground">
+          <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
             {option.reason ?? defaultReason}
           </span>
         ) : null}
@@ -236,16 +248,25 @@ export function DimensionSelect({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] min-w-[320px] p-0"
-          align="start"
-        >
+        <PopoverContent className="ds-select-popover p-0" align="start">
           <Command loop>
             <CommandInput
               placeholder={searchPlaceholder}
               value={query}
               onValueChange={setQuery}
               onKeyDown={onKeyDown}
+              trailingAction={
+                onCreate ? (
+                  <SelectSearchAction
+                    label={createLabel ?? dsTexts.selectCreate.dimension}
+                    disabledReason={createDisabledReason}
+                    onCreate={() => {
+                      onCreate(query);
+                      changeOpen(false);
+                    }}
+                  />
+                ) : undefined
+              }
             />
             <CommandList>
               <CommandEmpty>{emptyText}</CommandEmpty>

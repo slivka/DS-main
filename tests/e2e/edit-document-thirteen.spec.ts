@@ -106,7 +106,7 @@ test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstra
   await expect(form.getByRole("button", { name: /^(Uložit|Uložiť)$/ })).toBeDisabled();
   await expect(difference).toHaveCount(0);
   await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
-  await expect(form.getByText("Zkontrolovaný", { exact: true })).toBeVisible();
+  await expect(form.getByText("Zkontrolovaný", { exact: true })).toHaveCount(0);
   await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
   await form.getByRole("button", { name: "Zrušit kontrolu", exact: true }).click();
   await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toBeVisible();
@@ -162,18 +162,10 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           )
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
-        await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
-        await expect(actions.locator(".lucide-save")).toBeVisible();
-        await expect
-          .poll(() =>
-            form.locator('[data-slot="record-action-bar"]').evaluate((bar) => {
-              const save = bar.querySelector(
-                'button[aria-label="Uložit"],button[aria-label="Uložiť"]',
-              );
-              return save?.querySelector("span")?.classList.contains("sr-only") === false;
-            }),
-          )
-          .toBe(true);
+        await expect(actions).toBeVisible();
+        const compactSave = Number(await form.locator('[data-slot="record-action-bar"]').getAttribute("data-overflow-level")) === 2;
+        if (compactSave) await expect(actions.locator(".lucide-save")).toBeVisible();
+        else { await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(actions.locator(".lucide-save")).toHaveCount(0); }
         await expect(actions).toHaveAttribute("aria-label", /^(Uložit|Uložiť)$/);
         const actionGap = await form.evaluate((node) => {
           const bar = node.querySelector('[data-slot="record-action-bar"]');
@@ -250,8 +242,9 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
         .locator('[data-slot="record-action-bar"],[data-slot="document-action-bar"]')
         .first();
       const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
-      await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
-      await expect(save.locator(".lucide-save")).toBeVisible();
+      await expect(save).toBeVisible();
+      if (Number(await bar.getAttribute("data-overflow-level")) === 2) await expect(save.locator(".lucide-save")).toBeVisible();
+      else { await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(save.locator(".lucide-save")).toHaveCount(0); }
     }
   }
   await page

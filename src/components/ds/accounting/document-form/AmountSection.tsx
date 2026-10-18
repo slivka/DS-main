@@ -148,19 +148,13 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                           note: null,
                         })
                       }
+                      error={
+                        !vatRateField.manual && vatRateField.suggestedRate == null && !readOnly
+                          ? t.vatRateMissing
+                          : undefined
+                      }
                       className="w-full"
                     />
-                    {!vatRateField.manual &&
-                    vatRateField.suggestedRate == null &&
-                    !(readOnly || vatRateField.readOnly) ? (
-                      <p
-                        role="status"
-                        data-slot="document-vat-rate-missing"
-                        className="mt-3 text-xs font-medium text-destructive"
-                      >
-                        {t.vatRateMissing}
-                      </p>
-                    ) : null}
                   </>,
                   3,
                 )}
@@ -172,23 +166,10 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
           data-slot="document-total-currency-pair"
           className="order-1 ml-auto flex min-w-0 max-w-full shrink-0 items-start gap-3 @min-[50rem]:order-2"
         >
-          <div
-            data-slot="document-amount-total"
-            className="min-w-[9rem] flex-[0_1_18rem] @min-[30rem]:min-w-[11.5rem]"
-          >
+          <div data-slot="document-amount-total" className="w-[11.5rem] min-w-0 shrink">
             {field(
               "document-amountTotal",
-              <span className="flex min-w-0 items-center justify-between gap-2 whitespace-nowrap">
-                <span>{t.amountTotal}</span>
-                {totalMode === "sum" ? (
-                  <span
-                    className="shrink-0 whitespace-nowrap text-xs font-normal text-muted-foreground"
-                    title={toggleTexts.sumPressed}
-                  >
-                    {toggleTexts.sumPressed}
-                  </span>
-                ) : null}
-              </span>,
+              t.amountTotal,
               <>
                 <div className="relative">
                   <DecimalInput
@@ -234,15 +215,10 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     value={value.rateNote ?? ""}
                     maxLength={200}
                     required
-                    aria-invalid={!value.rateNote?.trim()}
+                    error={!value.rateNote?.trim() ? t.rateNoteRequired : undefined}
                     disabled={!can("rateNote")}
                     onChange={(event) => patch({ rateNote: event.target.value })}
                   />
-                  {!value.rateNote?.trim() ? (
-                    <p role="alert" className="text-xs font-medium text-destructive">
-                      {t.rateNoteRequired}
-                    </p>
-                  ) : null}
                 </>,
                 14,
               )
@@ -257,15 +233,10 @@ export function DocumentAmountSection(p: DocumentAmountSectionProps) {
                     value={vatRateField.note ?? ""}
                     maxLength={200}
                     required
-                    aria-invalid={!vatRateField.note?.trim()}
+                    error={!vatRateField.note?.trim() ? t.rateNoteRequired : undefined}
                     disabled={readOnly || vatRateField.readOnly}
                     onChange={(event) => vatRateField.onChange({ note: event.target.value })}
                   />
-                  {!vatRateField.note?.trim() ? (
-                    <p role="alert" className="text-xs font-medium text-destructive">
-                      {t.rateNoteRequired}
-                    </p>
-                  ) : null}
                 </>,
                 14,
               )

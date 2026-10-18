@@ -355,12 +355,12 @@ export function PrintShowcase() {
       </ShowcaseSection>
       <ShowcaseSection
         title="Pokladní doklady"
-        description="Příjem, výdej bez partnera, koncept s vodoznakem a doklad v cizí měně."
+        description="Příjem, výdaj bez partnera, koncept s vodoznakem a doklad v cizí měně."
       >
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => openCash("in")}>Příjem</Button>
           <Button variant="outline" onClick={() => openCash("courier")}>
-            Výdej kurýrovi
+            Výdaj kurýrovi
           </Button>
           <Button variant="outline" onClick={() => openCash("draft")}>
             Koncept

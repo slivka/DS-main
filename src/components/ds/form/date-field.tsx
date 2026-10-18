@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { useDsTexts } from "../../../ds-texts";
 import { parseUserDate, useDateTimePreferences } from "../../../lib/date-time-preferences";
+import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
+import { shiftDocumentDate } from "../../../lib/date-quick-options";
 
 function parseISO(value?: string | null): Date | undefined {
   if (!value) return undefined;
@@ -72,6 +74,10 @@ export type DateFieldLink = {
 };
 
 export type DateFieldProps = {
+  /** Výchozí datum relativního zápisu a rychlých voleb, ISO. */
+  baseDate?: string;
+  /** Rychlé volby uvnitř kalendáře, výpočet dostane ISO základ. */
+  quickOptions?: Array<{ label: string; compute: (base: string) => string }>;
   id?: string;
   /** hodnota ve formátu YYYY-MM-DD */
   value?: string | null;
@@ -97,6 +103,8 @@ export type DateFieldProps = {
   warning?: string;
   /** Ve formuláři dokladu označí pole a zobrazí výstrahu jen v tooltipu. */
   warningDisplay?: "below" | "indicator";
+  /** Chyba pole uvnitř před jeho akcemi. */
+  error?: string;
 };
 
 /** Jednotná komponenta pro zadání data v celé aplikaci. */
@@ -115,7 +123,9 @@ export function DateField({
   link,
   hint,
   warning,
-  warningDisplay = "below",
+  error,
+  baseDate,
+  quickOptions,
 }: DateFieldProps) {
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
@@ -126,8 +136,8 @@ export function DateField({
   const [invalid, setInvalid] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const warningId = React.useId();
-  const visibleIcons =
-    1 + (link && !link.locked ? 1 : 0) + (warning && warningDisplay === "indicator" ? 1 : 0);
+  const fieldError = error ?? (invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined);
+  const visibleIcons = 1 + (link && !link.locked ? 1 : 0) + (warning || fieldError ? 1 : 0);
   const inputStyle: React.CSSProperties & Record<"--date-field-icons", number> = {
     "--date-field-icons": visibleIcons,
   };
@@ -151,7 +161,10 @@ export function DateField({
       onChange("");
       return;
     }
-    const parsed = parseUserDate(raw, preferences);
+    const parsed =
+      /^\+\d+$/.test(raw) && baseDate
+        ? shiftDocumentDate(baseDate, Number(raw.slice(1)))
+        : parseUserDate(raw, preferences);
     if (parsed === null) {
       setInvalid(true);
       onValidityChange?.(false);
@@ -206,12 +219,14 @@ export function DateField({
             readOnly={link?.locked}
             placeholder={placeholder}
             value={text}
-            aria-invalid={invalid || undefined}
+            aria-invalid={invalid || Boolean(error) || undefined}
             aria-describedby={warning ? warningId : undefined}
             title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
             onChange={(e) => {
               const next = e.target.value;
-              const masked = maskDateInput(next, dateFormat, next.length < text.length);
+              const masked = baseDate && next.startsWith("+")
+                ? next.replace(/[^+\d]/g, "")
+                : maskDateInput(next, dateFormat, next.length < text.length);
               setText(masked);
               if (invalid) setInvalid(false);
               // Živý přepočet: jakmile je zapsané datum úplné a platné, ohlásíme ho hned
@@ -243,7 +258,7 @@ export function DateField({
               "min-w-[calc(7.5rem+var(--date-field-icons)*1.9rem)]",
               "pr-[calc(0.5em+var(--date-field-icons)*1.9em)]",
               link?.locked && "bg-muted/40",
-              warning && "border-warning ring-1 ring-warning/40",
+              fieldError ? "border-destructive" : warning && "border-warning ring-1 ring-warning/40",
               inputClassName,
             )}
           />
@@ -252,14 +267,14 @@ export function DateField({
               {warning}
             </span>
           ) : null}
-          {warning && warningDisplay === "indicator" ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
+          {warning || fieldError ? (
+            <DisabledReasonTooltip content={fieldError ?? warning} blocked>
                 <span
                   tabIndex={0}
-                  aria-label={warning}
+                  aria-label={fieldError ?? warning}
                   className={cn(
-                    "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm text-warning-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    fieldError ? "text-destructive" : "text-warning-strong",
                     link && !link.locked
                       ? "right-[calc(var(--document-date-icon-offset,0.3em)+2*var(--document-date-icon-step,1.8em))]"
                       : "right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))]",
@@ -267,9 +282,7 @@ export function DateField({
                 >
                   <AlertTriangle className="size-[var(--document-date-icon-size,1.05em)]" />
                 </span>
-              </TooltipTrigger>
-              <TooltipContent>{warning}</TooltipContent>
-            </Tooltip>
+            </DisabledReasonTooltip>
           ) : null}
           {link?.locked ? (
             <Tooltip>
@@ -361,14 +374,36 @@ export function DateField({
                       gridZoom != null && "grid-date-calendar",
                     )}
                   />
+                  {quickOptions?.length && baseDate ? (
+                    <div className="flex flex-wrap gap-1 border-t p-2">
+                      {quickOptions.map((option) => (
+                        <Button
+                          key={option.label}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const next = option.compute(baseDate);
+                            const date = parseISO(next);
+                            if (!date || (minDate && date < minDate) || (maxDate && date > maxDate))
+                              return;
+                            onChange(next);
+                            setText(formatDate(next));
+                            setInvalid(false);
+                            setOpen(false);
+                          }}
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    </div>
+                  ) : null}
                 </PopoverContent>
               </Popover>
             </>
           )}
         </div>
-        {warning && warningDisplay === "below" ? (
-          <p className="field-overflow-hint mt-1 text-xs text-warning-strong">{warning}</p>
-        ) : hint ? (
+        {hint && !warning && !error ? (
           <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p>
         ) : null}
       </div>

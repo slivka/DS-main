@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { DecimalInput } from "./decimal-input";
+import { FieldFeedbackIndicator } from "./field-feedback";
 import { FieldValue } from "./field-value";
 
 export interface RateFieldProps {
@@ -40,6 +41,10 @@ export interface RateFieldProps {
   className?: string;
   /** Výška a vzhled vstupu i hodnoty jen ke čtení. */
   inputClassName?: string;
+  /** Chyba kurzu uvnitř pole. */
+  error?: string;
+  /** Upozornění kurzu uvnitř pole. */
+  warning?: string;
 }
 
 export function rateValuesDiffer(
@@ -79,6 +84,8 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
     id = "rate",
     className,
     inputClassName,
+    error,
+    warning,
   }: RateFieldProps,
   ref,
 ) {
@@ -125,6 +132,11 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                     className={cn(
                       "bg-muted/40 border border-input text-muted-foreground opacity-100 font-sans text-right tabular-nums",
                       attention && "pl-9",
+                      error
+                        ? "border-destructive pr-9"
+                        : warning
+                          ? "border-warning pr-9"
+                          : undefined,
                       inputClassName,
                     )}
                   >
@@ -132,6 +144,7 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                   </FieldValue>
                 ) : (
                   <DecimalInput
+                    aria-invalid={Boolean(error) || undefined}
                     id={id}
                     value={value}
                     decimals={6}
@@ -143,6 +156,11 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                       attention && "pl-9",
                       differs && "pr-9 border-destructive",
                       attention && differs && "pl-7",
+                      error
+                        ? "border-destructive pr-9"
+                        : warning
+                          ? "border-warning pr-9"
+                          : undefined,
                       inputClassName,
                     )}
                     onChange={(next) => onChange(next === "" ? null : Number(next))}
@@ -159,6 +177,11 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
             </TooltipTrigger>
             {sourceOpen && !updateOpen ? <TooltipContent>{sourceText}</TooltipContent> : null}
           </Tooltip>
+          <FieldFeedbackIndicator
+            error={error}
+            warning={warning}
+            className={differs ? "right-10" : undefined}
+          />
           {!readOnly && differs ? (
             <Tooltip open={updateOpen} onOpenChange={setUpdateOpen}>
               <TooltipTrigger asChild>
@@ -200,15 +223,10 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
               maxLength={200}
               required
               disabled={disabled}
-              aria-invalid={noteInvalid}
+              error={noteInvalid ? (requiredMessage ?? t?.required) : undefined}
               className={cn(noteInvalid && "border-destructive")}
               onChange={(event) => onNoteChange?.(event.target.value)}
             />
-            {noteInvalid ? (
-              <p role="alert" className="text-xs font-medium text-destructive">
-                {requiredMessage ?? t?.required}
-              </p>
-            ) : null}
           </div>
         ) : null}
         {readOnly && manual && showNote && note ? (

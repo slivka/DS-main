@@ -23,7 +23,7 @@ describe("record form 2.62", () => {
     );
     expect(control).toContain("flex min-w-0 flex-col gap-1");
     expect(control).toContain('data-slot="field-hint"');
-    expect(value).toContain('data-slot="field-error"');
+    expect(value).toContain('data-slot="field-feedback"');
     expect(value).toContain('data-slot="field-value"');
   });
 

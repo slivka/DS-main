@@ -6,7 +6,7 @@
 - [ ] S6–S8: přidání v hledání, šířky nabídek a rychlé/relativní datumové volby.
 - [ ] S9–S10: rozložení a vazby dokladů, bankovní pohyb a nový výpis.
 - [ ] Ukázky CS/SK, testy chování a geometrie, lint a katalogy bez ztrát.
-- [ ] CHANGELOG 2.105.0 s migrací změněných props; obě současné verze neměnit.
+- [ ] CHANGELOG 2.105.0 s migrací změněných props; obě verze srovnat na poslední vydanou 2.104.0 podle schválení, nic nevydávat.
 
 ## DS 2.104.0 – Edit dokladu 13j–13l (nevydáno)
 

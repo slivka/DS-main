@@ -16,6 +16,8 @@ export interface DocumentDatesSectionProps {
   showVatFields?: boolean;
   vat?: DocumentVatConfig;
   filedVatDateWarning?: string;
+  /** Bankovní pohyb má pouze účetní datum. */
+  bankMovement?: boolean;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;
   date: (
     key: DocumentDateField,
@@ -32,6 +34,7 @@ export function DocumentDatesSection({
   vat,
   filedVatDateWarning,
   dateWarnings,
+  bankMovement,
   date,
 }: DocumentDatesSectionProps) {
   const labelsKey = [
@@ -53,7 +56,7 @@ export function DocumentDatesSection({
           data-slot="document-dates"
           className="document-dates-compact flex flex-wrap items-start gap-3"
         >
-          {date("issueDate", t.issueDate, "flex-none w-max")}
+          {!bankMovement ? date("issueDate", t.issueDate, "flex-none w-max") : null}
           {date("accountingDate", t.accountingDate, "flex-none w-max")}
           {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
           {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,

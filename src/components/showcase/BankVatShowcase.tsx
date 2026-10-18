@@ -11,7 +11,7 @@ import { formatCodeName } from "../../lib/code-format";
 import { CURRENCIES } from "./document-form-showcase-data";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
-/** BA výdej v EUR s DPH, odemykatelnou vazbou Datum DPH a jiným DUZP (Kurz DPH). */
+/** BA výdaj v EUR s DPH, odemykatelnou vazbou Datum DPH a jiným DUZP (Kurz DPH). */
 export function BankVatShowcase() {
   const [locked, setLocked] = useState(false);
   const [value, setValue] = useState<DocumentHeaderValue>({
@@ -33,12 +33,12 @@ export function BankVatShowcase() {
   });
   return (
     <ShowcaseSection
-      title="Banka – výdej v EUR s DPH a jiným DUZP"
-      description="BA s DPH: DUZP, Datum DPH s vazbou na DUZP (výdej lze odemknout) a Kurz DPH."
+      title="Banka – výdaj v EUR s DPH a jiným DUZP"
+      description="BA s DPH: DUZP, Datum DPH s vazbou na DUZP (výdaj lze odemknout) a Kurz DPH."
     >
       <div data-testid="bank-vat-example">
         <DocumentForm
-          title="Bankovní doklad – výdej"
+          title="Bankovní doklad – výdaj"
           identity={{
             variant: "cashBank",
             book: formatCodeName("BV", "Banka EUR"),

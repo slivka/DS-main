@@ -79,7 +79,8 @@ describe("DS 2.85.0 – chování výběrů", () => {
         onAddAccount={onAddAccount}
       />,
     );
-    await pick(view, view.getByRole("combobox"), "Přidat účet…");
+    fireEvent.click(view.getByRole("combobox"));
+    fireEvent.click(await view.findByRole("button", { name: "Přidat účet…" }));
     expect(onAddAccount).toHaveBeenCalledTimes(1);
     expect(onChange).not.toHaveBeenCalled();
   });

@@ -3,6 +3,7 @@ import { Label } from "../../ui/label";
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { CheckboxField } from "../form/checkbox-field";
 import { SegmentedField } from "../form/segmented-field";
+import { StepperInput } from "../form/stepper-input";
 import { FormSection, RecordDialog } from "../layout/RecordDialog";
 
 export type DocumentSuggestionScope = "company" | "book" | "documentType";
@@ -228,15 +229,15 @@ export function DocumentSettingsDialog({
           label={t.printDocumentNumber}
         />
         <div className="space-y-1">
-          <Label>{t.copies}</Label>
-          <RadioOptions
-            name="copies"
-            value={String(draft.copies)}
-            onChange={(copies) => patch({ copies: Number(copies) })}
-            options={[1, 2, 3, 4, 5].map((copies) => ({
-              value: String(copies),
-              label: String(copies),
-            }))}
+          <Label htmlFor="document-copies">{t.copies}</Label>
+          <StepperInput
+            id="document-copies"
+            value={draft.copies}
+            min={1}
+            max={5}
+            step={1}
+            disabled={busy}
+            onChange={(copies) => patch({ copies })}
           />
         </div>
       </FormSection>

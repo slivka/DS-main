@@ -1,6 +1,43 @@
 # Changelog – Slivka Design System
 
-## 2.104.0 – Edit dokladu 13j–13l (nevydáno)
+## 2.105.0 – Edit dokladu 14 (nevydáno)
+
+- S1: chyby a varování jako rámeček a výstraha uvnitř pole před akcemi, celé zprávy
+  také v pruhu formuláře. Bez textu výstrah pod polem, výška se nemění.
+- S2: tooltip Σ pouze „Sčítá částky z rozpisu“, stálá šířka Celkem v obou režimech.
+- S3–S4: StepperInput, kopie 1–5 včetně psaní/šipek/hranice; geometricky středová radio tečka.
+- S5: nahrazuje pravidlo 2.104.0 o vždy viditelném textu Uložit. Standardně akce bez ikon,
+  skutečně měřená kaskáda text → sekundární ikony → Uložit ikona; názvy a tooltipy zůstávají.
+- S6–S8: přidání vpravo v hledání s dotazem a důvodem zákazu; rostoucí nezalamované
+  nabídky do 36 rem/dostupné šířky; rychlá splatnost a relativní +14, kalendářní měsíc.
+- S9: FV/ZFV platba před účtem, daňové číslo s vazbou; účetní datum a DUZP sledují
+  vystavení do odpojení; BA protiúčet, datum pohybu, ID Partner před Popisem a Datumy.
+  Peněžní směr Výdaj; výpisový pohyb Bankovní pohyb. Texty CS/SK.
+- S10: výpis bez viditelného štítku stavu, nový výpis s prázdnými pohyby a onSaveThenAdd.
+- Poslední vydaná verze v package.json i meta.version je 2.104.0. Nic nevydáno.
+
+### BREAKING – migrace
+
+- `Field.error`, chyby Input/RateField a varování DateField již nevykreslují text pod polem.
+  Odstraňte vlastní podpolové zprávy; chyby/varování předejte také společnému pruhu,
+  u DocumentForm použijte `fieldErrors`, `fieldWarnings`, `taxDocumentNumberWarning`.
+  `DateField.warningDisplay="below"` je přijímáno jen pro kompatibilitu a ignorováno.
+- `ContactSelect.onCreateNew` a `BankAccountField.onAddAccount` dostávají `searchText`;
+  původní callback bez argumentu zůstává platný. Přidání není položkou výsledků.
+- Vlastní rozšíření lišty nesmějí vyžadovat textové Uložit v každé šířce; cílení přes
+  přístupný název zůstává stejné. Busy i dirty/disabled beze změny.
+- `DocumentForm.accountingDateLinked` má výchozí true u příslušných druhů;
+  pro staré samostatné datum předejte false. Existující `accountingDateLink` má přednost.
+- Hlavičku rozšiřte o `taxDocumentNumber`, `taxDocumentNumberLinked`, `bankAccountKind`,
+  `bankCode`, `bankIban`, `bankSwift`. Vazba čísla je výchozí true; znovuzamčení obnoví číslo.
+- BA účetní datum nyní „Datum pohybu“, protiúčet má samostatný kód banky nebo IBAN/SWIFT;
+  přemapujte dřívější spojený účet. ID má Partner a při DPH DUZP/Datum DPH.
+- BankStatementForm stav stále řídí uzamčení, ale není štítkem. Pro nový výpis předejte
+  `isNew` a `onSaveThenAdd(direction)`; aplikace musí nejprve úspěšně uložit výpis.
+- Úplné DsTexts doplňte o stepper, selectCreate, dateQuick a documentEdit; částečné přepisy se doplní.
+
+
+## 2.104.0 – Edit dokladu 13j–13l
 
 ### 13l – opravy kontroly
 

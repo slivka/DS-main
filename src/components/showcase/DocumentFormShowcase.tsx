@@ -117,11 +117,11 @@ export function DocumentFormShowcase() {
     <>
       <DocumentHeaderScenarios />
       <ShowcaseSection
-        title="Pokladna – výdej kurýrovi bez partnera"
+        title="Pokladna – výdaj kurýrovi bez partnera"
         description="Protistrana je jen text; ručně zadané IČO a DIČ zůstávají editovatelné a chybné české IČO se jen zvýrazní."
       >
         <DocumentForm
-          title="Pokladní doklad – výdej"
+          title="Pokladní doklad – výdaj"
           identity={{
             variant: "cashBank",
             book: formatCodeName("PO", "Pokladna"),
@@ -199,7 +199,7 @@ export function DocumentFormShowcase() {
             setSettingsOpen(false);
             toast.success("Nastavení uloženo");
           }}
-          documentTypeLabel="Pokladní doklad – výdej"
+          documentTypeLabel="Pokladní doklad – výdaj"
           allowCounterpartySuggestions
           showVatCalcMode
         />
