@@ -5,9 +5,9 @@
 import { useMemo, useState } from "react";
 import { useDebouncedValue } from "../../../../hooks/useDebouncedValue";
 import { visibleFormIssues, type FormIssue } from "../../../../lib/form-issues";
-import type { JournalLine } from "../journal-lines-model";
+import type { JournalLine } from "../journal-lines";
 import type { JournalLinesEditorProps } from "../journal-editor-types";
-import { journalFieldId } from "../journal-field-id";
+import { journalFieldId } from "../journal-lines-model";
 import type { DocumentFormError, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 
 /** Hlášení změny pole (hlavička: document-klíč; řádek: id buňky s rowId a columnId). */

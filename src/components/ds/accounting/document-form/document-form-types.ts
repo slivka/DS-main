@@ -3,6 +3,7 @@
  * Vlastní: datový kontrakt formuláře a kompatibilní české výchozí texty.
  * Nesmí: vykreslovat UI ani obsahovat stav formuláře.
  */
+import type { FormIssue } from "../../../../lib/form-issues";
 import type { FieldErrorLink } from "../../feedback/field-error-summary";
 import type { ReactNode } from "react";
 import type {
@@ -469,6 +470,20 @@ export interface DocumentFormProps {
   moreActions?: DocumentMoreAction[];
   settings?: DocumentSettingsAction;
   error?: DocumentFormError;
+  /**
+   * Položky živého pruhu od aplikace (2.108.0): serverové se zobrazí vždy, klientské až při
+   * `validationActive`. DS je deduplikuje; serverové mazat při změně pole je na aplikaci.
+   */
+  issues?: FormIssue[];
+  /** Uložení selhalo – titulek „Doklad nelze uložit (N)“; jinak „Před zařazením doplňte (N)“. */
+  saveFailed?: boolean;
+  /** Klientské položky a červené rámečky až po prvním pokusu o uložení / zařazení; výchozí true. */
+  validationActive?: boolean;
+  /**
+   * Změna pole (i přepínače v poli: zámek data, VS, Σ). Hlavička: `document-klíč`;
+   * buňka řádku: id buňky s `rowId` a `columnId`. Aplikace podle něj maže své serverové položky.
+   */
+  onFieldChange?: (fieldId: string, rowId?: string, columnId?: string) => void;
   /** Provozní informace pod chybou a nad bannerem jen pro čtení. */
   notices?: ReactNode;
   readOnly?: boolean;
