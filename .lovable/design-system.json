@@ -8586,10 +8586,6 @@
         {
           "name": "allowEmpty",
           "type": "boolean"
-        },
-        {
-          "name": "searchable",
-          "type": "boolean"
         }
       ],
       "usage": "Hledatelná větev OptionSelect s akcí + vpravo v hledání. Pro běžné formuláře preferujte OptionSelect searchable.",
