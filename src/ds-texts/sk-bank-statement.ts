@@ -20,7 +20,7 @@ export const BANK_STATEMENT_SK: BankStatementTexts = {
   income: "Príjmy",
   expense: "Výdavky",
   closing: "Konečný zostatok",
-  bankClosing: "Zostatok podľa banky",
+  bankClosing: "Zostatok na výpise",
   difference: "Rozdiel",
   items: "Pohyby",
   lockedChecked: "Výpis je skontrolovaný",
@@ -30,4 +30,9 @@ export const BANK_STATEMENT_SK: BankStatementTexts = {
   delete: "Odstrániť",
   matched: "Zostatok súhlasí",
   home: "Zostatky v {currency}",
+  bankClosingSum: "Zostatok na výpise sa počíta z pohybov. Kliknutím zadáte zostatok z banky.",
+  bankClosingEntered: "Zostatok je zadaný z banky. Kliknutím ho budete počítať z pohybov.",
+  bankClosingToggle: "Zostatok z pohybov",
+  differenceWarning: "Rozdiel oproti pohybom {amount}",
+  emptyItems: "Výpis zatiaľ nemá pohyby",
 };

@@ -9,17 +9,17 @@ export interface BankStatementTexts {
   checked: string;
   /** Popisek posted. */
   posted: string;
-  /** Popisek check. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená; klíč zůstává kvůli typům aplikací. */
   check: string;
-  /** Popisek uncheck. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená. */
   uncheck: string;
-  /** Vysvětlení potvrzení kontroly výpisu. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená. */
   checkHint: string;
-  /** Vysvětlení zrušení kontroly výpisu. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená. */
   uncheckHint: string;
   /** Popisek basic. */
   basic: string;
-  /** Popisek balances. */
+  /** @deprecated 2.108.0 – sekce Zůstatky dle pohybů je zrušená. */
   balances: string;
   /** Popisek date. */
   date: string;
@@ -33,7 +33,7 @@ export interface BankStatementTexts {
   expense: string;
   /** Popisek closing. */
   closing: string;
-  /** Popisek bankClosing. */
+  /** Popisek pole Zůstatek na výpise. */
   bankClosing: string;
   /** Popisek difference. */
   difference: string;
@@ -51,6 +51,16 @@ export interface BankStatementTexts {
   delete: string;
   /** Popisek shody zůstatku pro vlastní prezentaci aplikace. */
   matched: string;
-  /** Popisek home. */
+  /** @deprecated 2.108.0 – zůstatky v domácí měně se nezobrazují. */
   home: string;
+  /** Tooltip Σ: zůstatek na výpise se počítá z pohybů. */
+  bankClosingSum: string;
+  /** Tooltip Σ vypnuto: zůstatek na výpise je zadaný z banky. */
+  bankClosingEntered: string;
+  /** Přístupný název přepínače Σ zůstatku. */
+  bankClosingToggle: string;
+  /** Varování rozdílu, token {amount}. */
+  differenceWarning: string;
+  /** Prázdný seznam pohybů. */
+  emptyItems: string;
 }
