@@ -16,6 +16,18 @@
 - S10: výpis bez viditelného štítku stavu, nový výpis s prázdnými pohyby a onSaveThenAdd.
 - Poslední vydaná verze v package.json i meta.version je 2.104.0. Nic nevydáno.
 
+### Ověření
+
+- Unit 668/668; Chromium 19/19 v cílených konečných bězích: geometrie 10,
+  výpis 5, regrese 3, nový výpis 1. Radio při 70/200 % Firefox + WebKit 2/2.
+- Lint 0 chyb / 298 varování; automatická kontrola sestavy a typů OK.
+  Ruční tsgo/build prostředí nepovoluje. Formát dotčených souborů ověřen.
+- Katalog 430 → 432 komponent, zachováno 430/430 původních názvů,
+  props 764 → 813 bez odstranění. Manifest proti skutečnému začátku kola
+  532 → 543, odstraněno 0. Původních 38 náhledových cest zachováno podle
+  zákazu mazání; .dsignore je nadále vylučuje při attach.
+- Plná matice Firefox/WebKit a fyzický telefon neověřeny; radio ano.
+
 ### BREAKING – migrace
 
 - `Field.error`, chyby Input/RateField a varování DateField již nevykreslují text pod polem.

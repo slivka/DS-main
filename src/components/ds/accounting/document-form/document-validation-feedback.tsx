@@ -36,6 +36,14 @@ export interface DocumentValidationArgs {
 /** Celé zprávy patří také do pruhu nad formulářem. */
 export function documentValidationFeedback(a: DocumentValidationArgs) {
   const errors = Object.values(a.fieldErrors ?? {}).filter(Boolean);
+  if (
+    a.foreign &&
+    a.vatRateField &&
+    !a.vatRateField.sameAsDocument &&
+    !a.vatRateField.manual &&
+    a.vatRateField.suggestedRate == null
+  )
+    errors.push(a.t.vatRateMissing);
   if (a.foreign && a.value.rateManual && !a.value.rateNote?.trim())
     errors.push(a.t.rateNoteRequired);
   if (a.foreign && a.vatRateField?.manual && !a.vatRateField.note?.trim())

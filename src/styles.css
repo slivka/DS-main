@@ -2364,11 +2364,34 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   min-width: min(var(--radix-popover-trigger-width), var(--radix-popover-content-available-width));
   max-width: min(36rem, var(--radix-popover-content-available-width));
 }
-.ds-select-popover [cmdk-item] { width: max-content; min-width: 100%; max-width: 100%; }
-.ds-select-popover [cmdk-list] { max-width: 100%; }
-.ds-select-content { max-width: min(36rem, var(--radix-select-content-available-width)); }
+.ds-select-popover [cmdk-item] {
+  width: max-content;
+  min-width: 100%;
+  max-width: 100%;
+}
+.ds-select-popover [cmdk-list] {
+  max-width: 100%;
+}
+.ds-select-content {
+  max-width: min(36rem, var(--radix-select-content-available-width));
+}
 .ds-field-control:has(> [data-slot="field-feedback"]) input,
-.ds-field-control:has(> [data-slot="field-feedback"]) [role="combobox"] { padding-right: 2.75rem; }
-.ds-field-control:has([data-slot="field-inline-actions"]) { --field-feedback-offset: 5rem; }
-.ds-field-control:has([data-slot="select-chevron"]) { --field-feedback-offset: 2.75rem; }
-.ds-field-control:has([data-slot="field-toggle-button"]) { --field-feedback-offset: 3rem; }
+.ds-field-control:has(> [data-slot="field-feedback"]) [role="combobox"] {
+  padding-right: 2.75rem;
+}
+.ds-field-control:has([data-slot="field-inline-actions"]) {
+  --field-feedback-offset: 5rem;
+}
+.ds-field-control:has([data-slot="select-chevron"]) {
+  --field-feedback-offset: 2.75rem;
+}
+.ds-field-control:has([data-slot="field-toggle-button"]) {
+  --field-feedback-offset: 3rem;
+}
+
+/* Vnitřní ovládání vlastní výstrahu; obal nesmí vykreslit druhou. */
+.ds-field-control:has([data-slot="field-feedback"] [data-slot="field-feedback"])
+  > [data-slot="field-feedback"],
+.ds-field-control:has(> div [data-slot="field-feedback"]) > [data-slot="field-feedback"] {
+  display: none;
+}
