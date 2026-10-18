@@ -19,7 +19,7 @@ const SERVER: FormIssue[] = [
     rowId: "l1",
     columnId: "amount",
     label: "Řádek 1",
-    message: "Řádek 1: Chybí částka",
+    message: "Chybí částka",
     severity: "error",
     source: "client",
   },
