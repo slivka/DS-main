@@ -38,7 +38,7 @@ print(f"JSON: {len(old_by_name)} → {len(new_by_name)} komponent; "
 for path in ["src/index.ts", "src/components/ds/index.ts", "components.md"]:
     before, after = original(path), Path(path).read_text()
     if path.endswith("index.ts"):
-        exports = lambda text: set(re.findall(r"export\s+(?:\*[^;]*|\{[^;]*?\}[^;]*);", text, re.S))
+        exports = lambda text: {re.sub(r"[\s,]+", "", value) for value in re.findall(r"export\s+(?:\*[^;]*|\{[^;]*?\}[^;]*);", text, re.S)}
         assert exports(before) <= exports(after), f"Ubyl export: {path}"
     else:
         headings = lambda text: set(re.findall(r"^#{2,3} .+$", text, re.M))

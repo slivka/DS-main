@@ -1,4 +1,5 @@
 /** Skutečný editor řádků · měření potomků zděděné délky, nikoli napodobeniny. */
+import { writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 
 test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", async ({ page }) => {
@@ -82,6 +83,7 @@ test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", asy
       }
     }
   }
+  await writeFile("/tmp/browser/real-journal-heights.json", JSON.stringify(results, null, 2));
   await test.info().attach("real-journal-heights.json", {
     body: JSON.stringify(results, null, 2),
     contentType: "application/json",
