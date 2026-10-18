@@ -17,8 +17,6 @@ import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { DocumentStatusBadge } from "../document-status-badge";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
-import { companyAccountControlForForm } from "./BankAccountControls";
-import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -30,7 +28,7 @@ import {
   type DocumentHeaderValue,
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
-import { useExternalNumberField } from "./use-external-number-field";
+import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
@@ -44,7 +42,8 @@ import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document
 import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
 /** Kompletní formulář účetního dokladu. */
-export function DocumentForm({
+export function DocumentForm(props: DocumentFormProps) {
+  const {
   title,
   titleBadges,
   identity,
@@ -59,20 +58,11 @@ export function DocumentForm({
   partners = [],
   dimensions = [],
   currencies,
-  bankAccountOptions = [],
   constantSymbolOptions,
   paymentMethodOptions,
-  companyBankAccountOptions,
-  onAddBankAccount,
   counterpartyInput = "partner",
   onCounterpartyInputChange,
   counterpartyInputLockedReason,
-  paymentOrderEnabled = true,
-  onPaymentOrderEnabledChange,
-  isHomeCurrency,
-  onManualBankAccountValidationChange,
-  companyBankAccountDisabledReason,
-  receivedAccountDisabledReason,
   vatPartnerStatus,
   counterpartyTab,
   printTab,
@@ -128,7 +118,7 @@ export function DocumentForm({
   readOnlyActions,
   texts,
   className,
-}: DocumentFormProps) {
+} = props;
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const code = documentType.toUpperCase();
@@ -296,61 +286,24 @@ export function DocumentForm({
     rowLabel: dsTexts.journalEditor.row,
     onValidationChange: linesEditorProps?.onValidationChange,
   });
-  const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
-    ? receivedAccountDisabledReason
-    : undefined;
-  const paymentOrderOn = !receivedAccountReason && (!f.paymentOrders || paymentOrderEnabled);
-  const externalNumberField = useExternalNumberField({
-    sourcePatch: vsLink.sourcePatch,
-    value,
-    patch,
-    can,
-    receivedDocument,
-    showVatFields,
+  const {
+    externalNumberField,
+    bankAccountField,
+    issuedBankAccountAbove,
+    symbolsDisabledReason,
+    companyAccountField,
+  } = useDocumentPaymentFields(props, {
     f,
     t,
-    field,
-  });
-  const bankAccountField = useBankAccountField({
     value,
     patch,
     can,
-    t,
     field,
     receivedDocument,
-    counterpartyInput,
-    bankAccountOptions,
-    bankCodes,
-    isHomeCurrency: isHomeCurrency ?? value.currency === homeCurrency,
-    paymentOrdersApplicable: Boolean(f.paymentOrders),
-    paymentOrderEnabled: paymentOrderOn,
-    onPaymentOrderEnabledChange,
-    onManualBankAccountValidationChange,
-    onAddBankAccount,
-    receivedAccountDisabledReason: receivedAccountReason,
+    issuedDocument,
+    showVatFields,
+    sourcePatch: vsLink.sourcePatch,
   });
-  const issuedBankAccountAbove =
-    issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
-  const symbolsDisabledReason = receivedDocument
-    ? (receivedAccountReason ?? (!paymentOrderOn ? t.paymentOrderDisabled : undefined))
-    : issuedBankAccountAbove
-      ? companyBankAccountDisabledReason
-      : undefined;
-  const companyAccountField =
-    issuedBankAccountAbove && f.bankAccount
-      ? companyAccountControlForForm(
-          {
-            value,
-            companyBankAccountOptions,
-            companyBankAccountDisabledReason,
-          },
-          patch,
-          can,
-          t.payToBankAccount,
-          paymentMethodOptions,
-          t.paymentMethod,
-        )
-      : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
