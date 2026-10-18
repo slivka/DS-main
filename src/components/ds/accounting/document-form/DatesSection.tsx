@@ -87,7 +87,7 @@ export function DocumentDatesSection({
                             : vat.dateLink.lockedHint,
                         }
                       : undefined,
-                    hint: vat?.periodLabel,
+                    hint: filedVatDateWarning ? undefined : vat?.periodLabel,
                     warning:
                       [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
                       undefined,
