@@ -1,6 +1,7 @@
 /** Ukázka živého pruhu · vlastní náhledové položky ze „serveru“ · nesmí do knihovny. */
 import { useState } from "react";
-import { DocumentForm, type DocumentHeaderValue, type FormIssue } from "../ds";
+import { DocumentForm, type DocumentHeaderValue } from "../ds";
+import type { FormIssue } from "../../lib/form-issues";
 import { Button } from "../ui/button";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
@@ -33,6 +34,8 @@ export function LiveIssuesShowcase() {
     issueDate: "2026-10-10",
     taxDate: null,
     currency: "CZK",
+    amountTotal: null,
+    totalMode: "sum",
   });
   const [issues, setIssues] = useState<FormIssue[]>(SERVER);
   return (
