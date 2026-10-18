@@ -88,8 +88,10 @@ export const StepperInput = forwardRef<HTMLInputElement, StepperInputProps>(func
           if (event.key === "Enter") commit();
           if (event.defaultPrevented || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
           event.preventDefault();
+          const typed = draft === null ? NaN : Number(draft.replace(/\s/g, "").replace(",", "."));
+          const from = Number.isFinite(typed) ? Math.min(max, Math.max(min, typed)) : current;
           setDraft(null);
-          change(current + (event.key === "ArrowUp" ? step : -step));
+          change(from + (event.key === "ArrowUp" ? step : -step));
         }}
       />
       <Button

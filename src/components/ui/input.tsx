@@ -16,7 +16,11 @@ export interface InputProps extends React.ComponentProps<"input"> {
 
 /** Vstup s pojmenovanou podporou vzoru formátu. */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, formatPattern, placeholder, error, warning, ...props }, ref) => {
+  (allProps, ref) => {
+    const { className, type, formatPattern, placeholder, error, warning, ...props } = allProps;
+    // Předaný (i prázdný) error/warning drží stálý obal, aby se vstup při objevení
+    // výstrahy znovu nepřipojil a neztratil fokus.
+    const feedbackSlot = "error" in allProps || "warning" in allProps;
     const inherited = useFieldFeedback();
     const invalid = error || inherited.error;
     const attention = warning || inherited.warning;
@@ -36,7 +40,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         aria-invalid={invalid ? true : props["aria-invalid"]}
       />
     );
-    return error || warning ? (
+    return feedbackSlot || error || warning ? (
       <span className="relative block min-w-0">
         {control}
         <FieldFeedbackIndicator error={error} warning={warning} />
