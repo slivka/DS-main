@@ -1476,7 +1476,7 @@ _Párování s editovatelnou částkou_
 import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotné datum s výstrahou uvnitř pole. Rychlé volby se zobrazí v kalendáři; +14 znamená baseDate +14 dní. warningDisplay=below je ignorováno.
+Datum s chybou/varováním uvnitř pole; relativní +14 od baseDate a quickOptions v kalendáři. warningDisplay=below je přijímáno jen pro kompatibilitu a ignorováno.
 
 **Props:**
 
@@ -4075,7 +4075,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními.
+Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí.
 
 **Props:**
 
