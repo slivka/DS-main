@@ -1,7 +1,7 @@
 /**
  * Primární akce Přidat v liště gridu.
  * Vlastní: kaskádu textů podle šířky, sloučení dvou a více akcí do nabídky a zkratku N.
- * Nesmí: znát doménu (příjem/výdej) ani barvit akce podle směru.
+ * Nesmí: znát doménu (příjem/výdaj) ani barvit akce podle směru.
  */
 import * as React from "react";
 import { ChevronDown, Plus, type LucideIcon } from "lucide-react";

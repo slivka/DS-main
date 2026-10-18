@@ -9,12 +9,12 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
   await wide.scrollIntoViewIfNeeded();
   await expect(wide.locator("[data-toolbar-add]:visible span:visible")).toHaveText([
     "Nový příjem",
-    "Nový výdej",
+    "Nový výdaj",
   ]);
   await short.scrollIntoViewIfNeeded();
   await expect(short.locator("[data-toolbar-add]:visible span:visible")).toHaveText([
     "Příjem",
-    "Výdej",
+    "Výdaj",
   ]);
   // Lišta gridu se vykreslí až po vstupu do viewportu; ukázka nad ní může stránku posunout.
   await narrow.evaluate((node) => node.scrollIntoView({ block: "center" }));
@@ -25,9 +25,9 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
   await expect(menu).toHaveAttribute("aria-haspopup", "menu");
   await expect(narrow.locator("[data-toolbar-add]:visible")).toHaveCount(0);
   await menu.click();
-  await page.getByRole("menuitem", { name: "Výdej" }).click();
+  await page.getByRole("menuitem", { name: "Výdaj" }).click();
   await expect(page.getByTestId("primary-actions-last")).toHaveText(
-    "Poslední akce: Pokladna – úzký panel: výdej",
+    "Poslední akce: Pokladna – úzký panel: výdaj",
   );
   await menu.focus();
   await page.keyboard.press("Enter");
@@ -36,7 +36,7 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
     "Poslední akce: Pokladna – úzký panel: příjem",
   );
 });
-test("BA výdej v EUR s DPH ukazuje DUZP, Datum DPH a Kurz DPH", async ({ page }) => {
+test("BA výdaj v EUR s DPH ukazuje DUZP, Datum DPH a Kurz DPH", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   const form = page.getByTestId("bank-vat-example");
   await form.scrollIntoViewIfNeeded();
@@ -82,7 +82,7 @@ test("lišta na hranicích plné → zkrácené → nabídka nepřetéká", asyn
 
 test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespustí", async ({ page }) => {
   await page.goto("/components/grid", { waitUntil: "networkidle" });
-  const reason = "Pokladna je uzavřená – výdej nelze přidat";
+  const reason = "Pokladna je uzavřená – výdaj nelze přidat";
   const wide = page.getByTestId("primary-actions-locked");
   await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
   const out = wide.locator("[data-toolbar-add]:visible").nth(1);
@@ -103,7 +103,7 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   const menu = narrow.locator('[data-slot="grid-add-menu"]');
   await expect(menu).toBeVisible();
   await menu.click();
-  const item = page.getByRole("menuitem", { name: "Výdej", exact: true });
+  const item = page.getByRole("menuitem", { name: "Výdaj", exact: true });
   await expect(item).toHaveAttribute("aria-disabled", "true");
   await expect(item.locator('[data-slot="disabled-reason-text"]')).toHaveText(reason);
   await item.click({ force: true });
