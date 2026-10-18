@@ -24,24 +24,26 @@ export function SelectSearchAction({
   disabled,
 }: SelectSearchActionProps) {
   return (
-    <TooltipProvider><DisabledReasonTooltip
-      content={disabledReason ? `${label}: ${disabledReason}` : label}
-      blocked={Boolean(disabledReason)}
-    >
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={label}
-        disabled={disabledReason ? undefined : disabled}
-        aria-disabled={disabledReason ? true : undefined}
-        className="size-8 shrink-0 p-0"
-        onClick={() => {
-          if (!disabledReason && !disabled) onCreate();
-        }}
+    <TooltipProvider>
+      <DisabledReasonTooltip
+        content={disabledReason ? `${label}: ${disabledReason}` : label}
+        blocked={Boolean(disabledReason)}
       >
-        <Plus className="size-4" />
-      </Button>
-    </DisabledReasonTooltip></TooltipProvider>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={label}
+          disabled={disabledReason ? undefined : disabled}
+          aria-disabled={disabledReason ? true : undefined}
+          className="size-8 shrink-0 p-0"
+          onClick={() => {
+            if (!disabledReason && !disabled) onCreate();
+          }}
+        >
+          <Plus className="size-4" />
+        </Button>
+      </DisabledReasonTooltip>
+    </TooltipProvider>
   );
 }

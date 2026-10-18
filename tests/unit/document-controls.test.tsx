@@ -13,13 +13,23 @@ import { OptionSelect } from "../../src/components/ds/form/option-select";
 import type { DocumentHeaderValue } from "../../src/components/ds/accounting/document-form/document-form-types";
 
 afterEach(cleanup);
-const header: DocumentHeaderValue = { bookId: "b", number: "2026/12", issueDate: "2026-01-31",
-  accountingDate: "2026-01-31", currency: "CZK", amountTotal: 0 };
+const header: DocumentHeaderValue = {
+  bookId: "b",
+  number: "2026/12",
+  issueDate: "2026-01-31",
+  accountingDate: "2026-01-31",
+  currency: "CZK",
+  amountTotal: 0,
+};
 
 test("StepperInput rozsah kopií 1–5 platí pro psaní, tlačítka i šipky", () => {
   function Example() {
     const [value, setValue] = useState(1);
-    return <TooltipProvider><StepperInput value={value} onChange={setValue} min={1} max={5} aria-label="Kopie" /></TooltipProvider>;
+    return (
+      <TooltipProvider>
+        <StepperInput value={value} onChange={setValue} min={1} max={5} aria-label="Kopie" />
+      </TooltipProvider>
+    );
   }
   const view = render(<Example />);
   const input = view.getByRole("spinbutton") as HTMLInputElement;
@@ -40,7 +50,15 @@ test("StepperInput rozsah kopií 1–5 platí pro psaní, tlačítka i šipky", 
 
 test("Splatnost +14 používá datum vystavení", () => {
   let result = "";
-  const view = render(<DateField value="" baseDate="2026-01-31" onChange={(date) => { result = date; }} />);
+  const view = render(
+    <DateField
+      value=""
+      baseDate="2026-01-31"
+      onChange={(date) => {
+        result = date;
+      }}
+    />,
+  );
   fireEvent.change(view.getByRole("textbox"), { target: { value: "+14" } });
   fireEvent.blur(view.getByRole("textbox"));
   expect(result).toBe("2026-02-14");
@@ -57,7 +75,12 @@ test("Navázané účetní datum a dosud nezměněné DUZP sledují vystavení",
 });
 
 test("Ruční DUZP a samostatné účetní datum změna vystavení nepřepíše", () => {
-  const next = applyDocumentDateLinks({ ...header, taxDate: "2026-01-15" }, { issueDate: "2026-02-14" }, false, false);
+  const next = applyDocumentDateLinks(
+    { ...header, taxDate: "2026-01-15" },
+    { issueDate: "2026-02-14" },
+    false,
+    false,
+  );
   expect(next.accountingDate).toBe("2026-01-31");
   expect(next.taxDate).toBe("2026-01-15");
 });
@@ -65,7 +88,9 @@ test("Ruční DUZP a samostatné účetní datum změna vystavení nepřepíše"
 test("Daňové číslo po opětovném zamčení obnoví číslo dokladu", () => {
   function Example() {
     const [value, setValue] = useState(header);
-    return <TaxDocumentNumberField value={value} patch={(next) => setValue({ ...value, ...next })} />;
+    return (
+      <TaxDocumentNumberField value={value} patch={(next) => setValue({ ...value, ...next })} />
+    );
   }
   const view = render(<Example />);
   const toggle = view.getByRole("button", { name: "Svázat s číslem dokladu" });
@@ -78,8 +103,19 @@ test("Daňové číslo po opětovném zamčení obnoví číslo dokladu", () => 
 
 test("Přidání partnera dostane aktuální hledaný text", () => {
   let query = "";
-  const view = render(<TooltipProvider><OptionSelect value="" options={[]} onChange={() => {}}
-    onCreate={(next) => { query = next; }} createLabel="Nový partner" /></TooltipProvider>);
+  const view = render(
+    <TooltipProvider>
+      <OptionSelect
+        value=""
+        options={[]}
+        onChange={() => {}}
+        onCreate={(next) => {
+          query = next;
+        }}
+        createLabel="Nový partner"
+      />
+    </TooltipProvider>,
+  );
   fireEvent.click(view.getByRole("combobox"));
   fireEvent.change(view.getByPlaceholderText("Hledat…"), { target: { value: "Firma Alfa" } });
   fireEvent.click(view.getByRole("button", { name: "Nový partner" }));
@@ -88,10 +124,23 @@ test("Přidání partnera dostane aktuální hledaný text", () => {
 
 test("Nový výpis předá směr aplikaci místo zadání pohybu před uložením", () => {
   let direction = "";
-  const view = render(<BankStatementForm isNew value={{ number: "", date: "", bankClosing: null }}
-    onChange={() => {}} status="open" book="Banka" currency="EUR" currencySymbol="€" period="2026"
-    bankAccount="IBAN" balances={{ opening: 0, income: 0, expense: 0 }}
-    onSaveThenAdd={(next) => { direction = next; }} />);
+  const view = render(
+    <BankStatementForm
+      isNew
+      value={{ number: "", date: "", bankClosing: null }}
+      onChange={() => {}}
+      status="open"
+      book="Banka"
+      currency="EUR"
+      currencySymbol="€"
+      period="2026"
+      bankAccount="IBAN"
+      balances={{ opening: 0, income: 0, expense: 0 }}
+      onSaveThenAdd={(next) => {
+        direction = next;
+      }}
+    />,
+  );
   fireEvent.click(view.getByRole("button", { name: "Výdaj", exact: true }));
   expect(direction).toBe("out");
   expect(view.getByText("Pohyby lze zadat po uložení výpisu")).toBeDefined();

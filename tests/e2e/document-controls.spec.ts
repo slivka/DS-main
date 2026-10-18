@@ -5,7 +5,9 @@ for (const zoom of [1, 1.5, 2]) {
   for (const width of [360, 640, 1200]) {
     test(`Ovládání formuláře ${width}px při ${zoom * 100}%`, async ({ page }) => {
       await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+      await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+        timeout: 45000,
+      });
       await expect(page.getByTestId("document-controls")).toBeVisible();
       await page.evaluate(async (value) => {
         const path = "/src/lib/app-zoom.ts";
@@ -13,23 +15,28 @@ for (const zoom of [1, 1.5, 2]) {
         module.setAppZoom(value);
       }, zoom);
       const sample = page.getByTestId("document-controls");
-      await sample.evaluate((node, size) => { node.style.width = `${size}px`; }, width);
+      await sample.evaluate((node, size) => {
+        node.style.width = `${size}px`;
+      }, width);
       const field = sample.locator('[data-slot="field"]').first();
       const before = await field.boundingBox();
-      const fieldHeights = await sample.locator('[data-slot="field"]').evaluateAll(
-        (nodes) => nodes.map((node) => node.getBoundingClientRect().height),
-      );
+      const fieldHeights = await sample
+        .locator('[data-slot="field"]')
+        .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
       await sample.getByRole("button", { name: "Výstrahy", exact: true }).click();
       const after = await field.boundingBox();
       expect(Math.abs((before?.height ?? 0) - (after?.height ?? 0))).toBeLessThan(1);
-      const afterHeights = await sample.locator('[data-slot="field"]').evaluateAll(
-        (nodes) => nodes.map((node) => node.getBoundingClientRect().height),
+      const afterHeights = await sample
+        .locator('[data-slot="field"]')
+        .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+      fieldHeights.forEach((height, index) =>
+        expect(Math.abs(height - afterHeights[index])).toBeLessThan(1),
       );
-      fieldHeights.forEach((height, index) => expect(Math.abs(height - afterHeights[index])).toBeLessThan(1));
       const radio = sample.getByRole("radio", { name: "První" });
       const ring = await radio.boundingBox();
       const dot = await radio.locator('[data-slot="radio-dot"]').boundingBox();
-      expect(ring).not.toBeNull(); expect(dot).not.toBeNull();
+      expect(ring).not.toBeNull();
+      expect(dot).not.toBeNull();
       if (ring && dot) {
         expect(Math.abs(ring.x + ring.width / 2 - dot.x - dot.width / 2)).toBeLessThan(0.6);
         expect(Math.abs(ring.y + ring.height / 2 - dot.y - dot.height / 2)).toBeLessThan(0.6);
@@ -37,7 +44,9 @@ for (const zoom of [1, 1.5, 2]) {
       const bar = sample.getByTestId("action-width");
       let count = 0;
       for (const available of [width, 180, 110]) {
-        await bar.evaluate((node, size) => { node.style.width = `${size}px`; }, available);
+        await bar.evaluate((node, size) => {
+          node.style.width = `${size}px`;
+        }, available);
         await page.waitForTimeout(100);
         const actions = bar.locator('[data-slot="record-action-bar"]');
         const level = Number(await actions.getAttribute("data-overflow-level"));
@@ -56,16 +65,18 @@ for (const zoom of [1, 1.5, 2]) {
       const popup = page.locator(".ds-select-popover");
       const triggerBox = await select.boundingBox();
       const popupBox = await popup.boundingBox();
-      const rem = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
+      const rem = await page.evaluate(() =>
+        parseFloat(getComputedStyle(document.documentElement).fontSize),
+      );
       if (triggerBox && popupBox) {
         expect(popupBox.width).toBeGreaterThanOrEqual(triggerBox.width - 1);
         expect(popupBox.width).toBeGreaterThan(triggerBox.width + 10);
         expect(popupBox.width).toBeLessThanOrEqual(36 * rem + 1);
         expect(popupBox.x + popupBox.width).toBeLessThanOrEqual(1280);
       }
-      const itemLines = await popup.getByRole("option").evaluateAll((nodes) =>
-        nodes.map((node) => getComputedStyle(node).whiteSpace),
-      );
+      const itemLines = await popup
+        .getByRole("option")
+        .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).whiteSpace));
       expect(itemLines.every((value) => value === "nowrap")).toBe(true);
       await popup.getByPlaceholder("Hledat…").fill("Nová firma");
       await popup.getByRole("button", { name: "Nový partner" }).click();
@@ -76,7 +87,9 @@ for (const zoom of [1, 1.5, 2]) {
 
 test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+    timeout: 45000,
+  });
   for (const zoom of [0.7, 2]) {
     await page.evaluate(async (value) => {
       const path = "/src/lib/app-zoom.ts";
@@ -86,7 +99,8 @@ test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page
     const radio = page.getByTestId("document-controls").getByRole("radio", { name: "První" });
     const ring = await radio.boundingBox();
     const dot = await radio.locator('[data-slot="radio-dot"]').boundingBox();
-    expect(ring).not.toBeNull(); expect(dot).not.toBeNull();
+    expect(ring).not.toBeNull();
+    expect(dot).not.toBeNull();
     if (ring && dot) {
       expect(Math.abs(ring.x + ring.width / 2 - dot.x - dot.width / 2)).toBeLessThan(0.6);
       expect(Math.abs(ring.y + ring.height / 2 - dot.y - dot.height / 2)).toBeLessThan(0.6);
