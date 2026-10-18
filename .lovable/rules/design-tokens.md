@@ -165,4 +165,5 @@ Reference via `var(--name)` in inline styles or CSS.
 | `--chip-pad-x` |
 | `--chip-pad-y` |
 | `--chip-icon` |
+| `--field-feedback-offset` |
 
