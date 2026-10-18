@@ -46,8 +46,11 @@ function DetailField({
   error,
   warning,
   numeric,
+  fieldKey,
   children,
 }: {
+  /** Klíč `rowId:columnId` pro fokus ze souhrnu chyb. */
+  fieldKey?: string;
   label: string;
   width: string;
   error?: string;
@@ -57,7 +60,11 @@ function DetailField({
 }) {
   const status = useFieldStatus({ error, warning });
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1", width)} data-slot="journal-detail-field">
+    <div
+      className={cn("flex min-w-0 flex-col gap-1", width)}
+      data-slot="journal-detail-field"
+      data-journal-field={fieldKey}
+    >
       <Label
         title={label}
         className={cn(
@@ -169,6 +176,7 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
       ) : null}
       {inbound && line.vatDeduction === "partial" ? (
         <DetailField
+          fieldKey={`${line.id}:vatDeductionShare`}
           label={t.deductionShare}
           width="flex-none w-[6rem]"
           numeric
@@ -188,6 +196,7 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
       ) : null}
       {code?.requiresPdpSubject ? (
         <DetailField
+          fieldKey={`${line.id}:pdpSubjectCode`}
           label={t.pdpSubject}
           width="min-w-[12rem] flex-1 basis-[14rem]"
           error={errors.pdpSubjectCode}
@@ -335,6 +344,7 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
       {fields.map((id) => (
         <DetailField
           key={id}
+          fieldKey={`${line.id}:${id}`}
           label={labels[id]}
           width={widthClass(id)}
           numeric={id === "quantity" || id === "unitPrice"}

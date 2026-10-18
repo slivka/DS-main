@@ -285,13 +285,28 @@ export const filterJournalLines = (lines: JournalLine[], search: string) => {
     ),
   );
 };
-/** Chyby řádků očíslované podle pořadí řádku (1 = první). */
+/** Id pole řádku pro souhrn chyb a fokus (buňka i detail řádku). */
+export const journalFieldId = (rowId: string, columnId: string) =>
+  `journal-${rowId}-${columnId}`;
+
+/** Chyby řádků očíslované podle pořadí řádku (1 = první) s id pole, řádku a sloupce. */
 export const numberJournalErrors = (
   lines: JournalLine[],
   errors: Map<string, Partial<Record<string, string>>>,
 ) =>
   lines.flatMap((line, lineIndex) =>
     Object.entries(errors.get(line.id) ?? {}).flatMap(([field, message]) =>
-      message ? [{ line: lineIndex + 1, field, message }] : [],
+      message
+        ? [
+            {
+              line: lineIndex + 1,
+              field,
+              message,
+              fieldId: journalFieldId(line.id, field),
+              rowId: line.id,
+              columnId: field,
+            },
+          ]
+        : [],
     ),
   );

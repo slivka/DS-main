@@ -106,6 +106,9 @@ function RowNumberCell({
           <button
             type="button"
             className="rounded-md"
+            data-slot="journal-detail-toggle"
+            data-row-id={line.id}
+            aria-expanded={Boolean(expanded[line.id])}
             aria-label={expanded[line.id] ? t.hideDetail : t.showDetail}
             onClick={() =>
               editor.setExpanded((state) => ({ ...state, [line.id]: !state[line.id] }))

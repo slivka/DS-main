@@ -147,10 +147,20 @@ export interface JournalLinesEditorProps {
   validate?: (line: JournalLine) => JournalLineErrors;
   /** Celek řádků (stejný výpočet jako patička a „Celkem …“ v liště); volá se jen při změně hodnot. */
   onTotalsChange?: (totals: JournalTotals) => void;
-  /** Počet a seznam viditelných chyb; `line` je pořadí řádku od 1. */
+  /**
+   * Počet a seznam viditelných chyb; `line` je pořadí řádku od 1. Od 2.107.0 navíc
+   * `fieldId`, `rowId` a `columnId` pro odkazy souhrnu chyb (aditivní).
+   */
   onValidationChange?: (
     count: number,
-    errors: { line: number; field: string; message: string }[],
+    errors: {
+      line: number;
+      field: string;
+      message: string;
+      fieldId?: string;
+      rowId?: string;
+      columnId?: string;
+    }[],
   ) => void;
   /** Řádky lze přesouvat (výchozí, pokud je něco editovatelné). */
   reorderable?: boolean;
