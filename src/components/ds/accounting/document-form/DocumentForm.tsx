@@ -19,6 +19,7 @@ import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
 import {
   DEFAULT_DOCUMENT_FORM_TEXTS,
+  type DocumentDateField,
   type DocumentFormProps,
   type DocumentHeaderField,
   type DocumentHeaderValue,
