@@ -3,8 +3,12 @@ import { expect, test } from "@playwright/test";
 
 test("Pruh: oprava DUZP odebere položku, titulek 2 → 1 → pruh zmizí", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  // Hydratace: ukázka výpisu na téže stránce hlásí připravenost.
+  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+    timeout: 45000,
+  });
   const box = page.getByTestId("live-issues-showcase");
-  await expect(box).toContainText("Doklad nelze uložit (2)", { timeout: 45000 });
+  await expect(box).toContainText("Doklad nelze uložit (2)");
   const duzp = box.locator("#document-taxDate");
   await duzp.click();
   await page.keyboard.type("10.10.2026");
@@ -18,7 +22,9 @@ test("Pruh: oprava DUZP odebere položku, titulek 2 → 1 → pruh zmizí", asyn
 test("Protiúčet BA: sloupce obou řádků lícují při zoomu 70 / 100 / 200 %", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   const box = page.getByTestId("bank-vat-example");
-  await expect(box.locator("#document-bankAccountKind")).toBeVisible({ timeout: 45000 });
+  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+    timeout: 45000,
+  });
   for (const scale of [0.7, 1, 2]) {
     await page.evaluate(async (value) => {
       const path = "/src/lib/app-zoom.ts";
