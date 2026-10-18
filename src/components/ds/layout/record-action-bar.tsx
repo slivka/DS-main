@@ -25,6 +25,8 @@ import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { cn } from "../../../lib/utils";
 import { useRecordActionWidth } from "./use-record-action-width";
 import { FieldErrorSummary, type FieldErrorLink } from "../feedback/field-error-summary";
+import { FormIssuesBar } from "../feedback/form-issues-bar";
+import { mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
 
 export interface RecordSaveAction {
   onSave: () => void;
@@ -79,6 +81,14 @@ export interface RecordActionBarProps {
   error?: RecordActionError;
   /** Jeden nebo více informačních pruhů pod chybou. */
   notices?: ReactNode;
+  /**
+   * Živý seznam položek k opravě (2.108.0). Neprázdný seznam nahradí chybový pruh: titulek
+   * s počtem, chyby a pod nimi varování; prázdný = pruh zmizí sám. `error.message` se vypíše
+   * jen, když se neshoduje s položkou.
+   */
+  issues?: FormIssue[];
+  /** Uložení selhalo – titulek „Doklad nelze uložit (N)“. */
+  saveFailed?: boolean;
   saveLabel?: string;
   moreActionsLabel?: string;
   errorTitle?: ReactNode;
@@ -166,6 +176,8 @@ export function RecordActionBar({
   busy = false,
   error,
   notices,
+  issues,
+  saveFailed,
   saveLabel,
   moreActionsLabel,
   errorTitle,
@@ -353,7 +365,18 @@ export function RecordActionBar({
           ))}
         </div>
       </div>
-      {error ? (
+      {issues && mergeFormIssues(issues).length > 0 ? (
+        <div ref={errorRef} data-slot={errorDataSlot}>
+          <FormIssuesBar
+            issues={issues}
+            saveFailed={saveFailed}
+            title={error?.title}
+            message={error?.message}
+            onClose={error?.onClose}
+            closeLabel={closeText}
+          />
+        </div>
+      ) : error ? (
         <div
           ref={errorRef}
           role="alert"
