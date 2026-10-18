@@ -3,6 +3,7 @@
  * Řádek všech typů polí ve stavech ok / varování / chyba / nápověda, ve formuláři
  * i v detailu řádku mřížky, s přepínačem zoomu mřížky a hustoty.
  */
+import type * as React from "react";
 import { useState, type ReactNode } from "react";
 import { Field } from "@/components/ds/layout/form-field-layout";
 import { Input } from "@/components/ui/input";
@@ -136,7 +137,12 @@ export function FieldStatusShowcase() {
           data-slot="field-status-grid"
           data-density={density}
           className="journal-line-detail-grid space-y-4 rounded-md bg-muted/30 p-3"
-          style={{ fontSize: `${(zoom / 100) * (density === "compact" ? 0.875 : 1)}rem` }}
+          style={
+            {
+              fontSize: `${(zoom / 100) * (density === "compact" ? 0.875 : 1)}rem`,
+              "--control-h": `${2.25 * (zoom / 100) * (density === "compact" ? 0.875 : 1)}rem`,
+            } as React.CSSProperties
+          }
         >
           {STATES.map((state) => (
             <FieldRow key={state} state={state} prefix="grid" />
