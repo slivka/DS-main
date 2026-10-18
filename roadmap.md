@@ -2,7 +2,8 @@
 
 - [x] 1 S9: vazby dat zapisují odvozené hodnoty přes onChange; reset při změně value.id; test.
 - [x] 2 S1: žádný text pod polem (externí číslo, detail řádku); chyby do pruhu; vatRateMissing jednou.
-- [x] 3 S5: tooltip u každé akce RecordActionBar, ⋯ přes Tooltip; levý obsah nepřekryje akce. (E2E „výpis CS/SK 70–200 %“ selhává, k prošetření)
+- [x] 3 S5: tooltip u každé akce RecordActionBar, ⋯ přes Tooltip; levý obsah nepřekryje akce.
+- [ ] Před vydáním: měřicí kopie akcí mimo formulář; beze změny testu ověřit matici CS/SK 70–200 %, celé soubory výpisu, document-controls, grid-add-actions, unit a lint. Verze 2.104.0; jednotná výška nadále odložena, nevydávat.
 - [x] 4 S6: ＋ v hledání u CounterpartyField a TagPicker; UnitSelect důvod; typy (searchText).
 - [x] 5 S7: popover protistrany ds-select-popover; CategorySelect rem; ContactSelect jednořádkově.
 - [x] 6 Texty protiúčtu, TaxDocumentNumberField odsazení, protiúčet pohybu dle editableFields.

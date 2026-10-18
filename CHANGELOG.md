@@ -15,6 +15,8 @@
   Peněžní směr Výdaj; výpisový pohyb Bankovní pohyb. Texty CS/SK.
 - S10: výpis bez viditelného štítku stavu, nový výpis s prázdnými pohyby a onSaveThenAdd.
 - Poslední vydaná verze v package.json i meta.version je 2.104.0. Nic nevydáno.
+- Měřicí kopie lišty akcí jsou uvnitř jejího odsazení; sticky/backdrop oblast je neposouvá
+  přes jeho okraj a měření nezasahuje do skutečných akcí. Pravidla nezalamování beze změny.
 
 ### Ověření
 
