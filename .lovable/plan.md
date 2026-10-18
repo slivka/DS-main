@@ -1,65 +1,112 @@
-# DS 2.105.0 – jednotná výška polí, chyby a nápovědy bez změny výšky
+# DS 2.107.0 – jednotná výška polí, chyby a nápovědy bez změny výšky, dokončení A9
 
-Pravidlo: „Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.“
+Nic se nevydává. Nový plán, předchozí plán z 18. 10. 08:46 se nepoužívá.
 
-Stav ověřený před plánem: `package.json` i `meta.version` už jsou 2.104.0 (oprava není potřeba, jen kontrola); CHANGELOG má 2.105.0 (nevydáno) z Edit 14 – nové body se připíší do něj; u 2.104.0 se odstraní případné „nevydáno“. Existuje `field-feedback.tsx` (FieldFeedbackIndicator, kontext) z Edit 14 – stane se základem `FieldStatus`, nevznikne druhá implementace. `JournalRowDetail` dnes vykresluje chybu jako `role="alert"` text pod polem a chyby předává jen DPH polím (řádky 52–54, 125, 143). `styles.css:1264` přepisuje výšku v `.journal-line-detail-grid`.
+## 0. Verze a výchozí stav
 
-## 1) Výška z --control-h
-- `styles.css`: `.journal-line-detail-grid` a buňky mřížky nastaví `--control-h: 2.25em`; přepis `!important` pro input/combobox se odstraní. Pravidlo tlačítek v buňce (`height:auto`) se zúží tak, aby nezasahovalo do `[data-slot=segmented]`, ToggleGroup a FieldToggleButton.
-- Nová utilita `h-control` (`height: var(--control-h)`, border-box) a `min-w-control`.
-- Převedou se na `h-control` (místo h-9/h-8/min-h-9): `ui/input`, `ui/select` (SelectTrigger), `ui/toggle` + `toggle-group`, `ui/button` (size default/icon jen přes variantu `size="control"` – ostatní použití tlačítek se nemění), DecimalInput, OptionSelect, SearchableOptionSelect, PartnerSelect, DimensionSelect, AccountSelect, UnitSelect (+ výška mimo mřížku, `rounded-sm` → společné zaoblení), VsField, DateField, `date-range-field`, RateField, `counterparty-field`, SegmentedField (kontejner i vnitřní tlačítka `h-full`), FieldToggleButton (relativně k výšce pole), `address-fields` tlačítko Mapa (mezerník h-5 mb-1 zrušen), `PaymentSection` SS, `BasicSection`, `use-external-number-field`, `document-identity-line` (prvky v řádku polí), CheckboxField `align="input"`.
-- Mimo rozsah (nejsou v řádku polí, ponechat): navigace, panely, záložky, kalendář, paginace, lišty gridu (`grid-toolbar-control` má vlastní token).
+- Dnes je v package.json i v `meta.version` uvedeno **2.104.0** a CHANGELOG končí sekcí „2.105.0 (nevydáno)“. Podle zadání jsou 2.105.0 i 2.106.0 už vydané, takže obě hodnoty nastavím na **2.106.0**. Sekci 2.105.0 v CHANGELOG přejmenuji na vydanou; když sekce 2.106.0 chybí, doplním krátký záznam „vydáno (bez samostatných poznámek)“. Novou sekci založím jako **2.107.0 (nevydáno)**.
+- Výchozí commit pro porovnání katalogů je stav před prvním krokem tohoto kola. Porovnávají se 4 soubory: `.lovable/design-system.json`, `components.md`, `.lovable/rules/components.md` a `.lovable/sources.yaml`/manifest. Podmínky: počet komponent je alespoň 432, žádný dnešní název ani prop nezmizí a popisy se jen rozšiřují.
 
-## 2) FieldStatus – chyba a varování v poli
-- `form/field-feedback.tsx` rozšířit na `FieldStatus` (komponenta) + `useFieldStatus(id, {error, warning})` → `{ invalid, describedById, srText, indicator, tone }`. Stávající export `FieldFeedbackIndicator` zůstává jako alias (@deprecated 2.105.0).
-- Vzhled: `border-destructive ring-1 ring-destructive` / `border-warning-strong ring-warning-strong`; ikona AlertCircle / AlertTriangle velikosti `1em`; strana `iconSide: "start" | "end"` – start pro číslo zarovnané vpravo (DecimalInput, AmountInput, RateField, Poměr %), jinak end; ve výběrech před šipkou ve vyhrazeném slotu. Rezerva odsazení přes `ps-`/`pe-` v em.
-- Text: Tooltip (DisabledReasonTooltip) na hover pole, focus pole a klepnutí na ikonu (dotyk ~3 s / do dalšího klepnutí); `aria-invalid`, `aria-describedby` na sr-only text; popisek červeně (`Label` dostane stav z kontextu, truncate zůstává).
-- Prvky bez místa uvnitř (SegmentedField, ToggleGroup, CheckboxField, SwitchField, Textarea): rámeček kolem prvku + ikona za textem popisku.
-- Buňka mřížky: roh zůstává, nativní `title` → stejný Tooltip (`DataGrid` editory, `JournalLinesEditor` buňky).
-- Jednotné props `error?: string`, `warning?: string` na všech polích výše.
+## 1. Co se po 2.106.0 ještě kreslí pod polem (ověřeno v kódu)
 
-## 3) Nápověda
-- `Field.hint`, `CheckboxField.hint`, `SwitchField.hint`, `DateField.hint`: API zůstává, vykreslí se jako ikona Info v řádku popisku s bublinou. Výjimky: `formatPattern` uvnitř pole, `FieldGrid.hint` pod sekcí.
+| Místo | Co kreslí |
+|---|---|
+| `layout/form-field-layout.tsx` (Field) | `hint` jako `<p data-slot="field-hint">` pod prvkem |
+| `form/date-field.tsx` ř. ~406 | `hint` jako `field-overflow-hint` pod polem |
+| `form/checkbox-field.tsx` (CheckboxField ř. 77, SwitchField ř. 175) | `hint` jako `<p>` pod popiskem nebo přepínačem |
+| `ui/form.tsx` | `FormDescription` a `FormMessage` (text v toku) |
+| `accounting/bank-account-field.tsx` ř. ~249–266 | ruční `Input` s `mt-2` pod výběrem účtu |
+| `accounting/JournalRowDetail.tsx` | DetailField už má ikonu uvnitř (S1). Chyby ale dostává jen blok DPH; VS, zakázka, partner, MJ, množství, cena a ruční daň chybu ani varování nedostanou |
+| `received-bank-account-field.tsx` | mřížka s 2–3 poli (IBAN/SWIFT) pod sebou; jde o rozložení, ne o zprávu. Zůstává, ale každé pole má výšku `--control-h` |
 
-## 4) Souhrn chyb
+Rate-field a AmountSection už po S1 zobrazují chybu jako ikonu uvnitř pole. Během implementace to znovu ověřím testem „nic pod prvkem“ (bod 7).
+
+Napevno nastavené výšky v řádcích polí: `ui/toggle.tsx` (h-9/h-8), `form/date-range-field.tsx`, `counterparty-field.tsx`, `document-form/PaymentSection.tsx` (SS), `BasicSection.tsx` (tlačítko Mapa a mezerník h-5 mb-1), `use-external-number-field.tsx`, `document-identity-line.tsx`, `form/TagPicker.tsx`, `form/address-fields.tsx`. Výšky v lištách, menu a panelech zůstávají beze změny.
+
+## 2. Pravidlo
+
+> Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.
+
+Pravidlo zapíšu do `.lovable/system.md`, `components.md`, `src/components/ds/AGENTS.md` (kontroly) a na stránku Pravidla (`routes/guidelines.tsx`). Nahradí staré formulace „hint pod polem“, „pod polem kurzu je jen chyba“ a „kompaktní štítek v řádku“.
+
+## 3. Výška
+
+- `styles.css`: v `.journal-line-detail-grid` a v buňkách mřížky nahradím přepis `height: var(--f-h) !important` lokálním `--control-h: 2.25em`. Formulář má dál 2.25rem.
+- Výšku `h-[var(--control-h)]` (border-box) dostanou: Input, DecimalInput, SelectTrigger, OptionSelect, SearchableOptionSelect, PartnerSelect, DimensionSelect, AccountSelect, UnitSelect (i mimo mřížku, `rounded-md` jako ostatní), VsField, DateField, DateRangeField, RateField, CounterpartyField, SegmentedField a jeho vnitřní tlačítka, Toggle/ToggleGroup, SS, tlačítko Mapa (bez mezerníku) a CheckboxField `align="input"`.
+- SegmentedField dostane `data-slot="segmented"` a pravidlo tlačítek v buňce (`height:auto`) ho vynechá přes `:not([data-slot=segmented] *)`.
+- `ui/button.tsx`: nová velikost `size="control"` (`h-[var(--control-h)] px-[0.75em]`). Ostatní velikosti zůstávají.
+- FieldToggleButton se dál odvozuje relativně od `--control-h`.
+
+## 4. Stav pole: rozšíření field-feedback
+
+V `form/field-feedback.tsx` přibude:
+- `FieldStatus` (`{ error?: string; warning?: string }`, error má přednost),
+- `useFieldStatus(props)`, který vrátí `{ tone, message, describedById, controlProps: { "aria-invalid", "aria-describedby" }, className }`. Rámeček je `border-destructive|border-warning-strong ring-1`.
+- `FieldStatusIndicator` s prop `side: "start" | "end"` a `placement: "inside" | "label"`. `FieldFeedbackIndicator` zůstane jako alias. FieldFeedbackContext zůstane a nové API na něm stojí.
+
+Chování:
+- Ikona je vlevo u čísel zarovnaných doprava (DecimalInput, AmountInput, RateField, Poměr %), jinak vpravo. U výběrů je před šipkou. Odsazení textu je v em.
+- Bublina se ukáže při najetí na pole, při focusu pole a po klepnutí na ikonu (DisabledReasonTooltip, dotyk asi 3 s). Text je i v sr-only prvku napojeném přes `aria-describedby`. Popisek pole při chybě zčervená a nezalamuje se.
+- `placement="label"` pro SegmentedField, ToggleGroup, CheckboxField, SwitchField a Textarea: rámeček kolem prvku, ikona za popiskem, popisek se zkrátí s … a celý text je v bublině.
+- V buňce mřížky zůstává roh. Nativní `title` nahradí stejný Tooltip.
+
+## 5. Nápověda
+
+`Field.hint`, `CheckboxField.hint`, `SwitchField.hint`, `DateField.hint` a `FormDescription` se zobrazí jako ikona Info v řádku popisku s bublinou (sdílená `FieldHintIcon` v field-feedback). API se nemění. `FormMessage` použije FieldStatus místo textu. Výjimky zůstávají: `formatPattern` uvnitř pole a `FieldGrid.hint` pod sekcí. `DateField.warningDisplay` je už bez účinku a přibude u něj `@deprecated` (odstranění v 3.0).
+
+## 6. Souhrn chyb
+
 - Nový typ `FieldErrorLink { fieldId; label; message; rowId?; columnId? }`.
-- `RecordActionBar.error` a `DocumentForm.error` přijmou `fieldErrors?: FieldErrorLink[]`; odkazy „Popisek: zpráva“, max 5 + „a další N“ (texty v DsTexts CS/SK). Klik: `focusField(link)` – scrollIntoView + focus; u řádku mřížky přes `JournalLinesEditor` handle vybere řádek, rozbalí detail, fokusuje pole.
+- `RecordActionBar.error` a `DocumentForm.error` přijmou i `fieldErrors?: FieldErrorLink[]`. Zobrazí se odkazy „Popisek: zpráva“, nejvýš 5 a za nimi „a další N“ (DsTexts `fieldErrors.more`, CS/SK).
+- Klik na odkaz: `scrollIntoView` a focus. U řádku mřížky přes `JournalLinesEditor` handle `focusField(rowId, columnId)`: vybere řádek, rozbalí detail a fokusuje pole.
 - `RecordDialog`: stejný souhrn sticky nad patičkou.
-- `JournalLinesEditor.onValidationChange(count, errors)` – položky doplní `fieldId`, `rowId`, `columnId` (aditivně).
-- `lib/form-errors.ts`: české komentáře, `useFormErrors` vrací i `fieldErrors` ve tvaru `FieldErrorLink`.
+- `JournalLinesEditor.onValidationChange`: položky dostanou navíc `fieldId`, `rowId` a `columnId` (aditivní změna).
+- `lib/form-errors.ts`: komentáře česky a `useFormErrors` vrací i `fieldErrors(labels)`.
 
-## 5) JournalRowDetail
-- `DetailField` bez textu pod polem: popisek + prvek, chyba/varování přes FieldStatus. Každé pole (VS, zakázka, partner, množství, MJ, cena, sazba, nárok, poměr, PDP, ruční daň) dostane `error`/`warning` z `journal-lines-validation` podle sloupce; validace doplní kanál varování (ruční daň).
-- Kompaktní štítek chybějícího pole v řádku se nahradí rohem buňky (pravidlo „kompaktní štítek v řádku“ se ruší).
+## 7. JournalRowDetail
 
-## 6) BankAccountField – ruční režim
-- Nový prop `entryMode: "selected" | "manual"` + `onEntryModeChange` (řízeně), FieldToggleButton uvnitř pole jako u protistrany; v režimu ručně Input s `formatPattern` „předčíslí-číslo/kód“. Dosavadní ruční Input pod výběrem se odstraní; `manualValue`/`onManualChange` zůstávají.
+Každé pole (VS, zakázka, partner, množství, MJ, cena, sazba, nárok, poměr, PDP, ruční daň) dostane `error` a `warning` z `journal-lines-validation` podle sloupce. Ruční daň dostane warning. DetailField má jen popisek a prvek, kontejner je `items-start` bez zalamování zpráv. Zoom mřížky 60–140 % a kompaktní hustota mají stejnou výšku řádku.
 
-## Seznam míst s obsahem pod polem a převod
-| Místo | Dnes | Převod |
-|---|---|---|
-| Field | error, hint text | FieldStatus, Info ikona |
-| ui/form FormMessage, FormDescription | text | FormMessage napojí FieldStatus (vrací null), FormDescription → Info ikona v FormLabel |
-| DateField | hint, warning „below“ | Info ikona; `warningDisplay` @deprecated, ignorován |
-| RateField | chyba důvodu | indikátor v poli kurzu |
-| DocumentAmountSection | rateNoteRequired, vatRateMissing | indikátor na Kurz / Kurz DPH |
-| BankAccountField | chyba + ruční Input | indikátor + režim v poli |
-| CheckboxField, SwitchField | hint | Info ikona |
-| JournalRowDetail | chyba DPH | FieldStatus na všech polích |
-| address-fields Mapa | mezerník h-5 mb-1 | odstranit |
-| Navíc k ověření při realizaci (grep `text-destructive`, `text-xs text-muted` pod vstupem): `period-filter`, `chip-multi-select`, `TagPicker`, `amount-difference`, `use-external-number-field`, `ColumnFilter` – převést, pokud jde o text pod polem formuláře |
+## 8. BankAccountField
 
-## 7) Ukázky a testy
-- Showcase „Chyby a varování v polích“ (routa komponent): řádek všech typů ve stavech ok / varování / chyba, ve formuláři i v detailu řádku mřížky, přepínač zoomu mřížky 60–140 % a hustoty.
-- Unit: třída/proměnná výšky na všech prvcích; výška detailu shodná s chybou i bez; aria-invalid + describedby; bublina na focus a klepnutí; klik v souhrnu fokusuje pole (i v detailu řádku); `useFormErrors`.
-- Chromium E2E: měření výšek v řádku (rozdíl < 1 px) při 1280 / 560 px, světlý/tmavý, zoom aplikace 90/100/125 %, zoom mřížky 60/100/140 %; screenshoty.
-- Lint 0 chyb, unit, Chromium E2E; tsgo prostředí nepovoluje.
+Nové props `entryMode?: "selected" | "manual"` a `onEntryModeChange?`. Uvnitř pole bude FieldToggleButton (vzor partner / ručně). V režimu ručně je Input s `formatPattern` „předčíslí-číslo/kód“ (DsTexts). Bez řízení se zachová dnešní automatika podle hodnoty, ale bez druhého pole pod výběrem.
 
-## 8) Dokumentace, verze, changelog
-- Pravidlo zapsat do `.lovable/system.md`, `src/components/ds/AGENTS.md`, `.lovable/rules/components.md` a na stránku Pravidla; nahradit formulace o hint/error pod polem, „pod polem kurzu je jen chyba“, „kompaktní štítek v řádku“.
-- Verze package/meta 2.104.0, CHANGELOG 2.105.0 (nevydáno), sekce „Breaking / migrace pro aplikace“: hint → ikona (žádný text pod polem), `DateField.warningDisplay` ignorován, `BankAccountField` ruční režim řízený `entryMode`, `RecordActionBar.error`/`DocumentForm.error` s `fieldErrors`, `onValidationChange` nové klíče, `Button size="control"`.
-- Katalog: aditivně nové props/komponenty (FieldStatus, FieldErrorLink), všech 432 názvů zachovat; manifest aktualizovat.
+## 9. A9 (beze změny vzhledu)
 
-## Technické poznámky
-- Soubory nad 300 řádků (JournalRowDetail, DocumentForm, record-action-bar) – logiku souhrnu chyb do samostatného `field-error-summary.tsx`, focus do `use-focus-field.ts`.
-- Texty pouze přes DsTexts CS/SK.
+- `JournalLinesEditorProps.onCreateDimension?: (searchText: string) => void` se předá jako `DimensionSelect.onCreate` v JournalCellEditor i v JournalRowDetail.
+- BasicSection pro `code === "ID"`: PartnerSelect dostane `onCreate` (`counterpartyCreateSeed(query)` → `onCreatePartner`) a `onEditSelected` (→ `onEditCounterparty`).
+
+## 10. Ukázky, testy, dokumentace
+
+- Ukázka „Chyby a varování v polích“ (preview-only, vyloučená přes .dsignore): všechny typy polí ve stavech ok, varování a chyba, ve formuláři i v detailu řádku. Přepínač zoomu mřížky a hustoty.
+- Unit testy:
+  - výška z `--control-h`,
+  - stejná výška detailu s chybou i bez,
+  - aria-invalid a describedby,
+  - bublina při focusu a po klepnutí,
+  - hint jako ikona a nic pod prvkem,
+  - klik v souhrnu fokusuje pole i v detailu řádku,
+  - limit 5 a „a další N“,
+  - entryMode,
+  - A9: ＋ zakázky v buňce i v detailu předá hledaný text; u ID ＋ Nový partner a tužka.
+- Chromium E2E `control-height-2107.spec.ts`: rozdíl výšek v řádku pod 1 px při šířce 1280 a 560 px, ve světlém i tmavém vzhledu, při zoomu aplikace 90/100/125 % a zoomu mřížky 60/100/140 %. Spustí se znovu i document-controls a edit-document-thirteen.
+- CHANGELOG 2.107.0, sekce „Breaking / migrace pro aplikace“: hint jako ikona, `DateField.warningDisplay` deprecated, `BankAccountField.entryMode`, `fieldErrors`, nové klíče v `onValidationChange`, `Button size="control"`, `onCreateDimension`, nové klíče DsTexts.
+- Katalogy: nové props a komponenty FieldStatusIndicator, FieldHintIcon a FieldErrorSummary doplním s usage, examples a antipatterns. Ověření porovnávacím skriptem proti výchozímu commitu.
+
+## Nové a změněné props (souhrn)
+
+- Nové API: `useFieldStatus`, `FieldStatus`, `FieldStatusIndicator` (alias FieldFeedbackIndicator), `FieldHintIcon`, `FieldErrorSummary`, `FieldErrorLink`.
+- Button: `size="control"`.
+- RecordActionBar, DocumentForm a RecordDialog: `fieldErrors`.
+- JournalLinesEditor: `onCreateDimension`, handle `focusField`, rozšířené `onValidationChange`.
+- BankAccountField: `entryMode`, `onEntryModeChange`, `manualFormatPattern`.
+- `error`/`warning` jednotně na všech polích, nově na SegmentedField, ToggleGroup, CheckboxField, SwitchField, Textarea, UnitSelect, DimensionSelect a PartnerSelect.
+- DateField: `warningDisplay` deprecated.
+
+## Velikost souborů
+
+`field-feedback.tsx` vzroste na zhruba 200 řádků. JournalRowDetail (asi 300 řádků) rozdělím: mapování chyb na sloupce přesunu do `journal-row-detail-status.ts`. Souhrn chyb bude v samostatném souboru.
+
+## Na konci
+
+Výsledky unit testů, Chromium E2E (rozdíl výšek pod 1 px) a lintu, počty v katalozích s porovnáním 4 souborů a seznam nových a změněných props.
