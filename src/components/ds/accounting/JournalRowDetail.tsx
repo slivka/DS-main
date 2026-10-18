@@ -12,6 +12,7 @@ import { formatCodeName } from "../../../lib/code-format";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { DecimalInput } from "../form/decimal-input";
+import { FieldFeedbackContext, FieldFeedbackIndicator } from "../form/field-feedback";
 import { OptionSelect } from "../form/option-select";
 import { SegmentedField } from "../form/segmented-field";
 import { DimensionSelect } from "./dimension-select";
@@ -31,29 +32,46 @@ import { PartnerSelect } from "./partner-select";
 import { UnitSelect } from "./unit-select";
 import { VsField } from "./vs-field";
 
-/** Popsané pole detailu s volitelnou chybou. */
+/**
+ * Popsané pole detailu. Chyba i varování jsou jen ⚠ uvnitř pole s tooltipem
+ * (plný text jde přes onValidationChange do pruhu formuláře); pod polem nic.
+ */
 function DetailField({
   label,
   width,
   error,
+  warning,
   children,
 }: {
   label: string;
   width: string;
   error?: string;
+  warning?: string;
   children: React.ReactNode;
 }) {
+  const tone = error ? "error" : warning ? "warning" : undefined;
   return (
     <div className={cn("flex min-w-0 flex-col gap-1", width)}>
       <Label title={label} className="text-xs text-muted-foreground">
         {label}
       </Label>
-      {children}
-      {error ? (
-        <span role="alert" className="truncate text-xs text-destructive" title={error}>
-          {error}
-        </span>
-      ) : null}
+      <FieldFeedbackContext.Provider value={{}}>
+        <div
+          data-feedback={tone}
+          aria-invalid={error ? true : undefined}
+          className={cn(
+            "relative min-w-0 [--field-feedback-offset:0.5rem]",
+            tone && "[&_input]:pr-8 [&_[role=combobox]]:pr-8",
+            error && "[&_input]:border-destructive [&_[role=combobox]]:border-destructive",
+            !error &&
+              warning &&
+              "[&_input]:border-warning [&_[role=combobox]]:border-warning",
+          )}
+        >
+          {children}
+          <FieldFeedbackIndicator error={error} warning={warning} />
+        </div>
+      </FieldFeedbackContext.Provider>
     </div>
   );
 }
@@ -272,6 +290,7 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
           ...(editor.sideFields === "split" ? SPLIT_COLUMNS : SHARED_COLUMNS),
         ];
   const fields = candidates.filter((id) => !shown.has(id));
+  const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};
   const detailFieldCount = fields.length + (foreign && !shown.has("homeAmount") ? 1 : 0);
   return (
     <div
@@ -280,7 +299,7 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
       className="journal-line-detail-grid flex flex-wrap items-end gap-3 bg-muted/30 p-3"
     >
       {fields.map((id) => (
-        <DetailField key={id} label={labels[id]} width={widthClass(id)}>
+        <DetailField key={id} label={labels[id]} width={widthClass(id)} error={errors[id]}>
           <DetailInput line={line} id={id} />
         </DetailField>
       ))}
