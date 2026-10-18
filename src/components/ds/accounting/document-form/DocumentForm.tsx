@@ -24,7 +24,7 @@ import {
   type DocumentHeaderValue,
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
-import { useExternalNumberField } from "./use-external-number-field";
+import { externalNumberVsWarning, useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
@@ -263,9 +263,9 @@ export function DocumentForm({
     icoWarning,
     readOnly,
     invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map(
-      (key) => dateLabels[key],
+      (key) => t[key],
     ),
-    externalNumberWarning: externalNumberVsWarning,
+    externalNumberWarning: externalNumberVsWarning(value, receivedDocument, t),
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason

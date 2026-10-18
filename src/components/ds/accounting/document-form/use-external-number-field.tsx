@@ -24,6 +24,15 @@ interface Args {
     className?: string,
   ) => React.ReactNode;
 }
+/** Varování, že číslo dodavatele je pro VS příliš dlouhé (pole i pruh nad formulářem). */
+export function externalNumberVsWarning(
+  value: DocumentHeaderValue,
+  receivedDocument: boolean,
+  t: DocumentFormTexts,
+): string | undefined {
+  const digits = (value.externalNumber ?? "").replace(/\D/g, "");
+  return receivedDocument && digits.length > 10 ? t.documentNumberTooLongForVs : undefined;
+}
 /** Vykreslí externí číslo a udržuje automaticky odvozený VS. */
 export function useExternalNumberField({
   value,
@@ -35,9 +44,7 @@ export function useExternalNumberField({
   t,
   field,
 }: Args) {
-  const externalNumberDigits = (value.externalNumber ?? "").replace(/\D/g, "");
-  const externalNumberVsWarning =
-    receivedDocument && externalNumberDigits.length > 10 ? t.documentNumberTooLongForVs : undefined;
+  const warning = externalNumberVsWarning(value, receivedDocument, t);
   const initialSuggestedVs = vsFromDocumentNumber(value.externalNumber ?? "");
   const automaticVsRef = useRef<string | null>(
     value.variableSymbol === initialSuggestedVs ? initialSuggestedVs : null,
@@ -74,23 +81,14 @@ export function useExternalNumberField({
         ? t.supplierTaxDocumentNumber
         : t.supplierNumber
       : t.externalNumber,
-    <>
-      <Input
+    <Input
         id="document-externalNumber"
         value={value.externalNumber ?? ""}
         onChange={(event) => changeExternalNumber(event.target.value)}
         disabled={!can("externalNumber")}
+        warning={warning}
         className="h-9 font-mono tabular-nums"
-      />
-      {externalNumberVsWarning ? (
-        <p
-          data-slot="document-external-number-vs-warning"
-          className="mt-1 whitespace-nowrap text-xs text-warning-strong"
-        >
-          {externalNumberVsWarning}
-        </p>
-      ) : null}
-    </>,
+      />,
     6,
     false,
     receivedDocument
