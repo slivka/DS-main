@@ -1,5 +1,5 @@
 /** Vazby datumů · vlastní paměť ručního DUZP · nesmí synchronizovat props efektem. */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyDocumentDateLinks } from "./document-date-linking";
 import type { DocumentAccountingDateLink, DocumentHeaderValue } from "./document-form-types";
 
@@ -26,7 +26,15 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
   const [ownLinked, setOwnLinked] = useState(true);
   const locked =
     a.accountingDateLink?.locked ?? (applicable && a.accountingDateLinked && ownLinked);
-  const edited = useRef(Boolean(a.value.taxDate && a.value.taxDate !== a.value.issueDate));
+  const manualTaxDate = (v: DocumentHeaderValue) =>
+    Boolean(v.taxDate && v.issueDate && v.taxDate !== v.issueDate);
+  const edited = useRef(manualTaxDate(a.value));
+  const docId = useRef(a.value.id);
+  // Jiný doklad: ručně změněné DUZP se odvodí znovu z jeho dat.
+  if (docId.current !== a.value.id) {
+    docId.current = a.value.id;
+    edited.current = manualTaxDate(a.value);
+  }
   const patch = (next: Partial<DocumentHeaderValue>) => {
     if (next.taxDate !== undefined) edited.current = true;
     a.onChange(applyDocumentDateLinks(a.value, next, locked, received && !edited.current));
@@ -36,6 +44,20 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
     accountingDate: locked ? a.value.issueDate : a.value.accountingDate,
     taxDate: received && !edited.current ? a.value.issueDate || a.value.taxDate : a.value.taxDate,
   };
+  const taxLinked = received && !edited.current;
+  const latest = useRef({ value: a.value, onChange: a.onChange, locked, taxLinked });
+  latest.current = { value: a.value, onChange: a.onChange, locked, taxLinked };
+  // Synchronizace s rodičem jednou při otevření dokladu: zobrazené = uložené.
+  // Změny vystavení zapisuje přímo patch, efekt proto závisí jen na id dokladu.
+  useEffect(() => {
+    const { value, onChange, locked: l, taxLinked: tl } = latest.current;
+    if (!value.issueDate) return;
+    const next = { ...value };
+    if (l && value.accountingDate !== value.issueDate) next.accountingDate = value.issueDate;
+    if (tl && value.taxDate !== value.issueDate) next.taxDate = value.issueDate;
+    if (next.accountingDate !== value.accountingDate || next.taxDate !== value.taxDate)
+      onChange(next);
+  }, [a.value.id]);
   const link =
     a.accountingDateLink ??
     (applicable
