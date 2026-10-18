@@ -490,9 +490,17 @@ export function DocumentForm({
               date,
             }}
             description={
-              !f.partner
-                ? suggestedText("description", t.description, descriptionSuggest, 20)
-                : undefined
+              !f.partner ? (
+                <>
+                  {suggestedText(
+                    "description",
+                    t.description,
+                    descriptionSuggest,
+                    taxNumberField ? 14 : 20,
+                  )}
+                  {taxNumberField}
+                </>
+              ) : undefined
             }
             bank={bankMovement ? { value, patch, bankCodes, disabled: readOnly } : undefined}
             payment={{

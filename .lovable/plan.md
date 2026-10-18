@@ -37,3 +37,6 @@
 - Nové samostatné moduly držet pod 300 řádky. Existující rozsáhlejší orchestrace a veřejné typy zůstanou pohromadě kvůli kompatibilitě; nové chování přidat v menších pomocných modulech, ne nafukovat soubory nad limit.
 - Nové komponenty: typované props, ref, className a nativní props, barrel export a doplnění usage/examples/antipatterns v katalogu. Automaticky renderované soubory rules ručně nepřepisovat.
 - Před úpravami uložit výchozí inventuru katalogů pro závěrečné porovnání; neodstraňovat žádný dnešní název ani záznam manifestu.
+### Rozsah stávajících souborů
+
+DocumentForm zůstává nad 300 řádky kvůli zachování stávajícího širokého API; skládání sekcí, validace a vazby datumů byly odděleny bez změny veřejných importů. Lint délku existujícího souboru hlásí jako varování.
