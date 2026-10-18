@@ -86,21 +86,16 @@ function ToolbarLeft() {
           aria-disabled={vatReadOnly || undefined}
         />
       ) : null}
-      {totals.showRemaining ? (
+      {totals.showRemaining && totals.difference !== 0 ? (
         <>
           <GridToolbarSeparator density={editor.layout.density} />
           <AmountDifference
             data-slot="journal-lines-remaining"
             value={totals.difference}
             label={t.remaining}
-            balancedLabel={t.balanced}
+            overLabel={t.exceeded}
+            currencySymbol={documentMark}
           />
-          {vatOn && !grossColumnVisible ? (
-            <span
-              data-slot="journal-lines-toolbar-total"
-              className="inline-flex h-8 items-center whitespace-nowrap px-2 text-xs font-semibold tabular-nums"
-            >{`${t.total} ${formatAmount(totals.documentGrossTotal, 2)} ${documentMark}`}</span>
-          ) : null}
         </>
       ) : null}
     </>

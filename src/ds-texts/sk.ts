@@ -436,6 +436,7 @@ export const DS_TEXTS_SK: DsTexts = {
     removed: "Riadok bol odobraný",
     total: "Celkom",
     remaining: "Zostáva rozpísať",
+    exceeded: "Rozpis prevyšuje",
     balanced: "Rozpísané",
     roundingExists: "Zaokrúhlenie už na doklade je",
     errors: "Počet chýb",
