@@ -47,6 +47,7 @@ export function SegmentedField<Value extends string = string>({
   const group = (
     <div
       role="radiogroup"
+      data-slot="segmented"
       aria-label={ariaLabel ?? label ?? "Výběr typu"}
       className={cn(
         "inline-flex h-[var(--control-h)] w-fit overflow-hidden rounded-md border border-input bg-background",
