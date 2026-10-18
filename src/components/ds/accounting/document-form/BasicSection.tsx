@@ -6,7 +6,6 @@
 import type { ReactNode } from "react";
 import { Input } from "../../../ui/input";
 import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-field";
-import { PartnerSelect } from "../partner-select";
 import { CounterpartyInputField } from "../counterparty-input-field";
 import { IcoLink, type IcoLinkTarget } from "../../form/ico-link";
 import { SectionHeading } from "../../layout/section-heading";
@@ -67,7 +66,7 @@ export interface DocumentBasicSectionProps {
   counterpartyInputLockedReason?: string;
   /** Daňové číslo vedle Popisu. */
   taxNumberField?: ReactNode;
-  /** Interní doklad používá samotný PartnerSelect. */
+  /** Interní doklad (2.108.0: partner / ručně, IČO a DIČ jako u faktur, bez adresy). */
   internal?: boolean;
 }
 /** Vykreslí základní údaje dokladu. */
@@ -108,126 +107,104 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner",
             partnerLabel,
-            p.internal ? (
-              <PartnerSelect
-                id="document-partner"
-                partners={partners}
-                value={value.partnerId}
-                onChange={(partnerId) => patch({ partnerId })}
-                disabled={!can("partnerId")}
-                onCreate={
-                  onCreatePartner
-                    ? (query) => onCreatePartner(counterpartyCreateSeed(query))
-                    : undefined
-                }
-                onEditSelected={onEditCounterparty}
-              />
-            ) : (
-              <CounterpartyInputField
-                id="document-partner"
-                partners={partners}
-                mode={counterpartyInput}
-                partnerId={value.partnerId}
-                name={value.counterpartyName ?? partner?.name ?? ""}
-                onPartnerChange={(partnerId) => {
-                  const selected = partners.find((item) => item.id === partnerId);
-                  patch({
-                    partnerId,
-                    counterpartyName: selected?.name ?? value.counterpartyName,
-                    counterpartyIco: selected?.ico ?? null,
-                    counterpartyDic: selected?.dic ?? null,
-                  });
-                }}
-                onNameChange={(counterpartyName) => patch({ counterpartyName })}
-                onModeChange={onCounterpartyInputChange}
-                lockedReason={counterpartyInputLockedReason}
-                partnerModeLabel={t.selectFromDirectory}
-                manualModeLabel={t.enterManually}
-                replaceManualWarning={t.replaceManualCounterparty}
-                hasManualData={Boolean(
-                  value.counterpartyName || counterpartyIco || counterpartyDic,
-                )}
-                disabled={!can("partnerId")}
-                readOnly={readOnly}
-                onCreatePartner={
-                  onCreatePartner
-                    ? (query) => onCreatePartner(counterpartyCreateSeed(query))
-                    : undefined
-                }
-                onEditPartner={onEditCounterparty}
-              />
-            ),
+            <CounterpartyInputField
+              id="document-partner"
+              partners={partners}
+              mode={counterpartyInput}
+              partnerId={value.partnerId}
+              name={value.counterpartyName ?? partner?.name ?? ""}
+              onPartnerChange={(partnerId) => {
+                const selected = partners.find((item) => item.id === partnerId);
+                patch({
+                  partnerId,
+                  counterpartyName: selected?.name ?? value.counterpartyName,
+                  counterpartyIco: selected?.ico ?? null,
+                  counterpartyDic: selected?.dic ?? null,
+                });
+              }}
+              onNameChange={(counterpartyName) => patch({ counterpartyName })}
+              onModeChange={onCounterpartyInputChange}
+              lockedReason={counterpartyInputLockedReason}
+              partnerModeLabel={t.selectFromDirectory}
+              manualModeLabel={t.enterManually}
+              replaceManualWarning={t.replaceManualCounterparty}
+              hasManualData={Boolean(value.counterpartyName || counterpartyIco || counterpartyDic)}
+              disabled={!can("partnerId")}
+              readOnly={readOnly}
+              onCreatePartner={
+                onCreatePartner
+                  ? (query) => onCreatePartner(counterpartyCreateSeed(query))
+                  : undefined
+              }
+              onEditPartner={onEditCounterparty}
+            />,
             14,
             false,
             "@min-[40rem]:pr-3",
           )}
-          {!p.internal
-            ? field(
-                "document-partner-ico",
-                t.ico,
-                counterpartyInput === "partner" ? (
-                  <ReadField
-                    id="document-partner-ico"
-                    mono
-                    value={
-                      counterpartyIco ? (
-                        <IcoLink
-                          ico={counterpartyIco}
-                          country={partner?.country}
-                          kind={partner?.kind}
-                          target={icoLinkTarget}
-                        />
-                      ) : (
-                        "—"
-                      )
-                    }
-                  />
-                ) : (
-                  <>
-                    <Input
-                      id="document-partner-ico"
-                      value={counterpartyIco}
-                      onChange={(event) =>
-                        patch({
-                          counterpartyIco: normalizeManualIco(
-                            event.target.value,
-                            value.counterpartyCountry,
-                          ),
-                        })
-                      }
-                      disabled={!can("counterpartyIco")}
-                      warning={icoWarning ? t.invalidIco : undefined}
-                      className="h-[var(--control-h)] font-mono tabular-nums"
+          {field(
+            "document-partner-ico",
+            t.ico,
+            counterpartyInput === "partner" ? (
+              <ReadField
+                id="document-partner-ico"
+                mono
+                value={
+                  counterpartyIco ? (
+                    <IcoLink
+                      ico={counterpartyIco}
+                      country={partner?.country}
+                      kind={partner?.kind}
+                      target={icoLinkTarget}
                     />
-                  </>
-                ),
-                3,
-                !receivedDocument,
-              )
-            : null}
-          {!p.internal
-            ? field(
-                "document-partner-dic",
-                t.dic,
-                counterpartyInput === "partner" ? (
-                  <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} />
-                ) : (
-                  <Input
-                    id="document-partner-dic"
-                    value={counterpartyDic}
-                    onChange={(event) =>
-                      patch({
-                        counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase(),
-                      })
-                    }
-                    disabled={!can("counterpartyDic")}
-                    className="h-[var(--control-h)] font-mono uppercase tabular-nums"
-                  />
-                ),
-                3,
-                !receivedDocument,
-              )
-            : null}
+                  ) : (
+                    "—"
+                  )
+                }
+              />
+            ) : (
+              <>
+                <Input
+                  id="document-partner-ico"
+                  value={counterpartyIco}
+                  onChange={(event) =>
+                    patch({
+                      counterpartyIco: normalizeManualIco(
+                        event.target.value,
+                        value.counterpartyCountry,
+                      ),
+                    })
+                  }
+                  disabled={!can("counterpartyIco")}
+                  warning={icoWarning ? t.invalidIco : undefined}
+                  className="h-[var(--control-h)] font-mono tabular-nums"
+                />
+              </>
+            ),
+            3,
+            !receivedDocument,
+          )}
+          {field(
+            "document-partner-dic",
+            t.dic,
+            counterpartyInput === "partner" ? (
+              <ReadField id="document-partner-dic" mono value={counterpartyDic || "—"} />
+            ) : (
+              <Input
+                id="document-partner-dic"
+                value={counterpartyDic}
+                onChange={(event) =>
+                  patch({
+                    counterpartyDic: event.target.value.replace(/\s/g, "").toUpperCase(),
+                  })
+                }
+                disabled={!can("counterpartyDic")}
+                className="h-[var(--control-h)] font-mono uppercase tabular-nums"
+              />
+            ),
+            3,
+            !receivedDocument,
+          )}
           {f.handedOverBy
             ? suggestedText(
                 "handedOverBy",

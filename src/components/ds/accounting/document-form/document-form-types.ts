@@ -3,6 +3,7 @@
  * Vlastní: datový kontrakt formuláře a kompatibilní české výchozí texty.
  * Nesmí: vykreslovat UI ani obsahovat stav formuláře.
  */
+import type { FormIssue } from "../../../../lib/form-issues";
 import type { FieldErrorLink } from "../../feedback/field-error-summary";
 import type { ReactNode } from "react";
 import type {
@@ -52,6 +53,12 @@ export type DocumentHeaderValue = {
   taxDocumentNumber?: string | null;
   /** Číslo daňového dokladu sleduje číslo dokladu; výchozí true. */
   taxDocumentNumberLinked?: boolean;
+  /**
+   * VS je svázaný s číslem daňového dokladu (FP/ZFP/DDPOZ/FV/ZFV/DDPZ). Zamčený VS DS jen
+   * zobrazuje jako náhled; aplikace ho do DB neposílá (variable_symbol_auto). Výchozí: svázáno,
+   * když je VS prázdný nebo shodný s odvozeným.
+   */
+  variableSymbolLinked?: boolean;
   /** Režim protiúčtu bankovního pohybu. */
   bankAccountKind?: "domestic" | "iban";
   /** Kód banky oddělený od českého čísla účtu. */
@@ -399,6 +406,8 @@ export interface DocumentFormProps {
   printTab?: Omit<DocumentPrintTabProps, "readOnly">;
   /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
   bankCodes?: string[];
+  /** Kódy bank s názvy (bankovní pohyb): nabídka a pole „kód – název“, hledání podle obou. */
+  bankCodeOptions?: Array<{ code: string; name: string }>;
   documentType?: DocumentTypeCode | string;
   fields?: Partial<DocumentFields>;
   editableFields?: DocumentHeaderField[];
@@ -461,6 +470,20 @@ export interface DocumentFormProps {
   moreActions?: DocumentMoreAction[];
   settings?: DocumentSettingsAction;
   error?: DocumentFormError;
+  /**
+   * Položky živého pruhu od aplikace (2.108.0): serverové se zobrazí vždy, klientské až při
+   * `validationActive`. DS je deduplikuje; serverové mazat při změně pole je na aplikaci.
+   */
+  issues?: FormIssue[];
+  /** Uložení selhalo – titulek „Doklad nelze uložit (N)“; jinak „Před zařazením doplňte (N)“. */
+  saveFailed?: boolean;
+  /** Klientské položky a červené rámečky až po prvním pokusu o uložení / zařazení; výchozí true. */
+  validationActive?: boolean;
+  /**
+   * Změna pole (i přepínače v poli: zámek data, VS, Σ). Hlavička: `document-klíč`;
+   * buňka řádku: id buňky s `rowId` a `columnId`. Aplikace podle něj maže své serverové položky.
+   */
+  onFieldChange?: (fieldId: string, rowId?: string, columnId?: string) => void;
   /** Provozní informace pod chybou a nad bannerem jen pro čtení. */
   notices?: ReactNode;
   readOnly?: boolean;

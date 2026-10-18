@@ -119,7 +119,7 @@ export function DocumentDatesShowcase() {
                     value={{
                       currency: "EUR",
                       amountTotal: 0,
-                      totalMode: "entered",
+                      totalMode: "sum",
                       issueDate: "2026-10-12",
                       accountingDate: "2026-10-12",
                       dueDate: "2026-10-24",

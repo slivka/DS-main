@@ -7,7 +7,8 @@ import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { AmountInput } from "./amount";
-import { AmountDifference } from "./amount-difference";
+import { Sigma } from "lucide-react";
+import { FieldToggleButton } from "../form/field-toggle-button";
 import { DateField } from "../form/date-field";
 import { parseDecimalInput } from "../form/decimal-input";
 import { FieldValue } from "../form/field-value";
@@ -32,7 +33,25 @@ interface BasicSectionProps {
   texts: BankStatementTexts;
 }
 
-/** Základní údaje: datum vlevo, porovnání s bankou vpravo. */
+/** Konečný zůstatek z pohybů zaokrouhlený na haléře. */
+export function statementClosing(balances: BankStatementBalances): number {
+  return Math.round((balances.opening + balances.income - balances.expense) * 100) / 100;
+}
+
+/** Rozdíl zůstatku na výpise proti pohybům; null = Σ (počítá se z pohybů). */
+export function statementDifference(
+  bankClosing: number | null,
+  balances: BankStatementBalances,
+): number | null {
+  if (bankClosing === null) return null;
+  const difference = Math.round((bankClosing - statementClosing(balances)) * 100) / 100;
+  return difference === 0 ? null : difference;
+}
+
+/**
+ * Základní údaje jedním řádkem na mřížce 20 (po 4): datum, počáteční, příjmy, výdaje a
+ * zůstatek na výpise. Pod 40 rem se pole skládají pod sebe ve stejném pořadí.
+ */
 export function BankStatementBasic({
   id,
   value,
@@ -44,8 +63,8 @@ export function BankStatementBasic({
 }: BasicSectionProps) {
   const { containerRef, geometry } = useCompactDateGeometry(texts.date);
   return (
-    <FieldGrid cols={12}>
-      <Field span={3}>
+    <FieldGrid cols={20}>
+      <Field span={4}>
         <div ref={containerRef} className="document-dates-container">
           <div className="document-dates-compact" style={geometry}>
             <Field label={texts.date} htmlFor={`${id}-date`}>
@@ -60,6 +79,20 @@ export function BankStatementBasic({
           </div>
         </div>
       </Field>
+      {(["opening", "income", "expense"] as const).map((key) => (
+        <Field key={key} label={texts[key]} labelId={`${id}-${key}-label`} span={4}>
+          <FieldValue
+            aria-labelledby={`${id}-${key}-label`}
+            data-slot={`bank-statement-${key}`}
+            className={cn(
+              "justify-end text-right tabular-nums",
+              balances[key] < 0 && "text-destructive",
+            )}
+          >
+            {formatAmount(balances[key])} {symbol}
+          </FieldValue>
+        </Field>
+      ))}
       <BankStatementBankClosing
         id={id}
         bankClosing={value.bankClosing}
@@ -73,11 +106,11 @@ export function BankStatementBasic({
   );
 }
 
-/** Vnitřní porovnání bankovního zůstatku s pohyby. */
+/** Vnitřní vlastnosti zůstatku na výpise. */
 interface BankClosingProps {
   /** Identifikátor pole. */
   id: string;
-  /** Nepovinný bankovní zůstatek. */
+  /** Zadaný zůstatek z banky; null = Σ z pohybů. */
   bankClosing: number | null;
   /** Změna zůstatku. */
   onChange: (value: number | null) => void;
@@ -91,7 +124,10 @@ interface BankClosingProps {
   texts: BankStatementTexts;
 }
 
-/** Bankovní zůstatek vpravo; pouze nenulový rozdíl vlevo. */
+/**
+ * Zůstatek na výpise s přepínačem Σ (vzor Celkem za doklad): Σ zapnuto = konečný zůstatek
+ * z pohybů jen ke čtení; vypnuto = zadaný zůstatek z banky. Rozdíl = varování v poli.
+ */
 export function BankStatementBankClosing({
   id,
   bankClosing,
@@ -101,96 +137,66 @@ export function BankStatementBankClosing({
   symbol,
   texts: t,
 }: BankClosingProps) {
-  const closing = balances.opening + balances.income - balances.expense;
-  const difference = bankClosing === null ? null : Math.round((bankClosing - closing) * 100) / 100;
+  const closing = statementClosing(balances);
+  const sum = bankClosing === null;
+  const difference = statementDifference(bankClosing, balances);
+  const warning =
+    difference === null
+      ? undefined
+      : t.differenceWarning.replace("{amount}", `${formatAmount(difference)} ${symbol}`);
   return (
-    <>
-      {difference !== null && difference !== 0 ? (
-        <Field span={6} className="@min-[40rem]:col-start-4 flex items-end justify-end">
-          <AmountDifference
-            data-slot="bank-statement-difference"
-            value={difference}
-            label={t.difference}
-            currencySymbol={symbol}
-          />
-        </Field>
-      ) : null}
-      <Field
-        label={t.bankClosing}
-        htmlFor={locked ? undefined : `${id}-bankClosing`}
-        labelId={`${id}-bankClosing-label`}
-        span={3}
-        className="min-w-0 @min-[40rem]:col-start-10"
-      >
-        {locked ? (
+    <Field
+      label={t.bankClosing}
+      htmlFor={sum ? undefined : `${id}-bankClosing`}
+      labelId={`${id}-bankClosing-label`}
+      span={4}
+      warning={warning}
+      className="min-w-0"
+    >
+      <div className="relative min-w-0" data-slot="bank-statement-bank-closing">
+        {sum || locked ? (
           <FieldValue
             aria-labelledby={`${id}-bankClosing-label`}
-            className="text-right tabular-nums"
+            className="justify-end pr-[var(--field-toggle-space)] text-right font-bold tabular-nums"
           >
-            {bankClosing === null ? null : `${formatAmount(bankClosing)} ${symbol}`}
+            {formatAmount(sum ? closing : bankClosing)} {symbol}
           </FieldValue>
         ) : (
-          <div className="relative">
+          <>
             <AmountInput
               id={`${id}-bankClosing`}
               value={bankClosing}
               onChange={(next) => onChange(parseDecimalInput(next))}
-              className="pr-10"
+              className="pr-[calc(var(--field-toggle-space)+2rem)] font-bold"
             />
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-sm text-muted-foreground"
+              className="pointer-events-none absolute inset-y-0 right-[var(--field-toggle-space)] flex items-center pr-1 text-sm text-muted-foreground"
             >
               {symbol}
             </span>
-          </div>
+          </>
         )}
-      </Field>
-    </>
+        <FieldToggleButton
+          icon={Sigma}
+          pressed={sum}
+          label={t.bankClosingToggle}
+          pressedTooltip={t.bankClosingSum}
+          unpressedTooltip={t.bankClosingEntered}
+          disabled={locked}
+          onPressedChange={(pressed) => onChange(pressed ? null : closing)}
+        />
+      </div>
+    </Field>
   );
 }
 
-/** Vnitřní údaje společné oběma měnám. */
-interface BalancesSectionProps {
-  /** Identifikátor sekce. */
-  id: string;
-  /** Součty pohybů. */
-  balances: BankStatementBalances;
-  /** Značka měny. */
-  symbol: string;
-  /** Jazykové texty. */
-  texts: BankStatementTexts;
-}
-
-/** Čtyři zůstatky dle pohybů; porovnání s bankou sem nepatří. */
-export function BankStatementBalanceSection({
-  id,
-  balances,
-  symbol,
-  texts: t,
-}: BalancesSectionProps) {
-  const closing = balances.opening + balances.income - balances.expense;
-  return (
-    <FieldGrid cols={12}>
-      {(["opening", "income", "expense", "closing"] as const).map((key) => {
-        const amount = key === "closing" ? closing : balances[key];
-        return (
-          <Field key={key} label={t[key]} labelId={`${id}-${key}-label`} span={3}>
-            <FieldValue
-              aria-labelledby={`${id}-${key}-label`}
-              className={cn(
-                "text-right tabular-nums",
-                key === "closing" && "font-bold",
-                amount < 0 && "text-destructive",
-              )}
-            >
-              {formatAmount(amount)} {symbol}
-            </FieldValue>
-          </Field>
-        );
-      })}
-    </FieldGrid>
-  );
+/**
+ * @deprecated 2.108.0 – sekce Zůstatky dle pohybů je zrušená; formulář ji nevykresluje.
+ * Odstraní se v nejbližší major verzi.
+ */
+export function BankStatementBalanceSection() {
+  return null;
 }
 
 /** Vnitřní řízené číslo v identifikačním řádku. */

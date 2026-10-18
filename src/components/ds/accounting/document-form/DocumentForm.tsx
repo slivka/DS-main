@@ -2,18 +2,17 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { documentValidationFeedback } from "./document-validation-feedback";
+import { documentClientIssues, toggleInvalidDate } from "./document-validation-feedback";
+import {
+  reportingLinesChange,
+  reportingPatch,
+  useDocumentFormIssues,
+} from "./use-document-form-issues";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
-import { PageHeader } from "../../layout/page-header";
-import { RecordActionBar } from "../../layout/record-action-bar";
-import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
-import { DocumentStatusBadge } from "../document-status-badge";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
-import { companyAccountControlForForm } from "./BankAccountControls";
-import { useBankAccountField } from "./use-bank-account-field";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
@@ -25,7 +24,8 @@ import {
   type DocumentHeaderValue,
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
-import { externalNumberVsWarning, useExternalNumberField } from "./use-external-number-field";
+import { useDocumentPaymentFields } from "./use-document-payment-fields";
+import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
@@ -33,91 +33,72 @@ import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
-import { DocumentVatActionStatus } from "./document-vat-action-status";
+import { DocumentFormTop, handleDocumentSaveShortcut, useDetailTab } from "./document-form-top";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
 import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
 /** Kompletní formulář účetního dokladu. */
-export function DocumentForm({
-  title,
-  titleBadges,
-  identity,
-  directionBadge,
-  value,
-  onChange,
-  lines,
-  onLinesChange,
-  books,
-  accounts,
-  mainAccountOptions,
-  partners = [],
-  dimensions = [],
-  currencies,
-  bankAccountOptions = [],
-  constantSymbolOptions,
-  paymentMethodOptions,
-  companyBankAccountOptions,
-  onAddBankAccount,
-  counterpartyInput = "partner",
-  onCounterpartyInputChange,
-  counterpartyInputLockedReason,
-  paymentOrderEnabled = true,
-  onPaymentOrderEnabledChange,
-  isHomeCurrency,
-  onManualBankAccountValidationChange,
-  companyBankAccountDisabledReason,
-  receivedAccountDisabledReason,
-  vatPartnerStatus,
-  counterpartyTab,
-  printTab,
-  bankCodes,
-  documentType = "ID",
-  fields,
-  editableFields,
-  mainSide,
-  mainAccountLocked = false,
-  rateAmount = 1,
-  homeCurrency,
-  homeCurrencySymbol,
-  currencyLocked = false,
-  currencyDisabledReason,
-  onCreatePartner,
-  onEditCounterparty,
-  icoLinkTarget = "auto",
-  handedOverBySuggest,
-  descriptionSuggest,
-  accountingDateLink,
-  accountingDateLinked = true,
-  onAccountingDateLinkedChange,
-  taxDocumentNumberWarning,
-  fieldErrors,
-  fieldWarnings,
-  dateWarnings,
-  vat,
-  vatRateField,
-  linesEditorProps,
-  roundingLimit = 1,
-  roundingLabel,
-  tabs = [],
-  activeDetailTab,
-  onActiveDetailTabChange,
-  status,
-  approved,
-  changedBy,
-  changedAt,
-  saveAction,
-  primaryAction,
-  moreActions = [],
-  settings,
-  error,
-  notices,
-  readOnly = false,
-  readOnlyReason,
-  readOnlyTitle,
-  readOnlyActions,
-  texts,
-  className,
-}: DocumentFormProps) {
+export function DocumentForm(props: DocumentFormProps) {
+  const {
+    title,
+    identity,
+    value,
+    onChange,
+    lines,
+    onLinesChange,
+    books,
+    accounts,
+    mainAccountOptions,
+    partners = [],
+    dimensions = [],
+    currencies,
+    constantSymbolOptions,
+    paymentMethodOptions,
+    counterpartyInput = "partner",
+    onCounterpartyInputChange,
+    counterpartyInputLockedReason,
+    counterpartyTab,
+    printTab,
+    documentType = "ID",
+    fields,
+    editableFields,
+    mainSide,
+    mainAccountLocked = false,
+    rateAmount = 1,
+    homeCurrency,
+    homeCurrencySymbol,
+    currencyLocked = false,
+    currencyDisabledReason,
+    onCreatePartner,
+    onEditCounterparty,
+    icoLinkTarget = "auto",
+    handedOverBySuggest,
+    descriptionSuggest,
+    accountingDateLink,
+    accountingDateLinked = true,
+    onAccountingDateLinkedChange,
+    taxDocumentNumberWarning,
+    fieldErrors,
+    dateWarnings,
+    vat,
+    vatRateField,
+    linesEditorProps,
+    roundingLimit = 1,
+    roundingLabel,
+    tabs = [],
+    activeDetailTab,
+    changedBy,
+    changedAt,
+    moreActions = [],
+    error,
+    issues: appIssues,
+    validationActive,
+    onFieldChange,
+    notices,
+    readOnly = false,
+    texts,
+    className,
+  } = props;
   const dsTexts = useDsTexts();
   const t = { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...dsTexts.documentForm, ...texts };
   const code = documentType.toUpperCase();
@@ -129,7 +110,7 @@ export function DocumentForm({
     ...(internal ? { partner: true, taxDate: true } : {}),
   };
   const {
-    patch,
+    patch: datePatch,
     effectiveValue,
     link: effectiveAccountingLink,
   } = useDocumentDateLinks({
@@ -138,15 +119,16 @@ export function DocumentForm({
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange,
-    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(status ?? ""),
+    onAccountingDateLinkedChange: onAccountingDateLinkedChange
+      ? (linked) => {
+          onAccountingDateLinkedChange(linked);
+          onFieldChange?.("document-accountingDate");
+        }
+      : undefined,
+    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
-  const [uncontrolledTab, setUncontrolledTab] = useState("lines");
-  const tab = activeDetailTab ?? uncontrolledTab;
-  const setTab = (next: string) => {
-    if (activeDetailTab === undefined) setUncontrolledTab(next);
-    onActiveDetailTabChange?.(next);
-  };
+  const patch = reportingPatch(datePatch, onFieldChange);
+  const [tab, setTab] = useDetailTab(activeDetailTab, props.onActiveDetailTabChange);
   const formRef = useDocumentFormStickyTop();
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
@@ -199,7 +181,11 @@ export function DocumentForm({
     effectiveIdentity.account?.label,
     sameAccount,
   );
-  const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
+  const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
+  const effectiveFieldWarnings =
+    internal && counterpartyInput === "manual"
+      ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
+      : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
@@ -207,16 +193,10 @@ export function DocumentForm({
     can,
     dateWarnings,
     accountingDateLink: effectiveAccountingLink,
-    fieldErrors,
-    fieldWarnings,
+    fieldErrors: validationActive === false ? undefined : fieldErrors,
+    fieldWarnings: validationActive === false ? undefined : effectiveFieldWarnings,
     onInvalidDate: (key, invalid) =>
-      setInvalidDates((prev) => {
-        if (Boolean(prev[key]) === invalid) return prev;
-        const next = { ...prev };
-        if (invalid) next[key] = true;
-        else delete next[key];
-        return next;
-      }),
+      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
   });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
@@ -234,7 +214,7 @@ export function DocumentForm({
     showVatFields,
     filedVatDateWarning,
     notices,
-    bankAccountOptions,
+    bankAccountOptions: props.bankAccountOptions ?? [],
     t,
   });
   const showTaxNumber =
@@ -252,82 +232,54 @@ export function DocumentForm({
         6,
       )
     : null;
-  const { error: effectiveError, notices: validationNotices } = documentValidationFeedback({
-    value,
-    foreign,
-    vatRateField,
-    t,
-    notices: combinedNotices,
+  const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
+  const formIssues = useDocumentFormIssues({
+    clientIssues: documentClientIssues({
+      value,
+      foreign,
+      vatRateField,
+      t,
+      fieldErrors,
+      fieldWarnings: effectiveFieldWarnings,
+      taxDocumentNumberWarning,
+      icoWarning,
+      readOnly,
+      invalidDates: Object.keys(invalidDates) as DocumentDateField[],
+      variableSymbolWarning: vsLink.warning,
+      variableSymbolLabel: t.variableSymbol,
+      taxNumberLabel: dsTexts.documentEdit.taxNumber,
+    }),
+    issues: appIssues,
     error,
-    fieldErrors,
-    fieldWarnings,
-    taxDocumentNumberWarning,
-    icoWarning,
-    readOnly,
-    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map((key) => t[key]),
-    externalNumberWarning: externalNumberVsWarning(value, receivedDocument, t),
+    validationActive,
+    rowLabel: dsTexts.journalEditor.row,
+    onValidationChange: linesEditorProps?.onValidationChange,
   });
-  const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
-    ? receivedAccountDisabledReason
-    : undefined;
-  const paymentOrderOn = !receivedAccountReason && (!f.paymentOrders || paymentOrderEnabled);
-  const externalNumberField = useExternalNumberField({
-    value,
-    patch,
-    can,
-    receivedDocument,
-    showVatFields,
+  const {
+    externalNumberField,
+    bankAccountField,
+    issuedBankAccountAbove,
+    symbolsDisabledReason,
+    companyAccountField,
+  } = useDocumentPaymentFields(props, {
     f,
     t,
-    field,
-  });
-  const bankAccountField = useBankAccountField({
     value,
     patch,
     can,
-    t,
     field,
     receivedDocument,
-    counterpartyInput,
-    bankAccountOptions,
-    bankCodes,
-    isHomeCurrency: isHomeCurrency ?? value.currency === homeCurrency,
-    paymentOrdersApplicable: Boolean(f.paymentOrders),
-    paymentOrderEnabled: paymentOrderOn,
-    onPaymentOrderEnabledChange,
-    onManualBankAccountValidationChange,
-    onAddBankAccount,
-    receivedAccountDisabledReason: receivedAccountReason,
+    issuedDocument,
+    showVatFields,
+    sourcePatch: vsLink.sourcePatch,
   });
-  const issuedBankAccountAbove =
-    issuedDocument && ["FV", "ZFV"].includes(documentType.toUpperCase());
-  const symbolsDisabledReason = receivedDocument
-    ? (receivedAccountReason ?? (!paymentOrderOn ? t.paymentOrderDisabled : undefined))
-    : issuedBankAccountAbove
-      ? companyBankAccountDisabledReason
-      : undefined;
-  const companyAccountField =
-    issuedBankAccountAbove && f.bankAccount
-      ? companyAccountControlForForm(
-          {
-            value,
-            companyBankAccountOptions,
-            companyBankAccountDisabledReason,
-          },
-          patch,
-          can,
-          t.payToBankAccount,
-          paymentMethodOptions,
-          t.paymentMethod,
-        )
-      : null;
   const changeRounding = (roundingAmount: number) => {
     patch({ roundingAmount });
     onLinesChange(changeDocumentRounding(lines, roundingAmount, roundingLabel ?? t.rounding));
   };
   const allTabs = buildDocumentTabs({
     lines,
-    onLinesChange,
+    onLinesChange: reportingLinesChange(lines, onLinesChange, onFieldChange),
     accounts,
     dimensions,
     partners,
@@ -339,7 +291,7 @@ export function DocumentForm({
     homeCurrency,
     homeCurrencySymbol,
     rateAmount,
-    linesEditorProps,
+    linesEditorProps: { ...linesEditorProps, onValidationChange: formIssues.onValidationChange },
     readOnly,
     f,
     lineRounding,
@@ -372,63 +324,22 @@ export function DocumentForm({
       <div
         ref={formRef}
         className={cn("@container space-y-4", className)}
-        onKeyDown={(event) => {
-          if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key.toLowerCase() === "s" &&
-            saveAction &&
-            !saveAction.disabled &&
-            !saveAction.busy
-          ) {
-            event.preventDefault();
-            saveAction.onSave();
-          }
-        }}
+        onKeyDown={(event) => handleDocumentSaveShortcut(event, props.saveAction)}
       >
-        <PageHeader
+        <DocumentFormTop
+          props={props}
           title={bankMovement ? dsTexts.documentEdit.movementTitle : title}
-          titleBadge={
-            <span
-              data-slot="document-title-badges"
-              className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
-            >
-              <DocumentStatusBadge status={status} approved={approved} size="md" />
-              {titleBadges}
-            </span>
-          }
-        />
-        <RecordActionBar
-          leftContent={
-            vat?.visible ? (
-              <DocumentVatActionStatus
-                checked={vatRelevant}
-                readOnly={vat.relevantReadOnly}
-                onCheckedChange={(next) => patch({ vatRelevant: next })}
-                status={vatPartnerStatus}
-                texts={t}
-              />
-            ) : null
-          }
-          saveAction={saveAction}
-          primaryAction={primaryAction}
           moreActions={actionMenu}
-          error={effectiveError}
-          notices={validationNotices}
-          saveLabel={dsTexts.common.save}
-          moreActionsLabel={dsTexts.recordAction.moreActions}
-          errorTitle={t.errorTitle}
-          closeErrorLabel={t.closeError}
-          dataSlot="document-action-bar"
-          errorDataSlot="document-form-error"
-          noticesDataSlot="document-form-notices"
+          issues={formIssues.issues}
+          notices={combinedNotices}
+          vatRelevant={vatRelevant}
+          onVatRelevantChange={(next) => patch({ vatRelevant: next })}
+          t={t}
         />
-        {readOnly && readOnlyReason ? (
-          <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} />
-        ) : null}
         <section className="rounded-lg border bg-card p-4">
           <DocumentIdentityLine
             identity={effectiveIdentity}
-            direction={directionBadge}
+            direction={props.directionBadge}
             fallback={t.numberPending}
             texts={t}
             accountLabel={identityAccountLabel}
@@ -494,7 +405,7 @@ export function DocumentForm({
                 : undefined
             }
             dates={{
-              t: bankMovement ? { ...t, accountingDate: dsTexts.documentEdit.movementDate } : t,
+              t: bankMovement ? { ...t, issueDate: dsTexts.documentEdit.movementDate } : t,
               bankMovement,
               f,
               showVatFields,
@@ -517,7 +428,15 @@ export function DocumentForm({
               ) : undefined
             }
             bank={
-              bankMovement ? { value, patch, bankCodes, disabled: !can("bankAccount") } : undefined
+              bankMovement
+                ? {
+                    value,
+                    patch,
+                    bankCodes: props.bankCodes,
+                    bankCodeOptions: props.bankCodeOptions,
+                    disabled: !can("bankAccount"),
+                  }
+                : undefined
             }
             payment={{
               f: bankMovement ? { ...f, bankAccount: false } : f,
@@ -532,9 +451,12 @@ export function DocumentForm({
               constantSymbolOptions,
               paymentMethodOptions:
                 companyAccountField || receivedDocument ? undefined : paymentMethodOptions,
-              companyBankAccountOptions,
+              companyBankAccountOptions: props.companyBankAccountOptions,
               bankAccountField,
               field,
+              vsLink,
+              layout: bankMovement ? "grid20" : "flex",
+              vsPendingText: dsTexts.documentEdit.numberPending,
             }}
             amount={{
               t,

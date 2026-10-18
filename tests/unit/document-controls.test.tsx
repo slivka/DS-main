@@ -132,8 +132,7 @@ test("Přidání partnera dostane aktuální hledaný text", () => {
   expect(query).toBe("Firma Alfa");
 });
 
-test("Nový výpis předá směr aplikaci místo zadání pohybu před uložením", () => {
-  let direction = "";
+test("Nový výpis zobrazí stejný grid pohybů bez náhradních tlačítek", () => {
   const view = render(
     <BankStatementForm
       isNew
@@ -146,12 +145,10 @@ test("Nový výpis předá směr aplikaci místo zadání pohybu před uložení
       period="2026"
       bankAccount="IBAN"
       balances={{ opening: 0, income: 0, expense: 0 }}
-      onSaveThenAdd={(next) => {
-        direction = next;
-      }}
+      items={<div data-testid="grid">grid</div>}
     />,
   );
-  fireEvent.click(view.getByRole("button", { name: "Výdaj", exact: true }));
-  expect(direction).toBe("out");
-  expect(view.getByText("Pohyby lze zadat po uložení výpisu")).toBeDefined();
+  expect(view.getByTestId("grid")).toBeDefined();
+  expect(view.queryByRole("button", { name: "Výdaj", exact: true })).toBeNull();
+  expect(view.queryByText("Pohyby lze zadat po uložení výpisu")).toBeNull();
 });

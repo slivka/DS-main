@@ -140,6 +140,9 @@ export interface JournalEditorTexts {
   removed: string;
   total: string;
   remaining: string;
+  /** Rozpis řádků převyšuje zadanou částku. */
+  exceeded: string;
+  /** @deprecated 2.108.0 – stav „✓ Rozepsáno“ se nezobrazuje (rozhodnutí 18. 10.). */
   balanced: string;
   roundingExists: string;
   /** @deprecated Od 2.54; počet chyb předejte přes onValidationChange. Odstraní se ve 3.0.0. */

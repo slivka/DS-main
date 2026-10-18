@@ -9,33 +9,37 @@ export interface AmountDifferenceProps extends ComponentPropsWithoutRef<"span"> 
   value: number;
   /** Popisek nenulového rozdílu z jazykové sady. */
   label: string;
-  /** Popisek vyrovnaného dokladu; výpis nulový rozdíl nevykresluje. */
+  /** Popisek záporného rozdílu (rozpis převyšuje částku); jinak `label`. */
+  overLabel?: string;
+  /**
+   * @deprecated 2.108.0 – nulový rozdíl se nevykresluje vůbec (rozhodnutí 18. 10.); ignorováno.
+   * Odstraní se v nejbližší major verzi.
+   */
   balancedLabel?: string;
   /** Značka měny dodaná aplikací. */
   currencySymbol?: string;
 }
 
-/** Stav rozdílu se stejnými tokeny v editoru řádků i výpisu. */
+/** Nenulový rozdíl (nula = nic) se stejnými tokeny v editoru řádků i výpisu. */
 export const AmountDifference = forwardRef<HTMLSpanElement, AmountDifferenceProps>(
   function AmountDifference(
-    { value, label, balancedLabel, currencySymbol, className, ...props },
+    { value, label, overLabel, balancedLabel: _balancedLabel, currencySymbol, className, ...props },
     ref,
   ) {
+    if (value === 0) return null;
     return (
       <span
         ref={ref}
         data-slot="amount-difference"
         className={cn(
           "inline-flex h-8 items-center rounded-md px-2 text-xs font-semibold tabular-nums",
-          value === 0
-            ? "bg-success-soft text-success-strong"
-            : "bg-destructive-soft text-destructive-strong",
+          "bg-destructive-soft text-destructive-strong",
           className,
         )}
         {...props}
       >
-        {value === 0 ? `✓ ${balancedLabel ?? label}` : `${label} ${formatAmount(value, 2)}`}
-        {value !== 0 && currencySymbol ? ` ${currencySymbol}` : null}
+        {`${value < 0 && overLabel ? overLabel : label} ${formatAmount(Math.abs(value), 2)}`}
+        {currencySymbol ? ` ${currencySymbol}` : null}
       </span>
     );
   },

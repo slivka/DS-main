@@ -26,6 +26,12 @@ export interface DocumentFieldRenderersArgs {
   /** Oznámí neplatný zápis data; text patří i do chybového pruhu. */
   onInvalidDate?: (key: DocumentDateField, invalid: boolean) => void;
 }
+/** Klíč pole hlavičky z id ovládání; výběr partnera patří k partnerId. */
+export function headerFieldKey(id: string): DocumentHeaderField {
+  const key = id.replace("document-", "");
+  // Id ovládání odpovídá klíči hlavičky (výjimka: partner → partnerId).
+  return (key === "partner" ? "partnerId" : key) as DocumentHeaderField;
+}
 /** Vrátí jednotné vykreslovače běžných, datových a našeptávaných polí. */
 export function useDocumentFieldRenderers({
   value,
@@ -51,8 +57,8 @@ export function useDocumentFieldRenderers({
       htmlFor={id}
       label={label}
       hint={hint}
-      error={fieldErrors?.[id.replace("document-", "") as DocumentHeaderField]}
-      warning={fieldWarnings?.[id.replace("document-", "") as DocumentHeaderField]}
+      error={fieldErrors?.[headerFieldKey(id)]}
+      warning={fieldWarnings?.[headerFieldKey(id)]}
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >

@@ -7,19 +7,17 @@ import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
-import { Button } from "../../ui/button";
 import {
   BankStatementIdentity,
   BankStatementBasic,
-  BankStatementBalanceSection,
-  BankStatementBankClosing,
+  statementDifference,
 } from "./bank-statement-sections";
+import { NoticeBar } from "../feedback/notice-bar";
+import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
-import { FieldGrid } from "../layout/form-field-layout";
 import { SectionHeading } from "../layout/section-heading";
 import { RecordActionBar, type RecordActionError } from "../layout/record-action-bar";
-import { Plus, CheckCircle2, LockOpen } from "lucide-react";
 
 /** Editované údaje výpisu. */
 export interface BankStatementValue {
@@ -27,7 +25,7 @@ export interface BankStatementValue {
   date: string;
   /** Číslo výpisu. */
   number: string;
-  /** Nepovinný konečný zůstatek podle banky. */
+  /** Zůstatek na výpise zadaný z banky; null = Σ, počítá se z pohybů. */
   bankClosing: number | null;
 }
 /** Částky předané aplikací; konečný zůstatek odvozuje DS. */
@@ -59,15 +57,15 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   bankAccount: ReactNode;
   /** Součty v měně výpisu. */
   balances: BankStatementBalances;
-  /** Domácí součty a značka měny u cizoměnového výpisu. */
+  /** @deprecated 2.108.0 – zůstatky v domácí měně se nezobrazují; ignorováno. */
   home?: BankStatementBalances & { currencySymbol: string; bankClosing: number | null };
-  /** Změna domácího zůstatku podle banky, pokud je upravitelný. */
+  /** @deprecated 2.108.0 – ignorováno. */
   onHomeBankClosingChange?: (value: number | null) => void;
   /** Výpis má položky; zablokuje číslo a odstranění. */
   hasItems?: boolean;
-  /** Nový výpis dosud nebyl uložen. */
+  /** @deprecated 2.108.0 – pohyby se zobrazují vždy přes `items`; ignorováno. */
   isNew?: boolean;
-  /** Aplikace uloží výpis a následně otevře zadání příjmu nebo výdaje. */
+  /** @deprecated 2.108.0 – přidání řeší addAction gridu v `items`; ignorováno. */
   onSaveThenAdd?: (direction: "in" | "out") => void | Promise<void>;
   /** Všechna pole pouze ke čtení. */
   readOnly?: boolean;
@@ -77,9 +75,9 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   busy?: boolean;
   /** Uloží výpis. */
   onSave?: () => void;
-  /** Důvod, proč výpis nelze zkontrolovat; zakáže jen „Zkontrolovat“, ne „Zrušit kontrolu“. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená; ignorováno. */
   checkDisabledReason?: string;
-  /** Změní stav kontroly. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená; ignorováno. */
   onCheckedChange?: (checked: boolean) => void;
   /** Odstraní prázdný výpis. */
   onDelete?: () => void;
@@ -87,7 +85,7 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   error?: RecordActionError;
   /** Upozornění ze společných NoticeBar. */
   notices?: ReactNode;
-  /** Grid položek řízený aplikací. */
+  /** Grid pohybů řízený aplikací (lišta, addAction Nový příjem / Nový výdaj); i pro neuložený výpis. */
   items?: ReactNode;
   /** Přepisy textů; jinak DsTexts. */
   texts?: Partial<BankStatementTexts>;
@@ -106,17 +104,17 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       period,
       bankAccount,
       balances,
-      home,
-      onHomeBankClosingChange,
+      home: _home,
+      onHomeBankClosingChange: _onHomeBankClosingChange,
       hasItems,
-      isNew,
-      onSaveThenAdd,
+      isNew: _isNew,
+      onSaveThenAdd: _onSaveThenAdd,
       readOnly,
       dirty,
       onSave,
       busy,
-      onCheckedChange,
-      checkDisabledReason,
+      onCheckedChange: _onCheckedChange,
+      checkDisabledReason: _checkDisabledReason,
       onDelete,
       error,
       notices,
@@ -137,13 +135,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
         : status === "checked"
           ? t.lockedChecked
           : undefined;
-    const checkReason =
-      readOnly || status === "posted"
-        ? lockedReason
-        : status === "open"
-          ? checkDisabledReason || undefined
-          : undefined;
-    const checkBlocked = Boolean(checkReason) || Boolean(busy);
+    const difference = statementDifference(value.bankClosing, balances);
     const patch = (next: Partial<BankStatementValue>) => {
       if (!locked) onChange({ ...value, ...next });
     };
@@ -173,20 +165,6 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
           <PageLayout variant="form">
             <PageHeader title={t.title} />
             <RecordActionBar
-              primaryAction={
-                onCheckedChange
-                  ? {
-                      label: status === "open" ? t.check : t.uncheck,
-                      icon: status === "open" ? CheckCircle2 : LockOpen,
-                      disabled: checkBlocked,
-                      disabledReason: checkReason,
-                      tooltip: status === "open" ? t.checkHint : t.uncheckHint,
-                      onClick: () => {
-                        if (!checkBlocked) onCheckedChange(status === "open");
-                      },
-                    }
-                  : undefined
-              }
               busy={busy}
               saveAction={
                 onSave
@@ -210,7 +188,19 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   : []
               }
               error={error}
-              notices={notices}
+              notices={
+                <>
+                  {notices}
+                  {difference !== null ? (
+                    <NoticeBar tone="warning" data-slot="bank-statement-difference-notice">
+                      {t.differenceWarning.replace(
+                        "{amount}",
+                        `${formatAmount(difference)} ${currencySymbol}`,
+                      )}
+                    </NoticeBar>
+                  ) : null}
+                </>
+              }
             />
             <section className="rounded-lg border bg-card p-4">
               <BankStatementIdentity
@@ -231,66 +221,13 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                 symbol={currencySymbol}
                 texts={t}
               />
-              <SectionHeading>{t.balances}</SectionHeading>
-              <BankStatementBalanceSection
-                id={id}
-                balances={balances}
-                symbol={currencySymbol}
-                texts={t}
-              />
-              {home ? (
-                <>
-                  <SectionHeading>
-                    {t.home.replace("{currency}", home.currencySymbol)}
-                  </SectionHeading>
-                  <FieldGrid cols={12}>
-                    <BankStatementBankClosing
-                      id={`${id}-home`}
-                      bankClosing={home.bankClosing}
-                      balances={home}
-                      symbol={home.currencySymbol}
-                      locked={locked || !onHomeBankClosingChange}
-                      onChange={(next) => {
-                        if (!locked) onHomeBankClosingChange?.(next);
-                      }}
-                      texts={t}
-                    />
-                  </FieldGrid>
-                  <BankStatementBalanceSection
-                    id={`${id}-home`}
-                    balances={home}
-                    symbol={home.currencySymbol}
-                    texts={t}
-                  />
-                </>
-              ) : null}
             </section>
             <SectionHeading>{t.items}</SectionHeading>
             <div data-slot="bank-statement-items" className="min-w-0 max-w-full">
-              {isNew ? (
-                <>
-                  <div className="flex flex-wrap justify-end gap-2">
-                    {(["in", "out"] as const).map((direction) => (
-                      <Button
-                        key={direction}
-                        type="button"
-                        variant="default"
-                        disabled={busy || !onSaveThenAdd}
-                        onClick={() => {
-                          void onSaveThenAdd?.(direction);
-                        }}
-                      >
-                        <Plus className="size-4" />
-                        {direction === "in" ? ds.documentEdit.income : ds.documentEdit.expense}
-                      </Button>
-                    ))}
-                  </div>
-                  <div className="border border-input p-4 text-center text-sm text-muted-foreground">
-                    {ds.documentEdit.unsavedMovements}
-                  </div>
-                </>
-              ) : (
-                items
+              {items ?? (
+                <div className="rounded-lg border p-4 text-center text-sm text-muted-foreground">
+                  {t.emptyItems}
+                </div>
               )}
             </div>
           </PageLayout>

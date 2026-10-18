@@ -21,7 +21,7 @@ const initial: DocumentHeaderValue = {
   currency: currencies[0].code,
   rate: 1,
   amountTotal: 12345.67,
-  totalMode: "entered",
+  totalMode: "sum",
   externalNumber: "FA-2026/123",
 };
 const partners = [{ id: "supplier", name: "Dodavatel s.r.o.", ico: "12345678", dic: "CZ12345678" }];

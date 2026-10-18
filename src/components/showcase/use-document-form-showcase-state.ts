@@ -90,7 +90,7 @@ export function useDocumentFormShowcaseState() {
     currency: "CZK",
     rate: 1,
     amountTotal: 1250,
-    totalMode: "entered",
+    totalMode: "sum",
     roundingAmount: 0.4,
     mainAccountId: "211001",
   });
@@ -163,7 +163,7 @@ export function useDocumentFormShowcaseState() {
     currency: "CZK",
     rate: 1,
     amountTotal: 350,
-    totalMode: "entered",
+    totalMode: "sum",
     mainAccountId: "211001",
   });
   const [cashIn, setCashIn] = useState<DocumentHeaderValue>({
@@ -181,7 +181,7 @@ export function useDocumentFormShowcaseState() {
     currency: "CZK",
     rate: 1,
     amountTotal: 5000,
-    totalMode: "entered",
+    totalMode: "sum",
     mainAccountId: "211001",
   });
   const [cashEur, setCashEur] = useState<DocumentHeaderValue>({
@@ -201,7 +201,7 @@ export function useDocumentFormShowcaseState() {
     suggestedRate: 24.72,
     suggestedRateInfo: "ČNB 24. 9. 2026",
     amountTotal: 180,
-    totalMode: "entered",
+    totalMode: "sum",
     mainAccountId: "211001",
   });
   const [fvCzk, setFvCzk] = useState<DocumentHeaderValue>({
@@ -218,7 +218,7 @@ export function useDocumentFormShowcaseState() {
     currency: "CZK",
     rate: 1,
     amountTotal: 24200,
-    totalMode: "entered",
+    totalMode: "sum",
     mainAccountId: "311001",
     companyBankAccountId: "company-czk",
     paymentMethodId: "transfer",
@@ -286,7 +286,7 @@ export function useDocumentFormShowcaseState() {
     currency: "CZK",
     rate: 1,
     amountTotal: 0.24,
-    totalMode: "entered",
+    totalMode: "sum",
   });
   const common = {
     accounts: MOCK_ACCOUNTS,

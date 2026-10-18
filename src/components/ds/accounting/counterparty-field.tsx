@@ -121,7 +121,10 @@ export function CounterpartyField({
       <div
         id={id}
         aria-readonly="true"
-        className={cn("flex min-h-[var(--control-h)] min-w-0 items-center gap-2 text-sm", className)}
+        className={cn(
+          "flex min-h-[var(--control-h)] min-w-0 items-center gap-2 text-sm",
+          className,
+        )}
       >
         <span className={cn("min-w-0 truncate", !value.name && "text-muted-foreground")}>
           {value.name || "—"}
@@ -188,28 +191,28 @@ export function CounterpartyField({
             </div>
           ) : (
             <>
-            {showCreate ? (
-              <div className="absolute right-[var(--control-h)] top-0 flex h-[var(--control-h)] items-center">
-                <SelectSearchAction
-                  label={createText}
-                  disabledReason={createReason}
-                  onCreate={() => {
-                    setOpen(false);
-                    onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic));
-                  }}
-                />
-              </div>
-            ) : null}
-            <button
-              type="button"
-              aria-label="Zobrazit partnery"
-              title="Zobrazit partnery"
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => setOpen(true)}
-              className="absolute right-0 top-0 inline-flex size-[var(--control-h)] items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <ChevronDown className="size-4" />
-            </button>
+              {showCreate ? (
+                <div className="absolute right-[var(--control-h)] top-0 flex h-[var(--control-h)] items-center">
+                  <SelectSearchAction
+                    label={createText}
+                    disabledReason={createReason}
+                    onCreate={() => {
+                      setOpen(false);
+                      onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic));
+                    }}
+                  />
+                </div>
+              ) : null}
+              <button
+                type="button"
+                aria-label="Zobrazit partnery"
+                title="Zobrazit partnery"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => setOpen(true)}
+                className="absolute right-0 top-0 inline-flex size-[var(--control-h)] items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ChevronDown className="size-4" />
+              </button>
             </>
           )}
         </div>

@@ -26,39 +26,64 @@ function show(props: Partial<BankStatementFormProps> = {}, locale: "cs" | "sk" =
     </DsTextsProvider>,
   );
 }
-test.each([null, 12500, 12550])(
-  "BankStatementForm rozdíl při bankovním zůstatku %s",
-  (bankClosing) => {
-    const view = show({ value: { ...base.value, bankClosing } });
-    const difference = view.container.querySelector('[data-slot="bank-statement-difference"]');
-    expect(difference?.textContent ?? null).toBe(bankClosing === 12550 ? "Rozdíl 50,00 €" : null);
-    expect(view.getByText("12 500,00 €")).toBeTruthy();
-  },
-);
+test.each([
+  [null, null],
+  [12500, null],
+  [12550, "Rozdíl proti pohybům 50,00 €"],
+] as const)("BankStatementForm zůstatek na výpise %s → varování %s", (bankClosing, warning) => {
+  const view = show({ value: { ...base.value, bankClosing } });
+  const field = view.container.querySelector('[data-slot="bank-statement-bank-closing"]');
+  expect(field?.closest('[data-slot="field"]')?.getAttribute("data-warning") ?? null).toBe(
+    warning ? "true" : null,
+  );
+  const notice = view.container.querySelector('[data-slot="bank-statement-difference-notice"]');
+  expect(notice?.textContent ?? null).toBe(warning);
+  expect(view.container.querySelector('[data-slot="bank-statement-difference"]')).toBeNull();
+});
+test("BankStatementForm Σ zapnuto ukazuje konečný zůstatek jen ke čtení", () => {
+  const view = show();
+  const sum = view.getByRole("button", { name: "Zůstatek z pohybů" });
+  expect(sum.getAttribute("aria-pressed")).toBe("true");
+  expect(view.queryByRole("textbox", { name: "Zůstatek na výpise" })).toBeNull();
+  expect(view.getByText("12 500,00 €")).toBeTruthy();
+});
+test("BankStatementForm vypnutí Σ předvyplní vypočtený zůstatek, zapnutí vrátí null", () => {
+  let result = base.value;
+  const view = show({ onChange: (next) => (result = next) });
+  fireEvent.click(view.getByRole("button", { name: "Zůstatek z pohybů" }));
+  expect(result.bankClosing).toBe(12500);
+  view.rerender(
+    <BankStatementForm
+      {...base}
+      value={{ ...base.value, bankClosing: 12550 }}
+      onChange={(next) => (result = next)}
+    />,
+  );
+  fireEvent.click(view.getByRole("button", { name: "Zůstatek z pohybů" }));
+  expect(result.bankClosing).toBeNull();
+});
 test("BankStatementForm mění číslo v identitě, částku převede bez mezer", () => {
   let result = base.value;
   const view = show({
+    value: { ...base.value, bankClosing: 1 },
     onChange: (next) => {
       result = next;
     },
   });
   fireEvent.change(view.getByLabelText("Číslo výpisu"), { target: { value: "2026/11" } });
   expect(result.number).toBe("2026/11");
-  fireEvent.change(view.getByLabelText("Zůstatek dle banky"), {
+  fireEvent.change(view.getByLabelText("Zůstatek na výpise"), {
     target: { value: "12 500,50" },
   });
   expect(result.bankClosing).toBe(12500.5);
 });
 test.each(["checked", "posted"] as const)(
-  "BankStatementForm stav %s neumožní editaci",
+  "BankStatementForm stav %s neumožní editaci a nemá akce kontroly",
   (status) => {
     const view = show({ status, onSave: () => {}, onCheckedChange: () => {} });
     expect(view.queryByRole("textbox", { name: "Číslo výpisu" })).toBeNull();
     expect(view.getByRole("button", { name: "Uložit" }).getAttribute("aria-disabled")).toBe("true");
-    expect(
-      view.getByRole("button", { name: "Zrušit kontrolu" }).getAttribute("aria-disabled") ===
-        "true",
-    ).toBe(status === "posted");
+    expect(view.queryByRole("button", { name: /kontrol/i })).toBeNull();
   },
 );
 test("BankStatementForm položky zamknou číslo a zachovají obsah slotu", () => {
@@ -67,7 +92,7 @@ test("BankStatementForm položky zamknou číslo a zachovají obsah slotu", () =
   expect(view.getAllByText("2026/10")).toHaveLength(1);
   expect(view.getByText("Pohyb aplikace")).toBeTruthy();
 });
-test("BankStatementForm domácí zůstatky a slovenské texty", () => {
+test("BankStatementForm slovenské texty bez zůstatků v domácí měně", () => {
   const view = show(
     {
       home: {
@@ -81,11 +106,32 @@ test("BankStatementForm domácí zůstatky a slovenské texty", () => {
     "sk",
   );
   expect(view.getByRole("heading", { name: "Bankový výpis" })).toBeTruthy();
-  expect(view.getByRole("heading", { name: "Zostatky v zł" })).toBeTruthy();
-  expect(view.container.querySelectorAll('[data-slot="bank-statement-difference"]')).toHaveLength(
-    0,
+  expect(view.queryByText(/zł/)).toBeNull();
+  expect(view.getByText("Zostatok na výpise")).toBeTruthy();
+});
+test("BankStatementForm základní údaje v pořadí datum → zůstatek na výpise", () => {
+  const view = show();
+  const labels = [...view.container.querySelectorAll('[data-slot="field"] > span label')].map(
+    (node) => node.textContent,
   );
-  expect(view.getAllByText("312 500,00 zł")).toHaveLength(2);
+  expect(labels).toEqual([
+    "Datum výpisu",
+    "Počáteční zůstatek",
+    "Příjmy",
+    "Výdaje",
+    "Zůstatek na výpise",
+  ]);
+  expect(view.queryByText("Zůstatky dle pohybů")).toBeNull();
+  expect(view.queryByText("Konečný zůstatek")).toBeNull();
+});
+test.each([true, false])("BankStatementForm pohyby vždy ze slotu items (nový %s)", (isNew) => {
+  const view = show({ isNew, items: <span>Grid pohybů</span> });
+  expect(view.getByText("Grid pohybů")).toBeTruthy();
+  expect(view.queryByText("Pohyby lze zadat po uložení výpisu")).toBeNull();
+});
+test("BankStatementForm bez slotu ukáže prázdný stav", () => {
+  const view = show({ isNew: true });
+  expect(view.getByText("Výpis zatím nemá pohyby")).toBeTruthy();
 });
 
 test("BankStatementForm ukládá Ctrl/Cmd+S jen při dostupné akci", () => {
@@ -119,70 +165,15 @@ test("BankStatementForm pouze čtené hodnoty mají jméno z popisku", () => {
   const view = show({ status: "checked", value: { ...base.value, bankClosing: 12500 } });
   for (const label of [
     "Číslo výpisu",
-    "Zůstatek dle banky",
+    "Zůstatek na výpise",
     "Počáteční zůstatek",
     "Příjmy",
     "Výdaje",
-    "Konečný zůstatek",
   ]) {
     const node = view.getByRole("group", { name: label, exact: true });
     expect(node.getAttribute("data-slot")).toBe("field-value");
     expect(node.getAttribute("aria-labelledby") || node.getAttribute("aria-label")).toBeTruthy();
   }
-});
-test.each(["cs", "sk"] as const)("BankStatementForm důvody stavů %s", (locale) => {
-  const view = show({ status: "posted", onCheckedChange: () => {} }, locale);
-  const name = locale === "cs" ? "Zrušit kontrolu" : "Zrušiť kontrolu";
-  const action = view.getByRole("button", { name });
-  const id = action.getAttribute("aria-describedby");
-  expect(id).toBeTruthy();
-  expect(view.container.querySelector(`[id="${id}"]`)?.textContent).toBe("Výpis je zaúčtovaný");
-});
-
-test("BankStatementForm checkDisabledReason zakáže jen Zkontrolovat", () => {
-  let calls = 0;
-  const reason = "Nelze zkontrolovat – rozdíl 120,00";
-  const view = show({ checkDisabledReason: reason, onCheckedChange: () => (calls += 1) });
-  const action = view.getByRole("button", { name: "Zkontrolovat" });
-  expect(action.getAttribute("aria-disabled")).toBe("true");
-  expect(action.hasAttribute("disabled")).toBe(false);
-  action.focus();
-  expect(document.activeElement).toBe(action);
-  fireEvent.click(action);
-  expect(calls).toBe(0);
-  const id = action.getAttribute("aria-describedby");
-  expect(view.container.querySelector(`[id="${id}"]`)?.textContent).toBe(reason);
-  view.rerender(
-    <BankStatementForm
-      {...base}
-      status="checked"
-      checkDisabledReason={reason}
-      onCheckedChange={() => (calls += 1)}
-    />,
-  );
-  const undo = view.getByRole("button", { name: "Zrušit kontrolu" });
-  expect(undo.getAttribute("aria-disabled")).toBeNull();
-  fireEvent.click(undo);
-  expect(calls).toBe(1);
-});
-test("BankStatementForm bez checkDisabledReason kontrolu povolí", () => {
-  let calls = 0;
-  const view = show({ onCheckedChange: () => (calls += 1) });
-  fireEvent.click(view.getByRole("button", { name: "Zkontrolovat" }));
-  expect(calls).toBe(1);
-});
-
-test("BankStatementForm klepnutí na zablokované Zkontrolovat ukáže důvod", async () => {
-  let calls = 0;
-  const reason = "Nelze zkontrolovat – rozdíl 120,00";
-  const view = show({ checkDisabledReason: reason, onCheckedChange: () => (calls += 1) });
-  const action = view.getByRole("button", { name: "Zkontrolovat" });
-  fireEvent.pointerDown(action, { pointerType: "touch" });
-  fireEvent.pointerUp(action, { pointerType: "touch" });
-  fireEvent.click(action);
-  fireEvent.pointerLeave(action, { pointerType: "touch" });
-  expect(calls).toBe(0);
-  expect((await view.findAllByRole("tooltip")).some((n) => n.textContent === reason)).toBe(true);
 });
 
 test("BankStatementForm číslo je pouze v identifikačním řádku", () => {
@@ -198,14 +189,6 @@ test("BankStatementForm zámek čísla vysvětlí důvod klepnutím", async () =
   expect(
     (await view.findAllByRole("tooltip")).some((node) => node.textContent === "Výpis má položky"),
   ).toBe(true);
-});
-
-test("BankStatementForm povolený klik zavolá akci bez připnutí tooltipu", () => {
-  let calls = 0;
-  const view = show({ onCheckedChange: () => calls++ });
-  fireEvent.click(view.getByRole("button", { name: "Zkontrolovat" }));
-  expect(calls).toBe(1);
-  expect(view.queryByRole("tooltip")).toBeNull();
 });
 
 test("BankStatementForm čistý výpis neukládá klávesovou zkratkou", () => {
