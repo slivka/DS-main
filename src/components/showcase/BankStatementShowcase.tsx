@@ -8,7 +8,6 @@ import {
   FieldValue,
   CounterpartyInputField,
   SuggestInput,
-  NoticeBar,
   PaneLayout,
   PaneTabsProvider,
   createTab,
@@ -48,15 +47,12 @@ function StatementExample({ scenario }: { scenario: string }) {
         ? null
         : scenario === "difference"
           ? 12450
-          : scenario === "cannot-check"
-            ? 12380
-            : 12500,
+          : 12500,
   });
-  const [status, setStatus] = useState<BankStatementFormProps["status"]>(
+  const [status] = useState<BankStatementFormProps["status"]>(
     scenario === "checked" ? "checked" : scenario === "posted" ? "posted" : "open",
   );
   const [dirty, setDirty] = useState(false);
-  const [savedNew, setSavedNew] = useState(false);
   const [addedDirection, setAddedDirection] = useState<"in" | "out" | null>(null);
   return (
     <BankStatementForm
@@ -72,47 +68,22 @@ function StatementExample({ scenario }: { scenario: string }) {
       period="2026"
       bankAccount="123456789/0800"
       balances={{ opening: 10000, income: 5000, expense: 2500 }}
-      home={
-        foreign
-          ? {
-              opening: 250000,
-              income: 125000,
-              expense: 62500,
-              currencySymbol: "Kč",
-              bankClosing: 312500,
-            }
-          : undefined
-      }
-      isNew={scenario === "empty" && !savedNew}
-      onSaveThenAdd={(direction) => {
-        setDirty(false);
-        setSavedNew(true);
-        setAddedDirection(direction);
-        setValue({ ...value, number: "2026/011" });
-      }}
       hasItems={scenario === "items"}
       busy={scenario === "busy"}
       dirty={dirty}
       onSave={() => setDirty(false)}
       onDelete={() => setValue({ ...value, number: "" })}
-      checkDisabledReason={
-        scenario === "cannot-check" ? "Nelze zkontrolovat – rozdíl 120,00" : undefined
-      }
-      onCheckedChange={(checked) => setStatus(checked ? "checked" : "open")}
-      notices={
-        scenario === "difference" ? (
-          <NoticeBar tone="warning">Zůstatek se liší.</NoticeBar>
-        ) : undefined
-      }
       items={
-        scenario === "items" || savedNew ? (
-          <>
-            <output aria-label="Nový pohyb">
-              {addedDirection === "in" ? "Příjem" : addedDirection === "out" ? "Výdaj" : ""}
-            </output>
-            <MovementsGrid storageKey="bank-statement-items" />
-          </>
-        ) : null
+        <>
+          <output aria-label="Nový pohyb">
+            {addedDirection === "in" ? "Příjem" : addedDirection === "out" ? "Výdaj" : ""}
+          </output>
+          <MovementsGrid
+            storageKey={`bank-statement-items-${scenario}`}
+            rows={scenario === "empty" ? [] : undefined}
+            onAction={setAddedDirection}
+          />
+        </>
       }
     />
   );
@@ -211,7 +182,6 @@ export function BankStatementShowcase() {
               "empty",
               "equal",
               "difference",
-              "cannot-check",
               "eur",
               "checked",
               "items",

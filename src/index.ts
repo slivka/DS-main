@@ -84,6 +84,8 @@ export * from "./lib/lovable-error-reporting";
 export * from "./lib/grid-prefs";
 export * from "./lib/period";
 export * from "./lib/form-errors";
+export * from "./lib/form-issues";
+export * from "./components/ds/accounting/variable-symbol-link";
 export * from "./lib/http-retry";
 export * from "./lib/retry-after";
 export * from "./hooks";
@@ -97,4 +99,5 @@ export {
 } from "./components/ds/form/searchable-option-select";
 
 export * from "./components/ds/feedback/field-error-summary";
+export * from "./components/ds/feedback/form-issues-bar";
 export * from "./components/ds/grid/cell-status-tooltip";

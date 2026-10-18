@@ -212,16 +212,18 @@ describe("JournalLinesEditor – součty", () => {
     expect(totals?.base).toBe(1500);
   });
 
-  it("ukáže zbývající rozdíl a po vyrovnání stav Rozepsáno", () => {
+  it("ukáže zbývající rozdíl i převýšení se měnou, po vyrovnání nic", () => {
     const view = render(<Editor totalMode="entered" totalAmount={1600} />);
     const remaining = () =>
       squash(view.container.querySelector('[data-slot="journal-lines-remaining"]')?.textContent);
-    expect(remaining()).toBe("Zbývá rozepsat 100,00");
-    cleanup();
-    const balanced = render(<Editor totalMode="entered" totalAmount={1500} />);
-    expect(
-      balanced.container.querySelector('[data-slot="journal-lines-remaining"]')?.textContent,
-    ).toContain("Rozepsáno");
+    expect(remaining()).toBe("Zbývá rozepsat 100,00 CZK");
+    view.rerender(<Editor totalMode="entered" totalAmount={1400} />);
+    expect(remaining()).toBe("Rozpis převyšuje 100,00 CZK");
+    view.rerender(<Editor totalMode="entered" totalAmount={1500} />);
+    expect(view.container.querySelector('[data-slot="journal-lines-remaining"]')).toBeNull();
+    expect(view.container.textContent).not.toContain("Rozepsáno");
+    view.rerender(<Editor totalMode="sum" totalAmount={1600} />);
+    expect(view.container.querySelector('[data-slot="journal-lines-remaining"]')).toBeNull();
   });
 });
 

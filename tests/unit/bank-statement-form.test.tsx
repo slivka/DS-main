@@ -83,7 +83,9 @@ test.each(["checked", "posted"] as const)(
     const view = show({ status, onSave: () => {}, onCheckedChange: () => {} });
     expect(view.queryByRole("textbox", { name: "Číslo výpisu" })).toBeNull();
     expect(view.getByRole("button", { name: "Uložit" }).getAttribute("aria-disabled")).toBe("true");
-    expect(view.queryByRole("button", { name: /kontrol/i })).toBeNull();
+    for (const name of ["Zkontrolovat", "Zrušit kontrolu"]) {
+      expect(view.queryByRole("button", { name })).toBeNull();
+    }
   },
 );
 test("BankStatementForm položky zamknou číslo a zachovají obsah slotu", () => {

@@ -20,11 +20,14 @@ export function MovementsGrid({
   storageKey,
   onAction,
   outDisabledReason,
+  rows = ROWS,
 }: {
   storageKey: string;
   onAction?: (kind: "in" | "out") => void;
   /** Ukázka zablokované akce Výdaj s důvodem. */
   outDisabledReason?: string;
+  /** Řádky pohybů (prázdné pole = nový výpis). */
+  rows?: Movement[];
 }) {
   const columns = useMemo<DataGridColumn<Movement>[]>(
     () => [
@@ -59,7 +62,7 @@ export function MovementsGrid({
   return (
     <DataGrid<Movement>
       storageKey={storageKey}
-      rows={ROWS}
+      rows={rows}
       columns={columns}
       rowKey={(row) => row.id}
       addAction={actions}

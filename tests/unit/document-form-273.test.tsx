@@ -50,6 +50,10 @@ function Form({ initial = base, ...props }: { initial?: typeof base } & Record<s
 
 afterEach(() => cleanup());
 
+function VIEW_VS(view: { container: HTMLElement }) {
+  return view.container.querySelector("#document-variableSymbol") as HTMLInputElement;
+}
+
 describe("DocumentForm 2.73", () => {
   it("zobrazuje neznámý číselníkový KS bez volného vstupu a firemní účet jako výběr", () => {
     const view = render(
@@ -131,55 +135,47 @@ describe("DocumentForm 2.73", () => {
     expect(vsFromDocumentNumber("12345678901")).toBeNull();
   });
 
-  it("změna čísla obnoví automatický VS, ale nepřepíše ruční", () => {
-    const auto = render(<Form />);
-    fireEvent.change(auto.container.querySelector("#document-externalNumber") as HTMLInputElement, {
+  it("zamčený VS ukazuje náhled z čísla, ruční VS zůstane", () => {
+    let view = render(<Form />);
+    fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
       target: { value: "FA-2026/0456" },
     });
+    expect(VS().value).toBe("20260456");
+    expect(VS().readOnly).toBe(true);
     expect(
-      (auto.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("20260456");
+      view
+        .getByRole("button", { name: "Svázat VS s číslem daňového dokladu" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
     cleanup();
-    const manual = render(<Form initial={{ ...base, variableSymbol: "777" }} />);
-    fireEvent.change(
-      manual.container.querySelector("#document-externalNumber") as HTMLInputElement,
-      { target: { value: "FA-2026/0456" } },
+    view = render(
+      <Form initial={{ ...base, variableSymbol: "777", variableSymbolLinked: false }} />,
     );
-    expect(
-      (manual.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("777");
+    fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
+      target: { value: "FA-2026/0456" },
+    });
+    expect(VS().value).toBe("777");
+    expect(VS().readOnly).toBe(false);
+    function VS() {
+      return VIEW_VS(view);
+    }
   });
 
-  it("pamatuje automatický VS přes prázdné a příliš dlouhé číslo", () => {
-    const emptyBridge = render(
-      <Form initial={{ ...base, externalNumber: "FA-1", variableSymbol: "1" }} />,
-    );
-    const number = emptyBridge.container.querySelector(
-      "#document-externalNumber",
-    ) as HTMLInputElement;
-    fireEvent.change(number, { target: { value: "" } });
-    expect(
-      (emptyBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("");
-    fireEvent.change(number, { target: { value: "FA-2" } });
-    expect(
-      (emptyBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("2");
-    cleanup();
-    const longBridge = render(
+  it("prázdné číslo = náhled prázdný, > 10 číslic uvolní vazbu a VS nezkrátí", () => {
+    const view = render(
       <Form initial={{ ...base, externalNumber: "1234567890", variableSymbol: "1234567890" }} />,
     );
-    const longNumber = longBridge.container.querySelector(
-      "#document-externalNumber",
-    ) as HTMLInputElement;
-    fireEvent.change(longNumber, { target: { value: "123456789012" } });
-    expect(
-      (longBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("1234567890");
-    fireEvent.change(longNumber, { target: { value: "9876543210" } });
-    expect(
-      (longBridge.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("9876543210");
+    const number = view.container.querySelector("#document-externalNumber") as HTMLInputElement;
+    fireEvent.change(number, { target: { value: "" } });
+    expect(VIEW_VS(view).value).toBe("");
+    fireEvent.change(number, { target: { value: "FA-2" } });
+    expect(VIEW_VS(view).value).toBe("2");
+    fireEvent.change(number, { target: { value: "123456789012" } });
+    expect(VIEW_VS(view).value).toBe("1234567890");
+    expect(VIEW_VS(view).readOnly).toBe(false);
+    // vazba se po zkrácení čísla sama nevrátí – uživatel ji zamkne ručně
+    fireEvent.change(number, { target: { value: "9876543210" } });
+    expect(VIEW_VS(view).value).toBe("1234567890");
   });
 
   it("ručně zadaný VS nepřepíše ani přes prázdné nebo dlouhé číslo", () => {
@@ -225,17 +221,27 @@ describe("DocumentForm 2.73", () => {
     expect(nonPayer.getByText("Číslo dokladu dodavatele")).toBeTruthy();
   });
 
-  it("dlouhé číslo ponechá VS a ukáže nápovědu", () => {
+  it("dlouhé číslo ponechá VS a ukáže varování v poli VS", () => {
     const view = render(<Form />);
     fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
       target: { value: "12345678901" },
     });
+    expect(VIEW_VS(view).value).toBe("20260123");
+    expect(VIEW_VS(view).className).toContain("border-warning");
     expect(
-      (view.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("20260123");
-    // Text je v pruhu nad formulářem a jako přístupný popis ⚠ v poli, nikdy pod polem.
-    expect(view.getAllByText("Číslo má víc než 10 číslic – VS doplňte ručně").length).toBe(2);
-    expect(view.container.querySelector("[data-slot=document-external-number-vs-warning]")).toBeNull();
+      view.getAllByText("Číslo daňového dokladu má víc než 10 číslic – zadejte VS").length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("číslo bez číslic uvolní vazbu a varuje", () => {
+    const view = render(<Form />);
+    fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
+      target: { value: "ABC" },
+    });
+    expect(VIEW_VS(view).value).toBe("20260123");
+    expect(
+      view.getAllByText("Číslo daňového dokladu neobsahuje číslice – zadejte VS").length,
+    ).toBeGreaterThan(0);
   });
 
   it("živé datumové varování je v pruhu a po odebrání zmizí", () => {
@@ -414,12 +420,14 @@ describe("BankAccountField 2.73", () => {
 });
 
 describe("DocumentForm 2.73 – druhá kontrola", () => {
-  it("VS do patche nedá, když se nemění, a paměť obnoví při jiném dokladu", () => {
+  it("zamčený VS se do patche nezapisuje, ukládá se jen stav vazby", () => {
     const patches: Array<Record<string, unknown>> = [];
-    const initial = { ...base, externalNumber: "FA-1", variableSymbol: "" };
-    function Tracked({ doc }: { doc: typeof base & { id?: string } }) {
-      const [value, setValue] = React.useState(doc);
-      React.useEffect(() => setValue(doc), [doc]);
+    function Tracked() {
+      const [value, setValue] = React.useState({
+        ...base,
+        externalNumber: "FA-1",
+        variableSymbol: "",
+      });
       return (
         <DocumentForm
           title="FP"
@@ -428,7 +436,7 @@ describe("DocumentForm 2.73 – druhá kontrola", () => {
           value={value}
           onChange={(next: Record<string, unknown>) => {
             patches.push(next);
-            setValue(next as typeof doc);
+            setValue(next as typeof value);
           }}
           lines={[]}
           onLinesChange={() => {}}
@@ -441,25 +449,16 @@ describe("DocumentForm 2.73 – druhá kontrola", () => {
         />
       );
     }
-    const view = render(<Tracked doc={{ ...initial, externalNumber: "ABC" }} />);
-    const number = () =>
-      view.container.querySelector("#document-externalNumber") as HTMLInputElement;
-    fireEvent.change(number(), { target: { value: "ABCD" } });
+    const view = render(<Tracked />);
+    fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
+      target: { value: "FA-22" },
+    });
     expect(patches.at(-1)?.variableSymbol).toBe("");
-    // druhý doklad s ručním VS: paměť z prvního se nesmí přenést
-    view.rerender(
-      <Tracked
-        doc={{ ...base, id: "2", number: "FP2", externalNumber: "FA-5", variableSymbol: "5" }}
-      />,
-    );
-    view.rerender(
-      <Tracked
-        doc={{ ...base, id: "3", number: "FP3", externalNumber: "FA-7", variableSymbol: "5" }}
-      />,
-    );
-    fireEvent.change(number(), { target: { value: "FA-8" } });
-    expect(
-      (view.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
-    ).toBe("5");
+    expect(VIEW_VS(view).value).toBe("22");
+    fireEvent.click(view.getByRole("button", { name: "Svázat VS s číslem daňového dokladu" }));
+    expect(patches.at(-1)?.variableSymbolLinked).toBe(false);
+    expect(patches.at(-1)?.variableSymbol).toBe("22");
+    fireEvent.click(view.getByRole("button", { name: "Svázat VS s číslem daňového dokladu" }));
+    expect(patches.at(-1)?.variableSymbolLinked).toBe(true);
   });
 });
