@@ -139,6 +139,7 @@ export function DocumentForm({
     accountingDateLink,
     accountingDateLinked,
     onAccountingDateLinkedChange,
+    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(status ?? ""),
   });
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
@@ -263,9 +264,7 @@ export function DocumentForm({
     taxDocumentNumberWarning,
     icoWarning,
     readOnly,
-    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map(
-      (key) => t[key],
-    ),
+    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map((key) => t[key]),
     externalNumberWarning: externalNumberVsWarning(value, receivedDocument, t),
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
@@ -518,9 +517,7 @@ export function DocumentForm({
               ) : undefined
             }
             bank={
-              bankMovement
-                ? { value, patch, bankCodes, disabled: !can("bankAccount") }
-                : undefined
+              bankMovement ? { value, patch, bankCodes, disabled: !can("bankAccount") } : undefined
             }
             payment={{
               f: bankMovement ? { ...f, bankAccount: false } : f,

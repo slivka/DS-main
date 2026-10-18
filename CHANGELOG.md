@@ -39,6 +39,15 @@
 
 ### BREAKING – migrace
 
+- Úplné `DsTexts` doplňte také o povinné klíče `selectCreate.tag`,
+  `selectCreate.emptyQuery`, `selectCreate.duplicate` a `documentForm.invalidDate`.
+  Duplicitní název štítku nebo název/kód jednotky zakáže ＋ s vysvětlením CS/SK.
+- U nového nebo upravitelného dokladu `DocumentForm` zapisuje odvozené datum účetního
+  případu a automatické DUZP přes `onChange`; aplikace musí tyto hodnoty uložit.
+  Při otevření dokladu jen pro čtení, zaúčtovaného, uzamčeného či stornovaného
+  se nic nezapisuje a původní uložená data zůstávají zobrazena.
+- `hint` u Field, DateField a CheckboxField zůstává pod polem; převod na ikonu
+  je odložen do 2.106.0. Chyby a varování se pod polem nevykreslují.
 - `Field.error`, chyby Input/RateField a varování DateField již nevykreslují text pod polem.
   Odstraňte vlastní podpolové zprávy; chyby/varování předejte také společnému pruhu,
   u DocumentForm použijte `fieldErrors`, `fieldWarnings`, `taxDocumentNumberWarning`.

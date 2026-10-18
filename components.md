@@ -64,7 +64,7 @@
 
 ## Karta záznamu a jednotná pole (2.62.0)
 
-- `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint`, `error` a `FieldValue` používají stejné rozvržení.
+- `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint` u Field, DateField a CheckboxField se stále vykresluje pod polem; převod nápovědy na ikonu přijde až v 2.106.0. Chyby a varování jsou uvnitř ovládání s tooltipem, nikdy pod polem, a patří také do pruhu formuláře. `FieldValue` používá stejné rozvržení.
 - `CheckboxField` drží čtvereček u prvního řádku zalomeného popisku; nápověda začíná pod textem. Platí pro `align="natural"` i `align="input"`.
 - `RecordActionBar` má `leftContent`, `saveAction`, `primaryAction`, `moreActions`, `busy`, `error` a `notices`. Uložení s `dirty={false}` je zakázané. `DocumentForm` jej používá interně.
 
@@ -274,7 +274,7 @@ Jednotný nadpis sekcí formulářů, dialogů, karet a panelů: verzálky, jemn
 
 
 ## CounterpartyField (2.31.0)
-Protistrana jako volný text s volitelným propojením na partnera. „Nový partner…“ je při zadaném callbacku vždy poslední volba a je dosažitelný klávesnicí. Hodnota a callback nesou `{ name, partnerId, ico, dic }`; zrušení propojení ponechá IČO a DIČ.
+Protistrana jako volný text s volitelným propojením na partnera. ＋ v řádku hledání předá aktuální dotaz při zadaném callbacku a je dosažitelné klávesnicí; `createDisabledReason?: string` jej zakáže s přístupným vysvětlením. Hodnota a callback nesou `{ name, partnerId, ico, dic }`; zrušení propojení ponechá IČO a DIČ.
 
 ## DocumentActionBar a tisk (2.26.0)
 

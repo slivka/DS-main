@@ -6,6 +6,41 @@ import type { DocumentHeaderValue } from "../../src/components/ds/accounting/doc
 const base = (v: Partial<DocumentHeaderValue>) => ({ id: "new", ...v }) as DocumentHeaderValue;
 
 describe("useDocumentDateLinks", () => {
+  it("jiné value.id resetuje ručně změněné DUZP a obnoví automatickou vazbu", () => {
+    const onChange = mock((v: DocumentHeaderValue) => v);
+    const { result, rerender } = renderHook(
+      ({ value }) =>
+        useDocumentDateLinks({ code: "FP", value, onChange, accountingDateLinked: true }),
+      { initialProps: { value: base({ issueDate: "2026-10-01", taxDate: "2026-10-01" }) } },
+    );
+    act(() => result.current.patch({ taxDate: "2026-09-30" }));
+    rerender({ value: base({ id: "other", issueDate: "2026-10-18", taxDate: null }) });
+    expect(onChange.mock.calls.at(-1)?.[0].taxDate).toBe("2026-10-18");
+    act(() => result.current.patch({ issueDate: "2026-10-19" }));
+    expect(onChange.mock.calls.at(-1)?.[0].taxDate).toBe("2026-10-19");
+  });
+
+  it("readOnly doklad s odlišným DUZP po otevření nevolá onChange", () => {
+    const onChange = mock((v: DocumentHeaderValue) => v);
+    const value = base({
+      issueDate: "2026-10-18",
+      accountingDate: "2026-10-10",
+      taxDate: "2026-10-05",
+    });
+    const { result } = renderHook(() =>
+      useDocumentDateLinks({
+        code: "FP",
+        value,
+        onChange,
+        accountingDateLinked: true,
+        readOnly: true,
+      }),
+    );
+    expect(onChange).not.toHaveBeenCalled();
+    expect(result.current.effectiveValue.accountingDate).toBe("2026-10-10");
+    expect(result.current.effectiveValue.taxDate).toBe("2026-10-05");
+  });
+
   it("nové FP s prázdným DUZP zapíše taxDate = issueDate", () => {
     const onChange = mock(() => {});
     renderHook(() =>
@@ -23,7 +58,11 @@ describe("useDocumentDateLinks", () => {
 
   it("změna vystavení posune účetní datum i DUZP; ruční DUZP se neposouvá", () => {
     const onChange = mock((v: DocumentHeaderValue) => v);
-    const value = base({ issueDate: "2026-10-01", accountingDate: "2026-10-01", taxDate: "2026-10-01" });
+    const value = base({
+      issueDate: "2026-10-01",
+      accountingDate: "2026-10-01",
+      taxDate: "2026-10-01",
+    });
     const { result } = renderHook(() =>
       useDocumentDateLinks({ code: "FP", value, onChange, accountingDateLinked: true }),
     );

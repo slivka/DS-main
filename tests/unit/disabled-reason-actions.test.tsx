@@ -83,7 +83,7 @@ test("GridAddActions „+ ▾“: zablokovaná položka má důvod jako druhý �
             disabled: true,
             disabledReason: REASON,
           },
-          { label: "Nový výdej", shortLabel: "Výdej", onClick: () => log.push("out") },
+          { label: "Nový výdaj", shortLabel: "Výdaj", onClick: () => log.push("out") },
         ]}
       />
     </GridToolbarOverflowContext.Provider>,
