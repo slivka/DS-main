@@ -50,7 +50,15 @@ export function FormIssuesBar({
     typeof message === "string" && list.some((issue) => issue.message === message);
   const select = (issue: FormIssue) => {
     if (onSelect) return onSelect(issue);
-    if (issue.fieldId) focusFieldErrorLink({ ...issue, fieldId: issue.fieldId } as FieldErrorLink);
+    if (!issue.fieldId) return;
+    const link: FieldErrorLink = {
+      fieldId: issue.fieldId,
+      label: issue.label,
+      message: issue.message,
+      rowId: issue.rowId,
+      columnId: issue.columnId,
+    };
+    focusFieldErrorLink(link);
   };
   return (
     <div
