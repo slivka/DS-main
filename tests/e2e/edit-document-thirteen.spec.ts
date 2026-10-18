@@ -148,6 +148,12 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
                   const rect = el.getBoundingClientRect();
                   // Skryté měřicí kopie akcí gridu pohybů nemají rozměr.
                   if (rect.width === 0 && rect.height === 0) return true;
+                  // Hlavička gridu pohybů se v úzkém panelu posouvá uvnitř gridu (E6).
+                  const grid = el.closest("[data-slot=data-grid]");
+                  if (grid && grid !== el) {
+                    const g = grid.getBoundingClientRect();
+                    return g.right <= box.right + 2 && g.left >= box.left - 2;
+                  }
                   return rect.right <= box.right + 2 && rect.left >= box.left - 2;
                 },
               );
