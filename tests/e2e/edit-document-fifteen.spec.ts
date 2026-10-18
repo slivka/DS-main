@@ -14,3 +14,37 @@ test("Pruh: oprava DUZP odebere položku, titulek 2 → 1 → pruh zmizí", asyn
   await box.getByRole("button", { name: "Opravit řádek" }).click();
   await expect(box).not.toContainText("Doklad nelze uložit");
 });
+
+test("Protiúčet BA: sloupce obou řádků lícují při zoomu 70 / 100 / 200 %", async ({ page }) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const box = page.getByTestId("bank-vat-example");
+  await expect(box.locator("#document-bankAccountKind")).toBeVisible({ timeout: 45000 });
+  for (const scale of [0.7, 1, 2]) {
+    await page.evaluate(async (value) => {
+      const path = "/src/lib/app-zoom.ts";
+      const module = await import(/* @vite-ignore */ path);
+      module.setAppZoom(value);
+    }, scale);
+    await expect
+      .poll(async () =>
+        box.evaluate((root) => {
+          const left = (id: string) =>
+            document.getElementById(id)?.closest('[data-slot="field"]')?.getBoundingClientRect();
+          const pairs = [
+            ["document-bankAccountKind", "document-variableSymbol"],
+            ["document-movement-account", "document-constantSymbol"],
+            ["document-bank-code", "document-specificSymbol"],
+          ];
+          void root;
+          return pairs.every(([a, b]) => {
+            const x = left(a!);
+            const y = left(b!);
+            return Boolean(
+              x && y && Math.abs(x.left - y.left) < 1 && Math.abs(x.width - y.width) < 1,
+            );
+          });
+        }),
+      )
+      .toBe(true);
+  }
+});
