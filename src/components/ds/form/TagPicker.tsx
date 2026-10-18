@@ -6,6 +6,8 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
+import { useDsTexts } from "../../../ds-texts";
+import { SelectSearchAction } from "./select-search-action";
 
 export type TagOption = {
   id: string;
@@ -25,7 +27,8 @@ export function TagPicker({
   onCreate,
   placeholder = "Hledat štítek…",
   addLabel = "Štítky",
-  createLabel = "Vytvořit",
+  createLabel,
+  createDisabledReason,
   emptyLabel = "Žádné štítky",
   className,
 }: {
@@ -35,12 +38,16 @@ export function TagPicker({
   onCreate?: (name: string) => void | Promise<void>;
   placeholder?: string;
   addLabel?: string;
+  /** Přístupný název ＋ v řádku hledání; výchozí DsTexts.selectCreate.tag. */
   createLabel?: string;
+  /** Důvod zašedlého ＋ (např. chybějící oprávnění). */
+  createDisabledReason?: string;
   emptyLabel?: string;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const ds = useDsTexts();
 
   const selected = tags.filter((t) => value.includes(t.id));
   const filtered = tags.filter((t) => t.name.toLowerCase().includes(query.trim().toLowerCase()));
@@ -72,12 +79,27 @@ export function TagPicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-2" align="start">
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
-            className="h-8"
-          />
+          <div className="flex items-center gap-1">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={placeholder}
+              className="h-8 min-w-0 flex-1"
+            />
+            {onCreate ? (
+              <SelectSearchAction
+                label={createLabel ?? ds.selectCreate.tag}
+                disabled={!canCreate}
+                disabledReason={
+                  createDisabledReason ?? (!query.trim() ? ds.selectCreate.emptyQuery : undefined)
+                }
+                onCreate={async () => {
+                  await onCreate(query.trim());
+                  setQuery("");
+                }}
+              />
+            ) : null}
+          </div>
           <ul className="mt-2 max-h-56 space-y-0.5 overflow-auto">
             {filtered.length === 0 && !canCreate ? (
               <li className="px-2 py-1.5 text-sm text-muted-foreground">{emptyLabel}</li>
@@ -95,20 +117,6 @@ export function TagPicker({
               </li>
             ))}
           </ul>
-          {canCreate ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-2 w-full"
-              onClick={async () => {
-                await onCreate?.(query.trim());
-                setQuery("");
-              }}
-            >
-              {createLabel} „{query.trim()}“
-            </Button>
-          ) : null}
         </PopoverContent>
       </Popover>
     </div>
