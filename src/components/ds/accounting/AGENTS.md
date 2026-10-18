@@ -19,3 +19,7 @@
 - Keep bank-statement sections in a focused internal module and translations in DsTexts. Why: a small public form composes shared controls without application persistence.
 - Share amount discrepancy presentation through AmountDifference in journal and bank-statement forms. Why: one component owns balance-state styling.
 - Use IdentityLine.numberContent for controlled statement-number editing and FieldValue for locked identity. Why: identity layout remains shared without domain state.
+
+- Keep document-form translations in per-language modules consumed by DsTexts. Why: the central catalogs remain readable and below the source line limit.
+- Compute recap home totals inside the DS from document totals and rates; DocumentForm supplies its derived total. Why: applications must not duplicate conversion logic.
+- Compose document sections separately and apply date links through a focused hook and pure helper. Why: orchestration stays readable and date logic is testable.

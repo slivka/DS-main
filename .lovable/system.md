@@ -53,6 +53,11 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 10. **Načti firemní písma v dokumentu aplikace.** Hostitelská aplikace musí v
     hlavičce stránky načíst IBM Plex Sans (řezy 400–700) a IBM Plex Mono (400–500),
     protože náhledová obálka knihovny se do připojených projektů nekopíruje.
+    Importuj `SlivkaHead` z veřejného vstupu připojené knihovny a vlož
+    `<SlivkaHead />` do `<head>` kořenového dokumentu. Pokud framework spravuje
+    odkazy přes `head()`, vrať `links: [...SLIVKA_FONT_LINKS]` ze stejného
+    veřejného vstupu místo dalšího `<SlivkaHead />`. Samotný import CSS písma
+    nenačítá; odkazy nevkládej přes vzdálené CSS `@import`.
 11. **Exporty a tisk používají firemní ikony.** Pro Excel vždy použij dodanou
     ikonu Microsoft Excel a pro PDF nebo tiskovou sestavu dodanou ikonu Adobe
     Acrobat Reader ze sdílených assetů design systému; nenahrazuj je obecnými ikonami.

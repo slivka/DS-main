@@ -37,11 +37,9 @@ Aplikace nastaví jazyk jednou v kořeni:
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
-- Keep document-form translations in per-language modules consumed by DsTexts. Why: the central catalogs remain readable and below the source line limit.
 - Preview-only accounting examples live in showcase modules excluded by .dsignore. Why: all existing pages remain usable without leaking preview dependencies to consumers.
 - Export bank-account utilities directly from the root barrel and preserve their existing component-barrel re-export. Why: consumers get a clear utility entry without breaking existing imports.
 
-- Compute recap home totals inside the DS from document totals and rates; DocumentForm supplies its derived total. Why: applications must not duplicate conversion logic.
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
 - Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
@@ -66,4 +64,3 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
 - Keep field feedback in shared in-control indicators and duplicate full messages in form banners; never below fields. Why: validation cannot change row geometry.
-- Compose document sections separately and apply date links through a focused hook and pure helper. Why: orchestration stays readable and date logic is testable.
