@@ -164,6 +164,7 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
         value={line[column]}
         onChange={(value) => choose({ [column]: value })}
         onEditSelected={props.onEditDimension}
+        onCreate={props.onCreateDimension}
       />
     );
   if (column === "partnerId" || column === "debitPartnerId" || column === "creditPartnerId")

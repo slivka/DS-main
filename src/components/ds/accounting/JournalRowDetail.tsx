@@ -12,7 +12,11 @@ import { formatCodeName } from "../../../lib/code-format";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { DecimalInput } from "../form/decimal-input";
-import { FieldFeedbackContext, FieldFeedbackIndicator } from "../form/field-feedback";
+import {
+  FieldFeedbackContext,
+  FieldFeedbackIndicator,
+  useFieldStatus,
+} from "../form/field-feedback";
 import { OptionSelect } from "../form/option-select";
 import { SegmentedField } from "../form/segmented-field";
 import { DimensionSelect } from "./dimension-select";
@@ -33,43 +37,63 @@ import { UnitSelect } from "./unit-select";
 import { VsField } from "./vs-field";
 
 /**
- * Popsané pole detailu. Chyba i varování jsou jen ⚠ uvnitř pole s tooltipem
- * (plný text jde přes onValidationChange do pruhu formuláře); pod polem nic.
+ * Popsané pole detailu: popisek nahoře, prvek pod ním, nic dalšího. Chyba i varování jsou
+ * rámeček a ⚠ uvnitř pole s bublinou (čísla vlevo); plný text jde do pruhu formuláře.
  */
 function DetailField({
   label,
   width,
   error,
   warning,
+  numeric,
   children,
 }: {
   label: string;
   width: string;
   error?: string;
   warning?: string;
+  numeric?: boolean;
   children: React.ReactNode;
 }) {
-  const tone = error ? "error" : warning ? "warning" : undefined;
+  const status = useFieldStatus({ error, warning });
   return (
-    <div className={cn("flex min-w-0 flex-col gap-1", width)}>
-      <Label title={label} className="text-xs text-muted-foreground">
+    <div className={cn("flex min-w-0 flex-col gap-1", width)} data-slot="journal-detail-field">
+      <Label
+        title={label}
+        className={cn(
+          "min-w-0 truncate whitespace-nowrap text-xs",
+          error ? "text-destructive" : "text-muted-foreground",
+        )}
+      >
         {label}
       </Label>
       <FieldFeedbackContext.Provider value={{}}>
         <div
-          data-feedback={tone}
-          aria-invalid={error ? true : undefined}
+          data-feedback={status.tone}
+          aria-invalid={status.controlProps["aria-invalid"]}
+          aria-describedby={status.describedById}
           className={cn(
-            "relative min-w-0 [--field-feedback-offset:0.5rem]",
-            tone && "[&_input]:pr-8 [&_[role=combobox]]:pr-8",
-            error && "[&_input]:border-destructive [&_[role=combobox]]:border-destructive",
+            "relative h-[var(--control-h)] min-w-0 [--field-feedback-offset:1.5em]",
+            status.tone &&
+              (numeric
+                ? "[&_input]:pl-[1.75em]!"
+                : "[&_input]:pr-[1.75em]! [&_[role=combobox]]:pr-[2.75em]!"),
+            status.tone &&
+              "[&_input]:ring-1 [&_[role=combobox]]:ring-1 [&_[role=radiogroup]]:ring-1",
+            error &&
+              "[&_input]:border-destructive [&_[role=combobox]]:border-destructive [&_[role=radiogroup]]:border-destructive [&_input]:ring-destructive [&_[role=combobox]]:ring-destructive [&_[role=radiogroup]]:ring-destructive",
             !error &&
               warning &&
-              "[&_input]:border-warning [&_[role=combobox]]:border-warning",
+              "[&_input]:border-warning-strong [&_[role=combobox]]:border-warning-strong [&_[role=radiogroup]]:border-warning-strong [&_input]:ring-warning-strong [&_[role=combobox]]:ring-warning-strong [&_[role=radiogroup]]:ring-warning-strong",
           )}
         >
           {children}
-          <FieldFeedbackIndicator error={error} warning={warning} />
+          <FieldFeedbackIndicator
+            error={error}
+            warning={warning}
+            side={numeric ? "start" : "end"}
+            id={status.describedById}
+          />
         </div>
       </FieldFeedbackContext.Provider>
     </div>
@@ -90,13 +114,14 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
   const conversion =
     (vat?.vatRate || rate || 0) / ((vat?.vatRate ? vat?.vatRateAmount : editor.rateAmount) || 1);
   const errors = editor.validations.get(line.id) ?? {};
+  const warnings = editor.vatWarnings.get(line.id) ?? {};
   const inbound = (code?.direction === "in" || code?.selfAssessment) && code?.hasTax;
   const homeValue = (value: number | undefined, fallback: number) =>
     formatAmount(value ?? roundJournalAmount(fallback * conversion), 2);
   return (
     <>
       {!shown.has("vatRate") && code ? (
-        <DetailField label={t.vatRate} width="flex-none w-[6rem]">
+        <DetailField label={t.vatRate} width="flex-none w-[6rem]" numeric>
           <Input
             readOnly
             value={editor.displayValue(line, "vatRate")}
@@ -105,7 +130,13 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
         </DetailField>
       ) : null}
       {!shown.has("grossAmount") && code ? (
-        <DetailField label={t.grossAmount} width="flex-none w-[9.5rem]">
+        <DetailField
+          label={t.grossAmount}
+          width="flex-none w-[9.5rem]"
+          numeric
+          error={errors.vatAmount}
+          warning={warnings.vatAmount}
+        >
           <DecimalInput
             value={resolved.gross}
             decimals={2}
@@ -117,7 +148,7 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
         </DetailField>
       ) : null}
       {inbound ? (
-        <DetailField label={t.vatDeduction} width="flex-none w-max">
+        <DetailField label={t.vatDeduction} width="flex-none w-max" warning={warnings.vatCodeId}>
           <SegmentedField
             ariaLabel={t.vatDeduction}
             disabled={readOnly}
@@ -140,6 +171,7 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
         <DetailField
           label={t.deductionShare}
           width="flex-none w-[6rem]"
+          numeric
           error={errors.vatDeductionShare}
         >
           <DecimalInput
@@ -226,6 +258,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
         disabled={disabled}
         onChange={(value) => set({ [id]: value })}
         onEditSelected={props.onEditDimension}
+        onCreate={props.onCreateDimension}
       />
     );
   if (id === "partnerId" || id === "debitPartnerId" || id === "creditPartnerId")
@@ -291,15 +324,23 @@ export function JournalRowDetail({ line }: { line: JournalLine }) {
         ];
   const fields = candidates.filter((id) => !shown.has(id));
   const errors: Partial<Record<string, string>> = editor.validations.get(line.id) ?? {};
+  const warnings: Partial<Record<string, string>> = editor.vatWarnings.get(line.id) ?? {};
   const detailFieldCount = fields.length + (foreign && !shown.has("homeAmount") ? 1 : 0);
   return (
     <div
       data-slot="journal-line-detail-fields"
       data-field-count={detailFieldCount}
-      className="journal-line-detail-grid flex flex-wrap items-end gap-3 bg-muted/30 p-3"
+      className="journal-line-detail-grid flex flex-wrap items-start gap-3 bg-muted/30 p-3"
     >
       {fields.map((id) => (
-        <DetailField key={id} label={labels[id]} width={widthClass(id)} error={errors[id]}>
+        <DetailField
+          key={id}
+          label={labels[id]}
+          width={widthClass(id)}
+          numeric={id === "quantity" || id === "unitPrice"}
+          error={errors[id]}
+          warning={warnings[id]}
+        >
           <DetailInput line={line} id={id} />
         </DetailField>
       ))}
