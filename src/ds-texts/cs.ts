@@ -119,6 +119,7 @@ export const DS_TEXTS_CS: DsTexts = {
     unsaved: "Neuložené změny",
     errorTitle: "Záznam nelze uložit",
     closeError: "Zavřít chybovou hlášku",
+    moreErrors: "a další {count}",
   },
   grid: {
     locale: "cs-CZ",

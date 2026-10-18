@@ -125,6 +125,8 @@ export * from "./feedback/permission-gate";
 export * from "./feedback/read-only-banner";
 export * from "./feedback/notice-bar";
 export * from "./feedback/confirm-by-typing-dialog";
+export * from "./feedback/field-error-summary";
+export * from "./grid/cell-status-tooltip";
 export * from "./feedback/danger-zone";
 export * from "./feedback/coming-soon";
 
@@ -180,6 +182,7 @@ export {
   JournalRecapHomeTotal,
   type JournalRecapHomeTotalProps,
 } from "./accounting/journal-recap-home-total";
+export * from "./form/field-feedback";
 
 export * from "./form/field-toggle-button";
 

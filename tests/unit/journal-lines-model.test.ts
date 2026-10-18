@@ -104,9 +104,14 @@ describe("journal-lines-model – platnost a přečíslování", () => {
     const lines = [a, { ...b, creditAccount: null, amount: 0 }];
     const errors = validateJournalLines(lines, ctx, scope);
     expect(numberJournalErrors(lines, errors)).toEqual([
-      { line: 2, field: "creditAccount", message: "Vyberte účet DAL" },
-      { line: 2, field: "amount", message: "Částka musí být nenulová" },
+      expect.objectContaining({ line: 2, field: "creditAccount", message: "Vyberte účet DAL" }),
+      expect.objectContaining({ line: 2, field: "amount", message: "Částka musí být nenulová" }),
     ]);
+    expect(numberJournalErrors(lines, errors)[0]).toMatchObject({
+      rowId: b.id,
+      columnId: "creditAccount",
+      fieldId: `journal-${b.id}-creditAccount`,
+    });
   });
 
   it("nedotčený prázdný řádek a zaokrouhlení se nevalidují", () => {

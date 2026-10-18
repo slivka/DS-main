@@ -97,11 +97,13 @@ export type DateFieldProps = {
   onValidityChange?: (valid: boolean) => void;
   /** Řízené svázání se zdrojovým datem. */
   link?: DateFieldLink;
-  /** Doplňující text pod polem. */
+  /** Nápověda; uvnitř `Field` patří do `Field.hint` (ikona v popisku), zde jen přístupný text. */
   hint?: string;
-  /** Výstraha pod polem; má přednost před hintem. */
+  /** Varování uvnitř pole s bublinou; nikdy pod polem. */
   warning?: string;
-  /** Ve formuláři dokladu označí pole a zobrazí výstrahu jen v tooltipu. */
+  /**
+   * @deprecated 2.107.0 – bez účinku, výstraha je vždy uvnitř pole. Odstraní se ve 3.0.0.
+   */
   warningDisplay?: "below" | "indicator";
   /** Chyba pole uvnitř před jeho akcemi. */
   error?: string;
@@ -403,9 +405,7 @@ export function DateField({
             </>
           )}
         </div>
-        {hint && !warning && !error ? (
-          <p className="field-overflow-hint mt-1 text-xs text-muted-foreground">{hint}</p>
-        ) : null}
+        {hint ? <span className="sr-only">{hint}</span> : null}
       </div>
     </TooltipProvider>
   );

@@ -23,6 +23,8 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-[var(--control-h)] w-[var(--control-h)]",
+        /** Tlačítko v řádku polí: přesně výška --control-h prostředí. */
+        control: "h-[var(--control-h)] px-[0.75em] py-0",
       },
     },
     defaultVariants: {

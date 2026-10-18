@@ -29,7 +29,7 @@ export const ReadField = ({
     id={id}
     aria-readonly="true"
     className={cn(
-      "flex min-h-9 items-center text-sm",
+      "flex min-h-[var(--control-h)] items-center text-sm",
       muted && "italic text-muted-foreground",
       mono && "font-mono tabular-nums",
     )}

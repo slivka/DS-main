@@ -121,6 +121,7 @@ export const DS_TEXTS_SK: DsTexts = {
     unsaved: "Neuložené zmeny",
     errorTitle: "Záznam nie je možné uložiť",
     closeError: "Zavrieť chybové hlásenie",
+    moreErrors: "a ďalšie {count}",
   },
   grid: {
     ...DS_TEXTS_CS.grid,

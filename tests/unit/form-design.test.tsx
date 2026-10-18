@@ -79,7 +79,8 @@ describe("Design formulářů", () => {
         disabledReason="Důvod"
       />,
     );
-    expect(view.getByRole("textbox").getAttribute("placeholder")).toBeNull();
+    // Ruční vstup ukazuje jen vzor formátu, nikdy výzvu výběru.
+    expect(view.getByRole("textbox").getAttribute("placeholder")).toBe("předčíslí-číslo/kód");
   });
   it("FP řadí Dodavatele, IČO, DIČ, účet, popis a číslo ve stejném DOM pořadí", () => {
     const view = render(

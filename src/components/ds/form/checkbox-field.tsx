@@ -9,6 +9,7 @@ import { Checkbox } from "../../ui/checkbox";
 import { Switch } from "../../ui/switch";
 import { Label } from "../../ui/label";
 import { cn } from "../../../lib/utils";
+import { FieldFeedbackIndicator, FieldHintIcon, useFieldStatus } from "./field-feedback";
 
 type CheckboxRootProps = ComponentPropsWithoutRef<typeof Checkbox>;
 
@@ -20,8 +21,12 @@ export interface CheckboxFieldProps extends Omit<
   onCheckedChange: (checked: boolean) => void;
   /** Popisek vpravo od čtverečku (svázaný přes id). */
   label: ReactNode;
-  /** Volitelná nápověda pod popiskem. */
+  /** Nápověda jako ikona Info za popiskem. */
   hint?: ReactNode;
+  /** Chyba: rámeček kolem čtverečku a ikona za popiskem. */
+  error?: string;
+  /** Varování: rámeček kolem čtverečku a ikona za popiskem. */
+  warning?: string;
   /** `input` = ve `FieldGrid` vedle polí zarovnat na výšku pole (místo popisku nad); `natural` = přirozená výška. */
   align?: "natural" | "input";
 }
@@ -29,12 +34,26 @@ export interface CheckboxFieldProps extends Omit<
 /** Zaškrtávátko s popiskem – hodnota formuláře ukládaná tlačítkem Uložit / Potvrdit. */
 export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFieldProps>(
   function CheckboxField(
-    { checked, onCheckedChange, label, hint, align = "natural", id, className, disabled, ...props },
+    {
+      checked,
+      onCheckedChange,
+      label,
+      hint,
+      error,
+      warning,
+      align = "natural",
+      id,
+      className,
+      disabled,
+      ...props
+    },
     ref,
   ) {
     const autoId = useId();
     const controlId = id ?? `checkbox-${autoId}`;
     const hintId = hint ? `${controlId}-hint` : undefined;
+    const status = useFieldStatus({ error, warning });
+    const describedBy = [hintId, status.describedById].filter(Boolean).join(" ") || undefined;
     return (
       <div
         data-slot="checkbox-field"
@@ -48,7 +67,7 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
         <div
           className={cn(
             "grid grid-cols-[auto_minmax(0,1fr)] gap-x-2",
-            align === "input" && "min-h-[var(--control-h)] items-start",
+            align === "input" && "h-[var(--control-h)] items-center",
           )}
         >
           <span className="flex h-5 items-center">
@@ -57,28 +76,32 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
               id={controlId}
               checked={checked}
               disabled={disabled}
-              aria-describedby={hintId}
+              aria-describedby={describedBy}
+              aria-invalid={status.controlProps["aria-invalid"]}
               onCheckedChange={(value) => onCheckedChange(value === true)}
-              className="size-4"
+              className={cn("size-4", status.className)}
               {...props}
             />
           </span>
-          <div className="min-w-0">
+          <div className="flex min-w-0 items-center gap-1">
             <Label
               htmlFor={controlId}
               title={typeof label === "string" ? label : undefined}
               className={cn(
-                "my-0 whitespace-normal text-sm font-normal leading-5",
+                "my-0 min-w-0 truncate whitespace-nowrap text-sm font-normal leading-5",
                 disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+                error && "text-destructive",
               )}
             >
               {label}
             </Label>
-            {hint ? (
-              <p id={hintId} className="mt-0.5 text-xs text-muted-foreground">
-                {hint}
-              </p>
-            ) : null}
+            {hint ? <FieldHintIcon hint={hint} id={hintId} /> : null}
+            <FieldFeedbackIndicator
+              error={error}
+              warning={warning}
+              placement="label"
+              id={status.describedById}
+            />
           </div>
         </div>
       </div>
@@ -139,7 +162,12 @@ export interface SwitchFieldProps extends Omit<
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   label: ReactNode;
+  /** Nápověda jako ikona Info za popiskem. */
   hint?: ReactNode;
+  /** Chyba: rámeček kolem přepínače a ikona za popiskem. */
+  error?: string;
+  /** Varování: rámeček kolem přepínače a ikona za popiskem. */
+  warning?: string;
   /** Probíhá ukládání – přepínač je dočasně neaktivní. */
   busy?: boolean;
 }
@@ -147,12 +175,26 @@ export interface SwitchFieldProps extends Omit<
 /** Řádek nastavení: popisek a nápověda vlevo, přepínač vpravo. Změna se ukládá hned. */
 export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProps>(
   function SwitchField(
-    { checked, onCheckedChange, label, hint, busy = false, disabled, id, className, ...props },
+    {
+      checked,
+      onCheckedChange,
+      label,
+      hint,
+      error,
+      warning,
+      busy = false,
+      disabled,
+      id,
+      className,
+      ...props
+    },
     ref,
   ) {
     const autoId = useId();
     const controlId = id ?? `switch-${autoId}`;
     const hintId = hint ? `${controlId}-hint` : undefined;
+    const status = useFieldStatus({ error, warning });
+    const describedBy = [hintId, status.describedById].filter(Boolean).join(" ") || undefined;
     const inactive = disabled || busy;
     return (
       <div
@@ -160,23 +202,26 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
         aria-busy={busy || undefined}
         className={cn("grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 py-1", className)}
       >
-        <div className="min-w-0 space-y-0.5">
+        <div className="flex min-w-0 items-center gap-1">
           <Label
             htmlFor={controlId}
             title={typeof label === "string" ? label : undefined}
             className={cn(
-              "my-0 whitespace-normal font-medium leading-5",
+              "my-0 min-w-0 truncate whitespace-nowrap font-medium leading-5",
               inactive ? "cursor-not-allowed" : "cursor-pointer",
               disabled && "opacity-60",
+              error && "text-destructive",
             )}
           >
             {label}
           </Label>
-          {hint ? (
-            <p id={hintId} className="text-xs text-muted-foreground">
-              {hint}
-            </p>
-          ) : null}
+          {hint ? <FieldHintIcon hint={hint} id={hintId} /> : null}
+          <FieldFeedbackIndicator
+            error={error}
+            warning={warning}
+            placement="label"
+            id={status.describedById}
+          />
         </div>
         <span className="flex h-5 items-center">
           <Switch
@@ -184,9 +229,10 @@ export const SwitchField = forwardRef<ElementRef<typeof Switch>, SwitchFieldProp
             id={controlId}
             checked={checked}
             disabled={inactive}
-            aria-describedby={hintId}
+            aria-describedby={describedBy}
+            aria-invalid={status.controlProps["aria-invalid"]}
             onCheckedChange={onCheckedChange}
-            className={cn(busy && "animate-pulse")}
+            className={cn(busy && "animate-pulse", status.className)}
             {...props}
           />
         </span>

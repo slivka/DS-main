@@ -24,6 +24,7 @@ import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { DisabledReasonMenuItem } from "../feedback/disabled-reason-menu-item";
 import { cn } from "../../../lib/utils";
 import { useRecordActionWidth } from "./use-record-action-width";
+import { FieldErrorSummary, type FieldErrorLink } from "../feedback/field-error-summary";
 
 export interface RecordSaveAction {
   onSave: () => void;
@@ -61,6 +62,10 @@ export interface RecordActionError {
   title?: ReactNode;
   message: ReactNode;
   onClose?: () => void;
+  /** Odkazy na chybná pole „Popisek: zpráva“ (max 5 + „a další N“); klik fokusuje pole. */
+  fieldErrors?: FieldErrorLink[];
+  /** Vlastní výběr pole ze souhrnu; výchozí je `focusFieldErrorLink`. */
+  onFieldErrorSelect?: (link: FieldErrorLink) => void;
 }
 
 export interface RecordActionBarProps {
@@ -359,6 +364,9 @@ export function RecordActionBar({
           <div className="min-w-0 flex-1">
             <p className="font-bold">{error.title ?? fallbackErrorTitle}</p>
             <div className="mt-0.5 text-sm text-foreground">{error.message}</div>
+            {error.fieldErrors?.length ? (
+              <FieldErrorSummary errors={error.fieldErrors} onSelect={error.onFieldErrorSelect} />
+            ) : null}
           </div>
           {error.onClose ? (
             <Button

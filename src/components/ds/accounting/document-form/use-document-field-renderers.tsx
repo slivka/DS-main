@@ -45,10 +45,12 @@ export function useDocumentFieldRenderers({
     span = 3,
     mobileHalf = false,
     className?: string,
+    hint?: ReactNode,
   ) => (
     <Field
       htmlFor={id}
       label={label}
+      hint={hint}
       error={fieldErrors?.[id.replace("document-", "") as DocumentHeaderField]}
       warning={fieldWarnings?.[id.replace("document-", "") as DocumentHeaderField]}
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
@@ -103,13 +105,12 @@ export function useDocumentFieldRenderers({
               }
             : undefined)
         }
-        hint={options?.hint}
         warning={warning}
-        warningDisplay="indicator"
       />,
       3,
       false,
       className,
+      options?.hint,
     );
   };
   const suggestedText = (

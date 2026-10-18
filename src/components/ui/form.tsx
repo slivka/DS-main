@@ -11,6 +11,7 @@ import {
 } from "react-hook-form";
 
 import { cn } from "../../lib/utils";
+import { FieldFeedbackIndicator, FieldHintIcon } from "../ds/form/field-feedback";
 import { Label } from "./label";
 
 const Form = FormProvider;
@@ -118,45 +119,32 @@ const FormControl = React.forwardRef<
 });
 FormControl.displayName = "FormControl";
 
-const FormDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => {
-  const { formDescriptionId } = useFormField();
-
-  return (
-    <p
-      ref={ref}
-      id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
-      {...props}
-    />
-  );
-});
+/** Nápověda formuláře jako ikona Info (nikdy text pod polem); id slouží aria-describedby. */
+const FormDescription = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>(
+  ({ className, children, ...props }, ref) => {
+    const { formDescriptionId } = useFormField();
+    return (
+      <span ref={ref} className={cn("inline-flex", className)} {...props}>
+        <FieldHintIcon hint={children} id={formDescriptionId} />
+      </span>
+    );
+  },
+);
 FormDescription.displayName = "FormDescription";
 
-const FormMessage = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message ?? "") : children;
-
-  if (!body) {
-    return null;
-  }
-
-  return (
-    <p
-      ref={ref}
-      id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
-      {...props}
-    >
-      {body}
-    </p>
-  );
-});
+/** Chyba formuláře jako ikona s bublinou (nikdy text pod polem). */
+const FormMessage = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>(
+  ({ className, children, ...props }, ref) => {
+    const { error, formMessageId } = useFormField();
+    const body = error ? String(error?.message ?? "") : children;
+    if (!body) return null;
+    return (
+      <span ref={ref} className={cn("inline-flex", className)} {...props}>
+        <FieldFeedbackIndicator error={body} placement="label" id={formMessageId} />
+      </span>
+    );
+  },
+);
 FormMessage.displayName = "FormMessage";
 
 export {

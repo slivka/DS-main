@@ -64,7 +64,7 @@
 
 ## Karta záznamu a jednotná pole (2.62.0)
 
-- `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint` u Field, DateField a CheckboxField se stále vykresluje pod polem; převod nápovědy na ikonu přijde až v 2.106.0. Chyby a varování jsou uvnitř ovládání s tooltipem, nikdy pod polem, a patří také do pruhu formuláře. `FieldValue` používá stejné rozvržení.
+- `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint` u Field, DateField, CheckboxField, SwitchField a FormDescription je od 2.107.0 ikona Info v řádku popisku s bublinou, nikdy text pod polem. Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí. Chyby a varování jsou uvnitř ovládání s tooltipem, nikdy pod polem, a patří také do pruhu formuláře. `FieldValue` používá stejné rozvržení.
 - `CheckboxField` drží čtvereček u prvního řádku zalomeného popisku; nápověda začíná pod textem. Platí pro `align="natural"` i `align="input"`.
 - `RecordActionBar` má `leftContent`, `saveAction`, `primaryAction`, `moreActions`, `busy`, `error` a `notices`. Uložení s `dirty={false}` je zakázané. `DocumentForm` jej používá interně.
 
@@ -390,3 +390,15 @@ Edit dokladu 12i (2.99.0): zakázaná vybraná volba používá plné muted poza
 - Uložit má původní ikonu + text v každé šířce. Číslo sdílí typografii IdentityLine; kompaktní zámek vysvětlí důvod klepnutím.
 - 13l: bankovní zůstatek v obou měnách span 3/12 vpravo; nulový rozdíl se nezobrazuje. Povolený klik kontroly nepřipíná tooltip, dotyk jej ukáže na 3 s.
 - BREAKING: value.note a texts.note odstraněny. Datum a Zůstatek dle banky v základní sekci, pouze nenulový Rozdíl. Zůstatky dle pohybů mají čtyři součty. Migrace v CHANGELOG.
+
+## 2.107.0 – stav pole a jednotná výška (nevydáno)
+
+- Pravidlo: Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.
+- `useFieldStatus`, `FieldStatus`, `FieldStatusIndicator` (alias `FieldFeedbackIndicator`, nové `side`, `placement`, `extraInfo`, `id`), `FieldHintIcon`.
+- `FieldErrorSummary`, `FieldErrorLink`, `focusFieldErrorLink`; `RecordActionError.fieldErrors` / `onFieldErrorSelect`, `DocumentFormError.fieldErrors`, `RecordDialog.fieldErrors`.
+- `useCellStatusTooltip` – líná bublina buňky mřížky místo `title`.
+- `Button size="control"`; `Toggle` bere výšku z `--control-h`.
+- `CheckboxField` / `SwitchField`: `error`, `warning`.
+- `BankAccountField`: `entryMode`, `onEntryModeChange`, `manualFormatPattern`.
+- `JournalLinesEditor`: `onCreateDimension`; `onValidationChange` navíc `fieldId`, `rowId`, `columnId`.
+- `DateField.warningDisplay` je deprecated (bez účinku).

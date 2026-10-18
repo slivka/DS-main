@@ -1,4 +1,5 @@
 import { useEffect, useId, useState, type ReactNode } from "react";
+import { FieldErrorSummary, type FieldErrorLink } from "../feedback/field-error-summary";
 import { TooltipProvider } from "../../ui/tooltip";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { createPortal } from "react-dom";
@@ -85,6 +86,8 @@ export interface RecordDialogProps {
   saveAndActionLabel?: string;
   /** Titulek potvrzení při neuložených změnách bez vlastního `confirm`. */
   dirtyConfirmTitle?: string;
+  /** Souhrn chybných polí sticky nad patičkou (max 5 + „a další N“); klik fokusuje pole. */
+  fieldErrors?: FieldErrorLink[];
 }
 
 /** Čistý výpočet potvrzení akce životního cyklu; `null` = spustit hned bez dotazu. */
@@ -133,6 +136,7 @@ export function RecordDialog({
   busy,
   children,
   extraActions,
+  fieldErrors,
   size,
   wide,
   contentClassName,
@@ -277,6 +281,15 @@ export function RecordDialog({
                 })}
               </div>
             </PageTabs>
+          ) : null}
+          {fieldErrors?.length ? (
+            <div
+              role="alert"
+              data-slot="record-dialog-field-errors"
+              className="sticky bottom-0 z-10 border-l-4 border-destructive bg-destructive-soft px-3 py-2 text-destructive-strong"
+            >
+              <FieldErrorSummary errors={fieldErrors} />
+            </div>
           ) : null}
           <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
             {extraActions || lifecycleAction ? (

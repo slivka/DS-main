@@ -101,7 +101,14 @@ export interface DsTexts {
     no: string;
     system: string;
   };
-  recordAction: { moreActions: string; unsaved: string; errorTitle: string; closeError: string };
+  recordAction: {
+    moreActions: string;
+    unsaved: string;
+    errorTitle: string;
+    closeError: string;
+    /** Zbývající chyby souhrnu; `{count}` = počet. */
+    moreErrors: string;
+  };
   appShell: {
     clearSearch: string;
     mainMenu: string;
@@ -292,6 +299,14 @@ export interface DsTexts {
     bankAccountInvalid: string;
     bankCodeInvalid: string;
     otherBankAccount: string;
+    /** Přístupný název přepínače ručního zadání účtu. */
+    bankAccountManualToggle: string;
+    /** Bublina zapnutého ručního zadání účtu. */
+    bankAccountManualOn: string;
+    /** Bublina výběru z účtů. */
+    bankAccountManualOff: string;
+    /** Vzor formátu ručně zadaného účtu uvnitř pole. */
+    bankAccountFormatPattern: string;
     editSelected: string;
     manualAccountNumber: string;
     manualAccountWithoutIban: string;

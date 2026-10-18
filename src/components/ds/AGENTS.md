@@ -1,5 +1,7 @@
 # Pravidla kvality DS
 
+**Kontrola výšky:** Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí. Proč: řádek formuláře ani detail řádku mřížky se nesmí posunout chybou ani nápovědou.
+
 ## Dialogy záznamů
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nesmí měnit výšku řádku. Vzor formátu patří do `Input.formatPattern`, vysvětlení pod sekci do `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
@@ -22,7 +24,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 
 - Input owns `formatPattern`; never pass a bare placeholder for a format hint. Why: one shared input contract preserves empty values and separates format from help.
 - Selection actions reserve fixed rem slots beside a fixed chevron; trailing labels precede actions. Why: shared geometry prevents overlaps at every application zoom.
-- Field hints must not change a form row height; use formatPattern inside the input and FieldGrid.hint below a section. Why: adjacent control edges remain aligned.
+- Field hints are an Info icon in the label row (FieldHintIcon), never text below; use formatPattern inside the input and FieldGrid.hint below a section. Why: adjacent control edges remain aligned.
 - Locked payment-order toggles remain focusable with aria-disabled and a stable action name; the reason is an accessible description. Why: keyboard users can discover why the action is unavailable.
 - Field label IDs derive from htmlFor. Why: locked groups need separate accessible names and reasons.
 - Disabled fields use ds-disabled-control plus disabled token utilities; state borders win. Why: readable muted text, one surface and consumer overrides.
@@ -33,3 +35,6 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - BankStatement/cash BA shows DUZP like PO when VAT fields are visible; date lock/link and defaults stay app-controlled via vat.dateLink. Why: the DS must not render a VAT date bound to a missing DUZP.
 
 - Errors and warnings use shared in-control indicators with borders and full tooltips, never text below fields; DocumentForm repeats messages above the form. Why: validation must not change row height.
+
+- Field status (error/warning) goes through useFieldStatus/FieldStatusIndicator; grid cells use the lazy useCellStatusTooltip, never title or eager Tooltips. Why: one contract and no cost for thousands of rows.
+- A field with its own tooltip shows one bubble: the status message on top, the original information below. Why: two overlapping bubbles are unreadable.
