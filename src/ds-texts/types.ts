@@ -61,6 +61,20 @@ export interface DsTexts {
     income: string;
     expense: string;
     unsavedMovements: string;
+    /** Přístupný název zámku VS. */
+    vsLink: string;
+    /** Tooltip zamčeného VS (odvozený). */
+    vsLinked: string;
+    /** Tooltip odemčeného VS (vlastní). */
+    vsUnlinked: string;
+    /** Varování: číslo daňového dokladu má víc než 10 číslic. */
+    vsTooLong: string;
+    /** Varování: číslo daňového dokladu neobsahuje číslice. */
+    vsNoDigits: string;
+    /** Varování ručního partnera u interního dokladu. */
+    internalManualPartner: string;
+    /** Kód banky v nabídce, tokeny {code} a {name}. */
+    bankCodeOption: string;
   };
   /** Formulář bankovního výpisu. */
   bankStatement: BankStatementTexts;
@@ -108,6 +122,12 @@ export interface DsTexts {
     closeError: string;
     /** Zbývající chyby souhrnu; `{count}` = počet. */
     moreErrors: string;
+    /** Titulek pruhu po neúspěšném uložení, token {count}. */
+    saveFailedTitle: string;
+    /** Titulek pruhu s chybami k doplnění, token {count}. */
+    fixBeforeTitle: string;
+    /** Titulek pruhu jen s varováními, token {count}. */
+    warningsTitle: string;
   };
   appShell: {
     clearSearch: string;
