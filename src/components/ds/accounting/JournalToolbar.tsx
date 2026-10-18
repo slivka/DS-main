@@ -26,7 +26,6 @@ function ToolbarLeft() {
   const { t, totals, vatOn, vatReadOnly, documentMark } = editor;
   const { rounding } = editor.props;
   const addLabel = `${t.addLine} (Ctrl+Enter)`;
-  const grossColumnVisible = editor.layout.visibleColumns.some((c) => c.id === "grossAmount");
   const handleRounding = () => {
     if (!rounding?.onChange || rounding.readOnly || totals.roundingExists) return;
     rounding.onChange(totals.suggestion);

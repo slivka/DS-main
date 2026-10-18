@@ -17,7 +17,11 @@ export interface JournalRecapHomeTotalProps extends ComponentPropsWithoutRef<"sp
   /** Značka domácí měny z dat. */
   symbol: string;
 }
-/** Tučný přepočet celku v záhlaví rekapitulace. */
+/**
+ * Tučný přepočet celku v záhlaví rekapitulace.
+ * @deprecated 2.108.0 – nepoužívat (rozhodnutí 18. 10.); editor řádků ho nevykresluje.
+ * Odstraní se v nejbližší major verzi.
+ */
 export const JournalRecapHomeTotal = forwardRef<HTMLSpanElement, JournalRecapHomeTotalProps>(
   function JournalRecapHomeTotal(
     { total, rate, rateAmount = 1, symbol, labelTemplate, className, children, ...props },
