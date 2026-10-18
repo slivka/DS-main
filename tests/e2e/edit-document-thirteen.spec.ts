@@ -110,9 +110,11 @@ test("výpis uloží zůstatek přes Σ, rozdíl varuje v poli a položky zaká�
   await expect(remove).toHaveAttribute("aria-disabled", "true");
   await expect(remove).toContainText("Výpis má položky");
   await page.keyboard.press("Escape");
-  await info.attach("Výpis s položkami", { body: await form.screenshot(), contentType: "image/png" });
+  await info.attach("Výpis s položkami", {
+    body: await form.screenshot(),
+    contentType: "image/png",
+  });
 });
-
 
 test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", async ({
   page,
@@ -152,9 +154,17 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
         await expect(actions).toBeVisible();
-        const compactSave = Number(await form.locator('[data-slot="record-action-bar"]').getAttribute("data-overflow-level")) === 2;
+        const compactSave =
+          Number(
+            await form
+              .locator('[data-slot="record-action-bar"]')
+              .getAttribute("data-overflow-level"),
+          ) === 2;
         if (compactSave) await expect(actions.locator(".lucide-save")).toBeVisible();
-        else { await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(actions.locator(".lucide-save")).toHaveCount(0); }
+        else {
+          await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+          await expect(actions.locator(".lucide-save")).toHaveCount(0);
+        }
         await expect(actions).toHaveAttribute("aria-label", /^(Uložit|Uložiť)$/);
         const actionGap = await form.evaluate((node) => {
           const bar = node.querySelector('[data-slot="record-action-bar"]');
@@ -233,8 +243,12 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
         .first();
       const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
       await expect(save).toBeVisible();
-      if (Number(await bar.getAttribute("data-overflow-level")) === 2) await expect(save.locator(".lucide-save")).toBeVisible();
-      else { await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(save.locator(".lucide-save")).toHaveCount(0); }
+      if (Number(await bar.getAttribute("data-overflow-level")) === 2)
+        await expect(save.locator(".lucide-save")).toBeVisible();
+      else {
+        await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+        await expect(save.locator(".lucide-save")).toHaveCount(0);
+      }
     }
   }
   await page

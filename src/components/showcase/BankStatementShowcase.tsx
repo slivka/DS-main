@@ -42,12 +42,7 @@ function StatementExample({ scenario }: { scenario: string }) {
   const [value, setValue] = useState<BankStatementValue>({
     date: "2026-10-12",
     number: "2026/010",
-    bankClosing:
-      scenario === "empty"
-        ? null
-        : scenario === "difference"
-          ? 12450
-          : 12500,
+    bankClosing: scenario === "empty" ? null : scenario === "difference" ? 12450 : 12500,
   });
   const [status] = useState<BankStatementFormProps["status"]>(
     scenario === "checked" ? "checked" : scenario === "posted" ? "posted" : "open",
@@ -178,25 +173,18 @@ export function BankStatementShowcase() {
         <DsTextsProvider locale={locale}>
           <ToggleExamples />
           <div className="my-3 flex flex-wrap gap-2">
-            {[
-              "empty",
-              "equal",
-              "difference",
-              "eur",
-              "checked",
-              "items",
-              "posted",
-              "busy",
-            ].map((key) => (
-              <Button
-                key={key}
-                variant="outline"
-                aria-pressed={scenario === key}
-                onClick={() => setScenario(key)}
-              >
-                {key}
-              </Button>
-            ))}
+            {["empty", "equal", "difference", "eur", "checked", "items", "posted", "busy"].map(
+              (key) => (
+                <Button
+                  key={key}
+                  variant="outline"
+                  aria-pressed={scenario === key}
+                  onClick={() => setScenario(key)}
+                >
+                  {key}
+                </Button>
+              ),
+            )}
             {["cs", "sk"].map((language) => (
               <Button
                 key={language}

@@ -118,4 +118,3 @@ test("Nový výpis má grid pohybů s akcí Nový výdaj", async ({ page }) => {
   await form.getByRole("button", { name: "Nový výdaj" }).click();
   await expect(form.locator('output[aria-label="Nový pohyb"]')).toHaveText("Výdaj");
 });
-

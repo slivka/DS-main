@@ -52,7 +52,10 @@ for (const width of [960, 360]) {
     }
     await expect(form.locator('[data-slot="bank-statement-difference"]')).toHaveCount(0);
     await expect(form.getByText("Zůstatky dle pohybů")).toHaveCount(0);
-    await info.attach(`Výpis ${width}`, { body: await form.screenshot(), contentType: "image/png" });
+    await info.attach(`Výpis ${width}`, {
+      body: await form.screenshot(),
+      contentType: "image/png",
+    });
     await sum.click();
     await expect(notice).toHaveCount(0);
   });
@@ -68,11 +71,16 @@ test("BankStatementForm nový i uložený výpis mají stejný grid pohybů", as
 });
 
 test("BankStatementForm dotyk vysvětlí zámek čísla", async ({ browser }) => {
-  const context = await browser.newContext({ hasTouch: true, viewport: { width: 1280, height: 1800 } });
+  const context = await browser.newContext({
+    hasTouch: true,
+    viewport: { width: 1280, height: 1800 },
+  });
   const page = await context.newPage();
   const form = await open(page, "items", 960);
   await form.getByRole("button", { name: "Výpis má položky" }).tap();
-  await expect(page.getByRole("tooltip").filter({ hasText: "Výpis má položky" }).first()).toBeVisible();
+  await expect(
+    page.getByRole("tooltip").filter({ hasText: "Výpis má položky" }).first(),
+  ).toBeVisible();
   await context.close();
 });
 
@@ -81,5 +89,7 @@ test("BankStatementForm EUR: bez zůstatků v Kč a stejná typografie identity"
   await expect(form.getByText(/Zůstatky v/)).toHaveCount(0);
   const number = form.getByRole("textbox", { name: "Číslo výpisu", exact: true });
   const font = await number.evaluate((node) => getComputedStyle(node).fontSize);
-  expect(await number.evaluate((node) => getComputedStyle(node.parentElement ?? node).fontSize)).toBe(font);
+  expect(
+    await number.evaluate((node) => getComputedStyle(node.parentElement ?? node).fontSize),
+  ).toBe(font);
 });
