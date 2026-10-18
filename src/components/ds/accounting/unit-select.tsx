@@ -143,7 +143,10 @@ export function UnitSelect({
                   <SelectSearchAction
                     label={createLabel?.(query.trim()) ?? dsTexts.selectCreate.unit}
                     disabled={creating || !canCreate}
-                    disabledReason={createDisabledReason}
+                    disabledReason={
+                      createDisabledReason ??
+                      (!query.trim() ? dsTexts.selectCreate.emptyQuery : undefined)
+                    }
                     onCreate={() => {
                       if (!onCreateUnit) return;
                       setCreating(true);

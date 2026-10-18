@@ -359,7 +359,7 @@ export interface DocumentFormProps {
     isDefault?: boolean;
   }>;
   /** Založí nový účet partnera z výběru přijatého dokladu. */
-  onAddBankAccount?: () => void;
+  onAddBankAccount?: (searchText: string) => void;
   /** Zvolený způsob zadání protistrany. */
   counterpartyInput?: "partner" | "manual";
   /** Změna způsobu zadání protistrany. */

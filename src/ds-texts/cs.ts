@@ -18,6 +18,8 @@ export const DS_TEXTS_CS: DsTexts = {
     partner: "Nový partner",
     dimension: "Nová zakázka",
     unit: "Nová měrná jednotka",
+    tag: "Nový štítek",
+    emptyQuery: "Nejdřív napište hledaný text",
   },
   dateQuick: { sevenDays: "+7 dní", fourteenDays: "+14 dní", oneMonth: "+1 měsíc" },
   documentEdit: {
@@ -28,7 +30,7 @@ export const DS_TEXTS_CS: DsTexts = {
     numberUnlinked: "Vlastní číslo daňového dokladu",
     movementDate: "Datum pohybu",
     movementTitle: "Bankovní pohyb",
-    counteraccountSection: "PROTIÚČET A SYMBOLY",
+    counteraccountSection: "Protiúčet a symboly",
     accountKind: "Druh účtu",
     domesticAccount: "Český účet",
     iban: "IBAN",
