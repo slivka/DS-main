@@ -34,7 +34,7 @@ export function LiveIssuesShowcase() {
     issueDate: "2026-10-10",
     taxDate: null,
     currency: "CZK",
-    amountTotal: null,
+    amountTotal: 0,
     totalMode: "sum",
   });
   const [issues, setIssues] = useState<FormIssue[]>(SERVER);
