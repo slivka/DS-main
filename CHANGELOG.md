@@ -1,8 +1,24 @@
 # Changelog – Slivka Design System
 
-## 2.108.0 (nevydáno)
+## 2.108.0 (nevydáno) – Edit dokladu 15
 
-Breaking / migrace pro aplikace: viz níže.
+### Nové
+- **Živý pruh chyb a upozornění** (`FormIssuesBar`, `FormIssue`, `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`): položka `{ fieldId?, rowId?, columnId?, label, message, severity, source, code? }`; deduplikace podle (code nebo text, pole, řádek), chyba hlavičky se neopakuje jako „Řádek N“; titulek s počtem („Doklad nelze uložit (N)“ jen při `saveFailed`, jinak „Před zařazením doplňte (N)“, bez chyb „Upozornění (N)“); prázdný seznam pruh skryje.
+- `DocumentForm`: `issues`, `saveFailed`, `validationActive`, `onFieldChange(fieldId, rowId?, columnId?)`, `bankCodeOptions`; hlavička `variableSymbolLinked`.
+- `RecordActionBar`: `issues`, `saveFailed`.
+- `VsField`: `linked`, `onLinkedChange`, `derivedValue`, `pendingText`, `warning`; pravidla `deriveVariableSymbol`, `variableSymbolSource`, `supportsVariableSymbolLink`, `effectiveVariableSymbolLinked`.
+- `AmountDifference.overLabel` („Rozpis převyšuje X“).
+- Výpis: Σ u „Zůstatek na výpise“, rozdíl jako žluté varování v poli a v pruhu, prázdný grid „Výpis zatím nemá pohyby“.
+- Interní doklad: partner / ručně, IČO a DIČ, varování „Ruční partner se nepřenese do řádků dokladu.“
+- Bankovní pohyb: protiúčet a symboly na mřížce 20 (4 / 8 / 8), kód banky „kód – název“.
+
+### Breaking / migrace pro aplikace
+1. **Pruh chyb:** místo samostatného `error` / `notices` předávejte `issues` (serverové položky `source: "server"`), `saveFailed` po neúspěšném uložení a `validationActive` po prvním pokusu o uložení / zařazení. `validationActive` řídí jen klientské položky a červené rámečky; serverové se zobrazí vždy. Serverové položky maže aplikace: DS volá `onFieldChange(fieldId)` při každé změně pole i přepínače (zámek data, VS, Σ), u buněk řádku s `rowId` a `columnId`.
+2. **VS:** dříve DS zapisoval odvozený VS do hodnoty; nyní **DS zobrazuje odvozenou hodnotu jako náhled a ukládá jen stav vazby** `variableSymbolLinked`. Autoritou je DB (`variable_symbol_auto`); zamčený VS aplikace do DB neposílá. Při 0 nebo > 10 číslicích DS vazbu uvolní a stávající VS ponechá (nikdy nezkracuje). U vydaných v konceptu bez čísla je pole prázdné s „přidělí se při zařazení“.
+3. **Bankovní pohyb (BA):** „Datum pohybu“ ↔ `issueDate` (`date_issued`), „Datum účetního případu“ ↔ `accountingDate` (`date_accounting`) se zámkem svázaným s datem pohybu (stav vazby z rovnosti dat jako u PO). Dříve se datum pohybu zapisovalo do `accountingDate` – aplikace musí mapování upravit.
+4. **Výpis:** kontrola výpisu zrušena (`onCheckedChange`, `checkDisabledReason` se ignorují), sekce „Zůstatky dle pohybů“ a „Zůstatky v {měna}“ zrušeny (`home`, `onHomeBankClosingChange` se ignorují). `bankClosing: null` = Σ (zůstatek z pohybů), číslo = zůstatek z banky. Pohyby vždy ze slotu `items` (i nový výpis); `isNew` a `onSaveThenAdd` se ignorují – přidání řeší `addAction` gridu.
+5. **Řádky:** zrušen čip „Celkem“ v liště, „Celkem v {měna}“ v rekapitulaci a stav „✓ Rozepsáno“; rozdíl se ukazuje jen v režimu zadané částky a jen ≠ 0. Výchozí režim ukázek je `sum`.
+6. **Zastaralé props** (přijímají se, maže je nejbližší major; nepoužívat – rozhodnutí 18. 10.): `BankStatementForm.home`, `.onHomeBankClosingChange`, `.isNew`, `.onSaveThenAdd`, `.checkDisabledReason`, `.onCheckedChange`; `JournalLinesEditor.recapTotalAmount`, `.recapTotalLabel`; `AmountDifference.balancedLabel`; komponenta `JournalRecapHomeTotal`.
 
 ## 2.107.0 – vydáno
 

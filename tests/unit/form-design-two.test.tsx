@@ -42,9 +42,8 @@ describe("Design formulářů 2", () => {
     expect(rate.compareDocumentPosition(vat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(vat.compareDocumentPosition(total) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(view.container.querySelector("#document-total-home")).toBeNull();
-    const recap = view.container.querySelector('[data-slot="journal-recap-home-total"]');
-    expect(recap?.getAttribute("title")).toBe("Celkem v Kč");
-    expect(recap?.textContent?.replace(/\s/g, "")).toContain("30250,00");
+    // Rozhodnutí 18. 10.: „Celkem v domácí měně“ se v rekapitulaci nezobrazuje.
+    expect(view.container.querySelector('[data-slot="journal-recap-home-total"]')).toBeNull();
     view.rerender(
       <DocumentForm
         {...base}
@@ -54,7 +53,7 @@ describe("Design formulářů 2", () => {
     expect(view.queryByLabelText("Kurz DPH")).toBeNull();
     expect(view.container.textContent).not.toContain("stejný jako kurz dokladu");
   });
-  it("sčítaný celek a chybějící kurz v rekapitulaci, domácí měna údaj nemá", () => {
+  it("rekapitulace nemá domácí celek v žádném režimu, domácí měna nemá kurz", () => {
     const lines = [{ id: "1", amount: 5000, foreignAmount: 200 }];
     const view = render(
       <DocumentForm
@@ -64,20 +63,13 @@ describe("Design formulářů 2", () => {
         linesEditorProps={{ recap: { open: false } }}
       />,
     );
-    expect(
-      view.container
-        .querySelector('[data-slot="journal-recap-home-total"]')
-        ?.textContent?.replace(/\s/g, ""),
-    ).toContain("5000,00");
-    view.rerender(<DocumentForm {...base} value={{ ...base.value, rate: null }} />);
-    expect(
-      view.container.querySelector('[data-slot="journal-recap-home-total"]')?.textContent,
-    ).toContain("—");
-    view.rerender(<DocumentForm {...base} value={{ ...base.value, currency: "CZK" }} />);
     expect(view.container.querySelector('[data-slot="journal-recap-home-total"]')).toBeNull();
+    view.rerender(<DocumentForm {...base} value={{ ...base.value, rate: null }} />);
+    expect(view.container.querySelector('[data-slot="journal-recap-home-total"]')).toBeNull();
+    view.rerender(<DocumentForm {...base} value={{ ...base.value, currency: "CZK" }} />);
     expect(view.queryByLabelText("Kurz")).toBeNull();
   });
-  it("ruční důvody následují pořadí kurzů a chybějící kurz DPH upozorní", () => {
+  it("ruční důvody následují pořadí kurzů a chybějící kurz DPH upozorní", async () => {
     const view = render(
       <DocumentForm
         {...base}
@@ -89,10 +81,18 @@ describe("Design formulářů 2", () => {
     const vat = view.getByLabelText("Důvod ručního kurzu DPH");
     expect(doc.compareDocumentPosition(vat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     view.rerender(<DocumentForm {...base} vatRateField={{ value: null, onChange: () => {} }} />);
-    expect((view.getByLabelText("Kurz DPH") as HTMLInputElement).getAttribute("aria-invalid")).toBe("true");
+    expect((view.getByLabelText("Kurz DPH") as HTMLInputElement).getAttribute("aria-invalid")).toBe(
+      "true",
+    );
     // Chybějící kurz DPH se hlásí jen jednou – v chybovém pruhu, ne současně v upozorněních.
-    expect(view.container.querySelector('[data-slot="document-form-error"]')?.textContent).toContain("Kurz ČNB");
-    expect(view.container.querySelector('[data-slot="document-form-notices"]')?.textContent ?? "").not.toContain("Kurz ČNB");
+    await waitFor(() =>
+      expect(
+        view.container.querySelector('[data-slot="document-form-error"]')?.textContent,
+      ).toContain("Kurz ČNB"),
+    );
+    expect(
+      view.container.querySelector('[data-slot="document-form-notices"]')?.textContent ?? "",
+    ).not.toContain("Kurz ČNB");
     expect(view.container.querySelector('[data-slot="document-rate-details"]')).toBeNull();
   });
   it("RateField obnoví doporučený kurz a readOnly nemá akci", () => {
@@ -159,12 +159,8 @@ describe("Design formulářů 2", () => {
       />,
     );
     expect(view.getByLabelText("Forma úhrady")).toBeTruthy();
-    expect(
-      view.container
-        .querySelector('[data-slot="journal-recap-home-total"]')
-        ?.getAttribute("aria-label")
-        ?.replace(/\s/g, " "),
-    ).toBe("Domácí celek Kč: 30 250,00");
+    // Přepis totalHome se přijímá kvůli kompatibilitě, domácí celek se ale nevykresluje.
+    expect(view.queryByText(/Domácí celek/)).toBeNull();
   });
   it("FP přesune způsob platby nahoru, DDPZ jej ponechává v Platebních údajích", () => {
     for (const type of ["FP", "DDPZ"]) {

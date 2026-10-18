@@ -477,7 +477,19 @@ describe("DPH v editoru", () => {
       vat: { enabled: true, codes: OUT, calcMode: "net" },
     });
     expect(html).toContain("Kód DPH");
-    expect(html).toContain("Rozepsáno");
+    // Vyrovnaný rozpis: žádný rozdíl ani „Rozepsáno“ (rozhodnutí 18. 10.).
+    expect(html).not.toContain('data-slot="journal-lines-remaining"');
+    expect(html).not.toContain("Rozepsáno");
+    const off = render({
+      lines,
+      mode: "mainAccount",
+      mainAccount: "311001",
+      mainSide: "MD",
+      totalAmount: 1999.4,
+      totalMode: "entered",
+      vat: { enabled: true, codes: OUT, calcMode: "net" },
+    });
+    expect(off).toContain('data-slot="journal-lines-remaining"');
   });
   it("doklad jen ke čtení použije řádky daně z DB", () => {
     const html = render({
@@ -489,7 +501,7 @@ describe("DPH v editoru", () => {
       totalMode: "entered",
       vat: { enabled: true, codes: OUT, calcMode: "net", readOnly: true },
     });
-    expect(html).toContain("Rozepsáno");
+    expect(html).not.toContain('data-slot="journal-lines-remaining"');
   });
   it("bez vat žádné DPH sloupce", () => {
     const html = render({ lines: [lines[0]!] });
@@ -552,7 +564,7 @@ describe("DPH v editoru", () => {
     expect(html).toContain("DPH (Kč)");
     expect(html).not.toContain("(CZK)");
   });
-  it("při skrytém Celkem s DPH ukazuje celek se značkou měny v liště", () => {
+  it("lišta nemá čip Celkem, celek zůstává v patičce gridu", () => {
     const base: JournalLine[] = [
       { id: "a", debitAccount: "311001", creditAccount: "602001", amount: 1000, vatCodeId: "v21" },
       { id: "b", debitAccount: "311001", creditAccount: "604001", amount: 500, vatCodeId: "v12" },
@@ -567,8 +579,8 @@ describe("DPH v editoru", () => {
       documentCurrencySymbol: "Kč",
       vat: { enabled: true, codes: OUT, calcMode: "net" },
     });
-    expect(html).toContain('data-slot="journal-lines-toolbar-total"');
-    expect(html).toMatch(/Celkem 1\s770,00 Kč/);
+    expect(html).not.toContain('data-slot="journal-lines-toolbar-total"');
+    expect(html).toMatch(/1\s770,00/);
   });
   it("bez DPH zůstává původní součet v Částce", () => {
     const html = render({

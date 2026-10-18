@@ -83,7 +83,7 @@ export function BankStatementBasic({
         <Field key={key} label={texts[key]} labelId={`${id}-${key}-label`} span={4}>
           <FieldValue
             aria-labelledby={`${id}-${key}-label`}
-            data-slot={`bank-statement-${key}`}
+            data-bank-statement-value={`bank-statement-${key}`}
             className={cn(
               "justify-end text-right tabular-nums",
               balances[key] < 0 && "text-destructive",

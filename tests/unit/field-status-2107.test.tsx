@@ -8,16 +8,14 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
 
 const { cleanup, fireEvent, render, waitFor, act } = await import("@testing-library/react");
 const { Field } = await import("../../src/components/ds/layout/form-field-layout");
-const { CheckboxField, SwitchField } =
-  await import("../../src/components/ds/form/checkbox-field");
+const { CheckboxField, SwitchField } = await import("../../src/components/ds/form/checkbox-field");
 const { DateField } = await import("../../src/components/ds/form/date-field");
 const { Input } = await import("../../src/components/ui/input");
 const { Button } = await import("../../src/components/ui/button");
 const { FieldFeedbackIndicator, FieldStatusIndicator } =
   await import("../../src/components/ds/form/field-feedback");
 const { FieldToggleButton } = await import("../../src/components/ds/form/field-toggle-button");
-const { FieldErrorSummary } =
-  await import("../../src/components/ds/feedback/field-error-summary");
+const { FieldErrorSummary } = await import("../../src/components/ds/feedback/field-error-summary");
 const { RecordActionBar } = await import("../../src/components/ds/layout/record-action-bar");
 const { useCellStatusTooltip } = await import("../../src/components/ds/grid/cell-status-tooltip");
 const { BankAccountField } = await import("../../src/components/ds/accounting/bank-account-field");
@@ -124,17 +122,13 @@ describe("Pole bez textu pod prvkem", () => {
   it("bublina se otevře na focus ikony", async () => {
     const view = render(<FieldFeedbackIndicator error="Text chyby" />);
     fireEvent.focus(view.getByRole("img", { name: "Text chyby" }));
-    await waitFor(() =>
-      expect(view.getAllByText("Text chyby").length).toBeGreaterThan(1),
-    );
+    await waitFor(() => expect(view.getAllByText("Text chyby").length).toBeGreaterThan(1));
   });
 
   it("bublina se otevře klepnutím na ikonu", async () => {
     const view = render(<FieldFeedbackIndicator warning="Text varování" />);
     fireEvent.click(view.getByRole("img", { name: "Text varování" }));
-    await waitFor(() =>
-      expect(view.getAllByText("Text varování").length).toBeGreaterThan(1),
-    );
+    await waitFor(() => expect(view.getAllByText("Text varování").length).toBeGreaterThan(1));
   });
 
   it("přepínač v poli s chybou má jednu bublinu: zpráva nahoře, původní informace pod ní", async () => {
@@ -170,12 +164,10 @@ describe("Výška z --control-h", () => {
         <CheckboxField align="input" checked onCheckedChange={() => {}} label="A" />
       </>,
     );
-    expect(view.getByRole("button", { name: "Mapa" }).className).toContain(
+    expect(view.getByRole("button", { name: "Mapa" }).className).toContain("h-[var(--control-h)]");
+    expect(view.container.querySelector('[data-slot="checkbox-field"] > div')?.className).toContain(
       "h-[var(--control-h)]",
     );
-    expect(
-      view.container.querySelector('[data-slot="checkbox-field"] > div')?.className,
-    ).toContain("h-[var(--control-h)]");
   });
 });
 

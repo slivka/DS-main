@@ -79,10 +79,16 @@ describe("Edit dokladu 11", () => {
       />,
     );
     expect(view.container.querySelectorAll('[data-slot="rate-source-attention"]')).toHaveLength(2);
-    expect((view.getByLabelText("Kurz DPH") as HTMLInputElement).getAttribute("aria-invalid")).toBe("true");
+    expect((view.getByLabelText("Kurz DPH") as HTMLInputElement).getAttribute("aria-invalid")).toBe(
+      "true",
+    );
     // Chybějící kurz DPH se hlásí jen jednou – v chybovém pruhu, ne současně v upozorněních.
-    expect(view.container.querySelector('[data-slot="document-form-error"]')?.textContent).toContain("Kurz ČNB");
-    expect(view.container.querySelector('[data-slot="document-form-notices"]')?.textContent ?? "").not.toContain("Kurz ČNB");
+    expect(
+      view.container.querySelector('[data-slot="document-form-error"]')?.textContent,
+    ).toContain("Kurz ČNB");
+    expect(
+      view.container.querySelector('[data-slot="document-form-notices"]')?.textContent ?? "",
+    ).not.toContain("Kurz ČNB");
     expect(view.container.querySelector('[data-slot="document-rate-details"]')).toBeNull();
     view.rerender(
       <DocumentForm

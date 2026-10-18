@@ -25,3 +25,5 @@
 - Compose document sections separately and apply date links through a focused hook and pure helper. Why: orchestration stays readable and date logic is testable.
 
 - Gate document-date initialization writes with effective read-only state, including final statuses. Why: opening a finalized document must never mark it dirty.
+- Form issues flow through FormIssue (issues/saveFailed/validationActive); server items always show, client items after the first save attempt; the app removes server items via onFieldChange. Why: one deduplicated live list, never repeated messages.
+- A locked VS is a preview only; the DS stores just variableSymbolLinked. Why: the database owns variable_symbol_auto.

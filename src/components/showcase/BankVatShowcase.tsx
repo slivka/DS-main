@@ -60,6 +60,10 @@ export function BankVatShowcase() {
           currencyLocked
           books={MOCK_BOOKS.filter((b) => b.id === "b-bv")}
           documentType="BA"
+          bankCodeOptions={[
+            { code: "0100", name: "Komerční banka" },
+            { code: "0800", name: "Česká spořitelna" },
+          ]}
           mainSide="D"
           mainAccountLocked
           status="draft"

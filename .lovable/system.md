@@ -82,7 +82,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Stav záznamu je vždy v `PageHeader.titleBadge`, nikdy jako pole formuláře.
 - Zaškrtávátka jsou vždy v `CheckboxGroup` nebo v `FieldGrid` s `align="input"`, nikdy ve vlastním `div`.
 - Tlačítka Uložit a akce záznamu jsou vždy v `RecordActionBar`, nikdy volně pod poli.
-- Pole se skládají přes `Field`: popisek 12 px polotučně, mezera 4 px, ovládací prvek a případný `hint` nebo `error`. Hodnotu jen pro čtení vložte jako `FieldValue`.
+- Pole se skládají přes `Field`: popisek 12 px polotučně, mezera 4 px, ovládací prvek; nápověda je ikona Info v řádku popisku, chyba a varování uvnitř pole – pod prvkem nic. Hodnotu jen pro čtení vložte jako `FieldValue`.
 
 ```tsx
 <PageHeader title="Karta majetku" titleBadge={<StatusBadge status="active" config={statuses} />} />
@@ -476,3 +476,10 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Počet kopií je StepperInput min=1 max=5. Splatnost používá DateField.baseDate a quickOptions; +14 posouvá základ o 14 dní, měsíc je kalendářní.
 - Přidání patří jako + do pravého okraje hledání a předává aktuální dotaz; bez práva DisabledReasonTooltip. Nabídky se nezalamují, rostou do dostupné šířky a nejvýše 36 rem.
 - Výpis nemá viditelný stavový štítek; isNew zobrazí prázdné pohyby a onSaveThenAdd(direction). Peněžní směr je Výdaj, nadpis BA Bankovní pohyb.
+
+## Doklady – pruh, VS, výpis (2.108.0)
+- Pruh nad formulářem je živý seznam toho, co zbývá opravit: předávejte `issues` (`FormIssue`), `saveFailed` a `validationActive`. Serverové položky (`source: "server"`) se zobrazí vždy, klientské až po prvním pokusu o uložení. Stejná hláška se nikdy neopakuje; chyba hlavičky se nepíše znovu jako „Řádek N“. Serverové položky maže aplikace podle `onFieldChange(fieldId, rowId?, columnId?)`. Žádný toast ani druhý NoticeBar se stejným textem.
+- VS u FP/ZFP/DDPOZ a FV/ZFV/DDPZ má zámek (`variableSymbolLinked`). Zamčený VS je jen náhled z čísla daňového dokladu, autoritou je DB (`variable_symbol_auto`); DS ukládá jen stav vazby a VS nikdy nezkracuje.
+- Bankovní pohyb: Datum pohybu = `issueDate`, Datum účetního případu = `accountingDate` se zámkem; protiúčet a symboly na mřížce 20 (4 / 8 / 8).
+- Výpis: nemá kontrolu ani zůstatky dle pohybů / v domácí měně; „Zůstatek na výpise“ má Σ (`bankClosing: null`), rozdíl je žluté varování v poli. Pohyby vždy přes slot `items` (grid s `addAction`).
+- Řádky: žádný čip Celkem, domácí celek ani „Rozepsáno“; rozdíl jen v režimu zadané částky a jen ≠ 0.

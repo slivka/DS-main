@@ -340,10 +340,16 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const amount = view.container.querySelector("#document-amountTotal") as HTMLInputElement;
     expect(amount.value.replace(/\s/g, "")).toBe("1234567,89");
     expect(amount.readOnly).toBe(false);
-    view.rerender(<Form value={{ ...base, totalMode: "sum" }} lines={[{ id: "1", amount: 1234567.89 }]} />);
+    view.rerender(
+      <Form value={{ ...base, totalMode: "sum" }} lines={[{ id: "1", amount: 1234567.89 }]} />,
+    );
     expect((view.getByLabelText("Celkem za doklad") as HTMLInputElement).readOnly).toBe(true);
-    expect(view.getByRole("button", { name: "Sčítat z rozpisu" }).getAttribute("aria-pressed")).toBe("true");
-    expect(view.container.querySelector("[data-slot=document-amount-total] label")?.textContent).toBe("Celkem za doklad");
+    expect(
+      view.getByRole("button", { name: "Sčítat z rozpisu" }).getAttribute("aria-pressed"),
+    ).toBe("true");
+    expect(
+      view.container.querySelector("[data-slot=document-amount-total] label")?.textContent,
+    ).toBe("Celkem za doklad");
   });
 
   it("internal má měnu vedle Celkem a nikdy nevykreslí účet", () => {

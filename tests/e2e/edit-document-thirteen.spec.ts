@@ -91,27 +91,18 @@ test("přepínače mají jednotné rozměry, stálé názvy a klávesnici", asyn
   await info.attach("Přepínače 200 %", { body: await root.screenshot(), contentType: "image/png" });
 });
 
-test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstranění", async ({
+test("výpis uloží zůstatek přes Σ, rozdíl varuje v poli a položky zakážou odstranění", async ({
   page,
 }, info) => {
   await prepare(page);
   const showcase = page.getByTestId("bank-showcase");
   const root = page.getByTestId("bank-panels");
   const form = root.locator('[data-slot="bank-statement-form"]').first();
-  const difference = form.locator('[data-slot="bank-statement-difference"]');
-  await expect(difference).toHaveCount(0);
-  await form.getByLabel("Zůstatek dle banky", { exact: true }).fill("12500");
-  await expect(difference).toHaveCount(0);
-  await form.getByRole("button", { name: /^(Uložit|Uložiť)$/ }).click();
-  await expect(form.getByRole("button", { name: /^(Uložit|Uložiť)$/ })).toBeDisabled();
-  await expect(difference).toHaveCount(0);
-  await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
-  await expect(form.getByText("Zkontrolovaný", { exact: true })).toHaveCount(0);
-  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
-  await form.getByRole("button", { name: "Zrušit kontrolu", exact: true }).click();
-  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toBeVisible();
+  const notice = form.locator('[data-slot="bank-statement-difference-notice"]');
+  await expect(notice).toHaveCount(0);
+  await expect(form.getByRole("button", { name: "Zkontrolovat", exact: true })).toHaveCount(0);
   await showcase.getByRole("button", { name: "difference", exact: true }).click();
-  await expect(difference).toContainText("−50,00");
+  await expect(notice).toContainText("−50,00");
   await showcase.getByRole("button", { name: "items", exact: true }).click();
   await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
   await form.getByRole("button", { name: "Další akce", exact: true }).click();
@@ -155,6 +146,8 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
               return [...node.querySelectorAll("label,input,[data-slot=field-value],button")].every(
                 (el) => {
                   const rect = el.getBoundingClientRect();
+                  // Skryté měřicí kopie akcí gridu pohybů nemají rozměr.
+                  if (rect.width === 0 && rect.height === 0) return true;
                   return rect.right <= box.right + 2 && rect.left >= box.left - 2;
                 },
               );
@@ -163,9 +156,17 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
           .toBe(true);
         const actions = form.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
         await expect(actions).toBeVisible();
-        const compactSave = Number(await form.locator('[data-slot="record-action-bar"]').getAttribute("data-overflow-level")) === 2;
+        const compactSave =
+          Number(
+            await form
+              .locator('[data-slot="record-action-bar"]')
+              .getAttribute("data-overflow-level"),
+          ) === 2;
         if (compactSave) await expect(actions.locator(".lucide-save")).toBeVisible();
-        else { await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(actions.locator(".lucide-save")).toHaveCount(0); }
+        else {
+          await expect(actions.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+          await expect(actions.locator(".lucide-save")).toHaveCount(0);
+        }
         await expect(actions).toHaveAttribute("aria-label", /^(Uložit|Uložiť)$/);
         const actionGap = await form.evaluate((node) => {
           const bar = node.querySelector('[data-slot="record-action-bar"]');
@@ -244,8 +245,12 @@ test("Uložit odpovídá dokladu a během ukládání má spinner", async ({ pag
         .first();
       const save = bar.getByRole("button", { name: /^(Uložit|Uložiť)$/ });
       await expect(save).toBeVisible();
-      if (Number(await bar.getAttribute("data-overflow-level")) === 2) await expect(save.locator(".lucide-save")).toBeVisible();
-      else { await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible(); await expect(save.locator(".lucide-save")).toHaveCount(0); }
+      if (Number(await bar.getAttribute("data-overflow-level")) === 2)
+        await expect(save.locator(".lucide-save")).toBeVisible();
+      else {
+        await expect(save.getByText(/^(Uložit|Uložiť)$/)).toBeVisible();
+        await expect(save.locator(".lucide-save")).toHaveCount(0);
+      }
     }
   }
   await page

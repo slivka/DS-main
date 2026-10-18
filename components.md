@@ -566,3 +566,14 @@ Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeč
 <Textarea id="note" label={texts.note} value={note} onChange={handleNote} error={errors.note} />
 ```
 
+
+### FormIssuesBar (2.108.0)
+Živý pruh chyb a upozornění nad formulářem. Props: `issues: FormIssue[]`, `saveFailed`, `title`, `message`, `onClose`, `onSelect`, `closeLabel`, `dataSlot`. Skládají ho `RecordActionBar.issues` a `DocumentForm.issues`; deduplikace a titulek přes `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`.
+
+### Změny 2.108.0
+- `DocumentForm`: `issues`, `saveFailed`, `validationActive`, `onFieldChange`, `bankCodeOptions`, `value.variableSymbolLinked`.
+- `RecordActionBar`: `issues`, `saveFailed`.
+- `VsField`: `linked`, `onLinkedChange`, `derivedValue`, `pendingText`, `warning`.
+- `AmountDifference`: `overLabel`; `balancedLabel` zastaralé – nepoužívat – rozhodnutí 18. 10.
+- `BankStatementForm`: `home`, `onHomeBankClosingChange`, `isNew`, `onSaveThenAdd`, `checkDisabledReason`, `onCheckedChange` zastaralé – nepoužívat – rozhodnutí 18. 10.
+- `JournalLinesEditor`: `recapTotalAmount`, `recapTotalLabel` zastaralé; `JournalRecapHomeTotal` zastaralá – nepoužívat – rozhodnutí 18. 10.
