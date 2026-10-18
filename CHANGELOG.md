@@ -19,6 +19,22 @@ zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --co
 - A9: `JournalLinesEditor.onCreateDimension` v buňce i detailu řádku; interní doklad nabízí
   u partnera ＋ Nový partner a tužku.
 
+### Dokončení a ověření
+
+- Registrace `--control-h` má výchozí nezávislou délku `36px`; `2.25rem` není platné
+  initial-value registrované délky. Formulář dál bere `2.25rem` z kořene. Detail i buňky
+  nastavují relativní délku na kontejneru; odstraněn starý přepis inline vstupů v buňkách.
+- `SegmentedField`, `ToggleGroup`, `Textarea`: vlastní `error`, `warning`, rámeček,
+  přístupný popis a stavová ikona v popisku (`label`). Bez popisku dejte ikonu do okolního
+  popisku pomocí `FieldStatusIndicator placement="label"`.
+- Skutečný JournalLinesEditor: sedm polí detailu včetně chybného Poměru %, buňky i editor
+  buňky mají shodnou výšku v 18 kombinacích zoomu aplikace 70/100/200 %, gridu
+  60/100/140 % a obou hustot. Inline výška z ukázky odstraněna.
+- Ověření: unit 703/703, Chromium E2E 27/27 (skutečný editor 1, ukázka 5,
+  document-controls 11, edit-document-thirteen 10); lint 0 chyb / 299 varování.
+- Čtyři katalogy proti 8a53e95 beze ztrát: 432 → 441 komponent, 800 → 856 props.
+  Obě vydané verze zůstávají 2.106.0; nic nevydáno.
+
 ### Breaking / migrace pro aplikace
 
 - `hint` se už nekreslí pod polem, ale jako ikona Info v popisku; dlouhé texty přesuňte do

@@ -1,27 +1,45 @@
+/** Segmentová volba · vlastní výběr a stav pole · nesmí měnit výšku při chybě. */
 import * as React from "react";
 
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { Field } from "../layout/RecordDialog";
+import { FieldFeedbackIndicator, useFieldStatus } from "./field-feedback";
 
+/** Jedna pojmenovaná volba skupiny. */
 export interface SegmentedFieldOption<Value extends string = string> {
+  /** Stabilní hodnota. */
   value: Value;
+  /** Text volby. */
   label: React.ReactNode;
 }
 
+/** Vlastnosti segmentového pole. */
 export interface SegmentedFieldProps<Value extends string = string> extends Omit<
   React.ComponentPropsWithoutRef<"div">,
   "defaultValue" | "onChange"
 > {
+  /** Nabízené volby. */
   options: SegmentedFieldOption<Value>[];
+  /** Vybraná hodnota. */
   value: Value;
+  /** Změna vybrané hodnoty. */
   onChange: (value: Value) => void;
+  /** Zakázané ovládání. */
   disabled?: boolean;
   /** Volitelný viditelný popisek; bez něj použijte `ariaLabel`. */
   label?: string;
+  /** Přístupný název bez viditelného popisku. */
   ariaLabel?: string;
+  /** Chyba pole; má přednost před varováním. */
+  error?: string;
+  /** Varování bez změny výšky. */
+  warning?: string;
+  /** Ref na skupinu voleb. */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
+/** Další volba pro ovládání šipkami. */
 export function nextSegmentedFieldValue<Value extends string>(
   options: SegmentedFieldOption<Value>[],
   value: Value,
@@ -42,19 +60,29 @@ export function SegmentedField<Value extends string = string>({
   label,
   ariaLabel,
   className,
+  error,
+  warning,
+  ref,
   ...props
 }: SegmentedFieldProps<Value>) {
+  const status = useFieldStatus({ error, warning });
   const group = (
     <div
+      ref={ref}
       role="radiogroup"
       data-slot="segmented"
-      aria-label={ariaLabel ?? label ?? "Výběr typu"}
+      aria-label={ariaLabel ?? label}
       className={cn(
         "inline-flex h-[var(--control-h)] w-fit overflow-hidden rounded-md border border-input bg-background",
+        status.className,
         className,
       )}
       {...props}
+      {...status.controlProps}
     >
+      <span id={status.describedById} className="sr-only">
+        {status.message}
+      </span>
       {options.map((option, index) => (
         <Button
           key={option.value}
@@ -99,5 +127,20 @@ export function SegmentedField<Value extends string = string>({
     </div>
   );
 
-  return label ? <Field label={label}>{group}</Field> : group;
+  return label ? (
+    <Field
+      label={
+        <>
+          <span title={label} className={cn("min-w-0 truncate", error && "text-destructive")}>
+            {label}
+          </span>
+          <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
+        </>
+      }
+    >
+      {group}
+    </Field>
+  ) : (
+    group
+  );
 }

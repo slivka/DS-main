@@ -1,5 +1,7 @@
 "use client";
 
+/** Skupina přepínačů · vlastní volby a stav pole · nesmí přidávat zprávy pod ovládání. */
+
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import { type VariantProps } from "class-variance-authority";
@@ -12,19 +14,65 @@ const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariant
   variant: "default",
 });
 
+import { FieldFeedbackIndicator, useFieldStatus } from "../ds/form/field-feedback";
+import { Field } from "../ds/layout/form-field-layout";
+
+/** Vlastnosti skupiny přepínačů. */
+export interface ToggleGroupStatusProps {
+  /** Chyba má přednost před varováním. */
+  error?: string;
+  /** Nezabraňující upozornění. */
+  warning?: string;
+  /** Popisek s ikonou stavu. */
+  label?: string;
+}
+
+/** Zachovává rozlišené jednohodnotové a vícehodnotové API Radix. */
+export type ToggleGroupProps = React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root> &
+  VariantProps<typeof toggleVariants> &
+  ToggleGroupStatusProps;
+
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root> &
-    VariantProps<typeof toggleVariants>
->(({ className, variant, size, children, ...props }, ref) => (
-  <ToggleGroupPrimitive.Root
-    ref={ref}
-    className={cn("flex items-center justify-center gap-1", className)}
-    {...props}
-  >
-    <ToggleGroupContext.Provider value={{ variant, size }}>{children}</ToggleGroupContext.Provider>
-  </ToggleGroupPrimitive.Root>
-));
+  ToggleGroupProps
+>(({ className, variant, size, children, error, warning, label, ...props }, ref) => {
+  const status = useFieldStatus({ error, warning });
+  const group = (
+    <ToggleGroupPrimitive.Root
+      ref={ref}
+      className={cn(
+        "flex h-[var(--control-h)] items-center justify-center gap-1 rounded-md",
+        className,
+        status.className,
+      )}
+      {...props}
+      {...status.controlProps}
+    >
+      <span id={status.describedById} className="sr-only">
+        {status.message}
+      </span>
+      <ToggleGroupContext.Provider value={{ variant, size }}>
+        {children}
+      </ToggleGroupContext.Provider>
+    </ToggleGroupPrimitive.Root>
+  );
+  return label ? (
+    <Field
+      label={
+        <>
+          <span title={label} className={cn("min-w-0 truncate", error && "text-destructive")}>
+            {label}
+          </span>
+          <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
+        </>
+      }
+    >
+      {group}
+    </Field>
+  ) : (
+    group
+  );
+});
 
 ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
 

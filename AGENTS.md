@@ -64,4 +64,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
-- Keep field feedback in shared in-control indicators and duplicate full messages in form banners; never below fields. Why: validation cannot change row geometry.
+- Share field feedback and form banners; register control-h with an independent initial length. Why: errors never shift rows and descendants inherit resolved heights.

@@ -65,7 +65,7 @@
 ## Karta záznamu a jednotná pole (2.62.0)
 
 - `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint` u Field, DateField, CheckboxField, SwitchField a FormDescription je od 2.107.0 ikona Info v řádku popisku s bublinou, nikdy text pod polem. Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí. Chyby a varování jsou uvnitř ovládání s tooltipem, nikdy pod polem, a patří také do pruhu formuláře. `FieldValue` používá stejné rozvržení.
-- `CheckboxField` drží čtvereček u prvního řádku zalomeného popisku; nápověda začíná pod textem. Platí pro `align="natural"` i `align="input"`.
+- `CheckboxField` má jednořádkový popisek s výpustkou a úplným textem v bublině; nápověda je Info v popisku. Platí pro `align="natural"` i `align="input"`.
 - `RecordActionBar` má `leftContent`, `saveAction`, `primaryAction`, `moreActions`, `busy`, `error` a `notices`. Uložení s `dirty={false}` je zakázané. `DocumentForm` jej používá interně.
 
 ```tsx
@@ -402,3 +402,167 @@ Edit dokladu 12i (2.99.0): zakázaná vybraná volba používá plné muted poza
 - `BankAccountField`: `entryMode`, `onEntryModeChange`, `manualFormatPattern`.
 - `JournalLinesEditor`: `onCreateDimension`; `onValidationChange` navíc `fieldId`, `rowId`, `columnId`.
 - `DateField.warningDisplay` je deprecated (bez účinku).
+
+## Dokončení 2.107.0 – veřejné API
+
+### FieldStatus
+
+Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku.
+
+```tsx
+const status = useFieldStatus({ error: errors.name, warning: warnings.name });
+```
+
+### useFieldStatus
+
+Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku.
+
+```tsx
+const status = useFieldStatus({ error: errors.name, warning: warnings.name });
+```
+
+### FieldStatusIndicator
+
+Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. FieldStatusIndicator je alias původního FieldFeedbackIndicator.
+
+```tsx
+<FieldStatusIndicator error={errors.amount} side="start" id={status.describedById} />
+```
+
+### FieldFeedbackIndicator
+
+Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. FieldStatusIndicator je alias původního FieldFeedbackIndicator.
+
+```tsx
+<FieldStatusIndicator error={errors.amount} side="start" id={status.describedById} />
+```
+
+### FieldHintIcon
+
+Ikona Info v řádku popisku, bublina dostupná myší, klávesnicí i dotykem.
+
+```tsx
+<FieldHintIcon hint={texts.accountHint} />
+```
+
+### FieldErrorSummary
+
+Souhrn nejvýše pěti odkazů, zbytek jako „a další N“ přes DsTexts. Klik zaměří pole i v detailu řádku.
+
+```tsx
+<FieldErrorSummary errors={fieldErrors} onSelect={focusFieldErrorLink} />
+```
+
+### FieldErrorLink
+
+Odkaz na chybné pole, případně skryté v detailu řádku dokladu.
+
+```tsx
+const error: FieldErrorLink = { fieldId: "journal-row1-quantity", label: texts.quantity, message: texts.required, rowId: "row1", columnId: "quantity" };
+```
+
+### focusFieldErrorLink
+
+Posune a fokusuje pole; u skrytého pole rozbalí detail řádku.
+
+```tsx
+focusFieldErrorLink(error);
+```
+
+### useCellStatusTooltip
+
+Líná bublina buňky vzniká až při hover nebo focus; bez zprávy nejsou handlery ani bublina.
+
+```tsx
+const status = useCellStatusTooltip({ error: cellError, extraInfo: accountName });
+return <><div {...status.triggerProps}>{value}</div>{status.tooltip}</>;
+```
+
+### Button
+
+Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 12h: zakázané varianty default (primary), destructive, ghost i link mají šedý podklad muted/40 a tlumený text. Vnořené spany se plošně nepřebarvují, aby odznaky zachovaly vlastní stav. size="control" bere výšku z --control-h svého prostředí; ostatní velikosti zůstávají beze změny.
+
+```tsx
+<Button size="control" variant="outline">{texts.map}</Button>
+```
+
+### BankAccountField
+
+né tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Sdílený účet. Přidání v řádku hledání předává dotaz, neplatný účet má výstrahu uvnitř pole a nikdy text pod polem. onAddAccount má tvar (searchText: string) => void; dosavadní bezparametrické callbacky zůstávají kompatibilní. Ruční vstup nahrazuje výběr ve stejném poli; aplikace řídí entryMode a onEntryModeChange, přepnutí nemaže hodnotu.
+
+```tsx
+<BankAccountField value={account} onChange={setAccount} options={accounts} entryMode={entryMode} onEntryModeChange={setEntryMode} manualFormatPattern={texts.accountFormat} />
+```
+
+### JournalLinesEditor
+
+Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.
+
+```tsx
+<JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />
+```
+
+### RecordActionBar
+
+ní ikony → nakonec ikona Uložit. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu. Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí. Každá akce má Tooltip i v plné šířce (název akce, případně primaryAction.tooltip); ⋯ používá Tooltip místo title. Levý obsah si drží rezervu nejvýš 10 rem a zkrátí se s …, akce nikdy nepřekryje. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors.
+
+```tsx
+<RecordActionBar {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
+```
+
+### DocumentForm
+
+datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift. Navázané účetní datum a u FP/ZFP/DDPOZ ručně neměněné DUZP se zapisují přes onChange (při změně vystavení a jednou při otevření dokladu), takže zobrazené = uložené. Neplatné datum a varování čísla dodavatele pro VS jsou ⚠ v poli a celý text v pruhu nad formulářem; chybějící kurz DPH se hlásí jednou a ne u dokladu jen pro čtení. onAddBankAccount dostává hledaný text. Úvodní zápis odvozených datumů přes onChange probíhá jen u upravitelného dokladu; readOnly, posted, locked a cancelled zachovávají uložená data bez callbacku. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors.
+
+```tsx
+<DocumentForm {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
+```
+
+### RecordDialog
+
+Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs. Stav záznamu přes status (Aktivní / Neaktivní vedle nadpisu) a lifecycleAction (Deaktivovat / Aktivovat vlevo vedle Odstranit, s dirty nabídne „Uložit změny a …“). fieldErrors zobrazí stejný souhrn sticky nad patičkou dialogu.
+
+```tsx
+<RecordDialog {...props} fieldErrors={fieldErrors}>{fields}</RecordDialog>
+```
+
+### CheckboxField
+
+Zaškrtávátko formuláře s jednořádkovým zkráceným popiskem a úplným textem v bublině. Hint je ikona Info u popisku; align="input" má výšku --control-h. Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. Popisky jsou jednořádkové, dlouhé se zkrátí; hint je ikona Info, nikoli text pod polem.
+
+```tsx
+<CheckboxField label={texts.approved} checked={approved} onCheckedChange={setApproved} error={errors.approved} align="input" />
+```
+
+### SwitchField
+
+Řádek okamžitého nastavení – popisek vlevo, přepínač vpravo, uloží se hned. Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. Popisky jsou jednořádkové, dlouhé se zkrátí; hint je ikona Info, nikoli text pod polem.
+
+```tsx
+<SwitchField label={texts.enabled} checked={enabled} onCheckedChange={setEnabled} warning={warnings.enabled} />
+```
+
+### SegmentedField
+
+Segmentová volba 2–3 vzájemně výlučných typů záznamu ve formuláři s ovládáním šipkami. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 12i (2.98.0): zakázaná vybraná volba používá plné muted pozadí, foreground a font-semibold bez primární barvy; nevybraná zůstává muted/40 a muted-foreground s normálním řezem. Povolená vybraná volba zachovává primary/10 a primary. Obě zakázané volby mají kontrast nejméně 4,5 : 1; segmenty gridu beze změny. Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. Popisky jsou jednořádkové, dlouhé se zkrátí; hint je ikona Info, nikoli text pod polem.
+
+```tsx
+<SegmentedField label={texts.deduction} value={deduction} onChange={setDeduction} options={options} error={errors.deduction} />
+```
+
+### ToggleGroup
+
+Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. Popisky jsou jednořádkové, dlouhé se zkrátí; hint je ikona Info, nikoli text pod polem.
+
+```tsx
+<ToggleGroup type="single" label={texts.mode} value={mode} onValueChange={setMode} warning={warnings.mode}><ToggleGroupItem value="a">A</ToggleGroupItem></ToggleGroup>
+```
+
+### Textarea
+
+Víceřádkové textové pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. Popisky jsou jednořádkové, dlouhé se zkrátí; hint je ikona Info, nikoli text pod polem.
+
+```tsx
+<Textarea id="note" label={texts.note} value={note} onChange={handleNote} error={errors.note} />
+```
+
