@@ -35,13 +35,12 @@ test("Protiúčet BA: sloupce obou řádků lícují při zoomu 70 / 100 / 200 %
       .poll(async () =>
         box.evaluate((root) => {
           const left = (id: string) =>
-            document.getElementById(id)?.closest('[data-slot="field"]')?.getBoundingClientRect();
+            root.querySelector(`#${id}`)?.closest('[data-slot="field"]')?.getBoundingClientRect();
           const pairs = [
             ["document-bankAccountKind", "document-variableSymbol"],
             ["document-movement-account", "document-constantSymbol"],
             ["document-bank-code", "document-specificSymbol"],
           ];
-          void root;
           return pairs.every(([a, b]) => {
             const x = left(a!);
             const y = left(b!);
