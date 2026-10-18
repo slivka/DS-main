@@ -146,6 +146,8 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
               return [...node.querySelectorAll("label,input,[data-slot=field-value],button")].every(
                 (el) => {
                   const rect = el.getBoundingClientRect();
+                  // Skryté měřicí kopie akcí gridu pohybů nemají rozměr.
+                  if (rect.width === 0 && rect.height === 0) return true;
                   return rect.right <= box.right + 2 && rect.left >= box.left - 2;
                 },
               );
