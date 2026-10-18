@@ -61,7 +61,8 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
     el.style.width = "1100px";
   });
   await expect(form.locator("#document-total-home")).toHaveCount(0);
-  await expect(form.locator('[data-slot="journal-recap-home-total"]')).toContainText("30 250,00");
+  // Rozhodnutí 18. 10.: domácí celek se v rekapitulaci nezobrazuje.
+  await expect(form.locator('[data-slot="journal-recap-home-total"]')).toHaveCount(0);
   await expect(form.getByLabel("Způsob platby")).toHaveCount(1);
   await expect(async () => {
     const toggle = form.getByRole("checkbox", { name: "Stejný kurz DPH" });

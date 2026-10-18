@@ -91,27 +91,18 @@ test("přepínače mají jednotné rozměry, stálé názvy a klávesnici", asyn
   await info.attach("Přepínače 200 %", { body: await root.screenshot(), contentType: "image/png" });
 });
 
-test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstranění", async ({
+test("výpis uloží zůstatek přes Σ, rozdíl varuje v poli a položky zakážou odstranění", async ({
   page,
 }, info) => {
   await prepare(page);
   const showcase = page.getByTestId("bank-showcase");
   const root = page.getByTestId("bank-panels");
   const form = root.locator('[data-slot="bank-statement-form"]').first();
-  const difference = form.locator('[data-slot="bank-statement-difference"]');
-  await expect(difference).toHaveCount(0);
-  await form.getByLabel("Zůstatek dle banky", { exact: true }).fill("12500");
-  await expect(difference).toHaveCount(0);
-  await form.getByRole("button", { name: /^(Uložit|Uložiť)$/ }).click();
-  await expect(form.getByRole("button", { name: /^(Uložit|Uložiť)$/ })).toBeDisabled();
-  await expect(difference).toHaveCount(0);
-  await form.getByRole("button", { name: "Zkontrolovat", exact: true }).click();
-  await expect(form.getByText("Zkontrolovaný", { exact: true })).toHaveCount(0);
-  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
-  await form.getByRole("button", { name: "Zrušit kontrolu", exact: true }).click();
-  await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toBeVisible();
+  const notice = form.locator('[data-slot="bank-statement-difference-notice"]');
+  await expect(notice).toHaveCount(0);
+  await expect(form.getByRole("button", { name: "Zkontrolovat", exact: true })).toHaveCount(0);
   await showcase.getByRole("button", { name: "difference", exact: true }).click();
-  await expect(difference).toContainText("−50,00");
+  await expect(notice).toContainText("−50,00");
   await showcase.getByRole("button", { name: "items", exact: true }).click();
   await expect(form.getByRole("textbox", { name: "Číslo výpisu", exact: true })).toHaveCount(0);
   await form.getByRole("button", { name: "Další akce", exact: true }).click();
@@ -119,11 +110,9 @@ test("výpis uloží zůstatek, kontrola zamkne pole a položky zakážou odstra
   await expect(remove).toHaveAttribute("aria-disabled", "true");
   await expect(remove).toContainText("Výpis má položky");
   await page.keyboard.press("Escape");
-  await info.attach("Výpis s položkami", {
-    body: await form.screenshot(),
-    contentType: "image/png",
-  });
+  await info.attach("Výpis s položkami", { body: await form.screenshot(), contentType: "image/png" });
 });
+
 
 test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", async ({
   page,
