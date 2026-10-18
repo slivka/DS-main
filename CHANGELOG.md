@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.107.0 (nevydáno)
+## 2.108.0 (nevydáno)
+
+Breaking / migrace pro aplikace: viz níže.
+
+## 2.107.0 – vydáno
 
 Pravidlo: Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani
 zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.

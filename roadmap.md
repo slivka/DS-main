@@ -1,3 +1,14 @@
+## DS 2.108.0 – Edit dokladu 15 (nevydáno)
+- [ ] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
+- [ ] E2 VS se zámkem – DS jen zobrazuje náhled, ukládá stav vazby
+- [ ] E3 ukázky totalMode sum
+- [ ] E4 bez čipu Celkem, home total, Rozepsáno (deprecated + poznámka v katalogu)
+- [ ] E5 ID partner ručně / IČO / DIČ
+- [ ] E6 výpis vždy grid pohybů
+- [ ] E7 zůstatky v jednom řádku, Σ zůstatku na výpise, pořadí při zalamování
+- [ ] E8 protiúčet na mřížce 20, kód banky s názvem, datum pohybu s vazbou
+- [ ] DocumentForm < 500 řádků; katalog před/po; testy, E2E, lint
+
 ## Poslední dorovnání 2.105.0 (nevydáno)
 
 - [x] Sjednocen Výdaj; ochrana datumů readOnly/posted/locked/cancelled, reset DUZP při value.id; migrace a hint dorovnány; ContactSelect zkrácení s title; duplicitní přidání CS/SK s důvodem. Unit 681/681; lint 0 chyb / 297 varování; Chromium document-controls 11/11 + edit-document-thirteen 10/10. Katalog 432 komponent / 814 props, původních 432 názvů a 813 props zachováno; CounterpartyField.createDisabledReason doplněn. Verze 2.104.0 / CHANGELOG 2.105.0, nic nevydáno.
