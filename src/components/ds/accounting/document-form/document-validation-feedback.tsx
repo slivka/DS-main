@@ -1,15 +1,16 @@
-/** Validace hlavičky · vlastní společné pruhy · nesmí měnit pole ani hodnoty. */
-import type { ReactNode } from "react";
-import { NoticeBar } from "../../feedback/notice-bar";
+/**
+ * Klientské kontroly hlavičky dokladu · vlastní převod chyb a varování na položky pruhu ·
+ * nesmí měnit pole ani hodnoty; serverové položky sem nepatří.
+ */
+import type { FormIssue } from "../../../../lib/form-issues";
 import type {
-  DocumentFormError,
   DocumentFormTexts,
   DocumentHeaderField,
   DocumentHeaderValue,
   DocumentVatRateField,
 } from "./document-form-types";
 
-/** Vstupy sdílených pruhů. */
+/** Vstupy klientských kontrol. */
 export interface DocumentValidationArgs {
   /** Hlavička. */
   value: DocumentHeaderValue;
@@ -19,10 +20,6 @@ export interface DocumentValidationArgs {
   vatRateField?: DocumentVatRateField;
   /** Texty formuláře. */
   t: DocumentFormTexts;
-  /** Dosavadní upozornění. */
-  notices?: ReactNode;
-  /** Dosavadní chyba. */
-  error?: DocumentFormError;
   /** Chyby polí. */
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   /** Výstrahy polí. */
@@ -33,59 +30,60 @@ export interface DocumentValidationArgs {
   icoWarning?: boolean;
   /** Doklad jen pro čtení – chybějící kurz DPH se nehlásí. */
   readOnly?: boolean;
-  /** Popisky polí s neplatným zápisem data. */
-  invalidDateLabels?: string[];
-  /** Varování čísla dodavatele pro VS. */
-  externalNumberWarning?: string;
+  /** Klíče polí s neplatným zápisem data. */
+  invalidDates?: DocumentHeaderField[];
+  /** Varování VS (víc než 10 číslic / bez číslic) – jen z pole VS. */
+  variableSymbolWarning?: string;
+  /** Popisek pole VS. */
+  variableSymbolLabel?: string;
+  /** Popisek daňového čísla. */
+  taxNumberLabel?: string;
 }
 
-/** Celé zprávy patří také do pruhu nad formulářem. */
-export function documentValidationFeedback(a: DocumentValidationArgs) {
-  const errors = Object.values(a.fieldErrors ?? {}).filter(Boolean);
-  for (const label of a.invalidDateLabels ?? []) errors.push(`${label}: ${a.t.invalidDate}`);
-  if (
-    !a.readOnly &&
-    a.foreign &&
-    a.vatRateField &&
-    !a.vatRateField.sameAsDocument &&
-    !a.vatRateField.manual &&
-    a.vatRateField.suggestedRate == null
-  )
-    errors.push(a.t.vatRateMissing);
-  if (a.foreign && a.value.rateManual && !a.value.rateNote?.trim())
-    errors.push(a.t.rateNoteRequired);
-  if (a.foreign && a.vatRateField?.manual && !a.vatRateField.note?.trim())
-    errors.push(a.t.rateNoteRequired);
+/** Popisek pole hlavičky z textů formuláře, jinak klíč. */
+export function headerFieldLabel(t: DocumentFormTexts, key: string): string {
+  const found = Object.entries(t).find(([name]) => name === key)?.[1];
+  return typeof found === "string" ? found : key;
+}
+
+/** Položka pole hlavičky. */
+function headerIssue(
+  t: DocumentFormTexts,
+  key: DocumentHeaderField,
+  message: string,
+  severity: FormIssue["severity"],
+  label?: string,
+): FormIssue {
   return {
-    error: errors.length
-      ? {
-          ...a.error,
-          message: (
-            <>
-              {a.error?.message}
-              {errors.map((message, index) => (
-                <div key={index}>{message}</div>
-              ))}
-            </>
-          ),
-        }
-      : a.error,
-    notices: (
-      <>
-        {a.notices}
-        {Object.entries(a.fieldWarnings ?? {}).map(([key, message]) => (
-          <NoticeBar key={key} tone="warning">
-            {message}
-          </NoticeBar>
-        ))}
-        {a.taxDocumentNumberWarning ? (
-          <NoticeBar tone="warning">{a.taxDocumentNumberWarning}</NoticeBar>
-        ) : null}
-        {a.icoWarning ? <NoticeBar tone="warning">{a.t.invalidIco}</NoticeBar> : null}
-        {a.externalNumberWarning ? (
-          <NoticeBar tone="warning">{a.externalNumberWarning}</NoticeBar>
-        ) : null}
-      </>
-    ),
+    fieldId: `document-${key}`,
+    label: label ?? headerFieldLabel(t, key),
+    message,
+    severity,
+    source: "client",
   };
+}
+
+/** Klientské položky hlavičky: chyby polí, neplatná data, kurz DPH a varování polí. */
+export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
+  const issues: FormIssue[] = [];
+  for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
+    if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "error"));
+  }
+  for (const key of a.invalidDates ?? []) issues.push(headerIssue(a.t, key, a.t.invalidDate, "error"));
+  const vat = a.vatRateField;
+  if (!a.readOnly && a.foreign && vat && !vat.sameAsDocument && !vat.manual && vat.suggestedRate == null)
+    issues.push({ label: a.t.vatRate ?? "", message: a.t.vatRateMissing, severity: "error", source: "client", code: "vat_rate_missing" });
+  if (a.foreign && a.value.rateManual && !a.value.rateNote?.trim())
+    issues.push(headerIssue(a.t, "rateNote", a.t.rateNoteRequired, "error"));
+  if (a.foreign && vat?.manual && !vat.note?.trim())
+    issues.push({ label: a.t.vatRate ?? "", message: a.t.rateNoteRequired, severity: "error", source: "client", code: "vat_rate_note" });
+  for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
+    if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "warning"));
+  }
+  if (a.taxDocumentNumberWarning)
+    issues.push(headerIssue(a.t, "taxDocumentNumber", a.taxDocumentNumberWarning, "warning", a.taxNumberLabel));
+  if (a.icoWarning) issues.push(headerIssue(a.t, "counterpartyIco", a.t.invalidIco, "warning", a.t.ico));
+  if (a.variableSymbolWarning)
+    issues.push(headerIssue(a.t, "variableSymbol", a.variableSymbolWarning, "warning", a.variableSymbolLabel));
+  return issues;
 }
