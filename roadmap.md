@@ -7,7 +7,7 @@
 - [x] E6 výpis vždy grid pohybů
 - [x] E7 zůstatky v jednom řádku, Σ zůstatku na výpise, pořadí při zalamování
 - [x] E8 protiúčet na mřížce 20, kód banky s názvem, datum pohybu s vazbou
-- [ ] DocumentForm < 500 řádků; katalog před/po; testy, E2E, lint
+- [x] DocumentForm 496 řádků; katalog 437/824 → 438/849; unit 721/721; lint 0 chyb; Chromium 41 + 2 nové (4 starší přepsány a znovu prošly)
 
 ## Poslední dorovnání 2.105.0 (nevydáno)
 
