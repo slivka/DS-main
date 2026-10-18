@@ -13,7 +13,13 @@ export function useRecordActionWidth(key: string) {
     if (!bar || !measure) return;
     const update = () => {
       const gap = parseFloat(getComputedStyle(bar).columnGap) || 0;
-      const width = bar.clientWidth - (leftRef.current?.getBoundingClientRect().width ?? 0) - gap;
+      // Levá část smí ustoupit nejvýš na rezervu (10 rem), pak se zkrátí s …;
+      // akce se zkracují dřív, než by levý obsah musel pod rezervu.
+      const left = leftRef.current;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const leftNatural = left ? left.scrollWidth : 0;
+      const leftReserve = Math.min(leftNatural, 10 * rem);
+      const width = bar.clientWidth - leftReserve - (left && leftNatural ? gap : 0);
       const rows = Array.from(measure.children);
       const full = rows[0]?.getBoundingClientRect().width ?? 0;
       const secondary = rows[1]?.getBoundingClientRect().width ?? 0;
