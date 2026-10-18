@@ -2913,6 +2913,20 @@
       ],
       "antipatterns": [
         "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "type": "string"
+        }
       ]
     },
     {
@@ -4135,6 +4149,14 @@
           "name": "saveFailed",
           "type": "boolean",
           "description": "Uložení selhalo."
+        },
+        {
+          "name": "error.fieldErrors",
+          "type": "FieldErrorLink[]"
+        },
+        {
+          "name": "error.onFieldErrorSelect",
+          "type": "(link: FieldErrorLink) => void"
         }
       ],
       "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko; busy zobrazí spinner. Kaskáda podle měřené šířky: text → sekundární ikony → nakonec ikona Uložit. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu. Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí. Každá akce má Tooltip i v plné šířce (název akce, případně primaryAction.tooltip); ⋯ používá Tooltip místo title. Levý obsah si drží rezervu nejvýš 10 rem a zkrátí se s …, akce nikdy nepřekryje. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors.",
@@ -8157,6 +8179,14 @@
           "name": "recapTotalLabel",
           "type": "string",
           "description": "@deprecated 2.108.0 – nepoužívat – rozhodnutí 18. 10."
+        },
+        {
+          "name": "onCreateDimension",
+          "type": "(searchText: string) => void"
+        },
+        {
+          "name": "onValidationChange",
+          "type": "(count: number, errors: { line: number; field: string; message: string; fieldId?: string; rowId?: string; columnId?: string }[]) => void"
         }
       ]
     },
@@ -8323,6 +8353,14 @@
           "name": "value.variableSymbolLinked",
           "type": "boolean",
           "description": "Stav vazby VS na číslo daňového dokladu; DS ukládá jen tento stav."
+        },
+        {
+          "name": "error.fieldErrors",
+          "type": "FieldErrorLink[]"
+        },
+        {
+          "name": "error.onFieldErrorSelect",
+          "type": "(link: FieldErrorLink) => void"
         }
       ]
     },
@@ -8661,6 +8699,14 @@
         {
           "name": "id",
           "type": "string"
+        },
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
         }
       ],
       "usage": "Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku. FieldStatusIndicator je alias původního FieldFeedbackIndicator.",
@@ -8687,6 +8733,46 @@
       ],
       "antipatterns": [
         "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
+        },
+        {
+          "name": "side",
+          "type": "enum",
+          "values": [
+            "start",
+            "end"
+          ],
+          "default": "end"
+        },
+        {
+          "name": "placement",
+          "type": "enum",
+          "values": [
+            "inside",
+            "label"
+          ],
+          "default": "inside"
+        },
+        {
+          "name": "extraInfo",
+          "type": "ReactNode"
+        },
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
       ]
     },
     {
@@ -8970,6 +9056,151 @@
         "Toast nebo text pod polem místo položky v pruhu.",
         "Stejná hláška hlavičky znovu jako „Řádek N: …“ – DS deduplikuje podle code.",
         "Mazání serverových položek v DS – maže je aplikace podle onFieldChange."
+      ]
+    },
+    {
+      "name": "FieldStatus",
+      "file": "src/components/ds/form/field-feedback.tsx",
+      "import_path": "",
+      "usage": "Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku.",
+      "examples": [
+        {
+          "label": "Stav pole a jednotná výška (2.107.0)",
+          "code": "const status = useFieldStatus({ error: errors.name, warning: warnings.name });"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "useFieldStatus",
+      "file": "src/components/ds/form/field-feedback.tsx",
+      "import_path": "",
+      "usage": "Sdílený stav pole: chyba má přednost před varováním, rámeček a přístupný popis nemění výšku. Ikona prvků bez místa uvnitř patří do řádku popisku.",
+      "examples": [
+        {
+          "label": "Stav pole a jednotná výška (2.107.0)",
+          "code": "const status = useFieldStatus({ error: errors.name, warning: warnings.name });"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "FieldErrorLink",
+      "file": "src/components/ds/feedback/field-error-summary.tsx",
+      "import_path": "",
+      "usage": "Odkaz na chybné pole, případně skryté v detailu řádku dokladu.",
+      "examples": [
+        {
+          "label": "Stav pole a jednotná výška (2.107.0)",
+          "code": "const error: FieldErrorLink = { fieldId: \"journal-row1-quantity\", label: texts.quantity, message: texts.required, rowId: \"row1\", columnId: \"quantity\" };"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "fieldId",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true
+        },
+        {
+          "name": "message",
+          "type": "ReactNode",
+          "required": true
+        },
+        {
+          "name": "rowId",
+          "type": "string"
+        },
+        {
+          "name": "columnId",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "focusFieldErrorLink",
+      "file": "src/components/ds/feedback/field-error-summary.tsx",
+      "import_path": "",
+      "usage": "Posune a fokusuje pole; u skrytého pole rozbalí detail řádku.",
+      "examples": [
+        {
+          "label": "Stav pole a jednotná výška (2.107.0)",
+          "code": "focusFieldErrorLink(error);"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "link",
+          "type": "FieldErrorLink",
+          "required": true
+        },
+        {
+          "name": "root",
+          "type": "ParentNode"
+        }
+      ]
+    },
+    {
+      "name": "useCellStatusTooltip",
+      "file": "src/components/ds/grid/cell-status-tooltip.tsx",
+      "import_path": "",
+      "usage": "Líná bublina buňky vzniká až při hover nebo focus; bez zprávy nejsou handlery ani bublina.",
+      "examples": [
+        {
+          "label": "Stav pole a jednotná výška (2.107.0)",
+          "code": "const status = useCellStatusTooltip({ error: cellError, extraInfo: accountName });\nreturn <><div {...status.triggerProps}>{value}</div>{status.tooltip}</>;"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+      ],
+      "props": [
+        {
+          "name": "error",
+          "type": "string"
+        },
+        {
+          "name": "warning",
+          "type": "string"
+        },
+        {
+          "name": "extraInfo",
+          "type": "ReactNode"
+        }
       ]
     }
   ],
