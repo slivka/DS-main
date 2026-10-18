@@ -253,6 +253,7 @@ export function DocumentForm({
         6,
       )
     : null;
+  const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
   const { error: effectiveError, notices: validationNotices } = documentValidationFeedback({
     value,
     foreign,
@@ -272,7 +273,6 @@ export function DocumentForm({
     ? receivedAccountDisabledReason
     : undefined;
   const paymentOrderOn = !receivedAccountReason && (!f.paymentOrders || paymentOrderEnabled);
-  const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
   const externalNumberField = useExternalNumberField({
     sourcePatch: vsLink.sourcePatch,
     value,
