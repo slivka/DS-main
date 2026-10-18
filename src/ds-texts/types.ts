@@ -292,6 +292,14 @@ export interface DsTexts {
     bankAccountInvalid: string;
     bankCodeInvalid: string;
     otherBankAccount: string;
+    /** Přístupný název přepínače ručního zadání účtu. */
+    bankAccountManualToggle: string;
+    /** Bublina zapnutého ručního zadání účtu. */
+    bankAccountManualOn: string;
+    /** Bublina výběru z účtů. */
+    bankAccountManualOff: string;
+    /** Vzor formátu ručně zadaného účtu uvnitř pole. */
+    bankAccountFormatPattern: string;
     editSelected: string;
     manualAccountNumber: string;
     manualAccountWithoutIban: string;

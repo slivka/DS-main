@@ -7,6 +7,8 @@ import { forwardRef, useEffect, useRef, useState, type ComponentPropsWithoutRef 
 
 import { Input } from "../../ui/input";
 import { OptionSelect } from "../form/option-select";
+import { FieldToggleButton } from "../form/field-toggle-button";
+import { PencilLine } from "lucide-react";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { formatIban, isValidCzAccount, parseCzAccount } from "../../../lib/bank-account";
 import { cn } from "../../../lib/utils";
@@ -83,6 +85,15 @@ export interface BankAccountFieldProps extends Omit<
   placeholder?: string;
   /** Důvod zákazu uvnitř výběru místo prázdné hodnoty; nikdy pod polem. */
   disabledReason?: string;
+  /**
+   * Řízený režim: `selected` = výběr z účtů, `manual` = ruční zadání v témže poli.
+   * Bez prop odvozuje režim pole samo; ruční vstup se nikdy nevkládá pod výběr.
+   */
+  entryMode?: "selected" | "manual";
+  /** Změna režimu přepínačem uvnitř pole nebo volbou „Jiný účet“. */
+  onEntryModeChange?: (mode: "selected" | "manual") => void;
+  /** Vzor formátu ručního účtu uvnitř pole; výchozí z DsTexts. */
+  manualFormatPattern?: string;
 }
 
 const OTHER = "__other_bank_account__";
@@ -109,6 +120,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       disabledReason,
       placeholder,
       onBlur,
+      entryMode,
+      onEntryModeChange,
+      manualFormatPattern,
       ...props
     },
     ref,
@@ -149,9 +163,16 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       lastEmittedRef.current = next;
       onChange(next);
     };
-    const manual =
+    const derivedManual =
       !selectionOnly &&
       (options.length === 0 || otherSelected || (Boolean(value) && !selectedOption));
+    const manual =
+      !selectionOnly &&
+      (options.length === 0 || (entryMode ? entryMode === "manual" : derivedManual));
+    const setMode = (mode: "selected" | "manual") => {
+      setOtherSelected(mode === "manual");
+      onEntryModeChange?.(mode);
+    };
     const compact = value.replace(/\s/g, "");
     const [accountPart = "", bankCode = ""] = compact.split("/");
     const parsed = parseCzAccount(accountPart);
@@ -172,7 +193,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
 
     return (
       <div className={cn("min-w-0", className)}>
-        {options.length || selectionOnly ? (
+        {(options.length || selectionOnly) && !manual ? (
           <OptionSelect
             id={manual ? undefined : id}
             value={!manual && disabledReason ? "" : manual ? OTHER : value}
@@ -180,10 +201,10 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             placeholderValueLabel={disabledReason ?? placeholder}
             onChange={(next) => {
               if (next === OTHER) {
-                setOtherSelected(true);
+                setMode("manual");
                 return;
               }
-              setOtherSelected(false);
+              if (otherSelected) setMode("selected");
               setTouched(false);
               emit(next);
             }}
@@ -239,32 +260,52 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                     .join(" "),
                   inactive: option.invalid,
                 })),
-              ...(selectionOnly
-                  ? []
-                  : [{ value: OTHER, label: resolvedOtherAccountText }]),
+              ...(selectionOnly ? [] : [{ value: OTHER, label: resolvedOtherAccountText }]),
             ]}
           />
         ) : null}
         {manual ? (
-          <Input
-            {...props}
-            ref={ref}
-            id={id}
-            value={value}
-            disabled={disabled}
-            readOnly={readOnly}
-            inputMode="numeric"
-            autoComplete="off"
-            error={error}
-            onChange={(event) =>
-              emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))
-            }
-            onBlur={(event) => {
-              setTouched(true);
-              onBlur?.(event);
-            }}
-            className={cn("h-[var(--control-h)] font-mono tabular-nums", options.length && "mt-2")}
-          />
+          <div
+            className={cn(
+              "relative min-w-0",
+              options.length > 0 && "[--field-toggle-space:2.25rem]",
+            )}
+          >
+            <Input
+              {...props}
+              ref={ref}
+              id={id}
+              value={value}
+              disabled={disabled}
+              readOnly={readOnly}
+              inputMode="numeric"
+              autoComplete="off"
+              error={error}
+              onChange={(event) =>
+                emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))
+              }
+              onBlur={(event) => {
+                setTouched(true);
+                onBlur?.(event);
+              }}
+              formatPattern={manualFormatPattern ?? texts.bankAccountFormatPattern}
+              className={cn(
+                "h-[var(--control-h)] font-mono tabular-nums",
+                options.length > 0 && "pr-[var(--field-toggle-space)]",
+              )}
+            />
+            {options.length > 0 ? (
+              <FieldToggleButton
+                icon={PencilLine}
+                pressed
+                label={texts.bankAccountManualToggle}
+                pressedTooltip={texts.bankAccountManualOn}
+                unpressedTooltip={texts.bankAccountManualOff}
+                disabled={disabled || readOnly}
+                onPressedChange={() => setMode("selected")}
+              />
+            ) : null}
+          </div>
         ) : null}
       </div>
     );
