@@ -2,7 +2,8 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { documentValidationFeedback } from "./document-validation-feedback";
+import { documentClientIssues } from "./document-validation-feedback";
+import { reportingLinesChange, reportingPatch, useDocumentFormIssues } from "./use-document-form-issues";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";
@@ -112,6 +113,10 @@ export function DocumentForm({
   moreActions = [],
   settings,
   error,
+  issues: appIssues,
+  saveFailed,
+  validationActive,
+  onFieldChange,
   notices,
   readOnly = false,
   readOnlyReason,
@@ -131,7 +136,7 @@ export function DocumentForm({
     ...(internal ? { partner: true, taxDate: true } : {}),
   };
   const {
-    patch,
+    patch: datePatch,
     effectiveValue,
     link: effectiveAccountingLink,
   } = useDocumentDateLinks({
@@ -140,9 +145,15 @@ export function DocumentForm({
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange,
+    onAccountingDateLinkedChange: onAccountingDateLinkedChange
+      ? (linked) => {
+          onAccountingDateLinkedChange(linked);
+          onFieldChange?.("document-accountingDate");
+        }
+      : undefined,
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(status ?? ""),
   });
+  const patch = reportingPatch(datePatch, onFieldChange);
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
   const setTab = (next: string) => {
@@ -213,8 +224,8 @@ export function DocumentForm({
     can,
     dateWarnings,
     accountingDateLink: effectiveAccountingLink,
-    fieldErrors,
-    fieldWarnings: effectiveFieldWarnings,
+    fieldErrors: validationActive === false ? undefined : fieldErrors,
+    fieldWarnings: validationActive === false ? undefined : effectiveFieldWarnings,
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => {
         if (Boolean(prev[key]) === invalid) return prev;
@@ -259,20 +270,27 @@ export function DocumentForm({
       )
     : null;
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
-  const { error: effectiveError, notices: validationNotices } = documentValidationFeedback({
-    value,
-    foreign,
-    vatRateField,
-    t,
-    notices: combinedNotices,
+  const formIssues = useDocumentFormIssues({
+    clientIssues: documentClientIssues({
+      value,
+      foreign,
+      vatRateField,
+      t,
+      fieldErrors,
+      fieldWarnings: effectiveFieldWarnings,
+      taxDocumentNumberWarning,
+      icoWarning,
+      readOnly,
+      invalidDates: Object.keys(invalidDates) as DocumentDateField[],
+      variableSymbolWarning: vsLink.warning,
+      variableSymbolLabel: t.variableSymbol,
+      taxNumberLabel: dsTexts.documentEdit.taxNumber,
+    }),
+    issues: appIssues,
     error,
-    fieldErrors,
-    fieldWarnings: effectiveFieldWarnings,
-    taxDocumentNumberWarning,
-    icoWarning,
-    readOnly,
-    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map((key) => t[key]),
-    externalNumberWarning: vsLink.warning,
+    validationActive,
+    rowLabel: dsTexts.journalEditor.row,
+    onValidationChange: linesEditorProps?.onValidationChange,
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
@@ -335,7 +353,7 @@ export function DocumentForm({
   };
   const allTabs = buildDocumentTabs({
     lines,
-    onLinesChange,
+    onLinesChange: reportingLinesChange(lines, onLinesChange, onFieldChange),
     accounts,
     dimensions,
     partners,
@@ -347,7 +365,7 @@ export function DocumentForm({
     homeCurrency,
     homeCurrencySymbol,
     rateAmount,
-    linesEditorProps,
+    linesEditorProps: { ...linesEditorProps, onValidationChange: formIssues.onValidationChange },
     readOnly,
     f,
     lineRounding,
@@ -420,8 +438,10 @@ export function DocumentForm({
           saveAction={saveAction}
           primaryAction={primaryAction}
           moreActions={actionMenu}
-          error={effectiveError}
-          notices={validationNotices}
+          error={error}
+          issues={formIssues.issues}
+          saveFailed={saveFailed}
+          notices={combinedNotices}
           saveLabel={dsTexts.common.save}
           moreActionsLabel={dsTexts.recordAction.moreActions}
           errorTitle={t.errorTitle}
