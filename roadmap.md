@@ -1,12 +1,12 @@
 ## DS 2.108.0 – Edit dokladu 15 (nevydáno)
-- [ ] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
-- [ ] E2 VS se zámkem – DS jen zobrazuje náhled, ukládá stav vazby
-- [ ] E3 ukázky totalMode sum
-- [ ] E4 bez čipu Celkem, home total, Rozepsáno (deprecated + poznámka v katalogu)
-- [ ] E5 ID partner ručně / IČO / DIČ
-- [ ] E6 výpis vždy grid pohybů
-- [ ] E7 zůstatky v jednom řádku, Σ zůstatku na výpise, pořadí při zalamování
-- [ ] E8 protiúčet na mřížce 20, kód banky s názvem, datum pohybu s vazbou
+- [x] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
+- [x] E2 VS se zámkem – DS jen zobrazuje náhled, ukládá stav vazby
+- [x] E3 ukázky totalMode sum
+- [x] E4 bez čipu Celkem, home total, Rozepsáno (deprecated + poznámka v katalogu)
+- [x] E5 ID partner ručně / IČO / DIČ
+- [x] E6 výpis vždy grid pohybů
+- [x] E7 zůstatky v jednom řádku, Σ zůstatku na výpise, pořadí při zalamování
+- [x] E8 protiúčet na mřížce 20, kód banky s názvem, datum pohybu s vazbou
 - [ ] DocumentForm < 500 řádků; katalog před/po; testy, E2E, lint
 
 ## Poslední dorovnání 2.105.0 (nevydáno)
