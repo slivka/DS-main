@@ -517,7 +517,11 @@ export function DocumentForm({
                 </>
               ) : undefined
             }
-            bank={bankMovement ? { value, patch, bankCodes, disabled: readOnly } : undefined}
+            bank={
+              bankMovement
+                ? { value, patch, bankCodes, disabled: !can("bankAccount") }
+                : undefined
+            }
             payment={{
               f: bankMovement ? { ...f, bankAccount: false } : f,
               t: bankMovement ? { ...t, paymentSection: "" } : t,
