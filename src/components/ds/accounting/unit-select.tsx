@@ -89,7 +89,7 @@ export function UnitSelect({
   const canCreate = Boolean(onCreateUnit && query.trim() && !duplicate);
 
   return (
-    <div className="relative h-full min-w-0">
+    <div className="relative h-[var(--control-h)] min-w-0 in-[td]:h-full">
       <Popover
         open={open}
         onOpenChange={(next) => {
@@ -106,7 +106,7 @@ export function UnitSelect({
             className={cn(
               "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
               // Kompaktní buňka: šipka 0,875rem na 0,125rem od okraje, tužka 1,5rem těsně vlevo od ní.
-              "relative h-full w-full min-w-0 justify-between rounded-sm px-1 pr-[1.25rem] font-normal",
+              "relative h-full w-full min-w-0 justify-between rounded-md px-1 pr-[1.25rem] font-normal",
               selected &&
                 onEditSelected &&
                 !disabled &&

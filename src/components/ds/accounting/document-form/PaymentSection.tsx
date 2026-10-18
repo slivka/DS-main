@@ -166,7 +166,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                   value={symbolsDisabledReason ? "" : (value.specificSymbol ?? "")}
                   onChange={(event) => patch({ specificSymbol: event.target.value })}
                   disabled={Boolean(symbolsDisabledReason) || !can("specificSymbol")}
-                  className="h-9 font-mono tabular-nums"
+                  className="h-[var(--control-h)] font-mono tabular-nums"
                 />,
                 "document-specificSymbol",
               ),

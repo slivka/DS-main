@@ -191,7 +191,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                       }
                       disabled={!can("counterpartyIco")}
                       warning={icoWarning ? t.invalidIco : undefined}
-                      className="h-9 font-mono tabular-nums"
+                      className="h-[var(--control-h)] font-mono tabular-nums"
                     />
                   </>
                 ),
@@ -215,7 +215,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                       })
                     }
                     disabled={!can("counterpartyDic")}
-                    className="h-9 font-mono uppercase tabular-nums"
+                    className="h-[var(--control-h)] font-mono uppercase tabular-nums"
                   />
                 ),
                 3,

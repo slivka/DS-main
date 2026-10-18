@@ -127,7 +127,7 @@ export function AddressFieldGrid({
           <Button
             type="button"
             variant="outline"
-            className="h-9 w-full"
+            className="h-[var(--control-h)] w-full"
             onClick={mapAction.onClick}
             disabled={readOnly || mapAction.disabled}
           >

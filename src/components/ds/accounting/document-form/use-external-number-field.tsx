@@ -87,7 +87,7 @@ export function useExternalNumberField({
         onChange={(event) => changeExternalNumber(event.target.value)}
         disabled={!can("externalNumber")}
         warning={warning}
-        className="h-9 font-mono tabular-nums"
+        className="h-[var(--control-h)] font-mono tabular-nums"
       />,
     6,
     false,
