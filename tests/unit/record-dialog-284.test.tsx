@@ -117,7 +117,9 @@ describe("RecordDialog 2.84", () => {
     expect(
       view.getByText("Účet", { selector: "label" }).closest("[data-slot=field]")?.className,
     ).toContain("col-span-8");
-    expect(view.getByText("Na dokladu").parentElement?.className).toContain("col-span-4");
+    expect(view.getByText("Na dokladu").closest("[data-slot=field]")?.className).toContain(
+      "col-span-4",
+    );
     expect(view.getByText(/Nastavení DPH se použije/)).toBeTruthy();
   });
 
