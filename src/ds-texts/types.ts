@@ -277,6 +277,7 @@ export interface DsTexts {
     supplierNumber: string;
     supplierTaxDocumentNumber: string;
     documentNumberTooLongForVs: string;
+    invalidDate: string;
     bankAccountInvalid: string;
     bankCodeInvalid: string;
     otherBankAccount: string;
