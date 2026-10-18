@@ -221,7 +221,8 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
   await showcase.getByRole("button", { name: "eur", exact: true }).click();
   const form = root.locator('[data-slot="bank-statement-form"]').first();
   await expect(form.locator('[data-slot="bank-statement-difference"]')).toHaveCount(0);
-  await expect(form.getByRole("heading", { name: "Zostatky v Kč", exact: true })).toBeVisible();
+  // E7: u cizí měny se zůstatky v domácí měně nezobrazují.
+  await expect(form.getByRole("heading", { name: /^Zostatky v / })).toHaveCount(0);
   await info.attach("Měření všech výpisů", {
     body: JSON.stringify(results),
     contentType: "application/json",
