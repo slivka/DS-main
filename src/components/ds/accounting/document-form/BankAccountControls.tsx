@@ -46,7 +46,7 @@ export interface ReceivedAccountControlProps {
   /** Hlášení validačních chyb. */
   onValidationChange?: (errors: ManualBankAccountErrors) => void;
   /** Přidání účtu partnera. */
-  onAddAccount?: () => void;
+  onAddAccount?: (searchText: string) => void;
   /** Zakázání editace. */
   disabled?: boolean;
   /** Způsob platby nepoužívá účet; přednost před příkazem a protistranou. */

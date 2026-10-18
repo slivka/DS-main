@@ -5,7 +5,7 @@ test("svázané datum se kliknutím odemkne a dostane fokus", async ({ page }) =
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
     timeout: 60_000,
   });
-  const section = page.getByText("Pokladna – výdej kurýrovi bez partnera").locator("..");
+  const section = page.getByText("Pokladna – výdaj kurýrovi bez partnera").locator("..");
   const unlock = section.getByRole("button", {
     name: "Svázat s datem vystavení",
   });

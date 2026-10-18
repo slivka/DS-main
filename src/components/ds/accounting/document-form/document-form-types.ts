@@ -178,6 +178,8 @@ export type DocumentFormTexts = {
   supplierNumber: string;
   supplierTaxDocumentNumber: string;
   documentNumberTooLongForVs: string;
+  /** Neplatný zápis data v pruhu chyb (za popiskem pole). */
+  invalidDate: string;
   partner: string;
   ico: string;
   dic: string;
@@ -261,6 +263,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   supplierNumber: "Číslo dokladu dodavatele",
   supplierTaxDocumentNumber: "Číslo daňového dokladu",
   documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
+  invalidDate: "neplatné datum",
   partner: "Partner",
   ico: "IČO",
   dic: "DIČ",
@@ -356,7 +359,7 @@ export interface DocumentFormProps {
     isDefault?: boolean;
   }>;
   /** Založí nový účet partnera z výběru přijatého dokladu. */
-  onAddBankAccount?: () => void;
+  onAddBankAccount?: (searchText: string) => void;
   /** Zvolený způsob zadání protistrany. */
   counterpartyInput?: "partner" | "manual";
   /** Změna způsobu zadání protistrany. */

@@ -27,7 +27,16 @@ export interface DsTexts {
   /** Přístupné názvy číselného krokovače. */
   stepper: { decrease: string; increase: string };
   /** Názvy vytváření z hledatelných výběrů. */
-  selectCreate: { item: string; partner: string; dimension: string; unit: string };
+  selectCreate: {
+    item: string;
+    partner: string;
+    dimension: string;
+    unit: string;
+    /** Štítek (TagPicker). */
+    tag: string;
+    /** Důvod zašedlého ＋ při prázdném hledání. */
+    emptyQuery: string;
+  };
   /** Rychlé termíny splatnosti. */
   dateQuick: { sevenDays: string; fourteenDays: string; oneMonth: string };
   /** Specifické texty rozšířeného formuláře dokladu. */
@@ -277,6 +286,7 @@ export interface DsTexts {
     supplierNumber: string;
     supplierTaxDocumentNumber: string;
     documentNumberTooLongForVs: string;
+    invalidDate: string;
     bankAccountInvalid: string;
     bankCodeInvalid: string;
     otherBankAccount: string;

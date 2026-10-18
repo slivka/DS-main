@@ -34,10 +34,20 @@ test("StepperInput rozsah kopií 1–5 platí pro psaní, tlačítka i šipky", 
   const view = render(<Example />);
   const input = view.getByRole("spinbutton") as HTMLInputElement;
   expect((view.getByRole("button", { name: "Snížit" }) as HTMLButtonElement).disabled).toBe(true);
-  for (const value of ["0", "-1", "6"]) {
+  // Mezistav se ověří až při opuštění pole: mimo rozsah se zarovná na hranici.
+  for (const [value, expected] of [["0", "1"], ["-1", "1"], ["6", "5"], ["1", "1"]]) {
     fireEvent.change(input, { target: { value } });
-    expect(input.value).toBe("1");
+    fireEvent.blur(input);
+    expect(input.value).toBe(expected);
   }
+  fireEvent.change(input, { target: { value: "12" } });
+  expect(input.value).toBe("12");
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(input.value).toBe("5");
+  fireEvent.click(view.getByRole("button", { name: "Snížit" }));
+  fireEvent.click(view.getByRole("button", { name: "Snížit" }));
+  fireEvent.click(view.getByRole("button", { name: "Snížit" }));
+  fireEvent.click(view.getByRole("button", { name: "Snížit" }));
   fireEvent.change(input, { target: { value: "4" } });
   fireEvent.keyDown(input, { key: "ArrowUp" });
   expect(input.value).toBe("5");

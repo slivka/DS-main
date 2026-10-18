@@ -1,5 +1,5 @@
 /** Číselný krokovač · vlastní rozsah a klávesy · nesmí ukládat stav formuláře. */
-import { forwardRef, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, useState, type ComponentPropsWithoutRef } from "react";
 import { Minus, Plus } from "lucide-react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -46,9 +46,18 @@ export const StepperInput = forwardRef<HTMLInputElement, StepperInputProps>(func
   const t = ds.stepper;
   const current = Math.min(max, Math.max(min, value));
   const blocked = disabled || readOnly;
+  const fmt = new Intl.NumberFormat(ds.intlLocale, { maximumFractionDigits: 10 });
+  // Rozepsaný text (víceciferné číslo); rozsah se ověří až při opuštění pole nebo Enter.
+  const [draft, setDraft] = useState<string | null>(null);
   const change = (next: number) => {
     if (blocked || !Number.isFinite(next)) return;
     onChange(Math.min(max, Math.max(min, next)));
+  };
+  const commit = () => {
+    if (draft === null) return;
+    const next = Number(draft.replace(/\s/g, "").replace(",", "."));
+    setDraft(null);
+    if (draft.trim() && Number.isFinite(next) && next !== current) change(next);
   };
   return (
     <div
@@ -63,21 +72,26 @@ export const StepperInput = forwardRef<HTMLInputElement, StepperInputProps>(func
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={current}
-        value={new Intl.NumberFormat(ds.intlLocale, { maximumFractionDigits: 10 }).format(current)}
+        value={draft ?? fmt.format(current)}
         disabled={disabled}
         readOnly={readOnly}
         className="px-9 text-center tabular-nums"
         onChange={(event) => {
-          const raw = event.target.value.replace(/\s/g, "").replace(",", ".");
-          const next = Number(raw);
-          if (raw && Number.isFinite(next) && next >= min && next <= max) change(next);
-          else event.target.value = String(current);
+          if (/^[\d\s.,-]*$/.test(event.target.value)) setDraft(event.target.value);
+        }}
+        onBlur={(event) => {
+          commit();
+          props.onBlur?.(event);
         }}
         onKeyDown={(event) => {
           onKeyDown?.(event);
+          if (event.key === "Enter") commit();
           if (event.defaultPrevented || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
           event.preventDefault();
-          change(current + (event.key === "ArrowUp" ? step : -step));
+          const typed = draft === null ? NaN : Number(draft.replace(/\s/g, "").replace(",", "."));
+          const from = Number.isFinite(typed) ? Math.min(max, Math.max(min, typed)) : current;
+          setDraft(null);
+          change(from + (event.key === "ArrowUp" ? step : -step));
         }}
       />
       <Button

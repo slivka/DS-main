@@ -159,8 +159,9 @@ export function CategorySelect({
                     className={cn("mr-2 size-4", value === o.id ? "opacity-100" : "opacity-0")}
                   />
                   <span
-                    style={{ paddingLeft: `${o.level * 14}px` }}
-                    className={cn(o.level === 0 && "font-medium")}
+                    style={{ paddingLeft: `${o.level * 0.875}rem` }}
+                    title={o.name}
+                    className={cn("min-w-0 truncate", o.level === 0 && "font-medium")}
                   >
                     {o.name}
                   </span>

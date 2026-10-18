@@ -147,7 +147,7 @@ function CompactActionButton({
   return (
     <Tooltip>
       <TooltipTrigger asChild>{button}</TooltipTrigger>
-      {compact ? <TooltipContent>{label}</TooltipContent> : null}
+      <TooltipContent>{label}</TooltipContent>
     </Tooltip>
   );
 }
@@ -203,7 +203,7 @@ export function RecordActionBar({
           className,
         )}
       >
-        <div ref={leftRef} className="min-w-0 shrink [&_[data-slot=button]]:whitespace-nowrap">
+        <div ref={leftRef} className="min-w-0 shrink overflow-hidden text-ellipsis whitespace-nowrap [&_[data-slot=button]]:whitespace-nowrap">
           {leftContent}
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
@@ -251,18 +251,22 @@ export function RecordActionBar({
           ) : null}
           {moreActions.length ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={moreText}
-                  title={moreText}
-                  disabled={busy}
-                >
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={moreText}
+                      disabled={busy}
+                    >
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{moreText}</TooltipContent>
+              </Tooltip>
               <DropdownMenuContent align="end" className="min-w-56">
                 {moreActions.map((action) => {
                   const Icon = action.icon;

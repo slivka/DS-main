@@ -233,7 +233,9 @@ describe("DocumentForm 2.73", () => {
     expect(
       (view.container.querySelector("#document-variableSymbol") as HTMLInputElement).value,
     ).toBe("20260123");
-    expect(view.getByText("Číslo má víc než 10 číslic – VS doplňte ručně")).toBeTruthy();
+    // Text je v pruhu nad formulářem a jako přístupný popis ⚠ v poli, nikdy pod polem.
+    expect(view.getAllByText("Číslo má víc než 10 číslic – VS doplňte ručně").length).toBe(2);
+    expect(view.container.querySelector("[data-slot=document-external-number-vs-warning]")).toBeNull();
   });
 
   it("živé datumové varování je v pruhu a po odebrání zmizí", () => {

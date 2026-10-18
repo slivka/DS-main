@@ -1,3 +1,16 @@
+## Edit dokladu 14 – opravné kolo po kontrole (2.105.0, nevydáno)
+
+- [x] 1 S9: vazby dat zapisují odvozené hodnoty přes onChange; reset při změně value.id; test.
+- [x] 2 S1: žádný text pod polem (externí číslo, detail řádku); chyby do pruhu; vatRateMissing jednou.
+- [x] 3 S5: tooltip u každé akce RecordActionBar, ⋯ přes Tooltip; levý obsah nepřekryje akce. (E2E „výpis CS/SK 70–200 %“ selhává, k prošetření)
+- [x] 4 S6: ＋ v hledání u CounterpartyField a TagPicker; UnitSelect důvod; typy (searchText).
+- [x] 5 S7: popover protistrany ds-select-popover; CategorySelect rem; ContactSelect jednořádkově.
+- [x] 6 Texty protiúčtu, TaxDocumentNumberField odsazení, protiúčet pohybu dle editableFields.
+- [x] 7 „Výdej“ v e2e, system.md, katalogu a komentáři.
+- [x] 8 Počet kopií StepperInput; víceciferné psaní.
+- [x] 9 Katalog: obnovit plné popisy proti 9fa377ff, výčty, upstream_package; ověření programem.
+- (odloženo) Plán DS 2.105.0 jednotná výška a chyby bez změny výšky – čeká na schválení.
+
 ## Edit dokladu 14 – 2.105.0 (nevydáno)
 
 - Ověření: unit 668/668; Chromium 19/19 v cílených bězích (matice 10, výpis 5, regrese 3, nový výpis 1), radio Firefox/WebKit 2/2; lint 0 chyb / 298 varování. Ruční typy/build neprovedeny dle omezení, automatická kontrola OK.

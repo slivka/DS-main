@@ -52,7 +52,7 @@ interface Args {
   /** Chyby ručního účtu. */
   onManualBankAccountValidationChange?: (errors: ManualBankAccountErrors) => void;
   /** Přidání účtu partnera. */
-  onAddBankAccount?: () => void;
+  onAddBankAccount?: (searchText: string) => void;
   /** Zamčení přijatého účtu způsobem platby. */
   receivedAccountDisabledReason?: string;
 }

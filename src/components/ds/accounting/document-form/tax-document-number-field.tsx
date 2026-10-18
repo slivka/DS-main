@@ -27,7 +27,8 @@ export function TaxDocumentNumberField({
   const t = useDsTexts().documentEdit;
   const linked = value.taxDocumentNumberLinked !== false;
   return (
-    <div className="relative min-w-0">
+    // Při varování se ⚠ posune před zámek a text má rezervu pro obě ikony.
+    <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
       <Input
         id="document-taxDocumentNumber"
         value={linked ? (value.number ?? "") : (value.taxDocumentNumber ?? "")}
@@ -35,7 +36,11 @@ export function TaxDocumentNumberField({
         readOnly={linked}
         disabled={disabled}
         warning={warning}
-        className="pr-[var(--field-toggle-space)]"
+        className={
+          warning
+            ? "pr-[calc(var(--field-toggle-space)+1.75rem)]"
+            : "pr-[var(--field-toggle-space)]"
+        }
         onChange={(event) => patch({ taxDocumentNumber: event.target.value })}
       />
       <FieldToggleButton

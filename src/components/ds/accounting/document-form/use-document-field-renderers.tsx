@@ -23,6 +23,8 @@ export interface DocumentFieldRenderersArgs {
   accountingDateLink?: DocumentAccountingDateLink;
   fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
   fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /** Oznámí neplatný zápis data; text patří i do chybového pruhu. */
+  onInvalidDate?: (key: DocumentDateField, invalid: boolean) => void;
 }
 /** Vrátí jednotné vykreslovače běžných, datových a našeptávaných polí. */
 export function useDocumentFieldRenderers({
@@ -33,6 +35,7 @@ export function useDocumentFieldRenderers({
   accountingDateLink,
   fieldErrors,
   fieldWarnings,
+  onInvalidDate,
 }: DocumentFieldRenderersArgs) {
   const ds = useDsTexts();
   const field = (
@@ -73,6 +76,7 @@ export function useDocumentFieldRenderers({
         value={value[key] ?? ""}
         onChange={(next) => patch({ [key]: next || null })}
         disabled={!can(key)}
+        onValidityChange={(valid) => onInvalidDate?.(key, !valid)}
         baseDate={key === "dueDate" ? (value.issueDate ?? undefined) : undefined}
         quickOptions={
           key === "dueDate"

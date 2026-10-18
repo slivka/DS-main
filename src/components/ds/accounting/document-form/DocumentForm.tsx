@@ -19,12 +19,13 @@ import { useDsTexts } from "../../../../ds-texts";
 import { formatCodeName } from "../../../../lib/code-format";
 import {
   DEFAULT_DOCUMENT_FORM_TEXTS,
+  type DocumentDateField,
   type DocumentFormProps,
   type DocumentHeaderField,
   type DocumentHeaderValue,
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
-import { useExternalNumberField } from "./use-external-number-field";
+import { externalNumberVsWarning, useExternalNumberField } from "./use-external-number-field";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
@@ -198,6 +199,7 @@ export function DocumentForm({
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
+  const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
     patch,
@@ -206,6 +208,14 @@ export function DocumentForm({
     accountingDateLink: effectiveAccountingLink,
     fieldErrors,
     fieldWarnings,
+    onInvalidDate: (key, invalid) =>
+      setInvalidDates((prev) => {
+        if (Boolean(prev[key]) === invalid) return prev;
+        const next = { ...prev };
+        if (invalid) next[key] = true;
+        else delete next[key];
+        return next;
+      }),
   });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
@@ -252,6 +262,11 @@ export function DocumentForm({
     fieldWarnings,
     taxDocumentNumberWarning,
     icoWarning,
+    readOnly,
+    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map(
+      (key) => t[key],
+    ),
+    externalNumberWarning: externalNumberVsWarning(value, receivedDocument, t),
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
@@ -502,7 +517,11 @@ export function DocumentForm({
                 </>
               ) : undefined
             }
-            bank={bankMovement ? { value, patch, bankCodes, disabled: readOnly } : undefined}
+            bank={
+              bankMovement
+                ? { value, patch, bankCodes, disabled: !can("bankAccount") }
+                : undefined
+            }
             payment={{
               f: bankMovement ? { ...f, bankAccount: false } : f,
               t: bankMovement ? { ...t, paymentSection: "" } : t,

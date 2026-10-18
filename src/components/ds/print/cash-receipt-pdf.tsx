@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Label } from "../../ui/label";
 import { CheckboxField } from "../form/checkbox-field";
-import { OptionSelect } from "../form/option-select";
+import { StepperInput } from "../form/stepper-input";
 import {
   amountInWordsCs,
   createPrintDocument,
@@ -415,14 +415,13 @@ export function CashReceiptPrintDialog({
         <div className="flex flex-wrap items-end gap-4">
           <div className="grid gap-1">
             <Label htmlFor="cash-receipt-copies">Počet kopií</Label>
-            <OptionSelect
+            <StepperInput
               id="cash-receipt-copies"
-              value={String(copies)}
-              onChange={(next) => setCopies(Number(next) as CashReceiptCopies)}
-              options={([1, 2, 3, 4, 5] as const).map((count) => ({
-                value: String(count),
-                label: `${count} ${count === 1 ? "kopie" : count < 5 ? "kopie" : "kopií"}`,
-              }))}
+              value={copies}
+              min={1}
+              max={5}
+              size="compact"
+              onChange={(next) => setCopies(next as CashReceiptCopies)}
             />
           </div>
           <CheckboxField

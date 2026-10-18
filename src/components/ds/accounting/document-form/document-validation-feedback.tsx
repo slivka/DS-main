@@ -31,12 +31,20 @@ export interface DocumentValidationArgs {
   taxDocumentNumberWarning?: string;
   /** Neplatné IČO. */
   icoWarning?: boolean;
+  /** Doklad jen pro čtení – chybějící kurz DPH se nehlásí. */
+  readOnly?: boolean;
+  /** Popisky polí s neplatným zápisem data. */
+  invalidDateLabels?: string[];
+  /** Varování čísla dodavatele pro VS. */
+  externalNumberWarning?: string;
 }
 
 /** Celé zprávy patří také do pruhu nad formulářem. */
 export function documentValidationFeedback(a: DocumentValidationArgs) {
   const errors = Object.values(a.fieldErrors ?? {}).filter(Boolean);
+  for (const label of a.invalidDateLabels ?? []) errors.push(`${label}: ${a.t.invalidDate}`);
   if (
+    !a.readOnly &&
     a.foreign &&
     a.vatRateField &&
     !a.vatRateField.sameAsDocument &&
@@ -74,12 +82,8 @@ export function documentValidationFeedback(a: DocumentValidationArgs) {
           <NoticeBar tone="warning">{a.taxDocumentNumberWarning}</NoticeBar>
         ) : null}
         {a.icoWarning ? <NoticeBar tone="warning">{a.t.invalidIco}</NoticeBar> : null}
-        {a.foreign &&
-        a.vatRateField &&
-        !a.vatRateField.sameAsDocument &&
-        !a.vatRateField.manual &&
-        a.vatRateField.suggestedRate == null ? (
-          <NoticeBar tone="warning">{a.t.vatRateMissing}</NoticeBar>
+        {a.externalNumberWarning ? (
+          <NoticeBar tone="warning">{a.externalNumberWarning}</NoticeBar>
         ) : null}
       </>
     ),
