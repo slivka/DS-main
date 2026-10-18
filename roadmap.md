@@ -942,10 +942,10 @@
 
 ## 2.107.0 – jednotná výška a stav polí (nevydáno)
 
-- [ ] Dokončit skutečné měření buněk a detailu dokladu bez inline výšky.
-- [ ] Vlastní error/warning pro SegmentedField, ToggleGroup a Textarea; test zakázky v buňce.
-- [ ] Aditivně doplnit katalog a porovnat čtyři soubory s 8a53e95.
-- [ ] Všechny unit, Chromium výšky a starší document-controls / edit-document-thirteen, lint.
+- [x] Dokončit skutečné měření buněk a detailu dokladu bez inline výšky.
+- [x] Vlastní error/warning pro SegmentedField, ToggleGroup a Textarea; test zakázky v buňce.
+- [x] Aditivně doplnit katalog a porovnat čtyři soubory s 8a53e95.
+- [x] Všechny unit, Chromium výšky a starší document-controls / edit-document-thirteen, lint.
 
 - [x] Verze 2.106.0 (package.json, meta.version), CHANGELOG 2.105.0 vydáno, 2.106.0 záznam, 2.107.0
 - [x] Pravidlo výšky do system.md, components.md, AGENTS.md, stránky Pravidla
@@ -961,3 +961,5 @@
 - [x] Ukázka „Chyby a varování v polích“ + test „nic pod prvkem“ nad všemi poli
 - [x] Chromium E2E výšek (zoom aplikace 70/90/100/125/200 %, mřížky 60/100/140 %)
 - [x] Katalogy beze ztrát
+
+- Dokončení 2.107.0: skutečné výšky shodné v 18 kombinacích; unit 703/703, Chromium 27/27, lint 0 chyb / 299 varování, katalog 441 komponent / 856 props (baseline 432 / 800), automatický build OK. Nic nevydáno.

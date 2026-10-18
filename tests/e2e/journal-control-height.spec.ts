@@ -35,6 +35,7 @@ test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", asy
         exact: true,
       });
       if (await densityButton.count()) await densityButton.click();
+      await expect(root.locator(".journal-lines-grid")).toHaveAttribute("data-density", density);
       for (const grid of [60, 100, 140]) {
         await root.locator(".zoom-value").click();
         const name = grid < 100 ? "Zmenšit tabulku" : "Zvětšit tabulku";
@@ -72,6 +73,7 @@ test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", asy
           .locator('[data-cell-key^="height-row:"]')
           .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
         expect(Math.max(...cells) - Math.min(...cells)).toBeLessThan(1);
+        expect(Math.abs(cells[0] - fields[0].height)).toBeLessThan(1);
         // Skutečný textový editor buňky musí zdědit stejnou délku jako sousední buňky.
         await root.locator('[data-cell-key="height-row:text"]').click();
         const input = root.locator('[data-cell-key="height-row:text"] input');
