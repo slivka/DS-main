@@ -12,6 +12,7 @@ import { OptionSelect } from "../../form/option-select";
 import { VsField } from "../vs-field";
 import { SectionHeading } from "../../layout/section-heading";
 import type { DocumentFields } from "../document-fields";
+import type { VariableSymbolLinkState } from "./use-variable-symbol-link";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -48,6 +49,10 @@ export interface DocumentPaymentSectionProps {
   }>;
   bankAccountField: ReactNode;
   field: FieldRenderer;
+  /** Vazba VS na číslo daňového dokladu; bez ní pole nemá zámek. */
+  vsLink?: VariableSymbolLinkState;
+  /** Text zamčeného VS bez čísla dokladu. */
+  vsPendingText?: string;
 }
 
 /** Pole Platebních údajů: stejný podíl šířky, minimum pro čitelný obsah. */
@@ -115,6 +120,11 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 value={value.variableSymbol ?? ""}
                 onChange={(variableSymbol) => patch({ variableSymbol })}
                 disabled={!can("variableSymbol")}
+                linked={p.vsLink?.supported ? p.vsLink.linked : undefined}
+                onLinkedChange={p.vsLink?.onLinkedChange}
+                derivedValue={p.vsLink?.derivedValue}
+                pendingText={p.vsPendingText}
+                warning={p.vsLink?.warning}
               />,
               undefined,
               undefined,

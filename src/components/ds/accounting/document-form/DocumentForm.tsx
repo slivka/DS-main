@@ -25,7 +25,8 @@ import {
   type DocumentHeaderValue,
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
-import { externalNumberVsWarning, useExternalNumberField } from "./use-external-number-field";
+import { useExternalNumberField } from "./use-external-number-field";
+import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
@@ -265,13 +266,15 @@ export function DocumentForm({
     icoWarning,
     readOnly,
     invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map((key) => t[key]),
-    externalNumberWarning: externalNumberVsWarning(value, receivedDocument, t),
+    externalNumberWarning: vsLink.warning,
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
     : undefined;
   const paymentOrderOn = !receivedAccountReason && (!f.paymentOrders || paymentOrderEnabled);
+  const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
   const externalNumberField = useExternalNumberField({
+    sourcePatch: vsLink.sourcePatch,
     value,
     patch,
     can,
@@ -535,6 +538,8 @@ export function DocumentForm({
               companyBankAccountOptions,
               bankAccountField,
               field,
+              vsLink,
+              vsPendingText: dsTexts.documentEdit.numberPending,
             }}
             amount={{
               t,
