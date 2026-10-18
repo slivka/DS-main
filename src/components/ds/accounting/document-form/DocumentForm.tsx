@@ -42,7 +42,6 @@ export function DocumentForm(props: DocumentFormProps) {
   const {
     title,
     identity,
-    directionBadge,
     value,
     onChange,
     lines,
@@ -60,8 +59,6 @@ export function DocumentForm(props: DocumentFormProps) {
     counterpartyInputLockedReason,
     counterpartyTab,
     printTab,
-    bankCodes,
-    bankCodeOptions,
     documentType = "ID",
     fields,
     editableFields,
@@ -82,7 +79,6 @@ export function DocumentForm(props: DocumentFormProps) {
     onAccountingDateLinkedChange,
     taxDocumentNumberWarning,
     fieldErrors,
-    fieldWarnings,
     dateWarnings,
     vat,
     vatRateField,
@@ -91,13 +87,9 @@ export function DocumentForm(props: DocumentFormProps) {
     roundingLabel,
     tabs = [],
     activeDetailTab,
-    onActiveDetailTabChange,
-    status,
     changedBy,
     changedAt,
-    saveAction,
     moreActions = [],
-    settings,
     error,
     issues: appIssues,
     validationActive,
@@ -133,14 +125,14 @@ export function DocumentForm(props: DocumentFormProps) {
           onFieldChange?.("document-accountingDate");
         }
       : undefined,
-    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(status ?? ""),
+    readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);
   const [uncontrolledTab, setUncontrolledTab] = useState("lines");
   const tab = activeDetailTab ?? uncontrolledTab;
   const setTab = (next: string) => {
     if (activeDetailTab === undefined) setUncontrolledTab(next);
-    onActiveDetailTabChange?.(next);
+    props.onActiveDetailTabChange?.(next);
   };
   const formRef = useDocumentFormStickyTop();
   const can = (key: DocumentHeaderField) =>
@@ -194,11 +186,11 @@ export function DocumentForm(props: DocumentFormProps) {
     effectiveIdentity.account?.label,
     sameAccount,
   );
-  const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
+  const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
   const effectiveFieldWarnings =
     internal && counterpartyInput === "manual"
       ? { ...fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
-      : fieldWarnings;
+      : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
@@ -343,7 +335,7 @@ export function DocumentForm(props: DocumentFormProps) {
       <div
         ref={formRef}
         className={cn("@container space-y-4", className)}
-        onKeyDown={(event) => handleDocumentSaveShortcut(event, saveAction)}
+        onKeyDown={(event) => handleDocumentSaveShortcut(event, props.saveAction)}
       >
         <DocumentFormTop
           props={props}
@@ -358,7 +350,7 @@ export function DocumentForm(props: DocumentFormProps) {
         <section className="rounded-lg border bg-card p-4">
           <DocumentIdentityLine
             identity={effectiveIdentity}
-            direction={directionBadge}
+            direction={props.directionBadge}
             fallback={t.numberPending}
             texts={t}
             accountLabel={identityAccountLabel}
@@ -448,7 +440,7 @@ export function DocumentForm(props: DocumentFormProps) {
             }
             bank={
               bankMovement
-                ? { value, patch, bankCodes, bankCodeOptions, disabled: !can("bankAccount") }
+                ? { value, patch, props.bankCodes, props.bankCodeOptions, disabled: !can("bankAccount") }
                 : undefined
             }
             payment={{
