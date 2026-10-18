@@ -93,3 +93,16 @@ test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page
     }
   }
 });
+
+test("Nový výpis uloží a otevře nový výdaj", async ({ page }) => {
+  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  const showcase = page.getByTestId("bank-showcase");
+  await expect(showcase).toHaveAttribute("data-ready", "true", { timeout: 45000 });
+  await showcase.getByRole("button", { name: "empty", exact: true }).click();
+  const form = page.getByTestId("bank-panels").locator('[data-slot="bank-statement-form"]').first();
+  await expect(form.getByText("Pohyby lze zadat po uložení výpisu")).toBeVisible();
+  await form.getByRole("button", { name: "Výdaj", exact: true }).click();
+  await expect(form.getByText("Pohyby lze zadat po uložení výpisu")).toHaveCount(0);
+  await expect(form.locator('output[aria-label="Nový pohyb"]')).toHaveText("Výdaj");
+  await expect(form.getByRole("textbox", { name: "Číslo výpisu" })).toHaveValue("2026/011");
+});
