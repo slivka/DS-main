@@ -7,7 +7,11 @@ import type { ReactNode } from "react";
 
 import { Label } from "../../ui/label";
 import { SectionHeading } from "./section-heading";
-import { FieldFeedbackContext, FieldFeedbackIndicator } from "../form/field-feedback";
+import {
+  FieldFeedbackContext,
+  FieldFeedbackIndicator,
+  FieldHintIcon,
+} from "../form/field-feedback";
 
 const FIELD_SPAN_CLASSES = {
   1: "@min-[40rem]:col-span-1",
@@ -40,7 +44,7 @@ export interface FieldProps {
   htmlFor?: string;
   /** Identifikátor popisku hodnoty pouze ke čtení, bez vazby htmlFor. */
   labelId?: string;
-  /** Výjimečná nápověda přímo pod polem. */
+  /** Nápověda jako ikona Info v řádku popisku (nikdy text pod polem). */
   hint?: ReactNode;
   /** Chyba pole; má přednost před nápovědou. */
   error?: ReactNode;
@@ -86,14 +90,17 @@ export function Field({
       } ${className}`}
     >
       {label ? (
-        <Label
-          id={labelId ?? (htmlFor ? `${htmlFor}-label` : undefined)}
-          htmlFor={htmlFor}
-          title={typeof label === "string" ? label : undefined}
-          className={error ? "text-destructive" : undefined}
-        >
-          {label}
-        </Label>
+        <span className="flex min-w-0 items-center gap-1">
+          <Label
+            id={labelId ?? (htmlFor ? `${htmlFor}-label` : undefined)}
+            htmlFor={htmlFor}
+            title={typeof label === "string" ? label : undefined}
+            className={`min-w-0 truncate whitespace-nowrap ${error ? "text-destructive" : ""}`}
+          >
+            {label}
+          </Label>
+          {hint ? <FieldHintIcon hint={hint} /> : null}
+        </span>
       ) : null}
       <FieldFeedbackContext.Provider value={{ error, warning }}>
         <div className="relative min-w-0 ds-field-control">
@@ -101,11 +108,7 @@ export function Field({
           <FieldFeedbackIndicator error={error} warning={warning} />
         </div>
       </FieldFeedbackContext.Provider>
-      {!error && !warning && hint ? (
-        <p data-slot="field-hint" className="text-xs text-muted-foreground">
-          {hint}
-        </p>
-      ) : null}
+      {!label && hint ? <FieldHintIcon hint={hint} className="sr-only" /> : null}
     </div>
   );
 }
