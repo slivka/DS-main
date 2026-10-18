@@ -182,6 +182,7 @@ export {
   JournalRecapHomeTotal,
   type JournalRecapHomeTotalProps,
 } from "./accounting/journal-recap-home-total";
+export * from "./form/field-feedback";
 
 export * from "./form/field-toggle-button";
 
