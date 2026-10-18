@@ -24,8 +24,11 @@ export interface DocumentDateLinksArgs {
 /** Změna vystavení přepočítá jen data stále navázaná na vystavení. */
 export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
   const received = ["FP", "ZFP", "DDPOZ"].includes(a.code);
-  const applicable = ["FV", "ZFV", "FP", "ZFP", "DDPOZ", "ID"].includes(a.code);
-  const [ownLinked, setOwnLinked] = useState(true);
+  const applicable = ["FV", "ZFV", "FP", "ZFP", "DDPOZ", "ID", "BA"].includes(a.code);
+  // Bankovní pohyb: výchozí stav vazby z rovnosti Data pohybu a Data účetního případu.
+  const [ownLinked, setOwnLinked] = useState(
+    a.code !== "BA" || !a.value.accountingDate || a.value.accountingDate === a.value.issueDate,
+  );
   const locked =
     a.accountingDateLink?.locked ?? (applicable && a.accountingDateLinked && ownLinked);
   const manualTaxDate = (v: DocumentHeaderValue) =>

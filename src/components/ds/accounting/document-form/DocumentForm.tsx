@@ -502,7 +502,7 @@ export function DocumentForm({
                 : undefined
             }
             dates={{
-              t: bankMovement ? { ...t, accountingDate: dsTexts.documentEdit.movementDate } : t,
+              t: bankMovement ? { ...t, issueDate: dsTexts.documentEdit.movementDate } : t,
               bankMovement,
               f,
               showVatFields,
