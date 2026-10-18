@@ -156,7 +156,6 @@ export function DateField({
 
   /** Zpracuje ručně napsané datum ve formátu d.m.rrrr (i 1.1.90 nebo 01012000). */
   const commitText = () => {
-    console.info("FIELD commit", text, minDate, maxDate);
     const raw = text.trim();
     if (!raw) {
       setInvalid(false);
