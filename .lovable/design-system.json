@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.105.0",
+    "version": "2.106.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -21,7 +21,7 @@
       "#enrichment": "3f1e3c40539e435591fbf53b3274723c08816d0a5070a0b53498638e4ab74ac9",
       ".dsignore": "064818221ffbcf9369c43a13cf6bb694",
       ".gitignore": "6059213806e442947666752f3db6bfdc",
-      ".lovable/meta.yaml": "6652f16d0f66f7e08c133d71d84d5d9d",
+      ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
       ".lovable/plan.md": "8957b5fda7cbc46db5d698948db16b5c",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
