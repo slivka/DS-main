@@ -2,7 +2,7 @@
  * Horní část formuláře dokladu · vlastní nadpis se stavem, lištu akcí s živým pruhem a banner
  * jen pro čtení · nesmí počítat položky pruhu ani měnit hodnoty.
  */
-import type { KeyboardEvent, ReactNode } from "react";
+import { useState, type KeyboardEvent, type ReactNode } from "react";
 import { useDsTexts } from "../../../../ds-texts";
 import type { FormIssue } from "../../../../lib/form-issues";
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
@@ -115,4 +115,19 @@ export function DocumentFormTop({
       ) : null}
     </>
   );
+}
+
+/** Aktivní záložka spodní části: řízená, jinak vlastní stav (výchozí řádky). */
+export function useDetailTab(
+  active: string | undefined,
+  onChange?: (tabId: string) => void,
+): [string, (next: string) => void] {
+  const [own, setOwn] = useState("lines");
+  return [
+    active ?? own,
+    (next) => {
+      if (active === undefined) setOwn(next);
+      onChange?.(next);
+    },
+  ];
 }

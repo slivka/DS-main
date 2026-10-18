@@ -118,3 +118,16 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
     );
   return issues;
 }
+
+/** Přepne příznak neplatného data; beze změny vrátí stejný objekt. */
+export function toggleInvalidDate<K extends string>(
+  prev: Partial<Record<K, true>>,
+  key: K,
+  invalid: boolean,
+): Partial<Record<K, true>> {
+  if (Boolean(prev[key]) === invalid) return prev;
+  const next = { ...prev };
+  if (invalid) next[key] = true;
+  else delete next[key];
+  return next;
+}

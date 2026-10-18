@@ -2,7 +2,7 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { documentClientIssues } from "./document-validation-feedback";
+import { documentClientIssues, toggleInvalidDate } from "./document-validation-feedback";
 import {
   reportingLinesChange,
   reportingPatch,
@@ -33,7 +33,7 @@ import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
-import { DocumentFormTop, handleDocumentSaveShortcut } from "./document-form-top";
+import { DocumentFormTop, handleDocumentSaveShortcut, useDetailTab } from "./document-form-top";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
 import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
@@ -128,12 +128,7 @@ export function DocumentForm(props: DocumentFormProps) {
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);
-  const [uncontrolledTab, setUncontrolledTab] = useState("lines");
-  const tab = activeDetailTab ?? uncontrolledTab;
-  const setTab = (next: string) => {
-    if (activeDetailTab === undefined) setUncontrolledTab(next);
-    props.onActiveDetailTabChange?.(next);
-  };
+  const [tab, setTab] = useDetailTab(activeDetailTab, props.onActiveDetailTabChange);
   const formRef = useDocumentFormStickyTop();
   const can = (key: DocumentHeaderField) =>
     !readOnly && (!editableFields || editableFields.includes(key));
@@ -189,7 +184,7 @@ export function DocumentForm(props: DocumentFormProps) {
   const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
   const effectiveFieldWarnings =
     internal && counterpartyInput === "manual"
-      ? { ...fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
+      ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
       : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
@@ -201,13 +196,7 @@ export function DocumentForm(props: DocumentFormProps) {
     fieldErrors: validationActive === false ? undefined : fieldErrors,
     fieldWarnings: validationActive === false ? undefined : effectiveFieldWarnings,
     onInvalidDate: (key, invalid) =>
-      setInvalidDates((prev) => {
-        if (Boolean(prev[key]) === invalid) return prev;
-        const next = { ...prev };
-        if (invalid) next[key] = true;
-        else delete next[key];
-        return next;
-      }),
+      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
   });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
