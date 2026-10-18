@@ -1259,6 +1259,14 @@
 
 /* Detail řádku a mřížka: jediný zdroj výšky je lokální --control-h v em,
    takže se všechny prvky řádku mění se zoomem mřížky stejně. */
+/* Registrovaná vlastnost: em se přepočítá na prvku, který ji nastaví, takže všechny prvky
+   řádku (i s menším písmem) mají stejnou výšku. */
+@property --control-h {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 2.25rem;
+}
+
 .journal-line-detail-grid {
   --control-h: 2.25em;
 }

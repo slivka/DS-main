@@ -156,7 +156,7 @@ export function FieldHintIcon({ hint, id, className }: FieldHintIconProps) {
           aria-label={typeof hint === "string" ? hint : undefined}
           data-slot="field-hint"
           className={cn(
-            "inline-flex shrink-0 cursor-help items-center rounded-sm text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "-my-1 inline-flex h-[1em] shrink-0 cursor-help items-center rounded-sm text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             className,
           )}
         >
