@@ -203,10 +203,15 @@ export function RecordActionBar({
           className,
         )}
       >
-        <div ref={leftRef} className="min-w-0 shrink overflow-hidden text-ellipsis whitespace-nowrap [&_[data-slot=button]]:whitespace-nowrap">
-          {leftContent}
-        </div>
-        <div className="ml-auto flex shrink-0 items-center gap-2">
+        {leftContent ? (
+          <div
+            ref={leftRef}
+            className="min-w-0 shrink overflow-hidden text-ellipsis whitespace-nowrap [&_[data-slot=button]]:whitespace-nowrap"
+          >
+            {leftContent}
+          </div>
+        ) : null}
+        <div data-slot="record-action-buttons" className="ml-auto flex shrink-0 items-center gap-2">
           {primaryAction ? (
             <CompactActionButton
               label={primaryAction.label}
@@ -310,28 +315,33 @@ export function RecordActionBar({
         <div
           ref={measureRef}
           aria-hidden="true"
-          className="pointer-events-none fixed invisible left-0 top-0 -z-10 w-max"
+          className="pointer-events-none absolute invisible left-1 top-0 -z-10 w-max"
         >
           {[0, 1, 2].map((stage) => (
             <div key={stage} className="flex w-max items-center gap-2">
               {primaryAction ? (
                 <Button
+                  asChild
                   tabIndex={-1}
                   variant="outline"
                   className={stage > 0 ? "size-9 px-0" : undefined}
                 >
-                  {stage > 0 ? <PrimaryIcon /> : primaryAction.label}
+                  <span>{stage > 0 ? <PrimaryIcon /> : primaryAction.label}</span>
                 </Button>
               ) : null}
               {saveAction ? (
-                <Button tabIndex={-1} className={stage === 2 ? "size-9 px-0" : undefined}>
-                  {stage === 2 ? <Save /> : saveText}
-                  {saveAction.dirty ? <span className="size-1.5" /> : null}
+                <Button asChild tabIndex={-1} className={stage === 2 ? "size-9 px-0" : undefined}>
+                  <span>
+                    {stage === 2 ? <Save /> : saveText}
+                    {saveAction.dirty ? <span className="size-1.5" /> : null}
+                  </span>
                 </Button>
               ) : null}
               {moreActions.length ? (
-                <Button tabIndex={-1} variant="ghost" size="icon">
-                  <MoreHorizontal />
+                <Button asChild tabIndex={-1} variant="ghost" size="icon">
+                  <span>
+                    <MoreHorizontal />
+                  </span>
                 </Button>
               ) : null}
             </div>

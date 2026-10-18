@@ -269,7 +269,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
             <div data-slot="bank-statement-items" className="min-w-0 max-w-full">
               {isNew ? (
                 <>
-                  <div className="flex justify-end gap-2">
+                  <div className="flex flex-wrap justify-end gap-2">
                     {(["in", "out"] as const).map((direction) => (
                       <Button
                         key={direction}

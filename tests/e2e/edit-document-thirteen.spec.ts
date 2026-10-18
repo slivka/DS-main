@@ -169,8 +169,9 @@ test("výpis v CS/SK, 70–200 %, 1/2/3 panelech a 360 px nezalamuje popisky", a
         await expect(actions).toHaveAttribute("aria-label", /^(Uložit|Uložiť)$/);
         const actionGap = await form.evaluate((node) => {
           const bar = node.querySelector('[data-slot="record-action-bar"]');
-          const left = bar?.querySelector("div:first-child>button")?.getBoundingClientRect();
-          const right = bar?.querySelector("div:last-child>button")?.getBoundingClientRect();
+          const actions = bar?.querySelector('[data-slot="record-action-buttons"]');
+          const left = actions?.querySelector("button:first-child")?.getBoundingClientRect();
+          const right = actions?.querySelector("button:last-child")?.getBoundingClientRect();
           if (!left || !right) throw new Error("Chybí akce výpisu");
           return right.top >= left.bottom || right.left >= left.right;
         });

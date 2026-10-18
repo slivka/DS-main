@@ -2,7 +2,8 @@
 
 - [x] 1 S9: vazby dat zapisují odvozené hodnoty přes onChange; reset při změně value.id; test.
 - [x] 2 S1: žádný text pod polem (externí číslo, detail řádku); chyby do pruhu; vatRateMissing jednou.
-- [x] 3 S5: tooltip u každé akce RecordActionBar, ⋯ přes Tooltip; levý obsah nepřekryje akce. (E2E „výpis CS/SK 70–200 %“ selhává, k prošetření)
+- [x] 3 S5: tooltip u každé akce RecordActionBar, ⋯ přes Tooltip; levý obsah nepřekryje akce.
+- [x] Před vydáním: měřicí kopie jako neinteraktivní prvky uvnitř odsazení lišty; měření odečítá skutečné odsazení a mezeru. Příjem/Výdaj v úzkém výpisu přejdou pod sebe bez zalomení textu. Očekávání testu zachována, selektor rozestupu míří na skutečné akce. Chromium 30/30 (celé edit-document-thirteen, bank-statement-form, document-controls, grid-add-actions-13g); unit 670/670; lint 0 chyb / 297 varování; formát a automatická sestava OK. Katalog 432 komponent / 813 props; obě verze 2.104.0, CHANGELOG 2.105.0. Jednotná výška odložena, nic nevydáno.
 - [x] 4 S6: ＋ v hledání u CounterpartyField a TagPicker; UnitSelect důvod; typy (searchText).
 - [x] 5 S7: popover protistrany ds-select-popover; CategorySelect rem; ContactSelect jednořádkově.
 - [x] 6 Texty protiúčtu, TaxDocumentNumberField odsazení, protiúčet pohybu dle editableFields.

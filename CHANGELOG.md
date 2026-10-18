@@ -15,9 +15,18 @@
   Peněžní směr Výdaj; výpisový pohyb Bankovní pohyb. Texty CS/SK.
 - S10: výpis bez viditelného štítku stavu, nový výpis s prázdnými pohyby a onSaveThenAdd.
 - Poslední vydaná verze v package.json i meta.version je 2.104.0. Nic nevydáno.
+- Měřicí kopie lišty akcí jsou uvnitř jejího odsazení; sticky/backdrop oblast je neposouvá
+  přes jeho okraj a měření nezasahuje do skutečných akcí. Pravidla nezalamování beze změny.
+- Dostupná šířka akcí odečítá odsazení a skutečnou mezeru; prázdný levý obsah mezeru
+  nevytváří. Neinteraktivní měřicí kopie používají stejné styly jako skutečná tlačítka.
+  Příjem/Výdaj nového výpisu při 200 % přejdou pod sebe, texty zůstávají jednořádkové.
 
 ### Ověření
 
+- Před vydáním zopakováno: Chromium 30/30 (celé soubory edit-document-thirteen,
+  bank-statement-form, document-controls, grid-add-actions-13g), včetně matice CS/SK
+  70–200 %, 1/2/3 panelů a 360 px bez oslabení očekávání. Unit 670/670;
+  lint 0 chyb / 297 varování; formát dotčeného kódu a automatická sestava OK.
 - Unit 668/668; Chromium 19/19 v cílených konečných bězích: geometrie 10,
   výpis 5, regrese 3, nový výpis 1. Radio při 70/200 % Firefox + WebKit 2/2.
 - Lint 0 chyb / 298 varování; automatická kontrola sestavy a typů OK.

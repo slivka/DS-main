@@ -61,6 +61,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
 
 - Measure form action widths centrally: text-only → secondary icons → Save icon; retain accessible names and tooltips. Why: every form inherits the same overflow cascade.
+- Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
 - Keep field feedback in shared in-control indicators and duplicate full messages in form banners; never below fields. Why: validation cannot change row geometry.
