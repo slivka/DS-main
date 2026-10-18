@@ -5,6 +5,7 @@ import { Input } from "../../ui/input";
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { SelectSearchAction } from "../form/select-search-action";
 import type { PartnerOption } from "./partner-select";
 
 export type CounterpartyValue = {
@@ -69,7 +70,10 @@ export interface CounterpartyFieldProps {
   className?: string;
   linkedLabel?: string;
   unlinkLabel?: string;
+  /** Přístupný název ＋ v poli (založení partnera z napsaného textu). */
   createLabel?: string;
+  /** Důvod zašedlého ＋ (např. chybějící oprávnění). */
+  createDisabledReason?: string;
   /** Oblíbení partneři se při prázdném hledání zobrazí první. */
   favoriteIds?: string[];
 }
@@ -86,7 +90,8 @@ export function CounterpartyField({
   className,
   linkedLabel = "Partner",
   unlinkLabel = "Zrušit propojení",
-  createLabel = "Nový partner",
+  createLabel,
+  createDisabledReason,
   favoriteIds = [],
 }: CounterpartyFieldProps) {
   const dsTexts = useDsTexts();
@@ -98,7 +103,10 @@ export function CounterpartyField({
     [favoriteIds, partners, value.name],
   );
   const showCreate = !!onCreatePartner && !linked;
-  const listOpen = open && !linked && (matches.length > 0 || showCreate);
+  const listOpen = open && !linked && matches.length > 0;
+  const createText = createLabel ?? dsTexts.selectCreate.partner;
+  const createReason =
+    createDisabledReason ?? (!value.name.trim() ? dsTexts.selectCreate.emptyQuery : undefined);
   const listId = id ? `${id}-list` : undefined;
 
   const badge = linked ? (
@@ -113,7 +121,7 @@ export function CounterpartyField({
       <div
         id={id}
         aria-readonly="true"
-        className={cn("flex min-h-9 min-w-0 items-center gap-2 text-sm", className)}
+        className={cn("flex min-h-[var(--control-h)] min-w-0 items-center gap-2 text-sm", className)}
       >
         <span className={cn("min-w-0 truncate", !value.name && "text-muted-foreground")}>
           {value.name || "—"}
@@ -141,7 +149,7 @@ export function CounterpartyField({
             autoComplete="off"
             placeholder={placeholder}
             value={value.name}
-            className={cn("h-9 pr-9", linked && "pr-32")}
+            className={cn("pr-9", showCreate && "pr-[4.5rem]", linked && "pr-32")}
             onChange={(e) => {
               onChange(counterpartyFromText(e.target.value, value.ico, value.dic));
               setActive(0);
@@ -150,7 +158,7 @@ export function CounterpartyField({
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
               if (!listOpen) return;
-              const last = matches.length + (showCreate ? 1 : 0) - 1;
+              const last = matches.length - 1;
               if (e.key === "ArrowDown") {
                 e.preventDefault();
                 setActive((i) => Math.min(i + 1, last));
@@ -160,10 +168,6 @@ export function CounterpartyField({
               } else if (e.key === "Enter" && matches[active]) {
                 e.preventDefault();
                 select(matches[active]);
-              } else if (e.key === "Enter" && showCreate && active === matches.length) {
-                e.preventDefault();
-                setOpen(false);
-                onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic));
               } else if (e.key === "Escape") setOpen(false);
             }}
           />
@@ -183,22 +187,36 @@ export function CounterpartyField({
               </button>
             </div>
           ) : (
+            <>
+            {showCreate ? (
+              <div className="absolute right-[var(--control-h)] top-0 flex h-[var(--control-h)] items-center">
+                <SelectSearchAction
+                  label={createText}
+                  disabledReason={createReason}
+                  onCreate={() => {
+                    setOpen(false);
+                    onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic));
+                  }}
+                />
+              </div>
+            ) : null}
             <button
               type="button"
               aria-label="Zobrazit partnery"
               title="Zobrazit partnery"
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => setOpen(true)}
-              className="absolute right-0 top-0 inline-flex size-9 items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="absolute right-0 top-0 inline-flex size-[var(--control-h)] items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <ChevronDown className="size-4" />
             </button>
+            </>
           )}
         </div>
       </PopoverAnchor>
       <PopoverContent
         align="start"
-        className="w-[--radix-popover-trigger-width] min-w-[280px] p-1"
+        className="ds-select-popover p-1"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <ul id={listId} role="listbox" className="max-h-[22.5rem] overflow-y-auto">
@@ -211,11 +229,13 @@ export function CounterpartyField({
               onClick={() => select(p)}
               onMouseEnter={() => setActive(i)}
               className={cn(
-                "flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm",
+                "flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-sm px-2 py-1.5 text-sm",
                 i === active && "bg-accent text-accent-foreground",
               )}
             >
-              <span className="min-w-0 flex-1 truncate">{p.name}</span>
+              <span className="min-w-0 flex-1 truncate" title={p.name}>
+                {p.name}
+              </span>
               {p.ico ? (
                 <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                   {p.ico}
@@ -224,24 +244,6 @@ export function CounterpartyField({
             </li>
           ))}
         </ul>
-        {showCreate ? (
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onMouseEnter={() => setActive(matches.length)}
-            onClick={() => {
-              setOpen(false);
-              onCreatePartner?.(counterpartyCreateSeed(value.name, value.ico, value.dic));
-            }}
-            className={cn(
-              "w-full rounded-sm border-t px-2 py-1.5 text-left text-sm text-primary hover:bg-muted",
-              active === matches.length && "bg-accent text-accent-foreground",
-              matches.length > 0 && "mt-1",
-            )}
-          >
-            {`${createLabel}…`}
-          </button>
-        ) : null}
       </PopoverContent>
     </Popover>
   );
