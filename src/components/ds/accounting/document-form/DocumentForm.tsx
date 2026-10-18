@@ -198,6 +198,7 @@ export function DocumentForm({
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
+  const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
     patch,
@@ -206,6 +207,14 @@ export function DocumentForm({
     accountingDateLink: effectiveAccountingLink,
     fieldErrors,
     fieldWarnings,
+    onInvalidDate: (key, invalid) =>
+      setInvalidDates((prev) => {
+        if (Boolean(prev[key]) === invalid) return prev;
+        const next = { ...prev };
+        if (invalid) next[key] = true;
+        else delete next[key];
+        return next;
+      }),
   });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
@@ -252,6 +261,11 @@ export function DocumentForm({
     fieldWarnings,
     taxDocumentNumberWarning,
     icoWarning,
+    readOnly,
+    invalidDateLabels: (Object.keys(invalidDates) as DocumentDateField[]).map(
+      (key) => dateLabels[key],
+    ),
+    externalNumberWarning: externalNumberVsWarning,
   });
   const receivedAccountReason = ["FP", "ZFP"].includes(documentType.toUpperCase())
     ? receivedAccountDisabledReason
