@@ -115,6 +115,12 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                 value={value.partnerId}
                 onChange={(partnerId) => patch({ partnerId })}
                 disabled={!can("partnerId")}
+                onCreate={
+                  onCreatePartner
+                    ? (query) => onCreatePartner(counterpartyCreateSeed(query))
+                    : undefined
+                }
+                onEditSelected={onEditCounterparty}
               />
             ) : (
               <CounterpartyInputField
