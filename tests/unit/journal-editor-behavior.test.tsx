@@ -278,7 +278,14 @@ describe("JournalLinesEditor – režimy", () => {
 
 describe("JournalLinesEditor – chyby řádků", () => {
   it("ohlásí chybu s číslem řádku a označí buňku", () => {
-    const calls: { line: number; field: string; message: string }[][] = [];
+    const calls: {
+      line: number;
+      field: string;
+      message: string;
+      fieldId?: string;
+      rowId?: string;
+      columnId?: string;
+    }[][] = [];
     const view = render(
       <Editor
         initial={[LINES[0]!, { ...LINES[1]!, creditAccount: null }]}
@@ -286,7 +293,14 @@ describe("JournalLinesEditor – chyby řádků", () => {
       />,
     );
     expect(calls.at(-1)).toEqual([
-      { line: 2, field: "creditAccount", message: "Vyberte účet DAL" },
+      {
+        line: 2,
+        field: "creditAccount",
+        message: "Vyberte účet DAL",
+        fieldId: "journal-l2-creditAccount",
+        rowId: "l2",
+        columnId: "creditAccount",
+      },
     ]);
     expect(cell(view.container, "l2:creditAccount")?.getAttribute("data-invalid")).toBe("true");
     expect(cell(view.container, "l1:creditAccount")?.hasAttribute("data-invalid")).toBe(false);

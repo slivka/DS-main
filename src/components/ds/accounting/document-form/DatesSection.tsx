@@ -75,7 +75,7 @@ export function DocumentDatesSection({
               ? date(
                   "vatDate",
                   t.vatDate,
-                  "relative flex-none w-max [&_.field-overflow-hint]:absolute [&_.field-overflow-hint]:right-0 [&_.field-overflow-hint]:w-max [&_.field-overflow-hint]:max-w-none [&_.field-overflow-hint]:whitespace-nowrap [&_.field-overflow-hint]:text-right",
+                  "relative flex-none w-max",
                   {
                     link: vat?.dateLink
                       ? {

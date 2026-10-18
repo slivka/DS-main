@@ -45,7 +45,7 @@ describe("record form 2.62", () => {
     );
     expect(html).toContain("grid-cols-[auto_minmax(0,1fr)]");
     expect(html).toContain("size-4");
-    if (align === "input") expect(html).toContain("min-h-[var(--control-h)]");
+    if (align === "input") expect(html).toContain("h-[var(--control-h)]");
     expect(html).toContain("Druhý řádek");
     expect(html).toContain("Nápověda");
   });

@@ -80,7 +80,7 @@ describe("formulářové prvky dialogu záznamu", () => {
       <CheckboxField align="input" checked onCheckedChange={noop} label="Schválení" />,
     );
     expect(html).toContain('data-align="input"');
-    expect(html).toContain("min-h-[var(--control-h)]");
+    expect(html).toContain("h-[var(--control-h)]");
     expect(html).toContain("size-4");
     expect(html).toContain("pt-[calc(1.25rem+0.25rem)]");
   });
@@ -114,9 +114,9 @@ describe("RecordDialog 2.84", () => {
     expect(view.getByRole("table", { name: "Číselné řady" })).toBeTruthy();
     expect(view.getByRole("columnheader", { name: "Řada" }).className).toContain("col-span-2");
     expect(view.getByRole("columnheader", { name: "Maska" }).className).toContain("col-span-4");
-    expect(view.getByText("Účet", { selector: "label" }).parentElement?.className).toContain(
-      "col-span-8",
-    );
+    expect(
+      view.getByText("Účet", { selector: "label" }).closest("[data-slot=field]")?.className,
+    ).toContain("col-span-8");
     expect(view.getByText("Na dokladu").parentElement?.className).toContain("col-span-4");
     expect(view.getByText(/Nastavení DPH se použije/)).toBeTruthy();
   });
