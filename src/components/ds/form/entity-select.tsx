@@ -233,6 +233,15 @@ export function ContactSelect({
                 {filtered.map((c) => {
                   const address = formatAddress(c, homeCountries);
                   const idDoc = formatIdDoc(c, idDocumentLabels);
+                  // Jednořádková položka: doplňkové údaje za jménem, zkrácené s … a celé v title.
+                  const details = [
+                    c.ico ? `IČO: ${c.ico}` : "",
+                    c.birth_number ? `RČ: ${c.birth_number}` : "",
+                    idDoc ?? "",
+                    c.phone ?? "",
+                    c.email ?? "",
+                    address ?? "",
+                  ].filter(Boolean);
                   return (
                     <CommandItem
                       key={c.id}
@@ -242,30 +251,28 @@ export function ContactSelect({
                         setOpen(false);
                         setQuery("");
                       }}
-                      className="flex-col items-start gap-1 py-2"
+                      className="flex items-center gap-2 whitespace-nowrap"
+                      title={[formatContactName(c), ...details].join(" · ")}
                     >
-                      <div className="flex w-full items-start gap-2">
-                        <span className="flex-1 truncate font-medium">{formatContactName(c)}</span>
-                        {c.is_blacklisted ? (
-                          <Badge variant="destructive" className="shrink-0 text-[0.65rem]">
-                            Blacklist
-                          </Badge>
-                        ) : null}
-                        <Check
-                          className={cn(
-                            "ml-auto h-4 w-4 shrink-0",
-                            value === c.id ? "opacity-100" : "opacity-0",
-                          )}
-                        />
-                      </div>
-                      <div className="flex w-full flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                        {c.ico ? <span>IČO: {c.ico}</span> : null}
-                        {c.birth_number ? <span>RČ: {c.birth_number}</span> : null}
-                        {idDoc ? <span>{idDoc}</span> : null}
-                        {c.phone ? <span>{c.phone}</span> : null}
-                        {c.email ? <span className="truncate max-w-[16rem]">{c.email}</span> : null}
-                        {address ? <span className="w-full truncate">{address}</span> : null}
-                      </div>
+                      <span className="shrink-0 font-medium">{formatContactName(c)}</span>
+                      {details.length ? (
+                        <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+                          {details.join(" · ")}
+                        </span>
+                      ) : (
+                        <span className="flex-1" />
+                      )}
+                      {c.is_blacklisted ? (
+                        <Badge variant="destructive" className="shrink-0 text-[0.65rem]">
+                          Blacklist
+                        </Badge>
+                      ) : null}
+                      <Check
+                        className={cn(
+                          "h-4 w-4 shrink-0",
+                          value === c.id ? "opacity-100" : "opacity-0",
+                        )}
+                      />
                     </CommandItem>
                   );
                 })}
