@@ -1,3 +1,13 @@
+## Edit dokladu 14 – příprava dalšího vydání
+
+- [ ] S1–S2: jednotné výstrahy uvnitř polí a stálá geometrie součtu.
+- [ ] S3–S4: StepperInput 1–5 v nastavení a měřené vystředění radio.
+- [ ] S5: měřená kaskáda akcí formulářů, text → sekundární ikony → Uložit ikona.
+- [ ] S6–S8: přidání v hledání, šířky nabídek a rychlé/relativní datumové volby.
+- [ ] S9–S10: rozložení a vazby dokladů, bankovní pohyb a nový výpis.
+- [ ] Ukázky CS/SK, testy chování a geometrie, lint a katalogy bez ztrát.
+- [ ] CHANGELOG 2.105.0 s migrací změněných props; obě současné verze neměnit.
+
 ## DS 2.104.0 – Edit dokladu 13j–13l (nevydáno)
 
 - [x] 13l: geometrie, Uložit, zámky, tooltipy a přístupné názvy; katalog proti 1131b2b4 beze ztrát.
