@@ -3,7 +3,7 @@
 ## Zachování vydané knihovny
 - Zachovat všech 430 současných názvů komponent, obsah katalogů i existující záznamy manifestu. Nové komponenty a props přidávat bez plošného přegenerování katalogů.
 - Nové vydání vést pouze v CHANGELOG jako **2.105.0 (nevydáno)** s návodem migrace u BREAKING změn.
-- **Nesoulad aktuálního stavu:** oba soubory verzí nyní obsahují **2.103.0**, nikoli uvedených 2.104.0. Podle pokynu „NEMĚŇ je“ je ponechat beze změny; nevydávat knihovnu.
+- Podle opravy při schválení srovnat oba soubory verzí na poslední vydanou **2.104.0**; novou 2.105.0 vést jen v CHANGELOG, nic nevydávat.
 
 ## Sdílená pole a ovládání (S1–S4)
 - Sjednotit chyby a varování: barevný rámeček, výstražná ikona uvnitř před akcemi, úplný text v přístupném tooltipu; žádný text výstrahy pod polem a žádná změna výšky řádku. DocumentForm zobrazí stejné zprávy také ve společném pruhu.

@@ -32,21 +32,23 @@ export function FieldFeedbackIndicator({ error, warning, className }: FieldFeedb
   const message = error || warning;
   if (!message) return null;
   return (
-    <TooltipProvider><DisabledReasonTooltip content={message} blocked={false} openOnTouch>
-      <span
-        tabIndex={0}
-        role="img"
-        aria-label={typeof message === "string" ? message : undefined}
-        data-slot="field-feedback"
-        className={cn(
-          "absolute right-[var(--field-feedback-offset,0.75rem)] top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2 cursor-help rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          error ? "text-destructive" : "text-warning-strong",
-          className,
-        )}
-      >
-        <AlertTriangle className="size-4" aria-hidden="true" />
-        <span className="sr-only">{message}</span>
-      </span>
-    </DisabledReasonTooltip></TooltipProvider>
+    <TooltipProvider>
+      <DisabledReasonTooltip content={message} blocked openOnTouch>
+        <span
+          tabIndex={0}
+          role="img"
+          aria-label={typeof message === "string" ? message : undefined}
+          data-slot="field-feedback"
+          className={cn(
+            "absolute right-[var(--field-feedback-offset,0.75rem)] top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2 cursor-help rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            error ? "text-destructive" : "text-warning-strong",
+            className,
+          )}
+        >
+          <AlertTriangle className="size-4" aria-hidden="true" />
+          <span className="sr-only">{message}</span>
+        </span>
+      </DisabledReasonTooltip>
+    </TooltipProvider>
   );
 }
