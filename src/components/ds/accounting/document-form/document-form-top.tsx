@@ -4,6 +4,7 @@
  */
 import { useState, type KeyboardEvent, type ReactNode } from "react";
 import { useDsTexts } from "../../../../ds-texts";
+import type { DsTexts } from "../../../../ds-texts";
 import type { FormIssue } from "../../../../lib/form-issues";
 import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { PageHeader } from "../../layout/page-header";
@@ -32,8 +33,8 @@ export interface DocumentFormTopProps {
   vatRelevant: boolean;
   /** Změna vstupu do DPH. */
   onVatRelevantChange: (next: boolean) => void;
-  /** Texty formuláře. */
-  t: DocumentFormTexts;
+  /** Texty formuláře včetně DsTexts. */
+  t: DocumentFormTexts & DsTexts["documentForm"];
 }
 
 /** Ctrl/Cmd+S uloží povolený doklad. */

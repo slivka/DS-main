@@ -2,6 +2,7 @@
  * Platební pole formuláře dokladu · vlastní číslo dodavatele, bankovní účty a důvody
  * zakázaných symbolů · nesmí ukládat data ani rozhodovat o vazbě VS.
  */
+import type { DsTexts } from "../../../../ds-texts";
 import type { ReactNode } from "react";
 import type { DocumentFields } from "../document-fields";
 import { companyAccountControlForForm } from "./BankAccountControls";
@@ -18,8 +19,8 @@ import type {
 export interface DocumentPaymentFieldsContext {
   /** Viditelná pole. */
   f: DocumentFields;
-  /** Texty formuláře. */
-  t: DocumentFormTexts;
+  /** Texty formuláře včetně DsTexts. */
+  t: DocumentFormTexts & DsTexts["documentForm"];
   /** Hlavička. */
   value: DocumentHeaderValue;
   /** Změna hlavičky. */
