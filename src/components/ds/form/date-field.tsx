@@ -138,8 +138,7 @@ export function DateField({
   const [invalid, setInvalid] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const warningId = React.useId();
-  const fieldError =
-    error ?? (invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined);
+  const fieldError = error ?? (invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined);
   const visibleIcons = 1 + (link && !link.locked ? 1 : 0) + (warning || fieldError ? 1 : 0);
   const inputStyle: React.CSSProperties & Record<"--date-field-icons", number> = {
     "--date-field-icons": visibleIcons,
@@ -157,6 +156,7 @@ export function DateField({
 
   /** Zpracuje ručně napsané datum ve formátu d.m.rrrr (i 1.1.90 nebo 01012000). */
   const commitText = () => {
+    console.info("FIELD commit", text, minDate, maxDate);
     const raw = text.trim();
     if (!raw) {
       setInvalid(false);
@@ -227,10 +227,9 @@ export function DateField({
             title={invalid ? dsTexts.date.invalidFormat(dateFormat.toLowerCase()) : undefined}
             onChange={(e) => {
               const next = e.target.value;
-              const masked =
-                baseDate && next.startsWith("+")
-                  ? next.replace(/[^+\d]/g, "")
-                  : maskDateInput(next, dateFormat, next.length < text.length);
+              const masked = baseDate && next.startsWith("+")
+                ? next.replace(/[^+\d]/g, "")
+                : maskDateInput(next, dateFormat, next.length < text.length);
               setText(masked);
               if (invalid) setInvalid(false);
               // Živý přepočet: jakmile je zapsané datum úplné a platné, ohlásíme ho hned
@@ -262,9 +261,7 @@ export function DateField({
               "min-w-[calc(7.5rem+var(--date-field-icons)*1.9rem)]",
               "pr-[calc(0.5em+var(--date-field-icons)*1.9em)]",
               link?.locked && "bg-muted/40",
-              fieldError
-                ? "border-destructive"
-                : warning && "border-warning ring-1 ring-warning/40",
+              fieldError ? "border-destructive" : warning && "border-warning ring-1 ring-warning/40",
               inputClassName,
             )}
           />
@@ -275,19 +272,19 @@ export function DateField({
           ) : null}
           {warning || fieldError ? (
             <DisabledReasonTooltip content={fieldError ?? warning} blocked>
-              <span
-                tabIndex={0}
-                aria-label={fieldError ?? warning}
-                className={cn(
-                  "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  fieldError ? "text-destructive" : "text-warning-strong",
-                  link && !link.locked
-                    ? "right-[calc(var(--document-date-icon-offset,0.3em)+2*var(--document-date-icon-step,1.8em))]"
-                    : "right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))]",
-                )}
-              >
-                <AlertTriangle className="size-[var(--document-date-icon-size,1.05em)]" />
-              </span>
+                <span
+                  tabIndex={0}
+                  aria-label={fieldError ?? warning}
+                  className={cn(
+                    "absolute top-1/2 z-10 -translate-y-1/2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    fieldError ? "text-destructive" : "text-warning-strong",
+                    link && !link.locked
+                      ? "right-[calc(var(--document-date-icon-offset,0.3em)+2*var(--document-date-icon-step,1.8em))]"
+                      : "right-[calc(var(--document-date-icon-offset,0.3em)+var(--document-date-icon-step,1.8em))]",
+                  )}
+                >
+                  <AlertTriangle className="size-[var(--document-date-icon-size,1.05em)]" />
+                </span>
             </DisabledReasonTooltip>
           ) : null}
           {link?.locked ? (
