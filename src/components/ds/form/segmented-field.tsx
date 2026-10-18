@@ -5,7 +5,6 @@ import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { Field } from "../layout/RecordDialog";
 import { FieldFeedbackIndicator, useFieldStatus } from "./field-feedback";
-import { useDsTexts } from "../../../ds-texts";
 
 export interface SegmentedFieldOption<Value extends string = string> {
   value: Value;
@@ -57,13 +56,12 @@ export function SegmentedField<Value extends string = string>({
   ...props
 }: SegmentedFieldProps<Value>) {
   const status = useFieldStatus({ error, warning });
-  const texts = useDsTexts();
   const group = (
     <div
       ref={ref}
       role="radiogroup"
       data-slot="segmented"
-      aria-label={ariaLabel ?? label ?? texts.journalEditor.vatDeduction}
+      aria-label={ariaLabel ?? label}
       className={cn(
         "inline-flex h-[var(--control-h)] w-fit overflow-hidden rounded-md border border-input bg-background",
         status.className,

@@ -9,7 +9,7 @@ test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", asy
   await expect(root).toBeVisible();
   const toggle = root.locator('[data-slot="journal-detail-toggle"]');
   await expect(async () => {
-    if (await toggle.getAttribute("aria-expanded") !== "true") await toggle.click();
+    if ((await toggle.getAttribute("aria-expanded")) !== "true") await toggle.click();
     await expect(toggle).toHaveAttribute("aria-expanded", "true", { timeout: 1000 });
   }).toPass();
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
@@ -76,18 +76,15 @@ test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", asy
         const input = root.locator('[data-cell-key="height-row:text"] input');
         await expect(input).toBeVisible();
         const editorHeight = await input.evaluate((node) => node.getBoundingClientRect().height);
-        console.log("MEASURE", app, grid, density, fields, cells, editorHeight, await input.evaluate(node => ({h:getComputedStyle(node).height,min:getComputedStyle(node).minHeight,line:getComputedStyle(node).lineHeight,font:getComputedStyle(node).fontSize,control:getComputedStyle(node).getPropertyValue("--control-h")})));
         expect(Math.abs(editorHeight - cells[0])).toBeLessThan(1);
         await input.press("Escape");
         results.push({ app, grid, density, fields, cellHeight: cells[0], editorHeight });
       }
     }
   }
-  await test
-    .info()
-    .attach("real-journal-heights.json", {
-      body: JSON.stringify(results, null, 2),
-      contentType: "application/json",
-    });
-  await page.screenshot({ path: "/tmp/browser/real-journal-verified.png" });
+  await test.info().attach("real-journal-heights.json", {
+    body: JSON.stringify(results, null, 2),
+    contentType: "application/json",
+  });
+  await root.screenshot({ path: "/tmp/browser/real-journal-verified.png" });
 });
