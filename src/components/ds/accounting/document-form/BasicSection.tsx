@@ -6,7 +6,6 @@
 import type { ReactNode } from "react";
 import { Input } from "../../../ui/input";
 import { counterpartyCreateSeed, type CounterpartySeed } from "../counterparty-field";
-import { PartnerSelect } from "../partner-select";
 import { CounterpartyInputField } from "../counterparty-input-field";
 import { IcoLink, type IcoLinkTarget } from "../../form/ico-link";
 import { SectionHeading } from "../../layout/section-heading";
@@ -67,7 +66,7 @@ export interface DocumentBasicSectionProps {
   counterpartyInputLockedReason?: string;
   /** Daňové číslo vedle Popisu. */
   taxNumberField?: ReactNode;
-  /** Interní doklad používá samotný PartnerSelect. */
+  /** Interní doklad (2.108.0: partner / ručně, IČO a DIČ jako u faktur, bez adresy). */
   internal?: boolean;
 }
 /** Vykreslí základní údaje dokladu. */
@@ -108,21 +107,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
           {field(
             "document-partner",
             partnerLabel,
-            p.internal ? (
-              <PartnerSelect
-                id="document-partner"
-                partners={partners}
-                value={value.partnerId}
-                onChange={(partnerId) => patch({ partnerId })}
-                disabled={!can("partnerId")}
-                onCreate={
-                  onCreatePartner
-                    ? (query) => onCreatePartner(counterpartyCreateSeed(query))
-                    : undefined
-                }
-                onEditSelected={onEditCounterparty}
-              />
-            ) : (
+            (
               <CounterpartyInputField
                 id="document-partner"
                 partners={partners}
@@ -161,7 +146,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
             false,
             "@min-[40rem]:pr-3",
           )}
-          {!p.internal
+          {true
             ? field(
                 "document-partner-ico",
                 t.ico,
@@ -205,7 +190,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                 !receivedDocument,
               )
             : null}
-          {!p.internal
+          {true
             ? field(
                 "document-partner-dic",
                 t.dic,

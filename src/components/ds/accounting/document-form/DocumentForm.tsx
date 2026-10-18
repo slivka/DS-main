@@ -201,6 +201,10 @@ export function DocumentForm({
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, settings, t.settings);
+  const effectiveFieldWarnings =
+    internal && counterpartyInput === "manual"
+      ? { ...fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
+      : fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
@@ -209,7 +213,7 @@ export function DocumentForm({
     dateWarnings,
     accountingDateLink: effectiveAccountingLink,
     fieldErrors,
-    fieldWarnings,
+    fieldWarnings: effectiveFieldWarnings,
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => {
         if (Boolean(prev[key]) === invalid) return prev;
@@ -262,7 +266,7 @@ export function DocumentForm({
     notices: combinedNotices,
     error,
     fieldErrors,
-    fieldWarnings,
+    fieldWarnings: effectiveFieldWarnings,
     taxDocumentNumberWarning,
     icoWarning,
     readOnly,
