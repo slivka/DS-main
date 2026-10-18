@@ -37,7 +37,9 @@ for (const width of [960, 360]) {
     await sum.click();
     const amount = form.getByRole("textbox", { name: "Zůstatek na výpise", exact: true });
     await expect(amount).toHaveValue(/12\s500,00/);
-    await amount.fill("12550");
+    await amount.click();
+    await page.keyboard.press("ControlOrMeta+A");
+    await page.keyboard.type("12550");
     await amount.blur();
     const notice = form.locator('[data-slot="bank-statement-difference-notice"]');
     await expect(notice).toContainText("Rozdíl proti pohybům 50,00 Kč");
