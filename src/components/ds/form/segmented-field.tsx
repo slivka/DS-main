@@ -6,21 +6,30 @@ import { cn } from "../../../lib/utils";
 import { Field } from "../layout/RecordDialog";
 import { FieldFeedbackIndicator, useFieldStatus } from "./field-feedback";
 
+/** Jedna pojmenovaná volba skupiny. */
 export interface SegmentedFieldOption<Value extends string = string> {
+  /** Stabilní hodnota. */
   value: Value;
+  /** Text volby. */
   label: React.ReactNode;
 }
 
+/** Vlastnosti segmentového pole. */
 export interface SegmentedFieldProps<Value extends string = string> extends Omit<
   React.ComponentPropsWithoutRef<"div">,
   "defaultValue" | "onChange"
 > {
+  /** Nabízené volby. */
   options: SegmentedFieldOption<Value>[];
+  /** Vybraná hodnota. */
   value: Value;
+  /** Změna vybrané hodnoty. */
   onChange: (value: Value) => void;
+  /** Zakázané ovládání. */
   disabled?: boolean;
   /** Volitelný viditelný popisek; bez něj použijte `ariaLabel`. */
   label?: string;
+  /** Přístupný název bez viditelného popisku. */
   ariaLabel?: string;
   /** Chyba pole; má přednost před varováním. */
   error?: string;
@@ -30,6 +39,7 @@ export interface SegmentedFieldProps<Value extends string = string> extends Omit
   ref?: React.Ref<HTMLDivElement>;
 }
 
+/** Další volba pro ovládání šipkami. */
 export function nextSegmentedFieldValue<Value extends string>(
   options: SegmentedFieldOption<Value>[],
   value: Value,
@@ -121,7 +131,9 @@ export function SegmentedField<Value extends string = string>({
     <Field
       label={
         <>
-          <span className={error ? "text-destructive" : ""}>{label}</span>
+          <span title={label} className={cn("min-w-0 truncate", error && "text-destructive")}>
+            {label}
+          </span>
           <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
         </>
       }

@@ -65,7 +65,7 @@
 ## Karta záznamu a jednotná pole (2.62.0)
 
 - `Field` je jediný obal pole na kartách i v `DocumentForm`: popisek má 12 px, polotučný řez a mezeru 4 px od ovládacího prvku. `hint` u Field, DateField, CheckboxField, SwitchField a FormDescription je od 2.107.0 ikona Info v řádku popisku s bublinou, nikdy text pod polem. Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí. Chyby a varování jsou uvnitř ovládání s tooltipem, nikdy pod polem, a patří také do pruhu formuláře. `FieldValue` používá stejné rozvržení.
-- `CheckboxField` drží čtvereček u prvního řádku zalomeného popisku; nápověda začíná pod textem. Platí pro `align="natural"` i `align="input"`.
+- `CheckboxField` má jednořádkový popisek s výpustkou a úplným textem v bublině; nápověda je Info v popisku. Platí pro `align="natural"` i `align="input"`.
 - `RecordActionBar` má `leftContent`, `saveAction`, `primaryAction`, `moreActions`, `busy`, `error` a `notices`. Uložení s `dirty={false}` je zakázané. `DocumentForm` jej používá interně.
 
 ```tsx

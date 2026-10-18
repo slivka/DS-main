@@ -38,7 +38,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             htmlFor={props.id}
             label={
               <>
-                <span className={error ? "text-destructive" : ""}>{label}</span>
+                <span title={label} className={cn("min-w-0 truncate", error && "text-destructive")}>
+                  {label}
+                </span>
                 <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
               </>
             }
