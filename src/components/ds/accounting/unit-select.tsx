@@ -83,11 +83,10 @@ export function UnitSelect({
       (!normalized ||
         formatCodeName(item.code, item.name).toLocaleLowerCase("cs").includes(normalized)),
   );
-  const canCreate = Boolean(
-    onCreateUnit &&
-    query.trim() &&
-    !options.some((item) => item.code.toLocaleLowerCase("cs") === normalized),
+  const duplicate = options.some((item) =>
+    [item.code, item.name].some((text) => text.trim().toLocaleLowerCase("cs") === normalized),
   );
+  const canCreate = Boolean(onCreateUnit && query.trim() && !duplicate);
 
   return (
     <div className="relative h-full min-w-0">
@@ -145,7 +144,11 @@ export function UnitSelect({
                     disabled={creating || !canCreate}
                     disabledReason={
                       createDisabledReason ??
-                      (!query.trim() ? dsTexts.selectCreate.emptyQuery : undefined)
+                      (!query.trim()
+                        ? dsTexts.selectCreate.emptyQuery
+                        : duplicate
+                          ? dsTexts.selectCreate.duplicate
+                          : undefined)
                     }
                     onCreate={() => {
                       if (!onCreateUnit) return;

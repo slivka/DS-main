@@ -22,6 +22,7 @@ export const DS_TEXTS_SK: DsTexts = {
     unit: "Nová merná jednotka",
     tag: "Nový štítok",
     emptyQuery: "Najprv napíšte hľadaný text",
+    duplicate: "Záznam s týmto názvom alebo kódom už existuje",
   },
   dateQuick: { sevenDays: "+7 dní", fourteenDays: "+14 dní", oneMonth: "+1 mesiac" },
   documentEdit: {

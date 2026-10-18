@@ -1,3 +1,7 @@
+## Poslední dorovnání 2.105.0 (nevydáno)
+
+- [x] Sjednocen Výdaj; ochrana datumů readOnly/posted/locked/cancelled, reset DUZP při value.id; migrace a hint dorovnány; ContactSelect zkrácení s title; duplicitní přidání CS/SK s důvodem. Unit 681/681; lint 0 chyb / 297 varování; Chromium document-controls 11/11 + edit-document-thirteen 10/10. Katalog 432 komponent / 814 props, původních 432 názvů a 813 props zachováno; CounterpartyField.createDisabledReason doplněn. Verze 2.104.0 / CHANGELOG 2.105.0, nic nevydáno.
+
 ## Edit dokladu 14 – opravné kolo po kontrole (2.105.0, nevydáno)
 
 - [x] 1 S9: vazby dat zapisují odvozené hodnoty přes onChange; reset při změně value.id; test.
@@ -7,7 +11,7 @@
 - [x] 4 S6: ＋ v hledání u CounterpartyField a TagPicker; UnitSelect důvod; typy (searchText).
 - [x] 5 S7: popover protistrany ds-select-popover; CategorySelect rem; ContactSelect jednořádkově.
 - [x] 6 Texty protiúčtu, TaxDocumentNumberField odsazení, protiúčet pohybu dle editableFields.
-- [x] 7 „Výdej“ v e2e, system.md, katalogu a komentáři.
+- [x] 7 „Výdaj“ v e2e, system.md, katalogu a komentáři.
 - [x] 8 Počet kopií StepperInput; víceciferné psaní.
 - [x] 9 Katalog: obnovit plné popisy proti 9fa377ff, výčty, upstream_package; ověření programem.
 - (odloženo) Plán DS 2.105.0 jednotná výška a chyby bez změny výšky – čeká na schválení.
@@ -805,7 +809,7 @@
 ## Verze 2.7.0 (DocumentForm pro skutečné doklady + PaymentScheduleEditor)
 - [x] DocumentForm: nová hlavička, pole jen ke čtení, fields / documentFieldsForType, editableFields, hlavní účet, režim částky, linesEditorProps, tabs
 - [x] PaymentScheduleEditor + generatePaymentSchedule s unit testy
-- [x] Ukázky: FP s kalendářem, zaúčtovaná FP, pokladna výdej, interní doklad
+- [x] Ukázky: FP s kalendářem, zaúčtovaná FP, pokladna výdaj, interní doklad
 - [x] Verze 2.7.0, changelog s přechodem, design-system.json
 
 ## Verze 2.6.1 (decentní stav menu a pořadí akcí gridu)

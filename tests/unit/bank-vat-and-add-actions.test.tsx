@@ -47,6 +47,27 @@ function ba(extra: Record<string, unknown> = {}) {
 test("BA preset obsahuje DUZP", () => {
   expect(documentFieldsForType("BA").taxDate).toBe(true);
 });
+for (const status of ["posted", "locked", "cancelled"] as const) {
+  test(`DocumentForm ${status} při otevření nezapisuje navázaná data`, () => {
+    const changes: DocumentHeaderValue[] = [];
+    render(
+      <DocumentForm
+        homeCurrency="EUR"
+        homeCurrencySymbol="€"
+        title="Doklad"
+        documentType="FP"
+        value={{ ...value, id: status, accountingDate: "2026-10-03" }}
+        onChange={(next) => changes.push(next)}
+        lines={[]}
+        onLinesChange={() => {}}
+        books={[]}
+        accounts={[]}
+        status={status}
+      />,
+    );
+    expect(changes).toEqual([]);
+  });
+}
 test("BA bez DPH nemá DUZP ani Datum DPH", () => {
   const view = ba();
   expect(view.queryByText("DUZP")).toBeNull();
@@ -63,12 +84,12 @@ test("BA s DPH má DUZP, Datum DPH a při jiném DUZP Kurz DPH", () => {
 });
 const actions = (log: string[]) => [
   { label: "Nový příjem", shortLabel: "Příjem", onClick: () => log.push("in") },
-  { label: "Nový výdej", shortLabel: "Výdej", onClick: () => log.push("out") },
+  { label: "Nový výdaj", shortLabel: "Výdaj", onClick: () => log.push("out") },
 ];
 test("GridAddActions dvě akce mají plný i zkrácený text", () => {
   const view = render(<GridAddActions actions={actions([])} />);
   expect(view.getByText("Nový příjem")).toBeTruthy();
-  expect(view.getByText("Výdej")).toBeTruthy();
+  expect(view.getByText("Výdaj")).toBeTruthy();
   expect(view.queryByRole("button", { name: "Nový – vyberte druh" })).toBeNull();
 });
 test("GridAddActions v úrovni 3 slučuje akce do menu tlačítka", () => {

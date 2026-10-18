@@ -1,4 +1,4 @@
-/** Vazby datumů · vlastní paměť ručního DUZP · nesmí synchronizovat props efektem. */
+/** Vazby datumů · vlastní paměť ručního DUZP a úvodní zápis vazeb přes efekt · nesmí měnit doklad jen pro čtení. */
 import { useEffect, useRef, useState } from "react";
 import { applyDocumentDateLinks } from "./document-date-linking";
 import type { DocumentAccountingDateLink, DocumentHeaderValue } from "./document-form-types";
@@ -11,6 +11,8 @@ export interface DocumentDateLinksArgs {
   value: DocumentHeaderValue;
   /** Změna hlavičky. */
   onChange: (next: DocumentHeaderValue) => void;
+  /** Doklad jen pro čtení se při otevření ani změně vazby nezapisuje. */
+  readOnly?: boolean;
   /** Existující řízená vazba má přednost. */
   accountingDateLink?: DocumentAccountingDateLink;
   /** Povolit výchozí vazbu. */
@@ -36,22 +38,38 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
     edited.current = manualTaxDate(a.value);
   }
   const patch = (next: Partial<DocumentHeaderValue>) => {
+    if (a.readOnly) return;
     if (next.taxDate !== undefined) edited.current = true;
     a.onChange(applyDocumentDateLinks(a.value, next, locked, received && !edited.current));
   };
-  const effectiveValue = {
-    ...a.value,
-    accountingDate: locked ? a.value.issueDate : a.value.accountingDate,
-    taxDate: received && !edited.current ? a.value.issueDate || a.value.taxDate : a.value.taxDate,
-  };
+  const effectiveValue = a.readOnly
+    ? a.value
+    : {
+        ...a.value,
+        accountingDate: locked ? a.value.issueDate : a.value.accountingDate,
+        taxDate:
+          received && !edited.current ? a.value.issueDate || a.value.taxDate : a.value.taxDate,
+      };
   const taxLinked = received && !edited.current;
-  const latest = useRef({ value: a.value, onChange: a.onChange, locked, taxLinked });
-  latest.current = { value: a.value, onChange: a.onChange, locked, taxLinked };
+  const latest = useRef({
+    value: a.value,
+    onChange: a.onChange,
+    locked,
+    taxLinked,
+    readOnly: a.readOnly,
+  });
+  latest.current = {
+    value: a.value,
+    onChange: a.onChange,
+    locked,
+    taxLinked,
+    readOnly: a.readOnly,
+  };
   // Synchronizace s rodičem jednou při otevření dokladu: zobrazené = uložené.
   // Změny vystavení zapisuje přímo patch, efekt proto závisí jen na id dokladu.
   useEffect(() => {
-    const { value, onChange, locked: l, taxLinked: tl } = latest.current;
-    if (!value.issueDate) return;
+    const { value, onChange, locked: l, taxLinked: tl, readOnly } = latest.current;
+    if (readOnly || !value.issueDate) return;
     const next = { ...value };
     if (l && value.accountingDate !== value.issueDate) next.accountingDate = value.issueDate;
     if (tl && value.taxDate !== value.issueDate) next.taxDate = value.issueDate;

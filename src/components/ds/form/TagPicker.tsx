@@ -51,11 +51,8 @@ export function TagPicker({
 
   const selected = tags.filter((t) => value.includes(t.id));
   const filtered = tags.filter((t) => t.name.toLowerCase().includes(query.trim().toLowerCase()));
-  const canCreate = Boolean(
-    onCreate &&
-    query.trim() &&
-    !tags.some((t) => t.name.toLowerCase() === query.trim().toLowerCase()),
-  );
+  const duplicate = tags.some((t) => t.name.trim().toLowerCase() === query.trim().toLowerCase());
+  const canCreate = Boolean(onCreate && query.trim() && !duplicate);
 
   const toggle = (id: string) =>
     onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
@@ -91,7 +88,12 @@ export function TagPicker({
                 label={createLabel ?? ds.selectCreate.tag}
                 disabled={!canCreate}
                 disabledReason={
-                  createDisabledReason ?? (!query.trim() ? ds.selectCreate.emptyQuery : undefined)
+                  createDisabledReason ??
+                  (!query.trim()
+                    ? ds.selectCreate.emptyQuery
+                    : duplicate
+                      ? ds.selectCreate.duplicate
+                      : undefined)
                 }
                 onCreate={async () => {
                   await onCreate(query.trim());

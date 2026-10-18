@@ -23,3 +23,5 @@
 - Keep document-form translations in per-language modules consumed by DsTexts. Why: the central catalogs remain readable and below the source line limit.
 - Compute recap home totals inside the DS from document totals and rates; DocumentForm supplies its derived total. Why: applications must not duplicate conversion logic.
 - Compose document sections separately and apply date links through a focused hook and pure helper. Why: orchestration stays readable and date logic is testable.
+
+- Gate document-date initialization writes with effective read-only state, including final statuses. Why: opening a finalized document must never mark it dirty.

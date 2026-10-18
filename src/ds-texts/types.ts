@@ -36,6 +36,8 @@ export interface DsTexts {
     tag: string;
     /** Důvod zašedlého ＋ při prázdném hledání. */
     emptyQuery: string;
+    /** Důvod zašedlého ＋ při shodném názvu nebo kódu. */
+    duplicate: string;
   };
   /** Rychlé termíny splatnosti. */
   dateQuick: { sevenDays: string; fourteenDays: string; oneMonth: string };

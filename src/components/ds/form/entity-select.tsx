@@ -254,7 +254,12 @@ export function ContactSelect({
                       className="flex items-center gap-2 whitespace-nowrap"
                       title={[formatContactName(c), ...details].join(" · ")}
                     >
-                      <span className="shrink-0 font-medium">{formatContactName(c)}</span>
+                      <span
+                        className="min-w-0 truncate font-medium"
+                        title={formatContactName(c) ?? undefined}
+                      >
+                        {formatContactName(c)}
+                      </span>
                       {details.length ? (
                         <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
                           {details.join(" · ")}
