@@ -24,6 +24,14 @@ export const Route = createFileRoute("/guidelines")({
 
 const RULES: { title: string; items: string[] }[] = [
   {
+    title: "Pole formuláře",
+    items: [
+      "Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.",
+      "Chyba a varování jsou rámeček a ikona uvnitř pole s bublinou; celé zprávy jsou v pruhu nad formulářem s odkazy na pole.",
+      "Nápověda je ikona Info v řádku popisku; vzor formátu je uvnitř pole, vysvětlení sekce pod sekcí.",
+    ],
+  },
+  {
     title: "Čísla a data",
     items: [
       "Tisíce se oddělují mezerou – v editacích, mřížkách, tiscích i exportech.",

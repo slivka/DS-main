@@ -1,6 +1,44 @@
 # Changelog – Slivka Design System
 
-## 2.105.0 – Edit dokladu 14 (nevydáno)
+## 2.107.0 (nevydáno)
+
+Pravidlo: Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani
+zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí.
+
+- Výška: jediný zdroj `--control-h`; detail řádku mřížky nastaví lokálně `--control-h: 2.25em`
+  místo přepisu `!important`. SegmentedField, Toggle, UnitSelect (i mimo mřížku, stejné
+  zaoblení), DateRangeField, SS, číslo dodavatele, daňové číslo a adresa bez pevných h-9/h-8.
+- Stav pole: `useFieldStatus`, `FieldStatusIndicator` (alias `FieldFeedbackIndicator` zůstává),
+  ikona vlevo u čísel, `placement="label"` pro zaškrtávátka a přepínače, `extraInfo` pro jednu
+  společnou bublinu (RateField, FieldToggleButton).
+- Detail řádku dokladu: chyba i varování u všech polí podle sloupce, popisek nahoře a prvek
+  pod ním, nic dalšího; buňky mřížky mají línou bublinu místo `title`.
+- Nápověda: `Field.hint`, `CheckboxField.hint`, `SwitchField.hint`, `DateField.hint`
+  a `FormDescription` jsou ikona Info v řádku popisku; `FormMessage` je ikona s bublinou.
+- Souhrn chyb: `FieldErrorSummary` (max 5 + „a další N“), klik fokusuje pole i v řádku mřížky.
+- A9: `JournalLinesEditor.onCreateDimension` v buňce i detailu řádku; interní doklad nabízí
+  u partnera ＋ Nový partner a tužku.
+
+### Breaking / migrace pro aplikace
+
+- `hint` se už nekreslí pod polem, ale jako ikona Info v popisku; dlouhé texty přesuňte do
+  `FieldGrid.hint`. `FormDescription`/`FormMessage` vrací `span` s ikonou místo `p`.
+- `DateField.warningDisplay` je deprecated a bez účinku (odstraní se ve 3.0.0); `DateField.hint`
+  bez obalu `Field` je jen přístupný text – nápovědu dejte do `Field.hint`.
+- `BankAccountField`: ruční vstup už není pod výběrem. Nové `entryMode: "selected" | "manual"`,
+  `onEntryModeChange`, `manualFormatPattern`; přepínač je uvnitř pole.
+- `RecordActionBar.error.fieldErrors`, `DocumentForm.error.fieldErrors`, `RecordDialog.fieldErrors`:
+  pole `{ fieldId, label, message, rowId?, columnId? }`.
+- `JournalLinesEditor.onValidationChange`: položky navíc `fieldId`, `rowId`, `columnId`.
+- `Button size="control"` pro tlačítka v řádku polí; ostatní velikosti beze změny.
+- `onCreateDimension?: (searchText: string) => void` v `JournalLinesEditor`.
+- Nové klíče DsTexts: `recordAction.moreErrors`, `documentForm.bankAccountManualToggle`,
+  `bankAccountManualOn`, `bankAccountManualOff`, `bankAccountFormatPattern` (CS i SK).
+- Popisky zaškrtávátek a přepínačů jsou jednořádkové a zkrácené s … (celý text v `title`).
+
+## 2.106.0 – vydáno (dorovnání verze po 2.105.0, bez dalších změn)
+
+## 2.105.0 – Edit dokladu 14 (vydáno)
 
 - S1: chyby a varování jako rámeček a výstraha uvnitř pole před akcemi, celé zprávy
   také v pruhu formuláře. Bez textu výstrah pod polem, výška se nemění.
