@@ -91,4 +91,10 @@ export * from "@tanstack/react-query";
 export * as LucideIcons from "lucide-react";
 export type { LucideIcon, LucideProps } from "lucide-react";
 
-export { SearchableOptionSelect, type SearchableOptionSelectProps } from "./components/ds/form/searchable-option-select";
+export {
+  SearchableOptionSelect,
+  type SearchableOptionSelectProps,
+} from "./components/ds/form/searchable-option-select";
+
+export * from "./components/ds/feedback/field-error-summary";
+export * from "./components/ds/grid/cell-status-tooltip";

@@ -3,7 +3,6 @@
  * Řádek všech typů polí ve stavech ok / varování / chyba / nápověda, ve formuláři
  * i v detailu řádku mřížky, s přepínačem zoomu mřížky a hustoty.
  */
-import type * as React from "react";
 import { useState, type ReactNode } from "react";
 import { Field } from "@/components/ds/layout/form-field-layout";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,7 @@ import { SegmentedField } from "@/components/ds/form/segmented-field";
 import { CheckboxField } from "@/components/ds/form/checkbox-field";
 import { UnitSelect } from "@/components/ds/accounting/unit-select";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { JournalHeightShowcase } from "./journal-height-showcase";
 
 type State = "ok" | "warning" | "error" | "hint";
 const STATES: State[] = ["ok", "warning", "error", "hint"];
@@ -54,7 +54,11 @@ function FieldRow({ state, prefix }: { state: State; prefix: string }) {
     </div>
   );
   return (
-    <div data-slot="field-status-row" data-state={state} className="flex flex-wrap items-start gap-3">
+    <div
+      data-slot="field-status-row"
+      data-state={state}
+      className="flex flex-wrap items-start gap-3"
+    >
       {cell("text", "Text", <Input id={id("text")} defaultValue="Popis" />)}
       {cell("amount", "Částka", <DecimalInput value={amount} onChange={setAmount} decimals={2} />)}
       {cell(
@@ -62,7 +66,12 @@ function FieldRow({ state, prefix }: { state: State; prefix: string }) {
         "Druh",
         <OptionSelect id={id("select")} value={kind} onChange={setKind} options={OPTIONS} />,
       )}
-      {cell("date", "Datum", <DateField id={id("date")} value={date} onChange={setDate} />, "w-max")}
+      {cell(
+        "date",
+        "Datum",
+        <DateField id={id("date")} value={date} onChange={setDate} />,
+        "w-max",
+      )}
       {cell(
         "unit",
         "MJ",
@@ -137,17 +146,13 @@ export function FieldStatusShowcase() {
           data-slot="field-status-grid"
           data-density={density}
           className="journal-line-detail-grid space-y-4 rounded-md bg-muted/30 p-3"
-          style={
-            {
-              fontSize: `${(zoom / 100) * (density === "compact" ? 0.875 : 1)}rem`,
-              "--control-h": `${2.25 * (zoom / 100) * (density === "compact" ? 0.875 : 1)}rem`,
-            } as React.CSSProperties
-          }
+          style={{ fontSize: `${(zoom / 100) * (density === "compact" ? 0.875 : 1)}rem` }}
         >
           {STATES.map((state) => (
             <FieldRow key={state} state={state} prefix="grid" />
           ))}
         </section>
+        <JournalHeightShowcase />
       </div>
     </TooltipProvider>
   );

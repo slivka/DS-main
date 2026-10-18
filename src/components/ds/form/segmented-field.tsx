@@ -1,8 +1,11 @@
+/** Segmentová volba · vlastní výběr a stav pole · nesmí měnit výšku při chybě. */
 import * as React from "react";
 
 import { Button } from "../../ui/button";
 import { cn } from "../../../lib/utils";
 import { Field } from "../layout/RecordDialog";
+import { FieldFeedbackIndicator, useFieldStatus } from "./field-feedback";
+import { useDsTexts } from "../../../ds-texts";
 
 export interface SegmentedFieldOption<Value extends string = string> {
   value: Value;
@@ -20,6 +23,12 @@ export interface SegmentedFieldProps<Value extends string = string> extends Omit
   /** Volitelný viditelný popisek; bez něj použijte `ariaLabel`. */
   label?: string;
   ariaLabel?: string;
+  /** Chyba pole; má přednost před varováním. */
+  error?: string;
+  /** Varování bez změny výšky. */
+  warning?: string;
+  /** Ref na skupinu voleb. */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 export function nextSegmentedFieldValue<Value extends string>(
@@ -42,19 +51,30 @@ export function SegmentedField<Value extends string = string>({
   label,
   ariaLabel,
   className,
+  error,
+  warning,
+  ref,
   ...props
 }: SegmentedFieldProps<Value>) {
+  const status = useFieldStatus({ error, warning });
+  const texts = useDsTexts();
   const group = (
     <div
+      ref={ref}
       role="radiogroup"
       data-slot="segmented"
-      aria-label={ariaLabel ?? label ?? "Výběr typu"}
+      aria-label={ariaLabel ?? label ?? texts.journalEditor.vatDeduction}
       className={cn(
         "inline-flex h-[var(--control-h)] w-fit overflow-hidden rounded-md border border-input bg-background",
+        status.className,
         className,
       )}
       {...props}
+      {...status.controlProps}
     >
+      <span id={status.describedById} className="sr-only">
+        {status.message}
+      </span>
       {options.map((option, index) => (
         <Button
           key={option.value}
@@ -99,5 +119,18 @@ export function SegmentedField<Value extends string = string>({
     </div>
   );
 
-  return label ? <Field label={label}>{group}</Field> : group;
+  return label ? (
+    <Field
+      label={
+        <>
+          <span className={error ? "text-destructive" : ""}>{label}</span>
+          <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
+        </>
+      }
+    >
+      {group}
+    </Field>
+  ) : (
+    group
+  );
 }

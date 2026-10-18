@@ -48,6 +48,7 @@ function DetailField({
   numeric,
   fieldKey,
   children,
+  labelFeedback,
 }: {
   /** Klíč `rowId:columnId` pro fokus ze souhrnu chyb. */
   fieldKey?: string;
@@ -57,6 +58,8 @@ function DetailField({
   warning?: string;
   numeric?: boolean;
   children: React.ReactNode;
+  /** Stav prvku bez místa uvnitř patří k popisku. */
+  labelFeedback?: boolean;
 }) {
   const status = useFieldStatus({ error, warning });
   return (
@@ -65,15 +68,20 @@ function DetailField({
       data-slot="journal-detail-field"
       data-journal-field={fieldKey}
     >
-      <Label
-        title={label}
-        className={cn(
-          "min-w-0 truncate whitespace-nowrap text-xs",
-          error ? "text-destructive" : "text-muted-foreground",
-        )}
-      >
-        {label}
-      </Label>
+      <span className="flex min-w-0 items-center gap-1">
+        <Label
+          title={label}
+          className={cn(
+            "min-w-0 truncate whitespace-nowrap text-xs",
+            error ? "text-destructive" : "text-muted-foreground",
+          )}
+        >
+          {label}
+        </Label>
+        {labelFeedback ? (
+          <FieldFeedbackIndicator error={error} warning={warning} placement="label" />
+        ) : null}
+      </span>
       <FieldFeedbackContext.Provider value={{}}>
         <div
           data-feedback={status.tone}
@@ -95,12 +103,14 @@ function DetailField({
           )}
         >
           {children}
-          <FieldFeedbackIndicator
-            error={error}
-            warning={warning}
-            side={numeric ? "start" : "end"}
-            id={status.describedById}
-          />
+          {!labelFeedback ? (
+            <FieldFeedbackIndicator
+              error={error}
+              warning={warning}
+              side={numeric ? "start" : "end"}
+              id={status.describedById}
+            />
+          ) : null}
         </div>
       </FieldFeedbackContext.Provider>
     </div>
@@ -155,9 +165,17 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
         </DetailField>
       ) : null}
       {inbound ? (
-        <DetailField label={t.vatDeduction} width="flex-none w-max" warning={warnings.vatCodeId}>
+        <DetailField
+          label={t.vatDeduction}
+          width="flex-none w-max"
+          labelFeedback
+          warning={warnings.vatCodeId}
+          error={errors.vatDeduction}
+        >
           <SegmentedField
             ariaLabel={t.vatDeduction}
+            error={errors.vatDeduction}
+            warning={warnings.vatCodeId}
             disabled={readOnly}
             options={[
               { value: "full", label: t.deductionFull },

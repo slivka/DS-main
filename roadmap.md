@@ -942,6 +942,11 @@
 
 ## 2.107.0 – jednotná výška a stav polí (nevydáno)
 
+- [ ] Dokončit skutečné měření buněk a detailu dokladu bez inline výšky.
+- [ ] Vlastní error/warning pro SegmentedField, ToggleGroup a Textarea; test zakázky v buňce.
+- [ ] Aditivně doplnit katalog a porovnat čtyři soubory s 8a53e95.
+- [ ] Všechny unit, Chromium výšky a starší document-controls / edit-document-thirteen, lint.
+
 - [x] Verze 2.106.0 (package.json, meta.version), CHANGELOG 2.105.0 vydáno, 2.106.0 záznam, 2.107.0
 - [x] Pravidlo výšky do system.md, components.md, AGENTS.md, stránky Pravidla
 - [x] --control-h jako jediný zdroj výšky, Button size="control", Toggle, detail řádku

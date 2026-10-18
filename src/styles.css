@@ -692,6 +692,9 @@
   border-left: 0.45em solid transparent;
   content: "";
 }
+.journal-cell-editor {
+  height: var(--control-h);
+}
 .journal-cell-editor,
 .journal-cell-editor :is(button, input, [role="combobox"]) {
   width: 100%;
@@ -1222,9 +1225,9 @@
   :is(th, td)
   :is(button, a, [data-slot="badge"], .badge):not([role="checkbox"]):not([role="switch"]):not(
     [data-grid-cta]
-  ):not([data-slot="grid-action"]):not([data-slot="segmented"] *):not(
-    .journal-line-detail-grid *
-  ) {
+  ):not([data-slot="grid-action"]):not(.journal-cell-editor):not(.journal-cell-editor *):not(
+    [data-slot="segmented"] *
+  ):not(.journal-line-detail-grid *) {
   height: auto !important;
   min-height: 0 !important;
   line-height: 1.2 !important;
@@ -1257,18 +1260,21 @@
   padding: 0 !important;
 }
 
-/* Detail řádku a mřížka: jediný zdroj výšky je lokální --control-h v em,
-   takže se všechny prvky řádku mění se zoomem mřížky stejně. */
-/* Registrovaná vlastnost: em se přepočítá na prvku, který ji nastaví, takže všechny prvky
-   řádku (i s menším písmem) mají stejnou výšku. */
+/* Registrovaná délka se vyhodnotí na kontejneru. initial-value musí být nezávislá
+   na písmu; rem registraci zneplatní. Formulářovou výšku dál určuje :root. */
 @property --control-h {
   syntax: "<length>";
   inherits: true;
-  initial-value: 2.25rem;
+  initial-value: 36px;
 }
 
-.journal-line-detail-grid {
+.journal-line-detail-grid,
+.zoom-grid.journal-lines-grid .journal-grid-cell {
   --control-h: 2.25em;
+}
+
+.zoom-grid.journal-lines-grid .journal-grid-cell {
+  height: var(--control-h);
 }
 
 /* Vstupy i výběry v detailu berou výšku z --control-h; zdvojená třída přebíjí
@@ -1793,7 +1799,7 @@
 }
 
 /* Vstupy uvnitř buněk (inline editace) škálují se zoomem. */
-.zoom-grid :is(tbody, tfoot) :is(th, td) input {
+.zoom-grid:not(.journal-lines-grid) :is(tbody, tfoot) :is(th, td) input {
   height: calc(var(--grid-line) + 0.5em) !important;
   padding: 0 0.35em !important;
   font-size: 1em !important;
