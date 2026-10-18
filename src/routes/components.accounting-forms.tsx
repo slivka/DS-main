@@ -6,6 +6,7 @@ import { ReportsShowcase } from "@/components/showcase/ReportsShowcase";
 import { AccountingFieldsShowcase } from "@/components/showcase/AccountingFieldsShowcase";
 import { DocumentDatesShowcase } from "@/components/showcase/DocumentDatesShowcase";
 import { BankStatementShowcase } from "@/components/showcase/BankStatementShowcase";
+import { LiveIssuesShowcase } from "@/components/showcase/LiveIssuesShowcase";
 import { DocumentControlsShowcase } from "@/components/showcase/DocumentControlsShowcase";
 import { BankVatShowcase } from "@/components/showcase/BankVatShowcase";
 import { FormDesignTwoShowcase } from "@/components/showcase/FormDesignTwoShowcase";
@@ -238,6 +239,7 @@ function AccountingFormsPage() {
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Účetní formuláře" }]}>
       <DocumentControlsShowcase />
+      <LiveIssuesShowcase />
       <BankStatementShowcase />
       <BankVatShowcase />
       <FormDesignShowcase />

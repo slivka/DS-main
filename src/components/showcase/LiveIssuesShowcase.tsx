@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { DocumentForm, type DocumentHeaderValue, type FormIssue } from "../ds";
 import { Button } from "../ui/button";
-import { ShowcaseSection } from "./ShowcaseSection";
+import { ShowcaseSection } from "./ShowcaseLayout";
 
 const SERVER: FormIssue[] = [
   {
