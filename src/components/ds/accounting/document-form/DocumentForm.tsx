@@ -440,7 +440,13 @@ export function DocumentForm(props: DocumentFormProps) {
             }
             bank={
               bankMovement
-                ? { value, patch, props.bankCodes, props.bankCodeOptions, disabled: !can("bankAccount") }
+                ? {
+                    value,
+                    patch,
+                    bankCodes: props.bankCodes,
+                    bankCodeOptions: props.bankCodeOptions,
+                    disabled: !can("bankAccount"),
+                  }
                 : undefined
             }
             payment={{
