@@ -10,6 +10,7 @@ import { Pencil, ReceiptText } from "lucide-react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
+import { useCellStatusTooltip } from "../grid/cell-status-tooltip";
 import { JournalCellEditor } from "./JournalCellEditor";
 import { journalAccountColumnLabel } from "./journal-columns";
 import { useJournalEditor } from "./journal-editor-context";
@@ -108,6 +109,13 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
   const errorMessage = editor.validations.get(line.id)?.[validationColumn];
   const warningMessage = editor.vatWarnings.get(line.id)?.[validationColumn];
   const rowEditing = editing?.rowId === line.id;
+  const hint = accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
+  // Bublina chyby vzniká líně až při hover/focus; původní informace jde do téže bubliny.
+  const status = useCellStatusTooltip({
+    error: errorMessage,
+    warning: warningMessage,
+    extraInfo: hint,
+  });
   const node = (
     <div
       tabIndex={canEdit ? 0 : -1}
@@ -116,12 +124,15 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       aria-label={`${columnLabel} ${rowIndex + 1}`}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
-      title={errorMessage ?? warningMessage}
+      {...status.triggerProps}
       className={cn(
         "journal-grid-cell flex min-h-[1.8em] items-center truncate rounded-sm px-1 outline-none",
         canEdit && "cursor-cell",
       )}
-      onFocus={() => editor.setActive({ rowId: line.id, column })}
+      onFocus={(event) => {
+        status.triggerProps.onFocus?.(event);
+        editor.setActive({ rowId: line.id, column });
+      }}
       onClick={() => canEdit && !editing && editor.startEditing(line, column)}
       onDoubleClick={() => canEdit && editor.startEditing(line, column)}
       onKeyDown={(event) =>
@@ -152,7 +163,13 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       ) : null}
     </div>
   );
-  const hint = accountTitle ?? (calculated ? t.quantityPriceHint : undefined);
+  if (status.active)
+    return (
+      <>
+        {node}
+        {status.tooltip}
+      </>
+    );
   if (!hint) return node;
   return (
     <Tooltip>
