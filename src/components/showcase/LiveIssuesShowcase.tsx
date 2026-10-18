@@ -71,7 +71,7 @@ export function LiveIssuesShowcase() {
           issues={issues}
           validationActive
           saveFailed
-          onFieldChange={(fieldId) => console.info("FIELD", fieldId) ||
+          onFieldChange={(fieldId) =>
             setIssues((all) => all.filter((issue) => issue.fieldId !== fieldId))
           }
         />
