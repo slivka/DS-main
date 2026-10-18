@@ -386,7 +386,7 @@ Formulář bankovního výpisu: Uložit je společná primární akce RecordActi
 |---|---|---|
 | `value` | any | `—` |
 | `onChange` | function | `—` |
-| `status` | enum | `—` |
+| `status` | open · checked · posted | `—` |
 | `book` | any | `—` |
 | `currency` | string | `—` |
 | `currencySymbol` | string | `—` |
@@ -1496,7 +1496,7 @@ Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpř�
 | `link` | any | `—` |
 | `hint` | string | `—` |
 | `warning` | string | `—` |
-| `warningDisplay` | enum | `indicator` |
+| `warningDisplay` | below · indicator | `indicator` |
 | `baseDate` | string | `—` |
 | `quickOptions` | Array<{ label: string; compute: (base: string) => string }> | `—` |
 | `error` | string | `—` |
@@ -2070,7 +2070,7 @@ Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek,
 | `labelId` | string | `—` |
 | `hint` | any | `—` |
 | `error` | any | `—` |
-| `span` | enum | `—` |
+| `span` | 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 19 · 20 | `—` |
 | `className` | string | `—` |
 | `children` | any | `—` |
 | `warning` | ReactNode | `—` |
@@ -5420,7 +5420,7 @@ import { StepperInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 | `min` | number | `0` |
 | `max` | number | `Number.MAX_SAFE_INTEGER` |
 | `step` | number | `1` |
-| `size` | enum | `default` |
+| `size` | default · compact | `default` |
 | `className` | string | `—` |
 | `disabled` | boolean | `—` |
 | `readOnly` | boolean | `—` |
