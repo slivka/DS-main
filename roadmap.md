@@ -939,3 +939,20 @@
 - [x] 13g: BA DUZP, dvě primární akce lišty (zkrácení, nabídka), verze 2.101.0 pro Release
 
 - [x] 13h: dostupná šířka primárních akcí, texty, katalogy; unit 650/650, E2E 9/9 ve třech prohlížečích jedním během, lint 0 chyb / 292 varování. Katalog 429 → 429, manifest 523 → 503 (21 vyloučených ukázek, 1 doplněný test); verze 2.101.0, bez Release.
+
+## 2.107.0 – jednotná výška a stav polí (nevydáno)
+
+- [x] Verze 2.106.0 (package.json, meta.version), CHANGELOG 2.105.0 vydáno, 2.106.0 záznam, 2.107.0
+- [x] Pravidlo výšky do system.md, components.md, AGENTS.md, stránky Pravidla
+- [x] --control-h jako jediný zdroj výšky, Button size="control", Toggle, detail řádku
+- [x] useFieldStatus / FieldStatusIndicator / FieldHintIcon; hint jako ikona
+- [x] Jedna bublina u polí s vlastní bublinou (RateField, FieldToggleButton) + test
+- [x] Líná bublina buněk mřížky + test, že bez chyby nevzniká
+- [x] FieldErrorSummary v RecordActionBar / DocumentForm / RecordDialog, fokus i v detailu řádku
+- [x] JournalRowDetail: chyba a varování u všech polí
+- [x] BankAccountField.entryMode
+- [x] A9: onCreateDimension, ID partner ＋ a tužka
+- [x] received-bank-account-field: ověřit, že pod poli není zpráva
+- [x] Ukázka „Chyby a varování v polích“ + test „nic pod prvkem“ nad všemi poli
+- [x] Chromium E2E výšek (zoom aplikace 70/90/100/125/200 %, mřížky 60/100/140 %)
+- [x] Katalogy beze ztrát
