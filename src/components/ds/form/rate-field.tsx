@@ -175,11 +175,26 @@ export const RateField = forwardRef<HTMLDivElement, RateFieldProps>(function Rat
                 ) : null}
               </div>
             </TooltipTrigger>
-            {sourceOpen && !updateOpen ? <TooltipContent>{sourceText}</TooltipContent> : null}
+            {sourceOpen && !updateOpen ? (
+              <TooltipContent data-slot="rate-source-tooltip">
+                {/* Jedna bublina: nahoře zpráva pole, pod ní původní informace o zdroji. */}
+                {error || warning ? (
+                  <span className="flex flex-col gap-1">
+                    <span>{error || warning}</span>
+                    <span data-slot="field-feedback-extra" className="opacity-80">
+                      {sourceText}
+                    </span>
+                  </span>
+                ) : (
+                  sourceText
+                )}
+              </TooltipContent>
+            ) : null}
           </Tooltip>
           <FieldFeedbackIndicator
             error={error}
             warning={warning}
+            extraInfo={sourceText}
             className={differs ? "right-10" : undefined}
           />
           {!readOnly && differs ? (

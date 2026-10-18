@@ -8,6 +8,7 @@ import { useDsTexts } from "../../../ds-texts";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { TooltipProvider } from "../../ui/tooltip";
+import { useFieldFeedback } from "./field-feedback";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { cn } from "../../../lib/utils";
 
@@ -56,7 +57,20 @@ export const FieldToggleButton = forwardRef<HTMLButtonElement, FieldToggleButton
     const locked = Boolean(disabled || lockedReason || !onPressedChange);
     const texts = useDsTexts().fieldToggle;
     const reason = locked ? (lockedReason ?? texts.locked) : undefined;
-    const tooltip = reason ?? (pressed ? pressedTooltip : unpressedTooltip);
+    const base = reason ?? (pressed ? pressedTooltip : unpressedTooltip);
+    // Jedna bublina: zpráva pole nahoře, původní vysvětlení přepínače pod ní.
+    const feedback = useFieldFeedback();
+    const message = feedback.error || feedback.warning;
+    const tooltip = message ? (
+      <span className="flex flex-col gap-1">
+        <span>{message}</span>
+        <span data-slot="field-feedback-extra" className="opacity-80">
+          {base}
+        </span>
+      </span>
+    ) : (
+      base
+    );
     return (
       <TooltipProvider>
         <>
