@@ -57,7 +57,7 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
     if (tl && value.taxDate !== value.issueDate) next.taxDate = value.issueDate;
     if (next.accountingDate !== value.accountingDate || next.taxDate !== value.taxDate)
       onChange(next);
-  }, [a.value.id]); // eslint-disable-line react-hooks/exhaustive-deps -- jen při změně dokladu
+  }, [a.value.id]); // Záměrně jen při změně dokladu (ostatní čte latest).
   const link =
     a.accountingDateLink ??
     (applicable
