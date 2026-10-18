@@ -1,17 +1,18 @@
 import { useCallback, useState } from "react";
+import type { FieldErrorLink } from "../components/ds/feedback/field-error-summary";
 
 export type FieldErrors = Record<string, string>;
 
-/** Validační pravidlo jednoho pole – vrátí text chyby alebo null. */
+/** Validační pravidlo jednoho pole – vrátí text chyby nebo null. */
 export type Rule<T> = (form: T) => string | null;
 
 /** Definice validace formuláře: klíč pole → pravidlo. */
 export type Rules<T> = Record<string, Rule<T>>;
 
 /**
- * Sdílená validácia formulářů.
- * Chyby sa zobrazujú priamo pri poliach (komponenta `Field` s `error`),
- * takže všechny úpravy v aplikácii hlásí chyby stejně.
+ * Sdílená validace formulářů.
+ * Chyby se zobrazují uvnitř polí (komponenta `Field` s `error`) a souhrnně v pruhu
+ * přes `fieldErrors(labels)`, takže všechny úpravy v aplikaci hlásí chyby stejně.
  */
 export function useFormErrors<T>(rules: Rules<T>) {
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -39,7 +40,18 @@ export function useFormErrors<T>(rules: Rules<T>) {
     });
   }, []);
 
-  return { errors, validate, clear, setErrors };
+  /** Odkazy pro souhrn chyb; `labels` = id pole → popisek. */
+  const fieldErrors = useCallback(
+    (labels: Record<string, string> = {}): FieldErrorLink[] =>
+      Object.entries(errors).map(([fieldId, message]) => ({
+        fieldId,
+        label: labels[fieldId] ?? fieldId,
+        message,
+      })),
+    [errors],
+  );
+
+  return { errors, validate, clear, setErrors, fieldErrors };
 }
 
 /** Pole je povinné. */
@@ -51,15 +63,15 @@ export const required =
     return null;
   };
 
-/** Hodnota musí byť kladné číslo. */
+/** Hodnota musí být kladné číslo. */
 export const positiveNumber =
-  (message = "Zadajte kladné číslo.") =>
+  (message = "Zadejte kladné číslo.") =>
   (value: unknown): string | null => {
     const n = Number(value);
     return Number.isFinite(n) && n > 0 ? null : message;
   };
 
-/** První datum nesmí být později ako druhý. */
+/** První datum nesmí být později než druhé. */
 export function dateOrder(
   from: string | null | undefined,
   to: string | null | undefined,
