@@ -10,12 +10,8 @@ import {
 } from "./use-document-form-issues";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
-import { PageHeader } from "../../layout/page-header";
-import { RecordActionBar } from "../../layout/record-action-bar";
-import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
-import { DocumentStatusBadge } from "../document-status-badge";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
 import { cn } from "../../../../lib/utils";
 import { useDsTexts } from "../../../../ds-texts";
@@ -37,7 +33,7 @@ import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
 import { DocumentChangeMeta } from "./document-change-meta";
-import { DocumentVatActionStatus } from "./document-vat-action-status";
+import { DocumentFormTop, handleDocumentSaveShortcut } from "./document-form-top";
 import { changeDocumentRounding, useDocumentFormStickyTop } from "./use-document-form-layout";
 import { useIdentityAccountSelection } from "./use-identity-account-selection";
 import { buildDocumentActionMenu } from "./document-action-menu";
@@ -355,61 +351,18 @@ export function DocumentForm(props: DocumentFormProps) {
       <div
         ref={formRef}
         className={cn("@container space-y-4", className)}
-        onKeyDown={(event) => {
-          if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key.toLowerCase() === "s" &&
-            saveAction &&
-            !saveAction.disabled &&
-            !saveAction.busy
-          ) {
-            event.preventDefault();
-            saveAction.onSave();
-          }
-        }}
+        onKeyDown={(event) => handleDocumentSaveShortcut(event, saveAction)}
       >
-        <PageHeader
+        <DocumentFormTop
+          props={props}
           title={bankMovement ? dsTexts.documentEdit.movementTitle : title}
-          titleBadge={
-            <span
-              data-slot="document-title-badges"
-              className="inline-flex h-[1.625rem] shrink-0 items-center gap-1.5 whitespace-nowrap [&_[data-slot=badge]]:h-[1.625rem] [&_[data-slot=badge]]:px-2.5 [&_[data-slot=badge]]:text-sm"
-            >
-              <DocumentStatusBadge status={status} approved={approved} size="md" />
-              {titleBadges}
-            </span>
-          }
-        />
-        <RecordActionBar
-          leftContent={
-            vat?.visible ? (
-              <DocumentVatActionStatus
-                checked={vatRelevant}
-                readOnly={vat.relevantReadOnly}
-                onCheckedChange={(next) => patch({ vatRelevant: next })}
-                status={vatPartnerStatus}
-                texts={t}
-              />
-            ) : null
-          }
-          saveAction={saveAction}
-          primaryAction={primaryAction}
           moreActions={actionMenu}
-          error={error}
           issues={formIssues.issues}
-          saveFailed={saveFailed}
           notices={combinedNotices}
-          saveLabel={dsTexts.common.save}
-          moreActionsLabel={dsTexts.recordAction.moreActions}
-          errorTitle={t.errorTitle}
-          closeErrorLabel={t.closeError}
-          dataSlot="document-action-bar"
-          errorDataSlot="document-form-error"
-          noticesDataSlot="document-form-notices"
+          vatRelevant={vatRelevant}
+          onVatRelevantChange={(next) => patch({ vatRelevant: next })}
+          t={t}
         />
-        {readOnly && readOnlyReason ? (
-          <ReadOnlyBanner reason={readOnlyReason} title={readOnlyTitle} actions={readOnlyActions} />
-        ) : null}
         <section className="rounded-lg border bg-card p-4">
           <DocumentIdentityLine
             identity={effectiveIdentity}
