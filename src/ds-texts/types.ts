@@ -101,7 +101,14 @@ export interface DsTexts {
     no: string;
     system: string;
   };
-  recordAction: { moreActions: string; unsaved: string; errorTitle: string; closeError: string };
+  recordAction: {
+    moreActions: string;
+    unsaved: string;
+    errorTitle: string;
+    closeError: string;
+    /** Zbývající chyby souhrnu; `{count}` = počet. */
+    moreErrors: string;
+  };
   appShell: {
     clearSearch: string;
     mainMenu: string;
