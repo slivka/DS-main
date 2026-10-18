@@ -103,6 +103,8 @@ export interface JournalLinesEditorProps {
   onEditUnit?: (unitId: string) => void;
   /** Otevře úpravu vybrané zakázky z buňky nebo detailu řádku. */
   onEditDimension?: (dimensionId: string) => void;
+  /** Přidá zakázku z hledání (＋ v buňce i v detailu řádku); dostane hledaný text. */
+  onCreateDimension?: (searchText: string) => void;
   /** Kód měny dokladu. */
   documentCurrency: string;
   /** Značka měny dokladu (z dat). */
