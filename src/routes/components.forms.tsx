@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
 import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
+import { FieldStatusShowcase } from "@/components/showcase/FieldStatusShowcase";
 import {
   AccountSelect,
   AmountInput,
@@ -71,6 +72,13 @@ function FormsPage() {
 
   return (
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Formuláře" }]}>
+      <ShowcaseSection
+        title="Chyby a varování v polích"
+        description="Pod polem se nic nevykresluje; chyba ani varování nemění výšku řádku. Formulář i detail řádku mřížky."
+      >
+        <FieldStatusShowcase />
+      </ShowcaseSection>
+
       <ShowcaseSection
         title="Dialog záznamu"
         description="Společná mřížka, stejné výšky polí, číselné řady a stálá výška záložek."
