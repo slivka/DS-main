@@ -2,6 +2,8 @@
 
 ## 2.108.0 (nevydáno) – Edit dokladu 15
 
+- **Katalog:** obnoveny záznamy ztracené po vydání 2.107.0 (`8db33914`): FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip, props FieldStatusIndicator, FieldFeedbackIndicator (error/warning), ToggleGroup (label/error/warning), RecordActionBar a DocumentForm `error.fieldErrors` / `error.onFieldErrorSelect`, JournalLinesEditor `onCreateDimension` / `onValidationChange`. Kód se neměnil.
+
 ### Nové
 - **Živý pruh chyb a upozornění** (`FormIssuesBar`, `FormIssue`, `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`): položka `{ fieldId?, rowId?, columnId?, label, message, severity, source, code? }`; deduplikace podle (code nebo text, pole, řádek), chyba hlavičky se neopakuje jako „Řádek N“; titulek s počtem („Doklad nelze uložit (N)“ jen při `saveFailed`, jinak „Před zařazením doplňte (N)“, bez chyb „Upozornění (N)“); prázdný seznam pruh skryje.
 - `DocumentForm`: `issues`, `saveFailed`, `validationActive`, `onFieldChange(fieldId, rowId?, columnId?)`, `bankCodeOptions`; hlavička `variableSymbolLinked`.
