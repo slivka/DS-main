@@ -405,6 +405,8 @@ export interface DocumentFormProps {
   printTab?: Omit<DocumentPrintTabProps, "readOnly">;
   /** Povolené čtyřmístné kódy bank pro kontrolu ručně zadaného účtu. */
   bankCodes?: string[];
+  /** Kódy bank s názvy (bankovní pohyb): nabídka a pole „kód – název“, hledání podle obou. */
+  bankCodeOptions?: Array<{ code: string; name: string }>;
   documentType?: DocumentTypeCode | string;
   fields?: Partial<DocumentFields>;
   editableFields?: DocumentHeaderField[];

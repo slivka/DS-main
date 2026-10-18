@@ -72,6 +72,7 @@ export function DocumentForm({
   counterpartyTab,
   printTab,
   bankCodes,
+  bankCodeOptions,
   documentType = "ID",
   fields,
   editableFields,
@@ -524,7 +525,9 @@ export function DocumentForm({
               ) : undefined
             }
             bank={
-              bankMovement ? { value, patch, bankCodes, disabled: !can("bankAccount") } : undefined
+              bankMovement
+                ? { value, patch, bankCodes, bankCodeOptions, disabled: !can("bankAccount") }
+                : undefined
             }
             payment={{
               f: bankMovement ? { ...f, bankAccount: false } : f,
@@ -543,6 +546,7 @@ export function DocumentForm({
               bankAccountField,
               field,
               vsLink,
+              layout: bankMovement ? "grid20" : "flex",
               vsPendingText: dsTexts.documentEdit.numberPending,
             }}
             amount={{
