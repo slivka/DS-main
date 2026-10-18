@@ -72,27 +72,22 @@ export function DocumentDatesSection({
           >
             {showVatFields && f.taxDate ? date("taxDate", t.taxDate, "flex-none w-max") : null}
             {showVatFields
-              ? date(
-                  "vatDate",
-                  t.vatDate,
-                  "relative flex-none w-max",
-                  {
-                    link: vat?.dateLink
-                      ? {
-                          ...vat.dateLink,
-                          label: vat.dateLink.label ?? t.vatDateLinkLabel,
-                          toggleDisabled: vat.dateLockReadOnly,
-                          lockedHint: vat.dateLockReadOnly
-                            ? t.vatDateLockedHint
-                            : vat.dateLink.lockedHint,
-                        }
-                      : undefined,
-                    hint: filedVatDateWarning ? undefined : vat?.periodLabel,
-                    warning:
-                      [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
-                      undefined,
-                  },
-                )
+              ? date("vatDate", t.vatDate, "relative flex-none w-max", {
+                  link: vat?.dateLink
+                    ? {
+                        ...vat.dateLink,
+                        label: vat.dateLink.label ?? t.vatDateLinkLabel,
+                        toggleDisabled: vat.dateLockReadOnly,
+                        lockedHint: vat.dateLockReadOnly
+                          ? t.vatDateLockedHint
+                          : vat.dateLink.lockedHint,
+                      }
+                    : undefined,
+                  hint: filedVatDateWarning ? undefined : vat?.periodLabel,
+                  warning:
+                    [filedVatDateWarning, dateWarnings?.vatDate].filter(Boolean).join(" · ") ||
+                    undefined,
+                })
               : null}
           </div>
         </div>

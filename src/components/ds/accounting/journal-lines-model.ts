@@ -286,8 +286,7 @@ export const filterJournalLines = (lines: JournalLine[], search: string) => {
   );
 };
 /** Id pole řádku pro souhrn chyb a fokus (buňka i detail řádku). */
-export const journalFieldId = (rowId: string, columnId: string) =>
-  `journal-${rowId}-${columnId}`;
+export const journalFieldId = (rowId: string, columnId: string) => `journal-${rowId}-${columnId}`;
 
 /** Chyby řádků očíslované podle pořadí řádku (1 = první) s id pole, řádku a sloupce. */
 export const numberJournalErrors = (

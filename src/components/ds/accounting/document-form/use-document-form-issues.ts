@@ -8,7 +8,11 @@ import { visibleFormIssues, type FormIssue } from "../../../../lib/form-issues";
 import type { JournalLine } from "../journal-lines";
 import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { journalFieldId } from "../journal-lines-model";
-import type { DocumentFormError, DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
+import type {
+  DocumentFormError,
+  DocumentHeaderField,
+  DocumentHeaderValue,
+} from "./document-form-types";
 
 /** Hlášení změny pole (hlavička: document-klíč; řádek: id buňky s rowId a columnId). */
 export type DocumentFieldChange = (fieldId: string, rowId?: string, columnId?: string) => void;
@@ -76,7 +80,8 @@ export function reportingPatch(
 ) {
   return (next: Partial<DocumentHeaderValue>) => {
     patch(next);
-    for (const key of Object.keys(next) as DocumentHeaderField[]) onFieldChange?.(`document-${key}`);
+    for (const key of Object.keys(next) as DocumentHeaderField[])
+      onFieldChange?.(`document-${key}`);
   };
 }
 
@@ -95,7 +100,8 @@ export function reportingLinesChange(
       if (!old) continue;
       const keys = new Set([...Object.keys(old), ...Object.keys(line)]) as Set<keyof JournalLine>;
       for (const key of keys) {
-        if (old[key] !== line[key]) onFieldChange(journalFieldId(line.id, String(key)), line.id, String(key));
+        if (old[key] !== line[key])
+          onFieldChange(journalFieldId(line.id, String(key)), line.id, String(key));
       }
     }
   };

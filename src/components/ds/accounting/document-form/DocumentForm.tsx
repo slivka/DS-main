@@ -3,7 +3,11 @@ import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
 import { documentClientIssues } from "./document-validation-feedback";
-import { reportingLinesChange, reportingPatch, useDocumentFormIssues } from "./use-document-form-issues";
+import {
+  reportingLinesChange,
+  reportingPatch,
+  useDocumentFormIssues,
+} from "./use-document-form-issues";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { PageHeader } from "../../layout/page-header";

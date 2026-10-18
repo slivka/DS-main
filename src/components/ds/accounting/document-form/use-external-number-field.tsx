@@ -57,12 +57,12 @@ export function useExternalNumberField({
         : t.supplierNumber
       : t.externalNumber,
     <Input
-        id="document-externalNumber"
-        value={value.externalNumber ?? ""}
-        onChange={(event) => changeExternalNumber(event.target.value)}
-        disabled={!can("externalNumber")}
-        className="h-[var(--control-h)] font-mono tabular-nums"
-      />,
+      id="document-externalNumber"
+      value={value.externalNumber ?? ""}
+      onChange={(event) => changeExternalNumber(event.target.value)}
+      disabled={!can("externalNumber")}
+      className="h-[var(--control-h)] font-mono tabular-nums"
+    />,
     6,
     false,
     receivedDocument

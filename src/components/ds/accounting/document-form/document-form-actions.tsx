@@ -40,7 +40,9 @@ export function DocumentDirectionBadge({
       )}
     >
       <Icon className="size-3.5" aria-hidden="true" />
-      {direction === "in" ? inLabel ?? ds.documentEdit.income : outLabel ?? ds.documentEdit.expense}
+      {direction === "in"
+        ? (inLabel ?? ds.documentEdit.income)
+        : (outLabel ?? ds.documentEdit.expense)}
     </span>
   );
 }

@@ -84,7 +84,10 @@ export function BankStatementBasic({
           <FieldValue
             aria-labelledby={`${id}-${key}-label`}
             data-slot={`bank-statement-${key}`}
-            className={cn("justify-end text-right tabular-nums", balances[key] < 0 && "text-destructive")}
+            className={cn(
+              "justify-end text-right tabular-nums",
+              balances[key] < 0 && "text-destructive",
+            )}
           >
             {formatAmount(balances[key])} {symbol}
           </FieldValue>

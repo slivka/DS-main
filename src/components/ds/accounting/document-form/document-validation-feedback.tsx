@@ -69,21 +69,52 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
     if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "error"));
   }
-  for (const key of a.invalidDates ?? []) issues.push(headerIssue(a.t, key, a.t.invalidDate, "error"));
+  for (const key of a.invalidDates ?? [])
+    issues.push(headerIssue(a.t, key, a.t.invalidDate, "error"));
   const vat = a.vatRateField;
-  if (!a.readOnly && a.foreign && vat && !vat.sameAsDocument && !vat.manual && vat.suggestedRate == null)
-    issues.push({ label: a.t.vatRate, message: a.t.vatRateMissing, severity: "error", source: "client", code: "vat_rate_missing" });
+  if (
+    !a.readOnly &&
+    a.foreign &&
+    vat &&
+    !vat.sameAsDocument &&
+    !vat.manual &&
+    vat.suggestedRate == null
+  )
+    issues.push({
+      label: a.t.vatRate,
+      message: a.t.vatRateMissing,
+      severity: "error",
+      source: "client",
+      code: "vat_rate_missing",
+    });
   if (a.foreign && a.value.rateManual && !a.value.rateNote?.trim())
     issues.push(headerIssue(a.t, "rateNote", a.t.rateNoteRequired, "error"));
   if (a.foreign && vat?.manual && !vat.note?.trim())
-    issues.push({ label: a.t.vatRate, message: a.t.rateNoteRequired, severity: "error", source: "client", code: "vat_rate_note" });
+    issues.push({
+      label: a.t.vatRate,
+      message: a.t.rateNoteRequired,
+      severity: "error",
+      source: "client",
+      code: "vat_rate_note",
+    });
   for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
     if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "warning"));
   }
   if (a.taxDocumentNumberWarning)
-    issues.push(headerIssue(a.t, "taxDocumentNumber", a.taxDocumentNumberWarning, "warning", a.taxNumberLabel));
-  if (a.icoWarning) issues.push(headerIssue(a.t, "counterpartyIco", a.t.invalidIco, "warning", a.t.ico));
+    issues.push(
+      headerIssue(
+        a.t,
+        "taxDocumentNumber",
+        a.taxDocumentNumberWarning,
+        "warning",
+        a.taxNumberLabel,
+      ),
+    );
+  if (a.icoWarning)
+    issues.push(headerIssue(a.t, "counterpartyIco", a.t.invalidIco, "warning", a.t.ico));
   if (a.variableSymbolWarning)
-    issues.push(headerIssue(a.t, "variableSymbol", a.variableSymbolWarning, "warning", a.variableSymbolLabel));
+    issues.push(
+      headerIssue(a.t, "variableSymbol", a.variableSymbolWarning, "warning", a.variableSymbolLabel),
+    );
   return issues;
 }

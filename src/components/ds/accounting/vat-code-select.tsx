@@ -140,7 +140,10 @@ export function VatCodeSelect({
                   }}
                   className={cn("gap-2", code.inactive && "opacity-50")}
                 >
-                  <span title={formatCodeName(code.code, code.name)} className="min-w-0 flex-1 truncate font-mono tabular-nums">
+                  <span
+                    title={formatCodeName(code.code, code.name)}
+                    className="min-w-0 flex-1 truncate font-mono tabular-nums"
+                  >
                     {formatCodeName(code.code, code.name)}
                   </span>
                   {selected?.id === code.id ? <Check className="size-4" /> : null}
