@@ -1,6 +1,6 @@
 ## Poslední dorovnání 2.105.0 (nevydáno)
 
-- [ ] Sjednotit Výdaj, zabránit změnám datumů jen pro čtení, doplnit migrační pokyny a katalog, zkrátit kontakt a vysvětlit duplicitní přidání; unit, lint a Chromium document-controls + edit-document-thirteen. Verze 2.104.0, nevydávat.
+- [x] Sjednocen Výdaj; ochrana datumů readOnly/posted/locked/cancelled, reset DUZP při value.id; migrace a hint dorovnány; ContactSelect zkrácení s title; duplicitní přidání CS/SK s důvodem. Unit 681/681; lint 0 chyb / 297 varování; Chromium document-controls 11/11 + edit-document-thirteen 10/10. Katalog 432 komponent / 814 props, původních 432 názvů a 813 props zachováno; CounterpartyField.createDisabledReason doplněn. Verze 2.104.0 / CHANGELOG 2.105.0, nic nevydáno.
 
 ## Edit dokladu 14 – opravné kolo po kontrole (2.105.0, nevydáno)
 

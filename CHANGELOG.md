@@ -23,6 +23,14 @@
 
 ### Ověření
 
+- Poslední dorovnání: unit 681/681; Chromium 21/21 (celé document-controls 11/11
+  a edit-document-thirteen 10/10 včetně matice CS/SK 70–200 %); lint 0 chyb /
+  297 varování. Katalog 432 komponent / 814 props, zachováno všech 432 názvů
+  a 813 dosavadních props; doplněn CounterpartyField.createDisabledReason.
+  Programová kontrola beze ztrát, pouze výslovně opravená věta Field o hint.
+  Vyhledání zastaralého označení směru v src/tests/.lovable/roadmap bez výsledku.
+  Dlouhé jméno ContactSelect ověřeno v prohlížeči s výpustkou a celým title.
+  Verze package.json = meta.version = 2.104.0; nic nevydáno.
 - Před vydáním zopakováno: Chromium 30/30 (celé soubory edit-document-thirteen,
   bank-statement-form, document-controls, grid-add-actions-13g), včetně matice CS/SK
   70–200 %, 1/2/3 panelů a 360 px bez oslabení očekávání. Unit 670/670;
