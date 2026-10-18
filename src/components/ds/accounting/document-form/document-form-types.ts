@@ -47,6 +47,18 @@ export type DocumentHeaderValue = {
   vatRelevant?: boolean;
   dueDate?: string | null;
   externalNumber?: string | null;
+  /** Vlastní číslo daňového dokladu při vypnuté vazbě. */
+  taxDocumentNumber?: string | null;
+  /** Číslo daňového dokladu sleduje číslo dokladu; výchozí true. */
+  taxDocumentNumberLinked?: boolean;
+  /** Režim protiúčtu bankovního pohybu. */
+  bankAccountKind?: "domestic" | "iban";
+  /** Kód banky oddělený od českého čísla účtu. */
+  bankCode?: string | null;
+  /** IBAN protiúčtu pohybu. */
+  bankIban?: string | null;
+  /** SWIFT protiúčtu pohybu. */
+  bankSwift?: string | null;
   partnerId?: string | null;
   counterpartyName?: string | null;
   counterpartyIco?: string | null;
@@ -234,7 +246,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   numberPending: "Koncept – číslo při zařazení",
   direction: "Směr",
   directionIn: "Příjem",
-  directionOut: "Výdej",
+  directionOut: "Výdaj",
   status: "Stav",
   approved: "Schváleno",
   yes: "Ano",
@@ -394,6 +406,16 @@ export interface DocumentFormProps {
   handedOverBySuggest?: DocumentSuggestConfig;
   descriptionSuggest?: DocumentSuggestConfig;
   accountingDateLink?: DocumentAccountingDateLink;
+  /** Výchozí vazba účetního data na vystavení; false ponechá samostatné datum. */
+  accountingDateLinked?: boolean;
+  /** Řízená změna výchozí vazby účetního data. */
+  onAccountingDateLinkedChange?: (linked: boolean) => void;
+  /** Výstraha duplicity daňového čísla v poli i společném pruhu. */
+  taxDocumentNumberWarning?: string;
+  /** Chyby jednotlivých polí; společně se zobrazí nad formulářem. */
+  fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
+  /** Výstrahy jednotlivých polí; společně se zobrazí nad formulářem. */
+  fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;
   vat?: DocumentVatConfig;
   /** Kurz DPH pod kurzem dokladu (jen u cizí měny, jen když jej aplikace předá). */

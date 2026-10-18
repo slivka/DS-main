@@ -207,7 +207,7 @@ const SCENARIOS: ShowcaseScenario[] = [
   },
   {
     id: "ba",
-    title: "BA EUR – výdej",
+    title: "BA EUR – výdaj",
     type: "BA",
     identity: {
       variant: "cashBank",

@@ -89,7 +89,8 @@ describe("Design formulářů 2", () => {
     const vat = view.getByLabelText("Důvod ručního kurzu DPH");
     expect(doc.compareDocumentPosition(vat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     view.rerender(<DocumentForm {...base} vatRateField={{ value: null, onChange: () => {} }} />);
-    expect(view.container.querySelector('[data-slot="document-vat-rate-missing"]')).toBeTruthy();
+    expect((view.getByLabelText("Kurz DPH") as HTMLInputElement).getAttribute("aria-invalid")).toBe("true");
+    expect(view.container.querySelector('[data-slot="document-form-notices"]')?.textContent).toContain("Kurz ČNB");
     expect(view.container.querySelector('[data-slot="document-rate-details"]')).toBeNull();
   });
   it("RateField obnoví doporučený kurz a readOnly nemá akci", () => {

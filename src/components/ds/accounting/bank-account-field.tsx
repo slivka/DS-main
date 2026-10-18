@@ -74,7 +74,9 @@ export interface BankAccountFieldProps extends Omit<
   /** Režim pouze výběru bez volného zadání. */
   selectionOnly?: boolean;
   /** Poslední akce v nabídce. */
-  onAddAccount?: () => void;
+  onAddAccount?: (searchText: string) => void;
+  /** Důvod zakázání vytvoření účtu. */
+  addAccountDisabledReason?: string;
   /** Text akce přidání účtu. */
   addAccountText?: string;
   /** Výzva prázdného výběru; ruční vstup zůstává prázdný. */
@@ -102,6 +104,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
       className,
       selectionOnly = false,
       onAddAccount,
+      addAccountDisabledReason,
       addAccountText,
       disabledReason,
       placeholder,
@@ -176,10 +179,6 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             placeholder={disabledReason ?? placeholder}
             placeholderValueLabel={disabledReason ?? placeholder}
             onChange={(next) => {
-              if (next === OTHER && onAddAccount) {
-                onAddAccount();
-                return;
-              }
               if (next === OTHER) {
                 setOtherSelected(true);
                 return;
@@ -190,6 +189,9 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             }}
             allowEmpty={false}
             searchable
+            onCreate={onAddAccount}
+            createLabel={resolvedAddAccountText}
+            createDisabledReason={addAccountDisabledReason}
             selectedLabel={(option) =>
               option.inactive ? (
                 <span className="flex min-w-0 items-center gap-2">
@@ -237,9 +239,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
                     .join(" "),
                   inactive: option.invalid,
                 })),
-              ...(onAddAccount
-                ? [{ value: OTHER, label: resolvedAddAccountText }]
-                : selectionOnly
+              ...(selectionOnly
                   ? []
                   : [{ value: OTHER, label: resolvedOtherAccountText }]),
             ]}
@@ -255,7 +255,7 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             readOnly={readOnly}
             inputMode="numeric"
             autoComplete="off"
-            aria-invalid={Boolean(error)}
+            error={error}
             onChange={(event) =>
               emit(event.target.value.replace(/[^\d\-/\s]/g, "").replace(/\s/g, ""))
             }
@@ -265,11 +265,6 @@ export const BankAccountField = forwardRef<HTMLInputElement, BankAccountFieldPro
             }}
             className={cn("h-[var(--control-h)] font-mono tabular-nums", options.length && "mt-2")}
           />
-        ) : null}
-        {error ? (
-          <p role="alert" className="mt-1 text-xs font-medium text-destructive">
-            {error}
-          </p>
         ) : null}
       </div>
     );

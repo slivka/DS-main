@@ -150,10 +150,9 @@ export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
           disabled={props.disabled}
           inputMode={props.isHomeCurrency ? "numeric" : "text"}
           onChange={(event) => patch({ text: event.target.value })}
-          aria-invalid={Boolean(errors.text)}
+          error={errors.text}
           className="font-mono tabular-nums"
         />
-        {errors.text ? <p className="mt-1 text-xs text-destructive">{errors.text}</p> : null}
       </div>
       <div className="min-w-0">
         <Input
@@ -161,10 +160,9 @@ export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
           value={props.value.iban}
           disabled={props.disabled}
           onChange={(event) => patch({ iban: event.target.value.toUpperCase() })}
-          aria-invalid={Boolean(errors.iban)}
+          error={errors.iban}
           className="font-mono uppercase tabular-nums"
         />
-        {errors.iban ? <p className="mt-1 text-xs text-destructive">{errors.iban}</p> : null}
       </div>
       <div className="min-w-0">
         <Input
@@ -173,10 +171,9 @@ export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
           disabled={props.disabled}
           maxLength={11}
           onChange={(event) => patch({ swift: event.target.value.toUpperCase() })}
-          aria-invalid={Boolean(errors.swift)}
+          error={errors.swift}
           className="font-mono uppercase tabular-nums"
         />
-        {errors.swift ? <p className="mt-1 text-xs text-destructive">{errors.swift}</p> : null}
       </div>
     </div>
   );

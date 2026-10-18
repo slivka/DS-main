@@ -58,7 +58,7 @@ describe("DS 2.85.0 – obecná pravidla", () => {
     expect(locked).toContain('data-visible-icons="1"');
     expect(unlocked).toContain('data-visible-icons="2"');
     expect(warned).toContain('data-visible-icons="2"');
-    expect(warningBelow).toContain('data-visible-icons="1"');
+    expect(warningBelow).toContain('data-visible-icons="2"');
     const lockedWidth = /--date-field-icons:(\d+)/.exec(locked)?.[1];
     const unlockedWidth = /--date-field-icons:(\d+)/.exec(unlocked)?.[1];
     expect(Number(unlockedWidth)).toBeGreaterThan(Number(lockedWidth));

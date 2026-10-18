@@ -197,9 +197,10 @@ describe("DocumentForm 2.86.0 – chování", () => {
     expect(view.getAllByText("Variabilní symbol").length).toBeGreaterThan(0);
   });
 
-  it("bankovní doklad má pole účtu v Platebních údajích", () => {
+  it("bankovní pohyb má protiúčet a symboly", () => {
     const view = render(<Form documentType="BA" />);
-    expect(view.container.querySelector("#document-bankAccount")).not.toBeNull();
+    expect(view.getByLabelText("Číslo účtu")).toBeTruthy();
+    expect(view.getByRole("combobox", { name: "Druh účtu" })).toBeTruthy();
   });
 
   it("tužka u vybraného partnera otevře jeho kartu", () => {

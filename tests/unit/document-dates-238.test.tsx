@@ -120,7 +120,7 @@ describe("DocumentForm DPH 2.43.0", () => {
     expect(form({ vat: { visible: true, periodLabel: period } })).toContain(period);
     const filed = form({ vat: { visible: true, periodLabel: period, periodFiled: true } });
     expect(filed).toContain("Období je podané – doklad půjde do dodatečného přiznání");
-    expect(filed).toContain(period);
+    expect(filed).not.toContain(period);
   });
 
   it("řadí varování dat v pruhu a nevykreslí je pod poli", () => {

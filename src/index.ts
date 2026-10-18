@@ -61,6 +61,7 @@ export * from "./components/ui/toggle";
 export * from "./components/ui/toggle-group";
 
 export * from "./components/ds";
+export { StepperInput, type StepperInputProps } from "./components/ds/form/stepper-input";
 export {
   AmountDifference,
   type AmountDifferenceProps,
@@ -89,3 +90,5 @@ export * from "./hooks";
 export * from "@tanstack/react-query";
 export * as LucideIcons from "lucide-react";
 export type { LucideIcon, LucideProps } from "lucide-react";
+
+export { SearchableOptionSelect, type SearchableOptionSelectProps } from "./components/ds/form/searchable-option-select";

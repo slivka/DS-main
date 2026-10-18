@@ -7,7 +7,6 @@ import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from
 import { useDsTexts, type BankStatementTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { TooltipProvider } from "../../ui/tooltip";
-import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { Button } from "../../ui/button";
 import {
   BankStatementIdentity,
@@ -20,7 +19,7 @@ import { PageHeader } from "../layout/page-header";
 import { FieldGrid } from "../layout/form-field-layout";
 import { SectionHeading } from "../layout/section-heading";
 import { RecordActionBar, type RecordActionError } from "../layout/record-action-bar";
-import { StatusBadge } from "../data-display/status-badge";
+import { Plus, CheckCircle2, LockOpen } from "lucide-react";
 
 /** Editované údaje výpisu. */
 export interface BankStatementValue {
@@ -66,6 +65,10 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   onHomeBankClosingChange?: (value: number | null) => void;
   /** Výpis má položky; zablokuje číslo a odstranění. */
   hasItems?: boolean;
+  /** Nový výpis dosud nebyl uložen. */
+  isNew?: boolean;
+  /** Aplikace uloží výpis a následně otevře zadání příjmu nebo výdaje. */
+  onSaveThenAdd?: (direction: "in" | "out") => void | Promise<void>;
   /** Všechna pole pouze ke čtení. */
   readOnly?: boolean;
   /** Neuložené změny. */
@@ -106,6 +109,8 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       home,
       onHomeBankClosingChange,
       hasItems,
+      isNew,
+      onSaveThenAdd,
       readOnly,
       dirty,
       onSave,
@@ -166,45 +171,21 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
           className={cn("@container min-w-0", className)}
         >
           <PageLayout variant="form">
-            <PageHeader
-              title={t.title}
-              titleBadge={
-                <StatusBadge
-                  status={status}
-                  config={{
-                    open: { label: t.open },
-                    checked: { label: t.checked, tone: "info" },
-                    posted: { label: t.posted, tone: "success" },
-                  }}
-                />
-              }
-            />
+            <PageHeader title={t.title} />
             <RecordActionBar
-              leftContent={
-                onCheckedChange ? (
-                  <>
-                    <DisabledReasonTooltip
-                      content={checkReason ?? (status === "open" ? t.checkHint : t.uncheckHint)}
-                      blocked={checkBlocked}
-                      openOnTouch
-                    >
-                      <Button
-                        type="button"
-                        variant="outline"
-                        aria-disabled={checkBlocked || undefined}
-                        aria-describedby={`${id}-check-reason`}
-                        onClick={() => {
-                          if (!checkBlocked) onCheckedChange(status === "open");
-                        }}
-                      >
-                        {status === "open" ? t.check : t.uncheck}
-                      </Button>
-                    </DisabledReasonTooltip>
-                    <span id={`${id}-check-reason`} className="sr-only">
-                      {checkReason ?? (status === "open" ? t.checkHint : t.uncheckHint)}
-                    </span>
-                  </>
-                ) : null
+              primaryAction={
+                onCheckedChange
+                  ? {
+                      label: status === "open" ? t.check : t.uncheck,
+                      icon: status === "open" ? CheckCircle2 : LockOpen,
+                      disabled: checkBlocked,
+                      disabledReason: checkReason,
+                      tooltip: status === "open" ? t.checkHint : t.uncheckHint,
+                      onClick: () => {
+                        if (!checkBlocked) onCheckedChange(status === "open");
+                      },
+                    }
+                  : undefined
               }
               busy={busy}
               saveAction={
@@ -286,7 +267,31 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
             </section>
             <SectionHeading>{t.items}</SectionHeading>
             <div data-slot="bank-statement-items" className="min-w-0 max-w-full">
-              {items}
+              {isNew ? (
+                <>
+                  <div className="flex justify-end gap-2">
+                    {(["in", "out"] as const).map((direction) => (
+                      <Button
+                        key={direction}
+                        type="button"
+                        variant="default"
+                        disabled={busy || !onSaveThenAdd}
+                        onClick={() => {
+                          void onSaveThenAdd?.(direction);
+                        }}
+                      >
+                        <Plus className="size-4" />
+                        {direction === "in" ? ds.documentEdit.income : ds.documentEdit.expense}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="border border-input p-4 text-center text-sm text-muted-foreground">
+                    {ds.documentEdit.unsavedMovements}
+                  </div>
+                </>
+              ) : (
+                items
+              )}
             </div>
           </PageLayout>
         </div>

@@ -181,7 +181,7 @@ export function RecordDialogShowcase() {
               {
                 key: "out",
                 cells: {
-                  series: <Badge variant="outline">Výdej</Badge>,
+                  series: <Badge variant="outline">Výdaj</Badge>,
                   mask: <MaskInput value={maskOut} onChange={setMaskOut} preview="V-2026-001" />,
                   period: <OptionSelect value="year" onChange={() => {}} options={YEAR_OPTIONS} />,
                   from: <DecimalInput value="1" onChange={() => {}} decimals={0} />,

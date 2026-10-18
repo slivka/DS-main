@@ -65,8 +65,8 @@ describe("CounterpartyField / DocumentForm 2.25.0", () => {
     expect(html).toContain("document-partner-dic");
     expect(render({ ...base, partnerId: "p1" })).toContain("CZ12345678");
   });
-  it("ID nemá partnerskou sekci", () =>
-    expect(render({ ...base, counterpartyName: "FÚ" }, { documentType: "ID" })).not.toContain(
+  it("ID začíná partnerskou sekcí", () =>
+    expect(render({ ...base, counterpartyName: "FÚ" }, { documentType: "ID" })).toContain(
       'id="document-partner"',
     ));
   it("kurz u CZK není", () => {

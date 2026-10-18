@@ -116,7 +116,7 @@ export function VatCodeSelect({
           <ChevronDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[280px] p-0" align="start">
+      <PopoverContent className="ds-select-popover p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
             autoFocus
@@ -140,7 +140,7 @@ export function VatCodeSelect({
                   }}
                   className={cn("gap-2", code.inactive && "opacity-50")}
                 >
-                  <span className="min-w-0 flex-1 truncate font-mono tabular-nums">
+                  <span title={formatCodeName(code.code, code.name)} className="min-w-0 flex-1 truncate font-mono tabular-nums">
                     {formatCodeName(code.code, code.name)}
                   </span>
                   {selected?.id === code.id ? <Check className="size-4" /> : null}

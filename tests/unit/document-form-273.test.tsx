@@ -334,7 +334,7 @@ describe("BankAccountField 2.73", () => {
         invalidBankCodeText="Neplatná banka"
       />,
     );
-    expect(view.getByRole("alert").textContent).toBe("Neplatná banka");
+    expect(view.getByRole("img").textContent).toBe("Neplatná banka");
     view.rerender(
       <BankAccountField
         value="123456789/0800"
@@ -344,7 +344,7 @@ describe("BankAccountField 2.73", () => {
         invalidBankCodeText="Neplatná banka"
       />,
     );
-    expect(view.getByRole("alert").textContent).toBe("Neplatný účet");
+    expect(view.getByRole("img").textContent).toBe("Neplatný účet");
     view.rerender(
       <BankAccountField
         value="19-2000145399/0800"
@@ -354,7 +354,7 @@ describe("BankAccountField 2.73", () => {
         invalidBankCodeText="Neplatná banka"
       />,
     );
-    expect(view.queryByRole("alert")).toBeNull();
+    expect(view.queryByRole("img")).toBeNull();
   });
 
   it("po opuštění hlásí neúplný účet, odstraňuje mezery a vrací se z režimu Jiný účet", () => {
@@ -376,7 +376,7 @@ describe("BankAccountField 2.73", () => {
     fireEvent.change(input, { target: { value: "123 456 789" } });
     expect((input as HTMLInputElement).value).toBe("123456789");
     fireEvent.blur(input);
-    expect(view.getByRole("alert").textContent).toBe("Neplatný účet");
+    expect(view.getByRole("img").textContent).toBe("Neplatný účet");
     view.rerender(
       <BankAccountField
         aria-label="Bankovní účet"

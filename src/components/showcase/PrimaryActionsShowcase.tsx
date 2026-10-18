@@ -15,7 +15,7 @@ const ROWS: Movement[] = [
   { id: "2", text: "Nájem kanceláře", amount: -2500 },
 ];
 
-/** Pohyby výpisu / pokladny s akcemi příjem a výdej; sdílené i v ukázce výpisu. */
+/** Pohyby výpisu / pokladny s akcemi příjem a výdaj; sdílené i v ukázce výpisu. */
 export function MovementsGrid({
   storageKey,
   onAction,
@@ -23,7 +23,7 @@ export function MovementsGrid({
 }: {
   storageKey: string;
   onAction?: (kind: "in" | "out") => void;
-  /** Ukázka zablokované akce Výdej s důvodem. */
+  /** Ukázka zablokované akce Výdaj s důvodem. */
   outDisabledReason?: string;
 }) {
   const columns = useMemo<DataGridColumn<Movement>[]>(
@@ -48,8 +48,8 @@ export function MovementsGrid({
       onClick: () => onAction?.("in"),
     },
     {
-      label: "Nový výdej",
-      shortLabel: "Výdej",
+      label: "Nový výdaj",
+      shortLabel: "Výdaj",
       icon: ArrowUpRight,
       onClick: () => onAction?.("out"),
       disabled: Boolean(outDisabledReason),
@@ -68,7 +68,7 @@ export function MovementsGrid({
   );
 }
 
-const LOCKED = "Pokladna je uzavřená – výdej nelze přidat";
+const LOCKED = "Pokladna je uzavřená – výdaj nelze přidat";
 
 /** Výpis a pokladna ve třech šířkách: plné texty, zkrácené texty, sloučená nabídka. */
 export function PrimaryActionsShowcase() {
@@ -96,7 +96,7 @@ export function PrimaryActionsShowcase() {
           <MovementsGrid
             storageKey={`primary-actions-${item.key}`}
             outDisabledReason={item.reason}
-            onAction={(kind) => setLast(`${item.title}: ${kind === "in" ? "příjem" : "výdej"}`)}
+            onAction={(kind) => setLast(`${item.title}: ${kind === "in" ? "příjem" : "výdaj"}`)}
           />
         </div>
       ))}

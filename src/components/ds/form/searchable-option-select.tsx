@@ -21,6 +21,7 @@ import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { UnknownValue, type SelectOption } from "./option-select";
 import { useDsTexts } from "../../../ds-texts";
+import { SelectSearchAction } from "./select-search-action";
 
 /** Text pro hledání bez ohledu na diakritiku a velikost písmen. */
 export function normalizeSearchText(text: string): string {
@@ -60,6 +61,12 @@ export interface SearchableOptionSelectProps {
   className?: string;
   /** Text vybrané položky. */
   selectedLabel?: (option: SelectOption) => ReactNode;
+  /** Přidá položku z aktuálního hledaného textu. */
+  onCreate?: (searchText: string) => void;
+  /** Název přidání; jinak obecný text DsTexts. */
+  createLabel?: string;
+  /** Důvod chybějícího oprávnění přidávat. */
+  createDisabledReason?: string;
 }
 
 /** Hledatelný seznam s krátkou hodnotou ve spouštěči. */
@@ -95,7 +102,8 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
   ) : (
     props.emptyValueLabel
   );
-  const clearLabel = useDsTexts().documentForm.clear;
+  const dsTexts = useDsTexts();
+  const clearLabel = dsTexts.documentForm.clear;
   const showClear = Boolean(props.value && props.allowEmpty && !props.disabled);
 
   const choose = (value: string) => {
@@ -143,13 +151,25 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
+        <PopoverContent align="start" className="ds-select-popover p-0">
           <Command shouldFilter={false}>
             <CommandInput
               autoFocus
               value={query}
               onValueChange={setQuery}
               placeholder={props.searchPlaceholder}
+              trailingAction={
+                props.onCreate ? (
+                  <SelectSearchAction
+                    label={props.createLabel ?? dsTexts.selectCreate.item}
+                    disabledReason={props.createDisabledReason}
+                    onCreate={() => {
+                      props.onCreate?.(query);
+                      if (!props.createDisabledReason) setOpen(false);
+                    }}
+                  />
+                ) : undefined
+              }
             />
             <CommandList>
               <CommandEmpty>{props.noResultsLabel}</CommandEmpty>
@@ -161,7 +181,12 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
                     disabled={option.disabled || option.inactive}
                     onSelect={() => choose(option.value)}
                   >
-                    <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                    <span
+                      className="min-w-0 flex-1 truncate"
+                      title={typeof option.label === "string" ? option.label : undefined}
+                    >
+                      {option.label}
+                    </span>
                     {option.inactive ? <InactiveTag label={props.inactiveLabel} /> : null}
                     {option.value === props.value ? <Check className="size-4" /> : null}
                   </CommandItem>

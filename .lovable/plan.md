@@ -3,7 +3,7 @@
 ## Zachování vydané knihovny
 - Zachovat všech 430 současných názvů komponent, obsah katalogů i existující záznamy manifestu. Nové komponenty a props přidávat bez plošného přegenerování katalogů.
 - Nové vydání vést pouze v CHANGELOG jako **2.105.0 (nevydáno)** s návodem migrace u BREAKING změn.
-- **Nesoulad aktuálního stavu:** oba soubory verzí nyní obsahují **2.103.0**, nikoli uvedených 2.104.0. Podle pokynu „NEMĚŇ je“ je ponechat beze změny; nevydávat knihovnu.
+- Podle opravy při schválení srovnat oba soubory verzí na poslední vydanou **2.104.0**; novou 2.105.0 vést jen v CHANGELOG, nic nevydávat.
 
 ## Sdílená pole a ovládání (S1–S4)
 - Sjednotit chyby a varování: barevný rámeček, výstražná ikona uvnitř před akcemi, úplný text v přístupném tooltipu; žádný text výstrahy pod polem a žádná změna výšky řádku. DocumentForm zobrazí stejné zprávy také ve společném pruhu.
@@ -37,3 +37,6 @@
 - Nové samostatné moduly držet pod 300 řádky. Existující rozsáhlejší orchestrace a veřejné typy zůstanou pohromadě kvůli kompatibilitě; nové chování přidat v menších pomocných modulech, ne nafukovat soubory nad limit.
 - Nové komponenty: typované props, ref, className a nativní props, barrel export a doplnění usage/examples/antipatterns v katalogu. Automaticky renderované soubory rules ručně nepřepisovat.
 - Před úpravami uložit výchozí inventuru katalogů pro závěrečné porovnání; neodstraňovat žádný dnešní název ani záznam manifestu.
+### Rozsah stávajících souborů
+
+DocumentForm zůstává nad 300 řádky kvůli zachování stávajícího širokého API; skládání sekcí, validace a vazby datumů byly odděleny bez změny veřejných importů. Lint délku existujícího souboru hlásí jako varování.

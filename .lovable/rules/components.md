@@ -331,7 +331,7 @@ import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b
 import { BankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Sdílený účet. Přidání v řádku hledání předává dotaz, neplatný účet má výstrahu uvnitř pole a nikdy text pod polem.
 
 **Props:**
 
@@ -346,10 +346,11 @@ Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru u
 | `otherAccountText` | string | `—` |
 | `className` | string | `flex min-w-0 items-center gap-2` |
 | `selectionOnly` | boolean | `false` |
-| `onAddAccount` | function | `—` |
+| `onAddAccount` | (searchText: string) => void | `—` |
 | `addAccountText` | string | `—` |
 | `placeholder` | string | `—` |
 | `disabledReason` | string | `—` |
+| `addAccountDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -377,7 +378,7 @@ _Účet pouze s IBAN_
 import { BankStatementForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Formulář bankovního výpisu: Uložit je společná primární akce RecordActionBar s ikonou a textem v každé šířce, nikdy jen ikona; dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu. Bankovní zůstatek v obou měnách má na široké ploše span 3/12 vpravo; nenulový rozdíl těsně vlevo. Číslo dědí typografii IdentityLine také při zamčení. Zamčené Uložit vysvětluje lockedReason. Povolená kontrola se klikem provede bez připnutí vysvětlení; dotyk jej ukáže na 3 s.
+Výpis bez viditelného stavového štítku; status dál řídí zamčení. Nový výpis má prázdné pohyby; + Příjem / + Výdaj volají onSaveThenAdd, aplikace nejdříve úspěšně uloží. Kontrola používá sdílenou kaskádu RecordActionBar.
 
 **Props:**
 
@@ -385,7 +386,7 @@ Formulář bankovního výpisu: Uložit je společná primární akce RecordActi
 |---|---|---|
 | `value` | any | `—` |
 | `onChange` | function | `—` |
-| `status` | open · checked · posted | `—` |
+| `status` | enum | `—` |
 | `book` | any | `—` |
 | `currency` | string | `—` |
 | `currencySymbol` | string | `—` |
@@ -406,6 +407,8 @@ Formulář bankovního výpisu: Uložit je společná primární akce RecordActi
 | `notices` | any | `—` |
 | `items` | any | `—` |
 | `texts` | any | `—` |
+| `isNew` | boolean | `—` |
+| `onSaveThenAdd` | (direction: "in" &#124; "out") => void &#124; Promise<void> | `—` |
 
 **Examples:**
 
@@ -1107,7 +1110,14 @@ _Odstranění prostoru_
 import { ContactSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Hledání kontaktu s + v řádku hledání. onCreateNew dostane aktuální hledaný text, bez oprávnění akce vysvětlí důvod.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onCreateNew` | (searchText: string) => void | `—` |
+| `createDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -1466,7 +1476,7 @@ _Párování s editovatelnou částkou_
 import { DateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpřístupní text; warningDisplay="indicator" jej zobrazí v tooltipu ikony. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 13: Výjimka: vazba data zachovává vlastní geometrii a --document-date-*; stálý název, aria-pressed, fokusovatelný zakázaný stav a důvod v tooltipu i přístupném popisu. 13b: link.label je nepovinný stálý přístupný název; výchozí fieldToggle.dateLink. Vazba DPH přejímá vlastní název Svázat s DUZP z DocumentForm textů.
+Datum s chybou/varováním uvnitř pole; relativní +14 od baseDate a quickOptions v kalendáři. warningDisplay=below je přijímáno jen pro kompatibilitu a ignorováno.
 
 **Props:**
 
@@ -1486,13 +1496,21 @@ Jednotné datumové pole. warning zvýrazní pole a přes aria-describedby zpř�
 | `link` | any | `—` |
 | `hint` | string | `—` |
 | `warning` | string | `—` |
-| `warningDisplay` | below · indicator | `below` |
+| `warningDisplay` | enum | `indicator` |
+| `baseDate` | string | `—` |
+| `quickOptions` | Array<{ label: string; compute: (base: string) => string }> | `—` |
+| `error` | string | `—` |
 
 **Examples:**
 
 _Datum s varováním v indikátoru_
 ```tsx
 <DateField value={date} onChange={setDate} warning="Datum je mimo období" warningDisplay="indicator" />
+```
+
+_Editace dokladu_
+```tsx
+<DateField value={dueDate} onChange={setDueDate} baseDate={issueDate} quickOptions={options} />
 ```
 
 **Avoid:**
@@ -1606,7 +1624,15 @@ import { DialogTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { DimensionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onCreate` | (searchText: string) => void | `—` |
+| `createLabel` | string | `—` |
+| `createDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -1662,7 +1688,17 @@ import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 import { DocumentForm } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavatele + IČO + DIČ, účet + způsob platby (DDPOZ bez způsobu), Popis + číslo. Pod 40rem jsou pole pod sebou ve stejném DOM/Tab pořadí. FV/ZFV mají způsob platby a účet nahoře; kurzy mají zdroj v tooltipu. Datumová pole mají kompaktní šířku jen v dokladu s rozšířením podle popisku; DUZP a Datum DPH se při nedostatku místa zalomí jednotlivě bez rolování. KS/SS zůstávají viditelné, při nepoužité platbě prázdné a zakázané s důvodem; uložené hodnoty DS nemaže. Datum i popisek mají standardní velikost podle zoomu; zmenšení se měří pouze pro pole, které samo přesahuje kontejner. Šířku určuje aktivní formát a společné ikony. Delší popisek rozšiřuje jen své pole. Zamčené KS/SS mají přístupné jméno z popisku a samostatný popis důvodu. bankAccountOptions podporuje účty pouze s IBAN. Měření je izomorfní, klíčované formátem a popisky; nesouvisející editace neobnovuje ResizeObserver. Každé přesahující pole se zmenší podle vlastní šířky včetně popisku, bez zmenšení sousedů. Zakázané nativní vstupy včetně KS/SS a ručního účtu sdílejí podklad muted/40 se zamčeným datumem v obou režimech; hodnoty ani důvody se nemění. Částka, oba kurzy a měna mají standardní výšku control-h. Celkem používá velikost běžného VS a tučný řez v ručním i odvozeném režimu; přepínač součtu se škáluje uvnitř pole. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Zamčený účet a pevná měna sdílejí stejný stav. Měření datumů omezuje škálu na rozsah 0–1 a korekci na čtyři průchody. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně. Edit dokladu 12h: Celkem je při zákazu editace readOnly, nikoli disabled; zůstává dosažitelné klávesnicí a lze označit a kopírovat hodnotu. Edit dokladu 13: Součet Sigma používá FieldToggleButton; vynucený součet předává lockedReason. Pravý prostor určuje --field-toggle-space; ostatní datumová geometrie se nemění. 13b: identita je společná IdentityLine; Datum DPH má stálý název texts.vatDateLinkLabel (výchozí Svázat s DUZP). texts.sumFromLines, texts.selectFromDirectory a texts.enterManually jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte DsTexts.fieldToggle.sumPressed / directory / directoryUnpressed. Odstranění v 3.0.0.
+Formulář dokladu se sdílenými sekcemi a pruhy. FV/ZFV mají daňové číslo s vazbou; účetní datum výchozí sleduje vystavení. BA Bankovní pohyb s protiúčtem, ID Partner před Popisem a Datumy. Nové hodnoty hlavičky: taxDocumentNumber, taxDocumentNumberLinked, bankAccountKind, bankCode, bankIban, bankSwift.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `accountingDateLinked` | boolean | `—` |
+| `onAccountingDateLinkedChange` | (linked: boolean) => void | `—` |
+| `taxDocumentNumberWarning` | string | `—` |
+| `fieldErrors` | Partial<Record<DocumentHeaderField, string>> | `—` |
+| `fieldWarnings` | Partial<Record<DocumentHeaderField, string>> | `—` |
 
 **Examples:**
 
@@ -1712,6 +1748,8 @@ import { DocumentPrintTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8d
 import { DocumentSettingsDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Nastavení dokladu s počtem kopií StepperInput v rozsahu 1–5, platným také při psaní a šipkách.
+
 **Props:**
 
 | Prop | Type | Default |
@@ -1725,6 +1763,16 @@ import { DocumentSettingsDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4
 | `showVatCalcMode` | boolean | `false` |
 | `busy` | boolean | `—` |
 | `texts` | any | `—` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<DocumentSettingsDialog />
+```
+
+**Avoid:**
+
 
 ### DocumentStatusBadge
 
@@ -2011,7 +2059,7 @@ import { ExcelExportButton } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8
 import { Field } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek, mezera 4px, ovládání a jednotný hint nebo error. FieldValue zobrazuje hodnotu jen pro čtení. Popisek svázaný přes htmlFor má stabilní ID htmlFor + "-label" pro aria-labelledby zamčené skupiny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Popisek zachovává velikost písma; dlouhý text zkrátí výpustkou a celý text má v title. labelId váže FieldValue přes aria-labelledby bez htmlFor.
+Sdílený obal pole; error a warning jsou uvnitř ovládání před akcemi, nikdy pod polem. Zprávy předávejte také pruhu formuláře.
 
 **Props:**
 
@@ -2022,9 +2070,10 @@ Jediný obal pole na kartě záznamu i v DocumentForm: 12px polotučný popisek,
 | `labelId` | string | `—` |
 | `hint` | any | `—` |
 | `error` | any | `—` |
-| `span` | 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 19 · 20 | `—` |
+| `span` | enum | `—` |
 | `className` | string | `—` |
 | `children` | any | `—` |
+| `warning` | ReactNode | `—` |
 
 **Examples:**
 
@@ -2827,13 +2876,15 @@ _Výběr_
 import { Input } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Použijte pro textový vstup; krátký vzor zápisu předávejte přes formatPattern, vysvětlení patří pod sekci. Zakázaný vstup sdílí podklad muted/40 se zamčeným datumem; rámeček, text a průhlednost zůstávají shodné ve světlém i tmavém režimu. Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Chyba a varování mají rámeček a ukazatel s úplným tooltipem uvnitř pole. Formát přes formatPattern, nikoli nápovědu pod polem.
 
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
 | `formatPattern` | string | `—` |
+| `error` | string | `—` |
+| `warning` | string | `—` |
 
 **Examples:**
 
@@ -3389,7 +3440,15 @@ _Tři nepřečtená oznámení_
 import { OptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.  Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelná větev ignoruje mezery v dotazu i hledaném zápisu (také IBAN).
+Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onCreate` | (searchText: string) => void | `—` |
+| `createLabel` | string | `—` |
+| `createDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -3677,7 +3736,15 @@ tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' 
 import { PartnerSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `onCreate` | (searchText: string) => void | `—` |
+| `createLabel` | string | `—` |
+| `createDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -3897,13 +3964,30 @@ import { RadioGroup } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736
 import { RadioGroupItem } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Sémantické radio s geometricky vystředěnou tečkou podle středu ovládání; bez pixelového svislého posunu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<RadioGroupItem />
+```
+
+**Avoid:**
+
+
 ### RateField
 
 ```ts
 import { RateField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouze chyba. Ruční nebo upozorněný zdroj má ikonu vlevo; rozdíl proti návrhu zachovává červenou aktualizaci. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Edit dokladu 12h: hodnota jen pro čtení nemá aria-disabled na obecném div; dostupný tooltip a trvalý popis zdroje zůstávají zachovány.
+Kurz s vysvětlením zdroje a výstrahou uvnitř ovládání; ruční důvod samostatné pole, jeho chyba není pod polem.
 
 **Props:**
 
@@ -3934,6 +4018,8 @@ Kurz s jednotkou a zdrojem v přístupném tooltipu celého pole; pod polem pouz
 | `id` | string | `rate` |
 | `className` | string | `sr-only` |
 | `inputClassName` | string | `—` |
+| `error` | string | `—` |
+| `warning` | string | `—` |
 
 **Examples:**
 
@@ -3989,7 +4075,7 @@ import { ReceivedBankAccountField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a
 import { RecordActionBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko s ikonou a textem ve všech šířkách, nikdy jen ikona; busy ikonu nahrazuje spinnerem a text. Pouze sekundární akce přecházejí do kompaktního režimu. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu.
+Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí.
 
 **Props:**
 
@@ -5073,7 +5159,7 @@ import { TruncatedText } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-
 import { UnitSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+Výběr jednotky; + vpravo v hledání předá aktuální dotaz onCreateUnit, zakázaná akce vysvětlí důvod. Zachovává návrat vytvořené jednotky.
 
 **Props:**
 
@@ -5096,6 +5182,7 @@ Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před p
 | `inactiveLabel` | string | `neaktivní` |
 | `onEditSelected` | function | `—` |
 | `editSelectedLabel` | string | `—` |
+| `createDisabledReason` | string | `—` |
 
 **Examples:**
 
@@ -5314,4 +5401,75 @@ import { ZoomGrid } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 ```ts
 import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+
+### StepperInput
+
+```ts
+import { StepperInput } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Číselný krokovač pro omezený rozsah, například počet kopií. Psaní ani šipky nemohou překročit min/max; tlačítka na hranici jsou zakázaná.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | number | `—` |
+| `onChange` | (value: number) => void | `—` |
+| `min` | number | `0` |
+| `max` | number | `Number.MAX_SAFE_INTEGER` |
+| `step` | number | `1` |
+| `size` | enum | `default` |
+| `className` | string | `—` |
+| `disabled` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+
+**Examples:**
+
+_Počet kopií_
+```tsx
+<StepperInput value={copies} onChange={setCopies} min={1} max={5} step={1} />
+```
+
+**Avoid:**
+
+- Nepoužívejte radio pro počet kopií.
+- Neobcházejte rozsah vlastním číselným vstupem.
+
+
+### SearchableOptionSelect
+
+```ts
+import { SearchableOptionSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Hledatelná větev OptionSelect s akcí + vpravo v hledání. Pro běžné formuláře preferujte OptionSelect searchable.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `options` | SelectOption[] | `—` |
+| `onChange` | (value: string) => void | `—` |
+| `onCreate` | (searchText: string) => void | `—` |
+| `createLabel` | string | `—` |
+| `createDisabledReason` | string | `—` |
+| `emptyValueLabel` | ReactNode | `—` |
+| `noResultsLabel` | string | `—` |
+| `searchPlaceholder` | string | `—` |
+| `inactiveLabel` | string | `—` |
+| `unknownValueLabel` | string | `—` |
+| `allowEmpty` | boolean | `—` |
+
+**Examples:**
+
+_Základní použití_
+```tsx
+<SearchableOptionSelect />
+```
+
+**Avoid:**
+
 

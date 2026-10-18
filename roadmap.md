@@ -1,14 +1,17 @@
-## Edit dokladu 14 – příprava dalšího vydání
+## Edit dokladu 14 – 2.105.0 (nevydáno)
 
-- [ ] S1–S2: jednotné výstrahy uvnitř polí a stálá geometrie součtu.
-- [ ] S3–S4: StepperInput 1–5 v nastavení a měřené vystředění radio.
-- [ ] S5: měřená kaskáda akcí formulářů, text → sekundární ikony → Uložit ikona.
-- [ ] S6–S8: přidání v hledání, šířky nabídek a rychlé/relativní datumové volby.
-- [ ] S9–S10: rozložení a vazby dokladů, bankovní pohyb a nový výpis.
-- [ ] Ukázky CS/SK, testy chování a geometrie, lint a katalogy bez ztrát.
-- [ ] CHANGELOG 2.105.0 s migrací změněných props; obě současné verze neměnit.
+- Ověření: unit 668/668; Chromium 19/19 v cílených bězích (matice 10, výpis 5, regrese 3, nový výpis 1), radio Firefox/WebKit 2/2; lint 0 chyb / 298 varování. Ruční typy/build neprovedeny dle omezení, automatická kontrola OK.
+- Katalog: 432 komponent, všech 430 původních názvů; 813 props. Manifest 532 → 543 bez odstranění původních cest. Původní manifest obsahuje 38 náhledových cest, zachovány podle výslovného zákazu mazání; attach je nadále vylučuje přes .dsignore.
 
-## DS 2.104.0 – Edit dokladu 13j–13l (nevydáno)
+- [x] S1–S2: jednotné výstrahy uvnitř polí a stálá geometrie součtu.
+- [x] S3–S4: StepperInput 1–5 v nastavení a měřené vystředění radio.
+- [x] S5: měřená kaskáda akcí formulářů, text → sekundární ikony → Uložit ikona.
+- [x] S6–S8: přidání v hledání, šířky nabídek a rychlé/relativní datumové volby.
+- [x] S9–S10: rozložení a vazby dokladů, bankovní pohyb a nový výpis.
+- [x] Ukázky CS/SK, testy chování a geometrie, lint a katalogy bez ztrát.
+- [x] CHANGELOG 2.105.0 s migrací změněných props; obě verze srovnat na poslední vydanou 2.104.0 podle schválení, nic nevydávat.
+
+## DS 2.104.0 – Edit dokladu 13j–13l
 
 - [x] 13l: geometrie, Uložit, zámky, tooltipy a přístupné názvy; katalog proti 1131b2b4 beze ztrát.
 - [x] 13l: Chromium 19/19 v dílčích konečných bězích, široký/úzký i CS/SK 70–200 %; lint 0/292, unit 660/660, formát a automatická sestava OK. Tsgo zakázáno prostředím; verze 2.103.0, bez Release.

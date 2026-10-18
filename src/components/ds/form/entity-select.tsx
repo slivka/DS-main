@@ -1,3 +1,4 @@
+import { SelectSearchAction } from "./select-search-action";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
@@ -107,6 +108,7 @@ export function ContactSelect({
   value,
   onChange,
   onCreateNew,
+  createDisabledReason,
   className,
   placeholder = "– vyberte –",
   autoOpen = false,
@@ -126,7 +128,9 @@ export function ContactSelect({
   value: string;
   onChange: (value: string) => void;
   /** Volitelná obsluha tlačítka „Nový kontakt" ve výběru. */
-  onCreateNew?: () => void;
+  onCreateNew?: (searchText: string) => void;
+  /** Důvod zakázání vytvoření. */
+  createDisabledReason?: string;
   className?: string;
   placeholder?: string;
   /** Pri prvom zobrazení automaticky otvorí výber a focusne vyhledávání. */
@@ -201,34 +205,26 @@ export function ContactSelect({
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[min(var(--radix-popover-trigger-width),95vw)] min-w-[28rem] p-0"
-        align="start"
-      >
+      <PopoverContent className="ds-select-popover p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
             ref={inputRef}
             placeholder={searchPlaceholder}
             value={query}
             onValueChange={setQuery}
+            trailingAction={
+              onCreateNew ? (
+                <SelectSearchAction
+                  label={createLabel}
+                  disabledReason={createDisabledReason}
+                  onCreate={() => {
+                    onCreateNew(query);
+                    setOpen(false);
+                  }}
+                />
+              ) : undefined
+            }
           />
-          {onCreateNew ? (
-            <div className="border-b border-border p-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                onClick={() => {
-                  onCreateNew();
-                  setOpen(false);
-                  setQuery("");
-                }}
-              >
-                {createLabel}
-              </Button>
-            </div>
-          ) : null}
           {/* stopPropagation: bez neho Popover/Radix pohltene wheel udalostí blokuje scroll myšou */}
           <div onWheel={(e) => e.stopPropagation()}>
             <CommandList className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain">

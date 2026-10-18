@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Check, ChevronDown, Plus } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import { SelectSearchAction } from "../form/select-search-action";
 import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
@@ -10,7 +11,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "../../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { cn } from "../../../lib/utils";
@@ -30,6 +30,8 @@ export interface UnitSelectProps {
   value?: string | null;
   onChange: (id: string) => void;
   onCreateUnit?: (code: string) => Promise<UnitOption>;
+  /** Důvod zakázání založení jednotky. */
+  createDisabledReason?: string;
   disabled?: boolean;
   initialSearch?: string;
   defaultOpen?: boolean;
@@ -53,6 +55,7 @@ export function UnitSelect({
   value,
   onChange,
   onCreateUnit,
+  createDisabledReason,
   disabled,
   initialSearch = "",
   defaultOpen = false,
@@ -61,7 +64,7 @@ export function UnitSelect({
   placeholder = "Vyberte MJ",
   searchPlaceholder = "Hledat kód nebo název…",
   emptyText = "Žádná měrná jednotka nenalezena",
-  createLabel = (code) => `Přidat MJ „${code}“`,
+  createLabel,
   className,
   inactiveLabel = "neaktivní",
   onEditSelected,
@@ -128,13 +131,33 @@ export function UnitSelect({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] min-w-64 p-0">
+        <PopoverContent align="start" className="ds-select-popover p-0">
           <Command shouldFilter={false}>
             <CommandInput
               value={query}
               onValueChange={setQuery}
               placeholder={searchPlaceholder}
               onKeyDown={onKeyDown}
+              trailingAction={
+                onCreateUnit ? (
+                  <SelectSearchAction
+                    label={createLabel?.(query.trim()) ?? dsTexts.selectCreate.unit}
+                    disabled={creating || !canCreate}
+                    disabledReason={createDisabledReason}
+                    onCreate={() => {
+                      if (!onCreateUnit) return;
+                      setCreating(true);
+                      void onCreateUnit(query)
+                        .then((created) => {
+                          onChange(created.id);
+                          setOpen(false);
+                          setQuery("");
+                        })
+                        .finally(() => setCreating(false));
+                    }}
+                  />
+                ) : undefined
+              }
             />
             <CommandList>
               <CommandEmpty>{emptyText}</CommandEmpty>
@@ -155,32 +178,6 @@ export function UnitSelect({
                   </CommandItem>
                 ))}
               </CommandGroup>
-              {canCreate ? (
-                <>
-                  <CommandSeparator />
-                  <CommandGroup>
-                    <CommandItem
-                      disabled={creating}
-                      onSelect={async () => {
-                        const code = query.trim();
-                        if (!onCreateUnit) return;
-                        setCreating(true);
-                        try {
-                          const created = await onCreateUnit(code);
-                          onChange(created.id);
-                          setOpen(false);
-                          setQuery("");
-                        } finally {
-                          setCreating(false);
-                        }
-                      }}
-                    >
-                      <Plus />
-                      {createLabel(query.trim())}
-                    </CommandItem>
-                  </CommandGroup>
-                </>
-              ) : null}
             </CommandList>
           </Command>
         </PopoverContent>

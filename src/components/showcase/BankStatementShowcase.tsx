@@ -56,6 +56,8 @@ function StatementExample({ scenario }: { scenario: string }) {
     scenario === "checked" ? "checked" : scenario === "posted" ? "posted" : "open",
   );
   const [dirty, setDirty] = useState(false);
+  const [savedNew, setSavedNew] = useState(false);
+  const [addedDirection, setAddedDirection] = useState<"in" | "out" | null>(null);
   return (
     <BankStatementForm
       value={value}
@@ -81,6 +83,13 @@ function StatementExample({ scenario }: { scenario: string }) {
             }
           : undefined
       }
+      isNew={scenario === "empty" && !savedNew}
+      onSaveThenAdd={(direction) => {
+        setDirty(false);
+        setSavedNew(true);
+        setAddedDirection(direction);
+        setValue({ ...value, number: "2026/011" });
+      }}
       hasItems={scenario === "items"}
       busy={scenario === "busy"}
       dirty={dirty}
@@ -95,7 +104,16 @@ function StatementExample({ scenario }: { scenario: string }) {
           <NoticeBar tone="warning">Zůstatek se liší.</NoticeBar>
         ) : undefined
       }
-      items={scenario === "items" ? <MovementsGrid storageKey="bank-statement-items" /> : null}
+      items={
+        scenario === "items" || savedNew ? (
+          <>
+            <output aria-label="Nový pohyb">
+              {addedDirection === "in" ? "Příjem" : addedDirection === "out" ? "Výdaj" : ""}
+            </output>
+            <MovementsGrid storageKey="bank-statement-items" />
+          </>
+        ) : null
+      }
     />
   );
 }

@@ -1,5 +1,7 @@
 /** Pomocné vykreslení polí formuláře dokladu. */
 import type { ReactNode } from "react";
+import { useDsTexts } from "../../../../ds-texts";
+import { shiftDocumentDate } from "../../../../lib/date-quick-options";
 import { Input } from "../../../ui/input";
 import { Textarea } from "../../../ui/textarea";
 import { DateField } from "../../form/date-field";
@@ -19,6 +21,8 @@ export interface DocumentFieldRenderersArgs {
   can: (key: DocumentHeaderField) => boolean;
   dateWarnings?: Partial<Record<DocumentDateField, string>>;
   accountingDateLink?: DocumentAccountingDateLink;
+  fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
+  fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
 }
 /** Vrátí jednotné vykreslovače běžných, datových a našeptávaných polí. */
 export function useDocumentFieldRenderers({
@@ -27,7 +31,10 @@ export function useDocumentFieldRenderers({
   can,
   dateWarnings,
   accountingDateLink,
+  fieldErrors,
+  fieldWarnings,
 }: DocumentFieldRenderersArgs) {
+  const ds = useDsTexts();
   const field = (
     id: string,
     label: ReactNode,
@@ -39,6 +46,8 @@ export function useDocumentFieldRenderers({
     <Field
       htmlFor={id}
       label={label}
+      error={fieldErrors?.[id.replace("document-", "") as DocumentHeaderField]}
+      warning={fieldWarnings?.[id.replace("document-", "") as DocumentHeaderField]}
       span={span as 3 | 4 | 5 | 6 | 14 | 20}
       className={cn("col-span-20", mobileHalf && "col-span-10", className)}
     >
@@ -64,6 +73,22 @@ export function useDocumentFieldRenderers({
         value={value[key] ?? ""}
         onChange={(next) => patch({ [key]: next || null })}
         disabled={!can(key)}
+        baseDate={key === "dueDate" ? (value.issueDate ?? undefined) : undefined}
+        quickOptions={
+          key === "dueDate"
+            ? [
+                { label: ds.dateQuick.sevenDays, compute: (base) => shiftDocumentDate(base, 7) },
+                {
+                  label: ds.dateQuick.fourteenDays,
+                  compute: (base) => shiftDocumentDate(base, 14),
+                },
+                {
+                  label: ds.dateQuick.oneMonth,
+                  compute: (base) => shiftDocumentDate(base, 1, "months"),
+                },
+              ]
+            : undefined
+        }
         link={
           options?.link ??
           (key === "accountingDate" && accountingDateLink

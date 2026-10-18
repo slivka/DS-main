@@ -101,7 +101,7 @@ export function MultiSelect({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[min(24em,calc(100vw-2rem))] p-0"
+          className="ds-select-popover p-0"
           align="start"
           style={zoom ? { fontSize: gridFontSize(zoom) } : undefined}
         >

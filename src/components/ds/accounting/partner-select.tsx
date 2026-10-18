@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-import { Check, ChevronDown, Download, Plus } from "lucide-react";
+import { Check, ChevronDown, Download } from "lucide-react";
+import { SelectSearchAction } from "../form/select-search-action";
 import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
@@ -46,7 +47,8 @@ export function PartnerSelect({
   placeholder = "Vyberte partnera",
   searchPlaceholder = "Hledat název nebo IČO…",
   emptyText = "Žádný partner nenalezen",
-  createLabel = "Nový partner",
+  createLabel,
+  createDisabledReason,
   aresLabel = "Načíst z ARES",
   inactiveLabel = "neaktivní",
   disabled,
@@ -70,6 +72,8 @@ export function PartnerSelect({
   searchPlaceholder?: string;
   emptyText?: string;
   createLabel?: string;
+  /** Důvod zakázání vytvoření partnera. */
+  createDisabledReason?: string;
   aresLabel?: string;
   inactiveLabel?: string;
   disabled?: boolean;
@@ -152,16 +156,25 @@ export function PartnerSelect({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] min-w-[320px] p-0"
-          align="start"
-        >
+        <PopoverContent className="ds-select-popover p-0" align="start">
           <Command>
             <CommandInput
               placeholder={searchPlaceholder}
               value={query}
               onValueChange={setQuery}
               onKeyDown={onKeyDown}
+              trailingAction={
+                onCreate ? (
+                  <SelectSearchAction
+                    label={createLabel ?? dsTexts.selectCreate.partner}
+                    disabledReason={createDisabledReason}
+                    onCreate={() => {
+                      onCreate(query);
+                      changeOpen(false);
+                    }}
+                  />
+                ) : undefined
+              }
             />
             <CommandList>
               <CommandEmpty>{emptyText}</CommandEmpty>
@@ -176,7 +189,9 @@ export function PartnerSelect({
                     }}
                     className="gap-2"
                   >
-                    <span className="min-w-0 flex-1 truncate">{partner.name}</span>
+                    <span className="min-w-0 flex-1 truncate" title={partner.name}>
+                      {partner.name}
+                    </span>
                     {partner.ico ? (
                       <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
                         {partner.ico}
@@ -186,22 +201,8 @@ export function PartnerSelect({
                   </CommandItem>
                 ))}
               </CommandGroup>
-              {onCreate || onLoadFromAres ? (
+              {onLoadFromAres ? (
                 <div className="flex flex-wrap gap-2 border-t p-2">
-                  {onCreate ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        changeOpen(false);
-                        onCreate(query);
-                      }}
-                    >
-                      <Plus className="size-4" />
-                      {createLabel}
-                    </Button>
-                  ) : null}
                   {onLoadFromAres ? (
                     <Button
                       type="button"
