@@ -2,7 +2,7 @@
 import { Input } from "../../../ui/input";
 import { OptionSelect } from "../../form/option-select";
 import { SectionHeading } from "../../layout/section-heading";
-import { Field, FieldGrid } from "../../layout/form-field-layout";
+import { Field } from "../../layout/form-field-layout";
 import { useDsTexts } from "../../../../ds-texts";
 import type { DocumentHeaderValue } from "./document-form-types";
 
@@ -12,8 +12,10 @@ export interface BankMovementAccountProps {
   value: DocumentHeaderValue;
   /** Změna hlavičky. */
   patch: (next: Partial<DocumentHeaderValue>) => void;
-  /** Kódy bank dodané aplikací. */
+  /** Kódy bank dodané aplikací (bez názvů). */
   bankCodes?: string[];
+  /** Kódy bank s názvy z aplikace; nabídka i pole „0100 – Komerční banka“. */
+  bankCodeOptions?: Array<{ code: string; name: string }>;
   /** Zakázání editace. */
   disabled?: boolean;
 }
@@ -23,6 +25,7 @@ export function BankMovementAccount({
   value,
   patch,
   bankCodes = [],
+  bankCodeOptions,
   disabled,
 }: BankMovementAccountProps) {
   const t = useDsTexts().documentEdit;
@@ -30,8 +33,13 @@ export function BankMovementAccount({
   return (
     <>
       <SectionHeading>{t.counteraccountSection}</SectionHeading>
-      <FieldGrid cols={12}>
-        <Field label={t.accountKind} htmlFor="document-bankAccountKind" span={3}>
+      <div data-slot="bank-movement-account" className="grid grid-cols-20 gap-3">
+        <Field
+          label={t.accountKind}
+          htmlFor="document-bankAccountKind"
+          span={4}
+          className="col-span-20"
+        >
           <OptionSelect
             id="document-bankAccountKind"
             value={iban ? "iban" : "domestic"}
@@ -44,7 +52,12 @@ export function BankMovementAccount({
             onChange={(kind) => patch({ bankAccountKind: kind === "iban" ? "iban" : "domestic" })}
           />
         </Field>
-        <Field label={iban ? t.iban : t.accountNumber} htmlFor="document-movement-account" span={6}>
+        <Field
+          label={iban ? t.iban : t.accountNumber}
+          htmlFor="document-movement-account"
+          span={8}
+          className="col-span-20"
+        >
           <Input
             id="document-movement-account"
             value={iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
@@ -59,7 +72,12 @@ export function BankMovementAccount({
             }
           />
         </Field>
-        <Field label={iban ? t.swift : t.bankCode} htmlFor="document-bank-code" span={3}>
+        <Field
+          label={iban ? t.swift : t.bankCode}
+          htmlFor="document-bank-code"
+          span={8}
+          className="col-span-20"
+        >
           {iban ? (
             <Input
               id="document-bank-code"
@@ -73,12 +91,21 @@ export function BankMovementAccount({
               value={value.bankCode}
               searchable
               disabled={disabled}
-              options={bankCodes.map((code) => ({ value: code, label: code }))}
+              options={
+                bankCodeOptions
+                  ? bankCodeOptions.map((option) => {
+                      const label = t.bankCodeOption
+                        .replace("{code}", option.code)
+                        .replace("{name}", option.name);
+                      return { value: option.code, label, searchText: label };
+                    })
+                  : bankCodes.map((code) => ({ value: code, label: code }))
+              }
               onChange={(bankCode) => patch({ bankCode })}
             />
           )}
         </Field>
-      </FieldGrid>
+      </div>
     </>
   );
 }

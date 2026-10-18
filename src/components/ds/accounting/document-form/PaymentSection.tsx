@@ -51,6 +51,8 @@ export interface DocumentPaymentSectionProps {
   field: FieldRenderer;
   /** Vazba VS na číslo daňového dokladu; bez ní pole nemá zámek. */
   vsLink?: VariableSymbolLinkState;
+  /** grid20 = VS (4) · KS (8) · SS (8) na mřížce formuláře (bankovní pohyb). */
+  layout?: "flex" | "grid20";
   /** Text zamčeného VS bez čísla dokladu. */
   vsPendingText?: string;
 }
@@ -77,6 +79,13 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     field,
   } = p;
   const reasonId = useId();
+  const grid = p.layout === "grid20";
+  const item = (span: number) =>
+    grid
+      ? { span, mobileHalf: false, className: "" }
+      : { span: undefined, mobileHalf: undefined, className: PAYMENT_ITEM };
+  const vsItem = item(4);
+  const symbolItem = item(8);
   const symbolControl = (control: ReactNode, id: string) =>
     symbolsDisabledReason ? (
       <Tooltip disableHoverableContent>
@@ -109,7 +118,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
         data-slot="document-payment-section"
         // Pole se dělí o celou šířku podle počtu viditelných; při nedostatku místa
         // se zalomí celé pole (pravidlo 20), nikdy nezůstane prázdná třetina.
-        className="flex flex-wrap items-start gap-3"
+        className={grid ? "mt-3 grid grid-cols-20 gap-3" : "flex flex-wrap items-start gap-3"}
       >
         {f.symbols
           ? field(
@@ -126,9 +135,9 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 pendingText={p.vsPendingText}
                 warning={p.vsLink?.warning}
               />,
-              undefined,
-              undefined,
-              PAYMENT_ITEM,
+              vsItem.span,
+              vsItem.mobileHalf,
+              vsItem.className,
             )
           : null}
         {f.symbols
@@ -161,9 +170,9 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 ),
                 "document-constantSymbol",
               ),
-              undefined,
-              undefined,
-              PAYMENT_ITEM,
+              symbolItem.span,
+              symbolItem.mobileHalf,
+              symbolItem.className,
             )
           : null}
         {f.symbols
@@ -180,9 +189,9 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
                 />,
                 "document-specificSymbol",
               ),
-              3,
+              grid ? 8 : 3,
               false,
-              PAYMENT_ITEM,
+              symbolItem.className,
             )
           : null}
         {paymentMethodOptions
