@@ -405,7 +405,7 @@ export function DateField({
             </>
           )}
         </div>
-        {hint ? <FieldHintIcon hint={hint} className="sr-only" /> : null}
+        {hint ? <span className="sr-only">{hint}</span> : null}
       </div>
     </TooltipProvider>
   );

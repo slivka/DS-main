@@ -108,7 +108,7 @@ export function Field({
           <FieldFeedbackIndicator error={error} warning={warning} />
         </div>
       </FieldFeedbackContext.Provider>
-      {!label && hint ? <FieldHintIcon hint={hint} className="sr-only" /> : null}
+      {!label && hint ? <span className="sr-only">{hint}</span> : null}
     </div>
   );
 }
