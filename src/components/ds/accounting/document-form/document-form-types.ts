@@ -3,6 +3,7 @@
  * Vlastní: datový kontrakt formuláře a kompatibilní české výchozí texty.
  * Nesmí: vykreslovat UI ani obsahovat stav formuláře.
  */
+import type { FieldErrorLink } from "../../feedback/field-error-summary";
 import type { ReactNode } from "react";
 import type {
   RecordMoreAction,
@@ -104,7 +105,15 @@ export type DocumentSaveAction = RecordSaveAction;
 export type DocumentPrimaryAction = RecordPrimaryAction;
 export type DocumentMoreAction = RecordMoreAction;
 export type DocumentSettingsAction = { onOpen: () => void };
-export type DocumentFormError = { title?: string; message: ReactNode; onClose?: () => void };
+export type DocumentFormError = {
+  title?: string;
+  message: ReactNode;
+  onClose?: () => void;
+  /** Odkazy na chybná pole (max 5 + „a další N“); klik fokusuje pole i v řádku mřížky. */
+  fieldErrors?: FieldErrorLink[];
+  /** Vlastní výběr pole ze souhrnu. */
+  onFieldErrorSelect?: (link: FieldErrorLink) => void;
+};
 export interface DocumentIdentity {
   variant: DocumentIdentityVariant;
   book: string;
