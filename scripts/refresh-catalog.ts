@@ -12,6 +12,8 @@ interface CatalogComponent {
   name: string;
   usage?: string;
   props?: CatalogProp[];
+  examples?: { label: string; code: string }[];
+  antipatterns?: string[];
 }
 interface Catalog {
   components: CatalogComponent[];
@@ -33,10 +35,29 @@ export function refreshCatalog() {
   if (month)
     month.usage =
       "Vybere měsíc a rok společným kalendářem. Escape zavře nabídku přímo; Vymazat vrací null. emptyLabel pojmenuje prázdný výběr. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.";
+  const record = catalog.components.find((component) => component.name === "RecordDialog");
+  if (record) {
+    const source = readFileSync("src/components/ds/layout/RecordDialog.tsx", "utf8");
+    for (const name of ["activeTab", "onTabChange"]) {
+      if (!source.includes(`${name}?:`)) throw new Error(`Chybí RecordDialog.${name} ve zdroji.`);
+      record.props ??= [];
+      if (!record.props.some((prop) => prop.name === name))
+        record.props.push({ name, type: name === "activeTab" ? "string" : "function" });
+    }
+    if (!record.usage?.includes("activeTab"))
+      record.usage = (record.usage ?? "") + " Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS.";
+    record.examples ??= [];
+    const label = "Partner na zvolené záložce";
+    if (!record.examples.some((example) => example.label === label))
+      record.examples.push({ label, code: '<RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />' });
+    record.antipatterns ??= [];
+    const rule = "V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.";
+    if (!record.antipatterns.includes(rule)) record.antipatterns.push(rule);
+  }
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
-  for (const component of [status, calendar, month]) {
+  for (const component of [status, calendar, month, record]) {
     if (!component) continue;
     const heading = `### ${component.name}\n`;
     const start = markdown.indexOf(heading);

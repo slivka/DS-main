@@ -15,6 +15,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - `dirty` i u nového záznamu; bez práva `readOnly`, nikdy zakázané vstupy. Proč: ochrana zavření a režim čtení řeší DS centrálně.
 - V `readOnly` se jako hodnota vykreslí jen textové `Input` (bez `type`, text, email, tel, url, number; password jako „••••“); `search`, `hidden`, `file`, `checkbox` aj. zůstávají ovládáním. Část dialogu, která má zůstat ovladatelná (filtr, vyhledání v seznamu), obal `<RecordReadOnlyProvider value={false}>`. Proč: filtr ani skryté pole nejsou hodnotou záznamu.
 - Dialog v panelu drží fokus uvnitř (Tab/Shift+Tab cyklí); vnořené potvrzení má vlastní past. Proč: fokus nesmí utéct za překryv.
+- Zvolenou záložku řídí `activeTab` + `onTabChange`; bez `activeTab` vybírá DS. Proč: aplikace může po chybě uložení otevřít příslušnou sekci.
 
 - Před implementací vyhledej existující komponenty, hooky, typy a pomocné funkce a použij je; druhou implementaci stejného pravidla nevytvářej. Proč: jedno místo pravidla.
 - Zachovávej existující chování mimo rozsah zadání; závažný problém ohlas a navrhni řešení, nevyžádaný refaktoring nedělej. Proč: každá zpráva má jedno téma a kontroluje se diffem.

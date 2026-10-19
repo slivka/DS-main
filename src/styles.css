@@ -99,7 +99,8 @@
   --control-h: 2.25rem;
   --badge-h-sm: 1.25rem;
   --badge-h-md: 1.5rem;
-  --badge-cap-offset: 0.075em;
+  /* Firefox bez text-box: korekce metrik Work Sans, měřeno proti výšce H. */
+  --badge-cap-offset: -0.04em;
   --identity-account-width: 18rem;
   --identity-account-accessories-width: 4rem;
   --calendar-width: 22rem;
