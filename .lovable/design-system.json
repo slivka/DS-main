@@ -3362,14 +3362,11 @@
           "name": "size",
           "type": "enum",
           "values": [
+            "sm",
             "md",
             "lg"
           ],
-          "default": "sm"
-        },
-        {
-          "name": "wide",
-          "type": "boolean"
+          "required": true
         },
         {
           "name": "contentClassName",
@@ -3417,6 +3414,10 @@
           "type": "any"
         },
         {
+          "name": "deleteAction",
+          "type": "any"
+        },
+        {
           "name": "dirty",
           "type": "boolean",
           "default": "false"
@@ -3439,9 +3440,13 @@
         {
           "name": "fieldErrors",
           "type": "any"
+        },
+        {
+          "name": "error",
+          "type": "any"
         }
       ],
-      "usage": "Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs. Stav záznamu přes status (Aktivní / Neaktivní vedle nadpisu) a lifecycleAction (Deaktivovat / Aktivovat vlevo vedle Odstranit, s dirty nabídne „Uložit změny a …“). fieldErrors zobrazí stejný souhrn sticky nad patičkou dialogu.",
+      "usage": "Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky.",
       "examples": [
         {
           "label": "Detail prostoru jen pro čtení",
@@ -3454,12 +3459,20 @@
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
           "code": "<RecordDialog {...props} fieldErrors={fieldErrors}>{fields}</RecordDialog>"
+        },
+        {
+          "label": "Číselník s ochranou změn, chybou a Odstranit (2.111.0)",
+          "code": "<RecordDialog open={open} onOpenChange={setOpen} title=\"Kniha FP\" size=\"md\" dirty={dirty} busy={saving} error={saveError} onSubmit={save} deleteAction={{ onClick: remove, confirm: { title: \"Odstranit knihu FP?\" } }}>\n  <FieldGrid cols={12}>…</FieldGrid>\n</RecordDialog>"
         }
       ],
       "antipatterns": [
         "Nevykreslujte tlačítko Uložit v režimu readOnly.",
         "Nevytvářejte vlastní lištu záložek mimo tabs.",
-        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
+        "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.",
+        "Nevkládejte Alert do obsahu dialogu – chybu uložení předejte v error.",
+        "Nepřidávejte vlastní tlačítko Odstranit do extraActions – použijte deleteAction.",
+        "Bez práva upravit nezakazujte vstupy – použijte readOnly.",
+        "Nepřepínejte submitLabel na „Ukládám…“ – stačí busy."
       ]
     },
     {
