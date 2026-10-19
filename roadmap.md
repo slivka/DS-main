@@ -16,7 +16,9 @@
 - [x] `check:quick` (průběžná) a `check:full` (úplná), ESLint cache
 - [x] `check:catalog` místo jednorázových verify-*.py, `.lovable/release-base.json`, `.lovable/catalog-removals.json`
 - [x] GitHub Actions E2E (ručně / noc / vydání), Playwright na CI 4 workery, 1 opakování
-- [ ] První běh v GitHubu (spustí Petr)
+- [x] První běh GitHub Actions 39228766521: selhal na úložišti unit testů.
+- [x] Oprava CI: Bun 1.3.3 přes .bun-version, úložiště happy-dom, Ubuntu 24.04; checkout v7, cache v6, upload-artifact v7 (ověřeno Node 24); check:quick --harness a actionlint prošly, regresní testy 20/20.
+- [ ] Opakovaný běh GitHub Actions po opravě: Claude zde nemá dostupné připojení GitHub pro spuštění workflow.
 
 ## DS 2.108.0 – Edit dokladu 15
 - [x] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
