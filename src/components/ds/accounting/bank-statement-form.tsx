@@ -42,7 +42,7 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   value: BankStatementValue;
   /** Změna editovaných údajů. */
   onChange: (value: BankStatementValue) => void;
-  /** Stav výpisu. */
+  /** Stav výpisu. Hodnota „checked“ je @deprecated 2.108.0 – kontrola výpisu je zrušená. */
   status: "open" | "checked" | "posted";
   /** Kniha výpisu. */
   book: ReactNode;

@@ -39,7 +39,7 @@ export interface BankStatementTexts {
   difference: string;
   /** Popisek items. */
   items: string;
-  /** Důvod zamčení zkontrolovaného výpisu. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená; klíč zůstává kvůli typům aplikací. */
   lockedChecked: string;
   /** Důvod zamčení zaúčtovaného výpisu. */
   lockedPosted: string;
