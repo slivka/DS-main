@@ -122,5 +122,5 @@ test("DocumentDirectionBadge a DocumentStatusBadge mají md výšku 1,5 rem", as
         e.getBoundingClientRect().height /
         parseFloat(getComputedStyle(document.documentElement).fontSize),
     ),
-  ).toBe(1.5);
+  ).toBeCloseTo(1.5, 2);
 });

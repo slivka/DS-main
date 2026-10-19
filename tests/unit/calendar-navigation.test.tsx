@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, mock } from "bun:test";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, act } from "@testing-library/react";
 import { Calendar } from "../../src/components/ui/calendar";
 import { DocumentStatusBadge } from "../../src/components/ds/accounting/document-status-badge";
 import { MonthYearSelect } from "../../src/components/ds/form/month-year-select";
@@ -90,7 +90,7 @@ describe("Calendar navigation", () => {
     render(<Calendar mode="single" selected={date} />);
     fireEvent.click(screen.getByRole("button", { name: /říjen 2026/i }));
     const october = screen.getByRole("button", { name: "říjen", exact: true });
-    october.focus();
+    act(() => october.focus());
     fireEvent.keyDown(october, { key: "ArrowRight" });
     expect(document.activeElement).toBe(
       screen.getByRole("button", { name: "listopad", exact: true }),
@@ -100,7 +100,7 @@ describe("Calendar navigation", () => {
     const { container } = render(<Calendar mode="single" selected={date} />);
     const day = container.querySelector<HTMLButtonElement>('button[data-day="2026-10-19"]');
     if (!day) throw new Error("Chybí den");
-    day.focus();
+    act(() => day.focus());
     fireEvent.keyDown(day, { key: "PageDown" });
     expect(screen.getByRole("button", { name: /listopad 2026/i })).toBeDefined();
     const next = document.activeElement;
