@@ -2566,7 +2566,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   visibility: hidden;
   white-space: nowrap;
   padding-inline: 0.75rem;
-  padding-right: 3rem;
+  padding-right: 3.25rem;
   font-size: var(--text-sm);
   font-family: var(--font-mono);
 }
