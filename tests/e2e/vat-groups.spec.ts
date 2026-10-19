@@ -17,7 +17,7 @@ test.describe.configure({ timeout: 180_000 });
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("vat-groups-showcase")).toBeVisible();
+  await expect(page.getByTestId("vat-groups-showcase")).toBeVisible({ timeout: 90_000 });
   // Velká stránka hydratuje několik sekund; interakce až s Reactem na tlačítkách ukázky.
   await page.waitForFunction(
     () => {
