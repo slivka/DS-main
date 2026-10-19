@@ -128,6 +128,10 @@ export interface RecordDialogProps {
   readOnly?: boolean;
   /** Volitelné rovnocenné sekce detailu, jejichž obsah spravuje volající. */
   tabs?: RecordDialogTab[];
+  /** Řízená aktivní záložka; bez této hodnoty dialog spravuje výběr sám. */
+  activeTab?: string;
+  /** Žádost o změnu záložky uživatelem; řízenou hodnotu aktualizuje aplikace. */
+  onTabChange?: (value: string) => void;
   /** Stav záznamu vedle nadpisu (Aktivní / Neaktivní). U nového záznamu nepředávejte. */
   status?: RecordDialogStatus;
   /** Akce životního cyklu v patičce vlevo vedle Odstranit. U nového záznamu nepředávejte. */
@@ -212,6 +216,8 @@ export function RecordDialog({
   sidePanelExtra,
   readOnly = false,
   tabs,
+  activeTab: controlledTab,
+  onTabChange,
   status,
   lifecycleAction,
   deleteAction,
@@ -280,7 +286,12 @@ export function RecordDialog({
     />
   ) : null;
   const [panelOpen, setPanelOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabs?.[0]?.value ?? "");
+  const [localTab, setLocalTab] = useState(tabs?.[0]?.value ?? "");
+  const activeTab = controlledTab ?? localTab;
+  const changeTab = (value: string) => {
+    if (controlledTab === undefined) setLocalTab(value);
+    onTabChange?.(value);
+  };
   const pane = usePane();
   const [paneElement, setPaneElement] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -297,9 +308,9 @@ export function RecordDialog({
     }
   }, [open]);
   useEffect(() => {
-    if (tabs?.length && !tabs.some((tab) => tab.value === activeTab))
-      setActiveTab(tabs[0]?.value ?? "");
-  }, [activeTab, tabs]);
+    if (controlledTab === undefined && tabs?.length && !tabs.some((tab) => tab.value === localTab))
+      setLocalTab(tabs[0]?.value ?? "");
+  }, [controlledTab, localTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
   const showDelete = Boolean(deleteAction) && !readOnly;
@@ -346,7 +357,7 @@ export function RecordDialog({
             {children}
             {tabs?.length === 1 ? tabs[0]?.content : null}
             {tabs && tabs.length > 1 ? (
-              <RecordDialogTabs tabs={tabs} value={activeTab} onValueChange={setActiveTab} />
+              <RecordDialogTabs tabs={tabs} value={activeTab} onValueChange={changeTab} />
             ) : null}
           </RecordReadOnlyProvider>
           <RecordDialogErrorStrip error={error} fieldErrors={fieldErrors} />
