@@ -78,11 +78,26 @@ export const MonthYearSelect = forwardRef<HTMLDivElement, MonthYearSelectProps>(
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
+              initialFocus
               selected={selected}
               initialView="months"
               minDate={new Date(minYear, 0, 1)}
               maxDate={new Date(maxYear, 11, 31)}
               onClose={() => setOpen(false)}
+              footerActions={
+                value ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      onChange(null);
+                      setOpen(false);
+                    }}
+                  >
+                    {ds.date.clear}
+                  </Button>
+                ) : undefined
+              }
               onMonthSelect={(date) => {
                 onChange(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
                 setOpen(false);

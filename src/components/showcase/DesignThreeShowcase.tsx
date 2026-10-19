@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 import {
   Button,
+  Badge,
   Calendar,
   DateField,
   DocumentStatusBadge,
-  DocumentDirectionBadge,
   MonthYearSelect,
   Field,
   FieldGrid,
@@ -53,9 +53,10 @@ export function DesignThreeShowcase() {
   return (
     <div className="space-y-6" data-testid="design-three" data-ready={ready}>
       <PageHeader
-        title="Design 3"
+        title="Účetní doklady – Ýy"
         titleBadge={<DocumentStatusBadge status="posted" approved size="md" />}
       />
+      <Badge size="md">ÚČETNÍ DOKLADY</Badge>
       <SectionHeading>Záložky panelů</SectionHeading>
       <div className="flex gap-2">
         {([1, 2, 3] as const).map((n) => (
@@ -120,7 +121,6 @@ export function DesignThreeShowcase() {
         />
       </div>
       <MonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} />
-      <DocumentDirectionBadge direction="in" />
       <SectionHeading>Identifikace dokladu</SectionHeading>
       <div className="@container" data-testid="identity-demo">
         <DocumentIdentityLine
@@ -132,6 +132,7 @@ export function DesignThreeShowcase() {
             account: { side: "MD", label: "221.001 – Běžný bankovní účet" },
           }}
           fallback=""
+          direction="in"
           texts={DEFAULT_DOCUMENT_FORM_TEXTS}
           accountLabel={
             account === "221001"

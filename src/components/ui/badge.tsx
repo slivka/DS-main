@@ -41,7 +41,13 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(function Badge(
       className={cn(badgeVariants({ variant, size }), className)}
       {...props}
     >
-      <span className="ds-badge-text inline-flex items-center gap-1">{children}</span>
+      {React.Children.map(children, (child) =>
+        typeof child === "string" || typeof child === "number" ? (
+          <span className="ds-badge-text">{child}</span>
+        ) : (
+          child
+        ),
+      )}
     </div>
   );
 });

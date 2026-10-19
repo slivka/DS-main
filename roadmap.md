@@ -1,4 +1,5 @@
 ## DS 2.110.0 – Design 3 (nevydáno)
+- [x] Opravné kolo po 831f9342: body 1–12; Chromium 13/13 (54,0 s), unit 852/852, lint 0 chyb / 322 varování; full --harness 49,5 s; katalog 470/922 bez ztrát. Hledání překlepu mimo CHANGELOG: 0 výsledků.
 - [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
 - [x] D1 záložky panelu, D2 tlačítka, D3 kalendář.
 - [x] D4 štítky a nadpis, D5 identita bez poskočení.

@@ -3,6 +3,9 @@
 ## 2.110.0 (nevydáno) – Design 3
 
 ### Změny
+- Opravné kolo po 831f9342: katalog i reference obnovují „Schvájen“ na „Schválen“ z DsTexts; nadpis bez text-box ořezu, účet rezervuje 18 rem i místo ovládání bez překrytí čísla.
+- Kalendář slučuje disabled s mezemi, inline při vykreslení nebere fokus a className patří jen obalu. Pohledy měsíců/let používají skupinu tlačítek s aria-pressed/aria-current. MonthYearSelect zavře Escape přímo a nabízí Vymazat → null přes překlady DsTexts.
+- Badge centruje text stejně jako StatusBadge; pás záložek ořezává vodorovný přesah při přetažení a povoluje pouze 1 px spodní linky. Chromium test měří nadpis, účet, směr i stav dokladu.
 - Záložky panelu mají stálou geometrii a aktivní ouško navazující na obsah.
 - Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
 - Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
@@ -13,6 +16,7 @@
 - Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
 
 ### Kontroly
+- Opravné kolo po 831f9342: Chromium pouze `design-three.spec.ts` 13/13 (54,0 s), unit 852/852; lint 0 chyb / 322 varování, formát a peněžní kontrola OK; `check:full --harness` 49,5 s. Výšky identity 70/100/200 %, účet nejméně 18 rem a celý název při dostatku místa; Range textu nadpisu uvnitř h1, výšky obou štítků stejné. Hledání chybného schválení mimo CHANGELOG: 0 výsledků. Verze zůstává 2.109.0, bez vydání.
 - `check:catalog` proti vydané 2.109.0 (29bdeb24): 470 → 470 komponent, 910 → 922 props; 12 přidaných props, žádné odebrané položky.
 - `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
 - Nový Chromium spec Design 3: 10/10; plná sada a Firefox/WebKit se v Lovable nespouštěly.

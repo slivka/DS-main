@@ -131,9 +131,11 @@ export function DocumentIdentityLine({
         </span>
         {editingAccount ? (
           <span className="document-identity-account-box">
-            <span aria-hidden="true" className="document-identity-account-measure">
-              {accountLabel ?? account.label}
-            </span>
+            <span
+              aria-hidden="true"
+              className="document-identity-account-measure"
+              data-label={accountLabel ?? account.label}
+            />
             <AccountSelect
               id="document-mainAccountId"
               ariaLabel={texts.mainAccountSelect}
@@ -150,9 +152,16 @@ export function DocumentIdentityLine({
           <span
             id="document-mainAccountId"
             data-slot="document-identity-account"
-            className="document-identity-account-box flex items-center truncate border border-transparent rounded-md px-3 text-sm font-normal"
+            className="document-identity-account-box flex items-center border border-transparent rounded-md text-sm font-normal"
           >
-            <span className="truncate">{accountLabel ?? account.label}</span>
+            <span
+              aria-hidden="true"
+              className="document-identity-account-measure"
+              data-label={accountLabel ?? account.label}
+            />
+            <span className="absolute inset-0 flex items-center px-3">
+              <span className="truncate">{accountLabel ?? account.label}</span>
+            </span>
           </span>
         )}
         <span className="document-identity-pencil-slot">{pencil}</span>

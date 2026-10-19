@@ -11,6 +11,8 @@ export interface CalendarViewsProps {
   month: Date;
   selected?: Date;
   today: Date;
+  /** Fokus pouze po otevření nabídky nebo uživatelském přepnutí pohledu. */
+  autoFocus?: boolean;
   isAllowed: (from: Date, to: Date) => boolean;
   onMonth: (month: Date) => void;
   /** Výběr konkrétního měsíce. */
@@ -29,6 +31,7 @@ export function CalendarViews({
   month,
   selected,
   today,
+  autoFocus = false,
   isAllowed,
   onMonth,
   onMonthSelect,
@@ -40,11 +43,12 @@ export function CalendarViews({
   const start = Math.floor(year / 12) * 12;
   const names = calendarMonthNames(ds.intlLocale);
   useEffect(() => {
+    if (!autoFocus) return;
     const target =
       ref.current?.querySelector<HTMLButtonElement>('button[aria-pressed="true"]:not(:disabled)') ??
       ref.current?.querySelector<HTMLButtonElement>("button:not(:disabled)");
     target?.focus();
-  }, [view, year]);
+  }, [view, year, autoFocus]);
   const move = (direction: number) =>
     onMonth(new Date(year + direction * (view === "years" ? 12 : 1), month.getMonth(), 1));
   return (
@@ -89,7 +93,7 @@ export function CalendarViews({
       </div>
       <div
         ref={ref}
-        role="grid"
+        role="group"
         aria-label={view === "months" ? ds.date.month : ds.date.year}
         className="calendar-view-grid grid grid-cols-3 gap-2"
         onKeyDown={(event) => {
@@ -118,6 +122,7 @@ export function CalendarViews({
               variant={chosen ? "default" : "ghost"}
               size="control"
               aria-pressed={chosen || false}
+              aria-current={current ? "date" : undefined}
               data-today={current || undefined}
               disabled={
                 !isAllowed(new Date(y, m, 1), new Date(y, view === "years" ? 12 : m + 1, 0))

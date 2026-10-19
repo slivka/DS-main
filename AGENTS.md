@@ -50,6 +50,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - `meta.version` = `package.json` = poslední VYDANÁ verze; CHANGELOG a roadmap nesou další minor „(nevydáno)“. Nepromítne-li se commit vydání, nastav obě hodnoty a commit zapiš do `.lovable/release-base.json`.
 - Katalog jen přes `bun run check:catalog`; odebrání jen záznamem v `.lovable/catalog-removals.json`; čísla katalogu v CHANGELOG jen z jeho výstupu. Proč: žádné skripty s natvrdo commitem.
+- Refresh authored catalog defaults and render affected reference sections through check:catalog --refresh without publishing. Why: code-derived defaults and inherited documentation must agree before release.
 
 
 

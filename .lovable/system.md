@@ -4,6 +4,8 @@
 
 - Aktivní záložka panelu je ouško v barvě obsahu, aktivní panel má primární horní linku, ostatní neutrální. Žádný stav nemění geometrii záložky.
 - Kalendář má stejně velké pohledy dnů, měsíců a let; měsíc se zobrazuje v prvním pádě. Používejte společný Calendar, nikoli dropdown caption.
+- Inline Calendar při vykreslení nepřebírá fokus; v nabídce předávejte initialFocus/autoFocus. Vlastní zakázané dny se slučují s mezemi. MonthYearSelect zavře Escape přímo a Vymazat vrátí null.
+- Nadpis nesmí používat text-box ořez; diakritika a dotahy musí zůstat viditelné. Centrovat lze text štítku, nikoli ořezávat nadpis.
 - Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
 
 ## Dialogy záznamů
