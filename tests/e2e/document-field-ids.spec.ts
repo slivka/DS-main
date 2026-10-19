@@ -121,7 +121,8 @@ test("Vlastní chyba buňky: oprava částky odstraní rámeček i položku pruh
   await input.press("Enter");
   await expect(cell).toHaveAttribute("aria-invalid", "true");
   const bar = form.locator('[data-slot="form-issues-bar"]');
-  await expect(bar).toContainText("částk");
+  await expect(bar).toContainText(/Částka/);
+  await expect(bar).not.toContainText("– amount:");
   await cell.click();
   await cell.locator("input").fill("12 500");
   await cell.locator("input").press("Enter");

@@ -23,7 +23,7 @@ export interface DocumentIssueProjection {
   issueFieldErrors: Partial<Record<DocumentHeaderField, string>>;
   /** Varování polí hlavičky (žlutě). */
   issueFieldWarnings: Partial<Record<DocumentHeaderField, string>>;
-  /** Položky buněk řádků – jen serverové; vlastní chyby editoru se nevrací. */
+  /** Položky buněk od aplikace (klient i server); vlastní chyby editoru se nevrací. */
   cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]>;
 }
 

@@ -219,6 +219,8 @@ export function DocumentForm(props: DocumentFormProps) {
       variableSymbolLabel: t.variableSymbol,
       taxNumberLabel: dsTexts.documentEdit.taxNumber,
       fieldLabels: {
+        taxDocumentNumber: dsTexts.documentEdit.taxNumber,
+        counterpartyCountry: dsTexts.documentForm.country,
         bankCode: dsTexts.documentEdit.bankCode,
         bankIban: dsTexts.documentEdit.iban,
         bankSwift: dsTexts.documentEdit.swift,
@@ -240,8 +242,7 @@ export function DocumentForm(props: DocumentFormProps) {
     bankMovement,
     showTaxNumber,
     taxDocumentNumberWarning,
-    // Neaktivní validace skrývá jen klientské chyby; serverové chyby z projekce a žlutá
-    // varování zůstávají v polích vždy (projekce klientské chyby sama vyfiltruje).
+    // Neaktivní validace skrývá jen klientské chyby; projekce ponechá server i varování.
     fieldErrors: { ...(validationActive === false ? {} : fieldErrors), ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
     onInvalidDate: (key, invalid) =>
