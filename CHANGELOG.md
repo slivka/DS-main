@@ -3,6 +3,9 @@
 ## 2.110.0 (nevydáno) – Design 3
 
 ### Změny
+- Opravné kolo po 831f9342: katalog i reference obnovují „Schvájen“ na „Schválen“ z DsTexts; nadpis bez text-box ořezu, účet rezervuje 18 rem i místo ovládání bez překrytí čísla.
+- Kalendář slučuje disabled s mezemi, inline při vykreslení nebere fokus a className patří jen obalu. Pohledy měsíců/let používají skupinu tlačítek s aria-pressed/aria-current. MonthYearSelect zavře Escape přímo a nabízí Vymazat → null přes překlady DsTexts.
+- Badge centruje text stejně jako StatusBadge; pás záložek ořezává vodorovný přesah při přetažení a povoluje pouze 1 px spodní linky. Chromium test měří nadpis, účet, směr i stav dokladu.
 - Záložky panelu mají stálou geometrii a aktivní ouško navazující na obsah.
 - Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
 - Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
