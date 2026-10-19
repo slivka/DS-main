@@ -3,7 +3,10 @@ import { afterEach, describe, expect, it } from "bun:test";
 import * as React from "react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { DocumentForm } from "../../src/components/ds/accounting/document-form";
-import { documentClientIssues } from "../../src/components/ds/accounting/document-form/document-validation-feedback";
+import {
+  documentClientIssues,
+  headerFieldLabel,
+} from "../../src/components/ds/accounting/document-form/document-validation-feedback";
 import { useDocumentIssueProjection } from "../../src/components/ds/accounting/document-form/use-document-issue-projection";
 import { useDocumentDateLinks } from "../../src/components/ds/accounting/document-form/use-document-date-links";
 import { RecordActionBar } from "../../src/components/ds/layout/record-action-bar";
