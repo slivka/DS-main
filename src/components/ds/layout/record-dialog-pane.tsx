@@ -64,7 +64,8 @@ export function RecordDialogPane(props: RecordDialogPaneProps) {
           // Esc z portálu vnořeného výběru sem probublá stromem Reactu, ale ne stromem DOM;
           // takový výběr zavírá jen sám sebe.
           if (event.key !== "Escape" || event.defaultPrevented) return;
-          if (!(event.target instanceof Node) || !event.currentTarget.contains(event.target)) return;
+          if (!(event.target instanceof Node) || !event.currentTarget.contains(event.target))
+            return;
           event.preventDefault();
           props.onRequestClose();
         }}

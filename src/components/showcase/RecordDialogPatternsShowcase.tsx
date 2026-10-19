@@ -21,7 +21,13 @@ type Scenario = "new" | "existing" | "readOnly" | "errors" | "delete";
 type Opened = { scenario: Scenario; size: RecordDialogSize; inPane: boolean };
 
 const DEFAULTS = { code: "", name: "", type: "fp", from: "2026-01-01", active: true };
-const EXISTING = { code: "FP", name: "Přijaté faktury", type: "fp", from: "2026-01-01", active: true };
+const EXISTING = {
+  code: "FP",
+  name: "Přijaté faktury",
+  type: "fp",
+  from: "2026-01-01",
+  active: true,
+};
 const TYPE_OPTIONS = [
   { value: "fp", label: "Přijatá faktura" },
   { value: "fv", label: "Vydaná faktura" },
@@ -86,7 +92,10 @@ function BookFields(props: {
           />
         </Field>
         <Field label="Platí od" span={4}>
-          <DateField value={value.from} onChange={(from) => onChange({ ...value, from: from ?? "" })} />
+          <DateField
+            value={value.from}
+            onChange={(from) => onChange({ ...value, from: from ?? "" })}
+          />
         </Field>
         <Field label="Aktivní" span={8}>
           <CheckboxField

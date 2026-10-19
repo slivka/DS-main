@@ -40,7 +40,12 @@ export interface ReadOnlyControlValueProps {
 }
 
 /** Hodnota vstupu v režimu jen pro čtení – stejná výška a zarovnání jako vstup. */
-export function ReadOnlyControlValue({ children, id, numeric, ariaLabel }: ReadOnlyControlValueProps) {
+export function ReadOnlyControlValue({
+  children,
+  id,
+  numeric,
+  ariaLabel,
+}: ReadOnlyControlValueProps) {
   const empty = useDsTexts().recordDialog.emptyValue;
   const isEmpty = children === null || children === undefined || children === "";
   return (

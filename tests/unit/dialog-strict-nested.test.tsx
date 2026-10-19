@@ -144,7 +144,8 @@ describe("RecordDialog – vnořený formulář", () => {
     const innerSubmit = mock(() => {});
     const view = render(
       <RecordDialog size="md" open onOpenChange={() => {}} title="Partner" onSubmit={outerSubmit}>
-        <RecordDialog size="md"
+        <RecordDialog
+          size="md"
           open
           onOpenChange={() => {}}
           title="Bankovní účet"
