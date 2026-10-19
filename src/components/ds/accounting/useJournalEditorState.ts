@@ -338,6 +338,18 @@ export function useJournalEditorState(
   const vatWarnings = new Map(
     regularLines.map((line) => [line.id, journalVatIssues(line, validationContext).warnings]),
   );
+  // Externí stavy buněk z pruhu položek (aplikace / server) se sloučí s vlastní validací.
+  for (const issue of props.cellIssues ?? []) {
+    if (issue.severity === "warning") {
+      const row = vatWarnings.get(issue.rowId) ?? {};
+      if (!row[issue.columnId]) row[issue.columnId] = issue.message;
+      vatWarnings.set(issue.rowId, row);
+    } else {
+      const row = validations.get(issue.rowId) ?? {};
+      if (!row[issue.columnId]) row[issue.columnId] = issue.message;
+      validations.set(issue.rowId, row);
+    }
+  }
   const validationErrors = numberJournalErrors(lines, validations);
   const validationSignature = JSON.stringify(validationErrors);
   const validationChangeRef = React.useRef(props.onValidationChange);
