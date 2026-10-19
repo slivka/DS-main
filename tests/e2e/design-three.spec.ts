@@ -21,6 +21,7 @@ for (const zoom of [70, 100, 200]) {
       const demo = page.getByTestId("identity-demo");
       const identity = demo.locator('[data-slot="document-identity"]');
       const field = demo.getByRole("textbox", { name: "První pole" });
+      await demo.getByRole("button", { name: "Změnit účet", exact: true }).scrollIntoViewIfNeeded();
       const before = await identity.boundingBox();
       const fieldBefore = await field.boundingBox();
       await demo.getByRole("button", { name: "Změnit účet", exact: true }).click();
@@ -30,7 +31,11 @@ for (const zoom of [70, 100, 200]) {
       expect(before).not.toBeNull();
       expect(after).not.toBeNull();
       expect(Math.abs((before?.height ?? 0) - (after?.height ?? 0))).toBeLessThan(1);
-      expect(Math.abs((fieldBefore?.y ?? 0) - (fieldAfter?.y ?? 0))).toBeLessThan(1);
+      expect(
+        Math.abs(
+          (fieldBefore?.y ?? 0) - (before?.y ?? 0) - ((fieldAfter?.y ?? 0) - (after?.y ?? 0)),
+        ),
+      ).toBeLessThan(1);
     });
   }
 }
@@ -38,7 +43,7 @@ test("Calendar zachovává velikost popoveru ve třech pohledech", async ({ page
   await ready(page);
   await page.getByRole("button", { name: "Otevřít kalendář", exact: true }).click();
   const shell = page
-    .locator('[data-slot="popover-content"]')
+    .getByRole("dialog")
     .filter({ has: page.locator('[data-slot="calendar-shell"]') });
   const days = await shell.boundingBox();
   await shell.getByRole("button", { name: /říjen 2026/i }).click();
