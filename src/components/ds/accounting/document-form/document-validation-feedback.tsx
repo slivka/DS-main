@@ -50,7 +50,9 @@ const HEADER_FIELD_ID: Record<string, string> = {
   counterpartyIco: "document-partner-ico",
   counterpartyDic: "document-partner-dic",
   bankCode: "document-bank-code",
+  bankSwift: "document-bank-code",
   bankAccount: "document-movement-account",
+  bankIban: "document-movement-account",
   variableSymbolLinked: "document-variableSymbol",
   totalMode: "document-amountTotal",
 };
