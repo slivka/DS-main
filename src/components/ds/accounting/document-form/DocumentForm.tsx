@@ -163,14 +163,7 @@ export function DocumentForm(props: DocumentFormProps) {
     can,
     mainAccountLocked,
   });
-  const {
-    editingIdentityAccount,
-    pencilRef,
-    closeIdentityAccount,
-    startAccountEdit,
-    selectIdentityAccount,
-    identityAccountLabel,
-  } = useIdentityAccountSelection(
+  const identityAccount = useIdentityAccountSelection(
     value.mainAccountId,
     effectiveIdentity.account?.label,
     sameAccount,
@@ -343,26 +336,26 @@ export function DocumentForm(props: DocumentFormProps) {
             direction={props.directionBadge}
             fallback={t.numberPending}
             texts={t}
-            accountLabel={identityAccountLabel}
+            accountLabel={identityAccount.identityAccountLabel}
             accountValue={value.mainAccountId}
-            editingAccount={editingIdentityAccount}
+            editingAccount={identityAccount.editingIdentityAccount}
             canEditAccount={canEditIdentityAccount}
-            pencilRef={pencilRef}
-            onStartAccountEdit={startAccountEdit}
+            pencilRef={identityAccount.pencilRef}
+            onStartAccountEdit={identityAccount.startAccountEdit}
             onAccountChange={(mainAccountId) => {
               const selected = allowedMainAccounts.find((item) =>
                 sameAccount(item.code, mainAccountId),
               );
               if (!selected) return;
-              selectIdentityAccount({
+              identityAccount.selectIdentityAccount({
                 code: mainAccountId,
                 label: formatCodeName(formatAccountCode(selected.code), selected.name),
                 sourceLabel: effectiveIdentity.account?.label,
               });
               patch({ mainAccountId });
-              closeIdentityAccount();
+              identityAccount.closeIdentityAccount();
             }}
-            onAccountClose={closeIdentityAccount}
+            onAccountClose={identityAccount.closeIdentityAccount}
             accountOptions={allowedMainAccounts}
           />
           <DocumentSections
