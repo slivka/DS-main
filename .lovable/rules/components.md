@@ -3106,7 +3106,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.
+Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb. 2.109.0 (DPH krok 4B): řádky jsou vždy bez DPH; vat.calcMode / onCalcModeChange jsou @deprecated a ignorované, ruční daň na řádku zrušena (pevná systémová daň vatManual z DB se jen zobrazí se zámkem). Pomocník „Cena s DPH“ v buňce Částka / Jedn. cena a v detailu řádku vyplní základ. Pod mřížkou Rekapitulace DPH po skupinách kód × sazba (stejný výpočet jako DB, computeVatGroups) s úpravami „dle dokladu“ (DPH, Celkem s DPH, Základ) a „Vrátit vypočtenou daň“; přepisy řídí vatOverrides / onVatOverridesChange. Patička Součet · Zaokrouhlení · Rozdíl s nabídkou Dorovnat DPH / Dorovnat základ / Zaokrouhlení (jen do roundingLimit).
 
 **Examples:**
 
@@ -3115,15 +3115,21 @@ _Rozpis se zkrácenými účty_
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
-_Řádky s DPH (2.55.0)_
+_Řádky bez DPH s přepisem daně dle dokladu_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
-// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} />
+// uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides
 ```
 
 _Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />
+```
+
+_Skupiny DPH a patička (2.109.0)_
+```tsx
+<JournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? "error" : "warning"} />
+// uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }
 ```
 
 **Avoid:**
@@ -3133,6 +3139,8 @@ _Stav pole a jednotná výška (2.107.0)_
 - Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
 - Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 - Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.
+- Neposílejte vat_manual ani ruční daň řádku – pevnou daň zakládá jen systém.
+- Nepočítejte daň skupin v aplikaci; náhled dává computeVatGroups a skutečné řádky daně DB.
 
 ### JournalLinesRecap
 
