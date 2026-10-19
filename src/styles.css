@@ -2495,7 +2495,10 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 [data-slot="document-identity"] span:has(> .document-identity-account) {
   width: max-content;
-  min-width: min(calc(var(--identity-account-width) + var(--identity-account-accessories-width) + 1rem), 100%);
+  min-width: min(
+    calc(var(--identity-account-width) + var(--identity-account-accessories-width) + 1rem),
+    100%
+  );
   max-width: 100%;
 }
 .document-identity-account-box {
