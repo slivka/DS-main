@@ -421,13 +421,16 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 ## DPH na řádcích dokladu
 - Řádky daně vytváří výhradně databáze; DS je jen zobrazuje (doklad jen ke čtení) nebo počítá předběžně. Nikdy je neposílejte ani needitujte.
 - Editor řádků zapínejte propem `vat`; kódy DPH filtruje aplikace (směr, aktivní, platnost k Datu DPH). Ukládejte přes `toJournalRows` – nikdy neposílá `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
-- Přepínač „Bez DPH | S DPH“ je v liště gridu; v režimu S DPH je Částka jen ke čtení.
+- Řádky dokladu jsou vždy bez DPH; režim zadání s DPH ani ruční daň na řádku neexistují. Částku s DPH převádí jen pomocník „Cena s DPH“ v buňce. Pevná systémová daň (`vatManual` z DB) se jen zobrazuje.
+- Daň skupin kód × sazba počítá DB; náhled v DS dává `computeVatGroups` se stejným výsledkem. Přepisy „dle dokladu“ řídí aplikace (`vatOverrides` / `onVatOverridesChange`) a ukládá je s řádky jako `_vat_overrides`; samovyměření a kód bez daně přepis nemají.
+- Závažnost přepisu nad tolerancí ±1,00 (v měně firmy kurzem DPH) určuje aplikace přes `vatOverrideSeverity`.
+- Rozdíl proti zadané částce řeší patička editoru (Dorovnat DPH / základ / Zaokrouhlení do `roundingLimit`); zaokrouhlení nikdy nenavrhuj automaticky ani nad limit.
 - Značky měn v popiscích DPH vždy z dat (pravidlo 18); kód DPH ve výběru jako „kód – název“ (pravidlo 9).
 
 ## DPH – celek dokladu
 - Celek řádků dokladu počítej vždy přes `computeJournalTotals` (nebo převezmi z `JournalLinesEditor.onTotalsChange`) – nikdy ručním součtem `line.amount`, jinak chybí předběžná daň nebo se započte samovyměření.
-- Samovyměření (PDP, EU, dovoz) v režimu „S DPH“: zadaná částka je základ, daň se počítá navrch a celek dokladu nemění (Celkem s DPH = základ). Předběžné Kurzové zaokrouhlení (`isFxRounding` + `isVatPreview`) se nikdy neukládá.
-- Kurz DPH předávej přes `DocumentForm.vatRateField`; volbu Bez / S DPH v nastavení dokladu přes `DocumentSettingsDialog showVatCalcMode`.
+- Samovyměření (PDP, EU, dovoz): daň se počítá navrch ze základu a celek dokladu nemění. Předběžné Kurzové zaokrouhlení (`isFxRounding` + `isVatPreview`) se nikdy neukládá.
+- Kurz DPH předávej přes `DocumentForm.vatRateField`.
 
 ## Jazyk knihovny
 
