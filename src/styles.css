@@ -2522,6 +2522,22 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   outline-offset: -2px;
 }
 
-.calendar-shell .rdp-nav { pointer-events: none; }
-.calendar-shell .rdp-nav button { pointer-events: auto; }
-.calendar-shell .rdp-month_grid { table-layout: fixed; }
+.calendar-shell .rdp-nav {
+  pointer-events: none;
+}
+.calendar-shell .rdp-nav button {
+  pointer-events: auto;
+}
+.calendar-shell .rdp-month_grid {
+  table-layout: fixed;
+}
+
+/* Stavové štítky mají pevnou výšku i uvnitř gridu. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) .ds-badge {
+  height: var(--badge-h-sm) !important;
+  padding-block: 0 !important;
+  line-height: 1 !important;
+}
+.zoom-grid :is(tbody, tfoot) :is(th, td) .ds-badge-md {
+  height: var(--badge-h-md) !important;
+}

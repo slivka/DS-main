@@ -1,4 +1,8 @@
-import { OptionSelect, type SelectOption } from "./option-select";
+import { useState, forwardRef, type ComponentPropsWithoutRef } from "react";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../../ui/calendar";
+import { Button } from "../../ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "../../ui/popover";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 
@@ -6,19 +10,8 @@ import { cn } from "../../../lib/utils";
  * Výběr měsíce a roku – např. pro účetní období. Hodnota je „YYYY-MM“
  * (nebo null, když není nic vybráno). Rok i měsíc se volají zvlášť.
  */
-export function MonthYearSelect({
-  value,
-  onChange,
-  minYear = new Date().getFullYear() - 10,
-  maxYear = new Date().getFullYear() + 5,
-  emptyLabel = "— nevybráno —",
-  monthLabel,
-  yearLabel,
-  disabled,
-  className,
-  yearClassName,
-  monthClassName,
-}: {
+/** Vlastnosti výběru měsíce a roku. */
+export interface MonthYearSelectProps extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
   /** Hodnota „YYYY-MM“ nebo null. */
   value: string | null | undefined;
   onChange: (value: string | null) => void;
@@ -35,49 +28,69 @@ export function MonthYearSelect({
   className?: string;
   yearClassName?: string;
   monthClassName?: string;
-}) {
-  const dsTexts = useDsTexts();
-  const monthOptions: SelectOption[] = Array.from({ length: 12 }, (_, index) => ({
-    value: String(index + 1),
-    label: new Intl.DateTimeFormat(dsTexts.intlLocale, { month: "long" }).format(
-      new Date(2020, index, 1),
-    ),
-  }));
-  const year = value ? Number(value.slice(0, 4)) : null;
-  const month = value ? Number(value.slice(5, 7)) : null;
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-
-  const yearOptions: SelectOption[] = [];
-  for (let y = minYear; y <= maxYear; y++) yearOptions.push({ value: String(y), label: String(y) });
-
-  /** Doplň chybějící část dneškem, dokud není vybráno obojí. */
-  const compose = (nextMonth: number | null, nextYear: number | null) => {
-    const m = nextMonth ?? currentMonth;
-    const y = nextYear ?? currentYear;
-    return `${String(y).padStart(4, "0")}-${String(m).padStart(2, "0")}`;
-  };
-
-  return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <OptionSelect
-        value={month ? String(month) : null}
-        onChange={(m) => onChange(m === "" ? null : compose(Number(m), year))}
-        options={monthOptions}
-        placeholder={monthLabel ?? dsTexts.date.month}
-        emptyLabel={emptyLabel}
-        disabled={disabled}
-        className={cn("min-w-0 flex-1", monthClassName)}
-      />
-      <OptionSelect
-        value={year ? String(year) : null}
-        onChange={(y) => onChange(y === "" ? null : compose(month, Number(y)))}
-        options={yearOptions}
-        placeholder={yearLabel ?? dsTexts.date.year}
-        emptyLabel={emptyLabel}
-        disabled={disabled}
-        className={cn("w-[7rem] shrink-0", yearClassName)}
-      />
-    </div>
-  );
 }
+/** Výběr měsíce společným kalendářem; rok se volí v jeho nadřazeném pohledu. */
+export const MonthYearSelect = forwardRef<HTMLDivElement, MonthYearSelectProps>(
+  function MonthYearSelect(
+    {
+      value,
+      onChange,
+      minYear = new Date().getFullYear() - 10,
+      maxYear = new Date().getFullYear() + 5,
+      emptyLabel,
+      monthLabel,
+      yearLabel,
+      disabled,
+      className,
+      yearClassName,
+      monthClassName,
+      ...props
+    },
+    ref,
+  ) {
+    const ds = useDsTexts();
+    const [open, setOpen] = useState(false);
+    const selected = value
+      ? new Date(Number(value.slice(0, 4)), Number(value.slice(5, 7)) - 1, 1)
+      : undefined;
+    const label = selected
+      ? new Intl.DateTimeFormat(ds.intlLocale, { month: "long", year: "numeric" }).format(selected)
+      : (emptyLabel ?? `${monthLabel ?? ds.date.month} / ${yearLabel ?? ds.date.year}`);
+    return (
+      <div ref={ref} className={cn("min-w-0", className)} {...props}>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="control"
+              disabled={disabled}
+              aria-label={`${monthLabel ?? ds.date.month} / ${yearLabel ?? ds.date.year}`}
+              className={cn(
+                "ds-field-button ds-disabled-control w-full justify-start font-normal",
+                monthClassName,
+                yearClassName,
+              )}
+            >
+              <CalendarIcon />
+              <span className={cn("truncate", !selected && "text-muted-foreground")}>{label}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={selected}
+              initialView="months"
+              minDate={new Date(minYear, 0, 1)}
+              maxDate={new Date(maxYear, 11, 31)}
+              onClose={() => setOpen(false)}
+              onMonthSelect={(date) => {
+                onChange(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
+                setOpen(false);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  },
+);

@@ -13,6 +13,10 @@ import { useDsTexts } from "../../ds-texts";
 export interface CalendarNavigationProps {
   /** @deprecated 2.110.0 – bez účinku; hlavička používá pohledy měsíců a let. Odstranění v 3.0.0. */
   captionLayout?: React.ComponentProps<typeof DayPicker>["captionLayout"];
+  /** Počáteční pohled, například výběr měsíce. */
+  initialView?: "days" | "months" | "years";
+  /** Samostatný výběr měsíce bez výběru dne. */
+  onMonthSelect?: (month: Date) => void;
   /** Základ výchozího měsíce. */
   baseDate?: Date;
   /** Dolní mez výběru. */
@@ -32,6 +36,8 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   captionLayout: _captionLayout,
+  initialView = "days",
+  onMonthSelect,
   baseDate,
   minDate,
   maxDate,
@@ -62,7 +68,7 @@ function Calendar({
     props.month ?? props.defaultMonth ?? selected ?? baseDate ?? maxDate ?? today,
   );
   const month = props.month ?? ownMonth;
-  const [view, setView] = React.useState<"days" | "months" | "years">("days");
+  const [view, setView] = React.useState<"days" | "months" | "years">(initialView);
   const shell = React.useRef<HTMLDivElement>(null);
   const boundsStart = minDate ?? props.startMonth;
   const boundsEnd = maxDate ?? props.endMonth;
@@ -102,8 +108,13 @@ function Calendar({
             selected={selected}
             today={today}
             isAllowed={allowed}
-            onMonth={changeMonth}
-            onView={setView}
+            onMonth={(next) => {
+              changeMonth(next);
+              if (view === "months" && onMonthSelect) onMonthSelect(next);
+            }}
+            onView={(next) => {
+              if (!(next === "days" && onMonthSelect)) setView(next);
+            }}
           />
         ) : null}
         <div hidden={view !== "days"}>
