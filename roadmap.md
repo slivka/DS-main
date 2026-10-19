@@ -7,7 +7,9 @@
 - [x] E6 výpis vždy grid pohybů
 - [x] E7 zůstatky v jednom řádku, Σ zůstatku na výpise, pořadí při zalamování
 - [x] E8 protiúčet na mřížce 20, kód banky s názvem, datum pohybu s vazbou
-- [x] DocumentForm 496 řádků; katalog 437/824 → 438/849; unit 721/721; lint 0 chyb; Chromium 41 + 2 nové (4 starší přepsány a znovu prošly)
+- [x] Opravné kolo 4: DocumentForm 500 řádků; unit 751/751; lint 0 chyb / 314 varování; Chromium 41/41 včetně id FP/FV/ID/PO/BA a skutečné opravy buňky. Výpisové testy převedeny na posted, limit nezvýšen. Kontrola výšek 5/5 bez změny testu.
+- [x] Katalog proti 8db33914: 441/856 → 449/890, žádné ubylé komponenty ani props; CHANGELOG a pravidla aktuální; verze 2.107.0, 2.108.0 nevydáno.
+- [ ] Produkční build: ruční spuštění blokuje pravidlo prostředí; automatický výsledek není v dostupném logu.
 
 ## Poslední dorovnání 2.105.0 (nevydáno)
 
