@@ -51,12 +51,31 @@ const HEADER_FIELD_ID: Record<string, string> = {
   counterpartyName: "document-partner",
   counterpartyIco: "document-partner-ico",
   counterpartyDic: "document-partner-dic",
+  // Země protistrany nemá vlastní prvek; řídí tvar IČO.
+  counterpartyCountry: "document-partner-ico",
   bankCode: "document-bank-code",
   bankSwift: "document-bank-code",
   bankIban: "document-movement-account",
+  partnerBankAccountId: "document-bankAccount",
+  manualBankAccount: "document-bankAccount",
   variableSymbolLinked: "document-variableSymbol",
   totalMode: "document-amountTotal",
+  // Zaokrouhlení se zadává v rekapitulaci řádků; nejbližší prvek hlavičky je Celkem.
+  roundingAmount: "document-amountTotal",
+  rateNote: "document-rate-note",
+  rateManual: "document-rate",
 };
+
+/** Klíče hlavičky, které nejsou pole – do pruhu se jako položky pole neposílají. */
+const NON_FIELD_KEYS = new Set([
+  "id",
+  "rateInfo",
+  "suggestedRate",
+  "suggestedRateInfo",
+  "print",
+  "rateSourceAttention",
+  "vatRateSourceAttention",
+]);
 
 /** Id pole bankovního účtu: u BA protiúčet, jinak účet partnera. */
 function headerFieldId(key: string, code?: string): string {
@@ -65,11 +84,23 @@ function headerFieldId(key: string, code?: string): string {
   return HEADER_FIELD_ID[key] ?? `document-${key}`;
 }
 
+/** Klíč hlavičky z id ovládání – obráceně přes stejnou tabulku, ne odřezáním prefixu. */
+export function headerFieldKeyFromId(id: string, code?: string): string {
+  // Nejednoznačná id (víc klíčů sdílí prvek) se řeší dřív, než projdeme tabulku.
+  if (id === "document-bankAccount") return "bankAccount";
+  if (id === "document-movement-account") return code === "BA" ? "bankAccount" : "bankIban";
+  if (id === "document-amountTotal") return "amountTotal";
+  if (id === "document-partner-ico") return "counterpartyIco";
+  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID)) if (fieldId === id) return key;
+  return id.replace("document-", "");
+}
+
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
 function headerLabelAlias(
   t: DocumentFormTexts,
   key: string,
   fieldLabels?: Partial<Record<string, string>>,
+  direction?: string | null,
 ): string | undefined {
   // Některé popisky žijí v dsTexts.documentForm (DocumentForm předává sloučené texty).
   const all = t as Partial<Record<string, string>>;
@@ -79,7 +110,7 @@ function headerLabelAlias(
     counterpartyIco: t.ico,
     counterpartyDic: t.dic,
     counterpartyCountry: fieldLabels?.counterpartyCountry,
-    handedOverBy: t.handedOverByIn,
+    handedOverBy: direction === "out" ? t.handedOverByOut : t.handedOverByIn,
     companyBankAccountId: t.bankAccount,
     partnerBankAccountId: t.bankAccount,
     manualBankAccount: t.bankAccount,
@@ -102,12 +133,15 @@ export function headerFieldLabel(
   t: DocumentFormTexts,
   key: string,
   fieldLabels?: Partial<Record<string, string>>,
+  direction?: string | null,
 ): string {
   const found = Object.entries(t).find(([name]) => name === key)?.[1];
   if (typeof found === "string") return found;
-  const alias = headerLabelAlias(t, key, fieldLabels);
+  const alias = headerLabelAlias(t, key, fieldLabels, direction);
   if (alias) return alias;
-  throw new Error(`documentForm: chybí popisek pole „${key}“`);
+  // Za běhu formulář nesmí spadnout – obecný popisek + varování pro vývojáře.
+  console.warn(`documentForm: chybí popisek pole „${key}“`);
+  return t.unknownField;
 }
 
 /** Položka pole hlavičky. */
@@ -119,10 +153,11 @@ function headerIssue(
   label?: string,
   fieldLabels?: Partial<Record<string, string>>,
   code?: string,
+  direction?: string | null,
 ): FormIssue {
   return {
     fieldId: headerFieldId(key, code),
-    label: label ?? headerFieldLabel(t, key, fieldLabels),
+    label: label ?? headerFieldLabel(t, key, fieldLabels, direction),
     message,
     severity,
     source: "client",
@@ -133,6 +168,9 @@ function headerIssue(
 export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   const issues: FormIssue[] = [];
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
+    // Klíče, které nejsou pole (rateInfo, suggestedRate, print, *SourceAttention…),
+    // se do pruhu jako položky pole neposílají.
+    if (NON_FIELD_KEYS.has(key)) continue;
     if (message)
       issues.push(
         headerIssue(
@@ -143,6 +181,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
           undefined,
           a.fieldLabels,
           a.code,
+          a.value.direction,
         ),
       );
   }
@@ -177,6 +216,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
       code: "vat_rate_note",
     });
   for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
+    if (NON_FIELD_KEYS.has(key)) continue;
     if (message)
       issues.push(
         headerIssue(
@@ -187,6 +227,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
           undefined,
           a.fieldLabels,
           a.code,
+          a.value.direction,
         ),
       );
   }

@@ -48,7 +48,7 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
   const issues = useMemo(() => {
     const client: FormIssue[] = JSON.parse(debouncedKey);
     // error.fieldErrors se nepřevádí (label je ReactNode) – vykreslí je RecordActionBar
-    // jako FieldErrorSummary pod pruhem, stejně jako v 2.107.0.
+    // jako FieldErrorSummary v pruhu, stejně jako v 2.107.0.
     return visibleFormIssues([...(a.issues ?? []), ...client], active);
   }, [debouncedKey, a.issues, active]);
   const onValidationChange: NonNullable<JournalLinesEditorProps["onValidationChange"]> = (
@@ -64,6 +64,8 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
         message: error.message,
         severity: "error",
         source: "client",
+        // Vlastní validace editoru – do buněk se nepromítá (editor ji vykresluje sám).
+        origin: "editor",
       })),
     );
     a.onValidationChange?.(count, errors);

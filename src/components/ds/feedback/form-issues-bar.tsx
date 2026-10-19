@@ -6,7 +6,7 @@ import { AlertTriangle, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { formIssuesTitle, mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
+import { mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
 import { Button } from "../../ui/button";
 import { FieldErrorSummary, focusFieldErrorLink, type FieldErrorLink } from "./field-error-summary";
 
@@ -60,7 +60,28 @@ export function FormIssuesBar({
 }: FormIssuesBarProps) {
   const texts = useDsTexts().recordAction;
   const list = mergeFormIssues(issues);
-  const autoTitle = formIssuesTitle(list, saveFailed || Boolean(forceError), texts);
+  const shownTitle = forceError?.title ?? title;
+  const shownMessage = forceError?.message ?? message;
+  const duplicateMessage =
+    typeof shownMessage === "string" && list.some((issue) => issue.message === shownMessage);
+  const hasErrors = Boolean(forceError) || list.some((issue) => issue.severity === "error");
+  // Počet unikátních chyb: chyba z aplikace se nepočítá dvakrát, když je její text
+  // totožný s položkou pole.
+  const errorCount =
+    list.filter((issue) => issue.severity === "error").length +
+    (forceError && !duplicateMessage ? 1 : 0);
+  const count = hasErrors ? Math.max(errorCount, 1) : list.length;
+  // Titulek podle stavu: chyba (i vynucená bez chybových položek) → nelze uložit /
+  // doplňte před zařazením; jen varování → Upozornění.
+  const autoTitle =
+    list.length === 0 && !forceError
+      ? null
+      : (hasErrors
+          ? saveFailed
+            ? texts.saveFailedTitle
+            : texts.fixBeforeTitle
+          : texts.warningsTitle
+        ).replace("{count}", String(count));
   // Bez callbacku si pruh zavření drží sám do další změny celého obsahu (kód + text + pole).
   const signature = list
     .map(
@@ -70,13 +91,6 @@ export function FormIssuesBar({
   const [dismissed, setDismissed] = useState<string | null>(null);
   if (!autoTitle || dismissed === signature) return null;
   const close = onClose ?? (() => setDismissed(signature));
-  const hasErrors = Boolean(forceError) || list.some((issue) => issue.severity === "error");
-  const errorCount = list.filter((issue) => issue.severity === "error").length;
-  const count = hasErrors ? errorCount + (forceError ? 1 : 0) : list.length;
-  const shownTitle = forceError?.title ?? title;
-  const shownMessage = forceError?.message ?? message;
-  const duplicateMessage =
-    typeof shownMessage === "string" && list.some((issue) => issue.message === shownMessage);
   const select = (issue: FormIssue) => {
     if (onSelect) return onSelect(issue);
     if (!issue.fieldId) return;

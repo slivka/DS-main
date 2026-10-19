@@ -4,7 +4,7 @@ import { OptionSelect } from "../../form/option-select";
 import { SectionHeading } from "../../layout/section-heading";
 import { Field } from "../../layout/form-field-layout";
 import { useDsTexts } from "../../../../ds-texts";
-import type { DocumentHeaderValue } from "./document-form-types";
+import type { DocumentHeaderField, DocumentHeaderValue } from "./document-form-types";
 
 /** Vlastnosti protiúčtu bankovního pohybu. */
 export interface BankMovementAccountProps {
@@ -18,6 +18,10 @@ export interface BankMovementAccountProps {
   bankCodeOptions?: Array<{ code: string; name: string }>;
   /** Zakázání editace. */
   disabled?: boolean;
+  /** Chyby polí z projekce pruhu (rámeček + ikona + bublina). */
+  fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
+  /** Varování polí z projekce pruhu (žlutě). */
+  fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
 }
 
 /** Český účet nebo IBAN bez mazání druhého režimu. */
@@ -27,6 +31,8 @@ export function BankMovementAccount({
   bankCodes = [],
   bankCodeOptions,
   disabled,
+  fieldErrors,
+  fieldWarnings,
 }: BankMovementAccountProps) {
   const t = useDsTexts().documentEdit;
   const iban = value.bankAccountKind === "iban";
@@ -39,6 +45,8 @@ export function BankMovementAccount({
           htmlFor="document-bankAccountKind"
           span={4}
           className="col-span-20"
+          error={fieldErrors?.bankAccountKind}
+          warning={fieldWarnings?.bankAccountKind}
         >
           <OptionSelect
             id="document-bankAccountKind"
@@ -57,6 +65,8 @@ export function BankMovementAccount({
           htmlFor="document-movement-account"
           span={8}
           className="col-span-20"
+          error={iban ? fieldErrors?.bankIban : fieldErrors?.bankAccount}
+          warning={iban ? fieldWarnings?.bankIban : fieldWarnings?.bankAccount}
         >
           <Input
             id="document-movement-account"
@@ -77,6 +87,8 @@ export function BankMovementAccount({
           htmlFor="document-bank-code"
           span={8}
           className="col-span-20"
+          error={iban ? fieldErrors?.bankSwift : fieldErrors?.bankCode}
+          warning={iban ? fieldWarnings?.bankSwift : fieldWarnings?.bankCode}
         >
           {iban ? (
             <Input

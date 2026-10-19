@@ -38,8 +38,9 @@ export function useDocumentIssueProjection(
     const cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]> = [];
     for (const issue of a.issues) {
       if (issue.rowId && issue.columnId) {
-        // Do buněk smí jen serverové položky – vlastní chyby editoru by se jinak nikdy nesmazaly.
-        if (issue.source !== "server") continue;
+        // Do buněk nesmí vlastní validace editoru (origin „editor“) – ta by se nikdy nesmazala.
+        // Klientské položky řádků od aplikace (source client) se promítají stejně jako serverové.
+        if (issue.origin === "editor") continue;
         cellIssues.push({
           rowId: issue.rowId,
           columnId: issue.columnId,

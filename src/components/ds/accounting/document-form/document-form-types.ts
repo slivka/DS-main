@@ -198,6 +198,8 @@ export type DocumentFormTexts = {
   documentNumberTooLongForVs: string;
   /** Neplatný zápis data v pruhu chyb (za popiskem pole). */
   invalidDate: string;
+  /** Obecný popisek pole bez vlastního textu (výjimka – technický klíč se nikdy neukáže). */
+  unknownField: string;
   partner: string;
   ico: string;
   dic: string;
@@ -282,6 +284,7 @@ export const DEFAULT_DOCUMENT_FORM_TEXTS: DocumentFormTexts = {
   supplierTaxDocumentNumber: "Číslo daňového dokladu",
   documentNumberTooLongForVs: "Číslo má víc než 10 číslic – VS doplňte ručně",
   invalidDate: "neplatné datum",
+  unknownField: "Pole formuláře",
   partner: "Partner",
   ico: "IČO",
   dic: "DIČ",

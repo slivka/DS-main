@@ -321,6 +321,8 @@ export interface DsTexts {
     supplierTaxDocumentNumber: string;
     documentNumberTooLongForVs: string;
     invalidDate: string;
+    /** Obecný popisek pole bez vlastního textu (technický klíč se nikdy neukáže). */
+    unknownField: string;
     bankAccountInvalid: string;
     bankCodeInvalid: string;
     otherBankAccount: string;

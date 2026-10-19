@@ -141,7 +141,11 @@ export function DocumentIdentityLine({
             />
           </span>
         ) : (
-          <span data-slot="document-identity-account" className="truncate">
+          <span
+            id="document-mainAccountId"
+            data-slot="document-identity-account"
+            className="truncate"
+          >
             {accountLabel ?? account.label}
           </span>
         )}
@@ -153,14 +157,17 @@ export function DocumentIdentityLine({
       data-slot="document-identity"
       items={items}
       number={number}
+      numberId="document-number"
       fallback={identity.numberPending ?? fallback}
       leading={
         direction ? (
-          <DocumentDirectionBadge
-            direction={direction}
-            inLabel={texts.directionIn}
-            outLabel={texts.directionOut}
-          />
+          <span id="document-direction" className="inline-flex">
+            <DocumentDirectionBadge
+              direction={direction}
+              inLabel={texts.directionIn}
+              outLabel={texts.directionOut}
+            />
+          </span>
         ) : undefined
       }
     />
