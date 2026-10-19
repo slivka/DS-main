@@ -121,10 +121,11 @@ function headerIssue(
 export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   const issues: FormIssue[] = [];
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
-    if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "error"));
+    if (message)
+      issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "error", undefined, a.fieldLabels));
   }
   for (const key of a.invalidDates ?? [])
-    issues.push(headerIssue(a.t, key, a.t.invalidDate, "error"));
+    issues.push(headerIssue(a.t, key, a.t.invalidDate, "error", undefined, a.fieldLabels));
   const vat = a.vatRateField;
   if (
     !a.readOnly &&
