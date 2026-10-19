@@ -9,8 +9,9 @@ on:
         options: [chromium, all]
         default: chromium
   schedule:
-    # 03:15 Europe/Prague = 01:15 UTC v letním čase (02:15 UTC v zimním čase).
+    # 03:15 Europe/Prague: 01:15 UTC v letním, 02:15 UTC v zimním čase; druhý běh skončí hned.
     - cron: "15 1 * * *"
+    - cron: "15 2 * * *"
   push:
     branches: [main]
     paths: [package.json]
@@ -34,7 +35,10 @@ jobs:
       - name: Noční běh jen po novém commitu
         id: gate
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ] \
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(TZ=Europe/Prague date +%H)" != "03" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Mimo 03:xx Europe/Prague (posun letního času)."
+          elif [ "${{ github.event_name }}" = "schedule" ] \
             && [ -z "$(git log -1 --since='24 hours ago' --format=%H origin/main)" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "Za posledních 24 h na main nepřibyl commit."
