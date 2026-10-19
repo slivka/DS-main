@@ -86,10 +86,13 @@ function headerFieldId(key: string, code?: string): string {
 
 /** Klíč hlavičky z id ovládání – obráceně přes stejnou tabulku, ne odřezáním prefixu. */
 export function headerFieldKeyFromId(id: string, code?: string): string {
-  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID))
-    if (fieldId === id) return key;
+  // Nejednoznačná id (víc klíčů sdílí prvek) se řeší dřív, než projdeme tabulku.
   if (id === "document-bankAccount") return "bankAccount";
   if (id === "document-movement-account") return code === "BA" ? "bankAccount" : "bankIban";
+  if (id === "document-amountTotal") return "amountTotal";
+  if (id === "document-partner-ico") return "counterpartyIco";
+  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID))
+    if (fieldId === id) return key;
   return id.replace("document-", "");
 }
 
