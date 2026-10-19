@@ -974,3 +974,4 @@
 - [x] Katalogy beze ztrát
 
 - Dokončení 2.107.0: skutečné výšky shodné v 18 kombinacích; unit 703/703, Chromium 27/27, lint 0 chyb / 299 varování, katalog 441 komponent / 856 props (baseline 432 / 800), automatický build OK. Nic nevydáno.
+- Opravné kolo 2.108.0 (kontrola e8825790): fieldErrors z 2.107 zachovány, ✕ vždy (onIssuesClose), issues → pole i buňky (cellIssues), popisky z DsTexts + fieldId = skutečné id, VS pořadí derived→uložený, onFieldChange hlásí id pole, validationActive skrývá jen klientské chyby, rozdíl výpisu v pruhu, BA zámek „datum pohybu“. Unit 733/733, lint 0 chyb, katalog 448 komponent / 880 props (vydaná 2.107.0: 441 / 856 – nic neubývá). Nic nevydáno.

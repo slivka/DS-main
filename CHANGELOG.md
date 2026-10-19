@@ -4,6 +4,18 @@
 
 - **Katalog:** obnoveny záznamy ztracené po vydání 2.107.0 (`8db33914`): FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip, props FieldStatusIndicator, FieldFeedbackIndicator (error/warning), ToggleGroup (label/error/warning), RecordActionBar a DocumentForm `error.fieldErrors` / `error.onFieldErrorSelect`, JournalLinesEditor `onCreateDimension` / `onValidationChange`. Kód se neměnil.
 
+### Opravné kolo (kontrola kódu)
+- **`error.fieldErrors` z 2.107.0** zůstává zachováno: při samotných `fieldErrors` se vykreslí `FieldErrorSummary` (max 5 + „a další N“) s funkčním `error.onFieldErrorSelect`; nepřevádí se na `FormIssue` (label je ReactNode).
+- **FormIssuesBar má vždy ✕**: nové `onIssuesClose` na `RecordActionBar` / `DocumentForm`; bez callbacku si pruh zavření drží sám do další změny seznamu. Vlastní `error.title` nepřebije počet – titulek = vlastní text + „(N)“.
+- **`issues` se promítají do polí a buněk**: položka s `fieldId` → rámeček + ikona + bublina v poli (varování žlutě), s `rowId`/`columnId` → stav buňky přes nový `JournalLinesEditorProps.cellIssues`. Dedup klient × server stejného pole a textu bez ohledu na `code` (server má přednost); dedup hlavička × řádek jen při shodném `code` nebo `fieldId`.
+- **Popisky a fieldId v pruhu**: nikdy technický klíč – popisky z DsTexts (aliasy partnerId → Partner, counterpartyIco → IČO, paymentMethodId, mainAccountId…); `fieldId` odpovídá skutečnému id ovládacího prvku (document-partner, document-partner-ico…), test ověřuje existenci v DOM.
+- **VS po odemčení**: pořadí `derived.value || value.variableSymbol` – uživatel vidí hodnotu z náhledu; při automatickém uvolnění (0 / >10 číslic) zůstane uložený VS. Text „přidělí se při zařazení“ jen u vydaných (FV/ZFV/DDPZ) v konceptu bez čísla; u přijatých bez čísla prázdné zamčené pole.
+- **`onFieldChange` hlásí id pole, ne vazby**: zámek VS → `document-variableSymbol`, Σ → `document-amountTotal`, zámek data účetního případu vždy (i s řízeným `accountingDateLink`).
+- **`validationActive=false`** skrývá jen klientské chyby; žlutá varování (ruční partner, VS) se zobrazují vždy.
+- **BankStatementForm**: rozdíl zůstatku je položka pruhu (`issues`), ne samostatný NoticeBar; odstraněny zbytky stavu `checked` v ukázce, text `unsavedMovements` je deprecated.
+- **Bankovní pohyb**: zámek data účetního případu s texty „Svázat s datem pohybu“ / „Stejné jako datum pohybu“ (`documentEdit.movementDateLink` / `movementDateLinked`); stav vazby se přepočítá při změně dokladu. `DocumentAccountingDateLink` má nové `unlockedHint`.
+- **Katalog**: doplněny `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`, `deriveVariableSymbol`, `FormIssue`, `FormIssuesBar`, `JournalLinesEditor.cellIssues`; z `JournalLinesEditor` odstraněny `recapTotalAmount` / `recapTotalLabel` (nic nevykreslují) a zmínka o přepočteném celku v hlavičce.
+
 ### Nové
 - **Živý pruh chyb a upozornění** (`FormIssuesBar`, `FormIssue`, `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`): položka `{ fieldId?, rowId?, columnId?, label, message, severity, source, code? }`; deduplikace podle (code nebo text, pole, řádek), chyba hlavičky se neopakuje jako „Řádek N“; titulek s počtem („Doklad nelze uložit (N)“ jen při `saveFailed`, jinak „Před zařazením doplňte (N)“, bez chyb „Upozornění (N)“); prázdný seznam pruh skryje.
 - `DocumentForm`: `issues`, `saveFailed`, `validationActive`, `onFieldChange(fieldId, rowId?, columnId?)`, `bankCodeOptions`; hlavička `variableSymbolLinked`.
