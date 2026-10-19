@@ -2440,7 +2440,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 [data-slot="button"].ds-button:is(:disabled, [aria-disabled="true"]):not([role="combobox"]):not(
     .ds-disabled-control
-  ) {
+  ):not(.grid-toolbar-control) {
   background: transparent !important;
   border-color: var(--border) !important;
   color: var(--muted-foreground) !important;
