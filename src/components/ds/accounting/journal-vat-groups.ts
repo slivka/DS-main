@@ -8,8 +8,8 @@ import type { JournalLine, VatCodeOption } from "./journal-lines";
 
 const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 
-/** Zaokrouhlí na zadaný počet desetinných míst (výchozí 2). */
-export const roundTo = (value: number, precision = 2) => {
+/** Zaokrouhlí na zadaný počet desetinných míst (výchozí 2); jen interně. */
+const roundTo = (value: number, precision = 2) => {
   const factor = 10 ** precision;
   return Math.round((value + Math.sign(value) * Number.EPSILON) * factor) / factor;
 };
