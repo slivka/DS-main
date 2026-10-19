@@ -8,7 +8,6 @@ import {
   reportingPatch,
   useDocumentFormFeedback,
 } from "./use-document-form-issues";
-import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
 import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
@@ -28,7 +27,7 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
-import { useDocumentFieldRenderers } from "./use-document-field-renderers";
+import { useDocumentHeaderFields } from "./use-document-field-renderers";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
