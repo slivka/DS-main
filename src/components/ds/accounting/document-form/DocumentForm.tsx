@@ -195,7 +195,6 @@ export function DocumentForm(props: DocumentFormProps) {
   const showTaxNumber =
     ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
-  // Živý pruh + projekce položek do polí (rámeček + ikona + bublina) a buněk řádků.
   const {
     issues: formIssueList,
     onValidationChange,
