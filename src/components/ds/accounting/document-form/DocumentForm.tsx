@@ -249,12 +249,21 @@ export function DocumentForm(props: DocumentFormProps) {
     if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
     else issueFieldWarnings[key] ??= issue.message;
   }
+  // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
+  const dateLink =
+    bankMovement && effectiveAccountingLink
+      ? {
+          ...effectiveAccountingLink,
+          hint: dsTexts.documentEdit.movementDateLinked,
+          unlockedHint: dsTexts.documentEdit.movementDateLink,
+        }
+      : effectiveAccountingLink;
   const { field, date, suggestedText } = useDocumentFieldRenderers({
     value: effectiveValue,
     patch,
     can,
     dateWarnings,
-    accountingDateLink: effectiveAccountingLink,
+    accountingDateLink: dateLink,
     // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
     fieldErrors:
       validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
