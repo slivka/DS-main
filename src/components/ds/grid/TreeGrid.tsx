@@ -261,6 +261,8 @@ export function TreeGrid<Row extends TreeGridRow>(props: TreeGridProps<Row>) {
       className={cn(
         "grid-connected-block @container flex min-w-0 flex-col overflow-hidden rounded-lg border shadow-panel",
         resolvedHeight === "fill" && "min-h-0 flex-1",
+        // Automatická výška se ve sloupcovém flexu (AppShell) nesmí smrštit pod obsah.
+        resolvedHeight === "auto" && "shrink-0",
         props.className,
       )}
       data-slot="tree-grid"

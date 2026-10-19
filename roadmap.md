@@ -10,6 +10,8 @@
 - [x] Stránky ukázek rozděleny; document-field-ids prošel 6/6 třikrát bez zvýšení čekání.
 - [x] Třetí opravné kolo T1–T6: samovyměření bez přepisu, přesný kurz/jednotka, prázdné částky bez kurzu, katalog, peněžní editor a kontrolní skript.
 - [x] Uzavření třetího kola: check:full --harness 61,1 s; unit 836/836, lint 0 chyb / 322 varování, format OK, peněžní kontrola 174 souborů; katalog 449/890 → 470/910. Chromium vat-groups 4/4 a grid-amount-editor 1/1. Typecheck/build ponechány automatické kontrole Lovable; plná E2E sada neběžela.
+- [x] Roztřídění 22 selhání GitHub E2E (run 39244635839): regrese pomocníka v pořadí Tab, smršťování gridů, přetékání lišty; zastaralé testy srovnány, LibreOffice v CI.
+- [ ] Plná E2E sada v GitHub Actions po opravě – spouští Petr.
 
 
 ## Nástroje – zrychlení kontrol

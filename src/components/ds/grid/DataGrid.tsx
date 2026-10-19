@@ -246,6 +246,8 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
         className={cn(
           "@container flex w-full min-w-0 flex-col",
           resolvedHeight === "fill" && "min-h-0 flex-1",
+          // Automatická výška se ve sloupcovém flexu (AppShell) nesmí smrštit pod obsah.
+          resolvedHeight === "auto" && "shrink-0",
           plain
             ? "max-w-full overflow-hidden"
             : "grid-connected-block overflow-hidden rounded-lg border shadow-panel",

@@ -93,8 +93,12 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
     "Hotovostní platba nepoužívá bankovní účet",
   );
   await expect(toggle).toHaveAttribute("aria-pressed", "false");
-  await expect(received.locator("#document-constantSymbol")).toHaveCount(0);
-  await expect(received.locator("#document-specificSymbol")).toHaveCount(0);
+  // 2.96.0 (D2, BREAKING): KS/SS se neskrývají – při nepoužitém účtu jsou prázdné a zakázané.
+  for (const id of ["#document-constantSymbol", "#document-specificSymbol"]) {
+    const symbol = received.locator(id);
+    await expect(symbol).toHaveCount(1);
+    await expect(symbol).toBeDisabled();
+  }
   const reason = received
     .locator("[data-slot=field-value]")
     .filter({ hasText: "Hotovostní platba nepoužívá bankovní účet" });

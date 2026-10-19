@@ -78,6 +78,11 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         run: bunx playwright install --with-deps ${{ steps.browsers.outputs.install }}
 
+      # Jen pro excel-download.spec.ts: vzorový export musí otevřít LibreOffice bez varování.
+      - name: LibreOffice Calc
+        if: steps.gate.outputs.run == 'true'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libreoffice-calc
+
       - name: Úplná kontrola
         if: steps.gate.outputs.run == 'true'
         run: bun run check:full

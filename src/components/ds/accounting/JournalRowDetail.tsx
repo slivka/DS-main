@@ -327,6 +327,7 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
         <JournalGrossHelper
           line={line}
           column="unitPrice"
+          tabbable
           className="absolute top-1/2 right-[0.4em] -translate-y-1/2"
         />
       </div>

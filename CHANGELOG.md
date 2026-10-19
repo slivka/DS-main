@@ -2,6 +2,12 @@
 
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
+### Opravy po plné E2E sadě v GitHub Actions (run 39244635839)
+- **Pomocník Cena s DPH v buňce mřížky je mimo pořadí Tab** (regrese 2.109.0): Tab z Částky vede rovnou na Kód DPH. Otevření v mřížce myší; z klávesnice v detailu řádku, kde tlačítko v pořadí Tab zůstává (`JournalGrossHelper.tabbable`, výchozí `false`).
+- **Grid a strom s automatickou výškou se ve stránce AppShell nesmrští** (chyba už v 2.108.0): na dlouhé stránce se grid zmenšil na 2 px a jeho lišta byla zakrytá. `DataGrid` / `TreeGrid` s `height="auto"` mají `shrink-0`.
+- **Lišta gridu nepřeteče při šířce kolem 1 100 px** (chyba už v 2.108.0): měření šířky ignorovalo mezery mezi prvky volitelné levé části (`toolbarLeft`), lišta zvolila úroveň 1 a Obnovit přesáhlo okraj o 19 px.
+- E2E: zastaralá očekávání srovnána s platnými pravidly (2.107.0 výška 36 px, 2.96.0 KS/SS zakázané místo skrytých, 2.61.0 tlačítko „Rozbalit“, ukázka primárních akcí nad účetním deníkem, rozdělení stránek ukázek); CI instaluje LibreOffice Calc pro test otevření Excelu.
+
 ### Opravy
 - **Třetí opravné kolo T1–T6:** Rozdíl nabízí dorovnání DPH pouze běžných kódů s daní, nikdy PDP/EU; `setOverride` i `upsertVatOverride` odmítají vytvořit přepis samovyměření.
 - **Kurz / jednotka:** skupiny, pevná daň a spodní souhrn používají `mulDivRound(částka, kurz, jednotka)` bez mezidělení (−900 × 3,715 / 100 = −33,44); tolerance porovnává přesný součin křížovým násobením bez mezizaokrouhlení. `ComputeVatGroupsOptions.exchangeRateAmount` doplněno (výchozí 1).

@@ -4,6 +4,8 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test.setTimeout(120_000);
 
+const JOURNAL = '[data-slot="data-grid"]:has([data-slot="grid-context-bar"]) >> nth=0';
+
 async function colors(control: Locator) {
   return control.evaluate((node) => {
     const style = getComputedStyle(node);
@@ -21,15 +23,17 @@ async function colors(control: Locator) {
 async function prepareGrid(page: Page) {
   await page.goto("/components/grid", { waitUntil: "networkidle" });
   // Počkáme na připojení ovládání před změnou rozměrů měřené ukázky.
-  await expect(page.locator('[data-slot="grid-toolbar"]').first()).toHaveAttribute(
+  // Od 2.106 je nahoře ukázka primárních akcí; měříme účetní deník (grid s kontextovým řádkem).
+  await expect(page.locator(JOURNAL).locator('[data-slot="grid-toolbar"]')).toHaveAttribute(
     "data-overflow-level",
     /[0-3]/,
     { timeout: 60_000 },
   );
   // Oddělíme měřený grid od dalších ukázek, které se ve společném flexu smrští.
   await page.locator('[data-slot="data-grid"], [data-slot="tree-grid"]').evaluateAll((nodes) => {
-    nodes.forEach((node, index) => {
-      if (index === 0) {
+    const journal = nodes.find((node) => node.querySelector('[data-slot="grid-context-bar"]'));
+    nodes.forEach((node) => {
+      if (node === journal) {
         (node as HTMLElement).style.flexShrink = "0";
         (node as HTMLElement).style.width = "100rem";
       } else (node as HTMLElement).style.display = "none";
@@ -39,8 +43,8 @@ async function prepareGrid(page: Page) {
 
 test("aktivní lišta a hover zachovají barvy v obou režimech", async ({ page }, info) => {
   await prepareGrid(page);
-  const toolbar = page.locator('[data-slot="grid-toolbar"]').first();
-  const context = page.locator('[data-slot="grid-context-bar"]').first();
+  const toolbar = page.locator(JOURNAL).locator('[data-slot="grid-toolbar"]');
+  const context = page.locator(JOURNAL).locator('[data-slot="grid-context-bar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
   await toolbar.getByRole("button", { name: "Hledat", exact: true }).focus();
   await page.keyboard.press("Enter");
@@ -175,8 +179,8 @@ async function expectBorder(control: Locator, expression: string) {
 
 test("rámečky lišty odpovídají tokenům v obou režimech", async ({ page }, info) => {
   await prepareGrid(page);
-  const toolbar = page.locator('[data-slot="grid-toolbar"]').first();
-  const context = page.locator('[data-slot="grid-context-bar"]').first();
+  const toolbar = page.locator(JOURNAL).locator('[data-slot="grid-toolbar"]');
+  const context = page.locator(JOURNAL).locator('[data-slot="grid-context-bar"]');
   await expect(toolbar).toHaveAttribute("data-overflow-level", "0");
   for (const dark of [false, true]) {
     const toggle = page.getByRole("button", {

@@ -142,7 +142,8 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
           ".grid-toolbar-display-group, .grid-toolbar-data-group, .grid-toolbar-optional",
         )
         .forEach((item) => {
-          item.style.display = "inline-flex";
+          // Obal s `contents` zůstává průhledný – jeho prvky musí mít mezery řádku jako v liště.
+          item.style.display = item.classList.contains("contents") ? "contents" : "inline-flex";
         });
       // Kopie leží uvnitř kontejneru gridu v obalu se stejnou šířkou a vlastním
       // container query – třídy @min-[640px]:… se v ní vyhodnotí jako v řádku.

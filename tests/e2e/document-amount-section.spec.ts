@@ -87,7 +87,8 @@ test("Částka sdílí výšku, písmo a osu popisků s VS", async ({ page }, te
           ).toBeLessThanOrEqual(0.5);
         }
         expect(measured.weight).toBeGreaterThanOrEqual(600);
-        expect(measured.scroll).toBeLessThanOrEqual(measured.client);
+        // scrollWidth zaokrouhluje nahoru a clientWidth dolů; 1 px je zaokrouhlení subpixelové šířky.
+        expect(measured.scroll).toBeLessThanOrEqual(measured.client + 1);
         expect(measured.buttonTop).toBeGreaterThanOrEqual(0);
         expect(measured.buttonBottom).toBeGreaterThanOrEqual(0);
       }).toPass();
