@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { DocumentForm } from "../../src/components/ds/accounting/document-form";
+import { DocumentForm } from "../../../src/components/ds/accounting/document-form";
 describe("dbg", () => {
   it("PO manual ids", () => {
     const view = render(
