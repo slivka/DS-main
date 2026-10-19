@@ -2432,7 +2432,8 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 
 /* Design 3: stav tlačítka nemění jeho geometrii; pole mají vlastní šedou plochu. */
 .ds-button.ds-disabled-control:is(:disabled, [aria-disabled="true"]):not([role="radio"]),
-input.ds-disabled-control[readonly] {
+input.ds-disabled-control[readonly].bg-muted\/40,
+[aria-disabled="true"] input.ds-disabled-control[readonly] {
   background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
   border-color: var(--input);
   color: var(--muted-foreground) !important;
