@@ -221,6 +221,12 @@ export function DocumentForm(props: DocumentFormProps) {
       variableSymbolWarning: vsLink.warning,
       variableSymbolLabel: t.variableSymbol,
       taxNumberLabel: dsTexts.documentEdit.taxNumber,
+      fieldLabels: {
+        bankCode: dsTexts.documentEdit.bankCode,
+        bankIban: dsTexts.documentEdit.iban,
+        bankSwift: dsTexts.documentEdit.swift,
+        bankAccountKind: dsTexts.documentEdit.accountKind,
+      },
     }),
     issues: appIssues,
     error,
@@ -229,24 +235,10 @@ export function DocumentForm(props: DocumentFormProps) {
     onValidationChange: linesEditorProps?.onValidationChange,
   });
   // Položky pruhu se promítají do polí (rámeček + ikona + bublina) a do buněk řádků.
-  const issueFieldErrors: Partial<Record<DocumentHeaderField, string>> = {};
-  const issueFieldWarnings: Partial<Record<DocumentHeaderField, string>> = {};
-  const cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]> = [];
-  for (const issue of formIssues.issues) {
-    if (issue.rowId && issue.columnId) {
-      cellIssues.push({
-        rowId: issue.rowId,
-        columnId: issue.columnId,
-        message: issue.message,
-        severity: issue.severity,
-      });
-      continue;
-    }
-    if (!issue.fieldId?.startsWith("document-")) continue;
-    const key = headerFieldKey(issue.fieldId);
-    if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
-    else issueFieldWarnings[key] ??= issue.message;
-  }
+  const { issueFieldErrors, issueFieldWarnings, cellIssues } = useDocumentIssueProjection({
+    issues: formIssues.issues,
+    validationActive,
+  });
   // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
   const dateLink =
     bankMovement && effectiveAccountingLink
