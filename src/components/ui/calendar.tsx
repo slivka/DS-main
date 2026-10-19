@@ -47,6 +47,7 @@ function Calendar({
   CalendarNavigationProps & {
     buttonVariant?: React.ComponentProps<typeof Button>["variant"];
   }) {
+  void _captionLayout;
   const defaultClassNames = getDefaultClassNames();
   const dsTexts = useDsTexts();
   const today = props.today ?? new Date();

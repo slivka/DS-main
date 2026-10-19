@@ -1,5 +1,5 @@
 /** Ukázka Design 3 · pouze paměťová data · nesmí se distribuovat s knihovnou. */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText } from "lucide-react";
 import {
   Button,
@@ -37,6 +37,8 @@ function paneState(count: PaneLayoutCount): PaneTabsState {
   return { version: 2, layout: count, active: "pane-0", panes };
 }
 export function DesignThreeShowcase() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const [count, setCount] = useState<PaneLayoutCount>(1);
   const [state, setState] = useState(() => paneState(1));
   const [dirty, setDirty] = useState(false);
@@ -45,7 +47,7 @@ export function DesignThreeShowcase() {
   const [editing, setEditing] = useState(false);
   const pencil = useRef<HTMLButtonElement>(null);
   return (
-    <div className="space-y-6" data-testid="design-three">
+    <div className="space-y-6" data-testid="design-three" data-ready={ready}>
       <PageHeader
         title="Design 3"
         titleBadge={<DocumentStatusBadge status="posted" approved size="md" />}
