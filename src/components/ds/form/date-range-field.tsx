@@ -1,3 +1,4 @@
+/** Rozsah dat · vlastní popover · nesmí měnit data mimo callback. */
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
 
@@ -31,17 +32,8 @@ function toISO(date: Date): string {
  * Výběr rozsahu dat (Od–Do) v jednom ovládání – kalendář otevřený
  * z jednoho tlačítka. Hodí se do filtrů přehledů.
  */
-export function DateRangeField({
-  value,
-  onChange,
-  placeholder,
-  months = 1,
-  disabled,
-  minDate,
-  maxDate,
-  className,
-  label,
-}: {
+/** Vlastnosti výběru rozsahu data. */
+export interface DateRangeFieldProps {
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
   placeholder?: string;
@@ -55,7 +47,22 @@ export function DateRangeField({
   className?: string;
   /** Přístupný název ovládání. */
   label?: string;
-}) {
+
+  /** Základ výchozího měsíce ve formátu ISO. */
+  baseDate?: string;
+}
+export function DateRangeField({
+  value,
+  onChange,
+  placeholder,
+  months = 1,
+  disabled,
+  minDate,
+  maxDate,
+  baseDate,
+  className,
+  label,
+}: DateRangeFieldProps) {
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const { formatDate } = preferences;
@@ -110,6 +117,7 @@ export function DateRangeField({
         <Calendar
           locale={dsTexts.dateLocale}
           mode="range"
+          baseDate={parseISO(baseDate)}
           minDate={minDate}
           maxDate={maxDate}
           onClose={() => setOpen(false)}
@@ -121,7 +129,7 @@ export function DateRangeField({
           endMonth={endMonth}
           numberOfMonths={months}
           selected={selected}
-          defaultMonth={selected.from ?? maxDate}
+          defaultMonth={selected.from ?? parseISO(baseDate) ?? maxDate}
           disabled={disabledMatcher}
           onSelect={(range) => {
             if (!range?.from) {

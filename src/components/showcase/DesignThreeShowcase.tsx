@@ -21,6 +21,7 @@ import {
   type PaneTabsState,
 } from "../ds";
 import { DocumentIdentityLine } from "../ds/accounting/document-form/document-identity-line";
+import { shiftDocumentDate } from "../../lib/date-quick-options";
 import { useRef } from "react";
 import { DEFAULT_DOCUMENT_FORM_TEXTS } from "../ds/accounting/document-form/document-form-types";
 
@@ -97,7 +98,16 @@ export function DesignThreeShowcase() {
           />
         </Field>
         <Field label="Datum splatnosti">
-          <DateField value={value} onChange={setValue} baseDate="2026-10-19" />
+          <DateField
+            value={value}
+            onChange={setValue}
+            baseDate="2026-10-19"
+            quickOptions={[
+              { label: "+7", compute: (base) => shiftDocumentDate(base, 7) },
+              { label: "+14", compute: (base) => shiftDocumentDate(base, 14) },
+              { label: "+1 měsíc", compute: (base) => shiftDocumentDate(base, 1, "months") },
+            ]}
+          />
         </Field>
       </FieldGrid>
       <SectionHeading>Výběr data</SectionHeading>
