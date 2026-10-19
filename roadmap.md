@@ -7,7 +7,9 @@
 - [x] Patička Součet · Zaokrouhlení · Rozdíl s nabídkou dorovnání
 - [x] Showcase, unit, Chromium E2E, katalog, CHANGELOG, system.md
 - [x] Druhé opravné kolo: zaokrouhlení ve všech cestách DPH, zaúčtovaný doklad z řádků daně, samovyměření ve skupinách, kurz 0, Zaokrouhlení jen v domácí měně, pomocník 4 desetinná místa
-- [ ] document-field-ids (E2E): 2–4 ze 6 testů nestihnou 10 s čekání na načtení stránky účetních formulářů (načítání trvá ~15 s, selhává i bez nové ukázky) – rozhodnout: delší čekání v testu, nebo rozdělit stránku
+- [x] Stránky ukázek rozděleny; document-field-ids prošel 6/6 třikrát bez zvýšení čekání.
+- [x] Třetí opravné kolo T1–T6: samovyměření bez přepisu, přesný kurz/jednotka, prázdné částky bez kurzu, katalog, peněžní editor a kontrolní skript.
+- [x] Uzavření třetího kola: check:full --harness 61,1 s; unit 836/836, lint 0 chyb / 322 varování, format OK, peněžní kontrola 174 souborů; katalog 449/890 → 470/910. Chromium vat-groups 4/4 a grid-amount-editor 1/1. Typecheck/build ponechány automatické kontrole Lovable; plná E2E sada neběžela.
 
 
 ## Nástroje – zrychlení kontrol

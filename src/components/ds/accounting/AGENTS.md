@@ -30,3 +30,12 @@
 
 - Daň skupin kód × sazba počítá jen `computeVatGroups` (stejně jako DB); editor rozpočtenou daň promítne do náhledu přes `applyVatAllocation`. Why: náhled, rekapitulace a součty dávají stejný výsledek jako databáze.
 - Stav otevřeného pomocníka Cena s DPH drží editor, ne buňka. Why: buňka se při aktivaci bubliny stavu přemontuje.
+
+## Shared accounting contracts
+
+- Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
+- Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
+- Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
+- Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
+- Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
+- Keep VAT exchange rates as rate/unit pairs and compare tolerances with exact cross-products. Why: division before conversion loses decimal halves.

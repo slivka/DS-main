@@ -51,7 +51,10 @@ export function JournalDifferenceBar() {
     editor.vatOn && !editor.layout.visibleColumns.some((column) => column.id === "grossAmount");
   const difference = totals.showRemaining ? totals.difference : 0;
   const { actions, preferred } = vatGroups.difference(difference, roundingValue);
-  const groups = vatGroups.vatGroups.groups.filter((group) => group.rate > 0);
+  const groups = vatGroups.vatGroups.groups.filter(
+    (group) =>
+      group.rate > 0 && !group.selfAssessment && editor.vatCodeMap.get(group.vatCodeId)?.hasTax,
+  );
   const writeRounding = props.onRoundingChange ?? props.rounding?.onChange;
   const balanceVat = (group: VatGroup) => vatGroups.setOverride(group, group.tax + difference);
   const balanceBase = () => vatGroups.balanceBase(difference);

@@ -84,7 +84,7 @@ export const DEFAULT_JOURNAL_LINES_RECAP_TEXTS: JournalLinesRecapTexts = {
   deductible: "s nárokem",
   nonDeductible: "bez nároku",
 };
-const money = (value: number) => formatAmount(value, 2);
+const money = (value: number | null) => (value === null ? "" : formatAmount(value, 2));
 /** Řízená nebo lokálně řízená rekapitulace aktuálních účetních řádků. */
 export function JournalLinesRecap({
   lines,

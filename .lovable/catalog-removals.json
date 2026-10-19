@@ -1,0 +1,8 @@
+[
+  {
+    "name": "JournalLinesEditor",
+    "what": "example Řádky s DPH (2.55.0)",
+    "reason": "T4: požadované nahrazení zastaralé ukázky calcMode / onCalcModeChange aktuálním příkladem řádků bez DPH a vatOverrides; žádná funkce ani platná ukázka se neodstraňuje.",
+    "version": "2.109.0"
+  }
+]

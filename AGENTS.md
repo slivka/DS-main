@@ -44,18 +44,13 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
 - Keep recap header rendering and record-list navigation in focused internal modules. Why: orchestration stays readable without deleting whitespace or changing public exports.
-- Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
 
-- Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
-- Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
 
 ## Vydání knihovny
 
 - `meta.version` = `package.json` = poslední VYDANÁ verze; CHANGELOG a roadmap nesou další minor „(nevydáno)“. Nepromítne-li se commit vydání, nastav obě hodnoty a commit zapiš do `.lovable/release-base.json`.
 - Katalog jen přes `bun run check:catalog`; odebrání jen záznamem v `.lovable/catalog-removals.json`; čísla katalogu v CHANGELOG jen z jeho výstupu. Proč: žádné skripty s natvrdo commitem.
 
-- Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
-- Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: estimates and fixed breakpoints overflow near boundaries.
@@ -66,3 +61,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
 - Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.
+
+- Source scanning for monetary rounding belongs in the shared check-money-rounding script, not unit tests; exceptions carry reasons in one list. Why: tests verify behavior and both check levels enforce the same audit.
+
+- Run check:full with --harness inside Lovable so typecheck/build stay harness-owned; CI runs the default full pipeline. Why: duplicate manual builds are forbidden in the editor, while CI must validate all stages.

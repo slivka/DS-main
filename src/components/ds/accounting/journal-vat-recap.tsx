@@ -119,8 +119,8 @@ function GroupAdjust({ group }: { group: VatGroup }) {
 
 const amount = (value: number) => formatAmount(value, 2);
 /** Pevná daň v měně firmy jako DB round(x × kurz, 2); bez platného kurzu prázdné. */
-const fixedHome = (value: number, rate: number | null) =>
-  rate === null ? "" : amount(mulDivRound(value, rate, 1, 2));
+const fixedHome = (value: number, rate: number | null, unit: number) =>
+  rate === null ? "" : amount(mulDivRound(value, rate, unit, 2));
 const CELL = "px-2 py-1 text-right font-mono tabular-nums whitespace-nowrap";
 
 /** Řádek skupiny DPH. */
@@ -184,8 +184,8 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
       <td className={CELL}>{amount(group.gross)}</td>
       {showHome ? (
         <>
-          <td className={CELL}>{amount(group.baseHome)}</td>
-          <td className={CELL}>{amount(group.taxHome)}</td>
+          <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.baseHome)}</td>
+          <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.taxHome)}</td>
         </>
       ) : null}
       <td className="px-1 py-1 text-right whitespace-nowrap">
@@ -289,8 +289,12 @@ export function JournalVatRecap() {
                 <td className={CELL}>{amount(item.base + item.tax)}</td>
                 {homeOn ? (
                   <>
-                    <td className={CELL}>{fixedHome(item.base, vatGroups.exchangeRate)}</td>
-                    <td className={CELL}>{fixedHome(item.tax, vatGroups.exchangeRate)}</td>
+                    <td className={CELL}>
+                      {fixedHome(item.base, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
+                    </td>
+                    <td className={CELL}>
+                      {fixedHome(item.tax, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
+                    </td>
                   </>
                 ) : null}
                 <td />

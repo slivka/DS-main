@@ -1,7 +1,5 @@
 /** Druhé opravné kolo 2.109.0: zaokrouhlení ve všech cestách DPH, zaúčtovaný doklad, samovyměření. */
 import { describe, expect, it } from "bun:test";
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
 import {
   buildVatPreviewLines,
   calculateVatFromBase,
@@ -16,7 +14,11 @@ import {
   applyVatAllocation,
   computeVatGroups,
   storedVatAllocation,
+  upsertVatOverride,
+  vatGroupsFromStored,
 } from "../../src/components/ds/accounting/journal-vat-groups";
+import { vatSummaryWithGroupTax } from "../../src/components/ds/accounting/journal-vat-summary-groups";
+import { mulDivExceeds } from "../../src/lib/decimal-round";
 import { convertAmount } from "../../src/components/ds/accounting/currency-amount";
 import { roundTo } from "../../src/lib/format";
 import type { JournalLine, VatCodeOption } from "../../src/components/ds/accounting/journal-lines";
@@ -107,25 +109,6 @@ describe("cesty DPH zaokrouhlují polovinou od nuly jako DB", () => {
   it("roundTo zaokrouhlí −2,625 na −2,63", () => {
     expect(roundTo(-2.625, 2)).toBe(-2.63);
   });
-
-  it("v peněžních výpočtech DS a lib nezůstal Math.round", () => {
-    const allowed = new Set(["useJournalLayout.ts", "app-zoom.ts"]);
-    const offenders: string[] = [];
-    const walk = (dir: string) => {
-      for (const name of readdirSync(dir)) {
-        const path = join(dir, name);
-        if (statSync(path).isDirectory()) {
-          if (name !== "mock") walk(path);
-        } else if (/\.tsx?$/.test(name) && !allowed.has(name)) {
-          const code = readFileSync(path, "utf8").replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, "");
-          if (code.includes("Math.round(")) offenders.push(path);
-        }
-      }
-    };
-    walk("src/components/ds/accounting");
-    walk("src/lib");
-    expect(offenders).toEqual([]);
-  });
 });
 
 describe("zaúčtovaný doklad – daň z uložených řádků daně", () => {
@@ -195,5 +178,65 @@ describe("kurz DPH bez platné hodnoty", () => {
     }
     const one = computeVatGroups(lines, overrides, CODES, { foreign: true, exchangeRate: 1 });
     expect(one.groups[0].withinTolerance).toBe(false);
+  });
+});
+
+describe("kurz DPH s jednotkou bez mezidělení", () => {
+  const options = { foreign: true, exchangeRate: 3.715, exchangeRateAmount: 100 };
+  const lines = [line("fx", 0, { foreignAmount: -900 })];
+  it("−900 × 3,715 / 100 → −33,44 ve skupině", () => {
+    const result = computeVatGroups(lines, [], CODES, options);
+    expect(result.groups[0].baseHome).toBe(-33.44);
+    const overridden = computeVatGroups(
+      lines,
+      [{ vatCodeId: "p21", vatRate: 21, taxAmount: -900 }],
+      CODES,
+      options,
+    );
+    expect(overridden.groups[0].taxHome).toBe(-33.44);
+    const stored = vatGroupsFromStored(
+      [...lines, line("tax", 0, { isVatLine: true, vatParentLineId: "fx", foreignAmount: -900 })],
+      [],
+      CODES,
+      options,
+    );
+    expect(stored.groups[0].taxHome).toBe(-33.44);
+  });
+  it("spodní souhrn převádí daň i při stejné dani skupiny a řádku", () => {
+    const result = computeVatGroups(lines, [], CODES, options);
+    const rows = summarizeVat(lines, { codes: CODES, foreign: true });
+    rows[0].vat = result.taxTotal;
+    const [row] = vatSummaryWithGroupTax(rows, result, 3.715, 100);
+    expect(row.baseHome).toBe(-33.44);
+    expect(row.vatHome).toBe(-7.02);
+  });
+  it("bez kurzu jsou domácí buňky null, ne 0", () => {
+    const result = computeVatGroups(lines, [], CODES, { ...options, exchangeRate: null });
+    const [row] = vatSummaryWithGroupTax(
+      summarizeVat(lines, { codes: CODES, foreign: true }),
+      result,
+      null,
+      100,
+    );
+    expect(row.baseHome).toBeNull();
+    expect(row.vatHome).toBeNull();
+  });
+  it("tolerance nehodnotí zaokrouhlený podíl", () => {
+    expect(mulDivExceeds(1, 100.00000000001, 100, 1)).toBe(true);
+    expect(mulDivExceeds(1, 100, 100, 1)).toBe(false);
+    const result = computeVatGroups(
+      [line("a", 0, { foreignAmount: 100 })],
+      [{ vatCodeId: "p21", vatRate: 21, taxAmount: 48 }],
+      CODES,
+      options,
+    );
+    expect(result.groups[0].differenceHome).toBe(1);
+    expect(result.groups[0].withinTolerance).toBe(false);
+  });
+  it("PDP upsert zachová přepisy beze změny", () => {
+    const result = computeVatGroups([line("a", 100, { vatCodeId: "pdp" })], [], CODES);
+    const overrides = [{ vatCodeId: "p21", vatRate: 21, taxAmount: 21 }];
+    expect(upsertVatOverride(overrides, result.groups[0], 50)).toBe(overrides);
+    expect(upsertVatOverride(undefined, result.groups[0], 50)).toEqual([]);
   });
 });

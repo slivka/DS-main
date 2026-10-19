@@ -68,15 +68,17 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
   const { lines, onChange, vat } = props;
   const fxRate = props.vatExchangeRate ?? vat?.vatRate ?? rate;
   // Bez platného kurzu (0 / prázdný) null – tolerance se nehodnotí, nepočítá se s 1.
+  const exchangeRateAmount = !foreign
+    ? 1
+    : ((props.vatExchangeRate != null
+        ? props.vatExchangeRateAmount
+        : vat?.vatRate != null
+          ? vat.vatRateAmount
+          : rateAmount) ?? 1);
   const exchangeRate: number | null = !foreign
     ? 1
-    : fxRate && fxRate > 0
-      ? fxRate /
-        ((props.vatExchangeRate != null
-          ? props.vatExchangeRateAmount
-          : vat?.vatRate
-            ? vat.vatRateAmount
-            : rateAmount) || 1)
+    : fxRate > 0 && exchangeRateAmount > 0
+      ? fxRate
       : null;
   const active = vatOn && !vatReadOnly;
   // Otevřený pomocník drží editor: buňka se při aktivaci bubliny stavu přemontuje.
@@ -88,9 +90,26 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
       !vatOn
         ? computeVatGroups([], vatOverrides, vatCodeMap)
         : vatReadOnly
-          ? vatGroupsFromStored(lines, vatOverrides, vatCodeMap, { foreign, exchangeRate })
-          : computeVatGroups(lines, vatOverrides, vatCodeMap, { foreign, exchangeRate }),
-    [lines, vatOverrides, vatCodeMap, foreign, exchangeRate, vatOn, vatReadOnly],
+          ? vatGroupsFromStored(lines, vatOverrides, vatCodeMap, {
+              foreign,
+              exchangeRate,
+              exchangeRateAmount,
+            })
+          : computeVatGroups(lines, vatOverrides, vatCodeMap, {
+              foreign,
+              exchangeRate,
+              exchangeRateAmount,
+            }),
+    [
+      lines,
+      vatOverrides,
+      vatCodeMap,
+      foreign,
+      exchangeRate,
+      exchangeRateAmount,
+      vatOn,
+      vatReadOnly,
+    ],
   );
   const allocatedLines = React.useMemo(
     () =>
@@ -137,8 +156,10 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
       ),
     );
   };
-  const setOverride = (group: VatGroup, tax: number) =>
+  const setOverride = (group: VatGroup, tax: number) => {
+    if (group.selfAssessment || !vatCodeMap.get(group.vatCodeId)?.hasTax) return;
     props.onVatOverridesChange?.(upsertVatOverride(props.vatOverrides, group, tax));
+  };
   const resetOverride = (group: VatGroup) =>
     props.onVatOverridesChange?.(removeVatOverride(props.vatOverrides, group));
   /** b) Celkem s DPH dle dokladu: přepis daně + dorovnání základu. */
@@ -197,6 +218,7 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     canOverride,
     groupIssues,
     exchangeRate,
+    exchangeRateAmount,
     setOverride,
     resetOverride,
     applyGrossTotal,

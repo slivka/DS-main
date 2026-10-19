@@ -30,6 +30,7 @@ const changed = [
 ].filter((f) => existsSync(f));
 
 run("typecheck", "bunx", ["tsgo", "--noEmit"]);
+run("money-rounding", "bun", ["./scripts/check-money-rounding.ts"]);
 
 const lintable = changed.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs)$/.test(f));
 if (lintable.length)

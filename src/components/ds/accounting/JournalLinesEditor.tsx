@@ -160,10 +160,17 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
           ? vatSummaryWithGroupTax(
               totals.vatSummary,
               editor.vatGroups.vatGroups,
-              editor.vatGroups.exchangeRate ?? 0,
+              editor.vatGroups.exchangeRate,
+              editor.vatGroups.exchangeRateAmount,
             )
           : undefined,
-      [vatOn, totals.vatSummary, editor.vatGroups.vatGroups, editor.vatGroups.exchangeRate],
+      [
+        vatOn,
+        totals.vatSummary,
+        editor.vatGroups.vatGroups,
+        editor.vatGroups.exchangeRate,
+        editor.vatGroups.exchangeRateAmount,
+      ],
     );
     const { recap = {}, recapTabs = [], storageKey = "journal-lines" } = props;
     return (
