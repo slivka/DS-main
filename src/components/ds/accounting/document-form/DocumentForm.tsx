@@ -206,19 +206,6 @@ export function DocumentForm(props: DocumentFormProps) {
   });
   const showTaxNumber =
     ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
-  const taxNumberField = showTaxNumber
-    ? field(
-        "document-taxDocumentNumber",
-        dsTexts.documentEdit.taxNumber,
-        <TaxDocumentNumberField
-          value={value}
-          patch={patch}
-          warning={taxDocumentNumberWarning}
-          disabled={!can("taxDocumentNumber")}
-        />,
-        6,
-      )
-    : null;
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
   const formIssues = useDocumentFormIssues({
     clientIssues: documentClientIssues({
@@ -242,6 +229,51 @@ export function DocumentForm(props: DocumentFormProps) {
     rowLabel: dsTexts.journalEditor.row,
     onValidationChange: linesEditorProps?.onValidationChange,
   });
+  // Položky pruhu se promítají do polí (rámeček + ikona + bublina) a do buněk řádků.
+  const issueFieldErrors: Partial<Record<DocumentHeaderField, string>> = {};
+  const issueFieldWarnings: Partial<Record<DocumentHeaderField, string>> = {};
+  const cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]> = [];
+  for (const issue of formIssues.issues) {
+    if (issue.rowId && issue.columnId) {
+      cellIssues.push({
+        rowId: issue.rowId,
+        columnId: issue.columnId,
+        message: issue.message,
+        severity: issue.severity,
+      });
+      continue;
+    }
+    if (!issue.fieldId?.startsWith("document-")) continue;
+    const key = headerFieldKey(issue.fieldId);
+    if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
+    else issueFieldWarnings[key] ??= issue.message;
+  }
+  const { field, date, suggestedText } = useDocumentFieldRenderers({
+    value: effectiveValue,
+    patch,
+    can,
+    dateWarnings,
+    accountingDateLink: effectiveAccountingLink,
+    // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
+    fieldErrors:
+      validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
+    fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
+    onInvalidDate: (key, invalid) =>
+      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
+  });
+  const taxNumberField = showTaxNumber
+    ? field(
+        "document-taxDocumentNumber",
+        dsTexts.documentEdit.taxNumber,
+        <TaxDocumentNumberField
+          value={value}
+          patch={patch}
+          warning={taxDocumentNumberWarning}
+          disabled={!can("taxDocumentNumber")}
+        />,
+        6,
+      )
+    : null;
   const {
     externalNumberField,
     bankAccountField,
