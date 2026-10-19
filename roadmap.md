@@ -8,6 +8,13 @@
 - [x] Showcase, unit, Chromium E2E, katalog, CHANGELOG, system.md
 - [ ] document-field-ids (E2E): 2–4 ze 6 testů nestihnou 10 s čekání na načtení stránky účetních formulářů (načítání trvá ~15 s, selhává i bez nové ukázky) – rozhodnout: delší čekání v testu, nebo rozdělit stránku
 
+
+## Nástroje – zrychlení kontrol
+- [x] `check:quick` (průběžná) a `check:full` (úplná), ESLint cache
+- [x] `check:catalog` místo jednorázových verify-*.py, `.lovable/release-base.json`, `.lovable/catalog-removals.json`
+- [x] GitHub Actions E2E (ručně / noc / vydání), Playwright na CI 4 workery, 1 opakování
+- [ ] První běh v GitHubu (spustí Petr)
+
 ## DS 2.108.0 – Edit dokladu 15
 - [x] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
 - [x] E2 VS se zámkem – DS jen zobrazuje náhled, ukládá stav vazby

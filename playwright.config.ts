@@ -1,10 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/**
+ * Lokálně i na CI se testuje proti dev serveru: 11 specifikací importuje v prohlížeči
+ * zdrojové moduly (`import("/src/lib/app-zoom.ts")`), které produkční build neobsahuje.
+ */
+const ci = Boolean(process.env.CI);
+
 export default defineConfig({
   testDir: "./tests/e2e",
-  outputDir: "/tmp/slivka-playwright-results",
+  outputDir: ci ? "test-results" : "/tmp/slivka-playwright-results",
   fullyParallel: false,
-  workers: 1,
+  workers: ci ? 4 : 1,
+  ...(ci ? { retries: 1, reporter: [["github"], ["html", { open: "never" }]] } : {}),
   timeout: 90_000,
   expect: { timeout: 10_000 },
   use: {

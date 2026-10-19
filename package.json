@@ -11,12 +11,16 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint . --cache --cache-location node_modules/.cache/eslint/",
     "test": "bun test tests/unit",
     "typecheck": "tsgo --noEmit",
     "test:excel": "playwright test tests/e2e/excel-download.spec.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "check:quick": "bun ./scripts/check-quick.ts",
+    "check:full": "bun ./scripts/check-full.ts",
+    "check:catalog": "bun ./scripts/check-catalog.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

@@ -51,7 +51,8 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 ## Vydání knihovny
 
-- `meta.version` v `.lovable/design-system.json` = `package.json` = poslední VYDANÁ verze; dialog Release nabídne další minor (Current z `meta.version` + 1). CHANGELOG a roadmap nesou připravovanou verzi označenou „(nevydáno)“. Po vydání, pokud se commit vydání do pracovní větve nepromítne, hned nastav obě hodnoty na právě vydanou verzi.
+- `meta.version` = `package.json` = poslední VYDANÁ verze; CHANGELOG a roadmap nesou další minor „(nevydáno)“. Nepromítne-li se commit vydání, nastav obě hodnoty a commit zapiš do `.lovable/release-base.json`.
+- Katalog jen přes `bun run check:catalog`; odebrání jen záznamem v `.lovable/catalog-removals.json`; čísla katalogu v CHANGELOG jen z jeho výstupu. Proč: žádné skripty s natvrdo commitem.
 
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.

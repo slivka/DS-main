@@ -33,3 +33,5 @@ src/.generated/
 *.njsproj
 *.sln
 *.sw?
+playwright-report/
+test-results/
