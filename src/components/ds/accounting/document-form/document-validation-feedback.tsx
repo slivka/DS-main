@@ -64,7 +64,41 @@ const HEADER_FIELD_ID: Record<string, string> = {
   roundingAmount: "document-amountTotal",
   rateNote: "document-rate-note",
   rateManual: "document-rate",
+  taxDocumentNumberLinked: "document-taxDocumentNumber",
+  // Kniha a směr nemají vlastní pole; nejbližší prvek je identifikační řádek.
+  bookId: "document-identity",
+  direction: "document-identity",
 };
+
+/** Kontext zpětného mapování id → klíč (typ dokladu a režim účtu protiúčtu BA). */
+export interface HeaderFieldKeyContext {
+  /** Typ dokladu. */
+  code?: string;
+  /** Druh účtu protiúčtu BA (`iban` = IBAN + SWIFT). */
+  bankAccountKind?: string;
+}
+
+/** Id sdílená více klíči: klíč určuje typ dokladu a režim účtu (jediné místo pravidla). */
+const SHARED_ID_KEY: Record<string, (ctx: HeaderFieldKeyContext) => string> = {
+  "document-movement-account": (ctx) =>
+    ctx.code === "BA" && ctx.bankAccountKind !== "iban" ? "bankAccount" : "bankIban",
+  "document-bank-code": (ctx) => (ctx.bankAccountKind === "iban" ? "bankSwift" : "bankCode"),
+  "document-bankAccount": () => "bankAccount",
+  "document-partner": () => "partnerId",
+  "document-partner-ico": () => "counterpartyIco",
+  "document-amountTotal": () => "amountTotal",
+  "document-variableSymbol": () => "variableSymbol",
+  "document-taxDocumentNumber": () => "taxDocumentNumber",
+  "document-rate": () => "rate",
+  "document-identity": () => "bookId",
+};
+
+/** Jednoznačná id (jeden klíč na prvek) odvozená z tabulky klíč → id. */
+const UNIQUE_ID_KEY: Record<string, string> = Object.fromEntries(
+  Object.entries(HEADER_FIELD_ID)
+    .filter(([, id]) => !(id in SHARED_ID_KEY))
+    .map(([key, id]) => [id, key]),
+);
 
 /** Klíče hlavičky, které nejsou pole – do pruhu se jako položky pole neposílají. */
 const NON_FIELD_KEYS = new Set([
@@ -84,15 +118,11 @@ function headerFieldId(key: string, code?: string): string {
   return HEADER_FIELD_ID[key] ?? `document-${key}`;
 }
 
-/** Klíč hlavičky z id ovládání – obráceně přes stejnou tabulku, ne odřezáním prefixu. */
-export function headerFieldKeyFromId(id: string, code?: string): string {
-  // Nejednoznačná id (víc klíčů sdílí prvek) se řeší dřív, než projdeme tabulku.
-  if (id === "document-bankAccount") return "bankAccount";
-  if (id === "document-movement-account") return code === "BA" ? "bankAccount" : "bankIban";
-  if (id === "document-amountTotal") return "amountTotal";
-  if (id === "document-partner-ico") return "counterpartyIco";
-  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID)) if (fieldId === id) return key;
-  return id.replace("document-", "");
+/** Klíč hlavičky z id ovládání – explicitní tabulka id → klíč, nikdy „první shoda“. */
+export function headerFieldKeyFromId(id: string, ctx: HeaderFieldKeyContext = {}): string {
+  const shared = SHARED_ID_KEY[id];
+  if (shared) return shared(ctx);
+  return UNIQUE_ID_KEY[id] ?? id.replace("document-", "");
 }
 
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
@@ -118,6 +148,9 @@ function headerLabelAlias(
     mainAccountId: t.mainAccountSelect,
     variableSymbolLinked: t.variableSymbol,
     totalMode: t.amountTotal,
+    bookId: t.book,
+    taxDocumentNumber: fieldLabels?.taxDocumentNumber,
+    taxDocumentNumberLinked: fieldLabels?.taxDocumentNumber,
     rateManual: t.manualRate,
     roundingAmount: t.rounding,
     bankCode: fieldLabels?.bankCode,

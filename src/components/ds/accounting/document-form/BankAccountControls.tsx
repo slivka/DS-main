@@ -120,6 +120,7 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
   if (props.paymentOrdersApplicable === false)
     return props.accountDisabledReason ? (
       <LockedAccountValue
+        id="document-bankAccount"
         reason={props.accountDisabledReason}
         aria-label={props.texts.bankAccount}
       />

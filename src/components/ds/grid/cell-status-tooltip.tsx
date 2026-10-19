@@ -21,8 +21,7 @@ export function useCellStatusTooltip({ error, warning, extraInfo }: CellStatusTo
   const id = useId();
   const [anchor, setAnchor] = useState<DOMRect | null>(null);
   const message = error || warning;
-  if (!message)
-    return { triggerProps: {}, tooltip: null as ReactNode, active: false } as const;
+  if (!message) return { triggerProps: {}, tooltip: null as ReactNode, active: false } as const;
   const show = (event: PointerEvent<HTMLElement> | FocusEvent<HTMLElement>) =>
     setAnchor(event.currentTarget.getBoundingClientRect());
   const hide = () => setAnchor(null);

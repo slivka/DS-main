@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import type { FormIssue } from "../../../../lib/form-issues";
 import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { headerFieldKey } from "./use-document-field-renderers";
+import type { HeaderFieldKeyContext } from "./document-validation-feedback";
 import type { DocumentHeaderField } from "./document-form-types";
 
 /** Vstupy projekce. */
@@ -15,6 +16,8 @@ export interface DocumentIssueProjectionArgs {
   issues: readonly FormIssue[];
   /** Neaktivní validace skrývá jen klientské chyby; serverové chyby a varování zůstávají. */
   validationActive?: boolean;
+  /** Typ dokladu a režim účtu – určují klíč sdílených id (BA protiúčet). */
+  keyContext?: HeaderFieldKeyContext;
 }
 
 /** Výstupy projekce. */
@@ -52,10 +55,10 @@ export function useDocumentIssueProjection(
       if (!issue.fieldId?.startsWith("document-")) continue;
       // Neaktivní validace skrývá jen klientské chyby; serverové chyby a varování zůstávají.
       if (!active && issue.source === "client" && issue.severity === "error") continue;
-      const key = headerFieldKey(issue.fieldId);
+      const key = headerFieldKey(issue.fieldId, a.keyContext);
       if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
       else issueFieldWarnings[key] ??= issue.message;
     }
     return { issueFieldErrors, issueFieldWarnings, cellIssues };
-  }, [a.issues, active]);
+  }, [a.issues, active, a.keyContext?.code, a.keyContext?.bankAccountKind]);
 }

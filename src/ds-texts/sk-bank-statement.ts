@@ -24,6 +24,7 @@ export const BANK_STATEMENT_SK: BankStatementTexts = {
   difference: "Rozdiel",
   items: "Pohyby",
   lockedChecked: "Výpis je skontrolovaný",
+  locked: "Výpis je uzamknutý",
   lockedPosted: "Výpis je zaúčtovaný",
   lockedReadOnly: "Výpis je iba na čítanie",
   hasItems: "Výpis má položky",

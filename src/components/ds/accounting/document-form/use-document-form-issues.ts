@@ -109,6 +109,7 @@ export function useDocumentFormFeedback(a: DocumentFormFeedbackArgs): {
   const projection = useDocumentIssueProjection({
     issues: formIssues.issues,
     validationActive: a.validationActive,
+    keyContext: { code: a.validation.code, bankAccountKind: a.validation.value.bankAccountKind },
   });
   return {
     issues: formIssues.issues,
