@@ -14,6 +14,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 
 Vzor dialogu záznamu (2.111.0, závazné):
 - Dialog číselníku = `RecordDialog size="md"`; `size` je povinný (sm 32 rem krátké a jednoúčelové, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj.
+- Zvolenou záložku lze řídit `activeTab` + `onTabChange`, například po chybě uložení. Bez `activeTab` vybírá DS; callback oznamuje jen uživatelskou změnu, nikoli změnu props aplikací.
 - Veškerý obsah ve `FieldGrid cols={12}` + `Field span`; více mřížek jen pod `SectionHeading`. Žádný `Field`, `<p>`, `<span>` ani `<div>` s rozložením mimo mřížku. Vysvětlení přes `FieldGrid.hint`.
 - Chyba uložení (z databáze) přes `RecordDialog.error` – ve stejném pruhu nad tlačítky jako `fieldErrors`. `Alert` v obsahu dialogu je zakázaný.
 - Odstranění přes `deleteAction` (vždy vlevo, `outline-destructive`, destruktivní potvrzení); vlastní tlačítko Odstranit nepřidávej.

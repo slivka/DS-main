@@ -1,6 +1,11 @@
 ## DS 2.112.0 – Opravy pro Firefox a Safari (nevydáno)
 
-- Roztřídit a opravit selhání plné E2E sady ve Firefoxu a WebKitu (run 39318709163 na 8786635c: 30 selhání, 16 nestabilních; Chromium bez chyb).
+- [x] Prověřeno ve Firefoxu / WebKitu: bez pageerror; kruhový import nepotvrzen. Opožděná hydratace při studeném načtení reprodukována, společná produktová výjimka z CI nikoli.
+- [x] Opravená identita a centrování Firefoxu, flex obal PartnerSelect při 200 %; tolerance štítků 0,5 px. Design 3 + pageerror 32/32, vsazení Edit 13 2/2.
+- [x] Řízené záložky RecordDialog: activeTab / onTabChange, 2 testy chování, props i příklad v katalogu.
+- [x] Kontrola pageerror na hlavních ukázkách pro Firefox / WebKit (6/6).
+- [x] Quick / full --harness: 876/876 unit, lint 0 chyb, formát OK; katalog 440/900 → 440/902 bez ztrát a bez odebraných referenčních sekcí; verze 2.111.0, nevydáno.
+- [ ] Plná E2E sada a potvrzení původní CI regrese – spouští Petr v GitHub Actions; lokálně se společná výjimka nepotvrdila.
 
 ## DS 2.111.0 – Dialogy záznamů
 - [x] S1–S6 RecordDialog: povinná velikost, ochrana změn, jen pro čtení, error, deleteAction, Ukládám…

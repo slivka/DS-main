@@ -287,6 +287,14 @@ test("vzorový Excel se stáhne a otevře bez varování", async ({ page }, test
 
   try {
     await page.goto("/components/excel-export", { waitUntil: "networkidle" });
+    // SSR zpřístupní tlačítko před připojením React handleru; networkidle není hydratace.
+    // Čekáme na konkrétní ovládání, ne na pevný čas, a běžný timeout nezvyšujeme.
+    await page.waitForFunction(() => {
+      const button = Array.from(document.querySelectorAll("button")).find(
+        (node) => node.textContent === "Stáhnout vzorový export",
+      );
+      return button && Object.keys(button).some((key) => key.startsWith("__reactProps"));
+    });
     const [download] = await Promise.all([
       page.waitForEvent("download"),
       page.getByRole("button", { name: "Stáhnout vzorový export" }).click(),

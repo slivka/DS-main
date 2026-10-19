@@ -2,7 +2,14 @@
 
 ## 2.112.0 (nevydáno) – Opravy pro Firefox a Safari
 
-- Zatím bez změn.
+- `RecordDialog.activeTab?: string` a `onTabChange?: (value: string) => void`: aplikace může otevřít zvolenou sekci nebo přepnout po chybě uložení. Bez activeTab zůstává neřízený režim, callback oznamuje pouze změnu uživatelem.
+- Firefox: stálá výška slotu tužky v identifikačním řádku i při otevřeném výběru; měřicí text účtu má stejnou váhu v klidu i při úpravě.
+- Firefox: opravené optické centrování štítků při chybějící podpoře text-box; tolerance porovnání výšek směru a stavu je 0,5 px místo přesné rovnosti subpixelů.
+- PartnerSelect má flex obal: vysoký text při 200 % již nevytváří řádkový přesah kolem inline tlačítka a neposouvá přepínač protistrany.
+- Nový browser-page-errors spec pro Firefox / WebKit kontroluje hlavní účetní formuláře, grid a otevření dialogu záznamu; čeká na skutečně připojené ovládání, timeouty nezvyšuje.
+- Rozbor Input → record-read-only → field-value nepotvrdil kruhový import ani nepodporované API. Výjimka za běhu se při cílených kontrolách hlavních stránek nepotvrdila; nulový atribut měření a data-ready=false jsou před připojením efektů očekávané, nikoli důkaz výjimky.
+- Excel E2E čeká na připojený handler tlačítka před jediným klikem: samostatné Safari stažení včetně LibreOffice prošlo, při studeném SSR klik před připojením handleru download vůbec nespustil. Timeouty ani obsahové kontroly se nemění.
+- Kontroly: full --harness 876/876 unit, lint bez chyb, formát OK; katalog proti 2.111.0: 440 → 440 komponent, 900 → 902 props, bez odebrání. Čtyři katalogové soubory zachovaly všechny sekce. Design 3 + pageerror Firefox/WebKit 32/32, opravené vsazení Edit 13 2/2, cílené Safari menu/dialog/DPH a Excel prošly; plná E2E sada zůstává pro GitHub Actions.
 
 ## 2.111.0 – Dialogy záznamů
 
