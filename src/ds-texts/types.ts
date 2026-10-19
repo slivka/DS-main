@@ -64,6 +64,7 @@ export interface DsTexts {
     bankCode: string;
     income: string;
     expense: string;
+    /** @deprecated 2.108.0 – pohyby se zobrazují i u neuloženého výpisu; nepoužívat. */
     unsavedMovements: string;
     /** Přístupný název zámku VS. */
     vsLink: string;
