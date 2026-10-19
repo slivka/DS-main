@@ -14,8 +14,10 @@ describe("useDocumentDateLinks", () => {
       { initialProps: { value: base({ issueDate: "2026-10-01", taxDate: "2026-10-01" }) } },
     );
     act(() => result.current.patch({ taxDate: "2026-09-30" }));
+    const before = onChange.mock.calls.length;
     rerender({ value: base({ id: "other", issueDate: "2026-10-18", taxDate: null }) });
-    expect(onChange.mock.calls.at(-1)?.[0].taxDate).toBe("2026-10-18");
+    // Otevření existujícího dokladu nic nezapisuje (2.109.0); vazba platí až po akci.
+    expect(onChange.mock.calls.length).toBe(before);
     act(() => result.current.patch({ issueDate: "2026-10-19" }));
     expect(onChange.mock.calls.at(-1)?.[0].taxDate).toBe("2026-10-19");
   });
@@ -46,7 +48,12 @@ describe("useDocumentDateLinks", () => {
     renderHook(() =>
       useDocumentDateLinks({
         code: "FP",
-        value: base({ issueDate: "2026-10-01", accountingDate: "2026-10-01", taxDate: null }),
+        value: base({
+          id: undefined,
+          issueDate: "2026-10-01",
+          accountingDate: "2026-10-01",
+          taxDate: null,
+        }),
         onChange,
         accountingDateLinked: true,
       }),

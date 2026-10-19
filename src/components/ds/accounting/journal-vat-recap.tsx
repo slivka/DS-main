@@ -191,25 +191,29 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
 /** Rekapitulace DPH; vykreslí se jen u dokladu, který vstupuje do DPH. */
 export function JournalVatRecap() {
   const { editor } = useJournalEditor();
-  const { vatGroups, t, foreign, vatOn, vatReadOnly } = editor;
+  const { vatGroups, t, foreign, vatOn } = editor;
   const texts = t.vatGroups;
-  const [showHome, setShowHome] = React.useState(false);
+  // Sbalitelné sloupce v měně firmy řídí aplikace přes `recap` (žádný vnitřní stav).
+  const recap = editor.props.recap;
+  const showHome = Boolean(recap?.vatHomeOpen);
+  const onHomeChange = recap?.onVatHomeOpenChange;
   const { groups, fixed } = vatGroups.vatGroups;
-  if (!vatOn || vatReadOnly || (groups.length === 0 && fixed.length === 0)) return null;
+  // Zaúčtovaný doklad rekapitulaci ukáže jen ke čtení (úpravy skrývá canOverride).
+  if (!vatOn || (groups.length === 0 && fixed.length === 0)) return null;
   const home = editor.homeMark;
   const homeOn = foreign && showHome;
   return (
     <section data-slot="journal-vat-recap" aria-label={texts.title} className="border-t text-sm">
       <div className="flex items-center justify-between px-3 py-1">
         <span className="font-medium">{texts.title}</span>
-        {foreign ? (
+        {foreign && onHomeChange ? (
           <Button
             type="button"
             variant="ghost"
             size="sm"
             aria-expanded={showHome}
             data-slot="journal-vat-home-toggle"
-            onClick={() => setShowHome((value) => !value)}
+            onClick={() => onHomeChange(!showHome)}
             className="h-[var(--control-h)]"
           >
             {texts.toggleHome}

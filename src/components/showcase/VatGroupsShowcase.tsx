@@ -27,6 +27,7 @@ function GroupsExample(props: GroupsExampleProps) {
   const [lines, setLines] = useState(props.initial);
   const [overrides, setOverrides] = useState<JournalVatOverride[]>(props.initialOverrides ?? []);
   const [rounding, setRounding] = useState(0);
+  const [homeOpen, setHomeOpen] = useState(false);
   return (
     <div data-testid={`vat-groups-${props.id}`} className="space-y-1">
       <h3 className="text-sm font-medium">{props.title}</h3>
@@ -34,6 +35,7 @@ function GroupsExample(props: GroupsExampleProps) {
         storageKey={`vat-groups-${props.id}`}
         lines={lines}
         onChange={setLines}
+        recap={{ vatHomeOpen: homeOpen, onVatHomeOpenChange: setHomeOpen }}
         accounts={MOCK_ACCOUNTS}
         mode="mainAccount"
         mainAccount={props.mainAccount}
