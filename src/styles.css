@@ -2487,7 +2487,10 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 .document-identity-account {
   flex: 0 1 auto;
   width: max-content;
-  min-width: min(calc(var(--identity-account-width) + var(--identity-account-accessories-width)), 100%);
+  min-width: min(
+    calc(var(--identity-account-width) + var(--identity-account-accessories-width)),
+    100%
+  );
   max-width: 100%;
 }
 .document-identity-account-box {
