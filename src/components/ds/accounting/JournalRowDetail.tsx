@@ -20,6 +20,7 @@ import {
 import { OptionSelect } from "../form/option-select";
 import { SegmentedField } from "../form/segmented-field";
 import { DimensionSelect } from "./dimension-select";
+import { JournalGrossHelper } from "./journal-gross-helper";
 import { useJournalEditor } from "./journal-editor-context";
 import type { JournalLine, JournalLineColumn, VatDeduction } from "./journal-lines";
 import {
@@ -308,16 +309,29 @@ function DetailInput({ line, id }: { line: JournalLine; id: JournalLineColumn })
         onEditSelected={props.onEditUnit}
       />
     );
-  if (id === "quantity" || id === "unitPrice")
-    return (
+  if (id === "quantity" || id === "unitPrice") {
+    const input = (
       <DecimalInput
         value={line[id]}
         disabled={disabled}
+        className={id === "unitPrice" ? "pr-[calc(var(--control-h)*0.8)]" : undefined}
         onChange={(value) =>
           editor.updateCalculated(line, { [id]: value === "" ? undefined : Number(value) })
         }
       />
     );
+    if (id === "quantity" || disabled) return input;
+    return (
+      <div className="relative">
+        {input}
+        <JournalGrossHelper
+          line={line}
+          column="unitPrice"
+          className="absolute top-1/2 right-[0.4em] -translate-y-1/2"
+        />
+      </div>
+    );
+  }
   if (VS_COLUMNS.has(id))
     return (
       <VsField

@@ -11,7 +11,10 @@ const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 1
 /** Daň ze základu: round(základ × sazba / 100, 2). */
 export const calculateVatFromBase = (base: number, rate: number | null | undefined) =>
   rate ? round2((base * rate) / 100) : 0;
-/** Daň z částky s DPH: round(celkem × sazba / (100 + sazba), 2). */
+/**
+ * Daň z částky s DPH: round(celkem × sazba / (100 + sazba), 2).
+ * @deprecated 2.109.0 – použijte `taxFromGrossTotal`. Odstraní se ve 3.0.0.
+ */
 export const calculateVatFromGross = (gross: number, rate: number | null | undefined) =>
   rate ? round2((gross * rate) / (100 + rate)) : 0;
 
@@ -317,7 +320,10 @@ export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): Va
   return [...rows.values()];
 }
 
-/** Při přepnutí na „S DPH“ doplní celkem s DPH tak, aby se celek dokladu nezměnil. */
+/**
+ * Při přepnutí na „S DPH“ doplní celkem s DPH tak, aby se celek dokladu nezměnil.
+ * @deprecated 2.109.0 – režim s DPH zrušen. Odstraní se ve 3.0.0.
+ */
 export function applyVatCalcMode(
   lines: JournalLine[],
   mode: VatCalcMode,
@@ -336,7 +342,10 @@ export function applyVatCalcMode(
   );
 }
 
-/** Z celkem s DPH dopočítá základ (v měně dokladu i domácí), který řádek drží v amount / foreignAmount. */
+/**
+ * Z celkem s DPH dopočítá základ (v měně dokladu i domácí).
+ * @deprecated 2.109.0 – použijte `baseFromGrossAmount` (pomocník „Cena s DPH“). Odstraní se ve 3.0.0.
+ */
 export function baseFromGross(
   line: JournalLine,
   codes: VatCodeOption[],

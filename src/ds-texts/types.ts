@@ -21,7 +21,7 @@ export type TextTemplate = (...args: never[]) => string;
 export type TextTree = { [key: string]: string | TextTemplate | TextTree };
 
 import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
-export type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
+export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
   /** Přístupné názvy číselného krokovače. */

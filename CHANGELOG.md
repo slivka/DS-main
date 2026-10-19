@@ -1,6 +1,33 @@
 # Changelog – Slivka Design System
 
-## 2.108.0 (nevydáno) – Edit dokladu 15
+## 2.109.0 (nevydáno) – DPH krok 4B
+
+### BREAKING
+- **Řádky jsou vždy bez DPH.** `JournalLinesVat.calcMode` a `onCalcModeChange` jsou @deprecated (odstraní se ve 3.0.0) a ignorované; přepínač Bez / S DPH v liště zmizel. Typ `VatCalcMode`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromGross` zůstávají exportované jako @deprecated.
+- **Ruční daň na řádku zrušena.** Buňka DPH ani Celkem s DPH se needitují, akce „Vrátit vypočtenou daň“ v řádku zmizela. `toJournalRow(s)` už neposílá `vat_manual`, `vat_amount_foreign` ani `amount_gross`. Řádek s `vatManual` z DB je pevná systémová daň (odpočet zálohy, import) – jen zobrazení se zámkem a bublinou.
+- **Patička Součet · Zaokrouhlení · Rozdíl** (`data-slot="journal-difference-bar"`, `journal-footer-sum`, `journal-footer-rounding`, `journal-lines-remaining`). Tlačítko „± Zaokrouhlení“ (`journal-lines-rounding`) a stav rozepsání v liště zrušeny, stejně jako automatický návrh zaokrouhlení na jakýkoli rozdíl. `JournalLinesRounding.limit` je @deprecated – použijte `roundingLimit`.
+- **Rekapitulace DPH** se přesunula pod mřížku (`journal-vat-recap`); záložka DPH ve spodní rekapitulaci se už nevykresluje.
+
+### Nové
+- `JournalLinesEditor`: `vatOverrides`, `onVatOverridesChange`, `vatExchangeRate`, `vatExchangeRateAmount`, `roundingLimit`, `onRoundingChange`, `vatOverrideSeverity`. Sazba pro výpočet se bere z `VatCodeOption.rate` (sazba k Datu DPH) – samostatné `vatRateByCode` není potřeba.
+- Rekapitulace DPH po skupinách kód × sazba se stejným výpočtem jako DB; úpravy „dle dokladu“: DPH, Celkem s DPH (přepis + jednorázové dorovnání základu), Základ (jednorázové dorovnání řádku s největším základem); „Vrátit vypočtenou daň“; tolerance ±1,00 v měně firmy kurzem DPH. Přepis nad tolerancí: varování v řádku skupiny, při `vatOverrideSeverity="error"` položka v `onValidationChange` s `fieldId="journal-vat-group-{kód}-{sazba}"`.
+- Pomocník „Cena s DPH“ v buňce Částka / Jedn. cena a v detailu řádku.
+- Nabídka u Rozdílu: Dorovnat DPH (výběr skupiny), Dorovnat základ, Zaokrouhlení (jen do limitu). Výchozí volba: jedna skupina a |rozdíl| ≤ 0,01 × počet řádků → DPH, jinak Zaokrouhlení v limitu, nad limit žádná.
+- Čisté funkce `computeVatGroups`, `resolveDifferenceActions`, `baseFromGrossAmount`, `taxFromGrossTotal`, `upsertVatOverride`, `removeVatOverride`, `largestBaseLineId`, `applyVatAllocation`, `allocateVatGroupTax`.
+- `DocumentForm` předává svůj limit zaokrouhlení editoru jako `roundingLimit`.
+- Texty `journalEditor.vatGroups` (CS i SK); `vatMode*` a `vatManual` jsou @deprecated.
+
+### Migrace pro aplikace
+1. Odeberte `vat.calcMode` / `onCalcModeChange` a sloupec `amount_gross` z ukládání.
+2. Ukládejte přepisy spolu s řádky: `_vat_overrides: vatOverrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount }))`; `[]` = smazat.
+3. Předejte `vatExchangeRate` (kurz DPH), `roundingLimit` (limit firmy) a `onRoundingChange`.
+4. `vatOverrideSeverity="warning"` u konceptu, `"error"` při zařazení (DB vrací `vat_override_diff;skupina;sazba`).
+5. Testy a selektory na `journal-lines-rounding` nahraďte `journal-footer-rounding`.
+
+### Katalog
+- design-system.json: 438 komponent / 855 props → 447 / 894. Vráceny položky chybějící proti `8db33914` (FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip a 18 props); nic neubylo.
+
+## 2.108.0 – Edit dokladu 15
 
 - **Katalog:** obnoveny záznamy ztracené po vydání 2.107.0 (`8db33914`): FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip, props FieldStatusIndicator, FieldFeedbackIndicator (error/warning), ToggleGroup (label/error/warning), RecordActionBar a DocumentForm `error.fieldErrors` / `error.onFieldErrorSelect`, JournalLinesEditor `onCreateDimension` / `onValidationChange`. Kód se neměnil.
 

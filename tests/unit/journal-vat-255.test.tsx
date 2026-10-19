@@ -369,26 +369,25 @@ describe("DPH – ukládání a načtení", () => {
       "vat_parent_line_id",
       "vat_amount_foreign",
       "amount_gross",
+      "vat_manual",
     ])
       expect(row).not.toHaveProperty(key);
     expect(row).toMatchObject({
       vat_code_id: "p21",
-      vat_manual: false,
       vat_deduction: "partial",
       vat_deduction_share: 60,
     });
   });
-  it("ruční daň a režim S DPH posílají amount_gross i základ", () => {
+  // 2.109.0: ruční daň a režim S DPH zrušeny – klient posílá jen základ.
+  it("ruční daň ani režim S DPH se neposílají, jen základ", () => {
     const row = toJournalRow(
       { id: "a", amount: 100, grossAmount: 121, vatCodeId: "p21", vatManual: true, vatAmount: 21 },
       { vat: { calcMode: "gross" } },
     );
-    expect(row).toMatchObject({
-      amount: 100,
-      amount_gross: 121,
-      vat_amount_foreign: 21,
-      vat_manual: true,
-    });
+    expect(row).toMatchObject({ amount: 100 });
+    expect(row).not.toHaveProperty("amount_gross");
+    expect(row).not.toHaveProperty("vat_amount_foreign");
+    expect(row).not.toHaveProperty("vat_manual");
     expect(row).not.toHaveProperty("vat_deduction_share");
   });
   it("bez vat je výstup shodný s 2.54.0", () => {
@@ -538,7 +537,9 @@ describe("DPH v editoru", () => {
     });
     expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1\s500,00/);
     expect(html).toMatch(/data-slot="journal-lines-total-vat"[^>]*>270,00/);
-    expect(html).toMatch(/data-slot="journal-lines-total-gross"[^>]*>1\s770,00/);
+    // 2.109.0: režim S DPH zrušen (sloupec Celkem s DPH už není chráněný před automatickým
+    // skrytím); celek dokladu ukazuje Součet v patičce.
+    expect(html).toMatch(/data-slot="journal-footer-sum"[\s\S]*?1\s770,00/);
   });
   it("rekapitulace DPH používá značky měn z dat", () => {
     const summary = summarizeVat(

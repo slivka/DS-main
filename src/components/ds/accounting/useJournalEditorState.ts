@@ -49,7 +49,8 @@ import {
 import { journalVatIssues, validateJournalLines } from "./journal-lines-validation";
 import { useJournalLayout } from "./useJournalLayout";
 import { useJournalTotals } from "./useJournalTotals";
-import { applyVatCalcMode, baseFromGross, fillInitialVatCode } from "./journal-vat";
+import { fillInitialVatCode } from "./journal-vat";
+import { useJournalVatGroups } from "./useJournalVatGroups";
 
 /** Celý stav a akce editoru; sdílí jej všechny části přes `JournalEditorContext`. */
 export function useJournalEditorState(
@@ -116,7 +117,8 @@ export function useJournalEditorState(
     () => new Map(vatCodes.map((code) => [code.id, code])),
     [vatCodes],
   );
-  const calcMode: VatCalcMode = vatOn ? (vat?.calcMode ?? "net") : "net";
+  // 2.109.0: řádky jsou vždy bez DPH; vat.calcMode je zastaralý a ignoruje se.
+  const calcMode: VatCalcMode = "net";
   const counterShortLabel = counterColumn === "creditAccount" ? t.sideCredit : t.sideDebit;
   const counterNameLabel = counterColumn === "creditAccount" ? t.creditAccount : t.debitAccount;
   const columnDefs = React.useMemo(
@@ -159,11 +161,22 @@ export function useJournalEditorState(
     columnDefs,
     mode,
     sideFields,
-    grossProtected: calcMode === "gross",
+    grossProtected: false,
     rowCount: lines.length,
   });
   const { rootRef, visibleColumns, compactAccountIds } = layout;
-  const regularLines = lines.filter(isRegularLine);
+  const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);
+  const vatGroups = useJournalVatGroups({
+    props,
+    t,
+    vatOn,
+    vatReadOnly,
+    vatCodeMap,
+    foreign,
+    rate: rate ?? 1,
+    rateAmount,
+  });
+  const regularLines = vatGroups.allocatedLines.filter(isRegularLine);
   const vatConfig = {
     codes: vatCodes,
     calcMode,
@@ -173,7 +186,6 @@ export function useJournalEditorState(
     vatRateAmount: vat?.vatRateAmount,
     foreign,
   };
-  const vatReadOnly = vatOn && (Boolean(vat?.readOnly) || editable.size === 0);
   const totals = useJournalTotals({
     props,
     t,
@@ -184,6 +196,7 @@ export function useJournalEditorState(
     vatCodeMap,
     mainAccount,
     foreign,
+    allocatedLines: vatGroups.allocatedLines,
   });
   const normalizedLines = React.useMemo(
     () => orderJournalLines(totals.gridSource),
@@ -274,12 +287,8 @@ export function useJournalEditorState(
     if (calculated !== undefined) Object.assign(next, amountValues(calculated));
     patch(line.id, next);
   };
-  const patchVat = (line: JournalLine, values: Partial<JournalLine>) => {
-    const next = { ...line, ...values };
-    if (calcMode === "gross")
-      Object.assign(next, baseFromGross(next, vatCodes, { foreign, rate, rateAmount }));
-    patch(line.id, next);
-  };
+  const patchVat = (line: JournalLine, values: Partial<JournalLine>) =>
+    patch(line.id, { ...line, ...values });
   const changeVatCode = (line: JournalLine, codeId: string) => {
     const code = vatCodeMap.get(codeId);
     const inbound = code?.direction === "in" || code?.selfAssessment;
@@ -293,11 +302,8 @@ export function useJournalEditorState(
       pdpSubjectCode: code?.requiresPdpSubject ? line.pdpSubjectCode : null,
     });
   };
-  const changeCalcMode = (next: VatCalcMode) => {
-    if (next === calcMode) return;
-    if (next === "gross") onChange(applyVatCalcMode(lines, "gross", vatConfig));
-    vat?.onCalcModeChange?.(next);
-  };
+  /** @deprecated 2.109.0 – přepínač zrušen; nic nedělá. Odstraní se ve 3.0.0. */
+  const changeCalcMode = (next: VatCalcMode) => void next;
   const canEditCell = (line: JournalLine, column: ColumnId) => {
     const dataColumn = dataColumnOf(column);
     if (line.isFxRounding) return false;
@@ -305,11 +311,10 @@ export function useJournalEditorState(
       return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true;
     if (VAT_COLUMNS.has(dataColumn)) {
       if (!vatOn || vatReadOnly || column === "vatRate") return false;
-      if (column === "grossAmount") return calcMode === "gross";
-      if (column === "vatAmount") return Boolean(vatCodeMap.get(line.vatCodeId ?? "")?.hasTax);
+      // 2.109.0: daň ani celkem s DPH se na řádku nezadávají (daň počítá DB po skupinách).
+      if (column === "grossAmount" || column === "vatAmount") return false;
       return true;
     }
-    if (column === "amount" && vatOn && calcMode === "gross") return false;
     if (!editable.has(dataColumn)) return false;
     return !(
       dataColumn === "amount" && calculateLineAmount(line.quantity, line.unitPrice) !== undefined
@@ -336,7 +341,9 @@ export function useJournalEditorState(
     validate: props.validate,
   });
   const vatWarnings = new Map(
-    regularLines.map((line) => [line.id, journalVatIssues(line, validationContext).warnings]),
+    lines
+      .filter(isRegularLine)
+      .map((line) => [line.id, journalVatIssues(line, validationContext).warnings]),
   );
   // Externí stavy buněk z pruhu položek (aplikace / server) se sloučí s vlastní validací.
   for (const issue of props.cellIssues ?? []) {
@@ -351,7 +358,17 @@ export function useJournalEditorState(
       validations.set(issue.rowId, row);
     }
   }
-  const validationErrors = numberJournalErrors(lines, validations);
+  const validationErrors = [
+    ...numberJournalErrors(lines, validations),
+    ...vatGroups.groupIssues
+      .filter((issue) => issue.severity === "error")
+      .map((issue) => ({
+        line: 0,
+        field: "vatGroup",
+        message: issue.message,
+        fieldId: issue.fieldId,
+      })),
+  ];
   const validationSignature = JSON.stringify(validationErrors);
   const validationChangeRef = React.useRef(props.onValidationChange);
   React.useEffect(() => {
@@ -360,20 +377,25 @@ export function useJournalEditorState(
   React.useEffect(() => {
     validationChangeRef.current?.(validationErrors.length, validationErrors);
   }, [validationSignature]); // eslint-disable-line react-hooks/exhaustive-deps -- hlásí jen skutečnou změnu chyb
+  const allocatedById = new Map(vatGroups.allocatedLines.map((line) => [line.id, line]));
   const displayValue = (line: JournalLine, column: ColumnId) =>
-    journalDisplayValue(line, column, {
-      accountByCode,
-      dimensions: props.dimensions ?? [],
-      partners: props.partners ?? [],
-      units: props.units ?? [],
-      vatCodeMap,
-      calcMode,
-      foreign,
-      rate,
-      rateAmount,
-      counterColumn,
-      compactAccountIds,
-    });
+    journalDisplayValue(
+      VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line,
+      column,
+      {
+        accountByCode,
+        dimensions: props.dimensions ?? [],
+        partners: props.partners ?? [],
+        units: props.units ?? [],
+        vatCodeMap,
+        calcMode,
+        foreign,
+        rate,
+        rateAmount,
+        counterColumn,
+        compactAccountIds,
+      },
+    );
   const accountFor = (line: JournalLine, column: Parameters<typeof journalAccountFor>[1]) =>
     journalAccountFor(line, column, counterColumn);
   const finish = () => setEditing(null);
@@ -425,6 +447,7 @@ export function useJournalEditorState(
     regularLines,
     vatConfig,
     vatReadOnly,
+    vatGroups,
     totals,
     normalizedLines,
     displayedLines,

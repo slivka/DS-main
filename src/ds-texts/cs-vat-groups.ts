@@ -1,0 +1,37 @@
+/** České texty skupin DPH a patičky editoru řádků · jen texty · nesmí obsahovat logiku. */
+import type { JournalVatGroupsTexts } from "./grid-journal-types";
+
+/** České výchozí texty skupin DPH. */
+export const CS_VAT_GROUPS: JournalVatGroupsTexts = {
+  title: "Rekapitulace DPH",
+  code: "Kód DPH",
+  rate: "Sazba",
+  base: "Základ",
+  vat: "DPH",
+  gross: "Celkem",
+  baseHome: "Základ ({currency})",
+  vatHome: "DPH ({currency})",
+  toggleHome: "Částky v měně firmy",
+  adjust: "Upravit dle dokladu",
+  vatByDocument: "DPH dle dokladu",
+  grossByDocument: "Celkem s DPH dle dokladu",
+  baseByDocument: "Základ dle dokladu",
+  calculated: "Vypočteno",
+  difference: "Rozdíl",
+  resetVat: "Vrátit vypočtenou daň",
+  apply: "Použít",
+  cancel: "Zrušit",
+  overTolerance: "DPH dle dokladu u {group} se liší od vypočtené o {difference} – nad tolerancí",
+  fixedTax: "Pevná daň – odpočet zálohy / import",
+  grossHelper: "Cena s DPH",
+  grossHelperField: "Částka s DPH ({rate} %)",
+  sum: "Součet",
+  rounding: "Zaokrouhlení",
+  difference2: "Rozdíl",
+  balance: "Dorovnat",
+  balanceVat: "Dorovnat DPH",
+  balanceVatGroup: "Dorovnat DPH – {group}",
+  balanceBase: "Dorovnat základ",
+  balanceRounding: "Zaokrouhlení",
+  noAction: "Rozdíl je nad limitem zaokrouhlení",
+};

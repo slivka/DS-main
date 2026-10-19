@@ -14,6 +14,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { GridZoomContext, ZoomGrid } from "../grid/grid-zoom";
 import { JournalFooter } from "./JournalFooter";
+import { JournalDifferenceBar } from "./journal-difference-bar";
+import { JournalVatRecap } from "./journal-vat-recap";
 import { JournalRow } from "./JournalRow";
 import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
@@ -161,6 +163,8 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
           >
             <JournalToolbar />
             <JournalGrid />
+            <JournalVatRecap />
+            <JournalDifferenceBar />
             <JournalLinesRecap
               lines={
                 vatOn
@@ -174,7 +178,6 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
                     ]
                   : props.lines
               }
-              vatSummary={vatOn ? totals.vatSummary : undefined}
               accounts={props.accounts}
               dimensions={props.dimensions ?? []}
               documentCurrency={props.documentCurrency}

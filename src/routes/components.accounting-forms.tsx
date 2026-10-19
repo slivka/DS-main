@@ -13,6 +13,7 @@ import { FormDesignTwoShowcase } from "@/components/showcase/FormDesignTwoShowca
 import { FormDesignShowcase } from "@/components/showcase/FormDesignShowcase";
 import { DocumentFormShowcase } from "@/components/showcase/DocumentFormShowcase";
 import { VatJournalShowcase } from "@/components/showcase/VatJournalShowcase";
+import { VatGroupsShowcase } from "@/components/showcase/VatGroupsShowcase";
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
   JournalLinesEditor,
@@ -246,6 +247,7 @@ function AccountingFormsPage() {
       <FormDesignTwoShowcase />
       <DocumentDatesShowcase />
       <DocumentFormShowcase />
+      <VatGroupsShowcase />
       <VatJournalShowcase />
 
       <ShowcaseSection
