@@ -30,7 +30,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
       {...props}
       className={cn("mb-3 border-b border-border pb-3", className)}
     >
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,auto)] items-center gap-x-3 gap-y-2">
+      <div className="grid min-h-[var(--control-h)] min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,auto)] items-center gap-x-3 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-y-1 text-[length:var(--text-identity)] font-semibold text-foreground">
           {leading}
           {items[0] != null ? (
@@ -56,7 +56,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         <div
           id={numberId}
           className={cn(
-            "self-center min-w-0 max-w-full text-right font-mono text-xl font-bold tabular-nums",
+            "flex min-h-[var(--control-h)] items-center justify-end self-center min-w-0 max-w-full text-right font-mono text-xl font-bold tabular-nums",
             !number &&
               !numberContent &&
               "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground",

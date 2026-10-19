@@ -321,6 +321,10 @@ export const DS_TEXTS_CS: DsTexts = {
     no: "ne",
   },
   date: {
+    today: "Dnes",
+    previous: "Předchozí",
+    next: "Další",
+    approved: "Schválen",
     chooseDate: "Vyberte datum",
     dateSelection: "Výběr data",
     openCalendar: "Otevřít kalendář",

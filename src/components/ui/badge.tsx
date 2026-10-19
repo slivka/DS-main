@@ -4,9 +4,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const badgeVariants = cva(
-  "typo-action chip-base rounded-md border text-xs whitespace-nowrap focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>*]:self-center [&>svg]:shrink-0 [&>svg]:block [&>svg]:self-center [&>svg]:size-[0.9em]",
+  "typo-action ds-badge inline-flex items-center gap-1 px-2 leading-none rounded-md border text-xs whitespace-nowrap focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>*]:self-center [&>svg]:shrink-0 [&>svg]:block [&>svg]:self-center [&>svg]:size-[0.9em]",
   {
     variants: {
+      size: { sm: "", md: "ds-badge-md text-sm" },
       variant: {
         default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
         secondary:
@@ -21,6 +22,7 @@ const badgeVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      size: "sm",
     },
   },
 );
@@ -28,8 +30,20 @@ const badgeVariants = cva(
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return <div data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />;
-}
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(function Badge(
+  { className, variant, size, children, ...props },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      data-slot="badge"
+      className={cn(badgeVariants({ variant, size }), className)}
+      {...props}
+    >
+      <span className="ds-badge-text inline-flex items-center gap-1">{children}</span>
+    </div>
+  );
+});
 
 export { Badge, badgeVariants };

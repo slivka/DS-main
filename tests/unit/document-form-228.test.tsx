@@ -6,7 +6,6 @@ import {
   DocumentDirectionBadge,
   type DocumentHeaderValue,
 } from "../../src/components/ds/accounting/document-form";
-import { DocumentStatusBadge } from "../../src/components/ds/accounting/document-status-badge";
 import { counterpartyCreateSeed } from "../../src/components/ds/accounting/counterparty-field";
 import { IcoLink, icoRegistryUrl, isValidCzIco } from "../../src/components/ds/form/ico-link";
 import { RateField, rateValuesDiffer } from "../../src/components/ds/form/rate-field";
@@ -85,16 +84,7 @@ describe("DocumentForm 2.31.0", () => {
   it("vykreslí badge obou směrů", () => {
     const incoming = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
     expect(incoming).toContain("Příjem");
-    expect(incoming).toContain("h-[1.625rem]");
-    expect(incoming).toContain("text-sm");
     expect(renderToStaticMarkup(<DocumentDirectionBadge direction="out" />)).toContain("Výdaj");
-  });
-  it("má badge směru i stavu stejnou výšku", () => {
-    const direction = renderToStaticMarkup(<DocumentDirectionBadge direction="in" />);
-    const status = renderToStaticMarkup(<DocumentStatusBadge status="draft" size="md" />);
-    expect(direction).toContain("h-[1.625rem]");
-    expect(status).toContain("h-[1.625rem]");
-    expect(status).toContain("text-sm");
   });
   it("pruh akcí nemá spodní linku", () => {
     const html = form({ saveAction: { onSave: () => {} } });

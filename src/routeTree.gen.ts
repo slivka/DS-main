@@ -20,6 +20,7 @@ import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
 import { Route as ComponentsExcelExportRouteImport } from './routes/components.excel-export'
+import { Route as ComponentsDesignThreeRouteImport } from './routes/components.design-three'
 import { Route as ComponentsAccountingLinesRouteImport } from './routes/components.accounting-lines'
 import { Route as ComponentsAccountingJournalRouteImport } from './routes/components.accounting-journal'
 import { Route as ComponentsAccountingFormsRouteImport } from './routes/components.accounting-forms'
@@ -83,6 +84,11 @@ const ComponentsFeedbackRoute = ComponentsFeedbackRouteImport.update({
 const ComponentsExcelExportRoute = ComponentsExcelExportRouteImport.update({
   id: '/components/excel-export',
   path: '/components/excel-export',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsDesignThreeRoute = ComponentsDesignThreeRouteImport.update({
+  id: '/components/design-three',
+  path: '/components/design-three',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsAccountingLinesRoute =
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
   '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
+  '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
   '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
+  '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
   '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
   '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
+  '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/components/accounting-forms'
     | '/components/accounting-journal'
     | '/components/accounting-lines'
+    | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/components/accounting-forms'
     | '/components/accounting-journal'
     | '/components/accounting-lines'
+    | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/components/accounting-forms'
     | '/components/accounting-journal'
     | '/components/accounting-lines'
+    | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   ComponentsAccountingFormsRoute: typeof ComponentsAccountingFormsRoute
   ComponentsAccountingJournalRoute: typeof ComponentsAccountingJournalRoute
   ComponentsAccountingLinesRoute: typeof ComponentsAccountingLinesRoute
+  ComponentsDesignThreeRoute: typeof ComponentsDesignThreeRoute
   ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsExcelExportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/design-three': {
+      id: '/components/design-three'
+      path: '/components/design-three'
+      fullPath: '/components/design-three'
+      preLoaderRoute: typeof ComponentsDesignThreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/components/accounting-lines': {
       id: '/components/accounting-lines'
       path: '/components/accounting-lines'
@@ -465,6 +485,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComponentsAccountingFormsRoute: ComponentsAccountingFormsRoute,
   ComponentsAccountingJournalRoute: ComponentsAccountingJournalRoute,
   ComponentsAccountingLinesRoute: ComponentsAccountingLinesRoute,
+  ComponentsDesignThreeRoute: ComponentsDesignThreeRoute,
   ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,

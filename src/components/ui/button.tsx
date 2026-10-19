@@ -5,17 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "typo-action inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none ds-disabled-control disabled:bg-muted/40 disabled:opacity-100 disabled:text-muted-foreground aria-disabled:bg-muted/40 aria-disabled:opacity-100 aria-disabled:text-muted-foreground [&:disabled_svg]:text-muted-foreground disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "typo-action inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none ds-button disabled:opacity-100 disabled:text-muted-foreground aria-disabled:opacity-100 aria-disabled:text-muted-foreground [&:disabled_svg]:text-muted-foreground disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        default:
+          "border border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        destructive:
+          "border border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline: "border border-input bg-background shadow-sm hover-surface",
         "outline-destructive":
           "border border-destructive bg-background text-destructive shadow-sm hover:bg-destructive/10",
-        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover-surface",
+        secondary:
+          "border border-transparent bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        ghost: "border border-transparent hover-surface",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -323,6 +323,10 @@ export const DS_TEXTS_SK: DsTexts = {
     no: "nie",
   },
   date: {
+    today: "Dnes",
+    previous: "Predchádzajúci",
+    next: "Ďalší",
+    approved: "Schválený",
     chooseDate: "Vyberte dátum",
     dateSelection: "Výber dátumu",
     openCalendar: "Otvoriť kalendár",

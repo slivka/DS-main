@@ -47,6 +47,8 @@
   --color-share-high: var(--share-high);
   --color-share-mid: var(--share-mid);
   --color-share-low: var(--share-low);
+  --color-pane-tabbar: var(--pane-tabbar);
+  --color-border-strong: var(--border-strong);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -95,6 +97,14 @@
 :root {
   /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
   --control-h: 2.25rem;
+  --badge-h-sm: 1.25rem;
+  --badge-h-md: 1.5rem;
+  --badge-cap-offset: 0.075em;
+  --identity-account-width: 18rem;
+  --calendar-width: 22rem;
+  --calendar-body-h: 23rem;
+  --pane-tabbar: oklch(0.935 0.008 250);
+  --border-strong: oklch(0.7 0.025 250);
   /* Datum dokladu: skutečná poloha ikon je společná se šířkou i odsazením. */
   --text-identity: 0.9375rem;
   --document-date-icon-offset: 0.3em;
@@ -237,6 +247,8 @@
   --share-high: oklch(0.72 0.12 250);
   --share-mid: oklch(0.78 0.14 85);
   --share-low: oklch(0.7 0.15 30);
+  --pane-tabbar: oklch(0.19 0.015 250);
+  --border-strong: oklch(0.48 0.025 250);
   --border: oklch(0.32 0.018 250);
   --input: oklch(0.58 0.025 250);
   --ring: oklch(0.68 0.13 250);
@@ -2415,4 +2427,147 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   > [data-slot="field-feedback"],
 .ds-field-control:has(> div [data-slot="field-feedback"]) > [data-slot="field-feedback"] {
   display: none;
+}
+
+/* Design 3: stav tlačítka nemění jeho geometrii; pole mají vlastní šedou plochu. */
+[data-slot="button"].ds-button:is(:disabled, [aria-disabled="true"]):not([role="combobox"]):not(
+    .ds-disabled-control
+  ) {
+  background: transparent !important;
+  border-color: var(--border) !important;
+  color: var(--muted-foreground) !important;
+  box-shadow: none;
+  opacity: 1;
+}
+.pane-tab-active {
+  border-color: var(--border-strong);
+  border-bottom-color: var(--card);
+}
+.pane-tab-active::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 2px;
+  background: var(--border-strong);
+}
+.pane-tab-active[data-active-pane]::before {
+  background: var(--primary);
+}
+.pane-tab-active::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: var(--card);
+}
+.ds-badge {
+  height: var(--badge-h-sm);
+  flex-shrink: 0;
+  padding-block: 0;
+  line-height: 1;
+}
+.ds-badge-md {
+  height: var(--badge-h-md);
+}
+.ds-badge-text {
+  text-box: trim-both cap alphabetic;
+}
+@supports not (text-box: trim-both cap alphabetic) {
+  .ds-badge-text {
+    position: relative;
+    top: var(--badge-cap-offset);
+  }
+}
+.page-title-line h1 {
+  text-box: trim-both cap alphabetic;
+}
+.document-identity-account {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+.document-identity-account-box {
+  height: var(--control-h);
+  min-width: min(var(--identity-account-width), 100%);
+  width: max-content;
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.calendar-shell {
+  width: var(--calendar-width);
+  max-width: 100%;
+  padding: 0;
+}
+.calendar-body {
+  height: var(--calendar-body-h);
+  overflow: hidden;
+}
+.calendar-shell [data-slot="calendar"] {
+  width: 100%;
+}
+.calendar-view-grid {
+  height: calc(var(--calendar-body-h) - 5rem);
+  margin-top: 1rem;
+}
+.grid-date-popover .calendar-shell {
+  --calendar-width: 27em;
+  --calendar-body-h: 28.3em;
+}
+.grid-date-popover .calendar-view-grid {
+  height: calc(var(--calendar-body-h) - 6em);
+}
+.calendar-shell [data-today="true"] {
+  outline: 1px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.calendar-shell .rdp-nav {
+  pointer-events: none;
+}
+.calendar-shell .rdp-nav button {
+  pointer-events: auto;
+}
+.calendar-shell .rdp-month_grid {
+  table-layout: fixed;
+}
+
+/* Stavové štítky mají pevnou výšku i uvnitř gridu. */
+.zoom-grid :is(tbody, tfoot) :is(th, td) .ds-badge {
+  height: var(--badge-h-sm) !important;
+  padding-block: 0 !important;
+  line-height: 1 !important;
+}
+.zoom-grid :is(tbody, tfoot) :is(th, td) .ds-badge-md {
+  height: var(--badge-h-md) !important;
+}
+
+.document-identity-account-measure {
+  visibility: hidden;
+  white-space: nowrap;
+  padding-inline: 0.75rem;
+  font-size: var(--text-sm);
+}
+.document-identity-account-box:has([role="combobox"]) [role="combobox"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+.document-identity-pencil-slot {
+  width: 1.75rem;
+  flex-shrink: 0;
+}
+.grid-date-popover .calendar-alternate :is(button, .calendar-view-grid) {
+  font-size: 1em;
+}
+.grid-date-popover .calendar-alternate button {
+  height: 100%;
+}
+.pane-tabbar {
+  overflow: visible;
+}
+.pane-tabbar [data-tab-strip] {
+  overflow: visible;
 }

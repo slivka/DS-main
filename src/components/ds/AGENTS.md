@@ -1,5 +1,9 @@
 # Pravidla kvality DS
 
+- Tlačítko nikdy nemění tvar podle stavu; zakázané = tlumený text a slabší rámeček, bez výplně. Šedá výplň jen u zakázaných polí.
+- Keep calendar navigation inside the shared Calendar and its internal view grid. Why: all date controls share bounds, keyboard navigation and stable dimensions.
+- Reserve control-h and the same account box in identity read/edit modes. Why: opening a selector must not move following fields.
+
 **Kontrola výšky:** Pod ovládacím prvkem se nikdy nic nevykresluje. Chyba ani varování nemění výšku ani zarovnání řádku. Všechny prvky v jednom řádku mají přesně výšku --control-h svého prostředí. Proč: řádek formuláře ani detail řádku mřížky se nesmí posunout chybou ani nápovědou.
 
 ## Dialogy záznamů

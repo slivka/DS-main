@@ -1,4 +1,5 @@
 import { Check, Lock } from "lucide-react";
+import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { StatusBadge, type StatusConfig } from "../data-display/status-badge";
 
@@ -12,7 +13,7 @@ export type DocumentStatusBadgeSize = "sm" | "md";
 export interface DocumentStatusBadgeProps {
   status: DocumentStatus | null | undefined;
   config?: StatusConfig<DocumentStatus>;
-  /** Nezávislý příznak schvájení dokladu. */
+  /** Nezávislý příznak schválení dokladu. */
   approved?: boolean;
   approvedLabel?: string;
   /** Velikost štítku; md sjednocuje výšku s odznakem směru ve formuláři. */
@@ -41,11 +42,12 @@ export function DocumentStatusBadge({
   status,
   config = DOCUMENT_STATUS_CONFIG,
   approved = false,
-  approvedLabel = "Schvájen",
+  approvedLabel,
   size = "sm",
   className,
 }: DocumentStatusBadgeProps) {
-  const sizeClass = size === "md" ? "h-[1.625rem] px-2.5 text-sm font-medium" : undefined;
+  const ds = useDsTexts();
+  const sizeClass = size === "md" ? "ds-badge-md px-2.5 text-sm font-medium" : undefined;
   const badge = (
     <StatusBadge status={status} config={config} className={cn(sizeClass, className)} />
   );
@@ -57,7 +59,7 @@ export function DocumentStatusBadge({
         status="approved"
         config={{
           approved: {
-            label: approvedLabel,
+            label: approvedLabel ?? ds.date.approved,
             tone: "success",
             icon: <Check aria-hidden="true" className="size-3" />,
           },

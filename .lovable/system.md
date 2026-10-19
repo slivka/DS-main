@@ -1,5 +1,11 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Design 3
+
+- Aktivní záložka panelu je ouško v barvě obsahu, aktivní panel má primární horní linku, ostatní neutrální. Žádný stav nemění geometrii záložky.
+- Kalendář má stejně velké pohledy dnů, měsíců a let; měsíc se zobrazuje v prvním pádě. Používejte společný Calendar, nikoli dropdown caption.
+- Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
+
 ## Dialogy záznamů
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nikdy nesmí rozhodit výšku řádku polí. Vzor formátu patří do pole přes `Input.formatPattern`, vysvětlení pod sekci přes `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
@@ -7,7 +13,9 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Kód a název oddělujte výhradně řetězcem „ – “ přes `formatCodeName`; ruční skládání je zakázané.
 - Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu. Jediná výjimka pro vstup: krátký vzor zápisu hodnoty (např. „předčíslí-číslo“) přes `Input.formatPattern`, tlumeně `placeholder:text-muted-foreground`; nikdy popisná nápověda, příklad hodnoty ani opakování popisku. Holý `placeholder` pro tento účel nepoužívej.
 - Ovládací prvky, segmenty, štítky a ikonová tlačítka používají poloměr `0.25rem`; dialogy, karty, panely a nabídky `0.375rem`.
-- Pruh akcí řadí hlavní krok `outline`, poté plné primární Uložit a nakonec nabídku dalších akcí.
+- Pruh akcí řadí hlavní krok `outline`, Uložit bez změn zakázané `outline` (se změnami primární s tečkou) a orámovanou nabídku dalších akcí. Všechny akce mají výšku `--control-h`.
+- Tlačítko nikdy nemění tvar podle stavu; zakázané = tlumený text a slabší rámeček, bez výplně. Šedá výplň jen u zakázaných polí.
+- Přepnutí prvku do úprav (tužka, odemčení zámku, rozbalení) nesmí změnit výšku řádku ani posunout okolní obsah.
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
 - FV/ZFV začínají způsobem platby a potom polem „Uhradit na bankovní účet“, potom následují Základní údaje → Datumy → Platební údaje → Částka → záložky. Částka je vždy poslední sekce před záložkami.

@@ -1,3 +1,4 @@
+/** Rozsah dat · vlastní popover · nesmí měnit data mimo callback. */
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
 
@@ -31,17 +32,8 @@ function toISO(date: Date): string {
  * Výběr rozsahu dat (Od–Do) v jednom ovládání – kalendář otevřený
  * z jednoho tlačítka. Hodí se do filtrů přehledů.
  */
-export function DateRangeField({
-  value,
-  onChange,
-  placeholder,
-  months = 1,
-  disabled,
-  minDate,
-  maxDate,
-  className,
-  label,
-}: {
+/** Vlastnosti výběru rozsahu data. */
+export interface DateRangeFieldProps {
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
   placeholder?: string;
@@ -55,7 +47,22 @@ export function DateRangeField({
   className?: string;
   /** Přístupný název ovládání. */
   label?: string;
-}) {
+
+  /** Základ výchozího měsíce ve formátu ISO. */
+  baseDate?: string;
+}
+export function DateRangeField({
+  value,
+  onChange,
+  placeholder,
+  months = 1,
+  disabled,
+  minDate,
+  maxDate,
+  baseDate,
+  className,
+  label,
+}: DateRangeFieldProps) {
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const { formatDate } = preferences;
@@ -94,7 +101,7 @@ export function DateRangeField({
           disabled={disabled}
           aria-label={label ?? dsTexts.date.rangeLabel}
           className={cn(
-            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "ds-field-button ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "h-[var(--control-h)] w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
             className,
@@ -110,12 +117,19 @@ export function DateRangeField({
         <Calendar
           locale={dsTexts.dateLocale}
           mode="range"
-          captionLayout="dropdown"
+          baseDate={parseISO(baseDate)}
+          minDate={minDate}
+          maxDate={maxDate}
+          onClose={() => setOpen(false)}
+          onToday={(d) => {
+            onChange({ from: toISO(d), to: toISO(d) });
+            setOpen(false);
+          }}
           startMonth={startMonth}
           endMonth={endMonth}
           numberOfMonths={months}
           selected={selected}
-          defaultMonth={selected.from ?? maxDate}
+          defaultMonth={selected.from ?? parseISO(baseDate) ?? maxDate}
           disabled={disabledMatcher}
           onSelect={(range) => {
             if (!range?.from) {

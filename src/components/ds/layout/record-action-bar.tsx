@@ -137,7 +137,12 @@ function CompactActionButton({
         props.onClick?.(event);
       }}
       aria-label={label}
-      className={cn(compact && "size-9 px-0", blocked && "cursor-not-allowed", props.className)}
+      size="control"
+      className={cn(
+        compact && "w-[var(--control-h)] px-0",
+        blocked && "cursor-not-allowed",
+        props.className,
+      )}
     >
       {busy ? <Loader2 className="animate-spin" /> : compact && Icon ? <Icon /> : null}
       <span className={cn(compact && "sr-only")}>{busy ? `${label}…` : label}</span>
@@ -254,7 +259,7 @@ export function RecordActionBar({
               label={saveText}
               icon={Save}
               compact={level === 2}
-              variant="default"
+              variant={saveAction.dirty ? "default" : "outline"}
               busy={busy || saveAction.busy}
               disabled={
                 busy || saveAction.disabled || saveAction.busy || saveAction.dirty === false
@@ -281,8 +286,9 @@ export function RecordActionBar({
                   <DropdownMenuTrigger asChild>
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="icon"
+                      variant="outline"
+                      size="control"
+                      className="w-[var(--control-h)] px-0"
                       aria-label={moreText}
                       disabled={busy}
                     >
@@ -344,13 +350,20 @@ export function RecordActionBar({
                   asChild
                   tabIndex={-1}
                   variant="outline"
-                  className={stage > 0 ? "size-9 px-0" : undefined}
+                  size="control"
+                  className={stage > 0 ? "w-[var(--control-h)] px-0" : undefined}
                 >
                   <span>{stage > 0 ? <PrimaryIcon /> : primaryAction.label}</span>
                 </Button>
               ) : null}
               {saveAction ? (
-                <Button asChild tabIndex={-1} className={stage === 2 ? "size-9 px-0" : undefined}>
+                <Button
+                  asChild
+                  size="control"
+                  tabIndex={-1}
+                  variant={saveAction.dirty ? "default" : "outline"}
+                  className={stage === 2 ? "w-[var(--control-h)] px-0" : undefined}
+                >
                   <span>
                     {stage === 2 ? <Save /> : saveText}
                     {saveAction.dirty ? <span className="size-1.5" /> : null}
@@ -358,7 +371,13 @@ export function RecordActionBar({
                 </Button>
               ) : null}
               {moreActions.length ? (
-                <Button asChild tabIndex={-1} variant="ghost" size="icon">
+                <Button
+                  asChild
+                  tabIndex={-1}
+                  variant="outline"
+                  size="control"
+                  className="w-[var(--control-h)] px-0"
+                >
                   <span>
                     <MoreHorizontal />
                   </span>

@@ -1,3 +1,4 @@
+/** Výběr data · vlastní popover · nesmí měnit datum bez výběru. */
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
 
@@ -25,16 +26,8 @@ function toISO(date: Date): string {
  * Samostatný kalendář pro výběr dne – datum se vybírá pouze kliknutím,
  * bez ručního psaní. Pro zadávání psaním slouží DateField.
  */
-export function CalendarPicker({
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  minDate,
-  maxDate,
-  className,
-  label,
-}: {
+/** Vlastnosti samostatného výběru data. */
+export interface CalendarPickerProps {
   /** Hodnota ve formátu YYYY-MM-DD, prázdný řetězec = nevybráno. */
   value?: string | null;
   onChange: (value: string) => void;
@@ -47,7 +40,21 @@ export function CalendarPicker({
   className?: string;
   /** Přístupný název ovládání. */
   label?: string;
-}) {
+
+  /** Základ výchozího měsíce ve formátu ISO. */
+  baseDate?: string;
+}
+export function CalendarPicker({
+  value,
+  onChange,
+  placeholder,
+  disabled,
+  minDate,
+  maxDate,
+  baseDate,
+  className,
+  label,
+}: CalendarPickerProps) {
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const { formatDate } = preferences;
@@ -78,8 +85,8 @@ export function CalendarPicker({
           disabled={disabled}
           aria-label={label ?? dsTexts.date.dateSelection}
           className={cn(
-            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
-            "h-9 w-full justify-start gap-2 px-3 font-normal",
+            "ds-field-button ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "h-[var(--control-h)] w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
             className,
           )}
@@ -94,11 +101,18 @@ export function CalendarPicker({
         <Calendar
           locale={dsTexts.dateLocale}
           mode="single"
-          captionLayout="dropdown"
+          baseDate={parseISO(baseDate)}
+          minDate={minDate}
+          maxDate={maxDate}
+          onClose={() => setOpen(false)}
+          onToday={(d) => {
+            onChange(toISO(d));
+            setOpen(false);
+          }}
           startMonth={startMonth}
           endMonth={endMonth}
           selected={selected}
-          defaultMonth={selected ?? maxDate}
+          defaultMonth={selected ?? parseISO(baseDate) ?? maxDate}
           disabled={disabledMatcher}
           onSelect={(d) => {
             onChange(d ? toISO(d) : "");

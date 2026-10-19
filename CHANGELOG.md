@@ -1,6 +1,29 @@
 # Changelog – Slivka Design System
 
-## 2.109.0 (nevydáno) – DPH krok 4B
+## 2.110.0 (nevydáno) – Design 3
+
+### Změny
+- Záložky panelu mají stálou geometrii a aktivní ouško navazující na obsah.
+- Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
+- Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
+- Stavové štítky mají pevnou výšku a optické centrování; opraveno „Schválen“.
+- Identifikační řádek zachovává výšku při změně účtu; šířka rezervuje nejméně 18 rem a místo tužky i během úprav.
+- Nové props: `Badge.size`, `StatusBadge.size` (sm/md); `Calendar.baseDate`, `minDate`, `maxDate`, `onToday`, `onClose`, `footerActions`, `initialView`, `onMonthSelect`; `CalendarPicker.baseDate`, `DateRangeField.baseDate`.
+- Výchozí `DocumentStatusBadge.approvedLabel` je přeložené „Schválen“; sm 1,25 rem a md 1,5 rem.
+- Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
+
+### Kontroly
+- `check:catalog` proti vydané 2.109.0 (29bdeb24): 470 → 470 komponent, 910 → 922 props; 12 přidaných props, žádné odebrané položky.
+- `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
+- Nový Chromium spec Design 3: 10/10; plná sada a Firefox/WebKit se v Lovable nespouštěly.
+
+### Migrace
+- `Calendar.captionLayout` je deprecated od 2.110.0 a nemá účinek; používejte
+  společnou hlavičku kalendáře. Odstranění v nejbližší major verzi.
+- Vzhled zakázaných tlačítek se mění, jejich funkce a důvody zůstávají stejné.
+- `MonthYearSelect` má společný spouštěč a kalendář měsíců/let. `yearClassName` a `monthClassName` se slučují na spouštěči; pro rozvržení používejte `className` obalu.
+
+## 2.109.0 – DPH krok 4B
 
 ### Opravy po plné E2E sadě v GitHub Actions (run 39244635839)
 - **Pomocník Cena s DPH v buňce mřížky je mimo pořadí Tab** (regrese 2.109.0): Tab z Částky vede rovnou na Kód DPH. Otevření v mřížce myší; z klávesnice v detailu řádku, kde tlačítko v pořadí Tab zůstává (`JournalGrossHelper.tabbable`, výchozí `false`).
