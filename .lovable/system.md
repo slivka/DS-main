@@ -12,6 +12,14 @@
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nikdy nesmí rozhodit výšku řádku polí. Vzor formátu patří do pole přes `Input.formatPattern`, vysvětlení pod sekci přes `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
 
+Vzor dialogu záznamu (2.111.0, závazné):
+- Dialog číselníku = `RecordDialog size="md"`; `size` je povinný (sm 32 rem krátké a jednoúčelové, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj.
+- Veškerý obsah ve `FieldGrid cols={12}` + `Field span`; více mřížek jen pod `SectionHeading`. Žádný `Field`, `<p>`, `<span>` ani `<div>` s rozložením mimo mřížku. Vysvětlení přes `FieldGrid.hint`.
+- Chyba uložení (z databáze) přes `RecordDialog.error` – ve stejném pruhu nad tlačítky jako `fieldErrors`. `Alert` v obsahu dialogu je zakázaný.
+- Odstranění přes `deleteAction` (vždy vlevo, `outline-destructive`, destruktivní potvrzení); vlastní tlačítko Odstranit nepřidávej.
+- `dirty` předávej vždy, i u nového záznamu (= hodnoty se liší od výchozích); DS pak hlídá křížek, Esc, Zrušit i klik mimo. Během `busy` se dialog zavřít nedá a Uložit ukáže „Ukládám…“; text tlačítka aplikace nepřepíná.
+- Co po založení nejde měnit = `FieldValue lockedReason`. Bez práva upravit = `readOnly` (DS vstupy se vykreslí jako hodnoty); nikdy zakázané vstupy + Zrušit / Zavřít.
+
 - Kód a název oddělujte výhradně řetězcem „ – “ přes `formatCodeName`; ruční skládání je zakázané.
 - Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu. Jediná výjimka pro vstup: krátký vzor zápisu hodnoty (např. „předčíslí-číslo“) přes `Input.formatPattern`, tlumeně `placeholder:text-muted-foreground`; nikdy popisná nápověda, příklad hodnoty ani opakování popisku. Holý `placeholder` pro tento účel nepoužívej.
 - Ovládací prvky, segmenty, štítky a ikonová tlačítka používají poloměr `0.25rem`; dialogy, karty, panely a nabídky `0.375rem`.
