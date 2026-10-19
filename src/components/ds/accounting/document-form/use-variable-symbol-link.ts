@@ -64,7 +64,8 @@ export function variableSymbolLinkState(
           ? { variableSymbolLinked: true }
           : {
               variableSymbolLinked: false,
-              variableSymbol: value.variableSymbol || derived.value || null,
+              // Po odemčení zůstane hodnota z náhledu; při 0 / >10 číslicích uložený VS.
+              variableSymbol: derived.value || value.variableSymbol || null,
             },
       ),
     sourcePatch: (next) => {
@@ -77,7 +78,7 @@ export function variableSymbolLinkState(
       return {
         ...next,
         variableSymbolLinked: false,
-        variableSymbol: value.variableSymbol || derived.value || null,
+        variableSymbol: derived.value || value.variableSymbol || null,
       };
     },
   };
