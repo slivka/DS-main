@@ -103,6 +103,42 @@ describe("JournalLinesEditor – skupiny DPH", () => {
     expect(errors.some((item) => item.fieldId === "journal-vat-group-P21-21")).toBe(true);
   });
 
+  it("P21 + PDP: dorovnání DPH nabízí pouze P21", async () => {
+    const onVatOverridesChange = mock(() => {});
+    const { container } = renderEditor({
+      lines: [line("a", 100), line("b", 100, "rc")],
+      totalAmount: 250,
+      totalMode: "entered",
+      onVatOverridesChange,
+    });
+    const trigger = container.querySelector('[data-slot="journal-difference-actions"]');
+    if (!(trigger instanceof HTMLElement)) throw new Error("Chybí nabídka Rozdílu");
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    await waitFor(() => expect(document.querySelectorAll('[data-action="vat"]')).toHaveLength(1));
+    const item = document.querySelector('[data-action="vat"]');
+    if (!(item instanceof HTMLElement)) throw new Error("Chybí volba dorovnání DPH");
+    fireEvent.click(item);
+    expect(onVatOverridesChange.mock.calls[0]?.[0]).toEqual([
+      { vatCodeId: "p21", vatRate: 21, taxAmount: 50 },
+    ]);
+  });
+
+  it("pevná daň převádí kurz s jednotkou přesně", () => {
+    const { container } = renderEditor({
+      documentCurrency: "JPY",
+      homeCurrency: "CZK",
+      vatExchangeRate: 3.715,
+      vatExchangeRateAmount: 100,
+      recap: { vatHomeOpen: true },
+      lines: [{ ...line("fixed", 0), foreignAmount: -900, vatManual: true, vatAmount: -900 }],
+    });
+    const cells = container
+      .querySelector('[data-slot="journal-vat-fixed"]')
+      ?.querySelectorAll("td");
+    expect(cells?.[5]?.textContent).toBe("−33,44");
+    expect(cells?.[6]?.textContent).toBe("−33,44");
+  });
+
   it("samovyměření nemá pomocníka ceny s DPH ani úpravy skupiny", () => {
     const { container } = renderEditor({
       lines: [line("a", 100, "rc")],

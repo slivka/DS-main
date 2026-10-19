@@ -66,3 +66,8 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
 - Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.
+
+- Keep VAT exchange rates as rate/unit pairs and compare tolerances with exact cross-products. Why: division before conversion loses decimal halves.
+- Source scanning for monetary rounding belongs in the shared check-money-rounding script, not unit tests; exceptions carry reasons in one list. Why: tests verify behavior and both check levels enforce the same audit.
+
+- Run check:full with --harness inside Lovable so typecheck/build stay harness-owned; CI runs the default full pipeline. Why: duplicate manual builds are forbidden in the editor, while CI must validate all stages.

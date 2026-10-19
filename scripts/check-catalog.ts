@@ -101,7 +101,11 @@ function compareCatalog(old: Catalog, cur: Catalog, removals: Removal[]) {
     errors.push(`Duplicitní komponenta: ${n}`);
   const byName = new Map(cur.components.map((c) => [c.name, c]));
   const oldNames = new Set(old.components.map((c) => c.name));
-  for (const c of cur.components) if (!oldNames.has(c.name)) added.push(`komponenta ${c.name}`);
+  for (const c of cur.components) {
+    if (oldNames.has(c.name)) continue;
+    added.push(`komponenta ${c.name}`);
+    for (const prop of c.props ?? []) added.push(`prop ${c.name}.${prop.name}`);
+  }
   for (const o of old.components) {
     const c = byName.get(o.name);
     if (!c) {

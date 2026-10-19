@@ -268,8 +268,8 @@ export type VatSummaryRow = {
   vat: number;
   gross: number;
   /** Základ a daň v domácí měně kurzem DPH (u cizí měny). */
-  baseHome: number;
-  vatHome: number;
+  baseHome: number | null;
+  vatHome: number | null;
   selfAssessment: boolean;
   deductible: number;
   nonDeductible: number;
@@ -304,8 +304,8 @@ export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): Va
     row.base = sum2([row.base, resolved.base]);
     row.vat = sum2([row.vat, resolved.vat]);
     row.gross = sum2([row.gross, code?.selfAssessment ? resolved.base : resolved.gross]);
-    row.baseHome = sum2([row.baseHome, line.vatBaseHome ?? toHome(resolved.base, fx)]);
-    row.vatHome = sum2([row.vatHome, line.vatAmountHome ?? toHome(resolved.vat, fx)]);
+    row.baseHome = sum2([row.baseHome ?? 0, line.vatBaseHome ?? toHome(resolved.base, fx)]);
+    row.vatHome = sum2([row.vatHome ?? 0, line.vatAmountHome ?? toHome(resolved.vat, fx)]);
     if (code?.direction === "in" || code?.selfAssessment) {
       const deduction = line.vatDeduction ?? "full";
       const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));

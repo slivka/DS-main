@@ -1,6 +1,8 @@
+/** Peněžní editor buňky; vlastní potvrzení částky, nesmí počítat plovoucím zaokrouhlením. */
 import * as React from "react";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
+import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import { fmtAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { parseDecimalInput } from "../form/decimal-input";
@@ -34,7 +36,7 @@ export function exceedsMax(
   max: number | null | undefined,
 ): boolean {
   if (value == null || max == null) return false;
-  return Math.round(value * 100) > Math.round(max * 100);
+  return roundHalfAwayFromZero(value, 2) > roundHalfAwayFromZero(max, 2);
 }
 
 /**
@@ -77,7 +79,7 @@ export const GridAmountEditor = React.forwardRef<HTMLInputElement, GridAmountEdi
       const current = draftRef.current;
       if (current === null) return;
       const parsed = parseDecimalInput(current);
-      const rounded = parsed == null ? null : Math.round(parsed * 10 ** decimals) / 10 ** decimals;
+      const rounded = parsed == null ? null : roundHalfAwayFromZero(parsed, decimals);
       setDraft(null);
       if (rounded !== value) onChange(rounded);
     };

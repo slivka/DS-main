@@ -71,3 +71,15 @@ export function mulDivRound(a: number, b: number, c: number, decimals = 2): numb
   const denominator = z.units * pow10(x.scale + y.scale);
   return fromUnits(divRoundHalfAway(numerator, denominator), decimals);
 }
+
+/** Přesně porovná |a × b / c| s limitem bez mezizaokrouhlení; interní kontrola tolerance. */
+export function mulDivExceeds(a: number, b: number, c: number, limit: number): boolean {
+  const x = toScaled(Math.abs(a));
+  const y = toScaled(Math.abs(b));
+  const z = toScaled(Math.abs(c));
+  const t = toScaled(limit);
+  if (z.units === 0n) return false;
+  return (
+    x.units * y.units * pow10(z.scale + t.scale) > t.units * z.units * pow10(x.scale + y.scale)
+  );
+}

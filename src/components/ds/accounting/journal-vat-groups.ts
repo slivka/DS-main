@@ -4,7 +4,12 @@
  *   na řádky poměrem základů, toleranci přepisu, pomocné výpočty z částky s DPH a návrh dorovnání.
  * Nesmí: ukládat – výsledek je náhled; skutečné řádky daně vytváří databáze.
  */
-import { exactSum, mulDivRound, roundHalfAwayFromZero } from "../../../lib/decimal-round";
+import {
+  exactSum,
+  mulDivExceeds,
+  mulDivRound,
+  roundHalfAwayFromZero,
+} from "../../../lib/decimal-round";
 import type { JournalLine, VatCodeOption } from "./journal-lines";
 
 // Vždy polovina od nuly jako Postgres round(numeric, 2) – nikdy Math.round.
@@ -91,6 +96,8 @@ export interface ComputeVatGroupsOptions {
    * kurz chybí: tolerance se nehodnotí a částky v měně firmy jsou 0.
    */
   exchangeRate?: number | null;
+  /** Jednotka kurzu DPH (výchozí 1); kurz se před dělením nezaokrouhluje. */
+  exchangeRateAmount?: number;
   /** Doklad vstupuje do DPH (výchozí ano); jinak žádné skupiny ani pevné daně. */
   vatEnabled?: boolean;
   /** Tolerance přepisu v měně firmy (výchozí 1,00). */
@@ -152,6 +159,7 @@ export function computeVatGroups(
 ): VatGroupsResult {
   const codes = rates instanceof Map ? rates : new Map(rates.map((code) => [code.id, code]));
   const fx = validFx(options.exchangeRate);
+  const fxAmount = options.exchangeRateAmount ?? 1;
   const tolerance = options.tolerance ?? VAT_OVERRIDE_TOLERANCE;
   const buckets = new Map<
     string,
@@ -186,8 +194,7 @@ export function computeVatGroups(
     const tax = override ? round2(override.taxAmount) : calculatedTax;
     const difference = round2(exactSum([tax, -calculatedTax]));
     // Tolerance jako DB document_vat_validate: nezaokrouhlený součin rozdílu a kurzu.
-    const differenceHomeExact = fx === null ? 0 : mulDivRound(difference, fx, 1, 10);
-    const differenceHome = round2(differenceHomeExact);
+    const differenceHome = fx === null ? 0 : mulDivRound(difference, fx, fxAmount);
     return {
       key,
       vatCodeId: code.id,
@@ -201,10 +208,10 @@ export function computeVatGroups(
       overridden: Boolean(override),
       difference,
       differenceHome,
-      withinTolerance: fx === null || Math.abs(differenceHomeExact) <= tolerance,
+      withinTolerance: fx === null || !mulDivExceeds(difference, fx, fxAmount, tolerance),
       zeroBaseOverride: Boolean(override) && base === 0 && tax !== 0,
-      baseHome: fx === null ? 0 : mulDivRound(base, fx, 1, 2),
-      taxHome: fx === null ? 0 : mulDivRound(tax, fx, 1, 2),
+      baseHome: fx === null ? 0 : mulDivRound(base, fx, fxAmount, 2),
+      taxHome: fx === null ? 0 : mulDivRound(tax, fx, fxAmount, 2),
       lines: allocateVatGroupTax(items, tax),
       selfAssessment,
     };
@@ -235,6 +242,7 @@ export function vatGroupsFromStored(
   const taxLines = lines.filter((line) => line.isVatLine && !line.isFxRounding);
   if (taxLines.length === 0) return result;
   const fx = validFx(options.exchangeRate);
+  const fxAmount = options.exchangeRateAmount ?? 1;
   const groups = result.groups.map((group) => {
     const ids = new Set(group.lines.map((share) => share.lineId));
     const own = taxLines.filter((line) =>
@@ -248,7 +256,7 @@ export function vatGroupsFromStored(
       ...group,
       tax,
       gross: round2(exactSum([group.base, tax])),
-      taxHome: fx === null ? 0 : mulDivRound(tax, fx, 1, 2),
+      taxHome: fx === null ? 0 : mulDivRound(tax, fx, fxAmount, 2),
     };
   });
   const taxTotal = round2(
@@ -322,9 +330,10 @@ export function baseDeltaForDifference(
 /** Nastaví (nebo nahradí) přepis skupiny. */
 export function upsertVatOverride(
   overrides: JournalVatOverride[] | undefined,
-  group: Pick<VatGroup, "vatCodeId" | "rate">,
+  group: Pick<VatGroup, "vatCodeId" | "rate"> & Partial<Pick<VatGroup, "selfAssessment">>,
   taxAmount: number,
 ): JournalVatOverride[] {
+  if (group.selfAssessment) return overrides ?? [];
   const rest = removeVatOverride(overrides, group);
   return [
     ...rest,

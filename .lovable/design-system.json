@@ -8278,8 +8278,8 @@
           "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
         },
         {
-          "label": "Řádky s DPH (2.55.0)",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
+          "label": "Řádky bez DPH s přepisem daně dle dokladu",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} />\n// uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
@@ -9528,7 +9528,7 @@
       "name": "upsertVatOverride",
       "file": "src/components/ds/accounting/journal-vat-groups",
       "import_path": "",
-      "usage": "Nastaví nebo nahradí přepis daně skupiny „dle dokladu“.",
+      "usage": "Nastaví nebo nahradí přepis daně skupiny „dle dokladu“. Skupina selfAssessment vrací přepisy beze změny.",
       "examples": [
         {
           "label": "Použití",
@@ -9618,7 +9618,7 @@
       "name": "VatGroup",
       "file": "src/components/ds/accounting/journal-vat-groups",
       "import_path": "",
-      "usage": "Typ skupiny DPH kód × sazba (základ, vypočtená a platná daň, rozdíl, tolerance, rozpočet).",
+      "usage": "Typ skupiny DPH kód × sazba (základ, vypočtená a platná daň, rozdíl, tolerance, rozpočet). selfAssessment označuje PDP/EU: daň ze skupiny bez přepisu.",
       "examples": [
         {
           "label": "Použití",
@@ -9627,6 +9627,14 @@
       ],
       "antipatterns": [
         "Nevytvářejte vlastní obdobný typ."
+      ],
+      "props": [
+        {
+          "name": "selfAssessment",
+          "type": "boolean",
+          "required": true,
+          "description": "Samovyměření PDP/EU: daň se skupinuje, ale přepis ani pomocník Cena s DPH nejsou povoleny."
+        }
       ]
     },
     {
@@ -9678,15 +9686,29 @@
       "name": "ComputeVatGroupsOptions",
       "file": "src/components/ds/accounting/journal-vat-groups",
       "import_path": "",
-      "usage": "Volby computeVatGroups (cizí měna, kurz DPH, tolerance).",
+      "usage": "Volby computeVatGroups: foreign, kurz DPH exchangeRate / exchangeRateAmount, vatEnabled (false = žádné skupiny ani pevné daně), tolerance. Null nebo 0 kurz = tolerance se nehodnotí.",
       "examples": [
         {
           "label": "Použití",
-          "code": "const value: ComputeVatGroupsOptions = …;"
+          "code": "const options: ComputeVatGroupsOptions = { foreign: true, exchangeRate: 3.715, exchangeRateAmount: 100, vatEnabled: true, tolerance: 1 };"
         }
       ],
       "antipatterns": [
         "Nevytvářejte vlastní obdobný typ."
+      ],
+      "props": [
+        {
+          "name": "vatEnabled",
+          "type": "boolean",
+          "required": false,
+          "description": "Doklad vstupuje do DPH; false znamená žádné skupiny ani pevné daně."
+        },
+        {
+          "name": "exchangeRateAmount",
+          "type": "number",
+          "required": false,
+          "description": "Jednotka kurzu DPH; výchozí 1. Kurz a jednotka se používají bez mezidělení."
+        }
       ]
     },
     {
@@ -9732,6 +9754,21 @@
       ],
       "antipatterns": [
         "Nesčítejte haléře přes reduce bez zaokrouhlení."
+      ]
+    },
+    {
+      "name": "storedVatAllocation",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Promítne součet uložených řádků daně podle vatParentLineId do řádků základu zaúčtovaného dokladu; foreign vybírá měnu dokladu. Mřížka i patička pak čtou skutečnou daň DB.",
+      "examples": [
+        {
+          "label": "Zaúčtovaný doklad",
+          "code": "const allocated = storedVatAllocation(storedLines, documentCurrency !== homeCurrency);"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte pro přepočet konceptu; ten používá computeVatGroups a applyVatAllocation."
       ]
     }
   ],

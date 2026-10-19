@@ -3,6 +3,13 @@
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
 ### Opravy
+- **Třetí opravné kolo T1–T6:** Rozdíl nabízí dorovnání DPH pouze běžných kódů s daní, nikdy PDP/EU; `setOverride` i `upsertVatOverride` odmítají vytvořit přepis samovyměření.
+- **Kurz / jednotka:** skupiny, pevná daň a spodní souhrn používají `mulDivRound(částka, kurz, jednotka)` bez mezidělení (−900 × 3,715 / 100 = −33,44); tolerance porovnává přesný součin křížovým násobením bez mezizaokrouhlení. `ComputeVatGroupsOptions.exchangeRateAmount` doplněno (výchozí 1).
+- **Bez platného kurzu** jsou částky v měně firmy prázdné v obou rekapitulacích DPH; `VatSummaryRow.baseHome` / `vatHome` mohou být `null`.
+- **Peněžní editor gridu** potvrzuje i porovnává maximum zaokrouhlením polovinou od nuly (−1,005 → −1,01).
+- **Kontrola peněžního zaokrouhlování** přesunuta z unit testu do `scripts/check-money-rounding.ts`, zapojena do `check:quick` i `check:full`; zahrnuje účetnictví, gridy a lib, hledá volání Math.round i toFixed. Výstupní formátování a nepeněžní výpočty mají jeden seznam výjimek s důvody.
+- **Katalog T4 dle `check:catalog --base 03f1c677`:** 449 → 470 komponent, 890 → 910 props; v tomto kole + `storedVatAllocation`, + `VatGroup.selfAssessment`, + `ComputeVatGroupsOptions.vatEnabled`, + `ComputeVatGroupsOptions.exchangeRateAmount`. Jediná úmyslná náhrada je zastaralý příklad „Řádky s DPH (2.55.0)“ (záznam v catalog-removals.json); žádný export ani prop neubyl.
+- **Katalog:** veřejný `storedVatAllocation`, `VatGroup.selfAssessment`, `ComputeVatGroupsOptions.vatEnabled` a `exchangeRateAmount`; ukázka editoru převedena z deprecated calcMode na řádky bez DPH a vatOverrides.
 - **Záložka DPH ve spodní rekapitulaci editoru řádků** chyběla (souhrn se do rekapitulace nepředával) – vrácena. Daň bere ze skupin DPH (stejný výpočet jako DB, včetně přepisu „dle dokladu“); u zaúčtovaného dokladu z uložených řádků daně, jen ke čtení. U dokladu mimo DPH se nezobrazí.
 - **Zaokrouhlení jako DB:** výpočty DPH (daň skupiny, rozpočet na řádky, pomocník Cena s DPH, `taxFromGrossTotal`, sloupce v měně firmy) používají `roundHalfAwayFromZero` / `mulDivRound` – polovina od nuly v celých jednotkách jako Postgres `round(numeric, 2)` (10,075 → 10,08; −7,875 → −7,88). Dříve Math.round dával na záporných a hraničních hodnotách jiné výsledky.
 - **Zaúčtovaný doklad** má rekapitulaci DPH z uložených řádků (daň z řádků daně DB, přepisy jako „dle dokladu“), bez úprav a bez pomocníka (`vatGroupsFromStored`).
@@ -31,6 +38,7 @@
 - `BankStatementForm` se zastaralým `status="checked"` zůstává zamčený s důvodem `bankStatement.locked` („Výpis je uzamčený“, nový klíč CS/SK).
 
 ### BREAKING
+- `VatSummaryRow.baseHome` a `vatHome` jsou `number | null`: bez platného kurzu vykreslete prázdnou buňku, ne nulu.
 - **Řádky jsou vždy bez DPH.** `JournalLinesVat.calcMode` a `onCalcModeChange` jsou @deprecated (odstraní se ve 3.0.0) a ignorované; přepínač Bez / S DPH v liště zmizel. Typ `VatCalcMode`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromGross` zůstávají exportované jako @deprecated.
 - **Ruční daň na řádku zrušena.** Buňka DPH ani Celkem s DPH se needitují, akce „Vrátit vypočtenou daň“ v řádku zmizela. `toJournalRow(s)` už neposílá `vat_manual`, `vat_amount_foreign` ani `amount_gross`. Řádek s `vatManual` z DB je pevná systémová daň (odpočet zálohy, import) – jen zobrazení se zámkem a bublinou.
 - **Patička Součet · Zaokrouhlení · Rozdíl** (`data-slot="journal-difference-bar"`, `journal-footer-sum`, `journal-footer-rounding`, `journal-lines-remaining`). Tlačítko „± Zaokrouhlení“ (`journal-lines-rounding`) a stav rozepsání v liště zrušeny, stejně jako automatický návrh zaokrouhlení na jakýkoli rozdíl. `JournalLinesRounding.limit` je @deprecated – použijte `roundingLimit`.
@@ -53,6 +61,7 @@
 4. `vatOverrideSeverity="warning"` u konceptu, `"error"` při zařazení (DB vrací `vat_override_diff;skupina;sazba`).
 5. Testy a selektory na `journal-lines-rounding` nahraďte `journal-footer-rounding`.
 6. V `onValidationChange` ošetřete `line === undefined` (položky skupin DPH nemají řádek) a filtrujte podle `severity` (varování jsou ve stejném poli jako chyby).
+7. Při vlastním vykreslování `VatSummaryRow` ošetřete `baseHome === null` / `vatHome === null` prázdnou buňkou; pro kurz s jednotkou předávejte `exchangeRateAmount` spolu s `exchangeRate`.
 
 ### Ukázky (jen náhled, knihovna ani katalog beze změny)
 - Stránka účetních formulářů rozdělena na sedm stránek s přepínačem: Editor dokladů (původní adresa), Další doklady, Ovládací prvky a hlavičky, Bankovní výpis a pohyb, Řádky dokladu a DPH, Řádky zápisu, Pole a sestavy. Žádná ukázka nezmizela; každá stránka se načte do 8,1 s (dříve celá stránka 10–16 s). Testy v prohlížeči míří na novou stránku a čekají na signál připravenosti stránky; žádné čekání se nezvyšovalo.

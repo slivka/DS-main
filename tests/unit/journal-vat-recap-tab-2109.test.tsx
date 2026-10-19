@@ -101,6 +101,21 @@ describe("Rekapitulace – záložka DPH", () => {
     ).toBeNull();
   });
 
+  it("bez platného kurzu má spodní DPH prázdné domácí buňky", () => {
+    const { container } = renderEditor({
+      documentCurrency: "EUR",
+      homeCurrency: "CZK",
+      lines: [{ ...base, amount: 0, foreignAmount: 100 }],
+      vat: { enabled: true, codes: [P21] },
+      vatExchangeRate: 0,
+    });
+    const panel = container.querySelector('[role="tabpanel"][data-state="active"]');
+    const cells = panel?.querySelector("tbody tr")?.querySelectorAll("td");
+    expect(cells?.length).toBeGreaterThanOrEqual(7);
+    expect(cells?.[5]?.textContent?.trim()).toBe("");
+    expect(cells?.[6]?.textContent?.trim()).toBe("");
+  });
+
   it("doklad nevstupuje do DPH: záložka DPH chybí", () => {
     const { container } = renderEditor({ vat: { enabled: false, codes: [P21] } });
     expect(vatTab(container)).toBeNull();
