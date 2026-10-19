@@ -13,6 +13,8 @@ import type {
 
 /** Vstupy klientských kontrol. */
 export interface DocumentValidationArgs {
+  /** Typ dokladu (BA mění id polí protiúčtu). */
+  code?: string;
   /** Hlavička. */
   value: DocumentHeaderValue;
   /** Cizí měna. */
@@ -51,11 +53,17 @@ const HEADER_FIELD_ID: Record<string, string> = {
   counterpartyDic: "document-partner-dic",
   bankCode: "document-bank-code",
   bankSwift: "document-bank-code",
-  bankAccount: "document-movement-account",
   bankIban: "document-movement-account",
   variableSymbolLinked: "document-variableSymbol",
   totalMode: "document-amountTotal",
 };
+
+/** Id pole bankovního účtu: u BA protiúčet, jinak účet partnera. */
+function headerFieldId(key: string, code?: string): string {
+  if (key === "bankAccount")
+    return code === "BA" ? "document-movement-account" : "document-bankAccount";
+  return HEADER_FIELD_ID[key] ?? `document-${key}`;
+}
 
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
 function headerLabelAlias(
@@ -110,9 +118,10 @@ function headerIssue(
   severity: FormIssue["severity"],
   label?: string,
   fieldLabels?: Partial<Record<string, string>>,
+  code?: string,
 ): FormIssue {
   return {
-    fieldId: HEADER_FIELD_ID[key] ?? `document-${key}`,
+    fieldId: headerFieldId(key, code),
     label: label ?? headerFieldLabel(t, key, fieldLabels),
     message,
     severity,
@@ -130,7 +139,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
       );
   }
   for (const key of a.invalidDates ?? [])
-    issues.push(headerIssue(a.t, key, a.t.invalidDate, "error", undefined, a.fieldLabels));
+    issues.push(headerIssue(a.t, key, a.t.invalidDate, "error", undefined, a.fieldLabels, a.code));
   const vat = a.vatRateField;
   if (
     !a.readOnly &&
@@ -162,7 +171,15 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
     if (message)
       issues.push(
-        headerIssue(a.t, key as DocumentHeaderField, message, "warning", undefined, a.fieldLabels),
+        headerIssue(
+          a.t,
+          key as DocumentHeaderField,
+          message,
+          "warning",
+          undefined,
+          a.fieldLabels,
+          a.code,
+        ),
       );
   }
   if (a.taxDocumentNumberWarning)

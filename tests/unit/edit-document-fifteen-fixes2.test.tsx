@@ -152,6 +152,7 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
     };
     const view = render(<Doc documentType="BA" fieldErrors={baErrors} />);
     const issues = documentClientIssues({
+      code: "BA",
       value: { ...header, amountTotal: 0 },
       foreign: false,
       t: T,
