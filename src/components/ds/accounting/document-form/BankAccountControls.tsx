@@ -78,6 +78,7 @@ export function ReceivedAccountControl(props: ReceivedAccountControlProps) {
   const content =
     props.counterpartyInput === "partner" ? (
       <BankAccountField
+        id="document-bankAccount"
         aria-label={props.texts.bankAccount}
         value={props.partnerAccountId ?? ""}
         onChange={props.onPartnerAccountChange}
