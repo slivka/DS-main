@@ -3,7 +3,7 @@
  * nesmí validovat ani mazat serverové položky; prázdný seznam = pruh zmizí sám.
  */
 import { AlertTriangle, X } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { formIssuesTitle, mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
@@ -44,8 +44,15 @@ export function FormIssuesBar({
   const texts = useDsTexts().recordAction;
   const list = mergeFormIssues(issues);
   const autoTitle = formIssuesTitle(list, saveFailed, texts);
-  if (!autoTitle) return null;
+  // Bez callbacku si pruh zavření drží sám do další změny seznamu.
+  const signature = list
+    .map((issue) => `${issue.code ?? issue.message}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`)
+    .join(";");
+  const [dismissed, setDismissed] = useState<string | null>(null);
+  if (!autoTitle || dismissed === signature) return null;
+  const close = onClose ?? (() => setDismissed(signature));
   const hasErrors = list.some((issue) => issue.severity === "error");
+  const count = hasErrors ? list.filter((issue) => issue.severity === "error").length : list.length;
   const duplicateMessage =
     typeof message === "string" && list.some((issue) => issue.message === message);
   const select = (issue: FormIssue) => {
@@ -75,7 +82,13 @@ export function FormIssuesBar({
       <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <p className="font-bold" data-slot="form-issues-title">
-          {title ?? autoTitle}
+          {title ? (
+            <>
+              {title} ({count})
+            </>
+          ) : (
+            autoTitle
+          )}
         </p>
         {message && !duplicateMessage ? (
           <div className="mt-0.5 text-sm text-foreground">{message}</div>
@@ -106,18 +119,16 @@ export function FormIssuesBar({
           ))}
         </ul>
       </div>
-      {onClose ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={closeLabel}
-          onClick={onClose}
-          className="-mr-2 -mt-2 shrink-0"
-        >
-          <X />
-        </Button>
-      ) : null}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label={closeLabel}
+        onClick={close}
+        className="-mr-2 -mt-2 shrink-0"
+      >
+        <X />
+      </Button>
     </div>
   );
 }
