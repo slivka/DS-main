@@ -240,40 +240,21 @@ export function DocumentForm(props: DocumentFormProps) {
     rowLabel: dsTexts.journalEditor.row,
     onValidationChange: linesEditorProps?.onValidationChange,
   });
-  // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
-  const dateLink =
-    bankMovement && effectiveAccountingLink
-      ? {
-          ...effectiveAccountingLink,
-          hint: dsTexts.documentEdit.movementDateLinked,
-          unlockedHint: dsTexts.documentEdit.movementDateLink,
-        }
-      : effectiveAccountingLink;
-  const { field, date, suggestedText } = useDocumentFieldRenderers({
+  const { field, date, suggestedText, taxNumberField } = useDocumentHeaderFields({
     value: effectiveValue,
     patch,
     can,
     dateWarnings,
-    accountingDateLink: dateLink,
+    accountingDateLink: effectiveAccountingLink,
+    bankMovement,
+    showTaxNumber,
+    taxDocumentNumberWarning,
     // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
     fieldErrors: validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
   });
-  const taxNumberField = showTaxNumber
-    ? field(
-        "document-taxDocumentNumber",
-        dsTexts.documentEdit.taxNumber,
-        <TaxDocumentNumberField
-          value={value}
-          patch={patch}
-          warning={taxDocumentNumberWarning}
-          disabled={!can("taxDocumentNumber")}
-        />,
-        6,
-      )
-    : null;
   const {
     externalNumberField,
     bankAccountField,
