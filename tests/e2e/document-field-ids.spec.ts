@@ -93,9 +93,7 @@ const scenarios = [
 for (const scenario of scenarios) {
   test(`${scenario.code}: skutečná id všech polí vykreslené varianty`, async ({ page }) => {
     await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
-      timeout: 90_000,
-    });
+    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true");
     const form = page
       .locator('div[class~="@container"][class~="space-y-4"]')
       .filter({ has: page.getByRole("heading", { name: scenario.title, exact: true }) })
@@ -111,9 +109,7 @@ for (const scenario of scenarios) {
 
 test("Vlastní chyba buňky: oprava částky odstraní rámeček i položku pruhu", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
-    timeout: 90_000,
-  });
+  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true");
   const form = page
     .locator('div[class~="@container"][class~="space-y-4"]')
     .filter({ has: page.getByRole("heading", { name: "Interní doklad", exact: true }) })

@@ -14,8 +14,10 @@ import { isRegularLine, roundJournalAmount, toHomeAmount } from "./journal-lines
 import {
   applyVatAllocation,
   baseFromGrossAmount,
+  baseDeltaForDifference,
   computeVatGroups,
   largestBaseLineId,
+  vatGroupsFromStored,
   removeVatOverride,
   resolveDifferenceActions,
   taxFromGrossTotal,
@@ -43,6 +45,18 @@ export interface JournalVatGroupsInput {
   rateAmount: number;
 }
 
+/** Otevřený pomocník „Cena s DPH“ (jeden na editor). */
+export interface GrossHelperState {
+  /** Id řádku. */
+  lineId: string;
+  /** Cílový sloupec. */
+  column: "amount" | "unitPrice";
+  /** Zadaná částka s DPH. */
+  value: string;
+  /** Tlačítko, u kterého se okno otevře. */
+  anchor: HTMLElement | null;
+}
+
 /** Id pole skupiny pro pruh položek a odkazy. */
 export const vatGroupFieldId = (group: Pick<VatGroup, "code" | "rate">) =>
   `journal-vat-group-${group.code}-${group.rate}`;
@@ -61,24 +75,42 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     : 1;
   const active = vatOn && !vatReadOnly;
   // Otevřený pomocník drží editor: buňka se při aktivaci bubliny stavu přemontuje.
-  const [grossHelper, setGrossHelper] = React.useState<{ key: string; value: string } | null>(null);
-  const result = computeVatGroups(active ? lines : [], props.vatOverrides, vatCodeMap, {
-    foreign,
-    exchangeRate,
-  });
-  const allocatedLines = active ? applyVatAllocation(lines, result) : lines;
+  const [grossHelper, setGrossHelper] = React.useState<GrossHelperState | null>(null);
+  const { vatOverrides } = props;
+  // Zaúčtovaný doklad: skupiny z uložených řádků (daň z řádků daně DB), bez úprav.
+  const result = React.useMemo(
+    () =>
+      !vatOn
+        ? computeVatGroups([], vatOverrides, vatCodeMap)
+        : vatReadOnly
+          ? vatGroupsFromStored(lines, vatOverrides, vatCodeMap, { foreign, exchangeRate })
+          : computeVatGroups(lines, vatOverrides, vatCodeMap, { foreign, exchangeRate }),
+    [lines, vatOverrides, vatCodeMap, foreign, exchangeRate, vatOn, vatReadOnly],
+  );
+  const allocatedLines = React.useMemo(
+    () => (active ? applyVatAllocation(lines, result) : lines),
+    [active, lines, result],
+  );
   const canOverride = active && Boolean(props.onVatOverridesChange);
   const severity = props.vatOverrideSeverity ?? "warning";
-  const groupIssues = result.groups
-    .filter((group) => !group.withinTolerance)
-    .map((group) => ({
-      groupKey: group.key,
-      fieldId: vatGroupFieldId(group),
-      severity,
-      message: t.vatGroups.overTolerance
-        .replace("{group}", `${group.code} ${group.rate} %`)
-        .replace("{difference}", formatAmount(group.differenceHome, 2)),
-    }));
+  const groupIssues = React.useMemo(
+    () =>
+      result.groups
+        .filter((group) => !group.withinTolerance || group.zeroBaseOverride)
+        .map((group) => ({
+          groupKey: group.key,
+          fieldId: vatGroupFieldId(group),
+          label: `${group.code} ${group.rate} %`,
+          severity,
+          message: (group.zeroBaseOverride
+            ? t.vatGroups.overrideZeroBase
+            : t.vatGroups.overTolerance
+          )
+            .replace("{group}", `${group.code} ${group.rate} %`)
+            .replace("{difference}", formatAmount(group.differenceHome, 2)),
+        })),
+    [result, severity, t.vatGroups],
+  );
 
   const baseOf = (line: JournalLine) => Number(foreign ? line.foreignAmount : line.amount) || 0;
   const withBase = (line: JournalLine, base: number): JournalLine =>
@@ -127,14 +159,34 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     baseFromGrossAmount(gross, vatRate, precision);
 
   const regular = lines.filter(isRegularLine);
-  const difference = (amount: number) =>
+  /** Skupina řádku s největším základem (cíl Dorovnat základ). */
+  const largestGroup = () => {
+    const targetId = largestBaseLineId(regular, { foreign });
+    return result.groups.find((group) => group.lines.some((share) => share.lineId === targetId));
+  };
+  // Limit zaokrouhlení je v měně firmy; Rozdíl cizího dokladu je v měně dokladu.
+  const docRate = rate / (rateAmount || 1);
+  const roundingLimit =
+    props.roundingLimit === undefined
+      ? undefined
+      : foreign && docRate > 0
+        ? props.roundingLimit / docRate
+        : props.roundingLimit;
+  const difference = (amount: number, currentRounding = 0) =>
     resolveDifferenceActions({
       difference: amount,
       groups: result.groups.filter((group) => group.rate > 0),
       lineCount: regular.length,
-      roundingLimit: props.roundingLimit,
+      roundingLimit,
+      currentRounding,
+      baseBalanceable: baseDeltaForDifference(largestGroup(), amount) !== null,
       editable: !vatReadOnly && regular.length > 0,
     });
+  /** Dorovnat základ: posun, po kterém Rozdíl klesne na 0. */
+  const balanceBase = (amount: number) => {
+    const delta = baseDeltaForDifference(largestGroup(), amount);
+    if (delta !== null) adjustLargestBase(delta);
+  };
   return {
     vatGroups: result,
     allocatedLines,
@@ -151,6 +203,7 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     grossHelper,
     setGrossHelper,
     difference,
+    balanceBase,
   };
 }
 

@@ -1,10 +1,11 @@
 /**
- * Součtový řádek mřížky dokladu.
+ * Řádek Součet mřížky dokladu (2.109.0: jediný součtový řádek, samostatné „Celkem“ zrušeno).
  * Vlastní: součty základu, domácí částky, DPH a částky s DPH pod příslušnými sloupci.
  * Nesmí: počítat součty – hodnoty dodává useJournalTotals.
  */
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { roundJournalAmount } from "./journal-lines-model";
 import { TableCell, TableFooter, TableRow } from "../../ui/table";
 import { useJournalEditor } from "./journal-editor-context";
 
@@ -19,21 +20,23 @@ const TOTAL_SLOTS: Record<string, string> = {
 export function JournalFooter() {
   const { editor } = useJournalEditor();
   const { totals, vatOn, foreign, t } = editor;
+  // Součet je bez zaokrouhlení (to má vlastní hodnotu v liště pod mřížkou).
+  const homeSum = roundJournalAmount(totals.total - totals.roundingValue);
   const value = (id: string) => {
-    if (id === "row") return t.total;
+    if (id === "row") return t.vatGroups.sum;
     if (id === "amount")
       return formatAmount(
-        vatOn ? totals.documentBaseTotal : foreign ? totals.documentLinesTotal : totals.total,
+        vatOn ? totals.documentBaseTotal : foreign ? totals.documentLinesTotal : homeSum,
         2,
       );
-    if (id === "homeAmount") return formatAmount(vatOn ? totals.baseTotal : totals.total, 2);
+    if (id === "homeAmount") return formatAmount(vatOn ? totals.baseTotal : homeSum, 2);
     if (id === "vatAmount") return formatAmount(totals.documentVatTotal, 2);
-    if (id === "grossAmount") return formatAmount(totals.documentGrossTotal, 2);
+    if (id === "grossAmount") return formatAmount(foreign ? totals.documentGrossTotal : homeSum, 2);
     return null;
   };
   return (
     <TableFooter>
-      <TableRow>
+      <TableRow data-slot="journal-footer-sum">
         {editor.layout.visibleColumns.map((column) => (
           <TableCell
             key={column.id}

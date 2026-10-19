@@ -162,9 +162,14 @@ export interface JournalLinesEditorProps {
   onValidationChange?: (
     count: number,
     errors: {
-      line: number;
+      /** Pořadí řádku od 1; chybí u položek skupiny DPH (2.109.0). */
+      line?: number;
       field: string;
       message: string;
+      /** Popisek položky mimo řádek (skupina DPH „kód sazba %“). */
+      label?: string;
+      /** Závažnost; bez ní chyba. Varování se nepočítá do `count` (2.109.0). */
+      severity?: "error" | "warning";
       fieldId?: string;
       rowId?: string;
       columnId?: string;

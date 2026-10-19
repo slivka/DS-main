@@ -590,7 +590,7 @@ describe("DPH v editoru", () => {
         { id: "r", amount: 0.4, isRounding: true },
       ],
     });
-    expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1\s000,40/);
+    expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1\s000,00/);
     expect(html).not.toContain('data-slot="journal-lines-toolbar-total"');
   });
 });

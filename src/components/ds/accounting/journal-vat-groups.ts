@@ -4,15 +4,11 @@
  *   na řádky poměrem základů, toleranci přepisu, pomocné výpočty z částky s DPH a návrh dorovnání.
  * Nesmí: ukládat – výsledek je náhled; skutečné řádky daně vytváří databáze.
  */
+import { exactSum, mulDivRound, roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import type { JournalLine, VatCodeOption } from "./journal-lines";
 
-const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
-
-/** Zaokrouhlí na zadaný počet desetinných míst (výchozí 2); jen interně. */
-const roundTo = (value: number, precision = 2) => {
-  const factor = 10 ** precision;
-  return Math.round((value + Math.sign(value) * Number.EPSILON) * factor) / factor;
-};
+// Vždy polovina od nuly jako Postgres round(numeric, 2) – nikdy Math.round.
+const round2 = (value: number) => roundHalfAwayFromZero(value, 2);
 
 /** Přepis daně skupiny „DPH dle dokladu“ – ukládá se spolu s řádky (`_vat_overrides`). */
 export interface JournalVatOverride {
@@ -60,8 +56,10 @@ export interface VatGroup {
   difference: number;
   /** Rozdíl v měně firmy kurzem DPH. */
   differenceHome: number;
-  /** Rozdíl je v toleranci. */
+  /** Rozdíl je v toleranci (|rozdíl| × kurz ≤ tolerance na nezaokrouhleném součinu, jako DB). */
   withinTolerance: boolean;
+  /** Přepis ≠ 0 při nulovém součtu základů – DB ho odmítne (`vat_override_zero_base`). */
+  zeroBaseOverride: boolean;
   /** Základ v měně firmy kurzem DPH. */
   baseHome: number;
   /** Daň v měně firmy kurzem DPH. */
@@ -120,20 +118,17 @@ export function allocateVatGroupTax(
   tax: number,
 ): VatGroupLineShare[] {
   if (items.length === 0) return [];
-  const sum = round2(items.reduce((acc, item) => acc + item.base, 0));
+  const sum = exactSum(items.map((item) => item.base));
   let target = 0;
   items.forEach((item, index) => {
     if (Math.abs(item.base) > Math.abs(items[target].base)) target = index;
   });
   const shares = items.map((item) => ({
     ...item,
-    tax: sum === 0 ? 0 : round2((tax * item.base) / sum),
+    tax: sum === 0 ? 0 : mulDivRound(tax, item.base, sum, 2),
   }));
-  const others = shares.reduce(
-    (acc, share, index) => (index === target ? acc : acc + share.tax),
-    0,
-  );
-  shares[target].tax = round2(tax - others);
+  const others = exactSum(shares.filter((_, index) => index !== target).map((sh) => sh.tax));
+  shares[target].tax = round2(exactSum([tax, -others]));
   return shares;
 }
 
@@ -167,12 +162,14 @@ export function computeVatGroups(
     buckets.set(key, bucket);
   }
   const groups = [...buckets.entries()].map(([key, { code, rate, items }]): VatGroup => {
-    const base = round2(items.reduce((acc, item) => acc + item.base, 0));
-    const calculatedTax = round2((base * rate) / 100);
+    const base = round2(exactSum(items.map((item) => item.base)));
+    const calculatedTax = mulDivRound(base, rate, 100, 2);
     const override = overrides?.find((item) => vatGroupKey(item.vatCodeId, item.vatRate) === key);
     const tax = override ? round2(override.taxAmount) : calculatedTax;
-    const difference = round2(tax - calculatedTax);
-    const differenceHome = round2(difference * fx);
+    const difference = round2(exactSum([tax, -calculatedTax]));
+    // Tolerance jako DB document_vat_validate: nezaokrouhlený součin rozdílu a kurzu.
+    const differenceHomeExact = mulDivRound(difference, fx, 1, 10);
+    const differenceHome = round2(differenceHomeExact);
     return {
       key,
       vatCodeId: code.id,
@@ -182,21 +179,63 @@ export function computeVatGroups(
       base,
       calculatedTax,
       tax,
-      gross: round2(base + tax),
+      gross: round2(exactSum([base, tax])),
       overridden: Boolean(override),
       difference,
       differenceHome,
-      withinTolerance: Math.abs(differenceHome) <= tolerance + 1e-9,
-      baseHome: round2(base * fx),
-      taxHome: round2(tax * fx),
+      withinTolerance: Math.abs(differenceHomeExact) <= tolerance,
+      zeroBaseOverride: Boolean(override) && base === 0 && tax !== 0,
+      baseHome: mulDivRound(base, fx, 1, 2),
+      taxHome: mulDivRound(tax, fx, 1, 2),
       lines: allocateVatGroupTax(items, tax),
     };
   });
   const taxTotal = round2(
-    groups.reduce((acc, group) => acc + group.tax, 0) +
-      fixed.reduce((acc, item) => acc + item.tax, 0),
+    exactSum([...groups.map((group) => group.tax), ...fixed.map((item) => item.tax)]),
   );
   return { groups, fixed, taxTotal };
+}
+
+/**
+ * Skupiny zaúčtovaného dokladu z uložených řádků: základy z řádků základu, daň skupiny ze
+ * skutečných řádků daně DB (`isVatLine`), přepisy se ukážou jako „dle dokladu“. Bez řádků
+ * daně (starší data) zůstane daň z výpočtu, který je s DB shodný.
+ */
+export function vatGroupsFromStored(
+  lines: JournalLine[],
+  overrides: JournalVatOverride[] | undefined,
+  rates: VatCodeOption[] | Map<string, VatCodeOption>,
+  options: ComputeVatGroupsOptions = {},
+): VatGroupsResult {
+  const result = computeVatGroups(
+    lines.filter((line) => !line.isVatLine),
+    overrides,
+    rates,
+    options,
+  );
+  const taxLines = lines.filter((line) => line.isVatLine && !line.isFxRounding);
+  if (taxLines.length === 0) return result;
+  const fx = options.exchangeRate || 1;
+  const groups = result.groups.map((group) => {
+    const ids = new Set(group.lines.map((share) => share.lineId));
+    const own = taxLines.filter((line) =>
+      line.vatParentLineId
+        ? ids.has(line.vatParentLineId)
+        : line.vatCodeId === group.vatCodeId && (line.vatRate ?? group.rate) === group.rate,
+    );
+    if (own.length === 0) return group;
+    const tax = round2(exactSum(own.map((line) => baseOf(line, options.foreign))));
+    return {
+      ...group,
+      tax,
+      gross: round2(exactSum([group.base, tax])),
+      taxHome: mulDivRound(tax, fx, 1, 2),
+    };
+  });
+  const taxTotal = round2(
+    exactSum([...groups.map((group) => group.tax), ...result.fixed.map((item) => item.tax)]),
+  );
+  return { groups, fixed: result.fixed, taxTotal };
 }
 
 /**
@@ -213,11 +252,31 @@ export function applyVatAllocation(lines: JournalLine[], result: VatGroupsResult
 
 /** Základ z částky s DPH: round(s DPH × 100 / (100 + sazba)) na přesnost sloupce. */
 export const baseFromGrossAmount = (gross: number, rate: number, precision = 2) =>
-  roundTo((gross * 100) / (100 + rate), precision);
+  mulDivRound(gross, 100, exactSum([100, rate]), precision);
 
 /** Daň z celkem s DPH: round(celkem × sazba / (100 + sazba), 2). */
 export const taxFromGrossTotal = (total: number, rate: number) =>
-  round2((total * rate) / (100 + rate));
+  mulDivRound(total, rate, exactSum([100, rate]), 2);
+
+/**
+ * Posun základu řádku s největším základem, po kterém Rozdíl patičky klesne na 0.
+ * Skupina s přepisem (pevná daň) nebo řádek mimo skupinu: celý rozdíl. Bez přepisu se hledá
+ * posun d (± haléře kolem odhadu), pro který d + round((Σ + d) × sazba / 100) − daň = rozdíl;
+ * když neexistuje, vrací null (nabízí se jen Dorovnat DPH / Zaokrouhlení).
+ */
+export function baseDeltaForDifference(
+  group: Pick<VatGroup, "base" | "rate" | "calculatedTax" | "overridden"> | undefined,
+  difference: number,
+): number | null {
+  if (!group || group.overridden || group.rate === 0) return round2(difference);
+  const estimate = mulDivRound(difference, 100, exactSum([100, group.rate]), 2);
+  for (const step of [0, 1, -1, 2, -2, 3, -3]) {
+    const delta = round2(exactSum([estimate, step / 100]));
+    const tax = mulDivRound(exactSum([group.base, delta]), group.rate, 100, 2);
+    if (round2(exactSum([delta, tax, -group.calculatedTax, -difference])) === 0) return delta;
+  }
+  return null;
+}
 
 /** Nastaví (nebo nahradí) přepis skupiny. */
 export function upsertVatOverride(
@@ -268,8 +327,12 @@ export interface DifferenceActionsInput {
   groups: Pick<VatGroup, "key">[];
   /** Počet řádků základu. */
   lineCount: number;
-  /** Limit zaokrouhlení firmy; bez něj se Zaokrouhlení nenabízí. */
+  /** Limit zaokrouhlení v měně Rozdílu (u cizí měny přepočtený); bez něj se Zaokrouhlení nenabízí. */
   roundingLimit?: number;
+  /** Stávající zaokrouhlení – limit platí pro |zaokrouhlení + rozdíl|. */
+  currentRounding?: number;
+  /** Lze dorovnat základ tak, aby Rozdíl byl 0 (výsledek `baseDeltaForDifference` ≠ null). */
+  baseBalanceable?: boolean;
   /** Doklad lze upravit. */
   editable?: boolean;
 }
@@ -283,11 +346,12 @@ export function resolveDifferenceActions(input: DifferenceActionsInput): {
   if (diff === 0 || input.editable === false) return { actions: [], preferred: null };
   const actions: JournalDifferenceAction[] = [];
   if (input.groups.length > 0) actions.push("vat");
-  if (input.lineCount > 0) actions.push("base");
-  const roundingOk = input.roundingLimit !== undefined && diff <= input.roundingLimit + 1e-9;
+  if (input.lineCount > 0 && input.baseBalanceable !== false) actions.push("base");
+  const resulting = Math.abs(round2(exactSum([input.currentRounding ?? 0, input.difference])));
+  const roundingOk = input.roundingLimit !== undefined && resulting <= input.roundingLimit;
   if (roundingOk) actions.push("rounding");
   const vatPreferred =
-    input.groups.length === 1 && diff <= round2(0.01 * Math.max(1, input.lineCount)) + 1e-9;
+    input.groups.length === 1 && diff <= round2(0.01 * Math.max(1, input.lineCount));
   const preferred = vatPreferred ? "vat" : roundingOk ? "rounding" : null;
   return { actions, preferred };
 }

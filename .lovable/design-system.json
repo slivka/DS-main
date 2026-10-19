@@ -8349,6 +8349,12 @@
         {
           "name": "onValidationChange",
           "type": "(count: number, errors: { line: number; field: string; message: string; fieldId?: string; rowId?: string; columnId?: string }[]) => void"
+        },
+        {
+          "name": "cellIssues",
+          "type": "{ rowId; columnId; message; severity }[]",
+          "required": false,
+          "description": "Externí stavy buněk z pruhu položek (2.108.0) – chyba/varování se sloučí s vlastní validací."
         }
       ]
     },
@@ -8493,6 +8499,41 @@
         {
           "name": "error.onFieldErrorSelect",
           "type": "(link: FieldErrorLink) => void"
+        },
+        {
+          "name": "issues",
+          "type": "FormIssue[]",
+          "description": "Položky pruhu od aplikace (serverové source='server' se zobrazí vždy)."
+        },
+        {
+          "name": "saveFailed",
+          "type": "boolean",
+          "description": "Uložení selhalo → titulek „Doklad nelze uložit (N)“."
+        },
+        {
+          "name": "validationActive",
+          "type": "boolean",
+          "description": "Po prvním pokusu o uložení; řídí jen klientské položky a červené rámečky."
+        },
+        {
+          "name": "onFieldChange",
+          "type": "(fieldId: string, rowId?: string, columnId?: string) => void",
+          "description": "Změna pole, přepínače nebo buňky – aplikace podle ní maže serverové položky."
+        },
+        {
+          "name": "bankCodeOptions",
+          "type": "Array<{ code: string; name: string }>",
+          "description": "Kódy bank s názvy pro protiúčet BA."
+        },
+        {
+          "name": "value.variableSymbolLinked",
+          "type": "boolean",
+          "description": "Stav vazby VS na číslo daňového dokladu; DS ukládá jen tento stav."
+        },
+        {
+          "name": "onIssuesClose",
+          "type": "() => void",
+          "description": "Zavření pruhu položek ✕; bez callbacku si pruh zavření drží sám do změny seznamu."
         }
       ]
     },
@@ -9121,6 +9162,11 @@
         {
           "name": "texts",
           "type": "any"
+        },
+        {
+          "name": "value.bankClosing",
+          "type": "number | null",
+          "description": "null = Σ (zůstatek z pohybů), číslo = zůstatek na výpise."
         }
       ],
       "usage": "Formulář bankovního výpisu: Uložit je společná primární akce RecordActionBar se sdílenou měřenou kaskádou; dirty/disabled/busy se řídí props. Číslo se upravuje vpravo v IdentityLine; hasItems, checked/posted a readOnly ukážou FieldValue se zámkem a důvodem i klepnutím. value obsahuje date, number a bankClosing, nikoli note. Základní údaje: datum vlevo, nepovinný Zůstatek dle banky vpravo a pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty. Domácí měna zachovává samostatné porovnání. Kontrola a její zrušení vysvětlují účel i klepnutím; checkDisabledReason zakáže jen kontrolu. Aplikace řídí ukládání a změnu stavu. Bankovní zůstatek v obou měnách má na široké ploše span 3/12 vpravo; nenulový rozdíl těsně vlevo. Číslo dědí typografii IdentityLine také při zamčení. Zamčené Uložit vysvětluje lockedReason. Povolená kontrola se klikem provede bez připnutí vysvětlení; dotyk jej ukáže na 3 s. Výpis bez viditelného stavového štítku; status dál řídí zamčení. Nový výpis má prázdné pohyby; + Příjem / + Výdaj volají onSaveThenAdd, aplikace nejdříve úspěšně uloží. Kontrola používá sdílenou kaskádu RecordActionBar.",
@@ -9340,6 +9386,352 @@
           "name": "extraInfo",
           "type": "ReactNode"
         }
+      ]
+    },
+    {
+      "name": "mergeFormIssues",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Sloučí položky živého pruhu: stejná hláška (pole + text, bez ohledu na kód) jen jednou, server má přednost; hlavička × řádek jen při shodném kódu nebo fieldId.",
+      "antipatterns": [
+        "Neduplikovat hlášky ručně v aplikaci – deduplikaci řeší DS."
+      ]
+    },
+    {
+      "name": "visibleFormIssues",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Ponechá serverové položky a varování vždy; neaktivní validace skrývá jen klientské chyby.",
+      "examples": [
+        {
+          "label": "Viditelné položky",
+          "code": "const visible = visibleFormIssues(issues, validationActive);"
+        }
+      ],
+      "antipatterns": [
+        "Neskrývejte serverové chyby ani varování před prvním uložením."
+      ]
+    },
+    {
+      "name": "formIssuesTitle",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Titulek pruhu s počtem: „Doklad nelze uložit (N)“ jen při saveFailed, jinak „Před zařazením doplňte (N)“; jen varování → „Upozornění (N)“.",
+      "examples": [
+        {
+          "label": "Titulek seznamu",
+          "code": "const title = formIssuesTitle(visible, saveFailed, texts.recordAction);"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte skryté klientské chyby do titulku."
+      ]
+    },
+    {
+      "name": "deriveVariableSymbol",
+      "file": "src/components/ds/accounting/variable-symbol-link.ts",
+      "import_path": "",
+      "usage": "Číslice zdrojového čísla → VS (1–10 číslic); nikdy nezkracuje. Důvody: ok / tooLong / noDigits / pending.",
+      "examples": [
+        {
+          "label": "Odvození",
+          "code": "deriveVariableSymbol('FA-2026/0456') // { value: '20260456', reason: 'ok' }"
+        }
+      ],
+      "antipatterns": [
+        "Odvozený VS neukládat do DB – autoritou je variable_symbol_auto."
+      ]
+    },
+    {
+      "name": "FormIssue",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Položka živého pruhu: fieldId/rowId/columnId, label, message, severity error|warning, source client|server, code. Volitelné origin: \"editor\" označuje vlastní validaci editoru; aplikace tento původ nepoužívá pro vlastní položky.",
+      "antipatterns": [
+        "Jako label nikdy technický klíč pole – vždy popisek z DsTexts."
+      ],
+      "examples": [
+        {
+          "label": "Chyba pole ze serveru",
+          "code": "const issue: FormIssue = { fieldId: \"document-taxDate\", label: texts.taxDate, message: validationMessage, severity: \"error\", source: \"server\" };"
+        }
+      ]
+    },
+    {
+      "name": "DocumentAccountingDateLink",
+      "file": "src/components/ds/accounting/document-form/document-form-types.ts",
+      "import_path": "@/design-system",
+      "props": [
+        {
+          "name": "locked",
+          "type": "boolean",
+          "description": "Stav vazby data účetního případu."
+        },
+        {
+          "name": "onToggle",
+          "type": "(locked: boolean) => void",
+          "description": "Přepnutí vazby; DocumentForm hlásí onFieldChange(\"document-accountingDate\") i u řízené vazby."
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "description": "Tooltip zamčeného zámku."
+        },
+        {
+          "name": "unlockedHint",
+          "type": "string",
+          "description": "Tooltip odemčeného zámku (např. „Svázat s datem pohybu“ u bankovního pohybu)."
+        }
+      ],
+      "usage": "Řízená vazba data účetního případu na datum vystavení / pohybu.",
+      "examples": [
+        {
+          "label": "Řízená vazba",
+          "code": "<DocumentForm accountingDateLink={{ locked, onToggle: setLocked, unlockedHint: \"Svázat s datem pohybu\" }} {...props} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepřidávejte vlastní zámek data mimo DocumentAccountingDateLink."
+      ]
+    },
+    {
+      "name": "allocateVatGroupTax",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Rozpočet daně skupiny na řádky poměrem základů; haléřový zbytek dostane řádek s největším |základem| (při shodě dřívější), stejně jako DB.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const shares = allocateVatGroupTax([{ lineId: \"a\", base: 12.5 }], 2.63);"
+        }
+      ],
+      "antipatterns": [
+        "Nerozpočítávejte daň vlastním součtem s Math.round."
+      ]
+    },
+    {
+      "name": "applyVatAllocation",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Promítne rozpočtenou daň skupin do řádků náhledu (editor ji používá pro součty a rekapitulaci).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const preview = applyVatAllocation(lines, computeVatGroups(lines, overrides, codes));"
+        }
+      ],
+      "antipatterns": [
+        "Výsledek neukládejte – řádky daně vytváří DB."
+      ]
+    },
+    {
+      "name": "upsertVatOverride",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Nastaví nebo nahradí přepis daně skupiny „dle dokladu“.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "onVatOverridesChange(upsertVatOverride(overrides, group, 17.36));"
+        }
+      ],
+      "antipatterns": [
+        "Nepřepisujte samovyměření ani kód bez daně."
+      ]
+    },
+    {
+      "name": "removeVatOverride",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Odebere přepis skupiny („Vrátit vypočtenou daň“).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "onVatOverridesChange(removeVatOverride(overrides, group));"
+        }
+      ],
+      "antipatterns": [
+        "Nemažte přepisy prázdným polem, když chcete odebrat jen jednu skupinu."
+      ]
+    },
+    {
+      "name": "largestBaseLineId",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Id řádku s největším |základem| – cíl jednorázového dorovnání.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const id = largestBaseLineId(lines, { foreign });"
+        }
+      ],
+      "antipatterns": [
+        "Nevybírejte cíl dorovnání podle pořadí řádku."
+      ]
+    },
+    {
+      "name": "taxFromGrossTotal",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Daň z celkem s DPH: round(celkem × sazba / (100 + sazba), 2), polovina od nuly.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const tax = taxFromGrossTotal(100, 21); // 17.36"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte daň z celkem přes Math.round."
+      ]
+    },
+    {
+      "name": "baseDeltaForDifference",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Posun základu řádku s největším základem, po kterém Rozdíl klesne na 0; null, když to bez přepisu nejde.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const delta = baseDeltaForDifference(group, difference);"
+        }
+      ],
+      "antipatterns": [
+        "Neposouvejte základ o rozdíl / (1 + sazba) bez ověření výsledku."
+      ]
+    },
+    {
+      "name": "vatGroupsFromStored",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Skupiny zaúčtovaného dokladu z uložených řádků: daň skupiny z řádků daně DB, přepisy jako „dle dokladu“.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const recap = vatGroupsFromStored(lines, overrides, codes);"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte u zaúčtovaného dokladu daň znovu z []."
+      ]
+    },
+    {
+      "name": "VatGroup",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Typ skupiny DPH kód × sazba (základ, vypočtená a platná daň, rozdíl, tolerance, rozpočet).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const value: VatGroup = …;"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní obdobný typ."
+      ]
+    },
+    {
+      "name": "VatGroupLineShare",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Typ podílu řádku na dani skupiny.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const value: VatGroupLineShare = …;"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní obdobný typ."
+      ]
+    },
+    {
+      "name": "VatFixedTax",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Typ řádku s pevnou systémovou daní (odpočet zálohy, import).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const value: VatFixedTax = …;"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní obdobný typ."
+      ]
+    },
+    {
+      "name": "VatGroupsResult",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Výsledek computeVatGroups (skupiny, pevné daně, daň celkem).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const value: VatGroupsResult = …;"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní obdobný typ."
+      ]
+    },
+    {
+      "name": "ComputeVatGroupsOptions",
+      "file": "src/components/ds/accounting/journal-vat-groups",
+      "import_path": "",
+      "usage": "Volby computeVatGroups (cizí měna, kurz DPH, tolerance).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "const value: ComputeVatGroupsOptions = …;"
+        }
+      ],
+      "antipatterns": [
+        "Nevytvářejte vlastní obdobný typ."
+      ]
+    },
+    {
+      "name": "roundHalfAwayFromZero",
+      "file": "src/lib/decimal-round",
+      "import_path": "",
+      "usage": "Zaokrouhlení polovinou od nuly jako Postgres round(numeric, n) – přesně, bez chyb plovoucí čárky (10,075 → 10,08; −7,875 → −7,88).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "roundHalfAwayFromZero(10.075, 2); // 10.08"
+        }
+      ],
+      "antipatterns": [
+        "Nepoužívejte Math.round pro částky a daň."
+      ]
+    },
+    {
+      "name": "mulDivRound",
+      "file": "src/lib/decimal-round",
+      "import_path": "",
+      "usage": "Přesně spočte a × b / c a zaokrouhlí polovinou od nuly (daň round(základ × sazba / 100, 2)).",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "mulDivRound(-37.5, 21, 100, 2); // -7.88"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte daň v plovoucí čárce."
+      ]
+    },
+    {
+      "name": "exactSum",
+      "file": "src/lib/decimal-round",
+      "import_path": "",
+      "usage": "Přesný součet částek bez chyb plovoucí čárky.",
+      "examples": [
+        {
+          "label": "Použití",
+          "code": "exactSum([0.1, 0.2]); // 0.3"
+        }
+      ],
+      "antipatterns": [
+        "Nesčítejte haléře přes reduce bez zaokrouhlení."
       ]
     }
   ],

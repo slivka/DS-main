@@ -70,12 +70,13 @@ describe("JournalLinesEditor – skupiny DPH", () => {
     });
     const group = container.querySelector('[data-slot="journal-vat-group"]');
     expect(group?.textContent).toContain("17,36");
-    expect(container.querySelector('[data-slot="journal-vat-calculated"]')?.textContent).toContain(
-      "17,35",
-    );
-    expect(container.querySelector('[data-slot="journal-footer-sum"]')?.textContent).toContain(
-      "100,00",
-    );
+    // Vypočtená daň je v bublině (2.109.0) – přístupný název ikony ji nese.
+    expect(
+      container.querySelector('[data-slot="journal-vat-calculated"]')?.getAttribute("aria-label"),
+    ).toContain("17,35");
+    expect(
+      container.querySelector('[data-slot="journal-footer-sum-total"]')?.textContent,
+    ).toContain("100,00");
   });
 
   it("Vrátit vypočtenou daň odebere přepis skupiny", () => {
@@ -148,5 +149,39 @@ describe("JournalLinesEditor – skupiny DPH", () => {
         .querySelector('[data-slot="journal-difference-actions"]')
         ?.getAttribute("data-preferred"),
     ).toBeNull();
+  });
+});
+
+describe("JournalLinesEditor – zaúčtovaný doklad", () => {
+  it("rekapitulace DPH je jen ke čtení: daň z řádku daně DB, bez úprav a bez pomocníka", () => {
+    const { container } = renderEditor({
+      lines: [
+        {
+          id: "a",
+          text: "Služba",
+          debitAccount: "518001",
+          creditAccount: "321001",
+          amount: 82.64,
+          vatCodeId: "p21",
+        },
+        {
+          id: "t",
+          text: "DPH",
+          debitAccount: "343021",
+          creditAccount: "321001",
+          amount: 17.36,
+          vatCodeId: "p21",
+          isVatLine: true,
+          vatParentLineId: "a",
+        },
+      ],
+      vat: { enabled: true, codes: CODES, readOnly: true },
+      vatOverrides: [{ vatCodeId: "p21", vatRate: 21, taxAmount: 17.36 }],
+      onVatOverridesChange: () => {},
+    });
+    const group = container.querySelector('[data-slot="journal-vat-group"]');
+    expect(group?.textContent).toContain("17,36");
+    expect(container.querySelector('[data-slot="journal-vat-adjust"]')).toBeNull();
+    expect(container.querySelector('[data-slot="journal-gross-helper"]')).toBeNull();
   });
 });

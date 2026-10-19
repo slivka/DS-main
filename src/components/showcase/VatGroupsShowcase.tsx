@@ -1,5 +1,5 @@
 /** Ukázka skupin DPH 2.109.0 · vlastní ukázková data · jen náhled, nesmí do knihovny. */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   JournalLinesEditor,
@@ -21,6 +21,7 @@ interface GroupsExampleProps {
   vatEnabled?: boolean;
   currency?: { code: string; rate: number; vatRate: number };
   initialOverrides?: JournalVatOverride[];
+  readOnly?: boolean;
 }
 
 function GroupsExample(props: GroupsExampleProps) {
@@ -49,7 +50,11 @@ function GroupsExample(props: GroupsExampleProps) {
         rounding={{ value: rounding, onChange: setRounding }}
         roundingLimit={1}
         onRoundingChange={setRounding}
-        vat={props.vatEnabled === false ? undefined : { enabled: true, codes: props.codes }}
+        vat={
+          props.vatEnabled === false
+            ? undefined
+            : { enabled: true, codes: props.codes, readOnly: props.readOnly }
+        }
         vatOverrides={overrides}
         onVatOverridesChange={setOverrides}
         vatExchangeRate={props.currency?.vatRate}
@@ -78,14 +83,27 @@ const base = (
 
 /** Skupiny DPH, pomocník Cena s DPH a patička Součet · Zaokrouhlení · Rozdíl. */
 export function VatGroupsShowcase() {
-  // Ukázka se připojí až po hydrataci stránky, aby nezpomalila ostatní ukázky.
+  // Ukázka (šest editorů) se připojí, až se k ní stránka posune – nezdrží načtení ostatních.
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const sentinel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const element = sentinel.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setMounted(true);
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   return (
     <ShowcaseSection
       title="Skupiny DPH (2.109.0)"
       description="Řádky vždy bez DPH; daň po skupinách kód × sazba stejně jako databáze. Úpravy „dle dokladu“, pomocník Cena s DPH a dorovnání Rozdílu."
     >
+      <div ref={sentinel} />
       {mounted ? (
         <div className="space-y-6" data-testid="vat-groups-showcase">
           <GroupsExample
@@ -96,6 +114,15 @@ export function VatGroupsShowcase() {
             mainAccount="321001"
             mainSide="D"
             totalAmount={100}
+          />
+          <GroupsExample
+            id="base"
+            title="FP – Dorovnat základ (doklad 1 215,00)"
+            initial={[base("bs1", "Materiál", 1000, "p21", "in")]}
+            codes={MOCK_VAT_CODES_IN}
+            mainAccount="321001"
+            mainSide="D"
+            totalAmount={1215}
           />
           <GroupsExample
             id="fv"
@@ -118,6 +145,24 @@ export function VatGroupsShowcase() {
             mainSide="D"
             currency={{ code: "EUR", rate: 24.5, vatRate: 24.5 }}
             initialOverrides={[{ vatCodeId: "p21", vatRate: 21, taxAmount: 21.05 }]}
+          />
+          <GroupsExample
+            id="posted"
+            title="Zaúčtovaná FP – jen ke čtení (daň z řádků daně DB, přepis dle dokladu)"
+            initial={[
+              base("ps1", "Služba", 82.64, "p21", "in"),
+              {
+                ...base("ps1-vat", "DPH 21 %", 17.36, "p21", "in"),
+                debitAccount: "343021",
+                isVatLine: true,
+                vatParentLineId: "ps1",
+              },
+            ]}
+            codes={MOCK_VAT_CODES_IN}
+            mainAccount="321001"
+            mainSide="D"
+            initialOverrides={[{ vatCodeId: "p21", vatRate: 21, taxAmount: 17.36 }]}
+            readOnly
           />
           <GroupsExample
             id="rc"
