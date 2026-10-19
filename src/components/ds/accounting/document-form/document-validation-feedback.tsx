@@ -106,10 +106,11 @@ function headerIssue(
   message: string,
   severity: FormIssue["severity"],
   label?: string,
+  fieldLabels?: Partial<Record<string, string>>,
 ): FormIssue {
   return {
     fieldId: HEADER_FIELD_ID[key] ?? `document-${key}`,
-    label: label ?? headerFieldLabel(t, key),
+    label: label ?? headerFieldLabel(t, key, fieldLabels),
     message,
     severity,
     source: "client",
