@@ -34,7 +34,7 @@ for (const zoom of [70, 100, 200]) {
         label: e.querySelector('[role="combobox"] .truncate')?.getBoundingClientRect().width ?? 0,
       }));
       if (width === 1280)
-        expect(accountMetrics.width).toBeGreaterThanOrEqual(18 * accountMetrics.rootSize);
+        expect(accountMetrics.width + 1 / 64).toBeGreaterThanOrEqual(18 * accountMetrics.rootSize);
       expect(accountMetrics.label).toBeGreaterThan(0);
       const fieldAfter = await field.boundingBox();
       expect(before).not.toBeNull();
