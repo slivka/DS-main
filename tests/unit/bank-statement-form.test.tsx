@@ -36,8 +36,11 @@ test.each([
   expect(field?.closest('[data-slot="field"]')?.getAttribute("data-warning") ?? null).toBe(
     warning ? "true" : null,
   );
-  const notice = view.container.querySelector('[data-slot="bank-statement-difference-notice"]');
-  expect(notice?.textContent ?? null).toBe(warning);
+  // Rozdíl je položka živého pruhu, ne samostatný NoticeBar (oprava 2.108.0).
+  const bar = view.container.querySelector('[data-slot="form-issues-bar"]');
+  expect(bar?.textContent ?? null).toBe(warning ? `${warning ? "Upozornění (1)" : ""}` && bar?.textContent : null);
+  if (warning) expect(bar?.textContent).toContain(warning);
+  expect(view.container.querySelector('[data-slot="bank-statement-difference-notice"]')).toBeNull();
   expect(view.container.querySelector('[data-slot="bank-statement-difference"]')).toBeNull();
 });
 test("BankStatementForm Σ zapnuto ukazuje konečný zůstatek jen ke čtení", () => {
