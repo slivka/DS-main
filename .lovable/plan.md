@@ -1,67 +1,78 @@
-# DS 2.108.0 – Edit dokladu 15 (nic se nevydává)
+# DS 2.109.0 – DPH krok 4B (nevydávat)
 
-## Verze a katalogy
-- package.json a `.lovable/design-system.json meta.version`: 2.106.0 → **2.107.0**.
-- CHANGELOG: „## 2.107.0 (nevydáno)“ → „## 2.107.0 – vydáno“; nová sekce „## 2.108.0 (nevydáno)“ s „Breaking / migrace pro aplikace“.
-- Na konci programem porovnám 4 katalogové soubory (`.lovable/design-system.json`, `src/index.ts`, `src/components/ds/index.ts`, `components.md`) s výchozím commitem tohoto kola: žádný název, prop ani export neubude, počet komponent ≥ 441. Nové props se doplní aditivně (usage / examples / antipatterns).
+## 0. Výchozí stav a verze
+- Zjištěno: `package.json` = 2.107.0 a **`meta.version` v design-system.json je také 2.107.0** (ne 2.108.0). Obojí srovnám na vydanou 2.108.0.
+- CHANGELOG: sekci „2.108.0 (nevydáno)“ přejmenuji na „2.108.0“, nad ni nová „2.109.0 (nevydáno) – DPH krok 4B“; totéž v roadmap.md.
+- Před prací uložím snímek katalogu (počet komponent / props) jako výchozí stav „před“; navíc porovnání proti 8db33914.
 
-## E1 Živý pruh chyb a upozornění
-- Nový typ `FormIssue { fieldId?, rowId?, columnId?, label, message, severity: "error"|"warning", source: "client"|"server", code? }`; `FieldErrorLink` zůstává (alias / podmnožina, zpětně kompatibilní).
-- Nová čistá funkce `mergeFormIssues(issues)` v lib: deduplikace podle (code ?? message, fieldId, rowId); chyba s `fieldId` hlavičky potlačí stejnou hlášku z řádku („Řádek N: …“); text `error.message` shodný s položkou se nevypíše podruhé.
-- `FieldErrorSummary` přijme `issues` a obarví chyby / varování; `RecordActionBar.error` a `DocumentForm` dostanou `issues`, `saveFailed?: boolean`, `title?` a `validationActive?: boolean`.
-- Titulek s počtem (DsTexts CS/SK): „Doklad nelze uložit (N)“ jen při `saveFailed`; jinak „Před zařazením doplňte (N)“; jen varování „Upozornění (N)“. Prázdný seznam → pruh zmizí (bez toastu), ✕ zůstává.
-- Před prvním pokusem (`validationActive=false`) žádné červené rámečky ani klientské položky; poté klientské kontroly hlavičky i řádků přes `useDebouncedValue` (300 ms).
-- Server položky DS jen zobrazí; nový `onFieldChange?(fieldId)` na DocumentForm (volá se při změně pole hlavičky i buňky řádku) – aplikace podle něj smaže své server položky; zdokumentováno v system.md.
-- `documentValidationFeedback` vrací položky místo samostatných NoticeBarů; varování „víc než 10 číslic“ zůstane jen jedno (zruší se druhý NoticeBar u čísla dodavatele).
-- Ukázka: chyba z DB na DUZP (`vat_date_required`, `date_tax`) + klientská chyba řádku → oprava DUZP → titulek 2 → 1 → oprava řádku → pruh zmizí.
+## 1. Co uvidí uživatel
+- Řádky dokladu se zadávají vždy bez DPH; přepínač Bez / S DPH a ruční daň na řádku zmizí.
+- U Částky a Jedn. ceny (v mřížce i v detailu řádku) ikona „Cena s DPH“ → malé okno, zadá se částka s DPH, do pole se vyplní základ.
+- Pod mřížkou rekapitulace DPH po skupinách kód × sazba se třemi úpravami „dle dokladu“ a „Vrátit vypočtenou daň“.
+- Patička: Součet · Zaokrouhlení · Rozdíl s nabídkou dorovnání.
+- Pevná systémová daň (odpočet zálohy, import) se jen zobrazí se zámkem a bublinou.
 
-## E2 VS se zámkem
-- `VsField`: `linked?`, `onLinkedChange?`, `derivedValue?`, `pendingText?`, `warning?`; FieldToggleButton Lock / LockOpen jako TaxDocumentNumberField; zamčeno = readOnly s odvozenou hodnotou, zamknutí znovu odvodí.
-- Hlavička dokladu: `variableSymbolLinked?: boolean` (výchozí true u nových FP/ZFP/DDPOZ/FV/ZFV/DDPZ).
-- Čistá funkce `deriveVariableSymbol(source)` → `{ value, reason: "ok"|"tooLong"|"noDigits" }`:
-  - přijaté: číslice z Čísla daňového dokladu, 1–10 → VS; jinak vazba se uvolní, VS se nezkracuje, žluté varování v poli + položka v pruhu;
-  - vydané: číslice z coalesce(vlastní daňové číslo, číslo dokladu); koncept bez čísla → zamčené prázdné pole s „přidělí se při zařazení“.
-- Zápis odvozené hodnoty jen u upravitelného dokladu (stejné hradlo jako vazby dat). DsTexts CS/SK: vazba, zamčeno, odemčeno, 2 varování.
+## 2. Pořadí prací
+1. Verze + CHANGELOG/roadmap kostra.
+2. Čistá logika `computeVatGroups` + unit testy (DB scénáře).
+3. Logika patičky (Rozdíl, výchozí volba, limity) + unit testy.
+4. Odstranění režimu s DPH a ruční daně (deprecace, ignorování).
+5. Pomocník „Cena s DPH“ (mřížka + detail řádku).
+6. Rekapitulace DPH se skupinami a úpravami a/b/c, cizí měna, jen ke čtení.
+7. Nová patička a nabídka Rozdílu; zrušení automatického návrhu zaokrouhlení.
+8. Issues skupin do pruhu (2.108), onFieldChange, kontrola výšky (2.107).
+9. Texty CS/SK, showcase, E2E.
+10. Katalog, system.md, AGENTS.md, CHANGELOG s migrací; unit, lint, E2E Chromium, build.
 
-## E3 Celkem za doklad
-- Chování Σ beze změny. Výchozí `totalMode: "entered"` v ukázkách (use-document-form-showcase-state, FormDesignShowcase, DocumentDatesShowcase, stránka účetních formulářů) → `"sum"`, kromě ukázek, které režim zadané částky výslovně předvádějí (zůstane jedna označená).
+## 3. Props `JournalLinesEditor`
+Nové:
+- `vatOverrides?: JournalVatOverride[]` – `{ vatCodeId, vatRate, taxAmount }` (mapuje se na `_vat_overrides`; `[]` = smazat).
+- `onVatOverridesChange?: (overrides) => void`.
+- `vatExchangeRate?: number | null` + `vatExchangeRateAmount?` – kurz DPH pro toleranci a sloupce v Kč (výchozí: stávající `vat.vatRate`/`vatRateAmount`, pak kurz dokladu).
+- `roundingLimit?: number` – limit zaokrouhlení firmy; bez něj volba Zaokrouhlení není nabídnuta.
+- `onRoundingChange?: (value: number) => void` – zápis zaokrouhlení z nabídky Rozdílu (kompatibilní alias na `rounding.onChange`, má přednost).
+- `vatOverrideSeverity?: "warning" | "error"` – výchozí `"warning"`.
+- `onVatGroupIssuesChange?` není potřeba: skupinové položky jdou přes stávající `onValidationChange` / issues s `fieldId = "journal-vat-group-{kod}-{sazba}"`.
+- Sazba: **použiji existující `VatCodeOption.rate`** (sazba k Datu DPH už je ve volbě kódu) – nový prop `vatRateByCode` nezavádím.
 
-## E4 Řádky dokladu
-- Lišta: odstranit čip `journal-lines-toolbar-total`.
-- Rekapitulace: `JournalRecapHomeTotal` se v editoru nevykresluje (komponenta a export zůstávají, označeny `@deprecated` 2.108.0).
-- `AmountDifference` jen v režimu zadané částky a při rozdílu ≠ 0; stav „✓ Rozepsáno“ zrušen (`balancedLabel` deprecated, ignorován; klíč DsTexts zůstává).
-- Patička součtů zůstává.
+Zastaralé (@deprecated, odstranění 3.0.0, ignorováno):
+- `JournalLinesVat.calcMode`, `JournalLinesVat.onCalcModeChange`, typ `VatCalcMode` (export zůstává).
+- `JournalLine.vatManual` / `vatAmount` od klienta: `toJournalRow` už `vat_manual` neposílá; řádek s `vatManual` z DB = pevná systémová daň (jen zobrazení).
+- `applyVatCalcMode`, `calculateVatFromGross` zůstávají exportované, @deprecated.
+- Texty `vatManual`, `vatModeNet/Gross` (příp. dle skutečných klíčů) @deprecated.
+- `rounding.suggestion`/automatický návrh v liště – chování zrušeno, typy zachovány.
 
-## E5 Interní doklad
-- BasicSection pro ID: CounterpartyInputField (partner / ručně, stejná ikona), za ním IČO (3) a DIČ (3) – ReadField s IcoLink u partnera, Input u ručního; Popis na dalším řádku; bez adresy. ＋ a tužka jako u faktur.
-- Ruční partner: žluté varování v poli + položka v pruhu „Ruční partner se nepřenese do řádků dokladu.“ (DsTexts).
+Nové exporty: `computeVatGroups`, `baseFromGrossAmount` (pomocník), `resolveDifferenceActions`, typy `JournalVatOverride`, `VatGroup`, `VatGroupLineShare`, `JournalDifferenceAction`.
 
-## E6 Výpis – pohyby
-- Odstranit náhradní zobrazení nového výpisu; sekce Pohyby vždy vykreslí slot `items`. Prázdný grid: „Výpis zatím nemá pohyby“ (DsTexts).
-- Odstranit zbytky Zkontrolovat / Zrušit kontrolu (klíče `check/uncheck/checkHint/uncheckHint` deprecated, ponechány kvůli typům aplikací). Ukázka neuloženého výpisu s prázdným gridem.
+## 4. Pravidla výpočtu (shodná s DB)
+- Skupina = kód s daní × sazba, bez samovyměření a bez řádků `vatManual` (ty se přičtou jako pevné daně).
+- T = přepis skupiny nebo round(Σ základů × sazba / 100, 2); rozpočet poměrem základů, zbytek řádku s největším |základem|, při shodě nižší pořadí.
+- Tolerance |přepis − vypočtená| × kurz DPH ≤ 1,00 → v pořádku; jinak položka pruhu se severity z `vatOverrideSeverity`.
+- b) Celkem dle dokladu: daň = round(C × s / (100 + s), 2) jako přepis; základ = C − daň, rozdíl jednorázově do řádku s největším základem (onChange řádků).
+- c) Základ dle dokladu: jen jednorázové dorovnání řádku.
+- Rozdíl: jen při `totalMode="entered"` a ≠ 0. Výchozí volba: jedna skupina s daní a |rozdíl| ≤ 0,01 × počet řádků → Dorovnat DPH; jinak Zaokrouhlení, je-li |rozdíl| ≤ roundingLimit; jinak nic zvýrazněno.
 
-## E7 Výpis – zůstatky
-- Základní údaje jedním řádkem na mřížce 20: Datum výpisu · Počáteční zůstatek · Příjmy · Výdaje · Zůstatek na výpise (po 4); první tři částky FieldValue; zalamování po celých polích.
-- „Zůstatek dle banky“ → „Zůstatek na výpise“ s FieldToggleButton Σ: `bankClosing = null` = vypočtený konečný zůstatek jen ke čtení; vypnutí předvyplní vypočtenou hodnotu. Rozdíl ≠ 0 → žluté varování v poli + položka pruhu „Rozdíl proti pohybům X“.
-- Zrušit bloky „Rozdíl“, „Zůstatky dle pohybů“ a „Zůstatky v {měna}“.
+## 5. Unit testy `computeVatGroups`
+82,64 / 21 % + přepis 17,36 → celkem 100,00; 3 × 12,50 / 21 % → 7,88 rozpočet 2,62 / 2,63 / 2,63 (pořadí dle pravidla shody); EUR kurz 24,50 přepis +0,03 OK, +0,05 položka; +500 / −500 → daň 0; dvě skupiny 21 / 12; samovyměření a pevná daň mimo skupinu. Dále: výchozí volba Rozdílu, pomocník s DPH (přesnost sloupce), ignorování `calcMode`, `toJournalRow` bez `vat_manual`.
 
-## E8 Bankovní pohyb
-- Protiúčet a symboly na mřížce 20 přes `field()`: Druh účtu (4) · Číslo účtu / IBAN (8) · Kód banky / SWIFT (8); VS (4) · KS (8) · SS (8). Bez FieldGrid 12 a vlastního @container.
-- Kód banky: nové `bankCodeOptions?: { code, name }[]`, zobrazení „0100 – Komerční banka“ v seznamu i v poli, hledání podle kódu i názvu.
-- Data: Datum pohybu (issueDate, popisek movementDate) a Datum účetního případu se zámkem (accountingDateLink jako PO/FV, stav z rovnosti dat); DUZP a Datum DPH beze změny.
+## 6. Showcase a E2E
+Stránka účetních formulářů, nová sekce (modul v showcase, vyloučený .dsignore): FP s pomocníkem a haléřovým rozdílem, FV dvě sazby, EUR s kurzem DPH, samovyměření, bez DPH, zaúčtovaný jen ke čtení.
+Chromium E2E (`tests/e2e/vat-groups-2109.spec.ts`): výška řádku rekapitulace s chybou i bez stejná (<1 px), pomocník vyplní základ, Dorovnat DPH / základ změní řádek v mřížce, položka pruhu nad tolerancí. Plus regresní dávka 2.108 (document-controls, edit-document-thirteen/fifteen, control-height(-2107), journal-control-height, bank-statement-form, vs-lock, document-field-ids, journal-editor).
 
-## Testy a výsledky
-- Unit: mergeFormIssues (dedup, hlavička vs řádek, titulky), validationActive, onFieldChange, deriveVariableSymbol (1–10, >10, 0, koncept), VsField zámek, E4 skrytí prvků, ID partner ručně, výpis prázdný grid, Σ zůstatku a varování rozdílu, kód banky s názvem.
-- Chromium E2E: oprava pole odstraní položku a sníží počet; VS zámek; nový / uložený výpis stejný grid; Σ zůstatku; sloupce protiúčtu lícují při zoomu aplikace 70 / 100 / 200 % (< 1 px).
-- Celé unit, starší E2E (document-controls, edit-document-thirteen, control-height, journal-control-height, bank-statement-form), lint 0 chyb, formát; výpis nových / změněných props.
+## 7. Technické detaily – soubory
+Nové:
+- `src/components/ds/accounting/journal-vat-groups.ts` – computeVatGroups, tolerance, akce a/b/c.
+- `src/components/ds/accounting/journal-difference.ts` – resolveDifferenceActions.
+- `src/components/ds/accounting/journal-gross-helper.tsx` – ikona + popover „Cena s DPH“.
+- `src/components/ds/accounting/journal-vat-recap.tsx` – tabulka skupin, úpravy, sbalitelné Kč sloupce (šipka vpravo, řízený stav props).
+- `src/components/ds/accounting/journal-difference-menu.tsx`.
+- `src/components/showcase/VatGroupsShowcase.tsx`; testy `tests/unit/vat-groups-2109.test.ts(x)`, `tests/e2e/vat-groups-2109.spec.ts`.
+Změněné:
+- `journal-editor-types.ts`, `journal-lines.ts` (toJournalRow), `journal-vat.ts` (náhled přes computeVatGroups, deprecace), `useJournalTotals.ts`, `useJournalEditorState.ts`, `JournalToolbar.tsx` (bez přepínače a návrhu), `JournalFooter.tsx` (Součet · Zaokrouhlení · Rozdíl), `JournalCell.tsx`, `JournalCellEditor.tsx`, `JournalRow.tsx`, `JournalRowDetail.tsx` (pomocník, zámek pevné daně), `JournalLinesEditor.tsx`, `journal-lines-recap.tsx` (napojení rekapitulace), `journal-lines-editor.tsx` (exporty), `src/index.ts`, `src/components/ds/index.ts`.
+- `src/ds-texts/` typy, CS, SK (nové klíče, žádné pevné texty, měna z dat).
+- `src/routes/components.accounting-forms.tsx`, `.dsignore` dle potřeby.
+- `package.json`, `.lovable/design-system.json` (verze, nové props/exporty, usage/examples/antipatterns, nic neubude), `components.md`, `CHANGELOG.md` (BREAKING + migrace: vatCalcMode, ruční daň, `_vat_overrides`, nové props, patička), `roadmap.md`, `.lovable/system.md`, `src/components/ds/accounting/AGENTS.md`.
+- Existující testy závislé na režimu s DPH / ruční dani / automatickém návrhu zaokrouhlení: upravit jako zrušené chování (vyjmenuji v závěru); ostatní selhání = regrese → oprava kódu.
 
-## Technické poznámky
-- DocumentForm má dnes 574 řádků (nad limitem 500): logiku pruhu a VS přesunu do nových hooků (`use-form-issues.ts`, `use-variable-symbol-link.ts`) a soubor zkrátím pod 500.
-- Výpis (bank-statement-form 301 ř., sections 247 ř.) zůstane rozdělený; zůstatky do vlastního modulu.
-
-## BREAKING (CHANGELOG 2.108.0)
-- Pruh: obsah z `issues`, nové titulky; NoticeBary validace nahrazeny položkami pruhu.
-- VS je u nových dokladů ve výchozím stavu zamčený a DS zapisuje odvozenou hodnotu přes onChange.
-- Odstraněné zobrazení: čip Celkem v liště, Celkem v domácí měně v rekapitulaci, „✓ Rozepsáno“.
-- Výpis: zrušené sekce zůstatků a náhradní zobrazení pohybů; „Zůstatek na výpise“ s Σ (`bankClosing: null` = vypočtený).
-- Ukázky používají výchozí `totalMode: "sum"`.
+## 8. Závěrečný výstup
+Počty katalogu před / po (komponenty / props) a proti 8db33914, unit, lint 0 chyb, E2E po souborech, build. Verze zůstane 2.108.0, 2.109.0 nevydaná.
