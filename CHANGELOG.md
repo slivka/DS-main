@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.111.0 (nevydáno) – Dialogy záznamů
+## 2.112.0 (nevydáno) – Opravy pro Firefox a Safari
+
+- Zatím bez změn.
+
+## 2.111.0 – Dialogy záznamů
 
 ### Změny
 - `RecordDialog` má jednu šířku podle `size` v panelu i mimo panel: sm 32 rem, md 48 rem, lg 56 rem (vždy nejvýš šířka panelu / okna minus okraj).

@@ -1,10 +1,14 @@
-## DS 2.111.0 – Dialogy záznamů (nevydáno)
+## DS 2.112.0 – Opravy pro Firefox a Safari (nevydáno)
+
+- Roztřídit a opravit selhání plné E2E sady ve Firefoxu a WebKitu (run 39318709163 na 8786635c: 30 selhání, 16 nestabilních; Chromium bez chyb).
+
+## DS 2.111.0 – Dialogy záznamů
 - [x] S1–S6 RecordDialog: povinná velikost, ochrana změn, jen pro čtení, error, deleteAction, Ukládám…
 - [x] S7 pravidla, S8 ukázka a testy chování
 - [x] Opravné kolo po c23a7f35: textové Input jen pro čtení, past fokusu v panelu, busy u lifecycleAction, výběr nově založené zakázky, Chromium spec dialogů.
 - [ ] Plná E2E v GitHub Actions – spouští Petr.
 
-## DS 2.110.0 – Design 3 (nevydáno)
+## DS 2.110.0 – Design 3
 - [x] Druhé opravné kolo po GitHub run 39296790881: body 1–8; pět cílených Chromium speců 29/29 (5,8 min), unit 854/854, lint 0 chyb / 322 varování, full --harness 60,0 s; katalog 470/922 bez ztrát. Verze 2.109.0, bez vydání.
 - [x] Opravné kolo po 831f9342: body 1–12; Chromium 13/13 (54,0 s), unit 852/852, lint 0 chyb / 322 varování; full --harness 49,5 s; katalog 470/922 bez ztrát. Hledání překlepu mimo CHANGELOG: 0 výsledků.
 - [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
