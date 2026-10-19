@@ -29,7 +29,9 @@ const changed = [
   ]),
 ].filter((f) => existsSync(f));
 
-run("typecheck", "bunx", ["tsgo", "--noEmit"]);
+// Lovable kontroluje typy automaticky; CI a běžný lokální běh zachovávají celou kontrolu.
+if (process.argv.includes("--harness")) results.push("– typecheck: automatická kontrola Lovable");
+else run("typecheck", "bunx", ["tsgo", "--noEmit"]);
 run("money-rounding", "bun", ["./scripts/check-money-rounding.ts"]);
 
 const lintable = changed.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs)$/.test(f));
