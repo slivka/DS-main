@@ -65,3 +65,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Source scanning for monetary rounding belongs in the shared check-money-rounding script, not unit tests; exceptions carry reasons in one list. Why: tests verify behavior and both check levels enforce the same audit.
 
 - Run check:full with --harness inside Lovable so typecheck/build stay harness-owned; CI runs the default full pipeline. Why: duplicate manual builds are forbidden in the editor, while CI must validate all stages.
+- CI reads Bun from .bun-version; unit storage always comes from happy-dom. Why: runner updates must not change test DOM behavior.

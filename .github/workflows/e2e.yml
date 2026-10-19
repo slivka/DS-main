@@ -25,10 +25,10 @@ permissions:
 
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -60,6 +60,8 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         if: steps.gate.outputs.run == 'true'
+        with:
+          bun-version-file: .bun-version
 
       - name: Instalace závislostí
         if: steps.gate.outputs.run == 'true'
@@ -67,7 +69,7 @@ jobs:
 
       - name: Cache prohlížečů Playwright
         if: steps.gate.outputs.run == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('bun.lock') }}-${{ steps.browsers.outputs.install }}
@@ -86,7 +88,7 @@ jobs:
 
       - name: Report a trace
         if: failure() && steps.gate.outputs.run == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: |
