@@ -47,7 +47,10 @@ test("pomocník Cena s DPH vyplní základ", async ({ page }) => {
     expect(input).toBeVisible({ timeout: 1000 }),
   );
   await input.fill("121");
-  await page.getByRole("button", { name: "Použít" }).click();
+  await page
+    .locator('[data-slot="journal-gross-helper-content"]')
+    .getByRole("button", { name: "Použít" })
+    .click();
   await expect(fp.locator('[data-slot="journal-vat-group"]')).toContainText("100,00");
 });
 
@@ -57,7 +60,8 @@ test("Dorovnat DPH zapíše přepis skupiny a vyrovná rozdíl", async ({ page }
   await expect(actions).toHaveAttribute("data-preferred", "vat");
   const item = page.locator('[data-action="vat"]');
   await clickUntil(actions, () => expect(item).toBeVisible({ timeout: 1000 }));
-  await item.click();
+  await item.focus();
+  await page.keyboard.press("Enter");
   await expect(page.getByTestId("vat-groups-fp-overrides")).toContainText('"taxAmount":17.36');
   await expect(fp.locator('[data-slot="journal-lines-remaining"]')).toHaveCount(0);
 });
@@ -68,6 +72,7 @@ test("Dorovnat základ změní řádek v mřížce", async ({ page }) => {
   await clickUntil(fp.locator('[data-slot="journal-difference-actions"]'), () =>
     expect(item).toBeVisible({ timeout: 1000 }),
   );
-  await item.click();
+  await item.focus();
+  await page.keyboard.press("Enter");
   await expect(fp.locator('[data-slot="journal-vat-group"]')).toContainText("82,65");
 });
