@@ -28,7 +28,8 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
-import { useDocumentFieldRenderers } from "./use-document-field-renderers";
+import { headerFieldKey, useDocumentFieldRenderers } from "./use-document-field-renderers";
+import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
@@ -119,12 +120,10 @@ export function DocumentForm(props: DocumentFormProps) {
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange: onAccountingDateLinkedChange
-      ? (linked) => {
-          onAccountingDateLinkedChange(linked);
-          onFieldChange?.("document-accountingDate");
-        }
-      : undefined,
+    onAccountingDateLinkedChange: (linked) => {
+      onAccountingDateLinkedChange?.(linked);
+      onFieldChange?.("document-accountingDate");
+    },
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);
@@ -187,17 +186,6 @@ export function DocumentForm(props: DocumentFormProps) {
       ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
       : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
-  const { field, date, suggestedText } = useDocumentFieldRenderers({
-    value: effectiveValue,
-    patch,
-    can,
-    dateWarnings,
-    accountingDateLink: effectiveAccountingLink,
-    fieldErrors: validationActive === false ? undefined : fieldErrors,
-    fieldWarnings: validationActive === false ? undefined : effectiveFieldWarnings,
-    onInvalidDate: (key, invalid) =>
-      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
-  });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning =
@@ -219,19 +207,6 @@ export function DocumentForm(props: DocumentFormProps) {
   });
   const showTaxNumber =
     ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
-  const taxNumberField = showTaxNumber
-    ? field(
-        "document-taxDocumentNumber",
-        dsTexts.documentEdit.taxNumber,
-        <TaxDocumentNumberField
-          value={value}
-          patch={patch}
-          warning={taxDocumentNumberWarning}
-          disabled={!can("taxDocumentNumber")}
-        />,
-        6,
-      )
-    : null;
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
   const formIssues = useDocumentFormIssues({
     clientIssues: documentClientIssues({
@@ -255,6 +230,60 @@ export function DocumentForm(props: DocumentFormProps) {
     rowLabel: dsTexts.journalEditor.row,
     onValidationChange: linesEditorProps?.onValidationChange,
   });
+  // Položky pruhu se promítají do polí (rámeček + ikona + bublina) a do buněk řádků.
+  const issueFieldErrors: Partial<Record<DocumentHeaderField, string>> = {};
+  const issueFieldWarnings: Partial<Record<DocumentHeaderField, string>> = {};
+  const cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]> = [];
+  for (const issue of formIssues.issues) {
+    if (issue.rowId && issue.columnId) {
+      cellIssues.push({
+        rowId: issue.rowId,
+        columnId: issue.columnId,
+        message: issue.message,
+        severity: issue.severity,
+      });
+      continue;
+    }
+    if (!issue.fieldId?.startsWith("document-")) continue;
+    const key = headerFieldKey(issue.fieldId);
+    if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
+    else issueFieldWarnings[key] ??= issue.message;
+  }
+  // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
+  const dateLink =
+    bankMovement && effectiveAccountingLink
+      ? {
+          ...effectiveAccountingLink,
+          hint: dsTexts.documentEdit.movementDateLinked,
+          unlockedHint: dsTexts.documentEdit.movementDateLink,
+        }
+      : effectiveAccountingLink;
+  const { field, date, suggestedText } = useDocumentFieldRenderers({
+    value: effectiveValue,
+    patch,
+    can,
+    dateWarnings,
+    accountingDateLink: dateLink,
+    // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
+    fieldErrors:
+      validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
+    fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
+    onInvalidDate: (key, invalid) =>
+      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
+  });
+  const taxNumberField = showTaxNumber
+    ? field(
+        "document-taxDocumentNumber",
+        dsTexts.documentEdit.taxNumber,
+        <TaxDocumentNumberField
+          value={value}
+          patch={patch}
+          warning={taxDocumentNumberWarning}
+          disabled={!can("taxDocumentNumber")}
+        />,
+        6,
+      )
+    : null;
   const {
     externalNumberField,
     bankAccountField,
@@ -291,7 +320,11 @@ export function DocumentForm(props: DocumentFormProps) {
     homeCurrency,
     homeCurrencySymbol,
     rateAmount,
-    linesEditorProps: { ...linesEditorProps, onValidationChange: formIssues.onValidationChange },
+    linesEditorProps: {
+      ...linesEditorProps,
+      onValidationChange: formIssues.onValidationChange,
+      cellIssues,
+    },
     readOnly,
     f,
     lineRounding,
@@ -456,7 +489,9 @@ export function DocumentForm(props: DocumentFormProps) {
               field,
               vsLink,
               layout: bankMovement ? "grid20" : "flex",
-              vsPendingText: dsTexts.documentEdit.numberPending,
+      vsPendingText: ["FV", "ZFV", "DDPZ"].includes(code)
+        ? dsTexts.documentEdit.numberPending
+        : undefined,
             }}
             amount={{
               t,

@@ -50,6 +50,10 @@ export interface DsTexts {
     numberUnlinked: string;
     movementDate: string;
     movementTitle: string;
+    /** Zámek data účetního případu u bankovního pohybu (odemčeno). */
+    movementDateLink: string;
+    /** Zámek data účetního případu u bankovního pohybu (zamčeno). */
+    movementDateLinked: string;
     counteraccountSection: string;
     accountKind: string;
     domesticAccount: string;
@@ -60,6 +64,7 @@ export interface DsTexts {
     bankCode: string;
     income: string;
     expense: string;
+    /** @deprecated 2.108.0 – pohyby se zobrazují i u neuloženého výpisu; nepoužívat. */
     unsavedMovements: string;
     /** Přístupný název zámku VS. */
     vsLink: string;

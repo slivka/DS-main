@@ -12,7 +12,6 @@ import {
   BankStatementBasic,
   statementDifference,
 } from "./bank-statement-sections";
-import { NoticeBar } from "../feedback/notice-bar";
 import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
@@ -188,19 +187,23 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
                   : []
               }
               error={error}
-              notices={
-                <>
-                  {notices}
-                  {difference !== null ? (
-                    <NoticeBar tone="warning" data-slot="bank-statement-difference-notice">
-                      {t.differenceWarning.replace(
-                        "{amount}",
-                        `${formatAmount(difference)} ${currencySymbol}`,
-                      )}
-                    </NoticeBar>
-                  ) : null}
-                </>
+              issues={
+                difference !== null
+                  ? [
+                      {
+                        fieldId: `${id}-bankClosing`,
+                        label: t.bankClosing,
+                        message: t.differenceWarning.replace(
+                          "{amount}",
+                          `${formatAmount(difference)} ${currencySymbol}`,
+                        ),
+                        severity: "warning",
+                        source: "client",
+                      },
+                    ]
+                  : undefined
               }
+              notices={notices}
             />
             <section className="rounded-lg border bg-card p-4">
               <BankStatementIdentity

@@ -40,10 +40,38 @@ export interface DocumentValidationArgs {
   taxNumberLabel?: string;
 }
 
-/** Popisek pole hlavičky z textů formuláře, jinak klíč. */
+/** Id ovládacího prvku pro klíč hlavičky (výjimky od výchozího `document-klíč`). */
+const HEADER_FIELD_ID: Record<string, string> = {
+  partnerId: "document-partner",
+  counterpartyName: "document-partner",
+  counterpartyIco: "document-partner-ico",
+  counterpartyDic: "document-partner-dic",
+};
+
+/** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
+function headerLabelAlias(t: DocumentFormTexts, key: string): string | undefined {
+  // Některé popisky žijí v dsTexts.documentForm (DocumentForm předává sloučené texty).
+  const all = t as Partial<Record<string, string>>;
+  const alias: Record<string, string | undefined> = {
+    partnerId: t.partner,
+    counterpartyName: t.partner,
+    counterpartyIco: t.ico,
+    counterpartyDic: t.dic,
+    companyBankAccountId: t.bankAccount,
+    partnerBankAccountId: t.bankAccount,
+    paymentMethodId: all.paymentMethod,
+    mainAccountId: t.mainAccountSelect,
+    variableSymbolLinked: t.variableSymbol,
+    totalMode: t.amountTotal,
+  };
+  return alias[key];
+}
+
+/** Popisek pole hlavičky z textů formuláře; technický klíč se nikdy nezobrazí. */
 export function headerFieldLabel(t: DocumentFormTexts, key: string): string {
   const found = Object.entries(t).find(([name]) => name === key)?.[1];
-  return typeof found === "string" ? found : key;
+  if (typeof found === "string") return found;
+  return headerLabelAlias(t, key) ?? key;
 }
 
 /** Položka pole hlavičky. */
@@ -55,7 +83,7 @@ function headerIssue(
   label?: string,
 ): FormIssue {
   return {
-    fieldId: `document-${key}`,
+    fieldId: HEADER_FIELD_ID[key] ?? `document-${key}`,
     label: label ?? headerFieldLabel(t, key),
     message,
     severity,

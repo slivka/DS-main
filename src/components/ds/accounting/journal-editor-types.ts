@@ -162,6 +162,16 @@ export interface JournalLinesEditorProps {
       columnId?: string;
     }[],
   ) => void;
+  /**
+   * Externí stavy buněk z pruhu položek (2.108.0): chyba → červený rámeček buňky,
+   * varování → žluté; text se ukáže v bublině buňky. Sloučí se s vlastní validací.
+   */
+  cellIssues?: {
+    rowId: string;
+    columnId: string;
+    message: string;
+    severity: "error" | "warning";
+  }[];
   /** Řádky lze přesouvat (výchozí, pokud je něco editovatelné). */
   reorderable?: boolean;
   /** Prázdný doklad začne jedním prázdným řádkem. */

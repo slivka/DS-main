@@ -57,10 +57,34 @@ describe("FormIssue – sloučení a titulek", () => {
   it("chyba hlavičky se neopakuje jako Řádek N a stejná hláška je jen jednou", () => {
     expect(mergeFormIssues([duzp, rowDuzp, duzp, rowError])).toEqual([duzp, rowError]);
   });
-  it("text bez kódu se porovná bez prefixu řádku", () => {
+  it("hlavička × řádek se sloučí jen při shodném kódu nebo fieldId, ne obecném textu", () => {
     const header = { ...duzp, code: undefined };
     const row = { ...rowDuzp, code: undefined };
-    expect(mergeFormIssues([header, row])).toEqual([header]);
+    // Bez kódu a s jiným fieldId zůstávají obě položky (oprava 2.108.0).
+    expect(mergeFormIssues([header, row])).toHaveLength(2);
+    const genericHeader: FormIssue = {
+      fieldId: "document-partner",
+      label: "Partner",
+      message: "Povinný údaj",
+      severity: "error",
+      source: "client",
+    };
+    const genericRow: FormIssue = {
+      fieldId: "journal-l1-amount",
+      rowId: "l1",
+      columnId: "amount",
+      label: "Řádek 1",
+      message: "Povinný údaj",
+      severity: "error",
+      source: "client",
+    };
+    expect(mergeFormIssues([genericHeader, genericRow])).toHaveLength(2);
+  });
+  it("klient × server stejného pole a textu se sloučí bez ohledu na kód, server má přednost", () => {
+    const server: FormIssue = { ...duzp, code: "vat_date_required" };
+    const client: FormIssue = { ...duzp, code: undefined, source: "client" };
+    expect(mergeFormIssues([client, server])).toEqual([server]);
+    expect(mergeFormIssues([server, client])).toEqual([server]);
   });
   it("chyby jsou před varováními", () => {
     expect(mergeFormIssues([warning, rowError]).map((i) => i.severity)).toEqual([
@@ -68,8 +92,8 @@ describe("FormIssue – sloučení a titulek", () => {
       "warning",
     ]);
   });
-  it("validationActive skryje jen klientské položky, serverové zůstávají", () => {
-    expect(visibleFormIssues([duzp, rowError, warning], false)).toEqual([duzp]);
+  it("validationActive skryje jen klientské chyby; serverové položky a varování zůstávají", () => {
+    expect(visibleFormIssues([duzp, rowError, warning], false)).toEqual([duzp, warning]);
     expect(visibleFormIssues([duzp, rowError, warning], true)).toHaveLength(3);
   });
   it("titulek: chyby × uložení selhalo × jen varování × prázdno", () => {
@@ -228,7 +252,8 @@ describe("DocumentForm – pruh a hlášení změn", () => {
       />,
     );
     fireEvent.click(view.getByRole("button", { name: "Svázat VS s číslem daňového dokladu" }));
-    expect(changed).toContain("document-variableSymbolLinked");
+    // Přepínač hlásí id pole, ne id vazby (oprava 2.108.0).
+    expect(changed).toContain("document-variableSymbol");
   });
 });
 

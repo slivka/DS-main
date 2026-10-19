@@ -39,6 +39,9 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
   if (docId.current !== a.value.id) {
     docId.current = a.value.id;
     edited.current = manualTaxDate(a.value);
+    // Bankovní pohyb: stav vazby se při změně dokladu přepočítá z rovnosti dat.
+    if (a.code === "BA")
+      setOwnLinked(!a.value.accountingDate || a.value.accountingDate === a.value.issueDate);
   }
   const patch = (next: Partial<DocumentHeaderValue>) => {
     if (a.readOnly) return;

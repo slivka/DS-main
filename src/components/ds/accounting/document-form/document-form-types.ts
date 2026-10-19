@@ -138,6 +138,8 @@ export type DocumentAccountingDateLink = {
   locked: boolean;
   onToggle: (locked: boolean) => void;
   hint?: string;
+  /** Tooltip odemčeného zámku (např. „Svázat s datem pohybu“ u bankovního pohybu). */
+  unlockedHint?: string;
 };
 export type DocumentDateField = "issueDate" | "accountingDate" | "taxDate" | "dueDate" | "vatDate";
 export type DocumentVatConfig = {
@@ -479,6 +481,8 @@ export interface DocumentFormProps {
   saveFailed?: boolean;
   /** Klientské položky a červené rámečky až po prvním pokusu o uložení / zařazení; výchozí true. */
   validationActive?: boolean;
+  /** Zavření pruhu položek ✕; bez callbacku si pruh zavření drží sám do změny seznamu. */
+  onIssuesClose?: () => void;
   /**
    * Změna pole (i přepínače v poli: zámek data, VS, Σ). Hlavička: `document-klíč`;
    * buňka řádku: id buňky s `rowId` a `columnId`. Aplikace podle něj maže své serverové položky.

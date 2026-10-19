@@ -50,33 +50,49 @@ function sameKey(issue: FormIssue): string {
  * neopakuje jako „Řádek N: …“; chyba má přednost před varováním. Pořadí: chyby, varování.
  */
 export function mergeFormIssues(issues: readonly FormIssue[]): FormIssue[] {
-  const headerKeys = new Set(issues.filter((issue) => !issue.rowId).map(sameKey));
+  const headers = issues.filter((issue) => !issue.rowId);
   const seen = new Set<string>();
   const result: FormIssue[] = [];
+  // Server má přednost před klientem se stejným polem a textem (bez ohledu na kód).
+  const bySeverity = (severity: FormIssue["severity"]) =>
+    issues.filter((issue) => issue.severity === severity);
   const ordered = [
-    ...issues.filter((issue) => issue.severity === "error"),
-    ...issues.filter((issue) => issue.severity === "warning"),
+    ...bySeverity("error").sort((a, b) => (a.source === b.source ? 0 : a.source === "server" ? -1 : 1)),
+    ...bySeverity("warning").sort((a, b) => (a.source === b.source ? 0 : a.source === "server" ? -1 : 1)),
   ];
   for (const issue of ordered) {
-    const key = sameKey(issue);
-    if (issue.rowId && headerKeys.has(key)) continue;
-    const id = `${key}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`;
-    const loose = `${key}|${issue.rowId ?? ""}`;
-    if (seen.has(id) || (!issue.fieldId && seen.has(loose))) continue;
-    seen.add(id);
+    // Hlavička × řádek se dědikuje jen při shodném kódu nebo shodném fieldId, ne obecném textu.
+    if (
+      issue.rowId &&
+      headers.some(
+        (header) =>
+          (header.code !== undefined && header.code === issue.code) ||
+          (header.fieldId !== undefined && header.fieldId === issue.fieldId),
+      )
+    )
+      continue;
+    const key = `${bareMessage(issue.message)}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`;
+    const loose = `${bareMessage(issue.message)}|${issue.rowId ?? ""}`;
+    if (seen.has(key) || (!issue.fieldId && seen.has(loose))) continue;
+    seen.add(key);
     seen.add(loose);
     result.push(issue);
   }
   return result;
 }
 
-/** Ponechá serverové položky vždy, klientské jen po prvním pokusu o uložení. */
+/**
+ * Ponechá serverové položky a varování vždy; neaktivní validace skrývá jen klientské chyby
+ * (žlutá varování – ruční partner, VS – se zobrazují i před prvním pokusem o uložení).
+ */
 export function visibleFormIssues(
   issues: readonly FormIssue[],
   validationActive: boolean,
 ): FormIssue[] {
   return mergeFormIssues(
-    validationActive ? issues : issues.filter((issue) => issue.source === "server"),
+    validationActive
+      ? issues
+      : issues.filter((issue) => issue.source === "server" || issue.severity === "warning"),
   );
 }
 

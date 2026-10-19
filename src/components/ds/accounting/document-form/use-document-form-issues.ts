@@ -42,17 +42,10 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
   const debouncedKey = useDebouncedValue(clientKey, 300);
   const issues = useMemo(() => {
     const client: FormIssue[] = JSON.parse(debouncedKey);
-    const legacy: FormIssue[] = (a.error?.fieldErrors ?? []).map((link) => ({
-      fieldId: link.fieldId,
-      rowId: link.rowId,
-      columnId: link.columnId,
-      label: String(link.label),
-      message: String(link.message),
-      severity: "error",
-      source: "server",
-    }));
-    return visibleFormIssues([...(a.issues ?? []), ...legacy, ...client], active);
-  }, [debouncedKey, a.issues, a.error?.fieldErrors, active]);
+    // error.fieldErrors se nepřevádí (label je ReactNode) – vykreslí je RecordActionBar
+    // jako FieldErrorSummary pod pruhem, stejně jako v 2.107.0.
+    return visibleFormIssues([...(a.issues ?? []), ...client], active);
+  }, [debouncedKey, a.issues, active]);
   const onValidationChange: NonNullable<JournalLinesEditorProps["onValidationChange"]> = (
     count,
     errors,
@@ -73,6 +66,12 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
   return { issues, active, onValidationChange };
 }
 
+/** Přepínače v poli hlásí id pole, ne id vazby. */
+const REPORT_FIELD_ID: Partial<Record<DocumentHeaderField, string>> = {
+  variableSymbolLinked: "document-variableSymbol",
+  totalMode: "document-amountTotal",
+};
+
 /** Obalí patch hlavičky hlášením změněných polí. */
 export function reportingPatch(
   patch: (next: Partial<DocumentHeaderValue>) => void,
@@ -81,7 +80,7 @@ export function reportingPatch(
   return (next: Partial<DocumentHeaderValue>) => {
     patch(next);
     for (const key of Object.keys(next) as DocumentHeaderField[])
-      onFieldChange?.(`document-${key}`);
+      onFieldChange?.(REPORT_FIELD_ID[key] ?? `document-${key}`);
   };
 }
 

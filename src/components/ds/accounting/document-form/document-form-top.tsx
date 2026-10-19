@@ -98,6 +98,7 @@ export function DocumentFormTop({
         error={p.error}
         issues={issues}
         saveFailed={p.saveFailed}
+        onIssuesClose={p.onIssuesClose}
         notices={notices}
         saveLabel={dsTexts.common.save}
         moreActionsLabel={dsTexts.recordAction.moreActions}

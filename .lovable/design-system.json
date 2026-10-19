@@ -8143,7 +8143,7 @@
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "usage": "Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.",
+      "usage": "Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.",
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
@@ -8171,22 +8171,18 @@
       ],
       "props": [
         {
-          "name": "recapTotalAmount",
-          "type": "number",
-          "description": "@deprecated 2.108.0 – nepoužívat – rozhodnutí 18. 10."
-        },
-        {
-          "name": "recapTotalLabel",
-          "type": "string",
-          "description": "@deprecated 2.108.0 – nepoužívat – rozhodnutí 18. 10."
-        },
-        {
           "name": "onCreateDimension",
           "type": "(searchText: string) => void"
         },
         {
           "name": "onValidationChange",
           "type": "(count: number, errors: { line: number; field: string; message: string; fieldId?: string; rowId?: string; columnId?: string }[]) => void"
+        },
+        {
+          "name": "cellIssues",
+          "type": "{ rowId; columnId; message; severity }[]",
+          "required": false,
+          "description": "Externí stavy buněk z pruhu položek (2.108.0) – chyba/varování se sloučí s vlastní validací."
         }
       ]
     },
@@ -9201,6 +9197,51 @@
           "name": "extraInfo",
           "type": "ReactNode"
         }
+      ]
+    },
+    {
+      "name": "mergeFormIssues",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Sloučí položky živého pruhu: stejná hláška (pole + text, bez ohledu na kód) jen jednou, server má přednost; hlavička × řádek jen při shodném kódu nebo fieldId.",
+      "antipatterns": [
+        "Neduplikovat hlášky ručně v aplikaci – deduplikaci řeší DS."
+      ]
+    },
+    {
+      "name": "visibleFormIssues",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Ponechá serverové položky a varování vždy; neaktivní validace skrývá jen klientské chyby."
+    },
+    {
+      "name": "formIssuesTitle",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Titulek pruhu s počtem: „Doklad nelze uložit (N)“ jen při saveFailed, jinak „Před zařazením doplňte (N)“; jen varování → „Upozornění (N)“."
+    },
+    {
+      "name": "deriveVariableSymbol",
+      "file": "src/components/ds/accounting/variable-symbol-link.ts",
+      "import_path": "",
+      "usage": "Číslice zdrojového čísla → VS (1–10 číslic); nikdy nezkracuje. Důvody: ok / tooLong / noDigits / pending.",
+      "examples": [
+        {
+          "label": "Odvození",
+          "code": "deriveVariableSymbol('FA-2026/0456') // { value: '20260456', reason: 'ok' }"
+        }
+      ],
+      "antipatterns": [
+        "Odvozený VS neukládat do DB – autoritou je variable_symbol_auto."
+      ]
+    },
+    {
+      "name": "FormIssue",
+      "file": "src/lib/form-issues.ts",
+      "import_path": "",
+      "usage": "Položka živého pruhu: fieldId/rowId/columnId, label, message, severity error|warning, source client|server, code.",
+      "antipatterns": [
+        "Jako label nikdy technický klíč pole – vždy popisek z DsTexts."
       ]
     }
   ],

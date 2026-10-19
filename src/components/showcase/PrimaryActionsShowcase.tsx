@@ -21,6 +21,7 @@ export function MovementsGrid({
   onAction,
   outDisabledReason,
   rows = ROWS,
+  emptyTitle,
 }: {
   storageKey: string;
   onAction?: (kind: "in" | "out") => void;
@@ -28,6 +29,8 @@ export function MovementsGrid({
   outDisabledReason?: string;
   /** Řádky pohybů (prázdné pole = nový výpis). */
   rows?: Movement[];
+  /** Titulek prázdného gridu (např. „Výpis zatím nemá pohyby“). */
+  emptyTitle?: string;
 }) {
   const columns = useMemo<DataGridColumn<Movement>[]>(
     () => [
@@ -67,6 +70,7 @@ export function MovementsGrid({
       rowKey={(row) => row.id}
       addAction={actions}
       paginated={false}
+      emptyTitle={emptyTitle}
     />
   );
 }

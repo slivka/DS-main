@@ -89,6 +89,8 @@ export interface RecordActionBarProps {
   issues?: FormIssue[];
   /** Uložení selhalo – titulek „Doklad nelze uložit (N)“. */
   saveFailed?: boolean;
+  /** Zavření pruhu položek ✕; bez callbacku si pruh zavření drží sám do změny seznamu. */
+  onIssuesClose?: () => void;
   saveLabel?: string;
   moreActionsLabel?: string;
   errorTitle?: ReactNode;
@@ -178,6 +180,7 @@ export function RecordActionBar({
   notices,
   issues,
   saveFailed,
+  onIssuesClose,
   saveLabel,
   moreActionsLabel,
   errorTitle,
@@ -372,9 +375,12 @@ export function RecordActionBar({
             saveFailed={saveFailed}
             title={error?.title}
             message={error?.message}
-            onClose={error?.onClose}
+            onClose={error?.onClose ?? onIssuesClose}
             closeLabel={closeText}
           />
+          {error?.fieldErrors?.length ? (
+            <FieldErrorSummary errors={error.fieldErrors} onSelect={error.onFieldErrorSelect} />
+          ) : null}
         </div>
       ) : error ? (
         <div
