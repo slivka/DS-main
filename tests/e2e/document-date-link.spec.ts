@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("svázané datum se kliknutím odemkne a dostane fokus", async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
     timeout: 60_000,
   });
   const section = page.getByText("Pokladna – výdaj kurýrovi bez partnera").locator("..");

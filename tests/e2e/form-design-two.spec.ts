@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", async ({ page }) => {
   test.setTimeout(300_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("form-design-two");
   for (const zoom of [0.7, 1, 1.25, 1.5, 2]) {
     await page.evaluate(async (z) => {

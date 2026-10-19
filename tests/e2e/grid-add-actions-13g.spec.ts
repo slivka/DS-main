@@ -37,7 +37,7 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
   );
 });
 test("BA výdaj v EUR s DPH ukazuje DUZP, Datum DPH a Kurz DPH", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("bank-vat-example");
   await form.scrollIntoViewIfNeeded();
   await expect(form.getByText("DUZP", { exact: true })).toBeVisible();

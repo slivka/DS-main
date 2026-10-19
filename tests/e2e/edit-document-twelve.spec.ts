@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, testInfo) => {
   test.setTimeout(480_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const root = page.getByTestId("date-panels");
   await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const results = [];
@@ -174,7 +174,7 @@ test("pět dat při všech zoomech ve skutečných panelech", async ({ page }, t
 });
 
 test("šipka účtu nepřekrývá platební příkaz při 100 a 200 %", async ({ page }, testInfo) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const received = page.getByTestId("edit-document-eleven-received");
   await expect(received).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   for (const zoom of [1, 2]) {
@@ -207,7 +207,7 @@ test("šipka účtu nepřekrývá platební příkaz při 100 a 200 %", async ({
 });
 
 test("delší popisky v panelu 360 px při 200 % nepřetékají", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const root = page.getByTestId("date-panels");
   await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   await page.evaluate(async () => {
@@ -247,7 +247,7 @@ test("delší popisky v panelu 360 px při 200 % nepřetékají", async ({ page 
   }
 });
 test("přijaté symboly zůstávají prázdné se správným důvodem", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const received = page.getByTestId("edit-document-eleven-received");
   await expect(received).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const toggle = received.getByRole("button", { name: "Platit příkazem", exact: true });
@@ -283,7 +283,7 @@ test("přijaté symboly zůstávají prázdné se správným důvodem", async ({
 
 test("formáty a delší popisky rozšíří pouze vlastní pole", async ({ page }) => {
   test.setTimeout(180_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const root = page.getByTestId("date-panels");
   await expect(root).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   for (const language of ["CS", "SK"]) {

@@ -2,9 +2,9 @@
 import { expect, test } from "@playwright/test";
 
 test("Pruh: oprava DUZP odebere položku, titulek 2 → 1 → pruh zmizí", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   // Hydratace: ukázka výpisu na téže stránce hlásí připravenost.
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
     timeout: 45000,
   });
   const box = page.getByTestId("live-issues-showcase");
@@ -20,7 +20,7 @@ test("Pruh: oprava DUZP odebere položku, titulek 2 → 1 → pruh zmizí", asyn
 });
 
 test("Protiúčet BA: sloupce obou řádků lícují při zoomu 70 / 100 / 200 %", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const box = page.getByTestId("bank-vat-example");
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
     timeout: 45000,

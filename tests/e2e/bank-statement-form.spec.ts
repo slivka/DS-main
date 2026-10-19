@@ -2,7 +2,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function open(page: Page, scenario: string, width: number) {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const showcase = page.getByTestId("bank-showcase");
   await expect(showcase).toHaveAttribute("data-ready", "true", { timeout: 45000 });
   await page.evaluate(async () => {

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.use({ viewport: { width: 1280, height: 1800 } });
 test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   test.setTimeout(180_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const issued = page.getByTestId("form-design-two");
   const received = page.getByTestId("edit-document-eleven-received");
   // SSR obsah je viditelný dříve než hydratace rozsáhlé stránky; ověříme skutečnou reakci.
@@ -124,7 +124,7 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
 });
 
 test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("form-design-two");
   for (const zoom of [0.7, 1, 2]) {
     await page.evaluate(async (z) => {
@@ -151,7 +151,7 @@ test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page })
 test("reálný kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace má jediný tooltip", async ({
   page,
 }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("form-design-two");
   await expect(async () => {
     const attention = form.getByRole("checkbox", { name: "Starší zdroj kurzu" });

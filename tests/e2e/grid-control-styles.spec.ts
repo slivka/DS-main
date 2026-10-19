@@ -90,7 +90,7 @@ test("aktivní lišta a hover zachovají barvy v obou režimech", async ({ page 
 });
 
 test("zakázaná segmentová volba zůstává odlišená a čitelná", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   await expect(page.getByTestId("document-readonly")).toHaveAttribute("data-ready", "true", {
     timeout: 60_000,
   });

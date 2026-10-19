@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Úzká pole 2.90", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/components/accounting-forms");
+    await page.goto("/components/accounting-controls");
     await page.getByTestId("narrow-fields").scrollIntoViewIfNeeded();
   });
 
