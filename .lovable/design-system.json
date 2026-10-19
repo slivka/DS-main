@@ -4675,6 +4675,11 @@
         {
           "name": "onOpenInNewTab",
           "type": "function"
+        },
+        {
+          "name": "restoreFocusTo",
+          "type": "HTMLElement | null",
+          "description": "Prvek, na který se po zavření vrátí fokus; bez propu výchozí chování."
         }
       ],
       "usage": "Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.",
