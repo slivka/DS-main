@@ -9,8 +9,10 @@ for (const path of ["/components/accounting-forms", "/components/grid", "/compon
     if (path === "/components/accounting-forms") {
       await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
     } else if (path === "/components/grid") {
-      await expect(page.locator('[data-slot="grid-toolbar"]').first())
-        .toHaveAttribute("data-overflow-level", /[0-3]/);
+      await expect(page.locator('[data-slot="grid-toolbar"]').first()).toHaveAttribute(
+        "data-overflow-level",
+        /[0-3]/,
+      );
     } else {
       await page.getByTestId("record-dialog-demo-pane").scrollIntoViewIfNeeded();
       await page.getByRole("button", { name: "Nový", exact: true }).click();
