@@ -154,10 +154,11 @@ function headerIssue(
   label?: string,
   fieldLabels?: Partial<Record<string, string>>,
   code?: string,
+  direction?: string | null,
 ): FormIssue {
   return {
     fieldId: headerFieldId(key, code),
-    label: label ?? headerFieldLabel(t, key, fieldLabels),
+    label: label ?? headerFieldLabel(t, key, fieldLabels, direction),
     message,
     severity,
     source: "client",
@@ -168,6 +169,9 @@ function headerIssue(
 export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   const issues: FormIssue[] = [];
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
+    // Klíče, které nejsou pole (rateInfo, suggestedRate, print, *SourceAttention…),
+    // se do pruhu jako položky pole neposílají.
+    if (NON_FIELD_KEYS.has(key)) continue;
     if (message)
       issues.push(
         headerIssue(
@@ -178,6 +182,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
           undefined,
           a.fieldLabels,
           a.code,
+          a.value.direction,
         ),
       );
   }
@@ -212,6 +217,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
       code: "vat_rate_note",
     });
   for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
+    if (NON_FIELD_KEYS.has(key)) continue;
     if (message)
       issues.push(
         headerIssue(
@@ -222,6 +228,7 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
           undefined,
           a.fieldLabels,
           a.code,
+          a.value.direction,
         ),
       );
   }
