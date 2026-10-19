@@ -43,9 +43,7 @@ if (lintable.length)
   ]);
 else results.push("– eslint: žádné změněné soubory");
 
-const formattable = changed.filter((f) =>
-  /\.(ts|tsx|js|jsx|mjs|cjs|json|css|md|ya?ml)$/.test(f),
-);
+const formattable = changed.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs|json|css|md|ya?ml)$/.test(f));
 if (formattable.length)
   run(`prettier (${formattable.length} souborů)`, "bunx", [
     "prettier",

@@ -110,7 +110,8 @@ function compareCatalog(old: Catalog, cur: Catalog, removals: Removal[]) {
     }
     const props = new Map((c.props ?? []).map((p) => [p.name, p]));
     const oldProps = new Set((o.props ?? []).map((p) => p.name));
-    for (const p of c.props ?? []) if (!oldProps.has(p.name)) added.push(`prop ${o.name}.${p.name}`);
+    for (const p of c.props ?? [])
+      if (!oldProps.has(p.name)) added.push(`prop ${o.name}.${p.name}`);
     for (const p of o.props ?? []) {
       const np = props.get(p.name);
       if (!np) {
@@ -136,7 +137,11 @@ function exportsOf(text: string): Set<string> {
     result.add(m[1].replace(/[\s,]+/g, ""));
   for (const m of text.matchAll(/export\s+\{([^}]*)\}/gs))
     for (const part of m[1].split(",")) {
-      const name = part.trim().split(/\s+as\s+/).pop()?.replace(/^type\s+/, "");
+      const name = part
+        .trim()
+        .split(/\s+as\s+/)
+        .pop()
+        ?.replace(/^type\s+/, "");
       if (name) result.add(`name:${name}`);
     }
   return result;
