@@ -31,6 +31,8 @@ export const DS_TEXTS_CS: DsTexts = {
     numberUnlinked: "Vlastní číslo daňového dokladu",
     movementDate: "Datum pohybu",
     movementTitle: "Bankovní pohyb",
+    movementDateLink: "Svázat s datem pohybu",
+    movementDateLinked: "Stejné jako datum pohybu",
     counteraccountSection: "Protiúčet a symboly",
     accountKind: "Druh účtu",
     domesticAccount: "Český účet",

@@ -50,6 +50,10 @@ export interface DsTexts {
     numberUnlinked: string;
     movementDate: string;
     movementTitle: string;
+    /** Zámek data účetního případu u bankovního pohybu (odemčeno). */
+    movementDateLink: string;
+    /** Zámek data účetního případu u bankovního pohybu (zamčeno). */
+    movementDateLinked: string;
     counteraccountSection: string;
     accountKind: string;
     domesticAccount: string;
