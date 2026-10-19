@@ -2,11 +2,11 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { documentClientIssues, toggleInvalidDate } from "./document-validation-feedback";
+import { toggleInvalidDate } from "./document-validation-feedback";
 import {
   reportingLinesChange,
   reportingPatch,
-  useDocumentFormIssues,
+  useDocumentFormFeedback,
 } from "./use-document-form-issues";
 import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
@@ -29,7 +29,6 @@ import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentFieldRenderers } from "./use-document-field-renderers";
-import { useDocumentIssueProjection } from "./use-document-issue-projection";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
@@ -308,7 +307,7 @@ export function DocumentForm(props: DocumentFormProps) {
     rateAmount,
     linesEditorProps: {
       ...linesEditorProps,
-      onValidationChange: formIssues.onValidationChange,
+      onValidationChange,
       cellIssues,
     },
     readOnly,
@@ -349,7 +348,7 @@ export function DocumentForm(props: DocumentFormProps) {
           props={props}
           title={bankMovement ? dsTexts.documentEdit.movementTitle : title}
           moreActions={actionMenu}
-          issues={formIssues.issues}
+          issues={formIssueList}
           notices={combinedNotices}
           vatRelevant={vatRelevant}
           onVatRelevantChange={(next) => patch({ vatRelevant: next })}
