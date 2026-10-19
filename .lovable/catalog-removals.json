@@ -4,5 +4,11 @@
     "what": "example Řádky s DPH (2.55.0)",
     "reason": "T4: požadované nahrazení zastaralé ukázky calcMode / onCalcModeChange aktuálním příkladem řádků bez DPH a vatOverrides; žádná funkce ani platná ukázka se neodstraňuje.",
     "version": "2.109.0"
+  },
+  {
+    "name": "RecordDialog",
+    "what": "prop wide",
+    "reason": "S1: wide zrušen (BREAKING), nahrazuje ho size=\"md\"; migrace v CHANGELOG 2.111.0.",
+    "version": "2.111.0"
   }
 ]

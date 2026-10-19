@@ -1,3 +1,4 @@
+import { ReadOnlyControlValue, useRecordReadOnly } from "../form/record-read-only";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
@@ -108,6 +109,7 @@ export function AccountSelect({
   id,
   className,
 }: AccountSelectProps) {
+  const readOnly = useRecordReadOnly();
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
   // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
@@ -160,6 +162,14 @@ export function AccountSelect({
           .includes(query.trim().toLocaleLowerCase("cs"));
       })
     : list;
+
+  if (readOnly) {
+    return (
+      <ReadOnlyControlValue id={id}>
+        {selected ? formatCodeName(formatAccountCode(selected.code), selected.name) : (value ?? "")}
+      </ReadOnlyControlValue>
+    );
+  }
 
   return (
     <Popover open={open} onOpenChange={changeOpen}>

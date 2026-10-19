@@ -1,4 +1,5 @@
 /** Výběr DS; vlastní nabídku a výzvu, nesmí znát význam doménových hodnot. */
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import type { ReactNode } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { cn } from "../../../lib/utils";
@@ -81,6 +82,7 @@ export function OptionSelect({
   /** Důvod zakázání vytvoření. */
   createDisabledReason?: string;
 }) {
+  const readOnly = useRecordReadOnly();
   const texts = useDsTexts().optionSelect;
   const resolvedPlaceholder = placeholder ?? texts.emptyValue;
   const resolvedEmptyLabel = emptyLabel ?? texts.emptyValue;
@@ -107,6 +109,10 @@ export function OptionSelect({
     ) : (
       <UnknownValue value={current} label={resolvedUnknownValueLabel} />
     );
+  if (readOnly) {
+    return <ReadOnlyControlValue id={id}>{selectedOption?.label ?? current}</ReadOnlyControlValue>;
+  }
+
   const offered = options.filter((option) => !option.inactive || option.value === current);
   const useSearch =
     Boolean(onCreate) || (searchable === "auto" ? options.length >= 8 : Boolean(searchable));

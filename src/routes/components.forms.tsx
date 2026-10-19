@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
+import { RecordDialogPatternsShowcase } from "../components/showcase/RecordDialogPatternsShowcase";
 import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
 import { FieldStatusShowcase } from "@/components/showcase/FieldStatusShowcase";
 import {
@@ -87,6 +88,13 @@ function FormsPage() {
       </ShowcaseSection>
 
       <ShowcaseSection
+        title="Dialogy záznamů"
+        description="Jeden vzor: povinná velikost, ochrana neuložených změn, jen pro čtení, chyba uložení a Odstranit vlevo."
+      >
+        <RecordDialogPatternsShowcase />
+      </ShowcaseSection>
+
+      <ShowcaseSection
         title="Editační dialog dokladu"
         description="Stejný dialog používají všechny editace: tlačítko Odstranit vlevo, Zrušit a Uložit vpravo."
       >
@@ -114,7 +122,7 @@ function FormsPage() {
         open={open}
         onOpenChange={setOpen}
         title="Účetní doklad"
-        wide
+        size="md"
         onSubmit={() => {
           setOpen(false);
           toast.success("Doklad uložen");

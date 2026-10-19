@@ -1,3 +1,4 @@
+import { ReadOnlyControlValue, useRecordReadOnly, useYesNoText } from "./record-read-only";
 import {
   forwardRef,
   useId,
@@ -54,6 +55,18 @@ export const CheckboxField = forwardRef<ElementRef<typeof Checkbox>, CheckboxFie
     const hintId = hint ? `${controlId}-hint` : undefined;
     const status = useFieldStatus({ error, warning });
     const describedBy = [hintId, status.describedById].filter(Boolean).join(" ") || undefined;
+    const readOnly = useRecordReadOnly();
+    const yesNo = useYesNoText(checked);
+    if (readOnly) {
+      return (
+        <ReadOnlyControlValue
+          id={controlId}
+          ariaLabel={typeof label === "string" ? label : undefined}
+        >
+          {yesNo}
+        </ReadOnlyControlValue>
+      );
+    }
     return (
       <div
         data-slot="checkbox-field"

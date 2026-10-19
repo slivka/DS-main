@@ -1,3 +1,4 @@
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import { useEffect, useState } from "react";
 import { Input } from "../../ui/input";
 import { fmtAmount } from "../../../lib/format";
@@ -36,6 +37,7 @@ export function DecimalInput({
   /** Nezpracovaný první znak při zahájení editace z gridu. */
   seed?: string;
 } & Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type">) {
+  const readOnly = useRecordReadOnly();
   const [text, setText] = useState<string | null>(seed ?? null);
   useEffect(() => {
     if (seed !== undefined) setText(seed);
@@ -49,6 +51,14 @@ export function DecimalInput({
       : value != null
         ? String(value)
         : "");
+
+  if (readOnly) {
+    return (
+      <ReadOnlyControlValue id={props.id} numeric>
+        {num != null ? fmtAmount(num, displayDecimals ?? decimals) : ""}
+      </ReadOnlyControlValue>
+    );
+  }
 
   return (
     <Input

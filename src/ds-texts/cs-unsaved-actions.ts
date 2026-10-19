@@ -25,4 +25,10 @@ export const UNSAVED_ACTION_TEXTS_CS: UnsavedActionTexts = {
     back: "Zpět",
     save: "Uložit a odejít",
   },
+  record: {
+    title: "Zavřít záznam s neuloženými změnami?",
+    discard: "Zavřít bez uložení",
+    back: "Zpět k záznamu",
+    save: "Uložit a zavřít",
+  },
 };

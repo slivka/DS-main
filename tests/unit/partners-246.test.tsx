@@ -163,6 +163,7 @@ describe("B8 aktivní / neaktivní", () => {
     expect(() =>
       renderToStaticMarkup(
         <RecordDialog
+          size="md"
           open={false}
           onOpenChange={noop}
           title="Partner"

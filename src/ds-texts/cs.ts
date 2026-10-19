@@ -319,6 +319,11 @@ export const DS_TEXTS_CS: DsTexts = {
     system: "Systém",
     yes: "ano",
     no: "ne",
+    saving: "Ukládám…",
+    deleteLabel: "Odstranit",
+    valueYes: "Ano",
+    valueNo: "Ne",
+    emptyValue: "—",
   },
   date: {
     today: "Dnes",

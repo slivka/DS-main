@@ -1,5 +1,26 @@
 # Changelog – Slivka Design System
 
+## 2.111.0 (nevydáno) – Dialogy záznamů
+
+### Změny
+- `RecordDialog` má jednu šířku podle `size` v panelu i mimo panel: sm 32 rem, md 48 rem, lg 56 rem (vždy nejvýš šířka panelu / okna minus okraj).
+- Ochrana neuložených změn: při `dirty && !readOnly && !busy` otevře křížek, Esc, Zrušit i klik mimo (také v panelu) `UnsavedChangesDialog` s novou akcí `record` – „Zavřít bez uložení“ · „Zpět k záznamu“ · „Uložit a zavřít“ (= `onSubmit`).
+- Varianta v panelu zavírá Esc, po otevření přesune fokus do dialogu a po zavření ho vrátí. Esc ve vnořeném výběru zavře jen výběr.
+- `readOnly` vykreslí DS vstupy (`Input`, `Textarea`, `DecimalInput`, `AmountInput`, `DateField`, `OptionSelect`, `SearchableOptionSelect`, `AccountSelect`, `DimensionSelect`, `SegmentedField`, `CheckboxField`, `MaskInput`) jako `FieldValue`; zaškrtávátko „Ano / Ne“, prázdná hodnota „—“. Mimo `RecordDialog` beze změny.
+- Nové props: `RecordDialog.error` (chyba uložení v pruhu nad tlačítky), `RecordDialog.deleteAction` (`label?`, `onClick`, `confirm`, `disabled?`, `disabledReason?`).
+- Během `busy` je Uložit zakázané s textem „Ukládám…“ bez změny šířky; Zrušit je zakázané, Esc a klik mimo nic nedělají.
+- Nové exporty: `RecordDialogSize`, `RecordDialogDeleteAction`, `RecordReadOnlyProvider`, `useRecordReadOnly`, `ReadOnlyControlValue`, `useYesNoText`.
+- Nové texty DsTexts (CS/SK): `recordDialog.saving`, `deleteLabel`, `valueYes`, `valueNo`, `emptyValue`; `panes.unsavedActions.record`.
+- Ukázka „Dialogy záznamů“: nový, existující, jen pro čtení, s chybou, s Odstranit; sm / md / lg v panelu i mimo něj.
+
+### BREAKING – migrace
+- `size` je povinný. Dialog dříve bez `size` mimo panel odpovídá `size="sm"`; dialog číselníku používá `size="md"`.
+- `wide` je odstraněn → `size="md"`.
+- `readOnly` vykresluje vstupy jako hodnoty – aplikace už nepřepíná pole na `FieldValue` ani nezakazuje vstupy.
+- Zavření uživatelem se hlídá podle `dirty`: `onOpenChange(false)` přijde až po „Zavřít bez uložení“. Předávejte `dirty` i u nového záznamu; po úspěšném „Uložit a zavřít“ zavírá dialog aplikace.
+- Chybu uložení předávejte v `error` místo `Alert` v obsahu; Odstranit přes `deleteAction` místo vlastního tlačítka v `extraActions`.
+- „Ukládám…“ zobrazuje DS automaticky podle `busy`; nepřepínejte `submitLabel`.
+
 ## 2.110.0 – Design 3
 
 ### Změny

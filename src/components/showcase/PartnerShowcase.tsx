@@ -230,7 +230,7 @@ export function PartnerShowcase() {
         open={open}
         onOpenChange={setOpen}
         title="Partner"
-        wide
+        size="md"
         status={{ active }}
         dirty={dirty}
         onSubmit={() => {

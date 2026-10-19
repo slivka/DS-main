@@ -619,6 +619,7 @@ function MatchingView({
             if (!o) setCancelGroup(null);
           }}
           title={`Zrušit párování ${cancelGroup ?? ""}`}
+          size="sm"
           submitLabel="Zrušit párování"
           onSubmit={() => {
             if (!reason.trim()) {

@@ -369,7 +369,7 @@ function NavigationPage() {
         onOpenChange={setWorkspaceDetailOpen}
         title="Slivka Holding"
         readOnly
-        wide
+        size="md"
         tabs={[
           {
             value: "members",

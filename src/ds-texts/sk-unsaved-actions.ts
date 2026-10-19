@@ -25,4 +25,10 @@ export const UNSAVED_ACTION_TEXTS_SK: UnsavedActionTexts = {
     back: "Späť",
     save: "Uložiť a odísť",
   },
+  record: {
+    title: "Zavrieť záznam s neuloženými zmenami?",
+    discard: "Zavrieť bez uloženia",
+    back: "Späť k záznamu",
+    save: "Uložiť a zavrieť",
+  },
 };

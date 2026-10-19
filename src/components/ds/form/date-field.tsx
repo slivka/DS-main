@@ -1,4 +1,5 @@
 /** Datumové pole · vlastní vstup a vazbu data · nesmí měnit rozměry dokumentové oblasti. */
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import * as React from "react";
 import { AlertTriangle, CalendarIcon, Lock, LockOpen } from "lucide-react";
 import { cn } from "../../../lib/utils";
@@ -129,6 +130,7 @@ export function DateField({
   baseDate,
   quickOptions,
 }: DateFieldProps) {
+  const readOnly = useRecordReadOnly();
   const preferences = useDateTimePreferences();
   const dsTexts = useDsTexts();
   const { dateFormat, formatDate } = preferences;
@@ -204,6 +206,10 @@ export function DateField({
         : link?.locked
           ? lockedHint
           : unlockedHint);
+
+  if (readOnly) {
+    return <ReadOnlyControlValue id={id}>{value ? formatDate(value) : ""}</ReadOnlyControlValue>;
+  }
 
   return (
     <TooltipProvider>

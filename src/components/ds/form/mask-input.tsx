@@ -3,6 +3,7 @@
  * Vlastní: vložení tokenu na kurzor, otevření nabídky při fokusu a režim jen ke čtení.
  * Nesmí: generovat čísla dokladů ani znát pravidla konkrétní knihy.
  */
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import { forwardRef, useRef, useState, type ComponentPropsWithoutRef } from "react";
 
 import { useDsTexts } from "../../../ds-texts";
@@ -44,13 +45,18 @@ export const MaskInput = forwardRef<HTMLInputElement, MaskInputProps>(function M
   { value, onChange, tokens, preview, readOnly, lockedReason, className, onFocus, ...props },
   forwardedRef,
 ) {
+  const recordReadOnly = useRecordReadOnly();
   const texts = useDsTexts().maskInput;
   const localRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const items = tokens ?? texts.tokens;
 
-  if (readOnly || lockedReason) {
-    return <FieldValue lockedReason={lockedReason}>{value}</FieldValue>;
+  if (readOnly || lockedReason || recordReadOnly) {
+    return lockedReason ? (
+      <FieldValue lockedReason={lockedReason}>{value}</FieldValue>
+    ) : (
+      <ReadOnlyControlValue id={props.id}>{value}</ReadOnlyControlValue>
+    );
   }
 
   const setRefs = (node: HTMLInputElement | null) => {

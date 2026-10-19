@@ -10,7 +10,7 @@ import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
 
 /** Druh potvrzovaného odchodu. */
-export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate";
+export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate" | "record";
 /** Přeložené volby potvrzení odchodu. */
 export type UnsavedActionTexts = Record<
   UnsavedChangesAction,
@@ -206,6 +206,16 @@ export interface DsTexts {
     system: string;
     yes: string;
     no: string;
+    /** Text tlačítka Uložit během ukládání. */
+    saving: string;
+    /** Výchozí popisek akce Odstranit. */
+    deleteLabel: string;
+    /** Zaškrtnutá hodnota jen pro čtení. */
+    valueYes: string;
+    /** Nezaškrtnutá hodnota jen pro čtení. */
+    valueNo: string;
+    /** Prázdná hodnota jen pro čtení. */
+    emptyValue: string;
   };
   date: {
     today: string;

@@ -136,6 +136,7 @@ export function DocumentSettingsDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={t.title}
+      size="md"
       headerExtra={<span className="text-sm text-muted-foreground">{documentTypeLabel}</span>}
       busy={busy}
       submitLabel={t.save}
