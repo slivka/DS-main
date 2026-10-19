@@ -8,6 +8,8 @@ Apply with any color utility: `bg-<name>`, `text-<name>`, `border-<name>`, `ring
 
 | Name | CSS variable |
 |---|---|
+| `pane-tabbar` | `--pane-tabbar` |
+| `border-strong` | `--border-strong` |
 | `surface-page` | `--surface-page` |
 | `foreground` | `--foreground` |
 | `card` | `--card` |
@@ -96,6 +98,7 @@ Typography classes (`font-*` for families, `text-*` for sizes):
 | `text-section` | `--text-section` |
 | `text-label` | `--text-label` |
 | `text-meta` | `--text-meta` |
+| — | `--calendar-body-h` |
 | `text-identity` | `--text-identity` |
 | — | `--grid-heading-surface` |
 | — | `--grid-line` |
@@ -142,6 +145,12 @@ Reference via `var(--name)` in inline styles or CSS.
 | CSS variable |
 |---|
 | `--control-h` |
+| `--badge-h-sm` |
+| `--badge-h-md` |
+| `--badge-cap-offset` |
+| `--identity-account-width` |
+| `--identity-account-accessories-width` |
+| `--calendar-width` |
 | `--document-date-icon-offset` |
 | `--document-date-icon-step` |
 | `--document-date-icon-size` |

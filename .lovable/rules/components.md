@@ -321,11 +321,25 @@ import { AvatarImage } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 import { Badge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Používejte sdílenou komponentu se stabilní geometrií při změně stavu a měřítka.
+
 **Props:**
 
 | Prop | Type | Default |
 |---|---|---|
+| `size` | sm · md | `sm` |
 | `variant` | default · secondary · destructive · outline · success · warning · info | `default` |
+
+**Examples:**
+
+_Běžné použití_
+```tsx
+<Badge variant="outline">Kontrola</Badge>
+```
+
+**Avoid:**
+
+- Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu.
 
 ### BankAccountField
 
@@ -612,6 +626,17 @@ import { Calendar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 
 Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; v nabídce použijte initialFocus/autoFocus. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.
 
+**Examples:**
+
+_Běžné použití_
+```tsx
+<Calendar mode="single" selected={date} onSelect={setDate} onToday={setDate} />
+```
+
+**Avoid:**
+
+- Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu.
+
 ### CalendarDayButton
 
 ```ts
@@ -625,6 +650,20 @@ import { CalendarPicker } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 ```
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `placeholder` | string | `—` |
+| `disabled` | boolean | `—` |
+| `maxDate` | any | `—` |
+| `minDate` | any | `—` |
+| `className` | string | `size-4 shrink-0 text-muted-foreground` |
+| `label` | string | `—` |
+| `baseDate` | string | `—` |
 
 **Examples:**
 
@@ -1548,6 +1587,21 @@ import { DateRangeField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | any | `—` |
+| `onChange` | function | `—` |
+| `placeholder` | string | `—` |
+| `months` | number | `1` |
+| `disabled` | boolean | `—` |
+| `maxDate` | any | `—` |
+| `minDate` | any | `—` |
+| `className` | string | `size-4 shrink-0 text-muted-foreground` |
+| `label` | string | `—` |
+| `baseDate` | string | `—` |
+
 **Examples:**
 
 _Použití společného stavu_
@@ -1695,6 +1749,19 @@ import { DocumentCounterpartyTab } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-
 import { DocumentDirectionBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Používejte sdílenou komponentu se stabilní geometrií při změně stavu a měřítka.
+
+**Examples:**
+
+_Příjem_
+```tsx
+<DocumentDirectionBadge direction="in" />
+```
+
+**Avoid:**
+
+- Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu.
+
 ### DocumentForm
 
 ```ts
@@ -1800,7 +1867,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
+| `approvedLabel` | string | `—` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -3026,6 +3093,11 @@ _Číslo dokladu s identifikátorem_
 <IdentityLine items={[book, period]} number={document.number} numberId="document-number" />
 ```
 
+_Identifikace_
+```tsx
+<IdentityLine items={[bookName, periodLabel]} number={documentNumber} />
+```
+
 **Avoid:**
 
 - Neskládejte druhý vlastní řádek identity ani vlastní styl čísla.
@@ -3108,7 +3180,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.
+Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb. 2.109.0 (DPH krok 4B): řádky jsou vždy bez DPH; vat.calcMode / onCalcModeChange jsou @deprecated a ignorované, ruční daň na řádku zrušena (pevná systémová daň vatManual z DB se jen zobrazí se zámkem). Pomocník „Cena s DPH“ v buňce Částka / Jedn. cena a v detailu řádku vyplní základ. Pod mřížkou Rekapitulace DPH po skupinách kód × sazba (stejný výpočet jako DB, computeVatGroups) s úpravami „dle dokladu“ (DPH, Celkem s DPH, Základ) a „Vrátit vypočtenou daň“; přepisy řídí vatOverrides / onVatOverridesChange. Patička Součet · Zaokrouhlení · Rozdíl s nabídkou Dorovnat DPH / Dorovnat základ / Zaokrouhlení (jen do roundingLimit).
 
 **Examples:**
 
@@ -3117,15 +3189,21 @@ _Rozpis se zkrácenými účty_
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey="invoice-lines" />
 ```
 
-_Řádky s DPH (2.55.0)_
+_Řádky bez DPH s přepisem daně dle dokladu_
 ```tsx
-<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
-// uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
+<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} />
+// uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides
 ```
 
 _Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />
+```
+
+_Skupiny DPH a patička (2.109.0)_
+```tsx
+<JournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? "error" : "warning"} />
+// uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }
 ```
 
 **Avoid:**
@@ -3135,6 +3213,8 @@ _Stav pole a jednotná výška (2.107.0)_
 - Posílat nebo editovat řádky daně (isVatLine) – vytváří je jen databáze; ukládejte přes toJournalRows.
 - Neskládejte další vlastní přepínač; stálý název nenahrazujte tooltipem stavu.
 - Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.
+- Neposílejte vat_manual ani ruční daň řádku – pevnou daň zakládá jen systém.
+- Nepočítejte daň skupin v aplikaci; náhled dává computeVatGroups a skutečné řádky daně DB.
 
 ### JournalLinesRecap
 
@@ -3469,6 +3549,33 @@ import { MonthYearSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 
 Vybere měsíc a rok společným kalendářem. Escape zavře nabídku přímo; Vymazat vrací null. emptyLabel pojmenuje prázdný výběr. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `minYear` | number | `—` |
+| `maxYear` | number | `—` |
+| `emptyLabel` | string | `—` |
+| `monthLabel` | string | `—` |
+| `yearLabel` | string | `—` |
+| `disabled` | boolean | `—` |
+| `className` | string | `w-auto p-0` |
+| `yearClassName` | string | `—` |
+| `monthClassName` | string | `—` |
+
+**Examples:**
+
+_Běžné použití_
+```tsx
+<MonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} />
+```
+
+**Avoid:**
+
+- Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu.
+
 ### MultiSelect
 
 ```ts
@@ -3658,6 +3765,13 @@ Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirt
 | `actions` | any | `—` |
 | `menuActions` | any | `—` |
 | `paneTexts` | any | `—` |
+
+**Examples:**
+
+_Běžné použití_
+```tsx
+<PageHeader />
+```
 
 **Avoid:**
 
@@ -4270,6 +4384,11 @@ _Karta majetku_
 _Stav pole a jednotná výška (2.107.0)_
 ```tsx
 <RecordActionBar {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
+```
+
+_Uložení změn_
+```tsx
+<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: "Zařadit", onClick: classify }} />
 ```
 
 **Avoid:**
@@ -5000,6 +5119,16 @@ import { StatusBadge } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73
 ```
 
 Jednotný štítek stavu. Tón accent označuje privilegovaný pohled provozovatele bez chybového významu.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `status` | any | `—` |
+| `config` | any | `—` |
+| `fallbackLabel` | string | `—` |
+| `size` | sm · md | `sm` |
+| `ref` | any | `—` |
 
 **Examples:**
 
