@@ -131,6 +131,9 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
         paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
       />,
     );
+    // Účet hlavičky se vykreslí až v režimu změny účtu (tužka).
+    const pencil = view.queryAllByRole("button", { name: T.changeAccount })[0];
+    if (pencil) fireEvent.click(pencil);
     const issues = documentClientIssues({
       value: { ...header, amountTotal: 0 },
       foreign: false,
