@@ -16,6 +16,17 @@
 - **Bankovní pohyb**: zámek data účetního případu s texty „Svázat s datem pohybu“ / „Stejné jako datum pohybu“ (`documentEdit.movementDateLink` / `movementDateLinked`); stav vazby se přepočítá při změně dokladu. `DocumentAccountingDateLink` má nové `unlockedHint`.
 - **Katalog**: doplněny `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`, `deriveVariableSymbol`, `FormIssue`, `FormIssuesBar`, `JournalLinesEditor.cellIssues`; z `JournalLinesEditor` odstraněny `recapTotalAmount` / `recapTotalLabel` (nic nevykreslují) a zmínka o přepočteném celku v hlavičce.
 
+### Opravné kolo 2 (kontrola kódu)
+- **Chyby řádků se mažou**: do `cellIssues` se promítají jen položky `source: "server"`; vlastní chyby editoru vrácené přes `onValidationChange` se do buněk nevrací, takže po opravě buňky rámeček i položka pruhu zmizí (projekce přesunuta do `useDocumentIssueProjection`).
+- **Popisky a fieldId pro všechny klíče**: `HEADER_FIELD_ID` doplněno (bankCode → `document-bank-code`, bankAccount → `document-movement-account`, variableSymbolLinked → `document-variableSymbol`, totalMode → `document-amountTotal`); `headerFieldLabel` nemá fallback na technický klíč – chybějící popisek je chyba (test ověřuje fieldId v DOM pro všechny klíče všech typů dokladů vč. BA).
+- **`validationActive=false`** neskrývá serverové chyby v polích (jen klientské); dedup klient × server stejného pole bez ohledu na text (server má přednost); projekce issues i do polí vykreslených přes `Field` (BA protiúčet, kód banky).
+- **Zámek data**: `onFieldChange("document-accountingDate")` se hlásí i u řízeného `accountingDateLink.onToggle`.
+- **Chyba + varování**: když aplikace pošle `error` a `issues` obsahují jen varování, pruh je červený („Doklad nelze uložit“ / „Před zařazením doplňte“) s chybou a varováními pod ní – nový `FormIssuesBar.forceError`.
+- **FieldErrorSummary uvnitř FormIssuesBar** (`fieldErrors` / `onFieldErrorSelect`): zavření ✕ skryje i souhrn; podpis zavření se počítá z celého obsahu (code + message + fieldId), takže se pruh při změně textu znovu ukáže.
+- **„Přidělí se při zařazení“** jen u vydaných dokladů ve stavu koncept (kontrola `status`).
+- **BankStatementForm**: `status: "checked"` a texty `lockedChecked` / `check` / `uncheck` / `checkHint` / `uncheckHint` označeny @deprecated (kontrola výpisu zrušena). Odstraněno `data-slot="bank-statement-{key}"` (nově `data-bank-statement-value`) a `data-slot="bank-statement-difference"`; `BankStatementBalanceSection` vrací null.
+- **Katalog**: odstraněn příklad `recapTotalAmount`; doplněny `onIssuesClose` (DocumentForm, RecordActionBar), `DocumentAccountingDateLink.unlockedHint` a nové props `FormIssuesBar`.
+
 ### Nové
 - **Živý pruh chyb a upozornění** (`FormIssuesBar`, `FormIssue`, `mergeFormIssues`, `visibleFormIssues`, `formIssuesTitle`): položka `{ fieldId?, rowId?, columnId?, label, message, severity, source, code? }`; deduplikace podle (code nebo text, pole, řádek), chyba hlavičky se neopakuje jako „Řádek N“; titulek s počtem („Doklad nelze uložit (N)“ jen při `saveFailed`, jinak „Před zařazením doplňte (N)“, bez chyb „Upozornění (N)“); prázdný seznam pruh skryje.
 - `DocumentForm`: `issues`, `saveFailed`, `validationActive`, `onFieldChange(fieldId, rowId?, columnId?)`, `bankCodeOptions`; hlavička `variableSymbolLinked`.
