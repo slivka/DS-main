@@ -69,7 +69,7 @@ export function SegmentedField<Value extends string = string>({
   const status = useFieldStatus({ error, warning });
   const readOnly = useRecordReadOnly();
   const group = readOnly ? (
-    <ReadOnlyControlValue id={id}>
+    <ReadOnlyControlValue id={props.id}>
       {options.find((option) => option.value === value)?.label}
     </ReadOnlyControlValue>
   ) : (
