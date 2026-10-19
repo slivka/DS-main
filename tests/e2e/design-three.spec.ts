@@ -110,3 +110,17 @@ test("StatusBadge optické centrování velkých písmen", async ({ page }) => {
     );
   for (const metric of metrics) expect(metric.diff, metric.text).toBeLessThanOrEqual(0.5);
 });
+
+test("DocumentDirectionBadge a DocumentStatusBadge mají md výšku 1,5 rem", async ({ page }) => {
+  await ready(page);
+  const status = page
+    .locator('[data-testid="design-three"] > [data-slot="page-header"] .ds-badge')
+    .first();
+  expect(
+    await status.evaluate(
+      (e) =>
+        e.getBoundingClientRect().height /
+        parseFloat(getComputedStyle(document.documentElement).fontSize),
+    ),
+  ).toBe(1.5);
+});

@@ -1628,6 +1628,16 @@
           ],
           "default": "default"
         }
+      ],
+      "usage": "Používejte sdílenou komponentu se stabilní geometrií při změně stavu a měřítka.",
+      "examples": [
+        {
+          "label": "Běžné použití",
+          "code": "<Badge variant=\"outline\">Kontrola</Badge>"
+        }
+      ],
+      "antipatterns": [
+        "Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu."
       ]
     },
     {
@@ -1934,7 +1944,57 @@
     {
       "name": "Calendar",
       "file": "src/components/ui/calendar.tsx",
-      "import_path": ""
+      "import_path": "",
+      "props": [
+        {
+          "name": "baseDate",
+          "type": "Date"
+        },
+        {
+          "name": "minDate",
+          "type": "Date"
+        },
+        {
+          "name": "maxDate",
+          "type": "Date"
+        },
+        {
+          "name": "onToday",
+          "type": "function"
+        },
+        {
+          "name": "onClose",
+          "type": "function"
+        },
+        {
+          "name": "footerActions",
+          "type": "ReactNode"
+        },
+        {
+          "name": "initialView",
+          "type": "enum",
+          "values": [
+            "days",
+            "months",
+            "years"
+          ],
+          "default": "days"
+        },
+        {
+          "name": "onMonthSelect",
+          "type": "function"
+        }
+      ],
+      "usage": "Jednotný výběr dnů, měsíců a let. captionLayout od 2.110.0 nemá účinek; baseDate je výchozí měsíc po vybraném datu.",
+      "examples": [
+        {
+          "label": "Běžné použití",
+          "code": "<Calendar mode=\"single\" selected={date} onSelect={setDate} onToday={setDate} />"
+        }
+      ],
+      "antipatterns": [
+        "Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu."
+      ]
     },
     {
       "name": "CalendarDayButton",
@@ -3973,6 +4033,12 @@
         "Předávat actions uvnitř panelu místo menuActions",
         "Vkládat akci Nový do záhlaví místo gridového addAction",
         "Předávat description; kontext patří do GridContextBar nebo horní lišty"
+      ],
+      "examples": [
+        {
+          "label": "Běžné použití",
+          "code": "<PageHeader />"
+        }
       ]
     },
     {
@@ -6785,7 +6851,17 @@
     {
       "name": "MonthYearSelect",
       "file": "src/components/ds/form/month-year-select.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Vybere měsíc a rok společným kalendářem. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.",
+      "examples": [
+        {
+          "label": "Běžné použití",
+          "code": "<MonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} />"
+        }
+      ],
+      "antipatterns": [
+        "Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu."
+      ]
     },
     {
       "name": "ContactSelect",
@@ -8545,7 +8621,17 @@
     {
       "name": "DocumentDirectionBadge",
       "file": "src/components/ds/accounting/document-form/document-form-actions",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Používejte sdílenou komponentu se stabilní geometrií při změně stavu a měřítka.",
+      "examples": [
+        {
+          "label": "Běžné použití",
+          "code": "<DocumentDirectionBadge />"
+        }
+      ],
+      "antipatterns": [
+        "Neměňte výšku ani tvar podle aktivního nebo zakázaného stavu."
+      ]
     },
     {
       "name": "DocumentCounterpartyTab",
