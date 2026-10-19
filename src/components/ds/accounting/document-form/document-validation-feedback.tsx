@@ -134,12 +134,15 @@ export function headerFieldLabel(
   t: DocumentFormTexts,
   key: string,
   fieldLabels?: Partial<Record<string, string>>,
+  direction?: string | null,
 ): string {
   const found = Object.entries(t).find(([name]) => name === key)?.[1];
   if (typeof found === "string") return found;
-  const alias = headerLabelAlias(t, key, fieldLabels);
+  const alias = headerLabelAlias(t, key, fieldLabels, direction);
   if (alias) return alias;
-  throw new Error(`documentForm: chybí popisek pole „${key}“`);
+  // Za běhu formulář nesmí spadnout – obecný popisek + varování pro vývojáře.
+  console.warn(`documentForm: chybí popisek pole „${key}“`);
+  return t.unknownField;
 }
 
 /** Položka pole hlavičky. */
