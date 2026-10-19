@@ -38,6 +38,8 @@ export interface DocumentValidationArgs {
   variableSymbolLabel?: string;
   /** Popisek daňového čísla. */
   taxNumberLabel?: string;
+  /** Popisky polí mimo DocumentFormTexts (banka: kód banky, IBAN, SWIFT, druh účtu…). */
+  fieldLabels?: Partial<Record<string, string>>;
 }
 
 /** Id ovládacího prvku pro klíč hlavičky (výjimky od výchozího `document-klíč`). */
@@ -46,10 +48,18 @@ const HEADER_FIELD_ID: Record<string, string> = {
   counterpartyName: "document-partner",
   counterpartyIco: "document-partner-ico",
   counterpartyDic: "document-partner-dic",
+  bankCode: "document-bank-code",
+  bankAccount: "document-movement-account",
+  variableSymbolLinked: "document-variableSymbol",
+  totalMode: "document-amountTotal",
 };
 
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
-function headerLabelAlias(t: DocumentFormTexts, key: string): string | undefined {
+function headerLabelAlias(
+  t: DocumentFormTexts,
+  key: string,
+  fieldLabels?: Partial<Record<string, string>>,
+): string | undefined {
   // Některé popisky žijí v dsTexts.documentForm (DocumentForm předává sloučené texty).
   const all = t as Partial<Record<string, string>>;
   const alias: Record<string, string | undefined> = {
@@ -57,21 +67,36 @@ function headerLabelAlias(t: DocumentFormTexts, key: string): string | undefined
     counterpartyName: t.partner,
     counterpartyIco: t.ico,
     counterpartyDic: t.dic,
+    counterpartyCountry: fieldLabels?.counterpartyCountry,
+    handedOverBy: t.handedOverByIn,
     companyBankAccountId: t.bankAccount,
     partnerBankAccountId: t.bankAccount,
+    manualBankAccount: t.bankAccount,
     paymentMethodId: all.paymentMethod,
     mainAccountId: t.mainAccountSelect,
     variableSymbolLinked: t.variableSymbol,
     totalMode: t.amountTotal,
+    rateManual: t.manualRate,
+    roundingAmount: t.rounding,
+    bankCode: fieldLabels?.bankCode,
+    bankIban: fieldLabels?.bankIban,
+    bankSwift: fieldLabels?.bankSwift,
+    bankAccountKind: fieldLabels?.bankAccountKind,
   };
   return alias[key];
 }
 
 /** Popisek pole hlavičky z textů formuláře; technický klíč se nikdy nezobrazí. */
-export function headerFieldLabel(t: DocumentFormTexts, key: string): string {
+export function headerFieldLabel(
+  t: DocumentFormTexts,
+  key: string,
+  fieldLabels?: Partial<Record<string, string>>,
+): string {
   const found = Object.entries(t).find(([name]) => name === key)?.[1];
   if (typeof found === "string") return found;
-  return headerLabelAlias(t, key) ?? key;
+  const alias = headerLabelAlias(t, key, fieldLabels);
+  if (alias) return alias;
+  throw new Error(`documentForm: chybí popisek pole „${key}“`);
 }
 
 /** Položka pole hlavičky. */
