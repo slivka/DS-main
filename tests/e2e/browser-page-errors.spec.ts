@@ -20,7 +20,9 @@ for (const path of ["/components/accounting-forms", "/components/grid", "/compon
       await expect(async () => {
         if (!(await page.getByRole("dialog", { name: "Nová kniha" }).isVisible()))
           await page.getByRole("button", { name: "Nový", exact: true }).click();
-        await expect(page.getByRole("dialog", { name: "Nová kniha" })).toBeVisible({ timeout: 1000 });
+        await expect(page.getByRole("dialog", { name: "Nová kniha" })).toBeVisible({
+          timeout: 1000,
+        });
       }).toPass();
       await expect(page.getByRole("dialog", { name: "Nová kniha" })).toBeVisible();
     }
