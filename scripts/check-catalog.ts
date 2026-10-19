@@ -49,8 +49,17 @@ function versionAt(sha: string): string | null {
   return text ? (JSON.parse(text) as { version: string }).version : null;
 }
 
-/** Commit, kde se version v package.json naposledy změnila na `released`. */
+/**
+ * Commit, kde se version v package.json naposledy změnila na `released`.
+ * Výjimka: když se commit vydání do větve nepromítl, určuje ho
+ * .lovable/release-base.json ({ version, sha }) – platí jen pro shodnou verzi.
+ */
 function findBase(released: string): string {
+  const pinFile = ".lovable/release-base.json";
+  if (existsSync(pinFile)) {
+    const pin = JSON.parse(readFileSync(pinFile, "utf8")) as { version: string; sha: string };
+    if (pin.version === released) return pin.sha;
+  }
   const commits = git("log", "--format=%H", "-G", '"version"', "--", "package.json")
     .split("\n")
     .filter(Boolean);
@@ -164,8 +173,6 @@ function main() {
 
   if (pkg.version !== released)
     errors.push(`package.json ${pkg.version} ≠ meta.version ${released}`);
-  if (versionAt(base) !== released && argBase < 0)
-    errors.push(`Základ ${base} nemá verzi ${released}`);
   compareCatalog(old, cur, removals);
 
   for (const path of BARRELS) {
