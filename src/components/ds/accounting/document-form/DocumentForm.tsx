@@ -206,39 +206,36 @@ export function DocumentForm(props: DocumentFormProps) {
   const showTaxNumber =
     ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
-  const formIssues = useDocumentFormIssues({
-    clientIssues: documentClientIssues({
-      value,
-      foreign,
-      vatRateField,
-      t,
-      fieldErrors,
-      fieldWarnings: effectiveFieldWarnings,
-      taxDocumentNumberWarning,
-      icoWarning,
-      readOnly,
-      invalidDates: Object.keys(invalidDates) as DocumentDateField[],
-      variableSymbolWarning: vsLink.warning,
-      variableSymbolLabel: t.variableSymbol,
-      taxNumberLabel: dsTexts.documentEdit.taxNumber,
-      fieldLabels: {
-        bankCode: dsTexts.documentEdit.bankCode,
-        bankIban: dsTexts.documentEdit.iban,
-        bankSwift: dsTexts.documentEdit.swift,
-        bankAccountKind: dsTexts.documentEdit.accountKind,
+  // Živý pruh + projekce položek do polí (rámeček + ikona + bublina) a buněk řádků.
+  const { issues: formIssueList, onValidationChange, issueFieldErrors, issueFieldWarnings, cellIssues } =
+    useDocumentFormFeedback({
+      validation: {
+        value,
+        foreign,
+        vatRateField,
+        t,
+        fieldErrors,
+        fieldWarnings: effectiveFieldWarnings,
+        taxDocumentNumberWarning,
+        icoWarning,
+        readOnly,
+        invalidDates: Object.keys(invalidDates) as DocumentDateField[],
+        variableSymbolWarning: vsLink.warning,
+        variableSymbolLabel: t.variableSymbol,
+        taxNumberLabel: dsTexts.documentEdit.taxNumber,
+        fieldLabels: {
+          bankCode: dsTexts.documentEdit.bankCode,
+          bankIban: dsTexts.documentEdit.iban,
+          bankSwift: dsTexts.documentEdit.swift,
+          bankAccountKind: dsTexts.documentEdit.accountKind,
+        },
       },
-    }),
-    issues: appIssues,
-    error,
-    validationActive,
-    rowLabel: dsTexts.journalEditor.row,
-    onValidationChange: linesEditorProps?.onValidationChange,
-  });
-  // Položky pruhu se promítají do polí (rámeček + ikona + bublina) a do buněk řádků.
-  const { issueFieldErrors, issueFieldWarnings, cellIssues } = useDocumentIssueProjection({
-    issues: formIssues.issues,
-    validationActive,
-  });
+      issues: appIssues,
+      error,
+      validationActive,
+      rowLabel: dsTexts.journalEditor.row,
+      onValidationChange: linesEditorProps?.onValidationChange,
+    });
   // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
   const dateLink =
     bankMovement && effectiveAccountingLink
