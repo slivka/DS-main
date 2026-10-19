@@ -1,4 +1,13 @@
-## DS 2.108.0 – Edit dokladu 15 (nevydáno)
+## DS 2.109.0 – DPH krok 4B (nevydáno)
+- [x] Verze srovnána na vydanou 2.108.0 (package.json i meta.version)
+- [x] computeVatGroups + unit testy podle DB scénářů
+- [x] Zrušen režim s DPH a ruční daň (deprecace), pevná daň se zámkem
+- [x] Pomocník Cena s DPH (buňka + detail řádku)
+- [x] Rekapitulace DPH se skupinami, úpravy dle dokladu, tolerance, cizí měna
+- [x] Patička Součet · Zaokrouhlení · Rozdíl s nabídkou dorovnání
+- [x] Showcase, unit, Chromium E2E, katalog, CHANGELOG, system.md
+
+## DS 2.108.0 – Edit dokladu 15
 - [x] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
 - [x] E2 VS se zámkem – DS jen zobrazuje náhled, ukládá stav vazby
 - [x] E3 ukázky totalMode sum

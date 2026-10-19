@@ -6,7 +6,7 @@
 - Běžná pole dokladu mají mřížku 14/3/3; data jsou ve flex řádku. DPH je vpravo, „Vstupuje do DPH“ vlevo; skrytí nemaže data a vazba ukazuje zámek.
 - Varování dat jdou přes `dateWarnings` do NoticeBar; období DPH patří do `vat.periodLabel` a podané období jej nahrazuje výstrahou.
 - Řádky DPH vytváří DB; DS je jen zobrazuje a předběžně počítá v `journal-vat.ts`.
-- Zaokrouhlení je poslední připnutý řádek `JournalLinesEditor`; lišta nabízí jen návrh a stav rozepsání.
+- Zaokrouhlení je poslední připnutý řádek `JournalLinesEditor`; Součet, Zaokrouhlení a Rozdíl s nabídkou dorovnání patří do patičky, lišta je nenabízí.
 - `JournalLinesEditor` měří vnitřní šířku; po kaskádě sníží auto zoom nejvýš na 0,75 a až pak roluje.
 
 - Reuse the existing numeric input typography for document totals; derive the embedded sum control size from control-h. Why: amount controls stay aligned with other form fields at every application zoom.
@@ -27,3 +27,6 @@
 - Gate document-date initialization writes with effective read-only state, including final statuses. Why: opening a finalized document must never mark it dirty.
 - Form issues flow through FormIssue (issues/saveFailed/validationActive); server items always show, client items after the first save attempt; the app removes server items via onFieldChange. Why: one deduplicated live list, never repeated messages.
 - A locked VS is a preview only; the DS stores just variableSymbolLinked. Why: the database owns variable_symbol_auto.
+
+- Daň skupin kód × sazba počítá jen `computeVatGroups` (stejně jako DB); editor rozpočtenou daň promítne do náhledu přes `applyVatAllocation`. Why: náhled, rekapitulace a součty dávají stejný výsledek jako databáze.
+- Stav otevřeného pomocníka Cena s DPH drží editor, ne buňka. Why: buňka se při aktivaci bubliny stavu přemontuje.
