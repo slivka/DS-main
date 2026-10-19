@@ -86,6 +86,16 @@ export function refreshCatalog() {
         `**Props:**\n\n| Prop | Type | Default |\n|---|---|---|\n${rows.join("\n")}`,
       );
     }
+    if (component === record) {
+      const example = component.examples?.at(-1);
+      if (example && !section.includes(example.label))
+        section = section.replace(
+          "**Avoid:**",
+          `**${example.label}:**\n\n\`\`\`tsx\n${example.code}\n\`\`\`\n\n**Avoid:**`,
+        );
+      const rule = component.antipatterns?.at(-1);
+      if (rule && !section.includes(rule)) section += `\n- ${rule}\n`;
+    }
     markdown = markdown.slice(0, start) + section + markdown.slice(end);
   }
   writeFileSync(reference, markdown);

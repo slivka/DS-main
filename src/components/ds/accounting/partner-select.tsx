@@ -107,7 +107,7 @@ export function PartnerSelect({
   const selected = partners.find((partner) => partner.id === value);
 
   return (
-    <div className="relative min-w-0">
+    <div className="relative flex min-w-0 items-center">
       <Popover open={open} onOpenChange={changeOpen}>
         <PopoverTrigger asChild>
           <Button
