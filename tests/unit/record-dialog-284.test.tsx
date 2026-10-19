@@ -125,7 +125,7 @@ describe("RecordDialog 2.84", () => {
 
   it("jediná záložka ukáže přímo obsah bez lišty", () => {
     const view = render(
-      <RecordDialog
+      <RecordDialog size="md"
         open
         onOpenChange={noop}
         title="Záznam"
@@ -138,7 +138,7 @@ describe("RecordDialog 2.84", () => {
 
   it("více záložek ponechá všechny panely vykreslené a neaktivní znepřístupní", () => {
     const view = render(
-      <RecordDialog
+      <RecordDialog size="md"
         open
         onOpenChange={noop}
         title="Záznam"

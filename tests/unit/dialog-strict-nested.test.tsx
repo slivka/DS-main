@@ -143,8 +143,8 @@ describe("RecordDialog – vnořený formulář", () => {
     const outerSubmit = mock(() => {});
     const innerSubmit = mock(() => {});
     const view = render(
-      <RecordDialog open onOpenChange={() => {}} title="Partner" onSubmit={outerSubmit}>
-        <RecordDialog
+      <RecordDialog size="md" open onOpenChange={() => {}} title="Partner" onSubmit={outerSubmit}>
+        <RecordDialog size="md"
           open
           onOpenChange={() => {}}
           title="Bankovní účet"
@@ -184,7 +184,7 @@ describe("RecordDialog – vnořený formulář", () => {
       );
     }
     const view = render(
-      <RecordDialog open onOpenChange={() => {}} title="Doklad" onSubmit={submit}>
+      <RecordDialog size="md" open onOpenChange={() => {}} title="Doklad" onSubmit={submit}>
         <Lines />
       </RecordDialog>,
     );
@@ -211,7 +211,7 @@ describe("RecordDialog – vnořený formulář", () => {
       mainAccountId: "321001",
     };
     const view = render(
-      <RecordDialog open onOpenChange={() => {}} title="Doklad" onSubmit={submit}>
+      <RecordDialog size="md" open onOpenChange={() => {}} title="Doklad" onSubmit={submit}>
         <TooltipProvider>
           <DocumentForm
             title="FP"

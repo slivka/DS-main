@@ -162,7 +162,7 @@ describe("B8 aktivní / neaktivní", () => {
     // Dialog se vykresluje do portálu; kontrolujeme, že se sestaví bez chyby.
     expect(() =>
       renderToStaticMarkup(
-        <RecordDialog
+        <RecordDialog size="md"
           open={false}
           onOpenChange={noop}
           title="Partner"
