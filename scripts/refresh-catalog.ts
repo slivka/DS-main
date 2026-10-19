@@ -64,8 +64,11 @@ export function refreshCatalog() {
   writeFileSync(reference, markdown);
   const previewPath = "src/.generated/mockup-components.ts";
   const preview = readFileSync(previewPath, "utf8");
-  writeFileSync(previewPath, preview.replace(
-    /("DocumentStatusBadge":.*?schemaProps: )\[.*?\](, file:)/,
-    `$1${JSON.stringify(status?.props ?? [])}$2`,
-  ));
+  writeFileSync(
+    previewPath,
+    preview.replace(
+      /("DocumentStatusBadge":.*?schemaProps: )\[.*?\](, file:)/,
+      `$1${JSON.stringify(status?.props ?? [])}$2`,
+    ),
+  );
 }
