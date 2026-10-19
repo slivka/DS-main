@@ -12,6 +12,11 @@
 - Výchozí `DocumentStatusBadge.approvedLabel` je přeložené „Schválen“; sm 1,25 rem a md 1,5 rem.
 - Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
 
+### Kontroly
+- `check:catalog` proti vydané 2.109.0 (29bdeb24): 470 → 470 komponent, 910 → 922 props; 12 přidaných props, žádné odebrané položky.
+- `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
+- Nový Chromium spec Design 3: 10/10; plná sada a Firefox/WebKit se v Lovable nespouštěly.
+
 ### Migrace
 - `Calendar.captionLayout` je deprecated od 2.110.0 a nemá účinek; používejte
   společnou hlavičku kalendáře. Odstranění v nejbližší major verzi.

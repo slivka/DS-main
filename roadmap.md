@@ -2,7 +2,10 @@
 - [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
 - [x] D1 záložky panelu, D2 tlačítka, D3 kalendář.
 - [x] D4 štítky a nadpis, D5 identita bez poskočení.
-- [ ] Ukázka, unit a dotčené E2E, check:full --harness, katalog.
+- [x] Ukázka Design 3, unit 847/847 (84 souborů), lint 0 chyb / 322 varování, formát a peněžní kontrola OK; check:full --harness 72,1 s.
+- [x] Chromium design-three.spec.ts 10/10; identita 70/100/200 % a šířky 1280/560, centrování štítku a stálý popover. Náhled build OK.
+- [x] Katalog proti 29bdeb24: 470 → 470 komponent, 910 → 922 props, bez ztrát.
+- [ ] Plná E2E v GitHub Actions včetně Firefox/WebKit – spouští Petr.
 
 ## DS 2.109.0 – DPH krok 4B
 - [x] Verze srovnána na vydanou 2.108.0 (package.json i meta.version)
