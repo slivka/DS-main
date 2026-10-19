@@ -50,6 +50,8 @@ const HEADER_FIELD_ID: Record<string, string> = {
 
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
 function headerLabelAlias(t: DocumentFormTexts, key: string): string | undefined {
+  // Některé popisky žijí v dsTexts.documentForm (DocumentForm předává sloučené texty).
+  const all = t as Partial<Record<string, string>>;
   const alias: Record<string, string | undefined> = {
     partnerId: t.partner,
     counterpartyName: t.partner,
@@ -57,7 +59,7 @@ function headerLabelAlias(t: DocumentFormTexts, key: string): string | undefined
     counterpartyDic: t.dic,
     companyBankAccountId: t.bankAccount,
     partnerBankAccountId: t.bankAccount,
-    paymentMethodId: t.paymentMethod,
+    paymentMethodId: all.paymentMethod,
     mainAccountId: t.mainAccountSelect,
     variableSymbolLinked: t.variableSymbol,
     totalMode: t.amountTotal,

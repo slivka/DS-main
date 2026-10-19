@@ -340,13 +340,14 @@ export function useJournalEditorState(
   );
   // Externí stavy buněk z pruhu položek (aplikace / server) se sloučí s vlastní validací.
   for (const issue of props.cellIssues ?? []) {
+    const column = issue.columnId as JournalLineColumn;
     if (issue.severity === "warning") {
       const row = vatWarnings.get(issue.rowId) ?? {};
-      if (!row[issue.columnId]) row[issue.columnId] = issue.message;
+      if (!row[column]) row[column] = issue.message;
       vatWarnings.set(issue.rowId, row);
     } else {
       const row = validations.get(issue.rowId) ?? {};
-      if (!row[issue.columnId]) row[issue.columnId] = issue.message;
+      if (!row[column]) row[column] = issue.message;
       validations.set(issue.rowId, row);
     }
   }
