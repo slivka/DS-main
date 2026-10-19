@@ -76,11 +76,13 @@ describe("A) Chyby řádků se mažou", () => {
     source: "server",
   };
   const clientCell: FormIssue = { ...serverCell, source: "client", message: "Doplňte účet" };
-  it("do buněk se promítají jen serverové položky; vlastní chyby editoru ne", () => {
-    const view = render(<ProjectionProbe issues={[serverCell, clientCell]} />);
+  it("do buněk se promítají serverové i klientské položky aplikace; vlastní chyby editoru ne", () => {
+    const editorCell: FormIssue = { ...clientCell, origin: "editor" };
+    const view = render(<ProjectionProbe issues={[serverCell, clientCell, editorCell]} />);
     const cells = JSON.parse(view.container.querySelector("output")!.dataset.cells!);
-    expect(cells).toHaveLength(1);
-    expect(cells[0].message).toBe("Účet neexistuje");
+    // Serverová i klientská položka od aplikace projdou; vlastní validace editoru ne.
+    expect(cells).toHaveLength(2);
+    expect(cells.map((cell: { message: string }) => cell.message)).toContain("Doplňte účet");
   });
   it("chyba buňky → oprava → položka pruhu i rámeček zmizí", () => {
     const view = render(<Doc issues={[serverCell]} />);
@@ -89,7 +91,7 @@ describe("A) Chyby řádků se mažou", () => {
     expect(view.container.textContent).not.toContain("Účet neexistuje");
     expect(view.container.querySelector('[data-slot="form-issues-bar"]')).toBeNull();
   });
-  it("validationActive=false skryje klientskou chybu pole, serverovou nechá", () => {
+  it("validationActive=false: serverová chyba zůstane v poli (rámeček), klientská zmizí", () => {
     const serverField: FormIssue = {
       fieldId: "document-taxDate",
       label: "DUZP",
@@ -98,8 +100,18 @@ describe("A) Chyby řádků se mažou", () => {
       source: "server",
     };
     const view = render(
-      <Doc validationActive={false} issues={[serverField]} fieldErrors={{ dueDate: "Klient" }} />,
+      <Doc
+        validationActive={false}
+        issues={[serverField]}
+        fieldErrors={{ dueDate: "Klient" }}
+        vat={{ visible: true }}
+      />,
     );
+    // Rámeček / ikona v samotném poli: DUZP (server) označené, Splatnost (klient) ne.
+    const taxDate = view.container.querySelector("#document-taxDate")!;
+    expect(taxDate.closest("[data-invalid]")?.getAttribute("data-invalid")).toBe("true");
+    const dueDate = view.container.querySelector("#document-dueDate")!;
+    expect(dueDate.closest("[data-invalid]")).toBeNull();
     expect(view.container.textContent).toContain("Chyba z DB na DUZP");
     expect(view.container.textContent).not.toContain("Klient");
   });
