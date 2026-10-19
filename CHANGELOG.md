@@ -2,6 +2,12 @@
 
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
+### Opravy po kontrole 2.108.0 (páté kolo)
+- BA: chyba čísla účtu, IBAN, kódu banky i SWIFT z `issues` (server i klient) se promítne do správného pole. Zpětné mapování id → klíč je explicitní tabulka; sdílená id (`document-movement-account`, `document-bank-code`) rozlišuje typ dokladu a `bankAccountKind`.
+- Popisky `bookId`, `taxDocumentNumber`, `taxDocumentNumberLinked` doplněny; test selže, když popisek chybí nebo zazní `console.warn`.
+- fieldId: `taxDocumentNumberLinked` → `document-taxDocumentNumber`; `bookId` a `direction` → `document-identity` (nové id identifikačního řádku; odznak směru dál `document-direction`); zamčený účet přijatého dokladu má `id="document-bankAccount"`.
+- `BankStatementForm` se zastaralým `status="checked"` zůstává zamčený s důvodem `bankStatement.locked` („Výpis je uzamčený“, nový klíč CS/SK).
+
 ### BREAKING
 - **Řádky jsou vždy bez DPH.** `JournalLinesVat.calcMode` a `onCalcModeChange` jsou @deprecated (odstraní se ve 3.0.0) a ignorované; přepínač Bez / S DPH v liště zmizel. Typ `VatCalcMode`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromGross` zůstávají exportované jako @deprecated.
 - **Ruční daň na řádku zrušena.** Buňka DPH ani Celkem s DPH se needitují, akce „Vrátit vypočtenou daň“ v řádku zmizela. `toJournalRow(s)` už neposílá `vat_manual`, `vat_amount_foreign` ani `amount_gross`. Řádek s `vatManual` z DB je pevná systémová daň (odpočet zálohy, import) – jen zobrazení se zámkem a bublinou.

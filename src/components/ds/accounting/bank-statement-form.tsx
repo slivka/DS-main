@@ -131,7 +131,10 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       ? t.lockedReadOnly
       : status === "posted"
         ? t.lockedPosted
-        : undefined;
+        : // Zastaralý stav `checked` zůstává zamčený s obecným důvodem.
+          status === "checked"
+          ? t.locked
+          : undefined;
     const difference = statementDifference(value.bankClosing, balances);
     const patch = (next: Partial<BankStatementValue>) => {
       if (!locked) onChange({ ...value, ...next });

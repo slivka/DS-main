@@ -114,9 +114,7 @@ export function FieldFeedbackIndicator({
             placement === "inside" &&
               "absolute top-[calc(var(--control-h)/2)] z-10 -translate-y-1/2",
             placement === "inside" &&
-              (side === "start"
-                ? "left-[0.5em]"
-                : "right-[var(--field-feedback-offset,0.75rem)]"),
+              (side === "start" ? "left-[0.5em]" : "right-[var(--field-feedback-offset,0.75rem)]"),
             placement === "label" && "inline-flex shrink-0 items-center",
             error ? "text-destructive" : "text-warning-strong",
             className,

@@ -9,7 +9,7 @@ import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
-import { headerFieldKeyFromId } from "./document-validation-feedback";
+import { headerFieldKeyFromId, type HeaderFieldKeyContext } from "./document-validation-feedback";
 import type {
   DocumentAccountingDateLink,
   DocumentDateField,
@@ -29,10 +29,9 @@ export interface DocumentFieldRenderersArgs {
   onInvalidDate?: (key: DocumentDateField, invalid: boolean) => void;
 }
 /** Klíč pole hlavičky z id ovládání; výběr partnera patří k partnerId. */
-export function headerFieldKey(id: string): DocumentHeaderField {
-  // Obrácené mapování přes stejnou tabulku jako headerFieldId (ne odřezáním prefixu).
-  const key = headerFieldKeyFromId(id);
-  return (key === "partner" ? "partnerId" : key) as DocumentHeaderField;
+export function headerFieldKey(id: string, ctx?: HeaderFieldKeyContext): DocumentHeaderField {
+  // Obrácené mapování přes explicitní tabulku id → klíč (ne odřezáním prefixu).
+  return headerFieldKeyFromId(id, ctx) as DocumentHeaderField;
 }
 /** Vrátí jednotné vykreslovače běžných, datových a našeptávaných polí. */
 export function useDocumentFieldRenderers({

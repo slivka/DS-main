@@ -71,7 +71,8 @@ export function variableSymbolLinkState(
     sourcePatch: (next) => {
       if (!supported) return next;
       // Odvozený stav vazby se při změně zdroje zafixuje, jinak by ho nový náhled přepnul.
-      if (value.variableSymbolLinked === undefined) next = { ...next, variableSymbolLinked: linked };
+      if (value.variableSymbolLinked === undefined)
+        next = { ...next, variableSymbolLinked: linked };
       if (!received || !linked) return next;
       const nextDerived = deriveVariableSymbol(variableSymbolSource({ code, ...value, ...next }));
       if (nextDerived.reason !== "tooLong" && nextDerived.reason !== "noDigits") return next;

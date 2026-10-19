@@ -95,9 +95,7 @@ const header = {
   currency: "CZK",
 };
 function Doc(props: Record<string, unknown>) {
-  const [value, setValue] = React.useState(
-    (props.initial as typeof header | undefined) ?? header,
-  );
+  const [value, setValue] = React.useState((props.initial as typeof header | undefined) ?? header);
   return (
     <DocumentForm
       title="Doklad"
@@ -165,10 +163,7 @@ describe("DocumentForm – opravy pruhu", () => {
   });
   it("vydaný koncept bez čísla ukáže „přidělí se při zařazení“", () => {
     const view = render(
-      <Doc
-        documentType="FV"
-        initial={{ ...header, number: null, variableSymbolLinked: true }}
-      />,
+      <Doc documentType="FV" initial={{ ...header, number: null, variableSymbolLinked: true }} />,
     );
     const vs = view.container.querySelector("#document-variableSymbol") as HTMLInputElement;
     expect(vs.placeholder).toContain("přidělí se při zařazení");
@@ -212,7 +207,9 @@ describe("BankStatementForm – rozdíl v pruhu", () => {
     const view = render(<Statement />);
     const bar = view.container.querySelector('[data-slot="form-issues-bar"]');
     expect(bar?.textContent).toContain("Rozdíl");
-    expect(view.container.querySelector('[data-slot="bank-statement-difference-notice"]')).toBeNull();
+    expect(
+      view.container.querySelector('[data-slot="bank-statement-difference-notice"]'),
+    ).toBeNull();
   });
   it("bez rozdílu se pruh neukáže", () => {
     const view = render(<Statement />);

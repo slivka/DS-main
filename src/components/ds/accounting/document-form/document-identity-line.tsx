@@ -154,6 +154,7 @@ export function DocumentIdentityLine({
     );
   return (
     <IdentityLine
+      id="document-identity"
       data-slot="document-identity"
       items={items}
       number={number}
