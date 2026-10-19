@@ -29,5 +29,6 @@ test("VS zámek: náhled, odemčení se stejnou hodnotou, uvolnění při > 10 �
   await external.fill("12345678901");
   await expect(vs).not.toHaveAttribute("readonly", "");
   await expect(vs).toHaveValue("20260456");
-  await expect(vs).toHaveAttribute("aria-invalid", "true");
+  // Varování = žlutý rámeček (aria-invalid je jen pro chyby).
+  await expect(vs).toHaveClass(/border-warning/);
 });
