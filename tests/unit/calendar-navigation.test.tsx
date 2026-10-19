@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test, mock } from "bun:test";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Calendar } from "../../src/components/ui/calendar";
 import { DocumentStatusBadge } from "../../src/components/ds/accounting/document-status-badge";
+import { MonthYearSelect } from "../../src/components/ds/form/month-year-select";
 import { calendarMonthNames } from "../../src/components/ui/calendar-views";
 
 afterEach(cleanup);
@@ -84,5 +85,36 @@ describe("Calendar navigation", () => {
     render(<DocumentStatusBadge status="posted" approved />);
     expect(screen.getByText("Schválen")).toBeDefined();
     expect(screen.queryByText("Schvájen")).toBeNull();
+  });
+  test("šipka mění fokus v mřížce měsíců", () => {
+    render(<Calendar mode="single" selected={date} />);
+    fireEvent.click(screen.getByRole("button", { name: /říjen 2026/i }));
+    const october = screen.getByRole("button", { name: "říjen", exact: true });
+    october.focus();
+    fireEvent.keyDown(october, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "listopad", exact: true }),
+    );
+  });
+  test("PageDown a Shift PageDown mění měsíc a rok", () => {
+    const { container } = render(<Calendar mode="single" selected={date} />);
+    const day = container.querySelector<HTMLButtonElement>('button[data-day="2026-10-19"]');
+    if (!day) throw new Error("Chybí den");
+    day.focus();
+    fireEvent.keyDown(day, { key: "PageDown" });
+    expect(screen.getByRole("button", { name: /listopad 2026/i })).toBeDefined();
+    const next = document.activeElement;
+    if (!next) throw new Error("Chybí fokus");
+    fireEvent.keyDown(next, { key: "PageDown", shiftKey: true });
+    expect(screen.getByRole("button", { name: /listopad 2027/i })).toBeDefined();
+  });
+  test("MonthYearSelect navigace roku nevybírá hodnotu; měsíc vybere", () => {
+    const change = mock();
+    render(<MonthYearSelect value="2026-10" onChange={change} minYear={2020} maxYear={2030} />);
+    fireEvent.click(screen.getByRole("button", { name: "Měsíc / Rok" }));
+    fireEvent.click(screen.getByRole("button", { name: "Další", exact: true }));
+    expect(change).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "listopad", exact: true }));
+    expect(change).toHaveBeenCalledWith("2027-11");
   });
 });

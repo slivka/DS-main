@@ -13,6 +13,8 @@ export interface CalendarViewsProps {
   today: Date;
   isAllowed: (from: Date, to: Date) => boolean;
   onMonth: (month: Date) => void;
+  /** Výběr konkrétního měsíce. */
+  onMonthSelect?: (month: Date) => void;
   onView: (view: "days" | "months" | "years") => void;
 }
 /** Celá jména měsíců v prvním pádě. */
@@ -29,6 +31,7 @@ export function CalendarViews({
   today,
   isAllowed,
   onMonth,
+  onMonthSelect,
   onView,
 }: CalendarViewsProps) {
   const ds = useDsTexts();
@@ -121,7 +124,9 @@ export function CalendarViews({
               }
               className={cn("h-full px-1 text-sm", current && "border border-primary")}
               onClick={() => {
-                onMonth(new Date(y, view === "years" ? month.getMonth() : m, 1));
+                const next = new Date(y, view === "years" ? month.getMonth() : m, 1);
+                onMonth(next);
+                if (view === "months") onMonthSelect?.(next);
                 onView(view === "years" ? "months" : "days");
               }}
             >

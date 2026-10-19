@@ -82,7 +82,11 @@ function Calendar({
     allowed(today, today) && (!props.disabled || !dateMatchModifiers(today, props.disabled));
   React.useEffect(() => {
     if (view === "days")
-      shell.current?.querySelector<HTMLButtonElement>("button[data-day]:not(:disabled)")?.focus();
+      (
+        shell.current?.querySelector<HTMLButtonElement>(
+          'button[data-selected-single="true"]:not(:disabled)',
+        ) ?? shell.current?.querySelector<HTMLButtonElement>("button[data-day]:not(:disabled)")
+      )?.focus();
   }, [view]);
   return (
     <div
@@ -108,10 +112,8 @@ function Calendar({
             selected={selected}
             today={today}
             isAllowed={allowed}
-            onMonth={(next) => {
-              changeMonth(next);
-              if (view === "months" && onMonthSelect) onMonthSelect(next);
-            }}
+            onMonth={changeMonth}
+            onMonthSelect={onMonthSelect}
             onView={(next) => {
               if (!(next === "days" && onMonthSelect)) setView(next);
             }}
