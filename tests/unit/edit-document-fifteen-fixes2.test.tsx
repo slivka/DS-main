@@ -191,7 +191,7 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
         value: { ...header, amountTotal: 0 } as DocumentHeaderValue,
         foreign: false,
         t: T,
-        fieldErrors: { neexistujiciKlic: "x" } as never,
+        fieldErrors: JSON.parse('{"neexistujiciKlic":"x"}') as Partial<Record<string, string>>,
       }),
     ).toThrow(/neexistujiciKlic/);
   });
