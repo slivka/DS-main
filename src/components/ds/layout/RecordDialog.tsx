@@ -17,7 +17,7 @@ import {
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import { SectionHeading } from "./section-heading";
-import { PageTabs } from "./page-tabs";
+import { RecordDialogTabs } from "./record-dialog-tabs";
 import { StatusBadge } from "../data-display/status-badge";
 import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
@@ -342,36 +342,7 @@ export function RecordDialog({
             {children}
             {tabs?.length === 1 ? tabs[0]?.content : null}
             {tabs && tabs.length > 1 ? (
-              <PageTabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                items={tabs.map(({ value, label, disabled }) => ({
-                  value,
-                  label,
-                  ...(disabled !== undefined ? { disabled } : {}),
-                }))}
-                listLabel={dsTexts.recordDialog.detailSections}
-              >
-                <div className="mt-3 grid">
-                  {tabs.map((tab) => {
-                    const active = tab.value === activeTab;
-                    return (
-                      <div
-                        key={tab.value}
-                        role="tabpanel"
-                        aria-hidden={!active}
-                        inert={!active}
-                        className={cn(
-                          "col-start-1 row-start-1 min-w-0",
-                          !active && "invisible pointer-events-none",
-                        )}
-                      >
-                        {tab.content}
-                      </div>
-                    );
-                  })}
-                </div>
-              </PageTabs>
+              <RecordDialogTabs tabs={tabs} value={activeTab} onValueChange={setActiveTab} />
             ) : null}
           </RecordReadOnlyProvider>
           <RecordDialogErrorStrip error={error} fieldErrors={fieldErrors} />
