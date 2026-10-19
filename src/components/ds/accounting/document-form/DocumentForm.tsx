@@ -240,8 +240,9 @@ export function DocumentForm(props: DocumentFormProps) {
     bankMovement,
     showTaxNumber,
     taxDocumentNumberWarning,
-    // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
-    fieldErrors: validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
+    // Neaktivní validace skrývá jen klientské chyby; serverové chyby z projekce a žlutá
+    // varování zůstávají v polích vždy (projekce klientské chyby sama vyfiltruje).
+    fieldErrors: { ...(validationActive === false ? {} : fieldErrors), ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
@@ -430,6 +431,9 @@ export function DocumentForm(props: DocumentFormProps) {
                     bankCodes: props.bankCodes,
                     bankCodeOptions: props.bankCodeOptions,
                     disabled: !can("bankAccount"),
+                    // Projekce chyb a varování do polí protiúčtu (Druh účtu, Číslo/IBAN, Kód/SWIFT).
+                    fieldErrors: issueFieldErrors,
+                    fieldWarnings: issueFieldWarnings,
                   }
                 : undefined
             }

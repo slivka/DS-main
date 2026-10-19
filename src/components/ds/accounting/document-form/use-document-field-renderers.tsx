@@ -29,8 +29,8 @@ export interface DocumentFieldRenderersArgs {
 }
 /** Klíč pole hlavičky z id ovládání; výběr partnera patří k partnerId. */
 export function headerFieldKey(id: string): DocumentHeaderField {
-  const key = id.replace("document-", "");
-  // Id ovládání odpovídá klíči hlavičky (výjimka: partner → partnerId).
+  // Obrácené mapování přes stejnou tabulku jako headerFieldId (ne odřezáním prefixu).
+  const key = headerFieldKeyFromId(id);
   return (key === "partner" ? "partnerId" : key) as DocumentHeaderField;
 }
 /** Vrátí jednotné vykreslovače běžných, datových a našeptávaných polí. */
