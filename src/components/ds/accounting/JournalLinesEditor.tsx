@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { ColumnResizeHandle } from "../grid/grid-column-resize";
 import { GridZoomContext, ZoomGrid } from "../grid/grid-zoom";
 import { JournalFooter } from "./JournalFooter";
+import { JournalGrossHelperPopover } from "./journal-gross-helper";
 import { JournalDifferenceBar } from "./journal-difference-bar";
 import { JournalVatRecap } from "./journal-vat-recap";
 import { JournalRow } from "./JournalRow";
@@ -149,10 +150,12 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
   function JournalLinesEditor(props, forwardedRef) {
     const editor = useJournalEditorState(props, forwardedRef);
     const keyboard = useJournalKeyboard(editor);
+    // Stálá hodnota kontextu: nový objekt jen při změně stavu, ne při každém vykreslení.
+    const contextValue = React.useMemo(() => ({ editor, keyboard }), [editor, keyboard]);
     const { layout, totals, t, vatOn } = editor;
     const { recap = {}, recapTabs = [], storageKey = "journal-lines" } = props;
     return (
-      <JournalEditorContext.Provider value={{ editor, keyboard }}>
+      <JournalEditorContext.Provider value={contextValue}>
         <GridZoomContext.Provider
           value={{ zoom: layout.zoom, setZoom: layout.setZoom, density: layout.density }}
         >
@@ -164,6 +167,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             <JournalToolbar />
             <JournalGrid />
             <JournalVatRecap />
+            <JournalGrossHelperPopover />
             <JournalDifferenceBar />
             <JournalLinesRecap
               lines={

@@ -21,6 +21,8 @@ export const SK_VAT_GROUPS: JournalVatGroupsTexts = {
   resetVat: "Vrátiť vypočítanú daň",
   apply: "Použiť",
   cancel: "Zrušiť",
+  overrideZeroBase: "DPH podľa dokladu pri {group} nie je možné zadať pri nulovom základe",
+  calculatedInfo: "Vypočítaná daň a rozdiel",
   overTolerance:
     "DPH podľa dokladu pri {group} sa líši od vypočítanej o {difference} – nad toleranciou",
   fixedTax: "Pevná daň – odpočet zálohy / dovoz",

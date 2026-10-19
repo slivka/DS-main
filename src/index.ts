@@ -101,3 +101,4 @@ export {
 export * from "./components/ds/feedback/field-error-summary";
 export * from "./components/ds/feedback/form-issues-bar";
 export * from "./components/ds/grid/cell-status-tooltip";
+export { exactSum, mulDivRound, roundHalfAwayFromZero } from "./lib/decimal-round";

@@ -64,9 +64,12 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
         fieldId: error.fieldId,
         rowId: error.rowId,
         columnId: error.columnId,
-        label: `${a.rowLabel} ${error.line} – ${labels[error.field as keyof typeof labels] ?? texts.row}`,
+        label:
+          error.line === undefined
+            ? (error.label ?? texts.row)
+            : `${a.rowLabel} ${error.line} – ${labels[error.field as keyof typeof labels] ?? texts.row}`,
         message: error.message,
-        severity: "error",
+        severity: error.severity ?? "error",
         source: "client",
         // Vlastní validace editoru – do buněk se nepromítá (editor ji vykresluje sám).
         origin: "editor",

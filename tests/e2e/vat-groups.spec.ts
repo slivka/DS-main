@@ -17,7 +17,12 @@ test.describe.configure({ timeout: 180_000 });
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("vat-groups-showcase")).toBeVisible({ timeout: 90_000 });
+  // Ukázka se připojí až při posunu k ní (po hydrataci stránky).
+  const heading = page.getByRole("heading", { name: "Skupiny DPH (2.109.0)" });
+  await expect(async () => {
+    await heading.scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("vat-groups-showcase")).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 30_000 });
   // Velká stránka hydratuje několik sekund; interakce až s Reactem na tlačítkách ukázky.
   await page.waitForFunction(
     () => {
@@ -68,13 +73,20 @@ test("Dorovnat DPH zapíše přepis skupiny a vyrovná rozdíl", async ({ page }
   await expect(fp.locator('[data-slot="journal-lines-remaining"]')).toHaveCount(0);
 });
 
-test("Dorovnat základ změní řádek v mřížce", async ({ page }) => {
-  const fp = page.getByTestId("vat-groups-fp");
+test("Dorovnat základ vynuluje Rozdíl; u haléřového rozdílu se nenabízí", async ({ page }) => {
+  const root = page.getByTestId("vat-groups-base");
   const item = page.locator('[data-action="base"]');
-  await clickUntil(fp.locator('[data-slot="journal-difference-actions"]'), () =>
+  await clickUntil(root.locator('[data-slot="journal-difference-actions"]'), () =>
     expect(item).toBeVisible({ timeout: 1000 }),
   );
   await item.focus();
   await page.keyboard.press("Enter");
-  await expect(fp.locator('[data-slot="journal-vat-group"]')).toContainText("82,65");
+  await expect(root.locator('[data-slot="journal-lines-remaining"]')).toHaveCount(0);
+  await expect(root.locator('[data-slot="journal-vat-group"]')).toContainText("1 004,13");
+  // 82,64 / cíl 100,00: žádný základ nedá přesně 100,00 → jen Dorovnat DPH.
+  const fp = page.getByTestId("vat-groups-fp");
+  await clickUntil(fp.locator('[data-slot="journal-difference-actions"]'), () =>
+    expect(page.locator('[data-action="vat"]')).toBeVisible({ timeout: 1000 }),
+  );
+  await expect(page.locator('[data-action="base"]')).toHaveCount(0);
 });

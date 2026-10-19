@@ -423,6 +423,8 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Editor řádků zapínejte propem `vat`; kódy DPH filtruje aplikace (směr, aktivní, platnost k Datu DPH). Ukládejte přes `toJournalRows` – nikdy neposílá `vat_rate`, `vat_amount`, `vat_base_dom`, `is_vat_line`, `vat_parent_line_id`.
 - Řádky dokladu jsou vždy bez DPH; režim zadání s DPH ani ruční daň na řádku neexistují. Částku s DPH převádí jen pomocník „Cena s DPH“ v buňce. Pevná systémová daň (`vatManual` z DB) se jen zobrazuje.
 - Daň skupin kód × sazba počítá DB; náhled v DS dává `computeVatGroups` se stejným výsledkem. Přepisy „dle dokladu“ řídí aplikace (`vatOverrides` / `onVatOverridesChange`) a ukládá je s řádky jako `_vat_overrides`; samovyměření a kód bez daně přepis nemají.
+- Částky a daň zaokrouhlujte jen přes `roundHalfAwayFromZero` / `mulDivRound` (polovina od nuly jako Postgres `round(numeric, n)`), nikdy `Math.round` – jinak se náhled liší od DB.
+- Zaúčtovaný doklad ukazuje rekapitulaci DPH z uložených řádků (`vatGroupsFromStored`), jen ke čtení.
 - Závažnost přepisu nad tolerancí ±1,00 (v měně firmy kurzem DPH) určuje aplikace přes `vatOverrideSeverity`.
 - Rozdíl proti zadané částce řeší patička editoru (Dorovnat DPH / základ / Zaokrouhlení do `roundingLimit`); zaokrouhlení nikdy nenavrhuj automaticky ani nad limit.
 - Značky měn v popiscích DPH vždy z dat (pravidlo 18); kód DPH ve výběru jako „kód – název“ (pravidlo 9).

@@ -358,26 +358,32 @@ export function useJournalEditorState(
       validations.set(issue.rowId, row);
     }
   }
-  const validationErrors = [
+  const validationErrors: Parameters<
+    NonNullable<JournalLinesEditorProps["onValidationChange"]>
+  >[1] = [
     ...numberJournalErrors(lines, validations),
-    ...vatGroups.groupIssues
-      .filter((issue) => issue.severity === "error")
-      .map((issue) => ({
-        line: 0,
-        field: "vatGroup",
-        message: issue.message,
-        fieldId: issue.fieldId,
-      })),
+    // Položky skupin (chyba i varování) patří ke skupině, ne k řádku – bez `line`.
+    ...vatGroups.groupIssues.map((issue) => ({
+      field: "vatGroup",
+      label: issue.label,
+      message: issue.message,
+      fieldId: issue.fieldId,
+      severity: issue.severity,
+    })),
   ];
+  const errorCount = validationErrors.filter((item) => item.severity !== "warning").length;
   const validationSignature = JSON.stringify(validationErrors);
   const validationChangeRef = React.useRef(props.onValidationChange);
   React.useEffect(() => {
     validationChangeRef.current = props.onValidationChange;
   }, [props.onValidationChange]);
   React.useEffect(() => {
-    validationChangeRef.current?.(validationErrors.length, validationErrors);
+    validationChangeRef.current?.(errorCount, validationErrors);
   }, [validationSignature]); // eslint-disable-line react-hooks/exhaustive-deps -- hlásí jen skutečnou změnu chyb
-  const allocatedById = new Map(vatGroups.allocatedLines.map((line) => [line.id, line]));
+  const allocatedById = React.useMemo(
+    () => new Map(vatGroups.allocatedLines.map((line) => [line.id, line])),
+    [vatGroups.allocatedLines],
+  );
   const displayValue = (line: JournalLine, column: ColumnId) =>
     journalDisplayValue(
       VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line,

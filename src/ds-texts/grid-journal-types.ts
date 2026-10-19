@@ -233,6 +233,10 @@ export interface JournalVatGroupsTexts {
   cancel: string;
   /** Rozdíl přepisu nad tolerancí; `{group}`, `{difference}`. */
   overTolerance: string;
+  /** Přepis daně ≠ 0 u skupiny s nulovým základem ({group}). */
+  overrideZeroBase: string;
+  /** Popisek bubliny „vypočteno · rozdíl“ u přepsané daně. */
+  calculatedInfo: string;
   /** Bublina pevné daně. */
   fixedTax: string;
   /** Pomocník Cena s DPH (název ikony). */

@@ -5,7 +5,7 @@
  * Nesmí: počítat daň – výsledek dodává useJournalVatGroups (stejný výpočet jako databáze).
  */
 import * as React from "react";
-import { AlertTriangle, ChevronRight, Pencil } from "lucide-react";
+import { AlertTriangle, ChevronRight, Info, Pencil } from "lucide-react";
 
 import { formatAmount } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -85,20 +85,25 @@ function GroupAdjust({ group }: { group: VatGroup }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 space-y-3" data-slot="journal-vat-adjust-content">
-        <AdjustField
-          id={`${baseId}-vat`}
-          label={texts.vatByDocument}
-          initial={group.tax}
-          applyLabel={texts.apply}
-          onApply={(value) => run("vat", value)}
-        />
-        <AdjustField
-          id={`${baseId}-gross`}
-          label={texts.grossByDocument}
-          initial={group.gross}
-          applyLabel={texts.apply}
-          onApply={(value) => run("gross", value)}
-        />
+        {/* Nulový základ: DB přepis ≠ 0 odmítne (vat_override_zero_base) – a/b se nenabízí. */}
+        {group.base !== 0 ? (
+          <>
+            <AdjustField
+              id={`${baseId}-vat`}
+              label={texts.vatByDocument}
+              initial={group.tax}
+              applyLabel={texts.apply}
+              onApply={(value) => run("vat", value)}
+            />
+            <AdjustField
+              id={`${baseId}-gross`}
+              label={texts.grossByDocument}
+              initial={group.gross}
+              applyLabel={texts.apply}
+              onApply={(value) => run("gross", value)}
+            />
+          </>
+        ) : null}
         <AdjustField
           id={`${baseId}-base`}
           label={texts.baseByDocument}
@@ -136,8 +141,9 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
         data-warning={issue?.severity === "warning" || undefined}
         className={cn(
           CELL,
-          issue?.severity === "error" && "text-destructive",
-          issue?.severity === "warning" && "text-warning",
+          // Rámeček uvnitř buňky – stav nemění výšku řádku (pravidlo 2.107).
+          issue?.severity === "error" && "text-destructive ring-1 ring-inset ring-destructive",
+          issue?.severity === "warning" && "text-warning ring-1 ring-inset ring-warning",
         )}
       >
         <span className="inline-flex items-center justify-end gap-1">
@@ -149,14 +155,27 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
               <TooltipContent>{issue.message}</TooltipContent>
             </Tooltip>
           ) : null}
+          {group.overridden ? (
+            // Vypočtená daň a rozdíl v bublině – pod částkou nic, výška řádku stálá.
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  data-slot="journal-vat-calculated"
+                  aria-label={`${texts.calculatedInfo}: ${texts.calculated} ${amount(group.calculatedTax)} · ${texts.difference} ${amount(group.difference)}`}
+                  className="inline-flex text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <Info className="size-[0.9em]" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {texts.calculated} {amount(group.calculatedTax)} · {texts.difference}{" "}
+                {amount(group.difference)}
+              </TooltipContent>
+            </Tooltip>
+          ) : null}
           {amount(group.tax)}
         </span>
-        {group.overridden ? (
-          <span data-slot="journal-vat-calculated" className="block text-xs text-muted-foreground">
-            {texts.calculated} {amount(group.calculatedTax)} · {texts.difference}{" "}
-            {amount(group.difference)}
-          </span>
-        ) : null}
       </td>
       <td className={CELL}>{amount(group.gross)}</td>
       {showHome ? (

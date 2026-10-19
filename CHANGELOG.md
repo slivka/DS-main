@@ -3,6 +3,16 @@
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
 ### Opravy
+- **Zaokrouhlení jako DB:** všechny výpočty DPH (daň skupiny, rozpočet na řádky, pomocník Cena s DPH, `taxFromGrossTotal`, sloupce v měně firmy) používají `roundHalfAwayFromZero` / `mulDivRound` – polovina od nuly v celých jednotkách jako Postgres `round(numeric, 2)` (10,075 → 10,08; −7,875 → −7,88). Dříve Math.round dával na záporných a hraničních hodnotách jiné výsledky.
+- **Zaúčtovaný doklad** má rekapitulaci DPH z uložených řádků (daň z řádků daně DB, přepisy jako „dle dokladu“), bez úprav a bez pomocníka (`vatGroupsFromStored`).
+- **Výkon:** pomocník Cena s DPH je v buňce jen lehké tlačítko, okno je jedno na editor; výpočet skupin a mapa rozpočtených řádků jsou memoizované. Ukázka skupin DPH se připojí až při posunu k ní.
+- **Tolerance přepisu** jako DB `document_vat_validate`: |přepis − vypočtená| × kurz se porovnává nezaokrouhleně (0,04 × 25,10 = 1,004 → mimo toleranci).
+- **Přepis při nulovém základu:** úpravy DPH / Celkem dle dokladu se nenabízejí; existující přepis ≠ 0 je položka pruhu (`overrideZeroBase`).
+- **Položky skupin DPH** jdou do `onValidationChange` jako chyba i varování (`severity`, `label`, bez `line`); `count` počítá jen chyby. BREAKING (typy): `errors[].line` je volitelné.
+- **Dorovnat základ** vynuluje Rozdíl: u skupiny s přepisem posune základ o celý rozdíl, bez přepisu hledá posun, po kterém základ + round(Σ × sazba / 100) dá cíl; když neexistuje, nabídka ho nenabízí.
+- **Zaokrouhlení v nabídce Rozdílu** jen když |stávající zaokrouhlení + rozdíl| ≤ limit; u cizí měny se limit (v měně firmy) přepočte kurzem dokladu.
+- **Rekapitulace a výška řádku (2.107):** „vypočteno · rozdíl“ je v bublině ikony ⓘ, stav skupiny je rámeček uvnitř buňky – výška řádku se nemění.
+- **Patička:** jediný řádek Součet v mřížce (bez samostatného „Celkem“, bez zaokrouhlení); lišta nese Zaokrouhlení a Rozdíl. Celkovou částku lišta ukáže jen při skrytém sloupci s DPH (`journal-footer-sum-total`).
 - `DocumentForm` (FP, ZFP, ZFV, DDPOZ): otevření existujícího dokladu nic nezapisuje ani nevolá `onChange`. Stav vazby Datum účetního případu ↔ Datum vystavení se u existujícího dokladu odvodí z dat (`!issueDate || accountingDate === issueDate`) a přepočítá se při změně id. Nastavení `accountingDateLinked` platí jen pro nový doklad. Dříve se odpojené datum při otevření přepsalo na datum vystavení a doklad se zaúčtoval do špatného období. Řízený `accountingDateLink` beze změny.
 - Rekapitulace DPH: sloupce v měně firmy řídí aplikace přes `recap.vatHomeOpen` / `recap.onVatHomeOpenChange` (bez nich se přepínač nezobrazí). U zaúčtovaného dokladu se rekapitulace zobrazí jen ke čtení, místo aby zmizela.
 
@@ -35,7 +45,8 @@
 5. Testy a selektory na `journal-lines-rounding` nahraďte `journal-footer-rounding`.
 
 ### Katalog
-- design-system.json: 438 komponent / 855 props → 447 / 894. Vráceny položky chybějící proti `8db33914` (FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip a 18 props); nic neubylo.
+- design-system.json proti poslední vydané 2.108.0 (`03f1c677`): **449 komponent / 890 props → 469 / 907**; nic neubylo. Předchozí údaj „nic neubylo“ byl počítán proti `8db33914` a nebyl pravdivý: proti 2.108.0 chyběly `DocumentAccountingDateLink`, `FormIssue`, `formIssuesTitle`, `mergeFormIssues`, `visibleFormIssues`, `deriveVariableSymbol` a props `DocumentForm.issues`, `saveFailed`, `onIssuesClose`, `onFieldChange`, `validationActive`, `bankCodeOptions`, `value.variableSymbolLinked`, `JournalLinesEditor.cellIssues`, `BankStatementForm.value.bankClosing` – vráceny.
+- Nové záznamy: `allocateVatGroupTax`, `applyVatAllocation`, `baseDeltaForDifference`, `baseFromGrossAmount`, `computeVatGroups`, `largestBaseLineId`, `removeVatOverride`, `resolveDifferenceActions`, `taxFromGrossTotal`, `upsertVatOverride`, `vatGroupsFromStored`, `roundHalfAwayFromZero`, `mulDivRound`, `exactSum`, typy `JournalVatOverride`, `VatGroup`, `VatGroupLineShare`, `VatFixedTax`, `VatGroupsResult`, `ComputeVatGroupsOptions`; props `JournalLinesEditor.vatOverrides`, `onVatOverridesChange`, `vatExchangeRate`, `vatExchangeRateAmount`, `roundingLimit`, `onRoundingChange`, `vatOverrideSeverity`, `AccountSelect.id`, `VsField` (9 props).
 
 ## 2.108.0 – Edit dokladu 15
 
