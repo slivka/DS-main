@@ -45,6 +45,9 @@ test("Calendar zachovává velikost popoveru ve třech pohledech", async ({ page
   const shell = page
     .getByRole("dialog")
     .filter({ has: page.locator('[data-slot="calendar-shell"]') });
+  await shell.evaluate(async (e) => {
+    await Promise.all(e.getAnimations().map((a) => a.finished));
+  });
   const days = await shell.boundingBox();
   await shell.getByRole("button", { name: /říjen 2026/i }).click();
   const months = await shell.boundingBox();
