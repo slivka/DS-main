@@ -32,9 +32,14 @@ for (const zoom of [70, 100, 200]) {
         width: e.getBoundingClientRect().width,
         rootSize: parseFloat(getComputedStyle(document.documentElement).fontSize),
         label: e.querySelector('[role="combobox"] .truncate')?.getBoundingClientRect().width ?? 0,
+        labelOverflow: (() => {
+          const label = e.querySelector<HTMLElement>('[role="combobox"] .truncate');
+          return label ? label.scrollWidth - label.clientWidth : 0;
+        })(),
       }));
       if (width === 1280)
         expect(accountMetrics.width + 1 / 64).toBeGreaterThanOrEqual(18 * accountMetrics.rootSize);
+      if (width === 1280) expect(accountMetrics.labelOverflow).toBeLessThanOrEqual(1);
       expect(accountMetrics.label).toBeGreaterThan(0);
       const fieldAfter = await field.boundingBox();
       expect(before).not.toBeNull();

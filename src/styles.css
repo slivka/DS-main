@@ -2568,6 +2568,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   padding-inline: 0.75rem;
   padding-right: 3rem;
   font-size: var(--text-sm);
+  font-family: var(--font-mono);
 }
 .document-identity-account-measure::before {
   content: attr(data-label);
