@@ -35,6 +35,8 @@ export interface ReadOnlyControlValueProps {
   id?: string | undefined;
   /** Zarovnání čísel vpravo. */
   numeric?: boolean;
+  /** Víceřádková hodnota: zalomí text a smí růst (jen u `Textarea`). */
+  multiline?: boolean;
   /** Přístupný název (např. popisek zaškrtávátka). */
   ariaLabel?: string | undefined;
 }
@@ -44,6 +46,7 @@ export function ReadOnlyControlValue({
   children,
   id,
   numeric,
+  multiline,
   ariaLabel,
 }: ReadOnlyControlValueProps) {
   const empty = useDsTexts().recordDialog.emptyValue;
@@ -53,7 +56,13 @@ export function ReadOnlyControlValue({
       id={id}
       data-read-only-control=""
       aria-label={ariaLabel}
-      className={numeric ? "justify-end text-right font-mono tabular-nums" : undefined}
+      className={
+        numeric
+          ? "justify-end text-right font-mono tabular-nums"
+          : multiline
+            ? "h-auto min-h-[var(--control-h)] items-start py-1.5 [&>div:first-child]:whitespace-pre-wrap [&>div:first-child]:break-words"
+            : undefined
+      }
     >
       {isEmpty ? empty : children}
     </FieldValue>

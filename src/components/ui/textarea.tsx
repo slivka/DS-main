@@ -22,7 +22,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const status = useFieldStatus({ error, warning });
     const readOnly = useRecordReadOnly();
     const control = readOnly ? (
-      <ReadOnlyControlValue id={props.id}>
+      <ReadOnlyControlValue id={props.id} multiline>
         {String(props.value ?? props.defaultValue ?? "")}
       </ReadOnlyControlValue>
     ) : (

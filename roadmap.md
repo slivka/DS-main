@@ -1,6 +1,7 @@
 ## DS 2.111.0 – Dialogy záznamů (nevydáno)
 - [x] S1–S6 RecordDialog: povinná velikost, ochrana změn, jen pro čtení, error, deleteAction, Ukládám…
 - [x] S7 pravidla, S8 ukázka a testy chování
+- [x] Opravné kolo po c23a7f35: textové Input jen pro čtení, past fokusu v panelu, busy u lifecycleAction, výběr nově založené zakázky, Chromium spec dialogů.
 - [ ] Plná E2E v GitHub Actions – spouští Petr.
 
 ## DS 2.110.0 – Design 3 (nevydáno)

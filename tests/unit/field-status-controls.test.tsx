@@ -57,7 +57,9 @@ test("JournalCellEditor: ＋ zakázky předá aktuální hledaný text", async (
         documentCurrency: "CZK",
         homeCurrency: "CZK",
         dimensions: [],
-        onCreateDimension: (text) => created.push(text),
+        onCreateDimension: (text) => {
+          created.push(text);
+        },
       },
       null,
     );

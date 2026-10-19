@@ -12,6 +12,12 @@
 - Nové exporty: `RecordDialogSize`, `RecordDialogDeleteAction`, `RecordReadOnlyProvider`, `useRecordReadOnly`, `ReadOnlyControlValue`, `useYesNoText`.
 - Nové texty DsTexts (CS/SK): `recordDialog.saving`, `deleteLabel`, `valueYes`, `valueNo`, `emptyValue`; `panes.unsavedActions.record`.
 - Ukázka „Dialogy záznamů“: nový, existující, jen pro čtení, s chybou, s Odstranit; sm / md / lg v panelu i mimo něj.
+- Opravné kolo po c23a7f35:
+  - `Input` v `readOnly` jako hodnotu vykreslí jen textové typy (bez `type`, `text`, `email`, `tel`, `url`, `number`; `password` jako „••••“). `hidden`, `file`, `checkbox`, `radio`, `range`, `color` a `search` zůstávají ovládáním. Ovladatelnou část dialogu (filtr) obalte `<RecordReadOnlyProvider value={false}>`. `Textarea` jen pro čtení zalamuje víc řádků; nový prop `ReadOnlyControlValue.multiline`.
+  - Dialog v panelu drží fokus uvnitř (Tab / Shift+Tab cyklí), úvodní fokus jde na první pole formuláře; vnořené potvrzení má vlastní past.
+  - „Zpět k záznamu“ vrátí fokus do dialogu (nový prop `UnsavedChangesDialog.restoreFocusTo`).
+  - Během `busy` je zakázaná i `lifecycleAction`.
+  - `onCreateDimension` / `DimensionSelect.onCreate` smí vrátit `Promise<DimensionOption | null | undefined>`; vrácenou zakázku DS doplní do voleb a vybere v buňce nebo detailu řádku, ze kterého se zakládalo. `null` / `undefined` / zamítnutí nic nemění; `void` platí dál.
 
 ### BREAKING – migrace
 - `size` je povinný. Dialog dříve bez `size` mimo panel odpovídá `size="sm"`; dialog číselníku používá `size="md"`.

@@ -51,13 +51,24 @@ const InputControl = React.forwardRef<HTMLInputElement, InputProps>((allProps, r
 });
 InputControl.displayName = "InputControl";
 
-/** Vstup DS; v RecordDialog jen pro čtení se vykreslí jako hodnota pole. */
+/** Typy, které jsou hodnotou záznamu; `search`, `hidden`, `file` aj. zůstávají ovládáním. */
+const VALUE_TYPES = new Set(["text", "email", "tel", "url", "number", "password"]);
+/** Maska hesla v režimu jen pro čtení – heslo se nikdy nezobrazí. */
+const PASSWORD_MASK = "••••";
+
+/** Vrací `true`, pokud se vstup daného typu v režimu jen pro čtení vykreslí jako hodnota. */
+export function isReadOnlyValueInputType(type: string | undefined): boolean {
+  return type === undefined || VALUE_TYPES.has(type);
+}
+
+/** Vstup DS; v RecordDialog jen pro čtení se textový vstup vykreslí jako hodnota pole. */
 const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const readOnly = useRecordReadOnly();
-  if (readOnly) {
+  if (readOnly && isReadOnlyValueInputType(props.type)) {
+    const raw = String(props.value ?? props.defaultValue ?? "");
     return (
-      <ReadOnlyControlValue id={props.id}>
-        {String(props.value ?? props.defaultValue ?? "")}
+      <ReadOnlyControlValue id={props.id} numeric={props.type === "number"}>
+        {props.type === "password" && raw ? PASSWORD_MASK : raw}
       </ReadOnlyControlValue>
     );
   }
