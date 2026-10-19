@@ -2569,6 +2569,9 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   padding-right: 3rem;
   font-size: var(--text-sm);
 }
+.document-identity-account-measure::before {
+  content: attr(data-label);
+}
 .document-identity-account-box:has([role="combobox"]) [role="combobox"] {
   position: absolute;
   inset: 0;
