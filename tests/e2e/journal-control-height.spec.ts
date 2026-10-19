@@ -2,6 +2,9 @@
 import { writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 
+// Zapisuje sdílený soubor měření do /tmp/browser – nesmí běžet souběžně.
+test.describe.configure({ mode: "serial" });
+
 test("Skutečné buňky a detail: 70/100/200 %, 60/100/140 %, obě hustoty", async ({ page }) => {
   test.setTimeout(240_000);
   await page.setViewportSize({ width: 1280, height: 1800 });
