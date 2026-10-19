@@ -8,7 +8,15 @@ import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { formIssuesTitle, mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
 import { Button } from "../../ui/button";
-import { focusFieldErrorLink, type FieldErrorLink } from "./field-error-summary";
+import { FieldErrorSummary, focusFieldErrorLink, type FieldErrorLink } from "./field-error-summary";
+
+/** Vynucený chybový režim: aplikace poslala `error`, ale položky jsou jen varování. */
+export interface FormIssuesForceError {
+  /** Titulek chyby; výchozí je titulek podle saveFailed. */
+  title?: ReactNode;
+  /** Zpráva chyby nad seznamem varování. */
+  message?: ReactNode;
+}
 
 /** Vlastnosti pruhu položek. */
 export interface FormIssuesBarProps {
@@ -20,6 +28,12 @@ export interface FormIssuesBarProps {
   title?: ReactNode;
   /** Obecná zpráva formuláře; nevypíše se, je-li shodná s položkou. */
   message?: ReactNode;
+  /** Chyba z aplikace: pruh je červený i když položky obsahují jen varování. */
+  forceError?: FormIssuesForceError;
+  /** Odkazy na chybná pole „Popisek: zpráva“ (max 5 + „a další N“); zavření ✕ skryje i souhrn. */
+  fieldErrors?: FieldErrorLink[];
+  /** Vlastní výběr pole ze souhrnu; výchozí je `focusFieldErrorLink`. */
+  onFieldErrorSelect?: (link: FieldErrorLink) => void;
   /** Zavření ✕. */
   onClose?: () => void;
   /** Vlastní výběr pole; výchozí je `focusFieldErrorLink`. */
@@ -36,6 +50,9 @@ export function FormIssuesBar({
   saveFailed = false,
   title,
   message,
+  forceError,
+  fieldErrors,
+  onFieldErrorSelect,
   onClose,
   onSelect,
   closeLabel,
@@ -43,18 +60,23 @@ export function FormIssuesBar({
 }: FormIssuesBarProps) {
   const texts = useDsTexts().recordAction;
   const list = mergeFormIssues(issues);
-  const autoTitle = formIssuesTitle(list, saveFailed, texts);
-  // Bez callbacku si pruh zavření drží sám do další změny seznamu.
+  const autoTitle = formIssuesTitle(list, saveFailed || Boolean(forceError), texts);
+  // Bez callbacku si pruh zavření drží sám do další změny celého obsahu (kód + text + pole).
   const signature = list
-    .map((issue) => `${issue.code ?? issue.message}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`)
+    .map(
+      (issue) => `${issue.code ?? ""}|${issue.message}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`,
+    )
     .join(";");
   const [dismissed, setDismissed] = useState<string | null>(null);
   if (!autoTitle || dismissed === signature) return null;
   const close = onClose ?? (() => setDismissed(signature));
-  const hasErrors = list.some((issue) => issue.severity === "error");
-  const count = hasErrors ? list.filter((issue) => issue.severity === "error").length : list.length;
+  const hasErrors = Boolean(forceError) || list.some((issue) => issue.severity === "error");
+  const errorCount = list.filter((issue) => issue.severity === "error").length;
+  const count = hasErrors ? errorCount + (forceError ? 1 : 0) : list.length;
+  const shownTitle = forceError?.title ?? title;
+  const shownMessage = forceError?.message ?? message;
   const duplicateMessage =
-    typeof message === "string" && list.some((issue) => issue.message === message);
+    typeof shownMessage === "string" && list.some((issue) => issue.message === shownMessage);
   const select = (issue: FormIssue) => {
     if (onSelect) return onSelect(issue);
     if (!issue.fieldId) return;
@@ -82,16 +104,16 @@ export function FormIssuesBar({
       <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <p className="font-bold" data-slot="form-issues-title">
-          {title ? (
+          {shownTitle ? (
             <>
-              {title} ({count})
+              {shownTitle} ({count})
             </>
           ) : (
             autoTitle
           )}
         </p>
-        {message && !duplicateMessage ? (
-          <div className="mt-0.5 text-sm text-foreground">{message}</div>
+        {shownMessage && !duplicateMessage ? (
+          <div className="mt-0.5 text-sm text-foreground">{shownMessage}</div>
         ) : null}
         <ul className="mt-1 space-y-0.5 text-sm">
           {list.map((issue, index) => (
@@ -118,6 +140,9 @@ export function FormIssuesBar({
             </li>
           ))}
         </ul>
+        {fieldErrors?.length ? (
+          <FieldErrorSummary errors={fieldErrors} onSelect={onFieldErrorSelect} />
+        ) : null}
       </div>
       <Button
         type="button"

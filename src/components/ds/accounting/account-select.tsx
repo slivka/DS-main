@@ -70,6 +70,8 @@ export interface AccountSelectProps {
   suffix?: ReactNode;
   /** Přístupný název spouštěče, když výběr nemá viditelný popisek. */
   ariaLabel?: string;
+  /** Id spouštěče (fokus z chybového pruhu). */
+  id?: string;
   className?: string;
 }
 
@@ -103,6 +105,7 @@ export function AccountSelect({
   onKeyDown,
   suffix,
   ariaLabel,
+  id,
   className,
 }: AccountSelectProps) {
   const [open, setOpen] = useState(defaultOpen);
@@ -165,6 +168,7 @@ export function AccountSelect({
           type="button"
           variant="outline"
           role="combobox"
+          id={id}
           aria-label={ariaLabel}
           disabled={disabled}
           onPointerDownCapture={() => {

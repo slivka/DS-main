@@ -375,12 +375,13 @@ export function RecordActionBar({
             saveFailed={saveFailed}
             title={error?.title}
             message={error?.message}
+            // Chyba z aplikace: pruh je červený i když položky obsahují jen varování.
+            forceError={error ? { title: error.title, message: error.message } : undefined}
+            fieldErrors={error?.fieldErrors}
+            onFieldErrorSelect={error?.onFieldErrorSelect}
             onClose={error?.onClose ?? onIssuesClose}
             closeLabel={closeText}
           />
-          {error?.fieldErrors?.length ? (
-            <FieldErrorSummary errors={error.fieldErrors} onSelect={error.onFieldErrorSelect} />
-          ) : null}
         </div>
       ) : error ? (
         <div

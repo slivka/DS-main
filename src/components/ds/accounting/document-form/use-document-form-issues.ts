@@ -8,6 +8,11 @@ import { visibleFormIssues, type FormIssue } from "../../../../lib/form-issues";
 import type { JournalLine } from "../journal-lines";
 import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { journalFieldId } from "../journal-lines-model";
+import { documentClientIssues, type DocumentValidationArgs } from "./document-validation-feedback";
+import {
+  useDocumentIssueProjection,
+  type DocumentIssueProjection,
+} from "./use-document-issue-projection";
 import type {
   DocumentFormError,
   DocumentHeaderField,
@@ -64,6 +69,46 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
     a.onValidationChange?.(count, errors);
   };
   return { issues, active, onValidationChange };
+}
+
+/** Vstupy celé zpětné vazby formuláře (pruh + projekce do polí a buněk). */
+export interface DocumentFormFeedbackArgs {
+  /** Vstupy klientských kontrol hlavičky. */
+  validation: DocumentValidationArgs;
+  /** Položky od aplikace (server i klient). */
+  issues?: FormIssue[];
+  /** Dosavadní chyba formuláře. */
+  error?: DocumentFormError;
+  /** Klientské kontroly a červené rámečky až po prvním pokusu o uložení; výchozí true. */
+  validationActive?: boolean;
+  /** Popisek řádku („Ř.“). */
+  rowLabel: string;
+  /** Původní hlášení editoru řádků. */
+  onValidationChange?: JournalLinesEditorProps["onValidationChange"];
+}
+
+/** Pruh položek, obsluha chyb řádků a projekce do polí a buněk. */
+export function useDocumentFormFeedback(a: DocumentFormFeedbackArgs): {
+  issues: FormIssue[];
+  onValidationChange: NonNullable<JournalLinesEditorProps["onValidationChange"]>;
+} & DocumentIssueProjection {
+  const formIssues = useDocumentFormIssues({
+    clientIssues: documentClientIssues(a.validation),
+    issues: a.issues,
+    error: a.error,
+    validationActive: a.validationActive,
+    rowLabel: a.rowLabel,
+    onValidationChange: a.onValidationChange,
+  });
+  const projection = useDocumentIssueProjection({
+    issues: formIssues.issues,
+    validationActive: a.validationActive,
+  });
+  return {
+    issues: formIssues.issues,
+    onValidationChange: formIssues.onValidationChange,
+    ...projection,
+  };
 }
 
 /** Přepínače v poli hlásí id pole, ne id vazby. */

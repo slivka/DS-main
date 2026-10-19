@@ -1,5 +1,6 @@
 /** Pomocné vykreslení polí formuláře dokladu. */
 import type { ReactNode } from "react";
+import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { useDsTexts } from "../../../../ds-texts";
 import { shiftDocumentDate } from "../../../../lib/date-quick-options";
 import { Input } from "../../../ui/input";
@@ -162,4 +163,51 @@ export function useDocumentFieldRenderers({
       className,
     );
   return { field, date, suggestedText };
+}
+
+/** Vstupy polí hlavičky (renderery + daňové číslo + bankovní texty zámku data). */
+export interface DocumentHeaderFieldsArgs extends DocumentFieldRenderersArgs {
+  /** Bankovní pohyb: zámek data účetního případu mluví o datu pohybu. */
+  bankMovement: boolean;
+  /** Zobrazit pole daňového čísla. */
+  showTaxNumber: boolean;
+  /** Duplicitní daňové číslo. */
+  taxDocumentNumberWarning?: string;
+}
+
+/** Vykreslovače polí hlavičky včetně pole daňového čísla a bankovních textů zámku data. */
+export function useDocumentHeaderFields(a: DocumentHeaderFieldsArgs) {
+  const ds = useDsTexts();
+  const dateLink =
+    a.bankMovement && a.accountingDateLink
+      ? {
+          ...a.accountingDateLink,
+          hint: ds.documentEdit.movementDateLinked,
+          unlockedHint: ds.documentEdit.movementDateLink,
+        }
+      : a.accountingDateLink;
+  const { field, date, suggestedText } = useDocumentFieldRenderers({
+    value: a.value,
+    patch: a.patch,
+    can: a.can,
+    dateWarnings: a.dateWarnings,
+    accountingDateLink: dateLink,
+    fieldErrors: a.fieldErrors,
+    fieldWarnings: a.fieldWarnings,
+    onInvalidDate: a.onInvalidDate,
+  });
+  const taxNumberField = a.showTaxNumber
+    ? field(
+        "document-taxDocumentNumber",
+        ds.documentEdit.taxNumber,
+        <TaxDocumentNumberField
+          value={a.value}
+          patch={a.patch}
+          warning={a.taxDocumentNumberWarning}
+          disabled={!a.can("taxDocumentNumber")}
+        />,
+        6,
+      )
+    : null;
+  return { field, date, suggestedText, taxNumberField };
 }

@@ -2,15 +2,13 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { documentClientIssues, toggleInvalidDate } from "./document-validation-feedback";
+import { toggleInvalidDate, useDocumentCounterpartyWarnings } from "./document-validation-feedback";
 import {
   reportingLinesChange,
   reportingPatch,
-  useDocumentFormIssues,
+  useDocumentFormFeedback,
 } from "./use-document-form-issues";
-import { TaxDocumentNumberField } from "./tax-document-number-field";
 import { TooltipProvider } from "../../../ui/tooltip";
-import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
 import { cn } from "../../../../lib/utils";
@@ -28,8 +26,7 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
-import { headerFieldKey, useDocumentFieldRenderers } from "./use-document-field-renderers";
-import type { JournalLinesEditorProps } from "../journal-editor-types";
+import { useDocumentHeaderFields } from "./use-document-field-renderers";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
@@ -120,10 +117,8 @@ export function DocumentForm(props: DocumentFormProps) {
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange: (linked) => {
-      onAccountingDateLinkedChange?.(linked);
-      onFieldChange?.("document-accountingDate");
-    },
+    onAccountingDateLinkedChange,
+    onFieldChange: (fieldId) => onFieldChange?.(fieldId),
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);
@@ -168,30 +163,22 @@ export function DocumentForm(props: DocumentFormProps) {
     can,
     mainAccountLocked,
   });
-  const {
-    editingIdentityAccount,
-    pencilRef,
-    closeIdentityAccount,
-    startAccountEdit,
-    selectIdentityAccount,
-    identityAccountLabel,
-  } = useIdentityAccountSelection(
+  const identityAccount = useIdentityAccountSelection(
     value.mainAccountId,
     effectiveIdentity.account?.label,
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
-  const effectiveFieldWarnings =
-    internal && counterpartyInput === "manual"
-      ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
-      : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
-  const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
-  const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
-  const icoWarning =
-    !value.partnerId &&
-    /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) &&
-    !isValidCzIco(counterpartyIco);
+  const { counterpartyIco, counterpartyDic, icoWarning, effectiveFieldWarnings } =
+    useDocumentCounterpartyWarnings({
+      value,
+      partner,
+      internal,
+      counterpartyInput,
+      fieldWarnings: props.fieldWarnings,
+      internalManualPartner: dsTexts.documentEdit.internalManualPartner,
+    });
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = Boolean(vat?.visible && vatRelevant);
@@ -208,8 +195,16 @@ export function DocumentForm(props: DocumentFormProps) {
   const showTaxNumber =
     ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
   const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
-  const formIssues = useDocumentFormIssues({
-    clientIssues: documentClientIssues({
+  // Živý pruh + projekce položek do polí (rámeček + ikona + bublina) a buněk řádků.
+  const {
+    issues: formIssueList,
+    onValidationChange,
+    issueFieldErrors,
+    issueFieldWarnings,
+    cellIssues,
+  } = useDocumentFormFeedback({
+    validation: {
+      code,
       value,
       foreign,
       vatRateField,
@@ -223,67 +218,34 @@ export function DocumentForm(props: DocumentFormProps) {
       variableSymbolWarning: vsLink.warning,
       variableSymbolLabel: t.variableSymbol,
       taxNumberLabel: dsTexts.documentEdit.taxNumber,
-    }),
+      fieldLabels: {
+        bankCode: dsTexts.documentEdit.bankCode,
+        bankIban: dsTexts.documentEdit.iban,
+        bankSwift: dsTexts.documentEdit.swift,
+        bankAccountKind: dsTexts.documentEdit.accountKind,
+      },
+    },
     issues: appIssues,
     error,
     validationActive,
     rowLabel: dsTexts.journalEditor.row,
     onValidationChange: linesEditorProps?.onValidationChange,
   });
-  // Položky pruhu se promítají do polí (rámeček + ikona + bublina) a do buněk řádků.
-  const issueFieldErrors: Partial<Record<DocumentHeaderField, string>> = {};
-  const issueFieldWarnings: Partial<Record<DocumentHeaderField, string>> = {};
-  const cellIssues: NonNullable<JournalLinesEditorProps["cellIssues"]> = [];
-  for (const issue of formIssues.issues) {
-    if (issue.rowId && issue.columnId) {
-      cellIssues.push({
-        rowId: issue.rowId,
-        columnId: issue.columnId,
-        message: issue.message,
-        severity: issue.severity,
-      });
-      continue;
-    }
-    if (!issue.fieldId?.startsWith("document-")) continue;
-    const key = headerFieldKey(issue.fieldId);
-    if (issue.severity === "error") issueFieldErrors[key] ??= issue.message;
-    else issueFieldWarnings[key] ??= issue.message;
-  }
-  // Bankovní pohyb: zámek data účetního případu mluví o datu pohybu.
-  const dateLink =
-    bankMovement && effectiveAccountingLink
-      ? {
-          ...effectiveAccountingLink,
-          hint: dsTexts.documentEdit.movementDateLinked,
-          unlockedHint: dsTexts.documentEdit.movementDateLink,
-        }
-      : effectiveAccountingLink;
-  const { field, date, suggestedText } = useDocumentFieldRenderers({
+  const { field, date, suggestedText, taxNumberField } = useDocumentHeaderFields({
     value: effectiveValue,
     patch,
     can,
     dateWarnings,
-    accountingDateLink: dateLink,
+    accountingDateLink: effectiveAccountingLink,
+    bankMovement,
+    showTaxNumber,
+    taxDocumentNumberWarning,
     // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
-    fieldErrors:
-      validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
+    fieldErrors: validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
   });
-  const taxNumberField = showTaxNumber
-    ? field(
-        "document-taxDocumentNumber",
-        dsTexts.documentEdit.taxNumber,
-        <TaxDocumentNumberField
-          value={value}
-          patch={patch}
-          warning={taxDocumentNumberWarning}
-          disabled={!can("taxDocumentNumber")}
-        />,
-        6,
-      )
-    : null;
   const {
     externalNumberField,
     bankAccountField,
@@ -322,7 +284,7 @@ export function DocumentForm(props: DocumentFormProps) {
     rateAmount,
     linesEditorProps: {
       ...linesEditorProps,
-      onValidationChange: formIssues.onValidationChange,
+      onValidationChange,
       cellIssues,
     },
     readOnly,
@@ -363,7 +325,7 @@ export function DocumentForm(props: DocumentFormProps) {
           props={props}
           title={bankMovement ? dsTexts.documentEdit.movementTitle : title}
           moreActions={actionMenu}
-          issues={formIssues.issues}
+          issues={formIssueList}
           notices={combinedNotices}
           vatRelevant={vatRelevant}
           onVatRelevantChange={(next) => patch({ vatRelevant: next })}
@@ -375,26 +337,26 @@ export function DocumentForm(props: DocumentFormProps) {
             direction={props.directionBadge}
             fallback={t.numberPending}
             texts={t}
-            accountLabel={identityAccountLabel}
+            accountLabel={identityAccount.identityAccountLabel}
             accountValue={value.mainAccountId}
-            editingAccount={editingIdentityAccount}
+            editingAccount={identityAccount.editingIdentityAccount}
             canEditAccount={canEditIdentityAccount}
-            pencilRef={pencilRef}
-            onStartAccountEdit={startAccountEdit}
+            pencilRef={identityAccount.pencilRef}
+            onStartAccountEdit={identityAccount.startAccountEdit}
             onAccountChange={(mainAccountId) => {
               const selected = allowedMainAccounts.find((item) =>
                 sameAccount(item.code, mainAccountId),
               );
               if (!selected) return;
-              selectIdentityAccount({
+              identityAccount.selectIdentityAccount({
                 code: mainAccountId,
                 label: formatCodeName(formatAccountCode(selected.code), selected.name),
                 sourceLabel: effectiveIdentity.account?.label,
               });
               patch({ mainAccountId });
-              closeIdentityAccount();
+              identityAccount.closeIdentityAccount();
             }}
-            onAccountClose={closeIdentityAccount}
+            onAccountClose={identityAccount.closeIdentityAccount}
             accountOptions={allowedMainAccounts}
           />
           <DocumentSections
@@ -489,9 +451,11 @@ export function DocumentForm(props: DocumentFormProps) {
               field,
               vsLink,
               layout: bankMovement ? "grid20" : "flex",
-      vsPendingText: ["FV", "ZFV", "DDPZ"].includes(code)
-        ? dsTexts.documentEdit.numberPending
-        : undefined,
+              // „Přidělí se při zařazení“ jen u vydaných dokladů ve stavu koncept.
+              vsPendingText:
+                ["FV", "ZFV", "DDPZ"].includes(code) && (props.status ?? "draft") === "draft"
+                  ? dsTexts.documentEdit.numberPending
+                  : undefined,
             }}
             amount={{
               t,

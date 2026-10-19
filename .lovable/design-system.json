@@ -4157,6 +4157,11 @@
         {
           "name": "error.onFieldErrorSelect",
           "type": "(link: FieldErrorLink) => void"
+        },
+        {
+          "name": "onIssuesClose",
+          "type": "() => void",
+          "description": "Zavření pruhu položek ✕; bez callbacku si pruh zavření drží sám do změny seznamu."
         }
       ],
       "usage": "Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární a další akce, společný busy stav a pořadí error → notices. DocumentForm jej používá interně. Ikony položek dalších akcí mají jednotnou velikost size-4 a shrink-0. 13b: levý obsah zůstává v prostoru odděleném od kompaktních akcí také na úzkém formuláři. Používejte saveAction, moreActions a leftContent; nepřebíjejte skrývání ikon ani textů selektory potomků. 13c: levá textová tlačítka při zalomení rostou na výšku, neprotékají pevnou výškou. 13d: růst platí pouze pro data-slot=button mimo role switch/checkbox; přepínač DPH zachová 20 × 36 px při 100 %. 13j: saveAction a primaryAction přijímají disabledReason – akce zůstane fokusovatelná (aria-disabled), klik/klepnutí/Enter ji nespustí a ukáže důvod v tooltipu; bez důvodu zůstává nativně disabled. Zablokovaná položka dalších akcí ukazuje důvod jako druhý řádek. Uložit je vždy primární tlačítko; busy zobrazí spinner. Kaskáda podle měřené šířky: text → sekundární ikony → nakonec ikona Uložit. Kompaktní zablokovaná primární akce má tooltip Název: důvod. Důvod položky menu je jen přístupný popis, nikoli součást názvu. Sdílená lišta: standardně textové akce bez ikon, podle měřené šířky nejdříve sekundární ikony, nakonec Uložit ikona. Primární modré Uložit, dirty/disabled/busy, tooltip a přístupný název zachovány. Povolené primaryAction.tooltip vysvětlí akci i po dotyku. Chyba před upozorněními. primaryAction.tooltip vysvětluje povolený krok i krátce po dotyku; normální klik jej provede bez připnutí. Každá akce má Tooltip i v plné šířce (název akce, případně primaryAction.tooltip); ⋯ používá Tooltip místo title. Levý obsah si drží rezervu nejvýš 10 rem a zkrátí se s …, akce nikdy nepřekryje. error.fieldErrors jsou odkazy souhrnu; error.onFieldErrorSelect přepíše výchozí scroll a fokus. Nezaměňujte s mapou validačních chyb DocumentForm.fieldErrors.",
@@ -8154,10 +8159,6 @@
           "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" homeCurrencySymbol=\"Kč\" mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />\n// uložení: toJournalRows(lines, { mainSide: \"D\", vat: { calcMode } })"
         },
         {
-          "label": "2.92.0",
-          "code": "<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />"
-        },
-        {
           "label": "Stav pole a jednotná výška (2.107.0)",
           "code": "<JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />"
         }
@@ -8357,6 +8358,11 @@
         {
           "name": "error.onFieldErrorSelect",
           "type": "(link: FieldErrorLink) => void"
+        },
+        {
+          "name": "onIssuesClose",
+          "type": "() => void",
+          "description": "Zavření pruhu položek ✕; bez callbacku si pruh zavření drží sám do změny seznamu."
         }
       ]
     },
@@ -9039,6 +9045,21 @@
         {
           "name": "dataSlot",
           "type": "string"
+        },
+        {
+          "name": "forceError",
+          "type": "{ title?: ReactNode; message?: ReactNode }",
+          "description": "Chyba z aplikace: pruh je červený i když položky obsahují jen varování."
+        },
+        {
+          "name": "fieldErrors",
+          "type": "FieldErrorLink[]",
+          "description": "Odkazy na chybná pole (max 5 + „a další N“); zavření ✕ skryje i souhrn."
+        },
+        {
+          "name": "onFieldErrorSelect",
+          "type": "(link: FieldErrorLink) => void",
+          "description": "Vlastní výběr pole ze souhrnu."
         }
       ],
       "usage": "Živý seznam toho, co zbývá opravit, nad formulářem; RecordActionBar a DocumentForm ho skládají z issues. Každá položka odkazuje na pole.",
@@ -9242,6 +9263,43 @@
       "usage": "Položka živého pruhu: fieldId/rowId/columnId, label, message, severity error|warning, source client|server, code.",
       "antipatterns": [
         "Jako label nikdy technický klíč pole – vždy popisek z DsTexts."
+      ]
+    },
+    {
+      "name": "DocumentAccountingDateLink",
+      "file": "src/components/ds/accounting/document-form/document-form-types.ts",
+      "import_path": "@/design-system",
+      "props": [
+        {
+          "name": "locked",
+          "type": "boolean",
+          "description": "Stav vazby data účetního případu."
+        },
+        {
+          "name": "onToggle",
+          "type": "(locked: boolean) => void",
+          "description": "Přepnutí vazby; DocumentForm hlásí onFieldChange(\"document-accountingDate\") i u řízené vazby."
+        },
+        {
+          "name": "hint",
+          "type": "string",
+          "description": "Tooltip zamčeného zámku."
+        },
+        {
+          "name": "unlockedHint",
+          "type": "string",
+          "description": "Tooltip odemčeného zámku (např. „Svázat s datem pohybu“ u bankovního pohybu)."
+        }
+      ],
+      "usage": "Řízená vazba data účetního případu na datum vystavení / pohybu.",
+      "examples": [
+        {
+          "label": "Řízená vazba",
+          "code": "<DocumentForm accountingDateLink={{ locked, onToggle: setLocked, unlockedHint: \"Svázat s datem pohybu\" }} {...props} />"
+        }
+      ],
+      "antipatterns": [
+        "Nepřidávejte vlastní zámek data mimo DocumentAccountingDateLink."
       ]
     }
   ],

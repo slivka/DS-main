@@ -129,6 +129,7 @@ export function DocumentIdentityLine({
         {editingAccount ? (
           <span className="w-[18rem] max-w-full">
             <AccountSelect
+              id="document-mainAccountId"
               ariaLabel={texts.mainAccountSelect}
               accounts={accountOptions}
               value={accountValue}

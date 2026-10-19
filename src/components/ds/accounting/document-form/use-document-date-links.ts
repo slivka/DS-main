@@ -19,6 +19,8 @@ export interface DocumentDateLinksArgs {
   accountingDateLinked: boolean;
   /** Oznámení změny vazby. */
   onAccountingDateLinkedChange?: (linked: boolean) => void;
+  /** Hlášení změny pole (zámek hlásí id pole, ne id vazby) – i u řízené vazby. */
+  onFieldChange?: (fieldId: string) => void;
 }
 
 /** Změna vystavení přepočítá jen data stále navázaná na vystavení. */
@@ -82,17 +84,26 @@ export function useDocumentDateLinks(a: DocumentDateLinksArgs) {
     if (next.accountingDate !== value.accountingDate || next.taxDate !== value.taxDate)
       onChange(next);
   }, [a.value.id]); // Záměrně jen při změně dokladu (ostatní čte latest).
-  const link =
-    a.accountingDateLink ??
-    (applicable
+  // Řízená vazba z aplikace se obalí, aby i její přepnutí hlásilo změnu pole.
+  const external = a.accountingDateLink;
+  const link = external
+    ? {
+        ...external,
+        onToggle: (linked: boolean) => {
+          external.onToggle(linked);
+          a.onFieldChange?.("document-accountingDate");
+        },
+      }
+    : applicable
       ? {
           locked,
           onToggle: (linked: boolean) => {
             setOwnLinked(linked);
             a.onAccountingDateLinkedChange?.(linked);
+            a.onFieldChange?.("document-accountingDate");
             if (linked) patch({ accountingDate: a.value.issueDate });
           },
         }
-      : undefined);
+      : undefined;
   return { patch, effectiveValue, link };
 }
