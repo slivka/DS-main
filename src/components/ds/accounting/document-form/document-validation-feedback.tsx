@@ -153,7 +153,10 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
       code: "vat_rate_note",
     });
   for (const [key, message] of Object.entries(a.fieldWarnings ?? {})) {
-    if (message) issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "warning"));
+    if (message)
+      issues.push(
+        headerIssue(a.t, key as DocumentHeaderField, message, "warning", undefined, a.fieldLabels),
+      );
   }
   if (a.taxDocumentNumberWarning)
     issues.push(
