@@ -1867,7 +1867,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `—` |
+| `approvedLabel` | string | `Schválen` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -4419,7 +4419,7 @@ _Uložení změn_
 import { RecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky.
+Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky. Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS.
 
 **Props:**
 
@@ -4454,6 +4454,8 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `dirtyConfirmTitle` | string | `Formulář obsahuje neuložené změny` |
 | `fieldErrors` | any | `—` |
 | `error` | any | `—` |
+| `activeTab` | string | `—` |
+| `onTabChange` | function | `—` |
 
 **Examples:**
 

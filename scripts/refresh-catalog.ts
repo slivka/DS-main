@@ -45,13 +45,19 @@ export function refreshCatalog() {
         record.props.push({ name, type: name === "activeTab" ? "string" : "function" });
     }
     if (!record.usage?.includes("activeTab"))
-      record.usage = (record.usage ?? "") + " Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS.";
+      record.usage =
+        (record.usage ?? "") +
+        " Záložky lze řídit activeTab + onTabChange; bez activeTab vybírá DS.";
     record.examples ??= [];
     const label = "Partner na zvolené záložce";
     if (!record.examples.some((example) => example.label === label))
-      record.examples.push({ label, code: '<RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />' });
+      record.examples.push({
+        label,
+        code: '<RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />',
+      });
     record.antipatterns ??= [];
-    const rule = "V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.";
+    const rule =
+      "V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.";
     if (!record.antipatterns.includes(rule)) record.antipatterns.push(rule);
   }
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
