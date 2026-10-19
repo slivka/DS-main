@@ -12,6 +12,7 @@ export const DOCUMENT_FORM_TEXTS_SK: DsTexts["documentForm"] = {
   supplierTaxDocumentNumber: "Číslo daňového dokladu",
   documentNumberTooLongForVs: "Číslo má viac ako 10 číslic – VS doplňte ručne",
   invalidDate: "neplatný dátum",
+  unknownField: "Pole formulára",
   bankAccountInvalid: "Číslo účtu nie je platné.",
   bankCodeInvalid: "Kód banky nie je platný.",
   otherBankAccount: "Iný účet",
