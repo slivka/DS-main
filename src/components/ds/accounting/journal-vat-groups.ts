@@ -129,7 +129,10 @@ export function allocateVatGroupTax(
     ...item,
     tax: sum === 0 ? 0 : round2((tax * item.base) / sum),
   }));
-  const others = shares.reduce((acc, share, index) => (index === target ? acc : acc + share.tax), 0);
+  const others = shares.reduce(
+    (acc, share, index) => (index === target ? acc : acc + share.tax),
+    0,
+  );
   shares[target].tax = round2(tax - others);
   return shares;
 }
@@ -144,7 +147,10 @@ export function computeVatGroups(
   const codes = rates instanceof Map ? rates : new Map(rates.map((code) => [code.id, code]));
   const fx = options.exchangeRate || 1;
   const tolerance = options.tolerance ?? VAT_OVERRIDE_TOLERANCE;
-  const buckets = new Map<string, { code: VatCodeOption; rate: number; items: VatGroupLineShare[] }>();
+  const buckets = new Map<
+    string,
+    { code: VatCodeOption; rate: number; items: VatGroupLineShare[] }
+  >();
   const fixed: VatFixedTax[] = [];
   for (const line of lines.filter(isBase)) {
     const code = line.vatCodeId ? codes.get(line.vatCodeId) : undefined;
@@ -220,7 +226,10 @@ export function upsertVatOverride(
   taxAmount: number,
 ): JournalVatOverride[] {
   const rest = removeVatOverride(overrides, group);
-  return [...rest, { vatCodeId: group.vatCodeId, vatRate: group.rate, taxAmount: round2(taxAmount) }];
+  return [
+    ...rest,
+    { vatCodeId: group.vatCodeId, vatRate: group.rate, taxAmount: round2(taxAmount) },
+  ];
 }
 
 /** Odebere přepis skupiny („Vrátit vypočtenou daň“). */

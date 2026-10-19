@@ -121,7 +121,11 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
   const texts = t.vatGroups;
   const issue = vatGroups.groupIssues.find((item) => item.groupKey === group.key);
   return (
-    <tr data-slot="journal-vat-group" data-group={group.key} className="h-[var(--control-h)] border-t">
+    <tr
+      data-slot="journal-vat-group"
+      data-group={group.key}
+      className="h-[var(--control-h)] border-t"
+    >
       <td className="px-2 py-1">{group.code}</td>
       <td className={CELL}>{group.rate} %</td>
       <td className={CELL}>{amount(group.base)}</td>
@@ -209,7 +213,9 @@ export function JournalVatRecap() {
             className="h-[var(--control-h)]"
           >
             {texts.toggleHome}
-            <ChevronRight className={cn("size-[1em] transition-transform", showHome && "rotate-90")} />
+            <ChevronRight
+              className={cn("size-[1em] transition-transform", showHome && "rotate-90")}
+            />
           </Button>
         ) : null}
       </div>
@@ -241,7 +247,11 @@ export function JournalVatRecap() {
           {fixed.map((item) => {
             const code = editor.vatCodeMap.get(item.vatCodeId);
             return (
-              <tr key={item.lineId} data-slot="journal-vat-fixed" className="h-[var(--control-h)] border-t">
+              <tr
+                key={item.lineId}
+                data-slot="journal-vat-fixed"
+                className="h-[var(--control-h)] border-t"
+              >
                 <td className="px-2 py-1">{code?.code ?? item.vatCodeId}</td>
                 <td className={CELL}>{code?.rate ?? ""} %</td>
                 <td className={CELL}>{amount(item.base)}</td>

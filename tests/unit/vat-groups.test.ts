@@ -24,7 +24,12 @@ const code = (id: string, rate: number | null, extra: Partial<VatCodeOption> = {
     requiresPdpSubject: false,
     ...extra,
   }) as VatCodeOption;
-const CODES = [code("p21", 21), code("p12", 12), code("pdp", 21, { selfAssessment: true }), code("osv", null)];
+const CODES = [
+  code("p21", 21),
+  code("p12", 12),
+  code("pdp", 21, { selfAssessment: true }),
+  code("osv", null),
+];
 const line = (id: string, amount: number, vatCodeId = "p21", extra: Partial<JournalLine> = {}) =>
   ({ id, text: id, amount, vatCodeId, ...extra }) as JournalLine;
 
@@ -53,14 +58,24 @@ describe("computeVatGroups", () => {
 
   it("EUR s kurzem DPH 24,50: přepis +0,03 projde, +0,05 ne", () => {
     const lines = [line("a", 0, "p21", { foreignAmount: 100 })];
-    const ok = computeVatGroups(lines, [{ vatCodeId: "p21", vatRate: 21, taxAmount: 21.03 }], CODES, {
-      foreign: true,
-      exchangeRate: 24.5,
-    });
-    const over = computeVatGroups(lines, [{ vatCodeId: "p21", vatRate: 21, taxAmount: 21.05 }], CODES, {
-      foreign: true,
-      exchangeRate: 24.5,
-    });
+    const ok = computeVatGroups(
+      lines,
+      [{ vatCodeId: "p21", vatRate: 21, taxAmount: 21.03 }],
+      CODES,
+      {
+        foreign: true,
+        exchangeRate: 24.5,
+      },
+    );
+    const over = computeVatGroups(
+      lines,
+      [{ vatCodeId: "p21", vatRate: 21, taxAmount: 21.05 }],
+      CODES,
+      {
+        foreign: true,
+        exchangeRate: 24.5,
+      },
+    );
     expect(ok.groups[0].withinTolerance).toBe(true);
     expect(over.groups[0].withinTolerance).toBe(false);
     expect(over.groups[0].differenceHome).toBe(1.23);
@@ -73,7 +88,11 @@ describe("computeVatGroups", () => {
   });
 
   it("dvě skupiny 21 % a 12 %", () => {
-    const { groups, taxTotal } = computeVatGroups([line("a", 1000), line("b", 1000, "p12")], [], CODES);
+    const { groups, taxTotal } = computeVatGroups(
+      [line("a", 1000), line("b", 1000, "p12")],
+      [],
+      CODES,
+    );
     expect(groups.map((g) => [g.rate, g.tax])).toEqual([
       [21, 210],
       [12, 120],
@@ -126,7 +145,12 @@ describe("pomocné výpočty", () => {
 describe("resolveDifferenceActions", () => {
   it("jedna skupina a haléřový rozdíl → Dorovnat DPH", () => {
     expect(
-      resolveDifferenceActions({ difference: 0.01, groups: [{ key: "x" }], lineCount: 1, roundingLimit: 1 }),
+      resolveDifferenceActions({
+        difference: 0.01,
+        groups: [{ key: "x" }],
+        lineCount: 1,
+        roundingLimit: 1,
+      }),
     ).toEqual({ actions: ["vat", "base", "rounding"], preferred: "vat" });
   });
 
@@ -141,11 +165,18 @@ describe("resolveDifferenceActions", () => {
   });
 
   it("nad limit žádná výchozí akce ani Zaokrouhlení", () => {
-    const result = resolveDifferenceActions({ difference: 5, groups: [], lineCount: 2, roundingLimit: 0.5 });
+    const result = resolveDifferenceActions({
+      difference: 5,
+      groups: [],
+      lineCount: 2,
+      roundingLimit: 0.5,
+    });
     expect(result).toEqual({ actions: ["base"], preferred: null });
   });
 
   it("nulový rozdíl bez akcí", () => {
-    expect(resolveDifferenceActions({ difference: 0, groups: [], lineCount: 1 }).actions).toEqual([]);
+    expect(resolveDifferenceActions({ difference: 0, groups: [], lineCount: 1 }).actions).toEqual(
+      [],
+    );
   });
 });

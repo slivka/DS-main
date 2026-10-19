@@ -59,7 +59,13 @@ function GroupsExample(props: GroupsExampleProps) {
   );
 }
 
-const base = (id: string, text: string, amount: number, vatCodeId: string | null, side: "in" | "out") => ({
+const base = (
+  id: string,
+  text: string,
+  amount: number,
+  vatCodeId: string | null,
+  side: "in" | "out",
+) => ({
   id,
   text,
   debitAccount: side === "in" ? "518001" : "311001",

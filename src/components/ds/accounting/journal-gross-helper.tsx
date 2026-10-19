@@ -35,7 +35,8 @@ export function JournalGrossHelper({ line, column, className }: JournalGrossHelp
   const value = open ? state.value : "";
   const setOpen = (next: boolean) =>
     editor.vatGroups.setGrossHelper(next ? { key: helperKey, value: "" } : null);
-  const setValue = (next: string) => editor.vatGroups.setGrossHelper({ key: helperKey, value: next });
+  const setValue = (next: string) =>
+    editor.vatGroups.setGrossHelper({ key: helperKey, value: next });
   const inputId = `journal-gross-helper-${line.id}-${column}`;
   if (rate === null) return null;
   const precision = column === "amount" ? 2 : 4;

@@ -362,7 +362,12 @@ export function useJournalEditorState(
     ...numberJournalErrors(lines, validations),
     ...vatGroups.groupIssues
       .filter((issue) => issue.severity === "error")
-      .map((issue) => ({ line: 0, field: "vatGroup", message: issue.message, fieldId: issue.fieldId })),
+      .map((issue) => ({
+        line: 0,
+        field: "vatGroup",
+        message: issue.message,
+        fieldId: issue.fieldId,
+      })),
   ];
   const validationSignature = JSON.stringify(validationErrors);
   const validationChangeRef = React.useRef(props.onValidationChange);
@@ -374,19 +379,23 @@ export function useJournalEditorState(
   }, [validationSignature]); // eslint-disable-line react-hooks/exhaustive-deps -- hlásí jen skutečnou změnu chyb
   const allocatedById = new Map(vatGroups.allocatedLines.map((line) => [line.id, line]));
   const displayValue = (line: JournalLine, column: ColumnId) =>
-    journalDisplayValue(VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line, column, {
-      accountByCode,
-      dimensions: props.dimensions ?? [],
-      partners: props.partners ?? [],
-      units: props.units ?? [],
-      vatCodeMap,
-      calcMode,
-      foreign,
-      rate,
-      rateAmount,
-      counterColumn,
-      compactAccountIds,
-    });
+    journalDisplayValue(
+      VAT_COLUMNS.has(dataColumnOf(column)) ? (allocatedById.get(line.id) ?? line) : line,
+      column,
+      {
+        accountByCode,
+        dimensions: props.dimensions ?? [],
+        partners: props.partners ?? [],
+        units: props.units ?? [],
+        vatCodeMap,
+        calcMode,
+        foreign,
+        rate,
+        rateAmount,
+        counterColumn,
+        compactAccountIds,
+      },
+    );
   const accountFor = (line: JournalLine, column: Parameters<typeof journalAccountFor>[1]) =>
     journalAccountFor(line, column, counterColumn);
   const finish = () => setEditing(null);

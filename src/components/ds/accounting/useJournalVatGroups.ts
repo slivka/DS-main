@@ -61,9 +61,7 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     : 1;
   const active = vatOn && !vatReadOnly;
   // Otevřený pomocník drží editor: buňka se při aktivaci bubliny stavu přemontuje.
-  const [grossHelper, setGrossHelper] = React.useState<{ key: string; value: string } | null>(
-    null,
-  );
+  const [grossHelper, setGrossHelper] = React.useState<{ key: string; value: string } | null>(null);
   const result = computeVatGroups(active ? lines : [], props.vatOverrides, vatCodeMap, {
     foreign,
     exchangeRate,

@@ -21,7 +21,8 @@ export const SK_VAT_GROUPS: JournalVatGroupsTexts = {
   resetVat: "Vrátiť vypočítanú daň",
   apply: "Použiť",
   cancel: "Zrušiť",
-  overTolerance: "DPH podľa dokladu pri {group} sa líši od vypočítanej o {difference} – nad toleranciou",
+  overTolerance:
+    "DPH podľa dokladu pri {group} sa líši od vypočítanej o {difference} – nad toleranciou",
   fixedTax: "Pevná daň – odpočet zálohy / dovoz",
   grossHelper: "Cena s DPH",
   grossHelperField: "Suma s DPH ({rate} %)",

@@ -6,7 +6,8 @@ mock.module("@radix-ui/react-use-layout-effect", () => ({
 }));
 
 const { cleanup, fireEvent, render, screen, waitFor } = await import("@testing-library/react");
-const { JournalLinesEditor } = await import("../../src/components/ds/accounting/journal-lines-editor");
+const { JournalLinesEditor } =
+  await import("../../src/components/ds/accounting/journal-lines-editor");
 const { TooltipProvider } = await import("../../src/components/ui/tooltip");
 type JournalLine = import("../../src/components/ds/accounting/journal-lines").JournalLine;
 type VatCodeOption = import("../../src/components/ds/accounting/journal-lines").VatCodeOption;
@@ -143,9 +144,9 @@ describe("JournalLinesEditor – skupiny DPH", () => {
     });
     expect(container.querySelector('[data-slot="journal-vat-recap"]')).toBeNull();
     expect(
-      container.querySelector('[data-slot="journal-difference-actions"]')?.getAttribute(
-        "data-preferred",
-      ),
+      container
+        .querySelector('[data-slot="journal-difference-actions"]')
+        ?.getAttribute("data-preferred"),
     ).toBeNull();
   });
 });

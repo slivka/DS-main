@@ -6,14 +6,7 @@
 import type * as React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  ChevronDown,
-  ChevronRight,
-  Copy,
-  GripVertical,
-  Pin,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, GripVertical, Pin, Trash2 } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
 import { TableCell, TableRow } from "../../ui/table";

@@ -21,7 +21,9 @@ test.beforeEach(async ({ page }) => {
   // Velká stránka hydratuje několik sekund; interakce až s Reactem na tlačítkách ukázky.
   await page.waitForFunction(
     () => {
-      const node = document.querySelector('[data-testid="vat-groups-eur"] [data-slot="journal-vat-reset"]');
+      const node = document.querySelector(
+        '[data-testid="vat-groups-eur"] [data-slot="journal-vat-reset"]',
+      );
       return Boolean(node && Object.keys(node).some((key) => key.startsWith("__react")));
     },
     undefined,

@@ -16,7 +16,11 @@ import {
 import { AmountDifference } from "./amount-difference";
 import { useJournalEditor } from "./journal-editor-context";
 import { roundJournalAmount } from "./journal-lines-model";
-import { largestBaseLineId, type JournalDifferenceAction, type VatGroup } from "./journal-vat-groups";
+import {
+  largestBaseLineId,
+  type JournalDifferenceAction,
+  type VatGroup,
+} from "./journal-vat-groups";
 
 /** Položka nabídky Rozdílu. */
 interface DifferenceItem {
@@ -44,7 +48,9 @@ export function JournalDifferenceBar() {
   const texts = t.vatGroups;
   const { props } = editor;
   const roundingValue = totals.roundingValue;
-  const sum = foreign ? totals.documentLinesTotal : roundJournalAmount(totals.total - roundingValue);
+  const sum = foreign
+    ? totals.documentLinesTotal
+    : roundJournalAmount(totals.total - roundingValue);
   const difference = totals.showRemaining ? totals.difference : 0;
   const { actions, preferred } = vatGroups.difference(difference);
   const groups = vatGroups.vatGroups.groups.filter((group) => group.rate > 0);
@@ -53,9 +59,7 @@ export function JournalDifferenceBar() {
   const balanceBase = () => {
     const targetId = largestBaseLineId(editor.regularLines, { foreign });
     const group = groups.find((item) => item.lines.some((share) => share.lineId === targetId));
-    const delta = group
-      ? roundJournalAmount((difference * 100) / (100 + group.rate))
-      : difference;
+    const delta = group ? roundJournalAmount((difference * 100) / (100 + group.rate)) : difference;
     vatGroups.adjustLargestBase(delta);
   };
   const items = actions.flatMap((action): DifferenceItem[] => {
