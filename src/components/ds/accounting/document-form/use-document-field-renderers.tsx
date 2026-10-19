@@ -108,6 +108,7 @@ export function useDocumentFieldRenderers({
                 locked: accountingDateLink.locked,
                 onToggle: accountingDateLink.onToggle,
                 lockedHint: accountingDateLink.hint,
+                unlockedHint: accountingDateLink.unlockedHint,
               }
             : undefined)
         }

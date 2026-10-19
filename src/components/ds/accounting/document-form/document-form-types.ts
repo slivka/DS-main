@@ -138,6 +138,8 @@ export type DocumentAccountingDateLink = {
   locked: boolean;
   onToggle: (locked: boolean) => void;
   hint?: string;
+  /** Tooltip odemčeného zámku (např. „Svázat s datem pohybu“ u bankovního pohybu). */
+  unlockedHint?: string;
 };
 export type DocumentDateField = "issueDate" | "accountingDate" | "taxDate" | "dueDate" | "vatDate";
 export type DocumentVatConfig = {
