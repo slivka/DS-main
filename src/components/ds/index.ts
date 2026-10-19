@@ -195,3 +195,4 @@ export { Calendar, CalendarDayButton, type CalendarNavigationProps } from "../ui
 export { Button, buttonVariants, type ButtonProps } from "../ui/button";
 export { Badge, badgeVariants, type BadgeProps } from "../ui/badge";
 export { Input, type InputProps } from "../ui/input";
+export * from "./form/record-read-only";

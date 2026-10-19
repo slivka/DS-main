@@ -114,7 +114,7 @@ function FormsPage() {
         open={open}
         onOpenChange={setOpen}
         title="Účetní doklad"
-        wide
+        size="md"
         onSubmit={() => {
           setOpen(false);
           toast.success("Doklad uložen");
