@@ -1,6 +1,6 @@
 # Changelog – Slivka Design System
 
-## 2.110.0 (nevydáno) – Design 3
+## 2.110.0 – Design 3
 
 ### Změny
 - Druhé opravné kolo po GitHub run 39296790881: společné PopoverContent předává Escape kalendáři před zavřením portálu (roky → měsíce → dny; výběr měsíce zavře). Zakázané ovládání uvnitř pole má šedou výplň a tlumený text i v zapnutém stavu; zakázané ovládání lišty gridu zachovává rámeček --input.
