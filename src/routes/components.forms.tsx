@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { ShowcaseLayout, ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { PartnerShowcase } from "@/components/showcase/PartnerShowcase";
+import { RecordDialogPatternsShowcase } from "../components/showcase/RecordDialogPatternsShowcase";
 import { RecordDialogShowcase } from "@/components/showcase/RecordDialogShowcase";
 import { FieldStatusShowcase } from "@/components/showcase/FieldStatusShowcase";
 import {
@@ -84,6 +85,13 @@ function FormsPage() {
         description="Společná mřížka, stejné výšky polí, číselné řady a stálá výška záložek."
       >
         <RecordDialogShowcase />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Dialogy záznamů"
+        description="Jeden vzor: povinná velikost, ochrana neuložených změn, jen pro čtení, chyba uložení a Odstranit vlevo."
+      >
+        <RecordDialogPatternsShowcase />
       </ShowcaseSection>
 
       <ShowcaseSection
