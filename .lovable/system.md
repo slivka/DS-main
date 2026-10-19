@@ -1,5 +1,11 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Design 3
+
+- Aktivní záložka panelu je ouško v barvě obsahu, aktivní panel má primární horní linku, ostatní neutrální. Žádný stav nemění geometrii záložky.
+- Kalendář má stejně velké pohledy dnů, měsíců a let; měsíc se zobrazuje v prvním pádě. Používejte společný Calendar, nikoli dropdown caption.
+- Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
+
 ## Dialogy záznamů
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nikdy nesmí rozhodit výšku řádku polí. Vzor formátu patří do pole přes `Input.formatPattern`, vysvětlení pod sekci přes `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.

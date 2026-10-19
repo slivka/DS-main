@@ -7,12 +7,16 @@
 - Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
 - Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
 - Stavové štítky mají pevnou výšku a optické centrování; opraveno „Schválen“.
-- Identifikační řádek zachovává výšku při změně účtu.
+- Identifikační řádek zachovává výšku při změně účtu; šířka rezervuje nejméně 18 rem a místo tužky i během úprav.
+- Nové props: `Badge.size`, `StatusBadge.size` (sm/md); `Calendar.baseDate`, `minDate`, `maxDate`, `onToday`, `onClose`, `footerActions`, `initialView`, `onMonthSelect`; `CalendarPicker.baseDate`, `DateRangeField.baseDate`.
+- Výchozí `DocumentStatusBadge.approvedLabel` je přeložené „Schválen“; sm 1,25 rem a md 1,5 rem.
+- Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
 
 ### Migrace
 - `Calendar.captionLayout` je deprecated od 2.110.0 a nemá účinek; používejte
   společnou hlavičku kalendáře. Odstranění v nejbližší major verzi.
 - Vzhled zakázaných tlačítek se mění, jejich funkce a důvody zůstávají stejné.
+- `MonthYearSelect` má společný spouštěč a kalendář měsíců/let. `yearClassName` a `monthClassName` se slučují na spouštěči; pro rozvržení používejte `className` obalu.
 
 ## 2.109.0 – DPH krok 4B
 

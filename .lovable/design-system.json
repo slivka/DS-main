@@ -6848,6 +6848,13 @@
       ],
       "antipatterns": [
         "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ],
+      "props": [
+        {
+          "name": "baseDate",
+          "type": "string",
+          "description": "Základ výchozího měsíce ve formátu ISO; výběr má přednost."
+        }
       ]
     },
     {
@@ -6863,6 +6870,13 @@
       ],
       "antipatterns": [
         "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+      ],
+      "props": [
+        {
+          "name": "baseDate",
+          "type": "string",
+          "description": "Základ výchozího měsíce ve formátu ISO; výběr má přednost."
+        }
       ]
     },
     {
