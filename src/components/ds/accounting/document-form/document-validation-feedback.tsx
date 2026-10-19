@@ -135,7 +135,15 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
     if (message)
       issues.push(
-        headerIssue(a.t, key as DocumentHeaderField, message, "error", undefined, a.fieldLabels),
+        headerIssue(
+          a.t,
+          key as DocumentHeaderField,
+          message,
+          "error",
+          undefined,
+          a.fieldLabels,
+          a.code,
+        ),
       );
   }
   for (const key of a.invalidDates ?? [])

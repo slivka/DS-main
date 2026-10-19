@@ -204,6 +204,7 @@ export function DocumentForm(props: DocumentFormProps) {
     cellIssues,
   } = useDocumentFormFeedback({
     validation: {
+      code,
       value,
       foreign,
       vatRateField,
