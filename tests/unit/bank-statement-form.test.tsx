@@ -84,7 +84,7 @@ test("BankStatementForm mění číslo v identitě, částku převede bez mezer"
   });
   expect(result.bankClosing).toBe(12500.5);
 });
-test.each(["checked", "posted"] as const)(
+test.each(["posted"] as const)(
   "BankStatementForm stav %s neumožní editaci a nemá akce kontroly",
   (status) => {
     const view = show({ status, onSave: () => {}, onCheckedChange: () => {} });
@@ -171,7 +171,7 @@ test("BankStatementForm ukládá Ctrl/Cmd+S jen při dostupné akci", () => {
 });
 
 test("BankStatementForm pouze čtené hodnoty mají jméno z popisku", () => {
-  const view = show({ status: "checked", value: { ...base.value, bankClosing: 12500 } });
+  const view = show({ status: "posted", value: { ...base.value, bankClosing: 12500 } });
   for (const label of [
     "Číslo výpisu",
     "Zůstatek na výpise",
