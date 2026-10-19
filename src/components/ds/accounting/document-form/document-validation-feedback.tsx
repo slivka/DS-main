@@ -91,8 +91,7 @@ export function headerFieldKeyFromId(id: string, code?: string): string {
   if (id === "document-movement-account") return code === "BA" ? "bankAccount" : "bankIban";
   if (id === "document-amountTotal") return "amountTotal";
   if (id === "document-partner-ico") return "counterpartyIco";
-  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID))
-    if (fieldId === id) return key;
+  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID)) if (fieldId === id) return key;
   return id.replace("document-", "");
 }
 

@@ -77,10 +77,10 @@ export function FormIssuesBar({
     list.length === 0 && !forceError
       ? null
       : (hasErrors
-            ? saveFailed || forceError
-              ? texts.saveFailedTitle
-              : texts.fixBeforeTitle
-            : texts.warningsTitle
+          ? saveFailed || forceError
+            ? texts.saveFailedTitle
+            : texts.fixBeforeTitle
+          : texts.warningsTitle
         ).replace("{count}", String(count));
   // Bez callbacku si pruh zavření drží sám do další změny celého obsahu (kód + text + pole).
   const signature = list
