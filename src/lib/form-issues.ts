@@ -40,25 +40,24 @@ function bareMessage(message: string): string {
   return message.replace(ROW_PREFIX, "").trim();
 }
 
-/** Klíč stejné hlášky: kód, jinak text bez prefixu řádku. */
-function sameKey(issue: FormIssue): string {
-  return issue.code ?? bareMessage(issue.message);
-}
-
 /**
  * Sloučí položky: stejná hláška (kód nebo text, pole, řádek) jen jednou; chyba hlavičky se
  * neopakuje jako „Řádek N: …“; chyba má přednost před varováním. Pořadí: chyby, varování.
+ * Klient × server stejného pole se deduplikuje bez ohledu na text – server má přednost.
  */
 export function mergeFormIssues(issues: readonly FormIssue[]): FormIssue[] {
   const headers = issues.filter((issue) => !issue.rowId);
   const seen = new Set<string>();
+  const seenField = new Set<string>();
   const result: FormIssue[] = [];
-  // Server má přednost před klientem se stejným polem a textem (bez ohledu na kód).
+  // Server má přednost před klientem se stejným polem (bez ohledu na kód i text).
   const bySeverity = (severity: FormIssue["severity"]) =>
     issues.filter((issue) => issue.severity === severity);
+  const serverFirst = (a: FormIssue, b: FormIssue) =>
+    a.source === b.source ? 0 : a.source === "server" ? -1 : 1;
   const ordered = [
-    ...bySeverity("error").sort((a, b) => (a.source === b.source ? 0 : a.source === "server" ? -1 : 1)),
-    ...bySeverity("warning").sort((a, b) => (a.source === b.source ? 0 : a.source === "server" ? -1 : 1)),
+    ...bySeverity("error").sort(serverFirst),
+    ...bySeverity("warning").sort(serverFirst),
   ];
   for (const issue of ordered) {
     // Hlavička × řádek se dědikuje jen při shodném kódu nebo shodném fieldId, ne obecném textu.
@@ -74,8 +73,12 @@ export function mergeFormIssues(issues: readonly FormIssue[]): FormIssue[] {
     const key = `${bareMessage(issue.message)}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`;
     const loose = `${bareMessage(issue.message)}|${issue.rowId ?? ""}`;
     if (seen.has(key) || (!issue.fieldId && seen.has(loose))) continue;
+    // Stejné pole a závažnost jen jednou (server je seřazený první, takže vyhraje).
+    const fieldKey = issue.fieldId ? `${issue.severity}|${issue.fieldId}` : null;
+    if (fieldKey && seenField.has(fieldKey)) continue;
     seen.add(key);
     seen.add(loose);
+    if (fieldKey) seenField.add(fieldKey);
     result.push(issue);
   }
   return result;
