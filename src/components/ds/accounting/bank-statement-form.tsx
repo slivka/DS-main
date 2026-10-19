@@ -12,7 +12,6 @@ import {
   BankStatementBasic,
   statementDifference,
 } from "./bank-statement-sections";
-import { NoticeBar } from "../feedback/notice-bar";
 import { formatAmount } from "../../../lib/format";
 import { PageLayout } from "../layout/page-layout";
 import { PageHeader } from "../layout/page-header";
