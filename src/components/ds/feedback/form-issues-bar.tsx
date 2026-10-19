@@ -8,11 +8,7 @@ import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { formIssuesTitle, mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
 import { Button } from "../../ui/button";
-import {
-  FieldErrorSummary,
-  focusFieldErrorLink,
-  type FieldErrorLink,
-} from "./field-error-summary";
+import { FieldErrorSummary, focusFieldErrorLink, type FieldErrorLink } from "./field-error-summary";
 
 /** Vynucený chybový režim: aplikace poslala `error`, ale položky jsou jen varování. */
 export interface FormIssuesForceError {
@@ -68,8 +64,7 @@ export function FormIssuesBar({
   // Bez callbacku si pruh zavření drží sám do další změny celého obsahu (kód + text + pole).
   const signature = list
     .map(
-      (issue) =>
-        `${issue.code ?? ""}|${issue.message}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`,
+      (issue) => `${issue.code ?? ""}|${issue.message}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`,
     )
     .join(";");
   const [dismissed, setDismissed] = useState<string | null>(null);

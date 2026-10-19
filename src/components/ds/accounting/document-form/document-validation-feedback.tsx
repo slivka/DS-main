@@ -122,7 +122,9 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
   const issues: FormIssue[] = [];
   for (const [key, message] of Object.entries(a.fieldErrors ?? {})) {
     if (message)
-      issues.push(headerIssue(a.t, key as DocumentHeaderField, message, "error", undefined, a.fieldLabels));
+      issues.push(
+        headerIssue(a.t, key as DocumentHeaderField, message, "error", undefined, a.fieldLabels),
+      );
   }
   for (const key of a.invalidDates ?? [])
     issues.push(headerIssue(a.t, key, a.t.invalidDate, "error", undefined, a.fieldLabels));
@@ -143,7 +145,9 @@ export function documentClientIssues(a: DocumentValidationArgs): FormIssue[] {
       code: "vat_rate_missing",
     });
   if (a.foreign && a.value.rateManual && !a.value.rateNote?.trim())
-    issues.push(headerIssue(a.t, "rateNote", a.t.rateNoteRequired, "error", undefined, a.fieldLabels));
+    issues.push(
+      headerIssue(a.t, "rateNote", a.t.rateNoteRequired, "error", undefined, a.fieldLabels),
+    );
   if (a.foreign && vat?.manual && !vat.note?.trim())
     issues.push({
       label: a.t.vatRate,

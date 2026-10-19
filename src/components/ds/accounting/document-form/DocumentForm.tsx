@@ -255,8 +255,7 @@ export function DocumentForm(props: DocumentFormProps) {
     dateWarnings,
     accountingDateLink: dateLink,
     // Neaktivní validace skrývá jen klientské chyby; žlutá varování se ukazují vždy.
-    fieldErrors:
-      validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
+    fieldErrors: validationActive === false ? undefined : { ...fieldErrors, ...issueFieldErrors },
     fieldWarnings: { ...effectiveFieldWarnings, ...issueFieldWarnings },
     onInvalidDate: (key, invalid) =>
       setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
@@ -479,11 +478,11 @@ export function DocumentForm(props: DocumentFormProps) {
               field,
               vsLink,
               layout: bankMovement ? "grid20" : "flex",
-      // „Přidělí se při zařazení“ jen u vydaných dokladů ve stavu koncept.
-      vsPendingText:
-        ["FV", "ZFV", "DDPZ"].includes(code) && (props.status ?? "draft") === "draft"
-          ? dsTexts.documentEdit.numberPending
-          : undefined,
+              // „Přidělí se při zařazení“ jen u vydaných dokladů ve stavu koncept.
+              vsPendingText:
+                ["FV", "ZFV", "DDPZ"].includes(code) && (props.status ?? "draft") === "draft"
+                  ? dsTexts.documentEdit.numberPending
+                  : undefined,
             }}
             amount={{
               t,
