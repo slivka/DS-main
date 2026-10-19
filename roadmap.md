@@ -6,6 +6,7 @@
 - [x] Rekapitulace DPH se skupinami, úpravy dle dokladu, tolerance, cizí měna
 - [x] Patička Součet · Zaokrouhlení · Rozdíl s nabídkou dorovnání
 - [x] Showcase, unit, Chromium E2E, katalog, CHANGELOG, system.md
+- [ ] document-field-ids (E2E): 2–4 ze 6 testů nestihnou 10 s čekání na načtení stránky účetních formulářů (načítání trvá ~15 s, selhává i bez nové ukázky) – rozhodnout: delší čekání v testu, nebo rozdělit stránku
 
 ## DS 2.108.0 – Edit dokladu 15
 - [x] E1 živý pruh (issues, dedup, titulky, validationActive jen klient, onFieldChange vč. přepínačů a rowId/columnId)
