@@ -38,7 +38,8 @@ test("měna nemění rozměry ani polohu při zamčení", async ({ page }) => {
   const before = await geometry();
   await setChecked(page, true);
   expect(await geometry()).toEqual(before);
-  expect(before[0]?.slice(2)).toEqual([104, 44]);
+  // 2.107.0: jednotná výška ovládacích prvků (--control-h = 36 px při zoomu 100 %).
+  expect(before[0]?.slice(2)).toEqual([104, 36]);
 });
 
 test("účet lícuje s Dodavatelem a číslo dodavatele s IČO a DIČ", async ({ page }) => {

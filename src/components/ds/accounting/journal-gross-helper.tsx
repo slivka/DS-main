@@ -23,12 +23,19 @@ export interface JournalGrossHelperProps {
   column: "amount" | "unitPrice";
   /** Další třídy ikony. */
   className?: string;
+  /** V pořadí Tab (detail řádku). V buňce mřížky `false`, aby Tab vedl na další sloupec. @default false */
+  tabbable?: boolean;
 }
 
 const stop = (event: React.SyntheticEvent) => event.stopPropagation();
 
 /** Tlačítko „Cena s DPH“; bez sazby (kód bez daně, samovyměření, mimo DPH) se nevykreslí. */
-export function JournalGrossHelper({ line, column, className }: JournalGrossHelperProps) {
+export function JournalGrossHelper({
+  line,
+  column,
+  className,
+  tabbable = false,
+}: JournalGrossHelperProps) {
   const { editor } = useJournalEditor();
   const rate = editor.vatGroups.grossHelperRate(line);
   if (rate === null) return null;
@@ -41,6 +48,9 @@ export function JournalGrossHelper({ line, column, className }: JournalGrossHelp
       aria-label={editor.t.vatGroups.grossHelper}
       aria-haspopup="dialog"
       aria-expanded={open}
+      // Mimo pořadí Tab: Tab z Částky vede na Kód DPH. Z klávesnice jde pomocník otevřít
+      // v detailu řádku, kde je plně dosažitelný.
+      tabIndex={tabbable ? undefined : -1}
       onPointerDown={stop}
       onFocus={stop}
       onMouseDown={(event) => {

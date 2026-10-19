@@ -1,10 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+// Od 2.106 je nahoře stránky ukázka primárních akcí; měříme účetní deník (grid s kontextovým řádkem).
+const journalGrid = (page: Page) =>
+  page
+    .locator('[data-slot="data-grid"]')
+    .filter({ has: page.locator('[data-slot="grid-context-bar"]') })
+    .first();
 
 for (const width of [360, 480, 620, 800, 1100, 1440]) {
   test(`řádek akcí se neořízne při ${width} px`, async ({ page }) => {
     await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
-    const grid = page.locator('[data-slot="data-grid"]').first();
+    const grid = journalGrid(page);
     await grid.evaluate((element, nextWidth) => {
       const html = element as HTMLElement;
       html.style.width = `${nextWidth}px`;
@@ -53,7 +60,11 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
   test(`pořadí skupin a oddělovače v ${gridSelector}`, async ({ page }) => {
     await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
-    const toolbar = page.locator(gridSelector).first().locator('[data-slot="grid-toolbar"]');
+    const grid =
+      gridSelector === '[data-slot="data-grid"]'
+        ? journalGrid(page)
+        : page.locator(gridSelector).first();
+    const toolbar = grid.locator('[data-slot="grid-toolbar"]');
     await toolbar.evaluate((element) => {
       (
         element.closest('[data-slot="data-grid"],[data-slot="tree-grid"]') as HTMLElement
@@ -96,7 +107,7 @@ for (const width of [700, 800, 900, 1000]) {
   }) => {
     await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
-    const grid = page.locator('[data-slot="data-grid"]').first();
+    const grid = journalGrid(page);
     await grid.evaluate((element, nextWidth) => {
       (element as HTMLElement).style.width = `${nextWidth}px`;
     }, width);
@@ -127,7 +138,7 @@ for (const width of [700, 800, 900, 1000]) {
 test("360 px s textem v hledání: nic se nevytlačí", async ({ page }) => {
   await page.setViewportSize({ width: 1800, height: 1200 });
   await page.goto("/components/grid");
-  const grid = page.locator('[data-slot="data-grid"]').first();
+  const grid = journalGrid(page);
   await grid.evaluate((element) => {
     (element as HTMLElement).style.width = "360px";
   });

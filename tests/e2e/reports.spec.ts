@@ -16,10 +16,19 @@ test.describe("Výkazy 2.8.0", () => {
     const grid = page.locator('[data-slot="tree-grid"]').first();
     await expect(grid.locator('[data-row-id="g22"]')).toBeVisible();
     await expect(grid.locator('[data-row-id="s221"]')).toHaveCount(0);
-    await grid.getByRole("button", { name: "Rozbalit vše" }).click();
+    // Od přesunu textů do DsTexts (2.61.0) je tlačítko úrovní v liště „Rozbalit“;
+    // stejný název má i tlačítko řádku, proto hledáme jen v liště.
+    const expand = grid
+      .locator('[data-slot="grid-toolbar"]')
+      .getByRole("button", { name: "Rozbalit", exact: true });
+    // Rozsáhlá stránka (2.109.0) hydratuje později než SSR; ověříme skutečnou reakci.
+    await expect(async () => {
+      await expand.click();
+      await expect(page.getByRole("menuitem", { name: "Vše" })).toBeVisible({ timeout: 1000 });
+    }).toPass();
     await page.getByRole("menuitem", { name: "Vše" }).click();
     await expect(grid.locator('[data-row-id="a221001"]')).toBeVisible();
-    await grid.getByRole("button", { name: "Rozbalit vše" }).click();
+    await expand.click();
     await page.getByRole("menuitem", { name: "Třídy" }).click();
     await expect(grid.locator('[data-row-id="g22"]')).toHaveCount(0);
     await grid.locator('[data-row-id="t2"]').getByRole("button", { name: "Rozbalit" }).click();
@@ -31,7 +40,13 @@ test.describe("Výkazy 2.8.0", () => {
     const [download] = await Promise.all([
       page.waitForEvent("download"),
       (async () => {
-        await grid.getByRole("button", { name: "Stáhnout" }).click();
+        // Rozsáhlá stránka (2.109.0) hydratuje později než SSR; ověříme skutečnou reakci.
+        await expect(async () => {
+          await grid.getByRole("button", { name: "Stáhnout" }).click();
+          await expect(page.getByRole("button", { name: "Stáhnout do Excelu" })).toBeVisible({
+            timeout: 1000,
+          });
+        }).toPass();
         await page.getByRole("button", { name: "Stáhnout do Excelu" }).click();
       })(),
     ]);
@@ -45,8 +60,12 @@ test.describe("Výkazy 2.8.0", () => {
   test("BarBreakdownChart a FilterChips", async ({ page }) => {
     const chips = page.locator('[data-slot="filter-chips"]').last();
     await expect(chips.locator('[data-chip-id="group"]')).toBeVisible();
-    await page.locator('[data-bar-id="51"]').click();
-    await expect(chips.locator('[data-chip-id="group"]')).toHaveCount(0);
+    // Rozsáhlá stránka (2.109.0) hydratuje později než SSR; klik opakujeme, dokud filtr nezareaguje.
+    await expect(async () => {
+      if (await chips.locator('[data-chip-id="group"]').count())
+        await page.locator('[data-bar-id="51"]').click();
+      await expect(chips.locator('[data-chip-id="group"]')).toHaveCount(0, { timeout: 1000 });
+    }).toPass();
     await page.locator('[data-bar-id="52"]').click();
     await expect(chips.locator('[data-chip-id="group"]')).toContainText("52");
     await chips.getByRole("button", { name: "Zrušit vše" }).click();
