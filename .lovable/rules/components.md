@@ -70,6 +70,7 @@ Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stran
 | `onKeyDown` | any | `—` |
 | `suffix` | any | `—` |
 | `ariaLabel` | string | `—` |
+| `id` | string | `—` |
 | `className` | string | `ml-auto flex shrink-0 items-center gap-2` |
 
 **Examples:**
@@ -223,6 +224,7 @@ Společný stav rozdílu částek pro editor řádků a bankovní výpis. Výpis
 |---|---|---|
 | `value` | number | `—` |
 | `label` | string | `—` |
+| `overLabel` | string | `—` |
 | `balancedLabel` | string | `—` |
 | `currencySymbol` | string | `—` |
 
@@ -1721,6 +1723,11 @@ _Stav pole a jednotná výška (2.107.0)_
 <DocumentForm {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />
 ```
 
+_Živý pruh (2.108.0)_
+```tsx
+<DocumentForm {...props} issues={serverIssues} validationActive={triedSave} saveFailed={failed} onFieldChange={(id) => dropServerIssue(id)} />
+```
+
 **Avoid:**
 
 - Nevykreslujte hlavní účet v dolní sekci formuláře ani neskládejte identitu přes volné položky.
@@ -2128,6 +2135,19 @@ _Stav pole a jednotná výška (2.107.0)_
 import { FieldFeedbackContext } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Sdílený stav error/warning mezi Field a jeho ovládáním; pro běžné formuláře použijte Field, vlastní složená pole mohou kontext předat potomkům.
+
+**Examples:**
+
+_Předání stavu složenému poli_
+```tsx
+<FieldFeedbackContext.Provider value={{ error, warning }}><CustomControl /></FieldFeedbackContext.Provider>
+```
+
+**Avoid:**
+
+- Nevykreslujte druhou výstrahu, pokud ji již vykresluje Field.
+
 ### FieldFeedbackIndicator
 
 ```ts
@@ -2395,6 +2415,43 @@ import { FormDescription } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db
 ```ts
 import { FormField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### FormIssuesBar
+
+```ts
+import { FormIssuesBar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+Živý seznam toho, co zbývá opravit, nad formulářem; RecordActionBar a DocumentForm ho skládají z issues. Každá položka odkazuje na pole.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `issues` | any | `—` |
+| `saveFailed` | boolean | `false` |
+| `title` | any | `—` |
+| `message` | any | `—` |
+| `forceError` | any | `—` |
+| `fieldErrors` | any | `—` |
+| `onFieldErrorSelect` | function | `—` |
+| `onClose` | function | `—` |
+| `onSelect` | function | `—` |
+| `closeLabel` | string | `—` |
+| `dataSlot` | string | `form-issues-bar` |
+
+**Examples:**
+
+_Serverová chyba DUZP_
+```tsx
+<RecordActionBar issues={[{ fieldId: "document-taxDate", label: texts.taxDate, message: validationMessage, severity: "error", source: "server" }]} saveAction={{ onSave: save }} />
+```
+
+**Avoid:**
+
+- Toast nebo text pod polem místo položky v pruhu.
+- Stejná hláška hlavičky znovu jako „Řádek N: …“ – DS deduplikuje podle code.
+- Mazání serverových položek v DS – maže je aplikace podle onFieldChange.
 
 ### FormItem
 
@@ -2953,12 +3010,18 @@ Společná prezentační identita formuláře; položky a volitelný příznak v
 | `number` | string | `—` |
 | `numberContent` | any | `—` |
 | `fallback` | any | `—` |
+| `numberId` | string | `—` |
 
 **Examples:**
 
 _Identita výpisu_
 ```tsx
 <IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />
+```
+
+_Číslo dokladu s identifikátorem_
+```tsx
+<IdentityLine items={[book, period]} number={document.number} numberId="document-number" />
 ```
 
 **Avoid:**
@@ -3043,7 +3106,7 @@ import { InputOTPSlot } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7
 import { JournalLinesEditor } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Rozpis a rekapitulace; cizí měna ukazuje přepočtený celek v hlavičce. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.
+Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb.
 
 **Examples:**
 
@@ -3056,11 +3119,6 @@ _Řádky s DPH (2.55.0)_
 ```tsx
 <JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency="CZK" homeCurrency="CZK" homeCurrencySymbol="Kč" mode="mainAccount" mainSide="D" mainAccount="321001" vat={{ enabled: vatEnabled, codes: vatCodes, calcMode, onCalcModeChange: setCalcMode, pdpSubjects }} />
 // uložení: toJournalRows(lines, { mainSide: "D", vat: { calcMode } })
-```
-
-_2.92.0_
-```tsx
-<JournalLinesEditor {...props} recapTotalAmount={externalDocumentTotal} />
 ```
 
 _Stav pole a jednotná výška (2.107.0)_
@@ -3128,7 +3186,7 @@ _2.92.0_
 import { JournalRecapHomeTotal } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.
+Nepoužívat – rozhodnutí 18. 10. (2.108.0): domácí celek se v rekapitulaci nezobrazuje. Celek v domácí měně do hlavičky rekapitulace. Přepočet používá kurz dokladu; bez kurzu ukáže pomlčku.
 
 **Props:**
 
@@ -3149,6 +3207,7 @@ _Přepočtený celek_
 
 **Avoid:**
 
+- Jakékoli nové použití – komponenta je zastaralá (rozhodnutí 18. 10.).
 - Nevkládejte značku měny natvrdo.
 - Nevydávejte chybějící kurz za nulu.
 
@@ -4185,6 +4244,9 @@ Přilepený pruh karty záznamu pod PageHeader. Sjednocuje uložení, primární
 | `busy` | boolean | `false` |
 | `error` | any | `—` |
 | `notices` | any | `—` |
+| `issues` | any | `—` |
+| `saveFailed` | boolean | `—` |
+| `onIssuesClose` | function | `—` |
 | `saveLabel` | string | `—` |
 | `moreActionsLabel` | string | `—` |
 | `errorTitle` | any | `—` |
@@ -5576,6 +5638,25 @@ import { VsField } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-736433
 
 Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Celkem, Kurz a VS používají sans, text-sm a tabular-nums; Celkem zůstává tučně.
 
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | string | `—` |
+| `onChange` | function | `—` |
+| `maxLength` | number | `10` |
+| `placeholder` | string | `—` |
+| `required` | boolean | `—` |
+| `disabled` | boolean | `—` |
+| `readOnly` | boolean | `—` |
+| `id` | string | `—` |
+| `className` | string | `relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]` |
+| `linked` | boolean | `—` |
+| `onLinkedChange` | function | `—` |
+| `derivedValue` | string | `—` |
+| `pendingText` | string | `—` |
+| `warning` | string | `—` |
+
 **Examples:**
 
 _Použití společného stavu_
@@ -5583,9 +5664,15 @@ _Použití společného stavu_
 <VsField {...props} />
 ```
 
+_Zámek VS (2.108.0)_
+```tsx
+<VsField value={vs} onChange={setVs} linked={linked} onLinkedChange={setLinked} derivedValue="20260456" pendingText="přidělí se při zařazení" />
+```
+
 **Avoid:**
 
 - Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.
+- Ukládat derivedValue do DB – autoritou je variable_symbol_auto; ukládá se jen stav vazby.
 
 ### WorkspaceCompanySwitcher
 
