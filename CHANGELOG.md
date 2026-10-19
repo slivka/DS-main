@@ -17,6 +17,7 @@
 - Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
 
 ### Kontroly
+- Druhé opravné kolo po run 39296790881: pět Chromium speců beze změny testů, 29/29 (5,8 min): design-three 13/13, edit-document-thirteen 10/10, document-disabled-inputs 2/2, grid-control-styles 3/3 a přímo dotčený document-date-link 1/1. `check:full --harness` 60,0 s; unit 854/854 v 84 souborech, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Průběžný quick --harness prošel; při automaticky uloženém diffu 0 souborů provedl jen peněžní kontrolu, ostatní ověřil full. Samostatné unit kalendáře/přepínačů/zakázaných polí 28/28 ve třech souborech. Automatický build OK, ruční typecheck/build ani plná E2E sada neběžely; verze 2.109.0, bez vydání.
 - Opravné kolo po 831f9342: Chromium pouze `design-three.spec.ts` 13/13 (54,0 s), unit 852/852; lint 0 chyb / 322 varování, formát a peněžní kontrola OK; `check:full --harness` 49,5 s. Výšky identity 70/100/200 %, účet nejméně 18 rem a celý název při dostatku místa; Range textu nadpisu uvnitř h1, výšky obou štítků stejné. Hledání chybného schválení mimo CHANGELOG: 0 výsledků. Verze zůstává 2.109.0, bez vydání.
 - `check:catalog` proti vydané 2.109.0 (29bdeb24): 470 → 470 komponent, 910 → 922 props; 12 přidaných props, žádné odebrané položky.
 - `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
