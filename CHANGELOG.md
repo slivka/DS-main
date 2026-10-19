@@ -16,6 +16,7 @@
 - Nové tokeny: `pane-tabbar`, `border-strong`, pevné výšky štítků a geometrie kalendáře.
 
 ### Kontroly
+- Opravné kolo po 831f9342: Chromium pouze `design-three.spec.ts` 13/13 (54,0 s), unit 852/852; lint 0 chyb / 322 varování, formát a peněžní kontrola OK; `check:full --harness` 49,5 s. Výšky identity 70/100/200 %, účet nejméně 18 rem a celý název při dostatku místa; Range textu nadpisu uvnitř h1, výšky obou štítků stejné. Hledání chybného schválení mimo CHANGELOG: 0 výsledků. Verze zůstává 2.109.0, bez vydání.
 - `check:catalog` proti vydané 2.109.0 (29bdeb24): 470 → 470 komponent, 910 → 922 props; 12 přidaných props, žádné odebrané položky.
 - `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
 - Nový Chromium spec Design 3: 10/10; plná sada a Firefox/WebKit se v Lovable nespouštěly.
