@@ -161,10 +161,16 @@ export interface JournalEditorTexts {
   vatRate: string;
   vatAmount: string;
   grossAmount: string;
+  /** @deprecated 2.109.0 – přepínač Bez / S DPH zrušen; odstraní se ve 3.0.0. */
   vatMode: string;
+  /** @deprecated 2.109.0 – přepínač zrušen; odstraní se ve 3.0.0. */
   vatModeNet: string;
+  /** @deprecated 2.109.0 – přepínač zrušen; odstraní se ve 3.0.0. */
   vatModeGross: string;
+  /** @deprecated 2.109.0 – ruční daň na řádku zrušena; odstraní se ve 3.0.0. */
   vatManual: string;
+  /** Skupiny DPH, pomocník „Cena s DPH“ a patička Rozdílu (2.109.0). */
+  vatGroups: JournalVatGroupsTexts;
   resetVat: string;
   vatDeduction: string;
   deductionFull: string;
@@ -185,4 +191,70 @@ export interface JournalEditorTexts {
   moveRow: string;
   /** Zkratka nedaňového řádku na přepínači. */
   nonTaxShort: string;
+}
+
+/** Texty skupin DPH, pomocníka ceny s DPH a patičky (2.109.0). */
+export interface JournalVatGroupsTexts {
+  /** Nadpis rekapitulace DPH. */
+  title: string;
+  /** Sloupec Kód DPH. */
+  code: string;
+  /** Sloupec Sazba. */
+  rate: string;
+  /** Sloupec Základ. */
+  base: string;
+  /** Sloupec DPH. */
+  vat: string;
+  /** Sloupec Celkem. */
+  gross: string;
+  /** Sloupec základu v měně firmy; `{currency}` = značka měny. */
+  baseHome: string;
+  /** Sloupec DPH v měně firmy; `{currency}` = značka měny. */
+  vatHome: string;
+  /** Rozbalit / sbalit sloupce v měně firmy. */
+  toggleHome: string;
+  /** Akce úprav skupiny „dle dokladu“. */
+  adjust: string;
+  /** DPH dle dokladu. */
+  vatByDocument: string;
+  /** Celkem s DPH dle dokladu. */
+  grossByDocument: string;
+  /** Základ dle dokladu. */
+  baseByDocument: string;
+  /** Vypočtená daň vedle přepisu. */
+  calculated: string;
+  /** Rozdíl přepisu. */
+  difference: string;
+  /** Vrátit vypočtenou daň. */
+  resetVat: string;
+  /** Použít hodnotu. */
+  apply: string;
+  /** Zrušit. */
+  cancel: string;
+  /** Rozdíl přepisu nad tolerancí; `{group}`, `{difference}`. */
+  overTolerance: string;
+  /** Bublina pevné daně. */
+  fixedTax: string;
+  /** Pomocník Cena s DPH (název ikony). */
+  grossHelper: string;
+  /** Popisek pole v pomocníkovi; `{rate}` = sazba. */
+  grossHelperField: string;
+  /** Patička: Součet. */
+  sum: string;
+  /** Patička: Zaokrouhlení. */
+  rounding: string;
+  /** Patička: Rozdíl. */
+  difference2: string;
+  /** Nabídka u Rozdílu. */
+  balance: string;
+  /** Dorovnat DPH. */
+  balanceVat: string;
+  /** Dorovnat DPH skupiny; `{group}`. */
+  balanceVatGroup: string;
+  /** Dorovnat základ. */
+  balanceBase: string;
+  /** Zaokrouhlení v limitu. */
+  balanceRounding: string;
+  /** Bez možné akce (rozdíl nad limit). */
+  noAction: string;
 }

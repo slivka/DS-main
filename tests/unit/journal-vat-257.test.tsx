@@ -131,7 +131,8 @@ describe("Výchozí kód na počátečním řádku", () => {
   });
 });
 
-describe("Přepínač Bez DPH | S DPH", () => {
+// 2.109.0: přepínač Bez DPH | S DPH zrušen – vat.calcMode se ignoruje.
+describe("Přepínač Bez DPH | S DPH (zrušen)", () => {
   const render = (readOnly: boolean) =>
     renderToStaticMarkup(
       <TooltipProvider>
@@ -155,9 +156,9 @@ describe("Přepínač Bez DPH | S DPH", () => {
         />
       </TooltipProvider>,
     );
-  it("je neaktivní při vat.readOnly", () => {
-    expect(render(true)).toMatch(/role="radiogroup"[^>]*aria-disabled="true"/);
-    expect(render(false)).not.toMatch(/role="radiogroup"[^>]*aria-disabled="true"/);
+  it("se nevykreslí v žádném stavu", () => {
+    expect(render(true)).not.toContain('role="radiogroup"');
+    expect(render(false)).not.toContain('role="radiogroup"');
   });
 });
 

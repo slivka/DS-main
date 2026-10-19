@@ -38,6 +38,8 @@ export interface JournalTotalsInput {
   mainAccount?: { accountId: string; side: "MD" | "D" };
   /** Doklad v cizí měně. */
   foreign: boolean;
+  /** Řádky s rozpočtenou daní skupin (2.109.0); výchozí `props.lines`. */
+  allocatedLines?: JournalLine[];
 }
 
 /** Řádky daně: z DB u zaúčtovaného dokladu, jinak předběžný náhled. */
@@ -77,7 +79,7 @@ export function useJournalTotals(input: JournalTotalsInput) {
   const missingVatAccounts = new Map(
     vatPreview.missingAccounts.map((item) => [item.lineId, item.code]),
   );
-  const journalTotals = computeJournalTotals(lines, {
+  const journalTotals = computeJournalTotals(input.allocatedLines ?? lines, {
     vat: vatOn
       ? {
           enabled: true,
@@ -129,6 +131,7 @@ export function useJournalTotals(input: JournalTotalsInput) {
     difference,
     showRemaining: totalMode === "entered" && totalAmount !== undefined,
     roundingExists: Boolean(roundingLine || rounding?.value),
+    roundingValue,
     suggestion: roundingSuggestion({
       totalMode,
       expectedAmount: totalAmount,

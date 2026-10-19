@@ -1,6 +1,6 @@
 # Changelog – Slivka Design System
 
-## 2.108.0 (nevydáno) – Edit dokladu 15
+## 2.108.0 – Edit dokladu 15
 
 - **Katalog:** obnoveny záznamy ztracené po vydání 2.107.0 (`8db33914`): FieldStatus, useFieldStatus, FieldErrorLink, focusFieldErrorLink, useCellStatusTooltip, props FieldStatusIndicator, FieldFeedbackIndicator (error/warning), ToggleGroup (label/error/warning), RecordActionBar a DocumentForm `error.fieldErrors` / `error.onFieldErrorSelect`, JournalLinesEditor `onCreateDimension` / `onValidationChange`. Kód se neměnil.
 

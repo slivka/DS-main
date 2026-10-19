@@ -20,6 +20,7 @@ import type {
 } from "./journal-lines";
 import type { JournalRecapTab } from "./journal-lines-recap";
 import type { JournalTotals } from "./journal-vat";
+import type { JournalVatOverride } from "./journal-vat-groups";
 import type { JournalEditorTexts } from "../../../ds-texts";
 
 export type { JournalLinesMode } from "./journal-column-layout";
@@ -31,9 +32,12 @@ export interface JournalLinesVat {
   enabled: boolean;
   /** Jen kódy použitelné pro doklad (směr, aktivní, platné k Datu DPH) – filtruje aplikace. */
   codes: VatCodeOption[];
-  /** Zadání částky bez DPH, nebo s DPH. */
-  calcMode: VatCalcMode;
-  /** Změna režimu zadání částky. */
+  /**
+   * @deprecated 2.109.0 – řádky jsou vždy bez DPH, hodnota se ignoruje (pro výpočet z ceny
+   * s DPH slouží pomocník „Cena s DPH“). Odstraní se ve 3.0.0.
+   */
+  calcMode?: VatCalcMode;
+  /** @deprecated 2.109.0 – přepínač zrušen, nevolá se. Odstraní se ve 3.0.0. */
   onCalcModeChange?: (mode: VatCalcMode) => void;
   /** Kód pro nový řádek; jinak kód z předchozího řádku. */
   defaultCodeId?: string | null;
@@ -62,7 +66,7 @@ export interface JournalLinesRounding {
   readOnly?: boolean;
   /** Vlastní popisek řádku. */
   label?: string;
-  /** Největší navrhované zaokrouhlení (výchozí 0,5). */
+  /** @deprecated 2.109.0 – použijte `roundingLimit` editoru. Odstraní se ve 3.0.0. */
   limit?: number;
 }
 /** Řízený stav rekapitulace pod editorem. */
@@ -192,4 +196,18 @@ export interface JournalLinesEditorProps {
   className?: string;
   /** DPH na řádcích – bez propu se editor chová jako dřív. */
   vat?: JournalLinesVat;
+  /** Přepisy daně skupin „dle dokladu“ (2.109.0); ukládají se s řádky jako `_vat_overrides`. */
+  vatOverrides?: JournalVatOverride[];
+  /** Změna přepisů skupin; `[]` = smazat všechny. Bez ní je rekapitulace jen ke čtení. */
+  onVatOverridesChange?: (overrides: JournalVatOverride[]) => void;
+  /** Kurz DPH (měna firmy za `vatExchangeRateAmount` jednotek); výchozí `vat.vatRate`, pak kurz dokladu. */
+  vatExchangeRate?: number | null;
+  /** Počet jednotek kurzu DPH (výchozí 1). */
+  vatExchangeRateAmount?: number;
+  /** Limit zaokrouhlení firmy; bez něj nabídka Rozdílu Zaokrouhlení nenabízí. */
+  roundingLimit?: number;
+  /** Zápis zaokrouhlení z nabídky Rozdílu; výchozí `rounding.onChange`. */
+  onRoundingChange?: (value: number) => void;
+  /** Závažnost rozdílu přepisu nad tolerancí (koncept varování, zařazení chyba); výchozí warning. */
+  vatOverrideSeverity?: "warning" | "error";
 }

@@ -3,6 +3,7 @@
  * Vlastní: hodnoty DS_TEXTS_SK (chybějící klíče doplní čeština).
  * Nesmí: obsahovat React kód.
  */
+import { SK_VAT_GROUPS } from "./sk-vat-groups";
 import { BANK_STATEMENT_SK } from "./sk-bank-statement";
 import { sk } from "date-fns/locale";
 
@@ -470,6 +471,7 @@ export const DS_TEXTS_SK: DsTexts = {
     vatModeNet: "Bez DPH",
     vatModeGross: "S DPH",
     vatManual: "Daň zadaná ručne",
+    vatGroups: SK_VAT_GROUPS,
     resetVat: "Vrátiť vypočítanú daň",
     vatDeduction: "Nárok na odpočet",
     deductionFull: "Plný",

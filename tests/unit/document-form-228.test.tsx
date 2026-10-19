@@ -153,7 +153,8 @@ describe("DocumentForm 2.31.0", () => {
       html.indexOf('role="tablist"'),
     );
     expect(amountSection).not.toContain('id="document-roundingAmount"');
-    expect(html).toContain('data-slot="journal-lines-rounding"');
+    // 2.109.0: Zaokrouhlení a Rozdíl jsou v patičce editoru (lišta už je nenabízí).
+    expect(html).toContain('data-slot="journal-footer-rounding"');
     expect(html).toContain('data-slot="journal-lines-remaining"');
     expect(html).toContain("Zaokrouhlení");
   });

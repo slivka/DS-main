@@ -1,35 +1,25 @@
 /**
  * Lišta editoru řádků dokladu.
- * Vlastní: přidání řádku, návrh zaokrouhlení, režim zadání částky s/bez DPH, stav rozepsání,
+ * Vlastní: přidání řádku (Součet, Zaokrouhlení a Rozdíl jsou od 2.109.0 v patičce),
  *   hledání, výběr sloupců, zoom a pruh výsledku hledání.
  * Nesmí: měnit řádky jinak než přes akce stavu editoru.
  */
-import { AmountDifference } from "./amount-difference";
 import { Plus, X } from "lucide-react";
 
-import { formatAmount } from "../../../lib/format";
-import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { ColumnPicker } from "../grid/column-picker";
 import { GridSearch } from "../grid/grid-search";
-import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
-import { GridToolbar, GridToolbarSeparator } from "../grid/grid-toolbar";
+import { GridToolbar } from "../grid/grid-toolbar";
 import { ZoomControl } from "../grid/grid-zoom";
 import { useJournalEditor } from "./journal-editor-context";
-import type { VatCalcMode } from "./journal-lines";
 import { accountDataColumn, isAccountColumn, isAccountNameColumn } from "./journal-lines-model";
 
-/** Levá část lišty: přidat řádek, zaokrouhlení, režim DPH a stav rozepsání. */
+/** Levá část lišty: přidat řádek. */
 function ToolbarLeft() {
   const { editor } = useJournalEditor();
-  const { t, totals, vatOn, vatReadOnly, documentMark } = editor;
-  const { rounding } = editor.props;
+  const { t } = editor;
   const addLabel = `${t.addLine} (Ctrl+Enter)`;
-  const handleRounding = () => {
-    if (!rounding?.onChange || rounding.readOnly || totals.roundingExists) return;
-    rounding.onChange(totals.suggestion);
-  };
   return (
     <>
       <Tooltip>
@@ -48,55 +38,6 @@ function ToolbarLeft() {
         </TooltipTrigger>
         <TooltipContent>{addLabel}</TooltipContent>
       </Tooltip>
-      {rounding ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              data-slot="journal-lines-rounding"
-              data-limit={rounding.limit}
-              type="button"
-              variant="outline"
-              disabled={rounding.readOnly || !rounding.onChange || totals.roundingExists}
-              onClick={handleRounding}
-              className="grid-toolbar-control"
-            >
-              ± {rounding.label ?? t.rounding}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {totals.roundingExists
-              ? t.roundingExists
-              : `${formatAmount(totals.suggestion, 2)} ${documentMark}`}
-          </TooltipContent>
-        </Tooltip>
-      ) : null}
-      {vatOn ? (
-        <GridSegmentedToggle
-          disabled={vatReadOnly || editor.editable.size === 0}
-          ariaLabel={t.vatMode}
-          options={[
-            { value: "net", label: t.vatModeNet },
-            { value: "gross", label: t.vatModeGross },
-          ]}
-          value={editor.calcMode}
-          defaultValue={editor.calcMode}
-          onChange={(value) => editor.changeCalcMode(value as VatCalcMode)}
-          className={cn(vatReadOnly && "pointer-events-none opacity-60")}
-          aria-disabled={vatReadOnly || undefined}
-        />
-      ) : null}
-      {totals.showRemaining && totals.difference !== 0 ? (
-        <>
-          <GridToolbarSeparator density={editor.layout.density} />
-          <AmountDifference
-            data-slot="journal-lines-remaining"
-            value={totals.difference}
-            label={t.remaining}
-            overLabel={t.exceeded}
-            currencySymbol={documentMark}
-          />
-        </>
-      ) : null}
     </>
   );
 }

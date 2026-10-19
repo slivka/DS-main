@@ -38,13 +38,13 @@ describe("DocumentForm 2.36.0 – limit a popisek haléřového vyrovnání", ()
   it("výchozí limit je 1 Kč a popisek je výchozí", () => {
     const html = form({});
     expect(html).toContain('data-limit="1"');
-    expect(html).toContain("± Zaokrouhlení");
+    expect(html).toContain('data-slot="journal-footer-rounding"');
+    expect(html).toContain("Zaokrouhlení");
   });
   it("předá aplikací zadaný limit i vlastní popisek", () => {
     const html = form({ roundingLimit: 0.5, roundingLabel: "Zaokrouhlení firmy" });
     expect(html).toContain('data-limit="0.5"');
-    expect(html).toContain("± Zaokrouhlení firmy");
-    expect(html).not.toContain(">± Zaokrouhlení<");
+    expect(html).toContain(">Zaokrouhlení firmy<");
   });
 });
 

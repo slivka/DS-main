@@ -32,7 +32,10 @@ export type JournalLineColumn =
 export type VatDeduction = "full" | "none" | "partial";
 /** Druh řádku daně vytvořeného databází. */
 export type VatLineKind = "deductible" | "non_deductible";
-/** Režim zadání částky: bez DPH (základ) nebo s DPH (celkem). */
+/**
+ * Režim zadání částky.
+ * @deprecated 2.109.0 – řádky jsou vždy bez DPH. Odstraní se ve 3.0.0.
+ */
 export type VatCalcMode = "net" | "gross";
 /** Kód DPH použitelný pro doklad – filtruje aplikace (směr, aktivní, platnost k Datu DPH). */
 export type VatCodeOption = {
@@ -94,7 +97,10 @@ export type JournalLine = {
   /** Jen čtení z DB: daň a základ v domácí měně kurzem DPH. */
   vatAmountHome?: number;
   vatBaseHome?: number;
-  /** Daň zadaná ručně (jinak se počítá ze sazby). */
+  /**
+   * Pevná systémová daň z DB (odpočet zálohy, import) – jen zobrazení se zámkem.
+   * Od 2.109.0 ji klient nezadává ani neposílá.
+   */
   vatManual?: boolean;
   vatDeduction?: VatDeduction;
   vatDeductionShare?: number;
@@ -245,13 +251,11 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   const vatColumns: Partial<JournalRow> = {};
   if (options.vat) {
     vatColumns.vat_code_id = emptyToNull(line.vatCodeId);
-    vatColumns.vat_manual = Boolean(line.vatManual);
-    if (line.vatManual && line.vatAmount != null) vatColumns.vat_amount_foreign = line.vatAmount;
+    // 2.109.0: klient vat_manual ani ruční daň neposílá – pevnou daň zakládá jen systém.
     vatColumns.vat_deduction = line.vatDeduction ?? "full";
     if (line.vatDeduction === "partial")
       vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
     vatColumns.pdp_subject_code = emptyToNull(line.pdpSubjectCode);
-    if (options.vat.calcMode === "gross") vatColumns.amount_gross = line.grossAmount ?? null;
   }
   const counter =
     emptyToNull(line.counterAccount) ??

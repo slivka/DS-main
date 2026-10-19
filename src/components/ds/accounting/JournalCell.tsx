@@ -5,13 +5,14 @@
  * Nesmí: počítat hodnoty – text buňky dává journalDisplayValue, zápis JournalCellEditor.
  */
 import { useId } from "react";
-import { Pencil, ReceiptText } from "lucide-react";
+import { Lock, ReceiptText } from "lucide-react";
 
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useCellStatusTooltip } from "../grid/cell-status-tooltip";
 import { JournalCellEditor } from "./JournalCellEditor";
+import { JournalGrossHelper } from "./journal-gross-helper";
 import { journalAccountColumnLabel } from "./journal-columns";
 import { useJournalEditor } from "./journal-editor-context";
 import { isResultAccountType, type JournalLine } from "./journal-lines";
@@ -140,10 +141,17 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       }
     >
       {column === "vatAmount" && line.vatManual && !rowEditing ? (
-        <Pencil
-          aria-label={t.vatManual}
-          className="mr-1 size-[0.85em] shrink-0 text-muted-foreground"
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Lock
+              role="img"
+              data-slot="journal-fixed-tax"
+              aria-label={t.vatGroups.fixedTax}
+              className="mr-1 size-[0.85em] shrink-0 text-muted-foreground"
+            />
+          </TooltipTrigger>
+          <TooltipContent>{t.vatGroups.fixedTax}</TooltipContent>
+        </Tooltip>
       ) : null}
       <span
         className={cn(
@@ -158,6 +166,9 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
           editor.displayValue(line, column)
         )}
       </span>
+      {(column === "amount" || column === "unitPrice") && !rowEditing && canEdit ? (
+        <JournalGrossHelper line={line} column={column} />
+      ) : null}
       {column === "amount" && nonTaxAllowed && !rowEditing ? (
         <NonTaxToggle line={line} onToggle={toggleNonTax} />
       ) : null}

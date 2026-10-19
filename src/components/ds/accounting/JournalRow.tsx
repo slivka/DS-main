@@ -12,7 +12,6 @@ import {
   Copy,
   GripVertical,
   Pin,
-  RotateCcw,
   Trash2,
 } from "lucide-react";
 
@@ -141,14 +140,6 @@ function RowActions({ line }: { line: JournalLine }) {
   if (!editor.editable.size) return null;
   return (
     <GridActions>
-      {editor.vatOn && !editor.vatReadOnly && line.vatManual ? (
-        <GridAction
-          aria-label={t.resetVat}
-          onClick={() => editor.patchVat(line, { vatManual: false, vatAmount: undefined })}
-        >
-          <RotateCcw />
-        </GridAction>
-      ) : null}
       <GridAction aria-label={t.duplicateLine} onClick={() => editor.duplicate(line)}>
         <Copy />
       </GridAction>

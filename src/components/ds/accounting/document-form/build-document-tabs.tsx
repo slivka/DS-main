@@ -107,6 +107,7 @@ export function buildDocumentTabs(a: BuildDocumentTabsArgs): DocumentFormTab[] {
                 }
               : undefined
           }
+          roundingLimit={f.rounding ? roundingLimit : undefined}
         />
       ),
     },
