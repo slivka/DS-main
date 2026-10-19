@@ -109,16 +109,16 @@ export function FormIssuesBar({
       <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <p className="font-bold" data-slot="form-issues-title">
-          {title ? (
+          {shownTitle ? (
             <>
-              {title} ({count})
+              {shownTitle} ({count})
             </>
           ) : (
             autoTitle
           )}
         </p>
-        {message && !duplicateMessage ? (
-          <div className="mt-0.5 text-sm text-foreground">{message}</div>
+        {shownMessage && !duplicateMessage ? (
+          <div className="mt-0.5 text-sm text-foreground">{shownMessage}</div>
         ) : null}
         <ul className="mt-1 space-y-0.5 text-sm">
           {list.map((issue, index) => (
@@ -145,6 +145,9 @@ export function FormIssuesBar({
             </li>
           ))}
         </ul>
+        {fieldErrors?.length ? (
+          <FieldErrorSummary errors={fieldErrors} onSelect={onFieldErrorSelect} />
+        ) : null}
       </div>
       <Button
         type="button"
