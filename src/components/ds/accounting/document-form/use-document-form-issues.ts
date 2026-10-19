@@ -104,7 +104,11 @@ export function useDocumentFormFeedback(a: DocumentFormFeedbackArgs): {
     issues: formIssues.issues,
     validationActive: a.validationActive,
   });
-  return { issues: formIssues.issues, onValidationChange: formIssues.onValidationChange, ...projection };
+  return {
+    issues: formIssues.issues,
+    onValidationChange: formIssues.onValidationChange,
+    ...projection,
+  };
 }
 
 /** Přepínače v poli hlásí id pole, ne id vazby. */
