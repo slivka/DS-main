@@ -6,6 +6,8 @@ import {
   Calendar,
   DateField,
   DocumentStatusBadge,
+  DocumentDirectionBadge,
+  MonthYearSelect,
   Field,
   FieldGrid,
   Input,
@@ -42,6 +44,7 @@ export function DesignThreeShowcase() {
   const [count, setCount] = useState<PaneLayoutCount>(1);
   const [state, setState] = useState(() => paneState(1));
   const [dirty, setDirty] = useState(false);
+  const [month, setMonth] = useState<string | null>("2026-10");
   const [value, setValue] = useState("2026-10-19");
   const [account, setAccount] = useState("221001");
   const [editing, setEditing] = useState(false);
@@ -106,6 +109,8 @@ export function DesignThreeShowcase() {
           onToday={() => undefined}
         />
       </div>
+      <MonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} />
+      <DocumentDirectionBadge direction="in" />
       <SectionHeading>Identifikace dokladu</SectionHeading>
       <div className="@container" data-testid="identity-demo">
         <DocumentIdentityLine

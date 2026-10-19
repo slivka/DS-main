@@ -2487,7 +2487,9 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 .document-identity-account-box {
   height: var(--control-h);
-  width: var(--identity-account-width);
+  min-width: min(var(--identity-account-width), 100%);
+  width: max-content;
+  position: relative;
   max-width: 100%;
   min-width: 0;
   display: inline-flex;
@@ -2540,4 +2542,32 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 .zoom-grid :is(tbody, tfoot) :is(th, td) .ds-badge-md {
   height: var(--badge-h-md) !important;
+}
+
+.document-identity-account-measure {
+  visibility: hidden;
+  white-space: nowrap;
+  padding-inline: 0.75rem;
+  font-size: var(--text-sm);
+}
+.document-identity-account-box:has([role="combobox"]) [role="combobox"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+.document-identity-pencil-slot {
+  width: 1.75rem;
+  flex-shrink: 0;
+}
+.grid-date-popover .calendar-alternate :is(button, .calendar-view-grid) {
+  font-size: 1em;
+}
+.grid-date-popover .calendar-alternate button {
+  height: 100%;
+}
+.pane-tabbar {
+  overflow: visible;
+}
+.pane-tabbar [data-tab-strip] {
+  overflow: visible;
 }
