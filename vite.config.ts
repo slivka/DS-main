@@ -8,10 +8,11 @@ import tailwindcss from "@tailwindcss/vite";
 import { componentTagger } from "lovable-tagger";
 import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command, mode, isPreview }) => {
   // Cloudflare Workers plugin only on build (produces the worker output);
   // the workerd runtime isn't available for the dev server.
-  const useCloudflare = command === "build";
+  // Preview spouští produkční worker (E2E na CI proti buildu).
+  const useCloudflare = command === "build" || isPreview === true;
 
   return {
     server: {
