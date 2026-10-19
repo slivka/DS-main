@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach } from "bun:test";
+import { afterAll, beforeEach, describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { prunePersistedScroll } from "../../src/components/ds/panes/pane-tab-store";
 
@@ -9,6 +9,11 @@ describe("2.53.0 – druhá kontrola", () => {
   });
   describe("úklid pozic rolování", () => {
     const store = new Map<string, string>();
+    // Původní úložiště se po testech vrací – jinak by náhrada zůstala dalším souborům (Bun sdílí globální objekt).
+    const originalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    afterAll(() => {
+      if (originalStorage) Object.defineProperty(globalThis, "localStorage", originalStorage);
+    });
     beforeEach(() => {
       store.clear();
       Object.defineProperty(globalThis, "localStorage", {
@@ -21,6 +26,7 @@ describe("2.53.0 – druhá kontrola", () => {
           getItem: (k: string) => store.get(k) ?? null,
           setItem: (k: string, v: string) => void store.set(k, v),
           removeItem: (k: string) => void store.delete(k),
+          clear: () => store.clear(),
         },
       });
     });

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { afterAll, describe, expect, it } from "bun:test";
 
 import { resolveJournalColumnLayout } from "../../src/components/ds/accounting/journal-lines-editor";
 import { gridFontSize } from "../../src/components/ds/grid/grid-zoom";
@@ -11,8 +11,13 @@ import {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Jednoduchý localStorage pro prostředí bez DOM.
+// Jednoduchý localStorage pro prostředí bez DOM; po testech se vrací původní úložiště,
+// jinak by náhrada zůstala dalším souborům (Bun sdílí globální objekt).
 const memory = new Map<string, string>();
+const originalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+afterAll(() => {
+  if (originalStorage) Object.defineProperty(globalThis, "localStorage", originalStorage);
+});
 Object.defineProperty(globalThis, "localStorage", {
   configurable: true,
   value: {
