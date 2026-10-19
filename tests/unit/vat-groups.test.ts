@@ -100,7 +100,7 @@ describe("computeVatGroups", () => {
     expect(taxTotal).toBe(330);
   });
 
-  it("samovyměření, kód bez daně a pevná daň do skupiny nevstupují", () => {
+  it("kód bez daně a pevná daň do skupiny nevstupují, samovyměření má vlastní skupinu", () => {
     const { groups, fixed, taxTotal } = computeVatGroups(
       [
         line("a", 100),
@@ -111,10 +111,12 @@ describe("computeVatGroups", () => {
       [],
       CODES,
     );
-    expect(groups).toHaveLength(1);
-    expect(groups[0].base).toBe(100);
+    expect(groups.map((g) => [g.vatCodeId, g.base, g.selfAssessment])).toEqual([
+      ["p21", 100, false],
+      ["pdp", 100, true],
+    ]);
     expect(fixed).toEqual([{ lineId: "d", vatCodeId: "p21", base: -1000, tax: -210 }]);
-    expect(taxTotal).toBe(-189);
+    expect(taxTotal).toBe(-168);
   });
 
   it("rozpočet se promítne do řádků náhledu", () => {

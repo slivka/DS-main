@@ -17,7 +17,7 @@ import {
   formatJournalAccountDisplay,
   isAccountColumn,
   isAccountNameColumn,
-  roundJournalAmount,
+  toHomeAmount,
   type ColumnId,
   type JournalAccountColumnId,
 } from "./journal-lines-model";
@@ -265,8 +265,7 @@ export function journalDisplayValue(
     return line.amount == null && line.foreignAmount == null
       ? ""
       : formatAmount(
-          Number(line.amount) ||
-            roundJournalAmount(((line.foreignAmount || 0) * (ctx.rate || 0)) / ctx.rateAmount),
+          Number(line.amount) || toHomeAmount(line.foreignAmount || 0, ctx.rate, ctx.rateAmount),
           2,
         );
   if (column === "amount") {

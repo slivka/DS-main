@@ -8,6 +8,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 import { formatAccountCode } from "./account-code";
 import { formatCodeName } from "../../../lib/code-format";
+import { exactSum, mulDivRound, roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import type { JournalLine, JournalLineColumn } from "./journal-lines";
 import type { JournalEditorTexts } from "../../../ds-texts";
 
@@ -119,17 +120,16 @@ export const isRegularLine = (line: JournalLine) => isGridLine(line) && !isPinne
 export const newJournalLineId = () => `line-${Math.random().toString(36).slice(2, 10)}`;
 
 /** Zaokrouhlí částku na haléře. */
-export const roundJournalAmount = (value: number) =>
-  Math.round((value + Number.EPSILON) * 100) / 100;
+export const roundJournalAmount = (value: number) => roundHalfAwayFromZero(value, 2);
 /** Účet ve tvaru 221.001, rozšířená forma i s názvem. */
 export const formatJournalAccountDisplay = (code: string, name?: string, extended = false) =>
   formatCodeName(formatAccountCode(code), extended ? name : undefined);
 /** Částka řádku z množství a ceny za MJ; bez obou hodnot `undefined`. */
 export const calculateLineAmount = (quantity?: number, unitPrice?: number) =>
-  quantity != null && unitPrice != null ? roundJournalAmount(quantity * unitPrice) : undefined;
+  quantity != null && unitPrice != null ? mulDivRound(quantity, unitPrice, 1) : undefined;
 /** Částka v domácí měně z částky v měně dokladu. */
 export const toHomeAmount = (value: number, rate: number | null | undefined, rateAmount: number) =>
-  roundJournalAmount((value * (rate || 0)) / rateAmount);
+  mulDivRound(value, rate || 0, rateAmount);
 /** Popisky částek se značkou měny z dat. */
 export const journalAmountLabels = (
   texts: Pick<JournalEditorTexts, "amount" | "homeAmount" | "foreignAmount">,
@@ -154,9 +154,10 @@ export const roundingSuggestion = ({
   currentRounding?: number;
   limit?: number;
 }) => {
-  if (totalMode === "computed") return roundJournalAmount(Math.round(linesTotal) - linesTotal);
+  if (totalMode === "computed")
+    return roundJournalAmount(exactSum([roundHalfAwayFromZero(linesTotal, 0), -linesTotal]));
   if (expectedAmount === undefined) return 0;
-  const difference = roundJournalAmount(expectedAmount - linesTotal - currentRounding);
+  const difference = roundJournalAmount(exactSum([expectedAmount, -linesTotal, -currentRounding]));
   return Math.abs(difference) <= limit ? difference : 0;
 };
 /** Pořadí řádků gridu: řádky základu, Kurzové zaokrouhlení, Zaokrouhlení. Řádky daně (isVatLine) se do gridu nezařazují. */

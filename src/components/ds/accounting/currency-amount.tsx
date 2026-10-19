@@ -2,6 +2,7 @@ import { Label } from "../../ui/label";
 import { DecimalInput } from "../form/decimal-input";
 import { OptionSelect } from "../form/option-select";
 import { formatAmount } from "../../../lib/format";
+import { mulDivRound } from "../../../lib/decimal-round";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 
@@ -10,7 +11,7 @@ export type CurrencyOption = { code: string; label?: string; symbol?: string };
 /** Přepočet částky dokladu do měny účetnictví. */
 export function convertAmount(amount: number, rate: number, rateUnit = 1) {
   if (!Number.isFinite(amount) || !Number.isFinite(rate) || rateUnit === 0) return 0;
-  return Math.round(((amount * rate) / rateUnit) * 100) / 100;
+  return mulDivRound(amount, rate, rateUnit, 2);
 }
 
 /**

@@ -1,3 +1,4 @@
+import { exactSum, mulDivRound, roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import type { JournalLine, VatCalcMode, VatCodeOption } from "./journal-lines";
 
 /**
@@ -6,17 +7,29 @@ import type { JournalLine, VatCalcMode, VatCodeOption } from "./journal-lines";
  * nebo je počítá předběžně, aby součty seděly ještě před uložením.
  */
 
-const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+/** Přesný součet zaokrouhlený na haléře. */
+const sum2 = (values: number[]) => roundHalfAwayFromZero(exactSum(values), 2);
+/** Kurz jako dvojice kurz / množství – převod se počítá přesně jako DB `round(x × kurz, 2)`. */
+type Fx = { rate: number; unit: number };
+const toHome = (value: number, fx: Fx) => mulDivRound(value, fx.rate, fx.unit || 1);
+/** Kurz DPH (bez něj kurz dokladu) pro převod daně do měny firmy. */
+const vatFx = (config: VatPreviewConfig): Fx =>
+  config.foreign
+    ? {
+        rate: config.vatRate || config.rate || 0,
+        unit: (config.vatRate ? config.vatRateAmount : config.rateAmount) || 1,
+      }
+    : { rate: 1, unit: 1 };
 
 /** Daň ze základu: round(základ × sazba / 100, 2). */
 export const calculateVatFromBase = (base: number, rate: number | null | undefined) =>
-  rate ? round2((base * rate) / 100) : 0;
+  rate ? mulDivRound(base, rate, 100) : 0;
 /**
  * Daň z částky s DPH: round(celkem × sazba / (100 + sazba), 2).
  * @deprecated 2.109.0 – použijte `taxFromGrossTotal`. Odstraní se ve 3.0.0.
  */
 export const calculateVatFromGross = (gross: number, rate: number | null | undefined) =>
-  rate ? round2((gross * rate) / (100 + rate)) : 0;
+  rate ? mulDivRound(gross, rate, 100 + rate) : 0;
 
 /** Kód se samovyměřením (PDP, pořízení z EU, dovoz) – daň se počítá navrch ze základu a celek dokladu nemění. */
 export const isSelfAssessed = (code: VatCodeOption | null | undefined) =>
@@ -66,7 +79,7 @@ export function resolveLineVat(
       calculated,
       vat,
       gross: base,
-      deviation: manual ? round2(vat - calculated) : 0,
+      deviation: manual ? sum2([vat, -calculated]) : 0,
     };
   }
   if (options.calcMode === "gross" && line.grossAmount != null) {
@@ -76,11 +89,11 @@ export function resolveLineVat(
     return {
       code,
       rate,
-      base: round2(gross - vat),
+      base: sum2([gross, -vat]),
       calculated,
       vat,
       gross,
-      deviation: manual ? round2(vat - calculated) : 0,
+      deviation: manual ? sum2([vat, -calculated]) : 0,
     };
   }
   const calculated = calculateVatFromBase(storedBase, rate);
@@ -91,8 +104,8 @@ export function resolveLineVat(
     base: storedBase,
     calculated,
     vat,
-    gross: selfAssessed ? storedBase : round2(storedBase + vat),
-    deviation: manual ? round2(vat - calculated) : 0,
+    gross: selfAssessed ? storedBase : sum2([storedBase, vat]),
+    deviation: manual ? sum2([vat, -calculated]) : 0,
   };
 }
 
@@ -129,10 +142,7 @@ export function buildVatPreviewLines(
   const codes = new Map(config.codes.map((code) => [code.id, code]));
   const result: JournalLine[] = [];
   const missingAccounts: VatPreviewResult["missingAccounts"] = [];
-  const conversion = config.foreign
-    ? (config.vatRate || config.rate || 0) /
-      ((config.vatRate ? config.vatRateAmount : config.rateAmount) || 1)
-    : 1;
+  const fx = vatFx(config);
   for (const line of lines.filter(isBaseLine)) {
     const resolved = resolveLineVat(line, codes, {
       calcMode: config.calcMode,
@@ -147,7 +157,7 @@ export function buildVatPreviewLines(
       kind: JournalLine["vatLineKind"],
       suffix: string,
     ) => {
-      const amount = round2(vatForeign * conversion);
+      const amount = toHome(vatForeign, fx);
       const touchesMain = placement.mainAccount
         ? debit === placement.mainAccount || credit === placement.mainAccount
         : !code.selfAssessment;
@@ -182,9 +192,9 @@ export function buildVatPreviewLines(
       }
       if (rcDeduction === "partial") {
         const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));
-        const deductible = round2((resolved.vat * share) / 100);
+        const deductible = mulDivRound(resolved.vat, share, 100);
         if (deductible) push(code.taxInAccount, code.taxOutAccount, deductible, "deductible", "rc");
-        const rest = round2(resolved.vat - deductible);
+        const rest = sum2([resolved.vat, -deductible]);
         if (rest) push(line.debitAccount, code.taxOutAccount, rest, "non_deductible", "rc-nd");
         continue;
       }
@@ -210,24 +220,22 @@ export function buildVatPreviewLines(
     }
     if (deduction === "partial") {
       const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));
-      const deductible = round2((resolved.vat * share) / 100);
+      const deductible = mulDivRound(resolved.vat, share, 100);
       if (deductible) push(code.taxInAccount, line.creditAccount, deductible, "deductible", "in");
-      const rest = round2(resolved.vat - deductible);
+      const rest = sum2([resolved.vat, -deductible]);
       if (rest) push(line.debitAccount, line.creditAccount, rest, "non_deductible", "nd");
       continue;
     }
     push(code.taxInAccount, line.creditAccount, resolved.vat, "deductible", "in");
   }
   // Cizí měna s kurzem DPH odlišným od kurzu dokladu: předběžné Kurzové zaokrouhlení (DB ho dopočítá při uložení).
-  const docConversion = (config.rate || 0) / (config.rateAmount || 1);
-  if (config.foreign && config.vatRate && Math.abs(conversion - docConversion) > 1e-9) {
+  const docFx: Fx = { rate: config.rate || 0, unit: config.rateAmount || 1 };
+  if (config.foreign && config.vatRate && fx.rate * docFx.unit !== docFx.rate * fx.unit) {
     const base = lines.filter(isBaseLine);
     const counted = [...base, ...result.filter((item) => !item.excludeFromTotal)];
-    const docTotal = round2(
-      counted.reduce((sum, item) => sum + (Number(item.foreignAmount) || 0), 0),
-    );
-    const home = round2(counted.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
-    const diff = round2(round2(docTotal * docConversion) - home);
+    const docTotal = sum2(counted.map((item) => Number(item.foreignAmount) || 0));
+    const home = sum2(counted.map((item) => Number(item.amount) || 0));
+    const diff = sum2([toHome(docTotal, docFx), -home]);
     if (diff)
       result.push({
         id: "fx-rounding:preview",
@@ -246,10 +254,8 @@ export function buildVatPreviewLines(
 export function sumJournalTotal(lines: JournalLine[]) {
   const counted = lines.filter((line) => !line.excludeFromTotal);
   return {
-    amount: round2(counted.reduce((sum, line) => sum + (Number(line.amount) || 0), 0)),
-    foreignAmount: round2(
-      counted.reduce((sum, line) => sum + (Number(line.foreignAmount) || 0), 0),
-    ),
+    amount: sum2(counted.map((line) => Number(line.amount) || 0)),
+    foreignAmount: sum2(counted.map((line) => Number(line.foreignAmount) || 0)),
   };
 }
 
@@ -272,10 +278,7 @@ export type VatSummaryRow = {
 /** Rekapitulace DPH po kódech v měně dokladu (a v domácí měně kurzem DPH). */
 export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): VatSummaryRow[] {
   const codes = new Map(config.codes.map((code) => [code.id, code]));
-  const conversion = config.foreign
-    ? (config.vatRate || config.rate || 0) /
-      ((config.vatRate ? config.vatRateAmount : config.rateAmount) || 1)
-    : 1;
+  const fx = vatFx(config);
   const rows = new Map<string, VatSummaryRow>();
   for (const line of lines.filter(isBaseLine)) {
     if (!line.vatCodeId) continue;
@@ -298,11 +301,11 @@ export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): Va
       deductible: 0,
       nonDeductible: 0,
     };
-    row.base = round2(row.base + resolved.base);
-    row.vat = round2(row.vat + resolved.vat);
-    row.gross = round2(row.gross + (code?.selfAssessment ? resolved.base : resolved.gross));
-    row.baseHome = round2(row.baseHome + (line.vatBaseHome ?? round2(resolved.base * conversion)));
-    row.vatHome = round2(row.vatHome + (line.vatAmountHome ?? round2(resolved.vat * conversion)));
+    row.base = sum2([row.base, resolved.base]);
+    row.vat = sum2([row.vat, resolved.vat]);
+    row.gross = sum2([row.gross, code?.selfAssessment ? resolved.base : resolved.gross]);
+    row.baseHome = sum2([row.baseHome, line.vatBaseHome ?? toHome(resolved.base, fx)]);
+    row.vatHome = sum2([row.vatHome, line.vatAmountHome ?? toHome(resolved.vat, fx)]);
     if (code?.direction === "in" || code?.selfAssessment) {
       const deduction = line.vatDeduction ?? "full";
       const share = Math.min(100, Math.max(0, Number(line.vatDeductionShare) || 0));
@@ -310,10 +313,10 @@ export function summarizeVat(lines: JournalLine[], config: VatPreviewConfig): Va
         deduction === "none"
           ? 0
           : deduction === "partial"
-            ? round2((resolved.vat * share) / 100)
+            ? mulDivRound(resolved.vat, share, 100)
             : resolved.vat;
-      row.deductible = round2(row.deductible + deductible);
-      row.nonDeductible = round2(row.nonDeductible + resolved.vat - deductible);
+      row.deductible = sum2([row.deductible, deductible]);
+      row.nonDeductible = sum2([row.nonDeductible, resolved.vat, -deductible]);
     }
     rows.set(line.vatCodeId, row);
   }
@@ -356,7 +359,7 @@ export function baseFromGross(
   if (config.foreign)
     return {
       foreignAmount: resolved.base,
-      amount: round2((resolved.base * (config.rate || 0)) / (config.rateAmount || 1)),
+      amount: mulDivRound(resolved.base, config.rate || 0, config.rateAmount || 1),
     };
   return { amount: resolved.base };
 }
@@ -433,12 +436,9 @@ export function computeJournalTotals(
     }
   }
   const counted = tax.filter((line) => !line.excludeFromTotal);
-  const sumHome = (items: JournalLine[]) =>
-    round2(items.reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
+  const sumHome = (items: JournalLine[]) => sum2(items.map((line) => Number(line.amount) || 0));
   const sumDoc = (items: JournalLine[]) =>
-    options.foreign
-      ? round2(items.reduce((sum, line) => sum + (Number(line.foreignAmount) || 0), 0))
-      : sumHome(items);
+    options.foreign ? sum2(items.map((line) => Number(line.foreignAmount) || 0)) : sumHome(items);
   return {
     baseHome: sumHome(regular),
     base: sumDoc(regular),

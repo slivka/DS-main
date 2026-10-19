@@ -19,6 +19,7 @@ import { OptionSelect } from "../form/option-select";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import { amountClass, formatAmount, formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
+import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import {
   generatePaymentSchedule,
   sumPaymentSchedule,
@@ -150,7 +151,8 @@ export interface PaymentScheduleEditorProps {
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
-const round2 = (v: number) => Math.round((v + Number.EPSILON) * 100) / 100;
+/** Zaokrouhlení polovinou od nuly jako DB. */
+const round2 = (v: number) => roundHalfAwayFromZero(v, 2);
 const isReleased = (item: PaymentScheduleItem) => item.kind === "retention" && !!item.releasedDate;
 
 /**

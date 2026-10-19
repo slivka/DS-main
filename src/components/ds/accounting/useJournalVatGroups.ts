@@ -13,6 +13,7 @@ import type { JournalLine, VatCodeOption } from "./journal-lines";
 import { isRegularLine, roundJournalAmount, toHomeAmount } from "./journal-lines-model";
 import {
   applyVatAllocation,
+  storedVatAllocation,
   baseFromGrossAmount,
   baseDeltaForDifference,
   computeVatGroups,
@@ -65,14 +66,18 @@ export const vatGroupFieldId = (group: Pick<VatGroup, "code" | "rate">) =>
 export function useJournalVatGroups(input: JournalVatGroupsInput) {
   const { props, t, vatOn, vatReadOnly, vatCodeMap, foreign, rate, rateAmount } = input;
   const { lines, onChange, vat } = props;
-  const exchangeRate = foreign
-    ? (props.vatExchangeRate ?? vat?.vatRate ?? rate) /
-      ((props.vatExchangeRate != null
-        ? props.vatExchangeRateAmount
-        : vat?.vatRate
-          ? vat.vatRateAmount
-          : rateAmount) || 1)
-    : 1;
+  const fxRate = props.vatExchangeRate ?? vat?.vatRate ?? rate;
+  // Bez platného kurzu (0 / prázdný) null – tolerance se nehodnotí, nepočítá se s 1.
+  const exchangeRate: number | null = !foreign
+    ? 1
+    : fxRate && fxRate > 0
+      ? fxRate /
+        ((props.vatExchangeRate != null
+          ? props.vatExchangeRateAmount
+          : vat?.vatRate
+            ? vat.vatRateAmount
+            : rateAmount) || 1)
+      : null;
   const active = vatOn && !vatReadOnly;
   // Otevřený pomocník drží editor: buňka se při aktivaci bubliny stavu přemontuje.
   const [grossHelper, setGrossHelper] = React.useState<GrossHelperState | null>(null);
@@ -88,8 +93,13 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     [lines, vatOverrides, vatCodeMap, foreign, exchangeRate, vatOn, vatReadOnly],
   );
   const allocatedLines = React.useMemo(
-    () => (active ? applyVatAllocation(lines, result) : lines),
-    [active, lines, result],
+    () =>
+      active
+        ? applyVatAllocation(lines, result)
+        : vatOn && vatReadOnly
+          ? storedVatAllocation(lines, foreign)
+          : lines,
+    [active, vatOn, vatReadOnly, foreign, lines, result],
   );
   const canOverride = active && Boolean(props.onVatOverridesChange);
   const severity = props.vatOverrideSeverity ?? "warning";
@@ -164,18 +174,12 @@ export function useJournalVatGroups(input: JournalVatGroupsInput) {
     const targetId = largestBaseLineId(regular, { foreign });
     return result.groups.find((group) => group.lines.some((share) => share.lineId === targetId));
   };
-  // Limit zaokrouhlení je v měně firmy; Rozdíl cizího dokladu je v měně dokladu.
-  const docRate = rate / (rateAmount || 1);
-  const roundingLimit =
-    props.roundingLimit === undefined
-      ? undefined
-      : foreign && docRate > 0
-        ? props.roundingLimit / docRate
-        : props.roundingLimit;
+  // Cizí měna: zaokrouhlení (měna firmy) a Rozdíl (měna dokladu) nelze míchat – volba se nenabízí.
+  const roundingLimit = foreign ? undefined : props.roundingLimit;
   const difference = (amount: number, currentRounding = 0) =>
     resolveDifferenceActions({
       difference: amount,
-      groups: result.groups.filter((group) => group.rate > 0),
+      groups: result.groups.filter((group) => group.rate > 0 && !group.selfAssessment),
       lineCount: regular.length,
       roundingLimit,
       currentRounding,

@@ -106,7 +106,7 @@ export function JournalGrossHelperPopover() {
           id={inputId}
           autoFocus
           value={state.value === "" ? undefined : Number(state.value)}
-          decimals={2}
+          decimals={precision}
           onChange={(next) =>
             editor.vatGroups.setGrossHelper({ ...state, value: next === "" ? "" : String(next) })
           }
