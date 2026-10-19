@@ -119,12 +119,10 @@ export function DocumentForm(props: DocumentFormProps) {
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange: onAccountingDateLinkedChange
-      ? (linked) => {
-          onAccountingDateLinkedChange(linked);
-          onFieldChange?.("document-accountingDate");
-        }
-      : undefined,
+    onAccountingDateLinkedChange: (linked) => {
+      onAccountingDateLinkedChange?.(linked);
+      onFieldChange?.("document-accountingDate");
+    },
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);
@@ -187,17 +185,6 @@ export function DocumentForm(props: DocumentFormProps) {
       ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
       : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
-  const { field, date, suggestedText } = useDocumentFieldRenderers({
-    value: effectiveValue,
-    patch,
-    can,
-    dateWarnings,
-    accountingDateLink: effectiveAccountingLink,
-    fieldErrors: validationActive === false ? undefined : fieldErrors,
-    fieldWarnings: validationActive === false ? undefined : effectiveFieldWarnings,
-    onInvalidDate: (key, invalid) =>
-      setInvalidDates((prev) => toggleInvalidDate(prev, key, invalid)),
-  });
   const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
   const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
   const icoWarning =
