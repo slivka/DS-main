@@ -28,7 +28,8 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
-import { useDocumentFieldRenderers } from "./use-document-field-renderers";
+import { headerFieldKey, useDocumentFieldRenderers } from "./use-document-field-renderers";
+import type { JournalLinesEditorProps } from "../journal-editor-types";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
@@ -310,7 +311,11 @@ export function DocumentForm(props: DocumentFormProps) {
     homeCurrency,
     homeCurrencySymbol,
     rateAmount,
-    linesEditorProps: { ...linesEditorProps, onValidationChange: formIssues.onValidationChange },
+    linesEditorProps: {
+      ...linesEditorProps,
+      onValidationChange: formIssues.onValidationChange,
+      cellIssues,
+    },
     readOnly,
     f,
     lineRounding,
@@ -475,7 +480,9 @@ export function DocumentForm(props: DocumentFormProps) {
               field,
               vsLink,
               layout: bankMovement ? "grid20" : "flex",
-              vsPendingText: dsTexts.documentEdit.numberPending,
+      vsPendingText: ["FV", "ZFV", "DDPZ"].includes(code)
+        ? dsTexts.documentEdit.numberPending
+        : undefined,
             }}
             amount={{
               t,
