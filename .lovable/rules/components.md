@@ -1867,7 +1867,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
+| `approvedLabel` | string | `—` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -4325,6 +4325,22 @@ _Upozorněný zdroj_
 import { ReadOnlyBanner } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+### ReadOnlyControlValue
+
+```ts
+import { ReadOnlyControlValue } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `children` | any | `—` |
+| `id` | string | `—` |
+| `numeric` | boolean | `—` |
+| `multiline` | boolean | `—` |
+| `ariaLabel` | string | `—` |
+
 ### ReceivedBankAccountField
 
 ```ts
@@ -4403,7 +4419,7 @@ _Uložení změn_
 import { RecordDialog } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
-Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte readOnly; rovnocenné datové sekce předávejte přes tabs. Stav záznamu přes status (Aktivní / Neaktivní vedle nadpisu) a lifecycleAction (Deaktivovat / Aktivovat vlevo vedle Odstranit, s dirty nabídne „Uložit změny a …“). fieldErrors zobrazí stejný souhrn sticky nad patičkou dialogu.
+Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krátké, md 48 rem číselníky, lg 56 rem) a platí stejně v panelu i mimo něj. Obsah ve FieldGrid cols={12}. Předávejte dirty (i u nového záznamu) – DS pak hlídá křížek, Esc, Zrušit i klik mimo potvrzením „Zavřít záznam s neuloženými změnami?“. readOnly vykreslí DS vstupy jako hodnoty a nechá jen Zavřít. Chyba uložení přes error, odstranění přes deleteAction, busy ukáže „Ukládám…“. Stav přes status a lifecycleAction; fieldErrors ve stejném pruhu nad tlačítky.
 
 **Props:**
 
@@ -4414,13 +4430,12 @@ Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte
 | `title` | string | `—` |
 | `description` | string | `—` |
 | `onSubmit` | function | `—` |
-| `submitLabel` | string | `Uložit` |
-| `closeLabel` | string | `Zavřít` |
-| `busy` | boolean | `—` |
+| `submitLabel` | string | `—` |
+| `closeLabel` | string | `—` |
+| `busy` | boolean | `false` |
 | `children` | any | `—` |
 | `extraActions` | any | `—` |
-| `size` | md · lg | `sm` |
-| `wide` | boolean | `—` |
+| `size` | sm · md · lg | `sm` |
 | `contentClassName` | string | `—` |
 | `sidePanel` | any | `—` |
 | `sidePanelLabel` | string | `—` |
@@ -4432,11 +4447,13 @@ Jednotný dialog pro editaci i detail záznamu. Pro detail bez editace použijte
 | `tabs` | any | `—` |
 | `status` | any | `—` |
 | `lifecycleAction` | any | `—` |
+| `deleteAction` | any | `—` |
 | `dirty` | boolean | `false` |
-| `cancelLabel` | string | `Zrušit` |
+| `cancelLabel` | string | `—` |
 | `saveAndActionLabel` | string | `Uložit změny a {label}` |
 | `dirtyConfirmTitle` | string | `Formulář obsahuje neuložené změny` |
 | `fieldErrors` | any | `—` |
+| `error` | any | `—` |
 
 **Examples:**
 
@@ -4455,17 +4472,41 @@ _Stav pole a jednotná výška (2.107.0)_
 <RecordDialog {...props} fieldErrors={fieldErrors}>{fields}</RecordDialog>
 ```
 
+_Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
+```tsx
+<RecordDialog open={open} onOpenChange={setOpen} title="Kniha FP" size="md" dirty={dirty} busy={saving} error={saveError} onSubmit={save} deleteAction={{ onClick: remove, confirm: { title: "Odstranit knihu FP?" } }}>
+  <FieldGrid cols={12}>…</FieldGrid>
+</RecordDialog>
+```
+
 **Avoid:**
 
 - Nevykreslujte tlačítko Uložit v režimu readOnly.
 - Nevytvářejte vlastní lištu záložek mimo tabs.
 - Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku.
+- Nevkládejte Alert do obsahu dialogu – chybu uložení předejte v error.
+- Nepřidávejte vlastní tlačítko Odstranit do extraActions – použijte deleteAction.
+- Bez práva upravit nezakazujte vstupy – použijte readOnly.
+- Nepřepínejte submitLabel na „Ukládám…“ – stačí busy.
 
 ### RecordNotes
 
 ```ts
 import { RecordNotes } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+### RecordReadOnlyProvider
+
+```ts
+import { RecordReadOnlyProvider } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
+```
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | boolean | `—` |
+| `children` | any | `—` |
 
 ### ResizableCombobox
 
@@ -5640,6 +5681,7 @@ Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destruc
 | `onDiscard` | function | `—` |
 | `onBack` | function | `—` |
 | `onOpenInNewTab` | function | `—` |
+| `restoreFocusTo` | any | `—` |
 
 **Examples:**
 

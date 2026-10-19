@@ -2,7 +2,7 @@
   "meta": {
     "name": "DS - main",
     "package": "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b",
-    "version": "2.110.0",
+    "version": "2.111.0",
     "framework": "react",
     "css_framework": "tailwind",
     "starter_template": "custom_design_system",
@@ -18,12 +18,12 @@
     ],
     "source_type": "local",
     "source_manifest": {
-      "#enrichment": "00919191765384a708304834709ef67e3dc68ffe72247e984a4dad94f95c3272",
+      "#enrichment": "2e6eeb69a11984a1cc992e10e4c7c32290ac68c2c445fba83d4e0eb9ec243644",
       ".bun-version": "5b28ee398da148313e912a0c08d76ba4",
       ".dsignore": "064818221ffbcf9369c43a13cf6bb694",
       ".github/workflows/e2e.yml": "4908a980a8977388787ab2ee0d3df729",
       ".gitignore": "0df7b6501bbd73d1e2fe873c1e34f708",
-      ".lovable/catalog-removals.json": "32ec8bde744d1c8619c955dd1e6caa4a",
+      ".lovable/catalog-removals.json": "0315cc0c88f4864db119b5415f11400e",
       ".lovable/meta.yaml": "aa41cff31151514a9e9cbb343b0192aa",
       ".lovable/plan/accounting-app-panely-připnuté-stránky-a-lišty-gridů-2026-09-24.md": "0f49a3809ba60f7381701e8487f3d960",
       ".lovable/plan/appshell-2-0-2026-09-23.md": "4dee4d7fc0c0346f7c96679f09847ed8",
@@ -64,13 +64,13 @@
       ".lovable/plan/vystředění-firmy-a-období-v-horní-liště-2026-09-24.md": "da4bb48cc53dfbab43c8b83ce10f7a39",
       ".lovable/plan/záložky-v-panelech-ds-2-12-0-minor-s-breaking-changes-2026-09-24.md": "696125cd68a12e068b6edc1089e0591e",
       ".lovable/plan/čitelnost-a-orientace-ds-2-11-0-2026-09-24.md": "4104890d27465604cbf40cef78381c8d",
-      ".lovable/release-base.json": "e20a6d058d6fed67477138ec13978799",
+      ".lovable/release-base.json": "f20b11a4f2aede01249e10542b568132",
       ".lovable/sources.yaml": "aed14dfc536c367db440785e296ba68f",
-      ".lovable/system.md": "86c117fb10df9bc07c35010e32fa758f",
+      ".lovable/system.md": "d698e9502567ff78bfa454ebf965320e",
       ".prettierignore": "179907412937c047adb9cc8341e5d543",
       ".prettierrc": "9272ba2195ee6413f5e0b65fae341f20",
       "AGENTS.md": "682a653080ccb3d5fd5e0b83853e03d6",
-      "CHANGELOG.md": "cada4ec8b1c7d7062c1f2ebb47575129",
+      "CHANGELOG.md": "2718c1803b1236bfb288f9778fbeefb2",
       "README.md": "7686d9d28879e7e407dacfaafb8b66f7",
       "bunfig.toml": "38e61efe6317fb5294203198d62e8338",
       "components.json": "30d3d035361ce807021f5c54620962e9",
@@ -78,10 +78,10 @@
       "eslint.config.js": "b88e2040078ccbacbd923b5c966ab4a9",
       "lovable.toml": "9636c1bf32f9901bfba4eabb92981217",
       "mockupPreviewPlugin.ts": "6fe5f05c493baf6efc66702e62705495",
-      "package.json": "4a3ca62be2059980b0996fcc36adf359",
+      "package.json": "f10b12adcdfce8ec621eac2793752c55",
       "playwright.config.ts": "81d49064f93347303f0c8c83bfeea448",
       "public/favicon.ico": "9f504444f85a5af2eef9264b02ae40be",
-      "roadmap.md": "d0eed97e0f041723dbc1d9d962698efe",
+      "roadmap.md": "d11ba5ef9f0a7d71d48659dbe9f7fe2e",
       "scripts/check-catalog.ts": "df0fc76e3eccc8929693d87b3110e3ac",
       "scripts/check-full.ts": "966e63faf9dfcc4954911fe603d5a90b",
       "scripts/check-money-rounding.ts": "0304672adf21e178196d78599d108d8a",
@@ -91,7 +91,7 @@
       "src/assets/icons/pdf.svg": "ee89c3c8b1143ecaaa598f5ea48d089d",
       "src/assets/roboto-bold.ttf": "a68db3b33213fa138e6f72a5b76ac632",
       "src/assets/roboto-regular.ttf": "8f793587dcf03f31c551c5b60d175fc2",
-      "src/components/ds/AGENTS.md": "bd52908dce36e44c89811c510797072f",
+      "src/components/ds/AGENTS.md": "0a036d6f7e547f2c2cd8634a96a6e568",
       "src/components/ds/accounting/AGENTS.md": "159517e05b316c01666d467fd9cf8357",
       "src/components/ds/accounting/JournalCell.tsx": "9f1303ab73c551ab9a27fdf94c5f1504",
       "src/components/ds/accounting/JournalCellEditor.tsx": "75bbd332d786e41d44ac51b331d98ace",
@@ -102,7 +102,7 @@
       "src/components/ds/accounting/JournalToolbar.tsx": "a1c580239484692d49bb3561ab53440a",
       "src/components/ds/accounting/account-code.tsx": "7ebe63ef0e76cabd18c1d1bbc749eed9",
       "src/components/ds/accounting/account-columns.tsx": "7b9dc8bf2275a4649a65c2b53c409231",
-      "src/components/ds/accounting/account-select.tsx": "6c835f74a6507c0f181dfa28c831e549",
+      "src/components/ds/accounting/account-select.tsx": "38f5216c5fc5a104cd3b7a0870fa22df",
       "src/components/ds/accounting/amount-difference.tsx": "16744fbecbd3033f953e0541c5475210",
       "src/components/ds/accounting/amount.tsx": "235cd7f60996275ea08d28941405f757",
       "src/components/ds/accounting/bank-account-field.tsx": "93084664df3086331068310e97799071",
@@ -113,7 +113,7 @@
       "src/components/ds/accounting/counterparty-input-field.tsx": "7c2ae2d5c366e5551af1d0579242b17f",
       "src/components/ds/accounting/currency-amount.tsx": "1ae5712c983418cfd0d1a055f5815cce",
       "src/components/ds/accounting/debit-credit-cells.tsx": "8580f9d3dba573dc97df44a0f79d64c4",
-      "src/components/ds/accounting/dimension-select.tsx": "618365b586b656efdfa49c8b65f7f2f2",
+      "src/components/ds/accounting/dimension-select.tsx": "1d01f62f99b24fcacbcdf54b75d8b23d",
       "src/components/ds/accounting/document-detail-tabs.tsx": "85ac6026e90d0df29c667725cd4168b2",
       "src/components/ds/accounting/document-fields.ts": "141f4691e5748c89e1294320c645be1a",
       "src/components/ds/accounting/document-form.tsx": "0e51b1d400324199df5479c1880b6e03",
@@ -150,14 +150,14 @@
       "src/components/ds/accounting/document-form/use-external-number-field.tsx": "a1f850766356dffe04920641cd38f431",
       "src/components/ds/accounting/document-form/use-identity-account-selection.ts": "1438d64a6fedf0c6ee4b72ef9fbdfe5b",
       "src/components/ds/accounting/document-form/use-variable-symbol-link.ts": "64c1b04843d6551649c1abca105f6e61",
-      "src/components/ds/accounting/document-settings-dialog.tsx": "d7588b345bb295180e9b5e7d938cbf15",
+      "src/components/ds/accounting/document-settings-dialog.tsx": "bf0fed14c18e3a00f5e220c7f3c3c28b",
       "src/components/ds/accounting/document-status-badge.tsx": "74d5a31ae75a0a227d9fa06311f1654d",
       "src/components/ds/accounting/fiscal-period-select.tsx": "e3bd5a072d32ba3430b934b62204f141",
       "src/components/ds/accounting/journal-column-layout.ts": "b3f28da197ff6bb63d243d2be0a97903",
       "src/components/ds/accounting/journal-columns.ts": "dcf69cba254537d06e1c222293b6259d",
       "src/components/ds/accounting/journal-difference-bar.tsx": "ffc56fdda31771b926db94cbdea29b6f",
       "src/components/ds/accounting/journal-editor-context.ts": "1b7c14bfd0f1469a73ea8075820abe4a",
-      "src/components/ds/accounting/journal-editor-types.ts": "a03468e1d5cb257c9e2b178ff879ed00",
+      "src/components/ds/accounting/journal-editor-types.ts": "d1a6801cd76d9b8629fe2f3e03c62e56",
       "src/components/ds/accounting/journal-gross-helper.tsx": "80e7da76d832b4ab803dbf2f0b8dfd9f",
       "src/components/ds/accounting/journal-lines-editor.tsx": "e94991b6c05675d9c4d1b0be081867d0",
       "src/components/ds/accounting/journal-lines-model.ts": "090c8aeacccba517a409d32c3025c91b",
@@ -214,12 +214,12 @@
       "src/components/ds/form/as-of-date-field.tsx": "806c8ee49a6289104c75bef8fe41902f",
       "src/components/ds/form/calendar-picker.tsx": "37309896a33da5e3a7f8c94ac95f5869",
       "src/components/ds/form/category-select.tsx": "e870ea136d24f7aabbbc50efb53f38b0",
-      "src/components/ds/form/checkbox-field.tsx": "7e1d29acd36b9f776f819f43e66354a1",
+      "src/components/ds/form/checkbox-field.tsx": "b87967b85f364a8c5fa5c1a73fa8806f",
       "src/components/ds/form/chip-multi-select.tsx": "cf116ed3059818cc6028458035e5883d",
       "src/components/ds/form/country-select.tsx": "fd53a239b495b6b1363c9c4627c9c6c0",
-      "src/components/ds/form/date-field.tsx": "e834001898f3d0421dce5edb52f9e9c8",
+      "src/components/ds/form/date-field.tsx": "dc2ebc64e491d146d0f29b491336e5c9",
       "src/components/ds/form/date-range-field.tsx": "3f740b123e028d5d471e437f28393746",
-      "src/components/ds/form/decimal-input.tsx": "c0ab5d5e2a98ef7edab798a6022eb512",
+      "src/components/ds/form/decimal-input.tsx": "e8013c4871f0991b3dbc2121ecc6f2b3",
       "src/components/ds/form/entity-select.tsx": "90e9c40c56d3676fbbb40f9065a21bcf",
       "src/components/ds/form/field-feedback.tsx": "2e3784270959f6d40747a263ea94a26c",
       "src/components/ds/form/field-inline-actions.tsx": "9aaf0f61cd8dac3d8d323eb70cdd2951",
@@ -230,15 +230,16 @@
       "src/components/ds/form/ico-link.tsx": "f670fd77992d3a9fca915dc15581645a",
       "src/components/ds/form/legal-form-field.tsx": "84190d80e472c0a910f4e0d04c25dcfa",
       "src/components/ds/form/lookup-field.tsx": "bb32cd079312d890c5c4a1291d51b310",
-      "src/components/ds/form/mask-input.tsx": "20264f23b6f5c15f3eca7b5ed77c566c",
+      "src/components/ds/form/mask-input.tsx": "388cabd91d582b2da9671e16b20e8ec3",
       "src/components/ds/form/month-year-select.tsx": "7de7d50c02bff6d957d8c84e37e215d5",
       "src/components/ds/form/multi-select.tsx": "69a6d284eaa2bae808a8c36a63e0fdc7",
-      "src/components/ds/form/option-select.tsx": "400bfc32670fe6fa02a2fae74ad66237",
+      "src/components/ds/form/option-select.tsx": "6bd46114e416855357ca2652a3d3150d",
       "src/components/ds/form/period-filter.tsx": "90db263e3984bd773df61cf3ef0ba2cc",
       "src/components/ds/form/rate-field.tsx": "6d65439dce02448068ff8eb3fa1a9e8a",
+      "src/components/ds/form/record-read-only.tsx": "ec7511799983ed0fbc2cc3c10f466585",
       "src/components/ds/form/resizable-combobox.tsx": "da92124f0ec87975062f75107d8eb569",
-      "src/components/ds/form/searchable-option-select.tsx": "57997636372dcceb77323176d7209e18",
-      "src/components/ds/form/segmented-field.tsx": "4f04ca655d48f300b960f47c5899e0c8",
+      "src/components/ds/form/searchable-option-select.tsx": "269f1129fa0e0128a7d2e0838cc13e15",
+      "src/components/ds/form/segmented-field.tsx": "f2f8f2f5455204c14229539ef991924e",
       "src/components/ds/form/select-search-action.tsx": "778cd9b5ec3c72ac50ee7033c000a02a",
       "src/components/ds/form/stepper-input.tsx": "2c06ea19908319dbdc95864af59fdc61",
       "src/components/ds/form/suggest-input.tsx": "c5ec88e5d023394aa1453fe28ef432b9",
@@ -298,14 +299,14 @@
       "src/components/ds/grid/useRowActions.tsx": "38a55e87390e351ac2524d4bfd2efac6",
       "src/components/ds/grid/view-mode-toggle.tsx": "667d5e28e63a250a46ceb6d59dcf8035",
       "src/components/ds/grid/vs-column.tsx": "08787750c40354104cde7445d0eb4f41",
-      "src/components/ds/index.ts": "fdd72e5b53021326733bbc323cb63474",
+      "src/components/ds/index.ts": "f0aaed41276f90b8c231aea253be795f",
       "src/components/ds/layout/AppShell.tsx": "f2661ffe97493c3dc7fc9567a2af51d5",
       "src/components/ds/layout/AppShellNav.tsx": "ca091ea04506319a704f3ad8edaa2710",
       "src/components/ds/layout/AppShellNavGroup.tsx": "0a865c7cf895855e9da6a06d1f8fc1e8",
       "src/components/ds/layout/AppShellPanels.tsx": "de6b74dd71296d9b4f6263d6c117d9a2",
       "src/components/ds/layout/AppShellSidebar.tsx": "80b336b5fb1c35c019756d6b41ab47e7",
       "src/components/ds/layout/AppShellTopBar.tsx": "c79a0e9cdd85a077de73225671f68368",
-      "src/components/ds/layout/RecordDialog.tsx": "073b3900f04a0e070ee19236ad135737",
+      "src/components/ds/layout/RecordDialog.tsx": "0e0e93f2ee05a4d864d661e1ab1ac116",
       "src/components/ds/layout/ThemeToggle.tsx": "340f9dbeb253053acc7ccdcf9834b95c",
       "src/components/ds/layout/WorkspaceCompanySwitcher.tsx": "b3b881b303773be54297519bc8702ba8",
       "src/components/ds/layout/app-shell-types.ts": "f6ccbfeaa926b41ac79706a8db8c265a",
@@ -325,6 +326,9 @@
       "src/components/ds/layout/page-tabs.tsx": "88f4a67722bfb6cd815fe588722e2eb9",
       "src/components/ds/layout/period-switcher.tsx": "0ede0651812f61cdc6077d73ae2a38e4",
       "src/components/ds/layout/record-action-bar.tsx": "dda5fba9968a301a8b094dbe206bbd28",
+      "src/components/ds/layout/record-dialog-footer.tsx": "15c195828b5a3eb0311d3ee6657bb8e1",
+      "src/components/ds/layout/record-dialog-pane.tsx": "4daef52a320c5adb5655276e83da062e",
+      "src/components/ds/layout/record-dialog-tabs.tsx": "00b0e3492f2bc152a62b903d0caefbcf",
       "src/components/ds/layout/search-button.tsx": "5aa5ad81f7b4f78d1a68d20d34534810",
       "src/components/ds/layout/section-heading.tsx": "a8d2efeff43eb28a370ef2416cc200f8",
       "src/components/ds/layout/settings-section.tsx": "d927fc8474cb253c87366215b2033f26",
@@ -351,7 +355,7 @@
       "src/components/ds/panes/pane-tab-store.ts": "36a5263c0ed09e50995f857d301d613e",
       "src/components/ds/panes/pane-unsaved-controller.tsx": "cab804728be78a0cd76b7ed276407596",
       "src/components/ds/panes/pinned-bar.tsx": "1ccfdb63514f6f54ec8a9052ca6a3ca4",
-      "src/components/ds/panes/unsaved-changes-dialog.tsx": "96322d7c88a150e221bbe74014344e3a",
+      "src/components/ds/panes/unsaved-changes-dialog.tsx": "542c9fe40a7b8fde218672597feab132",
       "src/components/ds/panes/use-pane-provider-effects.ts": "cca65f0e82e8004239a234f9b93b933b",
       "src/components/ds/print/cash-receipt-pdf.tsx": "530af1724afea4c393e9bd9dcf8789d3",
       "src/components/ds/print/print-preview-dialog.tsx": "ae64b7667855df7a2618006d754d2314",
@@ -371,15 +375,16 @@
       "src/components/showcase/FormDesignTwoShowcase.tsx": "ef6c355804a57a0b2404a8f3668802a8",
       "src/components/showcase/JournalExamplesShowcase.tsx": "eb30abf74e6bd775fa8ca8bea90c6a4c",
       "src/components/showcase/LiveIssuesShowcase.tsx": "827f8bf8e72f06924b488d5b3f999404",
-      "src/components/showcase/MatchingShowcase.tsx": "ef83010bf71822dd26279e4b42fa4e78",
+      "src/components/showcase/MatchingShowcase.tsx": "917159d9a1d31f3bd01ad1cd18ede1e0",
       "src/components/showcase/PaneShowcase.tsx": "abd1af3294ab9f338001b009906b82d2",
-      "src/components/showcase/PartnerShowcase.tsx": "a42b9f5d59a66a020cd9cb53b76e3bd1",
+      "src/components/showcase/PartnerShowcase.tsx": "ac29bc753e8562fd2f4658820d00b420",
       "src/components/showcase/PrimaryActionsShowcase.tsx": "7ac1864d42f6e39e65b2a47fe98019b3",
       "src/components/showcase/PrintShowcase.tsx": "4a3b73ef2ec97061c7a1b073c5ee49dc",
+      "src/components/showcase/RecordDialogPatternsShowcase.tsx": "386a16b41eed0c5df5fd0d1c9a0a7ae0",
       "src/components/showcase/RecordDialogShowcase.tsx": "d19fb6641bb563153e07f9b4ab4a9652",
       "src/components/showcase/ReportsShowcase.tsx": "4c040e7fc138f71096d6d7cd7a36c587",
       "src/components/showcase/ShowcaseLayout.tsx": "e21f1f8af1079d7a12e7b82977960ddf",
-      "src/components/showcase/UnsavedActionsShowcase.tsx": "45469ab16f04984e5dca98809e9f4cb5",
+      "src/components/showcase/UnsavedActionsShowcase.tsx": "d37a8654d2e58dfb8da5d74ce1a4242a",
       "src/components/showcase/VatGroupsShowcase.tsx": "e66ff3ec854e0e55a2891caff1236120",
       "src/components/showcase/VatJournalShowcase.tsx": "8bb96dcc889ee8e9856c33936f72ecf7",
       "src/components/showcase/WorkspaceSettingsShowcase.tsx": "f800d772e9cf9302616306ad6b4a0acd",
@@ -413,7 +418,7 @@
       "src/components/ui/form.tsx": "fdd11ebe66b2799203353d713fc2c5e6",
       "src/components/ui/hover-card.tsx": "1f4ca143d9f75cc9858425e9e6eba7f8",
       "src/components/ui/input-otp.tsx": "e73af750feaebc6bbc38f226f644392c",
-      "src/components/ui/input.tsx": "06bc18878bff3a48b67fe1411b73a9c8",
+      "src/components/ui/input.tsx": "31355f9e8631eb8bde5b8d182ab4f9b5",
       "src/components/ui/label.tsx": "047ac9d0d6075ad8682e1862d39ffe5d",
       "src/components/ui/menubar.tsx": "f9256bbcccc3d9cacf87da66fdc3589c",
       "src/components/ui/navigation-menu.tsx": "651e23496a146e12513c8a449ef958d1",
@@ -433,25 +438,25 @@
       "src/components/ui/switch.tsx": "12132d5ff25dfcac9069d7d7290fd79b",
       "src/components/ui/table.tsx": "d36126efb4fdc9eee88299302ca0cc8d",
       "src/components/ui/tabs.tsx": "23c6c1a1f2e96d3cfe0cc31e7d3bd2a3",
-      "src/components/ui/textarea.tsx": "09d4143495a4242a5fd79683137668d1",
+      "src/components/ui/textarea.tsx": "eedcc4951c41909303ef187cb9622d63",
       "src/components/ui/toggle-group.tsx": "a03307828c304b41fab1193b4cf86a43",
       "src/components/ui/toggle.tsx": "966eced26f5a26fe2b0282eff7d6d7b4",
       "src/components/ui/tooltip.tsx": "233f52d135404db9abf3f8503c0c0022",
       "src/ds-texts/bank-statement-texts.ts": "cb4cdde9455a3da1d080395409ad1840",
       "src/ds-texts/cs-bank-statement.ts": "156422c76a2df1b5e94aca0395a98e99",
       "src/ds-texts/cs-document-form.ts": "516007812c5e2dc9ea9f5cfae1f03e61",
-      "src/ds-texts/cs-unsaved-actions.ts": "fba90d75dab2cc98a1f925265d15dc41",
+      "src/ds-texts/cs-unsaved-actions.ts": "ef2b6c230ba2cdabb39941b2446643ea",
       "src/ds-texts/cs-vat-groups.ts": "4a4224525782d8f79d139bb9698e38e8",
-      "src/ds-texts/cs.ts": "ab43a8d3f17b82cf069e189b9c2ef226",
+      "src/ds-texts/cs.ts": "8ac982645ebc1d52893c9ae072f1d77f",
       "src/ds-texts/form-design-two-showcase.ts": "fa5c99b6df4bf937b9c3d2d62495848e",
       "src/ds-texts/grid-journal-types.ts": "10db1c061710fabd32bf1ac2abf3ede1",
       "src/ds-texts/index.tsx": "07a66b60a2dd633c6fc6e9e890e99aaf",
       "src/ds-texts/sk-bank-statement.ts": "e9580f765383aa84fa6a4c24d7cf0f70",
       "src/ds-texts/sk-document-form.ts": "e448031ab6666946a013290888895c7d",
-      "src/ds-texts/sk-unsaved-actions.ts": "b8e416efdba18b53d2dd251020b6def6",
+      "src/ds-texts/sk-unsaved-actions.ts": "3527052fa6cc3e8356337bd24d44b617",
       "src/ds-texts/sk-vat-groups.ts": "73d52fcbe2720c70bc86e1ff30d88bb9",
-      "src/ds-texts/sk.ts": "7b1cc04a114b7eaf87e3396b928b2e68",
-      "src/ds-texts/types.ts": "f3d008b1887db9492866a36d90798562",
+      "src/ds-texts/sk.ts": "b539f406ca642198388e99639350a747",
+      "src/ds-texts/types.ts": "5f6d5e726037f48902891dc7882f3ef5",
       "src/hooks/index.ts": "6fece027b973135a96e5c7ae9a978a3e",
       "src/hooks/use-dialog-back-close.ts": "d3a0a16f8bc86d6133a313901508f2b0",
       "src/hooks/use-grid-keyboard-nav.ts": "8ba15428a0f0b2b36dcf50d2ec8849ee",
@@ -503,11 +508,11 @@
       "src/routes/components.accounting-lines.tsx": "87928bbbf79158876e60c1b1393a630e",
       "src/routes/components.design-three.tsx": "a9d71d6a13723e7e644a1e90bfe42278",
       "src/routes/components.excel-export.tsx": "80244190af373b08a2f2351d84989262",
-      "src/routes/components.feedback.tsx": "04b7e46106fdd2fb3c73d34df2581f88",
-      "src/routes/components.forms.tsx": "181f6e683557feb3e72d11bf16bc7ccd",
+      "src/routes/components.feedback.tsx": "27be10b17caf772c5f34f267240195cc",
+      "src/routes/components.forms.tsx": "d15f5ef094238c152a4abebe5d64302f",
       "src/routes/components.grid.tsx": "1c0f5cfc28b3e4da649943f7a0b2eda9",
       "src/routes/components.matching.tsx": "1119e7287264e60ee4f8a45fbe59ba56",
-      "src/routes/components.navigation.tsx": "8a837e58b02c97071690d0f76bd128c3",
+      "src/routes/components.navigation.tsx": "de4ddd4997de058db6af1b8868c1e1ad",
       "src/routes/components.print.tsx": "d4638611b27fc96e60dc28a4e7dd895e",
       "src/routes/guidelines.tsx": "06e9d4af81768cc3c82f7fd507382e78",
       "src/routes/index.tsx": "29116ed9f0ccbd380204edc48a942e94",
@@ -543,6 +548,7 @@
       "tests/e2e/narrow-fields-290.spec.ts": "7e54e267811e6869c1a49893a35d83ce",
       "tests/e2e/non-tax-baseline.ts": "c89c4f70b09d58c22003be88d0eee634",
       "tests/e2e/payment-schedule.spec.ts": "9cbe5de6ebf98ea321833e65a3e377eb",
+      "tests/e2e/record-dialog-2111.spec.ts": "4ccba0f406a61990fc62c809dfdb41f2",
       "tests/e2e/reports.spec.ts": "d0654de282c9de93506a033d6c7013f9",
       "tests/e2e/vat-code-tab-256.spec.ts": "4840e869be34b26d2c0caa729e912ff5",
       "tests/e2e/vat-groups.spec.ts": "927260727ad47c4ccb26a75774e42b29",
@@ -552,7 +558,7 @@
       "tests/unit/app-shell-behavior.test.tsx": "f0cc54bf0356c895dcf1f24736be143e",
       "tests/unit/app-zoom-264.test.ts": "3440099754a804b035c3c664e1fc1e1f",
       "tests/unit/app-zoom-270.test.tsx": "651c944c38f425043bb4876b381ff567",
-      "tests/unit/appshell-panels-240.test.tsx": "ec0604eb1c735aac6aadfb92797f3457",
+      "tests/unit/appshell-panels-240.test.tsx": "075315f3d43ff2c45026289116d09373",
       "tests/unit/appshell-panels-271.test.tsx": "f101f1d1ec0262db67e60a75fc4cc08e",
       "tests/unit/bank-account-options.test.tsx": "369b85aaf3bb8018c6a7393a0bd8901b",
       "tests/unit/bank-statement-form.test.tsx": "bab8fae8d0c2829c0c77d1bf399e9b03",
@@ -561,7 +567,7 @@
       "tests/unit/context-switchers-222.test.ts": "7db72cf010d8a9eb695590b707d65375",
       "tests/unit/counterparty-225.test.tsx": "fdf117807ef38a115fa62f3a6e95775e",
       "tests/unit/data-grid-behavior.test.tsx": "069f3df0e248518da18c8c898464d81d",
-      "tests/unit/dialog-strict-nested.test.tsx": "768cd520971fe23c88f208fb65449949",
+      "tests/unit/dialog-strict-nested.test.tsx": "fe0be4d81d05be3bca17ec9ffdab5bce",
       "tests/unit/disabled-controls.test.tsx": "445c66d9f8ca3f478a627dc3701bcb85",
       "tests/unit/disabled-reason-actions.test.tsx": "6b7d40fbdfc32ea16f9674838e3c27df",
       "tests/unit/document-controls.test.tsx": "a57bfd241fe3b3f3f174ab96ffa802f5",
@@ -585,7 +591,7 @@
       "tests/unit/edit-document-fifteen.test.tsx": "733e880826357bc664589b5282fee1c4",
       "tests/unit/edit-document-twelve.test.tsx": "88761e2e4f4b87fa859090d9a3d0058a",
       "tests/unit/field-status-2107.test.tsx": "3533029a9ee69d73dc83b71aec67dac8",
-      "tests/unit/field-status-controls.test.tsx": "c555c2153ae85cbfdb83d1efed248fdd",
+      "tests/unit/field-status-controls.test.tsx": "8cc88675ad53cb7b462e5544aa8a7cf5",
       "tests/unit/field-toggle-button.test.tsx": "8660f7968365b6bf85af8a45f0df9f27",
       "tests/unit/form-design-two.test.tsx": "b9e748489cb9215180f1efe04858f05a",
       "tests/unit/form-design.test.tsx": "b5b2b3fced1d1e9b923eea842937b411",
@@ -617,9 +623,11 @@
       "tests/unit/pane-state.test.ts": "833b9690641b71cd5c0e9b791fcb013c",
       "tests/unit/pane-tabs-217.test.ts": "dfd8fc337ea6a41bb44cf6b6388e8923",
       "tests/unit/pane-unsaved-286.test.tsx": "cdbf4947fa39165354ac07fc84b45c0d",
-      "tests/unit/partners-246.test.tsx": "1c76adce779eff2fb6b187ba2c4c9545",
+      "tests/unit/partners-246.test.tsx": "786c290509a3045255a8289546461985",
       "tests/unit/print-226.test.ts": "bbf381ca80a9649c500efb773dde50bc",
-      "tests/unit/record-dialog-284.test.tsx": "f0186b8ff561173b011086a8767e21fb",
+      "tests/unit/record-dialog-2111-fixes.test.tsx": "98dd845f2e6cb42423532420651688d3",
+      "tests/unit/record-dialog-2111.test.tsx": "9e58dff9909f12ae95c631d9f81f5d61",
+      "tests/unit/record-dialog-284.test.tsx": "6b3ff772ebb20875e1ea247bf1c1676c",
       "tests/unit/record-form-262.test.tsx": "c71a038c52650077c48d5fde3dc97348",
       "tests/unit/scrolling-fixes-253.test.ts": "8f8344795be47081a4e025df99df5ac4",
       "tests/unit/scrolling-zoom-253.test.tsx": "467c76353bd136e130b2dbcf7d668729",
@@ -1415,7 +1423,7 @@
       "examples": [
         {
           "label": "Počet kopií",
-          "code": "<StepperInput value={copies} onChange={setCopies} min={1} max={5} step={1} />"
+          "code": "\u003cStepperInput value={copies} onChange={setCopies} min={1} max={5} step={1} /\u003e"
         }
       ],
       "antipatterns": [
@@ -1455,7 +1463,7 @@
       "examples": [
         {
           "label": "Rozdíl výpisu",
-          "code": "{difference !== 0 && <AmountDifference value={difference} label={texts.difference} currencySymbol={currency.symbol} />}"
+          "code": "{difference !== 0 \u0026\u0026 \u003cAmountDifference value={difference} label={texts.difference} currencySymbol={currency.symbol} /\u003e}"
         }
       ],
       "antipatterns": [
@@ -1551,7 +1559,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchableOptionSelect />"
+          "code": "\u003cSearchableOptionSelect /\u003e"
         }
       ]
     },
@@ -1578,7 +1586,7 @@
       "examples": [
         {
           "label": "Slovenská aplikace",
-          "code": "<DsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"><App /></DsTextsProvider>"
+          "code": "\u003cDsTextsProvider texts={DS_TEXTS_SK} locale=\"sk\"\u003e\u003cApp /\u003e\u003c/DsTextsProvider\u003e"
         }
       ],
       "antipatterns": [
@@ -1646,11 +1654,11 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<Button {...props} />"
+          "code": "\u003cButton {...props} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<Button size=\"control\" variant=\"outline\">{texts.map}</Button>"
+          "code": "\u003cButton size=\"control\" variant=\"outline\"\u003e{texts.map}\u003c/Button\u003e"
         }
       ],
       "antipatterns": [
@@ -1680,7 +1688,7 @@
       "examples": [
         {
           "label": "Vzor čísla účtu",
-          "code": "<Input value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} />"
+          "code": "\u003cInput value={account} onChange={onAccountChange} formatPattern={appTexts.accountNumberPattern} /\u003e"
         }
       ],
       "antipatterns": [
@@ -1731,7 +1739,7 @@
       "examples": [
         {
           "label": "Běžné použití",
-          "code": "<Badge variant=\"outline\">Kontrola</Badge>"
+          "code": "\u003cBadge variant=\"outline\"\u003eKontrola\u003c/Badge\u003e"
         }
       ],
       "antipatterns": [
@@ -2047,7 +2055,7 @@
       "examples": [
         {
           "label": "Běžné použití",
-          "code": "<Calendar mode=\"single\" selected={date} onSelect={setDate} onToday={setDate} />"
+          "code": "\u003cCalendar mode=\"single\" selected={date} onSelect={setDate} onToday={setDate} /\u003e"
         }
       ],
       "antipatterns": [
@@ -2666,7 +2674,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<RadioGroupItem />"
+          "code": "\u003cRadioGroupItem /\u003e"
         }
       ]
     },
@@ -2718,7 +2726,7 @@
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "<Select disabled><SelectTrigger><SelectValue /></SelectTrigger></Select>"
+          "code": "\u003cSelect disabled\u003e\u003cSelectTrigger\u003e\u003cSelectValue /\u003e\u003c/SelectTrigger\u003e\u003c/Select\u003e"
         }
       ],
       "antipatterns": [
@@ -2992,11 +3000,11 @@
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "<Textarea disabled value={description} aria-label={texts.description} />"
+          "code": "\u003cTextarea disabled value={description} aria-label={texts.description} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<Textarea id=\"note\" label={texts.note} value={note} onChange={handleNote} error={errors.note} />"
+          "code": "\u003cTextarea id=\"note\" label={texts.note} value={note} onChange={handleNote} error={errors.note} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3039,7 +3047,7 @@
       "examples": [
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<ToggleGroup type=\"single\" label={texts.mode} value={mode} onValueChange={setMode} warning={warnings.mode}><ToggleGroupItem value=\"a\">A</ToggleGroupItem></ToggleGroup>"
+          "code": "\u003cToggleGroup type=\"single\" label={texts.mode} value={mode} onValueChange={setMode} warning={warnings.mode}\u003e\u003cToggleGroupItem value=\"a\"\u003eA\u003c/ToggleGroupItem\u003e\u003c/ToggleGroup\u003e"
         }
       ],
       "antipatterns": [
@@ -3084,7 +3092,7 @@
       "examples": [
         {
           "label": "Přepočtený celek",
-          "code": "<JournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} />"
+          "code": "\u003cJournalRecapHomeTotal total={total} rate={rate} rateAmount={rateAmount} symbol={homeCurrencySymbol} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3128,15 +3136,15 @@
       "examples": [
         {
           "label": "Identita výpisu",
-          "code": "<IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />"
+          "code": "\u003cIdentityLine items={[book, currency, period, bankAccount]} number={statement.number} /\u003e"
         },
         {
           "label": "Číslo dokladu s identifikátorem",
-          "code": "<IdentityLine items={[book, period]} number={document.number} numberId=\"document-number\" />"
+          "code": "\u003cIdentityLine items={[book, period]} number={document.number} numberId=\"document-number\" /\u003e"
         },
         {
           "label": "Identifikace",
-          "code": "<IdentityLine items={[bookName, periodLabel]} number={documentNumber} />"
+          "code": "\u003cIdentityLine items={[bookName, periodLabel]} number={documentNumber} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3152,7 +3160,7 @@
       "examples": [
         {
           "label": "Řízené části Nastavení",
-          "code": "<AppShell panels={[{ id: \"settings\", title: \"Nastavení\", icon: Settings, tooltip: \"Nastavení\", activeView, onViewChange: setActiveView, views: [{ id: \"company\", label: \"Firma\", title: \"Nastavení firmy\", context: company.name, scope: \"company\", nav: companyNav }, { id: \"workspace\", label: \"Prostor\", title: \"Nastavení prostoru\", context: workspace.name, scope: \"workspace\", nav: workspaceNav }] }]}>{children}</AppShell>"
+          "code": "\u003cAppShell panels={[{ id: \"settings\", title: \"Nastavení\", icon: Settings, tooltip: \"Nastavení\", activeView, onViewChange: setActiveView, views: [{ id: \"company\", label: \"Firma\", title: \"Nastavení firmy\", context: company.name, scope: \"company\", nav: companyNav }, { id: \"workspace\", label: \"Prostor\", title: \"Nastavení prostoru\", context: workspace.name, scope: \"workspace\", nav: workspaceNav }] }]}\u003e{children}\u003c/AppShell\u003e"
         }
       ],
       "antipatterns": [
@@ -3169,7 +3177,7 @@
       "examples": [
         {
           "label": "Pracovní prostor a firma",
-          "code": "<WorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} />"
+          "code": "\u003cWorkspaceCompanySwitcher workspaces={workspaces} companies={companies} workspaceId={workspaceId} companyId={companyId} onWorkspaceChange={setWorkspaceId} onCompanyChange={setCompanyId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3250,11 +3258,11 @@
       "examples": [
         {
           "label": "Pole přes čtyři sloupce",
-          "code": "<FieldGrid cols={12}><Field label=\"Jméno\" span={4}><Input /></Field></FieldGrid>"
+          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Jméno\" span={4}\u003e\u003cInput /\u003e\u003c/Field\u003e\u003c/FieldGrid\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<Field label={texts.name} hint={texts.nameHint}><Input value={name} error={errors.name} onChange={handleName} /></Field>"
+          "code": "\u003cField label={texts.name} hint={texts.nameHint}\u003e\u003cInput value={name} error={errors.name} onChange={handleName} /\u003e\u003c/Field\u003e"
         }
       ],
       "antipatterns": [
@@ -3296,7 +3304,7 @@
       "examples": [
         {
           "label": "Jméno osoby",
-          "code": "<FieldGrid cols={12}><Field label=\"Titul před\" span={2}>…</Field><Field label=\"Jméno\" span={4}>…</Field></FieldGrid>"
+          "code": "\u003cFieldGrid cols={12}\u003e\u003cField label=\"Titul před\" span={2}\u003e…\u003c/Field\u003e\u003cField label=\"Jméno\" span={4}\u003e…\u003c/Field\u003e\u003c/FieldGrid\u003e"
         }
       ],
       "antipatterns": [
@@ -3338,17 +3346,16 @@
         },
         {
           "name": "submitLabel",
-          "type": "string",
-          "default": "Uložit"
+          "type": "string"
         },
         {
           "name": "closeLabel",
-          "type": "string",
-          "default": "Zavřít"
+          "type": "string"
         },
         {
           "name": "busy",
-          "type": "boolean"
+          "type": "boolean",
+          "default": "false"
         },
         {
           "name": "children",
@@ -3366,6 +3373,7 @@
             "md",
             "lg"
           ],
+          "default": "sm",
           "required": true
         },
         {
@@ -3424,8 +3432,7 @@
         },
         {
           "name": "cancelLabel",
-          "type": "string",
-          "default": "Zrušit"
+          "type": "string"
         },
         {
           "name": "saveAndActionLabel",
@@ -3450,19 +3457,19 @@
       "examples": [
         {
           "label": "Detail prostoru jen pro čtení",
-          "code": "<RecordDialog open={open} onOpenChange={setOpen} title={workspace.name} readOnly tabs={[{ value: \"members\", label: \"Členové\", content: <MembersGrid /> }]} />"
+          "code": "\u003cRecordDialog open={open} onOpenChange={setOpen} title={workspace.name} readOnly tabs={[{ value: \"members\", label: \"Členové\", content: \u003cMembersGrid /\u003e }]} /\u003e"
         },
         {
           "label": "Stav a deaktivace",
-          "code": "<RecordDialog status={{ active }} dirty={dirty} lifecycleAction={{ label: active ? \"Deaktivovat\" : \"Aktivovat\", confirm: { title: \"Deaktivovat partnera?\" }, onClick: ({ saveFirst }) => toggle(saveFirst) }} …/>"
+          "code": "\u003cRecordDialog status={{ active }} dirty={dirty} lifecycleAction={{ label: active ? \"Deaktivovat\" : \"Aktivovat\", confirm: { title: \"Deaktivovat partnera?\" }, onClick: ({ saveFirst }) =\u003e toggle(saveFirst) }} …/\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<RecordDialog {...props} fieldErrors={fieldErrors}>{fields}</RecordDialog>"
+          "code": "\u003cRecordDialog {...props} fieldErrors={fieldErrors}\u003e{fields}\u003c/RecordDialog\u003e"
         },
         {
           "label": "Číselník s ochranou změn, chybou a Odstranit (2.111.0)",
-          "code": "<RecordDialog open={open} onOpenChange={setOpen} title=\"Kniha FP\" size=\"md\" dirty={dirty} busy={saving} error={saveError} onSubmit={save} deleteAction={{ onClick: remove, confirm: { title: \"Odstranit knihu FP?\" } }}>\n  <FieldGrid cols={12}>…</FieldGrid>\n</RecordDialog>"
+          "code": "\u003cRecordDialog open={open} onOpenChange={setOpen} title=\"Kniha FP\" size=\"md\" dirty={dirty} busy={saving} error={saveError} onSubmit={save} deleteAction={{ onClick: remove, confirm: { title: \"Odstranit knihu FP?\" } }}\u003e\n  \u003cFieldGrid cols={12}\u003e…\u003c/FieldGrid\u003e\n\u003c/RecordDialog\u003e"
         }
       ],
       "antipatterns": [
@@ -3591,7 +3598,7 @@
       "examples": [
         {
           "label": "Horní lišta",
-          "code": "<ThemeToggleButton onThemeChange={saveTheme} />"
+          "code": "\u003cThemeToggleButton onThemeChange={saveTheme} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3645,7 +3652,7 @@
       "examples": [
         {
           "label": "Tři nepřečtená oznámení",
-          "code": "<NotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} />"
+          "code": "\u003cNotificationBell items={items} unreadCount={3} onItemClick={openNotification} onMarkAllRead={markAllRead} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3687,7 +3694,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<ThemeSetting />"
+          "code": "\u003cThemeSetting /\u003e"
         }
       ],
       "antipatterns": [
@@ -3782,7 +3789,7 @@
       "examples": [
         {
           "label": "Řízené otevření",
-          "code": "<ContextPill label=\"Firma\" value=\"Slivka s.r.o.\" open={open} onOpenChange={setOpen}>…</ContextPill>"
+          "code": "\u003cContextPill label=\"Firma\" value=\"Slivka s.r.o.\" open={open} onOpenChange={setOpen}\u003e…\u003c/ContextPill\u003e"
         }
       ],
       "antipatterns": [
@@ -3856,11 +3863,11 @@
       "examples": [
         {
           "label": "Řízený výběr firmy",
-          "code": "<CompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} />"
+          "code": "\u003cCompanySwitcher items={companies} value={companyId} onChange={setCompanyId} open={open} onOpenChange={setOpen} /\u003e"
         },
         {
           "label": "Akce pro správce",
-          "code": "<CompanySwitcher items={firmy} value={id} onChange={setId} actions={[{ id: \"manage\", label: \"Spravovat firmy…\", onSelect: openManage }]} />"
+          "code": "\u003cCompanySwitcher items={firmy} value={id} onChange={setId} actions={[{ id: \"manage\", label: \"Spravovat firmy…\", onSelect: openManage }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -3944,7 +3951,7 @@
       "examples": [
         {
           "label": "Řízený výběr období",
-          "code": "<PeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} />"
+          "code": "\u003cPeriodSwitcher periods={periods} value={periodId} onChange={setPeriodId} open={open} onOpenChange={setOpen} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4015,7 +4022,7 @@
       "examples": [
         {
           "label": "S akcí pracovních prostorů",
-          "code": "<UserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} workspaceAction={{ label: \"Spravovat pracovní prostory\", icon: Settings, onSelect: openWorkspaceSettings }} />"
+          "code": "\u003cUserMenu name=\"Petr Slivka\" email=\"petr@slivka.cz\" workspaces={workspaces} workspaceAction={{ label: \"Spravovat pracovní prostory\", icon: Settings, onSelect: openWorkspaceSettings }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4047,7 +4054,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<SearchButton onClick={() => setOpen(true)} />"
+          "code": "\u003cSearchButton onClick={() =\u003e setOpen(true)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4093,7 +4100,7 @@
       "examples": [
         {
           "label": "Běžné použití",
-          "code": "<PageHeader />"
+          "code": "\u003cPageHeader /\u003e"
         }
       ],
       "antipatterns": [
@@ -4152,7 +4159,7 @@
       "examples": [
         {
           "label": "Sekce formuláře",
-          "code": "<SectionHeading level={2}>Platební údaje</SectionHeading>"
+          "code": "\u003cSectionHeading level={2}\u003ePlatební údaje\u003c/SectionHeading\u003e"
         }
       ],
       "antipatterns": [
@@ -4211,7 +4218,7 @@
       "examples": [
         {
           "label": "Sekce",
-          "code": "<SettingsSection title=\"Firma\">{switches}</SettingsSection>"
+          "code": "\u003cSettingsSection title=\"Firma\"\u003e{switches}\u003c/SettingsSection\u003e"
         }
       ],
       "antipatterns": [
@@ -4305,15 +4312,15 @@
       "examples": [
         {
           "label": "Karta majetku",
-          "code": "<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} notices={<NoticeBar tone=\"info\">Informace</NoticeBar>} />"
+          "code": "\u003cRecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} notices={\u003cNoticeBar tone=\"info\"\u003eInformace\u003c/NoticeBar\u003e} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<RecordActionBar {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />"
+          "code": "\u003cRecordActionBar {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} /\u003e"
         },
         {
           "label": "Uložení změn",
-          "code": "<RecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} />"
+          "code": "\u003cRecordActionBar saveAction={{ onSave, dirty }} primaryAction={{ label: \"Zařadit\", onClick: classify }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4363,7 +4370,7 @@
       "examples": [
         {
           "label": "Nastavení prostoru",
-          "code": "<StandaloneShell brand={<Logo />} title=\"Nastavení prostoru\" userMenu={<UserMenu … />} onClose={close} sidebar={<><ContextSwitcher … /><StandaloneNav groups={groups} /></>}>{page}</StandaloneShell>"
+          "code": "\u003cStandaloneShell brand={\u003cLogo /\u003e} title=\"Nastavení prostoru\" userMenu={\u003cUserMenu … /\u003e} onClose={close} sidebar={\u003c\u003e\u003cContextSwitcher … /\u003e\u003cStandaloneNav groups={groups} /\u003e\u003c/\u003e}\u003e{page}\u003c/StandaloneShell\u003e"
         }
       ],
       "antipatterns": [
@@ -4404,7 +4411,7 @@
       "examples": [
         {
           "label": "Stránky prostoru",
-          "code": "<StandaloneNav groups={[{ id: \"ws\", label: \"\", section: \"Prostor\", items: [{ to: \"/ws/udaje\", label: \"Údaje prostoru\" }] }]} />"
+          "code": "\u003cStandaloneNav groups={[{ id: \"ws\", label: \"\", section: \"Prostor\", items: [{ to: \"/ws/udaje\", label: \"Údaje prostoru\" }] }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4476,14 +4483,14 @@
         {
           "name": "className",
           "type": "string",
-          "default": "flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [&_svg]:size-4"
+          "default": "flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [\u0026_svg]:size-4"
         }
       ],
       "usage": "Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, název, popis a popover s hledáním od prahu, tečkou aktuálního a akcemi. Esc zavře jen popover.",
       "examples": [
         {
           "label": "Přepínač prostoru",
-          "code": "<ContextSwitcher label=\"Slivka Group\" description=\"3 firmy\" items={spaces} value={id} onValueChange={setId} actions={[{ id: \"new\", label: \"Nový prostor…\", icon: Plus, onSelect: create }]} />"
+          "code": "\u003cContextSwitcher label=\"Slivka Group\" description=\"3 firmy\" items={spaces} value={id} onValueChange={setId} actions={[{ id: \"new\", label: \"Nový prostor…\", icon: Plus, onSelect: create }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4606,7 +4613,7 @@
       "examples": [
         {
           "label": "Panely se záložkami",
-          "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
+          "code": "\u003cPaneTabsProvider state={state} onChange={setState}\u003e\n  \u003cPaneLayout renderTab={(tab) =\u003e \u003cPage route={tab.route} /\u003e} getTabIcon={(tab) =\u003e ICONS[tab.icon]} /\u003e\n\u003c/PaneTabsProvider\u003e"
         }
       ],
       "antipatterns": [
@@ -4678,15 +4685,14 @@
         },
         {
           "name": "restoreFocusTo",
-          "type": "HTMLElement | null",
-          "description": "Prvek, na který se po zavření vrátí fokus; bez propu výchozí chování."
+          "type": "any"
         }
       ],
       "usage": "Potvrzení odchodu pojmenované výsledkem; fokus Zpět, zahodit outline-destructive.",
       "examples": [
         {
           "label": "2.92.0",
-          "code": "<UnsavedChangesDialog {...props} action=\"close\" />"
+          "code": "\u003cUnsavedChangesDialog {...props} action=\"close\" /\u003e"
         }
       ]
     },
@@ -4733,7 +4739,7 @@
       "examples": [
         {
           "label": "Připnuté stránky",
-          "code": "<PinnedBar items={items} onOpen={(id, options) => openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} />"
+          "code": "\u003cPinnedBar items={items} onOpen={(id, options) =\u003e openPinned(id, options.newPane)} onUnpin={unpin} onReorder={setOrder} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4789,7 +4795,7 @@
       "examples": [
         {
           "label": "Vlastní panel",
-          "code": "<PaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} />"
+          "code": "\u003cPaneTabBar pane={pane} paneIndex={0} paneCount={1} api={tabs} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4823,11 +4829,11 @@
       "examples": [
         {
           "label": "Položka menu",
-          "code": "<PaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}>Účetní deník</PaneLink>"
+          "code": "\u003cPaneLink route=\"/denik\" options={{ title: 'Účetní deník', icon: 'journal' }}\u003eÚčetní deník\u003c/PaneLink\u003e"
         }
       ],
       "antipatterns": [
-        "Obyčejný <a> uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
+        "Obyčejný \u003ca\u003e uvnitř panelů – Cmd + klik otevře záložku prohlížeče."
       ]
     },
     {
@@ -4867,7 +4873,7 @@
       "examples": [
         {
           "label": "Obnovený koncept",
-          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? <DraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /> : null}\n{draft.conflict ? <DraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /> : null}"
+          "code": "const [form, setForm, draft] = useTabDraft(tabId, base, 'form', { recordVersion: row.updated_at });\n{draft.restored ? \u003cDraftRestoredBanner savedAt={draft.restored.savedAt} onDiscard={draft.discard} /\u003e : null}\n{draft.conflict ? \u003cDraftRestoredBanner variant=\"conflict\" savedAt={draft.conflict.savedAt} onShowDraft={draft.applyConflict} onDiscard={draft.discard} /\u003e : null}"
         }
       ],
       "antipatterns": [
@@ -4938,7 +4944,7 @@
       "examples": [
         {
           "label": "Vedle hledání v menu",
-          "code": "<AppShell navSearchMenu={<LayoutMenu trigger=\"icon\" items={layouts} onSave={({ name, snapshot }) => save(name, snapshot)} onApply={apply} onUpdate={update} onDelete={remove} />} />"
+          "code": "\u003cAppShell navSearchMenu={\u003cLayoutMenu trigger=\"icon\" items={layouts} onSave={({ name, snapshot }) =\u003e save(name, snapshot)} onApply={apply} onUpdate={update} onDelete={remove} /\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -4955,11 +4961,11 @@
       "examples": [
         {
           "label": "Akce řádků s vysvětlením zákazu",
-          "code": "<DataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} />"
+          "code": "\u003cDataGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row =\u003e row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} /\u003e"
         },
         {
           "label": "Párování s editovatelnou částkou",
-          "code": "<DataGrid storageKey=\"matching\" rows={items} rowKey={(r) => r.id} selectMode\n  selectedKeys={keys} onSelectedKeysChange={setKeys}\n  selectionSummary={(rows) => <span>Vybráno {rows.length}</span>}\n  columns={[{ id: \"amount\", label: \"Párovat částkou\", numeric: true, total: \"sumSelected\",\n    value: (r) => amounts[r.id], editor: (r) => <GridAmountEditor ariaLabel=\"Párovat částkou\" value={amounts[r.id]} max={r.remaining} currencySymbol={r.currencySymbol} invalid={exceedsMax(amounts[r.id], r.remaining)} invalidMessage=\"Převyšuje zbývající částku\" onChange={(v) => setAmount(r.id, v)} /> }]} />"
+          "code": "\u003cDataGrid storageKey=\"matching\" rows={items} rowKey={(r) =\u003e r.id} selectMode\n  selectedKeys={keys} onSelectedKeysChange={setKeys}\n  selectionSummary={(rows) =\u003e \u003cspan\u003eVybráno {rows.length}\u003c/span\u003e}\n  columns={[{ id: \"amount\", label: \"Párovat částkou\", numeric: true, total: \"sumSelected\",\n    value: (r) =\u003e amounts[r.id], editor: (r) =\u003e \u003cGridAmountEditor ariaLabel=\"Párovat částkou\" value={amounts[r.id]} max={r.remaining} currencySymbol={r.currencySymbol} invalid={exceedsMax(amounts[r.id], r.remaining)} invalidMessage=\"Převyšuje zbývající částku\" onChange={(v) =\u003e setAmount(r.id, v)} /\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5269,7 +5275,7 @@
       "examples": [
         {
           "label": "Dva směry pohybu",
-          "code": "<GridAddActions actions={[{ label: \"Nový příjem\", shortLabel: \"Příjem\", icon: ArrowDownLeft, onClick: () => createIncome() }, { label: \"Nový výdaj\", shortLabel: \"Výdaj\", icon: ArrowUpRight, onClick: () => createExpense(), disabled: true, disabledReason: \"Období je uzavřené\" }]} />"
+          "code": "\u003cGridAddActions actions={[{ label: \"Nový příjem\", shortLabel: \"Příjem\", icon: ArrowDownLeft, onClick: () =\u003e createIncome() }, { label: \"Nový výdaj\", shortLabel: \"Výdaj\", icon: ArrowUpRight, onClick: () =\u003e createExpense(), disabled: true, disabledReason: \"Období je uzavřené\" }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5305,7 +5311,7 @@
       "examples": [
         {
           "label": "Vlastní obsah",
-          "code": "<GridToolbar left={parameters} right={actions} />"
+          "code": "\u003cGridToolbar left={parameters} right={actions} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5458,7 +5464,7 @@
       "examples": [
         {
           "label": "Asynchronní obnovení",
-          "code": "<GridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} />"
+          "code": "\u003cGridRefreshButton onRefresh={reload} refreshing={isRefreshing} zoom={zoom} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5525,7 +5531,7 @@
       "examples": [
         {
           "label": "Filtr hodnot",
-          "code": "<ColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" />"
+          "code": "\u003cColumnFilter options={options} selected={selected} onChange={setSelected} label=\"Datum\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -5540,7 +5546,7 @@
       "examples": [
         {
           "label": "Akce řádků s vysvětlením zákazu",
-          "code": "<TreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row => row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} />"
+          "code": "\u003cTreeGrid rows={rows} columns={columns} onEditRow={editRow} onDeleteRow={deleteRow} deleteDisabledReason={row =\u003e row.posted ? \"Zaúčtovaný doklad nelze odstranit.\" : undefined} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5580,7 +5586,7 @@
       "examples": [
         {
           "label": "Filtry",
-          "code": "<FilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () => setGroup(null) }]} onClearAll={clear} />"
+          "code": "\u003cFilterChips chips={[{ id: \"g\", label: \"Skupina\", value: \"51 – Služby\", onRemove: () =\u003e setGroup(null) }]} onClearAll={clear} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5601,7 +5607,7 @@
       "examples": [
         {
           "label": "Kniha jen pro čtení",
-          "code": "<GridBookSelect books={books} value={bookId} readOnly />"
+          "code": "\u003cGridBookSelect books={books} value={bookId} readOnly /\u003e"
         }
       ],
       "antipatterns": [
@@ -5642,7 +5648,7 @@
       "examples": [
         {
           "label": "Kniha, období a směr",
-          "code": "<GridContextBar book={bookConfig} period={periodConfig} contextRight={<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr dokladu\" />} />"
+          "code": "\u003cGridContextBar book={bookConfig} period={periodConfig} contextRight={\u003cGridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr dokladu\" /\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5702,7 +5708,7 @@
       "examples": [
         {
           "label": "Směr pokladního dokladu",
-          "code": "<GridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr pokladního dokladu\" />"
+          "code": "\u003cGridSegmentedToggle options={GRID_DIRECTION_OPTIONS} value={direction} onChange={setDirection} defaultValue=\"all\" ariaLabel=\"Směr pokladního dokladu\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -5756,7 +5762,7 @@
       "examples": [
         {
           "label": "Částka k párování s maximem",
-          "code": "<GridAmountEditor ariaLabel=\"Párovat částkou\" value={amount} max={remaining} currencySymbol={row.currencySymbol} invalid={exceedsMax(amount, remaining)} invalidMessage=\"Převyšuje zbývající částku\" onChange={setAmount} />"
+          "code": "\u003cGridAmountEditor ariaLabel=\"Párovat částkou\" value={amount} max={remaining} currencySymbol={row.currencySymbol} invalid={exceedsMax(amount, remaining)} invalidMessage=\"Převyšuje zbývající částku\" onChange={setAmount} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5778,7 +5784,7 @@
       "examples": [
         {
           "label": "Grid",
-          "code": "<DataGrid filters={<ShowInactiveToggle pressed={show} onPressedChange={setShow} />} rows={filterInactiveRows(rows, show, (r) => r.active)} … />"
+          "code": "\u003cDataGrid filters={\u003cShowInactiveToggle pressed={show} onPressedChange={setShow} /\u003e} rows={filterInactiveRows(rows, show, (r) =\u003e r.active)} … /\u003e"
         }
       ],
       "antipatterns": [
@@ -5793,7 +5799,7 @@
       "examples": [
         {
           "label": "Řádek",
-          "code": "rowActions={(r) => <GridRowMenu items={[activeToggleMenuItem(r.active, (next) => setActive(r.id, next))]} />}"
+          "code": "rowActions={(r) =\u003e \u003cGridRowMenu items={[activeToggleMenuItem(r.active, (next) =\u003e setActive(r.id, next))]} /\u003e}"
         }
       ],
       "antipatterns": [
@@ -5808,7 +5814,7 @@
       "examples": [
         {
           "label": "Zakázané pole",
-          "code": "<DecimalInput disabled value={total} onChange={setTotal} />"
+          "code": "\u003cDecimalInput disabled value={total} onChange={setTotal} /\u003e"
         }
       ],
       "antipatterns": [
@@ -5944,15 +5950,15 @@
       "examples": [
         {
           "label": "Kurz EUR",
-          "code": "<RateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} />"
+          "code": "\u003cRateField value={rate} onChange={setRate} currency=\"EUR\" homeCurrency=\"CZK\" rateAmount={1} suggestedRate={24.38} suggestedInfo=\"ČNB 25. 9. 2026\" manual={manual} /\u003e"
         },
         {
           "label": "2.92.0",
-          "code": "<RateField {...rateProps} inputClassName=\"h-11\" />"
+          "code": "\u003cRateField {...rateProps} inputClassName=\"h-11\" /\u003e"
         },
         {
           "label": "Upozorněný zdroj",
-          "code": "<RateField {...rateProps} sourceAttention sourceLabel={sourceDescription} />"
+          "code": "\u003cRateField {...rateProps} sourceAttention sourceLabel={sourceDescription} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6050,11 +6056,11 @@
       "examples": [
         {
           "label": "Datum s varováním v indikátoru",
-          "code": "<DateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" />"
+          "code": "\u003cDateField value={date} onChange={setDate} warning=\"Datum je mimo období\" warningDisplay=\"indicator\" /\u003e"
         },
         {
           "label": "Editace dokladu",
-          "code": "<DateField value={dueDate} onChange={setDueDate} baseDate={issueDate} quickOptions={options} />"
+          "code": "\u003cDateField value={dueDate} onChange={setDueDate} baseDate={issueDate} quickOptions={options} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6087,7 +6093,7 @@
       "examples": [
         {
           "label": "Pojmenovaný výběr",
-          "code": "<OptionSelect ariaLabel=\"Bankovní účet\" value={value} onChange={setValue} options={options} />"
+          "code": "\u003cOptionSelect ariaLabel=\"Bankovní účet\" value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6128,7 +6134,7 @@
       "examples": [
         {
           "label": "Stav DPH",
-          "code": "<Field label=\"Stav DPH\" hint=\"Ověřeno 26.09.2026\"><FieldValue><VatStatusBadge status=\"payer\" /></FieldValue></Field>"
+          "code": "\u003cField label=\"Stav DPH\" hint=\"Ověřeno 26.09.2026\"\u003e\u003cFieldValue\u003e\u003cVatStatusBadge status=\"payer\" /\u003e\u003c/FieldValue\u003e\u003c/Field\u003e"
         }
       ],
       "antipatterns": [
@@ -6175,7 +6181,7 @@
       "examples": [
         {
           "label": "Vymazání výběru",
-          "code": "<FieldInlineActions onClear={() => setValue(\"\")} clearLabel={texts.documentForm.clear} />"
+          "code": "\u003cFieldInlineActions onClear={() =\u003e setValue(\"\")} clearLabel={texts.documentForm.clear} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6292,11 +6298,11 @@
       "examples": [
         {
           "label": "Typ partnera",
-          "code": "<SegmentedField ariaLabel=\"Typ partnera\" options={[{ value: \"company\", label: \"Firma\" }, { value: \"person\", label: \"Osoba\" }]} value={kind} onChange={setKind} />"
+          "code": "\u003cSegmentedField ariaLabel=\"Typ partnera\" options={[{ value: \"company\", label: \"Firma\" }, { value: \"person\", label: \"Osoba\" }]} value={kind} onChange={setKind} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<SegmentedField label={texts.deduction} value={deduction} onChange={setDeduction} options={options} error={errors.deduction} />"
+          "code": "\u003cSegmentedField label={texts.deduction} value={deduction} onChange={setDeduction} options={options} error={errors.deduction} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6314,7 +6320,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<CategorySelect {...props} />"
+          "code": "\u003cCategorySelect {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6329,7 +6335,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<MultiSelect {...props} />"
+          "code": "\u003cMultiSelect {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6344,7 +6350,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<ChipMultiSelect {...props} />"
+          "code": "\u003cChipMultiSelect {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6364,7 +6370,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<ResizableCombobox {...props} />"
+          "code": "\u003cResizableCombobox {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6379,7 +6385,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<TagPicker {...props} />"
+          "code": "\u003cTagPicker {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6452,7 +6458,7 @@
       "examples": [
         {
           "label": "Název z registru",
-          "code": "<LookupField value={name} onChange={setName} onAction={lookupByName} busy={busy} searchLabel=\"Vyhledat podle názvu\" />"
+          "code": "\u003cLookupField value={name} onChange={setName} onAction={lookupByName} busy={busy} searchLabel=\"Vyhledat podle názvu\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -6490,7 +6496,7 @@
       "examples": [
         {
           "label": "IČO partnera",
-          "code": "<IcoField value={ico} onChange={setIco} onLookup={loadFromAres} busy={busy} />"
+          "code": "\u003cIcoField value={ico} onChange={setIco} onLookup={loadFromAres} busy={busy} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6544,19 +6550,19 @@
       "examples": [
         {
           "label": "Vedle polí",
-          "code": "<FieldGrid cols={4}>…<CheckboxField align=\"input\" label=\"Plátce DPH\" checked={v} onCheckedChange={setV} /></FieldGrid>"
+          "code": "\u003cFieldGrid cols={4}\u003e…\u003cCheckboxField align=\"input\" label=\"Plátce DPH\" checked={v} onCheckedChange={setV} /\u003e\u003c/FieldGrid\u003e"
         },
         {
           "label": "Dlouhý popisek s nápovědou",
-          "code": "<CheckboxField label={texts.privateAsset} hint={texts.assetRatioHint} checked={v} onCheckedChange={setV} />"
+          "code": "\u003cCheckboxField label={texts.privateAsset} hint={texts.assetRatioHint} checked={v} onCheckedChange={setV} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<CheckboxField label={texts.approved} checked={approved} onCheckedChange={setApproved} error={errors.approved} align=\"input\" />"
+          "code": "\u003cCheckboxField label={texts.approved} checked={approved} onCheckedChange={setApproved} error={errors.approved} align=\"input\" /\u003e"
         }
       ],
       "antipatterns": [
-        "Holý Checkbox s nativním <label>",
+        "Holý Checkbox s nativním \u003clabel\u003e",
         "CheckboxField pro Aktivní u číselníku",
         "Checkbox pro okamžitě ukládané nastavení – použijte SwitchField",
         "Nevykreslujte zprávu pod polem ani nepřepisujte jeho výšku."
@@ -6590,7 +6596,7 @@
       "examples": [
         {
           "label": "Role",
-          "code": "<CheckboxGroup direction=\"horizontal\" title=\"Role\"><CheckboxField … /></CheckboxGroup>"
+          "code": "\u003cCheckboxGroup direction=\"horizontal\" title=\"Role\"\u003e\u003cCheckboxField … /\u003e\u003c/CheckboxGroup\u003e"
         }
       ],
       "antipatterns": [
@@ -6640,11 +6646,11 @@
       "examples": [
         {
           "label": "Nastavení",
-          "code": "<SettingsSection title=\"Upozornění\"><SwitchField label=\"Připomínat splatnost\" checked={v} busy={saving} onCheckedChange={save} /></SettingsSection>"
+          "code": "\u003cSettingsSection title=\"Upozornění\"\u003e\u003cSwitchField label=\"Připomínat splatnost\" checked={v} busy={saving} onCheckedChange={save} /\u003e\u003c/SettingsSection\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<SwitchField label={texts.enabled} checked={enabled} onCheckedChange={setEnabled} warning={warnings.enabled} />"
+          "code": "\u003cSwitchField label={texts.enabled} checked={enabled} onCheckedChange={setEnabled} warning={warnings.enabled} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6699,7 +6705,7 @@
       "examples": [
         {
           "label": "Právnická osoba",
-          "code": "<IcoLink ico=\"27074358\" country=\"CZ\" kind=\"company\" target=\"auto\" />"
+          "code": "\u003cIcoLink ico=\"27074358\" country=\"CZ\" kind=\"company\" target=\"auto\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -6761,7 +6767,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<LegalFormField {...props} />"
+          "code": "\u003cLegalFormField {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6810,7 +6816,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<CountrySelect {...props} />"
+          "code": "\u003cCountrySelect {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6934,7 +6940,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<DateRangeField {...props} />"
+          "code": "\u003cDateRangeField {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -6989,7 +6995,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<CalendarPicker {...props} />"
+          "code": "\u003cCalendarPicker {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7053,7 +7059,7 @@
       "examples": [
         {
           "label": "Běžné použití",
-          "code": "<MonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} />"
+          "code": "\u003cMonthYearSelect value={month} onChange={setMonth} minYear={2020} maxYear={2030} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7068,7 +7074,7 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<ContactSelect {...props} />"
+          "code": "\u003cContactSelect {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7127,7 +7133,7 @@
       "examples": [
         {
           "label": "Historie popisů",
-          "code": "<SuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} />"
+          "code": "\u003cSuggestInput value={value} onChange={setValue} loadSuggestions={load} enabled={enabled} onEnabledChange={setEnabled} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7261,7 +7267,7 @@
       "examples": [
         {
           "label": "Serverová chyba DUZP",
-          "code": "<RecordActionBar issues={[{ fieldId: \"document-taxDate\", label: texts.taxDate, message: validationMessage, severity: \"error\", source: \"server\" }]} saveAction={{ onSave: save }} />"
+          "code": "\u003cRecordActionBar issues={[{ fieldId: \"document-taxDate\", label: texts.taxDate, message: validationMessage, severity: \"error\", source: \"server\" }]} saveAction={{ onSave: save }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7313,7 +7319,7 @@
       "examples": [
         {
           "label": "Přeplatek partnera",
-          "code": "<NoticeBar tone=\"info\" title=\"Otevřený přeplatek\" actions={<Button>Použít VS</Button>}>Partner má otevřený přeplatek.</NoticeBar>"
+          "code": "\u003cNoticeBar tone=\"info\" title=\"Otevřený přeplatek\" actions={\u003cButton\u003ePoužít VS\u003c/Button\u003e}\u003ePartner má otevřený přeplatek.\u003c/NoticeBar\u003e"
         }
       ],
       "antipatterns": [
@@ -7388,7 +7394,7 @@
       "examples": [
         {
           "label": "Odstranění prostoru",
-          "code": "<ConfirmByTypingDialog open={open} onOpenChange={setOpen} title=\"Odstranit prostor\" description=\"Akci nelze vrátit.\" confirmText=\"Test\" acknowledgement=\"Rozumím, že data budou smazána\" confirmLabel=\"Odstranit prostor\" onConfirm={remove} />"
+          "code": "\u003cConfirmByTypingDialog open={open} onOpenChange={setOpen} title=\"Odstranit prostor\" description=\"Akci nelze vrátit.\" confirmText=\"Test\" acknowledgement=\"Rozumím, že data budou smazána\" confirmLabel=\"Odstranit prostor\" onConfirm={remove} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7415,7 +7421,7 @@
       "examples": [
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<FieldErrorSummary errors={fieldErrors} onSelect={focusFieldErrorLink} />"
+          "code": "\u003cFieldErrorSummary errors={fieldErrors} onSelect={focusFieldErrorLink} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7441,7 +7447,7 @@
       "examples": [
         {
           "label": "Prostor",
-          "code": "<DangerZone items={[{ title: \"Odstranit prostor\", description: \"Smaže všechny firmy.\", action: <Button variant=\"destructive\" onClick={ask}>Odstranit</Button> }]} />"
+          "code": "\u003cDangerZone items={[{ title: \"Odstranit prostor\", description: \"Smaže všechny firmy.\", action: \u003cButton variant=\"destructive\" onClick={ask}\u003eOdstranit\u003c/Button\u003e }]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7490,7 +7496,7 @@
       "examples": [
         {
           "label": "Provozovatel",
-          "code": "<StatusBadge status=\"operator\" config={{ operator: { label: \"Provozovatel\", tone: \"accent\" } }} />"
+          "code": "\u003cStatusBadge status=\"operator\" config={{ operator: { label: \"Provozovatel\", tone: \"accent\" } }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7510,7 +7516,7 @@
       "examples": [
         {
           "label": "Výběr",
-          "code": "<InactiveTag />"
+          "code": "\u003cInactiveTag /\u003e"
         }
       ],
       "antipatterns": [
@@ -7556,7 +7562,7 @@
       "examples": [
         {
           "label": "Nespolehlivý plátce",
-          "code": "<VatStatusBadge status=\"payer\" unreliableSince=\"2026-03-01\" checkedAt=\"2026-09-26\" />"
+          "code": "\u003cVatStatusBadge status=\"payer\" unreliableSince=\"2026-03-01\" checkedAt=\"2026-09-26\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -7629,7 +7635,7 @@
       "examples": [
         {
           "label": "Rozbor nákladů",
-          "code": "<BarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) => setGroup(id)} />"
+          "code": "\u003cBarBreakdownChart items={groups} variant=\"cost\" selectedId={group} onSelect={(id) =\u003e setGroup(id)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7768,7 +7774,7 @@
       "examples": [
         {
           "label": "Třída nebo skupina",
-          "code": "<AccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} />"
+          "code": "\u003cAccountSelect accounts={accounts} catalog={classesAndGroups} allowLevels={[\"class\",\"group\"]} value={prefix} onChange={setPrefix} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7806,8 +7812,7 @@
         },
         {
           "name": "approvedLabel",
-          "type": "string",
-          "default": "Schválen"
+          "type": "string"
         },
         {
           "name": "size",
@@ -7828,7 +7833,7 @@
       "examples": [
         {
           "label": "Stav v pruhu akcí",
-          "code": "<DocumentStatusBadge status=\"filed\" approved size=\"md\" />"
+          "code": "\u003cDocumentStatusBadge status=\"filed\" approved size=\"md\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -7849,7 +7854,7 @@
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<PartnerSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cPartnerSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
@@ -7925,7 +7930,7 @@
       "examples": [
         {
           "label": "Výběr partnera",
-          "code": "<CounterpartyField value={value} onChange={setValue} partners={partners} favoriteIds={[\"p1\"]} />"
+          "code": "\u003cCounterpartyField value={value} onChange={setValue} partners={partners} favoriteIds={[\"p1\"]} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8024,7 +8029,7 @@
       "examples": [
         {
           "label": "Řízené použití",
-          "code": "<CounterpartyInputField {...props} />"
+          "code": "\u003cCounterpartyInputField {...props} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8097,7 +8102,7 @@
       "examples": [
         {
           "label": "Buňka Kód DPH v editoru řádků",
-          "code": "<VatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) => { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className=\"journal-cell-editor\" />"
+          "code": "\u003cVatCodeSelect defaultOpen codes={vatCodes} value={line.vatCodeId} initialSearch={editing?.seed} onKeyDown={selectKey} onChange={(id) =\u003e { changeVatCode(line, id); finish(); }} onOpenChange={closeSelect} className=\"journal-cell-editor\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -8113,7 +8118,7 @@
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<DimensionSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cDimensionSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8211,7 +8216,7 @@
       "examples": [
         {
           "label": "Výběr hodnoty",
-          "code": "<UnitSelect value={value} onChange={setValue} options={options} />"
+          "code": "\u003cUnitSelect value={value} onChange={setValue} options={options} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8275,7 +8280,7 @@
       "examples": [
         {
           "label": "Jediná dostupná kniha",
-          "code": "<BookSelect books={books} value={bookId} onChange={setBookId} />"
+          "code": "\u003cBookSelect books={books} value={bookId} onChange={setBookId} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8353,11 +8358,11 @@
       "examples": [
         {
           "label": "Použití společného stavu",
-          "code": "<VsField {...props} />"
+          "code": "\u003cVsField {...props} /\u003e"
         },
         {
           "label": "Zámek VS (2.108.0)",
-          "code": "<VsField value={vs} onChange={setVs} linked={linked} onLinkedChange={setLinked} derivedValue=\"20260456\" pendingText=\"přidělí se při zařazení\" />"
+          "code": "\u003cVsField value={vs} onChange={setVs} linked={linked} onLinkedChange={setLinked} derivedValue=\"20260456\" pendingText=\"přidělí se při zařazení\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -8447,19 +8452,19 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Sdílený účet. Přidání v řádku hledání předává dotaz, neplatný účet má výstrahu uvnitř pole a nikdy text pod polem. onAddAccount má tvar (searchText: string) => void; dosavadní bezparametrické callbacky zůstávají kompatibilní. Ruční vstup nahrazuje výběr ve stejném poli; aplikace řídí entryMode a onEntryModeChange, přepnutí nemaže hodnotu.",
+      "usage": "Výběr účtu nebo ruční zadání. disabledReason nahrazuje výzvu výběru uvnitř pole, nikdy se nevykresluje pod polem. BankAccountOption vyžaduje úplné number + bankCode nebo iban; tuzemská dvojice má přednost, jinak se zobrazí IBAN po čtyřech znacích. Hledání zahrnuje IBAN i při současném tuzemském čísle. Výběr je vždy hledatelný; data bez úplné tuzemské dvojice nebo IBAN se vyřadí za běhu. Hledání podporuje také IBAN s mezerami. BankAccountOptionBase má number a bankCode volitelné; bankAccountOptionValue poskytuje stabilní identitu. Filtr za běhu ověřuje řetězcový typ number, bankCode a iban. Hledání ignoruje mezery v IBAN na obou stranách dotazu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Sdílený účet. Přidání v řádku hledání předává dotaz, neplatný účet má výstrahu uvnitř pole a nikdy text pod polem. onAddAccount má tvar (searchText: string) =\u003e void; dosavadní bezparametrické callbacky zůstávají kompatibilní. Ruční vstup nahrazuje výběr ve stejném poli; aplikace řídí entryMode a onEntryModeChange, přepnutí nemaže hodnotu.",
       "examples": [
         {
           "label": "Účet dodavatele",
-          "code": "<BankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} />"
+          "code": "\u003cBankAccountField aria-label=\"Bankovní účet\" value={account} onChange={setAccount} options={accounts} bankCodes={bankCodes} /\u003e"
         },
         {
           "label": "Účet pouze s IBAN",
-          "code": "<BankAccountField value={accountId} onChange={setAccountId} selectionOnly options={[{ id: \"eur\", iban: \"CZ6508000000192000145399\" }]} />"
+          "code": "\u003cBankAccountField value={accountId} onChange={setAccountId} selectionOnly options={[{ id: \"eur\", iban: \"CZ6508000000192000145399\" }]} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<BankAccountField value={account} onChange={setAccount} options={accounts} entryMode={entryMode} onEntryModeChange={setEntryMode} manualFormatPattern={texts.accountFormat} />"
+          "code": "\u003cBankAccountField value={account} onChange={setAccount} options={accounts} entryMode={entryMode} onEntryModeChange={setEntryMode} manualFormatPattern={texts.accountFormat} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8553,7 +8558,7 @@
       "examples": [
         {
           "label": "Vypnutý příkaz",
-          "code": "<PaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}>{accountControl}</PaymentOrderAccountField>"
+          "code": "\u003cPaymentOrderAccountField enabled={false} enabledLabel={texts.payByOrder} disabledLabel={texts.excludeFromPaymentOrders} disabledReason={texts.paymentOrderDisabled}\u003e{accountControl}\u003c/PaymentOrderAccountField\u003e"
         }
       ],
       "antipatterns": [
@@ -8577,19 +8582,19 @@
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) => setError(errors[0]?.message)} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} onValidationChange={(count, errors) =\u003e setError(errors[0]?.message)} storageKey=\"invoice-lines\" /\u003e"
         },
         {
           "label": "Řádky bez DPH s přepisem daně dle dokladu",
-          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} />\n// uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides"
+          "code": "\u003cJournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency={documentCurrency} homeCurrency={homeCurrency} homeCurrencySymbol={homeCurrencySymbol} mode=\"mainAccount\" mainSide=\"D\" mainAccount=\"321001\" vat={{ enabled: vatEnabled, codes: vatCodes, pdpSubjects }} vatOverrides={vatOverrides} onVatOverridesChange={setVatOverrides} /\u003e\n// uložení: řádky bez DPH spolu s _vat_overrides: vatOverrides"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<JournalLinesEditor {...props} onCreateDimension={query => openDimension({ name: query })} onValidationChange={(count, errors) => setFieldErrors(errors)} />"
+          "code": "\u003cJournalLinesEditor {...props} onCreateDimension={query =\u003e openDimension({ name: query })} onValidationChange={(count, errors) =\u003e setFieldErrors(errors)} /\u003e"
         },
         {
           "label": "Skupiny DPH a patička (2.109.0)",
-          "code": "<JournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? \"error\" : \"warning\"} />\n// uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }"
+          "code": "\u003cJournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? \"error\" : \"warning\"} /\u003e\n// uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o =\u003e ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }"
         }
       ],
       "antipatterns": [
@@ -8686,11 +8691,11 @@
       "examples": [
         {
           "label": "Rekapitulace",
-          "code": "<JournalLinesRecap lines={lines} accounts={accounts} storageKey=\"invoice-lines\" />"
+          "code": "\u003cJournalLinesRecap lines={lines} accounts={accounts} storageKey=\"invoice-lines\" /\u003e"
         },
         {
           "label": "2.92.0",
-          "code": "<JournalLinesRecap {...props} headerTotal={<JournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} />} />"
+          "code": "\u003cJournalLinesRecap {...props} headerTotal={\u003cJournalRecapHomeTotal total={total} rate={rate} symbol={homeSymbol} /\u003e} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8705,23 +8710,23 @@
       "examples": [
         {
           "label": "Faktura s editovatelným účtem",
-          "code": "<DocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} />"
+          "code": "\u003cDocumentForm {...props} identity={{ variant: \"invoice\", book: \"FV - Vydané faktury\", period: \"2026\", account: { side: \"MD\", label: \"311.001 - Odběratelé\", editable: true }, number: \"FV2026000420\" }} mainAccountOptions={allowedAccounts} /\u003e"
         },
         {
           "label": "Platba přijatého dokladu bez účtu",
-          "code": "<DocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FP\" receivedAccountDisabledReason={paymentAccountReason} value={{ ...value, rateSourceAttention: true }} /\u003e"
         },
         {
           "label": "Nepoužitá bankovní platba",
-          "code": "<DocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} />"
+          "code": "\u003cDocumentForm {...props} documentType=\"FV\" companyBankAccountDisabledReason={paymentAccountReason} /\u003e"
         },
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<DocumentForm {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} />"
+          "code": "\u003cDocumentForm {...props} error={{ message: texts.invalid, fieldErrors, onFieldErrorSelect: focusFieldErrorLink }} /\u003e"
         },
         {
           "label": "Živý pruh (2.108.0)",
-          "code": "<DocumentForm {...props} issues={serverIssues} validationActive={triedSave} saveFailed={failed} onFieldChange={(id) => dropServerIssue(id)} />"
+          "code": "\u003cDocumentForm {...props} issues={serverIssues} validationActive={triedSave} saveFailed={failed} onFieldChange={(id) =\u003e dropServerIssue(id)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -8749,7 +8754,7 @@
       "examples": [
         {
           "label": "Příjem",
-          "code": "<DocumentDirectionBadge direction=\"in\" />"
+          "code": "\u003cDocumentDirectionBadge direction=\"in\" /\u003e"
         }
       ],
       "antipatterns": [
@@ -8895,7 +8900,7 @@
       "examples": [
         {
           "label": "Základní použití",
-          "code": "<DocumentSettingsDialog />"
+          "code": "\u003cDocumentSettingsDialog /\u003e"
         }
       ]
     },
@@ -8976,7 +8981,7 @@
       "examples": [
         {
           "label": "Kalendář faktury",
-          "code": "<PaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) => release(id, date)} />"
+          "code": "\u003cPaymentScheduleEditor items={items} onChange={setItems} totalToPay={12100} paid={3630} remaining={8470} users={users} canRelease onRelease={(id, date) =\u003e release(id, date)} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9034,7 +9039,7 @@
       "examples": [
         {
           "label": "Pokladní doklad se značkami měn",
-          "code": "<CashReceiptPrintDialog {...props} value={{ ...receipt, currency: 'EUR', currencySymbol: '€', homeCurrency: 'CZK', homeCurrencySymbol: 'Kč' }} />"
+          "code": "\u003cCashReceiptPrintDialog {...props} value={{ ...receipt, currency: 'EUR', currencySymbol: '€', homeCurrency: 'CZK', homeCurrencySymbol: 'Kč' }} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9049,7 +9054,7 @@
       "examples": [
         {
           "label": "Předání stavu složenému poli",
-          "code": "<FieldFeedbackContext.Provider value={{ error, warning }}><CustomControl /></FieldFeedbackContext.Provider>"
+          "code": "\u003cFieldFeedbackContext.Provider value={{ error, warning }}\u003e\u003cCustomControl /\u003e\u003c/FieldFeedbackContext.Provider\u003e"
         }
       ],
       "antipatterns": [
@@ -9097,7 +9102,7 @@
       "examples": [
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<FieldStatusIndicator error={errors.amount} side=\"start\" id={status.describedById} />"
+          "code": "\u003cFieldStatusIndicator error={errors.amount} side=\"start\" id={status.describedById} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9112,7 +9117,7 @@
       "examples": [
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<FieldStatusIndicator error={errors.amount} side=\"start\" id={status.describedById} />"
+          "code": "\u003cFieldStatusIndicator error={errors.amount} side=\"start\" id={status.describedById} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9143,7 +9148,7 @@
       "examples": [
         {
           "label": "Stav pole a jednotná výška (2.107.0)",
-          "code": "<FieldHintIcon hint={texts.accountHint} />"
+          "code": "\u003cFieldHintIcon hint={texts.accountHint} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9197,7 +9202,7 @@
       "examples": [
         {
           "label": "Platit příkazem",
-          "code": "<FieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} />"
+          "code": "\u003cFieldToggleButton icon={Landmark} pressed={payByOrder} onPressedChange={setPayByOrder} label={texts.payByOrder} pressedTooltip={texts.enabled} unpressedTooltip={texts.disabled} lockedReason={reason} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9329,7 +9334,7 @@
       "examples": [
         {
           "label": "Řízený výpis",
-          "code": "<BankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} />"
+          "code": "\u003cBankStatementForm value={statement} onChange={setStatement} status=\"open\" book={bookName} currency={currency.code} currencySymbol={currency.symbol} period={periodLabel} bankAccount={accountLabel} balances={totals} dirty={dirty} onSave={save} onCheckedChange={check} items={itemsGrid} /\u003e"
         }
       ],
       "antipatterns": [
@@ -9337,6 +9342,49 @@
         "Neukládejte data uvnitř knihovny ani neschovávejte důvod zakázaného odstranění.",
         "Nepředávejte value.note; výpis poznámku nemá.",
         "Nevykreslujte nulový rozdíl ani další pole čísla v základní sekci."
+      ]
+    },
+    {
+      "name": "RecordReadOnlyProvider",
+      "file": "src/components/ds/form/record-read-only.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "children",
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "name": "ReadOnlyControlValue",
+      "file": "src/components/ds/form/record-read-only.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "children",
+          "type": "any"
+        },
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "numeric",
+          "type": "boolean"
+        },
+        {
+          "name": "multiline",
+          "type": "boolean"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string"
+        }
       ]
     }
   ],
