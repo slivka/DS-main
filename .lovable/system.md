@@ -16,7 +16,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Prázdný vstup je prázdný. Placeholder patří pouze hledání a výzvě výběru; výzva je tlumená, vybraná hodnota běžnou barvou textu. Jediná výjimka pro vstup: krátký vzor zápisu hodnoty (např. „předčíslí-číslo“) přes `Input.formatPattern`, tlumeně `placeholder:text-muted-foreground`; nikdy popisná nápověda, příklad hodnoty ani opakování popisku. Holý `placeholder` pro tento účel nepoužívej.
 - Ovládací prvky, segmenty, štítky a ikonová tlačítka používají poloměr `0.25rem`; dialogy, karty, panely a nabídky `0.375rem`.
 - Pruh akcí řadí hlavní krok `outline`, Uložit bez změn zakázané `outline` (se změnami primární s tečkou) a orámovanou nabídku dalších akcí. Všechny akce mají výšku `--control-h`.
-- Tlačítko nikdy nemění tvar podle stavu; zakázané = tlumený text a slabší rámeček, bez výplně. Šedá výplň jen u zakázaných polí.
+- Tlačítko nikdy nemění tvar podle stavu. Zakázané tlačítko samostatně (lišta, patička) = bez výplně, slabší rámeček. Ovládací prvek uvnitř pole (přepínač, tužka, zámek, ikona v poli) = vzhled zakázaného pole (šedá výplň), i když je to `Button`. V liště gridu má zakázané tlačítko stejný rámeček jako ostatní ovládací prvky.
 - Přepnutí prvku do úprav (tužka, odemčení zámku, rozbalení) nesmí změnit výšku řádku ani posunout okolní obsah.
 - Záložky formuláře používají `text-sm`, aktivní položka je tučná bez změny šířky.
 - Rekapitulace pod řádky nemá lištu nástrojů a účty vždy zobrazuje rozšířeně jako „321.100 – Závazky“; uživatel tuto formu nepřepíná.
@@ -478,7 +478,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
 - Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zaúčtovaný výpis je jen ke čtení; kontrola výpisu je zrušena, `checked` je deprecated. Položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
 
-- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Akce jsou standardně jen textové bez ikon. RecordActionBar měří dostupnou šířku: nejprve vedlejší akce na ikony, nakonec Uložit na ikonu. Uložit zůstává primární, bez změn zašedlé; vždy přístupný název a tooltip, při busy spinner.
+- Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Akce jsou standardně jen textové bez ikon. RecordActionBar měří dostupnou šířku: nejprve vedlejší akce na ikony, nakonec Uložit na ikonu. Uložit bez neuložené změny je zakázané orámované (outline), s neuloženou změnou primární s tečkou; vždy přístupný název a tooltip, při busy spinner.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
 - bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu se nevykresluje.
 

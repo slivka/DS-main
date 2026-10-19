@@ -4,10 +4,54 @@ import { Calendar } from "../../src/components/ui/calendar";
 import { DocumentStatusBadge } from "../../src/components/ds/accounting/document-status-badge";
 import { MonthYearSelect } from "../../src/components/ds/form/month-year-select";
 import { calendarMonthNames } from "../../src/components/ui/calendar-views";
+import { handleCalendarEscape } from "../../src/components/ui/calendar-escape";
 
 afterEach(cleanup);
 const date = new Date(2026, 9, 19);
 describe("Calendar navigation", () => {
+  test("Escape portálu vrátí roky a měsíce bez předčasného zavření", () => {
+    const close = mock();
+    render(<Calendar mode="single" selected={date} initialFocus onClose={close} />);
+    fireEvent.click(screen.getByRole("button", { name: /říjen 2026/i }));
+    fireEvent.click(screen.getByRole("button", { name: "2026" }));
+    const escape = () => {
+      const focused = document.activeElement;
+      if (!focused) throw new Error("Chybí fokus kalendáře");
+      const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
+      focused.dispatchEvent(event);
+      act(() => handleCalendarEscape(event));
+      return event.defaultPrevented;
+    };
+    expect(escape()).toBe(true);
+    expect(screen.getByRole("button", { name: "leden" })).toBeDefined();
+    expect(close).not.toHaveBeenCalled();
+    expect(escape()).toBe(true);
+    expect(screen.getByRole("button", { name: /říjen 2026/i })).toBeDefined();
+    expect(close).not.toHaveBeenCalled();
+    expect(escape()).toBe(false);
+  });
+  test("Escape portálu při výběru měsíce zavře bez změny hodnoty", () => {
+    const close = mock();
+    const change = mock();
+    render(
+      <Calendar
+        mode="single"
+        selected={date}
+        initialView="months"
+        initialFocus
+        onMonthSelect={change}
+        onClose={close}
+      />,
+    );
+    const month = screen.getByRole("button", { name: "říjen", exact: true });
+    const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
+    month.dispatchEvent(event);
+    act(() => handleCalendarEscape(event));
+    expect(event.defaultPrevented).toBe(true);
+    expect(close).toHaveBeenCalledTimes(1);
+    expect(change).not.toHaveBeenCalled();
+    expect(screen.queryByRole("grid")).toBeNull();
+  });
   test("nadpis používá samostatné jméno měsíce a rok", () => {
     render(<Calendar mode="single" selected={date} defaultMonth={date} />);
     expect(screen.getByRole("button", { name: /říjen 2026/i })).toBeDefined();

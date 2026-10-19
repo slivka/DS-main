@@ -1,4 +1,5 @@
 ## DS 2.110.0 – Design 3 (nevydáno)
+- [x] Druhé opravné kolo po GitHub run 39296790881: body 1–8; pět cílených Chromium speců 29/29 (5,8 min), unit 854/854, lint 0 chyb / 322 varování, full --harness 60,0 s; katalog 470/922 bez ztrát. Verze 2.109.0, bez vydání.
 - [x] Opravné kolo po 831f9342: body 1–12; Chromium 13/13 (54,0 s), unit 852/852, lint 0 chyb / 322 varování; full --harness 49,5 s; katalog 470/922 bez ztrát. Hledání překlepu mimo CHANGELOG: 0 výsledků.
 - [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
 - [x] D1 záložky panelu, D2 tlačítka, D3 kalendář.

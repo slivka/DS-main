@@ -2431,14 +2431,36 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 
 /* Design 3: stav tlačítka nemění jeho geometrii; pole mají vlastní šedou plochu. */
+.ds-button.ds-disabled-control:is(:disabled, [aria-disabled="true"]):not([role="radio"]) {
+  background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
+  border-color: var(--input);
+  color: var(--muted-foreground) !important;
+  box-shadow: none;
+  opacity: 1;
+}
+/* Kopírovatelná zamčená částka zachová výstražný rámeček vlastního pole. */
+input.ds-disabled-control[readonly].bg-muted\/40,
+[aria-disabled="true"] input.ds-disabled-control[readonly] {
+  background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
+  color: var(--muted-foreground) !important;
+  opacity: 1;
+}
 [data-slot="button"].ds-button:is(:disabled, [aria-disabled="true"]):not([role="combobox"]):not(
     .ds-disabled-control
-  ) {
+  ):not(.grid-toolbar-control) {
   background: transparent !important;
   border-color: var(--border) !important;
   color: var(--muted-foreground) !important;
   box-shadow: none;
   opacity: 1;
+}
+/* Zakázání nesmí zeslabit vlastní rámeček ovládání lišty gridu. */
+.ds-button.grid-toolbar-control:is(:disabled, [aria-disabled="true"]) {
+  border-color: var(--input) !important;
+}
+/* Primární akce zamčené řádkové tabulky přebírá povrch okolních polí. */
+.ds-button.grid-toolbar-primary:is(:disabled, [aria-disabled="true"]) {
+  background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
 }
 .pane-tab-active {
   border-color: var(--border-strong);
