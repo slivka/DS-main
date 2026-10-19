@@ -8,6 +8,7 @@ import { variableSymbolLinkState } from "../../src/components/ds/accounting/docu
 import { BankStatementForm } from "../../src/components/ds/accounting/bank-statement-form";
 import { FormIssuesBar } from "../../src/components/ds/feedback/form-issues-bar";
 import { DS_TEXTS_CS } from "../../src/ds-texts";
+import { DEFAULT_DOCUMENT_FORM_TEXTS } from "../../src/components/ds/accounting/document-form";
 import type { FormIssue } from "../../src/lib/form-issues";
 
 afterEach(cleanup);
@@ -121,7 +122,7 @@ describe("DocumentForm – opravy pruhu", () => {
     const issues = documentClientIssues({
       value: header as never,
       foreign: false,
-      t: { ...DS_TEXTS_CS.documentForm } as never,
+      t: { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...DS_TEXTS_CS.documentForm } as never,
       fieldErrors: { partnerId: "Povinný údaj", externalNumber: "Povinný údaj" },
       fieldWarnings: { counterpartyIco: "Podezřelé IČO" },
     });
@@ -208,7 +209,7 @@ describe("BankStatementForm – rozdíl v pruhu", () => {
   });
   it("bez rozdílu se pruh neukáže", () => {
     const view = render(<Statement />);
-    fireEvent.click(view.getByRole("button", { name: /zůstat/i }).closest("button")!);
+    fireEvent.click(view.getByRole("button", { name: "Zůstatek z pohybů" }));
     // Σ zapnuto → bankClosing null → bez rozdílu
     expect(view.container.querySelector('[data-slot="form-issues-bar"]')).toBeNull();
   });

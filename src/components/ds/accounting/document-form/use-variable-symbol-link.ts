@@ -78,7 +78,8 @@ export function variableSymbolLinkState(
       return {
         ...next,
         variableSymbolLinked: false,
-        variableSymbol: derived.value || value.variableSymbol || null,
+        // Automatické uvolnění (0 / >10 číslic): zůstane uložený VS, jinak náhled.
+        variableSymbol: value.variableSymbol || derived.value || null,
       };
     },
   };

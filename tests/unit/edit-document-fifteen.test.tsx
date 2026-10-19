@@ -252,7 +252,8 @@ describe("DocumentForm – pruh a hlášení změn", () => {
       />,
     );
     fireEvent.click(view.getByRole("button", { name: "Svázat VS s číslem daňového dokladu" }));
-    expect(changed).toContain("document-variableSymbolLinked");
+    // Přepínač hlásí id pole, ne id vazby (oprava 2.108.0).
+    expect(changed).toContain("document-variableSymbol");
   });
 });
 
