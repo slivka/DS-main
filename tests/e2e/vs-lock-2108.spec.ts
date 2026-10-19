@@ -8,10 +8,10 @@ test("VS zámek: náhled, odemčení se stejnou hodnotou, uvolnění při > 10 �
   await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
   const external = page.locator("#document-externalNumber").first();
   await external.scrollIntoViewIfNeeded();
-  const vs = page.locator("#document-variableSymbol").first();
-  const lock = page
-    .getByRole("button", { name: "Svázat VS s číslem daňového dokladu" })
-    .first();
+  // Stránka má více formulářů se stejnými id – pracujeme v nejbližším společném předkovi.
+  const form = external.locator("xpath=ancestor::div[.//*[@id='document-variableSymbol']][1]");
+  const vs = form.locator("#document-variableSymbol");
+  const lock = form.getByRole("button", { name: "Svázat VS s číslem daňového dokladu" });
 
   await expect(async () => {
     await external.fill("FA-2026/0456");

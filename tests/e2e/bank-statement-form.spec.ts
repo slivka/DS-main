@@ -41,8 +41,10 @@ for (const width of [960, 360]) {
     await page.keyboard.press("ControlOrMeta+A");
     await page.keyboard.type("12550");
     await amount.blur();
-    const notice = form.locator('[data-slot="bank-statement-difference-notice"]');
+    // Rozdíl je položka živého pruhu, ne samostatný NoticeBar (oprava 2.108.0).
+    const notice = form.locator('[data-slot="form-issues-bar"]');
     await expect(notice).toContainText("Rozdíl proti pohybům 50,00 Kč");
+    await expect(form.locator('[data-slot="bank-statement-difference-notice"]')).toHaveCount(0);
     const bank = await amount.boundingBox();
     const dateBox = await date.boundingBox();
     if (bank && dateBox) {
