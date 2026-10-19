@@ -34,9 +34,7 @@ const header = {
   currency: "CZK",
 };
 function Doc(props: Record<string, unknown>) {
-  const [value, setValue] = React.useState(
-    (props.initial as typeof header | undefined) ?? header,
-  );
+  const [value, setValue] = React.useState((props.initial as typeof header | undefined) ?? header);
   return (
     <DocumentForm
       title="Doklad"
@@ -337,7 +335,9 @@ describe("R3) fieldId = skutečné id v markupu (FV, ID, PO)", () => {
         accounts={ACCOUNTS}
         fieldErrors={fvErrors}
         vat={{ visible: true }}
-        companyBankAccountOptions={[{ id: "c1", label: "Účet", account: "1/0100", currency: "CZK" }]}
+        companyBankAccountOptions={[
+          { id: "c1", label: "Účet", account: "1/0100", currency: "CZK" },
+        ]}
         paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
       />,
     );
@@ -361,9 +361,7 @@ describe("R3) fieldId = skutečné id v markupu (FV, ID, PO)", () => {
       amountTotal: "x",
       partnerId: "x",
     };
-    const view = render(
-      <Doc documentType="ID" fieldErrors={idErrors} vat={{ visible: true }} />,
-    );
+    const view = render(<Doc documentType="ID" fieldErrors={idErrors} vat={{ visible: true }} />);
     const issues = documentClientIssues({
       value: { ...header, amountTotal: 0 },
       foreign: false,
@@ -434,9 +432,7 @@ describe("D) Zámek data hlásí onFieldChange i u řízené vazby", () => {
       code: "FV",
       value,
       onChange: setValue,
-      accountingDateLink: props.external
-        ? { locked: true, onToggle: () => {} }
-        : undefined,
+      accountingDateLink: props.external ? { locked: true, onToggle: () => {} } : undefined,
       accountingDateLinked: true,
       onFieldChange: (id) => props.changed.push(id),
     });
