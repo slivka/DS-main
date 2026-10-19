@@ -188,6 +188,7 @@ function FeedbackPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title="Ukázkový dialog"
+        size="sm"
         onSubmit={() => {
           setDialogOpen(false);
           toast.success("Uloženo");
