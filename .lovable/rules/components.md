@@ -1867,7 +1867,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `—` |
+| `approvedLabel` | string | `Schválen` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
