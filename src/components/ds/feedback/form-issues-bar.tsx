@@ -77,7 +77,7 @@ export function FormIssuesBar({
     list.length === 0 && !forceError
       ? null
       : (hasErrors
-          ? saveFailed || forceError
+          ? saveFailed
             ? texts.saveFailedTitle
             : texts.fixBeforeTitle
           : texts.warningsTitle
