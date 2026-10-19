@@ -61,7 +61,9 @@ for (const gridSelector of ['[data-slot="data-grid"]', '[data-slot="tree-grid"]'
     await page.setViewportSize({ width: 1800, height: 1200 });
     await page.goto("/components/grid");
     const grid =
-      gridSelector === '[data-slot="data-grid"]' ? journalGrid(page) : page.locator(gridSelector).first();
+      gridSelector === '[data-slot="data-grid"]'
+        ? journalGrid(page)
+        : page.locator(gridSelector).first();
     const toolbar = grid.locator('[data-slot="grid-toolbar"]');
     await toolbar.evaluate((element) => {
       (
