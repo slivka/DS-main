@@ -94,7 +94,7 @@ export function DateRangeField({
           disabled={disabled}
           aria-label={label ?? dsTexts.date.rangeLabel}
           className={cn(
-            "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
+            "ds-field-button ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "h-[var(--control-h)] w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
             className,

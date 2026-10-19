@@ -102,7 +102,7 @@
   --badge-cap-offset: 0.075em;
   --identity-account-width: 18rem;
   --calendar-width: 22rem;
-  --calendar-body-h: 19rem;
+  --calendar-body-h: 23rem;
   --pane-tabbar: oklch(0.935 0.008 250);
   --border-strong: oklch(0.7 0.025 250);
   /* Datum dokladu: skutečná poloha ikon je společná se šířkou i odsazením. */
@@ -2512,7 +2512,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 .grid-date-popover .calendar-shell {
   --calendar-width: 27em;
-  --calendar-body-h: 23.4em;
+  --calendar-body-h: 28.3em;
 }
 .grid-date-popover .calendar-view-grid {
   height: calc(var(--calendar-body-h) - 6em);
@@ -2521,3 +2521,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   outline: 1px solid var(--primary);
   outline-offset: -2px;
 }
+
+.calendar-shell .rdp-nav { pointer-events: none; }
+.calendar-shell .rdp-nav button { pointer-events: auto; }
+.calendar-shell .rdp-month_grid { table-layout: fixed; }
