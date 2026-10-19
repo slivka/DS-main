@@ -45,7 +45,7 @@ function StatementExample({ scenario }: { scenario: string }) {
     bankClosing: scenario === "empty" ? null : scenario === "difference" ? 12450 : 12500,
   });
   const [status] = useState<BankStatementFormProps["status"]>(
-    scenario === "checked" ? "checked" : scenario === "posted" ? "posted" : "open",
+    scenario === "posted" ? "posted" : "open",
   );
   const [dirty, setDirty] = useState(false);
   const [addedDirection, setAddedDirection] = useState<"in" | "out" | null>(null);
@@ -77,6 +77,7 @@ function StatementExample({ scenario }: { scenario: string }) {
             storageKey={`bank-statement-items-${scenario}`}
             rows={scenario === "empty" ? [] : undefined}
             onAction={setAddedDirection}
+            emptyTitle="Výpis zatím nemá pohyby"
           />
         </>
       }
@@ -173,7 +174,7 @@ export function BankStatementShowcase() {
         <DsTextsProvider locale={locale}>
           <ToggleExamples />
           <div className="my-3 flex flex-wrap gap-2">
-            {["empty", "equal", "difference", "eur", "checked", "items", "posted", "busy"].map(
+            {["empty", "equal", "difference", "eur", "items", "posted", "busy"].map(
               (key) => (
                 <Button
                   key={key}
