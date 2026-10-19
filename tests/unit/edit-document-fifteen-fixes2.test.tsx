@@ -197,15 +197,95 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
       ).not.toBeNull();
     }
   });
-  it("chybějící popisek je chyba, ne fallback na klíč", () => {
-    expect(() =>
-      documentClientIssues({
+  it("chybějící popisek nespadne: obecný text „Pole formuláře“ + console.warn", () => {
+    const warnings: unknown[][] = [];
+    const original = console.warn;
+    console.warn = (...args: unknown[]) => warnings.push(args);
+    try {
+      const issues = documentClientIssues({
         value: { ...header, amountTotal: 0 } as DocumentHeaderValue,
         foreign: false,
         t: T,
         fieldErrors: JSON.parse('{"neexistujiciKlic":"x"}') as Partial<Record<string, string>>,
-      }),
-    ).toThrow(/neexistujiciKlic/);
+      });
+      expect(issues[0].label).toBe("Pole formuláře");
+      expect(issues[0].label).not.toBe("neexistujiciKlic");
+      expect(warnings.flat().join(" ")).toContain("neexistujiciKlic");
+    } finally {
+      console.warn = original;
+    }
+  });
+  it("všechny klíče polí mají popisek; nepolní klíče se do pruhu neposílají", () => {
+    const NON_FIELD = [
+      "id",
+      "rateInfo",
+      "suggestedRate",
+      "suggestedRateInfo",
+      "print",
+      "rateSourceAttention",
+      "vatRateSourceAttention",
+    ];
+    const FIELD_KEYS = [
+      "bookId",
+      "number",
+      "direction",
+      "accountingDate",
+      "issueDate",
+      "taxDate",
+      "vatDate",
+      "vatRelevant",
+      "dueDate",
+      "externalNumber",
+      "taxDocumentNumber",
+      "taxDocumentNumberLinked",
+      "variableSymbolLinked",
+      "bankAccountKind",
+      "bankCode",
+      "bankIban",
+      "bankSwift",
+      "partnerId",
+      "counterpartyName",
+      "counterpartyIco",
+      "counterpartyDic",
+      "counterpartyCountry",
+      "handedOverBy",
+      "variableSymbol",
+      "constantSymbol",
+      "specificSymbol",
+      "bankAccount",
+      "partnerBankAccountId",
+      "companyBankAccountId",
+      "paymentMethodId",
+      "description",
+      "currency",
+      "rate",
+      "rateManual",
+      "rateNote",
+      "amountTotal",
+      "totalMode",
+      "roundingAmount",
+      "mainAccountId",
+      "manualBankAccount",
+    ];
+    for (const key of FIELD_KEYS) {
+      const label = headerFieldLabel(T, key, FIELD_LABELS, "in");
+      expect(label, `popisek ${key}`).toBeTruthy();
+      expect(label, `popisek ${key} není technický klíč`).not.toBe(key);
+    }
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0 } as DocumentHeaderValue,
+      foreign: false,
+      t: T,
+      fieldErrors: Object.fromEntries(NON_FIELD.map((key) => [key, "x"])) as Partial<
+        Record<string, string>
+      >,
+      fieldLabels: FIELD_LABELS,
+    });
+    expect(issues).toHaveLength(0);
+  });
+  it("popisek handedOverBy se řídí směrem dokladu", () => {
+    expect(headerFieldLabel(T, "handedOverBy", FIELD_LABELS, "in")).toBe(T.handedOverByIn);
+    expect(headerFieldLabel(T, "handedOverBy", FIELD_LABELS, "out")).toBe(T.handedOverByOut);
   });
 });
 
