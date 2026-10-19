@@ -4481,6 +4481,12 @@ _Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
 </RecordDialog>
 ```
 
+**Partner na zvolené záložce:**
+
+```tsx
+<RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />
+```
+
 **Avoid:**
 
 - Nevykreslujte tlačítko Uložit v režimu readOnly.
@@ -4490,6 +4496,8 @@ _Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
 - Nepřidávejte vlastní tlačítko Odstranit do extraActions – použijte deleteAction.
 - Bez práva upravit nezakazujte vstupy – použijte readOnly.
 - Nepřepínejte submitLabel na „Ukládám…“ – stačí busy.
+
+- V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.
 
 ### RecordNotes
 
