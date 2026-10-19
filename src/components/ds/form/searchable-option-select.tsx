@@ -3,6 +3,7 @@
  * Vlastní: otevření nabídky, filtrování a klávesnicový výběr.
  * Nesmí: rozhodovat o doménovém významu hodnot.
  */
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import { useMemo, useState, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { FieldInlineActions } from "./field-inline-actions";
@@ -71,6 +72,7 @@ export interface SearchableOptionSelectProps {
 
 /** Hledatelný seznam s krátkou hodnotou ve spouštěči. */
 export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
+  const readOnly = useRecordReadOnly();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const selected = props.options.find((option) => option.value === props.value);
@@ -111,6 +113,12 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
     setOpen(false);
     setQuery("");
   };
+
+  if (readOnly) {
+    return (
+      <ReadOnlyControlValue id={props.id}>{selected?.label ?? props.value}</ReadOnlyControlValue>
+    );
+  }
 
   return (
     <div className="relative min-w-0">

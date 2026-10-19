@@ -1,3 +1,4 @@
+import { ReadOnlyControlValue, useRecordReadOnly } from "../form/record-read-only";
 import React, { useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, ChevronRight } from "lucide-react";
 import { SelectSearchAction } from "../form/select-search-action";
@@ -87,6 +88,7 @@ export function DimensionSelect({
   /** Přístupný název tužky. */
   editSelectedLabel?: string;
 }) {
+  const readOnly = useRecordReadOnly();
   const dsTexts = useDsTexts();
   const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
   const [open, setOpen] = useState(defaultOpen);
@@ -195,6 +197,14 @@ export function DimensionSelect({
       </React.Fragment>
     );
   };
+
+  if (readOnly) {
+    return (
+      <ReadOnlyControlValue id={id}>
+        {selected ? formatCodeName(selected.code, selected.name) : ""}
+      </ReadOnlyControlValue>
+    );
+  }
 
   return (
     <div className="relative min-w-0">

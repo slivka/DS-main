@@ -1,4 +1,5 @@
 /** Segmentová volba · vlastní výběr a stav pole · nesmí měnit výšku při chybě. */
+import { ReadOnlyControlValue, useRecordReadOnly } from "./record-read-only";
 import * as React from "react";
 
 import { Button } from "../../ui/button";
@@ -66,7 +67,12 @@ export function SegmentedField<Value extends string = string>({
   ...props
 }: SegmentedFieldProps<Value>) {
   const status = useFieldStatus({ error, warning });
-  const group = (
+  const readOnly = useRecordReadOnly();
+  const group = readOnly ? (
+    <ReadOnlyControlValue id={id}>
+      {options.find((option) => option.value === value)?.label}
+    </ReadOnlyControlValue>
+  ) : (
     <div
       ref={ref}
       role="radiogroup"

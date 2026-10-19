@@ -2,6 +2,7 @@
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
+import { ReadOnlyControlValue, useRecordReadOnly } from "../ds/form/record-read-only";
 import { FieldFeedbackIndicator, useFieldFeedback } from "../ds/form/field-feedback";
 
 /** Vlastnosti vstupu včetně krátkého vzoru zápisu (nikoli příkladu hodnoty). */
@@ -15,7 +16,7 @@ export interface InputProps extends React.ComponentProps<"input"> {
 }
 
 /** Vstup s pojmenovanou podporou vzoru formátu. */
-const Input = React.forwardRef<HTMLInputElement, InputProps>((allProps, ref) => {
+const InputControl = React.forwardRef<HTMLInputElement, InputProps>((allProps, ref) => {
   const { className, type, formatPattern, placeholder, error, warning, ...props } = allProps;
   // Předaný (i prázdný) error/warning drží stálý obal, aby se vstup při objevení
   // výstrahy znovu nepřipojil a neztratil fokus.
@@ -47,6 +48,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((allProps, ref) => 
   ) : (
     control
   );
+});
+InputControl.displayName = "InputControl";
+
+/** Vstup DS; v RecordDialog jen pro čtení se vykreslí jako hodnota pole. */
+const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  const readOnly = useRecordReadOnly();
+  if (readOnly) {
+    return (
+      <ReadOnlyControlValue id={props.id}>
+        {String(props.value ?? props.defaultValue ?? "")}
+      </ReadOnlyControlValue>
+    );
+  }
+  return <InputControl ref={ref} {...props} />;
 });
 Input.displayName = "Input";
 
