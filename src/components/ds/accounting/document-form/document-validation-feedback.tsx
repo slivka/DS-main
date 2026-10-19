@@ -101,6 +101,7 @@ function headerLabelAlias(
   t: DocumentFormTexts,
   key: string,
   fieldLabels?: Partial<Record<string, string>>,
+  direction?: string | null,
 ): string | undefined {
   // Některé popisky žijí v dsTexts.documentForm (DocumentForm předává sloučené texty).
   const all = t as Partial<Record<string, string>>;
@@ -110,7 +111,7 @@ function headerLabelAlias(
     counterpartyIco: t.ico,
     counterpartyDic: t.dic,
     counterpartyCountry: fieldLabels?.counterpartyCountry,
-    handedOverBy: t.handedOverByIn,
+    handedOverBy: direction === "out" ? t.handedOverByOut : t.handedOverByIn,
     companyBankAccountId: t.bankAccount,
     partnerBankAccountId: t.bankAccount,
     manualBankAccount: t.bankAccount,
