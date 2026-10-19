@@ -292,6 +292,137 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
   });
 });
 
+describe("R3) fieldId = skutečné id v markupu (FV, ID, PO)", () => {
+  const ACCOUNTS = [{ code: "221001", name: "Banka" }];
+  const IDENTITY = {
+    variant: "issued" as const,
+    book: "FV",
+    period: "2026",
+    account: { side: "D" as const, label: "221.001 Banka", editable: true },
+  };
+  function expectIdsInDom(
+    view: ReturnType<typeof render>,
+    issues: { fieldId?: string; label: string }[],
+  ) {
+    for (const issue of issues) {
+      expect(issue.label, `popisek ${issue.fieldId}`).toBeTruthy();
+      expect(
+        view.container.querySelector(`[id="${CSS.escape(issue.fieldId ?? "")}"]`),
+        `fieldId ${issue.fieldId}`,
+      ).not.toBeNull();
+    }
+  }
+  it("FV: všechny klíče včetně čísla, směru, účtu v klidu a přepínače DPH", () => {
+    const fvErrors = {
+      partnerId: "x",
+      variableSymbol: "x",
+      constantSymbol: "x",
+      companyBankAccountId: "x",
+      paymentMethodId: "x",
+      amountTotal: "x",
+      issueDate: "x",
+      accountingDate: "x",
+      dueDate: "x",
+      number: "x",
+      direction: "x",
+      mainAccountId: "x",
+      description: "x",
+      vatRelevant: "x",
+    };
+    const view = render(
+      <Doc
+        documentType="FV"
+        directionBadge="out"
+        identity={IDENTITY}
+        accounts={ACCOUNTS}
+        fieldErrors={fvErrors}
+        vat={{ visible: true }}
+        companyBankAccountOptions={[{ id: "c1", label: "Účet", account: "1/0100", currency: "CZK" }]}
+        paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
+      />,
+    );
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0, direction: "out" },
+      foreign: false,
+      t: T,
+      fieldErrors: fvErrors,
+      fieldLabels: FIELD_LABELS,
+    });
+    expect(issues.length).toBeGreaterThan(10);
+    expectIdsInDom(view, issues);
+  });
+  it("ID: interní doklad bez účtu identity", () => {
+    const idErrors = {
+      number: "x",
+      accountingDate: "x",
+      issueDate: "x",
+      taxDate: "x",
+      description: "x",
+      amountTotal: "x",
+      partnerId: "x",
+    };
+    const view = render(
+      <Doc documentType="ID" fieldErrors={idErrors} vat={{ visible: true }} />,
+    );
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0 },
+      foreign: false,
+      t: T,
+      fieldErrors: idErrors,
+      fieldLabels: FIELD_LABELS,
+    });
+    expectIdsInDom(view, issues);
+  });
+  it("PO: přijatá objednávka včetně handedOverBy a ručního účtu", () => {
+    const poErrors = {
+      partnerId: "x",
+      handedOverBy: "x",
+      externalNumber: "x",
+      manualBankAccount: "x",
+      amountTotal: "x",
+      issueDate: "x",
+    };
+    const view = render(
+      <Doc
+        documentType="PO"
+        fieldErrors={poErrors}
+        counterpartyInput="manual"
+        onCounterpartyInputChange={() => {}}
+      />,
+    );
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0, direction: "in" },
+      foreign: false,
+      t: T,
+      fieldErrors: poErrors,
+      fieldLabels: FIELD_LABELS,
+    });
+    expectIdsInDom(view, issues);
+  });
+  it("cizí měna: rateNote → document-rate-note, rateManual → document-rate", () => {
+    const fxErrors = { rateNote: "x", rateManual: "x" };
+    const view = render(
+      <Doc
+        documentType="FP"
+        fieldErrors={fxErrors}
+        initial={{ ...header, currency: "EUR", rateManual: true }}
+        currencies={[
+          { code: "CZK", symbol: "Kč" },
+          { code: "EUR", symbol: "€" },
+        ]}
+      />,
+    );
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0, currency: "EUR", rateManual: true },
+      foreign: true,
+      t: T,
+      fieldErrors: fxErrors,
+      fieldLabels: FIELD_LABELS,
+    });
+    expectIdsInDom(view, issues);
+  });
+});
+
 describe("D) Zámek data hlásí onFieldChange i u řízené vazby", () => {
   function LinkProbe(props: { external?: boolean; changed: string[] }) {
     const [value, setValue] = React.useState({
