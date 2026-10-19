@@ -120,10 +120,8 @@ export function DocumentForm(props: DocumentFormProps) {
     onChange,
     accountingDateLink,
     accountingDateLinked,
-    onAccountingDateLinkedChange: (linked) => {
-      onAccountingDateLinkedChange?.(linked);
-      onFieldChange?.("document-accountingDate");
-    },
+    onAccountingDateLinkedChange,
+    onFieldChange: (fieldId) => onFieldChange?.(fieldId),
     readOnly: readOnly || ["posted", "locked", "cancelled"].includes(props.status ?? ""),
   });
   const patch = reportingPatch(datePatch, onFieldChange);

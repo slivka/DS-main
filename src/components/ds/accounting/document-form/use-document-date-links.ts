@@ -19,6 +19,8 @@ export interface DocumentDateLinksArgs {
   accountingDateLinked: boolean;
   /** Oznámení změny vazby. */
   onAccountingDateLinkedChange?: (linked: boolean) => void;
+  /** Hlášení změny pole (zámek hlásí id pole, ne id vazby) – i u řízené vazby. */
+  onFieldChange?: (fieldId: string) => void;
 }
 
 /** Změna vystavení přepočítá jen data stále navázaná na vystavení. */
