@@ -98,8 +98,10 @@ test("výpis uloží zůstatek přes Σ, rozdíl varuje v poli a položky zaká�
   const showcase = page.getByTestId("bank-showcase");
   const root = page.getByTestId("bank-panels");
   const form = root.locator('[data-slot="bank-statement-form"]').first();
-  const notice = form.locator('[data-slot="bank-statement-difference-notice"]');
+  // Rozdíl je položka živého pruhu, ne samostatný NoticeBar (oprava 2.108.0).
+  const notice = form.locator('[data-slot="form-issues-bar"]');
   await expect(notice).toHaveCount(0);
+  await expect(form.locator('[data-slot="bank-statement-difference-notice"]')).toHaveCount(0);
   await expect(form.getByRole("button", { name: "Zkontrolovat", exact: true })).toHaveCount(0);
   await showcase.getByRole("button", { name: "difference", exact: true }).click();
   await expect(notice).toContainText("−50,00");
