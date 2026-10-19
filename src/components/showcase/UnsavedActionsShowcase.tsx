@@ -15,7 +15,7 @@ export function UnsavedActionsShowcase() {
   return (
     <ShowcaseSection title={t.dialog}>
       <div data-testid="unsaved-actions-showcase" className="flex flex-wrap gap-3">
-        {(["close", "switch", "logout", "navigate"] as const).map((key) => (
+        {(["close", "switch", "logout", "navigate", "record"] as const).map((key) => (
           <Button key={key} variant="outline" onClick={() => setAction(key)}>
             {labels?.[key].title}
           </Button>
