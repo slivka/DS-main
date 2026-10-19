@@ -138,7 +138,9 @@ test("DocumentDirectionBadge a DocumentStatusBadge mají stejnou výšku", async
   const statusHeight = (await status.boundingBox())?.height;
   const directionHeight = (await direction.boundingBox())?.height;
   expect(statusHeight).toBeDefined();
-  expect(directionHeight).toBe(statusHeight);
+  expect(directionHeight).toBeDefined();
+  // Enginy zaokrouhlují rem na různé subpixely; smlouva dovoluje nejvýše 0,5 px.
+  expect(Math.abs((directionHeight ?? 0) - (statusHeight ?? 0))).toBeLessThanOrEqual(0.5);
 });
 
 test("PageHeader neořezává diakritiku ani dotahy nadpisu", async ({ page }) => {

@@ -14,8 +14,14 @@ for (const path of ["/components/accounting-forms", "/components/grid", "/compon
         /[0-3]/,
       );
     } else {
-      await page.getByTestId("record-dialog-demo-pane").scrollIntoViewIfNeeded();
-      await page.getByRole("button", { name: "Nový", exact: true }).click();
+      const pane = page.getByTestId("record-dialog-demo-pane");
+      await pane.scrollIntoViewIfNeeded();
+      // Po SSR je tlačítko viditelné dřív než má handler; opakujeme jen dosud neotevřený dialog.
+      await expect(async () => {
+        if (!(await page.getByRole("dialog", { name: "Nová kniha" }).isVisible()))
+          await page.getByRole("button", { name: "Nový", exact: true }).click();
+        await expect(page.getByRole("dialog", { name: "Nová kniha" })).toBeVisible({ timeout: 1000 });
+      }).toPass();
       await expect(page.getByRole("dialog", { name: "Nová kniha" })).toBeVisible();
     }
     expect(errors, errors.join("\n")).toEqual([]);

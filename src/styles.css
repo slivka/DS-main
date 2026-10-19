@@ -2591,6 +2591,7 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   padding-right: 3.25rem;
   font-size: var(--text-sm);
   font-family: var(--font-mono);
+  font-weight: 400;
 }
 .document-identity-account-measure::before {
   content: attr(data-label);
@@ -2602,6 +2603,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 }
 .document-identity-pencil-slot {
   width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
 }
 .grid-date-popover .calendar-alternate :is(button, .calendar-view-grid) {
