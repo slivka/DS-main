@@ -21,6 +21,7 @@ export function MovementsGrid({
   onAction,
   outDisabledReason,
   rows = ROWS,
+  emptyTitle,
 }: {
   storageKey: string;
   onAction?: (kind: "in" | "out") => void;
