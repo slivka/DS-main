@@ -6,7 +6,7 @@ import { AlertTriangle, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { formIssuesTitle, mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
+import { mergeFormIssues, type FormIssue } from "../../../lib/form-issues";
 import { Button } from "../../ui/button";
 import { FieldErrorSummary, focusFieldErrorLink, type FieldErrorLink } from "./field-error-summary";
 
