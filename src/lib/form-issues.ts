@@ -48,7 +48,8 @@ function bareMessage(message: string): string {
 export function mergeFormIssues(issues: readonly FormIssue[]): FormIssue[] {
   const headers = issues.filter((issue) => !issue.rowId);
   const seen = new Set<string>();
-  const seenField = new Set<string>();
+  // Pole + závažnost → zdroj první (serverové) položky; dedup jen klient × server.
+  const seenField = new Map<string, FormIssue["source"]>();
   const result: FormIssue[] = [];
   // Server má přednost před klientem se stejným polem (bez ohledu na kód i text).
   const bySeverity = (severity: FormIssue["severity"]) =>
@@ -73,12 +74,15 @@ export function mergeFormIssues(issues: readonly FormIssue[]): FormIssue[] {
     const key = `${bareMessage(issue.message)}|${issue.fieldId ?? ""}|${issue.rowId ?? ""}`;
     const loose = `${bareMessage(issue.message)}|${issue.rowId ?? ""}`;
     if (seen.has(key) || (!issue.fieldId && seen.has(loose))) continue;
-    // Stejné pole a závažnost jen jednou (server je seřazený první, takže vyhraje).
+    // Stejné pole a závažnost z obou zdrojů jen jednou (server je seřazený první, takže vyhraje).
     const fieldKey = issue.fieldId ? `${issue.severity}|${issue.fieldId}` : null;
-    if (fieldKey && seenField.has(fieldKey)) continue;
+    if (fieldKey) {
+      const firstSource = seenField.get(fieldKey);
+      if (firstSource && firstSource !== issue.source) continue;
+    }
     seen.add(key);
     seen.add(loose);
-    if (fieldKey) seenField.add(fieldKey);
+    if (fieldKey && !seenField.has(fieldKey)) seenField.set(fieldKey, issue.source);
     result.push(issue);
   }
   return result;
