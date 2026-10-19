@@ -51,18 +51,46 @@ const HEADER_FIELD_ID: Record<string, string> = {
   counterpartyName: "document-partner",
   counterpartyIco: "document-partner-ico",
   counterpartyDic: "document-partner-dic",
+  // Země protistrany nemá vlastní prvek; řídí tvar IČO.
+  counterpartyCountry: "document-partner-ico",
   bankCode: "document-bank-code",
   bankSwift: "document-bank-code",
   bankIban: "document-movement-account",
+  partnerBankAccountId: "document-bankAccount",
+  manualBankAccount: "document-bankAccount",
   variableSymbolLinked: "document-variableSymbol",
   totalMode: "document-amountTotal",
+  // Zaokrouhlení se zadává v rekapitulaci řádků; nejbližší prvek hlavičky je Celkem.
+  roundingAmount: "document-amountTotal",
+  rateNote: "document-rate-note",
+  rateManual: "document-rate",
 };
+
+/** Klíče hlavičky, které nejsou pole – do pruhu se jako položky pole neposílají. */
+const NON_FIELD_KEYS = new Set([
+  "id",
+  "rateInfo",
+  "suggestedRate",
+  "suggestedRateInfo",
+  "print",
+  "rateSourceAttention",
+  "vatRateSourceAttention",
+]);
 
 /** Id pole bankovního účtu: u BA protiúčet, jinak účet partnera. */
 function headerFieldId(key: string, code?: string): string {
   if (key === "bankAccount")
     return code === "BA" ? "document-movement-account" : "document-bankAccount";
   return HEADER_FIELD_ID[key] ?? `document-${key}`;
+}
+
+/** Klíč hlavičky z id ovládání – obráceně přes stejnou tabulku, ne odřezáním prefixu. */
+export function headerFieldKeyFromId(id: string, code?: string): string {
+  for (const [key, fieldId] of Object.entries(HEADER_FIELD_ID))
+    if (fieldId === id) return key;
+  if (id === "document-bankAccount") return code === "BA" ? "bankAccount" : "partnerBankAccountId";
+  if (id === "document-movement-account") return code === "BA" ? "bankAccount" : "bankIban";
+  return id.replace("document-", "");
 }
 
 /** Popisky klíčů, které nemají stejnojmenný text (nikdy se neukáže technický klíč). */
