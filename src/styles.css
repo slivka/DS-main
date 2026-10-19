@@ -2458,6 +2458,10 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .ds-button.grid-toolbar-control:is(:disabled, [aria-disabled="true"]) {
   border-color: var(--input) !important;
 }
+/* Primární akce zamčené řádkové tabulky přebírá povrch okolních polí. */
+.ds-button.grid-toolbar-primary:is(:disabled, [aria-disabled="true"]) {
+  background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
+}
 .pane-tab-active {
   border-color: var(--border-strong);
   border-bottom-color: var(--card);
