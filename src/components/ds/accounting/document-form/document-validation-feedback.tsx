@@ -193,3 +193,34 @@ export function toggleInvalidDate<K extends string>(
   else delete next[key];
   return next;
 }
+
+/** Vstupy odvozenin protistrany. */
+export interface DocumentCounterpartyArgs {
+  /** Hlavička. */
+  value: DocumentHeaderValue;
+  /** Vybraný partner z adresáře. */
+  partner?: { ico?: string | null; dic?: string | null } | null;
+  /** Interní doklad. */
+  internal: boolean;
+  /** Režim protistrany. */
+  counterpartyInput: string;
+  /** Výstrahy polí od aplikace. */
+  fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
+  /** Text varování ručního partnera (dsTexts.documentEdit.internalManualPartner). */
+  internalManualPartner: string;
+}
+
+/** IČO/DIČ protistrany, varování neplatného IČO a varování ručního partnera u interního dokladu. */
+export function useDocumentCounterpartyWarnings(a: DocumentCounterpartyArgs) {
+  const counterpartyIco = a.value.counterpartyIco ?? a.partner?.ico ?? "";
+  const counterpartyDic = a.value.counterpartyDic ?? a.partner?.dic ?? "";
+  const icoWarning =
+    !a.value.partnerId &&
+    /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) &&
+    !isValidCzIco(counterpartyIco);
+  const effectiveFieldWarnings =
+    a.internal && a.counterpartyInput === "manual"
+      ? { ...a.fieldWarnings, partnerId: a.internalManualPartner }
+      : a.fieldWarnings;
+  return { counterpartyIco, counterpartyDic, icoWarning, effectiveFieldWarnings };
+}
