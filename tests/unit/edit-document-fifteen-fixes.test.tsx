@@ -10,6 +10,7 @@ import { FormIssuesBar } from "../../src/components/ds/feedback/form-issues-bar"
 import { DS_TEXTS_CS } from "../../src/ds-texts";
 import { DEFAULT_DOCUMENT_FORM_TEXTS } from "../../src/components/ds/accounting/document-form";
 import type { FormIssue } from "../../src/lib/form-issues";
+import type { DocumentHeaderValue } from "../../src/components/ds/accounting/document-form";
 
 afterEach(cleanup);
 
@@ -55,7 +56,7 @@ describe("VS – pořadí hodnot po odemčení", () => {
     externalNumber: "FA-2026/0456",
     variableSymbol: null,
     variableSymbolLinked: true,
-  } as never;
+  } as DocumentHeaderValue;
   it("odemčení předvyplní hodnotu z náhledu, ne uložený VS", () => {
     let patch: Record<string, unknown> = {};
     const state = variableSymbolLinkState("FP", value, (next) => (patch = next), EDIT);
@@ -69,7 +70,13 @@ describe("VS – pořadí hodnot po odemčení", () => {
     let patch: Record<string, unknown> = {};
     const state = variableSymbolLinkState(
       "FP",
-      { externalNumber: "123", variableSymbol: "999", variableSymbolLinked: true } as never,
+      {
+        currency: "CZK",
+        amountTotal: 0,
+        externalNumber: "123",
+        variableSymbol: "999",
+        variableSymbolLinked: true,
+      },
       (next) => (patch = next),
       EDIT,
     );
@@ -120,9 +127,9 @@ describe("DocumentForm – opravy pruhu", () => {
       />,
     );
     const issues = documentClientIssues({
-      value: header as never,
+      value: { ...header, amountTotal: 0 },
       foreign: false,
-      t: { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...DS_TEXTS_CS.documentForm } as never,
+      t: { ...DEFAULT_DOCUMENT_FORM_TEXTS, ...DS_TEXTS_CS.documentForm },
       fieldErrors: { partnerId: "Povinný údaj", externalNumber: "Povinný údaj" },
       fieldWarnings: { counterpartyIco: "Podezřelé IČO" },
     });
