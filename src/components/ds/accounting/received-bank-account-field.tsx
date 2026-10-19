@@ -143,6 +143,7 @@ export function ReceivedBankAccountField(props: ReceivedBankAccountFieldProps) {
     <div className="grid min-w-0 gap-2 @container @min-[32rem]:grid-cols-2">
       <div className={cn("min-w-0", !props.isHomeCurrency && "@min-[32rem]:col-span-2")}>
         <Input
+          id="document-bankAccount"
           aria-label={
             props.isHomeCurrency ? props.texts.accountLabel : props.texts.accountWithoutIbanLabel
           }

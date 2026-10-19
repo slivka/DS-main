@@ -20,6 +20,7 @@ export function DocumentVatActionStatus({
     <div className="flex min-w-0 items-center gap-2">
       <label className="flex items-center gap-2 whitespace-nowrap text-sm font-medium">
         <Switch
+          id="document-vatRelevant"
           checked={checked}
           disabled={readOnly}
           onCheckedChange={onCheckedChange}

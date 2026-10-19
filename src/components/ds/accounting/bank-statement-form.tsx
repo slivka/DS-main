@@ -131,9 +131,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       ? t.lockedReadOnly
       : status === "posted"
         ? t.lockedPosted
-        : status === "checked"
-          ? t.lockedChecked
-          : undefined;
+        : undefined;
     const difference = statementDifference(value.bankClosing, balances);
     const patch = (next: Partial<BankStatementValue>) => {
       if (!locked) onChange({ ...value, ...next });

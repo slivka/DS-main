@@ -5,7 +5,7 @@ export interface BankStatementTexts {
   title: string;
   /** Popisek open. */
   open: string;
-  /** Popisek checked. */
+  /** @deprecated 2.108.0 – kontrola výpisu je zrušená. */
   checked: string;
   /** Popisek posted. */
   posted: string;
