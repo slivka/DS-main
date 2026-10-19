@@ -44,6 +44,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: "/", label: "Přehled", icon: Palette },
       { to: "/guidelines", label: "Pravidla", icon: BookOpen },
+      { to: "/components/design-three", label: "Design 3", icon: Palette },
     ],
   },
   {

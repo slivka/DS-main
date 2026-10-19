@@ -208,6 +208,10 @@ export interface DsTexts {
     no: string;
   };
   date: {
+    today: string;
+    previous: string;
+    next: string;
+    approved: string;
     chooseDate: string;
     dateSelection: string;
     openCalendar: string;

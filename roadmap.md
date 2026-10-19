@@ -1,4 +1,10 @@
-## DS 2.109.0 – DPH krok 4B (nevydáno)
+## DS 2.110.0 – Design 3 (nevydáno)
+- [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
+- [ ] D1 záložky panelu, D2 tlačítka, D3 kalendář.
+- [ ] D4 štítky a nadpis, D5 identita bez poskočení.
+- [ ] Ukázka, unit a dotčené E2E, check:full --harness, katalog.
+
+## DS 2.109.0 – DPH krok 4B
 - [x] Verze srovnána na vydanou 2.108.0 (package.json i meta.version)
 - [x] computeVatGroups + unit testy podle DB scénářů
 - [x] Zrušen režim s DPH a ruční daň (deprecace), pevná daň se zámkem

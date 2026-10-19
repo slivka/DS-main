@@ -189,3 +189,9 @@ export * from "./form/field-feedback";
 export * from "./form/field-toggle-button";
 
 export * from "./accounting/bank-statement-form";
+
+/* Sdílené veřejné primitivy pro skládání ukázek i aplikací. */
+export { Calendar, CalendarDayButton, type CalendarNavigationProps } from "../ui/calendar";
+export { Button, buttonVariants, type ButtonProps } from "../ui/button";
+export { Badge, badgeVariants, type BadgeProps } from "../ui/badge";
+export { Input, type InputProps } from "../ui/input";

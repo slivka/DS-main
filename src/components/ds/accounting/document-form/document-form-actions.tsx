@@ -33,16 +33,18 @@ export function DocumentDirectionBadge({
     <span
       data-slot="document-direction-badge"
       className={cn(
-        "inline-flex h-[1.625rem] items-center gap-1 rounded-md px-2 text-sm font-semibold",
+        "ds-badge ds-badge-md inline-flex items-center gap-1 rounded-md px-2 text-sm font-semibold leading-none",
         direction === "in"
           ? "bg-success-soft text-success-strong"
           : "bg-destructive-soft text-destructive-strong",
       )}
     >
       <Icon className="size-3.5" aria-hidden="true" />
-      {direction === "in"
-        ? (inLabel ?? ds.documentEdit.income)
-        : (outLabel ?? ds.documentEdit.expense)}
+      <span className="ds-badge-text">
+        {direction === "in"
+          ? (inLabel ?? ds.documentEdit.income)
+          : (outLabel ?? ds.documentEdit.expense)}
+      </span>
     </span>
   );
 }

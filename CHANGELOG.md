@@ -1,6 +1,20 @@
 # Changelog – Slivka Design System
 
-## 2.109.0 (nevydáno) – DPH krok 4B
+## 2.110.0 (nevydáno) – Design 3
+
+### Změny
+- Záložky panelu mají stálou geometrii a aktivní ouško navazující na obsah.
+- Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
+- Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
+- Stavové štítky mají pevnou výšku a optické centrování; opraveno „Schválen“.
+- Identifikační řádek zachovává výšku při změně účtu.
+
+### Migrace
+- `Calendar.captionLayout` je deprecated od 2.110.0 a nemá účinek; používejte
+  společnou hlavičku kalendáře. Odstranění v nejbližší major verzi.
+- Vzhled zakázaných tlačítek se mění, jejich funkce a důvody zůstávají stejné.
+
+## 2.109.0 – DPH krok 4B
 
 ### Opravy po plné E2E sadě v GitHub Actions (run 39244635839)
 - **Pomocník Cena s DPH v buňce mřížky je mimo pořadí Tab** (regrese 2.109.0): Tab z Částky vede rovnou na Kód DPH. Otevření v mřížce myší; z klávesnice v detailu řádku, kde tlačítko v pořadí Tab zůstává (`JournalGrossHelper.tabbable`, výchozí `false`).

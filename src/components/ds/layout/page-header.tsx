@@ -101,7 +101,7 @@ export function PageHeader({
       <div className="flex min-w-0 flex-1 items-start gap-2">
         <div className="min-w-0 flex-1">
           {titleSlot ? <h1 className="sr-only">{title}</h1> : null}
-          <div className="flex min-w-0 items-center gap-1.5">
+          <div className="page-title-line flex min-w-0 items-center">
             {titleSlot ? (
               titleSlot
             ) : chrome ? (
@@ -115,14 +115,16 @@ export function PageHeader({
               <h1 className="typo-title min-w-0 truncate text-primary leading-[1.3]">{title}</h1>
             )}
             {titleBadge ? (
-              <span className="inline-flex shrink-0 items-center self-center">{titleBadge}</span>
+              <span className="page-title-badge ml-3 inline-flex shrink-0 items-center self-center">
+                {titleBadge}
+              </span>
             ) : null}
             {chrome?.dirty ? (
               <span
                 role="img"
                 aria-label={t.unsaved}
                 title={t.unsaved}
-                className="size-2 shrink-0 rounded-full bg-primary"
+                className="ml-2 size-2 shrink-0 rounded-full bg-primary"
               />
             ) : null}
           </div>

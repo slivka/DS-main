@@ -362,11 +362,20 @@ export function DateField({
                   <Calendar
                     mode="single"
                     locale={dsTexts.dateLocale}
-                    captionLayout="dropdown"
+                    baseDate={parseISO(baseDate)}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    onClose={() => setOpen(false)}
+                    onToday={(d) => {
+                      onChange(toISO(d));
+                      setText(formatDate(toISO(d)));
+                      setInvalid(false);
+                      setOpen(false);
+                    }}
                     startMonth={minDate ?? new Date(1900, 0)}
                     endMonth={maxDate ?? new Date(new Date().getFullYear() + 10, 11)}
                     disabled={disabledMatcher}
-                    defaultMonth={selected ?? maxDate}
+                    defaultMonth={selected ?? parseISO(baseDate) ?? maxDate}
                     selected={selected}
                     onSelect={(d) => {
                       setInvalid(false);
@@ -379,31 +388,37 @@ export function DateField({
                       "pointer-events-auto p-3",
                       gridZoom != null && "grid-date-calendar",
                     )}
+                    footerActions={
+                      quickOptions?.length && baseDate ? (
+                        <div className="flex flex-wrap gap-1">
+                          {quickOptions.map((option) => (
+                            <Button
+                              key={option.label}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const next = option.compute(baseDate);
+                                const date = parseISO(next);
+                                if (
+                                  !date ||
+                                  (minDate && date < minDate) ||
+                                  (maxDate && date > maxDate)
+                                )
+                                  return;
+                                onChange(next);
+                                setText(formatDate(next));
+                                setInvalid(false);
+                                setOpen(false);
+                              }}
+                            >
+                              {option.label}
+                            </Button>
+                          ))}
+                        </div>
+                      ) : undefined
+                    }
                   />
-                  {quickOptions?.length && baseDate ? (
-                    <div className="flex flex-wrap gap-1 border-t p-2">
-                      {quickOptions.map((option) => (
-                        <Button
-                          key={option.label}
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const next = option.compute(baseDate);
-                            const date = parseISO(next);
-                            if (!date || (minDate && date < minDate) || (maxDate && date > maxDate))
-                              return;
-                            onChange(next);
-                            setText(formatDate(next));
-                            setInvalid(false);
-                            setOpen(false);
-                          }}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
-                  ) : null}
                 </PopoverContent>
               </Popover>
             </>

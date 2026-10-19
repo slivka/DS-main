@@ -79,7 +79,7 @@ export function CalendarPicker({
           aria-label={label ?? dsTexts.date.dateSelection}
           className={cn(
             "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
-            "h-9 w-full justify-start gap-2 px-3 font-normal",
+            "h-[var(--control-h)] w-full justify-start gap-2 px-3 font-normal",
             !text && "text-muted-foreground",
             className,
           )}
@@ -94,7 +94,13 @@ export function CalendarPicker({
         <Calendar
           locale={dsTexts.dateLocale}
           mode="single"
-          captionLayout="dropdown"
+          minDate={minDate}
+          maxDate={maxDate}
+          onClose={() => setOpen(false)}
+          onToday={(d) => {
+            onChange(toISO(d));
+            setOpen(false);
+          }}
           startMonth={startMonth}
           endMonth={endMonth}
           selected={selected}

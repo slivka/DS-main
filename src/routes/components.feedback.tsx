@@ -42,7 +42,7 @@ function FeedbackPage() {
   const [notes, setNotes] = useState<RecordNote[]>([
     {
       id: "n1",
-      body: "Doklad zkontrolován, čeká na schvájení.",
+      body: "Doklad zkontrolován, čeká na schválení.",
       author: "Jana Nováková",
       createdAt: "2026-03-10T09:15:00Z",
       editable: true,

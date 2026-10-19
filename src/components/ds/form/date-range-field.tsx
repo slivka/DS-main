@@ -110,7 +110,13 @@ export function DateRangeField({
         <Calendar
           locale={dsTexts.dateLocale}
           mode="range"
-          captionLayout="dropdown"
+          minDate={minDate}
+          maxDate={maxDate}
+          onClose={() => setOpen(false)}
+          onToday={(d) => {
+            onChange({ from: toISO(d), to: toISO(d) });
+            setOpen(false);
+          }}
           startMonth={startMonth}
           endMonth={endMonth}
           numberOfMonths={months}

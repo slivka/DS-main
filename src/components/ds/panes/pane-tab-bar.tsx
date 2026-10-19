@@ -126,7 +126,7 @@ export function PaneTabBar({
         role="toolbar"
         aria-label={`Panel ${paneIndex + 1}`}
         className={cn(
-          "flex h-9 shrink-0 items-stretch gap-1 border-b bg-muted/60 pl-1 pr-1",
+          "pane-tabbar flex h-9 shrink-0 items-stretch gap-1 border-b border-border-strong bg-pane-tabbar pl-1 pr-1",
           isOver && "bg-primary/10",
           className,
         )}
@@ -265,12 +265,12 @@ function SortableTab({
             maxWidth: `${PANE_TAB_MAX_WIDTH_REM}rem`,
           }}
           className={cn(
-            "group relative flex items-center border-r text-sm transition-colors",
+            "pane-tab group relative flex items-center border border-transparent text-sm transition-colors",
             active && paneActive
-              ? "bg-card font-semibold text-foreground shadow-[inset_0_2px_0_var(--primary)]"
+              ? "pane-tab-active bg-card font-semibold text-foreground"
               : active
-                ? "bg-card/70 text-foreground/80 shadow-[inset_0_2px_0_var(--border)]"
-                : "text-muted-foreground hover-surface",
+                ? "pane-tab-active bg-card font-medium text-foreground"
+                : "font-normal text-foreground hover-surface",
             attention && "ring-2 ring-inset ring-destructive",
             isDragging && "z-10 opacity-70",
           )}
@@ -304,7 +304,14 @@ function SortableTab({
                     className="size-2 shrink-0 rounded-full bg-primary"
                   />
                 ) : null}
-                {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
+                {Icon ? (
+                  <Icon
+                    className={cn(
+                      "size-3.5 shrink-0",
+                      active && paneActive ? "text-primary" : "text-muted-foreground",
+                    )}
+                  />
+                ) : null}
                 <span className="truncate">{label}</span>
               </button>
             </TooltipTrigger>

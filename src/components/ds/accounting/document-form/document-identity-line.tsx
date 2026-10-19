@@ -122,12 +122,15 @@ export function DocumentIdentityLine({
     ) : null;
   if (account)
     items.push(
-      <span key="account" className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+      <span
+        key="account"
+        className="document-identity-account inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap"
+      >
         <span className="inline-flex h-[1.5em] items-center rounded-sm border border-border px-1 font-mono text-xs font-semibold uppercase text-muted-foreground">
           {account.side}
         </span>
         {editingAccount ? (
-          <span className="w-[18rem] max-w-full">
+          <span className="document-identity-account-box">
             <AccountSelect
               id="document-mainAccountId"
               ariaLabel={texts.mainAccountSelect}
@@ -144,7 +147,7 @@ export function DocumentIdentityLine({
           <span
             id="document-mainAccountId"
             data-slot="document-identity-account"
-            className="truncate"
+            className="document-identity-account-box flex items-center truncate border border-transparent rounded-md px-3 text-sm font-normal"
           >
             {accountLabel ?? account.label}
           </span>
