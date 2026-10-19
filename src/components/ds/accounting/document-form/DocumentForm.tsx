@@ -28,8 +28,8 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { variableSymbolLinkState } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
-import { headerFieldKey, useDocumentFieldRenderers } from "./use-document-field-renderers";
-import type { JournalLinesEditorProps } from "../journal-editor-types";
+import { useDocumentFieldRenderers } from "./use-document-field-renderers";
+import { useDocumentIssueProjection } from "./use-document-issue-projection";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
 import { DocumentIdentityLine } from "./document-identity-line";
@@ -479,9 +479,11 @@ export function DocumentForm(props: DocumentFormProps) {
               field,
               vsLink,
               layout: bankMovement ? "grid20" : "flex",
-      vsPendingText: ["FV", "ZFV", "DDPZ"].includes(code)
-        ? dsTexts.documentEdit.numberPending
-        : undefined,
+      // „Přidělí se při zařazení“ jen u vydaných dokladů ve stavu koncept.
+      vsPendingText:
+        ["FV", "ZFV", "DDPZ"].includes(code) && (props.status ?? "draft") === "draft"
+          ? dsTexts.documentEdit.numberPending
+          : undefined,
             }}
             amount={{
               t,
