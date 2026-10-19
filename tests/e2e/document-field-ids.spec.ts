@@ -92,8 +92,15 @@ const scenarios = [
 
 for (const scenario of scenarios) {
   test(`${scenario.code}: skutečná id všech polí vykreslené varianty`, async ({ page }) => {
-    await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true");
+    // Přijatá faktura je na stránce Další doklady, bankovní pohyb ve výpisu, ostatní v Editoru dokladů.
+    const url =
+      scenario.code === "FP"
+        ? "/components/accounting-documents"
+        : scenario.code === "BA"
+          ? "/components/accounting-bank"
+          : "/components/accounting-forms";
+    await page.goto(url, { waitUntil: "networkidle" });
+    await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
     const form = page
       .locator('div[class~="@container"][class~="space-y-4"]')
       .filter({ has: page.getByRole("heading", { name: scenario.title, exact: true }) })
@@ -108,8 +115,8 @@ for (const scenario of scenarios) {
 }
 
 test("Vlastní chyba buňky: oprava částky odstraní rámeček i položku pruhu", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true");
+  await page.goto("/components/accounting-documents", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
   const form = page
     .locator('div[class~="@container"][class~="space-y-4"]')
     .filter({ has: page.getByRole("heading", { name: "Interní doklad", exact: true }) })

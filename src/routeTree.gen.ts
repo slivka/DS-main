@@ -20,7 +20,13 @@ import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
 import { Route as ComponentsExcelExportRouteImport } from './routes/components.excel-export'
+import { Route as ComponentsAccountingLinesRouteImport } from './routes/components.accounting-lines'
+import { Route as ComponentsAccountingJournalRouteImport } from './routes/components.accounting-journal'
 import { Route as ComponentsAccountingFormsRouteImport } from './routes/components.accounting-forms'
+import { Route as ComponentsAccountingFieldsRouteImport } from './routes/components.accounting-fields'
+import { Route as ComponentsAccountingDocumentsRouteImport } from './routes/components.accounting-documents'
+import { Route as ComponentsAccountingControlsRouteImport } from './routes/components.accounting-controls'
+import { Route as ComponentsAccountingBankRouteImport } from './routes/components.accounting-bank'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
@@ -79,10 +85,46 @@ const ComponentsExcelExportRoute = ComponentsExcelExportRouteImport.update({
   path: '/components/excel-export',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComponentsAccountingLinesRoute =
+  ComponentsAccountingLinesRouteImport.update({
+    id: '/components/accounting-lines',
+    path: '/components/accounting-lines',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ComponentsAccountingJournalRoute =
+  ComponentsAccountingJournalRouteImport.update({
+    id: '/components/accounting-journal',
+    path: '/components/accounting-journal',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ComponentsAccountingFormsRoute =
   ComponentsAccountingFormsRouteImport.update({
     id: '/components/accounting-forms',
     path: '/components/accounting-forms',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ComponentsAccountingFieldsRoute =
+  ComponentsAccountingFieldsRouteImport.update({
+    id: '/components/accounting-fields',
+    path: '/components/accounting-fields',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ComponentsAccountingDocumentsRoute =
+  ComponentsAccountingDocumentsRouteImport.update({
+    id: '/components/accounting-documents',
+    path: '/components/accounting-documents',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ComponentsAccountingControlsRoute =
+  ComponentsAccountingControlsRouteImport.update({
+    id: '/components/accounting-controls',
+    path: '/components/accounting-controls',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ComponentsAccountingBankRoute =
+  ComponentsAccountingBankRouteImport.update({
+    id: '/components/accounting-bank',
+    path: '/components/accounting-bank',
     getParentRoute: () => rootRouteImport,
   } as any)
 const Char91__mockupChar93PreviewSplatRoute =
@@ -102,7 +144,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-bank': typeof ComponentsAccountingBankRoute
+  '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
+  '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
+  '/components/accounting-fields': typeof ComponentsAccountingFieldsRoute
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
+  '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
+  '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -118,7 +166,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-bank': typeof ComponentsAccountingBankRoute
+  '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
+  '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
+  '/components/accounting-fields': typeof ComponentsAccountingFieldsRoute
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
+  '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
+  '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -135,7 +189,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-bank': typeof ComponentsAccountingBankRoute
+  '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
+  '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
+  '/components/accounting-fields': typeof ComponentsAccountingFieldsRoute
   '/components/accounting-forms': typeof ComponentsAccountingFormsRoute
+  '/components/accounting-journal': typeof ComponentsAccountingJournalRoute
+  '/components/accounting-lines': typeof ComponentsAccountingLinesRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
   '/components/forms': typeof ComponentsFormsRoute
@@ -153,7 +213,13 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-bank'
+    | '/components/accounting-controls'
+    | '/components/accounting-documents'
+    | '/components/accounting-fields'
     | '/components/accounting-forms'
+    | '/components/accounting-journal'
+    | '/components/accounting-lines'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -169,7 +235,13 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-bank'
+    | '/components/accounting-controls'
+    | '/components/accounting-documents'
+    | '/components/accounting-fields'
     | '/components/accounting-forms'
+    | '/components/accounting-journal'
+    | '/components/accounting-lines'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -185,7 +257,13 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-bank'
+    | '/components/accounting-controls'
+    | '/components/accounting-documents'
+    | '/components/accounting-fields'
     | '/components/accounting-forms'
+    | '/components/accounting-journal'
+    | '/components/accounting-lines'
     | '/components/excel-export'
     | '/components/feedback'
     | '/components/forms'
@@ -202,7 +280,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuidelinesRoute: typeof GuidelinesRoute
   WorkspaceSettingsRoute: typeof WorkspaceSettingsRouteWithChildren
+  ComponentsAccountingBankRoute: typeof ComponentsAccountingBankRoute
+  ComponentsAccountingControlsRoute: typeof ComponentsAccountingControlsRoute
+  ComponentsAccountingDocumentsRoute: typeof ComponentsAccountingDocumentsRoute
+  ComponentsAccountingFieldsRoute: typeof ComponentsAccountingFieldsRoute
   ComponentsAccountingFormsRoute: typeof ComponentsAccountingFormsRoute
+  ComponentsAccountingJournalRoute: typeof ComponentsAccountingJournalRoute
+  ComponentsAccountingLinesRoute: typeof ComponentsAccountingLinesRoute
   ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
@@ -293,11 +377,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsExcelExportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/accounting-lines': {
+      id: '/components/accounting-lines'
+      path: '/components/accounting-lines'
+      fullPath: '/components/accounting-lines'
+      preLoaderRoute: typeof ComponentsAccountingLinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/accounting-journal': {
+      id: '/components/accounting-journal'
+      path: '/components/accounting-journal'
+      fullPath: '/components/accounting-journal'
+      preLoaderRoute: typeof ComponentsAccountingJournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/components/accounting-forms': {
       id: '/components/accounting-forms'
       path: '/components/accounting-forms'
       fullPath: '/components/accounting-forms'
       preLoaderRoute: typeof ComponentsAccountingFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/accounting-fields': {
+      id: '/components/accounting-fields'
+      path: '/components/accounting-fields'
+      fullPath: '/components/accounting-fields'
+      preLoaderRoute: typeof ComponentsAccountingFieldsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/accounting-documents': {
+      id: '/components/accounting-documents'
+      path: '/components/accounting-documents'
+      fullPath: '/components/accounting-documents'
+      preLoaderRoute: typeof ComponentsAccountingDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/accounting-controls': {
+      id: '/components/accounting-controls'
+      path: '/components/accounting-controls'
+      fullPath: '/components/accounting-controls'
+      preLoaderRoute: typeof ComponentsAccountingControlsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/accounting-bank': {
+      id: '/components/accounting-bank'
+      path: '/components/accounting-bank'
+      fullPath: '/components/accounting-bank'
+      preLoaderRoute: typeof ComponentsAccountingBankRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/__mockup/preview/$': {
@@ -332,7 +458,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuidelinesRoute: GuidelinesRoute,
   WorkspaceSettingsRoute: WorkspaceSettingsRouteWithChildren,
+  ComponentsAccountingBankRoute: ComponentsAccountingBankRoute,
+  ComponentsAccountingControlsRoute: ComponentsAccountingControlsRoute,
+  ComponentsAccountingDocumentsRoute: ComponentsAccountingDocumentsRoute,
+  ComponentsAccountingFieldsRoute: ComponentsAccountingFieldsRoute,
   ComponentsAccountingFormsRoute: ComponentsAccountingFormsRoute,
+  ComponentsAccountingJournalRoute: ComponentsAccountingJournalRoute,
+  ComponentsAccountingLinesRoute: ComponentsAccountingLinesRoute,
   ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,

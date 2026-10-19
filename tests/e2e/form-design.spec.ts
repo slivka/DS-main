@@ -21,7 +21,7 @@ async function zoom(page: Page, value: number) {
 }
 
 test("měna nemění rozměry ani polohu při zamčení", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   await zoom(page, 1);
   const section = page.getByTestId("form-with-supplier");
   await page.waitForTimeout(1000);
@@ -42,7 +42,7 @@ test("měna nemění rozměry ani polohu při zamčení", async ({ page }) => {
 });
 
 test("účet lícuje s Dodavatelem a číslo dodavatele s IČO a DIČ", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   await zoom(page, 1);
   const section = page.getByTestId("form-with-supplier");
   await section.evaluate((el) => {
@@ -68,7 +68,7 @@ test("účet lícuje s Dodavatelem a číslo dodavatele s IČO a DIČ", async ({
 });
 
 test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   for (const value of [0.7, 1, 1.25, 1.5, 2]) {
     await zoom(page, value);
     // Rozložení se po změně zoomu ustálí až po přepočtu; měř opakovaně.
@@ -96,7 +96,7 @@ test("pevná měna zabírá stejnou šířku jako výběr při pěti aplikační
   page,
 }) => {
   test.setTimeout(300_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   await page.waitForTimeout(1000);
   const section = page.getByTestId("form-with-supplier");
   const measure = () =>
@@ -122,7 +122,7 @@ test("pevná měna zabírá stejnou šířku jako výběr při pěti aplikační
 
 test("pevná měna nepřeteče v úzkém panelu při pěti aplikačních zoomech", async ({ page }) => {
   test.setTimeout(300_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
   await page.waitForTimeout(1000);
   await setChecked(page, true);
   const section = page.getByTestId("form-with-supplier");

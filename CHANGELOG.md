@@ -3,6 +3,7 @@
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
 ### Opravy
+- **Záložka DPH ve spodní rekapitulaci editoru řádků** chyběla (souhrn se do rekapitulace nepředával) – vrácena. Daň bere ze skupin DPH (stejný výpočet jako DB, včetně přepisu „dle dokladu“); u zaúčtovaného dokladu z uložených řádků daně, jen ke čtení. U dokladu mimo DPH se nezobrazí.
 - **Zaokrouhlení jako DB:** všechny výpočty DPH (daň skupiny, rozpočet na řádky, pomocník Cena s DPH, `taxFromGrossTotal`, sloupce v měně firmy) používají `roundHalfAwayFromZero` / `mulDivRound` – polovina od nuly v celých jednotkách jako Postgres `round(numeric, 2)` (10,075 → 10,08; −7,875 → −7,88). Dříve Math.round dával na záporných a hraničních hodnotách jiné výsledky.
 - **Zaúčtovaný doklad** má rekapitulaci DPH z uložených řádků (daň z řádků daně DB, přepisy jako „dle dokladu“), bez úprav a bez pomocníka (`vatGroupsFromStored`).
 - **Výkon:** pomocník Cena s DPH je v buňce jen lehké tlačítko, okno je jedno na editor; výpočet skupin a mapa rozpočtených řádků jsou memoizované. Ukázka skupin DPH se připojí až při posunu k ní.
@@ -43,6 +44,9 @@
 3. Předejte `vatExchangeRate` (kurz DPH), `roundingLimit` (limit firmy) a `onRoundingChange`.
 4. `vatOverrideSeverity="warning"` u konceptu, `"error"` při zařazení (DB vrací `vat_override_diff;skupina;sazba`).
 5. Testy a selektory na `journal-lines-rounding` nahraďte `journal-footer-rounding`.
+
+### Ukázky (jen náhled, knihovna ani katalog beze změny)
+- Stránka účetních formulářů rozdělena na sedm stránek s přepínačem: Editor dokladů (původní adresa), Další doklady, Ovládací prvky a hlavičky, Bankovní výpis a pohyb, Řádky dokladu a DPH, Řádky zápisu, Pole a sestavy. Žádná ukázka nezmizela; každá stránka se načte do 8,1 s (dříve celá stránka 10–16 s). Testy v prohlížeči míří na novou stránku a čekají na signál připravenosti stránky; žádné čekání se nezvyšovalo.
 
 ### Katalog
 - design-system.json proti poslední vydané 2.108.0 (`03f1c677`): **449 komponent / 890 props → 469 / 907**; nic neubylo. Předchozí údaj „nic neubylo“ byl počítán proti `8db33914` a nebyl pravdivý: proti 2.108.0 chyběly `DocumentAccountingDateLink`, `FormIssue`, `formIssuesTitle`, `mergeFormIssues`, `visibleFormIssues`, `deriveVariableSymbol` a props `DocumentForm.issues`, `saveFailed`, `onIssuesClose`, `onFieldChange`, `validationActive`, `bankCodeOptions`, `value.variableSymbolLinked`, `JournalLinesEditor.cellIssues`, `BankStatementForm.value.bankClosing` – vráceny.

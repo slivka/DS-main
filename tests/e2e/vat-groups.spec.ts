@@ -16,7 +16,7 @@ async function clickUntil(target: Locator, done: () => Promise<void>) {
 test.describe.configure({ timeout: 180_000 });
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
   // Ukázka se připojí až při posunu k ní (po hydrataci stránky).
   const heading = page.getByRole("heading", { name: "Skupiny DPH (2.109.0)" });
   await expect(async () => {

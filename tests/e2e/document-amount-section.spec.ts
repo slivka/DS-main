@@ -5,7 +5,7 @@ test.use({ viewport: { width: 1280, height: 1800 } });
 
 test("Částka sdílí výšku, písmo a osu popisků s VS", async ({ page }, testInfo) => {
   test.setTimeout(180_000);
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("form-design-two");
   await expect(form).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const total = form.locator("#document-amountTotal");

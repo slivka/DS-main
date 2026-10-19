@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("Tab z Částky na Kód DPH a psaní otevře výběr", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
   // Stránka je velká: psaní do buňky funguje až po hydrataci, proto čekáme na odezvu editoru.
   const amount = page.locator('[data-cell-key="fv1:amount"]');
   await amount.scrollIntoViewIfNeeded();

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("JournalLinesEditor", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/components/accounting-forms");
+    await page.goto("/components/accounting-journal");
     await page.waitForFunction(() =>
       Object.keys(document.querySelector('[data-cell-key="l1:text"]') ?? {}).some((key) =>
         key.startsWith("__reactProps"),
@@ -35,7 +35,7 @@ test.describe("JournalLinesEditor", () => {
 
     await text.click();
     await text.press("a");
-    await page.getByRole("heading", { name: "Řádky", exact: true }).first().click();
+    await page.getByRole("heading", { name: "Řádky zápisu v Kč", exact: true }).click();
     await expect(text).toContainText("a");
 
     await amount.click();

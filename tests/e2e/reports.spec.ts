@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 test.describe("Výkazy 2.8.0", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/components/accounting-forms");
+    await page.goto("/components/accounting-fields");
     await page.waitForFunction(() =>
       Object.keys(document.querySelector('[data-slot="tree-grid"] button') ?? {}).some((key) =>
         key.startsWith("__react"),

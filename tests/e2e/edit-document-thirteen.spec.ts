@@ -7,10 +7,15 @@ test.use({ viewport: { width: 1280, height: 1800 } });
 // Jednotlivá očekávání používají běžný timeout a žádné opakování celého testu.
 test.setTimeout(480_000);
 async function prepare(page: Page) {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
     timeout: 60_000,
   });
+}
+/** Přepínač ND je v řádcích scénářů na stránce Další doklady. */
+async function prepareDocuments(page: Page) {
+  await page.goto("/components/accounting-documents", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
 }
 async function zoom(page: Page, value: number) {
   await page.evaluate(async (next) => {
@@ -275,7 +280,7 @@ test("přetékající grid nezakrývá ND prvního řádku a skutečný klik př
   page,
 }, info) => {
   test.setTimeout(90_000);
-  await prepare(page);
+  await prepareDocuments(page);
   await zoom(page, 1);
   const nd = page.locator('[data-slot="non-tax-toggle"]').first();
   const grid = nd.locator("xpath=ancestor::div[contains(@class,'zoom-grid')][1]");
@@ -307,7 +312,7 @@ test("přetékající grid nezakrývá ND prvního řádku a skutečný klik př
 });
 
 test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
-  await prepare(page);
+  await prepareDocuments(page);
   await page.evaluate(() => document.fonts.ready);
   const nd = page.locator('[data-slot="non-tax-toggle"]').first();
   const browser = info.project.name;

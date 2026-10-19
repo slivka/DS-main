@@ -5,7 +5,7 @@ test.use({ viewport: { width: 1280, height: 1800 } });
 test.setTimeout(180_000);
 
 test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page }, testInfo) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const received = page.getByTestId("edit-document-eleven-received");
   await expect(received).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   await received.getByRole("button", { name: "Platit příkazem", exact: true }).click();
@@ -53,7 +53,7 @@ test("zakázané KS a SS sdílejí vzhled zamčeného Datum DPH", async ({ page 
 });
 
 test("doklad jen pro čtení sdílí barvy a čitelný text v obou režimech", async ({ page }, info) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const form = page.getByTestId("document-readonly");
   await expect(form).toHaveAttribute("data-ready", "true", { timeout: 60_000 });
   const reference = form.locator("#document-vatDate");

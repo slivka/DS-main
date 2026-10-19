@@ -5,7 +5,9 @@ import { expect, test } from "@playwright/test";
 test("VS zámek: náhled, odemčení se stejnou hodnotou, uvolnění při > 10 číslicích", async ({
   page,
 }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
+  // Čekat na hydrataci stránky (spolehlivý signál), ne na delší limit.
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true");
   const external = page.locator("#document-externalNumber").first();
   await external.scrollIntoViewIfNeeded();
   // Stránka má více formulářů se stejnými id – pracujeme v nejbližším společném předkovi.

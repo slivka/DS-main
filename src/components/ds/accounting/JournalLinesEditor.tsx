@@ -17,6 +17,7 @@ import { JournalFooter } from "./JournalFooter";
 import { JournalGrossHelperPopover } from "./journal-gross-helper";
 import { JournalDifferenceBar } from "./journal-difference-bar";
 import { JournalVatRecap } from "./journal-vat-recap";
+import { vatSummaryWithGroupTax } from "./journal-vat-summary-groups";
 import { JournalRow } from "./JournalRow";
 import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
@@ -153,6 +154,17 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
     // Stálá hodnota kontextu: nový objekt jen při změně stavu, ne při každém vykreslení.
     const contextValue = React.useMemo(() => ({ editor, keyboard }), [editor, keyboard]);
     const { layout, totals, t, vatOn } = editor;
+    const vatSummary = React.useMemo(
+      () =>
+        vatOn
+          ? vatSummaryWithGroupTax(
+              totals.vatSummary,
+              editor.vatGroups.vatGroups,
+              editor.vatGroups.exchangeRate,
+            )
+          : undefined,
+      [vatOn, totals.vatSummary, editor.vatGroups.vatGroups, editor.vatGroups.exchangeRate],
+    );
     const { recap = {}, recapTabs = [], storageKey = "journal-lines" } = props;
     return (
       <JournalEditorContext.Provider value={contextValue}>
@@ -193,6 +205,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
               tab={recap.tab}
               onTabChange={recap.onTabChange}
               recapTabs={recapTabs}
+              vatSummary={vatSummary}
               zoom={layout.zoom}
               storageKey={`${storageKey}:recap`}
               texts={{ rounding: t.rounding, fxRounding: t.fxRounding, total: t.total }}

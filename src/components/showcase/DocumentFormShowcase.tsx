@@ -41,7 +41,6 @@ import {
   USERS,
 } from "./document-form-showcase-data";
 
-import { DocumentFormSecondaryScenarios } from "./document-form-secondary-scenarios";
 import { useDocumentFormShowcaseState } from "./use-document-form-showcase-state";
 
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
@@ -338,7 +337,6 @@ export function DocumentFormShowcase() {
           status="filed"
           vat={{ visible: false }}
         />
-        <DocumentFormSecondaryScenarios state={state} />
       </ShowcaseSection>
     </>
   );

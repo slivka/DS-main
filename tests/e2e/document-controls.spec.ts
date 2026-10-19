@@ -4,8 +4,8 @@ import { expect, test } from "@playwright/test";
 for (const zoom of [1, 1.5, 2]) {
   for (const width of [360, 640, 1200]) {
     test(`Ovládání formuláře ${width}px při ${zoom * 100}%`, async ({ page }) => {
-      await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-      await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+      await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
+      await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
         timeout: 45000,
       });
       await expect(page.getByTestId("document-controls")).toBeVisible();
@@ -86,8 +86,8 @@ for (const zoom of [1, 1.5, 2]) {
 }
 
 test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("bank-showcase")).toHaveAttribute("data-ready", "true", {
+  await page.goto("/components/accounting-controls", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
     timeout: 45000,
   });
   for (const zoom of [0.7, 2]) {
@@ -109,7 +109,7 @@ test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page
 });
 
 test("Nový výpis má grid pohybů s akcí Nový výdaj", async ({ page }) => {
-  await page.goto("/components/accounting-forms", { waitUntil: "networkidle" });
+  await page.goto("/components/accounting-bank", { waitUntil: "networkidle" });
   const showcase = page.getByTestId("bank-showcase");
   await expect(showcase).toHaveAttribute("data-ready", "true", { timeout: 45000 });
   await showcase.getByRole("button", { name: "empty", exact: true }).click();
