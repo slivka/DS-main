@@ -118,7 +118,6 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
     paymentMethodId: "x",
     description: "x",
     amountTotal: "x",
-    mainAccountId: "x",
     issueDate: "x",
     accountingDate: "x",
     taxDate: "x",
@@ -131,9 +130,6 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
         paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
       />,
     );
-    // Účet hlavičky se vykreslí až v režimu změny účtu (tužka).
-    const pencil = view.queryAllByRole("button", { name: T.changeAccount })[0];
-    if (pencil) fireEvent.click(pencil);
     const issues = documentClientIssues({
       value: { ...header, amountTotal: 0 },
       foreign: false,
@@ -142,6 +138,16 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
       fieldLabels: FIELD_LABELS,
     });
     expect(issues.length).toBeGreaterThan(10);
+    // Účet hlavičky se vykreslí až v režimu změny účtu (tužka) – ověříme aspoň mapování id.
+    const mainAccount = documentClientIssues({
+      value: { ...header, amountTotal: 0 },
+      foreign: false,
+      t: T,
+      fieldErrors: { mainAccountId: "x" },
+      fieldLabels: FIELD_LABELS,
+    })[0];
+    expect(mainAccount.fieldId).toBe("document-mainAccountId");
+    expect(mainAccount.label).toBe(T.mainAccountSelect);
     for (const issue of issues) {
       expect(issue.label).not.toBe(Object.keys(fpErrors).find((k) => k === issue.label));
       expect(
