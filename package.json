@@ -17,9 +17,9 @@
     "test:excel": "playwright test tests/e2e/excel-download.spec.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check:quick": "bun scripts/check-quick.ts",
-    "check:full": "bun scripts/check-full.ts",
-    "check:catalog": "bun scripts/check-catalog.ts",
+    "check:quick": "bun ./scripts/check-quick.ts",
+    "check:full": "bun ./scripts/check-full.ts",
+    "check:catalog": "bun ./scripts/check-catalog.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {

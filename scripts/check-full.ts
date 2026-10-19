@@ -10,7 +10,7 @@ const steps: [string, string[]][] = [
   ["unit", ["bun", "test", "tests/unit"]],
   ["format:check", ["bunx", "prettier", "--check", "."]],
   ["build", ["bunx", "vite", "build"]],
-  ["check:catalog", ["bun", "scripts/check-catalog.ts", ...process.argv.slice(2)]],
+  ["check:catalog", ["bun", "./scripts/check-catalog.ts", ...process.argv.slice(2)]],
 ];
 
 const started = Date.now();
