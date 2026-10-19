@@ -18,6 +18,10 @@ export interface BankMovementAccountProps {
   bankCodeOptions?: Array<{ code: string; name: string }>;
   /** Zakázání editace. */
   disabled?: boolean;
+  /** Chyby polí z projekce pruhu (rámeček + ikona + bublina). */
+  fieldErrors?: Partial<Record<DocumentHeaderField, string>>;
+  /** Varování polí z projekce pruhu (žlutě). */
+  fieldWarnings?: Partial<Record<DocumentHeaderField, string>>;
 }
 
 /** Český účet nebo IBAN bez mazání druhého režimu. */

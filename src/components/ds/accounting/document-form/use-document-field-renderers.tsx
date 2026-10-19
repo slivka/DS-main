@@ -9,6 +9,7 @@ import { DateField } from "../../form/date-field";
 import { SuggestInput } from "../../form/suggest-input";
 import { Field } from "../../layout/RecordDialog";
 import { cn } from "../../../../lib/utils";
+import { headerFieldKeyFromId } from "./document-validation-feedback";
 import type {
   DocumentAccountingDateLink,
   DocumentDateField,
