@@ -127,6 +127,7 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
     const view = render(
       <Doc
         fieldErrors={fpErrors}
+        vat={{ visible: true }}
         paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
       />,
     );
