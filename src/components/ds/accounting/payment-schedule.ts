@@ -1,3 +1,5 @@
+import { roundHalfAwayFromZero } from "../../../lib/decimal-round";
+
 /** Položka platebního kalendáře dokladu. */
 export type PaymentScheduleItem = {
   id?: string;
@@ -34,7 +36,8 @@ export interface PaymentScheduleParams {
   retentionDescription?: string;
 }
 
-const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+/** Zaokrouhlení polovinou od nuly jako DB. */
+const round2 = (value: number) => roundHalfAwayFromZero(value, 2);
 
 const pad = (value: number) => String(value).padStart(2, "0");
 

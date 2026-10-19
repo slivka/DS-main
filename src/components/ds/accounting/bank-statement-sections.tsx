@@ -5,6 +5,7 @@ import { Input } from "../../ui/input";
 import { useCompactDateGeometry } from "../form/use-compact-date-geometry";
 import type { BankStatementTexts } from "../../../ds-texts";
 import { formatAmount } from "../../../lib/format";
+import { exactSum, roundHalfAwayFromZero } from "../../../lib/decimal-round";
 import { cn } from "../../../lib/utils";
 import { AmountInput } from "./amount";
 import { Sigma } from "lucide-react";
@@ -35,7 +36,7 @@ interface BasicSectionProps {
 
 /** Konečný zůstatek z pohybů zaokrouhlený na haléře. */
 export function statementClosing(balances: BankStatementBalances): number {
-  return Math.round((balances.opening + balances.income - balances.expense) * 100) / 100;
+  return roundHalfAwayFromZero(exactSum([balances.opening, balances.income, -balances.expense]), 2);
 }
 
 /** Rozdíl zůstatku na výpise proti pohybům; null = Σ (počítá se z pohybů). */
@@ -44,7 +45,7 @@ export function statementDifference(
   balances: BankStatementBalances,
 ): number | null {
   if (bankClosing === null) return null;
-  const difference = Math.round((bankClosing - statementClosing(balances)) * 100) / 100;
+  const difference = roundHalfAwayFromZero(exactSum([bankClosing, -statementClosing(balances)]), 2);
   return difference === 0 ? null : difference;
 }
 

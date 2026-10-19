@@ -10,10 +10,8 @@ async function clickUntil(target: Locator, done: () => Promise<void>) {
     await target.scrollIntoViewIfNeeded();
     await target.click();
     await done();
-  }).toPass({ timeout: 30_000 });
+  }).toPass({ timeout: 10_000 });
 }
-
-test.describe.configure({ timeout: 180_000 });
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
@@ -22,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   await expect(async () => {
     await heading.scrollIntoViewIfNeeded();
     await expect(page.getByTestId("vat-groups-showcase")).toBeVisible({ timeout: 1_000 });
-  }).toPass({ timeout: 30_000 });
+  }).toPass({ timeout: 10_000 });
   // Velká stránka hydratuje několik sekund; interakce až s Reactem na tlačítkách ukázky.
   await page.waitForFunction(
     () => {
@@ -32,7 +30,7 @@ test.beforeEach(async ({ page }) => {
       return Boolean(node && Object.keys(node).some((key) => key.startsWith("__react")));
     },
     undefined,
-    { timeout: 120_000 },
+    { timeout: 10_000 },
   );
 });
 

@@ -4,18 +4,25 @@
 
 ### Opravy
 - **Záložka DPH ve spodní rekapitulaci editoru řádků** chyběla (souhrn se do rekapitulace nepředával) – vrácena. Daň bere ze skupin DPH (stejný výpočet jako DB, včetně přepisu „dle dokladu“); u zaúčtovaného dokladu z uložených řádků daně, jen ke čtení. U dokladu mimo DPH se nezobrazí.
-- **Zaokrouhlení jako DB:** všechny výpočty DPH (daň skupiny, rozpočet na řádky, pomocník Cena s DPH, `taxFromGrossTotal`, sloupce v měně firmy) používají `roundHalfAwayFromZero` / `mulDivRound` – polovina od nuly v celých jednotkách jako Postgres `round(numeric, 2)` (10,075 → 10,08; −7,875 → −7,88). Dříve Math.round dával na záporných a hraničních hodnotách jiné výsledky.
+- **Zaokrouhlení jako DB:** výpočty DPH (daň skupiny, rozpočet na řádky, pomocník Cena s DPH, `taxFromGrossTotal`, sloupce v měně firmy) používají `roundHalfAwayFromZero` / `mulDivRound` – polovina od nuly v celých jednotkách jako Postgres `round(numeric, 2)` (10,075 → 10,08; −7,875 → −7,88). Dříve Math.round dával na záporných a hraničních hodnotách jiné výsledky.
 - **Zaúčtovaný doklad** má rekapitulaci DPH z uložených řádků (daň z řádků daně DB, přepisy jako „dle dokladu“), bez úprav a bez pomocníka (`vatGroupsFromStored`).
 - **Výkon:** pomocník Cena s DPH je v buňce jen lehké tlačítko, okno je jedno na editor; výpočet skupin a mapa rozpočtených řádků jsou memoizované. Ukázka skupin DPH se připojí až při posunu k ní.
 - **Tolerance přepisu** jako DB `document_vat_validate`: |přepis − vypočtená| × kurz se porovnává nezaokrouhleně (0,04 × 25,10 = 1,004 → mimo toleranci).
 - **Přepis při nulovém základu:** úpravy DPH / Celkem dle dokladu se nenabízejí; existující přepis ≠ 0 je položka pruhu (`overrideZeroBase`).
-- **Položky skupin DPH** jdou do `onValidationChange` jako chyba i varování (`severity`, `label`, bez `line`); `count` počítá jen chyby. BREAKING (typy): `errors[].line` je volitelné.
 - **Dorovnat základ** vynuluje Rozdíl: u skupiny s přepisem posune základ o celý rozdíl, bez přepisu hledá posun, po kterém základ + round(Σ × sazba / 100) dá cíl; když neexistuje, nabídka ho nenabízí.
-- **Zaokrouhlení v nabídce Rozdílu** jen když |stávající zaokrouhlení + rozdíl| ≤ limit; u cizí měny se limit (v měně firmy) přepočte kurzem dokladu.
+- **Zaokrouhlení v nabídce Rozdílu** jen když |stávající zaokrouhlení + rozdíl| ≤ limit. U dokladu v cizí měně se nenabízí (zaokrouhlení je v měně firmy, Rozdíl v měně dokladu); zůstává Dorovnat DPH / základ. Domácí měna beze změny.
 - **Rekapitulace a výška řádku (2.107):** „vypočteno · rozdíl“ je v bublině ikony ⓘ, stav skupiny je rámeček uvnitř buňky – výška řádku se nemění.
 - **Patička:** jediný řádek Součet v mřížce (bez samostatného „Celkem“, bez zaokrouhlení); lišta nese Zaokrouhlení a Rozdíl. Celkovou částku lišta ukáže jen při skrytém sloupci s DPH (`journal-footer-sum-total`).
 - `DocumentForm` (FP, ZFP, ZFV, DDPOZ): otevření existujícího dokladu nic nezapisuje ani nevolá `onChange`. Stav vazby Datum účetního případu ↔ Datum vystavení se u existujícího dokladu odvodí z dat (`!issueDate || accountingDate === issueDate`) a přepočítá se při změně id. Nastavení `accountingDateLinked` platí jen pro nový doklad. Dříve se odpojené datum při otevření přepsalo na datum vystavení a doklad se zaúčtoval do špatného období. Řízený `accountingDateLink` beze změny.
 - Rekapitulace DPH: sloupce v měně firmy řídí aplikace přes `recap.vatHomeOpen` / `recap.onVatHomeOpenChange` (bez nich se přepínač nezobrazí). U zaúčtovaného dokladu se rekapitulace zobrazí jen ke čtení, místo aby zmizela.
+
+### Opravy po kontrole kódu 2.109.0 (druhé kolo)
+- **Zaokrouhlení i ve zbylých cestách:** daň řádku (`calculateVatFromBase`, PDP / EU), dělení při částečném odpočtu, domácí částka řádku daně, náhled Kurzového zaokrouhlení, `summarizeVat`, domácí částky řádků v cizí měně (`toHomeAmount`, `roundJournalAmount`, `calculateLineAmount`), pevná daň v rekapitulaci, `convertAmount`, součty `DocumentForm`, zůstatky výpisu, platební kalendář a `roundTo` počítají polovinou od nuly jako DB (−12,50 × 21 % → −2,63, dříve −2,62). Převody kurzem jako DB `round(x × kurz, 2)` po řádcích. Test hlídá, že v účetních komponentách a `lib` nezůstal Math.round v peněžních výpočtech.
+- **Zaúčtovaný doklad:** sloupec DPH v mřížce a Součet DPH v patičce berou daň z uložených řádků daně (Σ řádků se stejným `vatParentLineId`), ne z výpočtu po řádcích (3 × 0,50 při 21 % = 0,32, dříve 0,33).
+- **Samovyměření (PDP, EU)** se skupinuje stejně jako ostatní kódy (daň skupiny round(Σ základů × sazba / 100, 2), rozpočet na řádky); rekapitulace ho ukáže bez úprav. Přepis daně ani pomocník Cena s DPH nemá; zadaný přepis se ignoruje (DB `vat_override_self_assessment`). Kód bez daně ani řádek bez známé sazby do skupin nevstupuje. `VatGroup.selfAssessment`, `ComputeVatGroupsOptions.vatEnabled` (doklad mimo DPH → žádné skupiny).
+- **Kurz DPH 0 / prázdný:** tolerance se nehodnotí (žádná položka pruhu) a částky v měně firmy nejsou dopočítané; dříve se počítalo s kurzem 1.
+- **Pomocník Cena s DPH u Jedn. ceny:** vstup i výsledek na 4 desetinná místa.
+- Test skupin DPH v prohlížeči má po rozdělení stránky běžné limity.
 
 ### Opravy po kontrole 2.108.0 (páté kolo)
 - BA: chyba čísla účtu, IBAN, kódu banky i SWIFT z `issues` (server i klient) se promítne do správného pole. Zpětné mapování id → klíč je explicitní tabulka; sdílená id (`document-movement-account`, `document-bank-code`) rozlišuje typ dokladu a `bankAccountKind`.
@@ -27,7 +34,8 @@
 - **Řádky jsou vždy bez DPH.** `JournalLinesVat.calcMode` a `onCalcModeChange` jsou @deprecated (odstraní se ve 3.0.0) a ignorované; přepínač Bez / S DPH v liště zmizel. Typ `VatCalcMode`, `applyVatCalcMode`, `baseFromGross`, `calculateVatFromGross` zůstávají exportované jako @deprecated.
 - **Ruční daň na řádku zrušena.** Buňka DPH ani Celkem s DPH se needitují, akce „Vrátit vypočtenou daň“ v řádku zmizela. `toJournalRow(s)` už neposílá `vat_manual`, `vat_amount_foreign` ani `amount_gross`. Řádek s `vatManual` z DB je pevná systémová daň (odpočet zálohy, import) – jen zobrazení se zámkem a bublinou.
 - **Patička Součet · Zaokrouhlení · Rozdíl** (`data-slot="journal-difference-bar"`, `journal-footer-sum`, `journal-footer-rounding`, `journal-lines-remaining`). Tlačítko „± Zaokrouhlení“ (`journal-lines-rounding`) a stav rozepsání v liště zrušeny, stejně jako automatický návrh zaokrouhlení na jakýkoli rozdíl. `JournalLinesRounding.limit` je @deprecated – použijte `roundingLimit`.
-- **Rekapitulace DPH** se přesunula pod mřížku (`journal-vat-recap`); záložka DPH ve spodní rekapitulaci se už nevykresluje.
+- **Rekapitulace DPH** se přesunula pod mřížku (`journal-vat-recap`).
+- **Položky skupin DPH** jdou do `onValidationChange` jako chyba i varování (`severity`, `label`, bez `line`); `count` počítá jen chyby. Typy: `errors[].line` je volitelné a varování jsou ve stejném poli.
 
 ### Nové
 - `JournalLinesEditor`: `vatOverrides`, `onVatOverridesChange`, `vatExchangeRate`, `vatExchangeRateAmount`, `roundingLimit`, `onRoundingChange`, `vatOverrideSeverity`. Sazba pro výpočet se bere z `VatCodeOption.rate` (sazba k Datu DPH) – samostatné `vatRateByCode` není potřeba.
@@ -44,6 +52,7 @@
 3. Předejte `vatExchangeRate` (kurz DPH), `roundingLimit` (limit firmy) a `onRoundingChange`.
 4. `vatOverrideSeverity="warning"` u konceptu, `"error"` při zařazení (DB vrací `vat_override_diff;skupina;sazba`).
 5. Testy a selektory na `journal-lines-rounding` nahraďte `journal-footer-rounding`.
+6. V `onValidationChange` ošetřete `line === undefined` (položky skupin DPH nemají řádek) a filtrujte podle `severity` (varování jsou ve stejném poli jako chyby).
 
 ### Ukázky (jen náhled, knihovna ani katalog beze změny)
 - Stránka účetních formulářů rozdělena na sedm stránek s přepínačem: Editor dokladů (původní adresa), Další doklady, Ovládací prvky a hlavičky, Bankovní výpis a pohyb, Řádky dokladu a DPH, Řádky zápisu, Pole a sestavy. Žádná ukázka nezmizela; každá stránka se načte do 8,1 s (dříve celá stránka 10–16 s). Testy v prohlížeči míří na novou stránku a čekají na signál připravenosti stránky; žádné čekání se nezvyšovalo.

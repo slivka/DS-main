@@ -6,6 +6,7 @@
 - [x] Rekapitulace DPH se skupinami, úpravy dle dokladu, tolerance, cizí měna
 - [x] Patička Součet · Zaokrouhlení · Rozdíl s nabídkou dorovnání
 - [x] Showcase, unit, Chromium E2E, katalog, CHANGELOG, system.md
+- [x] Druhé opravné kolo: zaokrouhlení ve všech cestách DPH, zaúčtovaný doklad z řádků daně, samovyměření ve skupinách, kurz 0, Zaokrouhlení jen v domácí měně, pomocník 4 desetinná místa
 - [ ] document-field-ids (E2E): 2–4 ze 6 testů nestihnou 10 s čekání na načtení stránky účetních formulářů (načítání trvá ~15 s, selhává i bez nové ukázky) – rozhodnout: delší čekání v testu, nebo rozdělit stránku
 
 

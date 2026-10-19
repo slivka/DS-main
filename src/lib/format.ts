@@ -2,6 +2,8 @@
 const EPS = 1e-9;
 
 /** Normalizuje hodnotu blízkou nule na skutečnou nulu, aby se nezobrazovala -0. */
+import { roundHalfAwayFromZero } from "./decimal-round";
+
 export function nzero(value: number): number {
   if (!Number.isFinite(value)) return 0;
   // `+ 0` navíc převede -0 na 0, aby se nikam nedostala záporná nula.
@@ -174,8 +176,8 @@ export const RATE_DECIMALS = 3;
 /** Zaokrouhlení na zadaný počet desetinných míst (bez artefaktů plovoucí čárky). */
 export function roundTo(value: number, decimals: number): number {
   if (!Number.isFinite(value)) return 0;
-  const f = 10 ** decimals;
-  const rounded = Math.round((value + Number.EPSILON * Math.sign(value || 1)) * f) / f;
+  // Polovina od nuly jako DB round(numeric, n) – i u záporných částek.
+  const rounded = roundHalfAwayFromZero(value, decimals);
   // Object.is(-0, 0) je false, proto -0 explicitně normalizujeme na 0.
   return Object.is(rounded, -0) ? 0 : nzero(rounded);
 }

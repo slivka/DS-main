@@ -7,6 +7,7 @@
 import type * as React from "react";
 
 import { formatAmount } from "../../../lib/format";
+import { mulDivRound } from "../../../lib/decimal-round";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import { Input } from "../../ui/input";
@@ -29,7 +30,6 @@ import {
   SHARED_COLUMNS,
   SPLIT_COLUMNS,
   VS_COLUMNS,
-  roundJournalAmount,
   type ColumnId,
 } from "./journal-lines-model";
 import { resolveLineVat } from "./journal-vat";
@@ -129,13 +129,13 @@ function VatDetail({ line, shown }: { line: JournalLine; shown: Set<ColumnId> })
   const resolved = resolveLineVat(line, vatCodeMap, { calcMode: editor.calcMode, foreign });
   const readOnly = editor.vatReadOnly;
   const rate = editor.rate;
-  const conversion =
-    (vat?.vatRate || rate || 0) / ((vat?.vatRate ? vat?.vatRateAmount : editor.rateAmount) || 1);
+  const fxRate = vat?.vatRate || rate || 0;
+  const fxUnit = (vat?.vatRate ? vat?.vatRateAmount : editor.rateAmount) || 1;
   const errors = editor.validations.get(line.id) ?? {};
   const warnings = editor.vatWarnings.get(line.id) ?? {};
   const inbound = (code?.direction === "in" || code?.selfAssessment) && code?.hasTax;
   const homeValue = (value: number | undefined, fallback: number) =>
-    formatAmount(value ?? roundJournalAmount(fallback * conversion), 2);
+    formatAmount(value ?? mulDivRound(fallback, fxRate, fxUnit, 2), 2);
   return (
     <>
       {!shown.has("vatRate") && code ? (

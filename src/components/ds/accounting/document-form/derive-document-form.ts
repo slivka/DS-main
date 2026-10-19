@@ -3,6 +3,7 @@ import { computeJournalTotals } from "../journal-vat";
 import { formatAccountCode } from "../account-code";
 import { documentIdentityVariantForType } from "../document-fields";
 import { formatCodeName } from "../../../../lib/code-format";
+import { exactSum, roundHalfAwayFromZero } from "../../../../lib/decimal-round";
 import type { DocumentFields } from "../document-fields";
 import type { AccountOption } from "../account-select";
 import type { BookOption } from "../book-select";
@@ -65,21 +66,27 @@ export function deriveDocumentForm(a: DerivedArgs) {
     normalizedType === "KR" ||
     normalizedType === "ZAP";
   const totalMode = forcedSum ? "sum" : value.totalMode;
-  const linesSum =
-    Math.round(
+  const linesSum = roundHalfAwayFromZero(
+    exactSum(
       lines
         .filter((line) => !line.isRounding && !line.isFxRounding)
-        .reduce((sum, line) => sum + (line.amount || 0), 0) * 100,
-    ) / 100;
-  const documentLinesSum =
-    Math.round(
+        .map((line) => line.amount || 0),
+    ),
+    2,
+  );
+  const documentLinesSum = roundHalfAwayFromZero(
+    exactSum(
       lines
         .filter((line) => !line.isRounding && !line.isFxRounding)
-        .reduce((sum, line) => sum + (line.foreignAmount ?? line.amount ?? 0), 0) * 100,
-    ) / 100;
+        .map((line) => line.foreignAmount ?? line.amount ?? 0),
+    ),
+    2,
+  );
   const lineRounding = lines.find((line) => line.isRounding)?.amount;
-  const roundedLinesSum =
-    Math.round((linesSum + (lineRounding ?? value.roundingAmount ?? 0)) * 100) / 100;
+  const roundedLinesSum = roundHalfAwayFromZero(
+    exactSum([linesSum, lineRounding ?? value.roundingAmount ?? 0]),
+    2,
+  );
   const editorVat = linesEditorProps?.vat;
   const vatTotals = computeJournalTotals(lines, {
     vat: editorVat?.enabled ? editorVat : null,
@@ -93,14 +100,14 @@ export function deriveDocumentForm(a: DerivedArgs) {
   const sumTotal = editorVat?.enabled
     ? value.currency !== homeCurrency
       ? vatTotals.gross
-      : Math.round(
-          (vatTotals.grossHome +
-            (lineRounding ?? value.roundingAmount ?? 0) +
-            lines
-              .filter((line) => line.isFxRounding)
-              .reduce((sum, line) => sum + (line.amount || 0), 0)) *
-            100,
-        ) / 100
+      : roundHalfAwayFromZero(
+          exactSum([
+            vatTotals.grossHome,
+            lineRounding ?? value.roundingAmount ?? 0,
+            ...lines.filter((line) => line.isFxRounding).map((line) => line.amount || 0),
+          ]),
+          2,
+        )
     : value.currency !== homeCurrency
       ? documentLinesSum
       : roundedLinesSum;

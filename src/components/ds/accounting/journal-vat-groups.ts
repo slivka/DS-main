@@ -66,6 +66,8 @@ export interface VatGroup {
   taxHome: number;
   /** Rozpočet daně na řádky. */
   lines: VatGroupLineShare[];
+  /** Samovyměření (PDP, EU) – skupinuje se jako ostatní, ale přepis daně nemá. */
+  selfAssessment: boolean;
 }
 
 /** Řádek s pevnou systémovou daní (odpočet zálohy, import) – do skupin nevstupuje. */
@@ -84,8 +86,13 @@ export interface VatFixedTax {
 export interface ComputeVatGroupsOptions {
   /** Doklad v cizí měně – základ se bere z `foreignAmount`. */
   foreign?: boolean;
-  /** Kurz DPH (měna firmy za 1 jednotku měny dokladu); výchozí 1. */
+  /**
+   * Kurz DPH (měna firmy za 1 jednotku měny dokladu); bez zadání 1. `null` nebo 0 = platný
+   * kurz chybí: tolerance se nehodnotí a částky v měně firmy jsou 0.
+   */
   exchangeRate?: number | null;
+  /** Doklad vstupuje do DPH (výchozí ano); jinak žádné skupiny ani pevné daně. */
+  vatEnabled?: boolean;
   /** Tolerance přepisu v měně firmy (výchozí 1,00). */
   tolerance?: number;
 }
@@ -108,6 +115,10 @@ const isBase = (line: JournalLine) =>
 
 const baseOf = (line: JournalLine, foreign?: boolean) =>
   Number(foreign ? line.foreignAmount : line.amount) || 0;
+
+/** Platný kurz, nebo null (0 / prázdný); bez zadání 1 (domácí měna). */
+const validFx = (rate: number | null | undefined) =>
+  rate === undefined ? 1 : rate != null && rate > 0 ? rate : null;
 
 /** Klíč skupiny. */
 export const vatGroupKey = (vatCodeId: string, rate: number) => `${vatCodeId}|${rate}`;
@@ -140,22 +151,25 @@ export function computeVatGroups(
   options: ComputeVatGroupsOptions = {},
 ): VatGroupsResult {
   const codes = rates instanceof Map ? rates : new Map(rates.map((code) => [code.id, code]));
-  const fx = options.exchangeRate || 1;
+  const fx = validFx(options.exchangeRate);
   const tolerance = options.tolerance ?? VAT_OVERRIDE_TOLERANCE;
   const buckets = new Map<
     string,
     { code: VatCodeOption; rate: number; items: VatGroupLineShare[] }
   >();
   const fixed: VatFixedTax[] = [];
-  for (const line of lines.filter(isBase)) {
+  // Jako DB in_grp: kód má daň, doklad vstupuje do DPH, sazba známa, ne pevná daň.
+  const included = options.vatEnabled === false ? [] : lines.filter(isBase);
+  for (const line of included) {
     const code = line.vatCodeId ? codes.get(line.vatCodeId) : undefined;
-    if (!code?.hasTax || code.selfAssessment) continue;
+    if (!code?.hasTax) continue;
     const base = baseOf(line, options.foreign);
     if (line.vatManual) {
       fixed.push({ lineId: line.id, vatCodeId: code.id, base, tax: Number(line.vatAmount) || 0 });
       continue;
     }
-    const rate = code.rate ?? line.vatRate ?? 0;
+    const rate = code.rate ?? line.vatRate;
+    if (rate == null) continue;
     const key = vatGroupKey(code.id, rate);
     const bucket = buckets.get(key) ?? { code, rate, items: [] };
     bucket.items.push({ lineId: line.id, base, tax: 0 });
@@ -164,11 +178,15 @@ export function computeVatGroups(
   const groups = [...buckets.entries()].map(([key, { code, rate, items }]): VatGroup => {
     const base = round2(exactSum(items.map((item) => item.base)));
     const calculatedTax = mulDivRound(base, rate, 100, 2);
-    const override = overrides?.find((item) => vatGroupKey(item.vatCodeId, item.vatRate) === key);
+    const selfAssessment = Boolean(code.selfAssessment);
+    // Samovyměření přepis mít nesmí (DB vat_override_self_assessment) – ignoruje se.
+    const override = selfAssessment
+      ? undefined
+      : overrides?.find((item) => vatGroupKey(item.vatCodeId, item.vatRate) === key);
     const tax = override ? round2(override.taxAmount) : calculatedTax;
     const difference = round2(exactSum([tax, -calculatedTax]));
     // Tolerance jako DB document_vat_validate: nezaokrouhlený součin rozdílu a kurzu.
-    const differenceHomeExact = mulDivRound(difference, fx, 1, 10);
+    const differenceHomeExact = fx === null ? 0 : mulDivRound(difference, fx, 1, 10);
     const differenceHome = round2(differenceHomeExact);
     return {
       key,
@@ -183,11 +201,12 @@ export function computeVatGroups(
       overridden: Boolean(override),
       difference,
       differenceHome,
-      withinTolerance: Math.abs(differenceHomeExact) <= tolerance,
+      withinTolerance: fx === null || Math.abs(differenceHomeExact) <= tolerance,
       zeroBaseOverride: Boolean(override) && base === 0 && tax !== 0,
-      baseHome: mulDivRound(base, fx, 1, 2),
-      taxHome: mulDivRound(tax, fx, 1, 2),
+      baseHome: fx === null ? 0 : mulDivRound(base, fx, 1, 2),
+      taxHome: fx === null ? 0 : mulDivRound(tax, fx, 1, 2),
       lines: allocateVatGroupTax(items, tax),
+      selfAssessment,
     };
   });
   const taxTotal = round2(
@@ -215,7 +234,7 @@ export function vatGroupsFromStored(
   );
   const taxLines = lines.filter((line) => line.isVatLine && !line.isFxRounding);
   if (taxLines.length === 0) return result;
-  const fx = options.exchangeRate || 1;
+  const fx = validFx(options.exchangeRate);
   const groups = result.groups.map((group) => {
     const ids = new Set(group.lines.map((share) => share.lineId));
     const own = taxLines.filter((line) =>
@@ -229,7 +248,7 @@ export function vatGroupsFromStored(
       ...group,
       tax,
       gross: round2(exactSum([group.base, tax])),
-      taxHome: mulDivRound(tax, fx, 1, 2),
+      taxHome: fx === null ? 0 : mulDivRound(tax, fx, 1, 2),
     };
   });
   const taxTotal = round2(
@@ -247,6 +266,28 @@ export function applyVatAllocation(lines: JournalLine[], result: VatGroupsResult
   return lines.map((line) => {
     const share = shares.get(line.id);
     return share ? { ...line, vatManual: true, vatAmount: share.tax } : line;
+  });
+}
+
+/**
+ * Zaúčtovaný doklad: daň řádku základu = Σ uložených řádků daně DB se stejným
+ * `vatParentLineId` (jako pevná hodnota), aby mřížka i patička ukazovaly daň z DB.
+ * Řádky bez uložené daně zůstanou beze změny.
+ */
+export function storedVatAllocation(lines: JournalLine[], foreign?: boolean): JournalLine[] {
+  const byParent = new Map<string, number[]>();
+  for (const line of lines)
+    if (line.isVatLine && !line.isFxRounding && line.vatParentLineId)
+      byParent.set(line.vatParentLineId, [
+        ...(byParent.get(line.vatParentLineId) ?? []),
+        baseOf(line, foreign),
+      ]);
+  if (byParent.size === 0) return lines;
+  return lines.map((line) => {
+    const taxes = byParent.get(line.id);
+    return taxes && isBase(line)
+      ? { ...line, vatManual: true, vatAmount: round2(exactSum(taxes)) }
+      : line;
   });
 }
 

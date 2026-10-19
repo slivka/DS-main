@@ -160,7 +160,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
           ? vatSummaryWithGroupTax(
               totals.vatSummary,
               editor.vatGroups.vatGroups,
-              editor.vatGroups.exchangeRate,
+              editor.vatGroups.exchangeRate ?? 0,
             )
           : undefined,
       [vatOn, totals.vatSummary, editor.vatGroups.vatGroups, editor.vatGroups.exchangeRate],
