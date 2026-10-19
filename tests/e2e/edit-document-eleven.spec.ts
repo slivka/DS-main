@@ -120,11 +120,15 @@ test("kurzy a přijatý doklad při zoomu 70–200 %", async ({ page }) => {
   expect(geometry.textRight).toBeLessThanOrEqual(geometry.bankLeft);
   expect(geometry.scroll).toBeGreaterThan(geometry.width);
   await expect(reason.locator("svg")).toHaveCount(0);
-  await reason.focus();
-  await expect(page.getByRole("tooltip")).toHaveCount(1);
-  await expect(page.getByRole("tooltip")).toContainText(
-    "Hotovostní platba nepoužívá bankovní účet",
-  );
+  // Bublina přepínače z předchozího kroku se zavírá s animací; ověřujeme bublinu důvodu.
+  const reasonTip = page
+    .getByRole("tooltip")
+    .filter({ hasText: "Hotovostní platba nepoužívá bankovní účet" });
+  await expect(async () => {
+    await reason.blur();
+    await reason.focus();
+    await expect(reasonTip).toHaveCount(1, { timeout: 1000 });
+  }).toPass();
 });
 
 test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page }) => {
