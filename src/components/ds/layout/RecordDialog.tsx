@@ -1,8 +1,10 @@
-import { useEffect, useId, useState, type ReactNode } from "react";
-import { FieldErrorSummary, type FieldErrorLink } from "../feedback/field-error-summary";
-import { TooltipProvider } from "../../ui/tooltip";
-import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
-import { createPortal } from "react-dom";
+/**
+ * Jednotný dialog záznamu · vlastní velikost, hlavičku, záložky, ochranu neuložených změn,
+ * režim jen pro čtení, pruh chyb a pořadí akcí patičky · nesmí sám ukládat ani zavírat po
+ * uložení (to dělá aplikace po úspěchu).
+ */
+import { useEffect, useState, type ReactNode } from "react";
+import type { FieldErrorLink } from "../feedback/field-error-summary";
 
 import { usePane } from "../panes/pane-context";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
@@ -19,58 +21,110 @@ import { PageTabs } from "./page-tabs";
 import { StatusBadge } from "../data-display/status-badge";
 import { useDsTexts } from "../../../ds-texts";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
+import { UnsavedChangesDialog } from "../panes/unsaved-changes-dialog";
+import { RecordReadOnlyProvider } from "../form/record-read-only";
+import {
+  RecordDialogErrorStrip,
+  RecordDialogFooterAction,
+  RecordDialogSubmitButton,
+} from "./record-dialog-footer";
+import { RecordDialogPane } from "./record-dialog-pane";
 import { cn } from "../../../lib/utils";
 
 export { Field, FieldGrid, fieldSpanClass } from "./form-field-layout";
 
+/** Rovnocenná sekce detailu záznamu. */
 export interface RecordDialogTab {
+  /** Stabilní hodnota záložky. */
   value: string;
+  /** Popisek záložky. */
   label: ReactNode;
+  /** Obsah sekce. */
   content: ReactNode;
+  /** Záložka je zakázaná. */
   disabled?: boolean;
 }
 
+/** Stav záznamu vedle titulku. */
 export interface RecordDialogStatus {
+  /** Záznam je aktivní. */
   active: boolean;
+  /** Vlastní text aktivního stavu. */
   activeLabel?: string;
+  /** Vlastní text neaktivního stavu. */
   inactiveLabel?: string;
 }
 
+/** Akce životního cyklu (Deaktivovat / Aktivovat). */
 export interface RecordDialogLifecycleAction {
   /** Např. „Deaktivovat“ / „Aktivovat“. */
   label: string;
   /** `saveFirst: true` = uživatel potvrdil „Uložit změny a …“. */
   onClick: (opts: { saveFirst: boolean }) => void | Promise<void>;
+  /** Potvrzení před spuštěním. */
   confirm?: { title: string; description?: string; confirmLabel?: string };
+  /** Akce je zakázaná. */
   disabled?: boolean;
+  /** Důvod zákazu. */
   disabledReason?: string;
 }
 
+/** Odstranění záznamu – vždy úplně vlevo patičky, vždy s destruktivním potvrzením. */
+export interface RecordDialogDeleteAction {
+  /** Popisek; výchozí „Odstranit“ z DsTexts. */
+  label?: string;
+  /** Spustí se po potvrzení. */
+  onClick: () => void | Promise<void>;
+  /** Text potvrzení. */
+  confirm: { title: string; description?: string; confirmLabel?: string };
+  /** Akce je zakázaná. */
+  disabled?: boolean;
+  /** Důvod zákazu (tooltip, tlačítko zůstává zaměřitelné). */
+  disabledReason?: string;
+}
+
+/** Velikost dialogu: sm 32 rem, md 48 rem (číselníky), lg 56 rem; stejná v panelu i mimo. */
+export type RecordDialogSize = "sm" | "md" | "lg";
+
+/** Vlastnosti dialogu záznamu. */
 export interface RecordDialogProps {
+  /** Dialog je otevřený. */
   open: boolean;
+  /** Změna otevření; `false` přichází až po případném potvrzení neuložených změn. */
   onOpenChange: (value: boolean) => void;
+  /** Titulek dialogu (i název v potvrzení neuložených změn). */
   title: string;
   /** @deprecated Popis se zachovává pouze skrytě pro čtečky obrazovky. */
   description?: string;
+  /** Uložení; dialog zavírá aplikace po úspěchu. */
   onSubmit?: () => void;
+  /** Text tlačítka Uložit. */
   submitLabel?: string;
+  /** Text tlačítka Zavřít v režimu jen pro čtení. */
   closeLabel?: string;
+  /** Probíhá ukládání: Uložit ukáže „Ukládám…“, dialog nejde zavřít. */
   busy?: boolean;
+  /** Obsah formuláře. */
   children?: ReactNode;
+  /** Doplňkové akce v patičce vlevo (za Odstranit). */
   extraActions?: ReactNode;
-  /** Šířka dialogu: `md` odpovídá původnímu `wide`, `lg` je pro širší formuláře. */
-  size?: "md" | "lg";
-  /** @deprecated od 2.84.0; použijte `size="md"`. */
-  wide?: boolean;
+  /** Povinná šířka: sm 32 rem, md 48 rem, lg 56 rem. */
+  size: RecordDialogSize;
+  /** Doplňková třída obsahu dialogu. */
   contentClassName?: string;
+  /** Boční panel (např. poznámky). */
   sidePanel?: ReactNode;
+  /** Název bočního panelu. */
   sidePanelLabel?: string;
+  /** Obsah tlačítka bočního panelu. */
   sidePanelTitle?: ReactNode;
+  /** Doplňkový řádek pod titulkem. */
   headerExtra?: ReactNode;
   /** Stavové štítky zobrazené přímo vedle titulku. */
   titleBadges?: ReactNode;
+  /** Doplňkový obsah pod tlačítkem bočního panelu. */
   sidePanelExtra?: ReactNode;
-  /** Detail bez editace: skryje Uložit a ponechá pouze Zavřít. */
+  /** Bez práva upravit: jen Zavřít a DS vstupy se vykreslí jako hodnoty. */
   readOnly?: boolean;
   /** Volitelné rovnocenné sekce detailu, jejichž obsah spravuje volající. */
   tabs?: RecordDialogTab[];
@@ -78,7 +132,9 @@ export interface RecordDialogProps {
   status?: RecordDialogStatus;
   /** Akce životního cyklu v patičce vlevo vedle Odstranit. U nového záznamu nepředávejte. */
   lifecycleAction?: RecordDialogLifecycleAction;
-  /** Formulář má neuložené změny – akce životního cyklu nabídne „Uložit změny a …“. */
+  /** Odstranění záznamu; v `readOnly` se nevykreslí. */
+  deleteAction?: RecordDialogDeleteAction;
+  /** Neuložené změny (i u nového záznamu = liší se od výchozích hodnot); hlídá zavření. */
   dirty?: boolean;
   /** Text tlačítka Zrušit. */
   cancelLabel?: string;
@@ -88,7 +144,15 @@ export interface RecordDialogProps {
   dirtyConfirmTitle?: string;
   /** Souhrn chybných polí sticky nad patičkou (max 5 + „a další N“); klik fokusuje pole. */
   fieldErrors?: FieldErrorLink[];
+  /** Celková chyba uložení (např. z databáze) v pruhu nad tlačítky. */
+  error?: ReactNode;
 }
+
+const SIZE_CLASS: Record<RecordDialogSize, { dialog: string; pane: string }> = {
+  sm: { dialog: "sm:max-w-lg", pane: "max-w-lg" },
+  md: { dialog: "sm:max-w-3xl", pane: "max-w-3xl" },
+  lg: { dialog: "sm:max-w-4xl", pane: "max-w-4xl" },
+};
 
 /** Čistý výpočet potvrzení akce životního cyklu; `null` = spustit hned bez dotazu. */
 export function resolveLifecycleConfirm(
@@ -131,14 +195,14 @@ export function RecordDialog({
   title,
   description,
   onSubmit,
-  submitLabel = "Uložit",
-  closeLabel = "Zavřít",
-  busy,
+  submitLabel,
+  closeLabel,
+  busy = false,
   children,
   extraActions,
   fieldErrors,
+  error,
   size,
-  wide,
   contentClassName,
   sidePanel,
   sidePanelLabel,
@@ -150,20 +214,29 @@ export function RecordDialog({
   tabs,
   status,
   lifecycleAction,
+  deleteAction,
   dirty = false,
-  cancelLabel = "Zrušit",
+  cancelLabel,
   saveAndActionLabel,
   dirtyConfirmTitle,
 }: RecordDialogProps) {
   const dsTexts = useDsTexts();
-  const submitText = submitLabel === "Uložit" ? dsTexts.common.save : submitLabel;
-  const closeText = closeLabel === "Zavřít" ? dsTexts.common.close : closeLabel;
-  const cancelText = cancelLabel === "Zrušit" ? dsTexts.common.cancel : cancelLabel;
+  const submitText = submitLabel ?? dsTexts.common.save;
+  const closeText = closeLabel ?? dsTexts.common.close;
+  const cancelText = cancelLabel ?? dsTexts.common.cancel;
   const panelLabel = sidePanelLabel ?? dsTexts.recordDialog.notes;
   const saveAndActionText = saveAndActionLabel ?? dsTexts.recordDialog.saveAndAction;
   const dirtyTitle = dirtyConfirmTitle ?? dsTexts.recordDialog.dirtyTitle;
   const { confirm, confirmDialog } = useConfirmDialog();
-  const lifecycleReasonId = useId();
+  const [guardOpen, setGuardOpen] = useState(false);
+  const requestClose = () => {
+    if (busy) return;
+    if (dirty && !readOnly) {
+      setGuardOpen(true);
+      return;
+    }
+    onOpenChange(false);
+  };
   const runLifecycle = () => {
     if (!lifecycleAction) return;
     const plan = resolveLifecycleConfirm(lifecycleAction, dirty, saveAndActionText, dirtyTitle);
@@ -179,6 +252,20 @@ export function RecordDialog({
       onConfirm: () => void lifecycleAction.onClick({ saveFirst: plan.saveFirst }),
     });
   };
+  const deleteText = deleteAction?.label ?? dsTexts.recordDialog.deleteLabel;
+  const runDelete = () => {
+    if (!deleteAction) return;
+    confirm({
+      title: deleteAction.confirm.title,
+      ...(deleteAction.confirm.description
+        ? { description: deleteAction.confirm.description }
+        : {}),
+      confirmLabel: deleteAction.confirm.confirmLabel ?? deleteText,
+      cancelLabel: cancelText,
+      destructive: true,
+      onConfirm: () => void deleteAction.onClick(),
+    });
+  };
   const statusBadge = status ? (
     <StatusBadge
       status={status.active ? "active" : "inactive"}
@@ -188,7 +275,6 @@ export function RecordDialog({
       }}
     />
   ) : null;
-  const resolvedSize = size ?? (wide ? "md" : undefined);
   const [panelOpen, setPanelOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs?.[0]?.value ?? "");
   const pane = usePane();
@@ -201,7 +287,10 @@ export function RecordDialog({
     setPaneElement(document.querySelector<HTMLElement>(`[data-pane="${pane.paneId}"]`));
   }, [pane?.paneId, open]);
   useEffect(() => {
-    if (!open) setPanelOpen(false);
+    if (!open) {
+      setPanelOpen(false);
+      setGuardOpen(false);
+    }
   }, [open]);
   useEffect(() => {
     if (tabs?.length && !tabs.some((tab) => tab.value === activeTab))
@@ -209,6 +298,7 @@ export function RecordDialog({
   }, [activeTab, tabs]);
 
   const panelVisible = Boolean(sidePanel) && panelOpen;
+  const showDelete = Boolean(deleteAction) && !readOnly;
 
   const inner = (
     <>
@@ -245,100 +335,80 @@ export function RecordDialog({
             // React posílá submit stromem komponent i přes portál; vnořený dialog nesmí odeslat
             // formulář dialogu, ve kterém je otevřený (např. nový účet v dialogu partnera).
             e.stopPropagation();
-            if (!readOnly) onSubmit?.();
+            if (!readOnly && !busy) onSubmit?.();
           }}
         >
-          {children}
-          {tabs?.length === 1 ? tabs[0]?.content : null}
-          {tabs && tabs.length > 1 ? (
-            <PageTabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              items={tabs.map(({ value, label, disabled }) => ({
-                value,
-                label,
-                ...(disabled !== undefined ? { disabled } : {}),
-              }))}
-              listLabel={dsTexts.recordDialog.detailSections}
-            >
-              <div className="mt-3 grid">
-                {tabs.map((tab) => {
-                  const active = tab.value === activeTab;
-                  return (
-                    <div
-                      key={tab.value}
-                      role="tabpanel"
-                      aria-hidden={!active}
-                      inert={!active}
-                      className={cn(
-                        "col-start-1 row-start-1 min-w-0",
-                        !active && "invisible pointer-events-none",
-                      )}
-                    >
-                      {tab.content}
-                    </div>
-                  );
-                })}
-              </div>
-            </PageTabs>
-          ) : null}
-          {fieldErrors?.length ? (
-            <div
-              role="alert"
-              data-slot="record-dialog-field-errors"
-              className="sticky bottom-0 z-10 border-l-4 border-destructive bg-destructive-soft px-3 py-2 text-destructive-strong"
-            >
-              <FieldErrorSummary errors={fieldErrors} />
-            </div>
-          ) : null}
-          <div className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between">
-            {extraActions || lifecycleAction ? (
+          <RecordReadOnlyProvider value={readOnly}>
+            {children}
+            {tabs?.length === 1 ? tabs[0]?.content : null}
+            {tabs && tabs.length > 1 ? (
+              <PageTabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                items={tabs.map(({ value, label, disabled }) => ({
+                  value,
+                  label,
+                  ...(disabled !== undefined ? { disabled } : {}),
+                }))}
+                listLabel={dsTexts.recordDialog.detailSections}
+              >
+                <div className="mt-3 grid">
+                  {tabs.map((tab) => {
+                    const active = tab.value === activeTab;
+                    return (
+                      <div
+                        key={tab.value}
+                        role="tabpanel"
+                        aria-hidden={!active}
+                        inert={!active}
+                        className={cn(
+                          "col-start-1 row-start-1 min-w-0",
+                          !active && "invisible pointer-events-none",
+                        )}
+                      >
+                        {tab.content}
+                      </div>
+                    );
+                  })}
+                </div>
+              </PageTabs>
+            ) : null}
+          </RecordReadOnlyProvider>
+          <RecordDialogErrorStrip error={error} fieldErrors={fieldErrors} />
+          <div
+            data-slot="record-dialog-footer"
+            className="flex flex-col-reverse items-start gap-2 pt-2 @min-[40rem]:flex-row @min-[40rem]:items-center @min-[40rem]:justify-between"
+          >
+            {showDelete || extraActions || lifecycleAction ? (
               <div className="flex items-center gap-2">
+                {showDelete && deleteAction ? (
+                  <RecordDialogFooterAction
+                    label={deleteText}
+                    variant="outline-destructive"
+                    slot="delete-action"
+                    disabled={deleteAction.disabled || busy}
+                    disabledReason={deleteAction.disabledReason}
+                    onClick={runDelete}
+                  />
+                ) : null}
                 {extraActions}
                 {lifecycleAction ? (
-                  lifecycleAction.disabled && lifecycleAction.disabledReason ? (
-                    <TooltipProvider>
-                      <DisabledReasonTooltip content={lifecycleAction.disabledReason} blocked>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          data-slot="lifecycle-action"
-                          aria-disabled
-                          aria-describedby={`${lifecycleReasonId}`}
-                          className="cursor-not-allowed"
-                          onClick={(event) => event.preventDefault()}
-                        >
-                          {lifecycleAction.label}
-                        </Button>
-                      </DisabledReasonTooltip>
-                      <span id={lifecycleReasonId} className="sr-only">
-                        {lifecycleAction.disabledReason}
-                      </span>
-                    </TooltipProvider>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      data-slot="lifecycle-action"
-                      disabled={lifecycleAction.disabled}
-                      onClick={runLifecycle}
-                    >
-                      {lifecycleAction.label}
-                    </Button>
-                  )
+                  <RecordDialogFooterAction
+                    label={lifecycleAction.label}
+                    variant="outline"
+                    slot="lifecycle-action"
+                    disabled={lifecycleAction.disabled}
+                    disabledReason={lifecycleAction.disabledReason}
+                    onClick={runLifecycle}
+                  />
                 ) : null}
               </div>
             ) : null}
             <div className="flex items-center gap-2 @min-[40rem]:ml-auto">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                {/* Legacy source contract: {readOnly ? closeLabel : cancelLabel} */}
+              <Button type="button" variant="outline" disabled={busy} onClick={requestClose}>
                 {readOnly ? closeText : cancelText}
               </Button>
-              {!readOnly ? (
-                <Button type="submit" disabled={busy}>
-                  {submitText}
-                </Button>
-              ) : null}
+              {!readOnly ? <RecordDialogSubmitButton label={submitText} busy={busy} /> : null}
             </div>
           </div>
         </form>
@@ -346,77 +416,85 @@ export function RecordDialog({
         {panelVisible ? <aside className="w-80 shrink-0 border-l pl-4">{sidePanel}</aside> : null}
       </div>
       {confirmDialog}
+      <UnsavedChangesDialog
+        open={guardOpen}
+        action="record"
+        tabTitle={title}
+        intent=""
+        saving={busy}
+        {...(onSubmit
+          ? {
+              onSave: () => {
+                setGuardOpen(false);
+                onSubmit();
+              },
+            }
+          : {})}
+        onDiscard={() => {
+          setGuardOpen(false);
+          onOpenChange(false);
+        }}
+        onBack={() => setGuardOpen(false)}
+      />
     </>
   );
 
+  const titleContent = (
+    <>
+      <span className="min-w-0 truncate" title={title}>
+        {title}
+      </span>
+      {statusBadge}
+      {titleBadges}
+    </>
+  );
+  const extraLine = headerExtra ? (
+    <div className="flex items-center pt-1 text-[0.78125rem] text-muted-foreground">
+      {headerExtra}
+    </div>
+  ) : null;
+
   // Uvnitř panelu se dialog vykreslí jen nad obsahem svého panelu.
   if (open && paneElement) {
-    return createPortal(
-      <div
-        className="absolute inset-0 z-40 flex items-start justify-center overflow-auto bg-black/40 p-4"
-        onPointerDown={(event) => {
-          if (event.target === event.currentTarget) onOpenChange(false);
-        }}
-      >
-        <div
-          role="dialog"
-          aria-modal="true"
-          className={cn(
-            "@container relative w-full rounded-lg border bg-background p-6 shadow-lg",
-            resolvedSize === "lg" ? "max-w-4xl" : "max-w-3xl",
-            contentClassName,
-          )}
-          onPointerDown={(event) => event.stopPropagation()}
-        >
-          <div className="mb-4 space-y-1">
+    return (
+      <RecordDialogPane
+        container={paneElement}
+        sizeClassName={SIZE_CLASS[size].pane}
+        contentClassName={contentClassName}
+        onRequestClose={requestClose}
+        header={
+          <>
             <h2 className="flex min-w-0 flex-nowrap items-center gap-2 text-lg font-semibold">
-              <span className="min-w-0 truncate" title={title}>
-                {title}
-              </span>
-              {statusBadge}
-              {titleBadges}
+              {titleContent}
             </h2>
             {description ? <p className="sr-only">{description}</p> : null}
-            {headerExtra ? (
-              <div className="flex items-center pt-1 text-[0.78125rem] text-muted-foreground">
-                {headerExtra}
-              </div>
-            ) : null}
-          </div>
-          {inner}
-        </div>
-      </div>,
-      paneElement,
+            {extraLine}
+          </>
+        }
+      >
+        {inner}
+      </RecordDialogPane>
     );
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(next) => (next ? onOpenChange(true) : requestClose())}>
       <DialogContent
         className={cn(
           "@container max-h-[90dvh] overflow-y-auto overflow-x-hidden",
-          !contentClassName && resolvedSize === "md" && "sm:max-w-3xl",
-          !contentClassName && resolvedSize === "lg" && "sm:max-w-4xl",
+          SIZE_CLASS[size].dialog,
           panelVisible && "lg:!max-w-[min(96vw,1520px)]",
           contentClassName,
         )}
       >
         <DialogHeader>
           <DialogTitle className="flex min-w-0 flex-nowrap items-center gap-2">
-            <span className="min-w-0 truncate" title={title}>
-              {title}
-            </span>
-            {statusBadge}
-            {titleBadges}
+            {titleContent}
           </DialogTitle>
           {description ? (
             <DialogDescription className="sr-only">{description}</DialogDescription>
           ) : null}
-          {headerExtra ? (
-            <div className="flex items-center pt-1 text-[0.78125rem] text-muted-foreground">
-              {headerExtra}
-            </div>
-          ) : null}
+          {extraLine}
         </DialogHeader>
         {inner}
       </DialogContent>
