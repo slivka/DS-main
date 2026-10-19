@@ -1,3 +1,12 @@
+## Skupiny DPH a patička řádků (2.109.0)
+
+- Řádky dokladu jsou vždy bez DPH. `vat.calcMode` / `vat.onCalcModeChange` jsou @deprecated a ignorované; ruční daň na řádku zrušena. Řádek s `vatManual` z DB (odpočet zálohy, import) je pevná systémová daň – zobrazí se se zámkem a do skupin nevstupuje.
+- Pomocník „Cena s DPH“ (ikona v buňce Částka / Jedn. cena a v detailu řádku) vyplní základ `round(s DPH × 100 / (100 + sazba))` na přesnost sloupce. Jen u kódu s daní, ne u samovyměření, jen když doklad vstupuje do DPH; nic neukládá.
+- Rekapitulace DPH pod mřížkou: Kód DPH · Sazba · Základ · DPH · Celkem po skupinách kód × sazba; u cizí měny sbalitelné Základ / DPH v měně firmy kurzem DPH. Úpravy „dle dokladu“: DPH (přepis), Celkem s DPH (přepis + dorovnání základu), Základ (dorovnání řádku s největším základem); „Vrátit vypočtenou daň“.
+- Nové props `JournalLinesEditor`: `vatOverrides`, `onVatOverridesChange`, `vatExchangeRate`, `vatExchangeRateAmount`, `roundingLimit`, `onRoundingChange`, `vatOverrideSeverity`.
+- Patička: Součet · Zaokrouhlení · Rozdíl; nabídka Dorovnat DPH / Dorovnat základ / Zaokrouhlení (jen do `roundingLimit`). Automatický návrh zaokrouhlení v liště zrušen.
+- Čisté funkce: `computeVatGroups`, `resolveDifferenceActions`, `baseFromGrossAmount`, `taxFromGrossTotal`, `upsertVatOverride`, `removeVatOverride`, `largestBaseLineId`, `applyVatAllocation`; typy `JournalVatOverride`, `VatGroup`, `VatGroupLineShare`, `JournalDifferenceAction`.
+
 ## Edit dokladu 11 (2.94.0)
 
 - `RateField.sourceAttention?: boolean`; `DocumentHeaderValue.rateSourceAttention` / `vatRateSourceAttention` se předávají oběma kurzům. Jednotka a zdroj jsou v přístupném tooltipu celého pole, nikoli pod polem (BREAKING pravidla).
