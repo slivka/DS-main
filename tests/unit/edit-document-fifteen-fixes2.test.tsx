@@ -371,12 +371,11 @@ describe("R3) fieldId = skutečné id v markupu (FV, ID, PO)", () => {
     });
     expectIdsInDom(view, issues);
   });
-  it("PO: přijatá objednávka včetně handedOverBy a ručního účtu", () => {
+  it("PO: přijatá objednávka včetně handedOverBy", () => {
     const poErrors = {
       partnerId: "x",
       handedOverBy: "x",
       externalNumber: "x",
-      manualBankAccount: "x",
       amountTotal: "x",
       issueDate: "x",
     };
@@ -395,6 +394,29 @@ describe("R3) fieldId = skutečné id v markupu (FV, ID, PO)", () => {
       fieldErrors: poErrors,
       fieldLabels: FIELD_LABELS,
     });
+    expectIdsInDom(view, issues);
+  });
+  it("FP v ručním režimu protistrany: účet má id document-bankAccount", () => {
+    const fpManual = { manualBankAccount: "x", partnerBankAccountId: "x" };
+    const view = render(
+      <Doc
+        documentType="FP"
+        fieldErrors={fpManual}
+        counterpartyInput="manual"
+        onCounterpartyInputChange={() => {}}
+      />,
+    );
+    const issues = documentClientIssues({
+      value: { ...header, amountTotal: 0 },
+      foreign: false,
+      t: T,
+      fieldErrors: fpManual,
+      fieldLabels: FIELD_LABELS,
+    });
+    expect(issues.map((issue) => issue.fieldId)).toEqual([
+      "document-bankAccount",
+      "document-bankAccount",
+    ]);
     expectIdsInDom(view, issues);
   });
   it("cizí měna: rateNote → document-rate-note, rateManual → document-rate", () => {
