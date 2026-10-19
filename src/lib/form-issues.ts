@@ -19,6 +19,8 @@ export interface FormIssue {
   severity: "error" | "warning";
   /** Klientská kontrola DS / aplikace, nebo položka ze serveru (DS ji jen zobrazí). */
   source: "client" | "server";
+  /** Původ „editor“ = vlastní validace editoru řádků; do buněk se nepromítá (editor ji řeší sám). */
+  origin?: "editor";
   /** Stabilní kód zprávy (např. vat_date_required) pro deduplikaci. */
   code?: string;
 }
