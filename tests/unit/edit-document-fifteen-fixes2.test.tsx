@@ -503,6 +503,55 @@ describe("E) Chyba + jen varování → červený pruh", () => {
     expect(bar.textContent).toContain("VS má víc než 10 číslic");
     expect(bar.textContent).not.toContain("Upozornění");
   });
+  it("error bez titulku + jen varování: titulek podle saveFailed, ne „Upozornění“", () => {
+    const warning = {
+      fieldId: "document-variableSymbol",
+      label: "VS",
+      message: "VS má víc než 10 číslic",
+      severity: "warning" as const,
+      source: "client" as const,
+    };
+    const failed = render(
+      <RecordActionBar
+        saveAction={{ onSave: () => {} }}
+        saveFailed
+        error={{ message: "Server odmítl uložení" }}
+        issues={[warning]}
+      />,
+    );
+    const failedBar = failed.container.querySelector('[data-slot="form-issues-bar"]')!;
+    expect(failedBar.getAttribute("data-severity")).toBe("error");
+    expect(failedBar.textContent).toContain("Doklad nelze uložit (1)");
+    expect(failedBar.textContent).not.toContain("Upozornění");
+    failed.unmount();
+    const draft = render(
+      <RecordActionBar
+        saveAction={{ onSave: () => {} }}
+        error={{ message: "Server odmítl uložení" }}
+        issues={[warning]}
+      />,
+    );
+    expect(draft.container.textContent).toContain("Před zařazením doplňte (1)");
+    draft.unmount();
+    // Stejný text chyby jako položka pole se nepočítá dvakrát.
+    const dup = render(
+      <RecordActionBar
+        saveAction={{ onSave: () => {} }}
+        error={{ message: "Chybí DUZP" }}
+        issues={[
+          {
+            fieldId: "document-taxDate",
+            label: "DUZP",
+            message: "Chybí DUZP",
+            severity: "error",
+            source: "server",
+          },
+        ]}
+      />,
+    );
+    expect(dup.container.textContent).toContain("Před zařazením doplňte (1)");
+    expect(dup.container.textContent).not.toContain("(2)");
+  });
   it("FieldErrorSummary je uvnitř pruhu a ✕ ho skryje", () => {
     const view = render(
       <RecordActionBar
