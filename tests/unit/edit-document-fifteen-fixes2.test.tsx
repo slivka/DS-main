@@ -125,7 +125,12 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
     dueDate: "x",
   };
   it("FP: každý fieldId existuje v DOM a popisek není technický klíč", () => {
-    const view = render(<Doc fieldErrors={fpErrors} />);
+    const view = render(
+      <Doc
+        fieldErrors={fpErrors}
+        paymentMethodOptions={[{ value: "1", label: "Převodem" }]}
+      />,
+    );
     const issues = documentClientIssues({
       value: { ...header, amountTotal: 0 },
       foreign: false,
