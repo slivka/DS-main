@@ -7,6 +7,7 @@ import { DayButton, DayPicker, getDefaultClassNames, dateMatchModifiers } from "
 import { cn } from "../../lib/utils";
 import { Button, buttonVariants } from "./button";
 import { CalendarViews } from "./calendar-views";
+import { calendarEscapeEvent } from "./calendar-escape";
 import { useDsTexts } from "../../ds-texts";
 
 /** Vlastnosti společné navigace kalendáře. */
@@ -93,6 +94,18 @@ function Calendar({
         ) ?? shell.current?.querySelector<HTMLButtonElement>("button[data-day]:not(:disabled)")
       )?.focus();
   }, [view, focusView]);
+  const escapeView = React.useCallback(() => {
+    if (onMonthSelect || view === "days") onClose?.();
+    else {
+      setFocusView(true);
+      setView(view === "years" ? "months" : "days");
+    }
+  }, [onMonthSelect, onClose, view]);
+  React.useEffect(() => {
+    const element = shell.current;
+    element?.addEventListener(calendarEscapeEvent, escapeView);
+    return () => element?.removeEventListener(calendarEscapeEvent, escapeView);
+  }, [escapeView]);
   return (
     <div
       ref={shell}
@@ -100,13 +113,10 @@ function Calendar({
       data-view={view}
       className={cn("calendar-shell", className)}
       onKeyDown={(event) => {
-        if (event.key === "Escape") {
+        if (event.key === "Escape" && !event.defaultPrevented) {
           event.preventDefault();
           event.stopPropagation();
-          if (onMonthSelect) onClose?.();
-          else if (view === "years") changeView("months");
-          else if (view === "months") changeView("days");
-          else onClose?.();
+          escapeView();
         }
       }}
     >

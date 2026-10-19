@@ -2431,6 +2431,13 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 
 /* Design 3: stav tlačítka nemění jeho geometrii; pole mají vlastní šedou plochu. */
+[data-slot="button"].ds-disabled-control:is(:disabled, [aria-disabled="true"]) {
+  background: color-mix(in oklab, var(--muted) 40%, transparent) !important;
+  border-color: var(--input);
+  color: var(--muted-foreground) !important;
+  box-shadow: none;
+  opacity: 1;
+}
 [data-slot="button"].ds-button:is(:disabled, [aria-disabled="true"]):not([role="combobox"]):not(
     .ds-disabled-control
   ) {
@@ -2439,6 +2446,10 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   color: var(--muted-foreground) !important;
   box-shadow: none;
   opacity: 1;
+}
+/* Zakázání nesmí zeslabit vlastní rámeček ovládání lišty gridu. */
+[data-slot="button"].ds-button.grid-toolbar-control:is(:disabled, [aria-disabled="true"]) {
+  border-color: var(--input) !important;
 }
 .pane-tab-active {
   border-color: var(--border-strong);

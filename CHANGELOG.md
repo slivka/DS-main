@@ -3,11 +3,12 @@
 ## 2.110.0 (nevydáno) – Design 3
 
 ### Změny
+- Druhé opravné kolo po GitHub run 39296790881: společné PopoverContent předává Escape kalendáři před zavřením portálu (roky → měsíce → dny; výběr měsíce zavře). Zakázané ovládání uvnitř pole má šedou výplň a tlumený text i v zapnutém stavu; zakázané ovládání lišty gridu zachovává rámeček --input.
 - Opravné kolo po 831f9342: katalog i reference obnovují „Schvájen“ na „Schválen“ z DsTexts; nadpis bez text-box ořezu, účet rezervuje 18 rem i místo ovládání bez překrytí čísla.
 - Kalendář slučuje disabled s mezemi, inline při vykreslení nebere fokus a className patří jen obalu. Pohledy měsíců/let používají skupinu tlačítek s aria-pressed/aria-current. MonthYearSelect zavře Escape přímo a nabízí Vymazat → null přes překlady DsTexts.
 - Badge centruje text stejně jako StatusBadge; pás záložek ořezává vodorovný přesah při přetažení a povoluje pouze 1 px spodní linky. Chromium test měří nadpis, účet, směr i stav dokladu.
 - Záložky panelu mají stálou geometrii a aktivní ouško navazující na obsah.
-- Zakázaná tlačítka mají slabší rámeček bez výplně; zakázaná pole zůstávají šedá.
+- Samostatná zakázaná tlačítka mají slabší rámeček bez výplně; ovládání uvnitř zakázaných polí zůstává šedé a lišta gridu zachovává svůj rámeček.
 - Kalendář používá pohled dnů, měsíců a let ve stejně velké ploše.
 - Stavové štítky mají pevnou výšku a optické centrování; opraveno „Schválen“.
 - Identifikační řádek zachovává výšku při změně účtu; šířka rezervuje nejméně 18 rem a místo tužky i během úprav.
@@ -21,7 +22,13 @@
 - `check:full --harness`: unit 847/847, lint 0 chyb / 322 varování, formát i peněžní kontrola OK. Typecheck a build zůstávají automatické kontrole Lovable (build OK).
 - Nový Chromium spec Design 3: 10/10; plná sada a Firefox/WebKit se v Lovable nespouštěly.
 
-### Migrace
+### BREAKING – migrace
+- **Zakázaná tlačítka:** samostatné akce jsou bez výplně a se slabším rámečkem. Ovládání uvnitř polí musí používat `ds-disabled-control`, aby přebíralo šedý vzhled zakázaného pole; ovládání gridu používá `grid-toolbar-control` se zachovaným rámečkem. Vlastní přepisy zakázaných variant odstraňte.
+- **Uložit:** bez neuložené změny je zakázané `outline`, se změnou primární s tečkou. Aplikace musí předávat `dirty` do `RecordActionBar` podle skutečných neuložených změn, nikoli podle pouhého otevření formuláře.
+- **MonthYearSelect:** dva spouštěče nahrazuje jeden společný kalendář; rozvržení přesuňte do `className` obalu, `monthClassName` a `yearClassName` se slučují na společném spouštěči. Vymazat v patičce vrací `null`; obsluha `onChange` musí přijmout prázdnou hodnotu. `emptyLabel` označuje prázdný spouštěč, nikoli položku nabídky.
+- **Badge:** textové a číselné děti jsou obalené `span.ds-badge-text` kvůli centrování; vlastní selektory přímých textových uzlů a měření obsahu upravte na tento obal. Ikony a složené děti se neobalují.
+- **Exporty:** `Calendar`, `Button`, `Badge` a `Input` jsou nově dostupné také z `src/components/ds/index.ts`; stávající importy z kořenového vstupu zůstávají platné.
+
 - `Calendar.captionLayout` je deprecated od 2.110.0 a nemá účinek; používejte
   společnou hlavičku kalendáře. Odstranění v nejbližší major verzi.
 - Vzhled zakázaných tlačítek se mění, jejich funkce a důvody zůstávají stejné.
