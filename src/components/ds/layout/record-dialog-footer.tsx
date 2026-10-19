@@ -111,8 +111,18 @@ export function RecordDialogSubmitButton({ label, busy }: SubmitButtonProps) {
   return (
     <Button type="submit" disabled={busy} aria-busy={busy || undefined} data-slot="record-submit">
       <span className="grid">
-        <span className={cn("col-start-1 row-start-1", busy && "invisible")}>{label}</span>
-        <span className={cn("col-start-1 row-start-1", !busy && "invisible")}>{saving}</span>
+        <span
+          aria-hidden={busy || undefined}
+          className={cn("col-start-1 row-start-1", busy && "invisible")}
+        >
+          {label}
+        </span>
+        <span
+          aria-hidden={!busy || undefined}
+          className={cn("col-start-1 row-start-1", !busy && "invisible")}
+        >
+          {saving}
+        </span>
       </span>
     </Button>
   );
