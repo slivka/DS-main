@@ -2,6 +2,7 @@
  * Klientské kontroly hlavičky dokladu · vlastní převod chyb a varování na položky pruhu ·
  * nesmí měnit pole ani hodnoty; serverové položky sem nepatří.
  */
+import { isValidCzIco } from "../../form/ico-link";
 import type { FormIssue } from "../../../../lib/form-issues";
 import type {
   DocumentFormTexts,

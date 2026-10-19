@@ -2,14 +2,13 @@
 import { DocumentSections } from "./document-sections";
 import { useState } from "react";
 import { useDocumentDateLinks } from "./use-document-date-links";
-import { toggleInvalidDate } from "./document-validation-feedback";
+import { toggleInvalidDate, useDocumentCounterpartyWarnings } from "./document-validation-feedback";
 import {
   reportingLinesChange,
   reportingPatch,
   useDocumentFormFeedback,
 } from "./use-document-form-issues";
 import { TooltipProvider } from "../../../ui/tooltip";
-import { isValidCzIco } from "../../form/ico-link";
 import { formatAccountCode } from "../account-code";
 import { documentFieldsForType, partnerLabelForType } from "../document-fields";
 import { cn } from "../../../../lib/utils";
@@ -177,17 +176,16 @@ export function DocumentForm(props: DocumentFormProps) {
     sameAccount,
   );
   const actionMenu = buildDocumentActionMenu(moreActions, props.settings, t.settings);
-  const effectiveFieldWarnings =
-    internal && counterpartyInput === "manual"
-      ? { ...props.fieldWarnings, partnerId: dsTexts.documentEdit.internalManualPartner }
-      : props.fieldWarnings;
   const [invalidDates, setInvalidDates] = useState<Partial<Record<DocumentDateField, true>>>({});
-  const counterpartyIco = value.counterpartyIco ?? partner?.ico ?? "";
-  const counterpartyDic = value.counterpartyDic ?? partner?.dic ?? "";
-  const icoWarning =
-    !value.partnerId &&
-    /^\d{8}$/.test(counterpartyIco.replace(/\s/g, "")) &&
-    !isValidCzIco(counterpartyIco);
+  const { counterpartyIco, counterpartyDic, icoWarning, effectiveFieldWarnings } =
+    useDocumentCounterpartyWarnings({
+      value,
+      partner,
+      internal,
+      counterpartyInput,
+      fieldWarnings: props.fieldWarnings,
+      internalManualPartner: dsTexts.documentEdit.internalManualPartner,
+    });
   const filedVatDateWarning = vat?.periodFiled ? (vat.filedWarning ?? t.filedWarning) : undefined;
   const vatRelevant = value.vatRelevant !== false;
   const showVatFields = Boolean(vat?.visible && vatRelevant);
