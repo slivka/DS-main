@@ -461,24 +461,25 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Ikonový přepínač uvnitř pole vždy skládejte přes `FieldToggleButton`. Jediné výjimky jsou ND (`NonTaxToggle`) v buňce řádku a zámek vazby `DateField.link`; jejich rozměry včetně `--document-date-*` zůstávají vlastní.
 - Zapnutí řídí `pressed`, stálý název `label` je nezávislý na stavu. Tooltipy stavu jsou samostatné; `lockedReason` zakáže změnu, zachová fokus a zpřístupní důvod. Nevytvářejte další lokální přepínače. Vstup rezervuje pravý prostor přes `--field-toggle-space`; šipka, křížek a tužka jsou vlevo od tohoto prostoru.
 - Protistrana má vždy ContactRound: partner je zapnutý, ruční režim vypnutý. Tužka patří pouze vybranému partnerovi v režimu adresáře.
-- Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zkontrolovaný či zaúčtovaný výpis je jen ke čtení; položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
+- Bankovní výpis skládejte přes `BankStatementForm`. Aplikace předává součty, značky měn, položky a ukládací akce; DS odvozuje konečný zůstatek a rozdíl. Zaúčtovaný výpis je jen ke čtení; kontrola výpisu je zrušena, `checked` je deprecated. Položky zamykají číslo a odstranění. Texty pocházejí z DsTexts, nikdy pevná značka měny.
 
 - Identitu formuláře skládejte přes IdentityLine; RecordActionBar nepřepisujte selektory potomků. Akce jsou standardně jen textové bez ikon. RecordActionBar měří dostupnou šířku: nejprve vedlejší akce na ikony, nakonec Uložit na ikonu. Uložit zůstává primární, bez změn zašedlé; vždy přístupný název a tooltip, při busy spinner.
 - Zamčený FieldToggleButton bez konkrétního důvodu používá fieldToggle.locked v tooltipu i přístupném popisu; žádný text vybízející ke kliknutí. DateField.link.label je stálý název, vazba DPH používá documentForm.vatDateLinkLabel.
-- bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu je bankStatement.home: Zůstatky v {currency}.
+- bankStatement a fieldToggle jsou povinné oblasti úplného DsTexts. Sekční texty ukládejte běžným písmem; verzálky dělá SectionHeading. Domácí sekce výpisu se nevykresluje.
 
 - Rezervace `--field-toggle-space` se počítá v `@layer base` na každém prvku z jeho lokálního `--control-h`; změnou této výšky řiďte celé pole i přepínač, ne ručním odsazením.
 - Úzké FieldGrid skládají všechny děti pod sebe. Field zachovává velikost písma; dlouhý popisek zkrátí výpustkou a celý text dá do title. Kompaktní data obou formulářů měří společný useCompactDateGeometry.
 
-- Výpis nemá poznámku; číslo patří do IdentityLine.numberContent, zamčené do FieldValue s důvodem. Základní údaje: datum, nepovinný Zůstatek dle banky, pouze nenulový Rozdíl přes AmountDifference. Zůstatky dle pohybů mají čtyři součty; vysvětlení kontroly je z DsTexts a dostupné i klepnutím.
+- Výpis nemá poznámku; číslo patří do IdentityLine.numberContent, zamčené do FieldValue s důvodem. Základní údaje: datum, počáteční zůstatek, příjmy, výdaje a Zůstatek na výpise s Σ. Nenulový rozdíl patří do varování pole i položky pruhu, ne samostatného NoticeBar.
 
 - Výstrahy Field/Input/DateField/RateField a výběrů nesmějí změnit výšku řádku. Používejte error/warning a společný pruh DocumentForm.error/notices.
 - Počet kopií je StepperInput min=1 max=5. Splatnost používá DateField.baseDate a quickOptions; +14 posouvá základ o 14 dní, měsíc je kalendářní.
 - Přidání patří jako + do pravého okraje hledání a předává aktuální dotaz; bez práva DisabledReasonTooltip. Nabídky se nezalamují, rostou do dostupné šířky a nejvýše 36 rem.
-- Výpis nemá viditelný stavový štítek; isNew zobrazí prázdné pohyby a onSaveThenAdd(direction). Peněžní směr je Výdaj, nadpis BA Bankovní pohyb.
+- Výpis nemá viditelný stavový štítek; pohyby jsou vždy v items, prázdný grid používá bankStatement.emptyItems. isNew a onSaveThenAdd jsou deprecated a ignorované. Peněžní směr je Výdaj, nadpis BA Bankovní pohyb.
 
 ## Doklady – pruh, VS, výpis (2.108.0)
-- Pruh nad formulářem je živý seznam toho, co zbývá opravit: předávejte `issues` (`FormIssue`), `saveFailed` a `validationActive`. Serverové položky (`source: "server"`) se zobrazí vždy, klientské až po prvním pokusu o uložení. Stejná hláška se nikdy neopakuje; chyba hlavičky se nepíše znovu jako „Řádek N“. Serverové položky maže aplikace podle `onFieldChange(fieldId, rowId?, columnId?)`. Žádný toast ani druhý NoticeBar se stejným textem.
+- Pruh nad formulářem je živý seznam toho, co zbývá opravit: předávejte `issues` (`FormIssue`), `saveFailed` a `validationActive`. Serverové chyby i všechna varování zůstávají v pruhu i polích vždy; neaktivní validace skryje pouze klientské chyby. Server má přednost před klientem stejného pole bez ohledu na text či kód. Serverové položky maže aplikace podle `onFieldChange(fieldId, rowId?, columnId?)`. Žádný toast ani druhý NoticeBar se stejným textem.
+- Vlastní chyby editoru mají `origin: "editor"` a nevracejí se do cellIssues; klientské i serverové položky aplikace se do buněk promítají. Popisky řádků berte ze sdílených překladů sloupců. fieldId musí označovat skutečný prvek, vazby označují vlastní pole. Chybějící popisek bezpečně nahradí obecný překlad s console.warn, úplnost ověřují testy.
 - VS u FP/ZFP/DDPOZ a FV/ZFV/DDPZ má zámek (`variableSymbolLinked`). Zamčený VS je jen náhled z čísla daňového dokladu, autoritou je DB (`variable_symbol_auto`); DS ukládá jen stav vazby a VS nikdy nezkracuje.
 - Bankovní pohyb: Datum pohybu = `issueDate`, Datum účetního případu = `accountingDate` se zámkem; protiúčet a symboly na mřížce 20 (4 / 8 / 8).
 - Výpis: nemá kontrolu ani zůstatky dle pohybů / v domácí měně; „Zůstatek na výpise“ má Σ (`bankClosing: null`), rozdíl je žluté varování v poli. Pohyby vždy přes slot `items` (grid s `addAction`).

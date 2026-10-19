@@ -64,4 +64,4 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: normal clicks never pin an explanation or imply a blocked action.
 
-- Share field feedback and form banners; register control-h with an independent initial length. Why: errors never shift rows and descendants inherit resolved heights.
+- Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.

@@ -3001,6 +3001,11 @@
         {
           "name": "fallback",
           "type": "any"
+        },
+        {
+          "name": "numberId",
+          "type": "string",
+          "description": "Id prvku čísla pro odkaz a fokus z chybového pruhu."
         }
       ],
       "usage": "Společná prezentační identita formuláře; položky a volitelný příznak vlevo, číslo vpravo, jednotné oddělovače a typografie. Využívají ji DocumentForm a BankStatementForm. Pro editovatelné nebo zamčené číslo použijte numberContent; aplikace vlastní hodnotu a callback. Vlastní numberContent dědí typografii čísla a zůstává omezen šířkou řádku také při zoomu.",
@@ -3008,6 +3013,10 @@
         {
           "label": "Identita výpisu",
           "code": "<IdentityLine items={[book, currency, period, bankAccount]} number={statement.number} />"
+        },
+        {
+          "label": "Číslo dokladu s identifikátorem",
+          "code": "<IdentityLine items={[book, period]} number={document.number} numberId=\"document-number\" />"
         }
       ],
       "antipatterns": [
@@ -8664,7 +8673,17 @@
     {
       "name": "FieldFeedbackContext",
       "file": "src/components/ds/form/field-feedback.tsx",
-      "import_path": ""
+      "import_path": "",
+      "usage": "Sdílený stav error/warning mezi Field a jeho ovládáním; pro běžné formuláře použijte Field, vlastní složená pole mohou kontext předat potomkům.",
+      "examples": [
+        {
+          "label": "Předání stavu složenému poli",
+          "code": "<FieldFeedbackContext.Provider value={{ error, warning }}><CustomControl /></FieldFeedbackContext.Provider>"
+        }
+      ],
+      "antipatterns": [
+        "Nevykreslujte druhou výstrahu, pokud ji již vykresluje Field."
+      ]
     },
     {
       "name": "FieldFeedbackIndicator",
@@ -9066,7 +9085,7 @@
       "examples": [
         {
           "label": "Serverová chyba DUZP",
-          "code": "<RecordActionBar issues={[{ fieldId: 'document-taxDate', label: 'DUZP', message: 'Chybí DUZP', severity: 'error', source: 'server', code: 'vat_date_required' }]} onSave={save} />"
+          "code": "<RecordActionBar issues={[{ fieldId: \"document-taxDate\", label: texts.taxDate, message: validationMessage, severity: \"error\", source: \"server\" }]} saveAction={{ onSave: save }} />"
         }
       ],
       "antipatterns": [
@@ -9233,13 +9252,31 @@
       "name": "visibleFormIssues",
       "file": "src/lib/form-issues.ts",
       "import_path": "",
-      "usage": "Ponechá serverové položky a varování vždy; neaktivní validace skrývá jen klientské chyby."
+      "usage": "Ponechá serverové položky a varování vždy; neaktivní validace skrývá jen klientské chyby.",
+      "examples": [
+        {
+          "label": "Viditelné položky",
+          "code": "const visible = visibleFormIssues(issues, validationActive);"
+        }
+      ],
+      "antipatterns": [
+        "Neskrývejte serverové chyby ani varování před prvním uložením."
+      ]
     },
     {
       "name": "formIssuesTitle",
       "file": "src/lib/form-issues.ts",
       "import_path": "",
-      "usage": "Titulek pruhu s počtem: „Doklad nelze uložit (N)“ jen při saveFailed, jinak „Před zařazením doplňte (N)“; jen varování → „Upozornění (N)“."
+      "usage": "Titulek pruhu s počtem: „Doklad nelze uložit (N)“ jen při saveFailed, jinak „Před zařazením doplňte (N)“; jen varování → „Upozornění (N)“.",
+      "examples": [
+        {
+          "label": "Titulek seznamu",
+          "code": "const title = formIssuesTitle(visible, saveFailed, texts.recordAction);"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte skryté klientské chyby do titulku."
+      ]
     },
     {
       "name": "deriveVariableSymbol",
@@ -9260,9 +9297,15 @@
       "name": "FormIssue",
       "file": "src/lib/form-issues.ts",
       "import_path": "",
-      "usage": "Položka živého pruhu: fieldId/rowId/columnId, label, message, severity error|warning, source client|server, code.",
+      "usage": "Položka živého pruhu: fieldId/rowId/columnId, label, message, severity error|warning, source client|server, code. Volitelné origin: \"editor\" označuje vlastní validaci editoru; aplikace tento původ nepoužívá pro vlastní položky.",
       "antipatterns": [
         "Jako label nikdy technický klíč pole – vždy popisek z DsTexts."
+      ],
+      "examples": [
+        {
+          "label": "Chyba pole ze serveru",
+          "code": "const issue: FormIssue = { fieldId: \"document-taxDate\", label: texts.taxDate, message: validationMessage, severity: \"error\", source: \"server\" };"
+        }
       ]
     },
     {

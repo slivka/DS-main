@@ -3,6 +3,8 @@
  * hradlo validationActive a hlášení onFieldChange · nesmí mazat serverové položky.
  */
 import { useMemo, useState } from "react";
+import { useDsTexts } from "../../../../ds-texts";
+import { journalColumnLabels } from "../journal-columns";
 import { useDebouncedValue } from "../../../../hooks/useDebouncedValue";
 import { visibleFormIssues, type FormIssue } from "../../../../lib/form-issues";
 import type { JournalLine } from "../journal-lines";
@@ -40,6 +42,8 @@ export interface DocumentFormIssuesArgs {
 
 /** Položky pruhu a obsluha chyb řádků. */
 export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
+  const texts = useDsTexts().journalEditor;
+  const labels = journalColumnLabels(texts, "", texts.foreignAmount);
   const active = a.validationActive !== false;
   const [rowIssues, setRowIssues] = useState<FormIssue[]>([]);
   // Klientské kontroly se přepočítávají průběžně, zobrazení s odstupem ~300 ms.
@@ -60,7 +64,7 @@ export function useDocumentFormIssues(a: DocumentFormIssuesArgs) {
         fieldId: error.fieldId,
         rowId: error.rowId,
         columnId: error.columnId,
-        label: `${a.rowLabel} ${error.line} – ${error.field}`,
+        label: `${a.rowLabel} ${error.line} – ${labels[error.field as keyof typeof labels] ?? texts.row}`,
         message: error.message,
         severity: "error",
         source: "client",
