@@ -69,6 +69,11 @@ function Calendar({
   );
   const month = props.month ?? ownMonth;
   const [view, setView] = React.useState<"days" | "months" | "years">(initialView);
+  const [focusView, setFocusView] = React.useState(Boolean(props.autoFocus ?? props.initialFocus));
+  const changeView = (next: "days" | "months" | "years") => {
+    setFocusView(true);
+    setView(next);
+  };
   const shell = React.useRef<HTMLDivElement>(null);
   const boundsStart = minDate ?? props.startMonth;
   const boundsEnd = maxDate ?? props.endMonth;
@@ -81,13 +86,13 @@ function Calendar({
   const todayAllowed =
     allowed(today, today) && (!props.disabled || !dateMatchModifiers(today, props.disabled));
   React.useEffect(() => {
-    if (view === "days")
+    if (view === "days" && focusView)
       (
         shell.current?.querySelector<HTMLButtonElement>(
           'button[data-selected-single="true"]:not(:disabled)',
         ) ?? shell.current?.querySelector<HTMLButtonElement>("button[data-day]:not(:disabled)")
       )?.focus();
-  }, [view]);
+  }, [view, focusView]);
   return (
     <div
       ref={shell}
@@ -98,8 +103,9 @@ function Calendar({
         if (event.key === "Escape") {
           event.preventDefault();
           event.stopPropagation();
-          if (view === "years") setView("months");
-          else if (view === "months") setView("days");
+          if (onMonthSelect) onClose?.();
+          else if (view === "years") changeView("months");
+          else if (view === "months") changeView("days");
           else onClose?.();
         }
       }}
@@ -111,11 +117,12 @@ function Calendar({
             month={month}
             selected={selected}
             today={today}
+            autoFocus={focusView}
             isAllowed={allowed}
             onMonth={changeMonth}
             onMonthSelect={onMonthSelect}
             onView={(next) => {
-              if (!(next === "days" && onMonthSelect)) setView(next);
+              if (!(next === "days" && onMonthSelect)) changeView(next);
             }}
           />
         ) : null}
@@ -128,7 +135,6 @@ function Calendar({
                 "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
-                className,
               )}
               captionLayout="label"
               fixedWeeks
@@ -234,7 +240,7 @@ function Calendar({
                         className="capitalize"
                         onClick={() => {
                           changeMonth(calendarMonth.date);
-                          setView("months");
+                          changeView("months");
                         }}
                       >
                         {caption}
@@ -260,16 +266,15 @@ function Calendar({
               onMonthChange={changeMonth}
               startMonth={boundsStart}
               endMonth={boundsEnd}
-              disabled={
-                props.disabled ??
-                (minDate && maxDate
-                  ? { before: minDate, after: maxDate }
-                  : minDate
-                    ? { before: minDate }
-                    : maxDate
-                      ? { after: maxDate }
-                      : undefined)
-              }
+              disabled={[
+                ...(Array.isArray(props.disabled)
+                  ? props.disabled
+                  : props.disabled != null
+                    ? [props.disabled]
+                    : []),
+                ...(minDate ? [{ before: minDate }] : []),
+                ...(maxDate ? [{ after: maxDate }] : []),
+              ]}
             />
           </div>
         ) : null}

@@ -42,9 +42,9 @@ describe("Calendar navigation", () => {
     expect(screen.getByRole("button", { name: "listopad" }).hasAttribute("disabled")).toBe(false);
     fireEvent.click(screen.getByRole("button", { name: "2026" }));
     expect(screen.getByRole("button", { name: "2025" }).hasAttribute("disabled")).toBe(true);
-    fireEvent.keyDown(screen.getByRole("grid"), { key: "Escape" });
+    fireEvent.keyDown(screen.getByRole("group", { name: "Rok" }), { key: "Escape" });
     expect(screen.getByRole("button", { name: "leden" })).toBeDefined();
-    fireEvent.keyDown(screen.getByRole("grid"), { key: "Escape" });
+    fireEvent.keyDown(screen.getByRole("group", { name: "Měsíc" }), { key: "Escape" });
     expect(screen.getByRole("button", { name: /říjen 2026/i })).toBeDefined();
   });
   test("v dnech Escape zavře a nevolá změnu data", () => {
@@ -84,7 +84,7 @@ describe("Calendar navigation", () => {
   test("Schválen je český výchozí text schválení", () => {
     render(<DocumentStatusBadge status="posted" approved />);
     expect(screen.getByText("Schválen")).toBeDefined();
-    expect(screen.queryByText("Schvájen")).toBeNull();
+    expect(screen.getAllByText("Schválen")).toHaveLength(1);
   });
   test("šipka mění fokus v mřížce měsíců", () => {
     render(<Calendar mode="single" selected={date} />);
@@ -116,5 +116,57 @@ describe("Calendar navigation", () => {
     expect(change).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "listopad", exact: true }));
     expect(change).toHaveBeenCalledWith("2027-11");
+  });
+  test("MonthYearSelect Escape zavře přímo bez výběru dne", () => {
+    const change = mock();
+    render(<MonthYearSelect value="2026-10" onChange={change} />);
+    fireEvent.click(screen.getByRole("button", { name: "Měsíc / Rok" }));
+    fireEvent.keyDown(screen.getByRole("button", { name: "říjen", exact: true }), {
+      key: "Escape",
+    });
+    expect(screen.queryByRole("group", { name: "Měsíc" })).toBeNull();
+    expect(screen.queryByRole("grid")).toBeNull();
+    expect(change).not.toHaveBeenCalled();
+  });
+  test("MonthYearSelect vymazání vrátí null a zavře nabídku", () => {
+    const change = mock();
+    render(<MonthYearSelect value="2026-10" onChange={change} />);
+    fireEvent.click(screen.getByRole("button", { name: "Měsíc / Rok" }));
+    fireEvent.click(screen.getByRole("button", { name: "Vymazat" }));
+    expect(change).toHaveBeenCalledWith(null);
+    expect(screen.queryByRole("group", { name: "Měsíc" })).toBeNull();
+  });
+  test("vlastní disabled se slučuje s oběma mezemi", () => {
+    const { container } = render(
+      <Calendar
+        mode="single"
+        selected={date}
+        minDate={new Date(2026, 9, 5)}
+        maxDate={new Date(2026, 9, 20)}
+        disabled={new Date(2026, 9, 12)}
+      />,
+    );
+    for (const day of ["04", "12", "21"]) {
+      expect(
+        container.querySelector(`button[data-day="2026-10-${day}"]`)?.hasAttribute("disabled"),
+      ).toBe(true);
+    }
+    expect(container.querySelector('button[data-day="2026-10-13"]')?.hasAttribute("disabled")).toBe(
+      false,
+    );
+  });
+  test("inline kalendář při vykreslení nebere fokus", () => {
+    render(<input aria-label="Původní fokus" />);
+    const input = screen.getByRole("textbox", { name: "Původní fokus" });
+    act(() => input.focus());
+    render(<Calendar mode="single" selected={date} />);
+    expect(document.activeElement).toBe(input);
+  });
+  test("inline pohled měsíců při vykreslení nebere fokus", () => {
+    render(<input aria-label="Původní fokus" />);
+    const input = screen.getByRole("textbox", { name: "Původní fokus" });
+    act(() => input.focus());
+    render(<Calendar mode="single" selected={date} initialView="months" />);
+    expect(document.activeElement).toBe(input);
   });
 });

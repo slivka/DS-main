@@ -27,6 +27,15 @@ for (const zoom of [70, 100, 200]) {
       await demo.getByRole("button", { name: "Změnit účet", exact: true }).click();
       await expect(demo.getByRole("combobox")).toBeVisible();
       const after = await identity.boundingBox();
+      const accountBox = demo.locator(".document-identity-account-box");
+      const accountMetrics = await accountBox.evaluate((e) => ({
+        width: e.getBoundingClientRect().width,
+        rootSize: parseFloat(getComputedStyle(document.documentElement).fontSize),
+        label: e.querySelector('[role="combobox"] .truncate')?.getBoundingClientRect().width ?? 0,
+      }));
+      if (width === 1280)
+        expect(accountMetrics.width).toBeGreaterThanOrEqual(18 * accountMetrics.rootSize);
+      expect(accountMetrics.label).toBeGreaterThan(0);
       const fieldAfter = await field.boundingBox();
       expect(before).not.toBeNull();
       expect(after).not.toBeNull();
@@ -76,10 +85,12 @@ test("Button zakázané bez výplně, stav uložení nemění rozměry", async (
   const after = await save.boundingBox();
   expect(after?.height).toBe(before?.height);
 });
-test("StatusBadge optické centrování velkých písmen", async ({ page }) => {
+test("StatusBadge i Badge optické centrování velkých písmen", async ({ page }) => {
   await ready(page);
   const metrics = await page
-    .locator('[data-testid="design-three"] > [data-slot="page-header"] .ds-badge-text')
+    .locator(
+      '[data-testid="design-three"] > [data-slot="page-header"] .ds-badge-text, [data-testid="design-three"] > .ds-badge .ds-badge-text',
+    )
     .evaluateAll((elements) =>
       elements.map((e) => {
         const s = getComputedStyle(e);
@@ -111,16 +122,78 @@ test("StatusBadge optické centrování velkých písmen", async ({ page }) => {
   for (const metric of metrics) expect(metric.diff, metric.text).toBeLessThanOrEqual(0.5);
 });
 
-test("DocumentDirectionBadge a DocumentStatusBadge mají md výšku 1,5 rem", async ({ page }) => {
+test("DocumentDirectionBadge a DocumentStatusBadge mají stejnou výšku", async ({ page }) => {
   await ready(page);
   const status = page
     .locator('[data-testid="design-three"] > [data-slot="page-header"] .ds-badge')
     .first();
-  expect(
-    await status.evaluate(
-      (e) =>
-        e.getBoundingClientRect().height /
-        parseFloat(getComputedStyle(document.documentElement).fontSize),
-    ),
-  ).toBeCloseTo(1.5, 2);
+  const direction = page
+    .getByTestId("identity-demo")
+    .locator('[data-slot="document-direction-badge"]');
+  const statusHeight = (await status.boundingBox())?.height;
+  const directionHeight = (await direction.boundingBox())?.height;
+  expect(statusHeight).toBeDefined();
+  expect(directionHeight).toBe(statusHeight);
+});
+
+test("PageHeader neořezává diakritiku ani dotahy nadpisu", async ({ page }) => {
+  await ready(page);
+  const title = page.getByRole("heading", { name: "Účetní doklady – Ýy", exact: true });
+  const metrics = await title.evaluate((e) => {
+    const range = document.createRange();
+    range.selectNodeContents(e);
+    const text = range.getBoundingClientRect();
+    const box = e.getBoundingClientRect();
+    return {
+      scroll: e.scrollHeight,
+      client: e.clientHeight,
+      textTop: text.top,
+      textBottom: text.bottom,
+      top: box.top,
+      bottom: box.bottom,
+    };
+  });
+  expect(metrics.scroll).toBeLessThanOrEqual(metrics.client);
+  expect(metrics.textTop).toBeGreaterThanOrEqual(metrics.top);
+  expect(metrics.textBottom).toBeLessThanOrEqual(metrics.bottom);
+});
+
+test("MonthYearSelect Escape zavře a Vymazat obnoví prázdný výběr", async ({ page }) => {
+  await ready(page);
+  const trigger = page.getByRole("button", { name: "Měsíc / Rok", exact: true });
+  await trigger.click();
+  await expect(page.getByRole("button", { name: "říjen", exact: true })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("group", { name: "Měsíc" })).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await page.getByRole("button", { name: "Vymazat", exact: true }).click();
+  await expect(trigger).toHaveText("Měsíc / Rok");
+});
+
+test("Pás záložek v úzkém panelu ořezává vodorovný přesah i při přetažení", async ({ page }) => {
+  await ready(page);
+  await page.getByRole("button", { name: "3 panely", exact: true }).click();
+  const strip = page.locator(".design-three-panes [data-tab-strip]").first();
+  const tab = strip.locator("[data-tab-id]").first();
+  const box = await tab.boundingBox();
+  if (!box) throw new Error("Chybí záložka");
+  await page.mouse.move(box.x + 30, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x - 80, box.y + box.height / 2, { steps: 12 });
+  const metrics = await strip.evaluate((e) => {
+    const box = e.getBoundingClientRect();
+    const tab = e.querySelector("[data-tab-id]")?.getBoundingClientRect();
+    const outside = document.elementFromPoint(box.left - 2, box.top + box.height / 2);
+    return {
+      clip: getComputedStyle(e).clipPath,
+      left: box.left,
+      tabLeft: tab?.left,
+      leaked: Boolean(outside?.closest("[data-tab-id]")),
+    };
+  });
+  expect(metrics.clip).toBe("inset(0px 0px -1px)");
+  expect(metrics.tabLeft).toBeLessThan(metrics.left);
+  expect(metrics.leaked).toBe(false);
+  await page.mouse.up();
 });

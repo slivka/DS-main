@@ -7,6 +7,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { refreshCatalog } from "./refresh-catalog";
 
 type Prop = { name: string; values?: unknown[] };
 type Example = { label?: string; code?: string };
@@ -168,6 +169,7 @@ function nextMinor(version: string): string {
 }
 
 function main() {
+  if (process.argv.includes("--refresh")) refreshCatalog();
   const argBase = process.argv.indexOf("--base");
   const cur = parseStrict(readFileSync(CATALOG, "utf8"), "teď");
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as { version: string };

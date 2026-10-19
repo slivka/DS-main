@@ -101,6 +101,7 @@
   --badge-h-md: 1.5rem;
   --badge-cap-offset: 0.075em;
   --identity-account-width: 18rem;
+  --identity-account-accessories-width: 5rem;
   --calendar-width: 22rem;
   --calendar-body-h: 23rem;
   --pane-tabbar: oklch(0.935 0.008 250);
@@ -2478,20 +2479,25 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
     top: var(--badge-cap-offset);
   }
 }
-.page-title-line h1 {
-  text-box: trim-both cap alphabetic;
+.page-title-badge {
+  font-size: var(--text-title);
+  position: relative;
+  top: calc((1cap - 1em) / 2);
 }
 .document-identity-account {
   flex: 0 1 auto;
+  width: max-content;
   max-width: 100%;
 }
 .document-identity-account-box {
   height: var(--control-h);
-  min-width: min(var(--identity-account-width), 100%);
+  min-width: min(
+    var(--identity-account-width),
+    calc(100% - var(--identity-account-accessories-width))
+  );
   width: max-content;
   position: relative;
-  max-width: 100%;
-  min-width: 0;
+  max-width: calc(100% - var(--identity-account-accessories-width));
   display: inline-flex;
   align-items: center;
 }
@@ -2548,6 +2554,7 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
   visibility: hidden;
   white-space: nowrap;
   padding-inline: 0.75rem;
+  padding-right: 3rem;
   font-size: var(--text-sm);
 }
 .document-identity-account-box:has([role="combobox"]) [role="combobox"] {
@@ -2570,4 +2577,5 @@ input[type="time"].time-input-right::-webkit-calendar-picker-indicator {
 }
 .pane-tabbar [data-tab-strip] {
   overflow: visible;
+  clip-path: inset(0 0 -1px);
 }

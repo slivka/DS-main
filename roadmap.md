@@ -1,4 +1,5 @@
 ## DS 2.110.0 – Design 3 (nevydáno)
+- [ ] Opravné kolo po 831f9342: body 1–12, cílený Chromium spec, quick/full a katalog bez ztrát.
 - [x] Srovnání vydané verze 2.109.0 a základu 29bdeb24.
 - [x] D1 záložky panelu, D2 tlačítka, D3 kalendář.
 - [x] D4 štítky a nadpis, D5 identita bez poskočení.

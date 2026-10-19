@@ -1994,7 +1994,7 @@
           "type": "function"
         }
       ],
-      "usage": "Jednotný výběr dnů, měsíců a let. captionLayout od 2.110.0 nemá účinek; baseDate je výchozí měsíc po vybraném datu.",
+      "usage": "Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; v nabídce použijte initialFocus/autoFocus. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.",
       "examples": [
         {
           "label": "Běžné použití",
@@ -6883,7 +6883,7 @@
       "name": "MonthYearSelect",
       "file": "src/components/ds/form/month-year-select.tsx",
       "import_path": "",
-      "usage": "Vybere měsíc a rok společným kalendářem. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.",
+      "usage": "Vybere měsíc a rok společným kalendářem. Escape zavře nabídku přímo; Vymazat vrací null. emptyLabel pojmenuje prázdný výběr. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.",
       "examples": [
         {
           "label": "Běžné použití",
@@ -7623,7 +7623,7 @@
         {
           "name": "approvedLabel",
           "type": "string",
-          "default": "Schvájen"
+          "default": "Schválen"
         },
         {
           "name": "size",

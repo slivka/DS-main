@@ -610,6 +610,8 @@ _Stav pole a jednotná výška (2.107.0)_
 import { Calendar } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
 
+Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; v nabídce použijte initialFocus/autoFocus. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.
+
 ### CalendarDayButton
 
 ```ts
@@ -1798,7 +1800,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schvájen` |
+| `approvedLabel` | string | `Schválen` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -3464,6 +3466,8 @@ import { MenubarTrigger } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7
 ```ts
 import { MonthYearSelect } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-7364336b1c7b"
 ```
+
+Vybere měsíc a rok společným kalendářem. Escape zavře nabídku přímo; Vymazat vrací null. emptyLabel pojmenuje prázdný výběr. minYear/maxYear omezují měsíce i roky; monthClassName/yearClassName zůstávají na společném spouštěči.
 
 ### MultiSelect
 
