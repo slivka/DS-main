@@ -34,6 +34,11 @@ export interface UnsavedChangesDialogProps {
   onBack: () => void;
   /** Otevřít v nové záložce – jen když ji aplikace nabídne. */
   onOpenInNewTab?: () => void;
+  /**
+   * Prvek, na který se po zavření vrátí fokus (např. pole dialogu záznamu v panelu, kde
+   * Radix fokus sám obnovit nedokáže). Bez propu výchozí chování Radix.
+   */
+  restoreFocusTo?: HTMLElement | null;
 }
 
 /** Dialog „{záložka} – neuložené změny“. */
@@ -54,6 +59,12 @@ export function UnsavedChangesDialog(props: UnsavedChangesDialogProps) {
         onEscapeKeyDown={(event) => {
           event.preventDefault();
           if (!props.saving) props.onBack();
+        }}
+        onCloseAutoFocus={(event) => {
+          const target = props.restoreFocusTo;
+          if (!target?.isConnected) return;
+          event.preventDefault();
+          target.focus();
         }}
       >
         <AlertDialogHeader>

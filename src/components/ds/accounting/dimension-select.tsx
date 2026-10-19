@@ -37,7 +37,7 @@ const label = (option: DimensionOption) => formatCodeName(option.code, option.na
 
 /** Výběr zakázky nebo střediska ze stromu; nevolitelné uzly jsou vidět s vysvětlením. */
 export function DimensionSelect({
-  options: allOptions,
+  options: givenOptions,
   value,
   onChange,
   onCreate,
@@ -64,8 +64,11 @@ export function DimensionSelect({
   inactiveLabel?: string;
   value: string | null | undefined;
   onChange: (id: string) => void;
-  /** Založí položku z textu hledání. */
-  onCreate?: (searchText: string) => void;
+  /**
+   * Založí položku z textu hledání. Vrátí-li Promise položku, výběr ji doplní do voleb
+   * a vybere; `null` / `undefined` / zamítnutí nic nemění.
+   */
+  onCreate?: (searchText: string) => void | Promise<DimensionOption | null | undefined>;
   /** Název přidání. */
   createLabel?: string;
   /** Důvod chybějícího práva. */
@@ -103,6 +106,29 @@ export function DimensionSelect({
     if (!next) suppressFocusOpen.current = true;
     setOpen(next);
     onOpenChange?.(next);
+  };
+
+  // Nově založené položky, které rodič ještě nedoplnil do voleb.
+  const [created, setCreated] = useState<DimensionOption[]>([]);
+  const mergedOptions = useMemo(() => {
+    const known = new Set(givenOptions.map((option) => option.id));
+    const extra = created.filter((option) => !known.has(option.id));
+    return extra.length ? [...givenOptions, ...extra] : givenOptions;
+  }, [givenOptions, created]);
+  const allOptions = mergedOptions;
+  const runCreate = (text: string) => {
+    if (!onCreate) return;
+    const result = onCreate(text);
+    if (!result || typeof result.then !== "function") return;
+    result.then(
+      (option) => {
+        if (!option) return;
+        setCreated((list) => [...list.filter((item) => item.id !== option.id), option]);
+        onChange(option.id);
+      },
+      // Zamítnutí = aplikace zakládání zrušila nebo chybu ukázala sama; výběr se nemění.
+      () => {},
+    );
   };
 
   const options = useMemo(
@@ -271,7 +297,7 @@ export function DimensionSelect({
                     label={createLabel ?? dsTexts.selectCreate.dimension}
                     disabledReason={createDisabledReason}
                     onCreate={() => {
-                      onCreate(query);
+                      runCreate(query);
                       changeOpen(false);
                     }}
                   />

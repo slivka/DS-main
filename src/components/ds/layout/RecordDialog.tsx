@@ -229,9 +229,13 @@ export function RecordDialog({
   const dirtyTitle = dirtyConfirmTitle ?? dsTexts.recordDialog.dirtyTitle;
   const { confirm, confirmDialog } = useConfirmDialog();
   const [guardOpen, setGuardOpen] = useState(false);
+  // Prvek s fokusem před potvrzením; „Zpět k záznamu“ na něj fokus vrátí.
+  const [guardReturn, setGuardReturn] = useState<HTMLElement | null>(null);
   const requestClose = () => {
     if (busy) return;
     if (dirty && !readOnly) {
+      const active = document.activeElement;
+      setGuardReturn(active instanceof HTMLElement && active !== document.body ? active : null);
       setGuardOpen(true);
       return;
     }
@@ -368,7 +372,7 @@ export function RecordDialog({
                     label={lifecycleAction.label}
                     variant="outline"
                     slot="lifecycle-action"
-                    disabled={lifecycleAction.disabled}
+                    disabled={lifecycleAction.disabled || busy}
                     disabledReason={lifecycleAction.disabledReason}
                     onClick={runLifecycle}
                   />
@@ -392,6 +396,7 @@ export function RecordDialog({
         action="record"
         tabTitle={title}
         intent=""
+        restoreFocusTo={guardReturn}
         saving={busy}
         {...(onSubmit
           ? {

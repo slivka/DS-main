@@ -111,8 +111,12 @@ export interface JournalLinesEditorProps {
   onEditUnit?: (unitId: string) => void;
   /** Otevře úpravu vybrané zakázky z buňky nebo detailu řádku. */
   onEditDimension?: (dimensionId: string) => void;
-  /** Přidá zakázku z hledání (＋ v buňce i v detailu řádku); dostane hledaný text. */
-  onCreateDimension?: (searchText: string) => void;
+  /**
+   * Přidá zakázku z hledání (＋ v buňce i v detailu řádku); dostane hledaný text.
+   * Vrátí-li Promise zakázku, DS ji vybere v řádku, ze kterého se zakládalo;
+   * `null` / `undefined` / zamítnutí nic nemění.
+   */
+  onCreateDimension?: (searchText: string) => void | Promise<DimensionOption | null | undefined>;
   /** Kód měny dokladu. */
   documentCurrency: string;
   /** Značka měny dokladu (z dat). */
