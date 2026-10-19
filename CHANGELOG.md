@@ -2,6 +2,10 @@
 
 ## 2.109.0 (nevydáno) – DPH krok 4B
 
+### Opravy
+- `DocumentForm` (FP, ZFP, ZFV, DDPOZ): otevření existujícího dokladu nic nezapisuje ani nevolá `onChange`. Stav vazby Datum účetního případu ↔ Datum vystavení se u existujícího dokladu odvodí z dat (`!issueDate || accountingDate === issueDate`) a přepočítá se při změně id. Nastavení `accountingDateLinked` platí jen pro nový doklad. Dříve se odpojené datum při otevření přepsalo na datum vystavení a doklad se zaúčtoval do špatného období. Řízený `accountingDateLink` beze změny.
+- Rekapitulace DPH: sloupce v měně firmy řídí aplikace přes `recap.vatHomeOpen` / `recap.onVatHomeOpenChange` (bez nich se přepínač nezobrazí). U zaúčtovaného dokladu se rekapitulace zobrazí jen ke čtení, místo aby zmizela.
+
 ### Opravy po kontrole 2.108.0 (páté kolo)
 - BA: chyba čísla účtu, IBAN, kódu banky i SWIFT z `issues` (server i klient) se promítne do správného pole. Zpětné mapování id → klíč je explicitní tabulka; sdílená id (`document-movement-account`, `document-bank-code`) rozlišuje typ dokladu a `bankAccountKind`.
 - Popisky `bookId`, `taxDocumentNumber`, `taxDocumentNumberLinked` doplněny; test selže, když popisek chybí nebo zazní `console.warn`.

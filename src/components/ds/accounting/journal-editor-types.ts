@@ -79,6 +79,10 @@ export interface JournalLinesRecapState {
   tab?: string;
   /** Změna záložky. */
   onTabChange?: (tab: string) => void;
+  /** Rekapitulace DPH: sloupce v měně firmy rozbalené (cizí měna; 2.109.0). */
+  vatHomeOpen?: boolean;
+  /** Změna rozbalení sloupců v měně firmy; bez ní se přepínač nezobrazí. */
+  onVatHomeOpenChange?: (open: boolean) => void;
 }
 /** Texty editoru; výchozí hodnoty jsou v `DsTexts.journalEditor`. */
 export type JournalLinesEditorTexts = JournalEditorTexts;
