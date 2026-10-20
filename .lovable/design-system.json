@@ -8851,9 +8851,21 @@
           "name": "className",
           "type": "string",
           "default": "ml-auto size-4 shrink-0 opacity-50"
+        },
+        {
+          "name": "bidirectional",
+          "type": "boolean"
+        },
+        {
+          "name": "defaultDirection",
+          "type": "\"out\" | \"in\"",
+          "values": [
+            "out",
+            "in"
+          ]
         }
       ],
-      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
+      "usage": "Výběr kódu DPH ve skupinách S daní / Osvobozená a zvláštní režimy / Mimo DPH (menu_group z dat); u dokladu bez pevného směru skupiny Výstup / Vstup. Ve výběru „Z – Tuzemsko základní (21 %)“, v poli „Z 21 %“ (obousměrně se směrem). Klíčem je id (kód + směr).",
       "examples": [
         {
           "label": "Buňka Kód DPH v editoru řádků",
@@ -9336,7 +9348,7 @@
       "name": "JournalLinesEditor",
       "file": "src/components/ds/accounting/JournalLinesEditor",
       "import_path": "",
-      "usage": "Rozpis a rekapitulace řádků dokladu. DocumentForm předává odvozený celek automaticky. Edit dokladu 13: Výjimka ND v buňce zachovává vlastní rozměry a tab pořadí; stálý název Nedaňový řádek, aria-pressed a přístupný důvod zamčení. ND zachovává kaskádu vydaného zdroje 98810718; skutečná velikost závisí na aplikačním i gridovém zoomu. texts.nonTaxOn / nonTaxOff (journalEditor) jsou nepovinné @deprecated od 2.100.0 a ignorované; použijte fieldToggle.nonTaxPressed / nonTaxUnpressed. Odstranění v 3.0.0. 13c: ND používá původní vydanou gridovou kaskádu včetně jejího přepsání velikosti; důvod zamčení je aria-describedby. onCreateDimension dostane hledaný text v buňce i detailu. onValidationChange předává navíc fieldId, rowId a columnId pro fokus chyb. 2.109.0 (DPH krok 4B): řádky jsou vždy bez DPH; vat.calcMode / onCalcModeChange jsou @deprecated a ignorované, ruční daň na řádku zrušena (pevná systémová daň vatManual z DB se jen zobrazí se zámkem). Pomocník „Cena s DPH“ v buňce Částka / Jedn. cena a v detailu řádku vyplní základ. Pod mřížkou Rekapitulace DPH po skupinách kód × sazba (stejný výpočet jako DB, computeVatGroups) s úpravami „dle dokladu“ (DPH, Celkem s DPH, Základ) a „Vrátit vypočtenou daň“; přepisy řídí vatOverrides / onVatOverridesChange. Patička Součet · Zaokrouhlení · Rozdíl s nabídkou Dorovnat DPH / Dorovnat základ / Zaokrouhlení (jen do roundingLimit).",
+      "usage": "Editovatelná mřížka řádků dokladu: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (2.118.0). Enter skáče dál a vyplněná/zakotvená pole přeskakuje, na konci řádku založí řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec v otevřeném dokladu. Rekapitulace DPH po oddílech a patička Součet · Odečtené zálohy · Zaokrouhlení · K úhradě · Rozdíl. withoutAccounts pro zálohové listy.",
       "examples": [
         {
           "label": "Rozpis se zkrácenými účty",
@@ -9353,6 +9365,10 @@
         {
           "label": "Skupiny DPH a patička (2.109.0)",
           "code": "<JournalLinesEditor {...props} vat={{ enabled: true, codes: vatCodes }} vatOverrides={overrides} onVatOverridesChange={setOverrides} vatExchangeRate={vatRate} roundingLimit={companyRoundingLimit} onRoundingChange={setRounding} vatOverrideSeverity={filing ? \"error\" : \"warning\"} />\n// uložení: { lines: toJournalRows(lines, opts), _vat_overrides: overrides.map(o => ({ vat_code_id: o.vatCodeId, vat_rate: o.vatRate, tax_amount: o.taxAmount })) }"
+        },
+        {
+          "label": "Zálohový list",
+          "code": "<JournalLinesEditor lines={lines} onChange={setLines} accounts={accounts} documentCurrency=\"CZK\" homeCurrency=\"CZK\" withoutAccounts vat={{ enabled: true, codes, showKhSection: false, recapNote: texts.vatFive.notTaxDocument }} />"
         }
       ],
       "antipatterns": [
@@ -10153,6 +10169,42 @@
           "name": "ariaLabel",
           "type": "string"
         }
+      ]
+    },
+    {
+      "name": "DocumentPostingGrid",
+      "file": "src/components/ds/accounting/document-posting-grid.tsx",
+      "import_path": "",
+      "props": [
+        {
+          "name": "entries",
+          "type": "DocumentPostingEntry[]",
+          "required": true
+        },
+        {
+          "name": "accounts",
+          "type": "AccountOption[]",
+          "required": true
+        },
+        {
+          "name": "texts",
+          "type": "Partial<VatFiveTexts>"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "usage": "Obsah záložky Zaúčtování: grid jen ke čtení se všemi stranami deníku dokladu z DB; účty v rozšířené formě, automatické řádky se štítkem (DPH, Bez nároku, Záloha, Zaokrouhlení, Kurzové zaokrouhlení). U zálohových listů se záložka nepřidává.",
+      "examples": [
+        {
+          "label": "Záložka Zaúčtování",
+          "code": "tabs={[{ id: \"posting\", label: texts.vatFive.postingTab, content: <DocumentPostingGrid entries={entries} accounts={accounts} /> }]}"
+        }
+      ],
+      "antipatterns": [
+        "Nepočítejte zaúčtování v aplikaci ani v DS – řádky dodává DB.",
+        "Nepřidávejte kontrolní součet MD / DAL."
       ]
     }
   ],
