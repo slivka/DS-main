@@ -260,7 +260,6 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
         setOverflowLevel(next);
         current = next;
         node.dataset.overflowLevel = String(next);
-      });
     };
     const observer = new ResizeObserver(() => {
       const width = node.getBoundingClientRect().width;
