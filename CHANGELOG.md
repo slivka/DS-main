@@ -2,6 +2,39 @@
 
 ## 2.113.0 (nevydáno)
 
+### Edit dokladu 16
+
+- PageHeader: štítek centruje vertical-align: middle vůči stejnému písmu nadpisu,
+  tedy na účaří + polovinu x-výšky. Bez cap/px posunu; mezera 0,75 rem zůstává.
+- Záhlaví panelu: historie → maximalizace → ⋯ → Zavřít panel; křížek volá
+  stávající closePane s ochranou změn. Zavřít panel odstraněno z nabídky záložky.
+- VS: zámek mění pouze uživatel. Neodvoditelné číslo nechává prázdný zamčený náhled
+  s varováním; vlastní odemčený VS nevaruje. Odemčení přebírá poslední platný
+  náhled nebo prázdno. Paměť náhledu není automatický zápis VS.
+- Hledatelné výběry: společné inline-search přesouvá hledání přímo do pole,
+  tisknutelný znak/Alt+↓ otevře nabídku, Enter potvrzuje, Tab/Esc/odchod nevybírá.
+  Hodnota zůstává do výběru; IME přes compositionend. Akce přidání předává dotaz.
+  Zapojeny Option/Entity/Account/Partner/Dimension/Unit/Vat/Country/Category/LegalForm,
+  TagPicker, MultiSelect, ChipMultiSelect a hledatelné přepínače kontextu/firmy.
+  ContextPill.onSearchChange je nová volitelná vlastnost; bez ní beze změny.
+- Calendar: fokus vybraný den → dnešek v měsíci → první povolený den měsíce,
+  nikoli sousední měsíc. Rámeček jen focus-visible, výraznější měsíc, Dnes uprostřed.
+- GridToolbar: každé ovládání používá společné --f-h/--control-h; také lišty řádků,
+  výpisů a panelů. Opraven český komentář styles.css.
+- Pokladna: jediné externalNumber vedle partnera; Popis přes celou šířku. Příjem
+  s DPH svázaný náhled jako FV, výdaj volné daňové číslo dodavatele. Přepnutí DPH
+  vlastní hodnotu nemaže. Čtyři nové živé ukázky příjem/výdaj s DPH i bez.
+- IdentityLine bez zalomení, zkracuje jen název účtu s celým zněním v bublině;
+  číslo/kód/kniha/období zůstávají celé. Bankovní výpis bez měny v identitě.
+- BankMovementAccount: přepínač Č. účtu/IBAN přímo v poli Účet protistrany;
+  druhé pole Kód banky/SWIFT. Rozpoznání IBAN a accountFromCzIban s checksumem,
+  předčíslím a doplňujícími nulami. Neplatný CZ zůstává IBAN s chybou; druhý režim
+  se nemaže. Chyby bankAccountKind ukazují na skutečné pole protiúčtu.
+- Migrace chování: aplikace nesmí počítat s automatickým odemčením VS. Hledání
+  již nemá samostatný placeholder v nabídce; testy míří na vstup uvnitř pole.
+  bankAccountKind nemá samostatné pole/id; chyby patří na document-movement-account.
+- Bez vydání; předchozí krok panelu, příloh a poznámek a body Firefox/WebKit zachovány.
+
 ### Panel dokladu – přílohy a poznámky (krok 2)
 
 - Nové `RecordSidePanel`, `RecordPanelTriggers`, `AttachmentList`, `PinnedNoteBar`

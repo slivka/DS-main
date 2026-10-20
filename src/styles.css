@@ -519,8 +519,8 @@
     color 120ms ease;
 }
 
-/* Pracovná lišta s titulkom tvorí jeden súvislý technický panel bez deliacej čiary.
-   Rámeček má stejnou barvu ako titulkový pás a tabulka, aby obal gridu působil jednotne. */
+/* Pracovní lišta s titulkem tvoří jeden souvislý technický panel bez dělicí čáry.
+   Rámeček má stejnou barvu jako titulkový pás a tabulka, aby obal gridu působil jednotně. */
 .grid-toolbar-row {
   position: relative;
   background-color: var(--grid-title-surface);
