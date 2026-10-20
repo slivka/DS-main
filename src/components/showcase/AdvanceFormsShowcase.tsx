@@ -43,7 +43,7 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
         withoutAccounts: Boolean(zl),
         vat: {
           enabled: true,
-          direction: type === "FP" || type === "ZFP" ? "in" : "out",
+          defaultDirection: type === "FP" || type === "ZFP" ? "in" : "out",
           codes: type === "FP" || type === "ZFP" ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT,
         },
         advanceDeduction: zl ? undefined : 1500,

@@ -44,7 +44,7 @@ export function AdvancesShowcase() {
       collapsedGroups: collapsed,
       onCollapsedGroupsChange: setCollapsed,
       onOpen: (item) => toast(item.number),
-      onRemove: (item) => toast(`${t.remove}: ${item.number}`),
+      onRemove: (item) => { toast(`${t.remove}: ${item.number}`); },
       groups: [
         {
           id: kind,

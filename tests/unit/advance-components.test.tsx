@@ -56,7 +56,7 @@ describe("AdvancePaymentBreakdown", () => {
       />,
     );
     expect(screen.getAllByText("185,00 EUR").length).toBe(2);
-    expect(screen.getByRole("alert")).toHaveTextContent("Lhůta 15 dnů");
+    expect(screen.getByRole("alert").textContent).toContain("Lhůta 15 dnů");
     expect(calls).toBe(0);
     fireEvent.click(screen.getByRole("button", { name: "Přiřadit ZL…" }));
     expect(calls).toBe(1);
@@ -183,8 +183,8 @@ describe("AdvanceCorrectionDialog", () => {
         onDecision={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Vytvořit", exact: true })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Nevytvářet", exact: true })).not.toBeDisabled();
+    expect(screen.getByRole("button", { name: "Vytvořit", exact: true }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: "Nevytvářet", exact: true }).hasAttribute("disabled")).toBe(false);
   });
 });
 describe("AdvanceRegisterGrid", () => {
@@ -225,7 +225,7 @@ describe("AdvanceReasonDialog", () => {
         onConfirm={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Potvrdit", exact: true })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled")).toBe(true);
     view.rerender(
       <AdvanceReasonDialog
         open
@@ -237,6 +237,6 @@ describe("AdvanceReasonDialog", () => {
         onConfirm={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Potvrdit", exact: true })).not.toBeDisabled();
+    expect(screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled")).toBe(false);
   });
 });
