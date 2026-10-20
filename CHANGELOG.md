@@ -2,6 +2,15 @@
 
 ## 2.119.0 (nevydáno)
 
+### Druhé opravné kolo po aktualizaci APP
+
+- `useJournalKeyboard`: obsluhy buňky a textového editoru mají návratový typ `void` a přesuny fokusu vracejí explicitní `void`; sdílený tsconfig zapíná `noImplicitReturns` pro automatickou kontrolu i typecheck v check:quick / check:full.
+- Ctrl/Cmd+Enter: datum potvrdí rozepsanou hodnotu a předá zkratku formuláři; samotný Enter zůstává lokální. Hledatelné výběry předávají zkratku mimo cmdk bez potvrzení zvýrazněné položky; našeptávač a rozepsané textové/číselné buňky ji neblokují. Ctrl/Cmd+Enter mimo editaci řádku nadále přidá řádek. Uložení a zavření po úspěchu zůstává odpovědností callbacku APP, bez změny jeho API.
+- Pokladna: výdaj s DPH = „Číslo daňového dokladu“, výdaj bez DPH i příjem s DPH/bez DPH = „Externí číslo“. Vazba čísla u příjmu a nedestruktivní změna DPH zachovány; CS/SK používají stávající překlady.
+- Ověřeno sdílené chování faktur a obou ZL (ZFV/ZFP); devět nových unit testů zkratky. Veřejné API tohoto opravného kola beze změny (žádné přidané ani odebrané props). Nevydáno; E2E nespouštěno.
+
+### Duplikace a vzory B
+
 - Duplikace a vzory B: `DocumentNewMenu` pro lištu GridFrame přes `toolbarLeft`: Prázdný doklad / Ze vzoru / Vytvořit / Vytvořit sérii / Spravovat vzory, prázdná nabídka s důvodem.
 - `DuplicationDialog` a `DuplicationPreview`: jeden doklad nebo série (1–24 měsíců, den 1–31), datum a náhled od APP, stálé chybové řádky a souhrn N z M. Bez vytvořitelných řádků, při loading/error nebo neplatných parametrech nelze vytvořit. APP zajišťuje debounce, data i zápis.
 - `TemplateEditBanner` a `DocumentForm.templateEdit`: název vzoru a akce Uložit vzor / Zahodit změny nad identitou, společné pro FV/FP i ZFV/ZFP bez větvení.

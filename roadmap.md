@@ -1,6 +1,6 @@
 ## DS 2.119.0 (nevydáno)
 
-- [ ] Druhé opravné kolo: návratové hodnoty klávesnice a noImplicitReturns, Ctrl/Cmd+Enter z polí, popisky pokladny; unit testy a check:full, bez vydání.
+- [x] Druhé opravné kolo: návratové hodnoty klávesnice a noImplicitReturns, Ctrl/Cmd+Enter z data/hledání/částky/rozepsaných řádků, popisky pokladny. Devět nových unit testů včetně ZFV/ZFP; veřejné API beze změny; bez vydání a E2E.
 - [x] Duplikace a vzory B: nabídka Nový, řízený dialog a náhled, pruh ve sdíleném formuláři FV/FP/ZFV/ZFP, správa s oprávněními, ukázky, CS/SK a katalog. Nových 24 unit testů ve dvou souborech; přímý proklik Chromium desktop/úzký dialog bez chyb; E2E sada nespouštěna.
 - [ ] APP krok C: načítání vzorů, posun data, debounce náhledu, období/problémy, vytvoření a zápis správy podle práv.
 - Veřejné API C: DocumentNewMenu (templates/onBlank/onTemplate/onManage), DuplicationDialog (value/onChange/rows/loading/error/busy/dirty/onCreate), DuplicationPreview, TemplateManager/TemplateManagerDialog (templates/onAction), TemplateEditBanner a DocumentForm.templateEdit, RecordDialog.submitDisabled; datové typy DuplicationValue/PreviewRow, DocumentTemplate, TemplatePermission, TemplateAction; DsTexts.templates.
