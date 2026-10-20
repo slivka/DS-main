@@ -12,6 +12,9 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
     "Nový výdaj",
   ]);
   await short.scrollIntoViewIfNeeded();
+  // Počká, až lišta po vstupu do viewportu změří režim popisků a React překreslí
+  // zkrácené texty; atribut data-add-labels se nastaví dřív než stav v Reactu.
+  await expect(short.locator('[data-slot="grid-add-short"]').first()).toBeVisible();
   await expect(short.locator("[data-toolbar-add]:visible span:visible")).toHaveText([
     "Příjem",
     "Výdaj",
@@ -87,8 +90,10 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
   const out = wide.locator("[data-toolbar-add]:visible").nth(1);
   await expect(out).toHaveAttribute("aria-disabled", "true");
-  // Lišta se po vstupu do viewportu ještě přeměřuje; klik opakujeme, dokud se důvod neukáže.
+  // Lišta se po vstupu do viewportu ještě přeměřuje; před každým klikem ji
+  // znovu posuneme do zorného pole a klik opakujeme, dokud se důvod neukáže.
   await expect(async () => {
+    await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
     await out.click({ force: true });
     await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached({
       timeout: 1000,

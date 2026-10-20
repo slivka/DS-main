@@ -192,66 +192,70 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     };
     const update = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const style = getComputedStyle(node);
-        const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
-        const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
-        const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
-        const padding =
-          (Number.parseFloat(style.paddingLeft) || 0) +
-          (Number.parseFloat(style.paddingRight) || 0);
-        const measured = (cachedWidths ??= naturalWidths());
-        if (current < 3 || !fullLeft) fullLeft = measured.leftFull;
-        const leftFull = current === 3 ? Math.max(fullLeft, measured.leftFull) : measured.leftFull;
-        const findFull = measured.findFull;
-        const fontSize = Number.parseFloat(style.fontSize) || 13;
-        const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
-        const addCount = node.querySelectorAll("[data-toolbar-add]").length;
-        // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“.
-        const leftCompact = addCount > 1 ? measured.addMenuWidth : addCount ? controlSize : 0;
-        // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
-        const searchHasText = Boolean(
-          node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),
+      // První měření běží synchronně – Firefox ve headless režimu pod zátěží
+      // škrtí requestAnimationFrame a popisky lišty by se přeply pozdě.
+      if (lastWidth === -1) {
+        lastWidth = node.getBoundingClientRect().width;
+        measure();
+        return;
+      }
+      frame = requestAnimationFrame(measure);
+    };
+    const measure = () => {
+      const style = getComputedStyle(node);
+      const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
+      const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
+      const gap = Number.parseFloat(rightStyle.columnGap || rightStyle.gap) || 0;
+      const padding =
+        (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
+      const measured = (cachedWidths ??= naturalWidths());
+      if (current < 3 || !fullLeft) fullLeft = measured.leftFull;
+      const leftFull = current === 3 ? Math.max(fullLeft, measured.leftFull) : measured.leftFull;
+      const findFull = measured.findFull;
+      const fontSize = Number.parseFloat(style.fontSize) || 13;
+      const controlSize = Number.parseFloat(style.getPropertyValue("--f-h")) * fontSize;
+      const addCount = node.querySelectorAll("[data-toolbar-add]").length;
+      // Dvě a více akcí se v úrovni 3 slučují do jednoho tlačítka „+ ▾“.
+      const leftCompact = addCount > 1 ? measured.addMenuWidth : addCount ? controlSize : 0;
+      // Hledání s textem zůstává otevřené – v úrovni 3 se jen zúží (min. 6em).
+      const searchHasText = Boolean(
+        node.querySelector<HTMLInputElement>("[data-toolbar-search] input")?.value.trim(),
+      );
+      const searchCompact = searchHasText
+        ? Math.min(measured.searchWidth, 6 * fontSize)
+        : controlSize;
+      const findCompact = Math.max(0, findFull - Math.max(0, measured.searchWidth - searchCompact));
+      const widths: GridToolbarWidths = {
+        container: node.clientWidth,
+        leftFull,
+        leftCompact,
+        findFull,
+        findCompact,
+        display: measured.display,
+        data: measured.data,
+        menu: Math.max(measured.menu, controlSize),
+        refresh: measured.refresh,
+        gap,
+        padding,
+        hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
+      };
+      let next = calculateGridToolbarOverflowLevel(widths, current);
+      let labels: "full" | "short" = "full";
+      if (addCount > 1 && next === 3) {
+        const shortLevel = calculateGridToolbarOverflowLevel(
+          { ...widths, leftFull: measured.leftShort },
+          current,
         );
-        const searchCompact = searchHasText
-          ? Math.min(measured.searchWidth, 6 * fontSize)
-          : controlSize;
-        const findCompact = Math.max(
-          0,
-          findFull - Math.max(0, measured.searchWidth - searchCompact),
-        );
-        const widths: GridToolbarWidths = {
-          container: node.clientWidth,
-          leftFull,
-          leftCompact,
-          findFull,
-          findCompact,
-          display: measured.display,
-          data: measured.data,
-          menu: Math.max(measured.menu, controlSize),
-          refresh: measured.refresh,
-          gap,
-          padding,
-          hasMenuItems: node.querySelector(".grid-more-has-items") !== null,
-        };
-        let next = calculateGridToolbarOverflowLevel(widths, current);
-        let labels: "full" | "short" = "full";
-        if (addCount > 1 && next === 3) {
-          const shortLevel = calculateGridToolbarOverflowLevel(
-            { ...widths, leftFull: measured.leftShort },
-            current,
-          );
-          if (shortLevel < 3) {
-            next = shortLevel;
-            labels = "short";
-          }
+        if (shortLevel < 3) {
+          next = shortLevel;
+          labels = "short";
         }
-        setAddLabelMode(labels);
-        node.dataset.addLabels = labels;
-        setOverflowLevel(next);
-        current = next;
-        node.dataset.overflowLevel = String(next);
-      });
+      }
+      setAddLabelMode(labels);
+      node.dataset.addLabels = labels;
+      setOverflowLevel(next);
+      current = next;
+      node.dataset.overflowLevel = String(next);
     };
     const observer = new ResizeObserver(() => {
       const width = node.getBoundingClientRect().width;

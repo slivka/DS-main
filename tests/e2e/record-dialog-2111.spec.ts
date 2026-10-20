@@ -38,18 +38,21 @@ test("RecordDialog: sm / md / lg mají v panelu i mimo panel stejnou šířku", 
   for (const size of ["sm", "md", "lg"] as const) {
     const expected = WIDTHS[size] * REM;
     const outside = await openScenario(page, size, false, "Nový");
-    // Počká na konec úvodní animace (zvětšení z 95 %).
+    // Počká na konec úvodní animace (zvětšení z 95 %). Tolerance 1 px: WebKit
+    // zaokrouhluje rem šířky a rámečky na subpixely jinak než Chromium.
     await expect
-      .poll(async () => Math.round((await outside.boundingBox())?.width ?? 0))
-      .toBe(expected);
+      .poll(async () => Math.abs(Math.round((await outside.boundingBox())?.width ?? 0) - expected))
+      .toBeLessThanOrEqual(1);
     const outsideWidth = (await outside.boundingBox())?.width ?? 0;
     await page.keyboard.press("Escape");
     await expect(outside).toBeHidden();
     const inside = await openScenario(page, size, true, "Nový");
     const insideExpected = Math.min(expected, paneWidth - 2 * REM);
     await expect
-      .poll(async () => Math.round((await inside.boundingBox())?.width ?? 0))
-      .toBe(Math.round(insideExpected));
+      .poll(async () =>
+        Math.abs(Math.round((await inside.boundingBox())?.width ?? 0) - insideExpected),
+      )
+      .toBeLessThanOrEqual(1);
     const insideWidth = (await inside.boundingBox())?.width ?? 0;
     await page.keyboard.press("Escape");
     await expect(inside).toBeHidden();

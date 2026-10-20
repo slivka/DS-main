@@ -10,6 +10,8 @@
 - Rozbor Input → record-read-only → field-value nepotvrdil kruhový import ani nepodporované API. Výjimka za běhu se při cílených kontrolách hlavních stránek nepotvrdila; nulový atribut měření a data-ready=false jsou před připojením efektů očekávané, nikoli důkaz výjimky.
 - Excel E2E čeká na připojený handler tlačítka před jediným klikem: samostatné Safari stažení včetně LibreOffice prošlo, při studeném SSR klik před připojením handleru download vůbec nespustil. Timeouty ani obsahové kontroly se nemění.
 - Kontroly: full --harness 876/876 unit, lint bez chyb, formát OK; katalog proti 2.111.0: 440 → 440 komponent, 900 → 902 props, bez odebrání. Čtyři katalogové soubory zachovaly všechny sekce. Design 3 + pageerror Firefox/WebKit 32/32, opravené vsazení Edit 13 2/2, cílené Safari menu/dialog/DPH a Excel prošly; plná E2E sada zůstává pro GitHub Actions.
+- GridToolbar: prvotní měření lišty běží synchronně místo requestAnimationFrame – headless Firefox pod zátěží rAF škrtí a popisky Přidat se přepínaly pozdě (selhání grid-add-actions-13g v CI).
+- E2E robustnost bez změny timeoutů: zkrácené popisky lišty se čekají na vykreslený stav (ne na atribut, který předchází React render), klik na zablokovanou akci lišty se opakuje s návratem do viewportu, šířky RecordDialog porovnávají s tolerancí 1 px (subpixel zaokrouhlení rem ve WebKitu), měření ikony menu a najetí na Kurz DPH jsou uvnitř opakování, protože změna zoomu posouvá stránku.
 
 ## 2.111.0 – Dialogy záznamů
 
