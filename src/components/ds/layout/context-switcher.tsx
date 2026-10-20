@@ -107,6 +107,7 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
         <PopoverTrigger asChild>
           <Button
             role="combobox"
+            aria-label={label}
             variant="outline"
             ref={ref}
             type="button"
