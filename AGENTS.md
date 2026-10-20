@@ -18,7 +18,7 @@
 - Sbalitelné panely mají šipku vpravo a řízený stav přes props, nikdy `localStorage`.
 - AppShell: aplikace má tmavé menu, panely šedé; view řídí titul, nav, scope a `context` pojmenuje objekt; provozovatel = `badge` + warning accent.
 - LayoutMenu, nabídka záložky a UserMenu mají pevné pořadí; další položku přidej jen na výslovný požadavek. Nadpis panelu nemá ikonu.
-- Gridy skládají lištu přes `GridFrame` a menu řádku přes `useRowActions`; globální klávesy přes `useGlobalShortcuts` (jeden posluchač). Proč: jedno místo chování pro všechny gridy a rámy.
+- Grids use GridFrame, useRowActions and useGlobalShortcuts (one listener). Why: shared behavior.
 - Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
 - Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; Uložit a akce vždy v `RecordActionBar`, nikdy pod poli.
@@ -44,7 +44,8 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: avoid boundary overflow.
 - Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
 
-- Measure form action widths centrally: text-only → secondary icons → Save icon; retain accessible names and tooltips. Why: every form inherits the same overflow cascade.
+- Form action overflow rules live in src/components/ds/AGENTS.md. Why: shared measurement.
+- Journal overflow disables right-sticky actions in shared CSS. Why: no covered controls in invoices or advance lists.
 - Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: enabled clicks never pin blocked explanations.
 
