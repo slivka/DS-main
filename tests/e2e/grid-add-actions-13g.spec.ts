@@ -91,16 +91,12 @@ test("zablokovaná akce s důvodem – klik i Enter ukážou důvod, nic nespust
   const reason = "Pokladna je uzavřená – výdaj nelze přidat";
   const wide = page.getByTestId("primary-actions-locked");
   await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
-  // Počká na ustálení měření lišty; jinak se v pomalejším CI klikne na tlačítko,
-  // které přeměření mezitím skryje nebo přesune a tooltip se neotevře.
-  await expect(wide.locator('[data-slot="grid-toolbar"]')).toHaveAttribute(
-    "data-overflow-level",
-    /.+/,
-  );
   const out = wide.locator("[data-toolbar-add]:visible").nth(1);
   await expect(out).toHaveAttribute("aria-disabled", "true");
-  // Lišta se po vstupu do viewportu ještě přeměřuje; klik opakujeme, dokud se důvod neukáže.
+  // Lišta se po vstupu do viewportu ještě přeměřuje; před každým klikem ji
+  // znovu posuneme do zorného pole a klik opakujeme, dokud se důvod neukáže.
   await expect(async () => {
+    await wide.evaluate((node) => node.scrollIntoView({ block: "center" }));
     await out.click({ force: true });
     await expect(page.getByRole("tooltip").filter({ hasText: reason }).first()).toBeAttached({
       timeout: 1000,
