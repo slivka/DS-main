@@ -47,3 +47,6 @@
 
 - Every change to the invoice or advance-list form must state whether it also applies to the other document; advance lists differ only through advanceListVariant configuration. Why: both share DocumentForm and must never drift through copied code.
 - Journal-grid pinning and inherited values live in useJournalPins and are never persisted. Why: pinning is a per-open-document aid.
+- Advance compositions live in advances and reuse linked records, settlement and DataGrid; APP supplies all domain data. Why: no duplicate allocation or pairing engine.
+- Embed deductions through JournalLinesEditor.afterVatRecap; APP omits it on advance lists and supplies advanceDeduction separately. Why: invoices share one recap without inferred visibility.
+- Map advance auto-kind labels through DsTexts.vatFive in journal and posting views. Why: advance_fx stays distinct from fxRounding without generating accounting rows.

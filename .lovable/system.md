@@ -1,5 +1,14 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Zálohy
+
+- Platbu zobrazujte přes AdvancePaymentBreakdown: dvě roviny ZL a DD skládají SettlementBar a LinkedRecordsPanel. Obecné účetní párování neměňte; APP dodává všechny částky, lhůtu, stav po lhůtě, oprávnění i zápisy.
+- AdvanceAllocationDialog dostává kandidáty a výchozí částku minimum zbývající platby a cíle z APP; kontroluje jen nezáporné částky a překročení. APP znovu ověří návrh při zápisu a zavře až po úspěchu. Důvody DD nebude dodává APP do AdvanceReasonDialog.
+- AdvanceDeductionsSection připojte do DocumentForm.linesEditorProps.afterVatRecap, nikdy do kopie formuláře. APP rozhoduje o viditelnosti; u ZL slot nepředává. advanceDeduction v patičce zůstává samostatný údaj APP.
+- AdvanceRegisterGrid je preset DataGridu; jeho filtry a asOf předají změnu APP, která dodá odpovídající historické zůstatky. Nesčítejte částky různých měn.
+- AdvanceCorrectionDialog přijímá náhled z APP; onDecision rozlišuje vytvoření a nevytvoření, obyčejné zavření neznamená odmítnutí.
+- APP mapuje auto_kind do JournalLine.autoKind a DocumentPostingEntry.auto; advance a advance_fx zobrazí společné překlady štítků. DS nikdy nevytváří automatické účetní řádky. Ověřte použití vydaných i přijatých FV/FP, ZFV/ZFP, DDPZ/DDPOZ a BA/PO bez duplikace formulářů.
+
 ## Duplikace a vzory
 
 - `DocumentNewMenu` patří do `DataGrid.toolbarLeft` (sdílená lišta GridFrame), bez druhého tlačítka addAction. Nabídky používají sdílené DropdownMenu a zachovávají jeho klávesnici.

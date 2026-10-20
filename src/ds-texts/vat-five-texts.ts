@@ -57,6 +57,8 @@ export interface VatFiveTexts {
   autoVat: string;
   autoNonDeductible: string;
   autoAdvance: string;
+  /** Kurzové vyrovnání zálohy, odlišné od kurzového zaokrouhlení. */
+  autoAdvanceFx: string;
   autoRounding: string;
   autoFxRounding: string;
   /** Stav úhrady zálohového listu. */
@@ -96,6 +98,7 @@ export const VAT_FIVE_CS: VatFiveTexts = {
   autoVat: "DPH",
   autoNonDeductible: "Bez nároku",
   autoAdvance: "Záloha",
+  autoAdvanceFx: "Kurzové vyrovnání zálohy",
   autoRounding: "Zaokrouhlení",
   autoFxRounding: "Kurzové zaokrouhlení",
   paymentUnpaid: "Neuhrazeno",
@@ -134,6 +137,7 @@ export const VAT_FIVE_SK: VatFiveTexts = {
   autoVat: "DPH",
   autoNonDeductible: "Bez nároku",
   autoAdvance: "Záloha",
+  autoAdvanceFx: "Kurzové vyrovnanie zálohy",
   autoRounding: "Zaokrúhlenie",
   autoFxRounding: "Kurzové zaokrúhlenie",
   paymentUnpaid: "Neuhradené",

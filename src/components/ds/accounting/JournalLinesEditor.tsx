@@ -219,6 +219,7 @@ export const JournalLinesEditor = React.forwardRef<HTMLDivElement, JournalLinesE
             <JournalToolbar />
             <JournalGrid />
             <JournalVatRecap />
+            {props.afterVatRecap}
             <JournalGrossHelperPopover />
             <JournalDifferenceBar />
             <JournalLinesRecap
