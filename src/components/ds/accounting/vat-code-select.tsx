@@ -13,12 +13,7 @@ import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import { useDsTexts } from "../../../ds-texts";
 import type { VatCodeOption } from "./journal-lines";
-import {
-  groupVatCodes,
-  vatCodeCellLabel,
-  vatCodeMenuLabel,
-  type VatDirection,
-} from "./vat-code-labels";
+import { groupVatCodes, vatCodeMenuLabel, type VatDirection } from "./vat-code-labels";
 
 export interface VatCodeSelectProps {
   codes: VatCodeOption[];
@@ -108,7 +103,11 @@ export function VatCodeSelect({
             data-placeholder={!selected ? "" : undefined}
             className={cn("truncate", !selected && "text-muted-foreground")}
           >
-            {selected ? vatCodeCellLabel(selected, texts, bidirectional) : placeholder}
+            {selected
+              ? bidirectional
+                ? `${vatCodeMenuLabel(selected)} · ${selected.direction === "in" ? texts.directionInShort : texts.directionOutShort}`
+                : vatCodeMenuLabel(selected)
+              : placeholder}
           </span>
           <ChevronDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
