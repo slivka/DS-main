@@ -156,17 +156,15 @@ export function DocumentIdentityLine({
           <span
             id="document-mainAccountId"
             data-slot="document-identity-account"
+            data-mode="read"
             className="document-identity-account-box flex items-center border border-transparent rounded-md text-sm font-normal"
           >
-            <span
-              aria-hidden="true"
-              className="document-identity-account-measure"
-              data-label={accountLabel ?? account.label}
-            />
+            {/* Při čtení má box šířku textu, tužka stojí hned za ním (i za trojtečkou). */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <span
-                  className="absolute inset-0 flex min-w-0 items-center px-3"
+                  data-slot="document-identity-account-text"
+                  className="flex min-w-0 items-center pl-3 pr-1"
                   tabIndex={0}
                   title={fullAccountLabel}
                 >

@@ -125,7 +125,7 @@ describe("Design formulářů 2", () => {
     expect(view.container.querySelector('[data-slot="field-value"]')?.textContent).toBe("25,000");
   });
   for (const type of ["FV", "ZFV"])
-    it(`${type} má způsob platby jen jednou nahoře před účtem`, () => {
+    it(`${type} má způsob platby jen jednou nahoře za účtem`, () => {
       const props = {
         ...base,
         documentType: type,
@@ -140,7 +140,8 @@ describe("Design formulářů 2", () => {
       expect(view.getAllByLabelText("Způsob platby")).toHaveLength(1);
       expect(method.closest('[data-slot="company-bank-account-above"]')).toBeTruthy();
       expect(
-        method.compareDocumentPosition(account) & Node.DOCUMENT_POSITION_FOLLOWING,
+        // 2.117.0 D6: Uhradit na bankovní účet | Způsob platby (jako u přijatých).
+        account.compareDocumentPosition(method) & Node.DOCUMENT_POSITION_FOLLOWING,
       ).toBeTruthy();
       view.rerender(<DocumentForm {...props} companyBankAccountDisabledReason="Hotově" />);
       expect(view.getByLabelText("Uhradit na bankovní účet").getAttribute("data-slot")).toBe(

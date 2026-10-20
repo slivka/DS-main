@@ -6,7 +6,7 @@
 - Kalendář má stejně velké pohledy dnů, měsíců a let; měsíc se zobrazuje v prvním pádě. Používejte společný Calendar, nikoli dropdown caption.
 - Inline Calendar při vykreslení nepřebírá fokus; v nabídce předávejte initialFocus/autoFocus. Vlastní zakázané dny se slučují s mezemi. MonthYearSelect zavře Escape přímo a Vymazat vrátí null.
 - Nadpis nesmí používat text-box ořez; diakritika a dotahy musí zůstat viditelné. Centrovat lze text štítku, nikoli ořezávat nadpis.
-- Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
+- Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem; tečka má stejný svislý střed jako štítek (účaří + ½ x-výšky), i když štítek chybí.
 
 ## Panel záznamu, přílohy a poznámky
 
@@ -434,7 +434,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Stránka v panelu vždy začíná `PageHeader`: vlevo má jen nadpis a dirty tečku, vpravo jen ↑/↓, ←/→, maximalizaci a ⋯. Akce celé stránky dávej do `menuActions`; `actions` je jen pro stránky mimo panel. „Nový“ patří do `DataGrid.addAction`.
 - `LayoutMenu trigger="icon"` patří přes `AppShell.navSearchMenu` vedle hledání v menu, nikdy do horní lišty.
 - Nabídka rozložení má pevně Uložit jako nové + ikonovou Správu, uložená rozložení a Přepsat uložené aktuálním; výchozí rozložení se zde neurčuje.
-- Nabídka záložky má jen Zavřít záložku, přesun do jiného panelu, Duplikovat záložku pro seznam. Zavřít panel je poslední křížek záhlaví, za menu ⋯. Novou položku nepřidávej bez souhlasu.
+- Kontextové menu záložky má jen Zavřít záložku, přesun do jiného panelu, Duplikovat záložku pro seznam. ✕ vpravo v záhlaví zavře záložku (Alt+W); menu ⋯ v záhlaví nemá Zavřít záložku a končí oddělenou položkou Zavřít panel (Alt+Shift+W) jen při více panelech. Novou položku nepřidávej bez souhlasu.
 - Uživatelská nabídka řadí záhlaví, vlastní položky, Velikost zobrazení, Pracovní prostor a Odhlásit. Novou položku nepřidávej bez souhlasu.
 - Řádek nadpisu panelu nemá ikonu; ikona patří jen do tlačítka panelu v horní liště.
 - Zavřít panel zavře všechny jeho záložky po společné kontrole změn a uloží je pro Alt+Shift+T. Zmenšení rozložení panely nadále slučuje.
@@ -550,7 +550,12 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - PageHeader centruje štítky na účaří + polovinu x-výšky (vertical-align: middle), nikdy na cap výšku ani pevným px posunem.
 - Hledatelné výběry používají sdílené inline-search: dotaz přímo v poli, Enter potvrzuje, Tab/Esc/odchod nevybírají; tisknutelný znak otevírá nové hledání.
 - Lišty GridToolbar odvozují všechny výšky od --f-h; nezadávejte jednotlivým tlačítkům odlišnou výšku.
-- Identita je jednořádková; trojtečku smí mít jen název účtu, celý účet je v bublině. Výpis nemá měnu v identitě.
+- Identita je jednořádková; trojtečku smí mít jen název účtu, celý účet je v bublině. Výpis nemá měnu v identitě. Tužka Změnit účet stojí hned za textem účtu (i za trojtečkou); šířku podle měření má jen otevřený výběr.
+- Pole záhlaví výpisu i buňky pohybů značku měny neopakují; cizí měnu uveď jednou v nadpisu sloupce přes `currencyColumnLabel(label, měna, domácí měna)`.
+- Bankovní pohyb: VS a KS mají stejnou šířku pod Účtem protistrany; u IBAN / SWIFT nahrazuje KS a SS pole Reference (`paymentReference`).
+- Ctrl/Cmd+Enter = Uložit a zavřít přes `onSaveAndClose` (DocumentForm, BankStatementForm) bez tlačítka v liště; aplikace zavře formulář jen po úspěšném uložení. RecordDialog to nepotřebuje – Uložit v dialogu už zavírá.
+- Pruh upozornění jen pro věci, které uživatel může opravit; stav dokladu (ověření plátce, neověřený ručně zadaný dodavatel) je štítek vedle přepínače Vstupuje do DPH.
+- Název účetního období v horní liště se nikdy nezkracuje; rozsah dat se ukáže jen celý, když se vejde. Při nedostatku místa se zkracuje název firmy. Max. šířky přepínačů v rem.
 - Pokladna používá jediné externalNumber vedle partnera; Popis má plnou šířku. Příjem s DPH předává taxDocumentNumberLinked, svázaná hodnota je pouze náhled; přepnutí DPH vlastní číslo nemaže.
 
 ## Historie záznamu (2.114.0)

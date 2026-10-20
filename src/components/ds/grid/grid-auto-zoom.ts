@@ -93,7 +93,8 @@ export function useAutoGridZoom(
       setAutoZoom(next, initialized.current && !fromAppZoom);
       initialized.current = true;
     },
-    [currentZoom, enabled, rootRef, setAutoZoom],
+    // Zoom gridu ve výpočtu nefiguruje; jeho změna nesmí spustit přepočet a zrušit ruční zoom.
+    [enabled, rootRef, setAutoZoom],
   );
 
   useLayoutEffect(() => {

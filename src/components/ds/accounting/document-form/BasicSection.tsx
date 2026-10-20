@@ -144,7 +144,6 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
             false,
             "@min-[40rem]:pr-3",
           )}
-          {p.cashDocument ? externalNumberField : null}
           {field(
             "document-partner-ico",
             t.ico,
@@ -217,6 +216,8 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                 "@min-[40rem]:pr-3",
               )
             : null}
+          {/* Pokladna: 2. řádek = Vyplaceno komu / Přijato od | číslo dokladu. */}
+          {p.cashDocument ? externalNumberField : null}
           {receivedDocument && f.bankAccount ? bankAccountField : null}
           {receivedDocument && p.paymentMethodOptions
             ? field(

@@ -140,6 +140,7 @@ export function DocumentFormSecondaryScenarios({
             },
           ]}
           saveAction={{ onSave: () => toast.success("Doklad uložen"), dirty: true }}
+          onSaveAndClose={() => toast.success("Doklad uložen a zavřen (Ctrl+Enter)")}
           primaryAction={{ label: "Zaúčtovat", onClick: () => toast.success("Doklad zaúčtován") }}
           moreActions={[
             {
@@ -153,7 +154,7 @@ export function DocumentFormSecondaryScenarios({
 
       <ShowcaseSection
         title="Přijatá faktura – neplátce"
-        description="Číslo dodavatele má obecný popisek a pole DPH zůstávají skrytá."
+        description="Číslo dodavatele má obecný popisek a pole DPH zůstávají skrytá. Ručně zadaný dodavatel má štítek Neověřený dodavatel."
       >
         <DocumentForm
           title="Přijatá faktura"

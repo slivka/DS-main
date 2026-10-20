@@ -1,5 +1,18 @@
 ## DS 2.117.0 (nevydáno)
 
+### Drobné opravy 1 (edity)
+
+- [x] D1 Období v horní liště se nezkracuje; rozsah jen celý; šířky v rem; zkracuje se firma.
+- [x] D2 ✕ zavře záložku; „Zavřít panel“ poslední v ⋯ jen při více panelech.
+- [x] D3 Tužka Změnit účet hned za textem účtu.
+- [x] D4 Tečka neuložených změn ve středu štítku.
+- [x] D5 Pořadí polí pokladny; „Číslo daňového dokladu“.
+- [x] D6 FV/ZFV: Bankovní účet | Způsob platby.
+- [x] D7 Štítek Neověřený dodavatel vedle Vstupuje do DPH.
+- [x] D8 Výpis bez značek měny; měna v nadpisu sloupce; oprava zoomu vnořeného gridu.
+- [x] D9 VS = KS pod účtem; Reference u IBAN / SWIFT.
+- [x] D10 Ctrl/Cmd+Enter → `onSaveAndClose`.
+
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.116.0 – Navázané okno panelu

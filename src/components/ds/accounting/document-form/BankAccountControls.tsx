@@ -167,27 +167,11 @@ export interface CompanyAccountControlProps {
   paymentMethodLabel?: string;
 }
 
-/** Firemní účet FV/ZFV přes plnou šířku. */
+/** Firemní účet FV/ZFV, za ním způsob platby (stejně jako u přijatých dokladů). */
 export function CompanyAccountControl(props: CompanyAccountControlProps): ReactNode {
   const t = useDsTexts().documentForm;
   return (
     <>
-      {props.paymentMethodOptions ? (
-        <Field
-          label={props.paymentMethodLabel ?? t.paymentMethod}
-          htmlFor="document-paymentMethodId"
-          span={6}
-        >
-          <OptionSelect
-            id="document-paymentMethodId"
-            value={props.paymentMethodId}
-            onChange={(id) => props.onPaymentMethodChange?.(id)}
-            options={props.paymentMethodOptions}
-            searchable
-            disabled={props.paymentMethodDisabled}
-          />
-        </Field>
-      ) : null}
       <Field
         label={props.label}
         htmlFor="document-companyBankAccountId"
@@ -212,6 +196,23 @@ export function CompanyAccountControl(props: CompanyAccountControlProps): ReactN
           />
         )}
       </Field>
+      {/* Pořadí jako u přijatých: Bankovní účet | Způsob platby. */}
+      {props.paymentMethodOptions ? (
+        <Field
+          label={props.paymentMethodLabel ?? t.paymentMethod}
+          htmlFor="document-paymentMethodId"
+          span={6}
+        >
+          <OptionSelect
+            id="document-paymentMethodId"
+            value={props.paymentMethodId}
+            onChange={(id) => props.onPaymentMethodChange?.(id)}
+            options={props.paymentMethodOptions}
+            searchable
+            disabled={props.paymentMethodDisabled}
+          />
+        </Field>
+      ) : null}
     </>
   );
 }

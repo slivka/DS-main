@@ -355,6 +355,12 @@ export interface DsTexts {
     creditAccount: string;
   };
   documentForm: {
+    /** Štítek ručně zadaného dodavatele vedle „Vstupuje do DPH“. */
+    unverifiedSupplier: string;
+    /** Bublina štítku ručně zadaného dodavatele. */
+    unverifiedSupplierHint: string;
+    /** Reference platby (E2E) u zahraničního protiúčtu. */
+    paymentReference: string;
     /** Stálý název vazby data DPH na DUZP. */
     vatDateLinkLabel: string;
     /** Popisek celku v domácí měně. */

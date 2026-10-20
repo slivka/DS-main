@@ -77,6 +77,8 @@ export type DocumentHeaderValue = {
   variableSymbol?: string | null;
   constantSymbol?: string | null;
   specificSymbol?: string | null;
+  /** Reference platby (E2E) u zahraničního protiúčtu; nahrazuje KS a SS. */
+  paymentReference?: string | null;
   bankAccount?: string | null;
   /** Identifikátor vybraného účtu partnera. */
   partnerBankAccountId?: string | null;
@@ -473,6 +475,11 @@ export interface DocumentFormProps {
   changedBy?: string;
   changedAt?: string;
   saveAction?: DocumentSaveAction;
+  /**
+   * Ctrl/Cmd+Enter = Uložit a zavřít (bez tlačítka v liště; platí jen při povoleném uložení).
+   * Aplikace zavře formulář až po úspěšném uložení; při chybě zůstává otevřený.
+   */
+  onSaveAndClose?: () => void;
   primaryAction?: DocumentPrimaryAction;
   moreActions?: DocumentMoreAction[];
   settings?: DocumentSettingsAction;

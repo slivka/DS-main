@@ -1,3 +1,4 @@
+import { PageHeaderDirtyDemo } from "@/components/showcase/page-header-dirty-demo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -251,9 +252,9 @@ function NavigationPage() {
               <CompanySwitcher
                 className={
                   previewWidth < 768
-                    ? "max-w-[132px]"
+                    ? "max-w-[8.25rem]"
                     : previewWidth < 1280
-                      ? "max-w-[200px]"
+                      ? "max-w-[12.5rem]"
                       : undefined
                 }
                 items={companies}
@@ -261,18 +262,7 @@ function NavigationPage() {
                 onChange={setCompanyId}
               />
               <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-border" />
-              <PeriodSwitcher
-                className={
-                  previewWidth < 768
-                    ? "max-w-[112px]"
-                    : previewWidth < 1280
-                      ? "max-w-[200px]"
-                      : undefined
-                }
-                periods={MOCK_PERIODS}
-                value={periodId}
-                onChange={setPeriodId}
-              />
+              <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
               <NotificationBell
                 items={[]}
@@ -484,6 +474,13 @@ function NavigationPage() {
 
       <ShowcaseSection title="Připravovaná stránka" description="Jednotný prázdný stav modulu.">
         <ComingSoon description="Evidence majetku bude dostupná v některém z dalších vydání." />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Záhlaví panelu – neuložené změny"
+        description="Tečka neuložených změn má stejný svislý střed jako štítek stavu; ✕ zavře záložku."
+      >
+        <PageHeaderDirtyDemo />
       </ShowcaseSection>
     </ShowcaseLayout>
   );

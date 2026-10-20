@@ -44,7 +44,7 @@ test("výdaj: jediné číslo je volné, přepnutí DPH vlastní číslo zachov�
   expect(view.container.querySelector("#document-taxDocumentNumber")).toBeNull();
   expect(input?.readOnly).toBe(false);
   fireEvent.click(view.getByRole("switch"));
-  expect(view.getByLabelText("Číslo daňového dokladu dodavatele")).toBeDefined();
+  expect(view.getByLabelText("Číslo daňového dokladu")).toBeDefined();
   expect(input?.value).toBe("Dod2026001");
   expect(input?.readOnly).toBe(false);
 });
@@ -63,4 +63,26 @@ test("příjem: prázdné číslo se při zapnutí DPH sváže, odemčení dovol
   fireEvent.click(view.getByRole("switch"));
   expect(input.value).toBe("Vlastni2026");
   expect(input.readOnly).toBe(false);
+});
+test("pokladna: Partner | IČO | DIČ, pak Vyplaceno komu | číslo, pak Popis", () => {
+  const view = render(<Cash direction="out" />);
+  const ids = [
+    "document-partner",
+    "document-partner-ico",
+    "document-partner-dic",
+    "document-handedOverBy",
+    "document-externalNumber",
+    "document-description",
+  ];
+  const nodes = ids.map((id) => view.container.querySelector(`#${id}`));
+  nodes.forEach((node, index) => {
+    if (!node) throw new Error(`Chybí ${ids[index]}`);
+  });
+  for (let index = 1; index < nodes.length; index += 1) {
+    const previous = nodes[index - 1] as Element;
+    const current = nodes[index] as Element;
+    expect(previous.compareDocumentPosition(current) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  }
 });

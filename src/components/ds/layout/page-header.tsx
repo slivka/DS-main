@@ -131,12 +131,17 @@ export function PageHeader({
               </span>
             ) : null}
             {chrome?.dirty ? (
-              <span
-                role="img"
-                aria-label={t.unsaved}
-                title={t.unsaved}
-                className="ml-2 size-2 shrink-0 self-center rounded-full bg-primary"
-              />
+              // Stejné pravidlo jako štítek: střed na účaří + ½ x-výšky nadpisu.
+              <span className="page-title-badge-slot ml-2" data-slot="page-title-dirty-slot">
+                {"\u200b"}
+                <span
+                  role="img"
+                  aria-label={t.unsaved}
+                  title={t.unsaved}
+                  data-slot="page-title-dirty"
+                  className="page-title-badge inline-block size-2 rounded-full bg-primary"
+                />
+              </span>
             ) : null}
           </div>
         </div>
@@ -398,9 +403,9 @@ function PaneButtons({
           </DropdownMenuContent>
         </DropdownMenu>
         <IconButton
-          label={`${t.closePane} (Alt+Shift+W)`}
-          aria-label={t.closePane}
-          onClick={chrome.closePane}
+          label={`${t.closeHeader} (Alt+W)`}
+          aria-label={t.closeHeader}
+          onClick={chrome.closeTab}
         >
           <X className="size-4" />
         </IconButton>

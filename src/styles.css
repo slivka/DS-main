@@ -2614,6 +2614,11 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .document-identity-account-measure::before {
   content: attr(data-label);
 }
+/* Režim čtení: šířka podle textu „kód – název“; tužka hned za textem nebo trojtečkou. */
+.document-identity-account-box[data-mode="read"] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
 /* Pole výběru i hledání leží přes měřicí text; šířku boxu určuje jen měření. */
 .document-identity-account-box > .inline-search-field {
   position: absolute;

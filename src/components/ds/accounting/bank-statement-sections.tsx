@@ -28,7 +28,7 @@ interface BasicSectionProps {
   locked: boolean;
   /** Součty pohybů. */
   balances: BankStatementBalances;
-  /** Značka měny. */
+  /** Značka měny – jen do textu varování rozdílu; pole značku nezobrazují. */
   symbol: string;
   /** Jazykové texty. */
   texts: BankStatementTexts;
@@ -90,7 +90,7 @@ export function BankStatementBasic({
               balances[key] < 0 && "text-destructive",
             )}
           >
-            {formatAmount(balances[key])} {symbol}
+            {formatAmount(balances[key])}
           </FieldValue>
         </Field>
       ))}
@@ -119,7 +119,7 @@ interface BankClosingProps {
   locked: boolean;
   /** Součty pohybů. */
   balances: BankStatementBalances;
-  /** Značka měny. */
+  /** Značka měny – jen do textu varování rozdílu; pole značku nezobrazují. */
   symbol: string;
   /** Jazykové texty. */
   texts: BankStatementTexts;
@@ -160,7 +160,7 @@ export function BankStatementBankClosing({
             aria-labelledby={`${id}-bankClosing-label`}
             className="justify-end pr-[var(--field-toggle-space)] text-right font-bold tabular-nums"
           >
-            {formatAmount(sum ? closing : bankClosing)} {symbol}
+            {formatAmount(sum ? closing : bankClosing)}
           </FieldValue>
         ) : (
           <>
@@ -168,14 +168,8 @@ export function BankStatementBankClosing({
               id={`${id}-bankClosing`}
               value={bankClosing}
               onChange={(next) => onChange(parseDecimalInput(next))}
-              className="pr-[calc(var(--field-toggle-space)+2rem)] font-bold"
+              className="pr-[var(--field-toggle-space)] font-bold"
             />
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 right-[var(--field-toggle-space)] flex items-center pr-1 text-sm text-muted-foreground"
-            >
-              {symbol}
-            </span>
           </>
         )}
         <FieldToggleButton

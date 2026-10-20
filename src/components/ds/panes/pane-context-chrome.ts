@@ -27,6 +27,8 @@ export type PaneChromeTexts = {
   duplicate: string;
   reopenClosed: string;
   closePane: string;
+  /** Křížek v záhlaví panelu – zavře záložku. */
+  closeHeader: string;
   pageActions: string;
   untitled: string;
   /** Připnutí navázané záložky – zamkne záznam. */
@@ -62,19 +64,37 @@ type TabMenuApi = Pick<
   | "setLinkedPinned"
 >;
 
+/**
+ * Kde se menu zobrazí: `tab` = kontextové menu záložky (začíná „Zavřít záložku“),
+ * `header` = ⋯ v záhlaví (bez „Zavřít záložku“ – dubluje ✕; na konci „Zavřít panel“
+ * oddělené čarou, jen při více panelech).
+ */
+export type TabMenuSurface = "tab" | "header";
+
 export function buildTabMenuActions(
   api: TabMenuApi,
   tabId: string,
   texts: Partial<PaneChromeTexts> = {},
+  surface: TabMenuSurface = "tab",
 ): PaneMenuAction[] {
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...texts };
   const found = findTab(api.state, tabId);
   if (!found) return [];
   const { tab, paneIndex } = found;
   const count = api.state.panes.length;
-  const groups: PaneMenuAction[][] = [
-    [{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }],
-  ];
+  const groups: PaneMenuAction[][] =
+    surface === "tab"
+      ? [
+          [
+            {
+              id: "close",
+              label: t.closeTab,
+              shortcut: "Alt+W",
+              onSelect: () => api.closeTab(tabId),
+            },
+          ],
+        ]
+      : [];
   const tabActions: PaneMenuAction[] = [];
   const linked = tab.linked;
   if (linked) {
@@ -107,6 +127,15 @@ export function buildTabMenuActions(
       onSelect: () => api.duplicateTab(tabId),
     });
   if (tabActions.length) groups.push(tabActions);
+  if (surface === "header" && count > 1)
+    groups.push([
+      {
+        id: "close-pane",
+        label: t.closePane,
+        shortcut: "Alt+Shift+W",
+        onSelect: () => api.closePane(api.state.panes[paneIndex].id),
+      },
+    ]);
   return groups.flatMap((group, groupIndex) =>
     group.map((action, actionIndex) => ({
       ...action,
@@ -137,6 +166,8 @@ export type PaneChrome = {
   toggleMaximize: () => void;
   /** Zavře panel přes společnou ochranu neuložených změn. */
   closePane: () => void;
+  /** Zavře záložku (✕ v záhlaví) přes ochranu neuložených změn. */
+  closeTab: () => void;
   menuActions: PaneMenuAction[];
   /** Navázaná záložka: připnutí záznamu a návrat do panelu. */
   linked?: {

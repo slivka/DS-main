@@ -41,6 +41,11 @@ export interface ContextPillProps extends Omit<
   onOpenChange?: (open: boolean) => void;
   /** Zapne hledání přímo v kontextovém poli; dotaz řídí hostitel. */
   onSearchChange?: (query: string) => void;
+  /**
+   * Hodnota se nikdy nezkrátí (např. období); `detail` se zobrazí jen celý, když se vejde,
+   * jinak se skryje bez trojtečky – rozhoduje místo v tlačítku, ne šířka okna.
+   */
+  keepValue?: boolean;
 }
 
 const ContextPillCloseContext = createContext<() => void>(() => {});
@@ -73,6 +78,7 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
       open,
       onOpenChange,
       onSearchChange,
+      keepValue = false,
       ...props
     },
     ref,
@@ -103,7 +109,7 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   aria-label={label}
                   role={onSearchChange ? "combobox" : undefined}
                   className={cn(
-                    "h-9 min-w-0 max-w-[360px] justify-start gap-2 rounded-md px-2.5 py-1 text-left",
+                    "h-9 min-w-0 max-w-[22.5rem] justify-start gap-2 rounded-md px-2.5 py-1 text-left",
                     className,
                   )}
                   {...props}
@@ -118,10 +124,18 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                     )}
                   >
                     {statusIndicator}
-                    <span className="flex min-w-0 flex-1 items-baseline gap-2 leading-tight">
+                    <span
+                      data-slot="context-pill-text"
+                      className={cn(
+                        "flex min-w-0 flex-1 items-baseline gap-x-2 leading-tight",
+                        // Detail, který se nevejde, se zalomí na skrytý druhý řádek.
+                        keepValue && "h-[1.25rem] flex-wrap overflow-hidden",
+                      )}
+                    >
                       <span
                         className={cn(
-                          "block min-w-0 truncate text-base font-semibold",
+                          "block text-base font-semibold",
+                          keepValue ? "shrink-0 whitespace-nowrap" : "min-w-0 truncate",
                           valueMuted ? "text-muted-foreground" : "text-foreground",
                           valueClassName,
                         )}
@@ -135,8 +149,12 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                       </span>
                       {detail ? (
                         <span
+                          data-slot="context-pill-detail"
                           className={cn(
-                            "hidden min-w-0 truncate text-sm font-normal text-muted-foreground 2xl:inline",
+                            "text-sm font-normal text-muted-foreground",
+                            keepValue
+                              ? "shrink-0 whitespace-nowrap"
+                              : "hidden min-w-0 truncate 2xl:inline",
                             detailClassName,
                           )}
                         >

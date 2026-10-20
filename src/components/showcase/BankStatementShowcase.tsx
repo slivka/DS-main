@@ -78,6 +78,8 @@ function StatementExample({ scenario }: { scenario: string }) {
             rows={scenario === "empty" ? [] : undefined}
             onAction={setAddedDirection}
             emptyTitle="Výpis zatím nemá pohyby"
+            currency={foreign ? "EUR" : "CZK"}
+            homeCurrency="CZK"
           />
         </>
       }

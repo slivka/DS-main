@@ -52,7 +52,9 @@ test("BankStatementForm Σ zapnuto ukazuje konečný zůstatek jen ke čtení", 
   const sum = view.getByRole("button", { name: "Zůstatek z pohybů" });
   expect(sum.getAttribute("aria-pressed")).toBe("true");
   expect(view.queryByRole("textbox", { name: "Zůstatek na výpise" })).toBeNull();
-  expect(view.getByText("12 500,00 €")).toBeTruthy();
+  // 2.117.0 D8: pole záhlaví výpisu značku měny neopakují.
+  expect(view.getByText("12 500,00")).toBeTruthy();
+  expect(view.queryByText("12 500,00 €")).toBeNull();
 });
 test("BankStatementForm vypnutí Σ předvyplní vypočtený zůstatek, zapnutí vrátí null", () => {
   let result = base.value;

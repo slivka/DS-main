@@ -10,7 +10,7 @@ import { ReadOnlyBanner } from "../../feedback/read-only-banner";
 import { PageHeader } from "../../layout/page-header";
 import { RecordActionBar, type RecordMoreAction } from "../../layout/record-action-bar";
 import { DocumentStatusBadge } from "../document-status-badge";
-import { DocumentVatActionStatus } from "./document-vat-action-status";
+import { DocumentVatActionStatus, UnverifiedSupplierBadge } from "./document-vat-action-status";
 import type {
   DocumentFormProps,
   DocumentFormTexts,
@@ -31,26 +31,32 @@ export interface DocumentFormTopProps {
   notices: ReactNode;
   /** Doklad vstupuje do DPH. */
   vatRelevant: boolean;
+  /** Dodavatel je zadaný ručně (neověřený) – štítek vedle „Vstupuje do DPH“. */
+  manualSupplier?: boolean;
   /** Změna vstupu do DPH. */
   onVatRelevantChange: (next: boolean) => void;
   /** Texty formuláře včetně DsTexts. */
   t: DocumentFormTexts & DsTexts["documentForm"];
 }
 
-/** Ctrl/Cmd+S uloží povolený doklad. */
+/**
+ * Ctrl/Cmd+S uloží povolený doklad; Ctrl/Cmd+Enter zavolá `onSaveAndClose` (bez tlačítka).
+ * Aplikace v `onSaveAndClose` uloží a zavře jen po úspěchu – při chybě formulář zůstává.
+ * Zkratku, kterou už zpracoval vnořený prvek (např. Ctrl+Enter = nový řádek), nepřebírá.
+ */
 export function handleDocumentSaveShortcut(
   event: KeyboardEvent<HTMLDivElement>,
   saveAction?: DocumentSaveAction,
+  onSaveAndClose?: () => void,
 ) {
-  if (
-    (event.ctrlKey || event.metaKey) &&
-    event.key.toLowerCase() === "s" &&
-    saveAction &&
-    !saveAction.disabled &&
-    !saveAction.busy
-  ) {
+  if (event.defaultPrevented || !(event.ctrlKey || event.metaKey)) return;
+  if (!saveAction || saveAction.disabled || saveAction.busy) return;
+  if (event.key.toLowerCase() === "s") {
     event.preventDefault();
     saveAction.onSave();
+  } else if (event.key === "Enter" && onSaveAndClose) {
+    event.preventDefault();
+    onSaveAndClose();
   }
 }
 
@@ -62,10 +68,15 @@ export function DocumentFormTop({
   issues,
   notices,
   vatRelevant,
+  manualSupplier,
   onVatRelevantChange,
   t,
 }: DocumentFormTopProps) {
   const dsTexts = useDsTexts();
+  // Stav dokladu je štítek; pruh upozornění zůstává jen pro věci, které jde opravit.
+  const counterpartyStatus = manualSupplier ? (
+    <UnverifiedSupplierBadge label={t.unverifiedSupplier} hint={t.unverifiedSupplierHint} />
+  ) : null;
   return (
     <>
       <PageHeader
@@ -90,9 +101,12 @@ export function DocumentFormTop({
                 readOnly={p.vat.relevantReadOnly}
                 onCheckedChange={onVatRelevantChange}
                 status={p.vatPartnerStatus}
+                counterpartyStatus={counterpartyStatus}
                 texts={t}
               />
-            ) : null}
+            ) : (
+              counterpartyStatus
+            )}
           </>
         }
         saveAction={p.saveAction}

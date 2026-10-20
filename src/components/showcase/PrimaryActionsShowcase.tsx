@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { DataGrid, type DataGridColumn, type GridAddAction } from "../ds";
-import { formatAmount } from "../../lib/format";
+import { currencyColumnLabel, formatAmount } from "../../lib/format";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
 interface Movement {
@@ -22,6 +22,8 @@ export function MovementsGrid({
   outDisabledReason,
   rows = ROWS,
   emptyTitle,
+  currency,
+  homeCurrency,
 }: {
   storageKey: string;
   onAction?: (kind: "in" | "out") => void;
@@ -31,20 +33,24 @@ export function MovementsGrid({
   rows?: Movement[];
   /** Titulek prázdného gridu (např. „Výpis zatím nemá pohyby“). */
   emptyTitle?: string;
+  /** Měna výpisu; v cizí měně ji nese nadpis sloupce, buňky značku neopakují. */
+  currency?: string;
+  /** Domácí měna z aplikace. */
+  homeCurrency?: string;
 }) {
   const columns = useMemo<DataGridColumn<Movement>[]>(
     () => [
       { id: "text", label: "Popis", width: 220, value: (row) => row.text },
       {
         id: "amount",
-        label: "Částka",
+        label: currencyColumnLabel("Částka", currency, homeCurrency),
         width: 120,
         align: "right",
         value: (row) => row.amount,
         render: (row) => formatAmount(row.amount),
       },
     ],
-    [],
+    [currency, homeCurrency],
   );
   const actions: GridAddAction[] = [
     {
