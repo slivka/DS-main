@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.117.0 (nevydáno)
+## 2.118.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.117.0 – Drobné opravy 1
 
 ### Drobné opravy 1 (edity)
 

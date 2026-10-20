@@ -1,4 +1,10 @@
-## DS 2.117.0 (nevydáno)
+## DS 2.118.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.117.0 – Drobné opravy 1
+
+- Vydáno 20. 10. 2026 (commit 615e76af). E2E Chromium run 39485783990 na e1d73f3 🟢 (předchozí run 39483284611 na 624bf09 měl 2 zastaralé testy – D6 pořadí účet / způsob platby, selektor tužky D3; opraveny testy, ne kód).
 
 ### Drobné opravy 1 (edity)
 
@@ -17,7 +23,7 @@
 
 ## DS 2.116.0 – Navázané okno panelu
 
-- Vydáno 20. 10. 2026 (commit fa873c2f). E2E Chromium run 39476599967 na 86fa919 běžel při vydání (Petr: pokračovat bez čekání); výsledek dopíše Claude.
+- Vydáno 20. 10. 2026 (commit fa873c2f). E2E Chromium run 39476599967 na 86fa919 běžel při vydání (Petr: pokračovat bez čekání); následný run 39477750480 🟢.
 
 ### Navázané okno panelu (krok 5B)
 
