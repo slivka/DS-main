@@ -1,9 +1,12 @@
 ## DS 2.120.0 (nevydáno)
 
-- [ ] Zálohy B: rozpad platby, přiřazení ZL/DD, odečty pod rekapitulací, evidence a opravný DD.
-- [ ] Automatický řádek advance_fx, CS/SK, ukázky, testy, katalog a závěrečná kontrola.
-- [ ] Schválené upřesnění: odečty přes slot sdílené rekapitulace (APP je u ZL nepředává); štítky Záloha / Kurzové vyrovnání zálohy v řádcích i Zaúčtování.
+- [x] Zálohy B: rozpad platby, přiřazení ZL/DD, odečty pod rekapitulací, evidence a opravný DD.
+- [x] Automatický řádek advance_fx, CS/SK, ukázky, testy, katalog a závěrečná kontrola.
+- [x] Schválené upřesnění: odečty přes slot sdílené rekapitulace (APP je u ZL nepředává); štítky Záloha / Kurzové vyrovnání zálohy v řádcích i Zaúčtování.
 - [ ] APP krok C: data, výpočty, oprávnění, lhůty, obecné párování a zápisy záloh.
+- Ověřeno: check:full --harness 1058/1058 unit ve 112 souborech; 33 nových testů v advance-allocation, advance-components, advance-integration a advance-interactions. Katalog 459→465 komponent / 1000→1082 props, 0 odebrání; lint 0 chyb / 344 stávajících varování (nové soubory 0/0), formát i peněžní audit OK. Automatické typy/noImplicitReturns a build OK; samostatně nespouštěny. E2E specy neběžely; přímý Chromium proklik včetně 640 px / 200 % bez pageerror.
+- Veřejné API pro krok C: AdvancePaymentBreakdown (totals/currency/planes/actions/taxStatus/deadline), AdvanceAllocationDialog (target/candidates/value/onChange/remaining/onAllocate), AdvanceReasonDialog (reasons/value/onChange/onConfirm), AdvanceDeductionsSection (rows/addAction/manualAction/onAction/onOpenTaxDocument), AdvanceRegisterGrid (rows/filters/onFiltersChange/asOf/onOpen), AdvanceCorrectionDialog (rows/onDecision). Dialogy používají open/onOpenChange a loading/busy/error podle kontraktu.
+- Aditivní API: JournalLinesEditor.afterVatRecap přes DocumentForm.linesEditorProps; stávající advanceDeduction pro patičku. JournalLine.autoKind = advance/advance_fx; DocumentPostingAutoKind rozšířen o advance_fx. DsTexts.advances a vatFive.autoAdvanceFx. Exporty v obou barrelech; žádné odebrané props. Typy: AdvancePaymentTotals/Plane/Actions, AdvanceAllocationCandidate/Allocation, AdvanceDeductionRow/Action, AdvanceRegisterRow/Filters, AdvancePermission/Command, AdvanceTaxStatus, AdvanceReasonValue, AdvanceCorrectionRow.
 
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 

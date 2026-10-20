@@ -7,7 +7,9 @@
 - AdvanceDeductionsSection: grid odečtů, otevřený/uzavřený stav, důvody a řízené akce; společný slot JournalLinesEditor.afterVatRecap dostupný přes DocumentForm.linesEditorProps. U ZL APP slot nepředává; stávající patička používá advanceDeduction.
 - AdvanceRegisterGrid je preset DataGridu s řízenými filtry Po lhůtě/Bez DD a asOf; AdvanceCorrectionDialog předává explicitní rozhodnutí nad náhledem APP. Žádné doménové výpočty, nové párování nebo zápisy.
 - JournalLine.autoKind a DocumentPostingAutoKind podporují advance/advance_fx se štítky Záloha / Kurzové vyrovnání zálohy; zachované kurzové zaokrouhlení. Texty DsTexts.advances a vatFive.autoAdvanceFx CS/SK.
-- Ukázky na stránce Další doklady: platba 2 000 se dvěma ZL a stornem 185, poměrné pokrytí DD, FV/FP s odečty a ZFV/ZFP bez slotu, evidence a opravný DD. Nevydáno; výsledky kontrol budou doplněny po dokončení.
+- Ukázky na stránce Další doklady: platba 2 000 se dvěma ZL a stornem 185, poměrné pokrytí DD, FV/FP s odečty a ZFV/ZFP bez slotu, kandidáti partnera/DD, evidence a opravný DD.
+- Kontroly: check:full --harness prošel; 1058/1058 unit ve 112 souborech (33 nových ve čtyřech souborech), lint 0 chyb / 344 stávajících varování, nové soubory samostatně 0/0, formát a peněžní audit OK. Katalog proti vydané 2.119.0: 459 → 465 komponent, 1000 → 1082 props, 0 odebrání. Automatická kontrola typů s noImplicitReturns a sestavení hlásí build OK; ručně nespouštěny.
+- Průběžný check:quick --harness prošel; poslední běh kvůli snapshotu nenašel změněné soubory, cílené unit/lint a plná kontrola je ověřily. Chromium proklik přiřazení, překročení částky, důvodu DD nebude, opravného DD a filtrů bez pageerror; úzká plocha 640 px při 200 %. E2E specy neběžely. Verze zůstává 2.119.0, nevydáno.
 
 ## 2.119.0 – Duplikace a vzory
 
