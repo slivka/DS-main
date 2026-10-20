@@ -78,8 +78,9 @@ for (const zoom of [1, 1.5, 2]) {
         .getByRole("option")
         .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).whiteSpace));
       expect(itemLines.every((value) => value === "nowrap")).toBe(true);
-      await popup.getByPlaceholder("Hledat…").fill("Nová firma");
-      await popup.getByRole("button", { name: "Nový partner" }).click();
+      // Edit 16: hledaný text se píše přímo do pole (jediný combobox), ne do řádku nabídky.
+      await sample.getByRole("combobox", { name: "Partner", exact: true }).fill("Nová firma");
+      await sample.getByRole("button", { name: "Nový partner" }).click();
       await expect(sample.locator('output[aria-label="Nový partner"]')).toHaveText("Nová firma");
     });
   }

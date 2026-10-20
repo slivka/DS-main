@@ -2537,7 +2537,8 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .document-identity-account-box {
   height: var(--control-h);
   flex: 1 1 var(--identity-account-width);
-  min-width: 0;
+  /* Kód účtu a pole hledání zůstávají použitelné i v nejužším řádku. */
+  min-width: 6rem;
   position: relative;
   max-width: calc(100% - var(--identity-account-accessories-width));
   display: inline-flex;
@@ -2595,6 +2596,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .document-identity-account-measure {
   visibility: hidden;
   white-space: nowrap;
+  /* Měření smí v úzkém řádku ustoupit, aby box nepřekryl tužku. */
+  min-width: 0;
+  overflow: hidden;
   padding-inline: 0.75rem;
   padding-right: 3.25rem;
   font-size: var(--text-sm);
@@ -2604,12 +2608,16 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .document-identity-account-measure::before {
   content: attr(data-label);
 }
-.document-identity-account-box:has([role="combobox"]) [role="combobox"] {
+/* Pole výběru i hledání leží přes měřicí text; šířku boxu určuje jen měření. */
+.document-identity-account-box > .inline-search-field {
   position: absolute;
   inset: 0;
   width: 100%;
 }
 .document-identity-pencil-slot {
+  /* Tužka zůstává klikatelná i nad ořezaným textem účtu v úzkém řádku. */
+  position: relative;
+  z-index: 1;
   width: 1.75rem;
   height: 1.75rem;
   display: inline-flex;

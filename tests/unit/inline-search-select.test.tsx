@@ -96,3 +96,22 @@ test("mezerník otevře nabídku s prázdným dotazem", async () => {
   });
   expect(input.value).toBe("");
 });
+test("otevřený výběr má v přístupnostním stromu jediný combobox s názvem pole", async () => {
+  const view = render(
+    <OptionSelect
+      ariaLabel="Konstantní symbol"
+      value=""
+      onChange={() => {}}
+      searchable
+      options={[{ value: "0008", label: "0008 – Zboží" }]}
+    />,
+  );
+  fireEvent.keyDown(view.getByRole("combobox"), { key: "0" });
+  await waitFor(() => expect(view.container.querySelector("[cmdk-input]")).not.toBeNull());
+  const boxes = view.getAllByRole("combobox");
+  expect(boxes).toHaveLength(1);
+  expect(boxes[0]?.tagName).toBe("INPUT");
+  fireEvent.keyDown(boxes[0]!, { key: "Escape" });
+  await waitFor(() => expect(view.getAllByRole("combobox")[0]?.tagName).toBe("BUTTON"));
+  expect(view.getAllByRole("combobox")).toHaveLength(1);
+});
