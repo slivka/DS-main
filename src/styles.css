@@ -679,6 +679,12 @@ body {
   min-width: 0 !important;
   padding: 0 !important;
 }
+/* V úzkém rolovacím editoru nesmějí připnuté akce překrýt ND ani další pole.
+   Akce zůstanou dostupné na konci řádku; běžná šířka zachová připnutí zprava. */
+.zoom-grid.journal-lines-grid[data-overflow="true"] :is(th, td)[data-pin-right] {
+  position: static !important;
+  right: auto !important;
+}
 .journal-grid-cell:focus:not(:has(.journal-cell-editor)) {
   background-color: color-mix(in oklch, var(--primary) 8%, transparent);
 }

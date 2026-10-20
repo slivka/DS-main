@@ -3,7 +3,11 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function open(page: Page, url: string) {
   await page.goto(url, { waitUntil: "networkidle" });
-  await page.waitForFunction(() => document.readyState === "complete");
+  // readyState a __reactProps mohou existovat ještě před dokončením hydratace celé ukázky.
+  // Čekáme na její commit, nikoli opakovaným klikáním, které by nabídku zase zavřelo.
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
+    timeout: 45000,
+  });
 }
 
 /** Čeká, až React připojí obsluhu k poli (klik před hydratací by se ztratil). */
