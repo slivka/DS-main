@@ -14,7 +14,10 @@ function Host({ zoom, onAuto }: { zoom: number; onAuto: (z: number, reset: boole
 
 test("ruční zoom (+ / −) nevyvolá automatický přepočet s resetem", () => {
   const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "clientWidth");
-  Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => 600 });
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get: () => 600,
+  });
   try {
     const onAuto = mock();
     const view = render(<Host zoom={1} onAuto={onAuto} />);

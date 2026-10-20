@@ -262,11 +262,7 @@ function NavigationPage() {
                 onChange={setCompanyId}
               />
               <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-border" />
-              <PeriodSwitcher
-                periods={MOCK_PERIODS}
-                value={periodId}
-                onChange={setPeriodId}
-              />
+              <PeriodSwitcher periods={MOCK_PERIODS} value={periodId} onChange={setPeriodId} />
               <div className="min-w-0 flex-1" />
               <NotificationBell
                 items={[]}

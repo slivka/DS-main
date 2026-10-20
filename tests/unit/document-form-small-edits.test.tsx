@@ -58,7 +58,9 @@ describe("DocumentForm – drobné úpravy", () => {
     const view = render(
       <Form
         documentType="FV"
-        companyBankAccountOptions={[{ id: "a", label: "Hlavní", account: "1/0100", currency: "CZK" }]}
+        companyBankAccountOptions={[
+          { id: "a", label: "Hlavní", account: "1/0100", currency: "CZK" },
+        ]}
         paymentMethodOptions={[{ value: "bank", label: "Převodem" }]}
       />,
     );
@@ -69,7 +71,11 @@ describe("DocumentForm – drobné úpravy", () => {
 
   it("ručně zadaný dodavatel má štítek i při vypnutém Vstupuje do DPH", () => {
     const view = render(
-      <Form counterpartyInput="manual" vat={{ visible: true }} initial={{ ...base, vatRelevant: false }} />,
+      <Form
+        counterpartyInput="manual"
+        vat={{ visible: true }}
+        initial={{ ...base, vatRelevant: false }}
+      />,
     );
     expect(view.getByText("Neověřený dodavatel")).toBeTruthy();
     cleanup();
@@ -102,7 +108,9 @@ describe("DocumentForm – drobné úpravy", () => {
   });
 
   it("tuzemský bankovní pohyb má KS a SS a žádnou referenci", () => {
-    const view = render(<Form documentType="BA" initial={{ ...base, bankAccountKind: "domestic" }} />);
+    const view = render(
+      <Form documentType="BA" initial={{ ...base, bankAccountKind: "domestic" }} />,
+    );
     expect(view.container.querySelector("#document-paymentReference")).toBeNull();
     expect(view.container.querySelector("#document-specificSymbol")).not.toBeNull();
   });
@@ -122,10 +130,13 @@ describe("DocumentForm – drobné úpravy", () => {
     const locked = render(
       <Form saveAction={{ onSave: save, dirty: true, disabled: true }} onSaveAndClose={blocked} />,
     );
-    fireEvent.keyDown(locked.container.querySelector("#document-variableSymbol") ?? locked.container, {
-      key: "Enter",
-      ctrlKey: true,
-    });
+    fireEvent.keyDown(
+      locked.container.querySelector("#document-variableSymbol") ?? locked.container,
+      {
+        key: "Enter",
+        ctrlKey: true,
+      },
+    );
     expect(blocked).not.toHaveBeenCalled();
   });
 });
