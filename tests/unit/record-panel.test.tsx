@@ -294,7 +294,9 @@ describe("useFollowSelection", () => {
       initialProps: { rows: ["a"] },
     });
     ui.rerender({ rows: [] });
-    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
     expect(ui.result.current).toEqual({ kind: "empty" });
   });
 });
