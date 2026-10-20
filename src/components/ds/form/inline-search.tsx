@@ -144,7 +144,9 @@ export const InlineSearchInput = React.forwardRef<
   return createPortal(
     <CommandInput
       {...props}
-      aria-label={context.target.querySelector("button")?.getAttribute("aria-label") ?? props.placeholder}
+      aria-label={
+        context.target.querySelector("button")?.getAttribute("aria-label") ?? props.placeholder
+      }
       placeholder={undefined}
       ref={(node) => {
         inputRef.current = node;

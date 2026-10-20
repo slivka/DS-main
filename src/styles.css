@@ -2678,5 +2678,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   font-size: inherit !important;
 }
 
-.inline-search-field[data-search-open] ~ [data-slot="field-inline-actions"] { z-index: 2; }
-.inline-search-field[data-search-open]:has(~ [data-slot="field-inline-actions"]) [cmdk-input] { padding-right: calc(var(--control-h) * 2); }
+.inline-search-field[data-search-open] ~ [data-slot="field-inline-actions"] {
+  z-index: 2;
+}
+.inline-search-field[data-search-open]:has(~ [data-slot="field-inline-actions"]) [cmdk-input] {
+  padding-right: calc(var(--control-h) * 2);
+}

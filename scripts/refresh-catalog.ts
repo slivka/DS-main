@@ -34,19 +34,43 @@ export function refreshCatalog() {
       "Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; initialFocus volí vybraný den, dnešek v měsíci, první povolený den měsíce. Rámeček jen při klávesnici, Dnes uprostřed. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.";
   const header = catalog.components.find((component) => component.name === "PageHeader");
   if (header) {
-    header.usage = "Nadpis stránky se stavovým štítkem centrovaným na účaří + polovinu x-výšky písma; bez pevného posunu. Záhlaví panelu řadí historii, maximalizaci, menu a Zavřít panel.";
+    header.usage =
+      "Nadpis stránky se stavovým štítkem centrovaným na účaří + polovinu x-výšky písma; bez pevného posunu. Záhlaví panelu řadí historii, maximalizaci, menu a Zavřít panel.";
     header.examples ??= [];
     if (!header.examples.some((example) => example.label === "Nadpis se stavem"))
-      header.examples.push({ label: "Nadpis se stavem", code: '<PageHeader title="Přijatá faktura" titleBadge={<DocumentStatusBadge status="draft" />} />' });
+      header.examples.push({
+        label: "Nadpis se stavem",
+        code: '<PageHeader title="Přijatá faktura" titleBadge={<DocumentStatusBadge status="draft" />} />',
+      });
     header.antipatterns ??= [];
-    const rule = "Neposouvejte štítek pevným px ani cap metrikou; nesmí se ořezat diakritika nadpisu.";
+    const rule =
+      "Neposouvejte štítek pevným px ani cap metrikou; nesmí se ořezat diakritika nadpisu.";
     if (!header.antipatterns.includes(rule)) header.antipatterns.push(rule);
   }
-  const searchable = new Set(["SearchableOptionSelect", "OptionSelect", "EntitySelect", "AccountSelect", "PartnerSelect", "DimensionSelect", "UnitSelect", "VatCodeSelect", "CountrySelect", "CategorySelect", "LegalFormField", "TagPicker", "MultiSelect", "ChipMultiSelect", "ContextSwitcher", "CompanySwitcher"]);
+  const searchable = new Set([
+    "SearchableOptionSelect",
+    "OptionSelect",
+    "EntitySelect",
+    "AccountSelect",
+    "PartnerSelect",
+    "DimensionSelect",
+    "UnitSelect",
+    "VatCodeSelect",
+    "CountrySelect",
+    "CategorySelect",
+    "LegalFormField",
+    "TagPicker",
+    "MultiSelect",
+    "ChipMultiSelect",
+    "ContextSwitcher",
+    "CompanySwitcher",
+  ]);
   for (const component of catalog.components) {
     if (!searchable.has(component.name)) continue;
-    const guidance = " Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.";
-    if (!component.usage?.includes("Hledání probíhá přímo v poli")) component.usage = (component.usage ?? "Výběr z hodnot dodaných aplikací.") + guidance;
+    const guidance =
+      " Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.";
+    if (!component.usage?.includes("Hledání probíhá přímo v poli"))
+      component.usage = (component.usage ?? "Výběr z hodnot dodaných aplikací.") + guidance;
     component.examples ??= [];
     component.antipatterns ??= [];
     const rule = "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab.";
@@ -90,7 +114,15 @@ export function refreshCatalog() {
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
-  for (const component of [status, calendar, month, record, header, pill, ...catalog.components.filter((component) => searchable.has(component.name))]) {
+  for (const component of [
+    status,
+    calendar,
+    month,
+    record,
+    header,
+    pill,
+    ...catalog.components.filter((component) => searchable.has(component.name)),
+  ]) {
     if (!component) continue;
     const heading = `### ${component.name}\n`;
     const start = markdown.indexOf(heading);

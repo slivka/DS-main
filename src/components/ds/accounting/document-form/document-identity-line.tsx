@@ -165,7 +165,11 @@ export function DocumentIdentityLine({
             />
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="absolute inset-0 flex min-w-0 items-center px-3" tabIndex={0} title={fullAccountLabel}>
+                <span
+                  className="absolute inset-0 flex min-w-0 items-center px-3"
+                  tabIndex={0}
+                  title={fullAccountLabel}
+                >
                   <span className="shrink-0 font-mono tabular-nums">{accountCode}</span>
                   {accountName ? (
                     <>

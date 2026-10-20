@@ -152,12 +152,18 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     await act(async () => {
       fireEvent.keyDown(search, { key: "Escape" });
     });
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
+    expect(
+      view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé"),
+    ).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
     expect(last.mainAccountId).toBe("311100");
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(
+      view.getByText(
+        (_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko",
+      ),
+    ).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 
@@ -236,23 +242,47 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const view = render(<Host docValue={base} />);
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(
+      view.getByText(
+        (_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko",
+      ),
+    ).toBeTruthy();
     view.rerender(<Host docValue={{ ...base }} />);
-    expect(view.queryByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeNull();
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
+    expect(
+      view.queryByText(
+        (_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko",
+      ),
+    ).toBeNull();
+    expect(
+      view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé"),
+    ).toBeTruthy();
     view.rerender(<Host docValue={{ ...base, number: "FV2" }} />);
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
+    expect(
+      view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé"),
+    ).toBeTruthy();
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(
+      view.getByText(
+        (_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko",
+      ),
+    ).toBeTruthy();
     view.rerender(
       <Host
         docValue={{ ...base, number: "FV2", mainAccountId: "311100" }}
         accountLabel="311.100 - Závazný popisek aplikace"
       />,
     );
-    expect(view.queryByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeNull();
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 - Závazný popisek aplikace")).toBeTruthy();
+    expect(
+      view.queryByText(
+        (_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko",
+      ),
+    ).toBeNull();
+    expect(
+      view.getByText(
+        (_, element) => element?.getAttribute("title") === "311.100 - Závazný popisek aplikace",
+      ),
+    ).toBeTruthy();
   });
 
   it("kliknutí mimo zavře nabídku a vrátí fokus", async () => {
@@ -275,7 +305,9 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     });
     outside.remove();
     expect(view.container.querySelector("[cmdk-input]") === null).toBe(true);
-    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
+    expect(
+      view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé"),
+    ).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 

@@ -1557,12 +1557,15 @@
           "type": "string"
         }
       ],
-      "usage": "Hledatelná větev OptionSelect s akcí + vpravo v hledání. Pro běžné formuláře preferujte OptionSelect searchable.",
+      "usage": "Hledatelná větev OptionSelect s akcí + vpravo v hledání. Pro běžné formuláře preferujte OptionSelect searchable. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Základní použití",
           "code": "<SearchableOptionSelect />"
         }
+      ],
+      "antipatterns": [
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -2053,7 +2056,7 @@
       "name": "Calendar",
       "file": "src/components/ui/calendar.tsx",
       "import_path": "",
-      "usage": "Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; v nabídce použijte initialFocus/autoFocus. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.",
+      "usage": "Jednotný výběr dnů, měsíců a let. Inline nepřebírá fokus; initialFocus volí vybraný den, dnešek v měsíci, první povolený den měsíce. Rámeček jen při klávesnici, Dnes uprostřed. disabled se slučuje s minDate/maxDate; captionLayout od 2.110.0 nemá účinek.",
       "examples": [
         {
           "label": "Běžné použití",
@@ -3798,6 +3801,10 @@
         {
           "name": "onOpenChange",
           "type": "function"
+        },
+        {
+          "name": "onSearchChange",
+          "type": "function"
         }
       ],
       "usage": "Jednořádkový řízený kontextový přepínač do horní lišty; drží společnou geometrii, focus a zavírání firemního i období štítku.",
@@ -3874,7 +3881,7 @@
           "type": "function"
         }
       ],
-      "usage": "Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě.",
+      "usage": "Neutrální obrysový výběr firmy s hledáním v jediném seznamu, IČO, řízeným otevřením a automatickým zavřením po volbě. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Řízený výběr firmy",
@@ -3887,7 +3894,8 @@
       ],
       "antipatterns": [
         "Nevytvářejte skupinu posledních firem.",
-        "Nenahrazujte nativním selectem."
+        "Nenahrazujte nativním selectem.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -4111,17 +4119,22 @@
           "type": "any"
         }
       ],
-      "usage": "Hlavička každé stránky bez podtitulu. V panelu vykreslí vlevo nadpis a dirty tečku, vpravo listování záznamy, historii, maximalizaci a menu ⋯; akce stránky přijímá přes menuActions.",
+      "usage": "Nadpis stránky se stavovým štítkem centrovaným na účaří + polovinu x-výšky písma; bez pevného posunu. Záhlaví panelu řadí historii, maximalizaci, menu a Zavřít panel.",
       "examples": [
         {
           "label": "Běžné použití",
           "code": "<PageHeader />"
+        },
+        {
+          "label": "Nadpis se stavem",
+          "code": "<PageHeader title=\"Přijatá faktura\" titleBadge={<DocumentStatusBadge status=\"draft\" />} />"
         }
       ],
       "antipatterns": [
         "Předávat actions uvnitř panelu místo menuActions",
         "Vkládat akci Nový do záhlaví místo gridového addAction",
-        "Předávat description; kontext patří do GridContextBar nebo horní lišty"
+        "Předávat description; kontext patří do GridContextBar nebo horní lišty",
+        "Neposouvejte štítek pevným px ani cap metrikou; nesmí se ořezat diakritika nadpisu."
       ]
     },
     {
@@ -4501,7 +4514,7 @@
           "default": "flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground [&_svg]:size-4"
         }
       ],
-      "usage": "Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, název, popis a popover s hledáním od prahu, tečkou aktuálního a akcemi. Esc zavře jen popover.",
+      "usage": "Přepínač kontextu (prostoru) nahoře ve sloupci StandaloneShell: zkratka, název, popis a popover s hledáním od prahu, tečkou aktuálního a akcemi. Esc zavře jen popover. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Přepínač prostoru",
@@ -4509,7 +4522,8 @@
         }
       ],
       "antipatterns": [
-        "Nepoužívejte pro výběr firmy v AppShell – tam je CompanySwitcher."
+        "Nepoužívejte pro výběr firmy v AppShell – tam je CompanySwitcher.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -6110,7 +6124,7 @@
       "name": "OptionSelect",
       "file": "src/components/ds/form/option-select.tsx",
       "import_path": "",
-      "usage": "Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.  Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelná větev ignoruje mezery v dotazu i hledaném zápisu (také IBAN). Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.",
+      "usage": "Standardní výběr ze seznamu. ariaLabel pojmenuje výběr bez navázaného popisku; placeholderValueLabel mění text prázdné položky.  Zakázaný stav sdílí podklad muted/40, rámeček input a barvu foreground se zakázaným Input a DateField. Průhlednost je 1 kvůli čitelnosti; platí v obou režimech celé knihovny. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelná větev ignoruje mezery v dotazu i hledaném zápisu (také IBAN). Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Pojmenovaný výběr",
@@ -6120,7 +6134,8 @@
       "antipatterns": [
         "Pro volbu Firma / Osoba nepoužívejte OptionSelect; použijte SegmentedField.",
         "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -6337,7 +6352,7 @@
       "name": "CategorySelect",
       "file": "src/components/ds/form/category-select.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6345,14 +6360,15 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
       "name": "MultiSelect",
       "file": "src/components/ds/form/multi-select.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6360,14 +6376,15 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
       "name": "ChipMultiSelect",
       "file": "src/components/ds/form/chip-multi-select.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6375,7 +6392,8 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -6402,7 +6420,7 @@
       "name": "TagPicker",
       "file": "src/components/ds/form/TagPicker.tsx",
       "import_path": "",
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Duplicitní název (u jednotky také kód) zakáže ＋ s důvodem DsTexts.selectCreate.duplicate.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Duplicitní název (u jednotky také kód) zakáže ＋ s důvodem DsTexts.selectCreate.duplicate. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6410,7 +6428,8 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -6784,7 +6803,7 @@
           "default": "Zrušit výběr"
         }
       ],
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6792,7 +6811,8 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -6833,7 +6853,7 @@
           "default": "truncate"
         }
       ],
-      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Použití společného stavu",
@@ -6841,7 +6861,8 @@
         }
       ],
       "antipatterns": [
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -7853,7 +7874,7 @@
           "default": "ml-auto flex shrink-0 items-center gap-2"
         }
       ],
-      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Výběr účtu z osnovy; suffix vykreslí uvnitř spouštěče například stranu MD/DAL. S allowLevels a catalog podporuje také třídu nebo skupinu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Třída nebo skupina",
@@ -7863,7 +7884,8 @@
       "antipatterns": [
         "Nativní select pro účty",
         "Doplňování tečky do uloženého kódu",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -7934,7 +7956,7 @@
       "name": "PartnerSelect",
       "file": "src/components/ds/accounting/partner-select.tsx",
       "import_path": "",
-      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.",
+      "usage": "Výběr partnera podle názvu a IČO; PartnerOption podporuje také DIČ pro navazující zobrazení ve formuláři. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Výběr hodnoty",
@@ -7943,7 +7965,8 @@
       ],
       "antipatterns": [
         "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -8182,7 +8205,7 @@
           "default": "ml-auto size-4 shrink-0 opacity-50"
         }
       ],
-      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech.",
+      "usage": "Výběr kódu DPH (kód – název) pro řádek dokladu. V buňce gridu použijte defaultOpen – otevře se hned při vstupu do editace a psaní filtruje podle kódu i názvu. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Buňka Kód DPH v editoru řádků",
@@ -8191,14 +8214,15 @@
       ],
       "antipatterns": [
         "Nepoužívejte OptionSelect pro kód DPH v buňce gridu – neumí se otevřít hned při editaci ani filtrovat psaním.",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
       "name": "DimensionSelect",
       "file": "src/components/ds/accounting/dimension-select.tsx",
       "import_path": "",
-      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se.",
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Hledatelný výběr: přidání jako + v pravém okraji hledání, callback dostane aktuální dotaz. Bez práva důvod v tooltipu. Nabídka roste do dostupné šířky a 36 rem, nezalamuje se. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Výběr hodnoty",
@@ -8207,7 +8231,8 @@
       ],
       "antipatterns": [
         "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
@@ -8296,7 +8321,7 @@
           "type": "string"
         }
       ],
-      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Výběr jednotky; + vpravo v hledání předá aktuální dotaz onCreateUnit, zakázaná akce vysvětlí důvod. Zachovává návrat vytvořené jednotky. Při prázdném hledání je ＋ zašedlé s důvodem DsTexts.selectCreate.emptyQuery. Duplicitní název (u jednotky také kód) zakáže ＋ s důvodem DsTexts.selectCreate.duplicate.",
+      "usage": "Výběr hodnoty ze seznamu; text a ikonové akce mají oddělené místo před pevnou šipkou. Edit dokladu 12g: zakázaný stav používá muted/40, input a muted-foreground bez průhlednosti; prázdná hodnota je kurzívou. Stavové rámečky warning, destructive a aria-invalid mají přednost. Platí také pro spouštěče výběru na Button v obou režimech. Výběr jednotky; + vpravo v hledání předá aktuální dotaz onCreateUnit, zakázaná akce vysvětlí důvod. Zachovává návrat vytvořené jednotky. Při prázdném hledání je ＋ zašedlé s důvodem DsTexts.selectCreate.emptyQuery. Duplicitní název (u jednotky také kód) zakáže ＋ s důvodem DsTexts.selectCreate.duplicate. Hledání probíhá přímo v poli; tisknutelný znak otevře nový dotaz, Enter potvrzuje, Tab/Esc/odchod hodnotu nemění.",
       "examples": [
         {
           "label": "Výběr hodnoty",
@@ -8305,7 +8330,8 @@
       ],
       "antipatterns": [
         "Nevkládejte ikonová tlačítka do tlačítka spouštěče.",
-        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky."
+        "Nesnižujte průhlednost zakázaného textu pod kontrast 4,5 : 1; nepřebíjejte stavové rámečky.",
+        "Nepřidávejte druhé hledací okno do nabídky ani nepotvrzujte hodnotu při Tab."
       ]
     },
     {
