@@ -143,20 +143,24 @@ export const LinkRecordDialog = forwardRef<HTMLDivElement, LinkRecordDialogProps
               />
             </Field>
           </FieldGrid>
-          {candidates.length ? entries(candidates, texts.suggestions) : null}
-          {searching ? (
-            <p role="status" aria-busy="true" className="text-sm text-muted-foreground">
-              {texts.searching}
-            </p>
-          ) : null}
-          {!searching && (found ?? results).length
-            ? entries(found ?? results, texts.results)
-            : null}
-          {!searching && query.trim() && !(found ?? results).length ? (
-            <p role="status" className="text-sm text-muted-foreground">
-              {texts.noResults}
-            </p>
-          ) : null}
+          <FieldGrid cols={12}>
+            <Field span={12}>
+              {candidates.length ? entries(candidates, texts.suggestions) : null}
+              {searching ? (
+                <p role="status" aria-busy="true" className="text-sm text-muted-foreground">
+                  {texts.searching}
+                </p>
+              ) : null}
+              {!searching && (found ?? results).length
+                ? entries(found ?? results, texts.results)
+                : null}
+              {!searching && query.trim() && !(found ?? results).length ? (
+                <p role="status" className="text-sm text-muted-foreground">
+                  {texts.noResults}
+                </p>
+              ) : null}
+            </Field>
+          </FieldGrid>
           <FieldGrid cols={12}>
             <Field span={12} label={texts.relationType} htmlFor={`${id}-type`}>
               <OptionSelect
