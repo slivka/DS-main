@@ -1,5 +1,10 @@
 /** Slovenské texty panelu · vlastní překlady · nesmí obsahovat logiku oprávnění. */
-import type { AttachmentTexts, RecordNotesTexts, RecordPanelTexts } from "./record-panel-texts";
+import type {
+  AttachmentTexts,
+  RecordHistoryTexts,
+  RecordNotesTexts,
+  RecordPanelTexts,
+} from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_SK: RecordPanelTexts = {
   close: "Zavrieť panel",
@@ -48,4 +53,31 @@ export const ATTACHMENTS_SK: AttachmentTexts = {
   tooLarge: "Súbor prekračuje limit",
   failed: "Operácia s prílohou zlyhala.",
   denied: "Nemáte oprávnenie na túto akciu.",
+};
+/** História záznamu. */
+export const RECORD_HISTORY_SK: RecordHistoryTexts = {
+  modeLabel: "Režim histórie",
+  basic: "Základný",
+  detailed: "Rozšírený",
+  filterLabel: "Typy udalostí",
+  kinds: {
+    status: "Stavy",
+    change: "Údaje",
+    attachment: "Prílohy",
+    note: "Poznámky",
+    link: "Väzby",
+  },
+  today: "Dnes",
+  yesterday: "Včera",
+  empty: "Zatiaľ bez histórie.",
+  emptyFiltered: "Vybraným typom nezodpovedá žiadna udalosť.",
+  loading: "Načítavam históriu…",
+  field: "Pole",
+  before: "Bolo",
+  after: "Je",
+  system: "Systém",
+  changesCount: (count) => `${count} zmien`,
+  autoSummary: (count) => `Automatické prepočty (${count})`,
+  lineAdded: (label) => `Pridaný ${label}`,
+  lineRemoved: (label) => `Odobraný ${label}`,
 };

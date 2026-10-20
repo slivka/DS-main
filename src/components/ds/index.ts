@@ -124,6 +124,7 @@ export * from "./feedback/confirm-dialog";
 export * from "./feedback/loading-overlay";
 export * from "./feedback/error-boundary";
 export * from "./feedback/audit-history";
+export * from "./feedback/record-history-timeline";
 export * from "./feedback/record-notes";
 export * from "./feedback/record-notes-dialog";
 export * from "./feedback/permission-gate";

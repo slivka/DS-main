@@ -2,7 +2,11 @@
 
 ## 2.114.0 (nevydáno)
 
-- Zatím bez změn.
+### Historie záznamu (Panel dokladu, krok 3A)
+
+- Nové: `RecordHistoryTimeline` – časová osa zmapovaných událostí (`HistoryEvent`, `HistoryChange`, `HistoryLineChange`), seskupení po dnech (Dnes / Včera / datum), základní a rozšířený režim (`mode` + `onModeChange`, přepínač `GridSegmentedToggle`), filtr typů Stavy / Údaje / Přílohy / Poznámky / Vazby (`filter` + `onFilterChange`, prázdný = vše), tabulka „Pole – Bylo → Je“, řádky dokladu a sbalené automatické přepočty; `loading`, `emptyText`, volitelné `now`. Funguje jako záložka `RecordSidePanel`.
+- Nové pomocné funkce: `filterHistory`, `groupHistoryByDay`, `countHistoryChanges`; texty `DsTexts.recordHistory` (CS i SK).
+- Zastaralé: `HistoryPanel` (@deprecated, náhrada `RecordHistoryTimeline`, smaže se v příští major verzi). Bez breaking změn.
 
 ## 2.113.0 – Panel dokladu (přílohy a poznámky) + Edit dokladu 16
 

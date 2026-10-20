@@ -4,7 +4,12 @@
  * Nesmí: obsahovat React kód.
  */
 import { SK_VAT_GROUPS } from "./sk-vat-groups";
-import { ATTACHMENTS_SK, RECORD_NOTES_SK, RECORD_PANEL_SK } from "./sk-record-panel";
+import {
+  ATTACHMENTS_SK,
+  RECORD_HISTORY_SK,
+  RECORD_NOTES_SK,
+  RECORD_PANEL_SK,
+} from "./sk-record-panel";
 import { BANK_STATEMENT_SK } from "./sk-bank-statement";
 import { sk } from "date-fns/locale";
 
@@ -19,6 +24,7 @@ export const DS_TEXTS_SK: DsTexts = {
   recordPanel: RECORD_PANEL_SK,
   recordNotes: RECORD_NOTES_SK,
   attachments: ATTACHMENTS_SK,
+  recordHistory: RECORD_HISTORY_SK,
   stepper: { decrease: "Znížiť", increase: "Zvýšiť" },
   selectCreate: {
     item: "Nový záznam",

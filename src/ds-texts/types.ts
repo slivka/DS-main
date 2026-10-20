@@ -8,8 +8,13 @@ export type { BankStatementTexts } from "./bank-statement-texts";
 import type { Locale } from "date-fns";
 import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
-import type { AttachmentTexts, RecordNotesTexts, RecordPanelTexts } from "./record-panel-texts";
-export type { AttachmentTexts, RecordPanelTexts } from "./record-panel-texts";
+import type {
+  AttachmentTexts,
+  RecordHistoryTexts,
+  RecordNotesTexts,
+  RecordPanelTexts,
+} from "./record-panel-texts";
+export type { AttachmentTexts, RecordHistoryTexts, RecordPanelTexts } from "./record-panel-texts";
 
 /** Druh potvrzovaného odchodu. */
 export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate" | "record";
@@ -32,6 +37,8 @@ export interface DsTexts {
   recordNotes: RecordNotesTexts;
   /** Přílohy záznamu. */
   attachments: AttachmentTexts;
+  /** Historie záznamu. */
+  recordHistory: RecordHistoryTexts;
   /** Přístupné názvy číselného krokovače. */
   stepper: { decrease: string; increase: string };
   /** Názvy vytváření z hledatelných výběrů. */

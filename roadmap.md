@@ -1,5 +1,12 @@
 ## DS 2.114.0 (nevydáno)
 
+### Historie záznamu (krok 3A)
+
+- [x] RecordHistoryTimeline: režimy, filtr typů, dny, tabulka změn, řádky, automatické přepočty, CS/SK.
+- [x] HistoryPanel @deprecated (smazat v příští major).
+- [x] Ukázky: ~15 událostí, prázdná, načítání, úzký panel, záložka panelu záznamu.
+- [x] Testy chování (5 unit); check:quick.
+
 - Firefox i WebKit: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
 - WebKit: edit-document-eleven:161 (tooltip Ruční kurz); record-dialog-2111:35 vypršení času při kliknutí na „Nový“ (run 39438666270, dříve nestabilní); nestabilní browser-page-errors (accounting-forms), design-three 70 %, document-controls 1200 px 200 %, form-design-two:80, journal-control-height.
 - Chromium: nestabilní design-three 70 % / 1280.

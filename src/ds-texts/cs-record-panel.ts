@@ -1,5 +1,10 @@
 /** České texty panelu · vlastní výchozí texty · nesmí obsahovat logiku oprávnění. */
-import type { AttachmentTexts, RecordNotesTexts, RecordPanelTexts } from "./record-panel-texts";
+import type {
+  AttachmentTexts,
+  RecordHistoryTexts,
+  RecordNotesTexts,
+  RecordPanelTexts,
+} from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_CS: RecordPanelTexts = {
   close: "Zavřít panel",
@@ -48,4 +53,31 @@ export const ATTACHMENTS_CS: AttachmentTexts = {
   tooLarge: "Soubor překračuje limit",
   failed: "Operace s přílohou se nezdařila.",
   denied: "Nemáte oprávnění k této akci.",
+};
+/** Historie záznamu. */
+export const RECORD_HISTORY_CS: RecordHistoryTexts = {
+  modeLabel: "Režim historie",
+  basic: "Základní",
+  detailed: "Rozšířený",
+  filterLabel: "Typy událostí",
+  kinds: {
+    status: "Stavy",
+    change: "Údaje",
+    attachment: "Přílohy",
+    note: "Poznámky",
+    link: "Vazby",
+  },
+  today: "Dnes",
+  yesterday: "Včera",
+  empty: "Zatím bez historie.",
+  emptyFiltered: "Vybraným typům neodpovídá žádná událost.",
+  loading: "Načítám historii…",
+  field: "Pole",
+  before: "Bylo",
+  after: "Je",
+  system: "Systém",
+  changesCount: (count) => `${count} změn`,
+  autoSummary: (count) => `Automatické přepočty (${count})`,
+  lineAdded: (label) => `Přidán ${label}`,
+  lineRemoved: (label) => `Odebrán ${label}`,
 };
