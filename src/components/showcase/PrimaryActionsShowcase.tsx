@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { DataGrid, type DataGridColumn, type GridAddAction } from "../ds";
-import { formatAmount } from "../../lib/format";
+import { currencyColumnLabel, formatAmount } from "../../lib/format";
 import { ShowcaseSection } from "./ShowcaseLayout";
 
 interface Movement {
