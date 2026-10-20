@@ -332,7 +332,8 @@ test("ND zachovává rozměry vydání 2.99.0", async ({ page }, info) => {
     await reset.click();
     const direction = expected.grid < 1 ? "Zmenšit tabulku" : "Zvětšit tabulku";
     for (let step = 0; step < Math.round(Math.abs(expected.grid - 1) * 10); step += 1)
-      await editor.getByRole("button", { name: direction, exact: true }).click();
+      // 2.120.0: kontejner obsahuje i grid odečtených záloh – první lišta patří řádkům dokladu.
+      await editor.getByRole("button", { name: direction, exact: true }).first().click();
     await expect
       .poll(() =>
         nd.evaluate((n) => {
