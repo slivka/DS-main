@@ -191,7 +191,7 @@ describe("ContextSwitcher", () => {
     const big = render(
       <ContextSwitcher label="P" items={many} value="0" onValueChange={() => undefined} />,
     );
-    fireEvent.click(big.getByRole("button", { name: /P/ }));
+    fireEvent.click(big.getByRole("combobox", { name: /P/ }));
     await waitFor(() => expect(document.querySelector("[cmdk-input]")).toBeTruthy());
   });
 });
@@ -542,7 +542,7 @@ describe("ContextSwitcher – diakritika", () => {
     const view = render(
       <ContextSwitcher label="P" items={many} value="0" onValueChange={() => undefined} />,
     );
-    fireEvent.click(view.getByRole("button", { name: /P/ }));
+    fireEvent.click(view.getByRole("combobox", { name: /P/ }));
     const input = await waitFor(() => document.querySelector("[cmdk-input]") as HTMLInputElement);
     fireEvent.change(input, { target: { value: "treti" } });
     await waitFor(() =>
