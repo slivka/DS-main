@@ -31,12 +31,10 @@ export interface AdvanceListVariantInput {
 
 /** Konfigurace varianty pro DocumentForm a JournalLinesEditor. */
 export interface AdvanceListVariant {
-  /** Viditelná pole hlavičky – bez DUZP / Data DPH a zaokrouhlení. */
+  /** Viditelná pole hlavičky – bez DUZP, Data účetního případu a zaokrouhlení. */
   fields: DocumentFields;
-  /** „Vstupuje do DPH“ ani Datum DPH se nezobrazí. */
-  vatSectionVisible: false;
-  /** Datum účetního případu se nezobrazí. */
-  accountingDateVisible: false;
+  /** `DocumentForm.vat` – „Vstupuje do DPH“ ani Datum DPH se nezobrazí. */
+  vat: { visible: false };
   /** Záložka Zaúčtování se nepřidává. */
   postingTab: false;
   /** Řádky bez MD / DAL. */
@@ -50,9 +48,13 @@ export interface AdvanceListVariant {
 /** Sestaví variantu zálohového listu ze sdílené konfigurace faktur. */
 export function advanceListVariant(input: AdvanceListVariantInput): AdvanceListVariant {
   return {
-    fields: { ...documentFieldsForType(input.type), taxDate: false, rounding: false },
-    vatSectionVisible: false,
-    accountingDateVisible: false,
+    fields: {
+      ...documentFieldsForType(input.type),
+      taxDate: false,
+      rounding: false,
+      accountingDate: false,
+    },
+    vat: { visible: false },
     postingTab: false,
     withoutAccounts: true,
     linesVat: input.vatPayer

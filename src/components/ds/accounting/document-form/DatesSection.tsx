@@ -45,6 +45,7 @@ export function DocumentDatesSection({
     t.vatDate,
     f.dueDate,
     f.taxDate,
+    f.accountingDate,
     showVatFields,
   ].join("\u0000");
   const { containerRef, geometry } = useCompactDateGeometry(labelsKey);
@@ -57,7 +58,9 @@ export function DocumentDatesSection({
           className="document-dates-compact flex flex-wrap items-start gap-3"
         >
           {date("issueDate", t.issueDate, "flex-none w-max")}
-          {date("accountingDate", t.accountingDate, "flex-none w-max")}
+          {f.accountingDate !== false
+            ? date("accountingDate", t.accountingDate, "flex-none w-max")
+            : null}
           {f.dueDate ? date("dueDate", t.dueDate, "flex-none w-max") : null}
           {/* Rozpěrka nulové šířky: na společném řádku odsune skupinu DPH vpravo,
             po zalomení zůstane na prvním řádku a skupina začne vlevo – bez prahu. */}

@@ -11,6 +11,8 @@ export type DocumentFields = {
   rounding: boolean;
   paymentOrders: boolean;
   handedOverBy: boolean;
+  /** Datum účetního případu; `false` ho skryje (zálohový list, 2.118.0). Výchozí zobrazené. */
+  accountingDate?: boolean;
 };
 
 /** Kódy typů dokladů s předvolbou polí. */
