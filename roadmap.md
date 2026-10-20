@@ -3,6 +3,15 @@
 - Firefox: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
 - WebKit: edit-document-eleven:161 (tooltip Ruční kurz), nestabilní document-controls, journal-control-height, vat-groups.
 
+### Panel dokladu – přílohy a poznámky (krok 2)
+
+- [ ] Obecný RecordSidePanel a RecordPanelTriggers; sdílené sloty formuláře a dialogu.
+- [ ] AttachmentList a useFileDrop: oprávnění, odebrání/smazání, zdroj, průběh a odmítnuté soubory.
+- [ ] Zpětně kompatibilní RecordNotes, připnutí a PinnedNoteBar; texty CS/SK.
+- [ ] DataGrid record-indicators, číselný Excel export, useFollowSelection a MultiSelectionPanel.
+- [ ] Ukázka Panel záznamu, testy chování a nejvýše jeden Chromium E2E spec.
+- [ ] Průběžné kontroly quick, katalog a dokumentace; bez vydání a bez změn bodů Firefox/WebKit.
+
 ## DS 2.112.0 – Opravy pro Firefox a Safari
 
 - [x] Prověřeno ve Firefoxu / WebKitu: bez pageerror; kruhový import nepotvrzen. Opožděná hydratace při studeném načtení reprodukována, společná produktová výjimka z CI nikoli.
