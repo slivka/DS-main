@@ -30,7 +30,7 @@ export function useDataGridColumns<Row>(
       (book?.value === "all" && book.getRowBookId
         ? [createGridBookColumn(book), ...columns]
         : columns
-      ).map((column) =>
+      ).map((column: DataGridColumn<Row>) =>
         column.type === "record-indicators" ? { ...column, sortable: false } : column,
       ),
     [book, columns],

@@ -6,6 +6,7 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
   await page.goto("/components/record-panel");
   const example = page.getByTestId("document-panel-example");
   const trigger = example.getByRole("button", { name: "Přílohy: 2", exact: true });
+  await expect(page.getByTestId("record-panel-showcase")).toHaveAttribute("data-ready", "true");
   await trigger.click();
   const panel = example.locator('[data-slot="record-side-panel"]');
   await expect(panel.getByRole("tab", { name: "Přílohy" })).toHaveAttribute(

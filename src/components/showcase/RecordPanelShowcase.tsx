@@ -98,7 +98,7 @@ export function RecordPanelShowcase() {
     />
   );
   return (
-    <div data-testid="record-panel-showcase" className="space-y-6">
+    <div data-testid="record-panel-showcase" data-ready={Boolean(sourceUrl)} className="space-y-6">
       <PageHeader title="Panel záznamu" />
       <div className="flex flex-wrap items-center gap-3">
         <div className="w-48">
