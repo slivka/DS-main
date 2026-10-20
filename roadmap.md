@@ -1,5 +1,12 @@
 ## DS 2.115.0 (nevydáno)
 
+### Propojené doklady (krok 4B)
+
+- [ ] SettlementBar, LinkedRecordsPanel: skupiny, oprávnění, potvrzení a tok dokladů.
+- [ ] LinkRecordDialog: návrhy, hledání, typ vazby, poznámka a ochrana změn.
+- [ ] Ukázky v záložce Propojené; CS/SK, unit testy, katalog a check:full --harness.
+- E2E nespouštět; vydání provede Claude po kontrole.
+
 - Firefox i WebKit: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI selhává / nestabilní.
 - WebKit: narrow-fields-290 (zoom 0.7) – text kódu MJ za tužkou (run 39456236558, dříve procházelo; kód polí beze změny – nejspíš měření se `style.zoom` ve WebKitu); edit-document-eleven:161 (tooltip Ruční kurz); record-dialog-2111:35 vypršení času; nestabilní browser-page-errors, design-three 70 %, document-controls 1200 px 200 %, form-design-two:80, journal-control-height.
 - Firefox: vs-lock-2108:103 (GridToolbar výška) – `page.goto` přerušeno (NS_BINDING_ABORTED) obnovou stránky po načtení modulu; test čekat stabilněji.

@@ -3,6 +3,8 @@
  * Vlastní: tvar všech textů knihovny (DsTexts) a dílčí rozhraní.
  * Nesmí: obsahovat hodnoty textů ani React kód.
  */
+import type { LinkedRecordTexts } from "./linked-record-texts";
+export type { LinkedRecordTexts } from "./linked-record-texts";
 import type { BankStatementTexts } from "./bank-statement-texts";
 export type { BankStatementTexts } from "./bank-statement-texts";
 import type { Locale } from "date-fns";
@@ -31,6 +33,8 @@ import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Propojené doklady. */
+  linkedRecords: LinkedRecordTexts;
   /** Panel záznamu. */
   recordPanel: RecordPanelTexts;
   /** Poznámky záznamu. */
