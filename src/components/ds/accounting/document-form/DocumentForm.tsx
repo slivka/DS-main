@@ -329,11 +329,14 @@ export function DocumentForm(props: DocumentFormProps) {
           issues={formIssueList}
           notices={combinedNotices}
           vatRelevant={vatRelevant}
-          onVatRelevantChange={(next) => patch({
-            vatRelevant: next,
-            ...(code === "PO" && value.direction === "in" && next
-              ? { taxDocumentNumberLinked: !value.externalNumber } : {}),
-          })}
+          onVatRelevantChange={(next) =>
+            patch({
+              vatRelevant: next,
+              ...(code === "PO" && value.direction === "in" && next
+                ? { taxDocumentNumberLinked: !value.externalNumber }
+                : {}),
+            })
+          }
           t={t}
         />
         <section className="rounded-lg border bg-card p-4">

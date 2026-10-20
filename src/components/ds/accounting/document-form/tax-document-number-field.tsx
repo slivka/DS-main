@@ -31,7 +31,8 @@ export function TaxDocumentNumberField({
   valueKey = "taxDocumentNumber",
 }: TaxDocumentNumberFieldProps) {
   const t = useDsTexts().documentEdit;
-  const linked = value.taxDocumentNumberLinked ?? (valueKey === "taxDocumentNumber" || !value[valueKey]);
+  const linked =
+    value.taxDocumentNumberLinked ?? (valueKey === "taxDocumentNumber" || !value[valueKey]);
   return (
     // Při varování se ⚠ posune před zámek a text má rezervu pro obě ikony.
     <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
@@ -60,7 +61,9 @@ export function TaxDocumentNumberField({
           patch({
             taxDocumentNumberLinked: pressed,
             [valueKey]: pressed
-              ? (valueKey === "externalNumber" ? null : (value.number ?? ""))
+              ? valueKey === "externalNumber"
+                ? null
+                : (value.number ?? "")
               : (value[valueKey] ?? value.number ?? ""),
           })
         }

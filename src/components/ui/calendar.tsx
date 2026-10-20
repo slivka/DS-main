@@ -88,11 +88,16 @@ function Calendar({
     allowed(today, today) && (!props.disabled || !dateMatchModifiers(today, props.disabled));
   React.useEffect(() => {
     if (view !== "days" || !focusView) return;
-    const buttons = Array.from(shell.current?.querySelectorAll<HTMLButtonElement>(
-      'button[data-day]:not(:disabled):not([data-outside="true"])',
-    ) ?? []);
-    (buttons.find((button) => button.dataset.selectedSingle === "true") ??
-      buttons.find((button) => button.dataset.today === "true") ?? buttons[0])?.focus();
+    const buttons = Array.from(
+      shell.current?.querySelectorAll<HTMLButtonElement>(
+        'button[data-day]:not(:disabled):not([data-outside="true"])',
+      ) ?? [],
+    );
+    (
+      buttons.find((button) => button.dataset.selectedSingle === "true") ??
+      buttons.find((button) => button.dataset.today === "true") ??
+      buttons[0]
+    )?.focus();
   }, [view, focusView, month]);
   const escapeView = React.useCallback(() => {
     if (onMonthSelect || view === "days") onClose?.();
@@ -293,10 +298,17 @@ function Calendar({
         <div className="calendar-footer grid grid-cols-[1fr_auto_1fr] items-center gap-1 border-t p-2">
           <span />
           {onToday && todayAllowed ? (
-            <Button variant="outline" size="sm" className="text-primary font-semibold" onClick={() => onToday(today)}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-primary font-semibold"
+              onClick={() => onToday(today)}
+            >
               {dsTexts.date.today}
             </Button>
-          ) : <span />}
+          ) : (
+            <span />
+          )}
           <div className="flex justify-end gap-1">{footerActions}</div>
         </div>
       ) : null}

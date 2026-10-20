@@ -4,14 +4,13 @@ import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "./inline-search";
 import { cn } from "../../../lib/utils";
 import { formatContactName } from "../../../lib/format";
 import { InactiveTag } from "../data-display/inactive-tag";

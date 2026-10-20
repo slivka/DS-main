@@ -116,9 +116,7 @@ export function PageHeader({
               <h1 className="typo-title min-w-0 truncate text-primary leading-[1.3]">{title}</h1>
             )}
             {titleBadge ? (
-              <span className="page-title-badge ml-3 inline-flex items-center">
-                {titleBadge}
-              </span>
+              <span className="page-title-badge ml-3 inline-flex items-center">{titleBadge}</span>
             ) : null}
             {chrome?.dirty ? (
               <span

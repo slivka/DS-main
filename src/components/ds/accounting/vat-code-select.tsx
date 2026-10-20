@@ -2,14 +2,13 @@ import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
-import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "../form/inline-search";
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import type { VatCodeOption } from "./journal-lines";
@@ -62,7 +61,6 @@ export function VatCodeSelect({
 }: VatCodeSelectProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
-
 
   const changeOpen = (next: boolean) => {
     setOpen(next);

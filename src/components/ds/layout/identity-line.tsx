@@ -43,10 +43,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
             <span className="flex min-w-0 flex-1 flex-nowrap items-center">
               {items.slice(1).map((item, index) => (
                 <span key={index} className="flex min-w-0 items-center">
-                  <span
-                    aria-hidden="true"
-                    className="mx-2 h-4 w-px shrink-0 bg-border"
-                  />
+                  <span aria-hidden="true" className="mx-2 h-4 w-px shrink-0 bg-border" />
                   {item}
                 </span>
               ))}
