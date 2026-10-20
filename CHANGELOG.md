@@ -8,6 +8,7 @@
 - `TemplateManager` / `TemplateManagerDialog`: Název, Autor, Sdílení, Bez částek; Přejmenovat, Sdílet/Nesdílet, Upravit a potvrzené Smazat s individuálními oprávněními a důvody. Akce předány APP.
 - Aditivní API `RecordDialog.submitDisabled` blokuje submit tlačítkem i klávesou a nenabízí uložení při ochraně zavření; zavření bez ukládání zůstává dostupné.
 - Texty `DsTexts.templates` CS/SK, ukázky jednoho dokladu, série 12 měsíců se dvěma problémy, správy i pruhu na faktuře a ZL. Žádné odebrání veřejného API; nevydáno.
+- Katalog proti vydané 2.118.0: 453 → 459 komponent, 972 → 1026 props (+54, 0 odebraných). Nové kompozice a aditivní props mají použití a příklady. Rozhraní pro krok C je vypsané v roadmapě; datum/náhled/období/vytvoření/opravy práv a zápis dodává APP.
 
 ## 2.118.0 – DPH 5 B a zálohové listy
 

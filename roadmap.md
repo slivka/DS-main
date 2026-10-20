@@ -1,7 +1,8 @@
 ## DS 2.119.0 (nevydáno)
 
-- [ ] Duplikace a vzory B: nabídka Nový, řízený dialog a náhled, pruh ve sdíleném formuláři faktur/ZL, správa s oprávněními, ukázky, CS/SK, testy a katalog.
+- [x] Duplikace a vzory B: nabídka Nový, řízený dialog a náhled, pruh ve sdíleném formuláři FV/FP/ZFV/ZFP, správa s oprávněními, ukázky, CS/SK a katalog. Nových 24 unit testů ve dvou souborech; přímý proklik Chromium desktop/úzký dialog bez chyb; E2E sada nespouštěna.
 - [ ] APP krok C: načítání vzorů, posun data, debounce náhledu, období/problémy, vytvoření a zápis správy podle práv.
+- Veřejné API C: DocumentNewMenu (templates/onBlank/onTemplate/onManage), DuplicationDialog (value/onChange/rows/loading/error/busy/dirty/onCreate), DuplicationPreview, TemplateManager/TemplateManagerDialog (templates/onAction), TemplateEditBanner a DocumentForm.templateEdit, RecordDialog.submitDisabled; datové typy DuplicationValue/PreviewRow, DocumentTemplate, TemplatePermission, TemplateAction; DsTexts.templates.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.118.0 – DPH 5 B a zálohové listy
