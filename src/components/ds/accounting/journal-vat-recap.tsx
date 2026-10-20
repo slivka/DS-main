@@ -88,7 +88,11 @@ function GroupAdjust({ group }: { group: VatGroup }) {
           aria-label={`${inMenu ? editor.dsTexts.vatFive.rowActions : texts.adjust} – ${name}`}
           className="size-[var(--control-h)]"
         >
-          {inMenu ? <MoreHorizontal className="size-[0.9em]" /> : <Pencil className="size-[0.9em]" />}
+          {inMenu ? (
+            <MoreHorizontal className="size-[0.9em]" />
+          ) : (
+            <Pencil className="size-[0.9em]" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 space-y-3" data-slot="journal-vat-adjust-content">
@@ -228,12 +232,16 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
         <td className={CELL}>{amount(group.gross)}</td>
         {showHome ? (
           <>
-            <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.baseHome)}</td>
+            <td className={CELL}>
+              {vatGroups.exchangeRate === null ? "" : amount(group.baseHome)}
+            </td>
             <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.taxHome)}</td>
           </>
         ) : null}
         <td className="px-1 py-1 text-right whitespace-nowrap">
-          {vatGroups.canOverride && !group.selfAssessment && (!group.overridden || editor.props.vat?.overrideInMenu) ? (
+          {vatGroups.canOverride &&
+          !group.selfAssessment &&
+          (!group.overridden || editor.props.vat?.overrideInMenu) ? (
             <GroupAdjust group={group} />
           ) : null}
         </td>
@@ -254,7 +262,11 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
 function SectionRow({ label, slot, span }: { label: string; slot: string; span: number }) {
   return (
     <tr data-slot={slot} className="border-t">
-      <th colSpan={span} scope="colgroup" className="px-2 pt-1.5 pb-0.5 text-left text-xs font-medium text-muted-foreground">
+      <th
+        colSpan={span}
+        scope="colgroup"
+        className="px-2 pt-1.5 pb-0.5 text-left text-xs font-medium text-muted-foreground"
+      >
         {label}
       </th>
     </tr>
@@ -278,7 +290,8 @@ export function JournalVatRecap() {
   const home = editor.homeMark;
   const homeOn = foreign && showHome;
   const span = homeOn ? 7 : 5;
-  const outside = (group: VatGroup) => editor.vatCodeMap.get(group.vatCodeId)?.menuGroup === "outside";
+  const outside = (group: VatGroup) =>
+    editor.vatCodeMap.get(group.vatCodeId)?.menuGroup === "outside";
   const inVat = groups.filter((group) => !outside(group));
   const outsideGroups = groups.filter(outside);
   return (
@@ -324,7 +337,11 @@ export function JournalVatRecap() {
         </thead>
         <tbody data-slot="journal-vat-section-in">
           {inVat.length + fixed.length > 0 ? (
-            <SectionRow label={vatFive.sectionInVat} slot="journal-vat-section-in-title" span={span} />
+            <SectionRow
+              label={vatFive.sectionInVat}
+              slot="journal-vat-section-in-title"
+              span={span}
+            />
           ) : null}
           {inVat.map((group) => (
             <GroupRow key={group.key} group={group} showHome={homeOn} />
@@ -360,10 +377,21 @@ export function JournalVatRecap() {
           })}
         </tbody>
         {outsideGroups.length > 0 ? (
-          <tbody data-slot="journal-vat-section-outside" className="border-t-2 text-muted-foreground">
-            <SectionRow label={vatFive.sectionOutsideVat} slot="journal-vat-section-outside-title" span={span} />
+          <tbody
+            data-slot="journal-vat-section-outside"
+            className="border-t-2 text-muted-foreground"
+          >
+            <SectionRow
+              label={vatFive.sectionOutsideVat}
+              slot="journal-vat-section-outside-title"
+              span={span}
+            />
             {outsideGroups.map((group) => (
-              <tr key={group.key} data-slot="journal-vat-outside" className="h-[var(--control-h)] border-t">
+              <tr
+                key={group.key}
+                data-slot="journal-vat-outside"
+                className="h-[var(--control-h)] border-t"
+              >
                 <CodeCell code={editor.vatCodeMap.get(group.vatCodeId)} fallback={group.code} />
                 <td className={CELL}>{amount(group.base)}</td>
                 <td colSpan={span - 2} />
