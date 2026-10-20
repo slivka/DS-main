@@ -52,14 +52,8 @@ describe("menu ⋯ záhlaví panelu", () => {
     const { tab, api: a } = api(2);
     a.state.panes[0].tabs[0] = {
       ...tab,
-      linked: {
-        sourceTabId: "x",
-        recordKey: "r",
-        sectionId: "history",
-        sectionLabel: "Historie",
-        pinned: false,
-      },
-    } as typeof tab;
+      linked: { sourceTabId: "x", section: "history", sectionLabel: "Historie", pinned: false },
+    };
     const labels = buildTabMenuActions(a, tab.id, {}, "header").map((action) => action.label);
     expect(labels).toContain("Vrátit do panelu");
     expect(labels).toContain("Zamknout záznam v tomto okně");
