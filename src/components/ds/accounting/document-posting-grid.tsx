@@ -67,7 +67,13 @@ export const DocumentPostingGrid = React.forwardRef<HTMLDivElement, DocumentPost
         className={cn("overflow-auto rounded-lg border bg-card", className)}
         {...props}
       >
-        <Table>
+        <Table className="table-fixed">
+          <colgroup>
+            <col className="w-[34%]" />
+            <col className="w-[26%]" />
+            <col className="w-[26%]" />
+            <col className="w-[14%]" />
+          </colgroup>
           <TableHeader className="grid-column-header">
             <TableRow>
               <TableHead>{t.postingText}</TableHead>
