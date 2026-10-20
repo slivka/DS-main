@@ -3,24 +3,25 @@ import { DocumentFormSecondaryShowcase } from "@/components/showcase/DocumentFor
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { AccountingFormsNav } from "@/components/showcase/AccountingFormsNav";
 import { TemplatesShowcase } from "@/components/showcase/TemplatesShowcase";
+import { AdvancesShowcase } from "@/components/showcase/AdvancesShowcase";
 
 export const Route = createFileRoute("/components/accounting-documents")({
   head: () => ({
     meta: [
-      { title: "Účetní formuláře – další doklady – Slivka Design System" },
+      { title: "Zálohy a další doklady – Slivka Design System" },
       {
         name: "description",
         content:
-          "Hlavičky dokladů, ovládací prvky, živý pruh chyb, formulářový design a editor dokladu.",
+          "Rozpad platby zálohy, přiřazení, odečty faktur, evidence a opravné daňové doklady.",
       },
       {
         property: "og:title",
-        content: "Účetní formuláře – další doklady – Slivka Design System",
+        content: "Zálohy a další doklady – Slivka Design System",
       },
       {
         property: "og:description",
         content:
-          "Hlavičky dokladů, ovládací prvky, živý pruh chyb, formulářový design a editor dokladu.",
+          "Rozpad platby zálohy, přiřazení, odečty faktur, evidence a opravné daňové doklady.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -39,6 +40,7 @@ function AccountingDocumentsPage() {
       ]}
     >
       <AccountingFormsNav />
+      <AdvancesShowcase />
       <TemplatesShowcase />
       <DocumentFormSecondaryShowcase />
     </ShowcaseLayout>
