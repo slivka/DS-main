@@ -1,5 +1,9 @@
 ## DS 2.120.0 (nevydáno)
 
+- [ ] Zálohy B: rozpad platby, přiřazení ZL/DD, odečty pod rekapitulací, evidence a opravný DD.
+- [ ] Automatický řádek advance_fx, CS/SK, ukázky, testy, katalog a závěrečná kontrola.
+- [ ] APP krok C: data, výpočty, oprávnění, lhůty, obecné párování a zápisy záloh.
+
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.119.0 – Duplikace a vzory
