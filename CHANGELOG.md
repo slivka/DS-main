@@ -1,11 +1,15 @@
 # Changelog – Slivka Design System
 
-## 2.115.0 (nevydáno)
+## 2.116.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.115.0 – Propojené doklady
 
 - Nové: `SettlementBar`, `LinkedRecordsPanel`, `LinkedRecordEntry` a `LinkRecordDialog`; zmapované částky a oprávnění z aplikace, více měn, řízené skupiny, potvrzené odebrání, seznam/tok podle data a modifikátory otevření.
 - Dialog: návrhy a výsledky hledání aplikace, typ vazby a poznámka, ochrana změn přes RecordDialog, zachování hodnot při chybě uložení a ignorování opožděných výsledků.
-- Texty CS/SK se skloňováním počtů, ukázky v záložce Propojené a samostatné scénáře; nové testy chování a autorské obohacení katalogu. Bez vydání; verze zůstává 2.114.0.
-- Kontroly: 11 nových testů, celkem 941/941 unit v 97 souborech; katalog 448 → 452 komponent / 942 → 985 props, 0 odebrání; lint 0 chyb / 341 stávajících varování, nové moduly bez varování. E2E nespouštěno.
+- Texty CS/SK se skloňováním počtů, ukázky v záložce Propojené a samostatné scénáře; nové testy chování a autorské obohacení katalogu.
+- Kontroly: 11 nových testů, celkem 941/941 unit v 97 souborech; katalog 448 → 452 komponent / 942 → 985 props, 0 odebrání; lint 0 chyb / 341 stávajících varování, nové moduly bez varování. E2E Chromium run 39465817412 na 0c20bda prošlo.
 
 ## 2.114.0 – Historie záznamu + oprava výběru myší
 
