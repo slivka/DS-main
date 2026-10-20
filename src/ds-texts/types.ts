@@ -65,6 +65,12 @@ export interface DsTexts {
     counteraccountSection: string;
     accountKind: string;
     domesticAccount: string;
+    /** Krátký název tuzemského režimu přepínače protiúčtu. */
+    domesticAccountShort: string;
+    /** Společný popisek čísla nebo IBAN protiúčtu. */
+    counterpartyAccount: string;
+    /** Daňové číslo dodavatele v pokladním výdaji. */
+    cashSupplierTaxNumber: string;
     iban: string;
     swift: string;
     accountNumber: string;

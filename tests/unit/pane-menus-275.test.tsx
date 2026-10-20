@@ -98,15 +98,8 @@ describe("podmenu DS 2.75.0", () => {
       "Přesunout záložku do panelu 2",
       "Přesunout záložku do panelu 3",
       "Duplikovat záložku",
-      "Zavřít panel",
     ]);
-    expect(actions.map((action) => !!action.separatorBefore)).toEqual([
-      false,
-      true,
-      false,
-      false,
-      true,
-    ]);
+    expect(actions.map((action) => !!action.separatorBefore)).toEqual([false, true, false, false]);
     expect(
       actions.some((action) =>
         /ostatní|Maximalizovat|Obnovit rozložení|Znovu otevřít/.test(action.label),
@@ -114,7 +107,7 @@ describe("podmenu DS 2.75.0", () => {
     ).toBe(false);
   });
 
-  it("jeden panel se záznamem má právě jeden oddělovač", () => {
+  it("jeden panel se záznamem nemá oddělovač", () => {
     const state = createPaneTabsState(1);
     const record = createTab({ route: "/record", kind: "record" });
     state.panes[0] = { ...state.panes[0], tabs: [record], activeTab: record.id };
@@ -126,8 +119,8 @@ describe("podmenu DS 2.75.0", () => {
       closePane() {},
     };
     const actions = buildTabMenuActions(api, record.id);
-    expect(actions.map((action) => action.label)).toEqual(["Zavřít záložku", "Zavřít panel"]);
-    expect(actions.map((action) => !!action.separatorBefore)).toEqual([false, true]);
+    expect(actions.map((action) => action.label)).toEqual(["Zavřít záložku"]);
+    expect(actions.map((action) => !!action.separatorBefore)).toEqual([false]);
   });
 
   it("UserMenu má položky hned pod záhlavím, jedinou značku prostoru a akci prostoru", () => {

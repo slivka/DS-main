@@ -1,5 +1,10 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, afterEach, mock } from "bun:test";
+import { createElement } from "react";
+import { cleanup, render, fireEvent } from "@testing-library/react";
+import { CompanySwitcher } from "../../src/components/ds/layout/company-switcher";
+import { ContextPill } from "../../src/components/ds/layout/context-pill";
+afterEach(cleanup);
 
 const squashSrc = (s: string) => s.replace(/\s+/g, " ");
 
@@ -39,12 +44,39 @@ describe("CompanySwitcher 2.22.0", () => {
     expect(companySource).toContain("close(); onCreate();");
   });
 
-  it("používá neutrální obrys, budovu a řízený stav", () => {
-    expect(companySource).toContain("icon={Building2}");
-    expect(companySource).toContain("border-grid-chrome bg-background");
-    expect(companySource).toContain("open?: boolean");
-    expect(companySource).toContain("onOpenChange?: (open: boolean) => void");
-    expect(companySource).not.toContain("useState");
+  it("řízený stav firmy oznamuje otevření a hodnotu změní až výběrem", () => {
+    const opened = mock();
+    const change = mock();
+    const view = render(
+      createElement(CompanySwitcher, {
+        items: [
+          { id: "a", name: "Alfa" },
+          { id: "b", name: "Beta" },
+        ],
+        value: "a",
+        onChange: change,
+        open: false,
+        onOpenChange: opened,
+      }),
+    );
+    fireEvent.click(view.getByRole("combobox"));
+    expect(opened).toHaveBeenCalledWith(true);
+    expect(change).not.toHaveBeenCalled();
+    view.rerender(
+      createElement(CompanySwitcher, {
+        items: [
+          { id: "a", name: "Alfa" },
+          { id: "b", name: "Beta" },
+        ],
+        value: "a",
+        onChange: change,
+        open: true,
+        onOpenChange: opened,
+      }),
+    );
+    fireEvent.click(view.getByRole("option", { name: "Beta" }));
+    expect(change).toHaveBeenCalledWith("b");
+    expect(opened).toHaveBeenCalledWith(false);
   });
 });
 
@@ -102,6 +134,18 @@ describe("ukázka horní lišty", () => {
   });
 
   it("ContextPill předává řízený stav popoveru", () => {
-    expect(contextSource).toContain("<Popover open={resolvedOpen} onOpenChange={setOpen}>");
+    const opened = mock();
+    const view = render(
+      createElement(ContextPill, {
+        label: "Kontext",
+        value: "Alfa",
+        open: false,
+        onOpenChange: opened,
+        children: createElement("p", null, "Obsah"),
+      }),
+    );
+    fireEvent.click(view.getByRole("button", { name: "Kontext" }));
+    expect(opened).toHaveBeenCalledWith(true);
+    expect(view.queryByText("Obsah")).toBeNull();
   });
 });

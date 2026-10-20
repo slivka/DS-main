@@ -56,6 +56,7 @@ const HEADER_FIELD_ID: Record<string, string> = {
   bankCode: "document-bank-code",
   bankSwift: "document-bank-code",
   bankIban: "document-movement-account",
+  bankAccountKind: "document-movement-account",
   partnerBankAccountId: "document-bankAccount",
   manualBankAccount: "document-bankAccount",
   variableSymbolLinked: "document-variableSymbol",

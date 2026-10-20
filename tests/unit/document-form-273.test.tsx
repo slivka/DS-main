@@ -161,7 +161,7 @@ describe("DocumentForm 2.73", () => {
     }
   });
 
-  it("prázdné číslo = náhled prázdný, > 10 číslic uvolní vazbu a VS nezkrátí", () => {
+  it("prázdné nebo dlouhé číslo zůstává zamčené, platné číslo obnoví náhled", () => {
     const view = render(
       <Form initial={{ ...base, externalNumber: "1234567890", variableSymbol: "1234567890" }} />,
     );
@@ -171,11 +171,11 @@ describe("DocumentForm 2.73", () => {
     fireEvent.change(number, { target: { value: "FA-2" } });
     expect(VIEW_VS(view).value).toBe("2");
     fireEvent.change(number, { target: { value: "123456789012" } });
-    expect(VIEW_VS(view).value).toBe("1234567890");
-    expect(VIEW_VS(view).readOnly).toBe(false);
-    // vazba se po zkrácení čísla sama nevrátí – uživatel ji zamkne ručně
+    expect(VIEW_VS(view).value).toBe("");
+    expect(VIEW_VS(view).readOnly).toBe(true);
+    // Platné číslo se znovu propíše, protože vazba nebyla automaticky uvolněna.
     fireEvent.change(number, { target: { value: "9876543210" } });
-    expect(VIEW_VS(view).value).toBe("1234567890");
+    expect(VIEW_VS(view).value).toBe("9876543210");
   });
 
   it("ručně zadaný VS nepřepíše ani přes prázdné nebo dlouhé číslo", () => {
@@ -221,26 +221,30 @@ describe("DocumentForm 2.73", () => {
     expect(nonPayer.getByText("Číslo dokladu dodavatele")).toBeTruthy();
   });
 
-  it("dlouhé číslo ponechá VS a ukáže varování v poli VS", () => {
+  it("dlouhé číslo vyprázdní zamčený VS a ukáže varování", () => {
     const view = render(<Form />);
     fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
       target: { value: "12345678901" },
     });
-    expect(VIEW_VS(view).value).toBe("20260123");
+    expect(VIEW_VS(view).value).toBe("");
     expect(VIEW_VS(view).className).toContain("border-warning");
     expect(
-      view.getAllByText("Číslo daňového dokladu má víc než 10 číslic – zadejte VS").length,
+      view.getAllByText(
+        "Číslo daňového dokladu má víc než 10 číslic – VS nelze odvodit. Odemkněte zámek a zadejte VS.",
+      ).length,
     ).toBeGreaterThan(0);
   });
 
-  it("číslo bez číslic uvolní vazbu a varuje", () => {
+  it("číslo bez číslic ponechá zamčený prázdný VS a varuje", () => {
     const view = render(<Form />);
     fireEvent.change(view.container.querySelector("#document-externalNumber") as HTMLInputElement, {
       target: { value: "ABC" },
     });
-    expect(VIEW_VS(view).value).toBe("20260123");
+    expect(VIEW_VS(view).value).toBe("");
     expect(
-      view.getAllByText("Číslo daňového dokladu neobsahuje číslice – zadejte VS").length,
+      view.getAllByText(
+        "Číslo daňového dokladu neobsahuje číslice – VS nelze odvodit. Odemkněte zámek a zadejte VS.",
+      ).length,
     ).toBeGreaterThan(0);
   });
 

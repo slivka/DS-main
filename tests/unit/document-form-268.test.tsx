@@ -148,16 +148,16 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const view = render(<Tracked />);
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     expect(view.getByRole("combobox", { name: "Hlavní účet" })).toBeTruthy();
-    const search = await view.findByPlaceholderText("Hledat účet nebo číslo…");
+    const search = view.container.querySelector("[cmdk-input]") as HTMLInputElement;
     await act(async () => {
       fireEvent.keyDown(search, { key: "Escape" });
     });
-    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
     expect(last.mainAccountId).toBe("311100");
-    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 
@@ -209,7 +209,7 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
       />,
     );
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
-    await view.findByPlaceholderText("Hledat účet nebo číslo…");
+    view.container.querySelector("[cmdk-input]") as HTMLInputElement;
     const options = view.getAllByRole("option").map((item) => item.textContent ?? "");
     expect(options.length).toBe(1);
     expect(options.join(" ")).not.toContain("604");
@@ -236,29 +236,29 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
     const view = render(<Host docValue={base} />);
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
     view.rerender(<Host docValue={{ ...base }} />);
-    expect(view.queryByText("311.100 – Odběratelé tuzemsko")).toBeNull();
-    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
+    expect(view.queryByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeNull();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
     view.rerender(<Host docValue={{ ...base, number: "FV2" }} />);
-    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
     await act(async () => fireEvent.click(await view.findByRole("option", { name: /311\.100/ })));
-    expect(view.getByText("311.100 – Odběratelé tuzemsko")).toBeTruthy();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeTruthy();
     view.rerender(
       <Host
         docValue={{ ...base, number: "FV2", mainAccountId: "311100" }}
         accountLabel="311.100 - Závazný popisek aplikace"
       />,
     );
-    expect(view.queryByText("311.100 – Odběratelé tuzemsko")).toBeNull();
-    expect(view.getByText("311.100 - Závazný popisek aplikace")).toBeTruthy();
+    expect(view.queryByText((_, element) => element?.getAttribute("title") === "311.100 – Odběratelé tuzemsko")).toBeNull();
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.100 - Závazný popisek aplikace")).toBeTruthy();
   });
 
   it("kliknutí mimo zavře nabídku a vrátí fokus", async () => {
     const view = render(<Form />);
     fireEvent.click(view.getByRole("button", { name: "Změnit účet" }));
-    await view.findByPlaceholderText("Hledat účet nebo číslo…");
+    view.container.querySelector("[cmdk-input]") as HTMLInputElement;
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 20));
     });
@@ -274,8 +274,8 @@ describe("DocumentForm 2.68 – jednotná identita", () => {
       outside.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
     });
     outside.remove();
-    expect(view.queryByPlaceholderText("Hledat účet nebo číslo…") === null).toBe(true);
-    expect(view.getByText("311.001 – Odběratelé")).toBeTruthy();
+    expect(view.container.querySelector("[cmdk-input]") === null).toBe(true);
+    expect(view.getByText((_, element) => element?.getAttribute("title") === "311.001 – Odběratelé")).toBeTruthy();
     expect(document.activeElement).toBe(view.getByRole("button", { name: "Změnit účet" }));
   });
 

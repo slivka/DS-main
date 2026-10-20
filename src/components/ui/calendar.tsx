@@ -87,13 +87,13 @@ function Calendar({
   const todayAllowed =
     allowed(today, today) && (!props.disabled || !dateMatchModifiers(today, props.disabled));
   React.useEffect(() => {
-    if (view === "days" && focusView)
-      (
-        shell.current?.querySelector<HTMLButtonElement>(
-          'button[data-selected-single="true"]:not(:disabled)',
-        ) ?? shell.current?.querySelector<HTMLButtonElement>("button[data-day]:not(:disabled)")
-      )?.focus();
-  }, [view, focusView]);
+    if (view !== "days" || !focusView) return;
+    const buttons = Array.from(shell.current?.querySelectorAll<HTMLButtonElement>(
+      'button[data-day]:not(:disabled):not([data-outside="true"])',
+    ) ?? []);
+    (buttons.find((button) => button.dataset.selectedSingle === "true") ??
+      buttons.find((button) => button.dataset.today === "true") ?? buttons[0])?.focus();
+  }, [view, focusView, month]);
   const escapeView = React.useCallback(() => {
     if (onMonthSelect || view === "days") onClose?.();
     else {
@@ -247,7 +247,7 @@ function Calendar({
                       <Button
                         variant="ghost"
                         size="control"
-                        className="capitalize"
+                        className="capitalize font-semibold text-base"
                         onClick={() => {
                           changeMonth(calendarMonth.date);
                           changeView("months");
@@ -290,13 +290,14 @@ function Calendar({
         ) : null}
       </div>
       {onToday || footerActions ? (
-        <div className="calendar-footer flex items-center gap-1 border-t p-2">
+        <div className="calendar-footer grid grid-cols-[1fr_auto_1fr] items-center gap-1 border-t p-2">
+          <span />
           {onToday && todayAllowed ? (
-            <Button variant="outline" size="sm" onClick={() => onToday(today)}>
+            <Button variant="outline" size="sm" className="text-primary font-semibold" onClick={() => onToday(today)}>
               {dsTexts.date.today}
             </Button>
-          ) : null}
-          {footerActions}
+          ) : <span />}
+          <div className="flex justify-end gap-1">{footerActions}</div>
         </div>
       ) : null}
     </div>
@@ -321,6 +322,7 @@ function CalendarDayButton({
       variant="ghost"
       size="icon"
       data-today={modifiers.today || undefined}
+      data-outside={modifiers.outside || undefined}
       data-day={`${day.date.getFullYear()}-${String(day.date.getMonth() + 1).padStart(2, "0")}-${String(day.date.getDate()).padStart(2, "0")}`}
       data-selected-single={
         modifiers.selected &&
@@ -332,7 +334,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "border border-transparent data-[today=true]:border-primary data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-(--cell-size) flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70",
+        "border border-transparent data-[today=true]:border-primary data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground flex aspect-square h-auto w-full min-w-(--cell-size) flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className,
       )}

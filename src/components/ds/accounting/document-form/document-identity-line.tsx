@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { AccountSelect, type AccountOption } from "../account-select";
 import { DocumentDirectionBadge } from "../document-form";
 import { cn } from "../../../../lib/utils";
+import { CODE_SEPARATOR } from "../../../../lib/code-format";
 import type { DocumentDirection, DocumentFormTexts, DocumentIdentity } from "./document-form-types";
 
 export const ReadField = ({
@@ -68,6 +69,9 @@ export function DocumentIdentityLine({
   accountOptions: AccountOption[];
 }) {
   const number = identity.number || null;
+  const fullAccountLabel = accountLabel ?? identity.account?.label ?? "";
+  const [accountCode, ...accountNameParts] = fullAccountLabel.split(CODE_SEPARATOR);
+  const accountName = accountNameParts.join(CODE_SEPARATOR);
   // Interní doklad účet nikdy nezobrazuje, i když jej aplikace pošle.
   const account = identity.variant === "internal" ? undefined : identity.account;
   const items: ReactNode[] = [
@@ -159,9 +163,20 @@ export function DocumentIdentityLine({
               className="document-identity-account-measure"
               data-label={accountLabel ?? account.label}
             />
-            <span className="absolute inset-0 flex items-center px-3">
-              <span className="truncate">{accountLabel ?? account.label}</span>
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="absolute inset-0 flex min-w-0 items-center px-3" tabIndex={0} title={fullAccountLabel}>
+                  <span className="shrink-0 font-mono tabular-nums">{accountCode}</span>
+                  {accountName ? (
+                    <>
+                      <span className="shrink-0 whitespace-pre">{CODE_SEPARATOR}</span>
+                      <span className="min-w-0 truncate">{accountName}</span>
+                    </>
+                  ) : null}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{fullAccountLabel}</TooltipContent>
+            </Tooltip>
           </span>
         )}
         <span className="document-identity-pencil-slot">{pencil}</span>

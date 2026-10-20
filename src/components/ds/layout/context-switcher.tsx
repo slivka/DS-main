@@ -1,12 +1,17 @@
+import { Button } from "../../ui/button";
 import { forwardRef, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "../form/inline-search";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
@@ -86,6 +91,7 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
   ) {
     const texts = useDsTexts().contextSwitcher;
     const [ownOpen, setOwnOpen] = useState(false);
+    const [query, setQuery] = useState("");
     const isOpen = open ?? ownOpen;
     const setOpen = (next: boolean) => {
       if (open === undefined) setOwnOpen(next);
@@ -97,9 +103,11 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
       value != null && items.some((item) => item.id === value) ? `item-${value}` : undefined;
 
     return (
-      <Popover open={isOpen} onOpenChange={setOpen}>
+      <Popover onSearchChange={setQuery} open={isOpen} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button
+          <Button
+            role="combobox"
+            variant="outline"
             ref={ref}
             type="button"
             data-slot="context-switcher"
@@ -123,7 +131,7 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
               ) : null}
             </span>
             <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-          </button>
+          </Button>
         </PopoverTrigger>
         <PopoverContent
           align="start"
@@ -152,7 +160,13 @@ export const ContextSwitcher = forwardRef<HTMLButtonElement, ContextSwitcherProp
                 : 0
             }
           >
-            {searchable ? <CommandInput placeholder={searchPlaceholder ?? texts.search} /> : null}
+            {searchable ? (
+              <CommandInput
+                value={query}
+                onValueChange={setQuery}
+                placeholder={searchPlaceholder ?? texts.search}
+              />
+            ) : null}
             <CommandList>
               <CommandEmpty>{emptyText ?? texts.empty}</CommandEmpty>
               <CommandGroup>

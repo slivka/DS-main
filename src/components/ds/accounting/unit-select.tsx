@@ -8,11 +8,10 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import { InactiveTag } from "../data-display/inactive-tag";
@@ -90,8 +89,7 @@ export function UnitSelect({
 
   return (
     <div className="relative h-[var(--control-h)] min-w-0 in-[td]:h-full">
-      <Popover
-        open={open}
+      <Popover onSearchChange={setQuery} open={open}
         onOpenChange={(next) => {
           setOpen(next);
           onOpenChange?.(next);
@@ -188,7 +186,7 @@ export function UnitSelect({
           </Command>
         </PopoverContent>
       </Popover>
-      {selected && onEditSelected && !disabled ? (
+      {selected && onEditSelected && !disabled && !open ? (
         <FieldInlineActions
           size="compact"
           className="right-[calc(0.125rem+0.875rem+0.125rem)]"

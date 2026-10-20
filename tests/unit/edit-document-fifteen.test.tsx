@@ -258,7 +258,7 @@ describe("DocumentForm – pruh a hlášení změn", () => {
 });
 
 describe("Bankovní pohyb – protiúčet", () => {
-  it("dva řádky 4 / 8 / 8 na mřížce 20 a kód banky s názvem", () => {
+  it("protiúčet s přepínačem v poli a kód banky s názvem", () => {
     const view = render(
       <Doc
         documentType="BA"
@@ -266,11 +266,9 @@ describe("Bankovní pohyb – protiúčet", () => {
         bankCodeOptions={[{ code: "0100", name: "Komerční banka" }]}
       />,
     );
-    const spans = (id: string) =>
-      view.container.querySelector(`#${id}`)?.closest('[data-slot="field"]')?.className ?? "";
-    expect(spans("document-bankAccountKind")).toContain("col-span-4");
-    expect(spans("document-movement-account")).toContain("col-span-8");
-    expect(spans("document-bank-code")).toContain("col-span-8");
+    expect(view.container.querySelector("#document-bankAccountKind")).toBeNull();
+    expect(view.getByRole("button", { name: "Druh účtu" })).toBeDefined();
+
     expect(view.container.textContent).toContain("0100 – Komerční banka");
     expect(view.getByText("Datum pohybu")).toBeTruthy();
   });

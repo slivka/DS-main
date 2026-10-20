@@ -1,15 +1,9 @@
-import type { ComponentType } from "react";
+import { useState, type ComponentType } from "react";
+import { InlineSearchInput as CommandInput } from "../form/inline-search";
 import { Building2, Check, Plus } from "lucide-react";
 
 import { Button } from "../../ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import { cn } from "../../../lib/utils";
 import { ContextPill, useContextPillClose } from "./context-pill";
 
@@ -49,6 +43,8 @@ function CompanySwitcherContent({
   createLabel,
   onCreate,
   actions = [],
+  query,
+  onQueryChange,
 }: {
   items: CompanySwitcherItem[];
   value: string;
@@ -58,6 +54,8 @@ function CompanySwitcherContent({
   createLabel: string;
   onCreate?: () => void;
   actions?: CompanySwitcherAction[];
+  query: string;
+  onQueryChange: (query: string) => void;
 }) {
   const close = useContextPillClose();
   const row = (item: CompanySwitcherItem) => (
@@ -82,7 +80,7 @@ function CompanySwitcherContent({
   return (
     <>
       <Command>
-        <CommandInput placeholder={searchPlaceholder} />
+        <CommandInput value={query} onValueChange={onQueryChange} placeholder={searchPlaceholder} />
         <CommandList>
           <CommandEmpty>{emptyText}</CommandEmpty>
           <CommandGroup>{items.map(row)}</CommandGroup>
@@ -146,6 +144,7 @@ export function CompanySwitcher({
   onOpenChange,
 }: CompanySwitcherProps) {
   const selected = items.find((item) => item.id === value);
+  const [query, setQuery] = useState("");
 
   return (
     <ContextPill
@@ -168,6 +167,7 @@ export function CompanySwitcher({
       contentClassName="w-[380px]"
       open={open}
       onOpenChange={onOpenChange}
+      onSearchChange={setQuery}
     >
       <CompanySwitcherContent
         items={items}
@@ -178,6 +178,8 @@ export function CompanySwitcher({
         createLabel={createLabel}
         onCreate={onCreate}
         actions={actions}
+        query={query}
+        onQueryChange={setQuery}
       />
     </ContextPill>
   );

@@ -13,11 +13,10 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { UnknownValue, type SelectOption } from "./option-select";
@@ -122,7 +121,7 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
 
   return (
     <div className="relative min-w-0">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover onSearchChange={setQuery} open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             id={props.id}
@@ -204,7 +203,7 @@ export function SearchableOptionSelect(props: SearchableOptionSelectProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      {showClear ? <FieldInlineActions onClear={() => choose("")} clearLabel={clearLabel} /> : null}
+      {showClear && !open ? <FieldInlineActions onClear={() => choose("")} clearLabel={clearLabel} /> : null}
     </div>
   );
 }

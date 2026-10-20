@@ -68,6 +68,8 @@ export interface DocumentBasicSectionProps {
   taxNumberField?: ReactNode;
   /** Interní doklad (2.108.0: partner / ručně, IČO a DIČ jako u faktur, bez adresy). */
   internal?: boolean;
+  /** Pokladna drží číslo vedle partnera a Popis přes celou šířku. */
+  cashDocument?: boolean;
 }
 /** Vykreslí základní údaje dokladu. */
 export function DocumentBasicSection(p: DocumentBasicSectionProps) {
@@ -142,6 +144,7 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
             false,
             "@min-[40rem]:pr-3",
           )}
+          {p.cashDocument ? externalNumberField : null}
           {field(
             "document-partner-ico",
             t.ico,
@@ -232,12 +235,12 @@ export function DocumentBasicSection(p: DocumentBasicSectionProps) {
                 "@min-[40rem]:col-start-15",
               )
             : null}
-          {!receivedDocument && f.externalNumber ? externalNumberField : null}
+          {!p.cashDocument && !receivedDocument && f.externalNumber ? externalNumberField : null}
           {suggestedText(
             "description",
             t.description,
             descriptionSuggest,
-            receivedDocument || p.taxNumberField ? 14 : 20,
+            !p.cashDocument && (receivedDocument || p.taxNumberField) ? 14 : 20,
             receivedDocument ? "@min-[40rem]:col-start-1 @min-[40rem]:pr-3" : undefined,
           )}
           {p.taxNumberField}

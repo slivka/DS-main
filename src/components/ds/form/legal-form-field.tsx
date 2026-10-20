@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "./inline-search";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 
@@ -40,11 +38,12 @@ export function LegalFormField({
   clearLabel = "Zrušit výběr",
 }: LegalFormFieldProps) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const current = value?.trim() ?? "";
   const selected = options.find((item) => item.code === current);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onSearchChange={setQuery} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -69,7 +68,7 @@ export function LegalFormField({
       </PopoverTrigger>
       <PopoverContent className="w-[min(520px,90vw)] p-0" align="start">
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput placeholder={searchPlaceholder} value={query} onValueChange={setQuery} />
           <CommandList>
             <CommandEmpty>{noResultsText}</CommandEmpty>
             <CommandGroup>

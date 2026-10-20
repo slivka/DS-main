@@ -64,6 +64,7 @@ export function useDocumentPaymentFields(
     patch,
     can,
     receivedDocument,
+    cashDocument: documentType === "PO",
     showVatFields: c.showVatFields,
     f,
     t,

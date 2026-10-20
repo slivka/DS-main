@@ -98,7 +98,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       onChange,
       status,
       book,
-      currency,
+      currency: _currency,
       currencySymbol,
       period,
       bankAccount,
@@ -209,7 +209,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
             <section className="rounded-lg border bg-card p-4">
               <BankStatementIdentity
                 id={id}
-                items={[book, currency, period, bankAccount]}
+                items={[book, period, bankAccount]}
                 number={value.number}
                 lockedReason={lockedReason ?? (hasItems ? t.hasItems : undefined)}
                 onNumberChange={(number) => patch({ number })}

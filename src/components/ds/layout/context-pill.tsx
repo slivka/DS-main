@@ -10,6 +10,11 @@ import { ChevronDown, type LucideIcon } from "lucide-react";
 
 import { Button } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import {
+  InlineSearchPopover,
+  InlineSearchContent,
+  InlineSearchTrigger,
+} from "../form/inline-search";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "../../../lib/utils";
 
@@ -34,6 +39,8 @@ export interface ContextPillProps extends Omit<
   iconClassName?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Zapne hledání přímo v kontextovém poli; dotaz řídí hostitel. */
+  onSearchChange?: (query: string) => void;
 }
 
 const ContextPillCloseContext = createContext<() => void>(() => {});
@@ -65,6 +72,7 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
       iconClassName,
       open,
       onOpenChange,
+      onSearchChange,
       ...props
     },
     ref,
@@ -75,17 +83,25 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
       if (open === undefined) setInternalOpen(next);
       onOpenChange?.(next);
     };
+    const Root = onSearchChange ? InlineSearchPopover : Popover;
+    const Trigger = onSearchChange ? InlineSearchTrigger : PopoverTrigger;
+    const Content = onSearchChange ? InlineSearchContent : PopoverContent;
     return (
       <TooltipProvider>
         <Tooltip>
-          <Popover open={resolvedOpen} onOpenChange={setOpen}>
+          <Root
+            open={resolvedOpen}
+            onOpenChange={setOpen}
+            {...(onSearchChange ? { onSearchChange } : {})}
+          >
             <TooltipTrigger asChild>
-              <PopoverTrigger asChild>
+              <Trigger asChild>
                 <Button
                   ref={ref}
                   type="button"
                   variant="ghost"
                   aria-label={label}
+                  role={onSearchChange ? "combobox" : undefined}
                   className={cn(
                     "h-9 min-w-0 max-w-[360px] justify-start gap-2 rounded-md px-2.5 py-1 text-left",
                     className,
@@ -131,15 +147,15 @@ export const ContextPill = forwardRef<HTMLButtonElement, ContextPillProps>(
                   </span>
                   <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground md:block" />
                 </Button>
-              </PopoverTrigger>
+              </Trigger>
             </TooltipTrigger>
             <TooltipContent>{tooltip ?? `${label}: ${value}`}</TooltipContent>
-            <PopoverContent align={contentAlign} className={cn("p-0", contentClassName)}>
+            <Content align={contentAlign} className={cn("p-0", contentClassName)}>
               <ContextPillCloseContext.Provider value={() => setOpen(false)}>
                 {children}
               </ContextPillCloseContext.Provider>
-            </PopoverContent>
-          </Popover>
+            </Content>
+          </Root>
         </Tooltip>
       </TooltipProvider>
     );

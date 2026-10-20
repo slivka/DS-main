@@ -69,3 +69,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - CI reads Bun from .bun-version; unit storage always comes from happy-dom. Why: runner updates must not change test DOM behavior.
 - PopoverContent forwards calendar Escape before dismissal. Why: Radix capture must not close intermediate views.
 - RecordDialog uses activeTab when supplied, local selection otherwise; onTabChange reports user requests only. Why: error navigation without callback loops.
+
+- Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.

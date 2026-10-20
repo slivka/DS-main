@@ -49,3 +49,8 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 
 - Field status (error/warning) goes through useFieldStatus/FieldStatusIndicator; grid cells use the lazy useCellStatusTooltip, never title or eager Tooltips. Why: one contract and no cost for thousands of rows.
 - A field with its own tooltip shows one bubble: the status message on top, the original information below. Why: two overlapping bubbles are unreadable.
+
+- Center title-adjacent badges and icons on the baseline plus half the x-height using font metrics. Why: lowercase titles must align at every zoom.
+- Searchable selections share inline-search; queries never commit on Tab or blur. Why: a single keyboard and IME contract preserves selected values.
+- Grid toolbar rows derive every control height from --f-h and expose it as --control-h. Why: all grid bars scale uniformly.
+- IdentityLine never wraps; only the account name may truncate. Why: book, period, side, code and number must remain recognizable.

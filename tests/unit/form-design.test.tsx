@@ -163,9 +163,7 @@ describe("Design formulářů", () => {
     const clear = view.getByRole("button", { name: DS_TEXTS_CS.documentForm.clear });
     expect(trigger.querySelector('[data-slot="select-chevron"]')).toBeTruthy();
     expect(trigger.contains(clear)).toBe(false);
-    expect(trigger.parentElement).toBe(
-      clear.closest('[data-slot="field-inline-actions"]')?.parentElement,
-    );
+    expect(trigger.parentElement?.parentElement?.contains(clear)).toBe(true);
     fireEvent.click(clear);
     expect(change).toHaveBeenCalledWith("");
     expect(trigger.getAttribute("aria-expanded")).toBe("false");

@@ -1,8 +1,13 @@
 import { useMemo, useState } from "react";
-import { Check, ChevronDown, Search } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Command } from "../../ui/command";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 import { gridFontSize } from "../grid/grid-zoom";
 import { useResizableWidth } from "../../../hooks/use-resizable-width";
 import { useDsTexts } from "../../../ds-texts";
@@ -48,6 +53,7 @@ export function MultiSelect({
   const dsTexts = useDsTexts();
   const resolvedClearLabel = clearLabel ?? dsTexts.grid.clear;
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -73,7 +79,7 @@ export function MultiSelect({
       className="relative inline-flex max-w-full"
       style={resize.width ? { width: resize.width } : undefined}
     >
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -105,71 +111,61 @@ export function MultiSelect({
           align="start"
           style={zoom ? { fontSize: gridFontSize(zoom) } : undefined}
         >
-          {showSearch ? (
-            <div className="border-b p-2">
-              <div className="relative">
-                <Search className="absolute left-[0.55em] top-1/2 size-[1.05em] -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder={placeholder ?? dsTexts.grid.searchPlaceholder}
-                  className="h-[2.2em] pl-[2em] text-[0.95em]"
-                />
-              </div>
-            </div>
-          ) : null}
-          {showSelectAll || resolvedClearLabel ? (
-            <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
-              {showSelectAll ? (
+          <Command shouldFilter={false}>
+            {showSearch ? <InlineSearchInput value={search} onValueChange={setSearch} /> : null}
+            {showSelectAll || resolvedClearLabel ? (
+              <div className="flex items-center justify-between border-b px-2 py-1 text-[0.9em]">
+                {showSelectAll ? (
+                  <button
+                    type="button"
+                    className="typo-action text-primary hover:underline"
+                    onClick={() => onChange(options.map((o) => o.value))}
+                  >
+                    {dsTexts.multiSelect.selectAll}
+                  </button>
+                ) : (
+                  <span />
+                )}
                 <button
                   type="button"
-                  className="typo-action text-primary hover:underline"
-                  onClick={() => onChange(options.map((o) => o.value))}
+                  className="typo-action text-muted-foreground hover:underline"
+                  onClick={() => onChange([])}
                 >
-                  {dsTexts.multiSelect.selectAll}
+                  {resolvedClearLabel}
                 </button>
+              </div>
+            ) : null}
+            <div className="max-h-[20em] overflow-auto py-1">
+              {filtered.length === 0 ? (
+                <p className="px-3 py-2 text-[0.9em] text-muted-foreground">
+                  {dsTexts.multiSelect.noValues}
+                </p>
               ) : (
-                <span />
-              )}
-              <button
-                type="button"
-                className="typo-action text-muted-foreground hover:underline"
-                onClick={() => onChange([])}
-              >
-                {resolvedClearLabel}
-              </button>
-            </div>
-          ) : null}
-          <div className="max-h-[20em] overflow-auto py-1">
-            {filtered.length === 0 ? (
-              <p className="px-3 py-2 text-[0.9em] text-muted-foreground">
-                {dsTexts.multiSelect.noValues}
-              </p>
-            ) : (
-              filtered.map((opt) => {
-                const checked = selected.includes(opt.value);
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    className="flex w-full items-center gap-[0.5em] px-[0.6em] py-[0.35em] text-left text-[0.95em] hover-surface"
-                    onClick={() => toggle(opt.value)}
-                  >
-                    <span
-                      className={`flex size-[1.1em] shrink-0 items-center justify-center rounded border ${
-                        checked
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-input"
-                      }`}
+                filtered.map((opt) => {
+                  const checked = selected.includes(opt.value);
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className="flex w-full items-center gap-[0.5em] px-[0.6em] py-[0.35em] text-left text-[0.95em] hover-surface"
+                      onClick={() => toggle(opt.value)}
                     >
-                      {checked && <Check className="size-[0.8em]" />}
-                    </span>
-                    <span className="truncate">{opt.label || "—"}</span>
-                  </button>
-                );
-              })
-            )}
-          </div>
+                      <span
+                        className={`flex size-[1.1em] shrink-0 items-center justify-center rounded border ${
+                          checked
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-input"
+                        }`}
+                      >
+                        {checked && <Check className="size-[0.8em]" />}
+                      </span>
+                      <span className="truncate">{opt.label || "—"}</span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </Command>
         </PopoverContent>
       </Popover>
       <ComboboxResizeHandle onPointerDown={resize.onHandlePointerDown} />

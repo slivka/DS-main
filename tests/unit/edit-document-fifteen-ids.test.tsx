@@ -140,7 +140,7 @@ describe("B) fieldId a popisky pro všechny klíče", () => {
     const ids = issues.map((issue) => issue.fieldId);
     expect(ids).toContain("document-bank-code");
     expect(ids).toContain("document-movement-account");
-    expect(ids).toContain("document-bankAccountKind");
+    expect(ids).not.toContain("document-bankAccountKind");
     for (const issue of issues) {
       expect(
         view.container.querySelector(`[id="${CSS.escape(issue.fieldId ?? "")}"]`),

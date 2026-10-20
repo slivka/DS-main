@@ -9,6 +9,7 @@ import {
   Maximize2,
   Minimize2,
   MoreHorizontal,
+  X,
   type LucideIcon,
 } from "lucide-react";
 
@@ -101,7 +102,7 @@ export function PageHeader({
       <div className="flex min-w-0 flex-1 items-start gap-2">
         <div className="min-w-0 flex-1">
           {titleSlot ? <h1 className="sr-only">{title}</h1> : null}
-          <div className="page-title-line flex min-w-0 items-center">
+          <div className="page-title-line min-w-0">
             {titleSlot ? (
               titleSlot
             ) : chrome ? (
@@ -115,7 +116,7 @@ export function PageHeader({
               <h1 className="typo-title min-w-0 truncate text-primary leading-[1.3]">{title}</h1>
             )}
             {titleBadge ? (
-              <span className="page-title-badge ml-3 inline-flex shrink-0 items-center self-center">
+              <span className="page-title-badge ml-3 inline-flex items-center">
                 {titleBadge}
               </span>
             ) : null}
@@ -372,6 +373,13 @@ function PaneButtons({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <IconButton
+          label={`${t.closePane} (Alt+Shift+W)`}
+          aria-label={t.closePane}
+          onClick={chrome.closePane}
+        >
+          <X className="size-4" />
+        </IconButton>
       </div>
     </TooltipProvider>
   );

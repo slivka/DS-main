@@ -637,7 +637,7 @@
   color: var(--primary);
 }
 
-/* Primární tlačítko v lište gridu (přidání záznamu) – modré so světlým textom. */
+/* Primární tlačítko v liště gridu (přidání záznamu) – modré se světlým textem. */
 .zoom-filters .grid-toolbar-primary:where(:not(:disabled):not([aria-disabled="true"])),
 .grid-toolbar-row .grid-toolbar-primary:where(:not(:disabled):not([aria-disabled="true"])) {
   background-color: var(--grid-steel);
@@ -2506,35 +2506,29 @@ input.ds-disabled-control[readonly].bg-muted\/40,
     top: var(--badge-cap-offset);
   }
 }
-.page-title-badge {
+.page-title-line {
   font-size: var(--text-title);
-  position: relative;
-  top: calc((1cap - 1em) / 2);
+  white-space: nowrap;
 }
-.document-identity-account {
-  flex: 0 1 auto;
-  width: max-content;
-  min-width: min(
-    calc(var(--identity-account-width) + var(--identity-account-accessories-width)),
-    100%
-  );
-  max-width: 100%;
+.page-title-line h1 {
+  display: inline;
+  font-size: inherit;
+  vertical-align: baseline;
 }
+.page-title-badge {
+  font-size: inherit;
+  vertical-align: middle;
+}
+.document-identity-account,
 [data-slot="document-identity"] span:has(> .document-identity-account) {
-  width: max-content;
-  min-width: min(
-    calc(var(--identity-account-width) + var(--identity-account-accessories-width) + 1rem),
-    100%
-  );
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 100%;
 }
 .document-identity-account-box {
   height: var(--control-h);
-  min-width: min(
-    var(--identity-account-width),
-    calc(100% - var(--identity-account-accessories-width))
-  );
-  width: max-content;
+  flex: 1 1 var(--identity-account-width);
+  min-width: 0;
   position: relative;
   max-width: calc(100% - var(--identity-account-accessories-width));
   display: inline-flex;
@@ -2630,4 +2624,56 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 /* Ukázka: lokální měřítko odpovídá dvojnásobnému písmu bez změny zařízení. */
 .record-panel-demo-zoom {
   zoom: 2;
+}
+
+/* Hledání se promítá do původního pole, nikoli do dalšího řádku nabídky. */
+.inline-search-field {
+  height: var(--control-h);
+}
+.inline-search-field > button {
+  height: 100%;
+}
+.inline-search-field[data-search-open] > button > span {
+  visibility: hidden;
+}
+.inline-search-field > [cmdk-input-wrapper] {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  padding-inline: 0.75rem;
+  height: 100%;
+}
+.inline-search-field > [cmdk-input-wrapper] > svg {
+  display: none;
+}
+.inline-search-field [cmdk-input] {
+  height: 100%;
+  font-size: inherit;
+  padding-block: 0;
+}
+.inline-search-field[data-search-open] {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.calendar-shell button[data-day]:not(:focus-visible) {
+  --tw-ring-shadow: 0 0 #0000;
+}
+.calendar-shell button[data-day]:focus-visible {
+  outline: 2px solid var(--ring);
+}
+/* Každá lišta přebírá jednu výšku; vnitřní ikony nejsou samostatné řádky. */
+.grid-toolbar-row {
+  --f-h: 2.3em;
+  --control-h: var(--f-h);
+}
+.grid-toolbar-row[data-density="compact"] {
+  --f-h: 1.9em;
+}
+.grid-toolbar-row :is(input, button, [role="combobox"], .zoom-control) {
+  height: var(--f-h) !important;
+  min-height: var(--f-h) !important;
+  font-size: inherit !important;
 }

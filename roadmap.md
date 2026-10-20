@@ -1,5 +1,18 @@
 ## DS 2.113.0 (nevydáno)
 
+### Edit dokladu 16
+
+- [ ] 1. Štítek nadpisu: centrování na účaří + polovinu x-výšky.
+- [ ] 2. Zavřít panel vpravo v záhlaví, nikoli v nabídce záložky.
+- [ ] 3. Zámek VS mění jen uživatel; neodvoditelné číslo zůstává zamčené s varováním.
+- [ ] 4. Hledatelné výběry: hledání přímo v poli, Tab bez výběru, zachování hodnoty.
+- [ ] 5. Kalendář: fokus v měsíci, výraznější měsíc a Dnes uprostřed.
+- [ ] 6. Jednotná výška ovládání lišt při všech zoomech.
+- [ ] 7. Pokladna: jedno číslo vedle partnera, Popis přes celou šířku.
+- [ ] 8. Identita bez zalomení, zkracuje se jen název účtu; výpis bez měny v identitě.
+- [ ] 9. Protiúčet: přepínač v poli, rozpoznání IBAN a ověřený převod CZ.
+- [ ] Kontroly quick průběžně a full --harness na závěr; bez vydání a bez E2E dávek.
+
 - Firefox: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
 - WebKit: edit-document-eleven:161 (tooltip Ruční kurz), nestabilní document-controls, journal-control-height, vat-groups.
 

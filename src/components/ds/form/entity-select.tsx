@@ -8,11 +8,10 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
 import { cn } from "../../../lib/utils";
 import { formatContactName } from "../../../lib/format";
 import { InactiveTag } from "../data-display/inactive-tag";
@@ -155,17 +154,6 @@ export function ContactSelect({
     return () => clearTimeout(t);
   }, [autoOpen]);
 
-  useEffect(() => {
-    if (!open) return;
-    // Po otevření zaměříme vyhledávací pole.
-    const t = setTimeout(() => {
-      inputRef.current?.focus();
-      if (!inputRef.current) {
-        document.querySelector<HTMLInputElement>("[cmdk-input]")?.focus();
-      }
-    }, 0);
-    return () => clearTimeout(t);
-  }, [open]);
   const queryTokens = useMemo(() => tokens(query), [query]);
 
   const filtered = useMemo(() => {
@@ -178,7 +166,7 @@ export function ContactSelect({
   const isBlacklisted = Boolean(selected?.is_blacklisted);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onSearchChange={setQuery} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"

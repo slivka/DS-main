@@ -66,7 +66,7 @@ describe("VS – pořadí hodnot po odemčení", () => {
     expect(patch.variableSymbolLinked).toBe(false);
     expect(patch.variableSymbol).toBe("20260456");
   });
-  it("automatické uvolnění při > 10 číslicích zachová uložený VS", () => {
+  it("změna na > 10 číslicích nezmění zámek ani uložený VS", () => {
     let patch: Record<string, unknown> = {};
     const state = variableSymbolLinkState(
       "FP",
@@ -81,8 +81,8 @@ describe("VS – pořadí hodnot po odemčení", () => {
       EDIT,
     );
     const next = state.sourcePatch({ externalNumber: "12345678901" });
-    expect(next.variableSymbolLinked).toBe(false);
-    expect(next.variableSymbol).toBe("999");
+    expect(next.variableSymbolLinked).toBeUndefined();
+    expect(next.variableSymbol).toBeUndefined();
     void patch;
   });
 });

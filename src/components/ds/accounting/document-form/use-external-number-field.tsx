@@ -1,5 +1,7 @@
 /** Pole externího čísla a jeho vazba na variabilní symbol. */
 import { Input } from "../../../ui/input";
+import { TaxDocumentNumberField } from "./tax-document-number-field";
+import { useDsTexts } from "../../../../ds-texts";
 import type {
   DocumentFormTexts,
   DocumentHeaderField,
@@ -10,6 +12,8 @@ interface Args {
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (k: DocumentHeaderField) => boolean;
   receivedDocument: boolean;
+  /** Pokladní číslo má stálé místo vedle partnera. */
+  cashDocument?: boolean;
   showVatFields?: boolean;
   f: { handedOverBy?: boolean; bankAccount?: boolean };
   t: DocumentFormTexts;
@@ -41,36 +45,55 @@ export function useExternalNumberField({
   patch,
   can,
   receivedDocument,
+  cashDocument,
   showVatFields,
   f,
   t,
   field,
   sourcePatch,
 }: Args) {
+  const ds = useDsTexts();
+  const cashTaxNumber = cashDocument && showVatFields;
   const changeExternalNumber = (externalNumber: string) =>
     patch(sourcePatch ? sourcePatch({ externalNumber }) : { externalNumber });
   const externalNumberField = field(
     "document-externalNumber",
-    receivedDocument
-      ? showVatFields
-        ? t.supplierTaxDocumentNumber
-        : t.supplierNumber
-      : t.externalNumber,
-    <Input
-      id="document-externalNumber"
-      value={value.externalNumber ?? ""}
-      onChange={(event) => changeExternalNumber(event.target.value)}
-      disabled={!can("externalNumber")}
-      className="h-[var(--control-h)] font-mono tabular-nums"
-    />,
+    cashTaxNumber
+      ? value.direction === "in"
+        ? ds.documentEdit.taxNumber
+        : ds.documentEdit.cashSupplierTaxNumber
+      : receivedDocument
+        ? showVatFields
+          ? t.supplierTaxDocumentNumber
+          : t.supplierNumber
+        : t.externalNumber,
+    cashTaxNumber && value.direction === "in" ? (
+      <TaxDocumentNumberField
+        id="document-externalNumber"
+        value={value}
+        valueKey="externalNumber"
+        patch={patch}
+        disabled={!can("externalNumber")}
+      />
+    ) : (
+      <Input
+        id="document-externalNumber"
+        value={value.externalNumber ?? ""}
+        onChange={(event) => changeExternalNumber(event.target.value)}
+        disabled={!can("externalNumber")}
+        className="h-[var(--control-h)] font-mono tabular-nums"
+      />
+    ),
     6,
     false,
-    receivedDocument
-      ? // Číslo následuje Popis ve třetím řádku, nikoli bankovní účet.
-        "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
-      : !f.handedOverBy
-        ? "@min-[40rem]:col-start-15"
-        : undefined,
+    cashDocument
+      ? "@min-[40rem]:col-start-15"
+      : receivedDocument
+        ? // Číslo následuje Popis ve třetím řádku, nikoli bankovní účet.
+          "@min-[40rem]:col-span-6 @min-[40rem]:col-start-15"
+        : !f.handedOverBy
+          ? "@min-[40rem]:col-start-15"
+          : undefined,
   );
   return externalNumberField;
 }

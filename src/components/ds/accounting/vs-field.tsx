@@ -80,7 +80,7 @@ export const VsField = forwardRef<HTMLInputElement, VsFieldProps>(function VsFie
       disabled={disabled}
       readOnly={readOnly || locked}
       warning={warning}
-      placeholder={locked && !derivedValue ? pendingText : placeholder}
+      placeholder={locked && !derivedValue && !warning ? pendingText : placeholder}
       maxLength={locked ? undefined : maxLength}
       data-linked={locked || undefined}
       onChange={(event) => onChange(event.target.value.replace(/\D/g, "").slice(0, maxLength))}

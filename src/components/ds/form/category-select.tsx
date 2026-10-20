@@ -6,11 +6,10 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { InlineSearchPopover as Popover, InlineSearchContent as PopoverContent, InlineSearchTrigger as PopoverTrigger, InlineSearchInput as CommandInput } from "./inline-search";
 import { cn } from "../../../lib/utils";
 
 export type CategoryOption = {
@@ -85,11 +84,12 @@ export function CategorySelect({
   noResultsText?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const flat = useMemo(() => flattenCategories(options), [options]);
   const selected = flat.find((o) => o.id === value) ?? null;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover onSearchChange={setQuery} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -130,7 +130,7 @@ export function CategorySelect({
             itemValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0
           }
         >
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput placeholder={searchPlaceholder} value={query} onValueChange={setQuery} />
           <CommandList className="max-h-72 overflow-y-auto overscroll-contain">
             <CommandEmpty>{noResultsText}</CommandEmpty>
             <CommandGroup>
