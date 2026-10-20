@@ -1,4 +1,10 @@
-## DS 2.116.0 (nevydáno)
+## DS 2.117.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.116.0 – Navázané okno panelu
+
+- Vydáno 20. 10. 2026 (commit fa873c2f). E2E Chromium run 39476599967 na 86fa919 běžel při vydání (Petr: pokračovat bez čekání); výsledek dopíše Claude.
 
 ### Navázané okno panelu (krok 5B)
 

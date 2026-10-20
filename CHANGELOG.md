@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.116.0 (nevydáno)
+## 2.117.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.116.0 – Navázané okno panelu
 
 ### Navázané okno panelu (Panel dokladu, krok 5B)
 
