@@ -169,6 +169,19 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
           editor.displayValue(line, column)
         )}
       </span>
+      {column === "text" && line.autoKind && !isEditing ? (
+        <span
+          data-slot="journal-auto-kind"
+          className="ds-badge inline-flex min-w-0 max-w-full items-center rounded-sm border bg-muted px-2 text-xs text-muted-foreground"
+          title={line.autoKind === "advance"
+            ? editor.dsTexts.vatFive.autoAdvance
+            : editor.dsTexts.vatFive.autoAdvanceFx}
+        >
+          <span className="truncate">{line.autoKind === "advance"
+            ? editor.dsTexts.vatFive.autoAdvance
+            : editor.dsTexts.vatFive.autoAdvanceFx}</span>
+        </span>
+      ) : null}
       {(column === "amount" || column === "unitPrice") && !rowEditing && canEdit ? (
         <JournalGrossHelper line={line} column={column} />
       ) : null}

@@ -7,6 +7,7 @@ import { Button } from "../../../ui/button";
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
 import { LinkedRecordsPanel } from "../../data-display/linked-records-panel";
 import { StatusBadge } from "../../data-display/status-badge";
+import { TooltipProvider } from "../../../ui/tooltip";
 import type {
   AdvanceCommand,
   AdvancePaymentPlane,
@@ -78,6 +79,7 @@ export const AdvancePaymentBreakdown = forwardRef<HTMLDivElement, AdvancePayment
       ) : null;
     };
     return (
+      <TooltipProvider>
       <div ref={ref} className={cn("min-w-0 space-y-4", className)} {...props}>
         <h3 className="truncate text-base font-semibold" title={t.breakdown}>
           {t.breakdown}
@@ -141,6 +143,7 @@ export const AdvancePaymentBreakdown = forwardRef<HTMLDivElement, AdvancePayment
           </div>
         </section>
       </div>
+      </TooltipProvider>
     );
   },
 );
