@@ -4,7 +4,8 @@
  *   u dokladu bez pevného směru „Z 21 % (vstup)“) a skupiny nabídky podle `menuGroup` nebo směru.
  * Nesmí: filtrovat kódy podle dokladu (to dělá aplikace) ani je řadit uvnitř skupiny.
  */
-import type { VatCodeOption } from "./journal-lines";
+import type { JournalLine, VatCodeOption } from "./journal-lines";
+import { roundJournalAmount } from "./journal-lines-model";
 import type { VatFiveTexts } from "../../../ds-texts/vat-five-texts";
 
 /** Směr kódu DPH. */
@@ -80,4 +81,33 @@ export function groupVatCodes(
     label: labels[key],
     codes: codes.filter((code) => vatCodeMenuGroup(code) === key),
   })).filter((group) => group.codes.length > 0);
+}
+
+/** Základ kódu bez daně (osvobozená plnění, mimo DPH) pro řádek rekapitulace. */
+export interface VatNonTaxBase {
+  /** Kód DPH. */
+  code: VatCodeOption;
+  /** Součet základů v měně dokladu. */
+  base: number;
+}
+
+/**
+ * Součty základů kódů bez daně v pořadí prvního výskytu (náhled; daňové skupiny počítá
+ * `computeVatGroups` stejně jako DB a tyto kódy daň nemají).
+ */
+export function nonTaxVatBases(
+  lines: JournalLine[],
+  codes: ReadonlyMap<string, VatCodeOption>,
+  foreign: boolean,
+): VatNonTaxBase[] {
+  const result = new Map<string, VatNonTaxBase>();
+  for (const line of lines) {
+    const code = line.vatCodeId ? codes.get(line.vatCodeId) : undefined;
+    if (!code || code.hasTax || line.isRounding || line.isFxRounding || line.isVatLine) continue;
+    const value = Number(foreign ? line.foreignAmount : line.amount) || 0;
+    const item = result.get(code.id) ?? { code, base: 0 };
+    item.base = roundJournalAmount(item.base + value);
+    result.set(code.id, item);
+  }
+  return [...result.values()];
 }

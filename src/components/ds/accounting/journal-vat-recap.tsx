@@ -17,7 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useJournalEditor } from "./journal-editor-context";
 import type { VatCodeOption } from "./journal-lines";
 import type { VatGroup } from "./journal-vat-groups";
-import { vatCodeMenuLabel } from "./vat-code-labels";
+import { nonTaxVatBases, vatCodeMenuLabel, vatCodeMenuGroup } from "./vat-code-labels";
 import { vatGroupFieldId } from "./useJournalVatGroups";
 
 const amount = (value: number) => formatAmount(value, 2);
@@ -175,14 +175,13 @@ export function JournalVatRecap() {
   const onHomeChange = recap?.onVatHomeOpenChange;
   const { groups, fixed } = vatGroups.vatGroups;
   const note = editor.props.vat?.recapNote;
-  if (!vatOn || (groups.length === 0 && fixed.length === 0)) return null;
+  const nonTax = nonTaxVatBases(vatGroups.allocatedLines, editor.vatCodeMap, foreign);
+  if (!vatOn || groups.length + fixed.length + nonTax.length === 0) return null;
   const home = editor.homeMark;
   const homeOn = foreign && showHome;
   const span = homeOn ? 7 : 5;
-  const outside = (group: VatGroup) =>
-    editor.vatCodeMap.get(group.vatCodeId)?.menuGroup === "outside";
-  const inVat = groups.filter((group) => !outside(group));
-  const outsideGroups = groups.filter(outside);
+  const exempt = nonTax.filter((item) => vatCodeMenuGroup(item.code) !== "outside");
+  const outsideBases = nonTax.filter((item) => vatCodeMenuGroup(item.code) === "outside");
   return (
     <section data-slot="journal-vat-recap" aria-label={texts.title} className="border-t text-sm">
       <div className="flex items-center justify-between px-3 py-1">
