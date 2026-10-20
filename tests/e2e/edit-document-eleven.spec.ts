@@ -140,18 +140,20 @@ test("ikony menu mají 1rem při zoomu a nepřekrývají text", async ({ page })
       const m = await import(/* @vite-ignore */ path);
       m.setAppZoom(z);
     }, zoom);
-    await expect(async () => {
-      if (!(await page.getByRole("menuitem").first().isVisible()))
-        await form.getByRole("button", { name: "Další akce" }).click();
-      await expect(page.getByRole("menuitem").first()).toBeVisible({ timeout: 1000 });
-    }).toPass();
-    const icon = page.getByRole("menuitem").first().locator("svg");
-    const box = await icon.boundingBox();
     const root = await page.evaluate(() =>
       parseFloat(getComputedStyle(document.documentElement).fontSize),
     );
-    expect(box?.width).toBeCloseTo(root, 0);
-    expect(box?.height).toBeCloseTo(root, 0);
+    // Měření ikony je uvnitř opakování: změna zoomu posune stránku a WebKit
+    // mezitím menu zavře, takže ikona by měla boundingBox undefined.
+    await expect(async () => {
+      if (!(await page.getByRole("menuitem").first().isVisible()))
+        await form.getByRole("button", { name: "Další akce" }).click();
+      const icon = page.getByRole("menuitem").first().locator("svg");
+      await expect(icon).toBeVisible({ timeout: 1000 });
+      const box = await icon.boundingBox();
+      expect(box?.width).toBeCloseTo(root, 0);
+      expect(box?.height).toBeCloseTo(root, 0);
+    }).toPass();
     await page.keyboard.press("Escape");
   }
 });
@@ -211,9 +213,15 @@ test("reálný kurz odděluje ikonu zdroje, číslo a aktualizaci; aktualizace m
       expect(geometry.iconRight).toBeLessThanOrEqual(geometry.textLeft);
       expect(geometry.textRight).toBeLessThanOrEqual(geometry.actionLeft);
       // Standardní Tooltip po kliknutí do pole znovu otevře až nové najetí.
-      await page.mouse.move(0, 0);
-      await rate.hover();
-      await expect(page.getByRole("tooltip")).toContainText("Ruční kurz");
+      // Najetí je v opakování: po změně zoomu se stránka ještě posouvá a WebKit
+      // by jinak čekal na „stabilní" prvek až do timeoutu.
+      await expect(async () => {
+        await page.mouse.move(0, 0);
+        await rate.hover({ timeout: 1500 });
+        await expect(page.getByRole("tooltip")).toContainText("Ruční kurz", {
+          timeout: 1500,
+        });
+      }).toPass();
       // Posun stránky při změně zoomu zavírá tooltipy; najetí se proto opakuje po ustálení.
       await expect(async () => {
         await page.mouse.move(0, 0);
