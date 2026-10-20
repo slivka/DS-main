@@ -100,7 +100,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     line: JournalLine,
     column: ColumnId,
     cell: { canEdit: boolean; nonTaxAllowed: boolean; toggleNonTax: () => void },
-  ) => {
+  ): void => {
     if (
       column === "amount" &&
       event.altKey &&
@@ -144,7 +144,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       focusRelative(line.id, column, event.shiftKey ? -1 : 1, event.key === "Enter");
     return {
       /** Esc vrátí hodnotu; Enter / Tab potvrdí a přesune fokus. */
-      commonKey: (event: React.KeyboardEvent) => {
+      commonKey: (event: React.KeyboardEvent): void => {
         if (event.key === "Escape") {
           event.preventDefault();
           editor.cancel();
