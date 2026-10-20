@@ -27,6 +27,7 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
   return (
     <DocumentForm
       title={type}
+      status="draft"
       documentType={type}
       value={value}
       onChange={(next) => setValue({ ...next, recordKey: type })}

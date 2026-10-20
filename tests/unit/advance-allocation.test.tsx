@@ -80,9 +80,8 @@ describe("AdvanceAllocation", () => {
       screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled"),
     ).toBe(true);
     fireEvent.click(screen.getAllByRole("checkbox")[1]);
-    expect(screen.getByRole("textbox", { name: "Částka k přiřazení – ZL 1" })).toHaveValue(
-      "1 000,00",
-    );
+    const amount = screen.getByRole("textbox", { name: "Částka k přiřazení – ZL 1" });
+    expect(amount instanceof HTMLInputElement ? amount.value : null).toBe("1 000,00");
     fireEvent.click(screen.getByRole("button", { name: "Přiřadit", exact: true }));
     expect(saved).toEqual([{ id: "a", amount: 1000 }]);
   });
