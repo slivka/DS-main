@@ -132,7 +132,9 @@ test("Přidání partnera dostane aktuální hledaný text", () => {
     </TooltipProvider>,
   );
   fireEvent.click(view.getByRole("combobox"));
-  fireEvent.change(view.getByPlaceholderText("Hledat…"), { target: { value: "Firma Alfa" } });
+  fireEvent.change(view.container.querySelector("[cmdk-input]") as HTMLInputElement, {
+    target: { value: "Firma Alfa" },
+  });
   fireEvent.click(view.getByRole("button", { name: "Nový partner" }));
   expect(query).toBe("Firma Alfa");
 });

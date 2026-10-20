@@ -15,6 +15,10 @@ export interface TaxDocumentNumberFieldProps {
   disabled?: boolean;
   /** Upozornění na duplicitní číslo. */
   warning?: string;
+  /** Identifikátor společného pole. */
+  id?: string;
+  /** Ukládaná vlastní hodnota, u pokladny externalNumber. */
+  valueKey?: "taxDocumentNumber" | "externalNumber";
 }
 
 /** Zamčené číslo sleduje doklad; opětovné zamčení obnoví vazbu. */
@@ -23,15 +27,18 @@ export function TaxDocumentNumberField({
   patch,
   disabled,
   warning,
+  id = "document-taxDocumentNumber",
+  valueKey = "taxDocumentNumber",
 }: TaxDocumentNumberFieldProps) {
   const t = useDsTexts().documentEdit;
-  const linked = value.taxDocumentNumberLinked !== false;
+  const linked =
+    value.taxDocumentNumberLinked ?? (valueKey === "taxDocumentNumber" || !value[valueKey]);
   return (
     // Při varování se ⚠ posune před zámek a text má rezervu pro obě ikony.
     <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
       <Input
-        id="document-taxDocumentNumber"
-        value={linked ? (value.number ?? "") : (value.taxDocumentNumber ?? "")}
+        id={id}
+        value={linked ? (value.number ?? "") : (value[valueKey] ?? "")}
         placeholder={linked && !value.number ? t.numberPending : undefined}
         readOnly={linked}
         disabled={disabled}
@@ -41,7 +48,7 @@ export function TaxDocumentNumberField({
             ? "pr-[calc(var(--field-toggle-space)+1.75rem)]"
             : "pr-[var(--field-toggle-space)]"
         }
-        onChange={(event) => patch({ taxDocumentNumber: event.target.value })}
+        onChange={(event) => patch({ [valueKey]: event.target.value })}
       />
       <FieldToggleButton
         icon={linked ? Lock : LockOpen}
@@ -53,9 +60,11 @@ export function TaxDocumentNumberField({
         onPressedChange={(pressed) =>
           patch({
             taxDocumentNumberLinked: pressed,
-            taxDocumentNumber: pressed
-              ? (value.number ?? "")
-              : (value.taxDocumentNumber ?? value.number ?? ""),
+            [valueKey]: pressed
+              ? valueKey === "externalNumber"
+                ? null
+                : (value.number ?? "")
+              : (value[valueKey] ?? value.number ?? ""),
           })
         }
       />

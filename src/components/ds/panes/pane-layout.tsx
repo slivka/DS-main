@@ -530,6 +530,7 @@ function PaneColumn({
         canMaximize: paneCount > 1,
         maximized,
         toggleMaximize,
+        closePane: () => api.closePane(pane.id),
         menuActions: buildTabMenuActions(api, tab.id, texts),
         dragHandleProps: { ref: drag.setNodeRef, ...drag.attributes, ...drag.listeners },
         getIcon: getIconByName,

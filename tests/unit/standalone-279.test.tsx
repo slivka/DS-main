@@ -150,7 +150,7 @@ describe("StandaloneShell – Esc", () => {
         x
       </StandaloneShell>,
     );
-    fireEvent.click(view.getByRole("button", { name: /Test/ }));
+    fireEvent.click(view.getByRole("combobox", { name: /Test/ }));
     await waitFor(() => expect(view.getByText("Slivka Group")).toBeTruthy());
     fireEvent.keyDown(document.activeElement ?? document.body, { key: "Escape" });
     expect(closed).toBe(0);
@@ -182,7 +182,7 @@ describe("ContextSwitcher", () => {
       />,
     );
     expect(view.getByText("TE".slice(0, 1))).toBeTruthy();
-    fireEvent.click(view.getByRole("button", { name: /Test/ }));
+    fireEvent.click(view.getByRole("combobox", { name: /Test/ }));
     await waitFor(() => expect(view.getByText("Nový prostor…")).toBeTruthy());
     expect(document.querySelector("[cmdk-input]")).toBeNull();
     expect(view.getByRole("img", { name: "Aktuální" })).toBeTruthy();
@@ -191,7 +191,7 @@ describe("ContextSwitcher", () => {
     const big = render(
       <ContextSwitcher label="P" items={many} value="0" onValueChange={() => undefined} />,
     );
-    fireEvent.click(big.getByRole("button", { name: /P/ }));
+    fireEvent.click(big.getByRole("combobox", { name: /P/ }));
     await waitFor(() => expect(document.querySelector("[cmdk-input]")).toBeTruthy());
   });
 });
@@ -383,7 +383,7 @@ describe("Doplňky po kontrole 2.79.0", () => {
         }}
       />,
     );
-    fireEvent.click(view.getByRole("button", { name: /Test/ }));
+    fireEvent.click(view.getByRole("combobox", { name: /Test/ }));
     await waitFor(() => expect(document.activeElement?.hasAttribute("cmdk-root")).toBe(true));
     expect(document.querySelector('[cmdk-item][data-selected="true"]')?.textContent).toContain(
       "Test",
@@ -542,7 +542,7 @@ describe("ContextSwitcher – diakritika", () => {
     const view = render(
       <ContextSwitcher label="P" items={many} value="0" onValueChange={() => undefined} />,
     );
-    fireEvent.click(view.getByRole("button", { name: /P/ }));
+    fireEvent.click(view.getByRole("combobox", { name: /P/ }));
     const input = await waitFor(() => document.querySelector("[cmdk-input]") as HTMLInputElement);
     fireEvent.change(input, { target: { value: "treti" } });
     await waitFor(() =>

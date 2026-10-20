@@ -1,5 +1,8 @@
 /** Protiúčet pohybu · vlastní rozvržení režimů · nesmí vybírat účet výpisu. */
 import { Input } from "../../../ui/input";
+import { Landmark } from "lucide-react";
+import { FieldToggleButton } from "../../form/field-toggle-button";
+import { accountFromCzIban, isValidIban } from "../../../../lib/bank-account";
 import { OptionSelect } from "../../form/option-select";
 import { SectionHeading } from "../../layout/section-heading";
 import { Field } from "../../layout/form-field-layout";
@@ -34,53 +37,65 @@ export function BankMovementAccount({
   fieldErrors,
   fieldWarnings,
 }: BankMovementAccountProps) {
-  const t = useDsTexts().documentEdit;
+  const ds = useDsTexts();
+  const t = ds.documentEdit;
   const iban = value.bankAccountKind === "iban";
+  const invalidIban =
+    iban && value.bankIban && !isValidIban(value.bankIban)
+      ? ds.documentForm.invalidIban
+      : undefined;
+  const changeAccount = (text: string) => {
+    const normalized = text.replace(/\s/g, "").toUpperCase();
+    if (/^[A-Z]{2}\d{2}/.test(normalized)) {
+      const domestic = accountFromCzIban(text);
+      patch(
+        domestic
+          ? {
+              bankAccountKind: "domestic",
+              bankAccount: domestic.prefix
+                ? `${domestic.prefix}-${domestic.number}`
+                : domestic.number,
+              bankCode: domestic.bankCode,
+              bankIban: normalized,
+            }
+          : { bankAccountKind: "iban", bankIban: normalized },
+      );
+    } else patch(iban ? { bankIban: text.toUpperCase() } : { bankAccount: text });
+  };
   return (
     <>
       <SectionHeading>{t.counteraccountSection}</SectionHeading>
       <div data-slot="bank-movement-account" className="grid grid-cols-20 gap-3">
         <Field
-          label={t.accountKind}
-          htmlFor="document-bankAccountKind"
-          span={4}
-          className="col-span-20"
-          error={fieldErrors?.bankAccountKind}
-          warning={fieldWarnings?.bankAccountKind}
-        >
-          <OptionSelect
-            id="document-bankAccountKind"
-            value={iban ? "iban" : "domestic"}
-            allowEmpty={false}
-            disabled={disabled}
-            options={[
-              { value: "domestic", label: t.domesticAccount },
-              { value: "iban", label: t.iban },
-            ]}
-            onChange={(kind) => patch({ bankAccountKind: kind === "iban" ? "iban" : "domestic" })}
-          />
-        </Field>
-        <Field
-          label={iban ? t.iban : t.accountNumber}
+          label={t.counterpartyAccount}
           htmlFor="document-movement-account"
-          span={8}
+          span={12}
           className="col-span-20"
-          error={iban ? fieldErrors?.bankIban : fieldErrors?.bankAccount}
+          error={iban ? (fieldErrors?.bankIban ?? invalidIban) : fieldErrors?.bankAccount}
           warning={iban ? fieldWarnings?.bankIban : fieldWarnings?.bankAccount}
         >
-          <Input
-            id="document-movement-account"
-            value={iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
-            formatPattern={iban ? undefined : t.accountPattern}
-            disabled={disabled}
-            onChange={(event) =>
-              patch(
-                iban
-                  ? { bankIban: event.target.value.toUpperCase() }
-                  : { bankAccount: event.target.value },
-              )
-            }
-          />
+          <div className="relative min-w-0 [--field-feedback-offset:calc(var(--field-toggle-space)+0.25rem)]">
+            <Input
+              id="document-movement-account"
+              value={iban ? (value.bankIban ?? "") : (value.bankAccount ?? "")}
+              formatPattern={iban ? undefined : t.accountPattern}
+              disabled={disabled}
+              className="pr-[calc(var(--field-toggle-space)+3.5rem)]"
+              onChange={(event) => changeAccount(event.target.value)}
+            />
+            <span className="absolute right-[var(--field-toggle-space)] top-0 flex h-[var(--control-h)] items-center text-xs text-muted-foreground pointer-events-none">
+              {iban ? t.iban : t.domesticAccountShort}
+            </span>
+            <FieldToggleButton
+              icon={Landmark}
+              pressed={iban}
+              label={t.accountKind}
+              pressedTooltip={t.iban}
+              unpressedTooltip={t.domesticAccountShort}
+              disabled={disabled}
+              onPressedChange={(next) => patch({ bankAccountKind: next ? "iban" : "domestic" })}
+            />
+          </div>
         </Field>
         <Field
           label={iban ? t.swift : t.bankCode}

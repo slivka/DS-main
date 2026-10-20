@@ -199,8 +199,8 @@ describe("DocumentForm 2.86.0 – chování", () => {
 
   it("bankovní pohyb má protiúčet a symboly", () => {
     const view = render(<Form documentType="BA" />);
-    expect(view.getByLabelText("Číslo účtu")).toBeTruthy();
-    expect(view.getByRole("combobox", { name: "Druh účtu" })).toBeTruthy();
+    expect(view.getByLabelText("Účet protistrany")).toBeTruthy();
+    expect(view.getByRole("button", { name: "Druh účtu" })).toBeTruthy();
   });
 
   it("tužka u vybraného partnera otevře jeho kartu", () => {

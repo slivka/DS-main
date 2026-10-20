@@ -2,8 +2,13 @@ import { useMemo, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Command } from "../../ui/command";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 
 export type ChipOption = { value: string; label: string };
 
@@ -34,6 +39,7 @@ export function ChipMultiSelect({
   placeholder?: string;
 }) {
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -64,64 +70,66 @@ export function ChipMultiSelect({
           </Badge>
         ))}
 
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen} onSearchChange={setSearch}>
         <PopoverTrigger asChild>
-          <Button type="button" variant="outline" size="sm">
+          <Button type="button" variant="outline" size="sm" role="combobox">
             <Plus className="size-3.5" />
             {addLabel}
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-72 space-y-2 p-2">
-          <Input
-            value={search}
-            placeholder={searchPlaceholder}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-8"
-          />
-          <div className="flex items-center justify-between border-b border-border pb-1 text-xs">
-            <button
-              type="button"
-              className="font-medium text-primary hover:underline"
-              onClick={() => onChange(options.map((o) => o.value))}
-            >
-              {allLabel}
-            </button>
-            <button
-              type="button"
-              className="text-muted-foreground hover:underline"
-              onClick={() => onChange([])}
-            >
-              {clearLabel}
-            </button>
-          </div>
-          <div className="max-h-56 space-y-1 overflow-y-auto">
-            {filtered.length === 0 ? (
-              <p className="px-1 py-1 text-sm text-muted-foreground">{emptyLabel}</p>
-            ) : (
-              filtered.map((o) => {
-                const checked = value.includes(o.value);
-                return (
-                  <button
-                    key={o.value}
-                    type="button"
-                    onClick={() => toggle(o.value)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover-surface"
-                  >
-                    <span
-                      className={`flex size-4 shrink-0 items-center justify-center rounded border ${
-                        checked
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-input"
-                      }`}
+          <Command shouldFilter={false}>
+            <InlineSearchInput
+              value={search}
+              placeholder={searchPlaceholder}
+              onValueChange={setSearch}
+              className="h-8"
+            />
+            <div className="flex items-center justify-between border-b border-border pb-1 text-xs">
+              <button
+                type="button"
+                className="font-medium text-primary hover:underline"
+                onClick={() => onChange(options.map((o) => o.value))}
+              >
+                {allLabel}
+              </button>
+              <button
+                type="button"
+                className="text-muted-foreground hover:underline"
+                onClick={() => onChange([])}
+              >
+                {clearLabel}
+              </button>
+            </div>
+            <div className="max-h-56 space-y-1 overflow-y-auto">
+              {filtered.length === 0 ? (
+                <p className="px-1 py-1 text-sm text-muted-foreground">{emptyLabel}</p>
+              ) : (
+                filtered.map((o) => {
+                  const checked = value.includes(o.value);
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => toggle(o.value)}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover-surface"
                     >
-                      {checked ? <Check className="size-3" /> : null}
-                    </span>
-                    <span className="truncate">{o.label}</span>
-                  </button>
-                );
-              })
-            )}
-          </div>
+                      <span
+                        className={`flex size-4 shrink-0 items-center justify-center rounded border ${
+                          checked
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-input"
+                        }`}
+                      >
+                        {checked ? <Check className="size-3" /> : null}
+                      </span>
+                      <span className="truncate">{o.label}</span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </Command>
         </PopoverContent>
       </Popover>
     </div>

@@ -1,18 +1,16 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Check, ChevronDown, Download } from "lucide-react";
 import { SelectSearchAction } from "../form/select-search-action";
 import { FieldInlineActions } from "../form/field-inline-actions";
 
 import { Button } from "../../ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { InactiveTag } from "../data-display/inactive-tag";
 import { useDsTexts } from "../../../ds-texts";
@@ -92,13 +90,8 @@ export function PartnerSelect({
   const resolvedEditSelectedLabel = editSelectedLabel ?? dsTexts.documentForm.editSelected;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch);
-  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
-  const suppressFocusOpen = useRef(false);
-  // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.
-  const pointerDown = useRef(false);
 
   const changeOpen = (next: boolean) => {
-    if (!next) suppressFocusOpen.current = true;
     setOpen(next);
     onOpenChange?.(next);
   };
@@ -108,7 +101,7 @@ export function PartnerSelect({
 
   return (
     <div className="relative flex min-w-0 items-center">
-      <Popover open={open} onOpenChange={changeOpen}>
+      <Popover onSearchChange={setQuery} open={open} onOpenChange={changeOpen}>
         <PopoverTrigger asChild>
           <Button
             id={id}
@@ -116,20 +109,6 @@ export function PartnerSelect({
             variant="outline"
             role="combobox"
             disabled={disabled}
-            onPointerDownCapture={() => {
-              pointerDown.current = true;
-            }}
-            onPointerUp={() => {
-              pointerDown.current = false;
-            }}
-            onFocus={() => {
-              if (disabled || suppressFocusOpen.current || pointerDown.current) return;
-              changeOpen(true);
-            }}
-            onBlur={() => {
-              suppressFocusOpen.current = false;
-              pointerDown.current = false;
-            }}
             className={cn(
               "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
               "relative h-[var(--control-h)] w-full min-w-0 justify-between pr-9 font-normal",

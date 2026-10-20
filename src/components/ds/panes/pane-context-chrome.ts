@@ -58,7 +58,7 @@ export function buildTabMenuActions(
   const t = { ...DEFAULT_PANE_CHROME_TEXTS, ...texts };
   const found = findTab(api.state, tabId);
   if (!found) return [];
-  const { tab, pane, paneIndex } = found;
+  const { tab, paneIndex } = found;
   const count = api.state.panes.length;
   const groups: PaneMenuAction[][] = [
     [{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }],
@@ -80,14 +80,6 @@ export function buildTabMenuActions(
       onSelect: () => api.duplicateTab(tabId),
     });
   if (tabActions.length) groups.push(tabActions);
-  groups.push([
-    {
-      id: "closePane",
-      label: t.closePane,
-      shortcut: "Alt+Shift+W",
-      onSelect: () => api.closePane(pane.id),
-    },
-  ]);
   return groups.flatMap((group, groupIndex) =>
     group.map((action, actionIndex) => ({
       ...action,
@@ -116,6 +108,8 @@ export type PaneChrome = {
   canMaximize: boolean;
   maximized: boolean;
   toggleMaximize: () => void;
+  /** Zavře panel přes společnou ochranu neuložených změn. */
+  closePane: () => void;
   menuActions: PaneMenuAction[];
   /** Vlastnosti úchytu pro přetažení záložky (nadpis stránky). */
   dragHandleProps: Record<string, unknown> & { ref?: (element: HTMLElement | null) => void };

@@ -1,16 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
 import { Button } from "../../ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../../ui/command";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput as CommandInput,
+} from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
 import type { VatCodeOption } from "./journal-lines";
@@ -63,15 +61,8 @@ export function VatCodeSelect({
 }: VatCodeSelectProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
-  // Po zavření Radix vrátí fokus na trigger – potlačíme okamžité znovuotevření.
-  const suppressFocusOpen = useRef(false);
-  // Fokus z kliknutí myší necháváme na Radix (sám přepne), jinak by klik zavřel.
-  const pointerDown = useRef(false);
-
-  useEffect(() => setQuery(initialSearch ?? ""), [initialSearch]);
 
   const changeOpen = (next: boolean) => {
-    if (!next) suppressFocusOpen.current = true;
     setOpen(next);
     onOpenChange?.(next);
   };
@@ -80,27 +71,13 @@ export function VatCodeSelect({
   const selected = codes.find((code) => code.id === value);
 
   return (
-    <Popover open={open} onOpenChange={changeOpen}>
+    <Popover onSearchChange={setQuery} open={open} onOpenChange={changeOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
           variant="outline"
           role="combobox"
           disabled={disabled}
-          onPointerDownCapture={() => {
-            pointerDown.current = true;
-          }}
-          onPointerUp={() => {
-            pointerDown.current = false;
-          }}
-          onFocus={() => {
-            if (disabled || suppressFocusOpen.current || pointerDown.current) return;
-            changeOpen(true);
-          }}
-          onBlur={() => {
-            suppressFocusOpen.current = false;
-            pointerDown.current = false;
-          }}
           className={cn(
             "ds-disabled-control disabled:bg-muted/40 disabled:text-muted-foreground disabled:opacity-100",
             "w-full justify-between font-normal",

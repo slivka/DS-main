@@ -1,5 +1,6 @@
 /** Navazující scénáře ukázky účetních formulářů. */
 import { useState } from "react";
+import { CashNumberShowcase } from "./cash-number-showcase";
 import { Button } from "@/components/ui/button";
 import {
   DataGrid,
@@ -298,6 +299,7 @@ export function DocumentFormSecondaryScenarios({
           mainAccountLocked
           linesEditorProps={{ storageKey: "showcase-doc-cash" }}
           status="draft"
+          vat={{ visible: true }}
         />
       </ShowcaseSection>
 
@@ -322,6 +324,8 @@ export function DocumentFormSecondaryScenarios({
           status="filed"
         />
       </ShowcaseSection>
+
+      <CashNumberShowcase />
 
       <ShowcaseSection
         title="Kurzový rozdíl vzniklý párováním"

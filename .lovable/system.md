@@ -430,7 +430,7 @@ napojení na databázi ani produkční data. Czech UI texty, české formáty da
 - Stránka v panelu vždy začíná `PageHeader`: vlevo má jen nadpis a dirty tečku, vpravo jen ↑/↓, ←/→, maximalizaci a ⋯. Akce celé stránky dávej do `menuActions`; `actions` je jen pro stránky mimo panel. „Nový“ patří do `DataGrid.addAction`.
 - `LayoutMenu trigger="icon"` patří přes `AppShell.navSearchMenu` vedle hledání v menu, nikdy do horní lišty.
 - Nabídka rozložení má pevně Uložit jako nové + ikonovou Správu, uložená rozložení a Přepsat uložené aktuálním; výchozí rozložení se zde neurčuje.
-- Nabídka záložky má jen Zavřít záložku, přesun do jiného panelu, Duplikovat záložku pro seznam a Zavřít panel. Novou položku nepřidávej bez souhlasu.
+- Nabídka záložky má jen Zavřít záložku, přesun do jiného panelu, Duplikovat záložku pro seznam. Zavřít panel je poslední křížek záhlaví, za menu ⋯. Novou položku nepřidávej bez souhlasu.
 - Uživatelská nabídka řadí záhlaví, vlastní položky, Velikost zobrazení, Pracovní prostor a Odhlásit. Novou položku nepřidávej bez souhlasu.
 - Řádek nadpisu panelu nemá ikonu; ikona patří jen do tlačítka panelu v horní liště.
 - Zavřít panel zavře všechny jeho záložky po společné kontrole změn a uloží je pro Alt+Shift+T. Zmenšení rozložení panely nadále slučuje.
@@ -538,7 +538,13 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ## Doklady – pruh, VS, výpis (2.108.0)
 - Pruh nad formulářem je živý seznam toho, co zbývá opravit: předávejte `issues` (`FormIssue`), `saveFailed` a `validationActive`. Serverové chyby i všechna varování zůstávají v pruhu i polích vždy; neaktivní validace skryje pouze klientské chyby. Server má přednost před klientem stejného pole bez ohledu na text či kód. Serverové položky maže aplikace podle `onFieldChange(fieldId, rowId?, columnId?)`. Žádný toast ani druhý NoticeBar se stejným textem.
 - Vlastní chyby editoru mají `origin: "editor"` a nevracejí se do cellIssues; klientské i serverové položky aplikace se do buněk promítají. Popisky řádků berte ze sdílených překladů sloupců. fieldId musí označovat skutečný prvek, vazby označují vlastní pole. Chybějící popisek bezpečně nahradí obecný překlad s console.warn, úplnost ověřují testy.
-- VS u FP/ZFP/DDPOZ a FV/ZFV/DDPZ má zámek (`variableSymbolLinked`). Zamčený VS je jen náhled z čísla daňového dokladu, autoritou je DB (`variable_symbol_auto`); DS ukládá jen stav vazby a VS nikdy nezkracuje.
-- Bankovní pohyb: Datum pohybu = `issueDate`, Datum účetního případu = `accountingDate` se zámkem; protiúčet a symboly na mřížce 20 (4 / 8 / 8).
+- VS u FP/ZFP/DDPOZ a FV/ZFV/DDPZ má zámek (`variableSymbolLinked`), který mění pouze uživatel. Bez číslic nebo nad 10 číslic je svázaný náhled prázdný s varováním; odemčený vlastní VS nevaruje. Odemčení přebírá poslední platný náhled nebo prázdno. Zamčený VS je jen náhled z čísla daňového dokladu, autoritou je DB (`variable_symbol_auto`); DS ukládá jen stav vazby a VS nikdy nezkracuje.
+- Bankovní pohyb: Datum pohybu = `issueDate`, Datum účetního případu = `accountingDate` se zámkem; protiúčet na mřížce 20 (12 / 8), přepínač Č. účtu / IBAN uvnitř pole. Platný CZ IBAN převádí accountFromCzIban; neplatný zůstává IBAN s chybou.
 - Výpis: nemá kontrolu ani zůstatky dle pohybů / v domácí měně; „Zůstatek na výpise“ má Σ (`bankClosing: null`), rozdíl je žluté varování v poli. Pohyby vždy přes slot `items` (grid s `addAction`).
 - Řádky: žádný čip Celkem, domácí celek ani „Rozepsáno“; rozdíl jen v režimu zadané částky a jen ≠ 0.
+
+- PageHeader centruje štítky na účaří + polovinu x-výšky (vertical-align: middle), nikdy na cap výšku ani pevným px posunem.
+- Hledatelné výběry používají sdílené inline-search: dotaz přímo v poli, Enter potvrzuje, Tab/Esc/odchod nevybírají; tisknutelný znak otevírá nové hledání.
+- Lišty GridToolbar odvozují všechny výšky od --f-h; nezadávejte jednotlivým tlačítkům odlišnou výšku.
+- Identita je jednořádková; trojtečku smí mít jen název účtu, celý účet je v bublině. Výpis nemá měnu v identitě.
+- Pokladna používá jediné externalNumber vedle partnera; Popis má plnou šířku. Příjem s DPH předává taxDocumentNumberLinked, svázaná hodnota je pouze náhled; přepnutí DPH vlastní číslo nemaže.

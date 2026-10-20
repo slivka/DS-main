@@ -3,8 +3,13 @@ import { Check, Plus } from "lucide-react";
 
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Command } from "../../ui/command";
+import {
+  InlineSearchPopover as Popover,
+  InlineSearchContent as PopoverContent,
+  InlineSearchTrigger as PopoverTrigger,
+  InlineSearchInput,
+} from "./inline-search";
 import { cn } from "../../../lib/utils";
 import { useDsTexts } from "../../../ds-texts";
 import { SelectSearchAction } from "./select-search-action";
@@ -68,57 +73,59 @@ export function TagPicker({
           {tag.name}
         </Badge>
       ))}
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover onSearchChange={setQuery} open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button type="button" variant="outline" size="sm">
+          <Button type="button" variant="outline" size="sm" role="combobox" aria-label={addLabel}>
             <Plus className="size-3.5" />
             {addLabel}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-2" align="start">
-          <div className="flex items-center gap-1">
-            <Input
+          <Command shouldFilter={false}>
+            <InlineSearchInput
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onValueChange={setQuery}
               placeholder={placeholder}
               className="h-8 min-w-0 flex-1"
+              trailingAction={
+                onCreate ? (
+                  <SelectSearchAction
+                    label={createLabel ?? ds.selectCreate.tag}
+                    disabled={!canCreate}
+                    disabledReason={
+                      createDisabledReason ??
+                      (!query.trim()
+                        ? ds.selectCreate.emptyQuery
+                        : duplicate
+                          ? ds.selectCreate.duplicate
+                          : undefined)
+                    }
+                    onCreate={async () => {
+                      await onCreate(query.trim());
+                      setQuery("");
+                    }}
+                  />
+                ) : null
+              }
             />
-            {onCreate ? (
-              <SelectSearchAction
-                label={createLabel ?? ds.selectCreate.tag}
-                disabled={!canCreate}
-                disabledReason={
-                  createDisabledReason ??
-                  (!query.trim()
-                    ? ds.selectCreate.emptyQuery
-                    : duplicate
-                      ? ds.selectCreate.duplicate
-                      : undefined)
-                }
-                onCreate={async () => {
-                  await onCreate(query.trim());
-                  setQuery("");
-                }}
-              />
-            ) : null}
-          </div>
-          <ul className="mt-2 max-h-56 space-y-0.5 overflow-auto">
-            {filtered.length === 0 && !canCreate ? (
-              <li className="px-2 py-1.5 text-sm text-muted-foreground">{emptyLabel}</li>
-            ) : null}
-            {filtered.map((tag) => (
-              <li key={tag.id}>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm hover-surface"
-                  onClick={() => toggle(tag.id)}
-                >
-                  <span>{tag.name}</span>
-                  {value.includes(tag.id) ? <Check className="size-4" /> : null}
-                </button>
-              </li>
-            ))}
-          </ul>
+            <ul className="mt-2 max-h-56 space-y-0.5 overflow-auto">
+              {filtered.length === 0 && !canCreate ? (
+                <li className="px-2 py-1.5 text-sm text-muted-foreground">{emptyLabel}</li>
+              ) : null}
+              {filtered.map((tag) => (
+                <li key={tag.id}>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm hover-surface"
+                    onClick={() => toggle(tag.id)}
+                  >
+                    <span>{tag.name}</span>
+                    {value.includes(tag.id) ? <Check className="size-4" /> : null}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </Command>
         </PopoverContent>
       </Popover>
     </div>

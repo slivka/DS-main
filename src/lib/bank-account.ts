@@ -61,3 +61,14 @@ export function formatIban(value: string): string {
     .replace(/(.{4})/g, "$1 ")
     .trim();
 }
+
+/** Český IBAN → tuzemský účet; pouze správná délka a platný kontrolní součet. */
+export function accountFromCzIban(value: string): (CzAccountParts & { bankCode: string }) | null {
+  const iban = value.replace(/\s/g, "").toUpperCase();
+  if (!/^CZ\d{22}$/.test(iban) || !isValidIban(iban)) return null;
+  return {
+    bankCode: iban.slice(4, 8),
+    prefix: iban.slice(8, 14).replace(/^0+/, ""),
+    number: iban.slice(14).replace(/^0+/, "") || "0",
+  };
+}

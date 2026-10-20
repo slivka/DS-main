@@ -31,7 +31,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
       className={cn("mb-3 border-b border-border pb-3", className)}
     >
       <div className="grid min-h-[var(--control-h)] min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,auto)] items-center gap-x-3 gap-y-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-y-1 text-[length:var(--text-identity)] font-semibold text-foreground">
+        <div className="flex min-w-0 flex-nowrap items-center whitespace-nowrap text-[length:var(--text-identity)] font-semibold text-foreground">
           {leading}
           {items[0] != null ? (
             <span className="flex min-w-0 items-center">
@@ -40,13 +40,10 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
             </span>
           ) : null}
           {items.length > 1 ? (
-            <span className="flex min-w-0 flex-wrap items-center @max-[40rem]:basis-full">
+            <span className="flex min-w-0 flex-1 flex-nowrap items-center">
               {items.slice(1).map((item, index) => (
                 <span key={index} className="flex min-w-0 items-center">
-                  <span
-                    aria-hidden="true"
-                    className={cn("mx-2 h-4 w-px bg-border", index === 0 && "@max-[40rem]:hidden")}
-                  />
+                  <span aria-hidden="true" className="mx-2 h-4 w-px shrink-0 bg-border" />
                   {item}
                 </span>
               ))}
@@ -56,7 +53,7 @@ export const IdentityLine = forwardRef<HTMLDivElement, IdentityLineProps>(functi
         <div
           id={numberId}
           className={cn(
-            "flex min-h-[var(--control-h)] items-center justify-end self-center min-w-0 max-w-full text-right font-mono text-xl font-bold tabular-nums",
+            "flex min-h-[var(--control-h)] items-center justify-end self-center shrink-0 whitespace-nowrap text-right font-mono text-xl font-bold tabular-nums",
             !number &&
               !numberContent &&
               "max-w-48 font-sans text-sm font-normal italic leading-tight text-muted-foreground",

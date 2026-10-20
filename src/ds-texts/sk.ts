@@ -43,6 +43,9 @@ export const DS_TEXTS_SK: DsTexts = {
     counteraccountSection: "Protiúčet a symboly",
     accountKind: "Druh účtu",
     domesticAccount: "Český účet",
+    domesticAccountShort: "Č. účtu",
+    counterpartyAccount: "Účet protistrany",
+    cashSupplierTaxNumber: "Číslo daňového dokladu dodávateľa",
     iban: "IBAN",
     swift: "SWIFT",
     accountNumber: "Číslo účtu",
@@ -54,8 +57,10 @@ export const DS_TEXTS_SK: DsTexts = {
     vsLink: "Prepojiť VS s číslom daňového dokladu",
     vsLinked: "VS sa odvodzuje z čísla daňového dokladu",
     vsUnlinked: "Vlastný variabilný symbol",
-    vsTooLong: "Číslo daňového dokladu má viac ako 10 číslic – zadajte VS",
-    vsNoDigits: "Číslo daňového dokladu neobsahuje číslice – zadajte VS",
+    vsTooLong:
+      "Číslo daňového dokladu má viac ako 10 číslic – VS nemožno odvodiť. Odomknite zámok a zadajte VS.",
+    vsNoDigits:
+      "Číslo daňového dokladu neobsahuje číslice – VS nemožno odvodiť. Odomknite zámok a zadajte VS.",
     internalManualPartner: "Ručný partner sa neprenesie do riadkov dokladu.",
     bankCodeOption: "{code} – {name}",
   },

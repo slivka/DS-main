@@ -23,7 +23,7 @@ import {
 } from "./document-form-types";
 import { useCurrencyControl } from "./use-currency-control";
 import { useDocumentPaymentFields } from "./use-document-payment-fields";
-import { variableSymbolLinkState } from "./use-variable-symbol-link";
+import { useVariableSymbolLink } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
 import { useDocumentHeaderFields } from "./use-document-field-renderers";
@@ -193,8 +193,8 @@ export function DocumentForm(props: DocumentFormProps) {
     t,
   });
   const showTaxNumber =
-    ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID", "PO"].includes(code));
-  const vsLink = variableSymbolLinkState(code, value, patch, dsTexts.documentEdit);
+    ["FV", "ZFV"].includes(code) || (showVatFields && ["BA", "ID"].includes(code));
+  const vsLink = useVariableSymbolLink(code, value, patch, dsTexts.documentEdit);
   const {
     issues: formIssueList,
     onValidationChange,
@@ -329,7 +329,14 @@ export function DocumentForm(props: DocumentFormProps) {
           issues={formIssueList}
           notices={combinedNotices}
           vatRelevant={vatRelevant}
-          onVatRelevantChange={(next) => patch({ vatRelevant: next })}
+          onVatRelevantChange={(next) =>
+            patch({
+              vatRelevant: next,
+              ...(code === "PO" && value.direction === "in" && next
+                ? { taxDocumentNumberLinked: !value.externalNumber }
+                : {}),
+            })
+          }
           t={t}
         />
         <section className="rounded-lg border bg-card p-4">
@@ -396,6 +403,7 @@ export function DocumentForm(props: DocumentFormProps) {
                     onCounterpartyInputChange,
                     taxNumberField,
                     internal,
+                    cashDocument: code === "PO",
                     counterpartyInputLockedReason,
                   }
                 : undefined

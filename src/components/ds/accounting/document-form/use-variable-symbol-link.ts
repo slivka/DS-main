@@ -3,8 +3,8 @@
  * nesmí zapisovat odvozený VS (autoritou je databáze, ukládá se jen stav vazby).
  */
 import type { DsTexts } from "../../../../ds-texts";
+import { useRef } from "react";
 import {
-  VS_RECEIVED_CODES,
   deriveVariableSymbol,
   effectiveVariableSymbolLinked,
   supportsVariableSymbolLink,
@@ -24,10 +24,7 @@ export interface VariableSymbolLinkState {
   warning?: string;
   /** Změna vazby; odemčení předvyplní náhled jako vlastní VS. */
   onLinkedChange: (linked: boolean) => void;
-  /**
-   * Změna zdrojového čísla: při 0 nebo > 10 číslicích se vazba sama uvolní a VS zůstane
-   * (náhled se převezme, nikdy se nezkracuje).
-   */
+  /** Změna zdroje pouze zafixuje výchozí vazbu; nikdy ji automaticky neuvolňuje. */
   sourcePatch: (next: Partial<DocumentHeaderValue>) => Partial<DocumentHeaderValue>;
 }
 
@@ -37,9 +34,9 @@ export function variableSymbolLinkState(
   value: DocumentHeaderValue,
   patch: (next: Partial<DocumentHeaderValue>) => void,
   texts: DsTexts["documentEdit"],
+  lastValidValue?: string | null,
 ): VariableSymbolLinkState {
   const supported = supportsVariableSymbolLink(code);
-  const received = (VS_RECEIVED_CODES as readonly string[]).includes(code.toUpperCase());
   const derived = deriveVariableSymbol(variableSymbolSource({ code, ...value }));
   const linked = effectiveVariableSymbolLinked(
     code,
@@ -48,9 +45,9 @@ export function variableSymbolLinkState(
     derived,
   );
   const warning =
-    supported && received && !linked && derived.reason === "tooLong"
+    supported && linked && derived.reason === "tooLong"
       ? texts.vsTooLong
-      : supported && received && !linked && derived.reason === "noDigits"
+      : supported && linked && derived.reason === "noDigits"
         ? texts.vsNoDigits
         : undefined;
   return {
@@ -64,8 +61,8 @@ export function variableSymbolLinkState(
           ? { variableSymbolLinked: true }
           : {
               variableSymbolLinked: false,
-              // Po odemčení zůstane hodnota z náhledu; při 0 / >10 číslicích uložený VS.
-              variableSymbol: derived.value || value.variableSymbol || null,
+              // Paměť náhledu není uložený vlastní VS ani zápis odvozené hodnoty do DB.
+              variableSymbol: derived.value ?? lastValidValue ?? null,
             },
       ),
     sourcePatch: (next) => {
@@ -73,15 +70,22 @@ export function variableSymbolLinkState(
       // Odvozený stav vazby se při změně zdroje zafixuje, jinak by ho nový náhled přepnul.
       if (value.variableSymbolLinked === undefined)
         next = { ...next, variableSymbolLinked: linked };
-      if (!received || !linked) return next;
-      const nextDerived = deriveVariableSymbol(variableSymbolSource({ code, ...value, ...next }));
-      if (nextDerived.reason !== "tooLong" && nextDerived.reason !== "noDigits") return next;
-      return {
-        ...next,
-        variableSymbolLinked: false,
-        // Automatické uvolnění (0 / >10 číslic): zůstane uložený VS, jinak náhled.
-        variableSymbol: value.variableSymbol || derived.value || null,
-      };
+      return next;
     },
   };
+}
+
+/** Paměť platného náhledu pro odemčení; oddělená podle identity a druhu dokladu. */
+export function useVariableSymbolLink(
+  code: string,
+  value: DocumentHeaderValue,
+  patch: (next: Partial<DocumentHeaderValue>) => void,
+  texts: DsTexts["documentEdit"],
+): VariableSymbolLinkState {
+  const key = `${code}:${value.id ?? ""}`;
+  const memory = useRef<{ key: string; value: string | null }>({ key, value: null });
+  const derived = deriveVariableSymbol(variableSymbolSource({ code, ...value }));
+  if (memory.current.key !== key) memory.current = { key, value: null };
+  if (derived.value) memory.current.value = derived.value;
+  return variableSymbolLinkState(code, value, patch, texts, memory.current.value);
 }
