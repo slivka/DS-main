@@ -52,6 +52,13 @@ export type VatCodeOption = {
   taxOutAccount?: string | null;
   taxInAccount?: string | null;
   inactive?: boolean;
+  /**
+   * Skupina nabídky z dat (`menu_group`, 2.118.0): s daní / osvobozená a zvláštní režimy /
+   * mimo DPH. Bez hodnoty rozhodne `hasTax`. Kód sám není unikátní – klíčem je `id` (kód + směr).
+   */
+  menuGroup?: "taxed" | "exempt" | "outside";
+  /** Oddíl kontrolního hlášení (A1, A2, A4, A5, B1, B2, B3) pro štítek v rekapitulaci. */
+  khSection?: string;
 };
 /** Předmět plnění v režimu přenesení daňové povinnosti. */
 export type VatPdpSubject = { code: string; name: string };
