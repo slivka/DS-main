@@ -31,6 +31,12 @@
 - Nevydáno; package.json a katalog zůstávají na poslední vydané 2.112.0.
   Body Firefox/WebKit v roadmapě a konfigurace prohlížečů nejsou měněny.
 
+- Kontroly: check:quick průběžně; check:full --harness 894/894 unit ve 88 souborech
+  (18 nových testů), lint bez chyb, formát a peněžní audit OK. Chromium jediný
+  nový spec 1/1, bez pageerror. Automatický build OK. check:catalog:
+  440 → 445 komponent, 902 → 951 props; 0 odebrání. Plná E2E a Firefox/WebKit
+  v tomto kole neběžely; spustí Claude v GitHubu.
+
 ## 2.112.0 – Opravy pro Firefox a Safari
 
 - `RecordDialog.activeTab?: string` a `onTabChange?: (value: string) => void`: aplikace může otevřít zvolenou sekci nebo přepnout po chybě uložení. Bez activeTab zůstává neřízený režim, callback oznamuje pouze změnu uživatelem.
