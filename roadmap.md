@@ -1,4 +1,15 @@
-## DS 2.114.0 (nevydáno)
+## DS 2.115.0 (nevydáno)
+
+- Firefox i WebKit: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI selhává / nestabilní.
+- WebKit: narrow-fields-290 (zoom 0.7) – text kódu MJ za tužkou (run 39456236558, dříve procházelo; kód polí beze změny – nejspíš měření se `style.zoom` ve WebKitu); edit-document-eleven:161 (tooltip Ruční kurz); record-dialog-2111:35 vypršení času; nestabilní browser-page-errors, design-three 70 %, document-controls 1200 px 200 %, form-design-two:80, journal-control-height.
+- Firefox: vs-lock-2108:103 (GridToolbar výška) – `page.goto` přerušeno (NS_BINDING_ABORTED) obnovou stránky po načtení modulu; test čekat stabilněji.
+- Chromium: nestabilní design-three 70 % / 1280.
+- Ukázka řádků dokladu (/components/accounting-lines) se po načtení několik sekund dopočítává (Firefox 8–10 s) – rozdělit na menší ukázky.
+
+## DS 2.114.0 – Historie záznamu + oprava výběru myší
+
+- Vydáno 20. 10. 2026 (commit 85aefea4). E2E `all` run 39456236558 na 2fc27d2: Chromium 133/133, Firefox 135 + 1 (přerušená navigace), WebKit 134 + 1 (narrow-fields-290 zoom 0.7) + 1 nestabilní známé.
+- Oprava regrese z 2.113.0: klik myší na položku výběru s hledáním v poli nevybíral (commit 2fc27d2; původně patch 2.113.1).
 
 ### Historie záznamu (krok 3A)
 
