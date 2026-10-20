@@ -29,6 +29,12 @@ export type PaneChromeTexts = {
   closePane: string;
   pageActions: string;
   untitled: string;
+  /** Připnutí navázané záložky – zamkne záznam. */
+  pinLinked: string;
+  /** Odepnutí navázané záložky – znovu sleduje zdroj. */
+  unpinLinked: string;
+  /** Zavře navázanou záložku a vrátí se ke zdroji. */
+  returnToPanel: string;
 };
 
 /** Výchozí (české) texty – jediný zdroj je DS_TEXTS_CS.paneChrome. */
@@ -47,7 +53,13 @@ export type PaneMenuAction = {
 /** Sestaví menu záložky – stejné pro ⋯ v PageHeader i kontextové menu v PaneTabBar. */
 type TabMenuApi = Pick<
   PaneTabsApi,
-  "state" | "closeTab" | "moveTab" | "duplicateTab" | "closePane"
+  | "state"
+  | "closeTab"
+  | "moveTab"
+  | "duplicateTab"
+  | "closePane"
+  | "returnLinkedTab"
+  | "setLinkedPinned"
 >;
 
 export function buildTabMenuActions(
@@ -64,6 +76,21 @@ export function buildTabMenuActions(
     [{ id: "close", label: t.closeTab, shortcut: "Alt+W", onSelect: () => api.closeTab(tabId) }],
   ];
   const tabActions: PaneMenuAction[] = [];
+  const linked = tab.linked;
+  if (linked) {
+    tabActions.push(
+      {
+        id: "return-to-panel",
+        label: t.returnToPanel,
+        onSelect: () => api.returnLinkedTab(tabId),
+      },
+      {
+        id: "pin-linked",
+        label: linked.pinned ? t.unpinLinked : t.pinLinked,
+        onSelect: () => api.setLinkedPinned(tabId, !linked.pinned),
+      },
+    );
+  }
   Array.from({ length: count }, (_, index) => index)
     .filter((index) => index !== paneIndex)
     .forEach((index) =>
@@ -111,6 +138,13 @@ export type PaneChrome = {
   /** Zavře panel přes společnou ochranu neuložených změn. */
   closePane: () => void;
   menuActions: PaneMenuAction[];
+  /** Navázaná záložka: připnutí záznamu a návrat do panelu. */
+  linked?: {
+    sectionLabel: string;
+    pinned: boolean;
+    togglePin: () => void;
+    returnToPanel: () => void;
+  };
   /** Vlastnosti úchytu pro přetažení záložky (nadpis stránky). */
   dragHandleProps: Record<string, unknown> & { ref?: (element: HTMLElement | null) => void };
   getIcon?: (icon: string | undefined) => ComponentType<{ className?: string }> | undefined;

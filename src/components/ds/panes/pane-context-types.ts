@@ -4,6 +4,7 @@
  * Nesmí: obsahovat React stav ani měnit záložky.
  */
 import type { UnsavedChangesAction } from "../../../ds-texts";
+import type { LinkedSection } from "./linked-tabs";
 import type {
   LayoutSnapshot,
   OpenRecordModifiers,
@@ -117,6 +118,12 @@ export type PaneTabsApi = {
   /** Aplikace dodá pořadí záznamů pro listování ↑ ↓ v detailech otevřených ze záložky `tabId`. Vrací odregistraci. */
   registerRecordNav: (tabId: string, getOrderedItems: () => RecordNavItem[]) => () => void;
   getRecordNav: (tabId: string) => RecordNav | null;
+  /** Otevře navázanou záložku sekce panelu záznamu v okně vpravo od zdroje. */
+  openLinkedTab: (sourceTabId: string, section: LinkedSection) => void;
+  /** Připnutí navázané záložky – zamkne záznam, zdroj se přestane sledovat. */
+  setLinkedPinned: (tabId: string, pinned: boolean) => void;
+  /** Zavře navázanou záložku a aktivuje zdrojovou („Vrátit do panelu“). */
+  returnLinkedTab: (tabId: string) => void;
   /** Snímek aktuálního rozložení (bez konceptů a nových záznamů). */
   serializeLayout: () => LayoutSnapshot;
   /** Použije uložené rozložení; vrací záložky s neuloženými změnami, které zůstaly. */

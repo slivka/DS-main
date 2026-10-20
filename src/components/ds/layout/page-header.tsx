@@ -9,6 +9,9 @@ import {
   Maximize2,
   Minimize2,
   MoreHorizontal,
+  PanelRight,
+  Pin,
+  PinOff,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -312,6 +315,20 @@ function PaneButtons({
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
+        {chrome.linked ? (
+          <>
+            <IconButton
+              label={chrome.linked.pinned ? t.unpinLinked : t.pinLinked}
+              onClick={chrome.linked.togglePin}
+              aria-pressed={chrome.linked.pinned}
+            >
+              {chrome.linked.pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
+            </IconButton>
+            <IconButton label={t.returnToPanel} onClick={chrome.linked.returnToPanel}>
+              <PanelRight className="size-4" />
+            </IconButton>
+          </>
+        ) : null}
         {chrome.canMaximize || chrome.maximized ? (
           <IconButton
             label={chrome.maximized ? t.restore : t.maximize}

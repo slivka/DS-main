@@ -196,6 +196,10 @@ export interface DsTexts {
     openedInNewTab: (target: string, tab: string) => string;
     /** Přístupný název tečky neuložených změn. */
     unsavedChanges: string;
+    /** Potvrzení náhrady obsazeného okna navázanou záložkou. */
+    linkedReplaceTitle: string;
+    linkedReplaceDescription: string;
+    linkedReplaceConfirm: string;
   };
   notification: {
     label: string;

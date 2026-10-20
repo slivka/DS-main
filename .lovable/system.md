@@ -10,6 +10,10 @@
 
 ## Panel záznamu, přílohy a poznámky
 
+- Navázané okno (`openLinkedTab`) sleduje zdrojovou záložku, ne pozici panelu:
+  přepnutí záznamu ve zdroji přepne i navázanou záložku, špendlík záznam zamkne
+  a zavření zdroje nechá okno připnuté na posledním záznamu. Obsah dodává aplikace
+  stejným renderem jako záložku `RecordSidePanel`; DS předává jen recordKey a sekci.
 - `RecordSidePanel` obaluje hlavní obsah přes children: nad 640 px šířky prostředí
   formulář odsune, pod hranicí má místní překryv s tlumeným pozadím a pastí fokusu.
   Název záznamu zůstává viditelný; název a záložky se nezalamují ani při 200 %.

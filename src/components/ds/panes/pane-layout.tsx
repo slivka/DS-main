@@ -508,6 +508,7 @@ function PaneColumn({
     : null;
   const paneCount = api.state.panes.length;
   const toggleMaximize = () => api.toggleMaximize(paneIndex);
+  const linked = tab?.linked;
   const chrome: PaneChrome | null = tab
     ? {
         tabId: tab.id,
@@ -531,6 +532,14 @@ function PaneColumn({
         maximized,
         toggleMaximize,
         closePane: () => api.closePane(pane.id),
+        linked: linked
+          ? {
+              sectionLabel: linked.sectionLabel,
+              pinned: linked.pinned,
+              togglePin: () => api.setLinkedPinned(tab.id, !linked.pinned),
+              returnToPanel: () => api.returnLinkedTab(tab.id),
+            }
+          : undefined,
         menuActions: buildTabMenuActions(api, tab.id, texts),
         dragHandleProps: { ref: drag.setNodeRef, ...drag.attributes, ...drag.listeners },
         getIcon: getIconByName,

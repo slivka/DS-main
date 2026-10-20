@@ -2,7 +2,16 @@
 
 ## 2.116.0 (nevydáno)
 
-- Zatím bez změn.
+### Navázané okno panelu (Panel dokladu, krok 5B)
+
+- Nové: druh záložky `linked` v panelech – navázaná záložka vzniká z `RecordSidePanel` přes `openLinkedTab(sourceTabId, { id, label })`, nese `sourceTabId`, klíč záznamu a sekci; hlavička vždy „<Sekce> – <titulek záznamu>“.
+- Sledování: navázaná záložka se přepíná se zdrojovou (navigace, listování ↑↓, jiný řádek gridu) – sleduje zdroj, ne pozici panelu. Špendlík v záhlaví záznam zamkne; zavření zdroje nechá navázanou připnutou na posledním záznamu.
+- Umístění: okno vpravo od zdroje (u posledního vlevo, u jediného panelu nová záložka v něm); obsazené cizí okno vyžaduje potvrzení „Nahradit obsah okna vpravo?“ (ConfirmDialog), odmítnutí nechá obsah ve vysouvacím panelu.
+- Záhlaví navázané záložky (PageHeader v panelu) přidává špendlík a akci „Vrátit do panelu“; totéž v menu ⋯ a kontextovém menu záložky. Obsah dodává aplikace stejným renderem jako záložku RecordSidePanel (DS předává recordKey + sekci).
+- Nový modul `panes/linked-tabs.ts` s čistými funkcemi (`openLinkedTabInState`, `syncLinkedTabsInState`, `setLinkedTabPinnedInState`, `returnLinkedTabInState`, `findLinkedTab`, `linkedTabTitle`); `pane-state.ts` jen nese typ `LinkedTabInfo` a druh `linked`. Navázané záložky se neukládají do uložených rozložení.
+- Nové API `PaneTabsApi`: `openLinkedTab`, `setLinkedPinned`, `returnLinkedTab`; `PaneChrome.linked` pro záhlaví. Texty `DsTexts.panes.linkedReplace*` a `paneChrome.pinLinked/unpinLinked/returnToPanel` (CS i SK).
+- Ukázka Více oken: „Historie v okně“ v detailu faktury, listování přepíná navázané okno, špendlík, potvrzení při obsazených oknech.
+- Testy: 8 nových unit testů reduceru (vznik, sledování, špendlík, zavření zdroje, potvrzení/odmítnutí u obsazených oken, návrat do panelu). Bez breaking změn.
 
 ## 2.115.0 – Propojené doklady
 

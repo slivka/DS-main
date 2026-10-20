@@ -5,8 +5,20 @@
 
 export type PaneLayoutCount = 1 | 2 | 3;
 
-/** 'record' = konkrétní záznam (smí být otevřený jen jednou), 'list' = seznam (vícekrát). */
-export type TabKind = "list" | "record";
+/** 'record' = konkrétní záznam (jen jednou), 'list' = seznam (vícekrát), 'linked' = navázaná záložka panelu záznamu. */
+export type TabKind = "list" | "record" | "linked";
+
+/** Navázaná záložka (kind 'linked') – sleduje záznam zdrojové záložky, ne pozici panelu. */
+export type LinkedTabInfo = {
+  /** Zdrojová záložka se záznamem. */
+  sourceTabId: string;
+  /** Id sekce panelu záznamu (např. "history"). */
+  section: string;
+  /** Popisek sekce pro hlavičku „<Sekce> – <záznam>“. */
+  sectionLabel: string;
+  /** Připnutá zamyká záznam – zdroj se přestane sledovat. */
+  pinned: boolean;
+};
 
 /** Kam otevřít stránku: nahradit aktivní záložku, nová záložka, nebo nová záložka v sousedním panelu. */
 export type OpenTabTarget = "replace" | "newTab" | "adjacentPane";
@@ -38,6 +50,8 @@ export type PaneTab = {
   openerTabId: string | null;
   /** Nový, dosud neuložený záznam – nepatří do uloženého rozložení. */
   isNew?: boolean;
+  /** Navázaná záložka panelu záznamu (kind 'linked'); pravidla řeší linked-tabs.ts. */
+  linked?: LinkedTabInfo;
 };
 
 export type TabPane = {
@@ -1029,7 +1043,8 @@ export function serializeLayout(
     widths: state.widths,
     activePane,
     panes: state.panes.map((pane) => {
-      const tabs = pane.tabs.filter((tab) => !tab.isNew);
+      // Navázané záložky jsou odvozený pohled – do uloženého rozložení nepatří.
+      const tabs = pane.tabs.filter((tab) => !tab.isNew && !tab.linked);
       return {
         activeIndex: Math.max(
           0,

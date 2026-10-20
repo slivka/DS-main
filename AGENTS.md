@@ -60,3 +60,4 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
+- Linked pane tabs follow their source tab, not the pane position; logic lives in panes/linked-tabs.ts, pane-state only carries the type. Why: one tested place for follow/pin/orphan rules.

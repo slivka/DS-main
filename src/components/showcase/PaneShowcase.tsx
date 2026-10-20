@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatAmount, formatDate } from "@/lib/format";
+import { HistoryDemo } from "./RecordHistoryShowcase";
 import {
   MOCK_ACCOUNTS,
   MOCK_BOOKS,
@@ -303,9 +304,29 @@ function LongDocument({ id }: { id: string }) {
 
 type InvoiceForm = { partner: string; amount: string; text: string };
 
+/** Obsah navázané záložky: stejný render jako záložka RecordSidePanel, DS předává recordKey + sekci. */
+function LinkedSectionView({ tab }: { tab: PaneTab }) {
+  const linked = tab.linked;
+  if (!linked) return null;
+  return (
+    <div className="space-y-3">
+      <PageHeader title={tab.title ?? linked.sectionLabel} />
+      <p className="text-sm text-muted-foreground">
+        Navázané okno sekce „{linked.sectionLabel}“ – záznam{" "}
+        {String(tab.params?.id ?? tab.recordKey ?? "")}.{" "}
+        {linked.pinned
+          ? "Připnuté: zdrojové okno se nesleduje."
+          : "Sleduje zdrojovou záložku – přejděte v ní na jiný záznam (↑ ↓)."}
+      </p>
+      <HistoryDemo />
+    </div>
+  );
+}
+
 /** Detail faktury: rozepsaný stav se ukládá do IndexedDB a po obnovení stránky se nabídne zpět. */
 function InvoiceDetail({ id }: { id: string }) {
   const pane = usePane();
+  const tabs = usePaneTabs();
   const invoice = INVOICES.find((item) => item.id === id);
   const base: InvoiceForm = {
     partner: invoice?.partner ?? "",
@@ -336,6 +357,11 @@ function InvoiceDetail({ id }: { id: string }) {
             disabled: !dirty,
             disabledReason: "Nejsou žádné změny",
             onClick: save,
+          },
+          {
+            label: "Historie v okně",
+            onClick: () =>
+              pane && tabs?.openLinkedTab(pane.tabId, { id: "history", label: "Historie" }),
           },
         ]}
       />
@@ -511,6 +537,7 @@ export function PaneShowcase() {
   }, [layouts, loaded]);
 
   const renderTab = (tab: PaneTab) => {
+    if (tab.linked) return <LinkedSectionView tab={tab} />;
     if (tab.route === "/doklad-a" || tab.route === "/doklad-b")
       return <LongDocument id={tab.route === "/doklad-a" ? "ID2026000101" : "ID2026000102"} />;
     if (tab.route === "/faktura") return <InvoiceDetail id={String(tab.params?.id ?? "")} />;
@@ -581,6 +608,11 @@ export function PaneShowcase() {
             se akce nezobrazí.
           </li>
           <li>8. Nabídka ⋯ vedle hledání ukládá a obnovuje rozložení.</li>
+          <li>
+            9. V detailu faktury zvolte „Historie v okně“ – navázaná záložka sleduje zdroj (↑ ↓),
+            špendlík záznam zamkne, „Vrátit do panelu“ ji zavře. Při obsazených oknech se nahrazení
+            potvrzuje.
+          </li>
         </ol>
 
         <div className="overflow-x-auto rounded-lg border bg-muted p-3">
