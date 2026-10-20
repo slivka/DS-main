@@ -26,7 +26,7 @@ permissions:
 jobs:
   e2e:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
         with:
@@ -52,10 +52,10 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.browsers }}" = "all" ]; then
             echo "install=chromium firefox webkit" >> "$GITHUB_OUTPUT"
-            echo "projects=--project=chromium --project=firefox --project=webkit" >> "$GITHUB_OUTPUT"
+            echo "projects=chromium firefox webkit" >> "$GITHUB_OUTPUT"
           else
             echo "install=chromium" >> "$GITHUB_OUTPUT"
-            echo "projects=--project=chromium" >> "$GITHUB_OUTPUT"
+            echo "projects=chromium" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: oven-sh/setup-bun@v2
@@ -87,9 +87,18 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         run: bun run check:full
 
+      # Prohlížeče postupně, ne souběžně: tři prohlížeče najednou na 4 vCPU runneru
+      # prodlužují hydrataci ukázek ve Firefoxu a WebKitu nad 10 s timeout (19.–20. 10. 2026).
       - name: E2E
         if: steps.gate.outputs.run == 'true'
-        run: bun run test:e2e ${{ steps.browsers.outputs.projects }}
+        run: |
+          status=0
+          for project in ${{ steps.browsers.outputs.projects }}; do
+            echo "::group::E2E $project"
+            bun run test:e2e --project="$project" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
 
       - name: Report a trace
         if: failure() && steps.gate.outputs.run == 'true'
