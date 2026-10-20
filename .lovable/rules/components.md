@@ -1867,7 +1867,7 @@ Stav účetního dokladu. Výchozí size="sm" patří do gridů; size="md" sjedn
 | `status` | draft · filed · posted · locked · cancelled | `approved` |
 | `config` | any | `—` |
 | `approved` | boolean | `false` |
-| `approvedLabel` | string | `Schválen` |
+| `approvedLabel` | string | `—` |
 | `size` | sm · md | `sm` |
 | `className` | string | `size-3` |
 
@@ -4445,6 +4445,8 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `sidePanelExtra` | any | `—` |
 | `readOnly` | boolean | `false` |
 | `tabs` | any | `—` |
+| `activeTab` | string | `—` |
+| `onTabChange` | function | `—` |
 | `status` | any | `—` |
 | `lifecycleAction` | any | `—` |
 | `deleteAction` | any | `—` |
@@ -4454,8 +4456,6 @@ Jednotný dialog pro editaci i detail záznamu; size je povinný (sm 32 rem krá
 | `dirtyConfirmTitle` | string | `Formulář obsahuje neuložené změny` |
 | `fieldErrors` | any | `—` |
 | `error` | any | `—` |
-| `activeTab` | string | `—` |
-| `onTabChange` | function | `—` |
 
 **Examples:**
 
@@ -4481,8 +4481,7 @@ _Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
 </RecordDialog>
 ```
 
-**Partner na zvolené záložce:**
-
+_Partner na zvolené záložce_
 ```tsx
 <RecordDialog open={open} size="md" title="Partner" onOpenChange={setOpen} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} error={saveError} onSubmit={save} />
 ```
@@ -4496,7 +4495,6 @@ _Číselník s ochranou změn, chybou a Odstranit (2.111.0)_
 - Nepřidávejte vlastní tlačítko Odstranit do extraActions – použijte deleteAction.
 - Bez práva upravit nezakazujte vstupy – použijte readOnly.
 - Nepřepínejte submitLabel na „Ukládám…“ – stačí busy.
-
 - V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.
 
 ### RecordNotes
