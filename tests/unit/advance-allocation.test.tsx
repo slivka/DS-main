@@ -81,7 +81,9 @@ describe("AdvanceAllocation", () => {
     ).toBe(true);
     fireEvent.click(screen.getAllByRole("checkbox")[1]);
     const amount = screen.getByRole("textbox", { name: "Částka k přiřazení – ZL 1" });
-    expect(amount instanceof HTMLInputElement ? amount.value.replace(/\s/g, " ") : null).toBe("1 000,00");
+    expect(amount instanceof HTMLInputElement ? amount.value.replace(/\s/g, " ") : null).toBe(
+      "1 000,00",
+    );
     fireEvent.click(screen.getByRole("button", { name: "Přiřadit", exact: true }));
     expect(saved).toEqual([{ id: "a", amount: 1000 }]);
   });

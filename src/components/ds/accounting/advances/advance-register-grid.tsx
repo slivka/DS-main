@@ -46,7 +46,13 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
     const columns: DataGridColumn<AdvanceRegisterRow>[] = [
       { id: "partner", label: t.partner, value: (row) => row.partner },
       { id: "vs", label: t.vs, value: (row) => row.vs, format: "vs" },
-      { id: "paidAt", label: t.paidAt, value: (row) => row.paidAt, render: (row) => formatDate(row.paidAt), exportType: "date" },
+      {
+        id: "paidAt",
+        label: t.paidAt,
+        value: (row) => row.paidAt,
+        render: (row) => formatDate(row.paidAt),
+        exportType: "date",
+      },
       { id: "currency", label: t.currency, value: (row) => row.currency },
       ...(["amount", "paidList", "coveredTaxDocument", "deducted", "remaining"] as const).map(
         (id) => ({
@@ -73,7 +79,13 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
           />
         ),
       },
-      { id: "deadline", label: t.deadline, value: (row) => row.deadline, render: (row) => formatDate(row.deadline), exportType: "date" },
+      {
+        id: "deadline",
+        label: t.deadline,
+        value: (row) => row.deadline,
+        render: (row) => formatDate(row.deadline),
+        exportType: "date",
+      },
     ];
     return (
       <div ref={ref} className={cn("min-w-0", className)} {...props}>
