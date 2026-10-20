@@ -6,8 +6,18 @@ async function open(page: Page, url: string) {
   await page.waitForFunction(() => document.readyState === "complete");
 }
 
+/** Čeká, až React připojí obsluhu k poli (klik před hydratací by se ztratil). */
+async function hydrated(trigger: Locator) {
+  await expect
+    .poll(() =>
+      trigger.evaluate((node) => Object.keys(node).some((key) => key.startsWith("__reactProps"))),
+    )
+    .toBe(true);
+}
+
 /** Klikne myší na pole a pak na položku nabídky; hodnota se musí vybrat a nabídka zavřít. */
 async function pickWithMouse(page: Page, trigger: Locator, option: RegExp) {
+  await hydrated(trigger);
   await trigger.click();
   const input = page.locator("[cmdk-input]");
   await expect(input).toBeVisible();
@@ -31,6 +41,7 @@ test("KS a bankovní účet: klik myší vybere položku", async ({ page }) => {
   const bank = page
     .getByTestId("form-with-supplier")
     .getByRole("combobox", { name: "Bankovní účet" });
+  await hydrated(bank);
   await bank.click();
   const first = page.locator("[cmdk-item]").filter({ hasText: /\d+\/\d{4}|[A-Z]{2}\d{2}/ });
   const text = ((await first.first().textContent()) ?? "").match(/\d+\/\d{4}/)?.[0] ?? "";
