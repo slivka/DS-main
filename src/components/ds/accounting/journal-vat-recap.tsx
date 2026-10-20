@@ -64,7 +64,6 @@ function OverrideMark({ group }: { group: VatGroup }) {
           type="button"
           data-slot={canReset ? "journal-vat-reset" : "journal-vat-calculated"}
           aria-label={`${texts.calculatedInfo}: ${info}${canReset ? ` – ${editor.dsTexts.vatFive.cancelOverride}` : ""}`}
-          disabled={!canReset && undefined}
           onClick={canReset ? () => vatGroups.resetOverride(group) : undefined}
           className="inline-flex text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
@@ -172,13 +171,12 @@ export function JournalVatRecap() {
   const { vatGroups, t, foreign, vatOn } = editor;
   const texts = t.vatGroups;
   const vatFive = editor.dsTexts.vatFive;
-  // Sbalitelné sloupce v měně firmy řídí aplikace přes `recap` (žádný vnitřní stav).
+  // Sloupce v měně firmy řídí aplikace přes `recap`; jen ke čtení skrývá úpravy canOverride.
   const recap = editor.props.recap;
   const showHome = Boolean(recap?.vatHomeOpen);
   const onHomeChange = recap?.onVatHomeOpenChange;
   const { groups, fixed } = vatGroups.vatGroups;
   const note = editor.props.vat?.recapNote;
-  // Zaúčtovaný doklad rekapitulaci ukáže jen ke čtení (úpravy skrývá canOverride).
   if (!vatOn || (groups.length === 0 && fixed.length === 0)) return null;
   const home = editor.homeMark;
   const homeOn = foreign && showHome;
