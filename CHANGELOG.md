@@ -2,7 +2,34 @@
 
 ## 2.113.0 (nevydáno)
 
-- Zatím bez změn.
+### Panel dokladu – přílohy a poznámky (krok 2)
+
+- Nové `RecordSidePanel`, `RecordPanelTriggers`, `AttachmentList`, `PinnedNoteBar`
+  a `MultiSelectionPanel`, veřejné typy a hooky `useFileDrop`, `validateFiles`,
+  `useFollowSelection`. Data, oprávnění a operace dodává aplikace; DS nic nenačítá.
+- Panel odsouvá obsah, pod 640 px šířky prostředí místní překryv; řízené záložky,
+  připnutí, default/wide, volitelné otevření vedle. Esc a návrat fokusu; past
+  sdílená s RecordDialogPane, vnořené portály mají vlastní chování.
+- `DocumentForm.actionBarContent?: ReactNode`: nový slot vlevo v liště akcí.
+  Existující slot RecordActionBar nebyl veřejně průchozí přes DocumentForm;
+  `titleBadges` je určen stavům, nikoli tlačítkům. RecordDialog používá dosavadní
+  `headerExtra`, bez nového slotu či breaking změny.
+- Přílohy: zdroj s PDF/obrázkem a Nahradit; removeKind delete/Smazat nebo
+  remove/Odebrat s potvrzením a volitelným důvodem. Zákaz s důvodem zůstává
+  fokusovatelný; odebrané výchozím stavem skryté. Více souborů výběrem/dropem,
+  typ/velikost přes props, odmítnutí v NoticeBar i callbacku, progress/error po
+  souborech z aplikace. Velikost přes `formatFileSize`, např. 1,2 MB.
+- Zpětně kompatibilní `RecordNotes`: pinned/editedAt, onPin/canPin, canAdd a
+  oddělené canEdit/canRemove; původní editable funguje jako záloha. Dosavadní
+  výchozí texty přesunuty do DsTexts CS/SK, lokální texts mají přednost. Přidat
+  po úspěchu zůstává fokusovatelné, aby Esc neztratil hranici panelu.
+- DataGrid: sloupec type="record-indicators", obecná id/ikony/počty, nulové
+  tlumené bez čísla, onIndicatorClick bez výběru řádku, Excel jako samostatné
+  celočíselné sloupce. Sledování výběru přes sdílené zpoždění, výchozí 250 ms.
+- Nová stránka Panel záznamu: doklad, dialog, grid, existující HistoryPanel,
+  práva Číst/Koncept/Zařazen/Zaúčtován/Uzamčen, úzký panel a zoom 200 %.
+- Nevydáno; package.json a katalog zůstávají na poslední vydané 2.112.0.
+  Body Firefox/WebKit v roadmapě a konfigurace prohlížečů nejsou měněny.
 
 ## 2.112.0 – Opravy pro Firefox a Safari
 

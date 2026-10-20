@@ -9,6 +9,41 @@
 - Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
 
 ## Dialogy záznamů
+## Panel záznamu, přílohy a poznámky
+
+- `RecordSidePanel` obaluje hlavní obsah přes children: nad 640 px šířky prostředí
+  formulář odsune, pod hranicí má místní překryv s tlumeným pozadím a pastí fokusu.
+  Název záznamu zůstává viditelný; název a záložky se nezalamují ani při 200 %.
+  Esc respektuje vnořené nabídky a potvrzení, zavření vrací fokus na spouštěč.
+- Aplikace dodává `open`, `activeTab`, záložky, data a operace. `pinned` a
+  `onPinnedChange` jen zobrazují/oznamují připnutí; vazbu na záznam dělá aplikace.
+  `width="wide"` používá přibližně polovinu prostředí, bez nové logiky načítání.
+- `RecordPanelTriggers` přijímá pouze dodané indikátory v pořadí aplikace.
+  `DocumentForm.actionBarContent` je slot v liště akcí, `RecordDialog.headerExtra`
+  existující slot dialogu. Nula je tlumená ikona bez čísla.
+- Přílohy se skládají přes `AttachmentList`, nikoli novou implementaci. Zdroj má
+  pouze `onReplaceSource`; ostatní přílohy používají `removeKind`: `delete` =
+  Smazat, `remove` = Odebrat, `null` = bez akce. Oprávnění a důvod dodává aplikace;
+  zákaz zůstává fokusovatelný přes DisabledReasonTooltip. Odebrané se výchozím
+  stavem skrývají, přepínač ukáže kdo/kdy/důvod.
+- Typy a velikost jsou props aplikace. `useFileDrop(ref, { accept, maxSize,
+  onFiles })` sdílí `validateFiles` s výběrem souborů; callback dostane přijaté
+  soubory a odmítnuté se všemi důvody (`type`, `size`). NoticeBar překládá chyby,
+  `progress` a `error` přílohy dodává aplikace. DS nikdy nenahrává ani nenačítá.
+- `RecordNotes` zachovává `editable` jako zálohu; `canEdit` a `canRemove` jsou
+  samostatná oprávnění, `canAdd=false` skryje vstup. `pinned`, `editedAt`, `canPin`
+  a `onPin` řídí aplikace. DS připnuté řadí nahoru, nehlídá jediné připnutí.
+  `PinnedNoteBar` zabírá nejvýše control-h, celý text je v přístupné bublině.
+- `DataGridColumn.type="record-indicators"` a `indicators` obsahují obecná id,
+  popisky, ikony a `count(row)`. `onIndicatorClick(row,id)` nevybírá řádek; pevná
+  šířka nepovoluje tažení. Excel rozvine indikátory na samostatné celočíselné
+  sloupce s číselnými součty, žádné slučování počtů do řetězce.
+- `useFollowSelection` sdílí zpoždění přes useDebouncedValue, výchozí delay=250 ms;
+  vrací empty/single s record/multi s count. Pole vybraných řádků stabilizuje
+  aplikace. Dotazy a jejich rušení řeší aplikace, hromadnou akci dává do children
+  `MultiSelectionPanel`; jinou doménu pojmenuje propem label.
+
+## Dialogy záznamů
 
 Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. Řádky jednoho dialogu sdílejí svislé linky 12sloupcové mřížky. Vysvětlení patří pod sekci (`FieldGrid.hint`), `Field.hint` jen výjimečně a nikdy nesmí rozhodit výšku řádku polí. Vzor formátu patří do pole přes `Input.formatPattern`, vysvětlení pod sekci přes `FieldGrid.hint`. Záložky jen pro rovnocenné a obsáhlé části; méně než ~8 řádků polí = sekce pod sebou. Dialog s jedinou záložkou lištu nemá. Co po založení nejde měnit, je `FieldValue` (s `lockedReason`), ne zakázané pole. Okamžitě ukládané ovládání (matice oprávnění) do dialogu s Uložit nepatří. Malé editovatelné tabulky v dialogu = `FieldTable`, ne vlastní `<table>`.
 
