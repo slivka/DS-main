@@ -1,0 +1,56 @@
+/** 2.113.1 · výběr položky myší v hledání přímo v poli (KS, partner, účet, bankovní účet). */
+import { expect, test, type Locator, type Page } from "@playwright/test";
+
+async function open(page: Page, url: string) {
+  await page.goto(url, { waitUntil: "networkidle" });
+  await page.waitForFunction(() => document.readyState === "complete");
+}
+
+/** Klikne myší na pole a pak na položku nabídky; hodnota se musí vybrat a nabídka zavřít. */
+async function pickWithMouse(page: Page, trigger: Locator, option: RegExp) {
+  await trigger.click();
+  const input = page.locator("[cmdk-input]");
+  await expect(input).toBeVisible();
+  const item = page.locator("[cmdk-item]").filter({ hasText: option }).first();
+  await item.click();
+  await expect(input).toHaveCount(0);
+  await expect(trigger).toContainText(option);
+  await expect(trigger).toBeFocused();
+}
+
+test("KS a bankovní účet: klik myší vybere položku", async ({ page }) => {
+  await open(page, "/components/accounting-controls");
+  await expect(page.getByTestId("accounting-forms-nav")).toHaveAttribute("data-ready", "true", {
+    timeout: 45000,
+  });
+  const ks = page
+    .getByTestId("selection-comparison")
+    .getByRole("combobox", { name: "Konstantní symbol" })
+    .nth(1);
+  await pickWithMouse(page, ks, /0308/);
+  const bank = page
+    .getByTestId("form-with-supplier")
+    .getByRole("combobox", { name: "Bankovní účet" });
+  await bank.click();
+  const first = page.locator("[cmdk-item]").filter({ hasText: /\d+\/\d{4}|[A-Z]{2}\d{2}/ });
+  const text = ((await first.first().textContent()) ?? "").match(/\d+\/\d{4}/)?.[0] ?? "";
+  await page.keyboard.press("Escape");
+  await expect(page.locator("[cmdk-input]")).toHaveCount(0);
+  await pickWithMouse(page, bank, new RegExp(text.replace("/", "\\/")));
+});
+
+test("partner: klik myší vybere položku", async ({ page }) => {
+  await open(page, "/components/accounting-fields");
+  const partner = page.getByRole("combobox", { name: "Partner", exact: true }).first();
+  await pickWithMouse(page, partner, /Alfa/);
+});
+
+test("účet: klik myší vybere položku", async ({ page }) => {
+  await open(page, "/components/forms");
+  const account = page.getByRole("combobox", { name: "Účet MD" }).first();
+  await account.click();
+  const first = page.locator("[cmdk-item]:not([data-disabled=true])").first();
+  const code = ((await first.textContent()) ?? "").match(/\d{3}\.\d{3}|\d{3}/)?.[0] ?? "";
+  await page.keyboard.press("Escape");
+  await pickWithMouse(page, account, new RegExp(code.replace(".", "\\.")));
+});
