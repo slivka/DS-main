@@ -51,12 +51,6 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
   };
   const tabs: RecordSidePanelTab[] = [
     {
-      id: "linked",
-      label: "Propojené",
-      icon: Link,
-      content: <LinkedRecordsDemo readOnly={status === "read"} />,
-    },
-    {
       id: "attachments",
       label: "Přílohy",
       icon: Paperclip,
@@ -147,6 +141,12 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       label: "Historie",
       icon: History,
       content: <HistoryDemo />,
+    },
+    {
+      id: "linked",
+      label: "Propojené",
+      icon: Link,
+      content: <LinkedRecordsDemo readOnly={status === "read"} />,
     },
   ];
   return {
