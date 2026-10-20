@@ -16,6 +16,7 @@
 - D10 Ctrl/Cmd+Enter = Uložit a zavřít: nový prop `onSaveAndClose` v `DocumentForm` a `BankStatementForm` (bez tlačítka; jen při povoleném uložení; aplikace zavře až po úspěšném uložení). Vnořený editor řádků si Ctrl+Enter (nový řádek) ponechává. RecordDialog nic nového nepotřebuje – Uložit v dialogu zavírá.
 - Ukázky: horní lišta bez pevných px, záhlaví panelu s tečkou (Navigace), štítek neověřeného dodavatele a Ctrl+Enter (doklady), měna v nadpisu sloupce výpisu.
 - Bez breaking změn v API; změna chování ✕ v záhlaví panelu viz D2.
+- Kontroly: 969/969 unit v 104 souborech; katalog 452 komponent / 985 props, 0 odebrání; lint 0 chyb / 341 stávajících varování. Nový E2E spec `small-edits-one` (nespuštěn – pustí CI).
 
 ## 2.116.0 – Navázané okno panelu
 
