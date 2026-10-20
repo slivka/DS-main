@@ -39,3 +39,5 @@
 - Compose document and bank-statement identity through IdentityLine; retain domain account editing in DocumentIdentityLine. Why: separators, typography and number styling have one owner.
 - Keep bank-statement translations in per-language modules and calculate toggle spacing on each element. Why: attached consumers inherit locale separation and local control-height overrides.
 - Keep VAT exchange rates as rate/unit pairs and compare tolerances with exact cross-products. Why: division before conversion loses decimal halves.
+- Form save shortcuts (Ctrl/Cmd+S, Ctrl/Cmd+Enter → onSaveAndClose) go through handleDocumentSaveShortcut and yield to nested handlers that already prevented the event. Why: the journal editor keeps Ctrl+Enter for new lines.
+- Read-only identity accounts size to their text; only the open selection uses the measured width. Why: the pencil stays next to the account name.

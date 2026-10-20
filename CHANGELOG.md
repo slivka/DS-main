@@ -2,7 +2,20 @@
 
 ## 2.117.0 (nevydáno)
 
-- Zatím bez změn.
+### Drobné opravy 1 (edity)
+
+- D1 `PeriodSwitcher`: název období se nikdy nezkracuje; rozsah dat se zobrazí jen celý, když se vejde (jinak se skryje bez trojtečky – rozhoduje místo v tlačítku, ne šířka okna). Nový prop `ContextPill.keepValue`. Max. šířky přepínačů firmy a období v rem; při nedostatku místa se zkracuje firma (souměrná min. šířka firmy jen při dostatku místa).
+- D2 Záhlaví panelu (**mění Edit dokladu 16, bod 2**): ✕ zavře záložku (`closeTab`, ochrana neuložených změn, bublina „Zavřít (Alt+W)“). Menu ⋯ nemá „Zavřít záložku“ a končí oddělenou položkou „Zavřít panel“ (Alt+Shift+W) jen při více panelech; kontextové menu záložky beze změny. `buildTabMenuActions(api, tabId, texts, surface)` – nový volitelný 4. parametr `"tab" | "header"`; `PaneChrome.closeTab`; text `paneChrome.closeHeader` (CS/SK).
+- D3 Identita dokladu: v režimu čtení má box účtu šířku textu „kód – název“ a tužka stojí hned za ním (i za trojtečkou); otevřený výběr se dál rozbalí na měřenou šířku.
+- D4 `PageHeader`: tečka neuložených změn má stejný svislý střed jako štítek (účaří + ½ x-výšky), i bez štítku.
+- D5 Pokladna: Partner | IČO | DIČ → Vyplaceno komu / Přijato od | číslo dokladu → Popis; popisek výdaje s DPH „Číslo daňového dokladu“.
+- D6 Vydaná faktura / zálohový list: Uhradit na bankovní účet | Způsob platby (jako u přijatých).
+- D7 Ručně zadaný dodavatel: žlutý štítek „Neověřený dodavatel“ s bublinou vedle „Vstupuje do DPH“ (i při vypnutém přepínači); `DocumentVatActionStatus.counterpartyStatus`. Texty `documentForm.unverifiedSupplier*` (CS/SK). Pruh upozornění zůstává pro opravitelné věci.
+- D8 Bankovní výpis: pole záhlaví bez značky měny; nový pomocník `currencyColumnLabel(label, currency, homeCurrency)` pro nadpis sloupce v cizí měně („Příjem (EUR)“), buňky gridu bez značky (grid dodává aplikace). Oprava: zoom − / + vnořeného gridu v režimu Auto – změna zoomu spouštěla přepočet, který ruční hodnotu hned zrušil (`useAutoGridZoom` už na zoom gridu nezávisí).
+- D9 Bankovní pohyb: VS a KS stejně široké pod Účtem protistrany, SS pod kódem banky; u IBAN / SWIFT nahrazuje KS a SS pole Reference – nové `DocumentHeaderValue.paymentReference` (změna přes `onChange`), text `documentForm.paymentReference` (CS/SK).
+- D10 Ctrl/Cmd+Enter = Uložit a zavřít: nový prop `onSaveAndClose` v `DocumentForm` a `BankStatementForm` (bez tlačítka; jen při povoleném uložení; aplikace zavře až po úspěšném uložení). Vnořený editor řádků si Ctrl+Enter (nový řádek) ponechává. RecordDialog nic nového nepotřebuje – Uložit v dialogu zavírá.
+- Ukázky: horní lišta bez pevných px, záhlaví panelu s tečkou (Navigace), štítek neověřeného dodavatele a Ctrl+Enter (doklady), měna v nadpisu sloupce výpisu.
+- Bez breaking změn v API; změna chování ✕ v záhlaví panelu viz D2.
 
 ## 2.116.0 – Navázané okno panelu
 

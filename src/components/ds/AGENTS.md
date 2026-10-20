@@ -59,3 +59,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
 - Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: enabled clicks never pin blocked explanations.
 - Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.
+
+- Build pane menus through buildTabMenuActions with a surface ("tab" context menu, "header" ⋯); the header ✕ closes the tab. Why: one menu source without duplicate close actions.
+- Hide optional pill details by wrapping them onto a clipped second line, never by viewport breakpoints or ellipsis. Why: the decision follows real space at every font size.
+- Grid auto zoom recalculates only on width or column changes, never on its own zoom value. Why: manual zoom must survive until the next real resize.
