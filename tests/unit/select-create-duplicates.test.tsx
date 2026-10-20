@@ -22,8 +22,8 @@ for (const texts of [DS_TEXTS_CS, DS_TEXTS_SK]) {
         />
       </DsTextsProvider>,
     );
-    fireEvent.click(view.getByRole("button", { name: "Štítky" }));
-    fireEvent.change(view.getByPlaceholderText("Hledat štítek…"), {
+    fireEvent.click(view.getByRole("combobox", { name: "Štítky" }));
+    fireEvent.change(view.container.querySelector("[cmdk-input]") as HTMLInputElement, {
       target: { value: " urgent " },
     });
     const add = view.getByRole("button", { name: texts.selectCreate.tag });

@@ -186,7 +186,7 @@ export function UnitSelect({
           </Command>
         </PopoverContent>
       </Popover>
-      {selected && onEditSelected && !disabled && !open ? (
+      {selected && onEditSelected && !disabled ? (
         <FieldInlineActions
           size="compact"
           className="right-[calc(0.125rem+0.875rem+0.125rem)]"

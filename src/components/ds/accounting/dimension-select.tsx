@@ -308,7 +308,7 @@ export function DimensionSelect({
           </Command>
         </PopoverContent>
       </Popover>
-      {selected && onEditSelected && !disabled && !open ? (
+      {selected && onEditSelected && !disabled ? (
         <FieldInlineActions
           onEdit={() => onEditSelected(selected.id)}
           editLabel={resolvedEditSelectedLabel}
