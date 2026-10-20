@@ -62,6 +62,15 @@ const definitions = [
     avoid:
       "Nevynucujte jediné připnutí v DS a neslučujte canEdit s canRemove. editable zůstává zpětně kompatibilní záloha.",
   },
+  {
+    name: "RecordHistoryTimeline",
+    file: "src/components/ds/feedback/record-history-timeline.tsx",
+    usage:
+      "Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnovější nahoře; funguje i jako záložka RecordSidePanel v úzké šířce. Aplikace dodává už zmapované události s popisky a hodnotami a řídí režim (basic/detailed) i filtr typů; komponenta nic nenačítá ani doménově neformátuje.",
+    code: '<RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} filter={filter} onFilterChange={setFilter} loading={isLoading} />',
+    avoid:
+      "Nepředávejte surová data auditu (názvy sloupců, JSON, ID); hodnoty mapuje a formátuje aplikace. Nepoužívejte zastaralý HistoryPanel.",
+  },
 ];
 /** Props veřejného pojmenovaného rozhraní; děděné HTML props se neopakují. */
 function interfaceProps(file: string, name: string) {
@@ -94,6 +103,15 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     item.antipatterns ??= [];
     if (!item.antipatterns.includes(definition.avoid)) item.antipatterns.push(definition.avoid);
     touched.push(item);
+  }
+  const legacy = components.find((item) => item.name === "HistoryPanel");
+  if (legacy) {
+    legacy.usage =
+      "Zastaralé od 2.114.0 – použijte RecordHistoryTimeline; odstraní se v příští major verzi.";
+    legacy.antipatterns ??= [];
+    const rule = "Nepoužívejte v nových obrazovkách; nahraďte RecordHistoryTimeline.";
+    if (!legacy.antipatterns.includes(rule)) legacy.antipatterns.push(rule);
+    touched.push(legacy);
   }
   const document = components.find((item) => item.name === "DocumentForm");
   if (document) {

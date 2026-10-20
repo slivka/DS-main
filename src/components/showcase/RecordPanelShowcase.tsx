@@ -59,7 +59,6 @@ export function RecordPanelShowcase() {
   const follow = useFollowSelection(selected);
   const followed = follow.kind === "single" ? follow.record : null;
   const active = pinned ? pinnedRow : (followed ?? explicit);
-  const close = () => setOpen(false);
   const content = useRecordPanelContent(status, sourceUrl);
   const form = useRef<HTMLDivElement>(null);
   const [rejection, setRejection] = useState<string[]>([]);
