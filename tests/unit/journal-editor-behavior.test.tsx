@@ -186,13 +186,14 @@ describe("JournalLinesEditor – klávesnice", () => {
     fireEvent.keyDown(text.querySelector("input")!, { key: "Tab" });
     expect(text.textContent).toContain("Nový text");
     await waitFor(() =>
-      expect(document.activeElement?.getAttribute("data-cell-key")).toBe("l1:debitAccount"),
+      // 2.118.0: Popis · Částka · MD · DAL.
+      expect(document.activeElement?.getAttribute("data-cell-key")).toBe("l1:amount"),
     );
     const amount = cell(view.container, "l1:amount")!;
-    fireEvent.keyDown(amount, { key: "Enter" });
+    fireEvent.keyDown(amount, { key: "F2" });
     fireEvent.keyDown(amount.querySelector("input")!, { key: "Enter", shiftKey: true });
     await waitFor(() =>
-      expect(document.activeElement?.getAttribute("data-cell-key")).toBe("l1:creditAccount"),
+      expect(document.activeElement?.getAttribute("data-cell-key")).toBe("l1:text"),
     );
   });
 
