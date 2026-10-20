@@ -53,7 +53,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - Source scanning for monetary rounding belongs in the shared check-money-rounding script, not unit tests; exceptions carry reasons in one list. Why: tests verify behavior and both check levels enforce the same audit.
 
-- Run check:full --harness in Lovable; CI runs all stages. Why: typecheck/build are harness-owned.
+- Use check:full --harness; CI runs all stages. Keep noImplicitReturns enabled for consumers.
 - CI reads Bun from .bun-version; unit storage always comes from happy-dom. Why: runner updates must not change test DOM behavior.
 - PopoverContent forwards calendar Escape before dismissal. Why: Radix capture must not close intermediate views.
 - RecordDialog uses activeTab when supplied, local selection otherwise; onTabChange reports user requests only. Why: error navigation without callback loops.
