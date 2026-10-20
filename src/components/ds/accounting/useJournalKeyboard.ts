@@ -121,11 +121,11 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     if (event.key === "Enter") {
       event.preventDefault();
       // 2.118.0: Shift+Enter zpět; vyplněné nebo zakotvené pole Enter přeskočí.
-      if (event.shiftKey) return focusRelative(line.id, column, -1, true);
-      if (column === "text" && editor.discardBlankLine(line)) return focusRecap();
+      if (event.shiftKey) return void focusRelative(line.id, column, -1, true);
+      if (column === "text" && editor.discardBlankLine(line)) return void focusRecap();
       const filled = editor.displayValue(line, column) !== "";
       if (!cell.canEdit || filled || editor.pins.pinned.has(column))
-        return focusRelative(line.id, column, 1, true);
+        return void focusRelative(line.id, column, 1, true);
       editor.startEditing(line, column);
       return;
     }
@@ -156,7 +156,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
           event.preventDefault();
           const value = (event.target as HTMLInputElement).value ?? "";
           if (event.key === "Enter" && !event.shiftKey && column === "text" && !value.trim()) {
-            if (editor.discardBlankLine(line)) return focusRecap();
+            if (editor.discardBlankLine(line)) return void focusRecap();
           }
           editor.finish();
           next(event);

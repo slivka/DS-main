@@ -43,6 +43,7 @@ test("výdaj: jediné číslo je volné, přepnutí DPH vlastní číslo zachov�
   expect(view.container.querySelectorAll("#document-externalNumber")).toHaveLength(1);
   expect(view.container.querySelector("#document-taxDocumentNumber")).toBeNull();
   expect(input?.readOnly).toBe(false);
+  expect(view.getByLabelText("Externí číslo")).toBeDefined();
   fireEvent.click(view.getByRole("switch"));
   expect(view.getByLabelText("Číslo daňového dokladu")).toBeDefined();
   expect(input?.value).toBe("Dod2026001");
@@ -50,7 +51,10 @@ test("výdaj: jediné číslo je volné, přepnutí DPH vlastní číslo zachov�
 });
 test("příjem: prázdné číslo se při zapnutí DPH sváže, odemčení dovolí vlastní číslo", () => {
   const view = render(<Cash direction="in" />);
+  expect(view.getByLabelText("Externí číslo")).toBeDefined();
   fireEvent.click(view.getByRole("switch"));
+  expect(view.getByLabelText("Externí číslo")).toBeDefined();
+  expect(view.queryByLabelText("Číslo daňového dokladu")).toBeNull();
   const input = view.container.querySelector<HTMLInputElement>("#document-externalNumber");
   expect(input?.readOnly).toBe(true);
   expect(input?.value).toBe("PO2026001");

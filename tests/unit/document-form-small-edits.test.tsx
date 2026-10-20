@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import * as React from "react";
 
-const { cleanup, fireEvent, render } = await import("@testing-library/react");
+const { cleanup, fireEvent, render, waitFor } = await import("@testing-library/react");
 const { DocumentForm } = await import("../../src/components/ds/accounting/document-form");
 
 afterEach(cleanup);
@@ -54,6 +54,49 @@ const follows = (a: Element | null, b: Element | null) =>
   Boolean(a && b && a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 
 describe("DocumentForm – drobné úpravy", () => {
+  for (const modifier of ["ctrlKey", "metaKey"]) {
+    it(`${modifier}+Enter z data uloží a zavře, samotný Enter jen potvrdí datum`, () => {
+      const close = mock();
+      const view = render(
+        <Form saveAction={{ onSave: mock(), dirty: true }} onSaveAndClose={close} />,
+      );
+      const input = view.container.querySelector<HTMLInputElement>("#document-issueDate");
+      if (!input) throw new Error("Chybí datum vystavení");
+      input.focus();
+      expect(fireEvent.keyDown(input, { key: "Enter" })).toBe(false);
+      expect(close).not.toHaveBeenCalled();
+      fireEvent.keyDown(input, { key: "Enter", [modifier]: true });
+      expect(close).toHaveBeenCalledTimes(1);
+    });
+
+    it(`${modifier}+Enter z hledání uloží a zavře bez změny vybrané hodnoty`, async () => {
+      const close = mock();
+      const change = mock();
+      const view = render(
+        <Form
+          saveAction={{ onSave: mock(), dirty: true }}
+          onSaveAndClose={close}
+          onChange={change}
+          constantSymbolOptions={[
+            { value: "0308", label: "0308 – Služby" },
+            { value: "0008", label: "0008 – Zboží" },
+          ]}
+        />,
+      );
+      const trigger = view.container.querySelector("#document-constantSymbol");
+      if (!trigger) throw new Error("Chybí KS");
+      fireEvent.keyDown(trigger, { key: "0" });
+      const input = await waitFor(() => {
+        const node = view.container.querySelector<HTMLInputElement>("[cmdk-input]");
+        if (!node) throw new Error("Hledání se neotevřelo");
+        return node;
+      });
+      change.mockClear();
+      fireEvent.keyDown(input, { key: "Enter", [modifier]: true });
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(change).not.toHaveBeenCalled();
+    });
+  }
   it("vydaná faktura: Uhradit na bankovní účet stojí před Způsobem platby", () => {
     const view = render(
       <Form
