@@ -19,7 +19,14 @@
 - Firefox: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
 - WebKit: edit-document-eleven:161 (tooltip Ruční kurz), nestabilní document-controls, journal-control-height, vat-groups.
 
+### Edit dokladu 16 – čtvrté opravné kolo (Firefox)
+
+- [x] Tab z Částky na Kód DPH: zaměření buňky proběhne v jednom snímku (přesun mezi buňkami už nepřekresluje celý editor řádků); test čeká na dokončené načtení stránky místo opakování akcí se 1s sondou.
+- [x] vat-code-tab-256, vat-groups a journal-control-height 5× opakovány v Chromiu, Firefoxu i WebKitu; Firefox navíc pod zátěží jako v GitHubu (8 workerů) – bez selhání.
+- [x] check:full --harness 919/919, lint 0 chyb, tsc --noEmit bez chyb, build OK; katalog bez ztrát; verze 2.112.0, nevydáno.
+
 ### Panel dokladu – přílohy a poznámky (krok 2)
+
 
 - [x] Obecný RecordSidePanel a RecordPanelTriggers; sdílené sloty formuláře a dialogu.
 - [x] AttachmentList a useFileDrop: oprávnění, odebrání/smazání, zdroj, průběh a odmítnuté soubory.
