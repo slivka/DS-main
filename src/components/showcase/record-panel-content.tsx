@@ -5,11 +5,7 @@ import { AttachmentList, RecordNotes, type RecordAttachment, type RecordSidePane
 import { HistoryDemo } from "./RecordHistoryShowcase";
 import { ACCEPT, ATTACHMENTS, LIMIT, NOTES } from "./record-panel-data";
 export type DemoPermission = "read" | "draft" | "filed" | "posted" | "locked";
-export function useRecordPanelContent(
-  status: DemoPermission,
-  sourceUrl: string,
-  _close: () => void,
-) {
+export function useRecordPanelContent(status: DemoPermission, sourceUrl: string) {
   const [attachments, setAttachments] = useState(ATTACHMENTS);
   const [notes, setNotes] = useState(NOTES);
   const [source, setSource] = useState<RecordAttachment>({
