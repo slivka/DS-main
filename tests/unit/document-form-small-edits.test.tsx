@@ -97,6 +97,57 @@ describe("DocumentForm – drobné úpravy", () => {
       expect(change).not.toHaveBeenCalled();
     });
   }
+  it("Ctrl+Enter z částky formuláře uloží a zavře", () => {
+    const close = mock();
+    const view = render(
+      <Form saveAction={{ onSave: mock(), dirty: true }} onSaveAndClose={close} />,
+    );
+    const input = view.container.querySelector("#document-amountTotal");
+    if (!input) throw new Error("Chybí celková částka");
+    fireEvent.keyDown(input, { key: "Enter", ctrlKey: true });
+    expect(close).toHaveBeenCalledTimes(1);
+  });
+
+  for (const column of ["text", "amount"]) {
+    it(`Ctrl+Enter v editoru ${column} uloží a zavře bez přidání řádku`, () => {
+      const close = mock();
+      const linesChange = mock();
+      const view = render(
+        <Form
+          saveAction={{ onSave: mock(), dirty: true }}
+          onSaveAndClose={close}
+          lines={[{ id: "l1", text: "Služby", amount: 1000 }]}
+          onLinesChange={linesChange}
+        />,
+      );
+      const cell = view.container.querySelector(`[data-cell-key="l1:${column}"]`);
+      if (!cell) throw new Error("Chybí buňka");
+      fireEvent.keyDown(cell, { key: "F2" });
+      const input = cell.querySelector("input");
+      if (!input) throw new Error("Chybí editor buňky");
+      linesChange.mockClear();
+      fireEvent.keyDown(input, { key: "Enter", ctrlKey: true });
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(linesChange).not.toHaveBeenCalled();
+    });
+  }
+
+  for (const documentType of ["ZFV", "ZFP"]) {
+    it(`${documentType}: Cmd+Enter z data používá stejnou zkratku jako faktura`, () => {
+      const close = mock();
+      const view = render(
+        <Form
+          documentType={documentType}
+          saveAction={{ onSave: mock(), dirty: true }}
+          onSaveAndClose={close}
+        />,
+      );
+      const input = view.container.querySelector("#document-issueDate");
+      if (!input) throw new Error("Chybí datum vystavení");
+      fireEvent.keyDown(input, { key: "Enter", metaKey: true });
+      expect(close).toHaveBeenCalledTimes(1);
+    });
+  }
   it("vydaná faktura: Uhradit na bankovní účet stojí před Způsobem platby", () => {
     const view = render(
       <Form
