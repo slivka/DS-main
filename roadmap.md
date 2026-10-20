@@ -1,4 +1,13 @@
-## DS 2.113.0 (nevydáno)
+## DS 2.114.0 (nevydáno)
+
+- Firefox i WebKit: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
+- WebKit: edit-document-eleven:161 (tooltip Ruční kurz); record-dialog-2111:35 vypršení času při kliknutí na „Nový“ (run 39438666270, dříve nestabilní); nestabilní browser-page-errors (accounting-forms), design-three 70 %, document-controls 1200 px 200 %, form-design-two:80, journal-control-height.
+- Chromium: nestabilní design-three 70 % / 1280.
+- Ukázka řádků dokladu (/components/accounting-lines) se po načtení několik sekund dopočítává (Firefox 8–10 s) – rozdělit na menší ukázky.
+
+## DS 2.113.0 – Panel dokladu (přílohy a poznámky) + Edit dokladu 16
+
+- Vydáno 20. 10. 2026 (commit f613cbc9). E2E run 39438666270 na 1d48e82: Chromium 129 + 1 nestabilní, Firefox 132 + 1 známé selhání, WebKit 125 + 3 selhání (2 známá) + 5 nestabilních.
 
 ### Edit dokladu 16
 

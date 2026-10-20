@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.113.0 (nevydáno)
+## 2.114.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.113.0 – Panel dokladu (přílohy a poznámky) + Edit dokladu 16
 
 ### Edit dokladu 16 – čtvrté opravné kolo
 
