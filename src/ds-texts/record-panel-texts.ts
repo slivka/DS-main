@@ -87,3 +87,42 @@ export interface AttachmentTexts {
   /** Chybějící oprávnění. */
   denied: string;
 }
+/** Texty časové osy historie záznamu. */
+export interface RecordHistoryTexts {
+  /** Název přepínače režimu. */
+  modeLabel: string;
+  /** Základní režim. */
+  basic: string;
+  /** Rozšířený režim. */
+  detailed: string;
+  /** Název filtru typů. */
+  filterLabel: string;
+  /** Popisky typů událostí. */
+  kinds: { status: string; change: string; attachment: string; note: string; link: string };
+  /** Skupina dnešních událostí. */
+  today: string;
+  /** Skupina včerejších událostí. */
+  yesterday: string;
+  /** Prázdná historie. */
+  empty: string;
+  /** Prázdný výsledek filtru. */
+  emptyFiltered: string;
+  /** Načítání. */
+  loading: string;
+  /** Hlavička sloupce pole. */
+  field: string;
+  /** Hlavička původní hodnoty. */
+  before: string;
+  /** Hlavička nové hodnoty. */
+  after: string;
+  /** Autor bez jména. */
+  system: string;
+  /** Souhrn počtu změn. */
+  changesCount: (count: string) => string;
+  /** Řádek automatických přepočtů. */
+  autoSummary: (count: string) => string;
+  /** Přidaný řádek. */
+  lineAdded: (label: string) => string;
+  /** Odebraný řádek. */
+  lineRemoved: (label: string) => string;
+}
