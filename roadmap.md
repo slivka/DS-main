@@ -2,6 +2,7 @@
 
 - [ ] Zálohy B: rozpad platby, přiřazení ZL/DD, odečty pod rekapitulací, evidence a opravný DD.
 - [ ] Automatický řádek advance_fx, CS/SK, ukázky, testy, katalog a závěrečná kontrola.
+- [ ] Schválené upřesnění: odečty přes slot sdílené rekapitulace (APP je u ZL nepředává); štítky Záloha / Kurzové vyrovnání zálohy v řádcích i Zaúčtování.
 - [ ] APP krok C: data, výpočty, oprávnění, lhůty, obecné párování a zápisy záloh.
 
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
