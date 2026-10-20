@@ -7,6 +7,7 @@
 - Nové: `RecordHistoryTimeline` – časová osa zmapovaných událostí (`HistoryEvent`, `HistoryChange`, `HistoryLineChange`), seskupení po dnech (Dnes / Včera / datum), základní a rozšířený režim (`mode` + `onModeChange`, přepínač `GridSegmentedToggle`), filtr typů Stavy / Údaje / Přílohy / Poznámky / Vazby (`filter` + `onFilterChange`, prázdný = vše), tabulka „Pole – Bylo → Je“, řádky dokladu a sbalené automatické přepočty; `loading`, `emptyText`, volitelné `now`. Funguje jako záložka `RecordSidePanel`.
 - Nové pomocné funkce: `filterHistory`, `groupHistoryByDay`, `countHistoryChanges`; texty `DsTexts.recordHistory` (CS i SK).
 - Zastaralé: `HistoryPanel` (@deprecated, náhrada `RecordHistoryTimeline`, smaže se v příští major verzi). Bez breaking změn.
+- Oprava: `DsTexts.recordHistory.changesCount` přijímá číslo a skloňuje (CS 1 změna / 2–4 změny / 0 a 5+ změn, SK zmena / zmeny / zmien). Funkce modelu historie (`groupHistoryByDay` aj.) se exportují z kořene knihovny. Katalog: popis a příklad `RecordHistoryTimeline`, `HistoryPanel` označen jako zastaralý; obnova katalogu zachovává výčty props.
 
 ## 2.113.0 – Panel dokladu (přílohy a poznámky) + Edit dokladu 16
 
