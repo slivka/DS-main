@@ -11,7 +11,7 @@ import type { LinkRecordConfig, LinkRecordValue, LinkedRecordItem } from "./link
 
 export interface LinkRecordDialogProps extends Omit<
   ComponentPropsWithoutRef<"div">,
-  "children" | "onSubmit" | "onChange"
+  "children" | "onSubmit" | "onChange" | "results"
 > {
   open: boolean;
   onOpenChange: (open: boolean) => void;
