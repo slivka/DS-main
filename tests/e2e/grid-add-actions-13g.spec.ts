@@ -12,12 +12,9 @@ test("lišta: plné texty, zkrácené texty a sloučená nabídka", async ({ pag
     "Nový výdaj",
   ]);
   await short.scrollIntoViewIfNeeded();
-  // Počká, až lišta po vstupu do viewportu změří režim popisků; jinak se ve
-  // Firefoxu pod zátěží čte ještě plný text.
-  await expect(short.locator('[data-slot="grid-toolbar"]')).toHaveAttribute(
-    "data-add-labels",
-    "short",
-  );
+  // Počká, až lišta po vstupu do viewportu změří režim popisků a React překreslí
+  // zkrácené texty; atribut data-add-labels se nastaví dřív než stav v Reactu.
+  await expect(short.locator('[data-slot="grid-add-short"]').first()).toBeVisible();
   await expect(short.locator("[data-toolbar-add]:visible span:visible")).toHaveText([
     "Příjem",
     "Výdaj",
