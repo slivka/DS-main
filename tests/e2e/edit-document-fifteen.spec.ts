@@ -36,18 +36,21 @@ test("Protiúčet BA: sloupce obou řádků lícují při zoomu 70 / 100 / 200 %
         box.evaluate((root) => {
           const left = (id: string) =>
             root.querySelector(`#${id}`)?.closest('[data-slot="field"]')?.getBoundingClientRect();
-          const pairs = [
-            ["document-bankAccountKind", "document-variableSymbol"],
-            ["document-movement-account", "document-constantSymbol"],
-            ["document-bank-code", "document-specificSymbol"],
-          ];
-          return pairs.every(([a, b]) => {
-            const x = left(a!);
-            const y = left(b!);
-            return Boolean(
-              x && y && Math.abs(x.left - y.left) < 1 && Math.abs(x.width - y.width) < 1,
-            );
-          });
+          // Edit 16: druh účtu nemá samostatné pole; účet protistrany kryje sloupce VS + KS,
+          // kód banky / SWIFT lícuje se SS.
+          const account = left("document-movement-account");
+          const code = left("document-bank-code");
+          const vs = left("document-variableSymbol");
+          const ks = left("document-constantSymbol");
+          const ss = left("document-specificSymbol");
+          if (!account || !code || !vs || !ks || !ss) return false;
+          const near = (a: number, b: number) => Math.abs(a - b) < 1;
+          return (
+            near(account.left, vs.left) &&
+            near(account.right, ks.right) &&
+            near(code.left, ss.left) &&
+            near(code.width, ss.width)
+          );
         }),
       )
       .toBe(true);

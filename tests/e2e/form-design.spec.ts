@@ -77,7 +77,11 @@ test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí
       const selected = page.locator("#symbol-selected");
       const empty = page.locator("#symbol-empty");
       const arrow = selected.locator("[data-slot=select-chevron]");
-      const clear = selected.locator("..").getByRole("button", { name: "Vymazat" });
+      // Edit 16: tlačítko leží v obálce hledání v poli, Vymazat je její soused v poli.
+      const clear = page
+        .locator('[data-slot="field"]')
+        .filter({ has: selected })
+        .getByRole("button", { name: "Vymazat" });
       const boxes = await Promise.all([
         selected.boundingBox(),
         arrow.boundingBox(),
@@ -90,6 +94,23 @@ test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí
       expect(c.x + c.width).toBeLessThanOrEqual(a.x);
       expect(Math.abs(s.x + s.width - a.x - (e.x + e.width - ea.x))).toBeLessThan(1);
     }).toPass();
+    // Otevřené hledání: text vstupu nesmí zajet pod křížek.
+    await page.locator("#symbol-selected").click();
+    const field = page
+      .locator('[data-slot="field"]')
+      .filter({ has: page.locator("#symbol-selected") });
+    const input = field.getByRole("combobox");
+    await expect(input).toHaveCount(1);
+    const clearOpen = field.locator('button[aria-label="Vymazat"]');
+    if ((await clearOpen.count()) > 0) {
+      const textRight = await input.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return rect.right - parseFloat(getComputedStyle(node).paddingRight);
+      });
+      const clearBox = await clearOpen.boundingBox();
+      expect(textRight, `zoom ${value}`).toBeLessThanOrEqual((clearBox?.x ?? 0) + 0.5);
+    }
+    await input.press("Escape");
   }
 });
 

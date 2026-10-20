@@ -129,7 +129,8 @@ describe("DS 2.86.0", () => {
       />,
     );
     fireEvent.click(view.getByRole("combobox"));
-    fireEvent.change(view.getAllByRole("combobox")[1], { target: { value: "zboží" } });
+    // Otevřené hledání má jediný combobox – vstup v poli.
+    fireEvent.change(view.getByRole("combobox"), { target: { value: "zboží" } });
     fireEvent.click(view.getByRole("option", { name: "0308 – Platby za zboží" }));
     expect(change).toHaveBeenCalledWith("0308");
   });

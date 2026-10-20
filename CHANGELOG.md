@@ -2,6 +2,15 @@
 
 ## 2.113.0 (nevydáno)
 
+### Edit dokladu 16 – druhé opravné kolo
+
+- Hledání v poli: při otevřeném hledání je jediným comboboxem vstup (název pole přes
+  aria-label, bez skrytého popisku cmdk); tlačítko je po dobu otevření aria-hidden a mimo Tab.
+- DocumentIdentityLine: pole účtu má nejmenší šířku 6 rem, měření textu smí ustoupit a tužka
+  zůstává klikatelná i v úzkém řádku při zoomu 200 %.
+- Testy upravené podle rozhodnutí Edit 16 (hledání v poli, jedno číslo pokladny, druh účtu v poli
+  protiúčtu, řádek identity bez zalomení).
+
 ### Edit dokladu 16 – opravné kolo
 
 - PageHeader: dlouhý nadpis se nezalamuje a zkrátí trojtečkou (celý text v title);

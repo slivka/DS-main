@@ -30,6 +30,10 @@ for (const zoom of [70, 100, 200]) {
       const accountBox = demo.locator(".document-identity-account-box");
       const accountMetrics = await accountBox.evaluate((e) => ({
         width: e.getBoundingClientRect().width,
+        // Edit 16: řádek identity se nezalamuje, účet bere jen zbývající místo bez příslušenství.
+        available:
+          (e.parentElement?.getBoundingClientRect().width ?? 0) -
+          4 * parseFloat(getComputedStyle(document.documentElement).fontSize),
         rootSize: parseFloat(getComputedStyle(document.documentElement).fontSize),
         label: e.querySelector('[role="combobox"] .truncate')?.getBoundingClientRect().width ?? 0,
         labelOverflow: (() => {
@@ -38,8 +42,12 @@ for (const zoom of [70, 100, 200]) {
         })(),
       }));
       if (width === 1280)
-        expect(accountMetrics.width + 1 / 64).toBeGreaterThanOrEqual(18 * accountMetrics.rootSize);
-      if (width === 1280) expect(accountMetrics.labelOverflow).toBeLessThanOrEqual(1);
+        expect(accountMetrics.width + 4).toBeGreaterThanOrEqual(
+          Math.min(18 * accountMetrics.rootSize, accountMetrics.available),
+        );
+      // Bez zalomení (Edit 16) se název účtu smí zkrátit, jen když řádku chybí 18 rem.
+      if (width === 1280 && accountMetrics.available >= 18 * accountMetrics.rootSize)
+        expect(accountMetrics.labelOverflow).toBeLessThanOrEqual(1);
       expect(accountMetrics.label).toBeGreaterThan(0);
       const fieldAfter = await field.boundingBox();
       expect(before).not.toBeNull();

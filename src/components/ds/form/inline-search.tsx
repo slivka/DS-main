@@ -73,6 +73,20 @@ export function InlineSearchTrigger({
     target?.addEventListener("compositionend", composed);
     return () => target?.removeEventListener("compositionend", composed);
   }, [context]);
+  // Při otevřeném hledání je jediným comboboxem vstup; tlačítko se skryje čtečkám i Tabu.
+  const open = Boolean(context?.open);
+  React.useLayoutEffect(() => {
+    const button = context?.target?.querySelector<HTMLButtonElement>("button[role=combobox]");
+    if (!button || !open) return;
+    const tabIndex = button.getAttribute("tabindex");
+    button.setAttribute("aria-hidden", "true");
+    button.setAttribute("tabindex", "-1");
+    return () => {
+      button.removeAttribute("aria-hidden");
+      if (tabIndex === null) button.removeAttribute("tabindex");
+      else button.setAttribute("tabindex", tabIndex);
+    };
+  }, [context?.target, open]);
   return (
     <div
       ref={context?.setTarget}
@@ -97,6 +111,7 @@ export function InlineSearchTrigger({
         }
       }}
     >
+      {/* Při otevřeném hledání je jediným comboboxem vstup; tlačítko se skryje čtečkám i Tabu. */}
       <PopoverTrigger {...props}>{children}</PopoverTrigger>
     </div>
   );
@@ -142,13 +157,16 @@ export const InlineSearchInput = React.forwardRef<
   React.useLayoutEffect(() => {
     inputRef.current?.focus();
   }, [context?.target]);
+  // cmdk vnucuje aria-labelledby na skrytý popisek nabídky; název musí nést pole (aria-label).
+  React.useLayoutEffect(() => {
+    inputRef.current?.removeAttribute("aria-labelledby");
+  });
   if (!context?.target) return null;
   return createPortal(
     <CommandInput
       {...props}
-      aria-label={
-        context.target.querySelector("button")?.getAttribute("aria-label") ?? props.placeholder
-      }
+      aria-label={triggerName(context.target) ?? props.placeholder}
+      aria-expanded
       placeholder={undefined}
       ref={(node) => {
         inputRef.current = node;
@@ -214,3 +232,16 @@ export const InlineSearchInput = React.forwardRef<
     context.target,
   );
 });
+
+/** Přístupný název tlačítka (aria-label nebo <label for>) převzatý vstupem hledání. */
+function triggerName(target: HTMLDivElement): string | undefined {
+  const button = target.querySelector<HTMLButtonElement>("button[role=combobox], button");
+  if (!button) return undefined;
+  const label = button.getAttribute("aria-label");
+  if (label) return label;
+  const text = Array.from(button.labels ?? [])
+    .map((node) => node.textContent?.trim())
+    .filter(Boolean)
+    .join(" ");
+  return text || undefined;
+}
