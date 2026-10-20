@@ -42,7 +42,7 @@ const withList = (state: PaneTabsState, route: string, title: string) =>
 
 describe("navázané záložky", () => {
   test("1 panel: vznikne 2. panel vpravo s hlavičkou „Sekce – záznam“, bez potvrzení", () => {
-    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
+    const state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
     const result = openLinkedTabInState(state, sourceId, SECTION);
     expect(result.outcome).toBe("opened");
