@@ -47,7 +47,10 @@ test("partner: klik myší vybere položku", async ({ page }) => {
 
 test("účet: klik myší vybere položku", async ({ page }) => {
   await open(page, "/components/accounting-fields");
-  const account = page.locator("button[role=combobox]").filter({ hasText: /^\d+ – / }).first();
+  const account = page
+    .locator("button[role=combobox]")
+    .filter({ hasText: /^\d+ – / })
+    .first();
   await account.click();
   const first = page.locator("[cmdk-item]:not([data-disabled=true])").first();
   const before = (await account.textContent()) ?? "";
