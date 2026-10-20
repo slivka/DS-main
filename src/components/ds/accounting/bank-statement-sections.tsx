@@ -28,7 +28,7 @@ interface BasicSectionProps {
   locked: boolean;
   /** Součty pohybů. */
   balances: BankStatementBalances;
-  /** Značka měny. */
+  /** Značka měny – jen do textu varování rozdílu; pole značku nezobrazují. */
   symbol: string;
   /** Jazykové texty. */
   texts: BankStatementTexts;
@@ -119,7 +119,7 @@ interface BankClosingProps {
   locked: boolean;
   /** Součty pohybů. */
   balances: BankStatementBalances;
-  /** Značka měny. */
+  /** Značka měny – jen do textu varování rozdílu; pole značku nezobrazují. */
   symbol: string;
   /** Jazykové texty. */
   texts: BankStatementTexts;
