@@ -778,6 +778,18 @@ export function setLayoutInState(state: PaneTabsState, layout: PaneLayoutCount):
   return setLayoutWithLimitInState(state, layout).state;
 }
 
+/**
+ * Vloží nový prázdný panel na pozici `index` (rozšíření rozložení o 1, nejvýš 3 panely).
+ * Vrací null, když už jsou otevřené 3 panely.
+ */
+export function insertPaneInState(state: PaneTabsState, index: number): PaneTabsState | null {
+  if (state.panes.length >= 3) return null;
+  const layout = clampLayout(state.panes.length + 1);
+  const panes = [...state.panes];
+  panes.splice(Math.max(0, Math.min(index, panes.length)), 0, emptyPane());
+  return { ...state, panes, layout, widths: evenWidths(layout), hiddenPanes: null };
+}
+
 /** Zavření panelu: jeho záložky se zavřou; jediný panel zůstane prázdný. */
 export function closePaneInState(state: PaneTabsState, paneId: string): PaneTabsState {
   const index = state.panes.findIndex((pane) => pane.id === paneId);

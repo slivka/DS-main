@@ -8,6 +8,7 @@ import {
   closeTabInState,
   createTab,
   findTab,
+  insertPaneInState,
   insertTabInState,
   type OpenTabResult,
   type PaneTab,
