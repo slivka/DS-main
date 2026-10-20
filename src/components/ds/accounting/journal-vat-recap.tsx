@@ -77,7 +77,6 @@ function OverrideMark({ group }: { group: VatGroup }) {
     </Tooltip>
   );
 }
-
 /** Řádek skupiny DPH. */
 function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
   const { editor } = useJournalEditor();
@@ -149,7 +148,6 @@ function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
     </>
   );
 }
-
 /** Nadpis oddílu rekapitulace. */
 function SectionRow({ label, slot, span }: { label: string; slot: string; span: number }) {
   return (
