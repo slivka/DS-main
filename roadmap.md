@@ -1,5 +1,20 @@
 ## DS 2.118.0 (nevydáno)
 
+### DPH 5 – krok B
+
+- [x] Pořadí sloupců Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka; Sazba/DPH/Celkem z gridu pryč.
+- [x] Klávesnice Enter / Shift+Enter, výběr psaním, nový řádek s kódem a účty, zahození prázdného řádku.
+- [x] Zakotvení sloupce špendlíkem.
+- [x] Výběr kódu DPH ve skupinách; obousměrný režim; klíč id.
+- [x] Rekapitulace po oddílech, bez nároku, KH, informativní text; patička se zálohami a K úhradě.
+- [x] Ruční oprava DPH tužkou; u vydaných jen v ⋯.
+- [x] Záložka Zaúčtování (`DocumentPostingGrid`).
+- [ ] Napojení v APP (krok C).
+
+### Zálohové listy – krok B
+
+- [x] Varianta ZFV / ZFP jen konfigurací (`advanceListVariant`), stav úhrady, ukázka.
+
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.117.0 – Drobné opravy 1
