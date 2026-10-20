@@ -8,6 +8,7 @@
 - Ctrl/Cmd+Enter: datum potvrdí rozepsanou hodnotu a předá zkratku formuláři; samotný Enter zůstává lokální. Hledatelné výběry předávají zkratku mimo cmdk bez potvrzení zvýrazněné položky; našeptávač a rozepsané textové/číselné buňky ji neblokují. Ctrl/Cmd+Enter mimo editaci řádku nadále přidá řádek. Uložení a zavření po úspěchu zůstává odpovědností callbacku APP, bez změny jeho API.
 - Pokladna: výdaj s DPH = „Číslo daňového dokladu“, výdaj bez DPH i příjem s DPH/bez DPH = „Externí číslo“. Vazba čísla u příjmu a nedestruktivní změna DPH zachovány; CS/SK používají stávající překlady.
 - Ověřeno sdílené chování faktur a obou ZL (ZFV/ZFP); devět nových unit testů zkratky. Veřejné API tohoto opravného kola beze změny (žádné přidané ani odebrané props). Nevydáno; E2E nespouštěno.
+- Kontroly kola: check:full --harness prošel, unit 1025/1025 ve 108 souborech; katalog 459 komponent / 1026 props, 0 odebrání; lint 0 chyb / 344 stávajících varování; formát a peněžní audit OK. Typecheck s noImplicitReturns a sestavení potvrdila automatická kontrola Lovable (build OK), samostatně nespouštěny. Check:quick --harness provedl peněžní audit; kvůli průběžným snapshotům nezjistil změněné soubory, cíleně spuštěné unit testy i lint nahrazeny plnou kontrolou. Přímý proklik Chromium: Ctrl+Enter z data a Cmd+Enter z hledání vyvolají akci „Doklad uložen a zavřen“, bez pageerror.
 
 ### Duplikace a vzory B
 
