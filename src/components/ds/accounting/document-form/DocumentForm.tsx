@@ -320,7 +320,9 @@ export function DocumentForm(props: DocumentFormProps) {
       <div
         ref={formRef}
         className={cn("@container space-y-4", className)}
-        onKeyDown={(event) => handleDocumentSaveShortcut(event, props.saveAction)}
+        onKeyDown={(event) =>
+          handleDocumentSaveShortcut(event, props.saveAction, props.onSaveAndClose)
+        }
       >
         <DocumentFormTop
           props={props}

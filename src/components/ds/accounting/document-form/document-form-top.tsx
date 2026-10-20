@@ -39,20 +39,24 @@ export interface DocumentFormTopProps {
   t: DocumentFormTexts & DsTexts["documentForm"];
 }
 
-/** Ctrl/Cmd+S uloží povolený doklad. */
+/**
+ * Ctrl/Cmd+S uloží povolený doklad; Ctrl/Cmd+Enter zavolá `onSaveAndClose` (bez tlačítka).
+ * Aplikace v `onSaveAndClose` uloží a zavře jen po úspěchu – při chybě formulář zůstává.
+ * Zkratku, kterou už zpracoval vnořený prvek (např. Ctrl+Enter = nový řádek), nepřebírá.
+ */
 export function handleDocumentSaveShortcut(
   event: KeyboardEvent<HTMLDivElement>,
   saveAction?: DocumentSaveAction,
+  onSaveAndClose?: () => void,
 ) {
-  if (
-    (event.ctrlKey || event.metaKey) &&
-    event.key.toLowerCase() === "s" &&
-    saveAction &&
-    !saveAction.disabled &&
-    !saveAction.busy
-  ) {
+  if (event.defaultPrevented || !(event.ctrlKey || event.metaKey)) return;
+  if (!saveAction || saveAction.disabled || saveAction.busy) return;
+  if (event.key.toLowerCase() === "s") {
     event.preventDefault();
     saveAction.onSave();
+  } else if (event.key === "Enter" && onSaveAndClose) {
+    event.preventDefault();
+    onSaveAndClose();
   }
 }
 
