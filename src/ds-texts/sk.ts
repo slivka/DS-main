@@ -22,8 +22,8 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
-  vatFive: VAT_FIVE_SK,
   ...DS_TEXTS_CS,
+  vatFive: VAT_FIVE_SK,
   recordPanel: RECORD_PANEL_SK,
   recordNotes: RECORD_NOTES_SK,
   attachments: ATTACHMENTS_SK,
