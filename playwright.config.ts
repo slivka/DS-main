@@ -28,7 +28,17 @@ export default defineConfig({
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
-    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    // Firefox a WebKit hydratují ukázky na dev serveru CI pomaleji (měřeno lokálně 5–8 s,
+    // na runneru přes 10 s); delší čekání jen na CI, lokálně platí 10 s (20. 10. 2026).
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+      ...(ci ? { expect: { timeout: 20_000 } } : {}),
+    },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+      ...(ci ? { expect: { timeout: 20_000 } } : {}),
+    },
   ],
 });
