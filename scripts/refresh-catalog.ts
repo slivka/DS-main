@@ -184,7 +184,11 @@ export function refreshCatalog() {
   }
   writeFileSync(
     reference,
-    renderPanelCatalogSections(markdown, [...panelComponents, ...templateComponents, ...advanceComponents]),
+    renderPanelCatalogSections(markdown, [
+      ...panelComponents,
+      ...templateComponents,
+      ...advanceComponents,
+    ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";
   const preview = readFileSync(previewPath, "utf8");
