@@ -141,6 +141,7 @@ export function useJournalEditorState(
         foreign,
         homeAmountLabel,
         sideFields,
+        withoutAccounts: props.withoutAccounts,
         hasValue: (column: JournalLineColumn) =>
           lines.some(
             (line) => line[column] !== undefined && line[column] !== null && line[column] !== "",
@@ -160,6 +161,7 @@ export function useJournalEditorState(
       counterShortLabel,
       counterNameLabel,
       vatOn,
+      props.withoutAccounts,
     ],
   );
   const layout = useJournalLayout({
@@ -350,6 +352,7 @@ export function useJournalEditorState(
     foreign,
     documentMark,
     isCodeRequired: vat?.isCodeRequired,
+    withoutAccounts: props.withoutAccounts,
     missingVatAccounts: totals.missingVatAccounts,
   };
   const validations = validateJournalLines(lines, validationContext, {

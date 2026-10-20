@@ -240,6 +240,11 @@ export interface JournalLinesEditorProps {
   roundingLimit?: number;
   /** Zápis zaokrouhlení z nabídky Rozdílu; výchozí `rounding.onChange`. */
   onRoundingChange?: (value: number) => void;
+  /**
+   * Řádky bez zaúčtování MD / DAL (zálohový list, 2.118.0): sloupce účtů se nezobrazí ani
+   * nekontrolují; zaúčtování dokladu vytváří DB.
+   */
+  withoutAccounts?: boolean;
   /** Odečtené zálohy v měně dokladu (z DB, 2.118.0); patička je ukáže jen při nenulové hodnotě. */
   advanceDeduction?: number;
   /** Závažnost rozdílu přepisu nad tolerancí (koncept varování, zařazení chyba); výchozí warning. */

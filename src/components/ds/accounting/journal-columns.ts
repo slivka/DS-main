@@ -86,6 +86,8 @@ export interface JournalColumnDefsInput {
   homeAmountLabel: string;
   /** Režim polí stran. */
   sideFields: "shared" | "split";
+  /** Bez zaúčtování MD / DAL v řádcích (zálohový list, 2.118.0). */
+  withoutAccounts?: boolean;
   /** Sloupec má v některém řádku hodnotu (rozhoduje o výchozí viditelnosti polí stran). */
   hasValue: (column: JournalLineColumn) => boolean;
 }
@@ -125,6 +127,13 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     locked: true,
     align: "right",
   };
+  if (input.withoutAccounts)
+    return [
+      ...head,
+      ...amountColumns,
+      ...(input.sideFields === "shared" ? [{ id: "dimensionId" as const, label: t.dimension }] : []),
+      actions,
+    ];
   if (input.mode === "mainAccount")
     return [
       ...head,
