@@ -128,13 +128,14 @@ export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function
             <Button
               type="button"
               size="sm"
-              disabled={busy || !body.trim()}
-              onClick={() =>
+              aria-disabled={busy || !body.trim()}
+              onClick={() => {
+                if (busy || !body.trim()) return;
                 void run(
                   () => onAdd(body.trim()),
                   () => setBody(""),
-                )
-              }
+                );
+              }}
             >
               {t.add}
             </Button>
