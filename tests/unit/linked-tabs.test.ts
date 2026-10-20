@@ -154,6 +154,7 @@ describe("navázané záložky", () => {
 
   test("3 panely, zdroj v posledním: cílem je panel vlevo", () => {
     let state = withPanes(3);
+    state = withList(state, "/denik", "Deník");
     state = { ...state, active: state.panes[2].id };
     state = withRecord(state, "FV1", "Faktura FV1");
     const sourceId = state.panes[2].tabs[0].id;
