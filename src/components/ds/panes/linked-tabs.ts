@@ -56,7 +56,8 @@ export type OpenLinkedTabResult = Omit<OpenTabResult, "outcome"> & {
  * obsazené sousední okno (vpravo, u posledního vlevo) bez `confirmed` hlásí jako
  * 'needsConfirm' – potvrzení řeší volající; po odmítnutí se stav nemění a obsah
  * zůstane ve vysouvacím panelu. Po potvrzení navázaná záložka nahradí aktivní obsah
- * cílového okna (nepřidává další záložku).
+ * cílového okna – je-li ale rozepsaný (isDirty), nenahrazuje se: navázaná záložka se
+ * do cílového okna přidá vedle něj (limit záložek a vytlačení jako jinde).
  */
 export function openLinkedTabInState(
   state: PaneTabsState,
@@ -64,6 +65,7 @@ export function openLinkedTabInState(
   section: LinkedSection,
   options: { confirmed?: boolean } = {},
   now = Date.now(),
+  isDirty: (tabId: string) => boolean = () => false,
 ): OpenLinkedTabResult {
   const source = findTab(state, sourceTabId);
   if (!source || source.tab.kind !== "record") return { state, outcome: "rejected" };
@@ -106,6 +108,9 @@ export function openLinkedTabInState(
     return { ...result, paneId: target.id };
   }
   if (!options.confirmed) return { state, outcome: "needsConfirm", paneId: target.id };
+  // Rozepsanou aktivní záložku cílového okna nikdy nenahradíme: navázaná záložka se
+  // přidá vedle ní (limit záložek a vytlačení řeší insertTabInState jako jinde).
+  if (isDirty(target.activeTab)) return insertTabInState(state, targetIndex, tab, null, isDirty);
   // Po potvrzení nahradí aktivní obsah cílového okna – stejně jako existující nahrazení.
   const replacedId = target.activeTab;
   const tabs = target.tabs.map((item) => (item.id === replacedId ? tab : item));
