@@ -3,6 +3,7 @@
  * Vlastní: props `JournalLinesEditor` a jejich pomocné typy (DPH, zaokrouhlení, rekapitulace).
  * Nesmí: obsahovat logiku; změna tvaru props je změna veřejného API.
  */
+import type * as React from "react";
 import type { AccountOption } from "./account-select";
 import type { DimensionOption } from "./dimension-select";
 import type { PartnerOption } from "./partner-select";
@@ -51,6 +52,24 @@ export interface JournalLinesVat {
   readOnly?: boolean;
   /** Výchozí true; aplikace vrátí false u výjimek (např. řádek s účtem DPH). */
   isCodeRequired?: (line: JournalLine) => boolean;
+  /**
+   * Doklad bez pevného směru (interní doklad, pokladna, banka; 2.118.0): výběr ve skupinách
+   * Výstup / Vstup a směr v buňce („Z 21 % (vstup)“).
+   */
+  bidirectional?: boolean;
+  /** Výchozí směr – jeho skupina je ve výběru první. */
+  defaultDirection?: "out" | "in";
+  /** Štítek oddílu KH u řádků rekapitulace (z `VatCodeOption.khSection`); výchozí true, u ZL false. */
+  showKhSection?: boolean;
+  /** Informativní text pod rekapitulací (u ZL „Nejde o daňový doklad“). */
+  recapNote?: React.ReactNode;
+  /**
+   * Vydané doklady: ruční oprava DPH se nenabízí viditelně (tužka), jen jako akce v ⋯ řádku
+   * rekapitulace. Výchozí false.
+   */
+  overrideInMenu?: boolean;
+  /** Daň bez nároku na odpočet po kódech DPH (`vatCodeId` → částka v měně dokladu) z DB. */
+  nonDeductibleByCode?: Record<string, number>;
 }
 /** Výchozí hodnoty nového řádku. */
 export type JournalLineDefaults = Partial<Omit<JournalLine, "id">>;
@@ -221,6 +240,8 @@ export interface JournalLinesEditorProps {
   roundingLimit?: number;
   /** Zápis zaokrouhlení z nabídky Rozdílu; výchozí `rounding.onChange`. */
   onRoundingChange?: (value: number) => void;
+  /** Odečtené zálohy v měně dokladu (z DB, 2.118.0); patička je ukáže jen při nenulové hodnotě. */
+  advanceDeduction?: number;
   /** Závažnost rozdílu přepisu nad tolerancí (koncept varování, zařazení chyba); výchozí warning. */
   vatOverrideSeverity?: "warning" | "error";
 }
