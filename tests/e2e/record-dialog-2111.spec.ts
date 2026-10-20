@@ -41,9 +41,7 @@ test("RecordDialog: sm / md / lg mají v panelu i mimo panel stejnou šířku", 
     // Počká na konec úvodní animace (zvětšení z 95 %). Tolerance 1 px: WebKit
     // zaokrouhluje rem šířky a rámečky na subpixely jinak než Chromium.
     await expect
-      .poll(async () =>
-        Math.abs(Math.round((await outside.boundingBox())?.width ?? 0) - expected),
-      )
+      .poll(async () => Math.abs(Math.round((await outside.boundingBox())?.width ?? 0) - expected))
       .toBeLessThanOrEqual(1);
     const outsideWidth = (await outside.boundingBox())?.width ?? 0;
     await page.keyboard.press("Escape");
