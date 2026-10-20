@@ -5,6 +5,8 @@
  */
 import type { LinkedRecordTexts } from "./linked-record-texts";
 import type { TemplateTexts } from "./template-texts";
+import type { AdvanceTexts } from "./advance-texts";
+export type { AdvanceTexts } from "./advance-texts";
 export type { TemplateTexts } from "./template-texts";
 export type { LinkedRecordTexts } from "./linked-record-texts";
 import type { BankStatementTexts } from "./bank-statement-texts";
@@ -37,6 +39,8 @@ export type { VatFiveTexts } from "./vat-five-texts";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Texty záloh a odečtů. */
+  advances: AdvanceTexts;
   /** Duplikace a vzory. */
   templates: TemplateTexts;
   /** DPH 5 B a zálohové listy (2.118.0). */

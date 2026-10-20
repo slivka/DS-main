@@ -5,6 +5,7 @@
  */
 import { LINKED_RECORDS_CS } from "./cs-linked-records";
 import { TEMPLATES_CS } from "./cs-templates";
+import { ADVANCES_CS } from "./cs-advances";
 import { CS_VAT_GROUPS } from "./cs-vat-groups";
 import {
   ATTACHMENTS_CS,
@@ -22,6 +23,7 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  advances: ADVANCES_CS,
   templates: TEMPLATES_CS,
   vatFive: VAT_FIVE_CS,
   recordPanel: RECORD_PANEL_CS,
