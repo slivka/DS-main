@@ -163,7 +163,14 @@ describe("navázané záložky", () => {
     state = { ...state, active: state.panes[0].id };
     const dirtyId = state.panes[1].tabs[0].id;
     const isDirty = (tabId: string) => tabId === dirtyId;
-    const confirmed = openLinkedTabInState(state, sourceId, SECTION, { confirmed: true }, 1, isDirty);
+    const confirmed = openLinkedTabInState(
+      state,
+      sourceId,
+      SECTION,
+      { confirmed: true },
+      1,
+      isDirty,
+    );
     expect(confirmed.outcome).toBe("opened");
     expect(confirmed.state.panes).toHaveLength(3);
     // Rozepsaná záložka zůstala, navázaná se přidala vedle ní a je aktivní.
@@ -185,7 +192,14 @@ describe("navázané záložky", () => {
     state = withList(state, "/partneri", "Partneři");
     state = { ...state, active: state.panes[0].id };
     const replacedId = state.panes[1].tabs[0].id;
-    const confirmed = openLinkedTabInState(state, sourceId, SECTION, { confirmed: true }, 1, () => false);
+    const confirmed = openLinkedTabInState(
+      state,
+      sourceId,
+      SECTION,
+      { confirmed: true },
+      1,
+      () => false,
+    );
     expect(confirmed.outcome).toBe("replaced");
     expect(confirmed.closedTabIds).toEqual([replacedId]);
     expect(confirmed.state.panes[1].tabs).toHaveLength(1);
