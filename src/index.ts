@@ -61,6 +61,9 @@ export * from "./components/ui/toggle";
 export * from "./components/ui/toggle-group";
 
 export * from "./components/ds";
+export * from "./components/ds/data-display/linked-records-panel";
+export * from "./components/ds/data-display/settlement-bar";
+export * from "./components/ds/data-display/link-record-dialog";
 export { StepperInput, type StepperInputProps } from "./components/ds/form/stepper-input";
 export {
   AmountDifference,

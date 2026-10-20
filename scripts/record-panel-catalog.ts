@@ -11,6 +11,39 @@ export interface PanelCatalogComponent {
 }
 const definitions = [
   {
+    name: "SettlementBar",
+    file: "src/components/ds/data-display/settlement-bar.tsx",
+    usage:
+      "Souhrn úhrad nebo zúčtování po měnách. Částky, měny, label a progres dodává aplikace; komponenta nic nepočítá.",
+    code: "<SettlementBar rows={settlementRows} />",
+    avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
+  },
+  {
+    name: "LinkedRecordEntry",
+    file: "src/components/ds/data-display/linked-record-entry.tsx",
+    usage:
+      "Sdílený klikací řádek nebo uzel vazby; zmapované hodnoty, stav a ikonu dodává aplikace.",
+    code: '<LinkedRecordEntry item={record} variant="node" onOpen={openRecord} />',
+    avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
+  },
+  {
+    name: "LinkedRecordsPanel",
+    file: "src/components/ds/data-display/linked-records-panel.tsx",
+    usage:
+      "Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a seznam/tok, souhrn vypořádání a akce aplikace.",
+    code: "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />",
+    avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
+  },
+  {
+    name: "LinkRecordDialog",
+    file: "src/components/ds/data-display/link-record-dialog.tsx",
+    usage:
+      "Dialog nové vazby s návrhy, hledáním aplikace, typem a poznámkou. RecordDialog chrání změny; při chybě se nezavře.",
+    code: "<LinkRecordDialog open={open} onOpenChange={setOpen} candidates={suggestions} relationTypes={types} onSearch={searchRecords} onSave={saveLink} />",
+    avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
+  },
+
+  {
     name: "RecordSidePanel",
     file: "src/components/ds/layout/record-side-panel.tsx",
     usage:

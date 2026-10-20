@@ -1,7 +1,8 @@
 /** Ukázkové operace příloh a poznámek · vlastní stav demo · nesmí ukládat produkční data. */
 import { useEffect, useRef, useState } from "react";
-import { History, MessageSquare, Paperclip } from "lucide-react";
+import { History, Link, MessageSquare, Paperclip } from "lucide-react";
 import { AttachmentList, RecordNotes, type RecordAttachment, type RecordSidePanelTab } from "../ds";
+import { LinkedRecordsDemo } from "./LinkedRecordsShowcase";
 import { HistoryDemo } from "./RecordHistoryShowcase";
 import { ACCEPT, ATTACHMENTS, LIMIT, NOTES } from "./record-panel-data";
 export type DemoPermission = "read" | "draft" | "filed" | "posted" | "locked";
@@ -140,6 +141,12 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       label: "Historie",
       icon: History,
       content: <HistoryDemo />,
+    },
+    {
+      id: "linked",
+      label: "Propojené",
+      icon: Link,
+      content: <LinkedRecordsDemo readOnly={status === "read"} />,
     },
   ];
   return {

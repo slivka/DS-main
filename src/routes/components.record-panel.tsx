@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { RecordPanelShowcase } from "@/components/showcase/RecordPanelShowcase";
 import { RecordHistoryShowcase } from "@/components/showcase/RecordHistoryShowcase";
+import { LinkedRecordsShowcase } from "@/components/showcase/LinkedRecordsShowcase";
 export const Route = createFileRoute("/components/record-panel")({
   head: () => ({
     meta: [
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/components/record-panel")({
     <ShowcaseLayout breadcrumbs={[{ label: "Komponenty", to: "/" }, { label: "Panel záznamu" }]}>
       <RecordPanelShowcase />
       <RecordHistoryShowcase />
+      <LinkedRecordsShowcase />
     </ShowcaseLayout>
   ),
 });

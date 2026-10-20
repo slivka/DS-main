@@ -3,6 +3,7 @@
  * Vlastní: hodnoty DS_TEXTS_CS.
  * Nesmí: obsahovat React kód ani slovenské texty.
  */
+import { LINKED_RECORDS_CS } from "./cs-linked-records";
 import { CS_VAT_GROUPS } from "./cs-vat-groups";
 import {
   ATTACHMENTS_CS,
@@ -22,6 +23,7 @@ export const DS_TEXTS_CS: DsTexts = {
   recordPanel: RECORD_PANEL_CS,
   recordNotes: RECORD_NOTES_CS,
   attachments: ATTACHMENTS_CS,
+  linkedRecords: LINKED_RECORDS_CS,
   recordHistory: RECORD_HISTORY_CS,
   stepper: { decrease: "Snížit", increase: "Zvýšit" },
   selectCreate: {
