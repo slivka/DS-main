@@ -180,11 +180,14 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
           })
         )}
         {confirmDialog}
-        {onLink && linkDialog ? (
+        {onLink ? (
           <LinkRecordDialog
             open={dialogOpen}
             onOpenChange={setDialogOpen}
-            {...linkDialog}
+            candidates={linkDialog?.candidates}
+            results={linkDialog?.results}
+            relationTypes={linkDialog?.relationTypes ?? []}
+            onSearch={linkDialog?.onSearch ?? (async () => [])}
             onSave={onLink}
           />
         ) : null}

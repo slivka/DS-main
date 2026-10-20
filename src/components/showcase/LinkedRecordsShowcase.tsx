@@ -53,17 +53,15 @@ export function LinkedRecordsDemo({
         onCollapsedGroupsChange={setCollapsed}
         settlement={initialGroups === LINK_GROUPS ? LINK_SETTLEMENT : undefined}
         onOpen={(item, modifiers) => setOpened({ item, modifiers })}
-        onRemove={
-          readOnly
-            ? undefined
-            : (item) =>
-                setGroups((values) =>
-                  values.map((group) => ({
-                    ...group,
-                    items: group.items.filter((record) => record.id !== item.id),
-                  })),
-                )
-        }
+        onRemove={(item) => {
+          if (readOnly) return;
+          setGroups((values) =>
+            values.map((group) => ({
+              ...group,
+              items: group.items.filter((record) => record.id !== item.id),
+            })),
+          );
+        }}
         onLink={
           readOnly
             ? undefined
