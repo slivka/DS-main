@@ -30,7 +30,10 @@ const shortValue = (value: unknown, yes = "ano", no = "ne"): string => {
   return text.length > 60 ? `${text.slice(0, 60)}…` : text;
 };
 
-/** Boční panel historie změn jednoho záznamu. Data dodává aplikace přes props. */
+/**
+ * Boční panel historie změn jednoho záznamu. Data dodává aplikace přes props.
+ * @deprecated Od 2.114.0 použij RecordHistoryTimeline; smaže se v příští major verzi.
+ */
 export function HistoryPanel({
   entries,
   title,

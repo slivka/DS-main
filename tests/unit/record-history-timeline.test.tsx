@@ -14,13 +14,28 @@ import { DsTextsProvider } from "../../src/ds-texts";
 afterEach(cleanup);
 const NOW = new Date("2026-10-20T12:00:00Z");
 const events: HistoryEvent[] = [
-  { id: "a", at: "2026-10-20T09:00:00Z", author: "Jana", kind: "status", title: "Zařazeno",
+  {
+    id: "a",
+    at: "2026-10-20T09:00:00Z",
+    author: "Jana",
+    kind: "status",
+    title: "Zařazeno",
     statusChange: { from: "Koncept", to: "Zařazen" },
-    changes: [{ label: "Partner", after: "ACME" }, { label: "VS", before: "1", after: "2" }] },
+    changes: [
+      { label: "Partner", after: "ACME" },
+      { label: "VS", before: "1", after: "2" },
+    ],
+  },
   { id: "b", at: "2026-10-19T09:00:00Z", kind: "note", title: "Přidána poznámka" },
-  { id: "c", at: "2026-10-14T09:00:00Z", author: "Petr", kind: "change", title: "Upraveny řádky",
+  {
+    id: "c",
+    at: "2026-10-14T09:00:00Z",
+    author: "Petr",
+    kind: "change",
+    title: "Upraveny řádky",
     lines: [{ label: "řádek 3", kind: "added", summary: "Servis 1 500,00" }],
-    auto: [{ label: "DPH", before: "2 100,00", after: "2 415,00" }] },
+    auto: [{ label: "DPH", before: "2 100,00", after: "2 415,00" }],
+  },
 ];
 function Demo({ locale }: { locale?: "sk" }) {
   const [mode, setMode] = useState<HistoryMode>("basic");
@@ -28,8 +43,14 @@ function Demo({ locale }: { locale?: "sk" }) {
   return (
     <DsTextsProvider locale={locale}>
       <TooltipProvider>
-        <RecordHistoryTimeline events={events} now={NOW} mode={mode} onModeChange={setMode}
-          filter={filter} onFilterChange={setFilter} />
+        <RecordHistoryTimeline
+          events={events}
+          now={NOW}
+          mode={mode}
+          onModeChange={setMode}
+          filter={filter}
+          onFilterChange={setFilter}
+        />
       </TooltipProvider>
     </DsTextsProvider>
   );

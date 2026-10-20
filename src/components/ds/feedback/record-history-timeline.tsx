@@ -26,7 +26,10 @@ export * from "./record-history-model";
 export { HistoryChangeTable, HistoryEventDetail } from "./record-history-detail";
 
 /** Vlastnosti časové osy historie. */
-export interface RecordHistoryTimelineProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
+export interface RecordHistoryTimelineProps extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children"
+> {
   /** Zmapované události (české/slovenské popisky a hodnoty dodává aplikace). */
   events: HistoryEvent[];
   /** Režim zobrazení. */
@@ -84,7 +87,18 @@ function EventItem({ event, mode }: { event: HistoryEvent; mode: HistoryMode }) 
  */
 export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTimelineProps>(
   function RecordHistoryTimeline(
-    { events, mode, onModeChange, filter, onFilterChange, loading, emptyText, now, className, ...props },
+    {
+      events,
+      mode,
+      onModeChange,
+      filter,
+      onFilterChange,
+      loading,
+      emptyText,
+      now,
+      className,
+      ...props
+    },
     ref,
   ) {
     const texts = useDsTexts().recordHistory;
@@ -139,7 +153,11 @@ export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTim
           </div>
         </div>
         {message ? (
-          <p role="status" aria-busy={loading || undefined} className="text-sm text-muted-foreground">
+          <p
+            role="status"
+            aria-busy={loading || undefined}
+            className="text-sm text-muted-foreground"
+          >
             {message}
           </p>
         ) : (

@@ -1,19 +1,14 @@
 /** Ukázkové operace příloh a poznámek · vlastní stav demo · nesmí ukládat produkční data. */
 import { useEffect, useRef, useState } from "react";
 import { History, MessageSquare, Paperclip } from "lucide-react";
-import {
-  AttachmentList,
-  HistoryPanel,
-  RecordNotes,
-  type RecordAttachment,
-  type RecordSidePanelTab,
-} from "../ds";
+import { AttachmentList, RecordNotes, type RecordAttachment, type RecordSidePanelTab } from "../ds";
+import { HistoryDemo } from "./RecordHistoryShowcase";
 import { ACCEPT, ATTACHMENTS, LIMIT, NOTES } from "./record-panel-data";
 export type DemoPermission = "read" | "draft" | "filed" | "posted" | "locked";
 export function useRecordPanelContent(
   status: DemoPermission,
   sourceUrl: string,
-  close: () => void,
+  _close: () => void,
 ) {
   const [attachments, setAttachments] = useState(ATTACHMENTS);
   const [notes, setNotes] = useState(NOTES);
@@ -148,19 +143,7 @@ export function useRecordPanelContent(
       id: "history",
       label: "Historie",
       icon: History,
-      content: (
-        <HistoryPanel
-          onClose={close}
-          entries={[
-            {
-              id: "create",
-              action: "insert",
-              author: "Jana Nováková",
-              createdAt: "2026-10-19T09:00:00Z",
-            },
-          ]}
-        />
-      ),
+      content: <HistoryDemo />,
     },
   ];
   return {
