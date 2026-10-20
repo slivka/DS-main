@@ -33,6 +33,14 @@
 - Migrace chování: aplikace nesmí počítat s automatickým odemčením VS. Hledání
   již nemá samostatný placeholder v nabídce; testy míří na vstup uvnitř pole.
   bankAccountKind nemá samostatné pole/id; chyby patří na document-movement-account.
+- Kontroly: check:quick průběžně (poslední běh 49/49 v 6 souborech);
+  check:full --harness 916/916 unit ve 94 souborech (22 nových), lint 0 chyb /
+  341 varování, formát a peněžní audit OK, 74,1 s. Jediný zasažený Chromium
+  spec 4/4 (23,1 s); další prohlížečové ověření psaní, Tab, fokusu kalendáře,
+  převodu IBAN a zavření jediného panelu bez pageerror. Automatický build OK.
+  Katalog 440 → 445 komponent, 902 → 952 props, 0 odebrání.
+- Firefox/WebKit ani plná E2E sada neběžely; spustí Claude v GitHubu.
+  Typecheck/build jsou automatické kontroly Lovable, nebyly spouštěny ručně.
 - Bez vydání; předchozí krok panelu, příloh a poznámek a body Firefox/WebKit zachovány.
 
 ### Panel dokladu – přílohy a poznámky (krok 2)
