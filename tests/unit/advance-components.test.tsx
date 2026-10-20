@@ -183,8 +183,12 @@ describe("AdvanceCorrectionDialog", () => {
         onDecision={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Vytvořit", exact: true }).hasAttribute("disabled")).toBe(true);
-    expect(screen.getByRole("button", { name: "Nevytvářet", exact: true }).hasAttribute("disabled")).toBe(false);
+    expect(
+      screen.getByRole("button", { name: "Vytvořit", exact: true }).hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Nevytvářet", exact: true }).hasAttribute("disabled"),
+    ).toBe(false);
   });
 });
 describe("AdvanceRegisterGrid", () => {
@@ -225,7 +229,9 @@ describe("AdvanceReasonDialog", () => {
         onConfirm={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled")).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled"),
+    ).toBe(true);
     view.rerender(
       <AdvanceReasonDialog
         open
@@ -237,6 +243,8 @@ describe("AdvanceReasonDialog", () => {
         onConfirm={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled")).toBe(false);
+    expect(
+      screen.getByRole("button", { name: "Potvrdit", exact: true }).hasAttribute("disabled"),
+    ).toBe(false);
   });
 });

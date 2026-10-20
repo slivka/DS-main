@@ -76,7 +76,9 @@ describe("AdvanceAllocation", () => {
       );
     }
     render(<Example />);
-    expect(screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled")).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled"),
+    ).toBe(true);
     fireEvent.click(screen.getAllByRole("checkbox")[1]);
     expect(screen.getByRole("textbox", { name: "Částka k přiřazení – ZL 1" })).toHaveValue(
       "1 000,00",
@@ -121,8 +123,12 @@ describe("AdvanceAllocation", () => {
       onAllocate: () => {},
     };
     const view = render(<AdvanceAllocationDialog {...props} loading />);
-    expect(screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled")).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled"),
+    ).toBe(true);
     view.rerender(<AdvanceAllocationDialog {...props} error="Chyba APP" />);
-    expect(screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled")).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Přiřadit", exact: true }).hasAttribute("disabled"),
+    ).toBe(true);
   });
 });

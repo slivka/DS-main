@@ -120,56 +120,56 @@ export const AdvanceDeductionsSection = forwardRef<HTMLDivElement, AdvanceDeduct
     };
     return (
       <TooltipProvider>
-      <section ref={ref} className={cn("min-w-0 border-t p-3", className)} {...props}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          rowKey={(row) => row.id}
-          storageKey={storageKey}
-          title={t.deductions}
-          showTitle
-          loading={loading}
-          error={error}
-          paginated={false}
-          groupable={false}
-          toolbarLeft={
-            <>
-              {toolbarCommand(addAction, t.addAdvance)}
-              {toolbarCommand(manualAction, t.manualDeduction)}
-            </>
-          }
-          rowActions={
-            onAction
-              ? (row) => (
-                  <GridActions>
-                    {(["linkTaxDocument", "matchPayment", "remove"] as const).map((action) => {
-                      const permission = row.permissions?.[action];
-                      return permission ? (
-                        <GridAction
-                          key={action}
-                          aria-label={t[action]}
-                          disabled={!permission.can}
-                          disabledReason={permission.reason}
-                          tone={action === "remove" ? "destructive" : "default"}
-                          onClick={() => act(action, row)}
-                        >
-                          {action === "linkTaxDocument" ? (
-                            <Link />
-                          ) : action === "matchPayment" ? (
-                            <Wallet />
-                          ) : (
-                            <Unlink />
-                          )}
-                        </GridAction>
-                      ) : null;
-                    })}
-                  </GridActions>
-                )
-              : undefined
-          }
-        />
-        {confirmDialog}
-      </section>
+        <section ref={ref} className={cn("min-w-0 border-t p-3", className)} {...props}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            rowKey={(row) => row.id}
+            storageKey={storageKey}
+            title={t.deductions}
+            showTitle
+            loading={loading}
+            error={error}
+            paginated={false}
+            groupable={false}
+            toolbarLeft={
+              <>
+                {toolbarCommand(addAction, t.addAdvance)}
+                {toolbarCommand(manualAction, t.manualDeduction)}
+              </>
+            }
+            rowActions={
+              onAction
+                ? (row) => (
+                    <GridActions>
+                      {(["linkTaxDocument", "matchPayment", "remove"] as const).map((action) => {
+                        const permission = row.permissions?.[action];
+                        return permission ? (
+                          <GridAction
+                            key={action}
+                            aria-label={t[action]}
+                            disabled={!permission.can}
+                            disabledReason={permission.reason}
+                            tone={action === "remove" ? "destructive" : "default"}
+                            onClick={() => act(action, row)}
+                          >
+                            {action === "linkTaxDocument" ? (
+                              <Link />
+                            ) : action === "matchPayment" ? (
+                              <Wallet />
+                            ) : (
+                              <Unlink />
+                            )}
+                          </GridAction>
+                        ) : null;
+                      })}
+                    </GridActions>
+                  )
+                : undefined
+            }
+          />
+          {confirmDialog}
+        </section>
       </TooltipProvider>
     );
   },
