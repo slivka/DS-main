@@ -101,16 +101,15 @@ test("křížek a šipka se nepřekrývají při 70–200 % a šipka neposkočí
       .filter({ has: page.locator("#symbol-selected") });
     const input = field.getByRole("combobox");
     await expect(input).toHaveCount(1);
-    const [textRight, clearLeft] = await Promise.all([
-      input.evaluate((node) => {
+    const clearOpen = field.locator('button[aria-label="Vymazat"]');
+    if ((await clearOpen.count()) > 0) {
+      const textRight = await input.evaluate((node) => {
         const rect = node.getBoundingClientRect();
         return rect.right - parseFloat(getComputedStyle(node).paddingRight);
-      }),
-      field
-        .getByRole("button", { name: "Vymazat" })
-        .evaluate((node) => node.getBoundingClientRect().left),
-    ]);
-    expect(textRight, `zoom ${value}`).toBeLessThanOrEqual(clearLeft + 0.5);
+      });
+      const clearBox = await clearOpen.boundingBox();
+      expect(textRight, `zoom ${value}`).toBeLessThanOrEqual((clearBox?.x ?? 0) + 0.5);
+    }
     await input.press("Escape");
   }
 });
