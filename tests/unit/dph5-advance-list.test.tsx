@@ -214,8 +214,21 @@ describe("záložka Zaúčtování", () => {
       <DocumentPostingGrid
         accounts={ACCOUNTS}
         entries={[
-          { id: "1", text: "Služby", debitAccount: "518001", creditAccount: "321001", amount: 1000 },
-          { id: "2", text: "DPH", debitAccount: "343021", creditAccount: "321001", amount: 210, auto: "vat" },
+          {
+            id: "1",
+            text: "Služby",
+            debitAccount: "518001",
+            creditAccount: "321001",
+            amount: 1000,
+          },
+          {
+            id: "2",
+            text: "DPH",
+            debitAccount: "343021",
+            creditAccount: "321001",
+            amount: 210,
+            auto: "vat",
+          },
         ]}
       />,
     );
