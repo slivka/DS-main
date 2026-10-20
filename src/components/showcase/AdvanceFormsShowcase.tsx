@@ -30,48 +30,71 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
       : undefined;
   return (
     <>
-    <DocumentForm
-      title={type}
-      status="draft"
-      documentType={type}
-      value={value}
-      onChange={(next) => setValue({ ...next, recordKey: type })}
-      lines={lines}
-      onLinesChange={setLines}
-      books={MOCK_BOOKS}
-      accounts={MOCK_ACCOUNTS}
-      partners={MOCK_PARTNERS}
-      currencies={CURRENCIES}
-      homeCurrency={ADVANCE_CURRENCY.code}
-      fields={zl?.fields}
-      vat={zl?.vat ?? { visible: true }}
-      linesEditorProps={{
-        withoutAccounts: Boolean(zl),
-        vat: {
-          enabled: true,
-          defaultDirection: type === "FP" || type === "ZFP" ? "in" : "out",
-          codes: type === "FP" || type === "ZFP" ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT,
-        },
-        advanceDeduction: zl ? undefined : 1500,
-        afterVatRecap: zl ? undefined : (
-          <AdvanceDeductionsSection
-            rows={ADVANCE_DEDUCTIONS}
-            storageKey={`advance-deductions-${type}`}
-            addAction={{ can: true, onClick: () => { setAllocation([]); setAdding(true); } }}
-            manualAction={{ can: true, onClick: () => toast(t.advances.manualDeduction) }}
-            onAction={(action) => toast(t.advances[action])}
-            onOpenTaxDocument={(row) => toast(row.taxDocument)}
-          />
-        ),
-      }}
-    />
-    <AdvanceAllocationDialog open={adding} onOpenChange={setAdding}
-      target="taxDocument" storageKey={`deduction-candidates-${type}`}
-      candidates={[{ id: "advance", document: "Záloha partnera 2026003", remaining: 500, defaultAmount: 500 },
-        { id: "dd", document: "DDPZ 2026004", remaining: 700, defaultAmount: 700 }]}
-      value={allocation} onChange={setAllocation} remaining={2000}
-      currency={ADVANCE_CURRENCY.symbol} dirty={allocation.length > 0}
-      onAllocate={() => { setAdding(false); toast(t.advances.allocate); }} />
+      <DocumentForm
+        title={type}
+        status="draft"
+        documentType={type}
+        value={value}
+        onChange={(next) => setValue({ ...next, recordKey: type })}
+        lines={lines}
+        onLinesChange={setLines}
+        books={MOCK_BOOKS}
+        accounts={MOCK_ACCOUNTS}
+        partners={MOCK_PARTNERS}
+        currencies={CURRENCIES}
+        homeCurrency={ADVANCE_CURRENCY.code}
+        fields={zl?.fields}
+        vat={zl?.vat ?? { visible: true }}
+        linesEditorProps={{
+          withoutAccounts: Boolean(zl),
+          vat: {
+            enabled: true,
+            defaultDirection: type === "FP" || type === "ZFP" ? "in" : "out",
+            codes: type === "FP" || type === "ZFP" ? MOCK_VAT_CODES_IN : MOCK_VAT_CODES_OUT,
+          },
+          advanceDeduction: zl ? undefined : 1500,
+          afterVatRecap: zl ? undefined : (
+            <AdvanceDeductionsSection
+              rows={ADVANCE_DEDUCTIONS}
+              storageKey={`advance-deductions-${type}`}
+              addAction={{
+                can: true,
+                onClick: () => {
+                  setAllocation([]);
+                  setAdding(true);
+                },
+              }}
+              manualAction={{ can: true, onClick: () => toast(t.advances.manualDeduction) }}
+              onAction={(action) => toast(t.advances[action])}
+              onOpenTaxDocument={(row) => toast(row.taxDocument)}
+            />
+          ),
+        }}
+      />
+      <AdvanceAllocationDialog
+        open={adding}
+        onOpenChange={setAdding}
+        target="taxDocument"
+        storageKey={`deduction-candidates-${type}`}
+        candidates={[
+          {
+            id: "advance",
+            document: "Záloha partnera 2026003",
+            remaining: 500,
+            defaultAmount: 500,
+          },
+          { id: "dd", document: "DDPZ 2026004", remaining: 700, defaultAmount: 700 },
+        ]}
+        value={allocation}
+        onChange={setAllocation}
+        remaining={2000}
+        currency={ADVANCE_CURRENCY.symbol}
+        dirty={allocation.length > 0}
+        onAllocate={() => {
+          setAdding(false);
+          toast(t.advances.allocate);
+        }}
+      />
     </>
   );
 }
