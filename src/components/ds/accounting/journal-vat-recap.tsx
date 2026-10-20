@@ -224,47 +224,57 @@ export function JournalVatRecap() {
           </tr>
         </thead>
         <tbody data-slot="journal-vat-section-in">
-          {inVat.length + fixed.length > 0 ? (
+          {groups.length + fixed.length + exempt.length > 0 ? (
             <SectionRow
               label={vatFive.sectionInVat}
               slot="journal-vat-section-in-title"
               span={span}
             />
           ) : null}
-          {inVat.map((group) => (
+          {groups.map((group) => (
             <GroupRow key={group.key} group={group} showHome={homeOn} />
           ))}
-          {fixed.map((item) => {
-            const code = editor.vatCodeMap.get(item.vatCodeId);
-            return (
-              <tr
-                key={item.lineId}
-                data-slot="journal-vat-fixed"
-                className="h-[var(--control-h)] border-t"
-              >
-                <CodeCell code={code} fallback={item.vatCodeId} />
-                <td className={CELL}>{amount(item.base)}</td>
-                <td className={CELL}>
-                  <span className="sr-only">{texts.fixedTax}</span>
-                  {amount(item.tax)}
-                </td>
-                <td className={CELL}>{amount(item.base + item.tax)}</td>
-                {homeOn ? (
-                  <>
-                    <td className={CELL}>
-                      {fixedHome(item.base, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
-                    </td>
-                    <td className={CELL}>
-                      {fixedHome(item.tax, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
-                    </td>
-                  </>
-                ) : null}
-                <td />
-              </tr>
-            );
-          })}
+          {fixed.map((item) => (
+            <tr
+              key={item.lineId}
+              data-slot="journal-vat-fixed"
+              className="h-[var(--control-h)] border-t"
+            >
+              <CodeCell code={editor.vatCodeMap.get(item.vatCodeId)} fallback={item.vatCodeId} />
+              <td className={CELL}>{amount(item.base)}</td>
+              <td className={CELL}>
+                <span className="sr-only">{texts.fixedTax}</span>
+                {amount(item.tax)}
+              </td>
+              <td className={CELL}>{amount(item.base + item.tax)}</td>
+              {homeOn ? (
+                <>
+                  <td className={CELL}>
+                    {fixedHome(item.base, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
+                  </td>
+                  <td className={CELL}>
+                    {fixedHome(item.tax, vatGroups.exchangeRate, vatGroups.exchangeRateAmount)}
+                  </td>
+                </>
+              ) : null}
+              <td />
+            </tr>
+          ))}
+          {exempt.map((item) => (
+            <tr
+              key={item.code.id}
+              data-slot="journal-vat-exempt"
+              className="h-[var(--control-h)] border-t"
+            >
+              <CodeCell code={item.code} fallback={item.code.code} />
+              <td className={CELL}>{amount(item.base)}</td>
+              <td className={CELL}>—</td>
+              <td className={CELL}>{amount(item.base)}</td>
+              <td colSpan={span - 4} />
+            </tr>
+          ))}
         </tbody>
-        {outsideGroups.length > 0 ? (
+        {outsideBases.length > 0 ? (
           <tbody
             data-slot="journal-vat-section-outside"
             className="border-t-2 text-muted-foreground"
@@ -274,14 +284,14 @@ export function JournalVatRecap() {
               slot="journal-vat-section-outside-title"
               span={span}
             />
-            {outsideGroups.map((group) => (
+            {outsideBases.map((item) => (
               <tr
-                key={group.key}
+                key={item.code.id}
                 data-slot="journal-vat-outside"
                 className="h-[var(--control-h)] border-t"
               >
-                <CodeCell code={editor.vatCodeMap.get(group.vatCodeId)} fallback={group.code} />
-                <td className={CELL}>{amount(group.base)}</td>
+                <CodeCell code={item.code} fallback={item.code.code} />
+                <td className={CELL}>{amount(item.base)}</td>
                 <td colSpan={span - 2} />
               </tr>
             ))}
