@@ -1,4 +1,10 @@
-## DS 2.118.0 (nevydáno)
+## DS 2.119.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.118.0 – DPH 5 B a zálohové listy
+
+- Vydáno 20. 10. 2026 (commit e67c010). E2E Chromium run 39498810380 na 32d4314 🟢 (předchozí run 39493948211 na 21a12e8: zastaralý test pořadí Tab, překrytí ND sticky akcemi – opraveno v kódu).
 
 ### DPH 5 – krok B
 

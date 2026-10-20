@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.118.0 (nevydáno)
+## 2.119.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.118.0 – DPH 5 B a zálohové listy
 
 ### Opravné kolo po E2E Chromium
 
