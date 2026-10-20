@@ -1,5 +1,6 @@
 /**
- * Patička editoru řádků: Součet · Zaokrouhlení · Rozdíl (2.109.0).
+ * Patička editoru řádků: Součet · Odečtené zálohy · Zaokrouhlení · K úhradě · Rozdíl
+ * (2.109.0; zálohy a K úhradě 2.118.0 podle `recapFooterRows`).
  * Vlastní: zobrazení součtu, zaokrouhlení a rozdílu proti zadané částce a nabídku dorovnání
  *   (Dorovnat DPH / Dorovnat základ / Zaokrouhlení v limitu) s výchozí zvýrazněnou volbou.
  * Nesmí: počítat součty ani daň – hodnoty dodávají useJournalTotals a useJournalVatGroups.
@@ -16,6 +17,7 @@ import {
 import { AmountDifference } from "./amount-difference";
 import { useJournalEditor } from "./journal-editor-context";
 import { roundJournalAmount } from "./journal-lines-model";
+import { recapFooterRows } from "./journal-recap-footer";
 import { type JournalDifferenceAction, type VatGroup } from "./journal-vat-groups";
 
 /** Položka nabídky Rozdílu. */
@@ -50,6 +52,16 @@ export function JournalDifferenceBar() {
   const totalHidden =
     editor.vatOn && !editor.layout.visibleColumns.some((column) => column.id === "grossAmount");
   const difference = totals.showRemaining ? totals.difference : 0;
+  const footer = recapFooterRows({
+    sum,
+    advances: props.advanceDeduction,
+    rounding: roundingValue,
+    difference,
+  });
+  const footerValue = (key: string) => footer.find((row) => row.key === key)?.value;
+  const advances = footerValue("advances");
+  const toPay = footerValue("toPay");
+  const vatFive = editor.dsTexts.vatFive;
   const { actions, preferred } = vatGroups.difference(difference, roundingValue);
   const groups = vatGroups.vatGroups.groups.filter(
     (group) =>
@@ -89,6 +101,8 @@ export function JournalDifferenceBar() {
   return (
     <div
       data-slot="journal-difference-bar"
+      data-journal-recap-focus=""
+      tabIndex={-1}
       data-limit={props.roundingLimit}
       className="flex min-h-[var(--control-h)] flex-wrap items-center justify-end gap-x-4 gap-y-1 border-t bg-muted/40 px-3 py-1 text-sm"
     >
@@ -101,11 +115,25 @@ export function JournalDifferenceBar() {
           value={`${formatAmount(sum, 2)} ${documentMark}`}
         />
       ) : null}
+      {advances !== undefined ? (
+        <FooterValue
+          slot="journal-footer-advances"
+          label={vatFive.advances}
+          value={`${formatAmount(advances, 2)} ${documentMark}`}
+        />
+      ) : null}
       <FooterValue
         slot="journal-footer-rounding"
         label={props.rounding?.label ?? texts.rounding}
         value={`${formatAmount(roundingValue, 2)} ${documentMark}`}
       />
+      {toPay !== undefined ? (
+        <FooterValue
+          slot="journal-footer-to-pay"
+          label={vatFive.toPay}
+          value={`${formatAmount(toPay, 2)} ${documentMark}`}
+        />
+      ) : null}
       {difference !== 0 ? (
         <span className="inline-flex items-center gap-2">
           <AmountDifference
