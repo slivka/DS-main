@@ -54,3 +54,4 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Searchable selections share inline-search; queries never commit on Tab or blur, and while open the input is the only combobox (trigger aria-hidden). Why: one keyboard/IME contract and one accessible control.
 - Grid toolbar rows derive every control height from --f-h and expose it as --control-h. Why: all grid bars scale uniformly.
 - IdentityLine never wraps; only the account name may truncate. Why: book, period, side, code and number must remain recognizable.
+- Set rem/em values of registered custom properties (@property, e.g. --control-h) on body or deeper, never on :root. Why: Firefox and WebKit resolve them against the initial font there, so heights would ignore app zoom.
