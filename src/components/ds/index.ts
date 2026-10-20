@@ -5,6 +5,11 @@
  */
 
 /* Layout */
+export * from "./layout/record-side-panel";
+export * from "./layout/record-panel-triggers";
+export * from "./layout/multi-selection-panel";
+export * from "./feedback/attachment-list";
+export * from "./feedback/pinned-note-bar";
 export * from "./layout/identity-line";
 export * from "./layout/AppShell";
 export * from "./layout/WorkspaceCompanySwitcher";

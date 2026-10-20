@@ -46,6 +46,7 @@ export interface DataGridLayout<Row> {
 
 /** Šířka sloupce v px; null = kompaktní (šířka podle obsahu). */
 export function columnWidth<Row>(layout: DataGridLayout<Row>, c: DataGridColumn<Row>) {
+  if (c.type === "record-indicators") return c.width ?? (c.indicators?.length ?? 1) * 60;
   if (isBranchColumn(c)) return BRANCH_COLUMN_WIDTH;
   if (layout.compact.has(c.id)) return null;
   if (layout.pinned.has(c.id)) return pinnedColumnWidth(c.id);
@@ -155,7 +156,11 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
           const width = columnWidth(layout, c);
           const headStyle = width === null ? NOWRAP_1PX : fixedWidthStyle(width);
           const resize =
-            isPinned || isBranch || isBook || width === null ? null : (
+            isPinned ||
+            isBranch ||
+            isBook ||
+            c.type === "record-indicators" ||
+            width === null ? null : (
               <ColumnResizeHandle
                 onResize={(w) => cols.setWidth(c.id, w)}
                 scale={scale()}
@@ -192,7 +197,7 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
                 }
               >
                 {c.label}
-                {props.columnFilters ? filter : null}
+                {props.columnFilters && c.type !== "record-indicators" ? filter : null}
               </span>
               {resize}
             </TableHead>
@@ -209,7 +214,7 @@ export function DataGridHead<Row>(props: DataGridHeadProps<Row>) {
               dragProps={isPinned ? {} : dragProps}
               texts={texts}
             >
-              {props.columnFilters ? filter : null}
+              {props.columnFilters && c.type !== "record-indicators" ? filter : null}
               {resize}
             </SortHead>
           );

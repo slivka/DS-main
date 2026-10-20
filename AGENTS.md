@@ -44,6 +44,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 
 - Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
 - Keep recap and list navigation in focused modules. Why: readable orchestration, stable exports.
+- RecordSidePanel owns layout; file selection and useFileDrop share validation. Why: no consumer fetching or duplicate validation.
 
 
 ## Vydání knihovny

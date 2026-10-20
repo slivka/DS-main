@@ -95,6 +95,10 @@
 }
 
 :root {
+  --record-panel-width: 24rem;
+  --record-panel-wide: 50%;
+  --record-indicator-slot: 3.5rem;
+  --attachment-preview-height: 24rem;
   /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
   --control-h: 2.25rem;
   --badge-h-sm: 1.25rem;
@@ -2621,4 +2625,9 @@ input.ds-disabled-control[readonly].bg-muted\/40,
 .pane-tabbar [data-tab-strip] {
   overflow: visible;
   clip-path: inset(0 0 -1px);
+}
+
+/* Ukázka: lokální měřítko odpovídá dvojnásobnému písmu bez změny zařízení. */
+.record-panel-demo-zoom {
+  zoom: 2;
 }

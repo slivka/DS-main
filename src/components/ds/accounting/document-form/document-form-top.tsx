@@ -82,15 +82,18 @@ export function DocumentFormTop({
       />
       <RecordActionBar
         leftContent={
-          p.vat?.visible ? (
-            <DocumentVatActionStatus
-              checked={vatRelevant}
-              readOnly={p.vat.relevantReadOnly}
-              onCheckedChange={onVatRelevantChange}
-              status={p.vatPartnerStatus}
-              texts={t}
-            />
-          ) : null
+          <>
+            {p.actionBarContent}
+            {p.vat?.visible ? (
+              <DocumentVatActionStatus
+                checked={vatRelevant}
+                readOnly={p.vat.relevantReadOnly}
+                onCheckedChange={onVatRelevantChange}
+                status={p.vatPartnerStatus}
+                texts={t}
+              />
+            ) : null}
+          </>
         }
         saveAction={p.saveAction}
         primaryAction={p.primaryAction}

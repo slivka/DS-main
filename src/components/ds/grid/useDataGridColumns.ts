@@ -27,9 +27,12 @@ export function useDataGridColumns<Row>(
   const pinned = useMemo(() => new Set(pinnedIds), [pinnedIds]);
   const effectiveColumns = useMemo<DataGridColumn<Row>[]>(
     () =>
-      book?.value === "all" && book.getRowBookId
+      (book?.value === "all" && book.getRowBookId
         ? [createGridBookColumn(book), ...columns]
-        : columns,
+        : columns
+      ).map((column) =>
+        column.type === "record-indicators" ? { ...column, sortable: false } : column,
+      ),
     [book, columns],
   );
   const colDefs = useMemo(

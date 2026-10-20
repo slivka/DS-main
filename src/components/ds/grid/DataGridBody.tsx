@@ -19,6 +19,7 @@ import { VirtualPad, type GridVirtual } from "./grid-virtual";
 import { cellText } from "./data-grid-model";
 import type { DataGridLayout } from "./DataGridHead";
 import type { DataGridColumn } from "./data-grid-types";
+import { RecordPanelTriggers } from "../layout/record-panel-triggers";
 
 /** Položka těla: řádek, záhlaví skupiny nebo součet skupiny. */
 export type DataGridItem<Row> = GroupedItem<Row> | GroupTotalItem;
@@ -32,6 +33,8 @@ const cellAlign = (c: { align?: string | undefined; numeric?: boolean | undefine
 
 /** Props těla DataGrid. */
 export interface DataGridRowsProps<Row> {
+  /** Otevření obecného indikátoru záznamu. */
+  onIndicatorClick?: ((row: Row, id: string) => void) | undefined;
   /** Rozložení sloupců. */
   layout: DataGridLayout<Row>;
   /** Položky k zobrazení (všechny; okno vybere `virtual`). */
@@ -67,7 +70,20 @@ export interface DataGridRowsProps<Row> {
 }
 
 /** Obsah datové buňky: editor vybraného řádku, vlastní vykreslení, IČO, částka, nebo text. */
-function cellContent<Row>(c: DataGridColumn<Row>, row: Row, editing: boolean) {
+function cellContent<Row>(
+  c: DataGridColumn<Row>,
+  row: Row,
+  editing: boolean,
+  onIndicatorClick?: (row: Row, id: string) => void,
+) {
+  if (c.type === "record-indicators")
+    return (
+      <RecordPanelTriggers
+        size="compact"
+        indicators={(c.indicators ?? []).map((item) => ({ ...item, count: item.count(row) }))}
+        onIndicatorClick={(id) => onIndicatorClick?.(row, id)}
+      />
+    );
   if (editing && c.editor) return c.editor(row);
   if (c.render) return c.render(row);
   const v = c.value?.(row);
@@ -182,7 +198,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
                   } ${cols.sectionSeparators.has(c.id) ? "border-l" : ""} ${c.className ?? ""}`}
                   {...(cellStyle ? { style: cellStyle } : {})}
                 >
-                  {cellContent(c, row, selectMode && selected)}
+                  {cellContent(c, row, selectMode && selected, props.onIndicatorClick)}
                 </TableCell>
               );
             })}
