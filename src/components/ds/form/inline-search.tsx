@@ -209,6 +209,24 @@ export const InlineSearchInput = React.forwardRef<
         else if (forwardedRef) forwardedRef.current = node;
       }}
       onKeyDown={(event) => {
+        if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+          // cmdk každý Enter potvrzuje a blokuje. Zkratku předáme z pole mimo jeho strom,
+          // aby ji formulář dostal bez potvrzení právě zvýrazněné položky.
+          event.stopPropagation();
+          context.target?.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: event.key,
+              code: event.code,
+              ctrlKey: event.ctrlKey,
+              metaKey: event.metaKey,
+              shiftKey: event.shiftKey,
+              altKey: event.altKey,
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+          return;
+        }
         if (event.nativeEvent.isComposing) {
           event.stopPropagation();
           return;

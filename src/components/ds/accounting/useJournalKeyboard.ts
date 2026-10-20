@@ -117,6 +117,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       return;
     }
     if (editor.editing) return;
+    if (event.ctrlKey || event.metaKey) return;
     if (event.key === "Enter") {
       event.preventDefault();
       // 2.118.0: Shift+Enter zpět; vyplněné nebo zakotvené pole Enter přeskočí.
@@ -145,6 +146,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     return {
       /** Esc vrátí hodnotu; Enter / Tab potvrdí a přesune fokus. */
       commonKey: (event: React.KeyboardEvent): void => {
+        if (event.ctrlKey || event.metaKey) return;
         if (event.key === "Escape") {
           event.preventDefault();
           editor.cancel();
@@ -162,6 +164,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       },
       /** Ve výběru Enter / Tab vybere zvýrazněnou položku a přesune fokus. */
       selectKey: (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.ctrlKey || event.metaKey) return;
         if (event.key !== "Tab" && event.key !== "Enter") return;
         event.preventDefault();
         event.currentTarget
