@@ -293,6 +293,7 @@ export const DS_TEXTS_SK: DsTexts = {
     linkedReplaceTitle: "Nahradiť obsah okna vpravo?",
     linkedReplaceDescription: "Okno vpravo už zobrazuje iný obsah.",
     linkedReplaceConfirm: "Nahradiť",
+    linkedOnlyRecord: "Naviazané okno možno otvoriť len pri zázname.",
   },
   notification: {
     label: "Oznámenia",

@@ -360,7 +360,8 @@ export function PaneTabsProvider({
     const attempt = (confirmed: boolean) => {
       const result = openLinkedTabInState(stateRef.current, sourceTabId, section, { confirmed });
       if (result.outcome === "rejected") {
-        toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
+        // Zdroj není záznam – žádný toast o limitu záložek, ten by mátl.
+        toast.warning(p.linkedOnlyRecord);
         return;
       }
       if (result.outcome === "needsConfirm") {
