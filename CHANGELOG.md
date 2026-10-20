@@ -2,7 +2,12 @@
 
 ## 2.119.0 (nevydáno)
 
-- Zatím bez změn.
+- Duplikace a vzory B: `DocumentNewMenu` pro lištu GridFrame přes `toolbarLeft`: Prázdný doklad / Ze vzoru / Vytvořit / Vytvořit sérii / Spravovat vzory, prázdná nabídka s důvodem.
+- `DuplicationDialog` a `DuplicationPreview`: jeden doklad nebo série (1–24 měsíců, den 1–31), datum a náhled od APP, stálé chybové řádky a souhrn N z M. Bez vytvořitelných řádků, při loading/error nebo neplatných parametrech nelze vytvořit. APP zajišťuje debounce, data i zápis.
+- `TemplateEditBanner` a `DocumentForm.templateEdit`: název vzoru a akce Uložit vzor / Zahodit změny nad identitou, společné pro FV/FP i ZFV/ZFP bez větvení.
+- `TemplateManager` / `TemplateManagerDialog`: Název, Autor, Sdílení, Bez částek; Přejmenovat, Sdílet/Nesdílet, Upravit a potvrzené Smazat s individuálními oprávněními a důvody. Akce předány APP.
+- Aditivní API `RecordDialog.submitDisabled` blokuje submit tlačítkem i klávesou a nenabízí uložení při ochraně zavření; zavření bez ukládání zůstává dostupné.
+- Texty `DsTexts.templates` CS/SK, ukázky jednoho dokladu, série 12 měsíců se dvěma problémy, správy i pruhu na faktuře a ZL. Žádné odebrání veřejného API; nevydáno.
 
 ## 2.118.0 – DPH 5 B a zálohové listy
 

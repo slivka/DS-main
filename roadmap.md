@@ -1,5 +1,7 @@
 ## DS 2.119.0 (nevydáno)
 
+- [ ] Duplikace a vzory B: nabídka Nový, řízený dialog a náhled, pruh ve sdíleném formuláři faktur/ZL, správa s oprávněními, ukázky, CS/SK, testy a katalog.
+- [ ] APP krok C: načítání vzorů, posun data, debounce náhledu, období/problémy, vytvoření a zápis správy podle práv.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.118.0 – DPH 5 B a zálohové listy

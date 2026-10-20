@@ -98,6 +98,8 @@ export interface RecordDialogProps {
   description?: string;
   /** Uložení; dialog zavírá aplikace po úspěchu. */
   onSubmit?: () => void;
+  /** Zakáže uložení i klávesou; neruší možnost zavřít dialog. */
+  submitDisabled?: boolean;
   /** Text tlačítka Uložit. */
   submitLabel?: string;
   /** Text tlačítka Zavřít v režimu jen pro čtení. */
@@ -199,6 +201,7 @@ export function RecordDialog({
   title,
   description,
   onSubmit,
+  submitDisabled = false,
   submitLabel,
   closeLabel,
   busy = false,
@@ -350,7 +353,7 @@ export function RecordDialog({
             // React posílá submit stromem komponent i přes portál; vnořený dialog nesmí odeslat
             // formulář dialogu, ve kterém je otevřený (např. nový účet v dialogu partnera).
             e.stopPropagation();
-            if (!readOnly && !busy) onSubmit?.();
+            if (!readOnly && !busy && !submitDisabled) onSubmit?.();
           }}
         >
           <RecordReadOnlyProvider value={readOnly}>
@@ -394,7 +397,13 @@ export function RecordDialog({
               <Button type="button" variant="outline" disabled={busy} onClick={requestClose}>
                 {readOnly ? closeText : cancelText}
               </Button>
-              {!readOnly ? <RecordDialogSubmitButton label={submitText} busy={busy} /> : null}
+              {!readOnly ? (
+                <RecordDialogSubmitButton
+                  label={submitText}
+                  busy={busy}
+                  disabled={submitDisabled}
+                />
+              ) : null}
             </div>
           </div>
         </form>
@@ -409,7 +418,7 @@ export function RecordDialog({
         intent=""
         restoreFocusTo={guardReturn}
         saving={busy}
-        {...(onSubmit
+        {...(onSubmit && !submitDisabled
           ? {
               onSave: () => {
                 setGuardOpen(false);

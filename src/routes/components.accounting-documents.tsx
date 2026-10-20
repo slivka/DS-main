@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DocumentFormSecondaryShowcase } from "@/components/showcase/DocumentFormSecondaryShowcase";
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { AccountingFormsNav } from "@/components/showcase/AccountingFormsNav";
+import { TemplatesShowcase } from "@/components/showcase/TemplatesShowcase";
 
 export const Route = createFileRoute("/components/accounting-documents")({
   head: () => ({
@@ -38,6 +39,7 @@ function AccountingDocumentsPage() {
       ]}
     >
       <AccountingFormsNav />
+      <TemplatesShowcase />
       <DocumentFormSecondaryShowcase />
     </ShowcaseLayout>
   );

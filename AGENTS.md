@@ -28,7 +28,7 @@
 
 Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk">`. Bez provideru čeština; priorita prop → provider → `DS_TEXTS_CS`. Každý nový text má klíč v `DsTexts` a překlady `DS_TEXTS_CS`/`DS_TEXTS_SK`; žádné pevné UI texty.
 
-- Keep preview examples in .dsignore-excluded showcase modules. Why: preserve pages without shipping preview dependencies.
+- Keep preview examples in excluded showcase modules. Why: no preview dependencies in consumers.
 - Export bank-account utilities directly from the root barrel and preserve their existing component-barrel re-export. Why: stable utility imports.
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
@@ -61,4 +61,5 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
-- Linked pane tabs follow their source tab, not the pane position; logic lives in panes/linked-tabs.ts, pane-state only carries the type. Why: one tested place for follow/pin/orphan rules.
+- Linked tabs follow source tabs; linked-tabs owns follow/pin/orphan rules, pane-state carries types.
+- Templates compose menus, DataGrid and RecordDialog; DocumentForm shares the banner for invoices/ZL. Why: APP owns data and writes.

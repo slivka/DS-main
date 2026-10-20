@@ -103,13 +103,20 @@ interface SubmitButtonProps {
   label: string;
   /** Probíhá ukládání. */
   busy: boolean;
+  /** Uložení není dostupné. */
+  disabled?: boolean;
 }
 
 /** Uložit s pevnou šířkou: během ukládání ukáže „Ukládám…“ bez poskočení. */
-export function RecordDialogSubmitButton({ label, busy }: SubmitButtonProps) {
+export function RecordDialogSubmitButton({ label, busy, disabled }: SubmitButtonProps) {
   const saving = useDsTexts().recordDialog.saving;
   return (
-    <Button type="submit" disabled={busy} aria-busy={busy || undefined} data-slot="record-submit">
+    <Button
+      type="submit"
+      disabled={busy || disabled}
+      aria-busy={busy || undefined}
+      data-slot="record-submit"
+    >
       <span className="grid">
         <span
           aria-hidden={busy || undefined}

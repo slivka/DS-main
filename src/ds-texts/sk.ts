@@ -4,6 +4,7 @@
  * Nesmí: obsahovat React kód.
  */
 import { LINKED_RECORDS_SK } from "./sk-linked-records";
+import { TEMPLATES_SK } from "./sk-templates";
 import { SK_VAT_GROUPS } from "./sk-vat-groups";
 import {
   ATTACHMENTS_SK,
@@ -23,6 +24,7 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  templates: TEMPLATES_SK,
   vatFive: VAT_FIVE_SK,
   recordPanel: RECORD_PANEL_SK,
   recordNotes: RECORD_NOTES_SK,
