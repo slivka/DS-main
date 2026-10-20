@@ -74,6 +74,11 @@ export interface BankStatementFormProps extends Omit<ComponentPropsWithoutRef<"d
   busy?: boolean;
   /** Uloží výpis. */
   onSave?: () => void;
+  /**
+   * Ctrl/Cmd+Enter = Uložit a zavřít (bez tlačítka). Aplikace zavře výpis až po úspěšném
+   * uložení; při chybě zůstává otevřený.
+   */
+  onSaveAndClose?: () => void;
   /** @deprecated 2.108.0 – kontrola výpisu je zrušená; ignorováno. */
   checkDisabledReason?: string;
   /** @deprecated 2.108.0 – kontrola výpisu je zrušená; ignorováno. */
@@ -111,6 +116,7 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
       readOnly,
       dirty,
       onSave,
+      onSaveAndClose,
       busy,
       onCheckedChange: _onCheckedChange,
       checkDisabledReason: _checkDisabledReason,
@@ -146,17 +152,14 @@ export const BankStatementForm = forwardRef<HTMLDivElement, BankStatementFormPro
           ref={ref}
           onKeyDown={(event) => {
             onKeyDown?.(event);
-            if (
-              !event.defaultPrevented &&
-              (event.ctrlKey || event.metaKey) &&
-              event.key.toLowerCase() === "s" &&
-              onSave &&
-              !locked &&
-              !busy &&
-              dirty !== false
-            ) {
+            if (event.defaultPrevented || !(event.ctrlKey || event.metaKey)) return;
+            if (locked || busy) return;
+            if (event.key.toLowerCase() === "s" && onSave && dirty !== false) {
               event.preventDefault();
               onSave();
+            } else if (event.key === "Enter" && onSaveAndClose) {
+              event.preventDefault();
+              onSaveAndClose();
             }
           }}
           data-slot="bank-statement-form"
