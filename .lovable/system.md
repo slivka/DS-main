@@ -554,3 +554,10 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Historii zobrazuj přes `RecordHistoryTimeline`; `HistoryPanel` je zastaralý.
 - Historie zobrazuje jen zmapované hodnoty: aplikace převede auditní záznamy na `HistoryEvent` s přeloženými popisky polí a zformátovanými hodnotami (částky s mezerami tisíců, datum, kód a název přes `formatCodeName`). Nikdy nepředávej surová data (id, klíče sloupců, JSON, ISO hodnoty polí).
 - Režim a filtr typů řídí aplikace přes props; komponenta nic nenačítá.
+
+## Propojené doklady (2.115.0)
+
+- `LinkedRecordsPanel` je obsah záložky `RecordSidePanel`; aplikace dodává skupiny, jejich pořadí, řízené sbalení, režim, zmapované částky/měny a oprávnění. Žádné dotazy ani doménové výpočty. `SettlementBar` dostane již formátované částky a procento za každou měnu zvlášť.
+- Klik předává `onOpen(item, modifiers)`: bez Ctrl/Cmd `adjacentPane`, s Ctrl/Cmd `replace`. Jde o výslovnou konvenci vazeb; základní `PaneLink` se nemění. Navigaci a ochranu cílového panelu provádí aplikace.
+- `LinkedRecordEntry` sdílí seznam, tok a návrhy. Zakázané odebrání zůstává zaměřitelné s důvodem přes `DisabledReasonTooltip`, povolené vždy potvrzuje `useConfirmDialog`.
+- `LinkRecordDialog` skládá `RecordDialog size="md"`, `FieldGrid` a `OptionSelect`; callbacky aplikace hledají a ukládají. Opožděné odpovědi hledání se ignorují, při chybě uložení zůstává rozpracovaná vazba otevřená. Všechny ovládací texty jsou `DsTexts.linkedRecords` CS/SK.

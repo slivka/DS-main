@@ -69,3 +69,5 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - RecordDialog uses activeTab when supplied, local selection otherwise; onTabChange reports user requests only. Why: error navigation without callback loops.
 
 - Keep inline-search as the shared selection input/portal owner and account conversion in bank-account. Why: consumers inherit one keyboard contract and one checksum implementation.
+
+- Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: list, flow and candidate selection stay consistent without domain logic.

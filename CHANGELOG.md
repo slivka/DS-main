@@ -2,7 +2,9 @@
 
 ## 2.115.0 (nevydáno)
 
-- Zatím bez změn.
+- Nové: `SettlementBar`, `LinkedRecordsPanel`, `LinkedRecordEntry` a `LinkRecordDialog`; zmapované částky a oprávnění z aplikace, více měn, řízené skupiny, potvrzené odebrání, seznam/tok podle data a modifikátory otevření.
+- Dialog: návrhy a výsledky hledání aplikace, typ vazby a poznámka, ochrana změn přes RecordDialog, zachování hodnot při chybě uložení a ignorování opožděných výsledků.
+- Texty CS/SK se skloňováním počtů, ukázky v záložce Propojené a samostatné scénáře; nové testy chování a autorské obohacení katalogu. Bez vydání; verze zůstává 2.114.0.
 
 ## 2.114.0 – Historie záznamu + oprava výběru myší
 
