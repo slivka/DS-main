@@ -98,16 +98,6 @@ export function InlineSearchTrigger({
       else button.setAttribute("tabindex", tabIndex);
     };
   }, [context?.target, open]);
-  // Po zavření (výběr myší i klávesou) se fokus vrací na tlačítko, pokud nezůstal jinde.
-  const wasOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (wasOpen.current && !open) {
-      const active = document.activeElement;
-      if (!active || active === document.body)
-        context?.target?.querySelector<HTMLButtonElement>("button[role=combobox]")?.focus();
-    }
-    wasOpen.current = open;
-  }, [open, context?.target]);
   return (
     <div
       ref={context?.setTarget}
@@ -190,6 +180,18 @@ export const InlineSearchInput = React.forwardRef<
   React.useLayoutEffect(() => {
     inputRef.current?.focus();
   }, [context?.target]);
+  // Po zavření nabídky (výběr myší i klávesou) vrátí fokus na tlačítko, pokud neodešel jinam.
+  const target = context?.target;
+  React.useEffect(
+    () => () => {
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (!active || active === document.body)
+          target?.querySelector<HTMLButtonElement>("button[role=combobox]")?.focus();
+      });
+    },
+    [target],
+  );
   // cmdk vnucuje aria-labelledby na skrytý popisek nabídky; název musí nést pole (aria-label).
   React.useLayoutEffect(() => {
     inputRef.current?.removeAttribute("aria-labelledby");
