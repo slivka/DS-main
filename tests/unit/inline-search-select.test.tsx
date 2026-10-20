@@ -111,6 +111,7 @@ test("otevřený výběr má v přístupnostním stromu jediný combobox s názv
   const boxes = view.getAllByRole("combobox");
   expect(boxes).toHaveLength(1);
   expect(boxes[0]?.tagName).toBe("INPUT");
+  expect(view.getByRole("combobox", { name: "Konstantní symbol" })).toBe(boxes[0]!);
   fireEvent.keyDown(boxes[0]!, { key: "Escape" });
   await waitFor(() => expect(view.getAllByRole("combobox")[0]?.tagName).toBe("BUTTON"));
   expect(view.getAllByRole("combobox")).toHaveLength(1);

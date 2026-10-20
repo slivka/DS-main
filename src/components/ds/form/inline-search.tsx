@@ -157,6 +157,10 @@ export const InlineSearchInput = React.forwardRef<
   React.useLayoutEffect(() => {
     inputRef.current?.focus();
   }, [context?.target]);
+  // cmdk vnucuje aria-labelledby na skrytý popisek nabídky; název musí nést pole (aria-label).
+  React.useLayoutEffect(() => {
+    inputRef.current?.removeAttribute("aria-labelledby");
+  });
   if (!context?.target) return null;
   return createPortal(
     <CommandInput
