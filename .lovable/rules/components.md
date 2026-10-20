@@ -4697,7 +4697,7 @@ Sdílené ikonové spouštěče s počty; aplikace dodává libovolná id, popis
 | `indicators` | readonly RecordIndicator[] | `—` |
 | `onIndicatorClick` | (id: string) => void | `—` |
 | `activeTab` | string | `—` |
-| `size` | "default"  /  "compact" | `—` |
+| `size` | enum | `—` |
 
 **Examples:**
 
@@ -4744,7 +4744,7 @@ Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah ods
 | `header` | ReactNode | `—` |
 | `pinned` | boolean | `—` |
 | `onPinnedChange` | (pinned: boolean) => void | `—` |
-| `width` | "default"  /  "wide" | `—` |
+| `width` | enum | `—` |
 | `onWidthChange` | (width: "default"  /  "wide") => void | `—` |
 | `onOpenInAdjacentPane` | () => void | `—` |
 

@@ -67,7 +67,7 @@ const definitions = [
     file: "src/components/ds/feedback/record-history-timeline.tsx",
     usage:
       "Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnovější nahoře; funguje i jako záložka RecordSidePanel v úzké šířce. Aplikace dodává už zmapované události s popisky a hodnotami a řídí režim (basic/detailed) i filtr typů; komponenta nic nenačítá ani doménově neformátuje.",
-    code: '<RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} filter={filter} onFilterChange={setFilter} loading={isLoading} />',
+    code: "<RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} filter={filter} onFilterChange={setFilter} loading={isLoading} />",
     avoid:
       "Nepředávejte surová data auditu (názvy sloupců, JSON, ID); hodnoty mapuje a formátuje aplikace. Nepoužívejte zastaralý HistoryPanel.",
   },
@@ -97,7 +97,17 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     const previous = item.props ?? [];
     // Zachová výčty a výchozí hodnoty z extraktoru, které parser rozhraní nečte.
     item.props = interfaceProps(definition.types ?? definition.file, definition.name).map(
-      (prop) => ({ ...previous.find((old) => old.name === prop.name), ...prop }),
+      (prop) => {
+        const merged = { ...previous.find((old) => old.name === prop.name), ...prop };
+        // Řetězcový výčet publikuje stejně jako extraktor: type enum + values.
+        if (/^"[^"]+"( \| "[^"]+")*$/.test(prop.type))
+          return {
+            ...merged,
+            type: "enum",
+            values: prop.type.split(" | ").map((v) => v.slice(1, -1)),
+          };
+        return merged;
+      },
     );
     item.examples ??= [];
     const label = "Panel záznamu";

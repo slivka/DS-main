@@ -3209,8 +3209,12 @@
         },
         {
           "name": "width",
-          "type": "\"default\" | \"wide\"",
-          "required": false
+          "type": "enum",
+          "required": false,
+          "values": [
+            "default",
+            "wide"
+          ]
         },
         {
           "name": "onWidthChange",
@@ -3256,8 +3260,12 @@
         },
         {
           "name": "size",
-          "type": "\"default\" | \"compact\"",
-          "required": false
+          "type": "enum",
+          "required": false,
+          "values": [
+            "default",
+            "compact"
+          ]
         }
       ],
       "usage": "Sdílené ikonové spouštěče s počty; aplikace dodává libovolná id, popisky a ikony. Nula ukazuje tlumenou ikonu bez čísla. V DocumentForm použijte actionBarContent, v RecordDialog headerExtra.",
