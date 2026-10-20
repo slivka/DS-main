@@ -18,6 +18,7 @@ export type DocumentPostingAutoKind =
   | "vat"
   | "nonDeductible"
   | "advance"
+  | "advance_fx"
   | "rounding"
   | "fxRounding";
 
@@ -51,6 +52,7 @@ const AUTO_LABEL: Record<DocumentPostingAutoKind, keyof VatFiveTexts> = {
   vat: "autoVat",
   nonDeductible: "autoNonDeductible",
   advance: "autoAdvance",
+  advance_fx: "autoAdvanceFx",
   rounding: "autoRounding",
   fxRounding: "autoFxRounding",
 };

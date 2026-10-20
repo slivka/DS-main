@@ -247,6 +247,8 @@ export interface JournalLinesEditorProps {
   withoutAccounts?: boolean;
   /** Odečtené zálohy v měně dokladu (z DB, 2.118.0); patička je ukáže jen při nenulové hodnotě. */
   advanceDeduction?: number;
+  /** Obsah pod rekapitulací; APP předá odečty faktury, u ZL slot nepředává. */
+  afterVatRecap?: React.ReactNode;
   /** Závažnost rozdílu přepisu nad tolerancí (koncept varování, zařazení chyba); výchozí warning. */
   vatOverrideSeverity?: "warning" | "error";
 }

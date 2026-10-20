@@ -68,6 +68,8 @@ export type JournalSharedSide = "debit" | "credit" | "both";
 
 export type JournalLine = {
   id: string;
+  /** Automatický řádek zálohy dodaný APP, pouze prezentační štítek. */
+  autoKind?: "advance" | "advance_fx";
   debitAccount?: string | null;
   creditAccount?: string | null;
   /** Protiúčet u knih s pevným hlavním účtem. */
