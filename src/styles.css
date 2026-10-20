@@ -2510,10 +2510,19 @@ input.ds-disabled-control[readonly].bg-muted\/40,
   font-size: var(--text-title);
   white-space: nowrap;
 }
+.page-title-line {
+  display: flex;
+  align-items: baseline;
+}
 .page-title-line h1 {
-  display: inline;
   font-size: inherit;
-  vertical-align: baseline;
+  flex: 0 1 auto;
+}
+/* Obal sedí na účaří nadpisu; štítek uvnitř má vertical-align: middle vůči tomuto účaří. */
+.page-title-badge-slot {
+  flex: none;
+  font-size: inherit;
+  white-space: nowrap;
 }
 .page-title-badge {
   font-size: inherit;

@@ -10,6 +10,62 @@ import { CalendarViews } from "./calendar-views";
 import { calendarEscapeEvent } from "./calendar-escape";
 import { useDsTexts } from "../../ds-texts";
 
+// Stabilní typy podkomponent: vnořené definice by při každém vykreslení remountovaly
+// celý DayPicker a fokus šipky měsíce by spadl na body.
+const CalendarCaptionContext = React.createContext<{
+  locale: string;
+  open: (date: Date) => void;
+} | null>(null);
+type DayPickerComponents = NonNullable<React.ComponentProps<typeof DayPicker>["components"]>;
+const CalendarRoot: NonNullable<DayPickerComponents["Root"]> = ({
+  className,
+  rootRef,
+  ...props
+}) => <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
+const CalendarChevron: NonNullable<DayPickerComponents["Chevron"]> = ({
+  className,
+  orientation,
+  ...props
+}) => {
+  if (orientation === "left")
+    return <ChevronLeftIcon className={cn("size-4", className)} {...props} />;
+  if (orientation === "right")
+    return <ChevronRightIcon className={cn("size-4", className)} {...props} />;
+  return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
+};
+const CalendarMonthCaption: NonNullable<DayPickerComponents["MonthCaption"]> = ({
+  calendarMonth,
+}) => {
+  const context = React.useContext(CalendarCaptionContext);
+  const caption = new Intl.DateTimeFormat(context?.locale, {
+    month: "long",
+    year: "numeric",
+  }).format(calendarMonth.date);
+  return (
+    <div className="flex h-(--cell-size) items-center justify-center px-(--cell-size)">
+      <Button
+        variant="ghost"
+        size="control"
+        className="capitalize font-semibold text-base"
+        onClick={() => context?.open(calendarMonth.date)}
+      >
+        {caption}
+        <ChevronDownIcon />
+      </Button>
+    </div>
+  );
+};
+const CalendarWeekNumber: NonNullable<DayPickerComponents["WeekNumber"]> = ({
+  children,
+  ...props
+}) => (
+  <td {...props}>
+    <div className="flex size-(--cell-size) items-center justify-center text-center">
+      {children}
+    </div>
+  </td>
+);
+
 /** Vlastnosti společné navigace kalendáře. */
 export interface CalendarNavigationProps {
   /** @deprecated 2.110.0 – bez účinku; hlavička používá pohledy měsíců a let. Odstranění v 3.0.0. */
@@ -98,7 +154,8 @@ function Calendar({
       buttons.find((button) => button.dataset.today === "true") ??
       buttons[0]
     )?.focus();
-  }, [view, focusView, month]);
+    // Listování šipkami fokus nepřesouvá; jen otevření a návrat do dnů.
+  }, [view, focusView]);
   const escapeView = React.useCallback(() => {
     if (onMonthSelect || view === "days") onClose?.();
     else {
@@ -143,154 +200,124 @@ function Calendar({
         ) : null}
         {view === "days" ? (
           <div>
-            <DayPicker
-              locale={locale ?? dsTexts.dateLocale}
-              showOutsideDays={showOutsideDays}
-              className={cn(
-                "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
-                String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-                String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
-              )}
-              captionLayout="label"
-              fixedWeeks
-              formatters={{
-                formatMonthDropdown: (date) =>
-                  date.toLocaleString(dsTexts.intlLocale, { month: "short" }),
-                ...formatters,
+            <CalendarCaptionContext.Provider
+              value={{
+                locale: dsTexts.intlLocale,
+                open: (date) => {
+                  changeMonth(date);
+                  changeView("months");
+                },
               }}
-              classNames={{
-                root: cn("w-fit", defaultClassNames.root),
-                months: cn("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
-                month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-                nav: cn(
-                  "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
-                  defaultClassNames.nav,
-                ),
-                button_previous: cn(
-                  buttonVariants({ variant: buttonVariant }),
-                  "h-(--cell-size) w-(--cell-size) select-none p-0 aria-disabled:opacity-50",
-                  defaultClassNames.button_previous,
-                ),
-                button_next: cn(
-                  buttonVariants({ variant: buttonVariant }),
-                  "h-(--cell-size) w-(--cell-size) select-none p-0 aria-disabled:opacity-50",
-                  defaultClassNames.button_next,
-                ),
-                month_caption: cn(
-                  "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
-                  defaultClassNames.month_caption,
-                ),
-                dropdowns: cn(
-                  "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
-                  defaultClassNames.dropdowns,
-                ),
-                dropdown_root: cn(
-                  "has-focus:border-ring border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] relative rounded-md border",
-                  defaultClassNames.dropdown_root,
-                ),
-                dropdown: cn("bg-popover absolute inset-0 opacity-0", defaultClassNames.dropdown),
-                caption_label: cn(
-                  "select-none font-medium",
-                  "text-sm",
-                  defaultClassNames.caption_label,
-                ),
-                table: "w-full border-collapse",
-                weekdays: cn("flex", defaultClassNames.weekdays),
-                weekday: cn(
-                  "text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal",
-                  defaultClassNames.weekday,
-                ),
-                week: cn("mt-2 flex w-full", defaultClassNames.week),
-                week_number_header: cn(
-                  "w-(--cell-size) select-none",
-                  defaultClassNames.week_number_header,
-                ),
-                week_number: cn(
-                  "text-muted-foreground select-none text-[0.8rem]",
-                  defaultClassNames.week_number,
-                ),
-                day: cn(
-                  "group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md",
-                  defaultClassNames.day,
-                ),
-                range_start: cn("bg-accent rounded-l-md", defaultClassNames.range_start),
-                range_middle: cn("rounded-none", defaultClassNames.range_middle),
-                range_end: cn("bg-accent rounded-r-md", defaultClassNames.range_end),
-                today: cn("rounded-md", defaultClassNames.today),
-                outside: cn(
-                  "text-muted-foreground aria-selected:text-muted-foreground",
-                  defaultClassNames.outside,
-                ),
-                disabled: cn("text-muted-foreground opacity-50", defaultClassNames.disabled),
-                hidden: cn("invisible", defaultClassNames.hidden),
-                ...classNames,
-              }}
-              components={{
-                Root: ({ className, rootRef, ...props }) => {
-                  return (
-                    <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />
-                  );
-                },
-                Chevron: ({ className, orientation, ...props }) => {
-                  if (orientation === "left") {
-                    return <ChevronLeftIcon className={cn("size-4", className)} {...props} />;
-                  }
-
-                  if (orientation === "right") {
-                    return <ChevronRightIcon className={cn("size-4", className)} {...props} />;
-                  }
-
-                  return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
-                },
-                MonthCaption: ({ calendarMonth }) => {
-                  const caption = new Intl.DateTimeFormat(dsTexts.intlLocale, {
-                    month: "long",
-                    year: "numeric",
-                  }).format(calendarMonth.date);
-                  return (
-                    <div className="flex h-(--cell-size) items-center justify-center px-(--cell-size)">
-                      <Button
-                        variant="ghost"
-                        size="control"
-                        className="capitalize font-semibold text-base"
-                        onClick={() => {
-                          changeMonth(calendarMonth.date);
-                          changeView("months");
-                        }}
-                      >
-                        {caption}
-                        <ChevronDownIcon />
-                      </Button>
-                    </div>
-                  );
-                },
-                DayButton: CalendarDayButton,
-                WeekNumber: ({ children, ...props }) => {
-                  return (
-                    <td {...props}>
-                      <div className="flex size-(--cell-size) items-center justify-center text-center">
-                        {children}
-                      </div>
-                    </td>
-                  );
-                },
-                ...components,
-              }}
-              {...props}
-              month={month}
-              onMonthChange={changeMonth}
-              startMonth={boundsStart}
-              endMonth={boundsEnd}
-              disabled={[
-                ...(Array.isArray(props.disabled)
-                  ? props.disabled
-                  : props.disabled != null
-                    ? [props.disabled]
-                    : []),
-                ...(minDate ? [{ before: minDate }] : []),
-                ...(maxDate ? [{ after: maxDate }] : []),
-              ]}
-            />
+            >
+              <DayPicker
+                locale={locale ?? dsTexts.dateLocale}
+                showOutsideDays={showOutsideDays}
+                className={cn(
+                  "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+                  String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+                  String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+                )}
+                captionLayout="label"
+                fixedWeeks
+                formatters={{
+                  formatMonthDropdown: (date) =>
+                    date.toLocaleString(dsTexts.intlLocale, { month: "short" }),
+                  ...formatters,
+                }}
+                classNames={{
+                  root: cn("w-fit", defaultClassNames.root),
+                  months: cn("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
+                  month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
+                  nav: cn(
+                    "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+                    defaultClassNames.nav,
+                  ),
+                  button_previous: cn(
+                    buttonVariants({ variant: buttonVariant }),
+                    "h-(--cell-size) w-(--cell-size) select-none p-0 aria-disabled:opacity-50",
+                    defaultClassNames.button_previous,
+                  ),
+                  button_next: cn(
+                    buttonVariants({ variant: buttonVariant }),
+                    "h-(--cell-size) w-(--cell-size) select-none p-0 aria-disabled:opacity-50",
+                    defaultClassNames.button_next,
+                  ),
+                  month_caption: cn(
+                    "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+                    defaultClassNames.month_caption,
+                  ),
+                  dropdowns: cn(
+                    "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
+                    defaultClassNames.dropdowns,
+                  ),
+                  dropdown_root: cn(
+                    "has-focus:border-ring border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] relative rounded-md border",
+                    defaultClassNames.dropdown_root,
+                  ),
+                  dropdown: cn("bg-popover absolute inset-0 opacity-0", defaultClassNames.dropdown),
+                  caption_label: cn(
+                    "select-none font-medium",
+                    "text-sm",
+                    defaultClassNames.caption_label,
+                  ),
+                  table: "w-full border-collapse",
+                  weekdays: cn("flex", defaultClassNames.weekdays),
+                  weekday: cn(
+                    "text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal",
+                    defaultClassNames.weekday,
+                  ),
+                  week: cn("mt-2 flex w-full", defaultClassNames.week),
+                  week_number_header: cn(
+                    "w-(--cell-size) select-none",
+                    defaultClassNames.week_number_header,
+                  ),
+                  week_number: cn(
+                    "text-muted-foreground select-none text-[0.8rem]",
+                    defaultClassNames.week_number,
+                  ),
+                  day: cn(
+                    "group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md",
+                    defaultClassNames.day,
+                  ),
+                  range_start: cn("bg-accent rounded-l-md", defaultClassNames.range_start),
+                  range_middle: cn("rounded-none", defaultClassNames.range_middle),
+                  range_end: cn("bg-accent rounded-r-md", defaultClassNames.range_end),
+                  today: cn("rounded-md", defaultClassNames.today),
+                  outside: cn(
+                    "text-muted-foreground aria-selected:text-muted-foreground",
+                    defaultClassNames.outside,
+                  ),
+                  disabled: cn("text-muted-foreground opacity-50", defaultClassNames.disabled),
+                  hidden: cn("invisible", defaultClassNames.hidden),
+                  ...classNames,
+                }}
+                components={{
+                  Root: CalendarRoot,
+                  Chevron: CalendarChevron,
+                  MonthCaption: CalendarMonthCaption,
+                  DayButton: CalendarDayButton,
+                  WeekNumber: CalendarWeekNumber,
+                  ...components,
+                }}
+                {...props}
+                // Fokus řídí efekt výše; DayPicker by jej při listování přesouval do mřížky.
+                autoFocus={false}
+                initialFocus={false}
+                month={month}
+                onMonthChange={changeMonth}
+                startMonth={boundsStart}
+                endMonth={boundsEnd}
+                disabled={[
+                  ...(Array.isArray(props.disabled)
+                    ? props.disabled
+                    : props.disabled != null
+                      ? [props.disabled]
+                      : []),
+                  ...(minDate ? [{ before: minDate }] : []),
+                  ...(maxDate ? [{ after: maxDate }] : []),
+                ]}
+              />
+            </CalendarCaptionContext.Provider>
           </div>
         ) : null}
       </div>
