@@ -227,11 +227,7 @@ export const InlineSearchInput = React.forwardRef<
             document.querySelectorAll<HTMLElement>(
               'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
             ),
-          ).filter(
-            (node) =>
-              !insideSearch(context, node) &&
-              node.getClientRects().length > 0,
-          );
+          ).filter((node) => !insideSearch(context, node) && node.getClientRects().length > 0);
           const trigger = context.target?.querySelector('button[role="combobox"]');
           const next = event.shiftKey
             ? focusable

@@ -18,9 +18,11 @@ async function clickItem(view: ReturnType<typeof render>, text: string) {
     if (!node) throw new Error("Nabídka neotevřena");
     return node;
   });
-  const item = Array.from(view.baseElement.querySelectorAll<HTMLElement>("[cmdk-item]")).find(
-    (node) => node.textContent?.includes(text),
-  );
+  const item = Array.from(
+    view.baseElement.querySelectorAll<HTMLElement>(
+      "[cmdk-item], [data-radix-popper-content-wrapper] button",
+    ),
+  ).find((node) => node.textContent?.includes(text));
   if (!item) throw new Error(`Chybí položka ${text}`);
   // Nezrušený mousedown by v prohlížeči vzal vstupu fokus (relatedTarget null) a zavřel nabídku.
   const kept = !fireEvent.mouseDown(item);
@@ -32,7 +34,9 @@ async function clickItem(view: ReturnType<typeof render>, text: string) {
 async function expectClosedOnTrigger(view: ReturnType<typeof render>) {
   await waitFor(() => expect(view.baseElement.querySelector("[cmdk-input]")).toBeNull());
   const trigger = view.baseElement.querySelector("button[role=combobox]");
-  await waitFor(() => expect(document.activeElement?.outerHTML.slice(0, 60)).toBe(trigger?.outerHTML.slice(0, 60)));
+  await waitFor(() =>
+    expect(document.activeElement?.outerHTML.slice(0, 60)).toBe(trigger?.outerHTML.slice(0, 60)),
+  );
 }
 
 const single: [string, (change: ReturnType<typeof mock>) => ReactElement, string, unknown][] = [
@@ -120,6 +124,8 @@ test("MultiSelect: klik myší přidá položku a nabídka zůstane otevřená",
         { value: "b", label: "Beta" },
       ]}
       selected={[]}
+      allLabel="Vše"
+      itemsLabel="položky"
       onChange={change}
     />,
   );
