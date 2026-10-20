@@ -21,8 +21,7 @@
 - Gridy skládají lištu přes `GridFrame` a menu řádku přes `useRowActions`; globální klávesy přes `useGlobalShortcuts` (jeden posluchač). Proč: jedno místo chování pro všechny gridy a rámy.
 - Neaktivní volby filtruj přes sdílené `InactiveTag` / `selectableItems`.
 - Hodnota jen ke čtení patří do `FieldValue` uvnitř `Field`.
-- Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; akce v `RecordActionBar`.
-- Karta: Uložit a akce vždy v `RecordActionBar`, nikdy volně pod poli.
+- Karta: stav v `PageHeader.titleBadge`; checkboxy v `CheckboxGroup` nebo `FieldGrid align="input"`; Uložit a akce vždy v `RecordActionBar`, nikdy pod poli.
 - Kód a název formátujte pouze přes `formatCodeName`; proč: UI, gridy a exporty musí mít jeden typografický standard.
 
 ## Jazyk knihovny (2.61.0)
@@ -37,7 +36,7 @@ Aplikace nastaví jazyk jednou v kořeni:
 
 Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → `DsTextsProvider` → `DS_TEXTS_CS`. Nový text komponenty musí mít nový klíč v `DsTexts`, český výchozí text v `DS_TEXTS_CS` a slovenský překlad v `DS_TEXTS_SK`; uživatelsky viditelný text se nesmí vložit natvrdo.
 
-- Preview-only accounting examples live in showcase modules excluded by .dsignore. Why: all existing pages remain usable without leaking preview dependencies to consumers.
+- Keep preview examples in .dsignore-excluded showcase modules. Why: preserve pages without shipping preview dependencies.
 - Export bank-account utilities directly from the root barrel and preserve their existing component-barrel re-export. Why: consumers get a clear utility entry without breaking existing imports.
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
@@ -49,8 +48,7 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 ## Vydání knihovny
 
 - `meta.version` = `package.json` = poslední VYDANÁ verze; CHANGELOG a roadmap nesou další minor „(nevydáno)“. Nepromítne-li se commit vydání, nastav obě hodnoty a commit zapiš do `.lovable/release-base.json`.
-- Katalog jen přes `bun run check:catalog`; odebrání jen záznamem v `.lovable/catalog-removals.json`; čísla katalogu v CHANGELOG jen z jeho výstupu. Proč: žádné skripty s natvrdo commitem.
-- Refresh catalog via check:catalog --refresh. Why: code and references agree.
+- Use `bun run check:catalog` (`--refresh` to refresh); record removals in `.lovable/catalog-removals.json` and CHANGELOG counts only from its output. Why: code/references agree without hardcoded commits.
 
 
 
