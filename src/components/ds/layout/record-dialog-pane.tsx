@@ -3,10 +3,11 @@
  * přesun a návrat fokusu · nesmí rozhodovat o ochraně neuložených změn (žádost o zavření
  * předá rodiči).
  */
-import { useEffect, useId, useRef, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "../../../lib/utils";
+import { focusables, trapTab } from "./focus-boundary";
 
 /** Vlastnosti dialogu v panelu. */
 export interface RecordDialogPaneProps {
@@ -24,42 +25,8 @@ export interface RecordDialogPaneProps {
   onRequestClose: () => void;
 }
 
-const FOCUSABLE =
-  'input:not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
-
 const FIRST_FIELD =
   'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [role="combobox"]:not([disabled])';
-
-/** Viditelné zaměřitelné prvky dialogu v pořadí dokumentu. */
-function focusables(dialog: HTMLElement): HTMLElement[] {
-  return Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-    (node) => node.tabIndex >= 0 && !node.closest("[hidden],[aria-hidden='true'],[inert]"),
-  );
-}
-
-/**
- * Past fokusu jako Radix `Dialog`: Tab z posledního prvku jde na první a Shift+Tab naopak.
- * Událost z vnořeného portálu (potvrzení, výběr) se ignoruje – tam vládne jeho vlastní past.
- */
-function trapTab(event: KeyboardEvent<HTMLDivElement>) {
-  const dialog = event.currentTarget;
-  if (!(event.target instanceof Node) || !dialog.contains(event.target)) return;
-  const items = focusables(dialog);
-  const first = items[0];
-  const last = items[items.length - 1];
-  if (!first || !last) {
-    event.preventDefault();
-    return;
-  }
-  const active = document.activeElement;
-  if (event.shiftKey && (active === first || active === dialog)) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && active === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
 
 /** Dialog vykreslený jen nad obsahem svého panelu. */
 export function RecordDialogPane(props: RecordDialogPaneProps) {

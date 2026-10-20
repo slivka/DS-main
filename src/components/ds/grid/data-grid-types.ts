@@ -8,9 +8,14 @@ import type { ReactNode } from "react";
 import type { ExcelColumnType } from "../../../lib/excel-export";
 import type { GridBaseProps } from "./grid-base-props";
 import type { GridTexts } from "./grid-texts";
+import type { RecordIndicator } from "../layout/record-panel-triggers";
 
 /** Sloupec DataGrid. */
 export type DataGridColumn<Row> = {
+  /** Obecný sloupec ikon s počty. */
+  type?: "record-indicators";
+  /** Stálá sada indikátorů a jejich počty v řádku. */
+  indicators?: readonly (Omit<RecordIndicator, "count"> & { count: (row: Row) => number })[];
   /** Jednoznačný klíč sloupce. */
   id: string;
   label: string;
@@ -82,6 +87,8 @@ export type DataGridFilterChip = { id: string; label: string; onRemove?: () => v
 
 /** Props DataGrid; společné props s TreeGrid jsou v {@link GridBaseProps}. */
 export type DataGridProps<Row> = GridBaseProps<Row> & {
+  /** Klik indikátoru nevybere ani neotevře řádek. */
+  onIndicatorClick?: (row: Row, id: string) => void;
   /** Klíč pro uložení nastavení gridu v prohlížeči. */
   storageKey: string;
   /** Automaticky přizpůsobí zoom dostupné šířce; ve formulářovém PageLayoutu je výchozí true. */

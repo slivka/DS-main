@@ -5,12 +5,15 @@
 
 ### Panel dokladu – přílohy a poznámky (krok 2)
 
-- [ ] Obecný RecordSidePanel a RecordPanelTriggers; sdílené sloty formuláře a dialogu.
-- [ ] AttachmentList a useFileDrop: oprávnění, odebrání/smazání, zdroj, průběh a odmítnuté soubory.
-- [ ] Zpětně kompatibilní RecordNotes, připnutí a PinnedNoteBar; texty CS/SK.
-- [ ] DataGrid record-indicators, číselný Excel export, useFollowSelection a MultiSelectionPanel.
-- [ ] Ukázka Panel záznamu, testy chování a nejvýše jeden Chromium E2E spec.
-- [ ] Průběžné kontroly quick, katalog a dokumentace; bez vydání a bez změn bodů Firefox/WebKit.
+- [x] Obecný RecordSidePanel a RecordPanelTriggers; sdílené sloty formuláře a dialogu.
+- [x] AttachmentList a useFileDrop: oprávnění, odebrání/smazání, zdroj, průběh a odmítnuté soubory.
+- [x] Zpětně kompatibilní RecordNotes, připnutí a PinnedNoteBar; texty CS/SK.
+- [x] DataGrid record-indicators, číselný Excel export, useFollowSelection a MultiSelectionPanel.
+- [x] Ukázka Panel záznamu, testy chování a nejvýše jeden Chromium E2E spec.
+- [x] Průběžné kontroly quick, katalog a dokumentace; bez vydání a bez změn bodů Firefox/WebKit.
+
+- Ověřeno: 18 nových testů chování; check:full --harness 894/894 unit (88 souborů), lint bez chyb, formát a peněžní audit OK. Jeden nový Chromium spec 1/1; úzké prostředí a zoom 200 %. Katalog 440 → 445 komponent, 902 → 951 props, 0 odebrání. Automatický build OK.
+- Neběžela plná E2E sada ani nové Firefox/WebKit kontroly; spustí Claude v GitHubu. Nic nevydáno.
 
 ## DS 2.112.0 – Opravy pro Firefox a Safari
 

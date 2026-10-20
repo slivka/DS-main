@@ -1,6 +1,7 @@
 /** Obnovení autorských údajů katalogu · vlastní odvozené výchozí texty a referenci · nevydává. */
 import { readFileSync, writeFileSync } from "node:fs";
 import { DS_TEXTS_CS } from "../src/ds-texts/cs";
+import { enrichRecordPanelCatalog, renderPanelCatalogSections } from "./record-panel-catalog";
 
 interface CatalogProp {
   name: string;
@@ -60,6 +61,7 @@ export function refreshCatalog() {
       "V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.";
     if (!record.antipatterns.includes(rule)) record.antipatterns.push(rule);
   }
+  const panelComponents = enrichRecordPanelCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -98,7 +100,7 @@ export function refreshCatalog() {
     }
     markdown = markdown.slice(0, start) + section + markdown.slice(end);
   }
-  writeFileSync(reference, markdown);
+  writeFileSync(reference, renderPanelCatalogSections(markdown, panelComponents));
   const previewPath = "src/.generated/mockup-components.ts";
   const preview = readFileSync(previewPath, "utf8");
   writeFileSync(

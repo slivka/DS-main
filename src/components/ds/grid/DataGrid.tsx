@@ -439,6 +439,7 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
                     texts={texts}
                   >
                     <DataGridRows
+                      onIndicatorClick={props.onIndicatorClick}
                       layout={layout}
                       items={displayItems}
                       virtual={virtual}

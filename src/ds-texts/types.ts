@@ -8,6 +8,8 @@ export type { BankStatementTexts } from "./bank-statement-texts";
 import type { Locale } from "date-fns";
 import type { PaneChromeTexts } from "../components/ds/panes/pane-context";
 import type { LayoutMenuTexts } from "../components/ds/panes/layout-menu";
+import type { AttachmentTexts, RecordNotesTexts, RecordPanelTexts } from "./record-panel-texts";
+export type { AttachmentTexts, RecordPanelTexts } from "./record-panel-texts";
 
 /** Druh potvrzovaného odchodu. */
 export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate" | "record";
@@ -24,6 +26,12 @@ import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Panel záznamu. */
+  recordPanel: RecordPanelTexts;
+  /** Poznámky záznamu. */
+  recordNotes: RecordNotesTexts;
+  /** Přílohy záznamu. */
+  attachments: AttachmentTexts;
   /** Přístupné názvy číselného krokovače. */
   stepper: { decrease: string; increase: string };
   /** Názvy vytváření z hledatelných výběrů. */

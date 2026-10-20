@@ -351,6 +351,8 @@ export interface DocumentFormProps {
   title: string;
   /** Další stavové štítky bezprostředně za stavem dokladu. */
   titleBadges?: ReactNode;
+  /** Doplňkové ovládání vlevo v liště, například RecordPanelTriggers. */
+  actionBarContent?: ReactNode;
   description?: ReactNode;
   identity?: DocumentIdentity;
   directionBadge?: DocumentDirection;

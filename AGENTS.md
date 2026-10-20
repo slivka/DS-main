@@ -43,14 +43,14 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
 - Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
-- Keep recap and list navigation in focused modules. Why: readable orchestration, stable exports.
+- RecordSidePanel owns layout; file selection and useFileDrop share validation. Why: no consumer fetching or duplicate validation.
 
 
 ## Vydání knihovny
 
 - `meta.version` = `package.json` = poslední VYDANÁ verze; CHANGELOG a roadmap nesou další minor „(nevydáno)“. Nepromítne-li se commit vydání, nastav obě hodnoty a commit zapiš do `.lovable/release-base.json`.
 - Katalog jen přes `bun run check:catalog`; odebrání jen záznamem v `.lovable/catalog-removals.json`; čísla katalogu v CHANGELOG jen z jeho výstupu. Proč: žádné skripty s natvrdo commitem.
-- Refresh catalog defaults and references via check:catalog --refresh. Why: documentation agrees with code.
+- Refresh catalog via check:catalog --refresh. Why: code and references agree.
 
 
 

@@ -157,6 +157,19 @@ export function buildExportData<Row>(
   groupLevels: number | null,
   forPrint: boolean,
 ): GridExportData {
+  shown = shown.flatMap((column) =>
+    column.type === "record-indicators"
+      ? (column.indicators ?? []).map((indicator) => ({
+          id: `${column.id}:${indicator.id}`,
+          label: indicator.label,
+          value: indicator.count,
+          numeric: true,
+          exportType: "integer" as const,
+          decimals: 0,
+          total: "sum" as const,
+        }))
+      : [column],
+  );
   const hasSections = shown.some((column) => column.section);
   return {
     columns: shown.map((column) => column.label),

@@ -4,6 +4,7 @@
  * Nesmí: obsahovat React kód ani slovenské texty.
  */
 import { CS_VAT_GROUPS } from "./cs-vat-groups";
+import { ATTACHMENTS_CS, RECORD_NOTES_CS, RECORD_PANEL_CS } from "./cs-record-panel";
 import { BANK_STATEMENT_CS } from "./cs-bank-statement";
 import { cs } from "date-fns/locale";
 
@@ -13,6 +14,9 @@ import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  recordPanel: RECORD_PANEL_CS,
+  recordNotes: RECORD_NOTES_CS,
+  attachments: ATTACHMENTS_CS,
   stepper: { decrease: "Snížit", increase: "Zvýšit" },
   selectCreate: {
     item: "Nový záznam",

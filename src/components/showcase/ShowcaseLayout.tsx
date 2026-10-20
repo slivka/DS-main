@@ -57,6 +57,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/components/print", label: "Tisk", icon: Printer },
       { to: "/components/forms", label: "Formuláře", icon: TextCursorInput },
       { to: "/components/feedback", label: "Zpětná vazba", icon: MessageSquare },
+      { to: "/components/record-panel", label: "Panel záznamu", icon: MessageSquare },
       { to: "/components/accounting-forms", label: "Účetní formuláře – editor", icon: Receipt },
       {
         to: "/components/accounting-controls",

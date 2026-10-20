@@ -1,95 +1,140 @@
-import { useMemo, useState } from "react";
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Pencil, Trash2 } from "lucide-react";
-
+/** Poznámky záznamu · vlastní editor a řazení · nesmí načítat data ani vynucovat jediné připnutí. */
+import { forwardRef, useMemo, useState, type ComponentPropsWithoutRef } from "react";
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Pencil, Pin, PinOff, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Textarea } from "../../ui/textarea";
+import { Badge } from "../../ui/badge";
 import { formatUserDateTime } from "../../../lib/date-time-preferences";
+import { useDsTexts } from "../../../ds-texts";
+import type { RecordNotesTexts as NotesTexts } from "../../../ds-texts/record-panel-texts";
+import { cn } from "../../../lib/utils";
 import { useConfirmDialog } from "./confirm-dialog";
-
+import { NoticeBar } from "./notice-bar";
 /** Poznámka uživatele k záznamu. */
-export type RecordNote = {
+export interface RecordNote {
+  /** Klíč poznámky. */
   id: string;
+  /** Obsah poznámky. */
   body: string;
+  /** Autor. */
   author?: string | null;
+  /** Čas vytvoření. */
   createdAt: string;
-  /** Může přihlášený uživatel poznámku upravit nebo odstranit? */
+  /** Záložní oprávnění pro úpravu a odstranění, zachováno pro kompatibilitu. */
   editable?: boolean;
-};
-
-export type RecordNotesTexts = {
-  placeholder: string;
-  add: string;
-  save: string;
-  cancel: string;
-  edit: string;
-  remove: string;
-  empty: string;
-  sortNewest: string;
-  sortOldest: string;
-  confirmRemove: string;
-};
-
-const DEFAULT_TEXTS: RecordNotesTexts = {
-  placeholder: "Nová poznámka…",
-  add: "Přidat",
-  save: "Uložit",
-  cancel: "Zrušit",
-  edit: "Upravit",
-  remove: "Odstranit",
-  empty: "Zatím bez poznámek.",
-  sortNewest: "Nejnovější nahoře",
-  sortOldest: "Nejstarší nahoře",
-  confirmRemove: "Opravdu odstranit poznámku?",
-};
-
-/**
- * Sdílený panel poznámek k záznamu. Data i ukládání dodává aplikace přes props,
- * komponenta sama nic nenačítá.
- */
-export function RecordNotes({
-  notes,
-  onAdd,
-  onUpdate,
-  onRemove,
-  texts,
-}: {
+  /** Explicitní oprávnění upravit. */
+  canEdit?: boolean;
+  /** Explicitní oprávnění odstranit. */
+  canRemove?: boolean;
+  /** Stav připnutí dodaný aplikací. */
+  pinned?: boolean;
+  /** Čas poslední úpravy. */
+  editedAt?: string | null;
+}
+/** Původní textový kontrakt s volitelnými novými texty pro zpětnou kompatibilitu. */
+export type RecordNotesTexts = Omit<NotesTexts, "pin" | "unpin" | "pinned" | "edited" | "failed"> &
+  Partial<Pick<NotesTexts, "pin" | "unpin" | "pinned" | "edited" | "failed">>;
+/** Vlastnosti panelu poznámek. */
+export interface RecordNotesProps extends ComponentPropsWithoutRef<"div"> {
+  /** Poznámky dodané aplikací. */
   notes: RecordNote[];
+  /** Uložení nové poznámky. */
   onAdd?: (body: string) => void | Promise<void>;
+  /** Uložení změny. */
   onUpdate?: (id: string, body: string) => void | Promise<void>;
+  /** Odstranění. */
   onRemove?: (id: string) => void | Promise<void>;
+  /** Lokální přepisy textů. */
   texts?: Partial<RecordNotesTexts>;
-}) {
-  const t = { ...DEFAULT_TEXTS, ...texts };
+  /** Právo přidat; výchozí zachovává přítomnost onAdd. */
+  canAdd?: boolean;
+  /** Právo připnout; může záviset na poznámce. */
+  canPin?: boolean | ((note: RecordNote) => boolean);
+  /** Právo upravit; má přednost před editable. */
+  canEdit?: boolean | ((note: RecordNote) => boolean);
+  /** Právo odstranit; má přednost před editable. */
+  canRemove?: boolean | ((note: RecordNote) => boolean);
+  /** Změna připnutí; jedinou připnutou hlídá aplikace. */
+  onPin?: (id: string, pinned: boolean) => void | Promise<void>;
+}
+function allowed(
+  rule: boolean | ((note: RecordNote) => boolean) | undefined,
+  note: RecordNote,
+  fallback: boolean,
+) {
+  return typeof rule === "function" ? rule(note) : (rule ?? fallback);
+}
+/** Existující poznámky, rozšířené o připnutí a oddělená oprávnění. */
+export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function RecordNotes(
+  {
+    notes,
+    onAdd,
+    onUpdate,
+    onRemove,
+    texts,
+    canAdd = true,
+    canPin = false,
+    canEdit,
+    canRemove,
+    onPin,
+    className,
+    ...props
+  },
+  ref,
+) {
+  const t = { ...useDsTexts().recordNotes, ...texts };
   const { confirm, confirmDialog } = useConfirmDialog();
   const [body, setBody] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editBody, setEditBody] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
-
-  const sorted = useMemo(() => {
-    const list = [...notes];
-    list.sort((a, b) => (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0));
-    return sortDesc ? list.reverse() : list;
-  }, [notes, sortDesc]);
-
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const sorted = useMemo(
+    () =>
+      [...notes].sort((a, b) => {
+        if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+        const order = a.createdAt.localeCompare(b.createdAt);
+        return sortDesc ? -order : order;
+      }),
+    [notes, sortDesc],
+  );
+  const run = async (operation: () => void | Promise<void>, done?: () => void) => {
+    setBusy(true);
+    setError(null);
+    try {
+      await operation();
+      done?.();
+    } catch {
+      setError(t.failed);
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
-    <div className="flex flex-col gap-3">
-      {onAdd ? (
+    <div ref={ref} {...props} className={cn("flex flex-col gap-3", className)}>
+      {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
+      {onAdd && canAdd ? (
         <div className="flex flex-col gap-2">
           <Textarea
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={(event) => setBody(event.target.value)}
             placeholder={t.placeholder}
+            aria-label={t.placeholder}
             rows={3}
+            disabled={busy}
           />
           <div className="flex justify-end">
             <Button
               type="button"
               size="sm"
-              disabled={!body.trim()}
-              onClick={async () => {
-                await onAdd(body.trim());
-                setBody("");
+              aria-disabled={busy || !body.trim()}
+              onClick={() => {
+                if (busy || !body.trim()) return;
+                void run(
+                  () => onAdd(body.trim()),
+                  () => setBody(""),
+                );
               }}
             >
               {t.add}
@@ -97,14 +142,14 @@ export function RecordNotes({
           </div>
         </div>
       ) : null}
-
       <div className="flex justify-end">
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => setSortDesc((v) => !v)}
+          onClick={() => setSortDesc((value) => !value)}
           title={sortDesc ? t.sortNewest : t.sortOldest}
+          aria-label={sortDesc ? t.sortNewest : t.sortOldest}
         >
           {sortDesc ? (
             <ArrowDownWideNarrow className="size-4" />
@@ -113,22 +158,26 @@ export function RecordNotes({
           )}
         </Button>
       </div>
-
       {sorted.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t.empty}</p>
       ) : (
         <ul className="space-y-2">
           {sorted.map((note) => (
             <li key={note.id} className="rounded-md border p-3 text-sm">
-              <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                 <span>{note.author ?? "—"}</span>
-                <span>{formatUserDateTime(note.createdAt)}</span>
+                <span>
+                  {formatUserDateTime(note.createdAt)}
+                  {note.editedAt ? ` · ${t.edited} ${formatUserDateTime(note.editedAt)}` : ""}
+                </span>
+                {note.pinned ? <Badge variant="secondary">{t.pinned}</Badge> : null}
               </div>
               {editingId === note.id ? (
                 <div className="mt-2 flex flex-col gap-2">
                   <Textarea
                     value={editBody}
-                    onChange={(e) => setEditBody(e.target.value)}
+                    onChange={(event) => setEditBody(event.target.value)}
+                    aria-label={t.edit}
                     rows={3}
                   />
                   <div className="flex justify-end gap-2">
@@ -136,6 +185,7 @@ export function RecordNotes({
                       type="button"
                       variant="outline"
                       size="sm"
+                      disabled={busy}
                       onClick={() => setEditingId(null)}
                     >
                       {t.cancel}
@@ -143,25 +193,43 @@ export function RecordNotes({
                     <Button
                       type="button"
                       size="sm"
-                      onClick={async () => {
-                        await onUpdate?.(note.id, editBody.trim());
-                        setEditingId(null);
-                      }}
+                      disabled={busy || !editBody.trim()}
+                      onClick={() =>
+                        void run(
+                          () => onUpdate?.(note.id, editBody.trim()),
+                          () => setEditingId(null),
+                        )
+                      }
                     >
                       {t.save}
                     </Button>
                   </div>
                 </div>
               ) : (
-                <p className="mt-1 whitespace-pre-wrap">{note.body}</p>
+                <p className="mt-1 whitespace-pre-wrap break-words">{note.body}</p>
               )}
-              {note.editable !== false && editingId !== note.id ? (
+              {editingId !== note.id ? (
                 <div className="mt-2 flex justify-end gap-1">
-                  {onUpdate ? (
+                  {onPin && allowed(canPin, note, false) ? (
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
+                      disabled={busy}
+                      aria-label={note.pinned ? t.unpin : t.pin}
+                      title={note.pinned ? t.unpin : t.pin}
+                      onClick={() => void run(() => onPin(note.id, !note.pinned))}
+                    >
+                      {note.pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
+                    </Button>
+                  ) : null}
+                  {onUpdate && allowed(canEdit, note, note.canEdit ?? note.editable !== false) ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={busy}
+                      aria-label={t.edit}
                       title={t.edit}
                       onClick={() => {
                         setEditingId(note.id);
@@ -171,11 +239,14 @@ export function RecordNotes({
                       <Pencil className="size-4" />
                     </Button>
                   ) : null}
-                  {onRemove ? (
+                  {onRemove &&
+                  allowed(canRemove, note, note.canRemove ?? note.editable !== false) ? (
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
+                      disabled={busy}
+                      aria-label={t.remove}
                       title={t.remove}
                       className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       onClick={() =>
@@ -183,7 +254,7 @@ export function RecordNotes({
                           title: t.confirmRemove,
                           destructive: true,
                           confirmLabel: t.remove,
-                          onConfirm: () => void onRemove(note.id),
+                          onConfirm: () => void run(() => onRemove(note.id)),
                         })
                       }
                     >
@@ -199,4 +270,4 @@ export function RecordNotes({
       {confirmDialog}
     </div>
   );
-}
+});

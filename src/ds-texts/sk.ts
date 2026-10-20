@@ -4,6 +4,7 @@
  * Nesmí: obsahovat React kód.
  */
 import { SK_VAT_GROUPS } from "./sk-vat-groups";
+import { ATTACHMENTS_SK, RECORD_NOTES_SK, RECORD_PANEL_SK } from "./sk-record-panel";
 import { BANK_STATEMENT_SK } from "./sk-bank-statement";
 import { sk } from "date-fns/locale";
 
@@ -15,6 +16,9 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  recordPanel: RECORD_PANEL_SK,
+  recordNotes: RECORD_NOTES_SK,
+  attachments: ATTACHMENTS_SK,
   stepper: { decrease: "Znížiť", increase: "Zvýšiť" },
   selectCreate: {
     item: "Nový záznam",

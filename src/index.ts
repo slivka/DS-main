@@ -67,6 +67,7 @@ export {
   type AmountDifferenceProps,
 } from "./components/ds/accounting/amount-difference";
 export * from "./lib/utils";
+export * from "./lib/file-size";
 export * from "./lib/theme";
 export * from "./lib/accounting-utils";
 export * from "./lib/bank-account";
