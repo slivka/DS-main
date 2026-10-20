@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("Tab z Popisu na Kód DPH, Enter vybere a přejde na Částku; Shift+Tab zpět", async ({ page }) => {
+test("Tab z Popisu na Kód DPH, Enter vybere a přejde na Částku; Shift+Tab zpět", async ({
+  page,
+}) => {
   await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
   // Od rozdělení ukázek (2.109.0) jsou na stránce dva editory s řádkem fv1; měříme první.
   const amount = page.locator('[data-cell-key="fv1:amount"]').first();
