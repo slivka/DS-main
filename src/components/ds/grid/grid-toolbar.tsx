@@ -192,7 +192,16 @@ export const GridToolbar = React.forwardRef<HTMLDivElement, GridToolbarProps>(fu
     };
     const update = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
+      // První měření běží synchronně – Firefox ve headless režimu pod zátěží
+      // škrtí requestAnimationFrame a popisky lišty by se přeply pozdě.
+      if (lastWidth === -1) {
+        lastWidth = node.getBoundingClientRect().width;
+        measure();
+        return;
+      }
+      frame = requestAnimationFrame(measure);
+    };
+    const measure = () => {
         const style = getComputedStyle(node);
         const rightNode = node.querySelector<HTMLElement>('[data-slot="grid-toolbar-right"]');
         const rightStyle = rightNode ? getComputedStyle(rightNode) : style;
