@@ -129,6 +129,9 @@ export const DS_TEXTS_SK: DsTexts = {
     closePane: "Zavrieť panel",
     pageActions: "Akcie stránky",
     untitled: "Bez názvu",
+    pinLinked: "Zamknúť záznam v tomto okne",
+    unpinLinked: "Znova sledovať zdrojové okno",
+    returnToPanel: "Vrátiť do panela",
   },
   locale: "sk",
   intlLocale: "sk-SK",
@@ -287,6 +290,9 @@ export const DS_TEXTS_SK: DsTexts = {
     openedInNewTab: (target: string, tab: string) =>
       `${target} otvorené v novej karte – ${tab} má neuložené zmeny`,
     unsavedChanges: "neuložené zmeny",
+    linkedReplaceTitle: "Nahradiť obsah okna vpravo?",
+    linkedReplaceDescription: "Okno vpravo už zobrazuje iný obsah.",
+    linkedReplaceConfirm: "Nahradiť",
   },
   notification: {
     label: "Oznámenia",

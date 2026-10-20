@@ -56,6 +56,13 @@ import {
 } from "./pane-tab-store";
 import { recordNavigation } from "./pane-record-navigation";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
+import { useConfirmDialog } from "../feedback/confirm-dialog";
+import {
+  openLinkedTabInState,
+  returnLinkedTabInState,
+  setLinkedTabPinnedInState,
+  syncLinkedTabsInState,
+} from "./linked-tabs";
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
   onChange: (state: PaneTabsState) => void;
@@ -125,10 +132,13 @@ export function PaneTabsProvider({
     closedRef.current = stack;
     setClosedStack(stack);
   };
+  const { confirm, confirmDialog } = useConfirmDialog();
   const commit = useCallback(
     (next: PaneTabsState) => {
-      stateRef.current = next;
-      onChange(next);
+      // Navázané záložky se po každé změně přepnou podle zdroje (ne podle pozice panelu).
+      const synced = syncLinkedTabsInState(next);
+      stateRef.current = synced;
+      onChange(synced);
     },
     [onChange],
   );
@@ -346,6 +356,28 @@ export function PaneTabsProvider({
   };
   const getRecordNav = (tabId: string) =>
     recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
+  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section) => {
+    const attempt = (confirmed: boolean) => {
+      const result = openLinkedTabInState(stateRef.current, sourceTabId, section, { confirmed });
+      if (result.outcome === "rejected") {
+        toast.warning(t.limitRejected.replace("{max}", String(MAX_TABS_PER_PANE)));
+        return;
+      }
+      if (result.outcome === "needsConfirm") {
+        // Odmítnutí nic nemění – obsah zůstane ve vysouvacím panelu.
+        confirm({
+          title: p.linkedReplaceTitle,
+          description: p.linkedReplaceDescription,
+          confirmLabel: p.linkedReplaceConfirm,
+          onConfirm: () => attempt(true),
+        });
+        return;
+      }
+      if (result.evictedTabId) clearTabState(result.evictedTabId);
+      commit(result.state);
+    };
+    attempt(false);
+  };
   const api: PaneTabsApi = {
     state,
     openRecord,
@@ -384,6 +416,10 @@ export function PaneTabsProvider({
       };
     },
     getRecordNav,
+    openLinkedTab,
+    setLinkedPinned: (tabId, pinned) =>
+      commit(setLinkedTabPinnedInState(stateRef.current, tabId, pinned)),
+    returnLinkedTab: (tabId) => commit(returnLinkedTabInState(stateRef.current, tabId)),
     serializeLayout: () =>
       serializeLayout(stateRef.current, (tabId) => ({
         state: getTabDraft(tabId, "grid"),
@@ -457,6 +493,7 @@ export function PaneTabsProvider({
         titleOf={titleOf}
         onSaveTab={onSaveTab}
       />
+      {confirmDialog}
     </PaneTabsContext.Provider>
   );
 }

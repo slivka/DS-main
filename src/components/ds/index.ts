@@ -40,6 +40,7 @@ export { isNavItemActive } from "./layout/nav-items";
 
 /* Panely (režim více oken) */
 export * from "./panes/pane-state";
+export * from "./panes/linked-tabs";
 export * from "./panes/pane-context";
 export * from "./panes/pane-layout";
 export * from "./panes/unsaved-changes-dialog";

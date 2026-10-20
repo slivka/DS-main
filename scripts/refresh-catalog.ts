@@ -110,6 +110,26 @@ export function refreshCatalog() {
       "V řízeném režimu aktualizujte activeTab přes onTabChange; DS hodnotu sám nepřepíše.";
     if (!record.antipatterns.includes(rule)) record.antipatterns.push(rule);
   }
+  const provider = catalog.components.find((component) => component.name === "PaneTabsProvider");
+  if (provider) {
+    const guidance =
+      " Navázaná okna (openLinkedTab) sledují zdrojovou záložku, ne pozici panelu; připnutí zamkne záznam, zavření zdroje nechá okno připnuté na posledním záznamu.";
+    if (!provider.usage?.includes("openLinkedTab"))
+      provider.usage =
+        (provider.usage ?? "Stav a akce záložek v panelech; obaluje AppShell i PaneLayout.") +
+        guidance;
+    provider.examples ??= [];
+    const label = "Navázané okno panelu záznamu";
+    if (!provider.examples.some((example) => example.label === label))
+      provider.examples.push({
+        label,
+        code: 'tabs.openLinkedTab(pane.tabId, { id: "history", label: "Historie" })',
+      });
+    provider.antipatterns ??= [];
+    const rule =
+      "Navázanou záložku nevážete na pozici panelu ani ji neotvírejte vlastní cestou; vždy přes openLinkedTab.";
+    if (!provider.antipatterns.includes(rule)) provider.antipatterns.push(rule);
+  }
   const panelComponents = enrichRecordPanelCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
@@ -121,6 +141,7 @@ export function refreshCatalog() {
     record,
     header,
     pill,
+    provider,
     ...catalog.components.filter((component) => searchable.has(component.name)),
   ]) {
     if (!component) continue;

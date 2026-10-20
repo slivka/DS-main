@@ -112,6 +112,9 @@ export const DS_TEXTS_CS: DsTexts = {
     closePane: "Zavřít panel",
     pageActions: "Akce stránky",
     untitled: "Bez názvu",
+    pinLinked: "Zamknout záznam v tomto okně",
+    unpinLinked: "Znovu sledovat zdrojové okno",
+    returnToPanel: "Vrátit do panelu",
   },
   layoutMenu: {
     trigger: "Rozložení",
@@ -285,6 +288,9 @@ export const DS_TEXTS_CS: DsTexts = {
     openedInNewTab: (target: string, tab: string) =>
       `${target} otevřeno v nové záložce – ${tab} má neuložené změny`,
     unsavedChanges: "neuložené změny",
+    linkedReplaceTitle: "Nahradit obsah okna vpravo?",
+    linkedReplaceDescription: "Okno vpravo už zobrazuje jiný obsah.",
+    linkedReplaceConfirm: "Nahradit",
   },
   notification: {
     label: "Oznámení",
