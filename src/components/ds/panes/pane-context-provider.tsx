@@ -358,7 +358,14 @@ export function PaneTabsProvider({
     recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
   const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section) => {
     const attempt = (confirmed: boolean) => {
-      const result = openLinkedTabInState(stateRef.current, sourceTabId, section, { confirmed });
+      const result = openLinkedTabInState(
+        stateRef.current,
+        sourceTabId,
+        section,
+        { confirmed },
+        Date.now(),
+        isTabDirty,
+      );
       if (result.outcome === "rejected") {
         // Zdroj není záznam – žádný toast o limitu záložek, ten by mátl.
         toast.warning(p.linkedOnlyRecord);
@@ -374,7 +381,16 @@ export function PaneTabsProvider({
         });
         return;
       }
-      if (result.evictedTabId) clearTabState(result.evictedTabId);
+      // Zpracování výsledku jako doOpen: vytlačené a zavřené záložky uklidit.
+      if (result.evictedTabId) {
+        toast.info(
+          t.limitEvicted
+            .replace("{title}", titleOf(result.evictedTabId))
+            .replace("{max}", String(MAX_TABS_PER_PANE)),
+        );
+        clearTabState(result.evictedTabId);
+      }
+      result.closedTabIds?.forEach(clearTabState);
       commit(result.state);
     };
     attempt(false);

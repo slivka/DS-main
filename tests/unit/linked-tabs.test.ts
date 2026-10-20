@@ -152,6 +152,60 @@ describe("navázané záložky", () => {
     expect(confirmed.closedTabIds).toEqual([state.panes[1].tabs[0].id]);
   });
 
+  test("3 panely, rozepsaná aktivní záložka v cíli: po potvrzení se přidá, nic se nenahradí", () => {
+    let state = withPanes(3);
+    state = withRecord(state, "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[2].id };
+    state = withList(state, "/partneri", "Partneři");
+    state = { ...state, active: state.panes[0].id };
+    const dirtyId = state.panes[1].tabs[0].id;
+    const isDirty = (tabId: string) => tabId === dirtyId;
+    const confirmed = openLinkedTabInState(
+      state,
+      sourceId,
+      SECTION,
+      { confirmed: true },
+      1,
+      isDirty,
+    );
+    expect(confirmed.outcome).toBe("opened");
+    expect(confirmed.state.panes).toHaveLength(3);
+    // Rozepsaná záložka zůstala, navázaná se přidala vedle ní a je aktivní.
+    expect(confirmed.state.panes[1].tabs).toHaveLength(2);
+    expect(confirmed.state.panes[1].tabs.map((tab) => tab.id)).toContain(dirtyId);
+    const linked = confirmed.state.panes[1].tabs.find((tab) => tab.kind === "linked");
+    expect(linked).toBeDefined();
+    expect(confirmed.state.panes[1].activeTab).toBe(linked?.id);
+    expect(confirmed.closedTabIds).toEqual([]);
+  });
+
+  test("3 panely, nerozepsaná aktivní záložka v cíli: po potvrzení nahrazena a v closedTabIds", () => {
+    let state = withPanes(3);
+    state = withRecord(state, "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[2].id };
+    state = withList(state, "/partneri", "Partneři");
+    state = { ...state, active: state.panes[0].id };
+    const replacedId = state.panes[1].tabs[0].id;
+    const confirmed = openLinkedTabInState(
+      state,
+      sourceId,
+      SECTION,
+      { confirmed: true },
+      1,
+      () => false,
+    );
+    expect(confirmed.outcome).toBe("replaced");
+    expect(confirmed.closedTabIds).toEqual([replacedId]);
+    expect(confirmed.state.panes[1].tabs).toHaveLength(1);
+    expect(confirmed.state.panes[1].tabs[0]?.kind).toBe("linked");
+  });
+
   test("3 panely, zdroj v posledním: cílem je panel vlevo", () => {
     let state = withPanes(3);
     state = { ...state, active: state.panes[1].id };
