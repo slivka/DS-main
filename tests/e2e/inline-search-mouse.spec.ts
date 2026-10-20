@@ -63,7 +63,6 @@ test("účet: klik myší vybere položku", async ({ page }) => {
     .filter({ hasText: /^\d+ – / })
     .first();
   await account.click();
-  const first = page.locator("[cmdk-item]:not([data-disabled=true])").first();
   const before = (await account.textContent()) ?? "";
   const items = page.locator("[cmdk-item]:not([data-disabled=true])");
   const texts = await items.allTextContents();
