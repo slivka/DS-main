@@ -76,7 +76,8 @@ export const RECORD_HISTORY_CS: RecordHistoryTexts = {
   before: "Bylo",
   after: "Je",
   system: "Systém",
-  changesCount: (count) => `${count} změn`,
+  changesCount: (count) =>
+    `${count} ${count === 1 ? "změna" : count >= 2 && count <= 4 ? "změny" : "změn"}`,
   autoSummary: (count) => `Automatické přepočty (${count})`,
   lineAdded: (label) => `Přidán ${label}`,
   lineRemoved: (label) => `Odebrán ${label}`,

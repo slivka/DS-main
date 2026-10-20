@@ -22,7 +22,15 @@ import {
   type HistoryMode,
 } from "./record-history-model";
 
-export * from "./record-history-model";
+export type {
+  HistoryChange,
+  HistoryDayGroup,
+  HistoryEvent,
+  HistoryKind,
+  HistoryLineChange,
+  HistoryMode,
+  HistoryStatusChange,
+} from "./record-history-model";
 export { HistoryChangeTable, HistoryEventDetail } from "./record-history-detail";
 
 /** Vlastnosti časové osy historie. */
@@ -72,7 +80,7 @@ function EventItem({ event, mode }: { event: HistoryEvent; mode: HistoryMode }) 
         <span className="shrink-0 tabular-nums">{formatUserTime(event.at)}</span>
         {mode === "basic" && count > 0 ? (
           <span className="shrink-0" data-testid="history-count">
-            · {texts.changesCount(String(count))}
+            · {texts.changesCount(count)}
           </span>
         ) : null}
       </div>

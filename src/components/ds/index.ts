@@ -125,6 +125,7 @@ export * from "./feedback/loading-overlay";
 export * from "./feedback/error-boundary";
 export * from "./feedback/audit-history";
 export * from "./feedback/record-history-timeline";
+export { HISTORY_KINDS, countHistoryChanges, filterHistory, groupHistoryByDay } from "./feedback/record-history-model";
 export * from "./feedback/record-notes";
 export * from "./feedback/record-notes-dialog";
 export * from "./feedback/permission-gate";

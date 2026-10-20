@@ -117,8 +117,8 @@ export interface RecordHistoryTexts {
   after: string;
   /** Autor bez jména. */
   system: string;
-  /** Souhrn počtu změn. */
-  changesCount: (count: string) => string;
+  /** Souhrn počtu změn se správným tvarem slova podle čísla. */
+  changesCount: (count: number) => string;
   /** Řádek automatických přepočtů. */
   autoSummary: (count: string) => string;
   /** Přidaný řádek. */

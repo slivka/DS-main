@@ -4,12 +4,12 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import {
   RecordHistoryTimeline,
-  groupHistoryByDay,
   type HistoryEvent,
   type HistoryKind,
   type HistoryMode,
 } from "../../src/components/ds/feedback/record-history-timeline";
-import { DsTextsProvider } from "../../src/ds-texts";
+import { groupHistoryByDay } from "../../src/components/ds/feedback/record-history-model";
+import { DsTextsProvider, DS_TEXTS_CS, DS_TEXTS_SK } from "../../src/ds-texts";
 
 afterEach(cleanup);
 const NOW = new Date("2026-10-20T12:00:00Z");
@@ -68,7 +68,7 @@ describe("RecordHistoryTimeline", () => {
   it("základní režim ukáže počty, rozšířený tabulku Bylo → Je s „—“", () => {
     render(<Demo />);
     expect(screen.queryByTestId("history-detail")).toBeNull();
-    expect(screen.getAllByTestId("history-count")[0].textContent).toContain("2 změn");
+    expect(screen.getAllByTestId("history-count")[0].textContent).toContain("2 změny");
     fireEvent.click(screen.getByRole("radio", { name: "Rozšířený" }));
     expect(screen.getAllByTestId("history-detail").length).toBeGreaterThan(0);
     expect(screen.getByText("ACME")).toBeTruthy();
@@ -102,5 +102,13 @@ describe("RecordHistoryTimeline", () => {
     render(<Demo locale="sk" />);
     expect(screen.getByRole("radio", { name: "Rozšírený" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Väzby" })).toBeTruthy();
+  });
+
+  it("skloňuje počet změn v CS i SK", () => {
+    const cs = DS_TEXTS_CS.recordHistory.changesCount;
+    const sk = DS_TEXTS_SK.recordHistory.changesCount;
+    expect([1, 3, 5].map(cs)).toEqual(["1 změna", "3 změny", "5 změn"]);
+    expect([1, 3, 5].map(sk)).toEqual(["1 zmena", "3 zmeny", "5 zmien"]);
+    expect(cs(0)).toBe("0 změn");
   });
 });
