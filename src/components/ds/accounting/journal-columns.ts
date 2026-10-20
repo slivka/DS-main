@@ -131,7 +131,9 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     return [
       ...head,
       ...amountColumns,
-      ...(input.sideFields === "shared" ? [{ id: "dimensionId" as const, label: t.dimension }] : []),
+      ...(input.sideFields === "shared"
+        ? [{ id: "dimensionId" as const, label: t.dimension }]
+        : []),
       actions,
     ];
   if (input.mode === "mainAccount")

@@ -14,7 +14,12 @@ import type { AccountOption } from "./account-select";
 import { formatJournalAccountDisplay } from "./journal-lines-model";
 
 /** Druh automatického řádku deníku. */
-export type DocumentPostingAutoKind = "vat" | "nonDeductible" | "advance" | "rounding" | "fxRounding";
+export type DocumentPostingAutoKind =
+  | "vat"
+  | "nonDeductible"
+  | "advance"
+  | "rounding"
+  | "fxRounding";
 
 /** Jeden řádek deníku dokladu. */
 export interface DocumentPostingEntry {
