@@ -30,9 +30,13 @@ export type TextTemplate = (...args: never[]) => string;
 export type TextTree = { [key: string]: string | TextTemplate | TextTree };
 
 import type { GridTexts, JournalEditorTexts } from "./grid-journal-types";
+import type { VatFiveTexts } from "./vat-five-texts";
+export type { VatFiveTexts } from "./vat-five-texts";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** DPH 5 B a zálohové listy (2.118.0). */
+  vatFive: VatFiveTexts;
   /** Propojené doklady. */
   linkedRecords: LinkedRecordTexts;
   /** Panel záznamu. */
