@@ -60,8 +60,8 @@ const scenarios = [
       "mainAccountId",
       "direction",
       "handedOverBy",
+      // Edit 16: pokladna má jediné číslo dokladu (externalNumber).
       "externalNumber",
-      "taxDocumentNumber",
       "taxDate",
       "vatDate",
       "vatRelevant",
@@ -78,7 +78,7 @@ const scenarios = [
       "taxDate",
       "vatDate",
       "vatRelevant",
-      "bankAccountKind",
+      // Edit 16: druh účtu se přepíná přímo v poli účtu protistrany (bez vlastního id).
       "movement-account",
       "bank-code",
       "variableSymbol",
