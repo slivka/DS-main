@@ -548,3 +548,9 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Lišty GridToolbar odvozují všechny výšky od --f-h; nezadávejte jednotlivým tlačítkům odlišnou výšku.
 - Identita je jednořádková; trojtečku smí mít jen název účtu, celý účet je v bublině. Výpis nemá měnu v identitě.
 - Pokladna používá jediné externalNumber vedle partnera; Popis má plnou šířku. Příjem s DPH předává taxDocumentNumberLinked, svázaná hodnota je pouze náhled; přepnutí DPH vlastní číslo nemaže.
+
+## Historie záznamu (2.114.0)
+
+- Historii zobrazuj přes `RecordHistoryTimeline`; `HistoryPanel` je zastaralý.
+- Historie zobrazuje jen zmapované hodnoty: aplikace převede auditní záznamy na `HistoryEvent` s přeloženými popisky polí a zformátovanými hodnotami (částky s mezerami tisíců, datum, kód a název přes `formatCodeName`). Nikdy nepředávej surová data (id, klíče sloupců, JSON, ISO hodnoty polí).
+- Režim a filtr typů řídí aplikace přes props; komponenta nic nenačítá.
