@@ -44,6 +44,8 @@ export interface JournalValidationContext {
   foreign: boolean;
   /** Značka měny dokladu pro hlášku odchylky. */
   documentMark: string;
+  /** Řádky bez zaúčtování (zálohový list, 2.118.0) – účty se nekontrolují. */
+  withoutAccounts?: boolean;
   /** Výjimka z povinného kódu DPH. */
   isCodeRequired?: (line: JournalLine) => boolean;
   /** Řádky, jejichž kód DPH nemá účty (id řádku → kód). */
@@ -133,10 +135,11 @@ export function validateJournalLines(
       const validateLine = scope.showAllErrors || !line.isBlank || scope.touched.has(line.id);
       if (!validateLine || !isGridLine(line) || isPinnedLine(line)) return [line.id, {}];
       const errors: JournalLineErrors = {};
-      if (!line.debitAccount) errors.debitAccount = ctx.texts.debitRequired;
-      if (!line.creditAccount) errors.creditAccount = ctx.texts.creditRequired;
+      if (!ctx.withoutAccounts && !line.debitAccount) errors.debitAccount = ctx.texts.debitRequired;
+      if (!ctx.withoutAccounts && !line.creditAccount)
+        errors.creditAccount = ctx.texts.creditRequired;
       if (!Number(line.amount)) errors.amount = ctx.texts.amountRequired;
-      Object.assign(errors, journalSideIssues(line, ctx));
+      if (!ctx.withoutAccounts) Object.assign(errors, journalSideIssues(line, ctx));
       Object.assign(errors, journalVatIssues(line, ctx).errors);
       return [line.id, { ...errors, ...scope.validate?.(line) }];
     }),

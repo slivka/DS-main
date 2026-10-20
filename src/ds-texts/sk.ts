@@ -17,11 +17,13 @@ import { sk } from "date-fns/locale";
 import { DS_TEXTS_CS } from "./cs";
 import { UNSAVED_ACTION_TEXTS_SK } from "./sk-unsaved-actions";
 import type { DsTexts } from "./types";
+import { VAT_FIVE_SK } from "./vat-five-texts";
 import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  vatFive: VAT_FIVE_SK,
   recordPanel: RECORD_PANEL_SK,
   recordNotes: RECORD_NOTES_SK,
   attachments: ATTACHMENTS_SK,
@@ -450,7 +452,7 @@ export const DS_TEXTS_SK: DsTexts = {
     amount: "Suma",
     homeAmount: "Suma v {symbol}",
     foreignAmount: "Suma v {symbol}",
-    text: "Text",
+    text: "Popis",
     quantity: "Množstvo",
     unit: "MJ",
     unitPrice: "Cena za MJ",
@@ -498,6 +500,7 @@ export const DS_TEXTS_SK: DsTexts = {
     clearSearch: "Zrušiť hľadanie",
     quantityPriceHint: "Množstvo × cena za MJ",
     vatCode: "Kód DPH",
+    amountNet: "Suma bez DPH",
     vatRate: "Sadzba",
     vatAmount: "DPH",
     grossAmount: "Celkom s DPH",

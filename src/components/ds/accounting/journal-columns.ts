@@ -86,6 +86,8 @@ export interface JournalColumnDefsInput {
   homeAmountLabel: string;
   /** Režim polí stran. */
   sideFields: "shared" | "split";
+  /** Bez zaúčtování MD / DAL v řádcích (zálohový list, 2.118.0). */
+  withoutAccounts?: boolean;
   /** Sloupec má v některém řádku hodnotu (rozhoduje o výchozí viditelnosti polí stran). */
   hasValue: (column: JournalLineColumn) => boolean;
 }
@@ -93,20 +95,17 @@ export interface JournalColumnDefsInput {
 /** Definice sloupců gridu podle režimu: jen protiúčet, nebo MD i DAL. */
 export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<ColumnId>[] {
   const { t, showQuantityColumns: quantity } = input;
+  // 2.118.0 (DPH 5 B): Popis · Kód DPH · Částka bez DPH · účty · Zakázka. Sazba, DPH a Celkem
+  // s DPH v gridu nejsou (patří do rekapitulace); množstevní sloupce jen přes nastavení sloupců.
   const vatColumns: GridColumn<ColumnId>[] = input.vatOn
-    ? [
-        { id: "vatCodeId", label: t.vatCode },
-        { id: "vatRate", label: t.vatRate, align: "right" },
-        { id: "vatAmount", label: t.vatAmount, align: "right" },
-        { id: "grossAmount", label: t.grossAmount, align: "right" },
-      ]
+    ? [{ id: "vatCodeId", label: t.vatCode }]
     : [];
   const amountColumns: GridColumn<ColumnId>[] = [
+    ...vatColumns,
+    { id: "amount", label: input.vatOn ? t.amountNet : t.amount, locked: true, align: "right" },
     { id: "quantity", label: t.quantity, defaultVisible: quantity },
     { id: "unitId", label: t.unit, defaultVisible: quantity },
     { id: "unitPrice", label: t.unitPrice, defaultVisible: quantity, align: "right" },
-    { id: "amount", label: t.amount, locked: true, align: "right" },
-    ...vatColumns,
     ...(input.foreign
       ? [
           {
@@ -128,12 +127,21 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     locked: true,
     align: "right",
   };
+  if (input.withoutAccounts)
+    return [
+      ...head,
+      ...amountColumns,
+      ...(input.sideFields === "shared"
+        ? [{ id: "dimensionId" as const, label: t.dimension }]
+        : []),
+      actions,
+    ];
   if (input.mode === "mainAccount")
     return [
       ...head,
+      ...amountColumns,
       { id: "counterAccount", label: input.counterShortLabel },
       { id: "counterAccountName", label: input.counterNameLabel, defaultVisible: false },
-      ...amountColumns,
       { id: "dimensionId", label: t.dimension },
       { id: "vs", label: t.vs, defaultVisible: false, align: "left" },
       { id: "partnerId", label: t.partner, defaultVisible: false },
@@ -141,11 +149,11 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     ];
   return [
     ...head,
+    ...amountColumns,
     { id: "debitAccount", label: t.sideDebit },
     { id: "debitAccountName", label: t.debitAccount, defaultVisible: false },
     { id: "creditAccount", label: t.sideCredit },
     { id: "creditAccountName", label: t.creditAccount, defaultVisible: false },
-    ...amountColumns,
     ...(input.sideFields === "shared"
       ? SHARED_COLUMNS.map((id) => ({
           id,
@@ -218,6 +226,8 @@ export interface JournalDisplayContext {
   counterColumn: "debitAccount" | "creditAccount" | null;
   /** Rozšířené formy účtu zobrazené zkráceně. */
   compactAccountIds: ReadonlySet<ColumnId>;
+  /** Text kódu DPH v buňce („Z 21 %“, u obousměrného dokladu se směrem; 2.118.0). */
+  vatCodeLabel?: (code: VatCodeOption) => string;
 }
 
 const numberText = (value: number, options: Intl.NumberFormatOptions) =>
@@ -228,7 +238,8 @@ function vatDisplayValue(line: JournalLine, column: ColumnId, ctx: JournalDispla
     calcMode: ctx.calcMode,
     foreign: ctx.foreign,
   });
-  if (column === "vatCodeId") return resolved.code?.code ?? "";
+  if (column === "vatCodeId")
+    return resolved.code ? (ctx.vatCodeLabel?.(resolved.code) ?? resolved.code.code) : "";
   if (column === "vatRate")
     return resolved.code
       ? resolved.rate == null

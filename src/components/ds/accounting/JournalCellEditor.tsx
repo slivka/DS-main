@@ -192,6 +192,8 @@ export function JournalCellEditor({ line, column }: JournalCellEditorProps) {
       <VatCodeSelect
         {...selectProps}
         codes={editor.vatCodes}
+        bidirectional={props.vat?.bidirectional}
+        defaultDirection={props.vat?.defaultDirection}
         value={line.vatCodeId}
         onChange={(value) => {
           editor.changeVatCode(line, value);

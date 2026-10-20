@@ -16,10 +16,12 @@ import { cs } from "date-fns/locale";
 
 import { UNSAVED_ACTION_TEXTS_CS } from "./cs-unsaved-actions";
 import type { DsTexts } from "./types";
+import { VAT_FIVE_CS } from "./vat-five-texts";
 import { DOCUMENT_FORM_TEXTS_CS } from "./cs-document-form";
 
 /** Výchozí české texty všech komponent. */
 export const DS_TEXTS_CS: DsTexts = {
+  vatFive: VAT_FIVE_CS,
   recordPanel: RECORD_PANEL_CS,
   recordNotes: RECORD_NOTES_CS,
   attachments: ATTACHMENTS_CS,
@@ -448,7 +450,7 @@ export const DS_TEXTS_CS: DsTexts = {
     amount: "Částka",
     homeAmount: "Částka v {symbol}",
     foreignAmount: "Částka v {symbol}",
-    text: "Text",
+    text: "Popis",
     quantity: "Množství",
     unit: "MJ",
     unitPrice: "Cena za MJ",
@@ -496,6 +498,7 @@ export const DS_TEXTS_CS: DsTexts = {
     clearSearch: "Zrušit hledání",
     quantityPriceHint: "Množství × cena za MJ",
     vatCode: "Kód DPH",
+    amountNet: "Částka bez DPH",
     vatRate: "Sazba",
     vatAmount: "DPH",
     grossAmount: "Celkem s DPH",

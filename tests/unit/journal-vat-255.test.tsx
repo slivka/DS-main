@@ -536,7 +536,8 @@ describe("DPH v editoru", () => {
       vat: { enabled: true, codes: OUT, calcMode: "gross" },
     });
     expect(html).toMatch(/data-slot="journal-lines-total-base"[^>]*>1\s500,00/);
-    expect(html).toMatch(/data-slot="journal-lines-total-vat"[^>]*>270,00/);
+    // 2.118.0: sloupec DPH v gridu není – daň skupin ukazuje rekapitulace.
+    expect(html).toMatch(/data-slot="journal-vat-group"[\s\S]*?210,00[\s\S]*?60,00/);
     // 2.109.0: režim S DPH zrušen (sloupec Celkem s DPH už není chráněný před automatickým
     // skrytím); celek dokladu ukazuje Součet v patičce.
     expect(html).toMatch(/data-slot="journal-footer-sum"[\s\S]*?1\s770,00/);

@@ -558,6 +558,17 @@ Bez provideru zůstává knihovna česky. Priorita textu je prop komponenty → 
 - Název účetního období v horní liště se nikdy nezkracuje; rozsah dat se ukáže jen celý, když se vejde. Při nedostatku místa se zkracuje název firmy. Max. šířky přepínačů v rem.
 - Pokladna používá jediné externalNumber vedle partnera; Popis má plnou šířku. Příjem s DPH předává taxDocumentNumberLinked, svázaná hodnota je pouze náhled; přepnutí DPH vlastní číslo nemaže.
 
+## Faktury a zálohové listy (2.118.0)
+
+- **Závazné:** při každé úpravě formuláře faktury nebo zálohového listu vždy ověř a v odpovědi potvrď, zda má změna platit i pro druhý doklad. Zálohový list (ZFV / ZFP) je jen varianta formuláře faktury přes `advanceListVariant` – žádné kopie kódu ani duplicitní soubory.
+- Zálohový list: bez DUZP, Data DPH, Data účetního případu, „Vstupuje do DPH“, MD / DAL v řádcích (`withoutAccounts`), záložky Zaúčtování a štítku KH; pod rekapitulací „Nejde o daňový doklad“ (`vat.recapNote`). Neplátce = editor bez `vat`. Stav úhrady přes `StatusBadge` + `advancePaymentStatusConfig`.
+
+## DPH 5 B – řádky a rekapitulace (2.118.0)
+
+- Grid: Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka; Sazba, DPH a Celkem jen v rekapitulaci. Kód v buňce „Z 21 %“, ve výběru „Z – název (21 %)“; doklady bez pevného směru `vat.bidirectional` + `defaultDirection`. Kódy klíčuj `id`, kód sám není unikátní.
+- Klávesnice: Enter dál (vyplněné / zakotvené přeskočí), na konci řádku nový řádek s kódem DPH a účty, Shift+Enter zpět; špendlík zakotví sloupec jen v otevřeném dokladu.
+- Rekapitulace a patička dostávají hodnoty z DB (`nonDeductibleByCode`, `advanceDeduction`); DS nic nepřepočítává. Vydané doklady `vat.overrideInMenu`. Záložku Zaúčtování skládá aplikace z `DocumentPostingGrid`.
+
 ## Historie záznamu (2.114.0)
 
 - Historii zobrazuj přes `RecordHistoryTimeline`; `HistoryPanel` je zastaralý.

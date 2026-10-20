@@ -41,3 +41,8 @@
 - Keep VAT exchange rates as rate/unit pairs and compare tolerances with exact cross-products. Why: division before conversion loses decimal halves.
 - Form save shortcuts (Ctrl/Cmd+S, Ctrl/Cmd+Enter → onSaveAndClose) go through handleDocumentSaveShortcut and yield to nested handlers that already prevented the event. Why: the journal editor keeps Ctrl+Enter for new lines.
 - Read-only identity accounts size to their text; only the open selection uses the measured width. Why: the pencil stays next to the account name.
+
+## Faktury a zálohové listy
+
+- Every change to the invoice or advance-list form must state whether it also applies to the other document; advance lists differ only through advanceListVariant configuration. Why: both share DocumentForm and must never drift through copied code.
+- Journal-grid pinning and inherited values live in useJournalPins and are never persisted. Why: pinning is a per-open-document aid.

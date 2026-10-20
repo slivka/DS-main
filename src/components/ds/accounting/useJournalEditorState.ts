@@ -51,6 +51,8 @@ import { useJournalLayout } from "./useJournalLayout";
 import { useJournalTotals } from "./useJournalTotals";
 import { fillInitialVatCode } from "./journal-vat";
 import { useJournalVatGroups } from "./useJournalVatGroups";
+import { inheritedLineValues, useJournalPins } from "./useJournalPins";
+import { vatCodeCellLabel } from "./vat-code-labels";
 
 /** Celý stav a akce editoru; sdílí jej všechny části přes `JournalEditorContext`. */
 export function useJournalEditorState(
@@ -139,6 +141,7 @@ export function useJournalEditorState(
         foreign,
         homeAmountLabel,
         sideFields,
+        withoutAccounts: props.withoutAccounts,
         hasValue: (column: JournalLineColumn) =>
           lines.some(
             (line) => line[column] !== undefined && line[column] !== null && line[column] !== "",
@@ -158,6 +161,7 @@ export function useJournalEditorState(
       counterShortLabel,
       counterNameLabel,
       vatOn,
+      props.withoutAccounts,
     ],
   );
   const layout = useJournalLayout({
@@ -211,8 +215,11 @@ export function useJournalEditorState(
     () => filterJournalLines(normalizedLines, search),
     [normalizedLines, search],
   );
+  const pins = useJournalPins();
   const patch = (id: string, values: Partial<JournalLine>) => {
     touchedRows.current.add(id);
+    const current = lines.find((line) => line.id === id);
+    if (current) pins.releaseInherited(current, values);
     onChange(lines.map((line) => (line.id === id ? { ...line, ...values, isBlank: false } : line)));
   };
   const makeLine = () =>
@@ -243,10 +250,17 @@ export function useJournalEditorState(
   }, [initialEmptyLine, lines.length]); // eslint-disable-line react-hooks/exhaustive-deps -- jednorázové založení prázdného řádku
   const canEditColumn = (id: ColumnId) =>
     id !== "row" && id !== "homeAmount" && id !== "actions" && editable.has(dataColumnOf(id));
-  const addLine = (focus = false) => {
+  /**
+   * Nový řádek; převezme zakotvené sloupce z posledního řádku, s `inherit` (Enter na konci
+   * řádku, 2.118.0) navíc kód DPH a účty.
+   */
+  const addLine = (focus = false, inherit = false) => {
     setSearch("");
-    const next = makeLine();
+    const previous = [...lines].reverse().find(isRegularLine);
+    const { values, pinnedFields } = inheritedLineValues(previous, pins.pinned, inherit);
+    const next = { ...makeLine(), ...values };
     onChange(appendJournalLine(lines, next));
+    pins.markInherited(next.id, pinnedFields);
     if (focus)
       requestAnimationFrame(() => {
         const column = visibleColumns.map((item) => item.id).find(canEditColumn);
@@ -338,6 +352,7 @@ export function useJournalEditorState(
     foreign,
     documentMark,
     isCodeRequired: vat?.isCodeRequired,
+    withoutAccounts: props.withoutAccounts,
     missingVatAccounts: totals.missingVatAccounts,
   };
   const validations = validateJournalLines(lines, validationContext, {
@@ -405,8 +420,21 @@ export function useJournalEditorState(
         rateAmount,
         counterColumn,
         compactAccountIds,
+        vatCodeLabel: (code) =>
+          vatCodeCellLabel(code, dsTexts.vatFive, Boolean(vat?.bidirectional)),
       },
     );
+  /** Enter v Popisu prázdného posledního řádku: řádek zahodí (bez nabídky Zpět). */
+  const discardBlankLine = (line: JournalLine) => {
+    const regular = lines.filter(isRegularLine);
+    const last = regular[regular.length - 1];
+    const blank =
+      !line.text?.trim() && line.amount == null && line.foreignAmount == null && regular.length > 1;
+    if (!blank || last?.id !== line.id) return false;
+    onChange(lines.filter((item) => item.id !== line.id));
+    setEditing(null);
+    return true;
+  };
   const accountFor = (line: JournalLine, column: Parameters<typeof journalAccountFor>[1]) =>
     journalAccountFor(line, column, counterColumn);
   const finish = () => setEditing(null);
@@ -471,6 +499,8 @@ export function useJournalEditorState(
     sideFields,
     patch,
     addLine,
+    discardBlankLine,
+    pins,
     duplicate,
     remove,
     moveRow,

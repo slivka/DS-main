@@ -125,10 +125,13 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
       aria-label={`${columnLabel} ${rowIndex + 1}`}
       data-invalid={errorMessage ? true : undefined}
       data-warning={warningMessage ? true : undefined}
+      data-inherited={editor.pins.isInherited(line.id, column) || undefined}
       {...status.triggerProps}
       className={cn(
         "journal-grid-cell flex min-h-[1.8em] items-center truncate rounded-sm px-1 outline-none",
         canEdit && "cursor-cell",
+        // Převzatá hodnota zakotveného sloupce je světlejší, dokud do ní uživatel nesáhne.
+        editor.pins.isInherited(line.id, column) && "text-muted-foreground",
       )}
       onFocus={(event) => {
         status.triggerProps.onFocus?.(event);

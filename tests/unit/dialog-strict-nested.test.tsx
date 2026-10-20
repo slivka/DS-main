@@ -194,7 +194,9 @@ describe("RecordDialog – vnořený formulář", () => {
       if (!found) throw new Error("buňka ještě není");
       return found;
     });
+    // 2.118.0: Enter na vyplněné buňce skočí dál; editor otevře F2.
     expect(fireEvent.keyDown(cell, { key: "Enter" })).toBe(false);
+    fireEvent.keyDown(cell, { key: "F2" });
     const input = cell.querySelector("input")!;
     expect(fireEvent.keyDown(input, { key: "Enter" })).toBe(false);
     expect(submit).not.toHaveBeenCalled();
@@ -238,6 +240,7 @@ describe("RecordDialog – vnořený formulář", () => {
       return found;
     });
     expect(fireEvent.keyDown(cell, { key: "Enter" })).toBe(false);
+    fireEvent.keyDown(cell, { key: "F2" });
     expect(fireEvent.keyDown(cell.querySelector("input")!, { key: "Enter" })).toBe(false);
     expect(submit).not.toHaveBeenCalled();
   });

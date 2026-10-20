@@ -158,6 +158,8 @@ export interface JournalEditorTexts {
   clearSearch: string;
   quantityPriceHint: string;
   vatCode: string;
+  /** Sloupec částky u dokladu s DPH (2.118.0). */
+  amountNet: string;
   vatRate: string;
   vatAmount: string;
   grossAmount: string;

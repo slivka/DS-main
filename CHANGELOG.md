@@ -2,7 +2,25 @@
 
 ## 2.118.0 (nevydáno)
 
-- Zatím bez změn.
+### DPH 5 – krok B
+
+- Grid řádků: výchozí pořadí Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (`journalEditor.text` = „Popis“, nový text `journalEditor.amountNet`). Sloupce Sazba, DPH a Celkem s DPH z gridu odstraněny (hodnoty jsou v rekapitulaci); Množství, MJ a Cena/jedn. v detailu řádku, do gridu přes nastavení sloupců.
+- Klávesnice (rozšíření 2.113.0): Enter na vyplněném nebo zakotveném poli skočí dál bez otevření; Enter v editoru potvrdí a skočí dál; ve výběru psaní otevře a filtruje, Enter vybere a skočí dál, Esc zavře; Enter na konci posledního řádku založí řádek s kódem DPH a účty z předchozího; Shift+Enter zpět; Enter v Popisu prázdného nového řádku řádek zahodí a fokus přejde do patičky.
+- Zakotvení sloupce: špendlík v záhlaví (jen v otevřeném dokladu, nic se neukládá). Nový řádek převezme hodnotu zakotveného sloupce z řádku výše (světlejší, dokud ji uživatel nezmění); starší řádky se nemění.
+- `VatCodeSelect`: skupiny S daní / Osvobozená a zvláštní režimy / Mimo DPH podle nového `VatCodeOption.menuGroup`; nové props `bidirectional` (skupiny Výstup / Vstup) a `defaultDirection`. Výběr „Z – Tuzemsko základní (21 %)“, pole/buňka „Z 21 %“ (obousměrně „Z 21 % (vstup)“). Položky nabídky jsou klíčované `id` (kód + směr).
+- Rekapitulace DPH: Kód (název + %) · Základ · DPH · Celkem; oddíl „V režimu DPH“ (vč. osvobozených kódů) a „Mimo DPH“ (jen základ, šedě); řádek „z toho bez nároku“ (`vat.nonDeductibleByCode`); štítek KH z `VatCodeOption.khSection` (`vat.showKhSection`, výchozí zapnuto); informativní text `vat.recapNote`.
+- Ruční oprava DPH: opravená daň s tužkou; bublina ukáže vypočtenou daň a rozdíl, klik opravu zruší. Stav 'warning' / 'error' beze změny výšky. `vat.overrideInMenu` (vydané doklady): oprava jen jako akce ⋯ řádku.
+- Patička: Součet · Odečtené zálohy (`advanceDeduction`, jen nenulové) · Zaokrouhlení · K úhradě (jen se zálohami nebo zaokrouhlením) · Rozdíl (jen ≠ 0); pomocník `recapFooterRows`. Doklad mimo DPH: bez rekapitulace kódů.
+- Nové: `DocumentPostingGrid` (záložka Zaúčtování jen ke čtení, štítky automatických řádků, účty v rozšířené formě, bez kontrolního součtu); pomocníci `vatCodeMenuLabel`, `vatCodeCellLabel`, `groupVatCodes`, `nonTaxVatBases`.
+- Texty `DsTexts.vatFive` (CS i SK).
+
+### Zálohové listy – krok B
+
+- Žádná nová komponenta: `advanceListVariant({ type: "ZFV" | "ZFP", vatPayer, recapNote })` vrací konfiguraci sdíleného formuláře faktury – pole bez DUZP, Data účetního případu a zaokrouhlení, `vat: { visible: false }`, bez záložky Zaúčtování, řádky `withoutAccounts`, DPH editoru bez KH s textem „Nejde o daňový doklad“ (u neplátce `null` = bez DPH a bez rekapitulace kódů) a stavy Koncept → Zařazen a storno.
+- `advancePaymentStatusConfig` pro `StatusBadge`: Neuhrazeno / Částečně uhrazeno / Uhrazeno / Zbytek stornován.
+- Nové: `DocumentFields.accountingDate` (false skryje Datum účetního případu), `JournalLinesEditorProps.withoutAccounts` (bez sloupců a kontroly MD / DAL).
+- Ukázka „DPH 5 B a zálohové listy“ (CZK, EUR, zaokrouhlení, mimo DPH, interní doklad s oběma směry, Zaúčtování, vydaný i přijatý ZL plátce / neplátce, čtyři stavy úhrady).
+- Bez breaking změn v API; změna chování: Enter na vyplněné buňce už editor neotevírá (F2 nebo psaní), sloupce Sazba / DPH / Celkem s DPH v gridu nejsou.
 
 ## 2.117.0 – Drobné opravy 1
 

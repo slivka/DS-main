@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { VatGroupsShowcase } from "@/components/showcase/VatGroupsShowcase";
+import { Dph5Showcase } from "@/components/showcase/Dph5Showcase";
 import { VatJournalShowcase } from "@/components/showcase/VatJournalShowcase";
 import { ShowcaseLayout } from "@/components/showcase/ShowcaseLayout";
 import { AccountingFormsNav } from "@/components/showcase/AccountingFormsNav";
@@ -39,6 +40,7 @@ function AccountingLinesPage() {
       ]}
     >
       <AccountingFormsNav />
+      <Dph5Showcase />
       <VatGroupsShowcase />
       <VatJournalShowcase />
     </ShowcaseLayout>

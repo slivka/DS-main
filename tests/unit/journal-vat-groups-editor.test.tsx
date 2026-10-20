@@ -72,7 +72,7 @@ describe("JournalLinesEditor – skupiny DPH", () => {
     expect(group?.textContent).toContain("17,36");
     // Vypočtená daň je v bublině (2.109.0) – přístupný název ikony ji nese.
     expect(
-      container.querySelector('[data-slot="journal-vat-calculated"]')?.getAttribute("aria-label"),
+      container.querySelector('[data-slot="journal-vat-reset"]')?.getAttribute("aria-label"),
     ).toContain("17,35");
     expect(
       container.querySelector('[data-slot="journal-footer-sum-total"]')?.textContent,
@@ -135,8 +135,9 @@ describe("JournalLinesEditor – skupiny DPH", () => {
     const cells = container
       .querySelector('[data-slot="journal-vat-fixed"]')
       ?.querySelectorAll("td");
+    // 2.118.0: sloupec Sazba je součástí názvu kódu – Kód · Základ · DPH · Celkem · měna firmy.
+    expect(cells?.[4]?.textContent).toBe("−33,44");
     expect(cells?.[5]?.textContent).toBe("−33,44");
-    expect(cells?.[6]?.textContent).toBe("−33,44");
   });
 
   it("samovyměření nemá pomocníka ceny s DPH ani úpravy skupiny", () => {

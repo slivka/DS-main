@@ -11,7 +11,9 @@ import {
 } from "../form/inline-search";
 import { cn } from "../../../lib/utils";
 import { formatCodeName } from "../../../lib/code-format";
+import { useDsTexts } from "../../../ds-texts";
 import type { VatCodeOption } from "./journal-lines";
+import { groupVatCodes, vatCodeMenuLabel, type VatDirection } from "./vat-code-labels";
 
 export interface VatCodeSelectProps {
   codes: VatCodeOption[];
@@ -28,9 +30,13 @@ export interface VatCodeSelectProps {
   onOpenChange?: (open: boolean) => void;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
+  /** Doklad bez pevného směru: skupiny Výstup / Vstup a směr v textu pole (2.118.0). */
+  bidirectional?: boolean;
+  /** Výchozí směr – jeho skupina je v nabídce první (pokladna, banka). */
+  defaultDirection?: VatDirection;
 }
 
-/** Filtrování kódů DPH podle kódu i názvu (nerozlišuje velikost písmen); neaktivní jen když jsou vybrané. */
+/** Filtrování kódů DPH podle kódu, názvu i sazby (nerozlišuje velikost písmen); neaktivní jen když jsou vybrané. */
 export function filterVatCodes(
   codes: VatCodeOption[],
   query: string,
@@ -40,7 +46,9 @@ export function filterVatCodes(
   const q = query.trim().toLocaleLowerCase("cs");
   if (!q) return list;
   return list.filter((code) =>
-    formatCodeName(code.code, code.name).toLocaleLowerCase("cs").includes(q),
+    `${formatCodeName(code.code, code.name)} ${vatCodeMenuLabel(code)}`
+      .toLocaleLowerCase("cs")
+      .includes(q),
   );
 }
 
@@ -58,7 +66,10 @@ export function VatCodeSelect({
   onOpenChange,
   onKeyDown,
   className,
+  bidirectional = false,
+  defaultDirection,
 }: VatCodeSelectProps) {
+  const texts = useDsTexts().vatFive;
   const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState(initialSearch ?? "");
 
@@ -69,6 +80,10 @@ export function VatCodeSelect({
 
   const filtered = useMemo(() => filterVatCodes(codes, query, value), [codes, query, value]);
   const selected = codes.find((code) => code.id === value);
+  const groups = useMemo(
+    () => groupVatCodes(filtered, texts, { bidirectional, defaultDirection }),
+    [filtered, texts, bidirectional, defaultDirection],
+  );
 
   return (
     <Popover onSearchChange={setQuery} open={open} onOpenChange={changeOpen}>
@@ -88,7 +103,11 @@ export function VatCodeSelect({
             data-placeholder={!selected ? "" : undefined}
             className={cn("truncate", !selected && "text-muted-foreground")}
           >
-            {selected ? formatCodeName(selected.code, selected.name) : placeholder}
+            {selected
+              ? bidirectional
+                ? `${vatCodeMenuLabel(selected)} · ${selected.direction === "in" ? texts.directionInShort : texts.directionOutShort}`
+                : vatCodeMenuLabel(selected)
+              : placeholder}
           </span>
           <ChevronDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
@@ -104,29 +123,28 @@ export function VatCodeSelect({
           />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {filtered.map((code) => (
-                <CommandItem
-                  key={code.id}
-                  value={formatCodeName(code.code, code.name)}
-                  disabled={code.inactive}
-                  onSelect={() => {
-                    if (code.inactive) return;
-                    onChange(code.id);
-                    changeOpen(false);
-                  }}
-                  className={cn("gap-2", code.inactive && "opacity-50")}
-                >
-                  <span
-                    title={formatCodeName(code.code, code.name)}
-                    className="min-w-0 flex-1 truncate font-mono tabular-nums"
+            {groups.map((group) => (
+              <CommandGroup key={group.key} heading={group.label} data-vat-group={group.key}>
+                {group.codes.map((code) => (
+                  <CommandItem
+                    key={code.id}
+                    value={code.id}
+                    disabled={code.inactive}
+                    onSelect={() => {
+                      if (code.inactive) return;
+                      onChange(code.id);
+                      changeOpen(false);
+                    }}
+                    className={cn("gap-2", code.inactive && "opacity-50")}
                   >
-                    {formatCodeName(code.code, code.name)}
-                  </span>
-                  {selected?.id === code.id ? <Check className="size-4" /> : null}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                    <span title={vatCodeMenuLabel(code)} className="min-w-0 flex-1 truncate">
+                      {vatCodeMenuLabel(code)}
+                    </span>
+                    {selected?.id === code.id ? <Check className="size-4" /> : null}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
           </CommandList>
         </Command>
       </PopoverContent>

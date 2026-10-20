@@ -5,6 +5,7 @@
  * Nesmí: obsahovat výpočty ani logiku řádků – ty patří do modelu a hooků.
  */
 import * as React from "react";
+import { Pin } from "lucide-react";
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
@@ -23,9 +24,38 @@ import { JournalToolbar } from "./JournalToolbar";
 import { JournalEditorContext, useJournalEditor } from "./journal-editor-context";
 import type { JournalLinesEditorProps } from "./journal-editor-types";
 import { JournalLinesRecap } from "./journal-lines-recap";
-import { accountDataColumn, isAccountColumn, isPinnedLine } from "./journal-lines-model";
+import {
+  accountDataColumn,
+  isAccountColumn,
+  isPinnedLine,
+  type ColumnId,
+} from "./journal-lines-model";
 import { useJournalEditorState } from "./useJournalEditorState";
 import { useJournalKeyboard } from "./useJournalKeyboard";
+
+/** Špendlík zakotvení sloupce (2.118.0) – platí jen v otevřeném dokladu, nic se neukládá. */
+function JournalPinButton({ columnId, label }: { columnId: ColumnId; label: string }) {
+  const { editor } = useJournalEditor();
+  const texts = editor.dsTexts.vatFive;
+  const pinned = editor.pins.pinned.has(columnId);
+  const name = (pinned ? texts.unpinColumn : texts.pinColumn).replace("{column}", label);
+  return (
+    <button
+      type="button"
+      data-slot="journal-pin-column"
+      aria-pressed={pinned}
+      aria-label={name}
+      title={name}
+      onClick={() => editor.pins.togglePin(columnId)}
+      className={cn(
+        "ml-1 inline-flex size-[1.4em] items-center justify-center rounded-sm align-middle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+        pinned ? "text-primary" : "text-muted-foreground/50 hover:text-foreground",
+      )}
+    >
+      <Pin className={cn("size-[0.85em]", pinned && "fill-current")} />
+    </button>
+  );
+}
 
 /** Hlavička sloupců se zkrácenými formami účtu a úchyty šířky. */
 function JournalHeader() {
@@ -71,6 +101,9 @@ function JournalHeader() {
               ) : (
                 <span>{heading}</span>
               )}
+              {column.id !== "row" && column.id !== "actions" ? (
+                <JournalPinButton columnId={column.id} label={column.label} />
+              ) : null}
               {column.id !== "row" && column.id !== "actions" ? (
                 <ColumnResizeHandle
                   scale={(layout.rootRemPx / 16) * layout.zoom}
