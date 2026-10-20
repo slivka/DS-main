@@ -4,7 +4,7 @@ import { useDsTexts } from "../../../../ds-texts";
 import { cn } from "../../../../lib/utils";
 import { DataGrid, type DataGridColumn, type DataGridProps } from "../../grid/DataGrid";
 import { StatusBadge } from "../../data-display/status-badge";
-import { GridToggle } from "../../grid/grid-toggle";
+import { Button } from "../../../ui/button";
 import type { AdvanceRegisterRow } from "./advance-types";
 /** Řízené filtry evidence. */
 export interface AdvanceRegisterFilters {
@@ -44,8 +44,8 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
       <DataGrid storageKey={storageKey} rows={rows} columns={columns} rowKey={(row) => row.id}
         title={t.register} showTitle asOf={asOf} loading={loading} error={error} onRowClick={onOpen}
         toolbarLeft={<>
-          <GridToggle active={filters.overdue} onClick={() => onFiltersChange({ ...filters, overdue: !filters.overdue })}>{t.overdue}</GridToggle>
-          <GridToggle active={filters.withoutDD} onClick={() => onFiltersChange({ ...filters, withoutDD: !filters.withoutDD })}>{t.withoutDD}</GridToggle>
+          <Button variant="outline" aria-pressed={filters.overdue} onClick={() => onFiltersChange({ ...filters, overdue: !filters.overdue })}>{t.overdue}</Button>
+          <Button variant="outline" aria-pressed={filters.withoutDD} onClick={() => onFiltersChange({ ...filters, withoutDD: !filters.withoutDD })}>{t.withoutDD}</Button>
         </>}
         filterChips={(["overdue", "withoutDD"] as const).filter((key) => filters[key]).map((key) => ({ id: key, label: t[key], onRemove: () => onFiltersChange({ ...filters, [key]: false }) }))}
         onClearFilters={() => onFiltersChange({ overdue: false, withoutDD: false })}
