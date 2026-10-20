@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { DocumentForm } from "../ds/accounting/document-form";
 import { DocumentPostingGrid } from "../ds/accounting/document-posting-grid";
 import { AdvanceDeductionsSection } from "../ds/accounting/advances/advance-deductions-section";
+import { AdvanceAllocationDialog } from "../ds/accounting/advances/advance-allocation-dialog";
+import type { AdvanceAllocation } from "../ds/accounting/advances/advance-types";
 import { advanceListVariant } from "../ds/accounting/advance-list-variant";
 import { useDsTexts } from "../../ds-texts";
 import {
@@ -20,11 +22,14 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
   const t = useDsTexts();
   const [value, setValue] = useState({ ...INVOICE_HEADER, recordKey: type });
   const [lines, setLines] = useState(INVOICE_LINES);
+  const [adding, setAdding] = useState(false);
+  const [allocation, setAllocation] = useState<AdvanceAllocation[]>([]);
   const zl =
     type === "ZFV" || type === "ZFP"
       ? advanceListVariant({ type, vatPayer: true, recapNote: t.vatFive.notTaxDocument })
       : undefined;
   return (
+    <>
     <DocumentForm
       title={type}
       status="draft"
@@ -52,7 +57,7 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
           <AdvanceDeductionsSection
             rows={ADVANCE_DEDUCTIONS}
             storageKey={`advance-deductions-${type}`}
-            addAction={{ can: true, onClick: () => toast(t.advances.addAdvance) }}
+            addAction={{ can: true, onClick: () => { setAllocation([]); setAdding(true); } }}
             manualAction={{ can: true, onClick: () => toast(t.advances.manualDeduction) }}
             onAction={(action) => toast(t.advances[action])}
             onOpenTaxDocument={(row) => toast(row.taxDocument)}
@@ -60,6 +65,14 @@ function AdvanceForm({ type }: { type: "FV" | "FP" | "ZFV" | "ZFP" }) {
         ),
       }}
     />
+    <AdvanceAllocationDialog open={adding} onOpenChange={setAdding}
+      target="taxDocument" storageKey={`deduction-candidates-${type}`}
+      candidates={[{ id: "advance", document: "Záloha partnera 2026003", remaining: 500, defaultAmount: 500 },
+        { id: "dd", document: "DDPZ 2026004", remaining: 700, defaultAmount: 700 }]}
+      value={allocation} onChange={setAllocation} remaining={2000}
+      currency={ADVANCE_CURRENCY.symbol} dirty={allocation.length > 0}
+      onAllocate={() => { setAdding(false); toast(t.advances.allocate); }} />
+    </>
   );
 }
 export function AdvanceFormsShowcase() {
