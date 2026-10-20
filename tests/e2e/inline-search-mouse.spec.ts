@@ -27,7 +27,7 @@ test("KS a bankovní účet: klik myší vybere položku", async ({ page }) => {
     .getByTestId("selection-comparison")
     .getByRole("combobox", { name: "Konstantní symbol" })
     .nth(1);
-  await pickWithMouse(page, ks, /0308/);
+  await pickWithMouse(page, ks, /0008/);
   const bank = page
     .getByTestId("form-with-supplier")
     .getByRole("combobox", { name: "Bankovní účet" });
@@ -46,11 +46,15 @@ test("partner: klik myší vybere položku", async ({ page }) => {
 });
 
 test("účet: klik myší vybere položku", async ({ page }) => {
-  await open(page, "/components/forms");
-  const account = page.getByRole("combobox", { name: "Účet MD" }).first();
+  await open(page, "/components/accounting-fields");
+  const account = page.locator("button[role=combobox]").filter({ hasText: /^\d+ – / }).first();
   await account.click();
   const first = page.locator("[cmdk-item]:not([data-disabled=true])").first();
-  const code = ((await first.textContent()) ?? "").match(/\d{3}\.\d{3}|\d{3}/)?.[0] ?? "";
+  const before = (await account.textContent()) ?? "";
+  const items = page.locator("[cmdk-item]:not([data-disabled=true])");
+  const texts = await items.allTextContents();
+  const label = texts.map((t) => t.trim()).find((t) => t && !before.includes(t)) ?? "";
+  const name = label.split(/\s+/)[0] ?? "";
   await page.keyboard.press("Escape");
-  await pickWithMouse(page, account, new RegExp(code.replace(".", "\\.")));
+  await pickWithMouse(page, account, new RegExp(`^${name}`));
 });
