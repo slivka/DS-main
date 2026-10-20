@@ -289,6 +289,14 @@ describe("useFollowSelection", () => {
     const ui = renderHook(() => useFollowSelection(["a", "b"]));
     expect(ui.result.current).toEqual({ kind: "multi", count: 2 });
   });
+  it("vlastní delay=0 přečte prázdný výběr po změně", async () => {
+    const ui = renderHook(({ rows }) => useFollowSelection(rows, { delay: 0 }), {
+      initialProps: { rows: ["a"] },
+    });
+    ui.rerender({ rows: [] });
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
+    expect(ui.result.current).toEqual({ kind: "empty" });
+  });
 });
 describe("DataGrid record-indicators", () => {
   const rows = [{ id: "1", count: 2 }];

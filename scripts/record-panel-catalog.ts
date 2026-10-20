@@ -69,7 +69,7 @@ function interfaceProps(file: string, name: string) {
   const start = text.indexOf(`export interface ${name}Props`);
   if (start < 0) throw new Error(`Chybí ${name}Props v ${file}`);
   const body = text.slice(text.indexOf("{", start) + 1).split("\n}")[0] ?? "";
-  return Array.from(body.matchAll(/^  (\w+)(\?)?: ([\s\S]*?);/gm)).map((match) => ({
+  return Array.from(body.matchAll(/^ {2}(\w+)(\?)?: ([\s\S]*?);/gm)).map((match) => ({
     name: match[1] ?? "",
     type: (match[3] ?? "").replace(/\s+/g, " ").trim(),
     required: !match[2],

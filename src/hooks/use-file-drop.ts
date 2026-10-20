@@ -77,6 +77,7 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     const drop = (event: DragEvent) => {
       if (!containsFiles(event)) return;
       event.preventDefault();
+      event.stopPropagation();
       depth = 0;
       setDragging(false);
       if (latest.current.disabled) return;
