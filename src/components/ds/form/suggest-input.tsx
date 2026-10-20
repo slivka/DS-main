@@ -92,7 +92,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
               }}
               onKeyDown={(event) => {
                 onKeyDown?.(event);
-                if (event.defaultPrevented || !visible) return;
+                if (event.defaultPrevented || !visible || event.ctrlKey || event.metaKey) return;
                 if (event.key === "ArrowDown") {
                   event.preventDefault();
                   setActive((index) => Math.min(index + 1, items.length - 1));

@@ -100,7 +100,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
     line: JournalLine,
     column: ColumnId,
     cell: { canEdit: boolean; nonTaxAllowed: boolean; toggleNonTax: () => void },
-  ) => {
+  ): void => {
     if (
       column === "amount" &&
       event.altKey &&
@@ -117,14 +117,15 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       return;
     }
     if (editor.editing) return;
+    if (event.ctrlKey || event.metaKey) return;
     if (event.key === "Enter") {
       event.preventDefault();
       // 2.118.0: Shift+Enter zpět; vyplněné nebo zakotvené pole Enter přeskočí.
-      if (event.shiftKey) return focusRelative(line.id, column, -1, true);
-      if (column === "text" && editor.discardBlankLine(line)) return focusRecap();
+      if (event.shiftKey) return void focusRelative(line.id, column, -1, true);
+      if (column === "text" && editor.discardBlankLine(line)) return void focusRecap();
       const filled = editor.displayValue(line, column) !== "";
       if (!cell.canEdit || filled || editor.pins.pinned.has(column))
-        return focusRelative(line.id, column, 1, true);
+        return void focusRelative(line.id, column, 1, true);
       editor.startEditing(line, column);
       return;
     }
@@ -144,7 +145,8 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       focusRelative(line.id, column, event.shiftKey ? -1 : 1, event.key === "Enter");
     return {
       /** Esc vrátí hodnotu; Enter / Tab potvrdí a přesune fokus. */
-      commonKey: (event: React.KeyboardEvent) => {
+      commonKey: (event: React.KeyboardEvent): void => {
+        if (event.ctrlKey || event.metaKey) return;
         if (event.key === "Escape") {
           event.preventDefault();
           editor.cancel();
@@ -154,7 +156,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
           event.preventDefault();
           const value = (event.target as HTMLInputElement).value ?? "";
           if (event.key === "Enter" && !event.shiftKey && column === "text" && !value.trim()) {
-            if (editor.discardBlankLine(line)) return focusRecap();
+            if (editor.discardBlankLine(line)) return void focusRecap();
           }
           editor.finish();
           next(event);
@@ -162,6 +164,7 @@ export function useJournalKeyboard(editor: JournalEditorState) {
       },
       /** Ve výběru Enter / Tab vybere zvýrazněnou položku a přesune fokus. */
       selectKey: (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.ctrlKey || event.metaKey) return;
         if (event.key !== "Tab" && event.key !== "Enter") return;
         event.preventDefault();
         event.currentTarget

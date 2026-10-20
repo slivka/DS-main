@@ -58,10 +58,10 @@ export function useExternalNumberField({
     patch(sourcePatch ? sourcePatch({ externalNumber }) : { externalNumber });
   const externalNumberField = field(
     "document-externalNumber",
-    cashTaxNumber
-      ? value.direction === "in"
+    cashDocument
+      ? cashTaxNumber && value.direction !== "in"
         ? ds.documentEdit.taxNumber
-        : ds.documentEdit.cashSupplierTaxNumber
+        : t.externalNumber
       : receivedDocument
         ? showVatFields
           ? t.supplierTaxDocumentNumber

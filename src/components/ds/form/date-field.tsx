@@ -258,7 +258,7 @@ export function DateField({
             onBlur={commitText}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                e.preventDefault();
+                if (!e.ctrlKey && !e.metaKey) e.preventDefault();
                 commitText();
               }
             }}
