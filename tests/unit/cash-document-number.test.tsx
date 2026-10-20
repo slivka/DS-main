@@ -53,8 +53,8 @@ test("příjem: prázdné číslo se při zapnutí DPH sváže, odemčení dovol
   const view = render(<Cash direction="in" />);
   expect(view.getByLabelText("Externí číslo")).toBeDefined();
   fireEvent.click(view.getByRole("switch"));
-  expect(view.getByLabelText("Externí číslo")).toBeDefined();
-  expect(view.queryByLabelText("Číslo daňového dokladu")).toBeNull();
+  expect(view.getByLabelText("Číslo daňového dokladu")).toBeDefined();
+  expect(view.queryByLabelText("Externí číslo")).toBeNull();
   const input = view.container.querySelector<HTMLInputElement>("#document-externalNumber");
   expect(input?.readOnly).toBe(true);
   expect(input?.value).toBe("PO2026001");

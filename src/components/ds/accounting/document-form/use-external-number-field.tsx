@@ -59,7 +59,7 @@ export function useExternalNumberField({
   const externalNumberField = field(
     "document-externalNumber",
     cashDocument
-      ? cashTaxNumber && value.direction !== "in"
+      ? cashTaxNumber
         ? ds.documentEdit.taxNumber
         : t.externalNumber
       : receivedDocument
