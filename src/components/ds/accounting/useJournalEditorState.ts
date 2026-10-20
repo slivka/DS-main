@@ -84,7 +84,12 @@ export function useJournalEditorState(
   const accountFormRequired =
     texts?.accountFormRequired ?? dsTexts.columnPicker.accountFormRequired;
   const editable = React.useMemo(() => new Set(editableFields ?? ALL_EDITABLE), [editableFields]);
-  const [active, setActive] = React.useState<{ rowId: string; column: ColumnId } | null>(null);
+  // Aktivní buňka slouží jen zkratkám (Ctrl+D, Ctrl+Delete), ne vykreslení: drží se v ref,
+  // aby přesun fokusu (Tab, klik) nepřekresloval celý editor a neblokoval další klávesu.
+  const activeRef = React.useRef<{ rowId: string; column: ColumnId } | null>(null);
+  const setActive = React.useCallback((cell: { rowId: string; column: ColumnId } | null) => {
+    activeRef.current = cell;
+  }, []);
   const [editing, setEditing] = React.useState<EditState | null>(null);
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
   const [search, setSearch] = React.useState("");
@@ -424,7 +429,10 @@ export function useJournalEditorState(
     paneActive,
     accountFormRequired,
     editable,
-    active,
+    /** Aktivní buňka pro zkratky; čte se v obsluze klávesy, nevykresluje se. */
+    get active() {
+      return activeRef.current;
+    },
     setActive,
     editing,
     setEditing,

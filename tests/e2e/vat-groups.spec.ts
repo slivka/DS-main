@@ -15,23 +15,24 @@ async function clickUntil(target: Locator, done: () => Promise<void>) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/components/accounting-lines", { waitUntil: "networkidle" });
-  // Ukázka se připojí až při posunu k ní (po hydrataci stránky).
-  const heading = page.getByRole("heading", { name: "Skupiny DPH (2.109.0)" });
-  await expect(async () => {
-    await heading.scrollIntoViewIfNeeded();
-    await expect(page.getByTestId("vat-groups-showcase")).toBeVisible({ timeout: 1_000 });
-  }).toPass({ timeout: 10_000 });
-  // Velká stránka hydratuje několik sekund; interakce až s Reactem na tlačítkách ukázky.
+  // Nejdřív hydratace stránky (spolehlivý signál), pak jediný posun k ukázce: ukázka se připojí
+  // při posunu k ní. Dřívější opakování s 1s sondou při pomalé hydrataci nedoběhlo (Firefox, 2.113.0).
+  // Hydratace je stav, ne časový limit: čeká se na signál stránky v rámci limitu testu.
   await page.waitForFunction(
-    () => {
-      const node = document.querySelector(
-        '[data-testid="vat-groups-eur"] [data-slot="journal-vat-reset"]',
-      );
-      return Boolean(node && Object.keys(node).some((key) => key.startsWith("__react")));
-    },
-    undefined,
-    { timeout: 10_000 },
+    () =>
+      document.querySelector<HTMLElement>('[data-testid="accounting-forms-nav"]')?.dataset[
+        "ready"
+      ] === "true",
   );
+  await page.getByRole("heading", { name: "Skupiny DPH (2.109.0)" }).scrollIntoViewIfNeeded();
+  await expect(page.getByTestId("vat-groups-showcase")).toBeVisible();
+  // Interakce až s Reactem na tlačítkách ukázky.
+  await page.waitForFunction(() => {
+    const node = document.querySelector(
+      '[data-testid="vat-groups-eur"] [data-slot="journal-vat-reset"]',
+    );
+    return Boolean(node && Object.keys(node).some((key) => key.startsWith("__react")));
+  });
 });
 
 test("řádek rekapitulace má stejnou výšku s chybou i bez", async ({ page }) => {
@@ -48,9 +49,12 @@ test("řádek rekapitulace má stejnou výšku s chybou i bez", async ({ page })
 test("pomocník Cena s DPH vyplní základ", async ({ page }) => {
   const fp = page.getByTestId("vat-groups-fp");
   const input = page.getByLabel("Částka s DPH (21 %)");
-  await clickUntil(fp.locator('[data-slot="journal-gross-helper"]').first(), () =>
-    expect(input).toBeVisible({ timeout: 1000 }),
-  );
+  // Tlačítko okno přepíná: opakovaný klik (clickUntil) by pomalu otevřené okno zase zavřel.
+  // Hydrataci ukázky hlídá beforeEach, proto stačí jeden klik.
+  const helper = fp.locator('[data-slot="journal-gross-helper"]').first();
+  await helper.scrollIntoViewIfNeeded();
+  await helper.click();
+  await expect(input).toBeVisible();
   await input.fill("121");
   await page
     .locator('[data-slot="journal-gross-helper-content"]')
