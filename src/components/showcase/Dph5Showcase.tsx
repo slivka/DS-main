@@ -133,7 +133,13 @@ function AdvanceLists() {
             title={item.title}
             initial={[
               {
-                ...line(`${item.id}1`, "Záloha na dodávku", 10000, item.payer ? codes[0]!.id : null, side),
+                ...line(
+                  `${item.id}1`,
+                  "Záloha na dodávku",
+                  10000,
+                  item.payer ? codes[0]!.id : null,
+                  side,
+                ),
                 debitAccount: null,
                 creditAccount: null,
               },
@@ -230,12 +236,53 @@ export function Dph5Showcase() {
             <DocumentPostingGrid
               accounts={MOCK_ACCOUNTS}
               entries={[
-                { id: "1", text: "Služby", debitAccount: "518001", creditAccount: "321001", amount: 8264.46 },
-                { id: "2", text: "DPH 21 %", debitAccount: "343021", creditAccount: "321001", amount: 1735.54, auto: "vat" },
-                { id: "3", text: "DPH bez nároku", debitAccount: "518001", creditAccount: "321001", amount: 210, auto: "nonDeductible" },
-                { id: "4", text: "Odpočet zálohy", debitAccount: "324001", creditAccount: "321001", amount: -6050, auto: "advance" },
-                { id: "5", text: "Zaokrouhlení", debitAccount: "568001", creditAccount: "321001", amount: 0.46, auto: "rounding" },
-                { id: "6", text: "Kurzové zaokrouhlení", debitAccount: "563001", creditAccount: "321001", amount: 0.02, auto: "fxRounding" },
+                {
+                  id: "1",
+                  text: "Služby",
+                  debitAccount: "518001",
+                  creditAccount: "321001",
+                  amount: 8264.46,
+                },
+                {
+                  id: "2",
+                  text: "DPH 21 %",
+                  debitAccount: "343021",
+                  creditAccount: "321001",
+                  amount: 1735.54,
+                  auto: "vat",
+                },
+                {
+                  id: "3",
+                  text: "DPH bez nároku",
+                  debitAccount: "518001",
+                  creditAccount: "321001",
+                  amount: 210,
+                  auto: "nonDeductible",
+                },
+                {
+                  id: "4",
+                  text: "Odpočet zálohy",
+                  debitAccount: "324001",
+                  creditAccount: "321001",
+                  amount: -6050,
+                  auto: "advance",
+                },
+                {
+                  id: "5",
+                  text: "Zaokrouhlení",
+                  debitAccount: "568001",
+                  creditAccount: "321001",
+                  amount: 0.46,
+                  auto: "rounding",
+                },
+                {
+                  id: "6",
+                  text: "Kurzové zaokrouhlení",
+                  debitAccount: "563001",
+                  creditAccount: "321001",
+                  amount: 0.02,
+                  auto: "fxRounding",
+                },
               ]}
             />
           </div>
