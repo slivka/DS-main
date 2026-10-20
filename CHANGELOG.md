@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.112.0 (nevydáno) – Opravy pro Firefox a Safari
+## 2.113.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.112.0 – Opravy pro Firefox a Safari
 
 - `RecordDialog.activeTab?: string` a `onTabChange?: (value: string) => void`: aplikace může otevřít zvolenou sekci nebo přepnout po chybě uložení. Bez activeTab zůstává neřízený režim, callback oznamuje pouze změnu uživatelem.
 - Firefox: stálá výška slotu tužky v identifikačním řádku i při otevřeném výběru; měřicí text účtu má stejnou váhu v klidu i při úpravě.

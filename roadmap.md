@@ -1,4 +1,9 @@
-## DS 2.112.0 – Opravy pro Firefox a Safari (nevydáno)
+## DS 2.113.0 (nevydáno)
+
+- Firefox: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI stále selhává.
+- WebKit: edit-document-eleven:161 (tooltip Ruční kurz), nestabilní document-controls, journal-control-height, vat-groups.
+
+## DS 2.112.0 – Opravy pro Firefox a Safari
 
 - [x] Prověřeno ve Firefoxu / WebKitu: bez pageerror; kruhový import nepotvrzen. Opožděná hydratace při studeném načtení reprodukována, společná produktová výjimka z CI nikoli.
 - [x] Opravená identita a centrování Firefoxu, flex obal PartnerSelect při 200 %; tolerance štítků 0,5 px. Design 3 + pageerror 32/32, vsazení Edit 13 2/2.
