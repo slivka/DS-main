@@ -452,7 +452,7 @@ export const DS_TEXTS_SK: DsTexts = {
     amount: "Suma",
     homeAmount: "Suma v {symbol}",
     foreignAmount: "Suma v {symbol}",
-    text: "Text",
+    text: "Popis",
     quantity: "Množstvo",
     unit: "MJ",
     unitPrice: "Cena za MJ",

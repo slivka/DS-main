@@ -450,7 +450,7 @@ export const DS_TEXTS_CS: DsTexts = {
     amount: "Částka",
     homeAmount: "Částka v {symbol}",
     foreignAmount: "Částka v {symbol}",
-    text: "Text",
+    text: "Popis",
     quantity: "Množství",
     unit: "MJ",
     unitPrice: "Cena za MJ",
