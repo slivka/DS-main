@@ -86,6 +86,8 @@ export function InlineSearchTrigger({
           return;
         }
         if (event.altKey) return;
+        // Mezerník jen otevře nabídku s prázdným dotazem (výchozí chování tlačítka).
+        if (event.key === " ") return;
         if (event.key.length === 1 && !event.nativeEvent.isComposing) {
           const button = event.target;
           if (button instanceof HTMLButtonElement && button.disabled) return;

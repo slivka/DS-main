@@ -77,3 +77,22 @@ test("účet: diakritika přes compositionend se píše přímo do pole", async 
   expect(input?.value).toBe("č");
   expect(change).not.toHaveBeenCalled();
 });
+test("mezerník otevře nabídku s prázdným dotazem", async () => {
+  const view = render(
+    <OptionSelect
+      value=""
+      onChange={mock()}
+      searchable
+      options={[{ value: "0008", label: "0008 – Zboží" }]}
+    />,
+  );
+  const trigger = view.getByRole("combobox");
+  fireEvent.keyDown(trigger, { key: " " });
+  fireEvent.click(trigger);
+  const input = await waitFor(() => {
+    const node = view.container.querySelector<HTMLInputElement>("[cmdk-input]");
+    if (!node) throw new Error("Nabídka neotevřena");
+    return node;
+  });
+  expect(input.value).toBe("");
+});

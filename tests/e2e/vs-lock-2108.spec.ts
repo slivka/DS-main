@@ -50,7 +50,7 @@ test("PageHeader: střed štítku odpovídá účaří a polovině ex při změn
       .locator(".page-title-badge")
       .first()
       .evaluate((badge) => {
-        const title = badge.previousElementSibling;
+        const title = badge.closest(".page-title-line")?.querySelector("h1");
         if (!title) throw new Error("Chybí nadpis");
         // Nulová inline schránka měří účaří bez odhadu řádkové výšky či Canvas podpory enginu.
         const baseline = document.createElement("span");
@@ -66,6 +66,38 @@ test("PageHeader: střed štítku odpovídá účaří a polovině ex při změn
       });
     expect(diff, `zoom ${zoom}`).toBeLessThanOrEqual(1);
   }
+});
+
+test("PageHeader: dlouhý nadpis ve 360 px se zkrátí, štítek zůstane celý", async ({ page }) => {
+  await page.goto("/components/design-three");
+  await expect(page.getByTestId("design-three")).toHaveAttribute("data-ready", "true");
+  const result = await page
+    .locator(".page-title-badge")
+    .first()
+    .evaluate((badge) => {
+      const line = badge.closest(".page-title-line");
+      const header = line?.parentElement?.parentElement?.parentElement;
+      const title = line?.querySelector("h1");
+      if (!line || !header || !title) throw new Error("Chybí záhlaví");
+      title.textContent = "Daňový doklad k přijaté záloze – velmi dlouhý nadpis panelu";
+      header.style.width = "360px";
+      const row = line.getBoundingClientRect();
+      const b = badge.getBoundingClientRect();
+      return {
+        overflow: header.scrollWidth - header.clientWidth,
+        lineOverflow: line.scrollWidth - line.clientWidth,
+        badgeInside: b.left >= row.left - 1 && b.right <= row.right + 1,
+        truncated: title.scrollWidth > title.clientWidth,
+        ellipsis: getComputedStyle(title).textOverflow,
+        nowrap: getComputedStyle(title).whiteSpace,
+      };
+    });
+  expect(result.overflow).toBeLessThanOrEqual(0);
+  expect(result.lineOverflow).toBeLessThanOrEqual(0);
+  expect(result.badgeInside).toBe(true);
+  expect(result.truncated).toBe(true);
+  expect(result.ellipsis).toBe("ellipsis");
+  expect(result.nowrap).toBe("nowrap");
 });
 
 test("GridToolbar: všechny prvky sdílejí výšku při min, 75 %, 100 % a max", async ({ page }) => {

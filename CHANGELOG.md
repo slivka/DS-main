@@ -2,6 +2,14 @@
 
 ## 2.113.0 (nevydáno)
 
+### Edit dokladu 16 – opravné kolo
+
+- PageHeader: dlouhý nadpis se nezalamuje a zkrátí trojtečkou (celý text v title);
+  štítek a tečka neuložených změn zůstanou celé vpravo, centrování na účaří + ½ ex trvá.
+- Calendar: listování šipkami měsíce nechá fokus na šipce; fokus do mřížky jen při
+  otevření a návratu z měsíců/let. Podkomponenty DayPickeru mají stabilní typy.
+- Hledání v poli: mezerník na zavřeném výběru otevře nabídku s prázdným dotazem.
+
 ### Edit dokladu 16
 
 - PageHeader: štítek centruje vertical-align: middle vůči stejnému písmu nadpisu,

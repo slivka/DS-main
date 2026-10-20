@@ -107,23 +107,32 @@ export function PageHeader({
               titleSlot
             ) : chrome ? (
               <h1
+                title={typeof title === "string" ? title : undefined}
                 {...chrome.dragHandleProps}
                 className="typo-title min-w-0 cursor-grab truncate text-primary leading-[1.3] active:cursor-grabbing"
               >
                 {title}
               </h1>
             ) : (
-              <h1 className="typo-title min-w-0 truncate text-primary leading-[1.3]">{title}</h1>
+              <h1
+                title={typeof title === "string" ? title : undefined}
+                className="typo-title min-w-0 truncate text-primary leading-[1.3]"
+              >
+                {title}
+              </h1>
             )}
             {titleBadge ? (
-              <span className="page-title-badge ml-3 inline-flex items-center">{titleBadge}</span>
+              <span className="page-title-badge-slot ml-3">
+                {"\u200b"}
+                <span className="page-title-badge inline-flex items-center">{titleBadge}</span>
+              </span>
             ) : null}
             {chrome?.dirty ? (
               <span
                 role="img"
                 aria-label={t.unsaved}
                 title={t.unsaved}
-                className="ml-2 size-2 shrink-0 rounded-full bg-primary"
+                className="ml-2 size-2 shrink-0 self-center rounded-full bg-primary"
               />
             ) : null}
           </div>
