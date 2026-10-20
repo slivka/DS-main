@@ -94,7 +94,11 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
       components.push(item);
     }
     item.usage = definition.usage;
-    item.props = interfaceProps(definition.types ?? definition.file, definition.name);
+    const previous = item.props ?? [];
+    // Zachová výčty a výchozí hodnoty z extraktoru, které parser rozhraní nečte.
+    item.props = interfaceProps(definition.types ?? definition.file, definition.name).map(
+      (prop) => ({ ...previous.find((old) => old.name === prop.name), ...prop }),
+    );
     item.examples ??= [];
     const label = "Panel záznamu";
     const existing = item.examples.find((entry) => entry.label === label);
