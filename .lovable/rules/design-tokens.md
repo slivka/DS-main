@@ -137,6 +137,7 @@ Box-shadow classes:
 |---|---|
 | `shadow-panel` | `--shadow-panel` |
 | — | `--focus-ring-shadow` |
+| — | `--tw-ring-shadow` |
 
 ## Other
 
@@ -144,7 +145,10 @@ Reference via `var(--name)` in inline styles or CSS.
 
 | CSS variable |
 |---|
-| `--control-h` |
+| `--record-panel-width` |
+| `--record-panel-wide` |
+| `--record-indicator-slot` |
+| `--attachment-preview-height` |
 | `--badge-h-sm` |
 | `--badge-h-md` |
 | `--badge-cap-offset` |
@@ -156,6 +160,7 @@ Reference via `var(--name)` in inline styles or CSS.
 | `--document-date-icon-size` |
 | `--grid-title-surface` |
 | `--grid-toolbar-surface` |
+| `--control-h` |
 | `--grid-total-surface` |
 | `--f-h` |
 | `--p-h` |
