@@ -500,6 +500,7 @@ export const DS_TEXTS_SK: DsTexts = {
     clearSearch: "Zrušiť hľadanie",
     quantityPriceHint: "Množstvo × cena za MJ",
     vatCode: "Kód DPH",
+    amountNet: "Suma bez DPH",
     vatRate: "Sadzba",
     vatAmount: "DPH",
     grossAmount: "Celkom s DPH",

@@ -100,7 +100,7 @@ export function journalColumnDefs(input: JournalColumnDefsInput): GridColumn<Col
     : [];
   const amountColumns: GridColumn<ColumnId>[] = [
     ...vatColumns,
-    { id: "amount", label: t.amount, locked: true, align: "right" },
+    { id: "amount", label: input.vatOn ? t.amountNet : t.amount, locked: true, align: "right" },
     { id: "quantity", label: t.quantity, defaultVisible: quantity },
     { id: "unitId", label: t.unit, defaultVisible: quantity },
     { id: "unitPrice", label: t.unitPrice, defaultVisible: quantity, align: "right" },
