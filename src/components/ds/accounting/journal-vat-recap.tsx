@@ -1,11 +1,12 @@
 /**
- * Rekapitulace DPH pod mřížkou editoru řádků (2.109.0).
- * Vlastní: řádky skupin kód × sazba a pevných daní (Kód DPH · Sazba · Základ · DPH · Celkem),
- *   sbalitelné částky v měně firmy u cizí měny a úpravy skupiny „dle dokladu“.
+ * Rekapitulace DPH pod mřížkou editoru řádků (2.109.0; oddíly a tužka opravy 2.118.0).
+ * Vlastní: oddíl „V režimu DPH“ (Kód · Základ · DPH · Celkem, „z toho bez nároku“, štítek KH)
+ *   a „Mimo DPH“ (jen základ), sbalitelné částky v měně firmy, ruční opravu skupiny
+ *   (tužka = zrušit, bublina = vypočteno a rozdíl) a informativní text pod rekapitulací.
  * Nesmí: počítat daň – výsledek dodává useJournalVatGroups (stejný výpočet jako databáze).
  */
 import * as React from "react";
-import { AlertTriangle, ChevronRight, Info, Pencil } from "lucide-react";
+import { AlertTriangle, ChevronRight, MoreHorizontal, Pencil } from "lucide-react";
 
 import { mulDivRound } from "../../../lib/decimal-round";
 import { formatAmount } from "../../../lib/format";
@@ -16,7 +17,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { DecimalInput } from "../form/decimal-input";
 import { useJournalEditor } from "./journal-editor-context";
+import type { VatCodeOption } from "./journal-lines";
 import type { VatGroup } from "./journal-vat-groups";
+import { vatCodeMenuLabel } from "./vat-code-labels";
 import { vatGroupFieldId } from "./useJournalVatGroups";
 
 type AdjustMode = "vat" | "gross" | "base";
@@ -71,6 +74,8 @@ function GroupAdjust({ group }: { group: VatGroup }) {
     setOpen(false);
   };
   const name = `${group.code} ${group.rate} %`;
+  // Vydané doklady (overrideInMenu): oprava jen jako akce ⋯ řádku, ne viditelná tužka.
+  const inMenu = Boolean(editor.props.vat?.overrideInMenu);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -79,10 +84,11 @@ function GroupAdjust({ group }: { group: VatGroup }) {
           variant="ghost"
           size="icon"
           data-slot="journal-vat-adjust"
-          aria-label={`${texts.adjust} – ${name}`}
+          data-menu={inMenu || undefined}
+          aria-label={`${inMenu ? editor.dsTexts.vatFive.rowActions : texts.adjust} – ${name}`}
           className="size-[var(--control-h)]"
         >
-          <Pencil className="size-[0.9em]" />
+          {inMenu ? <MoreHorizontal className="size-[0.9em]" /> : <Pencil className="size-[0.9em]" />}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 space-y-3" data-slot="journal-vat-adjust-content">
@@ -123,90 +129,134 @@ const fixedHome = (value: number, rate: number | null, unit: number) =>
   rate === null ? "" : amount(mulDivRound(value, rate, unit, 2));
 const CELL = "px-2 py-1 text-right font-mono tabular-nums whitespace-nowrap";
 
-/** Řádek skupiny DPH. */
-function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
+/** Název kódu v rekapitulaci: „Z – Tuzemsko základní (21 %)“ + štítek oddílu KH. */
+function CodeCell({ code, fallback }: { code: VatCodeOption | undefined; fallback: string }) {
+  const { editor } = useJournalEditor();
+  const kh = editor.props.vat?.showKhSection !== false ? code?.khSection : undefined;
+  const label = code ? vatCodeMenuLabel(code) : fallback;
+  return (
+    <td className="max-w-0 px-2 py-1">
+      <span className="flex min-w-0 items-center gap-2">
+        <span className="truncate" title={label}>
+          {label}
+        </span>
+        {kh ? (
+          <span
+            data-slot="journal-vat-kh"
+            className="ds-badge inline-flex shrink-0 items-center rounded-sm border border-border bg-muted px-1.5 text-xs leading-none text-muted-foreground"
+          >
+            {editor.dsTexts.vatFive.khSection.replace("{section}", kh)}
+          </span>
+        ) : null}
+      </span>
+    </td>
+  );
+}
+
+/** Opravená daň: tužka; bublina ukáže vypočtenou daň a rozdíl, klik opravu zruší. */
+function OverrideMark({ group }: { group: VatGroup }) {
   const { editor } = useJournalEditor();
   const { vatGroups, t } = editor;
   const texts = t.vatGroups;
-  const issue = vatGroups.groupIssues.find((item) => item.groupKey === group.key);
+  const info = `${texts.calculated} ${amount(group.calculatedTax)} · ${texts.difference} ${amount(group.difference)}`;
+  const canReset = vatGroups.canOverride && !group.selfAssessment;
   return (
-    <tr
-      data-slot="journal-vat-group"
-      data-group={group.key}
-      className="h-[var(--control-h)] border-t"
-    >
-      <td className="px-2 py-1">{group.code}</td>
-      <td className={CELL}>{group.rate} %</td>
-      <td className={CELL}>{amount(group.base)}</td>
-      <td
-        id={vatGroupFieldId(group)}
-        tabIndex={issue ? 0 : undefined}
-        aria-invalid={issue?.severity === "error" || undefined}
-        data-warning={issue?.severity === "warning" || undefined}
-        className={cn(
-          CELL,
-          // Rámeček uvnitř buňky – stav nemění výšku řádku (pravidlo 2.107).
-          issue?.severity === "error" && "text-destructive ring-1 ring-inset ring-destructive",
-          issue?.severity === "warning" && "text-warning ring-1 ring-inset ring-warning",
-        )}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          data-slot={canReset ? "journal-vat-reset" : "journal-vat-calculated"}
+          aria-label={`${texts.calculatedInfo}: ${info}${canReset ? ` – ${editor.dsTexts.vatFive.cancelOverride}` : ""}`}
+          disabled={!canReset && undefined}
+          onClick={canReset ? () => vatGroups.resetOverride(group) : undefined}
+          className="inline-flex text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
+          <Pencil className="size-[0.9em]" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>
+        {info}
+        {canReset ? <div>{editor.dsTexts.vatFive.cancelOverride}</div> : null}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+/** Řádek skupiny DPH. */
+function GroupRow({ group, showHome }: { group: VatGroup; showHome: boolean }) {
+  const { editor } = useJournalEditor();
+  const { vatGroups } = editor;
+  const issue = vatGroups.groupIssues.find((item) => item.groupKey === group.key);
+  const code = editor.vatCodeMap.get(group.vatCodeId);
+  const nonDeductible = editor.props.vat?.nonDeductibleByCode?.[group.vatCodeId] ?? 0;
+  const span = showHome ? 6 : 4;
+  return (
+    <>
+      <tr
+        data-slot="journal-vat-group"
+        data-group={group.key}
+        className="h-[var(--control-h)] border-t"
       >
-        <span className="inline-flex items-center justify-end gap-1">
-          {issue ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <AlertTriangle role="img" aria-label={issue.message} className="size-[0.9em]" />
-              </TooltipTrigger>
-              <TooltipContent>{issue.message}</TooltipContent>
-            </Tooltip>
-          ) : null}
-          {group.overridden ? (
-            // Vypočtená daň a rozdíl v bublině – pod částkou nic, výška řádku stálá.
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  data-slot="journal-vat-calculated"
-                  aria-label={`${texts.calculatedInfo}: ${texts.calculated} ${amount(group.calculatedTax)} · ${texts.difference} ${amount(group.difference)}`}
-                  className="inline-flex text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <Info className="size-[0.9em]" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {texts.calculated} {amount(group.calculatedTax)} · {texts.difference}{" "}
-                {amount(group.difference)}
-              </TooltipContent>
-            </Tooltip>
-          ) : null}
-          {amount(group.tax)}
-        </span>
-      </td>
-      <td className={CELL}>{amount(group.gross)}</td>
-      {showHome ? (
-        <>
-          <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.baseHome)}</td>
-          <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.taxHome)}</td>
-        </>
-      ) : null}
-      <td className="px-1 py-1 text-right whitespace-nowrap">
-        {vatGroups.canOverride && !group.selfAssessment ? (
-          <>
-            {group.overridden ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                data-slot="journal-vat-reset"
-                className="h-[var(--control-h)]"
-                onClick={() => vatGroups.resetOverride(group)}
-              >
-                {texts.resetVat}
-              </Button>
+        <CodeCell code={code} fallback={`${group.code} ${group.rate} %`} />
+        <td className={CELL}>{amount(group.base)}</td>
+        <td
+          id={vatGroupFieldId(group)}
+          tabIndex={issue ? 0 : undefined}
+          aria-invalid={issue?.severity === "error" || undefined}
+          data-warning={issue?.severity === "warning" || undefined}
+          data-overridden={group.overridden || undefined}
+          className={cn(
+            CELL,
+            // Rámeček uvnitř buňky – stav nemění výšku řádku (pravidlo 2.107).
+            issue?.severity === "error" && "text-destructive ring-1 ring-inset ring-destructive",
+            issue?.severity === "warning" && "text-warning ring-1 ring-inset ring-warning",
+          )}
+        >
+          <span className="inline-flex items-center justify-end gap-1">
+            {issue ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <AlertTriangle role="img" aria-label={issue.message} className="size-[0.9em]" />
+                </TooltipTrigger>
+                <TooltipContent>{issue.message}</TooltipContent>
+              </Tooltip>
             ) : null}
-            <GroupAdjust group={group} />
+            {group.overridden ? <OverrideMark group={group} /> : null}
+            {amount(group.tax)}
+          </span>
+        </td>
+        <td className={CELL}>{amount(group.gross)}</td>
+        {showHome ? (
+          <>
+            <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.baseHome)}</td>
+            <td className={CELL}>{vatGroups.exchangeRate === null ? "" : amount(group.taxHome)}</td>
           </>
         ) : null}
-      </td>
+        <td className="px-1 py-1 text-right whitespace-nowrap">
+          {vatGroups.canOverride && !group.selfAssessment && (!group.overridden || editor.props.vat?.overrideInMenu) ? (
+            <GroupAdjust group={group} />
+          ) : null}
+        </td>
+      </tr>
+      {nonDeductible !== 0 ? (
+        <tr data-slot="journal-vat-non-deductible" className="text-muted-foreground">
+          <td className="py-0.5 pl-6 pr-2 text-xs">{editor.dsTexts.vatFive.nonDeductible}</td>
+          <td />
+          <td className={cn(CELL, "py-0.5 text-xs")}>{amount(nonDeductible)}</td>
+          <td colSpan={span - 2} />
+        </tr>
+      ) : null}
+    </>
+  );
+}
+
+/** Nadpis oddílu rekapitulace. */
+function SectionRow({ label, slot, span }: { label: string; slot: string; span: number }) {
+  return (
+    <tr data-slot={slot} className="border-t">
+      <th colSpan={span} scope="colgroup" className="px-2 pt-1.5 pb-0.5 text-left text-xs font-medium text-muted-foreground">
+        {label}
+      </th>
     </tr>
   );
 }
@@ -216,15 +266,21 @@ export function JournalVatRecap() {
   const { editor } = useJournalEditor();
   const { vatGroups, t, foreign, vatOn } = editor;
   const texts = t.vatGroups;
+  const vatFive = editor.dsTexts.vatFive;
   // Sbalitelné sloupce v měně firmy řídí aplikace přes `recap` (žádný vnitřní stav).
   const recap = editor.props.recap;
   const showHome = Boolean(recap?.vatHomeOpen);
   const onHomeChange = recap?.onVatHomeOpenChange;
   const { groups, fixed } = vatGroups.vatGroups;
+  const note = editor.props.vat?.recapNote;
   // Zaúčtovaný doklad rekapitulaci ukáže jen ke čtení (úpravy skrývá canOverride).
   if (!vatOn || (groups.length === 0 && fixed.length === 0)) return null;
   const home = editor.homeMark;
   const homeOn = foreign && showHome;
+  const span = homeOn ? 7 : 5;
+  const outside = (group: VatGroup) => editor.vatCodeMap.get(group.vatCodeId)?.menuGroup === "outside";
+  const inVat = groups.filter((group) => !outside(group));
+  const outsideGroups = groups.filter(outside);
   return (
     <section data-slot="journal-vat-recap" aria-label={texts.title} className="border-t text-sm">
       <div className="flex items-center justify-between px-3 py-1">
@@ -246,11 +302,10 @@ export function JournalVatRecap() {
           </Button>
         ) : null}
       </div>
-      <table className="w-full">
+      <table className="w-full table-fixed">
         <thead className="text-muted-foreground">
           <tr>
-            <th className="px-2 py-1 text-left font-normal">{texts.code}</th>
-            <th className="px-2 py-1 text-right font-normal">{texts.rate}</th>
+            <th className="w-[40%] px-2 py-1 text-left font-normal">{texts.code}</th>
             <th className="px-2 py-1 text-right font-normal">{texts.base}</th>
             <th className="px-2 py-1 text-right font-normal">{texts.vat}</th>
             <th className="px-2 py-1 text-right font-normal">{texts.gross}</th>
@@ -264,11 +319,14 @@ export function JournalVatRecap() {
                 </th>
               </>
             ) : null}
-            <th className="w-px" />
+            <th className="w-[calc(var(--control-h)+0.5rem)]" />
           </tr>
         </thead>
-        <tbody>
-          {groups.map((group) => (
+        <tbody data-slot="journal-vat-section-in">
+          {inVat.length + fixed.length > 0 ? (
+            <SectionRow label={vatFive.sectionInVat} slot="journal-vat-section-in-title" span={span} />
+          ) : null}
+          {inVat.map((group) => (
             <GroupRow key={group.key} group={group} showHome={homeOn} />
           ))}
           {fixed.map((item) => {
@@ -279,8 +337,7 @@ export function JournalVatRecap() {
                 data-slot="journal-vat-fixed"
                 className="h-[var(--control-h)] border-t"
               >
-                <td className="px-2 py-1">{code?.code ?? item.vatCodeId}</td>
-                <td className={CELL}>{code?.rate ?? ""} %</td>
+                <CodeCell code={code} fallback={item.vatCodeId} />
                 <td className={CELL}>{amount(item.base)}</td>
                 <td className={CELL}>
                   <span className="sr-only">{texts.fixedTax}</span>
@@ -302,7 +359,24 @@ export function JournalVatRecap() {
             );
           })}
         </tbody>
+        {outsideGroups.length > 0 ? (
+          <tbody data-slot="journal-vat-section-outside" className="border-t-2 text-muted-foreground">
+            <SectionRow label={vatFive.sectionOutsideVat} slot="journal-vat-section-outside-title" span={span} />
+            {outsideGroups.map((group) => (
+              <tr key={group.key} data-slot="journal-vat-outside" className="h-[var(--control-h)] border-t">
+                <CodeCell code={editor.vatCodeMap.get(group.vatCodeId)} fallback={group.code} />
+                <td className={CELL}>{amount(group.base)}</td>
+                <td colSpan={span - 2} />
+              </tr>
+            ))}
+          </tbody>
+        ) : null}
       </table>
+      {note ? (
+        <p data-slot="journal-vat-recap-note" className="px-3 py-1 text-xs text-muted-foreground">
+          {note}
+        </p>
+      ) : null}
     </section>
   );
 }
