@@ -161,7 +161,7 @@ export function CompanySwitcher({
       }
       valueClassName="text-base font-semibold"
       className={cn(
-        "max-w-[132px] border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[280px] xl:max-w-[380px]",
+        "min-w-[4.5rem] max-w-[8.25rem] shrink border border-grid-chrome bg-background text-foreground shadow-sm hover:border-input hover:bg-surface-hover data-[state=open]:border-primary focus-visible:border-primary md:max-w-[17.5rem] xl:max-w-[23.75rem]",
         className,
       )}
       contentClassName="w-[380px]"

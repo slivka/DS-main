@@ -174,10 +174,11 @@ export function PeriodSwitcher({
       statusIndicator={indicator}
       tooltip={tooltip}
       detail={selected ? formatPeriodRange(selected.from, selected.to) : undefined}
+      keepValue
       valueClassName="text-base xl:text-base"
       valueContainerClassName="gap-2"
       className={cn(
-        "max-w-[112px] border shadow-sm data-[state=open]:border-primary focus-visible:border-primary md:max-w-[220px] xl:max-w-[460px]",
+        "max-w-[28.75rem] shrink-0 border shadow-sm data-[state=open]:border-primary focus-visible:border-primary",
         selected
           ? triggerStateClass[selected.state]
           : isEmpty

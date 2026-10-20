@@ -329,6 +329,7 @@ export function DocumentForm(props: DocumentFormProps) {
           issues={formIssueList}
           notices={combinedNotices}
           vatRelevant={vatRelevant}
+          manualSupplier={receivedDocument && counterpartyInput === "manual"}
           onVatRelevantChange={(next) =>
             patch({
               vatRelevant: next,

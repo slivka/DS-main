@@ -78,7 +78,8 @@ function useContextPosition(hasContext: boolean) {
     const contextWidth = context.getBoundingClientRect().width;
     const rightControlsLeft = rightControls.getBoundingClientRect().left;
     const centeredRight = headerRect.left + headerRect.width / 2 + contextWidth / 2;
-    setCenterContext(centeredRight + 16 <= rightControlsLeft);
+    const centered = centeredRight + 16 <= rightControlsLeft;
+    setCenterContext(centered);
 
     const company = context.querySelector<HTMLElement>('[data-context-switcher="company"]');
     const period = context.querySelector<HTMLElement>('[data-context-switcher="period"]');
@@ -86,7 +87,10 @@ function useContextPosition(hasContext: boolean) {
     if (company && period && window.matchMedia("(min-width: 768px)").matches) {
       const periodWidth = period.getBoundingClientRect().width;
       const maxWidth = Number.parseFloat(window.getComputedStyle(company).maxWidth);
-      company.style.minWidth = `${Number.isFinite(maxWidth) ? Math.min(periodWidth, maxWidth) : periodWidth}px`;
+      // Souměrnost jen při dostatku místa; jinak se přednostně zkracuje firma, ne období.
+      if (centered)
+        company.style.minWidth = `${Number.isFinite(maxWidth) ? Math.min(periodWidth, maxWidth) : periodWidth}px`;
+      else company.style.removeProperty("min-width");
       const contextLeft = context.getBoundingClientRect().left;
       const gapCenter =
         (company.getBoundingClientRect().right + period.getBoundingClientRect().left) / 2;

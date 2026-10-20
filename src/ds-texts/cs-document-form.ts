@@ -77,4 +77,6 @@ export const DOCUMENT_FORM_TEXTS_CS: DsTexts["documentForm"] = {
   accountOrIban: "Zadejte buď IBAN, nebo číslo účtu – ne obojí",
   vsColumn: "VS",
   clear: "Vymazat",
+  unverifiedSupplier: "Neověřený dodavatel",
+  unverifiedSupplierHint: "Dodavatel zadán ručně – stav DPH a účet nejsou ověřeny.",
 };

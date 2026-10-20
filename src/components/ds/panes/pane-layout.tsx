@@ -532,6 +532,7 @@ function PaneColumn({
         maximized,
         toggleMaximize,
         closePane: () => api.closePane(pane.id),
+        closeTab: () => api.closeTab(tab.id),
         linked: linked
           ? {
               sectionLabel: linked.sectionLabel,
@@ -540,7 +541,7 @@ function PaneColumn({
               returnToPanel: () => api.returnLinkedTab(tab.id),
             }
           : undefined,
-        menuActions: buildTabMenuActions(api, tab.id, texts),
+        menuActions: buildTabMenuActions(api, tab.id, texts, "header"),
         dragHandleProps: { ref: drag.setNodeRef, ...drag.attributes, ...drag.listeners },
         getIcon: getIconByName,
       }
