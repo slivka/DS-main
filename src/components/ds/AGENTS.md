@@ -55,3 +55,7 @@ Všechny ovládací prvky a hodnoty jen ke čtení mají výšku `--control-h`. 
 - Grid toolbar rows derive every control height from --f-h and expose it as --control-h. Why: all grid bars scale uniformly.
 - IdentityLine never wraps; only the account name may truncate. Why: book, period, side, code and number must remain recognizable.
 - Set rem/em values of registered custom properties (@property, e.g. --control-h) on body or deeper, never on :root. Why: Firefox and WebKit resolve them against the initial font there, so heights would ignore app zoom.
+- Measure form action widths centrally: text-only → secondary icons → Save icon; retain accessible names and tooltips. Why: every form inherits the same overflow cascade.
+- Position action measurements absolutely inside bar padding; identify live actions by their slot. Why: sticky/backdrop containment must not move copies across the form edge.
+- Separate enabled-action touch explanations from blocked-action reasons in DisabledReasonTooltip. Why: enabled clicks never pin blocked explanations.
+- Share feedback, translated column labels and origin-tagged editor issues; register control-h independently. Why: stable heights and no stale errors.

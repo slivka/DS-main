@@ -4,7 +4,7 @@
 
 - [x] Druh záložky `linked`: vznik z RecordSidePanel, hlavička „Sekce – záznam“, sledování zdroje.
 - [x] Špendlík zamkne záznam; zavření zdroje nechá navázanou připnutou na posledním záznamu.
-- [x] Okno vpravo od zdroje; obsazené cizí okno s potvrzením, odmítnutí nechá obsah v panelu.
+- [x] Pod 3 panely vždy nový panel vpravo od zdroje; při 3 obsazených potvrzení a nahrazení obsahu, odmítnutí nechá obsah v panelu.
 - [x] „Vrátit do panelu“ v záhlaví i menu; ukázka, CS/SK texty, katalog, 8 unit testů.
 
 - Firefox i WebKit: tooltip důvodu zablokované akce lišty gridu po kliknutí (grid-add-actions-13g:86) – v CI selhává / nestabilní.

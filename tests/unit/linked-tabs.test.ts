@@ -36,13 +36,18 @@ const withRecord = (state: PaneTabsState, id: string, title: string) =>
     target: "newTab",
   }).state;
 
+/** Otevře seznam v aktivním panelu a vrátí stav. */
+const withList = (state: PaneTabsState, route: string, title: string) =>
+  openTabInState(state, { route, title, target: "newTab" }).state;
+
 describe("navázané záložky", () => {
-  test("vznikne v panelu vpravo od zdroje s hlavičkou „Sekce – záznam“", () => {
-    let state = withPanes(2);
-    state = withRecord(state, "FV1", "Faktura FV1");
+  test("1 panel: vznikne 2. panel vpravo s hlavičkou „Sekce – záznam“, bez potvrzení", () => {
+    const state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
     const result = openLinkedTabInState(state, sourceId, SECTION);
     expect(result.outcome).toBe("opened");
+    expect(result.state.panes).toHaveLength(2);
+    expect(result.state.layout).toBe(2);
     const linked = result.state.panes[1].tabs[0];
     expect(linked.kind).toBe("linked");
     expect(linked.title).toBe("Historie – Faktura FV1");
@@ -53,6 +58,22 @@ describe("navázané záložky", () => {
       pinned: false,
     });
     expect(linked.recordKey).toBe("FV1");
+    expect(result.state.active).toBe(result.state.panes[1].id);
+  });
+
+  test("2 panely, zdroj vlevo, vpravo obsazeno: vznikne 3. panel vpravo od zdroje, bez potvrzení", () => {
+    let state = withPanes(2);
+    state = withRecord(state, "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[0].id };
+    const result = openLinkedTabInState(state, sourceId, SECTION);
+    expect(result.outcome).toBe("opened");
+    expect(result.state.panes).toHaveLength(3);
+    // Nový panel je hned vpravo od zdroje – dosavadní pravý panel se posunul.
+    expect(result.state.panes[1].tabs[0]?.kind).toBe("linked");
+    expect(result.state.panes[2].tabs[0]?.route).toBe("/denik");
   });
 
   test("stejná sekce se neotvře dvakrát, jen se aktivuje", () => {
@@ -61,12 +82,11 @@ describe("navázané záložky", () => {
     state = openLinkedTabInState(state, sourceId, SECTION).state;
     const again = openLinkedTabInState(state, sourceId, SECTION);
     expect(again.outcome).toBe("activated");
-    expect(again.state.panes[0].tabs).toHaveLength(2);
+    expect(again.state.panes[1].tabs).toHaveLength(1);
   });
 
   test("sleduje zdroj při přepnutí záznamu; připnutí záznam zamkne", () => {
-    let state = withPanes(2);
-    state = withRecord(state, "FV1", "Faktura FV1");
+    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
     state = openLinkedTabInState(state, sourceId, SECTION).state;
     state = replaceTabContentInState(state, sourceId, {
@@ -96,8 +116,7 @@ describe("navázané záložky", () => {
   });
 
   test("zavření zdroje nechá navázanou na posledním záznamu jako připnutou", () => {
-    let state = withPanes(2);
-    state = withRecord(state, "FV1", "Faktura FV1");
+    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
     state = openLinkedTabInState(state, sourceId, SECTION).state;
     state = syncLinkedTabsInState(closeTabInState(state, sourceId));
@@ -107,46 +126,58 @@ describe("navázané záložky", () => {
     expect(linked.title).toBe("Historie – Faktura FV1");
   });
 
-  test("obsazené okno vpravo vyžaduje potvrzení; po potvrzení se obsah nahradí", () => {
+  test("3 obsazené panely: needsConfirm, po potvrzení nahradí aktivní obsah, odmítnutí nemění nic", () => {
     let state = withPanes(3);
     state = withRecord(state, "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
-    state = openTabInState(state, {
-      route: "/denik",
-      title: "Deník",
-      target: "adjacentPane",
-    }).state;
-    state = openTabInState(state, {
-      route: "/partneri",
-      title: "Partneři",
-      target: "adjacentPane",
-    }).state;
+    state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[2].id };
+    state = withList(state, "/partneri", "Partneři");
+    state = { ...state, active: state.panes[0].id };
     expect(state.panes.every((pane) => pane.tabs.length > 0)).toBe(true);
+    // Bez potvrzení: žádost o potvrzení, stav se nemění (odmítnutí = beze změny).
     const pending = openLinkedTabInState(state, sourceId, SECTION);
     expect(pending.outcome).toBe("needsConfirm");
+    expect(pending.paneId).toBe(state.panes[1].id);
     expect(pending.state).toBe(state);
+    // Po potvrzení: aktivní obsah okna vpravo je nahrazen, ne přidán.
     const confirmed = openLinkedTabInState(state, sourceId, SECTION, { confirmed: true });
-    expect(confirmed.outcome).toBe("opened");
-    expect(confirmed.state.panes[1].tabs.at(-1)?.linked?.section).toBe("history");
-    expect(confirmed.state.panes[1].activeTab).toBe(confirmed.state.panes[1].tabs.at(-1)?.id);
+    expect(confirmed.outcome).toBe("replaced");
+    expect(confirmed.state.panes).toHaveLength(3);
+    expect(confirmed.state.panes[1].tabs).toHaveLength(1);
+    const linked = confirmed.state.panes[1].tabs[0];
+    expect(linked.kind).toBe("linked");
+    expect(confirmed.state.panes[1].activeTab).toBe(linked.id);
+    expect(confirmed.closedTabIds).toEqual([state.panes[1].tabs[0].id]);
   });
 
-  test("u zdroje v posledním panelu se otevře vlevo; u jediného panelu v něm", () => {
-    let state = withPanes(2);
+  test("3 panely, zdroj v posledním: cílem je panel vlevo", () => {
+    let state = withPanes(3);
     state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[2].id };
     state = withRecord(state, "FV1", "Faktura FV1");
-    const sourceId = state.panes[1].tabs[0].id;
-    const left = openLinkedTabInState(state, sourceId, SECTION);
-    expect(left.state.panes[0].tabs[0].kind).toBe("linked");
-    let single = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
-    const singleSource = single.panes[0].tabs[0].id;
-    single = openLinkedTabInState(single, singleSource, SECTION).state;
-    expect(single.panes[0].tabs.map((tab) => tab.kind)).toEqual(["record", "linked"]);
+    const sourceId = state.panes[2].tabs[0].id;
+    const pending = openLinkedTabInState(state, sourceId, SECTION);
+    expect(pending.outcome).toBe("needsConfirm");
+    expect(pending.paneId).toBe(state.panes[1].id);
+    const confirmed = openLinkedTabInState(state, sourceId, SECTION, { confirmed: true });
+    expect(confirmed.state.panes[1].tabs[0]?.kind).toBe("linked");
+  });
+
+  test("3 panely s prázdným sousedem: otevře se v něm bez potvrzení", () => {
+    let state = withPanes(3);
+    state = withRecord(state, "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    const result = openLinkedTabInState(state, sourceId, SECTION);
+    expect(result.outcome).toBe("opened");
+    expect(result.state.panes).toHaveLength(3);
+    expect(result.state.panes[1].tabs[0]?.kind).toBe("linked");
   });
 
   test("„Vrátit do panelu“ zavře navázanou záložku a aktivuje zdroj", () => {
-    let state = withPanes(2);
-    state = withRecord(state, "FV1", "Faktura FV1");
+    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
     const sourceId = state.panes[0].tabs[0].id;
     state = openLinkedTabInState(state, sourceId, SECTION).state;
     const linkedId = state.panes[1].tabs[0].id;

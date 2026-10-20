@@ -8,6 +8,7 @@ import {
   closeTabInState,
   createTab,
   findTab,
+  insertPaneInState,
   insertTabInState,
   type OpenTabResult,
   type PaneTab,
@@ -49,9 +50,13 @@ export type OpenLinkedTabResult = Omit<OpenTabResult, "outcome"> & {
 };
 
 /**
- * Otevře navázanou záložku v panelu vpravo od zdroje (u posledního vlevo, u jediného v něm).
- * Obsazený cílový panel bez `confirmed` vrátí 'needsConfirm' – potvrzení řeší volající;
- * po odmítnutí se stav nemění a obsah zůstane ve vysouvacím panelu.
+ * Otevře navázanou záložku v okně vpravo od zdroje – stejná pravidla jako otevření do
+ * sousedního panelu: při méně než 3 panelech vždy vznikne nový panel hned vpravo od
+ * zdroje (rozšíření rozložení, bez potvrzení). Teprve při 3 otevřených panelech se
+ * obsazené sousední okno (vpravo, u posledního vlevo) bez `confirmed` hlásí jako
+ * 'needsConfirm' – potvrzení řeší volající; po odmítnutí se stav nemění a obsah
+ * zůstane ve vysouvacím panelu. Po potvrzení navázaná záložka nahradí aktivní obsah
+ * cílového okna (nepřidává další záložku).
  */
 export function openLinkedTabInState(
   state: PaneTabsState,
@@ -70,17 +75,6 @@ export function openLinkedTabInState(
       tabId: existing.tab.id,
       paneId: existing.pane.id,
     };
-  const count = state.panes.length;
-  const targetIndex =
-    count < 2
-      ? source.paneIndex
-      : source.paneIndex === count - 1
-        ? source.paneIndex - 1
-        : source.paneIndex + 1;
-  const target = state.panes[targetIndex];
-  // Potvrzení jen u cizího obsazeného okna; nová záložka v témže panelu nic nenahrazuje.
-  if (targetIndex !== source.paneIndex && target.tabs.length && !options.confirmed)
-    return { state, outcome: "needsConfirm", paneId: target.id };
   const tab: PaneTab = {
     ...createTab(
       {
@@ -97,8 +91,37 @@ export function openLinkedTabInState(
     ),
     linked: { sourceTabId, section: section.id, sectionLabel: section.label, pinned: false },
   };
-  const result = insertTabInState(state, targetIndex, tab, target.activeTab);
-  return { ...result, paneId: target.id };
+  // Méně než 3 panely: vždy nový panel hned vpravo od zdroje, bez potvrzení.
+  if (state.panes.length < 3) {
+    const expanded = insertPaneInState(state, source.paneIndex + 1);
+    if (!expanded) return { state, outcome: "rejected" };
+    const result = insertTabInState(expanded, source.paneIndex + 1, tab, null);
+    return { ...result, paneId: expanded.panes[source.paneIndex + 1].id };
+  }
+  // 3 panely: sousední okno vpravo (u posledního vlevo).
+  const targetIndex = source.paneIndex === 2 ? 1 : source.paneIndex + 1;
+  const target = state.panes[targetIndex];
+  if (!target.activeTab) {
+    const result = insertTabInState(state, targetIndex, tab, null);
+    return { ...result, paneId: target.id };
+  }
+  if (!options.confirmed) return { state, outcome: "needsConfirm", paneId: target.id };
+  // Po potvrzení nahradí aktivní obsah cílového okna – stejně jako existující nahrazení.
+  const replacedId = target.activeTab;
+  const tabs = target.tabs.map((item) => (item.id === replacedId ? tab : item));
+  return {
+    state: {
+      ...state,
+      panes: state.panes.map((pane) =>
+        pane.id === target.id ? { ...pane, tabs, activeTab: tab.id } : pane,
+      ),
+      active: target.id,
+    },
+    outcome: "replaced",
+    tabId: tab.id,
+    closedTabIds: [replacedId],
+    paneId: target.id,
+  };
 }
 
 /**

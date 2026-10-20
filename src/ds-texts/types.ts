@@ -200,6 +200,8 @@ export interface DsTexts {
     linkedReplaceTitle: string;
     linkedReplaceDescription: string;
     linkedReplaceConfirm: string;
+    /** Navázané okno jde otevřít jen ze záložky záznamu. */
+    linkedOnlyRecord: string;
   };
   notification: {
     label: string;
