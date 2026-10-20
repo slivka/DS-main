@@ -251,9 +251,9 @@ function NavigationPage() {
               <CompanySwitcher
                 className={
                   previewWidth < 768
-                    ? "max-w-[132px]"
+                    ? "max-w-[8.25rem]"
                     : previewWidth < 1280
-                      ? "max-w-[200px]"
+                      ? "max-w-[12.5rem]"
                       : undefined
                 }
                 items={companies}
@@ -262,13 +262,6 @@ function NavigationPage() {
               />
               <span aria-hidden className="mx-1 h-6 w-px shrink-0 bg-border" />
               <PeriodSwitcher
-                className={
-                  previewWidth < 768
-                    ? "max-w-[112px]"
-                    : previewWidth < 1280
-                      ? "max-w-[200px]"
-                      : undefined
-                }
                 periods={MOCK_PERIODS}
                 value={periodId}
                 onChange={setPeriodId}
