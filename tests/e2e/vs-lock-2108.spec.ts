@@ -102,7 +102,11 @@ test("PageHeader: dlouhý nadpis ve 360 px se zkrátí, štítek zůstane celý"
 
 test("GridToolbar: všechny prvky sdílejí výšku při min, 75 %, 100 % a max", async ({ page }) => {
   for (const route of ["grid", "accounting-controls", "accounting-bank", "record-panel"]) {
-    await page.goto(`/components/${route}`);
+    // Lištu vykreslí už SSR, ale hydratace ještě stahuje kód stránky. WebKit při odchodu
+    // přerušený import odmítne „Importing a module script failed“ a TanStack Router to
+    // vyhodnotí jako chybějící modul a stránku obnoví – další page.goto se pak přeruší.
+    // Proto se před měřením a odchodem čeká na dokončení všech požadavků.
+    await page.goto(`/components/${route}`, { waitUntil: "networkidle" });
     await expect(page.locator('[data-slot="grid-toolbar"]').first()).toBeVisible();
     for (const zoom of [0.6, 0.75, 1, 1.4]) {
       const metrics = await page.locator('[data-slot="grid-toolbar"]').evaluateAll(
