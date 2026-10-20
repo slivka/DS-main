@@ -2,7 +2,12 @@
 
 ## 2.120.0 (nevydáno)
 
-- Zatím bez změn.
+- Zálohy B: AdvancePaymentBreakdown skládá dvě roviny ZL/DD z SettlementBar a LinkedRecordsPanel; částky, lhůta 15 dnů, stav po lhůtě, oprávnění a akce dodává APP.
+- AdvanceAllocationDialog: řízený výběr kandidátů a částek, kontrola dostupné platby/cíle; AdvanceReasonDialog pro důvod a text rozhodnutí DD nebude nebo storna.
+- AdvanceDeductionsSection: grid odečtů, otevřený/uzavřený stav, důvody a řízené akce; společný slot JournalLinesEditor.afterVatRecap dostupný přes DocumentForm.linesEditorProps. U ZL APP slot nepředává; stávající patička používá advanceDeduction.
+- AdvanceRegisterGrid je preset DataGridu s řízenými filtry Po lhůtě/Bez DD a asOf; AdvanceCorrectionDialog předává explicitní rozhodnutí nad náhledem APP. Žádné doménové výpočty, nové párování nebo zápisy.
+- JournalLine.autoKind a DocumentPostingAutoKind podporují advance/advance_fx se štítky Záloha / Kurzové vyrovnání zálohy; zachované kurzové zaokrouhlení. Texty DsTexts.advances a vatFive.autoAdvanceFx CS/SK.
+- Ukázky na stránce Další doklady: platba 2 000 se dvěma ZL a stornem 185, poměrné pokrytí DD, FV/FP s odečty a ZFV/ZFP bez slotu, evidence a opravný DD. Nevydáno; výsledky kontrol budou doplněny po dokončení.
 
 ## 2.119.0 – Duplikace a vzory
 
