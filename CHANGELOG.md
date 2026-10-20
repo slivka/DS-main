@@ -2,6 +2,15 @@
 
 ## 2.113.0 (nevydáno)
 
+### Edit dokladu 16 – čtvrté opravné kolo
+
+- Editor řádků dokladu: aktivní buňka (jen pro zkratky Ctrl+D / Ctrl+Delete) se drží mimo
+  stav vykreslení, takže Tab ani klik mezi buňkami nepřekreslují celý editor. Přesun fokusu
+  klesl z ~100 ms na jeden snímek; na vytíženém prohlížeči už Tab neblokuje další klávesu.
+- Testy vat-code-tab-256 a vat-groups čekají na hydrataci stránky místo opakování akcí
+  s 1s sondou (opakovaný Tab zavíral pomalu otevřený výběr, opakovaný klik zavíral
+  pomocníka Cena s DPH).
+
 ### Edit dokladu 16 – druhé opravné kolo
 
 - Hledání v poli: při otevřeném hledání je jediným comboboxem vstup (název pole přes
