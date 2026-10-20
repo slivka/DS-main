@@ -4,6 +4,8 @@
  * Nesmí: obsahovat hodnoty textů ani React kód.
  */
 import type { LinkedRecordTexts } from "./linked-record-texts";
+import type { TemplateTexts } from "./template-texts";
+export type { TemplateTexts } from "./template-texts";
 export type { LinkedRecordTexts } from "./linked-record-texts";
 import type { BankStatementTexts } from "./bank-statement-texts";
 export type { BankStatementTexts } from "./bank-statement-texts";
@@ -35,6 +37,8 @@ export type { VatFiveTexts } from "./vat-five-texts";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Duplikace a vzory. */
+  templates: TemplateTexts;
   /** DPH 5 B a zálohové listy (2.118.0). */
   vatFive: VatFiveTexts;
   /** Propojené doklady. */

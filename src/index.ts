@@ -61,6 +61,12 @@ export * from "./components/ui/toggle";
 export * from "./components/ui/toggle-group";
 
 export * from "./components/ds";
+export * from "./components/ds/templates/template-types";
+export * from "./components/ds/templates/document-new-menu";
+export * from "./components/ds/templates/template-edit-banner";
+export * from "./components/ds/templates/duplication-preview";
+export * from "./components/ds/templates/duplication-dialog";
+export * from "./components/ds/templates/template-manager";
 export * from "./components/ds/data-display/linked-records-panel";
 export * from "./components/ds/data-display/settlement-bar";
 export * from "./components/ds/data-display/link-record-dialog";

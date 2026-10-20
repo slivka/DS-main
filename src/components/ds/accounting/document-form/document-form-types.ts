@@ -502,6 +502,8 @@ export interface DocumentFormProps {
   onFieldChange?: (fieldId: string, rowId?: string, columnId?: string) => void;
   /** Provozní informace pod chybou a nad bannerem jen pro čtení. */
   notices?: ReactNode;
+  /** Pruh úpravy vzoru nad identitou, společný pro faktury i zálohové listy. */
+  templateEdit?: import("../../templates/template-edit-banner").TemplateEditState;
   readOnly?: boolean;
   readOnlyReason?: ReactNode;
   readOnlyTitle?: ReactNode;

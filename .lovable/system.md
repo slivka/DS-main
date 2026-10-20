@@ -1,5 +1,13 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Duplikace a vzory
+
+- `DocumentNewMenu` patří do `DataGrid.toolbarLeft` (sdílená lišta GridFrame), bez druhého tlačítka addAction. Nabídky používají sdílené DropdownMenu a zachovávají jeho klávesnici.
+- `DuplicationDialog` je řízený: APP dodá parametry, výchozí datum posunuté o měsíc, řádky náhledu, loading/error/dirty/busy. APP řeší debounce, období a vytvoření. DS nepočítá vznik dokladů; pouze hlídá rozsah krokovačů a dostupnost Vytvořit. APP po úspěchu zavře, při chybě ponechá otevřené.
+- `DocumentForm.templateEdit` vloží `TemplateEditBanner` nad identitu v jednom sdíleném místě pro FV/FP/ZFV/ZFP. Při změně formuláře vždy ověřit a potvrdit dopad na faktury i zálohové listy. Akce vzoru předávat přes props; nevytvářet kopie formuláře.
+- `TemplateManager` je obsah panelu, `TemplateManagerDialog` sdílená obálka md. Každá akce má samostatné oprávnění a důvod. Smazání vyžaduje ConfirmDialog; APP znovu ověří práva při zápisu. Správa nemá společné Uložit: jednotlivé akce volají APP.
+- `RecordDialog.submitDisabled` blokuje odeslání i nabídku uložení při zavírání; neblokuje návrat či zahození. Nepoužívat busy místo zákazu vytvoření.
+
 ## Design 3
 
 - Aktivní záložka panelu je ouško v barvě obsahu, aktivní panel má primární horní linku, ostatní neutrální. Žádný stav nemění geometrii záložky.

@@ -6,6 +6,7 @@ upstream_package: ""
 starter_template: custom_design_system
 stack_packages:
     - react
+    - react-dom
     - '@tanstack/react-query'
     - '@tanstack/react-router'
     - lucide-react

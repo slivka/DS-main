@@ -26,6 +26,7 @@ import { useDocumentPaymentFields } from "./use-document-payment-fields";
 import { useVariableSymbolLink } from "./use-variable-symbol-link";
 import { deriveDocumentForm } from "./derive-document-form";
 import { buildDocumentNotices } from "./build-document-notices";
+import { TemplateEditBanner } from "../../templates/template-edit-banner";
 import { useDocumentHeaderFields } from "./use-document-field-renderers";
 import { buildDocumentTabs } from "./build-document-tabs";
 import { DocumentFormTabs } from "./Tabs";
@@ -343,6 +344,7 @@ export function DocumentForm(props: DocumentFormProps) {
           t={t}
         />
         <section className="rounded-lg border bg-card p-4">
+          {props.templateEdit ? <TemplateEditBanner template={props.templateEdit} /> : null}
           <DocumentIdentityLine
             identity={effectiveIdentity}
             direction={props.directionBadge}

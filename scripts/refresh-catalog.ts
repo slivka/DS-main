@@ -2,6 +2,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { DS_TEXTS_CS } from "../src/ds-texts/cs";
 import { enrichRecordPanelCatalog, renderPanelCatalogSections } from "./record-panel-catalog";
+import { enrichTemplateCatalog } from "./template-catalog";
 
 interface CatalogProp {
   name: string;
@@ -131,6 +132,7 @@ export function refreshCatalog() {
     if (!provider.antipatterns.includes(rule)) provider.antipatterns.push(rule);
   }
   const panelComponents = enrichRecordPanelCatalog(catalog.components);
+  const templateComponents = enrichTemplateCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -178,7 +180,10 @@ export function refreshCatalog() {
     }
     markdown = markdown.slice(0, start) + section + markdown.slice(end);
   }
-  writeFileSync(reference, renderPanelCatalogSections(markdown, panelComponents));
+  writeFileSync(
+    reference,
+    renderPanelCatalogSections(markdown, [...panelComponents, ...templateComponents]),
+  );
   const previewPath = "src/.generated/mockup-components.ts";
   const preview = readFileSync(previewPath, "utf8");
   writeFileSync(
