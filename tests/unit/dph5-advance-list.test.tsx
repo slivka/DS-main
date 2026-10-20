@@ -142,7 +142,9 @@ const ACCOUNTS = [
   { code: "343021", name: "DPH" },
 ];
 let key = 0;
-const renderEditor = (props: Partial<EditorProps>) =>
+const renderEditor = (
+  props: Omit<Partial<EditorProps>, "vat"> & { vat?: Partial<NonNullable<EditorProps["vat"]>> },
+) =>
   render(
     <TooltipProvider>
       <JournalLinesEditor
@@ -168,8 +170,6 @@ describe("rekapitulace DPH", () => {
   it("oddíly V režimu DPH a Mimo DPH, KH, bez nároku a informativní text", () => {
     const { container } = renderEditor({
       vat: {
-        enabled: true,
-        codes: [],
         nonDeductibleByCode: { "z-in": 5.25 },
         recapNote: "Nejde o daňový doklad",
       },
@@ -189,12 +189,12 @@ describe("rekapitulace DPH", () => {
     );
   });
   it("zálohový list štítek KH nezobrazí", () => {
-    const { container } = renderEditor({ vat: { enabled: true, codes: [], showKhSection: false } });
+    const { container } = renderEditor({ vat: { showKhSection: false } });
     expect(container.querySelector('[data-slot="journal-vat-kh"]')).toBeNull();
   });
   it("vydaný doklad nabízí opravu jen jako akci ⋯", () => {
     renderEditor({
-      vat: { enabled: true, codes: [], overrideInMenu: true },
+      vat: { overrideInMenu: true },
       onVatOverridesChange: () => {},
     });
     expect(screen.getByRole("button", { name: /^Další akce – Z 21 %/ })).toBeTruthy();
