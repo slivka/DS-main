@@ -99,8 +99,9 @@
   --record-panel-wide: 50%;
   --record-indicator-slot: 3.5rem;
   --attachment-preview-height: 24rem;
-  /* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení. */
-  --control-h: 2.25rem;
+  /* Jednotná výška ovládacích prvků (--control-h) je na body, ne na :root: Firefox
+     a WebKit počítají rem registrované vlastnosti na kořeni z výchozího písma
+     (cyklus přes font-size), takže by výška nesledovala zoom aplikace. */
   --badge-h-sm: 1.25rem;
   --badge-h-md: 1.5rem;
   /* Firefox bez text-box: korekce metrik Work Sans, měřeno proti výšce H. */
@@ -213,6 +214,11 @@
   --grid-heading-surface: var(--grid-frost);
   --grid-total-surface: var(--grid-frost);
   --grid-chrome-border: oklch(0.855 0.0135 251.6);
+}
+
+/* Jednotná výška formulářových ovládacích prvků a hodnot jen ke čtení (viz :root). */
+body {
+  --control-h: 2.25rem;
 }
 
 .dark {
@@ -1279,7 +1285,7 @@
 }
 
 /* Registrovaná délka se vyhodnotí na kontejneru. initial-value musí být nezávislá
-   na písmu; rem registraci zneplatní. Formulářovou výšku dál určuje :root. */
+   na písmu; rem registraci zneplatní. Formulářovou výšku určuje body. */
 @property --control-h {
   syntax: "<length>";
   inherits: true;

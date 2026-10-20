@@ -98,14 +98,20 @@ test("Radio tečka při 70 % a 200 % zachovává přesný střed", async ({ page
       module.setAppZoom(value);
     }, zoom);
     const radio = page.getByTestId("document-controls").getByRole("radio", { name: "První" });
-    const ring = await radio.boundingBox();
-    const dot = await radio.locator('[data-slot="radio-dot"]').boundingBox();
-    expect(ring).not.toBeNull();
-    expect(dot).not.toBeNull();
-    if (ring && dot) {
-      expect(Math.abs(ring.x + ring.width / 2 - dot.x - dot.width / 2)).toBeLessThan(0.6);
-      expect(Math.abs(ring.y + ring.height / 2 - dot.y - dot.height / 2)).toBeLessThan(0.6);
-    }
+    // Kruh i tečku měříme v jednom snímku po ustálení rozvržení: dvě samostatná volání
+    // boundingBox ve WebKitu zachytila stránku uprostřed přeskládání po změně zoomu.
+    const { ring, dot } = await radio.evaluate(async (item) => {
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const inner = item.querySelector('[data-slot="radio-dot"]');
+      if (!inner) throw new Error("Chybí tečka");
+      const box = (e: Element) => {
+        const r = e.getBoundingClientRect();
+        return { x: r.x, y: r.y, width: r.width, height: r.height };
+      };
+      return { ring: box(item), dot: box(inner) };
+    });
+    expect(Math.abs(ring.x + ring.width / 2 - dot.x - dot.width / 2)).toBeLessThan(0.6);
+    expect(Math.abs(ring.y + ring.height / 2 - dot.y - dot.height / 2)).toBeLessThan(0.6);
   }
 });
 

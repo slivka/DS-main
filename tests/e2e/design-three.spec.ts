@@ -41,9 +41,12 @@ for (const zoom of [70, 100, 200]) {
           return label ? label.scrollWidth - label.clientWidth : 0;
         })(),
       }));
+      // Tolerance 2 px: štítek strany (MD/D) v JetBrains Mono má v každém enginu jinou
+      // subpixelovou šířku (200 %: Chromium 52, WebKit 52,2, Firefox 53,4 px) a o tolik
+      // ubere místo účtu; víc než 2 px už je skutečná chyba rozvržení.
       if (width === 1280)
         expect(accountMetrics.width + 4).toBeGreaterThanOrEqual(
-          Math.min(18 * accountMetrics.rootSize, accountMetrics.available),
+          Math.min(18 * accountMetrics.rootSize, accountMetrics.available) - 2,
         );
       // Bez zalomení (Edit 16) se název účtu smí zkrátit, jen když řádku chybí 18 rem.
       if (width === 1280 && accountMetrics.available >= 18 * accountMetrics.rootSize)

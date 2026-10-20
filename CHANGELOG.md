@@ -95,6 +95,15 @@
   440 → 445 komponent, 902 → 951 props; 0 odebrání. Plná E2E a Firefox/WebKit
   v tomto kole neběžely; spustí Claude v GitHubu.
 
+### Edit dokladu 16 – třetí opravné kolo (Firefox a WebKit)
+
+- `--control-h` se definuje na `body`, ne na `:root`. Firefox a WebKit počítají `rem`
+  registrované vlastnosti (`@property`) na kořeni z výchozího písma, takže výška prvků
+  nesledovala zoom aplikace (vždy 36 px); identifikační řádek byl vyšší než control-h.
+- Testy: design-three tolerance 2 px (subpixelová šířka štítku MD/D v JetBrains Mono);
+  GridToolbar čeká na dokončení načtení (WebKit jinak přerušený import vyhodnotí jako
+  chybějící modul a router stránku obnoví); Radio tečka měří kruh i tečku v jednom snímku.
+
 ## 2.112.0 – Opravy pro Firefox a Safari
 
 - `RecordDialog.activeTab?: string` a `onTabChange?: (value: string) => void`: aplikace může otevřít zvolenou sekci nebo přepnout po chybě uložení. Bez activeTab zůstává neřízený režim, callback oznamuje pouze změnu uživatelem.
