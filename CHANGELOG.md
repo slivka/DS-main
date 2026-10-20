@@ -9,6 +9,15 @@
 - Zastaralé: `HistoryPanel` (@deprecated, náhrada `RecordHistoryTimeline`, smaže se v příští major verzi). Bez breaking změn.
 - Oprava: `DsTexts.recordHistory.changesCount` přijímá číslo a skloňuje (CS 1 změna / 2–4 změny / 0 a 5+ změn, SK zmena / zmeny / zmien). Funkce modelu historie (`groupHistoryByDay` aj.) se exportují z kořene knihovny. Katalog: popis a příklad `RecordHistoryTimeline`, `HistoryPanel` označen jako zastaralý; obnova katalogu zachovává výčty props.
 
+## 2.113.1 – Oprava výběru myší (patch, nevydáno)
+
+- Oprava regrese z Edit dokladu 16: kliknutí myší na položku nabídky ve výběru s hledáním v poli hodnotu nevybralo (nabídka se zavřela dřív, než klik doběhl). Týká se všech výběrů s hledáním v poli (OptionSelect searchable, EntitySelect, AccountSelect, PartnerSelect, DimensionSelect, VatCodeSelect, UnitSelect, CountrySelect, CategorySelect, LegalFormField, TagPicker, MultiSelect, ChipMultiSelect, ContextSwitcher, CompanySwitcher, ContextPill, BankAccountField).
+- Stisk myši v nabídce už nebere vstupu fokus (vzor comboboxu); výjimkou jsou vstupy, textová pole a výběry uvnitř nabídky.
+- „Uvnitř nabídky“ se rozpoznává jen přes odkaz na obsah nabídky (dřív selektor `data-slot="popover-content"`, který `PopoverContent` nemá); totéž pro Tab.
+- Po výběru myší se fokus vrací na tlačítko výběru; vícenásobné výběry nechávají nabídku otevřenou jako dřív.
+- Testy: unit `inline-search-mouse` (OptionSelect, PartnerSelect, AccountSelect, BankAccountField, MultiSelect), E2E `inline-search-mouse.spec.ts` (KS, partner, účet, bankovní účet).
+- Bez změny API.
+
 ## 2.113.0 – Panel dokladu (přílohy a poznámky) + Edit dokladu 16
 
 ### Edit dokladu 16 – čtvrté opravné kolo

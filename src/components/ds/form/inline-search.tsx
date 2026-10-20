@@ -10,6 +10,15 @@ interface SearchContextValue {
   changeQuery?: (query: string) => void;
   target: HTMLDivElement | null;
   setTarget: (target: HTMLDivElement | null) => void;
+  /** Obsah nabídky; jediný zdroj rozpoznání „uvnitř nabídky“. */
+  contentRef: React.MutableRefObject<HTMLDivElement | null>;
+}
+/** Prvek je součástí pole nebo jeho nabídky. */
+function insideSearch(context: SearchContextValue, node: EventTarget | null) {
+  return (
+    node instanceof Node &&
+    Boolean(context.contentRef.current?.contains(node) || context.target?.contains(node))
+  );
 }
 const SearchContext = React.createContext<SearchContextValue | null>(null);
 
@@ -27,6 +36,7 @@ export function InlineSearchPopover({
   ...props
 }: InlineSearchPopoverProps) {
   const [target, setTarget] = React.useState<HTMLDivElement | null>(null);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
   return (
     <SearchContext.Provider
       value={{
@@ -40,6 +50,7 @@ export function InlineSearchPopover({
         changeQuery: onSearchChange,
         target,
         setTarget,
+        contentRef,
       }}
     >
       <Popover
@@ -122,14 +133,26 @@ export const InlineSearchContent = React.forwardRef<
   React.ElementRef<typeof PopoverContent>,
   React.ComponentProps<typeof PopoverContent>
 >(function InlineSearchContent(
-  { onOpenAutoFocus, onCloseAutoFocus, onInteractOutside, ...props },
+  { onOpenAutoFocus, onCloseAutoFocus, onInteractOutside, onMouseDown, ...props },
   ref,
 ) {
   const context = React.useContext(SearchContext);
   return (
     <PopoverContent
-      ref={ref}
+      ref={(node) => {
+        if (context) context.contentRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       {...props}
+      onMouseDown={(event) => {
+        onMouseDown?.(event);
+        // Standardní combobox: klik do nabídky nebere fokus vstupu, jinak by blur nabídku zavřel
+        // dřív, než klik doběhne. Výjimkou jsou prvky, které fokus potřebují.
+        const element = event.target instanceof Element ? event.target : null;
+        if (!element?.closest("input, textarea, select, [contenteditable=true]"))
+          event.preventDefault();
+      }}
       onInteractOutside={(event) => {
         if (event.target instanceof Node && context?.target?.contains(event.target))
           event.preventDefault();
@@ -157,6 +180,18 @@ export const InlineSearchInput = React.forwardRef<
   React.useLayoutEffect(() => {
     inputRef.current?.focus();
   }, [context?.target]);
+  // Po zavření nabídky (výběr myší i klávesou) vrátí fokus na tlačítko, pokud neodešel jinam.
+  const target = context?.target;
+  React.useEffect(
+    () => () => {
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (!active || active === document.body)
+          target?.querySelector<HTMLButtonElement>("button[role=combobox]")?.focus();
+      });
+    },
+    [target],
+  );
   // cmdk vnucuje aria-labelledby na skrytý popisek nabídky; název musí nést pole (aria-label).
   React.useLayoutEffect(() => {
     inputRef.current?.removeAttribute("aria-labelledby");
@@ -192,12 +227,7 @@ export const InlineSearchInput = React.forwardRef<
             document.querySelectorAll<HTMLElement>(
               'button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
             ),
-          ).filter(
-            (node) =>
-              !context.target?.contains(node) &&
-              !node.closest('[data-slot="popover-content"]') &&
-              node.getClientRects().length > 0,
-          );
+          ).filter((node) => !insideSearch(context, node) && node.getClientRects().length > 0);
           const trigger = context.target?.querySelector('button[role="combobox"]');
           const next = event.shiftKey
             ? focusable
@@ -220,13 +250,7 @@ export const InlineSearchInput = React.forwardRef<
       }}
       onBlur={(event) => {
         props.onBlur?.(event);
-        if (
-          !(
-            event.relatedTarget instanceof Element &&
-            event.relatedTarget.closest('[data-slot="popover-content"], .inline-search-field')
-          )
-        )
-          context.changeOpen(false);
+        if (!insideSearch(context, event.relatedTarget)) context.changeOpen(false);
       }}
     />,
     context.target,
