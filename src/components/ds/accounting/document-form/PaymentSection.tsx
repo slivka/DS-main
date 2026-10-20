@@ -29,7 +29,8 @@ type FieldRenderer = (
 ) => ReactNode;
 export interface DocumentPaymentSectionProps {
   f: DocumentFields;
-  t: DocumentFormTexts & Pick<DsTexts["documentForm"], "paymentMethod" | "companyBankAccount">;
+  t: DocumentFormTexts &
+    Pick<DsTexts["documentForm"], "paymentMethod" | "companyBankAccount" | "paymentReference">;
   value: DocumentHeaderValue;
   patch: (v: Partial<DocumentHeaderValue>) => void;
   can: (key: DocumentHeaderField) => boolean;
@@ -51,7 +52,10 @@ export interface DocumentPaymentSectionProps {
   field: FieldRenderer;
   /** Vazba VS na číslo daňového dokladu; bez ní pole nemá zámek. */
   vsLink?: VariableSymbolLinkState;
-  /** grid20 = VS (4) · KS (8) · SS (8) na mřížce formuláře (bankovní pohyb). */
+  /**
+   * grid20 = bankovní pohyb: VS (6) · KS (6) pod Účtem protistrany, SS (8) pod kódem banky;
+   * u IBAN / SWIFT VS (6) · Reference (14).
+   */
   layout?: "flex" | "grid20";
   /** Text zamčeného VS bez čísla dokladu. */
   vsPendingText?: string;
@@ -84,8 +88,10 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
     grid
       ? { span, mobileHalf: false, className: "" }
       : { span: undefined, mobileHalf: undefined, className: PAYMENT_ITEM };
-  const vsItem = item(4);
-  const symbolItem = item(8);
+  const vsItem = item(6);
+  const symbolItem = item(6);
+  // Zahraniční protiúčet pohybu: KS a SS nahrazuje reference platby.
+  const referenceMode = grid && value.bankAccountKind === "iban";
   const symbolControl = (control: ReactNode, id: string) =>
     symbolsDisabledReason ? (
       <Tooltip disableHoverableContent>
@@ -140,7 +146,22 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               vsItem.className,
             )
           : null}
-        {f.symbols
+        {f.symbols && referenceMode
+          ? field(
+              "document-paymentReference",
+              t.paymentReference,
+              <Input
+                id="document-paymentReference"
+                value={value.paymentReference ?? ""}
+                onChange={(event) => patch({ paymentReference: event.target.value })}
+                disabled={!can("paymentReference")}
+                className="h-[var(--control-h)] font-mono"
+              />,
+              14,
+              false,
+            )
+          : null}
+        {f.symbols && !referenceMode
           ? field(
               "document-constantSymbol",
               t.constantSymbol,
@@ -175,7 +196,7 @@ export function DocumentPaymentSection(p: DocumentPaymentSectionProps) {
               symbolItem.className,
             )
           : null}
-        {f.symbols
+        {f.symbols && !referenceMode
           ? field(
               "document-specificSymbol",
               t.specificSymbol,

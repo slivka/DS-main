@@ -77,6 +77,8 @@ export type DocumentHeaderValue = {
   variableSymbol?: string | null;
   constantSymbol?: string | null;
   specificSymbol?: string | null;
+  /** Reference platby (E2E) u zahraničního protiúčtu; nahrazuje KS a SS. */
+  paymentReference?: string | null;
   bankAccount?: string | null;
   /** Identifikátor vybraného účtu partnera. */
   partnerBankAccountId?: string | null;

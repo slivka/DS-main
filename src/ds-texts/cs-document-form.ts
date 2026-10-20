@@ -79,4 +79,5 @@ export const DOCUMENT_FORM_TEXTS_CS: DsTexts["documentForm"] = {
   clear: "Vymazat",
   unverifiedSupplier: "Neověřený dodavatel",
   unverifiedSupplierHint: "Dodavatel zadán ručně – stav DPH a účet nejsou ověřeny.",
+  paymentReference: "Reference",
 };
