@@ -39,7 +39,7 @@ export const AdvanceCorrectionDialog = forwardRef<HTMLDivElement, AdvanceCorrect
           if (!blocked) onDecision(true);
         }}
         extraActions={
-          <Button variant="outline" disabled={busy} onClick={() => onDecision(false)}>
+          <Button type="button" variant="outline" disabled={busy} onClick={() => onDecision(false)}>
             {t.doNotCreate}
           </Button>
         }

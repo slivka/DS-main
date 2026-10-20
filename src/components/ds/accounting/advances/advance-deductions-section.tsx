@@ -8,7 +8,7 @@ import { DataGrid, type DataGridColumn } from "../../grid/DataGrid";
 import { GridAction, GridActions } from "../../grid/grid-action";
 import { StatusBadge } from "../../data-display/status-badge";
 import { DisabledReasonTooltip } from "../../feedback/disabled-reason-tooltip";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "../../../ui/tooltip";
 import { useConfirmDialog } from "../../feedback/confirm-dialog";
 import type { AdvanceCommand, AdvanceDeductionAction, AdvanceDeductionRow } from "./advance-types";
 /** Řízená sekce odečtů, do slotu afterVatRecap pouze tam, kde ji APP požaduje. */
@@ -119,6 +119,7 @@ export const AdvanceDeductionsSection = forwardRef<HTMLDivElement, AdvanceDeduct
       else onAction?.(action, row);
     };
     return (
+      <TooltipProvider>
       <section ref={ref} className={cn("min-w-0 border-t p-3", className)} {...props}>
         <DataGrid
           rows={rows}
@@ -169,6 +170,7 @@ export const AdvanceDeductionsSection = forwardRef<HTMLDivElement, AdvanceDeduct
         />
         {confirmDialog}
       </section>
+      </TooltipProvider>
     );
   },
 );
