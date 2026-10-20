@@ -1,3 +1,4 @@
+import { PageHeaderDirtyDemo } from "@/components/showcase/page-header-dirty-demo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -477,6 +478,13 @@ function NavigationPage() {
 
       <ShowcaseSection title="Připravovaná stránka" description="Jednotný prázdný stav modulu.">
         <ComingSoon description="Evidence majetku bude dostupná v některém z dalších vydání." />
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Záhlaví panelu – neuložené změny"
+        description="Tečka neuložených změn má stejný svislý střed jako štítek stavu; ✕ zavře záložku."
+      >
+        <PageHeaderDirtyDemo />
       </ShowcaseSection>
     </ShowcaseLayout>
   );
