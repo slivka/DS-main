@@ -7,13 +7,13 @@ import {
   StatusBadge,
   advanceListVariant,
   advancePaymentStatusConfig,
-  useDsTexts,
   type AdvancePaymentStatus,
   type JournalLine,
   type JournalLinesVat,
   type JournalVatOverride,
   type VatCodeOption,
 } from "@/components/ds";
+import { useDsTexts } from "@/ds-texts";
 import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import { MOCK_ACCOUNTS, MOCK_VAT_CODES_IN, MOCK_VAT_CODES_OUT } from "@/lib/mock/accounting";
 
