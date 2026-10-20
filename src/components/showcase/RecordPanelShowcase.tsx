@@ -12,6 +12,7 @@ import {
   PinnedNoteBar,
   RecordDialog,
   RecordPanelTriggers,
+  RecordNotes,
   RecordSidePanel,
   type DataGridColumn,
 } from "../ds";
@@ -53,9 +54,11 @@ export function RecordPanelShowcase() {
   const [gridOpen, setGridOpen] = useState(false);
   const [gridTab, setGridTab] = useState("attachments");
   const [explicit, setExplicit] = useState<DemoRow | null>(null);
+  const [pinnedRow, setPinnedRow] = useState<DemoRow | null>(null);
+  const [bulkNotes, setBulkNotes] = useState(false);
   const follow = useFollowSelection(selected);
   const followed = follow.kind === "single" ? follow.record : null;
-  const active = pinned ? explicit : (followed ?? explicit);
+  const active = pinned ? pinnedRow : (followed ?? explicit);
   const close = () => setOpen(false);
   const content = useRecordPanelContent(status, sourceUrl, close);
   const form = useRef<HTMLDivElement>(null);
@@ -74,6 +77,7 @@ export function RecordPanelShowcase() {
   useEffect(() => {
     // PDF ukázky je v paměti, URL se při odpojení vždy uvolní.
     const pdf = new jsPDF();
+    pdf.setTextColor(18, 48, 74);
     pdf.setFontSize(20);
     pdf.text("FAKTURA 2026/0142", 20, 25);
     pdf.setFontSize(12);
@@ -197,7 +201,10 @@ export function RecordPanelShowcase() {
             follow.kind === "multi" && !pinned ? "Výběr dokladů" : (active?.number ?? "Doklady")
           }
           pinned={pinned}
-          onPinnedChange={setPinned}
+          onPinnedChange={(next) => {
+            setPinnedRow(next ? active : null);
+            setPinned(next);
+          }}
           tabs={
             follow.kind === "multi" && !pinned
               ? [
@@ -207,9 +214,18 @@ export function RecordPanelShowcase() {
                     icon: MessageSquare,
                     content: (
                       <MultiSelectionPanel count={follow.count}>
-                        <Button variant="outline" onClick={() => setGridTab("notes")}>
+                        <Button variant="outline" onClick={() => setBulkNotes(true)}>
                           Přidat poznámku
                         </Button>
+                        {bulkNotes ? (
+                          <RecordNotes
+                            notes={[]}
+                            onAdd={(body) => {
+                              content.addNote(body);
+                              setBulkNotes(false);
+                            }}
+                          />
+                        ) : null}
                       </MultiSelectionPanel>
                     ),
                   },
@@ -233,6 +249,7 @@ export function RecordPanelShowcase() {
             }}
             onIndicatorClick={(row, id) => {
               setExplicit(row);
+              if (pinned) setPinnedRow(row);
               setGridTab(id);
               setGridOpen(true);
             }}

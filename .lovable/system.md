@@ -8,7 +8,6 @@
 - Nadpis nesmí používat text-box ořez; diakritika a dotahy musí zůstat viditelné. Centrovat lze text štítku, nikoli ořezávat nadpis.
 - Štítky mají sm 1,25 rem a md 1,5 rem, normální větné písmo a opticky centrovaný text. PageHeader má mezeru nadpis–štítek 0,75 rem a tečku za štítkem s mezerou 0,5 rem.
 
-## Dialogy záznamů
 ## Panel záznamu, přílohy a poznámky
 
 - `RecordSidePanel` obaluje hlavní obsah přes children: nad 640 px šířky prostředí

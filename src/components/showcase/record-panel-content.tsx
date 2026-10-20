@@ -1,5 +1,5 @@
 /** Ukázkové operace příloh a poznámek · vlastní stav demo · nesmí ukládat produkční data. */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { History, MessageSquare, Paperclip } from "lucide-react";
 import {
   AttachmentList,
@@ -25,6 +25,13 @@ export function useRecordPanelContent(
     uploadedBy: "Jana Nováková",
     uploadedAt: "2026-10-19T09:00:00Z",
   });
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(
+    () => () => {
+      timers.current.forEach(clearTimeout);
+    },
+    [],
+  );
   const addFiles = (files: File[]) => {
     const uploaded = files.map((file, index) => ({
       id: `upload-${Date.now()}-${index}`,
@@ -38,14 +45,16 @@ export function useRecordPanelContent(
     setAttachments((items) => [...items, ...uploaded]);
     // Průběh simuluje aplikace, nikoli knihovna.
     for (const progress of [35, 70, 100])
-      setTimeout(
-        () =>
-          setAttachments((items) =>
-            items.map((item) =>
-              uploaded.some((entry) => entry.id === item.id) ? { ...item, progress } : item,
+      timers.current.push(
+        setTimeout(
+          () =>
+            setAttachments((items) =>
+              items.map((item) =>
+                uploaded.some((entry) => entry.id === item.id) ? { ...item, progress } : item,
+              ),
             ),
-          ),
-        progress * 15,
+          progress * 15,
+        ),
       );
   };
   const tabs: RecordSidePanelTab[] = [
@@ -154,5 +163,19 @@ export function useRecordPanelContent(
       ),
     },
   ];
-  return { tabs, pinnedNote: notes.find((note) => note.pinned), addFiles };
+  return {
+    tabs,
+    pinnedNote: notes.find((note) => note.pinned),
+    addFiles,
+    addNote: (body: string) =>
+      setNotes((items) => [
+        ...items,
+        {
+          id: `bulk-${Date.now()}`,
+          body,
+          author: "Petr Slivka",
+          createdAt: new Date().toISOString(),
+        },
+      ]),
+  };
 }

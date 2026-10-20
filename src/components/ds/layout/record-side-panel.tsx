@@ -91,7 +91,7 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
     useEffect(() => {
       const element = host.current;
       if (!element) return;
-      const measure = () => setNarrow(element.getBoundingClientRect().width < 640);
+      const measure = () => setNarrow(element.clientWidth < 640);
       measure();
       const observer = new ResizeObserver(measure);
       observer.observe(element);
