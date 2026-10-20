@@ -2,6 +2,7 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import { useDsTexts } from "../../../../ds-texts";
 import { cn } from "../../../../lib/utils";
+import { formatDate } from "../../../../lib/format";
 import { DataGrid, type DataGridColumn, type DataGridProps } from "../../grid/DataGrid";
 import { StatusBadge } from "../../data-display/status-badge";
 import { Button } from "../../../ui/button";
@@ -45,7 +46,7 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
     const columns: DataGridColumn<AdvanceRegisterRow>[] = [
       { id: "partner", label: t.partner, value: (row) => row.partner },
       { id: "vs", label: t.vs, value: (row) => row.vs, format: "vs" },
-      { id: "paidAt", label: t.paidAt, value: (row) => row.paidAt, exportType: "date" },
+      { id: "paidAt", label: t.paidAt, value: (row) => row.paidAt, render: (row) => formatDate(row.paidAt), exportType: "date" },
       { id: "currency", label: t.currency, value: (row) => row.currency },
       ...(["amount", "paidList", "coveredTaxDocument", "deducted", "remaining"] as const).map(
         (id) => ({
@@ -72,7 +73,7 @@ export const AdvanceRegisterGrid = forwardRef<HTMLDivElement, AdvanceRegisterGri
           />
         ),
       },
-      { id: "deadline", label: t.deadline, value: (row) => row.deadline, exportType: "date" },
+      { id: "deadline", label: t.deadline, value: (row) => row.deadline, render: (row) => formatDate(row.deadline), exportType: "date" },
     ];
     return (
       <div ref={ref} className={cn("min-w-0", className)} {...props}>

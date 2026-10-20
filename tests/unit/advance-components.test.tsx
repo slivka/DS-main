@@ -9,7 +9,6 @@ import { AdvanceReasonDialog } from "../../src/components/ds/accounting/advances
 import type {
   AdvancePaymentPlane,
   AdvancePaymentTotals,
-  AdvanceRegisterRow,
 } from "../../src/components/ds/accounting/advances/advance-types";
 const totals: AdvancePaymentTotals = {
   amount: 2000,
