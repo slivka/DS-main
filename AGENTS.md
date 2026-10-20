@@ -62,4 +62,4 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - Linked records share LinkedRecordEntry and RecordDialog; mapped amounts and permissions come from the application. Why: consistent views without domain logic.
 - Linked tabs follow source tabs; linked-tabs owns follow/pin/orphan rules, pane-state carries types.
-- Templates compose menus, DataGrid and RecordDialog; DocumentForm shares the banner for invoices/ZL. Why: APP owns data and writes.
+- Templates/advances reuse grids/dialogs; deductions use afterVatRecap. Why: APP owns data/writes.
