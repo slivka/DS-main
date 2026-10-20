@@ -61,7 +61,9 @@ export interface AdvanceDeductionRow {
   /** Navázaný DD. */ taxDocument?: string;
   /** Stav odečtu. */ status: "open" | "closed";
   /** Proč je odečet otevřený. */ openReason?: string;
-  /** Práva jednotlivých akcí. */ permissions?: Partial<Record<AdvanceDeductionAction, AdvancePermission>>;
+  /** Práva jednotlivých akcí. */ permissions?: Partial<
+    Record<AdvanceDeductionAction, AdvancePermission>
+  >;
 }
 /** Položka evidence, včetně zůstatků a lhůty z APP. */
 export interface AdvanceRegisterRow {

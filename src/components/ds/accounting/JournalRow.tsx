@@ -200,13 +200,17 @@ export function JournalRow({ line, rowIndex }: { line: JournalLine; rowIndex: nu
                         <span
                           data-slot="journal-auto-kind"
                           className="ds-badge inline-flex max-w-full items-center rounded-sm border bg-muted px-2 text-xs text-muted-foreground"
-                          title={line.autoKind === "advance"
-                            ? editor.dsTexts.vatFive.autoAdvance
-                            : editor.dsTexts.vatFive.autoAdvanceFx}
+                          title={
+                            line.autoKind === "advance"
+                              ? editor.dsTexts.vatFive.autoAdvance
+                              : editor.dsTexts.vatFive.autoAdvanceFx
+                          }
                         >
-                          <span className="truncate">{line.autoKind === "advance"
-                            ? editor.dsTexts.vatFive.autoAdvance
-                            : editor.dsTexts.vatFive.autoAdvanceFx}</span>
+                          <span className="truncate">
+                            {line.autoKind === "advance"
+                              ? editor.dsTexts.vatFive.autoAdvance
+                              : editor.dsTexts.vatFive.autoAdvanceFx}
+                          </span>
                         </span>
                       ) : null}
                     </>

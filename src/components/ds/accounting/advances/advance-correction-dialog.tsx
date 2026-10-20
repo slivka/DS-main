@@ -19,21 +19,48 @@ export interface AdvanceCorrectionDialogProps extends ComponentPropsWithoutRef<"
 }
 /** Potvrzovací dialog se sdílenou patičkou a náhledem základu a DPH. */
 export const AdvanceCorrectionDialog = forwardRef<HTMLDivElement, AdvanceCorrectionDialogProps>(
-  function AdvanceCorrectionDialog({ open, onOpenChange, rows, storageKey, onDecision,
-    busy, loading, error, className, ...props }, ref) {
+  function AdvanceCorrectionDialog(
+    { open, onOpenChange, rows, storageKey, onDecision, busy, loading, error, className, ...props },
+    ref,
+  ) {
     const t = useDsTexts().advances;
     const blocked = Boolean(busy || loading || error || !rows.length);
-    return <RecordDialog open={open} onOpenChange={onOpenChange} size="md" title={t.corrective}
-      busy={busy} error={error} submitLabel={t.create} submitDisabled={blocked}
-      onSubmit={() => { if (!blocked) onDecision(true); }}
-      extraActions={<Button variant="outline" disabled={busy} onClick={() => onDecision(false)}>{t.doNotCreate}</Button>}>
-      <div ref={ref} className={cn("min-w-0", className)} {...props}>
-        <DataGrid rows={rows} storageKey={storageKey} rowKey={(row) => row.id} loading={loading}
-          columns={[{ id: "document", label: t.document, value: (row) => row.document },
-            { id: "base", label: t.base, numeric: true, value: (row) => row.base },
-            { id: "vat", label: t.vat, numeric: true, value: (row) => row.vat }]}
-          hideToolbar paginated={false} groupable={false} />
-      </div>
-    </RecordDialog>;
+    return (
+      <RecordDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        size="md"
+        title={t.corrective}
+        busy={busy}
+        error={error}
+        submitLabel={t.create}
+        submitDisabled={blocked}
+        onSubmit={() => {
+          if (!blocked) onDecision(true);
+        }}
+        extraActions={
+          <Button variant="outline" disabled={busy} onClick={() => onDecision(false)}>
+            {t.doNotCreate}
+          </Button>
+        }
+      >
+        <div ref={ref} className={cn("min-w-0", className)} {...props}>
+          <DataGrid
+            rows={rows}
+            storageKey={storageKey}
+            rowKey={(row) => row.id}
+            loading={loading}
+            columns={[
+              { id: "document", label: t.document, value: (row) => row.document },
+              { id: "base", label: t.base, numeric: true, value: (row) => row.base },
+              { id: "vat", label: t.vat, numeric: true, value: (row) => row.vat },
+            ]}
+            hideToolbar
+            paginated={false}
+            groupable={false}
+          />
+        </div>
+      </RecordDialog>
+    );
   },
 );
