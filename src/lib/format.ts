@@ -263,3 +263,16 @@ export function formatDate(value: Date | string | null | undefined): string {
   if (Number.isNaN(d.getTime())) return String(value);
   return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
 }
+
+/**
+ * Nadpis částkového sloupce: v domácí měně jen popisek, v cizí jednou s kódem měny
+ * („Příjem (EUR)“). Buňky pak značku měny neopakují. Kódy měn dodává aplikace.
+ */
+export function currencyColumnLabel(
+  label: string,
+  currency: string | null | undefined,
+  homeCurrency: string | null | undefined,
+): string {
+  if (!currency || !homeCurrency || currency === homeCurrency) return label;
+  return `${label} (${currency})`;
+}
