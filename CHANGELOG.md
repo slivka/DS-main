@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.119.0 (nevydáno)
+## 2.120.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.119.0 – Duplikace a vzory
 
 ### Druhé opravné kolo po aktualizaci APP
 

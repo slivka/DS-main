@@ -1,4 +1,10 @@
-## DS 2.119.0 (nevydáno)
+## DS 2.120.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.119.0 – Duplikace a vzory
+
+- Vydáno 21. 10. 2026 (commit a5f14af). E2E Chromium run 39509875932 na 3c36026 🟢 (134 prošlo, 2 nestabilní: design-three 70 % známé, document-field-ids PO – čekání na data-ready).
 
 - [x] Druhé opravné kolo: návratové hodnoty klávesnice a noImplicitReturns, Ctrl/Cmd+Enter z data/hledání/částky/rozepsaných řádků, popisky pokladny. Devět nových unit testů včetně ZFV/ZFP; veřejné API beze změny; bez vydání a E2E.
 - Kontrola druhého kola: check:full --harness 1025/1025 unit ve 108 souborech, katalog 459/1026 bez ztrát, lint 0 chyb / 344 stávajících varování, formát a peněžní audit OK; automatické typy s noImplicitReturns a build OK. Chromium proklik datum/výběr vyvolal Uložit a zavřít; E2E specy neběžely.
