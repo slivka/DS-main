@@ -2,6 +2,8 @@
 
 ### DPH 5 – krok B
 
+- [x] Opravné kolo Chromium: pořadí Tab/Enter/Shift+Tab, překrytí ND, první klik na partnera; tři specy jednou (14/14), check:full --harness (992/992 unit, katalog 453/993 bez ztrát, lint 0 chyb / 344 varování).
+
 - [x] Pořadí sloupců Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka; Sazba/DPH/Celkem z gridu pryč.
 - [x] Klávesnice Enter / Shift+Enter, výběr psaním, nový řádek s kódem a účty, zahození prázdného řádku.
 - [x] Zakotvení sloupce špendlíkem.

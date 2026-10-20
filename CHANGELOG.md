@@ -2,6 +2,12 @@
 
 ## 2.118.0 (nevydáno)
 
+### Opravné kolo po E2E Chromium
+
+- Oprava kódu: v přetékajícím editoru řádků se sloupec akcí nepřipíná zprava. Jeho neprůhledná buňka překrývala ND prvního řádku při šířce 200 px; ND zůstává na původním místě a test skutečného kliknutí je beze změny. Platí pro sdílený editor faktur i zálohových listů.
+- Aktualizace testu záměrného pořadí 2.118.0: Tab z Popisu na Kód DPH, psaní a jeden Enter vyberou kód a přesunou fokus na Částku bez DPH; Shift+Tab ověřuje návrat přes Kód DPH do Popisu.
+- Test výběru myší čeká na dokončenou hydrataci ukázky (`data-ready`), ne pouze přítomnost React props či `readyState`. První klik na partnera otevírá nabídku a výběr funguje; chování komponenty se nemění.
+
 ### DPH 5 – krok B
 
 - Grid řádků: výchozí pořadí Popis · Kód DPH · Částka bez DPH · MD · DAL · Zakázka (`journalEditor.text` = „Popis“, nový text `journalEditor.amountNet`). Sloupce Sazba, DPH a Celkem s DPH z gridu odstraněny (hodnoty jsou v rekapitulaci); Množství, MJ a Cena/jedn. v detailu řádku, do gridu přes nastavení sloupců.
