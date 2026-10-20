@@ -61,7 +61,9 @@ test("tužka Změnit účet stojí hned za textem účtu", async ({ page }) => {
   const text = page.locator('[data-slot="document-identity-account-text"]').first();
   await text.scrollIntoViewIfNeeded();
   const pencil = text
-    .locator("xpath=ancestor::span[contains(@class,'document-identity-account')][1]")
+    .locator(
+      "xpath=ancestor::span[contains(concat(' ',normalize-space(@class),' '),' document-identity-account ')][1]",
+    )
     .locator(".document-identity-pencil-slot");
   const textBox = await text.boundingBox();
   const pencilBox = await pencil.boundingBox();

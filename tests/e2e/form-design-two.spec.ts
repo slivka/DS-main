@@ -48,7 +48,8 @@ test("kurzy vlevo/pod celkem, shodná výška, rekapitulace a způsob platby", a
         else if (boxes.rate.y !== boxes.total.y)
           expect(boxes.rate.y).toBeGreaterThan(boxes.total.y);
         expect(boxes.rates.right).toBeLessThanOrEqual(boxes.section.right + 0.6);
-        if (width === 360) expect(boxes.account.y).toBeGreaterThan(boxes.method.y);
+        // 2.117.0 D6: pořadí Bankovní účet | Způsob platby – na úzké šířce je způsob platby pod účtem.
+        if (width === 360) expect(boxes.method.y).toBeGreaterThan(boxes.account.y);
       }).toPass();
     }
   }
