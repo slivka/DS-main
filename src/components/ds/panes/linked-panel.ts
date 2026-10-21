@@ -95,7 +95,9 @@ export function openLinkedPanelInState(
       pinned: false,
       kind: "panel",
       activeSection: options.activeSection,
-      ...(override ? { record: override } : {}),
+      ...(override
+        ? { record: override, recordSourceKey: source.tab.recordKey ?? source.tab.route }
+        : {}),
     },
   };
   return placeLinkedTab(state, source, tab, options.confirmed, isDirty);
@@ -179,7 +181,12 @@ export function updateLinkedPanelRecordInState(
     panes: state.panes.map((pane) => ({
       ...pane,
       tabs: pane.tabs.map((tab) =>
-        tab.id === panel.tab.id ? { ...tab, linked: { ...info, record } } : tab,
+        tab.id === panel.tab.id
+          ? {
+              ...tab,
+              linked: { ...info, record, recordSourceKey: source.recordKey ?? source.route },
+            }
+          : tab,
       ),
     })),
   });

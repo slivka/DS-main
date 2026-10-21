@@ -216,8 +216,17 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
         return { ...tab, linked: { ...linked, pinned: true } };
       }
       if (linked.pinned) return tab;
+      const sourceKey = source.tab.recordKey ?? source.tab.route;
+      if (linked.record && linked.recordSourceKey !== sourceKey) {
+        // Zdroj přešel na jiný záznam – hlášený záznam patří starému klíči.
+        const { record: _drop, recordSourceKey: _key, ...rest } = linked;
+        changed = true;
+        paneChanged = true;
+        tab = { ...tab, linked: rest };
+      }
+      const current = tab.linked ?? linked;
       const record =
-        (source.tab.kind === "record" ? linked.record : undefined) ?? sourceRecord(source.tab);
+        (source.tab.kind === "record" ? current.record : undefined) ?? sourceRecord(source.tab);
       if (!record) return tab;
       const title =
         linked.kind === "panel"
