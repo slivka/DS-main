@@ -2,7 +2,7 @@
 
 ## 2.124.0 (nevydáno)
 
-- Zatím bez změn.
+- Refaktor bez změny chování: logika navázaného panelu (druh "panel") se přesunula z `panes/linked-tabs.ts` (363 řádků nad limit 300) do nového modulu `panes/linked-panel.ts` (`openLinkedPanelInState`, `findLinkedPanel`, `setLinkedPanelSectionInState`, `LINKED_PANEL_SECTION`, `linkedPanelTitle`); umístění (`placeLinkedTab`) a záznam zdroje zůstávají v linked-tabs, který je sdílí. linked-tabs jen reexportuje, veřejné API a importy z barrel beze změny; testy beze změny.
 
 ## 2.123.0 – Panel záznamu 6
 
