@@ -4,7 +4,7 @@ import { Upload } from "lucide-react";
 import { useFileDrop, validateFiles, type RejectedFile } from "../../../hooks/use-file-drop";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
-import { Button } from "../../ui/button";
+import { Button, buttonVariants } from "../../ui/button";
 /** Plocha pro výběr a přetažení stejné dávky souborů. */
 export interface FileDropZoneProps extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
   /** Povolené přípony nebo MIME; prázdné = všechny. */ accept: readonly string[];
@@ -56,25 +56,14 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
     <div ref={ref} {...props} className={cn("min-w-0", className)} data-slot="file-drop-zone">
       <div
         ref={host}
-        role="button"
+        role="group"
         aria-label={t.drop}
         aria-disabled={disabled}
         aria-describedby={hint ? hintId : undefined}
-        tabIndex={disabled ? -1 : 0}
         data-dragging={dragging || undefined}
-        onKeyDown={(event) => {
-          onKeyDown?.(event);
-          if (
-            !event.defaultPrevented &&
-            event.target === event.currentTarget &&
-            (event.key === "Enter" || event.key === " ")
-          ) {
-            event.preventDefault();
-            if (!disabled) input.current?.click();
-          }
-        }}
+        onKeyDown={onKeyDown}
         className={cn(
-          "rounded-md border border-dashed border-border bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "rounded-md border border-dashed border-border bg-muted/30",
           size === "sm"
             ? "flex flex-wrap items-center gap-2 p-2"
             : "flex min-h-48 flex-col items-center justify-center gap-4 p-6 text-center",
@@ -82,22 +71,30 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
           disabled && "text-muted-foreground",
         )}
       >
-        {size === "md" ? (
-          <>
-            <Upload aria-hidden="true" className="size-8 text-muted-foreground" />
-            <p className="text-sm font-semibold">{t.drop}</p>
-          </>
-        ) : null}
         {children}
         <Button
           type="button"
-          variant={size === "sm" ? "outline" : "default"}
+          variant="ghost"
           disabled={disabled}
-          // Jediná zastávka Tab je samotná zóna (Enter/mezerník otevře výběr).
-          tabIndex={-1}
+          role="button"
+          aria-label={t.drop}
+          aria-describedby={hint ? hintId : undefined}
+          tabIndex={disabled ? -1 : 0}
+          className={cn(
+            "h-auto max-w-full whitespace-normal p-0 hover:bg-transparent",
+            size === "md" && "flex-col gap-4",
+          )}
           onClick={() => input.current?.click()}
         >
-          {label}
+          {size === "md" ? (
+            <>
+              <Upload aria-hidden="true" className="size-8 text-muted-foreground" />
+              <span className="text-sm font-semibold">{t.drop}</span>
+            </>
+          ) : null}
+          <span className={buttonVariants({ variant: size === "sm" ? "outline" : "default" })}>
+            {label}
+          </span>
         </Button>
         {hint ? (
           <p id={hintId} className="text-xs text-muted-foreground">
