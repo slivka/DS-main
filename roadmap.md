@@ -1,5 +1,6 @@
 ## DS 2.126.0 (nevydáno)
 
+- [ ] Import souborů I2: FileDropZone, FileChipBar, PaneDropOverlay, CheckList, SelectableGroupList; CS/SK, ukázka importu a přetažení nad gridem, testy, katalog a check:full.
 - [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
 - [ ] AdvanceCorrectionDialog: měna částek (currencyCode) – APP zatím skládá vlastní náhled z RecordDialog + DataGrid (AdvanceRefundCorrectionDialog).
 
