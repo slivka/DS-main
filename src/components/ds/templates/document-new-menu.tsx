@@ -28,6 +28,58 @@ export interface DocumentNewMenuProps extends Omit<
   /** Ikona z APP. */ icon?: ReactNode;
   /** Hlavní klik; přítomnost zapíná split-button. */ onPrimary?: () => void;
 }
+/** Vlastnosti sdílených položek nabídky Nový. */
+export interface DocumentNewMenuItemsProps {
+  /** Vzory od APP. */ templates: Pick<DocumentTemplate, "id" | "name">[];
+  /** Prázdný doklad. */ onBlank: () => void;
+  /** Vybraný vzor a režim. */ onTemplate: (id: string, mode: DuplicationMode) => void;
+  /** Správa. */ onManage: () => void;
+}
+/**
+ * Položky nabídky Nový – používá je DocumentNewMenu i split režim primární akce
+ * lišty gridu (GridAddAction.menu), aby obě cesty nabízely stejné volby.
+ */
+export function DocumentNewMenuItems({
+  templates,
+  onBlank,
+  onTemplate,
+  onManage,
+}: DocumentNewMenuItemsProps) {
+  const t = useDsTexts().templates;
+  return (
+    <>
+      <DisabledReasonMenuItem onSelect={onBlank}>{t.blank}</DisabledReasonMenuItem>
+      {templates.length ? (
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>{t.fromTemplate}</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {templates.map((template) => (
+              <DropdownMenuSub key={template.id}>
+                <DropdownMenuSubTrigger title={template.name}>
+                  <span className="max-w-72 truncate">{template.name}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DisabledReasonMenuItem onSelect={() => onTemplate(template.id, "single")}>
+                    {t.create}
+                  </DisabledReasonMenuItem>
+                  <DisabledReasonMenuItem onSelect={() => onTemplate(template.id, "series")}>
+                    {t.createSeries}
+                  </DisabledReasonMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      ) : (
+        <DisabledReasonMenuItem disabled disabledReason={t.noTemplates} onSelect={() => {}}>
+          {t.fromTemplate}
+        </DisabledReasonMenuItem>
+      )}
+      <DropdownMenuSeparator />
+      <DisabledReasonMenuItem onSelect={onManage}>{t.manage}</DisabledReasonMenuItem>
+    </>
+  );
+}
 /** Nabídka nového dokladu; faktura a ZL používají stejný kontrakt. */
 export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProps>(
   function DocumentNewMenu(

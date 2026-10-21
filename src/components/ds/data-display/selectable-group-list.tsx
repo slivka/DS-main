@@ -108,13 +108,14 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                 {new Intl.NumberFormat(texts.intlLocale).format(group.items.length)}
               </span>
             </h3>
-            <ul className="divide-y divide-border">
+            <ul role="listbox" aria-multiselectable="true" aria-label={group.title} className="divide-y divide-border">
               {group.items.map((item) => {
                 const blocked = disabled || !isGroupItemSelectable(item);
                 const reason = item.disabledReason ?? item.message ?? t.errorBlocked;
                 return (
                   <li
                     key={item.id}
+                    role="none"
                     className={cn(
                       "flex items-start gap-2 rounded-sm px-2",
                       size === "sm" ? "py-2" : "py-3",
@@ -137,12 +138,14 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                     <Button
                       type="button"
                       variant="ghost"
+                      role="option"
                       ref={(node) => {
                         if (node) buttons.current.set(item.id, node);
                         else buttons.current.delete(item.id);
                       }}
                       tabIndex={item.id === focusId ? 0 : -1}
-                      aria-pressed={item.id === activeId}
+                      aria-selected={item.id === activeId}
+                      aria-checked={checkedIds.includes(item.id)}
                       className="h-auto min-w-0 flex-1 justify-start whitespace-normal p-0 text-left"
                       onClick={() => onActiveChange(item.id)}
                       onKeyDown={(event) => {

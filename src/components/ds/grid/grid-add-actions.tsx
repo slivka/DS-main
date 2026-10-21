@@ -29,6 +29,12 @@ export interface GridAddAction {
   disabled?: boolean;
   /** Důvod zakázání v tooltipu. */
   disabledReason?: string;
+  /**
+   * Obsah nabídky split tlačítka (položky DropdownMenu, např. DocumentNewMenuItems).
+   * Přítomnost zapíná split režim: hlavní klik provede onClick, šipka otevře nabídku.
+   * Ve sloučené nabídce „+ ▾“ se akce vykreslí jako podnabídka.
+   */
+  menu?: ReactNode;
 }
 
 /** Vlastnosti primárních akcí lišty. */
