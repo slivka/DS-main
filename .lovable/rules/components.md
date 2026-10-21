@@ -6971,3 +6971,45 @@ Jednořádkové nástroje každé záložky: start pro zobrazení/filtr/řazení
 **Avoid:**
 
 - Nezalamujte nástroje ani nezkracujte název záznamu místo hlavní akce; nepředávejte DS doménovou logiku.
+
+### SourcePreview
+
+```tsx
+import { SourcePreview } from "@/design-system/{slug}";
+```
+
+Záložka Zdroj panelu záznamu: PDF v iframe, obrázek v img, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy.
+
+**Props:**
+
+| Prop | Type | Default |
+|---|---|---|
+| `source` | RecordAttachment  /  null | `—` |
+| `accept` | readonly string[] | `—` |
+| `maxSize` | number | `—` |
+| `canReplace` | boolean | `—` |
+| `replaceDisabledReason` | string | `—` |
+| `onReplace` | () => void | `—` |
+| `onUpload` | (files: File[], rejected: RejectedFile[]) => void | `—` |
+| `onDownload` | (attachment: RecordAttachment) => void | `—` |
+| `onOpen` | (attachment: RecordAttachment) => void | `—` |
+| `inheritedFrom` | SourceInheritedFrom | `—` |
+| `onUrlExpired` | () => void | `—` |
+
+**Examples:**
+
+**Panel záznamu:**
+
+```tsx
+<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />
+```
+
+**Panel záznamu 6:**
+
+```tsx
+<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />
+```
+
+**Avoid:**
+
+- Nevracejte náhled zdroje do AttachmentList (source je deprecated) a negenerujte adresy v DS – dodává je APP.

@@ -9,10 +9,13 @@ import {
   type PaneTabsState,
 } from "../../src/components/ds/panes/pane-state";
 import {
+  findLinkedPanel,
   findLinkedTab,
   linkedTabTitle,
+  openLinkedPanelInState,
   openLinkedTabInState,
   returnLinkedTabInState,
+  setLinkedPanelSectionInState,
   setLinkedTabPinnedInState,
   syncLinkedTabsInState,
   setLinkedSourceSelectionInState,
@@ -300,5 +303,110 @@ describe("navázané okno ze seznamu", () => {
     expect(findLinkedTab(empty, sourceId, "history")?.tab.recordKey).toBe("FV1");
     const next = setLinkedSourceSelectionInState(empty, sourceId, second);
     expect(findLinkedTab(next, sourceId, "history")?.tab.recordKey).toBe("FV2");
+  });
+});
+
+describe("navázaný panel (druh panel)", () => {
+  const PANEL = { label: "panel", activeSection: "attachments" };
+  test("vznik: nový panel vpravo, hlavička „záznam – panel“, pamatuje sekci", () => {
+    const state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    const result = openLinkedPanelInState(state, sourceId, PANEL);
+    expect(result.outcome).toBe("opened");
+    expect(result.state.panes).toHaveLength(2);
+    const linked = result.state.panes[1].tabs[0];
+    expect(linked.kind).toBe("linked");
+    expect(linked.title).toBe("Faktura FV1 – panel");
+    expect(linked.linked).toEqual({
+      sourceTabId: sourceId,
+      section: "panel",
+      sectionLabel: "panel",
+      pinned: false,
+      kind: "panel",
+      activeSection: "attachments",
+    });
+    expect(linked.recordKey).toBe("FV1");
+  });
+  test("stejný panel se neotvře dvakrát, jen se aktivuje", () => {
+    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = openLinkedPanelInState(state, sourceId, PANEL).state;
+    const again = openLinkedPanelInState(state, sourceId, PANEL);
+    expect(again.outcome).toBe("activated");
+    expect(again.state.panes[1].tabs).toHaveLength(1);
+  });
+  test("sleduje záznam zdroje; změna sekce se pamatuje; špendlík zamkne", () => {
+    let state = withRecord(createPaneTabsState(1), "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = openLinkedPanelInState(state, sourceId, PANEL).state;
+    let panel = findLinkedPanel(state, sourceId)!.tab;
+    state = setLinkedPanelSectionInState(state, panel.id, "notes");
+    expect(findLinkedPanel(state, sourceId)!.tab.linked?.activeSection).toBe("notes");
+    state = replaceTabContentInState(state, sourceId, {
+      route: "/faktura",
+      params: { id: "FV2" },
+      kind: "record",
+      recordKey: "FV2",
+      title: "Faktura FV2",
+    });
+    state = syncLinkedTabsInState(state);
+    panel = findLinkedPanel(state, sourceId)!.tab;
+    expect(panel.recordKey).toBe("FV2");
+    expect(panel.title).toBe("Faktura FV2 – panel");
+    expect(panel.linked?.activeSection).toBe("notes");
+    // Špendlík zamkne záznam – další přepnutí zdroje se neprojeví.
+    state = setLinkedTabPinnedInState(state, panel.id, true);
+    state = replaceTabContentInState(state, sourceId, {
+      route: "/faktura",
+      params: { id: "FV3" },
+      kind: "record",
+      recordKey: "FV3",
+      title: "Faktura FV3",
+    });
+    state = syncLinkedTabsInState(state);
+    panel = findLinkedPanel(state, sourceId)!.tab;
+    expect(panel.recordKey).toBe("FV2");
+    expect(panel.title).toBe("Faktura FV2 – panel");
+  });
+  test("blokace: 3 panely bez potvrzení needsConfirm; rozepsaný cíl se nenahradí", () => {
+    let state = withPanes(3);
+    state = withRecord(state, "FV1", "Faktura FV1");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = { ...state, active: state.panes[1].id };
+    state = withList(state, "/denik", "Deník");
+    state = { ...state, active: state.panes[2].id };
+    state = withList(state, "/partneri", "Partneři");
+    state = { ...state, active: state.panes[0].id };
+    const pending = openLinkedPanelInState(state, sourceId, PANEL);
+    expect(pending.outcome).toBe("needsConfirm");
+    expect(pending.state).toBe(state);
+    const dirtyId = state.panes[1].tabs[0].id;
+    const confirmed = openLinkedPanelInState(
+      state,
+      sourceId,
+      { ...PANEL, confirmed: true },
+      1,
+      (tabId) => tabId === dirtyId,
+    );
+    expect(confirmed.outcome).toBe("opened");
+    expect(confirmed.state.panes[1].tabs).toHaveLength(2);
+    expect(confirmed.state.panes[1].tabs.map((tab) => tab.id)).toContain(dirtyId);
+    expect(confirmed.closedTabIds).toEqual([]);
+  });
+  test("vznik ze seznamu sleduje výběr; zavření seznamu připne poslední záznam", () => {
+    const first = { route: "/faktura", recordKey: "FV1", title: "FV1", params: { id: "FV1" } };
+    const second = { route: "/faktura", recordKey: "FV2", title: "FV2", params: { id: "FV2" } };
+    let state = withList(createPaneTabsState(1), "/seznam", "Faktury");
+    const sourceId = state.panes[0].tabs[0].id;
+    state = openLinkedPanelInState(state, sourceId, { ...PANEL, record: first }).state;
+    expect(findLinkedPanel(state, sourceId)?.tab.recordKey).toBe("FV1");
+    expect(findLinkedPanel(state, sourceId)?.tab.title).toBe("FV1 – panel");
+    state = setLinkedSourceSelectionInState(state, sourceId, second);
+    expect(findLinkedPanel(state, sourceId)?.tab.recordKey).toBe("FV2");
+    expect(findLinkedPanel(state, sourceId)?.tab.title).toBe("FV2 – panel");
+    state = syncLinkedTabsInState(closeTabInState(state, sourceId));
+    const orphan = state.panes[1].tabs[0];
+    expect(orphan.linked?.pinned).toBe(true);
+    expect(orphan.recordKey).toBe("FV2");
   });
 });

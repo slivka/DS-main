@@ -4,6 +4,7 @@ import type {
   RecordHistoryTexts,
   RecordNotesTexts,
   RecordPanelTexts,
+  SourcePreviewTexts,
 } from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_CS: RecordPanelTexts = {
@@ -57,6 +58,13 @@ export const ATTACHMENTS_CS: AttachmentTexts = {
   tooLarge: "Soubor překračuje limit",
   failed: "Operace s přílohou se nezdařila.",
   denied: "Nemáte oprávnění k této akci.",
+};
+/** Náhled zdroje záznamu. */
+export const SOURCE_PREVIEW_CS: SourcePreviewTexts = {
+  upload: "Nahrát zdroj",
+  noPreview: "Náhled tohoto typu není k dispozici.",
+  inherited: "Zděděno z",
+  expired: "Adresa náhledu vypršela – načtěte ji znovu.",
 };
 /** Historie záznamu. */
 export const RECORD_HISTORY_CS: RecordHistoryTexts = {

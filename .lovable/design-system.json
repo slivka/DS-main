@@ -11155,6 +11155,82 @@
       "antipatterns": [
         "Nezalamujte nástroje ani nezkracujte název záznamu místo hlavní akce; nepředávejte DS doménovou logiku."
       ]
+    },
+    {
+      "name": "SourcePreview",
+      "file": "src/components/ds/feedback/source-preview.tsx",
+      "import_path": "",
+      "usage": "Záložka Zdroj panelu záznamu: PDF v iframe, obrázek v img, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy.",
+      "props": [
+        {
+          "name": "source",
+          "type": "RecordAttachment | null",
+          "required": true
+        },
+        {
+          "name": "accept",
+          "type": "readonly string[]",
+          "required": true
+        },
+        {
+          "name": "maxSize",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "canReplace",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "replaceDisabledReason",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "onReplace",
+          "type": "() => void",
+          "required": false
+        },
+        {
+          "name": "onUpload",
+          "type": "(files: File[], rejected: RejectedFile[]) => void",
+          "required": false
+        },
+        {
+          "name": "onDownload",
+          "type": "(attachment: RecordAttachment) => void",
+          "required": false
+        },
+        {
+          "name": "onOpen",
+          "type": "(attachment: RecordAttachment) => void",
+          "required": false
+        },
+        {
+          "name": "inheritedFrom",
+          "type": "SourceInheritedFrom",
+          "required": false
+        },
+        {
+          "name": "onUrlExpired",
+          "type": "() => void",
+          "required": false
+        }
+      ],
+      "examples": [
+        {
+          "label": "Panel záznamu",
+          "code": "<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />"
+        },
+        {
+          "label": "Panel záznamu 6",
+          "code": "<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />"
+        }
+      ],
+      "antipatterns": [
+        "Nevracejte náhled zdroje do AttachmentList (source je deprecated) a negenerujte adresy v DS – dodává je APP."
+      ]
     }
   ],
   "assets": [

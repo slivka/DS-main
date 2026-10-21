@@ -29,6 +29,14 @@ export function linkedTabTitle(sectionLabel: string, recordTitle: string): strin
   return `${sectionLabel} – ${recordTitle}`;
 }
 
+/** Id sekce vyhrazené navázané záložce s celým panelem. */
+export const LINKED_PANEL_SECTION = "panel";
+
+/** Hlavička navázaného panelu: „<titulek záznamu> – panel“. */
+export function linkedPanelTitle(recordTitle: string, panelLabel: string): string {
+  return `${recordTitle} – ${panelLabel}`;
+}
+
 /** Titulek záznamu zdrojové záložky (titulek, jinak klíč záznamu). */
 function sourceRecordTitle(source: PaneTab): string {
   return source.title ?? source.recordKey ?? source.route;
@@ -83,14 +91,62 @@ export type OpenLinkedTabResult = Omit<OpenTabResult, "outcome"> & {
 };
 
 /**
- * Otevře navázanou záložku v okně vpravo od zdroje – stejná pravidla jako otevření do
- * sousedního panelu: při méně než 3 panelech vždy vznikne nový panel hned vpravo od
- * zdroje (rozšíření rozložení, bez potvrzení). Teprve při 3 otevřených panelech se
- * obsazené sousední okno (vpravo, u posledního vlevo) bez `confirmed` hlásí jako
+ * Umístění nové navázané záložky – stejná pravidla jako otevření do sousedního
+ * panelu: při méně než 3 panelech vždy vznikne nový panel hned vpravo od zdroje
+ * (rozšíření rozložení, bez potvrzení). Teprve při 3 otevřených panelech se obsazené
+ * sousední okno (vpravo, u posledního vlevo) bez `confirmed` hlásí jako
  * 'needsConfirm' – potvrzení řeší volající; po odmítnutí se stav nemění a obsah
  * zůstane ve vysouvacím panelu. Po potvrzení navázaná záložka nahradí aktivní obsah
  * cílového okna – je-li ale rozepsaný (isDirty), nenahrazuje se: navázaná záložka se
  * do cílového okna přidá vedle něj (limit záložek a vytlačení jako jinde).
+ */
+function placeLinkedTab(
+  state: PaneTabsState,
+  source: { paneIndex: number },
+  tab: PaneTab,
+  confirmed: boolean | undefined,
+  isDirty: (tabId: string) => boolean,
+): OpenLinkedTabResult {
+  // Méně než 3 panely: vždy nový panel hned vpravo od zdroje, bez potvrzení.
+  if (state.panes.length < 3) {
+    const expanded = insertPaneInState(state, source.paneIndex + 1);
+    if (!expanded) return { state, outcome: "rejected" };
+    const result = insertTabInState(expanded, source.paneIndex + 1, tab, null);
+    return { ...result, paneId: expanded.panes[source.paneIndex + 1].id };
+  }
+  // 3 panely: sousední okno vpravo (u posledního vlevo).
+  const targetIndex = source.paneIndex === 2 ? 1 : source.paneIndex + 1;
+  const target = state.panes[targetIndex];
+  if (!target.activeTab) {
+    const result = insertTabInState(state, targetIndex, tab, null);
+    return { ...result, paneId: target.id };
+  }
+  if (!confirmed) return { state, outcome: "needsConfirm", paneId: target.id };
+  // Rozepsanou aktivní záložku cílového okna nikdy nenahradíme: navázaná záložka se
+  // přidá vedle ní (limit záložek a vytlačení řeší insertTabInState jako jinde).
+  if (isDirty(target.activeTab)) return insertTabInState(state, targetIndex, tab, null, isDirty);
+  // Po potvrzení nahradí aktivní obsah cílového okna – stejně jako existující nahrazení.
+  const replacedId = target.activeTab;
+  const tabs = target.tabs.map((item) => (item.id === replacedId ? tab : item));
+  return {
+    state: {
+      ...state,
+      panes: state.panes.map((pane) =>
+        pane.id === target.id ? { ...pane, tabs, activeTab: tab.id } : pane,
+      ),
+      active: target.id,
+    },
+    outcome: "replaced",
+    tabId: tab.id,
+    closedTabIds: [replacedId],
+    paneId: target.id,
+  };
+}
+
+/**
+ * Otevře navázanou záložku v okně vpravo od zdroje – pravidla umístění řeší
+ * placeLinkedTab (nový panel vpravo, při 3 panelech potvrzení či přidání vedle
+ * rozepsaného obsahu).
  */
 export function openLinkedTabInState(
   state: PaneTabsState,
@@ -128,39 +184,100 @@ export function openLinkedTabInState(
     ),
     linked: { sourceTabId, section: section.id, sectionLabel: section.label, pinned: false },
   };
-  // Méně než 3 panely: vždy nový panel hned vpravo od zdroje, bez potvrzení.
-  if (state.panes.length < 3) {
-    const expanded = insertPaneInState(state, source.paneIndex + 1);
-    if (!expanded) return { state, outcome: "rejected" };
-    const result = insertTabInState(expanded, source.paneIndex + 1, tab, null);
-    return { ...result, paneId: expanded.panes[source.paneIndex + 1].id };
+  return placeLinkedTab(state, source, tab, options.confirmed, isDirty);
+}
+
+/** Navázaný panel stejného zdroje, pokud existuje. */
+export function findLinkedPanel(state: PaneTabsState, sourceTabId: string) {
+  for (let paneIndex = 0; paneIndex < state.panes.length; paneIndex += 1) {
+    const pane = state.panes[paneIndex];
+    const tabIndex = pane.tabs.findIndex(
+      (tab) => tab.linked?.sourceTabId === sourceTabId && tab.linked.kind === "panel",
+    );
+    if (tabIndex >= 0) return { pane, paneIndex, tab: pane.tabs[tabIndex], tabIndex };
   }
-  // 3 panely: sousední okno vpravo (u posledního vlevo).
-  const targetIndex = source.paneIndex === 2 ? 1 : source.paneIndex + 1;
-  const target = state.panes[targetIndex];
-  if (!target.activeTab) {
-    const result = insertTabInState(state, targetIndex, tab, null);
-    return { ...result, paneId: target.id };
-  }
-  if (!options.confirmed) return { state, outcome: "needsConfirm", paneId: target.id };
-  // Rozepsanou aktivní záložku cílového okna nikdy nenahradíme: navázaná záložka se
-  // přidá vedle ní (limit záložek a vytlačení řeší insertTabInState jako jinde).
-  if (isDirty(target.activeTab)) return insertTabInState(state, targetIndex, tab, null, isDirty);
-  // Po potvrzení nahradí aktivní obsah cílového okna – stejně jako existující nahrazení.
-  const replacedId = target.activeTab;
-  const tabs = target.tabs.map((item) => (item.id === replacedId ? tab : item));
-  return {
-    state: {
-      ...state,
-      panes: state.panes.map((pane) =>
-        pane.id === target.id ? { ...pane, tabs, activeTab: tab.id } : pane,
-      ),
-      active: target.id,
+  return null;
+}
+
+/**
+ * Otevře navázanou záložku s celým panelem záznamu (druh "panel") v okně vpravo od
+ * zdroje. Nese záznam zdroje a aktivní sekci, kterou si okno pamatuje; obsah
+ * (RecordSidePanel bez zavírání do strany) vykresluje aplikace. Umístění řeší
+ * placeLinkedTab – při rozepsaném obsahu cílového okna se přidá vedle něj.
+ */
+export function openLinkedPanelInState(
+  state: PaneTabsState,
+  sourceTabId: string,
+  options: {
+    confirmed?: boolean;
+    record?: LinkedSourceRecord;
+    /** Popisek panelu pro hlavičku „<záznam> – <panel>“. */
+    label: string;
+    /** Sekce, kterou má panel po otevření zobrazit. */
+    activeSection: string;
+  },
+  now = Date.now(),
+  isDirty: (tabId: string) => boolean = () => false,
+): OpenLinkedTabResult {
+  if (options.record) state = setLinkedSourceSelectionInState(state, sourceTabId, options.record);
+  const source = findTab(state, sourceTabId);
+  const record = source ? sourceRecord(source.tab) : undefined;
+  if (!source || !record) return { state, outcome: "rejected" };
+  const existing = findLinkedPanel(state, sourceTabId);
+  if (existing)
+    return {
+      state: activateTabInState(state, existing.tab.id, now),
+      outcome: "activated",
+      tabId: existing.tab.id,
+      paneId: existing.pane.id,
+    };
+  const tab: PaneTab = {
+    ...createTab(
+      {
+        route: record.route,
+        params: record.params,
+        kind: "linked",
+        recordKey: record.recordKey,
+        title: linkedPanelTitle(record.title, options.label),
+        shortTitle: options.label,
+        icon: source.tab.icon,
+        openerTabId: sourceTabId,
+      },
+      now,
+    ),
+    linked: {
+      sourceTabId,
+      section: LINKED_PANEL_SECTION,
+      sectionLabel: options.label,
+      pinned: false,
+      kind: "panel",
+      activeSection: options.activeSection,
     },
-    outcome: "replaced",
-    tabId: tab.id,
-    closedTabIds: [replacedId],
-    paneId: target.id,
+  };
+  return placeLinkedTab(state, source, tab, options.confirmed, isDirty);
+}
+
+/** Změna aktivní sekce navázaného panelu – okno si ji pamatuje. */
+export function setLinkedPanelSectionInState(
+  state: PaneTabsState,
+  tabId: string,
+  section: string,
+): PaneTabsState {
+  const found = findTab(state, tabId);
+  const info = found?.tab.linked;
+  if (!found || !info || info.kind !== "panel" || info.activeSection === section) return state;
+  return {
+    ...state,
+    panes: state.panes.map((pane) =>
+      pane.id !== found.pane.id
+        ? pane
+        : {
+            ...pane,
+            tabs: pane.tabs.map((tab) =>
+              tab.id === tabId ? { ...tab, linked: { ...info, activeSection: section } } : tab,
+            ),
+          },
+    ),
   };
 }
 
@@ -186,7 +303,10 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
       if (linked.pinned) return tab;
       const record = sourceRecord(source.tab);
       if (!record) return tab;
-      const title = linkedTabTitle(linked.sectionLabel, record.title);
+      const title =
+        linked.kind === "panel"
+          ? linkedPanelTitle(record.title, linked.sectionLabel)
+          : linkedTabTitle(linked.sectionLabel, record.title);
       if (
         tab.route === record.route &&
         tab.recordKey === record.recordKey &&

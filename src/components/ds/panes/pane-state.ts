@@ -26,6 +26,10 @@ export type LinkedTabInfo = {
   sectionLabel: string;
   /** Připnutá zamyká záznam – zdroj se přestane sledovat. */
   pinned: boolean;
+  /** Druh navázané záložky; bez hodnoty jde o jednu sekci (2.122.0). */
+  kind?: "section" | "panel";
+  /** Aktivní sekce celého panelu (kind "panel"); okno si ji pamatuje. */
+  activeSection?: string;
 };
 
 /** Kam otevřít stránku: nahradit aktivní záložku, nová záložka, nebo nová záložka v sousedním panelu. */

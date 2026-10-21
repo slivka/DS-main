@@ -1,14 +1,31 @@
 /** Ukázkové operace příloh a poznámek · vlastní stav demo · nesmí ukládat produkční data. */
-import { useEffect, useRef, useState } from "react";
-import { History, Link, MessageSquare, Paperclip } from "lucide-react";
-import { AttachmentList, RecordNotes, type RecordAttachment, type RecordSidePanelTab } from "../ds";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FileText, History, Link, MessageSquare, Paperclip } from "lucide-react";
+import {
+  AttachmentList,
+  OptionSelect,
+  RecordNotes,
+  SourcePreview,
+  type RecordAttachment,
+  type RecordSidePanelTab,
+} from "../ds";
 import { LinkedRecordsDemo } from "./LinkedRecordsShowcase";
 import { HistoryDemo } from "./RecordHistoryShowcase";
 import { ACCEPT, ATTACHMENTS, LIMIT, NOTES } from "./record-panel-data";
 export type DemoPermission = "read" | "draft" | "filed" | "posted" | "locked";
+type SourceScenario = "pdf" | "image" | "isdoc" | "empty" | "inherited";
+const SCENARIOS: { value: SourceScenario; label: string }[] = [
+  { value: "pdf", label: "PDF" },
+  { value: "image", label: "Obrázek" },
+  { value: "isdoc", label: "ISDOC" },
+  { value: "empty", label: "Prázdný" },
+  { value: "inherited", label: "Zděděný" },
+];
+const IMAGE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="640" height="400" fill="#eef3f8"/><text x="40" y="80" font-size="32" fill="#12304a">FAKTURA 2026/0142</text><text x="40" y="140" font-size="20" fill="#12304a">Kancelářské potřeby</text><text x="40" y="200" font-size="20" fill="#12304a">Celkem: 12 100,00</text></svg>`;
 export function useRecordPanelContent(status: DemoPermission, sourceUrl: string) {
   const [attachments, setAttachments] = useState(ATTACHMENTS);
   const [notes, setNotes] = useState(NOTES);
+  const [scenario, setScenario] = useState<SourceScenario>("pdf");
   const [source, setSource] = useState<RecordAttachment>({
     id: "source",
     name: "Faktura-2026-0142.pdf",
@@ -17,6 +34,7 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
     uploadedBy: "Jana Nováková",
     uploadedAt: "2026-10-19T09:00:00Z",
   });
+  const imageUrl = useMemo(() => `data:image/svg+xml;utf8,${encodeURIComponent(IMAGE_SVG)}`, []);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(
     () => () => {
@@ -49,7 +67,68 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
         ),
       );
   };
+  const scenarioSource: RecordAttachment | null =
+    scenario === "empty"
+      ? null
+      : scenario === "isdoc"
+        ? { ...source, name: "faktura-2026-0142.isdoc", type: "text/xml", previewUrl: undefined }
+        : scenario === "image"
+          ? { ...source, name: "sken-faktury.svg", type: "image/svg+xml", previewUrl: imageUrl }
+          : { ...source, previewUrl: sourceUrl };
+  const download = (a: RecordAttachment) => {
+    const anchor = document.createElement("a");
+    anchor.href = sourceUrl;
+    anchor.download = a.name;
+    anchor.click();
+  };
   const tabs: RecordSidePanelTab[] = [
+    {
+      id: "source",
+      label: "Zdroj",
+      icon: FileText,
+      content: (
+        <div className="flex min-h-0 flex-col gap-2">
+          <div className="w-40">
+            <OptionSelect
+              value={scenario}
+              onChange={(next) => setScenario(next as SourceScenario)}
+              options={SCENARIOS}
+              aria-label="Scénář zdroje"
+            />
+          </div>
+          <SourcePreview
+            source={scenarioSource}
+            accept={ACCEPT}
+            maxSize={LIMIT}
+            canReplace={status !== "read"}
+            replaceDisabledReason="Máte pouze právo číst přílohy."
+            onReplace={() =>
+              setSource((value) => ({ ...value, name: "Opravená-faktura-2026-0142.pdf" }))
+            }
+            onUpload={(files) => {
+              const file = files[0];
+              if (file)
+                setSource({
+                  id: "source",
+                  name: file.name,
+                  type: file.type || "application/octet-stream",
+                  size: file.size,
+                  uploadedAt: new Date().toISOString(),
+                  uploadedBy: "Petr Slivka",
+                });
+            }}
+            onDownload={download}
+            onOpen={() => window.open(sourceUrl, "_blank", "noopener,noreferrer")}
+            inheritedFrom={
+              scenario === "inherited"
+                ? { label: "Výpis č. 12/2026", onOpen: () => undefined }
+                : undefined
+            }
+            onUrlExpired={() => undefined}
+          />
+        </div>
+      ),
+    },
     {
       id: "attachments",
       label: "Přílohy",
@@ -58,7 +137,6 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
       content: (
         <AttachmentList
           attachments={attachments}
-          source={{ ...source, previewUrl: sourceUrl }}
           accept={ACCEPT}
           maxSize={LIMIT}
           canAdd={status !== "read"}
@@ -84,17 +162,19 @@ export function useRecordPanelContent(status: DemoPermission, sourceUrl: string)
                   ),
             )
           }
-          canReplaceSource={status !== "read"}
-          replaceDisabledReason="Máte pouze právo číst přílohy."
-          onReplaceSource={() =>
-            setSource((value) => ({ ...value, name: "Opravená-faktura-2026-0142.pdf" }))
+          onSetSource={(a) =>
+            setSource({
+              id: "source",
+              name: a.name,
+              type: a.type,
+              size: a.size,
+              uploadedAt: a.uploadedAt,
+              uploadedBy: a.uploadedBy,
+            })
           }
-          onDownload={(a) => {
-            const anchor = document.createElement("a");
-            anchor.href = sourceUrl;
-            anchor.download = a.name;
-            anchor.click();
-          }}
+          canSetSource={() => status !== "read"}
+          setSourceDisabledReason={() => "Máte pouze právo číst přílohy."}
+          onDownload={download}
           onOpen={() => window.open(sourceUrl, "_blank", "noopener,noreferrer")}
         />
       ),

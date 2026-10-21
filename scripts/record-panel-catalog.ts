@@ -29,6 +29,15 @@ const definitions = [
       "Nezalamujte nástroje ani nezkracujte název záznamu místo hlavní akce; nepředávejte DS doménovou logiku.",
   },
   {
+    name: "SourcePreview",
+    file: "src/components/ds/feedback/source-preview.tsx",
+    usage:
+      "Záložka Zdroj panelu záznamu: PDF v iframe, obrázek v img, ostatní typy bez náhledu. Nástroje Nahradit/Stáhnout/Otevřít, prázdný stav s přetažením a Nahrát zdroj, inheritedFrom pro zděděný zdroj jen ke čtení, onUrlExpired pro obnovu podepsané adresy.",
+    code: "<SourcePreview source={source} accept={accept} maxSize={limit} canReplace={canEdit} onReplace={replaceSource} onUpload={uploadSource} onDownload={download} onOpen={open} inheritedFrom={inherited} onUrlExpired={refreshUrl} />",
+    avoid:
+      "Nevracejte náhled zdroje do AttachmentList (source je deprecated) a negenerujte adresy v DS – dodává je APP.",
+  },
+  {
     name: "SettlementBar",
     file: "src/components/ds/data-display/settlement-bar.tsx",
     usage:

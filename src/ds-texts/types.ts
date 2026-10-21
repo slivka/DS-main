@@ -19,8 +19,14 @@ import type {
   RecordHistoryTexts,
   RecordNotesTexts,
   RecordPanelTexts,
+  SourcePreviewTexts,
 } from "./record-panel-texts";
-export type { AttachmentTexts, RecordHistoryTexts, RecordPanelTexts } from "./record-panel-texts";
+export type {
+  AttachmentTexts,
+  RecordHistoryTexts,
+  RecordPanelTexts,
+  SourcePreviewTexts,
+} from "./record-panel-texts";
 
 /** Druh potvrzovaného odchodu. */
 export type UnsavedChangesAction = "close" | "switch" | "logout" | "navigate" | "record";
@@ -53,6 +59,8 @@ export interface DsTexts {
   recordNotes: RecordNotesTexts;
   /** Přílohy záznamu. */
   attachments: AttachmentTexts;
+  /** Náhled zdroje záznamu. */
+  sourcePreview: SourcePreviewTexts;
   /** Historie záznamu. */
   recordHistory: RecordHistoryTexts;
   /** Přístupné názvy číselného krokovače. */
