@@ -33,7 +33,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
-- Keep grid/editor text interfaces in their domain module and re-export them through the existing text entry. Why: public imports remain stable without files at the line limit.
+- Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
 - RecordSidePanel owns layout; file selection and useFileDrop share validation. Why: no consumer fetching or duplicate validation.
 
 ## Vydání knihovny
@@ -42,7 +42,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Use `bun run check:catalog` (`--refresh` to refresh); record removals in `.lovable/catalog-removals.json` and CHANGELOG counts only from its output. Why: code/references agree without hardcoded commits.
 
 - Measure full and short grid primary-action labels and the merged trigger in the toolbar copy; choose full → short → menu by available width. Why: avoid boundary overflow.
-- Exclude every preview-only path from source_manifest according to .dsignore. Why: the manifest consistently describes distributable source.
+- Exclude preview-only paths from source_manifest per .dsignore. Why: only distributable source belongs there.
 
 - Form action overflow rules live in src/components/ds/AGENTS.md. Why: shared measurement.
 - Journal overflow disables right-sticky actions in shared CSS. Why: no covered controls in invoices or advance lists.
