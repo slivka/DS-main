@@ -33,6 +33,7 @@
 
 ## Shared accounting contracts
 
+- Keep journal VAT detail fields in focused internal modules; withoutAccounts hides accounting-only controls and vat.rowDetails carries APP permissions. Why: invoices and advance lists share one editor without losing stored values.
 - Keep locked bank-account reasons in a shared internal FieldValue composition. Why: issued and received accounts must share truncation, tooltip and no-lock geometry.
 - Rate-source and rate-update tooltips use sibling triggers. Why: hovering the update action must expose only its own explanation.
 - Use bankAccountOptionValue in selections and notices. Why: IBAN-only identity stays consistent.
