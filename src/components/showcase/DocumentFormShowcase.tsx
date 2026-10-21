@@ -50,6 +50,7 @@ import { useRecordPanelContent } from "./record-panel-content";
 export function DocumentFormShowcase() {
   const state = useDocumentFormShowcaseState();
   const [panelOpen, setPanelOpen] = useState(false);
+  const [incomePanelOpen, setIncomePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState("attachments");
   const panelContent = useRecordPanelContent("draft", "");
   const {
@@ -229,12 +230,13 @@ export function DocumentFormShowcase() {
         title="Pokladna – příjem s propojeným partnerem"
         description="Propojený partner má štítek „Partner“ a ✕ Zrušit propojení; pod polem IČO a DIČ."
       >
+        <RecordSidePanel open={incomePanelOpen} onOpenChange={setIncomePanelOpen} activeTab={panelTab} onActiveTabChange={setPanelTab} tabs={panelContent.tabs}>
         <DocumentForm
           title="Pokladní doklad – příjem"
           panelToggle={
             <PanelToggleButton
-              open={panelOpen}
-              onToggle={() => setPanelOpen(!panelOpen)}
+              open={incomePanelOpen}
+              onToggle={() => setIncomePanelOpen(!incomePanelOpen)}
               tooltip="Panel"
             />
           }
@@ -257,6 +259,7 @@ export function DocumentFormShowcase() {
           mainAccountLocked
           status="filed"
         />
+        </RecordSidePanel>
       </ShowcaseSection>
       <ShowcaseSection
         title="Pokladna v EUR"

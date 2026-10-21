@@ -7,6 +7,7 @@ import type { LinkedSourceRecord, PaneTabsState } from "../ds/panes/pane-state";
 import { useLinkedSelection } from "../../hooks/use-linked-selection";
 import { DOCUMENTS } from "./record-panel-data";
 import { useRecordPanelContent } from "./record-panel-content";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type Row = (typeof DOCUMENTS)[number];
 const toRecord = (row: Row): LinkedSourceRecord => ({
@@ -67,7 +68,7 @@ function LinkedListContent() {
   return (
     <section data-testid="linked-list-showcase" className="min-w-0 space-y-3">
       <PageHeader title="Navázané okno ze seznamu" />
-      <div className="grid min-w-0 gap-4 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
         {sourceExists ? (
           <div className="min-w-0 space-y-2">
             <Button variant="outline" onClick={() => panes?.closeTab("list-source")}>
@@ -142,14 +143,12 @@ function LinkedListContent() {
               </Button>
             </div>
             {tab.linked?.kind === "panel" ? (
-              <RecordSidePanel
-                open
-                onOpenChange={() => panes?.closeLinkedPanel("list-source")}
-                activeTab={tab.linked.activeSection ?? "history"}
-                onActiveTabChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}
-                tabs={content.tabs}
-                header={tab.title}
-              />
+              <Tabs value={tab.linked.activeSection ?? "history"} onValueChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}>
+                <TabsList>
+                  {content.tabs.map(({ id, label, icon: Icon }) => <TabsTrigger key={id} value={id} aria-label={label} title={label}><Icon className="size-4" aria-hidden="true" /></TabsTrigger>)}
+                </TabsList>
+                {content.tabs.map(({ id, content: body }) => <TabsContent key={id} value={id}>{body}</TabsContent>)}
+              </Tabs>
             ) : (
               content.tabs.find((entry) => entry.id === tab.linked?.section)?.content
             )}
