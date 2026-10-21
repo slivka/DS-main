@@ -34,18 +34,21 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   const chips = dialog.locator('[data-slot="file-chip-bar"]');
   const remove = chips.getByRole("button", { name: "Odebrat vypis.xml" });
   await remove.focus();
-  for (const name of [
-    "Odebrat druhy.xml",
-    "Odebrat treti.xml",
-    "+1 dalších",
-    "Přetáhněte soubory sem",
-  ]) {
-    await page.keyboard.press("Tab");
+  for (const [name, steps] of [
+    ["Odebrat druhy.xml", 2],
+    ["Odebrat treti.xml", 2],
+    ["+1 dalších", 1],
+    ["Přetáhněte soubory sem", 1],
+  ] as const) {
+    // Stavové bubliny čipů jsou také přístupné přes Tab, nesmíme je přeskočit v očekávání.
+    for (let index = 0; index < steps; index++) await page.keyboard.press("Tab");
     await expect(chips.getByRole("button", { name, exact: true })).toBeFocused();
   }
   const more = chips.getByRole("button", { name: "+1 dalších" });
   await more.press("Enter");
   await chips.getByRole("button", { name: "Odebrat treti.xml" }).focus();
+  await page.keyboard.press("Tab");
+  await expect(chips.getByRole("img").last()).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(chips.getByRole("button", { name: "Odebrat ctvrty.xml" })).toBeFocused();
   const accessibility = await new AxeBuilder({ page })
