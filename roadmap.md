@@ -1,7 +1,8 @@
 ## DS 2.125.0 (nevydáno)
 
-- [ ] Panel 6C: DocumentForm.panelToggle, veřejné akce/hook/vykreslovač navázaného panelu, DataGrid.onRowOpen a RecordSidePanel.onSizeCommit.
-- [ ] Testy chování, ukázky, katalog bez ztrát a check:full --harness; nevydávat.
+- [x] Panel 6C: DocumentForm.panelToggle, veřejné akce/hook/vykreslovač navázaného panelu, DataGrid.onRowOpen a RecordSidePanel.onSizeCommit.
+- [x] Testy chování, ukázky, katalog bez ztrát a check:full --harness; nevydávat.
+- Ověření: 1 121/1 121 unit testů ve 117 souborech; check:full --harness (lint, audit částek, formát, katalog) OK, automatický typecheck/build OK. Katalog proti vydané 2.124.0: 468 → 468 komponent, 1 088 → 1 123 props, 0 odebrání (35 aditivních/obnovených položek). Chromium: dvojklik seznamu, sledování výběru, připnutí, zavření zdroje a DocumentForm panel, 360 px bez chyb. První klik před hydratací na velké stránce formulářů může předběhnout oživení; ověřeno po oživení. Plná E2E sada/FF/WebKit neběžely. Nové moduly pod 300 řádků, existující velké orchestrátory jen minimálně napojeny; DS bez domény. Vydání zůstává Claude.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.124.0 – Rozdělení navázaných záložek
