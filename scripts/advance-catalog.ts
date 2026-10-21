@@ -66,10 +66,12 @@ export function enrichAdvanceCatalog(components: PanelCatalogComponent[]) {
     component.file = file;
     component.import_path = "@/design-system/{slug}";
     component.usage = usage;
+    const previousProps = new Map(component.props?.map((prop) => [prop.name, prop]) ?? []);
     component.props = declaration.members.flatMap((member) =>
       ts.isPropertySignature(member) && member.type
         ? [
             {
+              ...previousProps.get(member.name.getText(source)),
               name: member.name.getText(source),
               type: member.type.getText(source),
               required: !member.questionToken,
