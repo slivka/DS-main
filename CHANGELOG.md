@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.122.0 (nevydáno)
+## 2.123.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.122.0 – Drobné opravy 2 + oprava výběru v řádcích
 
 - `LinkedRecordsPanel.unlinkReason` + `onUnlink(entry, reason)` umožní jediné potvrzení s povinným důvodem; prázdný důvod blokuje akci, Esc zruší bez dalšího dotazu. `confirmUnlink={false}` předá potvrzení APP; původní `onRemove` a výchozí chování zůstávají kompatibilní. Texty CS/SK přes DsTexts, bez doménových zápisů.
 - Navázaná okna vznikají i ze záložky seznamu: `openLinkedTab(sourceTabId, section, record)` přijímá zmapovaný `LinkedSourceRecord`; `useLinkedSelection` sdílí zpoždění `useFollowSelection` a hlásí výběr do `setLinkedSourceSelection`. Navigace seznamu se nemění, nepřipnuté sekce sledují výběr, špendlík zamkne a zavření zdroje připne poslední záznam. Ikony gridu i RecordSidePanel používají stávající callbacky; pane-state obsahuje jen nové datové typy, pravidla zůstávají v linked-tabs.

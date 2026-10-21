@@ -1,4 +1,8 @@
-## DS 2.122.0 (nevydáno)
+## DS 2.123.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.122.0 – Drobné opravy 2 + oprava výběru v řádcích
 
 - [x] Jediné potvrzení odebrání s důvodem nebo vlastní potvrzení APP; kompatibilní výchozí chování.
 - [x] Navázané sekce ze seznamu sledují vybraný řádek; připnutí a osiření.
