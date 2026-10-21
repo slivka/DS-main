@@ -137,10 +137,12 @@ describe("RecordNotes klávesnice", () => {
       const add = mock();
       const ui = render(wrap(<RecordNotes notes={[]} onAdd={add} />));
       const input = ui.getByRole("textbox");
+      input.focus();
       fireEvent.change(input, { target: { value: " Nová poznámka " } });
       await act(async () => fireEvent.keyDown(input, { key: "Enter", [modifier]: true }));
       expect(add).toHaveBeenCalledWith("Nová poznámka");
       expect((input as HTMLTextAreaElement).value).toBe("");
+      expect(document.activeElement).toBe(input);
     });
   }
   it("Ctrl+Enter uloží úpravu přes původní onUpdate", async () => {

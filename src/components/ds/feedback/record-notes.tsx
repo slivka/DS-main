@@ -146,7 +146,8 @@ export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function
             placeholder={t.placeholder}
             aria-label={t.placeholder}
             onSubmit={add}
-            disabled={busy}
+            aria-disabled={busy}
+            readOnly={busy}
           />
           <RecordPanelToolbar
             start={sort}
