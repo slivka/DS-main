@@ -5,7 +5,7 @@
  * (výšku zbytku drží prázdné řádky, hlavička a součty zůstávají ukotvené).
  * Nesmí: počítat výběr, skupiny ani součty – dostává je hotové od DataGrid nad celou množinou.
  */
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 import { Checkbox } from "../../ui/checkbox";
 import { TableCell, TableFooter, TableRow } from "../../ui/table";
@@ -59,7 +59,7 @@ export interface DataGridRowsProps<Row> {
   onRowClick?: ((row: Row) => void) | undefined;
   /** Dvojklik: úprava, jinak klik. */
   onRowOpen?: ((row: Row) => void) | undefined;
-  /** Jen explicitní veřejné onRowOpen se uplatní také při výběru. */
+  /** Jen explicitní veřejné onRowOpen se uplatní také při výběru a zapne roving fokus řádků. */
   openInSelectMode?: boolean;
   /** Řádek je klikací (kurzor). */
   clickable: boolean;
@@ -98,12 +98,73 @@ function cellContent<Row>(
   return cellText(v);
 }
 
+const ROW_NAV_KEYS = new Set(["ArrowDown", "ArrowUp", "Home", "End"]);
+
+/**
+ * Roving fokus řádků: v tabulátorovém pořadí je jen jeden řádek (0), ostatní −1;
+ * šipky ↑/↓ a Home/End fokus posouvají a ve virtualizaci k cíli doscrollují.
+ */
+function useRowRoving<Row>(
+  enabled: boolean,
+  rowKeys: string[],
+  activeRowKey: string | null | undefined,
+  virtual: GridVirtual,
+  count: number,
+) {
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+  const pending = useRef<{ key: string; index: number } | null>(null);
+  const current =
+    focusKey && rowKeys.includes(focusKey)
+      ? focusKey
+      : activeRowKey && rowKeys.includes(activeRowKey)
+        ? activeRowKey
+        : (rowKeys[0] ?? null);
+  useEffect(() => {
+    const target = pending.current;
+    const root = virtual.scrollRef.current;
+    if (!target || !root) return;
+    const row = root.querySelector<HTMLElement>(`[data-row-key="${CSS.escape(target.key)}"]`);
+    if (row) {
+      pending.current = null;
+      row.focus();
+      row.scrollIntoView?.({ block: "nearest" });
+    } else if (virtual.enabled && count > 0) {
+      root.scrollTop = (target.index / count) * root.scrollHeight;
+    }
+  });
+  const onKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, key: string) => {
+    if (!enabled || !ROW_NAV_KEYS.has(event.key) || event.target !== event.currentTarget) return;
+    const at = rowKeys.indexOf(key);
+    const last = rowKeys.length - 1;
+    const next =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? last
+          : event.key === "ArrowDown"
+            ? Math.min(last, at + 1)
+            : Math.max(0, at - 1);
+    const nextKey = rowKeys[next];
+    if (nextKey === undefined) return;
+    event.preventDefault();
+    event.stopPropagation();
+    pending.current = { key: nextKey, index: next };
+    setFocusKey(nextKey);
+  };
+  return { current, onKeyDown, setFocusKey };
+}
+
 /** Řádky těla DataGrid (s okny virtualizace). */
 export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
   const { layout, items, virtual, texts, rowKey, keySet } = props;
   const { shown, cols, pinned, compact, selectMode, hasRowActions } = layout;
   const colSpan = shown.length + (hasRowActions ? 1 : 0) + (selectMode ? 1 : 0);
   const windowItems = virtual.enabled ? items.slice(virtual.start, virtual.end) : items;
+  const roving = Boolean(props.openInSelectMode && props.onRowOpen);
+  const rowKeys = roving
+    ? items.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
+    : [];
+  const rove = useRowRoving(roving, rowKeys, props.activeRowKey, virtual, items.length);
   return (
     <>
       <VirtualPad height={virtual.padTop} colSpan={colSpan} />
@@ -155,15 +216,18 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
           <TableRow
             key={key}
             data-virtual-row=""
-            tabIndex={props.onRowOpen && (!selectMode || props.openInSelectMode) ? 0 : undefined}
+            data-row-key={roving ? key : undefined}
+            tabIndex={roving ? (rove.current === key ? 0 : -1) : undefined}
+            onFocus={roving ? (event) => event.target === event.currentTarget && rove.setFocusKey(key) : undefined}
             onKeyDown={(event) => {
+              rove.onKeyDown(event, key);
               if (
                 event.key !== "Enter" ||
                 event.defaultPrevented ||
                 event.target !== event.currentTarget
               )
                 return;
-              if (props.onRowOpen && (!selectMode || props.openInSelectMode)) {
+              if (roving && props.onRowOpen) {
                 event.preventDefault();
                 props.onRowOpen(row);
               }
