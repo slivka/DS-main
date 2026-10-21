@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.121.0 (nevydáno)
+## 2.122.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.121.0 – Řádek dokladu – nárok a limit KH
 
 - Opravné kolo: `toJournalRow` posílá nárok a procento pouze při definované hodnotě, i se zapnutým DPH; žádné doplňování `full` nebo `null`. Výchozí nárok nového řádku normalizuje DB. Načtený NULL tak při změně popisu neposílá nechtěnou změnu nároku; `partial` / 60 % a vyloučení KH zůstávají zachované. Platí pro sdílený editor FV/FP i ZFV/ZFP.
 - Kontroly opravného kola: 3 nové regresní testy; check:quick --harness 15/15 v journal-vat-detail, check:full --harness 1073/1073 ve 113 souborech. Lint 0 chyb / 346 varování, formát a peněžní audit OK, katalog 465 komponent / 1082 props bez odebrání; automatické sestavení build OK. E2E neběželo, nevydáno.

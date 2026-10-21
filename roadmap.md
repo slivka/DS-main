@@ -1,4 +1,8 @@
-## DS 2.121.0 (nevydáno)
+## DS 2.122.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.121.0 – Řádek dokladu – nárok a limit KH
 
 - [x] Opravné kolo: žádný výchozí nárok ani null procento; 3 regresní testy. check:quick --harness 15/15 v journal-vat-detail, check:full --harness 1073/1073 ve 113 souborech; lint 0 chyb / 346 varování, formát a peněžní audit OK, katalog beze ztrát (465 komponent / 1082 props), automatické sestavení build OK. E2E neběželo; nevydáno.
 - [x] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
