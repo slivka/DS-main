@@ -54,6 +54,22 @@ export type RecordNavItem = {
 
 export type RecordNav = { index: number; total: number; prev: () => void; next: () => void };
 
+/** Záznam a sekci dodává APP; při blokaci se panel nepřesune. */
+export interface OpenLinkedPanelOptions {
+  sourceTabId: string;
+  recordKey: string;
+  recordTitle: string;
+  section: string;
+  blockedReason?: string;
+}
+
+/** Zkrácené ovládání panelu konkrétní zdrojové záložky. */
+export interface LinkedPanelHandle {
+  state: "closed" | "elsewhere";
+  open: (options: Omit<OpenLinkedPanelOptions, "sourceTabId">) => void;
+  focus: () => void;
+}
+
 /** Rozhraní záložky dostupné jejímu obsahu (usePane). */
 export type PaneApi = {
   paneId: string;
@@ -121,6 +137,16 @@ export type PaneTabsApi = {
   getRecordNav: (tabId: string) => RecordNav | null;
   /** Otevře navázanou záložku sekce panelu záznamu v okně vpravo od zdroje. */
   openLinkedTab: (sourceTabId: string, section: LinkedSection, record?: LinkedSourceRecord) => void;
+  /** Celý panel v sousedním okně; zachovává blokaci i potvrzení nahrazení. */
+  openLinkedPanel: (options: OpenLinkedPanelOptions) => void;
+  /** Aktivuje existující navázaný panel, nevytváří další. */
+  focusLinkedPanel: (sourceTabId: string) => void;
+  /** Zapamatuje sekci panelové záložky podle jejího tabId (ne sourceTabId). */
+  setLinkedPanelSection: (tabId: string, section: string) => void;
+  /** Hlásí aktuální výběr APP; připnutý panel zůstává na svém záznamu. */
+  updateLinkedPanelRecord: (sourceTabId: string, recordKey: string, recordTitle: string) => void;
+  /** Zavře panel zdroje přes stejnou ochranu neuložených změn jako closeTab. */
+  closeLinkedPanel: (sourceTabId: string) => void;
   /** Ohlásí jednotlivý zpožděný výběr seznamu. */
   setLinkedSourceSelection: (sourceTabId: string, record: LinkedSourceRecord | null) => void;
   /** Připnutí navázané záložky – zamkne záznam, zdroj se přestane sledovat. */

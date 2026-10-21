@@ -5,7 +5,8 @@
  */
 import { createContext, useContext, useEffect } from "react";
 import { setTabDirty } from "./pane-tab-store";
-import type { PaneApi, PaneTabsApi } from "./pane-context-types";
+import type { LinkedPanelHandle, PaneApi, PaneTabsApi } from "./pane-context-types";
+import { findLinkedPanel } from "./linked-panel";
 
 export const PaneApiContext = createContext<PaneApi | null>(null);
 export const PaneTabsContext = createContext<PaneTabsApi | null>(null);
@@ -24,6 +25,16 @@ export function usePaneScrollElement(): HTMLElement | null {
 /** Rozhraní záložek v panelech; mimo PaneTabsProvider vrací null. */
 export function usePaneTabs(): PaneTabsApi | null {
   return useContext(PaneTabsContext);
+}
+
+/** Stav navázaného panelu zdroje; mimo poskytovatele bezpečně closed/no-op. */
+export function useLinkedPanel(sourceTabId: string): LinkedPanelHandle {
+  const api = usePaneTabs();
+  return {
+    state: api && findLinkedPanel(api.state, sourceTabId) ? "elsewhere" : "closed",
+    open: (options) => api?.openLinkedPanel({ ...options, sourceTabId }),
+    focus: () => api?.focusLinkedPanel(sourceTabId),
+  };
 }
 
 /** True, pokud je komponenta v aktivním panelu; mimo PaneLayout vždy true. */

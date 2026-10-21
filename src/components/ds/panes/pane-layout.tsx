@@ -131,6 +131,8 @@ function useAppZoomScale() {
 }
 
 export interface PaneLayoutProps {
+  /** Volitelný registr celého panelu. Bez něj se i druh panel vykreslí přes renderTab. */
+  renderLinkedPanel?: (recordKey: string, section: string, setSection: (section: string) => void) => ReactNode;
   /** Obsah aktivní záložky. Záložky na pozadí se nevykreslují – stav držte přes useTabDraft. */
   renderTab: (tab: PaneTab, pane: PaneApi) => ReactNode;
   /** Ikona záložky podle jejího `icon` nebo route. */
@@ -167,6 +169,7 @@ export function shouldRegisterPaneLayout(embedded: boolean, visible: boolean) {
 /** Režim více oken – 1 až 3 panely se záložkami. Musí být uvnitř PaneTabsProvider. */
 export function PaneLayout({
   renderTab,
+  renderLinkedPanel,
   getTabIcon,
   renderEmpty,
   minPaneWidth = 560,
@@ -201,6 +204,7 @@ export function PaneLayout({
     <PaneLayoutInner
       api={api}
       renderTab={renderTab}
+      renderLinkedPanel={renderLinkedPanel}
       getTabIcon={getTabIcon}
       renderEmpty={renderEmpty}
       minPaneWidth={minPaneWidth}
@@ -214,6 +218,7 @@ export function PaneLayout({
 function PaneLayoutInner({
   api,
   renderTab,
+  renderLinkedPanel,
   getTabIcon,
   renderEmpty,
   minPaneWidth,
@@ -395,6 +400,7 @@ function PaneLayoutInner({
                 paneIndex={state.panes.indexOf(pane)}
                 api={api}
                 renderTab={renderTab}
+                renderLinkedPanel={renderLinkedPanel}
                 renderEmpty={renderEmpty}
                 getTabIcon={getTabIcon}
                 emptyHint={emptyHint}
@@ -427,6 +433,7 @@ function PaneColumn({
   paneIndex,
   api,
   renderTab,
+  renderLinkedPanel,
   renderEmpty,
   getTabIcon,
   emptyHint,
@@ -439,6 +446,7 @@ function PaneColumn({
   paneIndex: number;
   api: PaneTabsApi;
   renderTab: PaneLayoutProps["renderTab"];
+  renderLinkedPanel?: PaneLayoutProps["renderLinkedPanel"];
   renderEmpty?: PaneLayoutProps["renderEmpty"];
   getTabIcon?: PaneLayoutProps["getTabIcon"];
   emptyHint: string;
@@ -603,7 +611,9 @@ function PaneColumn({
             <PaneChromeContext.Provider value={chrome}>
               <PaneScrollContext.Provider value={scrollElement}>
                 <div key={`${tab.id}:${tab.historyIndex}:${paneKey(tab)}`} className="contents">
-                  {renderTab(tab, tabApi)}
+                  {tab.linked?.kind === "panel" && tab.recordKey && renderLinkedPanel
+                    ? renderLinkedPanel(tab.recordKey, tab.linked.activeSection ?? "", (section) => api.setLinkedPanelSection(tab.id, section))
+                    : renderTab(tab, tabApi)}
                 </div>
               </PaneScrollContext.Provider>
             </PaneChromeContext.Provider>
