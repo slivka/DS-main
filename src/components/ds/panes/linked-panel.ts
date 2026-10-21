@@ -9,12 +9,16 @@ import {
   activateTabInState,
   createTab,
   findTab,
-  setLinkedSourceSelectionInState,
   type LinkedSourceRecord,
   type PaneTab,
   type PaneTabsState,
 } from "./pane-state";
-import { placeLinkedTab, sourceRecord, type OpenLinkedTabResult } from "./linked-tabs";
+import {
+  placeLinkedTab,
+  setLinkedSourceSelectionInState,
+  sourceRecord,
+  type OpenLinkedTabResult,
+} from "./linked-tabs";
 
 /** Id sekce vyhrazené navázané záložce s celým panelem. */
 export const LINKED_PANEL_SECTION = "panel";
