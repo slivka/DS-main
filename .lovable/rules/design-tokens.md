@@ -146,6 +146,8 @@ Reference via `var(--name)` in inline styles or CSS.
 | CSS variable |
 |---|
 | `--record-panel-width` |
+| `--note-input-min` |
+| `--note-input-max` |
 | `--record-panel-wide` |
 | `--record-indicator-slot` |
 | `--attachment-preview-height` |
