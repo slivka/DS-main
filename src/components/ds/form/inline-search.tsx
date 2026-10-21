@@ -244,6 +244,10 @@ export const InlineSearchInput = React.forwardRef<
           return;
         }
         if (event.key === "Tab") {
+          // Vlastní obsluha (editor řádků) může Tabem potvrdit zvýrazněnou položku;
+          // jinak Tab hodnotu nepotvrzuje a jen přesune fokus (2.122.0).
+          onKeyDown?.(event);
+          if (event.defaultPrevented) return;
           event.preventDefault();
           event.stopPropagation();
           const focusable = Array.from(

@@ -167,10 +167,14 @@ export function useJournalKeyboard(editor: JournalEditorState) {
         if (event.ctrlKey || event.metaKey) return;
         if (event.key !== "Tab" && event.key !== "Enter") return;
         event.preventDefault();
-        event.currentTarget
-          .closest("[cmdk-root]")
-          ?.querySelector<HTMLElement>('[cmdk-item][aria-selected="true"]')
-          ?.click();
+        // Vstup hledání se portálem vykresluje do spouštěče MIMO [cmdk-root]; kořen nabídky
+        // najdeme přes aria-controls vstupu (id seznamu), closest je jen záloha (2.122.0).
+        const input = event.currentTarget;
+        const listId = input.getAttribute("aria-controls");
+        const root =
+          (listId ? document.getElementById(listId)?.closest("[cmdk-root]") : null) ??
+          input.closest("[cmdk-root]");
+        root?.querySelector<HTMLElement>('[cmdk-item][aria-selected="true"]')?.click();
         editor.finish();
         next(event);
       },
