@@ -5284,8 +5284,8 @@
           "code": "tabs.openLinkedTab(pane.tabId, { id: \"history\", label: \"Historie\" })"
         },
         {
-          "label": "Panel 6C",
-          "code": "const panel = useLinkedPanel(pane.tabId);\npanel.open({ recordKey: record.id, recordTitle: record.title, section: \"history\" });\n// PanelToggleButton state elsewhere volá panel.focus\ntabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title);\ntabs.closeLinkedPanel(pane.tabId);"
+          "label": "Akce navázaného panelu",
+          "code": "const panel = useLinkedPanel(pane.tabId);\npanel.open({ recordKey: record.id, recordTitle: record.title, section: \"history\" });\n// PanelToggleButton state elsewhere volá panel.focus\ntabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title, {\n  route: \"/doklady/$id\",\n  params: { id: selected.id },\n});\ntabs.closeLinkedPanel(pane.tabId);"
         }
       ],
       "antipatterns": [
@@ -5349,7 +5349,7 @@
           "code": "<PaneTabsProvider state={state} onChange={setState}>\n  <PaneLayout renderTab={(tab) => <Page route={tab.route} />} getTabIcon={(tab) => ICONS[tab.icon]} />\n</PaneTabsProvider>"
         },
         {
-          "label": "Panel 6C",
+          "label": "Navázaný panel v sousedním okně",
           "code": "<PaneLayout renderTab={renderRecord} renderLinkedPanel={(key, section, setSection) => <AppRecordPanel recordKey={key} activeTab={section} onTabChange={setSection} />} />"
         }
       ],
@@ -10327,7 +10327,7 @@
           "code": "<DocumentForm {...formProps} templateEdit={{ name, onSave: saveTemplate, onDiscard: discardTemplate }} />"
         },
         {
-          "label": "Panel 6C",
+          "label": "Ovladač panelu v záhlaví",
           "code": "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />"
         }
       ],
