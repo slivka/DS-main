@@ -2,7 +2,11 @@
 
 ## 2.121.0 (nevydáno)
 
-- Zatím bez změn.
+- Rozbalení řádku DPH: stávající plný / poměrný / žádný nárok doplněn ikonou neplného nároku v buňce Kód DPH a bublinou „Krácený nárok 60 %“ / „Bez nároku na odpočet“, bez změny výšky řádku.
+- `JournalLine.khLimitExcluded` a převod `kh_limit_excluded`: přepínač Mimo plnění – nezapočítávat do limitu KH v detailu, pouze s kódem a směrem a bez `withoutAccounts`. APP řídí oprávnění přes `vat.rowDetails.canEdit(line, field)` a `disabledReason`; `vat.readOnly` má přednost. Změny obou polí jdou stávajícím `onChange(lines)`.
+- Změna kódu, nároku a skrytí DPH již nemaže nárok, procento ani vyloučení KH. FV/FP sdílí editor se ZFV/ZFP, u ZL jsou účetní pole i ikona skryté a data zachované. Žádný výpočet limitu KH ani doménové zápisy.
+- Detail rozdělen do soustředěných interních modulů; CS/SK texty, ukázka 60 %, bez nároku a zamčeného dokladu; katalogové použití, příklad a antipattern. Obnovení katalogu záloh zachovává varianty již vydaných props.
+- Kontroly: průběžný check:quick a závěrečný check:full --harness; výsledky doplněny po posledním běhu. Nevydáno, poslední vydaná verze zůstává 2.120.0.
 
 ## 2.120.0 – Zálohy
 

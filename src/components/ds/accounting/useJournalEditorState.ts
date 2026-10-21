@@ -41,7 +41,6 @@ import {
   orderJournalLines,
   removeJournalLine,
   reorderJournalLines,
-  roundJournalAmount,
   toHomeAmount,
   type ColumnId,
   type EditState,

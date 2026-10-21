@@ -1,7 +1,9 @@
 ## DS 2.121.0 (nevydáno)
 
-- [ ] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
-- [ ] Texty CS/SK, ukázky, komponentové testy, katalog, check:quick a check:full.
+- [x] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
+- [x] Texty CS/SK, ukázky, komponentové testy, katalog a průběžný check:quick.
+- [ ] Závěrečný check:full a přesné výsledky.
+- API pro APP: JournalLine.vatDeduction/vatDeductionShare/khLimitExcluded, stávající onChange(lines), vat.rowDetails.canEdit(line, field)/disabledReason; převod kh_limit_excluded. withoutAccounts u ZL účetní pole skryje bez mazání dat. Žádná doménová logika.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.120.0 – Zálohy
