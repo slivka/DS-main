@@ -172,7 +172,12 @@ describe("navázaný panel – záznam hlášený APP", () => {
   it("záznam: po navigaci zdroje na jiný záznam panel zahodí hlášený záznam a ukáže nový", () => {
     const { api, handle, panel, sourceId } = mount("record");
     act(() => handle().open({ recordKey: "A", recordTitle: "Doklad A", section: "history" }));
-    act(() => api().updateLinkedPanelRecord(sourceId, "A", "Doklad A", { route: "/doc", params: { id: "A" } }));
+    act(() =>
+      api().updateLinkedPanelRecord(sourceId, "A", "Doklad A", {
+        route: "/doc",
+        params: { id: "A" },
+      }),
+    );
     expect(panel()?.recordKey).toBe("A");
     const moved = {
       ...api().state,
