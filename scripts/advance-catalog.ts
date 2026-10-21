@@ -81,7 +81,10 @@ export function enrichAdvanceCatalog(components: PanelCatalogComponent[]) {
     );
     component.examples ??= [];
     if (!component.examples.some((example) => example.code === code))
-      component.examples.push({ label: name === "AdvanceCorrectionDialog" ? "Opravný DD s měnou" : "Zálohy", code });
+      component.examples.push({
+        label: name === "AdvanceCorrectionDialog" ? "Opravný DD s měnou" : "Zálohy",
+        code,
+      });
     component.antipatterns = [
       "Neprovádějte doménové výpočty, párování ani zápisy v DS; nesčítejte různé měny.",
     ];

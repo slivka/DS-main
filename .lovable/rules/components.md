@@ -187,6 +187,12 @@ Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit
 <AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} currencyCode={currency.code} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />
 ```
 
+**Zálohy:**
+
+```tsx
+<AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />
+```
+
 **Avoid:**
 
 - Neprovádějte doménové výpočty, párování ani zápisy v DS; nesčítejte různé měny.
