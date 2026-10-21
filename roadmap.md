@@ -1,5 +1,9 @@
 ## DS 2.122.0 (nevydáno)
 
+- [ ] Jediné potvrzení odebrání s důvodem nebo vlastní potvrzení APP; kompatibilní výchozí chování.
+- [ ] Navázané sekce ze seznamu sledují vybraný řádek; připnutí a osiření.
+- [ ] Dvojice split-button Příjem / Výdaj, překlady, ukázky a testy.
+- [ ] check:full, katalog bez ztrát a dokumentace; nevydávat.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.121.0 – Řádek dokladu – nárok a limit KH
