@@ -1,5 +1,5 @@
 /** Skupinový seznam · vlastní aktivní a zaškrtnutý výběr · nesmí hodnotit výpisy. */
-import { forwardRef, useRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, useId, useRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Checkbox } from "../../ui/checkbox";
 import { Button } from "../../ui/button";
 import { FileSeverityIcon, type CheckSeverity } from "../feedback/file-severity";
@@ -57,6 +57,7 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
     const t = texts.fileImport;
     const items = groups.flatMap((group) => group.items);
     const buttons = useRef(new Map<string, HTMLButtonElement>());
+    const reasonIdBase = useId();
     const focusId = items.some((item) => item.id === activeId) ? activeId : items[0]?.id;
     const toggle = (item: SelectableGroupItem) => {
       if (disabled || !isGroupItemSelectable(item)) return;
@@ -109,18 +110,16 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
               </span>
             </h3>
             <ul
-              role="listbox"
-              aria-multiselectable="true"
               aria-label={group.title}
               className="divide-y divide-border"
             >
               {group.items.map((item) => {
                 const blocked = disabled || !isGroupItemSelectable(item);
                 const reason = item.disabledReason ?? item.message ?? t.errorBlocked;
+                const reasonId = `${reasonIdBase}-${items.findIndex((entry) => entry.id === item.id)}`;
                 return (
                   <li
                     key={item.id}
-                    role="none"
                     className={cn(
                       "flex items-start gap-2 rounded-sm px-2",
                       size === "sm" ? "py-2" : "py-3",
@@ -134,23 +133,22 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                       <Checkbox
                         aria-label={item.title}
                         aria-disabled={blocked || undefined}
+                        aria-describedby={blocked ? reasonId : undefined}
                         checked={checkedIds.includes(item.id)}
                         className="mt-1"
-                        tabIndex={-1}
                         onCheckedChange={() => toggle(item)}
                       />
                     </DisabledReasonTooltip>
                     <Button
                       type="button"
                       variant="ghost"
-                      role="option"
                       ref={(node) => {
                         if (node) buttons.current.set(item.id, node);
                         else buttons.current.delete(item.id);
                       }}
                       tabIndex={item.id === focusId ? 0 : -1}
-                      aria-selected={item.id === activeId}
-                      aria-checked={checkedIds.includes(item.id)}
+                      aria-pressed={item.id === activeId}
+                      aria-describedby={blocked ? reasonId : undefined}
                       className="h-auto min-w-0 flex-1 justify-start whitespace-normal p-0 text-left"
                       onClick={() => onActiveChange(item.id)}
                       onKeyDown={(event) => {
@@ -175,6 +173,7 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                         ) : null}
                       </span>
                     </Button>
+                    {blocked ? <span id={reasonId} className="sr-only">{reason}</span> : null}
                     <div className="flex max-w-32 shrink-0 flex-wrap items-center justify-end gap-2">
                       <FileSeverityIcon severity={item.severity} message={item.message} />
                       {item.value ? (

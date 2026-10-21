@@ -176,12 +176,14 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             <DropdownMenu key={action.label}>
               <div className="inline-flex shrink-0">
                 {main}
-                <DropdownMenuTrigger asChild>
+                <DisabledReasonTooltip content={tip} blocked={blocked}>
+                <DropdownMenuTrigger asChild disabled={action.disabled}>
                   <Button
                     type="button"
                     size="sm"
                     disabled={blocked ? undefined : action.disabled}
                     aria-disabled={blocked || undefined}
+                    aria-describedby={blocked ? reasonId : undefined}
                     aria-label={`${action.label} – ${splitMenuText}`}
                     className={cn(
                       "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
@@ -191,6 +193,7 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
                     <ChevronDown aria-hidden className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
+                </DisabledReasonTooltip>
               </div>
               <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>
             </DropdownMenu>
