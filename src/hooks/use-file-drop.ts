@@ -101,7 +101,10 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
       if (latest.current.disabled) return;
       const { accept, maxSize, maxFiles, onFiles } = latest.current;
       const result = validateFiles(
-        Array.from(event.dataTransfer?.files ?? []), accept, maxSize, maxFiles,
+        Array.from(event.dataTransfer?.files ?? []),
+        accept,
+        maxSize,
+        maxFiles,
       );
       onFiles(result.files, result.rejected);
     };

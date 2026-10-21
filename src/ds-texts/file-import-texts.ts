@@ -6,7 +6,10 @@ export interface FileImportTexts {
   /** Odebrání souboru, token {name}. */ remove: string;
   /** Další soubory, token {count}. */ more: string;
   /** Sbalení souborů. */ less: string;
-  /** Výchozí názvy stavů. */ severity: Record<"ok" | "info" | "warning" | "error" | "loading", string>;
+  /** Výchozí názvy stavů. */ severity: Record<
+    "ok" | "info" | "warning" | "error" | "loading",
+    string
+  >;
   /** Souhrn kontrol, tokeny {errors}, {warnings}. */ summary: string;
   /** Prázdné kontroly. */ noChecks: string;
   /** Výběr všech povolených položek. */ selectValid: string;

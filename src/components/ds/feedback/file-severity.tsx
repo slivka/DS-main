@@ -8,8 +8,20 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 export type CheckSeverity = "ok" | "info" | "warning" | "error";
 /** Stav zpracování souboru. */
 export type FileSeverity = CheckSeverity | "loading";
-const ICONS = { ok: CircleCheck, info: Info, warning: TriangleAlert, error: CircleX, loading: LoaderCircle };
-const TONES = { ok: "text-success-strong", info: "text-primary", warning: "text-warning-strong", error: "text-destructive", loading: "text-muted-foreground motion-safe:animate-spin" };
+const ICONS = {
+  ok: CircleCheck,
+  info: Info,
+  warning: TriangleAlert,
+  error: CircleX,
+  loading: LoaderCircle,
+};
+const TONES = {
+  ok: "text-success-strong",
+  info: "text-primary",
+  warning: "text-warning-strong",
+  error: "text-destructive",
+  loading: "text-muted-foreground motion-safe:animate-spin",
+};
 /** Sdílená ikona závažnosti s vysvětlením. */
 export interface FileSeverityIconProps extends ComponentPropsWithoutRef<"span"> {
   /** Stav dodaný APP. */ severity: FileSeverity;
@@ -21,11 +33,25 @@ export const FileSeverityIcon = forwardRef<HTMLSpanElement, FileSeverityIconProp
     const t = useDsTexts().fileImport;
     const label = message ?? t.severity[severity];
     const Icon = ICONS[severity];
-    return <Tooltip><TooltipTrigger asChild>
-      <span ref={ref} {...props} role="img" aria-label={label} tabIndex={0}
-        className={cn("inline-flex shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}>
-        <Icon aria-hidden="true" className={cn("size-4", TONES[severity])} />
-      </span>
-    </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>;
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span
+            ref={ref}
+            {...props}
+            role="img"
+            aria-label={label}
+            tabIndex={0}
+            className={cn(
+              "inline-flex shrink-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              className,
+            )}
+          >
+            <Icon aria-hidden="true" className={cn("size-4", TONES[severity])} />
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>{label}</TooltipContent>
+      </Tooltip>
+    );
   },
 );
