@@ -137,7 +137,7 @@ function AdvanceLists() {
                   `${item.id}1`,
                   "Záloha na dodávku",
                   10000,
-                  item.payer ? codes[0]!.id : null,
+                  item.payer ? (codes[0]?.id ?? null) : null,
                   side,
                 ),
                 debitAccount: null,
@@ -184,14 +184,22 @@ export function Dph5Showcase() {
             id="czk"
             title="FP v CZK – KH, bez nároku, mimo DPH a zaokrouhlení"
             initial={[
-              line("c1", "Služby", 8264.46, "p21", "in"),
-              line("c2", "Občerstvení", 1000, "p21", "in"),
+              { ...line("c1", "Služby", 8264.46, "p21", "in"), vatDeduction: "partial", vatDeductionShare: 60 },
+              { ...line("c2", "Občerstvení", 1000, "p21", "in"), vatDeduction: "none", khLimitExcluded: true },
               line("c3", "Poplatek", 150, "mimo-in", "in"),
             ]}
             mainAccount="321001"
             mainSide="D"
             initialRounding={0.46}
             vat={{ enabled: true, codes: CODES_IN, nonDeductibleByCode: { p21: 210 } }}
+          />
+          <Example
+            id="locked-detail"
+            title="Zaúčtovaný doklad – údaje DPH se zachovanými hodnotami"
+            initial={[{ ...line("locked1", "Služby", 1000, "p21", "in"), vatDeduction: "partial", vatDeductionShare: 60, khLimitExcluded: true }]}
+            mainAccount="321001"
+            mainSide="D"
+            vat={{ enabled: true, codes: CODES_IN, readOnly: true, rowDetails: { canEdit: () => false, disabledReason: "Zaúčtovaný doklad nelze upravovat" } }}
           />
           <Example
             id="eur"
