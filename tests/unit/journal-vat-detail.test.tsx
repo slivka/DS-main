@@ -153,9 +153,21 @@ describe("účetní pole detailu DPH", () => {
   it("změna kódu na neznámý zachová obě hodnoty a 60 %", () => {
     const change = mock();
     let changeCode: (() => void) | undefined;
-    render(<Demo onChange={change} onEditor={(editor) => { changeCode = () => editor.changeVatCode(LINE, "other"); }} />);
+    render(
+      <Demo
+        onChange={change}
+        onEditor={(editor) => {
+          changeCode = () => editor.changeVatCode(LINE, "other");
+        }}
+      />,
+    );
     act(() => changeCode?.());
-    expect(change.mock.calls.at(-1)?.[0]).toMatchObject({ vatCodeId: "other", vatDeduction: "partial", vatDeductionShare: 60, khLimitExcluded: true });
+    expect(change.mock.calls.at(-1)?.[0]).toMatchObject({
+      vatCodeId: "other",
+      vatDeduction: "partial",
+      vatDeductionShare: 60,
+      khLimitExcluded: true,
+    });
   });
 });
 
