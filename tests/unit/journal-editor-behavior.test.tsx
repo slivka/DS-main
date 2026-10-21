@@ -204,6 +204,53 @@ describe("JournalLinesEditor – klávesnice", () => {
   });
 });
 
+describe("JournalLinesEditor – výběr z nabídky klávesou", () => {
+  // 2.122.0: vstup hledání se portálem vykresluje mimo [cmdk-root]; kořen nabídky se
+  // hledá přes aria-controls vstupu, jinak Enter / Tab zvýrazněnou položku nevybere.
+  it("napíše kód účtu do MD a Enter vybere zvýrazněnou položku", async () => {
+    let latest: JournalLine[] = [];
+    const view = render(<Editor onLines={(lines) => (latest = lines)} />);
+    fireEvent.doubleClick(cell(view.container, "l1:debitAccount")!);
+    const input = document.querySelector<HTMLInputElement>("[cmdk-input]")!;
+    fireEvent.change(input, { target: { value: "518" } });
+    await waitFor(() =>
+      expect(document.querySelector('[cmdk-item][aria-selected="true"]')?.textContent).toContain(
+        "518.001",
+      ),
+    );
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(latest[0]?.debitAccount).toBe("518001");
+    await waitFor(() =>
+      expect(document.activeElement?.getAttribute("data-cell-key")).toBe("l1:creditAccount"),
+    );
+  });
+
+  it("Tab potvrdí zvýrazněný kód DPH a přesune fokus dál", async () => {
+    let latest: JournalLine[] = [];
+    const view = render(
+      <Editor
+        vat={{ enabled: true, codes: CODES, calcMode: "net" }}
+        onLines={(lines) => (latest = lines)}
+      />,
+    );
+    fireEvent.doubleClick(cell(view.container, "l1:vatCodeId")!);
+    const input = document.querySelector<HTMLInputElement>("[cmdk-input]")!;
+    fireEvent.change(input, { target: { value: "12" } });
+    await waitFor(() =>
+      expect(document.querySelector('[cmdk-item][aria-selected="true"]')?.textContent).toContain(
+        "12V",
+      ),
+    );
+    fireEvent.keyDown(input, { key: "Tab" });
+    expect(latest[0]?.vatCodeId).toBe("v12");
+    await waitFor(() => {
+      const key = document.activeElement?.getAttribute("data-cell-key");
+      expect(key).not.toBeNull();
+      expect(key).not.toBe("l1:vatCodeId");
+    });
+  });
+});
+
 describe("JournalLinesEditor – součty", () => {
   it("sečte řádky do patičky a ohlásí součty rodiči", () => {
     let totals: { base: number } | undefined;
