@@ -63,9 +63,11 @@ describe("táhlo šířky panelu", () => {
     );
     const bar = ui.getByRole("separator");
     fireEvent.keyDown(bar, { key: "ArrowLeft" });
+    fireEvent.keyUp(bar, { key: "ArrowLeft" });
     expect(commit).toHaveBeenCalledTimes(1);
     expect(commit).toHaveBeenLastCalledWith(416);
     fireEvent.keyDown(bar, { key: "a" });
+    fireEvent.keyUp(bar, { key: "a" });
     expect(commit).toHaveBeenCalledTimes(1);
     fireEvent.doubleClick(bar);
     expect(commit).toHaveBeenCalledTimes(2);
