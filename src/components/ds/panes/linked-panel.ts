@@ -17,6 +17,7 @@ import {
   placeLinkedTab,
   setLinkedSourceSelectionInState,
   sourceRecord,
+  syncLinkedTabsInState,
   type OpenLinkedTabResult,
 } from "./linked-tabs";
 
@@ -120,4 +121,34 @@ export function setLinkedPanelSectionInState(
           },
     ),
   };
+}
+
+/** APP hlásí aktuální záznam; seznam sdílí linkedSelection, připnutý panel se nemění. */
+export function updateLinkedPanelRecordInState(
+  state: PaneTabsState,
+  sourceTabId: string,
+  recordKey: string,
+  recordTitle: string,
+): PaneTabsState {
+  const source = findTab(state, sourceTabId)?.tab;
+  if (!source) return state;
+  if (source.kind === "list") {
+    return setLinkedSourceSelectionInState(state, sourceTabId, {
+      route: source.linkedSelection?.route ?? source.route,
+      params: source.linkedSelection?.params,
+      recordKey,
+      title: recordTitle,
+    });
+  }
+  if (source.kind !== "record") return state;
+  if (source.recordKey === recordKey && source.title === recordTitle) return state;
+  return syncLinkedTabsInState({
+    ...state,
+    panes: state.panes.map((pane) => ({
+      ...pane,
+      tabs: pane.tabs.map((tab) =>
+        tab.id === sourceTabId ? { ...tab, recordKey, title: recordTitle } : tab,
+      ),
+    })),
+  });
 }

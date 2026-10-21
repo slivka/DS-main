@@ -48,6 +48,7 @@ import {
   useTabDirtyVersion,
 } from "./pane-tab-store";
 import { recordNavigation } from "./pane-record-navigation";
+import { createLinkedPanelActions } from "./pane-linked-panel-actions";
 import { usePaneProviderEffects } from "./use-pane-provider-effects";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
 import {
@@ -389,6 +390,28 @@ export function PaneTabsProvider({
     attempt(false);
   };
   const api: PaneTabsApi = {
+    ...createLinkedPanelActions({
+      stateRef,
+      commit,
+      closeTab,
+      panelLabel: dsTexts.recordPanel.panel,
+      isDirty: isTabDirty,
+      confirmReplace: (proceed) =>
+        confirm({
+          title: p.linkedReplaceTitle,
+          description: p.linkedReplaceDescription,
+          confirmLabel: p.linkedReplaceConfirm,
+          onConfirm: proceed,
+        }),
+      accept: (result) => {
+        if (result.evictedTabId) clearTabState(result.evictedTabId);
+        result.closedTabIds?.forEach(clearTabState);
+        commit(result.state);
+      },
+      focusPane: (index) => {
+        if (maximized !== null) setMaximized(index);
+      },
+    }),
     state,
     openRecord,
     openFromHistory,

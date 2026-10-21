@@ -81,6 +81,7 @@ export function DocumentFormTop({
     <>
       <PageHeader
         title={title}
+        panelToggle={p.panelToggle}
         titleBadge={
           <span
             data-slot="document-title-badges"

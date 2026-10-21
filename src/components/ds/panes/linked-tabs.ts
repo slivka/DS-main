@@ -193,6 +193,7 @@ export {
   findLinkedPanel,
   openLinkedPanelInState,
   setLinkedPanelSectionInState,
+  updateLinkedPanelRecordInState,
 } from "./linked-panel";
 
 /**

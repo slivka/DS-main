@@ -24,12 +24,29 @@ export interface PanelResizeProps {
   max: number;
   /** Žádost o změnu. */
   onSizeChange: (size: number) => void;
+  /** Dokončené gesto pro uložení šířky aplikací. */
+  onSizeCommit?: (size: number) => void;
 }
 /** Myš, dotyk a klávesnice používají stejné meze. */
-export function PanelResize({ size, defaultSize, min, max, onSizeChange }: PanelResizeProps) {
+export function PanelResize({
+  size,
+  defaultSize,
+  min,
+  max,
+  onSizeChange,
+  onSizeCommit,
+}: PanelResizeProps) {
   const drag = useRef<{ x: number; size: number } | null>(null);
+  const latest = useRef(size);
   const t = useDsTexts().recordPanel;
-  const change = (next: number) => onSizeChange(clampPanelSize(next, min, max));
+  const change = (next: number) => {
+    latest.current = clampPanelSize(next, min, max);
+    onSizeChange(latest.current);
+  };
+  const finish = (next: number) => {
+    change(next);
+    onSizeCommit?.(latest.current);
+  };
   return (
     <div
       role="separator"
@@ -40,17 +57,19 @@ export function PanelResize({ size, defaultSize, min, max, onSizeChange }: Panel
       aria-valuemax={Math.round(max)}
       aria-valuenow={Math.round(size)}
       className="absolute inset-y-0 left-0 z-20 w-1 cursor-col-resize touch-none hover:bg-primary/30 focus-visible:bg-primary/30 focus-visible:outline-2 focus-visible:outline-ring"
-      onDoubleClick={() => change(defaultSize)}
+      onDoubleClick={() => finish(defaultSize)}
       onPointerDown={(event) => {
         event.preventDefault();
         event.currentTarget.focus();
         event.currentTarget.setPointerCapture?.(event.pointerId);
         drag.current = { x: event.clientX, size };
+        latest.current = size;
       }}
       onPointerMove={(event) => {
         if (drag.current) change(drag.current.size + drag.current.x - event.clientX);
       }}
       onPointerUp={(event) => {
+        if (drag.current) onSizeCommit?.(latest.current);
         drag.current = null;
         event.currentTarget.releasePointerCapture?.(event.pointerId);
       }}
@@ -70,7 +89,7 @@ export function PanelResize({ size, defaultSize, min, max, onSizeChange }: Panel
                   : null;
         if (next !== null) {
           event.preventDefault();
-          change(next);
+          finish(next);
         }
       }}
     />

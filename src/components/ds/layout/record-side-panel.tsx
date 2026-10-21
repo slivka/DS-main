@@ -57,6 +57,8 @@ export interface RecordSidePanelProps extends Omit<ComponentPropsWithoutRef<"div
   size?: number;
   /** Žádost o změnu velikosti. */
   onSizeChange?: (size: number) => void;
+  /** Ukládejte šířku zde: jednou po puštění táhla, klávese nebo dvojkliku. */
+  onSizeCommit?: (size: number) => void;
   /** Velikost při dvojkliku na táhlo. */
   defaultSize?: number;
   /** Vysvětlení blokovaného přesunu při rozepsaném obsahu. */
@@ -84,6 +86,7 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
       header,
       size,
       onSizeChange,
+      onSizeCommit,
       defaultSize,
       blockedReason,
       pinned = false,
@@ -192,6 +195,7 @@ export const RecordSidePanel = forwardRef<HTMLDivElement, RecordSidePanelProps>(
                     min={bounds.min}
                     max={bounds.max}
                     onSizeChange={onSizeChange}
+                    onSizeCommit={onSizeCommit}
                   />
                 ) : null}
                 <Tabs

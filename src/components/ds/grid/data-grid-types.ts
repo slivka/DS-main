@@ -89,6 +89,8 @@ export type DataGridFilterChip = { id: string; label: string; onRemove?: () => v
 
 /** Props DataGrid; společné props s TreeGrid jsou v {@link GridBaseProps}. */
 export type DataGridProps<Row> = GridBaseProps<Row> & {
+  /** Dvojklik / Enter otevře záznam nezávisle na oprávnění editace, i při výběru řádků. */
+  onRowOpen?: (row: Row) => void;
   /** Klik indikátoru nevybere ani neotevře řádek. */
   onIndicatorClick?: (row: Row, id: string) => void;
   /** Klíč pro uložení nastavení gridu v prohlížeči. */

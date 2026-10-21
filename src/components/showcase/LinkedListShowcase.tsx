@@ -1,12 +1,13 @@
 /** Navázané sekce seznamu · vlastní demo stav · nesmí se distribuovat. */
 import { useState } from "react";
 import { History, Link, MessageSquare, Paperclip } from "lucide-react";
-import { Button, DataGrid, PageHeader, RecordSidePanel } from "../ds";
-import { PaneTabsProvider, usePaneTabs } from "../ds/panes/pane-context";
+import { Button, DataGrid, PageHeader, RecordSidePanel, PanelToggleButton } from "../ds";
+import { PaneTabsProvider, usePaneTabs, useLinkedPanel } from "../ds/panes/pane-context";
 import type { LinkedSourceRecord, PaneTabsState } from "../ds/panes/pane-state";
 import { useLinkedSelection } from "../../hooks/use-linked-selection";
 import { DOCUMENTS } from "./record-panel-data";
 import { useRecordPanelContent } from "./record-panel-content";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type Row = (typeof DOCUMENTS)[number];
 const toRecord = (row: Row): LinkedSourceRecord => ({
@@ -47,6 +48,7 @@ const INDICATORS = [
 
 function LinkedListContent() {
   const panes = usePaneTabs();
+  const linkedPanel = useLinkedPanel("list-source");
   const [selected, setSelected] = useState<Row[]>([]);
   const [explicit, setExplicit] = useState<Row | null>(null);
   const [open, setOpen] = useState(false);
@@ -60,20 +62,20 @@ function LinkedListContent() {
   const tabs =
     panes?.state.panes.flatMap((pane) => pane.tabs).filter((tab) => tab.kind === "linked") ?? [];
   const openLinked = (id: string, row: Row) => {
-    const label = INDICATORS.find((indicator) => indicator.id === id)?.label ?? id;
-    panes?.openLinkedTab("list-source", { id, label }, toRecord(row));
+    linkedPanel.open({ recordKey: row.id, recordTitle: row.number, section: id });
+    setOpen(false);
   };
   return (
     <section data-testid="linked-list-showcase" className="min-w-0 space-y-3">
       <PageHeader title="Navázané okno ze seznamu" />
-      <div className="grid min-w-0 gap-4 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
         {sourceExists ? (
           <div className="min-w-0 space-y-2">
             <Button variant="outline" onClick={() => panes?.closeTab("list-source")}>
               Zavřít seznam
             </Button>
             <RecordSidePanel
-              open={open}
+              open={open && linkedPanel.state === "closed"}
               onOpenChange={setOpen}
               activeTab={section}
               onActiveTabChange={setSection}
@@ -83,6 +85,19 @@ function LinkedListContent() {
             >
               <DataGrid
                 rows={DOCUMENTS}
+                panelToggle={
+                  <PanelToggleButton
+                    open={open}
+                    state={
+                      linkedPanel.state === "elsewhere" ? "elsewhere" : open ? "open" : "closed"
+                    }
+                    onToggle={() => setOpen(!open)}
+                    onFocusElsewhere={linkedPanel.focus}
+                    tooltip="Panel"
+                  />
+                }
+                canEditRow={() => false}
+                onRowOpen={(row) => openLinked(section, row)}
                 rowKey={(row) => row.id}
                 storageKey="linked-list-demo"
                 paginated={false}
@@ -127,7 +142,27 @@ function LinkedListContent() {
                 Vrátit do panelu
               </Button>
             </div>
-            {content.tabs.find((entry) => entry.id === tab.linked?.section)?.content}
+            {tab.linked?.kind === "panel" ? (
+              <Tabs
+                value={tab.linked.activeSection ?? "history"}
+                onValueChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}
+              >
+                <TabsList>
+                  {content.tabs.map(({ id, label, icon: Icon }) => (
+                    <TabsTrigger key={id} value={id} aria-label={label} title={label}>
+                      <Icon className="size-4" aria-hidden="true" />
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                {content.tabs.map(({ id, content: body }) => (
+                  <TabsContent key={id} value={id}>
+                    {body}
+                  </TabsContent>
+                ))}
+              </Tabs>
+            ) : (
+              content.tabs.find((entry) => entry.id === tab.linked?.section)?.content
+            )}
           </section>
         ))}
       </div>

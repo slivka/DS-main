@@ -2,7 +2,12 @@
 
 ## 2.125.0 (nevydáno)
 
-- Zatím beze změn.
+- Panel 6C: nepovinné `DocumentForm.panelToggle` předané PageHeader; ukázka s tečkou i bez, společná cesta i pro zálohové listy.
+- Kontext podoken: `openLinkedPanel`, `focusLinkedPanel`, `setLinkedPanelSection`, `updateLinkedPanelRecord`, `closeLinkedPanel`; veřejný `useLinkedPanel(sourceTabId)` vrací closed/elsewhere a open/focus. Stejný reducer, linkedSelection, připnutí, blokace a ochrana zavření; sekční navázaná okna beze změny.
+- Nepovinný registr `PaneLayout.renderLinkedPanel(recordKey, section, setSection)`; bez registru zachováno renderTab. APP dodává obsah/data/práva.
+- `DataGrid.onRowOpen` má přednost při dvojkliku/Enter, nezávisle na canEdit/editDisabledReason a v režimu výběru; onEditRow/tužka zůstávají. Vnořené ovladače řádek neotevřou.
+- `RecordSidePanel.onSizeCommit(px)` jednou po puštění táhla/klávese/dvojkliku; průběh zůstává v onSizeChange, ukládání APP v onSizeCommit.
+- Ověření: 1 121/1 121 testů ve 117 souborech, check:full --harness a automatický typecheck/build OK; katalog proti vydané 2.124.0 468 → 468 komponent / 1 088 → 1 123 props, 0 odebrání. Chromium proklik navázaného panelu (dvojklik, výběr, připnutí, zavření zdroje) a DocumentForm 1280/360 px bez page errors; plná E2E sada/FF/WebKit neběžely. Bez vydání, package/meta zůstávají 2.124.0.
 
 ## 2.124.0 – Rozdělení navázaných záložek
 

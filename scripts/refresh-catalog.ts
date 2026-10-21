@@ -4,6 +4,7 @@ import { DS_TEXTS_CS } from "../src/ds-texts/cs";
 import { enrichRecordPanelCatalog, renderPanelCatalogSections } from "./record-panel-catalog";
 import { enrichTemplateCatalog } from "./template-catalog";
 import { enrichAdvanceCatalog } from "./advance-catalog";
+import { enrichPanel6cCatalog } from "./panel-6c-catalog";
 
 interface CatalogProp {
   name: string;
@@ -133,6 +134,7 @@ export function refreshCatalog() {
     if (!provider.antipatterns.includes(rule)) provider.antipatterns.push(rule);
   }
   const panelComponents = enrichRecordPanelCatalog(catalog.components);
+  const panel6cComponents = enrichPanel6cCatalog(catalog.components);
   const templateComponents = enrichTemplateCatalog(catalog.components);
   const advanceComponents = enrichAdvanceCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
@@ -186,6 +188,7 @@ export function refreshCatalog() {
     reference,
     renderPanelCatalogSections(markdown, [
       ...panelComponents,
+      ...panel6cComponents,
       ...templateComponents,
       ...advanceComponents,
     ]),

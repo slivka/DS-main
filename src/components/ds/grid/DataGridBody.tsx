@@ -59,6 +59,8 @@ export interface DataGridRowsProps<Row> {
   onRowClick?: ((row: Row) => void) | undefined;
   /** Dvojklik: úprava, jinak klik. */
   onRowOpen?: ((row: Row) => void) | undefined;
+  /** Jen explicitní veřejné onRowOpen se uplatní také při výběru. */
+  openInSelectMode?: boolean;
   /** Řádek je klikací (kurzor). */
   clickable: boolean;
   /** Klíč aktivního řádku (otevřený boční panel). */
@@ -153,8 +155,27 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
           <TableRow
             key={key}
             data-virtual-row=""
+            tabIndex={props.onRowOpen && (!selectMode || props.openInSelectMode) ? 0 : undefined}
+            onKeyDown={(event) => {
+              if (
+                event.key !== "Enter" ||
+                event.defaultPrevented ||
+                event.target !== event.currentTarget
+              )
+                return;
+              if (props.onRowOpen && (!selectMode || props.openInSelectMode)) {
+                event.preventDefault();
+                props.onRowOpen(row);
+              }
+            }}
             onDoubleClick={
-              !selectMode && props.onRowOpen ? () => props.onRowOpen?.(row) : undefined
+              (!selectMode || props.openInSelectMode) && props.onRowOpen
+                ? (event) => {
+                    if (isInteractiveTarget(event.target as HTMLElement, event.currentTarget))
+                      return;
+                    props.onRowOpen?.(row);
+                  }
+                : undefined
             }
             onClick={
               selectMode
@@ -169,7 +190,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             }
             data-state={selectMode && selected ? "selected" : undefined}
             aria-current={active ? "true" : undefined}
-            className={`group/row ${props.clickable ? "cursor-pointer" : ""} ${
+            className={`group/row focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring ${props.clickable ? "cursor-pointer" : ""} ${
               active
                 ? "border-l-2 border-l-primary/60 bg-primary/[0.04] [&>td]:bg-primary/[0.02]"
                 : ""

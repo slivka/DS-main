@@ -452,15 +452,17 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
                       groupTotalLabelIndex={groupTotalLabelIndex}
                       onToggleGroup={grouping.toggleKey}
                       onRowClick={onRowClick}
+                      openInSelectMode={Boolean(props.onRowOpen)}
                       onRowOpen={
-                        onEditRow || onRowClick
+                        props.onRowOpen || onEditRow || onRowClick
                           ? (row) => {
-                              if (onEditRow && rowActions.canEdit(row)) onEditRow(row);
+                              if (props.onRowOpen) props.onRowOpen(row);
+                              else if (onEditRow && rowActions.canEdit(row)) onEditRow(row);
                               else onRowClick?.(row);
                             }
                           : undefined
                       }
-                      clickable={Boolean(onEditRow || onRowClick || selectMode)}
+                      clickable={Boolean(props.onRowOpen || onEditRow || onRowClick || selectMode)}
                       activeRowKey={props.activeRowKey}
                       rowClassName={props.rowClassName}
                       renderActions={rowActions.render}
