@@ -58,6 +58,7 @@ export interface GridAddActionsProps {
 export function GridAddActions({ actions }: GridAddActionsProps) {
   const overflowLevel = React.useContext(GridToolbarOverflowContext);
   const texts = useDsTexts().grid;
+  const splitMenuText = useDsTexts().templates.menu;
   const addMenuLabel = texts.addMenu ?? DS_TEXTS_CS.grid.addMenu;
   const labelMode = React.useContext(GridAddLabelContext);
   const primaryActionRef = React.useRef<HTMLButtonElement>(null);
