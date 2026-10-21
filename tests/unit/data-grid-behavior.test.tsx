@@ -227,6 +227,34 @@ describe("DataGrid – výběr a skupiny", () => {
 });
 
 describe("DataGrid – akce řádku a lišta", () => {
+  it("zakázaná úprava nebrání onRowOpen dvojklikem ani Enter", () => {
+    const open = mock(); const edit = mock(); const click = mock();
+    const ui = render(<Grid storageKey={nextKey()} onRowOpen={open} onEditRow={edit} onRowClick={click} canEdit={() => false} editDisabledReason="Jen pro čtení" />);
+    const row = ui.getByText("FA-002").closest("tr");
+    if (!row) throw new Error("Missing row");
+    fireEvent.click(row);
+    expect(click).toHaveBeenCalledWith(ROWS[0]);
+    expect(open).not.toHaveBeenCalled();
+    fireEvent.doubleClick(row);
+    fireEvent.keyDown(row, { key: "Enter" });
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(open).toHaveBeenLastCalledWith(ROWS[0]);
+    expect(edit).not.toHaveBeenCalled();
+  });
+  it("onRowOpen funguje i při výběru, vnořený checkbox neotevírá", () => {
+    const open = mock(); const selected = mock();
+    const ui = render(<Grid storageKey={nextKey()} selectable selectMode selectedKeys={[]} onSelectedKeysChange={selected} onRowOpen={open} />);
+    const row = ui.getByText("FA-002").closest("tr");
+    if (!row) throw new Error("Missing row");
+    fireEvent.click(row);
+    expect(selected).toHaveBeenCalledWith(["1"]);
+    fireEvent.doubleClick(row);
+    fireEvent.keyDown(row, { key: "Enter" });
+    const checkbox = within(row).getByRole("checkbox");
+    fireEvent.doubleClick(checkbox);
+    fireEvent.keyDown(checkbox, { key: "Enter" });
+    expect(open).toHaveBeenCalledTimes(2);
+  });
   it("Upravit volá onEditRow, Odstranit se ptá a po potvrzení volá onDeleteRow", async () => {
     const edited: string[] = [];
     const deleted: string[] = [];
