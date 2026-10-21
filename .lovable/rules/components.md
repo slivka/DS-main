@@ -2114,7 +2114,7 @@ Jednotný formulář dokladu s typovanou identitou. FP/ZFP/DDPOZ řadí Dodavate
 <DocumentForm {...formProps} templateEdit={{ name, onSave: saveTemplate, onDiscard: discardTemplate }} />
 ```
 
-**Panel 6C:**
+**Ovladač panelu v záhlaví:**
 
 ```tsx
 <DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />
@@ -4593,7 +4593,7 @@ Režim více oken s vždy viditelnou lištou rovnocenných záložek; musí být
 </PaneTabsProvider>
 ```
 
-**Panel 6C:**
+**Navázaný panel v sousedním okně:**
 
 ```tsx
 <PaneLayout renderTab={renderRecord} renderLinkedPanel={(key, section, setSection) => <AppRecordPanel recordKey={key} activeTab={section} onTabChange={setSection} />} />
@@ -4713,13 +4713,16 @@ tabs?.openTab('/doklad', { id }, { kind: 'record', title: 'Doklad FP2026000012' 
 tabs.openLinkedTab(pane.tabId, { id: "history", label: "Historie" })
 ```
 
-**Panel 6C:**
+**Akce navázaného panelu:**
 
 ```tsx
 const panel = useLinkedPanel(pane.tabId);
 panel.open({ recordKey: record.id, recordTitle: record.title, section: "history" });
 // PanelToggleButton state elsewhere volá panel.focus
-tabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title);
+tabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title, {
+  route: "/doklady/$id",
+  params: { id: selected.id },
+});
 tabs.closeLinkedPanel(pane.tabId);
 ```
 

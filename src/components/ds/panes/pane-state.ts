@@ -32,6 +32,8 @@ export type LinkedTabInfo = {
   activeSection?: string;
   /** Záznam hlášený APP pro panel nad záložkou záznamu; zdrojová záložka se nemění. */
   record?: LinkedSourceRecord;
+  /** Klíč zdrojové záložky, pro který byl `record` uložen; po navigaci zdroje se `record` zahodí. */
+  recordSourceKey?: string;
 };
 
 /** Kam otevřít stránku: nahradit aktivní záložku, nová záložka, nebo nová záložka v sousedním panelu. */

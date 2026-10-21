@@ -58,3 +58,8 @@ export function useRowRoving(
   };
   return { current, onKeyDown, setFocusKey };
 }
+
+/** Řádek s tabIndex 0: aktuální, je-li vykreslen, jinak první vykreslený (virtualizace). */
+export function rovingTabKey(current: string | null, windowKeys: string[]): string | null {
+  return current && windowKeys.includes(current) ? current : (windowKeys[0] ?? null);
+}

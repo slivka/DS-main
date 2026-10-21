@@ -16,7 +16,7 @@ import { GroupHeaderRow, type GroupedItem } from "./grid-grouping";
 import { isInteractiveTarget, type GroupTotalItem } from "./grid-selection";
 import type { GridTexts } from "./grid-texts";
 import { VirtualPad, type GridVirtual } from "./grid-virtual";
-import { useRowRoving } from "./grid-row-roving";
+import { rovingTabKey, useRowRoving } from "./grid-row-roving";
 import { cellText } from "./data-grid-model";
 import type { DataGridLayout } from "./DataGridHead";
 import type { DataGridColumn } from "./data-grid-types";
@@ -110,6 +110,11 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
     ? items.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
     : [];
   const rove = useRowRoving(roving, rowKeys, props.activeRowKey, virtual, items.length);
+  // Aktuální řádek mimo vykreslené okno: Tab se zastaví na prvním viditelném řádku.
+  const windowKeys = roving
+    ? windowItems.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
+    : [];
+  const tabKey = rovingTabKey(rove.current, windowKeys);
   return (
     <>
       <VirtualPad height={virtual.padTop} colSpan={colSpan} />
@@ -162,7 +167,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             key={key}
             data-virtual-row=""
             data-row-key={roving ? key : undefined}
-            tabIndex={roving ? (rove.current === key ? 0 : -1) : undefined}
+            tabIndex={roving ? (tabKey === key ? 0 : -1) : undefined}
             onFocus={
               roving
                 ? (event) => event.target === event.currentTarget && rove.setFocusKey(key)

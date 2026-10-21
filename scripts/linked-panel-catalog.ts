@@ -32,15 +32,16 @@ export function enrichLinkedPanelCatalog(
   const provider = components.find((item) => item.name === "PaneTabsProvider");
   if (provider) {
     const guidance =
-      ' usePaneTabs nabízí openLinkedPanel({ sourceTabId, recordKey, recordTitle, section, blockedReason? }), focusLinkedPanel(sourceTabId), setLinkedPanelSection(tabId, section), updateLinkedPanelRecord(sourceTabId, recordKey, recordTitle) a closeLinkedPanel(sourceTabId). useLinkedPanel(sourceTabId) vrací { state: "closed" | "elsewhere", open, focus }; open bez sourceTabId. APP hlásí výběr přes linkedSelection/useLinkedSelection nebo updateLinkedPanelRecord; připnutí zamkne obsah, zavření zdroje připne poslední záznam. blockedReason zabrání přesunu, closeLinkedPanel používá ochranu neuložených změn.';
+      ' usePaneTabs nabízí openLinkedPanel({ sourceTabId, recordKey, recordTitle, section, blockedReason? }), focusLinkedPanel(sourceTabId), setLinkedPanelSection(tabId, section), updateLinkedPanelRecord(sourceTabId, recordKey, recordTitle, { route?, params? }) a closeLinkedPanel(sourceTabId). useLinkedPanel(sourceTabId) vrací { state: "closed" | "elsewhere", open, focus }; open bez sourceTabId. APP hlásí výběr přes linkedSelection/useLinkedSelection nebo updateLinkedPanelRecord; připnutí zamkne obsah, zavření zdroje připne poslední záznam. blockedReason zabrání přesunu, closeLinkedPanel používá ochranu neuložených změn.';
     if (!provider.usage?.includes("useLinkedPanel"))
       provider.usage = (provider.usage ?? "") + guidance;
-    provider.examples ??= [];
-    if (!provider.examples.some((item) => item.label === "Akce navázaného panelu"))
-      provider.examples.push({
-        label: "Akce navázaného panelu",
-        code: 'const panel = useLinkedPanel(pane.tabId);\npanel.open({ recordKey: record.id, recordTitle: record.title, section: "history" });\n// PanelToggleButton state elsewhere volá panel.focus\ntabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title);\ntabs.closeLinkedPanel(pane.tabId);',
-      });
+    provider.examples = (provider.examples ?? []).filter(
+      (item) => item.label !== "Akce navázaného panelu",
+    );
+    provider.examples.push({
+      label: "Akce navázaného panelu",
+      code: 'const panel = useLinkedPanel(pane.tabId);\npanel.open({ recordKey: record.id, recordTitle: record.title, section: "history" });\n// PanelToggleButton state elsewhere volá panel.focus\ntabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title, {\n  route: "/doklady/$id",\n  params: { id: selected.id },\n});\ntabs.closeLinkedPanel(pane.tabId);',
+    });
     provider.antipatterns ??= [];
     const rule =
       "Nově otevírejte celý panel přes openLinkedPanel; openLinkedTab ponechte pro kompatibilní sekční okna.";
