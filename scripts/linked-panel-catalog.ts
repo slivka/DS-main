@@ -1,7 +1,9 @@
 /** Autorské doplnění registru panelu; katalog/reference obnovuje existující pipeline. */
 import type { PanelCatalogComponent } from "./record-panel-catalog";
 
-export function enrichLinkedPanelCatalog(components: PanelCatalogComponent[]): PanelCatalogComponent[] {
+export function enrichLinkedPanelCatalog(
+  components: PanelCatalogComponent[],
+): PanelCatalogComponent[] {
   const touched: PanelCatalogComponent[] = [];
   const layout = components.find((item) => item.name === "PaneLayout");
   if (layout) {
