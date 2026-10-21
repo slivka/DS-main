@@ -44,7 +44,7 @@ export const FileChipBar = forwardRef<HTMLDivElement, FileChipBarProps>(
           <FileSeverityIcon severity={severity} message={message} />
           <span className="min-w-0 max-w-48 truncate" title={file.name}>{file.name}</span>
           <span className="shrink-0 text-muted-foreground tabular-nums">{formatFileSize(file.size, texts.intlLocale)}</span>
-          <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon-sm"
+          <Tooltip><TooltipTrigger asChild><Button type="button" variant="ghost" size="icon"
             disabled={disabled} aria-label={t.remove.replace("{name}", file.name)} onClick={() => onRemove(id)}>
             <X aria-hidden="true" className="size-3" /></Button></TooltipTrigger>
             <TooltipContent>{t.remove.replace("{name}", file.name)}</TooltipContent></Tooltip>

@@ -86,7 +86,10 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     };
     const over = (event: DragEvent) => {
       node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
-      if (containsFiles(event) && owns(event)) event.preventDefault();
+      if (!containsFiles(event)) return;
+      const owner = owns(event);
+      if (owner) event.preventDefault();
+      setDragging(owner && !latest.current.disabled);
     };
     const drop = (event: DragEvent) => {
       node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
