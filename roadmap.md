@@ -1,6 +1,6 @@
 ## DS 2.121.0 (nevydáno)
 
-- [ ] Opravné kolo: neposílat výchozí nárok ani null procento, regresní testy a check:quick/check:full.
+- [x] Opravné kolo: žádný výchozí nárok ani null procento; 3 regresní testy. check:quick --harness 15/15 v journal-vat-detail, check:full --harness 1073/1073 ve 113 souborech; lint 0 chyb / 346 varování, formát a peněžní audit OK, katalog beze ztrát (465 komponent / 1082 props), automatické sestavení build OK. E2E neběželo; nevydáno.
 - [x] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
 - [x] Texty CS/SK, ukázky, komponentové testy, katalog a průběžný check:quick.
 - [x] Závěrečný check:full --harness: 1070/1070 unit ve 113 souborech (12 nových); lint 0 chyb / 346 varování (nové moduly a test 0/0), formát a peněžní audit OK; automatické typy a build OK. Katalog 465 → 465 komponent / 1055 → 1082 props, 0 odebrání. Proklik Chromium 1280/640 px bez pageerror; E2E specy neběžely. Nevydáno.

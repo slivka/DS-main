@@ -3,6 +3,7 @@
 ## 2.121.0 (nevydáno)
 
 - Opravné kolo: `toJournalRow` posílá nárok a procento pouze při definované hodnotě, i se zapnutým DPH; žádné doplňování `full` nebo `null`. Výchozí nárok nového řádku normalizuje DB. Načtený NULL tak při změně popisu neposílá nechtěnou změnu nároku; `partial` / 60 % a vyloučení KH zůstávají zachované. Platí pro sdílený editor FV/FP i ZFV/ZFP.
+- Kontroly opravného kola: 3 nové regresní testy; check:quick --harness 15/15 v journal-vat-detail, check:full --harness 1073/1073 ve 113 souborech. Lint 0 chyb / 346 varování, formát a peněžní audit OK, katalog 465 komponent / 1082 props bez odebrání; automatické sestavení build OK. E2E neběželo, nevydáno.
 - Rozbalení řádku DPH: stávající plný / poměrný / žádný nárok doplněn ikonou neplného nároku v buňce Kód DPH a bublinou „Krácený nárok 60 %“ / „Bez nároku na odpočet“, bez změny výšky řádku.
 - `JournalLine.khLimitExcluded` a převod `kh_limit_excluded`: přepínač Mimo plnění – nezapočítávat do limitu KH v detailu, pouze s kódem a směrem a bez `withoutAccounts`. APP řídí oprávnění přes `vat.rowDetails.canEdit(line, field)` a `disabledReason`; `vat.readOnly` má přednost. Změny obou polí jdou stávajícím `onChange(lines)`.
 - Změna kódu, nároku a skrytí DPH již nemaže nárok, procento ani vyloučení KH. FV/FP sdílí editor se ZFV/ZFP, u ZL jsou účetní pole i ikona skryté a data zachované. Žádný výpočet limitu KH ani doménové zápisy.
