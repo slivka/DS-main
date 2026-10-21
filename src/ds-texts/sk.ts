@@ -6,6 +6,7 @@
 import { LINKED_RECORDS_SK } from "./sk-linked-records";
 import { TEMPLATES_SK } from "./sk-templates";
 import { ADVANCES_SK } from "./sk-advances";
+import { FILE_IMPORT_SK } from "./sk-file-import";
 import { SK_VAT_GROUPS } from "./sk-vat-groups";
 import {
   ATTACHMENTS_SK,
@@ -26,6 +27,7 @@ import { DOCUMENT_FORM_TEXTS_SK } from "./sk-document-form";
 /** Slovenské texty; aplikace je zapne přes DsTextsProvider locale="sk". */
 export const DS_TEXTS_SK: DsTexts = {
   ...DS_TEXTS_CS,
+  fileImport: FILE_IMPORT_SK,
   advances: ADVANCES_SK,
   templates: TEMPLATES_SK,
   vatFive: VAT_FIVE_SK,
