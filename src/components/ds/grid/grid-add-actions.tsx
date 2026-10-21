@@ -4,6 +4,7 @@
  * Nesmí: znát doménu (příjem/výdaj) ani barvit akce podle směru.
  */
 import * as React from "react";
+import type { ReactNode } from "react";
 import { ChevronDown, Plus, type LucideIcon } from "lucide-react";
 import { DS_TEXTS_CS, useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
