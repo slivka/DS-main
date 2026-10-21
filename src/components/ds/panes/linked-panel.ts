@@ -29,7 +29,7 @@ export function findLinkedPanel(state: PaneTabsState, sourceTabId: string) {
   for (let paneIndex = 0; paneIndex < state.panes.length; paneIndex += 1) {
     const pane = state.panes[paneIndex];
     const tabIndex = pane.tabs.findIndex(
-      (tab) => tab.linked?.sourceTabId === sourceTabId && tab.linked?.kind === "panel",
+      (tab) => tab.linked?.sourceTabId === sourceTabId && tab.linked.kind === "panel",
     );
     if (tabIndex >= 0) return { pane, paneIndex, tab: pane.tabs[tabIndex], tabIndex };
   }

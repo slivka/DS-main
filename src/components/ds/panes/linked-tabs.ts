@@ -32,7 +32,6 @@ export function linkedTabTitle(sectionLabel: string, recordTitle: string): strin
   return `${sectionLabel} – ${recordTitle}`;
 }
 
-
 /** Titulek záznamu zdrojové záložky (titulek, jinak klíč záznamu). */
 function sourceRecordTitle(source: PaneTab): string {
   return source.title ?? source.recordKey ?? source.route;
