@@ -11,6 +11,24 @@ export interface PanelCatalogComponent {
 }
 const definitions = [
   {
+    name: "PanelToggleButton",
+    file: "src/components/ds/layout/panel-toggle-button.tsx",
+    usage:
+      "Tlačítko panelu v PageHeader.panelToggle a DataGrid.panelToggle za Obnovit. Stav elsewhere zaměří sousední okno přes onFocusElsewhere; tooltip a indikátor dodává APP.",
+    code: "<PanelToggleButton open={open} onToggle={() => setOpen(!open)} indicator={hasActivity} tooltip={panelSummary} state={panelState} onFocusElsewhere={focusPanel} />",
+    avoid:
+      "Nevytvářejte druhý místní panel při state=elsewhere a nedoplňujte počty ani oprávnění v DS.",
+  },
+  {
+    name: "RecordPanelToolbar",
+    file: "src/components/ds/layout/record-panel-toolbar.tsx",
+    usage:
+      "Jednořádkové nástroje každé záložky: start pro zobrazení/filtr/řazení, end pro vlastní obsah, action pro modrou hlavní akci zkrácenou při nedostatku místa na ikonu s tooltipem.",
+    code: "<RecordPanelToolbar start={sortControl} action={{ label: texts.add, icon: Plus, onClick: addAttachment, disabled: !canAdd, disabledReason }} />",
+    avoid:
+      "Nezalamujte nástroje ani nezkracujte název záznamu místo hlavní akce; nepředávejte DS doménovou logiku.",
+  },
+  {
     name: "SettlementBar",
     file: "src/components/ds/data-display/settlement-bar.tsx",
     usage:
@@ -48,7 +66,7 @@ const definitions = [
     file: "src/components/ds/layout/record-side-panel.tsx",
     usage:
       "Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah odsune, pod 640 px šířky prostředí používá místní překryv. Záložky, připnutí a šířku řídí aplikace; nic nenačítá.",
-    code: "<RecordSidePanel open={open} onOpenChange={setOpen} header={record.number} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} width={width} onWidthChange={setWidth}><DocumentForm {...formProps} /></RecordSidePanel>",
+    code: "<RecordSidePanel open={open} onOpenChange={setOpen} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} size={size} defaultSize={384} onSizeChange={setSize}><DocumentForm {...formProps} /></RecordSidePanel>",
     avoid:
       "Nevykreslujte panel vedle obalu bez children; aplikace řídí vazbu připnutí na záznam, nikoli DS.",
   },
@@ -65,8 +83,8 @@ const definitions = [
     file: "src/components/ds/feedback/attachment-list.tsx",
     types: "src/components/ds/feedback/attachment-types.ts",
     usage:
-      "Zdroj s náhledem a akcí Nahradit, ostatní přílohy s metadaty a operacemi aplikace. removeKind určuje delete/Smazat nebo remove/Odebrat; oprávnění a důvody dodává aplikace. Výběr i přetažení sdílejí validateFiles, chyby zobrazuje NoticeBar.",
-    code: "<AttachmentList attachments={files} source={source} accept={allowedTypes} maxSize={limit} canAdd={rights.add} onFiles={upload} canRemove={canRemove} removeKind={removeKind} onRemove={removeAttachment} allowRemovalReason onReplaceSource={replaceSource} />",
+      "Přílohy bez náhledů s ikonovými akcemi, filtrem odebraných a modrou akcí Přidat přílohu. removeKind určuje Smazat/Odebrat; onSetSource a canSetSource přidají nabídku Použít jako zdroj. Starý source a jeho náhrada zůstávají kompatibilní, jsou deprecated od 2.123.0.",
+    code: "<AttachmentList attachments={files} accept={allowedTypes} maxSize={limit} canAdd={rights.add} onFiles={upload} canRemove={canRemove} removeKind={removeKind} onRemove={removeAttachment} onSetSource={setSource} canSetSource={canSetSource} />",
     avoid:
       "Nenačítejte soubory uvnitř DS; nerozhodujte removeKind podle stavu dokladu v komponentě. Zakázanou akci nezakrývejte. Zdroj nemažte ani neodebírejte.",
   },
@@ -100,7 +118,7 @@ const definitions = [
     file: "src/components/ds/feedback/record-history-timeline.tsx",
     usage:
       "Historie záznamu jako časová osa po dnech (Dnes / Včera / datum), nejnovější nahoře; funguje i jako záložka RecordSidePanel v úzké šířce. Aplikace dodává už zmapované události s popisky a hodnotami a řídí režim (basic/detailed) i filtr typů; komponenta nic nenačítá ani doménově neformátuje.",
-    code: "<RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} filter={filter} onFilterChange={setFilter} loading={isLoading} />",
+    code: "<RecordHistoryTimeline events={historyEvents} mode={mode} onModeChange={setMode} hiddenKinds={hiddenKinds} onHiddenKindsChange={setHiddenKinds} loading={isLoading} />",
     avoid:
       "Nepředávejte surová data auditu (názvy sloupců, JSON, ID); hodnoty mapuje a formátuje aplikace. Nepoužívejte zastaralý HistoryPanel.",
   },
@@ -146,6 +164,8 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     const label = "Panel záznamu";
     const existing = item.examples.find((entry) => entry.label === label);
     if (!existing) item.examples.push({ label, code: definition.code });
+    if (!item.examples.some((entry) => entry.label === "Panel záznamu 6"))
+      item.examples.push({ label: "Panel záznamu 6", code: definition.code });
     if (
       definition.name === "LinkedRecordsPanel" &&
       !item.examples.some((entry) => entry.label === "Jediné potvrzení s důvodem")
@@ -179,10 +199,19 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     grid.props ??= [];
     if (!grid.props.some((item) => item.name === "onIndicatorClick"))
       grid.props.push({ name: "onIndicatorClick", type: "(row: Row, id: string) => void" });
+    if (!grid.props.some((item) => item.name === "panelToggle"))
+      grid.props.push({ name: "panelToggle", type: "ReactNode" });
     const rule =
       'Sloupec type="record-indicators" přijímá indicators s libovolnými id a count(row); klik volá onIndicatorClick bez výběru řádku, Excel rozvine samostatné číselné počty.';
     if (!grid.usage?.includes("record-indicators")) grid.usage = `${grid.usage ?? ""} ${rule}`;
     touched.push(grid);
+  }
+  const header = components.find((item) => item.name === "PageHeader");
+  if (header) {
+    header.props ??= [];
+    if (!header.props.some((item) => item.name === "panelToggle"))
+      header.props.push({ name: "panelToggle", type: "ReactNode" });
+    touched.push(header);
   }
   return touched;
 }

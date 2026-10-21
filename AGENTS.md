@@ -34,7 +34,7 @@ Jazyk nastav jednou v kořeni: `<DsTextsProvider texts={DS_TEXTS_SK} locale="sk"
 - Unsaved navigation uses a typed action and executes continuation only after successful saves. Why: labels and data-loss protection stay consistent across all entry points.
 
 - Keep grid/editor texts in domain modules, re-exported through the existing text entry. Why: stable imports and bounded files.
-- RecordSidePanel owns layout; file selection and useFileDrop share validation. Why: no consumer fetching or duplicate validation.
+- RecordSidePanel owns layout/resize; panel tabs share RecordPanelToolbar and PanelToolButton; file inputs share useFileDrop validation. Why: one keyboard, size and action contract.
 
 ## Vydání knihovny
 

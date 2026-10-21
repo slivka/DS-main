@@ -1,5 +1,11 @@
 ## DS 2.123.0 (nevydáno)
 
+- [x] Panel záznamu 6 – body 1–3 a 5–8: tlačítko/sloty, ikonové záložky a táhlo, společný řádek nástrojů, přílohy, poznámky, historie a propojené. Bod 10: výchozí skrytí indikátorů bez přepsání uloženého rozložení.
+- [ ] Zdroj: samostatný náhled a scénáře PDF/obrázek/ISDOC/prázdný/zděděný.
+- [ ] Celý panel v navázaném okně, blokace rozepsaného obsahu, sledování a připnutí.
+- [x] Překlady a ukázky dokončené části, regresní testy 1–3/5–8/10; nevydávat.
+- [ ] Dokončit ukázky a testy Zdroj/celý navázaný panel (zbytek 11–12), poté uzavřít celé kolo.
+- Kontrola dokončené části: check:quick a check:full --harness prošly, unit 1 100/1 100 ve 115 souborech, lint 0/349, formát a peněžní audit OK, katalog 465 → 467 / 1 061 → 1 108 bez ztrát, automatické sestavení OK. Jeden E2E spec Chromium 1/1, přímý proklik 1280/360 px a zoom 200 % bez chyb; plná E2E sada/FF/WebKit neběžely. Nevydáno.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
 ## DS 2.122.0 – Drobné opravy 2 + oprava výběru v řádcích

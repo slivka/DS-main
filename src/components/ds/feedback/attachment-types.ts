@@ -35,7 +35,7 @@ export interface RecordAttachment {
 export interface AttachmentListProps extends ComponentPropsWithoutRef<"div"> {
   /** Ostatní přílohy. */
   attachments: readonly RecordAttachment[];
-  /** Zdroj oddělený od ostatních příloh. */
+  /** @deprecated Od 2.123.0 použijte samostatnou záložku SourcePreview; zachováno do další major verze. */
   source?: RecordAttachment | null;
   /** Povolené MIME typy a přípony. */
   accept: readonly string[];
@@ -61,12 +61,18 @@ export interface AttachmentListProps extends ComponentPropsWithoutRef<"div"> {
   ) => void | Promise<void>;
   /** Nabídnout volitelný důvod odebrání. */
   allowRemovalReason?: boolean;
-  /** Náhrada zdroje. */
+  /** @deprecated Od 2.123.0 náhradu předejte SourcePreview. */
   onReplaceSource?: (source: RecordAttachment) => void | Promise<void>;
-  /** Právo nahradit zdroj. */
+  /** @deprecated Od 2.123.0 právo náhrady předejte SourcePreview. */
   canReplaceSource?: boolean;
-  /** Důvod zákazu náhrady. */
+  /** @deprecated Od 2.123.0 důvod náhrady předejte SourcePreview. */
   replaceDisabledReason?: string;
+  /** Použití přílohy jako zdroje přes nabídku položky. */
+  onSetSource?: (attachment: RecordAttachment) => void | Promise<void>;
+  /** Oprávnění použít jako zdroj. */
+  canSetSource?: (attachment: RecordAttachment) => boolean;
+  /** Důvod zakázaného použití jako zdroje. */
+  setSourceDisabledReason?: (attachment: RecordAttachment) => string | undefined;
   /** Stažení přes aplikaci; jinak odkaz z url. */
   onDownload?: (attachment: RecordAttachment) => void;
   /** Otevření přes aplikaci; jinak odkaz z url. */

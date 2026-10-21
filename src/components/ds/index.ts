@@ -5,6 +5,8 @@
  */
 
 /* Layout */
+export * from "./layout/panel-toggle-button";
+export * from "./layout/record-panel-toolbar";
 export * from "./layout/record-side-panel";
 export * from "./layout/record-panel-triggers";
 export * from "./layout/multi-selection-panel";

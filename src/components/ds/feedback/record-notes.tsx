@@ -2,8 +2,11 @@
 import { forwardRef, useMemo, useState, type ComponentPropsWithoutRef } from "react";
 import { ArrowDownWideNarrow, ArrowUpWideNarrow, Pencil, Pin, PinOff, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
-import { Textarea } from "../../ui/textarea";
-import { Badge } from "../../ui/badge";
+import { Plus } from "lucide-react";
+import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
+import { PanelToolButton } from "../layout/record-panel-tools";
+import { TruncatedText } from "../data-display/truncated-text";
+import { NoteTextarea } from "./record-note-textarea";
 import { formatUserDateTime } from "../../../lib/date-time-preferences";
 import { useDsTexts } from "../../../ds-texts";
 import type { RecordNotesTexts as NotesTexts } from "../../../ds-texts/record-panel-texts";
@@ -111,74 +114,62 @@ export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function
       setBusy(false);
     }
   };
+  const add = () => {
+    if (!onAdd || busy || !body.trim()) return;
+    void run(
+      () => onAdd(body.trim()),
+      () => setBody(""),
+    );
+  };
+  const save = () => {
+    if (!onUpdate || !editingId || busy || !editBody.trim()) return;
+    void run(
+      () => onUpdate(editingId, editBody.trim()),
+      () => setEditingId(null),
+    );
+  };
+  const sort = (
+    <PanelToolButton
+      label={sortDesc ? t.sortNewest : t.sortOldest}
+      icon={sortDesc ? ArrowDownWideNarrow : ArrowUpWideNarrow}
+      onClick={() => setSortDesc((value) => !value)}
+    />
+  );
   return (
     <div ref={ref} {...props} className={cn("flex flex-col gap-3", className)}>
       {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
       {onAdd && canAdd ? (
         <div className="flex flex-col gap-2">
-          <Textarea
+          <NoteTextarea
             value={body}
             onChange={(event) => setBody(event.target.value)}
             placeholder={t.placeholder}
             aria-label={t.placeholder}
-            rows={3}
-            disabled={busy}
+            onSubmit={add}
+            aria-disabled={busy}
+            readOnly={busy}
           />
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              size="sm"
-              aria-disabled={busy || !body.trim()}
-              onClick={() => {
-                if (busy || !body.trim()) return;
-                void run(
-                  () => onAdd(body.trim()),
-                  () => setBody(""),
-                );
-              }}
-            >
-              {t.add}
-            </Button>
-          </div>
+          <RecordPanelToolbar
+            start={sort}
+            action={{ label: t.add, icon: Plus, disabled: busy || !body.trim(), onClick: add }}
+          />
         </div>
-      ) : null}
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => setSortDesc((value) => !value)}
-          title={sortDesc ? t.sortNewest : t.sortOldest}
-          aria-label={sortDesc ? t.sortNewest : t.sortOldest}
-        >
-          {sortDesc ? (
-            <ArrowDownWideNarrow className="size-4" />
-          ) : (
-            <ArrowUpWideNarrow className="size-4" />
-          )}
-        </Button>
-      </div>
+      ) : (
+        <RecordPanelToolbar start={sort} />
+      )}
       {sorted.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t.empty}</p>
       ) : (
         <ul className="space-y-2">
           {sorted.map((note) => (
             <li key={note.id} className="rounded-md border p-3 text-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                <span>{note.author ?? "—"}</span>
-                <span>
-                  {formatUserDateTime(note.createdAt)}
-                  {note.editedAt ? ` · ${t.edited} ${formatUserDateTime(note.editedAt)}` : ""}
-                </span>
-                {note.pinned ? <Badge variant="secondary">{t.pinned}</Badge> : null}
-              </div>
               {editingId === note.id ? (
                 <div className="mt-2 flex flex-col gap-2">
-                  <Textarea
+                  <NoteTextarea
                     value={editBody}
                     onChange={(event) => setEditBody(event.target.value)}
                     aria-label={t.edit}
-                    rows={3}
+                    onSubmit={save}
                   />
                   <div className="flex justify-end gap-2">
                     <Button
@@ -194,12 +185,7 @@ export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function
                       type="button"
                       size="sm"
                       disabled={busy || !editBody.trim()}
-                      onClick={() =>
-                        void run(
-                          () => onUpdate?.(note.id, editBody.trim()),
-                          () => setEditingId(null),
-                        )
-                      }
+                      onClick={save}
                     >
                       {t.save}
                     </Button>
@@ -208,61 +194,68 @@ export const RecordNotes = forwardRef<HTMLDivElement, RecordNotesProps>(function
               ) : (
                 <p className="mt-1 whitespace-pre-wrap break-words">{note.body}</p>
               )}
-              {editingId !== note.id ? (
-                <div className="mt-2 flex justify-end gap-1">
-                  {onPin && allowed(canPin, note, false) ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      disabled={busy}
-                      aria-label={note.pinned ? t.unpin : t.pin}
-                      title={note.pinned ? t.unpin : t.pin}
-                      onClick={() => void run(() => onPin(note.id, !note.pinned))}
-                    >
-                      {note.pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
-                    </Button>
-                  ) : null}
-                  {onUpdate && allowed(canEdit, note, note.canEdit ?? note.editable !== false) ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      disabled={busy}
-                      aria-label={t.edit}
-                      title={t.edit}
-                      onClick={() => {
-                        setEditingId(note.id);
-                        setEditBody(note.body);
-                      }}
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
-                  ) : null}
-                  {onRemove &&
-                  allowed(canRemove, note, note.canRemove ?? note.editable !== false) ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      disabled={busy}
-                      aria-label={t.remove}
-                      title={t.remove}
-                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      onClick={() =>
-                        confirm({
-                          title: t.confirmRemove,
-                          destructive: true,
-                          confirmLabel: t.remove,
-                          onConfirm: () => void run(() => onRemove(note.id)),
-                        })
-                      }
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  ) : null}
-                </div>
-              ) : null}
+              <div className="mt-2 flex min-w-0 items-center gap-1">
+                {note.pinned ? <Pin className="size-3 shrink-0" aria-label={t.pinned} /> : null}
+                <TruncatedText
+                  text={`${note.author ?? "—"} · ${formatUserDateTime(note.createdAt)}${note.editedAt ? ` · ${t.edited} ${formatUserDateTime(note.editedAt)}` : ""}`}
+                  className="min-w-0 flex-1 text-xs text-muted-foreground"
+                />
+                {editingId !== note.id ? (
+                  <div className="ml-auto flex shrink-0 justify-end gap-1">
+                    {onPin && allowed(canPin, note, false) ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy}
+                        aria-label={note.pinned ? t.unpin : t.pin}
+                        title={note.pinned ? t.unpin : t.pin}
+                        onClick={() => void run(() => onPin(note.id, !note.pinned))}
+                      >
+                        {note.pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
+                      </Button>
+                    ) : null}
+                    {onUpdate && allowed(canEdit, note, note.canEdit ?? note.editable !== false) ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy}
+                        aria-label={t.edit}
+                        title={t.edit}
+                        onClick={() => {
+                          setEditingId(note.id);
+                          setEditBody(note.body);
+                        }}
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                    ) : null}
+                    {onRemove &&
+                    allowed(canRemove, note, note.canRemove ?? note.editable !== false) ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy}
+                        aria-label={t.remove}
+                        title={t.remove}
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() =>
+                          confirm({
+                            title: t.confirmRemove,
+                            destructive: true,
+                            confirmLabel: t.remove,
+                            onConfirm: () => void run(() => onRemove(note.id)),
+                          })
+                        }
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>

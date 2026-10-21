@@ -46,6 +46,8 @@ export interface PageHeaderProps extends Omit<React.ComponentPropsWithoutRef<"di
   /** @deprecated Kontext patří do GridContextBar nebo horní lišty. */
   description?: React.ReactNode;
   actions?: React.ReactNode;
+  /** Tlačítko panelu za nabídkou a před zavřením. */
+  panelToggle?: React.ReactNode;
   /** Akce celé stránky; uvnitř panelu se zobrazí nahoře v menu ⋯. */
   menuActions?: PageHeaderMenuAction[];
   /** Texty ovládání panelu (jen uvnitř PaneLayout). */
@@ -73,6 +75,7 @@ export function PageHeader({
   actions,
   menuActions = [],
   paneTexts,
+  panelToggle,
   className,
   ...props
 }: PageHeaderProps) {
@@ -146,12 +149,24 @@ export function PageHeader({
           </div>
         </div>
       </div>
-      {actions || chrome ? (
+      {actions || chrome || panelToggle ? (
         <div className="flex flex-wrap items-center gap-2">
           {chrome?.recordNav ? <RecordNavButtons chrome={chrome} t={t} /> : null}
-          {!chrome ? actions : null}
+          {!chrome ? (
+            <>
+              {actions}
+              {panelToggle}
+            </>
+          ) : null}
           {chrome ? <HistoryButtons chrome={chrome} t={t} /> : null}
-          {chrome ? <PaneButtons chrome={chrome} t={t} pageActions={menuActions} /> : null}
+          {chrome ? (
+            <PaneButtons
+              chrome={chrome}
+              t={t}
+              pageActions={menuActions}
+              panelToggle={panelToggle}
+            />
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -316,7 +331,8 @@ function PaneButtons({
   chrome,
   t,
   pageActions,
-}: ChromeProps & { pageActions: PageHeaderMenuAction[] }) {
+  panelToggle,
+}: ChromeProps & { pageActions: PageHeaderMenuAction[]; panelToggle?: React.ReactNode }) {
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
@@ -402,6 +418,7 @@ function PaneButtons({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {panelToggle}
         <IconButton
           label={`${t.closeHeader} (Alt+W)`}
           aria-label={t.closeHeader}

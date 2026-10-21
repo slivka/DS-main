@@ -284,6 +284,7 @@ export function DataGrid<Row>(props: DataGridProps<Row>) {
           expand={groups.expand}
           asOf={props.asOf}
           toolbarLeft={props.toolbarLeft}
+          panelToggle={props.panelToggle}
           search={{ value: filter.search, onChange: filter.setSearch }}
           {...(props.filters
             ? {

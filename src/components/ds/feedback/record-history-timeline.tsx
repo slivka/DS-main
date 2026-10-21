@@ -10,12 +10,20 @@ import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { StatusBadge } from "../data-display/status-badge";
 import { TruncatedText } from "../data-display/truncated-text";
-import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
+import { List, ListTree, Filter } from "lucide-react";
+import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
+import { PanelToolButton } from "../layout/record-panel-tools";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
+} from "../../ui/dropdown-menu";
 import { HistoryEventDetail } from "./record-history-detail";
 import {
   HISTORY_KINDS,
   countHistoryChanges,
-  filterHistory,
   groupHistoryByDay,
   type HistoryEvent,
   type HistoryKind,
@@ -44,10 +52,14 @@ export interface RecordHistoryTimelineProps extends Omit<
   mode: HistoryMode;
   /** Změna režimu. */
   onModeChange: (mode: HistoryMode) => void;
-  /** Vybrané typy; prázdné pole = vše. */
-  filter: HistoryKind[];
-  /** Změna filtru typů. */
-  onFilterChange: (filter: HistoryKind[]) => void;
+  /** @deprecated Od 2.123.0 použijte hiddenKinds; prázdné = vše. */
+  filter?: HistoryKind[];
+  /** @deprecated Od 2.123.0 použijte onHiddenKindsChange. */
+  onFilterChange?: (filter: HistoryKind[]) => void;
+  /** Skryté typy; prázdné = vše. Má přednost před filter. */
+  hiddenKinds?: HistoryKind[];
+  /** Změna skrytých typů. */
+  onHiddenKindsChange?: (kinds: HistoryKind[]) => void;
   /** Probíhá načítání v aplikaci. */
   loading?: boolean;
   /** Text prázdné historie. */
@@ -99,7 +111,9 @@ export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTim
       events,
       mode,
       onModeChange,
-      filter,
+      filter = [],
+      hiddenKinds,
+      onHiddenKindsChange,
       onFilterChange,
       loading,
       emptyText,
@@ -110,10 +124,15 @@ export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTim
     ref,
   ) {
     const texts = useDsTexts().recordHistory;
-    const visible = filterHistory(events, filter);
+    const hidden =
+      hiddenKinds ?? (filter.length ? HISTORY_KINDS.filter((kind) => !filter.includes(kind)) : []);
+    const visible = events.filter((event) => !hidden.includes(event.kind));
     const groups = groupHistoryByDay(visible, now);
-    const toggle = (kind: HistoryKind) =>
-      onFilterChange(filter.includes(kind) ? filter.filter((k) => k !== kind) : [...filter, kind]);
+    const changeHidden = (next: HistoryKind[]) => {
+      if (onHiddenKindsChange) onHiddenKindsChange(next);
+      else
+        onFilterChange?.(next.length ? HISTORY_KINDS.filter((kind) => !next.includes(kind)) : []);
+    };
     const message = loading
       ? texts.loading
       : !events.length
@@ -123,43 +142,57 @@ export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTim
           : null;
     return (
       <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <GridSegmentedToggle
-            ariaLabel={texts.modeLabel}
-            value={mode}
-            defaultValue="basic"
-            onChange={(next) => onModeChange(next as HistoryMode)}
-            options={[
-              { value: "basic", label: texts.basic },
-              { value: "detailed", label: texts.detailed },
-            ]}
-          />
-          <div
-            role="group"
-            aria-label={texts.filterLabel}
-            className="grid-segmented grid-toolbar-control inline-flex max-w-full overflow-x-auto border border-grid-chrome bg-card p-0"
-          >
-            {HISTORY_KINDS.map((kind, index) => {
-              const pressed = filter.includes(kind);
-              return (
-                <Button
-                  key={kind}
-                  type="button"
-                  variant="ghost"
-                  aria-pressed={pressed}
-                  onClick={() => toggle(kind)}
-                  className={cn(
-                    "h-full min-h-0 shrink-0 rounded-none border-0 px-[0.7em] text-[1em] font-normal shadow-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-                    index > 0 && "border-l border-l-grid-chrome",
-                    pressed && "bg-filter-active/15 font-semibold text-filter-active",
-                  )}
-                >
-                  {texts.kinds[kind]}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
+        <RecordPanelToolbar
+          start={
+            <>
+              <PanelToolButton
+                label={texts.basic}
+                icon={List}
+                aria-pressed={mode === "basic"}
+                onClick={() => onModeChange("basic")}
+              />
+              <PanelToolButton
+                label={texts.detailed}
+                icon={ListTree}
+                aria-pressed={mode === "detailed"}
+                onClick={() => onModeChange("detailed")}
+              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <PanelToolButton
+                    label={texts.filterLabel}
+                    icon={Filter}
+                    className={hidden.length ? "text-filter-active" : undefined}
+                  >
+                    {hidden.length ? (
+                      <span className="text-xs tabular-nums">
+                        {HISTORY_KINDS.length - hidden.length}/{HISTORY_KINDS.length}
+                      </span>
+                    ) : null}
+                  </PanelToolButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {HISTORY_KINDS.map((kind) => (
+                    <DropdownMenuCheckboxItem
+                      key={kind}
+                      checked={!hidden.includes(kind)}
+                      onCheckedChange={(checked) =>
+                        changeHidden(
+                          checked ? hidden.filter((item) => item !== kind) : [...hidden, kind],
+                        )
+                      }
+                    >
+                      {texts.kinds[kind]}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuItem onSelect={() => changeHidden([])}>
+                    {texts.showAll}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          }
+        />
         {message ? (
           <p
             role="status"
@@ -167,6 +200,11 @@ export const RecordHistoryTimeline = forwardRef<HTMLDivElement, RecordHistoryTim
             className="text-sm text-muted-foreground"
           >
             {message}
+            {!loading && events.length > 0 && !visible.length ? (
+              <Button type="button" variant="link" onClick={() => changeHidden([])}>
+                {texts.showAll}
+              </Button>
+            ) : null}
           </p>
         ) : (
           groups.map((group) => (

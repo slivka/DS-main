@@ -1,12 +1,13 @@
 /** Propojené záznamy · vlastní kompozici seznamu/toku · nic nenačítá ani doménově nepočítá. */
 import { forwardRef, useId, useState, type ComponentPropsWithoutRef } from "react";
-import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronRight, List, GitBranch, Link, X } from "lucide-react";
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { DisabledReasonTooltip } from "../feedback/disabled-reason-tooltip";
 import { useConfirmDialog } from "../feedback/confirm-dialog";
-import { GridSegmentedToggle } from "../grid/grid-segmented-toggle";
+import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
+import { PanelToolButton } from "../layout/record-panel-tools";
 import { TruncatedText } from "./truncated-text";
 import { SettlementBar } from "./settlement-bar";
 import { LinkedRecordEntry } from "./linked-record-entry";
@@ -98,23 +99,29 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
     return (
       <div ref={ref} className={cn("min-w-0 space-y-3", className)} {...props}>
         {settlement?.length ? <SettlementBar rows={settlement} /> : null}
-        <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
-          <GridSegmentedToggle
-            ariaLabel={texts.mode}
-            value={mode}
-            defaultValue="list"
-            onChange={(next) => onModeChange(next as LinkedRecordsMode)}
-            options={[
-              { value: "list", label: texts.list },
-              { value: "flow", label: texts.flow },
-            ]}
-          />
-          {onLink ? (
-            <Button type="button" variant="outline" onClick={() => setDialogOpen(true)}>
-              {texts.link}
-            </Button>
-          ) : null}
-        </div>
+        <RecordPanelToolbar
+          start={
+            <>
+              <PanelToolButton
+                label={texts.list}
+                icon={List}
+                aria-pressed={mode === "list"}
+                onClick={() => onModeChange("list")}
+              />
+              <PanelToolButton
+                label={texts.flow}
+                icon={GitBranch}
+                aria-pressed={mode === "flow"}
+                onClick={() => onModeChange("flow")}
+              />
+            </>
+          }
+          action={
+            onLink
+              ? { label: texts.link, icon: Link, onClick: () => setDialogOpen(true) }
+              : undefined
+          }
+        />
         {!visible.length ? (
           <p role="status" className="text-sm text-muted-foreground">
             {emptyText ?? texts.empty}
@@ -179,18 +186,19 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
                           content={
                             !item.removable
                               ? (item.removeDisabledReason ?? texts.removeBlocked)
-                              : undefined
+                              : texts.remove
                           }
                         >
                           <Button
                             type="button"
                             variant="ghost"
-                            size="sm"
+                            size="icon"
+                            aria-label={texts.remove}
                             aria-disabled={!item.removable}
                             className="shrink-0 text-destructive"
                             onClick={() => remove(item)}
                           >
-                            {texts.remove}
+                            <X className="size-4" aria-hidden="true" />
                           </Button>
                         </DisabledReasonTooltip>
                       ) : null}

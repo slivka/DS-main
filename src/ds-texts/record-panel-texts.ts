@@ -1,5 +1,9 @@
 /** Texty panelu záznamu · vlastní kontrakt překladů · nesmí obsahovat data záznamu. */
 export interface RecordPanelTexts {
+  /** Přístupný název tlačítka a panelu. */
+  panel: string;
+  /** Přístupný název táhla. */
+  resize: string;
   /** Zavření panelu. */
   close: string;
   /** Připnutí záznamu. */
@@ -50,6 +54,10 @@ export interface RecordNotesTexts {
 }
 /** Texty příloh bez doménových pravidel. */
 export interface AttachmentTexts {
+  /** Použití souboru jako zdroje. */
+  setSource: string;
+  /** Filtr příloh. */
+  filter: string;
   /** Zdroj záznamu. */
   source: string;
   /** Náhrada zdroje. */
@@ -89,6 +97,8 @@ export interface AttachmentTexts {
 }
 /** Texty časové osy historie záznamu. */
 export interface RecordHistoryTexts {
+  /** Zrušení filtru. */
+  showAll: string;
   /** Název přepínače režimu. */
   modeLabel: string;
   /** Základní režim. */
