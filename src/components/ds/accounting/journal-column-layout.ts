@@ -44,6 +44,7 @@ export const JOURNAL_COLUMN_WIDTHS: Record<ColumnId, number> = {
   grossAmount: 10,
   vatDeduction: 0,
   vatDeductionShare: 0,
+  khLimitExcluded: 0,
   pdpSubjectCode: 0,
 };
 /** Šířka sloupce Ř. podle nejvyššího pořadového čísla; minimum pohodlně pojme 99. */

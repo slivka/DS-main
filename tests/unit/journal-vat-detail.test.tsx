@@ -4,7 +4,8 @@ import { cleanup, fireEvent, render } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import { JournalVatAccountingFields } from "../../src/components/ds/accounting/journal-vat-accounting-fields";
 import { JournalEditorContext } from "../../src/components/ds/accounting/journal-editor-context";
-import { DS_TEXTS_CS } from "../../src/ds-texts";
+import { useJournalEditorState } from "../../src/components/ds/accounting/useJournalEditorState";
+import { useJournalKeyboard } from "../../src/components/ds/accounting/useJournalKeyboard";
 import {
   fromJournalRow,
   toJournalRow,
@@ -32,7 +33,6 @@ const LINE: JournalLine = {
   vatDeductionShare: 60,
   khLimitExcluded: true,
 };
-type Context = NonNullable<React.ContextType<typeof JournalEditorContext>>;
 interface DemoProps {
   withoutAccounts?: boolean;
   inbound?: boolean;
@@ -48,20 +48,19 @@ function Demo({
   onChange,
 }: DemoProps) {
   const [line, setLine] = React.useState(LINE);
-  const context = {
-    editor: {
-      t: DS_TEXTS_CS.journalEditor,
-      props: { withoutAccounts, vat: { rowDetails: { disabledReason: "Zaúčtovaný doklad" } } },
-      validations: new Map(),
-      vatWarnings: new Map(),
-      canEditCell: () => canEdit,
-      patch: (_id: string, values: Partial<JournalLine>) => {
-        const next = { ...line, ...values };
-        setLine(next);
-        onChange?.(next);
-      },
+  const editor = useJournalEditorState({
+    lines: [line], accounts: [], documentCurrency: "EUR", homeCurrency: "EUR", withoutAccounts,
+    vat: {
+      enabled: true, codes: code ? [code] : [],
+      rowDetails: { canEdit: () => canEdit, disabledReason: "Zaúčtovaný doklad" },
     },
-  } as unknown as Context;
+    onChange: (lines) => {
+      const next = lines[0];
+      if (!next) return;
+      setLine(next); onChange?.(next);
+    },
+  }, null);
+  const context = { editor, keyboard: useJournalKeyboard(editor) };
   return (
     <TooltipProvider>
       <JournalEditorContext.Provider value={context}>
