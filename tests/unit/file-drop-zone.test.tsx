@@ -135,9 +135,19 @@ describe("PaneDropOverlay", () => {
   it("přetažení sdílí odmítnutí typu, velikosti i počtu s výběrem", () => {
     let accepted: File[] = [];
     let reasons: string[][] = [];
-    const view = render(<FileDropZone accept={[".xml"]} maxSizeBytes={10} maxFiles={1}
-      onFiles={(files) => { accepted = files; }}
-      onReject={(files) => { reasons = files.map((entry) => entry.reasons); }} />);
+    const view = render(
+      <FileDropZone
+        accept={[".xml"]}
+        maxSizeBytes={10}
+        maxFiles={1}
+        onFiles={(files) => {
+          accepted = files;
+        }}
+        onReject={(files) => {
+          reasons = files.map((entry) => entry.reasons);
+        }}
+      />,
+    );
     fireEvent.drop(view.getByRole("group"), {
       dataTransfer: transfer([file("bad.pdf", 11), file("a.xml"), file("b.xml")]),
     });

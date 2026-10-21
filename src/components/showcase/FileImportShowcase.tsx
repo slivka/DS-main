@@ -56,7 +56,10 @@ export function FileImportShowcase() {
   };
   const currentFile = files[0]?.file;
   useEffect(() => {
-    if (!currentFile) { setSourceUrl(undefined); return; }
+    if (!currentFile) {
+      setSourceUrl(undefined);
+      return;
+    }
     const url = URL.createObjectURL(currentFile);
     setSourceUrl(url);
     return () => URL.revokeObjectURL(url);
