@@ -82,7 +82,12 @@ export function FileImportShowcase() {
       }
     : null;
   return (
-    <div data-slot="file-import-showcase" className="space-y-4">
+    <div
+      data-slot="file-import-showcase"
+      data-testid="file-import-showcase"
+      data-ready={ready ? "true" : "false"}
+      className="space-y-4"
+    >
       <PageHeader
         title="Import souborů"
         actions={<Button onClick={launch}>Importovat výpisy</Button>}

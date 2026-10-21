@@ -48,6 +48,11 @@ describe("FileDropZone", () => {
     expect(rejected).toBe(1);
     expect(input.value).toBe("");
   });
+  it("má jedinou zastávku Tab – zónu, tlačítko výběru je mimo pořadí", () => {
+    const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => {}} />);
+    expect(view.getByRole("group").getAttribute("tabindex")).toBe("0");
+    expect(view.getByRole("button").getAttribute("tabindex")).toBe("-1");
+  });
   it("Enter a mezerník otevřou výběr, zakázaná plocha nic nepředá", () => {
     let clicks = 0;
     let received = 0;
@@ -131,6 +136,41 @@ describe("PaneDropOverlay", () => {
     fireEvent.drop(view.getByText("Cíl"), { dataTransfer: transfer([file()]) });
     expect(outer).toBe(1);
     expect(inner).toBe(0);
+  });
+  it("zakázaný cíl drop spolkne bez akce, aby soubor neotevřel prohlížeč", () => {
+    let drops = 0;
+    const view = render(
+      <PaneDropOverlay disabled label="Import" onFiles={() => drops++}>
+        <p>Obsah</p>
+      </PaneDropOverlay>,
+    );
+    const content = view.getByText("Obsah");
+    // dragover musí být zablokovaný, jinak prohlížeč drop vůbec nenabídne.
+    expect(fireEvent.dragOver(content, { dataTransfer: transfer([file()]) })).toBe(false);
+    expect(fireEvent.drop(content, { dataTransfer: transfer([file()]) })).toBe(false);
+    expect(drops).toBe(0);
+    expect(view.queryByRole("status")).toBeNull();
+  });
+  it("tažení obrázku z vlastní stránky (dragstart v dokumentu) překryv neukáže", () => {
+    let drops = 0;
+    const view = render(
+      <PaneDropOverlay label="Import" onFiles={() => drops++}>
+        <img alt="Náhled" src="about:blank" />
+      </PaneDropOverlay>,
+    );
+    const image = view.getByAltText("Náhled");
+    // Chrome hlásí i interní tažení obrázku jako Files; pozná se podle dragstart v dokumentu.
+    fireEvent.dragStart(image, { dataTransfer: transfer([], ["Files"]) });
+    fireEvent.dragEnter(image, { dataTransfer: transfer([file()]) });
+    expect(view.queryByRole("status")).toBeNull();
+    fireEvent.drop(image, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(0);
+    fireEvent.dragEnd(image);
+    // Po dragend zase externí soubory fungují.
+    fireEvent.dragEnter(image, { dataTransfer: transfer([file()]) });
+    expect(view.getByRole("status").textContent).toBe("Import");
+    fireEvent.drop(image, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(1);
   });
   it("přetažení sdílí odmítnutí typu, velikosti i počtu s výběrem", () => {
     let accepted: File[] = [];
