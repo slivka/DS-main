@@ -1,4 +1,10 @@
-## DS 2.120.0 (nevydáno)
+## DS 2.121.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.120.0 – Zálohy
+
+- Vydáno 21. 10. 2026 (commit 439a5fe). E2E Chromium run 39521433469 na 20f0bc0 🟢 (135 + 1 nestabilní design-three 70 % známé); předchozí runy: 39516029840 (druhá lišta zoomu – test), 39517887678 (hydratace ukázek s Date.now – opraveno pevnými daty, zálohy na vlastní stránce katalogu).
 
 - [x] Zálohy B: rozpad platby, přiřazení ZL/DD, odečty pod rekapitulací, evidence a opravný DD.
 - [x] Automatický řádek advance_fx, CS/SK, ukázky, testy, katalog a závěrečná kontrola.

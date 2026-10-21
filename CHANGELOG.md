@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.120.0 (nevydáno)
+## 2.121.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.120.0 – Zálohy
 
 - Zálohy B: AdvancePaymentBreakdown skládá dvě roviny ZL/DD z SettlementBar a LinkedRecordsPanel; částky, lhůta 15 dnů, stav po lhůtě, oprávnění a akce dodává APP.
 - AdvanceAllocationDialog: řízený výběr kandidátů a částek, kontrola dostupné platby/cíle; AdvanceReasonDialog pro důvod a text rozhodnutí DD nebude nebo storna.
