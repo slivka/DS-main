@@ -31,6 +31,9 @@ export function FileImportShowcase() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [rejected, setRejected] = useState<RejectedFile[]>([]);
   const [result, setResult] = useState("");
+  // Po hydrataci stránky přepne na "true" – spolehlivý signál pro testy.
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   const sequence = useRef(0);
   const [sourceUrl, setSourceUrl] = useState<string>();
   const addFiles = (incoming: File[]) => {
