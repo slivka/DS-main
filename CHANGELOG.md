@@ -2,7 +2,11 @@
 
 ## 2.122.0 (nevydáno)
 
-- Zatím bez změn.
+- `LinkedRecordsPanel.unlinkReason` + `onUnlink(entry, reason)` umožní jediné potvrzení s povinným důvodem; prázdný důvod blokuje akci, Esc zruší bez dalšího dotazu. `confirmUnlink={false}` předá potvrzení APP; původní `onRemove` a výchozí chování zůstávají kompatibilní. Texty CS/SK přes DsTexts, bez doménových zápisů.
+- Navázaná okna vznikají i ze záložky seznamu: `openLinkedTab(sourceTabId, section, record)` přijímá zmapovaný `LinkedSourceRecord`; `useLinkedSelection` sdílí zpoždění `useFollowSelection` a hlásí výběr do `setLinkedSourceSelection`. Navigace seznamu se nemění, nepřipnuté sekce sledují výběr, špendlík zamkne a zavření zdroje připne poslední záznam. Ikony gridu i RecordSidePanel používají stávající callbacky; pane-state obsahuje jen nové datové typy, pravidla zůstávají v linked-tabs.
+- `DocumentNewMenu.label`, `icon` a `onPrimary` umožní dvě nezávislá split-button tlačítka Příjem / Výdaj: hlavní klik = prázdný doklad, šipka = nabídka prázdného dokladu / vzorů / série / správy. Bez onPrimary původní nabídka beze změny.
+- Katalogové ukázky, příklady použití, pravidla system.md a 10 nových testů. check:quick prošel; check:full --harness: 1083/1083 testů ve 114 souborech, lint 0 chyb / 344 varování, formát a peněžní audit OK. Katalog 465 → 465 komponent / 1055 → 1088 props, 0 odebrání; původní příklady zachované. Automatické sestavení build OK.
+- Chromium proklik: otevření z indikátoru seznamu, sledování jiného řádku, připnutí, zavření seznamu, dvě nezávislé pokladní akce a nabídka; jediné potvrzení s důvodem a Esc, bez pageerror. E2E sada neběžela. Nevydáno; package.json zůstává na vydané 2.121.0.
 
 ## 2.121.0 – Řádek dokladu – nárok a limit KH
 
