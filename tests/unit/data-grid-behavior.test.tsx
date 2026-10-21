@@ -279,7 +279,8 @@ describe("DataGrid – akce řádku a lišta", () => {
   it("roving fokus: jen jeden řádek v pořadí Tab, šipky a Home/End posouvají", () => {
     const open = mock();
     const ui = render(<Grid storageKey={nextKey()} onRowOpen={open} />);
-    const rows = () => Array.from(ui.container.querySelectorAll<HTMLElement>("tbody tr[data-row-key]"));
+    const rows = () =>
+      Array.from(ui.container.querySelectorAll<HTMLElement>("tbody tr[data-row-key]"));
     expect(rows().length).toBeGreaterThan(1);
     expect(rows().filter((row) => row.tabIndex === 0)).toHaveLength(1);
     expect(rows()[0]!.tabIndex).toBe(0);
