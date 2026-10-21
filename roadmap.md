@@ -1,8 +1,9 @@
 ## DS 2.126.0 (nevydáno)
 
-- [ ] Import souborů I2: FileDropZone, FileChipBar, PaneDropOverlay, CheckList, SelectableGroupList; CS/SK, ukázka importu a přetažení nad gridem, testy, katalog a check:full.
+- [x] Import souborů I2: FileDropZone, FileChipBar, PaneDropOverlay, CheckList, SelectableGroupList; CS/SK, ukázka importu a přetažení nad gridem, testy, katalog a check:full.
 - [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
 - [x] AdvanceCorrectionDialog: nepovinná měna částek currencyCode, zachovaný výchozí formát.
+- Ověření I2: check:full --harness OK, 1 149/1 149 testů ve 125 souborech; katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání. Chromium import XML → detail kontroly → dokončení, také 360 px bez pageerror/přetečení. Automatické typy/sestavení OK. Plná E2E sada/FF/WebKit neběžely. Bez vydání; rozdělení velkých souborů je samostatný plán mimo I2, nikoli součást tohoto kola.
 
 ## DS 2.125.0
 
