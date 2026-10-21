@@ -276,6 +276,33 @@ describe("DataGrid – akce řádku a lišta", () => {
     fireEvent.keyDown(checkbox, { key: "Enter" });
     expect(open).toHaveBeenCalledTimes(2);
   });
+  it("roving fokus: jen jeden řádek v pořadí Tab, šipky a Home/End posouvají", () => {
+    const open = mock();
+    const ui = render(<Grid storageKey={nextKey()} onRowOpen={open} />);
+    const rows = () =>
+      Array.from(ui.container.querySelectorAll<HTMLElement>("tbody tr[data-row-key]"));
+    expect(rows().length).toBeGreaterThan(1);
+    expect(rows().filter((row) => row.tabIndex === 0)).toHaveLength(1);
+    expect(rows()[0]!.tabIndex).toBe(0);
+    act(() => rows()[0]!.focus());
+    fireEvent.keyDown(rows()[0]!, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(rows()[1]!);
+    expect(rows()[1]!.tabIndex).toBe(0);
+    expect(rows()[0]!.tabIndex).toBe(-1);
+    fireEvent.keyDown(rows()[1]!, { key: "End" });
+    expect(document.activeElement).toBe(rows()[rows().length - 1]!);
+    fireEvent.keyDown(document.activeElement!, { key: "Home" });
+    expect(document.activeElement).toBe(rows()[0]!);
+    fireEvent.keyDown(rows()[0]!, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(rows()[0]!);
+    fireEvent.keyDown(rows()[0]!, { key: "Enter" });
+    expect(open).toHaveBeenCalledTimes(1);
+  });
+  it("bez onRowOpen řádky nejsou v pořadí Tab (onEditRow / onRowClick)", () => {
+    const ui = render(<Grid storageKey={nextKey()} onEditRow={() => {}} onRowClick={() => {}} />);
+    const rows = Array.from(ui.container.querySelectorAll<HTMLElement>("tbody tr"));
+    expect(rows.some((row) => row.hasAttribute("tabindex"))).toBe(false);
+  });
   it("Upravit volá onEditRow, Odstranit se ptá a po potvrzení volá onDeleteRow", async () => {
     const edited: string[] = [];
     const deleted: string[] = [];

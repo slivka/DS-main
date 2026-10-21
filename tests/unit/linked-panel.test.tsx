@@ -1,4 +1,4 @@
-/** Chování veřejného napojení panelu 6C. */
+/** Chování navázaného panelu v sousedním okně (useLinkedPanel, PaneLayout). */
 import { afterEach, describe, expect, it, mock } from "bun:test";
 import { useState } from "react";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
@@ -11,11 +11,6 @@ import {
 import { PaneLayout } from "../../src/components/ds/panes/pane-layout";
 import { createPaneTabsState, openTabInState } from "../../src/components/ds/panes/pane-state";
 import { findLinkedPanel } from "../../src/components/ds/panes/linked-panel";
-import { PanelResize } from "../../src/components/ds/layout/record-side-panel/panel-resize";
-import { DocumentFormTop } from "../../src/components/ds/accounting/document-form/document-form-top";
-import { DEFAULT_DOCUMENT_FORM_TEXTS } from "../../src/components/ds/accounting/document-form/document-form-types";
-import { DS_TEXTS_CS } from "../../src/ds-texts/cs";
-import type { DocumentFormProps } from "../../src/components/ds/accounting/document-form/document-form-types";
 
 afterEach(cleanup);
 type Api = NonNullable<ReturnType<typeof usePaneTabs>>;
@@ -62,7 +57,7 @@ function mount(
   return { ui, sourceId, api, handle, panel: () => findLinkedPanel(api().state, sourceId)?.tab };
 }
 
-describe("veřejný navázaný panel 6C", () => {
+describe("navázaný panel", () => {
   it("hook otevře panel, zaměří bez duplikace, změní sekci a zavře", () => {
     const { api, handle, panel, sourceId } = mount();
     expect(handle().state).toBe("closed");
@@ -139,78 +134,38 @@ describe("veřejný navázaný panel 6C", () => {
   });
 });
 
-describe("onSizeCommit", () => {
-  it("během tažení jen change, puštění právě jednou commit poslední omezené šířky", () => {
-    const change = mock();
-    const commit = mock();
-    const ui = render(
-      <PanelResize
-        host={{ current: null }}
-        size={400}
-        defaultSize={384}
-        min={320}
-        max={900}
-        onSizeChange={change}
-        onSizeCommit={commit}
-      />,
+describe("navázaný panel – záznam hlášený APP", () => {
+  it("seznam: nový klíč bez cesty nepřenese parametry starého výběru", () => {
+    const { api, handle, panel, sourceId } = mount();
+    act(() =>
+      handle().open({
+        recordKey: "A",
+        recordTitle: "A",
+        section: "history",
+        route: "/doc",
+        params: { id: "A" },
+      }),
     );
-    const bar = ui.getByRole("separator");
-    fireEvent.pointerDown(bar, { clientX: 800, pointerId: 1 });
-    fireEvent.pointerMove(bar, { clientX: 700, pointerId: 1 });
-    fireEvent.pointerMove(bar, { clientX: 0, pointerId: 1 });
-    expect(commit).not.toHaveBeenCalled();
-    expect(change).toHaveBeenLastCalledWith(900);
-    fireEvent.pointerUp(bar, { pointerId: 1 });
-    fireEvent.pointerUp(bar, { pointerId: 1 });
-    expect(commit).toHaveBeenCalledTimes(1);
-    expect(commit).toHaveBeenCalledWith(900);
-  });
-  it("klávesa i dvojklik jeden commit, nesouvisející klávesa žádný", () => {
-    const change = mock();
-    const commit = mock();
-    const ui = render(
-      <PanelResize
-        host={{ current: null }}
-        size={400}
-        defaultSize={384}
-        min={320}
-        max={900}
-        onSizeChange={change}
-        onSizeCommit={commit}
-      />,
+    expect(panel()?.params).toEqual({ id: "A" });
+    act(() => api().updateLinkedPanelRecord(sourceId, "B", "B"));
+    expect(panel()?.recordKey).toBe("B");
+    expect(panel()?.params).toBeUndefined();
+    act(() =>
+      api().updateLinkedPanelRecord(sourceId, "C", "C", { route: "/doc", params: { id: "C" } }),
     );
-    const bar = ui.getByRole("separator");
-    fireEvent.keyDown(bar, { key: "ArrowLeft" });
-    expect(commit).toHaveBeenCalledTimes(1);
-    expect(commit).toHaveBeenLastCalledWith(416);
-    fireEvent.keyDown(bar, { key: "a" });
-    expect(commit).toHaveBeenCalledTimes(1);
-    fireEvent.doubleClick(bar);
-    expect(commit).toHaveBeenCalledTimes(2);
-    expect(commit).toHaveBeenLastCalledWith(384);
+    expect(panel()?.route).toBe("/doc");
+    expect(panel()?.params).toEqual({ id: "C" });
   });
-});
-
-it("DocumentForm předaný ovladač panelu volá APP", () => {
-  const toggle = mock();
-  const props = {
-    status: "draft",
-    panelToggle: <button onClick={toggle}>Panel</button>,
-  } as DocumentFormProps;
-  const ui = render(
-    <TooltipProvider>
-      <DocumentFormTop
-        props={props}
-        title="Doklad"
-        moreActions={[]}
-        issues={[]}
-        notices={null}
-        vatRelevant={false}
-        onVatRelevantChange={() => {}}
-        t={{ ...DS_TEXTS_CS.documentForm, ...DEFAULT_DOCUMENT_FORM_TEXTS }}
-      />
-    </TooltipProvider>,
-  );
-  fireEvent.click(ui.getByRole("button", { name: "Panel" }));
-  expect(toggle).toHaveBeenCalledTimes(1);
+  it("záznam: zdrojová záložka zůstane beze změny, mění se jen panel", () => {
+    const { api, handle, panel, sourceId } = mount("record");
+    const source = () => api().state.panes[0].tabs.find((tab) => tab.id === sourceId);
+    act(() => handle().open({ recordKey: "B", recordTitle: "Doklad B", section: "history" }));
+    expect(source()?.recordKey).toBe("A");
+    expect(source()?.title).toBe("Doklady");
+    expect(panel()?.recordKey).toBe("B");
+    act(() => api().updateLinkedPanelRecord(sourceId, "C", "Doklad C"));
+    expect(source()?.recordKey).toBe("A");
+    expect(source()?.title).toBe("Doklady");
+    expect(panel()?.title).toBe("Doklad C – Panel");
+  });
 });

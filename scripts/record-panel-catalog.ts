@@ -208,9 +208,9 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     if (!document.usage?.includes("panelToggle"))
       document.usage = (document.usage ?? "") + guidance;
     document.examples ??= [];
-    if (!document.examples.some((item) => item.label === "Panel 6C"))
+    if (!document.examples.some((item) => item.label === "Ovladač panelu v záhlaví"))
       document.examples.push({
-        label: "Panel 6C",
+        label: "Ovladač panelu v záhlaví",
         code: "<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />",
       });
     touched.push(document);

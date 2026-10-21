@@ -27,7 +27,7 @@ export interface PanelResizeProps {
   /** Dokončené gesto pro uložení šířky aplikací. */
   onSizeCommit?: (size: number) => void;
 }
-/** Myš, dotyk a klávesnice používají stejné meze. */
+/** Myš, dotyk a klávesnice používají stejné meze; onSizeCommit jednou po gestu a jen při změně. */
 export function PanelResize({
   size,
   defaultSize,
@@ -37,15 +37,21 @@ export function PanelResize({
   onSizeCommit,
 }: PanelResizeProps) {
   const drag = useRef<{ x: number; size: number } | null>(null);
+  const keyStart = useRef<number | null>(null);
   const latest = useRef(size);
   const t = useDsTexts().recordPanel;
   const change = (next: number) => {
     latest.current = clampPanelSize(next, min, max);
-    onSizeChange(latest.current);
+    if (latest.current !== size) onSizeChange(latest.current);
   };
-  const finish = (next: number) => {
-    change(next);
-    onSizeCommit?.(latest.current);
+  /** Commit jen při skutečné změně proti začátku gesta. */
+  const commitFrom = (start: number) => {
+    if (latest.current !== start) onSizeCommit?.(latest.current);
+  };
+  const endDrag = () => {
+    const current = drag.current;
+    drag.current = null;
+    if (current) commitFrom(current.size);
   };
   return (
     <div
@@ -57,7 +63,11 @@ export function PanelResize({
       aria-valuemax={Math.round(max)}
       aria-valuenow={Math.round(size)}
       className="absolute inset-y-0 left-0 z-20 w-1 cursor-col-resize touch-none hover:bg-primary/30 focus-visible:bg-primary/30 focus-visible:outline-2 focus-visible:outline-ring"
-      onDoubleClick={() => finish(defaultSize)}
+      onDoubleClick={() => {
+        latest.current = size;
+        change(defaultSize);
+        commitFrom(size);
+      }}
       onPointerDown={(event) => {
         event.preventDefault();
         event.currentTarget.focus();
@@ -69,28 +79,40 @@ export function PanelResize({
         if (drag.current) change(drag.current.size + drag.current.x - event.clientX);
       }}
       onPointerUp={(event) => {
-        if (drag.current) onSizeCommit?.(latest.current);
-        drag.current = null;
+        endDrag();
         event.currentTarget.releasePointerCapture?.(event.pointerId);
       }}
-      onPointerCancel={() => {
-        drag.current = null;
-      }}
+      onPointerCancel={endDrag}
+      onLostPointerCapture={endDrag}
       onKeyDown={(event) => {
+        const base = keyStart.current === null ? size : latest.current;
         const next =
           event.key === "ArrowLeft"
-            ? size + 16
+            ? base + 16
             : event.key === "ArrowRight"
-              ? size - 16
+              ? base - 16
               : event.key === "Home"
                 ? min
                 : event.key === "End"
                   ? max
                   : null;
-        if (next !== null) {
-          event.preventDefault();
-          finish(next);
+        if (next === null) return;
+        event.preventDefault();
+        if (keyStart.current === null) {
+          keyStart.current = size;
+          latest.current = size;
         }
+        change(next);
+      }}
+      onKeyUp={() => {
+        const start = keyStart.current;
+        keyStart.current = null;
+        if (start !== null) commitFrom(start);
+      }}
+      onBlur={() => {
+        const start = keyStart.current;
+        keyStart.current = null;
+        if (start !== null) commitFrom(start);
       }}
     />
   );

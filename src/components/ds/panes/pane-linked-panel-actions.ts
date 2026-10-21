@@ -6,8 +6,10 @@ import {
   findLinkedPanel,
   openLinkedPanelInState,
   setLinkedPanelSectionInState,
+  resolveLinkedPanelRecord,
   updateLinkedPanelRecordInState,
 } from "./linked-panel";
+import { sourceRecord } from "./linked-tabs";
 import type { OpenLinkedTabResult } from "./linked-tabs";
 
 export type LinkedPanelActions = Pick<
@@ -41,15 +43,16 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
     focusPane(found.paneIndex);
   };
   return {
-    openLinkedPanel: ({ sourceTabId, recordKey, recordTitle, section, blockedReason }) => {
-      if (blockedReason || !findTab(stateRef.current, sourceTabId)) return;
+    openLinkedPanel: ({ sourceTabId, recordKey, recordTitle, section, blockedReason, ...loc }) => {
+      const source = findTab(stateRef.current, sourceTabId)?.tab;
+      if (blockedReason || !source) return;
+      const input = { recordKey, title: recordTitle, ...loc };
       const attempt = (confirmed: boolean) => {
-        const current = updateLinkedPanelRecordInState(
-          stateRef.current,
-          sourceTabId,
-          recordKey,
-          recordTitle,
-        );
+        const current = updateLinkedPanelRecordInState(stateRef.current, sourceTabId, input);
+        const record =
+          source.kind === "list"
+            ? undefined
+            : resolveLinkedPanelRecord(input, sourceRecord(source), source.route);
         const result = openLinkedPanelInState(
           current,
           sourceTabId,
@@ -57,6 +60,7 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
             label: panelLabel,
             activeSection: section,
             confirmed,
+            ...(record ? { record } : {}),
           },
           Date.now(),
           isDirty,
@@ -77,13 +81,12 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
       const next = setLinkedPanelSectionInState(stateRef.current, tabId, section);
       if (next !== stateRef.current) commit(next);
     },
-    updateLinkedPanelRecord: (sourceTabId, recordKey, recordTitle) => {
-      const next = updateLinkedPanelRecordInState(
-        stateRef.current,
-        sourceTabId,
+    updateLinkedPanelRecord: (sourceTabId, recordKey, recordTitle, location) => {
+      const next = updateLinkedPanelRecordInState(stateRef.current, sourceTabId, {
         recordKey,
-        recordTitle,
-      );
+        title: recordTitle,
+        ...location,
+      });
       if (next !== stateRef.current) commit(next);
     },
     closeLinkedPanel: (sourceTabId) => {

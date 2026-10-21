@@ -16,6 +16,7 @@ import { GroupHeaderRow, type GroupedItem } from "./grid-grouping";
 import { isInteractiveTarget, type GroupTotalItem } from "./grid-selection";
 import type { GridTexts } from "./grid-texts";
 import { VirtualPad, type GridVirtual } from "./grid-virtual";
+import { useRowRoving } from "./grid-row-roving";
 import { cellText } from "./data-grid-model";
 import type { DataGridLayout } from "./DataGridHead";
 import type { DataGridColumn } from "./data-grid-types";
@@ -59,7 +60,7 @@ export interface DataGridRowsProps<Row> {
   onRowClick?: ((row: Row) => void) | undefined;
   /** Dvojklik: úprava, jinak klik. */
   onRowOpen?: ((row: Row) => void) | undefined;
-  /** Jen explicitní veřejné onRowOpen se uplatní také při výběru. */
+  /** Jen explicitní veřejné onRowOpen se uplatní také při výběru a zapne roving fokus řádků. */
   openInSelectMode?: boolean;
   /** Řádek je klikací (kurzor). */
   clickable: boolean;
@@ -104,6 +105,11 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
   const { shown, cols, pinned, compact, selectMode, hasRowActions } = layout;
   const colSpan = shown.length + (hasRowActions ? 1 : 0) + (selectMode ? 1 : 0);
   const windowItems = virtual.enabled ? items.slice(virtual.start, virtual.end) : items;
+  const roving = Boolean(props.openInSelectMode && props.onRowOpen);
+  const rowKeys = roving
+    ? items.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
+    : [];
+  const rove = useRowRoving(roving, rowKeys, props.activeRowKey, virtual, items.length);
   return (
     <>
       <VirtualPad height={virtual.padTop} colSpan={colSpan} />
@@ -155,15 +161,22 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
           <TableRow
             key={key}
             data-virtual-row=""
-            tabIndex={props.onRowOpen && (!selectMode || props.openInSelectMode) ? 0 : undefined}
+            data-row-key={roving ? key : undefined}
+            tabIndex={roving ? (rove.current === key ? 0 : -1) : undefined}
+            onFocus={
+              roving
+                ? (event) => event.target === event.currentTarget && rove.setFocusKey(key)
+                : undefined
+            }
             onKeyDown={(event) => {
+              rove.onKeyDown(event, key);
               if (
                 event.key !== "Enter" ||
                 event.defaultPrevented ||
                 event.target !== event.currentTarget
               )
                 return;
-              if (props.onRowOpen && (!selectMode || props.openInSelectMode)) {
+              if (roving && props.onRowOpen) {
                 event.preventDefault();
                 props.onRowOpen(row);
               }
@@ -273,28 +286,4 @@ export function DataGridTotals<Row>({
   );
 }
 
-/** Boční panel vedle tabulky (detail aktivního řádku); bez obsahu nic. */
-export function DataGridSidePanel({ label, children }: { label: string; children: ReactNode }) {
-  if (!children) return null;
-  return (
-    <aside
-      data-grid-side-panel
-      className="w-[24rem] shrink-0 overflow-y-auto border border-l-0 border-t-0 bg-card p-4"
-      aria-label={label}
-    >
-      {children}
-    </aside>
-  );
-}
-
-/** Pruh pod tabulkou v režimu výběru (souhrn vybraných řádků). */
-export function DataGridSummary({ children }: { children: ReactNode }) {
-  return (
-    <div
-      data-slot="grid-selection-summary"
-      className="flex flex-wrap items-center gap-2 border border-t-0 bg-secondary/50 px-2 py-1.5 text-sm"
-    >
-      {children}
-    </div>
-  );
-}
+export { DataGridSidePanel, DataGridSummary } from "./data-grid-aside";
