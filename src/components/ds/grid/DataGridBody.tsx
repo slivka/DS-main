@@ -16,7 +16,7 @@ import { GroupHeaderRow, type GroupedItem } from "./grid-grouping";
 import { isInteractiveTarget, type GroupTotalItem } from "./grid-selection";
 import type { GridTexts } from "./grid-texts";
 import { VirtualPad, type GridVirtual } from "./grid-virtual";
-import { useRowRoving } from "./grid-row-roving";
+import { rovingTabKey, useRowRoving } from "./grid-row-roving";
 import { cellText } from "./data-grid-model";
 import type { DataGridLayout } from "./DataGridHead";
 import type { DataGridColumn } from "./data-grid-types";
@@ -114,8 +114,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
   const windowKeys = roving
     ? windowItems.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
     : [];
-  const tabKey =
-    rove.current && windowKeys.includes(rove.current) ? rove.current : (windowKeys[0] ?? null);
+  const tabKey = rovingTabKey(rove.current, windowKeys);
   return (
     <>
       <VirtualPad height={virtual.padTop} colSpan={colSpan} />
