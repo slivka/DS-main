@@ -8164,7 +8164,11 @@
       "examples": [
         {
           "label": "Panel záznamu",
-          "code": "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} onLink={saveLink} linkDialog={linkConfig} />"
+          "code": "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />"
+        },
+        {
+          "label": "Jediné potvrzení s důvodem",
+          "code": "<LinkedRecordsPanel {...panelProps} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} />"
         }
       ],
       "antipatterns": [
@@ -10722,10 +10726,15 @@
         {
           "label": "Duplikace a vzory",
           "code": "<DocumentNewMenu templates={templates} onBlank={openBlank} onTemplate={openFromTemplate} onManage={openManager} />"
+        },
+        {
+          "label": "Pokladna se dvěma akcemi",
+          "code": "<><DocumentNewMenu label=\"Příjem\" icon={incomeIcon} onPrimary={openIncome} templates={incomeTemplates} onBlank={openIncome} onTemplate={incomeFromTemplate} onManage={manageIncomeTemplates} /><DocumentNewMenu label=\"Výdaj\" icon={expenseIcon} onPrimary={openExpense} templates={expenseTemplates} onBlank={openExpense} onTemplate={expenseFromTemplate} onManage={manageExpenseTemplates} /></>"
         }
       ],
       "antipatterns": [
-        "Nevypočítávejte období ani nevytvářejte doklady v DS; data, oprávnění a zápis dodává APP."
+        "Nevypočítávejte období ani nevytvářejte doklady v DS; data, oprávnění a zápis dodává APP.",
+        "Hlavní klik split-button nesmí otevírat nabídku; nepoužívejte sdílený callback pro rozdílné příjmy a výdaje."
       ]
     },
     {

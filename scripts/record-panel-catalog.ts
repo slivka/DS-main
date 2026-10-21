@@ -31,7 +31,7 @@ const definitions = [
     file: "src/components/ds/data-display/linked-records-panel.tsx",
     usage:
       "Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a seznam/tok, souhrn vypořádání a akce aplikace. unlinkReason + onUnlink zobrazí jediné potvrzení s důvodem; confirmUnlink=false přenechá potvrzení APP.",
-    code: "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} onLink={saveLink} linkDialog={linkConfig} />",
+    code: "<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />",
     avoid: "Nepředávejte surová doménová data; DS nesmí načítat ani určovat oprávnění aplikace.",
   },
   {
@@ -145,8 +145,15 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     item.examples ??= [];
     const label = "Panel záznamu";
     const existing = item.examples.find((entry) => entry.label === label);
-    if (existing) existing.code = definition.code;
-    else item.examples.push({ label, code: definition.code });
+    if (!existing) item.examples.push({ label, code: definition.code });
+    if (
+      definition.name === "LinkedRecordsPanel" &&
+      !item.examples.some((entry) => entry.label === "Jediné potvrzení s důvodem")
+    )
+      item.examples.push({
+        label: "Jediné potvrzení s důvodem",
+        code: "<LinkedRecordsPanel {...panelProps} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} />",
+      });
     item.antipatterns ??= [];
     if (!item.antipatterns.includes(definition.avoid)) item.antipatterns.push(definition.avoid);
     touched.push(item);

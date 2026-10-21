@@ -2136,9 +2136,16 @@ Nabídka Nový v DataGrid.toolbarLeft: prázdný doklad, vzory s jedním doklade
 <DocumentNewMenu templates={templates} onBlank={openBlank} onTemplate={openFromTemplate} onManage={openManager} />
 ```
 
+**Pokladna se dvěma akcemi:**
+
+```tsx
+<><DocumentNewMenu label="Příjem" icon={incomeIcon} onPrimary={openIncome} templates={incomeTemplates} onBlank={openIncome} onTemplate={incomeFromTemplate} onManage={manageIncomeTemplates} /><DocumentNewMenu label="Výdaj" icon={expenseIcon} onPrimary={openExpense} templates={expenseTemplates} onBlank={openExpense} onTemplate={expenseFromTemplate} onManage={manageExpenseTemplates} /></>
+```
+
 **Avoid:**
 
 - Nevypočítávejte období ani nevytvářejte doklady v DS; data, oprávnění a zápis dodává APP.
+- Hlavní klik split-button nesmí otevírat nabídku; nepoužívejte sdílený callback pro rozdílné příjmy a výdaje.
 
 ### DocumentPostingGrid
 
@@ -3950,7 +3957,13 @@ Propojené záznamy jako obsah záložky RecordSidePanel: řízené skupiny a se
 **Panel záznamu:**
 
 ```tsx
-<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} onLink={saveLink} linkDialog={linkConfig} />
+<LinkedRecordsPanel groups={groups} mode={mode} onModeChange={setMode} collapsedGroups={collapsed} onCollapsedGroupsChange={setCollapsed} onOpen={openRecord} onRemove={removeLink} onLink={saveLink} linkDialog={linkConfig} />
+```
+
+**Jediné potvrzení s důvodem:**
+
+```tsx
+<LinkedRecordsPanel {...panelProps} unlinkReason={{ required: true }} onUnlink={unlinkWithReason} />
 ```
 
 **Avoid:**
