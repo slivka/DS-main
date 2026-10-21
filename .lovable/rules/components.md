@@ -7067,7 +7067,7 @@ import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { FileDropZone } from "@/design-system/{slug}";
 ```
 
-Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Zóna má role button a jedinou zastávku Tab s popisem limitů.
+Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Přetažení obsluhuje role group; vnitřní tlačítko výběru má jedinou zastávku Tab s popisem limitů a pouze statický obsah. Akce children jsou mimo tlačítko a mají vlastní zastávky.
 
 **Props:**
 

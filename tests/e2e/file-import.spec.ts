@@ -34,7 +34,12 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   const chips = dialog.locator('[data-slot="file-chip-bar"]');
   const remove = chips.getByRole("button", { name: "Odebrat vypis.xml" });
   await remove.focus();
-  for (const name of ["Odebrat druhy.xml", "Odebrat treti.xml", "+1 dalších", "Přetáhněte soubory sem"]) {
+  for (const name of [
+    "Odebrat druhy.xml",
+    "Odebrat treti.xml",
+    "+1 dalších",
+    "Přetáhněte soubory sem",
+  ]) {
     await page.keyboard.press("Tab");
     await expect(chips.getByRole("button", { name, exact: true })).toBeFocused();
   }

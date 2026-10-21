@@ -58,7 +58,9 @@ describe("FileDropZone", () => {
     expect(view.getAllByRole("button")).toHaveLength(1);
     expect(view.getByRole("group").getAttribute("tabindex")).toBeNull();
     const description = view.getByRole("button").getAttribute("aria-describedby");
-    expect(description ? document.getElementById(description)?.textContent : null).toBe("Limit 10 B");
+    expect(description ? document.getElementById(description)?.textContent : null).toBe(
+      "Limit 10 B",
+    );
   });
   it("Enter a mezerník otevřou výběr, zakázaná plocha nic nepředá", () => {
     let clicks = 0;
