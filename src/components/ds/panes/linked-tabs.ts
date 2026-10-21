@@ -1,6 +1,8 @@
 /**
- * Navázané záložky panelu záznamu (kind 'linked').
+ * Navázané záložky panelu záznamu (kind 'linked') – sekce a umístění v rozložení.
  * Vlastní: čistá pravidla vzniku, sledování zdroje, připnutí a návratu do panelu.
+ * Logika navázaného panelu (druh "panel") žije v linked-panel.ts; tady se jen
+ * reexportuje.
  * Nesmí: vykreslovat rozhraní, načítat data ani znát doménu aplikace.
  */
 import {
@@ -15,6 +17,7 @@ import {
   type LinkedSourceRecord,
   type PaneTabsState,
 } from "./pane-state";
+import { linkedPanelTitle } from "./linked-panel";
 
 /** Sekce panelu záznamu, kterou navázaná záložka zobrazuje. */
 export type LinkedSection = {
@@ -29,21 +32,14 @@ export function linkedTabTitle(sectionLabel: string, recordTitle: string): strin
   return `${sectionLabel} – ${recordTitle}`;
 }
 
-/** Id sekce vyhrazené navázané záložce s celým panelem. */
-export const LINKED_PANEL_SECTION = "panel";
-
-/** Hlavička navázaného panelu: „<titulek záznamu> – panel“. */
-export function linkedPanelTitle(recordTitle: string, panelLabel: string): string {
-  return `${recordTitle} – ${panelLabel}`;
-}
 
 /** Titulek záznamu zdrojové záložky (titulek, jinak klíč záznamu). */
 function sourceRecordTitle(source: PaneTab): string {
   return source.title ?? source.recordKey ?? source.route;
 }
 
-/** Záznam zdroje; seznam poskytuje samostatný výběr. */
-function sourceRecord(source: PaneTab): LinkedSourceRecord | undefined {
+/** Záznam zdroje; seznam poskytuje samostatný výběr. Sdíleno s linked-panel. */
+export function sourceRecord(source: PaneTab): LinkedSourceRecord | undefined {
   if (source.kind === "list") return source.linkedSelection;
   if (source.kind !== "record") return undefined;
   return {
@@ -100,7 +96,8 @@ export type OpenLinkedTabResult = Omit<OpenTabResult, "outcome"> & {
  * cílového okna – je-li ale rozepsaný (isDirty), nenahrazuje se: navázaná záložka se
  * do cílového okna přidá vedle něj (limit záložek a vytlačení jako jinde).
  */
-function placeLinkedTab(
+/** Umístění je sdílené se linked-panel (navázaný panel). */
+export function placeLinkedTab(
   state: PaneTabsState,
   source: { paneIndex: number },
   tab: PaneTab,
