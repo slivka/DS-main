@@ -30,6 +30,8 @@ export type LinkedTabInfo = {
   kind?: "section" | "panel";
   /** Aktivní sekce celého panelu (kind "panel"); okno si ji pamatuje. */
   activeSection?: string;
+  /** Záznam hlášený APP pro panel nad záložkou záznamu; zdrojová záložka se nemění. */
+  record?: LinkedSourceRecord;
 };
 
 /** Kam otevřít stránku: nahradit aktivní záložku, nová záložka, nebo nová záložka v sousedním panelu. */

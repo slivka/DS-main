@@ -216,7 +216,8 @@ export function syncLinkedTabsInState(state: PaneTabsState): PaneTabsState {
         return { ...tab, linked: { ...linked, pinned: true } };
       }
       if (linked.pinned) return tab;
-      const record = sourceRecord(source.tab);
+      const record =
+        (source.tab.kind === "record" ? linked.record : undefined) ?? sourceRecord(source.tab);
       if (!record) return tab;
       const title =
         linked.kind === "panel"
