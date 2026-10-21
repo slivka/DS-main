@@ -6,6 +6,8 @@
 import type { LinkedRecordTexts } from "./linked-record-texts";
 import type { TemplateTexts } from "./template-texts";
 import type { AdvanceTexts } from "./advance-texts";
+import type { FileImportTexts } from "./file-import-texts";
+export type { FileImportTexts } from "./file-import-texts";
 export type { AdvanceTexts } from "./advance-texts";
 export type { TemplateTexts } from "./template-texts";
 export type { LinkedRecordTexts } from "./linked-record-texts";
@@ -45,6 +47,8 @@ export type { VatFiveTexts } from "./vat-five-texts";
 export type { GridTexts, JournalEditorTexts, JournalVatGroupsTexts } from "./grid-journal-types";
 
 export interface DsTexts {
+  /** Obecné importní prvky. */
+  fileImport: FileImportTexts;
   /** Texty záloh a odečtů. */
   advances: AdvanceTexts;
   /** Duplikace a vzory. */

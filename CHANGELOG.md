@@ -2,7 +2,11 @@
 
 ## 2.126.0 (nevydáno)
 
-- Zatím bez změn.
+- Import souborů I2: FileDropZone (velká/kompaktní plocha, výběr, klávesnice, children), FileChipBar (stavy, odebrání, zalomení/+N), PaneDropOverlay (pouze Files, nejvnitřnější povolený cíl), CheckList (souhrn a pořadí závažností), SelectableGroupList (aktivní/zaškrtnutý výběr, klávesnice, zákaz chybných položek).
+- Sdílené validateFiles/useFileDrop: nepovinný maxFiles a důvod count; původní volání beze změny. Texty DsTexts.fileImport CS/SK. Bez bankovních kontrol, parseru nebo ukládání v DS.
+- RecordDialog size xl (80 rem); ukázka Import souborů s fiktivními výpisy, dvěma kroky, kontrolami/pohyby/souborem a přetažením nad gridem.
+- AdvanceCorrectionDialog.currencyCode: nepovinná měna APP v náhledu základu a DPH, bez hodnoty původní formát.
+- Ověření: check:quick --harness průběžně a check:full --harness OK; 1 149/1 149 unit testů ve 125 souborech, lint 0 chyb / 353 varování, formát a peněžní audit OK, automatický typecheck/build OK. Katalog proti vydané 2.125.0: 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání; původní příklad záloh zachovaný. Přímý Chromium proklik výběru XML, kontroly chyby, dokončení fiktivního importu a 360 px bez pageerror/přetečení; plná E2E sada/FF/WebKit neběžely. Package/meta zůstávají 2.125.0; nevydáno, release Claude.
 
 ## 2.125.0
 

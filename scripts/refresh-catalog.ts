@@ -5,6 +5,7 @@ import { enrichRecordPanelCatalog, renderPanelCatalogSections } from "./record-p
 import { enrichTemplateCatalog } from "./template-catalog";
 import { enrichAdvanceCatalog } from "./advance-catalog";
 import { enrichLinkedPanelCatalog } from "./linked-panel-catalog";
+import { enrichFileImportCatalog } from "./file-import-catalog";
 
 interface CatalogProp {
   name: string;
@@ -137,6 +138,7 @@ export function refreshCatalog() {
   const linkedPanelComponents = enrichLinkedPanelCatalog(catalog.components);
   const templateComponents = enrichTemplateCatalog(catalog.components);
   const advanceComponents = enrichAdvanceCatalog(catalog.components);
+  const fileImportComponents = enrichFileImportCatalog(catalog.components);
   writeFileSync(path, `${JSON.stringify(catalog, null, 2)}\n`);
   const reference = ".lovable/rules/components.md";
   let markdown = readFileSync(reference, "utf8");
@@ -191,6 +193,7 @@ export function refreshCatalog() {
       ...linkedPanelComponents,
       ...templateComponents,
       ...advanceComponents,
+      ...fileImportComponents,
     ]),
   );
   const previewPath = "src/.generated/mockup-components.ts";

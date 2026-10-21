@@ -19,6 +19,7 @@ import { Route as ComponentsNavigationRouteImport } from './routes/components.na
 import { Route as ComponentsMatchingRouteImport } from './routes/components.matching'
 import { Route as ComponentsGridRouteImport } from './routes/components.grid'
 import { Route as ComponentsFormsRouteImport } from './routes/components.forms'
+import { Route as ComponentsFileImportRouteImport } from './routes/components.file-import'
 import { Route as ComponentsFeedbackRouteImport } from './routes/components.feedback'
 import { Route as ComponentsExcelExportRouteImport } from './routes/components.excel-export'
 import { Route as ComponentsDesignThreeRouteImport } from './routes/components.design-three'
@@ -81,6 +82,11 @@ const ComponentsGridRoute = ComponentsGridRouteImport.update({
 const ComponentsFormsRoute = ComponentsFormsRouteImport.update({
   id: '/components/forms',
   path: '/components/forms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsFileImportRoute = ComponentsFileImportRouteImport.update({
+  id: '/components/file-import',
+  path: '/components/file-import',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComponentsFeedbackRoute = ComponentsFeedbackRouteImport.update({
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/file-import': typeof ComponentsFileImportRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/matching': typeof ComponentsMatchingRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/file-import': typeof ComponentsFileImportRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/matching': typeof ComponentsMatchingRoute
@@ -225,6 +233,7 @@ export interface FileRoutesById {
   '/components/design-three': typeof ComponentsDesignThreeRoute
   '/components/excel-export': typeof ComponentsExcelExportRoute
   '/components/feedback': typeof ComponentsFeedbackRoute
+  '/components/file-import': typeof ComponentsFileImportRoute
   '/components/forms': typeof ComponentsFormsRoute
   '/components/grid': typeof ComponentsGridRoute
   '/components/matching': typeof ComponentsMatchingRoute
@@ -252,6 +261,7 @@ export interface FileRouteTypes {
     | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
+    | '/components/file-import'
     | '/components/forms'
     | '/components/grid'
     | '/components/matching'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
+    | '/components/file-import'
     | '/components/forms'
     | '/components/grid'
     | '/components/matching'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/components/design-three'
     | '/components/excel-export'
     | '/components/feedback'
+    | '/components/file-import'
     | '/components/forms'
     | '/components/grid'
     | '/components/matching'
@@ -328,6 +340,7 @@ export interface RootRouteChildren {
   ComponentsDesignThreeRoute: typeof ComponentsDesignThreeRoute
   ComponentsExcelExportRoute: typeof ComponentsExcelExportRoute
   ComponentsFeedbackRoute: typeof ComponentsFeedbackRoute
+  ComponentsFileImportRoute: typeof ComponentsFileImportRoute
   ComponentsFormsRoute: typeof ComponentsFormsRoute
   ComponentsGridRoute: typeof ComponentsGridRoute
   ComponentsMatchingRoute: typeof ComponentsMatchingRoute
@@ -408,6 +421,13 @@ declare module '@tanstack/react-router' {
       path: '/components/forms'
       fullPath: '/components/forms'
       preLoaderRoute: typeof ComponentsFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components/file-import': {
+      id: '/components/file-import'
+      path: '/components/file-import'
+      fullPath: '/components/file-import'
+      preLoaderRoute: typeof ComponentsFileImportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/components/feedback': {
@@ -530,6 +550,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComponentsDesignThreeRoute: ComponentsDesignThreeRoute,
   ComponentsExcelExportRoute: ComponentsExcelExportRoute,
   ComponentsFeedbackRoute: ComponentsFeedbackRoute,
+  ComponentsFileImportRoute: ComponentsFileImportRoute,
   ComponentsFormsRoute: ComponentsFormsRoute,
   ComponentsGridRoute: ComponentsGridRoute,
   ComponentsMatchingRoute: ComponentsMatchingRoute,
