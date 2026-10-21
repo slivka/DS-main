@@ -171,29 +171,32 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
           </Tooltip>
         );
         // Split režim: hlavní klik provede akci, šipka otevře dodanou nabídku.
+        const arrow = (
+          <Button
+            type="button"
+            size="sm"
+            disabled={blocked ? undefined : action.disabled}
+            aria-disabled={blocked || undefined}
+            aria-describedby={blocked ? reasonId : undefined}
+            aria-label={`${action.label} – ${splitMenuText}`}
+            className={cn(
+              "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
+              merged && "hidden",
+            )}
+          >
+            <ChevronDown aria-hidden className="size-4" />
+          </Button>
+        );
         if (action.menu)
           return (
             <DropdownMenu key={action.label}>
               <div className="inline-flex shrink-0">
                 {main}
-                <DisabledReasonTooltip content={tip} blocked={blocked}>
-                <DropdownMenuTrigger asChild disabled={action.disabled}>
-                  <Button
-                    type="button"
-                    size="sm"
-                    disabled={blocked ? undefined : action.disabled}
-                    aria-disabled={blocked || undefined}
-                    aria-describedby={blocked ? reasonId : undefined}
-                    aria-label={`${action.label} – ${splitMenuText}`}
-                    className={cn(
-                      "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
-                      merged && "hidden",
-                    )}
-                  >
-                    <ChevronDown aria-hidden className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                </DisabledReasonTooltip>
+                {blocked ? (
+                  <DisabledReasonTooltip content={tip} blocked>{arrow}</DisabledReasonTooltip>
+                ) : (
+                  <DropdownMenuTrigger asChild disabled={action.disabled}>{arrow}</DropdownMenuTrigger>
+                )}
               </div>
               <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>
             </DropdownMenu>

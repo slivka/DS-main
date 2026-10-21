@@ -50,8 +50,8 @@ describe("FileDropZone", () => {
   });
   it("má jedinou zastávku Tab – zónu, tlačítko výběru je mimo pořadí", () => {
     const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => {}} />);
-    expect(view.getByRole("group").getAttribute("tabindex")).toBe("0");
-    expect(view.getByRole("button").getAttribute("tabindex")).toBe("-1");
+    expect(view.getByRole("button", { name: "Přetáhněte soubory sem" }).getAttribute("tabindex")).toBe("0");
+    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe("-1");
   });
   it("Enter a mezerník otevřou výběr, zakázaná plocha nic nepředá", () => {
     let clicks = 0;
@@ -59,7 +59,7 @@ describe("FileDropZone", () => {
     const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => received++} />);
     const input = view.container.querySelector("input");
     input?.addEventListener("click", () => clicks++);
-    const zone = view.getByRole("group");
+    const zone = view.getByRole("button", { name: "Přetáhněte soubory sem" });
     fireEvent.keyDown(zone, { key: "Enter" });
     fireEvent.keyDown(zone, { key: " " });
     expect(clicks).toBe(2);
@@ -73,6 +73,29 @@ describe("FileDropZone", () => {
   });
 });
 describe("PaneDropOverlay", () => {
+  it("drop po odpojení taženého prvku obnoví přijímání externích souborů", () => {
+    let drops = 0;
+    const view = render(<PaneDropOverlay label="Import" onFiles={() => drops++}><p>Cíl</p></PaneDropOverlay>);
+    const source = document.createElement("div");
+    document.body.append(source);
+    fireEvent.dragStart(source);
+    source.remove();
+    const target = view.getByText("Cíl");
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(0);
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(1);
+  });
+  it("dragend v capture na window obnoví příjem i při zastaveném bublání", () => {
+    let drops = 0;
+    const view = render(<PaneDropOverlay label="Import" onFiles={() => drops++}><p>Cíl</p></PaneDropOverlay>);
+    const target = view.getByText("Cíl");
+    target.addEventListener("dragend", (event) => event.stopPropagation());
+    fireEvent.dragStart(target);
+    fireEvent.dragEnd(target);
+    fireEvent.drop(target, { dataTransfer: transfer([file()]) });
+    expect(drops).toBe(1);
+  });
   it("ignoruje interní DnD a nechá běžný klik", () => {
     let drops = 0;
     let clicks = 0;
@@ -188,7 +211,7 @@ describe("PaneDropOverlay", () => {
         }}
       />,
     );
-    fireEvent.drop(view.getByRole("group"), {
+    fireEvent.drop(view.getByRole("button", { name: "Přetáhněte soubory sem" }), {
       dataTransfer: transfer([file("bad.pdf", 11), file("a.xml"), file("b.xml")]),
     });
     expect(accepted.map((item) => item.name)).toEqual(["a.xml"]);
