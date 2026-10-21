@@ -25,8 +25,8 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await expect(second).toHaveAttribute("aria-checked", "true");
   await expect(broken).toHaveAttribute("aria-checked", "false");
 
-  // Zakázanou položku s chybou nejde zaškrtnout ani klikem na zaškrtávátko.
-  await broken.getByRole("checkbox").click({ force: true });
+  // Zakázanou položku s chybou nejde zaškrtnout ani klávesou na řádku.
+  await broken.press(" ");
   await expect(broken).toHaveAttribute("aria-checked", "false");
 
   // Mezerník na řádku odškrtne platný výpis; patička sleduje počet.
