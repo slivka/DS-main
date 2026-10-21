@@ -39,10 +39,10 @@ const INITIAL: PaneTabsState = {
   ],
 };
 const INDICATORS = [
-  { id: "history", label: "Historie", icon: History, count: (_row: Row) => 0 },
+  { id: "history", label: "Historie", icon: History, count: () => 0 },
   { id: "attachments", label: "Přílohy", icon: Paperclip, count: (row: Row) => row.files },
   { id: "notes", label: "Poznámky", icon: MessageSquare, count: (row: Row) => row.notes },
-  { id: "linked", label: "Propojené", icon: Link, count: (_row: Row) => 0 },
+  { id: "linked", label: "Propojené", icon: Link, count: () => 0 },
 ];
 
 function LinkedListContent() {

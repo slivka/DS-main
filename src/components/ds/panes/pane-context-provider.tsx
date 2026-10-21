@@ -41,16 +41,13 @@ import {
   type ClosedTabRecord,
   type OpenRecordModifiers,
   type PaneLayoutCount,
-  type PaneTab,
   type PaneTabsState,
 } from "./pane-state";
 import {
   clearTabState,
-  dirtyTabIds,
   getTabDraft,
   isTabDirty,
   registerLiveTabs,
-  setTabDirty,
   setTabDraft,
   useTabDirtyVersion,
 } from "./pane-tab-store";
