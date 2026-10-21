@@ -11,6 +11,7 @@ import {
 import { PaneLayout } from "../../src/components/ds/panes/pane-layout";
 import { createPaneTabsState, openTabInState } from "../../src/components/ds/panes/pane-state";
 import { findLinkedPanel } from "../../src/components/ds/panes/linked-panel";
+import { syncLinkedTabsInState } from "../../src/components/ds/panes/linked-tabs";
 
 afterEach(cleanup);
 type Api = NonNullable<ReturnType<typeof usePaneTabs>>;
@@ -167,5 +168,25 @@ describe("navázaný panel – záznam hlášený APP", () => {
     expect(source()?.recordKey).toBe("A");
     expect(source()?.title).toBe("Doklady");
     expect(panel()?.title).toBe("Doklad C – Panel");
+  });
+  it("záznam: po navigaci zdroje na jiný záznam panel zahodí hlášený záznam a ukáže nový", () => {
+    const { api, handle, panel, sourceId } = mount("record");
+    act(() => handle().open({ recordKey: "A", recordTitle: "Doklad A", section: "history" }));
+    act(() => api().updateLinkedPanelRecord(sourceId, "A", "Doklad A", { route: "/doc", params: { id: "A" } }));
+    expect(panel()?.recordKey).toBe("A");
+    const moved = {
+      ...api().state,
+      panes: api().state.panes.map((pane) => ({
+        ...pane,
+        tabs: pane.tabs.map((tab) =>
+          tab.id === sourceId ? { ...tab, recordKey: "Z", title: "Doklad Z" } : tab,
+        ),
+      })),
+    };
+    const next = syncLinkedTabsInState(moved);
+    const tab = findLinkedPanel(next, sourceId)?.tab;
+    expect(tab?.recordKey).toBe("Z");
+    expect(tab?.title).toBe("Doklad Z – Panel");
+    expect(tab?.linked?.record).toBeUndefined();
   });
 });
