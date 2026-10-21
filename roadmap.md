@@ -1,6 +1,7 @@
 ## DS 2.126.0 (nevydáno)
 
 - [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
+- [ ] AdvanceCorrectionDialog: měna částek (currencyCode) – APP zatím skládá vlastní náhled z RecordDialog + DataGrid (AdvanceRefundCorrectionDialog).
 
 ## DS 2.125.0
 
