@@ -21,20 +21,35 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await dialog.getByRole("button", { name: "Pokračovat" }).click();
 
   // Krok 2: seskupený výběr – výchozí zaškrtnutí dvou platných výpisů.
-  const first = dialog.getByRole("option", { name: /Výpis 2026\/10/ });
-  const second = dialog.getByRole("option", { name: /Výpis 2026\/11/ });
-  const broken = dialog.getByRole("option", { name: /Výpis 2026\/04/ });
-  await expect(first).toHaveAttribute("aria-checked", "true");
-  await expect(second).toHaveAttribute("aria-checked", "true");
-  await expect(broken).toHaveAttribute("aria-checked", "false");
+  const first = dialog.getByRole("button", { name: /Výpis 2026\/10/ });
+  const second = dialog.getByRole("button", { name: /Výpis 2026\/11/ });
+  const broken = dialog.getByRole("button", { name: /Výpis 2026\/04/ });
+  await expect(dialog.getByRole("checkbox", { name: /Výpis 2026\/10/ })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
+  await expect(dialog.getByRole("checkbox", { name: /Výpis 2026\/11/ })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
+  await expect(dialog.getByRole("checkbox", { name: /Výpis 2026\/04/ })).toHaveAttribute(
+    "aria-checked",
+    "false",
+  );
 
   // Zakázanou položku s chybou nejde zaškrtnout ani klávesou na řádku.
   await broken.press(" ");
-  await expect(broken).toHaveAttribute("aria-checked", "false");
+  await expect(dialog.getByRole("checkbox", { name: /Výpis 2026\/04/ })).toHaveAttribute(
+    "aria-checked",
+    "false",
+  );
 
   // Mezerník na řádku odškrtne platný výpis; patička sleduje počet.
   await second.press(" ");
-  await expect(second).toHaveAttribute("aria-checked", "false");
+  await expect(dialog.getByRole("checkbox", { name: /Výpis 2026\/11/ })).toHaveAttribute(
+    "aria-checked",
+    "false",
+  );
   await expect(dialog.getByRole("button", { name: /Importovat 1/ })).toBeEnabled();
 
   await dialog.getByRole("button", { name: /Importovat 1/ }).click();

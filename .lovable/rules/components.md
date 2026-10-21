@@ -7067,7 +7067,7 @@ import { ZoomPane } from "@ws-8gsevdft8cwt1luatyrl/109c3412-986a-4b45-8db7-73643
 import { FileDropZone } from "@/design-system/{slug}";
 ```
 
-Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP.
+Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Zóna má role button a jedinou zastávku Tab s popisem limitů.
 
 **Props:**
 
@@ -7221,7 +7221,7 @@ Výsledky kontrol APP (severity, title, detail, action). Souhrn chyb/upozorněn�
 import { SelectableGroupList } from "@/design-system/{slug}";
 ```
 
-Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; důvod v tooltipu. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.
+Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; Sémantický seznam s fokusovatelnými checkboxy; aria-disabled a aria-describedby zpřístupní důvod zákazu. Detail je tlačítko s aria-pressed. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.
 
 **Props:**
 

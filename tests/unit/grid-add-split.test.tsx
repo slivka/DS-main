@@ -12,6 +12,30 @@ const splitMenu = (onPick: () => void) => (
 );
 
 describe("split primární akce lišty gridu", () => {
+  it("zakázaná šipka neotevře nabídku a klik ukáže důvod", () => {
+    const primary = mock();
+    const pick = mock();
+    const view = render(
+      <GridAddActions
+        actions={{
+          label: "Nový",
+          disabled: true,
+          disabledReason: "Chybí oprávnění",
+          onClick: primary,
+          menu: splitMenu(pick),
+        }}
+      />,
+    );
+    const arrow = view.getByRole("button", { name: "Nový – Nabídka" });
+    fireEvent.pointerDown(arrow, { button: 0, pointerType: "mouse" });
+    fireEvent.click(arrow);
+    expect(view.queryByRole("menu")).toBeNull();
+    expect(view.getByRole("tooltip").textContent).toBe("Chybí oprávnění");
+    for (const key of ["Enter", " ", "ArrowDown"]) fireEvent.keyDown(arrow, { key });
+    expect(view.queryByRole("menuitem")).toBeNull();
+    expect(primary).not.toHaveBeenCalled();
+    expect(pick).not.toHaveBeenCalled();
+  });
   it("hlavní klik a šipka mají vlastní přístupné názvy a zkratka N spustí hlavní akci", () => {
     const primary = mock();
     const pick = mock();

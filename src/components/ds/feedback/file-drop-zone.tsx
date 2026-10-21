@@ -56,7 +56,7 @@ export const FileDropZone = forwardRef<HTMLDivElement, FileDropZoneProps>(functi
     <div ref={ref} {...props} className={cn("min-w-0", className)} data-slot="file-drop-zone">
       <div
         ref={host}
-        role="group"
+        role="button"
         aria-label={t.drop}
         aria-disabled={disabled}
         aria-describedby={hint ? hintId : undefined}
