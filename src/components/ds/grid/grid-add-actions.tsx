@@ -154,23 +154,47 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
             )}
           </Button>
         );
-        if (blocked)
-          return (
-            <React.Fragment key={action.label}>
-              <DisabledReasonTooltip content={tip} blocked>
-                {button}
-              </DisabledReasonTooltip>
-              <span id={reasonId} className="sr-only">
-                {action.disabledReason}
-              </span>
-            </React.Fragment>
-          );
-        return (
+        const main = blocked ? (
+          <React.Fragment key={action.label}>
+            <DisabledReasonTooltip content={tip} blocked>
+              {button}
+            </DisabledReasonTooltip>
+            <span id={reasonId} className="sr-only">
+              {action.disabledReason}
+            </span>
+          </React.Fragment>
+        ) : (
           <Tooltip key={action.label}>
             <TooltipTrigger asChild>{button}</TooltipTrigger>
             <TooltipContent>{tip}</TooltipContent>
           </Tooltip>
         );
+        // Split režim: hlavní klik provede akci, šipka otevře dodanou nabídku.
+        if (action.menu)
+          return (
+            <DropdownMenu key={action.label}>
+              <div className="inline-flex shrink-0">
+                {main}
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={blocked ? undefined : action.disabled}
+                    aria-disabled={blocked || undefined}
+                    aria-label={`${action.label} – ${splitMenuText}`}
+                    className={cn(
+                      "grid-toolbar-control grid-toolbar-primary shrink-0 rounded-l-none border-l border-primary-foreground/30 px-2",
+                      merged && "hidden",
+                    )}
+                  >
+                    <ChevronDown aria-hidden className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+              </div>
+              <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>
+            </DropdownMenu>
+          );
+        return main;
       })}
       {multiple ? (
         <DropdownMenu>
