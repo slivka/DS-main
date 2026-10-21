@@ -236,27 +236,29 @@ export function ShowcaseLayout({
   const activeWorkspace =
     MOCK_WORKSPACES.find((workspace) => workspace.id === workspaceId) ?? MOCK_WORKSPACES[0];
   const activeCompany = companies.find((company) => company.id === companyId) ?? companies[0];
+  // Pevné časy ukázky – relativní čas se počítá při vykreslení a hydratace
+  // serveru a klienta musí vykreslit stejný text.
   const notifications = [
     {
       id: "n1",
       title: "Doklad byl zaúčtován",
       body: "Faktura FV-2026-0142 byla úspěšně zaúčtována.",
       type: "success" as const,
-      createdAt: new Date(Date.now() - 5 * 60_000),
+      createdAt: new Date("2026-10-20T11:55:00"),
     },
     {
       id: "n2",
       title: "Blíží se termín DPH",
       body: "Přiznání k DPH je potřeba podat do pěti dnů.",
       type: "warning" as const,
-      createdAt: new Date(Date.now() - 42 * 60_000),
+      createdAt: new Date("2026-10-20T11:18:00"),
     },
     {
       id: "n3",
       title: "Nový bankovní výpis",
       body: "Byl načten výpis se 24 pohyby.",
       type: "info" as const,
-      createdAt: new Date(Date.now() - 2 * 3_600_000),
+      createdAt: new Date("2026-10-20T10:00:00"),
     },
   ];
 

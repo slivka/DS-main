@@ -27,6 +27,7 @@ export function HistoryDemo({
       filter={filter}
       onFilterChange={setFilter}
       loading={loading}
+      now={DEMO_NOW}
     />
   );
 }
