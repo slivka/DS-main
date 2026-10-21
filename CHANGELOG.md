@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.123.0 (nevydáno)
+## 2.124.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.123.0 – Panel záznamu 6
 
 - Panel záznamu 6 – celé kolo 1–12 včetně Zdroje a navázaného panelu. Bez doménové logiky; data, práva a ukládání dodává APP. Nevydávat, package.json/meta.version zůstávají na poslední vydané 2.122.0.
 - Nové veřejné `PanelToggleButton` (open/onToggle/indicator/tooltip/state/onFocusElsewhere) a `RecordPanelToolbar` (start/end/action). Slot `PageHeader.panelToggle` mezi ⋯ a ✕, `DataGrid.panelToggle` vpravo za Obnovit. Stav elsewhere pouze zaměří sousední okno.

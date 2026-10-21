@@ -1,4 +1,9 @@
-## DS 2.123.0 (nevydáno)
+## DS 2.124.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+- [ ] `panes/linked-tabs.ts` má 363 řádků (limit 300) – rozdělit (navázaný panel do samostatného modulu) – kontrola Clauda po vydání 2.123.0.
+
+## DS 2.123.0 – Panel záznamu 6
 
 - [x] Panel záznamu 6 – body 1–3 a 5–8: tlačítko/sloty, ikonové záložky a táhlo, společný řádek nástrojů, přílohy, poznámky, historie a propojené. Bod 10: výchozí skrytí indikátorů bez přepsání uloženého rozložení.
 - [x] Zdroj: SourcePreview se scénáři PDF/obrázek/ISDOC/prázdný/zděděný, onUrlExpired a nástroje.
