@@ -6,8 +6,10 @@ import {
   findLinkedPanel,
   openLinkedPanelInState,
   setLinkedPanelSectionInState,
+  resolveLinkedPanelRecord,
   updateLinkedPanelRecordInState,
 } from "./linked-panel";
+import { sourceRecord } from "./linked-tabs";
 import type { OpenLinkedTabResult } from "./linked-tabs";
 
 export type LinkedPanelActions = Pick<
@@ -46,20 +48,11 @@ export function createLinkedPanelActions(options: LinkedPanelActionsOptions): Li
       if (blockedReason || !source) return;
       const input = { recordKey, title: recordTitle, ...loc };
       const attempt = (confirmed: boolean) => {
-        const isList = source.kind === "list";
-        const current = isList
-          ? updateLinkedPanelRecordInState(stateRef.current, sourceTabId, input)
-          : updateLinkedPanelRecordInState(stateRef.current, sourceTabId, input);
-        const record = isList
-          ? undefined
-          : {
-              recordKey,
-              title: recordTitle,
-              route: loc.route ?? source.route,
-              ...((loc.route ? loc.params : source.recordKey === recordKey ? source.params : undefined)
-                ? { params: loc.route ? loc.params : source.params }
-                : {}),
-            };
+        const current = updateLinkedPanelRecordInState(stateRef.current, sourceTabId, input);
+        const record =
+          source.kind === "list"
+            ? undefined
+            : resolveLinkedPanelRecord(input, sourceRecord(source), source.route);
         const result = openLinkedPanelInState(
           current,
           sourceTabId,

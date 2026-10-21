@@ -133,7 +133,8 @@ export interface LinkedPanelRecordInput {
   params?: Record<string, unknown>;
 }
 
-function resolveRecord(
+/** Sloučí hlášený záznam s předchozím; parametry starého klíče nepřenáší. */
+export function resolveLinkedPanelRecord(
   input: LinkedPanelRecordInput,
   previous: LinkedSourceRecord | undefined,
   fallbackRoute: string,
@@ -164,14 +165,14 @@ export function updateLinkedPanelRecordInState(
     return setLinkedSourceSelectionInState(
       state,
       sourceTabId,
-      resolveRecord(input, source.linkedSelection, source.route),
+      resolveLinkedPanelRecord(input, source.linkedSelection, source.route),
     );
   if (source.kind !== "record") return state;
   const panel = findLinkedPanel(state, sourceTabId);
   if (!panel || panel.tab.linked?.pinned) return state;
   const info = panel.tab.linked;
   if (!info) return state;
-  const record = resolveRecord(input, info.record ?? sourceRecord(source), source.route);
+  const record = resolveLinkedPanelRecord(input, info.record ?? sourceRecord(source), source.route);
   if (JSON.stringify(info.record ?? null) === JSON.stringify(record)) return state;
   return syncLinkedTabsInState({
     ...state,
