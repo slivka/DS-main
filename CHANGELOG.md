@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.124.0 (nevydáno)
+## 2.125.0 (nevydáno)
+
+- Zatím beze změn.
+
+## 2.124.0 – Rozdělení navázaných záložek
 
 - Refaktor bez změny chování: logika navázaného panelu (druh "panel") se přesunula z `panes/linked-tabs.ts` (363 řádků nad limit 300) do nového modulu `panes/linked-panel.ts` (`openLinkedPanelInState`, `findLinkedPanel`, `setLinkedPanelSectionInState`, `LINKED_PANEL_SECTION`, `linkedPanelTitle`); umístění (`placeLinkedTab`) a záznam zdroje zůstávají v linked-tabs, který je sdílí. linked-tabs jen reexportuje, veřejné API a importy z barrel beze změny; testy beze změny.
 

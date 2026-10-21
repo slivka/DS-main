@@ -1,4 +1,8 @@
-## DS 2.124.0 (nevydáno)
+## DS 2.125.0 (nevydáno)
+
+- Známé body FF / WebKit viz 2.116.0 (beze změny).
+
+## DS 2.124.0 – Rozdělení navázaných záložek
 
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 - [x] `panes/linked-tabs.ts` má 363 řádků (limit 300) – rozdělit (navázaný panel do samostatného modulu) – kontrola Clauda po vydání 2.123.0. Hotovo v 2.124.0: logika navázaného panelu v `panes/linked-panel.ts` (119 řádků), linked-tabs 277 řádků a jen reexportuje; API a testy beze změny.
