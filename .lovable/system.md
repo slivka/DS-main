@@ -2,6 +2,8 @@
 
 ## Panel záznamu – společné nástroje
 
+- Panel 6C: `DocumentForm.panelToggle` předává chrome tlačítko beze změny formuláře. `useLinkedPanel(sourceTabId)` vrací closed/elsewhere a open/focus; context nabízí openLinkedPanel, focusLinkedPanel, setLinkedPanelSection(tabId, section), updateLinkedPanelRecord a closeLinkedPanel. Volitelný `PaneLayout.renderLinkedPanel(recordKey, section, setSection)` je registr APP pro celé panelové okno; bez něj renderTab dál funguje. APP dodává data, render i blockedReason. Zdroj se jinde nevykresluje, špendlík/sledování stále řeší linked-tabs.
+- `DataGrid.onRowOpen` je otevření, nikoli editace: dvojklik/Enter ignorují canEdit a zachovávají tužku onEditRow. `RecordSidePanel.onSizeCommit` je jediné místo pro uložení šířky APP; onSizeChange pouze živě mění šířku.
 - Panel záznamu: tlačítko vpravo nahoře (záhlaví okna / lišta gridu za Obnovit), záložky ikonami, v každé záložce `RecordPanelToolbar` – vlevo zobrazení/filtr/řazení, vpravo modrá hlavní akce.
 - `PanelToggleButton` patří do `PageHeader.panelToggle` (mezi ⋯ a ✕) nebo `DataGrid.panelToggle`; `state="elsewhere"` volá pouze `onFocusElsewhere`. APP dodá tooltip a indikátor.
 - `RecordSidePanel` bez header má jednu řádku navigace a akcí, s header dvě. Nově používejte řízené `size`/`onSizeChange` a `defaultSize`; staré width/onWidthChange zachovávejte pro kompatibilitu. Velikost v px je rozměrový vstup APP, nikoli vizuální styl; meze 20 rem/75 % a krok 16 px zajišťuje společné táhlo. Pod 640 px zůstává překryv.
@@ -14,7 +16,7 @@
 ## Navázaná okna a potvrzení vazeb
 
 - Navázané okno ze seznamu sleduje jednotlivý výběr gridu. Použijte `useLinkedSelection(rows, { sourceTabId, toRecord })`, který sdílí `useFollowSelection`; APP mapuje id, titulek, route a params. Ikony `record-indicators` mohou přes stávající `onIndicatorClick(row, section)` volat `openLinkedTab(sourceTabId, { id, label }, toRecord(row))`; zdrojem zůstává seznam, nikoli nově otevřený doklad.
-- Stejné `openLinkedTab` připojte k `RecordSidePanel.onOpenInAdjacentPane`. Špendlík zamkne záznam; po zavření zdroje zůstane poslední záznam připnutý. Prázdný/vícenásobný výběr nepřepisuje poslední obsah, další jednotlivý výběr jej obnoví. Obsah sekce dodává APP.
+- Nové `RecordSidePanel.onOpenInAdjacentPane` připojte k `openLinkedPanel` nebo `useLinkedPanel().open`; openLinkedTab ponechte jen pro kompatibilní sekční okna. Špendlík zamkne záznam; po zavření zdroje zůstane poslední záznam připnutý. Prázdný/vícenásobný výběr nepřepisuje poslední obsah, další jednotlivý výběr jej obnoví. Obsah dodává APP.
 - `LinkedRecordsPanel` výchozím stavem potvrzuje odebrání jako dosud. Potřebuje-li aplikace důvod, předejte `unlinkReason` a `onUnlink(entry, reason)`; nevytvářejte druhé potvrzení v callbacku. Vlastní dialog APP vyžaduje `confirmUnlink={false}`. Esc zruší jediné potvrzení bez dotazu na rozpracovaný důvod.
 - Dvojice pokladních akcí používá dvě instance `DocumentNewMenu` s `label`, `icon` a `onPrimary`: hlavní klik je prázdný doklad, šipka nabídka. Bez `onPrimary` zůstává původní nabídka Nový. Vzory a zápisy dodává APP.
 

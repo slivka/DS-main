@@ -1,3 +1,21 @@
+## Panel 6C (2.125.0)
+
+- `DocumentForm.panelToggle?: ReactNode` předává tlačítko do `PageHeader` mezi nabídku a zavření; stejný formulář pro faktury i zálohové listy.
+- `RecordSidePanel.onSizeChange` pouze aktualizuje živý stav; uložení APP provádí v `onSizeCommit(px)` jednou po puštění táhla, klávese či dvojkliku.
+- `DataGrid.onRowOpen(row)` otevírá při dvojkliku/Enter nezávisle na `canEdit` i při výběru. `onEditRow` nadále řídí tužku; jednoduchý klik dál patří výběru/panelu. Vnořené ovladače neotevírají řádek.
+- `useLinkedPanel(sourceTabId)` z veřejného vstupu vrací `{ state: "closed" | "elsewhere", open, focus }`. `open({ recordKey, recordTitle, section, blockedReason? })` otevře celé panelové okno přes stejný reducer/ochranu podoken; při blockedReason nic nepřesune. APP současně zobrazí vysvětlení přes RecordSidePanel.blockedReason.
+- `usePaneTabs()` nabízí `openLinkedPanel({ sourceTabId, recordKey, recordTitle, section, blockedReason? })`, `focusLinkedPanel(sourceTabId)`, `setLinkedPanelSection(tabId, section)`, `updateLinkedPanelRecord(sourceTabId, recordKey, recordTitle)`, `closeLinkedPanel(sourceTabId)`. Aktualizace seznamu sdílí linkedSelection a useLinkedSelection; připnutí zamkne obsah. Zavření zdroje zachová poslední připnutý záznam. closeLinkedPanel používá ochranu rozepsaných změn.
+- Nejjednodušší registr je nepovinný `PaneLayout.renderLinkedPanel(recordKey, section, setSection)`. Použije se jen pro druh `panel`, ostatní záložky stále vykresluje renderTab; bez registru renderTab zůstává kompatibilní zálohou i pro panel. APP dodá obsah celého panelu (typicky své sdílené záložky/nástroje), data, oprávnění a špendlík/zavření z kontextu; nepředávejte `onOpenInAdjacentPane` znovu. RecordSidePanel je boční obal, samostatný celošířkový obsah APP vykreslí bez bočního zavírání.
+
+```tsx
+const linked = useLinkedPanel(pane.tabId);
+const tabs = usePaneTabs();
+<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={localOpen} state={linked.state === "elsewhere" ? "elsewhere" : localOpen ? "open" : "closed"} tooltip={summary} onToggle={toggleLocal} onFocusElsewhere={linked.focus} />} />;
+linked.open({ recordKey: record.id, recordTitle: record.title, section: "history" });
+tabs?.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title);
+<PaneLayout renderTab={renderRecord} renderLinkedPanel={(key, section, setSection) => <AppRecordPanel recordKey={key} activeTab={section} onTabChange={setSection} />} />;
+```
+
 ## Skupiny DPH a patička řádků (2.109.0)
 
 - Řádky dokladu jsou vždy bez DPH. `vat.calcMode` / `vat.onCalcModeChange` jsou @deprecated a ignorované; ruční daň na řádku zrušena. Řádek s `vatManual` z DB (odpočet zálohy, import) je pevná systémová daň – zobrazí se se zámkem a do skupin nevstupuje.

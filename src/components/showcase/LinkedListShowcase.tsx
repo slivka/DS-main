@@ -1,8 +1,8 @@
 /** Navázané sekce seznamu · vlastní demo stav · nesmí se distribuovat. */
 import { useState } from "react";
 import { History, Link, MessageSquare, Paperclip } from "lucide-react";
-import { Button, DataGrid, PageHeader, RecordSidePanel } from "../ds";
-import { PaneTabsProvider, usePaneTabs } from "../ds/panes/pane-context";
+import { Button, DataGrid, PageHeader, RecordSidePanel, PanelToggleButton } from "../ds";
+import { PaneTabsProvider, usePaneTabs, useLinkedPanel } from "../ds/panes/pane-context";
 import type { LinkedSourceRecord, PaneTabsState } from "../ds/panes/pane-state";
 import { useLinkedSelection } from "../../hooks/use-linked-selection";
 import { DOCUMENTS } from "./record-panel-data";
@@ -47,6 +47,7 @@ const INDICATORS = [
 
 function LinkedListContent() {
   const panes = usePaneTabs();
+  const linkedPanel = useLinkedPanel("list-source");
   const [selected, setSelected] = useState<Row[]>([]);
   const [explicit, setExplicit] = useState<Row | null>(null);
   const [open, setOpen] = useState(false);
@@ -60,8 +61,8 @@ function LinkedListContent() {
   const tabs =
     panes?.state.panes.flatMap((pane) => pane.tabs).filter((tab) => tab.kind === "linked") ?? [];
   const openLinked = (id: string, row: Row) => {
-    const label = INDICATORS.find((indicator) => indicator.id === id)?.label ?? id;
-    panes?.openLinkedTab("list-source", { id, label }, toRecord(row));
+    linkedPanel.open({ recordKey: row.id, recordTitle: row.number, section: id });
+    setOpen(false);
   };
   return (
     <section data-testid="linked-list-showcase" className="min-w-0 space-y-3">
@@ -73,7 +74,7 @@ function LinkedListContent() {
               Zavřít seznam
             </Button>
             <RecordSidePanel
-              open={open}
+              open={open && linkedPanel.state === "closed"}
               onOpenChange={setOpen}
               activeTab={section}
               onActiveTabChange={setSection}
@@ -83,6 +84,9 @@ function LinkedListContent() {
             >
               <DataGrid
                 rows={DOCUMENTS}
+                panelToggle={<PanelToggleButton open={open} state={linkedPanel.state === "elsewhere" ? "elsewhere" : open ? "open" : "closed"} onToggle={() => setOpen(!open)} onFocusElsewhere={linkedPanel.focus} tooltip="Panel" />}
+                canEdit={() => false}
+                onRowOpen={(row) => openLinked(section, row)}
                 rowKey={(row) => row.id}
                 storageKey="linked-list-demo"
                 paginated={false}
@@ -127,7 +131,12 @@ function LinkedListContent() {
                 Vrátit do panelu
               </Button>
             </div>
-            {content.tabs.find((entry) => entry.id === tab.linked?.section)?.content}
+            {tab.linked?.kind === "panel" ? (
+              <RecordSidePanel open onOpenChange={() => panes?.closeLinkedPanel("list-source")}
+                activeTab={tab.linked.activeSection ?? "history"}
+                onActiveTabChange={(id) => panes?.setLinkedPanelSection(tab.id, id)}
+                tabs={content.tabs} header={tab.title} />
+            ) : content.tabs.find((entry) => entry.id === tab.linked?.section)?.content}
           </section>
         ))}
       </div>

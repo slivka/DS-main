@@ -5,6 +5,8 @@ import { ShowcaseSection } from "@/components/showcase/ShowcaseLayout";
 import {
   DataGrid,
   DocumentForm,
+  PanelToggleButton,
+  RecordSidePanel,
   DocumentSettingsDialog,
   NoticeBar,
   PaymentScheduleEditor,
@@ -42,10 +44,14 @@ import {
 } from "./document-form-showcase-data";
 
 import { useDocumentFormShowcaseState } from "./use-document-form-showcase-state";
+import { useRecordPanelContent } from "./record-panel-content";
 
 /** Ukázky DocumentForm 2.7 a PaymentScheduleEditor na stránce Účetní formuláře. */
 export function DocumentFormShowcase() {
   const state = useDocumentFormShowcaseState();
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [panelTab, setPanelTab] = useState("attachments");
+  const panelContent = useRecordPanelContent("draft", "");
   const {
     cashDateLocked,
     setCashDateLocked,
@@ -119,8 +125,10 @@ export function DocumentFormShowcase() {
         title="Pokladna – výdaj kurýrovi bez partnera"
         description="Protistrana je jen text; ručně zadané IČO a DIČ zůstávají editovatelné a chybné české IČO se jen zvýrazní."
       >
+        <RecordSidePanel open={panelOpen} onOpenChange={setPanelOpen} activeTab={panelTab} onActiveTabChange={setPanelTab} tabs={panelContent.tabs}>
         <DocumentForm
           title="Pokladní doklad – výdaj"
+          panelToggle={<PanelToggleButton open={panelOpen} onToggle={() => setPanelOpen(!panelOpen)} indicator tooltip="Panel · Přílohy 2 · Poznámky 1" />}
           identity={{
             variant: "cashBank",
             book: formatCodeName("PO", "Pokladna"),
@@ -189,6 +197,7 @@ export function DocumentFormShowcase() {
           }}
           onCreatePartner={(seed) => toast.info(`Nový partner: ${seed.name || seed.ico}`)}
         />
+        </RecordSidePanel>
         <DocumentSettingsDialog
           open={settingsOpen}
           onOpenChange={setSettingsOpen}
@@ -209,6 +218,7 @@ export function DocumentFormShowcase() {
       >
         <DocumentForm
           title="Pokladní doklad – příjem"
+          panelToggle={<PanelToggleButton open={panelOpen} onToggle={() => setPanelOpen(!panelOpen)} tooltip="Panel" />}
           identity={{
             variant: "cashBank",
             book: formatCodeName("PO", "Pokladna"),
