@@ -2,6 +2,10 @@
 
 ## 2.125.0 (nevydáno)
 
+- Oprava: navázaný panel nad záložkou záznamu po navigaci zdroje na jiný záznam zahodí záznam hlášený APP (`linked.recordSourceKey`) a sleduje zdroj.
+- Oprava: ve virtualizovaném gridu s `onRowOpen` dostane tabIndex 0 první vykreslený řádek, když je aktuální mimo okno.
+- Katalog: odstraněny staré ukázky „Panel 6C“; ukázka `updateLinkedPanelRecord` s `{ route, params }`.
+
 - Ovladač panelu: nepovinné `DocumentForm.panelToggle` předané PageHeader; ukázka s tečkou i bez, společná cesta i pro zálohové listy.
 - Kontext podoken: `openLinkedPanel`, `focusLinkedPanel`, `setLinkedPanelSection`, `updateLinkedPanelRecord`, `closeLinkedPanel`; veřejný `useLinkedPanel(sourceTabId)` vrací closed/elsewhere a open/focus. Stejný reducer, linkedSelection, připnutí, blokace a ochrana zavření; sekční navázaná okna beze změny.
 - Nepovinný registr `PaneLayout.renderLinkedPanel(recordKey, section, setSection)`; bez registru zachováno renderTab. APP dodává obsah/data/práva.
