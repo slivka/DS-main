@@ -48,18 +48,27 @@ function Demo({
   onChange,
 }: DemoProps) {
   const [line, setLine] = React.useState(LINE);
-  const editor = useJournalEditorState({
-    lines: [line], accounts: [], documentCurrency: "EUR", homeCurrency: "EUR", withoutAccounts,
-    vat: {
-      enabled: true, codes: code ? [code] : [],
-      rowDetails: { canEdit: () => canEdit, disabledReason: "Zaúčtovaný doklad" },
+  const editor = useJournalEditorState(
+    {
+      lines: [line],
+      accounts: [],
+      documentCurrency: "EUR",
+      homeCurrency: "EUR",
+      withoutAccounts,
+      vat: {
+        enabled: true,
+        codes: code ? [code] : [],
+        rowDetails: { canEdit: () => canEdit, disabledReason: "Zaúčtovaný doklad" },
+      },
+      onChange: (lines) => {
+        const next = lines[0];
+        if (!next) return;
+        setLine(next);
+        onChange?.(next);
+      },
     },
-    onChange: (lines) => {
-      const next = lines[0];
-      if (!next) return;
-      setLine(next); onChange?.(next);
-    },
-  }, null);
+    null,
+  );
   const context = { editor, keyboard: useJournalKeyboard(editor) };
   return (
     <TooltipProvider>
