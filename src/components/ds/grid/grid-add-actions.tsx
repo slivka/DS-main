@@ -222,6 +222,17 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
           <DropdownMenuContent align="start">
             {list.map((action) => {
               const Icon = action.icon ?? Plus;
+              // Split akce se ve sloučené nabídce vykreslí jako podnabídka.
+              if (action.menu && !action.disabled)
+                return (
+                  <DropdownMenuSub key={action.label}>
+                    <DropdownMenuSubTrigger>
+                      <Icon aria-hidden className="size-[1.1em]" />
+                      {action.shortLabel ?? action.label}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>{action.menu}</DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                );
               return (
                 <DisabledReasonMenuItem
                   key={action.label}
