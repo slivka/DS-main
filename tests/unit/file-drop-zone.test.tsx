@@ -48,13 +48,18 @@ describe("FileDropZone", () => {
     expect(rejected).toBe(1);
     expect(input.value).toBe("");
   });
-  it("má jedinou zastávku Tab – zónu, tlačítko výběru je mimo pořadí", () => {
-    const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => {}} />);
+  it("má jedinou zastávku pro výběr a popis limitů na vnitřním tlačítku", () => {
+    const view = render(
+      <FileDropZone accept={[]} maxSizeBytes={10} hint="Limit 10 B" onFiles={() => {}} />,
+    );
     expect(
       view.getByRole("button", { name: "Přetáhněte soubory sem" }).getAttribute("tabindex"),
     ).toBe("0");
-    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe(
-      "-1",
+    expect(view.getAllByRole("button")).toHaveLength(1);
+    expect(view.getByRole("group").getAttribute("tabindex")).toBeNull();
+    const description = view.getByRole("button").getAttribute("aria-describedby");
+    expect(description ? document.getElementById(description)?.textContent : null).toBe(
+      "Limit 10 B",
     );
   });
   it("Enter a mezerník otevřou výběr, zakázaná plocha nic nepředá", () => {
@@ -64,8 +69,9 @@ describe("FileDropZone", () => {
     const input = view.container.querySelector("input");
     input?.addEventListener("click", () => clicks++);
     const zone = view.getByRole("button", { name: "Přetáhněte soubory sem" });
-    fireEvent.keyDown(zone, { key: "Enter" });
-    fireEvent.keyDown(zone, { key: " " });
+    // Nativní tlačítko aktivuje Enter/mezerník klikem prohlížeče; ověřuje také E2E.
+    fireEvent.click(zone);
+    fireEvent.click(zone);
     expect(clicks).toBe(2);
     view.rerender(
       <FileDropZone disabled accept={[]} maxSizeBytes={10} onFiles={() => received++} />,

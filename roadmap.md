@@ -1,5 +1,7 @@
 ## DS 2.126.0 (nevydáno)
 
+- [x] Oddělit FileDropZone skupinu přetažení od tlačítka výběru; ověřit Tab čipů a axe nested-interactive, check:full.
+- Ověření oddělení tlačítka: check:full --harness OK, 1 160/1 160 testů ve 126 souborech; Chromium file-import 1/1 (Enter/mezerník, Tab čipů/více/výběru, axe nested-interactive bez nálezů). Katalog 468 → 474 komponent / 1 090 → 1 160 props, 0 odebrání; automatické sestavení OK. Plná E2E sada/FF/WebKit neběžely, nevydáno.
 - [x] Poslední opravy: zakázaná split šipka bez nabídky s důvodem; interní tažení končí dropem i window capture dragend; přístupný seznam s checkboxy a FileDropZone role button.
 - Ověření posledního kola: check:full --harness OK, 1 159/1 159 testů ve 126 souborech; Chromium file-import 1/1, obnovený katalog bez ztrát (0 odebrání), automatické sestavení OK. Nevydáno; samostatný plán rozdělení velkých souborů se v tomto kole neprovádí.
 - [x] Opravné kolo: zakázaný cíl drop spolkne, interní tažení (dragstart) překryv neukáže, split tlačítko v addAction gridu (zkratka N, sloučení do „+ ▾“), sémantický seznam/checkboxy v SelectableGroupList, jedna zastávka Tab ve FileDropZone, E2E spec importu.

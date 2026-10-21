@@ -1,5 +1,6 @@
 /** Ukázka Import souborů: krok 1 → 2, výběr výpisů a zakázaná položka. */
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", async ({ page }) => {
   await page.goto("/components/file-import", { waitUntil: "networkidle" });
@@ -8,17 +9,53 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
 
+  // Jediné tlačítko plochy otevře výběr oběma klávesami bez vnořených ovladačů.
+  const choose = dialog.getByRole("button", { name: "Přetáhněte soubory sem" });
+  for (const key of ["Enter", " "]) {
+    const chooser = page.waitForEvent("filechooser");
+    await choose.press(key);
+    await chooser;
+  }
+
   // Krok 1: výběr souboru přes skrytý vstup zóny.
   await dialog
     .locator('input[type="file"]')
     .first()
-    .setInputFiles({
-      name: "vypis.xml",
-      mimeType: "text/xml",
-      buffer: Buffer.from("<xml/>"),
-    });
+    .setInputFiles(
+      ["vypis.xml", "druhy.xml", "treti.xml", "ctvrty.xml"].map((name) => ({
+        name,
+        mimeType: "text/xml",
+        buffer: Buffer.from("<xml/>"),
+      })),
+    );
   await expect(dialog.getByText("vypis.xml")).toBeVisible();
   await dialog.getByRole("button", { name: "Pokračovat" }).click();
+
+  const chips = dialog.locator('[data-slot="file-chip-bar"]');
+  const remove = chips.getByRole("button", { name: "Odebrat vypis.xml" });
+  await remove.focus();
+  for (const [name, steps] of [
+    ["Odebrat druhy.xml", 2],
+    ["Odebrat treti.xml", 2],
+    ["+1 dalších", 1],
+    ["Přetáhněte soubory sem", 1],
+  ] as const) {
+    // Stavové bubliny čipů jsou také přístupné přes Tab, nesmíme je přeskočit v očekávání.
+    for (let index = 0; index < steps; index++) await page.keyboard.press("Tab");
+    await expect(chips.getByRole("button", { name, exact: true })).toBeFocused();
+  }
+  const more = chips.getByRole("button", { name: "+1 dalších" });
+  await more.press("Enter");
+  await chips.getByRole("button", { name: "Odebrat treti.xml" }).focus();
+  await page.keyboard.press("Tab");
+  await expect(chips.getByRole("img").last()).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(chips.getByRole("button", { name: "Odebrat ctvrty.xml" })).toBeFocused();
+  const accessibility = await new AxeBuilder({ page })
+    .include('[data-slot="file-drop-zone"]')
+    .withRules(["nested-interactive"])
+    .analyze();
+  expect(accessibility.violations).toEqual([]);
 
   // Krok 2: seskupený výběr – výchozí zaškrtnutí dvou platných výpisů.
   const first = dialog.getByRole("button", { name: /Výpis 2026\/10/ });
