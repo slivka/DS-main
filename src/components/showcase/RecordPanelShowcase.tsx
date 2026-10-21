@@ -197,9 +197,12 @@ export function RecordPanelShowcase() {
         </div>
       </div>
       {adjacent ? (
-        <section className="border-l border-border p-3">
-          <PageHeader title="FP 2026/0142" />
-          {content.tabs[0]?.content}
+        <section className="border-l border-border p-3" data-testid="adjacent-panel-example">
+          <PageHeader title="FP 2026/0142 – panel" />
+          <p className="pb-2 text-xs text-muted-foreground">
+            Navázané okno s celým panelem – sekce si okno pamatuje, zdroj hlásí stav „panel jinde“.
+          </p>
+          {content.tabs.find((item) => item.id === tab)?.content}
         </section>
       ) : null}
       <section data-testid="grid-panel-example">

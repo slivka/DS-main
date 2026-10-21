@@ -13,7 +13,10 @@ test("Panel záznamu – přílohy, poznámky, výběr, úzká šířka a zoom",
     "aria-selected",
     "true",
   );
+  await panel.getByRole("tab", { name: "Zdroj", exact: true }).click();
+  await expect(panel.locator("iframe")).toBeVisible();
   await expect(panel.getByRole("button", { name: "Nahradit", exact: true })).toBeVisible();
+  await panel.getByRole("tab", { name: "Přílohy: 2", exact: true }).click();
   const handle = panel.getByRole("separator", { name: "Změnit šířku panelu" });
   await handle.focus();
   await handle.press("ArrowLeft");

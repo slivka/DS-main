@@ -95,6 +95,17 @@ export interface AttachmentTexts {
   /** Chybějící oprávnění. */
   denied: string;
 }
+/** Texty náhledu zdroje záznamu. */
+export interface SourcePreviewTexts {
+  /** Nahrání chybějícího zdroje. */
+  upload: string;
+  /** Typ bez náhledu. */
+  noPreview: string;
+  /** Poznámka zděděného zdroje. */
+  inherited: string;
+  /** Vypršená adresa náhledu. */
+  expired: string;
+}
 /** Texty časové osy historie záznamu. */
 export interface RecordHistoryTexts {
   /** Zrušení filtru. */

@@ -12,6 +12,7 @@ import {
   RECORD_HISTORY_CS,
   RECORD_NOTES_CS,
   RECORD_PANEL_CS,
+  SOURCE_PREVIEW_CS,
 } from "./cs-record-panel";
 import { BANK_STATEMENT_CS } from "./cs-bank-statement";
 import { cs } from "date-fns/locale";
@@ -29,6 +30,7 @@ export const DS_TEXTS_CS: DsTexts = {
   recordPanel: RECORD_PANEL_CS,
   recordNotes: RECORD_NOTES_CS,
   attachments: ATTACHMENTS_CS,
+  sourcePreview: SOURCE_PREVIEW_CS,
   linkedRecords: LINKED_RECORDS_CS,
   recordHistory: RECORD_HISTORY_CS,
   stepper: { decrease: "Snížit", increase: "Zvýšit" },
