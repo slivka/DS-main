@@ -9029,7 +9029,11 @@
         {
           "name": "target",
           "type": "\"list\" | \"taxDocument\"",
-          "required": true
+          "required": true,
+          "values": [
+            "list",
+            "taxDocument"
+          ]
         },
         {
           "name": "candidates",
