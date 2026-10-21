@@ -108,7 +108,12 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                 {new Intl.NumberFormat(texts.intlLocale).format(group.items.length)}
               </span>
             </h3>
-            <ul role="listbox" aria-multiselectable="true" aria-label={group.title} className="divide-y divide-border">
+            <ul
+              role="listbox"
+              aria-multiselectable="true"
+              aria-label={group.title}
+              className="divide-y divide-border"
+            >
               {group.items.map((item) => {
                 const blocked = disabled || !isGroupItemSelectable(item);
                 const reason = item.disabledReason ?? item.message ?? t.errorBlocked;

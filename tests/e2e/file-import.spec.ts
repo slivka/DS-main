@@ -9,11 +9,14 @@ test("import výpisů: výběr souboru, zaškrtnutí a zakázaná položka", asy
   await expect(dialog).toBeVisible();
 
   // Krok 1: výběr souboru přes skrytý vstup zóny.
-  await dialog.locator('input[type="file"]').first().setInputFiles({
-    name: "vypis.xml",
-    mimeType: "text/xml",
-    buffer: Buffer.from("<xml/>"),
-  });
+  await dialog
+    .locator('input[type="file"]')
+    .first()
+    .setInputFiles({
+      name: "vypis.xml",
+      mimeType: "text/xml",
+      buffer: Buffer.from("<xml/>"),
+    });
   await expect(dialog.getByText("vypis.xml")).toBeVisible();
   await dialog.getByRole("button", { name: "Pokračovat" }).click();
 

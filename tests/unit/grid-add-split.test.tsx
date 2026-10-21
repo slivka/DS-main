@@ -15,11 +15,7 @@ describe("split primární akce lišty gridu", () => {
   it("hlavní klik a šipka mají vlastní přístupné názvy a zkratka N spustí hlavní akci", () => {
     const primary = mock();
     const pick = mock();
-    render(
-      <GridAddActions
-        actions={{ label: "Nový", onClick: primary, menu: splitMenu(pick) }}
-      />,
-    );
+    render(<GridAddActions actions={{ label: "Nový", onClick: primary, menu: splitMenu(pick) }} />);
     const main = screen.getByRole("button", { name: "Nový (N)" });
     const chevron = screen.getByRole("button", { name: "Nový – Nabídka" });
     fireEvent.click(main);
@@ -62,7 +58,12 @@ describe("split primární akce lišty gridu", () => {
       <GridToolbarOverflowContext.Provider value={3}>
         <GridAddActions
           actions={[
-            { label: "Nový příjem", shortLabel: "Příjem", onClick: primary, menu: splitMenu(() => {}) },
+            {
+              label: "Nový příjem",
+              shortLabel: "Příjem",
+              onClick: primary,
+              menu: splitMenu(() => {}),
+            },
             { label: "Nový výdaj", shortLabel: "Výdaj", onClick: () => {} },
           ]}
         />

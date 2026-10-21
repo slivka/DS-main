@@ -81,9 +81,7 @@ export function useFileDrop(ref: RefObject<HTMLElement | null>, options: FileDro
     /** Cíl leží v tomto uzlu a žádný hlubší cíl souborů (povolený ani zakázaný) ho nepřebírá. */
     const innermost = (event: DragEvent) => {
       const target = event.target;
-      return target instanceof Element
-        ? target.closest("[data-file-drop-enabled]") === node
-        : true;
+      return target instanceof Element ? target.closest("[data-file-drop-enabled]") === node : true;
     };
     node.setAttribute("data-file-drop-enabled", String(!latest.current.disabled));
     const containsFiles = (event: DragEvent) =>
