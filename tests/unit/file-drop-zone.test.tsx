@@ -50,8 +50,12 @@ describe("FileDropZone", () => {
   });
   it("má jedinou zastávku Tab – zónu, tlačítko výběru je mimo pořadí", () => {
     const view = render(<FileDropZone accept={[]} maxSizeBytes={10} onFiles={() => {}} />);
-    expect(view.getByRole("button", { name: "Přetáhněte soubory sem" }).getAttribute("tabindex")).toBe("0");
-    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe("-1");
+    expect(
+      view.getByRole("button", { name: "Přetáhněte soubory sem" }).getAttribute("tabindex"),
+    ).toBe("0");
+    expect(view.getByRole("button", { name: "Vybrat soubory…" }).getAttribute("tabindex")).toBe(
+      "-1",
+    );
   });
   it("Enter a mezerník otevřou výběr, zakázaná plocha nic nepředá", () => {
     let clicks = 0;
@@ -75,7 +79,11 @@ describe("FileDropZone", () => {
 describe("PaneDropOverlay", () => {
   it("drop po odpojení taženého prvku obnoví přijímání externích souborů", () => {
     let drops = 0;
-    const view = render(<PaneDropOverlay label="Import" onFiles={() => drops++}><p>Cíl</p></PaneDropOverlay>);
+    const view = render(
+      <PaneDropOverlay label="Import" onFiles={() => drops++}>
+        <p>Cíl</p>
+      </PaneDropOverlay>,
+    );
     const source = document.createElement("div");
     document.body.append(source);
     fireEvent.dragStart(source);
@@ -88,7 +96,11 @@ describe("PaneDropOverlay", () => {
   });
   it("dragend v capture na window obnoví příjem i při zastaveném bublání", () => {
     let drops = 0;
-    const view = render(<PaneDropOverlay label="Import" onFiles={() => drops++}><p>Cíl</p></PaneDropOverlay>);
+    const view = render(
+      <PaneDropOverlay label="Import" onFiles={() => drops++}>
+        <p>Cíl</p>
+      </PaneDropOverlay>,
+    );
     const target = view.getByText("Cíl");
     target.addEventListener("dragend", (event) => event.stopPropagation());
     fireEvent.dragStart(target);

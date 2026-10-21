@@ -4,6 +4,7 @@
 
 - FileDropZone a FileChipBar sdílejí useFileDrop/validateFiles pro výběr i přetažení; accept, maxSizeBytes a zbývající maxFiles dodává APP. onReject vrací type/size/count. Žádné parsování banky ani nahrávání v DS.
 - PaneDropOverlay reaguje pouze na dataTransfer.types Files; vnořený povolený cíl má přednost, interní přetažení gridu a záložek ignoruje.
+- FileDropZone má jedinou zastávku Tab jako role button s popisem; tlačítko výběru je mimo pořadí. SelectableGroupList je sémantický seznam s fokusovatelnými checkboxy (aria-disabled a aria-describedby při zákazu), detail má tlačítko aria-pressed; nikdy nevkládejte checkboxy do listboxu.
 - SelectableGroupList odděluje activeId (detail) od checkedIds (import); chyby blokují zaškrtnutí s důvodem, šipky posouvají detail a mezerník zaškrtává.
 - CheckList dostává hotové kontroly APP, pouze řadí a shrnuje závažnosti. Import skládejte v RecordDialog size xl; nikdy nekopírujte dialog, grid či panel. AdvanceCorrectionDialog.currencyCode je volitelná měna APP, bez hodnoty zůstává původní formát.
 

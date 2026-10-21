@@ -1,6 +1,7 @@
 ## DS 2.126.0 (nevydáno)
 
-- [x] Opravné kolo: zakázaný cíl drop spolkne, interní tažení (dragstart) překryv neukáže, split tlačítko v addAction gridu (zkratka N, sloučení do „+ ▾“), listbox/option v SelectableGroupList, jedna zastávka Tab ve FileDropZone, E2E spec importu.
+- [x] Poslední opravy: zakázaná split šipka bez nabídky s důvodem; interní tažení končí dropem i window capture dragend; přístupný seznam s checkboxy a FileDropZone role button.
+- [x] Opravné kolo: zakázaný cíl drop spolkne, interní tažení (dragstart) překryv neukáže, split tlačítko v addAction gridu (zkratka N, sloučení do „+ ▾“), sémantický seznam/checkboxy v SelectableGroupList, jedna zastávka Tab ve FileDropZone, E2E spec importu.
 - [x] Import souborů I2: FileDropZone, FileChipBar, PaneDropOverlay, CheckList, SelectableGroupList; CS/SK, ukázka importu a přetažení nad gridem, testy, katalog a check:full.
 - [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
 - [x] AdvanceCorrectionDialog: nepovinná měna částek currencyCode, zachovaný výchozí formát.

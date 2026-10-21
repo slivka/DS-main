@@ -15,8 +15,17 @@ describe("split primární akce lišty gridu", () => {
   it("zakázaná šipka neotevře nabídku a klik ukáže důvod", () => {
     const primary = mock();
     const pick = mock();
-    const view = render(<GridAddActions actions={{ label: "Nový", disabled: true,
-      disabledReason: "Chybí oprávnění", onClick: primary, menu: splitMenu(pick) }} />);
+    const view = render(
+      <GridAddActions
+        actions={{
+          label: "Nový",
+          disabled: true,
+          disabledReason: "Chybí oprávnění",
+          onClick: primary,
+          menu: splitMenu(pick),
+        }}
+      />,
+    );
     const arrow = view.getByRole("button", { name: "Nový – Nabídka" });
     fireEvent.pointerDown(arrow, { button: 0, pointerType: "mouse" });
     fireEvent.click(arrow);

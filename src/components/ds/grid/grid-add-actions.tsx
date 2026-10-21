@@ -193,9 +193,13 @@ export function GridAddActions({ actions }: GridAddActionsProps) {
               <div className="inline-flex shrink-0">
                 {main}
                 {blocked ? (
-                  <DisabledReasonTooltip content={tip} blocked>{arrow}</DisabledReasonTooltip>
+                  <DisabledReasonTooltip content={tip} blocked>
+                    {arrow}
+                  </DisabledReasonTooltip>
                 ) : (
-                  <DropdownMenuTrigger asChild disabled={action.disabled}>{arrow}</DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild disabled={action.disabled}>
+                    {arrow}
+                  </DropdownMenuTrigger>
                 )}
               </div>
               <DropdownMenuContent align="start">{action.menu}</DropdownMenuContent>

@@ -6,7 +6,7 @@ const definitions = [
   [
     "FileDropZone",
     "feedback/file-drop-zone",
-    "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP.",
+    "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Zóna má role button a jedinou zastávku Tab s popisem limitů.",
     '<FileDropZone accept={[".xml", "application/pdf"]} maxFiles={remainingSlots} maxSizeBytes={limit} onFiles={addFiles} onReject={showRejected} hint={limitsLabel}>{overview}</FileDropZone>',
   ],
   [
@@ -36,7 +36,7 @@ const definitions = [
   [
     "SelectableGroupList",
     "data-display/selectable-group-list",
-    "Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; důvod v tooltipu. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.",
+    "Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; Sémantický seznam s fokusovatelnými checkboxy; aria-disabled a aria-describedby zpřístupní důvod zákazu. Detail je tlačítko s aria-pressed. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.",
     "<SelectableGroupList groups={groups} activeId={activeId} onActiveChange={setActiveId} checkedIds={checkedIds} onCheckedChange={setCheckedIds} />",
   ],
 ];

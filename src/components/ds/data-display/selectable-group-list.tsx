@@ -109,10 +109,7 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                 {new Intl.NumberFormat(texts.intlLocale).format(group.items.length)}
               </span>
             </h3>
-            <ul
-              aria-label={group.title}
-              className="divide-y divide-border"
-            >
+            <ul aria-label={group.title} className="divide-y divide-border">
               {group.items.map((item) => {
                 const blocked = disabled || !isGroupItemSelectable(item);
                 const reason = item.disabledReason ?? item.message ?? t.errorBlocked;
@@ -173,7 +170,11 @@ export const SelectableGroupList = forwardRef<HTMLDivElement, SelectableGroupLis
                         ) : null}
                       </span>
                     </Button>
-                    {blocked ? <span id={reasonId} className="sr-only">{reason}</span> : null}
+                    {blocked ? (
+                      <span id={reasonId} className="sr-only">
+                        {reason}
+                      </span>
+                    ) : null}
                     <div className="flex max-w-32 shrink-0 flex-wrap items-center justify-end gap-2">
                       <FileSeverityIcon severity={item.severity} message={item.message} />
                       {item.value ? (
