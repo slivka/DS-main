@@ -110,6 +110,12 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
     ? items.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
     : [];
   const rove = useRowRoving(roving, rowKeys, props.activeRowKey, virtual, items.length);
+  // Aktuální řádek mimo vykreslené okno: Tab se zastaví na prvním viditelném řádku.
+  const windowKeys = roving
+    ? windowItems.flatMap((item) => (item.type === "row" ? [rowKey(item.row)] : []))
+    : [];
+  const tabKey =
+    rove.current && windowKeys.includes(rove.current) ? rove.current : (windowKeys[0] ?? null);
   return (
     <>
       <VirtualPad height={virtual.padTop} colSpan={colSpan} />
@@ -162,7 +168,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             key={key}
             data-virtual-row=""
             data-row-key={roving ? key : undefined}
-            tabIndex={roving ? (rove.current === key ? 0 : -1) : undefined}
+            tabIndex={roving ? (tabKey === key ? 0 : -1) : undefined}
             onFocus={
               roving
                 ? (event) => event.target === event.currentTarget && rove.setFocusKey(key)
