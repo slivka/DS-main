@@ -218,7 +218,11 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             data-virtual-row=""
             data-row-key={roving ? key : undefined}
             tabIndex={roving ? (rove.current === key ? 0 : -1) : undefined}
-            onFocus={roving ? (event) => event.target === event.currentTarget && rove.setFocusKey(key) : undefined}
+            onFocus={
+              roving
+                ? (event) => event.target === event.currentTarget && rove.setFocusKey(key)
+                : undefined
+            }
             onKeyDown={(event) => {
               rove.onKeyDown(event, key);
               if (
