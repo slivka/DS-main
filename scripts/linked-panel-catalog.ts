@@ -1,7 +1,7 @@
 /** Autorské doplnění registru panelu; katalog/reference obnovuje existující pipeline. */
 import type { PanelCatalogComponent } from "./record-panel-catalog";
 
-export function enrichPanel6cCatalog(components: PanelCatalogComponent[]): PanelCatalogComponent[] {
+export function enrichLinkedPanelCatalog(components: PanelCatalogComponent[]): PanelCatalogComponent[] {
   const touched: PanelCatalogComponent[] = [];
   const layout = components.find((item) => item.name === "PaneLayout");
   if (layout) {
@@ -16,9 +16,9 @@ export function enrichPanel6cCatalog(components: PanelCatalogComponent[]): Panel
     if (!layout.usage?.includes("renderLinkedPanel"))
       layout.usage = (layout.usage ?? "") + guidance;
     layout.examples ??= [];
-    if (!layout.examples.some((item) => item.label === "Panel 6C"))
+    if (!layout.examples.some((item) => item.label === "Navázaný panel v sousedním okně"))
       layout.examples.push({
-        label: "Panel 6C",
+        label: "Navázaný panel v sousedním okně",
         code: "<PaneLayout renderTab={renderRecord} renderLinkedPanel={(key, section, setSection) => <AppRecordPanel recordKey={key} activeTab={section} onTabChange={setSection} />} />",
       });
     layout.antipatterns ??= [];
@@ -34,9 +34,9 @@ export function enrichPanel6cCatalog(components: PanelCatalogComponent[]): Panel
     if (!provider.usage?.includes("useLinkedPanel"))
       provider.usage = (provider.usage ?? "") + guidance;
     provider.examples ??= [];
-    if (!provider.examples.some((item) => item.label === "Panel 6C"))
+    if (!provider.examples.some((item) => item.label === "Akce navázaného panelu"))
       provider.examples.push({
-        label: "Panel 6C",
+        label: "Akce navázaného panelu",
         code: 'const panel = useLinkedPanel(pane.tabId);\npanel.open({ recordKey: record.id, recordTitle: record.title, section: "history" });\n// PanelToggleButton state elsewhere volá panel.focus\ntabs.updateLinkedPanelRecord(pane.tabId, selected.id, selected.title);\ntabs.closeLinkedPanel(pane.tabId);',
       });
     provider.antipatterns ??= [];

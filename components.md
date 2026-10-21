@@ -1,4 +1,4 @@
-## Panel 6C (2.125.0)
+## Navázaný panel, ovladač panelu a otevření řádku (2.125.0)
 
 - `DocumentForm.panelToggle?: ReactNode` předává tlačítko do `PageHeader` mezi nabídku a zavření; stejný formulář pro faktury i zálohové listy.
 - `RecordSidePanel.onSizeChange` pouze aktualizuje živý stav; uložení APP provádí v `onSizeCommit(px)` jednou po puštění táhla, klávese či dvojkliku.
