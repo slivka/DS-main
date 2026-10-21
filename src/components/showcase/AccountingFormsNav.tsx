@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const PAGES = [
   { to: "/components/accounting-forms", label: "Editor dokladů" },
   { to: "/components/accounting-documents", label: "Další doklady" },
+  { to: "/components/accounting-advances", label: "Zálohy" },
   { to: "/components/accounting-controls", label: "Ovládací prvky a hlavičky" },
   { to: "/components/accounting-bank", label: "Bankovní výpis a pohyb" },
   { to: "/components/accounting-lines", label: "Řádky dokladu a DPH" },

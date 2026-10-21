@@ -39,7 +39,6 @@ function AccountingDocumentsPage() {
       ]}
     >
       <AccountingFormsNav />
-      <AdvancesShowcase />
       <TemplatesShowcase />
       <DocumentFormSecondaryShowcase />
     </ShowcaseLayout>

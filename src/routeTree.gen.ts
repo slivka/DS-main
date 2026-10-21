@@ -29,6 +29,7 @@ import { Route as ComponentsAccountingFieldsRouteImport } from './routes/compone
 import { Route as ComponentsAccountingDocumentsRouteImport } from './routes/components.accounting-documents'
 import { Route as ComponentsAccountingControlsRouteImport } from './routes/components.accounting-controls'
 import { Route as ComponentsAccountingBankRouteImport } from './routes/components.accounting-bank'
+import { Route as ComponentsAccountingAdvancesRouteImport } from './routes/components.accounting-advances'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
@@ -139,6 +140,12 @@ const ComponentsAccountingBankRoute =
     path: '/components/accounting-bank',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ComponentsAccountingAdvancesRoute =
+  ComponentsAccountingAdvancesRouteImport.update({
+    id: '/components/accounting-advances',
+    path: '/components/accounting-advances',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char91__mockupChar93PreviewSplatRoute =
   Char91__mockupChar93PreviewSplatRouteImport.update({
     id: '/__mockup/preview/$',
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-advances': typeof ComponentsAccountingAdvancesRoute
   '/components/accounting-bank': typeof ComponentsAccountingBankRoute
   '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
   '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
@@ -180,6 +188,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-advances': typeof ComponentsAccountingAdvancesRoute
   '/components/accounting-bank': typeof ComponentsAccountingBankRoute
   '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
   '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
@@ -205,6 +214,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/guidelines': typeof GuidelinesRoute
   '/workspace-settings': typeof WorkspaceSettingsRouteWithChildren
+  '/components/accounting-advances': typeof ComponentsAccountingAdvancesRoute
   '/components/accounting-bank': typeof ComponentsAccountingBankRoute
   '/components/accounting-controls': typeof ComponentsAccountingControlsRoute
   '/components/accounting-documents': typeof ComponentsAccountingDocumentsRoute
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-advances'
     | '/components/accounting-bank'
     | '/components/accounting-controls'
     | '/components/accounting-documents'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-advances'
     | '/components/accounting-bank'
     | '/components/accounting-controls'
     | '/components/accounting-documents'
@@ -279,6 +291,7 @@ export interface FileRouteTypes {
     | '/'
     | '/guidelines'
     | '/workspace-settings'
+    | '/components/accounting-advances'
     | '/components/accounting-bank'
     | '/components/accounting-controls'
     | '/components/accounting-documents'
@@ -304,6 +317,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GuidelinesRoute: typeof GuidelinesRoute
   WorkspaceSettingsRoute: typeof WorkspaceSettingsRouteWithChildren
+  ComponentsAccountingAdvancesRoute: typeof ComponentsAccountingAdvancesRoute
   ComponentsAccountingBankRoute: typeof ComponentsAccountingBankRoute
   ComponentsAccountingControlsRoute: typeof ComponentsAccountingControlsRoute
   ComponentsAccountingDocumentsRoute: typeof ComponentsAccountingDocumentsRoute
@@ -466,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsAccountingBankRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/accounting-advances': {
+      id: '/components/accounting-advances'
+      path: '/components/accounting-advances'
+      fullPath: '/components/accounting-advances'
+      preLoaderRoute: typeof ComponentsAccountingAdvancesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/__mockup/preview/$': {
       id: '/__mockup/preview/$'
       path: '/__mockup/preview/$'
@@ -498,6 +519,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GuidelinesRoute: GuidelinesRoute,
   WorkspaceSettingsRoute: WorkspaceSettingsRouteWithChildren,
+  ComponentsAccountingAdvancesRoute: ComponentsAccountingAdvancesRoute,
   ComponentsAccountingBankRoute: ComponentsAccountingBankRoute,
   ComponentsAccountingControlsRoute: ComponentsAccountingControlsRoute,
   ComponentsAccountingDocumentsRoute: ComponentsAccountingDocumentsRoute,
