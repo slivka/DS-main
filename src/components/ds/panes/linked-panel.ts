@@ -174,8 +174,10 @@ export function updateLinkedPanelRecordInState(
   if (!panel || panel.tab.linked?.pinned) return state;
   const info = panel.tab.linked;
   if (!info) return state;
-  const record = resolveLinkedPanelRecord(input, info.record ?? sourceRecord(source), source.route);
-  if (JSON.stringify(info.record ?? null) === JSON.stringify(record)) return state;
+  const sourceKey = source.recordKey ?? source.route;
+  const stored = info.recordSourceKey === sourceKey ? info.record : undefined;
+  const record = resolveLinkedPanelRecord(input, stored ?? sourceRecord(source), source.route);
+  if (stored && JSON.stringify(stored) === JSON.stringify(record)) return state;
   return syncLinkedTabsInState({
     ...state,
     panes: state.panes.map((pane) => ({
@@ -184,7 +186,7 @@ export function updateLinkedPanelRecordInState(
         tab.id === panel.tab.id
           ? {
               ...tab,
-              linked: { ...info, record, recordSourceKey: source.recordKey ?? source.route },
+              linked: { ...info, record, recordSourceKey: sourceKey },
             }
           : tab,
       ),
