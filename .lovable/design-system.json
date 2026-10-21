@@ -11312,7 +11312,7 @@
       "name": "FileDropZone",
       "file": "src/components/ds/feedback/file-drop-zone.tsx",
       "import_path": "@/design-system/{slug}",
-      "usage": "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP.",
+      "usage": "Výběr a přetažení sdílejí validateFiles, limit typu/velikosti/počtu. maxFiles je zbývající kapacita další dávky. size sm je kompaktní pruh; children pojmou přehled APP. Zóna má role button a jedinou zastávku Tab s popisem limitů.",
       "props": [
         {
           "name": "accept",
@@ -11542,7 +11542,7 @@
       "name": "SelectableGroupList",
       "file": "src/components/ds/data-display/selectable-group-list.tsx",
       "import_path": "@/design-system/{slug}",
-      "usage": "Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; důvod v tooltipu. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.",
+      "usage": "Skupiny s počtem a nezávislým activeId/checkedIds. Chyba či disabled blokuje zaškrtnutí, nikoli detail; Sémantický seznam s fokusovatelnými checkboxy; aria-disabled a aria-describedby zpřístupní důvod zákazu. Detail je tlačítko s aria-pressed. Šipky/Home/End posouvají, mezerník zaškrtne, hromadná akce jen povolené.",
       "props": [
         {
           "name": "groups",
