@@ -184,7 +184,7 @@ export function DataGridRows<Row>(props: DataGridRowsProps<Row>) {
             }
             data-state={selectMode && selected ? "selected" : undefined}
             aria-current={active ? "true" : undefined}
-            className={`group/row ${props.clickable ? "cursor-pointer" : ""} ${
+            className={`group/row focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring ${props.clickable ? "cursor-pointer" : ""} ${
               active
                 ? "border-l-2 border-l-primary/60 bg-primary/[0.04] [&>td]:bg-primary/[0.02]"
                 : ""
