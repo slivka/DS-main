@@ -139,35 +139,12 @@ export const DocumentNewMenu = forwardRef<HTMLButtonElement, DocumentNewMenuProp
           </DropdownMenuTrigger>
         </div>
         <DropdownMenuContent align="start">
-          <DisabledReasonMenuItem onSelect={onBlank}>{t.blank}</DisabledReasonMenuItem>
-          {templates.length ? (
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>{t.fromTemplate}</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {templates.map((template) => (
-                  <DropdownMenuSub key={template.id}>
-                    <DropdownMenuSubTrigger title={template.name}>
-                      <span className="max-w-72 truncate">{template.name}</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent>
-                      <DisabledReasonMenuItem onSelect={() => onTemplate(template.id, "single")}>
-                        {t.create}
-                      </DisabledReasonMenuItem>
-                      <DisabledReasonMenuItem onSelect={() => onTemplate(template.id, "series")}>
-                        {t.createSeries}
-                      </DisabledReasonMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuSub>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          ) : (
-            <DisabledReasonMenuItem disabled disabledReason={t.noTemplates} onSelect={() => {}}>
-              {t.fromTemplate}
-            </DisabledReasonMenuItem>
-          )}
-          <DropdownMenuSeparator />
-          <DisabledReasonMenuItem onSelect={onManage}>{t.manage}</DisabledReasonMenuItem>
+          <DocumentNewMenuItems
+            templates={templates}
+            onBlank={onBlank}
+            onTemplate={onTemplate}
+            onManage={onManage}
+          />
         </DropdownMenuContent>
       </DropdownMenu>
     );
