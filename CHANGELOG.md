@@ -6,7 +6,7 @@
 - `JournalLine.khLimitExcluded` a převod `kh_limit_excluded`: přepínač Mimo plnění – nezapočítávat do limitu KH v detailu, pouze s kódem a směrem a bez `withoutAccounts`. APP řídí oprávnění přes `vat.rowDetails.canEdit(line, field)` a `disabledReason`; `vat.readOnly` má přednost. Změny obou polí jdou stávajícím `onChange(lines)`.
 - Změna kódu, nároku a skrytí DPH již nemaže nárok, procento ani vyloučení KH. FV/FP sdílí editor se ZFV/ZFP, u ZL jsou účetní pole i ikona skryté a data zachované. Žádný výpočet limitu KH ani doménové zápisy.
 - Detail rozdělen do soustředěných interních modulů; CS/SK texty, ukázka 60 %, bez nároku a zamčeného dokladu; katalogové použití, příklad a antipattern. Obnovení katalogu záloh zachovává varianty již vydaných props.
-- Kontroly: průběžný check:quick a závěrečný check:full --harness; výsledky doplněny po posledním běhu. Nevydáno, poslední vydaná verze zůstává 2.120.0.
+- Kontroly: průběžný check:quick prošel, závěrečný check:full --harness 1070/1070 unit ve 113 souborech (12 nových), lint 0 chyb / 346 varování, nové interní moduly a test samostatně 0/0; formát a peněžní audit OK. Katalog proti vydané 2.120.0: 465 → 465 komponent / 1055 → 1082 props, 0 odebrání. Automatická kontrola typů a sestavení build OK. Chromium proklik: změna procenta, návrat plný → poměrný bez ztráty, KH a zakázaný stav, 1280 i 640 px, bez pageerror; E2E specy neběžely. Nevydáno, poslední vydaná verze zůstává 2.120.0.
 
 ## 2.120.0 – Zálohy
 

@@ -2,7 +2,7 @@
 
 - [x] Rozbalení řádku: nárok a ikona, vyloučení KH s oprávněním; zachování dat pro FV/FP i ZFV/ZFP.
 - [x] Texty CS/SK, ukázky, komponentové testy, katalog a průběžný check:quick.
-- [ ] Závěrečný check:full a přesné výsledky.
+- [x] Závěrečný check:full --harness: 1070/1070 unit ve 113 souborech (12 nových); lint 0 chyb / 346 varování (nové moduly a test 0/0), formát a peněžní audit OK; automatické typy a build OK. Katalog 465 → 465 komponent / 1055 → 1082 props, 0 odebrání. Proklik Chromium 1280/640 px bez pageerror; E2E specy neběžely. Nevydáno.
 - API pro APP: JournalLine.vatDeduction/vatDeductionShare/khLimitExcluded, stávající onChange(lines), vat.rowDetails.canEdit(line, field)/disabledReason; převod kh_limit_excluded. withoutAccounts u ZL účetní pole skryje bez mazání dat. Žádná doménová logika.
 - Známé body FF / WebKit viz 2.116.0 (beze změny).
 
