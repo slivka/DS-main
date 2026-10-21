@@ -83,8 +83,8 @@ export interface RecordDialogDeleteAction {
   disabledReason?: string;
 }
 
-/** Velikost dialogu: sm 32 rem, md 48 rem (číselníky), lg 56 rem; stejná v panelu i mimo. */
-export type RecordDialogSize = "sm" | "md" | "lg";
+/** Velikost dialogu: sm 32 rem, md 48 rem, lg 56 rem, xl 80 rem; stejná i v panelu. */
+export type RecordDialogSize = "sm" | "md" | "lg" | "xl";
 
 /** Vlastnosti dialogu záznamu. */
 export interface RecordDialogProps {
@@ -110,7 +110,7 @@ export interface RecordDialogProps {
   children?: ReactNode;
   /** Doplňkové akce v patičce vlevo (za Odstranit). */
   extraActions?: ReactNode;
-  /** Povinná šířka: sm 32 rem, md 48 rem, lg 56 rem. */
+  /** Povinná šířka: sm 32 rem, md 48 rem, lg 56 rem, xl 80 rem. */
   size: RecordDialogSize;
   /** Doplňková třída obsahu dialogu. */
   contentClassName?: string;
@@ -158,6 +158,7 @@ const SIZE_CLASS: Record<RecordDialogSize, { dialog: string; pane: string }> = {
   sm: { dialog: "sm:max-w-lg", pane: "max-w-lg" },
   md: { dialog: "sm:max-w-3xl", pane: "max-w-3xl" },
   lg: { dialog: "sm:max-w-4xl", pane: "max-w-4xl" },
+  xl: { dialog: "sm:max-w-7xl", pane: "max-w-7xl" },
 };
 
 /** Čistý výpočet potvrzení akce životního cyklu; `null` = spustit hned bez dotazu. */
