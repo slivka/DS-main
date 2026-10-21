@@ -104,7 +104,7 @@ const ROW_NAV_KEYS = new Set(["ArrowDown", "ArrowUp", "Home", "End"]);
  * Roving fokus řádků: v tabulátorovém pořadí je jen jeden řádek (0), ostatní −1;
  * šipky ↑/↓ a Home/End fokus posouvají a ve virtualizaci k cíli doscrollují.
  */
-function useRowRoving<Row>(
+function useRowRoving(
   enabled: boolean,
   rowKeys: string[],
   activeRowKey: string | null | undefined,
