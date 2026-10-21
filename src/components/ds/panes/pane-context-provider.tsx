@@ -62,6 +62,7 @@ import {
   returnLinkedTabInState,
   setLinkedTabPinnedInState,
   syncLinkedTabsInState,
+  setLinkedSourceSelectionInState,
 } from "./linked-tabs";
 export interface PaneTabsProviderProps {
   state: PaneTabsState;
@@ -356,19 +357,19 @@ export function PaneTabsProvider({
   };
   const getRecordNav = (tabId: string) =>
     recordNavigation(tabId, () => stateRef.current, recordNavs.current, commit, t.recordNavDirty);
-  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section) => {
+  const openLinkedTab: PaneTabsApi["openLinkedTab"] = (sourceTabId, section, record) => {
     const attempt = (confirmed: boolean) => {
       const result = openLinkedTabInState(
         stateRef.current,
         sourceTabId,
         section,
-        { confirmed },
+        { confirmed, record },
         Date.now(),
         isTabDirty,
       );
       if (result.outcome === "rejected") {
         // Zdroj není záznam – žádný toast o limitu záložek, ten by mátl.
-        toast.warning(p.linkedOnlyRecord);
+        return;
         return;
       }
       if (result.outcome === "needsConfirm") {
@@ -433,6 +434,11 @@ export function PaneTabsProvider({
       };
     },
     getRecordNav,
+    setLinkedSourceSelection: useCallback((sourceTabId, record) => {
+      const current = stateRef.current;
+      const next = setLinkedSourceSelectionInState(current, sourceTabId, record);
+      if (next !== current) commit(next);
+    }, [commit]),
     openLinkedTab,
     setLinkedPinned: (tabId, pinned) =>
       commit(setLinkedTabPinnedInState(stateRef.current, tabId, pinned)),

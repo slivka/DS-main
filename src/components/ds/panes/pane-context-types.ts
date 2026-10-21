@@ -7,6 +7,7 @@ import type { UnsavedChangesAction } from "../../../ds-texts";
 import type { LinkedSection } from "./linked-tabs";
 import type {
   LayoutSnapshot,
+  LinkedSourceRecord,
   OpenRecordModifiers,
   PaneTab,
   PaneLayoutCount,
@@ -119,7 +120,9 @@ export type PaneTabsApi = {
   registerRecordNav: (tabId: string, getOrderedItems: () => RecordNavItem[]) => () => void;
   getRecordNav: (tabId: string) => RecordNav | null;
   /** Otevře navázanou záložku sekce panelu záznamu v okně vpravo od zdroje. */
-  openLinkedTab: (sourceTabId: string, section: LinkedSection) => void;
+  openLinkedTab: (sourceTabId: string, section: LinkedSection, record?: LinkedSourceRecord) => void;
+  /** Ohlásí jednotlivý zpožděný výběr seznamu. */
+  setLinkedSourceSelection: (sourceTabId: string, record: LinkedSourceRecord | null) => void;
   /** Připnutí navázané záložky – zamkne záznam, zdroj se přestane sledovat. */
   setLinkedPinned: (tabId: string, pinned: boolean) => void;
   /** Zavře navázanou záložku a aktivuje zdrojovou („Vrátit do panelu“). */
