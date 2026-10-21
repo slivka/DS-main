@@ -54,6 +54,8 @@ export type GridBaseProps<Row> = GridRowActionProps<Row> & {
   actions?: ReactNode | undefined;
   /** Vlastní ovládací prvky vlevo v liště (přepínače, datum a pod.). */
   toolbarLeft?: ReactNode | undefined;
+  /** Tlačítko panelu za Obnovit. */
+  panelToggle?: ReactNode | undefined;
   /** Účetní období v kontextovém řádku nad lištou. */
   period?: GridPeriodConfig | undefined;
   /** Kniha v kontextovém řádku; při hodnotě all se zobrazí první systémový sloupec Kniha. */

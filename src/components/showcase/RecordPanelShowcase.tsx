@@ -12,6 +12,7 @@ import {
   PinnedNoteBar,
   RecordDialog,
   RecordPanelTriggers,
+  PanelToggleButton,
   RecordNotes,
   RecordSidePanel,
   type DataGridColumn,
@@ -33,6 +34,7 @@ const columns: DataGridColumn<DemoRow>[] = [
     id: "signals",
     label: "Indikátory",
     type: "record-indicators",
+    defaultVisible: true,
     indicators: [
       { id: "attachments", label: "Přílohy", icon: Paperclip, count: (row) => row.files },
       { id: "notes", label: "Poznámky", icon: MessageSquare, count: (row) => row.notes },
@@ -43,7 +45,7 @@ export function RecordPanelShowcase() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState("attachments");
   const [pinned, setPinned] = useState(false);
-  const [width, setWidth] = useState<"default" | "wide">("default");
+  const [size, setSize] = useState(384);
   const [status, setStatus] = useState<DemoPermission>("draft");
   const [narrow, setNarrow] = useState(false);
   const [zoom, setZoom] = useState(false);
@@ -103,7 +105,17 @@ export function RecordPanelShowcase() {
   );
   return (
     <div data-testid="record-panel-showcase" data-ready={Boolean(sourceUrl)} className="space-y-6">
-      <PageHeader title="Panel záznamu" />
+      <PageHeader
+        title="Panel záznamu"
+        panelToggle={
+          <PanelToggleButton
+            open={open}
+            indicator
+            tooltip="Panel · Přílohy 2 · Poznámky 2"
+            onToggle={() => setOpen(!open)}
+          />
+        }
+      />
       <div className="flex flex-wrap items-center gap-3">
         <div className="w-48">
           <OptionSelect
@@ -135,12 +147,12 @@ export function RecordPanelShowcase() {
             onOpenChange={setOpen}
             activeTab={tab}
             onActiveTabChange={setTab}
-            header="FP 2026/0142"
             tabs={content.tabs}
             pinned={pinned}
             onPinnedChange={setPinned}
-            width={width}
-            onWidthChange={setWidth}
+            size={size}
+            defaultSize={384}
+            onSizeChange={setSize}
             onOpenInAdjacentPane={() => setAdjacent(!adjacent)}
           >
             <div ref={form} className="min-w-0 p-3" data-testid="document-panel-form">
@@ -238,6 +250,14 @@ export function RecordPanelShowcase() {
             columns={columns}
             rowKey={(row) => row.id}
             storageKey="record-panel-demo"
+            onRefresh={() => undefined}
+            panelToggle={
+              <PanelToggleButton
+                open={gridOpen}
+                tooltip="Panel"
+                onToggle={() => setGridOpen(!gridOpen)}
+              />
+            }
             paginated={false}
             selectable
             selectMode

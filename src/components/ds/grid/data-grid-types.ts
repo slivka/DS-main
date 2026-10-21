@@ -14,6 +14,8 @@ import type { RecordIndicator } from "../layout/record-panel-triggers";
 export type DataGridColumn<Row> = {
   /** Obecný sloupec ikon s počty. */
   type?: "record-indicators";
+  /** Výchozí skrytí; u record-indicators je implicitně true. Uložený stav má přednost. */
+  defaultHidden?: boolean;
   /** Stálá sada indikátorů a jejich počty v řádku. */
   indicators?: readonly (Omit<RecordIndicator, "count"> & { count: (row: Row) => number })[];
   /** Jednoznačný klíč sloupce. */

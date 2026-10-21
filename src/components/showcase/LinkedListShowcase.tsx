@@ -104,6 +104,7 @@ function LinkedListContent() {
                     id: "signals",
                     label: "Indikátory",
                     type: "record-indicators",
+                    defaultVisible: true,
                     indicators: INDICATORS,
                   },
                 ]}

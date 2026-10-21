@@ -67,6 +67,8 @@ export interface GridFrameProps {
   asOf?: AsOfDateConfig | undefined;
   /** Vlastní prvky vlevo. */
   toolbarLeft?: ReactNode;
+  /** Tlačítko panelu vpravo za Obnovit. */
+  panelToggle?: ReactNode;
   /** Hledání v gridu. */
   search: { value: string; onChange: (value: string) => void; placeholder?: string };
   /** Panel filtrů aplikace a tlačítko filtrů. */
@@ -111,6 +113,7 @@ export function GridFrame({
   expand,
   asOf,
   toolbarLeft,
+  panelToggle,
   search,
   filters,
   filtersOpen,
@@ -276,7 +279,10 @@ export function GridFrame({
                     zoom={zoom}
                     texts={texts}
                   />
+                  {panelToggle}
                 </span>
+              ) : panelToggle ? (
+                <span className="inline-flex shrink-0 items-center">{panelToggle}</span>
               ) : null}
             </>
           }

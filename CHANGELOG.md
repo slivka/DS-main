@@ -2,7 +2,14 @@
 
 ## 2.123.0 (nevydáno)
 
-- Zatím bez změn.
+- Panel záznamu 6 – dokončena ucelená část 1–3 a 5–8, navíc výchozí skrytí indikátorů gridu (10). Bez doménové logiky; data, práva a ukládání dodává APP. Nevydávat, package.json/meta.version zůstávají na poslední vydané 2.122.0.
+- Nové veřejné `PanelToggleButton` (open/onToggle/indicator/tooltip/state/onFocusElsewhere) a `RecordPanelToolbar` (start/end/action). Slot `PageHeader.panelToggle` mezi ⋯ a ✕, `DataGrid.panelToggle` vpravo za Obnovit. Stav elsewhere pouze zaměří sousední okno.
+- `RecordSidePanel`: header volitelný, bez něj jeden řádek, ikonové záložky s tooltipem a přístupným počtem. `size`/`onSizeChange`/`defaultSize`, levé táhlo s pointer capture, klávesami po 16 px, Home/End a dvojklikem; minimum 20 rem, maximum 75 % hostitele. Pod 640 px zachovaný překryv. `width`/`onWidthChange` deprecated od 2.123.0, původní chování zachováno. `blockedReason` vysvětlí a blokuje přesun, nikoli ukládání.
+- Přílohy: ikonové operace, název otevírá, metadata zkrácena s tooltipem, filtr odebraných v menu a hlavní modrá akce. `onSetSource`/`canSetSource`/`setSourceDisabledReason`. Bez source žádný náhled; starý source a jeho náhrada deprecated, zatím stále fungují včetně náhledu. Rozlišení Smazat/Odebrat a jediný potvrzovací dialog zachovány.
+- Poznámky: společný řádek pod polem, vlevo řazení, vpravo Přidat; text nad metadaty a ikonami, připnutí symbolem, Ctrl/Cmd+Enter přidá nebo uloží; pole 2–8 řádků. Staré editable/onUpdate zůstávají funkční.
+- Historie: ikonové Základní/Podrobně a filtr typů, `hiddenKinds`/`onHiddenKindsChange`, výchozí [], aktivní počet 4/5, Zobrazit vše i při prázdném výsledku. Staré filter/onFilterChange deprecated s převodem (prázdné = vše, jinak skryté = doplněk). Propojené: ikonový Seznam/Tok a odebrání, modré Propojit; potvrzení s důvodem a confirmUnlink=false z 2.122.0 zachováno.
+- `DataGridColumn.defaultHidden`, implicitně true pro record-indicators; explicitní defaultVisible má přednost, uložené rozložení se nemění. Ukázkové starší indikátory jsou explicitně zapnuté.
+- Zbývá bod 4 (SourcePreview a scénáře zdroje), 9 (celý navázaný panel a reducer) a odpovídající části 11–12; zapsáno do roadmapy. Dosavadní navázané sekce nebyly změněny. APP napojení následuje samostatně.
 
 ## 2.122.0 – Drobné opravy 2 + oprava výběru v řádcích
 

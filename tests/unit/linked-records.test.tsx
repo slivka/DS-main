@@ -214,7 +214,7 @@ describe("Propojené záznamy", () => {
     expect(records[0].getAttribute("aria-current")).toBe("true");
     ui.unmount();
     render(<Panel />);
-    fireEvent.click(screen.getByRole("radio", { name: "Tok dokladů" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tok dokladů" }));
     expect(screen.getByRole("list", { name: "Tok dokladů" })).toBeTruthy();
   });
   it("CS a SK skloňují 1, 3 a 5 vazeb", () => {

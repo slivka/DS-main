@@ -137,7 +137,7 @@ describe("AttachmentList", () => {
     expect(receive).toHaveBeenCalledWith([], [{ file, reasons: ["size"] }]);
     expect(ui.getByRole("alert").textContent).toContain("Soubor překračuje limit");
   });
-  it("odebrané defaultně skryje a přepínač zobrazí kdo/kdy/důvod", () => {
+  it("odebrané defaultně skryje a filtr zobrazí kdo/kdy/důvod", async () => {
     const ui = render(
       wrap(
         <AttachmentList
@@ -155,7 +155,12 @@ describe("AttachmentList", () => {
       ),
     );
     expect(ui.queryByText("Faktura.pdf")).toBeNull();
-    fireEvent.click(ui.getByRole("checkbox", { name: "Zobrazit odebrané" }));
+    fireEvent.pointerDown(ui.getByRole("button", { name: "Filtr příloh" }), {
+      button: 0,
+      ctrlKey: false,
+    });
+    await act(async () => {});
+    fireEvent.click(ui.getByRole("menuitemcheckbox", { name: "Zobrazit odebrané" }));
     expect(ui.getByText("Faktura.pdf")).toBeTruthy();
     expect(ui.getByText(/Duplicita/)).toBeTruthy();
   });
@@ -307,6 +312,7 @@ describe("DataGrid record-indicators", () => {
       id: "custom",
       label: "Signály",
       type: "record-indicators",
+      defaultVisible: true,
       indicators: [{ id: "files", label: "Přílohy", icon: Paperclip, count: (row) => row.count }],
     },
   ];

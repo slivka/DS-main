@@ -1,5 +1,16 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Panel záznamu – společné nástroje
+
+- Panel záznamu: tlačítko vpravo nahoře (záhlaví okna / lišta gridu za Obnovit), záložky ikonami, v každé záložce `RecordPanelToolbar` – vlevo zobrazení/filtr/řazení, vpravo modrá hlavní akce.
+- `PanelToggleButton` patří do `PageHeader.panelToggle` (mezi ⋯ a ✕) nebo `DataGrid.panelToggle`; `state="elsewhere"` volá pouze `onFocusElsewhere`. APP dodá tooltip a indikátor.
+- `RecordSidePanel` bez header má jednu řádku navigace a akcí, s header dvě. Nově používejte řízené `size`/`onSizeChange` a `defaultSize`; staré width/onWidthChange zachovávejte pro kompatibilitu. Velikost v px je rozměrový vstup APP, nikoli vizuální styl; meze 20 rem/75 % a krok 16 px zajišťuje společné táhlo. Pod 640 px zůstává překryv.
+- `RecordPanelToolbar.action` měří plný název a při nedostatku místa jej nahradí ikonou s přístupným názvem a tooltipem. Nevytvářejte vlastní řádky nástrojů.
+- Přílohy bez source nemají náhled; `onSetSource`/`canSetSource` přidají volitelnou akci položky. Starý source a onReplaceSource ponechte do další major verze; samostatný SourcePreview je navazující část kola, zatím ho neimportujte.
+- Poznámky používají Ctrl/Cmd+Enter pro přidání i úpravu; oprávnění, jedinou připnutou poznámku a ukládání stále řídí APP.
+- Historie přijímá `hiddenKinds` (výchozí [] = vše) a `onHiddenKindsChange`; starý filter zůstává kompatibilní (prázdný = vše, jinak doplněk skrytých typů). Propojené zachovávají jediné potvrzení s důvodem.
+- `record-indicators` jsou v novém rozložení výchozím stavem skryté; `defaultHidden={false}` nebo `defaultVisible={true}` je zobrazí. Nikdy nepřepisujte uloženou volbu uživatele.
+
 ## Navázaná okna a potvrzení vazeb
 
 - Navázané okno ze seznamu sleduje jednotlivý výběr gridu. Použijte `useLinkedSelection(rows, { sourceTabId, toRecord })`, který sdílí `useFollowSelection`; APP mapuje id, titulek, route a params. Ikony `record-indicators` mohou přes stávající `onIndicatorClick(row, section)` volat `openLinkedTab(sourceTabId, { id, label }, toRecord(row))`; zdrojem zůstává seznam, nikoli nově otevřený doklad.

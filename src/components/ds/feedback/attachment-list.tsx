@@ -2,12 +2,18 @@
 import { forwardRef, useRef, useState } from "react";
 import { useDsTexts } from "../../../ds-texts";
 import { useFileDrop, validateFiles, type RejectedFile } from "../../../hooks/use-file-drop";
-import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import { Checkbox } from "../../ui/checkbox";
+import { Filter, Plus } from "lucide-react";
+import { RecordPanelToolbar } from "../layout/record-panel-toolbar";
+import { PanelToolButton } from "../layout/record-panel-tools";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from "../../ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { AttachmentItem } from "./attachment-item";
-import { DisabledReasonTooltip } from "./disabled-reason-tooltip";
 import { NoticeBar } from "./notice-bar";
 import { useConfirmDialog } from "./confirm-dialog";
 import type { AttachmentListProps, RecordAttachment } from "./attachment-types";
@@ -79,6 +85,9 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
       replaceDisabledReason: _replaceReason,
       onDownload: _download,
       onOpen: _open,
+      onSetSource: _setSource,
+      canSetSource: _canSetSource,
+      setSourceDisabledReason: _sourceReason,
       ...dom
     } = rest;
     return (
@@ -88,9 +97,38 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
           data-slot="attachment-drop-zone"
           className={cn("min-w-0", dragging && "bg-primary/10 ring-2 ring-ring")}
         >
+          <RecordPanelToolbar
+            start={
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <PanelToolButton
+                    label={t.filter}
+                    icon={Filter}
+                    aria-pressed={showRemoved}
+                    className={showRemoved ? "text-filter-active" : undefined}
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuCheckboxItem checked={showRemoved} onCheckedChange={setShowRemoved}>
+                    {t.showRemoved}
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            }
+            action={
+              onFiles
+                ? {
+                    label: t.add,
+                    icon: Plus,
+                    disabled: !canAdd,
+                    disabledReason: p.addDisabledReason ?? t.denied,
+                    onClick: () => fileInput.current?.click(),
+                  }
+                : undefined
+            }
+          />
           {onFiles ? (
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border border-dashed border-border p-3">
-              <span className="text-sm text-muted-foreground">{t.drop}</span>
+            <>
               <input
                 ref={fileInput}
                 type="file"
@@ -109,20 +147,10 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
                   event.target.value = "";
                 }}
               />
-              <DisabledReasonTooltip blocked={!canAdd} content={p.addDisabledReason ?? t.denied}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  aria-disabled={!canAdd}
-                  onClick={() => {
-                    if (canAdd) fileInput.current?.click();
-                  }}
-                >
-                  {t.add}
-                </Button>
-              </DisabledReasonTooltip>
-            </div>
+              <div className="my-2 border border-dashed border-border px-2 py-1 text-xs text-muted-foreground">
+                {t.drop}
+              </div>
+            </>
           ) : null}
           {rejected.length ? (
             <NoticeBar tone="danger">
@@ -140,24 +168,32 @@ export const AttachmentList = forwardRef<HTMLDivElement, AttachmentListProps>(
           ) : null}
           {error ? <NoticeBar tone="danger">{error}</NoticeBar> : null}
           {source ? (
-            <ul>
-              <AttachmentItem
-                source
-                attachment={source}
-                options={p}
-                texts={t}
-                onRequestRemove={requestRemove}
-              />
-            </ul>
-          ) : null}
-          {attachments.some((a) => a.removedAt) ? (
-            <label className="my-3 flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={showRemoved}
-                onCheckedChange={(checked) => setShowRemoved(checked === true)}
-              />
-              {t.showRemoved}
-            </label>
+            <>
+              <ul>
+                <AttachmentItem
+                  source
+                  attachment={source}
+                  options={p}
+                  texts={t}
+                  onRequestRemove={requestRemove}
+                />
+              </ul>
+              {source.previewUrl || source.url ? (
+                source.type === "application/pdf" ? (
+                  <iframe
+                    src={source.previewUrl ?? source.url}
+                    title={source.name}
+                    className="h-[var(--attachment-preview-height)] w-full border border-border"
+                  />
+                ) : source.type.startsWith("image/") ? (
+                  <img
+                    src={source.previewUrl ?? source.url}
+                    alt={source.name}
+                    className="max-h-[var(--attachment-preview-height)] w-full object-contain"
+                  />
+                ) : null
+              ) : null}
+            </>
           ) : null}
           <ul>
             {attachments

@@ -31,7 +31,7 @@ export function useDataGridColumns<Row>(
         ? [createGridBookColumn(book), ...columns]
         : columns
       ).map((column: DataGridColumn<Row>) =>
-        column.type === "record-indicators" ? { ...column, sortable: false } : column,
+        column.type === "record-indicators" ? { ...column, sortable: false, defaultVisible: column.defaultVisible ?? !(column.defaultHidden ?? true) } : column,
       ),
     [book, columns],
   );
@@ -45,7 +45,7 @@ export function useDataGridColumns<Row>(
           pinned.has(c.id) || c.id === "actions" || c.label === "Akcie" || isBranchColumn(c)
             ? true
             : c.locked,
-        ...(c.defaultVisible !== undefined ? { defaultVisible: c.defaultVisible } : {}),
+        ...(c.defaultVisible !== undefined ? { defaultVisible: c.defaultVisible } : c.defaultHidden !== undefined ? { defaultVisible: !c.defaultHidden } : {}),
         ...(c.section !== undefined ? { section: c.section } : {}),
         ...(c.branchVisibility !== undefined ? { branchVisibility: c.branchVisibility } : {}),
         ...(c.transient !== undefined ? { transient: c.transient } : {}),

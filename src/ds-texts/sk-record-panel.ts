@@ -7,6 +7,8 @@ import type {
 } from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_SK: RecordPanelTexts = {
+  panel: "Panel",
+  resize: "Zmeniť šírku panela",
   close: "Zavrieť panel",
   pin: "Pripnúť k záznamu",
   unpin: "Uvoľniť záznam",
@@ -37,7 +39,9 @@ export const RECORD_NOTES_SK: RecordNotesTexts = {
 export const ATTACHMENTS_SK: AttachmentTexts = {
   source: "Zdroj",
   replace: "Nahradiť",
-  add: "Pridať prílohy",
+  add: "Pridať prílohu",
+  setSource: "Použiť ako zdroj",
+  filter: "Filter príloh",
   drop: "Pretiahnuť súbory",
   download: "Stiahnuť",
   open: "Otvoriť",
@@ -56,6 +60,7 @@ export const ATTACHMENTS_SK: AttachmentTexts = {
 };
 /** História záznamu. */
 export const RECORD_HISTORY_SK: RecordHistoryTexts = {
+  showAll: "Zobraziť všetko",
   modeLabel: "Režim histórie",
   basic: "Základný",
   detailed: "Rozšírený",

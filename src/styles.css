@@ -96,6 +96,8 @@
 
 :root {
   --record-panel-width: 24rem;
+  --note-input-min: calc(2lh + 1rem + 2px);
+  --note-input-max: calc(8lh + 1rem + 2px);
   --record-panel-wide: 50%;
   --record-indicator-slot: 3.5rem;
   --attachment-preview-height: 24rem;

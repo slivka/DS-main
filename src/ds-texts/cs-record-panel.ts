@@ -7,6 +7,8 @@ import type {
 } from "./record-panel-texts";
 /** Panel záznamu. */
 export const RECORD_PANEL_CS: RecordPanelTexts = {
+  panel: "Panel",
+  resize: "Změnit šířku panelu",
   close: "Zavřít panel",
   pin: "Připnout k záznamu",
   unpin: "Uvolnit záznam",
@@ -37,7 +39,9 @@ export const RECORD_NOTES_CS: RecordNotesTexts = {
 export const ATTACHMENTS_CS: AttachmentTexts = {
   source: "Zdroj",
   replace: "Nahradit",
-  add: "Přidat přílohy",
+  add: "Přidat přílohu",
+  setSource: "Použít jako zdroj",
+  filter: "Filtr příloh",
   drop: "Přetáhnout soubory",
   download: "Stáhnout",
   open: "Otevřít",
@@ -56,6 +60,7 @@ export const ATTACHMENTS_CS: AttachmentTexts = {
 };
 /** Historie záznamu. */
 export const RECORD_HISTORY_CS: RecordHistoryTexts = {
+  showAll: "Zobrazit vše",
   modeLabel: "Režim historie",
   basic: "Základní",
   detailed: "Rozšířený",

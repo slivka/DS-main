@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import { useState } from "react";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { TooltipProvider } from "../../src/components/ui/tooltip";
 import {
   RecordHistoryTimeline,
@@ -69,28 +69,70 @@ describe("RecordHistoryTimeline", () => {
     render(<Demo />);
     expect(screen.queryByTestId("history-detail")).toBeNull();
     expect(screen.getAllByTestId("history-count")[0].textContent).toContain("2 změny");
-    fireEvent.click(screen.getByRole("radio", { name: "Rozšířený" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rozšířený" }));
     expect(screen.getAllByTestId("history-detail").length).toBeGreaterThan(0);
     expect(screen.getByText("ACME")).toBeTruthy();
     expect(screen.getAllByText("—").length).toBeGreaterThan(0);
     expect(screen.getByText("Přidán řádek 3: Servis 1 500,00")).toBeTruthy();
   });
 
-  it("filtr typů zúží události, bez výběru zobrazí vše", () => {
+  it("starý filter se převede na skryté typy a změna volá původní callback", async () => {
     render(<Demo />);
-    const group = screen.getByRole("group", { name: "Typy událostí" });
-    fireEvent.click(within(group).getByRole("button", { name: "Poznámky" }));
-    expect(screen.getAllByRole("listitem")).toHaveLength(1);
-    fireEvent.click(within(group).getByRole("button", { name: "Stavy" }));
+    const menu = async () => {
+      fireEvent.pointerDown(screen.getByRole("button", { name: "Typy událostí" }), {
+        button: 0,
+        ctrlKey: false,
+      });
+      await act(async () => {});
+    };
+    await menu();
+    fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "Poznámky" }));
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    fireEvent.click(within(group).getByRole("button", { name: "Stavy" }));
-    fireEvent.click(within(group).getByRole("button", { name: "Poznámky" }));
+    await menu();
+    fireEvent.click(screen.getByRole("menuitem", { name: "Zobrazit vše" }));
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
+  });
+
+  it("hiddenKinds může skrýt všechny typy a odkaz vyžádá zobrazení všech", () => {
+    const calls: HistoryKind[][] = [];
+    render(
+      <TooltipProvider>
+        <RecordHistoryTimeline
+          events={events}
+          mode="basic"
+          onModeChange={() => {}}
+          filter={["status"]}
+          hiddenKinds={["status", "note", "change"]}
+          onHiddenKindsChange={(next) => calls.push(next)}
+          now={NOW}
+        />
+      </TooltipProvider>,
+    );
+    expect(screen.queryByText("Zařazeno")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Zobrazit vše" }));
+    expect(calls).toEqual([[]]);
+  });
+
+  it("neprázdný starý filter zobrazí pouze vybrané typy", () => {
+    render(
+      <TooltipProvider>
+        <RecordHistoryTimeline
+          events={events}
+          mode="basic"
+          onModeChange={() => {}}
+          filter={["note"]}
+          onFilterChange={() => {}}
+          now={NOW}
+        />
+      </TooltipProvider>,
+    );
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByText("Přidána poznámka")).toBeTruthy();
   });
 
   it("automatické přepočty jsou sbalené a rozbalí se", () => {
     render(<Demo />);
-    fireEvent.click(screen.getByRole("radio", { name: "Rozšířený" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rozšířený" }));
     const toggle = screen.getByRole("button", { name: "Automatické přepočty (1)" });
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     expect(screen.queryByText("2 415,00")).toBeNull();
@@ -98,10 +140,15 @@ describe("RecordHistoryTimeline", () => {
     expect(screen.getByText("2 415,00")).toBeTruthy();
   });
 
-  it("slovenské texty z DsTextsProvider", () => {
+  it("slovenské texty z DsTextsProvider", async () => {
     render(<Demo locale="sk" />);
-    expect(screen.getByRole("radio", { name: "Rozšírený" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Väzby" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Rozšírený" })).toBeTruthy();
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Typy udalostí" }), {
+      button: 0,
+      ctrlKey: false,
+    });
+    await act(async () => {});
+    expect(screen.getByRole("menuitemcheckbox", { name: "Väzby" })).toBeTruthy();
   });
 
   it("skloňuje počet změn v CS i SK", () => {
