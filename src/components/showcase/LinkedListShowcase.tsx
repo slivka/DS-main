@@ -85,7 +85,7 @@ function LinkedListContent() {
               <DataGrid
                 rows={DOCUMENTS}
                 panelToggle={<PanelToggleButton open={open} state={linkedPanel.state === "elsewhere" ? "elsewhere" : open ? "open" : "closed"} onToggle={() => setOpen(!open)} onFocusElsewhere={linkedPanel.focus} tooltip="Panel" />}
-                canEdit={() => false}
+                canEditRow={() => false}
                 onRowOpen={(row) => openLinked(section, row)}
                 rowKey={(row) => row.id}
                 storageKey="linked-list-demo"

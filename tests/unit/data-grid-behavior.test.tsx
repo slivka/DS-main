@@ -229,7 +229,7 @@ describe("DataGrid – výběr a skupiny", () => {
 describe("DataGrid – akce řádku a lišta", () => {
   it("zakázaná úprava nebrání onRowOpen dvojklikem ani Enter", () => {
     const open = mock(); const edit = mock(); const click = mock();
-    const ui = render(<Grid storageKey={nextKey()} onRowOpen={open} onEditRow={edit} onRowClick={click} canEdit={() => false} editDisabledReason="Jen pro čtení" />);
+    const ui = render(<Grid storageKey={nextKey()} onRowOpen={open} onEditRow={edit} onRowClick={click} canEditRow={() => false} editDisabledReason={() => "Jen pro čtení"} />);
     const row = ui.getByText("FA-002").closest("tr");
     if (!row) throw new Error("Missing row");
     fireEvent.click(row);

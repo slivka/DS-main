@@ -53,7 +53,7 @@ describe("veřejný navázaný panel 6C", () => {
     expect(tab.title).toBe("Doklad A – Panel");
     act(() => api().setLinkedPanelSection(tab.id, "notes"));
     expect(panel()?.linked?.activeSection).toBe("notes");
-    act(() => api().focusPane(0));
+    act(() => api().activatePane(api().state.panes[0].id));
     act(() => handle().focus());
     expect(api().state.active).toBe(api().state.panes[1].id);
     act(() => handle().open({ recordKey: "A", recordTitle: "Doklad A", section: "history" }));

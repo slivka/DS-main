@@ -74,8 +74,8 @@ const definitions = [
     name: "RecordSidePanel",
     file: "src/components/ds/layout/record-side-panel.tsx",
     usage:
-      "Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah odsune, pod 640 px šířky prostředí používá místní překryv. Záložky, připnutí a šířku řídí aplikace; nic nenačítá.",
-    code: "<RecordSidePanel open={open} onOpenChange={setOpen} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} size={size} defaultSize={384} onSizeChange={setSize}><DocumentForm {...formProps} /></RecordSidePanel>",
+      "Obal hlavního obsahu a pravého panelu záznamu. Na běžné šířce obsah odsune, pod 640 px šířky prostředí používá místní překryv. onSizeChange mění živý stav, APP ukládá v onSizeCommit jednou po puštění táhla/klávese/dvojkliku. Záložky, připnutí a šířku řídí aplikace; nic nenačítá.",
+    code: "<RecordSidePanel open={open} onOpenChange={setOpen} activeTab={tab} onActiveTabChange={setTab} tabs={tabs} pinned={pinned} onPinnedChange={setPinned} size={size} defaultSize={384} onSizeChange={setSize} onSizeCommit={savePanelSize}><DocumentForm {...formProps} /></RecordSidePanel>",
     avoid:
       "Nevykreslujte panel vedle obalu bez children; aplikace řídí vazbu připnutí na záznam, nikoli DS.",
   },
@@ -201,6 +201,12 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
     document.props ??= [];
     if (!document.props.some((item) => item.name === "actionBarContent"))
       document.props.push({ name: "actionBarContent", type: "ReactNode" });
+    if (!document.props.some((item) => item.name === "panelToggle"))
+      document.props.push({ name: "panelToggle", type: "ReactNode" });
+    const guidance = " panelToggle předává ovladač do PageHeader mezi nabídku a zavření; společné pro faktury i zálohové listy.";
+    if (!document.usage?.includes("panelToggle")) document.usage = (document.usage ?? "") + guidance;
+    document.examples ??= [];
+    if (!document.examples.some((item) => item.label === "Panel 6C")) document.examples.push({ label: "Panel 6C", code: '<DocumentForm {...formProps} panelToggle={<PanelToggleButton open={open} onToggle={togglePanel} indicator tooltip={panelSummary} />} />' });
     touched.push(document);
   }
   const grid = components.find((item) => item.name === "DataGrid");
@@ -210,6 +216,11 @@ export function enrichRecordPanelCatalog(components: PanelCatalogComponent[]) {
       grid.props.push({ name: "onIndicatorClick", type: "(row: Row, id: string) => void" });
     if (!grid.props.some((item) => item.name === "panelToggle"))
       grid.props.push({ name: "panelToggle", type: "ReactNode" });
+    if (!grid.props.some((item) => item.name === "onRowOpen"))
+      grid.props.push({ name: "onRowOpen", type: "(row: Row) => void" });
+    if (!grid.usage?.includes("onRowOpen")) grid.usage = (grid.usage ?? "") + " onRowOpen má při dvojkliku/Enter přednost před editací i v režimu výběru; canEditRow/editDisabledReason jej neblokují. onEditRow nadále řídí tužku.";
+    grid.examples ??= [];
+    if (!grid.examples.some((item) => item.label === "Otevření jen pro čtení")) grid.examples.push({ label: "Otevření jen pro čtení", code: '<DataGrid {...gridProps} canEditRow={() => false} onRowClick={selectRow} onRowOpen={openRecord} />' });
     const rule =
       'Sloupec type="record-indicators" přijímá indicators s libovolnými id a count(row); klik volá onIndicatorClick bez výběru řádku, Excel rozvine samostatné číselné počty.';
     if (!grid.usage?.includes("record-indicators")) grid.usage = `${grid.usage ?? ""} ${rule}`;
