@@ -10,6 +10,8 @@
 - Historie: ikonové Základní/Podrobně a filtr typů, `hiddenKinds`/`onHiddenKindsChange`, výchozí [], aktivní počet 4/5, Zobrazit vše i při prázdném výsledku. Staré filter/onFilterChange deprecated s převodem (prázdné = vše, jinak skryté = doplněk). Propojené: ikonový Seznam/Tok a odebrání, modré Propojit; potvrzení s důvodem a confirmUnlink=false z 2.122.0 zachováno.
 - `DataGridColumn.defaultHidden`, implicitně true pro record-indicators; explicitní defaultVisible má přednost, uložené rozložení se nemění. Ukázkové starší indikátory jsou explicitně zapnuté.
 - Zbývá bod 4 (SourcePreview a scénáře zdroje), 9 (celý navázaný panel a reducer) a odpovídající části 11–12; zapsáno do roadmapy. Dosavadní navázané sekce nebyly změněny. APP napojení následuje samostatně.
+- Kontroly dokončené části: check:quick --harness a check:full --harness prošly; 1 100/1 100 unit testů ve 115 souborech (15 nových), lint 0 chyb / 349 varování, formát i peněžní audit OK. Katalog proti vydané 2.122.0: 465 → 467 komponent / 1 061 → 1 108 props, 0 odebrání; staré příklady zachovány. Automatická kontrola typů a sestavení build OK.
+- Jediný E2E spec record-panel v Chromiu: 1/1; táhlo, Ctrl+Enter, Esc a návrat fokusu, překryv, zoom a výběr gridu. Po přidání poznámky se fokus zachovává během čekání na callback (pole není disabled). Přímý proklik 1280 px, 360 px a zoom 200 % bez pageerror a bez horizontálního přetečení na telefonu; historie ukazuje 4/5 po skrytí typu. Plná E2E sada ani Firefox/WebKit nespouštěny.
 
 ## 2.122.0 – Drobné opravy 2 + oprava výběru v řádcích
 
