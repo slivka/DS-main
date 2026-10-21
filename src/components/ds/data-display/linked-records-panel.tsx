@@ -31,6 +31,12 @@ export interface LinkedRecordsPanelProps extends Omit<ComponentPropsWithoutRef<"
   onCollapsedGroupsChange: (ids: string[]) => void;
   onOpen: (item: LinkedRecordItem, modifiers: LinkedRecordModifiers) => void;
   onRemove?: (item: LinkedRecordItem) => void | Promise<void>;
+  /** Jediné potvrzení v DS; false předá potvrzení aplikaci. */
+  confirmUnlink?: boolean;
+  /** Pole důvodu; bez required je výchozí povinné. */
+  unlinkReason?: { label?: string; required?: boolean; placeholder?: string };
+  /** Odebrání s důvodem; má přednost před onRemove. */
+  onUnlink?: (item: LinkedRecordItem, reason: string) => void | Promise<void>;
   onLink?: (value: LinkRecordValue) => void | Promise<void>;
   linkDialog?: LinkRecordConfig;
   emptyText?: string;
@@ -47,6 +53,9 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
       onCollapsedGroupsChange,
       onOpen,
       onRemove,
+      onUnlink,
+      confirmUnlink = true,
+      unlinkReason,
       onLink,
       linkDialog,
       emptyText,
@@ -64,13 +73,23 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
       new Map(visible.flatMap((group) => group.items).map((item) => [item.id, item])).values(),
     ).sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
     const remove = (item: LinkedRecordItem) => {
-      if (!item.removable || !onRemove) return;
+      if (!item.removable || (!onRemove && !onUnlink)) return;
+      const perform = (reason: string) => void (onUnlink ? onUnlink(item, reason) : onRemove?.(item));
+      if (!confirmUnlink) {
+        perform("");
+        return;
+      }
       confirm({
         title: texts.removeTitle,
         description: texts.removeDescription(item.number),
         confirmLabel: texts.remove,
         destructive: true,
-        onConfirm: () => void onRemove(item),
+        reason: unlinkReason ? {
+          label: unlinkReason.label ?? texts.unlinkReason,
+          required: unlinkReason.required ?? true,
+          placeholder: unlinkReason.placeholder ?? texts.unlinkReasonPlaceholder,
+        } : undefined,
+        onConfirm: perform,
       });
     };
     return (
@@ -151,7 +170,7 @@ export const LinkedRecordsPanel = forwardRef<HTMLDivElement, LinkedRecordsPanelP
                   {group.items.map((item) => (
                     <li key={item.id} className="flex min-w-0 flex-wrap items-center gap-1">
                       <LinkedRecordEntry item={item} onOpen={onOpen} />
-                      {onRemove ? (
+                      {onRemove || onUnlink ? (
                         <DisabledReasonTooltip
                           blocked={!item.removable}
                           content={
