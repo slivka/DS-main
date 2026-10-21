@@ -70,6 +70,21 @@ export interface JournalLinesVat {
   overrideInMenu?: boolean;
   /** Daň bez nároku na odpočet po kódech DPH (`vatCodeId` → částka v měně dokladu) z DB. */
   nonDeductibleByCode?: Record<string, number>;
+  /** Účetní pole detailu (2.121.0); withoutAccounts je skryje, hodnoty se nemažou. */
+  rowDetails?: {
+    /** Oprávnění APP pro pole konkrétního řádku; výchozí true. */
+    canEdit?: (
+      line: JournalLine,
+      field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded",
+    ) => boolean;
+    /** Vysvětlení zamčení od APP, např. zaúčtovaný doklad. */
+    disabledReason?:
+      | string
+      | ((
+          line: JournalLine,
+          field: "vatDeduction" | "vatDeductionShare" | "khLimitExcluded",
+        ) => string | undefined);
+  };
 }
 /** Výchozí hodnoty nového řádku. */
 export type JournalLineDefaults = Partial<Omit<JournalLine, "id">>;

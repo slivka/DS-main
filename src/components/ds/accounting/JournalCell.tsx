@@ -5,10 +5,11 @@
  * Nesmí: počítat hodnoty – text buňky dává journalDisplayValue, zápis JournalCellEditor.
  */
 import { useId } from "react";
-import { Lock, ReceiptText } from "lucide-react";
+import { Lock, ReceiptText, Percent } from "lucide-react";
 
 import { useDsTexts } from "../../../ds-texts";
 import { cn } from "../../../lib/utils";
+import { formatAmount } from "../../../lib/format";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { useCellStatusTooltip } from "../grid/cell-status-tooltip";
 import { JournalCellEditor } from "./JournalCellEditor";
@@ -117,6 +118,21 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
     warning: warningMessage,
     extraInfo: hint,
   });
+  const deductionCode = line.vatCodeId ? editor.vatCodeMap.get(line.vatCodeId) : undefined;
+  const deductionHint =
+    column === "vatCodeId" &&
+    !editor.props.withoutAccounts &&
+    deductionCode?.hasTax &&
+    (deductionCode.direction === "in" || deductionCode.selfAssessment)
+      ? line.vatDeduction === "none"
+        ? t.deductionNoneHint
+        : line.vatDeduction === "partial"
+          ? t.deductionPartialHint.replace(
+              "{share}",
+              line.vatDeductionShare == null ? "—" : formatAmount(line.vatDeductionShare, 0),
+            )
+          : undefined
+      : undefined;
   const node = (
     <div
       tabIndex={canEdit ? 0 : -1}
@@ -169,6 +185,23 @@ export function JournalCell({ line, rowIndex, column }: JournalCellProps) {
           editor.displayValue(line, column)
         )}
       </span>
+      {deductionHint ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span
+              tabIndex={0}
+              role="img"
+              aria-label={deductionHint}
+              data-slot="journal-deduction-indicator"
+              className="ml-1 inline-flex size-4 shrink-0 items-center text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Percent aria-hidden="true" className="size-3.5" />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{deductionHint}</TooltipContent>
+        </Tooltip>
+      ) : null}
       {column === "text" && line.autoKind && !isEditing ? (
         <span
           data-slot="journal-auto-kind"

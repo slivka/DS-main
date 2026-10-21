@@ -1,5 +1,11 @@
 # Slivka Design System – pravidla pro AI agenty
 
+## Rozbalení řádku DPH (2.121.0)
+
+- `JournalLine.vatDeduction`, `vatDeductionShare` a `khLimitExcluded` jsou řízená data APP; změny přebírejte přes stávající `JournalLinesEditor.onChange`. Limit KH DS nepočítá.
+- Oprávnění k účetním polím detailu předávejte přes `vat.rowDetails.canEdit(line, field)` a důvod přes `disabledReason` (text nebo funkce). `vat.readOnly` a prázdné `editableFields` mají přednost.
+- FV/FP sdílí editor se ZFV/ZFP; `withoutAccounts` skryje nárok i vyloučení KH. Změna kódu, nároku nebo skrytí DPH hodnoty nemaže; převod řádku zachovává i dříve zadané procento.
+
 ## Zálohy
 
 - Platbu zobrazujte přes AdvancePaymentBreakdown: dvě roviny ZL a DD skládají SettlementBar a LinkedRecordsPanel. Obecné účetní párování neměňte; APP dodává všechny částky, lhůtu, stav po lhůtě, oprávnění i zápisy.

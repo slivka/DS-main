@@ -26,6 +26,7 @@ export type JournalLineColumn =
   | "grossAmount"
   | "vatDeduction"
   | "vatDeductionShare"
+  | "khLimitExcluded"
   | "pdpSubjectCode";
 
 /** Nárok na odpočet DPH u vstupního kódu. */
@@ -113,6 +114,8 @@ export type JournalLine = {
   vatManual?: boolean;
   vatDeduction?: VatDeduction;
   vatDeductionShare?: number;
+  /** Mimo plnění – nezapočítávat do limitu KH; hodnotu a pravidla dodává APP. */
+  khLimitExcluded?: boolean;
   pdpSubjectCode?: string | null;
   /** Zadaná částka s DPH (režim „s DPH“), v měně dokladu. */
   grossAmount?: number;
@@ -154,6 +157,7 @@ export type JournalRow = {
   vat_amount_foreign?: number | null;
   vat_deduction?: VatDeduction;
   vat_deduction_share?: number | null;
+  kh_limit_excluded?: boolean;
   pdp_subject_code?: string | null;
   /** Zadaná částka s DPH v režimu „s DPH“. */
   amount_gross?: number | null;
@@ -258,11 +262,15 @@ export function toJournalRow(line: JournalLine, options: JournalRowOptions = {})
   const debit = emptyToNull(line.debitAccount);
   const credit = emptyToNull(line.creditAccount);
   const vatColumns: Partial<JournalRow> = {};
+  // Skrytí DPH ani změna nároku nesmí zahodit uložené údaje.
+  if (line.vatDeduction !== undefined) vatColumns.vat_deduction = line.vatDeduction;
+  if (line.vatDeductionShare !== undefined) vatColumns.vat_deduction_share = line.vatDeductionShare;
+  if (line.khLimitExcluded !== undefined) vatColumns.kh_limit_excluded = line.khLimitExcluded;
   if (options.vat) {
     vatColumns.vat_code_id = emptyToNull(line.vatCodeId);
     // 2.109.0: klient vat_manual ani ruční daň neposílá – pevnou daň zakládá jen systém.
     vatColumns.vat_deduction = line.vatDeduction ?? "full";
-    if (line.vatDeduction === "partial")
+    if (line.vatDeduction === "partial" && line.vatDeductionShare === undefined)
       vatColumns.vat_deduction_share = line.vatDeductionShare ?? null;
     vatColumns.pdp_subject_code = emptyToNull(line.pdpSubjectCode);
   }
@@ -359,6 +367,9 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
     unitId: row.unit_id,
     unitPrice: row.unit_price ?? undefined,
     isFxRounding: row.is_fx_rounding,
+    vatDeduction: row.vat_deduction ?? undefined,
+    vatDeductionShare: row.vat_deduction_share ?? undefined,
+    khLimitExcluded: row.kh_limit_excluded,
     ...(row.vat_code_id !== undefined || row.is_vat_line !== undefined
       ? {
           vatCodeId: row.vat_code_id ?? null,
@@ -367,8 +378,6 @@ export function fromJournalRow(row: JournalRow, id?: string): JournalLine {
           vatAmountHome: row.vat_amount ?? undefined,
           vatBaseHome: row.vat_base_dom ?? undefined,
           vatManual: Boolean(row.vat_manual),
-          vatDeduction: row.vat_deduction ?? undefined,
-          vatDeductionShare: row.vat_deduction_share ?? undefined,
           pdpSubjectCode: row.pdp_subject_code ?? null,
           grossAmount: row.vat_gross_foreign ?? undefined,
           isVatLine: Boolean(row.is_vat_line),

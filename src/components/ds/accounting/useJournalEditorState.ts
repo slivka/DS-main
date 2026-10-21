@@ -41,7 +41,6 @@ import {
   orderJournalLines,
   removeJournalLine,
   reorderJournalLines,
-  roundJournalAmount,
   toHomeAmount,
   type ColumnId,
   type EditState,
@@ -310,14 +309,11 @@ export function useJournalEditorState(
     patch(line.id, { ...line, ...values });
   const changeVatCode = (line: JournalLine, codeId: string) => {
     const code = vatCodeMap.get(codeId);
-    const inbound = code?.direction === "in" || code?.selfAssessment;
     patchVat(line, {
       vatCodeId: codeId || null,
       vatRate: code?.rate ?? null,
       vatManual: false,
       vatAmount: undefined,
-      vatDeduction: inbound && code?.hasTax ? (line.vatDeduction ?? "full") : undefined,
-      vatDeductionShare: inbound ? line.vatDeductionShare : undefined,
       pdpSubjectCode: code?.requiresPdpSubject ? line.pdpSubjectCode : null,
     });
   };
@@ -330,6 +326,14 @@ export function useJournalEditorState(
       return column === "amount" && Boolean(rounding?.onChange) && rounding?.readOnly !== true;
     if (VAT_COLUMNS.has(dataColumn)) {
       if (!vatOn || vatReadOnly || column === "vatRate") return false;
+      if (
+        dataColumn === "vatDeduction" ||
+        dataColumn === "vatDeductionShare" ||
+        dataColumn === "khLimitExcluded"
+      ) {
+        if (props.withoutAccounts) return false;
+        return vat?.rowDetails?.canEdit?.(line, dataColumn) !== false;
+      }
       // 2.109.0: daň ani celkem s DPH se na řádku nezadávají (daň počítá DB po skupinách).
       if (column === "grossAmount" || column === "vatAmount") return false;
       return true;

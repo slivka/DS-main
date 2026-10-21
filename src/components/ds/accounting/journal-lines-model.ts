@@ -104,6 +104,7 @@ export const VAT_COLUMNS = new Set<string>([
   "grossAmount",
   "vatDeduction",
   "vatDeductionShare",
+  "khLimitExcluded",
   "pdpSubjectCode",
 ]);
 /** Číselné sloupce DPH editované jako částka. */
