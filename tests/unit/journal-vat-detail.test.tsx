@@ -173,24 +173,32 @@ describe("účetní pole detailu DPH", () => {
 
 describe("model účetních údajů řádku", () => {
   it("nárok NULL z DB neposílá nárok ani procento při zapnutém DPH", () => {
-    const line = fromJournalRow({
-      ...toJournalRow(LINE),
-      vat_deduction: null,
-      vat_deduction_share: null,
-    }, "stored");
+    const line = fromJournalRow(
+      {
+        ...toJournalRow(LINE),
+        vat_deduction: null,
+        vat_deduction_share: null,
+      },
+      "stored",
+    );
     const row = toJournalRow(line, { vat: { calcMode: "net" } });
     expect(Object.hasOwn(row, "vat_deduction")).toBe(false);
     expect(Object.hasOwn(row, "vat_deduction_share")).toBe(false);
     expect(row.kh_limit_excluded).toBe(true);
   });
   it("zapnuté DPH zachová definovaný partial a 60 %", () => {
-    const row = toJournalRow(fromJournalRow(toJournalRow(LINE), "stored"), { vat: { calcMode: "net" } });
+    const row = toJournalRow(fromJournalRow(toJournalRow(LINE), "stored"), {
+      vat: { calcMode: "net" },
+    });
     expect(row.vat_deduction).toBe("partial");
     expect(row.vat_deduction_share).toBe(60);
     expect(row.kh_limit_excluded).toBe(true);
   });
   it("partial bez procenta nedoplňuje null", () => {
-    const row = toJournalRow({ ...LINE, vatDeductionShare: undefined }, { vat: { calcMode: "net" } });
+    const row = toJournalRow(
+      { ...LINE, vatDeductionShare: undefined },
+      { vat: { calcMode: "net" } },
+    );
     expect(row.vat_deduction).toBe("partial");
     expect(Object.hasOwn(row, "vat_deduction_share")).toBe(false);
   });
