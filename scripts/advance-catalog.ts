@@ -36,8 +36,8 @@ const definitions = [
   [
     "AdvanceCorrectionDialog",
     "advance-correction-dialog",
-    "Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit/Nevytvářet. Zavření není odmítnutí.",
-    '<AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />',
+    "Náhled řádků opravného DD dodaných APP a explicitní rozhodnutí Vytvořit/Nevytvářet. Zavření není odmítnutí. currencyCode dodává APP; bez něj částky jako dosud bez měny.",
+    '<AdvanceCorrectionDialog open={open} onOpenChange={setOpen} rows={preview} currencyCode={currency.code} storageKey="advance-correction" onDecision={handleDecision} busy={busy} error={error} />',
   ],
 ];
 /** Doplnění všech veřejných kompozic bez ručního kopírování seznamu props. */

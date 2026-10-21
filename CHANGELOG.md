@@ -2,7 +2,10 @@
 
 ## 2.126.0 (nevydáno)
 
-- Zatím bez změn.
+- Import souborů I2: FileDropZone (velká/kompaktní plocha, výběr, klávesnice, children), FileChipBar (stavy, odebrání, zalomení/+N), PaneDropOverlay (pouze Files, nejvnitřnější povolený cíl), CheckList (souhrn a pořadí závažností), SelectableGroupList (aktivní/zaškrtnutý výběr, klávesnice, zákaz chybných položek).
+- Sdílené validateFiles/useFileDrop: nepovinný maxFiles a důvod count; původní volání beze změny. Texty DsTexts.fileImport CS/SK. Bez bankovních kontrol, parseru nebo ukládání v DS.
+- RecordDialog size xl (80 rem); ukázka Import souborů s fiktivními výpisy, dvěma kroky, kontrolami/pohyby/souborem a přetažením nad gridem.
+- AdvanceCorrectionDialog.currencyCode: nepovinná měna APP v náhledu základu a DPH, bez hodnoty původní formát.
 
 ## 2.125.0
 
