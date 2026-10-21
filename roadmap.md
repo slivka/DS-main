@@ -1,4 +1,8 @@
-## DS 2.125.0 (nevydáno)
+## DS 2.126.0 (nevydáno)
+
+- [ ] Rozdělit soubory nad limitem (pane-context-provider, pane-layout, DataGrid, document-form-types).
+
+## DS 2.125.0
 
 - [x] Opravné kolo po kontrole: roving fokus řádků jen s onRowOpen, záznam navázaného panelu s route/params bez přepisu zdrojové záložky, commit táhla jen při změně, přejmenování testů/katalogu podle komponent.
 - [x] Ovladač a navázaný panel: DocumentForm.panelToggle, veřejné akce/hook/vykreslovač navázaného panelu, DataGrid.onRowOpen a RecordSidePanel.onSizeCommit.

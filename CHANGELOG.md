@@ -1,6 +1,10 @@
 # Changelog – Slivka Design System
 
-## 2.125.0 (nevydáno)
+## 2.126.0 (nevydáno)
+
+- Zatím bez změn.
+
+## 2.125.0
 
 - Oprava: navázaný panel nad záložkou záznamu po navigaci zdroje na jiný záznam zahodí záznam hlášený APP (`linked.recordSourceKey`) a sleduje zdroj.
 - Oprava: ve virtualizovaném gridu s `onRowOpen` dostane tabIndex 0 první vykreslený řádek, když je aktuální mimo okno.
